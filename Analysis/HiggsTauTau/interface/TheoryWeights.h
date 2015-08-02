@@ -24,50 +24,69 @@ namespace ic {
  * histogram is created (`uncert`) with nominal bin content and the std.
  * deviation as the error.
  */
-struct PDFSetHist {
-  TH2F *pdf_grid;
-  TH1F *uncert;
+struct TheorySystHist {
+  TH2F *grid;   // store multiple versions of a TH1F in a TH2F
+  TH1F *uncert;  // will hold the final uncertainty calculation
   TH1F *src;
+  TH2F *corr;
   unsigned start_pdf;
   unsigned end_pdf;
   std::string set_name;
   std::vector<std::string> pdf_strs;
 
-  PDFSetHist() {;}
+  TheorySystHist() {;}
 
-  PDFSetHist(TH1F *h_src, TFileDirectory *dir, unsigned start, unsigned end,
+  TheorySystHist(TH1F *h_src, TFileDirectory *dir, unsigned start, unsigned end,
              std::string name)
       : src(h_src), start_pdf(start), end_pdf(end), set_name(name) {
     unsigned n_pdfs = (end - start) + 1;
     for (unsigned i = start_pdf; i <= end_pdf; ++i) {
       pdf_strs.push_back(boost::lexical_cast<std::string>(i));
     }
-    pdf_grid = dir->make<TH2F>(
-        TString(src->GetName()) + "_pdf_grid_" + TString(set_name), "",
-        src->GetNbinsX(), src->GetXaxis()->GetXmin(), src->GetXaxis()->GetXmax(), n_pdfs, -0.5,
-        double(n_pdfs) - 0.5);
-    uncert = dir->make<TH1F>(
-        TString(src->GetName()) + "_pdf_" + TString(set_name), "", src->GetNbinsX(),
-        src->GetXaxis()->GetXmin(), src->GetXaxis()->GetXmax());
+    TString base_name = TString(src->GetName()) + "_" + TString(set_name);
+    int n = src->GetNbinsX();
+    double min = src->GetXaxis()->GetXmin();
+    double max = src->GetXaxis()->GetXmax();
+    grid   = dir->make<TH2F>(base_name + "_grid", "", n, min, max, n_pdfs, -0.5,
+                           double(n_pdfs) - 0.5);
+    uncert = dir->make<TH1F>(base_name + "_uncert", "", n, min, max);
+    corr   = dir->make<TH2F>(base_name + "_corr", "", n, min, max, n, min, max);
   }
 
   void Fill(double val, double wt, EventInfo const* info) {
-    int bin = pdf_grid->GetXaxis()->FindBin(val);
+    int bin = grid->GetXaxis()->FindBin(val);
     for (unsigned i = 0; i < pdf_strs.size(); ++i) {
       double new_wt = wt * info->weight(pdf_strs[i]);
-      pdf_grid->SetBinContent(bin, i+1, pdf_grid->GetBinContent(bin, i+1) + new_wt);
+      grid->SetBinContent(bin, i+1, grid->GetBinContent(bin, i+1) + new_wt);
     }
   }
 
-  void PostProcess() {
+  void PostProcessNormal() {
+    unsigned npdfs = pdf_strs.size();
     for (int bin = 1; bin <= src->GetNbinsX(); ++bin) {
       double sum2 = 0.;
-      for (unsigned pdf = 0; pdf < pdf_strs.size(); ++pdf) {
-        sum2 += std::pow(pdf_grid->GetBinContent(bin, pdf+1) - src->GetBinContent(bin), 2.);
+      for (unsigned pdf = 0; pdf < npdfs; ++pdf) {
+        double diff = grid->GetBinContent(bin, pdf+1) - src->GetBinContent(bin);
+        sum2 += (diff * diff);
       }
-      double err = sum2 > 0. ? std::sqrt(sum2 / double(pdf_strs.size() - 1)) : 0.;
+      double err = sum2 > 0. ? std::sqrt(sum2 / double(npdfs - 1)) : 0.;
       uncert->SetBinContent(bin, src->GetBinContent(bin));
       uncert->SetBinError(bin, err);
+    }
+    for (int i = 1; i <= src->GetNbinsX(); ++i) {
+      for (int j = i; j <= src->GetNbinsX(); ++j) {
+        double sum = 0.;
+        for (unsigned pdf = 0; pdf < npdfs; ++pdf) {
+          double diff_i = grid->GetBinContent(i, pdf+1) - src->GetBinContent(i);
+          double diff_j = grid->GetBinContent(j, pdf+1) - src->GetBinContent(j);
+          sum += (diff_i * diff_j);
+        }
+        double ei = uncert->GetBinError(i);
+        double ej = uncert->GetBinError(j);
+        double corrv = sum / (double(npdfs - 1) * ei * ej);
+        corr->SetBinContent(i, j, corrv);
+        corr->SetBinContent(j, i, corrv);
+      }
     }
   }
 
@@ -76,7 +95,7 @@ struct PDFSetHist {
       double min = std::numeric_limits<double>::max();
       double max = std::numeric_limits<double>::lowest();
       for (unsigned pdf = 0; pdf < pdf_strs.size(); ++pdf) {
-        double val = pdf_grid->GetBinContent(bin, pdf+1);
+        double val = grid->GetBinContent(bin, pdf+1);
         if (val > max) max = val;
         if (val < min) min = val;
       }
@@ -90,14 +109,14 @@ struct PDFSetHist {
 class TheoryWeights : public ModuleBase {
  private:
   TH1F *h_m_ll;
-  PDFSetHist hpdf_m_ll;
-  PDFSetHist hscale_m_ll;
+  TheorySystHist hpdf_m_ll;
+  TheorySystHist hscale_m_ll;
   TH1F *h_pt_ll;
-  PDFSetHist hpdf_pt_ll;
-  PDFSetHist hscale_pt_ll;
+  TheorySystHist hpdf_pt_ll;
+  TheorySystHist hscale_pt_ll;
   TH1F *h_n_jets;
-  PDFSetHist hpdf_n_jets;
-  PDFSetHist hscale_n_jets;
+  TheorySystHist hpdf_n_jets;
+  TheorySystHist hscale_n_jets;
   TH1F *h_pt_1;
   TH1F *h_pt_2;
   TH1F *h_eta_1;

@@ -19,15 +19,15 @@ int TheoryWeights::PreAnalysis() {
   using ROOT::Math::Pi;
   if (!fs_) return 0;
   TFileDirectory dir = fs_->mkdir(this->ModuleName());
-  h_m_ll    = dir.make<TH1F>("m_ll",  "m_ll",   20,   60,   120);
-  hpdf_m_ll = PDFSetHist(h_m_ll, &dir, 2001, 2100, "NNPDF3");
-  hscale_m_ll = PDFSetHist(h_m_ll, &dir, 1002, 1009, "SCALE");
-  h_pt_ll   = dir.make<TH1F>("pt_ll", "pt_ll", 20,    0,   200);
-  hpdf_pt_ll = PDFSetHist(h_pt_ll, &dir, 2001, 2100, "NNPDF3");
-  hscale_pt_ll = PDFSetHist(h_pt_ll, &dir, 1002, 1009, "SCALE");
+  h_m_ll    = dir.make<TH1F>("m_ll",  "m_ll",   10,   60,   120);
+  hpdf_m_ll = TheorySystHist(h_m_ll, &dir, 2001, 2100, "NNPDF3");
+  hscale_m_ll = TheorySystHist(h_m_ll, &dir, 1002, 1009, "SCALE");
+  h_pt_ll   = dir.make<TH1F>("pt_ll", "pt_ll", 10,    0,   200);
+  hpdf_pt_ll = TheorySystHist(h_pt_ll, &dir, 2001, 2100, "NNPDF3");
+  hscale_pt_ll = TheorySystHist(h_pt_ll, &dir, 1002, 1009, "SCALE");
   h_n_jets  = dir.make<TH1F>("n_jets", "n_jets", 5, -0.5,   4.5);
-  hpdf_n_jets = PDFSetHist(h_n_jets, &dir, 2001, 2100, "NNPDF3");
-  hscale_n_jets = PDFSetHist(h_n_jets, &dir, 1002, 1009, "SCALE");
+  hpdf_n_jets = TheorySystHist(h_n_jets, &dir, 2001, 2100, "NNPDF3");
+  hscale_n_jets = TheorySystHist(h_n_jets, &dir, 1002, 1009, "SCALE");
   h_pt_1    = dir.make<TH1F>("pt_1",  "pt_1",   50,    0,   100);
   h_pt_2    = dir.make<TH1F>("pt_2",  "pt_2",   50,    0,   100);
   h_eta_1   = dir.make<TH1F>("eta_1", "eta_1",  30,   -3,     3);
@@ -95,9 +95,9 @@ int TheoryWeights::Execute(TreeEvent* event) {
 }
 
 int TheoryWeights::PostAnalysis() {
-  hpdf_m_ll.PostProcess();
-  hpdf_pt_ll.PostProcess();
-  hpdf_n_jets.PostProcess();
+  hpdf_m_ll .PostProcessNormal();
+  hpdf_pt_ll.PostProcessNormal();
+  hpdf_n_jets.PostProcessNormal();
   hscale_m_ll.PostProcessEnvelope();
   hscale_pt_ll.PostProcessEnvelope();
   hscale_n_jets.PostProcessEnvelope();
