@@ -15,14 +15,21 @@ opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('release', '74XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
+opts.register('doGenWeights', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Store info for generator weights study")
+opts.register('doTauDebug', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Do the tau conversion debugging")
+
 
 opts.parseArguments()
 infile      = opts.file
 tag         = opts.globalTag
-isData      = opts.isData
+isData      = bool(opts.isData)
 release     = opts.release
+doGenWeights = bool(opts.doGenWeights)
+doTauDebug   = bool(opts.doTauDebug)
 
-if not release in ["74XMINIAOD"]:
+if not release in ["74X", "74XMINIAOD"]:
   print 'Release not recognised, exiting!'
   sys.exit(1)
 print 'release     : '+release
@@ -61,11 +68,43 @@ import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 ################################################################
 # Vertices
 ################################################################
+inputs = {
+    '74X' : {
+      'vertices' : cms.InputTag('offlinePrimaryVertices'),
+      },
+    '74XMINIAOD' : {
+      'vertices' : cms.InputTag('offlineSlimmedPrimaryVertices'),
+      }
+    }
+
 process.icVertexProducer = producers.icVertexProducer.clone(
   branch  = cms.string("vertices"),
-  input = cms.InputTag("offlineSlimmedPrimaryVertices"),
+  input = inputs[release]['vertices'],
   firstVertexOnly = cms.bool(True)
 )
+
+################################################################
+# PFCandidates
+################################################################
+process.selectedPFCandidates = cms.EDFilter("PFCandidateRefSelector",
+  src = cms.InputTag("particleFlow"),
+  cut = cms.string("pt > 0.0")
+)
+
+process.icPFProducer = producers.icPFProducer.clone(
+  branch  = cms.string("pfCandidates"),
+  input   = cms.InputTag("selectedPFCandidates"),
+  requestTracks       = cms.bool(True),
+  requestGsfTracks    = cms.bool(True)
+)
+
+process.icPFSequence = cms.Sequence()
+
+if doTauDebug:
+  process.icPFSequence += cms.Sequence(
+      process.selectedPFCandidates+
+      process.icPFProducer
+      )
 
 ################################################################
 # Muons
@@ -115,14 +154,17 @@ process.icMuonProducer = producers.icMuonProducer.clone(
     )
   )
 
-process.icMuonSequence = cms.Sequence(
-  process.selectedMuons+
-  process.muPFIsoValueCharged03PFIso+
-  process.muPFIsoValueGamma03PFIso+
-  process.muPFIsoValueNeutral03PFIso+
-  process.muPFIsoValuePU03PFIso+
-  process.icMuonProducer
-  )
+process.icMuonSequence = cms.Sequence()
+
+if release in ['74XMINIAOD']:
+  process.icMuonSequence += cms.Sequence(
+      process.selectedMuons+
+      process.muPFIsoValueCharged03PFIso+
+      process.muPFIsoValueGamma03PFIso+
+      process.muPFIsoValueNeutral03PFIso+
+      process.muPFIsoValuePU03PFIso+
+      process.icMuonProducer
+      )
 
 
 ################################################################
@@ -154,15 +196,21 @@ process.icPFJetProducer = producers.icPFJetFromPatProducer.clone(
     )
 )
 
-process.icJetSequence = cms.Sequence(
-  process.selectedJets+
-  process.icPFJetProducer
-  )
+process.icJetSequence = cms.Sequence()
 
+if release in ['74XMINIAOD']:
+  process.icJetSequence += cms.Sequence(
+      process.selectedJets+
+      process.icPFJetProducer
+      )
 
 ################################################################
 # GenParticles
 ################################################################
+if release in ['74X']:
+  from PhysicsTools.PatAlgos.slimming.prunedGenParticles_cfi import prunedGenParticles
+  process.prunedGenParticles = prunedGenParticles
+
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   input             = cms.InputTag("prunedGenParticles"),
   includeMothers    = cms.bool(True),
@@ -172,6 +220,7 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
 process.icMCSequence = cms.Sequence()
 
 if not isData:
+  if release in ['74X']: process.icMCSequence += process.prunedGenParticles
   process.icMCSequence += (
     process.icGenParticleProducer
     )
@@ -186,12 +235,12 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeLeptonRho    = cms.bool(False),
   inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
   includeVertexCount  = cms.bool(True),
-  inputVertices       = cms.InputTag("offlineSlimmedPrimaryVertices"),
+  inputVertices       = inputs[release]['vertices'],
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
-  isNlo               = cms.bool(True),
+  isNlo               = cms.bool((not isData) and doGenWeights),
   lheProducer         = cms.InputTag("externalLHEProducer"),
-  includeLHEWeights   = cms.bool(not isData)
+  includeLHEWeights   = cms.bool((not isData) and doGenWeights)
 )
 
 process.icEventInfoSequence = cms.Sequence(
@@ -208,6 +257,7 @@ process.icEventProducer = producers.icEventProducer.clone()
 ################################################################
 process.p = cms.Path(
   process.icVertexProducer+
+  process.icPFSequence+
   process.icMuonSequence+
   process.icJetSequence+
   process.icMCSequence+
