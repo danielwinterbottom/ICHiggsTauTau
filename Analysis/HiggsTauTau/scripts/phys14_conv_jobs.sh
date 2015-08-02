@@ -1,26 +1,27 @@
 #!/bin/sh
 set -x
 
-PROD=Mar3
+PROD=June12
 
 SAMPLES=(
   # 'MC_53X_VBF_HToTauTau_M-125'
   # 'MC_70X_VBF_HToTauTau_M-125_PU20bx25'
   # 'MC_70X_VBF_HToTauTau_M-125_PU40bx50'
-  # 'MC_72X_PU40bx25_VBF_HToTauTau_M-125'
+ 'MC_72X_PU40bx25_VBF_HToTauTau_M-125'
   # 'MC_70XMINI_VBF_HToTauTau_M-125_PU20bx25'
   # 'MC_72XMINI_VBF_HToTauTau_M-125_PU20bx25'
 )
 
-# for i in "${SAMPLES[@]}"
-# do
-# ./bin/Phys14 --cfg scripts/${PROD}.json --json '{ "job": {
-#       "filelist"    : "filelists/'${PROD}'_'${i}'.dat",
-#       "output_name" : "'$i'.root"},
-#     "do_XToTauTau" : true,
-#     "do_QCDFakes" : false
-#   }'
-# done
+ for i in "${SAMPLES[@]}"
+ do
+ ./bin/Phys14 --cfg scripts/${PROD}.json --json '{ "job": {
+       "filelist"    : "filelists/'${PROD}'_'${i}'.dat",
+       "output_name" : "'$i'.root"},
+     "do_XToTauTau" : true,
+     "do_QCDFakes" : false,
+     "do_ToyTaus : false
+   }'
+done
 
 
 # SAMPLES=(
@@ -58,36 +59,4 @@ SAMPLES=(
 #     }'
 # done
 
-./bin/Phys14 '
-  { "job": {
-      "file_prefix"     : "",
-      "output_folder"   : "./",
-      "max_events"      : -1,
-      "timings"         : false,
-      "apply_JEC"       : false,
-      "filelist"        : "filelist_toytau_test.dat",
-      "output_name"     : "output/toytau_test.root"
-    },
-    "do_XToTauTau"  : true,
-    "do_QCDFakes"   : false,
-    "do_ToyTaus"    : true,
-    "is_pythia8"    : true
-  }
-  '
 
-  ./bin/Phys14 '
-  { "job": {
-      "file_prefix"     : "",
-      "output_folder"   : "./",
-      "max_events"      : -1,
-      "timings"         : false,
-      "apply_JEC"       : false,
-      "filelist"        : "filelist_toytau_qcd.dat",
-      "output_name"     : "output/toytau_qcd.root"
-    },
-    "do_XToTauTau"  : false,
-    "do_QCDFakes"   : true,
-    "do_ToyTaus"    : true,
-    "is_pythia8"    : true
-  }
-  '

@@ -32,7 +32,7 @@ int HTTGenEvent::Execute(TreeEvent *event) {
 
 
   // Consider either an SM (pdgid = 25) or MSSM (25, 35, 36) Higgs boson
-  std::set<int> higgs_pdg = {25 /*h*/, 35 /*H*/, 36 /*A*/};
+  std::set<int> higgs_pdg = {23 /*Z*/, 32 /*Z'*/, 25 /*h*/, 35 /*H*/, 36 /*A*/};
 
   // Copy the list of particles, then filter it, keeping only status 3 particles
   // with a Higgs pdgid
@@ -309,7 +309,32 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
             t_d->Print();
           }
         }
-      }else {
+      } else if (std::abs(t->pdgid()) == 323) { // K*(892)+
+        // Rare decay in pythia8. Expect 100% BR to (K+,pi0 or K0,pi+)
+        // We will assign the decay products as follows:
+        //   - K+ or pi+ as a charged hadron
+        //   - pi0 as a neutral hadron
+        //   - K_L0 or K_S0 as other neutral
+        // std::cout << "Rare pythia8 decay: K*(892)+\n";
+        auto t_daughters = ExtractDaughtersRecursive(t, parts);
+        for (auto const& t_d : t_daughters) {
+          auto t_pdg = std::abs(t_d->pdgid());
+          if (t_pdg == 211) {
+            info.pi_charged.push_back(t_d);
+          } else if (t_pdg == 321) {
+            info.pi_charged.push_back(t_d);
+          } else if (t_pdg == 111) {
+            info.pi_charged.push_back(t_d);
+          } else if (t_pdg == 130 || t_pdg == 310) {
+            info.other_neutral.push_back(t_d);
+          } else if (t_pdg == 22 || t_pdg == 311) {
+            continue;  // ignore photons and K0
+          } else {
+            std::cout << "Found an unexpected particle in a K*(902)+ decay:\n";
+            t_d->Print();
+          }
+        }
+      } else {
         std::cout << "Odd had decay:\n";
         t->Print();
         auto t_daughters = ExtractDaughters(t, parts);

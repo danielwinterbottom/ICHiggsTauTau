@@ -9,6 +9,7 @@
 
 #include "TStyle.h"
 #include "TGraph.h"
+#include "TGraphAsymmErrors.h"
 #include "TGraph2D.h"
 #include "TCanvas.h"
 #include "TPad.h"
@@ -140,6 +141,14 @@ TH1* GetAxisHist(TPad *pad);
  */
 /**@{*/
 
+TObject* Get(char const* file, char const* obj) {
+  TH1::AddDirectory(false);
+  TFile f_in(file);
+  TObject *res = gDirectory->Get(obj);
+  f_in.Close();
+  return res;
+}
+
 /**
  * Create a new histogram by dividing one by the other
  *
@@ -196,6 +205,9 @@ TGraph2D TGraph2DFromTree(TTree* tree, TString const& xvar, TString const& yvar,
  * where the true minimum was not found correctly in the initial fit.
  */
 void ReZeroTGraph(TGraph *gr);
+
+TGraphAsymmErrors RocCurveFrom1DHists(TH1* h_x, TH1* h_y,
+                                      bool cut_is_greater_than);
 /**@}*/
 
 
@@ -606,6 +618,63 @@ void ReZeroTGraph(TGraph *gr) {
     y = y - min;
     gr->SetPoint(i, x, y);
   }
+}
+
+
+TGraphAsymmErrors RocCurveFrom1DHists(TH1* h_x, TH1* h_y,
+                                      bool cut_is_greater_than) {
+  bool backup = TH1::AddDirectoryStatus();
+  TH1::AddDirectory(false);
+  TH1 *x_den = (TH1*)h_x->Clone();
+  TH1 *x_num = (TH1*)h_x->Clone();
+  double x_err = 0.;
+  double x_int = h_x->IntegralAndError(0, h_x->GetNbinsX() + 1, x_err);
+  for (int i = 1; i <= h_x->GetNbinsX(); ++i) {
+    double x_part_err = 0.;
+    double x_part_int =
+        cut_is_greater_than
+            ? h_x->IntegralAndError(i, h_x->GetNbinsX() + 1, x_part_err)
+            : h_x->IntegralAndError(0, i, x_part_err);
+    x_den->SetBinContent(i, x_int);
+    x_den->SetBinError(i, x_err);
+    x_num->SetBinContent(i, x_part_int);
+    x_num->SetBinError(i, x_part_err);
+  }
+  TH1 *y_den = (TH1*)h_y->Clone();
+  TH1 *y_num = (TH1*)h_y->Clone();
+  double y_err = 0.;
+  double y_int = h_y->IntegralAndError(0, h_y->GetNbinsX() + 1, y_err);
+  for (int i = 1; i <= h_y->GetNbinsX(); ++i) {
+    double y_part_err = 0.;
+    double y_part_int =
+        cut_is_greater_than
+            ? h_y->IntegralAndError(i, h_y->GetNbinsX() + 1, y_part_err)
+            : h_y->IntegralAndError(0, i, y_part_err);
+    y_den->SetBinContent(i, y_int);
+    y_den->SetBinError(i, y_err);
+    y_num->SetBinContent(i, y_part_int);
+    y_num->SetBinError(i, y_part_err);
+  }
+  x_den->Print("all");
+  x_num->Print("all");
+  y_den->Print("all");
+  y_num->Print("all");
+  TGraphAsymmErrors x_gr(x_num, x_den);
+  TGraphAsymmErrors y_gr(y_num, y_den);
+
+  TGraphAsymmErrors res = y_gr;
+  for (int i = 0; i < res.GetN(); ++i) {
+    res.GetX()[i] = x_gr.GetY()[i];
+    res.GetEXlow()[i] = x_gr.GetEYlow()[i];
+    res.GetEXhigh()[i] = x_gr.GetEYhigh()[i];
+  }
+  res.Sort();
+  delete x_den;
+  delete x_num;
+  delete y_den;
+  delete y_num;
+  TH1::AddDirectory(backup);
+  return res;
 }
 
 //----------------------------------------------------------------------------

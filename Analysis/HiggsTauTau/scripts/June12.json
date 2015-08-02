@@ -1,0 +1,10 @@
+{
+  "job": {
+    "file_prefix": "",
+    "output_folder": "output/phys14/June12/",
+    // "output_folder": "./",
+    "max_events": 10000,
+    "timings": false,
+    "apply_JEC": false
+  }
+}

@@ -11,6 +11,8 @@ JSON='
   "y_axis_min" : 0.0,
   "y_axis_max" : 1.0,
   "log_y" : false,
+  "legend_height" : 0.18,
+  "legend_width" : 0.45,
   "title_right": "VBF H(125 GeV)#rightarrow#tau#tau",
   "default": {
     "color": 1,
