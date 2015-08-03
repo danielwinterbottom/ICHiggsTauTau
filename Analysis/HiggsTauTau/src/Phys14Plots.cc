@@ -11,6 +11,7 @@ Phys14Plots::Phys14Plots(std::string const& name) : ModuleBase(name) {
   th_eta_acc  = 2.3;
   do_real_th_studies_ = true;
   do_fake_th_studies_ = false;
+  jets_label_ = "pfJetsPFlow";
 }
 
 Phys14Plots::~Phys14Plots() { ; }
@@ -166,7 +167,7 @@ void Phys14Plots::DoRealThStudies(TreeEvent *event) {
   auto reco_th_vec = event->GetPtrVec<Tau>("taus");
 
   // Get the reco jet collection
-  auto reco_jet_vec = event->GetPtrVec<PFJet>("pfJetsPFlow");
+  auto reco_jet_vec = event->GetPtrVec<PFJet>(jets_label_);
 
   // Do the matching on the unbiased gen. and reco. taus
   auto gen_rec_th_matches =
@@ -449,7 +450,7 @@ void Phys14Plots::DoRealThStudies(TreeEvent *event) {
 
 void Phys14Plots::DoFakeThStudies(TreeEvent *event) {
   auto reco_th_vec = event->GetPtrVec<Tau>("taus");
-  auto reco_jet_vec = event->GetPtrVec<PFJet>("pfJetsPFlow");
+  auto reco_jet_vec = event->GetPtrVec<PFJet>(jets_label_);
 
   // Only look at jets with pT > 20.0 and eta < 2.3
   ic::erase_if(reco_jet_vec, [](ic::PFJet *jet) {

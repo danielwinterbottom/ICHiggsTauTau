@@ -65,29 +65,30 @@ SAMPLES=(
       "max_events"      : -1,
       "timings"         : false,
       "apply_JEC"       : false,
-      "filelist"        : "filelist_toytau_test.dat",
-      "output_name"     : "output/toytau_test.root"
+      "filelist"        : "filelist_zprime-500.dat",
+      "output_name"     : "output/toytau_zprime-500.root"
     },
     "do_XToTauTau"  : true,
     "do_QCDFakes"   : false,
-    "do_ToyTaus"    : true,
-    "is_pythia8"    : true
+    "do_ToyTaus"    : false,
+    "is_pythia8"    : false,
+    "jets_label"    : "ak4PFJetsCHS"
   }
   '
 
-  ./bin/Phys14 '
-  { "job": {
-      "file_prefix"     : "",
-      "output_folder"   : "./",
-      "max_events"      : -1,
-      "timings"         : false,
-      "apply_JEC"       : false,
-      "filelist"        : "filelist_toytau_qcd.dat",
-      "output_name"     : "output/toytau_qcd.root"
-    },
-    "do_XToTauTau"  : false,
-    "do_QCDFakes"   : true,
-    "do_ToyTaus"    : true,
-    "is_pythia8"    : true
-  }
-  '
+  # ./bin/Phys14 '
+  # { "job": {
+  #     "file_prefix"     : "",
+  #     "output_folder"   : "./",
+  #     "max_events"      : -1,
+  #     "timings"         : false,
+  #     "apply_JEC"       : false,
+  #     "filelist"        : "filelist_toytau_qcd.dat",
+  #     "output_name"     : "output/toytau_qcd.root"
+  #   },
+  #   "do_XToTauTau"  : false,
+  #   "do_QCDFakes"   : true,
+  #   "do_ToyTaus"    : true,
+  #   "is_pythia8"    : true
+  # }
+  # '

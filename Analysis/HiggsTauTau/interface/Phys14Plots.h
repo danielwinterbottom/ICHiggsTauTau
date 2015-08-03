@@ -162,16 +162,15 @@ class Phys14Plots : public ModuleBase {
  private:
   CLASS_MEMBER(Phys14Plots, bool, do_real_th_studies)
   CLASS_MEMBER(Phys14Plots, bool, do_fake_th_studies)
+  CLASS_MEMBER(Phys14Plots, std::string, jets_label)
 
  private:
-
   void DoRealThStudies(TreeEvent *event);
   void DoFakeThStudies(TreeEvent *event);
 
   double th_pt_acc;
   double th_eta_acc;
 
-  std::string jets_label_;
   TFileDirectory * dir_;
 
   TH1F *h_gen_h_pt;

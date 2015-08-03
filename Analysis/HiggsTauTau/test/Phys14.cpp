@@ -101,10 +101,12 @@ int main(int argc, char* argv[]) {
       .set_genparticle_label("genParticles")
       .set_is_pythia8(js.get("is_pythia8", false).asBool());
 
-  auto phys14Plots = ic::Phys14Plots("Phys14Plots")
-                         .set_fs(fs)
-                         .set_do_real_th_studies(do_XToTauTau)
-                         .set_do_fake_th_studies(do_QCDFakes);
+  auto phys14Plots =
+      ic::Phys14Plots("Phys14Plots")
+          .set_fs(fs)
+          .set_do_real_th_studies(do_XToTauTau)
+          .set_do_fake_th_studies(do_QCDFakes)
+          .set_jets_label(js.get("jets_label", "pfJetsPFlow").asString());
 
   auto recTauStudy = ic::ToyTauStudy("RecTauStudy")
                          .set_fs(fs)
