@@ -121,14 +121,6 @@ namespace ic {
                               std::string const& category, 
                               std::string const& weight);
 
-      TH1F GetShapeViaQCDMethodWMC(std::string const& variable,
-                              std::string const& data_sample,
-                              std::string const& selection,
-                              std::string const& category,
-                              std::vector<std::string> const& sub_samples,
-                              std::string const& weight/*,
-                              std::map<std::string, std::function<Value()>> dict*/
-                              );
       TH1F GetShapeViaQCDMethod(std::string const& variable,
                               std::string const& data_sample,
                               std::string const& selection,
@@ -223,13 +215,6 @@ namespace ic {
                               std::vector<std::string> const& sub_samples,
                               std::string const& weight,
                               std::map<std::string, std::function<Value()>> dict
-                              );
-      Value GetRateViaQCDMethodWMC(Value const& ratio,
-                              std::string const& data_sample,
-                              std::string const& control_selection,
-                              std::string const& category,
-                              std::vector<std::string> const& sub_samples,
-                              std::string const& weight
                               );
 
       std::string ResolveAlias(std::string const& al);

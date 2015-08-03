@@ -97,7 +97,7 @@ namespace ic {
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
-      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2<10&&antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
       //Categories can be added using inclusive alias as follows:
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
@@ -183,21 +183,16 @@ namespace ic {
    };
 
  if(ch_!=channel::em){
-  samples_alias_map_["qcd_sub_samples_wmc"] = {
+  samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToTauTau-JJ", "DYJetsToLL-J", "DYJetsToTauTau","DYJetsToLL-L", 
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "WJetsToLNu","TT"
-   };
-  samples_alias_map_["qcd_sub_samples_wdd"] = {
-   "DYJetsToTauTau-JJ", "DYJetsToLL-J", "DYJetsToTauTau","DYJetsToLL-L", 
-   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-  "WJetsToLNu","TT"
    };
 
   }
   
  if(ch_==channel::em){
-  samples_alias_map_["qcd_sub_samples_wmc"] = {
+  samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToTauTau",
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "TT"
@@ -441,189 +436,82 @@ namespace ic {
     std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
     
     Value w_norm;
-    //w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
-    //    "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
-    if(method==8 || method==9){
+    if(method == 8 || method == 9) {
       w_norm = this->GetLumiScaledRate("WJetsToLNu", sel, cat, wt);
     } else if(method == 10 || method == 11){
      w_norm = this->GetRateViaWMethod("WJetsToLNu", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveAlias("data_samples"), cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
     }
-
     
     std::string w_shape_cat = cat;
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
     TH1F w_hist = this->GetShape(var, "WJetsToLNu", sel, w_shape_cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % this->ResolveAlias("WJetsToLNu") % w_shape_sel % w_shape_cat % wt;
+      % "WJetsToLNu" % w_shape_sel % w_shape_cat % wt;
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
   }
 
-
-
-//   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned /*method*/,std::string var, std::string sel, std::string cat, std::string wt){
- /*   if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
-    std::vector<std::string> qcd_samples = this->ResolveSamplesAlias("qcd_samples");
-    if(verbosity_){
-      std::cout << "qcd_samples: ";
-      for (unsigned i = 0; i < qcd_samples.size(); ++i) {
-        std::cout << qcd_samples[i];
-        if (i != qcd_samples.size()-1) std::cout << ", ";
-       }
-       std::cout << std::endl;
-     }
-     auto qcd_norm = this->GetLumiScaledRate(qcd_samples, sel, cat, wt);
-     std::string qcd_shape_cat = cat;
-     TH1F qcd_hist = this->GetLumiScaledShape(var, qcd_samples, sel, qcd_shape_cat, wt);
-     if (verbosity_) std::cout << "Shape: " << boost::format("%s, '%s', '%s', '%s' \n")
-       % "qcd_samples" % sel %qcd_shape_cat % wt;
-     SetNorm(&qcd_hist, qcd_norm.first);
-     return std::make_pair(qcd_hist, qcd_norm);
-    }*/ 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
     Value qcd_norm;
     TH1F qcd_hist;
 //    if (ch_ != channel::em) {
       std::vector<std::string> qcd_sub_samples;
-      if(method == 8 ||method ==9){    
-        qcd_sub_samples = this->ResolveSamplesAlias("qcd_sub_samples_wmc");
-      } else if (method==10||method==11){
-        qcd_sub_samples = this->ResolveSamplesAlias("qcd_sub_samples_wdd");
-      }
+      qcd_sub_samples = this->ResolveSamplesAlias("qcd_sub_samples");
+      
       std::vector<std::string> w_sub_samples;
        if(ch_ != channel::em){
           w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
        }
       std::string qcd_sdb_sel = "!os && " + this->ResolveAlias("sel");
-      //std::string qcd_shape_sdb_sel = "!os &&" + this->ResolveAlias("qcd_loose_shape");
       std::string w_extrp_sdb_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("w_sdb");
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
-      std::string qcd_shape_cat;
-      if(method ==8 || method ==10){
-        qcd_shape_cat  = cat;
-      } else if(method == 9 || method == 11){
-        qcd_shape_cat = this->ResolveAlias("qcd_loose_shape");
-      }
-//      if (method == 5 || method == 4) qcd_cat = this->ResolveAlias("inclusive");
- //     if (method == 16) qcd_cat = this->ResolveAlias("2jetinclusive");
+      //Work out the W norm in the SS region separately if it is data driven
       Value w_ss_norm;
-      if(ch_ != channel::em){
-        w_ss_norm=  this->GetRateViaWMethod("WJetsToLNu", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
-            this->ResolveAlias("data_samples"), qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+      if(ch_ != channel::em) {
+        if(method == 10 || method == 11) { 
+          w_ss_norm = this->GetRateViaWMethod("WJetsToLNu", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+              this->ResolveAlias("data_samples"), qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+        } else {
+          w_ss_norm = std::make_pair(0.0,0.0);
+        }
+      } else {
+        w_ss_norm = std::make_pair(0.0,0.0);
       }
-     if(method == 8 || method == 9){
-      qcd_norm = this->GetRateViaQCDMethodWMC(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt);
-     } else if (method == 10 || method == 11){
-      qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,{
-        {"WJetsToLNu", [&]()->HTTRun2Analysis::Value {
-          return w_ss_norm;}
-        }
-      });
-     }
-/*      if (method == 5 || method == 4 || method == 16) {
-        Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
-        if (verbosity_) {
-          std::cout << "CategoryEff:   " << boost::format("%s,'%s','%s'/'%s','%s'\n") % this->ResolveAlias("QCD_Eff_Sample")  % qcd_sdb_sel 
-            % cat % qcd_cat % wt;
-          PrintValue("CategoryEff", qcd_eff);
-        }
-        qcd_norm = ValueProduct(qcd_norm, qcd_eff);
-      }*/
+      
+      if(method == 8 || method == 9) {
+        qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
+      } else if (method == 10 || method == 11) {
+        qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,{
+          {"WJetsToLNu", [&]()->HTTRun2Analysis::Value {
+            return w_ss_norm;}
+          }
+        });
+      } 
       if (qcd_norm.first <= 0.0) {
         double default_rate = 0.0000001;
         std::cout << "[HTTRun2Analysis::GenerateQCD] Warning, QCD rate is negative (" 
           << qcd_norm.first << "), setting to " << default_rate << " and maintaining error" << std::endl;
         qcd_norm.first = default_rate;
       }
-      if (method == 0 || method == 8 || method == 28 || method == 20) {
-        qcd_hist = this->GetShapeViaQCDMethodWMC(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt);/*, {
-          {"WJetsToLNuSoup", [&]()->HTTRun2Analysis::Value {
-            return w_ss_norm;} 
-          }
-        });*/
-       }
-      else if(method == 9 ){
-        qcd_hist = this->GetShapeViaQCDMethodWMC(var,this->ResolveAlias("data_samples"),qcd_sdb_sel,qcd_shape_cat,qcd_sub_samples,wt);
-      } 
-      else if(method == 10){
+      std::string qcd_shape_cat = cat;
+      if (method == 8) {
+        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
+      } else if(method == 10) {
         qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
-          {"WJetsToLNu", [&]()->HTTRun2Analysis::Value {
+        {"WJetsToLNu", [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;} 
           }
         });
-      } else if (method == 11){
-        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
-          {"WJetsToLNu", [&]()->HTTRun2Analysis::Value {
-            return w_ss_norm;} 
-          }
-        });
-     }
-
-
-      /*else {
-        if (method == 4) qcd_cat = cat;
-        if (method == 21 || method == 14)  qcd_cat = cat;
-        if (method == 5) qcd_cat = this->ResolveAlias("vbf_loose_jets20");
-        if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
-        if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
-        if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
-        if (method == 24) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
-        if (method == 15) qcd_cat = this->ResolveAlias("2jet1tagMassCuts_loose");        
-        if (method == 27) qcd_cat = this->ResolveAlias("2jet2tag_loose");        
-        if (method == 16) qcd_cat = this->ResolveAlias("2jet2tagMassCuts_loose");        
-        qcd_hist = this->GetShape(var, this->ResolveAlias("QCD_Shape_Sample"), qcd_sdb_sel, qcd_cat, wt);
-        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-          % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
-
-      }*/
-//    }
-/* else {
-      Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
-      qcd_dilepton = ValueProduct(qcd_dilepton, std::make_pair(0.83,0.));
-      std::string ss_sel = "!os && "+this->ResolveAlias("sel");
-      Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("ss"), "", ss_sel, cat, wt);
-      if (verbosity_) PrintValue("FR Inclusive", qcd_dilepton);
-      if (verbosity_) PrintValue("SS Eff", qcd_eff);
-      if (method == 0 || method == 2) {
-        qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-        qcd_hist = this->GetShape(var, "Special_23_Data", ss_sel, cat, wt);
-        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-          % "Special_23_Data" % ss_sel % cat % wt;
-      } else if (method == 1) {
-        qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-        qcd_hist = this->GetShape(var, "Special_24_Data", ss_sel, cat, wt);
-        if (verbosity_) std::cout << "SS Shape(0.2): " << boost::format("%s,'%s','%s','%s'\n")
-          % "Special_24_Data" % ss_sel % cat % wt;
-        TH1F fr_hist =  this->GetShapeViaFakesMethod(var, sel, cat, wt);
-        if (verbosity_) std::cout << "FR Shape(0.8): " << boost::format("%s,'%s','%s','%s'\n")
-          % "               " % sel % cat % wt;
-        qcd_hist.Scale(0.2 / Integral(&qcd_hist));
-        fr_hist.Scale(0.8 / Integral(&fr_hist));
-        qcd_hist.Add(&fr_hist,1.0);
-      } else if (method == 3) {
-        qcd_norm = this->GetRateViaFakesMethod(sel, cat, wt);
-        qcd_hist = this->GetShapeViaFakesMethod(var, sel, cat, wt); 
-        if (verbosity_) std::cout << "FR Shape: " << boost::format("%s,'%s','%s','%s'\n")
-          % "               " % sel % cat % wt;
-      } else if (method == 5) {
-        qcd_norm = this->GetRateViaFakesMethod(sel, cat, wt);
-        qcd_hist = this->GetShapeViaFakesMethod(var, sel, this->ResolveAlias("vbf_no_cjv"), wt);
-        if (verbosity_) std::cout << "FR Shape: " << boost::format("%s,'%s','%s','%s'\n")
-          % "               " % sel % this->ResolveAlias("vbf_no_cjv") % wt;
       } else {
-       qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-       qcd_hist = this->GetShape(var, "Data", ss_sel, cat, wt);
-       if (verbosity_) std::cout << "SS Shape: " << boost::format("%s,'%s','%s','%s'\n")
-         % "Data" % ss_sel % cat % wt;
+        if (method == 9 || method == 11) qcd_shape_cat = this->ResolveAlias("qcd_loose_shape");
+        qcd_hist = this->GetShape(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, wt);
+        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+          % this->ResolveAlias("data_samples") % qcd_sdb_sel % qcd_shape_cat % wt;
       }
-      if (method == 12) {
-        qcd_norm = ValueProduct(qcd_norm, std::make_pair(0.67,0.));
-      }
-    }*/
     SetNorm(&qcd_hist, qcd_norm.first);
     return std::make_pair(qcd_hist, qcd_norm);
   }
@@ -1029,44 +917,6 @@ namespace ic {
     return w_signal;
   }
 
-
-
-  HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaQCDMethodWMC(HTTRun2Analysis::Value const& ratio,
-                          std::string const& data_sample,
-                          std::string const& control_selection,
-                          std::string const& category,
-                          std::vector<std::string> const& sub_samples,
-                          std::string const& weight//,
-//                          std::map<std::string, std::function<Value()>> dict
-                          ) {
-    if (verbosity_) {
-      std::cout << "[HTTRun2Analysis::GetRateViaQCDMethod]\n";
-      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_selection % category % weight;
-    }
-    Value data_control = GetRate(data_sample, control_selection, category, weight);
-    if (verbosity_) PrintValue(data_sample, data_control);
-    Value total_bkg;
-    for (unsigned i = 0; i < sub_samples.size(); ++i) {
-      Value bkr;
-//      if (dict.count(sub_samples[i])) {
- //       bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
-  //    } else {
-      bkr = GetLumiScaledRate(sub_samples[i], control_selection, category, weight);
-//      }
-      if (verbosity_) PrintValue("-"+sub_samples[i], bkr);
-      double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
-      total_bkg.first += bkr.first;
-      total_bkg.second = new_err;
-    }
-    if (verbosity_) PrintValue("TotalBkg", total_bkg);
-    double qcd_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
-    Value qcd_control(data_control.first - total_bkg.first, qcd_control_err);
-    if (verbosity_) PrintValue("QCDSideband", qcd_control);
-    Value qcd_signal = ValueProduct(qcd_control, ratio);
-    if (verbosity_) PrintValue("OS/SS Factor", ratio);
-    return qcd_signal;
-  }
-
   HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaQCDMethod(HTTRun2Analysis::Value const& ratio,
                           std::string const& data_sample,
                           std::string const& control_selection,
@@ -1087,7 +937,7 @@ namespace ic {
       if (dict.count(sub_samples[i])) {
         bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
       } else {
-      bkr = GetLumiScaledRate(sub_samples[i], control_selection, category, weight);
+        bkr = GetLumiScaledRate(sub_samples[i], control_selection, category, weight);
       }
       if (verbosity_) PrintValue("-"+sub_samples[i], bkr);
       double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
@@ -1101,35 +951,6 @@ namespace ic {
     Value qcd_signal = ValueProduct(qcd_control, ratio);
     if (verbosity_) PrintValue("OS/SS Factor", ratio);
     return qcd_signal;
-  }
-
-
-  TH1F HTTRun2Analysis::GetShapeViaQCDMethodWMC(std::string const& variable,
-                          std::string const& data_sample,
-                          std::string const& selection,
-                          std::string const& category,
-                          std::vector<std::string> const& sub_samples,
-                          std::string const& weight/*,
-                          std::map<std::string, std::function<Value()>> dict*/
-                          ) {
-    if (verbosity_) {
-      std::cout << "[HTTRun2Analysis::GetShapeViaQCDMethod]\n";
-      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % selection % category % weight;
-
-    }
-    TH1F result = GetLumiScaledShape(variable, data_sample, selection, category, weight);
-    for (unsigned i = 0; i < sub_samples.size(); ++i) {
-/*      if (dict.count(sub_samples[i])) {
-        Value bkr_rate = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
-        TH1F tmp = GetShape(variable, sub_samples.at(i), selection, category, weight);
-        SetNorm(&tmp, bkr_rate.first);
-        result.Add(&tmp, -1.);
-      } else {*/
-      TH1F tmp = GetLumiScaledShape(variable, sub_samples[i], selection, category, weight);
-      result.Add(&tmp, -1.);
-//     }
-    }
-    return result;
   }
 
   TH1F HTTRun2Analysis::GetShapeViaQCDMethod(std::string const& variable,
