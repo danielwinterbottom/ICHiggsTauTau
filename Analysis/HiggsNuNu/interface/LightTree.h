@@ -105,6 +105,7 @@ namespace ic {
     unsigned n_jets_15_;
     unsigned n_jets_30_;
     double pass_sigtrigger_;
+    double pass_mettrigger_;
     double pass_controltrigger_;
     double l1met_;
     double metnomuons_;

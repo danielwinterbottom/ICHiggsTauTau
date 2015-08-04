@@ -107,6 +107,7 @@ namespace ic {
     n_jets_30_ = 0;
     cjvjetpt_=-1;
     pass_sigtrigger_ = -1;
+    pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
     l1met_ = 0;
     metnomuons_ =0;
@@ -255,6 +256,7 @@ namespace ic {
     outputTree_->Branch("n_jets_30",&n_jets_30_);
     outputTree_->Branch("cjvjetpt",&cjvjetpt_);
     outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
+    outputTree_->Branch("pass_mettrigger",&pass_mettrigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
     outputTree_->Branch("l1met",&l1met_);
     outputTree_->Branch("metnomuons",&metnomuons_);
@@ -320,35 +322,37 @@ namespace ic {
     event_= eventInfo->event();
     n_vertices_=eventInfo->good_vertices();
 
-      if (is_data_) {
+    //if (is_data_) {
 	
 	auto const& triggerPathPtrVec =
 	  event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
 	//EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings      
 	//unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings                                         
 	pass_sigtrigger_=-1;
+	pass_mettrigger_=-1;
 	pass_controltrigger_=-1;
 	for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
 	  std::string name = triggerPathPtrVec[i]->name();
 	  triggerPathPtrVec[i]->prescale();
-	  if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v2") != name.npos) pass_sigtrigger_ = 1;
-	  if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v2") != name.npos) pass_controltrigger_ = 1;
+	  if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v") != name.npos) pass_sigtrigger_ = 1;
+	  if (name.find("HLT_PFMET170_NoiseCleaned_v") != name.npos) pass_mettrigger_ = 1;
+	  if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v") != name.npos) pass_controltrigger_ = 1;
 	}
 	if(dotrigskim_){
-	  if(!(pass_sigtrigger_==1||pass_controltrigger_==1)){
+	  if(!(pass_sigtrigger_==1||pass_controltrigger_==1||pass_mettrigger_==1)){
 	    return 1;
 	  }
 	}
-      }
+	//}
       //for MC                                                                                                                                       
-      else {
-	pass_sigtrigger_=-1;
-	pass_controltrigger_=-1;
-	std::vector<TriggerObject *> const& sigobjs = event->GetPtrVec<TriggerObject>("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v2");
-	std::vector<TriggerObject *> const& contobjs = event->GetPtrVec<TriggerObject>("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v2");
-	if (sigobjs.size() > 0) pass_sigtrigger_=1;
-	if (contobjs.size() > 0) pass_controltrigger_=1;
-      } // do obj match                                                                            
+      // else {
+      // 	pass_sigtrigger_=-1;
+      // 	pass_controltrigger_=-1;
+      // 	std::vector<TriggerObject *> const& sigobjs = event->GetPtrVec<TriggerObject>("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140");
+      // 	std::vector<TriggerObject *> const& contobjs = event->GetPtrVec<TriggerObject>("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80");
+      // 	if (sigobjs.size() > 0) pass_sigtrigger_=1;
+      // 	if (contobjs.size() > 0) pass_controltrigger_=1;
+      // } // do obj match                                                                            
 
 
     double wt = eventInfo->total_weight();
