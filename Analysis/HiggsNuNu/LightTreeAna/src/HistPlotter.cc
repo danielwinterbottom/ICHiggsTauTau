@@ -44,12 +44,12 @@ namespace ic{
     float extraOverCmsTextSize = 0.76;
 
     //!!MAKE CHOICE CONFIGURABLE
-    TString lumi_13TeV = "20.1 fb^{-1}";
+    TString lumi_13TeV = "40.24 pb^{-1}";
     TString lumi_8TeV = "19.2 fb^{-1}";
     TString lumi_7TeV = "5.1 fb^{-1}";
 
-    lumiText +=lumi_8TeV;
-    lumiText +=" (8 TeV)";
+    lumiText +=lumi_13TeV;//lumi_8TeV;
+    lumiText +=" (13 TeV)";
 
 
     bool outOfFrame = false;
@@ -465,7 +465,7 @@ namespace ic{
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(do_debug_)std::cout<<"  "<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
 	if(!(elements_[iElement].in_stack())){
-	  if(!elements_[iElement].is_data()){
+	  if(!(elements_[iElement].is_data()&&!(elements_[iElement].is_trigeff()))){
 	    if(first){
 	      if(!do_ratio_) elements_[iElement].hist_ptr()->SetTitle(shapes_[iShape].histtitle().c_str());
 	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());

@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataNormShape.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataZNormShape.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataShape.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/TrigEff.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataZEst.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/NormPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/SimplePlots.h"
@@ -46,6 +47,10 @@ int main(int argc, char* argv[]){
   std::string dataset;
 
   bool do_singlemu;
+  bool do_mettrig;
+  bool do_trigeff;
+  bool do_run1;
+  bool do_nosigmcweight;
   bool do_promptsel;
   bool use_promptdata;
   bool do_datatop;
@@ -112,6 +117,10 @@ int main(int argc, char* argv[]){
     ("do_prepreselranges",       po::value<bool>(&do_prepreselranges)->default_value(false))
     ("do_relaxedqcdranges",      po::value<bool>(&do_relaxedqcdranges)->default_value(false))
     ("do_promptsel",             po::value<bool>(&do_promptsel)->default_value(false))
+    ("do_run1",                  po::value<bool>(&do_run1)->default_value(false))
+    ("do_mettrig",                  po::value<bool>(&do_mettrig)->default_value(false))
+    ("do_trigeff",                  po::value<bool>(&do_trigeff)->default_value(false))
+    ("do_nosigmcweight",                  po::value<bool>(&do_nosigmcweight)->default_value(false))
     ("do_singlemu",              po::value<bool>(&do_singlemu)->default_value(false))
     ("use_promptdata",           po::value<bool>(&use_promptdata)->default_value(false))
     ("do_plotmcqcd",             po::value<bool>(&do_plotmcqcd)->default_value(false))
@@ -202,20 +211,20 @@ int main(int argc, char* argv[]){
 
   //shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";n_{jets} (p_{T}>30 GeV);Events");
   if(!(channel=="taunu"||channel=="top"||channel=="mumu")){
-    shape.push_back("jet2_pt(26,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
-    shape.push_back("jet1_pt(30,50.,350.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
+    shape.push_back("jet2_pt(30,0.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
+    shape.push_back("jet1_pt(35,0.,350.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
     shape.push_back("cjvjetpt(27,15.,150.)");histTitle.push_back(";p_{T}^{CJV jet} (GeV);Events");
-    shape.push_back("metnomuons(20,90.,550.)");histTitle.push_back(";Missing transverse energy (GeV);Events");
+    shape.push_back("metnomuons(20,0.,550.)");histTitle.push_back(";Missing transverse energy (GeV);Events");
     shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);Events");
-    shape.push_back("l1met(20,00.,200.)");histTitle.push_back(";L1MET (GeV);Events");
+    shape.push_back("l1met(20,0.,200.)");histTitle.push_back(";L1MET (GeV);Events");
     //shape.push_back("dijet_M(17,300.,2000.)");histTitle.push_back(";M_{jj} (GeV);Events");
     if(!do_preselranges&&!do_prepreselranges&&!do_relaxedqcdranges){
-      shape.push_back("dijet_M(18,1200.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+      shape.push_back("dijet_M(18,0.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
       //shape.push_back("alljetsmetnomu_mindphi(12,0.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);Events");
-      shape.push_back("jetmetnomu_mindphi(10,2.3,3.142)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
-      shape.push_back("alljetsmetnomu_mindphi(10,2.3,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
-      if(do_pasqcdfigleft){shape.push_back("metnomu_significance(30,4.,15.)");histTitle.push_back(";S;Events");}
-      else shape.push_back("metnomu_significance(15,4.,15.)");histTitle.push_back(";S;Events");
+      shape.push_back("jetmetnomu_mindphi(32,0,3.142)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
+      shape.push_back("alljetsmetnomu_mindphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
+      if(do_pasqcdfigleft){shape.push_back("metnomu_significance(50,0.,200.)");histTitle.push_back(";S;Events");}
+      else shape.push_back("metnomu_significance(50,0.,200.)");histTitle.push_back(";S;Events");
     }
     else if(do_prepreselranges){
       shape.push_back("dijet_M(22,800.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
@@ -231,7 +240,7 @@ int main(int argc, char* argv[]){
       shape.push_back("metnomu_significance(33,3.,15.)");histTitle.push_back(";S;Events");
     }
     else{
-      shape.push_back("dijet_M(18,1200.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+      shape.push_back("dijet_M(30,0.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
       shape.push_back("alljetsmetnomu_mindphi(22,0.0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
       //shape.push_back("alljetsmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);Events");
       shape.push_back("metnomu_significance(45,1.,10.)");histTitle.push_back(";S;Events");
@@ -246,7 +255,7 @@ int main(int argc, char* argv[]){
     shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);Events");
     shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);Events");
     shape.push_back("dijet_dphi(15,0.,3.1416)");histTitle.push_back(";#Delta#phi_{jj};Events");
-    shape.push_back("dijet_deta(18,3.6,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
+    shape.push_back("dijet_deta(36,0,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
     shape.push_back("lep_mt(20,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
     shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events");
     shape.push_back("ele1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(electron) (GeV);Events");
@@ -265,7 +274,7 @@ int main(int argc, char* argv[]){
   else{
     shape.push_back("jet2_pt(13,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
     shape.push_back("jet1_pt(12,50.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
-    shape.push_back("metnomuons(15,90.,550.)");histTitle.push_back(";Missing transverse energy (GeV);Events");
+    shape.push_back("metnomuons(15,0.,550.)");histTitle.push_back(";Missing transverse energy (GeV);Events");
     shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);Events");
     shape.push_back("l1met(10,00.,200.)");histTitle.push_back(";L1MET (GeV);Events");
     shape.push_back("dijet_M(5,1200.,2000.)");histTitle.push_back(";M_{jj} (GeV);Events");
@@ -276,7 +285,7 @@ int main(int argc, char* argv[]){
     shape.push_back("jetmetnomu_mindphi(16,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
     if(channel=="taunu"){ shape.push_back("alljetsmetnomu_mindphi(22,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
     else if(channel=="top"){ shape.push_back("alljetsmetnomu_mindphi(11,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
-    else{ shape.push_back("alljetsmetnomu_mindphi(7,2.3,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
+    else{ shape.push_back("alljetsmetnomu_mindphi(16,0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
     if(!do_preselranges&&!do_prepreselranges){ shape.push_back("metnomu_significance(6,4.,10.)");histTitle.push_back(";S;Events");}
     else if(do_prepreselranges){shape.push_back("metnomu_significance(25,0.,10.)");histTitle.push_back(";S;Events");}
     else{ shape.push_back("metnomu_significance(22,1.,10.)");histTitle.push_back(";S;Events");}
@@ -290,7 +299,7 @@ int main(int argc, char* argv[]){
     shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);Events");
     shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);Events");
     shape.push_back("dijet_dphi(15,0.,3.)");histTitle.push_back(";#Delta#phi_{jj};Events");
-    shape.push_back("dijet_deta(9,3.6,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
+    shape.push_back("dijet_deta(18,0,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
     shape.push_back("lep_mt(20,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
     shape.push_back("tau1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(tau) (GeV);Events");
     shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events");
@@ -306,8 +315,14 @@ int main(int argc, char* argv[]){
   }
   
   std::string dataextrasel;
-  if(!use_promptdata)dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=203742))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>=40";
-  else dataextrasel="&&passtrigger==1&&l1met>=40";
+  if(!do_run1){
+    if(!do_mettrig) dataextrasel="&&(pass_sigtrigger==1)";
+    else dataextrasel="&&(pass_mettrigger==1)";
+  }
+  else{
+    if(!use_promptdata)dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=203742))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>=40";
+    else dataextrasel="&&passtrigger==1&&l1met>=40";
+  }
   //std::string dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=196531))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))";
   //std::string dataextrasel="&&(((run>=190456)&&(run<=193621)&&passtrigger==1)||(passparkedtrigger1==1)||(passparkedtrigger2==1))&&l1met>40";
   //std::string dataextrasel="&&passtrigger==1&&l1met>40";
@@ -471,6 +486,7 @@ int main(int argc, char* argv[]){
   
   if(channel=="nunu"||channel=="taunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor;
   else sigmcweight="total_weight_leptight"+mcweightpufactor;
+  if(do_nosigmcweight)sigmcweight="1";
 
   std::string closurecat;
   std::string zextraclosurecat;
@@ -503,6 +519,37 @@ int main(int argc, char* argv[]){
   }
       
 
+  TrigEff meteff("meteff");
+  meteff.set_dataset("SINGLEMUON")
+    .set_dirname("eff")
+    .set_shape("met(20,0.,1000.)")
+    .set_basesel("1")//"jet1_pt>40&&jet2_pt>40&&dijet_M>600&&dijet_deta>3.5")
+    .set_cat("1")
+    .set_trigger("pass_mettrigger==1");
+
+  TrigEff jpteff("jpteff");
+  jpteff.set_dataset("SINGLEMUON")
+    .set_dirname("eff")
+    .set_shape("jet2_pt(20,0.,200.)")
+    .set_basesel("jet1_pt>40&&dijet_M>600&&dijet_deta>3.5&&metnomuons>140")
+    .set_cat("1")
+    .set_trigger("pass_mettrigger==1");
+
+  TrigEff mjjeff("mjjeff");
+  mjjeff.set_dataset("SINGLEMUON")
+    .set_dirname("eff")
+    .set_shape("dijet_M(30,0.,3000.)")
+    .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_deta>3.5&&metnomuons>140")
+    .set_cat("1")
+    .set_trigger("pass_mettrigger==1");
+
+  TrigEff detaeff("detaeff");
+  detaeff.set_dataset("SINGLEMUON")
+    .set_dirname("eff")
+    .set_shape("dijet_deta(25,0.,10.)")
+    .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&metnomuons>140")
+    .set_cat("1")
+    .set_trigger("pass_mettrigger==1");
     
   //DATA SHAPE GENERATION
   DataShape data("data");
@@ -1384,49 +1431,54 @@ int main(int argc, char* argv[]){
     .set_sample("ggH125");
 
   if(!(channel=="nunu"&&runblind))elementvec.push_back(dataele);
-  if(channel!="mumu"){
-    if(channel!="enu")elementvec.push_back(wmunuele);
-    if(channel!="munu")elementvec.push_back(wenuele);
-    if(channel!="munu")elementvec.push_back(wtaunuele);
-  }
-  //  elementvec.push_back(zmumuele);
-  if(do_separatez&&channel=="mumu"){
-    elementvec.push_back(znunuewkele);
-    elementvec.push_back(znunuqcdele);
-  }
-  else{
-    if(channel!="enu"&&channel!="munu"&&channel!="taunu")elementvec.push_back(znunuele);
-  }
-  if(do_plotmcqcd||do_plotqcd)elementvec.push_back(qcdele);
-  if(channel!="munu")elementvec.push_back(vvele);
-  //   elementvec.push_back(wgele);
-  if(channel!="mumu")elementvec.push_back(topele);
-  if(channel!="mumu"&&channel!="enu"&&channel!="munu"){
-    elementvec.push_back(sigele);
-    elementvec.push_back(ggHele);
+  if(!dataonly){
+    if(channel!="mumu"){
+      if(channel!="enu")elementvec.push_back(wmunuele);
+      if(channel!="munu")elementvec.push_back(wenuele);
+      if(channel!="munu")elementvec.push_back(wtaunuele);
+    }
+    //  elementvec.push_back(zmumuele);
+    if(do_separatez&&channel=="mumu"){
+      elementvec.push_back(znunuewkele);
+      elementvec.push_back(znunuqcdele);
+    }
+    else{
+      if(channel!="enu"&&channel!="munu"&&channel!="taunu")elementvec.push_back(znunuele);
+    }
+    if(do_plotmcqcd||do_plotqcd)elementvec.push_back(qcdele);
+    if(channel!="munu")elementvec.push_back(vvele);
+    //   elementvec.push_back(wgele);
+    if(channel!="mumu")elementvec.push_back(topele);
+    if(channel!="mumu"&&channel!="enu"&&channel!="munu"){
+      elementvec.push_back(sigele);
+      elementvec.push_back(ggHele);
+    }
   }
 
   HistPlotter plotter("plotter");
   plotter.set_dirname("ControlPlots")
-    .set_add_underflows(false)
+    .set_add_underflows(true)
     .set_add_overflows(true)
     .set_elements(elementvec)
-    .set_do_ratio(true)
     //.set_histTitles(histTitle)
     .set_shapes(shapevec);
+  if(!dataonly)    plotter.set_do_ratio(true);
+  else plotter.set_do_ratio(false);
   if(channel=="nunu"&&runblind)plotter.set_do_ratio(false);
   if(do_closure)plotter.set_do_ratio_fitline(true);
 
   std::vector<std::string> dirvec;
-  dirvec.push_back("wel");
-  dirvec.push_back("wmu");
-  dirvec.push_back("wtau");
-  dirvec.push_back("zvv");
-  //dirvec.push_back("qcd");
-  dirvec.push_back("vv");
-  //dirvec.push_back("wg");  
-  dirvec.push_back("top");
-  dirvec.push_back("qqH125");
+  if(!dataonly){
+    dirvec.push_back("wel");
+    dirvec.push_back("wmu");
+    dirvec.push_back("wtau");
+    dirvec.push_back("zvv");
+    //dirvec.push_back("qcd");
+    dirvec.push_back("vv");
+    //dirvec.push_back("wg");  
+    dirvec.push_back("top");
+    dirvec.push_back("qqH125");
+  }
   if(!(channel=="nunu"&&runblind))dirvec.push_back("data_obs");
 
   SummaryTable summary("summary");
@@ -1442,6 +1494,47 @@ int main(int argc, char* argv[]){
   mceventlist.set_set(listset)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
+
+  std::vector<LTPlotElement> trigelementvec;
+
+  LTPlotElement trigele;
+  trigele.set_is_data(true)
+    .set_is_trigeff(true)
+    .set_scale(1)
+    .set_legname("Data")
+    .set_is_inrationum(true)
+    .set_sample("eff");
+
+  trigelementvec.push_back(trigele);
+
+  std::vector<LTShapeElement> trigshapevec;
+  LTShapeElement metshape;
+  metshape.set_name("met");
+  metshape.set_histtitle("MET");
+  trigshapevec.push_back(metshape);
+  LTShapeElement jptshape;
+  jptshape.set_name("jet2_pt");
+  jptshape.set_histtitle("j2 p_{T}");
+  trigshapevec.push_back(jptshape);
+  LTShapeElement mjjshape;
+  mjjshape.set_name("dijet_M");
+  mjjshape.set_histtitle("Mjj");
+  trigshapevec.push_back(mjjshape);
+  LTShapeElement detashape;
+  detashape.set_name("dijet_deta");
+  detashape.set_histtitle("#Delta#eta_{jj}");
+  trigshapevec.push_back(detashape);
+
+  HistPlotter trigplotter("plotter");
+  trigplotter.set_dirname("TrigEffPlots")
+    .set_add_underflows(false)
+    .set_add_overflows(false)
+    .set_elements(trigelementvec)
+    .set_shapes(trigshapevec);
+  if(!dataonly)    plotter.set_do_ratio(true);
+  else plotter.set_do_ratio(false);
+  if(channel=="nunu"&&runblind)plotter.set_do_ratio(false);
+  if(do_closure)plotter.set_do_ratio_fitline(true);
 
   /*##########################################
   #                                          #
@@ -1485,6 +1578,13 @@ int main(int argc, char* argv[]){
     //analysis->AddModule(&wgamma);
   }
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
+  if(do_trigeff){
+    analysis->AddModule(&meteff);
+    analysis->AddModule(&jpteff);
+    analysis->AddModule(&mjjeff);
+    analysis->AddModule(&detaeff);
+    analysis->AddModule(&trigplotter);
+  }
   if(datalist) analysis->AddModule(&eventlist);
   if(!dataonly){
     analysis->AddModule(&signal110);
@@ -1499,9 +1599,10 @@ int main(int argc, char* argv[]){
     analysis->AddModule(&ggHsignal200);
     analysis->AddModule(&ggHsignal300);
     analysis->AddModule(&ggHsignal400);
-    analysis->AddModule(&plotter);
-    analysis->AddModule(&summary);
   }
+  if(!do_trigeff)analysis->AddModule(&plotter);
+  if(!dataonly)analysis->AddModule(&summary);
+  
   analysis->RunAnalysis();
 
   return 0;
