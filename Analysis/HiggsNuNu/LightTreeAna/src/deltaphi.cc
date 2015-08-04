@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi.h"
+#include "../interface/deltaphi.h"
 
 namespace mymath {
   double deltaPhi(double phi1,double phi2)
