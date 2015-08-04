@@ -131,7 +131,14 @@ namespace ic {
 	}
       }
       //If we got through all the gen particles and there was no W->lnu reject the event
-      if(!iswenu&&!iswmunu&&!iswtaunu)std::cout<<"Warning: Found no WToLNu decay rejecting event"<<std::endl;
+      if(!iswenu&&!iswmunu&&!iswtaunu){
+	std::cout<<"Warning: Found no WToLNu decay rejecting event"<<std::endl;
+	std::cout<<"The following gen particles were present"<<std::endl;
+	for (unsigned iGenPart = 0; iGenPart < parts.size(); ++iGenPart) {//Loop over gen particles//!!
+	  int id = parts[iGenPart]->pdgid();
+	  std::cout<<"  "<<iGenPart<<"  "<<id<<"  "<<parts[iGenPart]->status()<<std::endl;
+	}
+      }
       return 1;
     }
     else{
