@@ -77,7 +77,7 @@ if options.proc_data or options.proc_all:
   for ch in channels:
    JOB='Data_2012'
    FILELIST=('./filelists/June6_Data_53X_Data_Paper_%(ch)s_skim.dat' %vars())
-   JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+   JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
    nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
    nperjob = 10
    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -87,7 +87,7 @@ if options.proc_data or options.proc_all:
     if ch in ['et','mt']:
       JOB='Embedded_2012' 
       FILELIST=('./filelists/June6_Data_53X_Embedded_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,\"is_data\":true, \"hadronic_tau_selector\":1}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,\"is_data\":true, \"hadronic_tau_selector\":1}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -97,7 +97,7 @@ if options.proc_data or options.proc_all:
     if ch in ['et','mt']:
       JOB='Data_2012' 
       FILELIST=('./filelists/June6_Data_53X_Special_2_Data_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":3}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":3}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -107,7 +107,7 @@ if options.proc_data or options.proc_all:
     if ch in ['et','mt']:
       JOB='Data_2012' 
       FILELIST=('./filelists/June6_Data_53X_Special_4_Data_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":4}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":4}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -117,7 +117,7 @@ if options.proc_data or options.proc_all:
     if ch in ['em']:
       JOB='Data_2012' 
       FILELIST=('./filelists/June6_Data_53X_Special_20_Data_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":20}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":20}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -126,7 +126,7 @@ if options.proc_data or options.proc_all:
 
       JOB='Data_2012' 
       FILELIST=('./filelists/June6_Data_53X_Special_21_Data_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":21}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":21}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -135,7 +135,7 @@ if options.proc_data or options.proc_all:
 
       JOB='Data_2012' 
       FILELIST=('./filelists/June6_Data_53X_Special_22_Data_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":22}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":22}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -144,7 +144,7 @@ if options.proc_data or options.proc_all:
 
       JOB='Data_2012' 
       FILELIST=('./filelists/June6_Data_53X_Special_23_Data_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":23}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":23}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -153,7 +153,7 @@ if options.proc_data or options.proc_all:
 
       JOB='Data_2012' 
       FILELIST=('./filelists/June6_Data_53X_Special_24_Data_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":24}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"special_mode\":24}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -162,7 +162,7 @@ if options.proc_data or options.proc_all:
 
       JOB='Embedded_2012' 
       FILELIST=('./filelists/June6_Data_53X_Embedded_Paper_%(ch)s_skim.dat' %vars())
-      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"], \"sequences\":{\"%(ch)s\":[\"scale_m_lo\",\"scale_m_hi\"]},\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\",\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"is_embedded\":true, \"baseline\":{\"mass_scale_mode\":true}}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"], \"sequences\":{\"%(ch)s\":[\"scale_m_lo\",\"scale_m_hi\"]},\"filelist\":\"%(FILELIST)s\", \"file_prefix\":\"/vols/ssd00/cms/ajg06/June6/Data_53X/\"},\"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true, \"is_embedded\":true, \"baseline\":{\"mass_scale_mode\":true}}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s' % vars()))
       nperjob = 10
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -384,7 +384,7 @@ if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
     for ch in channels:
       for sa in signal_mc:
         JOB='%s_2012' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"}, \"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"}, \"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s_%(ch)s_skim.dat' % vars()))
         nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -396,7 +396,7 @@ if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
         name_tth = sa.replace('WH_ZH_TTH','TTH')
         name_zh = sa.replace('WH_ZH_TTH','ZH')
         JOB='%s_2012' % (name_wh)
-        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"},\"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"vh_filter_mode\":1}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"},\"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"vh_filter_mode\":1}}' "%vars());
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s_%(ch)s_skim.dat' % vars()))
         nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -404,7 +404,7 @@ if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
           os.system('%(JOBSUBMIT)s jobsnew/%(JOB)s-%(i)d.sh' % vars())
 
         JOB='%s_2012' % (name_tth)
-        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"}, \"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"vh_filter_mode\":2}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"}, \"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"vh_filter_mode\":2}}' "%vars());
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s_%(ch)s_skim.dat' % vars()))
         nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -412,7 +412,7 @@ if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
           os.system('%(JOBSUBMIT)s jobsnew/%(JOB)s-%(i)d.sh' % vars())
 
         JOB='%s_2012' % (name_zh)
-        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"},\"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"vh_filter_mode\":3}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"},\"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"vh_filter_mode\":3}}' "%vars());
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s_%(ch)s_skim.dat' % vars()))
         nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -424,7 +424,7 @@ if options.proc_sm or options.proc_all:
     for ch in channels:
       for sa in signal_mc_ww:
         JOB='%s_2012' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"},\"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"channels\":[\"%(ch)s\"],\"filelist\":\"%(FILELIST)s_%(sa)s_%(ch)s_skim.dat\"},\"sequences\":{\"%(ch)s\":[\"scale_t_lo\", \"scale_t_hi\"]}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s_%(ch)s_skim.dat' % vars()))
         nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
