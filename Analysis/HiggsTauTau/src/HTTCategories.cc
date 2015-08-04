@@ -506,7 +506,7 @@ namespace ic {
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-
+    
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -514,7 +514,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || (strategy_==strategy::spring15&&!is_data_) ) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || (strategy_==strategy::spring15 && !is_data_) ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -577,8 +577,15 @@ namespace ic {
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
 //    std::vector <Met const* mets = event->GetPtrVec<Met>(met_label_);
    // std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
-    std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMet");
-    Met const* mets = met_vec.at(0);  
+    
+    //slightly different met format for new ntuples
+    Met const* mets;
+    if(strategy_ == strategy::paper2013){
+      mets = event->GetPtr<Met>(met_label_);
+    } else {
+      std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMet");
+      mets = met_vec.at(0);  
+    }
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> corrected_jets;
@@ -669,7 +676,7 @@ namespace ic {
     }
 
     Met const* pfmet = NULL;
-    //slightly different pfMET format for new ntuples
+    //slightly different met format for new ntuples
     if(strategy_ == strategy::paper2013) pfmet = event->GetPtr<Met>("pfMet");
     if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
       std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
@@ -696,20 +703,21 @@ namespace ic {
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
 
-/*    mt_1_ = MT(lep1, mets);
-    mt_2_ = MT(lep2, mets);
-    mt_ll_ = MT(ditau, mets);
-    pzeta_ = PZeta(ditau, mets, 0.85);
-    pzetavis_ = PZetaVis(ditau);
-    pzetamiss_ = PZeta(ditau, mets, 0.0);
-*/
-
-    mt_1_ = MT(lep1, pfmet);
-    mt_2_ = MT(lep2, pfmet);
-    mt_ll_ = MT(ditau, pfmet);
-    pzeta_ = PZeta(ditau, pfmet, 0.85);
-    pzetavis_ = PZetaVis(ditau);
-    pzetamiss_ = PZeta(ditau, pfmet, 0.0);
+    if(strategy_ == strategy::paper2013) {
+      mt_1_ = MT(lep1, mets);
+      mt_2_ = MT(lep2, mets);
+      mt_ll_ = MT(ditau, mets);
+      pzeta_ = PZeta(ditau, mets, 0.85);
+      pzetavis_ = PZetaVis(ditau);
+      pzetamiss_ = PZeta(ditau, mets, 0.0);
+    } else {
+      mt_1_ = MT(lep1, pfmet);
+      mt_2_ = MT(lep2, pfmet);
+      mt_ll_ = MT(ditau, pfmet);
+      pzeta_ = PZeta(ditau, pfmet, 0.85);
+      pzetavis_ = PZetaVis(ditau);
+      pzetamiss_ = PZeta(ditau, pfmet, 0.0);
+    }
 
     if(channel_ == channel::em || channel_ == channel::et){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -953,8 +961,8 @@ namespace ic {
       }
       d0_1_ = elec1->dxy_vertex();
       dz_1_ = elec1->dz_vertex();
-      d0_2_ = elec1->dxy_vertex();
-      dz_2_ = elec1->dz_vertex();
+      d0_2_ = elec2->dxy_vertex();
+      dz_2_ = elec2->dz_vertex();
     }
     if (channel_ == channel::zmm) {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
@@ -967,8 +975,8 @@ namespace ic {
       }
       d0_1_ = muon1->dxy_vertex();
       dz_1_ = muon1->dz_vertex();
-      d0_2_ = muon1->dxy_vertex();
-      dz_2_ = muon1->dz_vertex();
+      d0_2_ = muon2->dxy_vertex();
+      dz_2_ = muon2->dz_vertex();
     }
 
 
