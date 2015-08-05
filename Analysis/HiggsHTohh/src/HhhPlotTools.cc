@@ -492,7 +492,7 @@ namespace ic {
       int new_idx = CreateTransparentColor(12,0.5);
       err_element.set_fill_color(new_idx);
       err_element.set_fill_style(3001);
-      err_element.set_line_width(1);
+      err_element.set_line_width(0);
       err_element.set_draw_stat_error_y(true);
       err_element.set_draw_fill(true);
       err_element.set_draw_line(false);
