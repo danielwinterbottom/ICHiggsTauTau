@@ -41,11 +41,14 @@ sample_list = [
           'GluGluToHToTauTau_M-125',
           'VBF_HToTauTau_M-125', 
           'WH_ZH_TTH_HToTauTau_M-125',
+          'VBF_HToWWTo2LAndTau2Nu_M-125',
+          'WH_HToTauTau_M-125',
+          'ZH_HToTauTau_M-125',
           'Data',
           'Special_3_Data',
           'Special_4_Data',
           'Special_5_WJetsToLNuSoup',
-          'Embedded_mt_2012.root'
+          'Embedded'
 	]
 
 channel = ['em','et','mt','tt']

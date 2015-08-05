@@ -445,6 +445,7 @@ int main(int argc, char* argv[]){
   HTTTriggerFilter httTriggerFilter = HTTTriggerFilter("HTTTriggerFilter")
     .set_channel(channel)
     .set_mc(mc)
+    .set_era(era)
     .set_is_data(is_data)
     .set_is_embedded(is_embedded)
     .set_pair_label("emtauCandidates");
@@ -1314,10 +1315,10 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&hhhBJetRegression);
    }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
-    if (make_sync_ntuple&&strategy==strategy::phys14){
+    if (make_sync_ntuple && strategy==strategy::phys14){
          analysis.AddModule(&httSyncTemp);
     }
-     if (make_sync_ntuple&&strategy==strategy::paper2013){
+    if(make_sync_ntuple && strategy==strategy::paper2013){
          analysis.AddModule(&httSync);
     }
    

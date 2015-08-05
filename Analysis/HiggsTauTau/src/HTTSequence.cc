@@ -572,7 +572,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 //    if (js["run_trg_filter"].asBool()) {
 // if(is_data){
    if(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool()){
-    if(!is_embedded || (is_embedded&&strategy_type==strategy::paper2013&&era_type==era::data_2012_rereco)){
+    if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
             .set_channel(channel)
             .set_mc(mc_type)
