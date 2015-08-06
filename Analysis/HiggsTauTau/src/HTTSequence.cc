@@ -646,16 +646,20 @@ if(channel != channel::wmnu) {
   .set_uncert_set(jes_input_set));
 
 }
-
   
     
-  BuildModule(SimpleFilter<PFJet>("JetIDFilter")
-    .set_input_label(jets_label)
-    //.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training)));
-    .set_predicate((bind(PFJetIDNoHFCut, _1)))); 
+  SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
+    .set_input_label(jets_label);
+    if(strategy_type == strategy::paper2013) {
+      jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
+    } else {
+      jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1))); 
+    }
+  BuildModule(jetIDFilter);
 
 
   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
+
 if(channel != channel::wmnu) {
   BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
     .set_input_label(jets_label)
