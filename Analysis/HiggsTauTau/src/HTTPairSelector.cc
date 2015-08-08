@@ -237,8 +237,6 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    
-    
     if(strategy_ != strategy::spring15) {
       if (faked_tau_selector_ > 0  && channel_ != channel::em) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
@@ -256,7 +254,7 @@ namespace ic {
         }
         // Get the reco tau from the pair
         std::vector<Candidate *> tau;
-        if(channel::tt){
+        if(channel_ == channel::tt){
           tau.push_back(result[0]->GetCandidate("lepton1"));
         }
         tau.push_back(result[0]->GetCandidate("lepton2"));
@@ -347,7 +345,7 @@ namespace ic {
 
 
         //Fail the event if no gen-level Z's found for ZTT
-//        if (!has_z&&ztt_mode_==1) return 1;
+//        if (!has_z && ztt_mode_==1) return 1;
         // If we want Z->tautau and we have found a Z->ll, fail the event
         if (ztt_mode_ == 1 && !is_ztt) return 1;
         // If we want Z->ll and we have found a Z->tautau, fail the event
@@ -384,7 +382,7 @@ namespace ic {
         if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
       }
     }
-    if(strategy_==strategy::spring15 && channel_==channel::em && ztt_mode_>0){
+/*    if(strategy_==strategy::spring15 && channel_==channel::em && ztt_mode_>0){
       bool is_ztt=false; 
       bool has_z = false;
       // First find out if the gen level info points to Z->ll or Z->tautau
@@ -400,11 +398,11 @@ namespace ic {
                 is_ztt = true;
                }
              }
-           }
+           }*/
         /*  if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.){
             sel_particles.push_back(particles[i]);
           }*/
-        } 
+     /*   } 
       if(!has_z){
 //        bool has_tau_orphan = false;
         bool has_tau_from_incoming = false;
@@ -417,7 +415,7 @@ namespace ic {
               if(mothers[j]->status()==21){
                 has_tau_from_incoming=true;
               }
-            }
+            }*/
           /*} else if ((abs(particles[i]->pdgid()) == 13 || abs(particles[i]->pdgid()) == 11) && particles[i]->pt()>8.){
             std::vector<GenParticle *> const& mothers = ExtractMothers(particles[i], particles);
             for( unsigned j =0; j < mothers.size(); ++j){
@@ -425,7 +423,7 @@ namespace ic {
                has_emu_from_incoming = true;
              }
            }*/
-         }
+      /*   }
        }
        if(has_tau_from_incoming){
        //If we have a tau that comes from one of the incoming partons we have a Z->tautau event with virtual Z:
@@ -440,8 +438,7 @@ namespace ic {
      if (ztt_mode_ == 1 && !is_ztt) return 1;
      // If we want Z->ll and we have found a Z->tautau, fail the event
      if (ztt_mode_ == 2 && is_ztt) return 1;
-    }
-
+    }*/
 
     
     // ************************************************************************
