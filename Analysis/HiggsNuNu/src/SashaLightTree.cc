@@ -343,8 +343,8 @@ namespace ic {
 	    std::string name = triggerPathPtrVec[i]->name();
 	    triggerPathPtrVec[i]->prescale();
 	    if (name.find(trigger_path_) != name.npos) passtrigger_ = 1;
-	    if (name.find("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger1_ = 1;
-	    if (name.find("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger2_ = 1;
+	    if (name.find("HLT_IsoMu24_eta2p1_v") != name.npos) passparkedtrigger1_ = 1;
+	    if (name.find("HLT_IsoMu24_v") != name.npos) passparkedtrigger2_ = 1;
 	  }
 	}
       }
@@ -419,6 +419,30 @@ namespace ic {
     // 	std::cout<<jetveccopy[ijetjet]->eta()<<" ";
     // }
     // std::cout<<std::endl;//!!
+    
+
+    jet4_pt_=-1;
+    jet4_eta_=-10000;
+    jet4_phi_=-5;
+    jet4_E_=-1;
+    jet4_csv_=-1;
+    jet3_pt_=-1;
+    jet3_eta_=-10000;
+    jet3_phi_=-5;
+    jet3_E_=-1;
+    jet3_csv_=-1;
+    jet2_pt_=-1;
+    jet2_eta_=-10000;
+    jet2_phi_=-5;
+    jet2_E_=-1;
+    jet2_csv_=-1;
+    jet1_pt_=-1;
+    jet1_eta_=-10000;
+    jet1_phi_=-5;
+    jet1_E_=-1;
+    jet1_csv_=-1;
+    
+
     std::sort(jetveccopy.begin(),jetveccopy.end(),sashaptorderedjetsort);
     if(jetveccopy.size()>=1){
       jet1_pt_=jetveccopy[0]->pt();
@@ -451,37 +475,8 @@ namespace ic {
 	    jet4_E_=jetveccopy[3]->energy();
 	    jet4_csv_=jetveccopy[3]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
 	  }
-	  else{
-	    jet4_pt_=-1;
-	    jet4_eta_=-10000;
-	    jet4_phi_=-5;
-	    jet4_E_=-1;
-	    jet4_csv_=-1;
-	  }
-	}
-	else{
-	  jet3_pt_=-1;
-	  jet3_eta_=-10000;
-	  jet3_phi_=-5;
-	  jet3_E_=-1;
-	  jet3_csv_=-1;
 	}
       }
-      else{
-	jet2_pt_=-1;
-	jet2_eta_=-10000;
-	jet2_phi_=-5;
-	jet2_E_=-1;
-	jet2_csv_=-1;
-      }
-    }
-    else{
-      jet1_pt_=-1;
-      jet1_eta_=-10000;
-      jet1_phi_=-5;
-      jet1_E_=-1;
-      jet1_csv_=-1;
-      
     }
   
       
