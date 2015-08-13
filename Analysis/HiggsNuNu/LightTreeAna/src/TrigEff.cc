@@ -1,7 +1,9 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/TrigEff.h"
 #include <iostream>
 #include "TH1F.h"
+#include "TGraphAsymmErrors.h"
 #include "TCanvas.h"
+#include "TLegend.h"
 #include "TDirectory.h"
 #include <map>
 
@@ -52,8 +54,10 @@ namespace ic{
     TH1F  datashapewithtrig = filemanager->GetSetsShape(dataset_,shape_,basesel_,cat_+"&&"+trigger_,dataweight_,false);
     datashapenotrig.Sumw2();
     datashapewithtrig.Sumw2();
-    TH1F* efficiency=(TH1F*)datashapenotrig.Clone();
-    efficiency->Divide(&datashapewithtrig,&datashapenotrig);
+    //TH1F* efficiency=(TH1F*)datashapenotrig.Clone();
+    //efficiency->Divide(&datashapewithtrig,&datashapenotrig,1,1,"B");
+    TGraphAsymmErrors* efficiency=new TGraphAsymmErrors();
+    efficiency->Divide(&datashapewithtrig,&datashapenotrig,"cl=0.683 b(1,1) mode");
     dir->cd();
     std::string histname;
     if(shapename_==""){
@@ -73,6 +77,96 @@ namespace ic{
     datashapenotrig.Write();
     datashapewithtrig.Write();
     efficiency->Write();
+
+    //Make plots
+    TCanvas* c1= new TCanvas("canvas","canvas");
+    c1->cd();
+    c1->SetName(histname.c_str());
+    TPad* upper = new TPad("upper","pad",0, 0 ,1 ,1);
+    upper->SetBottomMargin(0.15);
+    
+    efficiency->Draw("AP");
+    //efficiency->Draw(elements_[iElement].drawopts().c_str());
+    //efficiency->GetYaxis()->SetRangeUser(0.,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
+    //efficiency->Draw(elements_[iElement].drawopts().c_str());
+    //c1->Update();                                                                                                                                                                                                                
+    efficiency->SetMarkerColor(1);
+    efficiency->SetLineColor(1);
+    efficiency->SetLineWidth(2);
+    efficiency->SetMarkerStyle(20);
+    efficiency->SetMarkerSize(1.1);
+    efficiency->GetYaxis()->SetLabelSize(0.06);
+    efficiency->GetYaxis()->SetTitleSize(0.095);
+    efficiency->GetYaxis()->SetTitleFont(62);
+    efficiency->GetXaxis()->SetLabelSize(0.06);
+    efficiency->GetXaxis()->SetTitleFont(62);
+    efficiency->GetXaxis()->SetTitleSize(0.09);
+    efficiency->GetXaxis()->SetTitleOffset(0.600);
+    std::string xtitle;
+    xtitle=histtitle_.substr(histtitle_.find(";")+1);
+    xtitle=xtitle.substr(0,xtitle.find(";"));
+    efficiency->GetXaxis()->SetTitle(xtitle.c_str());
+    std::string ytitle;
+    ytitle=histtitle_.substr(histtitle_.find(";")+1);
+    ytitle=ytitle.substr(ytitle.find(";")+1);
+    ytitle=ytitle.substr(0,ytitle.find(";"));
+    efficiency->SetTitle(ytitle.c_str());
+    
+    //SETUP AND DRAW THE LEGEND                                                                                                                                                                                                            
+    double legleft=0.67;
+    double legright=0.89;
+    double legbottom=0.3+((10-1)*(0.89-0.3)/10);
+    if(legbottom<0.3||legbottom>0.89)legbottom=0.3;
+    TLegend* leg=new TLegend(legleft,legbottom,legright,0.89);
+    leg->SetName("thelegend");
+    leg->SetTextSize(0.06);
+    leg->SetFillStyle(0);
+    leg->SetLineColor(10);
+    leg->AddEntry(efficiency,histname.c_str(),"ep");
+
+    leg->Draw("same");
+    //c1->Update();                                                                                                                                                                                                                        
+    //leg->Defficiencyte();                                                                                                                                                                                                                       lg
+    DrawCMSLogoTest(upper,"CMS","preliminary",10);
+
+    //save as PDF                                                                                                                                                                                                                          
+    //c1->Update();                                                                                                                                                                                                                        
+    std::ostringstream lsave;
+    std::ostringstream lsavepng;
+    std::string tmpstr = file->GetName();
+    tmpstr.erase(std::string(file->GetName()).find(".root"),5);
+    tmpstr=tmpstr;
+    lsave << tmpstr ;
+    lsave << ".pdf" ;
+    lsave << "[";
+    c1->Print(lsave.str().c_str());//open the file                                                                                                                                                                                       
+    lsave.str("");//reset for adding the first plot                                                                                                                                                                                      
+    lsave << tmpstr ;
+    lsave << ".pdf" ;
+
+    c1->Print(lsave.str().c_str());
+    lsave << "]";
+    c1->Print(lsave.str().c_str());//close the file                                                                                                                                                                                      
+    
+
+    lsave.str("");
+    lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
+    c1->Print((lsave.str()).c_str());
+    lsavepng.str("");
+    lsavepng << tmpstr << "_" << c1->GetName() << ".png" ;
+    c1->Print((lsavepng.str()).c_str());
+
+    //WRITE TO FILE                                                                                                                                                                                                                        
+    dir->cd();
+    c1->Write();
+    //upper->Close();                                                                                                                                                                                                                      
+    //lower->Close();                                                                                                                                                                                                                      
+    c1->Clear("D");
+    //      upper->Clear();                                                                                                                                                                                                                
+    //      lower->Clear();                                                                                                                                                                                                                
+  
+    dir->Close();
+
     return 0;
   };
 

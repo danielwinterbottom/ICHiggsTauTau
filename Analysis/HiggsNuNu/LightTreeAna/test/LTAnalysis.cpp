@@ -519,12 +519,22 @@ int main(int argc, char* argv[]){
   }
       
 
+  TrigEff metnomueff("metnomueff");
+  metnomueff.set_dataset("SINGLEMUON")
+    .set_dirname("eff")
+    .set_shape("metnomuons(20,0.,1000.)")
+    .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&dijet_deta>3.5")
+    .set_cat("1")
+    .set_histtitle("METnoMU")
+    .set_trigger("pass_sigtrigger==1");
+
   TrigEff meteff("meteff");
   meteff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
     .set_shape("met(20,0.,1000.)")
-    .set_basesel("1")//"jet1_pt>40&&jet2_pt>40&&dijet_M>600&&dijet_deta>3.5")
+    .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&dijet_deta>3.5")
     .set_cat("1")
+    .set_histtitle("MET")
     .set_trigger("pass_mettrigger==1");
 
   TrigEff jpteff("jpteff");
@@ -533,7 +543,8 @@ int main(int argc, char* argv[]){
     .set_shape("jet2_pt(20,0.,200.)")
     .set_basesel("jet1_pt>40&&dijet_M>600&&dijet_deta>3.5&&metnomuons>140")
     .set_cat("1")
-    .set_trigger("pass_mettrigger==1");
+    .set_histtitle("j_{2} p_{T}")
+    .set_trigger("pass_sigtrigger==1");
 
   TrigEff mjjeff("mjjeff");
   mjjeff.set_dataset("SINGLEMUON")
@@ -541,7 +552,8 @@ int main(int argc, char* argv[]){
     .set_shape("dijet_M(30,0.,3000.)")
     .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_deta>3.5&&metnomuons>140")
     .set_cat("1")
-    .set_trigger("pass_mettrigger==1");
+    .set_histtitle("M_{jj}")
+    .set_trigger("pass_sigtrigger==1");
 
   TrigEff detaeff("detaeff");
   detaeff.set_dataset("SINGLEMUON")
@@ -549,7 +561,8 @@ int main(int argc, char* argv[]){
     .set_shape("dijet_deta(25,0.,10.)")
     .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&metnomuons>140")
     .set_cat("1")
-    .set_trigger("pass_mettrigger==1");
+    .set_histtitle("#Delta#eta_{jj}")
+    .set_trigger("pass_sigtrigger==1");
     
   //DATA SHAPE GENERATION
   DataShape data("data");
@@ -1495,47 +1508,6 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
 
-  std::vector<LTPlotElement> trigelementvec;
-
-  LTPlotElement trigele;
-  trigele.set_is_data(true)
-    .set_is_trigeff(true)
-    .set_scale(1)
-    .set_legname("Data")
-    .set_is_inrationum(true)
-    .set_sample("eff");
-
-  trigelementvec.push_back(trigele);
-
-  std::vector<LTShapeElement> trigshapevec;
-  LTShapeElement metshape;
-  metshape.set_name("met");
-  metshape.set_histtitle("MET");
-  trigshapevec.push_back(metshape);
-  LTShapeElement jptshape;
-  jptshape.set_name("jet2_pt");
-  jptshape.set_histtitle("j2 p_{T}");
-  trigshapevec.push_back(jptshape);
-  LTShapeElement mjjshape;
-  mjjshape.set_name("dijet_M");
-  mjjshape.set_histtitle("Mjj");
-  trigshapevec.push_back(mjjshape);
-  LTShapeElement detashape;
-  detashape.set_name("dijet_deta");
-  detashape.set_histtitle("#Delta#eta_{jj}");
-  trigshapevec.push_back(detashape);
-
-  HistPlotter trigplotter("plotter");
-  trigplotter.set_dirname("TrigEffPlots")
-    .set_add_underflows(false)
-    .set_add_overflows(false)
-    .set_elements(trigelementvec)
-    .set_shapes(trigshapevec);
-  if(!dataonly)    plotter.set_do_ratio(true);
-  else plotter.set_do_ratio(false);
-  if(channel=="nunu"&&runblind)plotter.set_do_ratio(false);
-  if(do_closure)plotter.set_do_ratio_fitline(true);
-
   /*##########################################
   #                                          #
   #   SET UP ANALYSIS SEQUENCE AND RUN       #
@@ -1580,10 +1552,10 @@ int main(int argc, char* argv[]){
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
   if(do_trigeff){
     analysis->AddModule(&meteff);
+    analysis->AddModule(&metnomueff);
     analysis->AddModule(&jpteff);
     analysis->AddModule(&mjjeff);
     analysis->AddModule(&detaeff);
-    analysis->AddModule(&trigplotter);
   }
   if(datalist) analysis->AddModule(&eventlist);
   if(!dataonly){

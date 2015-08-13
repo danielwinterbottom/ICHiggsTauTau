@@ -17,6 +17,7 @@ namespace ic {
     CLASS_MEMBER(TrigEff,std::string,basesel)
     CLASS_MEMBER(TrigEff,std::string,dataweight)
     CLASS_MEMBER(TrigEff,std::string,dirname)
+    CLASS_MEMBER(TrigEff,std::string,histtitle)
   public:
     virtual TrigEff & set_dataset(std::string const& dataset) {
       std::vector<std::string> datasets;

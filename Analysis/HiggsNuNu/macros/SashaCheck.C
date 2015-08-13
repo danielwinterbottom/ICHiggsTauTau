@@ -32,7 +32,7 @@ int SashaCheck(){
   double centraljetthreshold=30;
   double forwardjetthreshold=30;
 
-  std::string outfolder="./";
+  std::string outfolder="output_sashacheck_rootfile/";
 
   //Define cuts
   std::string lMuCut = "mu1_pt>25&&mu2_pt>25&&(mu1_charge*mu2_charge==-1)&&(passparkedtrigger1==1||passparkedtrigger2==1)";
@@ -77,31 +77,34 @@ int SashaCheck(){
   //Set up cut steps
   std::string fullcut;
   fullcut=lMuCut;
-  cuts.push_back(fullcut);
-  cutname.push_back("_mupair");
+  //cuts.push_back(fullcut);
+  //cutname.push_back("_mupair");
   fullcut=fullcut+"&&"+lAnyCentralCut;
-  cuts.push_back(fullcut);
-  cutname.push_back("_centraljet");
+  //cuts.push_back(fullcut);
+  //cutname.push_back("_centraljet");
   fullcut=fullcut+"&&"+lCentralBCut;
-  cuts.push_back(fullcut);
-  cutname.push_back("_centralbjet");
+  //cuts.push_back(fullcut);
+  //cutname.push_back("_centralbjet");
   fullcut=fullcut+"&&"+lCentral1BCut;
-  cuts.push_back(fullcut);
-  cutname.push_back("_centralbjetcjv");
+  //cuts.push_back(fullcut);
+  //cutname.push_back("_centralbjetcjv");
   fullcut=fullcut+"&&"+lForwardCut;
   cuts.push_back(fullcut);
   cutname.push_back("_forwardjet");
   fullcut=fullcut+"&&"+lMassWindowCut;
-  cuts.push_back(fullcut);
-  cutname.push_back("_26-32");
+  //cuts.push_back(fullcut);
+  //cutname.push_back("_26-32");
 
   std::ostringstream var;
   var << histName << ">>htmp";
+
+  TFile* file=new TFile((outfolder+"output.root").c_str(),"RECREATE");
 
   //Loop over cut steps and get m_mumu plot and integral at each step
   for(unsigned iCut=0;iCut<cuts.size();iCut++){
     
     TH1F* htmp = new TH1F("htmp","",29,12,70);
+    //TH1F* htmp = new TH1F("htmp","",58,12,70);
     std::cout<<"getting histogram"<<std::endl;
     tree->Draw(var.str().c_str(),cuts[iCut].c_str());
 
@@ -128,12 +131,12 @@ int SashaCheck(){
     myfit->SetParName(3, "const term");
     myfit->SetParName(4, "linear term");
     myfit->SetParName(5, "quad term");
-    myfit->SetParameters(100, 30., 4, 10, 1, 1);
+    myfit->SetParameters(100, 45., 4, 10, 1, 1);
     
     //Fit to distribution after requiring forward jet
-    if(cutname[iCut]=="_forwardjet"){
-      htmp->Fit("myfit");
-    }
+    // if(cutname[iCut]=="_forwardjet"){
+    //   htmp->Fit("myfit");
+    // }
 
     //Draw and save
     htmp->Draw("e1lp");
@@ -145,6 +148,11 @@ int SashaCheck(){
     leg->Draw("same");
     
     myc->SaveAs((outfolder+"/mmumu"+cutname[iCut]+".pdf").c_str());
+    myc->SetName(cutname[iCut].c_str());
+    file->cd();
+    myc->Write();
+    
+
     myc->Clear();
     htmp->Delete();
     leg->Delete();

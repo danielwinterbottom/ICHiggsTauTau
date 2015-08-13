@@ -35,7 +35,7 @@
 
     //!!MAKE CHOICE CONFIGURABLE
     TString lumi_13TeV = "20.1 fb^{-1}";
-    TString lumi_8TeV = "19.2-19.7 fb^{-1}";
+    TString lumi_8TeV = "0-19.7 fb^{-1}";
     TString lumi_7TeV = "0-4.9 fb^{-1}";
 
     lumiText +=lumi_8TeV;
@@ -177,15 +177,20 @@ int main() {
   //  scans.push_back({"higgsCombinefullScan.MultiDimFit.mH125.root", "Observed", 1, nullptr});
   //  scans.push_back({"higgsCombineexpected.MultiDimFit.mH125.root", "Exp. for SM H", 32, nullptr});
 //   scans.push_back({"higgsCombinenoBBBScan.MultiDimFit.mH125.root", "no bbb syst.", 38, nullptr});
-  scans.push_back({dir+"higgsCombineCombExp.MultiDimFit.mH125.root", "Exp. for SM H", 1, nullptr});
-  scans.push_back({dir+"higgsCombineCombObs.MultiDimFit.mH125.root", "Obs. for SM H", 1, nullptr});
-
+  scans.push_back({dir+"higgsCombineCombObs.MultiDimFit.mH125.root", "Combined ", 1, nullptr});
+  scans.push_back({dir+"higgsCombineCombExp.MultiDimFit.mH125.root", "Combined Exp.", 1, nullptr});
+  scans.push_back({dir+"higgsCombineVBFObs.MultiDimFit.mH125.root", "VBF ", 38, nullptr});
+  scans.push_back({dir+"higgsCombineVBFExp.MultiDimFit.mH125.root", "VBF Exp.", 38, nullptr});
+  scans.push_back({dir+"higgsCombineZHObs.MultiDimFit.mH125.root", "ZH ", 3, nullptr});
+  scans.push_back({dir+"higgsCombineZHExp.MultiDimFit.mH125.root", "ZH Exp.", 3, nullptr});
+  scans.push_back({dir+"higgsCombineExoObs.MultiDimFit.mH125.root", "Monojet+V(had)H ", 4, nullptr});
+  scans.push_back({dir+"higgsCombineExoExp.MultiDimFit.mH125.root", "Monojet+V(had)H Exp.", 4, nullptr});
   TCanvas c1("canvas","canvas");
 
   std::vector<TLine *> lines;
 
 
-  TLegend *leg = new TLegend(0.65,0.75,0.9,0.9,"","brNDC");
+  TLegend *leg = new TLegend(0.6,0.65,0.9,0.9,"","brNDC");
 
   unsigned counter = 0;
   for (auto & sc : scans) {
@@ -194,21 +199,21 @@ int main() {
     double best1 = 0.0;
     TString res;
     sc.gr = new TGraph(ExtractGraph(t1, best1));
-    if(counter==1){
+    if(counter==0){
       auto x1 = GetCrossings(*(sc.gr), 1.0);
       auto x2 = GetCrossings(*(sc.gr), 3.84);
       lines.push_back(new TLine(x1[0],0,x1[0],1.0));
-      lines.back()->SetLineColor(2);
-      lines.back()->SetLineWidth(2);
+      lines.back()->SetLineColor(sc.color);
+      lines.back()->SetLineWidth(sc.color);
       lines.push_back(new TLine(x2[0],0,x2[0],3.84));
-      lines.back()->SetLineColor(2);
+      lines.back()->SetLineColor(sc.color);
       lines.back()->SetLineWidth(2);
     }
     sc.gr->SetLineColor(sc.color);
     sc.gr->SetLineWidth(3);
     sc.gr->Draw(counter ? "LSAME" : "AL");
     TString leg_text = "#splitline{"+sc.label+"}{"+res+"}";
-    leg->AddEntry(sc.gr, leg_text, "L");
+    if(counter%2==0) leg->AddEntry(sc.gr, leg_text, "L");
     counter++;
   }
   // c1.cd();
@@ -228,8 +233,9 @@ int main() {
   scans[0].gr->GetXaxis()->SetLabelOffset(0.02);
   scans[0].gr->GetYaxis()->SetLabelOffset(0.02);
   scans[0].gr->GetYaxis()->SetTitle("-2 #Delta ln L");
-  scans[0].gr->SetLineStyle(2);
-  scans[0].gr->SetLineColor(1);
+  for(unsigned iScan=0;iScan<scans.size();iScan++){
+    if(iScan%2!=0) scans[iScan].gr->SetLineStyle(2);
+  }
   leg->SetBorderSize(1);
   leg->SetTextFont(42);
   leg->SetTextSize(0.03);
@@ -262,6 +268,6 @@ int main() {
 
 
   c1.Update();
-  c1.SaveAs("scan.pdf");
+  c1.SaveAs("scanallchannels.pdf");
   return 0;
 }

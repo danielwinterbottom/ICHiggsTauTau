@@ -27,18 +27,18 @@
 int SashaCheckEvents(){
 
   //  double btagthreshold=0.679;
-  double btagthreshold=0.783;
+  double btagthreshold=0.898;
   double centraljetthreshold=30;
   double forwardjetthreshold=30;
   bool cutforward=false;
 
-  std::string lMuCut = "mu1_pt>25&&mu2_pt>25";
-  //std::string lCentralCut="((jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_csv>"+boost::lexical_cast<std::string>(btagthreshold)+")";
-  //std::string lCentralCut="((jet1_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_csv>"+boost::lexical_cast<std::string>(btagthreshold)+"&&!((jet2_eta<2.4&&jet2_eta>-2.4)&&jet2_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet3_eta<2.4&&jet3_eta>-2.4)&&jet3_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet4_eta<2.4&&jet4_eta>-2.4)&&jet4_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"))||(jet2_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet2_eta<2.4&&jet2_eta>-2.4)&&jet2_csv>"+boost::lexical_cast<std::string>(btagthreshold)+"&&!((jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet3_eta<2.4&&jet3_eta>-2.4)&&jet3_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet4_eta<2.4&&jet4_eta>-2.4)&&jet4_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"))||(jet3_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet3_eta<2.4&&jet3_eta>-2.4)&&jet3_csv>"+boost::lexical_cast<std::string>(btagthreshold)+"&&!((jet2_eta<2.4&&jet2_eta>-2.4)&&jet2_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet4_eta<2.4&&jet4_eta>-2.4)&&jet4_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")))";
-  std::string lCentralCut="((jet1_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_csv>"+boost::lexical_cast<std::string>(btagthreshold)+")||(jet2_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet2_eta<2.4&&jet2_eta>-2.4)&&jet2_csv>"+boost::lexical_cast<std::string>(btagthreshold)+")||(jet3_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet3_eta<2.4&&jet3_eta>-2.4)&&jet3_csv>"+boost::lexical_cast<std::string>(btagthreshold)+"))";
-  std::string lForwardCut="(((jet1_eta>=2.4||jet1_eta<=-2.4)&&jet1_pt>"+boost::lexical_cast<std::string>(forwardjetthreshold)+")||((jet2_eta>=2.4||jet2_eta<=-2.4)&&jet2_pt>"+boost::lexical_cast<std::string>(forwardjetthreshold)+")||((jet3_eta>=2.4||jet3_eta<=-2.4)&&jet3_pt>"+boost::lexical_cast<std::string>(forwardjetthreshold)+")||((jet4_eta>=2.4||jet4_eta<=-2.4)&&jet4_pt>"+boost::lexical_cast<std::string>(forwardjetthreshold)+"))";
-  unsigned nV=1;
-  std::string histName = "m_mumu";
+  // std::string lMuCut = "mu1_pt>25&&mu2_pt>25";
+  // //std::string lCentralCut="((jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_csv>"+boost::lexical_cast<std::string>(btagthreshold)+")";
+  // //std::string lCentralCut="((jet1_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_csv>"+boost::lexical_cast<std::string>(btagthreshold)+"&&!((jet2_eta<2.4&&jet2_eta>-2.4)&&jet2_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet3_eta<2.4&&jet3_eta>-2.4)&&jet3_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet4_eta<2.4&&jet4_eta>-2.4)&&jet4_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"))||(jet2_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet2_eta<2.4&&jet2_eta>-2.4)&&jet2_csv>"+boost::lexical_cast<std::string>(btagthreshold)+"&&!((jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet3_eta<2.4&&jet3_eta>-2.4)&&jet3_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet4_eta<2.4&&jet4_eta>-2.4)&&jet4_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"))||(jet3_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet3_eta<2.4&&jet3_eta>-2.4)&&jet3_csv>"+boost::lexical_cast<std::string>(btagthreshold)+"&&!((jet2_eta<2.4&&jet2_eta>-2.4)&&jet2_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")&&!((jet4_eta<2.4&&jet4_eta>-2.4)&&jet4_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+")))";
+  // std::string lCentralCut="((jet1_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet1_eta<2.4&&jet1_eta>-2.4)&&jet1_csv>"+boost::lexical_cast<std::string>(btagthreshold)+")||(jet2_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet2_eta<2.4&&jet2_eta>-2.4)&&jet2_csv>"+boost::lexical_cast<std::string>(btagthreshold)+")||(jet3_pt>"+boost::lexical_cast<std::string>(centraljetthreshold)+"&&(jet3_eta<2.4&&jet3_eta>-2.4)&&jet3_csv>"+boost::lexical_cast<std::string>(btagthreshold)+"))";
+  // std::string lForwardCut="(((jet1_eta>=2.4||jet1_eta<=-2.4)&&jet1_pt>"+boost::lexical_cast<std::string>(forwardjetthreshold)+")||((jet2_eta>=2.4||jet2_eta<=-2.4)&&jet2_pt>"+boost::lexical_cast<std::string>(forwardjetthreshold)+")||((jet3_eta>=2.4||jet3_eta<=-2.4)&&jet3_pt>"+boost::lexical_cast<std::string>(forwardjetthreshold)+")||((jet4_eta>=2.4||jet4_eta<=-2.4)&&jet4_pt>"+boost::lexical_cast<std::string>(forwardjetthreshold)+"))";
+  //  unsigned nV=1;
+  //  std::string histName = "m_mumu";
 
   std::vector<unsigned> run;
   std::vector<unsigned> lumi;
@@ -46,32 +46,37 @@ int SashaCheckEvents(){
   std::vector<double> mmumu;
 
   std::ifstream infile("eventlist.txt");
+  std::ofstream outfile;
+  outfile.open("sasahaevents.txt");
+
   unsigned run_,lumi_,event_;
   double mmumu_;
+  std::cout<<"Looking for the following events:"<<std::endl;
   while (infile >> run_ >> event_ >> lumi_ >> mmumu_){
     run.push_back(run_);
     lumi.push_back(lumi_);
     event.push_back(event_);
     mmumu.push_back(mmumu_);
-    std::cout<<run_<<" "<<lumi_<<" "<<event_<<" "<<mmumu_<<std::endl;
+    std::cout<<"  "<<run_<<" "<<lumi_<<" "<<event_<<" "<<mmumu_<<std::endl;
   }
 
 
   std::vector<std::string> files;
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012A-22Jan2013-v1.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split1.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split2.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split3.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split4.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split1.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split2.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split3.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split4.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split1.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split2.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split3.root");
-  files.push_back("output_lighttree_singlemuforsashacrosschecksashaonly_150715/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split4.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012A-22Jan2013-v1.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split1.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split2.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split3.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split4.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split1.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split2.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split3.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split4.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split1.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split2.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split3.root");
+  files.push_back("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split4.root");
 
+  std::cout<<"Searching:"<<std::endl;
   for(unsigned iFile=0;iFile<files.size();iFile++){
     std::cout<<files[iFile]<<std::endl;
     TFile* fS = TFile::Open(files[iFile].c_str());
@@ -99,6 +104,7 @@ int SashaCheckEvents(){
 	  if(boost::lexical_cast<unsigned>(eventnum->PrintValue(0,0,"u"))==event[irun]){
 	    if(boost::lexical_cast<unsigned>(lumisec->PrintValue(0,0,"u"))==lumi[irun]){
 	      std::cout<<"Run: "<<run[irun]<<", Lumi: "<<lumi[irun]<<", Event: "<<event[irun]<<std::endl;
+	      outfile<<files[iFile]<<" "<<iEvent<<std::endl;
 	    }
 	  }
 	}
@@ -106,6 +112,8 @@ int SashaCheckEvents(){
     }
   }
 
+  outfile.close();
+  
   // TH1F *htmp = new TH1F("htmp","",35,0,70);
 
   // TCanvas *myc;

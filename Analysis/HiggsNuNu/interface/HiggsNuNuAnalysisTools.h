@@ -5,6 +5,7 @@
 #include "TH1.h"
 #include "TH3.h"
 #include "TTree.h"
+#include "TPad.h"
 #include "Utilities/interface/SimpleParamParser.h"
 #include "Utilities/interface/FnRootTools.h"
 
@@ -17,6 +18,8 @@
 
   
 namespace ic {
+  void DrawCMSLogoTest(TPad* pad, TString cmsText, TString extraText, int iPosX,float relPosX, float relPosY, float relExtraDY);
+  void DrawCMSLogoTest(TPad* pad, TString cmsText, TString extraText, int iPosX);
   double Integral(TH1F const* hist);
   double Integral(TH1F const* hist, int binmin, int binmax);
   double Integral(TH3F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax);
