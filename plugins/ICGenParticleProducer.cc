@@ -17,12 +17,14 @@ ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
       store_mothers_(config.getParameter<bool>("includeMothers")),
-      store_daughters_(config.getParameter<bool>("includeDaughters")) {
+      store_daughters_(config.getParameter<bool>("includeDaughters")),
+      store_statusFlags_(config.getParameter<bool>("includeStatusFlags")){
   particles_ = new std::vector<ic::GenParticle>();
 
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, store_mothers_, "includeMothers");
   PrintOptional(1, store_daughters_, "includeDaughters");
+  PrintOptional(1, store_statusFlags_, "includeStatusFlags");
 }
 
 ICGenParticleProducer::~ICGenParticleProducer() { delete particles_; }
@@ -48,6 +50,9 @@ void ICGenParticleProducer::produce(edm::Event& event,
     dest.set_index(static_cast<int>((parts_handle->refAt(i).key())));
     dest.set_pdgid(src.pdgId());
     dest.set_status(src.status());
+    if (store_statusFlags_){
+      dest.set_statusFlags(src.statusFlags());
+    }
     if (store_mothers_) {
       std::vector<int> mothers(src.motherRefVector().size(), 0);
       for (unsigned j = 0; j < src.motherRefVector().size(); ++j) {

@@ -5,6 +5,8 @@
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
+#include "DataFormats/HepMCCandidate/interface/GenStatusFlags.h"
+
 
 namespace ic {
 
@@ -21,6 +23,7 @@ class GenParticle : public Candidate {
   GenParticle();
   virtual ~GenParticle();
   virtual void Print() const;
+
 
   /// @name Properties
   /**@{*/
@@ -41,6 +44,9 @@ class GenParticle : public Candidate {
   /// A vector of ic::GenParticle::index() values that identify the daughter
   /// particles
   inline std::vector<int> const& daughters() const { return daughters_; }
+
+  /// A genstatusflags object to give information about the production of the particle
+  inline reco::GenStatusFlags const& statusFlags() const { return statusFlags_; }
   /**@}*/
 
   /// @name Setters
@@ -63,6 +69,11 @@ class GenParticle : public Candidate {
   inline void set_daughters(std::vector<int> const& daughters) {
     daughters_ = daughters;
   }
+
+  /// @copybrief statusFlags()
+  inline void set_statusFlags(reco::GenStatusFlags const& statusFlags) {
+    statusFlags_ = statusFlags;
+  }
   /**@}*/
 
  private:
@@ -71,10 +82,12 @@ class GenParticle : public Candidate {
   int status_;
   std::vector<int> mothers_;
   std::vector<int> daughters_;
+  reco::GenStatusFlags statusFlags_;
+
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(GenParticle, 2);
+  ClassDef(GenParticle, 3);
  #endif
 };
 
