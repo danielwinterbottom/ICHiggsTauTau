@@ -1027,7 +1027,12 @@ namespace ic {
         ((muon->dr03_tk_sum_pt() + 
           muon->dr03_ecal_rechit_sum_et() + 
           muon->dr03_hcal_tower_sum_et()) 
-        / muon->pt()) < 0.15);
+	 / muon->pt()) < 0.15);
+    return isoCut;
+  }
+
+  bool MuonTkIso(Muon const* muon) {
+    bool isoCut = (((muon->dr03_tk_sum_pt())/muon->pt())<0.1); 
     return isoCut;
   }
   

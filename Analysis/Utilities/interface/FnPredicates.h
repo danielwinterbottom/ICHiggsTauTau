@@ -197,6 +197,7 @@ namespace ic {
   bool MuonTight(Muon const* muon);
   bool MuonMedium(Muon const* muon);
   bool MuonIso(Muon const* muon);
+  bool MuonTkIso(Muon const* muon);
 
 
   template<class T, class U>
