@@ -1,6 +1,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICGenParticleProducer.hh"
 #include <string>
 #include <vector>
+#include <bitset>
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -12,6 +13,10 @@
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+
+#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 4
+#include "DataFormats/HepMCCandidate/interface/GenStatusFlags.h"
+#endif
 
 ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -50,9 +55,22 @@ void ICGenParticleProducer::produce(edm::Event& event,
     dest.set_index(static_cast<int>((parts_handle->refAt(i).key())));
     dest.set_pdgid(src.pdgId());
     dest.set_status(src.status());
+#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 4
     if (store_statusFlags_){
-      dest.set_statusFlags(src.statusFlags());
+      reco::GenStatusFlags statusflags = src.statusFlags();
+      if(statusflags.flags_.size()!=15){
+	throw cms::Exception("OptionNotSupported")<<"size of status flags bitset is "<<statusflags.flags_.size()<<" which is different to what was expected\n";
+      }
+      else{
+	std::vector<bool> statusflags_;
+	for(unsigned iFlag=0;iFlag<statusflags.flags_.size();iFlag++){
+	  statusflags_.push_back(statusflags.flags_[iFlag]);
+	}
+	dest.set_statusFlags(statusflags_);
+      }
     }
+#endif
+
     if (store_mothers_) {
       std::vector<int> mothers(src.motherRefVector().size(), 0);
       for (unsigned j = 0; j < src.motherRefVector().size(); ++j) {
@@ -72,6 +90,12 @@ void ICGenParticleProducer::produce(edm::Event& event,
 
 void ICGenParticleProducer::beginJob() {
   ic::StaticTree::tree_->Branch(branch_.c_str(), &particles_);
+#if !(CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 4)
+  if(store_statusFlags_){
+    throw cms::Exception("OptionNotSupported")<<"status flags not supported for CMSSW versions before 7_4_X\n";
+  }
+#endif
+
 }
 
 void ICGenParticleProducer::endJob() {}

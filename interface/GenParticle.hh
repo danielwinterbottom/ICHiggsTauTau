@@ -5,10 +5,31 @@
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
-#include "DataFormats/HepMCCandidate/interface/GenStatusFlags.h"
 
 
 namespace ic {
+
+/**
+ * @brief Stores the order of the gen status flags stored inside the ic::GenParticle
+ */
+enum GenStatusBits {
+  IsPrompt = 0,
+  IsDecayedLeptonHadron,
+  IsTauDecayProduct,
+  IsPromptTauDecayProduct,
+  IsDirectTauDecayProduct,
+  IsDirectPromptTauDecayProduct,
+  IsDirectHadronDecayProduct,
+  IsHardProcess,
+  FromHardProcess,
+  IsHardProcessTauDecayProduct,
+  IsDirectHardProcessTauDecayProduct,
+  FromHardProcessBeforeFSR,
+  IsFirstCopy,
+  IsLastCopy,
+  IsLastCopyBeforeFSR
+};
+
 
 /**
  * @brief Stores the basic properties of generator-level particles as well as
@@ -23,7 +44,6 @@ class GenParticle : public Candidate {
   GenParticle();
   virtual ~GenParticle();
   virtual void Print() const;
-
 
   /// @name Properties
   /**@{*/
@@ -46,7 +66,7 @@ class GenParticle : public Candidate {
   inline std::vector<int> const& daughters() const { return daughters_; }
 
   /// A genstatusflags object to give information about the production of the particle
-  inline reco::GenStatusFlags const& statusFlags() const { return statusFlags_; }
+  inline std::vector<bool> const& statusFlags() const { return statusFlags_; }
   /**@}*/
 
   /// @name Setters
@@ -71,7 +91,7 @@ class GenParticle : public Candidate {
   }
 
   /// @copybrief statusFlags()
-  inline void set_statusFlags(reco::GenStatusFlags const& statusFlags) {
+  inline void set_statusFlags(std::vector<bool> const& statusFlags) {
     statusFlags_ = statusFlags;
   }
   /**@}*/
@@ -82,12 +102,11 @@ class GenParticle : public Candidate {
   int status_;
   std::vector<int> mothers_;
   std::vector<int> daughters_;
-  reco::GenStatusFlags statusFlags_;
-
+  std::vector<bool> statusFlags_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(GenParticle, 3);
+  ClassDef(GenParticle, 4);
  #endif
 };
 
