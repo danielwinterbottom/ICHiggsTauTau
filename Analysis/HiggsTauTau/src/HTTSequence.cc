@@ -25,6 +25,7 @@
 #include "HiggsTauTau/interface/HTTCategories.h"
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
+#include "HiggsTauTau/interface/SVFitTestRun2.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
@@ -688,7 +689,7 @@ if(channel != channel::wmnu) {
    }
 
 
-
+ if(era_type != era::data_2015){
   BuildModule(SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
@@ -700,6 +701,21 @@ if(channel != channel::wmnu) {
     .set_met_label(met_label)
     .set_fullpath(svfit_folder)
     .set_MC(true));
+} 
+
+if(era_type == era::data_2015){
+  BuildModule(SVFitTestRun2("SVFitTestRun2")
+    .set_channel(channel)
+    .set_outname(svfit_override == "" ? output_name : svfit_override)
+    .set_run_mode(new_svfit_mode)
+    .set_fail_mode(1)
+    .set_require_inputs_match(false)
+    .set_split(7000)
+    .set_dilepton_label("ditau")
+    .set_met_label(met_label)
+    .set_fullpath(svfit_folder)
+    .set_MC(true));
+} 
 
 
 
