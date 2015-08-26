@@ -140,7 +140,7 @@ namespace ic {
     }
     else{
       result = jet->neutral_em_energy_frac()    < 0.90
-	&& n_pf>10
+	&& n_pf>10;
     }
     return result;
   }
