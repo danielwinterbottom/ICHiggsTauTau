@@ -13,6 +13,7 @@ var searchData=
   ['genparticle_2ecc',['GenParticle.cc',['../_gen_particle_8cc.html',1,'']]],
   ['genparticle_2ehh',['GenParticle.hh',['../_gen_particle_8hh.html',1,'']]],
   ['genparticlecollection',['GenParticleCollection',['../namespaceic.html#a50b50b1dc3d9ad061885a4f8045c02ee',1,'ic']]],
+  ['genstatusbits',['GenStatusBits',['../namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887',1,'ic']]],
   ['getaxishist',['GetAxisHist',['../_plotting_8h.html#aafd63f976dd4c5ae271062e0f91c2681',1,'Plotting.h']]],
   ['getbdiscriminator',['GetBDiscriminator',['../classic_1_1_jet.html#ae0d94cb7607a3d9ff3e7d22238798708',1,'ic::Jet']]],
   ['getcandidate',['GetCandidate',['../classic_1_1_composite_candidate.html#aef6c218d28d4aa39a906eabb2a96d51b',1,'ic::CompositeCandidate']]],

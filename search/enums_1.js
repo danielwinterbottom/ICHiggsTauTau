@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['pfflag',['PFFlag',['../namespaceic.html#a5d84c3c4907f6cb7f0a8f37d56f8a31e',1,'ic']]],
-  ['pftype',['PFType',['../namespaceic.html#a271a9a651d13961ab8c6e039f5552460',1,'ic']]]
+  ['mvatype',['MVAType',['../class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5f',1,'EGammaMvaEleEstimatorCSA14']]]
 ];

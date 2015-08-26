@@ -241,6 +241,29 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:ab64510d92d9a7fce1dd79813cfb4e887"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887">GenStatusBits</a> { <br />
+&#160;&#160;<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a6fd0712983a2951322db1b4ed8470c01">IsPrompt</a> = 0, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a2a78d60ad6d82b4f143cf5693641d932">IsDecayedLeptonHadron</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a2d72678c5ee3bcf48bebc2340e75e05d">IsTauDecayProduct</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887ad7cad1b997c44cf16866dcfe366f87b5">IsPromptTauDecayProduct</a>, 
+<br />
+&#160;&#160;<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a3175934a5f3efda6ced39b83ed95ea73">IsDirectTauDecayProduct</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887af66461b6714f33c00dbce907febadc95">IsDirectPromptTauDecayProduct</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a9f6b816a165060c6681a21cda9c691e1">IsDirectHadronDecayProduct</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887ade6e97f33cd3b3048ba2274ab1ea8282">IsHardProcess</a>, 
+<br />
+&#160;&#160;<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a7e01fd6fd9cf79294b159ee2c0962deb">FromHardProcess</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a1b63509a2418130f20d4e738d191a4d0">IsHardProcessTauDecayProduct</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887af0e5c403d25852ae08b727fdefdc878b">IsDirectHardProcessTauDecayProduct</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a0204d69160ab8c9e0c0b7ecf77229be8">FromHardProcessBeforeFSR</a>, 
+<br />
+&#160;&#160;<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a12f8d2da4e9eb8148dd120c35d88a96f">IsFirstCopy</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a46699a03dca556e4fe15cfe9c3643d54">IsLastCopy</a>, 
+<a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887ac68e741b467813ba09e490b47c0bf004">IsLastCopyBeforeFSR</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:ab64510d92d9a7fce1dd79813cfb4e887"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the order of the gen status flags stored inside the <a class="el" href="classic_1_1_gen_particle.html" title="Stores the basic properties of generator-level particles as well as mother-daughter relations with ot...">ic::GenParticle</a>.  <a href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887">More...</a><br /></td></tr>
+<tr class="separator:ab64510d92d9a7fce1dd79813cfb4e887"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a271a9a651d13961ab8c6e039f5552460"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460">PFType</a> { <br />
 &#160;&#160;<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ab8c1c699ede56da9d6f8966a10d8f109">X</a>, 
 <a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460a0a448ee42ac858c13f448cf0370dffaa">h</a>, 
@@ -368,7 +391,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_gen_particle_8hh_source.html#l00081">81</a> of file <a class="el" href="_gen_particle_8hh_source.html">GenParticle.hh</a>.</p>
+<p>Definition at line <a class="el" href="_gen_particle_8hh_source.html#l00113">113</a> of file <a class="el" href="_gen_particle_8hh_source.html">GenParticle.hh</a>.</p>
 
 </div>
 </div>
@@ -598,6 +621,54 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887">ic::GenStatusBits</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Stores the order of the gen status flags stored inside the <a class="el" href="classic_1_1_gen_particle.html" title="Stores the basic properties of generator-level particles as well as mother-daughter relations with ot...">ic::GenParticle</a>. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a6fd0712983a2951322db1b4ed8470c01"></a>IsPrompt&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a2a78d60ad6d82b4f143cf5693641d932"></a>IsDecayedLeptonHadron&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a2d72678c5ee3bcf48bebc2340e75e05d"></a>IsTauDecayProduct&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887ad7cad1b997c44cf16866dcfe366f87b5"></a>IsPromptTauDecayProduct&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a3175934a5f3efda6ced39b83ed95ea73"></a>IsDirectTauDecayProduct&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887af66461b6714f33c00dbce907febadc95"></a>IsDirectPromptTauDecayProduct&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a9f6b816a165060c6681a21cda9c691e1"></a>IsDirectHadronDecayProduct&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887ade6e97f33cd3b3048ba2274ab1ea8282"></a>IsHardProcess&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a7e01fd6fd9cf79294b159ee2c0962deb"></a>FromHardProcess&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a1b63509a2418130f20d4e738d191a4d0"></a>IsHardProcessTauDecayProduct&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887af0e5c403d25852ae08b727fdefdc878b"></a>IsDirectHardProcessTauDecayProduct&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a0204d69160ab8c9e0c0b7ecf77229be8"></a>FromHardProcessBeforeFSR&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a12f8d2da4e9eb8148dd120c35d88a96f"></a>IsFirstCopy&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887a46699a03dca556e4fe15cfe9c3643d54"></a>IsLastCopy&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ab64510d92d9a7fce1dd79813cfb4e887ac68e741b467813ba09e490b47c0bf004"></a>IsLastCopyBeforeFSR&#160;</td><td class="fielddoc">
+</td></tr>
+</table>
+
+<p>Definition at line <a class="el" href="_gen_particle_8hh_source.html#l00015">15</a> of file <a class="el" href="_gen_particle_8hh_source.html">GenParticle.hh</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a271a9a651d13961ab8c6e039f5552460"></a>
 <div class="memitem">
 <div class="memproto">

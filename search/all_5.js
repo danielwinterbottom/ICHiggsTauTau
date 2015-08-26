@@ -17,5 +17,7 @@ var searchData=
   ['flags',['flags',['../classic_1_1_p_f_candidate.html#a938012d864dec6f3e83931683fed0bef',1,'ic::PFCandidate']]],
   ['flavour',['flavour',['../classic_1_1_gen_jet.html#aa3e68acb1e21edc16640b9439d9d467f',1,'ic::GenJet']]],
   ['frbx',['fRBX',['../classic_1_1_calo_jet.html#a6355395c873380ce1a4e9baae58fa4c4',1,'ic::CaloJet']]],
+  ['fromhardprocess',['FromHardProcess',['../namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a7e01fd6fd9cf79294b159ee2c0962deb',1,'ic']]],
+  ['fromhardprocessbeforefsr',['FromHardProcessBeforeFSR',['../namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a0204d69160ab8c9e0c0b7ecf77229be8',1,'ic']]],
   ['full5x5_5fsigma_5fietaieta',['full5x5_sigma_IetaIeta',['../classic_1_1_electron.html#a60f534de70672baebbfe573b4505e980',1,'ic::Electron']]]
 ];
