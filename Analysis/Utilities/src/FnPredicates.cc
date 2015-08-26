@@ -122,8 +122,9 @@ namespace ic {
     bool result = false;
 
     double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
+    int n_pf = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
 
-    if (eta < 2.4) {
+    if (eta <= 2.4) {
       result = neutralFrac   < 0.99
       && jet->neutral_em_energy_frac()    < 0.99
             && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
@@ -131,11 +132,15 @@ namespace ic {
             && jet->charged_had_energy_frac()   > 0.0
             && jet->charged_multiplicity()      > 0
             && jet->charged_em_energy_frac()    < 0.99;
-    } else {
+    } else if(eta<=3.0){
       result = neutralFrac   < 0.99
             && jet->neutral_em_energy_frac()    < 0.99
             && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
             && jet->muon_energy_frac() < 0.8;
+    }
+    else{
+      result = jet->neutral_em_energy_frac()    < 0.90
+	&& n_pf>10
     }
     return result;
   }
