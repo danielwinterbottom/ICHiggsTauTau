@@ -3,6 +3,7 @@
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 #include "boost/lexical_cast.hpp"
 #include <boost/algorithm/string.hpp>
 #include "HiggsTauTau/interface/SVFitServiceRun2.h"
@@ -29,6 +30,8 @@ namespace ic {
     run_mode_ = 0;
     fail_mode_ = 0;
     require_inputs_match_ = true;
+    dm1_ = -1;
+    dm2_ = -1;
 
     file_counter_ = 0;
     event_counter_ = 0;
@@ -128,8 +131,9 @@ int SVFitTestRun2::Execute(TreeEvent *event) {
   Candidate c1 = *(dilepton.at(0)->GetCandidate("lepton1"));
   Candidate c2 = *(dilepton.at(0)->GetCandidate("lepton2"));
  //Temporarily extract vector
-  std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
-  Met met = *(met_vec.at(0));
+  //std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+//  Met met = *(met_vec.at(0));
+  Met met = *(event->GetPtr<Met>(met_label_));
   
   //std::size_t event_hash = RunLumiEvtHash(eventInfo->run(), eventInfo->lumi_block(), eventInfo->event());
   std::size_t objects_hash = ObjectsHash(&c1, &c2, &met);
@@ -151,11 +155,21 @@ int SVFitTestRun2::Execute(TreeEvent *event) {
       out_tree_->Branch("objects_hash", &out_objects_hash_, "objects_hash/l");
       out_tree_->Branch("decay_mode", &decay_mode_);
       out_tree_->Branch("lepton1", &out_cand1_);
+      out_tree_->Branch("dm1", &dm1_, "dm1/I");
       out_tree_->Branch("lepton2", &out_cand2_);
+      out_tree_->Branch("dm2", &dm2_, "dm2/I");
       out_tree_->Branch("met", &out_met_);
       ++file_counter_;
     }
     //out_event_hash_ = event_hash;
+    if(channel_==channel::tt){
+     Tau * tau1 = dynamic_cast<Tau *>(dilepton.at(0)->GetCandidate("lepton1"));
+     dm1_ = tau1->decay_mode();
+     }
+    if(channel_==channel::tt || channel_==channel::et||channel_==channel::mt){
+     Tau * tau2 = dynamic_cast<Tau *>(dilepton.at(0)->GetCandidate("lepton2"));
+     dm2_ = tau2->decay_mode();
+    }
     out_event_ = eventInfo->event();
     out_lumi_ = eventInfo->lumi_block();
     out_run_ = eventInfo->run();
@@ -214,13 +228,13 @@ int SVFitTestRun2::Execute(TreeEvent *event) {
       } else {
         std::cout << "Calculating mass on-the-fly" << std::endl;
         if (decay_mode_ == 0) {
-          event->Add("svfitMass", SVFitServiceRun2::SVFitMassMuHad(&c1, &c2, &met, MC_));
+          event->Add("svfitMass", SVFitServiceRun2::SVFitMassMuHad(&c1, &c2, dm2_, &met, MC_));
         } else if (decay_mode_ == 1){
           event->Add("svfitMass", SVFitServiceRun2::SVFitMassEleMu(&c1, &c2, &met, MC_));
         } else if (decay_mode_ == 2){
-          event->Add("svfitMass", SVFitServiceRun2::SVFitMassEleHad(&c1, &c2, &met, MC_));
+          event->Add("svfitMass", SVFitServiceRun2::SVFitMassEleHad(&c1, &c2, dm2_, &met, MC_));
         } else if (decay_mode_ == 3){
-          event->Add("svfitMass", SVFitServiceRun2::SVFitMassHadHad(&c1, &c2, &met, MC_));
+          event->Add("svfitMass", SVFitServiceRun2::SVFitMassHadHad(&c1, dm1_, &c2, dm2_, &met, MC_));
         }
       }
     }

@@ -712,7 +712,7 @@ if(era_type == era::data_2015){
     .set_require_inputs_match(false)
     .set_split(7000)
     .set_dilepton_label("ditau")
-    .set_met_label(met_label)
+    .set_met_label("pfMVAMet")
     .set_fullpath(svfit_folder)
     .set_MC(true));
 } 

@@ -44,7 +44,9 @@ class SVFitTestRun2 : public ModuleBase {
     uint64_t out_run_;
     uint64_t out_objects_hash_;
     Candidate *out_cand1_;
+    int dm1_ = -1;
     Candidate *out_cand2_;
+    int dm2_ = -1;
     Met *out_met_;
 
     // These variables for reading in svfit output
