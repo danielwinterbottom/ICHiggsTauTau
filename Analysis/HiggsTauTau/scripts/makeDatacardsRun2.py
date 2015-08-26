@@ -86,7 +86,7 @@ extra_channel = {
   "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" ',
   "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" ',
   "tt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" ',
-  "em" : ' --fix_empty_bins="Fakes"'
+  "em" : ' --fix_empty_bins="QCD"'
 }
 
 #################################################################
@@ -96,7 +96,7 @@ if options.scheme == 'run2_mssm':
 #  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300]"
   scheme_et = [
-    ("9",   "inclusive",    "inclusive",  BINS_FINE, '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ""),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
@@ -104,7 +104,7 @@ if options.scheme == 'run2_mssm':
 #    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --set_alias="w_shape_os:1"')
   ]
   scheme_mt = [
-    ("9",   "inclusive",    "inclusive",  BINS_FINE,  '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '')
 #    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
@@ -112,7 +112,7 @@ if options.scheme == 'run2_mssm':
 #    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_tt = [
-    ("9",   "inclusive",    "inclusive",  BINS_FINE,  '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '')
 #    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
@@ -120,7 +120,7 @@ if options.scheme == 'run2_mssm':
 #    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_em = [
-    ("9",   "inclusive",    "inclusive",  BINS_FINE, '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, (
