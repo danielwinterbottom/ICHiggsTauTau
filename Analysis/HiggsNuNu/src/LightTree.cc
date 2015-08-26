@@ -857,7 +857,7 @@ namespace ic {
       if(!ignoreLeptons_){
 	if(!do_promptskim_){
 	  if(!do_noskim_){
-	    if (metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
+	    if (jet2_pt_>40&& dijet_M_ > 600 &&  dijet_deta_>3.6){
 	      //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
 	      outputTree_->Fill();
 	      ++processed;

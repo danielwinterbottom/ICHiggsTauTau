@@ -67,7 +67,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(3000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -82,7 +82,9 @@ process.options   = cms.untracked.PSet(
 if not isData:                         
   process.source = cms.Source("PoolSource", fileNames =
        #                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
-                              cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/1E0D8712-D722-E511-B7CF-008CFA051614.root')
+                              #cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/048FB1EE-33FD-E411-A2BA-0025905A6094.root')
+                              cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/WW_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/10000/006ABB57-1207-E511-A99E-0002C94CD150.root')
+                              #cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/1E0D8712-D722-E511-B7CF-008CFA051614.root')
                               
                               )
 else:
@@ -834,7 +836,7 @@ process.icGenSequence = cms.Sequence()
 
 #!!CHECK KEEPS ALL TOPS!!
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.icPrunedGenParticles = cms.EDProducer("ICGenParticlePruner",
+process.icPrunedGenParticles = cms.EDProducer("GenParticlePruner",
   src = cms.InputTag("prunedGenParticles","","PAT"),
   select = cms.vstring(
     "drop  *",

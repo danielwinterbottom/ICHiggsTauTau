@@ -23,9 +23,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfig.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_expandtopcatmumuonly
+JOBDIRPREFIX=jobs_sigreg
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_expandtopcatmumuonly
+OUTPUTPREFIX=output_sigreg
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -62,11 +62,11 @@ echo "Using job-submission: " $JOBSUBMIT
 
 
 echo "JOB name = $JOB"
-for syst in "" JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
+for syst in "" #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
   do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in nunu munu enu taunu mumu top #qcd
+  for channels in nunu #munu enu taunu mumu top #qcd
     do
     JOB=$channels
     OUTPUTNAME="$channels.root"

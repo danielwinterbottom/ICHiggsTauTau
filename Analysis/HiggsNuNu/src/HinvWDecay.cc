@@ -36,12 +36,155 @@ namespace ic {
     bool debug = false;
 
     if(do_newstatuscodes_){
-      //!!EVENTUALLY UPDATE TO TAKE NEW STATUS FLAGS
+      if(do_statusflags_){
+	//!!EVENTUALLY UPDATE TO TAKE NEW STATUS FLAGS
+	bool iswenu=false;
+	bool iswmunu=false;
+	bool iswtaunu=false;
+	std::vector<GenParticle*> & parts = event->GetPtrVec<GenParticle>("genParticles");
+	int npromptele=0;
+	int npromptmu=0;
+	int ntaudecele=0;
+	int ntaudecmu=0;
+	int ntaudechad=0;
+	std::vector<std::size_t> tauids;
+	for (unsigned iGenPart = 0; iGenPart < parts.size(); ++iGenPart) {//Loop over gen particles
+	  int id = parts[iGenPart]->pdgid();
+	  int status = parts[iGenPart]->status();
+	  //std::cout<<"  "<<parts[iGenPart]->id()<<"  "<<id<<"  "<<status<<std::endl;
+	  std::vector<bool> flags=parts[iGenPart]->statusFlags();
+	  if(flags[IsPrompt]){
+	    //find prompt final state ele or mu 
+	    if(status==1){
+	      if(abs(id)==11)npromptele++;
+	      if(abs(id)==13)npromptmu++;
+	    }
+	    //if tau go through to find what it decayed to
+	    if(abs(id)==15){
+	      //make sure this tau hasn't been considered in the decay chain of a previous tau
+	      bool notconsidered=true;
+	      for(unsigned itau=0;itau<tauids.size();itau++){
+		if(parts[iGenPart]->id()==tauids[itau])notconsidered=false;
+	      }
+	      tauids.push_back(parts[iGenPart]->id());
+	      if(notconsidered){
+		bool notauintaudecay=false;
+		GenParticle* tauptr=parts[iGenPart];//Make pointer to tau updated for each time tau decays in loop below
+		while(!notauintaudecay){//Loop through tau decays until now tau found
+		  bool founde=false;
+		  bool foundmu=false;
+		  bool foundtau=false;
+		  
+		  std::vector<GenParticle*> taudaughters=ExtractDaughters(tauptr,parts);//Get tau daughters
+		  for(unsigned iTauDaughter=0;iTauDaughter<taudaughters.size();iTauDaughter++){//Loop over tau daughters
+		    int daughterid=taudaughters[iTauDaughter]->pdgid();
+		    if(abs(daughterid)==11){
+		      founde=true;
+		    }
+		    if(abs(daughterid)==13){
+		      foundmu=true;
+		    }
+		    if(abs(daughterid)==15){
+		      foundtau=true;
+		      tauids.push_back(taudaughters[iTauDaughter]->id());
+		      tauptr=taudaughters[iTauDaughter];//If find a tau update tauptr for next loop through
+		    }
+		  }
+		  //If the tau didn't decay to another tau (i.e. if decay wasn't just radiation) see what type of decay it was
+		  if(!foundtau){
+		    notauintaudecay=true;
+		    if(founde&&!foundmu){
+		      ntaudecele++;
+		    }
+		    if(!founde&&foundmu){
+		      ntaudecmu++;
+		    }
+		    if(!founde&&!foundmu){
+		      ntaudechad++;		    
+		    }
+		  }
+		}
+	      }
+	    }
+	  }
+	}
+	//check what leptons were present in the event, if only one easy to decide
+	bool oneleptononly=true;
+	if(npromptele>0){
+	  if(npromptele==1&&npromptmu==0&&ntaudecele==0&&ntaudecmu==0&&ntaudechad==0){
+	    iswenu=true;
+	  }
+	  else oneleptononly=false;
+	}
+	else if(npromptmu>0){
+	  if(npromptmu==1&&npromptele==0&&ntaudecele==0&&ntaudecmu==0&&ntaudechad==0){
+	    iswmunu=true;
+	  }
+	  else oneleptononly=false;
+	}
+	else if(ntaudecele>0){
+	  if(npromptmu==0&&npromptele==0&&ntaudecele==1&&ntaudecmu==0&&ntaudechad==0){
+	    iswenu=true;
+	  }
+	  else oneleptononly=false;
+	}
+	else if(ntaudecmu>0){
+	  if(npromptmu==0&&npromptele==0&&ntaudecele==0&&ntaudecmu==1&&ntaudechad==0){
+	    iswmunu=true;
+	  }
+	  else oneleptononly=false;
+	}
+	else if(ntaudechad>0){
+	  if(npromptmu==0&&npromptele==0&&ntaudecele==0&&ntaudecmu==0&&ntaudechad==1){
+	    iswtaunu=true;
+	  }
+	  else oneleptononly=false;
+	}
+	else std::cout<<"No, lepton found"<<std::endl;
+	//if more than one lepton pick the flavour with 
+	if(!oneleptononly){
+	  bool oddele=false;
+	  bool oddmu=false;
+	  bool oddtau=false;
+	  if((npromptele+ntaudecele)%2!=0)oddele=true;
+	  if((npromptmu+ntaudecmu)%2!=0)oddmu=true;
+	  if((ntaudechad)%2!=0)oddtau=true;
+	  if(oddele&&!(oddmu||oddtau)){
+	    iswenu=true;
+	  }
+	  else if(oddmu&&!(oddele||oddtau)){
+	    iswmunu=true;
+	  }
+	  else if(oddtau&&!(oddele||oddmu)){
+	    iswtaunu=true;
+	  }
+	  else{
+	    std::cout<<"!!either no odd numbers or more than one flavour with odd numbers"<<std::endl;
+	    std::cout<<"    "<<npromptele<<" prompt eles, "<<npromptmu<<" prompt mus, "<<ntaudecele<<" taudec eles, "<<ntaudecmu<<" taudec mus, "<<ntaudechad<<" hadronic taus"<<std::endl;
+	  }
+	}
+	if(flavour_==11){
+	  if(iswenu)return 0;
+	  else return 1;
+	}
+	else if(flavour_==13){
+	  if(iswmunu)return 0;
+	  else return 1;
+	}
+	else if(flavour_==15){
+	  if(iswtaunu)return 0;
+	  else return 1;
+	}
+	else std::cout<<"Flavour "<<flavour_<<" not supported exiting!"<<std::endl;
+	return 1;
+      }
+      else{
       bool iswenu=false;
       bool iswmunu=false;
       bool iswtaunu=false;
       std::vector<GenParticle*> & parts = event->GetPtrVec<GenParticle>("genParticles");
       if (isEmbedded_) parts = event->GetPtrVec<GenParticle>("genParticlesEmbedded");
+
 
       for (unsigned iGenPart = 0; iGenPart < parts.size(); ++iGenPart) {//Loop over gen particles
 	int id = parts[iGenPart]->pdgid();
@@ -50,7 +193,20 @@ namespace ic {
 	  if(id<0)isnegative=1;
 	  else isnegative=-1;
 	  
+	  //get final w
+	  bool nowinwdecay=false;
 	  std::vector<GenParticle*> daughters=ExtractDaughters(parts[iGenPart],parts);//Get list of daughters
+	  while(!nowinwdecay){
+	    bool foundw=false;
+	    for(unsigned iDaughter=0;iDaughter<daughters.size();iDaughter++){//Loop over daughters
+	      if(abs(daughters[iDaughter]->pdgid())==24){
+		foundw=true;
+		daughters=ExtractDaughters(daughters[iDaughter],parts);//Get list of daughters
+		break;
+	      }
+	    }
+	    if(!foundw)nowinwdecay=true;
+	  }
 	  for(unsigned iDaughter=0;iDaughter<daughters.size();iDaughter++){//Loop over daughters
 	    if(daughters[iDaughter]->pdgid()==11*isnegative){
 	      iswenu=true;
@@ -76,12 +232,13 @@ namespace ic {
 		  //Check if any leptons are found
 		  if(taudaughters[iTauDaughter]->pdgid()==11*isnegative){
 		    founde=true;
+		    countDecay_e_++;
 		    nssleps++;
 		    }
 		  if(taudaughters[iTauDaughter]->pdgid()==13*isnegative){
 		    foundmu=true;
+		    countDecay_mu_++;
 		    nssleps++;
-
 		  }
 		  if(taudaughters[iTauDaughter]->pdgid()==15*isnegative){
 		    foundtau=true;
@@ -110,6 +267,7 @@ namespace ic {
 		  }
 		  if(!founde&&!foundmu){
 		    iswtaunu=true;
+		    countRest_++;
 		  }
 		  if(founde&&foundmu){
 		    std::cout<<"Warning: Found tau decaying to e and mu!!"<<std::endl;
@@ -137,9 +295,17 @@ namespace ic {
 	for (unsigned iGenPart = 0; iGenPart < parts.size(); ++iGenPart) {//Loop over gen particles//!!
 	  int id = parts[iGenPart]->pdgid();
 	  std::cout<<"  "<<iGenPart<<"  "<<id<<"  "<<parts[iGenPart]->status()<<std::endl;
+	  if(abs(id)==24){
+	    std::cout<<"    "<<"W daughters id and status are:"<<std::endl;
+	    std::vector<GenParticle*> wdaughters=ExtractDaughters(parts[iGenPart],parts);//Get list of daughters
+	    for(unsigned iDaughter=0;iDaughter<wdaughters.size();iDaughter++){//Loop over daughters
+	      std::cout<<"     "<<wdaughters[iDaughter]->pdgid()<<" "<<wdaughters[iDaughter]->status()<<std::endl;
+	    }
+	  }
 	}
       }
       return 1;
+      }
     }
     else{
       bool debugele=false;
@@ -259,7 +425,7 @@ namespace ic {
       } 
       
       return 1;
-    }  
+    }
   }
     
   int HinvWDecay::PostAnalysis() {

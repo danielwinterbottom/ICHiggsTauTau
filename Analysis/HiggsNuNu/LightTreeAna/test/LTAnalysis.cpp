@@ -77,6 +77,8 @@ int main(int argc, char* argv[]){
   bool do_expandtopcat;
   bool do_logy;
   std::string closurebase;
+  bool run2;
+  bool do_mcbkg;
 
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
@@ -118,16 +120,18 @@ int main(int argc, char* argv[]){
     ("do_relaxedqcdranges",      po::value<bool>(&do_relaxedqcdranges)->default_value(false))
     ("do_promptsel",             po::value<bool>(&do_promptsel)->default_value(false))
     ("do_run1",                  po::value<bool>(&do_run1)->default_value(false))
-    ("do_mettrig",                  po::value<bool>(&do_mettrig)->default_value(false))
-    ("do_trigeff",                  po::value<bool>(&do_trigeff)->default_value(false))
-    ("do_nosigmcweight",                  po::value<bool>(&do_nosigmcweight)->default_value(false))
+    ("do_mettrig",               po::value<bool>(&do_mettrig)->default_value(false))
+    ("do_trigeff",               po::value<bool>(&do_trigeff)->default_value(false))
+    ("do_nosigmcweight",         po::value<bool>(&do_nosigmcweight)->default_value(false))
     ("do_singlemu",              po::value<bool>(&do_singlemu)->default_value(false))
     ("use_promptdata",           po::value<bool>(&use_promptdata)->default_value(false))
     ("do_plotmcqcd",             po::value<bool>(&do_plotmcqcd)->default_value(false))
     ("do_plotqcd",               po::value<bool>(&do_plotqcd)->default_value(false))
     ("do_logy",                  po::value<bool>(&do_logy)->default_value(false))
     ("blindcutreg",              po::value<bool>(&blindcutreg)->default_value(true))
-    ("runblindreg",              po::value<bool>(&runblindreg)->default_value(true));
+    ("runblindreg",              po::value<bool>(&runblindreg)->default_value(true))
+    ("run2",                     po::value<bool>(&run2)->default_value(false))
+    ("do_mcbkg",                 po::value<bool>(&do_mcbkg)->default_value(false));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -1451,16 +1455,17 @@ int main(int argc, char* argv[]){
       if(channel!="munu")elementvec.push_back(wtaunuele);
     }
     //  elementvec.push_back(zmumuele);
-    if(do_separatez&&channel=="mumu"){
-      elementvec.push_back(znunuewkele);
-      elementvec.push_back(znunuqcdele);
-    }
-    else{
-      if(channel!="enu"&&channel!="munu"&&channel!="taunu")elementvec.push_back(znunuele);
+    if(!run2){
+      if(do_separatez&&channel=="mumu"){
+	elementvec.push_back(znunuewkele);
+	elementvec.push_back(znunuqcdele);
+      }
+      else{
+	if(channel!="enu"&&channel!="munu"&&channel!="taunu")elementvec.push_back(znunuele);
+      }
     }
     if(do_plotmcqcd||do_plotqcd)elementvec.push_back(qcdele);
     if(channel!="munu")elementvec.push_back(vvele);
-    //   elementvec.push_back(wgele);
     if(channel!="mumu")elementvec.push_back(topele);
     if(channel!="mumu"&&channel!="enu"&&channel!="munu"){
       elementvec.push_back(sigele);
@@ -1521,19 +1526,25 @@ int main(int argc, char* argv[]){
     if(do_datatop&&!do_singletop)analysis->AddModule(&top);
     else if(!do_singletop) analysis->AddModule(&topraw);
     if(do_list) analysis->AddModule(&mceventlist);
-    
-    analysis->AddModule(&wmunu);
-    analysis->AddModule(&wenu);
-    analysis->AddModule(&wtaunu);
-    if(channel!="mumu"){
-      analysis->AddModule(&zmumu);
+
+    if(!do_mcbkg){
+      analysis->AddModule(&wmunu);
+      analysis->AddModule(&wenu);
+      analysis->AddModule(&wtaunu);
+      if(channel!="mumu"){
+	analysis->AddModule(&zmumu);
+      }
+      else analysis->AddModule(&zmumuinzcont);
     }
-    else analysis->AddModule(&zmumuinzcont);
+    else{
+      analysis->AddModule(&wmunuraw);
+      analysis->AddModule(&wenuraw);
+      analysis->AddModule(&wtaunuraw);  
+      //!!put in Z mc bkg
+    }
+
     if(do_singletop)analysis->AddModule(&top);
     //analysis->AddModule(&QCD);
-    //analysis->AddModule(&wmunuraw);
-    //analysis->AddModule(&wenuraw);
-    //analysis->AddModule(&wtaunuraw);  
     if(do_plotmcqcd)analysis->AddModule(&QCDraw);
     if(do_plotqcd){
       analysis->AddModule(&wmunuqcd);
