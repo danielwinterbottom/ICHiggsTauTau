@@ -68,6 +68,7 @@ int main(int argc, char* argv[]){
 
   bool is_data;                   // true = data, false = mc         
   bool dotkiso;                   // Do Track Muon Isolation
+  bool do_selmuonoverlapveto;     // Do Jet Overlap Checking With Sel not Veto Muons
   bool dojessyst;                 // Do Jet Energy Scale Systematic Run
   bool dodatajessyst;             // Do Alternate Data Jet Energy Scale Method Systematic Run
   bool jesupordown;               // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
@@ -144,6 +145,7 @@ int main(int argc, char* argv[]){
     ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(15.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
+    ("do_selmuonoverlapveto",po::value<bool>(&do_selmuonoverlapveto)->default_value(false))
     ("dotkiso",             po::value<bool>(&dotkiso)->default_value(false))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
     ("dodatajessyst",       po::value<bool>(&dodatajessyst)->default_value(false))
@@ -439,8 +441,9 @@ int main(int argc, char* argv[]){
   CopyCollection<Muon> vetoMuonCopyCollection("CopyToVetoMuons","muonsPFlow","vetoMuons");
 
   SimpleFilter<Muon> vetoMuonFilter = SimpleFilter<Muon>
-    ("VetoMuonPtEtaFilter")
-    .set_input_label("vetoMuons").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
+    ("VetoMuonPtEtaFilter");
+  if(!dotkiso){
+    vetoMuonFilter.set_input_label("vetoMuons").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
 						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
 						&& bind(PF04Isolation<Muon>, _1, 0.5, 0.2)
 						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
@@ -448,6 +451,17 @@ int main(int argc, char* argv[]){
 						)
     .set_min(0)
     .set_max(999);
+  }
+  else{
+    vetoMuonFilter.set_input_label("vetoMuons").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
+						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
+						&& bind(MuonTkIso, _1)
+						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
+						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
+						)
+    .set_min(0)
+    .set_max(999);
+  }
 
   CopyCollection<Muon> vetoMuonNoIsoCopyCollection("CopyToVetoMuonsNoIso","muonsPFlow","vetoMuonsNoIso");
   SimpleFilter<Muon> vetoMuonNoIsoFilter = SimpleFilter<Muon>
@@ -627,8 +641,11 @@ int main(int argc, char* argv[]){
 
   OverlapFilter<PFJet, Muon> jetMuonOverlapFilter = OverlapFilter<PFJet, Muon>("jetMuonOverlapFilter")
     .set_input_label("pfJetsPFlow")
-    .set_reference_label("vetoMuons") //NoIso")
     .set_min_dr(0.5);
+  if(!do_selmuonoverlapveto)jetMuonOverlapFilter.set_reference_label("vetoMuons"); //NoIso")
+  else jetMuonOverlapFilter.set_reference_label("selMuons"); //NoIso")
+  
+
 
   OverlapFilter<PFJet, Tau> jetTauOverlapFilter = OverlapFilter<PFJet, Tau>("jetTauOverlapFilter")
     .set_input_label("pfJetsPFlow")

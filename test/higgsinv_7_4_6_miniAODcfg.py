@@ -30,8 +30,8 @@ opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('release', '74XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
-opts.register('isNLO', 0, parser.VarParsing.multiplicity.singleton,
-    parser.VarParsing.varType.int, "Store sign of weight?")
+opts.register('isNLO', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Store sign of weight?")
 
 opts.parseArguments()
 infile      = opts.file
@@ -863,14 +863,16 @@ process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   input   = cms.InputTag("icPrunedGenParticles"),
   includeMothers = cms.bool(True),
-  includeDaughters = cms.bool(True)
+  includeDaughters = cms.bool(True),
+  includeStatusFlags = cms.bool(True)
 )
 
 process.icGenParticleTauProducer = producers.icGenParticleProducer.clone(
   input   = cms.InputTag("prunedGenParticlesTaus"),
   branch = cms.string("genParticlesTaus"),
   includeMothers = cms.bool(True),
-  includeDaughters = cms.bool(True)
+  includeDaughters = cms.bool(True),
+  includeStatusFlags = cms.bool(True)
 )
 
 
@@ -1042,7 +1044,7 @@ process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
 
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
-  isNlo               =isNLO,
+  isNlo               = isNLO,
   includeJetRho       = cms.bool(True),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),

@@ -434,7 +434,8 @@ icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
   branch  = cms.string("genParticles"),
   input   = cms.InputTag("genParticles"),
   includeMothers = cms.bool(True),
-  includeDaughters = cms.bool(True)
+  includeDaughters = cms.bool(True),
+  includeStatusFlags = cms.bool(False)
 )
 ## [GenParticle]
 
