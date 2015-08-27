@@ -52,6 +52,7 @@ sample_list = [
 #  'DYJetsToTauTau10-50-L',
 #	'DYJetsToTauTau10-50-JJ',
 	'SUSYGluGluToHToTauTau_M-130',
+	'SUSYGluGluToHToTauTau_M-160',
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu']
@@ -69,6 +70,7 @@ for sa in sample_list:
       if len(fnmatch.filter(os.listdir('./output/%(outputf)s'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
         print "Hadding %(sa)s_%(ch)s"%vars()
         os.system('hadd -f ./output/%(outputf)s/%(sa)s_%(ch)s_2015.root ./output/%(outputf)s/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
+        os.system("sed -i  '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
         filetext = open("./haddout.txt").read()
         if 'Warning' in filetext or 'Error' in filetext:
           print "Hadd had a problem:"
@@ -80,6 +82,7 @@ for sa in sample_list:
     if os.path.isfile('./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_0.root'%vars()):
       if len(fnmatch.filter(os.listdir('./output/%(outputf)s/TSCALE_DOWN'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
         os.system('hadd ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_%(ch)s_2015.root ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
+        os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
         filetext = open("./haddout.txt").read()
         if 'Warning' in filetext or 'Error' in filetext:
           print "Hadd had a problem:"
@@ -91,6 +94,7 @@ for sa in sample_list:
     if os.path.isfile('./output/%(outputf)s/TSCALE_UP/%(sa)s_2015_%(ch)s_0.root'%vars()):
       if len(fnmatch.filter(os.listdir('./output/%(outputf)s/TSCALE_UP'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
         os.system('hadd ./output/%(outputf)s/TSCALE_UP/%(sa)s_%(ch)s_2015.root ./output/%(outputf)s/TSCALE_UP/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
+        os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
         filetext = open("./haddout.txt").read()
         if 'Warning' in filetext or 'Error' in filetext:
           print "Hadd had a problem:"

@@ -139,7 +139,7 @@ namespace ic {
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
 //     "WZJetsTo3LNu",
-     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
+     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     };
 
     samples_alias_map_["top_samples"] = {
