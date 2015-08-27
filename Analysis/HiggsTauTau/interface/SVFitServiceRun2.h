@@ -5,7 +5,7 @@
 #include <iostream>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
-#include "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
+#include "HiggsTauTau/SVFit/interface/SVfitStandaloneAlgorithm.h"
 
 #include "TTree.h"
 
