@@ -588,7 +588,7 @@ int main(int argc, char* argv[]){
     ("JetIDFilter")
     .set_input_label("pfJetsPFlow");
     if(!turnoffpuid){
-      jetIDFilter.set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
+      jetIDFilter.set_predicate((bind(PFJetID, _1)) && bind(PileupJetID, _1,2));
     }
     else{
       jetIDFilter.set_predicate(bind(PFJetID, _1));
@@ -751,6 +751,7 @@ int main(int argc, char* argv[]){
 
   HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
   WtoLeptonFilter.set_do_newstatuscodes(true);
+  WtoLeptonFilter.set_do_statusflags(true);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules

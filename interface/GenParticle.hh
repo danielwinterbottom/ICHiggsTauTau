@@ -6,7 +6,30 @@
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
 
+
 namespace ic {
+
+/**
+ * @brief Stores the order of the gen status flags stored inside the ic::GenParticle
+ */
+enum GenStatusBits {
+  IsPrompt = 0,
+  IsDecayedLeptonHadron,
+  IsTauDecayProduct,
+  IsPromptTauDecayProduct,
+  IsDirectTauDecayProduct,
+  IsDirectPromptTauDecayProduct,
+  IsDirectHadronDecayProduct,
+  IsHardProcess,
+  FromHardProcess,
+  IsHardProcessTauDecayProduct,
+  IsDirectHardProcessTauDecayProduct,
+  FromHardProcessBeforeFSR,
+  IsFirstCopy,
+  IsLastCopy,
+  IsLastCopyBeforeFSR
+};
+
 
 /**
  * @brief Stores the basic properties of generator-level particles as well as
@@ -41,6 +64,9 @@ class GenParticle : public Candidate {
   /// A vector of ic::GenParticle::index() values that identify the daughter
   /// particles
   inline std::vector<int> const& daughters() const { return daughters_; }
+
+  /// A genstatusflags object to give information about the production of the particle
+  inline std::vector<bool> const& statusFlags() const { return statusFlags_; }
   /**@}*/
 
   /// @name Setters
@@ -63,6 +89,11 @@ class GenParticle : public Candidate {
   inline void set_daughters(std::vector<int> const& daughters) {
     daughters_ = daughters;
   }
+
+  /// @copybrief statusFlags()
+  inline void set_statusFlags(std::vector<bool> const& statusFlags) {
+    statusFlags_ = statusFlags;
+  }
   /**@}*/
 
  private:
@@ -71,10 +102,11 @@ class GenParticle : public Candidate {
   int status_;
   std::vector<int> mothers_;
   std::vector<int> daughters_;
+  std::vector<bool> statusFlags_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(GenParticle, 2);
+  ClassDef(GenParticle, 4);
  #endif
 };
 

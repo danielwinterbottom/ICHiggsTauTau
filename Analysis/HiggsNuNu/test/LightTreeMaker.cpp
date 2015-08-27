@@ -580,7 +580,7 @@ int main(int argc, char* argv[]){
     ("JetIDFilter")
     .set_input_label("pfJetsPFlow");
     if(!turnoffpuid){
-      jetIDFilter.set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
+      jetIDFilter.set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));//!!note old function needs updating
     }
     else{
       jetIDFilter.set_predicate(bind(PFJetID, _1));

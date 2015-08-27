@@ -32,7 +32,7 @@ int SashaCheck(){
   double centraljetthreshold=30;
   double forwardjetthreshold=30;
 
-  std::string outfolder="output_sashacheck_rootfile/";
+  std::string outfolder="output_sashacheck_pfloose/";
 
   //Define cuts
   std::string lMuCut = "mu1_pt>25&&mu2_pt>25&&(mu1_charge*mu2_charge==-1)&&(passparkedtrigger1==1||passparkedtrigger2==1)";
@@ -50,19 +50,19 @@ int SashaCheck(){
 
   //Define files to read
   TChain *tree = new TChain("SashaLightTree");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012A-22Jan2013-v1.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split1.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split2.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split3.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split4.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split1.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split2.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split3.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split4.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split1.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split2.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split3.root");
-  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_070815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split4.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012A-22Jan2013-v1.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split1.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split2.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split3.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012B-22Jan2013-v1-split4.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split1.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split2.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split3.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012C-22Jan2013-v1-split4.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split1.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split2.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split3.root");
+  tree->Add("sashachecks/output_lighttree_singlemuforsashacrosschecksashaonly_pfloose_170815/SINGLEMU_SingleMu-2012D-22Jan2013-v1-split4.root");
 
   
 
@@ -77,23 +77,23 @@ int SashaCheck(){
   //Set up cut steps
   std::string fullcut;
   fullcut=lMuCut;
-  //cuts.push_back(fullcut);
-  //cutname.push_back("_mupair");
+  cuts.push_back(fullcut);
+  cutname.push_back("_mupair");
   fullcut=fullcut+"&&"+lAnyCentralCut;
-  //cuts.push_back(fullcut);
-  //cutname.push_back("_centraljet");
+  cuts.push_back(fullcut);
+  cutname.push_back("_centraljet");
   fullcut=fullcut+"&&"+lCentralBCut;
-  //cuts.push_back(fullcut);
-  //cutname.push_back("_centralbjet");
+  cuts.push_back(fullcut);
+  cutname.push_back("_centralbjet");
   fullcut=fullcut+"&&"+lCentral1BCut;
-  //cuts.push_back(fullcut);
-  //cutname.push_back("_centralbjetcjv");
+  cuts.push_back(fullcut);
+  cutname.push_back("_centralbjetcjv");
   fullcut=fullcut+"&&"+lForwardCut;
   cuts.push_back(fullcut);
   cutname.push_back("_forwardjet");
   fullcut=fullcut+"&&"+lMassWindowCut;
-  //cuts.push_back(fullcut);
-  //cutname.push_back("_26-32");
+  cuts.push_back(fullcut);
+  cutname.push_back("_26-32");
 
   std::ostringstream var;
   var << histName << ">>htmp";
@@ -148,9 +148,11 @@ int SashaCheck(){
     leg->Draw("same");
     
     myc->SaveAs((outfolder+"/mmumu"+cutname[iCut]+".pdf").c_str());
-    myc->SetName(cutname[iCut].c_str());
+    //myc->SetName(cutname[iCut].c_str());
     file->cd();
-    myc->Write();
+    //myc->Write();
+    htmp->SetName(cutname[iCut].c_str());
+    htmp->Write();
     
 
     myc->Clear();
