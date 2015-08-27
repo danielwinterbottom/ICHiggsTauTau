@@ -135,7 +135,7 @@ if options.scheme == 'run2_mssm':
     'em' : 'em_default',
     'tt' : 'tt_default'
   }
-  sig_scheme = 'mssm_run2'
+  sig_scheme = 'run2_mssm'
   ANA = 'mssm'
 
 cat_schemes = {

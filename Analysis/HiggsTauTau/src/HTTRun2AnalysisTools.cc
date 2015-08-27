@@ -131,7 +131,7 @@ namespace ic {
     // Inclusive region for e-mu fake rate normalisation
       // Sideband region for e-mu SS fake shape estimation
       alias_map_["ss"]                        = "!os";
-      alias_map_["sel"]                       = "pzeta>-20.";
+      alias_map_["sel"]                       = "1";
     }
 
     alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL";
