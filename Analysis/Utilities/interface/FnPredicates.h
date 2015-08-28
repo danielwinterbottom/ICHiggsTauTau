@@ -57,7 +57,9 @@ namespace ic {
   bool Electron2011WP70ID(Electron const* elec);
   bool Electron2011WP85ID(Electron const* elec);
   bool Electron2011WP95ID(Electron const* elec);
+  bool TightElectronIDSpring15(Electron const* elec);
   bool VetoElectronIDPhys14(Electron const* elec);
+  bool VetoElectronIDSpring15(Electron const* elec);
   bool VetoElectronID(Electron const* elec);
   bool ElectronSimpleWP85Iso(Electron const* elec);
   bool ElectronSimpleWP85ID(Electron const* elec);
