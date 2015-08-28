@@ -50,6 +50,7 @@ namespace ic{
   void HistPlotter::SetDataStyle(ic::LTPlotElement* ele) {
     ele->set_marker_color(1);
     ele->set_line_color(1);
+    ele->set_line_style(1);
     ele->set_fill_color(1);
     ele->set_fill_style(0);
     ele->set_draw_fill(false);
@@ -496,7 +497,9 @@ namespace ic{
 	      num=(TH1F*)(elements_[iElement].hist_ptr()->Clone(("num"+shapes_[iShape].name()).c_str()));
 	      firstnum=false;
 	    }
-	    else num->Add(elements_[iElement].hist_ptr());
+	    else{
+	      num->Add(elements_[iElement].hist_ptr());
+	    }
 
 	  }
 	  if(elements_[iElement].is_inratioden()){
@@ -505,7 +508,9 @@ namespace ic{
 	      den=(TH1F*)(elements_[iElement].hist_ptr()->Clone(("den"+shapes_[iShape].name()).c_str()));
 	      firstden=false;
 	    }
-	    else den->Add(elements_[iElement].hist_ptr());
+	    else{
+	      den->Add(elements_[iElement].hist_ptr());
+	    }
 	    //get error on this contribution
 	    double thiselementfracerr;
 	    double thiselementintegral=Integral(elements_[iElement].hist_ptr());

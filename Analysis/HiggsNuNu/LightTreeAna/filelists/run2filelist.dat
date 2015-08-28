@@ -15,7 +15,7 @@ SingleT-tW-powheg-inc single-t MC_SingleT-tW-powheg-inc.root
 SingleTBar-tW-powheg-inc single-t MC_SingleTBar-tW-powheg-inc.root
 
 TT-powheg ttpowheg MC_TT-powheg.root
-TTJets-mg ttmg MC_TTJets-mg.root
+TTJets-mg Top MC_TTJets-mg.root
 
 WJetsToLNu_enu WJets_enu MC_WJetsToLNu_enu.root
 
@@ -36,5 +36,5 @@ WW2L2Nu-powheg VV MC_WW2L2Nu-powheg.root
 WW4Q-powheg VV MC_WW4Q-powheg.root
 WWLNuQQ-powheg VV MC_WWLNuQQ-powheg.root
 WZ-pythia8 VV MC_WZ-pythia8.root
-WZLNuQQ-mg VV MC_WZLNuQQ-mg.root
+#WZLNuQQ-mg VV MC_WZLNuQQ-mg.root
 ZZ4L-powheg VV MC_ZZ4L-powheg.root

@@ -18,15 +18,15 @@ echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 PRODUCTION=Aug18
-INPUTPARAMS="filelists/Jul27/ParamsJul27.dat"
+INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_genflags_250815
+  JOBDIRPREFIX=jobs_lighttree_genflags_260815
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_genflags_250815
+  OUTPUTPREFIX=output_lighttree_genflags_260815
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]

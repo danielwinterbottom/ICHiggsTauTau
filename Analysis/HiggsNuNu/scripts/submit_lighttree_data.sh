@@ -21,16 +21,16 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 PRODUCTION=Aug18
-INPUTPARAMS="filelists/Jul27/ParamsJul27.dat"
+INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 
 
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree_genflags_250815
+  JOBDIRPREFIX=jobs_lighttree_genflags_260815
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_genflags_250815
+  OUTPUTPREFIX=output_lighttree_genflags_260815
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
