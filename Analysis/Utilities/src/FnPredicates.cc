@@ -128,15 +128,13 @@ namespace ic {
       result = neutralFrac   < 0.99
       && jet->neutral_em_energy_frac()    < 0.99
             && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
-            && jet->muon_energy_frac() < 0.8
             && jet->charged_had_energy_frac()   > 0.0
             && jet->charged_multiplicity()      > 0
             && jet->charged_em_energy_frac()    < 0.99;
     } else if(eta<=3.0){
       result = neutralFrac   < 0.99
             && jet->neutral_em_energy_frac()    < 0.99
-            && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
-            && jet->muon_energy_frac() < 0.8;
+	&& jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
     }
     else{
       result = jet->neutral_em_energy_frac()    < 0.90
