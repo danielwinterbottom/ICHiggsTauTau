@@ -20,17 +20,17 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-PRODUCTION=Dec18
-INPUTPARAMS="filelists/Dec18/ParamsDec18.dat"
+PRODUCTION=Aug18
+INPUTPARAMS="filelists/Jul27/ParamsJul27.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 
 
-for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
+for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree_postARCcomments1
+  JOBDIRPREFIX=jobs_lighttree_genflags_250815
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_postARCcomments1
+  OUTPUTPREFIX=output_lighttree_genflags_250815
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -107,7 +107,9 @@ if [ "$SYST" = "ELEEFFUP" ]
   echo "Config file: $CONFIG"
   mkdir -p $JOBDIR
   mkdir -p $OUTPUTDIR
-  
+
+  cp $CONFIG $JOBDIR
+
   for QUEUEDIR in medium long
     do
     if [ "$DOCERN" = "0" ]
@@ -135,10 +137,14 @@ if [ "$SYST" = "ELEEFFUP" ]
     fi
     export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
     echo "Using job-submission: " $JOBSUBMIT
-    
-    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MET/
-    
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*`
+
+    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/${PRODUCTION}_MET
+    if [ "$PRODUCTION" = "Dec18" ]
+    then
+        PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/${PRODUCTION}/MET
+    fi    
+
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*` 
       do
       echo "Processing files in "$FILELIST
       
@@ -149,7 +155,7 @@ if [ "$SYST" = "ELEEFFUP" ]
       
       echo "JOB name = $JOB"
       
-      $JOBWRAPPER "./bin/LightTreeMaker --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+      $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
       $JOBSUBMIT $JOBDIR/$JOB.sh
       
       

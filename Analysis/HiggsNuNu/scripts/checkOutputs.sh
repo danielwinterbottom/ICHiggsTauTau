@@ -32,7 +32,7 @@ for CHANNEL in nunulowmet #mumu nunuiglep #nunu #taunu enu munu mumu nunuiglep
       do
       if (( "$INJOBDIR" == "0" )); then
 	  #JOBDIR=jobs_lighttree_qcdpresel/$CHANNEL/MET$MET/$SYST
-	  JOBDIR=jobs_lighttree_postARCcomments1/$SYST #jobs_lighttree_nojetmetdphicut/ #$CHANNEL/MET$MET/$SYST
+	  JOBDIR=jobs_lighttree_singlemuforsashacrosschecksashaonly_tkisotightoverlap_180815/$SYST #jobs_lighttree_spring15andrun2golden_130815/$SYST #jobs_lighttree_nojetmetdphicut/ #$CHANNEL/MET$MET/$SYST
 	  #JOBDIR=jobs_rereco/$CHANNEL/MET$MET/$SYST
       fi
       
