@@ -134,11 +134,11 @@ namespace ic {
     } else if(eta<=3.0){
       result = neutralFrac   < 0.99
             && jet->neutral_em_energy_frac()    < 0.99
-            && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
+            && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
     }
     else{
       result = jet->neutral_em_energy_frac()    < 0.90
-	&& jet->neutral_multiplicity()>10;
+	    && jet->neutral_multiplicity()>10;
     }
     return result;
   }
@@ -564,7 +564,7 @@ namespace ic {
     if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
     
     double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
-    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+//    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
     
     return(
        !elec->has_matched_conversion()
@@ -599,7 +599,7 @@ namespace ic {
     if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
     
     double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
-    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+//    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
     
     return(
        !elec->has_matched_conversion()
@@ -635,7 +635,7 @@ namespace ic {
     if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
     
     double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
-    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+//    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
     
     return(
        !elec->has_matched_conversion()
