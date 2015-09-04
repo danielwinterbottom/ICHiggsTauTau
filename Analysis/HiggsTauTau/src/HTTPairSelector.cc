@@ -15,6 +15,7 @@ namespace ic {
     faked_tau_selector_ = 0;
     hadronic_tau_selector_ = 0;
     ztt_mode_ = 0;
+    use_status_flags_ = true;
     met_label_ = "pfMVAMet";
     fs_ = NULL;
     hists_.resize(1);
@@ -56,6 +57,7 @@ namespace ic {
     std::cout << boost::format(param_fmt) % "allowed_tau_modes"     % allowed_str;
     std::cout << boost::format(param_fmt) % "faked_tau_selector"    % faked_tau_selector_;
     std::cout << boost::format(param_fmt) % "ztt_mode"              % ztt_mode_;
+    std::cout << boost::format(param_fmt) % "use_status_flags"      % use_status_flags_;
     std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector_;
     std::cout << boost::format(param_fmt) % "gen_taus_label"        % gen_taus_label_;
 
@@ -272,9 +274,6 @@ namespace ic {
         for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
         ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));
         std::vector<Candidate *> tau;
-        if(channel::tt){
-          tau.push_back(result[0]->GetCandidate("lepton1"));
-        }
         tau.push_back(result[0]->GetCandidate("lepton2"));
         // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
         std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
@@ -287,7 +286,9 @@ namespace ic {
         if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
       }
     }
-    if(strategy_ == strategy::spring15 && channel_ != channel::em && ztt_mode_>0) {
+    if(strategy_ == strategy::spring15 && ztt_mode_>0) {
+    //if(strategy_ == strategy::spring15 && channel_ != channel::em && ztt_mode_>0) {
+     if(!use_status_flags_){
       bool is_ztt=false; 
       bool has_z = false;
       // First find out if the gen level info points to Z->ll or Z->tautau
@@ -342,8 +343,6 @@ namespace ic {
      }
 
 
-
-
         //Fail the event if no gen-level Z's found for ZTT
 //        if (!has_z && ztt_mode_==1) return 1;
         // If we want Z->tautau and we have found a Z->ll, fail the event
@@ -352,14 +351,72 @@ namespace ic {
         if (ztt_mode_ == 2 && is_ztt) return 1;
 //        if (sel_particles.size() > 0) {
           // Get the reco tau from the pair
+         if (channel_ != channel::em){
           std::vector<Candidate *> tau;
+          if(channel_ == channel::tt) tau.push_back(result[0]->GetCandidate("lepton1"));
           tau.push_back(result[0]->GetCandidate("lepton2"));
           // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
           std::vector<std::pair<Candidate*, GenParticle*> > matches = MatchByDR(tau, sel_particles, 0.5, true, true);
           // If we want ZL and there's no match, fail the event
-          if (faked_tau_selector_ == 1 && matches.size() == 0) return 1;
+          if (faked_tau_selector_ == 1 && matches.size() == 0 && channel_ != channel::tt) return 1;
+          // If we want ZL and there are less than 2 matches, fail the event for the tt channel
+          if (faked_tau_selector_ == 1 && matches.size() < 2 && channel_ == channel::tt) return 1;
           // If we want ZJ and there is a match, fail the event
+          if (faked_tau_selector_ == 2 && matches.size() > 0 && channel_ != channel::tt) return 1;
+          //If we want ZJ and there are at least 2 matches for tt, fail the event
+          if (faked_tau_selector_ == 2 && matches.size() > 1 && channel_ == channel::tt) return 1;
+//        }
+  //    }
+  //    Not figured out how the below should work yet
+      if (hadronic_tau_selector_ > 0) {
+        std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
+        std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+        std::vector<GenJet *> gen_taus_ptr;
+        for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+        ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));
+        std::vector<Candidate *> tau;
+        tau.push_back(result[0]->GetCandidate("lepton2"));
+        // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
+        std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
+        // If we want ZTT and there's no match, fail the event
+        if (hadronic_tau_selector_ == 1 && matches.size() == 0) return 1;
+        if (fs_ && matches.size() == 1) {
+          hists_[0]->Fill("pt_gen_reco", matches[0].second->pt(), matches[0].first->pt(), 1);
+        }
+        // If we want ZJ and there is a match, fail the event
+        if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
+      }
+     }
+    }
+  else{
+    bool is_ztt = false;
+    std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles"); 
+    std::vector<GenParticle *> sel_particles;
+    int ntaus=0;
+    for (unsigned i = 0; i < particles.size(); ++i){
+      std::vector<bool> status_flags = particles[i]->statusFlags();
+      if (status_flags[IsPrompt] && abs(particles[i]->pdgid()) == 15) ntaus++;
+      if ((abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) ==13) && particles[i]->pt() > 8.){
+        sel_particles.push_back(particles[i]);
+      }
+    }
+    if (ztt_mode_ == 1 && !is_ztt) return 1;
+    // If we want Z->ll and we have found a Z->tautau, fail the event
+    if (ztt_mode_ == 2 && is_ztt) return 1;
+         if (channel_ != channel::em){
+          std::vector<Candidate *> tau;
+          if (channel_ == channel::tt) tau.push_back(result[0]->GetCandidate("lepton1"));
+          tau.push_back(result[0]->GetCandidate("lepton2"));
+          // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
+          std::vector<std::pair<Candidate*, GenParticle*> > matches = MatchByDR(tau, sel_particles, 0.5, true, true);
+          // If we want ZL and there's no match for etau/mutau, fail the event
+          if (faked_tau_selector_ == 1 && matches.size() == 0 && channel_ != channel::tt) return 1;
+          // If we want ZL and there aren't two matches, fail the event 
+          if (faked_tau_selector_ == 1 && matches.size() < 2 && channel_ ==channel::tt ) return 1;
+          // If we want ZJ and there is a match for etau/mutau, fail the event
           if (faked_tau_selector_ == 2 && matches.size() > 0 ) return 1;
+          // If we want ZJ and there are at least two matches  for tautau, fail the event
+          if (faked_tau_selector_ == 2 && matches.size() > 1 && channel_ == channel::tt) return 1; 
 //        }
   //    }
   //    Not figured out how the below should work yet
@@ -381,7 +438,10 @@ namespace ic {
         // If we want ZJ and there is a match, fail the event
         if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
       }
-    }
+     }
+
+   }
+ }
 /*    if(strategy_==strategy::spring15 && channel_==channel::em && ztt_mode_>0){
       bool is_ztt=false; 
       bool has_z = false;
