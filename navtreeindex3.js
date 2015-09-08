@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"classic_1_1_electron.html#a85f0953b8b9116800d14506ff60ed230":[9,0,0,4,79],
 "classic_1_1_electron.html#a88d7ed9fef58f89cdabd2854167dc537":[9,0,0,4,81],
 "classic_1_1_electron.html#a8b8812926488402b96865521730a087f":[9,0,0,4,42],
 "classic_1_1_electron.html#a8c843dd303460c31e4e76f3e80b22173":[9,0,0,4,43],
@@ -248,6 +249,5 @@ var NAVTREEINDEX3 =
 "classic_1_1_muon.html#a9a1227808d7a2e737578765c0dc05038":[9,0,0,13,59],
 "classic_1_1_muon.html#a9d7b66004cc129c9c70bb39a0771ec20":[9,0,0,13,52],
 "classic_1_1_muon.html#aa25a38b2685058005c5feba2b9d52194":[9,0,0,13,4],
-"classic_1_1_muon.html#aabf271825ce73aeb2210c93d65d995ad":[9,0,0,13,15],
-"classic_1_1_muon.html#aad3adf154e368cc9061c91a941f195b8":[9,0,0,13,41]
+"classic_1_1_muon.html#aabf271825ce73aeb2210c93d65d995ad":[9,0,0,13,15]
 };

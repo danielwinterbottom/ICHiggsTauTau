@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"_i_c_tau_producer_8cc.html#ad3b45a40028b9687b97213612e34e163":[10,0,2,68,1],
 "_i_c_tau_producer_8cc.html#afca1db4776c5e4021e6441c5d1c8ca15":[10,0,2,68,0],
 "_i_c_tau_producer_8cc_source.html":[10,0,2,68],
 "_i_c_tau_producer_8hh.html":[10,0,2,69],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "city_8h_source.html":[10,0,1,2],
 "class_e_gamma_mva_ele_estimator_c_s_a14.html":[9,0,1],
 "class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5f":[9,0,1,0],
-"class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa485ce12f8394253ada21d0d9ddab5e62":[9,0,1,0,2],
-"class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa6834dbebd92c08255c8474d172b31097":[9,0,1,0,1]
+"class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa485ce12f8394253ada21d0d9ddab5e62":[9,0,1,0,2]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"classic_1_1_muon.html#aad3adf154e368cc9061c91a941f195b8":[9,0,0,13,41],
 "classic_1_1_muon.html#aad79bba88c92089f87a4dfd79cd09065":[9,0,0,13,3],
 "classic_1_1_muon.html#aae5b7e5946933b97a58abc93d875f604":[9,0,0,13,26],
 "classic_1_1_muon.html#ab037f17ae4e1af4733cf5d0baf5e08b8":[9,0,0,13,45],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "classic_1_1_track.html#aa92a2b7324266b29e93ae584a6acc22e":[9,0,0,22,40],
 "classic_1_1_track.html#aba658f6a41d5773ee5073f8c4aeffbba":[9,0,0,22,3],
 "classic_1_1_track.html#ac071903b7a78c980bc328fceeb9dde1f":[9,0,0,22,0],
-"classic_1_1_track.html#ac1d1fd2c50b2b39adfe1bf6204447dd3":[9,0,0,22,19],
-"classic_1_1_track.html#ad23494bde9939003eb256288bc5a2e33":[9,0,0,22,35]
+"classic_1_1_track.html#ac1d1fd2c50b2b39adfe1bf6204447dd3":[9,0,0,22,19]
 };
