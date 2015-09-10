@@ -50,6 +50,10 @@ sample_list = [
   'SingleMuon-2015B-prompt',
   'MuonEG-2015B-prompt',
   'Tau-2015B-prompt',
+  'SingleElectron-2015C-prompt',
+  'SingleMuon-2015C-prompt',
+  'MuonEG-2015C-prompt',
+  'Tau-2015C-prompt',
 #	'DYJetsToTauTau10-50',
 #	'DYJetsToLL10-50',
 #	'DYJetsToLL10-50-L',
@@ -57,6 +61,7 @@ sample_list = [
 #  'DYJetsToTauTau10-50-L',
 #	'DYJetsToTauTau10-50-JJ',
 	'SUSYGluGluToHToTauTau_M-130',
+	'SUSYGluGluToHToTauTau_M-160',
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu']

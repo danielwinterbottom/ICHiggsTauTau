@@ -26,6 +26,7 @@
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
+#include "HiggsTauTau/interface/SVFitTestRun2.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
@@ -467,7 +468,7 @@ void HTTSequence::BuildSequence(){
   }             
   if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
   //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
-  if (era_type == era::data_2015)  data_json= "input/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt";
+  if (era_type == era::data_2015)  data_json= "input/json/Cert_246908-254879_13TeV_PromptReco_Collisions15_JSON.txt";
 
  LumiMask lumiMask = LumiMask("LumiMask")
    .set_produce_output_jsons("")
@@ -694,7 +695,7 @@ if(channel != channel::wmnu) {
    }
 
 
-
+ if(era_type != era::data_2015){
   BuildModule(SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
@@ -706,6 +707,21 @@ if(channel != channel::wmnu) {
     .set_met_label(met_label)
     .set_fullpath(svfit_folder)
     .set_MC(true));
+} 
+
+if(era_type == era::data_2015){
+  BuildModule(SVFitTestRun2("SVFitTestRun2")
+    .set_channel(channel)
+    .set_outname(svfit_override == "" ? output_name : svfit_override)
+    .set_run_mode(new_svfit_mode)
+    .set_fail_mode(0)
+    .set_require_inputs_match(false)
+    .set_split(7000)
+    .set_dilepton_label("ditau")
+    .set_met_label("pfMVAMet")
+    .set_fullpath(svfit_folder)
+    .set_MC(true));
+} 
 
 
 
@@ -1453,7 +1469,7 @@ void HTTSequence::BuildDiElecVeto() {
                 Electron2011WP95ID(e)     &&                
                 PF04IsolationVal(e, 0.5,1) < 0.3;
       });
-    } else if(strategy_type==strategy::phys14 || strategy_type==strategy::spring15){
+    } else if(strategy_type==strategy::phys14){
        vetoElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
@@ -1463,7 +1479,17 @@ void HTTSequence::BuildDiElecVeto() {
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
-   } 
+   } else if(strategy_type==strategy::spring15){ 
+       vetoElecFilter.set_predicate([=](Electron const* e) {
+        return  e->pt()                 > veto_dielec_pt    &&
+                fabs(e->eta())          < veto_dielec_eta   &&
+                fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
+                fabs(e->dz_vertex())    < veto_dielec_dz   &&
+                VetoElectronIDSpring15(e)           &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
+                PF03IsolationVal(e, 0.5,0) < 0.3;
+      });
+  }
 
 
   BuildModule(vetoElecFilter);
