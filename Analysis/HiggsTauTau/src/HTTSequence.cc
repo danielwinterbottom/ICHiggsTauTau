@@ -25,6 +25,7 @@
 #include "HiggsTauTau/interface/HTTCategories.h"
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
+#include "HiggsTauTau/interface/HTTPairGenInfo.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
@@ -626,6 +627,11 @@ if(channel != channel::wmnu) {
   }
   
   BuildModule(httPairSelector);
+}
+
+if(strategy_type==strategy::spring15){
+  BuildModule(HTTPairGenInfo("HTTPairGenInfo")
+    .set_ditau_label("ditau"));
 }
 
  if (jes_mode > 0 && !is_data ){

@@ -223,7 +223,7 @@ if options.proc_bkg or options.proc_all:
 #        ]
 
   soups = ['']
-  nfiles = sum(1 for line in open('%(FILELIST)s_DYJetsToLL.dat' % vars()))
+  nfiles = sum(1 for line in open('%(FILELIST)s_DYJetsToLL_M-50-LO.dat' % vars()))
   nperjob = 30 
   for sp in soups:  
     JOB='DYJetsToTauTau%s_2015' % (sp)

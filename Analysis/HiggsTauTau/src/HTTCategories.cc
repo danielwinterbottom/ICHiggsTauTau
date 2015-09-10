@@ -81,6 +81,8 @@ namespace ic {
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
+      outtree_->Branch("leading_lepton_source", &leading_lepton_source_);
+      outtree_->Branch("subleading_lepton_source", &subleading_lepton_source_);
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
@@ -523,6 +525,8 @@ namespace ic {
     }
     n_pu_ = true_int;
     rho_ = eventInfo->jet_rho();
+    leading_lepton_source_ = event->Get<int>("leading_lepton_source");
+    subleading_lepton_source_ = event->Get<int>("subleading_lepton_source");
     
     wt_ggh_pt_up_ = 1.0;
     wt_ggh_pt_down_ = 1.0;
