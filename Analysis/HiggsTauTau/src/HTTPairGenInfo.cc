@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include <boost/functional/hash.hpp>
 #include "boost/algorithm/string.hpp"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/format.hpp"
 
@@ -63,8 +64,8 @@ namespace ic {
     
 
 
-   int leading_lepton_source;
-   int subleading_lepton_source;
+   mcorigin mc_origin_1 = mcorigin::fake;
+   mcorigin mc_origin_2 = mcorigin::fake;
    int promptsize = leading_prompt_match.size();
    int taudecaysize = leading_tau_decay_match.size();
    int tausize = leading_tau_match.size();
@@ -89,22 +90,22 @@ namespace ic {
  }
 
 
-   if(promptsize==0 && taudecaysize==0&&tausize==0) leading_lepton_source = 6;
+   if(promptsize==0 && taudecaysize==0&&tausize==0) mc_origin_1 = mcorigin::fake;
    if(promptsize!=0 && taudecaysize==0 && tausize ==0){
      leading_lepton_match_pt = leading_prompt_match.at(0).second->pt();
      if(abs(leading_prompt_match.at(0).second->pdgid())==11){
-              leading_lepton_source = 1;
-     } else leading_lepton_source = 2;
+              mc_origin_1 = mcorigin::promptE;
+     } else mc_origin_1 = mcorigin::promptMu;
    }
    if(promptsize==0 && taudecaysize !=0 &&tausize==0){
      leading_lepton_match_pt = leading_tau_decay_match.at(0).second->pt();
      if(abs(leading_tau_decay_match.at(0).second->pdgid())==11){
-       leading_lepton_source = 3;
-     } else leading_lepton_source = 4;
+       mc_origin_1 = mcorigin::tauE;
+     } else mc_origin_1 = mcorigin::tauMu;
    }
    if(promptsize==0 && taudecaysize==0 && tausize!=0){
     leading_lepton_match_pt = leading_tau_match.at(0).second->pt();
-    leading_lepton_source = 5;
+    mc_origin_1 = mcorigin::tauHad;
    }
 
 //Now for subleading lepton:
@@ -127,26 +128,26 @@ namespace ic {
       DR(subleading_tau_match.at(0).first,subleading_tau_match.at(0).second) < DR(subleading_prompt_match.at(0).first,subleading_prompt_match.at(0).second) ? promptsize=0:tausize=0;
     } 
  }
-   if(promptsize==0 && taudecaysize==0&&tausize==0) subleading_lepton_source = 6;
+   if(promptsize==0 && taudecaysize==0&&tausize==0) mc_origin_2 = mcorigin::fake;
   else if(promptsize!=0 && taudecaysize==0 && tausize ==0){
      subleading_lepton_match_pt = subleading_prompt_match.at(0).second->pt();
      if(abs(subleading_prompt_match.at(0).second->pdgid())==11){
-       subleading_lepton_source = 1;
-     } else  subleading_lepton_source = 2;
+       mc_origin_2 = mcorigin::promptE;
+     } else  mc_origin_2 = mcorigin::promptMu;
    }
    else if(promptsize==0 && taudecaysize !=0 &&tausize==0){
      subleading_lepton_match_pt = subleading_tau_decay_match.at(0).second->pt();
      if(abs(subleading_tau_decay_match.at(0).second->pdgid())==11){
-       subleading_lepton_source = 3;
-     } else subleading_lepton_source = 4;
+       mc_origin_2 = mcorigin::tauE;
+     } else mc_origin_2 = mcorigin::tauMu;
    }
    else if(promptsize==0 && taudecaysize==0 && tausize!=0){
     subleading_lepton_match_pt = subleading_tau_match.at(0).second->pt();
-    subleading_lepton_source = 5;
+    mc_origin_2 = mcorigin::tauHad;
   }
 
-   event->Add("leading_lepton_source",leading_lepton_source);
-   event->Add("subleading_lepton_source",subleading_lepton_source);
+   event->Add("mc_origin_1",mc_origin_1);
+   event->Add("mc_origin_2",mc_origin_2);
    event->Add("leading_lepton_match_pt",leading_lepton_match_pt);
    event->Add("subleading_lepton_match_pt",subleading_lepton_match_pt);
 
