@@ -503,7 +503,7 @@ namespace ic {
       }
      }
     }
-   else{
+/*   else{
     bool is_ztt = false;
     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles"); 
     std::vector<GenParticle *> sel_particles;
@@ -524,9 +524,8 @@ namespace ic {
     std::vector<std::pair<Candidate*, GenParticle*>> matches = MatchByDR(tau, sel_particles, 0.5, true, true);
     int pdgid=0;
     if(matches.size()!=0) pdgid = abs((matches.at(0).second)->pdgid());
-    if( faked_tau_selector_ == 1 && (matches.size() ==0 || pdgid!= 11)) return 1; 
-    if( faked_tau_selector_ == 2 && (matches.size() == 0 || pdgid!=13)) return 1;
-    if( faked_tau_selector_ == 3 && matches.size()!=0) return 1;
+    if( faked_tau_selector_ == 1 && (matches.size() ==0) return 1; 
+    if( faked_tau_selector_ == 2 && matches.size()!=0) return 1;
    if (hadronic_tau_selector_ > 0) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
         std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
@@ -546,11 +545,11 @@ namespace ic {
         if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
       }
     
-   }
+   }*/
     
      
 
-  /*else{
+  else{
     bool is_ztt = false;
     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles"); 
     std::vector<GenParticle *> sel_particles;
@@ -603,7 +602,7 @@ namespace ic {
       }
      }
 
-   }*/
+   }
  }
 /*    if(strategy_==strategy::spring15 && channel_==channel::em && ztt_mode_>0){
       bool is_ztt=false; 

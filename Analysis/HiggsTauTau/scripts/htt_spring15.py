@@ -88,7 +88,7 @@ CONFIG2 ='scripts/config-13.json'
 #    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s_M-50.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
  
 
-FILELIST='filelists/July23_MC_74X'
+FILELIST='filelists/Aug27_MC_74X'
 #FILELIST13='filelists/July13_MC_74X'
 
 signal_mc = [ ]
@@ -180,11 +180,11 @@ if options.proc_data or options.proc_all:
    'SingleElectron-2015B-prompt',
    'Tau-2015B-prompt'
   ]
-  DATAFILELIST="./filelists/July23_Data_74X"
+  DATAFILELIST="./filelists/Aug27_Data_74X"
 
   for sa in data_samples:
       JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July23_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Aug27_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 30 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -195,21 +195,21 @@ if options.proc_data or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-    'TTJets',
-    'TT',
-		'WJetsToLNu',
-    'WWinclusive',
-    'ZZinclusive',
-    'WZinclusive',
+#    'TTJets',
+#    'TT',
+#		'WJetsToLNu',
+#    'WWinclusive',
+#    'ZZinclusive',
+#    'WZinclusive',
    # 'QCDFlat',
 #    'QCDMuEnr',
-    'T-tW',
-    'Tbar-tW',
-    'WZTo1L1Nu2Q',
-    'WWTo2L2Nu',
-    'WWTo4Q',
-    'WWToLNuQQ',
-    'ZZTo4L'
+#    'T-tW',
+#    'Tbar-tW',
+#    'WZTo1L1Nu2Q',
+#    'WWTo2L2Nu',
+#    'WWTo4Q',
+#    'WWToLNuQQ',
+#    'ZZTo4L'
    # 'DYJetsToLL'
      ]
 
@@ -223,7 +223,7 @@ if options.proc_bkg or options.proc_all:
 #        ]
 
   soups = ['']
-  nfiles = sum(1 for line in open('%(FILELIST)s_DYJetsToLL_M-50-LO.dat' % vars()))
+  nfiles = sum(1 for line in open('%(FILELIST)s_DYJetsToLL.dat' % vars()))
   nperjob = 30 
   for sp in soups:  
     JOB='DYJetsToTauTau%s_2015' % (sp)

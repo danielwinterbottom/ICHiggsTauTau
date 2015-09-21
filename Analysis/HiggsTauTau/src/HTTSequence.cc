@@ -630,7 +630,7 @@ if(channel != channel::wmnu) {
   BuildModule(httPairSelector);
 }
 
-if(strategy_type==strategy::spring15){
+if(strategy_type==strategy::spring15&&!is_data){
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_ditau_label("ditau"));
 }
