@@ -17,16 +17,16 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
-PRODUCTION=May20
-INPUTPARAMS="filelists/May20/ParamsMay20.dat"
+PRODUCTION=Aug18
+INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_run2siginc300615
+  JOBDIRPREFIX=jobs_lighttree_genflags_260815
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_run2siginc290615
+  OUTPUTPREFIX=output_lighttree_genflags_260815
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -103,7 +103,9 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
   
   mkdir -p $JOBDIR
   mkdir -p $OUTPUTDIR
-  
+
+  cp $CONFIG $OUTPUTDIR
+
   for QUEUEDIR in short medium long
     do
     if [ "$DOCERN" = "0" ]
@@ -140,9 +142,9 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/${PRODUCTION}/MC
     fi
-#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJ*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
+#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
 	  do
       echo "Processing files in "$FILELIST
       
@@ -208,7 +210,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 	fi
     fi
     
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*`
+    for FILELIST in filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*
 	  do
       if [ "$DOSHARED" = "true" ]
 	  then

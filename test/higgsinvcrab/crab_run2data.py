@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='Jul27'
+prod ='Aug18'
 config = Configuration()
 config.section_('General')
 config.section_('Data')

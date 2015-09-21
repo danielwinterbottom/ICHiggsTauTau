@@ -33,6 +33,7 @@ class ICGenParticleProducer : public edm::EDProducer {
 
   bool store_mothers_;
   bool store_daughters_;
+  bool store_statusFlags_;
 };
 
 #endif

@@ -22,15 +22,15 @@ echo "Using job-submission: " $JOBSUBMIT
 
 PRODUCTION=Dec18
 INPUTPARAMS="filelists/Dec18/ParamsDec18.dat"
-CONFIG=scripts/DefaultLightTreeConfig_data.cfg
+CONFIG=scripts/DefaultLightTreeConfig_sashadata.cfg
 
 
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE UESUP UESDOWN SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree_singlemuforsashacrosschecksashaonly_150715
+  JOBDIRPREFIX=jobs_lighttree_singlemuforsashacrosschecksashaonly_tkisotightoverlap_250815
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_singlemuforsashacrosschecksashaonly_150715
+  OUTPUTPREFIX=output_lighttree_singlemuforsashacrosschecksashaonly_tkisotightoverlap_250815
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -107,7 +107,9 @@ if [ "$SYST" = "ELEEFFUP" ]
   echo "Config file: $CONFIG"
   mkdir -p $JOBDIR
   mkdir -p $OUTPUTDIR
-  
+
+  cp $CONFIG $OUTPUTDIR
+
   for QUEUEDIR in medium long
     do
     if [ "$DOCERN" = "0" ]
@@ -149,7 +151,7 @@ if [ "$SYST" = "ELEEFFUP" ]
       
       echo "JOB name = $JOB"
       
-      $JOBWRAPPER "./bin/LightTreeMakerSasha --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+      $JOBWRAPPER "./bin/LightTreeMakerSasha --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS  &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
       $JOBSUBMIT $JOBDIR/$JOB.sh
       
       
