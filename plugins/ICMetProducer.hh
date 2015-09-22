@@ -257,11 +257,17 @@ void ICMetProducer<pat::MET>::constructSpecific(
 #endif
       } else {
 #if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >=4
-        dest.set_pt(src.uncorrectedPt());
         dest.set_eta(src.eta());
-        dest.set_phi(src.uncorrectedPhi());
         dest.set_energy(src.energy());
+#if CMSSW_REVISION >= 12
+        dest.set_pt(src.uncorPt());
+        dest.set_phi(src.uncorPhi());
+        dest.set_sum_et(src.uncorSumEt());
+#else
+        dest.set_pt(src.uncorrectedPt());
+        dest.set_phi(src.uncorrectedPhi());
         dest.set_sum_et(src.uncorrectedSumEt());
+#endif
 #endif
       }
     }
