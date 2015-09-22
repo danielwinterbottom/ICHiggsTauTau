@@ -580,12 +580,12 @@ namespace ic {
     
     //slightly different met format for new ntuples
     Met const* mets;
-    if(strategy_ == strategy::paper2013){
+//    if(strategy_ == strategy::paper2013){
       mets = event->GetPtr<Met>(met_label_);
-    } else {
-      std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMet");
-      mets = met_vec.at(0);  
-    }
+ //   } else {
+  //    std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMet");
+   //   mets = met_vec.at(0);  
+    //}
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> corrected_jets;
