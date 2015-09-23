@@ -1,7 +1,7 @@
-#include "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneLikelihood.h"
+#include "HiggsTauTau/SVFitRun2/interface/SVfitStandaloneLikelihood.h"
 
-#include "TauAnalysis/SVfitStandalone/interface/svFitStandaloneAuxFunctions.h"
-#include "TauAnalysis/SVfitStandalone/interface/LikelihoodFunctions.h"
+#include "HiggsTauTau/SVFitRun2/interface/svFitStandaloneAuxFunctions.h"
+#include "HiggsTauTau/SVFitRun2/interface/LikelihoodFunctions.h"
 
 using namespace svFitStandalone;
 
