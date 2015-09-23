@@ -116,7 +116,7 @@ int main(int argc, char* argv[]){
     Double_t x3[vtxbinbounds.size()];
     Double_t err_x3[vtxbinbounds.size()];
     
-    for(int i=0; i<(vtxbinbounds.size()-1); i++)
+    for(unsigned i=0; i<(vtxbinbounds.size()-1); i++)
     {
         x3[i]=vtxbinbounds[i]+((vtxbinbounds[i+1]-vtxbinbounds[i])/2.0);   
         err_x3[i]=(vtxbinbounds[i+1]-vtxbinbounds[i])/2.0;
