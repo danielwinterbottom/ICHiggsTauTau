@@ -1029,7 +1029,7 @@ int main(int argc, char* argv[]){
     }
   }
 
-  TH1F *w_hist_ss;
+  TH1F *w_hist_ss=0;
 
   if (channel == channel::em) {
     w_norm = 0; 
