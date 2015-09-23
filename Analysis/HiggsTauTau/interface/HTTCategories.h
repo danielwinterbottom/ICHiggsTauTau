@@ -255,8 +255,8 @@ class HTTCategories : public ModuleBase {
   int convergence_bb_; //Defined if n_jets >= 2
   branch_var jdeta_;     // Defined if n_jets >= 2
   float jdphi_;
-  unsigned mc_origin_1_;
-  unsigned mc_origin_2_;
+  unsigned gen_match_1_;
+  unsigned gen_match_2_;
   //double leading_lepton_match_pt_;
   //double subleading_lepton_match_pt_;
 

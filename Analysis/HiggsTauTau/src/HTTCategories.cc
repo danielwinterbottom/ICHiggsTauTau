@@ -82,8 +82,8 @@ namespace ic {
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
-      outtree_->Branch("gen_match_1", &mc_origin_1_);
-      outtree_->Branch("gen_match_2", &mc_origin_2_);
+      outtree_->Branch("gen_match_1", &gen_match_1_);
+      outtree_->Branch("gen_match_2", &gen_match_2_);
 //      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
 //      outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
@@ -317,8 +317,8 @@ namespace ic {
       synctree_->Branch("dilepton_veto", &dilepton_veto_, "dilepton_veto/O");
       synctree_->Branch("extraelec_veto", &extraelec_veto_, "extraelec_veto/O");
       synctree_->Branch("extramuon_veto", &extramuon_veto_, "extramuon_veto/O");
-      synctree_->Branch("gen_match_1", &mc_origin_1_, "gen_match_1/i");
-      synctree_->Branch("gen_match_2", &mc_origin_2_,"gen_match_2/i");
+      synctree_->Branch("gen_match_1", &gen_match_1_, "gen_match_1/i");
+      synctree_->Branch("gen_match_2", &gen_match_2_,"gen_match_2/i");
 
       // Variables defined when lepton 2 is a tau
       // raw value of the 3hits delta-beta isolation
@@ -530,8 +530,8 @@ namespace ic {
     }
     n_pu_ = true_int;
     rho_ = eventInfo->jet_rho();
-    if(event->Exists("mc_origin_1")) mc_origin_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("mc_origin_1"));
-    if(event->Exists("mc_origin_2")) mc_origin_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("mc_origin_2"));
+    if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+    if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
 //    if(event->Exists("leading_lepton_match_pt")) leading_lepton_match_pt_ = event->Get<double>("leading_lepton_match_pt");
 //    if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
     
