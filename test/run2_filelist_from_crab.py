@@ -7,11 +7,21 @@ if (len(sys.argv)!=2):
 
 
 
+
+
 getoutputcommand="crab getoutput --dump --xrootd "+sys.argv[1]
 reportcommand="crab report "+sys.argv[1]
 import subprocess 
 
+checkproxy=subprocess.Popen("voms-proxy-info",stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=False)
+proxyexists=checkproxy.communicate()
+proxywords=(list(proxyexists)[0]).split()
+if proxywords[2]=="found:" :
+  print "You need to generate a proxy first!"
+  exit()
+
 print sys.argv[1]
+
 
 print "   Getting report for task"
 #run report command and get number of events
