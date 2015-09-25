@@ -844,7 +844,7 @@ namespace ic {
       }
       for (auto const& m : masses) {
         if (m == "145" || m == "155") { // no samples, will do horizontal morphing
-          double x1, x2, x;
+          double x1=0., x2=0., x=0.;
           std::string s1, s2;
           if (m == "145") {
             x = 145; x1 = 140; x2 = 150; s1 = "140"; s2 = "150";
@@ -1647,7 +1647,7 @@ namespace ic {
     return prob;
   }
 
-  HTTAnalysis::Value HTTAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min, int mode) {
+  HTTAnalysis::Value HTTAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double /*mt_min*/, int mode) {
     if(!verbosity_) RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
 
     if(verbosity_) std::cout << "Running WTTTemplate fit with mode: " << mode << std::endl;
