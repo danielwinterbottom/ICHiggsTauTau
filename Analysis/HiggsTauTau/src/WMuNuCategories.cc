@@ -81,7 +81,6 @@ namespace ic {
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
     std::vector<PileupInfo *> puInfo;
-    float true_int = -1;
 
     rho_ = eventInfo->jet_rho();
     

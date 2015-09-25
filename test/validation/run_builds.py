@@ -242,7 +242,7 @@ def runBuild(gh_user, gh_token, pr, config, req_user, do_clean=False):
       payload = {
         'state'       : state,
         'target_url'  : raw_url,
-        'description' : 'Task started by %s on %s' % (opts.gh_user, thedate),
+        'description' : 'Task started by %s on %s' % (req_user, thedate),
         'context'     : task
       }
       status_resp = requests.post(statuses_url, auth=auth, data=json.dumps(payload))

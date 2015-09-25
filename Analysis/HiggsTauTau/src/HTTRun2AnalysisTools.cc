@@ -456,7 +456,7 @@ namespace ic {
     return std::make_pair(w_hist, w_norm);
   }
 
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
     Value qcd_norm;
     TH1F qcd_hist;
