@@ -29,7 +29,7 @@
 
 namespace ic {
 
-  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity) : ch_(ch), year_(year), verbosity_(verbosity)  {
+  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int use_status_flags, int verbosity) : ch_(ch), year_(year), use_status_flags_(use_status_flags), verbosity_(verbosity)  {
     lumi_ = 1.;
     qcd_os_ss_factor_ = 1.06;
     using boost::range::push_back;
@@ -63,10 +63,15 @@ namespace ic {
       "WWinclusive", 
       "WZinclusive", 
       "ZZinclusive",
+      "DYJetsToTauTau",
     };
     if (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
         "WJetsToLNu",
+        "DYJetsToLL-L", 
+        "DYJetsToLL-J",
+        "DYJetsToTauTau-L",
+        "DYJetsToTauTau-JJ",
       });
     }
     if (ch_ == channel::et) {
@@ -89,6 +94,27 @@ namespace ic {
         "Tau-2015B-17Jul"
       });
     }   
+
+    //Sample splitting
+    if (ch_ == channel::et){
+      alias_map_["ztt_sel"] = "(gen_match_2==5)";
+      alias_map_["zl_sel"] = "(gen_match_2<5)";
+      alias_map_["zj_sel"] = "(gen_match_2==6)";
+    }
+    if (ch_ == channel::mt){
+      alias_map_["ztt_sel"] = "(gen_match_2==5)";
+      alias_map_["zl_sel"] = "(gen_match_2<5)";
+      alias_map_["zj_sel"] = "(gen_match_2==6)";
+    }
+    if (ch_ == channel::tt){
+      alias_map_["ztt_sel"] = "(gen_match_1==5&&gen_match_2==5)";
+      alias_map_["zl_sel"] = "(gen_match_2<5)";
+      alias_map_["zj_sel"] = "(gen_match_2==6||gen_match_1==6)";
+    }
+    if (ch_ == channel::em || ch_ == channel::zmm || ch_ == channel::zee || ch_ == channel::wmnu){
+      alias_map_["ztt_sel"] = "(gen_match_1>2 && gen_match_2>3)";
+      alias_map_["zll_sel"] = "(gen_match_1<3 && gen_match_2<4)";    
+    }
 
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
@@ -176,7 +202,7 @@ namespace ic {
 
 
 
-
+  if(use_status_flags_){
     samples_alias_map_["zj_samples"] = {
      "DYJetsToLL",
 //     "DYJetsToTauTau10-50-JJ", "DYJetsToLL10-50-J"
@@ -187,29 +213,69 @@ namespace ic {
    samples_alias_map_["zl_samples"] = {
      "DYJetsToLL"//,"DYJetsToLL10-50-L"
    };
-
- if(ch_!=channel::em){
+  } else {
+     samples_alias_map_["zj_samples"] = {
+     "DYJetsToTauTau-JJ","DYJetsToLL-J",
+//     "DYJetsToTauTau10-50-JJ", "DYJetsToLL10-50-J"
+    };
+   samples_alias_map_["ztt_samples"]={
+     "DYJetsToTauTau"//,"DYJetsToTauTau10-50"
+  };
+   samples_alias_map_["zl_samples"] = {
+     "DYJetsToLL-L"//,"DYJetsToLL10-50-L"
+   };
+ }  
+  
+ if(ch_!=channel::em && use_status_flags_){
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL", 
-   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "WJetsToLNu","TT"
    };
 
   }
   
- if(ch_==channel::em){
+
+ if(ch_!=channel::em && !use_status_flags_){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL",
-   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "DYJetsToTauTau-JJ","DYJetsToLL-J","DYJetsToTauTau","DYJetsToLL-L", 
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "WJetsToLNu","TT"
+   };
+
+  }
+
+ if(ch_==channel::em && !use_status_flags_){
+  samples_alias_map_["qcd_sub_samples"] = {
+   "DYJetsToLL","DYJetsToTauTau",
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "TT"
    };
   }
   
-  samples_alias_map_["w_sub_samples"] = {
+
+ if(ch_==channel::em && use_status_flags_){
+  samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL",
-   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "TT"
    };
+  }
+
+if(use_status_flags_){
+  samples_alias_map_["w_sub_samples"] = {
+   "DYJetsToLL",
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "TT"
+   };
+  }else{
+  samples_alias_map_["w_sub_samples"] = {
+   "DYJetsToLL-L","DYJetsToTauTau","DYJetsToLL-J","DYJetsToTauTau-JJ"
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "TT"
+   };
+
+}
 
   }
 
@@ -334,20 +400,22 @@ namespace ic {
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
-/*    if (ch_ != channel::em) {
+    if (ch_ != channel::em && !use_status_flags_) {
       auto ztt_leptonic_norm = this->GetLumiScaledRate("DYJetsToTauTau-L", sel, cat, wt);
       TH1F ztt_leptonic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-L", sel, cat, wt);
       SetNorm(&ztt_leptonic_hist, ztt_leptonic_norm.first);
       if (verbosity_) PrintValue("ZTT-Leptonic", ztt_leptonic_norm); 
       ztt_norm = ValueAdd(ztt_norm, ztt_leptonic_norm);
       ztt_hist.Add(&ztt_leptonic_hist);
+/*
       auto ztt_hadronic_norm = this->GetLumiScaledRate("DYJetsToTauTau-JJ"+dy_soup_, sel, cat, wt);
       TH1F ztt_hadronic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-JJ"+dy_soup_, sel, cat, wt);
       SetNorm(&ztt_hadronic_hist, ztt_hadronic_norm.first);
       if (verbosity_) PrintValue("ZTT-Hadronic", ztt_hadronic_norm);
       ztt_norm = ValueAdd(ztt_norm, ztt_hadronic_norm);
       ztt_hist.Add(&ztt_hadronic_hist);
-    }*/
+*/
+    }
 
     return std::make_pair(ztt_hist, ztt_norm);
   }
@@ -596,13 +664,13 @@ namespace ic {
     // Z->ll
     if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       std::string zl_sel, zj_sel;
-      if(ch_ == channel::et||ch_==channel::mt){
-      zl_sel= sel+"&&gen_match_2<5";
-      zj_sel= sel+"&&(gen_match_2==6)";
-      } else if(ch_ == channel::tt){
-      zl_sel= sel+"&&gen_match_2<5";
-      zj_sel= sel+"&&(gen_match_2==6||gen_match_1==6)";
-      } 
+      if(use_status_flags_){
+      zl_sel= sel+"&&"+this->ResolveAlias("zl_sel");
+      zj_sel= sel+"&&"+this->ResolveAlias("zj_sel");
+      } else {
+      zl_sel = sel;
+      zj_sel = sel;
+      }
       auto zl_pair = this->GenerateZL(method, var, zl_sel, cat, wt);
       auto zj_pair = this->GenerateZJ(method, var, zj_sel, cat, wt);
       Value zll_norm = ValueAdd(zl_pair.second, zj_pair.second);
@@ -617,7 +685,10 @@ namespace ic {
       hmap["ZJ"+postfix]  = zj_pair;
       total_hist.Add(&hmap["ZLL"+postfix].first,1.0);
     } else {
-      std::string zll_sel = sel+"&&gen_match_1<3&&gen_match_2<4";
+      std::string zll_sel;
+      if(use_status_flags_){
+      zll_sel = sel+"&&"+this->ResolveAlias("zll_sel");
+      }else zll_sel=sel;
       auto zll_pair = this->GenerateZLL(method, var, zll_sel, cat, wt);
       std::string zll_map_label = "ZLL";
       PrintValue(zll_map_label+postfix, zll_pair.second);
@@ -628,13 +699,9 @@ namespace ic {
     // Z->tautau
     if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       std::string ztt_sel;
-      if(ch_ == channel::et||ch_==channel::mt){
-      ztt_sel = sel+"&&gen_match_2==5";
-      } else if(ch_ == channel::tt){
-      ztt_sel = sel+"&&gen_match_1==5&&gen_match_2==5";
-      } else if(ch_ == channel::em){
-      ztt_sel = sel+"&&gen_match_1>2&&gen_match_2>3";
-      } 
+      if(use_status_flags_){
+        ztt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
+      } else ztt_sel = sel;
       auto ztt_pair = this->GenerateZTT(method, var, ztt_sel, cat, wt);
       std::string ztt_map_label = "ZTT";
       //std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";

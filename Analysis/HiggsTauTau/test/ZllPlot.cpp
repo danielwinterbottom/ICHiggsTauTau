@@ -21,6 +21,7 @@ int main(int argc, char* argv[]){
 	unsigned method;															// Use background methods for chosen category
 	string var;																		// Use background methods for chosen category
 	string cat;																		// Use background methods for chosen category
+  unsigned use_status_flags;
 	unsigned verbosity;														// Verbose output, useful for diagnostic purposes
 	bool do_ss;                            		    // Tweaking some things for the paper
 	string datacard;             									// Channel, e.g. et
@@ -44,6 +45,7 @@ int main(int argc, char* argv[]){
   	("method",           		    po::value<unsigned>(&method)->required())
 	  ("var",              		    po::value<string>(&var)->required())
 	  ("cat",             		    po::value<string>(&cat)->default_value(""))
+    ("use_status_flags",        po::value<unsigned>(&use_status_flags)->default_value(1))
 	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
 	  ("do_ss", 	                po::value<bool>(&do_ss)->default_value(false))
 	  ("interpolate", 	          po::value<bool>(&interpolate)->default_value(false))
@@ -98,7 +100,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
 	// ************************************************************************
-	HTTRun2Analysis ana(String2Channel(channel_str), "2015", verbosity);
+	HTTRun2Analysis ana(String2Channel(channel_str), "2015", use_status_flags, verbosity);
     ana.SetQCDRatio(qcd_os_ss_factor);
     if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
