@@ -108,7 +108,7 @@ $(document).ready(function(){initNavTree('_i_c_jet_flavour_calculator_8cc_source
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;FWCore/Utilities/interface/InputTag.h&quot;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;DataFormats/Common/interface/Handle.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;DataFormats/Common/interface/ValueMap.h&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;SimDataFormats/JetMatching/interface/JetFlavourInfoMatching.h&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;SimDataFormats/JetMatching/interface/JetFlavourMatching.h&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="class_i_c_jet_flavour_calculator.html#ae69c882c75eeb91b307b5a0ad52758db">   13</a></span>&#160;<a class="code" href="class_i_c_jet_flavour_calculator.html#ae69c882c75eeb91b307b5a0ad52758db">ICJetFlavourCalculator::ICJetFlavourCalculator</a>(</div>
@@ -126,27 +126,35 @@ $(document).ready(function(){initNavTree('_i_c_jet_flavour_calculator_8cc_source
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  edm::Handle &lt;edm::View &lt;reco::Jet&gt; &gt; jets_handle;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, jets_handle);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  edm::Handle&lt;reco::JetFlavourMatchingCollection&gt; flavour_handle;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="keyword">event</span>.getByLabel(input_jet_flavour_, flavour_handle);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  std::vector&lt;int&gt; values(jets_handle-&gt;size(), 0);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; jets_handle-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    values[i] = (*flavour_handle)[jets_handle-&gt;refAt(i)].getFlavour();</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  }</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  edm::ValueMap&lt;int&gt;::Filler filler(*product);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  filler.insert(jets_handle, values.begin(), values.end());</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  filler.fill();</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="keyword">event</span>.put(product);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keywordtype">void</span> ICJetFlavourCalculator::beginJob() {}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keywordtype">void</span> ICJetFlavourCalculator::endJob() {}</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<a class="code" href="_i_c_jet_flavour_calculator_8cc.html#a75e612345de16ca5439ed8c523d80eab">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_jet_flavour_calculator.html">ICJetFlavourCalculator</a>);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION&gt;=7 &amp;&amp; CMSSW_MINOR_VERSION &gt;=4 </span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  edm::Handle&lt;reco::JetFlavourInfoMatchingCollection&gt; flavour_handle;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  edm::Handle&lt;reco::JetFlavourMatchingCollection&gt; flavour_handle;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keyword">event</span>.getByLabel(input_jet_flavour_, flavour_handle);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  std::vector&lt;int&gt; values(jets_handle-&gt;size(), 0);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; jets_handle-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION&gt;=7 &amp;&amp; CMSSW_MINOR_VERSION&gt;=4</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    values[i] = (*flavour_handle)[jets_handle-&gt;refAt(i)].getPartonFlavour();</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    values[i] = (*flavour_handle)[jets_handle-&gt;refAt(i)].getFlavour();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  edm::ValueMap&lt;int&gt;::Filler filler(*product);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  filler.insert(jets_handle, values.begin(), values.end());</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  filler.fill();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keyword">event</span>.put(product);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keywordtype">void</span> ICJetFlavourCalculator::beginJob() {}</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keywordtype">void</span> ICJetFlavourCalculator::endJob() {}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">// define this as a plug-in</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<a class="code" href="_i_c_jet_flavour_calculator_8cc.html#a75e612345de16ca5439ed8c523d80eab">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_jet_flavour_calculator.html">ICJetFlavourCalculator</a>);</div>
 <div class="ttc" id="class_i_c_jet_flavour_calculator_html"><div class="ttname"><a href="class_i_c_jet_flavour_calculator.html">ICJetFlavourCalculator</a></div><div class="ttdef"><b>Definition:</b> <a href="_i_c_jet_flavour_calculator_8h_source.html#l00010">ICJetFlavourCalculator.h:10</a></div></div>
 <div class="ttc" id="_i_c_jet_flavour_calculator_8h_html"><div class="ttname"><a href="_i_c_jet_flavour_calculator_8h.html">ICJetFlavourCalculator.h</a></div></div>
 <div class="ttc" id="class_i_c_jet_flavour_calculator_html_ae69c882c75eeb91b307b5a0ad52758db"><div class="ttname"><a href="class_i_c_jet_flavour_calculator.html#ae69c882c75eeb91b307b5a0ad52758db">ICJetFlavourCalculator::ICJetFlavourCalculator</a></div><div class="ttdeci">ICJetFlavourCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_jet_flavour_calculator_8cc_source.html#l00013">ICJetFlavourCalculator.cc:13</a></div></div>
