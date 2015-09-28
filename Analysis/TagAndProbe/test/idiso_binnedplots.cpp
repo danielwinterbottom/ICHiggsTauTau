@@ -155,7 +155,7 @@ int main(int argc, char* argv[]){
     const Int_t n1=ptbinbounds.size()-1;
     Double_t x1[ptbinbounds.size()];
     Double_t err_x1[ptbinbounds.size()];
-    for(int i=0; i<(ptbinbounds.size()-1); i++)
+    for(unsigned i=0; i<(ptbinbounds.size()-1); i++)
     {
         x1[i]=ptbinbounds[i]+((ptbinbounds[i+1]-ptbinbounds[i])/2.0);   
         err_x1[i]=(ptbinbounds[i+1]-ptbinbounds[i])/2.0;

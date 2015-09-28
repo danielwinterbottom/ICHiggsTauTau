@@ -2,19 +2,20 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='July23_MC_74X'
+config.General.workArea='Sep22_MC_74X'
 #config.General.requestName = 'May13_MC'
 config.section_('JobType')
-config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_74X_Jul15.py'
+config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_7_patch1/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_74X_Sep15.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=74XMINIAOD','isData=0','isNLO=1']
+#config.JobType.inputFiles = ['Summer15_V5_MC.db']
+config.JobType.pyCfgParams = ['release=74XMINIAOD','isData=0','isNLO=1','globalTag=74X_mcRun2_asymptotic_v2']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000 
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adewit/July23_MC_74X/'
+config.Data.outLFNDirBase='/store/user/adewit/Sep22_MC_74X/'
 config.section_('User')
 config.section_('Site')
 config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome']

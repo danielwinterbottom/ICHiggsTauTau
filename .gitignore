@@ -9,6 +9,7 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
+*.pcm
 
 # Compiled Static libraries
 *.lai

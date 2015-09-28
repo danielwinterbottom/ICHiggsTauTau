@@ -122,7 +122,7 @@ namespace ic {
     bool result = false;
 
     double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
-    int n_pf = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
+//    int n_pf = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
 
     if (eta <= 2.4) {
       result = neutralFrac   < 0.99
@@ -134,11 +134,11 @@ namespace ic {
     } else if(eta<=3.0){
       result = neutralFrac   < 0.99
             && jet->neutral_em_energy_frac()    < 0.99
-	&& jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
+            && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
     }
     else{
       result = jet->neutral_em_energy_frac()    < 0.90
-	&& n_pf>10;
+	    && jet->neutral_multiplicity()>10;
     }
     return result;
   }
@@ -564,7 +564,7 @@ namespace ic {
     if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
     
     double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
-    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+//    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
     
     return(
        !elec->has_matched_conversion()
@@ -599,7 +599,7 @@ namespace ic {
     if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
     
     double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
-    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
     
     return(
        !elec->has_matched_conversion()
@@ -629,12 +629,13 @@ namespace ic {
 
    } 
 
+  
   bool VetoElectronIDSpring15(Electron const* elec){//function for spring15 veto 25ns
     bool in_barrel = true;
     if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
     
     double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
-    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+//    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
     
     return(
        !elec->has_matched_conversion()
@@ -821,20 +822,20 @@ namespace ic {
     double pt = fabs(elec->pt());
     double idmva = elec->GetIdIso("mvaNonTrigSpring15");
     if (!loose_wp) {
-      if (eta <= 0.8 && pt <= 10                  && idmva > -0.253) pass_mva = true;
-      if (eta >  0.8 && eta <= 1.479 && pt <=10   && idmva > 0.081) pass_mva = true;
-      if (eta >  1.479 && pt <= 10                && idmva > -0.081) pass_mva = true;
-      if (eta <= 0.8 && pt > 10                   && idmva > 0.965) pass_mva = true;
-      if (eta >  0.8 && eta <= 1.479 && pt > 10   && idmva > 0.917) pass_mva = true;
-      if (eta >  1.479 && pt > 10                 && idmva > 0.683) pass_mva = true;
+      if (eta <= 0.8 && pt <= 10                  && idmva > 0.287435) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479 && pt <=10   && idmva > 0.221846) pass_mva = true;
+      if (eta >  1.479 && pt <= 10                && idmva > -0.303263) pass_mva = true;
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.967083) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479 && pt > 10   && idmva > 0.929117) pass_mva = true;
+      if (eta >  1.479 && pt > 10                 && idmva > 0.726311) pass_mva = true;
 
     } else {
-      if (eta <= 0.8 && pt <= 10                  && idmva > -0.483) pass_mva = true;
-      if (eta >  0.8 && eta <= 1.479 && pt <=10   && idmva > -0.267) pass_mva = true;
-      if (eta >  1.479 && pt <= 10                && idmva > -0.323) pass_mva = true;
-      if (eta <= 0.8 && pt > 10                   && idmva > 0.933) pass_mva = true;
-      if (eta >  0.8 && eta <= 1.479 && pt > 10   && idmva > 0.825) pass_mva = true;
-      if (eta >  1.479 && pt > 10                 && idmva > 0.337) pass_mva = true;
+      if (eta <= 0.8 && pt <= 10                  && idmva > -0.083313) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479 && pt <=10   && idmva > -0.235222) pass_mva = true;
+      if (eta >  1.479 && pt <= 10                && idmva > -0.67099) pass_mva = true;
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.913286) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479 && pt > 10   && idmva > 0.805013) pass_mva = true;
+      if (eta >  1.479 && pt > 10                 && idmva > 0.358969) pass_mva = true;
     }
     return pass_mva;
   }

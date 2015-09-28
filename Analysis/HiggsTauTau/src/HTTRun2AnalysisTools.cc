@@ -131,7 +131,7 @@ namespace ic {
     // Inclusive region for e-mu fake rate normalisation
       // Sideband region for e-mu SS fake shape estimation
       alias_map_["ss"]                        = "!os";
-      alias_map_["sel"]                       = "pzeta>-20.";
+      alias_map_["sel"]                       = "1";
     }
 
     alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL";
@@ -139,7 +139,7 @@ namespace ic {
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
 //     "WZJetsTo3LNu",
-     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
+     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     };
 
     samples_alias_map_["top_samples"] = {
@@ -452,7 +452,7 @@ namespace ic {
     return std::make_pair(w_hist, w_norm);
   }
 
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
     Value qcd_norm;
     TH1F qcd_hist;
@@ -575,14 +575,16 @@ namespace ic {
     hmap["data_obs"+postfix] = data_pair;
     // Top
     auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
-    std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
+    std::string top_map_label = "TT";
+    //std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
     PrintValue(top_map_label+postfix, top_pair.second);
     total_bkr = ValueAdd(total_bkr, top_pair.second);
     hmap[top_map_label+postfix] = top_pair;
     TH1F total_hist = hmap[top_map_label+postfix].first; 
     // Diboson
     auto vv_pair = this->GenerateVV(method, var, sel, cat, wt);
-    std::string vv_map_label = (ch_ == channel::em) ? "EWK" : "VV";
+    std::string vv_map_label =  "VV";
+    //std::string vv_map_label = (ch_ == channel::em) ? "EWK" : "VV";
     PrintValue(vv_map_label+postfix, vv_pair.second);
     total_bkr = ValueAdd(total_bkr, vv_pair.second);
     hmap[vv_map_label+postfix] = vv_pair;
@@ -606,7 +608,8 @@ namespace ic {
     // Z->tautau
     if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       auto ztt_pair = this->GenerateZTT(method, var, sel, cat, wt);
-      std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
+      std::string ztt_map_label = "ZTT";
+      //std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
       PrintValue(ztt_map_label+postfix, ztt_pair.second);
       total_bkr = ValueAdd(total_bkr, ztt_pair.second);
       hmap[ztt_map_label+postfix] = ztt_pair;
@@ -630,7 +633,8 @@ namespace ic {
     // QCD/Fakes
     if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
-      std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
+      std::string qcd_map_label = "QCD";
+      //std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
       PrintValue(qcd_map_label+postfix, qcd_pair.second);
       total_bkr = ValueAdd(total_bkr, qcd_pair.second);
       hmap[qcd_map_label+postfix] = qcd_pair;
