@@ -1,5 +1,6 @@
 #!/bin/sh
-DOCERN=0
+DOCERN=1
+DOSUBMIT=0
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -24,9 +25,9 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_genflags_260815
+  JOBDIRPREFIX=jobs_lighttree_noskim_150901
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_genflags_260815
+  OUTPUTPREFIX=output_lighttree_noskim_150901
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -182,12 +183,20 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 	    WJOB=$JOB"_"$FLAVOUR
 	    
 	    $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
-	    $JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
+	    if [ "$DOSUBMIT" = "1" ]; then 
+		$JOBSUBMIT $JOBDIR/$WJOB.sh    
+	    else
+		echo "$JOBSUBMIT $JOBDIR/$WJOB.sh"
+	    fi                                                                                  
 	  done
 	  
       else  
 	  $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	  $JOBSUBMIT $JOBDIR/$JOB.sh
+	    if [ "$DOSUBMIT" = "1" ]; then 
+		$JOBSUBMIT $JOBDIR/$JOB.sh
+	    else
+		echo "$JOBSUBMIT $JOBDIR/$JOB.sh"
+	    fi                                                                                  
       fi
       rm tmp.txt tmp2.txt
       
@@ -242,11 +251,19 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 		WJOB=$JOB"_"$FLAVOUR
 		
 		$JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
-		$JOBSUBMIT $JOBDIR/$WJOB.sh
+		if [ "$DOSUBMIT" = "1" ]; then 
+		    $JOBSUBMIT $JOBDIR/$WJOB.sh
+		else
+		    echo "$JOBSUBMIT $JOBDIR/$WJOB.sh"
+		fi                                                                                  
 	      done
 	  else  
 	      $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	      $JOBSUBMIT $JOBDIR/$JOB.sh
+	      if [ "$DOSUBMIT" = "1" ]; then 
+		  $JOBSUBMIT $JOBDIR/$JOB.sh
+	      else
+		  echo "$JOBSUBMIT $JOBDIR/$JOB.sh"
+	      fi                                                                                  
 	  fi
 	  
 	  rm tmp.txt tmp2.txt
