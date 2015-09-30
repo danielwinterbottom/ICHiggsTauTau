@@ -744,6 +744,27 @@ namespace ic {
 	  jet_csv_[ijet]=jetveccopy[ijet]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
 	  jet_jetid_[ijet]=PFJetID2015(jetveccopy[ijet]);
 	  jet_puid_[ijet]=PileupJetID(jetveccopy[ijet],2);
+
+	  if(!is_data_){
+	    //fill gen matched
+	    double mindR = 1000;
+	    int whichgenjet=-1;
+	    for (unsigned iGenJet = 0; iGenJet < genvec.size(); ++iGenJet) {//loop on genjets
+	      double dR = ROOT::Math::VectorUtil::DeltaR(genvec[iGenJet]->vector(),jetveccopy[ijet]->vector());
+	      if (dR<mindR){
+		mindR = dR;
+		whichgenjet = iGenJet;
+	      }
+	    }//loop on genjets
+	    jet_genjet_mindR_[ijet]=mindR;
+	    if (mindR<0.4){
+	      jet_genMatched_[ijet]=jets[ijet]->parton_flavour();
+	      genjet_pt_[ijet]=genvec[whichgenjet]->pt();
+	      genjet_eta_[ijet]=genvec[whichgenjet]->eta();
+	      genjet_phi_[ijet]=genvec[whichgenjet]->phi();
+	    }
+	  }
+
 	}
 	if(jetveccopy[ijet]->pt()>15)n_jets_15_++;
 	if(jetveccopy[ijet]->pt()>30)n_jets_30_++;
