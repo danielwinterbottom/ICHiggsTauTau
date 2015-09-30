@@ -87,6 +87,7 @@ int main(int argc, char* argv[]){
   bool donoskim;                  // Do no skimming
 
   string mettype;                 // MET input collection to be used
+  string jettype;                 // JET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
   bool doMetFilters;              // apply cleaning MET filters.
   string filters;
@@ -137,6 +138,7 @@ int main(int argc, char* argv[]){
     ("wstream",             po::value<string>(&wstream)->default_value("nunu"))
     ("is_data",             po::value<bool>(&is_data)->required())
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
+    ("jettype",             po::value<string>(&jettype)->default_value("pfJetsPFlow"))
     ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(30.))
     ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(30.))
     ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(15.))
@@ -492,7 +494,7 @@ int main(int argc, char* argv[]){
 
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jettype)
     .set_met_label(mettype)
     .set_dosmear(dosmear)
     .set_doaltmatch(doaltmatch)
@@ -513,11 +515,11 @@ int main(int argc, char* argv[]){
     .set_fs(fs);
   
 
-  CopyCollection<PFJet> alljetsCopyCollection("copytoalljets","pfJetsPFlow","AllpfJetsPFlow");
+  CopyCollection<PFJet> alljetsCopyCollection("copytoalljets",jettype,"AllpfJetsPFlow");
   
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
-    .set_input_label("pfJetsPFlow");
+    .set_input_label(jettype);
     if(!turnoffpuid){
       jetIDFilter.set_predicate((bind(PFJetID2015, _1)) && bind(PileupJetID, _1,2));
     }
@@ -528,7 +530,7 @@ int main(int argc, char* argv[]){
   // Jet pT eta filter
   SimpleFilter<PFJet> jetPtEtaFilter = SimpleFilter<PFJet>
     ("JetPtEtaFilter")
-    .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptprecut, 4.7));
+    .set_input_label(jettype).set_predicate(bind(MinPtMaxEta, _1, jetptprecut, 4.7));
 
 
   //in principle no need to remove overlap because events with leptons are rejected...
@@ -537,23 +539,23 @@ int main(int argc, char* argv[]){
   //we want the leading jets to really be jets even before vetoing leptons...
   //so: removal of jets matched with veto electrons and muons
   OverlapFilter<PFJet, Electron> jetElecOverlapFilter = OverlapFilter<PFJet, Electron>("jetElecOverlapFilter")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jettype)
     .set_reference_label("vetoElectrons")
     .set_min_dr(0.5);
 
   OverlapFilter<PFJet, Muon> jetMuonOverlapFilter = OverlapFilter<PFJet, Muon>("jetMuonOverlapFilter")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jettype)
     .set_reference_label("vetoMuons") //NoIso")
     .set_min_dr(0.5);
 
   OverlapFilter<PFJet, Tau> jetTauOverlapFilter = OverlapFilter<PFJet, Tau>("jetTauOverlapFilter")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jettype)
     .set_reference_label("taus") //NoIso")
     .set_min_dr(0.5);
 
   OneCollCompositeProducer<PFJet> jjLeadingPairProducer = OneCollCompositeProducer<PFJet>
     ("JetJetLeadingPairProducer")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jettype)
     .set_candidate_name_first("jet1")
     .set_candidate_name_second("jet2")
     .set_select_leading_pair(true)
@@ -681,6 +683,7 @@ int main(int argc, char* argv[]){
   LightTreeJetMETval lightTree = LightTreeJetMETval("LightTreeJetMETval")
     .set_fs(fs)
     .set_met_label(mettype)
+    .set_jet_label(jettype)
     .set_is_data(is_data)
     .set_dotrigskim(false)
     .set_do_noskim(donoskim)

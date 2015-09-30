@@ -1,7 +1,10 @@
 #!/bin/sh
 DOCERN=1
 DOSUBMIT=0
-
+JETTYPE="ak4SlimmedJetsPuppi"
+#JETTYPE="pfJetsPFlow"
+#MYEXEC=LightTreeMakerFromMiniAOD
+MYEXEC=JetMETvalidation
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
@@ -25,10 +28,10 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_noskim_150928
-  JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_noskim_150928
-  OUTPUTDIR=$OUTPUTPREFIX/
+  JOBDIRPREFIX=jobs_lighttree_noskim_150930
+  JOBDIR=$JOBDIRPREFIX/$JETTYPE/
+  OUTPUTPREFIX=output_lighttree_noskim_150930
+  OUTPUTDIR=$OUTPUTPREFIX/$JETTYPE/
   
   if [ "$SYST" = "JESUP" ]
       then
@@ -182,7 +185,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 	    do
 	    WJOB=$JOB"_"$FLAVOUR
 	    
-	    $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+	    $JOBWRAPPER "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$WJOB.sh    
 	    else
@@ -191,7 +194,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 	  done
 	  
       else  
-	  $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBWRAPPER "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$JOB.sh
 	    else
@@ -250,7 +253,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 		
 		WJOB=$JOB"_"$FLAVOUR
 		
-		$JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+		$JOBWRAPPER "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
 		if [ "$DOSUBMIT" = "1" ]; then 
 		    $JOBSUBMIT $JOBDIR/$WJOB.sh
 		else
@@ -258,7 +261,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 		fi                                                                                  
 	      done
 	  else  
-	      $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	      $JOBWRAPPER "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	      if [ "$DOSUBMIT" = "1" ]; then 
 		  $JOBSUBMIT $JOBDIR/$JOB.sh
 	      else

@@ -59,6 +59,7 @@ namespace ic {//namespace
     input_params_ = "filelists/Apr04/ParamsApr04.dat";
     sample_name_= "test";
     input_met_ = "metNoMuons";
+    input_jet_ = "pfJetsPFlow";
     trg_weight_file_="input/scale_factors/DataMCWeight_53X_v1.root";
     Alumi_=-1;
     BClumi_=-1;
@@ -380,7 +381,7 @@ namespace ic {//namespace
           //double weight = 1.0;
 
  //    if (do_btag_weight_) {
-//       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
+//       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(input_jet_); // Make a copy of the jet collection
 //       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
 //       //double no_btag_weight = btag_weight.GetWeight(jets, "CSVM", 0, 0, is_2012_);
 //       //double inclusive_btag_weight = btag_weight.GetWeight(jets, "CSVM", 1, 99, is_2012_);

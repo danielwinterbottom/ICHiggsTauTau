@@ -17,6 +17,7 @@ namespace ic {
 
     CLASS_MEMBER(LightTreeJetMETval,fwlite::TFileService*, fs);
     CLASS_MEMBER(LightTreeJetMETval,std::string, met_label);
+    CLASS_MEMBER(LightTreeJetMETval,std::string, jet_label);
     CLASS_MEMBER(LightTreeJetMETval,bool, is_data);
     CLASS_MEMBER(LightTreeJetMETval,bool, ignoreLeptons);
     CLASS_MEMBER(LightTreeJetMETval,bool, dotrigskim);

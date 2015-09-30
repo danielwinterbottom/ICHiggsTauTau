@@ -57,6 +57,9 @@ int jetMetValidation(){//main
   TCanvas *mycvar[nV];
   mycvar[0] = new TCanvas("mycpt","mycpt",1500,1000);
   mycvar[1] = new TCanvas("myceta","myceta",1500,1000);
+  TCanvas *mycpu[nV];
+  mycpu[0] = new TCanvas("mycpupt","mycpupt",1500,1000);
+  mycpu[1] = new TCanvas("mycpueta","mycpueta",1500,1000);
   TCanvas *myceff[nV];
   myceff[0] = new TCanvas("myceffpt","myceffpt",1800,600);
   myceff[0]->Divide(3,1);
@@ -76,6 +79,7 @@ int jetMetValidation(){//main
   std::string ljetidcut[2] = {"_jetid>0.5","_puid>0.5"};
   TH1F *hratio[nV][nP];
   TH1F *hvarrec[nV][nS];
+  TH1F *hvarall[nV][nS];
   TH1F *hvargen[nV];
 
   double varval[nV][nP];
@@ -83,6 +87,7 @@ int jetMetValidation(){//main
 
   TGraphErrors *gr[2*nV];
   TGraphAsymmErrors *grEff[nV][nS-1];
+  TGraphAsymmErrors *grPu[nV][2];
 
   const unsigned nJets = 25;
 
@@ -118,7 +123,7 @@ int jetMetValidation(){//main
   mycmindR->Update();
   mycmindR->Print(("JetGenJetMindR_"+process+".pdf").c_str());
   
-  return 1;
+  //return 1;
 
   for (unsigned iv(0); iv<nV;++iv){//loop on variables
 
@@ -138,6 +143,21 @@ int jetMetValidation(){//main
 	tree->Draw(lvar.str().c_str(),lcut.str().c_str());
       }
     }//loop on jetid cond
+    for (unsigned is(0); is<nS;++is){//loop on jetid cond
+      histname.str("");
+      histname << "hall" << var[iv] << "_" << is;
+      hvarall[iv][is] = new TH1F(histname.str().c_str(),(";"+var[iv]).c_str(),100,iv==0?0:-5,iv==0?500:5);
+      hvarall[iv][is]->Sumw2();
+      for (unsigned ij(1);ij<nJets+1;++ij){//loop on jets
+	lvar.str("");
+	lvar << "jet" << ij << "_" << var[iv] << ">>+" << histname.str();
+	lcut.str("");
+	lcut << "nJets_15>=" << ij << " && genjet" << ij << "_pt>15 && TMath::Abs(genjet" << ij << "_eta)<4.7";
+	if (is==1 || is==3) lcut << " && jet" << ij << ljetidcut[0];
+	if (is==2 || is==3) lcut << " && jet" << ij << ljetidcut[1];	
+	tree->Draw(lvar.str().c_str(),lcut.str().c_str());
+      }
+    }
     histname.str("");
     histname << "hgen" << var[iv];
     hvargen[iv] = new TH1F(histname.str().c_str(),(";"+var[iv]).c_str(),100,iv==0?0:-5,iv==0?500:5);
@@ -183,6 +203,32 @@ int jetMetValidation(){//main
     myceff[iv]->Update();
     myceff[iv]->Print(("Jet"+var[iv]+"_idefficiencies_"+process+".pdf").c_str());
 
+    mycpu[iv]->cd();
+    gPad->SetGridy(1);
+    grPu[iv][0] = new TGraphAsymmErrors();
+    grPu[iv][0]->Divide(hvarrec[iv][0],hvarall[iv][0]);
+    if (iv==0) grPu[iv][0]->GetXaxis()->SetRangeUser(0,100);
+    grPu[iv][0]->SetTitle((";"+var[iv]+";matched/all").c_str());
+    grPu[iv][0]->SetMarkerStyle(22);
+    grPu[iv][0]->Draw("APE");
+
+    grPu[iv][1] = new TGraphAsymmErrors();
+    grPu[iv][1]->Divide(hvarrec[iv][0],hvarall[iv][3],"pois");
+    if (iv==0) grPu[iv][1]->GetXaxis()->SetRangeUser(0,100);
+    grPu[iv][1]->SetTitle((";"+var[iv]+";matched/all").c_str());
+    grPu[iv][1]->SetMarkerStyle(23);
+    grPu[iv][1]->SetMarkerColor(2);
+    grPu[iv][1]->SetLineColor(2);
+    grPu[iv][1]->Draw("PEsame");
+    lat.SetTextColor(2);
+    lat.DrawLatexNDC(0.15,0.85,"matched/ID");
+    lat.SetTextColor(1);
+    lat.DrawLatexNDC(0.15,0.75,"matched/all");
+
+    mycpu[iv]->Update();
+    mycpu[iv]->Print(("Jet"+var[iv]+"_fakerate_"+process+".pdf").c_str());
+
+    continue;
 
     for (unsigned ip(0); ip<nP;++ip){//loop on points
       histname.str("");

@@ -16,6 +16,7 @@ namespace ic {
   LightTreeJetMETval::LightTreeJetMETval(std::string const& name): ModuleBase(name){
     fs_ = NULL;
     met_label_ = "pfMetType1";
+    jet_label_ = "pfJetsPFlow";
     is_data_ = false;
     dotrigskim_ = false;
     do_noskim_ = false;
@@ -211,7 +212,7 @@ namespace ic {
     Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
     //!!if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jet_label_);
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<Muon*> vetomuons=event->GetPtrVec<Muon>("vetoMuons");
     std::vector<Muon*> selmuons=event->GetPtrVec<Muon>("selMuons");
