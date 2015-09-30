@@ -2,20 +2,20 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='July23_Data_74X'
+config.General.workArea='Sep22_MC_74X'
 #config.General.requestName = 'May13_MC'
 config.section_('JobType')
-config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_74X_Jul15.py'
+config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_74X_Sep15.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=74XMINIAOD','isData=1','isNLO=0', 'globalTag=74X_dataRun2_Prompt_v0']
+#config.JobType.inputFiles = ['Summer15_V5_MC.db']
+config.JobType.pyCfgParams = ['release=74X','isData=0','isNLO=1','globalTag=74X_mcRun2_asymptotic_v2']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
-#config.Data.unitsPerJob = 30000 
-config.Data.unitsPerJob = 1
-config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 30000 
+config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adewit/July23_Data_74X/'
+config.Data.outLFNDirBase='/store/user/adewit/Sep22_MC_74X/'
 config.section_('User')
 config.section_('Site')
 config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome']
@@ -41,10 +41,11 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    tasks.append(('Tau-2015B-prompt-fb','/Tau/Run2015B-PromptReco-v1/MINIAOD'))
-    tasks.append(('SingleMuon-2015B-prompt-fb','/SingleMuon/Run2015B-PromptReco-v1/MINIAOD'))
-    tasks.append(('SingleElectron-2015B-prompt-fb','/SingleElectron/Run2015B-PromptReco-v1/MINIAOD'))
-    tasks.append(('MuonEG-2015B-prompt-fb','/MuonEG/Run2015B-PromptReco-v1/MINIAOD'))
+    tasks.append(('WJetsToLNu-AOD','/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/AODSIM'))
+    tasks.append(('DYJetsToLL-AOD','/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3/AODSIM'))
+    #tasks.append(('DYJetsToLL10-50','/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/AODSIM'))
+    #tasks.append(('TTJets','/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/AODSIM'))
+    #tasks.append(('WZTo1L1Nu2Q','/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/AODSIM'))
 
     for task in tasks:
         print task[0]

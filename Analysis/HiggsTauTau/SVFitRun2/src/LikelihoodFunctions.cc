@@ -1,6 +1,6 @@
-#include "HiggsTauTau/SVFit/interface/LikelihoodFunctions.h"
+#include "HiggsTauTau/SVFitRun2/interface/LikelihoodFunctions.h"
 
-#include "HiggsTauTau/SVFit/interface/svFitStandaloneAuxFunctions.h"
+#include "HiggsTauTau/SVFitRun2/interface/svFitStandaloneAuxFunctions.h"
 
 #include <TMath.h>
 

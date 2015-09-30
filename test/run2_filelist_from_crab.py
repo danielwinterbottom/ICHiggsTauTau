@@ -1,28 +1,47 @@
 #!/usr/bin/env python
 import sys
+from optparse import OptionParser
 
-if (len(sys.argv)!=2):
-    print "Usage ./run2_filelist_from_crab.py CRAB_TASK"
-    exit()
+parser = OptionParser()
+
+parser.add_option("--dir", dest="crabdir",
+                  help="Crab task directory")
+parser.add_option("--noreport", dest="no_report",action="store_true",default=False,
+                  help="Do not fetch the task report")
+
+(options,args) = parser.parse_args()
+
+if not options.crabdir:
+  parser.error('Crab task directory not specified (--dir CRAB_TASK)')
 
 
-
-getoutputcommand="crab getoutput --dump --xrootd "+sys.argv[1]
-reportcommand="crab report "+sys.argv[1]
+getoutputcommand="crab getoutput --dump --xrootd "+options.crabdir
+reportcommand="crab report "+options.crabdir
 import subprocess 
 
-print sys.argv[1]
+checkproxy=subprocess.Popen("voms-proxy-info",stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=False)
+proxyexists=checkproxy.communicate()
+proxywords=(list(proxyexists)[0]).split()
+if proxywords[2]=="found:" :
+  print "You need to generate a proxy first!"
+  exit()
 
-print "   Getting report for task"
-#run report command and get number of events
-rep=subprocess.Popen(reportcommand,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)
-repout,reperr = rep.communicate()
-replines=repout.splitlines()
-for repline in replines:
-    if repline[-21:]=="events have been read":
-        replinebits=repline.split(" ")
-        evoutstring="   "+replinebits[0]+" events have been processed"
-        print evoutstring
+print options.crabdir
+
+if not options.no_report:
+  print "   Getting report for task"
+  #run report command and get number of events
+  rep=subprocess.Popen(reportcommand,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)
+  repout,reperr = rep.communicate()
+  replines=repout.splitlines()
+  for repline in replines:
+      if repline[-21:]=="events have been read":
+          replinebits=repline.split(" ")
+          evoutstring="   "+replinebits[0]+" events have been processed"
+          print evoutstring
+
+else:
+  print "    Using --noreport: straight to output list retrieval"
 
 print "   Getting output list for task"
 #run command and get output split into lines

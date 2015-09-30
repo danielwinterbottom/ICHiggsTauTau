@@ -1,28 +1,19 @@
 {
-  "slc6_amd64_gcc481-CMSSW_7_0_7" : {
-    "build_root"        : "/home/build/",
-    "cmssw_env_script"  : "/home/build/env_slc6_481.sh",
-    "cmssw_version"     : "CMSSW_7_0_7",
-    "cmssw_user"        : "ajgilbert",
-    "cmssw_branch"      : "htt-from-CMSSW_7_0_7",
-    "test_script"       : "test/validation/full_compile.sh",
-    "clean_script"      : "test/validation/full_clean.sh"
-  },
-  "slc6_amd64_gcc491-CMSSW_7_3_5" : {
-    "build_root"        : "/home/build/",
-    "cmssw_env_script"  : "/home/build/env_slc6_491.sh",
-    "cmssw_version"     : "CMSSW_7_3_5",
-    "cmssw_user"        : "cms-sw",
-    "cmssw_branch"      : "CMSSW_7_3_5",
-    "test_script"       : "test/validation/full_compile.sh",
-    "clean_script"      : "test/validation/full_clean.sh"
-  },
   "slc6_amd64_gcc491-CMSSW_7_4_6" : {
     "build_root"        : "/home/build/",
     "cmssw_env_script"  : "/home/build/env_slc6_491.sh",
     "cmssw_version"     : "CMSSW_7_4_6",
     "cmssw_user"        : "cms-sw",
     "cmssw_branch"      : "CMSSW_7_4_6",
+    "test_script"       : "test/validation/full_compile.sh",
+    "clean_script"      : "test/validation/full_clean.sh"
+  },
+  "slc6_amd64_gcc491-CMSSW_7_4_12" : {
+    "build_root"        : "/home/build/",
+    "cmssw_env_script"  : "/home/build/env_slc6_491.sh",
+    "cmssw_version"     : "CMSSW_7_4_12",
+    "cmssw_user"        : "cms-sw",
+    "cmssw_branch"      : "CMSSW_7_4_12",
     "test_script"       : "test/validation/full_compile.sh",
     "clean_script"      : "test/validation/full_clean.sh"
   },
