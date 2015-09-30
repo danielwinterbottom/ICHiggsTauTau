@@ -1,0 +1,96 @@
+#ifndef ICHiggsTauTau_Module_LightTree_h
+#define ICHiggsTauTau_Module_LightTree_h
+
+#include <string>
+
+#include "PhysicsTools/FWLite/interface/TFileService.h"
+
+#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
+
+#include "TTree.h"
+
+namespace ic {
+  class LightTreeJetMETval : public ModuleBase {
+
+  private:
+
+    CLASS_MEMBER(LightTreeJetMETval,fwlite::TFileService*, fs);
+    CLASS_MEMBER(LightTreeJetMETval,std::string, met_label);
+    CLASS_MEMBER(LightTreeJetMETval,bool, is_data);
+    CLASS_MEMBER(LightTreeJetMETval,bool, ignoreLeptons);
+    CLASS_MEMBER(LightTreeJetMETval,bool, dotrigskim);
+    CLASS_MEMBER(LightTreeJetMETval,bool, do_noskim);
+    CLASS_MEMBER(LightTreeJetMETval,std::string, trig_obj_label);
+    CLASS_MEMBER(LightTreeJetMETval,std::string, trigger_path);
+
+    TTree *outputTree_;
+    
+    unsigned run_;
+    unsigned lumi_;
+    unsigned event_;
+    double weight_nolep_;
+    double total_weight_lepveto_;
+    double total_weight_leptight_;
+    unsigned nJetsSave_;
+    unsigned nJets_15_;
+
+    std::vector<double> jet_pt_;
+    std::vector<double> jet_E_;
+    std::vector<double> jet_eta_;
+    std::vector<double> jet_phi_;
+    std::vector<double> jet_csv_;
+    std::vector<double> jet_jetid_;
+    std::vector<double> jet_puid_;
+
+    std::vector<double> jet_genjet_mindR_;
+    std::vector<int> jet_genMatched_;
+    std::vector<double> genjet_pt_;
+    std::vector<double> genjet_eta_;
+    std::vector<double> genjet_phi_;
+
+    double sumet_;
+
+    double l1met_;
+    double met_;
+    double genmet_;
+    double metnomuons_;
+    double met_x_;
+    double met_y_;
+    double metnomu_x_;
+    double metnomu_y_;
+    double met_significance_;
+    double metnomu_significance_;
+
+    double pass_sigtrigger_;
+    double pass_mettrigger_;
+    double pass_controltrigger_;
+
+    int nvetomuons_;
+    int nselmuons_;
+    int nvetoelectrons_;
+    int nselelectrons_;
+    int ntaus_;
+    double m_mumu_;
+    double m_ee_;
+    double m_mumu_gen_;
+    double m_ee_gen_;
+    double lep_mt_;
+
+    int n_vertices_;
+
+  public:
+    LightTreeJetMETval(std::string const& name);
+    virtual ~LightTreeJetMETval();
+    
+    virtual int PreAnalysis();
+    virtual int Execute(TreeEvent *event);
+    virtual int PostAnalysis();
+    virtual void PrintInfo();
+
+   };
+
+}
+
+
+#endif
