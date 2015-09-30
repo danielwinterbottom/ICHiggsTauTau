@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='Aug18'
+prod ='Sep29'
 config = Configuration()
 config.section_('General')
 config.section_('Data')
@@ -10,18 +10,23 @@ config.General.transferOutputs = True
 config.General.workArea=prod+'/MET'
 config.Data.outLFNDirBase='/store/user/pdunne/'+prod+'_MET/'
 #config.General.requestName = 'May13_MC'
-config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_6_miniAODcfg.py'
+config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_12_miniAODcfg.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.pyCfgParams = ['isData=1', 'release=74XMINIAOD', 'globalTag=74X_dataRun2_Prompt_v2']
 #config.Data.inputDataset = 'DUMMY'
-config.Data.unitsPerJob = 30000
-config.Data.splitting = 'EventAwareLumiBased'
+config.Data.unitsPerJob = 1
+config.Data.splitting = 'FileBased'
+#config.Data.unitsPerJob = 30000
+#config.Data.splitting = 'EventAwareLumiBased'
 #config.Data.unitsPerJob = 80
 #config.Data.splitting = 'LumiBased'
 config.Data.publication = False
 config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_US_Purdue','T2_IT_Legnaro','T2_FR_GRIF_IRFU']
 config.Site.storageSite = 'T2_UK_London_IC'
+config.Data.ignoreLocality = True
+
+
 
 if __name__ == '__main__':
 
@@ -48,16 +53,20 @@ if __name__ == '__main__':
     tasks=list()
 
     firstrun='246908'
-    maxrun='251883'#!!remember to update max run
+    maxrun='256869'#!!remember to update max run
     firstnonrerecorun='251563'
 
-    tasks.append(('MET-2015B-PromptReco-v1','/MET/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
+#    tasks.append(('MET-2015B-PromptReco-v1','/MET/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
 
-    tasks.append(('SingleMuon-2015B-PromptReco-v1','/SingleMuon/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
+#    tasks.append(('SingleMuon-2015B-PromptReco-v1','/SingleMuon/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
 
-    tasks.append(('MET-2015B-17Jul2015-v1','/MET/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
+#    tasks.append(('MET-2015B-17Jul2015-v1','/MET/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
 
-    tasks.append(('SingleMuon-2015B-17Jul2015-v1','/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
+#    tasks.append(('SingleMuon-2015B-17Jul2015-v1','/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
+
+    tasks.append(('MET-2015D-PromptReco-v3','/MET/Run2015D-PromptReco-v3/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-256869_13TeV_PromptReco_Collisions15_25ns_JSON.txt',firstnonrerecorun+'-'+maxrun))
+
+    tasks.append(('SingleMuon-2015D-PromptReco-v3','/SingleMuon/Run2015D-PromptReco-v3/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-256869_13TeV_PromptReco_Collisions15_25ns_JSON.txt',firstnonrerecorun+'-'+maxrun))
     
     for task in tasks:
         print task[0]
