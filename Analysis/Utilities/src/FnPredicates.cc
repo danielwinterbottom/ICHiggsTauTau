@@ -943,69 +943,69 @@ namespace ic {
   }
 
   //Photon IDs taken from https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2
- bool TightPhotonIDSpring15(Photon const* photon) {//function for spring15 ID
+  bool TightPhotonIDSpring15(Photon const* photon) {//function for spring15 ID
     bool in_barrel = true;
-    if (fabs(photon->sc_eta()) > 1.479) in_barrel = false;
+    if (fabs(photon->eta()) > 1.479) in_barrel = false;
     bool in_endcap = true;
-    if (fabs(photon->sc_eta()) < 1.479) in_endcap = false;
+    if (fabs(photon->eta()) < 1.479) in_endcap = false;
     
     return(
 	( (in_barrel       
 	   && photon->had_tower_over_em()<0.05
 	   && photon->sigma_IetaIeta()<0.01
 	   && photon->dr03_pfiso_charged()<0.91
-	   && photon->dr03_pfiso_neutral()<(0.33+exp(0.0044*photon->pt()+0.5809)
+	   && photon->dr03_pfiso_neutral()<(0.33+exp(0.0044*photon->pt()+0.5809))
            && photon->dr03_pfiso_gamma()<(0.61+0.0043*photon->pt())
-	      ) ||
-        (in_endcap       
-	 && photon->had_tower_over_em()<0.05
-	 && photon->sigma_IetaIeta()<0.0267
-	 && photon->dr03_pfiso_charged()<0.65
-	 && photon->dr03_pfiso_neutral()<(0.93+exp(0.004*photon->pt()+0.9402))
-	 && photon->dr03_pfiso_gamma()<(0.54+0.0041*photon->pt())
-        ) )
+	   ) ||
+	  (in_endcap       
+	   && photon->had_tower_over_em()<0.05
+	   && photon->sigma_IetaIeta()<0.0267
+	   && photon->dr03_pfiso_charged()<0.65
+	   && photon->dr03_pfiso_neutral()<(0.93+exp(0.004*photon->pt()+0.9402))
+	   && photon->dr03_pfiso_gamma()<(0.54+0.0041*photon->pt())
+	   ) )
         );
 
   }
 
- bool MediumPhotonIDSpring15(Photon const* photon) {//function for spring15 ID
+  bool MediumPhotonIDSpring15(Photon const* photon) {//function for spring15 ID
     bool in_barrel = true;
-    if (fabs(photon->sc_eta()) > 1.479) in_barrel = false;
+    if (fabs(photon->eta()) > 1.479) in_barrel = false;
     bool in_endcap = true;
-    if (fabs(photon->sc_eta()) < 1.479) in_endcap = false;
+    if (fabs(photon->eta()) < 1.479) in_endcap = false;
     
     return(
 	( (in_barrel       
 	   && photon->had_tower_over_em()<0.05
 	   && photon->sigma_IetaIeta()<0.01
 	   && photon->dr03_pfiso_charged()<1.31
-	   && photon->dr03_pfiso_neutral()<(0.6+exp(0.0044*photon->pt()+0.5809)
+	   && photon->dr03_pfiso_neutral()<(0.6+exp(0.0044*photon->pt()+0.5809))
            && photon->dr03_pfiso_gamma()<(1.33+0.0043*photon->pt())
-	      ) ||
-        (in_endcap       
-	 && photon->had_tower_over_em()<0.05
-	 && photon->sigma_IetaIeta()<0.0267
-	 && photon->dr03_pfiso_charged()<1.25
-	 && photon->dr03_pfiso_neutral()<(1.65+exp(0.004*photon->pt()+0.9402))
-	 && photon->dr03_pfiso_gamma()<(1.02+0.0041*photon->pt())
-        ) )
-        );
-
+	   ) ||
+	  (in_endcap       
+	   && photon->had_tower_over_em()<0.05
+	   && photon->sigma_IetaIeta()<0.0267
+	   && photon->dr03_pfiso_charged()<1.25
+	   && photon->dr03_pfiso_neutral()<(1.65+exp(0.004*photon->pt()+0.9402))
+	   && photon->dr03_pfiso_gamma()<(1.02+0.0041*photon->pt())
+	   ) )
+	   );
+    
   }
+  
 
-
- bool LoosePhotonIDSpring15(Photon const* photon) {//function for spring15 ID
+  bool LoosePhotonIDSpring15(Photon const* photon) {//function for spring15 ID
     bool in_barrel = true;
-    if (fabs(photon->sc_eta()) > 1.479) in_barrel = false;
+    if (fabs(photon->eta()) > 1.479) in_barrel = false;
     bool in_endcap = true;
-    if (fabs(photon->sc_eta()) < 1.479) in_endcap = false;
+    if (fabs(photon->eta()) < 1.479) in_endcap = false;
     
     return(
 	( (in_barrel       
 	   && photon->had_tower_over_em()<0.05
 	   && photon->sigma_IetaIeta()<0.0103
 	   && photon->dr03_pfiso_charged()<2.44
-	   && photon->dr03_pfiso_neutral()<(2.57+exp(0.0044*photon->pt()+0.5809)
+	   && photon->dr03_pfiso_neutral()<(2.57+exp(0.0044*photon->pt()+0.5809))
            && photon->dr03_pfiso_gamma()<(1.92+0.0043*photon->pt())
 	      ) ||
         (in_endcap       
