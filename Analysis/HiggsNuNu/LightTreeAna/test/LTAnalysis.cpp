@@ -529,7 +529,7 @@ int main(int argc, char* argv[]){
     .set_shape("metnomuons(20,0.,1000.)")
     .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&dijet_deta>3.5")
     .set_cat("1")
-    .set_histtitle("METnoMU")
+    .set_histtitle("METnoMU;efficiency")
     .set_trigger("pass_sigtrigger==1");
 
   TrigEff meteff("meteff");
@@ -538,34 +538,34 @@ int main(int argc, char* argv[]){
     .set_shape("met(20,0.,1000.)")
     .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&dijet_deta>3.5")
     .set_cat("1")
-    .set_histtitle("MET")
+    .set_histtitle("MET;efficiency")
     .set_trigger("pass_mettrigger==1");
 
   TrigEff jpteff("jpteff");
   jpteff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
-    .set_shape("jet2_pt(20,0.,200.)")
+    .set_shape("jet2_pt(10,0.,200.)")
     .set_basesel("jet1_pt>40&&dijet_M>600&&dijet_deta>3.5&&metnomuons>140")
     .set_cat("1")
-    .set_histtitle("j_{2} p_{T}")
+    .set_histtitle("j_{2} p_{T};efficiency")
     .set_trigger("pass_sigtrigger==1");
 
   TrigEff mjjeff("mjjeff");
   mjjeff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
-    .set_shape("dijet_M(30,0.,3000.)")
+    .set_shape("dijet_M(15,0.,3000.)")
     .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_deta>3.5&&metnomuons>140")
     .set_cat("1")
-    .set_histtitle("M_{jj}")
+    .set_histtitle("M_{jj};efficiency")
     .set_trigger("pass_sigtrigger==1");
 
   TrigEff detaeff("detaeff");
   detaeff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
-    .set_shape("dijet_deta(25,0.,10.)")
+    .set_shape("dijet_deta(20,0.,10.)")
     .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&metnomuons>140")
     .set_cat("1")
-    .set_histtitle("#Delta#eta_{jj}")
+    .set_histtitle("#Delta#eta_{jj};efficiency")
     .set_trigger("pass_sigtrigger==1");
     
   //DATA SHAPE GENERATION
