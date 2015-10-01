@@ -60,7 +60,7 @@ namespace ic {
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
         std::string name = triggerPathPtrVec[i]->name();
 
-        if (channel_ == channel::et) {
+        if (channel_ == channel::et||channel_ == channel::zee) {
           // 2011 Triggers
           if (run >= 160404 && run <= 163869 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau15_v") != name.npos) path_found = true;
           if (run >= 165088 && run <= 167913 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v") != name.npos) path_found = true;
@@ -78,7 +78,7 @@ namespace ic {
           //2015 triggers
        if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v") != name.npos || name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v") != name.npos) ) path_found = true;
         }
-        if (channel_ == channel::mt) {
+        if (channel_ == channel::mt || channel_ == channel::zmm) {
           if (run >= 160404 && run <= 163869 && name.find("HLT_IsoMu12_LooseIsoPFTau10_v") != name.npos) path_found = true;//215.634 pb
           if (run >= 165088 && run <= 173198 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) path_found = true; // 1787 pb
           if (run >= 165088 && run <= 180252 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) {
@@ -91,7 +91,7 @@ namespace ic {
           if (run >= 193752 && run <= 247600 && name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true;       
           //2015 Triggers
           if (run >= 250985 && run <= 256464 && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos)) path_found = true;
-          if (run >= 256630 /* && run <= xxxxx*/ && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMuTk24_eta2p1_v") != name.npos)) path_found = true;
+          if (run >= 256630 /* && run <= xxxxx*/ && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu22_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::em) {
           // Look for Mu Low trigger first
@@ -226,15 +226,15 @@ namespace ic {
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsIsoMu24";
-          alt_leg2_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09";
+          alt_leg1_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09";
         }
         if (run >= 256466 /*&& run <= xxxxx*/) {
           trig_obj_label = "triggerObjectsIsoMu17LooseTau20";
           leg1_filter = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
-          alt_trig_obj_label = "triggerObjectsIsoMu24";
-          alt_leg2_filter = "hltL3fL1sMu20Eta2p1L1f0Tkf24QL3trkIsoFiltered0p09"; 
+          alt_trig_obj_label = "triggerObjectsIsoMu22";
+          alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           high_leg_pt = 25.;
         }
       }

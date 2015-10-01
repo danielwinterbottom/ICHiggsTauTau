@@ -46,6 +46,7 @@
 #include "Modules/interface/LumiMask.h"
 #include "HiggsTauTau/interface/VertexFilter.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
+#include "HiggsTauTau/interface/NvtxWeight.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -405,6 +406,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
 
 
+
   auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
   std::vector<int> to_check =
   {
@@ -470,7 +472,8 @@ void HTTSequence::BuildSequence(){
   //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
   if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
-  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/json_DCSONLY.txt";
+  //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/json_DCSONLY.txt";
+  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-256869_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
 
  LumiMask lumiMask = LumiMask("LumiMask")
    .set_produce_output_jsons("")
@@ -529,10 +532,11 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
         if (output_name.at(i) != '_') mass_string += output_name.at(i);
         if (output_name.at(i) == '_') break;
       }
-      mssm_mass = boost::lexical_cast<double>(mass_string);
+  //    std::cout<<mass_string<<std::endl;
+//      mssm_mass = boost::lexical_cast<double>(mass_string);
       do_mass_filter = true;
       std::cout << "** MSSM Signal Sample **" << std::endl;
-      std::cout << boost::format(param_fmt) % "mssm_mass" % mssm_mass;
+ //     std::cout << boost::format(param_fmt) % "mssm_mass" % mssm_mass;
     }
   }
  
@@ -607,6 +611,12 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
   }
 }
 
+if(strategy_type == strategy::spring15 && js["do_pu_wt"].asBool() &&!is_data){
+   TH1F vertex_wts = GetFromTFile<TH1F>(js["nvtx_weight_file"].asString(),"/","nvtx_weights");
+   BuildModule(NvtxWeight("NvtxWeight")
+       .set_vertex_dist(new TH1F(vertex_wts)));
+ }
+
 if(channel != channel::wmnu) {
  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
@@ -632,7 +642,7 @@ if(channel != channel::wmnu) {
   BuildModule(httPairSelector);
 }
 
-if(strategy_type==strategy::spring15&&!is_data){
+if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_ditau_label("ditau"));
 }
@@ -793,7 +803,7 @@ if(era_type == era::data_2015){
         if (output_name.at(i) == '_') break;
       }
       std::cout << "SM ggH Signal sample detected with mass: " << mass_string << std::endl;
-      httWeights.set_ggh_mass(mass_string);
+      //httWeights.set_ggh_mass(mass_string);
     }
   }
 

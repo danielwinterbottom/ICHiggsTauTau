@@ -9,7 +9,7 @@ import fnmatch
 parser = OptionParser()
 
 parser.add_option("--folder", dest = "folder",
-                  help="Specify folder in ./output that contains the output to be hadded")
+                  help="Specify folder that contains the output to be hadded")
 
 
 (options,args) = parser.parse_args()
@@ -28,6 +28,13 @@ sample_list = [
   'WWinclusive',
   'WZinclusive',
   'ZZinclusive',
+	'TT-AOD',
+	'WJetsToLNu-AOD',
+	'T-tW-AOD',
+	'Tbar-tW-AOD',
+  'WWinclusive-AOD',
+  'WZinclusive-AOD',
+  'ZZinclusive-AOD',
   'WWTo2L2Nu',
   'WWTo4Q',
   'WWToLNuQQ',
@@ -37,6 +44,7 @@ sample_list = [
 #  'QCDMuEnr',
 #'DYJetsToTauTau',
 'DYJetsToLL',
+'DYJetsToLL-AOD',
 'DYJetsToLL_M-50-LO',
 'DYJetsToLL_M-50_HT100-200',
 'WJetsToLNu_HT100-200',
@@ -49,14 +57,14 @@ sample_list = [
 #'DYJetsToTauTau-JJ',
 #'ZToLL',
 #'ZToTauTau',
-  'SingleElectron-2015B-prompt',
-  'SingleMuon-2015B-prompt',
-  'MuonEG-2015B-prompt',
-  'Tau-2015B-prompt',
-  'SingleElectron-2015C-prompt',
-  'SingleMuon-2015C-prompt',
-  'MuonEG-2015C-prompt',
-  'Tau-2015C-prompt',
+#  'SingleElectron-2015B-prompt',
+#  'SingleMuon-2015B-prompt',
+#  'MuonEG-2015B-prompt',
+#  'Tau-2015B-prompt',
+#  'SingleElectron-2015C-prompt',
+#  'SingleMuon-2015C-prompt',
+#  'MuonEG-2015C-prompt',
+#  'Tau-2015C-prompt',
   'SingleElectron-2015D-prompt',
   'SingleMuon-2015D-prompt',
   'MuonEG-2015D-prompt',
@@ -69,9 +77,11 @@ sample_list = [
 #	'DYJetsToTauTau10-50-JJ',
 	'SUSYGluGluToHToTauTau_M-130',
   'SUSYGluGluToHToTauTau_M-160',
+  #'SUSYGluGluToHToTauTau_M-160-AOD',
   'SUSYGluGluToHToTauTau_M-500',
   'SUSYGluGluToHToTauTau_M-1000',
   'GluGluHToTauTau_M-125',
+  'GluGluHToTauTau_M-125-AOD',
   'GluGluHToTauTau_M-130',
   'VBFHToTauTau_M-120',
   'VBFHToTauTau_M-125',
@@ -89,41 +99,41 @@ for ind in range(0,len(lines)):
 
 for sa in sample_list:
   for ch in channel:
-    if os.path.isfile('./output/%(outputf)s/%(sa)s_2015_%(ch)s_0.root'%vars()):
-      if len(fnmatch.filter(os.listdir('./output/%(outputf)s'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
+    if os.path.isfile('./%(outputf)s/%(sa)s_2015_%(ch)s_0.root'%vars()):
+      if len(fnmatch.filter(os.listdir('./%(outputf)s'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
         print "Hadding %(sa)s_%(ch)s"%vars()
-        os.system('hadd -f ./output/%(outputf)s/%(sa)s_%(ch)s_2015.root ./output/%(outputf)s/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
+        os.system('hadd -f ./%(outputf)s/%(sa)s_%(ch)s_2015.root ./%(outputf)s/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
         os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
         filetext = open("./haddout.txt").read()
         if 'Warning' in filetext or 'Error' in filetext:
           print "Hadd had a problem:"
           print filetext 
         else :
-          os.system('rm ./output/%(outputf)s/%(sa)s_2015_%(ch)s_*' %vars())
+          os.system('rm ./%(outputf)s/%(sa)s_2015_%(ch)s_*' %vars())
 #      else :
 #        print "Incorrect number of files for sample %(sa)s_2015_%(ch)s!"%vars()
-#    if os.path.isfile('./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_0.root'%vars()):
-#      if len(fnmatch.filter(os.listdir('./output/%(outputf)s/TSCALE_DOWN'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
-#        os.system('hadd ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_%(ch)s_2015.root ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
+#    if os.path.isfile('./%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_0.root'%vars()):
+#      if len(fnmatch.filter(os.listdir('./%(outputf)s/TSCALE_DOWN'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
+#        os.system('hadd ./%(outputf)s/TSCALE_DOWN/%(sa)s_%(ch)s_2015.root ./%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
 #        os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
 #        filetext = open("./haddout.txt").read()
 #        if 'Warning' in filetext or 'Error' in filetext:
 #j          print "Hadd had a problem:"
 #          print filetext 
 #        else :
-#          os.system('rm ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_*' %vars())
+#          os.system('rm ./%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_*' %vars())
 #      else :
 #        print "Incorrect number of files!"
-#    if os.path.isfile('./output/%(outputf)s/TSCALE_UP/%(sa)s_2015_%(ch)s_0.root'%vars()):
-#      if len(fnmatch.filter(os.listdir('./output/%(outputf)s/TSCALE_UP'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
-#        os.system('hadd ./output/%(outputf)s/TSCALE_UP/%(sa)s_%(ch)s_2015.root ./output/%(outputf)s/TSCALE_UP/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
+#    if os.path.isfile('./%(outputf)s/TSCALE_UP/%(sa)s_2015_%(ch)s_0.root'%vars()):
+#      if len(fnmatch.filter(os.listdir('./%(outputf)s/TSCALE_UP'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
+#        os.system('hadd ./%(outputf)s/TSCALE_UP/%(sa)s_%(ch)s_2015.root ./%(outputf)s/TSCALE_UP/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
 #        os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
 #        filetext = open("./haddout.txt").read()
 #        if 'Warning' in filetext or 'Error' in filetext:
 #          print "Hadd had a problem:"
 #          print filetext 
 #        else :
-#          os.system('rm ./output/%(outputf)s/TSCALE_UP/%(sa)s_2015_%(ch)s_*' %vars())
+#          os.system('rm ./%(outputf)s/TSCALE_UP/%(sa)s_2015_%(ch)s_*' %vars())
 #      else :
 #        print "Incorrect number of files!"
 #

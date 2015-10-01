@@ -101,13 +101,13 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
 #  masses = ['90','95','100','105','110','115','120','125','130','135','140','145','150','155','160']
-  masses = ['125','130']
+  masses = ['125']
   if options.short_signal: masses = ['125']
   for mass in masses :
     signal_mc += [
 #      'SUSYGluGluToHToTauTau_M-'+mass,
 #      'VBFHToTauTau_M-'+mass, 
-      'GluGluHToTauTau_M-'+mass+,
+      'GluGluHToTauTau_M-'+mass+'-AOD',
 #      'WH_ZH_TTH_HToTauTau_M-'+mass
     ]
     signal_vh += [
@@ -121,12 +121,12 @@ if options.proc_sm or options.proc_all:
 #      'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
 #    ]
 if options.proc_mssm or options.proc_all:
-  masses = ['130','160','500','1000']
+  masses = ['160']
 #  if not options.do_2011: masses += ['80','110']
   if options.short_signal: masses = ['160']
   for mass in masses :
     signal_mc += [
-      'SUSYGluGluToHToTauTau_M-'+mass,
+      'SUSYGluGluToHToTauTau_M-'+mass+'-AOD',
 #      'SUSYBBHToTauTau_M-'+mass
     ]
 
@@ -175,14 +175,14 @@ if options.proc_mssm or options.proc_all:
 #
 if options.proc_data or options.proc_all:
   data_samples = [
-   'SingleMuon-2015B-17Jul',
-   'MuonEG-2015B-17Jul',
-   'SingleElectron-2015B-17Jul',
-   'Tau-2015B-17Jul',
-   'SingleMuon-2015C-prompt',
-   'SingleElectron-2015C-prompt',
-   'MuonEG-2015C-prompt',
-   'Tau-2015C-prompt',
+#   'SingleMuon-2015B-17Jul',
+#   'MuonEG-2015B-17Jul',
+#   'SingleElectron-2015B-17Jul',
+#   'Tau-2015B-17Jul',
+#   'SingleMuon-2015C-prompt',
+#   'SingleElectron-2015C-prompt',
+#   'MuonEG-2015C-prompt',
+#   'Tau-2015C-prompt',
    'SingleMuon-2015D-prompt',
    'SingleElectron-2015D-prompt',
    'MuonEG-2015D-prompt',
@@ -194,7 +194,7 @@ if options.proc_data or options.proc_all:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Sep22_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 40 
+      nperjob = 20 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
@@ -203,33 +203,35 @@ if options.proc_data or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-    'TTJets',
-    'TT',
-		'WJetsToLNu',
-    'WWinclusive',
-    'ZZinclusive',
-    'WZinclusive',
-    'T-tW',
-    'Tbar-tW',
-    'WZTo1L1Nu2Q',
-    'WWTo2L2Nu',
-    'WWTo4Q',
-    'WWToLNuQQ',
-    'ZZTo4L',
-    'DYJetsToLL',
-    'DYJetsToLL_M-50-LO',
-    'DYJetsToLL_M-50_HT100-200',
-    'WJetsToLNu_HT100-200',
-    'WJetsToLNu_HT200-400',
-    'WJetsToLNu_HT400-600',
-    'WJetsToLNu_HT600-inf'
+  #  'TTJets',
+    'TT-AOD',
+		'WJetsToLNu-AOD',
+    'WWinclusive-AOD',
+    'ZZinclusive-AOD',
+    'WZinclusive-AOD',
+   # 'QCDFlat',
+#    'QCDMuEnr',
+    'T-tW-AOD',
+    'Tbar-tW-AOD',
+#    'WZTo1L1Nu2Q',
+#    'WWTo2L2Nu',
+#    'WWTo4Q',
+#    'WWToLNuQQ',
+#    'ZZTo4L',
+    'DYJetsToLL-AOD',
+#    'DYJetsToLL_M-50-LO',
+#    'DYJetsToLL_M-50_HT100-200',
+#    'WJetsToLNu_HT100-200',
+#    'WJetsToLNu_HT200-400',
+#    'WJetsToLNu_HT400-600',
+#    'WJetsToLNu_HT600-inf'
      ]
 
   for sa in central_samples:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 40 
+      nperjob = 20 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())

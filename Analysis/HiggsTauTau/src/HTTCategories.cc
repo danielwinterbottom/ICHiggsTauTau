@@ -615,11 +615,11 @@ namespace ic {
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::spring15) btag_wp = 0.814 ;
-    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
+//    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
     std::vector<PFJet*> bjets_csv = prebjets;
-    std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
+ //   std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
     std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
 
@@ -630,8 +630,8 @@ namespace ic {
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
       ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
     } else{ 
-      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+//      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+ //     ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
     } 
     
     // Define event properties
@@ -1121,7 +1121,7 @@ namespace ic {
     }
 
 
-    if (n_bjets_ >= 1) {
+    /*if (n_bjets_ >= 1) {
       bcsv_1_ = bjets[0]->GetBDiscriminator(btag_label);
     } else {
       bcsv_1_ = -9999;
@@ -1130,7 +1130,7 @@ namespace ic {
       bcsv_2_ = bjets[1]->GetBDiscriminator(btag_label);
     } else {
       bcsv_2_ = -9999;
-    }
+    }*/
 
     emu_csv_ = (bcsv_1_.var_double > 0.244) ? bcsv_1_.var_double : -1.0;
 
@@ -1144,7 +1144,7 @@ namespace ic {
       jet_csvEt_1_ = std::sqrt(jets_csv[0]->pt()*jets_csv[0]->pt() + jets_csv[0]->M()*jets_csv[0]->M());
       if(bjet_regression_) jet_csvEt_1_ = std::sqrt(jet_csvpt_1_*jet_csvpt_1_ + jet_csv_pairs[0].second->M()*jet_csv_pairs[0].second->M());
       jet_csveta_1_ = jets_csv[0]->eta();
-      jet_csvbcsv_1_ = jets_csv[0]->GetBDiscriminator(btag_label);
+//      jet_csvbcsv_1_ = jets_csv[0]->GetBDiscriminator(btag_label);
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets_csv[0] };
       std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
@@ -1161,7 +1161,7 @@ namespace ic {
       jet_csvpt_bb_ = (jets_csv[0]->vector()+jets_csv[1]->vector()).pt();
       jet_csv_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(jets_csv[0]->vector(),jets_csv[1]->vector()));
       jet_csveta_2_ = jets_csv[1]->eta();
-      jet_csvbcsv_2_ = jets_csv[1]->GetBDiscriminator(btag_label);
+//      jet_csvbcsv_2_ = jets_csv[1]->GetBDiscriminator(btag_label);
       jet_csv_mjj_ = (jets_csv[0]->vector() + jets_csv[1]->vector()).M();
       if(bjet_regression_) jet_csv_mjj_ = (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector()).M();
       jet_csv_deta_ = fabs(jets_csv[0]->eta() - jets_csv[1]->eta());
