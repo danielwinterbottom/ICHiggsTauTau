@@ -406,7 +406,7 @@ int main(int argc, char* argv[]){
   SimpleFilter<Electron> vetoElectronFilter = SimpleFilter<Electron>
     ("VetoElectronPtEtaFilter")
     .set_input_label("vetoElectrons").set_predicate(bind(MinPtMaxEta, _1, veto_elec_pt, veto_elec_eta) &&
-						    bind(VetoElectronID, _1) && 
+						    bind(VetoElectronIDSpring15, _1) && 
 						    bind(fabs, bind(&Electron::dxy_vertex, _1)) < veto_elec_dxy && 
 						    bind(fabs, bind(&Electron::dz_vertex, _1)) < veto_elec_dz
 						    )
@@ -420,7 +420,7 @@ int main(int argc, char* argv[]){
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>
     ("SelElectronPtEtaFilter")
     .set_input_label("selElectrons").set_predicate(bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
-						   bind(Electron2011WP70ID, _1) &&
+						   bind(TightElectronIDSpring15, _1) &&
 						   bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
 						   bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
 						   )
