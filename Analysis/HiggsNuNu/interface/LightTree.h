@@ -28,7 +28,12 @@ namespace ic {
     CLASS_MEMBER(LightTree,std::string, trig_obj_label);
     CLASS_MEMBER(LightTree,std::string, trigger_path);
 
+    unsigned nJetsSave_=4;
+    unsigned nGenJetsSave_=4;
+
+
     TTree *outputTree_;
+
     
     unsigned run_;
     unsigned lumi_;
@@ -40,27 +45,45 @@ namespace ic {
     double puweight_down_scale_;
     double topweight_up_scale_;
     double topweight_down_scale_;
-    double jet1_pt_;
-    double jet2_pt_;
-    double jet3_pt_;
-    double jet4_pt_;
-    double jet1_E_;
-    double jet2_E_;
-    double jet3_E_;
-    double jet4_E_;
-    double jet1_eta_;
-    double jet2_eta_;
-    double jet3_eta_;
-    double jet4_eta_;
+
+    std::vector<double> jet_pt_;
+    std::vector<double> jet_E_;
+    std::vector<double> jet_eta_;
+    std::vector<double> jet_phi_;
+    std::vector<double> jet_csv_;
+    std::vector<double> jet_jetid_;
+    std::vector<double> jet_puid_;
+
+    std::vector<double> jet_genjet_mindR_;
+    std::vector<int> jet_genMatched_;
+    std::vector<double> genjet_pt_;
+    std::vector<double> genjet_eta_;
+    std::vector<double> genjet_phi_;
+    std::vector<double> genjet_E_;
+
+    /* double jet1_pt_; */
+    /* double jet2_pt_; */
+    /* double jet3_pt_; */
+    /* double jet4_pt_; */
+    /* double jet1_E_; */
+    /* double jet2_E_; */
+    /* double jet3_E_; */
+    /* double jet4_E_; */
+    /* double jet1_eta_; */
+    /* double jet2_eta_; */
+    /* double jet3_eta_; */
+    /* double jet4_eta_; */
     double forward_tag_eta_;
     double central_tag_eta_;
-    double jet1_phi_;
-    double jet2_phi_;
-    double jet3_phi_;
-    double jet4_phi_;
-    double jet_csv1_;
-    double jet_csv2_;
-    double jet_csv3_;
+
+    /* double jet1_phi_; */
+    /* double jet2_phi_; */
+    /* double jet3_phi_; */
+    /* double jet4_phi_; */
+    /* double jet_csv1_; */
+    /* double jet_csv2_; */
+    /* double jet_csv3_; */
+
     double dijet_M_;
     double dijet_deta_;
     double dijet_sumeta_;
@@ -110,22 +133,27 @@ namespace ic {
     double l1met_;
     double metnomuons_;
 
-    double genjet1_pt_;
-    double genjet1_eta_;
-    double genjet1_phi_;
-    double genjet1_E_;
-    double genjet2_pt_;
-    double genjet2_eta_;
-    double genjet2_phi_;
-    double genjet2_E_;
-    double genjet3_pt_;
-    double genjet3_eta_;
-    double genjet3_phi_;
-    double genjet3_E_;
-    double genjet4_pt_;
-    double genjet4_eta_;
-    double genjet4_phi_;
-    double genjet4_E_;
+    std::vector<double> genjetptordered_pt_;
+    std::vector<double> genjetptordered_eta_;
+    std::vector<double> genjetptordered_phi_;
+    std::vector<double> genjetptordered_E_;
+
+    /* double genjet1_pt_; */
+    /* double genjet1_eta_; */
+    /* double genjet1_phi_; */
+    /* double genjet1_E_; */
+    /* double genjet2_pt_; */
+    /* double genjet2_eta_; */
+    /* double genjet2_phi_; */
+    /* double genjet2_E_; */
+    /* double genjet3_pt_; */
+    /* double genjet3_eta_; */
+    /* double genjet3_phi_; */
+    /* double genjet3_E_; */
+    /* double genjet4_pt_; */
+    /* double genjet4_eta_; */
+    /* double genjet4_phi_; */
+    /* double genjet4_E_; */
     double digenjet_M_;
     double digenjet_deta_;
     double digenjet_dphi_;
