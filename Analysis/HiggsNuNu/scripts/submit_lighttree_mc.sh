@@ -1,8 +1,8 @@
 #!/bin/sh
 DOCERN=1
 DOSUBMIT=0
-JETTYPE="ak4SlimmedJetsPuppi"
-#JETTYPE="pfJetsPFlow"
+#JETTYPE="ak4SlimmedJetsPuppi"
+JETTYPE="pfJetsPFlow"
 #MYEXEC=LightTreeMakerFromMiniAOD
 MYEXEC=JetMETvalidation
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
