@@ -34,6 +34,7 @@ namespace ic {
     total_weight_leptight_ = 1;
     nJetsSave_ = 25;
     nJets_15_ = 0;
+    nGenJets_15_ = 0;
     for (unsigned ij(0); ij<nJetsSave_;++ij){
       jet_pt_.push_back(0);
       jet_E_.push_back(0);
@@ -44,6 +45,9 @@ namespace ic {
       jet_genMatched_.push_back(0);
       jet_jetid_.push_back(-1);
       jet_puid_.push_back(-1);
+      jet_genpt_.push_back(0);
+      jet_geneta_.push_back(-5);
+      jet_genphi_.push_back(-5);
       genjet_pt_.push_back(0);
       genjet_eta_.push_back(-5);
       genjet_phi_.push_back(-5);
@@ -103,6 +107,7 @@ namespace ic {
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
 
     outputTree_->Branch("nJets_15",&nJets_15_);
+    outputTree_->Branch("nGenJets_15",&nGenJets_15_);
 
     for (unsigned ij(0); ij<nJetsSave_;++ij){
       std::ostringstream label;
@@ -116,6 +121,9 @@ namespace ic {
       outputTree_->Branch((label.str()+"_puid").c_str(),&jet_puid_[ij]);
       outputTree_->Branch((label.str()+"_genjet_mindR").c_str(),&jet_genjet_mindR_[ij]);
       outputTree_->Branch((label.str()+"_genMatched").c_str(),&jet_genMatched_[ij]);
+      outputTree_->Branch((label.str()+"_genpt").c_str(),&jet_genpt_[ij]);
+      outputTree_->Branch((label.str()+"_geneta").c_str(),&jet_geneta_[ij]);
+      outputTree_->Branch((label.str()+"_genphi").c_str(),&jet_genphi_[ij]);
       outputTree_->Branch(("gen"+label.str()+"_pt").c_str(),&genjet_pt_[ij]);
       outputTree_->Branch(("gen"+label.str()+"_eta").c_str(),&genjet_eta_[ij]);
       outputTree_->Branch(("gen"+label.str()+"_phi").c_str(),&genjet_phi_[ij]);
@@ -220,9 +228,10 @@ namespace ic {
     std::vector<Electron*> selelectrons=event->GetPtrVec<Electron>("selElectrons");
     std::vector<Tau*> taus=event->GetPtrVec<Tau>("taus");
     std::vector<GenJet *> genvec;
-    if(!is_data_)genvec= event->GetPtrVec<GenJet>("genJets");
-    std::sort(genvec.begin(), genvec.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-
+    if(!is_data_){
+      genvec= event->GetPtrVec<GenJet>("genJets");
+      std::sort(genvec.begin(), genvec.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    }
 
     if(!ignoreLeptons_) nvetomuons_=vetomuons.size();
     else nvetomuons_=0;
@@ -354,9 +363,9 @@ namespace ic {
 	jet_genjet_mindR_[nJets_15_]=mindR;
 	if (mindR<0.5){
 	  jet_genMatched_[nJets_15_]=jets[i]->parton_flavour();
-	  genjet_pt_[nJets_15_]=genvec[genjetid]->pt();
-	  genjet_eta_[nJets_15_]=genvec[genjetid]->eta();
-	  genjet_phi_[nJets_15_]=genvec[genjetid]->phi();
+	  jet_genpt_[nJets_15_]=genvec[genjetid]->pt();
+	  jet_geneta_[nJets_15_]=genvec[genjetid]->eta();
+	  jet_genphi_[nJets_15_]=genvec[genjetid]->phi();
 	}
       }
 
@@ -366,6 +375,19 @@ namespace ic {
 	break;
       }
     }//loop on jets
+
+    nGenJets_15_ = 0;
+    for (unsigned ig = 0; ig < genvec.size(); ++ig) {//loop on genjets
+      if(genvec[ig]->pt()<=15) continue;
+      genjet_pt_[nGenJets_15_]=genvec[ig]->pt();
+      genjet_eta_[nGenJets_15_]=genvec[ig]->eta();
+      genjet_phi_[nGenJets_15_]=genvec[ig]->phi();
+      nGenJets_15_++;
+      if (nGenJets_15_>=nJetsSave_) {
+	std::cout << " -- Warning! maximum number of genjets reached ! nGenJets = " << genvec.size() << ". Saving only first " << nJetsSave_ << " jets." << std::endl;
+	break;
+      }
+    }//loop on genjets
 
     static unsigned processed = 0;
     //IF PASSES CUTS FILL TREE

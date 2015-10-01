@@ -46,6 +46,11 @@ namespace ic {
 
     std::vector<double> jet_genjet_mindR_;
     std::vector<int> jet_genMatched_;
+    std::vector<double> jet_genpt_;
+    std::vector<double> jet_geneta_;
+    std::vector<double> jet_genphi_;
+
+    unsigned nGenJets_15_;
     std::vector<double> genjet_pt_;
     std::vector<double> genjet_eta_;
     std::vector<double> genjet_phi_;
