@@ -70,9 +70,9 @@ namespace ic {
   bool ElectronHTTIdSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
 
-  bool TightPhotonIDSpring15(Photon const* photon);
-  bool MediumPhotonIDSpring15(Photon const* photon);
-  bool LoosePhotonIDSpring15(Photon const* photon);
+  bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
+  bool MediumPhotonIDSpring15(Photon const* photon,double const& rho);
+  bool LoosePhotonIDSpring15(Photon const* photon,double const& rho);
 
   bool HttEMuFakeElectron(Electron const* elec);
   bool HttEMuFakeMuon(Muon const* muon);
