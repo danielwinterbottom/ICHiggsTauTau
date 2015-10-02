@@ -10,6 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/Photon.hh"
 #include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/Track.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
