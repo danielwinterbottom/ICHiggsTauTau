@@ -56,7 +56,7 @@ int ComplexFilter<T,U,V>::PreAnalysis() {
 template <class T,class U,class V>
 int ComplexFilter<T,U,V>::Execute(TreeEvent *event) {
   std::vector<T *> & vec = event->GetPtrVec<T>(primary_input_label_);
-  U const* secondary = event->GetPtr<EventInfo>(secondary_input_label_);
+  U const* secondary = event->GetPtr<U>(secondary_input_label_);
 
   const V extrainfo=secondary_predicate_(secondary);
   
