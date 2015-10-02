@@ -10,7 +10,7 @@ opts = parser.VarParsing ('analysis')
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_4/src/UserCode/ICHiggsTauTau/test/testinput.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/TauDataTest.root', parser.VarParsing.multiplicity.singleton,
 opts.register('file',
-#'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',
+#'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015D/MuonEG/MINIAOD/PromptReco-v3/000/256/630/00000/24F810E0-335F-E511-94F4-02163E011C61.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/0014DC94-DC5C-E511-82FB-7845C4FC39F5.root', parser.VarParsing.multiplicity.singleton,
 'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/02D2D410-2A03-E511-8F6C-0025905A60A8.root', parser.VarParsing.multiplicity.singleton,
@@ -27,8 +27,8 @@ opts.register('globalTag', '74X_mcRun2_asymptotic_v2', parser.VarParsing.multipl
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
+#opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('release', '74X', parser.VarParsing.multiplicity.singleton,
-#opts.register('release', '74X', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('isNLO', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Is this an NLO sample?")
@@ -108,6 +108,19 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 #  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
+#process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
+# 'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/02D2D410-2A03-E511-8F6C-0025905A60A8.root',
+# 'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root',
+#'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/161/00000/7019DC27-9C26-E511-84FF-02163E011CC2.root',
+#'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/162/00000/9CC606D8-4127-E511-8F35-02163E013830.root',
+#'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',
+#'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/164/00000/4633CC68-A326-E511-95D0-02163E0124EA.root'
+#'root://xrootd.unl.edu//store/data/Run2015B/Tau/MINIAOD/PromptReco-v1/000/251/642/00000/EC1989CD-EB2A-E511-8F15-02163E0146A4.root',
+
+#),
+#lumisToProcess = cms.untracked.VLuminosityBlockRange('1:277-1:278','1:389-1:390'), 
+#)
+
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/161/00000/7019DC27-9C26-E511-84FF-02163E011CC2.root',
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/162/00000/9CC606D8-4127-E511-8F35-02163E013830.root',
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',
@@ -1574,6 +1587,18 @@ if isData:
   process.icTriggerObjectSequence.remove(process.icLooseTau50Met120ObjectProducer)
   process.icIsoMu24IterTrkObjectProducer.hltPath=cms.string("HLT_IsoTkMu24_eta2p1_v")
   process.icIsoMu27IterTrkObjectProducer.hltPath=cms.string("HLT_IsoTkMu27_v")
+  process.icIsoMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsIsoMu22"),
+      hltPath = cms.string("HLT_IsoMu22_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+  process.icTriggerObjectSequence += cms.Sequence(
+    process.icIsoMu22ObjectProducer
+  )
+
 
 #  process.icDoubleMediumTau40ObjectProducer = producers.icTriggerObjectProducer.clone(
 #      input   = cms.InputTag("patTriggerEvent"),
