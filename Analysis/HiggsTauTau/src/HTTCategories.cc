@@ -56,6 +56,7 @@ namespace ic {
 
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
+      outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
@@ -81,6 +82,10 @@ namespace ic {
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
+      outtree_->Branch("gen_match_1", &gen_match_1_);
+      outtree_->Branch("gen_match_2", &gen_match_2_);
+//      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
+//      outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
@@ -312,6 +317,8 @@ namespace ic {
       synctree_->Branch("dilepton_veto", &dilepton_veto_, "dilepton_veto/O");
       synctree_->Branch("extraelec_veto", &extraelec_veto_, "extraelec_veto/O");
       synctree_->Branch("extramuon_veto", &extramuon_veto_, "extramuon_veto/O");
+      synctree_->Branch("gen_match_1", &gen_match_1_, "gen_match_1/i");
+      synctree_->Branch("gen_match_2", &gen_match_2_,"gen_match_2/i");
 
       // Variables defined when lepton 2 is a tau
       // raw value of the 3hits delta-beta isolation
@@ -523,6 +530,10 @@ namespace ic {
     }
     n_pu_ = true_int;
     rho_ = eventInfo->jet_rho();
+    if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+    if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+//    if(event->Exists("leading_lepton_match_pt")) leading_lepton_match_pt_ = event->Get<double>("leading_lepton_match_pt");
+//    if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
     
     wt_ggh_pt_up_ = 1.0;
     wt_ggh_pt_down_ = 1.0;
@@ -599,16 +610,17 @@ namespace ic {
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     std::string btag_label="combinedSecondaryVertexBJetTags";
-    double btag_wp =  0.679;
+/*    double btag_wp =  0.679;
     if(strategy_ == strategy::phys14) btag_label = "combinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::spring15) btag_wp = 0.814 ;
-    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
+*/
+//    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
     std::vector<PFJet*> bjets_csv = prebjets;
-    std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
+ //   std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
     std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
 
@@ -619,8 +631,8 @@ namespace ic {
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
       ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
     } else{ 
-      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+//      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+ //     ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
     } 
     
     // Define event properties
@@ -1110,7 +1122,7 @@ namespace ic {
     }
 
 
-    if (n_bjets_ >= 1) {
+    /*if (n_bjets_ >= 1) {
       bcsv_1_ = bjets[0]->GetBDiscriminator(btag_label);
     } else {
       bcsv_1_ = -9999;
@@ -1119,7 +1131,7 @@ namespace ic {
       bcsv_2_ = bjets[1]->GetBDiscriminator(btag_label);
     } else {
       bcsv_2_ = -9999;
-    }
+    }*/
 
     emu_csv_ = (bcsv_1_.var_double > 0.244) ? bcsv_1_.var_double : -1.0;
 
@@ -1133,7 +1145,7 @@ namespace ic {
       jet_csvEt_1_ = std::sqrt(jets_csv[0]->pt()*jets_csv[0]->pt() + jets_csv[0]->M()*jets_csv[0]->M());
       if(bjet_regression_) jet_csvEt_1_ = std::sqrt(jet_csvpt_1_*jet_csvpt_1_ + jet_csv_pairs[0].second->M()*jet_csv_pairs[0].second->M());
       jet_csveta_1_ = jets_csv[0]->eta();
-      jet_csvbcsv_1_ = jets_csv[0]->GetBDiscriminator(btag_label);
+//      jet_csvbcsv_1_ = jets_csv[0]->GetBDiscriminator(btag_label);
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets_csv[0] };
       std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
@@ -1150,7 +1162,7 @@ namespace ic {
       jet_csvpt_bb_ = (jets_csv[0]->vector()+jets_csv[1]->vector()).pt();
       jet_csv_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(jets_csv[0]->vector(),jets_csv[1]->vector()));
       jet_csveta_2_ = jets_csv[1]->eta();
-      jet_csvbcsv_2_ = jets_csv[1]->GetBDiscriminator(btag_label);
+//      jet_csvbcsv_2_ = jets_csv[1]->GetBDiscriminator(btag_label);
       jet_csv_mjj_ = (jets_csv[0]->vector() + jets_csv[1]->vector()).M();
       if(bjet_regression_) jet_csv_mjj_ = (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector()).M();
       jet_csv_deta_ = fabs(jets_csv[0]->eta() - jets_csv[1]->eta());

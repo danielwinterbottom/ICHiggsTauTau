@@ -33,7 +33,7 @@ namespace ic {
     
     public:
       //! Constructor specifying channel, year and the level of verbosity
-      HTTRun2Analysis(ic::channel ch, std::string year, int verbosity);
+      HTTRun2Analysis(ic::channel ch, std::string year, int use_status_flags, int from_aod, int verbosity);
 
       //! Add a single sample to the list of files that will be opened
       void AddSample(std::string const& sample);
@@ -110,6 +110,12 @@ namespace ic {
                               std::string const& selection, 
                               std::string const& category, 
                               std::string const& weight);
+      TH1F GetShape(std::string const& variable,
+                              std::vector<std::string> const& sample, 
+                              std::string const& selection, 
+                              std::string const& category, 
+                              std::string const& weight);
+
       TH1F GetLumiScaledShape(std::string const& variable,
                               std::string const& sample, 
                               std::string const& selection, 
@@ -122,7 +128,7 @@ namespace ic {
                               std::string const& weight);
 
       TH1F GetShapeViaQCDMethod(std::string const& variable,
-                              std::string const& data_sample,
+                              std::vector<std::string> const& data_sample,
                               std::string const& selection,
                               std::string const& category,
                               std::vector<std::string> const& sub_samples,
@@ -138,6 +144,11 @@ namespace ic {
                     std::string const& selection, 
                     std::string const& category, 
                     std::string const& weight);
+      Value GetRate(std::vector<std::string> const& sample, 
+                    std::string const& selection, 
+                    std::string const& category, 
+                    std::string const& weight);
+
       Value GetLumiScaledRate(std::string const& sample, 
                               std::string const& selection,
                               std::string const& category,
@@ -201,7 +212,7 @@ namespace ic {
                               std::string const& ratio_cat,
                               std::string const& ratio_control_sel,
                               std::string const& ratio_signal_sel,
-                              std::string const& data_sample,
+                              std::vector<std::string> const& data_sample,
                               std::string const& cat,
                               std::string const& control_sel,
                               std::vector<std::string> const& sub_samples,
@@ -209,7 +220,7 @@ namespace ic {
                               std::map<std::string, std::function<Value()>> dict
                               );
       Value GetRateViaQCDMethod(Value const& ratio,
-                              std::string const& data_sample,
+                              std::vector<std::string> const& data_sample,
                               std::string const& control_selection,
                               std::string const& category,
                               std::vector<std::string> const& sub_samples,
@@ -229,11 +240,15 @@ namespace ic {
 
       void SetQCDRatio(double const& ratio);
       inline void SetVerbosity(unsigned const& verbosity) { verbosity_ = verbosity; }
+      inline void SetStatusFlags(unsigned const& use_status_flags) {use_status_flags_ = use_status_flags; }
+      inline void SetFromAOD(unsigned const& from_aod) {from_aod_ = from_aod;}
 
     private:
       ic::channel ch_;
       std::string year_;
       std::string input_folder_;
+      unsigned use_status_flags_;
+      unsigned from_aod_;
       unsigned verbosity_;
       double lumi_;
       std::string dy_soup_;
