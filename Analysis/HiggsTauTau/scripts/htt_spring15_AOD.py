@@ -87,7 +87,7 @@ CONFIG='scripts/config.json'
 #    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s_M-50.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
  
 
-FILELIST='filelists/Sep22_MC_74X'
+FILELIST='filelists/Sep22_MC_74X_AOD'
 #FILELIST13='filelists/July13_MC_74X'
 
 signal_mc = [ ]
@@ -107,7 +107,7 @@ if options.proc_sm or options.proc_all:
     signal_mc += [
 #      'SUSYGluGluToHToTauTau_M-'+mass,
 #      'VBFHToTauTau_M-'+mass, 
-      'GluGluHToTauTau_M-'+mass+'-AOD',
+      'GluGluHToTauTau_M-'+mass,
 #      'WH_ZH_TTH_HToTauTau_M-'+mass
     ]
     signal_vh += [
@@ -126,7 +126,7 @@ if options.proc_mssm or options.proc_all:
   if options.short_signal: masses = ['160']
   for mass in masses :
     signal_mc += [
-      'SUSYGluGluToHToTauTau_M-'+mass+'-AOD',
+      'SUSYGluGluToHToTauTau_M-'+mass,
 #      'SUSYBBHToTauTau_M-'+mass
     ]
 
@@ -204,21 +204,21 @@ if options.proc_data or options.proc_all:
 if options.proc_bkg or options.proc_all:
   central_samples = [
   #  'TTJets',
-    'TT-AOD',
-		'WJetsToLNu-AOD',
-    'WWinclusive-AOD',
-    'ZZinclusive-AOD',
-    'WZinclusive-AOD',
+    'TT',
+		'WJetsToLNu',
+    'WWinclusive',
+    'ZZinclusive',
+    'WZinclusive',
    # 'QCDFlat',
 #    'QCDMuEnr',
-    'T-tW-AOD',
-    'Tbar-tW-AOD',
+    'T-tW',
+    'Tbar-tW',
 #    'WZTo1L1Nu2Q',
 #    'WWTo2L2Nu',
 #    'WWTo4Q',
 #    'WWToLNuQQ',
 #    'ZZTo4L',
-    'DYJetsToLL-AOD',
+    'DYJetsToLL',
 #    'DYJetsToLL_M-50-LO',
 #    'DYJetsToLL_M-50_HT100-200',
 #    'WJetsToLNu_HT100-200',

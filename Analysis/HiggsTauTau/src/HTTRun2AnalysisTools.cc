@@ -29,12 +29,12 @@
 
 namespace ic {
 
-  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int use_status_flags, int from_aod, int verbosity) : ch_(ch), year_(year), use_status_flags_(use_status_flags), from_aod_(from_aod), verbosity_(verbosity)  {
+  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int use_status_flags, int verbosity) : ch_(ch), year_(year), use_status_flags_(use_status_flags), verbosity_(verbosity)  {
     lumi_ = 1.;
     qcd_os_ss_factor_ = 1.06;
     using boost::range::push_back;
     // Define some sensible defaults
-    sample_names_ = {
+/*    sample_names_ = {
 //      "WZJetsTo3LNu",
       "SingleElectron-2015B-17Jul",
       "SingleMuon-2015B-17Jul",
@@ -101,7 +101,7 @@ namespace ic {
       push_back(sample_names_, std::vector<std::string>{
         "Tau-2015B-17Jul"
       });
-    }   
+    }*/   
 
     //Sample splitting
     if (ch_ == channel::et){
@@ -176,33 +176,17 @@ namespace ic {
      "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     //,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     };
-    if (from_aod_){
-     samples_alias_map_["vv_samples"] = {
-     "T-tW-AOD", "Tbar-tW-AOD", "WWinclusive-AOD","WZinclusive-AOD", "ZZinclusive-AOD"
-    };
-   }
 
 
     samples_alias_map_["top_samples"] = {
      "TT"
     };
-    if (from_aod_){
-      samples_alias_map_["top_samples"] = {
-       "TT-AOD"
-      };
-    }
 
  
    samples_alias_map_["ztt_shape_samples"]={
     "DYJetsToLL"//, "DYJetsToLL10-50"
    };
 
-   if (from_aod_){
-     samples_alias_map_["ztt_shape_samples"]={
-       "DYJetsToLL-AOD"
-     };
-   }
-   
    samples_alias_map_["data_samples"] = {
    "SingleElectron-2015D-prompt"
    };
@@ -236,22 +220,15 @@ namespace ic {
 
    samples_alias_map_["ztt_samples"]={
      "DYJetsToLL",
-  };
+   };
    samples_alias_map_["zl_samples"] = {
      "DYJetsToLL",
    };
+   samples_alias_map_["zll_samples"] = {
+     "DYJetsToLL",
+   };
 
-   if(from_aod_){
-     samples_alias_map_["zj_samples"] = {
-       "DYJetsToLL-AOD",
-      };
-     samples_alias_map_["ztt_samples"] = {
-       "DYJetsToLL-AOD",
-      };
-     samples_alias_map_["zl_samples"] = {
-       "DYJetsToLL-AOD",
-     };
-   }
+
 
   } else {
      samples_alias_map_["zj_samples"] = {
@@ -264,6 +241,11 @@ namespace ic {
    samples_alias_map_["zl_samples"] = {
      "DYJetsToLL-L"//,"DYJetsToLL10-50-L"
    };
+   if(ch_ == channel::em){
+     samples_alias_map_["zll_samples"] = {
+     "DYJetsToLL"
+     };
+   }
  }  
   
  if(ch_!=channel::em && use_status_flags_){
@@ -273,13 +255,6 @@ namespace ic {
    "WJetsToLNu","TT"
    };
 
-  if(from_aod_){
-  samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL-AOD", 
-   "T-tW-AOD", "Tbar-tW-AOD", "WWinclusive-AOD","WZinclusive-AOD", "ZZinclusive-AOD",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "WJetsToLNu-AOD","TT-AOD"
-   };
-  }
 
 
   }
@@ -289,7 +264,7 @@ namespace ic {
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToTauTau-JJ","DYJetsToLL-J","DYJetsToTauTau","DYJetsToLL-L", 
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "WJetsToLNu-AOD","TT"
+   "WJetsToLNu","TT"
    };
 
   }
@@ -310,14 +285,6 @@ namespace ic {
    "TT"
    };
 
-  if(from_aod_){
-  samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL-AOD",
-   "T-tW-AOD", "Tbar-tW-AOD", "WWinclusive-AOD","WZinclusive-AOD", "ZZinclusive-AOD",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "TT-AOD"
-   };
-  }
-
   }
 
 if(use_status_flags_){
@@ -326,13 +293,6 @@ if(use_status_flags_){
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "TT"
    };
-  if(from_aod_){
-  samples_alias_map_["w_sub_samples"] = {
-   "DYJetsToLL-AOD",
-   "T-tW-AOD", "Tbar-tW-AOD", "WWinclusive-AOD","WZinclusive-AOD", "ZZinclusive-AOD",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "TT-AOD"
-   };
-  }
 
   }else{
   samples_alias_map_["w_sub_samples"] = {
@@ -342,6 +302,22 @@ if(use_status_flags_){
    };
 
 }
+
+samples_alias_map_["wjets_samples"] = {
+  "WJetsToLNu"
+ };
+
+sample_names_={};
+push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
+push_back(sample_names_,this->ResolveSamplesAlias("zl_samples"));
+push_back(sample_names_,this->ResolveSamplesAlias("zj_samples"));
+push_back(sample_names_,this->ResolveSamplesAlias("vv_samples"));
+push_back(sample_names_,this->ResolveSamplesAlias("wjets_samples"));
+if(ch_ == channel::em){
+  push_back(sample_names_,this->ResolveSamplesAlias("zll_samples"));
+}
+push_back(sample_names_,this->ResolveSamplesAlias("top_samples"));
+push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   }
 
@@ -380,25 +356,15 @@ if(use_status_flags_){
 
   void HTTRun2Analysis::AddSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
-      if(from_aod_){
-        sample_names_.push_back("GluGluHToTauTau_M-"+m+"-AOD");
-        //sample_names_.push_back("VBF_HToTauTau_M-"+m+"-AOD");
-      } else {
         sample_names_.push_back("GluGluHToTauTau_M-"+m);
-        //sample_names_.push_back("VBF_HToTauTau_M-"+m+"-AOD");
-      }
+        //sample_names_.push_back("VBF_HToTauTau_M-"+m");
     }
   }
 
   void HTTRun2Analysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
-      if(from_aod_){
-        sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m+"-AOD");
-//      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
-      } else {
         sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
 //      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
-      }
     }
   }
 
@@ -533,11 +499,9 @@ if(use_status_flags_){
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZLL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZLL --------------------------------------------------------\n";
     Value zl_norm;
-    std::string dysample_name;
-    dysample_name="DYJetsToLL";
-    if(from_aod_) dysample_name="DYJetsToLL-AOD";
-    zl_norm = this->GetLumiScaledRate(dysample_name.c_str(), sel, cat, wt) ;
-    TH1F zl_hist = this->GetLumiScaledShape(var, dysample_name.c_str(), sel, cat, wt);
+    std::vector<std::string> zll_samples = this->ResolveSamplesAlias("zll_samples");
+    zl_norm = this->GetLumiScaledRate(zll_samples, sel, cat, wt) ;
+    TH1F zl_hist = this->GetLumiScaledShape(var, zll_samples, sel, cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % "DYJetsToLL" % sel % cat % wt;
     SetNorm(&zl_hist, zl_norm.first);
@@ -587,20 +551,19 @@ if(use_status_flags_){
     std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
     
     Value w_norm;
-    std::string wjets_name="WJetsToLNu";
-    if(from_aod_) wjets_name="WJetsToLNu-AOD";
+    std::vector<std::string> wjets_samples = this->ResolveSamplesAlias("wjets_samples");
     if(method == 8 || method == 9) {
-      w_norm = this->GetLumiScaledRate(wjets_name.c_str(), sel, cat, wt);
+      w_norm = this->GetLumiScaledRate(wjets_samples, sel, cat, wt);
     } else if(method == 10 || method == 11){
-     w_norm = this->GetRateViaWMethod(wjets_name.c_str(), w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+     w_norm = this->GetRateViaWMethod(wjets_samples.at(0), w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
     }
     
     std::string w_shape_cat = cat;
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
-    TH1F w_hist = this->GetShape(var, wjets_name.c_str(), w_shape_sel, w_shape_cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % wjets_name.c_str() % w_shape_sel % w_shape_cat % wt;
+    TH1F w_hist = this->GetShape(var, wjets_samples, w_shape_sel, w_shape_cat, wt);
+    //if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+     // % wjets_samples % w_shape_sel % w_shape_cat % wt;
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
   }
@@ -624,11 +587,10 @@ if(use_status_flags_){
       std::string qcd_cat = cat;
       //Work out the W norm in the SS region separately if it is data driven
       Value w_ss_norm;
-      std::string wjets_name="WJetsToLNu";
-      if(from_aod_) wjets_name="WJetsToLNu-AOD";
+      std::vector<std::string> wjets_samples = this->ResolveSamplesAlias("wjets_samples");
       if(ch_ != channel::em) {
         if(method == 10 || method == 11) { 
-          w_ss_norm = this->GetRateViaWMethod(wjets_name.c_str(), qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+          w_ss_norm = this->GetRateViaWMethod(wjets_samples.at(0), qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
         } else {
           w_ss_norm = std::make_pair(0.0,0.0);
@@ -641,7 +603,7 @@ if(use_status_flags_){
         qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
       } else if (method == 10 || method == 11) {
         qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,{
-          {wjets_name.c_str(), [&]()->HTTRun2Analysis::Value {
+          {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;}
           }
         });
@@ -657,7 +619,7 @@ if(use_status_flags_){
         qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
       } else if(method == 10) {
         qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
-        {wjets_name.c_str(), [&]()->HTTRun2Analysis::Value {
+        {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;} 
           }
         });
@@ -695,13 +657,8 @@ if(use_status_flags_){
                     std::string const& postfix,
                     double fixed_xs) {
     for (auto const& m : masses) {
-      if(from_aod_){
-        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluHToTauTau_M-"+m+"-AOD",    var, sel, cat, wt, fixed_xs);
-//      hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToTauTau_M-"+m+"-AOD",        var, sel, cat, wt, fixed_xs);
-      } else {
         hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
 //      hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
-      }
     }
   }
   
@@ -716,13 +673,8 @@ if(use_status_flags_){
                     std::string const& postfix,
                     double fixed_xs) {
     for (auto const& m : masses) {
-      if(from_aod_){
-        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m+"-AOD", var, sel, cat, wt, fixed_xs);
-//      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
-      } else {
         hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
 //      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
-      }
     }
   }
 

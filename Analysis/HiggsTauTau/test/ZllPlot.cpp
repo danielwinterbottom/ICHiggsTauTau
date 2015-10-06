@@ -29,7 +29,6 @@ int main(int argc, char* argv[]){
 	string shift_backgrounds;
 	bool auto_titles=true;
   bool calc_vertex_weights;
-  bool from_aod;
   double qcd_os_ss_factor;
   bool interpolate;
 
@@ -54,7 +53,6 @@ int main(int argc, char* argv[]){
 	  ("datacard",                po::value<string>(&datacard)->default_value(""))
 	  ("set_alias",               po::value<vector<string>>(&set_alias)->composing())
     ("calc_vertex_weights",     po::value<bool>(&calc_vertex_weights)->default_value(false))
-    ("from_aod",                po::value<bool>(&from_aod)->default_value(false))
 	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
 
 
@@ -104,7 +102,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
 	// ************************************************************************
-	HTTRun2Analysis ana(String2Channel(channel_str), "2015", use_status_flags, from_aod,verbosity);
+	HTTRun2Analysis ana(String2Channel(channel_str), "2015", use_status_flags, verbosity);
     ana.SetQCDRatio(qcd_os_ss_factor);
     if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
