@@ -21,12 +21,14 @@ int main(int argc, char* argv[]){
 	unsigned method;															// Use background methods for chosen category
 	string var;																		// Use background methods for chosen category
 	string cat;																		// Use background methods for chosen category
+  unsigned use_status_flags;
 	unsigned verbosity;														// Verbose output, useful for diagnostic purposes
 	bool do_ss;                            		    // Tweaking some things for the paper
 	string datacard;             									// Channel, e.g. et
 	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
 	string shift_backgrounds;
 	bool auto_titles=true;
+  bool calc_vertex_weights;
   double qcd_os_ss_factor;
   bool interpolate;
 
@@ -44,11 +46,13 @@ int main(int argc, char* argv[]){
   	("method",           		    po::value<unsigned>(&method)->required())
 	  ("var",              		    po::value<string>(&var)->required())
 	  ("cat",             		    po::value<string>(&cat)->default_value(""))
+    ("use_status_flags",        po::value<unsigned>(&use_status_flags)->default_value(1))
 	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
 	  ("do_ss", 	                po::value<bool>(&do_ss)->default_value(false))
 	  ("interpolate", 	          po::value<bool>(&interpolate)->default_value(false))
 	  ("datacard",                po::value<string>(&datacard)->default_value(""))
 	  ("set_alias",               po::value<vector<string>>(&set_alias)->composing())
+    ("calc_vertex_weights",     po::value<bool>(&calc_vertex_weights)->default_value(false))
 	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
 
 
@@ -98,7 +102,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
 	// ************************************************************************
-	HTTRun2Analysis ana(String2Channel(channel_str), "2015", verbosity);
+	HTTRun2Analysis ana(String2Channel(channel_str), "2015", use_status_flags, verbosity);
     ana.SetQCDRatio(qcd_os_ss_factor);
     if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
@@ -194,6 +198,37 @@ int main(int argc, char* argv[]){
     plot.AddTextElement(text);
     //plot.AddTextElement(text2);
 	}
+
+  if (calc_vertex_weights){
+
+    TH1F * data = &hmap["data_obs"].first;
+    TH1F *data_test = (TH1F*)data->Clone("data_test");
+    TH1F * nvtx_weights = new TH1F("nvtx_weights","nvtx_weights",101,-0.5,100.5);
+    data_test->Scale(1./data_test->Integral(1,data_test->GetNbinsX()));
+    std::cout<<data_test->Integral()<<std::endl;
+    vector<string>bkgs = {"ZLL","W","TT","VV"};
+
+    double bckg_yield=0;
+    for (int i = 1; i<= data_test->GetNbinsX(); ++i){
+      for (auto bkg : bkgs) bckg_yield += hmap[bkg].first.GetBinContent(i);
+    }
+    std::cout <<bckg_yield<<std::endl;
+    for (int i = 1; i <= data_test->GetNbinsX(); ++i){
+      double bkg_tot = 0;
+      for (auto bkg : bkgs) bkg_tot += hmap[bkg].first.GetBinContent(i);
+      bkg_tot = (double)bkg_tot/bckg_yield;
+    if(bkg_tot !=0){
+      nvtx_weights->SetBinContent(nvtx_weights->FindBin(data_test->GetBinCenter(i)),(data_test->GetBinContent(i)/bkg_tot)); 
+      std::cout<<"PVMin "<<data_test->GetBinCenter(i)<<" data/bkg "<<(data_test->GetBinContent(i))/(bkg_tot)<<std::endl;
+   }
+
+   }
+   std::string weightfilename = "VertexWeightDistribution_"+channel_str+".root";
+   TFile *fileout = new TFile(weightfilename.c_str(),"RECREATE");
+     nvtx_weights->Write();
+   fileout->Close();
+  }
+
 	plot.GeneratePlot(hmap);
 
   return 0;
