@@ -169,6 +169,37 @@ namespace ic {
     return (iso < cut);
   }
 
+  template<class T>
+  double PF03EAIsolationVal(T const* cand, EventInfo const* evt,  bool jet_rho=true) {
+    double charged_iso = cand->dr03_pfiso_charged();
+    double eff_area=0;
+    double cand_eta = cand->eta();
+    if(abs(cand_eta)<1.) eff_area = 0.1752;
+    else if(abs(cand_eta)<1.479) eff_area = 0.1862;
+    else if(abs(cand_eta)<2.) eff_area = 0.1411;
+    else if(abs(cand_eta)<2.2) eff_area = 0.1534;
+    else if(abs(cand_eta)<2.3) eff_area = 0.1903;
+    else if(abs(cand_eta)<2.4) eff_area = 0.2243;
+    else if(abs(cand_eta)<5.) eff_area = 0.2687;
+    double rho=0;
+    if(jet_rho){
+      evt->jet_rho();
+    } else {
+      evt->lepton_rho();
+    }
+    
+    double iso =  charged_iso 
+                  + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - rho*eff_area, 0.0);
+    iso = iso / cand->pt();
+    return iso;
+  }
+  template<class T>
+  bool PF03EAIsolation(T const* cand, EventInfo const* evt, double const& cut, bool jet_rho=true) {
+    double iso =  PF03EAIsolationVal(cand, evt, jet_rho);
+    return (iso < cut);
+  }
+
+
 
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut);
