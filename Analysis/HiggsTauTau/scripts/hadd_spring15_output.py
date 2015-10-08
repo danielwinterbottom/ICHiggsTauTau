@@ -68,7 +68,7 @@ sample_list = [
 #  'DYJetsToTauTau10-50-L',
 #	'DYJetsToTauTau10-50-JJ',
 	#'SUSYGluGluToHToTauTau_M-130',
-  #'SUSYGluGluToHToTauTau_M-160',
+  'SUSYGluGluToHToTauTau_M-160',
   'SUSYGluGluToHToTauTau_M-500',
   'SUSYGluGluToHToTauTau_M-1000',
   'GluGluHToTauTau_M-125',

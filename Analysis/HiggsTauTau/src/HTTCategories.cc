@@ -72,6 +72,9 @@ namespace ic {
       outtree_->Branch("antiele_2",         &antiele_2_);
       outtree_->Branch("antimu_2",          &antimu_2_);
       outtree_->Branch("leptonveto",        &lepton_veto_);
+      outtree_->Branch("dilepton_veto",     &dilepton_veto_);
+      outtree_->Branch("extraelec_veto",    &extraelec_veto_);
+      outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &mvamet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);

@@ -11,6 +11,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+
 //boost
 #include <boost/format.hpp>
 #include "boost/lexical_cast.hpp"
@@ -57,6 +58,7 @@
 #include "Modules/interface/EnergyShifter.h"
 #include "Modules/interface/PileupWeight.h"
 #include "Modules/interface/CheckEvents.h"
+#include "Modules/interface/GenericModule.h"
 
 namespace ic {
 
@@ -564,6 +566,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
   if (channel == channel::zee) BuildZEEPairs();
   if (channel == channel::zmm) BuildZMMPairs();
   if (channel == channel::wmnu) BuildWMuNu();
+
 
 
   // Pair DeltaR filtering
@@ -1467,8 +1470,25 @@ BuildModule(tauAntiElecFilter);
 void HTTSequence::BuildDiElecVeto() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
-  BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
-      js["electrons"].asString(), "veto_elecs"));
+  if(strategy_type!=strategy::spring15){
+    BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
+        js["electrons"].asString(), "veto_elecs"));
+  } else {
+    BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
+        js["electrons"].asString(),"pre_iso_veto_elecs"));
+  }
+
+   
+  if(strategy_type==strategy::spring15){
+    BuildModule(GenericModule("GenericModule")
+      .set_function([](ic::TreeEvent *event)->int{
+        std::vector<ic::Electron*> elecs = event->GetPtrVec<Electron>("pre_iso_veto_elecs");
+ //       ic::EventInfo* evtInfo = event->GetPtr<EventInfo>("eventInfo");
+        ic::erase_if_not(elecs,[=](ic::Electron* e){return PF03IsolationVal(e,0.5,0)<0.3;});
+        event->Add("veto_elecs",elecs);
+        return 0;
+       }));
+   }
 
   SimpleFilter<Electron> vetoElecFilter = SimpleFilter<Electron>("VetoElecFilter")
       .set_input_label("veto_elecs");
@@ -1497,14 +1517,14 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(e->eta())          < veto_dielec_eta   &&
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
                 fabs(e->dz_vertex())    < veto_dielec_dz   &&
-                VetoElectronIDSpring15(e)           &&
+                VetoElectronIDSpring15(e);//           &&
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
-                PF03IsolationVal(e, 0.5,0) < 0.3;
+                //PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
 
-
   BuildModule(vetoElecFilter);
+
 
   BuildModule(OneCollCompositeProducer<Electron>("VetoElecPairProducer")
       .set_input_label("veto_elecs").set_output_label("elec_veto_pairs")
