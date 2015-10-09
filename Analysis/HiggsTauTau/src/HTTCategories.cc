@@ -72,6 +72,9 @@ namespace ic {
       outtree_->Branch("antiele_2",         &antiele_2_);
       outtree_->Branch("antimu_2",          &antimu_2_);
       outtree_->Branch("leptonveto",        &lepton_veto_);
+      outtree_->Branch("dilepton_veto",     &dilepton_veto_);
+      outtree_->Branch("extraelec_veto",    &extraelec_veto_);
+      outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &mvamet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
@@ -112,6 +115,7 @@ namespace ic {
         //outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         //outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
+        outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("pt_1",              &pt_1_.var_double);
         outtree_->Branch("eta_1",             &eta_1_.var_double);
         outtree_->Branch("eta_2",             &eta_2_.var_double);
@@ -669,6 +673,7 @@ namespace ic {
 
 
     n_vtx_ = eventInfo->good_vertices();
+    if(event->Exists("good_first_vertex")) good_vtx_ = event->Get<bool>("good_first_vertex");
 
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");

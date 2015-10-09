@@ -169,6 +169,61 @@ namespace ic {
     return (iso < cut);
   }
 
+  template<class T> 
+  double GetEffectiveArea(T const* cand){
+    return 0;
+  }
+  
+  inline double GetEffectiveArea(Electron const* cand){
+    double cand_eta = cand->eta();
+//From   https://github.com/ikrav/cmssw/blob/egm_id_747_v2/RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt
+    if(abs(cand_eta)<1.) return 0.1752;
+    else if(abs(cand_eta)<1.479) return 0.1862;
+    else if(abs(cand_eta)<2.) return 0.1411;
+    else if(abs(cand_eta)<2.2) return 0.1534;
+    else if(abs(cand_eta)<2.3) return 0.1903;
+    else if(abs(cand_eta)<2.4) return 0.2243;
+    else if(abs(cand_eta)<5.) return 0.2687;
+    return 0;
+
+  }
+
+  inline double GetEffectiveArea(Muon const* cand){
+     double cand_eta = cand->eta();
+    //From https://indico.cern.ch/event/451110/contribution/1/attachments/1165046/1679258/miniIsoEffectiveAreas_muonPOG_051015.pdf
+    if(abs(cand_eta)<0.8) return 0.0735;
+    else if(abs(cand_eta)<1.3) return 0.0619;
+    else if(abs(cand_eta)<2.) return 0.0465;
+    else if(abs(cand_eta)<2.2) return 0.0443;
+    else if(abs(cand_eta)<2.5) return 0.0577;
+    return 0;
+ 
+  }
+
+  template<class T>
+  double PF03EAIsolationVal(T const* cand, EventInfo const* evt, bool jet_rho=true){
+  double charged_iso = cand->dr03_pfiso_charged();
+    double eff_area = GetEffectiveArea(cand);
+    double rho=0;
+    if(jet_rho){
+      evt->jet_rho();
+    } else {
+      evt->lepton_rho();
+    }
+    double iso =  charged_iso 
+                  + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - rho*eff_area, 0.0);
+    iso = iso / cand->pt();
+    return iso;
+   }
+
+
+  template<class T>
+  bool PF03EAIsolation(T const* cand, EventInfo const* evt, double const& cut, bool jet_rho=true) {
+    double iso =  PF03EAIsolationVal(cand, evt, jet_rho);
+    return (iso < cut);
+  }
+
+
 
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut);

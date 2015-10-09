@@ -57,6 +57,7 @@
 #include "Modules/interface/EnergyShifter.h"
 #include "Modules/interface/PileupWeight.h"
 #include "Modules/interface/CheckEvents.h"
+#include "Modules/interface/GenericModule.h"
 
 namespace ic {
 
@@ -449,6 +450,15 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
+  BuildModule(GenericModule("checkGoodVertices")
+    .set_function([](ic::TreeEvent *event){
+       std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
+       bool is_good_vertex = GoodVertex(vertices.at(0));
+       event->Add("good_first_vertex",is_good_vertex);
+       return 0;  
+    }));
+       
+
 
   // If desired, run the HTTGenEventModule which will add some handily-
   // formatted generator-level info into the Event
@@ -672,7 +682,7 @@ if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
     if(strategy_type == strategy::paper2013) {
       jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
     } else {
-      jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1))); 
+      jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
     }
   BuildModule(jetIDFilter);
 
@@ -1467,8 +1477,25 @@ BuildModule(tauAntiElecFilter);
 void HTTSequence::BuildDiElecVeto() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
+//  if(strategy_type!=strategy::spring15){
   BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
       js["electrons"].asString(), "veto_elecs"));
+ /* } else {
+    BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
+        js["electrons"].asString(),"pre_iso_veto_elecs"));
+  }*/
+
+   
+/*  if(strategy_type==strategy::spring15){
+    BuildModule(GenericModule("vetoElecIsolation")
+      .set_function([](ic::TreeEvent *event){
+        std::vector<ic::Electron*> elecs = event->GetPtrVec<Electron>("pre_iso_veto_elecs");
+ //       ic::EventInfo* evtInfo = event->GetPtr<EventInfo>("eventInfo");
+        ic::erase_if_not(elecs,[=](ic::Electron* e){return PF03IsolationVal(e,0.5,0)<0.3;});
+        event->Add("veto_elecs",elecs);
+        return 0;
+       }));
+   }*/
 
   SimpleFilter<Electron> vetoElecFilter = SimpleFilter<Electron>("VetoElecFilter")
       .set_input_label("veto_elecs");
@@ -1496,13 +1523,12 @@ void HTTSequence::BuildDiElecVeto() {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
-                fabs(e->dz_vertex())    < veto_dielec_dz   &&
-                VetoElectronIDSpring15(e)           &&
+                fabs(e->dz_vertex())    < veto_dielec_dz    &&
+                VetoElectronIDSpring15(e)                   &&
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
-
 
   BuildModule(vetoElecFilter);
 

@@ -83,6 +83,7 @@ class HTTCategories : public ModuleBase {
   bool extramuon_veto_;
   bool lepton_veto_;
   unsigned n_vtx_;
+  bool good_vtx_;
   unsigned n_pu_;
   branch_var m_sv_;
   branch_var m_vis_;
