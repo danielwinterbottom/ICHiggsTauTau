@@ -37,8 +37,7 @@ int GenericModule::PreAnalysis() {
 
 
 int GenericModule::Execute(ic::TreeEvent* event) {
-  function_(event);
-  return 0;
+  return function_(event);
 }
 
 
