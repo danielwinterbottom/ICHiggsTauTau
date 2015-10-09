@@ -49,7 +49,6 @@ namespace ic {
 
 
 
-
   bool InEcalGap(Electron const* electron) {
     double scEta = fabs(electron->sc_eta());
     return (scEta >= 1.4442 && scEta <= 1.566);

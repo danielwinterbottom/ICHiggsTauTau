@@ -11,7 +11,6 @@
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
-
 //boost
 #include <boost/format.hpp>
 #include "boost/lexical_cast.hpp"
@@ -575,7 +574,6 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
   if (channel == channel::zee) BuildZEEPairs();
   if (channel == channel::zmm) BuildZMMPairs();
   if (channel == channel::wmnu) BuildWMuNu();
-
 
 
   // Pair DeltaR filtering
@@ -1533,7 +1531,6 @@ void HTTSequence::BuildDiElecVeto() {
   }
 
   BuildModule(vetoElecFilter);
-
 
   BuildModule(OneCollCompositeProducer<Electron>("VetoElecPairProducer")
       .set_input_label("veto_elecs").set_output_label("elec_veto_pairs")
