@@ -507,7 +507,7 @@ icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   genFilterWeights    = cms.PSet(
   ),
   includeFiltersFromTrig = cms.bool(False),
-  filtersfromtrig     = cms.vstring("Flag_CSCTightHaloFilter","Flag_hcalLaserEventFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_trackingFailureFilter","Flag_eeBadScFilter","Flag_ecalLaserCorrFilter","Flag_trkPOGFilters","Flag_trkPOG_manystripclus53X","Flag_trkPOG_toomanystripclus53X","Flag_trkPOG_logErrorTooManyClusters","Flag_METFilters"),
+  filtersfromtrig     = cms.vstring("Flag_CSCTightHaloFilter","Flag_hcalLaserEventFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_ecalLaserCorrFilter","Flag_trkPOGFilters","Flag_trkPOG_manystripclus53X","Flag_trkPOG_toomanystripclus53X","Flag_trkPOG_logErrorTooManyClusters","Flag_METFilters"),
   inputfiltersfromtrig = cms.InputTag("TriggerResults")
 )
 ## [EventInfo]

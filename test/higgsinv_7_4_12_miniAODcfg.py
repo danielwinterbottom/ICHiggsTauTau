@@ -67,7 +67,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(3000)
+  input = cms.untracked.int32(300000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -630,7 +630,7 @@ else:
       )
     )
 process.icPFJetProducer = producers.icPFJetProducer.clone(
-  branch                    = cms.string("pfJetsPFlow"),
+  branch                    = cms.string("pfJetsPFlowreclustered"),
   input                     = cms.InputTag("ak4PFJetsCHS"),
   srcConfig = jetsrcconfig,
   destConfig = cms.PSet(
@@ -645,7 +645,7 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
 
 #Produce and store jets taken straight from miniAOD
 process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
-  branch                    = cms.string("ak4SlimmedJets"),
+  branch                    = cms.string("pfJetsPFlow"),
   input                     = cms.InputTag("selectedSlimmedJetsAK4"),
   srcConfig = cms.PSet(
     isSlimmed               = cms.bool(True),
@@ -964,26 +964,26 @@ process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer
   )
 
 #!!THESE ARE IN IN LATER CMSSW RELEASES NOT INCLUDED IN SEQUENCE FOR THE MOMENT
-process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140"),
+process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140JetIdCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
+  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140JetIdCleaned"),
   input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v"),
+  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_JetIdCleaned_v"),
   inputIsStandAlone = cms.bool(False),
   storeOnlyIfFired = cms.bool(True)
   )
 
-process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80"),
+process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80JetIdCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
+  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80JetIdCleaned"),
   input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v"),
+  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_JetIdCleaned_v"),
   inputIsStandAlone = cms.bool(False),
   storeOnlyIfFired = cms.bool(True)
   )
 
 process.icTriggerObjectSequence = cms.Sequence(
   process.icPFMET170NoiseCleanedObjectProducer+
-  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer+
-  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140JetIdCleanedObjectProducer+
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80JetIdCleanedObjectProducer
 )
 
 for name in process.icTriggerObjectSequence.moduleNames():

@@ -56,6 +56,7 @@ namespace ic {
 
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
+      outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
@@ -71,6 +72,9 @@ namespace ic {
       outtree_->Branch("antiele_2",         &antiele_2_);
       outtree_->Branch("antimu_2",          &antimu_2_);
       outtree_->Branch("leptonveto",        &lepton_veto_);
+      outtree_->Branch("dilepton_veto",     &dilepton_veto_);
+      outtree_->Branch("extraelec_veto",    &extraelec_veto_);
+      outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &mvamet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
@@ -81,6 +85,10 @@ namespace ic {
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
+      outtree_->Branch("gen_match_1", &gen_match_1_);
+      outtree_->Branch("gen_match_2", &gen_match_2_);
+//      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
+//      outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
@@ -107,6 +115,7 @@ namespace ic {
         //outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         //outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
+        outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("pt_1",              &pt_1_.var_double);
         outtree_->Branch("eta_1",             &eta_1_.var_double);
         outtree_->Branch("eta_2",             &eta_2_.var_double);
@@ -312,6 +321,8 @@ namespace ic {
       synctree_->Branch("dilepton_veto", &dilepton_veto_, "dilepton_veto/O");
       synctree_->Branch("extraelec_veto", &extraelec_veto_, "extraelec_veto/O");
       synctree_->Branch("extramuon_veto", &extramuon_veto_, "extramuon_veto/O");
+      synctree_->Branch("gen_match_1", &gen_match_1_, "gen_match_1/i");
+      synctree_->Branch("gen_match_2", &gen_match_2_,"gen_match_2/i");
 
       // Variables defined when lepton 2 is a tau
       // raw value of the 3hits delta-beta isolation
@@ -523,6 +534,10 @@ namespace ic {
     }
     n_pu_ = true_int;
     rho_ = eventInfo->jet_rho();
+    if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+    if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+//    if(event->Exists("leading_lepton_match_pt")) leading_lepton_match_pt_ = event->Get<double>("leading_lepton_match_pt");
+//    if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
     
     wt_ggh_pt_up_ = 1.0;
     wt_ggh_pt_down_ = 1.0;
@@ -604,6 +619,7 @@ namespace ic {
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::spring15) btag_wp = 0.814 ;
+
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -657,6 +673,7 @@ namespace ic {
 
 
     n_vtx_ = eventInfo->good_vertices();
+    if(event->Exists("good_first_vertex")) good_vtx_ = event->Get<bool>("good_first_vertex");
 
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");
