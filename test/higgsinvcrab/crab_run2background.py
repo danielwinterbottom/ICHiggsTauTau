@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod='Aug18'
+prod='Aug18'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 config.section_('General')
 config.section_('Data')
@@ -9,11 +9,10 @@ config.section_('Site')
 config.General.transferOutputs = True
 config.General.workArea=prod+'/MC'
 config.Data.outLFNDirBase='/store/user/pdunne/'+prod+'_MC/'
-#config.General.requestName = 'May13_MC'
-config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_6_miniAODcfg.py'
+config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_6_miniAODcfg.py' #!!NB: THIS IS A LOCAL PATH WHICH DIFFERS FOR EACH USER
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['isData=0', 'release=74XMINIAOD','globalTag=MCRUN2_74_V9']
+config.JobType.pyCfgParams = ['isData=0', 'release=74XMINIAOD','globalTag=MCRUN2_74_V9']   #!!TO BE CHECKED ON EACH PROCESSING
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000
 config.Data.splitting = 'EventAwareLumiBased'
@@ -45,6 +44,10 @@ if __name__ == '__main__':
 
     tasks=list()
     
+    #!!For AM: This list needs quite a bit of updating
+    #Entries are in the format:
+    #tasks.append((taskname,dataset name from das))
+
     #25ns
     #Startup running conditions signal
     tasks.append(('Powheg-Htoinv-mH125Startupbx50','/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring15DR74-StartupFlat10to50bx50Raw_MCRUN2_74_V8-v1/MINIAODSIM'))

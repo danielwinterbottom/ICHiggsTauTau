@@ -67,7 +67,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(300000)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -100,6 +100,30 @@ process.GlobalTag.globaltag = cms.string(tag)
 #'root://xrootd-cms.infn.it///store/mc/Phys14DR/VBF_HToInv_M-125_13TeV_powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/58D548B0-AB6F-E411-B468-3417EBE34D1A.root')
 # 72X MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/AODSIM/PU40bx25_PHYS14_25_V1-v1/00000/00E63918-3A70-E411-A246-7845C4FC35F3.root globalTag=START72_V1::All                                                                                                               
 # 72XMINIAOD MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root globalTag=START72_V1::All                                                                                                   
+#load JEC not in global tag
+# process.load("CondCore.DBCommon.CondDBCommon_cfi")
+# from CondCore.DBCommon.CondDBSetup_cfi import *
+# process.jec = cms.ESSource("PoolDBESSource",
+#       DBParameters = cms.PSet(
+#         messageLevel = cms.untracked.int32(0)
+#         ),
+#       timetype = cms.string('runnumber'),
+#       toGet = cms.VPSet(
+#       cms.PSet(
+#             record = cms.string('JetCorrectionsRecord'),
+#             tag    = cms.string('JetCorrectorParametersCollection_Summer15_25nsV5_DATA_AK4PFchs'),
+#             label  = cms.untracked.string('AK4PFchs')
+#             ),
+#       #..................................................
+#       ## here you add as many jet types as you need
+#       ## note that the tag name is specific for the particular sqlite file 
+#       ), 
+#       connect = cms.string('sqlite:Summer15_25nsV5_DATA.db')
+#      # uncomment above tag lines and this comment to use MC JEC
+#      # connect = cms.string('sqlite:Summer12_V7_MC.db')
+# )
+# ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+# process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
  
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
@@ -461,11 +485,34 @@ process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 process.pfchs=cms.EDFilter("CandPtrSelector",src=cms.InputTag("packedPFCandidates"),cut=cms.string("fromPV"))
 process.ak4PFJetsCHS = ak4PFJets.clone(src='pfchs',doAreaFastjet=True)
 
+#reapply JEC
+# from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+# process.load('PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff')
+# process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+#   src = cms.InputTag("slimmedJets"),
+#   levels = ['L1FastJet', 
+#         'L2Relative', 
+#         'L3Absolute'],
+#   payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
+
+# from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+# process.patJetsReapplyJEC = process.patJetsUpdated.clone(
+#   jetSource = cms.InputTag("slimmedJets"),
+#   jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+#   )
+
+
 #Get slimmedJets direct from miniAOD
 process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
                                               src = cms.InputTag("slimmedJets"),
                                               cut = cms.string("pt > 15")
                                               )
+
+#Get re-jec'd slimmed jets
+#process.selectedReJECSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
+#                                              src = cms.InputTag("patJetsReapplyJEC"),
+#                                              cut = cms.string("pt > 15")
+#                                              )
 
 #Get slimmedJetsPuppi direct from miniAOD
 process.selectedSlimmedJetsPuppiAK4 = cms.EDFilter("PATJetRefSelector",
@@ -473,7 +520,7 @@ process.selectedSlimmedJetsPuppiAK4 = cms.EDFilter("PATJetRefSelector",
                                               cut = cms.string("pt > 15")
                                               )
 
-# get parton flavour by matching to genjets
+# get parton flavour by matching to genjets for reclustered
 #CHS
 process.jetPartonsforCHS = cms.EDProducer("PartonSelector",
                                     src = cms.InputTag("prunedGenParticles"),
@@ -496,7 +543,7 @@ process.icPFchsJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
                                                   flavourMap  = cms.InputTag("pfchsJetFlavourAssociation")
                                                   )
 
-# Jet energy corrections
+# Jet energy corrections for reclustered
 #CHS
 process.ak4PFCHSL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
                                         srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -531,12 +578,11 @@ else:
     L2L3Residual = cms.string("ak4PFCHSResidual")
   )
 
-# b-tagging
+# b-tagging for reclustered
 process.load("RecoJets.JetAssociationProducers.ak4JTA_cff")
 from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAtVertex
 process.load("RecoBTag.Configuration.RecoBTag_cff")
 import RecoBTag.Configuration.RecoBTag_cff as btag
-#chs
 process.jetTracksAssociatorAtVertexAK4PFCHS = ak4JetTracksAssociatorAtVertex.clone(
   jets = cms.InputTag("ak4PFJetsCHS"),
   tracks = cms.InputTag("unpackedTracksAndVertices"),
@@ -562,6 +608,7 @@ process.simpleSecondaryVertexHighPurBJetTagsAK4PFCHS = btag.pfSimpleSecondaryVer
 process.combinedSecondaryVertexBJetTagsAK4PFCHS = btag.pfCombinedSecondaryVertexBJetTags.clone (
   tagInfos = cms.VInputTag('impactParameterTagInfosAK4PFCHS', 'secondaryVertexTagInfosAK4PFCHS')
   )
+
 
 process.btaggingSequenceAK4PFCHS = cms.Sequence(
   process.jetTracksAssociatorAtVertexAK4PFCHS
@@ -643,6 +690,27 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
     )
   )
 
+#Produce and store jets from MiniAOD with updated JEC
+# process.icReJECPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+#   branch                    = cms.string("pfJetsPFlowReJEC"),
+#   input                     = cms.InputTag("selectedReJECSlimmedJetsAK4"),
+#   srcConfig = cms.PSet(
+#     isSlimmed               = cms.bool(True),
+#     includeJetFlavour       = cms.bool(True),
+#     includeJECs             = cms.bool(False),
+#     inputSVInfo             = cms.InputTag(""),
+#     requestSVInfo           = cms.bool(False)
+#     ),
+#   destConfig = cms.PSet(
+#     includePileupID         = cms.bool(True),
+#     inputPileupID           = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
+#     includeTrackBasedVars   = cms.bool(False),
+#     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),#!!check this and line below
+#     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),#!!
+#     requestTracks           = cms.bool(False)
+#     )
+#   )
+
 #Produce and store jets taken straight from miniAOD
 process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
   branch                    = cms.string("pfJetsPFlow"),
@@ -689,6 +757,9 @@ process.icPFJetSequence = cms.Sequence()
 
 process.icPFJetSequence += cms.Sequence(
   process.pfchs+
+#  process.patJetCorrFactorsReapplyJEC +
+#  process.patJetsReapplyJEC+
+#  process.selectedReJECSlimmedJetsAK4+
   process.selectedSlimmedJetsAK4+
   process.selectedSlimmedJetsPuppiAK4+
   process.unpackedTracksAndVertices+
@@ -707,6 +778,7 @@ process.icPFJetSequence += cms.Sequence(
   process.btaggingSequenceAK4PFCHS+
   process.icPFJetProducer+ #Not from slimmed jets!
   process.icPFJetProducerFromPat+
+  #process.icReJECPFJetProducerFromPat+
   process.icPFJetProducerFromPatPuppi
   )
 
@@ -1044,7 +1116,11 @@ process.icL1ExtraSequence = cms.Sequence(
 ################################################################                                                                                            
 process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
 process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
+process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
 
+#process.HBHEISONoiseFilterResultProducer = process.HBHENoiseFilterResultProducer.clone()
+#process.HBHEISONoiseFilterResultProducer.defaultDecision = cms.string("HBHEIsoNoiseFilterResult")
 
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
@@ -1059,12 +1135,14 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
   includeFiltersFromTrig = cms.bool(True),
   filters             = cms.PSet(
-    Flag_HBHENoiseFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult')
+    Flag_HBHENoiseFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+    #Flag_HBHENoiseIsoFilter = cms.InputTag('HBHEISONoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
     )
 )
 
 process.icEventInfoSequence = cms.Sequence(
   process.HBHENoiseFilterResultProducer+
+# process.HBHEISONoiseFilterResultProducer+
   process.icEventInfoProducer
 )
 ################################################################                                                                                            
