@@ -35,7 +35,7 @@
 
     //!!MAKE CHOICE CONFIGURABLE
     TString lumi_13TeV = "20.1 fb^{-1}";
-    TString lumi_8TeV = "0-19.7 fb^{-1}";
+    TString lumi_8TeV = "18.9-19.7 fb^{-1}";
     TString lumi_7TeV = "0-4.9 fb^{-1}";
 
     lumiText +=lumi_8TeV;
@@ -226,7 +226,7 @@ int main() {
   scans[0].gr->SetMinimum(0.);
   scans[0].gr->GetXaxis()->SetRangeUser(0., 0.9);
   scans[0].gr->GetXaxis()->SetTitle("BR_{inv}");
-  scans[0].gr->GetXaxis()->SetTitleOffset(1.);
+  scans[0].gr->GetXaxis()->SetTitleOffset(1.1);
   scans[0].gr->GetXaxis()->SetNdivisions(1005,true);
   scans[0].gr->GetXaxis()->SetLabelSize(0.05);
   scans[0].gr->GetYaxis()->SetLabelSize(0.05);
@@ -249,7 +249,7 @@ int main() {
   lines.back()->SetLineColor(2);
   lines.push_back(new TLine(0.,3.84,0.9,3.84));
   lines.back()->SetLineColor(2);
-  for (auto l : lines) l->Draw();
+  //for (auto l : lines) l->Draw();
 
   DrawCMSLogoTest(&c1,"CMS","preliminary",10);
 

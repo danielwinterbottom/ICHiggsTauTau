@@ -205,6 +205,53 @@ inline channel String2Channel(std::string const& in) {
 	}
 }
 
+struct mcorigin_def{
+  enum type {
+     promptE,
+     promptMu,
+     tauE,
+     tauMu,
+     tauHad,
+     fake
+  };
+};
+
+typedef safe_enum<mcorigin_def> mcorigin;
+
+inline unsigned MCOrigin2UInt(mcorigin const& in) {
+  static std::map<mcorigin, unsigned> conv = boost::assign::map_list_of
+    (mcorigin::promptE, 1)
+    (mcorigin::promptMu, 2)
+    (mcorigin::tauE,3)
+    (mcorigin::tauMu,4)
+    (mcorigin::tauHad,5)
+    (mcorigin::fake,6);
+
+  if (conv.find(in) != conv.end()) {
+    return (conv.find(in)->second);
+  } else {
+    std::cerr << "Enum2UInt error, enum not recognised " <<std::endl;
+    throw;
+  }
+}
+
+inline mcorigin UInt2MCOrigin(unsigned const&in){
+   static std::map<unsigned, mcorigin> conv = boost::assign::map_list_of
+   (1, mcorigin::promptE)
+   (2, mcorigin::promptMu)
+   (3, mcorigin::tauE)
+   (4, mcorigin::tauMu)
+   (5, mcorigin::tauHad)
+   (6, mcorigin::fake);
+
+ if (conv.find(in) != conv.end()){
+   return (conv.find(in)->second);
+ } else {
+   std::cerr << "UInt2Enum Error, unsigned " << in << " not recognised " <<std::endl;
+   throw;
+  }
+} 
+
 }
 
 #endif

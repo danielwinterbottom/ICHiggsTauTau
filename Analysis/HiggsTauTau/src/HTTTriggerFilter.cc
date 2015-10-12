@@ -49,7 +49,7 @@ namespace ic {
     std::string em_alt_leg2_filter;
     double high_leg_pt = 0;
 
-    if (is_data_ && era_!=era::data_2015) { //Switch this part off temporarily as we don't have this vector in first processed data
+    if (is_data_) { //Switch this part off temporarily as we don't have this vector in first processed data
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
       unsigned run = eventInfo->run();
@@ -60,7 +60,7 @@ namespace ic {
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
         std::string name = triggerPathPtrVec[i]->name();
 
-        if (channel_ == channel::et) {
+        if (channel_ == channel::et||channel_ == channel::zee) {
           // 2011 Triggers
           if (run >= 160404 && run <= 163869 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau15_v") != name.npos) path_found = true;
           if (run >= 165088 && run <= 167913 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v") != name.npos) path_found = true;
@@ -74,9 +74,11 @@ namespace ic {
           // 2012 Triggers
           if (run >= 190456 && run <= 193751 && name.find("HLT_Ele20_CaloIdVT_CaloIsoRhoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v") != name.npos) path_found = true; 
           //if (run >= 193752/* //&& run <= xxxxx*/ //&& name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
-       if (run >= 193752/* && run <= xxxxx*/ && name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
+       if (run >= 193752 && run <= 247600 && name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
+          //2015 triggers
+       if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v") != name.npos || name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v") != name.npos) ) path_found = true;
         }
-        if (channel_ == channel::mt) {
+        if (channel_ == channel::mt || channel_ == channel::zmm) {
           if (run >= 160404 && run <= 163869 && name.find("HLT_IsoMu12_LooseIsoPFTau10_v") != name.npos) path_found = true;//215.634 pb
           if (run >= 165088 && run <= 173198 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) path_found = true; // 1787 pb
           if (run >= 165088 && run <= 180252 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) {
@@ -86,16 +88,23 @@ namespace ic {
           if (run >= 173236 && run <= 180252 && name.find("HLT_IsoMu15_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true; //2979 pb
           //2012 Triggers
           if (run >= 190456 && run <= 193751 && name.find("HLT_IsoMu18_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true;          
-          if (run >= 193752/* && run <= xxxxx*/ && name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true;       
+          if (run >= 193752 && run <= 247600 && name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true;       
+          //2015 Triggers
+          if (run >= 250985 && run <= 256464 && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos)) path_found = true;
+          if (run >= 256630 /* && run <= xxxxx*/ && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu22_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::em) {
           // Look for Mu Low trigger first
           if (run >= 160404 && run <= 167913 && name.find("HLT_Mu8_Ele17_CaloIdL_v") != name.npos) path_found = true;
           if (run >= 170249 && run <= 180252 && name.find("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_v") != name.npos) path_found = true;
-          if (run >= 190456/* && run <= xxxxx*/ && name.find("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
+          if (run >= 190456 && run <= 247600 && name.find("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
           if (run >= 160404 && run <= 173198 && name.find("HLT_Mu17_Ele8_CaloIdL_v") != name.npos) path_found = true;
           if (run >= 173199 && run <= 180252 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v") != name.npos) path_found = true;
-          if (run >= 190456/* && run <= xxxxx*/ && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
+          if (run >= 190456 && run <= 247600 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
+          if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
+        }
+        if (channel_ == channel::tt){
+          if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
         }
         if (channel_ == channel::mtmet) {
           //2012 Triggers
@@ -116,7 +125,7 @@ namespace ic {
       }
       if (!path_found) return 1;
 
-      if (channel_ == channel::et) {
+      if (channel_ == channel::et || channel_ == channel::zee) {
         // 2011 Triggers
         if (run >= 160404 && run <= 163869) {
           trig_obj_label = "triggerObjectsEle15LooseTau15";
@@ -154,22 +163,31 @@ namespace ic {
           leg1_filter = "hltEle20CaloIdVTCaloIsoTTrkIdTTrkIsoTTrackIsoFilterL1IsoEG18OrEG20";
           leg2_filter = "hltPFTauIsoEleVertex20";
         }
-        if (run >= 193752/* && run <= xxxxx*/) {
+        if (run >= 193752 && run <= 247600) {
          trig_obj_label = "triggerObjectsEle22WP90RhoLooseTau20";
           leg1_filter = "hltEle22WP90RhoTrackIsoFilter";
           leg2_filter = "hltIsoElePFTau20TrackLooseIso";
+        }
+        if (run >= 250985 && run <= 253620){
 
-/*          trig_obj_label = "triggerObjectsEle22LooseTau20";
+          trig_obj_label = "triggerObjectsEle22LooseTau20";
           leg1_filter = "hltSingleEle22WPLooseGsfTrackIsoFilter";
-          //leg1_filter = "hltSingleEle22WPLooseGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
           extra_leg2_filter = "hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsEle32Gsf";
           alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
-*/
+        }
+        if (run >= 253621 /*&& run <= xxxxxx*/){
+          trig_obj_label = "triggerObjectsEle22LooseTau20";
+          leg1_filter = "hltEle22WPLooseL1IsoEG20erTau20erGsfTrackIsoFilter";
+          leg2_filter = "hltPFTau20TrackLooseIso";
+          extra_leg2_filter = "hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsEle32Gsf";
+          alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
+          high_leg_pt = 33.;
         }
       }
-      if (channel_ == channel::mt) {
+      if (channel_ == channel::mt || channel_ == channel::zmm) {
         // 2011 Triggers
         if (run >= 160404 && run <= 163869) {
           trig_obj_label = "triggerObjectsIsoMu12LooseTau10";
@@ -197,19 +215,27 @@ namespace ic {
           leg1_filter = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f18QL3crIsoFiltered10";
           leg2_filter = "hltPFTau20IsoMuVertex";
         }
-        if (run >= 193752/* && run <= xxxxx*/) {
+        if (run >= 193752 && run <= 247606) {
           trig_obj_label = "triggerObjectsIsoMu17LooseTau20";
           leg1_filter = "hltL3crIsoL1sMu14erORMu16erL1f0L2f14QL3f17QL3crIsoRhoFiltered0p15";
           leg2_filter = "hltIsoMuPFTau20TrackLooseIso";
-
-/*        trig_obj_label = "triggerObjectsIsoMu17LooseTau20";
-        leg1_filter = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
-        leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
-        extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
-        alt_trig_obj_label = "triggerObjectsIsoMu24";
-        alt_leg2_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09";
-*/
-        
+        }
+        if (run >= 250985 && run <= 256465) {
+          trig_obj_label = "triggerObjectsIsoMu17LooseTau20";
+          leg1_filter = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+          leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
+          extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_leg1_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09";
+        }
+        if (run >= 256466 /*&& run <= xxxxx*/) {
+          trig_obj_label = "triggerObjectsIsoMu17LooseTau20";
+          leg1_filter = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+          leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
+          extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsIsoMu22";
+          alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
+          high_leg_pt = 25.;
         }
       }
       if (channel_ == channel::em) {
@@ -235,15 +261,10 @@ namespace ic {
           leg1_filter = "hltMu8Ele17CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
           leg2_filter = "hltL1MuOpenEG12L3Filtered8";
         }
-        if (run >= 191691/* && run <= xxxxx*/) {
+        if (run >= 191691 && run <= 247606) {
           trig_obj_label = "triggerObjectsMu8Ele17";
           leg1_filter = "hltMu8Ele17CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
           leg2_filter = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8";
-
-/*         trig_obj_label = "triggerObjectsEle12Mu23";
-         leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
-         leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
-*/
         }
         // 2011 Triggers
         if (run >= 160404 && run <= 163261) {
@@ -272,21 +293,28 @@ namespace ic {
           em_alt_leg1_filter = "hltMu17Ele8CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
           em_alt_leg2_filter = "hltL1Mu12EG7L3MuFiltered17";
         }
-        if (run >= 193752/* && run <= xxxxx*/) {
+        if (run >= 193752 && run <= 247606) {
           em_alt_trig_obj_label = "triggerObjectsMu17Ele8";
           em_alt_leg1_filter = "hltMu17Ele8CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
           em_alt_leg2_filter = "hltL1Mu12EG7L3MuFiltered17";
-
-/*          alt_trig_obj_label = "triggerObjectsEle23Mu8";
-          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
-          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
-*/
         }
+        // 2015 Triggers
+        if (run >= 250985 /*&& run <= xxxxxx*/){
+         trig_obj_label = "triggerObjectsEle12Mu23";
+         leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+         leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+         alt_trig_obj_label = "triggerObjectsEle23Mu8";
+         alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+         alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+        }
+
       }
       if(channel_ == channel::tt){
-        trig_obj_label = "triggerObjectsDoubleMediumTau40";
-        leg1_filter = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
-        leg2_filter = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
+        if(run >= 250985 /*&& run <= xxxxxx*/){
+          trig_obj_label = "triggerObjectsDoubleMediumTau40";
+          leg1_filter = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
+          leg2_filter = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
+        }
       }
       if (channel_ == channel::mtmet) {
         if (run >= 203777/* && run <= xxxxx*/) {
@@ -302,7 +330,7 @@ namespace ic {
           leg2_filter = "hltIsoEle13PFTau20TrackLooseIso";
         }
       }
-    } else if(is_data_ && era_==era::data_2015){
+    /*} else if(is_data_ && era_==era::data_2015){
      if(channel_ == channel::tt){
        trig_obj_label = "triggerObjectsDoubleMediumTau40";
        leg1_filter = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
@@ -334,7 +362,7 @@ namespace ic {
         alt_trig_obj_label = "triggerObjectsEle32Gsf";
         alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
         high_leg_pt = 33.;
-     }
+     }*/
     } else {
       if (channel_ == channel::et || channel_ == channel::zee) {
         if (mc_ == mc::fall11_42X) {

@@ -83,7 +83,7 @@ namespace ic{
     c1->cd();
     c1->SetName(histname.c_str());
     TPad* upper = new TPad("upper","pad",0, 0 ,1 ,1);
-    upper->SetBottomMargin(0.15);
+    c1->SetBottomMargin(0.15);
     
     efficiency->Draw("AP");
     //efficiency->Draw(elements_[iElement].drawopts().c_str());
@@ -96,21 +96,22 @@ namespace ic{
     efficiency->SetMarkerStyle(20);
     efficiency->SetMarkerSize(1.1);
     efficiency->GetYaxis()->SetLabelSize(0.06);
-    efficiency->GetYaxis()->SetTitleSize(0.095);
+    efficiency->GetYaxis()->SetTitleSize(0.06);
     efficiency->GetYaxis()->SetTitleFont(62);
+    efficiency->GetYaxis()->SetTitleOffset(0.64);
     efficiency->GetXaxis()->SetLabelSize(0.06);
     efficiency->GetXaxis()->SetTitleFont(62);
-    efficiency->GetXaxis()->SetTitleSize(0.09);
-    efficiency->GetXaxis()->SetTitleOffset(0.600);
+    efficiency->GetXaxis()->SetTitleSize(0.08);
+    efficiency->GetXaxis()->SetTitleOffset(0.670);
     std::string xtitle;
-    xtitle=histtitle_.substr(histtitle_.find(";")+1);
+    xtitle=histtitle_.substr(0,histtitle_.find(";")+1);
     xtitle=xtitle.substr(0,xtitle.find(";"));
     efficiency->GetXaxis()->SetTitle(xtitle.c_str());
     std::string ytitle;
     ytitle=histtitle_.substr(histtitle_.find(";")+1);
     ytitle=ytitle.substr(ytitle.find(";")+1);
     ytitle=ytitle.substr(0,ytitle.find(";"));
-    efficiency->SetTitle(ytitle.c_str());
+    efficiency->GetYaxis()->SetTitle(ytitle.c_str());
     
     //SETUP AND DRAW THE LEGEND                                                                                                                                                                                                            
     double legleft=0.67;
@@ -124,7 +125,7 @@ namespace ic{
     leg->SetLineColor(10);
     leg->AddEntry(efficiency,histname.c_str(),"ep");
 
-    leg->Draw("same");
+    //leg->Draw("same");
     //c1->Update();                                                                                                                                                                                                                        
     //leg->Defficiencyte();                                                                                                                                                                                                                       lg
     DrawCMSLogoTest(upper,"CMS","preliminary",10);

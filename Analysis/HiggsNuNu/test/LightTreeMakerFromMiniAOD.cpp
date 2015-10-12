@@ -17,6 +17,7 @@
 
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CopyCollection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ComplexFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/IDOverlapFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
@@ -240,6 +241,7 @@ int main(int argc, char* argv[]){
   //double veto_muon_dz, veto_muon_dxy;
   double elec_pt, elec_eta, muon_pt, muon_eta;
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
+  double loose_photon_pt, loose_photon_eta, medium_photon_pt, medium_photon_eta, tight_photon_pt, tight_photon_eta;
   
   elec_dz = 0.1;
   elec_dxy = 0.02;
@@ -259,6 +261,13 @@ int main(int argc, char* argv[]){
   veto_elec_eta = 2.4;
   veto_muon_pt = 10.0;
   veto_muon_eta = 2.1;
+
+  loose_photon_pt = 15;
+  loose_photon_eta = 2.5;
+  medium_photon_pt = 15;
+  medium_photon_eta = 2.5;
+  tight_photon_pt = 15;
+  tight_photon_eta = 2.5;
 
   std::cout << "----------PARAMETERS----------" << std::endl;
   std::cout << boost::format("%-15s %-10s\n") % "elec_pt:" % elec_pt;
@@ -397,6 +406,47 @@ int main(int argc, char* argv[]){
     .set_max(999);
 
   // ------------------------------------------------------------------------------------
+  // Photon Modules
+  // ------------------------------------------------------------------------------------
+  //loose photons
+  CopyCollection<Photon>  loosePhotonCopyCollection("CopyToLoosePhotons","photons","loosePhotons");
+  
+  SimpleFilter<Photon> loosePhotonPtEtaFilter = SimpleFilter<Photon>
+    ("LoosePhotonPtEtaFilter")
+    .set_input_label("loosePhotons").set_predicate(bind(MinPtMaxEta, _1, loose_photon_pt, loose_photon_eta))
+    .set_min(0)
+    .set_max(999);
+
+  ComplexFilter<Photon,EventInfo,double> loosePhotonIDFilter = ComplexFilter<Photon,EventInfo,double>
+    ("LoosePhotonIDFilter")
+    .set_primary_input_label("loosePhotons").set_predicate(bind(LoosePhotonIDSpring15, _1,_2))
+    .set_secondary_input_label("eventinfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))
+    .set_min(0)
+    .set_max(999);
+  
+  //medium photons
+  CopyCollection<Photon>  mediumPhotonCopyCollection("CopyToMediumPhotons","photons","mediumPhotons");
+  
+  SimpleFilter<Photon> mediumPhotonFilter = SimpleFilter<Photon>
+    ("MediumPhotonPtEtaFilter")
+    .set_input_label("mediumPhotons").set_predicate(bind(MinPtMaxEta, _1, medium_photon_pt, medium_photon_eta) //&&
+						    //bind(MediumPhotonIDSpring15, _1)
+						   )
+    .set_min(0)
+    .set_max(999);
+
+  //tight photons
+  CopyCollection<Photon>  tightPhotonCopyCollection("CopyToTightPhotons","photons","tightPhotons");
+  
+  SimpleFilter<Photon> tightPhotonFilter = SimpleFilter<Photon>
+    ("TightPhotonPtEtaFilter")
+    .set_input_label("tightPhotons").set_predicate(bind(MinPtMaxEta, _1, tight_photon_pt, tight_photon_eta) //&&
+						   //bind(TightPhotonIDSpring15, _1)
+						   )
+    .set_min(0)
+    .set_max(999);
+
+  // ------------------------------------------------------------------------------------
   // Electron Modules
   // ------------------------------------------------------------------------------------
 
@@ -406,7 +456,7 @@ int main(int argc, char* argv[]){
   SimpleFilter<Electron> vetoElectronFilter = SimpleFilter<Electron>
     ("VetoElectronPtEtaFilter")
     .set_input_label("vetoElectrons").set_predicate(bind(MinPtMaxEta, _1, veto_elec_pt, veto_elec_eta) &&
-						    bind(VetoElectronID, _1) && 
+						    bind(VetoElectronIDSpring15, _1) && 
 						    bind(fabs, bind(&Electron::dxy_vertex, _1)) < veto_elec_dxy && 
 						    bind(fabs, bind(&Electron::dz_vertex, _1)) < veto_elec_dz
 						    )
@@ -420,7 +470,7 @@ int main(int argc, char* argv[]){
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>
     ("SelElectronPtEtaFilter")
     .set_input_label("selElectrons").set_predicate(bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
-						   bind(Electron2011WP70ID, _1) &&
+						   bind(TightElectronIDSpring15, _1) &&
 						   bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
 						   bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
 						   )
