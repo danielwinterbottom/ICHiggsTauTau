@@ -747,8 +747,8 @@ int main(int argc, char* argv[]){
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   
   //deal with removing overlap with selected leptons
-  analysis.AddModule(&jetMuonOverlapFilter);
-  analysis.AddModule(&jetElecOverlapFilter);
+  //analysis.AddModule(&jetMuonOverlapFilter);
+  //analysis.AddModule(&jetElecOverlapFilter);
   //no need to clean taus, we don't do it in the signal selection.
   
   //Module to do jet smearing and systematics

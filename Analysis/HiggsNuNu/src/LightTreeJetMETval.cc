@@ -25,6 +25,9 @@ namespace ic {
     trigger_path_ = "HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v";
 
     outputTree_ = 0;
+    hetavspt_genall_ = 0;
+    hetavspt_genmatched_ = 0;
+    hetavspt_recmatched_ = 0;
 
     run_=-1;
     lumi_=-1;
@@ -32,9 +35,9 @@ namespace ic {
     weight_nolep_=1;
     total_weight_lepveto_ = 1;
     total_weight_leptight_ = 1;
-    nJetsSave_ = 25;
-    nJets_15_ = 0;
-    nGenJets_15_ = 0;
+    nJetsSave_ = 50;
+    nJets_ = 0;
+    nGenJets_ = 0;
     for (unsigned ij(0); ij<nJetsSave_;++ij){
       jet_pt_.push_back(0);
       jet_E_.push_back(0);
@@ -42,15 +45,21 @@ namespace ic {
       jet_phi_.push_back(-5);
       jet_csv_.push_back(-1);
       jet_genjet_mindR_.push_back(99);
-      jet_genMatched_.push_back(0);
+      jet_flavour_.push_back(0);
       jet_jetid_.push_back(-1);
       jet_puid_.push_back(-1);
+      jet_genid_.push_back(1000);
       jet_genpt_.push_back(0);
       jet_geneta_.push_back(-5);
       jet_genphi_.push_back(-5);
       genjet_pt_.push_back(0);
       genjet_eta_.push_back(-5);
       genjet_phi_.push_back(-5);
+      genjet_jet_mindR_.push_back(99);
+      genjet_recid_.push_back(1000);
+      genjet_recpt_.push_back(0);
+      genjet_receta_.push_back(-5);
+      genjet_recphi_.push_back(-5);
     }
 
     sumet_ = 0;
@@ -98,6 +107,9 @@ namespace ic {
       if (is_data_) std::cout << "Processing set for data !" << std::endl;
       else  std::cout << "Processing set for MC !" << std::endl;
     }
+    hetavspt_genall_ = fs_->make<TH2D>("hetavsptgenall",";pT (GeV); #eta",100,0,500,100,-5,5);
+    hetavspt_genmatched_ = fs_->make<TH2D>("hetavsptgenmatched",";pT (GeV); #eta",100,0,500,100,-5,5);
+    hetavspt_recmatched_ = fs_->make<TH2D>("hetavsptrecmatched",";pT (GeV); #eta",100,0,500,100,-5,5);
     outputTree_=fs_->make<TTree>("LightTreeJetMETval","Tree containing LightTreeAna input variables");//    outputTree_ = new TTree("LightTree","Tree containing LightTreeAna input variables"); 
     outputTree_->Branch("run",&run_);
     outputTree_->Branch("lumi",&lumi_);
@@ -106,8 +118,8 @@ namespace ic {
     outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
 
-    outputTree_->Branch("nJets_15",&nJets_15_);
-    outputTree_->Branch("nGenJets_15",&nGenJets_15_);
+    outputTree_->Branch("nJets",&nJets_);
+    outputTree_->Branch("nGenJets",&nGenJets_);
 
     for (unsigned ij(0); ij<nJetsSave_;++ij){
       std::ostringstream label;
@@ -120,14 +132,20 @@ namespace ic {
       outputTree_->Branch((label.str()+"_jetid").c_str(),&jet_jetid_[ij]);
       outputTree_->Branch((label.str()+"_puid").c_str(),&jet_puid_[ij]);
       outputTree_->Branch((label.str()+"_genjet_mindR").c_str(),&jet_genjet_mindR_[ij]);
-      outputTree_->Branch((label.str()+"_genMatched").c_str(),&jet_genMatched_[ij]);
+      outputTree_->Branch((label.str()+"_flavour").c_str(),&jet_flavour_[ij]);
+      outputTree_->Branch((label.str()+"_genid").c_str(),&jet_genid_[ij]);
       outputTree_->Branch((label.str()+"_genpt").c_str(),&jet_genpt_[ij]);
       outputTree_->Branch((label.str()+"_geneta").c_str(),&jet_geneta_[ij]);
       outputTree_->Branch((label.str()+"_genphi").c_str(),&jet_genphi_[ij]);
       outputTree_->Branch(("gen"+label.str()+"_pt").c_str(),&genjet_pt_[ij]);
       outputTree_->Branch(("gen"+label.str()+"_eta").c_str(),&genjet_eta_[ij]);
       outputTree_->Branch(("gen"+label.str()+"_phi").c_str(),&genjet_phi_[ij]);
-    }
+     outputTree_->Branch(("gen"+label.str()+"_jet_mindR").c_str(),&genjet_jet_mindR_[ij]);
+       outputTree_->Branch(("gen"+label.str()+"_recid").c_str(),&genjet_recid_[ij]);
+       outputTree_->Branch(("gen"+label.str()+"_recpt").c_str(),&genjet_recpt_[ij]);
+      outputTree_->Branch(("gen"+label.str()+"_receta").c_str(),&genjet_receta_[ij]);
+      outputTree_->Branch(("gen"+label.str()+"_recphi").c_str(),&genjet_recphi_[ij]);
+   }
 
     outputTree_->Branch("sumet",&sumet_);
 
@@ -336,58 +354,149 @@ namespace ic {
     metnomu_x_ = metnomuvec.Px();
     metnomu_y_ = metnomuvec.Py();
     metnomu_significance_ = met_significance_/met_*metnomuons_;
-    nJets_15_ = 0;
+    nJets_ = 0;
+
+    std::vector<std::pair<unsigned,bool> > recotogenmatch;
+    recotogenmatch.resize(jets.size(),std::pair<unsigned,bool>(1000,false));
+    std::vector<std::pair<unsigned,bool> > gentorecomatch;
+    gentorecomatch.resize(genvec.size(),std::pair<unsigned,bool>(1000,false));
+
+    unsigned recotogenfilled = 0;
+    unsigned gentorecofilled = 0;
+    getGenRecoMatches(jets,genvec,recotogenmatch,gentorecomatch,true);
 
     for (unsigned i = 0; i < jets.size(); ++i) {//loop on jets
-      if(jets[i]->pt()<=15) continue;
+      //if(jets[i]->pt()<=15) continue;
+      jet_pt_[nJets_]=jets[i]->pt();
+      jet_E_[nJets_]=jets[i]->energy();
+      jet_eta_[nJets_]=jets[i]->eta();
+      jet_phi_[nJets_]=jets[i]->phi();
+      jet_csv_[nJets_]=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+      jet_jetid_[nJets_]=PFJetID2015(jets[i]);
+      jet_puid_[nJets_]=PileupJetID(jets[i],2);
+      jet_flavour_[nJets_]=jets[i]->parton_flavour();
 
-      jet_pt_[nJets_15_]=jets[i]->pt();
-      jet_E_[nJets_15_]=jets[i]->energy();
-      jet_eta_[nJets_15_]=jets[i]->eta();
-      jet_phi_[nJets_15_]=jets[i]->phi();
-      jet_csv_[nJets_15_]=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-      jet_jetid_[nJets_15_]=PFJetID2015(jets[i]);
-      jet_puid_[nJets_15_]=PileupJetID(jets[i],2);
-
-      if(!is_data_){
-	//fill gen matched
-	double mindR = 1000;
-	unsigned genjetid=0;
-	for (unsigned ig = 0; ig < genvec.size(); ++ig) {//loop on genjets
-	  double dR = ROOT::Math::VectorUtil::DeltaR(genvec[ig]->vector(),jets[i]->vector());
-	  if (dR<mindR){
-	    mindR = dR;
-	    genjetid = ig;
-	  }
-	}//loop on genjets
-	jet_genjet_mindR_[nJets_15_]=mindR;
-	if (mindR<0.5){
-	  jet_genMatched_[nJets_15_]=jets[i]->parton_flavour();
-	  jet_genpt_[nJets_15_]=genvec[genjetid]->pt();
-	  jet_geneta_[nJets_15_]=genvec[genjetid]->eta();
-	  jet_genphi_[nJets_15_]=genvec[genjetid]->phi();
+      if (!is_data_ && recotogenmatch[i].second){
+	unsigned genid = recotogenmatch[i].first;
+	jet_genjet_mindR_[nJets_]=ROOT::Math::VectorUtil::DeltaR(genvec[genid]->vector(),jets[i]->vector());
+	jet_genid_[nJets_]=genid;
+	jet_genpt_[nJets_]=genvec[genid]->pt();
+	jet_geneta_[nJets_]=genvec[genid]->eta();
+	jet_genphi_[nJets_]=genvec[genid]->phi();
+	if (jet_genjet_mindR_[nJets_]<0.5 && genvec[genid]->pt()>30 && fabs(genvec[genid]->eta())<4.6) {
+	  hetavspt_recmatched_->Fill(genvec[genid]->pt(),genvec[genid]->eta());
+	  recotogenfilled++;
 	}
+	
+	/*if (event_ == 139483659) {
+	  if (i==0) std::cout << " Event " << event_ << std::endl;
+	  std::cout  << " -- rec jet " << i << " mindR = " << jet_genjet_mindR_[nJets_] ;
+	  jets[i]->Print();
+	  std::cout << " -- genjetid" << genid << ": ";
+	  genvec[genid]->Print();
+	  }*/
       }
 
-      nJets_15_++;
-      if (nJets_15_>=nJetsSave_) {
+      nJets_++;
+      if (nJets_>=nJetsSave_) {
 	std::cout << " -- Warning! maximum number of jets reached ! nJets = " << jets.size() << ". Saving only first " << nJetsSave_ << " jets." << std::endl;
 	break;
       }
     }//loop on jets
 
-    nGenJets_15_ = 0;
-    for (unsigned ig = 0; ig < genvec.size(); ++ig) {//loop on genjets
-      if(genvec[ig]->pt()<=15) continue;
-      genjet_pt_[nGenJets_15_]=genvec[ig]->pt();
-      genjet_eta_[nGenJets_15_]=genvec[ig]->eta();
-      genjet_phi_[nGenJets_15_]=genvec[ig]->phi();
-      nGenJets_15_++;
-      if (nGenJets_15_>=nJetsSave_) {
-	std::cout << " -- Warning! maximum number of genjets reached ! nGenJets = " << genvec.size() << ". Saving only first " << nJetsSave_ << " jets." << std::endl;
-	break;
+    if(!is_data_){
+      nGenJets_ = 0;
+      for (unsigned ig = 0; ig < genvec.size(); ++ig) {//loop on genjets
+	//if(genvec[ig]->pt()<=15) continue;
+	
+
+	/*if (event_ == 139483659){
+	  if (ig==0) std::cout << " Event " << event_ << std::endl;
+	  std::cout<< " -- genjet = " << ig << ": " ;
+	  genvec[ig]->Print();
+	  std::cout << " -- gentorecomatch = " << gentorecomatch[ig].first << ", mindR = " << ROOT::Math::VectorUtil::DeltaR(genvec[ig]->vector(),jets[gentorecomatch[ig].first]->vector()) << ": ";
+	  jets[gentorecomatch[ig].first]->Print();
+	  }*/
+	
+	if (genvec[ig]->pt()>30 && fabs(genvec[ig]->eta())<4.6){
+	  hetavspt_genall_->Fill(genvec[ig]->pt(),genvec[ig]->eta());
+	}
+
+
+	/*if (genvec[ig]->pt()>30 && fabs(genvec[ig]->eta())<4.6 && (mindR>=0.4 || (mindR<0.4 && jets[jetid]->pt()<=15))){
+	  std::cout << " -- gen with no match: dRmin = " << mindR << std::endl
+	  << " -- genjet: ";
+	  genvec[ig]->Print();
+	  std::cout << std::endl << " -- recojet: id " << jetid << " ** ";
+	  jets[jetid]->Print();
+	  std::cout << std::endl;
+	  }*/
+	
+	genjet_pt_[nGenJets_]=genvec[ig]->pt();
+	genjet_eta_[nGenJets_]=genvec[ig]->eta();
+	genjet_phi_[nGenJets_]=genvec[ig]->phi();
+
+	if (gentorecomatch[ig].second){
+	  unsigned recid = gentorecomatch[ig].first;
+	  genjet_jet_mindR_[nGenJets_]=ROOT::Math::VectorUtil::DeltaR(genvec[ig]->vector(),jets[recid]->vector());
+	  if (genvec[ig]->pt()>30 && fabs(genvec[ig]->eta())<4.6){
+	    if (genjet_jet_mindR_[nGenJets_]<0.5){
+	      hetavspt_genmatched_->Fill(genvec[ig]->pt(),genvec[ig]->eta());
+	      gentorecofilled++;
+	    }
+	  }
+	  genjet_recid_[nGenJets_]=recid;
+	  genjet_recpt_[nGenJets_]=jets[recid]->pt();
+	  genjet_receta_[nGenJets_]=jets[recid]->eta();
+	  genjet_recphi_[nGenJets_]=jets[recid]->phi();
+	}
+
+	nGenJets_++;
+	if (nGenJets_>=nJetsSave_) {
+	  std::cout << " -- Warning! maximum number of genjets reached ! nGenJets = " << genvec.size() << ". Saving only first " << nJetsSave_ << " jets." << std::endl;
+	  break;
+	}
+      }//loop on genjets
+    }
+
+    if (recotogenfilled!=gentorecofilled) {
+      std::cout << " Event " << event_ << ", found diff numbers: recotogenfilled = " << recotogenfilled << ", gentorecofilled = " << gentorecofilled << std::endl;
+
+      /*for (unsigned i = 0; i < jets.size(); ++i) {//loop on jets
+	recotogenmatch[i] = std::pair<unsigned,bool>(1000,false);
       }
-    }//loop on genjets
+      for (unsigned ig = 0; ig < genvec.size(); ++ig) {//loop on genjets
+	gentorecomatch[ig] = std::pair<unsigned,bool>(1000,false);
+	}*/
+      //getGenRecoMatches(jets,genvec,recotogenmatch,gentorecomatch,false,true);
+ 
+
+      /*for (unsigned i = 0; i < jets.size(); ++i) {//loop on jets
+	std::cout << " rec " << i ;
+	if (recotogenmatch[i].second==false){
+	  std::cout << " no match "; jets[i]->Print();
+	  continue;
+	}
+	std::cout << " match " << recotogenmatch[i].first << " gen-reco match " << gentorecomatch[recotogenmatch[i].first].first << " dr=" << ROOT::Math::VectorUtil::DeltaR(genvec[recotogenmatch[i].first]->vector(),jets[i]->vector()) << std::endl;
+	std::cout << " reco "; jets[i]->Print();
+	std::cout << " gen "; genvec[recotogenmatch[i].first]->Print();
+      }
+
+      for (unsigned ig = 0; ig < genvec.size(); ++ig) {//loop on genjets
+	std::cout << " gen " << ig;
+	if (gentorecomatch[ig].second==false){
+	  std::cout << " no match "; 
+	  genvec[ig]->Print();
+	  continue;
+	}
+
+	std::cout << " match " << gentorecomatch[ig].first << " reco-gen match " << recotogenmatch[gentorecomatch[ig].first].first  << " dr=" << ROOT::Math::VectorUtil::DeltaR(jets[gentorecomatch[ig].first]->vector(),genvec[ig]->vector()) << std::endl;
+	std::cout << " gen "; genvec[ig]->Print();
+	std::cout << " reco "; jets[gentorecomatch[ig].first]->Print();
+      }
+      */
+      //exit(1);
+    }
 
     static unsigned processed = 0;
     //IF PASSES CUTS FILL TREE
@@ -408,6 +517,130 @@ namespace ic {
   void  LightTreeJetMETval::PrintInfo(){
     ;
   }
+
+  void LightTreeJetMETval::getGenRecoMatches(const std::vector<PFJet*> & jets,const std::vector<GenJet *> & genvec,std::vector<std::pair<unsigned,bool> > & recotogenmatch,std::vector<std::pair<unsigned,bool> > & gentorecomatch, bool firstTime, bool print){
+
+    if (is_data_) return;
+    
+    unsigned nRecNotMatched = 0;
+    for (unsigned i = 0; i < jets.size(); ++i) {//loop on jets
+      
+      if (print) std::cout << " - jet " << i << ": ";
+      if (recotogenmatch[i].second==true && gentorecomatch[recotogenmatch[i].first].second==true) {
+	continue;
+      }
+      double mindR = 1000;
+      unsigned genjetid=1000;
+      for (unsigned ig = 0; ig < genvec.size(); ++ig) {//loop on genjets
+	if (!firstTime && gentorecomatch[ig].second==true && 
+	    recotogenmatch[gentorecomatch[ig].first].second==true){
+	    //if (recotogenmatch[gentorecomatch[ig].first].second==false) recotogenmatch[gentorecomatch[ig].first]=std::pair<unsigned,bool>(ig,true);
+	  continue;
+	}
+	//double dphi = ROOT::Math::VectorUtil::DeltaPhi(genvec[ig]->vector(),jets[i]->vector());
+	//double deta = fabs(genvec[ig]->eta()-jets[i]->eta());
+	double dR = ROOT::Math::VectorUtil::DeltaR(genvec[ig]->vector(),jets[i]->vector());
+	if (dR<mindR){
+	  mindR = dR;
+	  genjetid = ig;
+	}
+      }//loop on genjets
+      if (genjetid==1000){
+	//std::cout << " No gen match found for recjet " << i << "! firstTime= " << firstTime << ", ngenjets = " << genvec.size() << ", njets = " << jets.size() << std::endl;
+	nRecNotMatched++;
+	continue;
+      }
+      recotogenmatch[i]=std::pair<unsigned,bool>(genjetid,true);
+      //loop again to find minimum dpT/pT
+      double ptgen = genvec[genjetid]->pt();
+      double mindpT = fabs(jets[i]->pt()-ptgen)/ptgen;
+      if (print) std::cout << " match " << genjetid << " mindR = " << mindR << " dpTrel=" << mindpT << std::endl;
+      for (unsigned j = 0; j < i; ++j) {//loop on jets
+	if (recotogenmatch[j].first!=genjetid) continue;
+	double dR = ROOT::Math::VectorUtil::DeltaR(genvec[genjetid]->vector(),jets[j]->vector());
+	double dptrel = fabs(jets[j]->pt()-ptgen)/ptgen;
+	if (print) std::cout << " --- found duplicate: jet " << j << " dR=" << dR << " dptrel=" << dptrel << std::endl;
+	if (dptrel<mindpT && dR<0.5) {
+	  mindpT = dptrel;
+	  recotogenmatch[i]=std::pair<unsigned,bool>(2000,false);
+	  if (print) std::cout << " --- keeping index " << j << std::endl;
+	} else if (dR<mindR){
+	  recotogenmatch[i]=std::pair<unsigned,bool>(2000,false);
+	  if (print) std::cout << " --- keeping index " << j << std::endl;
+	} else {
+	  recotogenmatch[j]=std::pair<unsigned,bool>(2000,false);
+	  if (print) std::cout << " --- keeping index " << i << std::endl;
+	}
+	nRecNotMatched++;
+      }
+    }
+
+    unsigned nGenNotMatched = 0;
+    for (unsigned ig = 0; ig < genvec.size(); ++ig) {//loop on genjets
+      if (print) std::cout << " - firstTime= " << firstTime << ", genjet " << ig << ": ";
+      if (gentorecomatch[ig].second==true && recotogenmatch[gentorecomatch[ig].first].second==true) continue;
+      double mindR = 1000;
+      unsigned jetid=1000;
+      for (unsigned i = 0; i < jets.size(); ++i) {//loop on jets
+	if (!firstTime && recotogenmatch[i].second==true && 
+	    gentorecomatch[recotogenmatch[i].first].second==true) {
+	  //if (gentorecomatch[recotogenmatch[i].first].second==false) gentorecomatch[recotogenmatch[i].first]=std::pair<unsigned,bool>(i,true);
+	  continue;
+	}
+	double dR = ROOT::Math::VectorUtil::DeltaR(genvec[ig]->vector(),jets[i]->vector());
+	//double dphi = genvec[ig]->phi()-jets[i]->phi();
+	//if (dphi > ROOT::Math::Pi()) dphi -= 2.*ROOT::Math::Pi();
+	//if (dphi < -1.*ROOT::Math::Pi()) dphi += 2.*ROOT::Math::Pi();
+	//double deta = genvec[ig]->eta()-jets[i]->eta();
+	//double dR = sqrt(dphi*dphi+deta*deta);
+	if (dR<mindR){
+	  mindR = dR;
+	  jetid = i;
+	}
+      }//loop on jets
+      if (jetid==1000){
+	//std::cout << " No rec match found for genjet " << ig << "! firstTime= " << firstTime << ", ngenjets = " << genvec.size() << ", njets = " << jets.size() << std::endl;
+	nGenNotMatched++;
+	continue;
+      }
+      gentorecomatch[ig] = std::pair<unsigned,bool>(jetid,true);
+      
+      //loop again to find minimum dpT/pT
+      double ptrec = jets[jetid]->pt();
+      double mindpT = fabs(ptrec-genvec[ig]->pt())/genvec[ig]->pt();
+      if (print) std::cout << " match " << jetid << " mindR = " << mindR << " dpTrel=" << mindpT << std::endl;
+      
+      for (unsigned jg = 0; jg < ig; ++jg) {//loop on jets
+	if (gentorecomatch[jg].first!=jetid) continue;
+	//if (!firstTime && gentorecomatch[jg].second==true) continue;
+	double dptrel = fabs(ptrec-genvec[jg]->pt())/genvec[jg]->pt();
+	double dR = ROOT::Math::VectorUtil::DeltaR(genvec[jg]->vector(),jets[jetid]->vector());
+	if (print) std::cout << " --- found duplicate: genjet " << jg << " dR=" << dR << " dptrel=" << dptrel << std::endl;
+	if (dptrel<mindpT && dR<0.5) {
+	  mindpT = dptrel;
+	  gentorecomatch[ig]=std::pair<unsigned,bool>(2000,false);
+	  if (print) std::cout << " --- keeping index " << jg << std::endl;
+	} else if (dR<mindR){
+	  gentorecomatch[ig]=std::pair<unsigned,bool>(2000,false);
+	  if (print) std::cout << " --- keeping index " << jg << std::endl;
+	} else {
+	  gentorecomatch[jg]=std::pair<unsigned,bool>(2000,false);
+	  if (print) std::cout << " --- keeping index " << ig << std::endl;
+	}
+	nGenNotMatched++;
+      }
+    }
+    
+    if (print) std::cout << " -- First=" << firstTime << ", found " << nGenNotMatched << "/" << genvec.size() << " genjets not matched and " << nRecNotMatched << "/" << jets.size() << " recjets not matched" << std::endl;
+    if (firstTime && (nGenNotMatched>0 && nRecNotMatched>0)) {
+      getGenRecoMatches(jets,genvec,recotogenmatch,gentorecomatch,false);
+    }
+    
+    
+    
+  }//getgenrecomatches
+  
+  
 
 }//namespace
 

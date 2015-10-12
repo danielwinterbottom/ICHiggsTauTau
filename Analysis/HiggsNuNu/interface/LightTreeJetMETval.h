@@ -7,8 +7,11 @@
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
+#include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 
 #include "TTree.h"
+#include "TH2D.h"
 
 namespace ic {
   class LightTreeJetMETval : public ModuleBase {
@@ -26,6 +29,9 @@ namespace ic {
     CLASS_MEMBER(LightTreeJetMETval,std::string, trigger_path);
 
     TTree *outputTree_;
+    TH2D *hetavspt_genall_;
+    TH2D *hetavspt_genmatched_;
+    TH2D *hetavspt_recmatched_;
     
     unsigned run_;
     unsigned lumi_;
@@ -34,7 +40,7 @@ namespace ic {
     double total_weight_lepveto_;
     double total_weight_leptight_;
     unsigned nJetsSave_;
-    unsigned nJets_15_;
+    unsigned nJets_;
 
     std::vector<double> jet_pt_;
     std::vector<double> jet_E_;
@@ -43,17 +49,23 @@ namespace ic {
     std::vector<double> jet_csv_;
     std::vector<double> jet_jetid_;
     std::vector<double> jet_puid_;
+    std::vector<int> jet_flavour_;
 
     std::vector<double> jet_genjet_mindR_;
-    std::vector<int> jet_genMatched_;
+    std::vector<unsigned> jet_genid_;
     std::vector<double> jet_genpt_;
     std::vector<double> jet_geneta_;
     std::vector<double> jet_genphi_;
 
-    unsigned nGenJets_15_;
+    unsigned nGenJets_;
     std::vector<double> genjet_pt_;
     std::vector<double> genjet_eta_;
     std::vector<double> genjet_phi_;
+    std::vector<double> genjet_jet_mindR_;
+    std::vector<unsigned> genjet_recid_;
+    std::vector<double> genjet_recpt_;
+    std::vector<double> genjet_receta_;
+    std::vector<double> genjet_recphi_;
 
     double sumet_;
 
@@ -88,7 +100,14 @@ namespace ic {
   public:
     LightTreeJetMETval(std::string const& name);
     virtual ~LightTreeJetMETval();
-    
+
+    void getGenRecoMatches(const std::vector<PFJet*> & jets,
+			   const std::vector<GenJet *> & genvec, 
+			   std::vector<std::pair<unsigned,bool> > & recotogenmatch, 
+			   std::vector<std::pair<unsigned,bool> > & gentorecomatch,
+			   bool firstTime,
+			   bool print=false);
+
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
