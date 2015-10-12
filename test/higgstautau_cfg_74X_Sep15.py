@@ -109,6 +109,8 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
+
+#'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/00B2F04A-E301-E511-8CF3-0025905A6090.root',
 # 'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/02D2D410-2A03-E511-8F6C-0025905A60A8.root',
 # 'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root',
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/161/00000/7019DC27-9C26-E511-84FF-02163E011CC2.root',
@@ -872,6 +874,7 @@ process.combinedSecondaryVertexBJetTagsAK4PFCHS = btag.pfCombinedSecondaryVertex
   tagInfos = cms.VInputTag('impactParameterTagInfosAK4PFCHS', 'secondaryVertexTagInfosAK4PFCHS')
 )
 
+
 process.btaggingSequenceAK4PF = cms.Sequence(
   process.jetTracksAssociatorAtVertexAK4PFCHS
   +process.impactParameterTagInfosAK4PFCHS
@@ -880,6 +883,13 @@ process.btaggingSequenceAK4PF = cms.Sequence(
   +process.simpleSecondaryVertexHighPurBJetTagsAK4PFCHS
   +process.combinedSecondaryVertexBJetTagsAK4PFCHS
  )
+
+if release in ['74X']:
+  process.btaggingSequenceAK4PF += cms.Sequence(
+    process.pfImpactParameterTagInfos+
+    process.pfSecondaryVertexTagInfos+
+    process.pfCombinedSecondaryVertexV2BJetTags
+  )
 
  # Pileup ID
  # ---------
@@ -1004,7 +1014,9 @@ if release in ['74X']:
     process.pfNoPileUpJMESequence
     )
 if release in ['74X']:#, '74XMINIAOD','7412MINIAOD']:
-  process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet()
+  process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet(
+  pfCombinedSecondaryVertexV2BJetTags = cms.InputTag("pfCombinedSecondaryVertexV2BJetTags")
+  )
   process.icPFJetSequence += cms.Sequence(
       process.ak4PFJetsCHS+
       process.puJetMva+ 
@@ -1244,21 +1256,39 @@ process.icGenSequence = cms.Sequence()
 #if release in ['74X']:
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
-    src = cms.InputTag("genParticles", "", "HLT"),
+    src = cms.InputTag("genParticles","","HLT"),
     select = cms.vstring(
-      "drop  *",
-      "keep status == 3 || status == 22 || status == 23",  # all status 3
-      "keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15",  # all charged leptons
-      "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",  # all neutrinos
-      "keep++ abs(pdgId) == 15",  # keep full tau decay chain
-      "+keep abs(pdgId) == 15 || abs(pdgId) == 11 || abs(pdgId) ==13", #also keep first charged lepton  parent
-      "keep (4 <= abs(pdgId) <= 5)", # keep heavy flavour quarks
-      "keep (21 <= abs(pdgId) <= 37)",# keep bosons
-      "keep (400 <= abs(pdgId) < 600) || (4000 <= abs(pdgId) < 6000)", # keep b and c hadrons
-      "keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", # additional c hadrons for jet fragmentation studies
-      "keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543" # additional b hadrons for jet fragmentation studies
+        "drop  *", # this is the default
+        "++keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15", # keep leptons, with history
+        "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",   # keep neutrinos
+        "drop   status == 2",                                              # drop the shower part of the history
+        "+keep pdgId == 22 && status == 1 && (pt > 10 || isPromptFinalState())", # keep gamma above 10 GeV (or all prompt) and its first parent
+        "+keep abs(pdgId) == 11 && status == 1 && (pt > 3 || isPromptFinalState())", # keep first parent of electrons above 3 GeV (or prompt)
+        "keep++ abs(pdgId) == 15",                                         # but keep keep taus with decays
+	"drop  status > 30 && status < 70 ", 				   #remove pythia8 garbage
+	"drop  pdgId == 21 && pt < 5",                                    #remove pythia8 garbage
+        "drop   status == 2 && abs(pdgId) == 21",                          # but remove again gluons in the inheritance chain
+        "keep abs(pdgId) == 23 || abs(pdgId) == 24 || abs(pdgId) == 25 || abs(pdgId) == 6 || abs(pdgId) == 37 ",   # keep VIP(articles)s
+        "keep abs(pdgId) == 310 && abs(eta) < 2.5 && pt > 1 ",                                                     # keep K0
+# keep heavy flavour quarks for parton-based jet flavour
+	"keep (4 <= abs(pdgId) <= 5) & (status = 2 || status = 11 || status = 71 || status = 72)",
+# keep light-flavour quarks and gluons for parton-based jet flavour
+	"keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5", 
+# keep b and c hadrons for hadron-based jet flavour
+	"keep (400 < abs(pdgId) < 600) || (4000 < abs(pdgId) < 6000)",
+# additional c hadrons for jet fragmentation studies
+	"keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", 
+# additional b hadrons for jet fragmentation studies
+	"keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543", 
+#keep SUSY particles
+	"keep (1000001 <= abs(pdgId) <= 1000039 ) || ( 2000001 <= abs(pdgId) <= 2000015)",
+# keep protons 
+        "keep pdgId = 2212",
+        "keep status == 3 || ( 21 <= status <= 29) || ( 11 <= status <= 19)",  #keep event summary (status=3 for pythia6, 21 <= status <= 29 for pythia8)
+        "keep isHardProcess() || fromHardProcessFinalState() || fromHardProcessDecayed() || fromHardProcessBeforeFSR() || (statusFlags().fromHardProcess() && statusFlags().isLastCopy())",  #keep event summary based on status flags
     )
-  )
+)
+ 
 
 #process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
 #  src = cms.InputTag("genParticles", "", "HLT"),
@@ -1458,6 +1488,8 @@ process.icEle22LooseTau20ObjectProducer = producers.icTriggerObjectProducer.clon
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
+
+
   
 process.icEle27GsfObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
@@ -1501,6 +1533,15 @@ process.icIsoMu17LooseTau20ObjectProducer = producers.icTriggerObjectProducer.cl
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
+
+process.icIsoMu17ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsIsoMu17LooseTau20"),
+      hltPath = cms.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
   
   
 process.icIsoMu16CaloMetObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1515,7 +1556,7 @@ process.icIsoMu16CaloMetObjectProducer = producers.icTriggerObjectProducer.clone
   
 process.icIsoMu17IterTrkObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
-      branch = cms.string("triggerObjectsIsoMu17IterTrk"),
+      branch = cms.string("triggerObjectsIsoMu17"),
       hltPath = cms.string("HLT_IsoMu17_eta2p1_v"), 
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
@@ -1568,7 +1609,7 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icEle12Mu23ObjectProducer +
       process.icEle23Mu8ObjectProducer +
       process.icEle22LooseTau20ObjectProducer +
-#      process.icEle22GsfObjectProducer +
+      process.icEle22GsfObjectProducer +
       process.icEle27GsfObjectProducer + 
       process.icEle32GsfObjectProducer +
 #      process.icEle32GsfLooseObjectProducer +
@@ -1576,16 +1617,19 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icIsoMu17LooseTau20ObjectProducer +
       process.icIsoMu24IterTrkObjectProducer +
       process.icIsoMu27IterTrkObjectProducer +
-#      process.icIsoMu17IterTrkObjectProducer +
+      process.icIsoMu17IterTrkObjectProducer +
       process.icDoubleMediumTau40ObjectProducer +
       process.icLooseTau50Met120ObjectProducer +
       process.icLooseTau50Met80ObjectProducer
       )
 
 if isData:
+  process.icTriggerObjectSequence.remove(process.icEle22GsfObjectProducer)
+  process.icTriggerObjectSequence.remove(process.icIsoMu17IterTrkObjectProducer)
   process.icTriggerObjectSequence.remove(process.icLooseTau50Met80ObjectProducer)
   process.icTriggerObjectSequence.remove(process.icLooseTau50Met120ObjectProducer)
-  process.icIsoMu24IterTrkObjectProducer.hltPath=cms.string("HLT_IsoTkMu24_eta2p1_v")
+#  process.icIsoMu24IterTrkObjectProducer.hltPath=cms.string("HLT_IsoTkMu24_eta2p1_v")
+  process.icTriggerObjectSequence.remove(process.icIsoMu24IterTrkObjectProducer)
   process.icIsoMu27IterTrkObjectProducer.hltPath=cms.string("HLT_IsoTkMu27_v")
   process.icIsoMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
@@ -1594,9 +1638,36 @@ if isData:
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
+  process.icIsoMu18ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsIsoMu18"),
+      hltPath = cms.string("HLT_IsoMu18_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+  process.icEle22ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle22"),
+      hltPath = cms.string("HLT_Ele22_eta2p1_WPLoose_Gsf_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+  process.icTau35ObjectProducer = producers.icTriggerObjectProducer.clone(
+     input = cms.InputTag("patTriggerEvent"),
+     branch = cms.string("triggerObjectsDiTau35"),
+     hltPath = cms.string("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v"),
+     inputIsStandAlone = cms.bool(False),
+     storeOnlyIfFired = cms.bool(False)
+     )
 
   process.icTriggerObjectSequence += cms.Sequence(
-    process.icIsoMu22ObjectProducer
+    process.icIsoMu22ObjectProducer+
+    process.icIsoMu18ObjectProducer+
+    process.icEle22ObjectProducer+
+    process.icTau35ObjectProducer+
+    process.icTau35ObjectProducer
   )
 
 
