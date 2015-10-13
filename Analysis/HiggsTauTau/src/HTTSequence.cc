@@ -18,6 +18,7 @@
 #include "Utilities/interface/FnRootTools.h"
 // HTT-specific modules
 #include "HiggsTauTau/interface/HTTSequence.h"
+#include "HiggsTauTau/interface/HTTElectronEfficiency.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
@@ -433,6 +434,8 @@ void HTTSequence::BuildSequence(){
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
     .set_fs(fs.get()));
+/*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_fs(fs.get()));*/
   }else{
 
   HTTPrint httPrint("HTTPrint");
@@ -455,7 +458,9 @@ void HTTSequence::BuildSequence(){
        std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
        bool is_good_vertex = GoodVertex(vertices.at(0));
        event->Add("good_first_vertex",is_good_vertex);
-       return 0;  
+       //if(is_good_vertex) return 1;
+       //else return 0;
+       return 0;
     }));
        
 
@@ -483,7 +488,7 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
   //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/json_DCSONLY.txt";
-  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-256869_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
+  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt";
 
  LumiMask lumiMask = LumiMask("LumiMask")
    .set_produce_output_jsons("")
@@ -1524,6 +1529,7 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(e->eta())          < veto_dielec_eta   &&
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
                 fabs(e->dz_vertex())    < veto_dielec_dz    &&
+                //ElectronHTTIdSpring15(e,true)                   &&
                 VetoElectronIDSpring15(e)                   &&
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;

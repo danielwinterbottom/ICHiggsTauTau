@@ -1166,6 +1166,13 @@ namespace ic {
     return isMedium;
   }
 
+  bool MuonLoose(Muon const* muon) {
+    bool isLoose = 
+      muon->is_pf() &&
+      (muon->is_global()||muon->is_tracker());
+    return isLoose;
+  }
+
   bool HttEMuFakeMuon(Muon const* muon) {
     bool pass_iso = false;
     if ( muon->pt() > 20. &&
