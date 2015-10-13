@@ -9,7 +9,7 @@ config.section_('Site')
 config.General.transferOutputs = True
 config.General.workArea=prod+'/MET'
 config.Data.outLFNDirBase='/store/user/pdunne/'+prod+'_MET/'
-config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_12_miniAODcfg.py' #!!NB: THIS IS A LOCAL PATH WHICH DIFFERS FOR EACH USER
+config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_14/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_14_miniAODcfg.py' #!!NB: THIS IS A LOCAL PATH WHICH DIFFERS FOR EACH USER
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.Data.inputDataset = 'DUMMY'
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     tasks=list()
 
     #!!TO BE UPDATED ON EACH PROCESSING
-    json='/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON.txt'
+    json='/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_14/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt'
     firstrun='246908'
     maxrun='258159'#!!remember to update max run
     lastrerecorun='258158'
