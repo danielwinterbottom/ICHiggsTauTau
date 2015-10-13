@@ -17,6 +17,7 @@ namespace ic {
 
     CLASS_MEMBER(LightTree,fwlite::TFileService*, fs);
     CLASS_MEMBER(LightTree,std::string, met_label);
+    CLASS_MEMBER(LightTree,std::string, jet_label);
     CLASS_MEMBER(LightTree,std::string, dijet_label);
     CLASS_MEMBER(LightTree,std::string, sel_label);
     CLASS_MEMBER(LightTree,bool, is_data);
