@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='Oct09'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='Oct13'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 config.section_('General')
 config.section_('Data')
@@ -12,7 +12,6 @@ config.Data.outLFNDirBase='/store/user/pdunne/'+prod+'_MET/'
 config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_12_miniAODcfg.py' #!!NB: THIS IS A LOCAL PATH WHICH DIFFERS FOR EACH USER
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['isData=1', 'release=74XMINIAOD', 'globalTag=74X_dataRun2_Prompt_v2']    #!!TO BE CHECKED ON EACH PROCESSING
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 1
 config.Data.splitting = 'FileBased'
@@ -67,21 +66,26 @@ if __name__ == '__main__':
     #tasks.append(('MET-2015B-17Jul2015-v1','/MET/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
     #tasks.append(('SingleMuon-2015B-17Jul2015-v1','/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
 
+    #!!To be checked on each processing
+    rerecoparams=['isData=1', 'release=74XMINIAOD', 'globalTag=74X_dataRun2_reMiniAOD_v0']
+    promptrecov4params=['isData=1', 'release=74XMINIAOD', 'globalTag=74X_dataRun2_Prompt_v4']
+
     #Run D
-    #!!For AM: prompt reco v3 needs replacing with the rereco in giovanni's email
-    tasks.append(('MET-2015D-PromptReco-v3','/MET/Run2015D-PromptReco-v3/MINIAOD',json,firstrun+'-'+lastrerecorun))
-    tasks.append(('SingleMuon-2015D-PromptReco-v3','/SingleMuon/Run2015D-PromptReco-v3/MINIAOD',json,firstrun+'-'+lastrerecorun))
-    tasks.append(('SinglePhoton-2015D-PromptReco-v3','/SinglePhoton/Run2015D-PromptReco-v3/MINIAOD',json,firstrun+'-'+lastrerecorun))
+    tasks.append(('MET-2015D-05Oct-v1','/MET/Run2015D-05Oct2015-v1/MINIAOD',json,rerecoparams.firstrun+'-'+lastrerecorun))
+    tasks.append(('SingleMuon-2015D-05Oct-v1','/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD',json,rerecoparams,firstrun+'-'+lastrerecorun))
+    tasks.append(('SinglePhoton-2015D-05Oct-v1','/SinglePhoton/Run2015D-05Oct2015-v1/MINIAOD',json,rerecoparams,firstrun+'-'+lastrerecorun))
 
     #Prompt Reco v4
-    tasks.append(('MET-2015D-PromptReco-v4','/MET/Run2015D-PromptReco-v4/MINIAOD',json,firstnonrerecorun+'-'+maxrun))
-    tasks.append(('SingleMuon-2015D-PromptReco-v4','/SingleMuon/Run2015D-PromptReco-v4/MINIAOD',json,firstnonrerecorun+'-'+maxrun))
-    tasks.append(('SinglePhoton-2015D-PromptReco-v4','/SinglePhoton/Run2015D-PromptReco-v4/MINIAOD',json,firstnonrerecorun+'-'+maxrun))
+    tasks.append(('MET-2015D-PromptReco-v4','/MET/Run2015D-PromptReco-v4/MINIAOD',json,promptrecov4params,firstnonrerecorun+'-'+maxrun))
+    tasks.append(('SingleMuon-2015D-PromptReco-v4','/SingleMuon/Run2015D-PromptReco-v4/MINIAOD',json,promptrecov4params,firstnonrerecorun+'-'+maxrun))
+    tasks.append(('SinglePhoton-2015D-PromptReco-v4','/SinglePhoton/Run2015D-PromptReco-v4/MINIAOD',json,promptrecov4params,firstnonrerecorun+'-'+maxrun))
     
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
         config.Data.lumiMask = task[2]
-        config.Data.runRange= task[3]
+        config.JobType.pyCfgParams = task[3] 
+
+        config.Data.runRange= task[4]
         submit(config)
