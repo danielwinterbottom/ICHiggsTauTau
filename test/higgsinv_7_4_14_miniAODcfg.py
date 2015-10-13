@@ -869,24 +869,6 @@ process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
                                                     includeMetUncertainties = cms.bool(True)
                                                     )
 
-
-#get uncorrectedmet from miniAOD met
-process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
-                                                    input = cms.InputTag("slimmedMETs"),
-                                                    branch = cms.string("pfMetUncor"),
-                                                    includeCustomID = cms.bool(False),
-                                                    inputCustomID = cms.InputTag(""),
-                                                    getUncorrectedMet = cms.bool(True),
-                                                    includeMetUncertainties = cms.bool(True)
-                                                    )
-
-
-
-
-
-
-
-
 # process.ictype1PfMetProducermetsigoutofbox = producers.icMetProducer.clone(
 #                                                     input = cms.InputTag("slimmedMETs"),
 #                                                     branch = cms.string("pfMetType1metsigoutofbox"),
