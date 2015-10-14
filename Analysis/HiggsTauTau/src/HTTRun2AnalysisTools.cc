@@ -133,6 +133,7 @@ namespace ic {
       alias_map_["inclusive"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
       // Categories for iso studies
       alias_map_["incnoiso"]         = "(iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["incnoisonolv"]     = "(iso_2<1.5 && antiele_2 && antimu_2)";
       alias_map_["db03iso0p1"]            = "(iso_1_db03<0.1&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p11"]            = "(iso_1_db03<0.11&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p12"]            = "(iso_1_db03<0.12&&"+alias_map_["incnoiso"]+")";
@@ -171,6 +172,10 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
       alias_map_["incnoiso"]         = "!leptonveto";
+      alias_map_["incnoisowmu"]         = "iso_2<0.15 && !leptonveto";
+      alias_map_["incnoisowe"]         = "iso_1<0.15 && !leptonveto";
+      alias_map_["incnoisonolvwmu"]         = "iso_2<0.15";
+      alias_map_["incnoisonolvwe"]         = "iso_1<0.15";
       alias_map_["edb03iso0p15"]            = "(iso_1_db03<0.15&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03iso0p16"]            = "(iso_1_db03<0.16&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03iso0p17"]            = "(iso_1_db03<0.17&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
