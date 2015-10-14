@@ -878,15 +878,6 @@ process.icPfMetPuppiProducer = producers.icMetFromPatProducer.clone(
   includeMetUncertainties = cms.bool(True)
   )
 
-
-
-
-
-
-
-
-
-
 # process.ictype1PfMetProducermetsigoutofbox = producers.icMetProducer.clone(
 #                                                     input = cms.InputTag("slimmedMETs"),
 #                                                     branch = cms.string("pfMetType1metsigoutofbox"),
