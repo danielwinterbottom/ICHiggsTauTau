@@ -353,7 +353,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (sub_ztt_top_frac > 0.) {
 		std::string top_label =  "TT";
-		std::string ztt_label =  "ZTT";
+		std::string ztt_label =  "ZTT90";
 		std::cout << "[HiggsTauTauPlot5] Subtracting " << top_label 
 			<< " contamination in " << ztt_label << ": " << sub_ztt_top_frac << std::endl;
 		HTTRun2Analysis::Value ztt_rate = hmap[ztt_label].second;
@@ -391,7 +391,7 @@ int main(int argc, char* argv[]){
     std::cout << "Corrected Eff:    " << corr_eff << std::endl;
     std::cout << "Ratio:            " << corr_eff/uncorr_eff << std::endl;
 		std::string top_label = "TT";
-		std::string ztt_label = "ZTT";
+		std::string ztt_label = "ZTT90";
     HTTRun2Analysis::Value scaled_embedded = hmap[ztt_label].second;
     double norm_sf = scaled_embedded.first / embedded_data.first;
     double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
@@ -408,7 +408,7 @@ int main(int argc, char* argv[]){
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 	std::cout << "[HiggsHTohhPlot] Subtracting TOP contamination from ZTT embedded using TT embedded shape..." << std::endl;	
     std::string top_label = "TT";
-	std::string ztt_label = "ZTT";
+	std::string ztt_label = "ZTT90";
     
     HTTRun2Analysis::Value embedded_ttbar = ana.GetLumiScaledRate("Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
     TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
@@ -604,8 +604,8 @@ int main(int argc, char* argv[]){
 	// Scan and fix bins that have data, no bkg and some signal
 	// ************************************************************************
   if (scan_bins) {
-    vector<string> bkgs = {"ZTT","ZL","ZJ","W","QCD","TT","VV"};
-    if (channel_str == "em") bkgs = {"ZTT","QCD","VV","TT"}; 
+    vector<string> bkgs = {"ZTT90","ZL","ZJ","W","QCD","TT","VV"};
+    if (channel_str == "em") bkgs = {"ZTT90","QCD","VV","TT"}; 
     if (channel_str == "tt") bkgs = {"QCD","W","VV","TT"};
     vector<string> sm_procs = {"ggH","qqH","VH"};
     vector<string> mssm_procs = {"ggH","bbH"};
@@ -716,6 +716,12 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "");
+		for (auto m : sm_masses) {
+     HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
+		 //HTTAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
+		 //HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
+    }
+
 	
     // ************************************************************************
 	// Shift backgrounds
@@ -746,7 +752,7 @@ int main(int argc, char* argv[]){
 	// Shift tau energy scale
 	// ************************************************************************
 	if (shift_tscale != 0.0) {
-		std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
+		std::string ztt_label = "ZTT90";
 		std::cout << "[HiggsTauTauPlot5] Shifting energy scale by pull: " << shift_tscale << std::endl;
 		TH1F ztt_central = hmap[ztt_label].first;
 		TH1F ztt_down = hmap[ztt_label+"_"+syst_tau_scale+"Down"].first;

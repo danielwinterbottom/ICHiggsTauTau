@@ -130,7 +130,17 @@ namespace ic {
 
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
-      alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["inclusive"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["incnoiso"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["iso0p1"]            = "(iso_1<0.1&&"+alias_map_["incnoiso"]+")";
+      alias_map_["iso0p01"]            = "(iso_1<0.01&&"+alias_map_["incnoiso"]+")";
+      alias_map_["iso0p11"]            = "(iso_1<0.11&&"+alias_map_["incnoiso"]+")";
+      alias_map_["iso0p12"]            = "(iso_1<0.12&&"+alias_map_["incnoiso"]+")";
+      alias_map_["iso0p09"]           = "(iso_1<0.09&&"+alias_map_["incnoiso"]+")";
+      alias_map_["iso0p08"]           = "(iso_1<0.08&&"+alias_map_["incnoiso"]+")";
+
+     // alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      //alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2)";
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
       //Categories can be added using inclusive alias as follows:
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
@@ -139,11 +149,26 @@ namespace ic {
       alias_map_["1jet"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::tt) {
       // SM Categories
+      //alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      alias_map_["incnoiso"]         = "!leptonveto";
+      alias_map_["isoe0p15"]            = "(iso_1<0.15&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isoe0p01"]            = "(iso_1<0.01&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isoe0p16"]            = "(iso_1<0.16&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isoe0p17"]            = "(iso_1<0.17&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isoe0p13"]           = "(iso_1<0.13&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isoe0p14"]           = "(iso_1<0.14&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isom0p15"]            = "(iso_2<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isom0p16"]            = "(iso_2<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isom0p17"]            = "(iso_2<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isom0p13"]           = "(iso_2<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["isom0p14"]           = "(iso_2<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      //alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5)";
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5 && !leptonveto)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
       alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<0.1)";
@@ -748,7 +773,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         ztt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
       } else ztt_sel = sel;
       auto ztt_pair = this->GenerateZTT(method, var, ztt_sel, cat, wt);
-      std::string ztt_map_label = "ZTT";
+      std::string ztt_map_label = "ZTT90";
       //std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
       PrintValue(ztt_map_label+postfix, ztt_pair.second);
       total_bkr = ValueAdd(total_bkr, ztt_pair.second);
