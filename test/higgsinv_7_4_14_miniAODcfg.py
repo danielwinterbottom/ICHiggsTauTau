@@ -940,7 +940,6 @@ process.icMetSequence = cms.Sequence(
   process.icuncorrectedPfMetProducer+
   process.ictype1PfMetProducer+
   process.icPfMetPuppiProducer+
-  process.icGenMetProducer+
   process.icMvaMetSequence
   #process.ictype1PfMetProducermetsigoutofbox
   #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
@@ -1042,6 +1041,7 @@ if not isData:
       process.selectedGenJets+
       process.icGenJetProducer+
       process.icGenJetProducerFromSlimmed+
+      process.icGenMetProducer+
       process.icPileupInfoProducer
     )
 #  if release in [ '74X']:
