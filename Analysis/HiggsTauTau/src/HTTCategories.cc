@@ -27,6 +27,7 @@ namespace ic {
       bjet_regression_ = false;
       make_sync_ntuple_ = false;
       sync_output_name_ = "SYNC.root";
+      iso_study_=false;
       is_embedded_=false;
       is_data_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
@@ -103,6 +104,17 @@ namespace ic {
         outtree_->Branch("n_bjets_csv",       &n_bjets_csv_);
         outtree_->Branch("jet_csvbcsv_1",     &jet_csvbcsv_1_);
         outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
+      }
+      if(iso_study_){
+        //Add different isolation variables for if studying isolation
+        outtree_->Branch("iso_1_db03", &iso_1_db03_);
+        outtree_->Branch("iso_1_db03allch", &iso_1_db03allch_);
+        outtree_->Branch("iso_1_db04allch", &iso_1_db04allch_);
+        outtree_->Branch("iso_1_ea03", &iso_1_ea03_);
+        outtree_->Branch("iso_2_db03", &iso_2_db03_);
+        outtree_->Branch("iso_2_db03allch", &iso_2_db03allch_);
+        outtree_->Branch("iso_2_db04allch", &iso_2_db04allch_);
+        outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
       }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -814,6 +826,16 @@ namespace ic {
       }
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_2_db03_ = 0;
+          iso_2_ea03_ = 0;
+          iso_2_db03allch_ = 0;
+          iso_2_db04allch_ = 0;
+        }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -859,6 +881,16 @@ namespace ic {
       }
       if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+          iso_2_db03_ = 0;
+          iso_2_ea03_ = 0;
+          iso_2_db03allch_ = 0;
+          iso_2_db04allch_ = 0;
+        }
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -898,6 +930,16 @@ namespace ic {
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_2_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_2_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
+          iso_2_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+        }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
 

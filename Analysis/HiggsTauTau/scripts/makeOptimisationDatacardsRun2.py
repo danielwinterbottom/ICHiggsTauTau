@@ -28,7 +28,7 @@ parser.add_option("--blind", dest="blind", action='store_true', default=False,
                   help="blind data")
 parser.add_option("--extra", dest="extra", type='string', default='',
                   help="Extra command line options, applied to every datacard")
-parser.add_option("-s", "--scheme", dest="scheme", type='string', default='run2_mssm',
+parser.add_option("-s", "--scheme", dest="scheme", type='string', default='run2_sm',
                   help="datacard scheme")
 parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
                   help="Only make inputs for visible mass, no svfit.")
@@ -92,15 +92,31 @@ extra_channel = {
 #################################################################
 #### Old SM scheme
 #################################################################
-if options.scheme == 'run2_mssm':
+if options.scheme == 'run2_sm':
 #  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300]"
   scheme_et = [
-    ("8",   "iso0p08",    "iso0p08",  BINS_FINE, ''),
-    ("8",   "iso0p09",    "iso0p09",  BINS_FINE, ''),
-    ("8",   "iso0p1",    "iso0p1",  BINS_FINE, ''),
-    ("8",   "iso0p11",    "iso0p11",  BINS_FINE, ''),
-    ("8",   "iso0p12",    "iso0p12",  BINS_FINE, ''),
+    ("8",   "db03iso0p08",    "db03iso0p08",  BINS_FINE, ''),
+    ("8",   "db03iso0p09",    "db03iso0p09",  BINS_FINE, ''),
+    ("8",   "db03iso0p1",    "db03iso0p1",  BINS_FINE, ''),
+    ("8",   "db03iso0p11",    "db03iso0p11",  BINS_FINE, ''),
+    ("8",   "db03iso0p12",    "db03iso0p12",  BINS_FINE, ''),
+    ("8",   "ea03iso0p08",    "ea03iso0p08",  BINS_FINE, ''),
+    ("8",   "ea03iso0p09",    "ea03iso0p09",  BINS_FINE, ''),
+    ("8",   "ea03iso0p1",    "ea03iso0p1",  BINS_FINE, ''),
+    ("8",   "ea03iso0p11",    "ea03iso0p11",  BINS_FINE, ''),
+    ("8",   "ea03iso0p12",    "ea03iso0p12",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p08",    "db03allchiso0p08",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p09",    "db03allchiso0p09",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p1",    "db03allchiso0p1",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p11",    "db03allchiso0p11",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p12",    "db03allchiso0p12",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p08",    "db04allchiso0p08",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p09",    "db04allchiso0p09",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p1",    "db04allchiso0p1",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p11",    "db04allchiso0p11",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p12",    "db04allchiso0p12",  BINS_FINE, ''),
+
 #    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ""),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
@@ -109,11 +125,27 @@ if options.scheme == 'run2_mssm':
   ]
   scheme_mt = [
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '')
-    ("8",   "iso0p08",    "iso0p08",  BINS_FINE, ''),
-    ("8",   "iso0p09",    "iso0p09",  BINS_FINE, ''),
-    ("8",   "iso0p1",    "iso0p1",  BINS_FINE, ''),
-    ("8",   "iso0p11",    "iso0p11",  BINS_FINE, ''),
-    ("8",   "iso0p12",    "iso0p12",  BINS_FINE, '')
+    ("8",   "db03iso0p08",    "db03iso0p08",  BINS_FINE, ''),
+    ("8",   "db03iso0p09",    "db03iso0p09",  BINS_FINE, ''),
+    ("8",   "db03iso0p1",    "db03iso0p1",  BINS_FINE, ''),
+    ("8",   "db03iso0p11",    "db03iso0p11",  BINS_FINE, ''),
+    ("8",   "db03iso0p12",    "db03iso0p12",  BINS_FINE, ''),
+    ("8",   "ea03iso0p08",    "ea03iso0p08",  BINS_FINE, ''),
+    ("8",   "ea03iso0p09",    "ea03iso0p09",  BINS_FINE, ''),
+    ("8",   "ea03iso0p1",    "ea03iso0p1",  BINS_FINE, ''),
+    ("8",   "ea03iso0p11",    "ea03iso0p11",  BINS_FINE, ''),
+    ("8",   "ea03iso0p12",    "ea03iso0p12",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p08",    "db03allchiso0p08",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p09",    "db03allchiso0p09",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p1",    "db03allchiso0p1",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p11",    "db03allchiso0p11",  BINS_FINE, ''),
+    ("8",   "db03allchiso0p12",    "db03allchiso0p12",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p08",    "db04allchiso0p08",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p09",    "db04allchiso0p09",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p1",    "db04allchiso0p1",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p11",    "db04allchiso0p11",  BINS_FINE, ''),
+    ("8",   "db04allchiso0p12",    "db04allchiso0p12",  BINS_FINE, ''),
+
 #    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
@@ -130,16 +162,47 @@ if options.scheme == 'run2_mssm':
   ]
   scheme_em = [
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
-    ("8",   "isoe0p13",    "isoe0p13",  BINS_FINE, ''),
-    ("8",   "isoe0p14",    "isoe0p14",  BINS_FINE, ''),
-    ("8",   "isoe0p15",    "isoe0p15",  BINS_FINE, ''),
-    ("8",   "isoe0p16",    "isoe0p16",  BINS_FINE, ''),
-    ("8",   "isoe0p17",    "isoe0p17",  BINS_FINE, ''),
-    ("8",   "isom0p13",    "isom0p13",  BINS_FINE, ''),
-    ("8",   "isom0p14",    "isom0p14",  BINS_FINE, ''),
-    ("8",   "isom0p15",    "isom0p15",  BINS_FINE, ''),
-    ("8",   "isom0p16",    "isom0p16",  BINS_FINE, ''),
-    ("8",   "isom0p17",    "isom0p17",  BINS_FINE, '')
+    ("8",   "edb03iso0p13",    "edb03iso0p13",  BINS_FINE, ''),
+    ("8",   "edb03iso0p14",    "edb03iso0p14",  BINS_FINE, ''),
+    ("8",   "edb03iso0p15",    "edb03iso0p15",  BINS_FINE, ''),
+    ("8",   "edb03iso0p16",    "edb03iso0p16",  BINS_FINE, ''),
+    ("8",   "edb03iso0p17",    "edb03iso0p17",  BINS_FINE, ''),
+    ("8",   "mdb03iso0p13",    "mdb03iso0p13",  BINS_FINE, ''),
+    ("8",   "mdb03iso0p14",    "mdb03iso0p14",  BINS_FINE, ''),
+    ("8",   "mdb03iso0p15",    "mdb03iso0p15",  BINS_FINE, ''),
+    ("8",   "mdb03iso0p16",    "mdb03iso0p16",  BINS_FINE, ''),
+    ("8",   "mdb03iso0p17",    "mdb03iso0p17",  BINS_FINE, ''),
+    ("8",   "eea03iso0p13",    "eea03iso0p13",  BINS_FINE, ''),
+    ("8",   "eea03iso0p14",    "eea03iso0p14",  BINS_FINE, ''),
+    ("8",   "eea03iso0p15",    "eea03iso0p15",  BINS_FINE, ''),
+    ("8",   "eea03iso0p16",    "eea03iso0p16",  BINS_FINE, ''),
+    ("8",   "eea03iso0p17",    "eea03iso0p17",  BINS_FINE, ''),
+    ("8",   "mea03iso0p13",    "mea03iso0p13",  BINS_FINE, ''),
+    ("8",   "mea03iso0p14",    "mea03iso0p14",  BINS_FINE, ''),
+    ("8",   "mea03iso0p15",    "mea03iso0p15",  BINS_FINE, ''),
+    ("8",   "mea03iso0p16",    "mea03iso0p16",  BINS_FINE, ''),
+    ("8",   "mea03iso0p17",    "mea03iso0p17",  BINS_FINE, ''),
+    ("8",   "edb03allchiso0p13",    "edb03allchiso0p13",  BINS_FINE, ''),
+    ("8",   "edb03allchiso0p14",    "edb03allchiso0p14",  BINS_FINE, ''),
+    ("8",   "edb03allchiso0p15",    "edb03allchiso0p15",  BINS_FINE, ''),
+    ("8",   "edb03allchiso0p16",    "edb03allchiso0p16",  BINS_FINE, ''),
+    ("8",   "edb03allchiso0p17",    "edb03allchiso0p17",  BINS_FINE, ''),
+    ("8",   "mdb03allchiso0p13",    "mdb03allchiso0p13",  BINS_FINE, ''),
+    ("8",   "mdb03allchiso0p14",    "mdb03allchiso0p14",  BINS_FINE, ''),
+    ("8",   "mdb03allchiso0p15",    "mdb03allchiso0p15",  BINS_FINE, ''),
+    ("8",   "mdb03allchiso0p16",    "mdb03allchiso0p16",  BINS_FINE, ''),
+    ("8",   "mdb03allchiso0p17",    "mdb03allchiso0p17",  BINS_FINE, ''),
+    ("8",   "edb04allchiso0p13",    "edb04allchiso0p13",  BINS_FINE, ''),
+    ("8",   "edb04allchiso0p14",    "edb04allchiso0p14",  BINS_FINE, ''),
+    ("8",   "edb04allchiso0p15",    "edb04allchiso0p15",  BINS_FINE, ''),
+    ("8",   "edb04allchiso0p16",    "edb04allchiso0p16",  BINS_FINE, ''),
+    ("8",   "edb04allchiso0p17",    "edb04allchiso0p17",  BINS_FINE, ''),
+    ("8",   "mdb04allchiso0p13",    "mdb04allchiso0p13",  BINS_FINE, ''),
+    ("8",   "mdb04allchiso0p14",    "mdb04allchiso0p14",  BINS_FINE, ''),
+    ("8",   "mdb04allchiso0p15",    "mdb04allchiso0p15",  BINS_FINE, ''),
+    ("8",   "mdb04allchiso0p16",    "mdb04allchiso0p16",  BINS_FINE, ''),
+    ("8",   "mdb04allchiso0p17",    "mdb04allchiso0p17",  BINS_FINE, ''),
+
 #    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, (
@@ -155,7 +218,7 @@ if options.scheme == 'run2_mssm':
     'tt' : 'tt_default'
   }
   sig_scheme = 'run2_sm'
-  ANA = 'mssm'
+  ANA = 'sm'
 
 cat_schemes = {
   'et' : scheme_et,
@@ -167,8 +230,8 @@ cat_schemes = {
 
 
 plots = [ 
-  ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' , "60", "2500" if ANA=='mssm' else "120"),
-  ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      , "100", "2500"  if ANA=='mssm' else "160")
+  ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' , "60", "2500" if ANA=='mssm' else "125"),
+  ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      , "100", "2500"  if ANA=='mssm' else "125")
  ]
 if options.mvis: del plots[1]
 if options.svfit: del plots[0]
