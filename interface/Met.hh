@@ -1,6 +1,7 @@
 #ifndef ICHiggsTauTau_Met_hh
 #define ICHiggsTauTau_Met_hh
 #include <vector>
+#include <map>
 #include <utility>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
@@ -9,9 +10,21 @@ namespace ic {
 
 /**
  * @brief Stores a missing transverse energy object and the corresponding
- * significance
+ * significance and corrections.
  */
 class Met : public Candidate {
+public:
+  struct BasicMet{
+    double px, py, sumet; 
+    double pt() const { return sqrt(px*px+py*py); }  
+    double phi() const { return std::atan2(py,px); }
+  };
+
+
+ private:
+  typedef std::map<std::size_t, BasicMet> UBMmap;
+  typedef std::map<std::size_t, std::string> TSmap;
+
  public:
   Met();
   virtual ~Met();
@@ -39,7 +52,26 @@ class Met : public Candidate {
   /**@}*/
 
 /// The vector of shifted mets
-  inline std::vector<std::pair<std::string,ic::Candidate> > shiftedmets() const { return shiftedmets_; }
+  inline std::map<std::size_t, BasicMet> const& shifted_mets() const { 
+    return shiftedmets_; 
+  }
+  /**@}*/
+
+
+  /// map of MET corrections.
+  inline std::map<std::size_t, BasicMet> const& corrected_mets() const {
+    return correctedmets_;
+  }
+  /**@}*/
+
+  /// Returns a specific correction factor if `name` is defined, otherwise
+  /// returns zero
+  BasicMet GetCorrectedMet(std::string const& name) const;
+  /**@}*/
+ 
+ /// Returns a specific correction factor if `name` is defined, otherwise
+  /// returns zero
+  BasicMet GetShiftedMet(std::string const& name) const;
   /**@}*/
 
   /// @name Setters
@@ -64,7 +96,22 @@ class Met : public Candidate {
   /**@}*/
 
   /// @copybrief shiftedmets()
-  inline void set_shiftedmets(std::vector<std::pair<std::string,ic::Candidate> > const& shiftedmets) { shiftedmets_ = shiftedmets; }
+  inline void set_shiftedmets(std::map<std::size_t, BasicMet> const& shiftedmets) { shiftedmets_ = shiftedmets; }
+  /**@}*/
+
+  /// @copybrief met_corrections()
+  inline void set_correctedmets(std::map<std::size_t, BasicMet> const& cormets) {
+    correctedmets_ = cormets;
+  }
+  /**@}*/
+
+  /// Store a corrected met, overwriting any existing value with
+  /// label `name`
+  void SetCorrectedMet(std::string const& name, BasicMet const& value);
+  /**@}*/
+  /// Store a shifted met, overwriting any existing value with
+  /// label `name`
+  void SetShiftedMet(std::string const& name, BasicMet const& value);
   /**@}*/
 
  private:
@@ -74,7 +121,11 @@ class Met : public Candidate {
   double xy_sig_;
   double yx_sig_;
   double yy_sig_;
-  std::vector<std::pair<std::string,ic::Candidate> > shiftedmets_;
+  UBMmap shiftedmets_;
+  UBMmap correctedmets_;
+
+  std::string UnHashMetCor(std::size_t cor) const;
+  std::string UnHashMetUnc(std::size_t unc) const;
 
  #ifndef SKIP_CINT_DICT
  public:
@@ -82,7 +133,9 @@ class Met : public Candidate {
  #endif
 };
 
-typedef std::vector<ic::Met> MetCollection;
+  std::ostream& operator<<(std::ostream& os,const Met::BasicMet& met);
+  
+  typedef std::vector<ic::Met> MetCollection;
 }
 /** \example plugins/ICMetProducer.cc */
 #endif

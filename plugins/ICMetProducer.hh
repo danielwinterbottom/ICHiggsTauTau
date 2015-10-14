@@ -56,12 +56,15 @@ class ICMetProducer : public edm::EDProducer {
     explicit SigTagsMethod2(edm::ParameterSet const& pset);
   };
 
+  bool do_gen_met_;
+
   bool do_external_metsig_;
   bool do_external_metsig_method2_;
   SigTags metsig_;
   SigTagsMethod2 metsig_method2_;
-  bool get_raw_from_pat_;
 
+  bool do_metcorrections_;
+  std::vector<std::string> metcorrections_;
   bool do_metuncertainties_;
   std::vector<std::string> metuncertainties_;
 };
@@ -85,6 +88,7 @@ ICMetProducer<T>::ICMetProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       do_custom_id_(config.getParameter<bool>("includeCustomID")),
       inputID_(config.getParameter<edm::InputTag>("inputCustomID")),
+      do_gen_met_(config.getParameter<bool>("doGenMet")),
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
       do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
       metsig_(config.getParameterSet("metsig")),
@@ -102,11 +106,13 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       do_custom_id_(config.getParameter<bool>("includeCustomID")),
       inputID_(config.getParameter<edm::InputTag>("inputCustomID")),
+      do_gen_met_(config.getParameter<bool>("doGenMet")),
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
       do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
       metsig_(config.getParameterSet("metsig")),
       metsig_method2_(config.getParameterSet("metsig_method2")),
-      get_raw_from_pat_(config.getParameter<bool>("getUncorrectedMet")),
+      do_metcorrections_(config.getParameter<bool>("includeMetCorrections")),
+      metcorrections_(config.getParameter<std::vector<std::string> >("metcorrections")),
       do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
       metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
   met_ = new std::vector<ic::Met>();
@@ -133,57 +139,55 @@ void ICMetProducer<T>::produce(edm::Event& event, const edm::EventSetup& setup) 
   met_->clear();
   met_->resize(mets_handle->size(), ic::Met());
 
-  for (unsigned i = 0; i < mets_handle->size(); ++i) {
-    T const& src = mets_handle->at(i);
-    ic::Met& dest = met_->at(i);
-    if (do_custom_id_) {
-      dest.set_id(id_handle->at(i));
-    } else {
-      dest.set_id(met_hasher_(&src));
-    }
-/*    dest.set_pt(src.pt());
-    dest.set_eta(src.eta());
-    dest.set_phi(src.phi());
-    dest.set_energy(src.energy());
-    dest.set_sum_et(src.sumEt());
-*/
-    if(!do_external_metsig_&&!do_external_metsig_method2_){
-      dest.set_et_sig(src.mEtSig());
-      dest.set_xx_sig(src.getSignificanceMatrix()(0, 0));
-      dest.set_xy_sig(src.getSignificanceMatrix()(0, 1));
-      dest.set_yx_sig(src.getSignificanceMatrix()(1, 0));
-      dest.set_yy_sig(src.getSignificanceMatrix()(1, 1));
-    }
-    else{
-      if(!do_external_metsig_method2_){
-        edm::Handle<double> metsig;
-        edm::Handle<double> metsigcov00;
-        edm::Handle<double> metsigcov01;
-        edm::Handle<double> metsigcov10;
-        edm::Handle<double> metsigcov11;
-        event.getByLabel(metsig_.metsig, metsig);
-        event.getByLabel(metsig_.metsigcov00, metsigcov00);
-        event.getByLabel(metsig_.metsigcov01, metsigcov01);
-        event.getByLabel(metsig_.metsigcov10, metsigcov10);
-        event.getByLabel(metsig_.metsigcov11, metsigcov11);
-        dest.set_et_sig(*metsig);
-        dest.set_xx_sig(*metsigcov00);
-        dest.set_xy_sig(*metsigcov01);
-        dest.set_yx_sig(*metsigcov10);
-        dest.set_yy_sig(*metsigcov11);
-       } else{
-	edm::Handle<double> metsig;
-	edm::Handle<math::Error<2>::type> metsigcov;
-	event.getByLabel(metsig_method2_.metsig, metsig);
-	event.getByLabel(metsig_method2_.metsigcov, metsigcov);
-	dest.set_et_sig(*metsig);
-	dest.set_xx_sig((*metsigcov)(0,0));
-	dest.set_xy_sig((*metsigcov)(0,1));
-	dest.set_yx_sig((*metsigcov)(1,0));
-	dest.set_yy_sig((*metsigcov)(1,1));
+  if (!do_gen_met_){
+    
+    for (unsigned i = 0; i < mets_handle->size(); ++i) {
+      T const& src = mets_handle->at(i);
+      ic::Met& dest = met_->at(i);
+      if (do_custom_id_) {
+	dest.set_id(id_handle->at(i));
+      } else {
+	dest.set_id(met_hasher_(&src));
+      }
+      
+      if(!do_external_metsig_&&!do_external_metsig_method2_){
+	dest.set_et_sig(src.mEtSig());
+	dest.set_xx_sig(src.getSignificanceMatrix()(0, 0));
+	dest.set_xy_sig(src.getSignificanceMatrix()(0, 1));
+	dest.set_yx_sig(src.getSignificanceMatrix()(1, 0));
+	dest.set_yy_sig(src.getSignificanceMatrix()(1, 1));
+      }
+      else{
+	if(!do_external_metsig_method2_){
+	  edm::Handle<double> metsig;
+	  edm::Handle<double> metsigcov00;
+	  edm::Handle<double> metsigcov01;
+	  edm::Handle<double> metsigcov10;
+	  edm::Handle<double> metsigcov11;
+	  event.getByLabel(metsig_.metsig, metsig);
+	  event.getByLabel(metsig_.metsigcov00, metsigcov00);
+	  event.getByLabel(metsig_.metsigcov01, metsigcov01);
+	  event.getByLabel(metsig_.metsigcov10, metsigcov10);
+	  event.getByLabel(metsig_.metsigcov11, metsigcov11);
+	  dest.set_et_sig(*metsig);
+	  dest.set_xx_sig(*metsigcov00);
+	  dest.set_xy_sig(*metsigcov01);
+	  dest.set_yx_sig(*metsigcov10);
+	  dest.set_yy_sig(*metsigcov11);
+	} else{
+	  edm::Handle<double> metsig;
+	  edm::Handle<math::Error<2>::type> metsigcov;
+	  event.getByLabel(metsig_method2_.metsig, metsig);
+	  event.getByLabel(metsig_method2_.metsigcov, metsigcov);
+	  dest.set_et_sig(*metsig);
+	  dest.set_xx_sig((*metsigcov)(0,0));
+	  dest.set_xy_sig((*metsigcov)(0,1));
+	  dest.set_yx_sig((*metsigcov)(1,0));
+	  dest.set_yy_sig((*metsigcov)(1,1));
+	}
       }
     }
-  }
+  }//!dogenmet
   constructSpecific(mets_handle, event, setup);
 }
 
@@ -209,6 +213,9 @@ void ICMetProducer<reco::MET>::constructSpecific(
     if(do_metuncertainties_){
       throw cms::Exception("OptionNotSupported")<<"metuncertainties not supported for reco::met\n";
 	}
+    if(do_metcorrections_){
+      throw cms::Exception("OptionNotSupported")<<"metcorrections not supported for reco::met\n";
+	}
   }
 
 template <>
@@ -218,60 +225,59 @@ void ICMetProducer<pat::MET>::constructSpecific(
     for (unsigned i = 0; i < mets_handle->size(); ++i) {
       pat::MET const& src = mets_handle->at(i);
       ic::Met& dest = met_->at(i);
-      if(!get_raw_from_pat_){
-        dest.set_pt(src.pt());
-        dest.set_eta(src.eta());
-        dest.set_phi(src.phi());
-        dest.set_energy(src.energy());
-        dest.set_sum_et(src.sumEt());
+
+      if (do_gen_met_){
+	dest.set_pt(src.genMET()->pt());
+	dest.set_eta(src.genMET()->eta());
+	dest.set_phi(src.genMET()->phi());
+	dest.set_energy(src.genMET()->energy());
+	dest.set_sum_et(src.genMET()->sumEt());
+	return;
+      }
+      
+      dest.set_pt(src.pt());
+      dest.set_eta(src.eta());
+      dest.set_phi(src.phi());
+      dest.set_energy(src.energy());
+      dest.set_sum_et(src.sumEt());
+      
+      
 #if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >=4
-	if(do_metuncertainties_){
-	  std::vector<std::pair<std::string,ic::Candidate> > metuncs;
-	  for(unsigned iunc=0;iunc<metuncertainties_.size();iunc++){
-	    ROOT::Math::PtEtaPhiEVector shiftedvector;
-	    if(metuncertainties_[iunc]=="JetEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::JetEnUp);
-	    else if(metuncertainties_[iunc]=="JetEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::JetEnDown);
-	    else if(metuncertainties_[iunc]=="JetResUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::JetResUp);
-	    else if(metuncertainties_[iunc]=="JetResDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::JetResDown);
-	    else if(metuncertainties_[iunc]=="MuonEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::MuonEnUp);
-	    else if(metuncertainties_[iunc]=="MuonEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::MuonEnDown);
-	    else if(metuncertainties_[iunc]=="ElectronEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::ElectronEnUp);
-	    else if(metuncertainties_[iunc]=="ElectronEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::ElectronEnDown);
-	    else if(metuncertainties_[iunc]=="TauEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::TauEnUp);
-	    else if(metuncertainties_[iunc]=="TauEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::TauEnDown);
-	    else if(metuncertainties_[iunc]=="UnclusteredEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::UnclusteredEnUp);
-	    else if(metuncertainties_[iunc]=="UnclusteredEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::UnclusteredEnDown);
-	    else if(metuncertainties_[iunc]=="NoShift")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::NoShift);
-	    else if(metuncertainties_[iunc]=="METUncertaintySize")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::METUncertaintySize);
-	    else{
-	      throw cms::Exception("UncertaintyNotRecognised")<<metuncertainties_[iunc]<<" is not a recognised uncertainty!\n";
-	    }
-	    ic::Candidate thismet;
-	    thismet.set_vector(shiftedvector);
-	    std::pair<std::string,ic::Candidate> thispair(metuncertainties_[iunc],thismet);
-	    metuncs.push_back(thispair);
-	  }
-	  dest.set_shiftedmets(metuncs);
+      // Only write correction into the output met if the user wants it
+      if (do_metcorrections_) {
+	if (metcorrections_.size() != pat::MET::METCorrectionLevel::METCorrectionLevelSize){
+	  throw cms::Exception("MetCorrectionNotRecognised")<<__FILE__ << " line " << __LINE__ << ": size of expected met correction object is " << metcorrections_.size() << " but pat::MET::METCorrectionLevel enum contains " << pat::MET::METCorrectionLevel::METCorrectionLevelSize << " elements. Code needs updating.\n";
+	}
+
+	for (unsigned j = 0; j < static_cast<unsigned>(pat::MET::METCorrectionLevel::METCorrectionLevelSize) ; ++j) {
+	  ic::Met::BasicMet tmp;
+	  tmp.px = src.corPx(static_cast<pat::MET::METCorrectionLevel>(j));
+	  tmp.py = src.corPy(static_cast<pat::MET::METCorrectionLevel>(j));
+	  tmp.sumet = src.corSumEt(static_cast<pat::MET::METCorrectionLevel>(j));
+	  dest.SetCorrectedMet(metcorrections_[j],tmp);
+	}
+
+      }
+
+      if(do_metuncertainties_){
+	if (metuncertainties_.size() != pat::MET::METUncertainty::METUncertaintySize){
+	  throw cms::Exception("MetCorrectionNotRecognised")<<__FILE__ << " line " << __LINE__ << ": size of expected met uncertainties object is " << metuncertainties_.size() << " but pat::MET::METUncertainty enum contains " << pat::MET::METUncertainty::METUncertaintySize << " elements. Code needs updating.\n";
+	}
+
+	for(unsigned iunc=0;iunc<static_cast<unsigned>(pat::MET::METUncertainty::METUncertaintySize);iunc++){
+	  ic::Met::BasicMet tmp;
+	  tmp.px = src.shiftedPx(static_cast<pat::MET::METUncertainty>(iunc));
+	  tmp.py = src.shiftedPy(static_cast<pat::MET::METUncertainty>(iunc));
+	  tmp.sumet = src.shiftedSumEt(static_cast<pat::MET::METUncertainty>(iunc));
+	  dest.SetShiftedMet(metuncertainties_[iunc],tmp);
+
 
 	}
-#endif
-      } else {
-#if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >=4
-        dest.set_eta(src.eta());
-        dest.set_energy(src.energy());
-#if CMSSW_REVISION >= 12
-        dest.set_pt(src.uncorPt());
-        dest.set_phi(src.uncorPhi());
-        dest.set_sum_et(src.uncorSumEt());
-#else
-        dest.set_pt(src.uncorrectedPt());
-        dest.set_phi(src.uncorrectedPhi());
-        dest.set_sum_et(src.uncorrectedSumEt());
-#endif
-#endif
+
       }
+#endif
     }
-  }
+}
 
 
 
