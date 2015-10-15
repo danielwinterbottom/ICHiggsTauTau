@@ -244,11 +244,12 @@ void ICMetProducer<pat::MET>::constructSpecific(
       
 #if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >=4
       // Only write correction into the output met if the user wants it
+#if CMSSW_REVISION >= 12
       if (do_metcorrections_) {
 	if (metcorrections_.size() != pat::MET::METCorrectionLevel::METCorrectionLevelSize){
 	  throw cms::Exception("MetCorrectionNotRecognised")<<__FILE__ << " line " << __LINE__ << ": size of expected met correction object is " << metcorrections_.size() << " but pat::MET::METCorrectionLevel enum contains " << pat::MET::METCorrectionLevel::METCorrectionLevelSize << " elements. Code needs updating.\n";
 	}
-
+	
 	for (unsigned j = 0; j < static_cast<unsigned>(pat::MET::METCorrectionLevel::METCorrectionLevelSize) ; ++j) {
 	  ic::Met::BasicMet tmp;
 	  tmp.px = src.corPx(static_cast<pat::MET::METCorrectionLevel>(j));
@@ -258,7 +259,7 @@ void ICMetProducer<pat::MET>::constructSpecific(
 	}
 
       }
-
+#endif
       if(do_metuncertainties_){
 	if (metuncertainties_.size() != pat::MET::METUncertainty::METUncertaintySize){
 	  throw cms::Exception("MetCorrectionNotRecognised")<<__FILE__ << " line " << __LINE__ << ": size of expected met uncertainties object is " << metuncertainties_.size() << " but pat::MET::METUncertainty enum contains " << pat::MET::METUncertainty::METUncertaintySize << " elements. Code needs updating.\n";
