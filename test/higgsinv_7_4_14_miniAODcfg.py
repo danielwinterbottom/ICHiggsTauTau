@@ -67,7 +67,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -544,7 +544,7 @@ process.selectedSlimmedJetsPuppiAK4 = cms.EDFilter("PATJetRefSelector",
 # select hadrons and partons for the jet flavour
 process.selectedHadronsAndPartons = cms.EDProducer('HadronAndPartonSelector',
     src = cms.InputTag("generator"),
-    particles = cms.InputTag("genParticles","","HLT"),
+    particles = cms.InputTag("prunedGenParticles"),
     partonMode = cms.string("Auto")
 )
 
@@ -858,6 +858,14 @@ process.load("RecoMET/METProducers.METSignificanceParams_cfi")
 
 #!!clone met sig producer with different name and input for met uncertainties
 
+#get genmet
+process.icGenMetProducer = producers.icMetFromPatProducer.clone(
+  input = cms.InputTag("slimmedMETs"),
+  branch = cms.string("genMetCollection"),
+  includeCustomID = cms.bool(False),
+  inputCustomID = cms.InputTag(""),
+  doGenMet = cms.bool(True)
+  )
 
 #get type 1 met straight from miniAOD !!update to take in output of met significance calculator
 process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
@@ -866,6 +874,7 @@ process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
   includeExternalMetsigMethod2 = cms.bool(True),
+  includeMetCorrections = cms.bool(True),
   includeMetUncertainties = cms.bool(True)
   )
 
@@ -875,6 +884,7 @@ process.icPfMetPuppiProducer = producers.icMetFromPatProducer.clone(
   branch = cms.string("pfMetPuppiCollection"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
+  includeMetCorrections = cms.bool(True),
   includeMetUncertainties = cms.bool(True)
   )
 
@@ -1031,6 +1041,7 @@ if not isData:
       process.selectedGenJets+
       process.icGenJetProducer+
       process.icGenJetProducerFromSlimmed+
+      process.icGenMetProducer+
       process.icPileupInfoProducer
     )
 #  if release in [ '74X']:
