@@ -129,7 +129,7 @@ public:
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Met, 4);
+  ClassDef(Met, 5);
  #endif
 };
 

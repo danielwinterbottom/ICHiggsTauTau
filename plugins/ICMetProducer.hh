@@ -139,16 +139,16 @@ void ICMetProducer<T>::produce(edm::Event& event, const edm::EventSetup& setup) 
   met_->clear();
   met_->resize(mets_handle->size(), ic::Met());
 
-  if (!do_gen_met_){
     
-    for (unsigned i = 0; i < mets_handle->size(); ++i) {
-      T const& src = mets_handle->at(i);
-      ic::Met& dest = met_->at(i);
-      if (do_custom_id_) {
-	dest.set_id(id_handle->at(i));
-      } else {
-	dest.set_id(met_hasher_(&src));
-      }
+  for (unsigned i = 0; i < mets_handle->size(); ++i) {
+    T const& src = mets_handle->at(i);
+    ic::Met& dest = met_->at(i);
+    if (do_custom_id_) {
+      dest.set_id(id_handle->at(i));
+    } else {
+      dest.set_id(met_hasher_(&src));
+    }
+    if (!do_gen_met_){
       
       if(!do_external_metsig_&&!do_external_metsig_method2_){
 	dest.set_et_sig(src.mEtSig());
@@ -186,8 +186,8 @@ void ICMetProducer<T>::produce(edm::Event& event, const edm::EventSetup& setup) 
 	  dest.set_yy_sig((*metsigcov)(1,1));
 	}
       }
-    }
-  }//!dogenmet
+    }//!dogenmet
+  }
   constructSpecific(mets_handle, event, setup);
 }
 
