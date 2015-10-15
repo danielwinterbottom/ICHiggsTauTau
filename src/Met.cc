@@ -28,22 +28,22 @@ namespace ic {
     }
   }
 
-  void Met::SetCorrectedMet(std::string const& name, Met::BasicMet const& factor) {
+  void Met::SetCorrectedMet(std::string const& name, ic::Met::BasicMet const& factor) {
     correctedmets_[CityHash64(name)] = factor;
   }
 
-  void Met::SetShiftedMet(std::string const& name, Met::BasicMet const& factor) {
+  void Met::SetShiftedMet(std::string const& name, ic::Met::BasicMet const& factor) {
     shiftedmets_[CityHash64(name)] = factor;
   }
 
-  Met::BasicMet Met::GetCorrectedMet(std::string const& name) const {
+  ic::Met::BasicMet Met::GetCorrectedMet(std::string const& name) const {
     UBMmap::const_iterator iter = correctedmets_.find(CityHash64(name));
     if (iter != correctedmets_.end()) {
       return iter->second;
     } else {
       std::cerr << "Warning in <Met::GetCorrectedMet>: MET \"" << name
                 << "\" not found" << std::endl;
-      Met::BasicMet tmp;
+      ic::Met::BasicMet tmp;
       tmp.px=0;
       tmp.py=0;
       tmp.sumet=0;
@@ -51,14 +51,14 @@ namespace ic {
     }
   }
 
-  Met::BasicMet Met::GetShiftedMet(std::string const& name) const {
+  ic::Met::BasicMet Met::GetShiftedMet(std::string const& name) const {
     UBMmap::const_iterator iter = shiftedmets_.find(CityHash64(name));
     if (iter != shiftedmets_.end()) {
       return iter->second;
     } else {
       std::cerr << "Warning in <Met::GetShiftedMet>: MET \"" << name
                 << "\" not found" << std::endl;
-      Met::BasicMet tmp;
+      ic::Met::BasicMet tmp;
       tmp.px=0;
       tmp.py=0;
       tmp.sumet=0;
@@ -124,7 +124,7 @@ namespace ic {
     return "";
   }
 
-  std::ostream& operator<<(std::ostream& os,const Met::BasicMet& met)
+  std::ostream& operator<<(std::ostream& os,const ic::Met::BasicMet& met)
   {
     return os << " pt=" << met.pt() << " phi=" << met.phi() << " sumet=" << met.sumet << std::endl;
   }

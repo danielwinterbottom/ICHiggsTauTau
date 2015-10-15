@@ -22,7 +22,7 @@ public:
 
 
  private:
-  typedef std::map<std::size_t, BasicMet> UBMmap;
+  typedef std::map<std::size_t, ic::Met::BasicMet> UBMmap;
   typedef std::map<std::size_t, std::string> TSmap;
 
  public:
@@ -52,26 +52,26 @@ public:
   /**@}*/
 
 /// The vector of shifted mets
-  inline std::map<std::size_t, BasicMet> const& shifted_mets() const { 
+  inline std::map<std::size_t, ic::Met::BasicMet> const& shifted_mets() const { 
     return shiftedmets_; 
   }
   /**@}*/
 
 
   /// map of MET corrections.
-  inline std::map<std::size_t, BasicMet> const& corrected_mets() const {
+  inline std::map<std::size_t, ic::Met::BasicMet> const& corrected_mets() const {
     return correctedmets_;
   }
   /**@}*/
 
   /// Returns a specific correction factor if `name` is defined, otherwise
   /// returns zero
-  BasicMet GetCorrectedMet(std::string const& name) const;
+  ic::Met::BasicMet GetCorrectedMet(std::string const& name) const;
   /**@}*/
  
  /// Returns a specific correction factor if `name` is defined, otherwise
   /// returns zero
-  BasicMet GetShiftedMet(std::string const& name) const;
+  ic::Met::BasicMet GetShiftedMet(std::string const& name) const;
   /**@}*/
 
   /// @name Setters
@@ -96,22 +96,22 @@ public:
   /**@}*/
 
   /// @copybrief shiftedmets()
-  inline void set_shiftedmets(std::map<std::size_t, BasicMet> const& shiftedmets) { shiftedmets_ = shiftedmets; }
+  inline void set_shiftedmets(std::map<std::size_t, ic::Met::BasicMet> const& shiftedmets) { shiftedmets_ = shiftedmets; }
   /**@}*/
 
   /// @copybrief met_corrections()
-  inline void set_correctedmets(std::map<std::size_t, BasicMet> const& cormets) {
+  inline void set_correctedmets(std::map<std::size_t, ic::Met::BasicMet> const& cormets) {
     correctedmets_ = cormets;
   }
   /**@}*/
 
   /// Store a corrected met, overwriting any existing value with
   /// label `name`
-  void SetCorrectedMet(std::string const& name, BasicMet const& value);
+  void SetCorrectedMet(std::string const& name, ic::Met::BasicMet const& value);
   /**@}*/
   /// Store a shifted met, overwriting any existing value with
   /// label `name`
-  void SetShiftedMet(std::string const& name, BasicMet const& value);
+  void SetShiftedMet(std::string const& name, ic::Met::BasicMet const& value);
   /**@}*/
 
  private:
@@ -133,7 +133,7 @@ public:
  #endif
 };
 
-  std::ostream& operator<<(std::ostream& os,const Met::BasicMet& met);
+  std::ostream& operator<<(std::ostream& os,const ic::Met::BasicMet& met);
   
   typedef std::vector<ic::Met> MetCollection;
 }
