@@ -22,6 +22,7 @@ int main(int argc, char* argv[]){
 	string var;																		// Use background methods for chosen category
 	string cat;																		// Use background methods for chosen category
 	unsigned verbosity;														// Verbose output, useful for diagnostic purposes
+  unsigned use_status_flags;                    // Use status flag based gen info for sample splitting?
 	bool do_ss;                            		    // Tweaking some things for the paper
 	string datacard;             									// Channel, e.g. et
 	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
@@ -73,6 +74,7 @@ int main(int argc, char* argv[]){
 	  ("var",              		    po::value<string>(&var)->required())
 	  ("cat",             		    po::value<string>(&cat)->default_value(""))
 	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
+    ("use_status_flags",        po::value<unsigned>(&use_status_flags)->default_value(1))
 	  ("do_ss", 	                po::value<bool>(&do_ss)->default_value(false))
 	  ("interpolate", 	          po::value<bool>(&interpolate)->default_value(false))
 	  ("datacard",                po::value<string>(&datacard)->default_value(""))
@@ -164,7 +166,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
 	// ************************************************************************
-	HTTRun2Analysis ana(String2Channel(channel_str), "2015", verbosity);
+	HTTRun2Analysis ana(String2Channel(channel_str), "2015", use_status_flags, verbosity);
     ana.SetQCDRatio(qcd_os_ss_factor);
     if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
@@ -196,7 +198,10 @@ int main(int argc, char* argv[]){
   if (signal_bins != "") sig_var = reduced_var+signal_bins;
 
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
-	//ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
+  
+
+   
+ ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 	}
@@ -320,7 +325,7 @@ int main(int argc, char* argv[]){
 	for (auto const& syst : systematics) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 		std::cout << "[HiggsTauTauPlot5] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
-		HTTRun2Analysis ana_syst(String2Channel(channel_str), "2015", verbosity);
+		HTTRun2Analysis ana_syst(String2Channel(channel_str), "2015", use_status_flags, verbosity);
         ana_syst.SetQCDRatio(qcd_os_ss_factor);
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
@@ -776,6 +781,40 @@ int main(int argc, char* argv[]){
     plot.AddTextElement(text);
     //plot.AddTextElement(text2);
 	}
+
+   
+   /*if(n_vtx){
+    TH1F * data = &hmap["data_obs"].first;
+    TH1F *data_test = (TH1F*)data->Clone("data_test");
+    TH1F * nvtx_weights = new TH1F("nvtx_weights","nvtx_weights",101,-0.5,100.5);
+    data_test->Scale(1./data_test->Integral(1,data_test->GetNbinsX()));
+    std::cout<<data_test->Integral()<<std::endl;
+    vector<string>bkgs = {"ZTT","ZL","ZJ","W","TT","VV"};
+    if (channel_str == "em") bkgs = {"ZTT","VV","TT"}; 
+    if (channel_str == "tt") bkgs = {"W","VV","TT"};
+
+    double bckg_yield=0;
+    for (int i = 1; i<= data_test->GetNbinsX(); ++i){
+      for (auto bkg : bkgs) bckg_yield += hmap[bkg].first.GetBinContent(i);
+    }
+    std::cout <<bckg_yield<<std::endl;
+    for (int i = 1; i <= data_test->GetNbinsX(); ++i){
+      double bkg_tot = 0;
+      for (auto bkg : bkgs) bkg_tot += hmap[bkg].first.GetBinContent(i);
+      bkg_tot = (double)bkg_tot/bckg_yield;
+    if(bkg_tot !=0){
+      nvtx_weights->SetBinContent(nvtx_weights->FindBin(data_test->GetBinCenter(i)),(data_test->GetBinContent(i)/bkg_tot)); 
+   }
+
+   }
+   std::string weightfilename = "VertexWeightDistribution_"+channel_str+".root";
+   TFile *fileout = new TFile(weightfilename.c_str(),"RECREATE");
+     nvtx_weights->Write();
+   fileout->Close();
+  }*/
+
+   //data->Divide(bkg_hist);
+
 	plot.GeneratePlot(hmap);
 
   return 0;

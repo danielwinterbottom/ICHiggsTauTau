@@ -91,6 +91,7 @@ int main(int argc, char* argv[]){
   string outname;
   string title;
   string x_axis_title;
+  string y_axis_title;
   bool custom_x_axis_range;                     // Can optionally specify an x-axis range
   double x_axis_min;                            // If custom_x_axis_range is true, use this as min
   double x_axis_max;                            // If custom_x_axis_range is true, use this as max
@@ -120,6 +121,7 @@ int main(int argc, char* argv[]){
     ("big_label",           po::value<string>(&channel)->required())
     ("norm_mode",           po::value<int>(&norm_mode)->required())
     ("x_axis_title",        po::value<string>(&x_axis_title)->default_value(""))
+    ("y_axis_title",        po::value<string>(&y_axis_title)->default_value("Events"))
     ("custom_x_axis_range", po::value<bool>(&custom_x_axis_range)->default_value(false))
     ("log_y",               po::value<bool>(&log_y)->default_value(false))
     ("x_axis_min",          po::value<double>(&x_axis_min)->default_value(0))
@@ -214,6 +216,7 @@ int main(int argc, char* argv[]){
       hist_map[split[0].c_str()] = TH1F(split[0].c_str(),split[0].c_str(),n_bins,x_low,x_up);
       tree->Draw((split[4]+">>"+split[0]).c_str(),sel_string.c_str());
       elements.emplace_back(split[0], &hist_map[split[0].c_str()], split[1]);
+      elements.back().hist_ptr()->Sumw2();
       }
 
 
@@ -294,7 +297,7 @@ int main(int argc, char* argv[]){
   compare.ratio_y_axis_max = 1.2;
   compare.ratio_y_axis_min = 0.8;
   compare.x_axis_title = x_axis_title;
-  compare.y_axis_title = "Events";
+  compare.y_axis_title = y_axis_title;
 
   compare.draw_ratio_hist = relements.size() > 0;
   compare.ratio_y_axis_title = ratio_axis_label;

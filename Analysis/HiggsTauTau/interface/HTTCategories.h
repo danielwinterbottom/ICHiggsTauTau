@@ -83,6 +83,7 @@ class HTTCategories : public ModuleBase {
   bool extramuon_veto_;
   bool lepton_veto_;
   unsigned n_vtx_;
+  bool good_vtx_;
   unsigned n_pu_;
   branch_var m_sv_;
   branch_var m_vis_;
@@ -255,6 +256,10 @@ class HTTCategories : public ModuleBase {
   int convergence_bb_; //Defined if n_jets >= 2
   branch_var jdeta_;     // Defined if n_jets >= 2
   float jdphi_;
+  unsigned gen_match_1_;
+  unsigned gen_match_2_;
+  //double leading_lepton_match_pt_;
+  //double subleading_lepton_match_pt_;
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2
