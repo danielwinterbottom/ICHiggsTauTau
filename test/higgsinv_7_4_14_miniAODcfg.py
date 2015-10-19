@@ -1170,7 +1170,6 @@ process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFil
 #process.HBHEISONoiseFilterResultProducer = process.HBHENoiseFilterResultProducer.clone()
 #process.HBHEISONoiseFilterResultProducer.defaultDecision = cms.string("HBHEIsoNoiseFilterResult")
 
-
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   isNlo               = isNLO,
   includeJetRho       = cms.bool(True),
@@ -1184,7 +1183,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeFiltersFromTrig = cms.bool(True),
   filters             = cms.PSet(
     Flag_HBHENoiseFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
-    #Flag_HBHENoiseIsoFilter = cms.InputTag('HBHEISONoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
+    Flag_HBHENoiseIsoFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
     )
 )
 
