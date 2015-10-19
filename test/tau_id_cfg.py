@@ -34,9 +34,9 @@ print 'globalTag   : '+tag
 # Standard setup
 ################################################################
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.load("Configuration.Geometry.GeometryRecoDB_cff")
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-process.load("Configuration.StandardSequences.MagneticField_cff")
+# process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
   fileName = cms.string("EventTree.root"),
@@ -60,24 +60,44 @@ process.options   = cms.untracked.PSet(
 # Input files and global tags
 ################################################################
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(infile))
-process.GlobalTag.globaltag = cms.string(tag)
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, tag, '')
 
 # 72XMINIAOD MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root globalTag=START72_V1::All
 # 74X: globalTag=MCRUN2_74_V9A file=/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/GEN-SIM-RECO/AsymptNoPURawReco_MCRUN2_74_V9A-v4/10000/000BE505-D818-E511-8A12-3417EBE5280A.root
-
+# from RAW: /store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/GEN-SIM-RAW/AsymptNoPURawReco_MCRUN2_74_V9A-v4/10000/0012730E-CC18-E511-8E17-00266CFFBE5C.root
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 
 ################################################################
 # Re-do PFTau reconstruction
 ################################################################
+process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
-
 
 process.extraPreSequence = cms.Sequence()
 
 if release in ['74X']:
-  process.extraPreSequence += process.PFTau
+  process.load('Configuration.StandardSequences.Services_cff')
+  # process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+  process.load('Configuration.EventContent.EventContent_cff')
+  process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
+  process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+  process.load('Configuration.StandardSequences.RawToDigi_cff')
+  process.load('Configuration.StandardSequences.L1Reco_cff')
+  process.load('Configuration.StandardSequences.Reconstruction_cff')
+  process.load('CommonTools.ParticleFlow.EITopPAG_cff')
+  process.extraPreSequence += process.RawToDigi
+  process.extraPreSequence += process.L1Reco
+  process.extraPreSequence += process.reconstruction
+  process.extraPreSequence += process.EIsequence
+  from SLHCUpgradeSimulations.Configuration.postLS1Customs import customisePostLS1_50ns 
+  process = customisePostLS1_50ns(process)
+
+  # process.extraPreSequence += process.PFTau
+  # process.extraPreSequence += process.globalreco
+  # process.extraPreSequence += process.highlevelreco
+
 
 ################################################################
 # Object Selection
@@ -621,7 +641,23 @@ process.icEventInfoSequence = cms.Sequence(
 process.icEventProducer = producers.icEventProducer.clone()
 
 
+process.tauParticles = cms.EDProducer("GenParticlePruner",
+    src = cms.InputTag("genParticles"),
+    select = cms.vstring(
+      "drop *", # this is the default
+      "keep abs(pdgId) == 15"  #keep event summary (status=3 for pythia6, 21 <= status <= 29 for pythia8)
+    )
+)
+
+process.zTauTauFilter = cms.EDFilter("CandViewCountFilter",
+    src = cms.InputTag("tauParticles"),
+    minNumber = cms.uint32(2),
+  )
+
+
 process.p = cms.Path(
+  process.tauParticles+
+  process.zTauTauFilter+
   process.extraPreSequence+
   process.icSelectionSequence+
   process.electronPFIsolationValuesSequence+
@@ -637,6 +673,7 @@ process.p = cms.Path(
   process.icEventProducer
 )
 
+# process.schedule = cms.Schedule(process.p)
 process.schedule = cms.Schedule(process.p)
 
 #print process.dumpPython()
