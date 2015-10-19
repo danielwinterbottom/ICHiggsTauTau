@@ -51,7 +51,7 @@ if __name__ == '__main__':
     tasks=list()
 
     #!!TO BE UPDATED ON EACH PROCESSING
-    json='/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_14/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-258714_13TeV_PromptReco_Collisions15_25ns_JSON.txt'
+    json='/vols/cms04/pjd12/invcmssws/run2ntuple/ammetwork/CMSSW_7_4_14/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-258714_13TeV_PromptReco_Collisions15_25ns_JSON.txt'
     firstrun='246908'
     maxrun='258714'#!!remember to update max run
     lastrerecorun='258158'
