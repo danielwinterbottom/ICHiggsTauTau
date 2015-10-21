@@ -83,7 +83,9 @@ if not isData:
   process.source = cms.Source("PoolSource", fileNames =
        #                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
                               #cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/048FB1EE-33FD-E411-A2BA-0025905A6094.root')
-                              cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/WW_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/10000/006ABB57-1207-E511-A99E-0002C94CD150.root')
+                              #cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/WW_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/10000/006ABB57-1207-E511-A99E-0002C94CD150.root')
+ #AMM - reminiaod v2 - 13/10/2015
+                              cms.untracked.vstring('file:/afs/cern.ch/work/a/amagnan/CMSSW_7_4_14/src/ttbartest.root')
                               #cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/1E0D8712-D722-E511-B7CF-008CFA051614.root')
                               
                               )
@@ -91,9 +93,10 @@ else:
   process.source = cms.Source("PoolSource", fileNames =
        #                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
                               #cms.untracked.vstring('root://xrootd.unl.edu//store/data/Run2015B/MET/MINIAOD/17Jul2015-v1/30000/64C3BF26-C32E-E511-8430-002618943982.root')
-                              cms.untracked.vstring('root://xrootd.unl.edu//store/data/Run2015D/MET/MINIAOD/PromptReco-v3/000/256/584/00000/C0ED0230-855D-E511-85C6-02163E0170AD.root')
-
-                              
+                              #cms.untracked.vstring('root://xrootd.unl.edu//store/data/Run2015D/MET/MINIAOD/PromptReco-v3/000/256/584/00000/C0ED0230-855D-E511-85C6-02163E0170AD.root')
+#AMM - reminiaod v2 - 13/10/2015
+                              cms.untracked.vstring('file:/afs/cern.ch/work/a/amagnan/CMSSW_7_4_14/src/datatest_oct5.root')
+                              #cms.untracked.vstring('file:/afs/cern.ch/work/a/amagnan/CMSSW_7_4_14/src/datatest_prv4.root')                    
                               )
 process.GlobalTag.globaltag = cms.string(tag)
 
@@ -522,21 +525,40 @@ process.selectedSlimmedJetsPuppiAK4 = cms.EDFilter("PATJetRefSelector",
 
 # get parton flavour by matching to genjets for reclustered
 #CHS
-process.jetPartonsforCHS = cms.EDProducer("PartonSelector",
-                                    src = cms.InputTag("prunedGenParticles"),
-                                    withLeptons = cms.bool(False)
-                                    )
+#process.jetPartonsforCHS = cms.EDProducer("PartonSelector",
+ #                                   src = cms.InputTag("prunedGenParticles"),
+  #                                  withLeptons = cms.bool(False)
+   #                                 )
 
-process.pfchsJetPartonMatches = cms.EDProducer("JetPartonMatcher",
-                                            jets = cms.InputTag("ak4PFJetsCHS"),
-                                            coneSizeToAssociate = cms.double(0.3),
-                                            partons = cms.InputTag("jetPartonsforCHS")
-                                            )
+#process.pfchsJetPartonMatches = cms.EDProducer("JetPartonMatcher",
+ #                                           jets = cms.InputTag("ak4PFJetsCHS"),
+  #                                          coneSizeToAssociate = cms.double(0.3),
+   #                                         partons = cms.InputTag("jetPartonsforCHS")
+    #                                        )
 
-process.pfchsJetFlavourAssociation = cms.EDProducer("JetFlavourIdentifier",
-                                                 srcByReference = cms.InputTag("pfchsJetPartonMatches"),
-                                                 physicsDefinition = cms.bool(False)
-                                                 )
+#process.pfchsJetFlavourAssociation = cms.EDProducer("JetFlavourIdentifier",
+                                                 #srcByReference = cms.InputTag("pfchsJetPartonMatches"),
+                                                 #physicsDefinition = cms.bool(False)
+                                                 #)
+
+# select hadrons and partons for the jet flavour
+process.selectedHadronsAndPartons = cms.EDProducer('HadronAndPartonSelector',
+    src = cms.InputTag("generator"),
+    particles = cms.InputTag("genParticles","","HLT"),
+    partonMode = cms.string("Auto")
+)
+
+process.pfchsJetFlavourAssociation = cms.EDProducer("JetFlavourClustering",
+    jets                     = cms.InputTag("ak4PFJetsCHS"),
+    bHadrons                 = cms.InputTag("selectedHadronsAndPartons","bHadrons"),
+    cHadrons                 = cms.InputTag("selectedHadronsAndPartons","cHadrons"),
+    partons                  = cms.InputTag("selectedHadronsAndPartons","algorithmicPartons"),
+    leptons                  = cms.InputTag("selectedHadronsAndPartons","leptons"),
+    jetAlgorithm             = cms.string("AntiKt"),
+    rParam                   = cms.double(0.4),
+    ghostRescaling           = cms.double(1e-18),
+    hadronFlavourHasPriority = cms.bool(False)
+)
 
 process.icPFchsJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
                                                   input       = cms.InputTag("ak4PFJetsCHS"),
@@ -769,8 +791,9 @@ process.icPFJetSequence += cms.Sequence(
 #  process.ak4PFJets+
 if not isData:
   process.icPFJetSequence += cms.Sequence(
-    process.jetPartonsforCHS+
-    process.pfchsJetPartonMatches+
+    #process.jetPartonsforCHS+
+    #process.pfchsJetPartonMatches+
+    process.selectedHadronsAndPartons+
     process.pfchsJetFlavourAssociation+
     process.icPFchsJetFlavourCalculator
     )
@@ -856,6 +879,13 @@ process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
 
 process.load('JetMETCorrections.Configuration.JetCorrectionProducers_cff')
 process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
+process.pfMVAMEt.inputFileNames = cms.PSet(
+        U     = cms.FileInPath('RecoMET/METPUSubtraction/data/gbru_7_4_X_miniAOD_25NS_July2015.root'),
+        DPhi  = cms.FileInPath('RecoMET/METPUSubtraction/data/gbrphi_7_4_X_miniAOD_25NS_July2015.root'),
+        CovU1 = cms.FileInPath('RecoMET/METPUSubtraction/data/gbru1cov_7_4_X_miniAOD_25NS_July2015.root'),
+        CovU2 = cms.FileInPath('RecoMET/METPUSubtraction/data/gbru2cov_7_4_X_miniAOD_25NS_July2015.root')
+    )
+
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 #make ak4 non-CHS jets:
@@ -1025,8 +1055,6 @@ process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
   inputPrescales=cms.InputTag("patTrigger")
   )
 
-
-
 process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
   branch = cms.string("triggerObjectsPFMET170NoiseCleaned"),
   input   = cms.InputTag("patTriggerEvent"),
@@ -1035,28 +1063,27 @@ process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer
   storeOnlyIfFired = cms.bool(True)
   )
 
-#!!THESE ARE IN IN LATER CMSSW RELEASES NOT INCLUDED IN SEQUENCE FOR THE MOMENT
-process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140JetIdCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140JetIdCleaned"),
+process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer = producers.icTriggerObjectProducer.clone(
+  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140"),
   input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_JetIdCleaned_v"),
+  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"),
   inputIsStandAlone = cms.bool(False),
   storeOnlyIfFired = cms.bool(True)
   )
 
-process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80JetIdCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80JetIdCleaned"),
+process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer = producers.icTriggerObjectProducer.clone(
+  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80"),
   input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_JetIdCleaned_v"),
+  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80"),
   inputIsStandAlone = cms.bool(False),
   storeOnlyIfFired = cms.bool(True)
   )
 
 process.icTriggerObjectSequence = cms.Sequence(
   process.icPFMET170NoiseCleanedObjectProducer+
-  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140JetIdCleanedObjectProducer+
-  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80JetIdCleanedObjectProducer
-)
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer+
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer
+  )
 
 for name in process.icTriggerObjectSequence.moduleNames():
   mod = getattr(process, name)
@@ -1162,7 +1189,7 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icPhotonSequence+
-  process.icPFJetSequence+                                                                                                                                
+  process.icPFJetSequence+
   process.icGenSequence+
   process.icMetSequence+
   process.icEventInfoSequence+
