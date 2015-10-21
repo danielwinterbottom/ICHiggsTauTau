@@ -28,7 +28,7 @@ opts.register('globalTag', '74X_mcRun2_asymptotic_v2', parser.VarParsing.multipl
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 #opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
-opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
+opts.register('release', '74X', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('isNLO', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Is this an NLO sample?")
@@ -576,7 +576,8 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   includeBeamspotIP         = cms.bool(True),
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
   includeFloats = cms.PSet(
-     mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")
+     mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
+     mvaTrigSpring15       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values")
   ),
   includePFIso03           = cms.bool(True),
   includePFIso04           = cms.bool(True)
