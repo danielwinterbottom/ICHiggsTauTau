@@ -180,7 +180,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(era_type == era::data_2015){
    min_taus = 1;
    pair_dr = 0.5;
-   elec_pt = 23;
+   elec_pt = 24;//Up from 23 to avoid turn on in new data trigger for first set of runs from run D
    elec_eta = 2.1;
    tau_pt  = 20;
    tau_eta = 2.3;
@@ -229,7 +229,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      }
    }
   if (era_type == era::data_2015){
-    muon_pt = 18.0;
+    muon_pt = 19.0;//Up from 18 to avoid trigger turn on in new data trigger
     muon_eta = 2.1;
     tau_pt = 20;
     tau_eta = 2.3;
@@ -488,7 +488,7 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
   //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/json_DCSONLY.txt";
-  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt";
+  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
 
  LumiMask lumiMask = LumiMask("LumiMask")
    .set_produce_output_jsons("")

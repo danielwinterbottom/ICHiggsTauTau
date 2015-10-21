@@ -43,11 +43,14 @@ namespace ic {
     std::string leg2_filter;
 		std::string extra_leg2_filter;
 		std::string alt_leg1_filter;
+    std::string alt_trig_obj_label_2;
+    std::string alt_leg1_filter_2;
 		std::string alt_leg2_filter;
     std::string em_alt_trig_obj_label;
     std::string em_alt_leg1_filter;
     std::string em_alt_leg2_filter;
     double high_leg_pt = 0;
+    double high_leg_pt_2 = 0;
 
     if (is_data_) { //Switch this part off temporarily as we don't have this vector in first processed data
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -76,7 +79,8 @@ namespace ic {
           //if (run >= 193752/* //&& run <= xxxxx*/ //&& name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
        if (run >= 193752 && run <= 247600 && name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
           //2015 triggers
-       if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
+       if (run >= 250985 && run <= 258654  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos) ) path_found = true;
+       if (run >= 258655/* &&run <=xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
        //if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v") != name.npos || name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v") != name.npos) ) path_found = true;
         }
         if (channel_ == channel::mt || channel_ == channel::zmm) {
@@ -189,15 +193,25 @@ namespace ic {
           alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
           high_leg_pt = 33.;
         }*/
-        if (run >= 253621 /*&& run <= xxxxxx*/){
+        if (run >= 253621 && run <= 258654){
+          trig_obj_label = "triggerObjectsEle22LooseTau20";
+          leg1_filter = "hltEle22WPLooseL1IsoEG20erTau20erGsfTrackIsoFilter";
+          leg2_filter = "hltPFTau20TrackLooseIso";
+          extra_leg2_filter = "hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsEle23";
+          alt_leg1_filter = "hltEle23WPLooseGsfTrackIsoFilter";
+          high_leg_pt = 24.;
+        }
+        if (run >= 258655 /*&& run <= xxxxxxxx*/){
           trig_obj_label = "triggerObjectsEle22LooseTau20";
           leg1_filter = "hltEle22WPLooseL1IsoEG20erTau20erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
           extra_leg2_filter = "hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsEle22";
-          alt_leg1_filter = "hltEle22WPLooseGsfTrackIsoFilter";
-          high_leg_pt = 22.;
+          alt_leg1_filter = "hltSingleEle22WPLooseGsfTrackIsoFilter";
+          high_leg_pt = 23.;
         }
+
 
       }
       if (channel_ == channel::mt || channel_ == channel::zmm) {
@@ -257,7 +271,7 @@ namespace ic {
           extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsIsoMu18";
           alt_leg1_filter =  "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
-          high_leg_pt = 18.;
+          high_leg_pt = 19.;
         }
 
       }
@@ -422,7 +436,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsEle22Gsf";
           alt_leg1_filter  = "hltSingleEle22WP75GsfTrackIsoFilter";
           alt_leg2_filter  = "";
-          high_leg_pt = 22.;
+          high_leg_pt = 23.;
 
 					}
 
@@ -448,10 +462,12 @@ namespace ic {
           leg1_filter     = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
           leg2_filter     = "hltPFTau20TrackLooseIsoAgainstMuon";
           extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
+         // alt_trig_obj_label = "triggerObjectsIsoMu24";
+         // alt_leg1_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09";
           alt_trig_obj_label = "triggerObjectsIsoMu17";
           alt_leg1_filter = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
           alt_leg2_filter = "";
-          high_leg_pt = 17.;
+          high_leg_pt = 18.;
         } 
       } else if (channel_ == channel::em) {
         if (mc_ == mc::fall11_42X) {
@@ -569,7 +585,9 @@ namespace ic {
          bool highpt_leg = dileptons[i]->At(0)->pt()>high_leg_pt;
          leg1_match = IsFilterMatched(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5);
 //					leg2_match = IsFilterMatched(dileptons[i]->At(1),alt_objs, alt_leg2_filter, 0.5);
-         if (leg1_match&&highpt_leg) dileptons_pass.push_back(dileptons[i]);	
+         if (leg1_match&&highpt_leg){
+           dileptons_pass.push_back(dileptons[i]);	
+         }
         }
       }
     }
