@@ -57,6 +57,7 @@
 #include "Modules/interface/OverlapFilter.h"
 #include "Modules/interface/EnergyShifter.h"
 #include "Modules/interface/PileupWeight.h"
+#include "Modules/interface/ProducePileup.h"
 #include "Modules/interface/CheckEvents.h"
 #include "Modules/interface/GenericModule.h"
 
@@ -434,6 +435,9 @@ void HTTSequence::BuildSequence(){
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
     .set_fs(fs.get()));
+ // BuildModule(ProducePileup("ProducePileup")
+  //  .set_bins(600)
+   // .set_max(60));
 /*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));*/
   }else{
@@ -617,7 +621,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 
 
   // Pileup Weighting
-if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
+if(strategy_type != strategy::phys14){
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
   TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
   if (js["do_pu_wt"].asBool()&&!is_data) {
@@ -626,11 +630,11 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
   }
 }
 
-if(strategy_type == strategy::spring15 && js["do_pu_wt"].asBool() &&!is_data){
+/*if(strategy_type == strategy::spring15 && js["do_pu_wt"].asBool() &&!is_data){
    TH1F vertex_wts = GetFromTFile<TH1F>(js["nvtx_weight_file"].asString(),"/","nvtx_weights");
    BuildModule(NvtxWeight("NvtxWeight")
        .set_vertex_dist(new TH1F(vertex_wts)));
- }
+ }*/
 
 if(channel != channel::wmnu) {
  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
@@ -1004,6 +1008,12 @@ if( strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
         }));
   }*/
 }
+
+if(js["do_iso_eff"].asBool()){
+BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_fs(fs.get()));
+}
+
 
   BuildTauSelection();
 
