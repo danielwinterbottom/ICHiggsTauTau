@@ -19,6 +19,7 @@
 // HTT-specific modules
 #include "HiggsTauTau/interface/HTTSequence.h"
 #include "HiggsTauTau/interface/HTTElectronEfficiency.h"
+#include "HiggsTauTau/interface/HTTMuonEfficiency.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
@@ -1092,6 +1093,8 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
   }*/
 }
  
+BuildModule(HTTMuonEfficiency("MuonEfficiency")
+    .set_fs(fs.get()));
 
 
   BuildTauSelection();
@@ -1263,7 +1266,13 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
         }));
   }*/
 }
-     
+     if(js["do_iso_eff"].asBool()){
+BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_fs(fs.get()));
+BuildModule(HTTMuonEfficiency("MuonEfficiency")
+    .set_fs(fs.get()));
+}
+
   
   BuildModule(CompositeProducer<Electron, Muon>("EMPairProducer")
       .set_input_label_first("sel_electrons")
