@@ -57,7 +57,6 @@
 #include "Modules/interface/OverlapFilter.h"
 #include "Modules/interface/EnergyShifter.h"
 #include "Modules/interface/PileupWeight.h"
-#include "Modules/interface/ProducePileup.h"
 #include "Modules/interface/CheckEvents.h"
 #include "Modules/interface/GenericModule.h"
 
@@ -435,9 +434,6 @@ void HTTSequence::BuildSequence(){
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
     .set_fs(fs.get()));
- // BuildModule(ProducePileup("ProducePileup")
-  //  .set_bins(600)
-   // .set_max(60));
 /*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));*/
   }else{

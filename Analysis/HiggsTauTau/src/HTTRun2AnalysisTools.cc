@@ -834,7 +834,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         ztt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
       } else ztt_sel = sel;
       auto ztt_pair = this->GenerateZTT(method, var, ztt_sel, cat, wt);
-      std::string ztt_map_label = "ZTT90";
+      std::string ztt_map_label = "ZTT";
       //std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
       PrintValue(ztt_map_label+postfix, ztt_pair.second);
       total_bkr = ValueAdd(total_bkr, ztt_pair.second);
