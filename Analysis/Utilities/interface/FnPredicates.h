@@ -117,6 +117,7 @@ namespace ic {
   double MT(Candidate const* cand1, Candidate const* cand2);
 
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
+  std::pair <bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
 
 
   template<class T>

@@ -20,6 +20,15 @@ if not options.folder:
 outputf = options.folder
 
 sample_list = [
+  'SUSYGluGluToHToTauTau_M-160',
+  'QCD_Ht100to200',
+  'QCD_Ht200to300',
+  'QCD_Ht300to500',
+  'QCD_Ht500to700',
+  'QCD_Ht700to1000',
+  'QCD_Ht1000to1500',
+  'QCD_Ht1500to2000',
+  'QCD_Ht2000toInf',
   'TTJets',
 	'TT',
 	'WJetsToLNu',

@@ -34,6 +34,19 @@ namespace ic {
     return false;
   }
 
+ std::pair<bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject*> const& objs, std::string const& filter, double const& max_dr){
+    std::size_t hash = CityHash64(filter);
+    for (unsigned i = 0; i < objs.size(); ++i) {
+      std::vector<std::size_t> const& labels = objs[i]->filters();
+      if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+      if (DR(cand, objs[i]) < max_dr){
+         const unsigned index_val = i;
+         return std::make_pair(true,index_val);
+      }
+    }
+    return std::make_pair(false,0);
+  }
+
   bool VertexDz(Tau const* cand, double const& vertexZ) {
     return ( fabs(cand->vz() - vertexZ)==0) ; 
   }
