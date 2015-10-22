@@ -578,18 +578,39 @@ namespace ic {
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = false;
         bool leg2_match = false;
+        //unsigned leg1_match_index = 0;
+        //unsigned leg2_match_index = 0;
        if(do_leptonplustau_){
-         leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(0), objs, extra_leg2_filter,0.5);
-         leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter,0.5);
+         leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, extra_leg2_filter,0.5).first;
+         leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_leg2_filter,0.5).first;
+         //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
+         //leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
          }
        if (leg1_match && leg2_match){
          dileptons_pass.push_back(dileptons[i]);
+         /*double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
+         double leg1_trigger_object_eta = objs.at(leg1_match_index)->eta();
+         double leg2_trigger_object_pt = objs.at(leg2_match_index)->pt();
+         double leg2_trigger_object_eta = objs.at(leg2_match_index)->eta();
+         if(store_trigobjpt_){
+           event->Add("leg1_trigger_obj_pt",leg1_trigger_object_pt);
+           event->Add("leg1_trigger_obj_eta",leg1_trigger_object_eta);
+           event->Add("leg2_trigger_obj_pt",leg2_trigger_object_pt);
+           event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
+         }*/
         } else if(do_singlelepton_) {
          bool highpt_leg = dileptons[i]->At(0)->pt()>high_leg_pt;
-         leg1_match = IsFilterMatched(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5);
+         leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first;
+         //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).second;
 //					leg2_match = IsFilterMatched(dileptons[i]->At(1),alt_objs, alt_leg2_filter, 0.5);
          if (leg1_match&&highpt_leg){
            dileptons_pass.push_back(dileptons[i]);	
+          /* double trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
+           double trigger_object_eta = alt_objs.at(leg1_match_index)->eta();
+           if(store_trigobjpt_){
+             event->Add("leg1_trig_obj_pt",trigger_object_pt);
+             event->Add("leg1_trig_obj_eta",trigger_object_eta);
+           }*/
          }
         }
       }
@@ -616,16 +637,42 @@ namespace ic {
    if (channel_ == channel::em && (mc_ == mc::phys14_72X||mc_ == mc::spring15_74X)){
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       for(unsigned i = 0; i < dileptons.size(); ++i){
-        bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
-        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
+        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
+        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
+        //unsigned leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
+        //unsigned leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
         bool highpt_leg = dileptons[i]->At(1)->pt() >24.0;
         if (leg1_match && leg2_match && highpt_leg) {
           dileptons_pass.push_back(dileptons[i]);
+       /*  double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
+         double leg1_trigger_object_eta = objs.at(leg1_match_index)->eta();
+         double leg2_trigger_object_pt = objs.at(leg2_match_index)->pt();
+         double leg2_trigger_object_eta = objs.at(leg2_match_index)->eta();
+         if(store_trigobjpt_){
+           event->Add("leg1_trigger_obj_pt",leg1_trigger_object_pt);
+           event->Add("leg1_trigger_obj_eta",leg1_trigger_object_eta);
+           event->Add("leg2_trigger_obj_pt",leg2_trigger_object_pt);
+           event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
+         }*/
         } else {
-          leg1_match = IsFilterMatched(dileptons[i]->at(0), alt_objs, alt_leg1_filter, 0.5);
-          leg2_match = IsFilterMatched(dileptons[i]->at(1), alt_objs, alt_leg2_filter, 0.5);
+          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->at(0), alt_objs, alt_leg1_filter, 0.5).first;
+          leg2_match = IsFilterMatchedWithIndex(dileptons[i]->at(1), alt_objs, alt_leg2_filter, 0.5).first;
+          //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->at(0), alt_objs, alt_leg1_filter, 0.5).second;
+          //leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->at(1), alt_objs, alt_leg2_filter, 0.5).second;
           highpt_leg = dileptons[i]->At(0)->pt() > 24.0;
-           if (leg1_match && leg2_match && highpt_leg) dileptons_pass.push_back(dileptons[i]);
+           if (leg1_match && leg2_match && highpt_leg){
+              dileptons_pass.push_back(dileptons[i]);
+           /*   double leg1_trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
+              double leg1_trigger_object_eta = alt_objs.at(leg1_match_index)->eta();
+              double leg2_trigger_object_pt = alt_objs.at(leg2_match_index)->pt();
+              double leg2_trigger_object_eta = alt_objs.at(leg2_match_index)->eta();
+              if(store_trigobjpt_){
+                event->Add("leg1_trigger_obj_pt",leg1_trigger_object_pt);
+                event->Add("leg1_trigger_obj_eta",leg1_trigger_object_eta);
+                event->Add("leg2_trigger_obj_pt",leg2_trigger_object_pt);
+                event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
+             }*/
+           }
         }
       }
     }
@@ -640,9 +687,23 @@ namespace ic {
 
    if (channel_ == channel::tt && mc_ == mc::spring15_74X){
      for(unsigned i = 0; i < dileptons.size(); ++i){
-       bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
-       bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
-       if (leg1_match && leg2_match) dileptons_pass.push_back(dileptons[i]);
+       bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
+       bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
+       //unsigned leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
+       //unsigned leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
+       if (leg1_match && leg2_match){
+         dileptons_pass.push_back(dileptons[i]);
+         /*double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
+         double leg1_trigger_object_eta = objs.at(leg1_match_index)->eta();
+         double leg2_trigger_object_pt = objs.at(leg2_match_index)->pt();
+         double leg2_trigger_object_eta = objs.at(leg2_match_index)->eta();
+         if(store_trigobjpt_){
+           event->Add("leg1_trigger_obj_pt",leg1_trigger_object_pt);
+           event->Add("leg1_trigger_obj_eta",leg1_trigger_object_eta);
+           event->Add("leg2_trigger_obj_pt",leg2_trigger_object_pt);
+           event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
+         }*/
+        }
       }
     }
 

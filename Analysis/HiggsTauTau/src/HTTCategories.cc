@@ -145,6 +145,11 @@ namespace ic {
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
+/*        outtree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_double);
+        outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
+        outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
+        outtree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_double);
+*/
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
@@ -297,6 +302,12 @@ namespace ic {
       synctree_->Branch("mt_1", &mt_1_.var_float, "mt_1/F");
       // Non-triggering electron ID MVA score
       synctree_->Branch("id_e_mva_nt_loose_1", &id_e_mva_nt_loose_1_, "id_e_mva_nt_loose_1/F");
+      /*synctree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_float,"trigger_object_pt_1/F");
+      synctree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_float,"trigger_object_eta_1/F");
+      synctree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_float,"trigger_object_pt_2/F");
+      synctree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_float,"trigger_object_eta_2/F");
+*/
+
 
       // Lepton 2 properties
       // pt (including effect of any energy scale corrections)
@@ -685,7 +696,16 @@ namespace ic {
 
 
     n_vtx_ = eventInfo->good_vertices();
+    /*trigger_object_pt_1 = 0;
+    trigger_object_pt_2 = 0;
+    trigger_object_eta_1 = 0;
+    trigger_object_eta_2 = 0;
     if(event->Exists("good_first_vertex")) good_vtx_ = event->Get<bool>("good_first_vertex");
+    if(event->Exists("leg1_trigger_obj_pt")) trigger_object_pt_1 = event->Get<double>("leg1_trigger_obj_pt");
+    if(event->Exists("leg1_trigger_obj_eta")) trigger_object_eta_1 = event->Get<double>("leg1_trigger_obj_eta");
+    if(event->Exists("leg2_trigger_obj_pt")) trigger_object_pt_2 = event->Get<double>("leg2_trigger_obj_pt");
+    if(event->Exists("leg2_trigger_obj_eta")) trigger_object_eta_2 = event->Get<double>("leg2_trigger_obj_eta");
+*/
 
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");

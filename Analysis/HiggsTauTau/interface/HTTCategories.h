@@ -85,6 +85,11 @@ class HTTCategories : public ModuleBase {
   bool lepton_veto_;
   unsigned n_vtx_;
   bool good_vtx_;
+/*  branch_var trigger_object_pt_1;
+  branch_var trigger_object_eta_1;
+  branch_var trigger_object_pt_2;
+  branch_var trigger_object_eta_2;
+*/
   unsigned n_pu_;
   branch_var m_sv_;
   branch_var m_vis_;
