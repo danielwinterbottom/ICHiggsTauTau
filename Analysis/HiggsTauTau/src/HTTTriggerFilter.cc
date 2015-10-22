@@ -43,14 +43,14 @@ namespace ic {
     std::string leg2_filter;
 		std::string extra_leg2_filter;
 		std::string alt_leg1_filter;
-    std::string alt_trig_obj_label_2;
-    std::string alt_leg1_filter_2;
+/*    std::string alt_trig_obj_label_2;
+    std::string alt_leg1_filter_2;*/
 		std::string alt_leg2_filter;
     std::string em_alt_trig_obj_label;
     std::string em_alt_leg1_filter;
     std::string em_alt_leg2_filter;
+    double alt_min_online_pt=0;
     double high_leg_pt = 0;
-    double high_leg_pt_2 = 0;
 
     if (is_data_) { //Switch this part off temporarily as we don't have this vector in first processed data
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -436,6 +436,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsEle22Gsf";
           alt_leg1_filter  = "hltSingleEle22WP75GsfTrackIsoFilter";
           alt_leg2_filter  = "";
+          alt_min_online_pt = 23.;
           high_leg_pt = 23.;
 
 					}
@@ -467,6 +468,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsIsoMu17";
           alt_leg1_filter = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
           alt_leg2_filter = "";
+          alt_min_online_pt = 18.;
           high_leg_pt = 18.;
         } 
       } else if (channel_ == channel::em) {
@@ -571,7 +573,8 @@ namespace ic {
 
     if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::zee) 
         &&(mc_ == mc::phys14_72X || mc_ == mc::spring15_74X)) {
-      std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
+      std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
+      ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = false;
         bool leg2_match = false;
