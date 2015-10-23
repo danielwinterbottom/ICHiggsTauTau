@@ -10,10 +10,11 @@ opts = parser.VarParsing ('analysis')
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_4/src/UserCode/ICHiggsTauTau/test/testinput.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/TauDataTest.root', parser.VarParsing.multiplicity.singleton,
 opts.register('file',
+'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/SUSYGluGluToHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/9EF16FCE-E771-E511-AAB0-008CFA1979EC.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015D/MuonEG/MINIAOD/PromptReco-v3/000/256/630/00000/24F810E0-335F-E511-94F4-02163E011C61.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/0014DC94-DC5C-E511-82FB-7845C4FC39F5.root', parser.VarParsing.multiplicity.singleton,
-'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/02D2D410-2A03-E511-8F6C-0025905A60A8.root', parser.VarParsing.multiplicity.singleton,
+#'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/02D2D410-2A03-E511-8F6C-0025905A60A8.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015C/SingleElectron/MINIAOD/PromptReco-v1/000/254/317/00000/C4F3838C-8345-E511-9AA9-02163E011FE4.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/164/00000/4633CC68-A326-E511-95D0-02163E0124EA.root', parser.VarParsing.multiplicity.singleton,
@@ -28,7 +29,7 @@ opts.register('globalTag', '74X_mcRun2_asymptotic_v2', parser.VarParsing.multipl
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 #opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
-opts.register('release', '74X', parser.VarParsing.multiplicity.singleton,
+opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('isNLO', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Is this an NLO sample?")
@@ -526,6 +527,18 @@ if release in ['74XMINIAOD','7412MINIAOD']:
     iso_type = cms.string("pu_iso") 
   )    
 
+  process.elEcalPFClusterIso = cms.EDProducer('ICElectronIsolation',
+    input        = electronLabel,
+    deltaR       = cms.double(0.3), 
+    iso_type     = cms.string("ecal_pf_cluster_iso")
+  )
+
+  process.elHcalPFClusterIso = cms.EDProducer('ICElectronIsolation',
+    input        = electronLabel,
+    deltaR       = cms.double(0.3), 
+    iso_type     = cms.string("hcal_pf_cluster_iso")
+  )
+
 if release in ['74X']:#Need to recalculate this as 04 isolation is stored in pat not reco electrons
   process.elPFIsoValueCharged04PFIdPFIso    = process.elPFIsoValueCharged04PFId.clone()
   process.elPFIsoValueGamma04PFIdPFIso      = process.elPFIsoValueGamma04PFId.clone()
@@ -560,7 +573,9 @@ process.electronPFIsolationValuesSequence +=cms.Sequence(
   process.elPFIsoValueGamma04PFIdPFIso+
   process.elPFIsoValuePU04PFIdPFIso+
   process.elPFIsoValueNeutral04PFIdPFIso+
-  process.elPFIsoValueChargedAll04PFIdPFIso
+  process.elPFIsoValueChargedAll04PFIdPFIso+
+  process.elEcalPFClusterIso+
+  process.elHcalPFClusterIso
 )
 
 
@@ -579,11 +594,14 @@ process.icElectronProducer = producers.icElectronProducer.clone(
      mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
      mvaTrigSpring15       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values")
   ),
+  includeClusterIso        = cms.bool(True),
   includePFIso03           = cms.bool(True),
   includePFIso04           = cms.bool(True)
 )
 
 
+if release in ['74X']:
+  process.icElectronProducer.includeClusterIso = cms.bool(False)
 
 process.icElectronSequence += cms.Sequence(
   process.icElectronConversionCalculator+

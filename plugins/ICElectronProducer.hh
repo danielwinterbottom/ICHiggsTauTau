@@ -52,8 +52,17 @@ class ICElectronProducer : public edm::EDProducer {
     explicit IsoTags(edm::ParameterSet const& pset);
   };
 
+  struct ClusterIsoTags {
+    edm::InputTag ecal;
+    edm::InputTag hcal;
+    explicit ClusterIsoTags(edm::ParameterSet const& pset);
+  };
+
+
+  ClusterIsoTags cluster_iso_;
   IsoTags pf_iso_03_;
   IsoTags pf_iso_04_;
+  bool do_cluster_iso_;
   bool do_pf_iso_03_;
   bool do_pf_iso_04_;
 };

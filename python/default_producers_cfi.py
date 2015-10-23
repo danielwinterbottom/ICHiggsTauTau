@@ -60,7 +60,12 @@ icElectronProducer = cms.EDProducer('ICElectronProducer',
       neutral     = cms.InputTag("elPFIsoValueNeutral04PFIdPFIso"),
       gamma       = cms.InputTag("elPFIsoValueGamma04PFIdPFIso"),
       pu          = cms.InputTag("elPFIsoValuePU04PFIdPFIso")
-    )
+    ),
+   includeClusterIso       = cms.bool(False),
+   clusterIso = cms.PSet(
+     ecal        = cms.InputTag("elEcalPFClusterIso"),
+     hcal        = cms.InputTag("elHcalPFClusterIso")
+   )   
 )
 ## [Electron]
 
