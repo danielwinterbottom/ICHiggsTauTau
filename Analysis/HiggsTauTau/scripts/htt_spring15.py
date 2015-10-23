@@ -42,6 +42,9 @@ parser.add_option("--data", dest="proc_data", action='store_true', default=False
 parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
                   help="Process background mc samples")
 
+parser.add_option("--qcd", dest="proc_qcd", action='store_true', default=False,
+                  help="Process QCD mc samples")
+
 parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
                   help="Process signal SM mc samples")
 
@@ -126,7 +129,7 @@ if options.proc_mssm or options.proc_all:
   if options.short_signal: masses = ['160']
   for mass in masses :
     signal_mc += [
-#      'SUSYGluGluToHToTauTau_M-'+mass,
+      'SUSYGluGluToHToTauTau_M-'+mass,
 #      'SUSYBBHToTauTau_M-'+mass
     ]
 
@@ -219,6 +222,27 @@ if options.proc_data or options.proc_all:
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
+if options.proc_qcd or options.proc_all:
+  qcd_samples = [
+    'QCD_Ht100to200',
+    'QCD_Ht200to300',
+    'QCD_Ht300to500',
+    'QCD_Ht500to700',
+    'QCD_Ht700to1000',
+    'QCD_Ht1000to1500',
+    'QCD_Ht1500to2000',
+    'QCD_Ht2000toInf'
+  ]
+
+  for sa in qcd_samples:
+      JOB='%s_2015' % (sa)
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+      nperjob = 40 
+      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
 if options.proc_bkg or options.proc_all:
@@ -235,7 +259,7 @@ if options.proc_bkg or options.proc_all:
     'WWTo2L2Nu',
     'WWTo4Q',
     'WWToLNuQQ',
-#    'ZZTo4L',
+    'ZZTo4L',
     'DYJetsToLL',
     'DYJetsToLL_M-50-LO',
     'DYJetsToLL_M-50_HT100-200',

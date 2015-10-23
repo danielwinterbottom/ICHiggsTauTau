@@ -1006,7 +1006,7 @@ if( strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
   }*/
 }
 
-if(js["do_iso_eff"].asBool()){
+if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));
 }
@@ -1093,9 +1093,11 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
   }*/
 }
  
+
+if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTMuonEfficiency("MuonEfficiency")
     .set_fs(fs.get()));
-
+}
 
   BuildTauSelection();
 
@@ -1266,7 +1268,7 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
         }));
   }*/
 }
-     if(js["do_iso_eff"].asBool()){
+     if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));
 BuildModule(HTTMuonEfficiency("MuonEfficiency")

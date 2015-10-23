@@ -13,17 +13,18 @@ HTTMuonEfficiency::HTTMuonEfficiency(std::string const& name) : ModuleBase(name)
 HTTMuonEfficiency::~HTTMuonEfficiency() { ; }
 
 int HTTMuonEfficiency::PreAnalysis() {
-  if (!fs_) return 0;
-  dir_ = new TFileDirectory(fs_->mkdir("HTTMuonEfficiency"));
-  outtree_ = dir_->make<TTree>("tree","tree");
-  outtree_->Branch("eta", &eta_);
-  outtree_->Branch("pt", &pt_);
-  outtree_->Branch("iso_ea03",&iso_ea03_);
-  outtree_->Branch("iso_db03",&iso_db03_);
-  outtree_->Branch("iso_db03allch",&iso_db03allch_);
-  outtree_->Branch("iso_db04allch",&iso_db04allch_);
-  outtree_->Branch("wt",&wt_);
-  outtree_->Branch("gen_match",&gen_match_);
+  if (fs_) {
+    dir_ = new TFileDirectory(fs_->mkdir("HTTMuonEfficiency"));
+    outtree_ = dir_->make<TTree>("tree","tree");
+    outtree_->Branch("eta", &eta_);
+    outtree_->Branch("pt", &pt_);
+    outtree_->Branch("iso_ea03",&iso_ea03_);
+    outtree_->Branch("iso_db03",&iso_db03_);
+    outtree_->Branch("iso_db03allch",&iso_db03allch_);
+    outtree_->Branch("iso_db04allch",&iso_db04allch_);
+    outtree_->Branch("wt",&wt_);
+    outtree_->Branch("gen_match",&gen_match_);
+  }
 
   return 0;
 }
@@ -38,6 +39,7 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
     std::vector<GenParticle *> prompt_sel_particles;
     std::vector<GenParticle *> tau_decay_sel_particles;
+    std::vector<GenParticle *> had_sel_particles;
     for (unsigned i=0; i < particles.size(); ++i){
       std::vector<bool> status_flags = particles[i]->statusFlags();
       if ( ((abs(particles[i]->pdgid()) == 11 && status_flags[IsPrompt])||(abs(particles[i]->pdgid()) == 13 && status_flags[IsPrompt] && particles[i]->status()==1)) && particles[i]->pt() > 8. ){
@@ -46,6 +48,9 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
       if ( ((abs(particles[i]->pdgid())==11 && status_flags[IsDirectPromptTauDecayProduct]) || (abs(particles[i]->pdgid()) == 13 && status_flags[IsDirectPromptTauDecayProduct] && particles[i]->status()==1)) && particles[i]->pt() > 8.){
        tau_decay_sel_particles.push_back(particles[i]);
       }
+      if ( ((abs(particles[i]->pdgid())==11 && status_flags[IsDirectHadronDecayProduct]) || (abs(particles[i]->pdgid()) == 13 && status_flags[IsDirectHadronDecayProduct] && particles[i]->status()==1)) && particles[i]->pt() > 8.){
+      had_sel_particles.push_back(particles[i]);
+     }
     }
 
     
@@ -61,11 +66,13 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
     std::vector<std::pair<Candidate*, GenParticle*> > leading_prompt_match = MatchByDR(leading_lepton, prompt_sel_particles, 0.5, true, true);
     std::vector<std::pair<Candidate*, GenParticle*> > leading_tau_decay_match = MatchByDR(leading_lepton, tau_decay_sel_particles, 0.5, true, true);
     std::vector<std::pair<Candidate*, GenJet*> > leading_tau_match  = MatchByDR(leading_lepton, gen_taus_ptr, 0.5, true, true);
+    std::vector<std::pair<Candidate*, GenParticle*> > leading_had_match = MatchByDR(leading_lepton, had_sel_particles, 0.5, true, true);
 
    mcorigin gen_match_1 = mcorigin::fake;
    int promptsize = leading_prompt_match.size();
    int taudecaysize = leading_tau_decay_match.size();
    int tausize = leading_tau_match.size();
+   int hadsize = leading_had_match.size();
 
 
    if(promptsize!=0 && taudecaysize!=0 && tausize == 0){
@@ -84,8 +91,15 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
     } 
  }
 
-
-   if(promptsize==0 && taudecaysize==0&&tausize==0) gen_match_1 = mcorigin::fake;
+   if(promptsize==0 && taudecaysize==0&&tausize==0){
+    if(hadsize==0){
+     gen_match_1 = mcorigin::fake;
+    } else {
+      if(abs(leading_had_match.at(0).second->pdgid()==11)){
+         gen_match_1 = mcorigin::hadE;
+      } else gen_match_1 = mcorigin::hadMu;
+     }
+   }
    if(promptsize!=0 && taudecaysize==0 && tausize ==0){
      if(abs(leading_prompt_match.at(0).second->pdgid())==11){
               gen_match_1 = mcorigin::promptE;
