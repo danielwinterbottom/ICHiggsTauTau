@@ -112,6 +112,8 @@ namespace ic {
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
+    pass_singlejettrigger_ = -1;
+    pass_htquadjettrigger_ = -1;
     l1met_ = 0;
     metnomuons_ =0;
     nvetomuons_=0;
@@ -156,6 +158,12 @@ namespace ic {
       genjetptordered_eta_.push_back(-5);
       genjetptordered_phi_.push_back(-5);
       genjetptordered_E_.push_back(-5);
+    }
+    for (unsigned ijet(0); ijet<nTrigJetsSave_;++ijet){
+      trigjetptordered_pt_.push_back(-1);
+      trigjetptordered_eta_.push_back(-5);
+      trigjetptordered_phi_.push_back(-5);
+      trigjetptordered_E_.push_back(-5);
     }
     digenjet_M_=-1;
     digenjet_deta_=-1;
@@ -266,6 +274,8 @@ namespace ic {
     outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
     outputTree_->Branch("pass_mettrigger",&pass_mettrigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
+    outputTree_->Branch("pass_singlejettrigger",&pass_singlejettrigger_);
+    outputTree_->Branch("pass_htquadjettrigger",&pass_htquadjettrigger_);
     outputTree_->Branch("l1met",&l1met_);
     outputTree_->Branch("metnomuons",&metnomuons_);
     outputTree_->Branch("nvetomuons",&nvetomuons_);
@@ -427,6 +437,8 @@ namespace ic {
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
+    pass_singlejettrigger_ = -1;
+    pass_htquadjettrigger_ = -1;
     l1met_ = 0;
     metnomuons_ =0;
     nvetomuons_=0;
@@ -480,6 +492,16 @@ namespace ic {
     digenjet_M_=-1;
     digenjet_deta_=-1;
     digenjet_dphi_=-1;
+    trigjetptordered_pt_.clear();
+    trigjetptordered_eta_.clear();
+    trigjetptordered_phi_.clear();
+    trigjetptordered_E_.clear();
+    for (unsigned ijet(0); ijet<nTrigJetsSave_;++ijet){
+      trigjetptordered_pt_.push_back(-1);
+      trigjetptordered_eta_.push_back(-5);
+      trigjetptordered_phi_.push_back(-5);
+      trigjetptordered_E_.push_back(-5);
+    }
     ditrigjet_M_=-1;
     ditrigjet_deta_=-1;
     ditrigjet_dphi_=-1;
@@ -506,9 +528,11 @@ namespace ic {
       if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_") != name.npos) pass_sigtrigger_ = 1;
       if (name.find("HLT_PFMET170_NoiseCleaned_v") != name.npos) pass_mettrigger_ = 1;
       if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_") != name.npos) pass_controltrigger_ = 1;
+      if (name.find("HLT_DiPFJetAve40_") != name.npos) pass_singlejettrigger_ = 1;
+      if (name.find("HLT_PFHT750_4JetPt50_") != name.npos) pass_htquadjettrigger_ = 1;
     }
     if(dotrigskim_){
-      if(!(pass_sigtrigger_==1||pass_controltrigger_==1||pass_mettrigger_==1)){
+      if(!(pass_sigtrigger_==1||pass_controltrigger_==1||pass_mettrigger_==1||pass_singlejettrigger_==1||pass_htquadjettrigger_==1)){
 	return 1;
       }
     }
@@ -741,6 +765,12 @@ namespace ic {
       std::vector<Candidate*> trigveccopy;
       trigveccopy=l1alljets;
       std::sort(trigveccopy.begin(),trigveccopy.end(),ptorderedcandidatesort);
+      for(unsigned itrigjet=0;(itrigjet<trigveccopy.size()&&itrigjet<nTrigJetsSave_);itrigjet++){
+	trigjetptordered_pt_[itrigjet]=trigveccopy[itrigjet]->pt();
+	trigjetptordered_eta_[itrigjet]=trigveccopy[itrigjet]->eta();
+	trigjetptordered_phi_[itrigjet]=trigveccopy[itrigjet]->phi();
+	trigjetptordered_E_[itrigjet]=trigveccopy[itrigjet]->energy();
+      }
       if(trigveccopy.size()>=2){
 	ROOT::Math::PtEtaPhiEVector trigjet1vec = trigveccopy[0]->vector();
 	ROOT::Math::PtEtaPhiEVector trigjet2vec = trigveccopy[1]->vector();
@@ -818,7 +848,7 @@ namespace ic {
       std::vector<PFJet*> jetveccopy;
       jetveccopy=jets;
       std::sort(jetveccopy.begin(),jetveccopy.end(),ptorderedjetsort);
-      for(unsigned ijet=0;(ijet<jetveccopy.size()&&ijet<nJetsSave_);ijet++){
+      for(unsigned ijet=0;ijet<jetveccopy.size();ijet++){
 	if(ijet<nJetsSave_){
 	  jet_pt_[ijet]=jetveccopy[ijet]->pt();
 	  jet_eta_[ijet]=jetveccopy[ijet]->eta();
