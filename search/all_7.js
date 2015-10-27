@@ -18,6 +18,7 @@ var searchData=
   ['hash128to64',['Hash128to64',['../city_8h.html#a277d7697b63b8321e906beccd0ce3339',1,'city.h']]],
   ['hasidiso',['HasIdIso',['../classic_1_1_electron.html#a0ebe6ecff16252c2ff47572879569dd1',1,'ic::Electron::HasIdIso()'],['../classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8',1,'ic::Muon::HasIdIso()']]],
   ['hastauid',['HasTauID',['../classic_1_1_tau.html#ab3f94de0cf0f218aa49861c6d9248861',1,'ic::Tau']]],
+  ['hcal_5fpf_5fcluster_5fiso',['hcal_pf_cluster_iso',['../classic_1_1_electron.html#adf79b4802599fd3376b5f0735989f11f',1,'ic::Electron']]],
   ['hcal_5fsum',['hcal_sum',['../classic_1_1_electron.html#ae9d99f35a1e6c2600277036a70526077',1,'ic::Electron']]],
   ['hf_5fem_5fenergy',['HF_em_energy',['../classic_1_1_p_f_jet.html#a71f0fa8b65e5a505278bb758e693cc5d',1,'ic::PFJet']]],
   ['hf_5fem_5fenergy_5ffrac',['HF_em_energy_frac',['../classic_1_1_p_f_jet.html#aec539e4fc17caca546167abd29ec5911',1,'ic::PFJet']]],

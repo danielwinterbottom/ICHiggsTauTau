@@ -8,6 +8,8 @@ var classic_1_1_electron =
     [ "dr03_tk_sum_pt", "classic_1_1_electron.html#a9e35a4a35766449c2176723fdbee17d6", null ],
     [ "dr03_ecal_rechit_sum_et", "classic_1_1_electron.html#afabe92f74a9963b71ca5f356a1f308f6", null ],
     [ "dr03_hcal_tower_sum_et", "classic_1_1_electron.html#a54d0218043fce42027c24dc703b1fc67", null ],
+    [ "ecal_pf_cluster_iso", "classic_1_1_electron.html#aa36e4616646526c55a9e760a878763dd", null ],
+    [ "hcal_pf_cluster_iso", "classic_1_1_electron.html#adf79b4802599fd3376b5f0735989f11f", null ],
     [ "dr03_pfiso_charged_all", "classic_1_1_electron.html#a043b0d1d48bed8c8b1a30bfc62f14760", null ],
     [ "dr03_pfiso_charged", "classic_1_1_electron.html#aa25e0d9b50623af90db87f3361a5ce41", null ],
     [ "dr03_pfiso_neutral", "classic_1_1_electron.html#ae258d0e67c58fa32e3038787564fe4d8", null ],
@@ -46,6 +48,8 @@ var classic_1_1_electron =
     [ "set_dr03_tk_sum_pt", "classic_1_1_electron.html#a8c843dd303460c31e4e76f3e80b22173", null ],
     [ "set_dr03_ecal_rechit_sum_et", "classic_1_1_electron.html#a8de946d305b1d4482d1cdc6894ce330b", null ],
     [ "set_dr03_hcal_tower_sum_et", "classic_1_1_electron.html#a381a45a01d500da27e6745efb84cdc4d", null ],
+    [ "set_ecal_pf_cluster_iso", "classic_1_1_electron.html#ac356dfa5eda3d26dfab5610d9f6ba837", null ],
+    [ "set_hcal_pf_cluster_iso", "classic_1_1_electron.html#a5feeba58ccc5a4b382153d35530f176d", null ],
     [ "set_dr03_pfiso_charged_all", "classic_1_1_electron.html#a138beccae3fadce9c43be845db896685", null ],
     [ "set_dr03_pfiso_charged", "classic_1_1_electron.html#a8326ab6e2ca5fd82bc77e53bf440d6be", null ],
     [ "set_dr03_pfiso_neutral", "classic_1_1_electron.html#ad4aff24abc6d8c43058f30e06d4c679b", null ],
@@ -82,5 +86,5 @@ var classic_1_1_electron =
     [ "SetIdIso", "classic_1_1_electron.html#a85f0953b8b9116800d14506ff60ed230", null ],
     [ "HasIdIso", "classic_1_1_electron.html#a0ebe6ecff16252c2ff47572879569dd1", null ],
     [ "GetIdIso", "classic_1_1_electron.html#a88d7ed9fef58f89cdabd2854167dc537", null ],
-    [ "ClassDef", "classic_1_1_electron.html#aaef04f538f0bdcf578fc36ea3c5a8c18", null ]
+    [ "ClassDef", "classic_1_1_electron.html#ab3c899765856f90c70250f1a2bf861a7", null ]
 ];

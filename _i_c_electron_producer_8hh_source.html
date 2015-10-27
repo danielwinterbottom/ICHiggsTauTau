@@ -150,17 +150,26 @@ $(document).ready(function(){initNavTree('_i_c_electron_producer_8hh_source.html
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">explicit</span> IsoTags(edm::ParameterSet <span class="keyword">const</span>&amp; pset);</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  };</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  IsoTags pf_iso_03_;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  IsoTags pf_iso_04_;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordtype">bool</span> do_pf_iso_03_;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keywordtype">bool</span> do_pf_iso_04_;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keyword">struct </span>ClusterIsoTags {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    edm::InputTag ecal;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    edm::InputTag hcal;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">explicit</span> ClusterIsoTags(edm::ParameterSet <span class="keyword">const</span>&amp; pset);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  };</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  ClusterIsoTags cluster_iso_;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  IsoTags pf_iso_03_;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  IsoTags pf_iso_04_;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="keywordtype">bool</span> do_cluster_iso_;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">bool</span> do_pf_iso_03_;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keywordtype">bool</span> do_pf_iso_04_;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;};</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="_electron_8hh_html"><div class="ttname"><a href="_electron_8hh.html">Electron.hh</a></div></div>
-<div class="ttc" id="class_i_c_electron_producer_html_a587d29ed5d0de77a8e35f50dc7ee07c7"><div class="ttname"><a href="class_i_c_electron_producer.html#a587d29ed5d0de77a8e35f50dc7ee07c7">ICElectronProducer::~ICElectronProducer</a></div><div class="ttdeci">~ICElectronProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_producer_8cc_source.html#l00068">ICElectronProducer.cc:68</a></div></div>
+<div class="ttc" id="class_i_c_electron_producer_html_a587d29ed5d0de77a8e35f50dc7ee07c7"><div class="ttname"><a href="class_i_c_electron_producer.html#a587d29ed5d0de77a8e35f50dc7ee07c7">ICElectronProducer::~ICElectronProducer</a></div><div class="ttdeci">~ICElectronProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_producer_8cc_source.html#l00074">ICElectronProducer.cc:74</a></div></div>
 <div class="ttc" id="namespaceic_html_a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc"><div class="ttname"><a href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">ic::gamma</a></div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8hh_source.html#l00012">PFCandidate.hh:12</a></div></div>
-<div class="ttc" id="class_i_c_electron_producer_html_a05669e445d792f302b66e1620963273c"><div class="ttname"><a href="class_i_c_electron_producer.html#a05669e445d792f302b66e1620963273c">ICElectronProducer::ICElectronProducer</a></div><div class="ttdeci">ICElectronProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_producer_8cc_source.html#l00029">ICElectronProducer.cc:29</a></div></div>
+<div class="ttc" id="class_i_c_electron_producer_html_a05669e445d792f302b66e1620963273c"><div class="ttname"><a href="class_i_c_electron_producer.html#a05669e445d792f302b66e1620963273c">ICElectronProducer::ICElectronProducer</a></div><div class="ttdeci">ICElectronProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_producer_8cc_source.html#l00033">ICElectronProducer.cc:33</a></div></div>
 <div class="ttc" id="class_i_c_electron_producer_html"><div class="ttname"><a href="class_i_c_electron_producer.html">ICElectronProducer</a></div><div class="ttdoc">See documentation here. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_producer_8hh_source.html#l00019">ICElectronProducer.hh:19</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

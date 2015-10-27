@@ -1,6 +1,7 @@
 var searchData=
 [
   ['ecal_5fenergy',['ecal_energy',['../classic_1_1_electron.html#a63c24fc932fc63f18131ee81bad457a3',1,'ic::Electron']]],
+  ['ecal_5fpf_5fcluster_5fiso',['ecal_pf_cluster_iso',['../classic_1_1_electron.html#aa36e4616646526c55a9e760a878763dd',1,'ic::Electron']]],
   ['egammamvaeleestimatorcsa14',['EGammaMvaEleEstimatorCSA14',['../class_e_gamma_mva_ele_estimator_c_s_a14.html#ace9f6f998084d2ea25357cde1ebd07a6',1,'EGammaMvaEleEstimatorCSA14']]],
   ['elecs_5fin_5fvtx_5fin_5fcalo',['elecs_in_vtx_in_calo',['../classic_1_1_j_p_t_jet.html#a4763943e6b38f55c4e2d9786b5b87ea3',1,'ic::JPTJet']]],
   ['elecs_5fin_5fvtx_5fout_5fcalo',['elecs_in_vtx_out_calo',['../classic_1_1_j_p_t_jet.html#af7661a14ace5a06430bad5c4473e5e7d',1,'ic::JPTJet']]],
