@@ -109,7 +109,8 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
-
+#'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/D61F7B94-676F-E511-9970-00221981B434.root',
+#'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/103BC4D8-666F-E511-AAC3-00221981AF26.root'
 #'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/00B2F04A-E301-E511-8CF3-0025905A6090.root',
 # 'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/02D2D410-2A03-E511-8F6C-0025905A60A8.root',
 # 'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root',
@@ -120,7 +121,7 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'root://xrootd.unl.edu//store/data/Run2015B/Tau/MINIAOD/PromptReco-v1/000/251/642/00000/EC1989CD-EB2A-E511-8F15-02163E0146A4.root',
 
 #),
-#lumisToProcess = cms.untracked.VLuminosityBlockRange('1:277-1:278','1:389-1:390'), 
+#lumisToProcess = cms.untracked.VLuminosityBlockRange('1:100317','1:98527'), 
 #)
 
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/161/00000/7019DC27-9C26-E511-84FF-02163E011CC2.root',
@@ -575,7 +576,8 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   includeBeamspotIP         = cms.bool(True),
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
   includeFloats = cms.PSet(
-     mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")
+     mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
+     mvaTrigSpring15       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values")
   ),
   includePFIso03           = cms.bool(True),
   includePFIso04           = cms.bool(True)
@@ -1654,6 +1656,15 @@ if isData:
       storeOnlyIfFired = cms.bool(False)
       )
 
+  process.icEle23ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle23"),
+      hltPath = cms.string("HLT_Ele23_WPLoose_Gsf_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+
   process.icTau35ObjectProducer = producers.icTriggerObjectProducer.clone(
      input = cms.InputTag("patTriggerEvent"),
      branch = cms.string("triggerObjectsDiTau35"),
@@ -1666,6 +1677,7 @@ if isData:
     process.icIsoMu22ObjectProducer+
     process.icIsoMu18ObjectProducer+
     process.icEle22ObjectProducer+
+    process.icEle23ObjectProducer+
     process.icTau35ObjectProducer+
     process.icTau35ObjectProducer
   )
