@@ -212,7 +212,9 @@ struct mcorigin_def{
      tauE,
      tauMu,
      tauHad,
-     fake
+     fake,
+     hadE,
+     hadMu
   };
 };
 
@@ -225,7 +227,9 @@ inline unsigned MCOrigin2UInt(mcorigin const& in) {
     (mcorigin::tauE,3)
     (mcorigin::tauMu,4)
     (mcorigin::tauHad,5)
-    (mcorigin::fake,6);
+    (mcorigin::fake,6)
+    (mcorigin::hadE,7)
+    (mcorigin::hadMu,8);
 
   if (conv.find(in) != conv.end()) {
     return (conv.find(in)->second);
@@ -242,7 +246,9 @@ inline mcorigin UInt2MCOrigin(unsigned const&in){
    (3, mcorigin::tauE)
    (4, mcorigin::tauMu)
    (5, mcorigin::tauHad)
-   (6, mcorigin::fake);
+   (6, mcorigin::fake)
+   (7, mcorigin::hadE)
+   (8, mcorigin::hadMu);
 
  if (conv.find(in) != conv.end()){
    return (conv.find(in)->second);

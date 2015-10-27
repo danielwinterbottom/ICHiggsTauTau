@@ -29,6 +29,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, systematic_shift)
   CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
+  CLASS_MEMBER(HTTCategories, bool, iso_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
  
@@ -84,6 +85,11 @@ class HTTCategories : public ModuleBase {
   bool lepton_veto_;
   unsigned n_vtx_;
   bool good_vtx_;
+/*  branch_var trigger_object_pt_1;
+  branch_var trigger_object_eta_1;
+  branch_var trigger_object_pt_2;
+  branch_var trigger_object_eta_2;
+*/
   unsigned n_pu_;
   branch_var m_sv_;
   branch_var m_vis_;
@@ -116,6 +122,14 @@ class HTTCategories : public ModuleBase {
   int q_2_;
   branch_var iso_1_;
   branch_var iso_2_;
+  double iso_1_db03_;
+  double iso_1_db03allch_;
+  double iso_1_db04allch_; 
+  double iso_1_ea03_;
+  double iso_2_db03_;
+  double iso_2_db03allch_;
+  double iso_2_db04allch_; 
+  double iso_2_ea03_;
   bool antiele_1_;
   bool antimu_1_;
   bool antiele_2_;

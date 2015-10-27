@@ -716,6 +716,12 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "");
+		for (auto m : sm_masses) {
+     HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
+		 //HTTAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
+		 //HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
+    }
+
 	
     // ************************************************************************
 	// Shift backgrounds
@@ -746,7 +752,7 @@ int main(int argc, char* argv[]){
 	// Shift tau energy scale
 	// ************************************************************************
 	if (shift_tscale != 0.0) {
-		std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
+		std::string ztt_label = "ZTT";
 		std::cout << "[HiggsTauTauPlot5] Shifting energy scale by pull: " << shift_tscale << std::endl;
 		TH1F ztt_central = hmap[ztt_label].first;
 		TH1F ztt_down = hmap[ztt_label+"_"+syst_tau_scale+"Down"].first;
