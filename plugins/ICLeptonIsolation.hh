@@ -94,7 +94,11 @@ void ICLeptonIsolation<pat::Electron>::constructSpecific(
       values[i] = src.pfIsolationVariables().sumPUPt;
 //    } else if(input_isolation_type_ == "allcharged_iso"){
  //     values[i] = src.chargedIso();
-    } else values[i] = 0;
+    } else if(input_isolation_type_ == "ecal_pf_cluster_iso"){
+      values[i] = src.ecalPFClusterIso();
+    } else if(input_isolation_type_ == "hcal_pf_cluster_iso"){
+      values[i] = src.hcalPFClusterIso();
+    }  else values[i] = 0;
 #endif
   }
 }
