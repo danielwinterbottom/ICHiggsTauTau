@@ -61,6 +61,13 @@ namespace ic {
     std::vector<double> genjet_phi_;
     std::vector<double> genjet_E_;
 
+    std::vector<double> jet_trigjet_mindR_;
+    std::vector<int> jet_trigMatched_;
+    std::vector<double> trigjet_pt_;
+    std::vector<double> trigjet_eta_;
+    std::vector<double> trigjet_phi_;
+    std::vector<double> trigjet_E_;
+
     /* double jet1_pt_; */
     /* double jet2_pt_; */
     /* double jet3_pt_; */
@@ -158,6 +165,10 @@ namespace ic {
     double digenjet_deta_;
     double digenjet_dphi_;
 
+    double ditrigjet_M_;
+    double ditrigjet_deta_;
+    double ditrigjet_dphi_;
+
 
     int nvetomuons_;
     int nselmuons_;
@@ -188,6 +199,12 @@ namespace ic {
     double tau1_pt_;
     double tau1_eta_;
     double tau1_phi_;
+    int nloosephotons_;
+    int nmediumphotons_;
+    int ntightphotons_;
+    double gamma1_pt_;
+    double gamma1_eta_;
+    double gamma1_phi_;
     double lep_mt_;
     int n_vertices_;
 
