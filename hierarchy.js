@@ -35,6 +35,7 @@ var hierarchy =
       [ "ICGenJetProducer", "class_i_c_gen_jet_producer.html", null ],
       [ "ICGenParticleProducer", "class_i_c_gen_particle_producer.html", null ],
       [ "ICGenTauProductProducer", "class_i_c_gen_tau_product_producer.html", null ],
+      [ "ICGenVertexProducer", "class_i_c_gen_vertex_producer.html", null ],
       [ "ICHttElecIsoCheck", "class_i_c_htt_elec_iso_check.html", null ],
       [ "ICHttMuonOverlapCheck", "class_i_c_htt_muon_overlap_check.html", null ],
       [ "ICJetFlavourCalculator", "class_i_c_jet_flavour_calculator.html", null ],

@@ -60,6 +60,10 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
     [ "ICGenTauProductProducer.hh", "_i_c_gen_tau_product_producer_8hh.html", [
       [ "ICGenTauProductProducer", "class_i_c_gen_tau_product_producer.html", "class_i_c_gen_tau_product_producer" ]
     ] ],
+    [ "ICGenVertexProducer.cc", "_i_c_gen_vertex_producer_8cc.html", "_i_c_gen_vertex_producer_8cc" ],
+    [ "ICGenVertexProducer.hh", "_i_c_gen_vertex_producer_8hh.html", [
+      [ "ICGenVertexProducer", "class_i_c_gen_vertex_producer.html", "class_i_c_gen_vertex_producer" ]
+    ] ],
     [ "ICHttElecIsoCheck.cc", "_i_c_htt_elec_iso_check_8cc.html", "_i_c_htt_elec_iso_check_8cc" ],
     [ "ICHttElecIsoCheck.h", "_i_c_htt_elec_iso_check_8h.html", [
       [ "ICHttElecIsoCheck", "class_i_c_htt_elec_iso_check.html", "class_i_c_htt_elec_iso_check" ]

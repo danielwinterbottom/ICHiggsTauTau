@@ -13,6 +13,7 @@ var searchData=
   ['icgenjetproducer',['ICGenJetProducer',['../class_i_c_gen_jet_producer.html',1,'']]],
   ['icgenparticleproducer',['ICGenParticleProducer',['../class_i_c_gen_particle_producer.html',1,'']]],
   ['icgentauproductproducer',['ICGenTauProductProducer',['../class_i_c_gen_tau_product_producer.html',1,'']]],
+  ['icgenvertexproducer',['ICGenVertexProducer',['../class_i_c_gen_vertex_producer.html',1,'']]],
   ['ichttelecisocheck',['ICHttElecIsoCheck',['../class_i_c_htt_elec_iso_check.html',1,'']]],
   ['ichttmuonoverlapcheck',['ICHttMuonOverlapCheck',['../class_i_c_htt_muon_overlap_check.html',1,'']]],
   ['icjetflavourcalculator',['ICJetFlavourCalculator',['../class_i_c_jet_flavour_calculator.html',1,'']]],
