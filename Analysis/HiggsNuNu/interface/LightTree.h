@@ -29,8 +29,9 @@ namespace ic {
     CLASS_MEMBER(LightTree,std::string, trig_obj_label);
     CLASS_MEMBER(LightTree,std::string, trigger_path);
 
-    unsigned nJetsSave_=4;
+    unsigned nJetsSave_=6;
     unsigned nGenJetsSave_=4;
+    unsigned nTrigJetsSave_=6;
 
 
     TTree *outputTree_;
@@ -61,6 +62,13 @@ namespace ic {
     std::vector<double> genjet_eta_;
     std::vector<double> genjet_phi_;
     std::vector<double> genjet_E_;
+
+    std::vector<double> jet_trigjet_mindR_;
+    std::vector<int> jet_trigMatched_;
+    std::vector<double> trigjet_pt_;
+    std::vector<double> trigjet_eta_;
+    std::vector<double> trigjet_phi_;
+    std::vector<double> trigjet_E_;
 
     /* double jet1_pt_; */
     /* double jet2_pt_; */
@@ -131,6 +139,8 @@ namespace ic {
     double pass_sigtrigger_;
     double pass_mettrigger_;
     double pass_controltrigger_;
+    double pass_singlejettrigger_;
+    double pass_htquadjettrigger_;
     double l1met_;
     double metnomuons_;
 
@@ -138,6 +148,11 @@ namespace ic {
     std::vector<double> genjetptordered_eta_;
     std::vector<double> genjetptordered_phi_;
     std::vector<double> genjetptordered_E_;
+
+    std::vector<double> trigjetptordered_pt_;
+    std::vector<double> trigjetptordered_eta_;
+    std::vector<double> trigjetptordered_phi_;
+    std::vector<double> trigjetptordered_E_;
 
     /* double genjet1_pt_; */
     /* double genjet1_eta_; */
@@ -158,6 +173,10 @@ namespace ic {
     double digenjet_M_;
     double digenjet_deta_;
     double digenjet_dphi_;
+
+    double ditrigjet_M_;
+    double ditrigjet_deta_;
+    double ditrigjet_dphi_;
 
 
     int nvetomuons_;
@@ -189,6 +208,12 @@ namespace ic {
     double tau1_pt_;
     double tau1_eta_;
     double tau1_phi_;
+    int nloosephotons_;
+    int nmediumphotons_;
+    int ntightphotons_;
+    double gamma1_pt_;
+    double gamma1_eta_;
+    double gamma1_phi_;
     double lep_mt_;
     int n_vertices_;
 

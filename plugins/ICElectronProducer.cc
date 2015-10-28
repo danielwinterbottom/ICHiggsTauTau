@@ -26,6 +26,10 @@ ICElectronProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
       gamma(pset.getParameter<edm::InputTag>("gamma")),
       pu(pset.getParameter<edm::InputTag>("pu")) {}
 
+ICElectronProducer::ClusterIsoTags::ClusterIsoTags(edm::ParameterSet const& pset)
+    : ecal(pset.getParameter<edm::InputTag>("ecal")),
+      hcal(pset.getParameter<edm::InputTag>("hcal")) {}
+
 ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
@@ -41,8 +45,10 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
           config.getParameter<edm::InputTag>("inputConversionMatches")),
       do_conversion_matches_(
           config.getParameter<bool>("includeConversionMatches")),
+      cluster_iso_(config.getParameterSet("clusterIso")),
       pf_iso_03_(config.getParameterSet("pfIso03")),
       pf_iso_04_(config.getParameterSet("pfIso04")),
+      do_cluster_iso_(config.getParameter<bool>("includeClusterIso")),
       do_pf_iso_03_(config.getParameter<bool>("includePFIso03")),
       do_pf_iso_04_(config.getParameter<bool>("includePFIso04")) {
   electrons_ = new std::vector<ic::Electron>();
@@ -99,6 +105,13 @@ void ICElectronProducer::produce(edm::Event& event,
   edm::Handle<edm::ValueMap<double> > neutral_03;
   edm::Handle<edm::ValueMap<double> > gamma_03;
   edm::Handle<edm::ValueMap<double> > pu_03;
+  edm::Handle<edm::ValueMap<double> > ecal_pf_cluster_iso;
+  edm::Handle<edm::ValueMap<double> > hcal_pf_cluster_iso;
+
+  if (do_cluster_iso_){
+    event.getByLabel(cluster_iso_.ecal, ecal_pf_cluster_iso);
+    event.getByLabel(cluster_iso_.hcal, hcal_pf_cluster_iso);
+  }
   if (do_pf_iso_03_) {
     event.getByLabel(pf_iso_03_.charged_all, charged_all_03);
     event.getByLabel(pf_iso_03_.charged, charged_03);
@@ -183,6 +196,12 @@ void ICElectronProducer::produce(edm::Event& event,
       dest.SetIdIso(input_vmaps_[v].first,
                     (*(float_handles[v]))[ref]);
     }
+
+    if (do_cluster_iso_) {
+      dest.set_ecal_pf_cluster_iso((*ecal_pf_cluster_iso)[ref]);
+      dest.set_hcal_pf_cluster_iso((*hcal_pf_cluster_iso)[ref]);
+    }
+
     if (do_pf_iso_03_) {
       dest.set_dr03_pfiso_charged_all((*charged_all_03)[ref]);
       dest.set_dr03_pfiso_charged((*charged_03)[ref]);

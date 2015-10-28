@@ -412,38 +412,33 @@ int main(int argc, char* argv[]){
   //loose photons
   CopyCollection<Photon>  loosePhotonCopyCollection("CopyToLoosePhotons","photons","loosePhotons");
   
-  SimpleFilter<Photon> loosePhotonPtEtaFilter = SimpleFilter<Photon>
-    ("LoosePhotonPtEtaFilter")
-    .set_input_label("loosePhotons").set_predicate(bind(MinPtMaxEta, _1, loose_photon_pt, loose_photon_eta))
-    .set_min(0)
-    .set_max(999);
-
-  ComplexFilter<Photon,EventInfo,double> loosePhotonIDFilter = ComplexFilter<Photon,EventInfo,double>
-    ("LoosePhotonIDFilter")
-    .set_primary_input_label("loosePhotons").set_predicate(bind(LoosePhotonIDSpring15, _1,_2))
-    .set_secondary_input_label("eventinfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))
+  ComplexFilter<Photon,EventInfo,double> loosePhotonFilter = ComplexFilter<Photon,EventInfo,double>
+    ("LoosePhotonFilter")
+    .set_primary_input_label("loosePhotons").set_predicate(bind(MinPtMaxEta, _1, loose_photon_pt, loose_photon_eta)&&
+							   bind(LoosePhotonIDSpring15, _1,_2))
+    .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))
     .set_min(0)
     .set_max(999);
   
   //medium photons
   CopyCollection<Photon>  mediumPhotonCopyCollection("CopyToMediumPhotons","photons","mediumPhotons");
   
-  SimpleFilter<Photon> mediumPhotonFilter = SimpleFilter<Photon>
+  ComplexFilter<Photon,EventInfo,double> mediumPhotonFilter = ComplexFilter<Photon,EventInfo,double>
     ("MediumPhotonPtEtaFilter")
-    .set_input_label("mediumPhotons").set_predicate(bind(MinPtMaxEta, _1, medium_photon_pt, medium_photon_eta) //&&
-						    //bind(MediumPhotonIDSpring15, _1)
-						   )
+    .set_primary_input_label("mediumPhotons").set_predicate(bind(MinPtMaxEta, _1, medium_photon_pt, medium_photon_eta)&&
+							    bind(MediumPhotonIDSpring15, _1,_2))
+    .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))
     .set_min(0)
     .set_max(999);
 
   //tight photons
   CopyCollection<Photon>  tightPhotonCopyCollection("CopyToTightPhotons","photons","tightPhotons");
   
-  SimpleFilter<Photon> tightPhotonFilter = SimpleFilter<Photon>
+  ComplexFilter<Photon,EventInfo,double> tightPhotonFilter = ComplexFilter<Photon,EventInfo,double>
     ("TightPhotonPtEtaFilter")
-    .set_input_label("tightPhotons").set_predicate(bind(MinPtMaxEta, _1, tight_photon_pt, tight_photon_eta) //&&
-						   //bind(TightPhotonIDSpring15, _1)
-						   )
+    .set_primary_input_label("tightPhotons").set_predicate(bind(MinPtMaxEta, _1, tight_photon_pt, tight_photon_eta)&&
+							   bind(TightPhotonIDSpring15, _1,_2))
+    .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))						   
     .set_min(0)
     .set_max(999);
 
@@ -859,6 +854,13 @@ int main(int argc, char* argv[]){
   //don't want pile-up jets to calculate HT,MHT...
   analysis.AddModule(&alljetsCopyCollection);
   
+  //prepare collections of photons
+  analysis.AddModule(&loosePhotonCopyCollection);
+  analysis.AddModule(&loosePhotonFilter);
+  analysis.AddModule(&mediumPhotonCopyCollection);
+  analysis.AddModule(&mediumPhotonFilter);
+  analysis.AddModule(&tightPhotonCopyCollection);
+  analysis.AddModule(&tightPhotonFilter);
   
   //prepare collections of veto leptons
   analysis.AddModule(&vetoElectronCopyCollection);

@@ -62,6 +62,16 @@ class Electron : public Candidate {
     return dr03_hcal_tower_sum_et_;
   }
 
+  ///ECAL PF cluster isolation
+  inline float ecal_pf_cluster_iso() const {
+    return ecal_pf_cluster_iso_;
+  }
+
+  ///HCAL PF cluster isolation
+  inline float hcal_pf_cluster_iso() const {
+    return hcal_pf_cluster_iso_;
+  }
+
   /// PF isolation, using all charged particles in a cone with
   /// \f$ \Delta R = 0.3 \f$
   inline float dr03_pfiso_charged_all() const {
@@ -201,6 +211,16 @@ class Electron : public Candidate {
   /// @copybrief dr03_hcal_tower_sum_et()
   inline void set_dr03_hcal_tower_sum_et(float const& dr03_hcal_tower_sum_et) {
     dr03_hcal_tower_sum_et_ = dr03_hcal_tower_sum_et;
+  }
+
+  /// @copybrief ecal_pf_cluster_iso()
+  inline void set_ecal_pf_cluster_iso(float const& ecal_pf_cluster_iso) {
+    ecal_pf_cluster_iso_ = ecal_pf_cluster_iso;
+  }
+
+  /// @copybrief hcal_pf_cluster_iso()
+  inline void set_hcal_pf_cluster_iso(float const& hcal_pf_cluster_iso){
+    hcal_pf_cluster_iso_ = hcal_pf_cluster_iso;
   }
 
   /// @copybrief dr03_pfiso_charged_all()
@@ -380,6 +400,10 @@ class Electron : public Candidate {
   float dr03_tk_sum_pt_;
   float dr03_ecal_rechit_sum_et_;
   float dr03_hcal_tower_sum_et_;
+ 
+  //ecal/hcal pf cluster isolation 
+  float ecal_pf_cluster_iso_;
+  float hcal_pf_cluster_iso_;
 
   // PF-based isolation variables
   float dr03_pfiso_charged_all_;
@@ -425,7 +449,7 @@ class Electron : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Electron, 3);
+  ClassDef(Electron, 4);
  #endif
 };
 

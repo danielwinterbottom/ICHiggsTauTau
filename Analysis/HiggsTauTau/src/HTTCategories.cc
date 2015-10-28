@@ -27,6 +27,7 @@ namespace ic {
       bjet_regression_ = false;
       make_sync_ntuple_ = false;
       sync_output_name_ = "SYNC.root";
+      iso_study_=false;
       is_embedded_=false;
       is_data_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
@@ -104,6 +105,17 @@ namespace ic {
         outtree_->Branch("jet_csvbcsv_1",     &jet_csvbcsv_1_);
         outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
       }
+      if(iso_study_){
+        //Add different isolation variables for if studying isolation
+        outtree_->Branch("iso_1_db03", &iso_1_db03_);
+        outtree_->Branch("iso_1_db03allch", &iso_1_db03allch_);
+        outtree_->Branch("iso_1_db04allch", &iso_1_db04allch_);
+        outtree_->Branch("iso_1_ea03", &iso_1_ea03_);
+        outtree_->Branch("iso_2_db03", &iso_2_db03_);
+        outtree_->Branch("iso_2_db03allch", &iso_2_db03allch_);
+        outtree_->Branch("iso_2_db04allch", &iso_2_db04allch_);
+        outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
+      }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
@@ -133,6 +145,11 @@ namespace ic {
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
+/*        outtree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_double);
+        outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
+        outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
+        outtree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_double);
+*/
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
@@ -285,6 +302,12 @@ namespace ic {
       synctree_->Branch("mt_1", &mt_1_.var_float, "mt_1/F");
       // Non-triggering electron ID MVA score
       synctree_->Branch("id_e_mva_nt_loose_1", &id_e_mva_nt_loose_1_, "id_e_mva_nt_loose_1/F");
+      /*synctree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_float,"trigger_object_pt_1/F");
+      synctree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_float,"trigger_object_eta_1/F");
+      synctree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_float,"trigger_object_pt_2/F");
+      synctree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_float,"trigger_object_eta_2/F");
+*/
+
 
       // Lepton 2 properties
       // pt (including effect of any energy scale corrections)
@@ -618,7 +641,7 @@ namespace ic {
     if(strategy_ == strategy::phys14) btag_label = "combinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    if(strategy_ == strategy::spring15) btag_wp = 0.814 ;
+    if(strategy_ == strategy::spring15) btag_wp = 0.89 ;
 
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
@@ -673,7 +696,16 @@ namespace ic {
 
 
     n_vtx_ = eventInfo->good_vertices();
+    /*trigger_object_pt_1 = 0;
+    trigger_object_pt_2 = 0;
+    trigger_object_eta_1 = 0;
+    trigger_object_eta_2 = 0;
     if(event->Exists("good_first_vertex")) good_vtx_ = event->Get<bool>("good_first_vertex");
+    if(event->Exists("leg1_trigger_obj_pt")) trigger_object_pt_1 = event->Get<double>("leg1_trigger_obj_pt");
+    if(event->Exists("leg1_trigger_obj_eta")) trigger_object_eta_1 = event->Get<double>("leg1_trigger_obj_eta");
+    if(event->Exists("leg2_trigger_obj_pt")) trigger_object_pt_2 = event->Get<double>("leg2_trigger_obj_pt");
+    if(event->Exists("leg2_trigger_obj_eta")) trigger_object_eta_2 = event->Get<double>("leg2_trigger_obj_eta");
+*/
 
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");
@@ -814,6 +846,16 @@ namespace ic {
       }
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_2_db03_ = 0;
+          iso_2_ea03_ = 0;
+          iso_2_db03allch_ = 0;
+          iso_2_db04allch_ = 0;
+        }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -859,6 +901,16 @@ namespace ic {
       }
       if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+          iso_2_db03_ = 0;
+          iso_2_ea03_ = 0;
+          iso_2_db03allch_ = 0;
+          iso_2_db04allch_ = 0;
+        }
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -898,6 +950,16 @@ namespace ic {
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_2_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_2_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
+          iso_2_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+        }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
 
