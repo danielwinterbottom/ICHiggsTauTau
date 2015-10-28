@@ -449,6 +449,12 @@ icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
 )
 ## [GenParticle]
 
+icGenVertexProducer = cms.EDProducer('ICGenVertexProducer',
+  branch = cms.string("genVertices"),
+  input = cms.InputTag("genParticles"),
+  type = cms.string("pp")
+)
+
 ## [GenJet]
 icGenJetProducer = cms.EDProducer('ICGenJetProducer',
   branch  = cms.string("genJets"),
