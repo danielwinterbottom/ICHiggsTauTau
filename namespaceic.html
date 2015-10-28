@@ -143,7 +143,7 @@ Data Structures</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merge several collections into one, removing any duplicates in the process.  <a href="classic_1_1_merge.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html">Met</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores a missing transverse energy object and the corresponding significance.  <a href="classic_1_1_met.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores a missing transverse energy object and the corresponding significance and corrections.  <a href="classic_1_1_met.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_muon.html">Muon</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class stores a subset of the reco::Muon properties which are most commonly used in analysis.  <a href="classic_1_1_muon.html#details">More...</a><br /></td></tr>
@@ -305,6 +305,8 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a97ee667e2e33a9a7818e66399ce1a9ac"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a97ee667e2e33a9a7818e66399ce1a9ac">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> &amp;met)</td></tr>
+<tr class="separator:a97ee667e2e33a9a7818e66399ce1a9ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d428d1ad2fb32f49e946023b458290c"><td class="memItemLeft" align="right" valign="top">Json::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a5d428d1ad2fb32f49e946023b458290c">ExtractJsonFromFile</a> (std::string const &amp;file)</td></tr>
 <tr class="memdesc:a5d428d1ad2fb32f49e946023b458290c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts a Json::Value from the specified input file.  <a href="#a5d428d1ad2fb32f49e946023b458290c">More...</a><br /></td></tr>
 <tr class="separator:a5d428d1ad2fb32f49e946023b458290c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -447,7 +449,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00085">85</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00138">138</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -752,6 +754,34 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a97ee667e2e33a9a7818e66399ce1a9ac"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream &amp; ic::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> &amp;&#160;</td>
+          <td class="paramname"><em>met</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_met_8cc_source.html#l00127">127</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a5d428d1ad2fb32f49e946023b458290c"></a>
 <div class="memitem">
 <div class="memproto">

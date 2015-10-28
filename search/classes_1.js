@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['egammamvaeleestimatorcsa14',['EGammaMvaEleEstimatorCSA14',['../class_e_gamma_mva_ele_estimator_c_s_a14.html',1,'']]],
-  ['electron',['Electron',['../classic_1_1_electron.html',1,'ic']]],
-  ['eventinfo',['EventInfo',['../classic_1_1_event_info.html',1,'ic']]]
+  ['calojet',['CaloJet',['../classic_1_1_calo_jet.html',1,'ic']]],
+  ['candidate',['Candidate',['../classic_1_1_candidate.html',1,'ic']]],
+  ['compositecandidate',['CompositeCandidate',['../classic_1_1_composite_candidate.html',1,'ic']]],
+  ['concatenate',['Concatenate',['../classic_1_1_concatenate.html',1,'ic']]]
 ];

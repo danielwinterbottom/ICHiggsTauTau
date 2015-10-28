@@ -96,13 +96,14 @@ $(document).ready(function(){initNavTree('classic_1_1_met.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ic::Met Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Stores a missing transverse energy object and the corresponding significance.  
+<p>Stores a missing transverse energy object and the corresponding significance and corrections.  
  <a href="classic_1_1_met.html#details">More...</a></p>
 
 <p><code>#include &quot;<a class="el" href="_met_8hh_source.html">UserCode/ICHiggsTauTau/interface/Met.hh</a>&quot;</code></p>
@@ -118,6 +119,11 @@ $(document).ready(function(){initNavTree('classic_1_1_met.html','');});
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structic_1_1_met_1_1_basic_met.html">BasicMet</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7242fb15c092e770367f36ab04f3d2c4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a7242fb15c092e770367f36ab04f3d2c4">Met</a> ()</td></tr>
@@ -126,15 +132,32 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab53581ed653a3d97810e61d5e6f2a009"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9bc91887a202b8a0bd12a24426084a1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#aa9bc91887a202b8a0bd12a24426084a1">Print</a> () const </td></tr>
 <tr class="separator:aa9bc91887a202b8a0bd12a24426084a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43f00e0b7164ad9a67c70b8e8df0beca"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair<br class="typebreak" />
-&lt; std::string, <a class="el" href="classic_1_1_candidate.html">ic::Candidate</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a43f00e0b7164ad9a67c70b8e8df0beca">shiftedmets</a> () const </td></tr>
-<tr class="memdesc:a43f00e0b7164ad9a67c70b8e8df0beca"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vector of shifted mets.  <a href="#a43f00e0b7164ad9a67c70b8e8df0beca">More...</a><br /></td></tr>
-<tr class="separator:a43f00e0b7164ad9a67c70b8e8df0beca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a60ce9a4b281a70a0c74463af3155bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a6a60ce9a4b281a70a0c74463af3155bb">set_shiftedmets</a> (std::vector&lt; std::pair&lt; std::string, <a class="el" href="classic_1_1_candidate.html">ic::Candidate</a> &gt; &gt; const &amp;<a class="el" href="classic_1_1_met.html#a43f00e0b7164ad9a67c70b8e8df0beca">shiftedmets</a>)</td></tr>
-<tr class="memdesc:a6a60ce9a4b281a70a0c74463af3155bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vector of shifted mets.  <a href="#a6a60ce9a4b281a70a0c74463af3155bb">More...</a><br /></td></tr>
-<tr class="separator:a6a60ce9a4b281a70a0c74463af3155bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f6f602a34a08701d08c9bbb2305746b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a9f6f602a34a08701d08c9bbb2305746b">ClassDef</a> (<a class="el" href="classic_1_1_met.html">Met</a>, 4)</td></tr>
-<tr class="separator:a9f6f602a34a08701d08c9bbb2305746b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0872de40c1fd8206916de4c18e6f403"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::size_t, <br class="typebreak" />
+<a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> &gt; const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#aa0872de40c1fd8206916de4c18e6f403">shifted_mets</a> () const </td></tr>
+<tr class="memdesc:aa0872de40c1fd8206916de4c18e6f403"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vector of shifted mets.  <a href="#aa0872de40c1fd8206916de4c18e6f403">More...</a><br /></td></tr>
+<tr class="separator:aa0872de40c1fd8206916de4c18e6f403"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b5045331556aa799aa84f97c0378bd5"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::size_t, <br class="typebreak" />
+<a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> &gt; const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a8b5045331556aa799aa84f97c0378bd5">corrected_mets</a> () const </td></tr>
+<tr class="memdesc:a8b5045331556aa799aa84f97c0378bd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">map of MET corrections.  <a href="#a8b5045331556aa799aa84f97c0378bd5">More...</a><br /></td></tr>
+<tr class="separator:a8b5045331556aa799aa84f97c0378bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb587664ab5ef8a3293cb9188456d02d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#afb587664ab5ef8a3293cb9188456d02d">GetCorrectedMet</a> (std::string const &amp;name) const </td></tr>
+<tr class="memdesc:afb587664ab5ef8a3293cb9188456d02d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a specific correction factor if <code>name</code> is defined, otherwise returns zero.  <a href="#afb587664ab5ef8a3293cb9188456d02d">More...</a><br /></td></tr>
+<tr class="separator:afb587664ab5ef8a3293cb9188456d02d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6af07f1df3979365a497512fb3ce723"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#af6af07f1df3979365a497512fb3ce723">GetShiftedMet</a> (std::string const &amp;name) const </td></tr>
+<tr class="memdesc:af6af07f1df3979365a497512fb3ce723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a specific correction factor if <code>name</code> is defined, otherwise returns zero.  <a href="#af6af07f1df3979365a497512fb3ce723">More...</a><br /></td></tr>
+<tr class="separator:af6af07f1df3979365a497512fb3ce723"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a166cdf51afc2af84c80c7b8d5ba94159"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a166cdf51afc2af84c80c7b8d5ba94159">set_shiftedmets</a> (std::map&lt; std::size_t, <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> &gt; const &amp;shiftedmets)</td></tr>
+<tr class="separator:a166cdf51afc2af84c80c7b8d5ba94159"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab54fe74ab45429477843ae1eef0e3c3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#ab54fe74ab45429477843ae1eef0e3c3a">set_correctedmets</a> (std::map&lt; std::size_t, <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> &gt; const &amp;cormets)</td></tr>
+<tr class="separator:ab54fe74ab45429477843ae1eef0e3c3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9683dbc11460e172cf88bf76726a43a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a9683dbc11460e172cf88bf76726a43a7">SetCorrectedMet</a> (std::string const &amp;name, <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> const &amp;value)</td></tr>
+<tr class="memdesc:a9683dbc11460e172cf88bf76726a43a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a corrected met, overwriting any existing value with label <code>name</code>  <a href="#a9683dbc11460e172cf88bf76726a43a7">More...</a><br /></td></tr>
+<tr class="separator:a9683dbc11460e172cf88bf76726a43a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31f9598d3dc1e2b37ff1380cf68b1982"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a31f9598d3dc1e2b37ff1380cf68b1982">SetShiftedMet</a> (std::string const &amp;name, <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> const &amp;value)</td></tr>
+<tr class="memdesc:a31f9598d3dc1e2b37ff1380cf68b1982"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a shifted met, overwriting any existing value with label <code>name</code>  <a href="#a31f9598d3dc1e2b37ff1380cf68b1982">More...</a><br /></td></tr>
+<tr class="separator:a31f9598d3dc1e2b37ff1380cf68b1982"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a061c7d40dab93980424ffff4f096a578"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a061c7d40dab93980424ffff4f096a578">ClassDef</a> (<a class="el" href="classic_1_1_met.html">Met</a>, 5)</td></tr>
+<tr class="separator:a061c7d40dab93980424ffff4f096a578"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Properties</div></td></tr>
 <tr class="memitem:a798b7613eb7ba69895464e3c9407c7ec"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_met.html#a798b7613eb7ba69895464e3c9407c7ec">sum_et</a> () const </td></tr>
 <tr class="memdesc:a798b7613eb7ba69895464e3c9407c7ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scalar sum of transverse energies for all input objects.  <a href="#a798b7613eb7ba69895464e3c9407c7ec">More...</a><br /></td></tr>
@@ -227,9 +250,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1ad59abd60b24bed580b2537e5628b4c inherit pub_methods_classic_1_1_candidate"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Stores a missing transverse energy object and the corresponding significance. </p>
+<div class="textblock"><p>Stores a missing transverse energy object and the corresponding significance and corrections. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00014">14</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00015">15</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a7242fb15c092e770367f36ab04f3d2c4"></a>
 <div class="memitem">
@@ -244,7 +267,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_met_8cc_source.html#l00004">4</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
+<p>Definition at line <a class="el" href="_met_8cc_source.html#l00009">9</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
 
 </div>
 </div>
@@ -269,7 +292,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_met_8cc_source.html#l00013">13</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
+<p>Definition at line <a class="el" href="_met_8cc_source.html#l00018">18</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
 
 </div>
 </div>
@@ -297,7 +320,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">ic::Candidate</a>.</p>
 
-<p>Definition at line <a class="el" href="_met_8cc_source.html#l00015">15</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
+<p>Definition at line <a class="el" href="_met_8cc_source.html#l00020">20</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
 
 </div>
 </div>
@@ -324,7 +347,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Scalar sum of transverse energies for all input objects. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00023">23</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00036">36</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -351,7 +374,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Signifiance of the missing transverse energy. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00026">26</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00039">39</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -378,7 +401,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The \(xx\) component of the significance matrix. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00029">29</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00042">42</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -405,7 +428,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The \(xy\) component of the significance matrix. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00032">32</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00045">45</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -432,7 +455,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The \(yx\) component of the significance matrix. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00035">35</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00048">48</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -459,11 +482,11 @@ Public Member Functions</h2></td></tr>
 
 <p>The \(yy\) component of the significance matrix. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00038">38</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00051">51</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a43f00e0b7164ad9a67c70b8e8df0beca"></a>
+<a class="anchor" id="aa0872de40c1fd8206916de4c18e6f403"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -471,7 +494,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::pair&lt;std::string,<a class="el" href="classic_1_1_candidate.html">ic::Candidate</a>&gt; &gt; ic::Met::shiftedmets </td>
+          <td class="memname">std::map&lt;std::size_t, <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a>&gt; const&amp; ic::Met::shifted_mets </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -486,7 +509,74 @@ Public Member Functions</h2></td></tr>
 
 <p>The vector of shifted mets. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00042">42</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00055">55</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8b5045331556aa799aa84f97c0378bd5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;std::size_t, <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a>&gt; const&amp; ic::Met::corrected_mets </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>map of MET corrections. </p>
+
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00062">62</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afb587664ab5ef8a3293cb9188456d02d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> ic::Met::GetCorrectedMet </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a specific correction factor if <code>name</code> is defined, otherwise returns zero. </p>
+
+<p>Definition at line <a class="el" href="_met_8cc_source.html#l00039">39</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af6af07f1df3979365a497512fb3ce723"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> ic::Met::GetShiftedMet </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a specific correction factor if <code>name</code> is defined, otherwise returns zero. </p>
+
+<p>Definition at line <a class="el" href="_met_8cc_source.html#l00054">54</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
 
 </div>
 </div>
@@ -514,7 +604,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Scalar sum of transverse energies for all input objects. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00048">48</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00080">80</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -542,7 +632,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Signifiance of the missing transverse energy. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00051">51</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00083">83</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -570,7 +660,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The \(xx\) component of the significance matrix. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00054">54</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00086">86</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -598,7 +688,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The \(xy\) component of the significance matrix. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00057">57</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00089">89</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -626,7 +716,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The \(yx\) component of the significance matrix. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00060">60</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00092">92</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
@@ -654,11 +744,11 @@ Public Member Functions</h2></td></tr>
 
 <p>The \(yy\) component of the significance matrix. </p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00063">63</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00095">95</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a6a60ce9a4b281a70a0c74463af3155bb"></a>
+<a class="anchor" id="a166cdf51afc2af84c80c7b8d5ba94159"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -668,7 +758,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void ic::Met::set_shiftedmets </td>
           <td>(</td>
-          <td class="paramtype">std::vector&lt; std::pair&lt; std::string, <a class="el" href="classic_1_1_candidate.html">ic::Candidate</a> &gt; &gt; const &amp;&#160;</td>
+          <td class="paramtype">std::map&lt; std::size_t, <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> &gt; const &amp;&#160;</td>
           <td class="paramname"><em>shiftedmets</em></td><td>)</td>
           <td></td>
         </tr>
@@ -680,13 +770,101 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>The vector of shifted mets. </p>
+<p></p>
 
-<p>Definition at line <a class="el" href="_met_8hh_source.html#l00067">67</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00099">99</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a9f6f602a34a08701d08c9bbb2305746b"></a>
+<a class="anchor" id="ab54fe74ab45429477843ae1eef0e3c3a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::Met::set_correctedmets </td>
+          <td>(</td>
+          <td class="paramtype">std::map&lt; std::size_t, <a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>cormets</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+
+<p>Definition at line <a class="el" href="_met_8hh_source.html#l00103">103</a> of file <a class="el" href="_met_8hh_source.html">Met.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9683dbc11460e172cf88bf76726a43a7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::Met::SetCorrectedMet </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> const &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Store a corrected met, overwriting any existing value with label <code>name</code> </p>
+
+<p>Definition at line <a class="el" href="_met_8cc_source.html#l00031">31</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a31f9598d3dc1e2b37ff1380cf68b1982"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::Met::SetShiftedMet </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> const &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Store a shifted met, overwriting any existing value with label <code>name</code> </p>
+
+<p>Definition at line <a class="el" href="_met_8cc_source.html#l00035">35</a> of file <a class="el" href="_met_8cc_source.html">Met.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a061c7d40dab93980424ffff4f096a578"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -699,7 +877,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">4&#160;</td>
+          <td class="paramtype">5&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>

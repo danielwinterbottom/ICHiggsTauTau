@@ -1,5 +1,6 @@
 var hierarchy =
 [
+    [ "ic::Met::BasicMet", "structic_1_1_met_1_1_basic_met.html", null ],
     [ "ic::Candidate", "classic_1_1_candidate.html", [
       [ "ic::CompositeCandidate", "classic_1_1_composite_candidate.html", null ],
       [ "ic::Electron", "classic_1_1_electron.html", null ],

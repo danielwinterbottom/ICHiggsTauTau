@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['pfcandidate',['PFCandidate',['../classic_1_1_p_f_candidate.html',1,'ic']]],
-  ['pfjet',['PFJet',['../classic_1_1_p_f_jet.html',1,'ic']]],
-  ['photon',['Photon',['../classic_1_1_photon.html',1,'ic']]],
-  ['pileupinfo',['PileupInfo',['../classic_1_1_pileup_info.html',1,'ic']]]
+  ['merge',['Merge',['../classic_1_1_merge.html',1,'ic']]],
+  ['met',['Met',['../classic_1_1_met.html',1,'ic']]],
+  ['muon',['Muon',['../classic_1_1_muon.html',1,'ic']]]
 ];

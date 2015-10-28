@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5f":[9,0,1,0],
+"class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa485ce12f8394253ada21d0d9ddab5e62":[9,0,1,0,2],
 "class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa6834dbebd92c08255c8474d172b31097":[9,0,1,0,1],
 "class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa8c00fd2fec6685ca4ab8c5032f597369":[9,0,1,0,0],
 "class_e_gamma_mva_ele_estimator_c_s_a14.html#a3a85736764536e22fb27ea237825be34":[9,0,1,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "classic_1_1_electron.html#a6d295e6239f2395d16454688f00a2508":[9,0,0,4,31],
 "classic_1_1_electron.html#a6ed720ac3ae78eca92580e44becd151b":[9,0,0,4,27],
 "classic_1_1_electron.html#a71c92b9d12f8709b9c6b0a529a6b0641":[9,0,0,4,72],
-"classic_1_1_electron.html#a730e63ccb7ad0cf8f70ddcc87de1107f":[9,0,0,4,40],
-"classic_1_1_electron.html#a76f0fe7f6703af5e27fa32c6b3f033ca":[9,0,0,4,36],
-"classic_1_1_electron.html#a7a823182b0ab16c432c30e9c27b845d6":[9,0,0,4,74]
+"classic_1_1_electron.html#a730e63ccb7ad0cf8f70ddcc87de1107f":[9,0,0,4,40]
 };
