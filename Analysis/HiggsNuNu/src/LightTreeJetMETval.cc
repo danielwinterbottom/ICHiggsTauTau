@@ -15,7 +15,7 @@ namespace ic {
 
   LightTreeJetMETval::LightTreeJetMETval(std::string const& name): ModuleBase(name){
     fs_ = NULL;
-    met_label_ = "pfMetType1";
+    met_label_ = "pfMetType1Collection";
     jet_label_ = "pfJetsPFlow";
     is_data_ = false;
     dotrigskim_ = false;
@@ -67,6 +67,7 @@ namespace ic {
     l1met_ = 0;
     met_ = 0;
     genmet_ = 0;
+    genmetphi_ = 0;
     metnomuons_ =0;
     met_x_ = 0;
     met_y_ = 0;
@@ -152,6 +153,7 @@ namespace ic {
     outputTree_->Branch("l1met",&l1met_);
     outputTree_->Branch("met",&met_);
     outputTree_->Branch("genmet",&genmet_);
+    outputTree_->Branch("genmetphi",&genmetphi_);
     outputTree_->Branch("metnomuons",&metnomuons_);
     outputTree_->Branch("met_x",&met_x_);
     outputTree_->Branch("met_y",&met_y_);
@@ -234,7 +236,8 @@ namespace ic {
     }
 
     //get collections
-    Met const* met = event->GetPtr<Met>(met_label_);
+    std::vector<Met*> metCol = event->GetPtrVec<Met>(met_label_);
+    Met const* met = metCol[0];
     Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
     //!!if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
@@ -294,7 +297,13 @@ namespace ic {
     m_ee_gen_=-1;
 
     genmet_ = 0;
+    genmetphi_ = 0;
     if(!is_data_){
+
+      std::vector<Met*> GenMet = event->GetPtrVec<Met>("genMetCollection");
+      genmet_ = GenMet[0]->pt();
+      genmetphi_ = GenMet[0]->phi();
+
       std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
       GenParticle* muplus = 0;
       GenParticle* muminus = 0;

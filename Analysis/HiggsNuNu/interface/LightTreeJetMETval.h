@@ -72,6 +72,7 @@ namespace ic {
     double l1met_;
     double met_;
     double genmet_;
+    double genmetphi_;
     double metnomuons_;
     double met_x_;
     double met_y_;

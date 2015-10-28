@@ -137,7 +137,7 @@ int main(int argc, char* argv[]){
     ("prod",                po::value<string>(&prod)->required())
     ("wstream",             po::value<string>(&wstream)->default_value("nunu"))
     ("is_data",             po::value<bool>(&is_data)->required())
-    ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
+    ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1Collection"))
     ("jettype",             po::value<string>(&jettype)->default_value("pfJetsPFlow"))
     ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(30.))
     ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(30.))
@@ -453,14 +453,14 @@ int main(int argc, char* argv[]){
     tau_iso_discr       = "byMediumIsolationMVA2";
   }
   if(taulepdiscrtight){
-    tau_anti_muon_discr   = "againstMuonTight";
-    tau_anti_elec_discr_1 = "againstElectronTight";
-    tau_anti_elec_discr_2 = "againstElectronTight";
+    tau_anti_muon_discr   = "againstMuonTight3";
+    tau_anti_elec_discr_1 = "againstElectronTightMVA5";
+    tau_anti_elec_discr_2 = "againstElectronTightMVA5";
   }
   else{
-    tau_anti_muon_discr   = "againstMuonLoose";
-    tau_anti_elec_discr_1 = "againstElectronLoose";
-    tau_anti_elec_discr_2 = "againstElectronLoose";
+    tau_anti_muon_discr   = "againstMuonLoose3";
+    tau_anti_elec_discr_1 = "againstElectronLooseMVA5";
+    tau_anti_elec_discr_2 = "againstElectronLooseMVA5";
   }
   
   //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
@@ -474,7 +474,7 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<Tau> tauIsoFilter = SimpleFilter<Tau>("TauIsoFilter")
     .set_input_label("taus")
-    .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
+    .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFindingNewDMs") > 0.5))
     .set_min(0);
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
@@ -573,7 +573,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
-  SingleMetMaker singleMet = SingleMetMaker(mettype,mettype+"Collection");
+  //SingleMetMaker singleMet = SingleMetMaker(mettype,mettype);
   MetSelection metFilters = MetSelection("MetFilters",mettype,doMetFilters,filtersVec,0);
   
 
@@ -695,7 +695,7 @@ int main(int argc, char* argv[]){
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
 
-  analysis.AddModule(&singleMet);
+  //analysis.AddModule(&singleMet);
   if (!is_data) {
     //do W streaming to e,mu,tau
     if (output_name.find("JetsToLNu") != output_name.npos ||

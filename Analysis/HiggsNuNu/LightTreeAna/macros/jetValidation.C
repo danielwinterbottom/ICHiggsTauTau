@@ -36,7 +36,7 @@ double deltaR(double eta1,double phi1,double eta2,double phi2)
   return std::sqrt(deta*deta + dphi*dphi);
 };
 
-int jetMetValidation(){//main
+int jetValidation(){//main
 
   const unsigned nR = 3;
   TFile *f[nR];
@@ -49,13 +49,15 @@ int jetMetValidation(){//main
 
   const std::string process = "TTJets";
   //const std::string process = "Sig400";
-  std::string jettype[nR] = {"pfJetsPFlow","ak4SlimmedJets","ak4SlimmedJetsPuppi"};
+  std::string jettype[nR] = {"pfJetsPFlowreclustered","pfJetsPFlow","ak4SlimmedJetsPuppi"};
 
   //if (process == "TTJets") f[0] = TFile::Open("../../output_lighttree_noskim_150928/MC_TTJets-mg.root");
   
   const unsigned nV = 2;
   TCanvas *myc2D = new TCanvas("myc2D","myc2D",1500,1000);
   myc2D->Divide(2,2);
+  TCanvas *myc2Dpurity = new TCanvas("myc2Dpurity","myc2Dpurity",1500,1000);
+  //myc2Dpurity->Divide(2,2);
   TCanvas *mycmindR = new TCanvas("mycmindR","mycmindR",1500,1000);
   const std::string var[nV] = {"pt","eta"};
   TCanvas *mycvar[nV];
@@ -85,6 +87,11 @@ int jetMetValidation(){//main
   TH2F *h2Dall[nR];
   TH2F *h2Dmatched[nR];
   TH2F *h2Dratio[nR];
+
+  TH2F *h2Dsel[nR];
+  TH2F *h2Dpurmatched[nR];
+  TH2F *h2Dpurratio[nR];
+
   TH2F *h2Dcheck[nR];
   TH2D *matched = 0;
   TH2D *recmatched = 0;
@@ -121,7 +128,7 @@ int jetMetValidation(){//main
   std::ostringstream lvar,lcut;
   
   for (unsigned ir(0); ir<nR;++ir){//loop on jettypes
-    std::string inputfile = "../../output_lighttree_noskim_150930/"+jettype[ir]+"/MC_"+process+"-mg.root";
+    std::string inputfile = "../../output_lighttree_noskim_151026/"+jettype[ir]+"/MC_"+process+"-mg.root";
     f[ir] = TFile::Open(inputfile.c_str());
     
     if (!f[ir]) {
@@ -156,7 +163,7 @@ int jetMetValidation(){//main
       lvar.str("");
       lvar << "genjet" << ij << "_eta:genjet" << ij << "_pt>>+" << histname.str();
       lcut.str("");
-      lcut << "nGenJets>=" << ij << " && genjet" << ij << "_pt>" << minptgencut << " && TMath::Abs(genjet" << ij << "_eta)<4.6 && genjet" << ij << "_jet_mindR < 0.4";
+      lcut << "nGenJets>=" << ij << " && genjet" << ij << "_pt>" << minptgencut << " && TMath::Abs(genjet" << ij << "_eta)<4.7 && genjet" << ij << "_jet_mindR < 0.4";
       tree[ir]->Draw(lvar.str().c_str(),lcut.str().c_str(),"colz");
     }
     histname.str("");
@@ -166,7 +173,7 @@ int jetMetValidation(){//main
       lvar.str("");
       lvar << "genjet" << ij << "_eta:genjet" << ij << "_pt>>+" << histname.str();
       lcut.str("");
-      lcut << "nGenJets>=" << ij << " && genjet" << ij << "_pt>" << minptgencut << " && TMath::Abs(genjet" << ij << "_eta)<4.6";
+      lcut << "nGenJets>=" << ij << " && genjet" << ij << "_pt>" << minptgencut << " && TMath::Abs(genjet" << ij << "_eta)<4.7";
       tree[ir]->Draw(lvar.str().c_str(),lcut.str().c_str(),"colz");
     }
     histname.str("");
@@ -180,10 +187,50 @@ int jetMetValidation(){//main
     h2Dratio[ir]->GetZaxis()->SetRangeUser(0.95,1.05);
     h2Dratio[ir]->Draw("colz");
     lat.DrawLatexNDC(0.2,0.94,jettype[ir].c_str());
+
+    if (ir==1){
+      myc2Dpurity->cd();//ir+1);
+      histname.str("");
+      histname << "etavspt_sel_" << ir;
+      h2Dsel[ir] = new TH2F(histname.str().c_str(),";p_{T} (GeV);#eta",50,0,500,50,-5,5);
+      
+      for (unsigned ij(1);ij<nJets;++ij){//loop on jets
+	lvar.str("");
+	lvar << "jet" << ij << "_eta:jet" << ij << "_pt>>+" << histname.str();
+	lcut.str("");
+	lcut << "nJets>=" << ij << " && jet" << ij << "_pt>" << minptcut << " &&  jet" << ij <<"_jetid>0.5 &&  jet" << ij <<"_puid>0.5";
+	tree[ir]->Draw(lvar.str().c_str(),lcut.str().c_str(),"colz");
+      }
+      histname.str("");
+      histname << "etavspt_recmatched_" << ir;
+      h2Dpurmatched[ir] = new TH2F(histname.str().c_str(),";p_{T} (GeV);#eta",50,0,500,50,-5,5);
+      for (unsigned ij(1);ij<nJets;++ij){//loop on jets
+	lvar.str("");
+	lvar << "jet" << ij << "_eta:jet" << ij << "_pt>>+" << histname.str();
+	lcut.str("");
+	lcut << "nJets>=" << ij << " && jet" << ij << "_pt>" << minptcut << " && jet" << ij << "_genjet_mindR < 0.4";
+	tree[ir]->Draw(lvar.str().c_str(),lcut.str().c_str(),"colz");
+      }
+      histname.str("");
+      histname << "etavspt_purreco_" << ir;
+      h2Dpurratio[ir] = new TH2F(histname.str().c_str(),";p_{T} (GeV);#eta",50,0,500,50,-5,5);
+      for (int i(1);i<51;++i){
+	for (int j(1);j<51;++j){ 
+	  if (h2Dpurmatched[ir]->GetBinContent(i,j)>0) h2Dpurratio[ir]->SetBinContent(i,j,h2Dsel[ir]->GetBinContent(i,j)/h2Dpurmatched[ir]->GetBinContent(i,j));
+	}
+      }
+      h2Dpurratio[ir]->GetZaxis()->SetRangeUser(0.9,1.2);
+      h2Dpurratio[ir]->Draw("colz");
+      lat.DrawLatexNDC(0.2,0.94,(jettype[ir]+" jetid+puid/matched").c_str());
+      myc2Dpurity->Update();
+      myc2Dpurity->Print(("PlotsJMETval/RecoPurFullIDvspTandeta_"+process+".pdf").c_str());
+    }
   }//loop on jettypes
   myc2D->Update();
   myc2D->Print(("PlotsJMETval/RecoEffvspTandeta_"+process+".pdf").c_str());
 
+
+  return 1;
   /*  for (unsigned ir(1); ir<nR;++ir){//loop on jettypes
     f[1]->cd();
     myc2D->cd(ir+2);
@@ -253,7 +300,8 @@ int jetMetValidation(){//main
 	  lvar.str("");
 	  lvar << "jet" << ij << "_" << var[iv] << ">>+" << histname.str();
 	  lcut.str("");
-	  lcut << "nJets>=" << ij << " && TMath::Abs(jet" << ij << "_geneta)<4.7 && jet" << ij << "_genjet_mindR<0.4 && jet" << ij << "_genpt>" << minptgencut << " && jet" << ij << "_pt>" << minptcut;
+	  //lcut << "nJets>=" << ij << " && TMath::Abs(jet" << ij << "_geneta)<4.7 && jet" << ij << "_genjet_mindR<0.4 && jet" << ij << "_genpt>" << minptgencut << " && jet" << ij << "_pt>" << minptcut;
+	  lcut << "nJets>=" << ij << " && jet" << ij << "_genjet_mindR<0.4 && jet" << ij << "_pt>" << minptcut;
 	  if (is==1 || is==3) lcut << " && jet" << ij << ljetidcut[0];
 	  if (is==2 || is==3) lcut << " && jet" << ij << ljetidcut[1];	
 	  tree[ir]->Draw(lvar.str().c_str(),lcut.str().c_str());
@@ -282,7 +330,7 @@ int jetMetValidation(){//main
 	lvar.str("");
 	lvar << "genjet" << ij << "_" << var[iv] << ">>+" << histname.str();
 	lcut.str("");
-	lcut << "nGenJets>=" << ij << " && TMath::Abs(genjet" << ij << "_eta)<4.6 && genjet" << ij << "_jet_mindR<0.4 && genjet" << ij << "_pt>" << minptgencut;
+	lcut << "nGenJets>=" << ij << " && TMath::Abs(genjet" << ij << "_eta)<4.7 && genjet" << ij << "_jet_mindR<0.4 && genjet" << ij << "_pt>" << minptgencut;
 
 	tree[ir]->Draw(lvar.str().c_str(),lcut.str().c_str());
       }
@@ -294,7 +342,7 @@ int jetMetValidation(){//main
 	lvar.str("");
 	lvar << "genjet" << ij << "_" << var[iv] << ">>+" << histname.str();
 	lcut.str("");
-	lcut << "nGenJets>=" << ij << " && TMath::Abs(genjet" << ij << "_eta)<4.6 && genjet" << ij << "_pt>" << minptgencut;
+	lcut << "nGenJets>=" << ij << " && TMath::Abs(genjet" << ij << "_eta)<4.7 && genjet" << ij << "_pt>" << minptgencut;
 	tree[ir]->Draw(lvar.str().c_str(),lcut.str().c_str());
       }
       for (unsigned is(0); is<nS;++is){//loop on jetid cond
@@ -304,7 +352,7 @@ int jetMetValidation(){//main
 	hvarrec[iv][ir][is]->Draw(is==0?"PE":"PEsame");
       }
       //hvargen[iv][ir]->SetMarkerColor(2);
-      //hvargen[iv][ir]->SetMarkerStyle(23);
+      //hvargen[iv][ir]->SetMarkerStyle(2);
       hvargen[iv][ir][0]->SetLineColor(2);
       hvargen[iv][ir][0]->Draw("same");
       hvargen[iv][ir][1]->SetLineColor(3);
@@ -355,14 +403,17 @@ int jetMetValidation(){//main
       grPu[iv][ir][0] = new TGraphAsymmErrors();
       grPu[iv][ir][0]->Divide(hvarall[iv][ir][3],hvarrec[iv][ir][0],"pois");
 
-      if (iv==0) grPu[iv][ir][0]->GetXaxis()->SetRangeUser(0,100);
+      if (iv==0) {
+	//gPad->SetLogy(1);
+	grPu[iv][ir][0]->GetXaxis()->SetRangeUser(0,100);
+      }
       grPu[iv][ir][0]->SetTitle((";"+var[iv]+";sel/matched").c_str());
       grPu[iv][ir][0]->SetMarkerStyle(22);
       grPu[iv][ir][0]->SetMarkerColor(1);
       grPu[iv][ir][0]->SetLineColor(1);
       if (iv==1) {
-	grPu[iv][ir][0]->SetMinimum(0);
-	grPu[iv][ir][0]->SetMaximum(2);
+	grPu[iv][ir][0]->SetMinimum(0.4);
+	grPu[iv][ir][0]->SetMaximum(1.6);
       }
       grPu[iv][ir][0]->Draw("APE");
 
@@ -370,7 +421,7 @@ int jetMetValidation(){//main
       grPu[iv][ir][1]->Divide(hvarall[iv][ir][0],hvarrec[iv][ir][0],"pois");
       if (iv==0) grPu[iv][ir][1]->GetXaxis()->SetRangeUser(0,100);
       grPu[iv][ir][1]->SetTitle((";"+var[iv]+";sel/matched").c_str());
-      grPu[iv][ir][1]->SetMarkerStyle(23);
+      grPu[iv][ir][1]->SetMarkerStyle(2);
       grPu[iv][ir][1]->SetMarkerColor(2);
       grPu[iv][ir][1]->SetLineColor(2);
       grPu[iv][ir][1]->Draw("PEsame");
@@ -402,8 +453,10 @@ int jetMetValidation(){//main
 	  histname.str("");
 	  histname << "hratio_" << iv << "_" << ir << "_" << ip;
 	  lvar << "jet" << ij << "_pt/jet" << ij << "_genpt>>+" << histname.str();
-	  lcut << "jet" << ij << "_genpt>" << minptgencut << " && jet" << ij << "_pt>" << minptcut;
-	  lcut << " && TMath::Abs(jet" << ij << "_geneta)<4.7 && jet" << ij << "_genjet_mindR<0.4";
+	  lcut << "jet" << ij << "_genpt>" << minptgencut << " && ";
+	  lcut << "jet" << ij << "_pt>" << minptcut;
+	  lcut << " && TMath::Abs(jet" << ij << "_geneta)<4.7";
+	  lcut << " && jet" << ij << "_genjet_mindR<0.4";
 	  //if (ir==1) lcut << " && jet" << ij << "_puid>0.5";
 	  //if (ir==0) lcut << " && jet" << ij << "_jetid>0.5";
 	  myc[nR*iv+ir]->cd(ip+1);
