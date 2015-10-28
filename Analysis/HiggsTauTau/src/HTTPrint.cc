@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "TMVA/Reader.h"
+#include <boost/functional/hash.hpp>
 #include "TVector3.h"
 
 
@@ -143,24 +144,60 @@ namespace ic {
       for (unsigned j = 0; j < muons.size(); ++j) {
         std::cout << "Elec " << i << ", Muon " << j << " DR: " <<
           ROOT::Math::VectorUtil::DeltaR(elecs[i]->vector(), muons[j]->vector()) << std::endl;
+     /*   std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+        std::size_t id = 0;
+        boost::hash_combine(id, elecs[i]->id());
+        boost::hash_combine(id, muons[j]->id());
+        std::map<std::size_t, Met *>::const_iterator it = met_map.find(id);
+        if (it != met_map.end()) {
+          Met * mva_met = it->second;
+          std::cout<<"MET: "<<mva_met->pt()<<","<<mva_met->eta()<<","<<mva_met->phi()<<std::endl;
+        }*/
       }
     }
     for (unsigned i = 0; i < muons.size(); ++i) {
       for (unsigned j = 0; j < taus.size(); ++j) {
        std::cout << "Muon " << i << ", Tau " << j << " DR: " <<
           ROOT::Math::VectorUtil::DeltaR(muons[i]->vector(), taus[j]->vector()) << std::endl;
+      /*  std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+        std::size_t id = 0;
+        boost::hash_combine(id, muons[i]->id());
+        boost::hash_combine(id, taus[j]->id());
+        std::map<std::size_t, Met *>::const_iterator it = met_map.find(id);
+        if (it != met_map.end()) {
+          Met * mva_met = it->second;
+          std::cout<<"MET: "<<mva_met->pt()<<","<<mva_met->eta()<<","<<mva_met->phi()<<std::endl;
+        }*/
       }
     }
     for (unsigned i = 0; i < elecs.size(); ++i) {
       for (unsigned j = 0; j < taus.size(); ++j) {
        std::cout << "Elec " << i << ", Tau " << j << " DR: " <<
           ROOT::Math::VectorUtil::DeltaR(elecs[i]->vector(), taus[j]->vector()) << std::endl;
+      /*  std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+        std::size_t id = 0;
+        boost::hash_combine(id, elecs[i]->id());
+        boost::hash_combine(id, taus[j]->id());
+        std::map<std::size_t, Met *>::const_iterator it = met_map.find(id);
+        if (it != met_map.end()) {
+          Met * mva_met = it->second;
+          std::cout<<"MET: "<<mva_met->pt()<<","<<mva_met->eta()<<","<<mva_met->phi()<<std::endl;
+        }*/
       }
     }
     for (unsigned i = 0; i < taus.size(); ++i) {
       for (unsigned j = 0; j < taus.size(); ++j) {
         std::cout << "Tau " << i << ", Tau " << j << " DR: " <<
           ROOT::Math::VectorUtil::DeltaR(taus[i]->vector(), taus[j]->vector()) << std::endl;
+        /*std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+        std::size_t id = 0;
+        boost::hash_combine(id, taus[i]->id());
+        boost::hash_combine(id, taus[j]->id());
+        std::map<std::size_t, Met *>::const_iterator it = met_map.find(id);
+        if (it != met_map.end()) {
+          Met * mva_met = it->second;
+          std::cout<<"MET: "<<mva_met->pt()<<","<<mva_met->eta()<<","<<mva_met->phi()<<std::endl;
+        }*/
       }
     }
 

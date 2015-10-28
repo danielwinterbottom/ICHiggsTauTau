@@ -18,6 +18,8 @@
 #include "Utilities/interface/FnRootTools.h"
 // HTT-specific modules
 #include "HiggsTauTau/interface/HTTSequence.h"
+#include "HiggsTauTau/interface/HTTElectronEfficiency.h"
+#include "HiggsTauTau/interface/HTTMuonEfficiency.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
@@ -57,6 +59,7 @@
 #include "Modules/interface/EnergyShifter.h"
 #include "Modules/interface/PileupWeight.h"
 #include "Modules/interface/CheckEvents.h"
+#include "Modules/interface/GenericModule.h"
 
 namespace ic {
 
@@ -178,7 +181,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(era_type == era::data_2015){
    min_taus = 1;
    pair_dr = 0.5;
-   elec_pt = 23;
+   elec_pt = 24;//Up from 23 to avoid turn on in new data trigger for first set of runs from run D
    elec_eta = 2.1;
    tau_pt  = 20;
    tau_eta = 2.3;
@@ -227,7 +230,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      }
    }
   if (era_type == era::data_2015){
-    muon_pt = 18.0;
+    muon_pt = 19.0;//Up from 18 to avoid trigger turn on in new data trigger
     muon_eta = 2.1;
     tau_pt = 20;
     tau_eta = 2.3;
@@ -432,6 +435,8 @@ void HTTSequence::BuildSequence(){
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
     .set_fs(fs.get()));
+/*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_fs(fs.get()));*/
   }else{
 
   HTTPrint httPrint("HTTPrint");
@@ -448,6 +453,17 @@ void HTTSequence::BuildSequence(){
   BuildModule(eventChecker);
   BuildModule(httPrint);  
 }
+
+  BuildModule(GenericModule("checkGoodVertices")
+    .set_function([](ic::TreeEvent *event){
+       std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
+       bool is_good_vertex = GoodVertex(vertices.at(0));
+       event->Add("good_first_vertex",is_good_vertex);
+       //if(is_good_vertex) return 1;
+       //else return 0;
+       return 0;
+    }));
+       
 
 
   // If desired, run the HTTGenEventModule which will add some handily-
@@ -473,7 +489,7 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
   //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/json_DCSONLY.txt";
-  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-256869_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
+  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
 
  LumiMask lumiMask = LumiMask("LumiMask")
    .set_produce_output_jsons("")
@@ -602,7 +618,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 
 
   // Pileup Weighting
-if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
+if(strategy_type != strategy::phys14){
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
   TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
   if (js["do_pu_wt"].asBool()&&!is_data) {
@@ -611,11 +627,11 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
   }
 }
 
-if(strategy_type == strategy::spring15 && js["do_pu_wt"].asBool() &&!is_data){
+/*if(strategy_type == strategy::spring15 && js["do_pu_wt"].asBool() &&!is_data){
    TH1F vertex_wts = GetFromTFile<TH1F>(js["nvtx_weight_file"].asString(),"/","nvtx_weights");
    BuildModule(NvtxWeight("NvtxWeight")
        .set_vertex_dist(new TH1F(vertex_wts)));
- }
+ }*/
 
 if(channel != channel::wmnu) {
  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
@@ -672,7 +688,7 @@ if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
     if(strategy_type == strategy::paper2013) {
       jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
     } else {
-      jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1))); 
+      jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
     }
   BuildModule(jetIDFilter);
 
@@ -869,6 +885,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_bjet_regression(bjet_regr_correction)
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
     .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
+    .set_iso_study(js["iso_study"].asBool())
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)
@@ -989,6 +1006,12 @@ if( strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
   }*/
 }
 
+if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
+BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_fs(fs.get()));
+}
+
+
   BuildTauSelection();
 
   BuildModule(CompositeProducer<Electron, Tau>("ETPairProducer")
@@ -1071,6 +1094,10 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
 }
  
 
+if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
+BuildModule(HTTMuonEfficiency("MuonEfficiency")
+    .set_fs(fs.get()));
+}
 
   BuildTauSelection();
 
@@ -1241,7 +1268,13 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
         }));
   }*/
 }
-     
+     if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
+BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_fs(fs.get()));
+BuildModule(HTTMuonEfficiency("MuonEfficiency")
+    .set_fs(fs.get()));
+}
+
   
   BuildModule(CompositeProducer<Electron, Muon>("EMPairProducer")
       .set_input_label_first("sel_electrons")
@@ -1467,8 +1500,25 @@ BuildModule(tauAntiElecFilter);
 void HTTSequence::BuildDiElecVeto() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
+//  if(strategy_type!=strategy::spring15){
   BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
       js["electrons"].asString(), "veto_elecs"));
+ /* } else {
+    BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
+        js["electrons"].asString(),"pre_iso_veto_elecs"));
+  }*/
+
+   
+/*  if(strategy_type==strategy::spring15){
+    BuildModule(GenericModule("vetoElecIsolation")
+      .set_function([](ic::TreeEvent *event){
+        std::vector<ic::Electron*> elecs = event->GetPtrVec<Electron>("pre_iso_veto_elecs");
+ //       ic::EventInfo* evtInfo = event->GetPtr<EventInfo>("eventInfo");
+        ic::erase_if_not(elecs,[=](ic::Electron* e){return PF03IsolationVal(e,0.5,0)<0.3;});
+        event->Add("veto_elecs",elecs);
+        return 0;
+       }));
+   }*/
 
   SimpleFilter<Electron> vetoElecFilter = SimpleFilter<Electron>("VetoElecFilter")
       .set_input_label("veto_elecs");
@@ -1496,13 +1546,13 @@ void HTTSequence::BuildDiElecVeto() {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
-                fabs(e->dz_vertex())    < veto_dielec_dz   &&
-                VetoElectronIDSpring15(e)           &&
+                fabs(e->dz_vertex())    < veto_dielec_dz    &&
+                //ElectronHTTIdSpring15(e,true)                   &&
+                VetoElectronIDSpring15(e)                   &&
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
-
 
   BuildModule(vetoElecFilter);
 

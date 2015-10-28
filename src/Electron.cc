@@ -9,6 +9,8 @@ Electron::Electron()
       dr03_tk_sum_pt_(0.),
       dr03_ecal_rechit_sum_et_(0.),
       dr03_hcal_tower_sum_et_(0.),
+      ecal_pf_cluster_iso_(0.),
+      hcal_pf_cluster_iso_(0.),
       dr03_pfiso_charged_all_(0.),
       dr03_pfiso_charged_(0.),
       dr03_pfiso_neutral_(0.),

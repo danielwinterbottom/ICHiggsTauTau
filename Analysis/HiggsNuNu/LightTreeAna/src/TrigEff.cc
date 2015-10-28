@@ -84,8 +84,11 @@ namespace ic{
     c1->SetName(histname.c_str());
     TPad* upper = new TPad("upper","pad",0, 0 ,1 ,1);
     c1->SetBottomMargin(0.15);
-    
+    upper->SetBottomMargin(0.15);
+    upper->Draw();
+    upper->cd();
     efficiency->Draw("AP");
+    DrawCMSLogoTest(upper,"CMS","preliminary",10);
     //efficiency->Draw(elements_[iElement].drawopts().c_str());
     //efficiency->GetYaxis()->SetRangeUser(0.,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
     //efficiency->Draw(elements_[iElement].drawopts().c_str());
@@ -128,7 +131,6 @@ namespace ic{
     //leg->Draw("same");
     //c1->Update();                                                                                                                                                                                                                        
     //leg->Defficiencyte();                                                                                                                                                                                                                       lg
-    DrawCMSLogoTest(upper,"CMS","preliminary",10);
 
     //save as PDF                                                                                                                                                                                                                          
     //c1->Update();                                                                                                                                                                                                                        

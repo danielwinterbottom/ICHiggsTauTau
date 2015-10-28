@@ -42,6 +42,9 @@ parser.add_option("--data", dest="proc_data", action='store_true', default=False
 parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
                   help="Process background mc samples")
 
+parser.add_option("--qcd", dest="proc_qcd", action='store_true', default=False,
+                  help="Process QCD mc samples")
+
 parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
                   help="Process signal SM mc samples")
 
@@ -87,7 +90,7 @@ CONFIG='scripts/config.json'
 #    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s_M-50.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
  
 
-FILELIST='filelists/Sep22_MC_74X'
+FILELIST='filelists/Oct15_MC_74X'
 #FILELIST13='filelists/July13_MC_74X'
 
 signal_mc = [ ]
@@ -107,7 +110,7 @@ if options.proc_sm or options.proc_all:
     signal_mc += [
 #      'SUSYGluGluToHToTauTau_M-'+mass,
 #      'VBFHToTauTau_M-'+mass, 
-      'GluGluHToTauTau_M-'+mass+,
+      'GluGluHToTauTau_M-'+mass,
 #      'WH_ZH_TTH_HToTauTau_M-'+mass
     ]
     signal_vh += [
@@ -121,7 +124,7 @@ if options.proc_sm or options.proc_all:
 #      'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
 #    ]
 if options.proc_mssm or options.proc_all:
-  masses = ['130','160','500','1000']
+  masses = ['160','500','1000']
 #  if not options.do_2011: masses += ['80','110']
   if options.short_signal: masses = ['160']
   for mass in masses :
@@ -175,25 +178,66 @@ if options.proc_mssm or options.proc_all:
 #
 if options.proc_data or options.proc_all:
   data_samples = [
-   'SingleMuon-2015B-17Jul',
-   'MuonEG-2015B-17Jul',
-   'SingleElectron-2015B-17Jul',
-   'Tau-2015B-17Jul',
-   'SingleMuon-2015C-prompt',
-   'SingleElectron-2015C-prompt',
-   'MuonEG-2015C-prompt',
-   'Tau-2015C-prompt',
+#   'SingleMuon-2015B-17Jul',
+#   'MuonEG-2015B-17Jul',
+#   'SingleElectron-2015B-17Jul',
+#   'Tau-2015B-17Jul',
    'SingleMuon-2015D-prompt',
    'SingleElectron-2015D-prompt',
    'MuonEG-2015D-prompt',
-   'Tau-2015D-prompt'
+   'Tau-2015D-prompt',
+#   'SingleMuon-2015D-promptv4',
+#   'SingleElectron-2015D-promptv4',
+#   'MuonEG-2015D-promptv4',
+#   'Tau-2015D-promptv4'
   ]
-  DATAFILELIST="./filelists/Sep22_Data_74X"
+
+  extra_data_samples = [
+   'SingleMuon-2015D-promptv4',
+   'SingleElectron-2015D-promptv4',
+   'MuonEG-2015D-promptv4',
+   'Tau-2015D-promptv4'
+  ]
+
+  DATAFILELIST="./filelists/Oct14_Data_74X"
+  EXTRADATAFILELIST="./filelists/Oct15_Data_74X"
 
   for sa in data_samples:
       JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Sep22_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct14_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
+      nperjob = 40 
+      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+
+  for sa in extra_data_samples:
+      JOB='%s_2015' % (sa)
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EXTRADATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct15_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      nfiles = sum(1 for line in open('%(EXTRADATAFILELIST)s_%(sa)s.dat' % vars()))
+      nperjob = 40 
+      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+
+if options.proc_qcd or options.proc_all:
+  qcd_samples = [
+    'QCD_Ht100to200',
+    'QCD_Ht200to300',
+    'QCD_Ht300to500',
+    'QCD_Ht500to700',
+    'QCD_Ht700to1000',
+    'QCD_Ht1000to1500',
+    'QCD_Ht1500to2000',
+    'QCD_Ht2000toInf'
+  ]
+
+  for sa in qcd_samples:
+      JOB='%s_2015' % (sa)
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 40 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
@@ -206,9 +250,9 @@ if options.proc_bkg or options.proc_all:
     'TTJets',
     'TT',
 		'WJetsToLNu',
-    'WWinclusive',
+#    'WWinclusive',
     'ZZinclusive',
-    'WZinclusive',
+#    'WZinclusive',
     'T-tW',
     'Tbar-tW',
     'WZTo1L1Nu2Q',

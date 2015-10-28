@@ -60,7 +60,12 @@ icElectronProducer = cms.EDProducer('ICElectronProducer',
       neutral     = cms.InputTag("elPFIsoValueNeutral04PFIdPFIso"),
       gamma       = cms.InputTag("elPFIsoValueGamma04PFIdPFIso"),
       pu          = cms.InputTag("elPFIsoValuePU04PFIdPFIso")
-    )
+    ),
+   includeClusterIso       = cms.bool(False),
+   clusterIso = cms.PSet(
+     ecal        = cms.InputTag("elEcalPFClusterIso"),
+     hcal        = cms.InputTag("elHcalPFClusterIso")
+   )   
 )
 ## [Electron]
 
@@ -166,6 +171,7 @@ icMetProducer = cms.EDProducer('ICPFMetProducer',
   input   = cms.InputTag("pfMet"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
+  doGenMet = cms.bool(False),
   includeExternalMetsig = cms.bool(False),
   includeExternalMetsigMethod2 = cms.bool(False),
   metsig = cms.PSet(
@@ -179,11 +185,12 @@ icMetProducer = cms.EDProducer('ICPFMetProducer',
     metsig      = cms.InputTag("METSignificance","METSignificance"),
     metsigcov = cms.InputTag("METSignificance","METCovariance")
     ),
+  includeMetCorrections = cms.bool(False),
+  metcorrections = cms.vstring(
+        'Raw','Type1','Type01','TypeXY','Type1XY','Type01XY','Type1Smear','Type01Smear','Type1SmearXY','Type01SmearXY','RawCalo'),
   includeMetUncertainties = cms.bool(False),
   metuncertainties = cms.vstring(
-    'JetEnUp','JetEnDown','JetResUp','JetResDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown'
-  )
-  
+        'JetResUp','JetResDown','JetEnUp','JetEnDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown','PhotonEnUp','PhotonEnDown','NoShift')
 )
 
 icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
@@ -191,6 +198,7 @@ icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
   input   = cms.InputTag("slimmedMETs"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
+  doGenMet = cms.bool(False),
   includeExternalMetsig = cms.bool(False),
   includeExternalMetsigMethod2 = cms.bool(False),
   getUncorrectedMet = cms.bool(False),
@@ -205,10 +213,12 @@ icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
     metsig      = cms.InputTag("METSignificance","METSignificance"),
     metsigcov = cms.InputTag("METSignificance","METCovariance")
     ),
+  includeMetCorrections = cms.bool(False),
+  metcorrections = cms.vstring(
+        'Raw','Type1','Type01','TypeXY','Type1XY','Type01XY','Type1Smear','Type01Smear','Type1SmearXY','Type01SmearXY','RawCalo'),
   includeMetUncertainties = cms.bool(False),
   metuncertainties = cms.vstring(
-    'JetEnUp','JetEnDown','JetResUp','JetResDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown'
-  )
+        'JetResUp','JetResDown','JetEnUp','JetEnDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown','PhotonEnUp','PhotonEnDown','NoShift')
 )
 
 ## [Met]
@@ -438,6 +448,12 @@ icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
   includeStatusFlags = cms.bool(False)
 )
 ## [GenParticle]
+
+icGenVertexProducer = cms.EDProducer('ICGenVertexProducer',
+  branch = cms.string("genVertices"),
+  input = cms.InputTag("genParticles"),
+  type = cms.string("pp")
+)
 
 ## [GenJet]
 icGenJetProducer = cms.EDProducer('ICGenJetProducer',

@@ -258,12 +258,12 @@ namespace ic {
     };
     sig_schemes_["run2_mssm"] = {
       PlotSigComponent("sig",
-        ("SUSYGluGluH("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times SUSYGluGluH("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
         {"ggH"}, TColor::GetColor(0,18,255), false)
     };
    sig_schemes_["run2_sm"] = {
      PlotSigComponent("sig", 
-       ("GluGluH("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
+       (boost::lexical_cast<std::string>(signal_scale_)+"#times GluGluH("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
        {"ggH"}, TColor::GetColor(0,18,255), false)
     };
 

@@ -264,9 +264,9 @@ int main(int argc, char* argv[]){
     shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events");
     shape.push_back("ele1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(electron) (GeV);Events");
     shape.push_back("mu1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(muon) (GeV);Events");
-    shape.push_back("jet_csv1(21,0.6,1.5)");histTitle.push_back(";Jet 1 CSV;Events");
-    shape.push_back("jet_csv2(21,0.6,1.5)");histTitle.push_back(";Jet 2 CSV;Events");
-    shape.push_back("jet_csv3(21,0.,1.)");histTitle.push_back(";Jet 3 CSV;Events");
+    // shape.push_back("jet_csv1(21,0.6,1.5)");histTitle.push_back(";Jet 1 CSV;Events");
+    // shape.push_back("jet_csv2(21,0.6,1.5)");histTitle.push_back(";Jet 2 CSV;Events");
+    // shape.push_back("jet_csv3(21,0.,1.)");histTitle.push_back(";Jet 3 CSV;Events");
     shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;Events");
     shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
     shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
@@ -283,9 +283,9 @@ int main(int argc, char* argv[]){
     shape.push_back("l1met(10,00.,200.)");histTitle.push_back(";L1MET (GeV);Events");
     shape.push_back("dijet_M(5,1200.,2000.)");histTitle.push_back(";M_{jj} (GeV);Events");
     shape.push_back("sqrt(2*ele1_pt*mu1_pt*(cosh(ele1_eta-mu1_eta)-cos(ele1_phi-mu1_phi)))(40,0.,1000.)");histTitle.push_back(";M_{e#mu} (GeV);Events");
-    shape.push_back("jet_csv1(21,0.,1.05)");histTitle.push_back(";Jet 1 CSV;Events");
-    shape.push_back("jet_csv2(21,0.,1.05)");histTitle.push_back(";Jet 2 CSV;Events");
-    shape.push_back("jet_csv3(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;Events");
+    // shape.push_back("jet_csv1(21,0.,1.05)");histTitle.push_back(";Jet 1 CSV;Events");
+    // shape.push_back("jet_csv2(21,0.,1.05)");histTitle.push_back(";Jet 2 CSV;Events");
+    // shape.push_back("jet_csv3(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;Events");
     shape.push_back("jetmetnomu_mindphi(16,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
     if(channel=="taunu"){ shape.push_back("alljetsmetnomu_mindphi(22,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
     else if(channel=="top"){ shape.push_back("alljetsmetnomu_mindphi(11,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
@@ -427,6 +427,9 @@ int main(int argc, char* argv[]){
 //   std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";
 //   std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";//top
 
+  std::string gammacat="ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;//&&lep_mt>10";
+  std::string gammazcat="&&ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;//wmu
+
   std::string qcdcat="nvetoelectrons==0&&nvetomuons==0&&"+jetmetdphicut+contonlycontplotjetmetdphi;
   std::string qcdzcat="&&"+jetmetdphicut+contonlycontplotjetmetdphi;//QCD
 
@@ -469,6 +472,10 @@ int main(int argc, char* argv[]){
     sigcat=topcat;
     zextrasigcat=topzcat;
   }
+  else if(channel=="gamma"){
+    sigcat=gammacat;
+    zextrasigcat=gammazcat;
+  }
   else{
     std::cout<<"Error: Channel "<<channel<<" not recognised, exiting"<<std::endl;
     return 1;
@@ -488,7 +495,7 @@ int main(int argc, char* argv[]){
   if(syst=="PUUP") mcweightpufactor="*puweight_up_scale";
   if(syst=="PUDOWN") mcweightpufactor="*puweight_down_scale";
   
-  if(channel=="nunu"||channel=="taunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor;
+  if(channel=="nunu"||channel=="taunu"||channel=="qcd"||channel=="gamma") sigmcweight="total_weight_lepveto"+mcweightpufactor;
   else sigmcweight="total_weight_leptight"+mcweightpufactor;
   if(do_nosigmcweight)sigmcweight="1";
 
@@ -523,11 +530,18 @@ int main(int argc, char* argv[]){
   }
       
 
+  std::string bothcentral="jet1_eta<3&&jet1_eta>-3&&jet2_eta<3&&jet2_eta>-3";
+  std::string bothforward="(jet1_eta>3||jet1_eta<-3)&&(jet2_eta>3||jet2_eta<-3)";
+  std::string j2forwardj1central="((jet1_eta<3||jet1_eta>-3)&&(jet2_eta>3||jet2_eta<-3))";
+  std::string j1forwardj2central="((jet1_eta>3||jet1_eta<-3)&&(jet2_eta<3||jet2_eta>-3))";
+
+  std::string additionalcut="";
+
   TrigEff metnomueff("metnomueff");
   metnomueff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
-    .set_shape("metnomuons(20,0.,1000.)")
-    .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&dijet_deta>3.5")
+    .set_shape("metnomuons(50,0.,1000.)")
+    .set_basesel("jet1_pt>80&&jet2_pt>80&&dijet_M>600&&dijet_deta>3.6"+additionalcut)
     .set_cat("1")
     .set_histtitle("METnoMU;efficiency")
     .set_trigger("pass_sigtrigger==1");
@@ -535,8 +549,8 @@ int main(int argc, char* argv[]){
   TrigEff meteff("meteff");
   meteff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
-    .set_shape("met(20,0.,1000.)")
-    .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&dijet_deta>3.5")
+    .set_shape("met(50,0.,1000.)")
+    .set_basesel("jet1_pt>80&&jet2_pt>80&&dijet_M>600&&dijet_deta>3.6"+additionalcut)
     .set_cat("1")
     .set_histtitle("MET;efficiency")
     .set_trigger("pass_mettrigger==1");
@@ -545,7 +559,7 @@ int main(int argc, char* argv[]){
   jpteff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
     .set_shape("jet2_pt(10,0.,200.)")
-    .set_basesel("jet1_pt>40&&dijet_M>600&&dijet_deta>3.5&&metnomuons>140")
+    .set_basesel("jet1_pt>80&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
     .set_cat("1")
     .set_histtitle("j_{2} p_{T};efficiency")
     .set_trigger("pass_sigtrigger==1");
@@ -554,7 +568,7 @@ int main(int argc, char* argv[]){
   mjjeff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
     .set_shape("dijet_M(15,0.,3000.)")
-    .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_deta>3.5&&metnomuons>140")
+    .set_basesel("jet1_pt>80&&jet2_pt>80&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
     .set_cat("1")
     .set_histtitle("M_{jj};efficiency")
     .set_trigger("pass_sigtrigger==1");
@@ -562,8 +576,8 @@ int main(int argc, char* argv[]){
   TrigEff detaeff("detaeff");
   detaeff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
-    .set_shape("dijet_deta(20,0.,10.)")
-    .set_basesel("jet1_pt>40&&jet2_pt>40&&dijet_M>600&&metnomuons>140")
+    .set_shape("dijet_deta(50,0.,10.)")
+    .set_basesel("jet1_pt>80&&jet2_pt>80&&dijet_M>600&&metnomuons>300"+additionalcut)
     .set_cat("1")
     .set_histtitle("#Delta#eta_{jj};efficiency")
     .set_trigger("pass_sigtrigger==1");

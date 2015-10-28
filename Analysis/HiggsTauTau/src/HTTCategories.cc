@@ -27,6 +27,7 @@ namespace ic {
       bjet_regression_ = false;
       make_sync_ntuple_ = false;
       sync_output_name_ = "SYNC.root";
+      iso_study_=false;
       is_embedded_=false;
       is_data_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
@@ -72,6 +73,9 @@ namespace ic {
       outtree_->Branch("antiele_2",         &antiele_2_);
       outtree_->Branch("antimu_2",          &antimu_2_);
       outtree_->Branch("leptonveto",        &lepton_veto_);
+      outtree_->Branch("dilepton_veto",     &dilepton_veto_);
+      outtree_->Branch("extraelec_veto",    &extraelec_veto_);
+      outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &mvamet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
@@ -101,6 +105,17 @@ namespace ic {
         outtree_->Branch("jet_csvbcsv_1",     &jet_csvbcsv_1_);
         outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
       }
+      if(iso_study_){
+        //Add different isolation variables for if studying isolation
+        outtree_->Branch("iso_1_db03", &iso_1_db03_);
+        outtree_->Branch("iso_1_db03allch", &iso_1_db03allch_);
+        outtree_->Branch("iso_1_db04allch", &iso_1_db04allch_);
+        outtree_->Branch("iso_1_ea03", &iso_1_ea03_);
+        outtree_->Branch("iso_2_db03", &iso_2_db03_);
+        outtree_->Branch("iso_2_db03allch", &iso_2_db03allch_);
+        outtree_->Branch("iso_2_db04allch", &iso_2_db04allch_);
+        outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
+      }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
@@ -112,6 +127,7 @@ namespace ic {
         //outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         //outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
+        outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("pt_1",              &pt_1_.var_double);
         outtree_->Branch("eta_1",             &eta_1_.var_double);
         outtree_->Branch("eta_2",             &eta_2_.var_double);
@@ -129,6 +145,11 @@ namespace ic {
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
+/*        outtree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_double);
+        outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
+        outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
+        outtree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_double);
+*/
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
@@ -281,6 +302,12 @@ namespace ic {
       synctree_->Branch("mt_1", &mt_1_.var_float, "mt_1/F");
       // Non-triggering electron ID MVA score
       synctree_->Branch("id_e_mva_nt_loose_1", &id_e_mva_nt_loose_1_, "id_e_mva_nt_loose_1/F");
+      /*synctree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_float,"trigger_object_pt_1/F");
+      synctree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_float,"trigger_object_eta_1/F");
+      synctree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_float,"trigger_object_pt_2/F");
+      synctree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_float,"trigger_object_eta_2/F");
+*/
+
 
       // Lepton 2 properties
       // pt (including effect of any energy scale corrections)
@@ -610,17 +637,17 @@ namespace ic {
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     std::string btag_label="combinedSecondaryVertexBJetTags";
-/*    double btag_wp =  0.679;
+    double btag_wp =  0.679;
     if(strategy_ == strategy::phys14) btag_label = "combinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    if(strategy_ == strategy::spring15) btag_wp = 0.814 ;
-*/
-//    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
+    if(strategy_ == strategy::spring15) btag_wp = 0.89 ;
+
+    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
     std::vector<PFJet*> bjets_csv = prebjets;
- //   std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
+    std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
     std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
 
@@ -631,8 +658,8 @@ namespace ic {
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
       ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
     } else{ 
-//      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
- //     ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
     } 
     
     // Define event properties
@@ -669,6 +696,16 @@ namespace ic {
 
 
     n_vtx_ = eventInfo->good_vertices();
+    /*trigger_object_pt_1 = 0;
+    trigger_object_pt_2 = 0;
+    trigger_object_eta_1 = 0;
+    trigger_object_eta_2 = 0;
+    if(event->Exists("good_first_vertex")) good_vtx_ = event->Get<bool>("good_first_vertex");
+    if(event->Exists("leg1_trigger_obj_pt")) trigger_object_pt_1 = event->Get<double>("leg1_trigger_obj_pt");
+    if(event->Exists("leg1_trigger_obj_eta")) trigger_object_eta_1 = event->Get<double>("leg1_trigger_obj_eta");
+    if(event->Exists("leg2_trigger_obj_pt")) trigger_object_pt_2 = event->Get<double>("leg2_trigger_obj_pt");
+    if(event->Exists("leg2_trigger_obj_eta")) trigger_object_eta_2 = event->Get<double>("leg2_trigger_obj_eta");
+*/
 
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");
@@ -809,6 +846,16 @@ namespace ic {
       }
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_2_db03_ = 0;
+          iso_2_ea03_ = 0;
+          iso_2_db03allch_ = 0;
+          iso_2_db04allch_ = 0;
+        }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -854,6 +901,16 @@ namespace ic {
       }
       if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+          iso_2_db03_ = 0;
+          iso_2_ea03_ = 0;
+          iso_2_db03allch_ = 0;
+          iso_2_db04allch_ = 0;
+        }
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -893,6 +950,16 @@ namespace ic {
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_2_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_2_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
+          iso_2_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+        }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
 
@@ -1122,7 +1189,7 @@ namespace ic {
     }
 
 
-    /*if (n_bjets_ >= 1) {
+    if (n_bjets_ >= 1) {
       bcsv_1_ = bjets[0]->GetBDiscriminator(btag_label);
     } else {
       bcsv_1_ = -9999;
@@ -1131,7 +1198,7 @@ namespace ic {
       bcsv_2_ = bjets[1]->GetBDiscriminator(btag_label);
     } else {
       bcsv_2_ = -9999;
-    }*/
+    }
 
     emu_csv_ = (bcsv_1_.var_double > 0.244) ? bcsv_1_.var_double : -1.0;
 
@@ -1145,7 +1212,7 @@ namespace ic {
       jet_csvEt_1_ = std::sqrt(jets_csv[0]->pt()*jets_csv[0]->pt() + jets_csv[0]->M()*jets_csv[0]->M());
       if(bjet_regression_) jet_csvEt_1_ = std::sqrt(jet_csvpt_1_*jet_csvpt_1_ + jet_csv_pairs[0].second->M()*jet_csv_pairs[0].second->M());
       jet_csveta_1_ = jets_csv[0]->eta();
-//      jet_csvbcsv_1_ = jets_csv[0]->GetBDiscriminator(btag_label);
+      jet_csvbcsv_1_ = jets_csv[0]->GetBDiscriminator(btag_label);
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets_csv[0] };
       std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
@@ -1162,7 +1229,7 @@ namespace ic {
       jet_csvpt_bb_ = (jets_csv[0]->vector()+jets_csv[1]->vector()).pt();
       jet_csv_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(jets_csv[0]->vector(),jets_csv[1]->vector()));
       jet_csveta_2_ = jets_csv[1]->eta();
-//      jet_csvbcsv_2_ = jets_csv[1]->GetBDiscriminator(btag_label);
+      jet_csvbcsv_2_ = jets_csv[1]->GetBDiscriminator(btag_label);
       jet_csv_mjj_ = (jets_csv[0]->vector() + jets_csv[1]->vector()).M();
       if(bjet_regression_) jet_csv_mjj_ = (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector()).M();
       jet_csv_deta_ = fabs(jets_csv[0]->eta() - jets_csv[1]->eta());

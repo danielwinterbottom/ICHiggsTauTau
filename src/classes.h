@@ -67,6 +67,8 @@ namespace { struct dictionary {
   ic::TriggerPath dummy32;
   std::vector<ic::TriggerPath> dummy33;
   ic::Met dummy34;
+  ic::Met::BasicMet dummy34a;
+  std::map<std::size_t, ic::Met::BasicMet> dummy34b;
   ic::LightTrack dummy35;
   std::vector<ic::LightTrack> dummy36;
   ic::Tau dummy37;

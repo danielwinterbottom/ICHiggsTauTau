@@ -1,0 +1,52 @@
+## Cross Sections #-1.0 for data
+XS_MET_MET-2015D-PromptReco-v4:-1.0
+XS_MET_SingleMuon-2015D-PromptReco-v4:-1.0
+XS_MET_SinglePhoton-2015D-PromptReco-v4:-1.0
+XS_MET_MET-2015D-05Oct-v1:-1.0
+XS_MET_SingleMuon-2015D-05Oct-v1:-1.0
+XS_MET_SinglePhoton-2015D-05Oct-v1:-1.0
+XS_MC_Powheg-Htoinv-mH125Startupbx50:3.748
+##!!DUMMY VALUES for non 125 Htoinv samples
+XS_MC_Powheg-Htoinv-mH300Asympt25ns:1
+XS_MC_Powheg-Htoinv-mH400Asympt25ns:1
+XS_MC_DYJetsToLL:6025
+XS_MC_DYJetsToLL-M_10to50:18610
+XS_MC_WJetsToLNu:20509
+XS_MC_WJetsToLNu_enu:20509
+XS_MC_WJetsToLNu_munu:20509
+XS_MC_WJetsToLNu_taunu:20509
+
+XS_MC_SingleT-t-powheg-lep:54.87
+XS_MC_SingleTBar-t-powheg-lep:29.74
+XS_MC_SingleT-s-amcatnlo-lep:5.55
+XS_MC_SingleT-tW-powheg-inc:35.6
+XS_MC_SingleTBar-tW-powheg-inc:35.6
+XS_MC_TTJets-mg:831.76
+XS_MC_TT-powheg:831.76
+XS_MC_WW-pythia8:63.21
+XS_MC_WW2L2Nu-powheg:10.481
+XS_MC_WW4Q-powheg:45.2
+XS_MC_WWLNuQQ-powheg:43.53
+XS_MC_WZ-pythia8:22.82
+XS_MC_WZLNuQQ-mg:10.96
+XS_MC_ZZ4L-powheg:1.256
+
+
+
+
+## Processed Events
+EVT_MET_MET-2015D-PromptReco-v3:1.0
+EVT_MET_SingleMuon-2015D-PromptReco-v3:1.0
+
+## Lumi
+LUMI_DATA:592.27
+LUMI_DATA_LABEL:592.27 pb^{-1}
+YEAR_LABEL:2015
+## Signal options
+DRAW_SIGNAL:1
+DRAW_SIGNAL_FACTOR:1
+DRAW_SIGNAL_MASS:125
+## TOP Options
+## VV Options
+## QCD Options
+

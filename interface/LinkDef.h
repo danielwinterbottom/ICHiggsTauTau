@@ -46,7 +46,9 @@
 #pragma link C++ class std::vector<ic::PFJet>+;
 
 #pragma link C++ class ic::Met+;
+#pragma link C++ class ic::Met::BasicMet+;
 #pragma link C++ class std::vector<ic::Met>+;
+#pragma link C++ class std::pair<unsigned long, ic::Met::BasicMet>+;
 
 #pragma link C++ class ic::SuperCluster+;
 #pragma link C++ class std::vector<ic::SuperCluster>+;
