@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod='Oct19'     #!!TO BE UPDATED ON EACH PROCESSING
+prod='Oct29'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 config.section_('General')
 config.section_('Data')
@@ -8,8 +8,9 @@ config.section_('User')
 config.section_('Site')
 config.General.transferOutputs = True
 config.General.workArea=prod+'/MC'
-config.Data.outLFNDirBase='/store/user/pdunne/'+prod+'_MC/'
-config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/ammetwork/CMSSW_7_4_14/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_14_miniAODcfg.py' #!!NB: THIS IS A LOCAL PATH WHICH DIFFERS FOR EACH USER
+config.Data.outLFNDirBase='/store/user/amagnan/'+prod+'_MC/'
+#config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/ammetwork/CMSSW_7_4_14/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_14_miniAODcfg.py' #!!NB: THIS IS A LOCAL PATH WHICH DIFFERS FOR EACH USER
+config.JobType.psetName = '/afs/cern.ch/work/a/amagnan/CMSSW_7_4_14/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_14_miniAODcfg.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.pyCfgParams = ['isData=0', 'release=74XMINIAOD','globalTag=74X_mcRun2_asymptotic_v2']   #!!TO BE CHECKED ON EACH PROCESSING

@@ -884,8 +884,8 @@ process.icPfMetPuppiProducer = producers.icMetFromPatProducer.clone(
   branch = cms.string("pfMetPuppiCollection"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
-  includeMetCorrections = cms.bool(True),
-  includeMetUncertainties = cms.bool(True)
+  includeMetCorrections = cms.bool(False),
+  includeMetUncertainties = cms.bool(False)
   )
 
 # process.ictype1PfMetProducermetsigoutofbox = producers.icMetProducer.clone(
