@@ -92,9 +92,9 @@ ICMetProducer<T>::ICMetProducer(const edm::ParameterSet& config)
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
       do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
       metsig_(config.getParameterSet("metsig")),
-      metsig_method2_(config.getParameterSet("metsig_method2")),
-      do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
-      metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
+      metsig_method2_(config.getParameterSet("metsig_method2")){
+      //do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
+      //metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -118,6 +118,8 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
+  PrintOptional(1, do_metuncertainties_, "includeMetUncertainties");
+  PrintOptional(1, do_metcorrections_, "includeMetCorrections");
 }
 
 
@@ -210,12 +212,6 @@ void ICMetProducer<reco::MET>::constructSpecific(
       dest.set_energy(src.energy());
       dest.set_sum_et(src.sumEt());
     }
-    if(do_metuncertainties_){
-      throw cms::Exception("OptionNotSupported")<<"metuncertainties not supported for reco::met\n";
-	}
-    if(do_metcorrections_){
-      throw cms::Exception("OptionNotSupported")<<"metcorrections not supported for reco::met\n";
-	}
   }
 
 template <>
