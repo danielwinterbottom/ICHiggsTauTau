@@ -179,8 +179,20 @@ namespace ic {
       std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
       std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");//GenJet collection, note: could make this a parameter but we only have one collection at the moment in the ntuples
       //std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");//Tau Collection could be used in future but commented out to remove compiler warning
-      Met *met;
-      met = event->GetPtr<Met>(met_label_);//MET collection
+      Met *met = 0;
+      try {
+	std::vector<Met*> metCol = event->GetPtrVec<Met>(met_label_);
+	met = metCol[0];
+      } catch (...){
+	//std::cout << " Met vec not found..." << std::endl;
+	met = event->GetPtr<Met>(met_label_);
+	if (!met) {
+	  std::cerr << " -- Found no MET " << met_label_ << " in event! Exiting..." << std::endl;
+	  exit(1);
+	}
+      }
+
+
       ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
       ROOT::Math::PxPyPzEVector  newmet = oldmet;
       //GET RUNMETUNCS COLLECTIONS FOR COMPARISON

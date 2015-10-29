@@ -39,8 +39,20 @@ namespace ic {
 
   int ModifyMet::Execute(TreeEvent *event){
 
+    Met *lMet = 0;
+    try {
+      std::vector<Met*> metvec = event->GetPtrVec<Met>(met_name_);
+      lMet = metvec[0];
+    }
+    catch (...){
+      //std::cout << " Met vec not found..." << std::endl;
+      lMet = event->GetPtr<Met>(met_name_);
+      if (!lMet) {
+	std::cerr << " -- Found no MET " << met_name_ << " in event! Exiting..." << std::endl;
+	exit(1);
+      }
+    }
 
-    Met *lMet = event->GetPtr<Met>(met_name_);
     event->Add(ModuleName()+"Product", *lMet);
     Met *lMetPtr = &(event->Get<Met>(ModuleName()+"Product"));
     event->Add(ModuleName(), lMetPtr);
