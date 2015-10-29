@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
   bool douessyst;                 // Do Unclustered MET Systematic Run
   bool uesupordown;               // If doing Unclustered MET Systematic Run, run with up or down correction (true for up, false for down) 
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
+  bool do2015tauid;                 // If doing cross check tau use alternate tau id discriminant
   bool taulepdiscrtight;          // Use tight electron and muon discriminants
   bool dojerdebug;                // Access runmetunc collections for debugging
   bool dotopreweighting;          // Do Top reweighting
@@ -152,6 +153,7 @@ int main(int argc, char* argv[]){
     ("douessyst",           po::value<bool>(&douessyst)->default_value(false))
     ("uesupordown",         po::value<bool>(&uesupordown)->default_value(true))
     ("docrosschecktau",     po::value<bool>(&docrosschecktau)->default_value(false))
+    ("do2015tauid",         po::value<bool>(&do2015tauid)->default_value(true))
     ("taulepdiscrtight",    po::value<bool>(&taulepdiscrtight)->default_value(false))
     ("dojerdebug",          po::value<bool>(&dojerdebug)->default_value(false))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
@@ -554,22 +556,32 @@ int main(int argc, char* argv[]){
     .set_predicate(bind(fabs, bind(&Tau::lead_dz_vertex, _1)) < 0.2)
     .set_min(0);
 
-  std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
-  if(!docrosschecktau){
-    tau_iso_discr       = "byTightCombinedIsolationDeltaBetaCorr3Hits";
+  std::string tau_id_discr, tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
+  if(do2015tauid){
+    tau_id_discr          = "decayModeFindingNewDMs";
+    tau_iso_discr         = "byTightCombinedIsolationDeltaBetaCorr3Hits";
+    tau_anti_muon_discr   = "againstMuonTight3";
+    tau_anti_elec_discr_1 = "againstElectronTightMVA5";
+    tau_anti_elec_discr_2 = "againstElectronTightMVA5";
   }
   else{
-    tau_iso_discr       = "byMediumIsolationMVA2";
-  }
-  if(taulepdiscrtight){
-    tau_anti_muon_discr   = "againstMuonTight";
-    tau_anti_elec_discr_1 = "againstElectronTight";
-    tau_anti_elec_discr_2 = "againstElectronTight";
-  }
-  else{
-    tau_anti_muon_discr   = "againstMuonLoose";
-    tau_anti_elec_discr_1 = "againstElectronLoose";
-    tau_anti_elec_discr_2 = "againstElectronLoose";
+    tau_id_discr          = "decayModeFinding";
+    if(!docrosschecktau){
+      tau_iso_discr       = "byTightCombinedIsolationDeltaBetaCorr3Hits";
+    }
+    else{
+      tau_iso_discr       = "byMediumIsolationMVA2";
+    }
+    if(taulepdiscrtight){
+      tau_anti_muon_discr   = "againstMuonTight";
+      tau_anti_elec_discr_1 = "againstElectronTight";
+      tau_anti_elec_discr_2 = "againstElectronTight";
+    }
+    else{
+      tau_anti_muon_discr   = "againstMuonLoose";
+      tau_anti_elec_discr_1 = "againstElectronLoose";
+      tau_anti_elec_discr_2 = "againstElectronLoose";
+    }
   }
   
   //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
@@ -583,7 +595,7 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<Tau> tauIsoFilter = SimpleFilter<Tau>("TauIsoFilter")
     .set_input_label("taus")
-    .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
+    .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, tau_id_discr) > 0.5))
     .set_min(0);
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
