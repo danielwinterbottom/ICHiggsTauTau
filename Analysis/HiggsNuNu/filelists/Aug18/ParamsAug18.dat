@@ -4,6 +4,7 @@ XS_MET_MET-2015B-17Jul2015-v1:-1.0
 XS_MET_SingleMuon-2015B-PromptReco-v1:-1.0
 XS_MET_SingleMuon-2015B-17Jul2015-v1:-1.0
 XS_MC_Powheg-Htoinv-mH125Startupbx50:3.748
+XS_MC_Powheg-Htoinv-mH125Asympt25ns:3.748
 ##!!DUMMY VALUES for non 125 Htoinv samples
 XS_MC_Powheg-Htoinv-mH300Asympt25ns:1
 XS_MC_Powheg-Htoinv-mH400Asympt25ns:1
@@ -42,6 +43,7 @@ EVT_MET_SingleMuon-2015B-17Jul2015-v1:1.0
 EVT_MC_DYJetsToLL:28825132
 EVT_MC_DYJetsToLL-M_10to50:30535559
 EVT_MC_Powheg-Htoinv-mH125Startupbx50:99200
+EVT_MC_Powheg-Htoinv-mH125Asympt25ns:99200
 EVT_MC_Powheg-Htoinv-mH300Asympt25ns:50000
 EVT_MC_Powheg-Htoinv-mH400Asympt25ns:50000
 EVT_MC_SingleT-s-amcatnlo-lep:984400

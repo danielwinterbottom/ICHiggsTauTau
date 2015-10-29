@@ -20,6 +20,7 @@ namespace ic {
   LightTree::LightTree(std::string const& name): ModuleBase(name){
     fs_ = NULL;
     met_label_ = "pfMetType1";
+    jet_label_ = "pfJetsPFlow";
     dijet_label_ = "jjCandidates";
     sel_label_ = "JetPair";
     is_data_ = false;
@@ -568,13 +569,25 @@ namespace ic {
     
     //get collections
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
-    Met const* met = event->GetPtr<Met>(met_label_);
+    //Met const* met = event->GetPtr<Met>(met_label_);
+    Met *met = 0;
+    try {
+      std::vector<Met*> metCol = event->GetPtrVec<Met>(met_label_);
+      met = metCol[0];
+    } catch (...){
+      //std::cout << " Met vec not found..." << std::endl;
+      met = event->GetPtr<Met>(met_label_);
+      if (!met) {
+	std::cerr << " -- Found no MET " << met_label_ << " in event! Exiting..." << std::endl;
+	exit(1);
+      }
+    }
     Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
     std::vector<Candidate *> const& l1forwardjets = event->GetPtrVec<Candidate>("l1extraForwardJets");
     std::vector<Candidate *> const& l1centraljets = event->GetPtrVec<Candidate>("l1extraCentralJets");
     //!!if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jet_label_);
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<Muon*> vetomuons=event->GetPtrVec<Muon>("vetoMuons");
     std::vector<Muon*> selmuons=event->GetPtrVec<Muon>("selMuons");

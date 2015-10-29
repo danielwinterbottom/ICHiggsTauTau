@@ -31,8 +31,18 @@ namespace ic {
     return 0;
   }
   int MetSelection::Execute(TreeEvent *event){
-
-    Met * lpfMet = event->GetPtr<Met>(input_name_);
+    Met *lpfMet = 0;
+    try {
+      std::vector<Met*> metvec = event->GetPtrVec<Met>(input_name_);
+      lpfMet = metvec[0];
+    } catch (...){
+      //std::cout << " Met vec not found..." << std::endl;
+      lpfMet = event->GetPtr<Met>(input_name_);
+      if (!lpfMet) {
+	std::cerr << " -- Found no MET " << input_name_ << " in event! Exiting..." << std::endl;
+	exit(1);
+      }
+    }
     double lVal = lpfMet->pt();
 
     bool passMet = false;

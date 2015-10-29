@@ -67,7 +67,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -544,7 +544,7 @@ process.selectedSlimmedJetsPuppiAK4 = cms.EDFilter("PATJetRefSelector",
 # select hadrons and partons for the jet flavour
 process.selectedHadronsAndPartons = cms.EDProducer('HadronAndPartonSelector',
     src = cms.InputTag("generator"),
-    particles = cms.InputTag("genParticles","","HLT"),
+    particles = cms.InputTag("prunedGenParticles"),
     partonMode = cms.string("Auto")
 )
 
@@ -858,16 +858,35 @@ process.load("RecoMET/METProducers.METSignificanceParams_cfi")
 
 #!!clone met sig producer with different name and input for met uncertainties
 
+#get genmet
+process.icGenMetProducer = producers.icMetFromPatProducer.clone(
+  input = cms.InputTag("slimmedMETs"),
+  branch = cms.string("genMetCollection"),
+  includeCustomID = cms.bool(False),
+  inputCustomID = cms.InputTag(""),
+  doGenMet = cms.bool(True)
+  )
 
 #get type 1 met straight from miniAOD !!update to take in output of met significance calculator
 process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
-                                                    input = cms.InputTag("slimmedMETs"),
-                                                    branch = cms.string("pfMetType1Collection"),
-                                                    includeCustomID = cms.bool(False),
-                                                    inputCustomID = cms.InputTag(""),
-                                                    includeExternalMetsigMethod2 = cms.bool(True),
-                                                    includeMetUncertainties = cms.bool(True)
-                                                    )
+  input = cms.InputTag("slimmedMETs"),
+  branch = cms.string("pfMetType1Collection"),
+  includeCustomID = cms.bool(False),
+  inputCustomID = cms.InputTag(""),
+  includeExternalMetsigMethod2 = cms.bool(True),
+  includeMetCorrections = cms.bool(True),
+  includeMetUncertainties = cms.bool(True)
+  )
+
+#puppi met, need to update significance....
+process.icPfMetPuppiProducer = producers.icMetFromPatProducer.clone(
+  input = cms.InputTag("slimmedMETsPuppi"),
+  branch = cms.string("pfMetPuppiCollection"),
+  includeCustomID = cms.bool(False),
+  inputCustomID = cms.InputTag(""),
+  includeMetCorrections = cms.bool(False),
+  includeMetUncertainties = cms.bool(False)
+  )
 
 # process.ictype1PfMetProducermetsigoutofbox = producers.icMetProducer.clone(
 #                                                     input = cms.InputTag("slimmedMETs"),
@@ -920,6 +939,7 @@ process.icMetSequence = cms.Sequence(
   process.icPfMet+
   process.icuncorrectedPfMetProducer+
   process.ictype1PfMetProducer+
+  process.icPfMetPuppiProducer+
   process.icMvaMetSequence
   #process.ictype1PfMetProducermetsigoutofbox
   #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
@@ -1021,6 +1041,7 @@ if not isData:
       process.selectedGenJets+
       process.icGenJetProducer+
       process.icGenJetProducerFromSlimmed+
+      process.icGenMetProducer+
       process.icPileupInfoProducer
     )
 #  if release in [ '74X']:
@@ -1149,7 +1170,6 @@ process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFil
 #process.HBHEISONoiseFilterResultProducer = process.HBHENoiseFilterResultProducer.clone()
 #process.HBHEISONoiseFilterResultProducer.defaultDecision = cms.string("HBHEIsoNoiseFilterResult")
 
-
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   isNlo               = isNLO,
   includeJetRho       = cms.bool(True),
@@ -1163,7 +1183,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeFiltersFromTrig = cms.bool(True),
   filters             = cms.PSet(
     Flag_HBHENoiseFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
-    #Flag_HBHENoiseIsoFilter = cms.InputTag('HBHEISONoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
+    Flag_HBHENoiseIsoFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
     )
 )
 
