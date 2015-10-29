@@ -584,6 +584,8 @@ namespace ic {
     std::vector<Photon*> loosephotons=event->GetPtrVec<Photon>("loosePhotons");
     std::vector<Photon*> mediumphotons=event->GetPtrVec<Photon>("mediumPhotons");
     std::vector<Photon*> tightphotons=event->GetPtrVec<Photon>("tightPhotons");
+    
+    std::vector<TriggerObject*> triggerobjects=event->GetPtrVec<TriggerObject>(trig_obj_label_);
 
     std::vector<GenJet *> genvec;
     if(!is_data_)genvec= event->GetPtrVec<GenJet>("genJets");
@@ -879,22 +881,34 @@ namespace ic {
 	  }
 
 	  //fill trig matched
-	  double trigmindR = 1000;
-	  int whichtrigjet=-1;
-	  for (unsigned iTrigJet = 0; iTrigJet < l1alljets.size(); ++iTrigJet) {//loop on trigjets
-	    double dR = ROOT::Math::VectorUtil::DeltaR(l1alljets[iTrigJet]->vector(),jetveccopy[ijet]->vector());
-	    if (dR<trigmindR){
-	      trigmindR = dR;
-	      whichtrigjet = iTrigJet;
-	    }
-	  }//loop on trigjets
-	  jet_trigjet_mindR_[ijet]=trigmindR;
-	  if (trigmindR<0.4){
+	  std::pair<bool,unsigned> trigmatch=IsFilterMatchedWithIndex(jetveccopy[ijet],triggerobjects,"hltDiPFJet40MJJ600DEta3p5",0.4);
+	  if(trigmatch.first){
 	    jet_trigMatched_[ijet]=1;
-	    trigjet_pt_[ijet]=l1alljets[whichtrigjet]->pt();
-	    trigjet_eta_[ijet]=l1alljets[whichtrigjet]->eta();
-	    trigjet_phi_[ijet]=l1alljets[whichtrigjet]->phi();
+	    trigjet_pt_[ijet]=triggerobjects[trigmatch.second]->pt();
+	    trigjet_eta_[ijet]=triggerobjects[trigmatch.second]->eta();
+	    trigjet_phi_[ijet]=triggerobjects[trigmatch.second]->phi();
+            jet_trigjet_mindR_[ijet]=ROOT::Math::VectorUtil::DeltaR(triggerobjects[trigmatch.second]->vector(),jetveccopy[ijet]->vector());
 	  }
+
+	  // double trigmindR = 1000;
+	  // int whichtrigjet=-1;
+	  // for (unsigned iTrigJet = 0; iTrigJet < l1alljets.size(); ++iTrigJet) {//loop on trigjets
+	  //   double dR = ROOT::Math::VectorUtil::DeltaR(l1alljets[iTrigJet]->vector(),jetveccopy[ijet]->vector());
+	  //   if (dR<trigmindR){
+	  //     trigmindR = dR;
+	  //     whichtrigjet = iTrigJet;
+	  //   }
+	  // }//loop on trigjets
+
+	  // //!!DO WRT HLT WITH TRIG OBJECTS ISFILTERMATCHED FNPREDICATES FUNCTION
+	  // //triggerobjects collection
+	  // jet_trigjet_mindR_[ijet]=trigmindR;
+	  // if (trigmindR<0.4){
+	  //   jet_trigMatched_[ijet]=1;
+	  //   trigjet_pt_[ijet]=l1alljets[whichtrigjet]->pt();
+	  //   trigjet_eta_[ijet]=l1alljets[whichtrigjet]->eta();
+	  //   trigjet_phi_[ijet]=l1alljets[whichtrigjet]->phi();
+	  // }
 
 
 	}
