@@ -131,6 +131,10 @@ namespace ic {
         outtree_->Branch("pt_1",              &pt_1_.var_double);
         outtree_->Branch("eta_1",             &eta_1_.var_double);
         outtree_->Branch("eta_2",             &eta_2_.var_double);
+        outtree_->Branch("phi_1",             &phi_1_.var_double);
+        outtree_->Branch("phi_2",             &phi_2_.var_double);
+        outtree_->Branch("E_1",               &E_1_);
+        outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("m_2",               &m_2_.var_double);
         outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
@@ -276,7 +280,7 @@ namespace ic {
       // pt (including effect of any energy scale corrections)
       synctree_->Branch("pt_1", &pt_1_.var_float, "pt_1/F");
       // phi
-      synctree_->Branch("phi_1", &phi_1_, "phi_1/F");
+      synctree_->Branch("phi_1", &phi_1_.var_float, "phi_1/F");
       // eta
       synctree_->Branch("eta_1", &eta_1_.var_float, "eta_1/F");
       // mass
@@ -313,7 +317,7 @@ namespace ic {
       // pt (including effect of any energy scale corrections)
       synctree_->Branch("pt_2", &pt_2_.var_float, "pt_2/F");
       // phi
-      synctree_->Branch("phi_2", &phi_2_, "phi_2/F");
+      synctree_->Branch("phi_2", &phi_2_.var_float, "phi_2/F");
       // eta
       synctree_->Branch("eta_2", &eta_2_.var_float, "eta_2/F");
       // mass
@@ -781,6 +785,8 @@ namespace ic {
     eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
+    E_1_ = lep1->energy();
+    E_2_ = lep2->energy();
     m_1_ = lep1->M();
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
@@ -1029,7 +1035,7 @@ namespace ic {
 
       }
     }
-    if (channel_ == channel::zee) {
+    if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
       if(strategy_ == strategy::spring15) {
@@ -1043,7 +1049,7 @@ namespace ic {
       d0_2_ = elec2->dxy_vertex();
       dz_2_ = elec2->dz_vertex();
     }
-    if (channel_ == channel::zmm) {
+    if (channel_ == channel::zmm || channel_ == channel::tpzmm) {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
       if(strategy_ == strategy::spring15) {

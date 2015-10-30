@@ -48,6 +48,8 @@ class HTTSequence {
   void BuildTTPairs();
   void BuildZEEPairs();
   void BuildZMMPairs();
+  void BuildTPZEEPairs();
+  void BuildTPZMMPairs();
   void BuildWMuNu();
 
   void BuildTauSelection();
