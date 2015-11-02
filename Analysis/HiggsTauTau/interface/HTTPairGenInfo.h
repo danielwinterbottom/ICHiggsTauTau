@@ -16,6 +16,7 @@ class HTTPairGenInfo : public ModuleBase {
  private:
   CLASS_MEMBER(HTTPairGenInfo, std::string, ditau_label)
   CLASS_MEMBER(HTTPairGenInfo, fwlite::TFileService*, fs)
+  std::vector<Dynamic2DHistoSet *> hists_;
 
  public:
   HTTPairGenInfo(std::string const& name);

@@ -686,8 +686,10 @@ if(channel != channel::wmnu) {
 
 if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
+    .set_fs(fs.get())
     .set_ditau_label("ditau"));
 }
+
 
  if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
@@ -770,7 +772,7 @@ if(era_type == era::data_2015){
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(0)
     .set_require_inputs_match(false)
-    .set_split(7000)
+    .set_split(700)
     .set_dilepton_label("ditau")
     .set_met_label("pfMVAMet")
     .set_fullpath(svfit_folder)
