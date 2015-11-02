@@ -79,8 +79,8 @@ namespace ic {
           //if (run >= 193752/* //&& run <= xxxxx*/ //&& name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
        if (run >= 193752 && run <= 247600 && name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
           //2015 triggers
-       if (run >= 250985 && run <= 258654  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos) ) path_found = true;
-       if (run >= 258655/* &&run <=xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
+       if (run >= 250985 /*&& run <= 258654*/  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos) ) path_found = true;
+       //if (run >= 258655/* &&run <=xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
        //if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v") != name.npos || name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v") != name.npos) ) path_found = true;
         }
         if (channel_ == channel::mt || channel_ == channel::zmm) {

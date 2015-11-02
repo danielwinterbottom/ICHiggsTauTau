@@ -781,6 +781,7 @@ int main(int argc, char* argv[]){
 		if (channel_str == "mt") 		channel_fmt = "#mu#tau_{h}";
 		if (channel_str == "mtmet") channel_fmt = "#mu_{soft}#tau_{h}";
 		if (channel_str == "em") 		channel_fmt = "e#mu";
+    if (channel_str == "tt")    channel_fmt = "#tau_{h}#tau_{h}";
     ic::TextElement text(channel_fmt,0.05,0.16,0.96);
 
     //ic::TextElement text2("#splitline{Same-sign}{region}",0.05,0.65,0.5);
