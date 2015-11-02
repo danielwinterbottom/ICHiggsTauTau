@@ -1,0 +1,18 @@
+ tail -n 8 queryDBS.txt
+ for datasetname in `head -n 8 queryDBS.txt`; do echo $datasetname >> querydbs.log; ./das_client.py --query="summary dataset=${datasetname}" >> querydbs.log; done
+ tail querydbs.log 
+ grep "nevents" querydbs.log | awk '{print $3}' > queryDBS_events.txt
+ paste queryDBS.txt queryDBS_events.txt > queryDBS_result.txt
+ for datasetname in `cat queryDBS.txt`; do echo $datasetname >> querydbsfiles.log; ./das_client.py --query="file dataset=${datasetname}" --limit=1 | tail -n 1 >> querydbsfiles.log; done 
+
+index=0; for filename in `cat querydbsfiles.log`; do echo $filename; cmsRun extractXSfromMC.py inputFiles="root://xrootd.unl.edu/${filename}" maxEvents=-1 >> outputXSjobs.log ; let index+=1 ; done
+
+
+grep "Before " /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log | wc -l
+grep "After filter" /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log | wc -l
+grep "Successfully opened file" /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log | wc -l
+
+grep "Before " /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log > xsBefore.txt
+grep "After filter" /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log > xsAfter.txt
+
+paste queryDBS.txt queryDBS_events.txt  xsBefore.txt xsAfter.txt > queryDBS_summary.txt
