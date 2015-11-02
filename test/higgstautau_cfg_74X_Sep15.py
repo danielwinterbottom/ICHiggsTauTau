@@ -10,7 +10,8 @@ opts = parser.VarParsing ('analysis')
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_4/src/UserCode/ICHiggsTauTau/test/testinput.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/TauDataTest.root', parser.VarParsing.multiplicity.singleton,
 opts.register('file',
-'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/SUSYGluGluToHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/9EF16FCE-E771-E511-AAB0-008CFA1979EC.root',parser.VarParsing.multiplicity.singleton,
+'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/40000/10563B6E-D871-E511-9513-B499BAABD280.root',parser.VarParsing.multiplicity.singleton,
+#'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/SUSYGluGluToHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/9EF16FCE-E771-E511-AAB0-008CFA1979EC.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015D/MuonEG/MINIAOD/PromptReco-v3/000/256/630/00000/24F810E0-335F-E511-94F4-02163E011C61.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/0014DC94-DC5C-E511-82FB-7845C4FC39F5.root', parser.VarParsing.multiplicity.singleton,
@@ -316,10 +317,18 @@ process.icVertexProducer = producers.icVertexProducer.clone(
   firstVertexOnly = cms.bool(True)
 )
 
+process.icGenVertexProducer = producers.icGenVertexProducer.clone(
+  input = cms.InputTag("prunedGenParticles")
+)
+
 
 process.icVertexSequence = cms.Sequence(
-  process.icVertexProducer
+  process.icVertexProducer+
+  process.icGenVertexProducer
 )
+
+if isData :
+  process.icVertexSequence.remove(process.icGenVertexProducer)
 
 ################################################################
 # PFCandidates
@@ -1249,6 +1258,7 @@ process.icPfMVAMetProducer = cms.EDProducer('ICPFMetProducer',
   includeMetUncertainties = cms.bool(False),
   metuncertainties = cms.vstring(),
   includeExternalMetsigMethod2 = cms.bool(False),
+  doGenMet = cms.bool(False),
   metsig = cms.PSet(
     metsig = cms.InputTag("METSignificance","METSignificance"),
     metsigcov00 = cms.InputTag("METSignificance", "CovarianceMatrix00"),
