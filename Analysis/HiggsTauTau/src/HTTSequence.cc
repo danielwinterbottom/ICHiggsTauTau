@@ -459,7 +459,7 @@ void HTTSequence::BuildSequence(){
        std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
        bool is_good_vertex = GoodVertex(vertices.at(0));
        event->Add("good_first_vertex",is_good_vertex);
-       //if(!is_good_vertex) return 1;
+       //if(is_good_vertex) return 1;
        //else return 0;
        return 0;
     }));
@@ -470,17 +470,26 @@ void HTTSequence::BuildSequence(){
        std::vector<ic::Vertex*> genvertices = event->GetPtrVec<ic::Vertex>("genVertices");
        bool pv_is_gen = false;
        bool is_good_vertex = GoodVertex(vertices.at(0));
-       if (fabs(vertices.at(0)->vz()-genvertices.at(0)->vz())<0.2){
-         if (TMath::Sqrt(TMath::Power(vertices.at(0)->vx()-genvertices.at(0)->vy(),2)+TMath::Power(vertices.at(0)->vy()-genvertices.at(0)->vy(),2))<0.045){ 
+       if (fabs(vertices.at(0)->vz()-genvertices.at(0)->vz())<0.01&&fabs(vertices.at(0)->vy()-genvertices.at(0)->vy())<0.01&&fabs(vertices.at(0)->vx()-genvertices.at(0)->vx())<0.01){
            pv_is_gen=true;
          } 
-       }
-       if(!pv_is_gen && is_good_vertex) return 1;
+       if(!pv_is_gen) return 1;
        //if(is_good_vertex) return 1;
        else return 0;
        //return 0;
     }));
+
+  BuildModule(GenericModule("checkGoodVerticesAfterGen")
+    .set_function([](ic::TreeEvent *event){
+       std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
+       bool is_good_vertex = GoodVertex(vertices.at(0));
+  //     event->Add("good_first_vertex",is_good_vertex);
+       if(!is_good_vertex) return 1;
+       else return 0;
+       //return 0;
+    }));
 */
+
 
 
   // If desired, run the HTTGenEventModule which will add some handily-
