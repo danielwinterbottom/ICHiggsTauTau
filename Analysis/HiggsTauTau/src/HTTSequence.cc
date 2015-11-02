@@ -1369,16 +1369,16 @@ void HTTSequence::BuildTPZEEPairs() {
 
       }));
 
-  BuildModule(SimpleFilter<Electron>("TagFilter")
+/*  BuildModule(SimpleFilter<Electron>("TagFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
-                fabs(e->dz_vertex())    < elec_dz    &&
-                ElecID(e) ;
+                fabs(e->dz_vertex())    < elec_dz  ;//  &&
+//                ElecID(e) ;
 
-      }));
+      }));*/
 
   BuildModule(CompositeProducer<Electron, Electron>("ZEEPairProducer")
       .set_input_label_first("sel_electrons")
@@ -1449,7 +1449,7 @@ void HTTSequence::BuildTPZMMPairs() {
 
       }));
   
-  BuildModule(SimpleFilter<Muon>("TagFilter")
+/*  BuildModule(SimpleFilter<Muon>("TagFilter")
       .set_input_label("sel_muons").set_min(1)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > muon_pt    &&
@@ -1458,7 +1458,7 @@ void HTTSequence::BuildTPZMMPairs() {
                 fabs(m->dz_vertex())    < muon_dz   &&
                 MuonID(m);
 
-      }));
+      }));*/
   
   BuildModule(CompositeProducer<Muon, Muon>("ZMMPairProducer")
       .set_input_label_first("sel_muons")

@@ -8,7 +8,7 @@
     "max_events":   -1,
     "timings":      true,
     //"channels":     ["zmm","zee","tpzee","tpzmm"],
-    "channels":     ["tpzmm"],
+    "channels":     ["tpzmm", "tpzee"],
     "sequences": {
       "all":  ["default"]//,//,// "scale_j_lo", "scale_j_hi"],
 //      "et":   ["scale_t_lo", "scale_t_hi"],
@@ -30,7 +30,7 @@
     "add_Hhh_variables" : false,
     "get_effective" : false,
     "do_leptonplustau" :false,
-    "do_singlelepton" :true,
+    "do_singlelepton" :false,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
     "electrons"     : "electrons",

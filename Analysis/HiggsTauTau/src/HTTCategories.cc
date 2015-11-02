@@ -116,6 +116,11 @@ namespace ic {
         outtree_->Branch("iso_2_db04allch", &iso_2_db04allch_);
         outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
       }
+      if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
+        //Extra variables needed for tag and probe
+        outtree_->Branch("id_1", &mva_1_.var_double);
+        outtree_->Branch("id_2", &mva_2_.var_double);
+      }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
@@ -293,7 +298,7 @@ namespace ic {
       // reasons
       synctree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
       // If an electron, the output of the ID MVA, zero otherwise
-      synctree_->Branch("mva_1", &mva_1_, "mva_1/F");
+      synctree_->Branch("mva_1", &mva_1_.var_float, "mva_1/F");
       // Transverse (x-y) impact parameter w.r.t to the primary vertex
       synctree_->Branch("d0_1", &d0_1_, "d0_1/F");
       // Longitudinal (z) impact parameter w.r.t to the primary vertex
@@ -334,7 +339,7 @@ namespace ic {
       // Longitudinal (z) impact parameter w.r.t to the primary vertex
       synctree_->Branch("dZ_2", &dz_2_, "dz_2/F");
       // If an electron, the output of the ID MVA, zero otherwise
-      synctree_->Branch("mva_2", &mva_2_, "mva_2/F");
+      synctree_->Branch("mva_2", &mva_2_.var_float, "mva_2/F");
       // Whether lepton passes ID selection (always true in IC ntuples)
 //      synctree_->Branch("passid_2", &lPassId2, "lPassId2/B");
       // Whether lepton passes iso selection (always true in IC ntuples)
@@ -1041,8 +1046,8 @@ namespace ic {
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
-        mva_1_ = elec1->GetIdIso("mvaNonTrigSpring15");
-        mva_2_ = elec2->GetIdIso("mvaNonTrigSpring15");
+        mva_1_ = ElectronHTTIdSpring15(elec1, false);
+        mva_2_ = ElectronHTTIdSpring15(elec2, false);
       }
       d0_1_ = elec1->dxy_vertex();
       dz_1_ = elec1->dz_vertex();
@@ -1055,8 +1060,8 @@ namespace ic {
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon2, 0.5, 0);
-        mva_1_ = 0.0;
-        mva_2_ = 0.0;
+        mva_1_ = MuonMedium(muon1);
+        mva_2_ = MuonMedium(muon2);
       }
       d0_1_ = muon1->dxy_vertex();
       dz_1_ = muon1->dz_vertex();

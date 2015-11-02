@@ -139,8 +139,8 @@ class HTTCategories : public ModuleBase {
   double z_2_;
   float m_1_;
   branch_var m_2_;
-  float mva_1_;
-  float mva_2_;
+  branch_var mva_1_;
+  branch_var mva_2_;
   branch_var mvamet_;
   branch_var mvamet_phi_;
   float pfmet_;
