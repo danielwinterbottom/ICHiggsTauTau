@@ -14,5 +14,9 @@ grep "Successfully opened file" /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outp
 
 grep "Before " /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log > xsBefore.txt
 grep "After filter" /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log > xsAfter.txt
+awk '{print $7}' xsBefore.txt > xsBeforeValue.txt
+awk '{print $7}' xsAfter.txt > xsAfterValue.txt
 
-paste queryDBS.txt queryDBS_events.txt  xsBefore.txt xsAfter.txt > queryDBS_summary.txt
+paste queryDBS.txt queryDBS_events.txt  xsBeforeValue.txt xsAfterValue.txt > queryDBS_summary.txt
+
+awk '{$5=$2/$3}{print $0}' queryDBS_summary.txt
