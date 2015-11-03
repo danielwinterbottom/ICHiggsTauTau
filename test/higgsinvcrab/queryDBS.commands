@@ -2,7 +2,9 @@ grep "tasks.append" crab_run2background.py > tmp.txt
 
 awk '{FS=","}{print $2}' tmp.txt > queryDBS.txt
 
-awk '{FS=","}{print $2}' queryDBS.txt > queryDBS.txttail -n 8 queryDBS.txt
+awk '{FS=","}{print $2}' queryDBS.txt > queryDBS.txt
+
+tail -n 8 queryDBS.txt
  for datasetname in `head -n 8 queryDBS.txt`; do echo $datasetname >> querydbs.log; ./das_client.py --query="summary dataset=${datasetname}" >> querydbs.log; done
  tail querydbs.log 
  grep "nevents" querydbs.log | awk '{print $3}' > queryDBS_events.txt
