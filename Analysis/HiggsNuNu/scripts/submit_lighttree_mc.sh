@@ -22,6 +22,7 @@ echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 PRODUCTION=Oct19
+PRODUSER=pdunne
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
@@ -140,11 +141,11 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
     
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
-#    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
-    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/${PRODUCTION}_MC
+#    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/$PRODUCTION/MC/
+    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
     if [ "$PRODUCTION" = "Dec18" ]
     then
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/${PRODUCTION}/MC
+	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJ*`
@@ -217,7 +218,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 	if [ "$PRODUCTION" = "Apr04" ]
 	    then
 	    DOSHARED=true
-	    SHAREDPREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MCtaushared/
+	    SHAREDPREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/$PRODUCTION/MCtaushared/
 	    FILELISTPREFIX=Apr04_MCtaushared_
 	fi
     fi

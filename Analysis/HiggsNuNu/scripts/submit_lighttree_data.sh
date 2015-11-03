@@ -20,7 +20,8 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-PRODUCTION=Aug18
+PRODUCTION=151030
+PRODUSER=amagnan
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 
@@ -28,9 +29,9 @@ CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree_genflags_260815
+  JOBDIRPREFIX=jobs_lighttree_301015goldenjson_hltcalojets_301015
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_genflags_260815
+  OUTPUTPREFIX=output_lighttree_301015goldenjson_hltcalojets_301015
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -138,10 +139,10 @@ if [ "$SYST" = "ELEEFFUP" ]
     export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
     echo "Using job-submission: " $JOBSUBMIT
 
-    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/${PRODUCTION}_MET
+    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MET
     if [ "$PRODUCTION" = "Dec18" ]
     then
-        PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/${PRODUCTION}/MET
+        PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MET
     fi    
 
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*` 
