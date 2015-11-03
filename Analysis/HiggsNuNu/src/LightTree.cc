@@ -15,10 +15,12 @@ namespace ic {
 
   bool ptorderedgenjetsort(GenJet * i,GenJet * j){return (i->pt())>(j->pt());}
   bool ptorderedjetsort(PFJet * i,PFJet * j){return (i->pt())>(j->pt());}
+  bool ptorderedcandidatesort(Candidate * i,Candidate * j){return (i->pt())>(j->pt());}
 
   LightTree::LightTree(std::string const& name): ModuleBase(name){
     fs_ = NULL;
     met_label_ = "pfMetType1";
+    jet_label_ = "pfJetsPFlow";
     dijet_label_ = "jjCandidates";
     sel_label_ = "JetPair";
     is_data_ = false;
@@ -57,6 +59,13 @@ namespace ic {
       genjet_eta_.push_back(-5);
       genjet_phi_.push_back(-5);
       genjet_E_.push_back(-5);
+      jet_trigjet_mindR_.push_back(-1);
+      jet_trigMatched_.push_back(0);
+      trigjet_pt_.push_back(-1);
+      trigjet_eta_.push_back(-5);
+      trigjet_phi_.push_back(-5);
+      trigjet_E_.push_back(-5);
+
     }
     dijet_M_ = 0;
     dijet_deta_ = 0;
@@ -104,6 +113,8 @@ namespace ic {
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
+    pass_singlejettrigger_ = -1;
+    pass_htquadjettrigger_ = -1;
     l1met_ = 0;
     metnomuons_ =0;
     nvetomuons_=0;
@@ -136,6 +147,12 @@ namespace ic {
     tau1_eta_=-10000;
     tau1_phi_=-1;
     lep_mt_=-1;
+    gamma1_pt_=-1;
+    gamma1_eta_=-10000;
+    gamma1_phi_=-1;
+    nloosephotons_=0;
+    nmediumphotons_=0;
+    ntightphotons_=0;
     n_vertices_=-1;
     for (unsigned ijet(0); ijet<nGenJetsSave_;++ijet){
       genjetptordered_pt_.push_back(-1);
@@ -143,9 +160,18 @@ namespace ic {
       genjetptordered_phi_.push_back(-5);
       genjetptordered_E_.push_back(-5);
     }
+    for (unsigned ijet(0); ijet<nTrigJetsSave_;++ijet){
+      trigjetptordered_pt_.push_back(-1);
+      trigjetptordered_eta_.push_back(-5);
+      trigjetptordered_phi_.push_back(-5);
+      trigjetptordered_E_.push_back(-5);
+    }
     digenjet_M_=-1;
     digenjet_deta_=-1;
     digenjet_dphi_=-1;
+    ditrigjet_M_=-1;
+    ditrigjet_deta_=-1;
+    ditrigjet_dphi_=-1;
   }
 
   LightTree::~LightTree(){
@@ -194,6 +220,12 @@ namespace ic {
       outputTree_->Branch(("gen"+label.str()+"_eta").c_str(),&genjet_eta_[ijet]);
       outputTree_->Branch(("gen"+label.str()+"_phi").c_str(),&genjet_phi_[ijet]);
       outputTree_->Branch(("gen"+label.str()+"_E").c_str(),&genjet_E_[ijet]);
+      outputTree_->Branch((label.str()+"_trigjet_mindR").c_str(),&jet_trigjet_mindR_[ijet]);
+      outputTree_->Branch((label.str()+"_trigMatched").c_str(),&jet_trigMatched_[ijet]);
+      outputTree_->Branch(("trig"+label.str()+"_pt").c_str(),&trigjet_pt_[ijet]);
+      outputTree_->Branch(("trig"+label.str()+"_eta").c_str(),&trigjet_eta_[ijet]);
+      outputTree_->Branch(("trig"+label.str()+"_phi").c_str(),&trigjet_phi_[ijet]);
+      outputTree_->Branch(("trig"+label.str()+"_E").c_str(),&trigjet_E_[ijet]);
     }
     outputTree_->Branch("forward_tag_eta",&forward_tag_eta_);
     outputTree_->Branch("central_tag_eta",&central_tag_eta_);
@@ -243,6 +275,8 @@ namespace ic {
     outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
     outputTree_->Branch("pass_mettrigger",&pass_mettrigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
+    outputTree_->Branch("pass_singlejettrigger",&pass_singlejettrigger_);
+    outputTree_->Branch("pass_htquadjettrigger",&pass_htquadjettrigger_);
     outputTree_->Branch("l1met",&l1met_);
     outputTree_->Branch("metnomuons",&metnomuons_);
     outputTree_->Branch("nvetomuons",&nvetomuons_);
@@ -275,6 +309,12 @@ namespace ic {
     outputTree_->Branch("tau1_eta",&tau1_eta_);
     outputTree_->Branch("tau1_phi",&tau1_phi_);
     outputTree_->Branch("lep_mt",&lep_mt_);
+    outputTree_->Branch("gamma1_pt",&gamma1_pt_);
+    outputTree_->Branch("gamma1_eta",&gamma1_eta_);
+    outputTree_->Branch("gamma1_phi",&gamma1_phi_);
+    outputTree_->Branch("nloosephotons",&nloosephotons_);
+    outputTree_->Branch("nmediumphotons",&nmediumphotons_);
+    outputTree_->Branch("ntightphotons",&ntightphotons_);
     outputTree_->Branch("n_vertices",&n_vertices_);
 
     for (unsigned ijet(0); ijet<nGenJetsSave_;++ijet){
@@ -288,6 +328,10 @@ namespace ic {
     outputTree_->Branch("digenjet_M",&digenjet_M_);
     outputTree_->Branch("digenjet_deta",&digenjet_deta_);
     outputTree_->Branch("digenjet_dphi",&digenjet_dphi_);
+
+    outputTree_->Branch("ditrigjet_M",&ditrigjet_M_);
+    outputTree_->Branch("ditrigjet_deta",&ditrigjet_deta_);
+    outputTree_->Branch("ditrigjet_dphi",&ditrigjet_dphi_);
 
 
 
@@ -320,6 +364,13 @@ namespace ic {
     genjet_eta_.clear();
     genjet_phi_.clear();
     genjet_E_.clear();
+    jet_trigjet_mindR_.clear();
+    jet_trigMatched_.clear();
+    trigjet_pt_.clear();
+    trigjet_eta_.clear();
+    trigjet_phi_.clear();
+    trigjet_E_.clear();
+
     for (unsigned ijet(0); ijet<nJetsSave_;++ijet){
       jet_pt_.push_back(-1);
       jet_eta_.push_back(-5);
@@ -334,6 +385,12 @@ namespace ic {
       genjet_eta_.push_back(-5);
       genjet_phi_.push_back(-5);
       genjet_E_.push_back(-5);
+      jet_trigjet_mindR_.push_back(-1);
+      jet_trigMatched_.push_back(0);
+      trigjet_pt_.push_back(-1);
+      trigjet_eta_.push_back(-5);
+      trigjet_phi_.push_back(-5);
+      trigjet_E_.push_back(-5);
     }
     dijet_M_ = 0;
     dijet_deta_ = 0;
@@ -381,6 +438,8 @@ namespace ic {
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
+    pass_singlejettrigger_ = -1;
+    pass_htquadjettrigger_ = -1;
     l1met_ = 0;
     metnomuons_ =0;
     nvetomuons_=0;
@@ -413,6 +472,12 @@ namespace ic {
     tau1_eta_=-10000;
     tau1_phi_=-1;
     lep_mt_=-1;
+    gamma1_pt_=-1;
+    gamma1_eta_=-10000;
+    gamma1_phi_=-1;
+    nloosephotons_=0;
+    nmediumphotons_=0;
+    ntightphotons_=0;
     n_vertices_=-1;
 
     genjetptordered_pt_.clear();
@@ -428,7 +493,19 @@ namespace ic {
     digenjet_M_=-1;
     digenjet_deta_=-1;
     digenjet_dphi_=-1;
-
+    trigjetptordered_pt_.clear();
+    trigjetptordered_eta_.clear();
+    trigjetptordered_phi_.clear();
+    trigjetptordered_E_.clear();
+    for (unsigned ijet(0); ijet<nTrigJetsSave_;++ijet){
+      trigjetptordered_pt_.push_back(-1);
+      trigjetptordered_eta_.push_back(-5);
+      trigjetptordered_phi_.push_back(-5);
+      trigjetptordered_E_.push_back(-5);
+    }
+    ditrigjet_M_=-1;
+    ditrigjet_deta_=-1;
+    ditrigjet_dphi_=-1;
 
 
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -449,12 +526,14 @@ namespace ic {
     for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
       std::string name = triggerPathPtrVec[i]->name();
       triggerPathPtrVec[i]->prescale();
-      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v") != name.npos) pass_sigtrigger_ = 1;
+      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_") != name.npos) pass_sigtrigger_ = 1;
       if (name.find("HLT_PFMET170_NoiseCleaned_v") != name.npos) pass_mettrigger_ = 1;
-      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v") != name.npos) pass_controltrigger_ = 1;
+      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_") != name.npos) pass_controltrigger_ = 1;
+      if (name.find("HLT_DiPFJetAve40_") != name.npos) pass_singlejettrigger_ = 1;
+      if (name.find("HLT_PFHT750_4JetPt50_") != name.npos) pass_htquadjettrigger_ = 1;
     }
     if(dotrigskim_){
-      if(!(pass_sigtrigger_==1||pass_controltrigger_==1||pass_mettrigger_==1)){
+      if(!(pass_sigtrigger_==1||pass_controltrigger_==1||pass_mettrigger_==1||pass_singlejettrigger_==1||pass_htquadjettrigger_==1)){
 	return 1;
       }
     }
@@ -487,26 +566,47 @@ namespace ic {
     total_weight_lepveto_ =wt*vetowt;
     if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<vetowt<<" "<<mu1_pt_<<" "<<mu1_eta_<<std::endl;//!!
     total_weight_leptight_=wt*tightwt;
-      
+    
     //get collections
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
-    Met const* met = event->GetPtr<Met>(met_label_);
+    //Met const* met = event->GetPtr<Met>(met_label_);
+    Met *met = 0;
+    try {
+      std::vector<Met*> metCol = event->GetPtrVec<Met>(met_label_);
+      met = metCol[0];
+    } catch (...){
+      //std::cout << " Met vec not found..." << std::endl;
+      met = event->GetPtr<Met>(met_label_);
+      if (!met) {
+	std::cerr << " -- Found no MET " << met_label_ << " in event! Exiting..." << std::endl;
+	exit(1);
+      }
+    }
     Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+    std::vector<Candidate *> const& l1forwardjets = event->GetPtrVec<Candidate>("l1extraForwardJets");
+    std::vector<Candidate *> const& l1centraljets = event->GetPtrVec<Candidate>("l1extraCentralJets");
     //!!if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
-    std::vector<PFJet*> alljets = event->GetPtrVec<PFJet>("AllpfJetsPFlow");
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
-    std::sort(alljets.begin(), alljets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jet_label_);
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<Muon*> vetomuons=event->GetPtrVec<Muon>("vetoMuons");
     std::vector<Muon*> selmuons=event->GetPtrVec<Muon>("selMuons");
     std::vector<Electron*> vetoelectrons=event->GetPtrVec<Electron>("vetoElectrons");
     std::vector<Electron*> selelectrons=event->GetPtrVec<Electron>("selElectrons");
     std::vector<Tau*> taus=event->GetPtrVec<Tau>("taus");
+    std::vector<Photon*> loosephotons=event->GetPtrVec<Photon>("loosePhotons");
+    std::vector<Photon*> mediumphotons=event->GetPtrVec<Photon>("mediumPhotons");
+    std::vector<Photon*> tightphotons=event->GetPtrVec<Photon>("tightPhotons");
+    
+    std::vector<TriggerObject*> triggerobjects=event->GetPtrVec<TriggerObject>(trig_obj_label_);
+
     std::vector<GenJet *> genvec;
     if(!is_data_)genvec= event->GetPtrVec<GenJet>("genJets");
     //std::vector<Vertex*> & vertices = event->GetPtrVec<Vertex>("vertices");
 
+    //Get vector of all trigger jets
+    std::vector<Candidate *> l1alljets = l1forwardjets;
+    l1alljets.insert(l1alljets.end(),l1centraljets.begin(),l1centraljets.end());
 
     if(!ignoreLeptons_) nvetomuons_=vetomuons.size();
     else nvetomuons_=0;
@@ -515,8 +615,19 @@ namespace ic {
     nselelectrons_=selelectrons.size();
     ntaus_=taus.size();
 
+    nloosephotons_=loosephotons.size();
+    nmediumphotons_=mediumphotons.size();
+    ntightphotons_=tightphotons.size();
+
     std::sort(selmuons.begin(), selmuons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::sort(selelectrons.begin(), selelectrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::sort(tightphotons.begin(), tightphotons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+
+    if(ntightphotons_>=1){
+      gamma1_pt_=tightphotons[0]->pt();
+      gamma1_eta_=tightphotons[0]->eta();
+      gamma1_phi_=tightphotons[0]->phi();
+    }
 
     //Get MT
     if(nselmuons_==1&&nselelectrons_==0&&ntaus_==0){//If 1 muon and no electrons use muon to make mt
@@ -662,9 +773,26 @@ namespace ic {
 	  ROOT::Math::PtEtaPhiEVector genjet2vec = genveccopy[1]->vector();
 	  ROOT::Math::PtEtaPhiEVector digenjetvec = genjet1vec+genjet2vec;
 	  digenjet_M_=digenjetvec.M();
-	  digenjet_deta_ = fabs(genvec[0]->eta() - genvec[1]->eta());
+	  digenjet_deta_ = fabs(genveccopy[0]->eta() - genveccopy[1]->eta());
 	  digenjet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(genjet1vec,genjet2vec));
 	}
+      }
+      std::vector<Candidate*> trigveccopy;
+      trigveccopy=l1alljets;
+      std::sort(trigveccopy.begin(),trigveccopy.end(),ptorderedcandidatesort);
+      for(unsigned itrigjet=0;(itrigjet<trigveccopy.size()&&itrigjet<nTrigJetsSave_);itrigjet++){
+	trigjetptordered_pt_[itrigjet]=trigveccopy[itrigjet]->pt();
+	trigjetptordered_eta_[itrigjet]=trigveccopy[itrigjet]->eta();
+	trigjetptordered_phi_[itrigjet]=trigveccopy[itrigjet]->phi();
+	trigjetptordered_E_[itrigjet]=trigveccopy[itrigjet]->energy();
+      }
+      if(trigveccopy.size()>=2){
+	ROOT::Math::PtEtaPhiEVector trigjet1vec = trigveccopy[0]->vector();
+	ROOT::Math::PtEtaPhiEVector trigjet2vec = trigveccopy[1]->vector();
+	ROOT::Math::PtEtaPhiEVector ditrigjetvec = trigjet1vec+trigjet2vec;
+	ditrigjet_M_=ditrigjetvec.M();
+	ditrigjet_deta_ = fabs(trigveccopy[0]->eta() - trigveccopy[1]->eta());
+	ditrigjet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(trigjet1vec,trigjet2vec));
       }
 
       met_ = met->pt();
@@ -735,7 +863,7 @@ namespace ic {
       std::vector<PFJet*> jetveccopy;
       jetveccopy=jets;
       std::sort(jetveccopy.begin(),jetveccopy.end(),ptorderedjetsort);
-      for(unsigned ijet=0;(ijet<jetveccopy.size()&&ijet<nJetsSave_);ijet++){
+      for(unsigned ijet=0;ijet<jetveccopy.size();ijet++){
 	if(ijet<nJetsSave_){
 	  jet_pt_[ijet]=jetveccopy[ijet]->pt();
 	  jet_eta_[ijet]=jetveccopy[ijet]->eta();
@@ -764,6 +892,37 @@ namespace ic {
 	      genjet_phi_[ijet]=genvec[whichgenjet]->phi();
 	    }
 	  }
+
+	  //fill trig matched
+	  std::pair<bool,unsigned> trigmatch=IsFilterMatchedWithIndex(jetveccopy[ijet],triggerobjects,"hltDiPFJet40MJJ600DEta3p5",0.4);
+	  if(trigmatch.first){
+	    jet_trigMatched_[ijet]=1;
+	    trigjet_pt_[ijet]=triggerobjects[trigmatch.second]->pt();
+	    trigjet_eta_[ijet]=triggerobjects[trigmatch.second]->eta();
+	    trigjet_phi_[ijet]=triggerobjects[trigmatch.second]->phi();
+            jet_trigjet_mindR_[ijet]=ROOT::Math::VectorUtil::DeltaR(triggerobjects[trigmatch.second]->vector(),jetveccopy[ijet]->vector());
+	  }
+
+	  // double trigmindR = 1000;
+	  // int whichtrigjet=-1;
+	  // for (unsigned iTrigJet = 0; iTrigJet < l1alljets.size(); ++iTrigJet) {//loop on trigjets
+	  //   double dR = ROOT::Math::VectorUtil::DeltaR(l1alljets[iTrigJet]->vector(),jetveccopy[ijet]->vector());
+	  //   if (dR<trigmindR){
+	  //     trigmindR = dR;
+	  //     whichtrigjet = iTrigJet;
+	  //   }
+	  // }//loop on trigjets
+
+	  // //!!DO WRT HLT WITH TRIG OBJECTS ISFILTERMATCHED FNPREDICATES FUNCTION
+	  // //triggerobjects collection
+	  // jet_trigjet_mindR_[ijet]=trigmindR;
+	  // if (trigmindR<0.4){
+	  //   jet_trigMatched_[ijet]=1;
+	  //   trigjet_pt_[ijet]=l1alljets[whichtrigjet]->pt();
+	  //   trigjet_eta_[ijet]=l1alljets[whichtrigjet]->eta();
+	  //   trigjet_phi_[ijet]=l1alljets[whichtrigjet]->phi();
+	  // }
+
 
 	}
 	if(jetveccopy[ijet]->pt()>15)n_jets_15_++;

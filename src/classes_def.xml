@@ -46,6 +46,8 @@
   <class name="ic::TriggerObject"/>
   <class name="std::vector<ic::TriggerObject>"/>
   <class name="ic::Met"/>
+  <class name="ic::Met::BasicMet"/>
+  <class name="std::map<unsigned long, ic::Met::BasicMet>"/>
   <class name="std::vector<ic::Met>"/>
   <class name="std::vector<unsigned long>"/>
   <class name="edm::Wrapper<std::vector<unsigned long> >"/>
