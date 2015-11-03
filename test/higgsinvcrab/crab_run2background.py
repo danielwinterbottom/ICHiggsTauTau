@@ -57,13 +57,13 @@ if __name__ == '__main__':
     #tasks.append(('Powheg-Htoinv-mH125Startupbx50','/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring15DR74-StartupFlat10to50bx50Raw_MCRUN2_74_V8-v1/MINIAODSIM'))
     
     #Signal nominal 25ns running conditions
-    #tasks.append(('Powheg-Htoinv-mH110Asympt25ns','/VBF_HToInvisible_M110_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
-    #tasks.append(('Powheg-Htoinv-mH125Asympt25ns','/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
-    #tasks.append(('Powheg-Htoinv-mH150Asympt25ns','/VBF_HToInvisible_M150_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
-    #tasks.append(('Powheg-Htoinv-mH200Asympt25ns','/VBF_HToInvisible_M200_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
-    #tasks.append(('Powheg-Htoinv-mH300Asympt25ns','/VBF_HToInvisible_M300_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
-    #tasks.append(('Powheg-Htoinv-mH400Asympt25ns','/VBF_HToInvisible_M400_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
-    #tasks.append(('Powheg-Htoinv-mH500Asympt25ns','/VBF_HToInvisible_M500_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH110Asympt25ns','/VBF_HToInvisible_M110_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH125Asympt25ns','/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH150Asympt25ns','/VBF_HToInvisible_M150_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH200Asympt25ns','/VBF_HToInvisible_M200_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH300Asympt25ns','/VBF_HToInvisible_M300_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH400Asympt25ns','/VBF_HToInvisible_M400_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH500Asympt25ns','/VBF_HToInvisible_M500_13TeV_powheg_pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
 
     #VV
     tasks.append(('WW-pythia8','/WW_TuneCUETP8M1_13TeV-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     tasks.append(('SingleT-t-powheg-lep','/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
     tasks.append(('SingleTBar-t-powheg-lep','/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
     tasks.append(('SingleT-s-amcatnlo-lep','/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
-    #tasks.append(('TTJets-mg','/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v3/MINIAODSIM'))
+    tasks.append(('TTJets-mg','/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v3/MINIAODSIM'))
     tasks.append(('TT-powheg','/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM'))
     
     #V+jets
