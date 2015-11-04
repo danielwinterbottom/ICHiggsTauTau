@@ -1,0 +1,72 @@
+grep "tasks.append" crab_run2background.py > tmp.txt
+
+awk '{FS=","}{print $2}' tmp.txt > queryDBS.txt
+
+awk '{FS=","}{print $2}' queryDBS.txt > queryDBS.txt
+
+tail -n 8 queryDBS.txt
+ for datasetname in `head -n 8 queryDBS.txt`; do echo $datasetname >> querydbs.log; ./das_client.py --query="summary dataset=${datasetname}" >> querydbs.log; done
+ tail querydbs.log 
+ grep "nevents" querydbs.log | awk '{print $3}' > queryDBS_events.txt
+ paste queryDBS.txt queryDBS_events.txt > queryDBS_result.txt
+ for datasetname in `cat queryDBS.txt`; do echo $datasetname >> querydbsfiles.log; ./das_client.py --query="file dataset=${datasetname}" --limit=1 | tail -n 1 >> querydbsfiles.log; done 
+
+index=0; for filename in `cat querydbsfiles.log`; do echo $filename; cmsRun extractXSfromMC.py inputFiles="root://xrootd.unl.edu/${filename}" maxEvents=-1 >> outputXSjobs.log ; let index+=1 ; done
+
+
+grep "Before " /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log | wc -l
+grep "After filter" /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log | wc -l
+grep "Successfully opened file" /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log | wc -l
+
+grep "Before " /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log > xsBefore.txt
+grep "After filter" /afs/cern.ch/work/a/amagnan/CMSSW_7_5_0/src/outputXS.log > xsAfter.txt
+awk '{print $7}' xsBefore.txt > xsBeforeValue.txt
+awk '{print $7}' xsAfter.txt > xsAfterValue.txt
+
+paste queryDBS.txt queryDBS_events.txt  xsBeforeValue.txt xsAfterValue.txt > queryDBS_summary.txt
+
+sed 's/0.000e+00/1.0e+08/g' queryDBS_summary.txt > tmp.txt
+awk '{$5=$2/$3*1./1000}{print $5}' tmp.txt > eqLumiBefore.txt
+awk '{$5=$2/$4*1./1000}{print $5}' tmp.txt > eqLumiAfter.txt
+rm tmp.txt
+sed 's/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2/SHORT/' queryDBS.txt > tmp.txt
+paste tmp.txt queryDBS_events.txt  xsBeforeValue.txt xsAfterValue.txt eqLumiBefore.txt eqLumiAfter.txt > queryDBS_summary.txt
+rm tmp.txt
+
+awk 'BEGIN { OFS = " & "; ORS = "\\\\\n" }{print $1, $2, $3, $4, $5, $6}' queryDBS_summary.txt > nameEventsXSLumiEq.tex
+
+### making params.dat file
+PROD="151030"
+
+echo "## Cross Sections #-1.0 for data" > Params$PROD.dat
+grep "tasks.append" crab_run2data.py | awk '{FS=","}{print $1}' | sed '/^ *# *tasks.append/d' | sed "s/ *tasks.append(('/XS_MET_/" | sed "s/'/:-1.0/" >> Params$PROD.dat
+
+grep "tasks.append" crab_run2background.py | awk '{FS=","}{print $1}' | sed '/^ *# *tasks.append/d' | sed "s/ *tasks.append(('/XS_MC_/" | sed "s/'/:/" > params_xs.txt
+grep "tasks.append" crab_run2background.py | awk '{FS=","}{print $1}' | sed '/^ *# *tasks.append/d' | sed "s/ *tasks.append(('/EVT_MC_/" | sed "s/'/:/" > params_evt.txt
+
+awk '{if ($4 == 0.000e+00) $4=$3}{print $4}' queryDBS_summary.txt > xsval.txt
+awk '{print $2}' queryDBS_summary.txt > evtval.txt
+
+paste -d "" params_xs.txt xsval.txt >> Params$PROD.dat
+echo "" >> Params$PROD.dat
+echo "" >> Params$PROD.dat
+echo "## Processed Events" >> Params$PROD.dat
+grep "tasks.append" crab_run2data.py | awk '{FS=","}{print $1}' | sed '/^ *# *tasks.append/d' | sed "s/ *tasks.append(('/EVT_MET_/" | sed "s/'/:1.0/" >> Params$PROD.dat
+paste -d "" params_evt.txt evtval.txt >> Params$PROD.dat
+
+rm params_xs.txt params_evt.txt xsval.txt evtval.txt
+echo "" >> Params$PROD.dat
+echo "" >> Params$PROD.dat
+echo "## Lumi" >> Params$PROD.dat
+echo "LUMI_DATA:1550" >> Params$PROD.dat
+echo "LUMI_DATA_LABEL:1.55 fb^{-1}" >> Params$PROD.dat
+echo "YEAR_LABEL:2015" >> Params$PROD.dat
+echo "## Signal options" >> Params$PROD.dat
+echo "DRAW_SIGNAL:1" >> Params$PROD.dat
+echo "DRAW_SIGNAL_FACTOR:1" >> Params$PROD.dat
+echo "DRAW_SIGNAL_MASS:125" >> Params$PROD.dat
+echo "## TOP Options" >> Params$PROD.dat
+echo "## VV Options" >> Params$PROD.dat
+echo "## QCD Options" >> Params$PROD.dat
+
+
