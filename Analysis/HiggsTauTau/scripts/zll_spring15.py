@@ -55,11 +55,6 @@ if options.submit:  JOBSUBMIT=options.submit
 
 channels = options.channels
 
-
-
-
-
-
 CONFIG='scripts/Zll_config.json'
 #CONFIG='scripts/WMuNu_config.json'
 
@@ -97,15 +92,15 @@ if options.proc_data or options.proc_all:
 if options.proc_bkg or options.proc_all:
   central_samples = [
 #    'TTJets',
-  #  'TT',
+    'TT',
     'WJetsToLNu',
-  #  'WWinclusive',
-  #  'ZZinclusive',
-  #  'WZinclusive',
+    'WWinclusive',
+    'ZZinclusive',
+    'WZinclusive',
    # 'QCDFlat',
 #    'QCDMuEnr',
-  #  'T-tW',
-  #  'Tbar-tW',
+    'T-tW',
+    'Tbar-tW',
 #    'WZTo1L1Nu2Q',
 #    'WWTo2L2Nu',
 #    'WWTo4Q',
@@ -113,29 +108,32 @@ if options.proc_bkg or options.proc_all:
 #    'ZZTo4L',
     'DYJetsToLL'
      ]
-
-
-  for sa in central_samples:
-      JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"zee\":[],\"zmm\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 30 
-      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-
+      
   tandp_samples = [
     'DYJetsToLL'
      ]
 
-  for sa in tandp_samples:
-      JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"tpzee\":[],\"tpzmm\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 30 
-      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+for channel in channels:
+      if 'tp' in channel:  
+          for sa in tandp_samples:
+              JOB='%s_2015' % (sa)
+              JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"tpzee\":[],\"tpzmm\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+              nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+              nperjob = 30 
+              for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+                os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+                os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+              file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+      else:
+          for sa in central_samples:
+              JOB='%s_2015' % (sa)
+              JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"zee\":[],\"zmm\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+              nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+              nperjob = 30 
+              for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+                os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+                os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+              file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+
+
 
