@@ -968,6 +968,7 @@ void HTTSequence::BuildETPairs() {
 
 if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
+    .set_dirname("ElectronEfficiencyForIDStudy")
     .set_fs(fs.get()));
 }
 
@@ -1001,6 +1002,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
 
 if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIsoStudy")
+    .set_dirname("ElectronEfficiencyForIsoStudy")
     .set_fs(fs.get()));
 }
 

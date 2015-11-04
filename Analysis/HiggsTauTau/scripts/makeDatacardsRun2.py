@@ -28,7 +28,7 @@ parser.add_option("--blind", dest="blind", action='store_true', default=False,
                   help="blind data")
 parser.add_option("--extra", dest="extra", type='string', default='',
                   help="Extra command line options, applied to every datacard")
-parser.add_option("-s", "--scheme", dest="scheme", type='string', default='run2_mssm',
+parser.add_option("-s", "--scheme", dest="scheme", type='string', default='run2_sm',
                   help="datacard scheme")
 parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
                   help="Only make inputs for visible mass, no svfit.")
@@ -92,9 +92,9 @@ extra_channel = {
 #################################################################
 #### Old SM scheme
 #################################################################
-if options.scheme == 'run2_mssm':
+if options.scheme == 'run2_sm':
 #  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
-  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300]"
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"
   scheme_et = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
@@ -135,8 +135,8 @@ if options.scheme == 'run2_mssm':
     'em' : 'em_default',
     'tt' : 'tt_default'
   }
-  sig_scheme = 'run2_mssm'
-  ANA = 'mssm'
+  sig_scheme = 'run2_sm'
+  ANA = 'sm'
 
 cat_schemes = {
   'et' : scheme_et,

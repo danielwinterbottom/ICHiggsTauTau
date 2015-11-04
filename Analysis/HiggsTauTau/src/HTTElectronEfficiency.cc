@@ -14,7 +14,7 @@ HTTElectronEfficiency::~HTTElectronEfficiency() { ; }
 
 int HTTElectronEfficiency::PreAnalysis() {
   if (fs_){
-    dir_ = new TFileDirectory(fs_->mkdir("HTTElectronEfficiency"));
+    dir_ = new TFileDirectory(fs_->mkdir(dirname_.c_str()));
     outtree_ = dir_->make<TTree>("tree","tree");
     outtree_->Branch("eta", &eta_);
     outtree_->Branch("pt", &pt_);

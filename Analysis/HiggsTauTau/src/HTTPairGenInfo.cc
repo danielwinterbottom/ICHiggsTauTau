@@ -86,7 +86,9 @@ namespace ic {
    if(leptonsize!=0) {
       std::vector<bool> status_flags = leading_lepton_match.at(0).second->statusFlags();
       leading_lepton_match_pt = leading_lepton_match.at(0).second->pt();
+      if(fs_){ 
        hists_[0]->Fill("relpt_vs_drlep_lead",leading_lepton_match.at(0).first->pt()/leading_lepton_match.at(0).second->pt(),DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second));
+      }
       if(status_flags[IsPrompt]){
         if(abs(leading_lepton_match.at(0).second->pdgid())==11){
           gen_match_1 = mcorigin::promptE;
@@ -104,7 +106,9 @@ namespace ic {
         } 
       }
      if(tausize!=0){
+       if(fs_){
        hists_[0]->Fill("relpt_vs_drtau_lead",leading_tau_match.at(0).first->pt()/leading_tau_match.at(0).second->pt(),DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second));
+       }
        leading_lepton_match_pt = leading_tau_match.at(0).second->pt();
        gen_match_1 = mcorigin::tauHad;
       }
@@ -121,7 +125,9 @@ namespace ic {
    if(leptonsize!=0) {
       std::vector<bool> status_flags = subleading_lepton_match.at(0).second->statusFlags();
       subleading_lepton_match_pt = subleading_lepton_match.at(0).second->pt();
+      if(fs_){
        hists_[0]->Fill("relpt_vs_drlep_sublead",subleading_lepton_match.at(0).first->pt()/subleading_lepton_match.at(0).second->pt(),DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second));
+      }
       if(status_flags[IsPrompt]){
         if(abs(subleading_lepton_match.at(0).second->pdgid())==11){
           gen_match_2 = mcorigin::promptE;
@@ -139,7 +145,9 @@ namespace ic {
         } 
       }
      if(tausize!=0){
+       if(fs_){
        hists_[0]->Fill("relpt_vs_drtau_sublead",subleading_tau_match.at(0).first->pt()/subleading_tau_match.at(0).second->pt(),DR(subleading_tau_match.at(0).first,subleading_tau_match.at(0).second));
+       }
        subleading_lepton_match_pt = subleading_tau_match.at(0).second->pt();
        gen_match_2 = mcorigin::tauHad;
       }

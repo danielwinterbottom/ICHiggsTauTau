@@ -300,21 +300,19 @@ namespace ic {
       alias_map_["sel"]                       = "1";
     }
 
-    alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL";
+    alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL_M-50-LO";
 
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
 //     "WZJetsTo3LNu",
-     "T-tW", "Tbar-tW", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
-     //"T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
+     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     //,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     };
 
   if(ch_==channel::em){
     samples_alias_map_["vv_samples"] = {
 //     "WZJetsTo3LNu",
-     "T-tW", "Tbar-tW", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
-     //"T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
+     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"//,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     //,"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     };
   }
@@ -322,12 +320,12 @@ namespace ic {
 
 
     samples_alias_map_["top_samples"] = {
-     "TT"
+     "TT-ext"
     };
 
  
    samples_alias_map_["ztt_shape_samples"]={
-    "DYJetsToLL"//, "DYJetsToLL10-50"
+    "DYJetsToLL_M-50-LO"//, "DYJetsToLL10-50"
    };
 
    samples_alias_map_["data_samples"] = {
@@ -335,22 +333,22 @@ namespace ic {
    };
    if(ch_==channel::et || ch_==channel::zee){
      samples_alias_map_["data_samples"] = {
-      "SingleElectron-2015D-prompt","SingleElectron-2015D-promptv4"
+      "SingleElectron-2015D-Oct05","SingleElectron-2015D-promptv4"
      };
    }
    if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::wmnu){
      samples_alias_map_["data_samples"] = {
-     "SingleMuon-2015D-prompt","SingleMuon-2015D-promptv4"
+     "SingleMuon-2015D-Oct05","SingleMuon-2015D-promptv4"
      };
    }
    if(ch_==channel::tt){
      samples_alias_map_["data_samples"] = {
-      "Tau-2015D-prompt","Tau-2015D-promptv4"
+      "Tau-2015D-Oct05","Tau-2015D-promptv4"
      };
    }
    if(ch_==channel::em){
     samples_alias_map_["data_samples"] = {
-      "MuonEG-2015D-prompt","MuonEG-2015D-promptv4"
+      "MuonEG-2015D-Oct05","MuonEG-2015D-promptv4"
     };
    }
 
@@ -358,17 +356,17 @@ namespace ic {
 
   if(use_status_flags_){
     samples_alias_map_["zj_samples"] = {
-     "DYJetsToLL",
+     "DYJetsToLL_M-50-LO",
     };
 
    samples_alias_map_["ztt_samples"]={
-     "DYJetsToLL",
+     "DYJetsToLL_M-50-LO",
    };
    samples_alias_map_["zl_samples"] = {
-     "DYJetsToLL",
+     "DYJetsToLL_M-50-LO",
    };
    samples_alias_map_["zll_samples"] = {
-     "DYJetsToLL",
+     "DYJetsToLL_M-50-LO",
    };
 
 
@@ -393,10 +391,9 @@ namespace ic {
   
  if(ch_!=channel::em && use_status_flags_){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL", 
-   "T-tW", "Tbar-tW", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   //"T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "WJetsToLNu","TT"
+   "DYJetsToLL_M-50-LO", 
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "WJetsToLNu-LO","TT-ext"
    };
 
 
@@ -424,20 +421,18 @@ namespace ic {
 
  if(ch_==channel::em && use_status_flags_){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL",
-   "T-tW", "Tbar-tW", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   //"T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "TT"
+   "DYJetsToLL_M-50-LO",
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "TT-ext","WJetsToLNu-LO"
    };
 
   }
 
 if(use_status_flags_){
   samples_alias_map_["w_sub_samples"] = {
-   "DYJetsToLL",
-   "T-tW", "Tbar-tW", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   //"T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "TT"
+   "DYJetsToLL_M-50-LO",
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "TT-ext"
    };
 
   }else{
@@ -450,7 +445,7 @@ if(use_status_flags_){
 }
 
 samples_alias_map_["wjets_samples"] = {
-  "WJetsToLNu"
+  "WJetsToLNu-LO"
  };
 
 sample_names_={};
@@ -901,13 +896,13 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       hmap[ztt_map_label+postfix] = ztt_pair;
       total_hist.Add(&hmap[ztt_map_label+postfix].first,1.0);
     }    // W+jets
-    if (ch_ != channel::em) {
+//    if (ch_ != channel::em) {
       auto w_pair = this->GenerateW(method, var, sel, cat, wt);
       PrintValue("W"+postfix, w_pair.second);
       total_bkr = ValueAdd(total_bkr, w_pair.second);
       hmap["W"+postfix] = w_pair;
       total_hist.Add(&hmap["W"+postfix].first,1.0);
-    }
+ //   }
     // QCD/Fakes
     if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);

@@ -41,6 +41,7 @@ class HTTElectronEfficiency : public ModuleBase {
 
 
   CLASS_MEMBER(HTTElectronEfficiency, fwlite::TFileService*, fs)
+  CLASS_MEMBER(HTTElectronEfficiency, std::string, dirname)
 
  public:
   HTTElectronEfficiency(std::string const& name);

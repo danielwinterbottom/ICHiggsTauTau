@@ -692,10 +692,10 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (datacard != "") {
 		std::string dc_mode_label;
-    if (channel_str == "et") 			dc_mode_label = "eleTau";
-    if (channel_str == "mt") 			dc_mode_label = "muTau";
-    if (channel_str == "tt")      dc_mode_label = "tauTau";
-    if (channel_str == "em") 			dc_mode_label = "emu";
+    if (channel_str == "et") 			dc_mode_label = "et";
+    if (channel_str == "mt") 			dc_mode_label = "mt";
+    if (channel_str == "tt")      dc_mode_label = "tt";
+    if (channel_str == "em") 			dc_mode_label = "em";
 		std::string tfile_name = "datacard_"+reduced_var+"_"+datacard+"_"+channel_str+("_2015")+".root";
 		TFile dc_file(tfile_name.c_str(),"RECREATE");
 		dc_file.cd();
