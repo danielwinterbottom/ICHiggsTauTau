@@ -1150,7 +1150,7 @@ process.icMvaMetSequence += cms.Sequence(
 process.icGenSequence = cms.Sequence()
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
+process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
   src = cms.InputTag("genParticles", "", "HLT"),
   select = cms.vstring(
     "drop  *",
@@ -1167,7 +1167,7 @@ process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
   )
 )
 
-#process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
+#process.prunedGenParticlesTaus = cms.EDProducer("GenParticlePruner",
 #  src = cms.InputTag("genParticles", "", "HLT"),
 #  select = cms.vstring(
 #    "drop  *",

@@ -852,7 +852,7 @@ process.icPrunedGenParticles = cms.EDProducer("GenParticlePruner",
   )
 )
 
-process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
+process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner53X",
   src = cms.InputTag("prunedGenParticles","","PAT"),
   select = cms.vstring(
     "drop  *",
