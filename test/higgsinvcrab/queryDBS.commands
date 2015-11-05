@@ -52,6 +52,7 @@ echo "" >> Params$PROD.dat
 echo "" >> Params$PROD.dat
 echo "## Processed Events" >> Params$PROD.dat
 grep "tasks.append" crab_run2data.py | awk '{FS=","}{print $1}' | sed '/^ *# *tasks.append/d' | sed "s/ *tasks.append(('/EVT_MET_/" | sed "s/'/:1.0/" >> Params$PROD.dat
+
 paste -d "" params_evt.txt evtval.txt >> Params$PROD.dat
 
 rm params_xs.txt params_evt.txt xsval.txt evtval.txt
@@ -69,4 +70,6 @@ echo "## TOP Options" >> Params$PROD.dat
 echo "## VV Options" >> Params$PROD.dat
 echo "## QCD Options" >> Params$PROD.dat
 
+### making event list actually run for params.dat file
+cat ${PROD}_*_report.dat > Params$PRODEVT.dat
 
