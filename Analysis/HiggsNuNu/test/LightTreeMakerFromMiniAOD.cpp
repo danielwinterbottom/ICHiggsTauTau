@@ -343,7 +343,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_moriond) data_pu_file   =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
-  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_2015D_246908-259891.root";
+  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_2015D_246908-259891-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");

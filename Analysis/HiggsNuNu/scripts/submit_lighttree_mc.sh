@@ -1,10 +1,10 @@
 #!/bin/sh
-DOCERN=1
-DOSUBMIT=0
+DOCERN=0
+DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=LightTreeMakerFromMiniAOD
-MYEXEC=JetMETvalidation
+MYEXEC=LightTreeMakerFromMiniAOD
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
@@ -21,17 +21,17 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
-PRODUCTION=Oct19
-PRODUSER=pdunne
+PRODUCTION=151030
+PRODUSER=amagnan
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_noskim_151026
+  JOBDIRPREFIX=jobs_lighttree_301015goldenjson_hltmet_051115v2/
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_noskim_151026
+  OUTPUTPREFIX=output_lighttree_301015goldenjson_hltmet_051115v2/
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
