@@ -827,8 +827,8 @@ int main(int argc, char* argv[]){
     .set_do_promptskim(dopromptskim)
     .set_do_noskim(donoskim)
     .set_ignoreLeptons(ignoreLeptons)
-    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
-    .set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
+    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
+  //.set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence

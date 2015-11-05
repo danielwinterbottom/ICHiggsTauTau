@@ -27,6 +27,7 @@ namespace ic {
     CLASS_MEMBER(LightTree,bool, do_noskim);
     CLASS_MEMBER(LightTree,bool, is_embedded);
     CLASS_MEMBER(LightTree,std::string, trig_obj_label);
+    CLASS_MEMBER(LightTree,std::string, cont_trig_obj_label);
     CLASS_MEMBER(LightTree,std::string, trigger_path);
 
     unsigned nJetsSave_=6;
@@ -69,6 +70,11 @@ namespace ic {
     std::vector<double> trigjet_eta_;
     std::vector<double> trigjet_phi_;
     std::vector<double> trigjet_E_;
+
+    double sigtrigcalomet_;
+    double sigtrigpfmet_;
+    double conttrigcalomet_;
+    double conttrigpfmet_;      
 
     /* double jet1_pt_; */
     /* double jet2_pt_; */
