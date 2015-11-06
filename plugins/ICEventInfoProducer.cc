@@ -162,9 +162,11 @@ void ICEventInfoProducer::produce(edm::Event& event,
   edm::Handle<GenEventInfoProduct> gen_info_handle;
   if(!event.isRealData()){
     event.getByLabel("generator",gen_info_handle);
-    if(gen_info_handle->weight()>=0){
-      info_->set_weight("wt_mc_sign",1);
-    } else info_->set_weight("wt_mc_sign",-1);
+    if(gen_info_handle.isValid()){
+      if(gen_info_handle->weight()>=0){
+        info_->set_weight("wt_mc_sign",1);
+      } else info_->set_weight("wt_mc_sign",-1);
+    }
   }
   if(is_nlo_){
     event.getByLabel(lhe_collection_, lhe_handle); 
