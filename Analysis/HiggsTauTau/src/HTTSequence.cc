@@ -687,6 +687,7 @@ if(channel != channel::wmnu) {
 if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
+    .set_write_plots(false)
     .set_ditau_label("ditau"));
 }
 

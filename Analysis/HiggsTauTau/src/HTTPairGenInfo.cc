@@ -13,6 +13,7 @@ namespace ic {
   HTTPairGenInfo::HTTPairGenInfo(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "ditau";
     fs_ = NULL;
+    write_plots_ = false;
     hists_.resize(1);
   }
 
@@ -21,7 +22,7 @@ namespace ic {
   }
 
   int HTTPairGenInfo::PreAnalysis() {
-  if (fs_) {
+  if (fs_ && write_plots_) {
       hists_[0] = new Dynamic2DHistoSet(fs_->mkdir("httpairgeninfo"));
       for (unsigned i = 0; i < hists_.size(); ++i) {
         hists_[i]->Create("relpt_vs_drlep_lead", 50, 0, 10, 20, 0, 0.5);
@@ -62,11 +63,11 @@ namespace ic {
  
  
  
-    std::vector<std::pair<Candidate*, GenParticle*> > leading_lepton_match = MatchByDR(leading_lepton, sel_particles, 0.5, true, true);
-    std::vector<std::pair<Candidate*, GenJet*> > leading_tau_match  = MatchByDR(leading_lepton, gen_taus_ptr, 0.5, true, true);
+    std::vector<std::pair<Candidate*, GenParticle*> > leading_lepton_match = MatchByDR(leading_lepton, sel_particles, 0.2, true, true);
+    std::vector<std::pair<Candidate*, GenJet*> > leading_tau_match  = MatchByDR(leading_lepton, gen_taus_ptr, 0.2, true, true);
 
-    std::vector<std::pair<Candidate*, GenParticle*> > subleading_lepton_match = MatchByDR(subleading_lepton, sel_particles, 0.5, true, true);
-    std::vector<std::pair<Candidate*, GenJet*> > subleading_tau_match  = MatchByDR(subleading_lepton, gen_taus_ptr, 0.5, true, true);
+    std::vector<std::pair<Candidate*, GenParticle*> > subleading_lepton_match = MatchByDR(subleading_lepton, sel_particles, 0.2, true, true);
+    std::vector<std::pair<Candidate*, GenJet*> > subleading_tau_match  = MatchByDR(subleading_lepton, gen_taus_ptr, 0.2, true, true);
     
 
 
@@ -74,8 +75,10 @@ namespace ic {
    mcorigin gen_match_2 = mcorigin::fake;
    int leptonsize = leading_lepton_match.size();
    int tausize = leading_tau_match.size();
-   double leading_lepton_match_pt = -1.;
+/*   double leading_lepton_match_pt = -1.;
    double subleading_lepton_match_pt = -1.;
+   double leading_lepton_match_DR = -1.;
+   double subleading_lepton_match_DR = -1;*/
 
 
    if(leptonsize!=0&&tausize!=0){
@@ -85,9 +88,10 @@ namespace ic {
    if(leptonsize==0&&tausize==0) gen_match_1 = mcorigin::fake;
    if(leptonsize!=0) {
       std::vector<bool> status_flags = leading_lepton_match.at(0).second->statusFlags();
-      leading_lepton_match_pt = leading_lepton_match.at(0).second->pt();
-      if(fs_){ 
-       hists_[0]->Fill("relpt_vs_drlep_lead",leading_lepton_match.at(0).first->pt()/leading_lepton_match.at(0).second->pt(),DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second));
+//      leading_lepton_match_pt = leading_lepton_match.at(0).second->pt();
+//      leading_lepton_match_DR = DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second);
+      if(fs_ && write_plots_){ 
+       hists_[0]->Fill("relpt_vs_drlep_lead",fabs(leading_lepton_match.at(0).second->pt()-leading_lepton_match.at(0).first->pt())/leading_lepton_match.at(0).first->pt(),DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second));
       }
       if(status_flags[IsPrompt]){
         if(abs(leading_lepton_match.at(0).second->pdgid())==11){
@@ -106,10 +110,11 @@ namespace ic {
         } 
       }
      if(tausize!=0){
-       if(fs_){
-       hists_[0]->Fill("relpt_vs_drtau_lead",leading_tau_match.at(0).first->pt()/leading_tau_match.at(0).second->pt(),DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second));
+       if(fs_ && write_plots_){
+       hists_[0]->Fill("relpt_vs_drtau_lead",fabs(leading_tau_match.at(0).second->pt()-leading_tau_match.at(0).first->pt())/leading_tau_match.at(0).first->pt(),DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second));
        }
-       leading_lepton_match_pt = leading_tau_match.at(0).second->pt();
+ //      leading_lepton_match_pt = leading_tau_match.at(0).second->pt();
+  //     leading_lepton_match_DR = DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second);
        gen_match_1 = mcorigin::tauHad;
       }
    
@@ -124,9 +129,10 @@ namespace ic {
    if(leptonsize==0&&tausize==0) gen_match_2 = mcorigin::fake;
    if(leptonsize!=0) {
       std::vector<bool> status_flags = subleading_lepton_match.at(0).second->statusFlags();
-      subleading_lepton_match_pt = subleading_lepton_match.at(0).second->pt();
-      if(fs_){
-       hists_[0]->Fill("relpt_vs_drlep_sublead",subleading_lepton_match.at(0).first->pt()/subleading_lepton_match.at(0).second->pt(),DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second));
+   //   subleading_lepton_match_pt = subleading_lepton_match.at(0).second->pt();
+    //  subleading_lepton_match_DR = DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second);
+      if(fs_ && write_plots_){
+       hists_[0]->Fill("relpt_vs_drlep_sublead",fabs(subleading_lepton_match.at(0).second->pt()-subleading_lepton_match.at(0).first->pt())/subleading_lepton_match.at(0).first->pt(),DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second));
       }
       if(status_flags[IsPrompt]){
         if(abs(subleading_lepton_match.at(0).second->pdgid())==11){
@@ -145,18 +151,21 @@ namespace ic {
         } 
       }
      if(tausize!=0){
-       if(fs_){
-       hists_[0]->Fill("relpt_vs_drtau_sublead",subleading_tau_match.at(0).first->pt()/subleading_tau_match.at(0).second->pt(),DR(subleading_tau_match.at(0).first,subleading_tau_match.at(0).second));
+       if(fs_&&write_plots_){
+       hists_[0]->Fill("relpt_vs_drtau_sublead",fabs(subleading_tau_match.at(0).second->pt()-subleading_tau_match.at(0).first->pt())/subleading_tau_match.at(0).first->pt(),DR(subleading_tau_match.at(0).first,subleading_tau_match.at(0).second));
        }
-       subleading_lepton_match_pt = subleading_tau_match.at(0).second->pt();
+     //  subleading_lepton_match_pt = subleading_tau_match.at(0).second->pt();
+      // subleading_lepton_match_DR = DR(subleading_tau_match.at(0).first,subleading_tau_match.at(0).second);
        gen_match_2 = mcorigin::tauHad;
       }
 
 
    event->Add("gen_match_1",gen_match_1);
    event->Add("gen_match_2",gen_match_2);
-   event->Add("leading_lepton_match_pt",leading_lepton_match_pt);
+/*   event->Add("leading_lepton_match_pt",leading_lepton_match_pt);
    event->Add("subleading_lepton_match_pt",subleading_lepton_match_pt);
+   event->Add("leading_lepton_match_DR",leading_lepton_match_DR);
+   event->Add("subleading_lepton_match_DR",subleading_lepton_match_DR);*/
 
 
     return 0;
