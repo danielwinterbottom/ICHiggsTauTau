@@ -116,8 +116,10 @@ class HTTCategories : public ModuleBase {
   branch_var pt_2_;
   branch_var eta_1_;
   branch_var eta_2_;
-  float phi_1_;
-  float phi_2_;
+  branch_var phi_1_;
+  branch_var phi_2_;
+  double E_1_;
+  double E_2_;
   int q_1_;
   int q_2_;
   branch_var iso_1_;
@@ -137,8 +139,8 @@ class HTTCategories : public ModuleBase {
   double z_2_;
   float m_1_;
   branch_var m_2_;
-  float mva_1_;
-  float mva_2_;
+  branch_var mva_1_;
+  branch_var mva_2_;
   branch_var mvamet_;
   branch_var mvamet_phi_;
   float pfmet_;

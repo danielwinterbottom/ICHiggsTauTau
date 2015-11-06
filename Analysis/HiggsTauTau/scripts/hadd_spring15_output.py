@@ -91,7 +91,7 @@ sample_list = [
   'VBFHToTauTau_M-130'
 	]
 
-channel = ['em','et','mt','tt','zee','zmm','wmnu']
+channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
 with open("jobs/files_per_sample.txt","r") as inf:
   lines = inf.readlines()
 

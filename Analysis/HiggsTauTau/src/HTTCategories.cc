@@ -116,6 +116,11 @@ namespace ic {
         outtree_->Branch("iso_2_db04allch", &iso_2_db04allch_);
         outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
       }
+      if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
+        //Extra variables needed for tag and probe
+        outtree_->Branch("id_1", &mva_1_.var_double);
+        outtree_->Branch("id_2", &mva_2_.var_double);
+      }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
@@ -131,6 +136,10 @@ namespace ic {
         outtree_->Branch("pt_1",              &pt_1_.var_double);
         outtree_->Branch("eta_1",             &eta_1_.var_double);
         outtree_->Branch("eta_2",             &eta_2_.var_double);
+        outtree_->Branch("phi_1",             &phi_1_.var_double);
+        outtree_->Branch("phi_2",             &phi_2_.var_double);
+        outtree_->Branch("E_1",               &E_1_);
+        outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("m_2",               &m_2_.var_double);
         outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
@@ -276,7 +285,7 @@ namespace ic {
       // pt (including effect of any energy scale corrections)
       synctree_->Branch("pt_1", &pt_1_.var_float, "pt_1/F");
       // phi
-      synctree_->Branch("phi_1", &phi_1_, "phi_1/F");
+      synctree_->Branch("phi_1", &phi_1_.var_float, "phi_1/F");
       // eta
       synctree_->Branch("eta_1", &eta_1_.var_float, "eta_1/F");
       // mass
@@ -289,7 +298,7 @@ namespace ic {
       // reasons
       synctree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
       // If an electron, the output of the ID MVA, zero otherwise
-      synctree_->Branch("mva_1", &mva_1_, "mva_1/F");
+      synctree_->Branch("mva_1", &mva_1_.var_float, "mva_1/F");
       // Transverse (x-y) impact parameter w.r.t to the primary vertex
       synctree_->Branch("d0_1", &d0_1_, "d0_1/F");
       // Longitudinal (z) impact parameter w.r.t to the primary vertex
@@ -313,7 +322,7 @@ namespace ic {
       // pt (including effect of any energy scale corrections)
       synctree_->Branch("pt_2", &pt_2_.var_float, "pt_2/F");
       // phi
-      synctree_->Branch("phi_2", &phi_2_, "phi_2/F");
+      synctree_->Branch("phi_2", &phi_2_.var_float, "phi_2/F");
       // eta
       synctree_->Branch("eta_2", &eta_2_.var_float, "eta_2/F");
       // mass
@@ -330,7 +339,7 @@ namespace ic {
       // Longitudinal (z) impact parameter w.r.t to the primary vertex
       synctree_->Branch("dZ_2", &dz_2_, "dz_2/F");
       // If an electron, the output of the ID MVA, zero otherwise
-      synctree_->Branch("mva_2", &mva_2_, "mva_2/F");
+      synctree_->Branch("mva_2", &mva_2_.var_float, "mva_2/F");
       // Whether lepton passes ID selection (always true in IC ntuples)
 //      synctree_->Branch("passid_2", &lPassId2, "lPassId2/B");
       // Whether lepton passes iso selection (always true in IC ntuples)
@@ -781,6 +790,8 @@ namespace ic {
     eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
+    E_1_ = lep1->energy();
+    E_2_ = lep2->energy();
     m_1_ = lep1->M();
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
@@ -1029,28 +1040,28 @@ namespace ic {
 
       }
     }
-    if (channel_ == channel::zee) {
+    if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
-        mva_1_ = elec1->GetIdIso("mvaNonTrigSpring15");
-        mva_2_ = elec2->GetIdIso("mvaNonTrigSpring15");
+        mva_1_ = ElectronHTTIdSpring15(elec1, false);
+        mva_2_ = ElectronHTTIdSpring15(elec2, false);
       }
       d0_1_ = elec1->dxy_vertex();
       dz_1_ = elec1->dz_vertex();
       d0_2_ = elec2->dxy_vertex();
       dz_2_ = elec2->dz_vertex();
     }
-    if (channel_ == channel::zmm) {
+    if (channel_ == channel::zmm || channel_ == channel::tpzmm) {
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon2, 0.5, 0);
-        mva_1_ = 0.0;
-        mva_2_ = 0.0;
+        mva_1_ = MuonMedium(muon1);
+        mva_2_ = MuonMedium(muon2);
       }
       d0_1_ = muon1->dxy_vertex();
       dz_1_ = muon1->dz_vertex();
