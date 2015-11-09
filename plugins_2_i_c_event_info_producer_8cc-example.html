@@ -120,6 +120,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"><span class="preprocessor">#include &quot;FWCore/Common/interface/TriggerNames.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_event_info_8hh.html">UserCode/ICHiggsTauTau/interface/EventInfo.hh</a>&quot;</span></div>
@@ -259,13 +260,24 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;LHEEventProduct&gt; lhe_handle;</div>
+<div class="line">  edm::Handle&lt;GenEventInfoProduct&gt; gen_info_handle;</div>
+<div class="line">  <span class="keywordflow">if</span>(!event.isRealData()){</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<span class="stringliteral">&quot;generator&quot;</span>,gen_info_handle);</div>
+<div class="line">    <span class="keywordflow">if</span>(gen_info_handle.isValid()){</div>
+<div class="line">      <span class="keywordflow">if</span>(gen_info_handle-&gt;weight()&gt;=0){</div>
+<div class="line">        info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,1);</div>
+<div class="line">      } <span class="keywordflow">else</span> info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,-1);</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
 <div class="line">  <span class="keywordflow">if</span>(is_nlo_){</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(lhe_collection_, lhe_handle); </div>
-<div class="line">    <span class="keywordflow">if</span>(lhe_handle-&gt;hepeup().XWGTUP&gt;=0){</div>
-<div class="line">      info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,1);</div>
-<div class="line">    } <span class="keywordflow">else</span> {</div>
-<div class="line">      info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,-1);</div>
-<div class="line">    }</div>
+<div class="line">   <span class="comment">/* Accessing global evt weights directly from the LHEEventProduct</span></div>
+<div class="line"><span class="comment">      disabled and replaced by taking them from the GenEventInfoProduct</span></div>
+<div class="line"><span class="comment">      which should exist in all samples, independent of which generator was used</span></div>
+<div class="line"><span class="comment">      if(lhe_handle-&gt;hepeup().XWGTUP&gt;=0){</span></div>
+<div class="line"><span class="comment">      info_-&gt;set_weight(&quot;wt_mc_sign&quot;,1);</span></div>
+<div class="line"><span class="comment">      } else info_-&gt;set_weight(&quot;wt_mc_sign&quot;,-1);</span></div>
+<div class="line"><span class="comment">    */</span></div>
 <div class="line">    <span class="keywordflow">if</span> (do_lhe_weights_) {</div>
 <div class="line">      <span class="keywordtype">double</span> nominal_wt = lhe_handle-&gt;hepeup().XWGTUP;</div>
 <div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; lhe_handle-&gt;weights().size(); ++i) {</div>
