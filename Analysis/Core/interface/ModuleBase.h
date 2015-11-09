@@ -9,10 +9,11 @@
 namespace ic { class TreeEvent; }
 
 #define CLASS_MEMBER(classn,type,name)                                                \
-    private:                                                                \
-      type name##_;                                                         \
-    public:                                                                 \
-      virtual classn & set_##name(type const& name) {name##_ = name; return *this; }
+    private:                                                                          \
+      type name##_;                                                                   \
+    public:                                                                           \
+      virtual classn & set_##name(type const& name) {name##_ = name; return *this; }  \
+    private:
 
 namespace ic {
 

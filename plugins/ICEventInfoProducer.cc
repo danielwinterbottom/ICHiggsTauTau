@@ -19,6 +19,7 @@
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
@@ -158,13 +159,24 @@ void ICEventInfoProducer::produce(edm::Event& event,
   }
 
   edm::Handle<LHEEventProduct> lhe_handle;
+  edm::Handle<GenEventInfoProduct> gen_info_handle;
+  if(!event.isRealData()){
+    event.getByLabel("generator",gen_info_handle);
+    if(gen_info_handle.isValid()){
+      if(gen_info_handle->weight()>=0){
+        info_->set_weight("wt_mc_sign",1);
+      } else info_->set_weight("wt_mc_sign",-1);
+    }
+  }
   if(is_nlo_){
     event.getByLabel(lhe_collection_, lhe_handle); 
-    if(lhe_handle->hepeup().XWGTUP>=0){
+   /* Accessing global evt weights directly from the LHEEventProduct
+      disabled and replaced by taking them from the GenEventInfoProduct
+      which should exist in all samples, independent of which generator was used
+      if(lhe_handle->hepeup().XWGTUP>=0){
       info_->set_weight("wt_mc_sign",1);
-    } else {
-      info_->set_weight("wt_mc_sign",-1);
-    }
+      } else info_->set_weight("wt_mc_sign",-1);
+    */
     if (do_lhe_weights_) {
       double nominal_wt = lhe_handle->hepeup().XWGTUP;
       for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {

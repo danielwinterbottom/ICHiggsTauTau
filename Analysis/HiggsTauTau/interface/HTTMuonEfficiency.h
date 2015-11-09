@@ -23,6 +23,8 @@ class HTTMuonEfficiency : public ModuleBase {
   double e_mva_id_;
   double eta_;
   double pt_;
+  double allcharged03iso_;
+  double allcharged04iso_;
   unsigned gen_match_;
   double iso_ea03_;
   double iso_db03_;

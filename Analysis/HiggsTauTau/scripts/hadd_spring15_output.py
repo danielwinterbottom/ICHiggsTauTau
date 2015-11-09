@@ -31,9 +31,13 @@ sample_list = [
   'QCD_Ht2000toInf',
   'TTJets',
 	'TT',
+  'TT-ext',
 	'WJetsToLNu',
+	'WJetsToLNu-LO',
 	'T-tW',
 	'Tbar-tW',
+  'T-t',
+  'Tbar-t',
   'WWinclusive',
   'WZinclusive',
   'ZZinclusive',
@@ -41,7 +45,12 @@ sample_list = [
   'WWTo4Q',
   'WWToLNuQQ',
   'WZTo1L1Nu2Q',
+  'WZTo2L2Q',
+  'WZTo3LNu',
+  'WZTo1L3Nu',
   'ZZTo4L',
+  'ZZTo2L2Nu',
+  'ZZTo2L2Q',
 #  'QCDFlat',
 #  'QCDMuEnr',
 #'DYJetsToTauTau',
@@ -74,6 +83,10 @@ sample_list = [
   'SingleMuon-2015D-promptv4',
   'MuonEG-2015D-promptv4',
   'Tau-2015D-promptv4',
+  'SingleElectron-2015D-Oct05',
+  'SingleMuon-2015D-Oct05',
+  'MuonEG-2015D-Oct05',
+  'Tau-2015D-Oct05',
 #	'DYJetsToTauTau10-50',
 #	'DYJetsToLL10-50',
 #	'DYJetsToLL10-50-L',
@@ -91,7 +104,7 @@ sample_list = [
   'VBFHToTauTau_M-130'
 	]
 
-channel = ['em','et','mt','tt','zee','zmm','wmnu']
+channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
 with open("jobs/files_per_sample.txt","r") as inf:
   lines = inf.readlines()
 

@@ -18,9 +18,9 @@ namespace helper {
   };
 }
 
-class ICGenParticlePruner : public edm::EDProducer {
+class ICGenParticlePruner53X : public edm::EDProducer {
 public:
-  ICGenParticlePruner(const edm::ParameterSet&);
+  ICGenParticlePruner53X(const edm::ParameterSet&);
 private:
   void produce(edm::Event&, const edm::EventSetup&);
   bool firstEvent_;
@@ -45,7 +45,7 @@ using namespace reco;
 
 const int keep = 1, drop = -1;
 
-void ICGenParticlePruner::parse(const std::string & selection, ::helper::SelectCode & code, std::string & cut) const {
+void ICGenParticlePruner53X::parse(const std::string & selection, ::helper::SelectCode & code, std::string & cut) const {
   using namespace ::helper;
   size_t f =  selection.find_first_not_of(' ');
   size_t n = selection.size();
@@ -91,7 +91,7 @@ void ICGenParticlePruner::parse(const std::string & selection, ::helper::SelectC
   code.all_ = cut == "*";
 }
 
-ICGenParticlePruner::ICGenParticlePruner(const ParameterSet& cfg) :
+ICGenParticlePruner53X::ICGenParticlePruner53X(const ParameterSet& cfg) :
   firstEvent_(true),
   src_(cfg.getParameter<InputTag>("src")), keepOrDropAll_(drop),
   selection_(cfg.getParameter<vector<string> >("select")) {
@@ -99,19 +99,19 @@ ICGenParticlePruner::ICGenParticlePruner(const ParameterSet& cfg) :
   produces<GenParticleCollection>();
 }
 
-void ICGenParticlePruner::flagDaughters(const reco::GenParticle & gen, int keepOrDrop) {
+void ICGenParticlePruner53X::flagDaughters(const reco::GenParticle & gen, int keepOrDrop) {
   GenParticleRefVector daughters = gen.daughterRefVector();
   for(GenParticleRefVector::const_iterator i = daughters.begin(); i != daughters.end(); ++i) 
     flags_[i->key()] = keepOrDrop;
 }
 
-void ICGenParticlePruner::flagMothers(const reco::GenParticle & gen, int keepOrDrop) {
+void ICGenParticlePruner53X::flagMothers(const reco::GenParticle & gen, int keepOrDrop) {
   GenParticleRefVector mothers = gen.motherRefVector();
   for(GenParticleRefVector::const_iterator i = mothers.begin(); i != mothers.end(); ++i) 
     flags_[i->key()] = keepOrDrop;
 }
 
-void ICGenParticlePruner::recursiveFlagDaughters(size_t index, const reco::GenParticleCollection & src, int keepOrDrop,
+void ICGenParticlePruner53X::recursiveFlagDaughters(size_t index, const reco::GenParticleCollection & src, int keepOrDrop,
 					       std::vector<size_t> & allIndices ) {
   GenParticleRefVector daughters = src[index].daughterRefVector();
   // avoid infinite recursion if the daughters are set to "this" particle.
@@ -130,7 +130,7 @@ void ICGenParticlePruner::recursiveFlagDaughters(size_t index, const reco::GenPa
   }
 }
 
-void ICGenParticlePruner::recursiveFlagMothers(size_t index, const reco::GenParticleCollection & src, int keepOrDrop,
+void ICGenParticlePruner53X::recursiveFlagMothers(size_t index, const reco::GenParticleCollection & src, int keepOrDrop,
 					     std::vector<size_t> & allIndices ) {
   GenParticleRefVector mothers = src[index].motherRefVector();
   // avoid infinite recursion if the mothers are set to "this" particle.
@@ -149,7 +149,7 @@ void ICGenParticlePruner::recursiveFlagMothers(size_t index, const reco::GenPart
   }
 }
 
-void ICGenParticlePruner::produce(Event& evt, const EventSetup& es) {
+void ICGenParticlePruner53X::produce(Event& evt, const EventSetup& es) {
   if (firstEvent_) {
     PdgEntryReplacer rep(es);
     for(vector<string>::const_iterator i = selection_.begin(); i != selection_.end(); ++i) {
@@ -249,7 +249,7 @@ void ICGenParticlePruner::produce(Event& evt, const EventSetup& es) {
 }
 
 
-void ICGenParticlePruner::addDaughterRefs(vector<size_t> & daIndxs, 
+void ICGenParticlePruner53X::addDaughterRefs(vector<size_t> & daIndxs, 
 					GenParticle& newGen, GenParticleRefProd outRef, 
 					const GenParticleRefVector& daughters) const {
   for(GenParticleRefVector::const_iterator j = daughters.begin();
@@ -273,7 +273,7 @@ void ICGenParticlePruner::addDaughterRefs(vector<size_t> & daIndxs,
 
 
 
-void ICGenParticlePruner::addMotherRefs(vector<size_t> & moIndxs,
+void ICGenParticlePruner53X::addMotherRefs(vector<size_t> & moIndxs,
 				      GenParticle& newGen, GenParticleRefProd outRef, 
 				      const GenParticleRefVector& mothers) const {
   for(GenParticleRefVector::const_iterator j = mothers.begin();
@@ -296,4 +296,4 @@ void ICGenParticlePruner::addMotherRefs(vector<size_t> & moIndxs,
 
 #include "FWCore/Framework/interface/MakerMacros.h"
 
-DEFINE_FWK_MODULE(ICGenParticlePruner);
+DEFINE_FWK_MODULE(ICGenParticlePruner53X);

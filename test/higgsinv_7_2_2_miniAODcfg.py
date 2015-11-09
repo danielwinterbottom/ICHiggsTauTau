@@ -732,7 +732,7 @@ process.icGenSequence = cms.Sequence()
 
 #!!CHECK KEEPS ALL TOPS!!
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.icPrunedGenParticles = cms.EDProducer("ICGenParticlePruner",
+process.icPrunedGenParticles = cms.EDProducer("ICGenParticlePruner53X",
   src = cms.InputTag("prunedGenParticles","","PAT"),
   select = cms.vstring(
     "drop  *",
@@ -747,7 +747,7 @@ process.icPrunedGenParticles = cms.EDProducer("ICGenParticlePruner",
   )
 )
 
-process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
+process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner53X",
   src = cms.InputTag("prunedGenParticles","","PAT"),
   select = cms.vstring(
     "drop  *",
