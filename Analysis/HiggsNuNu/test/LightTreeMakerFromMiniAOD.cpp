@@ -398,9 +398,9 @@ int main(int argc, char* argv[]){
 //   .set_l3_file("input/jec/START53_V10_L3Absolute_AK5PF.txt");
   
 
-  MetLaserFilters metLaserFilters = MetLaserFilters("MetLaserFilters",
-						    "input/met_laser_filters/AllBadHCALLaser.txt",
-						    "input/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
+  MetLaserFilters cscTightHaloFiltter = MetLaserFilters("CscTightHaloFilter",
+						    "input/halofilters/allevents.txt",
+						    "dummy.txt",
 						    doMetFilters);
 
 
