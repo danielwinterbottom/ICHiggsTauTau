@@ -88,8 +88,11 @@ namespace ic {
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
       outtree_->Branch("gen_match_1", &gen_match_1_);
       outtree_->Branch("gen_match_2", &gen_match_2_);
-//      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
-//      outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
+/*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
+      outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
+      outtree_->Branch("leading_lepton_match_DR", &leading_lepton_match_DR_);
+      outtree_->Branch("subleading_lepton_match_DR",&subleading_lepton_match_DR_);*/
+
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
@@ -568,9 +571,11 @@ namespace ic {
     rho_ = eventInfo->jet_rho();
     if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-//    if(event->Exists("leading_lepton_match_pt")) leading_lepton_match_pt_ = event->Get<double>("leading_lepton_match_pt");
-//    if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
-    
+    /*if(event->Exists("leading_lepton_match_pt")) leading_lepton_match_pt_ = event->Get<double>("leading_lepton_match_pt");
+    if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
+    if(event->Exists("leading_lepton_match_DR")) leading_lepton_match_DR_ = event->Get<double>("leading_lepton_match_DR");
+    if(event->Exists("subleading_lepton_match_DR")) subleading_lepton_match_DR_ = event->Get<double>("subleading_lepton_match_DR");*/
+   
     wt_ggh_pt_up_ = 1.0;
     wt_ggh_pt_down_ = 1.0;
     wt_tau_fake_up_ = 1.0;
@@ -709,8 +714,9 @@ namespace ic {
     trigger_object_pt_2 = 0;
     trigger_object_eta_1 = 0;
     trigger_object_eta_2 = 0;
+*/
     if(event->Exists("good_first_vertex")) good_vtx_ = event->Get<bool>("good_first_vertex");
-    if(event->Exists("leg1_trigger_obj_pt")) trigger_object_pt_1 = event->Get<double>("leg1_trigger_obj_pt");
+ /*   if(event->Exists("leg1_trigger_obj_pt")) trigger_object_pt_1 = event->Get<double>("leg1_trigger_obj_pt");
     if(event->Exists("leg1_trigger_obj_eta")) trigger_object_eta_1 = event->Get<double>("leg1_trigger_obj_eta");
     if(event->Exists("leg2_trigger_obj_pt")) trigger_object_pt_2 = event->Get<double>("leg2_trigger_obj_pt");
     if(event->Exists("leg2_trigger_obj_eta")) trigger_object_eta_2 = event->Get<double>("leg2_trigger_obj_eta");

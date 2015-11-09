@@ -7,7 +7,7 @@ from optparse import OptionParser
 
 JOBWRAPPER 			= './scripts/generate_job.sh'
 JOBSUBMIT 			= 'true'
-if "JOBWRAPPER" in os.environ: 			JOBWRAPPER 			= os.environ["JOBWRAPPER"]
+if "JOBWRAPPER" in os.environ: 			JOBWRAPPER 			= os.environ["JOBWRAPPER"] 
 if "JOBSUBMIT"  in os.environ: 			JOBSUBMIT 			= os.environ["JOBSUBMIT"]
 print "Using job-wrapper:    " + JOBWRAPPER
 print "Using job-submission: " + JOBSUBMIT
@@ -65,7 +65,7 @@ for root, dirnames, filenames in os.walk(options.input):
             submitTask = False
             filesVerified += 1
           else:
-            print 'Failed verification, input and output trees with differet numbers of entries!'
+            print 'Failed verification, input and output trees with different numbers of entries!'
           fin.Close()
           fout.Close()
         else:

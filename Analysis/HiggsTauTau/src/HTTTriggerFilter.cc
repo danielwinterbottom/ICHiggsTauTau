@@ -79,8 +79,8 @@ namespace ic {
           //if (run >= 193752/* //&& run <= xxxxx*/ //&& name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
        if (run >= 193752 && run <= 247600 && name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
           //2015 triggers
-       if (run >= 250985 && run <= 258654  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos) ) path_found = true;
-       if (run >= 258655/* &&run <=xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
+       if (run >= 250985 /*&& run <= 258654*/  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos) ) path_found = true;
+       //if (run >= 258655/* &&run <=xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
        //if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v") != name.npos || name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v") != name.npos) ) path_found = true;
         }
         if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
@@ -108,6 +108,7 @@ namespace ic {
           if (run >= 173199 && run <= 180252 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v") != name.npos) path_found = true;
           if (run >= 190456 && run <= 247600 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
           if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
+          //if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.finde("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::tt){
           if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
@@ -343,6 +344,16 @@ namespace ic {
          alt_trig_obj_label = "triggerObjectsEle23Mu8";
          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+
+//        if (run >= 250985 /*&& run <= xxxxxx*/){
+ /*        trig_obj_label = "triggerObjectsEle12Mu17";
+         leg1_filter = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+         leg2_filter = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17";
+         alt_trig_obj_label = "triggerObjectsEle17Mu8";
+         alt_leg1_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+         alt_leg2_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+*/
+
         }
 
       }
@@ -500,6 +511,15 @@ namespace ic {
           alt_trig_obj_label        = "triggerObjectsEle23Mu8";
           alt_leg1_filter           = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           alt_leg2_filter           = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+
+ /*      trig_obj_label = "triggerObjectsEle12Mu17";
+         leg1_filter = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+         leg2_filter = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17";
+         alt_trig_obj_label = "triggerObjectsEle17Mu8";
+         alt_leg1_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+         alt_leg2_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+*/
+
 
 				} 
       } else if (channel_ == channel::tt){

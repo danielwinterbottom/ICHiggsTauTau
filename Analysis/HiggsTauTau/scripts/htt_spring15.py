@@ -90,7 +90,7 @@ CONFIG='scripts/config.json'
 #    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s_M-50.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
  
 
-FILELIST='filelists/Oct15_MC_74X'
+FILELIST='filelists/Oct30_MC_74X'
 #FILELIST13='filelists/July13_MC_74X'
 
 signal_mc = [ ]
@@ -104,7 +104,8 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
 #  masses = ['90','95','100','105','110','115','120','125','130','135','140','145','150','155','160']
-  masses = ['125','130']
+  masses = ['120','125','130']
+  #masses = ['125','130']
   if options.short_signal: masses = ['125']
   for mass in masses :
     signal_mc += [
@@ -130,7 +131,7 @@ if options.proc_mssm or options.proc_all:
   for mass in masses :
     signal_mc += [
       'SUSYGluGluToHToTauTau_M-'+mass,
-#      'SUSYBBHToTauTau_M-'+mass
+#      'SUSYGluGluToBBHToTauTau_M-'+mass
     ]
 
 #if options.proc_Hhh or options.proc_all:
@@ -182,29 +183,22 @@ if options.proc_data or options.proc_all:
 #   'MuonEG-2015B-17Jul',
 #   'SingleElectron-2015B-17Jul',
 #   'Tau-2015B-17Jul',
-   'SingleMuon-2015D-prompt',
-   'SingleElectron-2015D-prompt',
-   'MuonEG-2015D-prompt',
-   'Tau-2015D-prompt',
-#   'SingleMuon-2015D-promptv4',
-#   'SingleElectron-2015D-promptv4',
-#   'MuonEG-2015D-promptv4',
-#   'Tau-2015D-promptv4'
-  ]
-
-  extra_data_samples = [
+   'SingleMuon-2015D-Oct05',
+   'SingleElectron-2015D-Oct05',
+   'MuonEG-2015D-Oct05',
+   'Tau-2015D-Oct05',
    'SingleMuon-2015D-promptv4',
    'SingleElectron-2015D-promptv4',
    'MuonEG-2015D-promptv4',
    'Tau-2015D-promptv4'
   ]
 
-  DATAFILELIST="./filelists/Oct14_Data_74X"
-  EXTRADATAFILELIST="./filelists/Oct15_Data_74X"
+
+  DATAFILELIST="./filelists/Oct30_Data_74X"
 
   for sa in data_samples:
       JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct14_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct30_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 40 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -212,17 +206,8 @@ if options.proc_data or options.proc_all:
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
-  for sa in extra_data_samples:
-      JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EXTRADATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct15_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
-      nfiles = sum(1 for line in open('%(EXTRADATAFILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 40 
-      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
-if options.proc_qcd or options.proc_all:
+if options.proc_qcd:
   qcd_samples = [
     'QCD_Ht100to200',
     'QCD_Ht200to300',
@@ -247,26 +232,40 @@ if options.proc_qcd or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-    'TTJets',
-    'TT',
-		'WJetsToLNu',
-#    'WWinclusive',
-    'ZZinclusive',
-#    'WZinclusive',
+    #'TTJets',
+    'TT-ext',
+    'WJetsToLNu-LO',
+		#'WJetsToLNu',
+    #'WWinclusive',
+    #'ZZinclusive',
+    #'WZinclusive',
+    'ZZTo2L2Nu',
+    'ZZTo4L',
+    'ZZTo2L2Q',
+    'WWToLNuQQ',
+    'WWTo2L2Nu',
+    'WZTo2L2Q',
+    'WZTo3LNu',
+    'WZTo1L3Nu',
+    'WZTo1L1Nu2Q',
+    'T-t',
+    'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    'WZTo1L1Nu2Q',
-    'WWTo2L2Nu',
-    'WWTo4Q',
-    'WWToLNuQQ',
-    'ZZTo4L',
-    'DYJetsToLL',
+    #'T-t',
+    #'Tbar-t'
+#    'WZTo1L1Nu2Q',
+#    'WWTo2L2Nu',
+#    'WWTo4Q',
+#    'WWToLNuQQ',
+#    'ZZTo4L',
+#    'DYJetsToLL',
     'DYJetsToLL_M-50-LO',
-    'DYJetsToLL_M-50_HT100-200',
-    'WJetsToLNu_HT100-200',
-    'WJetsToLNu_HT200-400',
-    'WJetsToLNu_HT400-600',
-    'WJetsToLNu_HT600-inf'
+#    'DYJetsToLL_M-50_HT100-200',
+#    'WJetsToLNu_HT100-200',
+#    'WJetsToLNu_HT200-400',
+#    'WJetsToLNu_HT400-600',
+#    'WJetsToLNu_HT600-inf'
      ]
 
   for sa in central_samples:
