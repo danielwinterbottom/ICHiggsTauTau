@@ -29,7 +29,8 @@ namespace ic {
     do_noskim_ = false;
     is_embedded_ = false;
     ignoreLeptons_=false;
-    trig_obj_label_ = "triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets";
+    trig_obj_label_ = "triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140";
+    cont_trig_obj_label_ = "triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80";
     trigger_path_ = "HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v";
 
     outputTree_ = 0;
@@ -67,6 +68,11 @@ namespace ic {
       trigjet_E_.push_back(-5);
 
     }
+    sigtrigcalomet_=-1;
+    sigtrigpfmet_=-1;
+    conttrigcalomet_=-1;
+    conttrigpfmet_=-1;
+
     dijet_M_ = 0;
     dijet_deta_ = 0;
     dijet_sumeta_ = 0;
@@ -227,6 +233,10 @@ namespace ic {
       outputTree_->Branch(("trig"+label.str()+"_phi").c_str(),&trigjet_phi_[ijet]);
       outputTree_->Branch(("trig"+label.str()+"_E").c_str(),&trigjet_E_[ijet]);
     }
+    outputTree_->Branch("sigtrigcalomet",&sigtrigcalomet_);
+    outputTree_->Branch("sigtrigpfmet",&sigtrigpfmet_);
+    outputTree_->Branch("conttrigcalomet",&conttrigcalomet_);
+    outputTree_->Branch("conttrigpfmet",&conttrigpfmet_);
     outputTree_->Branch("forward_tag_eta",&forward_tag_eta_);
     outputTree_->Branch("central_tag_eta",&central_tag_eta_);
     outputTree_->Branch("dijet_M",&dijet_M_);
@@ -392,6 +402,11 @@ namespace ic {
       trigjet_phi_.push_back(-5);
       trigjet_E_.push_back(-5);
     }
+    sigtrigcalomet_=-1;
+    sigtrigpfmet_=-1;
+    conttrigcalomet_=-1;
+    conttrigpfmet_=-1;
+
     dijet_M_ = 0;
     dijet_deta_ = 0;
     dijet_sumeta_ = 0;
@@ -599,6 +614,7 @@ namespace ic {
     std::vector<Photon*> tightphotons=event->GetPtrVec<Photon>("tightPhotons");
     
     std::vector<TriggerObject*> triggerobjects=event->GetPtrVec<TriggerObject>(trig_obj_label_);
+    std::vector<TriggerObject*> conttriggerobjects=event->GetPtrVec<TriggerObject>(cont_trig_obj_label_);
 
     std::vector<GenJet *> genvec;
     if(!is_data_)genvec= event->GetPtrVec<GenJet>("genJets");
@@ -894,7 +910,33 @@ namespace ic {
 	  }
 
 	  //fill trig matched
-	  std::pair<bool,unsigned> trigmatch=IsFilterMatchedWithIndex(jetveccopy[ijet],triggerobjects,"hltDiPFJet40MJJ600DEta3p5",0.4);
+	  // std::vector<std::string> filters;
+	  // filters.push_back("hltMET90");
+	  // filters.push_back("hltMETClean80");
+	  // filters.push_back("hltMETCleanUsingJetID80");
+	  // filters.push_back("hltPFMET170Filter");
+	  // filters.push_back("hltDiCaloJet30MJJ500DEta3p0");
+	  // filters.push_back("hltDiPFJet40MJJ600DEta3p5");
+	  // //	  filters.push_back("hltL1sL1ETM60ORETM70");
+	  // filters.push_back("hltMET80");
+	  // filters.push_back("hltMETCleanUsingJetID80");
+	  // filters.push_back("hltPFMETNoMu140");
+	  // filters.push_back("hltDiCaloJet30MJJ500DEta3p0");
+	  // filters.push_back("hltDiPFJet40MJJ600DEta3p5");
+	  // filters.push_back("hltL1sL1ETM50");
+	  // filters.push_back("hltMET50");
+	  // filters.push_back("hltMETCleanUsingJetID50");
+	  // filters.push_back("hltPFMETNoMu80");
+
+	  // for(unsigned ifilter=0;ifilter<filters.size();ifilter++){
+	  //   std::pair<bool,unsigned> trigmatch=IsFilterMatchedWithIndex(jetveccopy[ijet],triggerobjects,filters[ifilter],0.4);
+	  //   if(trigmatch.first){
+	  //     std::cout<<"found a trig match for"<<filters[ifilter]<<std::endl;
+	  //   }
+	  // }
+
+	  //std::pair<bool,unsigned> trigmatch=IsFilterMatchedWithIndex(jetveccopy[ijet],triggerobjects,"hltDiPFJet40MJJ600DEta3p5",0.4);
+	  std::pair<bool,unsigned> trigmatch=IsFilterMatchedWithIndex(jetveccopy[ijet],triggerobjects,"hltDiCaloJet30MJJ500DEta3p0",0.4);
 	  if(trigmatch.first){
 	    jet_trigMatched_[ijet]=1;
 	    trigjet_pt_[ijet]=triggerobjects[trigmatch.second]->pt();
@@ -902,6 +944,16 @@ namespace ic {
 	    trigjet_phi_[ijet]=triggerobjects[trigmatch.second]->phi();
             jet_trigjet_mindR_[ijet]=ROOT::Math::VectorUtil::DeltaR(triggerobjects[trigmatch.second]->vector(),jetveccopy[ijet]->vector());
 	  }
+
+	  std::pair<bool,unsigned> sigcalomatch=IsFilterMatchedWithIndex(met,triggerobjects,"hltMET80",11);
+	  std::pair<bool,unsigned> sigpfmatch=IsFilterMatchedWithIndex(metnomuons,triggerobjects,"hltPFMETNoMu140",11);
+	  std::pair<bool,unsigned> contcalomatch=IsFilterMatchedWithIndex(met,conttriggerobjects,"hltMET50",11);
+	  std::pair<bool,unsigned> contpfmatch=IsFilterMatchedWithIndex(metnomuons,conttriggerobjects,"hltPFMETNoMu80",11);
+	  
+	  if(sigcalomatch.first)sigtrigcalomet_=triggerobjects[sigcalomatch.second]->pt();
+	  if(sigpfmatch.first)sigtrigpfmet_=triggerobjects[sigpfmatch.second]->pt();
+	  if(contcalomatch.first)conttrigcalomet_=conttriggerobjects[contcalomatch.second]->pt();
+	  if(contpfmatch.first)conttrigpfmet_=conttriggerobjects[contpfmatch.second]->pt();
 
 	  // double trigmindR = 1000;
 	  // int whichtrigjet=-1;

@@ -925,7 +925,7 @@ process.icPrunedGenParticles = cms.EDProducer("GenParticlePruner",
   )
 )
 
-process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
+process.prunedGenParticlesTaus = cms.EDProducer("GenParticlePruner",
   src = cms.InputTag("prunedGenParticles","","PAT"),
   select = cms.vstring(
     "drop  *",

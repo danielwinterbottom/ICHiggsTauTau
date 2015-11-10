@@ -1201,7 +1201,7 @@ process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
   )
 )
 
-#process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
+#process.prunedGenParticlesTaus = cms.EDProducer("GenParticlePruner",
 #  src = cms.InputTag("genParticles", "", "HLT"),
 #  select = cms.vstring(
 #    "drop  *",

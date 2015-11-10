@@ -1020,7 +1020,7 @@ if release in ['70XMINIAOD', '72XMINIAOD']:
 process.icGenSequence = cms.Sequence()
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
+process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner53X",
   src = cms.InputTag("genParticles", "", "SIM"),
   select = cms.vstring(
     "drop  *",

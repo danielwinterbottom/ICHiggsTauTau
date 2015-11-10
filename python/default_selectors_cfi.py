@@ -42,7 +42,7 @@ selectedPFTaus = cms.EDFilter("PFTauRefSelector",
 )
 
 #process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
+prunedGenParticles = cms.EDProducer("ICGenParticlePruner53X",
   src = cms.InputTag("genParticles"),
   select = cms.vstring(
     "drop  *",

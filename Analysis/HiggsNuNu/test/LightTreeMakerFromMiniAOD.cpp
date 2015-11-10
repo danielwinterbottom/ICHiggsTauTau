@@ -333,7 +333,7 @@ int main(int argc, char* argv[]){
   if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
   if (mc == mc::summer12_52X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S7-600bins.root";
   if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
-  if (mc == mc::spring15_74X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
+  if (mc == mc::spring15_74X) mc_pu_file  = "input/pileup/MC_Spring15_PU25_Startup.root";
 
   string data_pu_file;
   if (era == era::data_2012_rereco) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
@@ -343,6 +343,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_moriond) data_pu_file   =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
+  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_2015D_246908-259891-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -397,9 +398,9 @@ int main(int argc, char* argv[]){
 //   .set_l3_file("input/jec/START53_V10_L3Absolute_AK5PF.txt");
   
 
-  MetLaserFilters metLaserFilters = MetLaserFilters("MetLaserFilters",
-						    "input/met_laser_filters/AllBadHCALLaser.txt",
-						    "input/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
+  MetLaserFilters cscTightHaloFilter = MetLaserFilters("CscTightHaloFilter",
+						    "input/halofilters/allevents.txt",
+						    "dummy.txt",
 						    doMetFilters);
 
 
@@ -542,7 +543,7 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(999);    
 
-  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,100,true);
+  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,150,true);
 
   // ------------------------------------------------------------------------------------
   // Tau modules
@@ -827,8 +828,8 @@ int main(int argc, char* argv[]){
     .set_do_promptskim(dopromptskim)
     .set_do_noskim(donoskim)
     .set_ignoreLeptons(ignoreLeptons)
-    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
-    .set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
+    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
+  //.set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -849,16 +850,16 @@ int main(int argc, char* argv[]){
     //just apply W and Z weights
     analysis.AddModule(&xsWeights);
     //Z pt <100 GeV cut for inclusive DY samples
-    // if(doincludehighptz && output_name.find("JetsToLL") != output_name.npos && output_name.find("PtZ-100-madgraph") == output_name.npos && output_name.find("DYJJ01") == output_name.npos){
-    //   analysis.AddModule(&ZlowmassFilter);
-    // }    
+    //if(doincludehighptz && output_name.find("DYJetsToLL-mg") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
+    //analysis.AddModule(&ZlowmassFilter);
+    //}
   }
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   if (is_data) {
     //FIXME: do MetFilters also on MC, but not saved right now in MC...
     analysis.AddModule(&metFilters);
-    analysis.AddModule(&metLaserFilters);
+    analysis.AddModule(&cscTightHaloFilter);
   }
   
   if(!donoskim)analysis.AddModule(&goodVertexFilter);
