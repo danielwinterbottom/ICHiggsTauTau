@@ -183,7 +183,7 @@ namespace ic{
       double ncdata = Integral(&contdatashape,1,1);
       double ncbkg = Integral(&contbkgshape,1,1);
       double ncmcerr = Error(&contmcshape,1,1);
-      double ncdataerr = Error(&contdatashape,1,1);
+//      double ncdataerr = Error(&contdatashape,1,1);
       double ncbkgerr = Error(&contbkgshape,1,1);
       
       ncbkgerr=sqrt(pow(ncbkgerr,2)+pow(extrancbkgerr,2));//Add error from other data driven weight extrapolation factors
@@ -192,7 +192,7 @@ namespace ic{
       
       //Calculate weight
       double weight=(ncdata-ncbkg)/ncmc;
-      double weighterrdatastatfrac=ncdataerr/(ncdata-ncbkg);
+      //double weighterrdatastatfrac=ncdataerr/(ncdata-ncbkg);
       double weighterrmcstatfrac=sqrt(((ncbkgerr/(ncdata-ncbkg))*(ncbkgerr/(ncdata-ncbkg)))+((ncmcerr/ncmc)*(ncmcerr/ncmc)));
       //std::cout<<"  weight: "<<weight<<"+-"<<weight*weighterrdatastatfrac<<"(data stat.)+-"<<weight*weighterrmcstatfrac<<"(MC stat.)"<<std::endl;
       std::cout<<"  Getting signal MC shapes"<<std::endl;

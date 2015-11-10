@@ -617,8 +617,8 @@ namespace ic{
 
 
 
-	  TF1* fiterrup=0;
-	  TF1* fiterrdown=0;
+//	  TF1* fiterrup=0;
+//	  TF1* fiterrdown=0;
 	  TLine *averageLine=0;
 	  TLine *averageupLine=0;
 	  TLine *averagedownLine=0;

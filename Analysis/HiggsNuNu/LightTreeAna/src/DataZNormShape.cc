@@ -184,7 +184,7 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
       dir->cd();
       if(iShape==0){
 	double ns=Integral(sigmcshape);
-	double nserr=Integral(sigmcshape);
+	//double nserr=Integral(sigmcshape);
 	std::cout<<"Final estimate: "<<ns<<"+-"<<ns*errvec[0]<<" (data stat.) +-"<<ns*errvec[1]<<"(MC stat.)"<<std::endl;
 	if(do_latex_){
 	  printf("N$_{Gen}$(EWK)&\\multicolumn{2}{c|}{$%.1f$}   \\\\ \n",ngenincewk_);
