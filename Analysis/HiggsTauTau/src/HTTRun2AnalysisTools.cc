@@ -180,12 +180,20 @@ namespace ic {
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
       alias_map_["vbf"] += "&&" + alias_map_["inclusive"];
       alias_map_["1jet"] += "&&" + alias_map_["inclusive"];
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["btag"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::tt) {
       // SM Categories
       //alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["btag"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
@@ -277,6 +285,10 @@ namespace ic {
 
       //alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5)";
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5 && !leptonveto)";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["btag"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
       alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<0.1)";
     } else if (ch_ == channel::wmnu) {

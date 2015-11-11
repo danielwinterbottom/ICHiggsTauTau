@@ -11,9 +11,10 @@ YEAR=$2
 ANA=$3
 POSTFIT=$4
 PARAMS=./scripts/"$PROD"_params_$YEAR.dat
-SMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
+SMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150"
+#SMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
 #MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1100,1200,1300,1400,1500"
-MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500"
+MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500,2000,2500,3000"
 
 ################################################################################
 ##### Inclusive selection plots
@@ -94,29 +95,37 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 
 #### Visible Mass MSSM
 
-#./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:1." \
-#  --method=8 --var="m_vis"["$MSSMBINS"] --cat="inclusive" \
-#  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $ET_INC_SHIFT \
-#  --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
-#  --custom_y_axis_min=true --y_axis_min=0.0099 \
-#  --blind=false --x_blind_min=110 --x_blind_max=2000 \
-#  --background_scheme="et_default"
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:1." \
+  --method=8 --var="m_vis"["$MSSMBINS"] --cat="inclusive" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $ET_INC_SHIFT \
+  --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
+  --custom_y_axis_min=true --y_axis_min=0.0099 \
+  --blind=false --x_blind_min=150 --x_blind_max=2000 \
+  --background_scheme="et_default" --extra_pad=0.3
 
-#./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:1." \
-#  --method=8 --var="m_vis"["$MSSMBINS"] --cat="inclusive" \
-#  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $MT_INC_SHIFT \
-#  --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
-#  --custom_y_axis_min=true --y_axis_min=0.0099 \
-#  --blind=false --x_blind_min=110 --x_blind_max=2000 \
-#  --background_scheme="mt_with_zmm"
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:1." \
+  --method=8 --var="m_vis"["$MSSMBINS"] --cat="inclusive" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $MT_INC_SHIFT \
+  --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
+  --custom_y_axis_min=true --y_axis_min=0.0099 \
+  --blind=false --x_blind_min=150 --x_blind_max=2000 \
+  --background_scheme="mt_with_zmm" --extra_pad=0.3
 
-#./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
-#  --method=8 --var="m_vis"["$MSSMBINS"] --cat="inclusive" \
-#  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
-#  --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
-#  --custom_y_axis_min=true --y_axis_min=0.0099 \
-#  --blind=false --x_blind_min=110 --x_blind_max=2000 \
-#  --background_scheme="em_no_qcd"
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
+  --method=8 --var="m_vis"["$MSSMBINS"] --cat="inclusive" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
+  --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
+  --custom_y_axis_min=true --y_axis_min=0.0099 \
+  --blind=false --x_blind_min=150 --x_blind_max=2000 \
+  --background_scheme="em_default" --extra_pad=0.3
+
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
+  --method=8 --var="m_vis"["$MSSMBINS"] --cat="inclusive" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $TT_INC_SHIFT \
+  --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
+  --custom_y_axis_min=true --y_axis_min=0.0099 \
+  --blind=false --x_blind_min=150 --x_blind_max=2000 \
+  --background_scheme="tt_default" --extra_pad=0.3
 #
 #### MET
 
