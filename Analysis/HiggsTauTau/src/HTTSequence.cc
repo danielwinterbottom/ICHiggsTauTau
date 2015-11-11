@@ -1340,7 +1340,7 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
   BuildModule(SimpleFilter<CompositeCandidate>("EMPairFilter")
       .set_input_label("ditau").set_min(1)
       .set_predicate([=](CompositeCandidate const* c) {
-        return PairOneWithPt(c, 20.0);
+        return PairOneWithPt(c, 18.0);
       }));
 }
 
