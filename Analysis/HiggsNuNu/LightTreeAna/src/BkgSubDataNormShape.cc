@@ -81,7 +81,7 @@ namespace ic{
       }
       shaperegshape.SetName(histname.c_str());
       double unnormnshapebase=Integral(&shaperegshape);
-      double unnormnshapebaseerr=Error(&shaperegshape);
+      //double unnormnshapebaseerr=Error(&shaperegshape);
       if(iShape==0) std::cout<<"unnormnshapebase: "<<unnormnshapebase<<std::endl;
       //Get Shapes for NSMC, NCMC, NCData and NCBkg
       std::cout<<"  Getting Shape Reg Backgrounds shape"<<std::endl;

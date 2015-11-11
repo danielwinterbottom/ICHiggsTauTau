@@ -121,7 +121,7 @@ namespace ic {
     }
     if (ch_ == channel::em ){
       alias_map_["ztt_sel"] = "(gen_match_1>2 && gen_match_2>3)";
-      alias_map_["zll_sel"] = "(gen_match_1<3 && gen_match_2<4)";    
+      alias_map_["zll_sel"] = "(gen_match_1<3 || gen_match_2<4)";    
     }
     if (ch_ == channel::zee||ch_==channel::zmm||ch_ ==channel::wmnu){
       alias_map_["ztt_sel"] = "";
