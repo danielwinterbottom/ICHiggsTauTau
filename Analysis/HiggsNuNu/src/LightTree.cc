@@ -568,9 +568,9 @@ namespace ic {
     double pileupwt=1;
     double pileupwtup=1;
     double pileupwtdown=1;
-    double topwt=1;
-    double topwtup=1;
-    double topwtdown=1;
+    //double topwt=1;
+    //double topwtup=1;
+    //double topwtdown=1;
     if(!is_data_){
       vetowt= eventInfo->weight("idisoVeto");
       tightwt = eventInfo->weight("idisoTight");

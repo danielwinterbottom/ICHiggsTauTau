@@ -123,6 +123,8 @@ int main(int argc, char* argv[]){
 
   bool turnoffpuid;
 
+  bool useOldLT;
+
  // Load the config
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
@@ -185,6 +187,7 @@ int main(int argc, char* argv[]){
     ("dospring10gaus",      po::value<bool>(&dospring10gaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
+    ("useOldLT",         po::value<bool>(&useOldLT)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -970,7 +973,8 @@ int main(int argc, char* argv[]){
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   
   //write tree
-  analysis.AddModule(&lightTreeNew);  
+  if (useOldLT) analysis.AddModule(&lightTree);  
+  else analysis.AddModule(&lightTreeNew);  
   
   // Run analysis
   analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );

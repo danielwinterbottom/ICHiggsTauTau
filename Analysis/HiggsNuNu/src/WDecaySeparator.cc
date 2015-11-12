@@ -37,7 +37,7 @@ namespace ic {
 
     bool iswenu=false;
     bool iswmunu=false;
-    bool iswtaunu=false;
+    //bool iswtaunu=false;
     unsigned id_W = 0;
     std::vector<GenParticle*> & parts = event->GetPtrVec<GenParticle>("genParticles");
 
@@ -111,7 +111,7 @@ namespace ic {
     }//Loop over gen particles
     
     if (!iswenu && !iswmunu) {
-      iswtaunu=true;
+      //iswtaunu=true;
       countPrompt_tau_++;
       countTau_had_++;
       if (flavour_==15) return 0;
