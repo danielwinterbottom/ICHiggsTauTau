@@ -64,12 +64,17 @@ parser.add_option("--short_signal", dest="short_signal", action='store_true', de
                   help="Only process the 125/160 signal samples")
 
 parser.add_option("-c", "--channels", dest="channels", type='string', action='callback',callback=split_callback,
-                  help="A comma separted list of channels to ignore.  Supported channels: For data_2015 %(CHANNELS_2015)s" % vars())
+                  help="A comma separated list of channels to ignore.  Supported channels: For data_2015 %(CHANNELS_2015)s" % vars())
+
+parser.add_option("--list_backup", dest="slbackupname", type='string', default='prevlist',
+                  help="Name you want to give to the previous files_per_samples file, in case you're resubmitting a subset of jobs")
 
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
+
+BACKUPNAME = options.slbackupname
 
 channels = options.channels
 
@@ -98,7 +103,7 @@ signal_vh = [ ]
 signal_mc_ww = [ ]
 
 if os.path.isfile("./jobs/files_per_sample.txt"):
-  os.system("rm ./jobs/files_per_sample.txt")
+  os.system("mv ./jobs/files_per_sample.txt ./jobs/files_per_sample-%(BACKUPNAME)s.txt"%vars())
 
 file_persamp = open("./jobs/files_per_sample.txt", "w")
 
@@ -125,13 +130,13 @@ if options.proc_sm or options.proc_all:
 #      'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
 #    ]
 if options.proc_mssm or options.proc_all:
-  masses = ['160','500','1000']
+  masses = ['160','500','1000','2000','2600','3200']
 #  if not options.do_2011: masses += ['80','110']
   if options.short_signal: masses = ['160']
   for mass in masses :
     signal_mc += [
       'SUSYGluGluToHToTauTau_M-'+mass,
-#      'SUSYGluGluToBBHToTauTau_M-'+mass
+      'SUSYGluGluToBBHToTauTau_M-'+mass
     ]
 
 #if options.proc_Hhh or options.proc_all:
