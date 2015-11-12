@@ -123,6 +123,8 @@ namespace ic {
         //Extra variables needed for tag and probe
         outtree_->Branch("id_1", &mva_1_.var_double);
         outtree_->Branch("id_2", &mva_2_.var_double);
+        outtree_->Branch("q_1", &q_1_);
+        outtree_->Branch("q_2", &q_2_);
       }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
