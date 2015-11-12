@@ -10,6 +10,8 @@ parser = OptionParser()
 
 parser.add_option("--folder", dest = "folder",
                   help="Specify folder that contains the output to be hadded")
+parser.add_option("--sample_list", dest = "samplelist", default="./jobs/files_per_sample.txt",
+                  help="list of files per sample you want to use for hadding")
 
 
 (options,args) = parser.parse_args()
@@ -18,6 +20,8 @@ if not options.folder:
   parser.error('No folder specified')
 
 outputf = options.folder
+samplelist = options.samplelist
+
 
 sample_list = [
   'SUSYGluGluToHToTauTau_M-160',
@@ -99,13 +103,14 @@ sample_list = [
   'SUSYGluGluToHToTauTau_M-1000',
   'GluGluHToTauTau_M-125',
   'GluGluHToTauTau_M-130',
+  'GluGluHToTauTau_M-120',
   'VBFHToTauTau_M-120',
   'VBFHToTauTau_M-125',
   'VBFHToTauTau_M-130'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
-with open("jobs/files_per_sample.txt","r") as inf:
+with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
 nfiles={}
@@ -116,17 +121,19 @@ for ind in range(0,len(lines)):
 for sa in sample_list:
   for ch in channel:
     if os.path.isfile('./%(outputf)s/%(sa)s_2015_%(ch)s_0.root'%vars()):
-      if len(fnmatch.filter(os.listdir('./%(outputf)s'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
-        print "Hadding %(sa)s_%(ch)s"%vars()
-        os.system('hadd -f ./%(outputf)s/%(sa)s_%(ch)s_2015.root ./%(outputf)s/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
-        os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
-        filetext = open("./haddout.txt").read()
-        if 'Warning' in filetext or 'Error' in filetext:
-          print "Hadd had a problem:"
-          print filetext 
+      if "%(sa)s_2015"%vars() in nfiles:
+        if len(fnmatch.filter(os.listdir('./%(outputf)s'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
+          print "Hadding %(sa)s_%(ch)s"%vars()
+          os.system('hadd -f ./%(outputf)s/%(sa)s_%(ch)s_2015.root ./%(outputf)s/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
+          os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
+          filetext = open("./haddout.txt").read()
+          if 'Warning' in filetext or 'Error' in filetext:
+            print "Hadd had a problem:"
+            print filetext 
+          else :
+            os.system('rm ./%(outputf)s/%(sa)s_2015_%(ch)s_*' %vars())
         else :
-          os.system('rm ./%(outputf)s/%(sa)s_2015_%(ch)s_*' %vars())
-#      else :
+          print "Incorrect number of files for sample %(sa)s_2015_%(ch)s!"%vars()
 #        print "Incorrect number of files for sample %(sa)s_2015_%(ch)s!"%vars()
 #    if os.path.isfile('./%(outputf)s/TSCALE_DOWN/%(sa)s_2015_%(ch)s_0.root'%vars()):
 #      if len(fnmatch.filter(os.listdir('./%(outputf)s/TSCALE_DOWN'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
