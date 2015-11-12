@@ -716,7 +716,7 @@ int main(int argc, char* argv[]){
 	  if(verbose)std::cout<<"    "<<dirname<<" "<<procsysttotal[dirname]<<" "<<procstattotal[dirname]<<std::endl;
 	}
 	else if(systematics[iSyst].type()=="datadrivendatastatgmN"){
-	  TDirectory* dir=nunu->GetDirectory(dirname.c_str());
+	  /*TDirectory* dir=nunu->GetDirectory(dirname.c_str());*/
 	  double gmnfac=0;
 	  double nevents=systematics[iSyst].constvalue();
 	  double error=1/sqrt(systematics[iSyst].constvalue());

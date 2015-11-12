@@ -235,10 +235,10 @@ int main(int argc, char* argv[]){
   checkfile.close();
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
   
-  bool ignoreLeptons=false;
+  /*bool ignoreLeptons=false;
   if (output_name.find("iglep") != output_name.npos) {
     ignoreLeptons = true;
-  }
+  }*/
    
   double elec_dz, elec_dxy;
   double muon_dz, muon_dxy;

@@ -14,7 +14,7 @@ HTTElectronEfficiency::~HTTElectronEfficiency() { ; }
 
 int HTTElectronEfficiency::PreAnalysis() {
   if (fs_){
-    dir_ = new TFileDirectory(fs_->mkdir("HTTElectronEfficiency"));
+    dir_ = new TFileDirectory(fs_->mkdir(dirname_.c_str()));
     outtree_ = dir_->make<TTree>("tree","tree");
     outtree_->Branch("eta", &eta_);
     outtree_->Branch("pt", &pt_);
@@ -23,7 +23,14 @@ int HTTElectronEfficiency::PreAnalysis() {
     outtree_->Branch("iso_db03allch",&iso_db03allch_);
     outtree_->Branch("iso_db04allch",&iso_db04allch_);
     outtree_->Branch("wt",&wt_);
+    outtree_->Branch("electronmvaID",&electronmvaID_);
+    outtree_->Branch("electronTrigmvaID",&electronTrigmvaID_);
     outtree_->Branch("gen_match",&gen_match_);
+    outtree_->Branch("pass_preselection",&pass_preselection);
+    outtree_->Branch("pass_cut_preselection",&pass_cut_preselection);
+    outtree_->Branch("allcharged03iso",&allcharged03iso_);
+    outtree_->Branch("allcharged04iso",&allcharged04iso_);
+    outtree_->Branch("sc_eta",&sc_eta);
   }
 
   return 0;
@@ -33,6 +40,12 @@ int HTTElectronEfficiency::PreAnalysis() {
 int HTTElectronEfficiency::Execute(TreeEvent* event) {
  std::vector<Electron *> elecs = event->GetPtrVec<Electron>("sel_electrons");
  EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
+ ic::erase_if_not(elecs,(boost::bind(&Electron::dxy_vertex,_1))<0.045);
+ ic::erase_if_not(elecs,(boost::bind(&Electron::dxy_vertex,_1))>-0.045);
+ ic::erase_if_not(elecs,(boost::bind(&Electron::dz_vertex,_1))<0.2);
+ ic::erase_if_not(elecs,(boost::bind(&Electron::dz_vertex,_1))>-0.2);
+ 
 
  if (eventInfo->weight_defined("wt_mc_sign")) wt_ = eventInfo->weight("wt_mc_sign"); else wt_= 1;
 
@@ -119,10 +132,24 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
   gen_match_ = MCOrigin2UInt(gen_match_1);
   eta_ = elecs.at(i)->eta();
   pt_ = elecs.at(i)->pt();
+  allcharged03iso_ = elecs.at(i)->dr03_pfiso_charged_all();
+  allcharged04iso_ = elecs.at(i)->dr04_pfiso_charged_all();
   iso_ea03_ = PF03EAIsolationVal(elecs.at(i),eventInfo);
   iso_db03_ = PF03IsolationVal(elecs.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(elecs.at(i),0.5,1);
   iso_db04allch_ = PF04IsolationVal(elecs.at(i),0.5,1);
+  pass_preselection = false;
+  pass_cut_preselection = true;
+  sc_eta = fabs(elecs.at(i)->sc_eta());
+ 
+  if(sc_eta <= 1.479 && pt_ > 15 && elecs.at(i)->full5x5_sigma_IetaIeta()<0.012&&elecs.at(i)->hadronic_over_em()<0.09 && elecs.at(i)->dr03_tk_sum_pt()/pt_ <0.18&&elecs.at(i)->ecal_pf_cluster_iso()/pt_<0.37&&elecs.at(i)->hcal_pf_cluster_iso()/pt_<0.25&&elecs.at(i)->deta_sc_tk_at_vtx()<0.0095&&elecs.at(i)->dphi_sc_tk_at_vtx()<0.065) pass_preselection = true;
+  if(sc_eta > 1.479 && pt_ > 15 && elecs.at(i)->full5x5_sigma_IetaIeta()<0.033&&elecs.at(i)->hadronic_over_em()<0.09  && elecs.at(i)->dr03_tk_sum_pt()/pt_ <0.18&&elecs.at(i)->ecal_pf_cluster_iso()/pt_<0.45&&elecs.at(i)->hcal_pf_cluster_iso()/pt_<0.28) pass_preselection = true;
+  if (elecs.at(i)->has_matched_conversion()) pass_cut_preselection=false;
+  if (elecs.at(i)->gsf_tk_nhits() > 1) pass_cut_preselection=false;
+
+
+  electronmvaID_ = elecs.at(i)->GetIdIso("mvaNonTrigSpring15");
+  electronTrigmvaID_ = elecs.at(i)->GetIdIso("mvaTrigSpring15");
 
   //if(elecs.at(i)->pt()>10){
   if(fs_){

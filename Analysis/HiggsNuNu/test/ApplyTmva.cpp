@@ -51,13 +51,13 @@ int main( int argc, char** argv )
    // - the variable names MUST corresponds in name and type to those given in the weight file(s) used
 
    const unsigned nVars=13;
-   const unsigned nSpecs=0;
+   //const unsigned nSpecs=0;
 
    Float_t var[nVars];
-   Float_t spec[nSpecs];
+//   Float_t spec[nSpecs];
 
    for (unsigned iV(0); iV<nVars;++iV){
-     if (iV<nSpecs) spec[iV] = 0;
+     //if (iV<nSpecs) spec[iV] = 0;
      var[iV] = 0;
    }
 
@@ -275,12 +275,12 @@ int main( int argc, char** argv )
     }
 
     double weight = 1;
-    double jet1_E=0,jet2_E=0,metx=0,mety=0;
+   // double jet1_E=0,jet2_E=0,metx=0,mety=0;
     double jet1met=0,jet2met=0;
     //Double_t treeSpec[nSpecs-2];
     Double_t treeVar[nVars];
     UInt_t nCJV = 0;
-    UInt_t nCJV20 = 0;
+    //UInt_t nCJV20 = 0;
 
     TTree *t = (TTree*)fData[iD]->Get("TmvaInputTree");
 //     t->SetBranchAddress("total_weight", &weight);

@@ -3,6 +3,7 @@
 import sys
 from optparse import OptionParser
 import os
+import string
 
 CHANNELS= ['et', 'mt', 'em','tt']
 
@@ -14,22 +15,22 @@ def split_callback(option, opt, value, parser):
   setattr(parser.values, option.dest, value.split(','))
 
 parser = OptionParser()
-parser.add_option("-p","--parameterfile", dest="params", type='string',
-                  help="Specify the paramter file containing the luminosity and cross section information.")
+parser.add_option("-p","--parameterfile", dest="params", type='string',default='',
+                  help="Specify the parameter file containing the luminosity and cross section information - can be used to override config file.")
 parser.add_option("--cfg", dest="config", type='string',
-                  help="The config file that will be passed to HiggsTauTauPlot3.")
-parser.add_option("-i","--input", dest="folder", type='string',
-                  help="The input folder, containing the output of HiggsTauTau")
+                  help="The config file that will be passed to HiggsTauTauPlot5. Parameter file, input folder and signal scheme taken from this cfg file unless overriden by command line options")
+parser.add_option("-i","--input", dest="folder", type='string', default='',
+                  help="The input folder, containing the output of HTT - can be used to override config file")
 parser.add_option("-o","--output", dest="output", type='string', default='',
                   help="The name that will be appended to the datacard inputs.")
 parser.add_option("-c", "--channels", dest="channels", type='string', action='callback',callback=split_callback,
-                  help="A comma separted list of channels to process.  Supported channels: %(CHANNELS)s" % vars())
+                  help="A comma separated list of channels to process.  Supported channels: %(CHANNELS)s" % vars())
 parser.add_option("--blind", dest="blind", action='store_true', default=False,
                   help="blind data")
 parser.add_option("--extra", dest="extra", type='string', default='',
                   help="Extra command line options, applied to every datacard")
-parser.add_option("-s", "--scheme", dest="scheme", type='string', default='run2_mssm',
-                  help="datacard scheme")
+parser.add_option("-s", "--scheme", dest="scheme", type='string', default='',
+                  help="datacard scheme - can be used to override config file")
 parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
                   help="Only make inputs for visible mass, no svfit.")
 parser.add_option("--svfit", dest="svfit", action='store_true', default=False,
@@ -67,14 +68,39 @@ for channel in channels:
   validate_channel(channel)
 
 
-PARAMS=options.params
 CFG=options.config
-FOLDER = options.folder
 BLIND = options.blind
 BLIND = "false"
 if options.blind: BLIND = "true"
 COM = options.energy
 YEAR = '2015'
+
+#Hacky config file parsing
+with open("%(CFG)s"%vars(),"r") as cfgfile:
+  lines = cfgfile.readlines()
+
+configmap={}
+
+for ind in range(0,len(lines)):
+  configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
+
+SCHEME= configmap["signal_scheme"].rstrip('\n')
+FOLDER=configmap["folder"].rstrip('\n')
+PARAMS=configmap["paramfile"].rstrip('\n')
+
+#Override config file params
+if not options.scheme == "":
+  SCHEME=options.scheme
+if not options.folder ==  "":
+  FOLDER=options.folder
+if not options.params == "":
+  PARAMS=options.params
+
+
+
+
+
+
 
 ########## Set up schemes and options
 
@@ -92,9 +118,56 @@ extra_channel = {
 #################################################################
 #### Old SM scheme
 #################################################################
-if options.scheme == 'run2_mssm':
+
+if SCHEME == 'run2_sm':
 #  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
-  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300]"
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"
+  scheme_et = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
+#    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
+#    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ""),
+#    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
+#    ("2",   "1jet_low",     "boost_low",  BINS_FINE, ""),
+#    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_mt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '')
+#    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
+#    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
+#    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
+#    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV:50:1.15:0.15"'),
+#    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '')
+#    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
+#    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
+#    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
+#    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV:50:1.15:0.15"'),
+#    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_em = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
+#    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+#    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+#    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, (
+#      (' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')+
+#       ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"')),
+#    ("2",   "1jet_low",     "boost_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+#    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default'
+  }
+  sig_scheme = 'run2_sm'
+  ANA = 'sm'
+
+
+if SCHEME == 'run2_mssm':
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"
   scheme_et = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
@@ -137,6 +210,7 @@ if options.scheme == 'run2_mssm':
   }
   sig_scheme = 'run2_mssm'
   ANA = 'mssm'
+
 
 cat_schemes = {
   'et' : scheme_et,

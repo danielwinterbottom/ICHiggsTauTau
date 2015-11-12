@@ -281,7 +281,7 @@ process.icPileupInfoProducer = producers.icPileupInfoProducer.clone(
 # GenParticle Module
 ##############################################################################
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.selectedGenParticles = cms.EDProducer("ICGenParticlePruner",
+process.selectedGenParticles = cms.EDProducer("ICGenParticlePruner53X",
   src = cms.InputTag("genParticles"),
   select = cms.vstring(
     "drop  *",
