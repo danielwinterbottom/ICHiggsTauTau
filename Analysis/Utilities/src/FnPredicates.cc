@@ -870,12 +870,12 @@ namespace ic {
     if(!pass_preselection) return false;
     double idmva = elec->GetIdIso("mvaTrigSpring15");
     if (!loose_wp) {
-/*      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
+      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.89) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;*/
-      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
+      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;
+/*      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.967910) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;
+      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;*/
     } else {
       if (eta <= 0.8                    && idmva > 0.972153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479    && idmva > 0.922126) pass_mva = true;
@@ -950,6 +950,19 @@ namespace ic {
       return (iso < cut_endcap);
     }
   }
+
+ double HEEPIso(Electron const* elec){
+   double iso = elec->dr03_ecal_rechit_sum_et() + elec->dr03_hcal_tower_sum_et();
+   iso=iso/elec->pt();
+   return iso;
+ }
+ 
+ double HEEPClusterIso(Electron const* elec){
+   double iso = elec->ecal_pf_cluster_iso() + elec->hcal_pf_cluster_iso();
+   iso = iso/elec->pt();
+   return iso;
+ }
+
 
 
   bool ElectronHTT2011IdIso(Electron const* elec) {
@@ -1271,6 +1284,12 @@ namespace ic {
     bool isoCut = (((muon->dr03_tk_sum_pt())/muon->pt())<0.1); 
     return isoCut;
   }
+
+  double MuonTkIsoVal(Muon const* muon) {
+    double isoCut = ((muon->dr03_tk_sum_pt())/muon->pt()); 
+    return isoCut;
+  }
+
   
   std::vector<Track *> GetTracksAtVertex(std::vector<Track *> const& trks, std::vector<Vertex *> const& vtxs, unsigned idx, double const& dz) {
     std::vector<Track *> result;
@@ -1412,6 +1431,41 @@ namespace ic {
     }
     return taus;
   }
+
+  std::vector<GenJet> BuildPromptTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic) {
+    std::vector<GenJet> taus;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      std::vector<bool> status_flags = parts[i]->statusFlags();
+      if (abs(parts[i]->pdgid()) == 15 && (status_flags[IsPrompt])) {
+      //if (abs(parts[i]->pdgid()) == 15 && (status_flags[IsPrompt]||status_flags[IsDirectPromptTauDecayProduct])) {
+        std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
+        bool has_tau_daughter = false;
+        bool has_lepton_daughter = false;
+        for (unsigned j = 0; j < daughters.size(); ++j) {
+          if (abs(daughters[j]->pdgid()) == 15) has_tau_daughter = true;
+          if (abs(daughters[j]->pdgid()) == 11 || abs(daughters[j]->pdgid()) == 13) has_lepton_daughter = true;
+        }
+        if (has_tau_daughter) continue;
+        if (has_lepton_daughter && !include_leptonic) continue;
+        std::vector<GenParticle *> jet_parts = ExtractStableDaughters(parts[i], parts);
+        taus.push_back(GenJet());
+        ROOT::Math::PtEtaPhiEVector vec;
+        std::vector<std::size_t> id_vec;
+        for (unsigned k = 0; k < jet_parts.size(); ++k) {
+          if (  abs(jet_parts[k]->pdgid()) == 12 || 
+                abs(jet_parts[k]->pdgid()) == 14 ||
+                abs(jet_parts[k]->pdgid()) == 16 ) continue;
+          vec += jet_parts[k]->vector();
+          taus.back().set_charge(taus.back().charge() + jet_parts[k]->charge());
+          id_vec.push_back(jet_parts[k]->id());
+        }
+        taus.back().set_vector(vec);
+        taus.back().set_constituents(id_vec);
+      }
+    }
+    return taus;
+  }
+
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){
 

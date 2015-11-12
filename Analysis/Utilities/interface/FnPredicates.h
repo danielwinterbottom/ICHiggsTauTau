@@ -171,6 +171,9 @@ namespace ic {
     return (iso < cut);
   }
 
+  double HEEPIso(Electron const* elec);
+  double HEEPClusterIso(Electron const* elec);
+
   template<class T> 
   double GetEffectiveArea(T const* cand){
     return 0;
@@ -262,6 +265,7 @@ namespace ic {
   bool MuonLoose(Muon const* muon);
   bool MuonIso(Muon const* muon);
   bool MuonTkIso(Muon const* muon);
+  double MuonTkIsoVal(Muon const* muon);
 
 
   template<class T, class U>
@@ -363,6 +367,8 @@ namespace ic {
   std::vector<GenParticle *> ExtractDaughtersRecursive(GenParticle * part, std::vector<GenParticle *> const& input);
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic);
+
+  std::vector<GenJet> BuildPromptTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 

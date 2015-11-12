@@ -30,6 +30,8 @@ class HTTMuonEfficiency : public ModuleBase {
   double iso_db03_;
   double iso_db03allch_;
   double iso_db04allch_;
+  double iso_db04_;
+  double iso_trk03_;
   int wt_;
   
 

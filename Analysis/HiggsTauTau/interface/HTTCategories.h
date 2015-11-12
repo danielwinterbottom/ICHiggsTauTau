@@ -125,10 +125,14 @@ class HTTCategories : public ModuleBase {
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
+  double iso_1_db04_;
+  double iso_1_trk03_;
   double iso_1_db03allch_;
   double iso_1_db04allch_; 
   double iso_1_ea03_;
   double iso_2_db03_;
+  double iso_2_db04_;
+  double iso_2_trk03_;
   double iso_2_db03allch_;
   double iso_2_db04allch_; 
   double iso_2_ea03_;

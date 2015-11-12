@@ -868,6 +868,8 @@ namespace ic {
           iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_1_db04_ = PF04IsolationVal(elec, 0.5, 0);
+          iso_1_trk03_ = 0; 
           iso_2_db03_ = 0;
           iso_2_ea03_ = 0;
           iso_2_db03allch_ = 0;
@@ -923,8 +925,12 @@ namespace ic {
           iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
           iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+          iso_1_db03_ = PF04IsolationVal(muon, 0.5,0); 
+          iso_1_trk03_ = MuonTkIsoVal(muon);
           iso_2_db03_ = 0;
           iso_2_ea03_ = 0;
+          iso_2_trk03_ = 0;
+          iso_2_db04_ = 0;
           iso_2_db03allch_ = 0;
           iso_2_db04allch_ = 0;
         }
@@ -969,11 +975,15 @@ namespace ic {
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
+          iso_1_db04_ = PF04IsolationVal(elec, 0.5, 0);
           iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_1_trk03_=0;
           iso_2_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_2_db04_ = PF03IsolationVal(muon, 0.5, 0);
           iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_2_trk03_ = MuonTkIsoVal(muon);
           iso_2_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_2_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
         }

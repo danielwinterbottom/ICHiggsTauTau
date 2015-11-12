@@ -1324,6 +1324,7 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
 }
      if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_dirname("ElectronEfficiencyForIDStudy")
     .set_fs(fs.get()));
 BuildModule(HTTMuonEfficiency("MuonEfficiency")
     .set_fs(fs.get()));
