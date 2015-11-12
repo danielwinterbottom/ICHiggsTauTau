@@ -130,13 +130,13 @@ if options.proc_sm or options.proc_all:
 #      'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
 #    ]
 if options.proc_mssm or options.proc_all:
-  masses = ['160','500','1000']
+  masses = ['160','500','1000','1500','2000','2600','3200']
 #  if not options.do_2011: masses += ['80','110']
   if options.short_signal: masses = ['160']
   for mass in masses :
     signal_mc += [
       'SUSYGluGluToHToTauTau_M-'+mass,
-#      'SUSYGluGluToBBHToTauTau_M-'+mass
+      'SUSYGluGluToBBHToTauTau_M-'+mass
     ]
 
 #if options.proc_Hhh or options.proc_all:

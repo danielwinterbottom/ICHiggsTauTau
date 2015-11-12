@@ -24,7 +24,6 @@ samplelist = options.samplelist
 
 
 sample_list = [
-  'SUSYGluGluToHToTauTau_M-160',
   'QCD_Ht100to200',
   'QCD_Ht200to300',
   'QCD_Ht300to500',
@@ -101,6 +100,17 @@ sample_list = [
   'SUSYGluGluToHToTauTau_M-160',
   'SUSYGluGluToHToTauTau_M-500',
   'SUSYGluGluToHToTauTau_M-1000',
+  'SUSYGluGluToHToTauTau_M-1500',
+  'SUSYGluGluToHToTauTau_M-2000',
+  'SUSYGluGluToHToTauTau_M-2600',
+  'SUSYGluGluToHToTauTau_M-3200',
+  'SUSYGluGluToBBHToTauTau_M-160',
+  'SUSYGluGluToBBHToTauTau_M-500',
+  'SUSYGluGluToBBHToTauTau_M-1000',
+  'SUSYGluGluToBBHToTauTau_M-1500',
+  'SUSYGluGluToBBHToTauTau_M-2000',
+  'SUSYGluGluToBBHToTauTau_M-2600',
+  'SUSYGluGluToBBHToTauTau_M-3200',
   'GluGluHToTauTau_M-125',
   'GluGluHToTauTau_M-130',
   'GluGluHToTauTau_M-120',
