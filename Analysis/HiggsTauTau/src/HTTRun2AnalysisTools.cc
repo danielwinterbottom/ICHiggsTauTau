@@ -527,7 +527,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   void HTTRun2Analysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
         sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
-//      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
+        sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
     }
   }
 
@@ -837,7 +837,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                     double fixed_xs) {
     for (auto const& m : masses) {
         hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
-//      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
+        hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
 
