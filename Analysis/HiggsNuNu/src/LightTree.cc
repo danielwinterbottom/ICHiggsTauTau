@@ -349,6 +349,9 @@ namespace ic {
   }
 
   int  LightTree::Execute(TreeEvent *event){
+
+    static unsigned processed = 0;
+
     //Reset all information
     run_=-1;
     lumi_=-1;
@@ -549,6 +552,7 @@ namespace ic {
     }
     if(dotrigskim_){
       if(!(pass_sigtrigger_==1||pass_controltrigger_==1||pass_mettrigger_==1||pass_singlejettrigger_==1||pass_htquadjettrigger_==1)){
+	
 	return 1;
       }
     }
@@ -568,14 +572,14 @@ namespace ic {
       pileupwt=eventInfo->weight("pileup");
       pileupwtup=eventInfo->weight("pileup_up");
       pileupwtdown=eventInfo->weight("pileup_down");
-      topwt=eventInfo->weight("tquark_weight");
-      topwtup=eventInfo->weight("tquark_weight_up");
-      topwtdown=eventInfo->weight("tquark_weight_up");
+      //topwt=eventInfo->weight("tquark_weight");
+      //topwtup=eventInfo->weight("tquark_weight_up");
+      //topwtdown=eventInfo->weight("tquark_weight_down");
     }
     puweight_up_scale_=pileupwtup/pileupwt;
     puweight_down_scale_=pileupwtdown/pileupwt;
-    topweight_up_scale_=topwtup/topwt;
-    topweight_down_scale_=topwtdown/topwt;
+    //topweight_up_scale_=topwtup/topwt;
+    //topweight_down_scale_=topwtdown/topwt;
 
     weight_nolep_ = wt;
     total_weight_lepveto_ =wt*vetowt;
@@ -1005,9 +1009,12 @@ namespace ic {
 	}
       }
 
-      static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
-      if(!ignoreLeptons_){
+      if(do_noskim_){
+	outputTree_->Fill();
+	++processed;
+      }
+      else if(!ignoreLeptons_){
 	if(!do_promptskim_){
 	  if(!do_noskim_){
 	    if (jet_pt_[1]>40&& dijet_M_ > 600 &&  dijet_deta_>3.6){
@@ -1046,9 +1053,12 @@ namespace ic {
 	}
 	
       }
-      if (processed == 500) outputTree_->OptimizeBaskets();
     }
-
+    else if(do_noskim_){
+      outputTree_->Fill();
+      ++processed;
+    }
+    if (processed == 500) outputTree_->OptimizeBaskets();
     return 0;
   }
 

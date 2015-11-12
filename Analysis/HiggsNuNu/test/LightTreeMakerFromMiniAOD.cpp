@@ -34,6 +34,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvDataTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWDecay.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/WDecaySeparator.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
@@ -41,6 +42,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTreeAM.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -232,7 +234,18 @@ int main(int argc, char* argv[]){
     return 1;
   }
   checkfile.close();
-  fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
+
+  //rename with _wstream.root properly
+  std::string fullpath = output_folder+output_name;
+  if (output_name.find("JetsToLNu") != output_name.npos) {
+    std::string suffix=".root";
+    std::size_t found = fullpath.find(suffix);
+    if(found!=std::string::npos){
+      fullpath.erase(found,5);
+    }
+    fullpath = fullpath+"_"+wstream+".root";
+  }
+  fwlite::TFileService *fs = new fwlite::TFileService(fullpath.c_str());
   
   bool ignoreLeptons=false;
   if (output_name.find("iglep") != output_name.npos) {
@@ -325,8 +338,8 @@ int main(int argc, char* argv[]){
 //     .set_input_file(data_json);
 
   MakeRunStats runStats = MakeRunStats("RunStats")
-    .set_output_name(output_folder+output_name+".runstats");
-  
+    .set_output_name(fullpath+".runstats");
+
   
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
@@ -362,6 +375,10 @@ int main(int argc, char* argv[]){
   else if(era == era::data_2015_50ns){
     data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Up.root", "/", "pileup");
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Down.root", "/", "pileup");
+  }
+  else if(era == era::data_2015_25ns){
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb80_2015D_246908-259891-600bins.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb58_2015D_246908-259891-600bins.root", "/", "pileup");
   }
 
   if (!is_data) {
@@ -542,8 +559,6 @@ int main(int argc, char* argv[]){
     .set_predicate( bind(PairMassInRange, _1,60,120) )
     .set_min(1)
     .set_max(999);    
-
-  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,150,true);
 
   // ------------------------------------------------------------------------------------
   // Tau modules
@@ -807,16 +822,18 @@ int main(int argc, char* argv[]){
   else if (wstream == "munu") lFlavour = 13;
   else if (wstream == "taunu") lFlavour = 15;
 
+  WDecaySeparator WtoLeptonFilter = WDecaySeparator("WtoLeptonSelector",lFlavour);
 
+  HinvWDecay WtoLeptonFilter2012 = HinvWDecay("WtoLeptonSelector2012",lFlavour);
+  WtoLeptonFilter2012.set_do_newstatuscodes(false);
+  WtoLeptonFilter2012.set_do_statusflags(false);
 
-  HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
-  WtoLeptonFilter.set_do_newstatuscodes(true);
-  WtoLeptonFilter.set_do_statusflags(true);
+  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,150,true);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
   // ------------------------------------------------------------------------------------  
-  
+
   LightTree lightTree = LightTree("LightTree")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -831,6 +848,17 @@ int main(int argc, char* argv[]){
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
   //.set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
 
+  LightTreeAM lightTreeNew = LightTreeAM("LightTreeNew")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_jet_label(jettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_is_data(is_data)
+    .set_do_trigskim(false)
+    .set_do_promptskim(dopromptskim)
+    .set_do_noskim(donoskim)
+    .set_ignoreLeptons(ignoreLeptons);
+
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
@@ -841,7 +869,10 @@ int main(int argc, char* argv[]){
     //do W streaming to e,mu,tau
     if (output_name.find("JetsToLNu") != output_name.npos ||
 	output_name.find("EWK-W2j") != output_name.npos) {
-      if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
+      if (wstream != "nunu") {
+	if (era_str.find("2012") != era_str.npos) analysis.AddModule(&WtoLeptonFilter2012);
+	else analysis.AddModule(&WtoLeptonFilter);
+      }
     }
     //Do PU Weight
     analysis.AddModule(&pileupWeight);
@@ -861,7 +892,7 @@ int main(int argc, char* argv[]){
     analysis.AddModule(&metFilters);
     analysis.AddModule(&metLaserFilters);
   }
-  
+
   if(!donoskim)analysis.AddModule(&goodVertexFilter);
   //jet modules
   analysis.AddModule(&jetIDFilter);
@@ -938,8 +969,8 @@ int main(int argc, char* argv[]){
   //jet pair selection
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   
-  //write tree with TMVA input variables
-  analysis.AddModule(&lightTree);  
+  //write tree
+  analysis.AddModule(&lightTreeNew);  
   
   // Run analysis
   analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
@@ -949,6 +980,7 @@ int main(int argc, char* argv[]){
   analysis.RunAnalysis();
   delete fs;
   return 0;
+
 }
 
 

@@ -1,18 +1,26 @@
 #!/bin/sh
-DOCERN=0
+DOCERN=1
+DOSUBMIT=0
+MYEXEC=LightTreeMakerFromMiniAOD
+PRODUCTION=151030
+PRODUSER=amagnan
+
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
-: ${JOBWRAPPER:="./scripts/generate_job.sh"}
+: ${JOBWRAPPER:="./scripts/generate_job.sh $DOCERN $MYEXEC $PRODUCTION"}
 : ${JOBSUBMIT:="eval"}
 
 #export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+
+GRIDSETUP=1
 
 if [ "$DOCERN" = "0" ]
     then
     JOBSCRIPT="./scripts/submit_ic_batch_job.sh"
 else
     JOBSCRIPT="./scripts/submit_cern_batch_job.sh"
+    GRIDSETUP=0
 fi
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 
@@ -20,18 +28,16 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-PRODUCTION=151030
-PRODUSER=amagnan
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 
 
-for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
+for SYST in central #JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree_301015goldenjson_hltcalojets_301015
+  JOBDIRPREFIX=jobs_lighttree_151111
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_301015goldenjson_hltcalojets_301015
+  OUTPUTPREFIX=output_lighttree_151111
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -109,7 +115,7 @@ if [ "$SYST" = "ELEEFFUP" ]
   mkdir -p $JOBDIR
   mkdir -p $OUTPUTDIR
 
-  cp $CONFIG $JOBDIR
+  cp $CONFIG $OUTPUTDIR
 
   for QUEUEDIR in medium long
     do
@@ -156,9 +162,12 @@ if [ "$SYST" = "ELEEFFUP" ]
       
       echo "JOB name = $JOB"
       
-      $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-      $JOBSUBMIT $JOBDIR/$JOB.sh
-      
+      $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh $GRIDSETUP
+      if [ "$DOSUBMIT" = "1" ]; then 
+	  $JOBSUBMIT $JOBDIR/$JOB.sh
+      else
+	  echo "$JOBSUBMIT $JOBDIR/$JOB.sh"
+      fi 
       
       rm tmp.txt tmp2.txt
       
