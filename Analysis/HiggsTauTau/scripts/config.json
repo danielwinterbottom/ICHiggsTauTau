@@ -58,7 +58,7 @@
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
     "nvtx_weight_file": "input/pileup/VertexWeightDistribution_zmm.root", 
-    "data_pu_file"  : "input/pileup/DataPUHist80MB.root",
+    "data_pu_file"  : "input/pileup/DataPUHist69MBOct19GoldenJson.root",
     "mc_pu_file"    : "input/pileup/MC_Spring15_PU25_Startup.root",
     "run_trg_filter": false,
     "baseline": {
