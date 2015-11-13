@@ -240,7 +240,7 @@ int SVFitTestRun2::Execute(TreeEvent *event) {
         antimu_1_ = lagainstMuonLoose3_1;
         antiele_2_ = lagainstElectronTightMVA5_2;
         antimu_2_ = lagainstMuonLoose3_2;
-        if(iso_1_<0.2&&iso_2_<0.2&&antiele_1_>0&&antimu_1_>0&&antiele_2_>0&&antimu_2_>0) pass_presel = true;
+        if(iso_1_<1.5&&iso_2_<1.5&&antiele_1_>0&&antimu_1_>0&&antiele_2_>0&&antimu_2_>0) pass_presel = true;
     }
 
 
