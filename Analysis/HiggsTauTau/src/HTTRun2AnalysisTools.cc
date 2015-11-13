@@ -72,7 +72,7 @@ namespace ic {
       "ZZinclusive-AOD",
       "DYJetsToTauTau",
     };
-    if (ch_ != channel::em) {
+    f (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
         "WJetsToLNu-AOD",
         "WJetsToLNu",
@@ -187,6 +187,17 @@ namespace ic {
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       alias_map_["prebtag"] += "&&" + alias_map_["inclusive"];
+      //MSSM update analysis style categories:
+      alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>30 && pt_2<45)";
+      alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45)";
+      alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>30 && pt_2<45";
+      alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>45 && pt_2<60";
+      alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>60";
+      alias_map_["btaglow"] += "&&" + alias_map_["inclusive"];
+      alias_map_["btaghigh"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtaglow"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtagmed"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtaghigh"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::tt) {
       // SM Categories
       //alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -200,9 +211,25 @@ namespace ic {
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       alias_map_["prebtag"] += "&&" + alias_map_["inclusive"];
+      //MSSM update analysis style categories:
+      alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45 && pt_2<60)";
+      alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>60)";
+      alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>45 && pt_2<60";
+      alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>60 && pt_2<80";
+      alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>80";
+      alias_map_["btaglow"] += "&&" + alias_map_["inclusive"];
+      alias_map_["btaghigh"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtaglow"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtagmed"] += "&&" + alias_map_["inclusive"];
+      alias_map_["nobtaghigh"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      //Categories can be added using inclusive alias as follows:
+      alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
+      alias_map_["vbf"] += "&&" + alias_map_["inclusive"];
+      alias_map_["1jet"] += "&&" + alias_map_["inclusive"];
       alias_map_["incnoiso"]         = "!leptonveto";
       alias_map_["incnoisowmu"]         = "iso_2<0.15 && !leptonveto";
       alias_map_["incnoisowe"]         = "iso_1<0.15 && !leptonveto";
