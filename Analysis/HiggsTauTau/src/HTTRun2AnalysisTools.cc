@@ -184,6 +184,9 @@ namespace ic {
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["btag"] += "&&" + alias_map_["inclusive"];
       alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
+      //for making CSV control plot
+      alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
+      alias_map_["prebtag"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::tt) {
       // SM Categories
       //alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -194,6 +197,9 @@ namespace ic {
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["btag"] += "&&" + alias_map_["inclusive"];
       alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
+      //for making CSV control plot
+      alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
+      alias_map_["prebtag"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
@@ -291,6 +297,9 @@ namespace ic {
       alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
       alias_map_["ttcontrol"] = "(n_jets>=1 && n_bjets>=1 && pzeta<-50)";
       alias_map_["ttcontrol"] += "&&" + alias_map_["inclusive"];
+      //for making CSV control plot
+      alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
+      alias_map_["prebtag"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
       alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<0.1)";
     } else if (ch_ == channel::wmnu) {
