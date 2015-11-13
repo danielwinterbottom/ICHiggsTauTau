@@ -389,9 +389,9 @@ namespace ic {
       //std::cout << " Trigger " << name 
       //<< " prescale " << prescale
       //<< std::endl;
-      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v") != name.npos) pass_sigtrigger_ = prescale;
-      if (name.find("HLT_PFMET170_NoiseCleaned_v") != name.npos) pass_mettrigger_ = prescale;
-      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v") != name.npos) pass_controltrigger_ = prescale;
+      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140") != name.npos) pass_sigtrigger_ = prescale;
+      if (name.find("HLT_PFMET170_NoiseCleaned") != name.npos) pass_mettrigger_ = prescale;
+      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80") != name.npos) pass_controltrigger_ = prescale;
     }
     if(do_trigskim_){
       if(!(pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0)){
@@ -456,7 +456,7 @@ namespace ic {
     met_significance_ = met->et_sig();
     sumet_ = met->sum_et();
     //      if(l1met.size()==1){//!!
-    l1met_ = l1met[0]->energy();
+    l1met_ = l1met[0]->pt();
     //}
     metnomuons_ = metnomuons->pt();
     metnomu_x_ = metnomuvec.Px();
@@ -801,8 +801,8 @@ namespace ic {
       //if (n_jets_30_>1 || 
       //nselmuons_>0 || nselelectrons_>0 || ntaus_ > 0 ||
       //nloosephotons_ > 0 || nmediumphotons_ > 0 || ntightphotons_ > 0){
-      outputTree_->Fill();
-      //}
+	outputTree_->Fill();
+	//}
       //++processed;
     }
     else if(!ignoreLeptons_){

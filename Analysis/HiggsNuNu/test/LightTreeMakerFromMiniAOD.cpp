@@ -38,7 +38,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetEventFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
@@ -417,11 +417,11 @@ int main(int argc, char* argv[]){
 //   .set_l2_file("input/jec/START53_V10_L2Relative_AK5PF.txt")
 //   .set_l3_file("input/jec/START53_V10_L3Absolute_AK5PF.txt");
   
-
-  MetLaserFilters cscTightHaloFilter = MetLaserFilters("CscTightHaloFilter",
-						    "input/halofilters/allevents.txt",
-						    "dummy.txt",
-						    doMetFilters);
+  std::vector<string> inputVec;
+  inputVec.push_back("input/halofilters/allevents.txt");
+  MetEventFilters cscTightHaloFilter = MetEventFilters("CscTightHaloFilter",
+						       inputVec,
+						       doMetFilters);
 
 
   SimpleFilter<Vertex> goodVertexFilter = SimpleFilter<Vertex>("goodVertexFilter")
@@ -977,7 +977,7 @@ int main(int argc, char* argv[]){
   else analysis.AddModule(&lightTreeNew);  
   
   // Run analysis
-  analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
+  analysis.RetryFileAfterFailure(60,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
   analysis.StopOnFileFailure(true);
   analysis.SetTTreeCaching(true); 
   
