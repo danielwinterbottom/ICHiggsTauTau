@@ -177,7 +177,7 @@ int SVFitTestRun2::Execute(TreeEvent *event) {
         lbyIsolationMVA3oldDMwLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwLTraw") : 0.;*/
         antiele_2_ = lagainstElectronTightMVA5_2;
         antimu_2_ = lagainstMuonLoose3_2;
-        if(antiele_2_>0&&antimu_2_>0&&iso_2_<2&&iso_1_<0.15) pass_presel = true;
+        if(antiele_2_>0&&antimu_2_>0&&iso_2_<10&&iso_1_<0.5) pass_presel = true;
     }
     if(channel_ == channel::mt) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
@@ -204,7 +204,7 @@ int SVFitTestRun2::Execute(TreeEvent *event) {
         lbyIsolationMVA3oldDMwLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwLTraw") : 0.;*/
         antiele_2_ = lagainstElectronVLooseMVA5_2;
         antimu_2_ = lagainstMuonTight3_2;
-        if(antiele_2_>0&&antimu_2_>0&&iso_2_<2&&iso_1_<0.15) pass_presel = true;
+        if(antiele_2_>0&&antimu_2_>0&&iso_2_<10&&iso_1_<0.5) pass_presel = true;
     }
     if(channel_ == channel::em) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
