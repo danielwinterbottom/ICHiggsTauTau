@@ -113,11 +113,15 @@ namespace ic {
         outtree_->Branch("iso_1_db03", &iso_1_db03_);
         outtree_->Branch("iso_1_db03allch", &iso_1_db03allch_);
         outtree_->Branch("iso_1_db04allch", &iso_1_db04allch_);
+        outtree_->Branch("iso_1_db04", &iso_1_db04_);
         outtree_->Branch("iso_1_ea03", &iso_1_ea03_);
+        outtree_->Branch("iso_1_trk03", &iso_1_trk03_);
         outtree_->Branch("iso_2_db03", &iso_2_db03_);
         outtree_->Branch("iso_2_db03allch", &iso_2_db03allch_);
         outtree_->Branch("iso_2_db04allch", &iso_2_db04allch_);
+        outtree_->Branch("iso_2_db04", &iso_2_db04_);
         outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
+        outtree_->Branch("iso_2_trk03", &iso_2_trk03_);
       }
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
         //Extra variables needed for tag and probe

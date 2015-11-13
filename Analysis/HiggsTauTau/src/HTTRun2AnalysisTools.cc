@@ -131,6 +131,7 @@ namespace ic {
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
       // Categories for iso studies
       alias_map_["incnoiso"]         = "(iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["incnoisonolv"]     = "(iso_2<1.5 && antiele_2 && antimu_2)";
@@ -172,6 +173,30 @@ namespace ic {
       alias_map_["db04allchiso0p09"]           = "(iso_1_db04allch<0.09&&"+alias_map_["incnoiso"]+")";
       alias_map_["db04allchiso0p08"]           = "(iso_1_db04allch<0.08&&"+alias_map_["incnoiso"]+")";
       alias_map_["db04allchiso0p07"]           = "(iso_1_db04allch<0.07&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p1"]            = "(iso_1_db04<0.1&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p11"]            = "(iso_1_db04<0.11&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p12"]            = "(iso_1_db04<0.12&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p13"]            = "(iso_1_db04<0.13&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p14"]            = "(iso_1_db04<0.14&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p15"]            = "(iso_1_db04<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p16"]            = "(iso_1_db04<0.16&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p17"]            = "(iso_1_db04<0.17&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p18"]            = "(iso_1_db04<0.18&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p09"]           = "(iso_1_db04<0.09&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p08"]           = "(iso_1_db04<0.08&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p07"]           = "(iso_1_db04<0.07&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p1"]            = "(iso_1_trk03<0.1&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p11"]            = "(iso_1_trk03<0.11&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p12"]            = "(iso_1_trk03<0.12&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p13"]            = "(iso_1_trk03<0.13&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p14"]            = "(iso_1_trk03<0.14&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p15"]            = "(iso_1_trk03<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p16"]            = "(iso_1_trk03<0.16&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p17"]            = "(iso_1_trk03<0.17&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p18"]            = "(iso_1_trk03<0.18&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p09"]           = "(iso_1_trk03<0.09&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p08"]           = "(iso_1_trk03<0.08&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p07"]           = "(iso_1_trk03<0.07&&"+alias_map_["incnoiso"]+")";
      // alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
       //alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2)";
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
@@ -184,11 +209,13 @@ namespace ic {
       // SM Categories
       //alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       alias_map_["incnoiso"]         = "!leptonveto";
       alias_map_["incnoisowmu"]         = "iso_2<0.15 && !leptonveto";
       alias_map_["incnoisowe"]         = "iso_1<0.15 && !leptonveto";
@@ -214,6 +241,37 @@ namespace ic {
       alias_map_["mdb03iso0p12"]           = "(iso_2_db03<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03iso0p13"]           = "(iso_2_db03<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03iso0p14"]           = "(iso_2_db03<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p15"]            = "(iso_2_db04<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p16"]            = "(iso_2_db04<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p17"]            = "(iso_2_db04<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p18"]            = "(iso_2_db04<0.18&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p19"]            = "(iso_2_db04<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p20"]            = "(iso_2_db04<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p21"]            = "(iso_2_db04<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p12"]           = "(iso_2_db04<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p13"]           = "(iso_2_db04<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p14"]           = "(iso_2_db04<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p15"]            = "(iso_2_db04<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p16"]            = "(iso_2_db04<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p17"]            = "(iso_2_db04<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p18"]            = "(iso_2_db04<0.18&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p19"]            = "(iso_2_db04<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p20"]            = "(iso_2_db04<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p21"]            = "(iso_2_db04<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p12"]           = "(iso_2_db04<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p13"]           = "(iso_2_db04<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p14"]           = "(iso_2_db04<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p14"]           = "(iso_2_trk03<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p15"]            = "(iso_2_trk03<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p16"]            = "(iso_2_trk03<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p17"]            = "(iso_2_trk03<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p18"]            = "(iso_2_trk03<0.18&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p19"]            = "(iso_2_trk03<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p20"]            = "(iso_2_trk03<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p21"]            = "(iso_2_trk03<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p12"]           = "(iso_2_trk03<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p13"]           = "(iso_2_trk03<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p14"]           = "(iso_2_trk03<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p15"]            = "(iso_1_ea03<0.15&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p16"]            = "(iso_1_ea03<0.16&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p17"]            = "(iso_1_ea03<0.17&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
