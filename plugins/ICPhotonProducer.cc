@@ -159,7 +159,11 @@ void ICPhotonProducer::produce(edm::Event& event,
       dest.set_dr03_pfiso_neutral(patsrc.neutralHadronIso());
       dest.set_dr03_pfiso_gamma(patsrc.photonIso());
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
+#if CMSSW_MINOR_VERSION >= 6
+      dest.set_dr03_pfiso_charged_all(patsrc.patParticleIso());
+#else
       dest.set_dr03_pfiso_charged_all(patsrc.particleIso());
+#endif
       dest.set_dr03_pfiso_pu(patsrc.puChargedHadronIso());
 #endif
     }
@@ -170,7 +174,11 @@ void ICPhotonProducer::produce(edm::Event& event,
       dest.set_dr04_pfiso_neutral(patsrc.neutralHadronIso());
       dest.set_dr04_pfiso_gamma(patsrc.photonIso());
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
+#if CMSSW_MINOR_VERSION >= 6
+      dest.set_dr04_pfiso_charged_all(patsrc.patParticleIso());
+#else
       dest.set_dr04_pfiso_charged_all(patsrc.particleIso());
+#endif
       dest.set_dr04_pfiso_pu(patsrc.puChargedHadronIso());
 #endif
     }
