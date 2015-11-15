@@ -9,7 +9,7 @@
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "CommonTools/UtilAlgos/interface/MasterCollectionHelper.h"
 #include "DataFormats/Provenance/interface/ProductID.h"
-
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
@@ -18,9 +18,12 @@
 
 ICElectronConversionCalculator::ICElectronConversionCalculator(
     const edm::ParameterSet& config)
-    : input_(consumes<edm::View<reco::GsfElectron>> (config.getParameter<edm::InputTag>("input"))),
-      input_beamspot_(consumes<reco::BeamSpot> (config.getParameter<edm::InputTag>("beamspot"))),
-      input_conversions_(consumes<reco::ConversionCollection> (config.getParameter<edm::InputTag>("conversions"))) {
+    : input_((config.getParameter<edm::InputTag>("input"))),
+      input_beamspot_((config.getParameter<edm::InputTag>("beamspot"))),
+      input_conversions_((config.getParameter<edm::InputTag>("conversions"))) {
+      consumes<edm::View<reco::GsfElectron>>(input_);
+      consumes<reco::BeamSpot>(input_beamspot_);
+      consumes<reco::ConversionCollection>(input_conversions_);
   produces<edm::ValueMap<bool> >();
 }
 
@@ -32,13 +35,13 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
   // Use an edm::View here so that this will work on a reco::GsfElectron or
   // pat::Electron collection
   edm::Handle<edm::View<reco::GsfElectron> > elecs_handle;
-  event.getByToken(input_, elecs_handle);
+  event.getByLabel(input_, elecs_handle);
 
   edm::Handle<reco::BeamSpot> beamspot_handle;
-  event.getByToken(input_beamspot_, beamspot_handle);
+  event.getByLabel(input_beamspot_, beamspot_handle);
 
   edm::Handle<reco::ConversionCollection> conversions_handle;
-  event.getByToken(input_conversions_, conversions_handle);
+  event.getByLabel(input_conversions_, conversions_handle);
 
   // Have to be careful producing a ValueMap from an edm::View. When we call
   // filler.insert(handle,...) the ValueMap will use the ProductID of the handle

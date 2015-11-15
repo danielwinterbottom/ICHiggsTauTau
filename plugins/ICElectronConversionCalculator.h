@@ -43,9 +43,9 @@ class ICElectronConversionCalculator : public edm::EDProducer {
 
 
 //  edm::InputTag input_;
-  edm::EDGetTokenT<edm::View<reco::GsfElectron>> input_;
-  edm::EDGetTokenT<reco::BeamSpot> input_beamspot_;
-  edm::EDGetTokenT<reco::ConversionCollection> input_conversions_;
+  edm::InputTag input_; 
+  edm::InputTag input_beamspot_;
+  edm::InputTag input_conversions_;
 };
 
 #endif
