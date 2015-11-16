@@ -124,6 +124,7 @@ int main(int argc, char* argv[]){
   bool turnoffpuid;
 
   bool useOldLT;
+  bool doAllPairs;
 
  // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -188,6 +189,7 @@ int main(int argc, char* argv[]){
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
     ("useOldLT",         po::value<bool>(&useOldLT)->default_value(false))
+    ("doAllPairs",       po::value<bool>(&doAllPairs)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -711,6 +713,14 @@ int main(int argc, char* argv[]){
     .set_select_leading_pair(true)
     .set_output_label("jjLeadingCandidates");                                                        
 
+  OneCollCompositeProducer<PFJet> jjAllPairProducer = OneCollCompositeProducer<PFJet>
+    ("JetJetAllPairProducer")
+    .set_input_label(jettype)
+    .set_candidate_name_first("jet1")
+    .set_candidate_name_second("jet2")
+    .set_select_leading_pair(false)
+    .set_output_label("jjAllCandidates");                                                        
+
   int npairs=1;
   if(donoskim)npairs=0;
   bool cutaboveorbelow=true;
@@ -719,6 +729,11 @@ int main(int argc, char* argv[]){
     .set_predicate( bind(OrderedPairPtSelection, _1,jet1ptcut, jet2ptcut, cutaboveorbelow) )
     .set_min(npairs)
     .set_max(999);
+
+  if (doAllPairs) {
+    jetPairFilter.set_input_label("jjAllCandidates");
+    jetPairFilter.set_predicate(!bind(PairDEtaLessThan, _1, 3.2) && bind(PairMassInRange, _1,600,100000) && bind(PairPtSelection, _1,30,30)  );
+  }
 
   // ------------------------------------------------------------------------------------
   // Met Modules
@@ -862,6 +877,8 @@ int main(int argc, char* argv[]){
     .set_do_noskim(donoskim)
     .set_ignoreLeptons(ignoreLeptons);
 
+  if (doAllPairs) lightTreeNew.set_dijet_label("jjAllCandidates");
+
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
@@ -955,6 +972,8 @@ int main(int argc, char* argv[]){
   //if (printEventContent) analysis.AddModule(&hinvPrint);
   //two-leading jet pair production before plotting
   analysis.AddModule(&jjLeadingPairProducer);
+  if (doAllPairs) analysis.AddModule(&jjAllPairProducer);
+
   //if (printEventContent) analysis.AddModule(&hinvPrint);
   
   //analysis.AddModule(&hinvPrint);

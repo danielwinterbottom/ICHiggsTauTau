@@ -24,7 +24,7 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 opts.register('file', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', 'MCRUN2_74_V9::All', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '74X_mcRun2_asymptotic_v2', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -740,7 +740,8 @@ process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
   srcConfig = cms.PSet(
     isSlimmed               = cms.bool(True),
     includeJetFlavour       = cms.bool(True),
-    includeJECs             = cms.bool(False),
+    includeJECs             = cms.bool(True),
+    JECs                    = pfchsJECS,
     inputSVInfo             = cms.InputTag(""),
     requestSVInfo           = cms.bool(False)
     ),
@@ -975,7 +976,7 @@ process.icPrunedGenParticles = cms.EDProducer("GenParticlePruner",
   )
 )
 
-process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
+process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner53X",
   src = cms.InputTag("prunedGenParticles","","PAT"),
   select = cms.vstring(
     "drop  *",
