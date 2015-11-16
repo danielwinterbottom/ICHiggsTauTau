@@ -15,6 +15,7 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/ICFillerStructs.hh"
 
 ICElectronConversionCalculator::ICElectronConversionCalculator(
     const edm::ParameterSet& config)
@@ -62,19 +63,16 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
   // .id() and ->size() 
 
 
-  CollectionSize csize;
-  CollectionSize* csize_ptr;
-  CollectionIDAndSize c_id_size;
+  CollectionSize<reco::GsfElectron> csize;
+  CollectionSize<reco::GsfElectron>* csize_ptr;
+  CollectionIDAndSize<reco::GsfElectron> c_id_size;
   unsigned n=0;
   if(elecs_handle->size()>0){
     csize.handle_ = elecs_handle;
     csize_ptr = &csize;
-    //rbf.id() = elecs_handle->refAt(0).id();
     c_id_size.collsizepointer = csize_ptr;
-//    rbf.size() = elecs_handle->size();
     n=elecs_handle->size();
   }
-//    std::vector<reftobase_fix> vec_test(n, rbf);
     std::vector<bool> values(n,false);
 /*  edm::RefToBaseProd<reco::GsfElectron> reftobase =
       elecs_handle->size() > 0

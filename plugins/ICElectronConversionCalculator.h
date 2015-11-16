@@ -11,7 +11,6 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
-
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 /**
  * @brief Produces an edm::ValueMap<bool> for the electron conversion-rejection
@@ -21,19 +20,6 @@ class ICElectronConversionCalculator : public edm::EDProducer {
  public:
   explicit ICElectronConversionCalculator(const edm::ParameterSet &);
   ~ICElectronConversionCalculator();
-
-  struct CollectionSize{
-     edm::Handle<edm::View<reco::GsfElectron> > handle_;
-     size_t size() const {return handle_->size();};
-  };
-
-  struct CollectionIDAndSize{
-     CollectionSize* collsizepointer;
-     edm::ProductID id() const {return collsizepointer->handle_->refAt(0).id();};
-     CollectionSize* operator->() const {
-       return collsizepointer;
-     }
-   }; 
 
  private:
   virtual void beginJob();
