@@ -39,15 +39,7 @@
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
-<<<<<<< Updated upstream
-    "output_folder" : "./output/Oct30PU80MB/",
-=======
-<<<<<<< Updated upstream
-    "output_folder" : "./output/Oct30/",
-=======
     "output_folder" : "./output/Oct30IsoStudyForFits/",
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-160T",
 //    "output_name"   : "VBF_HToTauTau_M-125",
