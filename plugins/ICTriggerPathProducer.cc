@@ -35,6 +35,14 @@ ICTriggerPathProducer::ICTriggerPathProducer(const edm::ParameterSet& config)
       split_version_(config.getParameter<bool>("splitVersion")),
       input_is_standalone_(config.getParameter<bool>("inputIsStandAlone")),
       input_prescales_(config.getParameter<edm::InputTag>("inputPrescales")) {
+  if(!input_is_standalone_){
+    consumes<pat::TriggerEvent>(input_);
+  } else {
+    consumes<edm::TriggerResults>(input_);
+  }
+  #if CMSSW_MAJOR_VERSION>=7
+   consumes<pat::PackedTriggerPrescales>(input_prescales_);
+  #endif
   paths_ = new std::vector<ic::TriggerPath>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, include_if_fired_, "includeAcceptedOnly");

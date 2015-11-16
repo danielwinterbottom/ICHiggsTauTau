@@ -12,10 +12,13 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/Math/interface/deltaR.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICHttElecIsoCheck::ICHttElecIsoCheck(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       input_pf_charged_(config.getParameter<edm::InputTag>("pfChargedAll")) {
+  consumes<reco::GsfElectronCollection>(input_);
+  consumes<edm::View<reco::PFCandidate>>(input_pf_charged_);
   produces<edm::ValueMap<float> >();
 }
 

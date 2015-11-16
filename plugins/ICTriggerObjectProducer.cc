@@ -19,6 +19,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICTriggerObjectProducer::ICTriggerObjectProducer(
     const edm::ParameterSet& config)
@@ -28,6 +29,12 @@ ICTriggerObjectProducer::ICTriggerObjectProducer(
       hlt_path_(config.getParameter<std::string>("hltPath")),
       store_only_if_fired_(config.getParameter<bool>("storeOnlyIfFired")),
       input_is_standalone_(config.getParameter<bool>("inputIsStandAlone")) {
+  if(!input_is_standalone_){
+    consumes<pat::TriggerEvent>(input_);
+  } else {
+    consumes<pat::TriggerObjectStandAloneCollection>(input_);
+  }
+  consumes<edm::TriggerResults>(input_trigres_);
   objects_ = new std::vector<ic::TriggerObject>();
   PrintHeaderWithProduces(config, input_, branch_);
   std::cout << boost::format("%-15s : %-60s\n") % "Path" % hlt_path_;

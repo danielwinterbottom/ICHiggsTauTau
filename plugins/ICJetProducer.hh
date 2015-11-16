@@ -84,6 +84,7 @@ ICJetProducer<T, U>::~ICJetProducer() { delete jets_; }
 template <class T, class U>
 void ICJetProducer<T, U>::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
+  consumes<edm::View<U>>(input_);
   edm::Handle<edm::View<U> > jets_handle;
   event.getByLabel(input_, jets_handle);
 
@@ -114,6 +115,12 @@ template <>
 void ICJetProducer<ic::CaloJet, reco::CaloJet>::constructSpecific(
     edm::Handle<edm::View<reco::CaloJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+  consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+  for(unsigned i=0;i<src_.input_btags.size();++i){ 
+    consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
+  }
+
   edm::Handle<reco::JetIDValueMap> jet_id_handle;
   if (dest_.do_jet_id) event.getByLabel(dest_.input_jet_id, jet_id_handle);
   for (unsigned i = 0; i < passed_.size(); ++i) {
@@ -144,6 +151,8 @@ template <>
 void ICJetProducer<ic::CaloJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+
   for (unsigned i = 0; i < passed_.size(); ++i) {
     pat::Jet const& src = jets_handle->at(passed_[i]);
     ic::CaloJet & dest = jets_->at(i);
@@ -171,6 +180,12 @@ template <>
 void ICJetProducer<ic::JPTJet, reco::JPTJet>::constructSpecific(
     edm::Handle<edm::View<reco::JPTJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+  consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+  for(unsigned i=0;i<src_.input_btags.size();++i){ 
+    consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
+  }
+
   edm::Handle<reco::JetIDValueMap> jet_id_handle;
   if (dest_.do_jet_id) event.getByLabel(dest_.input_jet_id, jet_id_handle);
 
@@ -253,6 +268,8 @@ template <>
 void ICJetProducer<ic::JPTJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+
+    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
   edm::Handle<reco::TrackCollection> trk_handle;
   edm::Handle<reco::VertexCollection> vtx_handle;
   std::map<unsigned, unsigned> trk_vtx_map;
@@ -331,6 +348,12 @@ template <>
 void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
     edm::Handle<edm::View<reco::PFJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+  consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+  for(unsigned i=0;i<src_.input_btags.size();++i){ 
+    consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
+  }
+
   edm::Handle<edm::ValueMap<float> > pu_id_handle;
   if (dest_.do_pu_id) event.getByLabel(dest_.input_pu_id, pu_id_handle);
 
@@ -381,6 +404,8 @@ template <>
 void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+
+    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
   edm::Handle<edm::ValueMap<float> > pu_id_handle;
   if (dest_.do_pu_id) event.getByLabel(dest_.input_pu_id, pu_id_handle);
 

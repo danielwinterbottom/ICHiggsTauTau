@@ -21,7 +21,8 @@ ICPhotonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
     charged(pset.getParameter<edm::InputTag>("charged")),
     neutral(pset.getParameter<edm::InputTag>("neutral")),
     gamma(pset.getParameter<edm::InputTag>("gamma")),
-    pu(pset.getParameter<edm::InputTag>("pu")) {}
+    pu(pset.getParameter<edm::InputTag>("pu")) {
+    }
 
 
 ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
@@ -39,6 +40,22 @@ ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
   // isolator_ = new PFIsolationEstimator();
   // isolator_->initializePhotonIsolation(true);
   // isolator_->setConeSize(0.3);
+  if(do_iso_from_pat_){
+    consumes<edm::View<pat::Photon>>(input_);
+  } else {
+    consumes<edm::View<reco::Photon>>(input_);
+  }
+  consumes<edm::ValueMap<bool>>(input_electron_veto_);
+  consumes<double>(pf_iso_03_.charged_all);
+  consumes<double>(pf_iso_03_.charged);
+  consumes<double>(pf_iso_03_.neutral);
+  consumes<double>(pf_iso_03_.gamma);
+  consumes<double>(pf_iso_03_.pu);
+  consumes<double>(pf_iso_04_.charged_all);
+  consumes<double>(pf_iso_04_.charged);
+  consumes<double>(pf_iso_04_.neutral);
+  consumes<double>(pf_iso_04_.gamma);
+  consumes<double>(pf_iso_04_.pu);
   photons_ = new std::vector<ic::Photon>();
 
   PrintHeaderWithProduces(config, input_, branch_);

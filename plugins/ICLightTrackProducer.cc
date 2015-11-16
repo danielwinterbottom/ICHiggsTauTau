@@ -18,6 +18,7 @@
 ICLightTrackProducer::ICLightTrackProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
+  consumes<edm::View<reco::Track>>(input_);
   tracks_ = new std::vector<ic::LightTrack>();
   PrintHeaderWithProduces(config, input_, branch_);
 }

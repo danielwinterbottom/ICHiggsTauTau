@@ -17,6 +17,8 @@
 ICElectronHcalDepthCalculator::ICElectronHcalDepthCalculator(
     const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")) {
+  consumes<reco::GsfElectronCollection>(input_);
+  consumes<CaloTowerCollection>({"towerMaker"}); 
   produces<edm::ValueMap<float> >();
 }
 

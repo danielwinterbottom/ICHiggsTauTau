@@ -14,11 +14,14 @@
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICSuperClusterProducer::ICSuperClusterProducer(const edm::ParameterSet& config)
     : input_barrel_(config.getParameter<edm::InputTag>("inputBarrel")),
       input_endcap_(config.getParameter<edm::InputTag>("inputEndcap")),
       branch_(config.getParameter<std::string>("branch")) {
+  consumes<edm::View<reco::SuperCluster>>(input_barrel_);
+  consumes<edm::View<reco::SuperCluster>>(input_endcap_);
   scs_ = new std::vector<ic::SuperCluster>();
   PrintHeaderWithBranch(config, branch_);
 }

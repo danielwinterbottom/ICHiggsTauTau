@@ -9,6 +9,7 @@
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 template <class T>
 class ICLeptonIsolation : public edm::EDProducer {
@@ -35,6 +36,7 @@ ICLeptonIsolation<T>::ICLeptonIsolation(
     : input_(config.getParameter<edm::InputTag>("input")),
       deltaR_(config.getParameter<double>("deltaR")),
       input_isolation_type_(config.getParameter<std::string>("iso_type")) {
+  consumes<edm::View<T>>(input_);
   produces<edm::ValueMap<double> >();
 }
 

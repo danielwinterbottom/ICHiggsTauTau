@@ -14,10 +14,12 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICSingleMetProducer::ICSingleMetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
+  consumes<edm::View<reco::MET>>(input_);
   met_ = new ic::Met();
   PrintHeaderWithProduces(config, input_, branch_);
 }

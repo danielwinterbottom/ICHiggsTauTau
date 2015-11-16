@@ -17,6 +17,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
 /**
@@ -95,6 +96,8 @@ ICMetProducer<T>::ICMetProducer(const edm::ParameterSet& config)
       metsig_method2_(config.getParameterSet("metsig_method2")){
       //do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
       //metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
+  consumes<edm::View<T>>(input_);
+  consumes<std::vector<std::size_t>>(inputID_);
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -115,6 +118,15 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
       metcorrections_(config.getParameter<std::vector<std::string> >("metcorrections")),
       do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
       metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
+  consumes<edm::View<pat::MET>>(input_);
+  consumes<std::vector<std::size_t>>(inputID_);
+  consumes<double>(metsig_.metsig);
+  consumes<double>(metsig_.metsigcov00);
+  consumes<double>(metsig_.metsigcov01);
+  consumes<double>(metsig_.metsigcov10);
+  consumes<double>(metsig_.metsigcov11);
+  consumes<double>(metsig_method2_.metsig);
+  consumes<double>(metsig_method2_.metsigcov);
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
