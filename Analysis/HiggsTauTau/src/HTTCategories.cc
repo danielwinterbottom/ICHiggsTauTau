@@ -932,7 +932,6 @@ namespace ic {
           iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
-          iso_1_db03_ = PF04IsolationVal(muon, 0.5,0); 
           iso_1_trk03_ = MuonTkIsoVal(muon);
           iso_2_db03_ = 0;
           iso_2_ea03_ = 0;
