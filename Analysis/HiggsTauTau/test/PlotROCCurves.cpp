@@ -109,7 +109,7 @@ using namespace ic;
  int main(int /*argc*/, char* /*argv*/[]){
   using namespace ic;
   using namespace std;
-  std::string real_sel = "(gen_match==4)";
+  std::string real_sel = "(gen_match==2)";
   std::string fake_sel = "(gen_match==6)";
   std::string channel = "mt";
 

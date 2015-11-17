@@ -139,6 +139,11 @@ namespace ic {
       alias_map_["db03iso0p11"]            = "(iso_1_db03<0.11&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p12"]            = "(iso_1_db03<0.12&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p13"]            = "(iso_1_db03<0.13&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p14"]            = "(iso_1_db03<0.14&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p15"]            = "(iso_1_db03<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p16"]            = "(iso_1_db03<0.16&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p17"]            = "(iso_1_db03<0.17&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p18"]            = "(iso_1_db03<0.18&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p09"]           = "(iso_1_db03<0.09&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p08"]           = "(iso_1_db03<0.08&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p07"]           = "(iso_1_db03<0.07&&"+alias_map_["incnoiso"]+")";
@@ -158,6 +163,11 @@ namespace ic {
       alias_map_["db03allchiso0p11"]            = "(iso_1_db03allch<0.11&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p12"]            = "(iso_1_db03allch<0.12&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p13"]            = "(iso_1_db03allch<0.13&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p14"]            = "(iso_1_db03allch<0.14&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p15"]            = "(iso_1_db03allch<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p16"]            = "(iso_1_db03allch<0.16&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p17"]            = "(iso_1_db03allch<0.17&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p18"]            = "(iso_1_db03allch<0.18&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p09"]           = "(iso_1_db03allch<0.09&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p08"]           = "(iso_1_db03allch<0.08&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p07"]           = "(iso_1_db03allch<0.07&&"+alias_map_["incnoiso"]+")";

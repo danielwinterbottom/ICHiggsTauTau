@@ -20,6 +20,7 @@
 #include "HiggsTauTau/interface/HTTSequence.h"
 #include "HiggsTauTau/interface/HTTElectronEfficiency.h"
 #include "HiggsTauTau/interface/HTTMuonEfficiency.h"
+#include "HiggsTauTau/interface/HTTTauEfficiency.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
@@ -1584,6 +1585,10 @@ if(strategy_type == strategy::paper2013){
       }));
   }
 
+if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
+BuildModule(HTTTauEfficiency("HTTTauEfficiency")
+    .set_fs(fs.get()));
+}
 
 if(strategy_type == strategy::phys14){
   BuildModule(VertexFilter<Tau>("TauVertexFilter")

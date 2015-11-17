@@ -23,7 +23,7 @@
 using namespace std;
 using namespace ic;
 
-double calcSoverRootB(std::string const& filepath, std::string const& directory, bool use_ztt_sig){
+std::pair<double,double> calcSoverRootB(std::string const& filepath, std::string const& directory, bool use_ztt_sig){
   TH1F ztt = GetFromTFile<TH1F>(filepath, directory, "ZTT");
   TH1F vv = GetFromTFile<TH1F>(filepath, directory, "VV"); 
   TH1F zll = GetFromTFile<TH1F>(filepath, directory, "ZLL");
@@ -34,14 +34,32 @@ double calcSoverRootB(std::string const& filepath, std::string const& directory,
  
  double signal=0;
  double background=0;
+ double sig_error=0;
+ double bkg_error=0;
  if(use_ztt_sig){
+  ztt.IntegralAndError(0,ztt.GetNbinsX()+1,sig_error);
   signal = ztt.Integral();
+
+  TH1F bkglist[5]={vv,zll,tt,qcd,w};
+  for(int i=0;i<5;++i){
+    double dummy_bkg_err=0;
+    bkglist[i].IntegralAndError(0,bkglist[i].GetNbinsX()+1,dummy_bkg_err);
+    bkg_error+=dummy_bkg_err;
+  }
   background = vv.Integral()+zll.Integral()+tt.Integral()+qcd.Integral()+w.Integral();
  } else {
+  ggH125.IntegralAndError(0,ggH125.GetNbinsX()+1,sig_error);
   signal = ggH125.Integral();
+  TH1F bkglist[6]={vv,ztt,zll,tt,qcd,w};
+  for(int i=0;i<6;++i){
+    double dummy_bkg_err=0;
+    bkglist[i].IntegralAndError(0,bkglist[i].GetNbinsX()+1,dummy_bkg_err);
+    bkg_error+=dummy_bkg_err;
+  }
   background = ztt.Integral()+vv.Integral()+zll.Integral()+tt.Integral()+qcd.Integral()+w.Integral();
  }
-  return signal/TMath::Sqrt(background); 
+ double sorb_err = TMath::Sqrt((sig_error/signal)*(sig_error/signal)+(0.5*bkg_error/background)*(0.5*bkg_error/background))*signal/TMath::Sqrt(background);
+  return std::make_pair(signal/TMath::Sqrt(background),sorb_err); 
 }
 
  int main(int /*argc*/, char* /*argv*/[]){
@@ -55,8 +73,18 @@ double calcSoverRootB(std::string const& filepath, std::string const& directory,
 // double sm_sig_db04[10];
  double ztt_sig_trk03[12];
  double ztt_sig_db04allch[12];
- double ztt_sig_db03allch[7];
- double ztt_sig_db03[7];
+ double ztt_sig_db03allch[12];
+ double ztt_sig_db03[12];
+
+ double ztt_sig_err_db04[12];
+// double sm_sig_db04[10];
+ double ztt_sig_err_trk03[12];
+ double ztt_sig_err_db04allch[12];
+ double ztt_sig_err_db03allch[12];
+ double ztt_sig_err_db03[12];
+
+double x_err[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+
  //double sm_sig_trk03[10];
  double iso_cuts[12];
   iso_cuts[0] = 0.07;
@@ -72,20 +100,33 @@ double calcSoverRootB(std::string const& filepath, std::string const& directory,
   iso_cuts[10] = 0.17;
   iso_cuts[11] = 0.18;
  
- double iso_cuts_short[7]={0.07,0.08,0.09,0.1,0.11,0.12,0.13};
 
-  ztt_sig_db04[0] = calcSoverRootB(file, "mt_db04iso0p07",true);
-  ztt_sig_db04[1] = calcSoverRootB(file, "mt_db04iso0p08",true);
-  ztt_sig_db04[2] = calcSoverRootB(file, "mt_db04iso0p09",true);
-  ztt_sig_db04[3] = calcSoverRootB(file, "mt_db04iso0p1",true);
-  ztt_sig_db04[4] = calcSoverRootB(file, "mt_db04iso0p11",true);
-  ztt_sig_db04[5] = calcSoverRootB(file, "mt_db04iso0p12",true);
-  ztt_sig_db04[6] = calcSoverRootB(file, "mt_db04iso0p13",true);
-  ztt_sig_db04[7] = calcSoverRootB(file, "mt_db04iso0p14",true);
-  ztt_sig_db04[8] = calcSoverRootB(file, "mt_db04iso0p15",true);
-  ztt_sig_db04[9] = calcSoverRootB(file, "mt_db04iso0p16",true);
-  ztt_sig_db04[10] = calcSoverRootB(file, "mt_db04iso0p17",true);
-  ztt_sig_db04[11] = calcSoverRootB(file, "mt_db04iso0p18",true);
+  ztt_sig_db04[0] = calcSoverRootB(file, "mt_db04iso0p07",true).first;
+  ztt_sig_db04[1] = calcSoverRootB(file, "mt_db04iso0p08",true).first;
+  ztt_sig_db04[2] = calcSoverRootB(file, "mt_db04iso0p09",true).first;
+  ztt_sig_db04[3] = calcSoverRootB(file, "mt_db04iso0p1",true).first;
+  ztt_sig_db04[4] = calcSoverRootB(file, "mt_db04iso0p11",true).first;
+  ztt_sig_db04[5] = calcSoverRootB(file, "mt_db04iso0p12",true).first;
+  ztt_sig_db04[6] = calcSoverRootB(file, "mt_db04iso0p13",true).first;
+  ztt_sig_db04[7] = calcSoverRootB(file, "mt_db04iso0p14",true).first;
+  ztt_sig_db04[8] = calcSoverRootB(file, "mt_db04iso0p15",true).first;
+  ztt_sig_db04[9] = calcSoverRootB(file, "mt_db04iso0p16",true).first;
+  ztt_sig_db04[10] = calcSoverRootB(file, "mt_db04iso0p17",true).first;
+  ztt_sig_db04[11] = calcSoverRootB(file, "mt_db04iso0p18",true).first;
+
+  ztt_sig_err_db04[0] = calcSoverRootB(file, "mt_db04iso0p07",true).second;
+  ztt_sig_err_db04[1] = calcSoverRootB(file, "mt_db04iso0p08",true).second;
+  ztt_sig_err_db04[2] = calcSoverRootB(file, "mt_db04iso0p09",true).second;
+  ztt_sig_err_db04[3] = calcSoverRootB(file, "mt_db04iso0p1",true).second;
+  ztt_sig_err_db04[4] = calcSoverRootB(file, "mt_db04iso0p11",true).second;
+  ztt_sig_err_db04[5] = calcSoverRootB(file, "mt_db04iso0p12",true).second;
+  ztt_sig_err_db04[6] = calcSoverRootB(file, "mt_db04iso0p13",true).second;
+  ztt_sig_err_db04[7] = calcSoverRootB(file, "mt_db04iso0p14",true).second;
+  ztt_sig_err_db04[8] = calcSoverRootB(file, "mt_db04iso0p15",true).second;
+  ztt_sig_err_db04[9] = calcSoverRootB(file, "mt_db04iso0p16",true).second;
+  ztt_sig_err_db04[10] = calcSoverRootB(file, "mt_db04iso0p17",true).second;
+  ztt_sig_err_db04[11] = calcSoverRootB(file, "mt_db04iso0p18",true).second;
+
 
   /*sm_sig_db04[0] = calcSoverRootB(file, "mt_db04iso0p09",false);
   sm_sig_db04[1] = calcSoverRootB(file, "mt_db04iso0p1",false);
@@ -99,47 +140,116 @@ double calcSoverRootB(std::string const& filepath, std::string const& directory,
   sm_sig_db04[9] = calcSoverRootB(file, "mt_db04iso0p18",false);*/
 
  
-  ztt_sig_trk03[0] = calcSoverRootB(file, "mt_trk03iso0p07",true);
-  ztt_sig_trk03[1] = calcSoverRootB(file, "mt_trk03iso0p08",true);
-  ztt_sig_trk03[2] = calcSoverRootB(file, "mt_trk03iso0p09",true);
-  ztt_sig_trk03[3] = calcSoverRootB(file, "mt_trk03iso0p1",true);
-  ztt_sig_trk03[4] = calcSoverRootB(file, "mt_trk03iso0p11",true);
-  ztt_sig_trk03[5] = calcSoverRootB(file, "mt_trk03iso0p12",true);
-  ztt_sig_trk03[6] = calcSoverRootB(file, "mt_trk03iso0p13",true);
-  ztt_sig_trk03[7] = calcSoverRootB(file, "mt_trk03iso0p14",true);
-  ztt_sig_trk03[8] = calcSoverRootB(file, "mt_trk03iso0p15",true);
-  ztt_sig_trk03[9] = calcSoverRootB(file, "mt_trk03iso0p16",true);
-  ztt_sig_trk03[10] = calcSoverRootB(file, "mt_trk03iso0p17",true);
-  ztt_sig_trk03[11] = calcSoverRootB(file, "mt_trk03iso0p18",true);
+  ztt_sig_trk03[0] = calcSoverRootB(file, "mt_trk03iso0p07",true).first;
+  ztt_sig_trk03[1] = calcSoverRootB(file, "mt_trk03iso0p08",true).first;
+  ztt_sig_trk03[2] = calcSoverRootB(file, "mt_trk03iso0p09",true).first;
+  ztt_sig_trk03[3] = calcSoverRootB(file, "mt_trk03iso0p1",true).first;
+  ztt_sig_trk03[4] = calcSoverRootB(file, "mt_trk03iso0p11",true).first;
+  ztt_sig_trk03[5] = calcSoverRootB(file, "mt_trk03iso0p12",true).first;
+  ztt_sig_trk03[6] = calcSoverRootB(file, "mt_trk03iso0p13",true).first;
+  ztt_sig_trk03[7] = calcSoverRootB(file, "mt_trk03iso0p14",true).first;
+  ztt_sig_trk03[8] = calcSoverRootB(file, "mt_trk03iso0p15",true).first;
+  ztt_sig_trk03[9] = calcSoverRootB(file, "mt_trk03iso0p16",true).first;
+  ztt_sig_trk03[10] = calcSoverRootB(file, "mt_trk03iso0p17",true).first;
+  ztt_sig_trk03[11] = calcSoverRootB(file, "mt_trk03iso0p18",true).first;
 
-  ztt_sig_db04allch[0] = calcSoverRootB(file, "mt_db04allchiso0p07",true);
-  ztt_sig_db04allch[1] = calcSoverRootB(file, "mt_db04allchiso0p08",true);
-  ztt_sig_db04allch[2] = calcSoverRootB(file, "mt_db04allchiso0p09",true);
-  ztt_sig_db04allch[3] = calcSoverRootB(file, "mt_db04allchiso0p1",true);
-  ztt_sig_db04allch[4] = calcSoverRootB(file, "mt_db04allchiso0p11",true);
-  ztt_sig_db04allch[5] = calcSoverRootB(file, "mt_db04allchiso0p12",true);
-  ztt_sig_db04allch[6] = calcSoverRootB(file, "mt_db04allchiso0p13",true);
-  ztt_sig_db04allch[7] = calcSoverRootB(file, "mt_db04allchiso0p14",true);
-  ztt_sig_db04allch[8] = calcSoverRootB(file, "mt_db04allchiso0p15",true);
-  ztt_sig_db04allch[9] = calcSoverRootB(file, "mt_db04allchiso0p16",true);
-  ztt_sig_db04allch[10] = calcSoverRootB(file, "mt_db04allchiso0p17",true);
-  ztt_sig_db04allch[11] = calcSoverRootB(file, "mt_db04allchiso0p18",true);
+ztt_sig_err_trk03[0] = calcSoverRootB(file, "mt_trk03iso0p07",true).second;
+  ztt_sig_err_trk03[1] = calcSoverRootB(file, "mt_trk03iso0p08",true).second;
+  ztt_sig_err_trk03[2] = calcSoverRootB(file, "mt_trk03iso0p09",true).second;
+  ztt_sig_err_trk03[3] = calcSoverRootB(file, "mt_trk03iso0p1",true).second;
+  ztt_sig_err_trk03[4] = calcSoverRootB(file, "mt_trk03iso0p11",true).second;
+  ztt_sig_err_trk03[5] = calcSoverRootB(file, "mt_trk03iso0p12",true).second;
+  ztt_sig_err_trk03[6] = calcSoverRootB(file, "mt_trk03iso0p13",true).second;
+  ztt_sig_err_trk03[7] = calcSoverRootB(file, "mt_trk03iso0p14",true).second;
+  ztt_sig_err_trk03[8] = calcSoverRootB(file, "mt_trk03iso0p15",true).second;
+  ztt_sig_err_trk03[9] = calcSoverRootB(file, "mt_trk03iso0p16",true).second;
+  ztt_sig_err_trk03[10] = calcSoverRootB(file, "mt_trk03iso0p17",true).second;
+  ztt_sig_err_trk03[11] = calcSoverRootB(file, "mt_trk03iso0p18",true).second;
 
-  ztt_sig_db03allch[0] = calcSoverRootB(file, "mt_db03allchiso0p07",true);
-  ztt_sig_db03allch[1] = calcSoverRootB(file, "mt_db03allchiso0p08",true);
-  ztt_sig_db03allch[2] = calcSoverRootB(file, "mt_db03allchiso0p09",true);
-  ztt_sig_db03allch[3] = calcSoverRootB(file, "mt_db03allchiso0p1",true);
-  ztt_sig_db03allch[4] = calcSoverRootB(file, "mt_db03allchiso0p11",true);
-  ztt_sig_db03allch[5] = calcSoverRootB(file, "mt_db03allchiso0p12",true);
-  ztt_sig_db03allch[6] = calcSoverRootB(file, "mt_db03allchiso0p13",true);
 
-  ztt_sig_db03[0] = calcSoverRootB(file, "mt_db03iso0p07",true);
-  ztt_sig_db03[1] = calcSoverRootB(file, "mt_db03iso0p08",true);
-  ztt_sig_db03[2] = calcSoverRootB(file, "mt_db03iso0p09",true);
-  ztt_sig_db03[3] = calcSoverRootB(file, "mt_db03iso0p1",true);
-  ztt_sig_db03[4] = calcSoverRootB(file, "mt_db03iso0p11",true);
-  ztt_sig_db03[5] = calcSoverRootB(file, "mt_db03iso0p12",true);
-  ztt_sig_db03[6] = calcSoverRootB(file, "mt_db03iso0p13",true);
+
+  ztt_sig_db04allch[0] = calcSoverRootB(file, "mt_db04allchiso0p07",true).first;
+  ztt_sig_db04allch[1] = calcSoverRootB(file, "mt_db04allchiso0p08",true).first;
+  ztt_sig_db04allch[2] = calcSoverRootB(file, "mt_db04allchiso0p09",true).first;
+  ztt_sig_db04allch[3] = calcSoverRootB(file, "mt_db04allchiso0p1",true).first;
+  ztt_sig_db04allch[4] = calcSoverRootB(file, "mt_db04allchiso0p11",true).first;
+  ztt_sig_db04allch[5] = calcSoverRootB(file, "mt_db04allchiso0p12",true).first;
+  ztt_sig_db04allch[6] = calcSoverRootB(file, "mt_db04allchiso0p13",true).first;
+  ztt_sig_db04allch[7] = calcSoverRootB(file, "mt_db04allchiso0p14",true).first;
+  ztt_sig_db04allch[8] = calcSoverRootB(file, "mt_db04allchiso0p15",true).first;
+  ztt_sig_db04allch[9] = calcSoverRootB(file, "mt_db04allchiso0p16",true).first;
+  ztt_sig_db04allch[10] = calcSoverRootB(file, "mt_db04allchiso0p17",true).first;
+  ztt_sig_db04allch[11] = calcSoverRootB(file, "mt_db04allchiso0p18",true).first;
+
+  ztt_sig_err_db04allch[0] = calcSoverRootB(file, "mt_db04allchiso0p07",true).second;
+  ztt_sig_err_db04allch[1] = calcSoverRootB(file, "mt_db04allchiso0p08",true).second;
+  ztt_sig_err_db04allch[2] = calcSoverRootB(file, "mt_db04allchiso0p09",true).second;
+  ztt_sig_err_db04allch[3] = calcSoverRootB(file, "mt_db04allchiso0p1",true).second;
+  ztt_sig_err_db04allch[4] = calcSoverRootB(file, "mt_db04allchiso0p11",true).second;
+  ztt_sig_err_db04allch[5] = calcSoverRootB(file, "mt_db04allchiso0p12",true).second;
+  ztt_sig_err_db04allch[6] = calcSoverRootB(file, "mt_db04allchiso0p13",true).second;
+  ztt_sig_err_db04allch[7] = calcSoverRootB(file, "mt_db04allchiso0p14",true).second;
+  ztt_sig_err_db04allch[8] = calcSoverRootB(file, "mt_db04allchiso0p15",true).second;
+  ztt_sig_err_db04allch[9] = calcSoverRootB(file, "mt_db04allchiso0p16",true).second;
+  ztt_sig_err_db04allch[10] = calcSoverRootB(file, "mt_db04allchiso0p17",true).second;
+  ztt_sig_err_db04allch[11] = calcSoverRootB(file, "mt_db04allchiso0p18",true).second;
+
+
+
+  ztt_sig_db03allch[0] = calcSoverRootB(file, "mt_db03allchiso0p07",true).first;
+  ztt_sig_db03allch[1] = calcSoverRootB(file, "mt_db03allchiso0p08",true).first;
+  ztt_sig_db03allch[2] = calcSoverRootB(file, "mt_db03allchiso0p09",true).first;
+  ztt_sig_db03allch[3] = calcSoverRootB(file, "mt_db03allchiso0p1",true).first;
+  ztt_sig_db03allch[4] = calcSoverRootB(file, "mt_db03allchiso0p11",true).first;
+  ztt_sig_db03allch[5] = calcSoverRootB(file, "mt_db03allchiso0p12",true).first;
+  ztt_sig_db03allch[6] = calcSoverRootB(file, "mt_db03allchiso0p13",true).first;
+  ztt_sig_db03allch[7] = calcSoverRootB(file, "mt_db03allchiso0p14",true).first;
+  ztt_sig_db03allch[8] = calcSoverRootB(file, "mt_db03allchiso0p15",true).first;
+  ztt_sig_db03allch[9] = calcSoverRootB(file, "mt_db03allchiso0p16",true).first;
+  ztt_sig_db03allch[10] = calcSoverRootB(file, "mt_db03allchiso0p17",true).first;
+  ztt_sig_db03allch[11] = calcSoverRootB(file, "mt_db03allchiso0p13",true).first;
+
+  ztt_sig_err_db03allch[0] = calcSoverRootB(file, "mt_db03allchiso0p07",true).second;
+  ztt_sig_err_db03allch[1] = calcSoverRootB(file, "mt_db03allchiso0p08",true).second;
+  ztt_sig_err_db03allch[2] = calcSoverRootB(file, "mt_db03allchiso0p09",true).second;
+  ztt_sig_err_db03allch[3] = calcSoverRootB(file, "mt_db03allchiso0p1",true).second;
+  ztt_sig_err_db03allch[4] = calcSoverRootB(file, "mt_db03allchiso0p11",true).second;
+  ztt_sig_err_db03allch[5] = calcSoverRootB(file, "mt_db03allchiso0p12",true).second;
+  ztt_sig_err_db03allch[6] = calcSoverRootB(file, "mt_db03allchiso0p13",true).second;
+  ztt_sig_err_db03allch[7] = calcSoverRootB(file, "mt_db03allchiso0p14",true).second;
+  ztt_sig_err_db03allch[8] = calcSoverRootB(file, "mt_db03allchiso0p15",true).second;
+  ztt_sig_err_db03allch[9] = calcSoverRootB(file, "mt_db03allchiso0p16",true).second;
+  ztt_sig_err_db03allch[10] = calcSoverRootB(file, "mt_db03allchiso0p17",true).second;
+  ztt_sig_err_db03allch[11] = calcSoverRootB(file, "mt_db03allchiso0p13",true).second;
+
+
+
+  ztt_sig_db03[0] = calcSoverRootB(file, "mt_db03iso0p07",true).first;
+  ztt_sig_db03[1] = calcSoverRootB(file, "mt_db03iso0p08",true).first;
+  ztt_sig_db03[2] = calcSoverRootB(file, "mt_db03iso0p09",true).first;
+  ztt_sig_db03[3] = calcSoverRootB(file, "mt_db03iso0p1",true).first;
+  ztt_sig_db03[4] = calcSoverRootB(file, "mt_db03iso0p11",true).first;
+  ztt_sig_db03[5] = calcSoverRootB(file, "mt_db03iso0p12",true).first;
+  ztt_sig_db03[6] = calcSoverRootB(file, "mt_db03iso0p13",true).first;
+  ztt_sig_db03[7] = calcSoverRootB(file, "mt_db03iso0p14",true).first;
+  ztt_sig_db03[8] = calcSoverRootB(file, "mt_db03iso0p15",true).first;
+  ztt_sig_db03[9] = calcSoverRootB(file, "mt_db03iso0p16",true).first;
+  ztt_sig_db03[10] = calcSoverRootB(file, "mt_db03iso0p17",true).first;
+  ztt_sig_db03[11] = calcSoverRootB(file, "mt_db03iso0p18",true).first;
+
+ztt_sig_err_db03[0] = calcSoverRootB(file, "mt_db03iso0p07",true).second;
+  ztt_sig_err_db03[1] = calcSoverRootB(file, "mt_db03iso0p08",true).second;
+  ztt_sig_err_db03[2] = calcSoverRootB(file, "mt_db03iso0p09",true).second;
+  ztt_sig_err_db03[3] = calcSoverRootB(file, "mt_db03iso0p1",true).second;
+  ztt_sig_err_db03[4] = calcSoverRootB(file, "mt_db03iso0p11",true).second;
+  ztt_sig_err_db03[5] = calcSoverRootB(file, "mt_db03iso0p12",true).second;
+  ztt_sig_err_db03[6] = calcSoverRootB(file, "mt_db03iso0p13",true).second;
+  ztt_sig_err_db03[7] = calcSoverRootB(file, "mt_db03iso0p14",true).second;
+  ztt_sig_err_db03[8] = calcSoverRootB(file, "mt_db03iso0p15",true).second;
+  ztt_sig_err_db03[9] = calcSoverRootB(file, "mt_db03iso0p16",true).second;
+  ztt_sig_err_db03[10] = calcSoverRootB(file, "mt_db03iso0p17",true).second;
+  ztt_sig_err_db03[11] = calcSoverRootB(file, "mt_db03iso0p18",true).second;
+
 
 
 /*  sm_sig_trk03[0] = calcSoverRootB(file, "mt_trk03iso0p09",false);
@@ -153,11 +263,11 @@ double calcSoverRootB(std::string const& filepath, std::string const& directory,
   sm_sig_trk03[8] = calcSoverRootB(file, "mt_trk03iso0p17",false);
   sm_sig_trk03[9] = calcSoverRootB(file, "mt_trk03iso0p18",false);*/
 
-  TGraph *ztt_sig_db04_graph = new TGraph(12,iso_cuts,ztt_sig_db04); 
-  TGraph *ztt_sig_trk03_graph = new TGraph(12,iso_cuts,ztt_sig_trk03); 
-  TGraph *ztt_sig_db04allch_graph = new TGraph(12,iso_cuts,ztt_sig_db04allch); 
-  TGraph *ztt_sig_db03allch_graph = new TGraph(7,iso_cuts_short,ztt_sig_db03allch); 
-  TGraph *ztt_sig_db03_graph = new TGraph(7,iso_cuts_short,ztt_sig_db03); 
+  TGraphErrors *ztt_sig_db04_graph = new TGraphErrors(12,iso_cuts,ztt_sig_db04,x_err,ztt_sig_err_db04); 
+  TGraphErrors *ztt_sig_trk03_graph = new TGraphErrors(12,iso_cuts,ztt_sig_trk03,x_err,ztt_sig_err_trk03); 
+  TGraphErrors *ztt_sig_db04allch_graph = new TGraphErrors(12,iso_cuts,ztt_sig_db04allch,x_err,ztt_sig_err_db04allch); 
+  TGraphErrors *ztt_sig_db03allch_graph = new TGraphErrors(12,iso_cuts,ztt_sig_db03allch,x_err,ztt_sig_err_db03allch); 
+  TGraphErrors *ztt_sig_db03_graph = new TGraphErrors(12,iso_cuts,ztt_sig_db03,x_err,ztt_sig_err_db03); 
 
 /*  TGraph *sm_sig_db04_graph = new TGraph(10,iso_cuts,sm_sig_db04); 
   TGraph *sm_sig_trk03_graph = new TGraph(10,iso_cuts,sm_sig_trk03); */

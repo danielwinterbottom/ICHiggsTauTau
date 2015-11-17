@@ -171,6 +171,7 @@ if SCHEME == 'run2_sm':
     ("8",   "db03iso0p11",    "db03iso0p11",  BINS_FINE, ''),
     ("8",   "db03iso0p12",    "db03iso0p12",  BINS_FINE, ''),
     ("8",   "db03iso0p13",    "db03iso0p13",  BINS_FINE, ''),
+    ("8",   "db03iso0p14",    "db03iso0p14",  BINS_FINE, ''),
     ("8",   "db03iso0p15",    "db03iso0p15",  BINS_FINE, ''),
     ("8",   "db03iso0p16",    "db03iso0p16",  BINS_FINE, ''),
     ("8",   "db03iso0p17",    "db03iso0p17",  BINS_FINE, ''),
