@@ -2,6 +2,7 @@
 #define UserCode_ICHiggsTauTau_ICJetProducer_h
 
 #include <memory>
+#include <typeinfo>
 #include "boost/functional/hash.hpp"
 #include "boost/format.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
@@ -45,6 +46,7 @@ class ICJetProducer : public edm::EDProducer {
   virtual void beginJob();
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
+  void specifyConsumes();
   void constructSpecific(edm::Handle<edm::View<U> > const& jets_handle,
                          edm::Event& event, const edm::EventSetup& setup);
 
@@ -58,6 +60,7 @@ class ICJetProducer : public edm::EDProducer {
   JetDestHelper<T> dest_;
 };
 
+
 // =============================
 // Template class implementation
 // =============================
@@ -67,7 +70,10 @@ ICJetProducer<T, U>::ICJetProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       src_(config.getParameterSet("srcConfig")),
       dest_(config.getParameterSet("destConfig")) {
+  consumes<edm::View<U>>(input_);
+  specifyConsumes();
   jets_ = new std::vector<T>();
+
 
   PrintHeaderWithProduces(config, input_, branch_);
 
@@ -75,8 +81,78 @@ ICJetProducer<T, U>::ICJetProducer(const edm::ParameterSet& config)
   dest_.DoSetup(this);
 }
 
+
 template <class T, class U>
 ICJetProducer<T, U>::~ICJetProducer() { delete jets_; }
+
+//=====================================
+//Specialised consumes statements
+//=====================================
+//Need to specialise here because a) consumes calls need to be made in 
+//the constructor and b) when making any of the ic::Jet types out of a
+//pat::Jet, input_btags and input_jet_flavour don't exist, but we need 
+//the consumes calls for these labels if we want to make an ic::Jet 
+//from any of the reco:: input jet types.
+template <class T, class U>
+void ICJetProducer<T, U>::specifyConsumes(){}
+
+template <>
+void ICJetProducer<ic::CaloJet, pat::Jet>::specifyConsumes(){
+  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+  }
+
+template <>
+void ICJetProducer<ic::JPTJet, pat::Jet>::specifyConsumes(){
+  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+  }
+
+template<>
+void ICJetProducer<ic::PFJet, pat::Jet>::specifyConsumes(){
+  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+  }
+
+template<>
+void ICJetProducer<ic::Jet, pat::Jet>::specifyConsumes(){
+  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+  }
+
+template<>
+void ICJetProducer<ic::CaloJet, reco::CaloJet>::specifyConsumes(){
+    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+    consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+    for(unsigned i=0;i<src_.input_btags.size();++i){ 
+      consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
+    }
+  }
+
+template<>
+void ICJetProducer<ic::JPTJet, reco::JPTJet>::specifyConsumes(){
+    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+    consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+    for(unsigned i=0;i<src_.input_btags.size();++i){ 
+      consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
+    }
+  }
+
+template<>
+void ICJetProducer<ic::PFJet, reco::PFJet>::specifyConsumes(){
+    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+    consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+    for(unsigned i=0;i<src_.input_btags.size();++i){ 
+      consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
+    }
+  }
+
+template<>
+void ICJetProducer<ic::Jet, reco::Jet>::specifyConsumes(){
+    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+    consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+    for(unsigned i=0;i<src_.input_btags.size();++i){ 
+      consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
+    }
+  }
+
+
 
 // =============
 // Main producer
@@ -84,7 +160,7 @@ ICJetProducer<T, U>::~ICJetProducer() { delete jets_; }
 template <class T, class U>
 void ICJetProducer<T, U>::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
-  consumes<edm::View<U>>(input_);
+  
   edm::Handle<edm::View<U> > jets_handle;
   event.getByLabel(input_, jets_handle);
 
@@ -115,11 +191,7 @@ template <>
 void ICJetProducer<ic::CaloJet, reco::CaloJet>::constructSpecific(
     edm::Handle<edm::View<reco::CaloJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
-  consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
-  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-  for(unsigned i=0;i<src_.input_btags.size();++i){ 
-    consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
-  }
+  //}
 
   edm::Handle<reco::JetIDValueMap> jet_id_handle;
   if (dest_.do_jet_id) event.getByLabel(dest_.input_jet_id, jet_id_handle);
@@ -151,7 +223,7 @@ template <>
 void ICJetProducer<ic::CaloJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
-    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+   // consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
 
   for (unsigned i = 0; i < passed_.size(); ++i) {
     pat::Jet const& src = jets_handle->at(passed_[i]);
@@ -180,11 +252,11 @@ template <>
 void ICJetProducer<ic::JPTJet, reco::JPTJet>::constructSpecific(
     edm::Handle<edm::View<reco::JPTJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
-  consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
-  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-  for(unsigned i=0;i<src_.input_btags.size();++i){ 
-    consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
-  }
+ // consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+  //consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+  //for(unsigned i=0;i<src_.input_btags.size();++i){ 
+   // consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
+  //}
 
   edm::Handle<reco::JetIDValueMap> jet_id_handle;
   if (dest_.do_jet_id) event.getByLabel(dest_.input_jet_id, jet_id_handle);
@@ -269,7 +341,7 @@ void ICJetProducer<ic::JPTJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
 
-    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+   // consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
   edm::Handle<reco::TrackCollection> trk_handle;
   edm::Handle<reco::VertexCollection> vtx_handle;
   std::map<unsigned, unsigned> trk_vtx_map;
@@ -348,11 +420,11 @@ template <>
 void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
     edm::Handle<edm::View<reco::PFJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
-  consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
+  /*consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
   consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
   for(unsigned i=0;i<src_.input_btags.size();++i){ 
     consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
-  }
+  }*/
 
   edm::Handle<edm::ValueMap<float> > pu_id_handle;
   if (dest_.do_pu_id) event.getByLabel(dest_.input_pu_id, pu_id_handle);
@@ -405,7 +477,7 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
 
-    consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
+   // consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
   edm::Handle<edm::ValueMap<float> > pu_id_handle;
   if (dest_.do_pu_id) event.getByLabel(dest_.input_pu_id, pu_id_handle);
 
