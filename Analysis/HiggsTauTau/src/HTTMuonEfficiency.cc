@@ -23,6 +23,8 @@ int HTTMuonEfficiency::PreAnalysis() {
     outtree_->Branch("iso_db03allch",&iso_db03allch_);
     outtree_->Branch("iso_db04allch",&iso_db04allch_);
     outtree_->Branch("wt",&wt_);
+    outtree_->Branch("allcharged03iso",&allcharged03iso_);
+    outtree_->Branch("allcharged04iso",&allcharged04iso_);
     outtree_->Branch("gen_match",&gen_match_);
   }
 
@@ -118,6 +120,8 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
   gen_match_ = MCOrigin2UInt(gen_match_1);
   eta_ = muons.at(i)->eta();
   pt_ = muons.at(i)->pt();
+  allcharged03iso_ = muons.at(i)->dr03_pfiso_charged_all();
+  allcharged04iso_ = muons.at(i)->dr04_pfiso_charged_all();
   iso_ea03_ = PF03EAIsolationVal(muons.at(i),eventInfo);
   iso_db03_ = PF03IsolationVal(muons.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(muons.at(i),0.5,1);

@@ -84,6 +84,7 @@ namespace ic {
     std::vector<CompositeCandidate *> ss_dilepton;
     std::vector<CompositeCandidate *> result;
 
+
     for (unsigned i = 0; i < dilepton.size(); ++i) {
       if (PairOppSign(dilepton[i])) os_dilepton.push_back(dilepton[i]);
       if (PairSameSign(dilepton[i])) ss_dilepton.push_back(dilepton[i]);
@@ -150,7 +151,7 @@ namespace ic {
     }
     if (result.size() == 0) return 1;  //Require at least one dilepton
     //Rest of code is not needed for Z->ee and Z->mumu channels    
-    if(channel_ == channel::zee || channel_ == channel::zmm) {
+    if(channel_ == channel::zee || channel_ == channel::zmm || channel_ == channel::tpzmm || channel_ == channel::tpzee) {
       dilepton = result;
       return 0;
     }

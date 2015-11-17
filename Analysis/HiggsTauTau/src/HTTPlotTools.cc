@@ -287,6 +287,14 @@ namespace ic {
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
         {"ggH","bbH"}, TColor::GetColor(0,18,255), false)
     };
+    sig_schemes_["mssm_nostack_sigsep"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times gg#Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
+        {"ggH"}, TColor::GetColor(0,18,255), false),
+      PlotSigComponent("sig_bbH",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times bb#Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
+        {"bbH"}, kBlue+3, false)
+    };
     sig_schemes_["mssm_nopars"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau"),

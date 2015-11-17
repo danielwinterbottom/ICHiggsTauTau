@@ -36,7 +36,7 @@ namespace ic {
 
 
     TTree *outputTree_;
-
+    unsigned processed;
     
     unsigned run_;
     unsigned lumi_;
@@ -142,6 +142,7 @@ namespace ic {
     unsigned n_jets_cjv_20EB_30EE_;
     unsigned n_jets_15_;
     unsigned n_jets_30_;
+    double pass_muontrigger_;
     double pass_sigtrigger_;
     double pass_mettrigger_;
     double pass_controltrigger_;

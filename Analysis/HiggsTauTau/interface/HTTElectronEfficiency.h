@@ -22,18 +22,26 @@ class HTTElectronEfficiency : public ModuleBase {
   TTree * outtree_;
   double e_mva_id_;
   double eta_;
+  double sc_eta;
   double pt_;
+  double allcharged03iso_;
+  double allcharged04iso_;
+  double electronmvaID_;
+  double electronTrigmvaID_;
   unsigned gen_match_;
   double iso_ea03_;
   double iso_db03_;
   double iso_db03allch_;
   double iso_db04allch_;
+  bool pass_preselection;
+  bool pass_cut_preselection;
   int wt_;
   
 
 
 
   CLASS_MEMBER(HTTElectronEfficiency, fwlite::TFileService*, fs)
+  CLASS_MEMBER(HTTElectronEfficiency, std::string, dirname)
 
  public:
   HTTElectronEfficiency(std::string const& name);

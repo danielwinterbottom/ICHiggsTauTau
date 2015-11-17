@@ -398,9 +398,9 @@ int main(int argc, char* argv[]){
 //   .set_l3_file("input/jec/START53_V10_L3Absolute_AK5PF.txt");
   
 
-  MetLaserFilters metLaserFilters = MetLaserFilters("MetLaserFilters",
-						    "input/met_laser_filters/AllBadHCALLaser.txt",
-						    "input/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
+  MetLaserFilters cscTightHaloFilter = MetLaserFilters("CscTightHaloFilter",
+						    "input/halofilters/allevents.txt",
+						    "dummy.txt",
 						    doMetFilters);
 
 
@@ -859,7 +859,7 @@ int main(int argc, char* argv[]){
   if (is_data) {
     //FIXME: do MetFilters also on MC, but not saved right now in MC...
     analysis.AddModule(&metFilters);
-    analysis.AddModule(&metLaserFilters);
+    analysis.AddModule(&cscTightHaloFilter);
   }
   
   if(!donoskim)analysis.AddModule(&goodVertexFilter);

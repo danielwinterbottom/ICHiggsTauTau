@@ -82,7 +82,7 @@ USERINCLUDES += -isystem $(PYSYS)
 
 CXX=g++
 LD=g++
-CXXFLAGS= -Wall -Wextra -O2 -std=c++0x
+CXXFLAGS= -Wall -Wextra -Werror -O2 -std=c++0x
 LDFLAGS= -shared -Wall -Wextra
 CXXFLAGS += $(EXTRAFLAGS)
 
