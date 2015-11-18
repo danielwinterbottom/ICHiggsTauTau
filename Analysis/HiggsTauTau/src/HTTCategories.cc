@@ -28,6 +28,7 @@ namespace ic {
       make_sync_ntuple_ = false;
       sync_output_name_ = "SYNC.root";
       iso_study_=false;
+      tau_id_study_=false;
       is_embedded_=false;
       is_data_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
@@ -123,6 +124,30 @@ namespace ic {
         outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
         outtree_->Branch("iso_2_trk03", &iso_2_trk03_);
       }
+ 
+      if(tau_id_study_){
+       outtree_->Branch("antie_vloose_1",&lagainstElectronVLooseMVA5_1);
+       outtree_->Branch("antie_loose_1",&lagainstElectronLooseMVA5_1);
+       outtree_->Branch("antie_medium_1",&lagainstElectronMediumMVA5_1); 
+       outtree_->Branch("antie_tight_1",&lagainstElectronTightMVA5_1);
+       outtree_->Branch("antie_vtight_1",&lagainstElectronVTightMVA5_1);
+       outtree_->Branch("antimu_loose_1",&lagainstMuonLoose3_1);
+       outtree_->Branch("antimu_tight_1",&lagainstMuonTight3_1);
+       outtree_->Branch("antie_vloose_2",&lagainstElectronVLooseMVA5_2);
+       outtree_->Branch("antie_loose_2",&lagainstElectronLooseMVA5_2);
+       outtree_->Branch("antie_medium_2",&lagainstElectronMediumMVA5_2); 
+       outtree_->Branch("antie_tight_2",&lagainstElectronTightMVA5_2);
+       outtree_->Branch("antie_vtight_2",&lagainstElectronVTightMVA5_2);
+       outtree_->Branch("antimu_loose_2",&lagainstMuonLoose3_2);
+       outtree_->Branch("antimu_tight_2",&lagainstMuonTight3_2);
+       outtree_->Branch("iso_mva_new_1",&lbyIsolationMVA3newDMwLTraw_1);
+       outtree_->Branch("iso_mva_old_1",&lbyIsolationMVA3oldDMwLTraw_1);
+       outtree_->Branch("iso_mva_new_2",&lbyIsolationMVA3newDMwLTraw_2);
+       outtree_->Branch("iso_mva_old_2",&lbyIsolationMVA3oldDMwLTraw_2);
+       outtree_->Branch("olddm_1",&ldecayModeFindingOldDMs_1);
+       outtree_->Branch("olddm_2",&ldecayModeFindingOldDMs_2);
+      }
+
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
         //Extra variables needed for tag and probe
         outtree_->Branch("id_1", &mva_1_.var_double);
@@ -987,7 +1012,7 @@ namespace ic {
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
           iso_1_trk03_=0;
           iso_2_db03_ = PF03IsolationVal(muon, 0.5, 0);
-          iso_2_db04_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_2_db04_ = PF04IsolationVal(muon, 0.5, 0);
           iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo);
           iso_2_trk03_ = MuonTkIsoVal(muon);
           iso_2_db03allch_ = PF03IsolationVal(muon, 0.5, 1);

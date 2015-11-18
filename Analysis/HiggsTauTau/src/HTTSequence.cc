@@ -932,6 +932,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
     .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
     .set_iso_study(js["iso_study"].asBool())
+    .set_tau_id_study(js["tau_id_study"].asBool())
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)
@@ -1007,7 +1008,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
     }
 
 
-  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+ /* BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
@@ -1052,7 +1053,7 @@ if( strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
             return PF04IsolationVal(e, 0.5, 1) > elec_iso_min_val && PF04IsolationVal(e,0.5, 1) < elec_iso_max_val;
           } 
         }));
-  }
+  }*/
 
 
 /*  if (js["baseline"]["lep_iso"].asBool() &&strategy_type==strategy::phys14) {
@@ -1063,7 +1064,7 @@ if( strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
           //return PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
         }));
   }*/
-}
+//}
 
 
 
@@ -1585,7 +1586,7 @@ if(strategy_type == strategy::paper2013){
       }));
   }
 
-if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
+if(js["do_tau_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTTauEfficiency("HTTTauEfficiency")
     .set_fs(fs.get()));
 }
