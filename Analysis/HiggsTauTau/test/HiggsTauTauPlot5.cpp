@@ -721,6 +721,11 @@ int main(int argc, char* argv[]){
 		 //HTTAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
 		 //HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
     }
+    for (auto m : mssm_masses) {
+     HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
+     HTTAnalysis::PrintValue("bbH"+m, hmap["bbH"+m].second);
+    }
+
 
 	
     // ************************************************************************

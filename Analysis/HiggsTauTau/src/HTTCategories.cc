@@ -1247,13 +1247,13 @@ namespace ic {
     }
 
 
-    if (n_bjets_ >= 1) {
-      bcsv_1_ = bjets[0]->GetBDiscriminator(btag_label);
+    if (n_prebjets_ >= 1) {
+      bcsv_1_ = prebjets[0]->GetBDiscriminator(btag_label);
     } else {
       bcsv_1_ = -9999;
     }
-    if (n_bjets_ >= 2) {
-      bcsv_2_ = bjets[1]->GetBDiscriminator(btag_label);
+    if (n_prebjets_ >= 2) {
+      bcsv_2_ = prebjets[1]->GetBDiscriminator(btag_label);
     } else {
       bcsv_2_ = -9999;
     }
