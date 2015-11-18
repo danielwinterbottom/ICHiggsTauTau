@@ -353,7 +353,7 @@ namespace ic {
 
   int  LightTree::Execute(TreeEvent *event){
 
-    static unsigned processed = 0;
+    //static unsigned processed = 0;
 
     //Reset all information
     run_=-1;
@@ -826,7 +826,8 @@ namespace ic {
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
       //      if(l1met.size()==1){//!!
-      l1met_ = l1met[0]->pt();
+      if(!is_data_) l1met_ = l1met[0]->pt();
+      else l1met_ = l1met[2]->pt();
       //}
       metnomuons_ = metnomuons->pt();
       metnomu_x_ = metnomuvec.Px();

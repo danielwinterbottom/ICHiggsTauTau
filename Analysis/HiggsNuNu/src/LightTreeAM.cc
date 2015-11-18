@@ -31,8 +31,6 @@ namespace ic {
     //set vectors, do not reset later!!!
     //Used for setting branch addresses...
     nJetsSave_ = 6;
-    nJets_ = 0;
-    nGenJets_ = 0;
 
     //initialise arrays fixed size
     jet_pt_ = new double[nJetsSave_];
@@ -456,7 +454,10 @@ namespace ic {
     met_significance_ = met->et_sig();
     sumet_ = met->sum_et();
     //std::cout << "l1metsize = " << l1met.size() << std::endl;
-    l1met_ = l1met[0]->pt();
+    //data have 5 bx saved, 2 before, 2 after. 
+    //MC has only 1 but 3 objects (not sure why...)
+    if(!is_data_) l1met_ = l1met[0]->pt();
+    else l1met_ = l1met[2]->pt();
     //}
     metnomuons_ = metnomuons->pt();
     metnomu_x_ = metnomuvec.Px();
@@ -574,7 +575,7 @@ namespace ic {
 
     std::vector<std::pair<unsigned,bool> > recotogenmatch;
     recotogenmatch.resize(jets.size(),std::pair<unsigned,bool>(1000,false));
-    getGenRecoMatches<PFJet,GenJet>(jets,genvec,recotogenmatch);
+    if (!is_data_) getGenRecoMatches<PFJet,GenJet>(jets,genvec,recotogenmatch);
 
     ROOT::Math::PtEtaPhiEVector mhtVec(0,0,0,0);
     alljetsmetnomu_mindphi_=jetmetnomu_mindphi_;
@@ -687,15 +688,15 @@ namespace ic {
 
     std::vector<std::pair<unsigned,bool> > recotogen_elecs;
     recotogen_elecs.resize(selelectrons.size(),std::pair<unsigned,bool>(1000,false));
-    getGenRecoMatches<Electron,Candidate>(selelectrons,genElecs,recotogen_elecs);
+     if (!is_data_) getGenRecoMatches<Electron,Candidate>(selelectrons,genElecs,recotogen_elecs);
 
     std::vector<std::pair<unsigned,bool> > recotogen_muons;
     recotogen_muons.resize(selmuons.size(),std::pair<unsigned,bool>(1000,false));
-    getGenRecoMatches<Muon,Candidate>(selmuons,genMus,recotogen_muons);
+     if (!is_data_) getGenRecoMatches<Muon,Candidate>(selmuons,genMus,recotogen_muons);
 
     std::vector<std::pair<unsigned,bool> > recotogen_taus;
     recotogen_taus.resize(taus.size(),std::pair<unsigned,bool>(1000,false));
-    getGenRecoMatches<Tau,Candidate>(taus,genTaus,recotogen_taus);
+     if (!is_data_) getGenRecoMatches<Tau,Candidate>(taus,genTaus,recotogen_taus);
 
     double lep_pt=0;
     double lep_phi=0;
@@ -779,7 +780,7 @@ namespace ic {
 
     std::vector<std::pair<unsigned,bool> > recotogen_photons;
     recotogen_photons.resize(tightphotons.size(),std::pair<unsigned,bool>(1000,false));
-    getGenRecoMatches<Photon,Candidate>(tightphotons,genPhotons,recotogen_photons);
+     if (!is_data_) getGenRecoMatches<Photon,Candidate>(tightphotons,genPhotons,recotogen_photons);
 
     if(ntightphotons_>=1){
       gamma1_pt_=tightphotons[0]->pt();

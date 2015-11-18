@@ -6,6 +6,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include <cmath>
 #include "TH2F.h"
 #include <vector>
@@ -23,10 +24,33 @@ namespace ic {
   
   class JetMETModifier : public ModuleBase {
   private:
-    JetCorrectionUncertainty *total;
-    JetCorrectionUncertainty *total2;
+
+    enum jetmetCor {
+      jecData=0,
+      jecMC=1,
+      smearMC=2
+    };
+    enum jetmetSyst {
+      jesUp=0,
+      jesDown=1,
+      jerBetter=2,
+      jerWorse=3,
+      uesUp=4,
+      uesDown=5
+    };
+
+    JetCorrectionUncertainty *jetCorUnc_;
+    JetCorrectorParameters *resJetPar_data_;
+    JetCorrectorParameters *l3JetPar_data_;
+    JetCorrectorParameters *l2JetPar_data_;
+    JetCorrectorParameters *l1JetPar_data_;
+    FactorizedJetCorrector *jetCorrector_data_;
+
     CLASS_MEMBER(JetMETModifier,fwlite::TFileService*, fs);
     CLASS_MEMBER(JetMETModifier, bool, is_data)
+    CLASS_MEMBER(JetMETModifier, bool, reapplyJEC)
+    CLASS_MEMBER(JetMETModifier, std::vector<std::string>, jec_data_files)
+
     CLASS_MEMBER(JetMETModifier, bool, dojetresmeasurement)
     CLASS_MEMBER(JetMETModifier, bool, dojessyst)
     CLASS_MEMBER(JetMETModifier, bool, dodatajessyst)

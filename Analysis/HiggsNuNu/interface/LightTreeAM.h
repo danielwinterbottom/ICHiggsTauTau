@@ -183,17 +183,11 @@ namespace ic {
 
     int n_vertices_;
 
-    template <class T, class U>
-      void getGenRecoMatches(const std::vector<T*> & jets,
-			     const std::vector<U*> & genvec, 
-			     std::vector<std::pair<unsigned,bool> > & recotogenmatch);
-
   public:
     LightTreeAM(std::string const& name);
     virtual ~LightTreeAM();
 
     void resetAllTreeVariables();
-
 
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);
@@ -201,63 +195,6 @@ namespace ic {
     virtual void PrintInfo();
 
    };
-
-  template <class T, class U>
-    void LightTreeAM::getGenRecoMatches(const std::vector<T*> & recovec,
-					const std::vector<U*> & genvec, 
-					std::vector<std::pair<unsigned,bool> > & recotogenmatch){
-
-
-    if (is_data_) return;
-    
-    unsigned nReco = recovec.size();
-    unsigned nGen = genvec.size();
-    unsigned nRecNotMatched = 0;
-    std::vector<bool> ignoreIndex;
-    ignoreIndex.resize(nGen,false);
-    for (unsigned i = 0; i < nReco; ++i) {//loop on recovec
-      double mindR = 1000;
-      unsigned genvecid=1000;
-      for (unsigned ig = 0; ig < nGen; ++ig) {//loop on genvec
-	if (ignoreIndex[ig]) continue;
-	double dR = ROOT::Math::VectorUtil::DeltaR(genvec[ig]->vector(),recovec[i]->vector());
-	if (dR<mindR){
-	  mindR = dR;
-	  genvecid = ig;
-	}
-      }//loop on genvec
-      if (genvecid==1000){
-	nRecNotMatched++;
-	continue;
-      }
-      recotogenmatch[i]=std::pair<unsigned,bool>(genvecid,true);
-      ignoreIndex[genvecid] = true;
-      //loop again to find minimum dpT/pT
-      /*double ptgen = genvec[genvecid]->pt();
-      double mindpT = fabs(recovec[i]->pt()-ptgen)/ptgen;
-      for (unsigned j = 0; j < i; ++j) {//loop on recovec
-	if (recotogenmatch[j].first!=genvecid) continue;
-	double dR = ROOT::Math::VectorUtil::DeltaR(genvec[genvecid]->vector(),recovec[j]->vector());	
-	double dptrel = fabs(recovec[j]->pt()-ptgen)/ptgen;
-	if (dptrel<mindpT && dR<0.4) {
-	  mindpT = dptrel;
-	  recotogenmatch[i]=std::pair<unsigned,bool>(2000,false);
-	} else if (dR<mindR){
-	  recotogenmatch[i]=std::pair<unsigned,bool>(2000,false);
-	} else {
-	  recotogenmatch[j]=std::pair<unsigned,bool>(2000,false);
-	}
-	nRecNotMatched++;
-	}*/
-    }
-
-    if (nReco<=nGen && nRecNotMatched>0) std::cout << " -- Warning, found " << nRecNotMatched << "/" << nReco << " recovec not matched, genvec size is: " << nGen << std::endl;
-    
-  }//getgenrecomatches
-  
-
-
- 
 
 
 }

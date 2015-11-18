@@ -43,6 +43,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTreeAM.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTreeTrig.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -94,6 +95,9 @@ int main(int argc, char* argv[]){
   string mettype;                 // MET input collection to be used
   string jettype;                 // JET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
+  bool reapplyJEC;                // Reapply JEC from txt files
+  string jecdata;                 // File list to get JEC to reapply offline
+
   bool doMetFilters;              // apply cleaning MET filters.
   string filters;
   //unsigned signal_region;       // DeltaPhi cut > 2.7
@@ -124,6 +128,7 @@ int main(int argc, char* argv[]){
   bool turnoffpuid;
 
   bool useOldLT;
+  bool doTrigLT;
   bool doAllPairs;
 
  // Load the config
@@ -186,9 +191,12 @@ int main(int argc, char* argv[]){
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("dospring10gaus",      po::value<bool>(&dospring10gaus)->default_value(false))
-    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
+    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt"))
+    ("reapplyJEC",          po::value<bool>(&reapplyJEC)->default_value(false))
+    ("jecdata",          po::value<string>(&jecdata)->default_value("input/jec/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
     ("useOldLT",         po::value<bool>(&useOldLT)->default_value(false))
+    ("doTrigLT",         po::value<bool>(&doTrigLT)->default_value(false))
     ("doAllPairs",       po::value<bool>(&doAllPairs)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
@@ -198,6 +206,9 @@ int main(int argc, char* argv[]){
 
   vector<string> filtersVec;
   boost::split(filtersVec, filters, boost::is_any_of(","));
+
+  std::vector<string> jecdatafiles;
+  boost::split(jecdatafiles, jecdata, boost::is_any_of(","));
 
   // Some options must now be re-configured based on other options
   ic::era era           = String2Era(era_str);
@@ -361,7 +372,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_moriond) data_pu_file   =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
-  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_2015D_246908-259891-600bins.root";
+  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -382,8 +393,8 @@ int main(int argc, char* argv[]){
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Down.root", "/", "pileup");
   }
   else if(era == era::data_2015_25ns){
-    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb80_2015D_246908-259891-600bins.root", "/", "pileup");
-    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb58_2015D_246908-259891-600bins.root", "/", "pileup");
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb72d5_2015D_246908-260627-600bins.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
   }
 
   if (!is_data) {
@@ -639,6 +650,8 @@ int main(int argc, char* argv[]){
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
     .set_input_label(jettype)
+    .set_jec_data_files(jecdatafiles)
+    .set_reapplyJEC(reapplyJEC)
     .set_met_label(mettype)
     .set_dosmear(dosmear)
     .set_doaltmatch(doaltmatch)
@@ -866,6 +879,17 @@ int main(int argc, char* argv[]){
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
   //.set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
 
+  LightTreeTrig lightTreeTrig = LightTreeTrig("LightTreeTrig")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_jet_label(jettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_is_data(is_data)
+    .set_dotrigskim(false)
+    .set_do_noskim(donoskim)
+    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
+  //.set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
+
   LightTreeAM lightTreeNew = LightTreeAM("LightTreeNew")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -995,6 +1019,8 @@ int main(int argc, char* argv[]){
   if (useOldLT) analysis.AddModule(&lightTree);  
   else analysis.AddModule(&lightTreeNew);  
   
+  if (!useOldLT && doTrigLT) analysis.AddModule(&lightTreeTrig);
+
   // Run analysis
   analysis.RetryFileAfterFailure(60,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
   analysis.StopOnFileFailure(true);
