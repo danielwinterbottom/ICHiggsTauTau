@@ -35,7 +35,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetEventFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTreeJetMETval.h"
@@ -320,9 +320,10 @@ int main(int argc, char* argv[]){
     .set_mc(&mc_pu)
     .set_print_weights(false);
 
-  MetLaserFilters metLaserFilters = MetLaserFilters("MetLaserFilters",
-						    "input/met_laser_filters/AllBadHCALLaser.txt",
-						    "input/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
+  std::vector<string> inputVec;
+  inputVec.push_back("input/halofilters/allevents.txt");
+  MetEventFilters metEventFilters = MetEventFilters("MetEventFilters",
+						    inputVec,
 						    doMetFilters);
 
 
@@ -716,7 +717,7 @@ int main(int argc, char* argv[]){
   if (is_data) {
     //FIXME: do MetFilters also on MC, but not saved right now in MC...
     analysis.AddModule(&metFilters);
-    analysis.AddModule(&metLaserFilters);
+    analysis.AddModule(&metEventFilters);
   }
 
   //if(!donoskim)

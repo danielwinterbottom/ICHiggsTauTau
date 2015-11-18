@@ -39,8 +39,29 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for JetMETModifier" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    if(is_data_&&!dodatajessyst_){
-      std::cout<<"Sample is data, no corrections will be made."<<std::endl;
+
+    l1JetPar_data_  = new JetCorrectorParameters(jec_data_files_[0]);
+    l2JetPar_data_  = new JetCorrectorParameters(jec_data_files_[1]);
+    l3JetPar_data_  = new JetCorrectorParameters(jec_data_files_[2]);
+    resJetPar_data_ = new JetCorrectorParameters(jec_data_files_[3]); 
+    //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
+    std::vector<JetCorrectorParameters> vPar_data;
+    vPar_data.push_back(*l1JetPar_data_);
+    vPar_data.push_back(*l2JetPar_data_);
+    vPar_data.push_back(*l3JetPar_data_);
+    vPar_data.push_back(*resJetPar_data_);
+    jetCorrector_data_ = new FactorizedJetCorrector(vPar_data);
+
+    if(is_data_){
+      if (reapplyJEC_) {
+	std::cout << "-- Reapplying JEC using corrections from files:" << std::endl;
+	for (unsigned i(0); i<jec_data_files_.size();++i){
+	  std::cout << jec_data_files_[i] << std::endl;
+	}
+      }
+      else if (!dodatajessyst_) {
+	std::cout<<"-- Sample is data, no corrections will be made."<<std::endl;
+      }
     }
     else{
       if(dosmear_){
@@ -86,7 +107,7 @@ namespace ic {
 	std::cout << "Doing UESDOWN"<<std::endl;
       }
     }
-    total = new JetCorrectionUncertainty(*(new JetCorrectorParameters(jesuncfile_)));
+    jetCorUnc_ = new JetCorrectionUncertainty(*(new JetCorrectorParameters(jesuncfile_)));
     
     std::cout<<"Got parameters successfully"<<std::endl;
     TFileDirectory const& dir = fs_->mkdir("JES");
@@ -169,32 +190,90 @@ namespace ic {
   }
 
   int JetMETModifier::Execute(TreeEvent *event) {
+    if(is_data_ && !reapplyJEC_ && !dodatajessyst_) return 0;
+
+    std::vector<PFJet *> & jetvec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
+    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    Met *met = 0;
+    try {
+      std::vector<Met*> metCol = event->GetPtrVec<Met>(met_label_);
+      met = metCol[0];
+    } catch (...){
+      //std::cout << " Met vec not found..." << std::endl;
+      met = event->GetPtr<Met>(met_label_);
+      if (!met) {
+	std::cerr << " -- Found no MET " << met_label_ << " in event! Exiting..." << std::endl;
+	exit(1);
+      }
+    }
+
+    ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
+    ROOT::Math::PxPyPzEVector  newmet = oldmet;
+
     if(is_data_){
+      //std::cout << " - MET before: ";
+      //met->Print();
+      double sumetdiff = 0;
+      for (int i = 0; unsigned(i) < jetvec.size(); ++i) {//LOOP OVER JET COLLECTION
+	//std::cout << " - Before : Jet " << i ;
+	//jetvec[i]->Print();
+
+	//Get jet information
+	ROOT::Math::PxPyPzEVector  oldjet = ROOT::Math::PxPyPzEVector(jetvec[i]->vector());
+	ROOT::Math::PxPyPzEVector  newjet;
+
+	double oldcor = oldjet.E()/jetvec[i]->uncorrected_energy();
+	//remove old correction using corrector
+	//double oldcor = jetvec[i]->GetJecFactor("L1FastJet")*
+	//jetvec[i]->GetJecFactor("L2Relative")*
+	//jetvec[i]->GetJecFactor("L3Absolute")*
+	//jetvec[i]->GetJecFactor("L2L3Residual");
+
+	ROOT::Math::PxPyPzEVector rawjet = 1./oldcor*oldjet;
+	
+	//std::cout << " -- Check of removal of corrections: uncorE = "<< jetvec[i]->uncorrected_energy() << " rawjet E = " << rawjet.E() << std::endl;
+
+	//apply new correction
+	jetCorrector_data_->setJetEta(rawjet.eta());
+	jetCorrector_data_->setJetPt(rawjet.pt());
+	jetCorrector_data_->setJetA(jetvec[i]->jet_area());
+	jetCorrector_data_->setRho(eventInfo->jet_rho()); 
+      
+	//Step5 (Get the correction factor or a vector of the individual correction factors) 
+      
+	double newcor = jetCorrector_data_->getCorrection();
+      //vector<double> factors = JetCorrector_data_->getSubCorrections();
+      //IMPORTANT: the getSubCorrections member function returns the vector of the subcorrections UP to the given level. For example in the example above, factors[0] is the L1 correction and factors[3] is the L1+L2+L3+Residual correction. 
+
+	newjet = newcor/oldcor*oldjet;
+	sumetdiff += (newcor/oldcor-1)*oldjet.pt();
+	//update jet and correspondingly the met.
+	jetvec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
+
+	//std::cout << " - After : Jet " << i ;
+	//jetvec[i]->Print();
+
+	double dpx = newjet.px()-oldjet.px();
+	double dpy = newjet.py()-oldjet.py();
+	newmet.SetPx(newmet.px()-dpx);
+	newmet.SetPy(newmet.py()-dpy);
+	newmet.SetE(newmet.pt());
+      }//end of loop over jets
+
+      met->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newmet));
+      met->set_sum_et(met->sum_et()+sumetdiff);
+      //std::cout << " - MET after: ";
+      //met->Print();
+
       return 0;
     }
     else{
-      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
       double wt_ = eventInfo->total_weight();
       //GET MET AND JET COLLECTIONS
-      std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
       std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");//GenJet collection, note: could make this a parameter but we only have one collection at the moment in the ntuples
       //std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");//Tau Collection could be used in future but commented out to remove compiler warning
-      Met *met = 0;
-      try {
-	std::vector<Met*> metCol = event->GetPtrVec<Met>(met_label_);
-	met = metCol[0];
-      } catch (...){
-	//std::cout << " Met vec not found..." << std::endl;
-	met = event->GetPtr<Met>(met_label_);
-	if (!met) {
-	  std::cerr << " -- Found no MET " << met_label_ << " in event! Exiting..." << std::endl;
-	  exit(1);
-	}
-      }
 
 
-      ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
-      ROOT::Math::PxPyPzEVector  newmet = oldmet;
       //GET RUNMETUNCS COLLECTIONS FOR COMPARISON
       std::vector<ic::Candidate *> runmetuncvec;
       std::vector< std::pair<PFJet*, ic::Candidate*> > jet_runmetjet_pairs;
@@ -204,15 +283,15 @@ namespace ic {
 	  runmetjetpt->Fill(runmetuncvec[i]->vector().pt());
 	}
 	//MATCH RUNMETUNCS JETS	
-	jet_runmetjet_pairs = MatchByDR(vec,runmetuncvec,0.5,true,true);
+	jet_runmetjet_pairs = MatchByDR(jetvec,runmetuncvec,0.5,true,true);
       }
       
       //MATCH GEN JETS
       std::vector< std::pair<PFJet*, GenJet*> > jet_genjet_pairs;
 
-      if(!doaltmatch_)jet_genjet_pairs = MatchByDR(vec,genvec,0.5,true,true);//TWIKI METHOD
+      if(!doaltmatch_)jet_genjet_pairs = MatchByDR(jetvec,genvec,0.5,true,true);//TWIKI METHOD
       else{//RUNMETUNCERTAINTIES METHOD
-	std::vector< std::pair<PFJet*,GenJet*> > pairVec = MakePairs(vec,genvec);//Make all possible pairs
+	std::vector< std::pair<PFJet*,GenJet*> > pairVec = MakePairs(jetvec,genvec);//Make all possible pairs
 	std::vector< std::pair<PFJet*,GenJet*> > filteredpairVec;
 	for(int g =0;unsigned(g)<pairVec.size();g++){//Filter pairs with too large a dr separation
 	  double dr=sqrt( (pairVec[g].first->eta()-pairVec[g].second->eta())*(pairVec[g].first->eta()-pairVec[g].second->eta()) + (pairVec[g].first->phi()-pairVec[g].second->phi())*(pairVec[g].first->phi()-pairVec[g].second->phi()) );
@@ -235,9 +314,9 @@ namespace ic {
       }
 
       //Find closest gen jet to each jet
-      for (int i = 0; unsigned(i) < vec.size(); ++i) {//loop over the jet collection
-	double jeteta=vec[i]->vector().eta();
-	double jetphi=vec[i]->vector().phi();
+      for (int i = 0; unsigned(i) < jetvec.size(); ++i) {//loop over the jet collection
+	double jeteta=jetvec[i]->vector().eta();
+	double jetphi=jetvec[i]->vector().phi();
 	double mindr=999;
 	for(int j = 0;unsigned(j)<genvec.size();j++){
 	  double dr = sqrt((jeteta-genvec[j]->vector().eta())*(jeteta-genvec[j]->vector().eta())+(jetphi-genvec[j]->vector().phi())*(jetphi-genvec[j]->vector().phi()));
@@ -258,15 +337,15 @@ namespace ic {
       int newjet1index = -1;
       int newjet2index = -1;
       
-      for (int i = 0; unsigned(i) < vec.size(); ++i) {//LOOP OVER JET COLLECTION
+      for (int i = 0; unsigned(i) < jetvec.size(); ++i) {//LOOP OVER JET COLLECTION
 	//Get jet information
-	ROOT::Math::PxPyPzEVector  oldjet = ROOT::Math::PxPyPzEVector(vec[i]->vector());
+	ROOT::Math::PxPyPzEVector  oldjet = ROOT::Math::PxPyPzEVector(jetvec[i]->vector());
 	ROOT::Math::PxPyPzEVector  newjet;
 
 	int index = -1;
 	//Check for matches between reco and gen jets
 	for(int j = 0;unsigned(j)<jet_genjet_pairs.size();j++){
-	  if(jet_genjet_pairs[j].first->id()==vec[i]->id()){
+	  if(jet_genjet_pairs[j].first->id()==jetvec[i]->id()){
 	    index = j;
 	    break;
 	  }
@@ -388,7 +467,7 @@ namespace ic {
 	    }
 	    else{//do runmetuncertainties smearing
 	      double et = oldjet.energy()/cosh(oldjet.eta());
-	      double etraw = vec[i]->uncorrected_energy()/cosh(oldjet.eta());
+	      double etraw = jetvec[i]->uncorrected_energy()/cosh(oldjet.eta());
 	      double etgen = jet_genjet_pairs[index].second->energy()/cosh(oldjet.eta());
 	      double etcorrected=et*(1+(JERcencorrfac-1)*(et-etgen)/std::max(et,etraw));
 	      if(etcorrected<0.)etcorrected=0.;
@@ -441,7 +520,7 @@ namespace ic {
 	if(dojerdebug_){
 	  //Check for matches between ic and runmetunc jets
 	  for(int j = 0;unsigned(j)<jet_runmetjet_pairs.size();j++){
-	    if(jet_runmetjet_pairs[j].first->id()==vec[i]->id()){
+	    if(jet_runmetjet_pairs[j].first->id()==jetvec[i]->id()){
 	      runmetindex = j;
 	      break;
 	    }
@@ -489,15 +568,15 @@ namespace ic {
 	//else if((is_data_&&dodatajessyst_)||(!is_data_&&!dodatajessyst_)){//if not central value correct by the JES uncertainty
 	else if(!is_data_){
 	  //Get JES uncertainty
-	  total->setJetPt(newjet.pt());
+	  jetCorUnc_->setJetPt(newjet.pt());
 	  // Catch the few events with |Eta| > 5.4 and apply the extremal uncertainty
 	  if (newjet.eta() > 5.4 || newjet.eta() < -5.4) {
-	    newjet.eta() > 0 ? total->setJetEta(5.39) : total->setJetEta(-5.4);
+	    newjet.eta() > 0 ? jetCorUnc_->setJetEta(5.39) : jetCorUnc_->setJetEta(-5.4);
 	  }
 	  else {
-	    total->setJetEta(newjet.eta());
+	    jetCorUnc_->setJetEta(newjet.eta());
 	  }
-	  double uncert = total->getUncertainty(jesupordown_);
+	  double uncert = jetCorUnc_->getUncertainty(jesupordown_);
 	  JEScorrfac->Fill(newjet.pt(),uncert); //Fill histogram of uncertainty against pt	
 	  float jesupordownmult;
 	  if(jesupordown_==true) jesupordownmult=1.; //upper uncertainty
@@ -528,7 +607,7 @@ namespace ic {
 
 	}
 	//Set jet in event to corrected jet
-	vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
+	jetvec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
       }//end of loop over jets
       //Get Unclustered MET for UES Systematic
       if (!is_data_ && douessyst_){
@@ -549,7 +628,7 @@ namespace ic {
       
       //Check if first two jets have changed
       if((oldjet1index==-1)||(newjet1index==-1)||(oldjet2index==-1)||(newjet2index==-1)){
-	if(vec.size()>1){
+	if(jetvec.size()>1){
 	  JESisordersame->Fill(-2.);//ERROR there are two or more jets but no second highest pt jet has been found
 	}
       }
