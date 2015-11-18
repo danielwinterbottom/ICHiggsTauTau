@@ -131,6 +131,17 @@ namespace ic {
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inclelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incmelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_medium_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incmetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_medium_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inctelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_tight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["inctetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incvtelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvtetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
+
       alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
       // Categories for iso studies
       alias_map_["incnoiso"]         = "(iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
@@ -261,16 +272,16 @@ namespace ic {
       alias_map_["mdb04iso0p12"]           = "(iso_2_db04<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb04iso0p13"]           = "(iso_2_db04<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb04iso0p14"]           = "(iso_2_db04<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p15"]            = "(iso_2_db04<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p16"]            = "(iso_2_db04<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p17"]            = "(iso_2_db04<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p18"]            = "(iso_2_db04<0.18&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p19"]            = "(iso_2_db04<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p20"]            = "(iso_2_db04<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p21"]            = "(iso_2_db04<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p12"]           = "(iso_2_db04<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p13"]           = "(iso_2_db04<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mdb04iso0p14"]           = "(iso_2_db04<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p15"]            = "(iso_2_db04<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p16"]            = "(iso_2_db04<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p17"]            = "(iso_2_db04<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p18"]            = "(iso_2_db04<0.18&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p19"]            = "(iso_2_db04<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p20"]            = "(iso_2_db04<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p21"]            = "(iso_2_db04<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p12"]           = "(iso_2_db04<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p13"]           = "(iso_2_db04<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p14"]           = "(iso_2_db04<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mtrk03iso0p14"]           = "(iso_2_trk03<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mtrk03iso0p15"]            = "(iso_2_trk03<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mtrk03iso0p16"]            = "(iso_2_trk03<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
@@ -281,7 +292,6 @@ namespace ic {
       alias_map_["mtrk03iso0p21"]            = "(iso_2_trk03<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mtrk03iso0p12"]           = "(iso_2_trk03<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mtrk03iso0p13"]           = "(iso_2_trk03<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
-      alias_map_["mtrk03iso0p14"]           = "(iso_2_trk03<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p15"]            = "(iso_1_ea03<0.15&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p16"]            = "(iso_1_ea03<0.16&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p17"]            = "(iso_1_ea03<0.17&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
