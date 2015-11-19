@@ -189,11 +189,11 @@ if options.proc_data or options.proc_all:
 #   'SingleElectron-2015B-17Jul',
 #   'Tau-2015B-17Jul',
    'SingleMuon-2015D-Oct05',
-  # 'SingleElectron-2015D-Oct05',
+   'SingleElectron-2015D-Oct05',
    'MuonEG-2015D-Oct05',
    'Tau-2015D-Oct05',
    'SingleMuon-2015D-promptv4',
-  # 'SingleElectron-2015D-promptv4',
+   'SingleElectron-2015D-promptv4',
    'MuonEG-2015D-promptv4',
    'Tau-2015D-promptv4'
   ]

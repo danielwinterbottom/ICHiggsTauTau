@@ -1008,7 +1008,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
     }
 
 
- /* BuildModule(SimpleFilter<Electron>("ElectronFilter")
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
@@ -1053,7 +1053,7 @@ if( strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
             return PF04IsolationVal(e, 0.5, 1) > elec_iso_min_val && PF04IsolationVal(e,0.5, 1) < elec_iso_max_val;
           } 
         }));
-  }*/
+  }
 
 
 /*  if (js["baseline"]["lep_iso"].asBool() &&strategy_type==strategy::phys14) {
@@ -1064,7 +1064,7 @@ if( strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
           //return PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
         }));
   }*/
-//}
+}
 
 
 

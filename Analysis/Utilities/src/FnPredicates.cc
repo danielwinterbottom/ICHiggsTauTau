@@ -1425,8 +1425,6 @@ namespace ic {
     return taus;
   }
 
-
-
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){
 
 
