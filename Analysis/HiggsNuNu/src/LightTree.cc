@@ -34,6 +34,7 @@ namespace ic {
     trigger_path_ = "HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v";
 
     outputTree_ = 0;
+    processed=0;
 
     run_=-1;
     lumi_=-1;
@@ -116,6 +117,7 @@ namespace ic {
     n_jets_15_ = 0;
     n_jets_30_ = 0;
     cjvjetpt_=-1;
+    pass_muontrigger_ = -1;
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
@@ -282,6 +284,7 @@ namespace ic {
     outputTree_->Branch("n_jets_15",&n_jets_15_);
     outputTree_->Branch("n_jets_30",&n_jets_30_);
     outputTree_->Branch("cjvjetpt",&cjvjetpt_);
+    outputTree_->Branch("pass_muontrigger",&pass_muontrigger_);
     outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
     outputTree_->Branch("pass_mettrigger",&pass_mettrigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
@@ -349,6 +352,9 @@ namespace ic {
   }
 
   int  LightTree::Execute(TreeEvent *event){
+
+    //static unsigned processed = 0;
+
     //Reset all information
     run_=-1;
     lumi_=-1;
@@ -450,6 +456,7 @@ namespace ic {
     n_jets_15_ = 0;
     n_jets_30_ = 0;
     cjvjetpt_=-1;
+    pass_muontrigger_ = -1;
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
@@ -535,12 +542,14 @@ namespace ic {
       event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
     //EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings      
     //unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings                                         
+    pass_muontrigger_=-1;
     pass_sigtrigger_=-1;
     pass_mettrigger_=-1;
     pass_controltrigger_=-1;
     for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
       std::string name = triggerPathPtrVec[i]->name();
       triggerPathPtrVec[i]->prescale();
+      if (name.find("HLT_IsoMu20_") != name.npos) pass_muontrigger_ = 1;
       if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_") != name.npos) pass_sigtrigger_ = 1;
       if (name.find("HLT_PFMET170_NoiseCleaned_v") != name.npos) pass_mettrigger_ = 1;
       if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_") != name.npos) pass_controltrigger_ = 1;
@@ -548,7 +557,7 @@ namespace ic {
       if (name.find("HLT_PFHT750_4JetPt50_") != name.npos) pass_htquadjettrigger_ = 1;
     }
     if(dotrigskim_){
-      if(!(pass_sigtrigger_==1||pass_controltrigger_==1||pass_mettrigger_==1||pass_singlejettrigger_==1||pass_htquadjettrigger_==1)){
+      if(!(pass_sigtrigger_==1||pass_controltrigger_==1||pass_mettrigger_==1||pass_singlejettrigger_==1||pass_htquadjettrigger_==1||pass_muontrigger_==1)){
 	return 1;
       }
     }
@@ -559,23 +568,23 @@ namespace ic {
     double pileupwt=1;
     double pileupwtup=1;
     double pileupwtdown=1;
-    double topwt=1;
-    double topwtup=1;
-    double topwtdown=1;
+    //double topwt=1;
+    //double topwtup=1;
+    //double topwtdown=1;
     if(!is_data_){
       vetowt= eventInfo->weight("idisoVeto");
       tightwt = eventInfo->weight("idisoTight");
       pileupwt=eventInfo->weight("pileup");
       pileupwtup=eventInfo->weight("pileup_up");
       pileupwtdown=eventInfo->weight("pileup_down");
-      topwt=eventInfo->weight("tquark_weight");
-      topwtup=eventInfo->weight("tquark_weight_up");
-      topwtdown=eventInfo->weight("tquark_weight_up");
+      //topwt=eventInfo->weight("tquark_weight");
+      //topwtup=eventInfo->weight("tquark_weight_up");
+      //topwtdown=eventInfo->weight("tquark_weight_down");
     }
     puweight_up_scale_=pileupwtup/pileupwt;
     puweight_down_scale_=pileupwtdown/pileupwt;
-    topweight_up_scale_=topwtup/topwt;
-    topweight_down_scale_=topwtdown/topwt;
+    //topweight_up_scale_=topwtup/topwt;
+    //topweight_down_scale_=topwtdown/topwt;
 
     weight_nolep_ = wt;
     total_weight_lepveto_ =wt*vetowt;
@@ -817,7 +826,8 @@ namespace ic {
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
       //      if(l1met.size()==1){//!!
-      l1met_ = l1met[0]->energy();
+      if(!is_data_) l1met_ = l1met[0]->pt();
+      else l1met_ = l1met[2]->pt();
       //}
       metnomuons_ = metnomuons->pt();
       metnomu_x_ = metnomuvec.Px();
@@ -1005,9 +1015,12 @@ namespace ic {
 	}
       }
 
-      static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
-      if(!ignoreLeptons_){
+      if(do_noskim_){
+	outputTree_->Fill();
+	++processed;
+      }
+      else if(!ignoreLeptons_){
 	if(!do_promptskim_){
 	  if(!do_noskim_){
 	    if (jet_pt_[1]>40&& dijet_M_ > 600 &&  dijet_deta_>3.6){
@@ -1046,14 +1059,18 @@ namespace ic {
 	}
 	
       }
-      if (processed == 500) outputTree_->OptimizeBaskets();
     }
-
+    else if(do_noskim_){
+      outputTree_->Fill();
+      ++processed;
+    }
+    if (processed == 500) outputTree_->OptimizeBaskets();
     return 0;
   }
 
   int  LightTree::PostAnalysis(){
-    
+    std::cout<<"----------------------------------------"<<std::endl<<"PostAnalysis for LightTree"<<std::endl<<"----------------------------------------"<<std::endl;
+    std::cout<<"Light Tree saved "<<processed<<" events"<<std::endl;
     return 0;
   }
 

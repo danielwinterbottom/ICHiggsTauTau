@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_Module_MetLaserFilters_h
-#define ICHiggsTauTau_Module_MetLaserFilters_h
+#ifndef ICHiggsTauTau_Module_MetEventFilters_h
+#define ICHiggsTauTau_Module_MetEventFilters_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -7,6 +7,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 
 #include <string>
+#include <vector>
 #include <boost/algorithm/string.hpp>
 #include <set>
 #include "boost/functional/hash.hpp"
@@ -46,22 +47,22 @@ namespace ic {
     return is; 
   }
  
-  class MetLaserFilters : public ModuleBase {
+  class MetEventFilters : public ModuleBase {
   private:
-    std::string hcal_input_name_;
-    std::string ecal_input_name_;
+    std::vector<std::string> input_vec_;
     bool doFilters_;
     
     evtsArray badEvts_;
 
     bool extractEvents(std::string inputfile);
 
+    unsigned countRejected_;
+
   public:
-    MetLaserFilters(std::string const& name, 
-		    std::string hcal_input_name, 
-		    std::string ecal_input_name, 
+    MetEventFilters(std::string const& name, 
+		    std::vector<std::string> input_vec, 
 		    bool doFilters);
-    virtual ~MetLaserFilters();
+    virtual ~MetEventFilters();
 
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);

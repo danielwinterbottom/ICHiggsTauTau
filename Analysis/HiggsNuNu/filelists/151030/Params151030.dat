@@ -117,7 +117,7 @@ EVT_MC_SingleT-tW-powheg-inc:995600
 EVT_MC_SingleTBar-t-powheg-lep:1680200
 EVT_MC_SingleTBar-tW-powheg-inc:988500
 EVT_MC_TT-powheg:19709439
-EVT_MC_TTJets-mg:
+EVT_MC_TTJets-mg:42784971
 EVT_MC_WJetsToLNu-mg-ht100to200:10152718
 EVT_MC_WJetsToLNu-mg-ht1200to2500:255637
 EVT_MC_WJetsToLNu-mg-ht200to400:5221599
