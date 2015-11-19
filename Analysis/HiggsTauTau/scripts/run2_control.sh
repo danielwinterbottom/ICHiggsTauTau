@@ -68,29 +68,29 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 #
 #### Visible Mass
 
-#./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:1." \
-#  --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
-#  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $ET_INC_SHIFT \
-#  --norm_bins=true --datacard="inclusive"\
-#  --background_scheme="et_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:1." \
+  --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $ET_INC_SHIFT \
+  --norm_bins=true --datacard="inclusive"\
+  --background_scheme="et_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
 
-#./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:1." \
-#  --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
-#  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $MT_INC_SHIFT \
-#  --norm_bins=true --datacard="inclusive"\
-#  --background_scheme="mt_with_zmm" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:1." \
+  --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $MT_INC_SHIFT \
+  --norm_bins=true --datacard="inclusive"\
+  --background_scheme="mt_with_zmm" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
 
-#./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
-#  --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
-# --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
-#  --norm_bins=true --datacard="inclusive"\
-#  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
+  --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
+ --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
+  --norm_bins=true --datacard="inclusive"\
+  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
 
-#./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
-#  --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
-# --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
-#  --norm_bins=true --datacard="inclusive"\
-#  --background_scheme="tt_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
+  --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
+ --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
+  --norm_bins=true --datacard="inclusive"\
+  --background_scheme="tt_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
 
 
 #### Visible Mass MSSM
