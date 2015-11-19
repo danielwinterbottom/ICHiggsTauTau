@@ -58,7 +58,7 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
     }
 
     
-    std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+    std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
     for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
     ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));

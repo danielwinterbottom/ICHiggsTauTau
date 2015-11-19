@@ -21,8 +21,8 @@ int HTTElectronEfficiency::PreAnalysis() {
     outtree_->Branch("pt", &pt_);
     outtree_->Branch("et", &et_);
     outtree_->Branch("jet_rho",&jet_rho_);
-    outtree_->Branch("iso_heep",&iso_heep_);
-    outtree_->Branch("iso_heep_cluster",&iso_heep_cluster_);
+//    outtree_->Branch("iso_heep",&iso_heep_);
+ //   outtree_->Branch("iso_heep_cluster",&iso_heep_cluster_);
     outtree_->Branch("iso_tk",&iso_tk_);
     outtree_->Branch("iso_ea03",&iso_ea03_);
     outtree_->Branch("iso_db03",&iso_db03_);
@@ -73,7 +73,7 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
     }
 
     
-    std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+    std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
     for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
     ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
@@ -145,8 +145,8 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
   iso_db03_ = PF03IsolationVal(elecs.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(elecs.at(i),0.5,1);
   iso_db04allch_ = PF04IsolationVal(elecs.at(i),0.5,1);
-  iso_heep_ = HEEPIso(elecs.at(i));
-  iso_heep_cluster_  =HEEPClusterIso(elecs.at(i));
+/*  iso_heep_ = HEEPIso(elecs.at(i));
+  iso_heep_cluster_  =HEEPClusterIso(elecs.at(i));*/
   iso_tk_ = elecs.at(i)->dr03_tk_sum_pt(); 
   jet_rho_ = eventInfo->jet_rho();
   pass_preselection = false;
