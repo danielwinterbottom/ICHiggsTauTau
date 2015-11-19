@@ -35,8 +35,8 @@ opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
 #opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
-opts.register('isNLO', 0, parser.VarParsing.multiplicity.singleton,
-    parser.VarParsing.varType.int, "Is this an NLO sample?")
+opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Store HT?")
 
 
 opts.parseArguments()
@@ -46,9 +46,9 @@ isData      = opts.isData
 tag         = opts.globalTag
 release     = opts.release
 if not isData:
-  isNLO     = opts.isNLO
+  doHT     = opts.doHT
 else:
-  isNLO     = 0
+  doHT     = 0
 #isEmbedded  = opts.isEmbedded
 #isTandP     = opts.isTandP
 #isZStudy    = opts.isZStudy
@@ -60,7 +60,7 @@ if not release in ["74X", "74XMINIAOD", "7412MINIAOD"]:
 print 'release     : '+release
 print 'isData      : '+str(isData)
 print 'globalTag   : '+str(tag)
-print 'isNLO       : '+str(isNLO)
+print 'doHT        : '+str(doHT)
 
 ################################################################
 # Standard setup
@@ -79,7 +79,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1834,7 +1834,7 @@ if release in ['74XMINIAOD','7412MINIAOD']:
 ################################################################
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
-  isNlo               = cms.bool(False),
+  includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag("externalLHEProducer"),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),
@@ -1845,8 +1845,8 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
 )
 
-if isNLO:
-  process.icEventInfoProducer.isNlo = cms.bool(True)
+if doHT:
+  process.icEventInfoProducer.includeHT = cms.bool(True)
   
 
 process.icEventInfoSequence = cms.Sequence(

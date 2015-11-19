@@ -5,7 +5,7 @@ config.General.transferOutputs = True
 config.General.workArea='Oct30_Data_74X'
 #config.General.requestName = 'May13_MC'
 config.section_('JobType')
-config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_74X_Sep15.py'
+config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_12/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_74X_Nov15.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Summer15_V5_MC.db']
@@ -47,14 +47,14 @@ if __name__ == '__main__':
     #tasks.append(('SingleMuon-2015B-17Jul','/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD'))
     #tasks.append(('SingleElectron-2015B-17Jul','/SingleElectron/Run2015B-17Jul2015-v1/MINIAOD'))
     #tasks.append(('MuonEG-2015B-17Jul','/MuonEG/Run2015B-17Jul2015-v1/MINIAOD'))
-    tasks.append(('Tau-2015D-promptv4','/Tau/Run2015D-PromptReco-v4/MINIAOD'))
-    tasks.append(('SingleMuon-2015D-promptv4','/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'))
-    tasks.append(('SingleElectron-2015D-promptv4','/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'))
-    tasks.append(('MuonEG-2015D-promptv4','/MuonEG/Run2015D-PromptReco-v4/MINIAOD'))
-    tasks.append(('Tau-2015D-Oct05','/Tau/Run2015D-05Oct2015-v1/MINIAOD'))
-    tasks.append(('SingleMuon-2015D-Oct05','/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'))
-    tasks.append(('SingleElectron-2015D-Oct05','/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD'))
-    tasks.append(('MuonEG-2015D-Oct05','/MuonEG/Run2015D-05Oct2015-v2/MINIAOD'))
+    tasks.append(('Tau-2015D-promptv4-v2','/Tau/Run2015D-PromptReco-v4/MINIAOD'))
+    tasks.append(('SingleMuon-2015D-promptv4-v2','/SingleMuon/Run2015D-PromptReco-v4/MINIAOD'))
+    tasks.append(('SingleElectron-2015D-promptv4-v2','/SingleElectron/Run2015D-PromptReco-v4/MINIAOD'))
+    tasks.append(('MuonEG-2015D-promptv4-v2','/MuonEG/Run2015D-PromptReco-v4/MINIAOD'))
+    #tasks.append(('Tau-2015D-Oct05','/Tau/Run2015D-05Oct2015-v1/MINIAOD'))
+    #tasks.append(('SingleMuon-2015D-Oct05','/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD'))
+    #tasks.append(('SingleElectron-2015D-Oct05','/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD'))
+    #tasks.append(('MuonEG-2015D-Oct05','/MuonEG/Run2015D-05Oct2015-v2/MINIAOD'))
 
 
     for task in tasks:
