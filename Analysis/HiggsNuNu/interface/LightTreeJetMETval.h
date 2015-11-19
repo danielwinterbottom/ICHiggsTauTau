@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_Module_LightTree_h
-#define ICHiggsTauTau_Module_LightTree_h
+#ifndef ICHiggsTauTau_Module_LightTreeJetMETval_h
+#define ICHiggsTauTau_Module_LightTreeJetMETval_h
 
 #include <string>
 

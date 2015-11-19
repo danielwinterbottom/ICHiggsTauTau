@@ -14,6 +14,5 @@ else
     JOBNAME=$3
 fi
 
-
 echo "Submitting job $INPUT to lxplus batch queue $QUEUE"
 bsub -q $QUEUE -J $JOBNAME < $INPUT
