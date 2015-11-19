@@ -1021,6 +1021,7 @@ namespace ic {
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
 
+
       mva_2_ = 0.0;
       if(strategy_ == strategy::paper2013){
         emu_dxy_1_ = -1. * elec->dxy_vertex();
@@ -1063,9 +1064,9 @@ namespace ic {
         lagainstElectronVLooseMVA5_2 = tau2->HasTauID("againstElectronVLooseMVA5") ? tau2->GetTauID("againstElectronVLooseMVA5") :0. ;
         lagainstMuonLoose3_2 = tau2->HasTauID("againstMuonLoose3") ? tau2->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau2->HasTauID("againstMuonTight3") ? tau2->GetTauID("againstMuonTight3") : 0.;
-        antiele_1_ = lagainstElectronTightMVA5_1;
+        antiele_1_ = lagainstElectronVLooseMVA5_1;
         antimu_1_ = lagainstMuonLoose3_1;
-        antiele_2_ = lagainstElectronTightMVA5_2;
+        antiele_2_ = lagainstElectronVLooseMVA5_2;
         antimu_2_ = lagainstMuonLoose3_2;
         lchargedIsoPtSum_1 = tau1->HasTauID("chargedIsoPtSum") ? tau1->GetTauID("chargedIsoPtSum") : 0.;
         lneutralIsoPtSum_1 = tau1->HasTauID("neutralIsoPtSum") ? tau1->GetTauID("neutralIsoPtSum") : 0.;
