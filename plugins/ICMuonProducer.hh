@@ -52,7 +52,6 @@ class ICMuonProducer : public edm::EDProducer {
     explicit IsoTags(edm::ParameterSet const& pset);
   };
 
-
   IsoTags pf_iso_03_;
   IsoTags pf_iso_04_;
   bool do_pf_iso_03_;

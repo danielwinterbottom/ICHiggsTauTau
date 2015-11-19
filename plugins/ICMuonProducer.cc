@@ -100,7 +100,6 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     event.getByLabel(input_double_vmaps_[i].second, double_handles[i]);
   }
 
-
   edm::Handle<edm::ValueMap<double> > charged_all_03;
   edm::Handle<edm::ValueMap<double> > charged_03;
   edm::Handle<edm::ValueMap<double> > neutral_03;
@@ -222,7 +221,6 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
                     float((*(double_handles[v]))[muon_base_ref]));
       }
     }
-
 
     if (is_pf_) {
       if (do_pf_iso_03_) {
