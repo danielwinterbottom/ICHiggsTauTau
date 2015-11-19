@@ -89,6 +89,11 @@ icMuonProducer = cms.EDProducer('ICMuonProducer',
       # objects keyed on the input collection objects. The hash
       # of the name and the float value will be stored.
     ),
+    includeDoubles = cms.PSet(
+      # A named list of InputTags identifying edm::ValueMap<double>
+      # objects keyed on the input collection objects. The hash
+      # of the name and the double value (cast as float) will be stored.
+    ),
     includePFIso03           = cms.bool(False),
     pfIso03 = cms.PSet(
       chargedAll  = cms.InputTag("muPFIsoValueChargedAll03PFIso"),

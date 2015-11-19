@@ -57,7 +57,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
       pset_doubles.getParameterNamesForType<edm::InputTag>();
   for (unsigned i = 0; i < doubles_vec.size(); ++i) {
     input_double_vmaps_.push_back(std::make_pair(
-        doubles_vec[i], pset_doubles.getParameter<edm::InputTag>(vec[i])));
+        doubles_vec[i], pset_doubles.getParameter<edm::InputTag>(doubles_vec[i])));
   }
 
   PrintHeaderWithProduces(config, input_, branch_);
