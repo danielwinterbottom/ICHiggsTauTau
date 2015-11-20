@@ -205,7 +205,7 @@ if options.proc_data or options.proc_all:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct30_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 80 
+      nperjob = 40 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
