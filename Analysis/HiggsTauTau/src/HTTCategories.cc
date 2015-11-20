@@ -66,7 +66,9 @@ namespace ic {
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
+      outtree_->Branch("pfmt_1",            &pfmt_1_);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
+      outtree_->Branch("pfpzeta",           &pfpzeta_);
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
       outtree_->Branch("antiele_1",         &antiele_1_);
@@ -78,6 +80,7 @@ namespace ic {
       outtree_->Branch("extraelec_veto",    &extraelec_veto_);
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &mvamet_.var_double);
+      outtree_->Branch("pfmet",             &pfmet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("mjj",               &mjj_.var_double);
@@ -451,7 +454,7 @@ namespace ic {
 
       }
       // Uncorrected PF MET (not used in analysis)
-      synctree_->Branch("met", &pfmet_, "pfmet/F");
+      synctree_->Branch("met", &pfmet_.var_float, "pfmet/F");
       // Uncorrected PF MET phi (not used in analysis)
       synctree_->Branch("metphi", &pfmet_phi_, "pfmet_phi/F");
       // Elements of the PF MET covariance matrix (not used in analysis)
@@ -798,21 +801,15 @@ namespace ic {
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
 
-    if(strategy_ == strategy::paper2013) {
-      mt_1_ = MT(lep1, mets);
-      mt_2_ = MT(lep2, mets);
-      mt_ll_ = MT(ditau, mets);
-      pzeta_ = PZeta(ditau, mets, 0.85);
-      pzetavis_ = PZetaVis(ditau);
-      pzetamiss_ = PZeta(ditau, mets, 0.0);
-    } else {
-      mt_1_ = MT(lep1, pfmet);
-      mt_2_ = MT(lep2, pfmet);
-      mt_ll_ = MT(ditau, pfmet);
-      pzeta_ = PZeta(ditau, pfmet, 0.85);
-      pzetavis_ = PZetaVis(ditau);
-      pzetamiss_ = PZeta(ditau, pfmet, 0.0);
-    }
+    mt_1_ = MT(lep1, mets);
+    mt_2_ = MT(lep2, mets);
+    mt_ll_ = MT(ditau, mets);
+    pzeta_ = PZeta(ditau, mets, 0.85);
+    pzetavis_ = PZetaVis(ditau);
+    pzetamiss_ = PZeta(ditau, mets, 0.0);
+    //save some pfmet versions as well for now
+    pfmt_1_ = MT(lep1, pfmet);
+    pfpzeta_ = PZeta(ditau, pfmet, 0.85);
 
     if(channel_ == channel::em || channel_ == channel::et){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
