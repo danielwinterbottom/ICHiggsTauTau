@@ -135,27 +135,28 @@ $(document).ready(function(){initNavTree('_i_c_muon_producer_8hh_source.html',''
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keywordtype">bool</span> is_pf_;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; input_vmaps_;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  edm::InputTag input_vertices_;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keywordtype">bool</span> do_vertex_ip_;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  edm::InputTag input_beamspot_;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordtype">bool</span> do_beamspot_ip_;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keyword">struct </span>IsoTags {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    edm::InputTag charged_all;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    edm::InputTag charged;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    edm::InputTag neutral;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    edm::InputTag <a class="code" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">gamma</a>;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    edm::InputTag pu;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">explicit</span> IsoTags(edm::ParameterSet <span class="keyword">const</span>&amp; pset);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  };</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  IsoTags pf_iso_03_;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  IsoTags pf_iso_04_;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keywordtype">bool</span> do_pf_iso_03_;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordtype">bool</span> do_pf_iso_04_;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;};</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_i_c_muon_producer_html_a739aaa640a503935e2c563c22e803adc"><div class="ttname"><a href="class_i_c_muon_producer.html#a739aaa640a503935e2c563c22e803adc">ICMuonProducer::~ICMuonProducer</a></div><div class="ttdeci">~ICMuonProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_muon_producer_8cc_source.html#l00061">ICMuonProducer.cc:61</a></div></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; input_double_vmaps_;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  edm::InputTag input_vertices_;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="keywordtype">bool</span> do_vertex_ip_;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  edm::InputTag input_beamspot_;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="keywordtype">bool</span> do_beamspot_ip_;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="keyword">struct </span>IsoTags {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    edm::InputTag charged_all;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    edm::InputTag charged;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    edm::InputTag neutral;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    edm::InputTag <a class="code" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">gamma</a>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    edm::InputTag pu;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">explicit</span> IsoTags(edm::ParameterSet <span class="keyword">const</span>&amp; pset);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  };</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  IsoTags pf_iso_03_;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  IsoTags pf_iso_04_;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordtype">bool</span> do_pf_iso_03_;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keywordtype">bool</span> do_pf_iso_04_;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="class_i_c_muon_producer_html_a739aaa640a503935e2c563c22e803adc"><div class="ttname"><a href="class_i_c_muon_producer.html#a739aaa640a503935e2c563c22e803adc">ICMuonProducer::~ICMuonProducer</a></div><div class="ttdeci">~ICMuonProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_muon_producer_8cc_source.html#l00071">ICMuonProducer.cc:71</a></div></div>
 <div class="ttc" id="namespaceic_html_a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc"><div class="ttname"><a href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">ic::gamma</a></div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8hh_source.html#l00012">PFCandidate.hh:12</a></div></div>
 <div class="ttc" id="_muon_8hh_html"><div class="ttname"><a href="_muon_8hh.html">Muon.hh</a></div></div>
 <div class="ttc" id="class_i_c_muon_producer_html_a616948504cb2a9e5fa1c05d5efc4d694"><div class="ttname"><a href="class_i_c_muon_producer.html#a616948504cb2a9e5fa1c05d5efc4d694">ICMuonProducer::ICMuonProducer</a></div><div class="ttdeci">ICMuonProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_muon_producer_8cc_source.html#l00031">ICMuonProducer.cc:31</a></div></div>

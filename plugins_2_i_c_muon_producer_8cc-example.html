@@ -151,6 +151,16 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">    input_vmaps_.push_back(std::make_pair(</div>
 <div class="line">        vec[i], pset_floats.getParameter&lt;edm::InputTag&gt;(vec[i])));</div>
 <div class="line">  }</div>
+<div class="line"></div>
+<div class="line">  edm::ParameterSet pset_doubles =</div>
+<div class="line">      config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;includeDoubles&quot;</span>);</div>
+<div class="line">  std::vector&lt;std::string&gt; doubles_vec =</div>
+<div class="line">      pset_doubles.getParameterNamesForType&lt;edm::InputTag&gt;();</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; doubles_vec.size(); ++i) {</div>
+<div class="line">    input_double_vmaps_.push_back(std::make_pair(</div>
+<div class="line">        doubles_vec[i], pset_doubles.getParameter&lt;edm::InputTag&gt;(doubles_vec[i])));</div>
+<div class="line">  }</div>
+<div class="line"></div>
 <div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
 <div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, is_pf_, <span class="stringliteral">&quot;isPF&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_ip_, <span class="stringliteral">&quot;includeVertexIP&quot;</span>);</div>
@@ -185,11 +195,19 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">    <span class="keyword">event</span>.getByLabel(input_vmaps_[i].second, float_handles[i]);</div>
 <div class="line">  }</div>
 <div class="line"></div>
+<div class="line">  std::vector&lt;edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; &gt; double_handles(</div>
+<div class="line">      input_double_vmaps_.size());</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; double_handles.size(); ++i) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(input_double_vmaps_[i].second, double_handles[i]);</div>
+<div class="line">  }</div>
+<div class="line"></div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; charged_all_03;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; charged_03;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; neutral_03;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; gamma_03;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; pu_03;</div>
+<div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; neutral_pfw_03;</div>
+<div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; gamma_pfw_03;</div>
 <div class="line">  <span class="keywordflow">if</span> (do_pf_iso_03_) {</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_03_.charged_all, charged_all_03);</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_03_.charged, charged_03);</div>
@@ -203,6 +221,8 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; neutral_04;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; gamma_04;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; pu_04;</div>
+<div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; neutral_pfw_04;</div>
+<div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; gamma_pfw_04;</div>
 <div class="line">  <span class="keywordflow">if</span> (do_pf_iso_04_) {</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_04_.charged_all, charged_all_04);</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_04_.charged, charged_04);</div>
@@ -290,6 +310,16 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">      } <span class="keywordflow">else</span> {</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">SetIdIso</a>(input_vmaps_[v].first,</div>
 <div class="line">                    (*(float_handles[v]))[muon_base_ref]);</div>
+<div class="line">      }</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> v = 0; v &lt; double_handles.size(); ++v) {</div>
+<div class="line">      <span class="keywordflow">if</span> (is_pf_) {</div>
+<div class="line">        dest.<a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">SetIdIso</a>(input_double_vmaps_[v].first,</div>
+<div class="line">                    <span class="keywordtype">float</span>((*(double_handles[v]))[pf_base_ref]));</div>
+<div class="line">      } <span class="keywordflow">else</span> {</div>
+<div class="line">        dest.<a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">SetIdIso</a>(input_double_vmaps_[v].first,</div>
+<div class="line">                    <span class="keywordtype">float</span>((*(double_handles[v]))[muon_base_ref]));</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line"></div>

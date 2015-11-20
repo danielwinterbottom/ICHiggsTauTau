@@ -76,6 +76,7 @@ var searchData=
   ['set_5fflavour',['set_flavour',['../classic_1_1_gen_jet.html#a5c8df3fc736685efdaf6365e420054d4',1,'ic::GenJet']]],
   ['set_5ffrbx',['set_fRBX',['../classic_1_1_calo_jet.html#a447a983c06b78273cf71a545eef40e4f',1,'ic::CaloJet']]],
   ['set_5ffull5x5_5fsigma_5fietaieta',['set_full5x5_sigma_IetaIeta',['../classic_1_1_electron.html#a08bc6f7d914d88a25c360df56c6723ac',1,'ic::Electron']]],
+  ['set_5fgen_5fht',['set_gen_ht',['../classic_1_1_event_info.html#a9cc39e3a1fcd187e5d3ea64a2a652811',1,'ic::EventInfo']]],
   ['set_5fgen_5fparticles',['set_gen_particles',['../classic_1_1_electron.html#ab6b4934133629f9c94f970799c9ef9a6',1,'ic::Electron::set_gen_particles()'],['../classic_1_1_jet.html#a4837e5400fcb65999c36e761378a5bc7',1,'ic::Jet::set_gen_particles()'],['../classic_1_1_muon.html#a249f32ae88448e956c360abe63d75689',1,'ic::Muon::set_gen_particles()']]],
   ['set_5fgood_5fvertices',['set_good_vertices',['../classic_1_1_event_info.html#a2b6830f55112bd17730f34a6e2a2ab9b',1,'ic::EventInfo']]],
   ['set_5fgsf_5ftk_5fnhits',['set_gsf_tk_nhits',['../classic_1_1_electron.html#ab38251f7abe9902ed16c49ad7d5daabf',1,'ic::Electron']]],
