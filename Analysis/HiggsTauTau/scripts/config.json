@@ -51,7 +51,7 @@
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
     "svfit_mode"     :0,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "metscale_mode" : 0,
     "mva_met_mode"  : 1,
