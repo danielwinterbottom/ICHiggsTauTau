@@ -30,6 +30,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, bool, iso_study)
+  CLASS_MEMBER(HTTCategories, bool, tau_id_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
  
@@ -125,10 +126,14 @@ class HTTCategories : public ModuleBase {
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
+  double iso_1_db04_;
+  double iso_1_trk03_;
   double iso_1_db03allch_;
   double iso_1_db04allch_; 
   double iso_1_ea03_;
   double iso_2_db03_;
+  double iso_2_db04_;
+  double iso_2_trk03_;
   double iso_2_db03allch_;
   double iso_2_db04allch_; 
   double iso_2_ea03_;

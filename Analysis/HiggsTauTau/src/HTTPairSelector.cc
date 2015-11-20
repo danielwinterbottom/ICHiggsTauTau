@@ -271,7 +271,7 @@ namespace ic {
       }
       if (hadronic_tau_selector_ > 0 && channel_ != channel::em) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
-        std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+        std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
         std::vector<GenJet *> gen_taus_ptr;
         for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
         ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));
@@ -486,7 +486,7 @@ namespace ic {
   //    Not figured out how the below should work yet
       if (hadronic_tau_selector_ > 0) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
-        std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+        std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
         std::vector<GenJet *> gen_taus_ptr;
         for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
         ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));
@@ -585,7 +585,7 @@ namespace ic {
   //    Not figured out how the below should work yet
       if (hadronic_tau_selector_ > 0) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
-        std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+        std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
         std::vector<GenJet *> gen_taus_ptr;
         for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
         ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));

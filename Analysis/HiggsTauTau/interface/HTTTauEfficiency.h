@@ -1,5 +1,5 @@
-#ifndef HiggsTauTau_HTTMuonEfficiency_h
-#define HiggsTauTau_HTTMuonEfficiency_h
+#ifndef HiggsTauTau_HTTTauEfficiency_h
+#define HiggsTauTau_HTTTauEfficiency_h
 
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
@@ -16,32 +16,38 @@
 
 namespace ic {
 
-class HTTMuonEfficiency : public ModuleBase {
+class HTTTauEfficiency : public ModuleBase {
  private:
   TFileDirectory * dir_;
   TTree * outtree_;
-  double e_mva_id_;
+  double iso_mva_newDMwoLTraw_;
+  double iso_mva_newDMwLTraw_;
+  double iso_mva_oldDMwoLTraw_;
+  double iso_mva_oldDMwLTraw_;
+  double iso_dbetacorr_;
+  unsigned dm_;
+  bool against_mu_tight_; 
+  bool against_mu_loose_; 
+  bool against_ele_loose_;
+  bool against_ele_medium_;
+  bool against_ele_tight_;
+  bool against_ele_vloose_;
+  bool against_ele_vtight_;
+  bool dm_finding_old_;
+  bool dm_finding_new_;
+
   double eta_;
   double pt_;
-  double allcharged03iso_;
-  double allcharged04iso_;
   unsigned gen_match_;
-  double iso_ea03_;
-  double iso_db03_;
-  double iso_db03allch_;
-  double iso_db04allch_;
-  double iso_db04_;
-  double iso_trk03_;
   int wt_;
-  
 
 
 
-  CLASS_MEMBER(HTTMuonEfficiency, fwlite::TFileService*, fs)
+  CLASS_MEMBER(HTTTauEfficiency, fwlite::TFileService*, fs)
 
  public:
-  HTTMuonEfficiency(std::string const& name);
-  virtual ~HTTMuonEfficiency();
+  HTTTauEfficiency(std::string const& name);
+  virtual ~HTTTauEfficiency();
 
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
