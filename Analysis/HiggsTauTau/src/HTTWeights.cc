@@ -239,7 +239,7 @@ namespace ic {
     if (do_tau_id_weights_) {
       std::vector<Candidate *> tau = { (dilepton[0]->GetCandidate("lepton2")) };
       std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_tau_collection_);
-      std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+      std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
       std::vector<GenJet *> gen_taus_ptr;
       for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
       std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);

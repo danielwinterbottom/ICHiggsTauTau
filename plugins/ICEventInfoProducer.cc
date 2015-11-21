@@ -30,7 +30,6 @@
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
-      is_nlo_(config.getParameter<bool>("isNlo")),
       lhe_collection_(config.getParameter<edm::InputTag>("lheProducer")),
       do_jets_rho_(config.getParameter<bool>("includeJetRho")),
       input_jets_rho_(config.getParameter<edm::InputTag>("inputJetRho")),
@@ -41,6 +40,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
       input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
       do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")),
+      do_ht_(config.getParameter<bool>("includeHT")),
       do_filtersfromtrig_(config.getParameter<bool>("includeFiltersFromTrig")),
       filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig")),
       filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")){
@@ -95,8 +95,8 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
   info_ = new ic::EventInfo();
 
   PrintHeaderWithBranch(config, branch_);
-  PrintOptional(1, is_nlo_, "isNlo");
   PrintOptional(1, do_lhe_weights_, "includeLHEWeights");
+  PrintOptional(1, do_ht_, "includeHT");
   PrintOptional(1, do_jets_rho_, "includeJetRho");
   PrintOptional(1, do_leptons_rho_, "includeLeptonRho");
   PrintOptional(1, do_vertex_count_, "includeVertexCount");
@@ -180,7 +180,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
       } else info_->set_weight("wt_mc_sign",-1);
     }
   }
-  if(is_nlo_){
+  if(do_lhe_weights_ || do_ht_){
     event.getByLabel(lhe_collection_, lhe_handle); 
    /* Accessing global evt weights directly from the LHEEventProduct
       disabled and replaced by taking them from the GenEventInfoProduct
@@ -189,6 +189,18 @@ void ICEventInfoProducer::produce(edm::Event& event,
       info_->set_weight("wt_mc_sign",1);
       } else info_->set_weight("wt_mc_sign",-1);
     */
+    if (do_ht_){
+      std::vector<lhef::HEPEUP::FiveVector> lheParticles = lhe_handle->hepeup().PUP;
+      double lheHt = 0.;
+      for(size_t idxPart = 0; idxPart < lheParticles.size();++idxPart){
+       unsigned absPdgId = TMath::Abs(lhe_handle->hepeup().IDUP[idxPart]);
+       unsigned status = lhe_handle->hepeup().ISTUP[idxPart];
+       if(status==1 &&((absPdgId >=1 &&absPdgId<=6) || absPdgId == 21)){
+         lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxPart][0],2) + TMath::Power(lheParticles[idxPart][1],2));
+        }
+      }
+      info_->set_gen_ht(lheHt);
+    }
     if (do_lhe_weights_) {
       double nominal_wt = lhe_handle->hepeup().XWGTUP;
       for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {

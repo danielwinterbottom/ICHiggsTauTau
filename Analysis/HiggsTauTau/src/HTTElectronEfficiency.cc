@@ -1,6 +1,7 @@
 #include "HiggsTauTau/interface/HTTElectronEfficiency.h"
 #include "Utilities/interface/FnPredicates.h"
 #include "Utilities/interface/FnPairs.h"
+#include "TMath.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/Track.hh"
 
@@ -18,6 +19,11 @@ int HTTElectronEfficiency::PreAnalysis() {
     outtree_ = dir_->make<TTree>("tree","tree");
     outtree_->Branch("eta", &eta_);
     outtree_->Branch("pt", &pt_);
+    outtree_->Branch("et", &et_);
+    outtree_->Branch("jet_rho",&jet_rho_);
+//    outtree_->Branch("iso_heep",&iso_heep_);
+ //   outtree_->Branch("iso_heep_cluster",&iso_heep_cluster_);
+    outtree_->Branch("iso_tk",&iso_tk_);
     outtree_->Branch("iso_ea03",&iso_ea03_);
     outtree_->Branch("iso_db03",&iso_db03_);
     outtree_->Branch("iso_db03allch",&iso_db03allch_);
@@ -67,7 +73,7 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
     }
 
     
-    std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+    std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
     for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
     ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
@@ -132,12 +138,17 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
   gen_match_ = MCOrigin2UInt(gen_match_1);
   eta_ = elecs.at(i)->eta();
   pt_ = elecs.at(i)->pt();
+  et_ = TMath::Sqrt(pt_*pt_+(elecs.at(i)->M())*(elecs.at(i)->M()));
   allcharged03iso_ = elecs.at(i)->dr03_pfiso_charged_all();
   allcharged04iso_ = elecs.at(i)->dr04_pfiso_charged_all();
   iso_ea03_ = PF03EAIsolationVal(elecs.at(i),eventInfo);
   iso_db03_ = PF03IsolationVal(elecs.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(elecs.at(i),0.5,1);
   iso_db04allch_ = PF04IsolationVal(elecs.at(i),0.5,1);
+/*  iso_heep_ = HEEPIso(elecs.at(i));
+  iso_heep_cluster_  =HEEPClusterIso(elecs.at(i));*/
+  iso_tk_ = elecs.at(i)->dr03_tk_sum_pt(); 
+  jet_rho_ = eventInfo->jet_rho();
   pass_preselection = false;
   pass_cut_preselection = true;
   sc_eta = fabs(elecs.at(i)->sc_eta());
