@@ -12,6 +12,9 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "UserCode/ICHiggsTauTau/interface/Photon.hh"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
+
 // #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
 
 /**
@@ -45,7 +48,7 @@ class ICPhotonProducer : public edm::EDProducer {
     edm::InputTag neutral;
     edm::InputTag gamma;
     edm::InputTag pu;
-    explicit IsoTags(edm::ParameterSet const& pset);
+    explicit IsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector);
   };
 
   IsoTags pf_iso_03_;

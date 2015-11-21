@@ -10,9 +10,11 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 /**
  * @brief See documentation [here](\ref objs-muon)
@@ -48,7 +50,7 @@ class ICMuonProducer : public edm::EDProducer {
     edm::InputTag neutral;
     edm::InputTag gamma;
     edm::InputTag pu;
-    explicit IsoTags(edm::ParameterSet const& pset);
+    explicit IsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector);
   };
 
   IsoTags pf_iso_03_;

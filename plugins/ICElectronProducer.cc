@@ -67,20 +67,6 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
         consumes<edm::View<reco::Vertex>>(input_vertices_);
         consumes<reco::BeamSpot>(input_beamspot_);
         consumes<edm::ValueMap<bool>>(input_conversion_matches_);
-        /*consumes<edm::ValueMap<double>>(pf_iso_03_.charged_all);
-        consumes<edm::ValueMap<double>>(pf_iso_03_.charged);
-        consumes<edm::ValueMap<double>>(pf_iso_03_.neutral);
-        consumes<edm::ValueMap<double>>(pf_iso_03_.gamma);
-        consumes<edm::ValueMap<double>>(pf_iso_03_.pu);
-        consumes<edm::ValueMap<double>>(pf_iso_04_.charged_all);
-        consumes<edm::ValueMap<double>>(pf_iso_04_.charged);
-        consumes<edm::ValueMap<double>>(pf_iso_04_.neutral);
-        consumes<edm::ValueMap<double>>(pf_iso_04_.gamma);
-        consumes<edm::ValueMap<double>>(pf_iso_04_.pu);
-        consumes<edm::ValueMap<double>>(cluster_iso_.ecal);
-        consumes<edm::ValueMap<double>>(cluster_iso_.hcal);
-*/
-
 
      electrons_ = new std::vector<ic::Electron>();
 
