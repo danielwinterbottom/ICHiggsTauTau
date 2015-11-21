@@ -1,7 +1,6 @@
 #ifndef UserCode_ICHiggsTauTau_ICElectronConversionCalculator_h
 #define UserCode_ICHiggsTauTau_ICElectronConversionCalculator_h
 
-#include "DataFormats/Provenance/interface/ProductID.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -26,9 +25,6 @@ class ICElectronConversionCalculator : public edm::EDProducer {
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
-
-
-//  edm::InputTag input_;
   edm::InputTag input_; 
   edm::InputTag input_beamspot_;
   edm::InputTag input_conversions_;

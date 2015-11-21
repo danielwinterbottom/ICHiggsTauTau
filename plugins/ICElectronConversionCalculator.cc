@@ -7,8 +7,6 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/ValueMap.h"
-#include "CommonTools/UtilAlgos/interface/MasterCollectionHelper.h"
-#include "DataFormats/Provenance/interface/ProductID.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
