@@ -19,7 +19,7 @@ ICJetFlavourCalculator::ICJetFlavourCalculator(
   #if CMSSW_MAJOR_VERSION>=7 && CMSSW_MINOR_VERSION >=4
   consumes<reco::JetFlavourInfoMatchingCollection>(input_jet_flavour_);
   #else 
-  consumes<reco::JetFlavourMatchingCollection>(input_jet_flavour_)
+  consumes<reco::JetFlavourMatchingCollection>(input_jet_flavour_);
   #endif
   produces<edm::ValueMap<int> >();
 }

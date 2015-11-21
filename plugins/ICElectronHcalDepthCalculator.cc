@@ -13,6 +13,7 @@
 #include "DataFormats/CaloTowers/interface/CaloTower.h"
 #include "DataFormats/CaloTowers/interface/CaloTowerFwd.h"
 #include "RecoEgamma/EgammaIsolationAlgos/interface/EgammaTowerIsolation.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICElectronHcalDepthCalculator::ICElectronHcalDepthCalculator(
     const edm::ParameterSet& config)

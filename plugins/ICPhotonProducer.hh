@@ -12,7 +12,6 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "UserCode/ICHiggsTauTau/interface/Photon.hh"
-#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 // #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"

@@ -19,7 +19,6 @@
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "FWCore/Utilities/interface/Exception.h"
-#include "FWCore/Framework/interface/ConsumesCollector.h"
 
 /**
  * @brief See documentation [here](\ref objs-met)

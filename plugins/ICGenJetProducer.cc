@@ -14,6 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),

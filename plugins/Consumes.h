@@ -28,4 +28,7 @@ struct ConsumesCollector
 }
 edm::ConsumesCollector consumesCollector();
 #endif
+#if CMSSW_MAJOR_VERSION >= 6
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#endif
 #endif

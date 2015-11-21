@@ -12,7 +12,6 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
-#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 
 /**
