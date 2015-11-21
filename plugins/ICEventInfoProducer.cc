@@ -45,8 +45,10 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig")),
       filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")){
       consumes<LHERunInfoProduct>({"externalLHEProducer"});
+      consumes<GenEventInfoProduct>({"generator"});
       consumes<LHEEventProduct>(lhe_collection_);
       consumes<double>(input_leptons_rho_);
+      consumes<double>(input_jets_rho_);
       consumes<edm::View<reco::Vertex>>(input_vertices_);
       consumes<reco::BeamHaloSummary>(input_csc_filter_);
       consumes<edm::TriggerResults>(filtersfromtrig_input_);

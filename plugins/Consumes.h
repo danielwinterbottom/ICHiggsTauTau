@@ -13,5 +13,17 @@ template<typename T>
 void consumes(edm::InputTag const& in){
 //*omnomnomnom*
  } 
+
+namespace edm{
+
+struct ConsumesCollector
+{
+ template<typename T>
+ void consumes(edm::InputTag const& in){
+}
+  };
+
+}
+edm::ConsumesCollector consumesCollector();
 #endif
 #endif

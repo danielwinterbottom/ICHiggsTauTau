@@ -20,17 +20,24 @@
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
-ICElectronProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
+ICElectronProducer::IsoTags::IsoTags(edm::ParameterSet const& pset,edm::ConsumesCollector && collector)
     : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
       charged(pset.getParameter<edm::InputTag>("charged")),
       neutral(pset.getParameter<edm::InputTag>("neutral")),
       gamma(pset.getParameter<edm::InputTag>("gamma")),
       pu(pset.getParameter<edm::InputTag>("pu")) {
+        collector.consumes<edm::ValueMap<double>>(charged_all);
+        collector.consumes<edm::ValueMap<double>>(charged);
+        collector.consumes<edm::ValueMap<double>>(neutral);
+        collector.consumes<edm::ValueMap<double>>(gamma);
+        collector.consumes<edm::ValueMap<double>>(pu);
        }
 
-ICElectronProducer::ClusterIsoTags::ClusterIsoTags(edm::ParameterSet const& pset)
+ICElectronProducer::ClusterIsoTags::ClusterIsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector)
     : ecal(pset.getParameter<edm::InputTag>("ecal")),
       hcal(pset.getParameter<edm::InputTag>("hcal")) {
+        collector.consumes<edm::ValueMap<double>>(ecal);
+        collector.consumes<edm::ValueMap<double>>(hcal);
       }
 
 ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
@@ -48,9 +55,9 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
           config.getParameter<edm::InputTag>("inputConversionMatches")),
       do_conversion_matches_(
           config.getParameter<bool>("includeConversionMatches")),
-      cluster_iso_(config.getParameterSet("clusterIso")),
-      pf_iso_03_(config.getParameterSet("pfIso03")),
-      pf_iso_04_(config.getParameterSet("pfIso04")),
+      cluster_iso_(config.getParameterSet("clusterIso"),consumesCollector()),
+      pf_iso_03_(config.getParameterSet("pfIso03"),consumesCollector()),
+      pf_iso_04_(config.getParameterSet("pfIso04"),consumesCollector()),
       do_cluster_iso_(config.getParameter<bool>("includeClusterIso")),
       do_pf_iso_03_(config.getParameter<bool>("includePFIso03")),
       do_pf_iso_04_(config.getParameter<bool>("includePFIso04")) {
@@ -60,7 +67,7 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
         consumes<edm::View<reco::Vertex>>(input_vertices_);
         consumes<reco::BeamSpot>(input_beamspot_);
         consumes<edm::ValueMap<bool>>(input_conversion_matches_);
-        consumes<edm::ValueMap<double>>(pf_iso_03_.charged_all);
+        /*consumes<edm::ValueMap<double>>(pf_iso_03_.charged_all);
         consumes<edm::ValueMap<double>>(pf_iso_03_.charged);
         consumes<edm::ValueMap<double>>(pf_iso_03_.neutral);
         consumes<edm::ValueMap<double>>(pf_iso_03_.gamma);
@@ -72,6 +79,7 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
         consumes<edm::ValueMap<double>>(pf_iso_04_.pu);
         consumes<edm::ValueMap<double>>(cluster_iso_.ecal);
         consumes<edm::ValueMap<double>>(cluster_iso_.hcal);
+*/
 
 
      electrons_ = new std::vector<ic::Electron>();
