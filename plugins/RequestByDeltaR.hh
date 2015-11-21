@@ -14,6 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 template <class T>
 class RequestByDeltaR : public edm::EDProducer {
@@ -43,6 +44,8 @@ RequestByDeltaR<T>::RequestByDeltaR(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("src")),
       reference_(config.getParameter<edm::InputTag>("reference")),
       dr_(config.getParameter<double>("deltaR")) {
+  consumes<edm::View<T> >(input_);
+  consumes<edm::View<reco::Candidate> >(reference_);
   produces<RefVectorVec>();
   PrintHeaderWithProduces(config, input_, "");
   std::cout << boost::format("%-15s : %-60s\n") % "Reference" %

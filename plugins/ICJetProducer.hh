@@ -46,7 +46,6 @@ class ICJetProducer : public edm::EDProducer {
   virtual void beginJob();
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
- // void specifyConsumes();
   void constructSpecific(edm::Handle<edm::View<U> > const& jets_handle,
                          edm::Event& event, const edm::EventSetup& setup);
 
@@ -71,7 +70,6 @@ ICJetProducer<T, U>::ICJetProducer(const edm::ParameterSet& config)
       src_(config.getParameterSet("srcConfig"),consumesCollector()),
       dest_(config.getParameterSet("destConfig"),consumesCollector()) {
   consumes<edm::View<U>>(input_);
-  //specifyConsumes();
   jets_ = new std::vector<T>();
 
 
@@ -84,95 +82,6 @@ ICJetProducer<T, U>::ICJetProducer(const edm::ParameterSet& config)
 
 template <class T, class U>
 ICJetProducer<T, U>::~ICJetProducer() { delete jets_; }
-
-//=====================================
-//Specialised consumes statements
-//=====================================
-//Need to specialise here because a) consumes calls need to be made in 
-//the constructor and b) when making any of the ic::Jet types out of a
-//pat::Jet, input_btags and input_jet_flavour don't exist, but we need 
-//the consumes calls for these labels if we want to make an ic::Jet 
-//from any of the reco:: input jet types.
-/*template <class T, class U>
-void ICJetProducer<T, U>::specifyConsumes(){}
-
-template <>
-void ICJetProducer<ic::CaloJet, pat::Jet>::specifyConsumes(){
-//  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-  }
-
-template <>
-void ICJetProducer<ic::JPTJet, pat::Jet>::specifyConsumes(){
-//  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-  }
-
-template<>
-void ICJetProducer<ic::PFJet, pat::Jet>::specifyConsumes(){
-  consumes<edm::ValueMap<float> >(dest_.input_pu_id);
-//  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-  }
-
-template<>
-void ICJetProducer<ic::Jet, pat::Jet>::specifyConsumes(){
- // consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-  }
-
-template<>
-void ICJetProducer<ic::CaloJet, reco::CaloJet>::specifyConsumes(){
-    consumes<reco::JetIDValueMap>(dest_.input_jet_id);
-  //  consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-  //  consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
-    for(unsigned i=0;i<src_.input_btags.size();++i){ 
-      consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
-    }
-    for(unsigned i=0;i<src_.jecs.size();++i){ 
-      consumes<double>(src_.jecs[i].second);
-    }
-
-  }*/
-
-/*template<>
-void ICJetProducer<ic::JPTJet, reco::JPTJet>::specifyConsumes(){
-    consumes<reco::JetIDValueMap>(dest_.input_jet_id);
-*/
-   // consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-   // consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
-/*    for(unsigned i=0;i<src_.input_btags.size();++i){ 
-      consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
-    }
-    for(unsigned i=0;i<src_.jecs.size();++i){ 
-      consumes<double>(src_.jecs[i].second);
-    }*/
-
-  //}
-
-/*template<>
-void ICJetProducer<ic::PFJet, reco::PFJet>::specifyConsumes(){
-  consumes<edm::ValueMap<float> >(dest_.input_pu_id);
-    //consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-    //consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
-    for(unsigned i=0;i<src_.input_btags.size();++i){ 
-      consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
-    }
-    for(unsigned i=0;i<src_.jecs.size();++i){ 
-      consumes<double>(src_.jecs[i].second);
-    }
-
-  }*/
-
-/*template<>
-void ICJetProducer<ic::Jet, reco::Jet>::specifyConsumes(){
-    //consumes<reco::SecondaryVertexTagInfoCollection>(src_.input_sv_info);
-    //consumes<edm::ValueMap<int>>(src_.input_jet_flavour);
-    for(unsigned i=0;i<src_.input_btags.size();++i){ 
-      consumes<reco::JetFloatAssociation::Container>(src_.input_btags[i].second);
-    }
-    for(unsigned i=0;i<src_.jecs.size();++i){ 
-      consumes<double>(src_.jecs[i].second);
-    }
-
-  }*/
-
 
 
 // =============

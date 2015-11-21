@@ -10,6 +10,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Common/interface/Handle.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 namespace ic {
 
@@ -36,6 +37,9 @@ class Concatenate : public edm::EDProducer {
 template <class T>
 Concatenate<T>::Concatenate(const edm::ParameterSet &config)
     : inputs_(config.getParameter<VInputTag>("concatenate")) {
+  for(unsigned i = 0; i < inputs_.size(); ++i) {
+    consumes<Vec>(inputs_[i]);
+  }
   produces<Vec>();
 }
 
