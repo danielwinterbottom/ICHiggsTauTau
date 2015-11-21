@@ -14,6 +14,8 @@ void consumes(edm::InputTag const& in){
 //*omnomnomnom*
  } 
 
+//Need this part to be able to use an edm::ConsumesCollector for consumes
+//calls in helper structs in CMSSW 76X without crashing CMSSW 53X compilation
 namespace edm{
 
 struct ConsumesCollector

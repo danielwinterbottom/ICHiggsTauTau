@@ -74,13 +74,6 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
     n=elecs_handle->size();
   }
     std::vector<bool> values(n,false);
-/*  edm::RefToBaseProd<reco::GsfElectron> reftobase =
-      elecs_handle->size() > 0
-          ? edm::RefToBaseProd<reco::GsfElectron>((elecs_handle->refAt(0)))
-          : edm::RefToBaseProd<reco::GsfElectron>();
-
-  unsigned n = reftobase.isNonnull() ? reftobase->size() : 0;
-  std::vector<bool> values(n, false);*/
 
   for (unsigned i = 0; i < n; ++i) {
     reco::GsfElectron const& src = elecs_handle->at(i);
@@ -90,7 +83,7 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
   }
 
   edm::ValueMap<bool>::Filler filler(*product);
-  // We need to pass a valid RefToBaseProd here, but will only have a valid one
+  // We need to pass a CollectionIDAndSize here, only exists
   // if the collection has at least one object (see above)
   if (n > 0) {
     filler.insert(c_id_size, values.begin(), values.end());
