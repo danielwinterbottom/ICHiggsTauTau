@@ -1,10 +1,13 @@
 #!/usr/bin/env python
-
+import subprocess
 import sys
 import os
 from optparse import OptionParser
 import math
 import fnmatch
+
+MACHINE1=""#First machine you want to submit to
+MACHINE2=""#Second machine you want to submit to
 
 parser = OptionParser()
 
@@ -43,23 +46,31 @@ n_machine2=njobs-n_machine1
 switched=0
 machine1jobs.write('cd %(cwd)s \n'%vars())
 machine1jobs.write('source /vols/cms/grid/setup.sh \n')
+machine1jobs.write('export PATH=/home/hep/amd12/bin/:$PATH \n')
 machine1jobs.write('ts -S 7 \n')
 machine2jobs.write('cd %(cwd)s \n'%vars())
 machine2jobs.write('source /vols/cms/grid/setup.sh \n')
+machine2jobs.write('export PATH=/home/hep/amd12/bin/:$PATH \n')
 machine2jobs.write('ts -S 7 \n')
 
 for ind in range(0, len(lines)):
   for i in range (0, nfiles[lines[ind].split()[0]]) :
     jobname=lines[ind].split()[0]
     if nsubmitted<n_machine1:
-      machine1jobs.write("eval './scripts/submit_ts_job.sh jobs/%(jobname)s-%(i)d.sh' \n"%vars())
+      machine1jobs.write("eval '%(cwd)s/scripts/submit_ts_job.sh jobs/%(jobname)s-%(i)d.sh' \n"%vars())
     else :
-      machine2jobs.write("eval './scripts/submit_ts_job.sh jobs/%(jobname)s-%(i)d.sh' \n"%vars())
+      machine2jobs.write("eval '%(cwd)s/scripts/submit_ts_job.sh jobs/%(jobname)s-%(i)d.sh' \n"%vars())
     nsubmitted+=1
 
-#machine1jobs.write('exit')
-#machine2jobs.write('exit')
+machine1jobs.write('exit')
+machine2jobs.write('exit')
+machine1jobs.close()
+machine2jobs.close()
 os.system('chmod +x ./jobs/submit_to_machine_1.sh')
 os.system('chmod +x ./jobs/submit_to_machine_2.sh')
 
 
+out_1 = subprocess.check_output(["ssh","%(MACHINE1)s"%vars(),"%(cwd)s/jobs/submit_to_machine_1.sh"%vars()])
+print out_1
+out_2 = subprocess.check_output(["ssh","%(MACHINE2)s"%vars(),"%(cwd)s/jobs/submit_to_machine_2.sh"%vars()])
+print out_2
