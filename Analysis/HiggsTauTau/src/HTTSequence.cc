@@ -20,6 +20,7 @@
 #include "HiggsTauTau/interface/HTTSequence.h"
 #include "HiggsTauTau/interface/HTTElectronEfficiency.h"
 #include "HiggsTauTau/interface/HTTMuonEfficiency.h"
+#include "HiggsTauTau/interface/HTTTauEfficiency.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
@@ -931,6 +932,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
     .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
     .set_iso_study(js["iso_study"].asBool())
+    .set_tau_id_study(js["tau_id_study"].asBool())
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)
@@ -1324,6 +1326,7 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
 }
      if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_dirname("ElectronEfficiencyForIDStudy")
     .set_fs(fs.get()));
 BuildModule(HTTMuonEfficiency("MuonEfficiency")
     .set_fs(fs.get()));
@@ -1583,6 +1586,10 @@ if(strategy_type == strategy::paper2013){
       }));
   }
 
+if(js["do_tau_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
+BuildModule(HTTTauEfficiency("HTTTauEfficiency")
+    .set_fs(fs.get()));
+}
 
 if(strategy_type == strategy::phys14){
   BuildModule(VertexFilter<Tau>("TauVertexFilter")

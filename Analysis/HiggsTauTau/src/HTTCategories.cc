@@ -28,6 +28,7 @@ namespace ic {
       make_sync_ntuple_ = false;
       sync_output_name_ = "SYNC.root";
       iso_study_=false;
+      tau_id_study_=false;
       is_embedded_=false;
       is_data_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
@@ -65,7 +66,9 @@ namespace ic {
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
+      outtree_->Branch("pfmt_1",            &pfmt_1_);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
+      outtree_->Branch("pfpzeta",           &pfpzeta_);
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
       outtree_->Branch("antiele_1",         &antiele_1_);
@@ -77,6 +80,7 @@ namespace ic {
       outtree_->Branch("extraelec_veto",    &extraelec_veto_);
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("met",               &mvamet_.var_double);
+      outtree_->Branch("pfmet",             &pfmet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("mjj",               &mjj_.var_double);
@@ -113,12 +117,40 @@ namespace ic {
         outtree_->Branch("iso_1_db03", &iso_1_db03_);
         outtree_->Branch("iso_1_db03allch", &iso_1_db03allch_);
         outtree_->Branch("iso_1_db04allch", &iso_1_db04allch_);
+        outtree_->Branch("iso_1_db04", &iso_1_db04_);
         outtree_->Branch("iso_1_ea03", &iso_1_ea03_);
+        outtree_->Branch("iso_1_trk03", &iso_1_trk03_);
         outtree_->Branch("iso_2_db03", &iso_2_db03_);
         outtree_->Branch("iso_2_db03allch", &iso_2_db03allch_);
         outtree_->Branch("iso_2_db04allch", &iso_2_db04allch_);
+        outtree_->Branch("iso_2_db04", &iso_2_db04_);
         outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
+        outtree_->Branch("iso_2_trk03", &iso_2_trk03_);
       }
+ 
+      if(tau_id_study_){
+       outtree_->Branch("antie_vloose_1",&lagainstElectronVLooseMVA5_1);
+       outtree_->Branch("antie_loose_1",&lagainstElectronLooseMVA5_1);
+       outtree_->Branch("antie_medium_1",&lagainstElectronMediumMVA5_1); 
+       outtree_->Branch("antie_tight_1",&lagainstElectronTightMVA5_1);
+       outtree_->Branch("antie_vtight_1",&lagainstElectronVTightMVA5_1);
+       outtree_->Branch("antimu_loose_1",&lagainstMuonLoose3_1);
+       outtree_->Branch("antimu_tight_1",&lagainstMuonTight3_1);
+       outtree_->Branch("antie_vloose_2",&lagainstElectronVLooseMVA5_2);
+       outtree_->Branch("antie_loose_2",&lagainstElectronLooseMVA5_2);
+       outtree_->Branch("antie_medium_2",&lagainstElectronMediumMVA5_2); 
+       outtree_->Branch("antie_tight_2",&lagainstElectronTightMVA5_2);
+       outtree_->Branch("antie_vtight_2",&lagainstElectronVTightMVA5_2);
+       outtree_->Branch("antimu_loose_2",&lagainstMuonLoose3_2);
+       outtree_->Branch("antimu_tight_2",&lagainstMuonTight3_2);
+       outtree_->Branch("iso_mva_new_1",&lbyIsolationMVA3newDMwLTraw_1);
+       outtree_->Branch("iso_mva_old_1",&lbyIsolationMVA3oldDMwLTraw_1);
+       outtree_->Branch("iso_mva_new_2",&lbyIsolationMVA3newDMwLTraw_2);
+       outtree_->Branch("iso_mva_old_2",&lbyIsolationMVA3oldDMwLTraw_2);
+       outtree_->Branch("olddm_1",&ldecayModeFindingOldDMs_1);
+       outtree_->Branch("olddm_2",&ldecayModeFindingOldDMs_2);
+      }
+
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
         //Extra variables needed for tag and probe
         outtree_->Branch("id_1", &mva_1_.var_double);
@@ -422,7 +454,7 @@ namespace ic {
 
       }
       // Uncorrected PF MET (not used in analysis)
-      synctree_->Branch("met", &pfmet_, "pfmet/F");
+      synctree_->Branch("met", &pfmet_.var_float, "pfmet/F");
       // Uncorrected PF MET phi (not used in analysis)
       synctree_->Branch("metphi", &pfmet_phi_, "pfmet_phi/F");
       // Elements of the PF MET covariance matrix (not used in analysis)
@@ -769,21 +801,15 @@ namespace ic {
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
 
-    if(strategy_ == strategy::paper2013) {
-      mt_1_ = MT(lep1, mets);
-      mt_2_ = MT(lep2, mets);
-      mt_ll_ = MT(ditau, mets);
-      pzeta_ = PZeta(ditau, mets, 0.85);
-      pzetavis_ = PZetaVis(ditau);
-      pzetamiss_ = PZeta(ditau, mets, 0.0);
-    } else {
-      mt_1_ = MT(lep1, pfmet);
-      mt_2_ = MT(lep2, pfmet);
-      mt_ll_ = MT(ditau, pfmet);
-      pzeta_ = PZeta(ditau, pfmet, 0.85);
-      pzetavis_ = PZetaVis(ditau);
-      pzetamiss_ = PZeta(ditau, pfmet, 0.0);
-    }
+    mt_1_ = MT(lep1, mets);
+    mt_2_ = MT(lep2, mets);
+    mt_ll_ = MT(ditau, mets);
+    pzeta_ = PZeta(ditau, mets, 0.85);
+    pzetavis_ = PZetaVis(ditau);
+    pzetamiss_ = PZeta(ditau, mets, 0.0);
+    //save some pfmet versions as well for now
+    pfmt_1_ = MT(lep1, pfmet);
+    pfpzeta_ = PZeta(ditau, pfmet, 0.85);
 
     if(channel_ == channel::em || channel_ == channel::et){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -870,6 +896,8 @@ namespace ic {
           iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_1_db04_ = PF04IsolationVal(elec, 0.5, 0);
+          iso_1_trk03_ = 0; 
           iso_2_db03_ = 0;
           iso_2_ea03_ = 0;
           iso_2_db03allch_ = 0;
@@ -925,8 +953,12 @@ namespace ic {
           iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
           iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+          iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
+          iso_1_trk03_ = MuonTkIsoVal(muon);
           iso_2_db03_ = 0;
           iso_2_ea03_ = 0;
+          iso_2_trk03_ = 0;
+          iso_2_db04_ = 0;
           iso_2_db03allch_ = 0;
           iso_2_db04allch_ = 0;
         }
@@ -971,16 +1003,21 @@ namespace ic {
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(elec, 0.5, 0);
+          iso_1_db04_ = PF04IsolationVal(elec, 0.5, 0);
           iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_1_trk03_=0;
           iso_2_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_2_db04_ = PF04IsolationVal(muon, 0.5, 0);
           iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_2_trk03_ = MuonTkIsoVal(muon);
           iso_2_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_2_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
+
 
       mva_2_ = 0.0;
       if(strategy_ == strategy::paper2013){
@@ -1024,9 +1061,9 @@ namespace ic {
         lagainstElectronVLooseMVA5_2 = tau2->HasTauID("againstElectronVLooseMVA5") ? tau2->GetTauID("againstElectronVLooseMVA5") :0. ;
         lagainstMuonLoose3_2 = tau2->HasTauID("againstMuonLoose3") ? tau2->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau2->HasTauID("againstMuonTight3") ? tau2->GetTauID("againstMuonTight3") : 0.;
-        antiele_1_ = lagainstElectronTightMVA5_1;
+        antiele_1_ = lagainstElectronVLooseMVA5_1;
         antimu_1_ = lagainstMuonLoose3_1;
-        antiele_2_ = lagainstElectronTightMVA5_2;
+        antiele_2_ = lagainstElectronVLooseMVA5_2;
         antimu_2_ = lagainstMuonLoose3_2;
         lchargedIsoPtSum_1 = tau1->HasTauID("chargedIsoPtSum") ? tau1->GetTauID("chargedIsoPtSum") : 0.;
         lneutralIsoPtSum_1 = tau1->HasTauID("neutralIsoPtSum") ? tau1->GetTauID("neutralIsoPtSum") : 0.;

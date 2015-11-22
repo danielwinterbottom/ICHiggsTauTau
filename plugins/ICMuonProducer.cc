@@ -50,6 +50,16 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
     input_vmaps_.push_back(std::make_pair(
         vec[i], pset_floats.getParameter<edm::InputTag>(vec[i])));
   }
+
+  edm::ParameterSet pset_doubles =
+      config.getParameter<edm::ParameterSet>("includeDoubles");
+  std::vector<std::string> doubles_vec =
+      pset_doubles.getParameterNamesForType<edm::InputTag>();
+  for (unsigned i = 0; i < doubles_vec.size(); ++i) {
+    input_double_vmaps_.push_back(std::make_pair(
+        doubles_vec[i], pset_doubles.getParameter<edm::InputTag>(doubles_vec[i])));
+  }
+
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, is_pf_, "isPF");
   PrintOptional(1, do_vertex_ip_, "includeVertexIP");
@@ -84,11 +94,19 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     event.getByLabel(input_vmaps_[i].second, float_handles[i]);
   }
 
+  std::vector<edm::Handle<edm::ValueMap<double> > > double_handles(
+      input_double_vmaps_.size());
+  for (unsigned i = 0; i < double_handles.size(); ++i) {
+    event.getByLabel(input_double_vmaps_[i].second, double_handles[i]);
+  }
+
   edm::Handle<edm::ValueMap<double> > charged_all_03;
   edm::Handle<edm::ValueMap<double> > charged_03;
   edm::Handle<edm::ValueMap<double> > neutral_03;
   edm::Handle<edm::ValueMap<double> > gamma_03;
   edm::Handle<edm::ValueMap<double> > pu_03;
+  edm::Handle<edm::ValueMap<double> > neutral_pfw_03;
+  edm::Handle<edm::ValueMap<double> > gamma_pfw_03;
   if (do_pf_iso_03_) {
     event.getByLabel(pf_iso_03_.charged_all, charged_all_03);
     event.getByLabel(pf_iso_03_.charged, charged_03);
@@ -102,6 +120,8 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   edm::Handle<edm::ValueMap<double> > neutral_04;
   edm::Handle<edm::ValueMap<double> > gamma_04;
   edm::Handle<edm::ValueMap<double> > pu_04;
+  edm::Handle<edm::ValueMap<double> > neutral_pfw_04;
+  edm::Handle<edm::ValueMap<double> > gamma_pfw_04;
   if (do_pf_iso_04_) {
     event.getByLabel(pf_iso_04_.charged_all, charged_all_04);
     event.getByLabel(pf_iso_04_.charged, charged_04);
@@ -189,6 +209,16 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
       } else {
         dest.SetIdIso(input_vmaps_[v].first,
                     (*(float_handles[v]))[muon_base_ref]);
+      }
+    }
+
+    for (unsigned v = 0; v < double_handles.size(); ++v) {
+      if (is_pf_) {
+        dest.SetIdIso(input_double_vmaps_[v].first,
+                    float((*(double_handles[v]))[pf_base_ref]));
+      } else {
+        dest.SetIdIso(input_double_vmaps_[v].first,
+                    float((*(double_handles[v]))[muon_base_ref]));
       }
     }
 

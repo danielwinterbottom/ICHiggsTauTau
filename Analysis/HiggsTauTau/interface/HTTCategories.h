@@ -30,6 +30,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, bool, iso_study)
+  CLASS_MEMBER(HTTCategories, bool, tau_id_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
  
@@ -98,10 +99,12 @@ class HTTCategories : public ModuleBase {
   float phi_h_;
   branch_var pt_tt_;
   branch_var mt_1_;
+  double pfmt_1_;
   float id_e_mva_nt_loose_1_ = 0;
   float mt_2_;
   double mt_ll_;
   branch_var pzeta_;
+  double pfpzeta_;
   branch_var pzetavis_;
   branch_var pzetamiss_;
   double emu_dphi_;
@@ -125,10 +128,14 @@ class HTTCategories : public ModuleBase {
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
+  double iso_1_db04_;
+  double iso_1_trk03_;
   double iso_1_db03allch_;
   double iso_1_db04allch_; 
   double iso_1_ea03_;
   double iso_2_db03_;
+  double iso_2_db04_;
+  double iso_2_trk03_;
   double iso_2_db03allch_;
   double iso_2_db04allch_; 
   double iso_2_ea03_;
@@ -143,7 +150,7 @@ class HTTCategories : public ModuleBase {
   branch_var mva_2_;
   branch_var mvamet_;
   branch_var mvamet_phi_;
-  float pfmet_;
+  branch_var pfmet_;
   float pfmet_phi_;
   float mvametCov00_;
   float mvametCov01_;

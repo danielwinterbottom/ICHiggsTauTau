@@ -870,12 +870,12 @@ namespace ic {
     if(!pass_preselection) return false;
     double idmva = elec->GetIdIso("mvaTrigSpring15");
     if (!loose_wp) {
-/*      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
+      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.89) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;*/
-      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
+      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;
+/*      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.967910) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;
+      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;*/
     } else {
       if (eta <= 0.8                    && idmva > 0.972153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479    && idmva > 0.922126) pass_mva = true;
@@ -1271,6 +1271,12 @@ namespace ic {
     bool isoCut = (((muon->dr03_tk_sum_pt())/muon->pt())<0.1); 
     return isoCut;
   }
+
+  double MuonTkIsoVal(Muon const* muon) {
+    double isoCut = ((muon->dr03_tk_sum_pt())/muon->pt()); 
+    return isoCut;
+  }
+
   
   std::vector<Track *> GetTracksAtVertex(std::vector<Track *> const& trks, std::vector<Vertex *> const& vtxs, unsigned idx, double const& dz) {
     std::vector<Track *> result;
@@ -1381,10 +1387,16 @@ namespace ic {
     return result;
   }
 
-  std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic) {
+  std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt) {
     std::vector<GenJet> taus;
     for (unsigned i = 0; i < parts.size(); ++i) {
-      if (abs(parts[i]->pdgid()) == 15) {
+        std::vector<bool> status_flags;
+        bool is_prompt=true; 
+        if(use_prompt){
+          status_flags = parts[i]->statusFlags();
+          is_prompt=status_flags[IsPrompt];
+        }
+      if (abs(parts[i]->pdgid()) == 15 && is_prompt) {
         std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
         bool has_tau_daughter = false;
         bool has_lepton_daughter = false;

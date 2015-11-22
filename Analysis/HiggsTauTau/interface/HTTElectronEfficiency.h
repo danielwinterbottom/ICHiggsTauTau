@@ -24,6 +24,8 @@ class HTTElectronEfficiency : public ModuleBase {
   double eta_;
   double sc_eta;
   double pt_;
+  double et_;
+  double jet_rho_;
   double allcharged03iso_;
   double allcharged04iso_;
   double electronmvaID_;
@@ -31,6 +33,9 @@ class HTTElectronEfficiency : public ModuleBase {
   unsigned gen_match_;
   double iso_ea03_;
   double iso_db03_;
+  double iso_heep_;
+  double iso_tk_;
+  double iso_heep_cluster_;
   double iso_db03allch_;
   double iso_db04allch_;
   bool pass_preselection;
