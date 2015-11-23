@@ -83,6 +83,8 @@ class HTTCategories : public ModuleBase {
   bool dilepton_veto_;
   bool extraelec_veto_;
   bool extramuon_veto_;
+  bool minimal_extraelec_veto_;
+  bool minimal_extramuon_veto_;
   bool lepton_veto_;
   unsigned n_vtx_;
   bool good_vtx_;
@@ -173,6 +175,7 @@ class HTTCategories : public ModuleBase {
   float lchargedIsoPtSum_2 = 0;
   float lneutralIsoPtSum_2 = 0;
   float lpuCorrPtSum_2 = 0;
+  branch_var lPhotonPtSum_2;
   bool ldecayModeFindingOldDMs_2 = 0;
 
   float l3Hits_1 = 0;
@@ -190,6 +193,7 @@ class HTTCategories : public ModuleBase {
   float lchargedIsoPtSum_1 = 0;
   float lneutralIsoPtSum_1 = 0;
   float lpuCorrPtSum_1 = 0;
+  branch_var lPhotonPtSum_1;
   bool ldecayModeFindingOldDMs_1 = 0;
 
   float lagainstElectronLooseMVA5_2 = 0;

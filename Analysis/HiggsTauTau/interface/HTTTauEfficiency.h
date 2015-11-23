@@ -25,6 +25,7 @@ class HTTTauEfficiency : public ModuleBase {
   double iso_mva_oldDMwoLTraw_;
   double iso_mva_oldDMwLTraw_;
   double iso_dbetacorr_;
+  double iso_pho_sum_pt_;
   unsigned dm_;
   bool against_mu_tight_; 
   bool against_mu_loose_; 
