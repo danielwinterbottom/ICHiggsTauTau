@@ -22,6 +22,7 @@ int HTTTauEfficiency::PreAnalysis() {
     outtree_->Branch("iso_mva_newDMwLTraw",&iso_mva_newDMwLTraw_);
     outtree_->Branch("iso_mva_oldDMwoLTraw",&iso_mva_oldDMwoLTraw_);
     outtree_->Branch("iso_mva_oldDMwLTraw",&iso_mva_oldDMwLTraw_);
+    outtree_->Branch("isoPhoSumPt",&iso_pho_sum_pt_);
     outtree_->Branch("iso_dbetacorr",&iso_dbetacorr_);
     outtree_->Branch("against_mu_tight",&against_mu_tight_);
     outtree_->Branch("against_mu_loose",&against_mu_loose_);
@@ -140,6 +141,7 @@ int HTTTauEfficiency::Execute(TreeEvent* event) {
   against_ele_vtight_ = taus.at(i)->GetTauID("againstElectronVTightMVA5");
   against_ele_vloose_ = taus.at(i)->GetTauID("againstElectronVLooseMVA5");
   against_ele_medium_ = taus.at(i)->GetTauID("againstElectronMediumMVA5");
+  iso_pho_sum_pt_ = taus.at(i)->GetTauID("photonPtSumOutsideSignalCone");
   dm_finding_old_ = taus.at(i)->GetTauID("decayModeFinding");
   dm_ = taus.at(i)->decay_mode();
   

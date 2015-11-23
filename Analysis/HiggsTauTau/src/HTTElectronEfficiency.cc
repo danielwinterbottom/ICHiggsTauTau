@@ -153,7 +153,7 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
   pass_cut_preselection = true;
   sc_eta = fabs(elecs.at(i)->sc_eta());
  
-  if(sc_eta <= 1.479 && pt_ > 15 && elecs.at(i)->full5x5_sigma_IetaIeta()<0.012&&elecs.at(i)->hadronic_over_em()<0.09 && elecs.at(i)->dr03_tk_sum_pt()/pt_ <0.18&&elecs.at(i)->ecal_pf_cluster_iso()/pt_<0.37&&elecs.at(i)->hcal_pf_cluster_iso()/pt_<0.25&&elecs.at(i)->deta_sc_tk_at_vtx()<0.0095&&elecs.at(i)->dphi_sc_tk_at_vtx()<0.065) pass_preselection = true;
+  if(sc_eta <= 1.479 && pt_ > 15 && elecs.at(i)->full5x5_sigma_IetaIeta()<0.012&&elecs.at(i)->hadronic_over_em()<0.09 && elecs.at(i)->dr03_tk_sum_pt()/pt_ <0.18&&elecs.at(i)->ecal_pf_cluster_iso()/pt_<0.37&&elecs.at(i)->hcal_pf_cluster_iso()/pt_<0.25&&abs(elecs.at(i)->deta_sc_tk_at_vtx()<0.0095)&&abs(elecs.at(i)->dphi_sc_tk_at_vtx()<0.065)) pass_preselection = true;
   if(sc_eta > 1.479 && pt_ > 15 && elecs.at(i)->full5x5_sigma_IetaIeta()<0.033&&elecs.at(i)->hadronic_over_em()<0.09  && elecs.at(i)->dr03_tk_sum_pt()/pt_ <0.18&&elecs.at(i)->ecal_pf_cluster_iso()/pt_<0.45&&elecs.at(i)->hcal_pf_cluster_iso()/pt_<0.28) pass_preselection = true;
   if (elecs.at(i)->has_matched_conversion()) pass_cut_preselection=false;
   if (elecs.at(i)->gsf_tk_nhits() > 1) pass_cut_preselection=false;

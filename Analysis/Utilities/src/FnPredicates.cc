@@ -864,7 +864,7 @@ namespace ic {
 /*    if(eta <= 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.012&&elec->hadronic_over_em()<0.09 && elec->dr03_tk_sum_pt()/pt <0.18&&elec->deta_sc_tk_at_vtx()<0.0095&&elec->dphi_sc_tk_at_vtx()<0.065) pass_preselection = true;
     if(eta > 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.033&&elec->hadronic_over_em()<0.09  && elec->dr03_tk_sum_pt()/pt <0.18) pass_preselection = true;
 */
-     if(eta <= 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.012&&elec->hadronic_over_em()<0.09 && elec->ecal_pf_cluster_iso()/pt <0.37 && elec->hcal_pf_cluster_iso()/pt < 0.25 && elec->dr03_tk_sum_pt()/pt <0.18&&elec->deta_sc_tk_at_vtx()<0.0095&&elec->dphi_sc_tk_at_vtx()<0.065) pass_preselection = true;
+     if(eta <= 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.012&&elec->hadronic_over_em()<0.09 && elec->ecal_pf_cluster_iso()/pt <0.37 && elec->hcal_pf_cluster_iso()/pt < 0.25 && elec->dr03_tk_sum_pt()/pt <0.18&&abs(elec->deta_sc_tk_at_vtx()<0.0095)&&abs(elec->dphi_sc_tk_at_vtx()<0.065)) pass_preselection = true;
     if(eta > 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.033&&elec->hadronic_over_em()<0.09 && elec->ecal_pf_cluster_iso()/pt <0.45 && elec->hcal_pf_cluster_iso()/pt < 0.28 && elec->dr03_tk_sum_pt()/pt <0.18) pass_preselection = true;
     
     if(!pass_preselection) return false;
