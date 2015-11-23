@@ -927,6 +927,7 @@ namespace ic {
           iso_2_db04allch_ = 0;
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
+        lPhotonPtSum_1 = 0.;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
         l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
@@ -987,6 +988,7 @@ namespace ic {
           iso_2_db04allch_ = 0;
         }
         mva_1_ = 0.0;
+        lPhotonPtSum_1 = 0.;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
         l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
@@ -1042,7 +1044,8 @@ namespace ic {
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
-
+      lPhotonPtSum_1 = 0.;
+      lPhotonPtSum_2 = 0.;
 
       mva_2_ = 0.0;
       if(strategy_ == strategy::paper2013){
