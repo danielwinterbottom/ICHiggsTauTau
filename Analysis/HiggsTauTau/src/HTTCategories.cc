@@ -93,6 +93,13 @@ namespace ic {
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
       outtree_->Branch("gen_match_1", &gen_match_1_);
       outtree_->Branch("gen_match_2", &gen_match_2_);
+      outtree_->Branch("db_loose_1",&lbyLooseCombinedIsolation_1);
+      outtree_->Branch("db_loose_2",&lbyLooseCombinedIsolation_2);
+      outtree_->Branch("db_medium_1",&lbyMediumCombinedIsolation_1);
+      outtree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2);
+      outtree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1);
+      outtree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2);
+
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
       outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
       outtree_->Branch("leading_lepton_match_DR", &leading_lepton_match_DR_);
@@ -130,6 +137,22 @@ namespace ic {
       }
  
       if(tau_id_study_){
+       outtree_->Branch("mvanew_vloose_1",&lbyVLooseIsolationMVA3newDMwLT_1);
+       outtree_->Branch("mvanew_vloose_2",&lbyVLooseIsolationMVA3newDMwLT_2);
+       outtree_->Branch("mvanew_loose_1",&lbyLooseIsolationMVA3newDMwLT_1);
+       outtree_->Branch("mvanew_loose_2",&lbyLooseIsolationMVA3newDMwLT_2);
+       outtree_->Branch("mvanew_medium_1",&lbyMediumIsolationMVA3newDMwLT_1);
+       outtree_->Branch("mvanew_medium_2",&lbyMediumIsolationMVA3newDMwLT_2);
+       outtree_->Branch("mvanew_tight_1",&lbyTightIsolationMVA3newDMwLT_1);
+       outtree_->Branch("mvanew_tight_2",&lbyTightIsolationMVA3newDMwLT_2);
+       outtree_->Branch("mvanew_vtight_1",&lbyVTightIsolationMVA3newDMwLT_1);
+       outtree_->Branch("mvanew_vtight_2",&lbyVTightIsolationMVA3newDMwLT_2);
+       outtree_->Branch("puw_loose_1",&lbyLoosePileupWeightedIsolation_1);
+       outtree_->Branch("puw_loose_2",&lbyLoosePileupWeightedIsolation_2);
+       outtree_->Branch("puw_medium_1",&lbyMediumPileupWeightedIsolation_1);
+       outtree_->Branch("puw_medium_2",&lbyMediumPileupWeightedIsolation_2);
+       outtree_->Branch("puw_tight_1",&lbyTightPileupWeightedIsolation_1);
+       outtree_->Branch("puw_tight_2",&lbyTightPileupWeightedIsolation_2);
        outtree_->Branch("antie_vloose_1",&lagainstElectronVLooseMVA5_1);
        outtree_->Branch("antie_loose_1",&lagainstElectronLooseMVA5_1);
        outtree_->Branch("antie_medium_1",&lagainstElectronMediumMVA5_1); 
@@ -947,6 +970,9 @@ namespace ic {
         lbyIsolationMVA3oldDMwoLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwoLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwoLTraw") : 0.;
         lbyIsolationMVA3newDMwLTraw_2 = tau->HasTauID("byIsolationMVA3newDMwLTraw") ? tau->GetTauID("byIsolationMVA3newDMwLTraw") : 0.;
         lbyIsolationMVA3oldDMwLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwLTraw") : 0.;
+        lbyLooseCombinedIsolation_2 = tau->HasTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") ? tau->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") : 0.; 
+        lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") ? tau->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") : 0.; 
+        lbyTightCombinedIsolation_2 = tau->HasTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") ? tau->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") : 0.;
         antiele_2_ = lagainstElectronTightMVA5_2;
         antimu_2_ = lagainstMuonLoose3_2;
       }
@@ -1008,7 +1034,9 @@ namespace ic {
         lbyIsolationMVA3newDMwLTraw_2 = tau->HasTauID("byIsolationMVA3newDMwLTraw") ? tau->GetTauID("byIsolationMVA3newDMwLTraw") : 0.;
         lbyIsolationMVA3oldDMwLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwLTraw") : 0.;
         lPhotonPtSum_2 = tau->HasTauID("photonPtSumOutsideSignalCone") ? tau->GetTauID("photonPtSumOutsideSignalCone") : 0.;
-
+        lbyLooseCombinedIsolation_2 = tau->HasTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") ? tau->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") : 0.; 
+        lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") ? tau->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") : 0.; 
+        lbyTightCombinedIsolation_2 = tau->HasTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") ? tau->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") : 0.;
         antiele_2_ = lagainstElectronVLooseMVA5_2;
         antimu_2_ = lagainstMuonTight3_2;
       }
@@ -1082,6 +1110,9 @@ namespace ic {
         lagainstMuonLoose3_1 = tau1->HasTauID("againstMuonLoose3") ? tau1->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_1 = tau1->HasTauID("againstMuonTight3") ? tau1->GetTauID("againstMuonTight3") : 0.;
         lPhotonPtSum_1 = tau1->HasTauID("photonPtSumOutsideSignalCone") ? tau1->GetTauID("photonPtSumOutsideSignalCone") : 0.;
+        lbyLooseCombinedIsolation_1 = tau1->HasTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") ? tau1->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") : 0.; 
+        lbyMediumCombinedIsolation_1 = tau1->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") ? tau1->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") : 0.; 
+        lbyTightCombinedIsolation_1 = tau1->HasTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") ? tau1->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") : 0.;
         l3Hits_2 = tau2->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
         lagainstElectronLooseMVA5_2 = tau2->HasTauID("againstElectronLooseMVA5") ? tau2->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau2->HasTauID("againstElectronMediumMVA5") ? tau2->GetTauID("againstElectronMediumMVA5") : 0.;
@@ -1091,6 +1122,9 @@ namespace ic {
         lagainstMuonLoose3_2 = tau2->HasTauID("againstMuonLoose3") ? tau2->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau2->HasTauID("againstMuonTight3") ? tau2->GetTauID("againstMuonTight3") : 0.;
         lPhotonPtSum_2 = tau2->HasTauID("photonPtSumOutsideSignalCone") ? tau2->GetTauID("photonPtSumOutsideSignalCone") : 0.;
+        lbyLooseCombinedIsolation_1 = tau2->HasTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") ? tau2->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") : 0.; 
+        lbyMediumCombinedIsolation_1 = tau2->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") ? tau2->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") : 0.; 
+        lbyTightCombinedIsolation_1 = tau2->HasTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") ? tau2->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") : 0.;
         antiele_1_ = lagainstElectronVLooseMVA5_1;
         antimu_1_ = lagainstMuonLoose3_1;
         antiele_2_ = lagainstElectronVLooseMVA5_2;
