@@ -65,22 +65,25 @@ std::pair<double,double> calcSoverRootB(std::string const& filepath, std::string
  int main(int /*argc*/, char* /*argv*/[]){
   using namespace ic;
   using namespace std;
-  std::string channel = "em";
-  std::string e_or_m = "m";
-  std::string extralabel = "Nov20Opt";
-  bool do_tau = false;
+  std::string channel = "tt";
+  std::string e_or_m = "e";
+  std::string extralabel = "TauIsoOptNov23";
+  bool do_tau = true;
+  bool iso_opt = true;
 
  
- std::string tau_file = ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/htt_"+channel+".inputs-sm-13TeV-mvis-TauOpt.root").c_str();
+ std::string tau_file = ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/htt_"+channel+".inputs-sm-13TeV-mvis-TauIsoOptNov23.root").c_str();
  std::string file = "";
- if(!do_tau){
+ //if(!do_tau){
  file = ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/htt_"+channel+".inputs-sm-13TeV-mvis-"+extralabel+".root").c_str();
-}
+//}
  
  double ztt_sig_loosem[5];
  double ztt_sig_tightm[5];
+ double ztt_sig_stightm[5];
  double ztt_sig_err_loosem[5];
  double ztt_sig_err_tightm[5];
+ double ztt_sig_err_stightm[5];
 
  double ztt_sig_db04[12];
 // double sm_sig_db04[10];
@@ -97,14 +100,20 @@ std::pair<double,double> calcSoverRootB(std::string const& filepath, std::string
  double ztt_sig_err_db03[12];
 
 
+//double x_err_tau[19]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+//double x_err_tau[9]={0,0,0,0,0,0,0,0,0};
 double x_err_tau[5]={0,0,0,0,0};
 double iso_cuts_tau[5]={1.,2.,3.,4.,5.};
+//double iso_cuts_tau[19]={0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0,-0.1,-0.2,-0.3,-0.4,-0.5,-0.6,-0.7,-0.8,-0.9};
+//double iso_cuts_tau[9]={0.5,0.75,1.0,1.25,1.5,1.75,2,2.25,2.5};
+
 TH1F hempty("hempty",";Anti-E discriminator;S/#sqrt{B}",5,0.5,5.5);
+if(!iso_opt){
 hempty.SetStats(0);
 if(channel=="et"){
-hempty.GetYaxis()->SetRangeUser(28,36);
+hempty.GetYaxis()->SetRangeUser(32,40);
 }else if(channel=="mt"){
-hempty.GetYaxis()->SetRangeUser(50,70);
+hempty.GetYaxis()->SetRangeUser(55,75);
 }else{
 hempty.GetYaxis()->SetRangeUser(0,5);
 }
@@ -113,6 +122,22 @@ hempty.GetXaxis()->SetBinLabel(2,"L");
 hempty.GetXaxis()->SetBinLabel(3,"M");
 hempty.GetXaxis()->SetBinLabel(4,"T");
 hempty.GetXaxis()->SetBinLabel(5,"VT");
+} else {
+hempty.SetTitle(";Isolation WP;S/#sqrt{B}");
+hempty.SetStats(0);
+if(channel=="et"){
+hempty.GetYaxis()->SetRangeUser(10,50);
+}else if(channel=="mt"){
+hempty.GetYaxis()->SetRangeUser(40,100);
+}else{
+hempty.GetYaxis()->SetRangeUser(0,5);
+}
+hempty.GetXaxis()->SetBinLabel(1,"VT");
+hempty.GetXaxis()->SetBinLabel(2,"T");
+hempty.GetXaxis()->SetBinLabel(3,"M");
+hempty.GetXaxis()->SetBinLabel(4,"L");
+hempty.GetXaxis()->SetBinLabel(5,"VL");
+}
 
 double x_err[12]={0,0,0,0,0,0,0,0,0,0,0,0};
 //double x_err[10]={0,0,0,0,0,0,0,0,0,0};
@@ -149,6 +174,7 @@ double x_err[12]={0,0,0,0,0,0,0,0,0,0,0,0};
 // double antie[5]={1.,2.,3.,4.,5.};
   
 if(do_tau){
+ if(!iso_opt){
   ztt_sig_loosem[0]=calcSoverRootB(tau_file, (channel+"_incvlelm").c_str(),true).first;
   ztt_sig_loosem[1]=calcSoverRootB(tau_file, (channel+"_inclelm").c_str(),true).first;
   ztt_sig_loosem[2]=calcSoverRootB(tau_file, (channel+"_incmelm").c_str(),true).first;
@@ -161,6 +187,7 @@ if(do_tau){
   ztt_sig_tightm[3]=calcSoverRootB(tau_file, (channel+"_inctetm").c_str(),true).first;
   ztt_sig_tightm[4]=calcSoverRootB(tau_file, (channel+"_incvtetm").c_str(),true).first;
 
+
  ztt_sig_err_loosem[0]=calcSoverRootB(tau_file, (channel+"_incvlelm").c_str(),true).second;
   ztt_sig_err_loosem[1]=calcSoverRootB(tau_file, (channel+"_inclelm").c_str(),true).second;
   ztt_sig_err_loosem[2]=calcSoverRootB(tau_file, (channel+"_incmelm").c_str(),true).second;
@@ -172,6 +199,115 @@ if(do_tau){
   ztt_sig_err_tightm[2]=calcSoverRootB(tau_file, (channel+"_incmetm").c_str(),true).second;
   ztt_sig_err_tightm[3]=calcSoverRootB(tau_file, (channel+"_inctetm").c_str(),true).second;
   ztt_sig_err_tightm[4]=calcSoverRootB(tau_file, (channel+"_incvtetm").c_str(),true).second;
+
+ } else {
+  std::cout<<"ADsf"<<std::endl;
+  ztt_sig_loosem[1]=calcSoverRootB(file, (channel+"_dbloose").c_str(),true).first;
+  ztt_sig_loosem[2]=calcSoverRootB(file, (channel+"_dbmedium").c_str(),true).first;
+  ztt_sig_loosem[3]=calcSoverRootB(file, (channel+"_dbtight").c_str(),true).first;
+  ztt_sig_loosem[0]=-1;
+  ztt_sig_loosem[4]=-1;
+
+ /* ztt_sig_loosem[0]=calcSoverRootB(file, (channel+"_mvaisop0p9").c_str(),true).first;
+  ztt_sig_loosem[1]=calcSoverRootB(file, (channel+"_mvaisop0p8").c_str(),true).first;
+  ztt_sig_loosem[2]=calcSoverRootB(file, (channel+"_mvaisop0p7").c_str(),true).first;
+  ztt_sig_loosem[3]=calcSoverRootB(file, (channel+"_mvaisop0p6").c_str(),true).first;
+  ztt_sig_loosem[4]=calcSoverRootB(file, (channel+"_mvaisop0p5").c_str(),true).first;
+  ztt_sig_loosem[5]=calcSoverRootB(file, (channel+"_mvaisop0p4").c_str(),true).first;
+  ztt_sig_loosem[6]=calcSoverRootB(file, (channel+"_mvaisop0p3").c_str(),true).first;
+  ztt_sig_loosem[7]=calcSoverRootB(file, (channel+"_mvaisop0p2").c_str(),true).first;
+  ztt_sig_loosem[8]=calcSoverRootB(file, (channel+"_mvaisop0p1").c_str(),true).first;
+  ztt_sig_loosem[9]=calcSoverRootB(file, (channel+"_mvaiso0").c_str(),true).first;
+  ztt_sig_loosem[10]=calcSoverRootB(file, (channel+"_mvaisom0p1").c_str(),true).first;
+  ztt_sig_loosem[11]=calcSoverRootB(file, (channel+"_mvaisom0p2").c_str(),true).first;
+  ztt_sig_loosem[12]=calcSoverRootB(file, (channel+"_mvaisom0p3").c_str(),true).first;
+  ztt_sig_loosem[13]=calcSoverRootB(file, (channel+"_mvaisom0p4").c_str(),true).first;
+  ztt_sig_loosem[14]=calcSoverRootB(file, (channel+"_mvaisom0p5").c_str(),true).first;
+  ztt_sig_loosem[15]=calcSoverRootB(file, (channel+"_mvaisom0p6").c_str(),true).first;
+  ztt_sig_loosem[16]=calcSoverRootB(file, (channel+"_mvaisom0p7").c_str(),true).first;
+  ztt_sig_loosem[17]=calcSoverRootB(file, (channel+"_mvaisom0p8").c_str(),true).first;
+  ztt_sig_loosem[18]=calcSoverRootB(file, (channel+"_mvaisom0p9").c_str(),true).first;
+*/
+/*
+  ztt_sig_loosem[0]=calcSoverRootB(file, (channel+"_dbriso0p5").c_str(),true).first;
+  ztt_sig_loosem[1]=calcSoverRootB(file, (channel+"_dbriso0p75").c_str(),true).first;
+  ztt_sig_loosem[2]=calcSoverRootB(file, (channel+"_dbriso1p0").c_str(),true).first;
+  ztt_sig_loosem[3]=calcSoverRootB(file, (channel+"_dbriso1p25").c_str(),true).first;
+  ztt_sig_loosem[4]=calcSoverRootB(file, (channel+"_dbriso1p5").c_str(),true).first;
+  ztt_sig_loosem[5]=calcSoverRootB(file, (channel+"_dbriso1p75").c_str(),true).first;
+  ztt_sig_loosem[6]=calcSoverRootB(file, (channel+"_dbriso2p0").c_str(),true).first;
+  ztt_sig_loosem[7]=calcSoverRootB(file, (channel+"_dbriso2p25").c_str(),true).first;
+  ztt_sig_loosem[8]=calcSoverRootB(file, (channel+"_dbriso2p5").c_str(),true).first;
+*/
+ 
+  ztt_sig_tightm[1]=calcSoverRootB(file, (channel+"_pwloose").c_str(),true).first;
+
+std::string filepwmed = ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/htt_"+channel+".inputs-sm-13TeV-mvis-"+extralabel+"Ext.root").c_str();
+  ztt_sig_tightm[2]=calcSoverRootB(filepwmed, (channel+"_pwmedium").c_str(),true).first;
+  ztt_sig_tightm[3]=calcSoverRootB(file, (channel+"_pwtight").c_str(),true).first;
+  ztt_sig_tightm[0]=-1;
+  ztt_sig_tightm[4]=-1;
+
+  ztt_sig_stightm[1]=calcSoverRootB(file, (channel+"_mvaloose").c_str(),true).first;
+  ztt_sig_stightm[2]=calcSoverRootB(file, (channel+"_mvamedium").c_str(),true).first;
+  ztt_sig_stightm[3]=calcSoverRootB(file, (channel+"_mvatight").c_str(),true).first;
+  ztt_sig_stightm[0]=calcSoverRootB(file, (channel+"_mvavloose").c_str(),true).first;
+  ztt_sig_stightm[4]=calcSoverRootB(file, (channel+"_mvavtight").c_str(),true).first;
+
+
+/*  ztt_sig_err_loosem[0]=calcSoverRootB(file, (channel+"_mvaisop0p9").c_str(),true).second;
+  ztt_sig_err_loosem[1]=calcSoverRootB(file, (channel+"_mvaisop0p8").c_str(),true).second;
+  ztt_sig_err_loosem[2]=calcSoverRootB(file, (channel+"_mvaisop0p7").c_str(),true).second;
+  ztt_sig_err_loosem[3]=calcSoverRootB(file, (channel+"_mvaisop0p6").c_str(),true).second;
+  ztt_sig_err_loosem[4]=calcSoverRootB(file, (channel+"_mvaisop0p5").c_str(),true).second;
+  ztt_sig_err_loosem[5]=calcSoverRootB(file, (channel+"_mvaisop0p4").c_str(),true).second;
+  ztt_sig_err_loosem[6]=calcSoverRootB(file, (channel+"_mvaisop0p3").c_str(),true).second;
+  ztt_sig_err_loosem[7]=calcSoverRootB(file, (channel+"_mvaisop0p2").c_str(),true).second;
+  ztt_sig_err_loosem[8]=calcSoverRootB(file, (channel+"_mvaisop0p1").c_str(),true).second;
+  ztt_sig_err_loosem[9]=calcSoverRootB(file, (channel+"_mvaiso0").c_str(),true).second;
+  ztt_sig_err_loosem[10]=calcSoverRootB(file, (channel+"_mvaisom0p1").c_str(),true).second;
+  ztt_sig_err_loosem[11]=calcSoverRootB(file, (channel+"_mvaisom0p2").c_str(),true).second;
+  ztt_sig_err_loosem[12]=calcSoverRootB(file, (channel+"_mvaisom0p3").c_str(),true).second;
+  ztt_sig_err_loosem[13]=calcSoverRootB(file, (channel+"_mvaisom0p4").c_str(),true).second;
+  ztt_sig_err_loosem[14]=calcSoverRootB(file, (channel+"_mvaisom0p5").c_str(),true).second;
+  ztt_sig_err_loosem[15]=calcSoverRootB(file, (channel+"_mvaisom0p6").c_str(),true).second;
+  ztt_sig_err_loosem[16]=calcSoverRootB(file, (channel+"_mvaisom0p7").c_str(),true).second;
+  ztt_sig_err_loosem[17]=calcSoverRootB(file, (channel+"_mvaisom0p8").c_str(),true).second;
+  ztt_sig_err_loosem[18]=calcSoverRootB(file, (channel+"_mvaisom0p9").c_str(),true).second;
+*/
+/*
+  ztt_sig_err_loosem[0]=calcSoverRootB(file, (channel+"_dbriso0p5").c_str(),true).second;
+  ztt_sig_err_loosem[1]=calcSoverRootB(file, (channel+"_dbriso0p75").c_str(),true).second;
+  ztt_sig_err_loosem[2]=calcSoverRootB(file, (channel+"_dbriso1p0").c_str(),true).second;
+  ztt_sig_err_loosem[3]=calcSoverRootB(file, (channel+"_dbriso1p25").c_str(),true).second;
+  ztt_sig_err_loosem[4]=calcSoverRootB(file, (channel+"_dbriso1p5").c_str(),true).second;
+  ztt_sig_err_loosem[5]=calcSoverRootB(file, (channel+"_dbriso1p75").c_str(),true).second;
+  ztt_sig_err_loosem[6]=calcSoverRootB(file, (channel+"_dbriso2p0").c_str(),true).second;
+  ztt_sig_err_loosem[7]=calcSoverRootB(file, (channel+"_dbriso2p25").c_str(),true).second;
+  ztt_sig_err_loosem[8]=calcSoverRootB(file, (channel+"_dbriso2p5").c_str(),true).second;
+*/
+
+  ztt_sig_err_loosem[0]=0;
+  ztt_sig_err_loosem[1]=calcSoverRootB(file, (channel+"_dbloose").c_str(),true).second;
+  ztt_sig_err_loosem[2]=calcSoverRootB(file, (channel+"_dbmedium").c_str(),true).second;
+  ztt_sig_err_loosem[3]=calcSoverRootB(file, (channel+"_dbtight").c_str(),true).second;
+  ztt_sig_err_loosem[4]=0;
+ 
+  ztt_sig_err_tightm[0]=0;
+  ztt_sig_err_tightm[1]=calcSoverRootB(file, (channel+"_pwloose").c_str(),true).second;
+  ztt_sig_err_tightm[2]=calcSoverRootB(filepwmed, (channel+"_pwmedium").c_str(),true).second;
+  ztt_sig_err_tightm[3]=calcSoverRootB(file, (channel+"_pwtight").c_str(),true).second;
+  ztt_sig_err_tightm[4]=0;
+
+  ztt_sig_err_stightm[0]=calcSoverRootB(file, (channel+"_mvavloose").c_str(),true).second;
+  ztt_sig_err_stightm[1]=calcSoverRootB(file, (channel+"_mvaloose").c_str(),true).second;
+  ztt_sig_err_stightm[2]=calcSoverRootB(file, (channel+"_mvamedium").c_str(),true).second;
+  ztt_sig_err_stightm[3]=calcSoverRootB(file, (channel+"_mvatight").c_str(),true).second;
+  ztt_sig_err_stightm[4]=calcSoverRootB(file, (channel+"_mvavtight").c_str(),true).second;
+
+
+
+}
 } else {
 
 if(channel!="em"){
@@ -523,14 +659,21 @@ ztt_sig_err_db03[2] = calcSoverRootB(file, (channel+"_"+e_or_m+"db03iso0p12").c_
 
   TGraphErrors *ztt_sig_loosem_graph;
   TGraphErrors *ztt_sig_tightm_graph;
+  TGraphErrors *ztt_sig_stightm_graph;
 if(do_tau){
   ztt_sig_loosem_graph = new TGraphErrors(5,iso_cuts_tau,ztt_sig_loosem,x_err_tau,ztt_sig_err_loosem);
   ztt_sig_tightm_graph = new TGraphErrors(5,iso_cuts_tau,ztt_sig_tightm,x_err_tau,ztt_sig_err_tightm);
+  ztt_sig_stightm_graph = new TGraphErrors(5,iso_cuts_tau,ztt_sig_stightm,x_err_tau,ztt_sig_err_stightm);
+
+ // ztt_sig_loosem_graph = new TGraphErrors(19,iso_cuts_tau,ztt_sig_loosem,x_err_tau,ztt_sig_err_loosem);
+//  ztt_sig_loosem_graph = new TGraphErrors(9,iso_cuts_tau,ztt_sig_loosem,x_err_tau,ztt_sig_err_loosem);
 
  ztt_sig_loosem_graph->SetMarkerStyle(20);
  ztt_sig_loosem_graph->SetMarkerColor(kRed);
  ztt_sig_tightm_graph->SetMarkerStyle(21);
  ztt_sig_tightm_graph->SetMarkerColor(kGreen+3);
+ ztt_sig_stightm_graph->SetMarkerStyle(22);
+ ztt_sig_stightm_graph->SetMarkerColor(kBlue);
 }
 
 /*  TGraphErrors *ztt_sig_db04_graph = new TGraphErrors(12,iso_cuts,ztt_sig_db04,x_err,ztt_sig_err_db04); 
@@ -564,7 +707,7 @@ if(do_tau){
 
 //:  ztt_sig_db04_graph->GetXaxis()->SetRangeUser(0.065,0.185);
 if(channel=="et"){
-  ztt_sig_db04_graph->GetYaxis()->SetRangeUser(16,23);
+  ztt_sig_db04_graph->GetYaxis()->SetRangeUser(27,32);
 } else if (channel=="mt"){
   ztt_sig_db04_graph->GetYaxis()->SetRangeUser(58,68);
 } else {
@@ -572,12 +715,12 @@ if(channel=="et"){
 }
   ztt_sig_db04_graph->SetTitle(";Isolation cut;S/#sqrt{B}");
   
-/* ztt_sig_loosem_graph->GetYaxis()->SetRangeUser(40,80);
- ztt_sig_loosem_graph->SetTitle(";AntiE discriminator;S/root(B)");*/
+ ztt_sig_loosem_graph->GetYaxis()->SetRangeUser(40,80);
+ ztt_sig_loosem_graph->SetTitle(";AntiE discriminator;S/root(B)");
    
   TCanvas plot_canv("plot_canv","plot_canv",1200,800); 
   plot_canv.cd();
-/*  ztt_sig_loosem_graph->Draw("AP");
+ /* ztt_sig_loosem_graph->Draw("AP");
   ztt_sig_tightm_graph->Draw("PSAME");*/
 if(!do_tau){
   ztt_sig_db04_graph->Draw("AP"); 
@@ -608,20 +751,39 @@ if(!do_tau){
 
   plot_canv.SaveAs(("s_over_root_b_"+channel+"_"+e_or_m+".pdf").c_str());
  } else{
-  hempty.Draw();
-  ztt_sig_loosem_graph->Draw("PSAME"); 
-  ztt_sig_tightm_graph->Draw("PSAME");
+  if(!iso_opt){
+    hempty.Draw();
+    ztt_sig_loosem_graph->Draw("PSAME"); 
+    ztt_sig_tightm_graph->Draw("PSAME");
 
-  TLegend *leg = PositionedLegend(0.3,0.2,3,0);
-  leg->SetFillStyle(0);
-  leg->AddEntry(ztt_sig_loosem_graph,"antiMuLoose","p");
-  leg->AddEntry(ztt_sig_tightm_graph,"antiMuTight","p");
+    TLegend *leg = PositionedLegend(0.3,0.2,3,0);
+   leg->SetFillStyle(0);
+    leg->AddEntry(ztt_sig_loosem_graph,"antiMuLoose","p");
+    leg->AddEntry(ztt_sig_tightm_graph,"antiMuTight","p");
 
-  leg->Draw("SAME");
+    leg->Draw("SAME");
   
  // plot_canv.SetGrid(1,1);
-
   plot_canv.SaveAs(("s_over_root_b_"+channel+"_tau.pdf").c_str());
+} else {
+    hempty.Draw();
+   ztt_sig_loosem_graph->GetYaxis()->SetRangeUser(10,50); 
+   //ztt_sig_loosem_graph->GetYaxis()->SetRangeUser(60,80); 
+   ztt_sig_loosem_graph->SetTitle(";Isolation WP;s/#sqrt{B}");
+    ztt_sig_loosem_graph->Draw("PSAME"); 
+    ztt_sig_tightm_graph->Draw("PSAME");
+    ztt_sig_stightm_graph->Draw("PSAME");
+
+    TLegend *leg = PositionedLegend(0.3,0.1,3,0);
+   leg->SetFillStyle(0);
+    leg->AddEntry(ztt_sig_loosem_graph,"DB corr","p");
+    leg->AddEntry(ztt_sig_tightm_graph,"PU weighted","p");
+    leg->AddEntry(ztt_sig_stightm_graph,"MVA","p");
+
+    leg->Draw("SAME");
+
+  plot_canv.SaveAs(("s_over_root_b_"+channel+"_tauISOMVA.pdf").c_str());
+}
 }
  return 0;
 }

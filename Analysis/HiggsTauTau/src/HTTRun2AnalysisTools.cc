@@ -131,31 +131,37 @@ namespace ic {
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
-      alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["inclelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["incletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["incmelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_medium_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["incmetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_medium_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["inctelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_tight_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["inctetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["incvtelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["incvtetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["dbriso1p5"]        = "(iso_1<0.1&&iso_2<1.5&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["dbriso1p75"]        = "(iso_1<0.1&&iso_2<1.75&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["dbriso1p0"]        = "(iso_1<0.1&&iso_2<1&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["dbriso2p0"]        = "(iso_1<0.1&&iso_2<2&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["dbriso2p5"]        = "(iso_1<0.1&&iso_2<2.5&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["mvaiso0"]        = "(iso_1<0.1&&iso_mva_new_2>0&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["mvaisom0p2"]        = "(iso_1<0.1&&iso_mva_new_2>-0.2&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["mvaisop0p2"]        = "(iso_1<0.1&&iso_mva_new_2>0.2&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["mvaisom0p1"]        = "(iso_1<0.1&&iso_mva_new_2>-0.1&&antiele_2&&antimu_2&&!leptonveto)";
-      alias_map_["mvaisop0p1"]        = "(iso_1<0.1&&iso_mva_new_2>0.1&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["inclusivetauisofix"] = "(iso_1<0.1&&db_medium_2>0 &&antiele_2 &&antimu_2 && !leptonveto)";
+      alias_map_["minlv"]         = "(iso_1<0.1&&db_medium_2>0 && antiele_2 && antimu_2 && !(minimal_extraelec_veto>0||minimal_extramuon_veto>0))";
+      alias_map_["minlvwdi"]         = "(iso_1<0.1&&db_medium_2>0 && antiele_2 && antimu_2 && !(minimal_extraelec_veto>0||minimal_extramuon_veto>0||dilepton_veto>0))";
+      alias_map_["stdlv"]         = "(iso_1<0.1&&db_medium_2>0&& antiele_2 && antimu_2 && !(extraelec_veto>0||extramuon_veto>0))";
+      alias_map_["stdlvwdi"]         = "(iso_1<0.1&&db_medium_2>0 && antiele_2 && antimu_2 && !(extraelec_veto>0||extramuon_veto>0||dilepton_veto>0))";
+      alias_map_["incvlelm"]         = "(iso_1<0.1&&db_medium_2>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvletm"]         = "(iso_1<0.1&&db_medium_2>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inclelm"]         = "(iso_1<0.1&&db_medium_2>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incletm"]         = "(iso_1<0.1&&db_medium_2>0 && antie_loose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incmelm"]         = "(iso_1<0.1&&db_medium_2>0 && antie_medium_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incmetm"]         = "(iso_1<0.1&&db_medium_2>0&&antie_medium_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inctelm"]         = "(iso_1<0.1&&db_medium_2>0&&antie_tight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["inctetm"]         = "(iso_1<0.1&&db_medium_2>0&&antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incvtelm"]         = "(iso_1<0.1&&db_medium_2>0&&antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvtetm"]         = "(iso_1<0.1&&db_medium_2>0&&antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["dbloose"]        = "(iso_1<0.1&&db_loose_2>0 &&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbmedium"]        = "(iso_1<0.1&&db_medium_2>0 &&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbtight"]        = "(iso_1<0.1&&db_tight_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["pwloose"]        = "(iso_1<0.1&&puw_loose_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["pwmedium"]        = "(iso_1<0.1&&puw_medium_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["pwtight"]        = "(iso_1<0.1&&puw_tight_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvavloose"]        = "(iso_1<0.1&&mvanew_vloose_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaloose"]        = "(iso_1<0.1&&mvanew_loose_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvamedium"]        = "(iso_1<0.1&&mvanew_medium_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvatight"]        = "(iso_1<0.1&&mvanew_tight_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvavtight"]        = "(iso_1<0.1&&mvanew_vtight_2>0&&antiele_2&&antimu_2&&!leptonveto)";
 
       alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
       // Categories for iso studies
-      alias_map_["incnoiso"]         = "(iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
-      alias_map_["incnoisonolv"]     = "(iso_2<1.5 && antiele_2 && antimu_2)";
+      alias_map_["incnoiso"]         = "(db_medium>0 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["incnoisonolv"]     = "(db_medium>0 && antiele_2 && antimu_2)";
       alias_map_["db03iso0p1"]            = "(iso_1_db03<0.1&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p11"]            = "(iso_1_db03<0.11&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p12"]            = "(iso_1_db03<0.12&&"+alias_map_["incnoiso"]+")";
@@ -255,17 +261,29 @@ namespace ic {
       alias_map_["nobtagmed"] += "&&" + alias_map_["inclusive"];
       alias_map_["nobtaghigh"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::tt) {
-      alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["incvletm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["inclelm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_loose_1>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["incletm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_tight_1>0 && antie_loose_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["incmelm"]         = "(iso_1<1&&iso_2<1 && antie_medium_1>0 && antimu_loose_1>0 && antie_medium_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["incmetm"]         = "(iso_1<1&&iso_2<1 && antie_medium_1>0 && antimu_tight_1>0 && antie_medium_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["inctelm"]         = "(iso_1<1&&iso_2<1 && antie_tight_1>0 && antimu_loose_1>0 && antie_tight_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["inctetm"]         = "(iso_1<1&&iso_2<1 && antie_tight_1>0 && antimu_tight_1>0 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
-      alias_map_["incvtelm"]         = "(iso_1<1&&iso_2<1 && antie_vtight_1>0 && antimu_loose_1>0 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
-      alias_map_["incvtetm"]         = "(iso_1<1&&iso_2<1 && antie_vtight_1>0 && antimu_tight_1>0 && antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
-
+      alias_map_["inclusivetauisofix"] = "(iso_1<1.0 && iso_2 <1.0 && isoPhoSumPt_1 <0.1*pt_1 &&isoPhoSumPt_2<0.1*pt_2 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["minlv"]         = "(db_tight_1>0&&db_tight_2>0 && antiele_1 &&antiele_2 &&antimu_1&&antimu_2&& !(minimal_extraelec_veto>0||minimal_extramuon_veto>0))";
+      alias_map_["incvlelm"]         = "(db_tight_1>0&&db_tight_2>0 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvletm"]         = "(db_tight_1>0&&db_tight_2>0&& antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inclelm"]         = "(db_tight_1>0&&db_tight_2>0&&antie_loose_1>0 && antimu_loose_1>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incletm"]         = "(db_tight_1>0&&db_tight_2>0 &&antie_loose_1>0 && antimu_tight_1>0 && antie_loose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incmelm"]         = "(db_tight_1>0&&db_tight_2>0&&antie_medium_1>0 && antimu_loose_1>0 && antie_medium_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incmetm"]         = "(db_tight_1>0&&db_tight_2>0&&antie_medium_1>0 && antimu_tight_1>0 && antie_medium_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inctelm"]         = "(db_tight_1>0&&db_tight_2>0&&antie_tight_1>0 && antimu_loose_1>0 && antie_tight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["inctetm"]         = "(db_tight_1>0&&db_tight_2>0&&antie_tight_1>0 && antimu_tight_1>0 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incvtelm"]         = "(db_tight_1>0&&db_tight_2>0&&antie_vtight_1>0 && antimu_loose_1>0 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvtetm"]         = "(db_tight_1>0&&db_tight_2>0&&antie_vtight_1>0 && antimu_tight_1>0 && antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["dbtight"] = "(db_tight_1>0&&db_tight_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["dbmedium"] = "(db_medium_1>0&&db_medium_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["dbloose"] = "(db_loose_1>0&&db_loose_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["pwtight"] = "(puw_tight_1>0&&puw_tight_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["pwmedium"] = "(puw_medium_1>0&&puw_medium_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["pwloose"] = "(puw_loose_1>0&&puw_loose_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["mvavtight"] = "(mvanew_vtight_1>0&&mvanew_vtight_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["mvatight"] = "(mvanew_tight_1>0&&mvanew_tight_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["mvamedium"] = "(mvanew_medium_1>0&&mvanew_medium_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["mvaloose"] = "(mvanew_loose_1>0&&mvanew_loose_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
+      alias_map_["mvavloose"] = "(mvanew_vloose_1>0&&mvanew_vloose_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
 
       // SM Categories
       //alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -293,6 +311,8 @@ namespace ic {
       alias_map_["nobtaghigh"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::em) {
       // SM Categories
+      //
+      alias_map_["minlv"]         = "(iso_1<0.15&&iso_2<0.15 &&!(minimal_extraelec_veto>0||minimal_extramuon_veto>0))";
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:

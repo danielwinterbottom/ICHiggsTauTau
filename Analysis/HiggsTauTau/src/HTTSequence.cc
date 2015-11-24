@@ -529,7 +529,7 @@ void HTTSequence::BuildSequence(){
   //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
   if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
-  //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
+//  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
   if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
 
  LumiMask lumiMask = LumiMask("LumiMask")
@@ -1115,6 +1115,7 @@ void HTTSequence::BuildMTPairs() {
 
       }));
 
+
  double muon_iso_min = 0.;
  double muon_iso_max = 0.;
  if(special_mode ==2 ){
@@ -1137,6 +1138,7 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
           return PF04IsolationVal(m, 0.5, 1)<muon_iso_max && PF04IsolationVal(m,0.5,1)>muon_iso_min;
         }));
   }
+
 
 
 
@@ -1827,10 +1829,29 @@ void HTTSequence::BuildExtraElecVeto(){
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
+ HTTFilter<Electron> minimalExtraElecFilter = HTTFilter<Electron>("MinimalExtraElecFilter")
+      .set_input_label("extra_elecs")
+			.set_veto_name("minimal_extra_elec_veto")
+      .set_no_filter(true)
+      .set_min(0).set_max(js["baseline"]["max_extra_elecs"].asUInt());
+
+ minimalExtraElecFilter.set_predicate([=](Electron const* e){
+     return e->pt() >  13 &&
+            fabs(e->eta()) <2.5 &&
+            fabs(e->dxy_vertex()) < veto_elec_dxy &&
+            fabs(e->dz_vertex()) < veto_elec_dz &&
+            ElectronHTTIdSpring15(e, false) &&
+            PF03IsolationVal(e, 0.5, 0) <0.15;
+    });
+
+ BuildModule(minimalExtraElecFilter);
+
   }
 
 
 BuildModule(extraElecFilter);
+
+
  }
 
 
@@ -1865,6 +1886,27 @@ void HTTSequence::BuildExtraMuonVeto(){
                 //PF04IsolationVal(m, 0.5,0) < 0.3;
                 PF03IsolationVal(m, 0.5,0) < 0.3;
       });
+
+
+  HTTFilter<Muon> minimalExtraMuonFilter = HTTFilter<Muon>("MinimalExtraMuonFilter")
+      .set_input_label("extra_muons")
+			.set_veto_name("minimal_extra_muon_veto")
+      .set_no_filter(true)
+      .set_min(0).set_max(js["baseline"]["max_extra_muons"].asUInt());
+
+   minimalExtraMuonFilter.set_predicate([=](Muon const* m) {
+           return m->pt()     > 10 &&
+                  fabs(m->eta()) < 2.4 &&
+                  fabs(m->dxy_vertex())   < veto_muon_dxy   &&
+                  fabs(m->dz_vertex())    < veto_muon_dz    &&
+                  MuonMedium(m)                     &&
+                //PF04IsolationVal(m, 0.5,0) < 0.3;
+                  PF03IsolationVal(m, 0.5,0) < 0.15;
+        });
+
+   BuildModule(minimalExtraMuonFilter);
+
+   
    }
 
   BuildModule(extraMuonFilter);
