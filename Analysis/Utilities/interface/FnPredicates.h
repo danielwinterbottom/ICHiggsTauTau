@@ -156,6 +156,8 @@ namespace ic {
     }
   }
 
+  double PUW03IsolationVal(Muon const* muon);
+  double PUW04IsolationVal(Muon const* muon);
   
   template<class T>
   double PF03IsolationVal(T const* cand, double const& dbeta, bool allcharged=false) {
