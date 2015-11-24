@@ -803,6 +803,7 @@ int main(int argc, char* argv[]){
       .set_do_binnedin2d1dfittedtrg_weights(dobinnedin2d1dtrgeff)
       .set_binnedin2d1dfitweightvar1binning(jptbinning)
       .set_binnedin2d1dfitweightvar2binning(mjjbinning)
+      .set_do_run2(true)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
     if(do3dtrgeff){
