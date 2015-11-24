@@ -163,25 +163,26 @@ if SCHEME == 'run2_sm':
 
 if SCHEME == 'run2_mssm':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900]"
   scheme_et = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, ''),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
-    ("8",   "btag",    "btag",  BINS_FINE, '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30"')
   ]
   scheme_mt = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
-    ("8",   "btag",    "btag",  BINS_FINE, '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '--set_alias="sel:mt_1<30"'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30"')
   ]
   scheme_tt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
     ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
-    ("8",   "btag",    "btag",  BINS_FINE, '')
+    ("8",   "btag",    "btag",  BINS, '')
   ]
   scheme_em = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ''),
     ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
-    ("8",   "btag",    "btag",  BINS_FINE, '')
+    ("8",   "btag",    "btag",  BINS, '')
   ]
   bkg_schemes = {
     'et' : 'et_default',

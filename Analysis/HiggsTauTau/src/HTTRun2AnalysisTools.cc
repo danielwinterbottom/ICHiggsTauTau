@@ -130,7 +130,6 @@ namespace ic {
 
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
-      alias_map_["inclusive"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["inclusivetauisofix"] = "(iso_1<0.1&&db_medium_2>0 &&antiele_2 &&antimu_2 && !leptonveto)";
       alias_map_["minlv"]         = "(iso_1<0.1&&db_medium_2>0 && antiele_2 && antimu_2 && !(minimal_extraelec_veto>0||minimal_extramuon_veto>0))";
       alias_map_["minlvwdi"]         = "(iso_1<0.1&&db_medium_2>0 && antiele_2 && antimu_2 && !(minimal_extraelec_veto>0||minimal_extramuon_veto>0||dilepton_veto>0))";
@@ -157,6 +156,29 @@ namespace ic {
       alias_map_["mvamedium"]        = "(iso_1<0.1&&mvanew_medium_2>0&&antiele_2&&antimu_2&&!leptonveto)";
       alias_map_["mvatight"]        = "(iso_1<0.1&&mvanew_tight_2>0&&antiele_2&&antimu_2&&!leptonveto)";
       alias_map_["mvavtight"]        = "(iso_1<0.1&&mvanew_vtight_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]         = "(iso_1<0.1 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inclelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incmelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_medium_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incmetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_medium_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inctelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_tight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["inctetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incvtelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvtetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["dbriso1p5"]        = "(iso_1<0.1&&iso_2<1.5&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbriso1p75"]        = "(iso_1<0.1&&iso_2<1.75&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbriso1p0"]        = "(iso_1<0.1&&iso_2<1&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbriso2p0"]        = "(iso_1<0.1&&iso_2<2&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbriso2p5"]        = "(iso_1<0.1&&iso_2<2.5&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaiso0"]        = "(iso_1<0.1&&iso_mva_new_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaisom0p2"]        = "(iso_1<0.1&&iso_mva_new_2>-0.2&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaisop0p2"]        = "(iso_1<0.1&&iso_mva_new_2>0.2&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaisom0p1"]        = "(iso_1<0.1&&iso_mva_new_2>-0.1&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaisop0p1"]        = "(iso_1<0.1&&iso_mva_new_2>0.1&&antiele_2&&antimu_2&&!leptonveto)";
+>>>>>>> origin
 
       alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
       // Categories for iso studies
@@ -234,32 +256,20 @@ namespace ic {
       alias_map_["trk03iso0p09"]           = "(iso_1_trk03<0.09&&"+alias_map_["incnoiso"]+")";
       alias_map_["trk03iso0p08"]           = "(iso_1_trk03<0.08&&"+alias_map_["incnoiso"]+")";
       alias_map_["trk03iso0p07"]           = "(iso_1_trk03<0.07&&"+alias_map_["incnoiso"]+")";
-     // alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
-      //alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2)";
-      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
-      //Categories can be added using inclusive alias as follows:
+      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["qcd_vloose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
-      alias_map_["vbf"] += "&&" + alias_map_["inclusive"];
-      alias_map_["1jet"] += "&&" + alias_map_["inclusive"];
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
-      alias_map_["btag"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
-      alias_map_["prebtag"] += "&&" + alias_map_["inclusive"];
       //MSSM update analysis style categories:
       alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>30 && pt_2<45)";
       alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45)";
       alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>30 && pt_2<45";
       alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>45 && pt_2<60";
       alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>60";
-      alias_map_["btaglow"] += "&&" + alias_map_["inclusive"];
-      alias_map_["btaghigh"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtaglow"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtagmed"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtaghigh"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::tt) {
       alias_map_["inclusivetauisofix"] = "(iso_1<1.0 && iso_2 <1.0 && isoPhoSumPt_1 <0.1*pt_1 &&isoPhoSumPt_2<0.1*pt_2 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
       alias_map_["minlv"]         = "(db_tight_1>0&&db_tight_2>0 && antiele_1 &&antiele_2 &&antimu_1&&antimu_2&& !(minimal_extraelec_veto>0||minimal_extramuon_veto>0))";
@@ -286,40 +296,31 @@ namespace ic {
       alias_map_["mvavloose"] = "(mvanew_vloose_1>0&&mvanew_vloose_2>0 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
 
       // SM Categories
-      //alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
-      alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]          = "db_tight_1>0.5 && db_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
-      alias_map_["btag"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
-      alias_map_["prebtag"] += "&&" + alias_map_["inclusive"];
       //MSSM update analysis style categories:
       alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45 && pt_2<60)";
       alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>60)";
       alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>45 && pt_2<60";
       alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>60 && pt_2<80";
       alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>80";
-      alias_map_["btaglow"] += "&&" + alias_map_["inclusive"];
-      alias_map_["btaghigh"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtaglow"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtagmed"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtaghigh"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::em) {
       // SM Categories
       //
       alias_map_["minlv"]         = "(iso_1<0.15&&iso_2<0.15 &&!(minimal_extraelec_veto>0||minimal_extramuon_veto>0))";
-      alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
-      alias_map_["vbf"] += "&&" + alias_map_["inclusive"];
-      alias_map_["1jet"] += "&&" + alias_map_["inclusive"];
       alias_map_["incnoiso"]         = "!leptonveto";
       alias_map_["incnoisowmu"]         = "iso_2<0.15 && !leptonveto";
       alias_map_["incnoisowe"]         = "iso_1<0.15 && !leptonveto";
@@ -462,17 +463,15 @@ namespace ic {
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5 && !leptonveto)";
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
-      alias_map_["btag"] += "&&" + alias_map_["inclusive"];
-      alias_map_["nobtag"] += "&&" + alias_map_["inclusive"];
       alias_map_["ttcontrol"] = "(n_jets>=1 && n_bjets>=1 && pzeta<-50)";
-      alias_map_["ttcontrol"] += "&&" + alias_map_["inclusive"];
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
-      alias_map_["prebtag"] += "&&" + alias_map_["inclusive"];
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
-      alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<0.1)";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
     } else if (ch_ == channel::wmnu) {
-      alias_map_["inclusive"]         = "(iso_1<0.1)";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]         = "(iso_1<0.1)";
     }
     
     // Selection control regions
@@ -766,6 +765,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateData(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
+    cat += "&&" + alias_map_["baseline"];
     auto data_norm = this->GetRate(this->ResolveSamplesAlias("data_samples"), sel, cat, wt);
     TH1F data_hist = this->GetShape(var, this->ResolveSamplesAlias("data_samples"), sel, cat, wt);
     SetNorm(&data_hist, data_norm.first);
@@ -776,6 +776,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZTT(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZTT] --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     Value ztt_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> ztt_samples = this->ResolveSamplesAlias("ztt_samples");
@@ -807,6 +808,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZL --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     Value zl_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> zl_samples = this->ResolveSamplesAlias("zl_samples");
@@ -820,6 +822,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZJ(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZJ --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     Value zj_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> zj_samples = this->ResolveSamplesAlias("zj_samples");
@@ -841,6 +844,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZLL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZLL --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     Value zl_norm;
     std::vector<std::string> zll_samples = this->ResolveSamplesAlias("zll_samples");
     zl_norm = this->GetLumiScaledRate(zll_samples, sel, cat, wt) ;
@@ -854,6 +858,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateTOP(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateTOP] --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     std::vector<std::string> top_samples = this->ResolveSamplesAlias("top_samples");
     if (verbosity_) {
       std::cout << "top_samples: ";
@@ -875,6 +880,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateVV(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateVV] ---------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     std::vector<std::string> vv_samples = this->ResolveSamplesAlias("vv_samples");
     auto vv_norm = this->GetLumiScaledRate(vv_samples, sel, cat, wt);
     std::string vv_shape_cat = cat;
@@ -886,6 +892,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   }
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    cat += "&&" + alias_map_["baseline"];
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     std::string w_extrap_cat = cat;
@@ -913,6 +920,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
+    std::string maincat = cat + "&&" + alias_map_["baseline"];
     Value qcd_norm;
     TH1F qcd_hist;
 //    if (ch_ != channel::em) {
@@ -927,7 +935,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::string w_extrp_sdb_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("w_sdb");
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
-      std::string qcd_cat = cat;
+      std::string qcd_cat = maincat;
       //Work out the W norm in the SS region separately if it is data driven
       Value w_ss_norm;
       std::vector<std::string> wjets_samples = this->ResolveSamplesAlias("wjets_samples");
@@ -959,15 +967,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       }
       std::string qcd_shape_cat = cat;
       if (method == 8) {
+        qcd_shape_cat += "&&" + alias_map_["baseline"];
         qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
       } else if(method == 10) {
+        qcd_shape_cat += "&&" + alias_map_["baseline"];
         qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
         {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;} 
           }
         });
       } else {
-        if (method == 9 || method == 11) qcd_shape_cat = this->ResolveAlias("qcd_loose_shape");
+        if (method == 9 || method == 11) {
+            qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
+        }
         qcd_hist = this->GetShape(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, wt);
 //        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
  //         % this->ResolveSamplesAlias("data_samples") % qcd_sdb_sel % qcd_shape_cat % wt;
@@ -977,6 +989,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   }
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs) {
+    cat += "&&" + alias_map_["baseline"];
     Value signal_norm;
     if (xs > 0) {
       if (verbosity_ > 1) std::cout << "[HTTRun2Analysis::GenerateSignal] " << sample << " scaled to lumi using cross section " << xs << " pb" << std::endl;

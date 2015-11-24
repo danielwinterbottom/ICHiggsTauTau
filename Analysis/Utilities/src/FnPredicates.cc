@@ -852,6 +852,25 @@ namespace ic {
     }
     return pass_mva;
   }
+  
+ double PUW03IsolationVal(Muon const* muon){
+   double charged_iso = muon->dr03_pfiso_charged();
+   double neutral_weighted = muon->GetIdIso("neutral_pfweighted_iso_03");
+   double gamma_weighted = muon->GetIdIso("gamma_pfweighted_iso_03");
+   double iso = charged_iso + neutral_weighted + gamma_weighted;
+    iso = iso / muon->pt();
+    return iso;
+ }
+ 
+ double PUW04IsolationVal(Muon const* muon){
+   double charged_iso = muon->dr04_pfiso_charged();
+   double neutral_weighted = muon->GetIdIso("neutral_pfweighted_iso_04");
+   double gamma_weighted = muon->GetIdIso("gamma_pfweighted_iso_04");
+   double iso = charged_iso + neutral_weighted + gamma_weighted;
+    iso = iso / muon->pt();
+    return iso;
+ }
+
 
   bool ElectronHTTIdTrigSpring15(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
