@@ -141,16 +141,17 @@ $(document).ready(function(){initNavTree('_i_c_l1_et_miss_producer_8cc_source.ht
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    dest.<a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    dest.<a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.etTotal());</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    dest.<a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  }</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">void</span> ICL1EtMissProducer::beginJob() {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;candidates_);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">void</span> ICL1EtMissProducer::endJob() {}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<a class="code" href="_i_c_l1_et_miss_producer_8cc.html#a223dee57dbfc2474bdb7e1406b33e348">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_l1_et_miss_producer.html">ICL1EtMissProducer</a>);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::cout&lt;&lt;i&lt;&lt;<span class="stringliteral">&quot; &quot;</span>&lt;&lt;src.bx()&lt;&lt;std::endl;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">void</span> ICL1EtMissProducer::beginJob() {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;candidates_);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keywordtype">void</span> ICL1EtMissProducer::endJob() {}</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<a class="code" href="_i_c_l1_et_miss_producer_8cc.html#a223dee57dbfc2474bdb7e1406b33e348">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_l1_et_miss_producer.html">ICL1EtMissProducer</a>);</div>
 <div class="ttc" id="_i_c_l1_et_miss_producer_8cc_html_a223dee57dbfc2474bdb7e1406b33e348"><div class="ttname"><a href="_i_c_l1_et_miss_producer_8cc.html#a223dee57dbfc2474bdb7e1406b33e348">DEFINE_FWK_MODULE</a></div><div class="ttdeci">DEFINE_FWK_MODULE(ICL1EtMissProducer)</div></div>
 <div class="ttc" id="_static_tree_8hh_html"><div class="ttname"><a href="_static_tree_8hh.html">StaticTree.hh</a></div></div>
 <div class="ttc" id="class_i_c_l1_et_miss_producer_html_a553fbb29e33174cdf94c4912a1e8710a"><div class="ttname"><a href="class_i_c_l1_et_miss_producer.html#a553fbb29e33174cdf94c4912a1e8710a">ICL1EtMissProducer::~ICL1EtMissProducer</a></div><div class="ttdeci">~ICL1EtMissProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_l1_et_miss_producer_8cc_source.html#l00024">ICL1EtMissProducer.cc:24</a></div></div>
