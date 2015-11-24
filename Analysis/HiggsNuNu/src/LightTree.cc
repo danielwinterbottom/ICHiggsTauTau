@@ -823,7 +823,7 @@ namespace ic {
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
       //      if(l1met.size()==1){//!!
-      l1met_ = l1met[0]->pt();
+      l1met_ = l1met[2]->pt();
       //}
       metnomuons_ = metnomuons->pt();
       metnomu_x_ = metnomuvec.Px();
