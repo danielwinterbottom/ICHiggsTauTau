@@ -36,7 +36,7 @@ namespace ic{
     float extraOverCmsTextSize = 0.76;
 
     //!!MAKE CHOICE CONFIGURABLE
-    TString lumi_13TeV = "1546.6 pb^{-1}";
+    TString lumi_13TeV = "2.11 fb^{-1}";
     TString lumi_8TeV = "19.2 fb^{-1}";
     TString lumi_7TeV = "5.1 fb^{-1}";
 

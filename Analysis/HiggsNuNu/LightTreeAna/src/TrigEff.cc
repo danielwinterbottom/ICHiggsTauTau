@@ -1,6 +1,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/TrigEff.h"
 #include <iostream>
+#include <sstream>
 #include "TH1F.h"
+#include "TF1.h"
 #include "TGraphAsymmErrors.h"
 #include "TCanvas.h"
 #include "TLegend.h"
@@ -11,10 +13,13 @@ namespace ic{
 
   TrigEff::TrigEff(std::string name) : LTModule(name){
     trigger_="pass_sigtrigger==1";
-    dataweight_="weight_nolep";
+    numweight_="weight_nolep";
+    denweight_="weight_nolep";
     shape_=("jet2_pt(200,0.,1000.)");
     shapename_="";
     dirname_="";
+    namestr_="";
+    do_fit_=false;
   };
 
   TrigEff::~TrigEff(){ ;};
@@ -28,7 +33,8 @@ namespace ic{
       }
     std::cout<<"  Base selection is: "<<basesel_<<std::endl;
     std::cout<<"  Extra selection is: "<<cat_<<std::endl;
-    std::cout<<"  Data weight is: "<<dataweight_<<std::endl;
+    std::cout<<"  Num weight is: "<<numweight_<<std::endl;
+    std::cout<<"  Den weight is: "<<denweight_<<std::endl;
     return 0;
   };
 
@@ -50,12 +56,18 @@ namespace ic{
     //Get Shapes for Data
     std::cout<<"  Getting shape"<<std::endl;
 
-    TH1F  datashapenotrig = filemanager->GetSetsShape(dataset_,shape_,basesel_,cat_,dataweight_,false);
-    TH1F  datashapewithtrig = filemanager->GetSetsShape(dataset_,shape_,basesel_,cat_+"&&"+trigger_,dataweight_,false);
+    TH1F  datashapenotrig = filemanager->GetSetsShape(dataset_,shape_,basesel_,cat_,denweight_,false);
+    TH1F  datashapewithtrig = filemanager->GetSetsShape(dataset_,shape_,basesel_,cat_+"&&"+trigger_,numweight_,false);
     datashapenotrig.Sumw2();
     datashapewithtrig.Sumw2();
     //TH1F* efficiency=(TH1F*)datashapenotrig.Clone();
     //efficiency->Divide(&datashapewithtrig,&datashapenotrig,1,1,"B");
+
+    //Check one histo is not larger than the other
+    // for(int ibin=0;ibin<datashapenotrig.GetNbinsX()+1;ibin++){
+    //   if(datashapewithtrig.GetBinContent(ibin)>datashapenotrig.GetBinContent(ibin))datashapewithtrig.SetBinContent(ibin,datashapenotrig.GetBinContent(ibin));
+    // }
+
     TGraphAsymmErrors* efficiency=new TGraphAsymmErrors();
     efficiency->Divide(&datashapewithtrig,&datashapenotrig,"cl=0.683 b(1,1) mode");
     dir->cd();
@@ -70,7 +82,7 @@ namespace ic{
     }
     std::cout<<"  nevents before trigger: "<<Integral(&datashapenotrig)<<"+-"<<Error(&datashapenotrig)<<std::endl;
     std::cout<<"  nevents after trigger: "<<Integral(&datashapewithtrig)<<"+-"<<Error(&datashapewithtrig)<<std::endl;
-
+    
     efficiency->SetName(histname.c_str());
     datashapenotrig.SetName((histname+"notrig").c_str());
     datashapewithtrig.SetName((histname+"withtrig").c_str());
@@ -78,9 +90,48 @@ namespace ic{
     datashapewithtrig.Write();
     efficiency->Write();
 
+    //Fit efficiency
+    TF1* fitresult;
+    if(do_fit_){
+      std::string varlow=shape_.substr(shape_.find("(")+1,shape_.find(")")-1);  
+      std::string varhigh=varlow;
+      varlow=varlow.substr(varlow.find(",")+1);
+      varlow=varlow.substr(0,varlow.find(","));
+      varhigh=varhigh.substr(varhigh.find(",")+1);
+      varhigh=varhigh.substr(varhigh.find(",")+1);
+      varhigh=varhigh.substr(0,varhigh.find(")"));
+
+      double rangelow, rangehigh;
+      std::stringstream convertlow(varlow);
+      if( !(convertlow >> rangelow) ) throw;
+      std::stringstream converthigh(varhigh);
+      if( !(converthigh >> rangehigh) ) throw;
+      //TF1 *func = new TF1("erf","[0]*0.5*(1+TMath::Erf((x-[1])/(sqrt([2]))))",rangelow,rangehigh);
+      TF1 *func = new TF1("erf","[0]*0.5*(1+TMath::Erf((x-[1])/(sqrt([2]))))+[3]*0.5*(1+TMath::Erf((x-[4])/(sqrt([5]))))",rangelow,rangehigh);
+      // func->SetParameters(1,100,10000);
+      // func->SetParNames("Max","Turn On","Sigma");
+      // func->SetParLimits(0,0.,1.);
+      // func->SetParLimits(1,-10000,10000);
+      // func->SetParLimits(2,0,100000);
+      func->SetParameters(1,100,10000,0.1,250,10000);
+      func->SetParNames("Max1","Turn On1","Sigma1","Max2","Turn On2","Sigma2");
+      func->SetParLimits(0,0.,1.);
+      func->SetParLimits(1,-10000,10000);
+      func->SetParLimits(2,0,100000);
+      func->SetParLimits(3,0.,1.);
+      func->SetParLimits(4,-10000,10000);
+      func->SetParLimits(5,0,100000);
+
+      
+      efficiency->Fit("erf","R");
+      fitresult=efficiency->GetFunction("erf");
+      fitresult->Write((namestr_+"eff").c_str());
+    }
+
     //Make plots
     TCanvas* c1= new TCanvas("canvas","canvas");
     c1->cd();
+    c1->SetGrid(1,1);
     c1->SetName(histname.c_str());
     TPad* upper = new TPad("upper","pad",0, 0 ,1 ,1);
     c1->SetBottomMargin(0.15);
@@ -152,12 +203,15 @@ namespace ic{
     c1->Print(lsave.str().c_str());//close the file                                                                                                                                                                                      
     
 
-    lsave.str("");
-    lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
-    c1->Print((lsave.str()).c_str());
-    lsavepng.str("");
-    lsavepng << tmpstr << "_" << c1->GetName() << ".png" ;
-    c1->Print((lsavepng.str()).c_str());
+    // lsave.str("");
+    // lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
+    // c1->Print((lsave.str()).c_str());
+    // lsavepng.str("");
+    // lsavepng << tmpstr << "_" << c1->GetName() << ".png" ;
+    // c1->Print((lsavepng.str()).c_str());
+
+    c1->SaveAs((tmpstr+namestr_+"_"+c1->GetName()+".pdf").c_str());
+    c1->SaveAs((tmpstr+namestr_+"_"+c1->GetName()+".png").c_str());
 
     //WRITE TO FILE                                                                                                                                                                                                                        
     dir->cd();
