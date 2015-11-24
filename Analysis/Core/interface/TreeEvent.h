@@ -228,6 +228,7 @@ class TreeEvent : public Event {
   void SetEvent(int64_t event);
 
   void SetTree(TTree* tree);
+  void DeleteAndClearHandlers();
 
   virtual void List();
 };

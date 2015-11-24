@@ -72,7 +72,7 @@ namespace ic {
       "ZZinclusive-AOD",
       "DYJetsToTauTau",
     };
-    if (ch_ != channel::em) {
+    f (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
         "WJetsToLNu-AOD",
         "WJetsToLNu",
@@ -130,7 +130,30 @@ namespace ic {
 
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
-      alias_map_["inclusive"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]         = "(iso_1<0.1 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inclelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incmelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_medium_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incmetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_medium_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inctelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_tight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["inctetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incvtelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvtetm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["dbriso1p5"]        = "(iso_1<0.1&&iso_2<1.5&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbriso1p75"]        = "(iso_1<0.1&&iso_2<1.75&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbriso1p0"]        = "(iso_1<0.1&&iso_2<1&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbriso2p0"]        = "(iso_1<0.1&&iso_2<2&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["dbriso2p5"]        = "(iso_1<0.1&&iso_2<2.5&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaiso0"]        = "(iso_1<0.1&&iso_mva_new_2>0&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaisom0p2"]        = "(iso_1<0.1&&iso_mva_new_2>-0.2&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaisop0p2"]        = "(iso_1<0.1&&iso_mva_new_2>0.2&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaisom0p1"]        = "(iso_1<0.1&&iso_mva_new_2>-0.1&&antiele_2&&antimu_2&&!leptonveto)";
+      alias_map_["mvaisop0p1"]        = "(iso_1<0.1&&iso_mva_new_2>0.1&&antiele_2&&antimu_2&&!leptonveto)";
+
+      alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
       // Categories for iso studies
       alias_map_["incnoiso"]         = "(iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["incnoisonolv"]     = "(iso_2<1.5 && antiele_2 && antimu_2)";
@@ -138,6 +161,11 @@ namespace ic {
       alias_map_["db03iso0p11"]            = "(iso_1_db03<0.11&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p12"]            = "(iso_1_db03<0.12&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p13"]            = "(iso_1_db03<0.13&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p14"]            = "(iso_1_db03<0.14&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p15"]            = "(iso_1_db03<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p16"]            = "(iso_1_db03<0.16&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p17"]            = "(iso_1_db03<0.17&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03iso0p18"]            = "(iso_1_db03<0.18&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p09"]           = "(iso_1_db03<0.09&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p08"]           = "(iso_1_db03<0.08&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03iso0p07"]           = "(iso_1_db03<0.07&&"+alias_map_["incnoiso"]+")";
@@ -157,6 +185,11 @@ namespace ic {
       alias_map_["db03allchiso0p11"]            = "(iso_1_db03allch<0.11&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p12"]            = "(iso_1_db03allch<0.12&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p13"]            = "(iso_1_db03allch<0.13&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p14"]            = "(iso_1_db03allch<0.14&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p15"]            = "(iso_1_db03allch<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p16"]            = "(iso_1_db03allch<0.16&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p17"]            = "(iso_1_db03allch<0.17&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db03allchiso0p18"]            = "(iso_1_db03allch<0.18&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p09"]           = "(iso_1_db03allch<0.09&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p08"]           = "(iso_1_db03allch<0.08&&"+alias_map_["incnoiso"]+")";
       alias_map_["db03allchiso0p07"]           = "(iso_1_db03allch<0.07&&"+alias_map_["incnoiso"]+")";
@@ -172,23 +205,81 @@ namespace ic {
       alias_map_["db04allchiso0p09"]           = "(iso_1_db04allch<0.09&&"+alias_map_["incnoiso"]+")";
       alias_map_["db04allchiso0p08"]           = "(iso_1_db04allch<0.08&&"+alias_map_["incnoiso"]+")";
       alias_map_["db04allchiso0p07"]           = "(iso_1_db04allch<0.07&&"+alias_map_["incnoiso"]+")";
-     // alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
-      //alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2)";
-      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5  && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["db04iso0p1"]            = "(iso_1_db04<0.1&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p11"]            = "(iso_1_db04<0.11&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p12"]            = "(iso_1_db04<0.12&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p13"]            = "(iso_1_db04<0.13&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p14"]            = "(iso_1_db04<0.14&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p15"]            = "(iso_1_db04<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p16"]            = "(iso_1_db04<0.16&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p17"]            = "(iso_1_db04<0.17&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p18"]            = "(iso_1_db04<0.18&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p09"]           = "(iso_1_db04<0.09&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p08"]           = "(iso_1_db04<0.08&&"+alias_map_["incnoiso"]+")";
+      alias_map_["db04iso0p07"]           = "(iso_1_db04<0.07&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p1"]            = "(iso_1_trk03<0.1&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p11"]            = "(iso_1_trk03<0.11&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p12"]            = "(iso_1_trk03<0.12&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p13"]            = "(iso_1_trk03<0.13&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p14"]            = "(iso_1_trk03<0.14&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p15"]            = "(iso_1_trk03<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p16"]            = "(iso_1_trk03<0.16&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p17"]            = "(iso_1_trk03<0.17&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p18"]            = "(iso_1_trk03<0.18&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p09"]           = "(iso_1_trk03<0.09&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p08"]           = "(iso_1_trk03<0.08&&"+alias_map_["incnoiso"]+")";
+      alias_map_["trk03iso0p07"]           = "(iso_1_trk03<0.07&&"+alias_map_["incnoiso"]+")";
+      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["qcd_vloose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
+      //for making CSV control plot
+      alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
+      //MSSM update analysis style categories:
+      alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>30 && pt_2<45)";
+      alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45)";
+      alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>30 && pt_2<45";
+      alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>45 && pt_2<60";
+      alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>60";
+    } else if (ch_ == channel::tt) {
+      alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvletm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inclelm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_loose_1>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incletm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_tight_1>0 && antie_loose_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incmelm"]         = "(iso_1<1&&iso_2<1 && antie_medium_1>0 && antimu_loose_1>0 && antie_medium_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incmetm"]         = "(iso_1<1&&iso_2<1 && antie_medium_1>0 && antimu_tight_1>0 && antie_medium_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["inctelm"]         = "(iso_1<1&&iso_2<1 && antie_tight_1>0 && antimu_loose_1>0 && antie_tight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["inctetm"]         = "(iso_1<1&&iso_2<1 && antie_tight_1>0 && antimu_tight_1>0 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["incvtelm"]         = "(iso_1<1&&iso_2<1 && antie_vtight_1>0 && antimu_loose_1>0 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
+      alias_map_["incvtetm"]         = "(iso_1<1&&iso_2<1 && antie_vtight_1>0 && antimu_tight_1>0 && antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
+
+
+      // SM Categories
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]          = "db_tight_1>0.5 && db_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
+      //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
+      alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
+      //for making CSV control plot
+      alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
+      //MSSM update analysis style categories:
+      alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45 && pt_2<60)";
+      alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>60)";
+      alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>45 && pt_2<60";
+      alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>60 && pt_2<80";
+      alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>80";
+    } else if (ch_ == channel::em) {
+      // SM Categories
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
-      alias_map_["vbf"] += "&&" + alias_map_["inclusive"];
-      alias_map_["1jet"] += "&&" + alias_map_["inclusive"];
-    } else if (ch_ == channel::tt) {
-      // SM Categories
-      //alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
-      alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
-      alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-    } else if (ch_ == channel::em) {
-      // SM Categories
-      alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
       alias_map_["incnoiso"]         = "!leptonveto";
       alias_map_["incnoisowmu"]         = "iso_2<0.15 && !leptonveto";
       alias_map_["incnoisowe"]         = "iso_1<0.15 && !leptonveto";
@@ -201,6 +292,8 @@ namespace ic {
       alias_map_["edb03iso0p19"]            = "(iso_1_db03<0.18&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03iso0p20"]            = "(iso_1_db03<0.19&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03iso0p21"]            = "(iso_1_db03<0.21&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb03iso0p1"]           = "(iso_1_db03<0.1&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb03iso0p11"]           = "(iso_1_db03<0.11&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03iso0p12"]           = "(iso_1_db03<0.12&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03iso0p13"]           = "(iso_1_db03<0.13&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03iso0p14"]           = "(iso_1_db03<0.14&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
@@ -211,9 +304,47 @@ namespace ic {
       alias_map_["mdb03iso0p19"]            = "(iso_2_db03<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03iso0p20"]            = "(iso_2_db03<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03iso0p21"]            = "(iso_2_db03<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb03iso0p1"]           = "(iso_2_db03<0.1&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb03iso0p11"]           = "(iso_2_db03<0.11&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03iso0p12"]           = "(iso_2_db03<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03iso0p13"]           = "(iso_2_db03<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03iso0p14"]           = "(iso_2_db03<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p15"]            = "(iso_2_db04<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p16"]            = "(iso_2_db04<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p17"]            = "(iso_2_db04<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p18"]            = "(iso_2_db04<0.18&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p19"]            = "(iso_2_db04<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p20"]            = "(iso_2_db04<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p21"]            = "(iso_2_db04<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p1"]           = "(iso_2_db04<0.1&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p11"]           = "(iso_2_db04<0.11&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p12"]           = "(iso_2_db04<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p13"]           = "(iso_2_db04<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04iso0p14"]           = "(iso_2_db04<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p15"]            = "(iso_2_db04<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p16"]            = "(iso_2_db04<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p17"]            = "(iso_2_db04<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p18"]            = "(iso_2_db04<0.18&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p19"]            = "(iso_2_db04<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p20"]            = "(iso_2_db04<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p21"]            = "(iso_2_db04<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p1"]           = "(iso_2_db04<0.1&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p11"]           = "(iso_2_db04<0.11&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p12"]           = "(iso_2_db04<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p13"]           = "(iso_2_db04<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04iso0p14"]           = "(iso_2_db04<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p14"]           = "(iso_2_trk03<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p15"]            = "(iso_2_trk03<0.15&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p16"]            = "(iso_2_trk03<0.16&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p17"]            = "(iso_2_trk03<0.17&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p18"]            = "(iso_2_trk03<0.18&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p19"]            = "(iso_2_trk03<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p20"]            = "(iso_2_trk03<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p21"]            = "(iso_2_trk03<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p1"]           = "(iso_2_trk03<0.1&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p11"]           = "(iso_2_trk03<0.11&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p12"]           = "(iso_2_trk03<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mtrk03iso0p13"]           = "(iso_2_trk03<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p15"]            = "(iso_1_ea03<0.15&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p16"]            = "(iso_1_ea03<0.16&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p17"]            = "(iso_1_ea03<0.17&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
@@ -221,6 +352,8 @@ namespace ic {
       alias_map_["eea03iso0p19"]            = "(iso_1_ea03<0.19&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p20"]            = "(iso_1_ea03<0.20&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p21"]            = "(iso_1_ea03<0.21&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["eea03iso0p1"]           = "(iso_1_ea03<0.1&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["eea03iso0p11"]           = "(iso_1_ea03<0.11&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p12"]           = "(iso_1_ea03<0.12&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p13"]           = "(iso_1_ea03<0.13&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["eea03iso0p14"]           = "(iso_1_ea03<0.14&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
@@ -231,6 +364,8 @@ namespace ic {
       alias_map_["mea03iso0p19"]            = "(iso_2_ea03<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mea03iso0p20"]            = "(iso_2_ea03<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mea03iso0p21"]            = "(iso_2_ea03<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mea03iso0p1"]           = "(iso_2_ea03<0.1&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mea03iso0p11"]           = "(iso_2_ea03<0.11&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mea03iso0p12"]           = "(iso_2_ea03<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mea03iso0p13"]           = "(iso_2_ea03<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mea03iso0p14"]           = "(iso_2_ea03<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
@@ -241,6 +376,8 @@ namespace ic {
       alias_map_["edb03allchiso0p19"]            = "(iso_1_db03allch<0.19&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03allchiso0p20"]            = "(iso_1_db03allch<0.20&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03allchiso0p21"]            = "(iso_1_db03allch<0.21&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb03allchiso0p1"]           = "(iso_1_db03allch<0.1&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb03allchiso0p11"]           = "(iso_1_db03allch<0.11&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03allchiso0p12"]           = "(iso_1_db03allch<0.12&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03allchiso0p13"]           = "(iso_1_db03allch<0.13&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb03allchiso0p14"]           = "(iso_1_db03allch<0.14&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
@@ -251,6 +388,8 @@ namespace ic {
       alias_map_["mdb03allchiso0p19"]            = "(iso_2_db03allch<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03allchiso0p20"]            = "(iso_2_db03allch<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03allchiso0p21"]            = "(iso_2_db03allch<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb03allchiso0p1"]           = "(iso_2_db03allch<0.1&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb03allchiso0p11"]           = "(iso_2_db03allch<0.11&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03allchiso0p12"]           = "(iso_2_db03allch<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03allchiso0p13"]           = "(iso_2_db03allch<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb03allchiso0p14"]           = "(iso_2_db03allch<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
@@ -261,6 +400,8 @@ namespace ic {
       alias_map_["edb04allchiso0p19"]            = "(iso_1_db04allch<0.19&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb04allchiso0p20"]            = "(iso_1_db04allch<0.20&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb04allchiso0p21"]            = "(iso_1_db04allch<0.21&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04allchiso0p1"]           = "(iso_1_db04allch<0.1&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["edb04allchiso0p11"]           = "(iso_1_db04allch<0.11&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb04allchiso0p12"]           = "(iso_1_db04allch<0.12&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb04allchiso0p13"]           = "(iso_1_db04allch<0.13&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["edb04allchiso0p14"]           = "(iso_1_db04allch<0.14&&iso_2<0.15&&"+alias_map_["incnoiso"]+")";
@@ -271,16 +412,25 @@ namespace ic {
       alias_map_["mdb04allchiso0p19"]            = "(iso_2_db04allch<0.19&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb04allchiso0p20"]            = "(iso_2_db04allch<0.20&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb04allchiso0p21"]            = "(iso_2_db04allch<0.21&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04allchiso0p1"]           = "(iso_2_db04allch<0.1&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
+      alias_map_["mdb04allchiso0p11"]           = "(iso_2_db04allch<0.11&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb04allchiso0p12"]           = "(iso_2_db04allch<0.12&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb04allchiso0p13"]           = "(iso_2_db04allch<0.13&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
       alias_map_["mdb04allchiso0p14"]           = "(iso_2_db04allch<0.14&&iso_1<0.15&&"+alias_map_["incnoiso"]+")";
 
       //alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5)";
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5 && !leptonveto)";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["ttcontrol"] = "(n_jets>=1 && n_bjets>=1 && pzeta<-50)";
+      //for making CSV control plot
+      alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
-      alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<0.1)";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
     } else if (ch_ == channel::wmnu) {
-      alias_map_["inclusive"]         = "(iso_1<0.1)";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]         = "(iso_1<0.1)";
     }
     
     // Selection control regions
@@ -515,7 +665,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   void HTTRun2Analysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
         sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
-//      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
+        sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
     }
   }
 
@@ -574,6 +724,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateData(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
+    cat += "&&" + alias_map_["baseline"];
     auto data_norm = this->GetRate(this->ResolveSamplesAlias("data_samples"), sel, cat, wt);
     TH1F data_hist = this->GetShape(var, this->ResolveSamplesAlias("data_samples"), sel, cat, wt);
     SetNorm(&data_hist, data_norm.first);
@@ -584,6 +735,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZTT(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZTT] --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     Value ztt_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> ztt_samples = this->ResolveSamplesAlias("ztt_samples");
@@ -615,6 +767,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZL --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     Value zl_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> zl_samples = this->ResolveSamplesAlias("zl_samples");
@@ -628,6 +781,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZJ(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZJ --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     Value zj_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> zj_samples = this->ResolveSamplesAlias("zj_samples");
@@ -649,6 +803,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZLL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZLL --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     Value zl_norm;
     std::vector<std::string> zll_samples = this->ResolveSamplesAlias("zll_samples");
     zl_norm = this->GetLumiScaledRate(zll_samples, sel, cat, wt) ;
@@ -662,6 +817,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateTOP(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateTOP] --------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     std::vector<std::string> top_samples = this->ResolveSamplesAlias("top_samples");
     if (verbosity_) {
       std::cout << "top_samples: ";
@@ -683,6 +839,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateVV(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateVV] ---------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
     std::vector<std::string> vv_samples = this->ResolveSamplesAlias("vv_samples");
     auto vv_norm = this->GetLumiScaledRate(vv_samples, sel, cat, wt);
     std::string vv_shape_cat = cat;
@@ -694,6 +851,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   }
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    cat += "&&" + alias_map_["baseline"];
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     std::string w_extrap_cat = cat;
@@ -721,6 +879,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
+    std::string maincat = cat + "&&" + alias_map_["baseline"];
     Value qcd_norm;
     TH1F qcd_hist;
 //    if (ch_ != channel::em) {
@@ -735,7 +894,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::string w_extrp_sdb_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("w_sdb");
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
-      std::string qcd_cat = cat;
+      std::string qcd_cat = maincat;
       //Work out the W norm in the SS region separately if it is data driven
       Value w_ss_norm;
       std::vector<std::string> wjets_samples = this->ResolveSamplesAlias("wjets_samples");
@@ -767,15 +926,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       }
       std::string qcd_shape_cat = cat;
       if (method == 8) {
+        qcd_shape_cat += "&&" + alias_map_["baseline"];
         qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
       } else if(method == 10) {
+        qcd_shape_cat += "&&" + alias_map_["baseline"];
         qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
         {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;} 
           }
         });
       } else {
-        if (method == 9 || method == 11) qcd_shape_cat = this->ResolveAlias("qcd_loose_shape");
+        if (method == 9 || method == 11) {
+            qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
+        }
         qcd_hist = this->GetShape(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, wt);
 //        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
  //         % this->ResolveSamplesAlias("data_samples") % qcd_sdb_sel % qcd_shape_cat % wt;
@@ -785,6 +948,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   }
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs) {
+    cat += "&&" + alias_map_["baseline"];
     Value signal_norm;
     if (xs > 0) {
       if (verbosity_ > 1) std::cout << "[HTTRun2Analysis::GenerateSignal] " << sample << " scaled to lumi using cross section " << xs << " pb" << std::endl;
@@ -825,7 +989,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                     double fixed_xs) {
     for (auto const& m : masses) {
         hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
-//      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
+        hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
 

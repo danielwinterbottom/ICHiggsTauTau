@@ -51,7 +51,10 @@ class EventInfo {
 
   /// Energy density used for calculating lepton isolation in this event
   inline double lepton_rho() const { return lepton_rho_; }
-  
+
+  /// Generator level HT, used for combining HT binned samples with inclusive samples
+  inline double gen_ht() const { return gen_ht_; }
+
   /// Number of reconstructed vertices passing some baseline quality
   /// requirements
   inline unsigned good_vertices() const { return good_vertices_; }
@@ -85,6 +88,9 @@ class EventInfo {
   inline void set_lepton_rho(double const& lepton_rho) {
     lepton_rho_ = lepton_rho;
   }
+
+  /// @copybrief gen_ht()
+  inline void set_gen_ht(double const& gen_ht) { gen_ht_ = gen_ht; }
 
   /// @copybrief good_vertices()
   inline void set_good_vertices(unsigned const& good_vertices) {
@@ -247,6 +253,7 @@ class EventInfo {
   int bunch_crossing_;
   double jet_rho_;
   double lepton_rho_;
+  double gen_ht_;
   SDMap weights_;
   SBMap weight_status_;
   unsigned good_vertices_;
@@ -254,7 +261,7 @@ class EventInfo {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 4);
+  ClassDef(EventInfo, 5);
  #endif
 };
 }

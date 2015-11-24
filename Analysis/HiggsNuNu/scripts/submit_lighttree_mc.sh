@@ -1,37 +1,40 @@
 #!/bin/sh
-DOCERN=0
-DOSUBMIT=1
+DOCERN=1
+DOSUBMIT=0
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=LightTreeMakerFromMiniAOD
 MYEXEC=LightTreeMakerFromMiniAOD
+PRODUCTION=151030
+PRODUSER=amagnan
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
-: ${JOBWRAPPER:="./scripts/generate_job.sh"}
+: ${JOBWRAPPER:="./scripts/generate_job.sh $DOCERN $MYEXEC $PRODUCTION"}
 : ${JOBSUBMIT:="eval"}
 
+
+GRIDSETUP=1
 if [ "$DOCERN" = "0" ]
     then
     JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
 else
     JOBSCRIPT="./scripts/submit_cern_batch_job.sh"
+    GRIDSETUP=0
 fi
 
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
-PRODUCTION=151030
-PRODUSER=amagnan
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_301015goldenjson_hltmet_051115v2/
+  JOBDIRPREFIX=jobs_lighttree_151117
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_301015goldenjson_hltmet_051115v2/
+  OUTPUTPREFIX=output_lighttree_151117
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -186,7 +189,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 	    do
 	    WJOB=$JOB"_"$FLAVOUR
 	    
-	    $JOBWRAPPER "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+	    $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh $GRIDSETUP
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$WJOB.sh    
 	    else
@@ -195,7 +198,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 	  done
 	  
       else  
-	  $JOBWRAPPER "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh  $GRIDSETUP
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$JOB.sh
 	    else
@@ -254,7 +257,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 		
 		WJOB=$JOB"_"$FLAVOUR
 		
-		$JOBWRAPPER "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+		$JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh $GRIDSETUP
 		if [ "$DOSUBMIT" = "1" ]; then 
 		    $JOBSUBMIT $JOBDIR/$WJOB.sh
 		else
@@ -262,12 +265,12 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 		fi                                                                                  
 	      done
 	  else  
-	      $JOBWRAPPER "./bin/$MYEXEC --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	      $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh $GRIDSETUP
 	      if [ "$DOSUBMIT" = "1" ]; then 
 		  $JOBSUBMIT $JOBDIR/$JOB.sh
 	      else
 		  echo "$JOBSUBMIT $JOBDIR/$JOB.sh"
-	      fi                                                                                  
+	      fi
 	  fi
 	  
 	  rm tmp.txt tmp2.txt

@@ -352,6 +352,9 @@ namespace ic {
   }
 
   int  LightTree::Execute(TreeEvent *event){
+
+    //static unsigned processed = 0;
+
     //Reset all information
     run_=-1;
     lumi_=-1;
@@ -565,23 +568,23 @@ namespace ic {
     double pileupwt=1;
     double pileupwtup=1;
     double pileupwtdown=1;
-    double topwt=1;
-    double topwtup=1;
-    double topwtdown=1;
+    //double topwt=1;
+    //double topwtup=1;
+    //double topwtdown=1;
     if(!is_data_){
       vetowt= eventInfo->weight("idisoVeto");
       tightwt = eventInfo->weight("idisoTight");
       pileupwt=eventInfo->weight("pileup");
       pileupwtup=eventInfo->weight("pileup_up");
       pileupwtdown=eventInfo->weight("pileup_down");
-      topwt=eventInfo->weight("tquark_weight");
-      topwtup=eventInfo->weight("tquark_weight_up");
-      topwtdown=eventInfo->weight("tquark_weight_up");
+      //topwt=eventInfo->weight("tquark_weight");
+      //topwtup=eventInfo->weight("tquark_weight_up");
+      //topwtdown=eventInfo->weight("tquark_weight_down");
     }
     puweight_up_scale_=pileupwtup/pileupwt;
     puweight_down_scale_=pileupwtdown/pileupwt;
-    topweight_up_scale_=topwtup/topwt;
-    topweight_down_scale_=topwtdown/topwt;
+    //topweight_up_scale_=topwtup/topwt;
+    //topweight_down_scale_=topwtdown/topwt;
 
     weight_nolep_ = wt;
     total_weight_lepveto_ =wt*vetowt;
@@ -823,7 +826,9 @@ namespace ic {
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
       //      if(l1met.size()==1){//!!
-      l1met_ = l1met[2]->pt();
+
+      if(!is_data_) l1met_ = l1met[0]->pt();
+      else l1met_ = l1met[2]->pt();
       //}
       metnomuons_ = metnomuons->pt();
       metnomu_x_ = metnomuvec.Px();
@@ -1012,7 +1017,11 @@ namespace ic {
       }
 
       //IF PASSES CUTS FILL TREE
-      if(!ignoreLeptons_){
+      if(do_noskim_){
+	outputTree_->Fill();
+	++processed;
+      }
+      else if(!ignoreLeptons_){
 	if(!do_promptskim_){
 	  if(!do_noskim_){
 	    if (jet_pt_[1]>40&& dijet_M_ > 600 &&  dijet_deta_>3.6){
@@ -1051,9 +1060,12 @@ namespace ic {
 	}
 	
       }
-      if (processed == 500) outputTree_->OptimizeBaskets();
     }
-
+    else if(do_noskim_){
+      outputTree_->Fill();
+      ++processed;
+    }
+    if (processed == 500) outputTree_->OptimizeBaskets();
     return 0;
   }
 

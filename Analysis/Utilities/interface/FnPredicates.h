@@ -156,6 +156,8 @@ namespace ic {
     }
   }
 
+  double PUW03IsolationVal(Muon const* muon);
+  double PUW04IsolationVal(Muon const* muon);
   
   template<class T>
   double PF03IsolationVal(T const* cand, double const& dbeta, bool allcharged=false) {
@@ -262,6 +264,7 @@ namespace ic {
   bool MuonLoose(Muon const* muon);
   bool MuonIso(Muon const* muon);
   bool MuonTkIso(Muon const* muon);
+  double MuonTkIsoVal(Muon const* muon);
 
 
   template<class T, class U>
@@ -362,11 +365,61 @@ namespace ic {
 
   std::vector<GenParticle *> ExtractDaughtersRecursive(GenParticle * part, std::vector<GenParticle *> const& input);
 
-  std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic);
+  std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 
-  
+  template <class T, class U>
+    void getGenRecoMatches(const std::vector<T*> & recovec,
+			   const std::vector<U*> & genvec, 
+			   std::vector<std::pair<unsigned,bool> > & recotogenmatch){
+    recotogenmatch.resize(recovec.size(),std::pair<unsigned,bool>(1000,false));
+    unsigned nReco = recovec.size();
+    unsigned nGen = genvec.size();
+    unsigned nRecNotMatched = 0;
+    std::vector<bool> ignoreIndex;
+    ignoreIndex.resize(nGen,false);
+    for (unsigned i = 0; i < nReco; ++i) {//loop on recovec
+      double mindR = 1000;
+      unsigned genvecid=1000;
+      for (unsigned ig = 0; ig < nGen; ++ig) {//loop on genvec
+	if (ignoreIndex[ig]) continue;
+	double dR = ROOT::Math::VectorUtil::DeltaR(genvec[ig]->vector(),recovec[i]->vector());
+	if (dR<mindR){
+	  mindR = dR;
+	  genvecid = ig;
+	}
+      }//loop on genvec
+      if (genvecid==1000){
+	nRecNotMatched++;
+	continue;
+      }
+      recotogenmatch[i]=std::pair<unsigned,bool>(genvecid,true);
+      ignoreIndex[genvecid] = true;
+      //loop again to find minimum dpT/pT
+      /*double ptgen = genvec[genvecid]->pt();
+      double mindpT = fabs(recovec[i]->pt()-ptgen)/ptgen;
+      for (unsigned j = 0; j < i; ++j) {//loop on recovec
+	if (recotogenmatch[j].first!=genvecid) continue;
+	double dR = ROOT::Math::VectorUtil::DeltaR(genvec[genvecid]->vector(),recovec[j]->vector());	
+	double dptrel = fabs(recovec[j]->pt()-ptgen)/ptgen;
+	if (dptrel<mindpT && dR<0.4) {
+	  mindpT = dptrel;
+	  recotogenmatch[i]=std::pair<unsigned,bool>(2000,false);
+	} else if (dR<mindR){
+	  recotogenmatch[i]=std::pair<unsigned,bool>(2000,false);
+	} else {
+	  recotogenmatch[j]=std::pair<unsigned,bool>(2000,false);
+	}
+	nRecNotMatched++;
+	}*/
+    }
+
+    if (nReco<=nGen && nRecNotMatched>0) std::cout << " -- Warning: " << __FILE__ << " line " << __LINE__ << ", found " << nRecNotMatched << "/" << nReco << " recovec not matched, genvec size is: " << nGen << std::endl;
+    
+  }
+
+
 
   /*
   //---------------------------------------------------------------------------

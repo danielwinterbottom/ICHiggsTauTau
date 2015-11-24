@@ -31,7 +31,6 @@ class ICEventInfoProducer : public edm::EDProducer {
 
   ic::EventInfo *info_;
   std::string branch_;
-  bool is_nlo_;
   edm::InputTag lhe_collection_;
   bool do_jets_rho_;
   edm::InputTag input_jets_rho_;
@@ -42,6 +41,7 @@ class ICEventInfoProducer : public edm::EDProducer {
   bool do_csc_filter_;
   edm::InputTag input_csc_filter_;
   bool do_lhe_weights_;
+  bool do_ht_;
   bool do_filtersfromtrig_;
   std::vector<std::pair<std::string, edm::InputTag> > filters_;
   std::vector<std::string> filtersfromtrig_;

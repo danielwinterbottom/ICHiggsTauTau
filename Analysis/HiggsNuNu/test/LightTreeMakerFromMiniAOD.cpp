@@ -34,13 +34,16 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvDataTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWDecay.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/WDecaySeparator.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetEventFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTreeAM.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTreeTrig.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -92,6 +95,9 @@ int main(int argc, char* argv[]){
   string mettype;                 // MET input collection to be used
   string jettype;                 // JET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
+  bool reapplyJEC;                // Reapply JEC from txt files
+  string jecdata;                 // File list to get JEC to reapply offline
+
   bool doMetFilters;              // apply cleaning MET filters.
   string filters;
   //unsigned signal_region;       // DeltaPhi cut > 2.7
@@ -120,6 +126,10 @@ int main(int argc, char* argv[]){
   bool printEventContent; //print event content of events selected
 
   bool turnoffpuid;
+
+  bool useOldLT;
+  bool doTrigLT;
+  bool doAllPairs;
 
  // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -181,8 +191,13 @@ int main(int argc, char* argv[]){
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("dospring10gaus",      po::value<bool>(&dospring10gaus)->default_value(false))
-    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
+    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt"))
+    ("reapplyJEC",          po::value<bool>(&reapplyJEC)->default_value(false))
+    ("jecdata",          po::value<string>(&jecdata)->default_value("input/jec/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
+    ("useOldLT",         po::value<bool>(&useOldLT)->default_value(false))
+    ("doTrigLT",         po::value<bool>(&doTrigLT)->default_value(false))
+    ("doAllPairs",       po::value<bool>(&doAllPairs)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -191,6 +206,9 @@ int main(int argc, char* argv[]){
 
   vector<string> filtersVec;
   boost::split(filtersVec, filters, boost::is_any_of(","));
+
+  std::vector<string> jecdatafiles;
+  boost::split(jecdatafiles, jecdata, boost::is_any_of(","));
 
   // Some options must now be re-configured based on other options
   ic::era era           = String2Era(era_str);
@@ -232,7 +250,18 @@ int main(int argc, char* argv[]){
     return 1;
   }
   checkfile.close();
-  fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
+
+  //rename with _wstream.root properly
+  std::string fullpath = output_folder+output_name;
+  if (output_name.find("JetsToLNu") != output_name.npos) {
+    std::string suffix=".root";
+    std::size_t found = fullpath.find(suffix);
+    if(found!=std::string::npos){
+      fullpath.erase(found,5);
+    }
+    fullpath = fullpath+"_"+wstream+".root";
+  }
+  fwlite::TFileService *fs = new fwlite::TFileService(fullpath.c_str());
   
   bool ignoreLeptons=false;
   if (output_name.find("iglep") != output_name.npos) {
@@ -325,8 +354,8 @@ int main(int argc, char* argv[]){
 //     .set_input_file(data_json);
 
   MakeRunStats runStats = MakeRunStats("RunStats")
-    .set_output_name(output_folder+output_name+".runstats");
-  
+    .set_output_name(fullpath+".runstats");
+
   
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
@@ -343,7 +372,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_moriond) data_pu_file   =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
-  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_2015D_246908-259891-600bins.root";
+  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -362,6 +391,10 @@ int main(int argc, char* argv[]){
   else if(era == era::data_2015_50ns){
     data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Up.root", "/", "pileup");
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Down.root", "/", "pileup");
+  }
+  else if(era == era::data_2015_25ns){
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb72d5_2015D_246908-260627-600bins.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
   }
 
   if (!is_data) {
@@ -397,11 +430,11 @@ int main(int argc, char* argv[]){
 //   .set_l2_file("input/jec/START53_V10_L2Relative_AK5PF.txt")
 //   .set_l3_file("input/jec/START53_V10_L3Absolute_AK5PF.txt");
   
-
-  MetLaserFilters cscTightHaloFilter = MetLaserFilters("CscTightHaloFilter",
-						    "input/halofilters/allevents.txt",
-						    "dummy.txt",
-						    doMetFilters);
+  std::vector<string> inputVec;
+  inputVec.push_back("input/halofilters/allevents.txt");
+  MetEventFilters cscTightHaloFilter = MetEventFilters("CscTightHaloFilter",
+						       inputVec,
+						       doMetFilters);
 
 
   SimpleFilter<Vertex> goodVertexFilter = SimpleFilter<Vertex>("goodVertexFilter")
@@ -543,8 +576,6 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(999);    
 
-  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,150,true);
-
   // ------------------------------------------------------------------------------------
   // Tau modules
   // ------------------------------------------------------------------------------------
@@ -619,6 +650,8 @@ int main(int argc, char* argv[]){
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
     .set_input_label(jettype)
+    .set_jec_data_files(jecdatafiles)
+    .set_reapplyJEC(reapplyJEC)
     .set_met_label(mettype)
     .set_dosmear(dosmear)
     .set_doaltmatch(doaltmatch)
@@ -693,6 +726,14 @@ int main(int argc, char* argv[]){
     .set_select_leading_pair(true)
     .set_output_label("jjLeadingCandidates");                                                        
 
+  OneCollCompositeProducer<PFJet> jjAllPairProducer = OneCollCompositeProducer<PFJet>
+    ("JetJetAllPairProducer")
+    .set_input_label(jettype)
+    .set_candidate_name_first("jet1")
+    .set_candidate_name_second("jet2")
+    .set_select_leading_pair(false)
+    .set_output_label("jjAllCandidates");                                                        
+
   int npairs=1;
   if(donoskim)npairs=0;
   bool cutaboveorbelow=true;
@@ -701,6 +742,11 @@ int main(int argc, char* argv[]){
     .set_predicate( bind(OrderedPairPtSelection, _1,jet1ptcut, jet2ptcut, cutaboveorbelow) )
     .set_min(npairs)
     .set_max(999);
+
+  if (doAllPairs) {
+    jetPairFilter.set_input_label("jjAllCandidates");
+    jetPairFilter.set_predicate(!bind(PairDEtaLessThan, _1, 3.2) && bind(PairMassInRange, _1,600,100000) && bind(PairPtSelection, _1,30,30)  );
+  }
 
   // ------------------------------------------------------------------------------------
   // Met Modules
@@ -807,16 +853,18 @@ int main(int argc, char* argv[]){
   else if (wstream == "munu") lFlavour = 13;
   else if (wstream == "taunu") lFlavour = 15;
 
+  WDecaySeparator WtoLeptonFilter = WDecaySeparator("WtoLeptonSelector",lFlavour);
 
+  HinvWDecay WtoLeptonFilter2012 = HinvWDecay("WtoLeptonSelector2012",lFlavour);
+  WtoLeptonFilter2012.set_do_newstatuscodes(false);
+  WtoLeptonFilter2012.set_do_statusflags(false);
 
-  HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
-  WtoLeptonFilter.set_do_newstatuscodes(true);
-  WtoLeptonFilter.set_do_statusflags(true);
+  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,150,true);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
   // ------------------------------------------------------------------------------------  
-  
+
   LightTree lightTree = LightTree("LightTree")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -831,6 +879,30 @@ int main(int argc, char* argv[]){
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
   //.set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
 
+  LightTreeTrig lightTreeTrig = LightTreeTrig("LightTreeTrig")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_jet_label(jettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_is_data(is_data)
+    .set_dotrigskim(false)
+    .set_do_noskim(donoskim)
+    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
+  //.set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
+
+  LightTreeAM lightTreeNew = LightTreeAM("LightTreeNew")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_jet_label(jettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_is_data(is_data)
+    .set_do_trigskim(false)
+    .set_do_promptskim(dopromptskim)
+    .set_do_noskim(donoskim)
+    .set_ignoreLeptons(ignoreLeptons);
+
+  if (doAllPairs) lightTreeNew.set_dijet_label("jjAllCandidates");
+
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
@@ -841,7 +913,10 @@ int main(int argc, char* argv[]){
     //do W streaming to e,mu,tau
     if (output_name.find("JetsToLNu") != output_name.npos ||
 	output_name.find("EWK-W2j") != output_name.npos) {
-      if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
+      if (wstream != "nunu") {
+	if (era_str.find("2012") != era_str.npos) analysis.AddModule(&WtoLeptonFilter2012);
+	else analysis.AddModule(&WtoLeptonFilter);
+      }
     }
     //Do PU Weight
     analysis.AddModule(&pileupWeight);
@@ -861,7 +936,7 @@ int main(int argc, char* argv[]){
     analysis.AddModule(&metFilters);
     analysis.AddModule(&cscTightHaloFilter);
   }
-  
+
   if(!donoskim)analysis.AddModule(&goodVertexFilter);
   //jet modules
   analysis.AddModule(&jetIDFilter);
@@ -921,6 +996,8 @@ int main(int argc, char* argv[]){
   //if (printEventContent) analysis.AddModule(&hinvPrint);
   //two-leading jet pair production before plotting
   analysis.AddModule(&jjLeadingPairProducer);
+  if (doAllPairs) analysis.AddModule(&jjAllPairProducer);
+
   //if (printEventContent) analysis.AddModule(&hinvPrint);
   
   //analysis.AddModule(&hinvPrint);
@@ -938,17 +1015,21 @@ int main(int argc, char* argv[]){
   //jet pair selection
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   
-  //write tree with TMVA input variables
-  analysis.AddModule(&lightTree);  
+  //write tree
+  if (useOldLT) analysis.AddModule(&lightTree);  
+  else analysis.AddModule(&lightTreeNew);  
   
+  if (!useOldLT && doTrigLT) analysis.AddModule(&lightTreeTrig);
+
   // Run analysis
-  analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
+  analysis.RetryFileAfterFailure(60,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
   analysis.StopOnFileFailure(true);
   analysis.SetTTreeCaching(true); 
   
   analysis.RunAnalysis();
   delete fs;
   return 0;
+
 }
 
 
