@@ -28,6 +28,9 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, std::vector<std::string>, binnedin2d1dfitweightvarorder)//bin in first two fit in 3rd
   CLASS_MEMBER(HinvWeights, std::vector<double>, binnedin2d1dfitweightvar1binning)//binning of first var
   CLASS_MEMBER(HinvWeights, std::vector<double>, binnedin2d1dfitweightvar2binning)//binning of second var
+  CLASS_MEMBER(HinvWeights, bool, do_run2)
+
+
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_veto_weights)

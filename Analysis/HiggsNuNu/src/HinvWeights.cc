@@ -44,6 +44,7 @@ namespace ic {//namespace
     thisvar2binning.push_back(1000);
     thisvar2binning.push_back(5000);
     binnedin2d1dfitweightvar2binning_=thisvar2binning;
+    do_run2_=false;
     trg_applied_in_mc_  = false;
     do_idiso_tight_weights_   = false;
     do_idiso_veto_weights_   = false;
@@ -223,9 +224,14 @@ namespace ic {//namespace
 	    std::ostringstream convert;
 	    convert<<iVar1+1<<iVar2+1;
 	    std::string histnumber=convert.str();
-	    thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"A").c_str()));
-	    thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"BC").c_str()));
-	    thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
+	    if(!do_run2_){
+	      thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"A").c_str()));
+	      thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"BC").c_str()));
+	      thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
+	    }
+	    else{
+	      thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
+	    }
 	    thisfuncvectorvector.push_back(thisfuncvector);
 	  }
 	  func_trigSF_binnedin2d.push_back(thisfuncvectorvector);
@@ -621,17 +627,21 @@ namespace ic {//namespace
 	  if(var2bin==-10)var2bin=binnedin2d1dfitweightvar2binning_.size()-1;
 	}
 	double trgweights[3];
+	int nRuns;
+	if(!do_run2_) nRuns=3;
+	else nRuns=1;
 	if((var1bin!=-1)&&(var2bin!=-1)){
 	  //!!READ OUT WEIGHT FOR EACH RUN
 	  double xmin,xmax;
 	  TF1* funcs[3];
-	  for(unsigned iRun=0;iRun<3;iRun++){
+	  for(int iRun=0;iRun<nRuns;iRun++){
 	    funcs[iRun]=func_trigSF_binnedin2d[var1bin-1][var2bin-1][iRun];
 	  }
+	  
 	  funcs[0]->GetRange(xmin,xmax);
 	  
 	  //Get weight                                                                                                                                     
-	  for(unsigned iRun=0;iRun<3;iRun++){
+	  for(int iRun=0;iRun<nRuns;iRun++){
 	    
 	    if(vars[2]<=xmax){
 	      if(vars[2]>=xmin){
@@ -643,12 +653,18 @@ namespace ic {//namespace
 	  }
 	}
 	else{
-	  for(unsigned iRun=0;iRun<3;iRun++){
+	  for(int iRun=0;iRun<nRuns;iRun++){
 	    trgweights[iRun]=0;
 	  }
 	}
-	//LUMI WEIGHTED AVERAGE OVER RUNS                                                                                                      
-	double trgweight=(trgweights[0]*Alumi_+trgweights[1]*BClumi_+trgweights[2]*Dlumi_)/(Alumi_+BClumi_+Dlumi_);
+	double trgweight;
+	if(!do_run2_){
+	  //LUMI WEIGHTED AVERAGE OVER RUNS                                                                                                      
+	  trgweight=(trgweights[0]*Alumi_+trgweights[1]*BClumi_+trgweights[2]*Dlumi_)/(Alumi_+BClumi_+Dlumi_);
+	}
+	else{
+	  trgweight=trgweights[0];
+	}
 	//std::cout<<" Total Weight "<<trgweight<<std::endl;                                                                                            
 	//SET TRIGGER WEIGHT                                                                                                                             
 	if (do_trg_weights_) eventInfo->set_weight("trig_2dbinned1d",trgweight);
