@@ -79,6 +79,8 @@ namespace ic {
       outtree_->Branch("antimu_2",          &antimu_2_);
       outtree_->Branch("leptonveto",        &lepton_veto_);
       outtree_->Branch("dilepton_veto",     &dilepton_veto_);
+      outtree_->Branch("loose_dilepton_veto",     &loose_dilepton_veto_);
+      outtree_->Branch("loosenoid_dilepton_veto",     &loosenoid_dilepton_veto_);
       outtree_->Branch("extraelec_veto",    &extraelec_veto_);
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("minimal_extraelec_veto",    &minimal_extraelec_veto_);
@@ -126,6 +128,8 @@ namespace ic {
       if(iso_study_){
         //Add different isolation variables for if studying isolation
         outtree_->Branch("iso_1_db03", &iso_1_db03_);
+        outtree_->Branch("iso_1_puw03", &iso_1_puw03_);
+        outtree_->Branch("iso_1_puw04", &iso_1_puw04_);
         outtree_->Branch("iso_1_db03allch", &iso_1_db03allch_);
         outtree_->Branch("iso_1_db04allch", &iso_1_db04allch_);
         outtree_->Branch("iso_1_db04", &iso_1_db04_);
@@ -137,6 +141,8 @@ namespace ic {
         outtree_->Branch("iso_2_db04", &iso_2_db04_);
         outtree_->Branch("iso_2_ea03", &iso_2_ea03_);
         outtree_->Branch("iso_2_trk03", &iso_2_trk03_);
+        outtree_->Branch("iso_2_puw03", &iso_2_puw03_);
+        outtree_->Branch("iso_2_puw04", &iso_2_puw04_);
       }
  
       if(tau_id_study_){
@@ -751,10 +757,14 @@ namespace ic {
     dilepton_veto_ = false;
     extraelec_veto_ = false;
     extramuon_veto_ = false;
+    loose_dilepton_veto_ = false;
+    loosenoid_dilepton_veto_ = false;
     minimal_extraelec_veto_ = false;
     minimal_extramuon_veto_ = false;
     if(channel_ == channel::et) { 
         if(event->Exists("dielec_veto")) dilepton_veto_ = event->Get<bool>("dielec_veto");
+        if(event->Exists("loose_dielec_veto")) loose_dilepton_veto_ = event->Get<bool>("loose_dielec_veto");
+        if(event->Exists("loosenoid_dielec_veto")) loosenoid_dilepton_veto_ = event->Get<bool>("loosenoid_dielec_veto");
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
@@ -762,6 +772,8 @@ namespace ic {
     }
     if(channel_ == channel::mt) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
+        if(event->Exists("loose_dimuon_veto")) loose_dilepton_veto_ = event->Get<bool>("loose_dimuon_veto");
+        if(event->Exists("loosenoid_dimuon_veto")) loosenoid_dilepton_veto_ = event->Get<bool>("loosenoid_dimuon_veto");
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
@@ -940,6 +952,10 @@ namespace ic {
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(elec, 0.5, 0);
+          iso_1_puw03_=0;
+          iso_1_puw04_=0;
+          iso_2_puw03_=0; 
+          iso_2_puw04_=0;
           iso_1_trk03_ = 0; 
           iso_2_db03_ = 0;
           iso_2_ea03_ = 0;
@@ -1013,7 +1029,11 @@ namespace ic {
           iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
           iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
+          iso_1_puw03_ = PUW03IsolationVal(muon);
+          iso_1_puw04_ = PUW04IsolationVal(muon);
           iso_1_trk03_ = MuonTkIsoVal(muon);
+          iso_2_puw03_ = 0;
+          iso_2_puw04_ = 0;
           iso_2_db03_ = 0;
           iso_2_ea03_ = 0;
           iso_2_trk03_ = 0;
@@ -1081,9 +1101,13 @@ namespace ic {
           iso_1_ea03_ = PF03EAIsolationVal(elec, eventInfo);
           iso_1_db03allch_ = PF03IsolationVal(elec, 0.5, 1);
           iso_1_db04allch_ = PF04IsolationVal(elec, 0.5, 1);
+          iso_1_puw03_=0;
+          iso_1_puw04_=0;
           iso_1_trk03_=0;
           iso_2_db03_ = PF03IsolationVal(muon, 0.5, 0);
           iso_2_db04_ = PF04IsolationVal(muon, 0.5, 0);
+          iso_2_puw03_ = PUW03IsolationVal(muon);
+          iso_2_puw04_ = PUW04IsolationVal(muon);
           iso_2_ea03_ = PF03EAIsolationVal(muon, eventInfo);
           iso_2_trk03_ = MuonTkIsoVal(muon);
           iso_2_db03allch_ = PF03IsolationVal(muon, 0.5, 1);

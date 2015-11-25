@@ -109,9 +109,9 @@ using namespace ic;
  int main(int /*argc*/, char* /*argv*/[]){
   using namespace ic;
   using namespace std;
-  std::string real_sel = "(gen_match==3)";
+  std::string real_sel = "(gen_match==4)";
   std::string fake_sel = "(gen_match==6)";
-  std::string channel = "et";
+  std::string channel = "mt";
   bool do_tau = false;
   
   if(do_tau){
@@ -177,40 +177,53 @@ using namespace ic;
 
 } else {
 
-  TH1F DY_real_db03 = drawVariable("iso_db03",real_sel, ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Oct30ElectronEff/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"ElectronEfficiencyForIsoStudy","tree");
-  TH1F QCD_fake_db03 = addQCDHists("iso_db03",fake_sel, "./output/Oct30ElectronEff/",channel,"ElectronEfficiencyForIsoStudy","tree");
+  TH1F DY_real_db03 = drawVariable("iso_db03",real_sel, ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Nov19ROCCurves/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"HTTMuonEfficiency","tree");
+  TH1F QCD_fake_db03 = addQCDHists("iso_db03",fake_sel, "./output/Nov19ROCCurves/",channel,"HTTMuonEfficiency","tree");
+  TH1F DY_real_puw03 = drawVariable("iso_puw03",real_sel, ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Nov19ROCCurves/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"HTTMuonEfficiency","tree");
+  TH1F QCD_fake_puw03 = addQCDHists("iso_puw03",fake_sel, "./output/Nov19ROCCurves/",channel,"HTTMuonEfficiency","tree");
 
-  TH1F DY_real_db03allch = drawVariable("iso_db03allch",real_sel, ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Oct30ElectronEff/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"ElectronEfficiencyForIsoStudy","tree");
-  TH1F QCD_fake_db03allch = addQCDHists("iso_db03allch",fake_sel, "./output/Oct30ElectronEff/",channel,"ElectronEfficiencyForIsoStudy","tree");
+  TH1F DY_real_db03allch = drawVariable("iso_db03allch",real_sel, ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Nov19ROCCurves/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"HTTMuonEfficiency","tree");
+  TH1F QCD_fake_db03allch = addQCDHists("iso_db03allch",fake_sel, "./output/Nov19ROCCurves/",channel,"HTTMuonEfficiency","tree");
 
 
-  //TH1F DY_real_db04 = drawVariable("iso_db04",real_sel, ("./output/Oct30ElectronEff/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"ElectronEfficiencyForIsoStudy","tree");
-  //TH1F QCD_fake_db04 = addQCDHists("iso_db04",fake_sel, "./output/Oct30ElectronEff/",channel,"ElectronEfficiencyForIsoStudy","tree");
+  TH1F DY_real_db04 = drawVariable("iso_db04",real_sel, ("./output/Nov19ROCCurves/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"HTTMuonEfficiency","tree");
+  TH1F QCD_fake_db04 = addQCDHists("iso_db04",fake_sel, "./output/Nov19ROCCurves/",channel,"HTTMuonEfficiency","tree");
+TH1F DY_real_puw04 = drawVariable("iso_puw04",real_sel, ("./output/Nov19ROCCurves/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"HTTMuonEfficiency","tree");
+  TH1F QCD_fake_puw04 = addQCDHists("iso_puw04",fake_sel, "./output/Nov19ROCCurves/",channel,"HTTMuonEfficiency","tree");
 
-  TH1F DY_real_db04allch = drawVariable("iso_db04allch",real_sel, ("./output/Oct30ElectronEff/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"ElectronEfficiencyForIsoStudy","tree");
-  TH1F QCD_fake_db04allch = addQCDHists("iso_db04allch",fake_sel, "./output/Oct30ElectronEff/",channel,"ElectronEfficiencyForIsoStudy","tree");
+  TH1F DY_real_db04allch = drawVariable("iso_db04allch",real_sel, ("./output/Nov19ROCCurves/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"HTTMuonEfficiency","tree");
+  TH1F QCD_fake_db04allch = addQCDHists("iso_db04allch",fake_sel, "./output/Nov19ROCCurves/",channel,"HTTMuonEfficiency","tree");
 
-  TH1F DY_real_trk03 = drawVariable("iso_ea03",real_sel, ("./output/Oct30ElectronEff/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"ElectronEfficiencyForIsoStudy","tree");
-  TH1F QCD_fake_trk03 = addQCDHists("iso_ea03",fake_sel, "./output/Oct30ElectronEff/",channel,"ElectronEfficiencyForIsoStudy","tree");
+  TH1F DY_real_trk03 = drawVariable("iso_ea03",real_sel, ("./output/Nov19ROCCurves/DYJetsToLL_M-50-LO_"+channel+"_2015.root").c_str(),"HTTMuonEfficiency","tree");
+  TH1F QCD_fake_trk03 = addQCDHists("iso_ea03",fake_sel, "./output/Nov19ROCCurves/",channel,"HTTMuonEfficiency","tree");
   
   std::vector<double> trk03_real_eff;
   std::vector<double> trk03_fake_rej;
   std::vector<double> db03_real_eff;
   std::vector<double> db03_fake_rej;
+  std::vector<double> puw03_real_eff;
+  std::vector<double> puw03_fake_rej;
+
   std::vector<double> db03allch_real_eff;
   std::vector<double> db03allch_fake_rej;
   std::vector<double> db04allch_real_eff;
   std::vector<double> db04allch_fake_rej;
   std::vector<double> db04_real_eff;
   std::vector<double> db04_fake_rej;
+  std::vector<double> puw04_real_eff;
+  std::vector<double> puw04_fake_rej;
 
  DY_real_db03.Scale(1./DY_real_db03.Integral());
- //DY_real_db04.Scale(1./DY_real_db04.Integral());
+ DY_real_db04.Scale(1./DY_real_db04.Integral());
+ DY_real_puw03.Scale(1./DY_real_puw03.Integral());
+ DY_real_puw04.Scale(1./DY_real_puw04.Integral());
  DY_real_db03allch.Scale(1./DY_real_db03allch.Integral());
  DY_real_db04allch.Scale(1./DY_real_db04allch.Integral());
  DY_real_trk03.Scale(1./DY_real_trk03.Integral());
  QCD_fake_db03.Scale(1./QCD_fake_db03.Integral());
-// QCD_fake_db04.Scale(1./QCD_fake_db04.Integral());
+ QCD_fake_db04.Scale(1./QCD_fake_db04.Integral());
+ QCD_fake_puw03.Scale(1./QCD_fake_puw03.Integral());
+ QCD_fake_puw04.Scale(1./QCD_fake_puw04.Integral());
  QCD_fake_db03allch.Scale(1./QCD_fake_db03allch.Integral());
  QCD_fake_db04allch.Scale(1./QCD_fake_db04allch.Integral());
  QCD_fake_trk03.Scale(1./QCD_fake_trk03.Integral());
@@ -219,57 +232,73 @@ using namespace ic;
   for(int i=1;i<=100;i++){
    trk03_real_eff.push_back(DY_real_trk03.Integral(1,i));     
    db03_real_eff.push_back(DY_real_db03.Integral(1,i));     
+   puw03_real_eff.push_back(DY_real_puw03.Integral(1,i));     
    db03allch_real_eff.push_back(DY_real_db03allch.Integral(1,i));     
-//   db04_real_eff.push_back(DY_real_db04.Integral(1,i));     
+   db04_real_eff.push_back(DY_real_db04.Integral(1,i));     
+   puw04_real_eff.push_back(DY_real_puw04.Integral(1,i));     
    db04allch_real_eff.push_back(DY_real_db04allch.Integral(1,i));     
    trk03_fake_rej.push_back(1-QCD_fake_trk03.Integral(1,i));     
-   db03_fake_rej.push_back(1-QCD_fake_db03.Integral(1,i));     
+    puw03_fake_rej.push_back(1-QCD_fake_puw03.Integral(1,i));     
+  db03_fake_rej.push_back(1-QCD_fake_db03.Integral(1,i));     
    db03allch_fake_rej.push_back(1-QCD_fake_db03allch.Integral(1,i));     
- //  db04_fake_rej.push_back(1-QCD_fake_db04.Integral(1,i));     
+    puw04_fake_rej.push_back(1-QCD_fake_puw04.Integral(1,i));     
+  db04_fake_rej.push_back(1-QCD_fake_db04.Integral(1,i));     
    db04allch_fake_rej.push_back(1-QCD_fake_db04allch.Integral(1,i));     
  }
 
   TGraph *trk03 = new TGraph(100,&(trk03_real_eff[0]),&(trk03_fake_rej[0]));
   TGraph *db03 = new TGraph(100,&(db03_real_eff[0]),&(db03_fake_rej[0]));
+  TGraph *puw03 = new TGraph(100,&(puw03_real_eff[0]),&(puw03_fake_rej[0]));
   TGraph *db03allch = new TGraph(100,&(db03allch_real_eff[0]),&(db03allch_fake_rej[0]));
-  //TGraph *db04 = new TGraph(100,&(db04_real_eff[0]),&(db04_fake_rej[0]));
+  TGraph *db04 = new TGraph(100,&(db04_real_eff[0]),&(db04_fake_rej[0]));
+  TGraph *puw04 = new TGraph(100,&(puw04_real_eff[0]),&(puw04_fake_rej[0]));
   TGraph *db04allch = new TGraph(100,&(db04allch_real_eff[0]),&(db04allch_fake_rej[0]));
 
  trk03->SetMarkerStyle(21);
  trk03->SetMarkerColor(kGreen+3);
  db03->SetMarkerStyle(24);
  db03->SetMarkerColor(kRed+2);
+ puw03->SetMarkerStyle(25);
+ puw03->SetMarkerColor(kBlack);
  db03allch->SetMarkerStyle(23);
  db03allch->SetMarkerColor(kBlue+3);
-// db04->SetMarkerStyle(20);
-// db04->SetMarkerColor(kRed);
+ db04->SetMarkerStyle(20);
+ db04->SetMarkerColor(kRed);
+ puw04->SetMarkerStyle(26);
+ puw04->SetMarkerColor(kBlue);
  db04allch->SetMarkerStyle(22);
  db04allch->SetMarkerColor(kBlue);
 
  db03->GetXaxis()->SetRangeUser(0.6,1);
  db03->GetYaxis()->SetRangeUser(0,1);
- db03->SetTitle(";Real e efficiency;Fake e rejection");
+ db03->SetTitle(";Real #mu efficiency;Fake #mu rejection");
 
   TCanvas plot_canv("plot_canv","plot_canv",1200,800); 
   plot_canv.cd();
   db03->Draw("AP"); 
+  db04->Draw("PSAME");
+  puw03->Draw("PSAME"); 
+  puw04->Draw("PSAME");
+
 //  db03->Draw("PSAME");
   db03allch->Draw("PSAME");
   trk03->Draw("PSAME");
   db04allch->Draw("PSAME");
   TLegend *leg = PositionedLegend(0.3,0.3,4,0);
   leg->SetFillStyle(0);
- // leg->AddEntry(db04,"dBeta corr iso (cs 0.4)","p");
-  //leg->AddEntry(trk03,"Tracker iso (cs 0.3)","p");
-  leg->AddEntry(trk03,"EA corrected iso (cs 0.3)","p");
+  leg->AddEntry(db04,"dBeta corr iso (cs 0.4)","p");
+  leg->AddEntry(trk03,"Tracker iso (cs 0.3)","p");
+//  leg->AddEntry(trk03,"EA corrected iso (cs 0.3)","p");
   leg->AddEntry(db04allch,"dBeta corr iso, allcharged (cs 0.4)","p");
   leg->AddEntry(db03,"dBeta corr iso (cs 0.3)","p");
   leg->AddEntry(db03allch,"dBeta corr iso, allcharged (cs 0.3)","p");
+  leg->AddEntry(puw03,"PF weighted (cs 0.3)","p");
+  leg->AddEntry(puw04,"PF weighted (cs 0.4)","p");
   leg->Draw("SAME");
   
  // plot_canv.SetGrid(1,1);
 
-  plot_canv.SaveAs("ElectronROCCurve_fromtau.pdf");
+  plot_canv.SaveAs("MuonROCCurve_fromtau.pdf");
 
 
 }

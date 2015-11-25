@@ -28,6 +28,7 @@ int HTTElectronEfficiency::PreAnalysis() {
     outtree_->Branch("iso_db03",&iso_db03_);
     outtree_->Branch("iso_db03allch",&iso_db03allch_);
     outtree_->Branch("iso_db04allch",&iso_db04allch_);
+    outtree_->Branch("iso_db04",&iso_db04_);
     outtree_->Branch("wt",&wt_);
     outtree_->Branch("electronmvaID",&electronmvaID_);
     outtree_->Branch("electronTrigmvaID",&electronTrigmvaID_);
@@ -145,6 +146,7 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
   iso_db03_ = PF03IsolationVal(elecs.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(elecs.at(i),0.5,1);
   iso_db04allch_ = PF04IsolationVal(elecs.at(i),0.5,1);
+  iso_db04_ = PF04IsolationVal(elecs.at(i),0.5,0);
 /*  iso_heep_ = HEEPIso(elecs.at(i));
   iso_heep_cluster_  =HEEPClusterIso(elecs.at(i));*/
   iso_tk_ = elecs.at(i)->dr03_tk_sum_pt(); 

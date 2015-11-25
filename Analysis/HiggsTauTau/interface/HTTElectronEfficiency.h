@@ -33,6 +33,7 @@ class HTTElectronEfficiency : public ModuleBase {
   unsigned gen_match_;
   double iso_ea03_;
   double iso_db03_;
+  double iso_db04_;
   double iso_heep_;
   double iso_tk_;
   double iso_heep_cluster_;

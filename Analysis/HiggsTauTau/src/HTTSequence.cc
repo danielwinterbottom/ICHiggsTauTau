@@ -1657,6 +1657,14 @@ void HTTSequence::BuildDiElecVeto() {
 //  if(strategy_type!=strategy::spring15){
   BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
       js["electrons"].asString(), "veto_elecs"));
+
+  BuildModule(CopyCollection<Electron>("CopyToLooseVetoElecs",
+      js["electrons"].asString(), "loose_veto_elecs"));
+
+  BuildModule(CopyCollection<Electron>("CopyToLooseNoIDVetoElecs",
+      js["electrons"].asString(), "loose_no_id_veto_elecs"));
+
+
  /* } else {
     BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
         js["electrons"].asString(),"pre_iso_veto_elecs"));
@@ -1676,6 +1684,14 @@ void HTTSequence::BuildDiElecVeto() {
 
   SimpleFilter<Electron> vetoElecFilter = SimpleFilter<Electron>("VetoElecFilter")
       .set_input_label("veto_elecs");
+
+  SimpleFilter<Electron> looseVetoElecFilter = SimpleFilter<Electron>("looseVetoElecFilter")
+      .set_input_label("loose_veto_elecs");
+
+  SimpleFilter<Electron> looseNoIDVetoElecFilter = SimpleFilter<Electron>("looseNoIDVetoElecFilter")
+      .set_input_label("loose_no_id_veto_elecs");
+
+
    if(strategy_type==strategy::paper2013){
       vetoElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_dielec_pt    &&
@@ -1706,9 +1722,35 @@ void HTTSequence::BuildDiElecVeto() {
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
+
+       looseVetoElecFilter.set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 8    &&
+                fabs(e->eta())          < veto_dielec_eta   &&
+                fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
+                fabs(e->dz_vertex())    < veto_dielec_dz    &&
+                //ElectronHTTIdSpring15(e,true)                   &&
+                VetoElectronIDSpring15(e)                   &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
+                PF03IsolationVal(e, 0.5,0) < 0.3;
+      });
+
+       looseNoIDVetoElecFilter.set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 8    &&
+                fabs(e->eta())          < veto_dielec_eta   &&
+                fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
+                fabs(e->dz_vertex())    < veto_dielec_dz    &&
+                //ElectronHTTIdSpring15(e,true)                   &&
+               // VetoElectronIDSpring15(e)                   &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
+                PF03IsolationVal(e, 0.5,0) < 0.3;
+      });
+
+
   }
 
   BuildModule(vetoElecFilter);
+  BuildModule(looseVetoElecFilter);
+  BuildModule(looseNoIDVetoElecFilter);
 
   BuildModule(OneCollCompositeProducer<Electron>("VetoElecPairProducer")
       .set_input_label("veto_elecs").set_output_label("elec_veto_pairs")
@@ -1720,6 +1762,30 @@ void HTTSequence::BuildDiElecVeto() {
         return  c->DeltaR("elec1", "elec2") > 0.15 &&
                 c->charge() == 0;
       });
+
+  BuildModule(OneCollCompositeProducer<Electron>("LooseVetoElecPairProducer")
+      .set_input_label("loose_veto_elecs").set_output_label("elec_loose_veto_pairs")
+      .set_candidate_name_first("elec1").set_candidate_name_second("elec2"));
+
+  HTTFilter<CompositeCandidate> LooseVetoElecPairFilter = HTTFilter<CompositeCandidate>("LooseVetoElecPairFilter")
+      .set_input_label("elec_loose_veto_pairs").set_min(0).set_max(0).set_no_filter(true).set_veto_name("loose_dielec_veto")
+      .set_predicate([=](CompositeCandidate const* c) {
+        return  c->DeltaR("elec1", "elec2") > 0.15 &&
+                c->charge() == 0;
+      });
+
+  BuildModule(OneCollCompositeProducer<Electron>("LooseNoIDVetoElecPairProducer")
+      .set_input_label("loose_no_id_veto_elecs").set_output_label("elec_loose_no_id_veto_pairs")
+      .set_candidate_name_first("elec1").set_candidate_name_second("elec2"));
+
+  HTTFilter<CompositeCandidate> LooseNoIDVetoElecPairFilter = HTTFilter<CompositeCandidate>("LooseNoIDVetoElecPairFilter")
+      .set_input_label("elec_loose_no_id_veto_pairs").set_min(0).set_max(0).set_no_filter(true).set_veto_name("loosenoid_dielec_veto")
+      .set_predicate([=](CompositeCandidate const* c) {
+        return  c->DeltaR("elec1", "elec2") > 0.15 &&
+                c->charge() == 0;
+      });
+
+
 	
 // Use special mode of veto module which stores the veto value but doesnt actually apply the filter for run 2 analysis	
     if(strategy_type==strategy::phys14 || strategy_type==strategy::spring15){
@@ -1728,6 +1794,8 @@ void HTTSequence::BuildDiElecVeto() {
   	}
 
 	BuildModule(vetoElecPairFilter);
+  BuildModule(LooseVetoElecPairFilter);
+  BuildModule(LooseNoIDVetoElecPairFilter);
  }
 
  void HTTSequence::BuildDiMuonVeto() {
@@ -1736,8 +1804,24 @@ void HTTSequence::BuildDiElecVeto() {
   BuildModule(CopyCollection<Muon>("CopyToVetoMuons",
       js["muons"].asString(), "veto_muons"));
 
+  BuildModule(CopyCollection<Muon>("CopyToVetoMuons",
+      js["muons"].asString(), "loose_veto_muons"));
+
+  BuildModule(CopyCollection<Muon>("CopyToVetoMuons",
+      js["muons"].asString(), "loose_no_id_veto_muons"));
+
+
+
   SimpleFilter<Muon> vetoMuonFilter = SimpleFilter<Muon>("VetoMuonFilter")
       .set_input_label("veto_muons");
+
+  SimpleFilter<Muon> looseVetoMuonFilter = SimpleFilter<Muon>("LooseVetoMuonFilter")
+      .set_input_label("loose_veto_muons");
+
+  SimpleFilter<Muon> looseNoIDVetoMuonFilter = SimpleFilter<Muon>("LooseNoIDVetoMuonFilter")
+      .set_input_label("loose_no_id_veto_muons");
+
+
    if(strategy_type==strategy::paper2013){
       vetoMuonFilter.set_predicate([=](Muon const* m) {
         return  m->pt()                 > veto_dimuon_pt    &&
@@ -1762,11 +1846,43 @@ void HTTSequence::BuildDiElecVeto() {
       });
     }
 
+      looseVetoMuonFilter.set_predicate([=](Muon const* m) {
+        return  m->pt()                 > 8    &&
+                fabs(m->eta())          < veto_dimuon_eta   &&
+                fabs(m->dxy_vertex())   < veto_dimuon_dxy   &&
+                fabs(m->dz_vertex())    < veto_dimuon_dz    &&
+                m->is_global()                    &&
+                m->is_tracker()                   &&
+                m->is_pf()                        &&
+                //PF04IsolationVal(m, 0.5,0) < 0.3;
+                PF03IsolationVal(m, 0.5,0) < 0.3;
+      });
+
+      looseNoIDVetoMuonFilter.set_predicate([=](Muon const* m) {
+        return  m->pt()                 > 8    &&
+                fabs(m->eta())          < veto_dimuon_eta   &&
+                fabs(m->dxy_vertex())   < veto_dimuon_dxy   &&
+                fabs(m->dz_vertex())    < veto_dimuon_dz    &&
+                //PF04IsolationVal(m, 0.5,0) < 0.3;
+                PF03IsolationVal(m, 0.5,0) < 0.3;
+      });
+
   BuildModule(vetoMuonFilter);
+  BuildModule(looseVetoMuonFilter);
+  BuildModule(looseNoIDVetoMuonFilter);
 
   BuildModule(OneCollCompositeProducer<Muon>("VetoMuonPairProducer")
       .set_input_label("veto_muons").set_output_label("muon_veto_pairs")
       .set_candidate_name_first("muon1").set_candidate_name_second("muon2"));
+
+  BuildModule(OneCollCompositeProducer<Muon>("LooseVetoMuonPairProducer")
+      .set_input_label("loose_veto_muons").set_output_label("muon_loose_veto_pairs")
+      .set_candidate_name_first("muon1").set_candidate_name_second("muon2"));
+
+  BuildModule(OneCollCompositeProducer<Muon>("LooseNoIDVetoMuonPairProducer")
+      .set_input_label("loose_no_id_veto_muons").set_output_label("muon_loose_no_id_veto_pairs")
+      .set_candidate_name_first("muon1").set_candidate_name_second("muon2"));
+
 
   HTTFilter<CompositeCandidate> vetoMuonPairFilter = HTTFilter<CompositeCandidate>("VetoMuonPairFilter")
 	   .set_input_label("muon_veto_pairs").set_min(0).set_max(0)
@@ -1774,6 +1890,21 @@ void HTTSequence::BuildDiElecVeto() {
 		   return c->DeltaR("muon1", "muon2") > 0.15 &&
 			        c->charge() == 0;
 			});
+
+  HTTFilter<CompositeCandidate> looseVetoMuonPairFilter = HTTFilter<CompositeCandidate>("LooseVetoMuonPairFilter")
+	   .set_input_label("muon_loose_veto_pairs").set_min(0).set_max(0).set_no_filter(true).set_veto_name("loose_dimuon_veto")
+		 .set_predicate([=](CompositeCandidate const* c){
+		   return c->DeltaR("muon1", "muon2") > 0.15 &&
+			        c->charge() == 0;
+			});
+
+  HTTFilter<CompositeCandidate> looseNoIDVetoMuonPairFilter = HTTFilter<CompositeCandidate>("LooseNoIDVetoMuonPairFilter")
+	   .set_input_label("muon_loose_no_id_veto_pairs").set_min(0).set_max(0).set_no_filter(true).set_veto_name("loosenoid_dimuon_veto")
+		 .set_predicate([=](CompositeCandidate const* c){
+		   return c->DeltaR("muon1", "muon2") > 0.15 &&
+			        c->charge() == 0;
+			});
+
 	
 // Use special mode of veto module which stores the veto value but doesnt actually apply the filter for run 2 analysis	
 	if(strategy_type==strategy::phys14 || strategy_type==strategy::spring15) {
@@ -1782,6 +1913,8 @@ void HTTSequence::BuildDiElecVeto() {
 	}
 	
 	BuildModule(vetoMuonPairFilter);
+	BuildModule(looseVetoMuonPairFilter);
+	BuildModule(looseNoIDVetoMuonPairFilter);
 
 }
 

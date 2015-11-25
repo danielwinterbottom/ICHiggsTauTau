@@ -81,6 +81,8 @@ class HTTCategories : public ModuleBase {
   float signalweight_;
   bool os_;
   bool dilepton_veto_;
+  bool loose_dilepton_veto_;
+  bool loosenoid_dilepton_veto_;
   bool extraelec_veto_;
   bool extramuon_veto_;
   bool minimal_extraelec_veto_;
@@ -130,6 +132,10 @@ class HTTCategories : public ModuleBase {
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
+  double iso_1_puw03_;
+  double iso_1_puw04_;
+  double iso_2_puw03_;
+  double iso_2_puw04_;
   double iso_1_db04_;
   double iso_1_trk03_;
   double iso_1_db03allch_;

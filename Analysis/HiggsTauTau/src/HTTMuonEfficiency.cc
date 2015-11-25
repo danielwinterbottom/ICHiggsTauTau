@@ -24,6 +24,8 @@ int HTTMuonEfficiency::PreAnalysis() {
     outtree_->Branch("iso_db04allch",&iso_db04allch_);
     outtree_->Branch("iso_db04",&iso_db04_);
     outtree_->Branch("iso_trk03",&iso_trk03_);
+    outtree_->Branch("iso_puw03",&iso_puw03_);
+    outtree_->Branch("iso_puw04",&iso_puw04_);
     outtree_->Branch("wt",&wt_);
     outtree_->Branch("allcharged03iso",&allcharged03iso_);
     outtree_->Branch("allcharged04iso",&allcharged04iso_);
@@ -129,6 +131,8 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
   iso_db03_ = PF03IsolationVal(muons.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(muons.at(i),0.5,1);
   iso_db04allch_ = PF04IsolationVal(muons.at(i),0.5,1);
+  iso_puw04_ = PUW04IsolationVal(muons.at(i));
+  iso_puw03_ = PUW03IsolationVal(muons.at(i));
   iso_db04_ = PF04IsolationVal(muons.at(i),0.5,0);
 
   //if(muons.at(i)->pt()>10){

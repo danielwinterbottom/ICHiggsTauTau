@@ -107,8 +107,8 @@ namespace ic {
           if (run >= 160404 && run <= 173198 && name.find("HLT_Mu17_Ele8_CaloIdL_v") != name.npos) path_found = true;
           if (run >= 173199 && run <= 180252 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v") != name.npos) path_found = true;
           if (run >= 190456 && run <= 247600 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
-          //if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
-          if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
+          if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
+          //if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::tt){
           if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
@@ -338,21 +338,22 @@ namespace ic {
         }
         // 2015 Triggers
         if (run >= 250985 /*&& run <= xxxxxx*/){
-/*         trig_obj_label = "triggerObjectsEle12Mu23";
+         trig_obj_label = "triggerObjectsEle12Mu23";
          leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
          alt_trig_obj_label = "triggerObjectsEle23Mu8";
          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
-*/
+
 
 //        if (run >= 250985 /*&& run <= xxxxxx*/){
-        trig_obj_label = "triggerObjectsEle12Mu17";
+/*        trig_obj_label = "triggerObjectsEle12Mu17";
          leg1_filter = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          leg2_filter = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17";
          alt_trig_obj_label = "triggerObjectsEle17Mu8";
          alt_leg1_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+*/
 
 
         }
@@ -506,20 +507,21 @@ namespace ic {
           alt_leg1_filter           = "hltMu8Ele23GsfTrackIsoLegEle23GsfCaloIdTrackIdIsoMediumWPFilter";
           alt_leg2_filter           = "hltL1sL1Mu5EG20ORL1Mu5IsoEG18L3IsoFiltered8";
         } else if (mc_ == mc::spring15_74X){
-/*          trig_obj_label            = "triggerObjectsEle12Mu23";
+          trig_obj_label            = "triggerObjectsEle12Mu23";
           leg1_filter               = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           leg2_filter               = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
           alt_trig_obj_label        = "triggerObjectsEle23Mu8";
           alt_leg1_filter           = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           alt_leg2_filter           = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
-*/
 
-      trig_obj_label = "triggerObjectsEle12Mu17";
+
+/*      trig_obj_label = "triggerObjectsEle12Mu17";
          leg1_filter = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          leg2_filter = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17";
          alt_trig_obj_label = "triggerObjectsEle17Mu8";
          alt_leg1_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+*/
 
 
 
@@ -663,7 +665,7 @@ namespace ic {
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
         //unsigned leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
         //unsigned leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
-        bool highpt_leg = dileptons[i]->At(1)->pt() >18.0;
+        bool highpt_leg = dileptons[i]->At(1)->pt() >24.0;
         if (leg1_match && leg2_match && highpt_leg) {
           dileptons_pass.push_back(dileptons[i]);
        /*  double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
@@ -681,7 +683,7 @@ namespace ic {
           leg2_match = IsFilterMatchedWithIndex(dileptons[i]->at(1), alt_objs, alt_leg2_filter, 0.5).first;
           //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->at(0), alt_objs, alt_leg1_filter, 0.5).second;
           //leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->at(1), alt_objs, alt_leg2_filter, 0.5).second;
-          highpt_leg = dileptons[i]->At(0)->pt() > 18.0;
+          highpt_leg = dileptons[i]->At(0)->pt() > 24.0;
            if (leg1_match && leg2_match && highpt_leg){
               dileptons_pass.push_back(dileptons[i]);
            /*   double leg1_trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
