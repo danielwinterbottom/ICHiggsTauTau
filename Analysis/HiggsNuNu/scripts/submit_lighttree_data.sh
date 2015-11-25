@@ -1,10 +1,10 @@
 #!/bin/sh
 DOCERN=1
-DOSUBMIT=0
+DOSUBMIT=1
 MYEXEC=LightTreeMakerFromMiniAOD
 PRODUCTION=151113
 PRODUSER=amagnan
-
+JPTCUTVAL=40
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -35,9 +35,9 @@ CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 for SYST in central #JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree_151117
+  JOBDIRPREFIX=jobs_lighttree_151123
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_151117
+  OUTPUTPREFIX=output_lighttree_151123
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -162,7 +162,7 @@ if [ "$SYST" = "ELEEFFUP" ]
       
       echo "JOB name = $JOB"
       
-      $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh $GRIDSETUP
+      $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS --jet1ptcut="$JPTCUTVAL" --jet2ptcut="$JPTCUTVAL" | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh $GRIDSETUP
       if [ "$DOSUBMIT" = "1" ]; then 
 	  $JOBSUBMIT $JOBDIR/$JOB.sh
       else

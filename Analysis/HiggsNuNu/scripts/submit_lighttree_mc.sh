@@ -1,12 +1,13 @@
 #!/bin/sh
 DOCERN=1
-DOSUBMIT=0
+DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=LightTreeMakerFromMiniAOD
 MYEXEC=LightTreeMakerFromMiniAOD
 PRODUCTION=151030
 PRODUSER=amagnan
+JPTCUTVAL=40
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh $DOCERN $MYEXEC $PRODUCTION"}
@@ -32,9 +33,9 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_151117
+  JOBDIRPREFIX=jobs_lighttree_151123
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_151117
+  OUTPUTPREFIX=output_lighttree_151123
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -135,7 +136,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 	    then
 	    JOBQUEUE="2nd"
 	else
-	    JOBQUEUE="8nh"
+	    JOBQUEUE="1nh"
 	fi
     fi
     export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
@@ -169,7 +170,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 # 	      continue
 # 	  fi
       
-      JPTCUT=30
+      JPTCUT=$JPTCUTVAL
       grep "Htoinv" tmp.txt
       if (( "$?" == 0 )); then
 	  JPTCUT=0

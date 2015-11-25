@@ -402,6 +402,9 @@ namespace ic {
     ////////////////////////////////
 
     double wt = eventInfo->total_weight();
+
+    
+
     double vetowt=1;
     double tightwt=1;
     double pileupwt=1;
@@ -797,16 +800,16 @@ namespace ic {
 
 
     //IF PASSES CUTS FILL TREE    
-    if(do_noskim_){
-      //but at least one interesting offline object....
-      //if (n_jets_30_>1 || 
-      //nselmuons_>0 || nselelectrons_>0 || ntaus_ > 0 ||
-      //nloosephotons_ > 0 || nmediumphotons_ > 0 || ntightphotons_ > 0){
-	outputTree_->Fill();
-	//}
-      //++processed;
-    }
-    else if(!ignoreLeptons_){
+    //if(do_noskim_){
+    //but at least one interesting offline object....
+    //if (n_jets_30_>1 || 
+    //nselmuons_>0 || nselelectrons_>0 || ntaus_ > 0 ||
+    //nloosephotons_ > 0 || nmediumphotons_ > 0 || ntightphotons_ > 0){
+    outputTree_->Fill();
+    //}
+    //++processed;
+    //}
+    /*else if(!ignoreLeptons_){
       if(!do_promptskim_){
 	if (jet_pt_[1]>40&& dijet_M_ > 600 &&  dijet_deta_>3.6){
 	  //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
@@ -838,6 +841,7 @@ namespace ic {
 	}
       }	
     }
+    */
     
     //if (processed == 500) outputTree_->OptimizeBaskets();
     //if ((processed%500) == 0) outputTree_->OptimizeBaskets();

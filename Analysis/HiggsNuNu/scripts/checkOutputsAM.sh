@@ -48,8 +48,8 @@ do
     fi
     grep -q "Processing Complete" $LOGFILE
     if (( "$?" == 1 )); then
-	echo "File $LOGFILE failed !"
-	let RESULT=1
+	echo "****File $LOGFILE failed !"
+	let RESULT=$RESULT+1
 	grep -q "Error opening the file" $LOGFILE
 	if (( "$?" == 0 )); then
 	    echo "--> Error opening a file, need to resubmit job $JOBDIR/${JOBFILE}${WSTREAM}.sh!"
@@ -66,22 +66,29 @@ do
     if (( "$?" == 0 )); then
 	grep -qi "nan" $LOGFILE | grep -v "value"
 	if (( "$?" == 0 )); then
-	    echo "File $LOGFILE failed ! Found NAN value."
-	    let RESULT=1
+	    echo "****File $LOGFILE failed ! Found NAN value."
+	    let RESULT=$RESULT+1
 	fi
     fi
     ntotal=`grep "Processing Complete" $LOGFILE | sed 's!.*>>!!' | awk '{print $3}'`
     npassed=`grep "LightTreeNew" $LOGFILE | awk '{print $2}'`
     rejected=`echo "$ntotal-$npassed" | bc`
-    nfilelist=`grep "EVT_$JOBFILE:" filelists/$PROD/Params$PROD.dat | sed "s!EVT_$JOBFILE:!!"`
+    nfilelist=`grep "EVT_$JOBFILE:" filelists/$PROD/Params$PROD.dat | grep -v "#" | sed "s!EVT_$JOBFILE:!!"`
     missed=0
     if (( "$isData" == "0" )); then
-	let missed=`echo "$nfilelist-$ntotal" | bc`
+	missed=`echo "$nfilelist-$ntotal" | bc`
     fi
     echo -e "-- Sample: "${JOBFILE}${WSTREAM}", Nfilelist="$nfilelist", Nprocessed="$ntotal", Npassed="$npassed", Nmissed="$missed", Nrejected="$rejected
+    if (( "$missed" != "0" )); then
+	echo "****Problem with filelist EVT number! Please check."
+	let RESULT=$RESULT+1
+    fi
+
 done
 
 if (( "$RESULT" == 0 )); then
     echo "-- All Clear !"
+else
+    echo "-- Found $RESULT problematic jobs."
 fi
 
