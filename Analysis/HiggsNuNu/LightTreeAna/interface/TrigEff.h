@@ -15,9 +15,12 @@ namespace ic {
     CLASS_MEMBER(TrigEff,std::vector<double>,binning)
     CLASS_MEMBER(TrigEff,std::string,cat)
     CLASS_MEMBER(TrigEff,std::string,basesel)
-    CLASS_MEMBER(TrigEff,std::string,dataweight)
+    CLASS_MEMBER(TrigEff,std::string,numweight)
+    CLASS_MEMBER(TrigEff,std::string,denweight)
     CLASS_MEMBER(TrigEff,std::string,dirname)
     CLASS_MEMBER(TrigEff,std::string,histtitle)
+    CLASS_MEMBER(TrigEff,std::string,namestr)
+    CLASS_MEMBER(TrigEff,bool,do_fit)
   public:
     virtual TrigEff & set_dataset(std::string const& dataset) {
       std::vector<std::string> datasets;

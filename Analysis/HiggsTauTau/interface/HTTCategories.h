@@ -30,6 +30,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, bool, iso_study)
+  CLASS_MEMBER(HTTCategories, bool, tau_id_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
  
@@ -82,6 +83,8 @@ class HTTCategories : public ModuleBase {
   bool dilepton_veto_;
   bool extraelec_veto_;
   bool extramuon_veto_;
+  bool minimal_extraelec_veto_;
+  bool minimal_extramuon_veto_;
   bool lepton_veto_;
   unsigned n_vtx_;
   bool good_vtx_;
@@ -98,10 +101,12 @@ class HTTCategories : public ModuleBase {
   float phi_h_;
   branch_var pt_tt_;
   branch_var mt_1_;
+  double pfmt_1_;
   float id_e_mva_nt_loose_1_ = 0;
   float mt_2_;
   double mt_ll_;
   branch_var pzeta_;
+  double pfpzeta_;
   branch_var pzetavis_;
   branch_var pzetamiss_;
   double emu_dphi_;
@@ -125,10 +130,14 @@ class HTTCategories : public ModuleBase {
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
+  double iso_1_db04_;
+  double iso_1_trk03_;
   double iso_1_db03allch_;
   double iso_1_db04allch_; 
   double iso_1_ea03_;
   double iso_2_db03_;
+  double iso_2_db04_;
+  double iso_2_trk03_;
   double iso_2_db03allch_;
   double iso_2_db04allch_; 
   double iso_2_ea03_;
@@ -143,7 +152,7 @@ class HTTCategories : public ModuleBase {
   branch_var mva_2_;
   branch_var mvamet_;
   branch_var mvamet_phi_;
-  float pfmet_;
+  branch_var pfmet_;
   float pfmet_phi_;
   float mvametCov00_;
   float mvametCov01_;
@@ -168,6 +177,7 @@ class HTTCategories : public ModuleBase {
   float lchargedIsoPtSum_2 = 0;
   float lneutralIsoPtSum_2 = 0;
   float lpuCorrPtSum_2 = 0;
+  branch_var lPhotonPtSum_2;
   bool ldecayModeFindingOldDMs_2 = 0;
 
   float l3Hits_1 = 0;
@@ -185,8 +195,30 @@ class HTTCategories : public ModuleBase {
   float lchargedIsoPtSum_1 = 0;
   float lneutralIsoPtSum_1 = 0;
   float lpuCorrPtSum_1 = 0;
+  branch_var lPhotonPtSum_1;
   bool ldecayModeFindingOldDMs_1 = 0;
-
+  bool lbyVLooseIsolationMVA3newDMwLT_1=0;
+  bool lbyVLooseIsolationMVA3newDMwLT_2=0;
+  bool lbyLooseIsolationMVA3newDMwLT_1=0;
+  bool lbyLooseIsolationMVA3newDMwLT_2=0;
+  bool lbyMediumIsolationMVA3newDMwLT_1=0;
+  bool lbyMediumIsolationMVA3newDMwLT_2=0;
+  bool lbyVTightIsolationMVA3newDMwLT_1=0;
+  bool lbyVTightIsolationMVA3newDMwLT_2=0;
+  bool lbyTightIsolationMVA3newDMwLT_1=0;
+  bool lbyTightIsolationMVA3newDMwLT_2=0;
+  bool lbyLooseCombinedIsolation_1=0;
+  bool lbyLooseCombinedIsolation_2=0;
+  bool lbyMediumCombinedIsolation_1=0;
+  bool lbyMediumCombinedIsolation_2=0;
+  bool lbyTightCombinedIsolation_1=0;
+  bool lbyTightCombinedIsolation_2=0;
+  bool lbyLoosePileupWeightedIsolation_1=0;
+  bool lbyLoosePileupWeightedIsolation_2=0;
+  bool lbyMediumPileupWeightedIsolation_1=0;
+  bool lbyMediumPileupWeightedIsolation_2=0;
+  bool lbyTightPileupWeightedIsolation_1=0;
+  bool lbyTightPileupWeightedIsolation_2=0;
   float lagainstElectronLooseMVA5_2 = 0;
   float lagainstElectronMediumMVA5_2 = 0;
   float lagainstElectronTightMVA5_2 = 0;

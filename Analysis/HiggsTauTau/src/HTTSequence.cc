@@ -20,6 +20,7 @@
 #include "HiggsTauTau/interface/HTTSequence.h"
 #include "HiggsTauTau/interface/HTTElectronEfficiency.h"
 #include "HiggsTauTau/interface/HTTMuonEfficiency.h"
+#include "HiggsTauTau/interface/HTTTauEfficiency.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
@@ -528,8 +529,8 @@ void HTTSequence::BuildSequence(){
   //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
   if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
-  //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/json_DCSONLY.txt";
-  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
+  //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
+  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
 
  LumiMask lumiMask = LumiMask("LumiMask")
    .set_produce_output_jsons("")
@@ -789,7 +790,7 @@ if(era_type == era::data_2015){
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(0)
     .set_require_inputs_match(false)
-    .set_split(700)
+    .set_split(7000)
     .set_dilepton_label("ditau")
     .set_met_label("pfMVAMet")
     .set_fullpath(svfit_folder)
@@ -931,6 +932,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
     .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
     .set_iso_study(js["iso_study"].asBool())
+    .set_tau_id_study(js["tau_id_study"].asBool())
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)
@@ -1324,6 +1326,7 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
 }
      if(js["do_iso_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTElectronEfficiency("ElectronEfficiency")
+    .set_dirname("ElectronEfficiencyForIDStudy")
     .set_fs(fs.get()));
 BuildModule(HTTMuonEfficiency("MuonEfficiency")
     .set_fs(fs.get()));
@@ -1583,6 +1586,10 @@ if(strategy_type == strategy::paper2013){
       }));
   }
 
+if(js["do_tau_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
+BuildModule(HTTTauEfficiency("HTTTauEfficiency")
+    .set_fs(fs.get()));
+}
 
 if(strategy_type == strategy::phys14){
   BuildModule(VertexFilter<Tau>("TauVertexFilter")

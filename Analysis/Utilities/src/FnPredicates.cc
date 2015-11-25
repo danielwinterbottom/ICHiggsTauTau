@@ -852,6 +852,25 @@ namespace ic {
     }
     return pass_mva;
   }
+  
+ double PUW03IsolationVal(Muon const* muon){
+   double charged_iso = muon->dr03_pfiso_charged();
+   double neutral_weighted = muon->GetIdIso("neutral_pfweighted_iso_03");
+   double gamma_weighted = muon->GetIdIso("gamma_pfweighted_iso_03");
+   double iso = charged_iso + neutral_weighted + gamma_weighted;
+    iso = iso / muon->pt();
+    return iso;
+ }
+ 
+ double PUW04IsolationVal(Muon const* muon){
+   double charged_iso = muon->dr04_pfiso_charged();
+   double neutral_weighted = muon->GetIdIso("neutral_pfweighted_iso_04");
+   double gamma_weighted = muon->GetIdIso("gamma_pfweighted_iso_04");
+   double iso = charged_iso + neutral_weighted + gamma_weighted;
+    iso = iso / muon->pt();
+    return iso;
+ }
+
 
   bool ElectronHTTIdTrigSpring15(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
@@ -864,18 +883,18 @@ namespace ic {
 /*    if(eta <= 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.012&&elec->hadronic_over_em()<0.09 && elec->dr03_tk_sum_pt()/pt <0.18&&elec->deta_sc_tk_at_vtx()<0.0095&&elec->dphi_sc_tk_at_vtx()<0.065) pass_preselection = true;
     if(eta > 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.033&&elec->hadronic_over_em()<0.09  && elec->dr03_tk_sum_pt()/pt <0.18) pass_preselection = true;
 */
-     if(eta <= 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.012&&elec->hadronic_over_em()<0.09 && elec->ecal_pf_cluster_iso()/pt <0.37 && elec->hcal_pf_cluster_iso()/pt < 0.25 && elec->dr03_tk_sum_pt()/pt <0.18&&elec->deta_sc_tk_at_vtx()<0.0095&&elec->dphi_sc_tk_at_vtx()<0.065) pass_preselection = true;
+     if(eta <= 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.012&&elec->hadronic_over_em()<0.09 && elec->ecal_pf_cluster_iso()/pt <0.37 && elec->hcal_pf_cluster_iso()/pt < 0.25 && elec->dr03_tk_sum_pt()/pt <0.18&&abs(elec->deta_sc_tk_at_vtx()<0.0095)&&abs(elec->dphi_sc_tk_at_vtx()<0.065)) pass_preselection = true;
     if(eta > 1.479 && pt > 15 && elec->full5x5_sigma_IetaIeta()<0.033&&elec->hadronic_over_em()<0.09 && elec->ecal_pf_cluster_iso()/pt <0.45 && elec->hcal_pf_cluster_iso()/pt < 0.28 && elec->dr03_tk_sum_pt()/pt <0.18) pass_preselection = true;
     
     if(!pass_preselection) return false;
     double idmva = elec->GetIdIso("mvaTrigSpring15");
     if (!loose_wp) {
-/*      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
+      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.89) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;*/
-      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
+      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;
+/*      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.967910) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;
+      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;*/
     } else {
       if (eta <= 0.8                    && idmva > 0.972153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479    && idmva > 0.922126) pass_mva = true;
@@ -1271,6 +1290,12 @@ namespace ic {
     bool isoCut = (((muon->dr03_tk_sum_pt())/muon->pt())<0.1); 
     return isoCut;
   }
+
+  double MuonTkIsoVal(Muon const* muon) {
+    double isoCut = ((muon->dr03_tk_sum_pt())/muon->pt()); 
+    return isoCut;
+  }
+
   
   std::vector<Track *> GetTracksAtVertex(std::vector<Track *> const& trks, std::vector<Vertex *> const& vtxs, unsigned idx, double const& dz) {
     std::vector<Track *> result;
@@ -1381,10 +1406,16 @@ namespace ic {
     return result;
   }
 
-  std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic) {
+  std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt) {
     std::vector<GenJet> taus;
     for (unsigned i = 0; i < parts.size(); ++i) {
-      if (abs(parts[i]->pdgid()) == 15) {
+        std::vector<bool> status_flags;
+        bool is_prompt=true; 
+        if(use_prompt){
+          status_flags = parts[i]->statusFlags();
+          is_prompt=status_flags[IsPrompt];
+        }
+      if (abs(parts[i]->pdgid()) == 15 && is_prompt) {
         std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
         bool has_tau_daughter = false;
         bool has_lepton_daughter = false;

@@ -22,6 +22,8 @@ int HTTMuonEfficiency::PreAnalysis() {
     outtree_->Branch("iso_db03",&iso_db03_);
     outtree_->Branch("iso_db03allch",&iso_db03allch_);
     outtree_->Branch("iso_db04allch",&iso_db04allch_);
+    outtree_->Branch("iso_db04",&iso_db04_);
+    outtree_->Branch("iso_trk03",&iso_trk03_);
     outtree_->Branch("wt",&wt_);
     outtree_->Branch("allcharged03iso",&allcharged03iso_);
     outtree_->Branch("allcharged04iso",&allcharged04iso_);
@@ -56,7 +58,7 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
     }
 
     
-    std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+    std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
     for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
     ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
@@ -122,10 +124,12 @@ int HTTMuonEfficiency::Execute(TreeEvent* event) {
   pt_ = muons.at(i)->pt();
   allcharged03iso_ = muons.at(i)->dr03_pfiso_charged_all();
   allcharged04iso_ = muons.at(i)->dr04_pfiso_charged_all();
+  iso_trk03_ = MuonTkIsoVal(muons.at(i));
   iso_ea03_ = PF03EAIsolationVal(muons.at(i),eventInfo);
   iso_db03_ = PF03IsolationVal(muons.at(i),0.5,0);
   iso_db03allch_ = PF03IsolationVal(muons.at(i),0.5,1);
   iso_db04allch_ = PF04IsolationVal(muons.at(i),0.5,1);
+  iso_db04_ = PF04IsolationVal(muons.at(i),0.5,0);
 
   //if(muons.at(i)->pt()>10){
     outtree_->Fill();

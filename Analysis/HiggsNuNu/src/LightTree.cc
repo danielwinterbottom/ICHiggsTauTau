@@ -826,6 +826,7 @@ namespace ic {
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
       //      if(l1met.size()==1){//!!
+
       if(!is_data_) l1met_ = l1met[0]->pt();
       else l1met_ = l1met[2]->pt();
       //}

@@ -6,7 +6,7 @@ namespace ic {
 
 TreeEvent::TreeEvent() : Event(), tree_(nullptr), event_(0) {}
 
-TreeEvent::~TreeEvent() { ; }
+TreeEvent::~TreeEvent() { DeleteAndClearHandlers(); }
 
 void TreeEvent::SetEvent(int64_t event) {
   event_ = event;
@@ -19,7 +19,7 @@ void TreeEvent::SetEvent(int64_t event) {
 
 void TreeEvent::SetTree(TTree* tree) {
   tree_ = tree;
-  handlers_.clear();
+  DeleteAndClearHandlers();
   cached_funcs_.clear();
   auto_add_funcs_.clear();
   if (tree) {
@@ -53,5 +53,10 @@ std::string TreeEvent::FormMissingMessage(std::string const& name,
            "and no branch with name %s in the TTree\n") %
        name % branch_name).str();
   return msg;
+}
+
+void TreeEvent::DeleteAndClearHandlers() {
+  for (auto & bh : handlers_) delete bh.second;
+  handlers_.clear();
 }
 }

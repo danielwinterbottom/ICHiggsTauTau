@@ -24,7 +24,7 @@ namespace ic {
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, met->vector().px(), met->vector().py(), covMET, 0);
     algo.addLogM(false);
     TH1::AddDirectory(false);
-    TFile *inputFile_visPtResolution = new TFile("../../../../TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root");
+    TFile *inputFile_visPtResolution = new TFile("SVFitRun2/data/svFitVisMassAndPtResolutionPDF.root");
     algo.shiftVisPt(false, inputFile_visPtResolution);
 
     if(MC) algo.integrateMarkovChain();
@@ -46,7 +46,7 @@ namespace ic {
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, met->vector().px(), met->vector().py(), covMET, 0);
     algo.addLogM(false);
     TH1::AddDirectory(false);
-    TFile *inputFile_visPtResolution = new TFile("../../../../TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root");
+    TFile *inputFile_visPtResolution = new TFile("SVFitRun2/data/svFitVisMassAndPtResolutionPDF.root");
     algo.shiftVisPt(false, inputFile_visPtResolution);
 
     if(MC) algo.integrateMarkovChain();
@@ -68,7 +68,7 @@ namespace ic {
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, met->vector().px(), met->vector().py(), covMET, 0);
     algo.addLogM(false);
     TH1::AddDirectory(false);
-    TFile *inputFile_visPtResolution = new TFile("../../../../TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root");
+    TFile *inputFile_visPtResolution = new TFile("SVFitRun2/data/svFitVisMassAndPtResolutionPDF.root");
     algo.shiftVisPt(false, inputFile_visPtResolution);
 
     if(MC) algo.integrateMarkovChain();
@@ -91,7 +91,7 @@ namespace ic {
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, met->vector().px(), met->vector().py(), covMET, 0);
     algo.addLogM(false);
     TH1::AddDirectory(false);
-    TFile *inputFile_visPtResolution = new TFile("../../../../TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root");
+    TFile *inputFile_visPtResolution = new TFile("SVFitRun2/data/svFitVisMassAndPtResolutionPDF.root");
     algo.shiftVisPt(false, inputFile_visPtResolution);
 
     if(MC) algo.integrateMarkovChain();
@@ -113,7 +113,7 @@ namespace ic {
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, met->vector().px(),met->vector().py(), covMET, 0);
     algo.addLogM(false);
     TH1::AddDirectory(false);
-    TFile *inputFile_visPtResolution = new TFile("../../../../TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root");
+    TFile *inputFile_visPtResolution = new TFile("SVFitRun2/data/svFitVisMassAndPtResolutionPDF.root");
     algo.shiftVisPt(false, inputFile_visPtResolution);
 
     Candidate fitresult;
@@ -139,7 +139,7 @@ namespace ic {
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, met->vector().px(), met->vector().py(), covMET, 0);
     algo.addLogM(false);
     TH1::AddDirectory(false);
-    TFile *inputFile_visPtResolution = new TFile("../../../../TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root");
+    TFile *inputFile_visPtResolution = new TFile("SVFitRun2/data/svFitVisMassAndPtResolutionPDF.root");
     algo.shiftVisPt(false, inputFile_visPtResolution);
 
     Candidate fitresult;
@@ -165,7 +165,7 @@ namespace ic {
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, met->vector().px(), met->vector().py(), covMET, 0);
     algo.addLogM(false);
     TH1::AddDirectory(false);
-    TFile *inputFile_visPtResolution = new TFile("../../../../TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root");
+    TFile *inputFile_visPtResolution = new TFile("SVFitRun2/data/svFitVisMassAndPtResolutionPDF.root");
     algo.shiftVisPt(false, inputFile_visPtResolution);
 
     Candidate fitresult;
@@ -191,7 +191,7 @@ namespace ic {
     SVfitStandaloneAlgorithm algo(measuredTauLeptons, met->vector().px(), met->vector().py(), covMET, 0);
     algo.addLogM(false);
     TH1::AddDirectory(false);
-    TFile *inputFile_visPtResolution = new TFile("../../../../TauAnalysis/SVfitStandalone/data/svFitVisMassAndPtResolutionPDF.root");
+    TFile *inputFile_visPtResolution = new TFile("SVFitRun2/data/svFitVisMassAndPtResolutionPDF.root");
     algo.shiftVisPt(false, inputFile_visPtResolution);
 
     Candidate fitresult;
