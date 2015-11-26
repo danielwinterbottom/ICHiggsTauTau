@@ -78,51 +78,79 @@ std::pair<double,double> calcSoverRootB(std::string const& filepath, std::string
  
  std::string file = ("/vols/cms04/amd12/CMSSW_7_4_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/htt_"+channel+".inputs-mssm-13TeV-mvis-"+extralabel+".root").c_str();
  
- double sig_pfmt[7];
- double sig_mvamt[7];
- double sig_err_pfmt[7];
- double sig_err_mvamt[7];
+ double sig_pfmt[14];
+ double sig_mvamt[14];
+ double sig_err_pfmt[14];
+ double sig_err_mvamt[14];
 
 
-double x_err[7]={0,0,0,0,0,0,0};
-double mt_cuts[7]={20.,25.,30.,35.,40.,45.,50.};
+double x_err[14]={0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+double mt_cuts[14]={10.,15.,20.,25.,30.,35.,40.,45.,50.,60.,70.,80.,90.,100.};
 
-  sig_pfmt[0] = calcSoverRootB(file, (channel+"_inclusive_pfmt20").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[1] = calcSoverRootB(file, (channel+"_inclusive_pfmt25").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[2] = calcSoverRootB(file, (channel+"_inclusive_pfmt30").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[3] = calcSoverRootB(file, (channel+"_inclusive_pfmt35").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[4] = calcSoverRootB(file, (channel+"_inclusive_pfmt40").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[5] = calcSoverRootB(file, (channel+"_inclusive_pfmt45").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[6] = calcSoverRootB(file, (channel+"_inclusive_pfmt50").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[0] = calcSoverRootB(file, (channel+"_inclusive_pfmt10").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[1] = calcSoverRootB(file, (channel+"_inclusive_pfmt15").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[2] = calcSoverRootB(file, (channel+"_inclusive_pfmt20").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[3] = calcSoverRootB(file, (channel+"_inclusive_pfmt25").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[4] = calcSoverRootB(file, (channel+"_inclusive_pfmt30").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[5] = calcSoverRootB(file, (channel+"_inclusive_pfmt35").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[6] = calcSoverRootB(file, (channel+"_inclusive_pfmt40").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[7] = calcSoverRootB(file, (channel+"_inclusive_pfmt45").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[8] = calcSoverRootB(file, (channel+"_inclusive_pfmt50").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[9] = calcSoverRootB(file, (channel+"_inclusive_pfmt60").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[10] = calcSoverRootB(file, (channel+"_inclusive_pfmt70").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[11] = calcSoverRootB(file, (channel+"_inclusive_pfmt80").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[12] = calcSoverRootB(file, (channel+"_inclusive_pfmt90").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[13] = calcSoverRootB(file, (channel+"_inclusive_pfmt100").c_str(),use_ztt,signalsample,massp).first;
 
-  sig_err_pfmt[0] = calcSoverRootB(file, (channel+"_inclusive_pfmt20").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[1] = calcSoverRootB(file, (channel+"_inclusive_pfmt25").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[2] = calcSoverRootB(file, (channel+"_inclusive_pfmt30").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[3] = calcSoverRootB(file, (channel+"_inclusive_pfmt35").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[4] = calcSoverRootB(file, (channel+"_inclusive_pfmt40").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[5] = calcSoverRootB(file, (channel+"_inclusive_pfmt45").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[6] = calcSoverRootB(file, (channel+"_inclusive_pfmt50").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[0] = calcSoverRootB(file, (channel+"_inclusive_pfmt10").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[1] = calcSoverRootB(file, (channel+"_inclusive_pfmt15").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[2] = calcSoverRootB(file, (channel+"_inclusive_pfmt20").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[3] = calcSoverRootB(file, (channel+"_inclusive_pfmt25").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[4] = calcSoverRootB(file, (channel+"_inclusive_pfmt30").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[5] = calcSoverRootB(file, (channel+"_inclusive_pfmt35").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[6] = calcSoverRootB(file, (channel+"_inclusive_pfmt40").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[7] = calcSoverRootB(file, (channel+"_inclusive_pfmt45").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[8] = calcSoverRootB(file, (channel+"_inclusive_pfmt50").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[9] = calcSoverRootB(file, (channel+"_inclusive_pfmt60").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[10] = calcSoverRootB(file, (channel+"_inclusive_pfmt70").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[11] = calcSoverRootB(file, (channel+"_inclusive_pfmt80").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[12] = calcSoverRootB(file, (channel+"_inclusive_pfmt90").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[13] = calcSoverRootB(file, (channel+"_inclusive_pfmt100").c_str(),use_ztt,signalsample,massp).second;
 
-  sig_mvamt[0] = calcSoverRootB(file, (channel+"_inclusive_mt20").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[1] = calcSoverRootB(file, (channel+"_inclusive_mt25").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[2] = calcSoverRootB(file, (channel+"_inclusive_mt30").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[3] = calcSoverRootB(file, (channel+"_inclusive_mt35").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[4] = calcSoverRootB(file, (channel+"_inclusive_mt40").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[5] = calcSoverRootB(file, (channel+"_inclusive_mt45").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[6] = calcSoverRootB(file, (channel+"_inclusive_mt50").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[0] = calcSoverRootB(file, (channel+"_inclusive_mt10").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[1] = calcSoverRootB(file, (channel+"_inclusive_mt15").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[2] = calcSoverRootB(file, (channel+"_inclusive_mt20").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[3] = calcSoverRootB(file, (channel+"_inclusive_mt25").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[4] = calcSoverRootB(file, (channel+"_inclusive_mt30").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[5] = calcSoverRootB(file, (channel+"_inclusive_mt35").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[6] = calcSoverRootB(file, (channel+"_inclusive_mt40").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[7] = calcSoverRootB(file, (channel+"_inclusive_mt45").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[8] = calcSoverRootB(file, (channel+"_inclusive_mt50").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[9] = calcSoverRootB(file, (channel+"_inclusive_mt60").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[10] = calcSoverRootB(file, (channel+"_inclusive_mt70").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[11] = calcSoverRootB(file, (channel+"_inclusive_mt80").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[12] = calcSoverRootB(file, (channel+"_inclusive_mt90").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[13] = calcSoverRootB(file, (channel+"_inclusive_mt100").c_str(),use_ztt,signalsample,massp).first;
 
-  sig_err_mvamt[0] = calcSoverRootB(file, (channel+"_inclusive_mt20").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[1] = calcSoverRootB(file, (channel+"_inclusive_mt25").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[2] = calcSoverRootB(file, (channel+"_inclusive_mt30").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[3] = calcSoverRootB(file, (channel+"_inclusive_mt35").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[4] = calcSoverRootB(file, (channel+"_inclusive_mt40").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[5] = calcSoverRootB(file, (channel+"_inclusive_mt45").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[6] = calcSoverRootB(file, (channel+"_inclusive_mt50").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[0] = calcSoverRootB(file, (channel+"_inclusive_mt10").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[1] = calcSoverRootB(file, (channel+"_inclusive_mt15").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[2] = calcSoverRootB(file, (channel+"_inclusive_mt20").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[3] = calcSoverRootB(file, (channel+"_inclusive_mt25").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[4] = calcSoverRootB(file, (channel+"_inclusive_mt30").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[5] = calcSoverRootB(file, (channel+"_inclusive_mt35").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[6] = calcSoverRootB(file, (channel+"_inclusive_mt40").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[7] = calcSoverRootB(file, (channel+"_inclusive_mt45").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[8] = calcSoverRootB(file, (channel+"_inclusive_mt50").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[9] = calcSoverRootB(file, (channel+"_inclusive_mt60").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[10] = calcSoverRootB(file, (channel+"_inclusive_mt70").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[11] = calcSoverRootB(file, (channel+"_inclusive_mt80").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[12] = calcSoverRootB(file, (channel+"_inclusive_mt90").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[13] = calcSoverRootB(file, (channel+"_inclusive_mt100").c_str(),use_ztt,signalsample,massp).second;
 
 
 
-   TGraphErrors *sig_pfmt_graph = new TGraphErrors(7,mt_cuts,sig_pfmt,x_err,sig_err_pfmt);
-   TGraphErrors *sig_mvamt_graph = new TGraphErrors(7,mt_cuts,sig_mvamt,x_err,sig_err_mvamt);
+   TGraphErrors *sig_pfmt_graph = new TGraphErrors(14,mt_cuts,sig_pfmt,x_err,sig_err_pfmt);
+   TGraphErrors *sig_mvamt_graph = new TGraphErrors(14,mt_cuts,sig_mvamt,x_err,sig_err_mvamt);
 
  sig_pfmt_graph->SetMarkerStyle(20);
  sig_pfmt_graph->SetMarkerColor(kRed);

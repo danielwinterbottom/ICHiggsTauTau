@@ -209,7 +209,8 @@ namespace ic {
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("m_2",               &m_2_.var_double);
         outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
-        outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
+        outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
+        outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
         outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
         outtree_->Branch("jpt_1",             &jpt_1_.var_double);
@@ -1175,13 +1176,21 @@ namespace ic {
       dz_2_ = muon2->dz_vertex();
     }
 
-
-    Tau const* tau = dynamic_cast<Tau const*>(lep2);
-    if (tau) {
-      tau_decay_mode_ = tau->decay_mode();
-      z_2_ = tau->vz() + (130. / tan(tau->vector().theta()));
+    Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
+    Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+    if (tau1) {
+      tau_decay_mode_1_ = tau1->decay_mode();
+      z_1_ = tau1->vz() + (130. / tan(tau1->vector().theta()));
     } else {
-      tau_decay_mode_ = 0;
+      tau_decay_mode_1_ = 0;
+      z_1_ = 0.;
+    }
+
+    if (tau2) {
+      tau_decay_mode_2_ = tau2->decay_mode();
+      z_2_ = tau2->vz() + (130. / tan(tau2->vector().theta()));
+    } else {
+      tau_decay_mode_2_ = 0;
       z_2_ = 0.;
     }
 
