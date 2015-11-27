@@ -145,6 +145,7 @@ class HTTCategories : public ModuleBase {
   bool antimu_1_;
   bool antiele_2_;
   bool antimu_2_;
+  double z_1_;
   double z_2_;
   float m_1_;
   branch_var m_2_;
@@ -227,7 +228,8 @@ class HTTCategories : public ModuleBase {
   float lagainstMuonLoose3_2 = 0;
   float lagainstMuonTight3_2 = 0;
     
-  int tau_decay_mode_;
+  int tau_decay_mode_1_;
+  int tau_decay_mode_2_;
 
   unsigned n_jets_;
   unsigned n_lowpt_jets_;
