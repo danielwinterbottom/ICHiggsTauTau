@@ -95,7 +95,7 @@ CONFIG='scripts/config.json'
 #    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s_M-50.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
  
 
-FILELIST='filelists/Oct30_MC_74X'
+FILELIST='filelists/Nov19_MC_74X'
 #FILELIST13='filelists/July13_MC_74X'
 
 signal_mc = [ ]
@@ -199,11 +199,11 @@ if options.proc_data or options.proc_all:
   ]
 
 
-  DATAFILELIST="./filelists/Oct30_Data_74X"
+  DATAFILELIST="./filelists/Nov19_Data_74X"
 
   for sa in data_samples:
       JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct30_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Nov19_Data_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 40 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -244,14 +244,13 @@ if options.proc_bkg or options.proc_all:
     #'WWinclusive',
     #'ZZinclusive',
     #'WZinclusive',
-    'ZZTo2L2Nu',
     'ZZTo4L',
+    'VVTo2L2Nu',
     'ZZTo2L2Q',
-    'WWToLNuQQ',
-    'WWTo2L2Nu',
-    'WZTo2L2Q',
-    'WZTo3LNu',
+    'WWTo1L1Nu2Q',
+    'WZJetsTo3LNu',
     'WZTo1L3Nu',
+    'WZTo2L2Q',
     'WZTo1L1Nu2Q',
     'T-t',
     'Tbar-t',
@@ -265,12 +264,20 @@ if options.proc_bkg or options.proc_all:
 #    'WWToLNuQQ',
 #    'ZZTo4L',
 #    'DYJetsToLL',
+    'DYJetsToLL_M-5-LO',
+    'DYJetsToLL_M-5_HT100-200',
+    'DYJetsToLL_M-5_HT200-400',
+    'DYJetsToLL_M-5_HT400-600',
+    'DYJetsToLL_M-5_HT600-Inf',
     'DYJetsToLL_M-50-LO',
-#    'DYJetsToLL_M-50_HT100-200',
-#    'WJetsToLNu_HT100-200',
-#    'WJetsToLNu_HT200-400',
-#    'WJetsToLNu_HT400-600',
-#    'WJetsToLNu_HT600-inf'
+    'DYJetsToLL_M-50_HT100-200',
+    'DYJetsToLL_M-50_HT200-400',
+    'DYJetsToLL_M-50_HT400-600',
+    'DYJetsToLL_M-50_HT600-Inf',
+    'WJetsToLNu_HT100-200',
+    'WJetsToLNu_HT200-400',
+    'WJetsToLNu_HT400-600',
+    'WJetsToLNu_HT600-Inf',
      ]
 
   for sa in central_samples:
