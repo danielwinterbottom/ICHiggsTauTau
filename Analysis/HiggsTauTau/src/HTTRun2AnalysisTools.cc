@@ -236,6 +236,7 @@ namespace ic {
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
+      alias_map_["btagpt20"] = "(n_lowpt_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["nobtagnotwoprong"] = "n_bjets==0&&"+alias_map_["notwoprong"]+")";
       //for making CSV control plot
