@@ -461,9 +461,9 @@ namespace ic {
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
-     "WWToLNuQQ","WWTo2L2Nu",
-     "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
+     "WWTo1L1Nu2Q",
+     "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
+     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
     };
 
 /*  if(ch_==channel::em){
@@ -550,9 +550,9 @@ namespace ic {
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL_M-50-LO", 
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q",
+   "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "WJetsToLNu-LO","TT-ext"
    };
 
@@ -583,9 +583,9 @@ namespace ic {
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext","WJetsToLNu-LO"
    };
 
@@ -595,9 +595,9 @@ if(use_status_flags_){
   samples_alias_map_["w_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext"
    };
 
