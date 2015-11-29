@@ -29,7 +29,6 @@
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
-#include "HiggsTauTau/interface/SVFitTestRun2.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
@@ -769,8 +768,7 @@ if(channel != channel::wmnu) {
    }
 
 
- if(era_type != era::data_2015){
-  BuildModule(SVFitTest("SVFitTest")
+  SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
@@ -780,22 +778,15 @@ if(channel != channel::wmnu) {
     .set_dilepton_label("ditau")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder)
-    .set_MC(true));
-} 
+    .set_legacy_svfit(true)
+    .set_do_preselection(false)
+    .set_MC(true);
+ if(era_type == era::data_2015){
+   svFitTest.set_legacy_svfit(false);
+   svFitTest.set_do_preselection(!make_sync_ntuple);
+ }
 
-if(era_type == era::data_2015){
-  BuildModule(SVFitTestRun2("SVFitTestRun2")
-    .set_channel(channel)
-    .set_outname(svfit_override == "" ? output_name : svfit_override)
-    .set_run_mode(new_svfit_mode)
-    .set_fail_mode(0)
-    .set_require_inputs_match(false)
-    .set_split(7000)
-    .set_dilepton_label("ditau")
-    .set_met_label("pfMVAMet")
-    .set_fullpath(svfit_folder)
-    .set_MC(true));
-} 
+BuildModule(svFitTest);
 
 
 
