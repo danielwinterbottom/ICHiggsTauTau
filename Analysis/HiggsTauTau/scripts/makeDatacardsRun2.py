@@ -118,7 +118,8 @@ if SCHEME == 'run2_sm':
 #  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"
   scheme_et = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, ''),
+    ("8",   "notwoprong",    "inclusivemtnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<40"')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ""),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
@@ -126,7 +127,8 @@ if SCHEME == 'run2_sm':
 #    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --set_alias="w_shape_os:1"')
   ]
   scheme_mt = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE,  '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("8",   "notwoprong",    "inclusivemtnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<40"')
 #    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
