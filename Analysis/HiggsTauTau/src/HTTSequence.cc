@@ -774,7 +774,7 @@ if(channel != channel::wmnu) {
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(1)
     .set_require_inputs_match(false)
-    .set_split(700)
+    .set_split(7000)
     .set_dilepton_label("ditau")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder)
