@@ -1,0 +1,604 @@
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeAnalyser.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeModule.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeFiles.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataNormShape.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataZNormShape.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataShape.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/TrigEff.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataZEst.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/NormPlots.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/SimplePlots.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/MVATrain.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/AddFriends.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/Plotter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/HistPlotter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/SummaryTable.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/EventList.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/BkgSubDataNormShape.h"
+#include "boost/lexical_cast.hpp"
+#include "boost/program_options.hpp"
+#include "TColor.h"
+#include "TMath.h"
+
+namespace po=boost::program_options;
+using namespace ic;
+
+int main(int argc, char* argv[]){
+  /*##########################################
+  #                                          #
+  #            SET UP OPTIONS                #
+  #                                          #
+  ##########################################*/
+
+  //Input output and config options
+  std::string cfg;
+  std::string outputname;
+  std::string inputfolder;
+  std::string inputparams;
+  std::string filelist;
+  std::string basesel;
+
+  std::string channel;
+  std::string syst;
+  std::string dataset;
+
+  bool do_mettrig;
+  bool apply_trig_in_mc;
+  bool runblind;
+  bool runblindreg;
+  bool blindcutreg;
+
+  bool dataonly;
+  bool datalist;
+  bool do_list;
+  std::string listset;
+
+  bool do_latex;
+  bool do_logy;
+  bool do_mcbkg;
+
+  unsigned debug;
+
+  po::options_description preconfig("Configuration"); 
+  preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
+  po::variables_map vm;
+  po::store(po::command_line_parser(argc, argv).options(preconfig).allow_unregistered().run(), vm);
+  po::notify(vm);
+  po::options_description config("Configuration");
+  config.add_options()
+    //Input output and config options
+    ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
+    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_151123/"))
+    ("syst,s",                   po::value<std::string>(&syst)->default_value(""))
+    ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/151030/Params151030.dat"))
+    ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/run2filelist.dat"))
+    ("dataset,d",                po::value<std::string>(&dataset)->default_value("MET"))
+    ("dataonly",                 po::value<bool>(&dataonly)->default_value(false))
+    ("datalist",                 po::value<bool>(&datalist)->default_value(false))
+    ("do_list",                  po::value<bool>(&do_list)->default_value(false))
+    ("listset",                  po::value<std::string>(&listset)->default_value("Top"))
+    ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=800&&jet1_pt>80&&dijet_deta>3.6&& jet2_pt>70&&metnomuons>200"))
+    ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
+
+    ("runblind",                 po::value<bool>(&runblind)->default_value(true))
+
+    ("do_latex",                 po::value<bool>(&do_latex)->default_value(false))
+
+    ("do_mettrig",               po::value<bool>(&do_mettrig)->default_value(false))
+    ("apply_trig_in_mc",               po::value<bool>(&apply_trig_in_mc)->default_value(false))
+
+    ("do_logy",                  po::value<bool>(&do_logy)->default_value(false))
+    ("blindcutreg",              po::value<bool>(&blindcutreg)->default_value(true))
+    ("runblindreg",              po::value<bool>(&runblindreg)->default_value(true))
+    ("debug",                    po::value<unsigned>(&debug)->default_value(0))
+    ("do_mcbkg",                 po::value<bool>(&do_mcbkg)->default_value(true));
+
+  po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
+  po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
+  po::notify(vm);
+
+  /*##########################################
+  #                                          #
+  #          INSTANTIATE ANALYSER            #
+  #                                          #
+  ##########################################*/
+
+  LTAnalyser* analysis = new LTAnalyser(outputname);
+
+
+  if (debug) std::cout << "syst=" << syst << " size " << syst.size() << std::endl;
+
+  analysis->AddFiles(filelist);
+  if(syst!="PUUP"&&syst!="PUDOWN"&&syst.size()!=0){
+    std::cout<<"Syst, taking input from: "<<inputfolder<<"/"<<syst<<std::endl;
+    analysis->SetInFolder(inputfolder+"/"+syst);
+  }
+  else{
+    std::cout<<"Taking input from: "<<inputfolder<<std::endl;
+    analysis->SetInFolder(inputfolder);
+  }
+  analysis->SetInputParams(inputparams);
+
+  std::cout<<"Base selection: "<<basesel<<std::endl;
+
+  analysis->set_baseselection(basesel);
+  
+  /*##########################################
+  #                                          #
+  #            DEFINE MODULES                #
+  #                                          #
+  ##########################################*/
+
+  std::vector<std::string> histTitle;
+  std::vector<std::string> shape;
+
+  if (debug) {
+    shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
+  }
+  else {
+    if(channel=="enu" || channel=="munu" || channel=="taunu"){
+      shape.push_back("lep_mt(40,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
+      if (channel=="enu"){
+	shape.push_back("ele1_pt(30,0.,300.)");histTitle.push_back(";p_{T}(electron) (GeV);Events");
+	shape.push_back("ele1_eta(30,-2.4,2.4)");histTitle.push_back(";#eta(electron) (GeV);Events");
+      }
+      else if (channel=="munu"){
+	shape.push_back("mu1_pt(30,0.,300.)");histTitle.push_back(";p_{T}(muon) (GeV);Events");
+	shape.push_back("mu1_eta(30,-2.1,2.1)");histTitle.push_back(";#eta(muon) (GeV);Events");
+      }
+      else if (channel=="taunu") {
+	shape.push_back("tau1_pt(30,0.,300.)");histTitle.push_back(";p_{T}(tau) (GeV);Events");
+	shape.push_back("tau1_eta(30,-2.4,2.4)");histTitle.push_back(";#eta(tau) (GeV);Events");
+      }
+    }
+    
+    if(channel=="mumu"){
+      shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};Events");
+      shape.push_back("mu1_pt(30,0.,300.)");histTitle.push_back(";p_{T}(lead muon) (GeV);Events");
+      shape.push_back("mu1_eta(30,-2.1,2.1)");histTitle.push_back(";#eta(lead muon) (GeV);Events");
+      shape.push_back("mu2_pt(30,0.,300.)");histTitle.push_back(";p_{T}(sublead muon) (GeV);Events");
+      shape.push_back("mu2_eta(50,-2.1,2.1)");histTitle.push_back(";#eta(sublead muon) (GeV);Events");
+    }
+    
+    shape.push_back("n_vertices(40,0,40)");histTitle.push_back(";n_{vtx};Events");
+
+    shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
+    shape.push_back("jet2_pt(28,70.,350.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
+    shape.push_back("cjvjetpt(19,15.,205.)");histTitle.push_back(";p_{T}^{CJV jet} (GeV);Events");
+    
+    shape.push_back("metnomuons(35,200.,550.)");histTitle.push_back(";MET_{no #mu} (GeV);Events");
+    shape.push_back("met(30,0.,550.)");histTitle.push_back(";MET (GeV);Events");
+    shape.push_back("l1met(30,0.,550.)");histTitle.push_back(";L1MET (GeV);Events");
+    
+    shape.push_back("ht(30,100,1000)");histTitle.push_back(";H_{T}^{p_{T}^{j}>15 GeV} (GeV);Events");
+    shape.push_back("ht30(30,100,1000)");histTitle.push_back(";H_{T}^{p_{T}^{j}>30 GeV} (GeV);Events");
+    
+    shape.push_back("dijet_M(30,700.,4000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+    shape.push_back("dijet_dphi(15,0.,3.1416)");histTitle.push_back(";#Delta#phi_{jj};Events");
+    shape.push_back("dijet_deta(30,3.6,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
+    shape.push_back("dijet_sumeta(30,-5,5)");histTitle.push_back(";#eta_{j1}+#eta_{j2};Events");
+    
+    shape.push_back("jetmetnomu_mindphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
+    shape.push_back("alljetsmetnomu_mindphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
+    shape.push_back("metnomu_significance(30,0.,200.)");histTitle.push_back(";S;Events");
+    
+    shape.push_back("jetunclet_mindphi(32,0,3.1416)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});Events");
+    shape.push_back("metnomuunclet_dphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl});Events");
+    shape.push_back("dijetmetnomu_scalarSum_pt(35,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;Events");
+    shape.push_back("dijetmetnomu_vectorialSum_pt(20,0,400)");histTitle.push_back(";p_{T}(#vec{ja}+#vec{jb}+#vec{METnoMu});Events");
+    shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events");
+    
+    shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);Events");
+    shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);Events");
+    
+    shape.push_back("jet1_csv(21,0.,1.)");histTitle.push_back(";Jet 1 CSV;Events");
+    shape.push_back("jet2_csv(21,0.,1.)");histTitle.push_back(";Jet 2 CSV;Events");
+    shape.push_back("jet3_csv(21,0.,1.)");histTitle.push_back(";Jet 3 CSV;Events");
+    
+    shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;Events");
+    shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
+    shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
+    shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
+
+    //mindR(tau,tagjets)
+    //shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);Events");
+  }
+
+  std::string dataextrasel;
+  std::string mcextrasel;
+
+  if(!do_mettrig) dataextrasel="&&(pass_sigtrigger==1)";
+  else dataextrasel="&&(pass_mettrigger==1)";
+
+  if (apply_trig_in_mc) mcextrasel=dataextrasel;
+
+  std::string sigcat;
+
+  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120";
+  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0";
+  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1";
+  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0";
+  std::string gammacat="ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0";
+
+  if(channel=="mumu"){//zmumu
+    sigcat=mumucat;
+  }
+  else if(channel=="munu"){//wmu
+    sigcat=munucat;
+  }
+  else if(channel=="enu"){//wel
+    sigcat=enucat;
+  }
+  else if(channel=="taunu"){//wtau
+    sigcat=taunucat;
+  }
+  else if(channel=="gamma"){
+    sigcat=gammacat;
+  }
+  else{
+    std::cout<<"Error: Channel "<<channel<<" not recognised, exiting"<<std::endl;
+    return 1;
+  }
+
+  std::string sigmcweight;
+  std::string mcweightpufactor="";
+  if(syst=="PUUP") mcweightpufactor="*puweight_up_scale";
+  if(syst=="PUDOWN") mcweightpufactor="*puweight_down_scale";
+  
+  if(channel=="taunu"||channel=="gamma") sigmcweight="total_weight_lepveto"+mcweightpufactor;
+  else sigmcweight="total_weight_leptight"+mcweightpufactor;
+
+  std::string bothcentral="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)<3";
+  std::string bothforward="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)>=3";
+  std::string j2forwardj1central="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)>=3";
+  std::string j1forwardj2central="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)<3";
+
+  std::string additionalcut="";
+
+  //DATA SHAPE GENERATION
+  DataShape data("data");
+  data.set_dataset(dataset)
+    .set_dirname("data_obs")
+    .set_shape(shape)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+dataextrasel);
+
+  DataShape signal110("signal110");
+  signal110.set_dataset("sig110")
+    .set_dirname("qqH110")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape signal125("signal125");
+  signal125.set_dataset("sig125")
+    .set_dirname("qqH125")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape signal150("signal150");
+  signal150.set_dataset("sig150")
+    .set_dirname("qqH150")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape signal200("signal200");
+  signal200.set_dataset("sig200")
+    .set_dirname("qqH200")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape signal300("signal300");
+  signal300.set_dataset("sig300")
+    .set_dirname("qqH300")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape signal400("signal400");
+  signal400.set_dataset("sig400")
+    .set_dirname("qqH400")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape vv("vv");
+  vv.set_dataset("VV")
+    .set_dirname("vv")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape topraw("topraw");
+  topraw.set_dataset("Top")
+    .set_dirname("top")
+    .set_shape(shape)    
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape znunuraw("znunuraw");
+  znunuraw.set_dataset("ZJets_nunu")
+    .set_dirname("zvv")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape zmumuraw("zmumuraw");
+  zmumuraw.set_dataset("ZJets_ll")
+    .set_dirname("zmumu")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape wmunuraw("wmunuraw");
+  wmunuraw.set_dataset("WJets_munu")
+    .set_dirname("wmu")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape wenuraw("wenuraw");
+  wenuraw.set_dataset("WJets_enu")
+    .set_dirname("wel")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape wtaunuraw("wtaunuraw");
+  wtaunuraw.set_dataset("WJets_taunu")
+    .set_dirname("wtau")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape qcdraw("qcdraw");
+  qcdraw.set_dataset("QCD")
+    .set_dirname("qcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  //HISTPLOTTER
+  //std::vector<std::string> shapevec;
+  std::vector<LTShapeElement> shapevec;
+  for(unsigned ishape=0;ishape<shape.size();ishape++){
+    std::vector<std::string> strs;
+    boost::split(strs, shape[ishape], boost::is_any_of("("));
+    LTShapeElement thisshape;
+    thisshape.set_name(strs[0]);
+    thisshape.set_histtitle(histTitle[ishape]);
+    //    shapevec.push_back(strs[0]);
+    if(do_logy) thisshape.set_dology(true);
+    shapevec.push_back(thisshape);
+  }
+
+  std::vector<LTPlotElement> elementvec;
+
+  LTPlotElement dataele;
+  dataele.set_is_data(true)
+    .set_scale(1)
+    .set_legname("Data")
+    .set_is_inrationum(true)
+    .set_sample("data_obs");
+  if(runblindreg&&channel=="nunu"){
+    std::vector<std::string> blindvars;
+    std::vector<std::pair<double,double> > blindrange;
+    blindvars.push_back("alljetsmetnomu_mindphi");
+    blindvars.push_back("metnomu_significance");
+    std::pair<double,double>mindphirange(2.,6.);
+    std::pair<double,double>metsigrange(4.,20.);
+    blindrange.push_back(mindphirange);
+    blindrange.push_back(metsigrange);
+    dataele.set_blindvar(blindvars)
+      .set_blindrange(blindrange);
+  }
+
+  if(blindcutreg&&!runblindreg){
+    std::vector<std::string> blindvars;
+    std::vector<std::pair<double,double> > blindrange;
+    blindvars.push_back("forward_tag_eta");
+    std::pair<double,double>forwardetarange(-1.8,1.8);
+    blindrange.push_back(forwardetarange);
+    dataele.set_blindvar(blindvars)
+      .set_blindrange(blindrange);
+  }
+
+  LTPlotElement wmunuele;
+  wmunuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange-4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("W#rightarrow#mu#nu")
+    .set_sample("wmu");
+  if(!do_mcbkg)wmunuele.set_has_dderrors(1);
+
+  LTPlotElement wenuele;
+  wenuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("W#rightarrow e#nu")
+    .set_sample("wel");
+  if(!do_mcbkg)wenuele.set_has_dderrors(1);
+
+
+  LTPlotElement wtaunuele;
+  wtaunuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange + 4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("W#rightarrow#tau#nu")
+    .set_sample("wtau");
+  if(!do_mcbkg)wtaunuele.set_has_dderrors(1);
+
+
+  LTPlotElement zmumuele;
+  zmumuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kAzure  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("Z#rightarrow#mu#mu")
+    .set_sample("zmumu");
+  if(!do_mcbkg)zmumuele.set_has_dderrors(1);
+
+  LTPlotElement vvele;
+  vvele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kGreen-5)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("VV")
+    .set_sample("vv");
+
+  LTPlotElement topele;
+  topele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kBlue-8)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("Top")
+    .set_sample("top");
+
+  LTPlotElement qcdele;
+  qcdele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kYellow+2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD")
+    .set_sample("qcd");
+
+
+  LTPlotElement sigele;
+  sigele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kRed)
+    .set_in_stack(false)
+    .set_legname("Signal (x1)")
+    .set_sample("qqH125");
+
+  LTPlotElement ggHele;
+  ggHele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kBlue)
+    .set_in_stack(false)
+    .set_legname("gg#rightarrow H (x1)")
+    .set_sample("ggH125");
+
+  if(!(channel=="nunu"&&runblind))elementvec.push_back(dataele);
+  if(!dataonly){
+    if(channel!="mumu"){
+    elementvec.push_back(wmunuele);
+    elementvec.push_back(wenuele);
+    elementvec.push_back(wtaunuele);
+    } //else {
+    elementvec.push_back(zmumuele);
+    //}
+    elementvec.push_back(vvele);
+    elementvec.push_back(topele);
+    elementvec.push_back(qcdele);
+    if(channel!="mumu"&&channel!="enu"&&channel!="munu"&&channel!="taunu"){
+      elementvec.push_back(sigele);
+      //elementvec.push_back(ggHele);
+    }
+  }
+
+  if (debug){
+    std::cout << " number of elements: " << elementvec.size() << std::endl;
+    for(unsigned iElement=0;iElement<elementvec.size();iElement++){
+      std::cout<<" --- Ele " << iElement << " sample " << elementvec[iElement].sample() << std::endl;
+    }
+  }
+
+  HistPlotter plotter("plotter");
+  plotter.set_dirname("ControlPlots")
+    .set_add_underflows(true)
+    .set_add_overflows(true)
+    .set_elements(elementvec)
+    //.set_histTitles(histTitle)
+    .set_shapes(shapevec);
+  if(!dataonly)    plotter.set_do_ratio(true);
+  else plotter.set_do_ratio(false);
+  if(channel=="nunu"&&runblind)plotter.set_do_ratio(false);
+
+  if (debug) plotter.set_do_debug(true);
+
+  std::vector<std::string> dirvec;
+  if(!dataonly){
+    dirvec.push_back("wel");
+    dirvec.push_back("wmu");
+    dirvec.push_back("wtau");
+    dirvec.push_back("zmumu");
+    //dirvec.push_back("zvv");
+    dirvec.push_back("qcd");
+    dirvec.push_back("vv");
+    //dirvec.push_back("wg");  
+    dirvec.push_back("top");
+    dirvec.push_back("qqH125");
+  }
+  if(!(channel=="nunu"&&runblind))dirvec.push_back("data_obs");
+
+  SummaryTable summary("summary");
+  summary.set_shape(shapevec)
+    .set_dirs(dirvec);
+  
+  /*##########################################
+  #                                          #
+  #   SET UP ANALYSIS SEQUENCE AND RUN       #
+  #                                          #
+  ##########################################*/
+
+  if(!dataonly){
+
+    if(do_mcbkg){
+      analysis->AddModule(&wmunuraw);
+      analysis->AddModule(&wenuraw);
+      analysis->AddModule(&wtaunuraw);
+      analysis->AddModule(&topraw);
+      analysis->AddModule(&qcdraw);
+      analysis->AddModule(&zmumuraw);
+    }
+    analysis->AddModule(&vv);
+  }
+  if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
+
+  if(!dataonly){
+    //analysis->AddModule(&signal110);
+    //analysis->AddModule(&signal150);
+    //analysis->AddModule(&signal200);
+    //analysis->AddModule(&signal300);
+    //analysis->AddModule(&signal400);
+    //analysis->AddModule(&signal500);
+    analysis->AddModule(&signal125);
+  }
+  analysis->AddModule(&plotter);
+  if(!dataonly) analysis->AddModule(&summary);
+  
+  analysis->RunAnalysis();
+  
+  return 0;
+  
+}

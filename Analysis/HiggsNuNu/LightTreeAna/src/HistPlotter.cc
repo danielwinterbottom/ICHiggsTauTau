@@ -155,10 +155,11 @@ namespace ic{
       if(!do_ratio_) stack->SetTitle(shapes_[iShape].histtitle().c_str());
 
       //EXTRACT ALL THE HISTOS AND PUT THEM IN STACKED OR UNSTACKED GROUPS
-      std::cout<<"    Getting histograms.."<<std::endl;
+      std::cout<<"    Getting histograms using "<< elements_.size() << " elements" << std::endl;
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(elements_[iElement].sample()==""){
-	  std::cout<<"ERROR: Element with empty name exiting with status 1"<<std::endl;
+	  std::cout<<"HistPlotter ERROR: Element " << iElement << " with empty name, exiting with status 1"<<std::endl;
+	  std::cout<<"Ele before: " << elements_[iElement>0?iElement-1 : 0].sample() << " after " << elements_[iElement<(elements_.size()-1)?iElement+1:elements_.size()-1].sample() << std::endl;
 	  return 1;
 	}
 	if(!fs_->GetDirectory(elements_[iElement].sample().c_str())){
@@ -588,7 +589,10 @@ namespace ic{
 	  //ratio->GetXaxis()->SetTitleOffset(0.8);
 	  //std::cout<<ratio->GetMaximum();
 	  double ratiomax=ratio->GetMaximum()+0.1;
-	  if(ratiomax<2)ratiomax=2;
+	  if(ratiomax<2 || ratiomax>3) {
+	    std::cout << " Found ratio max = " << ratiomax << " setting to 2." << std::endl;
+	    ratiomax=2;
+	  }
 	  ratio->GetYaxis()->SetRangeUser(0,ratiomax);
 	  ratio->SetTitle("");
 	  ratio->GetYaxis()->SetTitle("Data/Bkg");

@@ -250,6 +250,10 @@ int main(int argc, char* argv[]){
 
   // Build a vector of input files
   vector<string> files = ParseFileLines(filelist);
+  if (files.size()==0) {
+    std::cout << " -- ERROR ! No input file provided, filelist " << filelist << " doesn't exist or is empty, please check." << std::endl;
+    return 1;
+  }
   for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
   
   // Create ROOT output fileservice
@@ -420,7 +424,7 @@ int main(int argc, char* argv[]){
   PileupWeight pileupWeight = PileupWeight("PileupWeight")
     .set_data(&data_pu)
     .set_mc(&mc_pu)
-    .set_print_weights(true);
+    .set_print_weights(false);
   PileupWeight pileupWeight_up = PileupWeight("PileupWeight_up","!pileup_up")
     .set_data(&data_pu_up)
     .set_mc(&mc_pu)
@@ -824,7 +828,7 @@ int main(int argc, char* argv[]){
       .set_binnedin2d1dfitweightvar2binning(mjjbinning)
       .set_do_run2(true)
       .set_trg_weight_file(trg_weight_file)
-      .set_trg_applied_in_mc(true);
+      .set_trg_applied_in_mc(false);
     if(do3dtrgeff){
       hinvWeights.set_Alumi(0.889)
 	.set_BClumi(11.023)
@@ -889,7 +893,7 @@ int main(int argc, char* argv[]){
   WtoLeptonFilter2012.set_do_newstatuscodes(false);
   WtoLeptonFilter2012.set_do_statusflags(false);
 
-  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,150,true);
+  HinvZDecay ZhighptFilter = HinvZDecay("ZhighptFilter",is2012?13:0,0,150,true,is2012);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
@@ -955,9 +959,9 @@ int main(int argc, char* argv[]){
     //just apply W and Z weights
     analysis.AddModule(&xsWeights);
     //Z pt <100 GeV cut for inclusive DY samples
-    //if(doincludehighptz && output_name.find("DYJetsToLL-mg") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
-    //analysis.AddModule(&ZlowmassFilter);
-    //}
+    if(doincludehighptz && output_name.find("DYJetsToLL-mg-m50") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
+      analysis.AddModule(&ZhighptFilter);
+    }
   }
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);

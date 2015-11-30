@@ -1,6 +1,6 @@
 #!/bin/sh
 DOCERN=1
-DOSUBMIT=1
+DOSUBMIT=0
 MYEXEC=LightTreeMakerFromMiniAOD
 PRODUCTION=151113
 PRODUSER=amagnan
@@ -36,9 +36,9 @@ for SYST in central #JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOW
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
-  JOBDIRPREFIX=jobs_lighttree_151123
+  JOBDIRPREFIX=jobs_lighttree_151130
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_151123
+  OUTPUTPREFIX=output_lighttree_151130
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
