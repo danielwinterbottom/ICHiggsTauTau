@@ -13,7 +13,7 @@
 
 using svFitStandalone::Vector;
 using svFitStandalone::LorentzVector;
-using svFitStandalone::MeasuredTauLepton;
+//svFitStandalone::MeasuredTauLepton;
 
 /**
    \class   ObjectFunctionAdapter SVfitStandaloneAlgorithm.h "TauAnalysis/SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
@@ -269,7 +269,7 @@ class SVfitStandaloneAlgorithm
 {
  public:
   /// constructor from a minimal set of configurables
-  SVfitStandaloneAlgorithm(const std::vector<MeasuredTauLepton>& measuredTauLeptons, double measuredMETx, double measuredMETy, const TMatrixD& covMET, unsigned int verbose = 0);
+  SVfitStandaloneAlgorithm(const std::vector<svFitStandalone::MeasuredTauLepton>& measuredTauLeptons, double measuredMETx, double measuredMETy, const TMatrixD& covMET, unsigned int verbose = 0);
   /// destructor
   ~SVfitStandaloneAlgorithm();
 

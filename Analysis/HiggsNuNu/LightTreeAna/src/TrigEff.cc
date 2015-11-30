@@ -41,6 +41,8 @@ namespace ic{
   int TrigEff::Run(LTFiles* filemanager){
     std::cout<<module_name_<<":"<<std::endl;
 
+    TFile *trigweightsout=new TFile("TrigEff2015D_MET1DFit.root","UPDATE");
+
     TFile *file=fs_;
     TDirectory* dir;
     if(dirname_==""){
@@ -82,7 +84,7 @@ namespace ic{
     }
     std::cout<<"  nevents before trigger: "<<Integral(&datashapenotrig)<<"+-"<<Error(&datashapenotrig)<<std::endl;
     std::cout<<"  nevents after trigger: "<<Integral(&datashapewithtrig)<<"+-"<<Error(&datashapewithtrig)<<std::endl;
-    
+
     efficiency->SetName(histname.c_str());
     datashapenotrig.SetName((histname+"notrig").c_str());
     datashapewithtrig.SetName((histname+"withtrig").c_str());
@@ -106,26 +108,29 @@ namespace ic{
       if( !(convertlow >> rangelow) ) throw;
       std::stringstream converthigh(varhigh);
       if( !(converthigh >> rangehigh) ) throw;
-      //TF1 *func = new TF1("erf","[0]*0.5*(1+TMath::Erf((x-[1])/(sqrt([2]))))",rangelow,rangehigh);
-      TF1 *func = new TF1("erf","[0]*0.5*(1+TMath::Erf((x-[1])/(sqrt([2]))))+[3]*0.5*(1+TMath::Erf((x-[4])/(sqrt([5]))))",rangelow,rangehigh);
-      // func->SetParameters(1,100,10000);
-      // func->SetParNames("Max","Turn On","Sigma");
-      // func->SetParLimits(0,0.,1.);
-      // func->SetParLimits(1,-10000,10000);
-      // func->SetParLimits(2,0,100000);
-      func->SetParameters(1,100,10000,0.1,250,10000);
-      func->SetParNames("Max1","Turn On1","Sigma1","Max2","Turn On2","Sigma2");
+      TF1 *func = new TF1("erf","[0]*0.5*(1+TMath::Erf((x-[1])/(sqrt([2]))))",rangelow,rangehigh);
+      //TF1 *func = new TF1("erf","[0]*0.5*(1+TMath::Erf((x-[1])/(sqrt([2]))))+[3]*0.5*(1+TMath::Erf((x-[4])/(sqrt([5]))))",rangelow,rangehigh);
+      func->SetParameters(1,100,10000);
+      func->SetParNames("Max","Turn On","Sigma");
       func->SetParLimits(0,0.,1.);
       func->SetParLimits(1,-10000,10000);
       func->SetParLimits(2,0,100000);
-      func->SetParLimits(3,0.,1.);
-      func->SetParLimits(4,-10000,10000);
-      func->SetParLimits(5,0,100000);
+      // func->SetParameters(1,100,10000,0.1,250,10000);
+      // func->SetParNames("Max1","Turn On1","Sigma1","Max2","Turn On2","Sigma2");
+      // func->SetParLimits(0,0.,1.);
+      // func->SetParLimits(1,-10000,10000);
+      // func->SetParLimits(2,0,100000);
+      // func->SetParLimits(3,0.,1.);
+      // func->SetParLimits(4,-10000,10000);
+      // func->SetParLimits(5,0,100000);
 
       
       efficiency->Fit("erf","R");
+      
       fitresult=efficiency->GetFunction("erf");
+      trigweightsout->cd();
       fitresult->Write((namestr_+"eff").c_str());
+      dir->cd();
     }
 
     //Make plots
@@ -138,6 +143,7 @@ namespace ic{
     upper->SetBottomMargin(0.15);
     upper->Draw();
     upper->cd();
+    efficiency->GetYaxis()->SetRangeUser(0.,1.35);
     efficiency->Draw("AP");
     DrawCMSLogoTest(upper,"CMS","preliminary",10);
     //efficiency->Draw(elements_[iElement].drawopts().c_str());
@@ -223,6 +229,7 @@ namespace ic{
     //      lower->Clear();                                                                                                                                                                                                                
   
     dir->Close();
+    trigweightsout->Close();
 
     return 0;
   };

@@ -131,6 +131,7 @@ namespace ic {
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "1";
+      alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
       alias_map_["baseline"]         = "(iso_1<0.1 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -234,15 +235,20 @@ namespace ic {
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
+      alias_map_["btagpt20"] = "(n_lowpt_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["nobtagnotwoprong"] = "n_bjets==0&&"+alias_map_["notwoprong"]+")";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       //MSSM update analysis style categories:
       alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>30 && pt_2<45)";
       alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45)";
+      alias_map_["btaghighnotwoprong"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45&&"+alias_map_["notwoprong"]+")";
       alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>30 && pt_2<45";
       alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>45 && pt_2<60";
       alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>60";
+      alias_map_["nobtaghighnotwoprong"] = "(n_bjets==0 && pt_2>60 &&"+alias_map_["notwoprong"]+")";
     } else if (ch_ == channel::tt) {
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -455,9 +461,9 @@ namespace ic {
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
-     "WWToLNuQQ","WWTo2L2Nu",
-     "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
+     "WWTo1L1Nu2Q",
+     "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
+     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
     };
 
 /*  if(ch_==channel::em){
@@ -544,9 +550,9 @@ namespace ic {
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL_M-50-LO", 
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q",
+   "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "WJetsToLNu-LO","TT-ext"
    };
 
@@ -577,9 +583,9 @@ namespace ic {
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext","WJetsToLNu-LO"
    };
 
@@ -589,9 +595,9 @@ if(use_status_flags_){
   samples_alias_map_["w_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext"
    };
 
