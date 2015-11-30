@@ -28,6 +28,10 @@ int main(int argc, char* argv[]){
   // AutoLibraryLoader::enable();
 
   std::string input_file = argv[1];
+  bool run_legacy = false;
+  if(argc == 3){
+     run_legacy = atoi(argv[2]);
+    } 
   std::string output_file = input_file;
   bool MC=true; // Set to true to use Markov-Chain integration
   if (output_file.find("input.root") != input_file.npos) {
