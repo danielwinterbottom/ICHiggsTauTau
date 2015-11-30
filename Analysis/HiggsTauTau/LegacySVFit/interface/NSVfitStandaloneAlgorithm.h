@@ -11,7 +11,7 @@
 
 using NSVfitStandalone::Vector;
 using NSVfitStandalone::LorentzVector;
-using NSVfitStandalone::MeasuredTauLepton;
+//using NSVfitStandalone::MeasuredTauLepton;
 
 /**
    \class   ObjectFunctionAdapter NSVfitStandaloneAlgorithm.h "TauAnalysis/CandidateTools/interface/NSVfitStandaloneAlgorithm.h"
@@ -256,7 +256,7 @@ class NSVfitStandaloneAlgorithm
 {
  public:
   /// constructor from a minimal set of configurables
-  NSVfitStandaloneAlgorithm(std::vector<MeasuredTauLepton> measuredTauLeptons, Vector measuredMET, const TMatrixD& covMET, unsigned int verbosity = 0);
+  NSVfitStandaloneAlgorithm(std::vector<NSVfitStandalone::MeasuredTauLepton> measuredTauLeptons, Vector measuredMET, const TMatrixD& covMET, unsigned int verbosity = 0);
   /// destructor
   ~NSVfitStandaloneAlgorithm();
 
