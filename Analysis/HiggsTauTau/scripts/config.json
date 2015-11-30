@@ -1,7 +1,7 @@
 {
   "job": {
-    "filelist" : "filelists/Oct30_MC_74X_SUSYGluGluToHToTauTau_M-160.dat",
-    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct30_MC_74X/",
+    "filelist" : "filelists/Nov19_MC_74X_SUSYGluGluToHToTauTau_M-160.dat",
+    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Nov19_MC_74X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["mt","et","tt","em"],
@@ -41,7 +41,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/Oct30/",
+    "output_folder" : "./output/Nov19/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
