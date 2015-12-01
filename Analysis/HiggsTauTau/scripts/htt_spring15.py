@@ -139,7 +139,7 @@ if options.proc_mssm or options.proc_all:
       'SUSYGluGluToBBHToTauTau_M-'+mass
     ]
 
-if options.proc_Hhh
+if options.proc_Hhh:
   masses = ['250','260','270','280','300','320','340','350','400','450','500','550','600','650','700','800','900']
   for mass in masses :
     signal_mc += [
