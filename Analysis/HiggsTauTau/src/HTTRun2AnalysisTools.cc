@@ -238,7 +238,7 @@ namespace ic {
       alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
       alias_map_["btagpt20"] = "(n_lowpt_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
-      alias_map_["nobtagnotwoprong"] = "n_bjets==0&&"+alias_map_["notwoprong"]+")";
+      alias_map_["nobtagnotwoprong"] = "(n_bjets==0&&"+alias_map_["notwoprong"]+")";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       //MSSM update analysis style categories:
