@@ -8,7 +8,8 @@
 namespace ic {
 
   class TrigEff : public LTModule{
-    CLASS_MEMBER(TrigEff,std::string,trigger)
+    CLASS_MEMBER(TrigEff,std::vector<std::string>,trigger)
+    CLASS_MEMBER(TrigEff,std::vector<std::string>,triggername)
     CLASS_MEMBER(TrigEff,std::string,shape)
     CLASS_MEMBER(TrigEff,std::string,shapename)
     CLASS_MEMBER(TrigEff,std::vector<std::string>,dataset)
@@ -26,6 +27,12 @@ namespace ic {
       std::vector<std::string> datasets;
       datasets.push_back(dataset);
       dataset_ = datasets;
+      return *this;
+    }
+    virtual TrigEff & set_trigger(std::string const& trigger) {
+      std::vector<std::string> triggers;
+      triggers.push_back(trigger);
+      trigger_ = triggers;
       return *this;
     }
     TrigEff(std::string);
