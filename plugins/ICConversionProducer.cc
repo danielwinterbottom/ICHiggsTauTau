@@ -16,6 +16,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICConversionProducer::ICConversionProducer(const edm::ParameterSet& config)
@@ -23,6 +24,7 @@ ICConversionProducer::ICConversionProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       tracks_branch_(config.getParameter<std::string>("tracksBranch")),
       request_trks_(config.getParameter<bool>("saveTracks")) {
+  consumes<edm::View<reco::Conversion>>(input_);
   vertices_ = new std::vector<ic::Vertex>();
   tracks_ = new std::vector<ic::Track>();
   PrintHeaderWithProduces(config, input_, branch_);

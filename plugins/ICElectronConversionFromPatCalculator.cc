@@ -8,10 +8,12 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICElectronConversionFromPatCalculator::ICElectronConversionFromPatCalculator(
     const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")) {
+  consumes<pat::ElectronCollection>(input_);
   produces<edm::ValueMap<bool> >();
 }
 

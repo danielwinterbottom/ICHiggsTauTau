@@ -12,10 +12,13 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/Math/interface/deltaR.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICHttMuonOverlapCheck::ICHttMuonOverlapCheck(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       input_muons_(config.getParameter<edm::InputTag>("muons")) {
+  consumes<reco::GsfElectronCollection>(input_);
+  consumes<edm::View<reco::Muon>>(input_muons_);
   produces<edm::ValueMap<float> >();
 }
 

@@ -26,6 +26,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "FWCore/Utilities/interface/Exception.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
@@ -43,6 +44,14 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_filtersfromtrig_(config.getParameter<bool>("includeFiltersFromTrig")),
       filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig")),
       filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")){
+      consumes<LHERunInfoProduct>({"externalLHEProducer"});
+      consumes<GenEventInfoProduct>({"generator"});
+      consumes<LHEEventProduct>(lhe_collection_);
+      consumes<double>(input_leptons_rho_);
+      consumes<double>(input_jets_rho_);
+      consumes<edm::View<reco::Vertex>>(input_vertices_);
+      consumes<reco::BeamHaloSummary>(input_csc_filter_);
+      consumes<edm::TriggerResults>(filtersfromtrig_input_);
   edm::ParameterSet filter_params =
       config.getParameter<edm::ParameterSet>("filters");
   std::vector<std::string> filter_names =
@@ -51,6 +60,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     filters_.push_back(std::make_pair(
         filter_names[i],
         filter_params.getParameter<edm::InputTag>(filter_names[i])));
+        consumes<bool>(filters_[i].second);
     if (filters_.back().second.label().at(0) == '!') {
       std::cout << "Info in <ICEventInfoProducer>: Inverting logic for filter: "
                 << filters_.back().first << std::endl;
@@ -69,6 +79,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
   for (unsigned i = 0; i < wt.size(); ++i) {
     weights_.push_back(
         std::make_pair(wt[i], wt_pset.getParameter<edm::InputTag>(wt[i])));
+        consumes<double>(weights_[i].second);
   }
 
   edm::ParameterSet gwt_pset =
@@ -78,6 +89,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
   for (unsigned i = 0; i < gwt.size(); ++i) {
     gen_weights_.push_back(
         std::make_pair(gwt[i], gwt_pset.getParameter<edm::InputTag>(gwt[i])));
+        consumes<double>(gen_weights_[i].second);
   }
 
   info_ = new ic::EventInfo();

@@ -16,6 +16,7 @@
 #include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICSecondaryVertexProducer::ICSecondaryVertexProducer(
     const edm::ParameterSet& config)
@@ -23,6 +24,7 @@ ICSecondaryVertexProducer::ICSecondaryVertexProducer(
       branch_(config.getParameter<std::string>("branch")),
       track_pt_threshold_(config.getParameter<double>("trackPtThreshold")),
       request_trks_(config.getParameter<bool>("requestTracks")) {
+  consumes<edm::View<reco::SecondaryVertexTagInfo>>(input_);
   vertices_ = new std::vector<ic::SecondaryVertex>();
   if (request_trks_) {
     produces<reco::TrackRefVector>("requestedTracks");

@@ -2,6 +2,7 @@
 #define UserCode_ICHiggsTauTau_ICJetProducer_h
 
 #include <memory>
+#include <typeinfo>
 #include "boost/functional/hash.hpp"
 #include "boost/format.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
@@ -58,6 +59,7 @@ class ICJetProducer : public edm::EDProducer {
   JetDestHelper<T> dest_;
 };
 
+
 // =============================
 // Template class implementation
 // =============================
@@ -65,9 +67,11 @@ template <class T, class U>
 ICJetProducer<T, U>::ICJetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
-      src_(config.getParameterSet("srcConfig")),
-      dest_(config.getParameterSet("destConfig")) {
+      src_(config.getParameterSet("srcConfig"),consumesCollector()),
+      dest_(config.getParameterSet("destConfig"),consumesCollector()) {
+  consumes<edm::View<U>>(input_);
   jets_ = new std::vector<T>();
+
 
   PrintHeaderWithProduces(config, input_, branch_);
 
@@ -75,8 +79,10 @@ ICJetProducer<T, U>::ICJetProducer(const edm::ParameterSet& config)
   dest_.DoSetup(this);
 }
 
+
 template <class T, class U>
 ICJetProducer<T, U>::~ICJetProducer() { delete jets_; }
+
 
 // =============
 // Main producer
@@ -84,6 +90,7 @@ ICJetProducer<T, U>::~ICJetProducer() { delete jets_; }
 template <class T, class U>
 void ICJetProducer<T, U>::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
+  
   edm::Handle<edm::View<U> > jets_handle;
   event.getByLabel(input_, jets_handle);
 
@@ -114,6 +121,8 @@ template <>
 void ICJetProducer<ic::CaloJet, reco::CaloJet>::constructSpecific(
     edm::Handle<edm::View<reco::CaloJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+  //}
+
   edm::Handle<reco::JetIDValueMap> jet_id_handle;
   if (dest_.do_jet_id) event.getByLabel(dest_.input_jet_id, jet_id_handle);
   for (unsigned i = 0; i < passed_.size(); ++i) {
@@ -144,6 +153,7 @@ template <>
 void ICJetProducer<ic::CaloJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+
   for (unsigned i = 0; i < passed_.size(); ++i) {
     pat::Jet const& src = jets_handle->at(passed_[i]);
     ic::CaloJet & dest = jets_->at(i);
@@ -171,6 +181,7 @@ template <>
 void ICJetProducer<ic::JPTJet, reco::JPTJet>::constructSpecific(
     edm::Handle<edm::View<reco::JPTJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+
   edm::Handle<reco::JetIDValueMap> jet_id_handle;
   if (dest_.do_jet_id) event.getByLabel(dest_.input_jet_id, jet_id_handle);
 
@@ -253,6 +264,7 @@ template <>
 void ICJetProducer<ic::JPTJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+
   edm::Handle<reco::TrackCollection> trk_handle;
   edm::Handle<reco::VertexCollection> vtx_handle;
   std::map<unsigned, unsigned> trk_vtx_map;
@@ -331,6 +343,7 @@ template <>
 void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
     edm::Handle<edm::View<reco::PFJet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+
   edm::Handle<edm::ValueMap<float> > pu_id_handle;
   if (dest_.do_pu_id) event.getByLabel(dest_.input_pu_id, pu_id_handle);
 
@@ -381,6 +394,7 @@ template <>
 void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     edm::Handle<edm::View<pat::Jet> > const& jets_handle,
     edm::Event& event, const edm::EventSetup& setup) {
+
   edm::Handle<edm::ValueMap<float> > pu_id_handle;
   if (dest_.do_pu_id) event.getByLabel(dest_.input_pu_id, pu_id_handle);
 

@@ -15,6 +15,7 @@
 #include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICPhotonElectronVetoCalculator::ICPhotonElectronVetoCalculator(
     const edm::ParameterSet& config)
@@ -22,6 +23,10 @@ ICPhotonElectronVetoCalculator::ICPhotonElectronVetoCalculator(
       input_electrons_(config.getParameter<edm::InputTag>("electrons")),
       input_beamspot_(config.getParameter<edm::InputTag>("beamspot")),
       input_conversions_(config.getParameter<edm::InputTag>("conversions")) {
+  consumes<reco::PhotonCollection>(input_);
+  consumes<reco::GsfElectronCollection>(input_electrons_);
+  consumes<reco::BeamSpot>(input_beamspot_);
+  consumes<reco::ConversionCollection>(input_conversions_);
   produces<edm::ValueMap<bool> >();
 }
 

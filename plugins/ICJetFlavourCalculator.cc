@@ -9,11 +9,18 @@
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "SimDataFormats/JetMatching/interface/JetFlavourInfoMatching.h"
 #include "SimDataFormats/JetMatching/interface/JetFlavourMatching.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICJetFlavourCalculator::ICJetFlavourCalculator(
     const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       input_jet_flavour_(config.getParameter<edm::InputTag>("flavourMap")) {
+  consumes<edm::View<reco::Jet>>(input_);
+  #if CMSSW_MAJOR_VERSION>=7 && CMSSW_MINOR_VERSION >=4
+  consumes<reco::JetFlavourInfoMatchingCollection>(input_jet_flavour_);
+  #else 
+  consumes<reco::JetFlavourMatchingCollection>(input_jet_flavour_);
+  #endif
   produces<edm::ValueMap<int> >();
 }
 

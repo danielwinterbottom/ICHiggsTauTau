@@ -7,18 +7,22 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/ValueMap.h"
-
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/ICFillerStructs.hh"
 
 ICElectronConversionCalculator::ICElectronConversionCalculator(
     const edm::ParameterSet& config)
-    : input_(config.getParameter<edm::InputTag>("input")),
-      input_beamspot_(config.getParameter<edm::InputTag>("beamspot")),
-      input_conversions_(config.getParameter<edm::InputTag>("conversions")) {
+    : input_((config.getParameter<edm::InputTag>("input"))),
+      input_beamspot_((config.getParameter<edm::InputTag>("beamspot"))),
+      input_conversions_((config.getParameter<edm::InputTag>("conversions"))) {
+      consumes<edm::View<reco::GsfElectron>>(input_);
+      consumes<reco::BeamSpot>(input_beamspot_);
+      consumes<reco::ConversionCollection>(input_conversions_);
   produces<edm::ValueMap<bool> >();
 }
 
@@ -49,26 +53,38 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
   // this to create an edm::RefToBaseProd, which will always carry the ID of the
   // concrete collection and can be used in place of the handle in
   // filler.insert(...).
-  edm::RefToBaseProd<reco::GsfElectron> reftobase =
-      elecs_handle->size() > 0
-          ? edm::RefToBaseProd<reco::GsfElectron>((elecs_handle->refAt(0)))
-          : edm::RefToBaseProd<reco::GsfElectron>();
+  // 14/11 - as RefToBaseProd doesn't exist in CMSSW_7_6_X anymore,
+  // need a different solution. Unfortunately filler.insert(handle,...) calls 
+  // handle.id() and handle->size() hence the ridiculous double struct construction - 
+  // the first struct stores the size of the RefVector, the second a pointer to the first
+  // plus the id of the underlying collection, so that indeed filler.insert can call both
+  // .id() and ->size() 
 
-  unsigned n = reftobase.isNonnull() ? reftobase->size() : 0;
-  std::vector<bool> values(n, false);
+
+  CollectionSize<reco::GsfElectron> csize;
+  CollectionSize<reco::GsfElectron>* csize_ptr;
+  CollectionIDAndSize<reco::GsfElectron> c_id_size;
+  unsigned n=0;
+  if(elecs_handle->size()>0){
+    csize.handle_ = elecs_handle;
+    csize_ptr = &csize;
+    c_id_size.collsizepointer = csize_ptr;
+    n=elecs_handle->size();
+  }
+    std::vector<bool> values(n,false);
 
   for (unsigned i = 0; i < n; ++i) {
-    reco::GsfElectron const& src = reftobase->at(i);
+    reco::GsfElectron const& src = elecs_handle->at(i);
     values[i] = ConversionTools::hasMatchedConversion(
         src, conversions_handle, beamspot_handle->position(),
         true, 2.0, 1e-6, 0);
   }
 
   edm::ValueMap<bool>::Filler filler(*product);
-  // We need to pass a valid RefToBaseProd here, but will only have a valid one
+  // We need to pass a CollectionIDAndSize here, only exists
   // if the collection has at least one object (see above)
   if (n > 0) {
-    filler.insert(reftobase, values.begin(), values.end());
+    filler.insert(c_id_size, values.begin(), values.end());
     filler.fill();
   }
 

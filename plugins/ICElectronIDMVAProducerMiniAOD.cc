@@ -13,6 +13,7 @@
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 #include "UserCode/ICHiggsTauTau/plugins/ICElectronIDMVAProducerMiniAOD.hh"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 //Based on https://github.com/HuguesBrun/ExampleElectronMVAid/blob/addMVAfromMiniAOD/plugins/ExampleElectronMVAid.cc
 
 ICElectronIDMVAProducerMiniAOD::ICElectronIDMVAProducerMiniAOD(const edm::ParameterSet& config) {
@@ -22,6 +23,7 @@ ICElectronIDMVAProducerMiniAOD::ICElectronIDMVAProducerMiniAOD(const edm::Parame
 	method_ = config.getParameter<string>("method");
 	std::vector<string> fpMvaWeightFiles = config.getParameter<std::vector<std::string> >("mvaWeightFile");
 	trig_ = config.getParameter<bool>("trig");
+        consumes<pat::ElectronCollection>(electronToken_);
     
     produces<edm::ValueMap<float> >("");
     

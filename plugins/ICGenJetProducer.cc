@@ -14,6 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -21,6 +22,8 @@ ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
       input_particles_(config.getParameter<edm::InputTag>("inputGenParticles")),
       request_gen_particles_(config.getParameter<bool>("requestGenParticles")),
       is_slimmed_(config.getParameter<bool>("isSlimmed")) {
+  consumes<edm::View<reco::GenJet>>(input_);
+  consumes<reco::GenParticleCollection>(input_particles_);
   gen_jets_ = new std::vector<ic::GenJet>();
   if (request_gen_particles_) {
     produces<reco::GenParticleRefVector>("requestedGenParticles");

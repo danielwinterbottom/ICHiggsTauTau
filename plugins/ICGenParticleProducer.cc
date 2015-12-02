@@ -13,6 +13,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 4
 #include "DataFormats/HepMCCandidate/interface/GenStatusFlags.h"
@@ -24,6 +25,7 @@ ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& config)
       store_mothers_(config.getParameter<bool>("includeMothers")),
       store_daughters_(config.getParameter<bool>("includeDaughters")),
       store_statusFlags_(config.getParameter<bool>("includeStatusFlags")){
+  consumes<edm::View<reco::GenParticle>>(input_);
   particles_ = new std::vector<ic::GenParticle>();
 
   PrintHeaderWithProduces(config, input_, branch_);
