@@ -205,6 +205,7 @@ var searchData=
   ['setuptwopadsplitasratio',['SetupTwoPadSplitAsRatio',['../_plotting_8h.html#ac22871e6dbf88fd29fa06f8a2cfb5f8d',1,'SetupTwoPadSplitAsRatio(std::vector&lt; TPad * &gt; const &amp;pads, TH1 *upper, TH1 *lower, TString y_title, bool y_centered, float y_min, float y_max):&#160;Plotting.h'],['../_plotting_8h.html#a293279a5520769bf993d81e4dc070709',1,'SetupTwoPadSplitAsRatio(std::vector&lt; TPad * &gt; const &amp;pads, TString y_title, bool y_centered, float y_min, float y_max):&#160;Plotting.h']]],
   ['shifted_5fmets',['shifted_mets',['../classic_1_1_met.html#aa0872de40c1fd8206916de4c18e6f403',1,'ic::Met']]],
   ['sigma_5fietaieta',['sigma_IetaIeta',['../classic_1_1_electron.html#a1c90bb31ae4cea0fb89da5bcbab0559b',1,'ic::Electron::sigma_IetaIeta()'],['../classic_1_1_photon.html#ab36ab2c117497c02ec13d0881f7bcd7e',1,'ic::Photon::sigma_IetaIeta()']]],
+  ['size',['size',['../struct_collection_size.html#a7cb5406369f8705fff2b4e8694c314a2',1,'CollectionSize']]],
   ['standardaxes',['StandardAxes',['../_plotting_8h.html#a976a4920cd03f97ded8454279c895a32',1,'Plotting.h']]],
   ['statictree',['StaticTree',['../structic_1_1_static_tree.html',1,'ic']]],
   ['statictree_2ecc',['StaticTree.cc',['../_static_tree_8cc.html',1,'']]],
@@ -213,8 +214,8 @@ var searchData=
   ['statusflags',['statusFlags',['../classic_1_1_gen_particle.html#a5bbc3a00efff5fbaf2e8f4a890288813',1,'ic::GenParticle']]],
   ['sum_5fet',['sum_et',['../classic_1_1_met.html#a798b7613eb7ba69895464e3c9407c7ec',1,'ic::Met']]],
   ['sumet',['sumet',['../structic_1_1_met_1_1_basic_met.html#ac4c7b276ff46bf8248c2f6489f8d4d70',1,'ic::Met::BasicMet']]],
-  ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html',1,'ic']]],
   ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html#a3007fd9f8b0ed11a888865ef5dd3cddb',1,'ic::SuperCluster']]],
+  ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html',1,'ic']]],
   ['supercluster_2ecc',['SuperCluster.cc',['../_super_cluster_8cc.html',1,'']]],
   ['supercluster_2ehh',['SuperCluster.hh',['../_super_cluster_8hh.html',1,'']]],
   ['superclustercollection',['SuperClusterCollection',['../namespaceic.html#a28792d2093cc4ef84dbc74d89405598c',1,'ic']]]

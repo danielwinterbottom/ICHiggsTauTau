@@ -110,49 +110,53 @@ $(document).ready(function(){initNavTree('_i_c_photon_electron_conversion_veto_f
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;DataFormats/Common/interface/ValueMap.h&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;DataFormats/PatCandidates/interface/Electron.h&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;DataFormats/PatCandidates/interface/Photon.h&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#aeba68dbb300b27a3812394aa132246b0">   13</a></span>&#160;<a class="code" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#aeba68dbb300b27a3812394aa132246b0">ICPhotonElectronConversionVetoFromPatCalculator::ICPhotonElectronConversionVetoFromPatCalculator</a>(</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                       <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)) {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  produces&lt;edm::ValueMap&lt;bool&gt; &gt;();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#a732eee94c6fbfdc16abaeda55c5eee71">   19</a></span>&#160;<a class="code" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#a732eee94c6fbfdc16abaeda55c5eee71">ICPhotonElectronConversionVetoFromPatCalculator::~ICPhotonElectronConversionVetoFromPatCalculator</a>() {}</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#aeba68dbb300b27a3812394aa132246b0">   14</a></span>&#160;<a class="code" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#aeba68dbb300b27a3812394aa132246b0">ICPhotonElectronConversionVetoFromPatCalculator::ICPhotonElectronConversionVetoFromPatCalculator</a>(</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                       <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)) {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  consumes&lt;pat::PhotonCollection&gt;(input_);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  produces&lt;edm::ValueMap&lt;bool&gt; &gt;();</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronConversionVetoFromPatCalculator::produce(edm::Event&amp; event,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  std::auto_ptr&lt;edm::ValueMap&lt;bool&gt; &gt; product(<span class="keyword">new</span> edm::ValueMap&lt;bool&gt;());</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  edm::Handle&lt;pat::PhotonCollection&gt; photons_handle;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, photons_handle);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  std::vector&lt;bool&gt; values(photons_handle-&gt;size(), 0.);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; photons_handle-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    pat::Photon <span class="keyword">const</span>&amp; src = photons_handle-&gt;at(i);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    values[i] = src.passElectronVeto();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;IncompatibleCMSSWVersion&quot;</span>) &lt;&lt; <span class="stringliteral">&quot;This module should not be used before CMSSW_7_0_X!!&quot;</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  edm::ValueMap&lt;bool&gt;::Filler filler(*product);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  filler.insert(photons_handle, values.begin(), values.end());</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  filler.fill();</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keyword">event</span>.put(product);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;}</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronConversionVetoFromPatCalculator::beginJob() {}</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#a732eee94c6fbfdc16abaeda55c5eee71">   21</a></span>&#160;<a class="code" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#a732eee94c6fbfdc16abaeda55c5eee71">ICPhotonElectronConversionVetoFromPatCalculator::~ICPhotonElectronConversionVetoFromPatCalculator</a>() {}</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronConversionVetoFromPatCalculator::produce(edm::Event&amp; event,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  std::auto_ptr&lt;edm::ValueMap&lt;bool&gt; &gt; product(<span class="keyword">new</span> edm::ValueMap&lt;bool&gt;());</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  edm::Handle&lt;pat::PhotonCollection&gt; photons_handle;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, photons_handle);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  std::vector&lt;bool&gt; values(photons_handle-&gt;size(), 0.);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; photons_handle-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    pat::Photon <span class="keyword">const</span>&amp; src = photons_handle-&gt;at(i);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    values[i] = src.passElectronVeto();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;IncompatibleCMSSWVersion&quot;</span>) &lt;&lt; <span class="stringliteral">&quot;This module should not be used before CMSSW_7_0_X!!&quot;</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  edm::ValueMap&lt;bool&gt;::Filler filler(*product);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  filler.insert(photons_handle, values.begin(), values.end());</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  filler.fill();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keyword">event</span>.put(product);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronConversionVetoFromPatCalculator::endJob() {}</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronConversionVetoFromPatCalculator::beginJob() {}</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<a class="code" href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8cc.html#ac8688a038fba62b7b3a799fa282b15dc">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html">ICPhotonElectronConversionVetoFromPatCalculator</a>);</div>
-<div class="ttc" id="class_i_c_photon_electron_conversion_veto_from_pat_calculator_html_a732eee94c6fbfdc16abaeda55c5eee71"><div class="ttname"><a href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#a732eee94c6fbfdc16abaeda55c5eee71">ICPhotonElectronConversionVetoFromPatCalculator::~ICPhotonElectronConversionVetoFromPatCalculator</a></div><div class="ttdeci">~ICPhotonElectronConversionVetoFromPatCalculator()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8cc_source.html#l00019">ICPhotonElectronConversionVetoFromPatCalculator.cc:19</a></div></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronConversionVetoFromPatCalculator::endJob() {}</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">// define this as a plug-in</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<a class="code" href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8cc.html#ac8688a038fba62b7b3a799fa282b15dc">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html">ICPhotonElectronConversionVetoFromPatCalculator</a>);</div>
+<div class="ttc" id="class_i_c_photon_electron_conversion_veto_from_pat_calculator_html_a732eee94c6fbfdc16abaeda55c5eee71"><div class="ttname"><a href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#a732eee94c6fbfdc16abaeda55c5eee71">ICPhotonElectronConversionVetoFromPatCalculator::~ICPhotonElectronConversionVetoFromPatCalculator</a></div><div class="ttdeci">~ICPhotonElectronConversionVetoFromPatCalculator()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8cc_source.html#l00021">ICPhotonElectronConversionVetoFromPatCalculator.cc:21</a></div></div>
 <div class="ttc" id="_i_c_photon_electron_conversion_veto_from_pat_calculator_8cc_html_ac8688a038fba62b7b3a799fa282b15dc"><div class="ttname"><a href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8cc.html#ac8688a038fba62b7b3a799fa282b15dc">DEFINE_FWK_MODULE</a></div><div class="ttdeci">DEFINE_FWK_MODULE(ICPhotonElectronConversionVetoFromPatCalculator)</div></div>
-<div class="ttc" id="class_i_c_photon_electron_conversion_veto_from_pat_calculator_html_aeba68dbb300b27a3812394aa132246b0"><div class="ttname"><a href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#aeba68dbb300b27a3812394aa132246b0">ICPhotonElectronConversionVetoFromPatCalculator::ICPhotonElectronConversionVetoFromPatCalculator</a></div><div class="ttdeci">ICPhotonElectronConversionVetoFromPatCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8cc_source.html#l00013">ICPhotonElectronConversionVetoFromPatCalculator.cc:13</a></div></div>
+<div class="ttc" id="class_i_c_photon_electron_conversion_veto_from_pat_calculator_html_aeba68dbb300b27a3812394aa132246b0"><div class="ttname"><a href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html#aeba68dbb300b27a3812394aa132246b0">ICPhotonElectronConversionVetoFromPatCalculator::ICPhotonElectronConversionVetoFromPatCalculator</a></div><div class="ttdeci">ICPhotonElectronConversionVetoFromPatCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8cc_source.html#l00014">ICPhotonElectronConversionVetoFromPatCalculator.cc:14</a></div></div>
 <div class="ttc" id="class_i_c_photon_electron_conversion_veto_from_pat_calculator_html"><div class="ttname"><a href="class_i_c_photon_electron_conversion_veto_from_pat_calculator.html">ICPhotonElectronConversionVetoFromPatCalculator</a></div><div class="ttdoc">Produces an edm::ValueMap<bool> for the photon electron conversion veto. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8h_source.html#l00014">ICPhotonElectronConversionVetoFromPatCalculator.h:14</a></div></div>
 <div class="ttc" id="_i_c_photon_electron_conversion_veto_from_pat_calculator_8h_html"><div class="ttname"><a href="_i_c_photon_electron_conversion_veto_from_pat_calculator_8h.html">ICPhotonElectronConversionVetoFromPatCalculator.h</a></div></div>
+<div class="ttc" id="namespaceedm_html"><div class="ttname"><a href="namespaceedm.html">edm</a></div><div class="ttdef"><b>Definition:</b> <a href="_consumes_8h_source.html#l00019">Consumes.h:19</a></div></div>
+<div class="ttc" id="_consumes_8h_html"><div class="ttname"><a href="_consumes_8h.html">Consumes.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

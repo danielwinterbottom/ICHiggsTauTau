@@ -117,13 +117,15 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_secondary_vertex_produce
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_secondary_vertex_8hh.html">UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
 <div class="line"></div>
 <div class="line"><a name="a0"></a><a class="code" href="class_i_c_secondary_vertex_producer.html#a96c230b137e9b4e32332641240fb698d">ICSecondaryVertexProducer::ICSecondaryVertexProducer</a>(</div>
 <div class="line">    <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line">    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
 <div class="line">      track_pt_threshold_(config.getParameter&lt;double&gt;(<span class="stringliteral">&quot;trackPtThreshold&quot;</span>)),</div>
 <div class="line">      request_trks_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestTracks&quot;</span>)) {</div>
+<div class="line">  consumes&lt;edm::View&lt;reco::SecondaryVertexTagInfo&gt;&gt;(input_);</div>
 <div class="line">  vertices_ = <span class="keyword">new</span> std::vector&lt;ic::SecondaryVertex&gt;();</div>
 <div class="line">  <span class="keywordflow">if</span> (request_trks_) {</div>
 <div class="line">    produces&lt;reco::TrackRefVector&gt;(<span class="stringliteral">&quot;requestedTracks&quot;</span>);</div>

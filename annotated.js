@@ -1,6 +1,9 @@
 var annotated =
 [
+    [ "edm", "namespaceedm.html", "namespaceedm" ],
     [ "ic", "namespaceic.html", "namespaceic" ],
+    [ "CollectionIDAndSize", "struct_collection_i_d_and_size.html", "struct_collection_i_d_and_size" ],
+    [ "CollectionSize", "struct_collection_size.html", "struct_collection_size" ],
     [ "EGammaMvaEleEstimatorCSA14", "class_e_gamma_mva_ele_estimator_c_s_a14.html", "class_e_gamma_mva_ele_estimator_c_s_a14" ],
     [ "ICCandidateFromL1MuonProducer", "class_i_c_candidate_from_l1_muon_producer.html", "class_i_c_candidate_from_l1_muon_producer" ],
     [ "ICCandidateProducer", "class_i_c_candidate_producer.html", "class_i_c_candidate_producer" ],

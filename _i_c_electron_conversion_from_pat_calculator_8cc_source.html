@@ -109,46 +109,50 @@ $(document).ready(function(){initNavTree('_i_c_electron_conversion_from_pat_calc
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;DataFormats/Common/interface/Handle.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;DataFormats/Common/interface/ValueMap.h&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;DataFormats/PatCandidates/interface/Electron.h&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_i_c_electron_conversion_from_pat_calculator.html#af8b6794c2f51c124ba4b876990a4ccef">   12</a></span>&#160;<a class="code" href="class_i_c_electron_conversion_from_pat_calculator.html#af8b6794c2f51c124ba4b876990a4ccef">ICElectronConversionFromPatCalculator::ICElectronConversionFromPatCalculator</a>(</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)) {</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  produces&lt;edm::ValueMap&lt;bool&gt; &gt;();</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;}</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="class_i_c_electron_conversion_from_pat_calculator.html#a68b0ed00529162ba572e2e0c63843907">   18</a></span>&#160;<a class="code" href="class_i_c_electron_conversion_from_pat_calculator.html#a68b0ed00529162ba572e2e0c63843907">ICElectronConversionFromPatCalculator::~ICElectronConversionFromPatCalculator</a>() {}</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="class_i_c_electron_conversion_from_pat_calculator.html#af8b6794c2f51c124ba4b876990a4ccef">   13</a></span>&#160;<a class="code" href="class_i_c_electron_conversion_from_pat_calculator.html#af8b6794c2f51c124ba4b876990a4ccef">ICElectronConversionFromPatCalculator::ICElectronConversionFromPatCalculator</a>(</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)) {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  consumes&lt;pat::ElectronCollection&gt;(input_);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  produces&lt;edm::ValueMap&lt;bool&gt; &gt;();</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;}</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span> ICElectronConversionFromPatCalculator::produce(edm::Event&amp; event,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                                 <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  std::auto_ptr&lt;edm::ValueMap&lt;bool&gt; &gt; product(<span class="keyword">new</span> edm::ValueMap&lt;bool&gt;());</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  edm::Handle&lt;pat::ElectronCollection&gt; elecs_handle;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, elecs_handle);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  std::vector&lt;bool&gt; values(elecs_handle-&gt;size(), 0.);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; elecs_handle-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    pat::Electron <span class="keyword">const</span>&amp; src = elecs_handle-&gt;at(i);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="comment">// We want true = is matched to a conversion, so flip the logic</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    values[i] = !src.passConversionVeto();</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  }</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  edm::ValueMap&lt;bool&gt;::Filler filler(*product);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  filler.insert(elecs_handle, values.begin(), values.end());</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  filler.fill();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keyword">event</span>.put(product);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">void</span> ICElectronConversionFromPatCalculator::beginJob() {}</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="class_i_c_electron_conversion_from_pat_calculator.html#a68b0ed00529162ba572e2e0c63843907">   20</a></span>&#160;<a class="code" href="class_i_c_electron_conversion_from_pat_calculator.html#a68b0ed00529162ba572e2e0c63843907">ICElectronConversionFromPatCalculator::~ICElectronConversionFromPatCalculator</a>() {}</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keywordtype">void</span> ICElectronConversionFromPatCalculator::produce(edm::Event&amp; event,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                                 <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  std::auto_ptr&lt;edm::ValueMap&lt;bool&gt; &gt; product(<span class="keyword">new</span> edm::ValueMap&lt;bool&gt;());</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  edm::Handle&lt;pat::ElectronCollection&gt; elecs_handle;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, elecs_handle);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  std::vector&lt;bool&gt; values(elecs_handle-&gt;size(), 0.);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; elecs_handle-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    pat::Electron <span class="keyword">const</span>&amp; src = elecs_handle-&gt;at(i);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">// We want true = is matched to a conversion, so flip the logic</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    values[i] = !src.passConversionVeto();</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  }</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  edm::ValueMap&lt;bool&gt;::Filler filler(*product);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  filler.insert(elecs_handle, values.begin(), values.end());</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  filler.fill();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keyword">event</span>.put(product);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">void</span> ICElectronConversionFromPatCalculator::endJob() {}</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">void</span> ICElectronConversionFromPatCalculator::beginJob() {}</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<a class="code" href="_i_c_electron_conversion_from_pat_calculator_8cc.html#a37873c057585042c8304829e3a2801b0">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_electron_conversion_from_pat_calculator.html">ICElectronConversionFromPatCalculator</a>);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keywordtype">void</span> ICElectronConversionFromPatCalculator::endJob() {}</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">// define this as a plug-in</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<a class="code" href="_i_c_electron_conversion_from_pat_calculator_8cc.html#a37873c057585042c8304829e3a2801b0">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_electron_conversion_from_pat_calculator.html">ICElectronConversionFromPatCalculator</a>);</div>
 <div class="ttc" id="_i_c_electron_conversion_from_pat_calculator_8h_html"><div class="ttname"><a href="_i_c_electron_conversion_from_pat_calculator_8h.html">ICElectronConversionFromPatCalculator.h</a></div></div>
 <div class="ttc" id="class_i_c_electron_conversion_from_pat_calculator_html"><div class="ttname"><a href="class_i_c_electron_conversion_from_pat_calculator.html">ICElectronConversionFromPatCalculator</a></div><div class="ttdoc">Produces an edm::ValueMap<bool> for the electron conversion-rejection flag. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_from_pat_calculator_8h_source.html#l00015">ICElectronConversionFromPatCalculator.h:15</a></div></div>
-<div class="ttc" id="class_i_c_electron_conversion_from_pat_calculator_html_a68b0ed00529162ba572e2e0c63843907"><div class="ttname"><a href="class_i_c_electron_conversion_from_pat_calculator.html#a68b0ed00529162ba572e2e0c63843907">ICElectronConversionFromPatCalculator::~ICElectronConversionFromPatCalculator</a></div><div class="ttdeci">~ICElectronConversionFromPatCalculator()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_from_pat_calculator_8cc_source.html#l00018">ICElectronConversionFromPatCalculator.cc:18</a></div></div>
+<div class="ttc" id="class_i_c_electron_conversion_from_pat_calculator_html_a68b0ed00529162ba572e2e0c63843907"><div class="ttname"><a href="class_i_c_electron_conversion_from_pat_calculator.html#a68b0ed00529162ba572e2e0c63843907">ICElectronConversionFromPatCalculator::~ICElectronConversionFromPatCalculator</a></div><div class="ttdeci">~ICElectronConversionFromPatCalculator()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_from_pat_calculator_8cc_source.html#l00020">ICElectronConversionFromPatCalculator.cc:20</a></div></div>
 <div class="ttc" id="_i_c_electron_conversion_from_pat_calculator_8cc_html_a37873c057585042c8304829e3a2801b0"><div class="ttname"><a href="_i_c_electron_conversion_from_pat_calculator_8cc.html#a37873c057585042c8304829e3a2801b0">DEFINE_FWK_MODULE</a></div><div class="ttdeci">DEFINE_FWK_MODULE(ICElectronConversionFromPatCalculator)</div></div>
-<div class="ttc" id="class_i_c_electron_conversion_from_pat_calculator_html_af8b6794c2f51c124ba4b876990a4ccef"><div class="ttname"><a href="class_i_c_electron_conversion_from_pat_calculator.html#af8b6794c2f51c124ba4b876990a4ccef">ICElectronConversionFromPatCalculator::ICElectronConversionFromPatCalculator</a></div><div class="ttdeci">ICElectronConversionFromPatCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_from_pat_calculator_8cc_source.html#l00012">ICElectronConversionFromPatCalculator.cc:12</a></div></div>
+<div class="ttc" id="namespaceedm_html"><div class="ttname"><a href="namespaceedm.html">edm</a></div><div class="ttdef"><b>Definition:</b> <a href="_consumes_8h_source.html#l00019">Consumes.h:19</a></div></div>
+<div class="ttc" id="_consumes_8h_html"><div class="ttname"><a href="_consumes_8h.html">Consumes.h</a></div></div>
+<div class="ttc" id="class_i_c_electron_conversion_from_pat_calculator_html_af8b6794c2f51c124ba4b876990a4ccef"><div class="ttname"><a href="class_i_c_electron_conversion_from_pat_calculator.html#af8b6794c2f51c124ba4b876990a4ccef">ICElectronConversionFromPatCalculator::ICElectronConversionFromPatCalculator</a></div><div class="ttdeci">ICElectronConversionFromPatCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_from_pat_calculator_8cc_source.html#l00013">ICElectronConversionFromPatCalculator.cc:13</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

@@ -120,6 +120,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_path_producer_8c
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
 <div class="line"></div>
 <div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
 <div class="line"><span class="comment">// In MiniAOD the prescales must be extracted from a new</span></div>
@@ -129,13 +130,21 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_path_producer_8c
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"></div>
 <div class="line"><a name="a0"></a><a class="code" href="class_i_c_trigger_path_producer.html#aa9a684a1b4803d2b3cf17777c81f4b02">ICTriggerPathProducer::ICTriggerPathProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line">    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
 <div class="line">      include_if_fired_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeAcceptedOnly&quot;</span>)),</div>
 <div class="line">      save_strings_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;saveStrings&quot;</span>)),</div>
 <div class="line">      split_version_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;splitVersion&quot;</span>)),</div>
 <div class="line">      input_is_standalone_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;inputIsStandAlone&quot;</span>)),</div>
-<div class="line">      input_prescales_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputPrescales&quot;</span>)) {</div>
+<div class="line">      input_prescales_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputPrescales&quot;</span>)) {</div>
+<div class="line">  <span class="keywordflow">if</span>(!input_is_standalone_){</div>
+<div class="line">    consumes&lt;pat::TriggerEvent&gt;(input_);</div>
+<div class="line">  } <span class="keywordflow">else</span> {</div>
+<div class="line">    consumes&lt;edm::TriggerResults&gt;(input_);</div>
+<div class="line">  }</div>
+<div class="line"><span class="preprocessor">  #if CMSSW_MAJOR_VERSION&gt;=7</span></div>
+<div class="line">   consumes&lt;pat::PackedTriggerPrescales&gt;(input_prescales_);</div>
+<div class="line"><span class="preprocessor">  #endif</span></div>
 <div class="line">  paths_ = <span class="keyword">new</span> std::vector&lt;ic::TriggerPath&gt;();</div>
 <div class="line">  <a name="a1"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
 <div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, include_if_fired_, <span class="stringliteral">&quot;includeAcceptedOnly&quot;</span>);</div>

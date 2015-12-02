@@ -19,6 +19,9 @@ var hierarchy =
       [ "ic::Tau", "classic_1_1_tau.html", null ],
       [ "ic::TriggerObject", "classic_1_1_trigger_object.html", null ]
     ] ],
+    [ "CollectionIDAndSize< T >", "struct_collection_i_d_and_size.html", null ],
+    [ "CollectionSize< T >", "struct_collection_size.html", null ],
+    [ "edm::ConsumesCollector", "structedm_1_1_consumes_collector.html", null ],
     [ "EDProducer", null, [
       [ "ic::Concatenate< T >", "classic_1_1_concatenate.html", null ],
       [ "ic::Merge< T >", "classic_1_1_merge.html", null ],

@@ -116,60 +116,67 @@ $(document).ready(function(){initNavTree('_i_c_photon_electron_veto_calculator_8
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;DataFormats/EgammaCandidates/interface/PhotonFwd.h&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;DataFormats/EgammaCandidates/interface/Conversion.h&quot;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;RecoEgamma/EgammaTools/interface/ConversionTools.h&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="class_i_c_photon_electron_veto_calculator.html#a255b77f91543e450d57b3aabdb4f4931">   19</a></span>&#160;<a class="code" href="class_i_c_photon_electron_veto_calculator.html#a255b77f91543e450d57b3aabdb4f4931">ICPhotonElectronVetoCalculator::ICPhotonElectronVetoCalculator</a>(</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;      input_electrons_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;electrons&quot;</span>)),</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;      input_beamspot_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;beamspot&quot;</span>)),</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;      input_conversions_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;conversions&quot;</span>)) {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  produces&lt;edm::ValueMap&lt;bool&gt; &gt;();</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="class_i_c_photon_electron_veto_calculator.html#ab86a2fed2836501e6838458be0eae3b8">   28</a></span>&#160;<a class="code" href="class_i_c_photon_electron_veto_calculator.html#ab86a2fed2836501e6838458be0eae3b8">ICPhotonElectronVetoCalculator::~ICPhotonElectronVetoCalculator</a>() {}</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronVetoCalculator::produce(edm::Event&amp; event,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                                             <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  std::auto_ptr&lt;edm::ValueMap&lt;bool&gt; &gt; product(<span class="keyword">new</span> edm::ValueMap&lt;bool&gt;());</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  edm::Handle&lt;reco::PhotonCollection&gt; photons_handle;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, photons_handle);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  edm::Handle&lt;reco::GsfElectronCollection&gt; elecs_handle;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="keyword">event</span>.getByLabel(input_electrons_, elecs_handle);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  edm::Handle&lt;reco::BeamSpot&gt; beamspot_handle;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keyword">event</span>.getByLabel(input_beamspot_, beamspot_handle);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  edm::Handle&lt;reco::ConversionCollection&gt; conversions_handle;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="keyword">event</span>.getByLabel(input_conversions_, conversions_handle);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  std::vector&lt;bool&gt; values(photons_handle-&gt;size(), <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; photons_handle-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    reco::Photon <span class="keyword">const</span>&amp; src = photons_handle-&gt;at(i);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    values[i] = !ConversionTools::hasMatchedPromptElectron(</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                     src.superCluster(), elecs_handle, conversions_handle,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                     beamspot_handle-&gt;position());</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  edm::ValueMap&lt;bool&gt;::Filler filler(*product);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  filler.insert(photons_handle, values.begin(), values.end());</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  filler.fill();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keyword">event</span>.put(product);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronVetoCalculator::beginJob() {}</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="class_i_c_photon_electron_veto_calculator.html#a255b77f91543e450d57b3aabdb4f4931">   20</a></span>&#160;<a class="code" href="class_i_c_photon_electron_veto_calculator.html#a255b77f91543e450d57b3aabdb4f4931">ICPhotonElectronVetoCalculator::ICPhotonElectronVetoCalculator</a>(</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;      input_electrons_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;electrons&quot;</span>)),</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;      input_beamspot_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;beamspot&quot;</span>)),</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;      input_conversions_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;conversions&quot;</span>)) {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  consumes&lt;reco::PhotonCollection&gt;(input_);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  consumes&lt;reco::GsfElectronCollection&gt;(input_electrons_);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  consumes&lt;reco::BeamSpot&gt;(input_beamspot_);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  consumes&lt;reco::ConversionCollection&gt;(input_conversions_);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  produces&lt;edm::ValueMap&lt;bool&gt; &gt;();</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="class_i_c_photon_electron_veto_calculator.html#ab86a2fed2836501e6838458be0eae3b8">   33</a></span>&#160;<a class="code" href="class_i_c_photon_electron_veto_calculator.html#ab86a2fed2836501e6838458be0eae3b8">ICPhotonElectronVetoCalculator::~ICPhotonElectronVetoCalculator</a>() {}</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronVetoCalculator::produce(edm::Event&amp; event,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                                             <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  std::auto_ptr&lt;edm::ValueMap&lt;bool&gt; &gt; product(<span class="keyword">new</span> edm::ValueMap&lt;bool&gt;());</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  edm::Handle&lt;reco::PhotonCollection&gt; photons_handle;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, photons_handle);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  edm::Handle&lt;reco::GsfElectronCollection&gt; elecs_handle;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keyword">event</span>.getByLabel(input_electrons_, elecs_handle);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  edm::Handle&lt;reco::BeamSpot&gt; beamspot_handle;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="keyword">event</span>.getByLabel(input_beamspot_, beamspot_handle);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  edm::Handle&lt;reco::ConversionCollection&gt; conversions_handle;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="keyword">event</span>.getByLabel(input_conversions_, conversions_handle);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  std::vector&lt;bool&gt; values(photons_handle-&gt;size(), <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; photons_handle-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    reco::Photon <span class="keyword">const</span>&amp; src = photons_handle-&gt;at(i);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    values[i] = !ConversionTools::hasMatchedPromptElectron(</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                     src.superCluster(), elecs_handle, conversions_handle,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                     beamspot_handle-&gt;position());</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  }</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  edm::ValueMap&lt;bool&gt;::Filler filler(*product);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  filler.insert(photons_handle, values.begin(), values.end());</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  filler.fill();</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronVetoCalculator::endJob() {}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<a class="code" href="_i_c_photon_electron_veto_calculator_8cc.html#acd8677bd77d74bbd65d174c248a68112">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_photon_electron_veto_calculator.html">ICPhotonElectronVetoCalculator</a>);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keyword">event</span>.put(product);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronVetoCalculator::beginJob() {}</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keywordtype">void</span> ICPhotonElectronVetoCalculator::endJob() {}</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">// define this as a plug-in</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<a class="code" href="_i_c_photon_electron_veto_calculator_8cc.html#acd8677bd77d74bbd65d174c248a68112">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_photon_electron_veto_calculator.html">ICPhotonElectronVetoCalculator</a>);</div>
 <div class="ttc" id="class_i_c_photon_electron_veto_calculator_html"><div class="ttname"><a href="class_i_c_photon_electron_veto_calculator.html">ICPhotonElectronVetoCalculator</a></div><div class="ttdoc">Produces an edm::ValueMap<bool> for the photon electron-veto flag. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_veto_calculator_8h_source.html#l00017">ICPhotonElectronVetoCalculator.h:17</a></div></div>
-<div class="ttc" id="class_i_c_photon_electron_veto_calculator_html_ab86a2fed2836501e6838458be0eae3b8"><div class="ttname"><a href="class_i_c_photon_electron_veto_calculator.html#ab86a2fed2836501e6838458be0eae3b8">ICPhotonElectronVetoCalculator::~ICPhotonElectronVetoCalculator</a></div><div class="ttdeci">~ICPhotonElectronVetoCalculator()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_veto_calculator_8cc_source.html#l00028">ICPhotonElectronVetoCalculator.cc:28</a></div></div>
-<div class="ttc" id="class_i_c_photon_electron_veto_calculator_html_a255b77f91543e450d57b3aabdb4f4931"><div class="ttname"><a href="class_i_c_photon_electron_veto_calculator.html#a255b77f91543e450d57b3aabdb4f4931">ICPhotonElectronVetoCalculator::ICPhotonElectronVetoCalculator</a></div><div class="ttdeci">ICPhotonElectronVetoCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_veto_calculator_8cc_source.html#l00019">ICPhotonElectronVetoCalculator.cc:19</a></div></div>
+<div class="ttc" id="class_i_c_photon_electron_veto_calculator_html_ab86a2fed2836501e6838458be0eae3b8"><div class="ttname"><a href="class_i_c_photon_electron_veto_calculator.html#ab86a2fed2836501e6838458be0eae3b8">ICPhotonElectronVetoCalculator::~ICPhotonElectronVetoCalculator</a></div><div class="ttdeci">~ICPhotonElectronVetoCalculator()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_veto_calculator_8cc_source.html#l00033">ICPhotonElectronVetoCalculator.cc:33</a></div></div>
+<div class="ttc" id="class_i_c_photon_electron_veto_calculator_html_a255b77f91543e450d57b3aabdb4f4931"><div class="ttname"><a href="class_i_c_photon_electron_veto_calculator.html#a255b77f91543e450d57b3aabdb4f4931">ICPhotonElectronVetoCalculator::ICPhotonElectronVetoCalculator</a></div><div class="ttdeci">ICPhotonElectronVetoCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_photon_electron_veto_calculator_8cc_source.html#l00020">ICPhotonElectronVetoCalculator.cc:20</a></div></div>
 <div class="ttc" id="_i_c_photon_electron_veto_calculator_8h_html"><div class="ttname"><a href="_i_c_photon_electron_veto_calculator_8h.html">ICPhotonElectronVetoCalculator.h</a></div></div>
 <div class="ttc" id="_i_c_photon_electron_veto_calculator_8cc_html_acd8677bd77d74bbd65d174c248a68112"><div class="ttname"><a href="_i_c_photon_electron_veto_calculator_8cc.html#acd8677bd77d74bbd65d174c248a68112">DEFINE_FWK_MODULE</a></div><div class="ttdeci">DEFINE_FWK_MODULE(ICPhotonElectronVetoCalculator)</div></div>
+<div class="ttc" id="namespaceedm_html"><div class="ttname"><a href="namespaceedm.html">edm</a></div><div class="ttdef"><b>Definition:</b> <a href="_consumes_8h_source.html#l00019">Consumes.h:19</a></div></div>
+<div class="ttc" id="_consumes_8h_html"><div class="ttname"><a href="_consumes_8h.html">Consumes.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

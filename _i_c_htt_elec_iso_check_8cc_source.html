@@ -113,60 +113,65 @@ $(document).ready(function(){initNavTree('_i_c_htt_elec_iso_check_8cc_source.htm
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;DataFormats/EgammaCandidates/interface/GsfElectronFwd.h&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;DataFormats/ParticleFlowCandidate/interface/PFCandidate.h&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;DataFormats/Math/interface/deltaR.h&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="class_i_c_htt_elec_iso_check.html#a42aeae8c1bdee4f4f1bbc06b26ca4a9a">   16</a></span>&#160;<a class="code" href="class_i_c_htt_elec_iso_check.html#a42aeae8c1bdee4f4f1bbc06b26ca4a9a">ICHttElecIsoCheck::ICHttElecIsoCheck</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;      input_pf_charged_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;pfChargedAll&quot;</span>)) {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  produces&lt;edm::ValueMap&lt;float&gt; &gt;();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;}</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_i_c_htt_elec_iso_check.html#a8685c7e1be7d10ce8d2be275b8e557e5">   22</a></span>&#160;<a class="code" href="class_i_c_htt_elec_iso_check.html#a8685c7e1be7d10ce8d2be275b8e557e5">ICHttElecIsoCheck::~ICHttElecIsoCheck</a>() {}</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keywordtype">void</span> ICHttElecIsoCheck::produce(edm::Event&amp; event,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                 <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  std::auto_ptr&lt;edm::ValueMap&lt;float&gt; &gt; product(<span class="keyword">new</span> edm::ValueMap&lt;float&gt;());</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  edm::Handle&lt;reco::GsfElectronCollection&gt; elecs_handle;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, elecs_handle);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  edm::Handle&lt;edm::View&lt;reco::PFCandidate&gt; &gt; pf_handle;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="keyword">event</span>.getByLabel(input_pf_charged_, pf_handle);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  std::vector&lt;float&gt; values(elecs_handle-&gt;size(), 0.);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; elecs_handle-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    reco::GsfElectron <span class="keyword">const</span>&amp; src = elecs_handle-&gt;at(i);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    values[i] = 0.;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> pf = 0; pf &lt; pf_handle-&gt;size(); ++pf) {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      reco::PFCandidate <span class="keyword">const</span>&amp; pfcand = pf_handle-&gt;at(pf);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      <span class="keywordtype">bool</span> barrel = fabs(src.superCluster()-&gt;eta()) &lt; 1.479;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;      <span class="keywordtype">double</span> dr_veto = barrel ? 0.01 : 0.015;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      <span class="keywordflow">if</span> (reco::deltaR(src, pfcand) &lt; dr_veto ||</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;          reco::deltaR(src, pfcand) &gt; 0.4)</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;      <span class="keywordflow">if</span> (pfcand.trackRef().isNonnull()) {  <span class="comment">// PF candidate has a track</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">if</span> (pfcand.trackRef().index() == src.closestCtfTrackRef().index()) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;          values[i] = pfcand.pt();</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        }</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  edm::ValueMap&lt;float&gt;::Filler filler(*product);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  filler.insert(elecs_handle, values.begin(), values.end());</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  filler.fill();</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keyword">event</span>.put(product);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="class_i_c_htt_elec_iso_check.html#a42aeae8c1bdee4f4f1bbc06b26ca4a9a">   17</a></span>&#160;<a class="code" href="class_i_c_htt_elec_iso_check.html#a42aeae8c1bdee4f4f1bbc06b26ca4a9a">ICHttElecIsoCheck::ICHttElecIsoCheck</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;      input_pf_charged_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;pfChargedAll&quot;</span>)) {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  consumes&lt;reco::GsfElectronCollection&gt;(input_);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  consumes&lt;edm::View&lt;reco::PFCandidate&gt;&gt;(input_pf_charged_);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  produces&lt;edm::ValueMap&lt;float&gt; &gt;();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;}</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="class_i_c_htt_elec_iso_check.html#a8685c7e1be7d10ce8d2be275b8e557e5">   25</a></span>&#160;<a class="code" href="class_i_c_htt_elec_iso_check.html#a8685c7e1be7d10ce8d2be275b8e557e5">ICHttElecIsoCheck::~ICHttElecIsoCheck</a>() {}</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">void</span> ICHttElecIsoCheck::produce(edm::Event&amp; event,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                                 <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  std::auto_ptr&lt;edm::ValueMap&lt;float&gt; &gt; product(<span class="keyword">new</span> edm::ValueMap&lt;float&gt;());</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  edm::Handle&lt;reco::GsfElectronCollection&gt; elecs_handle;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, elecs_handle);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  edm::Handle&lt;edm::View&lt;reco::PFCandidate&gt; &gt; pf_handle;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keyword">event</span>.getByLabel(input_pf_charged_, pf_handle);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  std::vector&lt;float&gt; values(elecs_handle-&gt;size(), 0.);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; elecs_handle-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    reco::GsfElectron <span class="keyword">const</span>&amp; src = elecs_handle-&gt;at(i);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    values[i] = 0.;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> pf = 0; pf &lt; pf_handle-&gt;size(); ++pf) {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      reco::PFCandidate <span class="keyword">const</span>&amp; pfcand = pf_handle-&gt;at(pf);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      <span class="keywordtype">bool</span> barrel = fabs(src.superCluster()-&gt;eta()) &lt; 1.479;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;      <span class="keywordtype">double</span> dr_veto = barrel ? 0.01 : 0.015;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;      <span class="keywordflow">if</span> (reco::deltaR(src, pfcand) &lt; dr_veto ||</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;          reco::deltaR(src, pfcand) &gt; 0.4)</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;      <span class="keywordflow">if</span> (pfcand.trackRef().isNonnull()) {  <span class="comment">// PF candidate has a track</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">if</span> (pfcand.trackRef().index() == src.closestCtfTrackRef().index()) {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;          values[i] = pfcand.pt();</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;      }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  }</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  edm::ValueMap&lt;float&gt;::Filler filler(*product);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  filler.insert(elecs_handle, values.begin(), values.end());</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  filler.fill();</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keywordtype">void</span> ICHttElecIsoCheck::beginJob() {}</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keywordtype">void</span> ICHttElecIsoCheck::endJob() {}</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<a class="code" href="_i_c_htt_elec_iso_check_8cc.html#a5e4b4ae5bf2883089de80e19880f5fac">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_htt_elec_iso_check.html">ICHttElecIsoCheck</a>);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keyword">event</span>.put(product);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keywordtype">void</span> ICHttElecIsoCheck::beginJob() {}</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">void</span> ICHttElecIsoCheck::endJob() {}</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">// define this as a plug-in</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<a class="code" href="_i_c_htt_elec_iso_check_8cc.html#a5e4b4ae5bf2883089de80e19880f5fac">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_htt_elec_iso_check.html">ICHttElecIsoCheck</a>);</div>
 <div class="ttc" id="class_i_c_htt_elec_iso_check_html"><div class="ttname"><a href="class_i_c_htt_elec_iso_check.html">ICHttElecIsoCheck</a></div><div class="ttdef"><b>Definition:</b> <a href="_i_c_htt_elec_iso_check_8h_source.html#l00010">ICHttElecIsoCheck.h:10</a></div></div>
 <div class="ttc" id="_i_c_htt_elec_iso_check_8cc_html_a5e4b4ae5bf2883089de80e19880f5fac"><div class="ttname"><a href="_i_c_htt_elec_iso_check_8cc.html#a5e4b4ae5bf2883089de80e19880f5fac">DEFINE_FWK_MODULE</a></div><div class="ttdeci">DEFINE_FWK_MODULE(ICHttElecIsoCheck)</div></div>
-<div class="ttc" id="class_i_c_htt_elec_iso_check_html_a8685c7e1be7d10ce8d2be275b8e557e5"><div class="ttname"><a href="class_i_c_htt_elec_iso_check.html#a8685c7e1be7d10ce8d2be275b8e557e5">ICHttElecIsoCheck::~ICHttElecIsoCheck</a></div><div class="ttdeci">~ICHttElecIsoCheck()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_htt_elec_iso_check_8cc_source.html#l00022">ICHttElecIsoCheck.cc:22</a></div></div>
+<div class="ttc" id="class_i_c_htt_elec_iso_check_html_a8685c7e1be7d10ce8d2be275b8e557e5"><div class="ttname"><a href="class_i_c_htt_elec_iso_check.html#a8685c7e1be7d10ce8d2be275b8e557e5">ICHttElecIsoCheck::~ICHttElecIsoCheck</a></div><div class="ttdeci">~ICHttElecIsoCheck()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_htt_elec_iso_check_8cc_source.html#l00025">ICHttElecIsoCheck.cc:25</a></div></div>
+<div class="ttc" id="namespaceedm_html"><div class="ttname"><a href="namespaceedm.html">edm</a></div><div class="ttdef"><b>Definition:</b> <a href="_consumes_8h_source.html#l00019">Consumes.h:19</a></div></div>
 <div class="ttc" id="_i_c_htt_elec_iso_check_8h_html"><div class="ttname"><a href="_i_c_htt_elec_iso_check_8h.html">ICHttElecIsoCheck.h</a></div></div>
-<div class="ttc" id="class_i_c_htt_elec_iso_check_html_a42aeae8c1bdee4f4f1bbc06b26ca4a9a"><div class="ttname"><a href="class_i_c_htt_elec_iso_check.html#a42aeae8c1bdee4f4f1bbc06b26ca4a9a">ICHttElecIsoCheck::ICHttElecIsoCheck</a></div><div class="ttdeci">ICHttElecIsoCheck(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_htt_elec_iso_check_8cc_source.html#l00016">ICHttElecIsoCheck.cc:16</a></div></div>
+<div class="ttc" id="_consumes_8h_html"><div class="ttname"><a href="_consumes_8h.html">Consumes.h</a></div></div>
+<div class="ttc" id="class_i_c_htt_elec_iso_check_html_a42aeae8c1bdee4f4f1bbc06b26ca4a9a"><div class="ttname"><a href="class_i_c_htt_elec_iso_check.html#a42aeae8c1bdee4f4f1bbc06b26ca4a9a">ICHttElecIsoCheck::ICHttElecIsoCheck</a></div><div class="ttdeci">ICHttElecIsoCheck(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_htt_elec_iso_check_8cc_source.html#l00017">ICHttElecIsoCheck.cc:17</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

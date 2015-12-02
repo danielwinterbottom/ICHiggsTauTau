@@ -117,40 +117,52 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
 <div class="line"></div>
-<div class="line">ICPhotonProducer::IsoTags::IsoTags(edm::ParameterSet <span class="keyword">const</span>&amp; pset)</div>
-<div class="line">  : charged_all(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;chargedAll&quot;</span>)),</div>
-<div class="line">    charged(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;charged&quot;</span>)),</div>
-<div class="line">    neutral(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;neutral&quot;</span>)),</div>
-<div class="line">    <a name="a0"></a><a class="code" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">gamma</a>(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;gamma&quot;</span>)),</div>
-<div class="line">    pu(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;pu&quot;</span>)) {}</div>
+<div class="line">ICPhotonProducer::IsoTags::IsoTags(edm::ParameterSet <span class="keyword">const</span>&amp; pset, <a name="_a0"></a><a class="code" href="structedm_1_1_consumes_collector.html">edm::ConsumesCollector</a> &amp;&amp; collector)</div>
+<div class="line">  : charged_all(pset.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;chargedAll&quot;</span>)),</div>
+<div class="line">    charged(pset.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;charged&quot;</span>)),</div>
+<div class="line">    neutral(pset.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;neutral&quot;</span>)),</div>
+<div class="line">    <a name="a1"></a><a class="code" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">gamma</a>(pset.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;gamma&quot;</span>)),</div>
+<div class="line">    pu(pset.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;pu&quot;</span>)) {</div>
+<div class="line">     collector.consumes&lt;edm::ValueMap&lt;double&gt;&gt;(charged_all);</div>
+<div class="line">     collector.consumes&lt;edm::ValueMap&lt;double&gt;&gt;(charged);</div>
+<div class="line">     collector.consumes&lt;edm::ValueMap&lt;double&gt;&gt;(neutral);</div>
+<div class="line">     collector.consumes&lt;edm::ValueMap&lt;double&gt;&gt;(<a class="code" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">gamma</a>);</div>
+<div class="line">     collector.consumes&lt;edm::ValueMap&lt;double&gt;&gt;(pu);</div>
+<div class="line">    }</div>
 <div class="line"></div>
 <div class="line"></div>
-<div class="line"><a name="a1"></a><a class="code" href="class_i_c_photon_producer.html#ab863b239599ba5bd11449f9c42720d26">ICPhotonProducer::ICPhotonProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line"><a name="a2"></a><a class="code" href="class_i_c_photon_producer.html#ab863b239599ba5bd11449f9c42720d26">ICPhotonProducer::ICPhotonProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line">    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
 <div class="line">      input_electron_veto_(</div>
-<div class="line">          config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputElectronVeto&quot;</span>)),</div>
+<div class="line">          config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputElectronVeto&quot;</span>)),</div>
 <div class="line">      do_electron_veto_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeElectronVeto&quot;</span>)),</div>
 <div class="line">      do_had_tow_over_em_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeHadTowOverEm&quot;</span>)),</div>
-<div class="line">      pf_iso_03_(config.getParameterSet(<span class="stringliteral">&quot;pfIso03&quot;</span>)),</div>
-<div class="line">      pf_iso_04_(config.getParameterSet(<span class="stringliteral">&quot;pfIso04&quot;</span>)),</div>
+<div class="line">      pf_iso_03_(config.getParameterSet(<span class="stringliteral">&quot;pfIso03&quot;</span>),<a name="a3"></a><a class="code" href="_consumes_8cc.html#ad7634b4a9cdc0a485dd8b9ed2f795e4d">consumesCollector</a>()),</div>
+<div class="line">      pf_iso_04_(config.getParameterSet(<span class="stringliteral">&quot;pfIso04&quot;</span>),<a class="code" href="_consumes_8cc.html#ad7634b4a9cdc0a485dd8b9ed2f795e4d">consumesCollector</a>()),</div>
 <div class="line">      do_pf_iso_03_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includePFIso03&quot;</span>)),</div>
 <div class="line">      do_pf_iso_04_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includePFIso04&quot;</span>)),</div>
 <div class="line">      do_iso_from_pat_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeIsoFromPat&quot;</span>)) {</div>
 <div class="line">  <span class="comment">// isolator_ = new PFIsolationEstimator();</span></div>
 <div class="line">  <span class="comment">// isolator_-&gt;initializePhotonIsolation(true);</span></div>
 <div class="line">  <span class="comment">// isolator_-&gt;setConeSize(0.3);</span></div>
+<div class="line">  <span class="keywordflow">if</span>(do_iso_from_pat_){</div>
+<div class="line">    consumes&lt;edm::View&lt;pat::Photon&gt;&gt;(input_);</div>
+<div class="line">  } <span class="keywordflow">else</span> {</div>
+<div class="line">    consumes&lt;edm::View&lt;reco::Photon&gt;&gt;(input_);</div>
+<div class="line">  }</div>
+<div class="line">  consumes&lt;edm::ValueMap&lt;bool&gt;&gt;(input_electron_veto_);</div>
 <div class="line">  photons_ = <span class="keyword">new</span> std::vector&lt;ic::Photon&gt;();</div>
 <div class="line"></div>
-<div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
-<div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_electron_veto_, <span class="stringliteral">&quot;includeElectronVeto&quot;</span>);</div>
+<div class="line">  <a name="a4"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
+<div class="line">  <a name="a5"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_electron_veto_, <span class="stringliteral">&quot;includeElectronVeto&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_had_tow_over_em_, <span class="stringliteral">&quot;includeHadTowOverEm&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_pf_iso_03_, <span class="stringliteral">&quot;includePFIso03&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_pf_iso_04_, <span class="stringliteral">&quot;includePFIso04&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_iso_from_pat_, <span class="stringliteral">&quot;includeIsoFromPat&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><a name="a4"></a><a class="code" href="class_i_c_photon_producer.html#aa3b86ba45e3ec0f9921c073cebb840d3">ICPhotonProducer::~ICPhotonProducer</a>() {</div>
+<div class="line"><a name="a6"></a><a class="code" href="class_i_c_photon_producer.html#aa3b86ba45e3ec0f9921c073cebb840d3">ICPhotonProducer::~ICPhotonProducer</a>() {</div>
 <div class="line">  <span class="keyword">delete</span> photons_;</div>
 <div class="line">  <span class="comment">// delete isolator_;</span></div>
 <div class="line">}</div>
@@ -202,7 +214,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">  <span class="comment">// event.getByLabel(&quot;offlinePrimaryVertices&quot;, vertexCollection);</span></div>
 <div class="line"></div>
 <div class="line">  photons_-&gt;clear();</div>
-<div class="line">  photons_-&gt;resize(photons_handle-&gt;size(), <a name="_a5"></a><a class="code" href="classic_1_1_photon.html">ic::Photon</a>());</div>
+<div class="line">  photons_-&gt;resize(photons_handle-&gt;size(), <a name="_a7"></a><a class="code" href="classic_1_1_photon.html">ic::Photon</a>());</div>
 <div class="line"></div>
 <div class="line">  <span class="comment">// unsigned idx = 0;</span></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; photons_handle-&gt;size(); ++i) {</div>
@@ -210,13 +222,13 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">    edm::RefToBase&lt;reco::Photon&gt; ref = photons_handle-&gt;refAt(i);</div>
 <div class="line">    <a class="code" href="classic_1_1_photon.html">ic::Photon</a> &amp; dest = photons_-&gt;at(i);</div>
 <div class="line"></div>
-<div class="line">    dest.<a name="a6"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(photon_hasher_(&amp;src));</div>
-<div class="line">    dest.<a name="a7"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
-<div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
-<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
-<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
-<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
-<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_photon.html#a694eef18a9163cf5c19261fb601e116f">set_sigma_IetaIeta</a>(src.sigmaIetaIeta());</div>
+<div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(photon_hasher_(&amp;src));</div>
+<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
+<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
+<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
+<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
+<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
+<div class="line">    dest.<a name="a14"></a><a class="code" href="classic_1_1_photon.html#a694eef18a9163cf5c19261fb601e116f">set_sigma_IetaIeta</a>(src.sigmaIetaIeta());</div>
 <div class="line"></div>
 <div class="line">    <span class="comment">// isolator_-&gt;fGetIsolation(&amp;(*iter), &amp;(*pfCandidatesH),</span></div>
 <div class="line">    <span class="comment">// reco::VertexRef(vertexCollection,0), vertexCollection);</span></div>
@@ -226,27 +238,27 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">    <span class="comment">// pho.set_dr03_pfiso_neutral(isolator_-&gt;getIsolationNeutral());</span></div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (do_electron_veto_) {</div>
-<div class="line">      dest.<a name="a13"></a><a class="code" href="classic_1_1_photon.html#a3b62e8c8a96580f7d1bf173cd9925d18">set_pass_electron_veto</a>((*electron_veto_handle)[ref]);</div>
+<div class="line">      dest.<a name="a15"></a><a class="code" href="classic_1_1_photon.html#a3b62e8c8a96580f7d1bf173cd9925d18">set_pass_electron_veto</a>((*electron_veto_handle)[ref]);</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (do_had_tow_over_em_) {</div>
-<div class="line">      dest.<a name="a14"></a><a class="code" href="classic_1_1_photon.html#a30eb93d12e66581b6521d8f6a82f3b04">set_had_tower_over_em</a>(src.hadTowOverEm());</div>
+<div class="line">      dest.<a name="a16"></a><a class="code" href="classic_1_1_photon.html#a30eb93d12e66581b6521d8f6a82f3b04">set_had_tower_over_em</a>(src.hadTowOverEm());</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (do_pf_iso_03_&amp;&amp;!do_iso_from_pat_) {</div>
-<div class="line">      dest.<a name="a15"></a><a class="code" href="classic_1_1_photon.html#a164ac1ba8bef0260ac7e47956a6177d0">set_dr03_pfiso_charged_all</a>((*charged_all_03)[ref]);</div>
-<div class="line">      dest.<a name="a16"></a><a class="code" href="classic_1_1_photon.html#a7350b29f43b507a5b35b981858d64031">set_dr03_pfiso_charged</a>((*charged_03)[ref]);</div>
-<div class="line">      dest.<a name="a17"></a><a class="code" href="classic_1_1_photon.html#a42f261c695f0a6e2df12ae008cb0912b">set_dr03_pfiso_neutral</a>((*neutral_03)[ref]);</div>
-<div class="line">      dest.<a name="a18"></a><a class="code" href="classic_1_1_photon.html#afc059106d5403c389477f1081f57c20e">set_dr03_pfiso_gamma</a>((*gamma_03)[ref]);</div>
-<div class="line">      dest.<a name="a19"></a><a class="code" href="classic_1_1_photon.html#ae7fe94afa1fc3c39af6c854f59ba295e">set_dr03_pfiso_pu</a>((*pu_03)[ref]);</div>
+<div class="line">      dest.<a name="a17"></a><a class="code" href="classic_1_1_photon.html#a164ac1ba8bef0260ac7e47956a6177d0">set_dr03_pfiso_charged_all</a>((*charged_all_03)[ref]);</div>
+<div class="line">      dest.<a name="a18"></a><a class="code" href="classic_1_1_photon.html#a7350b29f43b507a5b35b981858d64031">set_dr03_pfiso_charged</a>((*charged_03)[ref]);</div>
+<div class="line">      dest.<a name="a19"></a><a class="code" href="classic_1_1_photon.html#a42f261c695f0a6e2df12ae008cb0912b">set_dr03_pfiso_neutral</a>((*neutral_03)[ref]);</div>
+<div class="line">      dest.<a name="a20"></a><a class="code" href="classic_1_1_photon.html#afc059106d5403c389477f1081f57c20e">set_dr03_pfiso_gamma</a>((*gamma_03)[ref]);</div>
+<div class="line">      dest.<a name="a21"></a><a class="code" href="classic_1_1_photon.html#ae7fe94afa1fc3c39af6c854f59ba295e">set_dr03_pfiso_pu</a>((*pu_03)[ref]);</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (do_pf_iso_04_&amp;&amp;!do_iso_from_pat_) {</div>
-<div class="line">      dest.<a name="a20"></a><a class="code" href="classic_1_1_photon.html#a281430867c15a92ffb73b38c4a6f51a6">set_dr04_pfiso_charged_all</a>((*charged_all_04)[ref]);</div>
-<div class="line">      dest.<a name="a21"></a><a class="code" href="classic_1_1_photon.html#a602a7d6d36fb1dbef01be0acede2652e">set_dr04_pfiso_charged</a>((*charged_04)[ref]);</div>
-<div class="line">      dest.<a name="a22"></a><a class="code" href="classic_1_1_photon.html#ab2f72e8d86684d302abaedeaa88b9f9b">set_dr04_pfiso_neutral</a>((*neutral_04)[ref]);</div>
-<div class="line">      dest.<a name="a23"></a><a class="code" href="classic_1_1_photon.html#aeeb005c071a9ce38de0ee2e4bb65b830">set_dr04_pfiso_gamma</a>((*gamma_04)[ref]);</div>
-<div class="line">      dest.<a name="a24"></a><a class="code" href="classic_1_1_photon.html#a91962fcda8edb00e8e337c639f4a2219">set_dr04_pfiso_pu</a>((*pu_04)[ref]);</div>
+<div class="line">      dest.<a name="a22"></a><a class="code" href="classic_1_1_photon.html#a281430867c15a92ffb73b38c4a6f51a6">set_dr04_pfiso_charged_all</a>((*charged_all_04)[ref]);</div>
+<div class="line">      dest.<a name="a23"></a><a class="code" href="classic_1_1_photon.html#a602a7d6d36fb1dbef01be0acede2652e">set_dr04_pfiso_charged</a>((*charged_04)[ref]);</div>
+<div class="line">      dest.<a name="a24"></a><a class="code" href="classic_1_1_photon.html#ab2f72e8d86684d302abaedeaa88b9f9b">set_dr04_pfiso_neutral</a>((*neutral_04)[ref]);</div>
+<div class="line">      dest.<a name="a25"></a><a class="code" href="classic_1_1_photon.html#aeeb005c071a9ce38de0ee2e4bb65b830">set_dr04_pfiso_gamma</a>((*gamma_04)[ref]);</div>
+<div class="line">      dest.<a name="a26"></a><a class="code" href="classic_1_1_photon.html#a91962fcda8edb00e8e337c639f4a2219">set_dr04_pfiso_pu</a>((*pu_04)[ref]);</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span>(do_pf_iso_03_&amp;&amp;do_iso_from_pat_&amp;&amp;do_pf_iso_04_){</div>
@@ -259,7 +271,11 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a42f261c695f0a6e2df12ae008cb0912b">set_dr03_pfiso_neutral</a>(patsrc.neutralHadronIso());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#afc059106d5403c389477f1081f57c20e">set_dr03_pfiso_gamma</a>(patsrc.photonIso());</div>
 <div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MINOR_VERSION &gt;= 6</span></div>
+<div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a164ac1ba8bef0260ac7e47956a6177d0">set_dr03_pfiso_charged_all</a>(patsrc.patParticleIso());</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a164ac1ba8bef0260ac7e47956a6177d0">set_dr03_pfiso_charged_all</a>(patsrc.particleIso());</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#ae7fe94afa1fc3c39af6c854f59ba295e">set_dr03_pfiso_pu</a>(patsrc.puChargedHadronIso());</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    }</div>
@@ -270,7 +286,11 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#ab2f72e8d86684d302abaedeaa88b9f9b">set_dr04_pfiso_neutral</a>(patsrc.neutralHadronIso());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#aeeb005c071a9ce38de0ee2e4bb65b830">set_dr04_pfiso_gamma</a>(patsrc.photonIso());</div>
 <div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MINOR_VERSION &gt;= 6</span></div>
+<div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a281430867c15a92ffb73b38c4a6f51a6">set_dr04_pfiso_charged_all</a>(patsrc.patParticleIso());</div>
+<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a281430867c15a92ffb73b38c4a6f51a6">set_dr04_pfiso_charged_all</a>(patsrc.particleIso());</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a91962fcda8edb00e8e337c639f4a2219">set_dr04_pfiso_pu</a>(patsrc.puChargedHadronIso());</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    }</div>
@@ -286,13 +306,13 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICPhotonProducer::beginJob() {</div>
-<div class="line">  <a name="a25"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;photons_);</div>
+<div class="line">  <a name="a27"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;photons_);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICPhotonProducer::endJob() {}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="a26"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a27"></a><a class="code" href="class_i_c_photon_producer.html">ICPhotonProducer</a>);</div>
+<div class="line"><a name="a28"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a29"></a><a class="code" href="class_i_c_photon_producer.html">ICPhotonProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

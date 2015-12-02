@@ -127,23 +127,32 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;FWCore/Utilities/interface/Exception.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
 <div class="line"></div>
 <div class="line"><a name="a0"></a><a class="code" href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
 <div class="line">    : branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
-<div class="line">      lhe_collection_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;lheProducer&quot;</span>)),</div>
+<div class="line">      lhe_collection_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;lheProducer&quot;</span>)),</div>
 <div class="line">      do_jets_rho_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeJetRho&quot;</span>)),</div>
-<div class="line">      input_jets_rho_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputJetRho&quot;</span>)),</div>
+<div class="line">      input_jets_rho_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputJetRho&quot;</span>)),</div>
 <div class="line">      do_leptons_rho_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLeptonRho&quot;</span>)),</div>
-<div class="line">      input_leptons_rho_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputLeptonRho&quot;</span>)),</div>
+<div class="line">      input_leptons_rho_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputLeptonRho&quot;</span>)),</div>
 <div class="line">      do_vertex_count_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeVertexCount&quot;</span>)),</div>
-<div class="line">      input_vertices_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
+<div class="line">      input_vertices_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
 <div class="line">      do_csc_filter_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeCSCFilter&quot;</span>)),</div>
-<div class="line">      input_csc_filter_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputCSCFilter&quot;</span>)),</div>
+<div class="line">      input_csc_filter_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputCSCFilter&quot;</span>)),</div>
 <div class="line">      do_lhe_weights_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLHEWeights&quot;</span>)),</div>
 <div class="line">      do_ht_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeHT&quot;</span>)),</div>
 <div class="line">      do_filtersfromtrig_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeFiltersFromTrig&quot;</span>)),</div>
 <div class="line">      filtersfromtrig_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::vector&lt;<a class="code" href="namespacestd.html">std</a>::string&gt; &gt;(<span class="stringliteral">&quot;filtersfromtrig&quot;</span>)),</div>
-<div class="line">      filtersfromtrig_input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputfiltersfromtrig&quot;</span>)){</div>
+<div class="line">      filtersfromtrig_input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputfiltersfromtrig&quot;</span>)){</div>
+<div class="line">      consumes&lt;LHERunInfoProduct&gt;({<span class="stringliteral">&quot;externalLHEProducer&quot;</span>});</div>
+<div class="line">      consumes&lt;GenEventInfoProduct&gt;({<span class="stringliteral">&quot;generator&quot;</span>});</div>
+<div class="line">      consumes&lt;LHEEventProduct&gt;(lhe_collection_);</div>
+<div class="line">      consumes&lt;double&gt;(input_leptons_rho_);</div>
+<div class="line">      consumes&lt;double&gt;(input_jets_rho_);</div>
+<div class="line">      consumes&lt;edm::View&lt;reco::Vertex&gt;&gt;(input_vertices_);</div>
+<div class="line">      consumes&lt;reco::BeamHaloSummary&gt;(input_csc_filter_);</div>
+<div class="line">      consumes&lt;edm::TriggerResults&gt;(filtersfromtrig_input_);</div>
 <div class="line">  edm::ParameterSet filter_params =</div>
 <div class="line">      config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;filters&quot;</span>);</div>
 <div class="line">  std::vector&lt;std::string&gt; filter_names =</div>
@@ -152,6 +161,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">    filters_.push_back(std::make_pair(</div>
 <div class="line">        filter_names[i],</div>
 <div class="line">        filter_params.getParameter&lt;edm::InputTag&gt;(filter_names[i])));</div>
+<div class="line">        consumes&lt;bool&gt;(filters_[i].second);</div>
 <div class="line">    <span class="keywordflow">if</span> (filters_.back().second.label().at(0) == <span class="charliteral">&#39;!&#39;</span>) {</div>
 <div class="line">      std::cout &lt;&lt; <span class="stringliteral">&quot;Info in &lt;ICEventInfoProducer&gt;: Inverting logic for filter: &quot;</span></div>
 <div class="line">                &lt;&lt; filters_.back().first &lt;&lt; std::endl;</div>
@@ -170,6 +180,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; wt.size(); ++i) {</div>
 <div class="line">    weights_.push_back(</div>
 <div class="line">        std::make_pair(wt[i], wt_pset.getParameter&lt;edm::InputTag&gt;(wt[i])));</div>
+<div class="line">        consumes&lt;double&gt;(weights_[i].second);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  edm::ParameterSet gwt_pset =</div>
@@ -179,6 +190,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; gwt.size(); ++i) {</div>
 <div class="line">    gen_weights_.push_back(</div>
 <div class="line">        std::make_pair(gwt[i], gwt_pset.getParameter&lt;edm::InputTag&gt;(gwt[i])));</div>
+<div class="line">        consumes&lt;double&gt;(gen_weights_[i].second);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  info_ = <span class="keyword">new</span> <a name="_a1"></a><a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>

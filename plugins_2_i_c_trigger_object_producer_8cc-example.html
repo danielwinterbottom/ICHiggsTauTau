@@ -120,15 +120,22 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
 <div class="line"></div>
 <div class="line"><a name="a0"></a><a class="code" href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer::ICTriggerObjectProducer</a>(</div>
 <div class="line">    <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
-<div class="line">      input_trigres_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputTriggerResults&quot;</span>)),</div>
+<div class="line">    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line">      input_trigres_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputTriggerResults&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
 <div class="line">      hlt_path_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;hltPath&quot;</span>)),</div>
 <div class="line">      store_only_if_fired_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;storeOnlyIfFired&quot;</span>)),</div>
 <div class="line">      input_is_standalone_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;inputIsStandAlone&quot;</span>)) {</div>
+<div class="line">  <span class="keywordflow">if</span>(!input_is_standalone_){</div>
+<div class="line">    consumes&lt;pat::TriggerEvent&gt;(input_);</div>
+<div class="line">  } <span class="keywordflow">else</span> {</div>
+<div class="line">    consumes&lt;pat::TriggerObjectStandAloneCollection&gt;(input_);</div>
+<div class="line">  }</div>
+<div class="line">  consumes&lt;edm::TriggerResults&gt;(input_trigres_);</div>
 <div class="line">  objects_ = <span class="keyword">new</span> std::vector&lt;ic::TriggerObject&gt;();</div>
 <div class="line">  <a name="a1"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
 <div class="line">  std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-15s : %-60s\n&quot;</span>) % <span class="stringliteral">&quot;Path&quot;</span> % hlt_path_;</div>

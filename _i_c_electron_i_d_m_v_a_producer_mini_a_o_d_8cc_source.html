@@ -114,98 +114,101 @@ $(document).ready(function(){initNavTree('_i_c_electron_i_d_m_v_a_producer_mini_
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;TrackingTools/Records/interface/TransientTrackRecord.h&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;TrackingTools/IPTools/interface/IPTools.h&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8hh.html">UserCode/ICHiggsTauTau/plugins/ICElectronIDMVAProducerMiniAOD.hh</a>&quot;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">//Based on https://github.com/HuguesBrun/ExampleElectronMVAid/blob/addMVAfromMiniAOD/plugins/ExampleElectronMVAid.cc</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a373554a087c2f3ccf6d2083e2bea3f50">   18</a></span>&#160;<a class="code" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a373554a087c2f3ccf6d2083e2bea3f50">ICElectronIDMVAProducerMiniAOD::ICElectronIDMVAProducerMiniAOD</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config) {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    verbose_ = config.getUntrackedParameter&lt;<span class="keywordtype">bool</span>&gt;(<span class="stringliteral">&quot;verbose&quot;</span>, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">//  electronToken_ = consumes&lt;pat::ElectronCollection&gt;(config.getParameter&lt;edm::InputTag&gt;(&quot;electronTag&quot;));</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        electronToken_ = config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;electronTag&quot;</span>);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  method_ = config.getParameter&lt;<span class="keywordtype">string</span>&gt;(<span class="stringliteral">&quot;method&quot;</span>);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  std::vector&lt;string&gt; fpMvaWeightFiles = config.getParameter&lt;std::vector&lt;std::string&gt; &gt;(<span class="stringliteral">&quot;mvaWeightFile&quot;</span>);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  trig_ = config.getParameter&lt;<span class="keywordtype">bool</span>&gt;(<span class="stringliteral">&quot;trig&quot;</span>);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    produces&lt;edm::ValueMap&lt;float&gt; &gt;(<span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">//Based on https://github.com/HuguesBrun/ExampleElectronMVAid/blob/addMVAfromMiniAOD/plugins/ExampleElectronMVAid.cc</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a373554a087c2f3ccf6d2083e2bea3f50">   19</a></span>&#160;<a class="code" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a373554a087c2f3ccf6d2083e2bea3f50">ICElectronIDMVAProducerMiniAOD::ICElectronIDMVAProducerMiniAOD</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config) {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    verbose_ = config.getUntrackedParameter&lt;<span class="keywordtype">bool</span>&gt;(<span class="stringliteral">&quot;verbose&quot;</span>, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">//  electronToken_ = consumes&lt;pat::ElectronCollection&gt;(config.getParameter&lt;edm::InputTag&gt;(&quot;electronTag&quot;));</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        electronToken_ = config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;electronTag&quot;</span>);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  method_ = config.getParameter&lt;<span class="keywordtype">string</span>&gt;(<span class="stringliteral">&quot;method&quot;</span>);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  std::vector&lt;string&gt; fpMvaWeightFiles = config.getParameter&lt;std::vector&lt;std::string&gt; &gt;(<span class="stringliteral">&quot;mvaWeightFile&quot;</span>);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  trig_ = config.getParameter&lt;<span class="keywordtype">bool</span>&gt;(<span class="stringliteral">&quot;trig&quot;</span>);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        consumes&lt;pat::ElectronCollection&gt;(electronToken_);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    mvaID_ = <span class="keyword">new</span> <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html">EGammaMvaEleEstimatorCSA14</a>();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    produces&lt;edm::ValueMap&lt;float&gt; &gt;(<span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5f">EGammaMvaEleEstimatorCSA14::MVAType</a> type_;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    mvaID_ = <span class="keyword">new</span> <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html">EGammaMvaEleEstimatorCSA14</a>();</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordflow">if</span>(trig_){type_ = <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa8c00fd2fec6685ca4ab8c5032f597369">EGammaMvaEleEstimatorCSA14::kTrig</a>;}</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5f">EGammaMvaEleEstimatorCSA14::MVAType</a> type_;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span>(!trig_){</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordflow">if</span> (fpMvaWeightFiles.size() &gt; 4) type_ = <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa485ce12f8394253ada21d0d9ddab5e62">EGammaMvaEleEstimatorCSA14::kNonTrigPhys14</a>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">else</span> type_ = <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa6834dbebd92c08255c8474d172b31097">EGammaMvaEleEstimatorCSA14::kNonTrig</a>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">bool</span> manualCat_ = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="keywordtype">string</span> path_mvaWeightFileEleID;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> ifile=0 ; ifile &lt; fpMvaWeightFiles.size() ; ++ifile) {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        path_mvaWeightFileEleID = edm::FileInPath ( fpMvaWeightFiles[ifile].c_str() ).fullPath();</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        mvaWeightFiles_.push_back(path_mvaWeightFileEleID);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    mvaID_-&gt;initialize(method_, type_, manualCat_, mvaWeightFiles_);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span>(trig_){type_ = <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa8c00fd2fec6685ca4ab8c5032f597369">EGammaMvaEleEstimatorCSA14::kTrig</a>;}</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">if</span>(!trig_){</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordflow">if</span> (fpMvaWeightFiles.size() &gt; 4) type_ = <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa485ce12f8394253ada21d0d9ddab5e62">EGammaMvaEleEstimatorCSA14::kNonTrigPhys14</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordflow">else</span> type_ = <a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa6834dbebd92c08255c8474d172b31097">EGammaMvaEleEstimatorCSA14::kNonTrig</a>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">bool</span> manualCat_ = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="keywordtype">string</span> path_mvaWeightFileEleID;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> ifile=0 ; ifile &lt; fpMvaWeightFiles.size() ; ++ifile) {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        path_mvaWeightFileEleID = edm::FileInPath ( fpMvaWeightFiles[ifile].c_str() ).fullPath();</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        mvaWeightFiles_.push_back(path_mvaWeightFileEleID);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  }</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a1d86baa4e1bef0c2e619def4a09d766c">   51</a></span>&#160;<a class="code" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a1d86baa4e1bef0c2e619def4a09d766c">ICElectronIDMVAProducerMiniAOD::~ICElectronIDMVAProducerMiniAOD</a>()</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="comment">// do anything here that needs to be done at desctruction time</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="comment">// (e.g. close files, deallocate resources etc.)</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">// member functions</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    mvaID_-&gt;initialize(method_, type_, manualCat_, mvaWeightFiles_);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a1d86baa4e1bef0c2e619def4a09d766c">   53</a></span>&#160;<a class="code" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a1d86baa4e1bef0c2e619def4a09d766c">ICElectronIDMVAProducerMiniAOD::~ICElectronIDMVAProducerMiniAOD</a>()</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="comment">// do anything here that needs to be done at desctruction time</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="comment">// (e.g. close files, deallocate resources etc.)</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// ------------ method called on each new Event  ------------</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keywordtype">void</span> ICElectronIDMVAProducerMiniAOD::produce(edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">//  using namespace edm;</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    std::auto_ptr&lt;edm::ValueMap&lt;float&gt; &gt; out(<span class="keyword">new</span> edm::ValueMap&lt;float&gt;() );</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    edm::Handle&lt;pat::ElectronCollection&gt; egCollection;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">event</span>.getByLabel(electronToken_,egCollection);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespaceic.html#a709b8b3ff15d98b9da3b53de3aa56328">pat::ElectronCollection</a> egCandidates = (*egCollection.product());</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    std::vector&lt;float&gt; values;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    values.reserve(egCollection-&gt;size());</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">for</span> ( pat::ElectronCollection::const_iterator egIter = egCandidates.begin(); egIter != egCandidates.end(); ++egIter) {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordtype">double</span> mvaVal = -999999;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">//        mvaVal = mvaID_-&gt;mvaValue( *egIter, *pv,thebuilder,lazyTools, verbose_);</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        mvaVal = mvaID_-&gt;<a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#acfa2ce84691e826da31a0beeb4abba6f">mvaValue</a>(*egIter,verbose_);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        values.push_back( mvaVal );</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  }</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    edm::ValueMap&lt;float&gt;::Filler filler(*out);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    filler.insert(egCollection, values.begin(), values.end() );</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    filler.fill();</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keyword">event</span>.put(out);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// member functions</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">// ------------ method called on each new Event  ------------</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keywordtype">void</span> ICElectronIDMVAProducerMiniAOD::produce(edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">//  using namespace edm;</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    std::auto_ptr&lt;edm::ValueMap&lt;float&gt; &gt; out(<span class="keyword">new</span> edm::ValueMap&lt;float&gt;() );</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    edm::Handle&lt;pat::ElectronCollection&gt; egCollection;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">event</span>.getByLabel(electronToken_,egCollection);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespaceic.html#a709b8b3ff15d98b9da3b53de3aa56328">pat::ElectronCollection</a> egCandidates = (*egCollection.product());</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    std::vector&lt;float&gt; values;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    values.reserve(egCollection-&gt;size());</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">for</span> ( pat::ElectronCollection::const_iterator egIter = egCandidates.begin(); egIter != egCandidates.end(); ++egIter) {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordtype">double</span> mvaVal = -999999;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">//        mvaVal = mvaID_-&gt;mvaValue( *egIter, *pv,thebuilder,lazyTools, verbose_);</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        mvaVal = mvaID_-&gt;<a class="code" href="class_e_gamma_mva_ele_estimator_c_s_a14.html#acfa2ce84691e826da31a0beeb4abba6f">mvaValue</a>(*egIter,verbose_);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        values.push_back( mvaVal );</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    edm::ValueMap&lt;float&gt;::Filler filler(*out);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    filler.insert(egCollection, values.begin(), values.end() );</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    filler.fill();</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment">//define this as a plug-in</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<a class="code" href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8cc.html#ad869fcf90b7f3da70a22b21faa75de1e">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html">ICElectronIDMVAProducerMiniAOD</a>);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keyword">event</span>.put(out);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">//define this as a plug-in</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<a class="code" href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8cc.html#ad869fcf90b7f3da70a22b21faa75de1e">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html">ICElectronIDMVAProducerMiniAOD</a>);</div>
 <div class="ttc" id="class_e_gamma_mva_ele_estimator_c_s_a14_html_a2b6b98dda304923f7f62f8bff59fff5fa6834dbebd92c08255c8474d172b31097"><div class="ttname"><a href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa6834dbebd92c08255c8474d172b31097">EGammaMvaEleEstimatorCSA14::kNonTrig</a></div><div class="ttdef"><b>Definition:</b> <a href="_e_gamma_mva_ele_estimator_c_s_a14_8h_source.html#l00054">EGammaMvaEleEstimatorCSA14.h:54</a></div></div>
 <div class="ttc" id="class_e_gamma_mva_ele_estimator_c_s_a14_html_acfa2ce84691e826da31a0beeb4abba6f"><div class="ttname"><a href="class_e_gamma_mva_ele_estimator_c_s_a14.html#acfa2ce84691e826da31a0beeb4abba6f">EGammaMvaEleEstimatorCSA14::mvaValue</a></div><div class="ttdeci">Double_t mvaValue(const pat::Electron &amp;ele, bool printDebug)</div><div class="ttdef"><b>Definition:</b> <a href="_e_gamma_mva_ele_estimator_c_s_a14_8cc_source.html#l00354">EGammaMvaEleEstimatorCSA14.cc:354</a></div></div>
 <div class="ttc" id="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_html"><div class="ttname"><a href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html">ICElectronIDMVAProducerMiniAOD</a></div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8hh_source.html#l00026">ICElectronIDMVAProducerMiniAOD.hh:26</a></div></div>
-<div class="ttc" id="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_html_a1d86baa4e1bef0c2e619def4a09d766c"><div class="ttname"><a href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a1d86baa4e1bef0c2e619def4a09d766c">ICElectronIDMVAProducerMiniAOD::~ICElectronIDMVAProducerMiniAOD</a></div><div class="ttdeci">~ICElectronIDMVAProducerMiniAOD()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8cc_source.html#l00051">ICElectronIDMVAProducerMiniAOD.cc:51</a></div></div>
+<div class="ttc" id="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_html_a1d86baa4e1bef0c2e619def4a09d766c"><div class="ttname"><a href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a1d86baa4e1bef0c2e619def4a09d766c">ICElectronIDMVAProducerMiniAOD::~ICElectronIDMVAProducerMiniAOD</a></div><div class="ttdeci">~ICElectronIDMVAProducerMiniAOD()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8cc_source.html#l00053">ICElectronIDMVAProducerMiniAOD.cc:53</a></div></div>
 <div class="ttc" id="class_e_gamma_mva_ele_estimator_c_s_a14_html"><div class="ttname"><a href="class_e_gamma_mva_ele_estimator_c_s_a14.html">EGammaMvaEleEstimatorCSA14</a></div><div class="ttdef"><b>Definition:</b> <a href="_e_gamma_mva_ele_estimator_c_s_a14_8h_source.html#l00047">EGammaMvaEleEstimatorCSA14.h:47</a></div></div>
 <div class="ttc" id="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8hh_html"><div class="ttname"><a href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8hh.html">ICElectronIDMVAProducerMiniAOD.hh</a></div></div>
 <div class="ttc" id="namespaceic_html_a709b8b3ff15d98b9da3b53de3aa56328"><div class="ttname"><a href="namespaceic.html#a709b8b3ff15d98b9da3b53de3aa56328">ic::ElectronCollection</a></div><div class="ttdeci">std::vector&lt; ic::Electron &gt; ElectronCollection</div><div class="ttdef"><b>Definition:</b> <a href="_electron_8hh_source.html#l00456">Electron.hh:456</a></div></div>
 <div class="ttc" id="class_e_gamma_mva_ele_estimator_c_s_a14_html_a2b6b98dda304923f7f62f8bff59fff5f"><div class="ttname"><a href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5f">EGammaMvaEleEstimatorCSA14::MVAType</a></div><div class="ttdeci">MVAType</div><div class="ttdef"><b>Definition:</b> <a href="_e_gamma_mva_ele_estimator_c_s_a14_8h_source.html#l00052">EGammaMvaEleEstimatorCSA14.h:52</a></div></div>
 <div class="ttc" id="class_e_gamma_mva_ele_estimator_c_s_a14_html_a2b6b98dda304923f7f62f8bff59fff5fa485ce12f8394253ada21d0d9ddab5e62"><div class="ttname"><a href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa485ce12f8394253ada21d0d9ddab5e62">EGammaMvaEleEstimatorCSA14::kNonTrigPhys14</a></div><div class="ttdef"><b>Definition:</b> <a href="_e_gamma_mva_ele_estimator_c_s_a14_8h_source.html#l00055">EGammaMvaEleEstimatorCSA14.h:55</a></div></div>
 <div class="ttc" id="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8cc_html_ad869fcf90b7f3da70a22b21faa75de1e"><div class="ttname"><a href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8cc.html#ad869fcf90b7f3da70a22b21faa75de1e">DEFINE_FWK_MODULE</a></div><div class="ttdeci">DEFINE_FWK_MODULE(ICElectronIDMVAProducerMiniAOD)</div></div>
-<div class="ttc" id="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_html_a373554a087c2f3ccf6d2083e2bea3f50"><div class="ttname"><a href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a373554a087c2f3ccf6d2083e2bea3f50">ICElectronIDMVAProducerMiniAOD::ICElectronIDMVAProducerMiniAOD</a></div><div class="ttdeci">ICElectronIDMVAProducerMiniAOD(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8cc_source.html#l00018">ICElectronIDMVAProducerMiniAOD.cc:18</a></div></div>
+<div class="ttc" id="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_html_a373554a087c2f3ccf6d2083e2bea3f50"><div class="ttname"><a href="class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html#a373554a087c2f3ccf6d2083e2bea3f50">ICElectronIDMVAProducerMiniAOD::ICElectronIDMVAProducerMiniAOD</a></div><div class="ttdeci">ICElectronIDMVAProducerMiniAOD(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_i_d_m_v_a_producer_mini_a_o_d_8cc_source.html#l00019">ICElectronIDMVAProducerMiniAOD.cc:19</a></div></div>
 <div class="ttc" id="class_e_gamma_mva_ele_estimator_c_s_a14_html_a2b6b98dda304923f7f62f8bff59fff5fa8c00fd2fec6685ca4ab8c5032f597369"><div class="ttname"><a href="class_e_gamma_mva_ele_estimator_c_s_a14.html#a2b6b98dda304923f7f62f8bff59fff5fa8c00fd2fec6685ca4ab8c5032f597369">EGammaMvaEleEstimatorCSA14::kTrig</a></div><div class="ttdef"><b>Definition:</b> <a href="_e_gamma_mva_ele_estimator_c_s_a14_8h_source.html#l00053">EGammaMvaEleEstimatorCSA14.h:53</a></div></div>
+<div class="ttc" id="_consumes_8h_html"><div class="ttname"><a href="_consumes_8h.html">Consumes.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

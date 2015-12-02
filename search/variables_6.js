@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['px',['px',['../structic_1_1_met_1_1_basic_met.html#a5fc0ca35dfc351209337f60daa8d6842',1,'ic::Met::BasicMet']]],
-  ['py',['py',['../structic_1_1_met_1_1_basic_met.html#afe126d9add1bd24901c0b444cc330ac3',1,'ic::Met::BasicMet']]]
+  ['loose_5fid',['loose_id',['../struct_jet_dest_helper_3_01ic_1_1_calo_jet_01_4.html#a278846ca9599499775b9d100f4959e93',1,'JetDestHelper&lt; ic::CaloJet &gt;::loose_id()'],['../struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4.html#a758205dd7d36dcaa86d6fb85f675aadb',1,'JetDestHelper&lt; ic::JPTJet &gt;::loose_id()']]]
 ];

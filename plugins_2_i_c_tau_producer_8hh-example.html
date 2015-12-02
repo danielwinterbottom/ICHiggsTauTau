@@ -123,6 +123,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
 <div class="line"><span class="keyword">class </span><a name="_a0"></a><a class="code" href="class_i_c_tau_producer.html">ICTauProducer</a> : <span class="keyword">public</span> edm::EDProducer {</div>
@@ -155,11 +156,13 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line"><span class="comment">// =============================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
 <div class="line"><a class="code" href="class_i_c_tau_producer.html#a74fb28e63eed7bb5fc6e9cbaee75b34d">ICTauProducer&lt;T&gt;::ICTauProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line">    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
-<div class="line">      input_vertices_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
+<div class="line">      input_vertices_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
 <div class="line">      do_vertex_ip_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeVertexIP&quot;</span>)),</div>
 <div class="line">      request_trks_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestTracks&quot;</span>)) {</div>
+<div class="line">  consumes&lt;edm::View&lt;T&gt;&gt;(input_);</div>
+<div class="line">  consumes&lt;edm::View&lt;reco::Vertex&gt;&gt;(input_vertices_);</div>
 <div class="line">  taus_ = <span class="keyword">new</span> std::vector&lt;ic::Tau&gt;();</div>
 <div class="line"></div>
 <div class="line">  edm::ParameterSet pset = config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;tauIDs&quot;</span>);</div>
@@ -167,6 +170,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; vec.size(); ++i) {</div>
 <div class="line">    tau_ids_.push_back(</div>
 <div class="line">        std::make_pair(vec[i], pset.getParameter&lt;edm::InputTag&gt;(vec[i])));</div>
+<div class="line">        consumes&lt;reco::PFTauDiscriminator&gt;(tau_ids_[i].second);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">if</span> (request_trks_) {</div>

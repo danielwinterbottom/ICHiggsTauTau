@@ -115,11 +115,14 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_super_cluster_producer_8
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_super_cluster_8hh.html">UserCode/ICHiggsTauTau/interface/SuperCluster.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
 <div class="line"></div>
 <div class="line"><a name="a0"></a><a class="code" href="class_i_c_super_cluster_producer.html#a217e9d2ac1cd9caf4944f527eb6d8cef">ICSuperClusterProducer::ICSuperClusterProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line">    : input_barrel_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputBarrel&quot;</span>)),</div>
-<div class="line">      input_endcap_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputEndcap&quot;</span>)),</div>
+<div class="line">    : input_barrel_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputBarrel&quot;</span>)),</div>
+<div class="line">      input_endcap_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputEndcap&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)) {</div>
+<div class="line">  consumes&lt;edm::View&lt;reco::SuperCluster&gt;&gt;(input_barrel_);</div>
+<div class="line">  consumes&lt;edm::View&lt;reco::SuperCluster&gt;&gt;(input_endcap_);</div>
 <div class="line">  scs_ = <span class="keyword">new</span> std::vector&lt;ic::SuperCluster&gt;();</div>
 <div class="line">  <a name="a1"></a><a class="code" href="_print_config_tools_8cc.html#ab43bfd51524152e54a91ba2194ce420a">PrintHeaderWithBranch</a>(config, branch_);</div>
 <div class="line">}</div>

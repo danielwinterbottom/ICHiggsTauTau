@@ -201,6 +201,7 @@ var searchData=
   ['setuptwopadsplitasratio',['SetupTwoPadSplitAsRatio',['../_plotting_8h.html#ac22871e6dbf88fd29fa06f8a2cfb5f8d',1,'SetupTwoPadSplitAsRatio(std::vector&lt; TPad * &gt; const &amp;pads, TH1 *upper, TH1 *lower, TString y_title, bool y_centered, float y_min, float y_max):&#160;Plotting.h'],['../_plotting_8h.html#a293279a5520769bf993d81e4dc070709',1,'SetupTwoPadSplitAsRatio(std::vector&lt; TPad * &gt; const &amp;pads, TString y_title, bool y_centered, float y_min, float y_max):&#160;Plotting.h']]],
   ['shifted_5fmets',['shifted_mets',['../classic_1_1_met.html#aa0872de40c1fd8206916de4c18e6f403',1,'ic::Met']]],
   ['sigma_5fietaieta',['sigma_IetaIeta',['../classic_1_1_electron.html#a1c90bb31ae4cea0fb89da5bcbab0559b',1,'ic::Electron::sigma_IetaIeta()'],['../classic_1_1_photon.html#ab36ab2c117497c02ec13d0881f7bcd7e',1,'ic::Photon::sigma_IetaIeta()']]],
+  ['size',['size',['../struct_collection_size.html#a7cb5406369f8705fff2b4e8694c314a2',1,'CollectionSize']]],
   ['standardaxes',['StandardAxes',['../_plotting_8h.html#a976a4920cd03f97ded8454279c895a32',1,'Plotting.h']]],
   ['status',['status',['../classic_1_1_gen_particle.html#a588049c55119552a4d7a0c03000b9f40',1,'ic::GenParticle']]],
   ['statusflags',['statusFlags',['../classic_1_1_gen_particle.html#a5bbc3a00efff5fbaf2e8f4a890288813',1,'ic::GenParticle']]],

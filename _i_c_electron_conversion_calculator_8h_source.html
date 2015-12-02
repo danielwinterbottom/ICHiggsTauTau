@@ -107,26 +107,30 @@ $(document).ready(function(){initNavTree('_i_c_electron_conversion_calculator_8h
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;FWCore/Framework/interface/Event.h&quot;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;FWCore/Framework/interface/EventSetup.h&quot;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;FWCore/Utilities/interface/InputTag.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_i_c_electron_conversion_calculator.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_i_c_electron_conversion_calculator.html">ICElectronConversionCalculator</a> : <span class="keyword">public</span> edm::EDProducer {</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="class_i_c_electron_conversion_calculator.html#a0e73a7aa1daeb5774de6c1945f61758f">ICElectronConversionCalculator</a>(<span class="keyword">const</span> edm::ParameterSet &amp;);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  <a class="code" href="class_i_c_electron_conversion_calculator.html#ab167a7d6de47adf26a5df7da7ae874cd">~ICElectronConversionCalculator</a>();</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> beginJob();</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> produce(edm::Event &amp;, <span class="keyword">const</span> edm::EventSetup &amp;);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> endJob();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  edm::InputTag input_;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  edm::InputTag input_beamspot_;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  edm::InputTag input_conversions_;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;};</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_i_c_electron_conversion_calculator_html"><div class="ttname"><a href="class_i_c_electron_conversion_calculator.html">ICElectronConversionCalculator</a></div><div class="ttdoc">Produces an edm::ValueMap<bool> for the electron conversion-rejection flag. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_calculator_8h_source.html#l00014">ICElectronConversionCalculator.h:14</a></div></div>
-<div class="ttc" id="class_i_c_electron_conversion_calculator_html_ab167a7d6de47adf26a5df7da7ae874cd"><div class="ttname"><a href="class_i_c_electron_conversion_calculator.html#ab167a7d6de47adf26a5df7da7ae874cd">ICElectronConversionCalculator::~ICElectronConversionCalculator</a></div><div class="ttdeci">~ICElectronConversionCalculator()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_calculator_8cc_source.html#l00025">ICElectronConversionCalculator.cc:25</a></div></div>
-<div class="ttc" id="class_i_c_electron_conversion_calculator_html_a0e73a7aa1daeb5774de6c1945f61758f"><div class="ttname"><a href="class_i_c_electron_conversion_calculator.html#a0e73a7aa1daeb5774de6c1945f61758f">ICElectronConversionCalculator::ICElectronConversionCalculator</a></div><div class="ttdeci">ICElectronConversionCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_calculator_8cc_source.html#l00017">ICElectronConversionCalculator.cc:17</a></div></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;DataFormats/EgammaCandidates/interface/GsfElectron.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;DataFormats/EgammaCandidates/interface/GsfElectronFwd.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;DataFormats/EgammaCandidates/interface/Conversion.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;RecoEgamma/EgammaTools/interface/ConversionTools.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;DataFormats/BeamSpot/interface/BeamSpot.h&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="class_i_c_electron_conversion_calculator.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_i_c_electron_conversion_calculator.html">ICElectronConversionCalculator</a> : <span class="keyword">public</span> edm::EDProducer {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="class_i_c_electron_conversion_calculator.html#a0e73a7aa1daeb5774de6c1945f61758f">ICElectronConversionCalculator</a>(<span class="keyword">const</span> edm::ParameterSet &amp;);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <a class="code" href="class_i_c_electron_conversion_calculator.html#ab167a7d6de47adf26a5df7da7ae874cd">~ICElectronConversionCalculator</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> beginJob();</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> produce(edm::Event &amp;, <span class="keyword">const</span> edm::EventSetup &amp;);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> endJob();</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  edm::InputTag input_; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  edm::InputTag input_beamspot_;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  edm::InputTag input_conversions_;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;};</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="class_i_c_electron_conversion_calculator_html"><div class="ttname"><a href="class_i_c_electron_conversion_calculator.html">ICElectronConversionCalculator</a></div><div class="ttdoc">Produces an edm::ValueMap<bool> for the electron conversion-rejection flag. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_calculator_8h_source.html#l00018">ICElectronConversionCalculator.h:18</a></div></div>
+<div class="ttc" id="class_i_c_electron_conversion_calculator_html_ab167a7d6de47adf26a5df7da7ae874cd"><div class="ttname"><a href="class_i_c_electron_conversion_calculator.html#ab167a7d6de47adf26a5df7da7ae874cd">ICElectronConversionCalculator::~ICElectronConversionCalculator</a></div><div class="ttdeci">~ICElectronConversionCalculator()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_calculator_8cc_source.html#l00029">ICElectronConversionCalculator.cc:29</a></div></div>
+<div class="ttc" id="class_i_c_electron_conversion_calculator_html_a0e73a7aa1daeb5774de6c1945f61758f"><div class="ttname"><a href="class_i_c_electron_conversion_calculator.html#a0e73a7aa1daeb5774de6c1945f61758f">ICElectronConversionCalculator::ICElectronConversionCalculator</a></div><div class="ttdeci">ICElectronConversionCalculator(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_electron_conversion_calculator_8cc_source.html#l00018">ICElectronConversionCalculator.cc:18</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
