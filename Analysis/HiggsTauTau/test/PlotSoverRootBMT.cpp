@@ -65,14 +65,15 @@ std::pair<double,double> calcSoverRootB(std::string const& filepath, std::string
  int main(int argc, char* argv[]){
   using namespace ic;
   using namespace std;
-  if(argc <= 4){
-    std::cout<<"Usage [CHANNEL] [ExtraDCLabel] [MASSPOINT] [SIGNALSAMPLE]"<<std::endl;
+  if(argc <= 5){
+    std::cout<<"Usage [CHANNEL] [ExtraDCLabel] [MASSPOINT] [SIGNALSAMPLE] [CATEGORY]"<<std::endl;
     exit(1);
   }
   std::string channel = argv[1];//"mt";
   std::string extralabel = argv[2];//"MTOpt";
   std::string massp = argv[3];//"2900";
   std::string signalsample = argv[4];//"ggH";
+  std::string category = argv[5];//"+category+"
   bool use_ztt = false;
 
  
@@ -87,65 +88,65 @@ std::pair<double,double> calcSoverRootB(std::string const& filepath, std::string
 double x_err[14]={0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 double mt_cuts[14]={10.,15.,20.,25.,30.,35.,40.,45.,50.,60.,70.,80.,90.,100.};
 
-  sig_pfmt[0] = calcSoverRootB(file, (channel+"_inclusive_pfmt10").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[1] = calcSoverRootB(file, (channel+"_inclusive_pfmt15").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[2] = calcSoverRootB(file, (channel+"_inclusive_pfmt20").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[3] = calcSoverRootB(file, (channel+"_inclusive_pfmt25").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[4] = calcSoverRootB(file, (channel+"_inclusive_pfmt30").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[5] = calcSoverRootB(file, (channel+"_inclusive_pfmt35").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[6] = calcSoverRootB(file, (channel+"_inclusive_pfmt40").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[7] = calcSoverRootB(file, (channel+"_inclusive_pfmt45").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[8] = calcSoverRootB(file, (channel+"_inclusive_pfmt50").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[9] = calcSoverRootB(file, (channel+"_inclusive_pfmt60").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[10] = calcSoverRootB(file, (channel+"_inclusive_pfmt70").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[11] = calcSoverRootB(file, (channel+"_inclusive_pfmt80").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[12] = calcSoverRootB(file, (channel+"_inclusive_pfmt90").c_str(),use_ztt,signalsample,massp).first;
-  sig_pfmt[13] = calcSoverRootB(file, (channel+"_inclusive_pfmt100").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[0] = calcSoverRootB(file, (channel+"_"+category+"_pfmt10").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[1] = calcSoverRootB(file, (channel+"_"+category+"_pfmt15").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[2] = calcSoverRootB(file, (channel+"_"+category+"_pfmt20").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[3] = calcSoverRootB(file, (channel+"_"+category+"_pfmt25").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[4] = calcSoverRootB(file, (channel+"_"+category+"_pfmt30").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[5] = calcSoverRootB(file, (channel+"_"+category+"_pfmt35").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[6] = calcSoverRootB(file, (channel+"_"+category+"_pfmt40").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[7] = calcSoverRootB(file, (channel+"_"+category+"_pfmt45").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[8] = calcSoverRootB(file, (channel+"_"+category+"_pfmt50").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[9] = calcSoverRootB(file, (channel+"_"+category+"_pfmt60").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[10] = calcSoverRootB(file, (channel+"_"+category+"_pfmt70").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[11] = calcSoverRootB(file, (channel+"_"+category+"_pfmt80").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[12] = calcSoverRootB(file, (channel+"_"+category+"_pfmt90").c_str(),use_ztt,signalsample,massp).first;
+  sig_pfmt[13] = calcSoverRootB(file, (channel+"_"+category+"_pfmt100").c_str(),use_ztt,signalsample,massp).first;
 
-  sig_err_pfmt[0] = calcSoverRootB(file, (channel+"_inclusive_pfmt10").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[1] = calcSoverRootB(file, (channel+"_inclusive_pfmt15").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[2] = calcSoverRootB(file, (channel+"_inclusive_pfmt20").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[3] = calcSoverRootB(file, (channel+"_inclusive_pfmt25").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[4] = calcSoverRootB(file, (channel+"_inclusive_pfmt30").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[5] = calcSoverRootB(file, (channel+"_inclusive_pfmt35").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[6] = calcSoverRootB(file, (channel+"_inclusive_pfmt40").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[7] = calcSoverRootB(file, (channel+"_inclusive_pfmt45").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[8] = calcSoverRootB(file, (channel+"_inclusive_pfmt50").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[9] = calcSoverRootB(file, (channel+"_inclusive_pfmt60").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[10] = calcSoverRootB(file, (channel+"_inclusive_pfmt70").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[11] = calcSoverRootB(file, (channel+"_inclusive_pfmt80").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[12] = calcSoverRootB(file, (channel+"_inclusive_pfmt90").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_pfmt[13] = calcSoverRootB(file, (channel+"_inclusive_pfmt100").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[0] = calcSoverRootB(file, (channel+"_"+category+"_pfmt10").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[1] = calcSoverRootB(file, (channel+"_"+category+"_pfmt15").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[2] = calcSoverRootB(file, (channel+"_"+category+"_pfmt20").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[3] = calcSoverRootB(file, (channel+"_"+category+"_pfmt25").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[4] = calcSoverRootB(file, (channel+"_"+category+"_pfmt30").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[5] = calcSoverRootB(file, (channel+"_"+category+"_pfmt35").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[6] = calcSoverRootB(file, (channel+"_"+category+"_pfmt40").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[7] = calcSoverRootB(file, (channel+"_"+category+"_pfmt45").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[8] = calcSoverRootB(file, (channel+"_"+category+"_pfmt50").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[9] = calcSoverRootB(file, (channel+"_"+category+"_pfmt60").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[10] = calcSoverRootB(file, (channel+"_"+category+"_pfmt70").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[11] = calcSoverRootB(file, (channel+"_"+category+"_pfmt80").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[12] = calcSoverRootB(file, (channel+"_"+category+"_pfmt90").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_pfmt[13] = calcSoverRootB(file, (channel+"_"+category+"_pfmt100").c_str(),use_ztt,signalsample,massp).second;
 
-  sig_mvamt[0] = calcSoverRootB(file, (channel+"_inclusive_mt10").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[1] = calcSoverRootB(file, (channel+"_inclusive_mt15").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[2] = calcSoverRootB(file, (channel+"_inclusive_mt20").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[3] = calcSoverRootB(file, (channel+"_inclusive_mt25").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[4] = calcSoverRootB(file, (channel+"_inclusive_mt30").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[5] = calcSoverRootB(file, (channel+"_inclusive_mt35").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[6] = calcSoverRootB(file, (channel+"_inclusive_mt40").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[7] = calcSoverRootB(file, (channel+"_inclusive_mt45").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[8] = calcSoverRootB(file, (channel+"_inclusive_mt50").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[9] = calcSoverRootB(file, (channel+"_inclusive_mt60").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[10] = calcSoverRootB(file, (channel+"_inclusive_mt70").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[11] = calcSoverRootB(file, (channel+"_inclusive_mt80").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[12] = calcSoverRootB(file, (channel+"_inclusive_mt90").c_str(),use_ztt,signalsample,massp).first;
-  sig_mvamt[13] = calcSoverRootB(file, (channel+"_inclusive_mt100").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[0] = calcSoverRootB(file, (channel+"_"+category+"_mt10").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[1] = calcSoverRootB(file, (channel+"_"+category+"_mt15").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[2] = calcSoverRootB(file, (channel+"_"+category+"_mt20").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[3] = calcSoverRootB(file, (channel+"_"+category+"_mt25").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[4] = calcSoverRootB(file, (channel+"_"+category+"_mt30").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[5] = calcSoverRootB(file, (channel+"_"+category+"_mt35").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[6] = calcSoverRootB(file, (channel+"_"+category+"_mt40").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[7] = calcSoverRootB(file, (channel+"_"+category+"_mt45").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[8] = calcSoverRootB(file, (channel+"_"+category+"_mt50").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[9] = calcSoverRootB(file, (channel+"_"+category+"_mt60").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[10] = calcSoverRootB(file, (channel+"_"+category+"_mt70").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[11] = calcSoverRootB(file, (channel+"_"+category+"_mt80").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[12] = calcSoverRootB(file, (channel+"_"+category+"_mt90").c_str(),use_ztt,signalsample,massp).first;
+  sig_mvamt[13] = calcSoverRootB(file, (channel+"_"+category+"_mt100").c_str(),use_ztt,signalsample,massp).first;
 
-  sig_err_mvamt[0] = calcSoverRootB(file, (channel+"_inclusive_mt10").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[1] = calcSoverRootB(file, (channel+"_inclusive_mt15").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[2] = calcSoverRootB(file, (channel+"_inclusive_mt20").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[3] = calcSoverRootB(file, (channel+"_inclusive_mt25").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[4] = calcSoverRootB(file, (channel+"_inclusive_mt30").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[5] = calcSoverRootB(file, (channel+"_inclusive_mt35").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[6] = calcSoverRootB(file, (channel+"_inclusive_mt40").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[7] = calcSoverRootB(file, (channel+"_inclusive_mt45").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[8] = calcSoverRootB(file, (channel+"_inclusive_mt50").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[9] = calcSoverRootB(file, (channel+"_inclusive_mt60").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[10] = calcSoverRootB(file, (channel+"_inclusive_mt70").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[11] = calcSoverRootB(file, (channel+"_inclusive_mt80").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[12] = calcSoverRootB(file, (channel+"_inclusive_mt90").c_str(),use_ztt,signalsample,massp).second;
-  sig_err_mvamt[13] = calcSoverRootB(file, (channel+"_inclusive_mt100").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[0] = calcSoverRootB(file, (channel+"_"+category+"_mt10").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[1] = calcSoverRootB(file, (channel+"_"+category+"_mt15").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[2] = calcSoverRootB(file, (channel+"_"+category+"_mt20").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[3] = calcSoverRootB(file, (channel+"_"+category+"_mt25").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[4] = calcSoverRootB(file, (channel+"_"+category+"_mt30").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[5] = calcSoverRootB(file, (channel+"_"+category+"_mt35").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[6] = calcSoverRootB(file, (channel+"_"+category+"_mt40").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[7] = calcSoverRootB(file, (channel+"_"+category+"_mt45").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[8] = calcSoverRootB(file, (channel+"_"+category+"_mt50").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[9] = calcSoverRootB(file, (channel+"_"+category+"_mt60").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[10] = calcSoverRootB(file, (channel+"_"+category+"_mt70").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[11] = calcSoverRootB(file, (channel+"_"+category+"_mt80").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[12] = calcSoverRootB(file, (channel+"_"+category+"_mt90").c_str(),use_ztt,signalsample,massp).second;
+  sig_err_mvamt[13] = calcSoverRootB(file, (channel+"_"+category+"_mt100").c_str(),use_ztt,signalsample,massp).second;
 
 
 
@@ -186,7 +187,7 @@ if(use_ztt){
   plot_canv.SaveAs(("s_over_root_b_"+channel+"_mtcut_ztt.pdf").c_str());
  } else{
 
-  plot_canv.SaveAs(("s_over_root_b_"+channel+"_mtcut_"+signalsample+"_"+massp+".pdf").c_str());
+  plot_canv.SaveAs(("s_over_root_b_"+channel+"_"+category+"_mtcut_"+signalsample+"_"+massp+".pdf").c_str());
 }
  return 0;
 }
