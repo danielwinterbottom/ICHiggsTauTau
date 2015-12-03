@@ -92,6 +92,7 @@ class SVFitTest : public ModuleBase {
   CLASS_MEMBER(SVFitTest, bool, legacy_svfit)
   CLASS_MEMBER(SVFitTest, bool, MC)
   CLASS_MEMBER(SVFitTest, bool, do_preselection)
+  CLASS_MEMBER(SVFitTest, bool, from_grid)
 
   unsigned file_counter_;
   unsigned event_counter_;

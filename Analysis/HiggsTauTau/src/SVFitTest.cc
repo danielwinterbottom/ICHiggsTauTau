@@ -30,6 +30,7 @@ namespace ic {
     fail_mode_ = 0;
     require_inputs_match_ = true;
     legacy_svfit_ = false;
+    from_grid_ = false;
     do_preselection_ = false;
     dm1_ = -1;
     dm2_ = -1;
@@ -92,13 +93,18 @@ namespace ic {
     }
     std::cout << boost::format(param_fmt()) % "directory"      % fullpath_;
 
-    total_path_ = operator/(fullpath_, folder_p);
+    if(!from_grid_){
+      total_path_ = operator/(fullpath_, folder_p);
+    } else {
+      boost::filesystem::path nofolder("");
+      total_path_ = operator/(fullpath_,nofolder);
+    }
     boost::filesystem::create_directories(total_path_);
     if (run_mode_ == 2) {
       boost::filesystem::directory_iterator it(total_path_);
       for (; it != boost::filesystem::directory_iterator(); ++it) {
         std::string path = it->path().string();
-        if (path.find("output.root") != path.npos) {
+        if ((!from_grid_ && path.find("output.root") != path.npos)||(path.find(outputadd_.c_str()) != path.npos && path.find("output.root") != path.npos)) {
           std::cout << "Reading TFile: " << path << std::endl;
           TFile *ofile = new TFile(path.c_str());
           if (!ofile) {

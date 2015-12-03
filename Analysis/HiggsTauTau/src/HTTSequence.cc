@@ -784,6 +784,7 @@ if(channel != channel::wmnu) {
  if(era_type == era::data_2015){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool());
+   svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
  }
 
 BuildModule(svFitTest);
