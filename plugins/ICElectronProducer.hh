@@ -11,6 +11,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 
 /**
@@ -49,13 +50,13 @@ class ICElectronProducer : public edm::EDProducer {
     edm::InputTag neutral;
     edm::InputTag gamma;
     edm::InputTag pu;
-    explicit IsoTags(edm::ParameterSet const& pset);
+    explicit IsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector);
   };
 
   struct ClusterIsoTags {
     edm::InputTag ecal;
     edm::InputTag hcal;
-    explicit ClusterIsoTags(edm::ParameterSet const& pset);
+    explicit ClusterIsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector);
   };
 
 

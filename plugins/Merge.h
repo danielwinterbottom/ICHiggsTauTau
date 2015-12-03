@@ -13,6 +13,7 @@
 #include "DataFormats/Common/interface/View.h"
 #include "DataFormats/Common/interface/Ref.h"
 #include "DataFormats/Common/interface/RefVector.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 namespace ic {
 
@@ -65,6 +66,9 @@ class Merge : public edm::EDProducer {
 template <class T>
 Merge<T>::Merge(const edm::ParameterSet &config)
     : merge_inputs_(config.getParameter<VInputTag>("merge")) {
+  for( unsigned i = 0; i < merge_inputs_.size(); ++i){
+    consumes<edm::View<T>>(merge_inputs_[i]);
+  }
   produces<RefVectorVec>();
 }
 

@@ -16,12 +16,18 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
-ICPhotonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
+ICPhotonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector)
   : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
     charged(pset.getParameter<edm::InputTag>("charged")),
     neutral(pset.getParameter<edm::InputTag>("neutral")),
     gamma(pset.getParameter<edm::InputTag>("gamma")),
-    pu(pset.getParameter<edm::InputTag>("pu")) {}
+    pu(pset.getParameter<edm::InputTag>("pu")) {
+     collector.consumes<edm::ValueMap<double>>(charged_all);
+     collector.consumes<edm::ValueMap<double>>(charged);
+     collector.consumes<edm::ValueMap<double>>(neutral);
+     collector.consumes<edm::ValueMap<double>>(gamma);
+     collector.consumes<edm::ValueMap<double>>(pu);
+    }
 
 
 ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
@@ -31,14 +37,20 @@ ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
           config.getParameter<edm::InputTag>("inputElectronVeto")),
       do_electron_veto_(config.getParameter<bool>("includeElectronVeto")),
       do_had_tow_over_em_(config.getParameter<bool>("includeHadTowOverEm")),
-      pf_iso_03_(config.getParameterSet("pfIso03")),
-      pf_iso_04_(config.getParameterSet("pfIso04")),
+      pf_iso_03_(config.getParameterSet("pfIso03"),consumesCollector()),
+      pf_iso_04_(config.getParameterSet("pfIso04"),consumesCollector()),
       do_pf_iso_03_(config.getParameter<bool>("includePFIso03")),
       do_pf_iso_04_(config.getParameter<bool>("includePFIso04")),
       do_iso_from_pat_(config.getParameter<bool>("includeIsoFromPat")) {
   // isolator_ = new PFIsolationEstimator();
   // isolator_->initializePhotonIsolation(true);
   // isolator_->setConeSize(0.3);
+  if(do_iso_from_pat_){
+    consumes<edm::View<pat::Photon>>(input_);
+  } else {
+    consumes<edm::View<reco::Photon>>(input_);
+  }
+  consumes<edm::ValueMap<bool>>(input_electron_veto_);
   photons_ = new std::vector<ic::Photon>();
 
   PrintHeaderWithProduces(config, input_, branch_);
@@ -159,7 +171,11 @@ void ICPhotonProducer::produce(edm::Event& event,
       dest.set_dr03_pfiso_neutral(patsrc.neutralHadronIso());
       dest.set_dr03_pfiso_gamma(patsrc.photonIso());
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
+#if CMSSW_MINOR_VERSION >= 6
+      dest.set_dr03_pfiso_charged_all(patsrc.patParticleIso());
+#else
       dest.set_dr03_pfiso_charged_all(patsrc.particleIso());
+#endif
       dest.set_dr03_pfiso_pu(patsrc.puChargedHadronIso());
 #endif
     }
@@ -170,7 +186,11 @@ void ICPhotonProducer::produce(edm::Event& event,
       dest.set_dr04_pfiso_neutral(patsrc.neutralHadronIso());
       dest.set_dr04_pfiso_gamma(patsrc.photonIso());
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
+#if CMSSW_MINOR_VERSION >= 6
+      dest.set_dr04_pfiso_charged_all(patsrc.patParticleIso());
+#else
       dest.set_dr04_pfiso_charged_all(patsrc.particleIso());
+#endif
       dest.set_dr04_pfiso_pu(patsrc.puChargedHadronIso());
 #endif
     }

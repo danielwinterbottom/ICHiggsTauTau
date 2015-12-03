@@ -18,6 +18,7 @@
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/CaloJet.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 /**
  * @brief A struct to help with the configuration of the ICJetProducer, in
@@ -40,7 +41,7 @@
  */
 template <class U>
 struct JetSrcHelper {
-  explicit JetSrcHelper(const edm::ParameterSet &config)
+  explicit JetSrcHelper(const edm::ParameterSet &config, edm::ConsumesCollector && collector)
       : input_jet_flavour(
             config.getParameter<edm::InputTag>("inputJetFlavour")),
         include_jet_flavour(config.getParameter<bool>("includeJetFlavour")),
@@ -49,8 +50,10 @@ struct JetSrcHelper {
         cut(config.getParameter<std::string>("cutAfterJECs")),
         cut_string(config.getParameter<std::string>("cutAfterJECs")),
         apply_post_jec_cut(config.getParameter<bool>("applyCutAfterJECs")),
-        input_sv_info(config.getParameter<edm::InputTag>("inputSVInfo")),
+        input_sv_info((config.getParameter<edm::InputTag>("inputSVInfo"))),
         include_sv_info_ids(config.getParameter<bool>("requestSVInfo")) {
+        collector.consumes<edm::ValueMap<int>>(input_jet_flavour);
+        collector.consumes<reco::SecondaryVertexTagInfoCollection>(input_sv_info);
     if (apply_jec_factors || include_jec_factors) {
       edm::ParameterSet pset = config.getParameter<edm::ParameterSet>("JECs");
       std::vector<std::string> vec =
@@ -58,6 +61,7 @@ struct JetSrcHelper {
       for (unsigned i = 0; i < vec.size(); ++i) {
         jecs.push_back(
             std::make_pair(vec[i], pset.getParameter<std::string>(vec[i])));
+        collector.consumes<double>(jecs[i].second);
       }
     }
     edm::ParameterSet btag_pset =
@@ -67,6 +71,7 @@ struct JetSrcHelper {
     for (unsigned i = 0; i < btag_vec.size(); ++i) {
       input_btags.push_back(std::make_pair(
           btag_vec[i], btag_pset.getParameter<edm::InputTag>(btag_vec[i])));
+      collector.consumes<reco::JetFloatAssociation::Container>(input_btags[i].second);
     }
   }
 
@@ -218,12 +223,14 @@ struct JetSrcHelper {
  */
 template <>
 struct JetSrcHelper<pat::Jet> {
-  explicit JetSrcHelper(const edm::ParameterSet &config)
+  explicit JetSrcHelper(const edm::ParameterSet &config, edm::ConsumesCollector && collector)
       : include_jet_flavour(config.getParameter<bool>("includeJetFlavour")),
         include_jec_factors(config.getParameter<bool>("includeJECs")),
-        input_sv_info(config.getParameter<edm::InputTag>("inputSVInfo")),
+        input_sv_info((config.getParameter<edm::InputTag>("inputSVInfo"))),
         include_sv_info_ids(config.getParameter<bool>("requestSVInfo")),
-        is_slimmed(config.getParameter<bool>("isSlimmed")) {}
+        is_slimmed(config.getParameter<bool>("isSlimmed")) {
+         collector.consumes<reco::SecondaryVertexTagInfoCollection>(input_sv_info);
+       }
   void DoSetup(edm::EDProducer * prod) {
     if (include_sv_info_ids) {
       prod->produces<reco::SecondaryVertexTagInfoRefVector>("requestedSVInfo");

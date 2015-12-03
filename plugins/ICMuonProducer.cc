@@ -16,17 +16,25 @@
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 
-ICMuonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
+
+ICMuonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector)
     : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
       charged(pset.getParameter<edm::InputTag>("charged")),
       neutral(pset.getParameter<edm::InputTag>("neutral")),
       gamma(pset.getParameter<edm::InputTag>("gamma")),
-      pu(pset.getParameter<edm::InputTag>("pu")) {}
+      pu(pset.getParameter<edm::InputTag>("pu")) {
+       collector.consumes<edm::ValueMap<double>>(charged_all);
+       collector.consumes<edm::ValueMap<double>>(charged);
+       collector.consumes<edm::ValueMap<double>>(neutral);
+       collector.consumes<edm::ValueMap<double>>(gamma);
+       collector.consumes<edm::ValueMap<double>>(pu);
+      }
 
 ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -36,10 +44,17 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
       do_vertex_ip_(config.getParameter<bool>("includeVertexIP")),
       input_beamspot_(config.getParameter<edm::InputTag>("inputBeamspot")),
       do_beamspot_ip_(config.getParameter<bool>("includeBeamspotIP")),
-      pf_iso_03_(config.getParameterSet("pfIso03")),
-      pf_iso_04_(config.getParameterSet("pfIso04")),
+      pf_iso_03_(config.getParameterSet("pfIso03"),consumesCollector()),
+      pf_iso_04_(config.getParameterSet("pfIso04"),consumesCollector()),
       do_pf_iso_03_(config.getParameter<bool>("includePFIso03")),
       do_pf_iso_04_(config.getParameter<bool>("includePFIso04"))  {
+  if(is_pf_){
+    consumes<edm::View<reco::PFCandidate>>(input_);
+  } else {
+    consumes<edm::View<reco::Muon>>(input_);
+  }
+  consumes<edm::View<reco::Vertex>>(input_vertices_);
+  consumes<reco::BeamSpot>(input_beamspot_);
   muons_ = new std::vector<ic::Muon>();
 
   edm::ParameterSet pset_floats =
@@ -49,6 +64,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
   for (unsigned i = 0; i < vec.size(); ++i) {
     input_vmaps_.push_back(std::make_pair(
         vec[i], pset_floats.getParameter<edm::InputTag>(vec[i])));
+    consumes<edm::ValueMap<float>>(input_vmaps_[i].second);
   }
 
   edm::ParameterSet pset_doubles =
@@ -58,6 +74,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
   for (unsigned i = 0; i < doubles_vec.size(); ++i) {
     input_double_vmaps_.push_back(std::make_pair(
         doubles_vec[i], pset_doubles.getParameter<edm::InputTag>(doubles_vec[i])));
+    consumes<edm::ValueMap<double>>(input_double_vmaps_[i].second);
   }
 
   PrintHeaderWithProduces(config, input_, branch_);

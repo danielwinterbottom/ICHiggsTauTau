@@ -22,6 +22,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 /**
  * @brief See documentation [here](\ref objs-pf-candidate)
@@ -61,6 +62,8 @@ ICPFCandidateProducer<T>::ICPFCandidateProducer(const edm::ParameterSet& config)
       request_trks_(config.getParameter<bool>("requestTracks")),
       request_gsf_trks_(config.getParameter<bool>("requestGsfTracks")),
       track_input_(config.getParameter<edm::InputTag>("inputUnpackedTracks")) {
+  consumes<edm::View<T>>(input_);
+  consumes<edm::View<reco::Track>>(track_input_);
   cands_ = new std::vector<ic::PFCandidate>();
 
   if (request_trks_) {

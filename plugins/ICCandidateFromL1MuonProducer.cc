@@ -15,10 +15,12 @@
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICCandidateFromL1MuonProducer::ICCandidateFromL1MuonProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
+      consumes<edm::View<l1extra::L1MuonParticle>>(input_);
   candidates_ = new std::vector<ic::Candidate>();
   PrintHeaderWithProduces(config, input_, branch_);
 }
