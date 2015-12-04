@@ -249,7 +249,14 @@ namespace ic {
       alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>45 && pt_2<60";
       alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>60";
       alias_map_["nobtaghighnotwoprong"] = "(n_bjets==0 && pt_2>60 &&"+alias_map_["notwoprong"]+")";
+      alias_map_["2jet0tag"] = "(n_lowpt_jets>=2 && n_bjets==0)";
+      alias_map_["2jet1tag"] = "(n_lowpt_jets>=2 && n_bjets==1)";
+      alias_map_["2jet2tag"] = "(n_lowpt_jets>=2 && n_bjets>=2)";
+      alias_map_["2jet0taghigh"] = "(n_jets>=2 && n_bjets==0)";
+      alias_map_["2jet1taghigh"] = "(n_jets>=2 && n_bjets==1)";
+      alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
+      alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["inclelm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_loose_1>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -675,6 +682,13 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
   }
 
+  void HTTRun2Analysis::AddHhhSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+        sample_names_.push_back("GluGluToRadionToHHTo2B2Tau_M-"+m);
+    }
+  }
+
+
   void HTTRun2Analysis::ReadTrees(std::string const& folder, std::string const& fallback_folder) {
     std::cout << "[HTTRun2Analysis::ReadTrees] Reading input files..." << std::endl;
     std::vector<std::string> result_summary;
@@ -996,6 +1010,20 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     for (auto const& m : masses) {
         hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
         hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+  void HTTRun2Analysis::FillHhhSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToRadionToHHTo2B2Tau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
 
