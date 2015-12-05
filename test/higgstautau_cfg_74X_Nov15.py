@@ -1118,6 +1118,11 @@ if release in ['74XMINIAOD','7412MINIAOD']:
                            branch = cms.string("pfMet"),
                            getUncorrectedMet=cms.bool(False)
                            )
+  process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
+                           input=cms.InputTag("slimmedMETsPuppi"),
+                           branch = cms.string("puppiMet"),
+                           getUncorrectedMet=cms.bool(False)
+                           )
 
 
 process.icPfMetSequence = cms.Sequence(
@@ -1127,6 +1132,7 @@ process.icPfMetSequence = cms.Sequence(
 
 if release in ['74XMINIAOD','7412MINIAOD']:
   process.icPfMetSequence.remove(process.pfMetRe)
+  process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
 
 from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_74X import mvaMetPairs
 
