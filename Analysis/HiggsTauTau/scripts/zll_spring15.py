@@ -64,7 +64,7 @@ channels = options.channels
 CONFIG='scripts/Zll_config.json'
 #CONFIG='scripts/WMuNu_config.json'
 
-FILELIST='filelists/Oct30_MC_74X'
+FILELIST='filelists/Nov19_MC_74X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -140,7 +140,7 @@ if options.proc_bkg or options.proc_all or options.proc_tp:
      ]
       
   tandp_samples = [
-    'DYJetsToLL'
+    'DYJetsToLL_M-50-LO'
      ]
 
   if not options.proc_tp:
