@@ -261,6 +261,12 @@ namespace ic {
         (boost::lexical_cast<std::string>(signal_scale_)+"#times SUSYGluGluH("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
         {"ggH"}, TColor::GetColor(0,18,255), false)
     };
+    sig_schemes_["run2_Hhh"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times RadionGluGluH("+draw_signal_mass_+" GeV)#rightarrowhh#rightarrowbb#tau#tau"),
+        {"ggH"}, TColor::GetColor(0,18,255), false)
+    };
+
    sig_schemes_["run2_sm"] = {
      PlotSigComponent("sig", 
        (boost::lexical_cast<std::string>(signal_scale_)+"#times GluGluH("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
