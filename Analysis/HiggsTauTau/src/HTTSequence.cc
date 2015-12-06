@@ -865,6 +865,30 @@ BuildModule(svFitTest);
 
 }
 
+
+ /*if(strategy_type == strategy::spring15){
+   HTTWeights httWeights = HTTWeights("HTTWeights")   
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_mc(mc_type)
+    .set_do_tau_id_weights(false)
+    .set_ditau_label("ditau");
+
+   if (output_name.find("DYJetsToLL_M-50") != output_name.npos){
+      httWeights.set_do_dy_soup_htbinned(true);
+      httWeights.SetDYInputCrossSections(4895,139.4,42.75,5.497,2.21);
+      httWeights.SetDYInputYields(9042031,2725655,973937,1067758,998912);
+    }
+
+    if (output_name.find("WJetsToLNu") != output_name.npos){
+      httWeights.set_do_w_soup_htbinned(true);
+      httWeights.SetWInputCrossSections(50690,1345,359.7,48.91,18.77);
+      httWeights.SetWInputYields(72207128,10152718,5221599,1745914,1039152);
+    }
+
+    BuildModule(httWeights);
+  }*/
+
  if (is_embedded && era_type == era::data_2012_rereco) {
    EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
     .set_genparticle_label("genParticlesEmbedded")
