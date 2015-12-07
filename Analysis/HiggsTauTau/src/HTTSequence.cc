@@ -700,6 +700,39 @@ if(channel != channel::wmnu) {
   BuildModule(httPairSelector);
 }
 
+if(channel == channel::tpzmm){
+  BuildModule(GenericModule("TPTriggerInformation")
+    .set_function([](ic::TreeEvent *event){
+       std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>("ditau");
+       CompositeCandidate const* ditau  = dileptons.at(0);
+       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>("triggerObjectsIsoMu17");
+       std::string tp_filter = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+       bool tp_leg1_match = IsFilterMatched(ditau->At(0), objs, tp_filter, 0.5);
+       bool tp_leg2_match = IsFilterMatched(ditau->At(1), objs, tp_filter, 0.5);
+       event->Add("tp_leg1_match",tp_leg1_match);
+       event->Add("tp_leg2_match",tp_leg2_match);
+       return 0;
+    }));
+
+ }
+
+if(channel == channel::tpzee){
+  BuildModule(GenericModule("TPTriggerInformation")
+    .set_function([](ic::TreeEvent *event){
+       std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>("ditau");
+       CompositeCandidate const* ditau  = dileptons.at(0);
+       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>("triggerObjectsEle22Gsf");
+       std::string tp_filter  = "hltSingleEle22WP75GsfTrackIsoFilter";
+       bool tp_leg1_match = IsFilterMatched(ditau->At(0), objs, tp_filter, 0.5);
+       bool tp_leg2_match = IsFilterMatched(ditau->At(1), objs, tp_filter, 0.5);
+       event->Add("tp_leg1_match",tp_leg1_match);
+       event->Add("tp_leg2_match",tp_leg2_match);
+       return 0;
+    }));
+
+ }
+
+
 if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
@@ -1523,6 +1556,17 @@ void HTTSequence::BuildTPZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
+
+  BuildModule(GenericModule("checkGoodVertices")
+    .set_function([](ic::TreeEvent *event){
+       std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
+       bool is_good_vertex = GoodVertex(vertices.at(0));
+       event->Add("good_first_vertex",is_good_vertex);
+       //if(is_good_vertex) return 1;
+       //else return 0;
+       return 0;
+    }));
+
 
 }
 
