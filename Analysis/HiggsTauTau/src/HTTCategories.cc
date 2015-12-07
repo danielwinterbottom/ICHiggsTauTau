@@ -190,6 +190,8 @@ namespace ic {
         outtree_->Branch("dxy_2", &d0_2_);
         outtree_->Branch("dz_1", &dz_1_);
         outtree_->Branch("dz_2", &dz_2_);
+        outtree_->Branch("trigger_match_1", &trigger_match_1_);
+        outtree_->Branch("trigger_match_2", &trigger_match_2_);
       }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -1172,6 +1174,11 @@ namespace ic {
       dz_1_ = muon1->dz_vertex();
       d0_2_ = muon2->dxy_vertex();
       dz_2_ = muon2->dz_vertex();
+    }
+
+    if (channel_ == channel::tpzmm || channel_ == channel::tpzee){
+      trigger_match_1_ = event->Exists("tp_leg1_match") ? event->Get<bool>("tp_leg1_match") : 0;
+      trigger_match_2_ = event->Exists("tp_leg2_match") ? event->Get<bool>("tp_leg2_match") : 0;
     }
 
     Tau const* tau1 = dynamic_cast<Tau const*>(lep1);

@@ -127,6 +127,8 @@ class HTTCategories : public ModuleBase {
   double E_2_;
   int q_1_;
   int q_2_;
+  bool trigger_match_1_;
+  bool trigger_match_2_;
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
