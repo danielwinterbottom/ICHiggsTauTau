@@ -1557,16 +1557,6 @@ void HTTSequence::BuildTPZMMPairs() {
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
 
-  BuildModule(GenericModule("checkGoodVertices")
-    .set_function([](ic::TreeEvent *event){
-       std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
-       bool is_good_vertex = GoodVertex(vertices.at(0));
-       event->Add("good_first_vertex",is_good_vertex);
-       //if(is_good_vertex) return 1;
-       //else return 0;
-       return 0;
-    }));
-
 
 }
 
