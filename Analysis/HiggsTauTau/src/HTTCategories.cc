@@ -186,6 +186,10 @@ namespace ic {
         outtree_->Branch("id_2", &mva_2_.var_double);
         outtree_->Branch("q_1", &q_1_);
         outtree_->Branch("q_2", &q_2_);
+        outtree_->Branch("dxy_1", &d0_1_);
+        outtree_->Branch("dxy_2", &d0_2_);
+        outtree_->Branch("dz_1", &dz_1_);
+        outtree_->Branch("dz_2", &dz_2_);
       }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
