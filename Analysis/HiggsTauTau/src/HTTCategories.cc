@@ -693,17 +693,10 @@ namespace ic {
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
-//    std::vector <Met const* mets = event->GetPtrVec<Met>(met_label_);
-   // std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
     
-    //slightly different met format for new ntuples
-    Met const* mets;
-//    if(strategy_ == strategy::paper2013){
-      mets = event->GetPtr<Met>(met_label_);
- //   } else {
-  //    std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMet");
-   //   mets = met_vec.at(0);  
-    //}
+    Met const* mets = NULL;
+    //MVA met doesnt exist for Z->ee and Z->mumu
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mets = event->GetPtr<Met>(met_label_);
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> corrected_jets;
@@ -827,8 +820,8 @@ namespace ic {
     }
 
 
-    //pt_tt_ = (ditau->vector() + mets->vector()).pt();
-    pt_tt_ = (ditau->vector() + pfmet->vector()).pt();
+    //MVA met doesnt exist for Z->ee and Z->mumu
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pt_tt_ = (ditau->vector() + mets->vector()).pt();
     m_vis_ = ditau->M();
    
 
@@ -846,12 +839,13 @@ namespace ic {
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
 
-    mt_1_ = MT(lep1, mets);
-    mt_2_ = MT(lep2, mets);
-    mt_ll_ = MT(ditau, mets);
-    pzeta_ = PZeta(ditau, mets, 0.85);
+    //MVA met doesnt exist for Z->ee and Z->mumu
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_1_ = MT(lep1, mets);
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_2_ = MT(lep2, mets);
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_ll_ = MT(ditau, mets);
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pzeta_ = PZeta(ditau, mets, 0.85);
     pzetavis_ = PZetaVis(ditau);
-    pzetamiss_ = PZeta(ditau, mets, 0.0);
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pzetamiss_ = PZeta(ditau, mets, 0.0);
     //save some pfmet versions as well for now
     pfmt_1_ = MT(lep1, pfmet);
     pfpzeta_ = PZeta(ditau, pfmet, 0.85);
@@ -875,13 +869,13 @@ namespace ic {
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
-    mvamet_ = mets->pt();
-    mvamet_phi_ = mets->phi();
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvamet_ = mets->pt();
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvamet_phi_ = mets->phi();
 
-    mvametCov00_ = mets->xx_sig();
-    mvametCov10_ = mets->yx_sig();
-    mvametCov01_ = mets->xy_sig();
-    mvametCov11_ = mets->yy_sig();
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvametCov00_ = mets->xx_sig();
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvametCov10_ = mets->yx_sig();
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvametCov01_ = mets->xy_sig();
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvametCov11_ = mets->yy_sig();
     
     pfmet_ = pfmet->pt();
     pfmet_phi_ = pfmet->phi();
@@ -1368,7 +1362,7 @@ namespace ic {
       jet_csv_deta_ = fabs(jets_csv[0]->eta() - jets_csv[1]->eta());
       jet_csv_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(jets_csv[0]->vector(), jets_csv[1]->vector()));
       jet_csv_dtheta_ = std::fabs((jets_csv[0]->vector().theta() -  jets_csv[1]->vector().theta()));
-      mjj_tt_= (jets_csv[0]->vector() + jets_csv[1]->vector() + ditau->vector() + mets->vector()).M();
+      if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mjj_tt_= (jets_csv[0]->vector() + jets_csv[1]->vector() + ditau->vector() + mets->vector()).M();
       if(bjet_regression_) mjj_tt_= (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector() + ditau->vector() + mets->vector()).M();
       if (event->Exists("svfitHiggs")) {
         mjj_h_= (jets_csv[0]->vector() + jets_csv[1]->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
