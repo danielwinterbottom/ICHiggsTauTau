@@ -700,7 +700,7 @@ if(channel != channel::wmnu) {
   BuildModule(httPairSelector);
 }
 
-if(channel == channel::tpzmm || channel::tpzee){
+if(channel == channel::tpzmm || channel == channel::tpzee){
   BuildModule(GenericModule("TPTriggerInformation")
     .set_function([=](ic::TreeEvent *event){
        std::string trig_obj_label;
@@ -807,7 +807,7 @@ if(channel != channel::wmnu) {
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
-    .set_fail_mode(1)
+    .set_fail_mode(0)
     .set_require_inputs_match(false)
     .set_split(7000)
     .set_dilepton_label("ditau")
