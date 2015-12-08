@@ -113,10 +113,10 @@ class HTTCategories : public ModuleBase {
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
-  float d0_1_;
-  float d0_2_;
-  float dz_1_;
-  float dz_2_;
+  branch_var d0_1_;
+  branch_var d0_2_;
+  branch_var dz_1_;
+  branch_var dz_2_;
   branch_var pt_1_;
   branch_var pt_2_;
   branch_var eta_1_;
