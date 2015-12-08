@@ -194,7 +194,7 @@ namespace ic {
           alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
           high_leg_pt = 33.;
         }*/
-        if (run >= 253621 && run <= 258654){
+        if (run >= 253621 /*&& run <= xxxxxxxxx*/){
           trig_obj_label = "triggerObjectsEle22LooseTau20";
           leg1_filter = "hltEle22WPLooseL1IsoEG20erTau20erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
@@ -203,15 +203,15 @@ namespace ic {
           alt_leg1_filter = "hltEle23WPLooseGsfTrackIsoFilter";
           high_leg_pt = 24.;
         }
-        if (run >= 258655 /*&& run <= xxxxxxxx*/){
-          trig_obj_label = "triggerObjectsEle22LooseTau20";
+       // if (run >= 258655 /*&& run <= xxxxxxxx*/){
+        /*  trig_obj_label = "triggerObjectsEle22LooseTau20";
           leg1_filter = "hltEle22WPLooseL1IsoEG20erTau20erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
           extra_leg2_filter = "hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsEle22";
           alt_leg1_filter = "hltSingleEle22WPLooseGsfTrackIsoFilter";
           high_leg_pt = 23.;
-        }
+        }*/
 
 
       }
