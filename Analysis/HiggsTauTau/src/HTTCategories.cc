@@ -66,9 +66,11 @@ namespace ic {
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
-      outtree_->Branch("pfmt_1",            &pfmt_1_);
+      outtree_->Branch("pfmt_1",            &pfmt_1_.var_double);
+      outtree_->Branch("puppimt_1",         &puppimt_1_.var_double);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
-      outtree_->Branch("pfpzeta",           &pfpzeta_);
+      outtree_->Branch("pfpzeta",           &pfpzeta_.var_double);
+      outtree_->Branch("puppipzeta",        &puppipzeta_.var_double);
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
       outtree_->Branch("iso_pho_sum_pt_2",  &lPhotonPtSum_2.var_double);
@@ -313,13 +315,13 @@ namespace ic {
 
       // The lumi scaling factor for mc * additional weights
       // (not filled in IC trees!)
-      /*synctree_->Branch("mcweight", &mc_weight_, "mc_weight/F");
+      /*synctree_->Branch("mcweight", &mc_weight_, "mc_weight/F");*/
       // Pileup weight
       synctree_->Branch("puweight", &pu_weight_, "pu_weight/F");
 
       // Tag-and-probe weights for leptons
       // Total trigger weight for lepton 1
-      synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+      /*synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
       // Total trigger weight for lepton 2
       synctree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
       // Total ID weight for lepton 1
@@ -382,6 +384,8 @@ namespace ic {
 //      synctree_->Branch("passiso_1", &lPassIso1, "lPassIso1/B");
       // Transverse mass of lepton 1 and MVA MET
       synctree_->Branch("mt_1", &mt_1_.var_float, "mt_1/F");
+      synctree_->Branch("pfmt_1", &pfmt_1_.var_float, "pfmt_1/F");
+      synctree_->Branch("puppimt_1", &puppimt_1_.var_float, "puppimt_1/F");
       // Non-triggering electron ID MVA score
       synctree_->Branch("id_e_mva_nt_loose_1", &id_e_mva_nt_loose_1_, "id_e_mva_nt_loose_1/F");
       /*synctree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_float,"trigger_object_pt_1/F");
@@ -498,7 +502,9 @@ namespace ic {
       synctree_->Branch("metcov01", &pfmetCov01_, "pfmetCov01/F");
       synctree_->Branch("metcov10", &pfmetCov10_, "pfmetCov10/F");
       synctree_->Branch("metcov11", &pfmetCov11_, "pfmetCov11/F");
-
+      //Puppi Met
+      synctree_->Branch("puppimet",&puppimet_.var_float, "puppimet/F");
+      synctree_->Branch("puppimetphi", &puppimet_phi_,"puppimet_phi/F");
       // MVA MET
       synctree_->Branch("mvamet", &mvamet_.var_float, "mvamet/F");
       // MVA MET phi
@@ -516,6 +522,10 @@ namespace ic {
       synctree_->Branch("pzetavis", &pzetavis_.var_float, "pzetavis/F");
       // MET pzeta
       synctree_->Branch("pzetamiss", &pzetamiss_.var_float, "pzetamiss/F");
+      // PF met pzeta
+      synctree_->Branch("pfpzetamiss",&pfpzetamiss_.var_float,"pfpzetamiss/F");
+      // Puppi met pzeta
+      synctree_->Branch("puppipzetamiss",&puppipzetamiss_.var_float,"puppipzetamiss/F");
       // ttbar-rejection MVA output (emu channel only)
       synctree_->Branch("mva_gf", &em_gf_mva_, "em_gf_mva/F");
 
@@ -665,7 +675,7 @@ namespace ic {
     if (event->Exists("mc_weight_sign"))    std::cout<<event->Get<double>("mc_weight_sign");
   
   mc_weight_ = 0.0;
-  if (!is_embedded_ && event->Exists("pileupInfo") && strategy_!=strategy::phys14 && strategy_!=strategy::spring15) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
+  if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
   if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 0.0;
   if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 0.0;
   if (event->Exists("idweight_1")) idweight_1_ = event->Get<double>("idweight_1"); else idweight_1_ = 0.0;
@@ -816,11 +826,16 @@ namespace ic {
     }
 
     Met const* pfmet = NULL;
+    Met const* puppimet = NULL;
     //slightly different met format for new ntuples
     if(strategy_ == strategy::paper2013) pfmet = event->GetPtr<Met>("pfMet");
     if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
       std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
       pfmet = pfMet_vec.at(0);  
+      if(event->ExistsInTree("puppiMet")){
+        std::vector<Met*> puppiMet_vec = event->GetPtrVec<Met>("puppiMet");
+        puppimet = puppiMet_vec.at(0);
+      }
     }
 
 
@@ -850,9 +865,15 @@ namespace ic {
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pzeta_ = PZeta(ditau, mets, 0.85);
     pzetavis_ = PZetaVis(ditau);
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pzetamiss_ = PZeta(ditau, mets, 0.0);
-    //save some pfmet versions as well for now
+    //save some pfmet and puppi met versions as well for now
     pfmt_1_ = MT(lep1, pfmet);
     pfpzeta_ = PZeta(ditau, pfmet, 0.85);
+    pfpzetamiss_ = PZeta(ditau, pfmet, 0.0);
+    if(puppimet != NULL){
+      puppimt_1_ = MT(lep1, puppimet);
+      puppipzeta_ = PZeta(ditau, puppimet, 0.85);
+      puppipzetamiss_ = PZeta(ditau, puppimet,0.0);
+    }
 
     if(channel_ == channel::em || channel_ == channel::et){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -883,6 +904,10 @@ namespace ic {
     
     pfmet_ = pfmet->pt();
     pfmet_phi_ = pfmet->phi();
+    if(puppimet != NULL){
+      puppimet_ = puppimet->pt();
+      puppimet_phi_ = puppimet->phi();
+    }
   
     pfmetCov00_ = pfmet->xx_sig();
     pfmetCov01_ = pfmet->xy_sig();
