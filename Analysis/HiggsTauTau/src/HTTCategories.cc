@@ -188,10 +188,10 @@ namespace ic {
         outtree_->Branch("id_2", &mva_2_.var_double);
         outtree_->Branch("q_1", &q_1_);
         outtree_->Branch("q_2", &q_2_);
-        outtree_->Branch("dxy_1", &d0_1_);
-        outtree_->Branch("dxy_2", &d0_2_);
-        outtree_->Branch("dz_1", &dz_1_);
-        outtree_->Branch("dz_2", &dz_2_);
+        outtree_->Branch("dxy_1", &d0_1_.var_double);
+        outtree_->Branch("dxy_2", &d0_2_.var_double);
+        outtree_->Branch("dz_1", &dz_1_.var_double);
+        outtree_->Branch("dz_2", &dz_2_.var_double);
         outtree_->Branch("trigger_match_1", &trigger_match_1_);
         outtree_->Branch("trigger_match_2", &trigger_match_2_);
       }
@@ -375,9 +375,9 @@ namespace ic {
       // If an electron, the output of the ID MVA, zero otherwise
       synctree_->Branch("mva_1", &mva_1_.var_float, "mva_1/F");
       // Transverse (x-y) impact parameter w.r.t to the primary vertex
-      synctree_->Branch("d0_1", &d0_1_, "d0_1/F");
+      synctree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
       // Longitudinal (z) impact parameter w.r.t to the primary vertex
-      synctree_->Branch("dZ_1", &dz_1_, "dz_1/F");
+      synctree_->Branch("dZ_1", &dz_1_.var_float, "dz_1/F");
       // Whether lepton passes ID selection (always true in IC ntuples)
 //      synctree_->Branch("passid_1", &lPassId1, "lPassId1/B");
       // Whether lepton passes iso selection (always true in IC ntuples)
@@ -412,9 +412,9 @@ namespace ic {
       // reasons
       synctree_->Branch("iso_2", &iso_2_.var_float, "iso_2/F");
       // Transverse (x-y) impact parameter w.r.t to the primary vertex
-      synctree_->Branch("d0_2", &d0_2_, "d0_2/F");
+      synctree_->Branch("d0_2", &d0_2_.var_float, "d0_2/F");
       // Longitudinal (z) impact parameter w.r.t to the primary vertex
-      synctree_->Branch("dZ_2", &dz_2_, "dz_2/F");
+      synctree_->Branch("dZ_2", &dz_2_.var_float, "dz_2/F");
       // If an electron, the output of the ID MVA, zero otherwise
       synctree_->Branch("mva_2", &mva_2_.var_float, "mva_2/F");
       // Whether lepton passes ID selection (always true in IC ntuples)
