@@ -35,6 +35,7 @@ namespace ic {
     do_w_soup_                = false;
     do_dy_soup_               = false;
     do_dy_soup_htbinned_      = false;
+    do_w_soup_htbinned_      = false;
     ggh_mass_                 = "";
     ggh_hist_                 = nullptr;
     ggh_hist_up_              = nullptr;
