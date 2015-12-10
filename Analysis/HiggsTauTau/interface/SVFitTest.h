@@ -44,7 +44,9 @@ class SVFitTest : public ModuleBase {
     uint64_t out_run_;
     uint64_t out_objects_hash_;
     Candidate *out_cand1_;
+    int dm1_ = -1;
     Candidate *out_cand2_;
+    int dm2_ = -1;
     Met *out_met_;
 
     // These variables for reading in svfit output
@@ -87,10 +89,14 @@ class SVFitTest : public ModuleBase {
   CLASS_MEMBER(SVFitTest, std::string, fullpath)
   CLASS_MEMBER(SVFitTest, std::string, met_label)
   CLASS_MEMBER(SVFitTest, std::string, dilepton_label)
+  CLASS_MEMBER(SVFitTest, bool, legacy_svfit)
   CLASS_MEMBER(SVFitTest, bool, MC)
+  CLASS_MEMBER(SVFitTest, bool, do_preselection)
+  CLASS_MEMBER(SVFitTest, bool, from_grid)
 
   unsigned file_counter_;
   unsigned event_counter_;
+  std::string outputadd_;
 
 
 

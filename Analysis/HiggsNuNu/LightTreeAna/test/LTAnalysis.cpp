@@ -46,6 +46,9 @@ int main(int argc, char* argv[]){
   std::string syst;
   std::string dataset;
 
+  std::string trigpresel;
+  std::string trigtrigcut;
+
   bool do_singlemu;
   bool do_mettrig;
   bool do_trigeff;
@@ -94,6 +97,8 @@ int main(int argc, char* argv[]){
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     ("dataset,d",                po::value<std::string>(&dataset)->default_value("SPLITPARKEDPLUSA"))
+    ("trigpresel",                po::value<std::string>(&trigpresel)->default_value("1==1"))
+    ("trigtrigcut",                po::value<std::string>(&trigtrigcut)->default_value("pass_sigtrigger>0"))
     ("dataonly",                 po::value<bool>(&dataonly)->default_value(false))
     ("datalist",                 po::value<bool>(&datalist)->default_value(false))
     ("do_list",                  po::value<bool>(&do_list)->default_value(false))
@@ -535,53 +540,162 @@ int main(int argc, char* argv[]){
   std::string j2forwardj1central="((jet1_eta<3||jet1_eta>-3)&&(jet2_eta>3||jet2_eta<-3))";
   std::string j1forwardj2central="((jet1_eta>3||jet1_eta<-3)&&(jet2_eta<3||jet2_eta>-3))";
 
+  //std::string additionalcut="&&("+j2forwardj1central+"||"+j1forwardj2central+")";//"&&"+bothcentral;
   std::string additionalcut="";
 
+  //std::string trigcut="pass_htquadjettrigger==1";
+  //std::string trigcut="pass_controltrigger==1";
+  //std::string trigcut="l1met>=60";
+  std::string trigcut=trigtrigcut;//"pass_sigtrigger==1";
+  std::string trigweight=trigtrigcut.substr(0,trigtrigcut.find(">"));
+  std::cout<<trigweight<<std::endl;
+  //std::string presel="pass_muontrigger==1&&l1met>=60";
+  //std::string presel="pass_muontrigger==1";
+  //std::string presel="l1met>=60";
+  std::string presel=trigpresel;//"1==1";
+  
   TrigEff metnomueff("metnomueff");
   metnomueff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
     .set_shape("metnomuons(50,0.,1000.)")
-    .set_basesel("jet1_pt>80&&jet2_pt>80&&dijet_M>600&&dijet_deta>3.6"+additionalcut)
+    .set_basesel(presel+"&&jet1_pt>80&&jet2_pt>80&&dijet_M>600&&dijet_deta>3.6"+additionalcut)
+    //.set_basesel(presel+"&&jet1_pt>50&&jet2_pt>50&&dijet_M>800&&dijet_deta>3.6"+additionalcut)
+    //.set_basesel(presel+additionalcut)
     .set_cat("1")
     .set_histtitle("METnoMU;efficiency")
-    .set_trigger("pass_sigtrigger==1");
+    .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
+
+  TrigEff l1meteff("l1meteff");
+  l1meteff.set_dataset("SINGLEMUON")
+    .set_dirname("eff")
+    .set_shape("l1met(50,0.,1000.)")
+    .set_basesel(presel+"&&jet1_pt>80&&jet2_pt>80&&dijet_M>600&&dijet_deta>3.6"+additionalcut)
+    //.set_basesel(presel+"&&jet1_pt>50&&jet2_pt>50&&dijet_M>800&&dijet_deta>3.6"+additionalcut)
+    //.set_basesel(presel+additionalcut)
+    .set_cat("1")
+    .set_histtitle("L1 MET;efficiency")
+    .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
 
   TrigEff meteff("meteff");
   meteff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
     .set_shape("met(50,0.,1000.)")
-    .set_basesel("jet1_pt>80&&jet2_pt>80&&dijet_M>600&&dijet_deta>3.6"+additionalcut)
+    .set_basesel(presel+"&&jet1_pt>80&&jet2_pt>80&&dijet_M>600&&dijet_deta>3.6"+additionalcut)
+    //.set_basesel(presel+"&&jet1_pt>50&&jet2_pt>50&&dijet_M>800&&dijet_deta>3.6"+additionalcut)
+    //.set_basesel(presel+additionalcut)
     .set_cat("1")
     .set_histtitle("MET;efficiency")
-    .set_trigger("pass_mettrigger==1");
+    .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
 
   TrigEff jpteff("jpteff");
   jpteff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
-    .set_shape("jet2_pt(10,0.,200.)")
-    .set_basesel("jet1_pt>80&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+    .set_shape("jet2_pt(20,0.,200.)")
+    .set_basesel(presel+"&&jet1_pt>80&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+    //.set_basesel(presel+"&&jet1_pt>50&&dijet_M>800&&dijet_deta>3.6&&metnomuons>200"+additionalcut)
+    //.set_basesel(presel+additionalcut)
     .set_cat("1")
     .set_histtitle("j_{2} p_{T};efficiency")
-    .set_trigger("pass_sigtrigger==1");
+    .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
 
   TrigEff mjjeff("mjjeff");
   mjjeff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
     .set_shape("dijet_M(15,0.,3000.)")
-    .set_basesel("jet1_pt>80&&jet2_pt>80&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+    .set_basesel(presel+"&&jet1_pt>80&&jet2_pt>80&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+    //.set_basesel(presel+"&&jet1_pt>50&&jet2_pt>50&&dijet_deta>3.6&&metnomuons>200"+additionalcut)
+    //.set_basesel(presel+additionalcut)
     .set_cat("1")
     .set_histtitle("M_{jj};efficiency")
-    .set_trigger("pass_sigtrigger==1");
+    .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
 
   TrigEff detaeff("detaeff");
   detaeff.set_dataset("SINGLEMUON")
     .set_dirname("eff")
     .set_shape("dijet_deta(50,0.,10.)")
-    .set_basesel("jet1_pt>80&&jet2_pt>80&&dijet_M>600&&metnomuons>300"+additionalcut)
+    .set_basesel(presel+"&&jet1_pt>80&&jet2_pt>80&&dijet_M>600&&metnomuons>300"+additionalcut)
+    //.set_basesel(presel+"&&jet1_pt>50&&jet2_pt>50&&dijet_M>800&&metnomuons>200"+additionalcut)
+    //.set_basesel(presel+additionalcut)
     .set_cat("1")
     .set_histtitle("#Delta#eta_{jj};efficiency")
-    .set_trigger("pass_sigtrigger==1");
+    .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
     
+   std::vector<TrigEff> efficiencies;
+  
+   std::vector<std::string> jptbinning;
+   jptbinning.push_back("jet1_pt>80&&jet2_pt>70&&jet2_pt<=80");
+   jptbinning.push_back("jet1_pt>80&&jet2_pt>80");
+   std::vector<std::string> jptname;
+   jptname.push_back("j2pt70-80");
+   jptname.push_back("j2pt80-inf");
+
+   std::vector<std::string> mjjbinning;
+   mjjbinning.push_back("dijet_M>800&&dijet_M<=1000");
+   mjjbinning.push_back("dijet_M>1000");
+   std::vector<std::string> mjjname;
+   mjjname.push_back("mjj800-1000");
+   mjjname.push_back("mjj1000-inf");
+  
+   for(unsigned ijpt=0;ijpt<jptbinning.size();ijpt++){
+     for(unsigned imjj=0;imjj<mjjbinning.size();imjj++){
+       TrigEff imetnomueff("metnomueff_"+jptname[ijpt]+mjjname[imjj]);
+       imetnomueff.set_dataset("SINGLEMUON")
+	 .set_dirname("binnedeff"+jptname[ijpt]+mjjname[imjj])
+	 .set_shape("metnomuons(46,80.,1000.)")
+	 .set_basesel(presel+"&&"+jptbinning[ijpt]+"&&"+mjjbinning[imjj]+"&&dijet_deta>3.6"+additionalcut)
+	 .set_cat("1")
+	 .set_histtitle("METnoMU;efficiency")
+	 .set_namestr(jptname[ijpt]+mjjname[imjj])
+	 .set_do_fit(true)
+	 //.set_numweight("weight_nolep*"+trigweight)
+	 .set_trigger(trigcut);
+       efficiencies.push_back(imetnomueff);
+     }
+   }
+  
+
+  // TrigEff j4pteff("j4pteff");
+  // j4pteff.set_dataset("SINGLEMUON")
+  //   .set_dirname("eff")
+  //   .set_shape("jet4_pt(20,0.,200.)")
+  //   //.set_basesel("jet1_pt>80&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+  //   .set_basesel("ht>1200")//&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+  //   .set_cat("1")
+  //   .set_histtitle("j_{4} p_{T};efficiency")
+  //   .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
+
+  // TrigEff j3pteff("j3pteff");
+  // j3pteff.set_dataset("SINGLEMUON")
+  //   .set_dirname("eff")
+  //   .set_shape("jet3_pt(10,0.,400.)")
+  //   //.set_basesel("jet1_pt>80&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+  //   .set_basesel("ht>1200&&jet1_pt>80")//&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+  //   .set_cat("1")
+  //   .set_histtitle("j_{3} p_{T};efficiency")
+  //   .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
+
+  // TrigEff j1pteff("j1pteff");
+  // j1pteff.set_dataset("SINGLEMUON")
+  //   .set_dirname("eff")
+  //   .set_shape("jet1_pt(10,0.,400.)")
+  //   //.set_basesel("jet1_pt>80&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+  //   .set_basesel("ht>1200")//&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+  //   .set_cat("1")
+  //   .set_histtitle("j_{1} p_{T};efficiency")
+  //   .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
+
+  // TrigEff hteff("hteff");
+  // hteff.set_dataset("SINGLEMUON")
+  //   .set_dirname("eff")
+  //   .set_shape("ht(10,0.,1500.)")
+  //   //.set_basesel("jet1_pt>80&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+  //   .set_basesel("jet1_pt>80")//&&dijet_M>600&&dijet_deta>3.6&&metnomuons>300"+additionalcut)
+  //   .set_cat("1")
+  //   .set_histtitle("H_{T};efficiency")
+  //   .set_numweight("weight_nolep*"+trigweight).set_trigger(trigcut);
+
+
+
   //DATA SHAPE GENERATION
   DataShape data("data");
   data.set_dataset(dataset)
@@ -1581,11 +1695,15 @@ int main(int argc, char* argv[]){
   }
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
   if(do_trigeff){
-    analysis->AddModule(&meteff);
-    analysis->AddModule(&metnomueff);
-    analysis->AddModule(&jpteff);
-    analysis->AddModule(&mjjeff);
-    analysis->AddModule(&detaeff);
+    // analysis->AddModule(&meteff);
+    // analysis->AddModule(&metnomueff);
+    // analysis->AddModule(&l1meteff);
+    // analysis->AddModule(&jpteff);
+    // analysis->AddModule(&mjjeff);
+    // analysis->AddModule(&detaeff);
+    for(unsigned ieff=0;ieff<efficiencies.size();ieff++){
+      analysis->AddModule(&efficiencies[ieff]);
+    }
   }
   if(datalist) analysis->AddModule(&eventlist);
   if(!dataonly){

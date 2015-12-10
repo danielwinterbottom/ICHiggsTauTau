@@ -17,6 +17,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICVertexProducer::ICVertexProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -24,6 +25,7 @@ ICVertexProducer::ICVertexProducer(const edm::ParameterSet& config)
       first_only_(config.getParameter<bool>("firstVertexOnly")),
       track_pt_threshold_(config.getParameter<double>("trackPtThreshold")),
       request_trks_(config.getParameter<bool>("requestTracks")) {
+  consumes<edm::View<reco::Vertex>>(input_);
   vertices_ = new std::vector<ic::Vertex>();
   if (request_trks_) {
     produces<reco::TrackRefVector>("requestedTracks");

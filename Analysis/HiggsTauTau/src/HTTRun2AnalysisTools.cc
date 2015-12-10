@@ -161,6 +161,8 @@ namespace ic {
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]         = "1";
       //alias_map_["baseline"]         = "(iso_1<0.1 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
+      //alias_map_["baseline"]         = "(iso_1<0.1 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["inclelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -275,15 +277,26 @@ namespace ic {
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
+      alias_map_["btagpt20"] = "(n_lowpt_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["nobtagnotwoprong"] = "(n_bjets==0&&"+alias_map_["notwoprong"]+")";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       //MSSM update analysis style categories:
       alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>30 && pt_2<45)";
       alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45)";
+      alias_map_["btaghighnotwoprong"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45&&"+alias_map_["notwoprong"]+")";
       alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>30 && pt_2<45";
       alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>45 && pt_2<60";
       alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>60";
+      alias_map_["nobtaghighnotwoprong"] = "(n_bjets==0 && pt_2>60 &&"+alias_map_["notwoprong"]+")";
+      alias_map_["2jet0tag"] = "(n_lowpt_jets>=2 && n_bjets==0)";
+      alias_map_["2jet1tag"] = "(n_lowpt_jets>=2 && n_bjets==1)";
+      alias_map_["2jet2tag"] = "(n_lowpt_jets>=2 && n_bjets>=2)";
+      alias_map_["2jet0taghigh"] = "(n_jets>=2 && n_bjets==0)";
+      alias_map_["2jet1taghigh"] = "(n_jets>=2 && n_bjets==1)";
+      alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
       alias_map_["inclusivetauisofix"] = "(iso_1<1.0 && iso_2 <1.0 && isoPhoSumPt_1 <0.1*pt_1 &&isoPhoSumPt_2<0.1*pt_2 &&antiele_2 &&antimu_2 &&antiele_1 &&antimu_1 && !leptonveto)";
       alias_map_["minlv"]         = "(db_tight_1>0&&db_tight_2>0 && antiele_1 &&antiele_2 &&antimu_1&&antimu_2&& !(minimal_extraelec_veto>0||minimal_extramuon_veto>0))";
@@ -317,7 +330,9 @@ namespace ic {
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
       alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["nobtagnotwoprong"] = "(n_bjets==0 &&"+alias_map_["notwoprong"]+")";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       //MSSM update analysis style categories:
@@ -523,9 +538,9 @@ namespace ic {
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
-     "WWToLNuQQ","WWTo2L2Nu",
-     "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
+     "WWTo1L1Nu2Q",
+     "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
+     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
     };
 
 /*  if(ch_==channel::em){
@@ -612,9 +627,9 @@ namespace ic {
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL_M-50-LO", 
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q",
+   "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "WJetsToLNu-LO","TT-ext"
    };
 
@@ -645,9 +660,9 @@ namespace ic {
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext","WJetsToLNu-LO"
    };
 
@@ -657,9 +672,9 @@ if(use_status_flags_){
   samples_alias_map_["w_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWToLNuQQ","WWTo2L2Nu",
-   "ZZTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext"
    };
 
@@ -736,6 +751,13 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
     }
   }
+
+  void HTTRun2Analysis::AddHhhSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+        sample_names_.push_back("GluGluToRadionToHHTo2B2Tau_M-"+m);
+    }
+  }
+
 
   void HTTRun2Analysis::ReadTrees(std::string const& folder, std::string const& fallback_folder) {
     std::cout << "[HTTRun2Analysis::ReadTrees] Reading input files..." << std::endl;
@@ -1058,6 +1080,20 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     for (auto const& m : masses) {
         hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
         hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+  void HTTRun2Analysis::FillHhhSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToRadionToHHTo2B2Tau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
 

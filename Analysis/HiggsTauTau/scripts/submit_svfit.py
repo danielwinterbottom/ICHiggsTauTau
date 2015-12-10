@@ -30,6 +30,9 @@ parser.add_option("--submit", dest="submit", action='store_true', default=False,
 parser.add_option("--verify", dest="verify", action='store_true', default=False,
                   help="Run verification of output, if --submit is also set then only jobs failing verification will be resubmitted.")
 
+parser.add_option("--run_legacy", dest="run_legacy", action='store_true', default=False,
+                  help="Use legacy SVFit code (off by default)")
+
 
 (options, args) = parser.parse_args()
 
@@ -76,7 +79,10 @@ for root, dirnames, filenames in os.walk(options.input):
 
     if submitTask and options.submit:
       job = fullfile.replace('_input.root','.sh')
-      os.system('%(JOBWRAPPER)s "./bin/SVFitTest %(fullfile)s" %(job)s' % vars())
+      if options.run_legacy:
+        os.system('%(JOBWRAPPER)s "./bin/SVFitTest %(fullfile)s 1" %(job)s' % vars())
+      else:
+        os.system('%(JOBWRAPPER)s "./bin/SVFitTest %(fullfile)s" %(job)s' %vars())
       os.system('%(JOBSUBMIT)s %(job)s' % vars())
 
 print 'TOTAL SVFIT FILES:    '+str(filesSeen)

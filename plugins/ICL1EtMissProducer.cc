@@ -13,10 +13,12 @@
 #include "DataFormats/L1Trigger/interface/L1EtMissParticle.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICL1EtMissProducer::ICL1EtMissProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
+  consumes<edm::View<l1extra::L1EtMissParticle>>(input_);
   candidates_ = new std::vector<ic::Candidate>();
   PrintHeaderWithProduces(config, input_, branch_);
 }
@@ -40,6 +42,7 @@ void ICL1EtMissProducer::produce(edm::Event& event,
     dest.set_phi(src.phi());
     dest.set_energy(src.etTotal());
     dest.set_charge(src.charge());
+    //std::cout<<i<<" "<<src.bx()<<std::endl;
   }
 }
 

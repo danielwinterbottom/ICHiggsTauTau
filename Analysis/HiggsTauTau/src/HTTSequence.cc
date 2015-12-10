@@ -29,7 +29,6 @@
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
-#include "HiggsTauTau/interface/SVFitTestRun2.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
@@ -701,6 +700,41 @@ if(channel != channel::wmnu) {
   BuildModule(httPairSelector);
 }
 
+if(channel == channel::tpzmm || channel == channel::tpzee){
+  BuildModule(GenericModule("TPTriggerInformation")
+    .set_function([=](ic::TreeEvent *event){
+       std::string trig_obj_label;
+       std::string tp_filter;
+       if(channel_str == "tpzmm"){ 
+         if(!is_data){
+           trig_obj_label = "triggerObjectsIsoMu17";
+           tp_filter = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+         } else {
+           trig_obj_label = "triggerObjectsIsoMu18";
+           tp_filter = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+         }
+       } else if (channel_str == "tpzee"){
+         if(!is_data){
+           trig_obj_label = "triggerObjectsEle22Gsf";
+           tp_filter = "hltSingleEle22WP75GsfTrackIsoFilter";
+         } else {
+           trig_obj_label = "triggerObjectsEle23";
+           tp_filter = "hltEle23WPLooseGsfTrackIsoFilter";
+         }
+       }
+       std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>("ditau");
+       CompositeCandidate const* ditau  = dileptons.at(0);
+       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
+       bool tp_leg1_match = IsFilterMatched(ditau->At(0), objs, tp_filter, 0.5);
+       bool tp_leg2_match = IsFilterMatched(ditau->At(1), objs, tp_filter, 0.5);
+       event->Add("tp_leg1_match",tp_leg1_match);
+       event->Add("tp_leg2_match",tp_leg2_match);
+       return 0;
+    }));
+
+ }
+
+
 if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
@@ -769,22 +803,7 @@ if(channel != channel::wmnu) {
    }
 
 
- if(era_type != era::data_2015){
-  BuildModule(SVFitTest("SVFitTest")
-    .set_channel(channel)
-    .set_outname(svfit_override == "" ? output_name : svfit_override)
-    .set_run_mode(new_svfit_mode)
-    .set_fail_mode(1)
-    .set_require_inputs_match(false)
-    .set_split(7000)
-    .set_dilepton_label("ditau")
-    .set_met_label(met_label)
-    .set_fullpath(svfit_folder)
-    .set_MC(true));
-} 
-
-if(era_type == era::data_2015){
-  BuildModule(SVFitTestRun2("SVFitTestRun2")
+  SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
@@ -792,10 +811,18 @@ if(era_type == era::data_2015){
     .set_require_inputs_match(false)
     .set_split(7000)
     .set_dilepton_label("ditau")
-    .set_met_label("pfMVAMet")
+    .set_met_label(met_label)
     .set_fullpath(svfit_folder)
-    .set_MC(true));
-} 
+    .set_legacy_svfit(true)
+    .set_do_preselection(false)
+    .set_MC(true);
+ if(era_type == era::data_2015){
+   svFitTest.set_legacy_svfit(false);
+   svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool());
+   svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
+ }
+
+BuildModule(svFitTest);
 
 
 
@@ -872,6 +899,30 @@ if(era_type == era::data_2015){
  BuildModule(httWeights);
 
 }
+
+
+ /*if(strategy_type == strategy::spring15){
+   HTTWeights httWeights = HTTWeights("HTTWeights")   
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_mc(mc_type)
+    .set_do_tau_id_weights(false)
+    .set_ditau_label("ditau");
+
+   if (output_name.find("DYJetsToLL_M-50") != output_name.npos){
+      httWeights.set_do_dy_soup_htbinned(true);
+      httWeights.SetDYInputCrossSections(4895,139.4,42.75,5.497,2.21);
+      httWeights.SetDYInputYields(9042031,2725655,973937,1067758,998912);
+    }
+
+    if (output_name.find("WJetsToLNu") != output_name.npos){
+      httWeights.set_do_w_soup_htbinned(true);
+      httWeights.SetWInputCrossSections(50690,1345,359.7,48.91,18.77);
+      httWeights.SetWInputYields(72207128,10152718,5221599,1745914,1039152);
+    }
+
+    BuildModule(httWeights);
+  }*/
 
  if (is_embedded && era_type == era::data_2012_rereco) {
    EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
@@ -1509,6 +1560,7 @@ void HTTSequence::BuildTPZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
+
 
 }
 

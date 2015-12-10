@@ -103,22 +103,26 @@ class HTTCategories : public ModuleBase {
   float phi_h_;
   branch_var pt_tt_;
   branch_var mt_1_;
-  double pfmt_1_;
+  branch_var pfmt_1_;
+  branch_var puppimt_1_;
   float id_e_mva_nt_loose_1_ = 0;
   float mt_2_;
   double mt_ll_;
   branch_var pzeta_;
-  double pfpzeta_;
+  branch_var pfpzeta_;
+  branch_var puppipzeta_;
   branch_var pzetavis_;
   branch_var pzetamiss_;
+  branch_var pfpzetamiss_;
+  branch_var puppipzetamiss_;
   double emu_dphi_;
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
-  float d0_1_;
-  float d0_2_;
-  float dz_1_;
-  float dz_2_;
+  branch_var d0_1_;
+  branch_var d0_2_;
+  branch_var dz_1_;
+  branch_var dz_2_;
   branch_var pt_1_;
   branch_var pt_2_;
   branch_var eta_1_;
@@ -129,6 +133,8 @@ class HTTCategories : public ModuleBase {
   double E_2_;
   int q_1_;
   int q_2_;
+  bool trigger_match_1_;
+  bool trigger_match_2_;
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
@@ -151,6 +157,7 @@ class HTTCategories : public ModuleBase {
   bool antimu_1_;
   bool antiele_2_;
   bool antimu_2_;
+  double z_1_;
   double z_2_;
   float m_1_;
   branch_var m_2_;
@@ -160,6 +167,8 @@ class HTTCategories : public ModuleBase {
   branch_var mvamet_phi_;
   branch_var pfmet_;
   float pfmet_phi_;
+  branch_var puppimet_;
+  float puppimet_phi_; 
   float mvametCov00_;
   float mvametCov01_;
   float mvametCov10_;
@@ -233,7 +242,8 @@ class HTTCategories : public ModuleBase {
   float lagainstMuonLoose3_2 = 0;
   float lagainstMuonTight3_2 = 0;
     
-  int tau_decay_mode_;
+  int tau_decay_mode_1_;
+  int tau_decay_mode_2_;
 
   unsigned n_jets_;
   unsigned n_lowpt_jets_;
