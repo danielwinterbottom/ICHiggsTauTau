@@ -17,6 +17,7 @@ class EffectiveEvents : public ModuleBase {
   CLASS_MEMBER(EffectiveEvents, fwlite::TFileService*, fs)
   TTree *outtree_;
   int mcsign_;
+  double gen_ht_;
 
  public:
   EffectiveEvents(std::string const& name);

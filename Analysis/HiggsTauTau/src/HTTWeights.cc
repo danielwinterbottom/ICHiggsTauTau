@@ -177,10 +177,10 @@ namespace ic {
       w2_ = (n_inc_*f2_) / ((n_inc_*f2_) + n2_);
       w3_ = (n_inc_*f3_) / ((n_inc_*f3_) + n3_);
       w4_ = (n_inc_*f4_) / ((n_inc_*f4_) + n4_);
-      std::cout << boost::format("f 100<ht<200=%-9.2f  n 100<ht<200=%-9i  w 100<ht<200=%-9.2f \n") % f1_ % n1_ % w1_;
-      std::cout << boost::format("f 200<ht<400=%-9.2f  n 200<ht<400=%-9i  w 200<ht<400=%-9.2f \n") % f2_ % n2_ % w2_;
-      std::cout << boost::format("f 400<ht<600=%-9.2f  n 400<ht<600=%-9i  w 400<ht<600=%-9.2f \n") % f3_ % n3_ % w3_;
-      std::cout << boost::format("f ht>600=%-9.2f  n ht>600=%-9i  w ht>600=%-9.2f \n") % f4_ % n4_ % w4_;
+      std::cout << boost::format("f 100<ht<200=%-9.5f  n 100<ht<200=%-9i  w 100<ht<200=%-9.5f \n") % f1_ % n1_ % w1_;
+      std::cout << boost::format("f 200<ht<400=%-9.5f  n 200<ht<400=%-9i  w 200<ht<400=%-9.5f \n") % f2_ % n2_ % w2_;
+      std::cout << boost::format("f 400<ht<600=%-9.5f  n 400<ht<600=%-9i  w 400<ht<600=%-9.5f \n") % f3_ % n3_ % w3_;
+      std::cout << boost::format("f ht>600=%-9.5f  n ht>600=%-9i  w ht>600=%-9.5f \n") % f4_ % n4_ % w4_;
     }
 
     if (do_dy_soup_htbinned_ ) {
@@ -193,10 +193,10 @@ namespace ic {
       zw2_ = (zn_inc_*zf2_) / ( (zn_inc_*zf2_) + zn2_ );
       zw3_ = (zn_inc_*zf3_) / ( (zn_inc_*zf3_) + zn3_ );
       zw4_ = (zn_inc_*zf4_) / ( (zn_inc_*zf4_) + zn4_ );
-      std::cout << boost::format("f 100<ht<200=%-9.2f  n 100<ht<200=%-9i  w 100<ht<200=%-9.2f \n") % zf1_ % zn1_ % zw1_;
-      std::cout << boost::format("f 200<ht<400=%-9.2f  n 200<ht<400=%-9i  w 200<ht<400=%-9.2f \n") % zf2_ % zn2_ % zw2_;
-      std::cout << boost::format("f 400<ht<600=%-9.2f  n 400<ht<600=%-9i  w 400<ht<600=%-9.2f \n") % zf3_ % zn3_ % zw3_;
-      std::cout << boost::format("f ht>600=%-9.2f  n ht>600=%-9i  w ht>600=%-9.2f \n") % zf4_ % zn4_ % zw4_;
+      std::cout << boost::format("f 100<ht<200=%-9.5f  n 100<ht<200=%-9i  w 100<ht<200=%-9.5f \n") % zf1_ % zn1_ % zw1_;
+      std::cout << boost::format("f 200<ht<400=%-9.5f  n 200<ht<400=%-9i  w 200<ht<400=%-9.5f \n") % zf2_ % zn2_ % zw2_;
+      std::cout << boost::format("f 400<ht<600=%-9.5f  n 400<ht<600=%-9i  w 400<ht<600=%-9.5f \n") % zf3_ % zn3_ % zw3_;
+      std::cout << boost::format("f ht>600=%-9.5f  n ht>600=%-9i  w ht>600=%-9.5f \n") % zf4_ % zn4_ % zw4_;
     }
 
     return 0;
