@@ -276,7 +276,9 @@ namespace ic {
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
       alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["nobtagnotwoprong"] = "(n_bjets==0 &&"+alias_map_["notwoprong"]+")";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       //MSSM update analysis style categories:

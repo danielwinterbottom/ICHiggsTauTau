@@ -228,12 +228,16 @@ if SCHEME == 'run2_mssm':
   scheme_tt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
     ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
-    ("8",   "btag",    "btag",  BINS, '')
+    ("8",   "btag",    "btag",  BINS, ''),
+    ("8",   "notwoprong",    "notwoprong",  BINS_FINE,  ''),
+    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, ''),
+    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, ''),
+
   ]
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, ''),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
-    ("8",   "btag",    "btag",  BINS, '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
   ]
   bkg_schemes = {
     'et' : 'et_default',
