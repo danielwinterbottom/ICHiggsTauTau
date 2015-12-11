@@ -80,7 +80,7 @@ namespace ic {
     } else {
       for (unsigned i = 0; i<embed_jets.size(); ++i){
         pt = embed_jets[i]->pt();
-        eta = embed_jets[i]->eta();
+        eta = fabs(embed_jets[i]->eta());
         csv = embed_jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         jet_flavour = abs(embed_jets[i]->parton_flavour());
         std::vector<PFJet*> current_jet;
