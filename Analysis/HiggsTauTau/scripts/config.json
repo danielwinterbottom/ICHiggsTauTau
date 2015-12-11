@@ -27,6 +27,7 @@
     "tau_id_study":false,
     "add_Hhh_variables" : false,
     "get_effective" : false,
+    "do_btag_eff":false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "store_trigobjpt" :true,

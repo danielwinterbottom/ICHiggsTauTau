@@ -14,8 +14,17 @@ namespace ic {
 class BTagCheck : public ModuleBase {
  private:
   CLASS_MEMBER(BTagCheck, fwlite::TFileService*, fs)
+  CLASS_MEMBER(BTagCheck, std::string, jet_label)
+  CLASS_MEMBER(BTagCheck, bool, do_legacy)
   Dynamic2DHistoSet * hists_;
   DynamicHistoSet * hists1d_;
+  TTree* outtree_;
+  double pt;
+  double eta;
+  double wt;
+  unsigned jet_flavour;
+  bool gen_match;
+  double csv;
 
  public:
   BTagCheck(std::string const& name);

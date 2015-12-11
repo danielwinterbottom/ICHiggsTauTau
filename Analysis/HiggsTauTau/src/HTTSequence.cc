@@ -29,6 +29,7 @@
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
+#include "HiggsTauTau/interface/BTagCheck.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
@@ -740,6 +741,13 @@ if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
     .set_fs(fs.get())
     .set_write_plots(false)
     .set_ditau_label("ditau"));
+}
+
+if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_do_legacy(false)
+    .set_jet_label(jets_label));
 }
 
 
