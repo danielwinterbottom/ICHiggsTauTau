@@ -67,7 +67,7 @@ std::pair<double,double> calcSoverRootB(std::string const& filepath, std::string
   using namespace std;
   std::string channel = "mt";
   std::string e_or_m = "m";
-  std::string extralabel = "AddPUW";
+  std::string extralabel = "PUW";
   bool do_tau = false;
   bool iso_opt = true;
 
@@ -87,17 +87,17 @@ std::pair<double,double> calcSoverRootB(std::string const& filepath, std::string
 
  double ztt_sig_db04[12];
 // double sm_sig_db04[10];
- double ztt_sig_ea03[5];
+// double ztt_sig_ea03[5];
 // double ztt_sig_db04allch[12];
 // double ztt_sig_db03allch[12];
  double ztt_sig_db03[12];
 
  double ztt_sig_err_db04[12];
 // double sm_sig_db04[10];
- double ztt_sig_err_ea03[12];
+ //double ztt_sig_err_ea03[12];
  //double ztt_sig_err_db04allch[12];
  //double ztt_sig_err_db03allch[12];
- double ztt_sig_err_db03[12];
+double ztt_sig_err_db03[12];
 
 
 //double x_err_tau[19]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -413,7 +413,7 @@ if(channel!="em"){
    ztt_sig_err_ea03[10] = calcSoverRootB(file, (channel+"_trk03iso0p17").c_str(),true).second;
    ztt_sig_err_ea03[11] = calcSoverRootB(file, (channel+"_trk03iso0p18").c_str(),true).second;
 */
-  ztt_sig_ea03[0] = calcSoverRootB(file, (channel+"_trk03iso0p02").c_str(),true).first;
+/*  ztt_sig_ea03[0] = calcSoverRootB(file, (channel+"_trk03iso0p02").c_str(),true).first;
   ztt_sig_ea03[1] = calcSoverRootB(file, (channel+"_trk03iso0p03").c_str(),true).first;
   ztt_sig_ea03[2] = calcSoverRootB(file, (channel+"_trk03iso0p04").c_str(),true).first;
   ztt_sig_ea03[3] = calcSoverRootB(file, (channel+"_trk03iso0p05").c_str(),true).first;
@@ -424,6 +424,7 @@ if(channel!="em"){
   ztt_sig_err_ea03[2] = calcSoverRootB(file, (channel+"_trk03iso0p04").c_str(),true).second;
   ztt_sig_err_ea03[3] = calcSoverRootB(file, (channel+"_trk03iso0p05").c_str(),true).second;
   ztt_sig_err_ea03[4] = calcSoverRootB(file, (channel+"_trk03iso0p06").c_str(),true).second;
+*/
 
 }
 
@@ -583,16 +584,18 @@ ztt_sig_err_ea03[2] = calcSoverRootB(file, (channel+"_eea03iso0p12").c_str(),tru
   ztt_sig_err_ea03[11] = calcSoverRootB(file, (channel+"_eea03iso0p21").c_str(),true).second;
 */
   } else if(e_or_m=="m"){
-  ztt_sig_ea03[0] = calcSoverRootB(file, (channel+"_mtrk03iso0p05").c_str(),true).first;
+/*  ztt_sig_ea03[0] = calcSoverRootB(file, (channel+"_mtrk03iso0p05").c_str(),true).first;
   ztt_sig_ea03[1] = calcSoverRootB(file, (channel+"_mtrk03iso0p06").c_str(),true).first;
   ztt_sig_ea03[2] = calcSoverRootB(file, (channel+"_mtrk03iso0p07").c_str(),true).first;
   ztt_sig_ea03[3] = calcSoverRootB(file, (channel+"_mtrk03iso0p08").c_str(),true).first;
+*/
 //  ztt_sig_ea03[4] = calcSoverRootB(file, (channel+"_mtrk03iso0p09").c_str(),true).first;
 
-  ztt_sig_err_ea03[0] = calcSoverRootB(file, (channel+"_mtrk03iso0p05").c_str(),true).second;
+ /* ztt_sig_err_ea03[0] = calcSoverRootB(file, (channel+"_mtrk03iso0p05").c_str(),true).second;
   ztt_sig_err_ea03[1] = calcSoverRootB(file, (channel+"_mtrk03iso0p06").c_str(),true).second;
   ztt_sig_err_ea03[2] = calcSoverRootB(file, (channel+"_mtrk03iso0p07").c_str(),true).second;
   ztt_sig_err_ea03[3] = calcSoverRootB(file, (channel+"_mtrk03iso0p08").c_str(),true).second;
+*/
  // ztt_sig_err_ea03[4] = calcSoverRootB(file, (channel+"_mtrk03iso0p09").c_str(),true).second;
 
   /*ztt_sig_ea03[0] = calcSoverRootB(file, (channel+"_mtrk03iso0p1").c_str(),true).first;
@@ -750,7 +753,7 @@ if(do_tau){
   TGraphErrors *ztt_sig_db03_graph = new TGraphErrors(12,iso_cuts,ztt_sig_db03,x_err,ztt_sig_err_db03);*/ 
 
   TGraphErrors *ztt_sig_db04_graph = new TGraphErrors(3,iso_cuts,ztt_sig_db04,x_err,ztt_sig_err_db04); 
-  TGraphErrors *ztt_sig_ea03_graph = new TGraphErrors(4,iso_cuts,ztt_sig_ea03,x_err,ztt_sig_err_ea03); 
+//  TGraphErrors *ztt_sig_ea03_graph = new TGraphErrors(4,iso_cuts,ztt_sig_ea03,x_err,ztt_sig_err_ea03); 
  // TGraphErrors *ztt_sig_db04allch_graph = new TGraphErrors(12,iso_cuts,ztt_sig_db04allch,x_err,ztt_sig_err_db04allch); 
  // TGraphErrors *ztt_sig_db03allch_graph = new TGraphErrors(12,iso_cuts,ztt_sig_db03allch,x_err,ztt_sig_err_db03allch); 
   TGraphErrors *ztt_sig_db03_graph = new TGraphErrors(3,iso_cuts,ztt_sig_db03,x_err,ztt_sig_err_db03); 
@@ -763,8 +766,8 @@ if(do_tau){
   ztt_sig_db04_graph->SetMarkerStyle(20);
   ztt_sig_db04_graph->SetMarkerColor(kRed);
 
-  ztt_sig_ea03_graph->SetMarkerStyle(21);
-  ztt_sig_ea03_graph->SetMarkerColor(kGreen+3);
+//  ztt_sig_ea03_graph->SetMarkerStyle(21);
+//  ztt_sig_ea03_graph->SetMarkerColor(kGreen+3);
  /* ztt_sig_db04allch_graph->SetMarkerStyle(22);
   ztt_sig_db04allch_graph->SetMarkerColor(kBlue);
   ztt_sig_db03allch_graph->SetMarkerStyle(23);
