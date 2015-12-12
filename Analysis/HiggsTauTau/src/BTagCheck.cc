@@ -5,10 +5,11 @@
 
 namespace ic {
 
-  BTagCheck::BTagCheck(std::string const& name) : ModuleBase(name) {
+  BTagCheck::BTagCheck(std::string const& name) : ModuleBase(name),channel_(channel::et) {
     fs_ = NULL;
     jet_label_ = "pfJetsPFlow";
     do_legacy_ = true;
+    dilepton_label_ = "ditau";
   }
 
   BTagCheck::~BTagCheck() {
@@ -54,13 +55,78 @@ namespace ic {
       outtree_->Branch("csv_value",&csv);
       outtree_->Branch("jet_flavour",&jet_flavour);
       outtree_->Branch("gen_match",&gen_match);
+      outtree_->Branch("iso_1",&iso_1);
+      outtree_->Branch("iso_2",&iso_2);
+      outtree_->Branch("leptonveto",&leptonveto);
+      outtree_->Branch("os",&os);
+      outtree_->Branch("antiele_pass",&antiele_pass);
+      outtree_->Branch("antimu_pass",&antimu_pass);
     }
     return 0;
   }
 
   int BTagCheck::Execute(TreeEvent *event) {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    double wt = eventInfo->total_weight();
+    std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(dilepton_label_);
+    Candidate c1 = *(dilepton.at(0)->GetCandidate("lepton1"));
+    Candidate c2 = *(dilepton.at(0)->GetCandidate("lepton2"));
+    Candidate const* lep1 = dilepton.at(0)->GetCandidate("lepton1");
+    Candidate const* lep2 = dilepton.at(0)->GetCandidate("lepton2");
+    os=PairOppSign(dilepton.at(0));
+    double pass_presel=false;
+    
+     bool dilepton_veto_=false,extraelec_veto_=false,extramuon_veto_ = false;
+    if(channel_ == channel::et) { 
+        if(event->Exists("dielec_veto"))  dilepton_veto_ = event->Get<bool>("dielec_veto");
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+        Electron const* elec = dynamic_cast<Electron const*>(lep1);
+        Tau const* tau = dynamic_cast<Tau const*>(lep2);
+        iso_1 = PF03IsolationVal(elec, 0.5, 0);
+        iso_2 = tau->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
+        antiele_pass = tau->GetTauID("againstElectronTightMVA5");
+        antimu_pass = tau->GetTauID("againstMuonLoose3");
+        if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+    }
+    if(channel_ == channel::mt) { 
+        if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+        Muon const* muon  = dynamic_cast<Muon const*>(lep1);
+        Tau const* tau = dynamic_cast<Tau const*>(lep2);
+        iso_1 = PF03IsolationVal(muon, 0.5, 0);
+        iso_2 = tau->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
+        antiele_pass =  tau->GetTauID("againstElectronVLooseMVA5");
+        antimu_pass = tau->GetTauID("againstMuonTight3");
+        if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+    }
+    if(channel_ == channel::em) { 
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+        Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
+        Muon const* muon = dynamic_cast<Muon const*>(lep2);
+        iso_1 = PF03IsolationVal(elec, 0.5, 0);
+        iso_2 = PF03IsolationVal(muon, 0.5, 0);
+        if(iso_1<0.15&&iso_2<0.15&&os>0) pass_presel=true;
+    }
+    if(channel_ == channel::tt) {
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+        Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
+        Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+        iso_1 = tau1->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
+        iso_2 = tau2->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
+        antiele_pass = (tau1->GetTauID("againstElectronTightMVA5")&&tau2->GetTauID("againstElectronTightMVA5"));
+        antimu_pass = (tau1->GetTauID("againstMuonLoose3") &&tau2->GetTauID("againstMuonLoose3"));
+        if(iso_1>0.5&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+    }
+
+
+ leptonveto = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
+
+
+
+    wt = eventInfo->total_weight();
     std::vector<PFJet*> embed_jets = event->GetPtrVec<PFJet>(jet_label_);
     ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     std::vector<GenJet*> gen_jets;
@@ -78,6 +144,7 @@ namespace ic {
         }
       }
     } else {
+    if(pass_presel&&!leptonveto){
       for (unsigned i = 0; i<embed_jets.size(); ++i){
         pt = embed_jets[i]->pt();
         eta = fabs(embed_jets[i]->eta());
@@ -112,6 +179,7 @@ namespace ic {
         outtree_->Fill();
       }         
     } 
+   }
     
     if(do_legacy_){
       std::vector<PFJet*> orig_jets = event->GetPtrVec<PFJet>("pfJetsReco");

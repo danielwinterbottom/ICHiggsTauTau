@@ -746,6 +746,7 @@ if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
 if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
     .set_fs(fs.get())
+    .set_channel(channel)
     .set_do_legacy(false)
     .set_jet_label(jets_label));
 }
