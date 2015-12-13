@@ -47,7 +47,7 @@
     "output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
-    "svfit_folder"  : "svfit-output-nov19",
+    "svfit_folder"  : "svfit-output-dec01-full",
     "svfit_override" : "",
     //"event_check_file":"checkoneeventmt.dat",
     "pu_id_training": 2,
