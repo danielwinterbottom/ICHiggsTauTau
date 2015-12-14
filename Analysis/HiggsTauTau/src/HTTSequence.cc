@@ -743,11 +743,11 @@ if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
     .set_ditau_label("ditau"));
 }
 
-if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
+if(strategy_type!=strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
     .set_fs(fs.get())
     .set_channel(channel)
-    .set_do_legacy(false)
+    .set_do_legacy(true)
     .set_jet_label(jets_label));
 }
 
@@ -790,6 +790,16 @@ if(channel != channel::wmnu) {
     .set_reference_label("ditau")
     .set_min_dr(0.5));
 }
+
+if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_do_legacy(false)
+    .set_jet_label(jets_label));
+}
+
+
   if(strategy_type != strategy::phys14&& strategy_type!= strategy::spring15){
     BuildModule(HTTRecoilCorrector("HTTRecoilCorrector")
      .set_sample(output_name)
