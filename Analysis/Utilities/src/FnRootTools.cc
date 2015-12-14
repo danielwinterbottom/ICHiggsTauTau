@@ -29,7 +29,7 @@ namespace ic {
       }
     }
     return result;
-  }
+  }//necessary?!
 
   std::vector<std::string> ParseFileLines(std::string const& file_name) {
     // Build a vector of input files
@@ -46,7 +46,7 @@ namespace ic {
     }
     file.close();
     return files;
-  }
+  }//keep
 
   // Vertical morphing between template, based on implementation here:
   // http://root.cern.ch/root/html532/src/RooStats__HistFactory__FlexibleInterpVar.cxx.html#193
@@ -74,6 +74,6 @@ namespace ic {
       central->SetBinContent(i, total);
       // std::cout << "Bin " << i <<": Nominal " << nominal << "\tDown " << low << "\tUp " << high << "\tResult " << total << std::endl;
     }
-  }
+  }//keep
 
 } //namespace

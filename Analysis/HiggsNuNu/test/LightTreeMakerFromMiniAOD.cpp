@@ -17,7 +17,7 @@
 
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CopyCollection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ComplexFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/GenericModule.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/IDOverlapFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
@@ -447,38 +447,46 @@ int main(int argc, char* argv[]){
   // Photon Modules
   // ------------------------------------------------------------------------------------
   //loose photons
-  CopyCollection<Photon>  loosePhotonCopyCollection("CopyToLoosePhotons","photons","loosePhotons");
-  
-  ComplexFilter<Photon,EventInfo,double> loosePhotonFilter = ComplexFilter<Photon,EventInfo,double>
-    ("LoosePhotonFilter")
-    .set_primary_input_label("loosePhotons").set_predicate(bind(MinPtMaxEta, _1, loose_photon_pt, loose_photon_eta)&&
-							   bind(LoosePhotonIDSpring15, _1,_2))
-    .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))
-    .set_min(0)
-    .set_max(999);
+  CopyCollection<Photon>  loosePhotonCopyCollection("CopyToLoosePhotons","photons","loosePhotonsCP");
+  GenericModule loosePhotonFilter = GenericModule("LoosePhotonPtEtaFilter")
+    .set_function([=](ic::TreeEvent *event){
+       std::vector<ic::Photon*> photons = event->GetPtrVec<ic::Photon>("loosePhotonsCP");
+       ic::EventInfo *evtinfo = event->GetPtr<ic::EventInfo>("eventInfo");
+       double jet_rho = evtinfo->jet_rho();
+       ic::erase_if(photons,!(bind(MinPtMaxEta,_1,loose_photon_pt,loose_photon_eta)&&bind(LoosePhotonIDSpring15,_1,jet_rho)));
+       event->Add("loosePhotons",photons);
+       return 0;
+    });
+
   
   //medium photons
-  CopyCollection<Photon>  mediumPhotonCopyCollection("CopyToMediumPhotons","photons","mediumPhotons");
-  
-  ComplexFilter<Photon,EventInfo,double> mediumPhotonFilter = ComplexFilter<Photon,EventInfo,double>
-    ("MediumPhotonPtEtaFilter")
-    .set_primary_input_label("mediumPhotons").set_predicate(bind(MinPtMaxEta, _1, medium_photon_pt, medium_photon_eta)&&
-							    bind(MediumPhotonIDSpring15, _1,_2))
-    .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))
-    .set_min(0)
-    .set_max(999);
+  CopyCollection<Photon>  mediumPhotonCopyCollection("CopyToMediumPhotons","photons","mediumPhotonsCP");
 
+  GenericModule mediumPhotonFilter = GenericModule("MediumPhotonPtEtaFilter")
+    .set_function([=](ic::TreeEvent *event){
+       std::vector<ic::Photon*> photons = event->GetPtrVec<ic::Photon>("mediumPhotonsCP");
+       ic::EventInfo *evtinfo = event->GetPtr<ic::EventInfo>("eventInfo");
+       double jet_rho = evtinfo->jet_rho();
+       ic::erase_if(photons,!(bind(MinPtMaxEta,_1,medium_photon_pt,medium_photon_eta)&&bind(MediumPhotonIDSpring15,_1,jet_rho)));
+       event->Add("mediumPhotons",photons);
+       return 0;
+    });
+
+  
   //tight photons
-  CopyCollection<Photon>  tightPhotonCopyCollection("CopyToTightPhotons","photons","tightPhotons");
-  
-  ComplexFilter<Photon,EventInfo,double> tightPhotonFilter = ComplexFilter<Photon,EventInfo,double>
-    ("TightPhotonPtEtaFilter")
-    .set_primary_input_label("tightPhotons").set_predicate(bind(MinPtMaxEta, _1, tight_photon_pt, tight_photon_eta)&&
-							   bind(TightPhotonIDSpring15, _1,_2))
-    .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))						   
-    .set_min(0)
-    .set_max(999);
+  CopyCollection<Photon>  tightPhotonCopyCollection("CopyToTightPhotons","photons","tightPhotonsCP");
 
+  GenericModule tightPhotonFilter = GenericModule("TightPhotonPtEtaFilter")
+    .set_function([=](ic::TreeEvent *event){
+       std::vector<ic::Photon*> photons = event->GetPtrVec<ic::Photon>("tightPhotonsCP");
+       ic::EventInfo * evtinfo = event->GetPtr<ic::EventInfo>("eventInfo");
+       double jet_rho = evtinfo->jet_rho();
+       ic::erase_if(photons,!(bind(MinPtMaxEta,_1,tight_photon_pt,tight_photon_eta)&&bind(TightPhotonIDSpring15,_1,jet_rho)));
+       event->Add("tightPhotons",photons);
+       return 0;
+    });
+
+  
   // ------------------------------------------------------------------------------------
   // Electron Modules
   // ------------------------------------------------------------------------------------

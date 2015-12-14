@@ -18,11 +18,11 @@ namespace ic {
     } else {
       return false; 
     }
-  }
+  } //This is still useful - keep
 
   bool GenParticleInMassBand(GenParticle const* part, int pdgid, double m_low, double m_high) {
     return (abs(part->pdgid()) == pdgid && part->vector().M() > m_low && part->vector().M() < m_high);
-  }
+  } //Keep
 
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr) {
     std::size_t hash = CityHash64(filter);
@@ -32,7 +32,7 @@ namespace ic {
       if (DR(cand, objs[i]) < max_dr) return true;
     }
     return false;
-  }
+  } //Keep
 
  std::pair<bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject*> const& objs, std::string const& filter, double const& max_dr){
     std::size_t hash = CityHash64(filter);
@@ -45,46 +45,47 @@ namespace ic {
       }
     }
     return std::make_pair(false,0);
-  }
+  } //Probably delete - needs fixing in trigger filter too
 
   bool VertexDz(Tau const* cand, double const& vertexZ) {
     return ( fabs(cand->vz() - vertexZ)==0) ; 
-  }
+  }//Remove and remove associated stuff
 
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta) {
     return ( (cand->pt() > minPt) && (std::fabs(cand->eta()) < maxEta) ); 
-  }
+  } //KEEP KEEP KEEP KEEP
 
 
   bool CSVMediumWP(Jet const* cand, double const& minDiscri) {
     return (cand->GetBDiscriminator("combinedSecondaryVertexBJetTags") > minDiscri);
-  }
+  } //keep
 
 
 
   bool InEcalGap(Electron const* electron) {
     double scEta = fabs(electron->sc_eta());
     return (scEta >= 1.4442 && scEta <= 1.566);
-  }
+  }//keep
 
+//Actually possibly merge with previous sets of functions by adding an extra option to them - give a think
   bool MinPtMaxEtaSC(SuperCluster const* cand, double const& minPt, double const& maxEta) {
     return ( (cand->pt() > minPt) && (std::fabs(cand->eta()) < maxEta) ); 
-  }
+  }//keep
 
   bool InEcalGapSC(SuperCluster const* electron) {
     double scEta = fabs(electron->eta());
     return (scEta >= 1.4442 && scEta <= 1.566);
-  }
+  }/keep
 
   bool InEcalGapCand(Candidate const* cand) {
     double scEta = fabs(cand->eta());
     return (scEta >= 1.4442 && scEta <= 1.566);
-  }
+  }//keep
 
   bool MaxEtaSC(Electron const* electron, double const& maxEta) {
     double scEta = fabs(electron->sc_eta());
     return (scEta < maxEta);
-  }
+  }//keep
 
   bool PFJetID(PFJet const* jet) {
     int n_pu = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
@@ -106,7 +107,7 @@ namespace ic {
             && n_pu                             > 0;
     }
     return result;
-  }
+  } //keep
 
   bool PFJetIDNoHFCut(PFJet const* jet) {
     int n_pu = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
@@ -128,7 +129,7 @@ namespace ic {
             && n_pu                             > 0;
     }
     return result;
-  }
+  }//keep
 
   bool PFJetID2015(PFJet const* jet) {
     double eta = fabs(jet->eta());
@@ -154,7 +155,7 @@ namespace ic {
 	    && jet->neutral_multiplicity()>10;
     }
     return result;
-  }
+  }//keep but potentially rename to something more useful
 
 
   bool PUJetID(PFJet const* jet, bool is_2012) {
@@ -209,7 +210,7 @@ namespace ic {
             } else return true;
       } else return true;
     }
-  }
+  }//Remove, this only exists in HTTPrint so am sure we can do without
 
 
   bool PileupJetID(PFJet const* jet, unsigned training) {
@@ -285,7 +286,7 @@ namespace ic {
     } else {
       return true;
     }
-  }
+  }//keep
 
   bool IsReBTagged(Jet const* jet, std::map<std::size_t, bool> const& tag_map) {
     std::map<std::size_t,bool>::const_iterator it = tag_map.find(jet->id());
@@ -295,7 +296,7 @@ namespace ic {
       std::cout << "Warning in IsReBTagged: Jet with id " << jet->id() << " not found in result map" << std::endl;
       return true;
     }
-  }
+  } //keep
 
 
   double PZeta(CompositeCandidate const* cand, Candidate const* met, double const& alpha) {
@@ -323,7 +324,7 @@ namespace ic {
    double pZetaMiss = px*zetaX + py*zetaY;
 
    return (pZetaMiss - alpha * pZetaVis);
-  }
+  }//keep
 
   double PZetaVis(CompositeCandidate const* cand) {
      if (cand->AsVector().size() < 2) return 0.0;
@@ -345,7 +346,7 @@ namespace ic {
     double visPy = leg1->vector().py() + leg2->vector().py();
     double pZetaVis = visPx*zetaX + visPy*zetaY;
     return pZetaVis;
-  }
+  }//keep
 
 
 
@@ -357,7 +358,7 @@ namespace ic {
       std::cerr << "Transverse mass would be negative! Returning 0.0" << std::endl;
     }
     return 0.0;
-  }
+  }//keep
 
   bool passAntiEMVA(Tau const * tau, int WP){
     
@@ -379,7 +380,7 @@ namespace ic {
     if(WP==1) cut = cutsTight[iCat];
     if(WP==2) cut = cutsVeryTight[iCat];
     return (raw>cut);
-  }
+  }//keep
 
   bool TauEoverP(Tau const* tau, double cut) {
     if (tau->decay_mode() != 0) {
@@ -389,7 +390,7 @@ namespace ic {
       if (e_over_p != e_over_p) return true;
       return e_over_p > cut;
     }
-  }
+  }//keep
 
   bool ElectronZbbID(Electron const * elec) {
     if (InEcalGap(elec)) return false;
@@ -409,7 +410,7 @@ namespace ic {
               && fabs(elec->dphi_sc_tk_at_vtx())  < 0.03
               && fabs(elec->deta_sc_tk_at_vtx())  < 0.007
               && OneOverEOneOverP                 < 0.05) );
-  }
+  }//keep
   
   bool MVAMETElectron(Electron const * elec) {
     if (fabs(elec->eta()) > 1.4442 && fabs(elec->eta()) < 1.566) return false;
@@ -433,7 +434,7 @@ namespace ic {
               && fabs(elec->deta_sc_tk_at_vtx())  < 0.009
               && OneOverEOneOverP                 < 0.05
               && elec->hadronic_over_em()         < 0.10) );
-  }
+  }//Only exists in HTTPrint, can prob do without -> delete
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut) {
     double eta = fabs(elec->sc_eta());
@@ -462,7 +463,7 @@ namespace ic {
       iso = iso / elec->pt();
 
     return (iso < cut);
-  }
+  }//Keep
 
 
 
@@ -488,7 +489,7 @@ namespace ic {
 
     iso = iso / elec->pt();
     return ( (in_barrel && iso < 0.053) || (!in_barrel && iso < 0.042) );
-  }
+  }//Keep, used in ElectronT&P
 
   bool Electron2011WP85IsoNoRhoSub(Electron const* elec) {
     bool in_barrel = true;
@@ -510,7 +511,7 @@ namespace ic {
 
     iso = iso / elec->pt();
     return ( (in_barrel && iso < 0.053) || (!in_barrel && iso < 0.042) );
-  }
+  }//Delete
 
   bool ElectronSimpleWP85Iso(Electron const* elec) {
     bool in_barrel = true;
@@ -526,7 +527,7 @@ namespace ic {
               && trk_iso  < 0.05 
               && ecal_iso < 0.05 
               && hcal_iso < 0.025) );
-  }
+  }//Used in Zbb 
 
   bool Electron2011WP85ID(Electron const* elec) {
     bool in_barrel = true;
@@ -544,7 +545,7 @@ namespace ic {
               && fabs(elec->deta_sc_tk_at_vtx())  < 0.007
               && elec->gsf_tk_nhits()            == 0
               && (fabs(elec->conv_dist()) >= 0.02 || fabs(elec->conv_dcot()) >= 0.02)));
-  }
+  }//Used in ElectronT&P - can probably remove because ElectronT&P module lives in its own area of the repo
 
   bool Electron2011WP70ID(Electron const* elec) {
     bool in_barrel = true;
@@ -570,7 +571,7 @@ namespace ic {
        )
       )
        );
-  }
+  }//keep used in Hinv
 
   bool TightElectronIDSpring15(Electron const* elec) {//function for spring15 ID 25ns !! needs updating
     bool in_barrel = true;
@@ -605,7 +606,7 @@ namespace ic {
         ) )
         );
 
-  }
+  }//keep used in Hinv
 
   bool VetoElectronIDPhys14(Electron const* elec){
     bool in_barrel = true;
@@ -640,7 +641,7 @@ namespace ic {
         ) )
         );
 
-   } 
+   }//Keep for a bit 
 
   
   bool VetoElectronIDSpring15(Electron const* elec){//function for spring15 veto 25ns
@@ -676,7 +677,7 @@ namespace ic {
         ) )
         );
 
-   } 
+   } //keep
 
 
   bool VetoElectronID(Electron const* elec) {
@@ -703,7 +704,7 @@ namespace ic {
        )
       )
        );
-  }
+  }//Keep
 
   bool Electron2011WP95ID(Electron const* elec) {
     //if (elec->has_matched_conversion()) return false;
@@ -722,7 +723,7 @@ namespace ic {
               && fabs(elec->dphi_sc_tk_at_vtx())  < 0.7
               && fabs(elec->deta_sc_tk_at_vtx())  < 0.01
               /*&& elec->gsf_tk_nhits()            == 0*/));
-  }
+  }//keep
 
 
   bool ElectronSimpleWP85ID(Electron const* elec) {
@@ -744,7 +745,7 @@ namespace ic {
               && elec->hadronic_over_em()         < 0.025
               && elec->gsf_tk_nhits()            <= 1
               && (fabs(elec->conv_dist()) >= 0.02 || fabs(elec->conv_dcot()) >= 0.02)));
-  }
+  }//keep
 
 
   bool ElectronHTTIdIso(Electron const* elec, unsigned const& mode) {
@@ -768,7 +769,7 @@ namespace ic {
       if (pt >  20.0 && eta >  1.479                && idmva > 0.975) pass_mva = true;
     }
     return pass_mva;
-  }
+  }//Used by tag an d probe in separate area of repo, not the othing stuck in Modules
 
   bool ElectronHTTVHID(Electron const* elec) {
     //Do some cut-based pre-selection
@@ -782,7 +783,7 @@ namespace ic {
     if (pt >= 10.0 && eta >  0.8 && eta <= 1.479  && idmva > 0.12) pass_mva = true;
     if (pt >= 10.0 && eta >  1.479                && idmva > 0.6) pass_mva = true;
     return pass_mva;
-  }
+  }//Used by T&P
 
   bool ElectronHTTId(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
@@ -805,7 +806,7 @@ namespace ic {
       if (pt >  20.0 && eta >  1.479                && idmva > 0.975) pass_mva = true;
     }
     return pass_mva;
-  }
+  }//Yes but similar thing exists in T&P package, see if that can use this one 
   
   bool ElectronHTTIdPhys14(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
@@ -824,7 +825,7 @@ namespace ic {
       if (eta >  1.479                && idmva > -0.52) pass_mva = true;
     }
     return pass_mva;
-  }
+  }//Keep for a bit
 
   bool ElectronHTTIdSpring15(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
@@ -851,7 +852,7 @@ namespace ic {
       if (eta >  1.479 && pt > 10                 && idmva > 0.358969) pass_mva = true;
     }
     return pass_mva;
-  }
+  }//keep
   
  double PUW03IsolationVal(Muon const* muon){
    double charged_iso = muon->dr03_pfiso_charged();
@@ -860,7 +861,7 @@ namespace ic {
    double iso = charged_iso + neutral_weighted + gamma_weighted;
     iso = iso / muon->pt();
     return iso;
- }
+ }//Keep for a bit
  
  double PUW04IsolationVal(Muon const* muon){
    double charged_iso = muon->dr04_pfiso_charged();
@@ -869,7 +870,7 @@ namespace ic {
    double iso = charged_iso + neutral_weighted + gamma_weighted;
     iso = iso / muon->pt();
     return iso;
- }
+ }//keep for a bit
 
 
   bool ElectronHTTIdTrigSpring15(Electron const* elec, bool loose_wp) {
@@ -901,7 +902,7 @@ namespace ic {
       if (eta >  1.479                 && idmva > 0.610764) pass_mva = true;
     }
     return pass_mva;
-  }
+  }//keep for a bit
 
 
 
@@ -926,7 +927,7 @@ namespace ic {
       if (pt >  20.0 && eta >  1.479                && idmva > 0.8375) pass_mva = true;
     }
     return pass_mva;
-  }
+  }//delete
 
   bool HttEMuFakeElectron(Electron const* elec) {
     if (elec->has_matched_conversion()) return false; // ConversionTools::hasMatchedConversion(...)
@@ -957,7 +958,7 @@ namespace ic {
              && fabs(elec->deta_sc_tk_at_vtx())  < 0.009
              && elec->hadronic_over_em()         < 0.10)));
    return pass_id && !(ElectronHTTId(elec, true) && PF04IsolationEB(elec, 0.5, 0.15, 0.1) && fabs(elec->dxy_vertex()) < 0.02 && fabs(elec->dz_vertex()) < 0.1 ); // !(usual MVA ID && pf isolation < 0.15(0.1) barrel(endcap))
-  }
+  }//keep
 
   
 
@@ -968,7 +969,7 @@ namespace ic {
     } else {
       return (iso < cut_endcap);
     }
-  }
+  }//keep
 
 
   bool ElectronHTT2011IdIso(Electron const* elec) {
@@ -1004,7 +1005,7 @@ namespace ic {
     if (pt >  20.0 && eta >  1.0 && eta <= 1.5    && idmva > 0.947) pass_mva = true;
     if (pt >  20.0 && eta >  1.5                  && idmva > 0.878) pass_mva = true;
     return pass_mva;
-  }
+  }//delete
 
   //Photon IDs taken from https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho) {//function for spring15 ID
@@ -1041,7 +1042,7 @@ namespace ic {
 	   ) )
         );
 
-  }
+  }//keep
 
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho) {//function for spring15 ID
     double eta = fabs(photon->eta());
@@ -1076,7 +1077,7 @@ namespace ic {
 	   ) )
 	   );
     
-  }
+  }//keep
   
 
   bool LoosePhotonIDSpring15(Photon const* photon,double const& rho) {//function for spring15 ID
@@ -1112,7 +1113,7 @@ namespace ic {
         ) )
         );
 
-  }
+  }//keep
 
 
   bool PairOneWithPt(CompositeCandidate const* cand, double const& ptMin) {
@@ -1121,12 +1122,12 @@ namespace ic {
       if (vec[i]->pt() > ptMin) return true;
     }
     return false;
-  }
+  }//keep
   
   bool PairPtSelection(CompositeCandidate const* cand, double const& jetpt1, double const& jetpt2){
     if (cand->At(0)->pt()>jetpt1 && cand->At(1)->pt()>jetpt2) return true;
     return false;
-  }
+  }//keep
 
   bool OrderedPairPtSelection(CompositeCandidate const* cand, double const& jetpt1, double const& jetpt2, bool const& aboveorbelow){
     double at0pt=cand->At(0)->pt();
@@ -1149,57 +1150,57 @@ namespace ic {
       }
       return false;
     }
-  }
+  }//keep
 
   bool PairMassInRange(CompositeCandidate const* cand, double const& mLow, double const& mHigh) {
     double mass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
     return (mass > mLow && mass < mHigh);
-  }
+  }//keep
   
   double PairMass(CompositeCandidate const* cand) {
     double mass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
     return (mass);
-  }
+  }//can remove
   //Return abolute difference between mass of candidate pair and given mass (e.g. Higgs), for sorting by closest candidate pair
   double PairMassDiff(CompositeCandidate const* cand, double const& mass) {
     double pairmass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
     return abs(pairmass-mass);
-  }
+  }//can remove
 
   bool PairEtaProdLessThan(CompositeCandidate const* cand, double const& max){
     if ((cand->At(0)->eta() * cand->At(1)->eta()) < max) return true;
     return false;
-  }
+  }//keep
 
   bool PairDEtaLessThan(CompositeCandidate const* cand, double const& max){
     if (fabs(cand->At(0)->eta() - cand->At(1)->eta()) < max) return true;
     return false;
-  }
+  }//keep
 
   bool PairDPhiLessThan(CompositeCandidate const* cand, double const& max){
     if (ROOT::Math::VectorUtil::DeltaPhi(cand->At(0)->vector(),cand->At(1)->vector()) < max) return true;
     return false;
-  }
+  }//remove
 
   bool PairAbsDPhiLessThan(CompositeCandidate const* cand, double const& max){
     if (fabs(ROOT::Math::VectorUtil::DeltaPhi(cand->At(0)->vector(),cand->At(1)->vector())) < max) return true;
     return false;
-  }
+  }//keep
 
   bool PairOppCharge(CompositeCandidate const& cand) {
     int charge = (cand.At(0)->charge() * cand.At(1)->charge());
     return (charge == -1);
-  }
+  }//keep ?
 
   bool PairOppSign(CompositeCandidate const* cand) {
     int charge = (cand->At(0)->charge() * cand->At(1)->charge());
     return (charge == -1 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1);
-  }
+  }//keep
 
   bool PairSameSign(CompositeCandidate const* cand) {
     int charge = (cand->At(0)->charge() * cand->At(1)->charge());
     return (charge == 1 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1);
-  }
+  }//keep
 
   bool MuonTight(Muon const* muon) {
     bool tightCut = ( 
@@ -1213,7 +1214,7 @@ namespace ic {
         muon->matched_stations() > 1
         );
     return tightCut;
-  }
+  }//keep
 
   //Defined in https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonId2015
   bool MuonMedium(Muon const* muon) {
@@ -1228,14 +1229,14 @@ namespace ic {
       muon->it_valid_fraction() > 0.8 && 
       muon->segment_compatibility() > (goodGlob ? 0.303 : 0.451); 
     return isMedium;
-  }
+  }//keep
 
   bool MuonLoose(Muon const* muon) {
     bool isLoose = 
       muon->is_pf() &&
       (muon->is_global()||muon->is_tracker());
     return isLoose;
-  }
+  }//remove?
 
   bool HttEMuFakeMuon(Muon const* muon) {
     bool pass_iso = false;
@@ -1256,7 +1257,7 @@ namespace ic {
         pass_iso
         );
     return (pass && !( MuonTight(muon) && PF04IsolationEB(muon, 0.5, 0.15, 0.1) && fabs(muon->dxy_vertex()) < 0.02 && fabs(muon->dz_vertex()) < 0.1 )); // !(usual tight muon && pf iso < 0.15(0.1) barrel(endcap))
-  }
+  }//keep
 
   bool HttEMuFakeMuon2011(Muon const* muon) {
     bool pass_iso = false;
@@ -1274,7 +1275,7 @@ namespace ic {
         pass_iso
         );
     return (pass && !( MuonTight(muon) && PF04IsolationEB(muon, 0.5, 0.15, 0.1) && fabs(muon->dxy_vertex()) < 0.02 && fabs(muon->dz_vertex()) < 0.1 )); // !(usual tight muon && pf iso < 0.15(0.1) barrel(endcap))
-  }
+  }//remove
 
 
   bool MuonIso(Muon const* muon) {
@@ -1284,17 +1285,17 @@ namespace ic {
           muon->dr03_hcal_tower_sum_et()) 
 	 / muon->pt()) < 0.15);
     return isoCut;
-  }
+  }//keep
 
   bool MuonTkIso(Muon const* muon) {
     bool isoCut = (((muon->dr03_tk_sum_pt())/muon->pt())<0.1); 
     return isoCut;
-  }
+  }//keep
 
   double MuonTkIsoVal(Muon const* muon) {
     double isoCut = ((muon->dr03_tk_sum_pt())/muon->pt()); 
     return isoCut;
-  }
+  }//keep
 
   
   std::vector<Track *> GetTracksAtVertex(std::vector<Track *> const& trks, std::vector<Vertex *> const& vtxs, unsigned idx, double const& dz) {
@@ -1318,7 +1319,7 @@ namespace ic {
       }
     }
     return result;
-  }
+  }//remove?
 
   bool MassDiffCompare(Candidate const* p1, Candidate const* p2, 
       double const& mass) {
@@ -1327,7 +1328,7 @@ namespace ic {
       double md1 = fabs(m1 - mass);
       double md2 = fabs (m2 - mass);
       return (md1 < md2);
-  }
+  }//keep
 
   std::vector<GenParticle *> ExtractStableDaughters(GenParticle * part, std::vector<GenParticle *> const& input) {
     std::vector<GenParticle *> tmp = ExtractDaughters(part, input);
@@ -1351,7 +1352,7 @@ namespace ic {
     std::vector<GenParticle *> result;
     for (auto it : result_set) result.push_back(it);
     return result;
-  }
+  }//keep
 
   std::vector<GenParticle*> ExtractDaughters(
       GenParticle* part, std::vector<GenParticle*> const& input) {
@@ -1364,7 +1365,7 @@ namespace ic {
       }
     }
     return result;
-  }
+  }//keep
 
   std::vector<GenParticle*> ExtractMothers(
       GenParticle* part, std::vector<GenParticle*> const& input) {
@@ -1377,7 +1378,7 @@ namespace ic {
       }
     }
     return result;
-  }
+  }//do we still need this - think ghit is used in run 2 pair selector Z bollocks but this is fixed with the status flags so this thing is no longer needed, right?
 
 
   std::vector<GenParticle*> ExtractDaughtersRecursive(
@@ -1404,7 +1405,7 @@ namespace ic {
                  GenParticle const* p2) { return p1->index() < p2->index();
               });
     return result;
-  }
+  }//remove
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt) {
     std::vector<GenJet> taus;
@@ -1442,7 +1443,7 @@ namespace ic {
       }
     }
     return taus;
-  }
+  }//keep
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){
 
@@ -1487,7 +1488,7 @@ namespace ic {
     lWreco = lepton->vector() + nuP4;
     return lWreco;
     
-  }
+  }//keep
 
   /*
   
