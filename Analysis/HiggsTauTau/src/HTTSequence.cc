@@ -65,7 +65,9 @@
 namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
+  addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else{std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
+  svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   svfit_override = json["svfit_override"].asString();
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
@@ -322,7 +324,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  ztautau_mode = json["ztautau_mode"].asUInt();
  vh_filter_mode = json["vh_filter_mode"].asUInt();
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
- tau_scale_mode = json["tau_scale_mode"].asUInt();
+ tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
@@ -469,7 +471,7 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
-  BuildModule(GenericModule("checkGoodVertices")
+/*  BuildModule(GenericModule("checkGoodVertices")
     .set_function([](ic::TreeEvent *event){
        std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
        bool is_good_vertex = GoodVertex(vertices.at(0));
@@ -477,7 +479,7 @@ void HTTSequence::BuildSequence(){
        //if(is_good_vertex) return 1;
        //else return 0;
        return 0;
-    }));
+    }));*/
        
 /*  BuildModule(GenericModule("checkGenVertices")
     .set_function([](ic::TreeEvent *event){
@@ -1620,10 +1622,11 @@ void HTTSequence::BuildTauSelection(){
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type!=strategy::phys14&&strategy_type!=strategy::spring15) moriond_tau_scale = true; 
  
- if (tau_scale_mode > 0 && !moriond_tau_scale)
+ if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15)){
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
-    .set_input_label("taus")
+    .set_input_label(js["taus"].asString())
     .set_shift(tau_shift));
+ }
 
  if(moriond_tau_scale&&(!is_data||is_embedded)){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")
