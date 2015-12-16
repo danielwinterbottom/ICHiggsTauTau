@@ -103,10 +103,12 @@ class HTTCategories : public ModuleBase {
   float phi_h_;
   branch_var pt_tt_;
   branch_var mt_1_;
+  branch_var mt_lep_;
+  branch_var mt_tot_;
   branch_var pfmt_1_;
   branch_var puppimt_1_;
   float id_e_mva_nt_loose_1_ = 0;
-  float mt_2_;
+  branch_var mt_2_;
   double mt_ll_;
   branch_var pzeta_;
   branch_var pfpzeta_;

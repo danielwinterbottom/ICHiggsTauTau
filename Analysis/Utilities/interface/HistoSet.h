@@ -221,6 +221,11 @@ class DynamicHistoSet : public HistoSet{
        hmap_[name] = dir_.make<TH2F>(name.c_str(),name.c_str(),binsx,minx,maxx,binsy,miny,maxy);
      }
 
+     void Create(std::string name, unsigned binsx, const double* xarr, unsigned binsy, const double* yarr) {
+       if (hmap_.count(name)) return;
+       hmap_[name] = dir_.make<TH2F>(name.c_str(),name.c_str(),binsx,xarr,binsy,yarr);
+     }
+
      void Fill(std::string name, double valuex, double valuey, double weight = 1.0) {
        if (!hmap_.count(name)) return;
        hmap_[name]->Fill(valuex, valuey, weight);
