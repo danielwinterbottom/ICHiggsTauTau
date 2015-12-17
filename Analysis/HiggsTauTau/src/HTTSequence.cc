@@ -288,18 +288,18 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    muon_eta = 2.1;
  }
  if(channel_str == "tpzmm"){
-   muon_dz = 0.2;
-   muon_dxy = 0.045;
+   muon_dz = 0.5;
+   muon_dxy = 0.2;
    pair_dr = 0.5;
    muon_pt = 10;
-   muon_eta = 2.1;
+   muon_eta = 2.4;
  }
  if(channel_str == "tpzee"){
-   elec_dz = 0.2;
-   elec_dxy = 0.045;
+   elec_dz = 0.5;
+   elec_dxy = 0.2;
    pair_dr = 0.5;
    elec_pt = 10;
-   elec_eta = 2.1;
+   elec_eta = 2.4;
  }
  
  is_data      = json["is_data"].asBool();
