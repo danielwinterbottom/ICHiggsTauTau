@@ -32,6 +32,7 @@ namespace ic {
     legacy_svfit_ = false;
     from_grid_ = false;
     do_preselection_ = false;
+    read_all_ = false;
     dm1_ = -1;
     dm2_ = -1;
 
@@ -96,6 +97,17 @@ namespace ic {
     if(!from_grid_){
       total_path_ = operator/(fullpath_, folder_p);
     } else {
+      if(read_all_){
+        std::string chan;
+        if (channel_ == channel::et) chan = "_et_";
+        if (channel_ == channel::mt) chan = "_mt_";
+        if (channel_ == channel::em) chan = "_em_";
+        if (channel_ == channel::tt) chan = "_tt_";
+        std::string::size_type channelpos = outputadd_.find(chan);
+        if(channelpos != std::string::npos){
+          outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
+        } 
+      }
       boost::filesystem::path nofolder("");
       total_path_ = operator/(fullpath_,nofolder);
     }
