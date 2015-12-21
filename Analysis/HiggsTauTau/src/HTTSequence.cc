@@ -301,7 +301,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    elec_dxy = 0.2;
    pair_dr = 0.5;
    elec_pt = 10;
-   elec_eta = 2.4;
+   elec_eta = 2.5;
  }
  
  is_data      = json["is_data"].asBool();
