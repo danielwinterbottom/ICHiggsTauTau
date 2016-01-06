@@ -54,6 +54,11 @@ var NAVTREE =
       [ "Selection of events ", "higgs-to-tau-tau.html#htt-event-selection", null ],
       [ "Producing plots and datacards ", "higgs-to-tau-tau.html#htt-datacards", null ]
     ] ],
+    [ "HiggsToTauTau - Run2", "higgs-to-tau-tau-run2.html", [
+      [ "Ntuple Production ", "higgs-to-tau-tau-run2.html#htt-ntuple-production-run2", null ],
+      [ "Selection of events ", "higgs-to-tau-tau-run2.html#htt-event-selection-run2", null ],
+      [ "Producing plots and datacards ", "higgs-to-tau-tau-run2.html#htt-datacards-run2", null ]
+    ] ],
     [ "Todo List", "todo.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Namespaces", null, [
@@ -99,7 +104,7 @@ var NAVTREEINDEX =
 "classic_1_1_electron.html#a4817225cb11055f3f8b65f240cc59248",
 "classic_1_1_muon.html#a3177522ba8b62ae12e9f200d3567d96e",
 "classic_1_1_track.html#a0996780197b63e97bcf50a64fcc63e73",
-"struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4.html#a08ee546f8af233ac61bc4d7910a6cc45"
+"struct_jet_dest_helper_3_01ic_1_1_calo_jet_01_4.html#ac220e8ffbe8d984a56ce119c8e9a1060"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

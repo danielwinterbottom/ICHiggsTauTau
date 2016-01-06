@@ -28,6 +28,8 @@ var searchData=
   ['hf_5fhad_5fenergy_5ffrac',['HF_had_energy_frac',['../classic_1_1_p_f_jet.html#a3867dce5a5769bcfe487428a0c9ecce7',1,'ic::PFJet']]],
   ['hf_5fhad_5fmultiplicity',['HF_had_multiplicity',['../classic_1_1_p_f_jet.html#a44bf96f061d8a5ad529c9e0ce5c46a90',1,'ic::PFJet']]],
   ['higgstotautau',['HiggsToTauTau',['../higgs-to-tau-tau.html',1,'']]],
+  ['higgstotautau_20_2d_20run2',['HiggsToTauTau - Run2',['../higgs-to-tau-tau-run2.html',1,'']]],
+  ['higgstotautau_2drun2_2emd',['HiggsToTauTau-Run2.md',['../_higgs_to_tau_tau-_run2_8md.html',1,'']]],
   ['higgstotautau_2emd',['HiggsToTauTau.md',['../_higgs_to_tau_tau_8md.html',1,'']]],
   ['hits',['hits',['../classic_1_1_track.html#ad83d971f50201df353005f47c1cc0e99',1,'ic::Track']]],
   ['hits_5fmiss_5finner',['hits_miss_inner',['../classic_1_1_track.html#a6543cbf7ea95e91423dc962120ce7b02',1,'ic::Track']]]
