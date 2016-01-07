@@ -32,9 +32,11 @@ parser.add_option("--extra", dest="extra", type='string', default='',
 parser.add_option("-s", "--scheme", dest="scheme", type='string', default='',
                   help="datacard scheme - can be used to override config file")
 parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
-                  help="Only make inputs for visible mass, no svfit.")
+                  help="Make inputs for visible mass.")
 parser.add_option("--svfit", dest="svfit", action='store_true', default=False,
-                  help="Only make inputs for svfit mass.")
+                  help="Make inputs for svfit mass.")
+parser.add_option("--mttot", dest="mttot", action='store_true', default=False,
+                  help="Make inputs for total transverse mass.")
 #parser.add_option("--dijet", dest="dijet", action='store_true', default=False,
 #                  help="Make inputs for dijet mass.")
 #parser.add_option("--mttbb", dest="mttbb", action='store_true', default=False,
@@ -201,37 +203,39 @@ if SCHEME == 'run2_Hhh':
 if SCHEME == 'run2_mssm':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
   BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  MTTOTBINSFINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,450,500,550,600,700,1000]"
+  MTTOTBINS="[0,40,80,120,160,200,240,280,320,360,400,450,500,550,600,700,1000]"
   scheme_et = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "notwoprong",  "notwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, '--set_alias="sel:mt_1<30"'),
+#    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "notwoprong",  "notwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+#    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+#    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
+    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghighnotwoprong",    "btaghighnotwoprong",  BINS, '--set_alias="sel:mt_1<30"')
   ]
   scheme_mt = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "notwoprong",  "notwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, '--set_alias="sel:mt_1<30"'),
+#    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "notwoprong",  "notwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+#    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+#    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
+    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghighnotwoprong",    "btaghighnotwoprong",  BINS, '--set_alias="sel:mt_1<30"')
   ]
   scheme_tt = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
-    ("8",   "btag",    "btag",  BINS, ''),
-    ("8",   "notwoprong",    "notwoprong",  BINS_FINE,  ''),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, ''),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, ''),
+#    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE,  ''),
+#    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, ''),
+#    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, ''),
+    ("8",   "notwoprong",    "notwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE,  ''),
+    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, ''),
+    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS if not options.mttot else MTTOTBINS, ''),
 
   ]
   scheme_em = [
@@ -260,35 +264,40 @@ cat_schemes = {
 
 plots = [ 
   ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' , "60", "2500" if ANA=='mssm' else "120"),
-  ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      , "100", "2500"  if ANA=='mssm' else "160")
+  ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      , "100", "2500"  if ANA=='mssm' else "160"),
+  ('mt_tot' , "m_{T}^{tot} [GeV]"        , '-mttot'      , "100", "3000")
  ]
-if options.mvis: del plots[1]
-if options.svfit: del plots[0]
+if options.mvis:
+    plots = plots[0]
+if options.svfit: 
+    plots = plots[1]
+if options.mttot: 
+    plots = plots[2]
 
-for pl in plots:
-  var     = pl[0]
-  xlab    = pl[1]
-  dc_app  = pl[2]
-  blind_min = pl[3]
-  blind_max = pl[4]
-  for ch in channels:
-    scheme = cat_schemes[ch]
-    bkg_scheme = bkg_schemes[ch]
-    for x in scheme:
-      cat_num = x[0]
-      cat_str = x[1]
-      dc      = x[2]
-      bin     = x[3]
-      opts    = x[4]
-      extra = options.extra + extra_global + extra_channel[ch] + opts
 
-      os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
+var     = plots[0]
+xlab    = plots[1]
+dc_app  = plots[2]
+blind_min = plots[3]
+blind_max = plots[4]
+for ch in channels:
+  scheme = cat_schemes[ch]
+  bkg_scheme = bkg_schemes[ch]
+  for x in scheme:
+    cat_num = x[0]
+    cat_str = x[1]
+    dc      = x[2]
+    bin     = x[3]
+    opts    = x[4]
+    extra = options.extra + extra_global + extra_channel[ch] + opts
+
+    os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
         ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
         ' --var="%(var)s%(bin)s" --norm_bins=true '
         ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
         ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
         ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbose=false'
         ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(extra)s' % vars())
-    os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_%(var)s_*_%(ch)s_%(YEAR)s.root' % vars())
-    os.system('rm datacard_%(var)s_*_%(ch)s_%(YEAR)s.root' % vars())
+  os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_%(var)s_*_%(ch)s_%(YEAR)s.root' % vars())
+  os.system('rm datacard_%(var)s_*_%(ch)s_%(YEAR)s.root' % vars())
 
