@@ -44,7 +44,22 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_dy_soup_htbinned)
   CLASS_MEMBER(HTTWeights, bool, do_tt_muon_weights)
   CLASS_MEMBER(HTTWeights, bool, do_tau_id_weights)
-
+  CLASS_MEMBER(HTTWeights, TH2D*, mt_idiso_mc)
+  CLASS_MEMBER(HTTWeights, TH2D*, mt_idiso_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, et_idiso_mc)
+  CLASS_MEMBER(HTTWeights, TH2D*, et_idiso_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_e_idiso_mc)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_e_idiso_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_m_idiso_mc)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_m_idiso_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_m_trig_mc)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_m_trig_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_e_trig_mc)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_e_trig_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, et_trig_mc)
+  CLASS_MEMBER(HTTWeights, TH2D*, et_trig_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, mt_trig_mc)
+  CLASS_MEMBER(HTTWeights, TH2D*, mt_trig_data)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
@@ -78,7 +93,7 @@ class HTTWeights : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
   double Efficiency(double m, double m0, double sigma, double alpha, double n, double norm);
-  void SetWTargetFractions(double f0, double f1, double f2, double f3, double f4);
+  void SetWTargetFractions(double f0, double f1, double f2, double f3, double f4) ;
   void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4);
   void SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4);
   void SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4);
