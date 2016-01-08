@@ -9,10 +9,12 @@
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICPhotonElectronConversionVetoFromPatCalculator::ICPhotonElectronConversionVetoFromPatCalculator(
 									     const edm::ParameterSet& config)
   : input_(config.getParameter<edm::InputTag>("input")) {
+  consumes<pat::PhotonCollection>(input_);
   produces<edm::ValueMap<bool> >();
 }
 

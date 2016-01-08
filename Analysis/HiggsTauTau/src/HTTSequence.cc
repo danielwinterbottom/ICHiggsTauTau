@@ -29,6 +29,7 @@
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
+#include "HiggsTauTau/interface/BTagCheck.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
@@ -64,7 +65,9 @@
 namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
+  addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else{std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
+  svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   svfit_override = json["svfit_override"].asString();
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
@@ -287,18 +290,18 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    muon_eta = 2.1;
  }
  if(channel_str == "tpzmm"){
-   muon_dz = 0.2;
-   muon_dxy = 0.045;
+   muon_dz = 0.5;
+   muon_dxy = 0.2;
    pair_dr = 0.5;
    muon_pt = 10;
-   muon_eta = 2.1;
+   muon_eta = 2.4;
  }
  if(channel_str == "tpzee"){
-   elec_dz = 0.2;
-   elec_dxy = 0.045;
+   elec_dz = 0.5;
+   elec_dxy = 0.2;
    pair_dr = 0.5;
    elec_pt = 10;
-   elec_eta = 2.1;
+   elec_eta = 2.5;
  }
  
  is_data      = json["is_data"].asBool();
@@ -321,7 +324,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  ztautau_mode = json["ztautau_mode"].asUInt();
  vh_filter_mode = json["vh_filter_mode"].asUInt();
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
- tau_scale_mode = json["tau_scale_mode"].asUInt();
+ tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
@@ -468,7 +471,7 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
-  BuildModule(GenericModule("checkGoodVertices")
+/*  BuildModule(GenericModule("checkGoodVertices")
     .set_function([](ic::TreeEvent *event){
        std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
        bool is_good_vertex = GoodVertex(vertices.at(0));
@@ -476,7 +479,7 @@ void HTTSequence::BuildSequence(){
        //if(is_good_vertex) return 1;
        //else return 0;
        return 0;
-    }));
+    }));*/
        
 /*  BuildModule(GenericModule("checkGenVertices")
     .set_function([](ic::TreeEvent *event){
@@ -700,11 +703,54 @@ if(channel != channel::wmnu) {
   BuildModule(httPairSelector);
 }
 
+if(channel == channel::tpzmm || channel == channel::tpzee){
+  BuildModule(GenericModule("TPTriggerInformation")
+    .set_function([=](ic::TreeEvent *event){
+       std::string trig_obj_label;
+       std::string tp_filter;
+       if(channel_str == "tpzmm"){ 
+         if(!is_data){
+           trig_obj_label = "triggerObjectsIsoMu17";
+           tp_filter = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+         } else {
+           trig_obj_label = "triggerObjectsIsoMu18";
+           tp_filter = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+         }
+       } else if (channel_str == "tpzee"){
+         if(!is_data){
+           trig_obj_label = "triggerObjectsEle22Gsf";
+           tp_filter = "hltSingleEle22WP75GsfTrackIsoFilter";
+         } else {
+           trig_obj_label = "triggerObjectsEle23";
+           tp_filter = "hltEle23WPLooseGsfTrackIsoFilter";
+         }
+       }
+       std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>("ditau");
+       CompositeCandidate const* ditau  = dileptons.at(0);
+       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
+       bool tp_leg1_match = IsFilterMatched(ditau->At(0), objs, tp_filter, 0.5);
+       bool tp_leg2_match = IsFilterMatched(ditau->At(1), objs, tp_filter, 0.5);
+       event->Add("tp_leg1_match",tp_leg1_match);
+       event->Add("tp_leg2_match",tp_leg2_match);
+       return 0;
+    }));
+
+ }
+
+
 if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
     .set_write_plots(false)
     .set_ditau_label("ditau"));
+}
+
+if(strategy_type!=strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_do_legacy(true)
+    .set_jet_label(jets_label));
 }
 
 
@@ -746,6 +792,16 @@ if(channel != channel::wmnu) {
     .set_reference_label("ditau")
     .set_min_dr(0.5));
 }
+
+if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_do_legacy(false)
+    .set_jet_label(jets_label));
+}
+
+
   if(strategy_type != strategy::phys14&& strategy_type!= strategy::spring15){
     BuildModule(HTTRecoilCorrector("HTTRecoilCorrector")
      .set_sample(output_name)
@@ -772,7 +828,7 @@ if(channel != channel::wmnu) {
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
-    .set_fail_mode(1)
+    .set_fail_mode(0)
     .set_require_inputs_match(false)
     .set_split(7000)
     .set_dilepton_label("ditau")
@@ -784,6 +840,8 @@ if(channel != channel::wmnu) {
  if(era_type == era::data_2015){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool());
+   svFitTest.set_read_all(js["read_all_svfit_files"].asBool());
+   svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
  }
 
 BuildModule(svFitTest);
@@ -863,6 +921,30 @@ BuildModule(svFitTest);
  BuildModule(httWeights);
 
 }
+
+
+ /*if(strategy_type == strategy::spring15){
+   HTTWeights httWeights = HTTWeights("HTTWeights")   
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_mc(mc_type)
+    .set_do_tau_id_weights(false)
+    .set_ditau_label("ditau");
+
+   if (output_name.find("DYJetsToLL_M-50") != output_name.npos){
+      httWeights.set_do_dy_soup_htbinned(true);
+      httWeights.SetDYInputCrossSections(4895,139.4,42.75,5.497,2.21);
+      httWeights.SetDYInputYields(9042031,2725655,973937,1067758,998912);
+    }
+
+    if (output_name.find("WJetsToLNu") != output_name.npos){
+      httWeights.set_do_w_soup_htbinned(true);
+      httWeights.SetWInputCrossSections(50690,1345,359.7,48.91,18.77);
+      httWeights.SetWInputYields(72207128,10152718,5221599,1745914,1039152);
+    }
+
+    BuildModule(httWeights);
+  }*/
 
  if (is_embedded && era_type == era::data_2012_rereco) {
    EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
@@ -1499,6 +1581,7 @@ void HTTSequence::BuildTPZMMPairs() {
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
 
+
 }
 
 // --------------------------------------------------------------------------
@@ -1540,10 +1623,11 @@ void HTTSequence::BuildTauSelection(){
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type!=strategy::phys14&&strategy_type!=strategy::spring15) moriond_tau_scale = true; 
  
- if (tau_scale_mode > 0 && !moriond_tau_scale)
+ if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15)){
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
-    .set_input_label("taus")
+    .set_input_label(js["taus"].asString())
     .set_shift(tau_shift));
+ }
 
  if(moriond_tau_scale&&(!is_data||is_embedded)){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")

@@ -12,11 +12,13 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICCandidateProducer::ICCandidateProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
+  consumes<edm::View<reco::Candidate>>(input_);
   candidates_ = new std::vector<ic::Candidate>();
   PrintHeaderWithProduces(config, input_, branch_);
 }

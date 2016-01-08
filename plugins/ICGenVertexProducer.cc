@@ -11,11 +11,13 @@
 #include "DataFormats/Common/interface/View.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICGenVertexProducer::ICGenVertexProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
       type_(config.getParameter<std::string>("type")) {
+  consumes<edm::View<reco::GenParticle>>(input_);
   vertices_ = new std::vector<ic::Vertex>();
   if (type_ != "pp") {
     throw cms::Exception("OptionNotSupported") << "Vertex type " << type_

@@ -21,6 +21,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 #include "boost/format.hpp"
 
@@ -28,6 +29,7 @@
 ICGenTauProductProducer::ICGenTauProductProducer(const edm::ParameterSet& iConfig) {
   produces<std::vector<unsigned> >("selectGenParticles");
   input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
+  consumes<reco::GenParticleCollection>(input_label_);
 
 }
 

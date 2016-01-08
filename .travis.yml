@@ -1,6 +1,9 @@
 language: cpp
 before_install:
   #  - sudo apt-get update -qq
+  - sudo apt-add-repository -y ppa:git-core/ppa
+  - sudo apt-get update -qq
+  - sudo apt-get install git
   - cd .. && mkdir -p src/UserCode && mv $OLDPWD src/UserCode/ICHiggsTauTau
   - export CMSSW_BASE=$PWD
   - cd src/UserCode/ICHiggsTauTau

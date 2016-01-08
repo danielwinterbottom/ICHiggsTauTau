@@ -34,6 +34,8 @@ namespace ic {
     bfake_mode_               = 0;
     do_w_soup_                = false;
     do_dy_soup_               = false;
+    do_dy_soup_htbinned_      = false;
+    do_w_soup_htbinned_      = false;
     ggh_mass_                 = "";
     ggh_hist_                 = nullptr;
     ggh_hist_up_              = nullptr;
@@ -153,7 +155,7 @@ namespace ic {
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % f3_ % n3_ % w3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % f4_ % n4_ % w4_;
     }
-    if (do_dy_soup_) {
+    if (do_dy_soup_ ) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
       std::cout << "nInc = " << zn_inc_ << std::endl;
       zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
@@ -165,6 +167,38 @@ namespace ic {
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_ % zw3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % zf4_ % zn4_ % zw4_;
     }
+    if (do_w_soup_htbinned_ ) {
+      std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
+      f1_ = wxs1_/wxs0_;
+      f2_ = wxs2_/wxs0_;
+      f3_ = wxs3_/wxs0_;
+      f4_ = wxs4_/wxs0_;
+      w1_ = (n_inc_*f1_) / ((n_inc_*f1_) + n1_);
+      w2_ = (n_inc_*f2_) / ((n_inc_*f2_) + n2_);
+      w3_ = (n_inc_*f3_) / ((n_inc_*f3_) + n3_);
+      w4_ = (n_inc_*f4_) / ((n_inc_*f4_) + n4_);
+      std::cout << boost::format("f 100<ht<200=%-9.5f  n 100<ht<200=%-9i  w 100<ht<200=%-9.5f \n") % f1_ % n1_ % w1_;
+      std::cout << boost::format("f 200<ht<400=%-9.5f  n 200<ht<400=%-9i  w 200<ht<400=%-9.5f \n") % f2_ % n2_ % w2_;
+      std::cout << boost::format("f 400<ht<600=%-9.5f  n 400<ht<600=%-9i  w 400<ht<600=%-9.5f \n") % f3_ % n3_ % w3_;
+      std::cout << boost::format("f ht>600=%-9.5f  n ht>600=%-9i  w ht>600=%-9.5f \n") % f4_ % n4_ % w4_;
+    }
+
+    if (do_dy_soup_htbinned_ ) {
+      std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
+      zf1_ = zxs1_/zxs0_;
+      zf2_ = zxs2_/zxs0_;
+      zf3_ = zxs3_/zxs0_;
+      zf4_ = zxs4_/zxs0_;
+      zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
+      zw2_ = (zn_inc_*zf2_) / ( (zn_inc_*zf2_) + zn2_ );
+      zw3_ = (zn_inc_*zf3_) / ( (zn_inc_*zf3_) + zn3_ );
+      zw4_ = (zn_inc_*zf4_) / ( (zn_inc_*zf4_) + zn4_ );
+      std::cout << boost::format("f 100<ht<200=%-9.5f  n 100<ht<200=%-9i  w 100<ht<200=%-9.5f \n") % zf1_ % zn1_ % zw1_;
+      std::cout << boost::format("f 200<ht<400=%-9.5f  n 200<ht<400=%-9i  w 200<ht<400=%-9.5f \n") % zf2_ % zn2_ % zw2_;
+      std::cout << boost::format("f 400<ht<600=%-9.5f  n 400<ht<600=%-9i  w 400<ht<600=%-9.5f \n") % zf3_ % zn3_ % zw3_;
+      std::cout << boost::format("f ht>600=%-9.5f  n ht>600=%-9i  w ht>600=%-9.5f \n") % zf4_ % zn4_ % zw4_;
+    }
+
     return 0;
   }
 
@@ -1037,6 +1071,23 @@ namespace ic {
       if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
     }
 
+   if (do_w_soup_htbinned_){
+     double gen_ht = eventInfo->gen_ht() ;
+     if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("wsoup", w1_);
+     if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("wsoup", w2_);
+     if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("wsoup", w3_);
+     if (gen_ht >= 600) eventInfo->set_weight("wsoup", w4_);
+   }
+
+
+   if (do_dy_soup_htbinned_){
+     double gen_ht = eventInfo->gen_ht() ;
+     if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("dysoup", zw1_);
+     if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("dysoup", zw2_);
+     if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("dysoup", zw3_);
+     if (gen_ht >= 600) eventInfo->set_weight("dysoup", zw4_);
+   }
+
     return 0;
   }
 
@@ -1078,6 +1129,22 @@ namespace ic {
     zn2_ = zn2;
     zn3_ = zn3;
     zn4_ = zn4;
+  }
+
+  void HTTWeights::SetDYInputCrossSections(double zxs0, double zxs1, double zxs2, double zxs3, double zxs4) {
+    zxs0_ = zxs0;
+    zxs1_ = zxs1;
+    zxs2_ = zxs2;
+    zxs3_ = zxs3;
+    zxs4_ = zxs4;
+  }
+
+  void HTTWeights::SetWInputCrossSections(double wxs0, double wxs1, double wxs2, double wxs3, double wxs4) {
+    wxs0_ = wxs0;
+    wxs1_ = wxs1;
+    wxs2_ = wxs2;
+    wxs3_ = wxs3;
+    wxs4_ = wxs4;
   }
 
   double HTTWeights::Efficiency(double m, double m0, double sigma, double alpha,

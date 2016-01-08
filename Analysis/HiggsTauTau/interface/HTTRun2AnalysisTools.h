@@ -59,6 +59,8 @@ namespace ic {
       */
       void AddMSSMSignalSamples(std::vector<std::string> masses);
 
+      void AddHhhSignalSamples(std::vector<std::string> masses);
+
       //! Read a parameter file for cross section and luminosity information
       /*! Argument \p file is the full path to the parameter file. 
       */
@@ -93,6 +95,15 @@ namespace ic {
                         std::string const& postfix,
                         double fixed_xs = -1.0);
       void FillMSSMSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+      void FillHhhSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,
                         std::string const& sel,

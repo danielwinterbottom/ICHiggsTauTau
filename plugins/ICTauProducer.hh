@@ -22,6 +22,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 /**
  * @brief See documentation [here](\ref objs-tau)
@@ -62,6 +63,8 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_vertex_ip_(config.getParameter<bool>("includeVertexIP")),
       request_trks_(config.getParameter<bool>("requestTracks")) {
+  consumes<edm::View<T>>(input_);
+  consumes<edm::View<reco::Vertex>>(input_vertices_);
   taus_ = new std::vector<ic::Tau>();
 
   edm::ParameterSet pset = config.getParameter<edm::ParameterSet>("tauIDs");
@@ -69,6 +72,7 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
   for (unsigned i = 0; i < vec.size(); ++i) {
     tau_ids_.push_back(
         std::make_pair(vec[i], pset.getParameter<edm::InputTag>(vec[i])));
+        consumes<reco::PFTauDiscriminator>(tau_ids_[i].second);
   }
 
   if (request_trks_) {

@@ -17,6 +17,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
 /**
@@ -47,13 +48,13 @@ class ICMetProducer : public edm::EDProducer {
     edm::InputTag metsigcov01;
     edm::InputTag metsigcov10;
     edm::InputTag metsigcov11;
-    explicit SigTags(edm::ParameterSet const& pset);
+    explicit SigTags(edm::ParameterSet const& pset,edm::ConsumesCollector && collector);
   };
 
   struct SigTagsMethod2 {
     edm::InputTag metsig;
     edm::InputTag metsigcov;
-    explicit SigTagsMethod2(edm::ParameterSet const& pset);
+    explicit SigTagsMethod2(edm::ParameterSet const& pset, edm::ConsumesCollector && collector);
   };
 
   bool do_gen_met_;
@@ -70,17 +71,26 @@ class ICMetProducer : public edm::EDProducer {
 };
 
 template <class T>
-ICMetProducer<T>::SigTags::SigTags(edm::ParameterSet const& pset)
+ICMetProducer<T>::SigTags::SigTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector)
   : metsig(pset.getParameter<edm::InputTag>("metsig")),
     metsigcov00(pset.getParameter<edm::InputTag>("metsigcov00")),
     metsigcov01(pset.getParameter<edm::InputTag>("metsigcov01")),
     metsigcov10(pset.getParameter<edm::InputTag>("metsigcov10")),
-    metsigcov11(pset.getParameter<edm::InputTag>("metsigcov11")) {}
+    metsigcov11(pset.getParameter<edm::InputTag>("metsigcov11")) {
+      collector.consumes<double>(metsig);
+      collector.consumes<double>(metsigcov00);
+      collector.consumes<double>(metsigcov01);
+      collector.consumes<double>(metsigcov10);
+      collector.consumes<double>(metsigcov11);
+    }
 
 template <class T>
-ICMetProducer<T>::SigTagsMethod2::SigTagsMethod2(edm::ParameterSet const& pset)
+ICMetProducer<T>::SigTagsMethod2::SigTagsMethod2(edm::ParameterSet const& pset, edm::ConsumesCollector && collector)
   : metsig(pset.getParameter<edm::InputTag>("metsig")),
-    metsigcov(pset.getParameter<edm::InputTag>("metsigcov")) {}
+    metsigcov(pset.getParameter<edm::InputTag>("metsigcov")) {
+     collector.consumes<double>(metsig);
+     collector.consumes<double>(metsigcov);
+    }
 
 template <class T>
 ICMetProducer<T>::ICMetProducer(const edm::ParameterSet& config)
@@ -91,10 +101,12 @@ ICMetProducer<T>::ICMetProducer(const edm::ParameterSet& config)
       do_gen_met_(config.getParameter<bool>("doGenMet")),
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
       do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
-      metsig_(config.getParameterSet("metsig")),
-      metsig_method2_(config.getParameterSet("metsig_method2")){
+      metsig_(config.getParameterSet("metsig"),consumesCollector()),
+      metsig_method2_(config.getParameterSet("metsig_method2"),consumesCollector()){
       //do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
       //metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
+  consumes<edm::View<T>>(input_);
+  consumes<std::vector<std::size_t>>(inputID_);
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -109,12 +121,14 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
       do_gen_met_(config.getParameter<bool>("doGenMet")),
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
       do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
-      metsig_(config.getParameterSet("metsig")),
-      metsig_method2_(config.getParameterSet("metsig_method2")),
+      metsig_(config.getParameterSet("metsig"),consumesCollector()),
+      metsig_method2_(config.getParameterSet("metsig_method2"),consumesCollector()),
       do_metcorrections_(config.getParameter<bool>("includeMetCorrections")),
       metcorrections_(config.getParameter<std::vector<std::string> >("metcorrections")),
       do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
       metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
+  consumes<edm::View<pat::MET>>(input_);
+  consumes<std::vector<std::size_t>>(inputID_);
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");

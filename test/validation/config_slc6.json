@@ -1,10 +1,10 @@
 {
-  "slc6_amd64_gcc491-CMSSW_7_4_6" : {
+  "slc6_amd64_gcc493-CMSSW_7_6_1" : {
     "build_root"        : "/home/build/",
-    "cmssw_env_script"  : "/home/build/env_slc6_491.sh",
-    "cmssw_version"     : "CMSSW_7_4_6",
+    "cmssw_env_script"  : "/home/build/env_slc6_493.sh",
+    "cmssw_version"     : "CMSSW_7_6_1",
     "cmssw_user"        : "cms-sw",
-    "cmssw_branch"      : "CMSSW_7_4_6",
+    "cmssw_branch"      : "CMSSW_7_6_1",
     "test_script"       : "test/validation/full_compile.sh",
     "clean_script"      : "test/validation/full_clean.sh"
   },

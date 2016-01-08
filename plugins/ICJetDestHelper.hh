@@ -20,7 +20,7 @@
 
 template <class U>
 struct JetDestHelper {
-  explicit JetDestHelper(const edm::ParameterSet &pset) {}
+  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector) {}
   void DoSetup(edm::EDProducer * prod) {}
   ~JetDestHelper() {}
 };
@@ -33,12 +33,13 @@ struct JetDestHelper<ic::CaloJet> {
   JetIDSelectionFunctor *tight_id;
   bool do_n_carrying;
 
-  explicit JetDestHelper(const edm::ParameterSet &pset)
+  explicit JetDestHelper(const edm::ParameterSet &pset,edm::ConsumesCollector && collector)
       : do_jet_id(pset.getParameter<bool>("includeJetID")),
         input_jet_id(pset.getParameter<edm::InputTag>("inputJetID")),
         loose_id(NULL),
         tight_id(NULL),
         do_n_carrying(pset.getParameter<bool>("includeTowerCounts")) {
+    collector.consumes<reco::JetIDValueMap>(input_jet_id);
     loose_id = new JetIDSelectionFunctor(JetIDSelectionFunctor::PURE09,
                                          JetIDSelectionFunctor::LOOSE);
     tight_id = new JetIDSelectionFunctor(JetIDSelectionFunctor::PURE09,
@@ -70,7 +71,7 @@ struct JetDestHelper<ic::JPTJet> {
   edm::InputTag input_vtxs;
   bool do_n_carrying;
 
-  explicit JetDestHelper(const edm::ParameterSet &pset)
+  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector)
       : do_jet_id(pset.getParameter<bool>("includeJetID")),
         input_jet_id(pset.getParameter<edm::InputTag>("inputJetID")),
         loose_id(NULL),
@@ -80,6 +81,9 @@ struct JetDestHelper<ic::JPTJet> {
         input_trks(pset.getParameter<edm::InputTag>("inputTracks")),
         input_vtxs(pset.getParameter<edm::InputTag>("inputVertices")),
         do_n_carrying(pset.getParameter<bool>("includeTowerCounts")) {
+    collector.consumes<edm::ValueMap<float>>(input_jet_id);
+    collector.consumes<reco::TrackCollection>(input_trks);
+    collector.consumes<reco::VertexCollection>(input_vtxs);
     loose_id = new JetIDSelectionFunctor(JetIDSelectionFunctor::PURE09,
                                          JetIDSelectionFunctor::LOOSE);
     tight_id = new JetIDSelectionFunctor(JetIDSelectionFunctor::PURE09,
@@ -130,13 +134,17 @@ struct JetDestHelper<ic::PFJet> {
   bool request_trks;
   boost::hash<reco::Track const*> track_hasher;
 
-  explicit JetDestHelper(const edm::ParameterSet &pset)
+  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector)
       : do_pu_id(pset.getParameter<bool>("includePileupID")),
         input_pu_id(pset.getParameter<edm::InputTag>("inputPileupID")),
         do_trk_vars(pset.getParameter<bool>("includeTrackBasedVars")),
         input_trks(pset.getParameter<edm::InputTag>("inputTracks")),
         input_vtxs(pset.getParameter<edm::InputTag>("inputVertices")),
-        request_trks(pset.getParameter<bool>("requestTracks")) {}
+        request_trks(pset.getParameter<bool>("requestTracks")) {
+          collector.consumes<edm::ValueMap<float>>(input_pu_id);
+          collector.consumes<reco::TrackCollection>(input_trks);
+          collector.consumes<reco::VertexCollection>(input_vtxs);
+        }
 
   void DoSetup(edm::EDProducer * prod) {
     if (request_trks) {
