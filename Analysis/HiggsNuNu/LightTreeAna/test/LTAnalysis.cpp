@@ -151,8 +151,8 @@ int main(int argc, char* argv[]){
   LTAnalyser* analysis = new LTAnalyser(outputname);
 
   analysis->AddFiles(filelist);
-  if(syst!="PUUP"&&syst!="PUDOWN"){
-    std::cout<<"Taking input from: "<<inputfolder<<"/"<<syst<<std::endl;
+  if(syst!="PUUP"&&syst!="PUDOWN"&&syst.size()!=0){
+    std::cout<<"Syst, taking input from: "<<inputfolder<<"/"<<syst<<std::endl;
     analysis->SetInFolder(inputfolder+"/"+syst);
   }
   else{
@@ -317,7 +317,7 @@ int main(int argc, char* argv[]){
     shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
     shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
     //mindR(tau,tagjets)
-    shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);Events");
+    //shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);Events");
     if(channel=="mumu"){
       shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};Events");
     }
@@ -1488,6 +1488,8 @@ int main(int argc, char* argv[]){
     .set_legname("Z#rightarrow#nu#nu")
     .set_sample("zvv");
 
+  if(do_mcbkg) znunuele.set_has_dderrors(0);
+
   LTPlotElement znunuewkele;
   znunuewkele.set_is_data(false)
     .set_scale(1)
@@ -1497,6 +1499,8 @@ int main(int argc, char* argv[]){
     .set_has_dderrors(1)
     .set_legname("Z#rightarrow#nu#nu EWK")
     .set_sample("zvv_ewk");
+
+  if(do_mcbkg) znunuewkele.set_has_dderrors(0);
 
   LTPlotElement znunuqcdele;
   znunuqcdele.set_is_data(false)
@@ -1508,7 +1512,7 @@ int main(int argc, char* argv[]){
     .set_legname("Z#rightarrow#nu#nu QCD")
     .set_sample("zvv_qcd");
 
-
+  if(do_mcbkg) znunuqcdele.set_has_dderrors(0);
 
   LTPlotElement zmumuele;
   zmumuele.set_is_data(false)
@@ -1519,6 +1523,8 @@ int main(int argc, char* argv[]){
     .set_has_dderrors(1)
     .set_legname("Z#rightarrow#mu#mu")
     .set_sample("zmumu");
+
+  if(do_mcbkg) zmumuele.set_has_dderrors(0);
 
   LTPlotElement qcdele;
   qcdele.set_is_data(false)
@@ -1673,7 +1679,10 @@ int main(int argc, char* argv[]){
       analysis->AddModule(&wmunuraw);
       analysis->AddModule(&wenuraw);
       analysis->AddModule(&wtaunuraw);  
-      //!!put in Z mc bkg
+      if(channel!="mumu"){
+	analysis->AddModule(&znunuraw);
+      }
+      else analysis->AddModule(&zmumuraw);
     }
 
     if(do_singletop)analysis->AddModule(&top);

@@ -108,7 +108,11 @@ namespace ic {//namespace
 	std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
       }
       else{
-	sample_name_.erase(found,5);
+	//std::cout << sample_name_ << " " << sample_name_.find("split") <<std::endl;
+	if (sample_name_.find("split")!=sample_name_.npos){
+	  sample_name_.erase(found-8,13);
+	}
+	else sample_name_.erase(found,5);
 	std::cout << "Sample Name: "<<sample_name_<<std::endl;
 
 	//Get lumi xs and events from params file

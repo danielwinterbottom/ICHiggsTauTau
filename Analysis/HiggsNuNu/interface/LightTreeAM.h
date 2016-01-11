@@ -125,6 +125,7 @@ namespace ic {
     double jet2metnomu_scalarprod_;
 
     double pass_muontrigger_;
+    double pass_photontrigger_;
     double pass_sigtrigger_;
     double pass_mettrigger_;
     double pass_controltrigger_;

@@ -24,7 +24,7 @@ namespace ic{
     LTFile();
     LTFile(std::string,std::string);
     LTFile(std::string,std::string,std::string);
-    int Open(std::string);
+    int Open(std::string,std::string dataeospath="",std::string mceospath="");
     int Close();
     int AddFriend(TTree*);
     int AddFriend(std::string,std::string);
@@ -37,6 +37,8 @@ namespace ic{
 
   class LTFiles{
     CLASS_MEMBER(LTFiles,std::string,infolder)
+    CLASS_MEMBER(LTFiles,std::string,dataeosfolder)
+    CLASS_MEMBER(LTFiles,std::string,mceosfolder)
     CLASS_MEMBER(LTFiles,std::string,input_params)
     protected:								
     std::map<std::string,LTFile> files_;					

@@ -173,7 +173,7 @@ namespace ic{
 	  histo =dynamic_cast<TH1F*>(file->Get((elements_[iElement].sample()+"/"+shapes_[iShape].name()).c_str()));
 	}
 	else{
-	  std::cout<<"histo didn't open properly"<<std::endl;
+	  std::cout<<"histo " << elements_[iElement].sample() << "/" << shapes_[iShape].name() << " didn't open properly"<<std::endl;
 	  return 1;
 	}
 	writedir->cd();
@@ -181,14 +181,15 @@ namespace ic{
 	//Do blinding of shapes
 	for(unsigned iblindshape=0;iblindshape<elements_[iElement].blindvar().size();iblindshape++){
 	  if(shapes_[iShape].name()==elements_[iElement].blindvar()[iblindshape]){
-	    for (int j = 0; j < histo->GetNbinsX(); ++j) {
-	      double low_edge = histo->GetBinLowEdge(j+1);
-	      double high_edge = histo->GetBinWidth(j+1)+histo->GetBinLowEdge(j+1);
+	    for (int j = 0; j < histo->GetNbinsX()+2; ++j) {
+	      double low_edge = histo->GetBinLowEdge(j);
+	      double high_edge = histo->GetBinWidth(j)+histo->GetBinLowEdge(j);
+	      if (j==0 || j==histo->GetNbinsX()+1) std::cout << " Low edge - high edge " << low_edge << " " << high_edge << std::endl;
 	      double x_blind_min_=elements_[iElement].blindrange()[iblindshape].first;
 	      double x_blind_max_=elements_[iElement].blindrange()[iblindshape].second;
 	      if ((low_edge > x_blind_min_ && low_edge < x_blind_max_) || (high_edge > x_blind_min_ && high_edge < x_blind_max_)) {
-		histo->SetBinContent(j+1,0);
-		histo->SetBinError(j+1,0);
+		histo->SetBinContent(j,0);
+		histo->SetBinError(j,0);
 	      }
 	    }
 	  }
@@ -683,12 +684,14 @@ namespace ic{
       tmpstr.erase(std::string(file->GetName()).find(".root"),5);
       tmpstr=tmpstr+outsuffix_;
       lsave << tmpstr ;
+      if (shapes_[iShape].dology()) lsave << "_logy";
       lsave << ".pdf" ;
       if (iShape==0) {
       	lsave << "[";
       	c1->Print(lsave.str().c_str());//open the file
       	lsave.str("");//reset for adding the first plot
       	lsave << tmpstr ;
+	if (shapes_[iShape].dology()) lsave << "_logy";
       	lsave << ".pdf" ;
       }
       c1->Print(lsave.str().c_str());
@@ -698,10 +701,14 @@ namespace ic{
       }
 
       lsave.str("");
-      lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
+      lsave << tmpstr << "_" << c1->GetName() ;
+      if (shapes_[iShape].dology()) lsave << "_logy";
+      lsave << ".pdf" ;
       c1->Print((lsave.str()).c_str());
       lsavepng.str("");
-      lsavepng << tmpstr << "_" << c1->GetName() << ".png" ;
+      lsavepng << tmpstr << "_" << c1->GetName();
+      if (shapes_[iShape].dology()) lsavepng << "_logy";
+      lsavepng << ".png" ;
       c1->Print((lsavepng.str()).c_str());
 
       //WRITE TO FILE

@@ -38,7 +38,9 @@ int main(int argc, char* argv[]){
   std::string mass;
   std::string indir;
   std::string outname;
-
+  std::string channel;
+  bool mcBkgOnly;
+  bool do_run2;
 
   po::variables_map vm;
   po::options_description config("Configuration");
@@ -57,10 +59,19 @@ int main(int argc, char* argv[]){
     ("qcdrate",                  po::value<double>(&qcdrate)->default_value(17))
     ("zvvstat",                  po::value<double>(&zvvstat)->default_value(18))
     ("mass,m",                   po::value<std::string>(&mass)->default_value("125"))
-    ("do_datatop,t",             po::value<bool>(&do_datatop)->default_value(false));
+    ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
+    ("do_datatop,t",             po::value<bool>(&do_datatop)->default_value(false))
+    ("mcBkgOnly",                po::value<bool>(&mcBkgOnly)->default_value(false))
+    ("do_run2",                  po::value<bool>(&do_run2)->default_value(false));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::notify(vm);
+
+  if (do_qcdfromnumber && (channel!="nunu" || do_run2)) do_qcdfromnumber=false;
+
+  if (channel!="nunu") blind=false;
+
+  if (do_run2) do_ggh=false;
 
   std::map<std::string,double > procsysttotal;
   std::map<std::string,double > procstattotal;
@@ -72,7 +83,7 @@ int main(int argc, char* argv[]){
   double totalsigsyst=0;
 
   //Rate to use if qcd not taken from a shape
-  double qcdabserr=14;
+  double qcdabserr= (channel=="nunu")?14:0;
 
   if((mass!="110")&&(mass!="125")&&(mass!="150")&&(mass!="200")&&(mass!="300")&&(mass!="400")){
     std::cout<<"Mass "<<mass<<" not currently supported, please use 110, 125, 200, 300 or 400. Exiting!"<<std::endl;
@@ -80,55 +91,68 @@ int main(int argc, char* argv[]){
   }
   
   std::vector<std::string> sigprocesses;
-  sigprocesses.push_back("qqH"+mass);
-  if(do_ggh)sigprocesses.push_back("ggH"+mass);
-  std::vector<std::string> sigprocessesnames;
-  sigprocessesnames.push_back("qqH");
-  if(do_ggh)sigprocessesnames.push_back("ggH");
+    std::vector<std::string> sigprocessesnames;
   std::vector<std::string> sigprocesslatex;
-  sigprocesslatex.push_back("Signal(VBF)");
-  if(do_ggh)sigprocesslatex.push_back("Signal(ggH)");
+  if (channel=="nunu") {
+    sigprocesses.push_back("qqH"+mass);
+    if(do_ggh)sigprocesses.push_back("ggH"+mass);
+    sigprocessesnames.push_back("qqH");
+    if(do_ggh)sigprocessesnames.push_back("ggH");
+    sigprocesslatex.push_back("Signal(VBF)");
+    if(do_ggh)sigprocesslatex.push_back("Signal(ggH)");
+  }
   std::vector<std::string> bkgprocesses;
-  bkgprocesses.push_back("zvv");
+  if (channel=="nunu") bkgprocesses.push_back("zvv");
+  if (channel=="mumu") bkgprocesses.push_back("zmumu");
   bkgprocesses.push_back("wmu");
   bkgprocesses.push_back("wel");
   bkgprocesses.push_back("wtau");
   bkgprocesses.push_back("top");
-  if(do_qcdfromshape)bkgprocesses.push_back("qcd");
+  if( (do_qcdfromshape || do_run2) && channel=="nunu") bkgprocesses.push_back("qcd");
   bkgprocesses.push_back("vv");
 
   std::vector<std::string> bkgprocesslatex;
-  bkgprocesslatex.push_back("$Z\\rightarrow\\nu\\nu$");
+  if (channel=="nunu")bkgprocesslatex.push_back("$Z\\rightarrow\\nu\\nu$");
+  if (channel=="mumu") bkgprocesslatex.push_back("$Z\\rightarrow\\mu\\mu$");
   bkgprocesslatex.push_back("$W\\rightarrow\\mu\\nu$");
   bkgprocesslatex.push_back("$W\\rightarrow e\\nu$");
   bkgprocesslatex.push_back("$W\\rightarrow\\tau\\nu$");
   bkgprocesslatex.push_back("top");
-  if(do_qcdfromshape)bkgprocesslatex.push_back("QCD multijet");
+  if( (do_qcdfromshape || do_run2) && channel=="nunu") bkgprocesslatex.push_back("QCD multijet");
   bkgprocesslatex.push_back("VV");
   
   //CENTRAL ROOT FILE
   std::cout<<"IMPORTANT NOTE: GMN UNCERTAINTY MUST BE PUT IN MANUALLY!!"<<std::endl;
   std::cout<<"Processing indir: "<<indir<<std::endl;
-  TFile* nunu=new TFile((indir+"/nunu.root").c_str());
+  TFile* nunu=new TFile((indir+"/"+channel+".root").c_str());
 
   //SYST VARIED ROOT FILES
-  TFile* jesup=new TFile((indir+"/JESUP/nunu.root").c_str());
-  TFile* jesdown=new TFile((indir+"/JESDOWN/nunu.root").c_str());
-  TFile* jerbetter=new TFile((indir+"/JERBETTER/nunu.root").c_str());
-  TFile* jerworse=new TFile((indir+"/JERWORSE/nunu.root").c_str());
-  TFile* uesup=new TFile((indir+"/UESUP/nunu.root").c_str());
-  TFile* uesdown=new TFile((indir+"/UESDOWN/nunu.root").c_str());
-  TFile* eleup=new TFile((indir+"/ELEEFFUP/nunu.root").c_str());
-  TFile* eledown=new TFile((indir+"/ELEEFFDOWN/nunu.root").c_str());
-  TFile* muup=new TFile((indir+"/MUEFFUP/nunu.root").c_str());
-  TFile* mudown=new TFile((indir+"/MUEFFDOWN/nunu.root").c_str());
-  TFile* puup=new TFile((indir+"/PUUP/nunu.root").c_str());
-  TFile* pudown=new TFile((indir+"/PUDOWN/nunu.root").c_str());
+  TFile* jesup=new TFile((indir+"/JESUP/"+channel+".root").c_str());
+  TFile* jesdown=new TFile((indir+"/JESDOWN/"+channel+".root").c_str());
+  TFile* jerbetter=new TFile((indir+"/JERBETTER/"+channel+".root").c_str());
+  TFile* jerworse=new TFile((indir+"/JERWORSE/"+channel+".root").c_str());
+  TFile* uesup=do_run2?0:new TFile((indir+"/UESUP/"+channel+".root").c_str());
+  TFile* uesdown=do_run2?0:new TFile((indir+"/UESDOWN/"+channel+".root").c_str());
+  TFile* eleup=do_run2?0:new TFile((indir+"/ELEEFFUP/"+channel+".root").c_str());
+  TFile* eledown=do_run2?0:new TFile((indir+"/ELEEFFDOWN/"+channel+".root").c_str());
+  TFile* muup=do_run2?0:new TFile((indir+"/MUEFFUP/"+channel+".root").c_str());
+  TFile* mudown=do_run2?0:new TFile((indir+"/MUEFFDOWN/"+channel+".root").c_str());
+  TFile* puup=new TFile((indir+"/PUUP/"+channel+".root").c_str());
+  TFile* pudown=new TFile((indir+"/PUDOWN/"+channel+".root").c_str());
 
   //SYSTEMATICS
   std::vector<Syst> systematics;
 
   std::vector<std::string> lumi8tevprocsaffected={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","wg","vv","qcd"};
+  if (mcBkgOnly) {
+    lumi8tevprocsaffected.push_back("zvv");
+    lumi8tevprocsaffected.push_back("zmumu");
+    lumi8tevprocsaffected.push_back("wmu");
+    lumi8tevprocsaffected.push_back("wel");
+    lumi8tevprocsaffected.push_back("wtau");
+    lumi8tevprocsaffected.push_back("top");
+    if (do_run2) lumi8tevprocsaffected.push_back("qcd");
+  }
   Syst lumi8tev;
   lumi8tev.set_name("lumi_8TeV")
     .set_latexname("Luminosity")
@@ -136,8 +160,8 @@ int main(int argc, char* argv[]){
     .set_procsaffected(lumi8tevprocsaffected)
     .set_constvalue(1.026);
 
-  std::vector<std::string> allprocs={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","zvv","wmu","wel","wtau","top","qcd","wg","vv"};
-  std::vector<std::string> allprocsnotqcd={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","zvv","wmu","wel","wtau","top","wg","vv"};
+  std::vector<std::string> allprocs={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","zvv","zmumu","wmu","wel","wtau","top","qcd","wg","vv"};
+  std::vector<std::string> allprocsnotqcd={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","zvv","zmumu","wmu","wel","wtau","top","wg","vv"};
   std::vector<std::string> ggHprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH"};
   std::vector<std::string> qqHprocs={"qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH"};
   Syst eleeff;
@@ -160,7 +184,7 @@ int main(int argc, char* argv[]){
   jes.set_name("CMS_scale_j")
     .set_latexname("Jet energy scale")
     .set_type("fromfilelnN")
-    .set_procsaffected(allprocsnotqcd)
+    .set_procsaffected(do_run2?allprocs:allprocsnotqcd)
     .set_uptfile(jesup)
     .set_downtfile(jesdown);
 
@@ -168,7 +192,7 @@ int main(int argc, char* argv[]){
   jer.set_name("CMS_res_j")
     .set_latexname("Jet energy resolution")
     .set_type("fromfilelnN")
-    .set_procsaffected(allprocsnotqcd)
+    .set_procsaffected(do_run2?allprocs:allprocsnotqcd)
     .set_uptfile(jerbetter)
     .set_downtfile(jerworse);
 
@@ -176,7 +200,7 @@ int main(int argc, char* argv[]){
   ues.set_name("CMS_scale_met")
     .set_latexname("Unclustered energy scale")
     .set_type("fromfilelnN")
-    .set_procsaffected(allprocsnotqcd)
+    .set_procsaffected(do_run2?allprocs:allprocsnotqcd)
     .set_uptfile(uesup)
     .set_downtfile(uesdown);
 
@@ -184,7 +208,7 @@ int main(int argc, char* argv[]){
   pu.set_name("CMS_VBFHinv_puweight")
     .set_latexname("Pileup weight")
     .set_type("fromfilelnN")
-    .set_procsaffected(allprocsnotqcd)
+    .set_procsaffected(do_run2?allprocs:allprocsnotqcd)
     .set_uptfile(puup)
     .set_downtfile(pudown);
 
@@ -193,6 +217,14 @@ int main(int argc, char* argv[]){
     .set_latexname("$Z\\rightarrow\\nu\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"zvv"});
+
+  if (mcBkgOnly) zvvmcstat.set_type("fromMCstatlnN");
+
+  Syst zmumumcstat;
+  zmumumcstat.set_name("CMS_VBFHinv_zmumu_norm")
+    .set_latexname("$Z\\rightarrow\\mu\\mu$ MC stat.")
+    .set_type("fromMCstatlnN")
+    .set_procsaffected({"zmumu"});
 
   Syst zvvdatastat;
   zvvdatastat.set_name("CMS_VBFHinv_zvv_stat")
@@ -214,6 +246,7 @@ int main(int argc, char* argv[]){
     .set_latexname("$W\\rightarrow e\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"wel"});
+  if (mcBkgOnly) welmcstat.set_type("fromMCstatlnN");
 
   Syst weldatastat;
   weldatastat.set_name("CMS_VBFHinv_wel_stat")
@@ -227,6 +260,7 @@ int main(int argc, char* argv[]){
     .set_latexname("$W\\rightarrow \\mu\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"wmu"});
+  if (mcBkgOnly) wmumcstat.set_type("fromMCstatlnN");
 
   Syst wmudatastat;
   wmudatastat.set_name("CMS_VBFHinv_wmu_stat")
@@ -254,6 +288,7 @@ int main(int argc, char* argv[]){
     .set_latexname("$W\\rightarrow\\tau\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"wtau"});
+  if (mcBkgOnly) wtaumcstat.set_type("fromMCstatlnN");
 
   Syst wtaudatastat;
   wtaudatastat.set_name("CMS_VBFHinv_wtau_stat")
@@ -267,9 +302,10 @@ int main(int argc, char* argv[]){
     .set_latexname("Top MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"top"});
+  if (mcBkgOnly) topmcstat.set_type("fromMCstatlnN");
 
   Syst topmcsfunc;
-  topmcsfunc.set_name("CMS_VBFHinv_top_norm")
+  topmcsfunc.set_name("CMS_VBFHinv_top_extrapfacunc")
     .set_latexname("Top MC scale factor unc.")
     .set_type("constlnN")
     .set_constvalue(1.2)
@@ -324,9 +360,9 @@ int main(int argc, char* argv[]){
 
   Syst qcdmcstat;
   qcdmcstat.set_name("CMS_VBFHinv_qcd_norm")
-    .set_latexname("QCD FROM MC SHOULD NOT APPEAR IN FINAL RESULT")
+    .set_latexname(do_run2?"QCD MC stat.":"QCD FROM MC SHOULD NOT APPEAR IN FINAL RESULT")
     .set_type("fromMCstatlnN")
-    .set_procsaffected({"qcd"});  
+    .set_procsaffected({"qcd"});
 
   Syst qcdfromnumerr;
   qcdfromnumerr.set_name("CMS_VBFHinv_qcd_norm")
@@ -371,7 +407,26 @@ int main(int argc, char* argv[]){
     .set_procsaffected({"vv"})
     .set_constvalue(1.007);
 
-  
+  Syst wxsunc;
+  wxsunc.set_name("CMS_VBFHinv_W_xsunc")
+    .set_latexname("W cross-section")
+    .set_type("constlnN")
+    .set_procsaffected({"wmu","wel","wtau"})
+    .set_constvalue(1.1);
+
+  Syst zxsunc;
+  zxsunc.set_name("CMS_VBFHinv_Z_xsunc")
+    .set_latexname("Z cross-section")
+    .set_type("constlnN")
+    .set_procsaffected({"zvv","zmumu"})
+    .set_constvalue(1.1);
+
+  Syst topxsunc;
+  topxsunc.set_name("CMS_VBFHinv_top_xsunc")
+    .set_latexname("top cross-section")
+    .set_type("constlnN")
+    .set_procsaffected({"top"})
+    .set_constvalue(1.1);
 
   Syst wgmcstat;
   wgmcstat.set_name("CMS_VBFHinv_wg_norm")
@@ -387,51 +442,61 @@ int main(int argc, char* argv[]){
     .set_constvalue(1.2);
 
   systematics.push_back(lumi8tev);
-  systematics.push_back(eleeff);
-  systematics.push_back(mueff);
+  if (!do_run2) systematics.push_back(eleeff);
+  if (!do_run2) systematics.push_back(mueff);
   systematics.push_back(jes);
   systematics.push_back(jer);
-  if(do_ues)systematics.push_back(ues);
+  if(do_ues && !do_run2)systematics.push_back(ues);
   systematics.push_back(pu);
-  systematics.push_back(zvvmcstat);
-  //  systematics.push_back(zvvdatastat);
-  systematics.push_back(zvvdatastatgmn);
+  if (channel=="nunu" || channel=="mumu") {
+    //if (mcBkgOnly) systematics.push_back(zxsunc);
+    if (channel=="nunu") systematics.push_back(zvvmcstat);
+    if (channel=="mumu") systematics.push_back(zmumumcstat);
+    //  systematics.push_back(zvvdatastat);
+    if (!mcBkgOnly) systematics.push_back(zvvdatastatgmn);
+    //systematics.push_back(mcfmzvv);
+  }
+  //if (mcBkgOnly) systematics.push_back(wxsunc);
   systematics.push_back(wmumcstat);
-  systematics.push_back(wmudatastat);
+  if (!mcBkgOnly) systematics.push_back(wmudatastat);
   systematics.push_back(welmcstat);
-  systematics.push_back(weldatastat);
+  if (!mcBkgOnly) systematics.push_back(weldatastat);
   systematics.push_back(wtauideff);
   systematics.push_back(wtaujetmetextrap);
   systematics.push_back(wtaumcstat);
-  systematics.push_back(wtaudatastat);
-  //systematics.push_back(mcfmzvv);
-    if(do_datatop){
+  if (!mcBkgOnly) systematics.push_back(wtaudatastat);
+  if(do_datatop){
     systematics.push_back(topmcstat);
-    systematics.push_back(topdatastat);
+    if (!mcBkgOnly) systematics.push_back(topdatastat);
   }
   else{
     systematics.push_back(mctopmcstat);
-    systematics.push_back(topmcsfunc);
+    if (!mcBkgOnly) systematics.push_back(topmcsfunc);
   }
-  if(do_qcdfromshape)systematics.push_back(qcdmcstat);
-  if(do_qcdfromnumber)systematics.push_back(qcdfromnumerr);
+  if (mcBkgOnly) systematics.push_back(topxsunc);
+  if(do_run2 || do_qcdfromshape)systematics.push_back(qcdmcstat);
+  if(!do_run2 && do_qcdfromnumber)systematics.push_back(qcdfromnumerr);
   //systematics.push_back(wgmcstat);
   systematics.push_back(vvmcstat);
   systematics.push_back(vvxsunc);
-  systematics.push_back(qqHmcstat);
-  systematics.push_back(qqHqcdscale);
-  systematics.push_back(qqHpdf);
-  if(do_ggh){
-    systematics.push_back(ggHmcstat);
-    systematics.push_back(ggHqcdscale);
-    systematics.push_back(ggHpdf);
-    systematics.push_back(ggHUEPS);
+  if (channel=="nunu"){
+    systematics.push_back(qqHmcstat);
+    systematics.push_back(qqHqcdscale);
+    systematics.push_back(qqHpdf);
+    if(do_ggh){
+      systematics.push_back(ggHmcstat);
+      systematics.push_back(ggHqcdscale);
+      systematics.push_back(ggHpdf);
+      systematics.push_back(ggHUEPS);
+    }
   }
   
 
   std::cout<<"Setting up datacard header.."<<std::endl;
   std::ofstream datacard;
   datacard.open (outname.c_str());
+  //precision
+  datacard << std::setprecision(3);
   //Header information
   datacard << "# Invisible Higgs analysis for mH="<<mass<<" GeV"<<std::endl;
   datacard << "imax 1"<<std::endl;
@@ -452,6 +517,7 @@ int main(int argc, char* argv[]){
     }
     else if(!nunu->GetDirectory(dirname.c_str())){
       std::cout<<"Error: No directory called: "<<dirname<<" exiting"<<std::endl;
+      //continue;
       return 1;
     }
     else{
@@ -461,6 +527,7 @@ int main(int argc, char* argv[]){
     TH1F* histo = (TH1F*)dir->Get("jet2_pt");
     double rate=histo->Integral(0, histo->GetNbinsX() + 1);
     datacard<<"observation "<<rate<<std::endl;
+    std::cout<<"observation "<<rate<<std::endl;
   }
   else{
     double totalbkgs=0;
@@ -472,6 +539,7 @@ int main(int argc, char* argv[]){
       }
       else if(!nunu->GetDirectory(dirname.c_str())){
 	std::cout<<"Error: No directory called: "<<dirname<<" exiting"<<std::endl;
+	//continue;
 	return 1;
       }
       else{
@@ -484,6 +552,7 @@ int main(int argc, char* argv[]){
     }
     if(do_qcdfromnumber) totalbkgs+=qcdrate;
     datacard<<"observation "<<totalbkgs<<std::endl;
+    std::cout<<"observation "<<totalbkgs<<std::endl;
 
   }
 
@@ -627,8 +696,11 @@ int main(int argc, char* argv[]){
 	  else centralrate=bkgcentralrates[iProc-sigprocesses.size()];
 	  double downlnnfac=downrate/centralrate;
 	  double uplnnfac=uprate/centralrate;
-	  datacard<<"\t"<<downlnnfac<<"/"<<uplnnfac;
-	  
+	  if (downlnnfac==downlnnfac) datacard<<"\t"<<downlnnfac;
+	  else datacard<<"\t-";
+	  if (uplnnfac==uplnnfac) datacard<<"/"<<uplnnfac;
+	  else datacard<<"\t-";
+
 	  double error=(fabs(1-uplnnfac)+fabs(1-downlnnfac))/2;
 
 	  double abserror=0;
@@ -665,8 +737,8 @@ int main(int argc, char* argv[]){
 	  else centralrate=bkgcentralrates[iProc-sigprocesses.size()];
 	  double lnnfac=error/centralrate;
 	  lnnfac=lnnfac+1;
-	  datacard<<"\t"<<lnnfac;
-	  
+	  if (lnnfac==lnnfac) datacard<<"\t"<<lnnfac;
+	  else datacard<<"\t-";
 	  double relerror=lnnfac-1;
 
 	  double abserror=0;
@@ -767,7 +839,11 @@ int main(int argc, char* argv[]){
       }
     }
     if(do_qcdfromnumber){
-      if(systematics[iSyst].type()=="qcdfromnumberlnN")datacard<<"\t"<<(1+qcdabserr/qcdrate);
+      if(systematics[iSyst].type()=="qcdfromnumberlnN"){
+	double tmp = (1+qcdabserr/qcdrate);
+	if (tmp==tmp) datacard<<"\t"<<tmp;
+	else datacard<<"\t-";
+      }
       else datacard<<"\t-";
     }
     datacard<<std::endl;

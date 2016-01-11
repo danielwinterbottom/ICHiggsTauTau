@@ -24,6 +24,7 @@ namespace ic{
     LTAnalyser AddFile(std::string,std::string,std::string);
     LTAnalyser AddFiles(std::string);
     void SetInFolder(std::string);
+    void SetEosFolders(std::string,std::string);
     void SetInputParams(std::string);
 
     bool PostModule(int);

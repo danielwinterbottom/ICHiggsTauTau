@@ -1,10 +1,10 @@
 #!/bin/sh
 DOCERN=1
-DOSUBMIT=0
+DOSUBMIT=1
 MYEXEC=LightTreeMakerFromMiniAOD
 PRODUCTION=151113
 PRODUSER=amagnan
-JPTCUTVAL=40
+JPTCUTVAL=70
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -32,13 +32,13 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 
 
-for SYST in central #JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
+for SYST in central JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
-  JOBDIRPREFIX=jobs_lighttree_151130
+  JOBDIRPREFIX=jobs_lighttree_160105
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_151130
+  OUTPUTPREFIX=output_lighttree_160105
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -152,7 +152,7 @@ if [ "$SYST" = "ELEEFFUP" ]
         PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MET
     fi    
 
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*` 
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_MET*` 
       do
       echo "Processing files in "$FILELIST
       

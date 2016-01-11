@@ -143,6 +143,7 @@ namespace ic {
     jet2metnomu_scalarprod_ = 0;
 
     pass_muontrigger_ = -1;
+    pass_photontrigger_ = -1;
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
@@ -304,6 +305,7 @@ namespace ic {
 
 
     outputTree_->Branch("pass_muontrigger",&pass_muontrigger_);
+    outputTree_->Branch("pass_photontrigger",&pass_photontrigger_);
     outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
     outputTree_->Branch("pass_mettrigger",&pass_mettrigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
@@ -368,7 +370,7 @@ namespace ic {
 
   int  LightTreeAM::Execute(TreeEvent *event){
  
-    //static unsigned processed = 0;
+    static unsigned processed = 0;
     
     resetAllTreeVariables();
 
@@ -392,9 +394,18 @@ namespace ic {
     for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
       std::string name = triggerPathPtrVec[i]->name();
       double prescale = triggerPathPtrVec[i]->prescale();
+      //if (name.find("Photon") != name.npos){
       //std::cout << " Trigger " << name 
       //<< " prescale " << prescale
       //<< std::endl;
+      //}
+      //if (name.find("HLT_IsoMu20_") != name.npos) pass_photontrigger_ = prescale;
+      //HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_VBF_v2
+      //HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_PFMET40
+      ///HLT_Photon175_v*
+      //HLT_Photon135_PFMET100
+
+
       if (name.find("HLT_IsoMu20_") != name.npos) pass_muontrigger_ = prescale;
       if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140") != name.npos) pass_sigtrigger_ = prescale;
       if (name.find("HLT_PFMET170_") != name.npos) pass_mettrigger_ = prescale;
@@ -858,8 +869,9 @@ namespace ic {
     }
     */
     
+    ++processed;
     //if (processed == 500) outputTree_->OptimizeBaskets();
-    //if ((processed%500) == 0) outputTree_->OptimizeBaskets();
+    if ((processed%1000000) == 0) outputTree_->AutoSave();
 
     return 0;
 
@@ -867,6 +879,8 @@ namespace ic {
   }//execute method
   
   int  LightTreeAM::PostAnalysis(){
+
+    outputTree_->Write();
 
     std::cout << "----------------------------------------" << std::endl
 	      << "PostAnalysis Info for LightTreeAM" << std::endl

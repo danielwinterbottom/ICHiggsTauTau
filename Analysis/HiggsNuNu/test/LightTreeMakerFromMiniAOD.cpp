@@ -38,6 +38,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JECStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetEventFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
@@ -290,8 +291,8 @@ int main(int argc, char* argv[]){
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   double loose_photon_pt, loose_photon_eta, medium_photon_pt, medium_photon_eta, tight_photon_pt, tight_photon_eta;
   
-  double muon_iso = is2012 ? 0.12 : 0.15;
-  double veto_muon_iso = is2012 ? 0.2 : 0.25;
+  double muon_iso = is2012 ? 0.12 : 0.12;//0.15 -> too loose
+  double veto_muon_iso = is2012 ? 0.2 : 0.2;//0.25 -> too loose??
 
   elec_dz = 0.1;
   elec_dxy = 0.02;
@@ -665,6 +666,14 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
+  /*JECStudy jecStudy = JECStudy
+    ("jecStudy")
+    .set_input_label(jettype)
+    .set_jec_old_files("input/jec/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt")
+    .set_jec_new_files("input/jec/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt")
+    .set_is_data(is_data)
+    .set_reapplyJEC(true);
+  */
 
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
@@ -1005,13 +1014,14 @@ int main(int argc, char* argv[]){
   
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   
+  //Module to do jet smearing and systematics
+  //analysis.AddModule(&jecStudy);
+  analysis.AddModule(&ModifyJetMET);
+  
   //deal with removing overlap with selected leptons
   analysis.AddModule(&jetMuonOverlapFilter);
   analysis.AddModule(&jetElecOverlapFilter);
   //no need to clean taus, we don't do it in the signal selection.
-  
-  //Module to do jet smearing and systematics
-  analysis.AddModule(&ModifyJetMET);
   
   //add met without leptons for plots
   analysis.AddModule(&metNoMuons);

@@ -21,16 +21,29 @@ namespace ic{
     path_=path;
   };
 
-  int LTFile::Open(std::string infolder){
+  int LTFile::Open(std::string infolder,std::string dataeosfolder,std::string mceosfolder){
     //std::cout<<"Opening TFile..."<<std::endl;
     std::string filepath = (this->path());
-    TFile * tmp = TFile::Open((infolder+"/"+this->path()).c_str());
+    bool isMC=false;
+    if (filepath.find("MC_")!=filepath.npos){
+      //std::cout << " File " << filepath << " is MC." << std::endl;
+	isMC=true;
+    }
+    else {
+      std::cout << " File " << dataeosfolder << infolder << filepath << " is data." << std::endl;
+      isMC=false;
+    }
+    TFile * tmp = isMC?TFile::Open((mceosfolder+infolder+"/"+this->path()).c_str()) : TFile::Open((dataeosfolder+infolder+"/"+this->path()).c_str());
     if (!tmp) {
       std::cerr << "Warning, file " << this->name() << " could not be opened." << std::endl;
       return 1;
     }
     tfile_ = tmp;
     tree_=(TTree *)tfile_->Get("LightTree");
+    if (!tree_) {
+      std::cout << " Error opening tree, tree not found in file " << this->name() << std::endl;
+      return 1;
+    }
     tree_->SetEstimate(1000);
     if(friendTrees.size()!=0){
       for(unsigned iFriend=0;iFriend<friendTrees.size();iFriend++){
@@ -254,7 +267,7 @@ namespace ic{
 
   int LTFiles::OpenFile(std::string filename){
     if(files_.count(filename)>0){
-      if(files_[filename].Open(infolder_)==1){
+      if(files_[filename].Open(infolder_,dataeosfolder_,mceosfolder_)==1){
 	std::cout<<"other stuff";
 	return 1;
       }
@@ -269,7 +282,7 @@ namespace ic{
   int LTFiles::OpenSet(std::string setname){
     if(setlists_.count(setname)>0){
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
-	if((files_[*iter].Open(infolder_))==1){
+	if((files_[*iter].Open(infolder_,dataeosfolder_,mceosfolder_))==1){
 	  std::cout<<"stuff";
 	  return 1;
 	}
@@ -285,7 +298,7 @@ namespace ic{
 
   int LTFiles::OpenAll(){
     for(auto iter=files_.begin();iter!=files_.end();iter++){
-      if((iter->second.Open(infolder_))==1)return 1;
+      if((iter->second.Open(infolder_,dataeosfolder_,mceosfolder_))==1)return 1;
     }
     return 0;
   };
