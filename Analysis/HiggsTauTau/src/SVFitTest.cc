@@ -31,6 +31,7 @@ namespace ic {
     require_inputs_match_ = true;
     legacy_svfit_ = false;
     from_grid_ = false;
+    read_svfit_mt_ = false;
     do_preselection_ = false;
     read_all_ = false;
     dm1_ = -1;
@@ -133,17 +134,25 @@ namespace ic {
           unsigned    run      = 0;
           ULong64_t    objects_hash  = 0;
           double      svfit_mass    = 0;
+          double      svfit_transverse_mass = 0;
           Candidate * svfit_vector  = nullptr;
           otree->SetBranchAddress("event"  , &event);
           otree->SetBranchAddress("lumi"  , &lumi);
           otree->SetBranchAddress("run"  , &run);
           otree->SetBranchAddress("objects_hash", &objects_hash);
           otree->SetBranchAddress("svfit_mass"  , &svfit_mass);
+          if(read_svfit_mt_){
+            otree->SetBranchAddress("svfit_transverse_mass",&svfit_transverse_mass);
+          }
           otree->SetBranchAddress("svfit_vector"  , &svfit_vector);
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
             if(!MC_) mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
-            else p4_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, *svfit_vector);
+            else{
+              if(read_svfit_mt_){
+                p4_map[tri_unsigned(run, lumi, event)] = std::make_tuple(objects_hash, *svfit_vector, svfit_transverse_mass);
+              } else p4_map[tri_unsigned(run, lumi, event)] = std::make_tuple(objects_hash, *svfit_vector, 0);
+            }
           }
           ofile->Close();
           delete ofile;
@@ -344,14 +353,15 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
         auto it = p4_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
         if (it != p4_map.end()) {
           ;
-          if (require_inputs_match_ && it->second.first != objects_hash) {
+          if (require_inputs_match_ && std::get<0>(it->second) != objects_hash) {
             fail_state = true;
           } else {
-            if (it->second.second.M() < 1.) {
-              std::cout << "Warning, SVFit mass is invalid: " << it->second.second.M() << std::endl;
+            if ((std::get<1>(it->second)).M() < 1.) {
+              std::cout << "Warning, SVFit mass is invalid: " << (std::get<1>(it->second)).M() << std::endl;
             } else {
-              event->Add("svfitMass", it->second.second.M());
-              event->Add("svfitHiggs", it->second.second);
+              event->Add("svfitMass", (std::get<1>(it->second)).M());
+              event->Add("svfitHiggs", std::get<1>(it->second));
+              event->Add("svfitMT", std::get<2>(it->second));
             }
           }
         } else {
