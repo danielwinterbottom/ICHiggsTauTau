@@ -840,7 +840,7 @@ if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
  if(era_type == era::data_2015){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool());
-   svFitTest.set_read_svfit_mt(false);
+   svFitTest.set_read_svfit_mt(true);
    svFitTest.set_read_all(js["read_all_svfit_files"].asBool());
    svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
  }
