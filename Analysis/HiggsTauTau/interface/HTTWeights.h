@@ -97,7 +97,7 @@ class HTTWeights : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
   double Efficiency(double m, double m0, double sigma, double alpha, double n, double norm);
-  void SetWTargetFractions(double f0, double f1, double f2, double f3, double f4) ;
+  void SetWTargetFractions(double f0, double f1, double f2, double f3, double f4);
   void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4);
   void SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4);
   void SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4);
