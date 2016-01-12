@@ -156,7 +156,7 @@ class Jet : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Jet, 2);
+  ClassDef(Jet, 3);
  #endif
 };
 

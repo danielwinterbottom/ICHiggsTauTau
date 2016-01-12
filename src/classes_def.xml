@@ -56,4 +56,6 @@
   <class name="edm::Wrapper<reco::VertexRefVector>"/>
   <class name="edm::Wrapper<reco::GsfTrackRefVector>"/>
   <class name="edm::Wrapper<reco::PFCandidateRefVector>"/>
+  <class name="edm::ValueMap<std::vector<int>>"/>
+  <class name="edm::Wrapper<edm::ValueMap<std::vector<int>>>"/>
 </lcgdict>

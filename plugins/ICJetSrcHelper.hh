@@ -52,7 +52,7 @@ struct JetSrcHelper {
         apply_post_jec_cut(config.getParameter<bool>("applyCutAfterJECs")),
         input_sv_info((config.getParameter<edm::InputTag>("inputSVInfo"))),
         include_sv_info_ids(config.getParameter<bool>("requestSVInfo")) {
-        collector.consumes<edm::ValueMap<int>>(input_jet_flavour);
+        collector.consumes<edm::ValueMap<std::vector<int>>>(input_jet_flavour);
         collector.consumes<reco::SecondaryVertexTagInfoCollection>(input_sv_info);
     if (apply_jec_factors || include_jec_factors) {
       edm::ParameterSet pset = config.getParameter<edm::ParameterSet>("JECs");
@@ -91,7 +91,7 @@ struct JetSrcHelper {
   void Produce(edm::Handle<edm::View<U> > const &jets_handle,
                std::vector<T> *jets, std::vector<unsigned> *passed,
                edm::Event &event, const edm::EventSetup &setup) {
-    edm::Handle<edm::ValueMap<int> > jet_flavour_handle;
+    edm::Handle<edm::ValueMap<std::vector<int>> > jet_flavour_handle;
     if (include_jet_flavour)
       event.getByLabel(input_jet_flavour, jet_flavour_handle);
 
@@ -155,7 +155,8 @@ struct JetSrcHelper {
       dest.set_charge(src.charge());
       dest.set_jet_area(src.jetArea());
       if (include_jet_flavour) {
-        dest.set_parton_flavour((*jet_flavour_handle)[jets_handle->refAt(i)]);
+        dest.set_parton_flavour((*jet_flavour_handle)[jets_handle->refAt(i)].at(0));
+        dest.set_hadron_flavour((*jet_flavour_handle)[jets_handle->refAt(i)].at(1));
       }
       // Only write correction into the output jet if the user wants it
       if (include_jec_factors) {
