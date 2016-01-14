@@ -55,6 +55,7 @@ git config remote.origin.url ${MY_PKG_GIT}
 git fetch ${MY_PKG_GIT} refs/pull/${PULL_REQ}/merge
 git checkout -f -q FETCH_HEAD
 git submodule init && git submodule update
+git gc
 
 cd ${CMSSW_BASE}/src/${MY_CMSSW_PKG}
 
