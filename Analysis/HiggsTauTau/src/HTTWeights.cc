@@ -490,10 +490,10 @@ namespace ic {
             muRERECO  = Efficiency(pt, 15.9977, 7.64004e-05, 6.4951e-08, 1.57403, 0.865325);
             mcRERECO  = Efficiency(pt, 16.0051, 2.45144e-05, 4.3335e-09, 1.66134, 0.87045);
           }
-          //if (era_ == era::data_2012_rereco) {
+          if (era_ == era::data_2012_rereco) {
             mu_trg = muRERECO;
             mu_trg_mc = mcRERECO;
-          //}
+          }
 
           double tdataRERECO   = 1.0;
           double tmcRERECO     = 1.0;
@@ -506,10 +506,10 @@ namespace ic {
             tmcRERECO    = Efficiency(t_pt, 18.212782, 0.338119, 0.122828, 12.577926, 0.893975);
 
           }
-        //  if (era_ == era::data_2012_rereco) {
+          if (era_ == era::data_2012_rereco) {
             tau_trg = tdataRERECO;
             tau_trg_mc = tmcRERECO;
-         // }
+          }
         } else if (mc_ == mc::fall11_42X) {
           if (m_eta < 0.8) {
             double mu12 = 0.920;
