@@ -62,6 +62,7 @@ namespace ic {
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
+      outtree_->Branch("mt_sv",              &mt_sv_.var_double);
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
@@ -816,6 +817,12 @@ namespace ic {
     } else {
       m_sv_ = -9999;
     }
+
+   if (event->Exists("svfitMT")){
+     mt_sv_ = event->Get<double>("svfitMT");
+   } else {
+     mt_sv_ = -9999;
+   }
 
     if (event->Exists("svfitHiggs")) {
       Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
