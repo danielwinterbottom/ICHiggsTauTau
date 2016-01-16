@@ -37,6 +37,8 @@ parser.add_option("--svfit", dest="svfit", action='store_true', default=False,
                   help="Make inputs for svfit mass.")
 parser.add_option("--mttot", dest="mttot", action='store_true', default=False,
                   help="Make inputs for total transverse mass.")
+parser.add_option("--mtsv", dest="mtsv", action='store_true', default=False,
+                  help="Make inputs for total transverse svfit mass.")
 #parser.add_option("--dijet", dest="dijet", action='store_true', default=False,
 #                  help="Make inputs for dijet mass.")
 #parser.add_option("--mttbb", dest="mttbb", action='store_true', default=False,
@@ -205,13 +207,17 @@ if SCHEME == 'run2_mssm':
   BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
   MTTOTBINSFINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,450,500,550,600,700,1000]"
   MTTOTBINS="[0,40,80,120,160,200,240,280,320,360,400,450,500,550,600,700,1000]"
+  if options.mttot or options.mtsv:
+    BINS_FINE=MTTOTBINSFINE
+    BINS=MTTOTBINS
+
   scheme_et = [
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "notwoprong",  "notwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "notwoprong",  "notwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
+    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
@@ -219,11 +225,11 @@ if SCHEME == 'run2_mssm':
   ]
   scheme_mt = [
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "notwoprong",  "notwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "notwoprong",  "notwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
+    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
@@ -233,9 +239,9 @@ if SCHEME == 'run2_mssm':
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE,  ''),
 #    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, ''),
 #    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, ''),
-    ("8",   "notwoprong",    "notwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE,  ''),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE if not options.mttot else MTTOTBINSFINE, ''),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS if not options.mttot else MTTOTBINS, ''),
+    ("8",   "notwoprong",    "notwoprong",  BINS_FINE,  ''),
+    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, ''),
+    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, ''),
 
   ]
   scheme_em = [
@@ -265,7 +271,8 @@ cat_schemes = {
 plots = [ 
   ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' , "60", "2500" if ANA=='mssm' else "120"),
   ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      , "100", "2500"  if ANA=='mssm' else "160"),
-  ('mt_tot' , "m_{T}^{tot} [GeV]"        , '-mttot'      , "100", "3000")
+  ('mt_tot' , "m_{T}^{tot} [GeV]"        , '-mttot'      , "100", "3000"),
+  ('mt_sv' , "m_{T#tau#tau} [GeV]"        , '-mtsv'      , "100", "3000")
  ]
 if options.mvis:
     plots = plots[0]
@@ -273,7 +280,8 @@ if options.svfit:
     plots = plots[1]
 if options.mttot: 
     plots = plots[2]
-
+if options.mtsv: 
+    plots = plots[3]
 
 var     = plots[0]
 xlab    = plots[1]
