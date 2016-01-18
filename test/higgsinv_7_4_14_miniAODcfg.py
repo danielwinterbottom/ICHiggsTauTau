@@ -16,6 +16,7 @@ import sys
 electronLabel = cms.InputTag("slimmedElectrons")
 muonLabel = cms.InputTag("slimmedMuons")
 photonLabel = cms.InputTag("slimmedPhotons")
+tauLabel = cms.InputTag("slimmedTaus")
 
 ################################################################                                                                                         
 # Setup and Read Options                                                                                                                          
@@ -151,7 +152,7 @@ process.selectedVertices = cms.EDFilter("VertexRefSelector",
 
 process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
   src = electronLabel,
-  cut = cms.string("pt > 5.0 & abs(eta) < 2.6")
+  cut = cms.string("pt > 9.5 & abs(eta) < 2.6")
 )
 
 process.selectedPFMuons = cms.EDFilter("PATMuonRefSelector",
@@ -160,8 +161,8 @@ process.selectedPFMuons = cms.EDFilter("PATMuonRefSelector",
 )
 
 process.selectedPFTaus = cms.EDFilter("PATTauRefSelector",
-  src = cms.InputTag("slimmedTaus"),
-  cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFinding") > 0.5')
+  src = tauLabel,
+  cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFindingNewDMs") > 0.5')
 )
 
 
@@ -172,7 +173,7 @@ process.selectedPF = cms.EDFilter("PATPackedCandidateSelector",#
 
 process.icSelectionSequence = cms.Sequence(
   process.selectedPF+
-  process.selectedVertices+
+  #process.selectedVertices+
   process.selectedElectrons+
   process.selectedPFMuons+
   process.selectedPFTaus
@@ -391,17 +392,33 @@ process.icMuonSequence = cms.Sequence()
 
 #redo isolation calculation
 process.load("CommonTools.ParticleFlow.Isolation.pfMuonIsolation_cff")
+
+
 process.muPFIsoValueCharged03PFIso    = process.muPFIsoValueCharged03.clone()
 process.muPFIsoValueChargedAll03PFIso = process.muPFIsoValueChargedAll03.clone()
 process.muPFIsoValueGamma03PFIso      = process.muPFIsoValueGamma03.clone()
 process.muPFIsoValueNeutral03PFIso    = process.muPFIsoValueNeutral03.clone()
 process.muPFIsoValuePU03PFIso         = process.muPFIsoValuePU03.clone()
+
+
+process.muPFIsoValueCharged04PFIso    = process.muPFIsoValueCharged04.clone()
+process.muPFIsoValueChargedAll04PFIso = process.muPFIsoValueChargedAll04.clone()
+process.muPFIsoValueGamma04PFIso      = process.muPFIsoValueGamma04.clone()
+process.muPFIsoValueNeutral04PFIso    = process.muPFIsoValueNeutral04.clone()
+process.muPFIsoValuePU04PFIso         = process.muPFIsoValuePU04.clone()
+
+
 process.muonPFIsolationValuesSequence = cms.Sequence(
     process.muPFIsoValueCharged03PFIso+
     process.muPFIsoValueChargedAll03PFIso+
     process.muPFIsoValueGamma03PFIso+
     process.muPFIsoValueNeutral03PFIso+
-    process.muPFIsoValuePU03PFIso
+    process.muPFIsoValuePU03PFIso+
+    process.muPFIsoValueCharged04PFIso+
+    process.muPFIsoValueChargedAll04PFIso+
+    process.muPFIsoValueGamma04PFIso+
+    process.muPFIsoValueNeutral04PFIso+
+    process.muPFIsoValuePU04PFIso
     )
 process.muPFIsoDepositCharged.src     = muonLabel
 process.muPFIsoDepositChargedAll.src  = muonLabel
@@ -424,7 +441,8 @@ process.icMuonProducer = producers.icMuonProducer.clone(
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
   includeFloats = cms.PSet(
   ),
-  includePFIso03           = cms.bool(True)
+  includePFIso03           = cms.bool(True),
+  includePFIso04           = cms.bool(True),
 )
 
 process.icMuonSequence += cms.Sequence(

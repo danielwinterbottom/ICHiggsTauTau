@@ -291,15 +291,15 @@ int main(int argc, char* argv[]){
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   double loose_photon_pt, loose_photon_eta, medium_photon_pt, medium_photon_eta, tight_photon_pt, tight_photon_eta;
   
-  double muon_iso = is2012 ? 0.12 : 0.12;//0.15 -> too loose
-  double veto_muon_iso = is2012 ? 0.2 : 0.2;//0.25 -> too loose??
+  double muon_iso = is2012 ? 0.12 : 0.1;//0.15 -> too loose
+  double veto_muon_iso = is2012 ? 0.2 : 0.15;//0.25 -> too loose??
 
   elec_dz = 0.1;
   elec_dxy = 0.02;
   veto_elec_dz = 0.2;
   veto_elec_dxy = 0.04;
-  muon_dz = is2012 ? 0.2 : 0.5;
-  muon_dxy = is2012 ? 0.045 : 0.2;
+  muon_dz = 0.2;//is2012 ? 0.2 : 0.5;
+  muon_dxy = 0.045;//is2012 ? 0.045 : 0.2;
   //veto_muon_dz = 0.2;
   //veto_muon_dxy = 0.045;
   
@@ -549,7 +549,7 @@ int main(int argc, char* argv[]){
     .set_input_label("vetoMuons")
     .set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
 		   bind(MuonLoose, _1) &&
-		   bind(PF04IsolationVal<Muon>, _1, 0.5, false) < veto_muon_iso
+		   bind(PF03IsolationVal<Muon>, _1, 0.5, false) < veto_muon_iso
 						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
 						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
 						)
@@ -574,7 +574,7 @@ int main(int argc, char* argv[]){
     ("SelMuonPtEtaFilter")
     .set_input_label("selMuons").set_predicate(bind(MinPtMaxEta, _1, muon_pt, muon_eta) &&
 					       bind(MuonTight, _1) && 
-					       bind(PF04IsolationVal<Muon>, _1, 0.5, false) < muon_iso &&
+					       bind(PF03IsolationVal<Muon>, _1, 0.5, false) < muon_iso &&
 					       bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
 					       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
 					       )

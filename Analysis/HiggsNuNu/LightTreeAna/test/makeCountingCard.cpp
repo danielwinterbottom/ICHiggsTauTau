@@ -41,6 +41,9 @@ int main(int argc, char* argv[]){
   std::string channel;
   bool mcBkgOnly;
   bool do_run2;
+  bool do_4params;
+  bool do_1param;
+  double wz_syst;
 
   po::variables_map vm;
   po::options_description config("Configuration");
@@ -62,7 +65,11 @@ int main(int argc, char* argv[]){
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
     ("do_datatop,t",             po::value<bool>(&do_datatop)->default_value(false))
     ("mcBkgOnly",                po::value<bool>(&mcBkgOnly)->default_value(false))
-    ("do_run2",                  po::value<bool>(&do_run2)->default_value(false));
+    ("do_run2",                  po::value<bool>(&do_run2)->default_value(false))
+    ("do_4params",                  po::value<bool>(&do_4params)->default_value(false))
+    ("do_1param",                  po::value<bool>(&do_1param)->default_value(true))
+    ("wz_syst",                  po::value<double>(&wz_syst)->default_value(1.15))
+;
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::notify(vm);
@@ -102,23 +109,35 @@ int main(int argc, char* argv[]){
     if(do_ggh)sigprocesslatex.push_back("Signal(ggH)");
   }
   std::vector<std::string> bkgprocesses;
-  if (channel=="nunu") bkgprocesses.push_back("zvv");
+  if (channel=="nunu") {
+    if (do_run2) bkgprocesses.push_back("zvv");
+    else {
+      bkgprocesses.push_back("zvv_ewk");
+      bkgprocesses.push_back("zvv_qcd");
+    }
+  }
   if (channel=="mumu") bkgprocesses.push_back("zmumu");
   bkgprocesses.push_back("wmu");
   bkgprocesses.push_back("wel");
   bkgprocesses.push_back("wtau");
   bkgprocesses.push_back("top");
-  if( (do_qcdfromshape || do_run2) && channel=="nunu") bkgprocesses.push_back("qcd");
+  if( do_run2 || (do_qcdfromshape && channel=="nunu")) bkgprocesses.push_back("qcd");
   bkgprocesses.push_back("vv");
 
   std::vector<std::string> bkgprocesslatex;
-  if (channel=="nunu")bkgprocesslatex.push_back("$Z\\rightarrow\\nu\\nu$");
+  if (channel=="nunu"){
+    if (do_run2) bkgprocesslatex.push_back("$Z\\rightarrow\\nu\\nu$");
+    else {
+      bkgprocesslatex.push_back("$ewkZ\\rightarrow\\nu\\nu$");
+      bkgprocesslatex.push_back("$qcdZ\\rightarrow\\nu\\nu$");
+    }
+  }
   if (channel=="mumu") bkgprocesslatex.push_back("$Z\\rightarrow\\mu\\mu$");
   bkgprocesslatex.push_back("$W\\rightarrow\\mu\\nu$");
   bkgprocesslatex.push_back("$W\\rightarrow e\\nu$");
   bkgprocesslatex.push_back("$W\\rightarrow\\tau\\nu$");
   bkgprocesslatex.push_back("top");
-  if( (do_qcdfromshape || do_run2) && channel=="nunu") bkgprocesslatex.push_back("QCD multijet");
+  if( do_run2 || (do_qcdfromshape && channel=="nunu")) bkgprocesslatex.push_back("QCD multijet");
   bkgprocesslatex.push_back("VV");
   
   //CENTRAL ROOT FILE
@@ -127,10 +146,10 @@ int main(int argc, char* argv[]){
   TFile* nunu=new TFile((indir+"/"+channel+".root").c_str());
 
   //SYST VARIED ROOT FILES
-  TFile* jesup=new TFile((indir+"/JESUP/"+channel+".root").c_str());
-  TFile* jesdown=new TFile((indir+"/JESDOWN/"+channel+".root").c_str());
-  TFile* jerbetter=new TFile((indir+"/JERBETTER/"+channel+".root").c_str());
-  TFile* jerworse=new TFile((indir+"/JERWORSE/"+channel+".root").c_str());
+  TFile* jesup=do_run2?0:new TFile((indir+"/JESUP/"+channel+".root").c_str());
+  TFile* jesdown=do_run2?0:new TFile((indir+"/JESDOWN/"+channel+".root").c_str());
+  TFile* jerbetter=do_run2?0:new TFile((indir+"/JERBETTER/"+channel+".root").c_str());
+  TFile* jerworse=do_run2?0:new TFile((indir+"/JERWORSE/"+channel+".root").c_str());
   TFile* uesup=do_run2?0:new TFile((indir+"/UESUP/"+channel+".root").c_str());
   TFile* uesdown=do_run2?0:new TFile((indir+"/UESDOWN/"+channel+".root").c_str());
   TFile* eleup=do_run2?0:new TFile((indir+"/ELEEFFUP/"+channel+".root").c_str());
@@ -145,7 +164,11 @@ int main(int argc, char* argv[]){
 
   std::vector<std::string> lumi8tevprocsaffected={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","wg","vv","qcd"};
   if (mcBkgOnly) {
-    lumi8tevprocsaffected.push_back("zvv");
+    if (do_run2) lumi8tevprocsaffected.push_back("zvv");
+    else {
+      lumi8tevprocsaffected.push_back("zvv_ewk");
+      lumi8tevprocsaffected.push_back("zvv_qcd");
+    }
     lumi8tevprocsaffected.push_back("zmumu");
     lumi8tevprocsaffected.push_back("wmu");
     lumi8tevprocsaffected.push_back("wel");
@@ -160,8 +183,8 @@ int main(int argc, char* argv[]){
     .set_procsaffected(lumi8tevprocsaffected)
     .set_constvalue(1.026);
 
-  std::vector<std::string> allprocs={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","zvv","zmumu","wmu","wel","wtau","top","qcd","wg","vv"};
-  std::vector<std::string> allprocsnotqcd={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","zvv","zmumu","wmu","wel","wtau","top","wg","vv"};
+  std::vector<std::string> allprocs={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","zvv","zvv_ewk","zvv_qcd","zmumu","wmu","wel","wtau","top","qcd","wg","vv"};
+  std::vector<std::string> allprocsnotqcd={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","zvv","zvv_ewk","zvv_qcd","zmumu","wmu","wel","wtau","top","wg","vv"};
   std::vector<std::string> ggHprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH"};
   std::vector<std::string> qqHprocs={"qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH"};
   Syst eleeff;
@@ -219,6 +242,22 @@ int main(int argc, char* argv[]){
     .set_procsaffected({"zvv"});
 
   if (mcBkgOnly) zvvmcstat.set_type("fromMCstatlnN");
+
+  Syst zvvewkmcstat;
+  zvvewkmcstat.set_name("CMS_VBFHinv_zvv_ewk_norm")
+    .set_latexname("$ewkZ\\rightarrow\\nu\\nu$ MC stat.")
+    .set_type("datadrivenMCstatlnN")
+    .set_procsaffected({"zvv_ewk"});
+
+  if (mcBkgOnly) zvvewkmcstat.set_type("fromMCstatlnN");
+
+  Syst zvvqcdmcstat;
+  zvvqcdmcstat.set_name("CMS_VBFHinv_zvv_qcd_norm")
+    .set_latexname("$qcdZ\\rightarrow\\nu\\nu$ MC stat.")
+    .set_type("datadrivenMCstatlnN")
+    .set_procsaffected({"zvv_qcd"});
+
+  if (mcBkgOnly) zvvqcdmcstat.set_type("fromMCstatlnN");
 
   Syst zmumumcstat;
   zmumumcstat.set_name("CMS_VBFHinv_zmumu_norm")
@@ -444,13 +483,20 @@ int main(int argc, char* argv[]){
   systematics.push_back(lumi8tev);
   if (!do_run2) systematics.push_back(eleeff);
   if (!do_run2) systematics.push_back(mueff);
-  systematics.push_back(jes);
-  systematics.push_back(jer);
+  if (!do_run2) systematics.push_back(jes);
+  if (!do_run2) systematics.push_back(jer);
   if(do_ues && !do_run2)systematics.push_back(ues);
-  systematics.push_back(pu);
+  if (!do_run2) 
+    systematics.push_back(pu);
   if (channel=="nunu" || channel=="mumu") {
     //if (mcBkgOnly) systematics.push_back(zxsunc);
-    if (channel=="nunu") systematics.push_back(zvvmcstat);
+    if (channel=="nunu") {
+      if (do_run2) systematics.push_back(zvvmcstat);
+      else {
+	systematics.push_back(zvvewkmcstat);
+	systematics.push_back(zvvqcdmcstat);
+      }
+    }
     if (channel=="mumu") systematics.push_back(zmumumcstat);
     //  systematics.push_back(zvvdatastat);
     if (!mcBkgOnly) systematics.push_back(zvvdatastatgmn);
@@ -462,7 +508,7 @@ int main(int argc, char* argv[]){
   systematics.push_back(welmcstat);
   if (!mcBkgOnly) systematics.push_back(weldatastat);
   systematics.push_back(wtauideff);
-  systematics.push_back(wtaujetmetextrap);
+  if (channel=="taunu") systematics.push_back(wtaujetmetextrap);
   systematics.push_back(wtaumcstat);
   if (!mcBkgOnly) systematics.push_back(wtaudatastat);
   if(do_datatop){
@@ -525,6 +571,10 @@ int main(int argc, char* argv[]){
     }
     dir->cd();
     TH1F* histo = (TH1F*)dir->Get("jet2_pt");
+    if (!histo) {
+      std::cout<<"Error: No histogram jet2_pt found for "<<dirname<<" exiting"<<std::endl; 
+      return 1;
+    }
     double rate=histo->Integral(0, histo->GetNbinsX() + 1);
     datacard<<"observation "<<rate<<std::endl;
     std::cout<<"observation "<<rate<<std::endl;
@@ -694,8 +744,13 @@ int main(int argc, char* argv[]){
 	  double centralrate;
 	  if(iProc<sigprocesses.size())centralrate=sigcentralrates[iProc];
 	  else centralrate=bkgcentralrates[iProc-sigprocesses.size()];
+
 	  double downlnnfac=downrate/centralrate;
+	  if (downlnnfac<=0)downlnnfac=0.01;
+
 	  double uplnnfac=uprate/centralrate;
+	  if (uplnnfac<=0)uplnnfac=0.01;
+
 	  if (downlnnfac==downlnnfac) datacard<<"\t"<<downlnnfac;
 	  else datacard<<"\t-";
 	  if (uplnnfac==uplnnfac) datacard<<"/"<<uplnnfac;
@@ -910,6 +965,42 @@ int main(int argc, char* argv[]){
     std::cout<<"\\end{tabular}"<<std::endl;
   }
 
+datacard<<std::endl;
+datacard<<std::endl;
+
+  if (do_4params){
+    if (channel=="qcd" || channel=="nunu"){
+      if (do_run2) datacard<<"Z_xsection rateParam ch1 zvv 1"<<std::endl;
+      else {
+	datacard<<"Z_xsection rateParam ch1 zvv_ewk 1"<<std::endl;
+	datacard<<"Z_xsection rateParam ch1 zvv_qcd 1"<<std::endl;
+      }
+    }
+    if (channel=="mumu") datacard<<"Z_xsection rateParam ch1 zmumu 1"<<std::endl;
+    if (channel=="qcd" || channel=="munu" || channel=="nunu" || channel=="topl" || channel=="topb")
+      datacard<<"W_mu_xsection rateParam ch1 wmu 1"<<std::endl;
+    if (channel=="qcd" || channel=="enu" || channel=="nunu" || channel=="topl" || channel=="topb")
+      datacard<<"W_el_xsection rateParam ch1 wel 1"<<std::endl;
+    if (channel=="qcd" || channel=="taunu" || channel=="nunu" || channel=="topl" || channel=="topb")
+      datacard<<"W_tau_xsection rateParam ch1 wtau 1"<<std::endl;
+    datacard<<"QCD_xsection rateParam ch1 qcd 1"<<std::endl;
+    datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
+  }
+  else if (do_1param){
+    if (do_run2) datacard<<"WZ_xsection rateParam ch1 zvv 1"<<std::endl;
+    else {
+      datacard<<"WZ_xsection rateParam ch1 zvv_ewk 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 zvv_qcd 1"<<std::endl;
+    }
+
+    datacard<<"WZ_xsection rateParam ch1 mumu 1"<<std::endl;
+    datacard<<"WZ_xsection rateParam ch1 wmu 1"<<std::endl;
+    datacard<<"WZ_xsection rateParam ch1 wel 1"<<std::endl;
+    datacard<<"WZ_xsection rateParam ch1 wtau 1"<<std::endl;
+    datacard<<"QCD_xsection rateParam ch1 qcd 1"<<std::endl;
+    datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
+  }
+
   datacard.close();  
 
-  }
+}

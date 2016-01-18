@@ -349,7 +349,8 @@ int main(int argc, char* argv[]){
   }
   else{
     nunucat=("nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut);//+"&&jet3_pt>30&&jet_csv1>0.679&&jet_csv2>0.679");//CSVT: 0.898
-    nunuzcat="&&"+jetmetdphicut;//+"&&jet3_pt>30&&jet_csv1>0.679&&jet_csv2>0.679";
+    nunuzcat="&&"+jetmetdphicut;
+    if (do_mcbkg) nunuzcat="m_mumu_gen>80&&m_mumu_gen<100&&"+jetmetdphicut;//+"&&jet3_pt>30&&jet_csv1>0.679&&jet_csv2>0.679";
     //nunucat=("nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut+"&&ntaus==0");
     //nunuzcat="&&"+jetmetdphicut+"&&ntaus==0";
   }
@@ -828,6 +829,22 @@ int main(int argc, char* argv[]){
   DataShape znunuraw("znunuraw");
   znunuraw.set_dataset("ZJets_nunu")
     .set_dirname("zvv")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat);
+
+  DataShape ewkznunufrommumu("ewkznunufrommumu");
+  ewkznunufrommumu.set_dataset("ZJets_ll_vbf_iglep")
+    .set_dirname("zvv_ewk")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat);
+
+  DataShape qcdznunufrommumu("qcdznunufrommumu");
+  qcdznunufrommumu.set_dataset("ZJets_ll_iglep")
+    .set_dirname("zvv_qcd")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
@@ -1500,7 +1517,10 @@ int main(int argc, char* argv[]){
     .set_legname("Z#rightarrow#nu#nu EWK")
     .set_sample("zvv_ewk");
 
-  if(do_mcbkg) znunuewkele.set_has_dderrors(0);
+  if(do_mcbkg) {
+    znunuewkele.set_has_dderrors(0);
+    znunuewkele.set_scale(4.554);//BR mumu->nunu
+  }
 
   LTPlotElement znunuqcdele;
   znunuqcdele.set_is_data(false)
@@ -1512,7 +1532,10 @@ int main(int argc, char* argv[]){
     .set_legname("Z#rightarrow#nu#nu QCD")
     .set_sample("zvv_qcd");
 
-  if(do_mcbkg) znunuqcdele.set_has_dderrors(0);
+  if(do_mcbkg){
+    znunuqcdele.set_has_dderrors(0);
+    znunuqcdele.set_scale(5.651);//BR mumu->nunu
+  }
 
   LTPlotElement zmumuele;
   zmumuele.set_is_data(false)
@@ -1536,8 +1559,6 @@ int main(int argc, char* argv[]){
   if(do_plotmcqcd) qcdele.set_legname("MC QCD");
   else qcdele.set_legname("QCD");
     
-
-
   LTPlotElement vvele;
   vvele.set_is_data(false)
     .set_scale(1)
@@ -1592,7 +1613,7 @@ int main(int argc, char* argv[]){
     }
     //  elementvec.push_back(zmumuele);
     if(!run2){
-      if(do_separatez&&channel=="mumu"){
+      if(do_separatez&&(channel=="mumu" || channel=="nunu")){
 	elementvec.push_back(znunuewkele);
 	elementvec.push_back(znunuqcdele);
       }
@@ -1679,10 +1700,12 @@ int main(int argc, char* argv[]){
       analysis->AddModule(&wmunuraw);
       analysis->AddModule(&wenuraw);
       analysis->AddModule(&wtaunuraw);  
-      if(channel!="mumu"){
-	analysis->AddModule(&znunuraw);
-      }
-      else analysis->AddModule(&zmumuraw);
+      //if(channel!="mumu"){
+      //analysis->AddModule(&znunuraw);
+      //}
+      //else analysis->AddModule(&zmumuraw);
+      analysis->AddModule(&ewkznunufrommumu);
+      analysis->AddModule(&qcdznunufrommumu);
     }
 
     if(do_singletop)analysis->AddModule(&top);

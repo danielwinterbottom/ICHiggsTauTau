@@ -42,7 +42,7 @@ namespace ic{
     CLASS_MEMBER(LTFiles,std::string,input_params)
     protected:								
     std::map<std::string,LTFile> files_;					
-    std::map<std::string,std::vector<std::string> > setlists_;
+    std::map<std::string,std::vector<std::pair<std::string,bool> > > setlists_;
     public:
     LTFiles();
     LTFiles(std::string,std::string);

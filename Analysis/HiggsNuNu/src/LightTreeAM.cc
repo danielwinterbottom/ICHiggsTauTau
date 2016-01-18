@@ -399,9 +399,17 @@ namespace ic {
       //<< " prescale " << prescale
       //<< std::endl;
       //}
-      //if (name.find("HLT_IsoMu20_") != name.npos) pass_photontrigger_ = prescale;
+      if (prescale==1 && 
+	  ( (name.find("HLT_Photon") != name.npos &&
+	     (name.find("R9Id90_HE10_Iso") != name.npos ||
+	      name.find("_PFMET") != name.npos)
+	     ) ||
+	    name.find("HLT_Photon175_v") != name.npos
+	    )
+	  ) pass_photontrigger_ = 1;
       //HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_VBF_v2
       //HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_PFMET40
+      //HLT_Photon36_R9Id90_HE10_IsoM
       ///HLT_Photon175_v*
       //HLT_Photon135_PFMET100
 
@@ -412,7 +420,7 @@ namespace ic {
       if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80") != name.npos) pass_controltrigger_ = prescale;
     }
     if(do_trigskim_){
-      if(!(pass_muontrigger_==1 || pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0)){
+      if(!(pass_muontrigger_==1 || pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0||pass_photontrigger_>0)){
 	return 1;
       }
     }
@@ -871,7 +879,7 @@ namespace ic {
     
     ++processed;
     //if (processed == 500) outputTree_->OptimizeBaskets();
-    if ((processed%1000000) == 0) outputTree_->AutoSave();
+    if ((processed%100000) == 0) outputTree_->AutoSave();
 
     return 0;
 
@@ -880,6 +888,7 @@ namespace ic {
   
   int  LightTreeAM::PostAnalysis(){
 
+    fs_->cd();
     outputTree_->Write();
 
     std::cout << "----------------------------------------" << std::endl

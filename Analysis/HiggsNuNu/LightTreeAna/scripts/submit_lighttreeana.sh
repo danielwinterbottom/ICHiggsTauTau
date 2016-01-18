@@ -69,7 +69,7 @@ for syst in JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN M
   do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in nunu mumu #enu munu taunu mumu #top gamma #qcd
+  for channels in nunu #enu munu taunu mumu #top gamma #qcd
     do
     JOB=$channels
     OUTPUTNAME="$channels.root"

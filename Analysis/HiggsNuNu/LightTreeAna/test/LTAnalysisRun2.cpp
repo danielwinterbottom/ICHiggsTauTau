@@ -145,7 +145,7 @@ int main(int argc, char* argv[]){
   else if (channel=="munu") metsigsel="&& metnomuons/sqrt(sumet-mu1_pt)>"+metsigcut;
   else metsigsel="&& metnomuons/sqrt(sumet)>"+metsigcut;
 
-  basesel = basesel+metsigsel;
+  basesel = basesel;//+metsigsel;
 
   analysis->set_baseselection(basesel);
   
@@ -160,8 +160,14 @@ int main(int argc, char* argv[]){
 
   if (debug) {
     shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
-
-    if (channel=="munu"){
+    shape.push_back("jet2_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
+    if(channel=="enu" || channel=="munu" || channel=="taunu") {
+      shape.push_back("lep_mt(30,0.,150.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
+    }
+    else if(channel=="mumu"){
+      shape.push_back("m_mumu(12,60.,120.)");histTitle.push_back(";m_{#mu#mu};Events");
+    }
+    /*if (channel=="munu"){
       shape.push_back("metnomuons*pow(sqrt(sumet-mu1_pt),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
     }
     else if (channel=="mumu"){
@@ -169,21 +175,21 @@ int main(int argc, char* argv[]){
     }
     else {
       shape.push_back("metnomuons*pow(sqrt(sumet),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
-    }
+      }*/
   }
   else {
-    if(channel=="enu" || channel=="munu" || channel=="taunu"){
+    if(channel=="enu" || channel=="munu" || channel=="taunu" || channel=="topl" || channel=="topb"){
       if(channel=="taunu") {
 	shape.push_back("lep_mt(10,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
       }
       else {
 	shape.push_back("lep_mt(30,0.,150.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
       }
-      if (channel=="enu"){
+      if (channel=="enu" || channel=="topl" || channel=="topb"){
 	shape.push_back("ele1_pt(30,0.,300.)");histTitle.push_back(";p_{T}(electron) (GeV);Events");
 	shape.push_back("ele1_eta(30,-2.4,2.4)");histTitle.push_back(";#eta(electron) (GeV);Events");
       }
-      else if (channel=="munu"){
+      else if (channel=="munu" || channel=="topl" || channel=="topb"){
 	shape.push_back("mu1_pt(30,0.,300.)");histTitle.push_back(";p_{T}(muon) (GeV);Events");
 	shape.push_back("mu1_eta(30,-2.1,2.1)");histTitle.push_back(";#eta(muon) (GeV);Events");
       }
@@ -193,7 +199,7 @@ int main(int argc, char* argv[]){
       }
     }
 
-    if (channel=="munu"){
+    if (channel=="munu" || channel=="topl" || channel=="topb"){
       shape.push_back("metnomuons*pow(sqrt(sumet-mu1_pt),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
     }
     else if (channel=="mumu"){
@@ -275,7 +281,7 @@ int main(int argc, char* argv[]){
     else dataextrasel="&&(pass_mettrigger==1)";
   }
   else {
-    //dataextrasel="&&(pass_photontrigger==1)";
+    dataextrasel="&&(pass_photontrigger==1)";
   }
   if (apply_trig_in_mc) mcextrasel=dataextrasel;
 
@@ -285,10 +291,12 @@ int main(int argc, char* argv[]){
   std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
 
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
-  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut;
+  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
   std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
+  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";
   std::string gammacat="ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
+  std::string toplcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";
+  std::string topbcat = "(nselmuons>=1 || nselelectrons>=1)&&(jet1_csv>0.679||jet2_csv>0.679)&&(forward_tag_eta>2.8||forward_tag_eta<-2.8)";
 
   if(channel=="nunu" || channel=="qcd"){//nunu
     sigcat=nunucat;
@@ -309,7 +317,13 @@ int main(int argc, char* argv[]){
     else if(channel=="gamma"){
       sigcat=gammacat;
     }
-    else{
+    else if(channel=="topl"){
+      sigcat=toplcat;
+    }
+    else if(channel=="topb"){
+      sigcat=topbcat;
+    }
+     else{
       std::cout<<"Error: Channel "<<channel<<" not recognised, exiting"<<std::endl;
       return 1;
     }
@@ -493,7 +507,8 @@ int main(int argc, char* argv[]){
     blindvars.push_back("metnomu_significance");
     blindvars.push_back("metnomuons");
     blindvars.push_back("dijet_deta");
-    std::pair<double,double>mindphirange(2.,10.);
+    blindvars.push_back("metnomuons*pow");
+    std::pair<double,double>mindphirange(1.,10.);
     std::pair<double,double>metsigrange(150.,1000.);
     std::pair<double,double>metnomurange(350.,1000.);
     std::pair<double,double>detarange(5.,10.);
@@ -501,6 +516,7 @@ int main(int argc, char* argv[]){
     blindrange.push_back(metsigrange);
     blindrange.push_back(metnomurange);
     blindrange.push_back(detarange);
+    blindrange.push_back(std::pair<double,double>(3,100));
     dataele.set_blindvar(blindvars)
       .set_blindrange(blindrange);
   }
