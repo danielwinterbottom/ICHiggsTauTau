@@ -130,8 +130,12 @@ namespace ic{
     if (hist) {
       double ltmp =hist->Integral(0, hist->GetNbinsX() + 1);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	ltmp=0;
+	std::cout << " -- Warning: integral is " << ltmp << ". Removing overflows. " << std::endl;
+	ltmp = hist->Integral(1, hist->GetNbinsX());
+	if (ltmp<0 || ltmp != ltmp) {
+	  std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+	  ltmp=0;
+	}
       }
       return ltmp;
     }
@@ -143,8 +147,12 @@ namespace ic{
     if (hist) {
       hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
       if (err<0 || err != err) {
-	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
-	err=0;
+	std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
+	hist->IntegralAndError(1, hist->GetNbinsX(), err);
+	if (err<0 || err != err) {
+	  std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+	  err=0;
+	}
       }
     }
     return err;
@@ -166,8 +174,12 @@ namespace ic{
     if (hist) {
       double ltmp =hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	ltmp=0;
+	std::cout << " -- Warning: integral is " << ltmp << ". Remove overflows." << std::endl;
+	ltmp=hist->IntegralAndError(1, hist->GetNbinsX(), err);
+	if (ltmp<0 || ltmp != ltmp) {
+	  std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+	  ltmp=0;
+	}
       }
       return ltmp;
     }

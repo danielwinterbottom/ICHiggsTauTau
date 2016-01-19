@@ -77,8 +77,10 @@ int main(int argc, char* argv[]){
     //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
     ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_151123/"))
-    ("eos_path_mc",           po::value<std::string>(&eos_path_mc)->default_value("root://eoscms//eos/cms/store/user/amagnan/SkimFiles/151030/"))
-    ("eos_path_data",           po::value<std::string>(&eos_path_data)->default_value("root://eoscms//eos/cms/store/user/amagnan/SkimFiles/151113/"))
+    ("eos_path_mc",           po::value<std::string>(&eos_path_mc)->default_value(""))
+    //root://eoscms//eos/cms/store/user/amagnan/SkimFiles/151030/"))
+    ("eos_path_data",           po::value<std::string>(&eos_path_data)->default_value(""))
+    //root://eoscms//eos/cms/store/user/amagnan/SkimFiles/151113/"))
     ("syst,s",                   po::value<std::string>(&syst)->default_value(""))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/151030/Params151030.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/run2filelist.dat"))
@@ -342,7 +344,7 @@ int main(int argc, char* argv[]){
   std::string j2forwardj1central="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)>=3";
   std::string j1forwardj2central="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)<3";
 
-  std::string additionalcut=(syst=="PUUP")?("&&puweight_up_scale==puweight_up_scale"): (syst=="PUDOWN")?("&&puweight_down_scale==puweight_down_scale") : ("");
+  std::string additionalcut=(syst=="PUUP")?("&&abs(puweight_up_scale)<10000"): (syst=="PUDOWN")?("&&abs(puweight_down_scale)<10000") : ("");
   analysis->set_baseselection(basesel+additionalcut);
 
   //DATA SHAPE GENERATION

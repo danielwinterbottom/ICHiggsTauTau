@@ -662,6 +662,7 @@ int main(int argc, char* argv[]){
     dir->cd();
     TH1F* histo = (TH1F*)dir->Get("jet2_pt");
     double rate=Integral(histo);
+    if (rate != rate) std::cout << " -- Problem, nan in sample " << dirname << std::endl;
     if(iProc<sigprocesses.size())sigcentralrates.push_back(rate);
     else bkgcentralrates.push_back(rate);
     datacard<<"\t"<<rate;

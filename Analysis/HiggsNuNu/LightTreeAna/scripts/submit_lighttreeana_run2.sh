@@ -1,5 +1,5 @@
 #!/bin/sh
-DOCERN=1
+DOCERN=0
 DOSUBMIT=1
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
