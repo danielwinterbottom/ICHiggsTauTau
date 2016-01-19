@@ -3,8 +3,8 @@
 #infolder=output_parkedana
 #outfolder=cards_parkedana/
 #blind=false
-infolder=output_run2ana_160115
-outfolder=cards_run2ana_160115/
+infolder=output_run2ana_160118
+outfolder=cards_run2ana_160118/
 blind=true
 zvvstat=18
 mkdir -p $outfolder

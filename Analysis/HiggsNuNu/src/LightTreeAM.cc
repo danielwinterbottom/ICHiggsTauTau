@@ -445,9 +445,14 @@ namespace ic {
       pileupwtdown=eventInfo->weight("pileup_down");
       weight_trig_=eventInfo->weight("trig_2dbinned1d");
     }
-    puweight_up_scale_=pileupwtup/pileupwt;
-    puweight_down_scale_=pileupwtdown/pileupwt;
-
+    if (pileupwt!=0) {
+      puweight_up_scale_=pileupwtup/pileupwt;
+      puweight_down_scale_=pileupwtdown/pileupwt;
+    }
+    else {
+      puweight_up_scale_=1;
+      puweight_down_scale_=1;
+    }
     weight_nolep_ = wt;
     total_weight_lepveto_ =wt*vetowt;
     if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<vetowt<<std::endl;//!!

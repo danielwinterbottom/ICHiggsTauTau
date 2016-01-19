@@ -486,8 +486,8 @@ int main(int argc, char* argv[]){
   if (!do_run2) systematics.push_back(jes);
   if (!do_run2) systematics.push_back(jer);
   if(do_ues && !do_run2)systematics.push_back(ues);
-  if (!do_run2) 
-    systematics.push_back(pu);
+  //if (!do_run2) 
+  systematics.push_back(pu);
   if (channel=="nunu" || channel=="mumu") {
     //if (mcBkgOnly) systematics.push_back(zxsunc);
     if (channel=="nunu") {

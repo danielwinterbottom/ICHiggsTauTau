@@ -342,7 +342,8 @@ int main(int argc, char* argv[]){
   std::string j2forwardj1central="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)>=3";
   std::string j1forwardj2central="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)<3";
 
-  std::string additionalcut="";
+  std::string additionalcut=(syst=="PUUP")?("&&puweight_up_scale==puweight_up_scale"): (syst=="PUDOWN")?("&&puweight_down_scale==puweight_down_scale") : ("");
+  analysis->set_baseselection(basesel+additionalcut);
 
   //DATA SHAPE GENERATION
   DataShape data("data");
