@@ -788,10 +788,12 @@ int main(int argc, char* argv[]){
 	  dir->cd();
 	  TH1F* histo = (TH1F*)dir->Get("jet2_pt");
 	  double error=Error(histo);
+	  if (error!=error) error=Error(histo,1,histo->GetNbinsX());
 	  double centralrate;
 	  if(iProc<sigprocesses.size())centralrate=sigcentralrates[iProc];
 	  else centralrate=bkgcentralrates[iProc-sigprocesses.size()];
 	  double lnnfac=error/centralrate;
+	  if (lnnfac!=lnnfac) std::cout << " nan for process " << dirname << std::endl;
 	  lnnfac=lnnfac+1;
 	  if (lnnfac==lnnfac) datacard<<"\t"<<lnnfac;
 	  else datacard<<"\t-";

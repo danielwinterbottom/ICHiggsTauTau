@@ -344,7 +344,7 @@ int main(int argc, char* argv[]){
   std::string j2forwardj1central="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)>=3";
   std::string j1forwardj2central="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)<3";
 
-  std::string additionalcut=(syst=="PUUP")?("&&abs(puweight_up_scale)<10000"): (syst=="PUDOWN")?("&&abs(puweight_down_scale)<10000") : ("");
+  std::string additionalcut=(syst=="PUUP")?("&&abs(puweight_up_scale)<200"): (syst=="PUDOWN")?("&&abs(puweight_down_scale)<10") : ("");
   analysis->set_baseselection(basesel+additionalcut);
 
   //DATA SHAPE GENERATION
@@ -710,11 +710,11 @@ int main(int argc, char* argv[]){
   if(!dataonly){
 
     if(do_mcbkg){
+      analysis->AddModule(&qcdraw);
       analysis->AddModule(&wmunuraw);
       analysis->AddModule(&wenuraw);
       analysis->AddModule(&wtaunuraw);
       analysis->AddModule(&topraw);
-      analysis->AddModule(&qcdraw);
       analysis->AddModule(&gjetsraw);
       analysis->AddModule(&zmumuraw);
       analysis->AddModule(&znunuraw);

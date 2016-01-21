@@ -133,8 +133,17 @@ namespace ic{
 	std::cout << " -- Warning: integral is " << ltmp << ". Removing overflows. " << std::endl;
 	ltmp = hist->Integral(1, hist->GetNbinsX());
 	if (ltmp<0 || ltmp != ltmp) {
-	  std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+	  std::cout << " -- Warning: integral is " << ltmp << ". Removing bins with nans." << std::endl;
 	  ltmp=0;
+	  for (int iB(0); iB<hist->GetNbinsX() + 2; ++iB){
+	    if (hist->GetBinContent(iB)!=hist->GetBinContent(iB)) continue;
+	    ltmp += hist->GetBinContent(iB);
+	    //std::cout << " bin " << iB << " content " << hist->GetBinContent(iB) << std::endl;
+	  }
+	  if (ltmp<0 || ltmp != ltmp) {
+	    std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+	    ltmp=0;
+	  }
 	}
       }
       return ltmp;
