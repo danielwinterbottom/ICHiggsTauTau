@@ -588,7 +588,7 @@ namespace ic {
 	  newjet=newjet*(1+jesupordownmult*uncert);
 	  newmet.SetPx(newmet.px()-deltapx);
 	  newmet.SetPy(newmet.py()-deltapy);
-	  newmet.SetE(newmet.px()*newmet.px()+newmet.py()*newmet.py());
+	  newmet.SetE(sqrt(newmet.px()*newmet.px()+newmet.py()*newmet.py()));
 	  
 	  JESjetphidiff->Fill(newjet.phi()-oldjet.phi());
 	  JESjetetadiff->Fill(newjet.eta()-oldjet.eta());
@@ -612,11 +612,21 @@ namespace ic {
       //Get Unclustered MET for UES Systematic
       if (!is_data_ && douessyst_){
 	std::string ues_label_;
-	uesupordown_ ? ues_label_ = "pfMetUnclusteredEnUp" : ues_label_ = "pfMetUnclusteredEnDown";
-	ic::Candidate* uesCorrected = event->GetPtr<ic::Candidate>(ues_label_);
-	newmet.SetPx(uesCorrected->pt() * cos(uesCorrected->phi()));
-	newmet.SetPy(uesCorrected->pt() * sin(uesCorrected->phi()));
-	newmet.SetE(uesCorrected->pt());
+	if (!run2_) {
+	  uesupordown_ ? ues_label_ = "pfMetUnclusteredEnUp" : ues_label_ = "pfMetUnclusteredEnDown";
+	  ic::Candidate* uesCorrected = event->GetPtr<ic::Candidate>(ues_label_);
+	  newmet.SetPx(uesCorrected->pt() * cos(uesCorrected->phi()));
+	  newmet.SetPy(uesCorrected->pt() * sin(uesCorrected->phi()));
+	  newmet.SetE(uesCorrected->pt());
+	}
+	else {
+	  uesupordown_ ? ues_label_ = "UnclusteredEnUp" : ues_label_ = "UnclusteredEnDown";
+	  const Met::BasicMet & shiftedMet = met->GetShiftedMet(ues_label_);
+	  newmet.SetPx(shiftedMet.px);
+	  newmet.SetPy(shiftedMet.py);
+	  newmet.SetE(shiftedMet.pt());
+	  met->set_sum_et(shiftedMet.sumet);
+	}
 	// !! Scale met significance using Ues Up/Down met
 	double met_sig = met->et_sig();
 	double new_met_sig = met_sig / met->pt() * newmet.Pt();

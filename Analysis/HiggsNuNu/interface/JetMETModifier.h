@@ -70,6 +70,8 @@ namespace ic {
     CLASS_MEMBER(JetMETModifier, bool, dojerdebug)
     CLASS_MEMBER(JetMETModifier, std::string, jesuncfile)
     CLASS_MEMBER(JetMETModifier, int, randomseed)
+    CLASS_MEMBER(JetMETModifier, bool, run2)
+
     TH2F* JEScorrfac;
     TH1F* JESmetdiff;
     TH1F* JESjetphidiff;
