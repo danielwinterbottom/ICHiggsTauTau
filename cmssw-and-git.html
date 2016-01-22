@@ -120,7 +120,7 @@ git config --global user.github [GitHub account name]
 </pre></dd></dl>
 <p>Before working with CMSSW in git, you will need to create a copy (or fork) of the official CMSSW repository in your own account at <a href="https://github.com/cms-sw/cmssw/fork">https://github.com/cms-sw/cmssw/fork</a>. You will be able to store your own CMSSW branches and developments in this forked repository.</p>
 <p>Create a new CMSSW area: </p><pre class="fragment">export SCRAM_ARCH=slc5_amd64_gcc462
-# Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481
+# Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481,slc6_amd64_gcc491,slc6_amd64_gcc493 (for new 76X samples)
 scramv1 project CMSSW CMSSW_X_Y_Z
 cd CMSSW_X_Y_Z/src/
 cmsenv
@@ -128,7 +128,7 @@ cmsenv
 # If you are not running on a machine based at CERN, this script will ask if you want to create a new reference repository.
 # You should answer yes to this, and the script will copy the entire cmssw repository to your home folder,
 # which will make setting up subsequent release areas a lot faster.
-</pre><p>This command will have created two remote repositories, <code>official-cmssw</code> and <code>my-cmssw</code>. It will also have created and switched to a new branch, <code>from-CMSSW_X_Y_Z</code>. An additional remote can be added which provides the pre-configured branches shared by the group: </p><pre class="fragment">git remote add ic-cmssw git@github.com:ajgilbert/cmssw.git
+</pre><p>This command will have created two remote repositories, <code>official-cmssw</code> and <code>my-cmssw</code>. It will also have created and switched to a new branch, <code>from-CMSSW_X_Y_Z</code>. An additional remote can be added which provides the pre-configured branches shared by the group: </p><pre class="fragment">git remote add ic-cmssw git@github.com:adewit/cmssw.git
 # fetch from the ic-cmssw remote repository and merge the from-CMSSW_X_Y_Z into your own local branch.
 git pull ic-cmssw from-CMSSW_X_Y_Z
 # Check which branch you actually need to merge in here. Descriptive names are useful, e.g. "higgstautau_from-CMSSW_5_3_7"
