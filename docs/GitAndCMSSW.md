@@ -31,7 +31,7 @@ Before working with CMSSW in git, you will need to create a copy (or fork) of th
 Create a new CMSSW area:
 
 		export SCRAM_ARCH=slc5_amd64_gcc462
-		# Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481
+		# Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481,slc6_amd64_gcc491,slc6_amd64_gcc493 (for new 76X samples)
 		scramv1 project CMSSW CMSSW_X_Y_Z
 		cd CMSSW_X_Y_Z/src/
 		cmsenv
@@ -45,7 +45,7 @@ Initialise this area for git by adding a single package:
 
 This command will have created two remote repositories, `official-cmssw` and `my-cmssw`. It will also have created and switched to a new branch, `from-CMSSW_X_Y_Z`. An additional remote can be added which provides the pre-configured branches shared by the group:
 
-		git remote add ic-cmssw git@github.com:ajgilbert/cmssw.git
+		git remote add ic-cmssw git@github.com:adewit/cmssw.git
 		# fetch from the ic-cmssw remote repository and merge the from-CMSSW_X_Y_Z into your own local branch.
 		git pull ic-cmssw from-CMSSW_X_Y_Z
 		# Check which branch you actually need to merge in here. Descriptive names are useful, e.g. "higgstautau_from-CMSSW_5_3_7"
