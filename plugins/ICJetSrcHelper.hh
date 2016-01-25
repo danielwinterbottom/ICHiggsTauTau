@@ -102,16 +102,19 @@ struct JetSrcHelper {
     edm::Handle<edm::ValueMap<std::vector<int>> > jet_flavour_handle;
     if (include_jet_flavour)
       event.getByLabel(input_jet_flavour, jet_flavour_handle);
-
+  #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 6
     std::vector<reco::JetCorrector const *> correctors(jecs.size(), NULL);
+  #else
+    std::vector<JetCorrector const*> correctors(jecs.size(), NULL);
+  #endif
     for (unsigned i = 0; i < correctors.size(); ++i) {
-#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 6
+  #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 6
       edm::Handle<reco::JetCorrector> corrector_handle;
       event.getByLabel(jecs[i].second,corrector_handle);
       correctors[i] = corrector_handle.product();
-#else
+  #else
       correctors[i] = JetCorrector::getJetCorrector(jecs[i].second, setup);
-#endif
+  #endif
     }
 
     edm::Handle<reco::SecondaryVertexTagInfoCollection> sv_info_handle;
