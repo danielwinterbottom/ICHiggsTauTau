@@ -169,12 +169,18 @@ $(document).ready(function(){initNavTree('_git_and_c_m_s_s_w_8md.html','');});
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;   git clone git@github.com:ajgilbert/ICHiggsTauTau.git UserCode/ICHiggsTauTau</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;   ./UserCode/ICHiggsTauTau/init_X_Y_Z.sh  # (if exisits) This script performs a few final tasks in the new cmssw area</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;At this point everything is ready, and the working area can be compiled in the normal way with `scram`.  New developments that are relevant for everyone can be committed to a branch and pushed to central IC repository (`ic-cmssw`). If you wish to test some new changes, or just share with specific people, it will be safer to work from a new branch, either based on the CMSSW release tag, or some commit on the `from-CMSSW_X_Y_Z` branch, e.g.</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;   git checkout -b my-analysis-from-CMSSW_X_Y_Z CMSSW_X_Y_Z # from the release tag</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;   git checkout -b my-analysis-from-CMSSW_X_Y_Z from-CMSSW_X_Y_Z # from the pre-configured branch</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;   ... do some development ...</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;   git push my-cmssw my-new-branch</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;The CMSSW-facing part of the analysis code uses an external package that we need to add for all of the CMSSW configs to run:</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;   git clone git@github.com:ajgilbert/ICAnalysis-MVAMETPairProducer.git ICAnalysis/MVAMETPairProducer</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;   cd ICAnalysis/MVAMETPairProducer</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;   git checkout 7_6_X_common</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;   cd ../../</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;At this point everything is ready, and the working area can be compiled in the normal way with `scram`.  New developments that are relevant for everyone can be committed to a branch and pushed to central IC repository (`ic-cmssw`). If you wish to test some new changes, or just share with specific people, it will be safer to work from a new branch, either based on the CMSSW release tag, or some commit on the `from-CMSSW_X_Y_Z` branch, e.g.</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;   git checkout -b my-analysis-from-CMSSW_X_Y_Z CMSSW_X_Y_Z # from the release tag</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;   git checkout -b my-analysis-from-CMSSW_X_Y_Z from-CMSSW_X_Y_Z # from the pre-configured branch</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;   ... do some development ...</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;   git push my-cmssw my-new-branch</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
