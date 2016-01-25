@@ -12,7 +12,11 @@
 #include "DataFormats/JetReco/interface/PFJet.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h"
+#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 6
+#include "JetMETCorrections/Modules/interface/CorrectedJetProducer.h"
+#else
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
+#endif
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 #include "UserCode/ICHiggsTauTau/interface/JPTJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
@@ -61,7 +65,11 @@ struct JetSrcHelper {
       for (unsigned i = 0; i < vec.size(); ++i) {
         jecs.push_back(
             std::make_pair(vec[i], pset.getParameter<std::string>(vec[i])));
+#if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >= 6
+        collector.consumes<reco::JetCorrector>(jecs[i].second);
+#else
         collector.consumes<double>(jecs[i].second);
+#endif
       }
     }
     edm::ParameterSet btag_pset =
@@ -95,9 +103,15 @@ struct JetSrcHelper {
     if (include_jet_flavour)
       event.getByLabel(input_jet_flavour, jet_flavour_handle);
 
-    std::vector<JetCorrector const *> correctors(jecs.size(), NULL);
+    std::vector<reco::JetCorrector const *> correctors(jecs.size(), NULL);
     for (unsigned i = 0; i < correctors.size(); ++i) {
+#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 6
+      edm::Handle<reco::JetCorrector> corrector_handle;
+      event.getByLabel(jecs[i].second,corrector_handle);
+      correctors[i] = corrector_handle.product();
+#else
       correctors[i] = JetCorrector::getJetCorrector(jecs[i].second, setup);
+#endif
     }
 
     edm::Handle<reco::SecondaryVertexTagInfoCollection> sv_info_handle;
@@ -126,8 +140,12 @@ struct JetSrcHelper {
         // Loop through each correction and apply
         for (unsigned j = 0; j < correctors.size(); ++j) {
           #ifndef CMSSW_4_2_8_patch7
+            #if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >= 6
+          double factor = correctors[j]->correction(jet_cpy);
+            #else
           double factor = correctors[j]->correction(jet_cpy, event, setup);
-          #else
+            #endif
+          #else 
           double factor = correctors[j]->correction(jet_cpy,
               edm::RefToBase<reco::Jet>(jets_handle->refAt(i)), event, setup);
           #endif
