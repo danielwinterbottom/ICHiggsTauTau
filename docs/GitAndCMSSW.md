@@ -69,6 +69,7 @@ Next, add the IC analysis code package:
 		./UserCode/ICHiggsTauTau/init_X_Y_Z.sh  # (if exisits) This script performs a few final tasks in the new cmssw area
 
 The CMSSW-facing part of the analysis code uses an external package that we need to add for all of the CMSSW configs to run:
+
 		git clone git@github.com:ajgilbert/ICAnalysis-MVAMETPairProducer.git ICAnalysis/MVAMETPairProducer
 		cd ICAnalysis/MVAMETPairProducer
 		git checkout 7_6_X_common
