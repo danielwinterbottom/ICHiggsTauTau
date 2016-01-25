@@ -92,8 +92,8 @@ namespace { struct dictionary {
   std::vector<ic::PFCandidate> dummy54;
   edm::Wrapper<reco::GsfTrackRefVector> dummy55;
   edm::Wrapper<reco::PFCandidateRefVector> dummy56;
-  edm::ValueMap<std::vector<int>> dummy57;  
-  edm::Wrapper<edm::ValueMap<std::vector<int>>> dummy58;  
+  edm::ValueMap<std::vector<int> > dummy57;  
+  edm::Wrapper<edm::ValueMap<std::vector<int> > > dummy58;  
 };
 }
 
