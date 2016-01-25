@@ -68,6 +68,12 @@ Next, add the IC analysis code package:
 		git clone git@github.com:ajgilbert/ICHiggsTauTau.git UserCode/ICHiggsTauTau
 		./UserCode/ICHiggsTauTau/init_X_Y_Z.sh  # (if exisits) This script performs a few final tasks in the new cmssw area
 
+The CMSSW-facing part of the analysis code uses an external package that we need to add for all of the CMSSW configs to run:
+		git clone git@github.com:ajgilbert/ICAnalysis-MVAMETPairProducer.git ICAnalysis/MVAMETPairProducer
+		cd ICAnalysis/MVAMETPairProducer
+		git checkout 7_6_X_common
+		cd ../../
+
 At this point everything is ready, and the working area can be compiled in the normal way with `scram`.  New developments that are relevant for everyone can be committed to a branch and pushed to central IC repository (`ic-cmssw`). If you wish to test some new changes, or just share with specific people, it will be safer to work from a new branch, either based on the CMSSW release tag, or some commit on the `from-CMSSW_X_Y_Z` branch, e.g.
 
 		git checkout -b my-analysis-from-CMSSW_X_Y_Z CMSSW_X_Y_Z # from the release tag
