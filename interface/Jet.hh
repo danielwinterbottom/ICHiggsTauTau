@@ -76,6 +76,10 @@ class Jet : public Candidate {
   /// code.
   inline int const& parton_flavour() const { return parton_flavour_; }
 
+  /// Returns true flavour of jet as PDG code. The hadronic definition can
+  /// only return 0, 4 or 5
+  inline int const& hadron_flavour() const { return hadron_flavour_; }
+
   /// Returns a specific correction factor if `name` is defined, otherwise
   /// returns zero
   float GetJecFactor(std::string const& name) const;
@@ -122,6 +126,12 @@ class Jet : public Candidate {
     parton_flavour_ = parton_flavour;
   }
 
+  /// @copybrief hadron_flavour()
+  inline void set_hadron_flavour(int const& hadron_flavour) {
+    hadron_flavour_ = hadron_flavour;
+  }
+
+
   /// Store a jet energy correction factor, overwriting any existing value with
   /// label `name`
   void SetJecFactor(std::string const& name, float const& value);
@@ -139,13 +149,14 @@ class Jet : public Candidate {
   double uncorrected_energy_;
   float jet_area_;
   int parton_flavour_;
+  int hadron_flavour_;
 
   std::string UnHashJecFactor(std::size_t jec) const;
   std::string UnHashDiscr(std::size_t dis) const;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Jet, 2);
+  ClassDef(Jet, 3);
  #endif
 };
 
