@@ -87,6 +87,7 @@ var searchData=
   ['set_5fhad_5fenergy_5fhf',['set_had_energy_HF',['../classic_1_1_calo_jet.html#a748ed9b925a9b54d253e9a06b44dbeed',1,'ic::CaloJet']]],
   ['set_5fhad_5fenergy_5fho',['set_had_energy_HO',['../classic_1_1_calo_jet.html#a273da937db199304a4babc54a6dbdd81',1,'ic::CaloJet']]],
   ['set_5fhad_5ftower_5fover_5fem',['set_had_tower_over_em',['../classic_1_1_photon.html#a30eb93d12e66581b6521d8f6a82f3b04',1,'ic::Photon']]],
+  ['set_5fhadron_5fflavour',['set_hadron_flavour',['../classic_1_1_jet.html#abdec5931346cadb77079d1f2b4fc0c17',1,'ic::Jet']]],
   ['set_5fhadronic_5fover_5fem',['set_hadronic_over_em',['../classic_1_1_electron.html#a46f8b59700ef4915f564d5e76607766b',1,'ic::Electron']]],
   ['set_5fhas_5fmatched_5fconversion',['set_has_matched_conversion',['../classic_1_1_electron.html#a3e1f3f0b49e1d02a74c582cca725f816',1,'ic::Electron']]],
   ['set_5fhcal_5fpf_5fcluster_5fiso',['set_hcal_pf_cluster_iso',['../classic_1_1_electron.html#a5feeba58ccc5a4b382153d35530f176d',1,'ic::Electron']]],

@@ -10,6 +10,7 @@ var classic_1_1_jet =
     [ "uncorrected_energy", "classic_1_1_jet.html#a4e318628849f02e08d7a84a2a8ed1f14", null ],
     [ "jet_area", "classic_1_1_jet.html#a0a9de14da7bdde02334df38493325cce", null ],
     [ "parton_flavour", "classic_1_1_jet.html#a1375692c109756397348c3c8f78ef44c", null ],
+    [ "hadron_flavour", "classic_1_1_jet.html#a9d5eee24c9a9cd0494b903573e2e8e43", null ],
     [ "GetJecFactor", "classic_1_1_jet.html#a2139e94d705ed49cc31f52830c6daf10", null ],
     [ "GetBDiscriminator", "classic_1_1_jet.html#ae0d94cb7607a3d9ff3e7d22238798708", null ],
     [ "set_jec_factors", "classic_1_1_jet.html#a70554b3aad3d014262ec53ca6efafe5a", null ],
@@ -19,7 +20,8 @@ var classic_1_1_jet =
     [ "set_uncorrected_energy", "classic_1_1_jet.html#ac41c56020d5cac0e375d052ff2f417ce", null ],
     [ "set_jet_area", "classic_1_1_jet.html#ab26f9886c112bd42667ee289b91d6612", null ],
     [ "set_parton_flavour", "classic_1_1_jet.html#a2d293ca81b9154970b78f252c20156ce", null ],
+    [ "set_hadron_flavour", "classic_1_1_jet.html#abdec5931346cadb77079d1f2b4fc0c17", null ],
     [ "SetJecFactor", "classic_1_1_jet.html#a34bccbc602d25fef1801c14234d51734", null ],
     [ "SetBDiscriminator", "classic_1_1_jet.html#a571a1d3d1c800d7400f2f30dae1f6b5c", null ],
-    [ "ClassDef", "classic_1_1_jet.html#a4e686fd202e78036a2485eca26c4cf8d", null ]
+    [ "ClassDef", "classic_1_1_jet.html#a23bcf6fa2ac54c779a8302f6c4d3c095", null ]
 ];

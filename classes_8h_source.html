@@ -127,74 +127,77 @@ $(document).ready(function(){initNavTree('classes_8h_source.html','');});
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_trigger_object_8hh.html">UserCode/ICHiggsTauTau/interface/TriggerObject.hh</a>&quot;</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h&quot;</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;DataFormats/Common/interface/Wrapper.h&quot;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;DataFormats/VertexReco/interface/VertexFwd.h&quot;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;DataFormats/GsfTrackReco/interface/GsfTrack.h&quot;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;DataFormats/GsfTrackReco/interface/GsfTrackFwd.h&quot;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;DataFormats/ParticleFlowCandidate/interface/PFCandidate.h&quot;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h&quot;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>{ <span class="keyword">struct </span>dictionary {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <a class="code" href="classic_1_1_candidate.html">ic::Candidate</a> dummy1;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  std::vector&lt;ic::Candidate&gt; dummy2;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <a class="code" href="classic_1_1_jet.html">ic::Jet</a> dummy3;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  std::vector&lt;ic::Jet&gt; dummy4;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  std::map&lt;size_t, float&gt; dummy5;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <a class="code" href="classic_1_1_calo_jet.html">ic::CaloJet</a> dummy6;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  std::vector&lt;ic::CaloJet&gt; dummy7;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <a class="code" href="classic_1_1_gen_particle.html">ic::GenParticle</a> dummy8;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  std::vector&lt;ic::GenParticle&gt; dummy9;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <a class="code" href="classic_1_1_p_f_jet.html">ic::PFJet</a> dummy10;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  std::vector&lt;ic::PFJet&gt; dummy11;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <a class="code" href="classic_1_1_j_p_t_jet.html">ic::JPTJet</a> dummy12;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  std::vector&lt;ic::JPTJet&gt; dummy13;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <a class="code" href="classic_1_1_track.html">ic::Track</a> dummy14;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  std::vector&lt;ic::Track&gt; dummy15;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <a class="code" href="classic_1_1_gen_jet.html">ic::GenJet</a> dummy16;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  std::vector&lt;ic::GenJet&gt; dummy17;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <a class="code" href="classic_1_1_vertex.html">ic::Vertex</a> dummy18;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  std::vector&lt;ic::Vertex&gt; dummy19;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  std::pair&lt;unsigned long, float&gt; dummy20;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  std::vector&lt; std::pair&lt;unsigned long, float&gt; &gt; dummy21;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <a class="code" href="classic_1_1_electron.html">ic::Electron</a> dummy22;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  std::vector&lt;ic::Electron&gt; dummy23;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <a class="code" href="classic_1_1_muon.html">ic::Muon</a> dummy24;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  std::vector&lt;ic::Muon&gt; dummy25;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  std::pair&lt;std::string, double&gt; dummy26;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  std::vector&lt; std::pair&lt;std::string, double&gt; &gt; dummy27;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a> dummy28;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <a class="code" href="classic_1_1_pileup_info.html">ic::PileupInfo</a> dummy30;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  std::vector&lt;ic::PileupInfo&gt; dummy31;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <a class="code" href="classic_1_1_trigger_path.html">ic::TriggerPath</a> dummy32;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  std::vector&lt;ic::TriggerPath&gt; dummy33;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <a class="code" href="classic_1_1_met.html">ic::Met</a> dummy34;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <a class="code" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> dummy34a;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  std::map&lt;std::size_t, ic::Met::BasicMet&gt; dummy34b;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <a class="code" href="classic_1_1_light_track.html">ic::LightTrack</a> dummy35;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  std::vector&lt;ic::LightTrack&gt; dummy36;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <a class="code" href="classic_1_1_tau.html">ic::Tau</a> dummy37;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  std::vector&lt;ic::Tau&gt; dummy38;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <a class="code" href="classic_1_1_super_cluster.html">ic::SuperCluster</a> dummy39;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  std::vector&lt;ic::SuperCluster&gt; dummy40;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a> dummy41;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  std::vector&lt;ic::TriggerObject&gt; dummy42;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  std::vector&lt;ic::Met&gt; dummy43;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  std::vector&lt;unsigned long&gt; dummy44;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  edm::Wrapper&lt;std::vector&lt;unsigned long&gt; &gt; dummy45;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  mithep::TH2DAsymErr dummy46;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  <a class="code" href="classic_1_1_photon.html">ic::Photon</a> dummy47;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  std::vector&lt;ic::Photon&gt; dummy48;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <a class="code" href="classic_1_1_secondary_vertex.html">ic::SecondaryVertex</a> dummy49;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  std::vector&lt;ic::SecondaryVertex&gt; dummy50;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  edm::Wrapper&lt;reco::SecondaryVertexTagInfoRefVector&gt; dummy51;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  edm::Wrapper&lt;reco::VertexRefVector&gt; dummy52;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <a class="code" href="classic_1_1_p_f_candidate.html">ic::PFCandidate</a> dummy53;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  std::vector&lt;ic::PFCandidate&gt; dummy54;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  edm::Wrapper&lt;reco::GsfTrackRefVector&gt; dummy55;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  edm::Wrapper&lt;reco::PFCandidateRefVector&gt; dummy56;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;};</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;DataFormats/Common/interface/ValueMap.h&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h&quot;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;DataFormats/VertexReco/interface/VertexFwd.h&quot;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;DataFormats/GsfTrackReco/interface/GsfTrack.h&quot;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;DataFormats/GsfTrackReco/interface/GsfTrackFwd.h&quot;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;DataFormats/ParticleFlowCandidate/interface/PFCandidate.h&quot;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h&quot;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>{ <span class="keyword">struct </span>dictionary {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <a class="code" href="classic_1_1_candidate.html">ic::Candidate</a> dummy1;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  std::vector&lt;ic::Candidate&gt; dummy2;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <a class="code" href="classic_1_1_jet.html">ic::Jet</a> dummy3;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  std::vector&lt;ic::Jet&gt; dummy4;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  std::map&lt;size_t, float&gt; dummy5;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <a class="code" href="classic_1_1_calo_jet.html">ic::CaloJet</a> dummy6;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::vector&lt;ic::CaloJet&gt; dummy7;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <a class="code" href="classic_1_1_gen_particle.html">ic::GenParticle</a> dummy8;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  std::vector&lt;ic::GenParticle&gt; dummy9;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <a class="code" href="classic_1_1_p_f_jet.html">ic::PFJet</a> dummy10;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  std::vector&lt;ic::PFJet&gt; dummy11;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <a class="code" href="classic_1_1_j_p_t_jet.html">ic::JPTJet</a> dummy12;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  std::vector&lt;ic::JPTJet&gt; dummy13;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <a class="code" href="classic_1_1_track.html">ic::Track</a> dummy14;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  std::vector&lt;ic::Track&gt; dummy15;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <a class="code" href="classic_1_1_gen_jet.html">ic::GenJet</a> dummy16;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  std::vector&lt;ic::GenJet&gt; dummy17;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <a class="code" href="classic_1_1_vertex.html">ic::Vertex</a> dummy18;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  std::vector&lt;ic::Vertex&gt; dummy19;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  std::pair&lt;unsigned long, float&gt; dummy20;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  std::vector&lt; std::pair&lt;unsigned long, float&gt; &gt; dummy21;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <a class="code" href="classic_1_1_electron.html">ic::Electron</a> dummy22;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  std::vector&lt;ic::Electron&gt; dummy23;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <a class="code" href="classic_1_1_muon.html">ic::Muon</a> dummy24;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  std::vector&lt;ic::Muon&gt; dummy25;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  std::pair&lt;std::string, double&gt; dummy26;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  std::vector&lt; std::pair&lt;std::string, double&gt; &gt; dummy27;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a> dummy28;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <a class="code" href="classic_1_1_pileup_info.html">ic::PileupInfo</a> dummy30;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  std::vector&lt;ic::PileupInfo&gt; dummy31;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <a class="code" href="classic_1_1_trigger_path.html">ic::TriggerPath</a> dummy32;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  std::vector&lt;ic::TriggerPath&gt; dummy33;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <a class="code" href="classic_1_1_met.html">ic::Met</a> dummy34;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <a class="code" href="structic_1_1_met_1_1_basic_met.html">ic::Met::BasicMet</a> dummy34a;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  std::map&lt;std::size_t, ic::Met::BasicMet&gt; dummy34b;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <a class="code" href="classic_1_1_light_track.html">ic::LightTrack</a> dummy35;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  std::vector&lt;ic::LightTrack&gt; dummy36;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="classic_1_1_tau.html">ic::Tau</a> dummy37;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  std::vector&lt;ic::Tau&gt; dummy38;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <a class="code" href="classic_1_1_super_cluster.html">ic::SuperCluster</a> dummy39;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  std::vector&lt;ic::SuperCluster&gt; dummy40;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a> dummy41;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  std::vector&lt;ic::TriggerObject&gt; dummy42;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  std::vector&lt;ic::Met&gt; dummy43;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  std::vector&lt;unsigned long&gt; dummy44;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  edm::Wrapper&lt;std::vector&lt;unsigned long&gt; &gt; dummy45;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  mithep::TH2DAsymErr dummy46;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <a class="code" href="classic_1_1_photon.html">ic::Photon</a> dummy47;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  std::vector&lt;ic::Photon&gt; dummy48;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <a class="code" href="classic_1_1_secondary_vertex.html">ic::SecondaryVertex</a> dummy49;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  std::vector&lt;ic::SecondaryVertex&gt; dummy50;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  edm::Wrapper&lt;reco::SecondaryVertexTagInfoRefVector&gt; dummy51;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  edm::Wrapper&lt;reco::VertexRefVector&gt; dummy52;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <a class="code" href="classic_1_1_p_f_candidate.html">ic::PFCandidate</a> dummy53;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  std::vector&lt;ic::PFCandidate&gt; dummy54;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  edm::Wrapper&lt;reco::GsfTrackRefVector&gt; dummy55;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  edm::Wrapper&lt;reco::PFCandidateRefVector&gt; dummy56;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  edm::ValueMap&lt;std::vector&lt;int&gt; &gt; dummy57;  </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  edm::Wrapper&lt;edm::ValueMap&lt;std::vector&lt;int&gt; &gt; &gt; dummy58;  </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;};</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;}</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
 <div class="ttc" id="classic_1_1_met_html"><div class="ttname"><a href="classic_1_1_met.html">ic::Met</a></div><div class="ttdoc">Stores a missing transverse energy object and the corresponding significance and corrections. </div><div class="ttdef"><b>Definition:</b> <a href="_met_8hh_source.html#l00015">Met.hh:15</a></div></div>
 <div class="ttc" id="classic_1_1_pileup_info_html"><div class="ttname"><a href="classic_1_1_pileup_info.html">ic::PileupInfo</a></div><div class="ttdoc">Stores information on the in-time or out-of-time simulated pileup interactions. </div><div class="ttdef"><b>Definition:</b> <a href="_pileup_info_8hh_source.html#l00014">PileupInfo.hh:14</a></div></div>
 <div class="ttc" id="_light_track_8hh_html"><div class="ttname"><a href="_light_track_8hh.html">LightTrack.hh</a></div></div>
