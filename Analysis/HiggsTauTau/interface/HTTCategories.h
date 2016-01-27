@@ -71,8 +71,8 @@ class HTTCategories : public ModuleBase {
   double wt_tau_id_down_;
   float trigweight_1_;
   float trigweight_2_;
-  float idweight_1_;
-  float idweight_2_;
+  float idisoweight_1_;
+  float idisoweight_2_;
   float isoweight_1_;
   float isoweight_2_;
   float effweight_;
@@ -193,11 +193,11 @@ class HTTCategories : public ModuleBase {
   bool ldecayModeFindingOldDMs_2 = 0;
 
   float l3Hits_1 = 0;
-  float lagainstElectronLooseMVA5_1 = 0;
-  float lagainstElectronMediumMVA5_1 = 0;
-  float lagainstElectronTightMVA5_1 = 0;
-  float lagainstElectronVTightMVA5_1 = 0;
-  float lagainstElectronVLooseMVA5_1 = 0;
+  float lagainstElectronLooseMVA_1 = 0;
+  float lagainstElectronMediumMVA_1 = 0;
+  float lagainstElectronTightMVA_1 = 0;
+  float lagainstElectronVTightMVA_1 = 0;
+  float lagainstElectronVLooseMVA_1 = 0;
   float lagainstMuonLoose3_1 = 0;
   float lagainstMuonTight3_1 = 0;
   float lbyIsolationMVA3newDMwoLTraw_1 = 0;
@@ -231,11 +231,11 @@ class HTTCategories : public ModuleBase {
   bool lbyMediumPileupWeightedIsolation_2=0;
   bool lbyTightPileupWeightedIsolation_1=0;
   bool lbyTightPileupWeightedIsolation_2=0;
-  float lagainstElectronLooseMVA5_2 = 0;
-  float lagainstElectronMediumMVA5_2 = 0;
-  float lagainstElectronTightMVA5_2 = 0;
-  float lagainstElectronVTightMVA5_2 = 0;
-  float lagainstElectronVLooseMVA5_2 = 0;
+  float lagainstElectronLooseMVA_2 = 0;
+  float lagainstElectronMediumMVA_2 = 0;
+  float lagainstElectronTightMVA_2 = 0;
+  float lagainstElectronVTightMVA_2 = 0;
+  float lagainstElectronVLooseMVA_2 = 0;
   float lagainstMuonLoose3_2 = 0;
   float lagainstMuonTight3_2 = 0;
     
