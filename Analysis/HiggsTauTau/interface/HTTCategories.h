@@ -93,7 +93,7 @@ class HTTCategories : public ModuleBase {
   branch_var trigger_object_pt_2;
   branch_var trigger_object_eta_2;
 */
-  unsigned n_pu_;
+ float n_pu_;
   branch_var m_sv_;
   branch_var mt_sv_;
   branch_var m_vis_;

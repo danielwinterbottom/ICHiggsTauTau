@@ -351,6 +351,8 @@ namespace ic {
 
       // Visible di-tau mass
       synctree_->Branch("m_vis", &m_vis_.var_float, "m_vis/F");
+      // SVFit di-tau transverse mass
+      synctree_->Branch("mt_sv", &mt_sv_.var_float, "mt_sv/F");
       // SVFit di-tau mass
       synctree_->Branch("m_sv", &m_sv_.var_float, "m_sv/F");
       // SVFit di-tau pt (only for Markov-Chain SVFit)
@@ -559,6 +561,8 @@ namespace ic {
 
       // pt of the di-tau + MET system
       synctree_->Branch("pt_tt", &pt_tt_.var_float, "pt_tt/F");
+      //mt total
+      synctree_->Branch("mt_tot", &mt_tot_.var_float, "mt_tot/F");
 
       // Visible pzeta
       synctree_->Branch("pzetavis", &pzetavis_.var_float, "pzetavis/F");

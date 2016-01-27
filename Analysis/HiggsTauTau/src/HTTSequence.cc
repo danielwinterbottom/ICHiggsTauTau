@@ -763,7 +763,7 @@ if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     jes_input_set  = "SubTotalMC";
   }
   if (era_type == era::data_2015) {
-    jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+    jes_input_file = "input/jec/Summer15_25nsV5_MC_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "SubTotalMC";
   }
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
@@ -954,6 +954,7 @@ BuildModule(svFitTest);
     .set_mc(mc_type)
     .set_do_tau_id_weights(false)
     .set_ditau_label("ditau")
+    .set_jets_label("ak4PFJetsCHS")
     .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
     .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
     .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
@@ -964,7 +965,7 @@ BuildModule(svFitTest);
     .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
     .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
-  if (!is_data&&strategy_type !=strategy::fall15) {
+  if (!is_data) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
   }
 
