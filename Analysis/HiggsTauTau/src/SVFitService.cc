@@ -86,7 +86,7 @@ namespace ic {
     return std::make_pair(fitresult, algo.getMass());
   }
 
-  double SVFitService::SVFitMassEleHad(Candidate const* lep, Candidate const* had, int decm2, Met const* met, bool MC) {
+/*  double SVFitService::SVFitMassEleHad(Candidate const* lep, Candidate const* had, int decm2, Met const* met, bool MC) {
     svFitStandalone::Vector met_vec(met->vector().px(), met->vector().py(), met->vector().pz());
     TMatrixD covMET(2, 2);
     covMET(0,0) = met->xx_sig();
@@ -278,6 +278,7 @@ namespace ic {
 
     return std::make_pair(fitresult, algo.getMass());
   }
+*/
 
 
 
