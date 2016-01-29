@@ -62,9 +62,13 @@ namespace ic {
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
+      outtree_->Branch("mt_sv",              &mt_sv_.var_double);
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
+      outtree_->Branch("mt_tot",            &mt_tot_.var_double);
+      outtree_->Branch("mt_lep",            &mt_lep_.var_double);
+      outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
       outtree_->Branch("pfmt_1",            &pfmt_1_.var_double);
       outtree_->Branch("puppimt_1",         &puppimt_1_.var_double);
@@ -104,6 +108,8 @@ namespace ic {
       outtree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2);
       outtree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1);
       outtree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2);
+      outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
+      outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
       outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
@@ -217,8 +223,6 @@ namespace ic {
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("m_2",               &m_2_.var_double);
         outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
-        outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
-        outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
         outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
         outtree_->Branch("jpt_1",             &jpt_1_.var_double);
@@ -422,7 +426,7 @@ namespace ic {
       // Whether lepton passes iso selection (always true in IC ntuples)
 //      synctree_->Branch("passiso_2", &lPassIso2, "lPassIso2/B");
       // Transverse mass of lepton 2 and MVA MET
-      synctree_->Branch("mt_2", &mt_2_, "mt_2/F");
+      synctree_->Branch("mt_2", &mt_2_.var_float, "mt_2/F");
 
       // Whether event is os or ss
       synctree_->Branch("os", &os_, "os/O");
@@ -814,6 +818,12 @@ namespace ic {
       m_sv_ = -9999;
     }
 
+   if (event->Exists("svfitMT")){
+     mt_sv_ = event->Get<double>("svfitMT");
+   } else {
+     mt_sv_ = -9999;
+   }
+
     if (event->Exists("svfitHiggs")) {
       Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
       pt_h_ = higgs.pt();
@@ -858,10 +868,12 @@ namespace ic {
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
 
+    mt_lep_ = MT(lep1,lep2);
     //MVA met doesnt exist for Z->ee and Z->mumu
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_1_ = MT(lep1, mets);
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_2_ = MT(lep2, mets);
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_ll_ = MT(ditau, mets);
+    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pzeta_ = PZeta(ditau, mets, 0.85);
     pzetavis_ = PZetaVis(ditau);
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pzetamiss_ = PZeta(ditau, mets, 0.0);

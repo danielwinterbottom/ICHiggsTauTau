@@ -62,8 +62,8 @@ class SVFitTest : public ModuleBase {
   // std::map<std::string, double> mass_map;
   // We map from a combined hash of the run,ls,event to a the lepton+met hash and the mass value
   std::map<tri_unsigned, std::pair<std::size_t,double> > mass_map;
-  // And a similar map from a combined hash of the run,ls,event to a the lepton+met hash and the higgs 4-vector
-  std::map<tri_unsigned, std::pair<std::size_t,Candidate> > p4_map;
+  // And a similar map from a combined hash of the run,ls,event to a the lepton+met hash, the higgs 4-vector and svfit transverse mass
+  std::map<tri_unsigned, std::tuple<std::size_t,Candidate,double> > p4_map;
  
   CLASS_MEMBER(SVFitTest, ic::channel, channel)
 
@@ -93,6 +93,8 @@ class SVFitTest : public ModuleBase {
   CLASS_MEMBER(SVFitTest, bool, MC)
   CLASS_MEMBER(SVFitTest, bool, do_preselection)
   CLASS_MEMBER(SVFitTest, bool, from_grid)
+  CLASS_MEMBER(SVFitTest, bool, read_all)
+  CLASS_MEMBER(SVFitTest, bool, read_svfit_mt)
 
   unsigned file_counter_;
   unsigned event_counter_;

@@ -73,7 +73,7 @@ namespace ic {
     Candidate const* lep1 = dilepton.at(0)->GetCandidate("lepton1");
     Candidate const* lep2 = dilepton.at(0)->GetCandidate("lepton2");
     os=PairOppSign(dilepton.at(0));
-    double pass_presel=false;
+//    double pass_presel=false;
     
      bool dilepton_veto_=false,extraelec_veto_=false,extramuon_veto_ = false;
     if(channel_ == channel::et) { 
@@ -86,7 +86,7 @@ namespace ic {
         iso_2 = tau->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         antiele_pass = tau->GetTauID("againstElectronTightMVA5");
         antimu_pass = tau->GetTauID("againstMuonLoose3");
-        if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+//        if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
     }
     if(channel_ == channel::mt) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
@@ -98,7 +98,7 @@ namespace ic {
         iso_2 = tau->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA5");
         antimu_pass = tau->GetTauID("againstMuonTight3");
-        if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+ //       if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
     }
     if(channel_ == channel::em) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -107,7 +107,7 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
         iso_2 = PF03IsolationVal(muon, 0.5, 0);
-        if(iso_1<0.15&&iso_2<0.15&&os>0) pass_presel=true;
+  //      if(iso_1<0.15&&iso_2<0.15&&os>0) pass_presel=true;
     }
     if(channel_ == channel::tt) {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -118,7 +118,7 @@ namespace ic {
         iso_2 = tau2->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         antiele_pass = (tau1->GetTauID("againstElectronTightMVA5")&&tau2->GetTauID("againstElectronTightMVA5"));
         antimu_pass = (tau1->GetTauID("againstMuonLoose3") &&tau2->GetTauID("againstMuonLoose3"));
-        if(iso_1>0.5&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+   //     if(iso_1>0.5&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
     }
 
 
@@ -144,7 +144,7 @@ namespace ic {
         }
       }
     } else {
-    if(pass_presel&&!leptonveto){
+ //   if(pass_presel&&!leptonveto){
       for (unsigned i = 0; i<embed_jets.size(); ++i){
         pt = embed_jets[i]->pt();
         eta = fabs(embed_jets[i]->eta());
@@ -178,7 +178,7 @@ namespace ic {
         }
         outtree_->Fill();
       }         
-    } 
+    //} 
    }
     
     if(do_legacy_){

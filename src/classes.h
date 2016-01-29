@@ -26,6 +26,7 @@
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h"
 #include "DataFormats/Common/interface/Wrapper.h"
+#include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
@@ -91,6 +92,8 @@ namespace { struct dictionary {
   std::vector<ic::PFCandidate> dummy54;
   edm::Wrapper<reco::GsfTrackRefVector> dummy55;
   edm::Wrapper<reco::PFCandidateRefVector> dummy56;
+  edm::ValueMap<std::vector<int> > dummy57;  
+  edm::Wrapper<edm::ValueMap<std::vector<int> > > dummy58;  
 };
 }
 

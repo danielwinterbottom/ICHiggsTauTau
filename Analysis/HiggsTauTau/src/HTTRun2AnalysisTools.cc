@@ -491,7 +491,9 @@ namespace ic {
 
  
    samples_alias_map_["ztt_shape_samples"]={
-    "DYJetsToLL_M-50-LO"//, "DYJetsToLL10-50"
+    "DYJetsToLL_M-50-LO",// "DYJetsToLL10-50"
+    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
    };
 
    samples_alias_map_["data_samples"] = {
@@ -523,16 +525,24 @@ namespace ic {
   if(use_status_flags_){
     samples_alias_map_["zj_samples"] = {
      "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
     };
 
    samples_alias_map_["ztt_samples"]={
      "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
    };
    samples_alias_map_["zl_samples"] = {
      "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
    };
    samples_alias_map_["zll_samples"] = {
      "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
    };
 
 
@@ -562,7 +572,11 @@ namespace ic {
    "WWTo1L1Nu2Q",
    "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "WJetsToLNu-LO","TT-ext"
+   "WJetsToLNu-LO","TT-ext",
+   "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+  "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
    };
 
 
@@ -595,7 +609,12 @@ namespace ic {
    "WWTo1L1Nu2Q","VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT-ext","WJetsToLNu-LO"
+   "TT-ext","WJetsToLNu-LO",
+   "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+  "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+
    };
 
   }
@@ -603,6 +622,8 @@ namespace ic {
 if(use_status_flags_){
   samples_alias_map_["w_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
+   "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q","VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
@@ -620,7 +641,9 @@ if(use_status_flags_){
 }
 
 samples_alias_map_["wjets_samples"] = {
-  "WJetsToLNu-LO"
+  "WJetsToLNu-LO",
+  "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
  };
 
 sample_names_={};

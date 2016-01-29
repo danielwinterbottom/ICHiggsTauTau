@@ -399,7 +399,7 @@ namespace ic {
    
     pads[0]->SetLogy(log_y_);
     // Create axes based on data hist and possible user specified axis range
-    std::vector<TH1*> h = CreateAxisHists(2, data_hist, custom_x_axis_range_ ? x_axis_min_ : data_hist->GetXaxis()->GetXmin(), custom_x_axis_range_ ? x_axis_max_ : data_hist->GetXaxis()->GetXmax());
+    std::vector<TH1*> h = CreateAxisHists(2, data_hist, custom_x_axis_range_ ? x_axis_min_ : data_hist->GetXaxis()->GetXmin(), custom_x_axis_range_ ? x_axis_max_-0.01 : data_hist->GetXaxis()->GetXmax()-0.01);
     h[0]->Draw();
     
     //Deal with units in axis label

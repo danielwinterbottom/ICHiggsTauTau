@@ -65,7 +65,9 @@
 namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
+  addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else{std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
+  svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   svfit_override = json["svfit_override"].asString();
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
@@ -288,18 +290,18 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    muon_eta = 2.1;
  }
  if(channel_str == "tpzmm"){
-   muon_dz = 0.2;
-   muon_dxy = 0.045;
+   muon_dz = 0.5;
+   muon_dxy = 0.2;
    pair_dr = 0.5;
    muon_pt = 10;
-   muon_eta = 2.1;
+   muon_eta = 2.4;
  }
  if(channel_str == "tpzee"){
-   elec_dz = 0.2;
-   elec_dxy = 0.045;
+   elec_dz = 0.5;
+   elec_dxy = 0.2;
    pair_dr = 0.5;
    elec_pt = 10;
-   elec_eta = 2.1;
+   elec_eta = 2.5;
  }
  
  is_data      = json["is_data"].asBool();
@@ -322,7 +324,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  ztautau_mode = json["ztautau_mode"].asUInt();
  vh_filter_mode = json["vh_filter_mode"].asUInt();
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
- tau_scale_mode = json["tau_scale_mode"].asUInt();
+ tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
@@ -469,7 +471,7 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
-  BuildModule(GenericModule("checkGoodVertices")
+/*  BuildModule(GenericModule("checkGoodVertices")
     .set_function([](ic::TreeEvent *event){
        std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
        bool is_good_vertex = GoodVertex(vertices.at(0));
@@ -477,7 +479,7 @@ void HTTSequence::BuildSequence(){
        //if(is_good_vertex) return 1;
        //else return 0;
        return 0;
-    }));
+    }));*/
        
 /*  BuildModule(GenericModule("checkGenVertices")
     .set_function([](ic::TreeEvent *event){
@@ -743,11 +745,11 @@ if(strategy_type==strategy::spring15&&!is_data&&channel != channel::wmnu){
     .set_ditau_label("ditau"));
 }
 
-if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
+if(strategy_type!=strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
     .set_fs(fs.get())
     .set_channel(channel)
-    .set_do_legacy(false)
+    .set_do_legacy(true)
     .set_jet_label(jets_label));
 }
 
@@ -760,7 +762,7 @@ if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
     jes_input_set  = "SubTotalMC";
   }
   if (era_type == era::data_2015) {
-    jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+    jes_input_file = "input/jec/Summer15_25nsV5_DATA_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "SubTotalMC";
   }
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
@@ -790,6 +792,16 @@ if(channel != channel::wmnu) {
     .set_reference_label("ditau")
     .set_min_dr(0.5));
 }
+
+if(strategy_type==strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_do_legacy(false)
+    .set_jet_label(jets_label));
+}
+
+
   if(strategy_type != strategy::phys14&& strategy_type!= strategy::spring15){
     BuildModule(HTTRecoilCorrector("HTTRecoilCorrector")
      .set_sample(output_name)
@@ -828,6 +840,8 @@ if(channel != channel::wmnu) {
  if(era_type == era::data_2015){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool());
+   svFitTest.set_read_svfit_mt(true);
+   svFitTest.set_read_all(js["read_all_svfit_files"].asBool());
    svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
  }
 
@@ -910,13 +924,47 @@ BuildModule(svFitTest);
 }
 
 
- /*if(strategy_type == strategy::spring15){
+ if(strategy_type == strategy::spring15){
+   TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_SingleEle_MC_eff");
+   TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_SingleEle_Data_eff");
+   TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_SingleMu_MC_eff");
+   TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_SingleMu_Data_eff");
+   TH2D et_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_IdIso0p10_MC_eff");
+   TH2D et_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_IdIso0p10_Data_eff");
+   TH2D em_e_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_IdIso0p15_MC_eff");
+   TH2D em_e_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_IdIso0p15_Data_eff");
+   TH2D mt_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_IdIso0p10_MC_eff");
+   TH2D mt_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_IdIso0p10_Data_eff");
+   TH2D em_m_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_IdIso0p15_MC_eff");
+   TH2D em_m_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_IdIso0p15_Data_eff");
+   TH2D em_m17_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_Mu17_Data_eff");
+   TH2D em_m17_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_Mu17_MC_eff");
+   TH2D em_m8_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_Mu8_Data_eff");
+   TH2D em_m8_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_Mu8_MC_eff");
+   TH2D em_e17_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_Ele17_Data_eff");
+   TH2D em_e17_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_Ele17_MC_eff");
+   TH2D em_e12_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_Ele12_Data_eff");
+   TH2D em_e12_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_Ele12_MC_eff");
+
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
     .set_era(era_type)
     .set_mc(mc_type)
     .set_do_tau_id_weights(false)
-    .set_ditau_label("ditau");
+    .set_ditau_label("ditau")
+    .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
+    .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+    .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
+    .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
+    .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
+    .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
+    .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
+    .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
+    .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
+    .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
+  if (!is_data) {
+    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
+  }
 
    if (output_name.find("DYJetsToLL_M-50") != output_name.npos){
       httWeights.set_do_dy_soup_htbinned(true);
@@ -929,9 +977,10 @@ BuildModule(svFitTest);
       httWeights.SetWInputCrossSections(50690,1345,359.7,48.91,18.77);
       httWeights.SetWInputYields(72207128,10152718,5221599,1745914,1039152);
     }
+   
 
     BuildModule(httWeights);
-  }*/
+  }
 
  if (is_embedded && era_type == era::data_2012_rereco) {
    EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
@@ -1610,10 +1659,11 @@ void HTTSequence::BuildTauSelection(){
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type!=strategy::phys14&&strategy_type!=strategy::spring15) moriond_tau_scale = true; 
  
- if (tau_scale_mode > 0 && !moriond_tau_scale)
+ if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15)){
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
-    .set_input_label("taus")
+    .set_input_label(js["taus"].asString())
     .set_shift(tau_shift));
+ }
 
  if(moriond_tau_scale&&(!is_data||is_embedded)){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")

@@ -31,7 +31,9 @@ namespace ic {
     require_inputs_match_ = true;
     legacy_svfit_ = false;
     from_grid_ = false;
+    read_svfit_mt_ = false;
     do_preselection_ = false;
+    read_all_ = false;
     dm1_ = -1;
     dm2_ = -1;
 
@@ -96,6 +98,17 @@ namespace ic {
     if(!from_grid_){
       total_path_ = operator/(fullpath_, folder_p);
     } else {
+      if(read_all_){
+        std::string chan;
+        if (channel_ == channel::et) chan = "_et_";
+        if (channel_ == channel::mt) chan = "_mt_";
+        if (channel_ == channel::em) chan = "_em_";
+        if (channel_ == channel::tt) chan = "_tt_";
+        std::string::size_type channelpos = outputadd_.find(chan);
+        if(channelpos != std::string::npos){
+          outputadd_.erase(outputadd_.begin() + channelpos +chan.length(),outputadd_.end());
+        } 
+      }
       boost::filesystem::path nofolder("");
       total_path_ = operator/(fullpath_,nofolder);
     }
@@ -121,17 +134,25 @@ namespace ic {
           unsigned    run      = 0;
           ULong64_t    objects_hash  = 0;
           double      svfit_mass    = 0;
+          double      svfit_transverse_mass = 0;
           Candidate * svfit_vector  = nullptr;
           otree->SetBranchAddress("event"  , &event);
           otree->SetBranchAddress("lumi"  , &lumi);
           otree->SetBranchAddress("run"  , &run);
           otree->SetBranchAddress("objects_hash", &objects_hash);
           otree->SetBranchAddress("svfit_mass"  , &svfit_mass);
+          if(read_svfit_mt_){
+            otree->SetBranchAddress("svfit_transverse_mass",&svfit_transverse_mass);
+          }
           otree->SetBranchAddress("svfit_vector"  , &svfit_vector);
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
             if(!MC_) mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
-            else p4_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, *svfit_vector);
+            else{
+              if(read_svfit_mt_){
+                p4_map[tri_unsigned(run, lumi, event)] = std::make_tuple(objects_hash, *svfit_vector, svfit_transverse_mass);
+              } else p4_map[tri_unsigned(run, lumi, event)] = std::make_tuple(objects_hash, *svfit_vector, 0);
+            }
           }
           ofile->Close();
           delete ofile;
@@ -165,6 +186,10 @@ int SVFitTest::Execute(TreeEvent *event) {
  bool antimu_2_ = false;
  double iso_1_ = 0;
  double iso_2_ = 0;
+ //bool lbyMediumCombinedIsolation_1=0; 
+ //bool lbyMediumCombinedIsolation_2=0; 
+ bool lbyTightCombinedIsolation_1=0; 
+ bool lbyTightCombinedIsolation_2=0; 
  bool pass_presel = false;
 
     if(channel_ == channel::et && do_preselection_) { 
@@ -174,6 +199,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         /*lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;*/
@@ -192,7 +218,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         lbyIsolationMVA3oldDMwLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwLTraw") : 0.;*/
         antiele_2_ = lagainstElectronTightMVA5_2;
         antimu_2_ = lagainstMuonLoose3_2;
-        if(antiele_2_>0&&antimu_2_>0&&iso_2_<10&&iso_1_<0.5) pass_presel = true;
+        if(antiele_2_>0 && antimu_2_>0 && iso_2_<10 && iso_1_<0.5) pass_presel = true;
     }
     if(channel_ == channel::mt && do_preselection_) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
@@ -201,6 +227,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         Muon const* muon  = dynamic_cast<Muon const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
+        //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
 /*        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
@@ -219,7 +246,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         lbyIsolationMVA3oldDMwLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwLTraw") : 0.;*/
         antiele_2_ = lagainstElectronVLooseMVA5_2;
         antimu_2_ = lagainstMuonTight3_2;
-        if(antiele_2_>0&&antimu_2_>0&&iso_2_<10&&iso_1_<0.5) pass_presel = true;
+        if(antiele_2_>0 && antimu_2_>0 && iso_2_<10 && iso_1_<0.5) pass_presel = true;
     }
     if(channel_ == channel::em && do_preselection_) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -228,34 +255,34 @@ int SVFitTest::Execute(TreeEvent *event) {
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
-        if(iso_2_<0.2&&iso_1_<0.2) pass_presel = true;
+        if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
     }
     if(channel_ == channel::tt && do_preselection_) {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
         Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-        iso_1_ = tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-        iso_2_ = tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-        /*lagainstElectronLooseMVA5_1 = tau1->HasTauID("againstElectronLooseMVA5") ? tau1->GetTauID("againstElectronLooseMVA5") : 0.;
-        lagainstElectronMediumMVA5_1 = tau1->HasTauID("againstElectronMediumMVA5") ? tau1->GetTauID("againstElectronMediumMVA5") : 0.;*/
-        bool lagainstElectronTightMVA5_1 = tau1->HasTauID("againstElectronTightMVA5") ? tau1->GetTauID("againstElectronTightMVA5") : 0.;
-        /*lagainstElectronVTightMVA5_1= tau1->HasTauID("againstElectronVTightMVA5") ? tau1->GetTauID("againstElectronVTightMVA5") : 0.;
-        lagainstElectronVLooseMVA5_1 = tau1->HasTauID("againstElectronVLooseMVA5") ? tau1->GetTauID("againstElectronVLooseMVA5") :0. ;*/
+        lbyTightCombinedIsolation_1 = tau1->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
+        lbyTightCombinedIsolation_2 = tau2->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
+        //lagainstElectronLooseMVA5_1 = tau1->HasTauID("againstElectronLooseMVA5") ? tau1->GetTauID("againstElectronLooseMVA5") : 0.;
+        //lagainstElectronMediumMVA5_1 = tau1->HasTauID("againstElectronMediumMVA5") ? tau1->GetTauID("againstElectronMediumMVA5") : 0.;
+        //bool lagainstElectronTightMVA5_1 = tau1->HasTauID("againstElectronTightMVA5") ? tau1->GetTauID("againstElectronTightMVA5") : 0.;
+        //lagainstElectronVTightMVA5_1= tau1->HasTauID("againstElectronVTightMVA5") ? tau1->GetTauID("againstElectronVTightMVA5") : 0.;
+        bool lagainstElectronVLooseMVA5_1 = tau1->HasTauID("againstElectronVLooseMVA5") ? tau1->GetTauID("againstElectronVLooseMVA5") :0. ;
         bool lagainstMuonLoose3_1 = tau1->HasTauID("againstMuonLoose3") ? tau1->GetTauID("againstMuonLoose3") : 0.;
         //lagainstMuonTight3_1 = tau1->HasTauID("againstMuonTight3") ? tau1->GetTauID("againstMuonTight3") : 0.;
-        /*lagainstElectronLooseMVA5_2 = tau2->HasTauID("againstElectronLooseMVA5") ? tau2->GetTauID("againstElectronLooseMVA5") : 0.;
-        lagainstElectronMediumMVA5_2 = tau2->HasTauID("againstElectronMediumMVA5") ? tau2->GetTauID("againstElectronMediumMVA5") : 0.;*/
-        bool lagainstElectronTightMVA5_2 = tau2->HasTauID("againstElectronTightMVA5") ? tau2->GetTauID("againstElectronTightMVA5") : 0.;
-        /*lagainstElectronVTightMVA5_2 = tau2->HasTauID("againstElectronVTightMVA5") ? tau2->GetTauID("againstElectronVTightMVA5") : 0.;
-        lagainstElectronVLooseMVA5_2 = tau2->HasTauID("againstElectronVLooseMVA5") ? tau2->GetTauID("againstElectronVLooseMVA5") :0. ;*/
+        //lagainstElectronLooseMVA5_2 = tau2->HasTauID("againstElectronLooseMVA5") ? tau2->GetTauID("againstElectronLooseMVA5") : 0.;
+        //lagainstElectronMediumMVA5_2 = tau2->HasTauID("againstElectronMediumMVA5") ? tau2->GetTauID("againstElectronMediumMVA5") : 0.;*/
+        //bool lagainstElectronTightMVA5_2 = tau2->HasTauID("againstElectronTightMVA5") ? tau2->GetTauID("againstElectronTightMVA5") : 0.;
+        //lagainstElectronVTightMVA5_2 = tau2->HasTauID("againstElectronVTightMVA5") ? tau2->GetTauID("againstElectronVTightMVA5") : 0.;
+        bool lagainstElectronVLooseMVA5_2 = tau2->HasTauID("againstElectronVLooseMVA5") ? tau2->GetTauID("againstElectronVLooseMVA5") :0. ;
         bool lagainstMuonLoose3_2 = tau2->HasTauID("againstMuonLoose3") ? tau2->GetTauID("againstMuonLoose3") : 0.;
         //lagainstMuonTight3_2 = tau2->HasTauID("againstMuonTight3") ? tau2->GetTauID("againstMuonTight3") : 0.;
-        antiele_1_ = lagainstElectronTightMVA5_1;
+        antiele_1_ =  lagainstElectronVLooseMVA5_1;
         antimu_1_ = lagainstMuonLoose3_1;
-        antiele_2_ = lagainstElectronTightMVA5_2;
+        antiele_2_ = lagainstElectronVLooseMVA5_2 ;
         antimu_2_ = lagainstMuonLoose3_2;
-        if(iso_1_<1.5&&iso_2_<1.5&&antiele_1_>0&&antimu_1_>0&&antiele_2_>0&&antimu_2_>0) pass_presel = true;
+        if(lbyTightCombinedIsolation_2>0.5 && lbyTightCombinedIsolation_1>0.5 && antiele_1_>0 && antimu_1_>0 && antiele_2_>0 && antimu_2_>0) pass_presel = true;
     }
 
 
@@ -332,14 +359,15 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
         auto it = p4_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
         if (it != p4_map.end()) {
           ;
-          if (require_inputs_match_ && it->second.first != objects_hash) {
+          if (require_inputs_match_ && std::get<0>(it->second) != objects_hash) {
             fail_state = true;
           } else {
-            if (it->second.second.M() < 1.) {
-              std::cout << "Warning, SVFit mass is invalid: " << it->second.second.M() << std::endl;
+            if ((std::get<1>(it->second)).M() < 1.) {
+              std::cout << "Warning, SVFit mass is invalid: " << (std::get<1>(it->second)).M() << std::endl;
             } else {
-              event->Add("svfitMass", it->second.second.M());
-              event->Add("svfitHiggs", it->second.second);
+              event->Add("svfitMass", (std::get<1>(it->second)).M());
+              event->Add("svfitHiggs", std::get<1>(it->second));
+              event->Add("svfitMT", std::get<2>(it->second));
             }
           }
         } else {

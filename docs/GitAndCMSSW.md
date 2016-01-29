@@ -31,7 +31,7 @@ Before working with CMSSW in git, you will need to create a copy (or fork) of th
 Create a new CMSSW area:
 
 		export SCRAM_ARCH=slc5_amd64_gcc462
-		# Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481
+		# Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481,slc6_amd64_gcc491,slc6_amd64_gcc493 (for new 76X samples)
 		scramv1 project CMSSW CMSSW_X_Y_Z
 		cd CMSSW_X_Y_Z/src/
 		cmsenv
@@ -45,7 +45,7 @@ Initialise this area for git by adding a single package:
 
 This command will have created two remote repositories, `official-cmssw` and `my-cmssw`. It will also have created and switched to a new branch, `from-CMSSW_X_Y_Z`. An additional remote can be added which provides the pre-configured branches shared by the group:
 
-		git remote add ic-cmssw git@github.com:ajgilbert/cmssw.git
+		git remote add ic-cmssw git@github.com:adewit/cmssw.git
 		# fetch from the ic-cmssw remote repository and merge the from-CMSSW_X_Y_Z into your own local branch.
 		git pull ic-cmssw from-CMSSW_X_Y_Z
 		# Check which branch you actually need to merge in here. Descriptive names are useful, e.g. "higgstautau_from-CMSSW_5_3_7"
@@ -67,6 +67,13 @@ Next, add the IC analysis code package:
 
 		git clone git@github.com:ajgilbert/ICHiggsTauTau.git UserCode/ICHiggsTauTau
 		./UserCode/ICHiggsTauTau/init_X_Y_Z.sh  # (if exisits) This script performs a few final tasks in the new cmssw area
+
+The CMSSW-facing part of the analysis code uses an external package that we need to add for all of the CMSSW configs to run:
+
+		git clone git@github.com:ajgilbert/ICAnalysis-MVAMETPairProducer.git ICAnalysis/MVAMETPairProducer
+		cd ICAnalysis/MVAMETPairProducer
+		git checkout 7_6_X_common
+		cd ../../
 
 At this point everything is ready, and the working area can be compiled in the normal way with `scram`.  New developments that are relevant for everyone can be committed to a branch and pushed to central IC repository (`ic-cmssw`). If you wish to test some new changes, or just share with specific people, it will be safer to work from a new branch, either based on the CMSSW release tag, or some commit on the `from-CMSSW_X_Y_Z` branch, e.g.
 
