@@ -109,10 +109,10 @@ extra_global = ' '
 
 #### Apply these options for specific channels
 extra_channel = {
-    "et" : ' ',
-    "mt" : ' ',
-    "tt" : ' ',
-    "em" : ' '
+    "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV"',
+    "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV"',
+    "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV"',
+    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV"'
 }
 
 #################################################################
