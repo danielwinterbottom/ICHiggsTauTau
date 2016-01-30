@@ -382,15 +382,17 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
         std::cout << "Error, SVFitTest mass not found!" << std::endl;
         throw;
       } else {
-        std::cout << "Calculating mass on-the-fly" << std::endl;
         if(legacy_svfit_){
+          std::cout << "Calculating mass on-the-fly" << std::endl;
           if (decay_mode_ == 0) {
             event->Add("svfitMass", SVFitService::SVFitMassLepHad(&c1, &c2, &met, MC_));
           } else {
             event->Add("svfitMass", SVFitService::SVFitMassLepLep(&c1, &c2, &met, MC_));
           }
         } else {
-          if (decay_mode_ == 0) {
+          std::cout << "On-the-fly mass calculation not supported!" << std::endl;
+          throw;
+         /* if (decay_mode_ == 0) {
             event->Add("svfitMass", SVFitService::SVFitMassMuHad(&c1, &c2, dm2_, &met, MC_));
           } else if (decay_mode_ == 1){
             event->Add("svfitMass", SVFitService::SVFitMassEleMu(&c1, &c2, &met, MC_));
@@ -398,7 +400,7 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
             event->Add("svfitMass", SVFitService::SVFitMassEleHad(&c1, &c2, dm2_, &met, MC_));
           } else if (decay_mode_ == 3){
             event->Add("svfitMass", SVFitService::SVFitMassHadHad(&c1, dm1_, &c2, dm2_, &met, MC_));
-          }
+          }*/
         }
       }
     }

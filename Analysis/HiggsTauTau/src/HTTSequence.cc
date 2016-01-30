@@ -762,7 +762,7 @@ if(strategy_type!=strategy::spring15&&!is_data&&js["do_btag_eff"].asBool()){
     jes_input_set  = "SubTotalMC";
   }
   if (era_type == era::data_2015) {
-    jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+    jes_input_file = "input/jec/Summer15_25nsV5_DATA_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "SubTotalMC";
   }
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
