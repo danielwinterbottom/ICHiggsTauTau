@@ -384,14 +384,14 @@ Double_t EGammaMvaEleEstimatorCSA14::mvaValue(const pat::Electron& ele,
     
     
     // Pure ECAL -> shower shapes
-    #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 1
+    #if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 1)
     fMVAVar_see = ele.full5x5_sigmaIetaIeta(); //EleSigmaIEtaIEta
     fMVAVar_spp = ele.full5x5_sigmaIphiIphi();   //EleSigmaIPhiIPhi
     #endif
     
     fMVAVar_etawidth        =  ele.superCluster()->etaWidth();
     fMVAVar_phiwidth        =  ele.superCluster()->phiWidth();
-    #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 1
+    #if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION ==7 && CMSSW_MINOR_VERSION >= 1)
     fMVAVar_OneMinusE1x5E5x5        =  (ele.full5x5_e5x5()) !=0. ? 1.-(ele.full5x5_e1x5()/ele.full5x5_e5x5()) : -1. ;
     fMVAVar_R9              =  ele.full5x5_r9();
     #endif
