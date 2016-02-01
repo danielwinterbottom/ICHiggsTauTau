@@ -331,6 +331,14 @@ class HTTCategories : public ModuleBase {
   double mjj_lowpt_;       // Defined if n_lowpt_jets >= 2
   double jdeta_lowpt_;     // Defined if n_lowpt_jets >= 2
   unsigned n_jetsingap_lowpt_; // Defined if n_lowpt_jets >= 2
+  float lbyMediumIsolationMVArun2DBoldDMwLT_1_;
+  float lbyMediumIsolationMVArun2DBnewDMwLT_1_;
+  float lbyTightIsolationMVArun2DBoldDMwLT_1_;
+  float lbyTightIsolationMVArun2DBnewDMwLT_1_;
+  float lbyMediumIsolationMVArun2DBoldDMwLT_2_;
+  float lbyMediumIsolationMVArun2DBnewDMwLT_2_;
+  float lbyTightIsolationMVArun2DBoldDMwLT_2_;
+  float lbyTightIsolationMVArun2DBnewDMwLT_2_;
 
   unsigned n_prebjets_;
   unsigned n_jets_csv_;
