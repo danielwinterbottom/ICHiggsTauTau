@@ -12,7 +12,7 @@
 #include "DataFormats/JetReco/interface/PFJet.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h"
-#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 6
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 6)
 #include "JetMETCorrections/Modules/interface/CorrectedJetProducer.h"
 #else
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
@@ -65,7 +65,7 @@ struct JetSrcHelper {
       for (unsigned i = 0; i < vec.size(); ++i) {
         jecs.push_back(
             std::make_pair(vec[i], pset.getParameter<std::string>(vec[i])));
-#if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >= 6
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION ==7 && CMSSW_MINOR_VERSION >= 6 )
         collector.consumes<reco::JetCorrector>(jecs[i].second);
 #else
         collector.consumes<double>(jecs[i].second);
@@ -102,13 +102,13 @@ struct JetSrcHelper {
     edm::Handle<edm::ValueMap<std::vector<int>> > jet_flavour_handle;
     if (include_jet_flavour)
       event.getByLabel(input_jet_flavour, jet_flavour_handle);
-  #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 6
+  #if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 6 )
     std::vector<reco::JetCorrector const *> correctors(jecs.size(), NULL);
   #else
     std::vector<JetCorrector const*> correctors(jecs.size(), NULL);
   #endif
     for (unsigned i = 0; i < correctors.size(); ++i) {
-  #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 6
+  #if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 6)
       edm::Handle<reco::JetCorrector> corrector_handle;
       event.getByLabel(jecs[i].second,corrector_handle);
       correctors[i] = corrector_handle.product();
@@ -143,7 +143,7 @@ struct JetSrcHelper {
         // Loop through each correction and apply
         for (unsigned j = 0; j < correctors.size(); ++j) {
           #ifndef CMSSW_4_2_8_patch7
-            #if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >= 6
+            #if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION ==7 && CMSSW_MINOR_VERSION >= 6)
           double factor = correctors[j]->correction(jet_cpy);
             #else
           double factor = correctors[j]->correction(jet_cpy, event, setup);

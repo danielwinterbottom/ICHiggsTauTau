@@ -172,13 +172,13 @@ void ICElectronProducer::produce(edm::Event& event,
 
     dest.set_hadronic_over_em(src.hadronicOverEm());
     dest.set_sigma_IetaIeta(src.sigmaIetaIeta());
-#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 1
+#if CMSSW_MAJOR_VERSION >7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 1)
     dest.set_full5x5_sigma_IetaIeta(src.full5x5_sigmaIetaIeta());
 #endif
     dest.set_dphi_sc_tk_at_vtx(src.deltaPhiSuperClusterTrackAtVtx());
     dest.set_deta_sc_tk_at_vtx(src.deltaEtaSuperClusterTrackAtVtx());
     if (src.gsfTrack().isNonnull()) {
-#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 2
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 2)
       dest.set_gsf_tk_nhits(
           src.gsfTrack()->hitPattern().numberOfHits(
               reco::HitPattern::MISSING_INNER_HITS));
