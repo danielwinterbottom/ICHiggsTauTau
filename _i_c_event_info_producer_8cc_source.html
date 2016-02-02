@@ -231,7 +231,7 @@ $(document).ready(function(){initNavTree('_i_c_event_info_producer_8cc_source.ht
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  *info_ = <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8">set_is_data</a>(event.isRealData());</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a">set_run</a>(event.run());</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;=7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 3</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION ==7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 3)</span></div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c">set_event</a>(event.id().event());</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c">set_event</a>((<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span>)event.id().event());</div>

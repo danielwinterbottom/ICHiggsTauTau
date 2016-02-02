@@ -175,7 +175,7 @@ $(document).ready(function(){initNavTree('_i_c_conversion_producer_8cc_source.ht
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        dtrk.<a class="code" href="classic_1_1_track.html#a2c31b120f1e6ee4245fa452874722813">set_algorithm</a>(trk-&gt;algo());</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        dtrk.<a class="code" href="classic_1_1_track.html#a7789dfa38236ee76b8dc406cadbd32ae">set_pt_err</a>(trk-&gt;ptError());</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        dtrk.<a class="code" href="classic_1_1_track.html#a134cdd15c61c45540711d6634bd57cf8">set_quality</a>(trk-&gt;qualityMask());</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 2</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 2)</span></div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        dtrk.<a class="code" href="classic_1_1_track.html#aa92a2b7324266b29e93ae584a6acc22e">set_hits_miss_inner</a>(</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            trk-&gt;hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#else</span></div>

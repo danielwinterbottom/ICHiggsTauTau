@@ -484,14 +484,14 @@ $(document).ready(function(){initNavTree('_e_gamma_mva_ele_estimator_c_s_a14_8cc
 <div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    </div>
 <div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    </div>
 <div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="comment">// Pure ECAL -&gt; shower shapes</span></div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="preprocessor">    #if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 1</span></div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="preprocessor">    #if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 1)</span></div>
 <div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    fMVAVar_see = ele.full5x5_sigmaIetaIeta(); <span class="comment">//EleSigmaIEtaIEta</span></div>
 <div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    fMVAVar_spp = ele.full5x5_sigmaIphiIphi();   <span class="comment">//EleSigmaIPhiIPhi</span></div>
 <div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="preprocessor">    #endif</span></div>
 <div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    </div>
 <div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    fMVAVar_etawidth        =  ele.superCluster()-&gt;etaWidth();</div>
 <div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    fMVAVar_phiwidth        =  ele.superCluster()-&gt;phiWidth();</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="preprocessor">    #if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 1</span></div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="preprocessor">    #if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION ==7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 1)</span></div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    fMVAVar_OneMinusE1x5E5x5        =  (ele.full5x5_e5x5()) !=0. ? 1.-(ele.full5x5_e1x5()/ele.full5x5_e5x5()) : -1. ;</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    fMVAVar_R9              =  ele.full5x5_r9();</div>
 <div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor">    #endif</span></div>

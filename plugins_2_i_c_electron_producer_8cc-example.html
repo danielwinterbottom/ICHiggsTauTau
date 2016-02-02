@@ -273,13 +273,13 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_electron_producer_8cc-ex
 <div class="line"></div>
 <div class="line">    dest.<a name="a16"></a><a class="code" href="classic_1_1_electron.html#a46f8b59700ef4915f564d5e76607766b">set_hadronic_over_em</a>(src.hadronicOverEm());</div>
 <div class="line">    dest.<a name="a17"></a><a class="code" href="classic_1_1_electron.html#aab4e53187af67404224fbcf01bf76e35">set_sigma_IetaIeta</a>(src.sigmaIetaIeta());</div>
-<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 1</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 1)</span></div>
 <div class="line">    dest.<a name="a18"></a><a class="code" href="classic_1_1_electron.html#a08bc6f7d914d88a25c360df56c6723ac">set_full5x5_sigma_IetaIeta</a>(src.full5x5_sigmaIetaIeta());</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    dest.<a name="a19"></a><a class="code" href="classic_1_1_electron.html#ad664e482890a81e2e277c29403cb94f6">set_dphi_sc_tk_at_vtx</a>(src.deltaPhiSuperClusterTrackAtVtx());</div>
 <div class="line">    dest.<a name="a20"></a><a class="code" href="classic_1_1_electron.html#a8dccbd4fb63229e483abdb629ef782c7">set_deta_sc_tk_at_vtx</a>(src.deltaEtaSuperClusterTrackAtVtx());</div>
 <div class="line">    <span class="keywordflow">if</span> (src.gsfTrack().isNonnull()) {</div>
-<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 2</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 2)</span></div>
 <div class="line">      dest.<a name="a21"></a><a class="code" href="classic_1_1_electron.html#ab38251f7abe9902ed16c49ad7d5daabf">set_gsf_tk_nhits</a>(</div>
 <div class="line">          src.gsfTrack()-&gt;hitPattern().numberOfHits(</div>
 <div class="line">              reco::HitPattern::MISSING_INNER_HITS));</div>

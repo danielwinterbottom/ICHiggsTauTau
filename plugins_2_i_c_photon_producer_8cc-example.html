@@ -271,7 +271,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a42f261c695f0a6e2df12ae008cb0912b">set_dr03_pfiso_neutral</a>(patsrc.neutralHadronIso());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#afc059106d5403c389477f1081f57c20e">set_dr03_pfiso_gamma</a>(patsrc.photonIso());</div>
 <div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
-<div class="line"><span class="preprocessor">#if CMSSW_MINOR_VERSION &gt;= 6</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 6)</span></div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a164ac1ba8bef0260ac7e47956a6177d0">set_dr03_pfiso_charged_all</a>(patsrc.patParticleIso());</div>
 <div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a164ac1ba8bef0260ac7e47956a6177d0">set_dr03_pfiso_charged_all</a>(patsrc.particleIso());</div>
@@ -286,7 +286,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#ab2f72e8d86684d302abaedeaa88b9f9b">set_dr04_pfiso_neutral</a>(patsrc.neutralHadronIso());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#aeeb005c071a9ce38de0ee2e4bb65b830">set_dr04_pfiso_gamma</a>(patsrc.photonIso());</div>
 <div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
-<div class="line"><span class="preprocessor">#if CMSSW_MINOR_VERSION &gt;= 6</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 6)</span></div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a281430867c15a92ffb73b38c4a6f51a6">set_dr04_pfiso_charged_all</a>(patsrc.patParticleIso());</div>
 <div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a281430867c15a92ffb73b38c4a6f51a6">set_dr04_pfiso_charged_all</a>(patsrc.particleIso());</div>

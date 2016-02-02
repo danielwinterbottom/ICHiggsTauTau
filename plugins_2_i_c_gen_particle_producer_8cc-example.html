@@ -116,7 +116,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_gen_particle_producer_8c
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
 <div class="line"></div>
-<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 4</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 4)</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/HepMCCandidate/interface/GenStatusFlags.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"></div>
@@ -158,7 +158,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_gen_particle_producer_8c
 <div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_gen_particle.html#a310cb395760d03fd9b548f5ce864f277">set_index</a>(static_cast&lt;int&gt;((parts_handle-&gt;refAt(i).key())));</div>
 <div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_gen_particle.html#a63bf6644a9f55e0e862cb89b115d898e">set_pdgid</a>(src.pdgId());</div>
 <div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_gen_particle.html#a2f8d80dd2f3659472842c08b5158b040">set_status</a>(src.status());</div>
-<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 4</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 4 )</span></div>
 <div class="line">    <span class="keywordflow">if</span> (store_statusFlags_){</div>
 <div class="line">      reco::GenStatusFlags statusflags = src.statusFlags();</div>
 <div class="line">      <span class="keywordflow">if</span>(statusflags.flags_.size()!=15){</div>
@@ -193,7 +193,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_gen_particle_producer_8c
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICGenParticleProducer::beginJob() {</div>
 <div class="line">  <a name="a17"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;particles_);</div>
-<div class="line"><span class="preprocessor">#if !(CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 4)</span></div>
+<div class="line"><span class="preprocessor">#if !(CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 4))</span></div>
 <div class="line">  <span class="keywordflow">if</span>(store_statusFlags_){</div>
 <div class="line">    <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;OptionNotSupported&quot;</span>)&lt;&lt;<span class="stringliteral">&quot;status flags not supported for CMSSW versions before 7_4_X\n&quot;</span>;</div>
 <div class="line">  }</div>

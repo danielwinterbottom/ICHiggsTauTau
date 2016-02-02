@@ -273,13 +273,13 @@ $(document).ready(function(){initNavTree('_i_c_electron_producer_8cc_source.html
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    dest.<a class="code" href="classic_1_1_electron.html#a46f8b59700ef4915f564d5e76607766b">set_hadronic_over_em</a>(src.hadronicOverEm());</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    dest.<a class="code" href="classic_1_1_electron.html#aab4e53187af67404224fbcf01bf76e35">set_sigma_IetaIeta</a>(src.sigmaIetaIeta());</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 1</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 1)</span></div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    dest.<a class="code" href="classic_1_1_electron.html#a08bc6f7d914d88a25c360df56c6723ac">set_full5x5_sigma_IetaIeta</a>(src.full5x5_sigmaIetaIeta());</div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    dest.<a class="code" href="classic_1_1_electron.html#ad664e482890a81e2e277c29403cb94f6">set_dphi_sc_tk_at_vtx</a>(src.deltaPhiSuperClusterTrackAtVtx());</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    dest.<a class="code" href="classic_1_1_electron.html#a8dccbd4fb63229e483abdb629ef782c7">set_deta_sc_tk_at_vtx</a>(src.deltaEtaSuperClusterTrackAtVtx());</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keywordflow">if</span> (src.gsfTrack().isNonnull()) {</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 2</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION == 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 2)</span></div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;      dest.<a class="code" href="classic_1_1_electron.html#ab38251f7abe9902ed16c49ad7d5daabf">set_gsf_tk_nhits</a>(</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;          src.gsfTrack()-&gt;hitPattern().numberOfHits(</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;              reco::HitPattern::MISSING_INNER_HITS));</div>

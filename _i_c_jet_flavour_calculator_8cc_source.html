@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('_i_c_jet_flavour_calculator_8cc_source
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;      input_jet_flavour_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;flavourMap&quot;</span>)) {</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  consumes&lt;edm::View&lt;reco::Jet&gt;&gt;(input_);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">  #if CMSSW_MAJOR_VERSION&gt;=7 &amp;&amp; CMSSW_MINOR_VERSION &gt;=4</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">  #if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION==7 &amp;&amp; CMSSW_MINOR_VERSION &gt;=4)</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  consumes&lt;reco::JetFlavourInfoMatchingCollection&gt;(input_jet_flavour_);</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">  #else </span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  consumes&lt;reco::JetFlavourMatchingCollection&gt;(input_jet_flavour_);</div>
@@ -133,7 +133,7 @@ $(document).ready(function(){initNavTree('_i_c_jet_flavour_calculator_8cc_source
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  edm::Handle &lt;edm::View &lt;reco::Jet&gt; &gt; jets_handle;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keyword">event</span>.getByLabel(input_, jets_handle);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION&gt;=7 &amp;&amp; CMSSW_MINOR_VERSION &gt;=4 </span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION==7 &amp;&amp; CMSSW_MINOR_VERSION &gt;=4 )</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  edm::Handle&lt;reco::JetFlavourInfoMatchingCollection&gt; flavour_handle;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  edm::Handle&lt;reco::JetFlavourMatchingCollection&gt; flavour_handle;</div>
@@ -143,7 +143,7 @@ $(document).ready(function(){initNavTree('_i_c_jet_flavour_calculator_8cc_source
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  std::vector&lt;int&gt; dummy_vec(2,0);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  std::vector&lt;std::vector&lt;int&gt;&gt; values(jets_handle-&gt;size(), dummy_vec);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; jets_handle-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION&gt;=7 &amp;&amp; CMSSW_MINOR_VERSION&gt;=4</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt; 7 || (CMSSW_MAJOR_VERSION==7 &amp;&amp; CMSSW_MINOR_VERSION&gt;=4)</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    values[i].at(0) = (*flavour_handle)[jets_handle-&gt;refAt(i)].getPartonFlavour();</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    values[i].at(1) = (*flavour_handle)[jets_handle-&gt;refAt(i)].getHadronFlavour();</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#else</span></div>
