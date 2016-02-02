@@ -965,11 +965,11 @@ BuildModule(svFitTest);
     .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
     .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
-  if (!is_data) {
+  /*if (!is_data) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
-  }
+  }*/
 
-   if (output_name.find("DYJetsToLL_M-50") != output_name.npos){
+   /*if (output_name.find("DYJetsToLL_M-50") != output_name.npos){
       httWeights.set_do_dy_soup_htbinned(true);
       httWeights.SetDYInputCrossSections(4895,139.4,42.75,5.497,2.21);
       httWeights.SetDYInputYields(9042031,2725655,973937,1067758,998912);
@@ -979,7 +979,7 @@ BuildModule(svFitTest);
       httWeights.set_do_w_soup_htbinned(true);
       httWeights.SetWInputCrossSections(50690,1345,359.7,48.91,18.77);
       httWeights.SetWInputYields(72207128,10152718,5221599,1745914,1039152);
-    }
+    }*/
    
 
     BuildModule(httWeights);
