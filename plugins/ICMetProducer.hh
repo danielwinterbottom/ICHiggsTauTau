@@ -89,7 +89,7 @@ ICMetProducer<T>::SigTagsMethod2::SigTagsMethod2(edm::ParameterSet const& pset, 
   : metsig(pset.getParameter<edm::InputTag>("metsig")),
     metsigcov(pset.getParameter<edm::InputTag>("metsigcov")) {
      collector.consumes<double>(metsig);
-     collector.consumes<double>(metsigcov);
+     collector.consumes<math::Error<2>::type>(metsigcov);
     }
 
 template <class T>
@@ -129,6 +129,7 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
       metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
   consumes<edm::View<pat::MET>>(input_);
   consumes<std::vector<std::size_t>>(inputID_);
+
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
