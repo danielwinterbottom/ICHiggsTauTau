@@ -69,6 +69,9 @@ parser.add_option("-c", "--channels", dest="channels", type='string', action='ca
 parser.add_option("--list_backup", dest="slbackupname", type='string', default='prevlist',
                   help="Name you want to give to the previous files_per_samples file, in case you're resubmitting a subset of jobs")
 
+parser.add_option("--scales", dest="scales", action='store_true', default=False,
+                  help="Process tau ES up/down")
+
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
@@ -77,6 +80,8 @@ if options.submit:  JOBSUBMIT=options.submit
 BACKUPNAME = options.slbackupname
 
 channels = options.channels
+scales = options.scales
+
 
 
 
@@ -259,8 +264,6 @@ if options.proc_bkg or options.proc_all:
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    #'T-t',
-    #'Tbar-t'
 #    'WZTo1L1Nu2Q',
 #    'WWTo2L2Nu',
 #    'WWTo4Q',
@@ -286,6 +289,8 @@ if options.proc_bkg or options.proc_all:
   for sa in central_samples:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      if 'DYJetsToLL' in sa and scales:
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 60 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -425,12 +430,15 @@ if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
   for sa in signal_mc:
     JOB='%s_2015' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-    nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-    nperjob = 50
-    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+    if scales:
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    if os.path.exists('%(FILELIST)s_%(sa)s.dat' %vars()):
+      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+      nperjob = 50
+      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 '''
       for sa in signal_vh:
         name_wh = sa.replace('WH_ZH_TTH','WH')
