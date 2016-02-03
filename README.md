@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Introduction
 ============
 
@@ -85,3 +86,7 @@ At this point everything is ready, and the working area can be compiled in the n
 		git checkout -b my-analysis-from-CMSSW_X_Y_Z from-CMSSW_X_Y_Z # from the pre-configured branch
 		... do some development ...
 		git push my-cmssw my-new-branch
+=======
+# MyRep
+# MyRep
+>>>>>>> 330c308fa71ce04214f63d0a0c7d87dedc74dbaa
