@@ -437,11 +437,11 @@ int main(int argc, char* argv[]){
     std::cout << boost::format(param_fmt) % "mc_pu_file" % mc_pu_file;
     std::cout << boost::format(param_fmt) % "data_pu_file" % data_pu_file;
   }
-  PileupWeight pileupWeight = PileupWeight("PileupWeight")
+  /*PileupWeight pileupWeight = PileupWeight("PileupWeight")
     .set_data(&data_pu)
     .set_mc(&mc_pu)
     .set_print_weights(false);
-    //might not need this
+    */
 /*
   HTTTriggerFilter httTriggerFilter = HTTTriggerFilter("HTTTriggerFilter")
     .set_channel(channel)
@@ -516,7 +516,7 @@ int main(int argc, char* argv[]){
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
     .set_min(1);
 */
-
+/*
   EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
     .set_genparticle_label("genParticlesEmbedded")
     .set_channel(channel);
@@ -524,7 +524,7 @@ int main(int argc, char* argv[]){
   if (channel == channel::mt) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_muPtGt16tauPtGt18_recEmbedded.root");
   if (channel == channel::em) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_recEmbedding_emu.root");
   if (channel == channel::mtmet) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_muPt7to25tauPtGt18_recEmbedded.root");
-  
+  */
   std::string jets_label="pfJetsPFlow";
   if(era==era::data_2015) jets_label="ak4PFJetsCHS";
   /*
@@ -1200,7 +1200,7 @@ int main(int argc, char* argv[]){
         channel == channel::mtmet)
         && !is_data )             analysis.AddModule(&httL1MetCorrector);*/ 
   //if (is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&lumiMask);
-  if (!is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&pileupWeight);
+  //if (!is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&pileupWeight);
   //if (vh_filter_mode > 0)         analysis.AddModule(&vhFilter);
   //if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
   //if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
@@ -1316,9 +1316,9 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&httL1MetCut);
 				  }  */
     //if(strategy != strategy::phys14) analysis.AddModule(&httWeights);
-   if (is_embedded && era == era::data_2012_rereco) {
+/*   if (is_embedded && era == era::data_2012_rereco) {
                                   analysis.AddModule(&rechitWeights);
-   }
+   }*/
    if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
 //                                  analysis.AddModule(&HhhemuMVA);
