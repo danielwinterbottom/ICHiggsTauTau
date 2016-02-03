@@ -317,12 +317,12 @@ namespace ic {
     // If both of these are the same then try the taus
     Tau const* t1 = static_cast<Tau const*>(c1->At(1));
     Tau const* t2 = static_cast<Tau const*>(c2->At(1));
-    double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-    double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-    /*double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
-    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");*/
-    if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
-    //if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
+    /*double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
+    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    //if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
+    if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
   }
 
@@ -339,12 +339,12 @@ namespace ic {
     // If both of these are the same then try the taus
     Tau const* t1 = static_cast<Tau const*>(c1->At(1));
     Tau const* t2 = static_cast<Tau const*>(c2->At(1));
-    double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-    double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-    /*double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
-    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");*/
-    if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
-   // if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
+    /*double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
+    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+   // if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
+    if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
   }
 
@@ -371,25 +371,25 @@ namespace ic {
     // First we sort the electrons
     Tau const* t1_1 = static_cast<Tau const*>(c1->At(0));
     Tau const* t1_2 = static_cast<Tau const*>(c2->At(0));
-    double t1_iso1 = t1_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-    double t1_iso2 = t1_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-    /*double t1_iso1 = t1_1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
-    double t1_iso2 = t1_2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");*/
+    /*double t1_iso1 = t1_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    double t1_iso2 = t1_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
+    double t1_iso1 = t1_1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    double t1_iso2 = t1_2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
     // If the iso is different we just use this
-    if (t1_iso1 != t1_iso2) return t1_iso1 < t1_iso2;
-    //if (t1_iso1 != t1_iso2) return t1_iso1 > t1_iso2;
+    //if (t1_iso1 != t1_iso2) return t1_iso1 < t1_iso2;
+    if (t1_iso1 != t1_iso2) return t1_iso1 > t1_iso2;
     // If not try the pT
     if (t1_1->pt() != t1_2->pt()) return t1_1->pt() > t1_2->pt();
     // If both of these are the same then try the taus
     Tau const* t2_1 = static_cast<Tau const*>(c1->At(1));
     Tau const* t2_2 = static_cast<Tau const*>(c2->At(1));
-    double t2_iso1 = t2_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-    double t2_iso2 = t2_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-    /*double t2_iso1 = t2_1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
-    double t2_iso2 = t2_2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");*/
+    /*double t2_iso1 = t2_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    double t2_iso2 = t2_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
+    double t2_iso1 = t2_1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    double t2_iso2 = t2_2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
     // If the iso is different we just use this
-    if (t2_iso1 != t2_iso2) return t2_iso1 < t2_iso2;
-    //if (t2_iso1 != t2_iso2) return t2_iso1 > t2_iso2;
+    //if (t2_iso1 != t2_iso2) return t2_iso1 < t2_iso2;
+    if (t2_iso1 != t2_iso2) return t2_iso1 > t2_iso2;
     // If not try the pT
     return t2_1->pt() > t2_2->pt();
   }
