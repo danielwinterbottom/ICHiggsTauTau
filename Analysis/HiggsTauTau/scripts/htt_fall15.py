@@ -256,7 +256,7 @@ if options.proc_bkg or options.proc_all:
     #'WZTo2L2Q',
     #'WZTo1L1Nu2Q',
     'T-t',
-    #'Tbar-t',
+    'Tbar-t',
     'T-tW',
     'Tbar-tW',
     #'T-t',
