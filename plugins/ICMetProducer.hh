@@ -252,9 +252,9 @@ void ICMetProducer<pat::MET>::constructSpecific(
       dest.set_sum_et(src.sumEt());
       
       
-#if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >=4
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION ==7 && CMSSW_MINOR_VERSION >=4)
       // Only write correction into the output met if the user wants it
-#if CMSSW_REVISION >= 12
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_REVISION >= 12)
       if (do_metcorrections_) {
 	if (metcorrections_.size() != pat::MET::METCorrectionLevel::METCorrectionLevelSize){
 	  throw cms::Exception("MetCorrectionNotRecognised")<<__FILE__ << " line " << __LINE__ << ": size of expected met correction object is " << metcorrections_.size() << " but pat::MET::METCorrectionLevel enum contains " << pat::MET::METCorrectionLevel::METCorrectionLevelSize << " elements. Code needs updating.\n";

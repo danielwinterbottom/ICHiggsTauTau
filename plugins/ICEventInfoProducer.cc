@@ -130,7 +130,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
   *info_ = ic::EventInfo();
   info_->set_is_data(event.isRealData());
   info_->set_run(event.run());
-#if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >= 3
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION ==7 && CMSSW_MINOR_VERSION >= 3)
   info_->set_event(event.id().event());
 #else
   info_->set_event((unsigned long long)event.id().event());

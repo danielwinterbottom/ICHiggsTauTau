@@ -104,14 +104,15 @@ if not options.params == "":
 ########## Set up schemes and options
 
 #### Always apply these options:
-extra_global = ' --fix_empty_hists="ggH.*,ggA*,qqH.*,VH.*,WH.*,ZH.*,ttH.*,bbH.*"'
+#extra_global = ' --fix_empty_hists="ggH.*,ggA*,qqH.*,VH.*,WH.*,ZH.*,ttH.*,bbH.*"'
+extra_global = ' '
 
 #### Apply these options for specific channels
 extra_channel = {
-  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" ',
-  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" ',
-  "tt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" ',
-  "em" : ' --fix_empty_bins="QCD"'
+    "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV"',
+    "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV"',
+    "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV"',
+    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV"'
 }
 
 #################################################################
@@ -205,11 +206,11 @@ if SCHEME == 'run2_Hhh':
 if SCHEME == 'run2_mssm':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
   BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
-  MTTOTBINSFINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,450,500,550,600,700,1000,1300,1600,1900,2200,2500,3000,3500,4000]"
-  MTTOTBINS="[0,40,80,120,160,200,240,280,320,360,400,450,500,550,600,700,1000,1500,2000,2500,3000,3500,4000]"
-  if options.mttot or options.mtsv:
-    BINS_FINE=MTTOTBINSFINE
-    BINS=MTTOTBINS
+#  MTTOTBINSFINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,450,500,550,600,700,1000,1300,1600,1900,2200,2500,3000,3500,4000]"
+#  MTTOTBINS="[0,40,80,120,160,200,240,280,320,360,400,450,500,550,600,700,1000,1500,2000,2500,3000,3500,4000]"
+#  if options.mttot or options.mtsv:
+#    BINS_FINE=MTTOTBINSFINE
+#    BINS=MTTOTBINS
 
   scheme_et = [
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
