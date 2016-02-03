@@ -1694,7 +1694,7 @@ process.icDoubleMediumTau35ObjectProducer = producers.icTriggerObjectProducer.cl
    )
 
 if isData :
-  process.icDoubleMediumTau35ObjectProducer.branch = cms.string("triggerObjectsDiTau35") #Keeping this branch name the same for rereco and prompt reco
+  process.icDoubleMediumTau35ObjectProducer.branch = cms.string("triggerObjectsDiTau35")
 
 process.icDoubleMediumTau40ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
@@ -1703,7 +1703,6 @@ process.icDoubleMediumTau40ObjectProducer = producers.icTriggerObjectProducer.cl
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
-
   
 process.icLooseTau50Met120ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
