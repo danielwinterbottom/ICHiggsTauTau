@@ -49,6 +49,8 @@ parser.add_option("--mtsv", dest="mtsv", action='store_true', default=False,
 #                  help="Apply mass cuts on m_bb and m_tautau to 4 body mass for H->hh analysis.")
 parser.add_option("-e", dest="energy", type='string', default='13',
                   help="The C.O.M. energy is written into the datacard name, default is 13")
+parser.add_option("--shape_systs", dest="shape_systs", action='store_true', default=False,
+                  help="Add systs shapes")
 
 (options, args) = parser.parse_args()
 
@@ -109,11 +111,18 @@ extra_global = ' '
 
 #### Apply these options for specific channels
 extra_channel = {
-    "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV"',
-    "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV"',
-    "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV"',
-    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV"'
+    "et" : ' ',
+    "mt" : ' ',
+    "tt" : ' ',
+    "em" : ' '
 }
+if options.shape_systs:
+  extra_channel = {
+      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" ',
+      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" ',
+      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" ',
+      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" '
+  }
 
 #################################################################
 #### Old SM scheme
