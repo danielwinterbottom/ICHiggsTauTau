@@ -64,6 +64,7 @@ namespace ic {
       alias_map_["inclusive"]         = "1";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
       alias_map_["baseline"]         = "(iso_1<0.1 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+//      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["inclelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -87,6 +88,37 @@ namespace ic {
 
       alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
       // Categories for iso studies
+      alias_map_["incnotauiso"]      = "(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto&&"+alias_map_["notwoprong"]+")";
+      alias_map_["dbloose"]          = "(db_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["dbmedium"]         = "(db_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["dbtight"]         = "(db_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwloose"]          = "(puw_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwmedium"]         = "(puw_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwtight"]         = "(puw_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvloose"]    = "(mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldloose"]     = "(mvadbold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldmedium"]    = "(mvadbold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldtight"]     = "(mvadbold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvtight"]     = "(mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvvtight"]    = "(mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewtight"]     = "(mvadbnew_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvtight"]     = "(mvadbnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvvtight"]    = "(mvadbnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvloose"]    = "(mvapwold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldloose"]     = "(mvapwold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldmedium"]    = "(mvapwold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldtight"]     = "(mvapwold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvtight"]     = "(mvapwold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvvtight"]    = "(mvapwold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvloose"]    = "(mvapwnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewloose"]     = "(mvapwnew_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewmedium"]    = "(mvapwnew_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewtight"]     = "(mvapwnew_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvtight"]     = "(mvapwnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvvtight"]    = "(mvapwnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["incnoiso"]         = "(iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["incnoisonolv"]     = "(iso_2<1.5 && antiele_2 && antimu_2)";
       alias_map_["db03iso0p1"]            = "(iso_1_db03<0.1&&"+alias_map_["incnoiso"]+")";
@@ -188,6 +220,7 @@ namespace ic {
       alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
+      alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto &&"+alias_map_["notwoprong"];
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["inclelm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_loose_1>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -198,10 +231,42 @@ namespace ic {
       alias_map_["inctetm"]         = "(iso_1<1&&iso_2<1 && antie_tight_1>0 && antimu_tight_1>0 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["incvtelm"]         = "(iso_1<1&&iso_2<1 && antie_vtight_1>0 && antimu_loose_1>0 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvtetm"]         = "(iso_1<1&&iso_2<1 && antie_vtight_1>0 && antimu_tight_1>0 && antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["dbloose"]          = "(db_loose_1&&db_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["dbmedium"]         = "(db_medium_1&&db_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["dbtight"]         = "(db_tight_1&&db_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwloose"]          = "(puw_loose_1&&puw_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwmedium"]         = "(puw_medium_1&&puw_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwtight"]         = "(puw_tight_1&&puw_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvloose"]    = "(mvadbold_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldloose"]     = "(mvadbold_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldmedium"]    = "(mvadbold_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldtight"]     = "(mvadbold_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvtight"]     = "(mvadbold_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvvtight"]    = "(mvadbold_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_1&&mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_1&&mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_1&&mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewtight"]     = "(mvadbnew_tight_1&&mvadbnew_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvtight"]     = "(mvadbnew_vtight_1&&mvadbnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvvtight"]    = "(mvadbnew_vvtight_1&&mvadbnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvloose"]    = "(mvapwold_vloose_1&&mvapwold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldloose"]     = "(mvapwold_loose_1&&mvapwold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldmedium"]    = "(mvapwold_medium_1&&mvapwold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldtight"]     = "(mvapwold_tight_1&&mvapwold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvtight"]     = "(mvapwold_vtight_1&&mvapwold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvvtight"]    = "(mvapwold_vvtight_1&&mvapwold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvloose"]    = "(mvapwnew_vloose_1&&mvapwnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewloose"]     = "(mvapwnew_loose_1&&mvapwnew_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewmedium"]    = "(mvapwnew_medium_1&&mvapwnew_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewtight"]     = "(mvapwnew_tight_1&&mvapwnew_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvtight"]     = "(mvapwnew_vtight_1&&mvapwnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvvtight"]    = "(mvapwnew_vvtight_2&&mvapwnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
 
 
       // SM Categories
       alias_map_["inclusive"]         = "1";
+      //alias_map_["baseline"]          = "1";
+
       alias_map_["baseline"]          = "db_tight_1>0.5 && db_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
