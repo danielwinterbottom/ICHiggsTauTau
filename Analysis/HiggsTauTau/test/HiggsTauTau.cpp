@@ -24,7 +24,6 @@
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
-#include "HiggsTauTau/interface/HTTSyncTemp.h"
 #include "HiggsTauTau/interface/HTTPrint.h"
 #include "Modules/interface/MakeRunStats.h"
 #include "Modules/interface/EnergyShifter.h"
@@ -1131,8 +1130,8 @@ int main(int argc, char* argv[]){
   HTTSync httSync("HTTSync","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
 
-  HTTSyncTemp httSyncTemp("HTTSyncTemp","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
-  httSyncTemp.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label);
+ /* HTTSyncTemp httSyncTemp("HTTSyncTemp","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
+  httSyncTemp.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label);*/
 
 
   SVFit svfit("SVFit");
@@ -1315,9 +1314,9 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&hhhBJetRegression);
    }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
-    if (make_sync_ntuple && strategy==strategy::phys14){
+/*    if (make_sync_ntuple && strategy==strategy::phys14){
          analysis.AddModule(&httSyncTemp);
-    }
+    }*/
     if(make_sync_ntuple && strategy==strategy::paper2013){
          analysis.AddModule(&httSync);
     }

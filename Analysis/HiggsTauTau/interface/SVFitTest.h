@@ -66,6 +66,7 @@ class SVFitTest : public ModuleBase {
   std::map<tri_unsigned, std::tuple<std::size_t,Candidate,double> > p4_map;
  
   CLASS_MEMBER(SVFitTest, ic::channel, channel)
+  CLASS_MEMBER(SVFitTest, ic::strategy, strategy)
 
   // The module operation mode:
   // 0: Do Nothing, no mass added to event
