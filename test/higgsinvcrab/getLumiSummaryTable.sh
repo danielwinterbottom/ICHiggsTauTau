@@ -1,3 +1,4 @@
+#!/bin/bash
 
 if [ "$#" -ne "2" ]; then
     echo "Usage: $0 <production name> <Dataset>"
@@ -14,9 +15,10 @@ fi
 
 echo "Dataset: "$DATASET
 totlumi=0
-for era in 05Oct-v1 PromptReco-v4;
+for era in 16Dec-v1 #05Oct-v1 PromptReco-v4;
 do
-    brilcalc lumi -i $PROD/MET/crab_${DATASET}-2015D-$era/results/lumiSummary.json -u /pb --normtag /afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json > lumiSummary_${PROD}_${DATASET}_${era}.txt
+    brilcalc lumi -i $PROD/DATA/crab_${DATASET}-2015D-$era/results/lumiSummary.json -u /pb > lumiSummary_${PROD}_${DATASET}_${era}.txt
+     #--normtag /afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json 
     lumi=`grep -A 4 "Summary" lumiSummary_${PROD}_${DATASET}_${era}.txt | tail -n 1 | awk '{SUM += $12} END {print SUM}'`
     echo $era" & "$lumi
     totlumi=`echo "$totlumi+$lumi" | bc`
@@ -32,9 +34,9 @@ for TRIG in $SIGTRIG $CONTTRIG;
 do
     echo $TRIG
     totlumi=0
-    for era in 05Oct-v1 PromptReco-v4;
+    for era in 16Dec-v1 #05Oct-v1 PromptReco-v4;
     do
-	brilcalc lumi -i $PROD/MET/crab_${DATASET}-2015D-$era/results/lumiSummary.json -u /pb --normtag /afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json --hltpath ${TRIG}"*" > lumiSummary_${PROD}_${DATASET}_${era}_${TRIG}.txt
+	brilcalc lumi -i $PROD/DATA/crab_${DATASET}-2015D-$era/results/lumiSummary.json -u /pb --hltpath ${TRIG}"*" > lumiSummary_${PROD}_${DATASET}_${era}_${TRIG}.txt
 	lumi=`grep -A 10 "Summary" lumiSummary_${PROD}_${DATASET}_${era}_${TRIG}.txt | grep ${TRIG} | awk '{SUM += $12} END {print SUM}'`
 	echo $era" & "$lumi
 	totlumi=`echo "$totlumi+$lumi" | bc`
