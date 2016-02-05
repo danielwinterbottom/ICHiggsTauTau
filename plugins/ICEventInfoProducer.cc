@@ -37,13 +37,14 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       input_leptons_rho_(config.getParameter<edm::InputTag>("inputLeptonRho")),
       do_vertex_count_(config.getParameter<bool>("includeVertexCount")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
-      do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
-      input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
       do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")),
       do_ht_(config.getParameter<bool>("includeHT")),
+      do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
+      input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
       do_filtersfromtrig_(config.getParameter<bool>("includeFiltersFromTrig")),
-      filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig")),
-      filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")){
+      filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")),
+      filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig"))
+{
       consumes<LHERunInfoProduct>({"externalLHEProducer"});
       consumes<GenEventInfoProduct>({"generator"});
       consumes<LHEEventProduct>(lhe_collection_);
@@ -70,6 +71,12 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
           edm::InputTag(new_label, filters_.back().second.instance(),
                         filters_.back().second.process());
       invert_filter_logic_.insert(filters_.back().first);
+    }
+  }
+  for (unsigned iFilter=0;iFilter<filtersfromtrig_.size();iFilter++){
+    if((filtersfromtrig_[iFilter]).at(0)=='!'){
+      filtersfromtrig_[iFilter].erase(0,1);
+      invert_filter_logic_.insert(filtersfromtrig_[iFilter]);
     }
   }
 
@@ -229,41 +236,49 @@ void ICEventInfoProducer::produce(edm::Event& event,
      }
      
      const edm::TriggerNames &triggerNames = event.triggerNames(*triggerResults);
-     for (unsigned iFilter=0;iFilter<filtersfromtrig_.size();iFilter++){
-       bool found=false;
-       bool opposite=false;
-       std::string filtername=filtersfromtrig_[iFilter];
-       if((filtersfromtrig_[iFilter]).at(0)=='!'){
-	 filtername.erase(0,1);
-	 opposite=true;
-       }
-       for(unsigned iTrigger=0;iTrigger<triggerResults->size();iTrigger++){
-	 std::string trigName = triggerNames.triggerName(iTrigger);
-     	 if(trigName.find(filtername)==std::string::npos) continue;
-	 else{
-	   found=true;
-	   if(!triggerResults->wasrun(iTrigger)){
-	     throw cms::Exception("TriggerNotRun")<<filtername<<" was not run\n";
+     for(unsigned iTrigger=0;iTrigger<triggerResults->size();iTrigger++){
+       std::string trigName = triggerNames.triggerName(iTrigger);
+       bool pass = false;
+       if (filtersfromtrig_.size()==1 && filtersfromtrig_[0] == "*"){
+	 //copy all filters
+	 pass = true;
+       } else {
+	 //copy only filters given in input
+	 for (unsigned iFilter=0;iFilter<filtersfromtrig_.size();iFilter++){
+	   std::string filtername=filtersfromtrig_[iFilter];
+	   if(filtername.find(trigName)!=std::string::npos) {
+	     pass = true;
+	     break;
 	   }
-	   bool filter_result=triggerResults->accept(iTrigger);
-	   if(opposite)filter_result=!filter_result;
-	   info_->set_filter_result(filtername, filter_result);
-	   observed_filters_[filtername] = CityHash64(filtername);
 	 }
+	 //if (!pass) {
+	 //throw cms::Exception("TriggerNotFound")<<trigName<<" was not found in trigger results\n"; 
+	 //} 
        }
-       if(!found){
-	 throw cms::Exception("TriggerNotFound")<<filtername<<" was not found in trigger results\n";
+       if (!pass) continue;
+       if(!triggerResults->wasrun(iTrigger)){
+	 throw cms::Exception("TriggerNotRun")<<trigName<<" was not run\n";
        }
-     }
-   }
+       bool filter_result=triggerResults->accept(iTrigger);
+       if (invert_filter_logic_.find(trigName) !=
+	   invert_filter_logic_.end())
+	 filter_result = !filter_result;
 
-  edm::Handle<reco::BeamHaloSummary> beam_halo_handle;
-  if (do_csc_filter_) {
-    event.getByLabel(input_csc_filter_, beam_halo_handle);
-    info_->set_filter_result("CSCTightHaloFilter",
-                             beam_halo_handle->CSCTightHaloId());
-    observed_filters_["CSCTightHaloFilter"] = CityHash64("CSCTightHaloFilter");
-  }
+       //std::cout << " Filter " << trigName << " " << triggerResults->accept(iTrigger) << " " << filter_result << std::endl;
+
+       info_->set_filter_result(trigName, filter_result);
+       observed_filters_[trigName] = CityHash64(trigName);
+     }//loop on triggers
+     
+   }
+   
+   edm::Handle<reco::BeamHaloSummary> beam_halo_handle;
+   if (do_csc_filter_) {
+     event.getByLabel(input_csc_filter_, beam_halo_handle);
+     info_->set_filter_result("CSCTightHaloFilter",
+			      beam_halo_handle->CSCTightHaloId());
+     observed_filters_["CSCTightHaloFilter"] = CityHash64("CSCTightHaloFilter");
+   }
 }
 
 void ICEventInfoProducer::beginJob() {

@@ -45,11 +45,13 @@ ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
   // isolator_ = new PFIsolationEstimator();
   // isolator_->initializePhotonIsolation(true);
   // isolator_->setConeSize(0.3);
-  if(do_iso_from_pat_){
-    consumes<edm::View<pat::Photon>>(input_);
-  } else {
-    consumes<edm::View<reco::Photon>>(input_);
-  }
+  consumes<edm::View<reco::Photon>>(input_);
+  consumes<edm::View<pat::Photon>>(input_);
+  //if(do_iso_from_pat_){
+  //  consumes<edm::View<pat::Photon>>(input_);
+  //} else {
+  //  consumes<edm::View<reco::Photon>>(input_);
+  //}
   consumes<edm::ValueMap<bool>>(input_electron_veto_);
   photons_ = new std::vector<ic::Photon>();
 
