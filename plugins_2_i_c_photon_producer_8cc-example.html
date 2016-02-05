@@ -146,11 +146,13 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">  <span class="comment">// isolator_ = new PFIsolationEstimator();</span></div>
 <div class="line">  <span class="comment">// isolator_-&gt;initializePhotonIsolation(true);</span></div>
 <div class="line">  <span class="comment">// isolator_-&gt;setConeSize(0.3);</span></div>
-<div class="line">  <span class="keywordflow">if</span>(do_iso_from_pat_){</div>
-<div class="line">    consumes&lt;edm::View&lt;pat::Photon&gt;&gt;(input_);</div>
-<div class="line">  } <span class="keywordflow">else</span> {</div>
-<div class="line">    consumes&lt;edm::View&lt;reco::Photon&gt;&gt;(input_);</div>
-<div class="line">  }</div>
+<div class="line">  consumes&lt;edm::View&lt;reco::Photon&gt;&gt;(input_);</div>
+<div class="line">  consumes&lt;edm::View&lt;pat::Photon&gt;&gt;(input_);</div>
+<div class="line">  <span class="comment">//if(do_iso_from_pat_){</span></div>
+<div class="line">  <span class="comment">//  consumes&lt;edm::View&lt;pat::Photon&gt;&gt;(input_);</span></div>
+<div class="line">  <span class="comment">//} else {</span></div>
+<div class="line">  <span class="comment">//  consumes&lt;edm::View&lt;reco::Photon&gt;&gt;(input_);</span></div>
+<div class="line">  <span class="comment">//}</span></div>
 <div class="line">  consumes&lt;edm::ValueMap&lt;bool&gt;&gt;(input_electron_veto_);</div>
 <div class="line">  photons_ = <span class="keyword">new</span> std::vector&lt;ic::Photon&gt;();</div>
 <div class="line"></div>
