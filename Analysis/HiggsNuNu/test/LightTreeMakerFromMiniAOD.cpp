@@ -685,6 +685,7 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_jesuncfile(jesuncfile)
     .set_randomseed(randomseed)
+    .set_run2(!is2012)
     .set_fs(fs);
   std::vector<JetMETModifier::jetmetCor> corVec;
   if (reapplyJEC) corVec.push_back(JetMETModifier::jetmetCor::jecData);

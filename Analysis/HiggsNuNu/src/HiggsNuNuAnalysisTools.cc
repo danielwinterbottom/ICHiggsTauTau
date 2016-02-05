@@ -166,6 +166,37 @@ namespace ic{
     }
     return err;
   }
+  double Integral(TH2F const* hist) {
+    if (hist) {
+      double ltmp =hist->Integral(0, hist->GetNbinsX() + 1, 0, hist->GetNbinsY() + 1);
+      if (ltmp<0 || ltmp != ltmp) {
+	std::cout << " -- Warning: integral is " << ltmp << ". Removing overflows. " << std::endl;
+	ltmp = hist->Integral(1, hist->GetNbinsX(),1,hist->GetNbinsY());
+	if (ltmp<0 || ltmp != ltmp) {
+	  std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+	  ltmp=0;
+	}
+      }
+      return ltmp;
+    }
+  else return 0;
+  }
+
+  double Error(TH2F const* hist) {
+    double err = 0.0;
+    if (hist) {
+      hist->IntegralAndError(0, hist->GetNbinsX()+1,0, hist->GetNbinsY() + 1, err);
+      if (err<0 || err != err) {
+	std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
+	hist->IntegralAndError(1, hist->GetNbinsX(),1,hist->GetNbinsY(), err);
+	if (err<0 || err != err) {
+	  std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+	  err=0;
+	}
+      }
+    }
+    return err;
+  }
   
   double IntegralWithError(TH1F const* hist, int binmin, int binmax, double &err){
     if (hist) {
@@ -207,6 +238,18 @@ namespace ic{
     else return 0;
   }
 
+  double Integral(TH2F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax){
+    if (hist) {
+      double ltmp =hist->Integral(xbinmin, xbinmax,ybinmin, ybinmax);
+      if (ltmp<0 || ltmp != ltmp) {
+	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+	ltmp=0;
+      }
+      return ltmp;
+    }
+    else return 0;
+  }
+  
   double Integral(TH3F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax){
     if (hist) {
       double ltmp =hist->Integral(xbinmin, xbinmax,ybinmin, ybinmax,zbinmin, zbinmax);
@@ -223,6 +266,18 @@ namespace ic{
     double err = 0.0;
     if (hist) {
       hist->IntegralAndError(binmin, binmax, err);
+      if (err<0 || err != err) {
+	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+	err=0;
+      }
+    }
+    return err;
+  }
+
+  double Error(TH2F const* hist,int xbinmin, int xbinmax, int ybinmin, int ybinmax) {
+    double err = 0.0;
+    if (hist) {
+      hist->IntegralAndError(xbinmin, xbinmax,ybinmin, ybinmax, err);
       if (err<0 || err != err) {
 	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
 	err=0;
@@ -285,6 +340,25 @@ namespace ic{
     gDirectory->Delete("htemp;*");
     return hshape;
   }
+
+  TH2F GetShape2D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
+    std::string full_variable= BuildVarString(variable);
+    std::string full_selection = BuildCutString(selection, category, weight);
+    TH1::AddDirectory(true);
+    ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
+    TH1::AddDirectory(false);
+    TH2F* htemp = (TH2F*)gDirectory->Get("htemp");
+    if (!htemp) {
+      std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
+      std::cout<<"Returning empty histogram!"<<std::endl;
+      TH2F hshape;
+      hshape.SetName("ERROR");
+      return hshape;
+    }
+    TH2F hshape= (*htemp);
+    gDirectory->Delete("htemp;*");
+    return hshape;
+    }
 
   TH3F GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
     std::string full_variable= BuildVarString(variable);

@@ -161,14 +161,17 @@ int main(int argc, char* argv[]){
   std::vector<std::string> shape;
 
   if (debug) {
-    shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
+    /*shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
     shape.push_back("jet2_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
     if(channel=="enu" || channel=="munu" || channel=="taunu") {
       shape.push_back("lep_mt(30,0.,150.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
     }
     else if(channel=="mumu"){
       shape.push_back("m_mumu(12,60.,120.)");histTitle.push_back(";m_{#mu#mu};Events");
-    }
+      }*/
+    //shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
+    shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
+
     /*if (channel=="munu"){
       shape.push_back("metnomuons*pow(sqrt(sumet-mu1_pt),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
     }
@@ -191,11 +194,11 @@ int main(int argc, char* argv[]){
 	shape.push_back("ele1_pt(30,0.,300.)");histTitle.push_back(";p_{T}(electron) (GeV);Events");
 	shape.push_back("ele1_eta(30,-2.4,2.4)");histTitle.push_back(";#eta(electron) (GeV);Events");
       }
-      else if (channel=="munu" || channel=="topl" || channel=="topb"){
+      if (channel=="munu" || channel=="topl" || channel=="topb"){
 	shape.push_back("mu1_pt(30,0.,300.)");histTitle.push_back(";p_{T}(muon) (GeV);Events");
 	shape.push_back("mu1_eta(30,-2.1,2.1)");histTitle.push_back(";#eta(muon) (GeV);Events");
       }
-      else if (channel=="taunu") {
+      if (channel=="taunu") {
 	shape.push_back("tau1_pt(15,0.,300.)");histTitle.push_back(";p_{T}(tau) (GeV);Events");
 	shape.push_back("tau1_eta(15,-2.4,2.4)");histTitle.push_back(";#eta(tau) (GeV);Events");
       }
@@ -270,6 +273,9 @@ int main(int argc, char* argv[]){
     shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
     shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
     shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
+
+    shape.push_back("alljetsmetnomu_mindphi:dijet_M(24,800.,2000.,20,1.,3.)");histTitle.push_back(";M_{jj} (GeV);#Delta#phi(E_{T}^{miss},j);Events");
+ 
 
     //mindR(tau,tagjets)
     //shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);Events");
@@ -403,6 +409,14 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);  
 
+  DataShape signal500("signal500");
+  signal500.set_dataset("sig500")
+    .set_dirname("qqH500")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
   DataShape vv("vv");
   vv.set_dataset("VV")
     .set_dirname("vv")
@@ -489,6 +503,15 @@ int main(int argc, char* argv[]){
     boost::split(strs, shape[ishape], boost::is_any_of("("));
     LTShapeElement thisshape;
     thisshape.set_name(strs[0]);
+
+    //do not plot 2D hists....
+    if (strs[0].find(":")!=strs[0].npos) continue;
+
+    if (strs[0]=="forward_tag_eta"){
+      thisshape.set_legleft(0.39);
+      thisshape.set_legright(0.61);
+    }
+
     thisshape.set_histtitle(histTitle[ishape]);
     //    shapevec.push_back(strs[0]);
     if(do_logy) thisshape.set_dology(true);
@@ -724,12 +747,12 @@ int main(int argc, char* argv[]){
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
 
   if(!dataonly){
-    //analysis->AddModule(&signal110);
-    //analysis->AddModule(&signal150);
-    //analysis->AddModule(&signal200);
-    //analysis->AddModule(&signal300);
-    //analysis->AddModule(&signal400);
-    //analysis->AddModule(&signal500);
+    analysis->AddModule(&signal110);
+    analysis->AddModule(&signal150);
+    analysis->AddModule(&signal200);
+    analysis->AddModule(&signal300);
+    analysis->AddModule(&signal400);
+    analysis->AddModule(&signal500);
     analysis->AddModule(&signal125);
   }
   analysis->AddModule(&plotter);
