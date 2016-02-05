@@ -29,79 +29,10 @@
 
 namespace ic {
 
-  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int use_status_flags, int verbosity) : ch_(ch), year_(year), use_status_flags_(use_status_flags), verbosity_(verbosity)  {
+  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity) : ch_(ch), year_(year), verbosity_(verbosity)  {
     lumi_ = 1.;
     qcd_os_ss_factor_ = 1.06;
     using boost::range::push_back;
-    // Define some sensible defaults
-/*    sample_names_ = {
-//      "WZJetsTo3LNu",
-      "SingleElectron-2015B-17Jul",
-      "SingleMuon-2015B-17Jul",
-      "Tau-2015B-17Jul",
-      "MuonEG-2015B-17Jul",
-      "SingleElectron-2015C-prompt",
-      "SingleMuon-2015C-prompt",
-      "Tau-2015C-prompt",
-      "MuonEG-2015C-prompt",
-      "SingleElectron-2015D-prompt",
-      "SingleMuon-2015D-prompt",
-      "MuonEG-2015D-prompt",
-      "Tau-2015D-prompt",
-      "QCDMuEnr",
-      "QCDFlat",
-      "T-tW",
-      "Tbar-tW",
-      "T-tW-AOD",
-      "Tbar-tW-AOD",
-      "TTJets",
-      "TT",
-      "DYJetsToLL",
-      "TT-AOD",
-      "DYJetsToLL-AOD",
-      "WWTo2L2Nu",
-      "WWTo4Q",
-      "ZZTo4L",
-      "WWToLNuQQ",
-      "WZTo1L1Nu2Q",
-      "WWinclusive", 
-      "WZinclusive", 
-      "ZZinclusive",
-      "WWinclusive-AOD", 
-      "WZinclusive-AOD", 
-      "ZZinclusive-AOD",
-      "DYJetsToTauTau",
-    };
-    f (ch_ != channel::em) {
-      push_back(sample_names_, std::vector<std::string>{
-        "WJetsToLNu-AOD",
-        "WJetsToLNu",
-        "DYJetsToLL-L", 
-        "DYJetsToLL-J",
-        "DYJetsToTauTau-L",
-        "DYJetsToTauTau-JJ",
-      });
-    }
-    if (ch_ == channel::et) {
-      push_back(sample_names_, std::vector<std::string>{
-       "SingleElectron-2015B-17Jul"
-      });
-    }
-    if (ch_ == channel::mt) {
-      push_back(sample_names_, std::vector<std::string>{
-        "SingleMuon-2015B-17Jul"
-      });
-    }
-    if (ch_ == channel::em) {
-      push_back(sample_names_, std::vector<std::string>{
-        "MuonEG-2015B-17Jul"
-      });
-    }
-    if (ch_ == channel::tt) {
-      push_back(sample_names_, std::vector<std::string>{
-        "Tau-2015B-17Jul"
-      });
-    }*/   
 
     //Sample splitting
     if (ch_ == channel::et){
@@ -133,6 +64,7 @@ namespace ic {
       alias_map_["inclusive"]         = "1";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
       alias_map_["baseline"]         = "(iso_1<0.1 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+//      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["inclelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -156,6 +88,37 @@ namespace ic {
 
       alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
       // Categories for iso studies
+      alias_map_["incnotauiso"]      = "(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto&&"+alias_map_["notwoprong"]+")";
+      alias_map_["dbloose"]          = "(db_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["dbmedium"]         = "(db_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["dbtight"]         = "(db_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwloose"]          = "(puw_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwmedium"]         = "(puw_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwtight"]         = "(puw_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvloose"]    = "(mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldloose"]     = "(mvadbold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldmedium"]    = "(mvadbold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldtight"]     = "(mvadbold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvtight"]     = "(mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvvtight"]    = "(mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewtight"]     = "(mvadbnew_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvtight"]     = "(mvadbnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvvtight"]    = "(mvadbnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvloose"]    = "(mvapwold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldloose"]     = "(mvapwold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldmedium"]    = "(mvapwold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldtight"]     = "(mvapwold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvtight"]     = "(mvapwold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvvtight"]    = "(mvapwold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvloose"]    = "(mvapwnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewloose"]     = "(mvapwnew_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewmedium"]    = "(mvapwnew_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewtight"]     = "(mvapwnew_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvtight"]     = "(mvapwnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvvtight"]    = "(mvapwnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["incnoiso"]         = "(iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["incnoisonolv"]     = "(iso_2<1.5 && antiele_2 && antimu_2)";
       alias_map_["db03iso0p1"]            = "(iso_1_db03<0.1&&"+alias_map_["incnoiso"]+")";
@@ -257,6 +220,7 @@ namespace ic {
       alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
+      alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto &&"+alias_map_["notwoprong"];
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["inclelm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_loose_1>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -267,10 +231,42 @@ namespace ic {
       alias_map_["inctetm"]         = "(iso_1<1&&iso_2<1 && antie_tight_1>0 && antimu_tight_1>0 && antie_tight_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["incvtelm"]         = "(iso_1<1&&iso_2<1 && antie_vtight_1>0 && antimu_loose_1>0 && antie_vtight_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvtetm"]         = "(iso_1<1&&iso_2<1 && antie_vtight_1>0 && antimu_tight_1>0 && antie_vtight_2>0 && antimu_tight_2>0 && !leptonveto)";
+      alias_map_["dbloose"]          = "(db_loose_1&&db_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["dbmedium"]         = "(db_medium_1&&db_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["dbtight"]         = "(db_tight_1&&db_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwloose"]          = "(puw_loose_1&&puw_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwmedium"]         = "(puw_medium_1&&puw_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["puwtight"]         = "(puw_tight_1&&puw_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvloose"]    = "(mvadbold_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldloose"]     = "(mvadbold_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldmedium"]    = "(mvadbold_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldtight"]     = "(mvadbold_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvtight"]     = "(mvadbold_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvvtight"]    = "(mvadbold_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_1&&mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_1&&mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_1&&mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewtight"]     = "(mvadbnew_tight_1&&mvadbnew_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvtight"]     = "(mvadbnew_vtight_1&&mvadbnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadbnewvvtight"]    = "(mvadbnew_vvtight_1&&mvadbnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvloose"]    = "(mvapwold_vloose_1&&mvapwold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldloose"]     = "(mvapwold_loose_1&&mvapwold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldmedium"]    = "(mvapwold_medium_1&&mvapwold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldtight"]     = "(mvapwold_tight_1&&mvapwold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvtight"]     = "(mvapwold_vtight_1&&mvapwold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwoldvvtight"]    = "(mvapwold_vvtight_1&&mvapwold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvloose"]    = "(mvapwnew_vloose_1&&mvapwnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewloose"]     = "(mvapwnew_loose_1&&mvapwnew_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewmedium"]    = "(mvapwnew_medium_1&&mvapwnew_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewtight"]     = "(mvapwnew_tight_1&&mvapwnew_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvtight"]     = "(mvapwnew_vtight_1&&mvapwnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvapwnewvvtight"]    = "(mvapwnew_vvtight_2&&mvapwnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
 
 
       // SM Categories
       alias_map_["inclusive"]         = "1";
+      //alias_map_["baseline"]          = "1";
+
       alias_map_["baseline"]          = "db_tight_1>0.5 && db_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -471,8 +467,8 @@ namespace ic {
     samples_alias_map_["vv_samples"] = {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
      "WWTo1L1Nu2Q",
-     "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
+     /*"VVTo2L2Nu","ZZTo2L2Q",*/"ZZTo4L",
+     /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/
     };
 
 /*  if(ch_==channel::em){
@@ -491,9 +487,9 @@ namespace ic {
 
  
    samples_alias_map_["ztt_shape_samples"]={
-    "DYJetsToLL_M-50-LO",// "DYJetsToLL10-50"
+    "DYJetsToLL_M-50-LO"/*,// "DYJetsToLL10-50"
     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"*/
    };
 
    samples_alias_map_["data_samples"] = {
@@ -501,82 +497,64 @@ namespace ic {
    };
    if(ch_==channel::et || ch_==channel::zee){
      samples_alias_map_["data_samples"] = {
-      "SingleElectron-2015D-Oct05","SingleElectron-2015D-promptv4"
+      "SingleElectron-2015D"
      };
    }
    if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::wmnu){
      samples_alias_map_["data_samples"] = {
-     "SingleMuon-2015D-Oct05","SingleMuon-2015D-promptv4"
+     "SingleMuon-2015D"
      };
    }
    if(ch_==channel::tt){
      samples_alias_map_["data_samples"] = {
-      "Tau-2015D-Oct05","Tau-2015D-promptv4"
+      "Tau-2015D"
      };
    }
    if(ch_==channel::em){
     samples_alias_map_["data_samples"] = {
-      "MuonEG-2015D-Oct05","MuonEG-2015D-promptv4"
+      "MuonEG-2015D"
     };
    }
 
 
 
-  if(use_status_flags_){
     samples_alias_map_["zj_samples"] = {
-     "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50-LO"/*,
      "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"*/
     };
 
    samples_alias_map_["ztt_samples"]={
-     "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50-LO"/*,
      "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"*/
    };
    samples_alias_map_["zl_samples"] = {
-     "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50-LO"/*,
      "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"*/
    };
    samples_alias_map_["zll_samples"] = {
-     "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50-LO"/*,
      "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"*/
    };
 
 
 
-  } else {
-     samples_alias_map_["zj_samples"] = {
-     "DYJetsToTauTau-JJ","DYJetsToLL-J",
-//     "DYJetsToTauTau10-50-JJ", "DYJetsToLL10-50-J"
-    };
-   samples_alias_map_["ztt_samples"]={
-     "DYJetsToTauTau"//,"DYJetsToTauTau10-50"
-  };
-   samples_alias_map_["zl_samples"] = {
-     "DYJetsToLL-L"//,"DYJetsToLL10-50-L"
-   };
-   if(ch_ == channel::em){
-     samples_alias_map_["zll_samples"] = {
-     "DYJetsToLL"
-     };
-   }
- }  
   
- if(ch_!=channel::em && use_status_flags_){
+ if(ch_!=channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL_M-50-LO", 
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",
-   "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "WJetsToLNu-LO","TT-ext",
+   /*"VVTo2L2Nu","ZZTo2L2Q",*/"ZZTo4L",
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu",//"WZTo1L1Nu2Q",
+   "WJetsToLNu","TT-ext"/*,
    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
    };
 
 
@@ -584,66 +562,39 @@ namespace ic {
   }
   
 
- if(ch_!=channel::em && !use_status_flags_){
-  samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToTauTau-JJ","DYJetsToLL-J","DYJetsToTauTau","DYJetsToLL-L", 
-   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "WJetsToLNu","TT"
-   };
-
-  }
-
- if(ch_==channel::em && !use_status_flags_){
-  samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL","DYJetsToTauTau",
-   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "TT"
-   };
-  }
-  
-
- if(ch_==channel::em && use_status_flags_){
+ if(ch_==channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWTo1L1Nu2Q","VVTo2L2Nu",
-   "ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT-ext","WJetsToLNu-LO",
+   "WWTo1L1Nu2Q",//"VVTo2L2Nu",
+   /*"ZZTo2L2Q",*/"ZZTo4L",
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu",//"WZTo1L1Nu2Q",
+   "TT-ext","WJetsToLNu"/*,
    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
 
    };
 
   }
 
-if(use_status_flags_){
   samples_alias_map_["w_sub_samples"] = {
    "DYJetsToLL_M-50-LO",
-   "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+   /*"DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",*/
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWTo1L1Nu2Q","VVTo2L2Nu",
-   "ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "WWTo1L1Nu2Q",//"VVTo2L2Nu",
+   /*"ZZTo2L2Q",*/"ZZTo4L",
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu",//"WZTo1L1Nu2Q",
    "TT-ext"
    };
 
-  }else{
-  samples_alias_map_["w_sub_samples"] = {
-   "DYJetsToLL-L","DYJetsToTauTau","DYJetsToLL-J","DYJetsToTauTau-JJ"
-   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive",//"WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "TT"
-   };
-
-}
 
 samples_alias_map_["wjets_samples"] = {
-  "WJetsToLNu-LO",
+  "WJetsToLNu"/*,
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
  };
 
 sample_names_={};
@@ -790,23 +741,6 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
-    if (ch_ != channel::em && !use_status_flags_) {
-      auto ztt_leptonic_norm = this->GetLumiScaledRate("DYJetsToTauTau-L", sel, cat, wt);
-      TH1F ztt_leptonic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-L", sel, cat, wt);
-      SetNorm(&ztt_leptonic_hist, ztt_leptonic_norm.first);
-      if (verbosity_) PrintValue("ZTT-Leptonic", ztt_leptonic_norm); 
-      ztt_norm = ValueAdd(ztt_norm, ztt_leptonic_norm);
-      ztt_hist.Add(&ztt_leptonic_hist);
-/*
-      auto ztt_hadronic_norm = this->GetLumiScaledRate("DYJetsToTauTau-JJ"+dy_soup_, sel, cat, wt);
-      TH1F ztt_hadronic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-JJ"+dy_soup_, sel, cat, wt);
-      SetNorm(&ztt_hadronic_hist, ztt_hadronic_norm.first);
-      if (verbosity_) PrintValue("ZTT-Hadronic", ztt_hadronic_norm);
-      ztt_norm = ValueAdd(ztt_norm, ztt_hadronic_norm);
-      ztt_hist.Add(&ztt_hadronic_hist);
-*/
-    }
-
     return std::make_pair(ztt_hist, ztt_norm);
   }
   
@@ -1083,13 +1017,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     // Z->ll
     if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       std::string zl_sel, zj_sel;
-      if(use_status_flags_){
       zl_sel= sel+"&&"+this->ResolveAlias("zl_sel");
       zj_sel= sel+"&&"+this->ResolveAlias("zj_sel");
-      } else {
-      zl_sel = sel;
-      zj_sel = sel;
-      }
       auto zl_pair = this->GenerateZL(method, var, zl_sel, cat, wt);
       auto zj_pair = this->GenerateZJ(method, var, zj_sel, cat, wt);
       Value zll_norm = ValueAdd(zl_pair.second, zj_pair.second);
@@ -1105,9 +1034,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       total_hist.Add(&hmap["ZLL"+postfix].first,1.0);
     } else {
       std::string zll_sel;
-      if(use_status_flags_){
       zll_sel = sel+"&&"+this->ResolveAlias("zll_sel");
-      }else zll_sel=sel;
       auto zll_pair = this->GenerateZLL(method, var, zll_sel, cat, wt);
       std::string zll_map_label = "ZLL";
       PrintValue(zll_map_label+postfix, zll_pair.second);
@@ -1118,9 +1045,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     // Z->tautau
     if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       std::string ztt_sel;
-      if(use_status_flags_){
-        ztt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
-      } else ztt_sel = sel;
+      ztt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
       auto ztt_pair = this->GenerateZTT(method, var, ztt_sel, cat, wt);
       std::string ztt_map_label = "ZTT";
       //std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";

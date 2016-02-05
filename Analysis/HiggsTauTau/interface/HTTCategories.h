@@ -71,8 +71,8 @@ class HTTCategories : public ModuleBase {
   double wt_tau_id_down_;
   float trigweight_1_;
   float trigweight_2_;
-  float idweight_1_;
-  float idweight_2_;
+  float idisoweight_1_;
+  float idisoweight_2_;
   float isoweight_1_;
   float isoweight_2_;
   float effweight_;
@@ -93,7 +93,7 @@ class HTTCategories : public ModuleBase {
   branch_var trigger_object_pt_2;
   branch_var trigger_object_eta_2;
 */
-  unsigned n_pu_;
+ float n_pu_;
   branch_var m_sv_;
   branch_var mt_sv_;
   branch_var m_vis_;
@@ -140,6 +140,10 @@ class HTTCategories : public ModuleBase {
   branch_var iso_2_;
   double iso_1_db03_;
   double iso_1_db04_;
+  double iso_1_puw03_;
+  double iso_1_puw04_;
+  double iso_2_puw03_;
+  double iso_2_puw04_;
   double iso_1_trk03_;
   double iso_1_db03allch_;
   double iso_1_db04allch_; 
@@ -193,11 +197,11 @@ class HTTCategories : public ModuleBase {
   bool ldecayModeFindingOldDMs_2 = 0;
 
   float l3Hits_1 = 0;
-  float lagainstElectronLooseMVA5_1 = 0;
-  float lagainstElectronMediumMVA5_1 = 0;
-  float lagainstElectronTightMVA5_1 = 0;
-  float lagainstElectronVTightMVA5_1 = 0;
-  float lagainstElectronVLooseMVA5_1 = 0;
+  float lagainstElectronLooseMVA_1 = 0;
+  float lagainstElectronMediumMVA_1 = 0;
+  float lagainstElectronTightMVA_1 = 0;
+  float lagainstElectronVTightMVA_1 = 0;
+  float lagainstElectronVLooseMVA_1 = 0;
   float lagainstMuonLoose3_1 = 0;
   float lagainstMuonTight3_1 = 0;
   float lbyIsolationMVA3newDMwoLTraw_1 = 0;
@@ -231,11 +235,67 @@ class HTTCategories : public ModuleBase {
   bool lbyMediumPileupWeightedIsolation_2=0;
   bool lbyTightPileupWeightedIsolation_1=0;
   bool lbyTightPileupWeightedIsolation_2=0;
-  float lagainstElectronLooseMVA5_2 = 0;
-  float lagainstElectronMediumMVA5_2 = 0;
-  float lagainstElectronTightMVA5_2 = 0;
-  float lagainstElectronVTightMVA5_2 = 0;
-  float lagainstElectronVLooseMVA5_2 = 0;
+  branch_var lbyIsolationMVArun2DBnewDMwLTraw_2;
+  branch_var lbyIsolationMVArun2DBoldDMwLTraw_2;
+  branch_var lbyIsolationMVArun2PWnewDMwLTraw_2;
+  branch_var lbyIsolationMVArun2PWoldDMwLTraw_2;
+  bool lbyVVTightIsolationMVArun2PWoldDMwLT_2=0;
+  bool lbyVVTightIsolationMVArun2PWnewDMwLT_2=0;
+  bool lbyVVTightIsolationMVArun2DBoldDMwLT_2=0;
+  bool lbyVVTightIsolationMVArun2DBnewDMwLT_2=0;
+  bool lbyVTightIsolationMVArun2PWoldDMwLT_2=0;
+  bool lbyVTightIsolationMVArun2PWnewDMwLT_2=0;
+  bool lbyVTightIsolationMVArun2DBoldDMwLT_2=0;
+  bool lbyVTightIsolationMVArun2DBnewDMwLT_2=0;
+  bool lbyTightIsolationMVArun2PWoldDMwLT_2=0;
+  bool lbyTightIsolationMVArun2PWnewDMwLT_2=0;
+  bool lbyTightIsolationMVArun2DBoldDMwLT_2=0;
+  bool lbyTightIsolationMVArun2DBnewDMwLT_2=0;
+  bool lbyMediumIsolationMVArun2PWoldDMwLT_2=0;
+  bool lbyMediumIsolationMVArun2PWnewDMwLT_2=0;
+  bool lbyMediumIsolationMVArun2DBoldDMwLT_2=0;
+  bool lbyMediumIsolationMVArun2DBnewDMwLT_2=0;
+  bool lbyLooseIsolationMVArun2PWoldDMwLT_2=0;
+  bool lbyLooseIsolationMVArun2PWnewDMwLT_2=0;
+  bool lbyLooseIsolationMVArun2DBoldDMwLT_2=0;
+  bool lbyLooseIsolationMVArun2DBnewDMwLT_2=0;
+  bool lbyVLooseIsolationMVArun2PWoldDMwLT_2=0;
+  bool lbyVLooseIsolationMVArun2PWnewDMwLT_2=0;
+  bool lbyVLooseIsolationMVArun2DBoldDMwLT_2=0;
+  bool lbyVLooseIsolationMVArun2DBnewDMwLT_2=0;
+  branch_var lbyIsolationMVArun2DBnewDMwLTraw_1;
+  branch_var lbyIsolationMVArun2DBoldDMwLTraw_1;
+  branch_var lbyIsolationMVArun2PWnewDMwLTraw_1;
+  branch_var lbyIsolationMVArun2PWoldDMwLTraw_1;
+  bool lbyVVTightIsolationMVArun2PWoldDMwLT_1=0;
+  bool lbyVVTightIsolationMVArun2PWnewDMwLT_1=0;
+  bool lbyVVTightIsolationMVArun2DBoldDMwLT_1=0;
+  bool lbyVVTightIsolationMVArun2DBnewDMwLT_1=0;
+  bool lbyVTightIsolationMVArun2PWoldDMwLT_1=0;
+  bool lbyVTightIsolationMVArun2PWnewDMwLT_1=0;
+  bool lbyVTightIsolationMVArun2DBoldDMwLT_1=0;
+  bool lbyVTightIsolationMVArun2DBnewDMwLT_1=0;
+  bool lbyTightIsolationMVArun2PWoldDMwLT_1=0;
+  bool lbyTightIsolationMVArun2PWnewDMwLT_1=0;
+  bool lbyTightIsolationMVArun2DBoldDMwLT_1=0;
+  bool lbyTightIsolationMVArun2DBnewDMwLT_1=0;
+  bool lbyMediumIsolationMVArun2PWoldDMwLT_1=0;
+  bool lbyMediumIsolationMVArun2PWnewDMwLT_1=0;
+  bool lbyMediumIsolationMVArun2DBoldDMwLT_1=0;
+  bool lbyMediumIsolationMVArun2DBnewDMwLT_1=0;
+  bool lbyLooseIsolationMVArun2PWoldDMwLT_1=0;
+  bool lbyLooseIsolationMVArun2PWnewDMwLT_1=0;
+  bool lbyLooseIsolationMVArun2DBoldDMwLT_1=0;
+  bool lbyLooseIsolationMVArun2DBnewDMwLT_1=0;
+  bool lbyVLooseIsolationMVArun2PWoldDMwLT_1=0;
+  bool lbyVLooseIsolationMVArun2PWnewDMwLT_1=0;
+  bool lbyVLooseIsolationMVArun2DBoldDMwLT_1=0;
+  bool lbyVLooseIsolationMVArun2DBnewDMwLT_1=0;
+  float lagainstElectronLooseMVA_2 = 0;
+  float lagainstElectronMediumMVA_2 = 0;
+  float lagainstElectronTightMVA_2 = 0;
+  float lagainstElectronVTightMVA_2 = 0;
+  float lagainstElectronVLooseMVA_2 = 0;
   float lagainstMuonLoose3_2 = 0;
   float lagainstMuonTight3_2 = 0;
     
@@ -331,6 +391,14 @@ class HTTCategories : public ModuleBase {
   double mjj_lowpt_;       // Defined if n_lowpt_jets >= 2
   double jdeta_lowpt_;     // Defined if n_lowpt_jets >= 2
   unsigned n_jetsingap_lowpt_; // Defined if n_lowpt_jets >= 2
+  float lbyMediumIsolationMVArun2DBoldDMwLT_1_;
+  float lbyMediumIsolationMVArun2DBnewDMwLT_1_;
+  float lbyTightIsolationMVArun2DBoldDMwLT_1_;
+  float lbyTightIsolationMVArun2DBnewDMwLT_1_;
+  float lbyMediumIsolationMVArun2DBoldDMwLT_2_;
+  float lbyMediumIsolationMVArun2DBnewDMwLT_2_;
+  float lbyTightIsolationMVArun2DBoldDMwLT_2_;
+  float lbyTightIsolationMVArun2DBnewDMwLT_2_;
 
   unsigned n_prebjets_;
   unsigned n_jets_csv_;
