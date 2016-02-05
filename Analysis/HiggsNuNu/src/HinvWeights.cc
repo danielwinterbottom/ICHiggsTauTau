@@ -81,7 +81,7 @@ namespace ic {//namespace
     std::cout << "Do Trg Weights?: \t\t" << do_trg_weights_ << std::endl;
     if(trg_applied_in_mc_) std::cout << "Trg Sel Is Applied In MC make sure you use DataMC scale factors for trigger weightst" << std::endl;
     else std::cout << "Trg Sel Not Applied In MC make sure you use raw Data efficiencies for trigger weightst" << std::endl;
-    std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
+    //std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
     std::cout << "Do ID & iso weights for Tight leptons ?: \t\t" << do_idiso_tight_weights_ << std::endl;
     std::cout << "Do ID & iso weights for veto leptons ?: \t\t" << do_idiso_veto_weights_ << std::endl;
     std::cout << "Do ID & iso weight errors ?: \t\t" << do_idiso_err_ <<std::endl;
@@ -108,7 +108,11 @@ namespace ic {//namespace
 	std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
       }
       else{
-	sample_name_.erase(found,5);
+	//std::cout << sample_name_ << " " << sample_name_.find("split") <<std::endl;
+	if (sample_name_.find("split")!=sample_name_.npos){
+	  sample_name_.erase(found-8,13);
+	}
+	else sample_name_.erase(found,5);
 	std::cout << "Sample Name: "<<sample_name_<<std::endl;
 
 	//Get lumi xs and events from params file
@@ -221,16 +225,20 @@ namespace ic {//namespace
 	  std::vector<std::vector<TF1*> > thisfuncvectorvector;
 	  for(unsigned iVar2=0;iVar2<(binnedin2d1dfitweightvar2binning_.size()-1);iVar2++){
 	    std::vector<TF1*> thisfuncvector;
-	    std::ostringstream convert;
-	    convert<<iVar1+1<<iVar2+1;
-	    std::string histnumber=convert.str();
-	    if(!do_run2_){
-	      thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"A").c_str()));
-	      thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"BC").c_str()));
-	      thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
-	    }
-	    else{
-	      thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
+	    //HF bins
+	    for(unsigned iVar3=0;iVar3<(do_run2_?2:1);iVar3++){
+	      std::ostringstream convert;
+	      convert<<iVar1+1<<iVar2+1;
+	      if (do_run2_) convert<<iVar3+1;
+	      std::string histnumber=convert.str();
+	      if(!do_run2_){
+		thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"A").c_str()));
+		thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"BC").c_str()));
+		thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
+	      }
+	      else{
+		thisfuncvector.push_back((TF1*)gDirectory->Get(("fdata_"+binnedin2d1dfitweightvarorder_[2]+"_1d_"+histnumber+"Deff").c_str()));
+	      }
 	    }
 	    thisfuncvectorvector.push_back(thisfuncvector);
 	  }
@@ -438,7 +446,8 @@ namespace ic {//namespace
       double mjj=0.;
       double jet1pt=0.;
       double jet2pt=0.;
-      
+      bool hasJetsInHF = false;
+
       //get 2 leading jets
       std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>("jjLeadingCandidates");
       if (dijet_vec.size() > 0) {
@@ -451,10 +460,14 @@ namespace ic {//namespace
 	mjj = dijet->M();
 	jet1pt = jet1->pt();
 	jet2pt = jet2->pt();
+	hasJetsInHF = fabs(jet1->eta())>=3 || fabs(jet2->eta())>=3 ;
 	//std::cout<<"mjj "<<mjj<<" j2pt "<<jet2pt<<" metl1 "<<l1met<<" hltmet "<<hltmet<<std::endl;
+	unsigned nruns;
+	if(!do_run2_) nruns=3;
+	else nruns=2;
+
 	if(do_3dtrg_weights_){
 	  //GET THE 3 3D TRIG WEIGHTS
-	  unsigned nruns=3;
 	  double trgweights[nruns];
 	  unsigned naxes=3;
 	  unsigned bins[nruns][naxes];
@@ -496,9 +509,8 @@ namespace ic {//namespace
 	  if (do_trg_weights_) eventInfo->set_weight("trig_3d",trgweight3d);
 	  else eventInfo->set_weight("!trig_3d",trgweight3d);
 	  
-	}
+	}//3D weights
 	else if(do_1dparkedtrg_weights_){
-	  unsigned nruns=3;
 	  double trgweights[nruns];
 	  unsigned nvars=4;
 	  if(!do_fitted1dparkedtrg_weights_){
@@ -536,7 +548,7 @@ namespace ic {//namespace
 	    
 	    //std::cout << " Bin Jet2pt"<<irun<<" " << bins[irun][0] << " Bin metHLT"<<irun<<" " << bins[irun][1] << " BinMjj"<<irun<<" " << bins[irun][2] << std::endl;
 	  }
-	}
+	  }//1D parked
 	else{
 	  //!!GET FITTED 1D WEIGHTS AND PUT IN TRGWEIGHTS[nruns]
 	  for(unsigned irun=0;irun<nruns;irun++){
@@ -583,7 +595,7 @@ namespace ic {//namespace
 	  return 1;
 	}
 	double vars[3];
-	bool found[3]={false};
+	bool found[3]={false,false,false};
 	//Get the 3 variables
 	for(unsigned iVar=0;iVar<binnedin2d1dfitweightvarorder_.size();iVar++){
 	  if(binnedin2d1dfitweightvarorder_[iVar]=="MET"){
@@ -616,7 +628,7 @@ namespace ic {//namespace
 	  }	
 	  if(var1bin==-10)var1bin=binnedin2d1dfitweightvar1binning_.size()-1;
 	}
-	if(vars[1]<binnedin2d1dfitweightvar1binning_[0])var2bin=-1;
+	if(vars[1]<binnedin2d1dfitweightvar2binning_[0])var2bin=-1;
 	else{
 	  for(unsigned iBin=0;iBin<(binnedin2d1dfitweightvar2binning_.size()-1);iBin++){
 	    if(vars[1]<binnedin2d1dfitweightvar2binning_[iBin+1]){
@@ -626,22 +638,20 @@ namespace ic {//namespace
 	  }
 	  if(var2bin==-10)var2bin=binnedin2d1dfitweightvar2binning_.size()-1;
 	}
-	double trgweights[3];
-	int nRuns;
-	if(!do_run2_) nRuns=3;
-	else nRuns=1;
+	double trgweights[3]={0,0,0};
+	double xmin,xmax;
 	if((var1bin!=-1)&&(var2bin!=-1)){
 	  //!!READ OUT WEIGHT FOR EACH RUN
-	  double xmin,xmax;
-	  TF1* funcs[3];
-	  for(int iRun=0;iRun<nRuns;iRun++){
+	  TF1* funcs[3]={0,0,0};
+	  for(unsigned iRun=0;iRun<nruns;iRun++){
 	    funcs[iRun]=func_trigSF_binnedin2d[var1bin-1][var2bin-1][iRun];
 	  }
 	  
-	  funcs[0]->GetRange(xmin,xmax);
+	   if (!hasJetsInHF) funcs[0]->GetRange(xmin,xmax);
+	   else funcs[1]->GetRange(xmin,xmax);
 	  
 	  //Get weight                                                                                                                                     
-	  for(int iRun=0;iRun<nRuns;iRun++){
+	  for(unsigned iRun=0;iRun<nruns;iRun++){
 	    
 	    if(vars[2]<=xmax){
 	      if(vars[2]>=xmin){
@@ -653,7 +663,7 @@ namespace ic {//namespace
 	  }
 	}
 	else{
-	  for(int iRun=0;iRun<nRuns;iRun++){
+	  for(unsigned iRun=0;iRun<nruns;iRun++){
 	    trgweights[iRun]=0;
 	  }
 	}
@@ -663,13 +673,20 @@ namespace ic {//namespace
 	  trgweight=(trgweights[0]*Alumi_+trgweights[1]*BClumi_+trgweights[2]*Dlumi_)/(Alumi_+BClumi_+Dlumi_);
 	}
 	else{
-	  trgweight=trgweights[0];
+	  if (!hasJetsInHF) trgweight=trgweights[0];
+	  else trgweight=trgweights[1];
 	}
-	//std::cout<<" Total Weight "<<trgweight<<std::endl;                                                                                            
+	/*if (var1bin>0&&var2bin>0) 
+	std::cout<<" Total Weight "<<trgweight
+		 <<" vars[0]=" << vars[0] << "(" << var1bin << ")"
+		 <<" vars[1]=" << vars[1] << "(" << var2bin << ")"
+		 <<" vars[2]=" << vars[2] << "(" << xmin << "," << xmax << ")"
+		 <<" hasJetsInHF=" << hasJetsInHF
+		 <<std::endl;   */                                                                                         
 	//SET TRIGGER WEIGHT                                                                                                                             
 	if (do_trg_weights_) eventInfo->set_weight("trig_2dbinned1d",trgweight);
 	else eventInfo->set_weight("!trig_2dbinned1d",trgweight);
-      }
+      }//2D-1D
       else{
 	double lMax = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(hist_trigSF_MjjHLT->GetNbinsX());
 	double lMin = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(1);
@@ -706,8 +723,9 @@ namespace ic {//namespace
 	//event->Add("trigweight_1", ele_trg);
 	//event->Add("trigweight_2", tau_trg);
       }
-    }
-    }
+      }//dijet pair
+    
+    }//do trig weights
     //else {
     //std::cout << " skipping trigger stuff" << std::endl;
     //}
@@ -748,7 +766,7 @@ namespace ic {//namespace
 	else { genWeight=pow(0.6741/(2./3.),2); }
 	eventInfo->set_weight("madgraph_ttbarbr_weight",genWeight);
       }
-    }
+    }//do top
     //else {
     //std::cout << " skipping top stuff" << std::endl;
     //}
@@ -853,7 +871,7 @@ namespace ic {//namespace
     //std::cout << " IDISO veto done." << std::endl;
 
    
-    }
+    }//save weights
 
 
     bool zeroParton = false;
@@ -935,7 +953,8 @@ namespace ic {//namespace
     if (!save_weights_) event->Add("NoParton",zeroParton);
     //std::cout<<"Final weight: "<<eventInfo->total_weight()<<std::endl;
     return 0;
-  }
+
+  }//execute method
 
   int HinvWeights::PostAnalysis() {
     if (save_weights_) {

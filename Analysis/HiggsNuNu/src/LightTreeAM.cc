@@ -71,6 +71,7 @@ namespace ic {
     lumi_=0;
     event_=0;
     weight_nolep_=1;
+    weight_trig_=1;
     total_weight_lepveto_ = 1;
     total_weight_leptight_ = 1;
     puweight_up_scale_=1;
@@ -141,6 +142,8 @@ namespace ic {
     jet1metnomu_scalarprod_ = 0;
     jet2metnomu_scalarprod_ = 0;
 
+    pass_muontrigger_ = -1;
+    pass_photontrigger_ = -1;
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
     pass_controltrigger_ = -1;
@@ -155,7 +158,9 @@ namespace ic {
     ntightphotons_=0;
 
     m_mumu_=-1;
+    pt_mumu_=-1;
     m_ee_=-1;
+    pt_ee_=-1;
     m_mumu_gen_=-1;
     m_ee_gen_=-1;
     lep_mt_=-1;
@@ -228,6 +233,7 @@ namespace ic {
     outputTree_->Branch("lumi",&lumi_);
     outputTree_->Branch("event",&event_);
     outputTree_->Branch("weight_nolep",&weight_nolep_);
+    outputTree_->Branch("weight_trig",&weight_trig_);
     outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("puweight_up_scale",&puweight_up_scale_);
@@ -298,6 +304,8 @@ namespace ic {
     outputTree_->Branch("jet2metnomu_scalarprod",&jet2metnomu_scalarprod_);
 
 
+    outputTree_->Branch("pass_muontrigger",&pass_muontrigger_);
+    outputTree_->Branch("pass_photontrigger",&pass_photontrigger_);
     outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
     outputTree_->Branch("pass_mettrigger",&pass_mettrigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
@@ -312,7 +320,9 @@ namespace ic {
     outputTree_->Branch("ntightphotons",&ntightphotons_);
 
     outputTree_->Branch("m_mumu",&m_mumu_);
+    outputTree_->Branch("pt_mumu",&pt_mumu_);
     outputTree_->Branch("m_ee",&m_ee_);
+    outputTree_->Branch("pt_ee",&pt_ee_);
     outputTree_->Branch("m_mumu_gen",&m_mumu_gen_);
     outputTree_->Branch("m_ee_gen",&m_ee_gen_);
     outputTree_->Branch("lep_mt",&lep_mt_);
@@ -360,7 +370,7 @@ namespace ic {
 
   int  LightTreeAM::Execute(TreeEvent *event){
  
-    //static unsigned processed = 0;
+    static unsigned processed = 0;
     
     resetAllTreeVariables();
 
@@ -384,15 +394,33 @@ namespace ic {
     for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
       std::string name = triggerPathPtrVec[i]->name();
       double prescale = triggerPathPtrVec[i]->prescale();
+      //if (name.find("Photon") != name.npos){
       //std::cout << " Trigger " << name 
       //<< " prescale " << prescale
       //<< std::endl;
+      //}
+      if (prescale==1 && 
+	  ( (name.find("HLT_Photon") != name.npos &&
+	     (name.find("R9Id90_HE10_Iso") != name.npos ||
+	      name.find("_PFMET") != name.npos)
+	     ) ||
+	    name.find("HLT_Photon175_v") != name.npos
+	    )
+	  ) pass_photontrigger_ = 1;
+      //HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_VBF_v2
+      //HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_PFMET40
+      //HLT_Photon36_R9Id90_HE10_IsoM
+      ///HLT_Photon175_v*
+      //HLT_Photon135_PFMET100
+
+
+      if (name.find("HLT_IsoMu20_") != name.npos) pass_muontrigger_ = prescale;
       if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140") != name.npos) pass_sigtrigger_ = prescale;
-      if (name.find("HLT_PFMET170_NoiseCleaned") != name.npos) pass_mettrigger_ = prescale;
+      if (name.find("HLT_PFMET170_") != name.npos) pass_mettrigger_ = prescale;
       if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80") != name.npos) pass_controltrigger_ = prescale;
     }
     if(do_trigskim_){
-      if(!(pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0)){
+      if(!(pass_muontrigger_==1 || pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0||pass_photontrigger_>0)){
 	return 1;
       }
     }
@@ -402,6 +430,7 @@ namespace ic {
     ////////////////////////////////
 
     double wt = eventInfo->total_weight();
+
     double vetowt=1;
     double tightwt=1;
     double pileupwt=1;
@@ -414,10 +443,16 @@ namespace ic {
       pileupwt=eventInfo->weight("pileup");
       pileupwtup=eventInfo->weight("pileup_up");
       pileupwtdown=eventInfo->weight("pileup_down");
+      weight_trig_=eventInfo->weight("trig_2dbinned1d");
     }
-    puweight_up_scale_=pileupwtup/pileupwt;
-    puweight_down_scale_=pileupwtdown/pileupwt;
-
+    if (pileupwt!=0) {
+      puweight_up_scale_=pileupwtup/pileupwt;
+      puweight_down_scale_=pileupwtdown/pileupwt;
+    }
+    else {
+      puweight_up_scale_=1;
+      puweight_down_scale_=1;
+    }
     weight_nolep_ = wt;
     total_weight_lepveto_ =wt*vetowt;
     if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<vetowt<<std::endl;//!!
@@ -492,13 +527,18 @@ namespace ic {
       for (unsigned iGenPart = 0; iGenPart < parts.size(); ++iGenPart) {//Loop over gen particles
 	int id = parts[iGenPart]->pdgid();
 	std::vector<bool> flags=parts[iGenPart]->statusFlags();
- 	if (flags[GenStatusBits::IsHardProcess]){
+ 	if (flags[GenStatusBits::IsHardProcess] && 
+	    flags[GenStatusBits::FromHardProcess] &&
+	    flags[GenStatusBits::IsFirstCopy]
+	    ){
 	  //parts[iGenPart]->Print();
 	  if (abs(id)==15){
 	    genTaus.push_back(parts[iGenPart]);
 	  }
-	  else if (parts[iGenPart]->mothers().size()==1 &&
-		   parts[parts[iGenPart]->mothers()[0]]->pdgid()==23){
+	  else if (parts[iGenPart]->mothers().size()==0 || 
+		   (parts[iGenPart]->mothers().size()==1 &&
+		    parts[parts[iGenPart]->mothers()[0]]->pdgid()==23)
+		   ){
 	    if (abs(id)==11) Zelecs.push_back(parts[iGenPart]);
 	    else if (abs(id)==13) Zmuons.push_back(parts[iGenPart]);
 	  }
@@ -720,6 +760,7 @@ namespace ic {
 	mu2_eta_=selmuons[1]->eta();
 	mu2_phi_=selmuons[1]->phi();
 	m_mumu_=((selmuons.at(0)->vector())+(selmuons.at(1)->vector())).M();
+	pt_mumu_=((selmuons.at(0)->vector())+(selmuons.at(1)->vector())).Pt();
 	if (!is_data_ && recotogen_muons[1].second){
 	  unsigned genid = recotogen_muons[1].first;
 	  mu2_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genMus[genid]->vector(),selmuons[1]->vector());
@@ -746,6 +787,7 @@ namespace ic {
       }
       if(nselelectrons_>=2){
 	m_ee_=((selelectrons.at(0)->vector())+(selelectrons.at(1)->vector())).M();
+	pt_ee_=((selelectrons.at(0)->vector())+(selelectrons.at(1)->vector())).Pt();
       }
     }
     if(ntaus_>=1){
@@ -797,16 +839,16 @@ namespace ic {
 
 
     //IF PASSES CUTS FILL TREE    
-    if(do_noskim_){
-      //but at least one interesting offline object....
-      //if (n_jets_30_>1 || 
-      //nselmuons_>0 || nselelectrons_>0 || ntaus_ > 0 ||
-      //nloosephotons_ > 0 || nmediumphotons_ > 0 || ntightphotons_ > 0){
-	outputTree_->Fill();
-	//}
-      //++processed;
-    }
-    else if(!ignoreLeptons_){
+    //if(do_noskim_){
+    //but at least one interesting offline object....
+    //if (n_jets_30_>1 || 
+    //nselmuons_>0 || nselelectrons_>0 || ntaus_ > 0 ||
+    //nloosephotons_ > 0 || nmediumphotons_ > 0 || ntightphotons_ > 0){
+    outputTree_->Fill();
+    //}
+    //++processed;
+    //}
+    /*else if(!ignoreLeptons_){
       if(!do_promptskim_){
 	if (jet_pt_[1]>40&& dijet_M_ > 600 &&  dijet_deta_>3.6){
 	  //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
@@ -838,9 +880,11 @@ namespace ic {
 	}
       }	
     }
+    */
     
+    ++processed;
     //if (processed == 500) outputTree_->OptimizeBaskets();
-    //if ((processed%500) == 0) outputTree_->OptimizeBaskets();
+    if ((processed%100000) == 0) outputTree_->AutoSave();
 
     return 0;
 
@@ -848,6 +892,9 @@ namespace ic {
   }//execute method
   
   int  LightTreeAM::PostAnalysis(){
+
+    fs_->cd();
+    outputTree_->Write();
 
     std::cout << "----------------------------------------" << std::endl
 	      << "PostAnalysis Info for LightTreeAM" << std::endl

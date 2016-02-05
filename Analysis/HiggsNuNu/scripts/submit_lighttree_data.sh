@@ -1,10 +1,10 @@
 #!/bin/sh
-DOCERN=1
-DOSUBMIT=0
+DOCERN=0
+DOSUBMIT=1
 MYEXEC=LightTreeMakerFromMiniAOD
 PRODUCTION=151113
 PRODUSER=amagnan
-
+JPTCUTVAL=70
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -32,13 +32,13 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 
 
-for SYST in central #JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
+for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
-  JOBDIRPREFIX=jobs_lighttree_301015goldenjson_l1metfix_131115
+  JOBDIRPREFIX=jobs_lighttree_160120
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_301015goldenjson_l1metfix_131115
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160120
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -152,7 +152,7 @@ if [ "$SYST" = "ELEEFFUP" ]
         PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MET
     fi    
 
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*` 
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_MET*` 
       do
       echo "Processing files in "$FILELIST
       
@@ -163,7 +163,7 @@ if [ "$SYST" = "ELEEFFUP" ]
       
       echo "JOB name = $JOB"
       
-      $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh $GRIDSETUP
+      $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS --jet1ptcut="$JPTCUTVAL" --jet2ptcut="$JPTCUTVAL" | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh $GRIDSETUP
       if [ "$DOSUBMIT" = "1" ]; then 
 	  $JOBSUBMIT $JOBDIR/$JOB.sh
       else

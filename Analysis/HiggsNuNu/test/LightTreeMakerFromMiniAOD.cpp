@@ -38,6 +38,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JECStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetEventFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
@@ -119,6 +120,8 @@ int main(int argc, char* argv[]){
   double jet1ptcut;               //jet1ptcut
   double jet2ptcut;               //jet2ptcut
   double jetptprecut;             //jetptprecut, should be the CJV threshold
+  double mjjcut;
+  double detajjcut;
 
   int randomseed;
 
@@ -154,6 +157,8 @@ int main(int argc, char* argv[]){
     ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(30.))
     ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(30.))
     ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(15.))
+    ("mjjcut",           po::value<double>(&mjjcut)->default_value(600.))
+    ("detajjcut",           po::value<double>(&detajjcut)->default_value(3.2))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
@@ -231,15 +236,25 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "filters" % filters;
   std::cout << boost::format(param_fmt) % "dotrgeff" % dotrgeff;
   std::cout << boost::format(param_fmt) % "doidisoeff" % doidisoeff;
+  std::cout << boost::format(param_fmt) % "jet1ptcut" % jet1ptcut;
+  std::cout << boost::format(param_fmt) % "jet2ptcut" % jet2ptcut;
+  std::cout << boost::format(param_fmt) % "mjjcut" % mjjcut;
+  std::cout << boost::format(param_fmt) % "detajjcut" % detajjcut;
+
 
   // Load necessary libraries for ROOT I/O of custom classes
   // gSystem->Load("libFWCoreFWLite.dylib");
   // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
   // AutoLibraryLoader::enable();
-
+  bool is2012 = false;
+  if (era_str.find("2012") != era_str.npos) is2012 = true;
 
   // Build a vector of input files
   vector<string> files = ParseFileLines(filelist);
+  if (files.size()==0) {
+    std::cout << " -- ERROR ! No input file provided, filelist " << filelist << " doesn't exist or is empty, please check." << std::endl;
+    return 1;
+  }
   for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
   
   // Create ROOT output fileservice
@@ -276,12 +291,15 @@ int main(int argc, char* argv[]){
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   double loose_photon_pt, loose_photon_eta, medium_photon_pt, medium_photon_eta, tight_photon_pt, tight_photon_eta;
   
+  double muon_iso = is2012 ? 0.12 : 0.1;//0.15 -> too loose
+  double veto_muon_iso = is2012 ? 0.2 : 0.15;//0.25 -> too loose??
+
   elec_dz = 0.1;
   elec_dxy = 0.02;
   veto_elec_dz = 0.2;
   veto_elec_dxy = 0.04;
-  muon_dz = 0.2;
-  muon_dxy = 0.045;
+  muon_dz = 0.2;//is2012 ? 0.2 : 0.5;
+  muon_dxy = 0.045;//is2012 ? 0.045 : 0.2;
   //veto_muon_dz = 0.2;
   //veto_muon_dxy = 0.045;
   
@@ -317,7 +335,9 @@ int main(int argc, char* argv[]){
   std::cout << boost::format("%-15s %-10s\n") % "veto muon_eta:" % veto_muon_eta;
   std::cout << boost::format("%-15s %-10s\n") % "muon_dxy:" % muon_dxy;
   std::cout << boost::format("%-15s %-10s\n") % "muon_dz:" % muon_dz;
-  
+  std::cout << boost::format("%-15s %-10s\n") % "muon_iso:" % muon_iso;
+  std::cout << boost::format("%-15s %-10s\n") % "veto_muon_iso:" % veto_muon_iso;
+
   
   
   // Create analysis object
@@ -526,9 +546,10 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<Muon> vetoMuonFilter = SimpleFilter<Muon>
     ("VetoMuonPtEtaFilter")
-    .set_input_label("vetoMuons").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
-						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
-						&& bind(PF04Isolation<Muon>, _1, 0.5, 0.2)
+    .set_input_label("vetoMuons")
+    .set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
+		   bind(MuonLoose, _1) &&
+		   bind(PF03IsolationVal<Muon>, _1, 0.5, false) < veto_muon_iso
 						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
 						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
 						)
@@ -539,7 +560,7 @@ int main(int argc, char* argv[]){
   SimpleFilter<Muon> vetoMuonNoIsoFilter = SimpleFilter<Muon>
     ("VetoMuonNoIsoPtEtaFilter")
     .set_input_label("vetoMuonsNoIso").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
-						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
+						     bind(MuonLoose, _1)
 						//&& bind(PF04Isolation<Muon>, _1, 0.5, 0.2)
 						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
 						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
@@ -552,9 +573,8 @@ int main(int argc, char* argv[]){
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>
     ("SelMuonPtEtaFilter")
     .set_input_label("selMuons").set_predicate(bind(MinPtMaxEta, _1, muon_pt, muon_eta) &&
-					       bind(&Muon::is_global, _1) &&
 					       bind(MuonTight, _1) && 
-					       bind(PF04Isolation<Muon>, _1, 0.5, 0.12) &&
+					       bind(PF03IsolationVal<Muon>, _1, 0.5, false) < muon_iso &&
 					       bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
 					       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
 					       )
@@ -646,35 +666,36 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
+  /*JECStudy jecStudy = JECStudy
+    ("jecStudy")
+    .set_input_label(jettype)
+    .set_jec_old_files("input/jec/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt")
+    .set_jec_new_files("input/jec/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt")
+    .set_is_data(is_data)
+    .set_reapplyJEC(true);
+  */
 
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
     .set_input_label(jettype)
     .set_jec_data_files(jecdatafiles)
-    .set_reapplyJEC(reapplyJEC)
     .set_met_label(mettype)
-    .set_dosmear(dosmear)
-    .set_doaltmatch(doaltmatch)
-    .set_doetsmear(doetsmear)
     .set_dogaus(dogaus)
     .set_dospring10gaus(dospring10gaus)
     .set_is_data(is_data)
-    .set_dojessyst(dojessyst)
-    .set_dodatajessyst(dodatajessyst)
-    .set_jesupordown(jesupordown)
-    .set_dojersyst(dojersyst)
-    .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
-    .set_dojerdebug(dojerdebug)
-    .set_douessyst(douessyst)
-    .set_uesupordown(uesupordown)
     .set_randomseed(randomseed)
+    .set_run2(!is2012)
     .set_fs(fs);
-  
+  std::vector<JetMETModifier::jetmetCor> corVec;
+  if (reapplyJEC) corVec.push_back(JetMETModifier::jetmetCor::jecData);
+  if (dosmear)    corVec.push_back(JetMETModifier::jetmetCor::smearMC);
+  ModifyJetMET.set_corVec(corVec);
 
-  
-  
-  
+  if (dojessyst) ModifyJetMET.set_syst(jesupordown?JetMETModifier::jetmetSyst::jesUp:JetMETModifier::jetmetSyst::jesDown);
+  if (dojersyst) ModifyJetMET.set_syst(jerbetterorworse?JetMETModifier::jetmetSyst::jerBetter:JetMETModifier::jetmetSyst::jerWorse);
+  if (douessyst) ModifyJetMET.set_syst(uesupordown?JetMETModifier::jetmetSyst::uesUp:JetMETModifier::jetmetSyst::uesDown);
+
   CopyCollection<PFJet> alljetsCopyCollection("copytoalljets",jettype,"AllpfJetsPFlow");
 
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
@@ -743,6 +764,10 @@ int main(int argc, char* argv[]){
     .set_min(npairs)
     .set_max(999);
 
+  if(!donoskim && !doAllPairs){
+    jetPairFilter.set_predicate(bind(OrderedPairPtSelection, _1,jet1ptcut, jet2ptcut, cutaboveorbelow) && !bind(PairDEtaLessThan, _1, detajjcut) && bind(PairMassInRange, _1,mjjcut,100000) );
+  }
+  
   if (doAllPairs) {
     jetPairFilter.set_input_label("jjAllCandidates");
     jetPairFilter.set_predicate(!bind(PairDEtaLessThan, _1, 3.2) && bind(PairMassInRange, _1,600,100000) && bind(PairPtSelection, _1,30,30)  );
@@ -805,7 +830,7 @@ int main(int argc, char* argv[]){
       .set_binnedin2d1dfitweightvar2binning(mjjbinning)
       .set_do_run2(true)
       .set_trg_weight_file(trg_weight_file)
-      .set_trg_applied_in_mc(true);
+      .set_trg_applied_in_mc(false);
     if(do3dtrgeff){
       hinvWeights.set_Alumi(0.889)
 	.set_BClumi(11.023)
@@ -870,7 +895,7 @@ int main(int argc, char* argv[]){
   WtoLeptonFilter2012.set_do_newstatuscodes(false);
   WtoLeptonFilter2012.set_do_statusflags(false);
 
-  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,150,true);
+  HinvZDecay ZhighptFilter = HinvZDecay("ZhighptFilter",is2012?13:0,0,150,true,is2012);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
@@ -925,7 +950,7 @@ int main(int argc, char* argv[]){
     if (output_name.find("JetsToLNu") != output_name.npos ||
 	output_name.find("EWK-W2j") != output_name.npos) {
       if (wstream != "nunu") {
-	if (era_str.find("2012") != era_str.npos) analysis.AddModule(&WtoLeptonFilter2012);
+	if (is2012) analysis.AddModule(&WtoLeptonFilter2012);
 	else analysis.AddModule(&WtoLeptonFilter);
       }
     }
@@ -936,9 +961,9 @@ int main(int argc, char* argv[]){
     //just apply W and Z weights
     analysis.AddModule(&xsWeights);
     //Z pt <100 GeV cut for inclusive DY samples
-    //if(doincludehighptz && output_name.find("DYJetsToLL-mg") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
-    //analysis.AddModule(&ZlowmassFilter);
-    //}
+    if(doincludehighptz && output_name.find("DYJetsToLL-mg-m50") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
+      analysis.AddModule(&ZhighptFilter);
+    }
   }
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);
@@ -982,13 +1007,14 @@ int main(int argc, char* argv[]){
   
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   
+  //Module to do jet smearing and systematics
+  //analysis.AddModule(&jecStudy);
+  analysis.AddModule(&ModifyJetMET);
+  
   //deal with removing overlap with selected leptons
   analysis.AddModule(&jetMuonOverlapFilter);
   analysis.AddModule(&jetElecOverlapFilter);
   //no need to clean taus, we don't do it in the signal selection.
-  
-  //Module to do jet smearing and systematics
-  analysis.AddModule(&ModifyJetMET);
   
   //add met without leptons for plots
   analysis.AddModule(&metNoMuons);
