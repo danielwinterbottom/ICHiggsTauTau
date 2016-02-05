@@ -102,6 +102,11 @@ namespace ic {
     TGraphErrors* res[5]; 
     TF1* resfunc[5];
     TF1* spring10resfunc[5]; 
+
+    double getJERcorrfac(const double & abseta,
+			 const int error,
+			 const bool run2);
+
 	
   public:
     JetMETModifier(std::string const& name);

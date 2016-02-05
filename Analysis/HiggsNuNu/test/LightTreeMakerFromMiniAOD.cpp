@@ -697,6 +697,7 @@ int main(int argc, char* argv[]){
     .set_douessyst(douessyst)
     .set_uesupordown(uesupordown)
     .set_randomseed(randomseed)
+    .set_run2(!is2012)
     .set_fs(fs);
   
 

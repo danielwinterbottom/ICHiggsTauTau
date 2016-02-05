@@ -29,6 +29,7 @@ namespace ic {
     doaltmatch_=false;
     dojerdebug_=false;
     randomno = new TRandom3(randomseed_);
+    run2_ = false;
   }
 
   JetMETModifier::~JetMETModifier() {
@@ -65,7 +66,9 @@ namespace ic {
     }
     else{
       if(dosmear_){
-	std::cout << "Doing jet central value smearing. "<<std::endl;
+	std::cout << "Doing jet central value smearing ";
+	if (run2_) std::cout << "using run2 scale factors.";
+	std::cout <<std::endl;
 	std::cout<<"Random seed for jet smearing is: "<<randomseed_<<std::endl;
       }
       else if((!dosmear_)&&dojersyst_){
@@ -434,25 +437,13 @@ namespace ic {
 	  double JERscalefac=1.;//if no match leave jet alone
 	  double JERcencorrfac=1.;
 	  if(!dojersyst_){//doing central value
-	    if(fabs(oldjet.eta())<0.5)JERcencorrfac=1.052;
-	    else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.057;
-	    else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.096;
-	    else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.134;
-	    else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.288;
+	    getJERcorrfac(fabs(oldjet.eta()),0,run2_);
 	  }
 	  else if(dojersyst_&&jerbetterorworse_){//doing JERBETTER
-	    if(fabs(oldjet.eta())<0.5)JERcencorrfac=0.990;
-	    else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.001;
-	    else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.032;
-	    else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.042;
-	    else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.089;
+	    getJERcorrfac(fabs(oldjet.eta()),-1,run2_);
 	  }
 	  else if(dojersyst_&&(!jerbetterorworse_)){//doing JERWORSE
-	    if(fabs(oldjet.eta())<0.5)JERcencorrfac=1.115;
-	    else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.114;
-	    else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.161;
-	    else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.228;
-	    else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.488;	      
+	    getJERcorrfac(fabs(oldjet.eta()),1,run2_);
 	  }
 	  if(index!=-1){//if gen jet match calculate correction factor for pt
 	    if(oldjet.pt()>50.) Smear50miss->Fill(-1.);
@@ -460,7 +451,7 @@ namespace ic {
 	    if(!doetsmear_){//do twiki smearing
 	      double ptcorrected = jet_genjet_pairs[index].second->pt()+JERcencorrfac*(oldjet.pt()-jet_genjet_pairs[index].second->pt());
 	      if(ptcorrected<0.)ptcorrected=0.;
-	      JERscalefac = ptcorrected/oldjet.pt();
+	      if (oldjet.pt()>0) JERscalefac = ptcorrected/oldjet.pt();
 	      Smearjetgenjetptdiff->Fill(oldjet.pt()-jet_genjet_pairs[index].second->pt());
 	      Smearjetgenjetptratio->Fill(oldjet.pt()/jet_genjet_pairs[index].second->pt());
 	      Smearjetgenjetptratioetabin->Fill(oldjet.pt()/jet_genjet_pairs[index].second->pt(),oldjet.eta());
@@ -663,6 +654,45 @@ namespace ic {
       }
       return 0;
     }
+  }
+
+  double JetMETModifier::getJERcorrfac(const double & abseta,
+				       const int error,
+				       const bool run2){
+    double JERcencorrfac=1;
+    if (!run2){
+      if (error==0) {
+	if(abseta< 0.5)JERcencorrfac=1.052;
+	else if(abseta<1.1)JERcencorrfac=1.057;
+	else if(abseta<1.7)JERcencorrfac=1.096;
+	else if(abseta<2.3)JERcencorrfac=1.134;
+	else if(abseta<5.0)JERcencorrfac=1.288;
+      }
+      else if (error==-1){
+	if(abseta<0.5)JERcencorrfac=0.990;
+	else if(abseta<1.1)JERcencorrfac=1.001;
+	else if(abseta<1.7)JERcencorrfac=1.032;
+	else if(abseta<2.3)JERcencorrfac=1.042;
+	else if(abseta<5.0)JERcencorrfac=1.089;
+      }
+      else if (error==1){
+	if(abseta<0.5)JERcencorrfac=1.115;
+	else if(abseta<1.1)JERcencorrfac=1.114;
+	else if(abseta<1.7)JERcencorrfac=1.161;
+	else if(abseta<2.3)JERcencorrfac=1.228;
+	else if(abseta<5.0)JERcencorrfac=1.488;	      
+      }
+    }//run1
+    else {
+      double val[7] = {1.061,1.088,1.106,1.126,1.343,1.303,1.320};
+      double err[7] = {0.023,0.029,0.030,0.094,0.123,0.111,0.286}; 
+      double etabounds[8] = {0,0.8,1.3,1.9,2.5,3,3.2,5};
+      for (unsigned id(0); id<7;++id){
+	if (abseta>=etabounds[id] && abseta<etabounds[id+1]) JERcencorrfac=val[id]+error*err[id];
+      }
+
+    }
+    return JERcencorrfac;
   }
 
 

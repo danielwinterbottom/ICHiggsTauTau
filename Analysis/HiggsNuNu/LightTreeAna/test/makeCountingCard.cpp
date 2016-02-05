@@ -44,7 +44,9 @@ int main(int argc, char* argv[]){
   bool do_4params;
   bool do_1param;
   double wz_syst;
-
+  double minvarXcut;
+  double minvarYcut;
+  std::string histoToIntegrate;
   po::variables_map vm;
   po::options_description config("Configuration");
   config.add_options()
@@ -66,9 +68,13 @@ int main(int argc, char* argv[]){
     ("do_datatop,t",             po::value<bool>(&do_datatop)->default_value(false))
     ("mcBkgOnly",                po::value<bool>(&mcBkgOnly)->default_value(false))
     ("do_run2",                  po::value<bool>(&do_run2)->default_value(false))
-    ("do_4params",                  po::value<bool>(&do_4params)->default_value(false))
-    ("do_1param",                  po::value<bool>(&do_1param)->default_value(true))
+    ("do_4params",               po::value<bool>(&do_4params)->default_value(false))
+    ("do_1param",                po::value<bool>(&do_1param)->default_value(true))
     ("wz_syst",                  po::value<double>(&wz_syst)->default_value(1.15))
+    ("minvarXcut",               po::value<double>(&minvarXcut)->default_value(1.0))
+    ("minvarYcut",               po::value<double>(&minvarYcut)->default_value(1.0))
+    ("histoToIntegrate",         po::value<std::string>(&histoToIntegrate)->default_value("alljetsmetnomu_mindphi"))
+
 ;
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -92,8 +98,8 @@ int main(int argc, char* argv[]){
   //Rate to use if qcd not taken from a shape
   double qcdabserr= (channel=="nunu")?14:0;
 
-  if((mass!="110")&&(mass!="125")&&(mass!="150")&&(mass!="200")&&(mass!="300")&&(mass!="400")){
-    std::cout<<"Mass "<<mass<<" not currently supported, please use 110, 125, 200, 300 or 400. Exiting!"<<std::endl;
+  if((mass!="110")&&(mass!="125")&&(mass!="150")&&(mass!="200")&&(mass!="300")&&(mass!="400")&&(mass!="500")){
+    std::cout<<"Mass "<<mass<<" not currently supported, please use 110, 125, 200, 300, 400 or 500. Exiting!"<<std::endl;
     return 1;
   }
   
@@ -146,12 +152,12 @@ int main(int argc, char* argv[]){
   TFile* nunu=new TFile((indir+"/"+channel+".root").c_str());
 
   //SYST VARIED ROOT FILES
-  TFile* jesup=do_run2?0:new TFile((indir+"/JESUP/"+channel+".root").c_str());
-  TFile* jesdown=do_run2?0:new TFile((indir+"/JESDOWN/"+channel+".root").c_str());
-  TFile* jerbetter=do_run2?0:new TFile((indir+"/JERBETTER/"+channel+".root").c_str());
-  TFile* jerworse=do_run2?0:new TFile((indir+"/JERWORSE/"+channel+".root").c_str());
-  TFile* uesup=do_run2?0:new TFile((indir+"/UESUP/"+channel+".root").c_str());
-  TFile* uesdown=do_run2?0:new TFile((indir+"/UESDOWN/"+channel+".root").c_str());
+  TFile* jesup=new TFile((indir+"/JESUP/"+channel+".root").c_str());
+  TFile* jesdown=new TFile((indir+"/JESDOWN/"+channel+".root").c_str());
+  TFile* jerbetter=new TFile((indir+"/JERBETTER/"+channel+".root").c_str());
+  TFile* jerworse=new TFile((indir+"/JERWORSE/"+channel+".root").c_str());
+  TFile* uesup=new TFile((indir+"/UESUP/"+channel+".root").c_str());
+  TFile* uesdown=new TFile((indir+"/UESDOWN/"+channel+".root").c_str());
   TFile* eleup=do_run2?0:new TFile((indir+"/ELEEFFUP/"+channel+".root").c_str());
   TFile* eledown=do_run2?0:new TFile((indir+"/ELEEFFDOWN/"+channel+".root").c_str());
   TFile* muup=do_run2?0:new TFile((indir+"/MUEFFUP/"+channel+".root").c_str());
@@ -162,7 +168,7 @@ int main(int argc, char* argv[]){
   //SYSTEMATICS
   std::vector<Syst> systematics;
 
-  std::vector<std::string> lumi8tevprocsaffected={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","wg","vv","qcd"};
+  std::vector<std::string> lumi8tevprocsaffected={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","wg","vv","qcd"};
   if (mcBkgOnly) {
     if (do_run2) lumi8tevprocsaffected.push_back("zvv");
     else {
@@ -183,10 +189,10 @@ int main(int argc, char* argv[]){
     .set_procsaffected(lumi8tevprocsaffected)
     .set_constvalue(1.026);
 
-  std::vector<std::string> allprocs={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","zvv","zvv_ewk","zvv_qcd","zmumu","wmu","wel","wtau","top","qcd","wg","vv"};
-  std::vector<std::string> allprocsnotqcd={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","zvv","zvv_ewk","zvv_qcd","zmumu","wmu","wel","wtau","top","wg","vv"};
+  std::vector<std::string> allprocs={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","qqH500","zvv","zvv_ewk","zvv_qcd","zmumu","wmu","wel","wtau","top","qcd","wg","vv"};
+  std::vector<std::string> allprocsnotqcd={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","zvv","zvv_ewk","zvv_qcd","zmumu","wmu","wel","wtau","top","wg","vv"};
   std::vector<std::string> ggHprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH"};
-  std::vector<std::string> qqHprocs={"qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH"};
+  std::vector<std::string> qqHprocs={"qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH"};
   Syst eleeff;
   eleeff.set_name("CMS_eff_e")
     .set_latexname("Electron efficiency")
@@ -242,6 +248,13 @@ int main(int argc, char* argv[]){
     .set_procsaffected({"zvv"});
 
   if (mcBkgOnly) zvvmcstat.set_type("fromMCstatlnN");
+
+  Syst wzratio;
+  wzratio.set_name("CMS_WZ_ratio_from_theory")
+    .set_latexname("W/Z from theory")
+    .set_type("constlnN")
+    .set_constvalue(wz_syst)
+    .set_procsaffected({"zmumu","zvv"});
 
   Syst zvvewkmcstat;
   zvvewkmcstat.set_name("CMS_VBFHinv_zvv_ewk_norm")
@@ -313,7 +326,7 @@ int main(int argc, char* argv[]){
     .set_latexname("Tau efficiency")
     .set_procsaffected({"wtau"})
     .set_type("constlnN")
-    .set_constvalue(1.08);
+    .set_constvalue(1.05);
 
   Syst wtaujetmetextrap;
   wtaujetmetextrap.set_name("CMS_VBFHinv_tau_extrapfacunc")
@@ -414,12 +427,13 @@ int main(int argc, char* argv[]){
     .set_latexname("VBF QCD scale")
     .set_type("constlnN")
     .set_procsaffected(qqHprocs);
-  if(mass=="110")qqHqcdscale.set_constvalue(1.002);
-  if(mass=="125")qqHqcdscale.set_constvalue(1.002);
-  if(mass=="150")qqHqcdscale.set_constvalue(1.0025);
-  if(mass=="200")qqHqcdscale.set_constvalue(1.002);
-  if(mass=="300")qqHqcdscale.set_constvalue(1.002);
-  if(mass=="400")qqHqcdscale.set_constvalue(1.0035);
+  if(mass=="110")qqHqcdscale.set_constvalue(1.02);
+  if(mass=="125")qqHqcdscale.set_constvalue(1.02);
+  if(mass=="150")qqHqcdscale.set_constvalue(1.025);
+  if(mass=="200")qqHqcdscale.set_constvalue(1.02);
+  if(mass=="300")qqHqcdscale.set_constvalue(1.02);
+  if(mass=="400")qqHqcdscale.set_constvalue(1.035);
+  if(mass=="500")qqHqcdscale.set_constvalue(1.035);
 
   Syst qqHpdf;
   qqHpdf.set_name("pdf_qqbar")
@@ -432,6 +446,7 @@ int main(int argc, char* argv[]){
   if(mass=="200")qqHpdf.set_constvalue(1.026);
   if(mass=="300")qqHpdf.set_constvalue(1.0255);
   if(mass=="400")qqHpdf.set_constvalue(1.027);
+  if(mass=="500")qqHpdf.set_constvalue(1.027);
 
   Syst vvmcstat;
   vvmcstat.set_name("CMS_VBFHinv_vv_norm")
@@ -481,11 +496,16 @@ int main(int argc, char* argv[]){
     .set_constvalue(1.2);
 
   systematics.push_back(lumi8tev);
-  if (!do_run2) systematics.push_back(eleeff);
+  if (!do_run2)  systematics.push_back(eleeff);
   if (!do_run2) systematics.push_back(mueff);
-  if (!do_run2) systematics.push_back(jes);
-  if (!do_run2) systematics.push_back(jer);
-  if(do_ues && !do_run2)systematics.push_back(ues);
+  //if (!do_run2) 
+  systematics.push_back(jes);
+  //if (!do_run2) 
+  systematics.push_back(jer);
+  if(do_ues){
+    //if (!do_run2) 
+    systematics.push_back(ues);
+  }
   //if (!do_run2) 
   systematics.push_back(pu);
   if (channel=="nunu" || channel=="mumu") {
@@ -497,7 +517,12 @@ int main(int argc, char* argv[]){
 	systematics.push_back(zvvqcdmcstat);
       }
     }
-    if (channel=="mumu") systematics.push_back(zmumumcstat);
+    if (channel=="mumu") {
+      systematics.push_back(zmumumcstat);
+    }
+    if (channel=="mumu" || channel=="nunu") {
+      systematics.push_back(wzratio);
+    }
     //  systematics.push_back(zvvdatastat);
     if (!mcBkgOnly) systematics.push_back(zvvdatastatgmn);
     //systematics.push_back(mcfmzvv);
@@ -542,7 +567,7 @@ int main(int argc, char* argv[]){
   std::ofstream datacard;
   datacard.open (outname.c_str());
   //precision
-  datacard << std::setprecision(3);
+  datacard << std::setprecision(4);
   //Header information
   datacard << "# Invisible Higgs analysis for mH="<<mass<<" GeV"<<std::endl;
   datacard << "imax 1"<<std::endl;
@@ -570,12 +595,24 @@ int main(int argc, char* argv[]){
       dir=nunu->GetDirectory(dirname.c_str());
     }
     dir->cd();
-    TH1F* histo = (TH1F*)dir->Get("jet2_pt");
-    if (!histo) {
-      std::cout<<"Error: No histogram jet2_pt found for "<<dirname<<" exiting"<<std::endl; 
-      return 1;
+    double rate = 0;
+    if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+      TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
+      if (!histo) {
+	std::cout<<"Error: No histogram " << histoToIntegrate << " found for "<<dirname<<" exiting"<<std::endl; 
+	return 1;
+      }
+      rate=histo->Integral(histo->FindBin(minvarXcut), histo->GetNbinsX() + 1);
     }
-    double rate=histo->Integral(0, histo->GetNbinsX() + 1);
+    else {
+      TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
+      if (!histo) {
+	std::cout<<"Error: No histogram " << histoToIntegrate << " found for "<<dirname<<" exiting"<<std::endl;
+        return 1;
+      }
+      rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetNbinsX() + 1, histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
+
+    }
     datacard<<"observation "<<rate<<std::endl;
     std::cout<<"observation "<<rate<<std::endl;
   }
@@ -596,8 +633,14 @@ int main(int argc, char* argv[]){
 	dir=nunu->GetDirectory(dirname.c_str());
       }
       dir->cd();
-      TH1F* histo = (TH1F*)dir->Get("jet2_pt");
-      double rate=histo->Integral(0, histo->GetNbinsX() + 1);
+      double rate = 0;
+      if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+	TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
+	rate=histo->Integral(histo->FindBin(minvarXcut), histo->GetNbinsX() + 1);
+      } else {
+	TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
+	rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetNbinsX() + 1, histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
+      }
       totalbkgs+=rate;
     }
     if(do_qcdfromnumber) totalbkgs+=qcdrate;
@@ -644,6 +687,8 @@ int main(int argc, char* argv[]){
   std::vector<double> sigcentralrates;//store central rates for syst calculation
   std::vector<double> bkgcentralrates;
   datacard<<"rate\t\t";
+  TH1F* histo[100];
+  TH2F* histo2D[100];
   for(unsigned iProc=0;iProc<(sigprocesses.size()+bkgprocesses.size());iProc++){
     std::string dirname;
     if(iProc<sigprocesses.size())dirname=sigprocesses[iProc];
@@ -660,9 +705,28 @@ int main(int argc, char* argv[]){
       dir=nunu->GetDirectory(dirname.c_str());
     }
     dir->cd();
-    TH1F* histo = (TH1F*)dir->Get("jet2_pt");
-    double rate=Integral(histo);
-    if (rate != rate) std::cout << " -- Problem, nan in sample " << dirname << std::endl;
+    double rate = 0;
+    if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+      histo[iProc] = (TH1F*)dir->Get(histoToIntegrate.c_str());
+      rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX()+1);
+      if (rate != rate) {
+	rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX());
+	if (rate!=rate){
+	  std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
+	  rate=0;
+	}
+      }
+    } else {
+      histo2D[iProc] = (TH2F*)dir->Get(histoToIntegrate.c_str());
+      rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX()+1,histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY()+1);
+      if (rate != rate) {
+	rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX(),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY());
+	if (rate!=rate){
+	  std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
+	  rate=0;
+	}
+      }
+    }
     if(iProc<sigprocesses.size())sigcentralrates.push_back(rate);
     else bkgcentralrates.push_back(rate);
     datacard<<"\t"<<rate;
@@ -738,19 +802,49 @@ int main(int argc, char* argv[]){
 	    downdir=systematics[iSyst].downtfile()->GetDirectory(dirname.c_str());
 	  }
 	  updir->cd();
-	  TH1F* uphisto = (TH1F*)updir->Get("jet2_pt");
-	  double uprate=Integral(uphisto);
-	  TH1F* downhisto = (TH1F*)downdir->Get("jet2_pt");
-	  double downrate=Integral(downhisto);
+	  double uprate=0;
+	  double downrate=0;
+	  TH1F* uphisto=0;
+	  TH1F* downhisto=0;
+	  TH2F* uphisto2D=0;
+	  TH2F* downhisto2D=0;
+	  if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+	    uphisto = (TH1F*)updir->Get(histoToIntegrate.c_str());
+	    uprate=Integral(uphisto,uphisto->FindBin(minvarXcut),uphisto->GetNbinsX()+1);
+	    downhisto = (TH1F*)downdir->Get(histoToIntegrate.c_str());
+	    downrate=Integral(downhisto,downhisto->FindBin(minvarXcut),downhisto->GetNbinsX()+1);
+	  } else {
+	    uphisto2D = (TH2F*)updir->Get(histoToIntegrate.c_str());
+	    uprate=Integral(uphisto2D,uphisto2D->GetXaxis()->FindBin(minvarXcut),uphisto2D->GetNbinsX()+1,uphisto2D->GetYaxis()->FindBin(minvarYcut),uphisto2D->GetNbinsY()+1);
+	    downhisto2D = (TH2F*)downdir->Get(histoToIntegrate.c_str());
+	    downrate=Integral(downhisto2D,downhisto2D->GetXaxis()->FindBin(minvarXcut),downhisto2D->GetNbinsX()+1,downhisto2D->GetYaxis()->FindBin(minvarYcut),downhisto2D->GetNbinsY()+1);
+	  }
+
 	  double centralrate;
 	  if(iProc<sigprocesses.size())centralrate=sigcentralrates[iProc];
 	  else centralrate=bkgcentralrates[iProc-sigprocesses.size()];
 
-	  double downlnnfac=downrate/centralrate;
-	  if (downlnnfac<=0)downlnnfac=0.01;
+	  double downlnnfac=centralrate!=0?downrate/centralrate:0;
+	  if (downlnnfac<=0)downlnnfac=0.001;
 
-	  double uplnnfac=uprate/centralrate;
-	  if (uplnnfac<=0)uplnnfac=0.01;
+	  double uplnnfac=centralrate!=0?uprate/centralrate:0;
+	  if (uplnnfac<=0)uplnnfac=0.001;
+
+	  if (centralrate!=0 && (fabs(downlnnfac-1)>0.2 || fabs(uplnnfac-1)>0.2)){
+	    std::cout << " Process " << dirname << ", systematics " << systematics[iSyst].name() << " is more than 20%: down - central - up = "
+		      << downrate << " - " << centralrate << " - " << uprate << std::endl;
+	    std::cout << "Diff entries: " ;
+	    if (histoToIntegrate.find(":")==histoToIntegrate.npos){
+	      std::cout << downhisto->GetEntries() 
+			<< " - " << histo[iProc]->GetEntries()
+			<< " - " << uphisto->GetEntries() << std::endl;
+	    }
+	    else {
+	      std::cout << downhisto2D->GetEntries() 
+			<< " - " << histo2D[iProc]->GetEntries()
+			<< " - " << uphisto2D->GetEntries() << std::endl;
+	    }
+	  }
 
 	  if (downlnnfac==downlnnfac) datacard<<"\t"<<downlnnfac;
 	  else datacard<<"\t-";
@@ -786,13 +880,21 @@ int main(int argc, char* argv[]){
  	else if(systematics[iSyst].type()=="fromMCstatlnN"){
 	  TDirectory* dir=nunu->GetDirectory(dirname.c_str());	  
 	  dir->cd();
-	  TH1F* histo = (TH1F*)dir->Get("jet2_pt");
-	  double error=Error(histo);
-	  if (error!=error) error=Error(histo,1,histo->GetNbinsX());
+	  double error = 0;
+	  if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+	    TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
+	    error=Error(histo,histo->FindBin(minvarXcut),histo->GetNbinsX()+1);
+	    if (error!=error) error=Error(histo,histo->FindBin(minvarXcut),histo->GetNbinsX());
+	  } else {
+	    TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
+	    error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetNbinsX()+1,histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
+	    if (error!=error) error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetNbinsX(),histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY());
+	  }
+
 	  double centralrate;
 	  if(iProc<sigprocesses.size())centralrate=sigcentralrates[iProc];
 	  else centralrate=bkgcentralrates[iProc-sigprocesses.size()];
-	  double lnnfac=error/centralrate;
+	  double lnnfac=centralrate!=0?error/centralrate : 0;
 	  if (lnnfac!=lnnfac) std::cout << " nan for process " << dirname << std::endl;
 	  lnnfac=lnnfac+1;
 	  if (lnnfac==lnnfac) datacard<<"\t"<<lnnfac;
@@ -987,7 +1089,7 @@ datacard<<std::endl;
     if (channel=="qcd" || channel=="taunu" || channel=="nunu" || channel=="topl" || channel=="topb")
       datacard<<"W_tau_xsection rateParam ch1 wtau 1"<<std::endl;
     datacard<<"QCD_xsection rateParam ch1 qcd 1"<<std::endl;
-    datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
+    if (channel=="topl" || channel=="topb") datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
   }
   else if (do_1param){
     if (do_run2) datacard<<"WZ_xsection rateParam ch1 zvv 1"<<std::endl;
@@ -1001,7 +1103,7 @@ datacard<<std::endl;
     datacard<<"WZ_xsection rateParam ch1 wel 1"<<std::endl;
     datacard<<"WZ_xsection rateParam ch1 wtau 1"<<std::endl;
     datacard<<"QCD_xsection rateParam ch1 qcd 1"<<std::endl;
-    datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
+    if (channel=="topl" || channel=="topb") datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
   }
 
   datacard.close();  

@@ -7,6 +7,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TH1F.h"
+#include "TH1.h"
 #include "TH3F.h"
 #include "TEntryList.h"
 
@@ -31,6 +32,7 @@ namespace ic{
     TEntryList GetEntryList(std::string const&, std::string const&, std::string const&);
     TTree* GetSubTree(TEntryList);
     TH1F GetShape(std::string const&, std::string const&, std::string const&, std::string const&);
+    TH2F GetShape2D(std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetShape3D(std::string const&, std::string const&, std::string const&, std::string const&);
     TTree* GetTree();
   };
@@ -79,6 +81,9 @@ namespace ic{
     TH1F GetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH1F GetSetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
     TH1F GetSetsShape(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,bool);
+    TH2F GetShape2D(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
+    TH2F GetSetShape2D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
+    TH2F GetSetsShape2D(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,bool);
     TH3F GetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetSetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
   };
