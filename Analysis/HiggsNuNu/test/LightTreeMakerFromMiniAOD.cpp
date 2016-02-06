@@ -286,7 +286,7 @@ int main(int argc, char* argv[]){
   double elec_dz, elec_dxy;
   double muon_dz, muon_dxy;
   double veto_elec_dz, veto_elec_dxy;
-  //double veto_muon_dz, veto_muon_dxy;
+  double veto_muon_dz, veto_muon_dxy;
   double elec_pt, elec_eta, muon_pt, muon_eta;
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   double loose_photon_pt, loose_photon_eta, medium_photon_pt, medium_photon_eta, tight_photon_pt, tight_photon_eta;
@@ -300,8 +300,8 @@ int main(int argc, char* argv[]){
   veto_elec_dxy = 0.04;
   muon_dz = 0.2;//is2012 ? 0.2 : 0.5;
   muon_dxy = 0.045;//is2012 ? 0.045 : 0.2;
-  //veto_muon_dz = 0.2;
-  //veto_muon_dxy = 0.045;
+  veto_muon_dz = 0.5;
+  veto_muon_dxy = 0.2;
   
   elec_pt = 20.0;
   elec_eta = 2.4;
@@ -383,6 +383,7 @@ int main(int argc, char* argv[]){
   if (mc == mc::summer12_52X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S7-600bins.root";
   if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
   if (mc == mc::spring15_74X) mc_pu_file  = "input/pileup/MC_Spring15_PU25_Startup.root";
+  if (mc == mc::fall15_76X) mc_pu_file  = "input/pileup/MC_Fall15_PU25_V1.root";
 
   string data_pu_file;
   if (era == era::data_2012_rereco) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
@@ -550,9 +551,9 @@ int main(int argc, char* argv[]){
     .set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
 		   bind(MuonLoose, _1) &&
 		   bind(PF03IsolationVal<Muon>, _1, 0.5, false) < veto_muon_iso
-						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
-						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
-						)
+		   && bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
+		   && bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
+		   )
     .set_min(0)
     .set_max(999);
 
@@ -865,7 +866,8 @@ int main(int argc, char* argv[]){
     }
   }
   if (output_name.find("JetsToLL") != output_name.npos && 
-      output_name.find("PtZ-100-madgraph") == output_name.npos && 
+      (output_name.find("PtZ-100-madgraph") == output_name.npos ||
+       output_name.find("Zpt-150toInf") == output_name.npos) && 
       output_name.find("DYJJ01") == output_name.npos) {
     if (mc == mc::summer12_53X) {
       xsWeights.set_do_dy_soup(true);
@@ -877,6 +879,12 @@ int main(int argc, char* argv[]){
       else{
 	xsWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
       }
+    }
+    else if (mc == mc::fall15_76X){
+      xsWeights.set_do_dy_soup(true);
+      xsWeights.set_do_dy_reweighting(false);
+      xsWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
+      xsWeights.SetDYInputYields(9004328.0, 0.0, 20019059.0, 5701878.0, 4189017.0);
     }
   }
 
