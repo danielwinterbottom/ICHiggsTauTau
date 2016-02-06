@@ -898,7 +898,7 @@ int main(int argc, char* argv[]){
       output_name.find("m50-ht") != output_name.npos){
     xsWeights.set_do_dy_soup_htbinned(true);
     xsWeights.set_do_dy_reweighting(false);
-    xsWeights.SetDYTargetFractions();
+    xsWeights.SetDYTargetFractions(1,1,1,1,1);
     xsWeights.SetDYInputYields(9004328,0,962195,1069003,1031103);
   }
 

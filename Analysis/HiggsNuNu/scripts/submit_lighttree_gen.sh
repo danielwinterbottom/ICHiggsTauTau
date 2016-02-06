@@ -1,6 +1,6 @@
 #!/bin/sh
-DOCERN=1
-DOSUBMIT=0
+DOCERN=0
+DOSUBMIT=1
 #MYEXEC=LightTreeMakerFromMiniAOD
 MYEXEC=GenLightTreeMaker
 PRODUCTION=160203
@@ -69,7 +69,7 @@ do
 #Signal files and DYtoNuNu
 #    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/$PRODUCTION/MC/
     PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_DYJetsToLL-mg-m50_split*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_EWK*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJ*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
     do
