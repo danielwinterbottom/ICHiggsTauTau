@@ -45,6 +45,17 @@ namespace ic {
     double* genjet_phi_;
     double* genjet_E_;
 
+    unsigned countHt0_100_;
+    unsigned countHt100_200_;
+    unsigned countHt200_400_;
+    unsigned countHt400_600_;
+    unsigned countHt600_inf_;
+
+    unsigned count0Parton_;
+    unsigned count1Parton_;
+    unsigned count2Parton_;
+    unsigned count3Parton_;
+    unsigned count4Parton_;
 
   public:
     LightTreeMCGen(std::string const& name);

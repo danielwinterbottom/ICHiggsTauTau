@@ -51,6 +51,7 @@ namespace ic {//namespace
     do_w_soup_          = false;
     do_w_reweighting_   = false;
     do_dy_soup_         = false;
+    do_dy_soup_htbinned_         = false;
     do_dy_reweighting_   = false;
     do_idiso_err_       = false;
     do_idiso_errupordown_ = true;
@@ -148,7 +149,7 @@ namespace ic {//namespace
       std::cout << "f3 = " << f3_ << "\t" << "n3 = " << n3_ << "\t" << "w3 = " << w3_ << std::endl;
       std::cout << "f4 = " << f4_ << "\t" << "n4 = " << n4_ << "\t" << "w4 = " << w4_ << std::endl;
     }
-    if (do_dy_soup_) {
+    if (do_dy_soup_ || do_dy_soup_htbinned_) {
       std::cout << "Making DY Soup:" << std::endl;
       std::cout << "nInc = " << zn_inc_ << std::endl;
       zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
@@ -877,28 +878,24 @@ namespace ic {//namespace
     bool zeroParton = false;
 
     if (do_w_soup_) {
-      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      bool count_jets = false;
-      unsigned partons = 0;
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        if (parts[i]->status() != 3) continue;
-        unsigned id = abs(parts[i]->pdgid());
-        if (count_jets) { 
-          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
-        }
-        if (id == 24) count_jets = true; 
+      if (mc_ == mc::fall15_76X){
+	double gen_ht = eventInfo->gen_ht() ;
+	if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("wsoup", w1_);
+	else if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("wsoup", w2_);
+	else if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("wsoup", w3_);
+	else if (gen_ht >= 600) eventInfo->set_weight("wsoup", w4_);
       }
-      if (partons > 4) {
-        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
-        throw;
+      else {
+	std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+	unsigned partons = getPartonNumber(parts);//,24);
+	
+	if (partons == 1) eventInfo->set_weight("wsoup", w1_);
+	if (partons == 2) eventInfo->set_weight("wsoup", w2_);
+	if (partons == 3) eventInfo->set_weight("wsoup", w3_);
+	if (partons == 4) eventInfo->set_weight("wsoup", w4_);
+	
+	if (partons == 0) zeroParton = true;
       }
-      if (partons == 1) eventInfo->set_weight("wsoup", w1_);
-      if (partons == 2) eventInfo->set_weight("wsoup", w2_);
-      if (partons == 3) eventInfo->set_weight("wsoup", w3_);
-      if (partons == 4) eventInfo->set_weight("wsoup", w4_);
-
-      if (partons == 0) zeroParton = true;
-
     }
 
     if (do_w_reweighting_ || do_dy_reweighting_) {
@@ -928,26 +925,21 @@ namespace ic {//namespace
 
     if (do_dy_soup_) {
       std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      bool count_jets = false;
-      unsigned partons = 0;
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        // std::cout << i << "\t" << parts[i]->status() << "\t" << parts[i]->pdgid() << "\t" << parts[i]->vector() << std::endl;
-        if (parts[i]->status() != 3) continue;
-        unsigned id = abs(parts[i]->pdgid());
-        if (count_jets) { 
-          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
-        }
-        if (id == 23) count_jets = true; 
-      }
-      if (partons > 4) {
-        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
-        throw;
-      }
+      unsigned partons = getPartonNumber(parts);//,23);
+
       if (partons == 1) eventInfo->set_weight("dysoup", zw1_);
       if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
       if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
       if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
       if (partons == 0) zeroParton = true;
+    }
+
+    if (do_dy_soup_htbinned_){
+      double gen_ht = eventInfo->gen_ht() ;
+      if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("dysoup", zw1_);
+      if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("dysoup", zw2_);
+      if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("dysoup", zw3_);
+      if (gen_ht >= 600) eventInfo->set_weight("dysoup", zw4_);
     }
 
     if (!save_weights_) event->Add("NoParton",zeroParton);
@@ -1009,6 +1001,28 @@ namespace ic {//namespace
     zn2_ = zn2;
     zn3_ = zn3;
     zn4_ = zn4;
+  }
+
+  unsigned HinvWeights::getPartonNumber(std::vector<GenParticle*> const& parts){
+    
+    //bool count_jets = false;
+    unsigned partons = 0;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      unsigned id = abs(parts[i]->pdgid());
+      std::vector<bool> flags=parts[i]->statusFlags();
+      if (!(flags[GenStatusBits::IsHardProcess] && 
+	    flags[GenStatusBits::FromHardProcess] &&
+	    flags[GenStatusBits::IsFirstCopy]) ) continue;
+      //if (count_jets) { 
+	if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+	//}
+	//if (id == bosonid) count_jets = true; 
+    }
+    if (partons > 4) {
+      std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+      throw;
+    }
+    return partons;
   }
 
   double HinvWeights::Efficiency(double m, double m0, double sigma, double alpha,

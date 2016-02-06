@@ -864,11 +864,18 @@ int main(int argc, char* argv[]){
       xsWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
       //xsWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
     }
+    if (mc == mc::fall15_76X){
+      xsWeights.set_do_w_soup(false);
+      xsWeights.set_do_w_reweighting(false);
+      xsWeights.SetWTargetFractions(1,1,1,1,1);
+      xsWeights.SetWInputYields(0,10205377,4949568,1943664,1041358);
+    }
   }
   if (output_name.find("JetsToLL") != output_name.npos && 
-      (output_name.find("PtZ-100-madgraph") == output_name.npos ||
-       output_name.find("Zpt-150toInf") == output_name.npos) && 
-      output_name.find("DYJJ01") == output_name.npos) {
+      output_name.find("PtZ-100-madgraph") == output_name.npos &&
+      output_name.find("Zpt-150toInf") == output_name.npos && 
+      output_name.find("DYJJ01") == output_name.npos && 
+      output_name.find("m50-ht") == output_name.npos) {
     if (mc == mc::summer12_53X) {
       xsWeights.set_do_dy_soup(true);
       xsWeights.set_do_dy_reweighting(false);
@@ -886,6 +893,13 @@ int main(int argc, char* argv[]){
       xsWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
       xsWeights.SetDYInputYields(9004328.0, 0.0, 20019059.0, 5701878.0, 4189017.0);
     }
+  }
+  if (output_name.find("JetsToLL") != output_name.npos &&
+      output_name.find("m50-ht") != output_name.npos){
+    xsWeights.set_do_dy_soup_htbinned(true);
+    xsWeights.set_do_dy_reweighting(false);
+    xsWeights.SetDYTargetFractions();
+    xsWeights.SetDYInputYields(9004328,0,962195,1069003,1031103);
   }
 
   // ------------------------------------------------------------------------------------

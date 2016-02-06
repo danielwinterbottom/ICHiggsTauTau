@@ -1,9 +1,9 @@
 #!/bin/sh
 DOCERN=1
-DOSUBMIT=1
+DOSUBMIT=0
 #MYEXEC=LightTreeMakerFromMiniAOD
 MYEXEC=GenLightTreeMaker
-PRODUCTION=151030
+PRODUCTION=160203
 PRODUSER=amagnan
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
@@ -25,9 +25,9 @@ echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultGenLightTreeConfig.cfg
 
-JOBDIRPREFIX=jobs_genlighttree_160114
+JOBDIRPREFIX=jobs_genlighttree_160206
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_genlighttree_160114
+OUTPUTPREFIX=output_genlighttree_160206
 OUTPUTDIR=$OUTPUTPREFIX/
 
 echo "Config file: $CONFIG"
@@ -69,7 +69,7 @@ do
 #Signal files and DYtoNuNu
 #    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/$PRODUCTION/MC/
     PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*Jets*-mg-*ht*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_DYJetsToLL-mg-m50_split*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJ*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
     do

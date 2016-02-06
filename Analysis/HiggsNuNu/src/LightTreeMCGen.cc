@@ -32,6 +32,18 @@ namespace ic {
     genjet_phi_ = new double[nJetsSave_];
     genjet_E_ = new double[nJetsSave_];
 
+    countHt0_100_ = 0;
+    countHt100_200_ = 0;
+    countHt200_400_ = 0;
+    countHt400_600_ = 0;
+    countHt600_inf_ = 0;
+
+    count0Parton_ = 0;
+    count1Parton_ = 0;
+    count2Parton_ = 0;
+    count3Parton_ = 0;
+    count4Parton_ = 0;
+
     resetAllTreeVariables();
   }
 
@@ -118,7 +130,15 @@ namespace ic {
     lumi_= eventInfo->lumi_block();
     event_= eventInfo->event();
     
-   ////////////////////////////////
+    double gen_ht  = eventInfo->gen_ht();
+
+    if (gen_ht < 100) countHt0_100_++;
+    else if (100 <= gen_ht&&gen_ht <200) countHt100_200_++;
+    else if (200 <= gen_ht&&gen_ht <400) countHt200_400_++;
+    else if (400 <= gen_ht &&gen_ht<600) countHt400_600_++;
+    else if (gen_ht >= 600) countHt600_inf_++;
+
+    ////////////////////////////////
     // Get GenLevel collections
     ////////////////////////////////
 
@@ -126,6 +146,7 @@ namespace ic {
     std::vector<Candidate*> genLeptons;
 
     //std::cout << " -- Event: " << event_ << " print of hardProcess particles..." << std::endl;
+    unsigned partons = 0;
 
     for (unsigned iGenPart = 0; iGenPart < parts.size(); ++iGenPart) {//Loop over gen particles
       int id = parts[iGenPart]->pdgid();
@@ -134,6 +155,8 @@ namespace ic {
 	  flags[GenStatusBits::FromHardProcess] &&
 	  flags[GenStatusBits::IsFirstCopy]
 	  ){
+	if (abs(id) == 1 || abs(id) == 2 || abs(id) == 3 || abs(id) == 4 || abs(id) == 5 || abs(id) == 6 || abs(id) == 21) partons++;
+
 	if (abs(id)==11 || abs(id)==13 || abs(id)==15){
 	  genLeptons.push_back(parts[iGenPart]);
 	}
@@ -154,6 +177,12 @@ namespace ic {
       }//for MC
     }//Loop over gen particles
 
+
+    if (partons == 0) count0Parton_++;
+    else if (partons == 1) count1Parton_++;
+    else if (partons == 2) count2Parton_++;
+    else if (partons == 3) count3Parton_++;
+    else if (partons == 4) count4Parton_++;
 
     std::vector<GenJet *> genvec= event->GetPtrVec<GenJet>("genJets");
     std::sort(genvec.begin(), genvec.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
@@ -195,9 +224,19 @@ namespace ic {
     fs_->cd();
     outputTree_->Write();
 
-    //std::cout << "----------------------------------------" << std::endl
-    //<< "PostAnalysis Info for LightTreeMCGen" << std::endl
-    //<< "----------------------------------------" << std::endl;
+    std::cout << "----------------------------------------" << std::endl
+	      << "PostAnalysis Info for LightTreeMCGen" << std::endl
+	      << "----------------------------------------" << std::endl
+	      << " hT<100: " << countHt0_100_ << std::endl
+	      << " 100<ht<200: " << countHt100_200_ << std::endl
+	      << " 200<ht<400: " << countHt200_400_ << std::endl
+	      << " 400<ht<600: " << countHt400_600_ << std::endl
+	      << " ht>600: " << countHt600_inf_ << std::endl
+	      << " 0 parton: " << count0Parton_ << std::endl
+	      << " 1 parton: " << count1Parton_ << std::endl
+	      << " 2 parton: " << count2Parton_ << std::endl
+	      << " 3 parton: " << count3Parton_ << std::endl
+	      << " 4 parton: " << count4Parton_ << std::endl;
 
     return 0;
   }
