@@ -873,7 +873,7 @@ int main(int argc, char* argv[]){
   }
   if (output_name.find("JetsToLL") != output_name.npos && 
       output_name.find("PtZ-100-madgraph") == output_name.npos &&
-      output_name.find("Zpt-150toInf") == output_name.npos && 
+      output_name.find("Zpt150") == output_name.npos && 
       output_name.find("DYJJ01") == output_name.npos && 
       output_name.find("m50-ht") == output_name.npos) {
     if (mc == mc::summer12_53X) {
@@ -894,9 +894,10 @@ int main(int argc, char* argv[]){
       xsWeights.SetDYInputYields(9004328.0, 0.0, 20019059.0, 5701878.0, 4189017.0);
     }
   }
+
   if (output_name.find("JetsToLL") != output_name.npos &&
       output_name.find("m50-ht") != output_name.npos){
-    xsWeights.set_do_dy_soup_htbinned(true);
+    xsWeights.set_do_dy_soup_htbinned(false);
     xsWeights.set_do_dy_reweighting(false);
     xsWeights.SetDYTargetFractions(1,1,1,1,1);
     xsWeights.SetDYInputYields(9004328,0,962195,1069003,1031103);
@@ -970,7 +971,7 @@ int main(int argc, char* argv[]){
   if (!is_data) {
     //do W streaming to e,mu,tau
     if (output_name.find("JetsToLNu") != output_name.npos ||
-	output_name.find("EWK-W2j") != output_name.npos) {
+	output_name.find("EWKW") != output_name.npos) {
       if (wstream != "nunu") {
 	if (is2012) analysis.AddModule(&WtoLeptonFilter2012);
 	else analysis.AddModule(&WtoLeptonFilter);
@@ -983,16 +984,16 @@ int main(int argc, char* argv[]){
     //just apply W and Z weights
     analysis.AddModule(&xsWeights);
     //Z pt <100 GeV cut for inclusive DY samples
-    if(doincludehighptz && output_name.find("DYJetsToLL-mg-m50") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
+    if(doincludehighptz && output_name.find("JetsToLL-mg-m50") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
       analysis.AddModule(&ZhighptFilter);
     }
   }
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   if (is_data) {
-    //FIXME: do MetFilters also on MC, but not saved right now in MC...
     analysis.AddModule(&metFilters);
-    analysis.AddModule(&cscTightHaloFilter);
+    //74X only
+    //analysis.AddModule(&cscTightHaloFilter);
   }
 
   if(!donoskim)analysis.AddModule(&goodVertexFilter);

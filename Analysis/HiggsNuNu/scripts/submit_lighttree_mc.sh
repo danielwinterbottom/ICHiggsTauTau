@@ -1,11 +1,11 @@
 #!/bin/sh
 DOCERN=0
-DOSUBMIT=1
+DOSUBMIT=0
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=JetMETvalidation
 MYEXEC=LightTreeMakerFromMiniAOD
-PRODUCTION=151030
+PRODUCTION=160203
 PRODUSER=amagnan
 JPTCUTVAL=70
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
@@ -33,9 +33,9 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 for SYST in UESUP UESDOWN #central JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_160120
+  JOBDIRPREFIX=jobs_lighttree_160207
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160120
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160207
   #OUTPUTPREFIX=output_lighttree_160121
   OUTPUTDIR=$OUTPUTPREFIX/
   
@@ -178,7 +178,7 @@ for SYST in UESUP UESDOWN #central JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDO
       fi
 
       NEEDSSTREAM=0
-      grep "EWK-W2j" tmp.txt
+      grep "EWKW" tmp.txt
       if (( "$?" == 0 )); then
 	  NEEDSSTREAM=1
 	  fi

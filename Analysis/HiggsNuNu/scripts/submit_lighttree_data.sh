@@ -2,7 +2,7 @@
 DOCERN=0
 DOSUBMIT=1
 MYEXEC=LightTreeMakerFromMiniAOD
-PRODUCTION=151113
+PRODUCTION=160203
 PRODUSER=amagnan
 JPTCUTVAL=70
 
@@ -36,9 +36,9 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP EL
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
-  JOBDIRPREFIX=jobs_lighttree_160120
+  JOBDIRPREFIX=jobs_lighttree_160206
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160120
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160206
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -152,7 +152,7 @@ if [ "$SYST" = "ELEEFFUP" ]
         PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MET
     fi    
 
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_MET*` 
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_SingleMuon*` 
       do
       echo "Processing files in "$FILELIST
       
