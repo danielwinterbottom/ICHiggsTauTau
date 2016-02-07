@@ -348,12 +348,12 @@ int main(int argc, char* argv[]){
 			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
-		ana_syst.FillHhhSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		ana_syst.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		if (extra_binning.size() == 2) {
 			ana_syst.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", "_"+syst.second+extra_binning[1]);
 			ana_syst.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 			ana_syst.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
-			ana_syst.FillHhhSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
+			ana_syst.FillHhhSignal(hmap, Hhh_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 		}
   }
 
