@@ -829,7 +829,7 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     .set_strategy(strategy_type)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
-    .set_fail_mode(0)
+    .set_fail_mode(3)
     .set_require_inputs_match(false)
     .set_split(7000)
     .set_dilepton_label("ditau")
@@ -842,6 +842,7 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool());
    svFitTest.set_read_svfit_mt(true);
+   svFitTest.set_tau_optimisation(js["tau_id_study"].asBool());
    svFitTest.set_read_all(js["read_all_svfit_files"].asBool());
    svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
  }
