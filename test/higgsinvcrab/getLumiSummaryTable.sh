@@ -23,9 +23,9 @@ do
     echo $era" & "$lumi
     totlumi=`echo "$totlumi+$lumi" | bc`
 done
-echo " & "$totlumi
+echo "Total & "$totlumi
 
-exit 0
+#exit 0
 
 SIGTRIG="HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"
 CONTTRIG="HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80"
@@ -41,5 +41,5 @@ do
 	echo $era" & "$lumi
 	totlumi=`echo "$totlumi+$lumi" | bc`
     done
-    echo " & "$totlumi
+    echo "total & "$totlumi
 done

@@ -126,7 +126,8 @@ struct mc_def {
 		summer12_53X,			// 53X MC
 		summer12_52X,			// 52X MC
 		phys14_72X,			// 72X MC
-		spring15_74X			// 74X MC
+		spring15_74X,			// 74X MC
+		fall15_76X			// 76X MC
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -137,7 +138,8 @@ inline std::string MC2String(mc const& in) {
 		(mc::summer12_53X, "summer12_53X")
 		(mc::summer12_52X, "summer12_52X")
 		(mc::phys14_72X, "phys14_72X")
-		(mc::spring15_74X, "spring15_74X");
+		(mc::spring15_74X, "spring15_74X")
+		(mc::fall15_76X, "fall15_76X");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -152,7 +154,8 @@ inline mc String2MC(std::string const& in) {
 	("summer12_53X",	mc::summer12_53X)
 	("summer12_52X",	mc::summer12_52X)
 	("phys14_72X",	        mc::phys14_72X)
-	("spring15_74X",	mc::spring15_74X);
+	("spring15_74X",	mc::spring15_74X)
+	("fall15_76X",  	mc::fall15_76X);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

@@ -62,15 +62,31 @@ namespace ic {
       genjet_recphi_.push_back(-5);
     }
 
-    sumet_ = 0;
+    nMets_ = 12;
+    for (unsigned im(0); im<nMets_;++im){
+      sumet_.push_back(0);
+      met_.push_back(0);
+      metphi_.push_back(0);
+      met_x_.push_back(0);
+      met_y_.push_back(0);
+    }
+    metName_.push_back("NA");
+    metName_.push_back("Raw");
+    metName_.push_back("Type1");
+    metName_.push_back("Type01");
+    metName_.push_back("TypeXY");
+    metName_.push_back("Type1XY");
+    metName_.push_back("Type01XY");
+    metName_.push_back("Type1Smear");
+    metName_.push_back("Type01Smear");
+    metName_.push_back("Type1SmearXY");
+    metName_.push_back("Type01SmearXY");
+    metName_.push_back("RawCalo");
 
     l1met_ = 0;
-    met_ = 0;
     genmet_ = 0;
     genmetphi_ = 0;
     metnomuons_ =0;
-    met_x_ = 0;
-    met_y_ = 0;
     metnomu_x_ = 0;
     metnomu_y_ = 0;
     met_significance_ = 0;
@@ -148,15 +164,21 @@ namespace ic {
       outputTree_->Branch(("gen"+label.str()+"_recphi").c_str(),&genjet_recphi_[ij]);
    }
 
-    outputTree_->Branch("sumet",&sumet_);
+
+    for (unsigned im(0); im<nMets_;++im){
+      std::ostringstream label;
+      if (im>0) label << "_" << metName_[im];
+      outputTree_->Branch(("sumet"+label.str()).c_str(),&sumet_[im]);
+      outputTree_->Branch(("met"+label.str()).c_str(),&met_[im]);
+      outputTree_->Branch(("metphi"+label.str()).c_str(),&metphi_[im]);
+      outputTree_->Branch(("met_x"+label.str()).c_str(),&met_x_[im]);
+      outputTree_->Branch(("met_y"+label.str()).c_str(),&met_y_[im]);
+    }
 
     outputTree_->Branch("l1met",&l1met_);
-    outputTree_->Branch("met",&met_);
     outputTree_->Branch("genmet",&genmet_);
     outputTree_->Branch("genmetphi",&genmetphi_);
     outputTree_->Branch("metnomuons",&metnomuons_);
-    outputTree_->Branch("met_x",&met_x_);
-    outputTree_->Branch("met_y",&met_y_);
     outputTree_->Branch("metnomu_x",&metnomu_x_);
     outputTree_->Branch("metnomu_y",&metnomu_y_);
     outputTree_->Branch("met_significance",&met_significance_);
@@ -236,8 +258,17 @@ namespace ic {
     }
 
     //get collections
-    std::vector<Met*> metCol = event->GetPtrVec<Met>(met_label_);
-    Met const* met = metCol[0];
+    Met *met = 0;
+    try {
+      std::vector<Met*> metCol = event->GetPtrVec<Met>(met_label_);
+      met = metCol[0];
+    } catch (...){
+      met = event->GetPtr<Met>(met_label_);
+      if (!met) {
+	std::cerr << " -- Found no MET " << met_label_ << " in event! Exiting..." << std::endl;
+	exit(1);
+      }
+    }
     Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
     //!!if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
@@ -344,6 +375,24 @@ namespace ic {
 
 
     ROOT::Math::PtEtaPhiEVector metvec = met->vector();
+    met_[0] = met->pt();
+    metphi_[0] = metvec.Phi();
+    met_x_[0] = metvec.Px();
+    met_y_[0] = metvec.Py();
+    sumet_[0] = met->sum_et();
+
+    //get other mets with corrections
+    for (unsigned im(1); im<nMets_;++im){
+      const Met::BasicMet & metcor = met->GetCorrectedMet(metName_[im]);
+      met_[im] = metcor.pt();
+      metphi_[im] = metcor.phi();
+      met_x_[im] = metcor.px;
+      met_y_[im] = metcor.py;
+      sumet_[im] = metcor.sumet;
+    }
+
+    //get met no mu and significance
+
     ROOT::Math::PtEtaPhiEVector metnomuvec = metnomuons->vector();
 
     weight_nolep_ = wt;
@@ -351,18 +400,17 @@ namespace ic {
     if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<vetowt<<std::endl;//!!
     total_weight_leptight_=wt*tightwt;
     
-    met_ = met->pt();
-    met_x_ = metvec.Px();
-    met_y_ = metvec.Py();
     met_significance_ = met->et_sig();
-    sumet_ = met->sum_et();
     //      if(l1met.size()==1){//!!
     l1met_ = l1met[0]->energy();
     //}
     metnomuons_ = metnomuons->pt();
     metnomu_x_ = metnomuvec.Px();
     metnomu_y_ = metnomuvec.Py();
-    metnomu_significance_ = met_significance_/met_*metnomuons_;
+    metnomu_significance_ = met_significance_/met_[0]*metnomuons_;
+
+    //get jets
+
     nJets_ = 0;
 
     std::vector<std::pair<unsigned,bool> > recotogenmatch;
@@ -469,7 +517,7 @@ namespace ic {
     }
 
     if (recotogenfilled!=gentorecofilled) {
-      std::cout << " Event " << event_ << ", found diff numbers: recotogenfilled = " << recotogenfilled << ", gentorecofilled = " << gentorecofilled << std::endl;
+      //std::cout << " Event " << event_ << ", found diff numbers: recotogenfilled = " << recotogenfilled << ", gentorecofilled = " << gentorecofilled << std::endl;
 
       /*for (unsigned i = 0; i < jets.size(); ++i) {//loop on jets
 	recotogenmatch[i] = std::pair<unsigned,bool>(1000,false);

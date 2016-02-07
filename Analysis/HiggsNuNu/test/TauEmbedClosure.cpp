@@ -581,18 +581,9 @@ int main(int argc, char* argv[]){
     ("ModifyJetMET")
     .set_input_label("pfJetsPFlow")
     .set_met_label(mettype)
-    .set_dosmear(dosmear)
-    .set_doaltmatch(doaltmatch)
-    .set_doetsmear(doetsmear)
     .set_dogaus(dogaus)
     .set_is_data(is_data)
-    .set_dojessyst(dojessyst)
-    .set_dodatajessyst(dodatajessyst)
-    .set_jesupordown(jesupordown)
-    .set_dojersyst(dojersyst)
-    .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
-    .set_dojerdebug(dojerdebug)
     .set_fs(fs);
   
   

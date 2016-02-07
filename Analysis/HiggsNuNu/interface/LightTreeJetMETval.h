@@ -67,15 +67,18 @@ namespace ic {
     std::vector<double> genjet_receta_;
     std::vector<double> genjet_recphi_;
 
-    double sumet_;
+    unsigned nMets_; 
+    std::vector<std::string> metName_;
+    std::vector<double> sumet_;
+    std::vector<double> met_;
+    std::vector<double> metphi_;
+    std::vector<double> met_x_;
+    std::vector<double> met_y_;
 
     double l1met_;
-    double met_;
     double genmet_;
     double genmetphi_;
     double metnomuons_;
-    double met_x_;
-    double met_y_;
     double metnomu_x_;
     double metnomu_y_;
     double met_significance_;

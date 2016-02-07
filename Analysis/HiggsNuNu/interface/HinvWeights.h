@@ -1,6 +1,7 @@
 #ifndef ICHiggsTauTau_Module_HinvWeights_h
 #define ICHiggsTauTau_Module_HinvWeights_h
 
+#include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -37,6 +38,7 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_w_soup)
   CLASS_MEMBER(HinvWeights, bool, do_w_reweighting)
   CLASS_MEMBER(HinvWeights, bool, do_dy_soup)
+  CLASS_MEMBER(HinvWeights, bool, do_dy_soup_htbinned)
   CLASS_MEMBER(HinvWeights, bool, do_dy_reweighting)
   CLASS_MEMBER(HinvWeights, std::string, input_met)
   CLASS_MEMBER(HinvWeights, std::string, input_jet)
@@ -116,6 +118,8 @@ class HinvWeights : public ModuleBase {
   void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4);
   void SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4);
   void SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4);
+
+  unsigned getPartonNumber(std::vector<GenParticle*> const& parts);
 
   unsigned findElectronPtEtaBin(double pt, double eta);
   unsigned findMuonPtEtaBin(double pt, double eta);
