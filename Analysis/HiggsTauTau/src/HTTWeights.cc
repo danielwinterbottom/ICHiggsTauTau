@@ -999,8 +999,13 @@ namespace ic {
          
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);
-        event->Add("idweight_1", e_idiso);
-        event->Add("idweight_2", m_idiso);
+        if(mc_!=mc::fall15_76X && mc_!=mc::spring15_74X){
+          event->Add("idweight_1", e_idiso);
+          event->Add("idweight_2", m_idiso);
+        } else { 
+          event->Add("idisoweight_1", e_idiso);
+          event->Add("idisoweight_2", m_idiso);
+        }
         event->Add("isoweight_1", double(1.0));
         event->Add("isoweight_2", double(1.0));
       } else if (channel_ == channel::mtmet) {
