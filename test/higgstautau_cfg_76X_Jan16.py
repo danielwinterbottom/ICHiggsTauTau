@@ -967,33 +967,41 @@ if release in ['76XMINIAOD']:
  # Pileup ID
  # ---------
  # Recalculated puJetId isn't the same as miniaod stored - should investigate 
-stdalgos = cms.VPSet()
-from RecoJets.JetProducers.PileupJetIDParams_cfi import *
-stdalgos = cms.VPSet(full_5x_chs,cutbased)
-
-process.puJetMvaRe = cms.EDProducer('PileupJetIdProducer',
-    produceJetIds = cms.bool(True),
-    jetids = cms.InputTag(""),
-    runMvas = cms.bool(True),
-    #jets = cms.InputTag("slimmedJets"),
-    jets = cms.InputTag("ak4PFJetsCHS"),
-    vertexes = cms.InputTag("offlinePrimaryVertices"),
-#    vertexes = cms.InputTag("unpackedTracksAndVertices"),
-    algos = cms.VPSet(stdalgos),
-#    rho     = cms.InputTag("kt6PFJets", "rho"),
-    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
-    jec     = cms.string("AK4PFchs"),
-    applyJec = cms.bool(True),
-    inputIsCorrected = cms.bool(False),
-    residualsFromTxt = cms.bool(False),
-    residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
-)
+#stdalgos = cms.VPSet()
+#from RecoJets.JetProducers.PileupJetIDParams_cfi import *
+#stdalgos = cms.VPSet(full_5x_chs,cutbased)
+process.load('RecoJets.JetProducers.PileupJetID_cfi')
 
 if release in ['76XMINIAOD']:
-  process.puJetMvaRe.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+  process.pileupJetIdCalculator.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.pileupJetIdCalculator.jets = cms.InputTag("ak4PFJetsCHS")
+process.pileupJetIdCalculator.rho = cms.InputTag("fixedGridRhoFastjetAll")
+process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
+process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
-if release in ['76X', '76XMINIAOD']:
-  process.puJetMvaRe.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
+#process.puJetMvaRe = cms.EDProducer('PileupJetIdProducer',
+#    produceJetIds = cms.bool(True),
+#    jetids = cms.InputTag(""),
+#    runMvas = cms.bool(True),
+    #jets = cms.InputTag("slimmedJets"),
+#    jets = cms.InputTag("ak4PFJetsCHS"),
+#    vertexes = cms.InputTag("offlinePrimaryVertices"),
+#    vertexes = cms.InputTag("unpackedTracksAndVertices"),
+#    algos = cms.VPSet(stdalgos),
+#    rho     = cms.InputTag("kt6PFJets", "rho"),
+#    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
+#    jec     = cms.string("AK4PFchs"),
+#    applyJec = cms.bool(True),
+#    inputIsCorrected = cms.bool(False),
+#    residualsFromTxt = cms.bool(False),
+#    residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
+#)
+
+#if release in ['76XMINIAOD']:
+#  process.puJetMvaRe.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+
+#if release in ['76X', '76XMINIAOD']:
+#  process.puJetMvaRe.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
 
 
 
@@ -1022,7 +1030,7 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
     ),
     destConfig = cms.PSet(
       includePileupID       = cms.bool(True), #rerunning the pu MVA on the jet collection created in miniAOD is possible in newer CMSSW versions but not yet in 72
-      inputPileupID         = cms.InputTag("puJetMvaRe", "fullDiscriminant"),
+      inputPileupID         = cms.InputTag("pileupJetIdEvaluator", "fullDiscriminant"),
       includeTrackBasedVars = cms.bool(False),
       inputTracks           = cms.InputTag("generalTracks"),
       inputVertices         = vtxLabel,
@@ -1096,7 +1104,8 @@ if release in ['76X', '76XMINIAOD']:
     process.ak4PFL3AbsoluteCHS+
     process.ak4PFResidualCHS+
     process.ak4PFJetsCHS+
-    process.puJetMvaRe+ 
+    process.pileupJetIdCalculator+
+    process.pileupJetIdEvaluator+ 
     process.jetPartons+
 #      process.pfJetPartonMatches+
     process.pfJetFlavourAssociation+
