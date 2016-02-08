@@ -19,8 +19,8 @@ opts.register('file',
 #'root://xrootd.unl.edu//store/data/Run2015D/Tau/MINIAOD/16Dec2015-v1/00000/006DFE2F-B2B6-E511-A7B6-3417EBE65E39.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file',
-#'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
-'root://xrootd.unl.edu//store/data/Run2015D/SingleElectron/MINIAOD/16Dec2015-v1/20000/00050EF1-F9A6-E511-86B2-0025905A48D0.root',parser.VarParsing.multiplicity.singleton,
+'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
+#'root://xrootd.unl.edu//store/data/Run2015D/SingleElectron/MINIAOD/16Dec2015-v1/20000/00050EF1-F9A6-E511-86B2-0025905A48D0.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/50000/12184969-3DB8-E511-879B-001E67504A65.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2_ext3-v1/10000/0041D4C0-D86E-E511-8D6B-001E67A3E8F9.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015C/SingleElectron/MINIAOD/PromptReco-v1/000/254/317/00000/C4F3838C-8345-E511-9AA9-02163E011FE4.root', parser.VarParsing.multiplicity.singleton,
@@ -785,6 +785,16 @@ process.icTauSequence = cms.Sequence(
   process.icTauProducer
 )
 
+
+################################################################
+# L1 Taus
+################################################################
+
+process.icL1ExtraTauProducer = cms.EDProducer("ICCandidateProducer",
+  branch                     = cms.string("l1isoTaus"),
+  input                      = cms.InputTag("l1extraParticles","IsoTau","RECO")
+)
+
 # ################################################################
 # # Jets
 # ################################################################
@@ -958,33 +968,41 @@ if release in ['76XMINIAOD']:
  # Pileup ID
  # ---------
  # Recalculated puJetId isn't the same as miniaod stored - should investigate 
-stdalgos = cms.VPSet()
-from RecoJets.JetProducers.PileupJetIDParams_cfi import *
-stdalgos = cms.VPSet(full_5x_chs,cutbased)
-
-process.puJetMvaRe = cms.EDProducer('PileupJetIdProducer',
-    produceJetIds = cms.bool(True),
-    jetids = cms.InputTag(""),
-    runMvas = cms.bool(True),
-    #jets = cms.InputTag("slimmedJets"),
-    jets = cms.InputTag("ak4PFJetsCHS"),
-    vertexes = cms.InputTag("offlinePrimaryVertices"),
-#    vertexes = cms.InputTag("unpackedTracksAndVertices"),
-    algos = cms.VPSet(stdalgos),
-#    rho     = cms.InputTag("kt6PFJets", "rho"),
-    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
-    jec     = cms.string("AK4PFchs"),
-    applyJec = cms.bool(True),
-    inputIsCorrected = cms.bool(False),
-    residualsFromTxt = cms.bool(False),
-    residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
-)
+#stdalgos = cms.VPSet()
+#from RecoJets.JetProducers.PileupJetIDParams_cfi import *
+#stdalgos = cms.VPSet(full_5x_chs,cutbased)
+process.load('RecoJets.JetProducers.PileupJetID_cfi')
 
 if release in ['76XMINIAOD']:
-  process.puJetMvaRe.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+  process.pileupJetIdCalculator.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.pileupJetIdCalculator.jets = cms.InputTag("ak4PFJetsCHS")
+process.pileupJetIdCalculator.rho = cms.InputTag("fixedGridRhoFastjetAll")
+process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
+process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
 
-if release in ['76X', '76XMINIAOD']:
-  process.puJetMvaRe.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
+#process.puJetMvaRe = cms.EDProducer('PileupJetIdProducer',
+#    produceJetIds = cms.bool(True),
+#    jetids = cms.InputTag(""),
+#    runMvas = cms.bool(True),
+    #jets = cms.InputTag("slimmedJets"),
+#    jets = cms.InputTag("ak4PFJetsCHS"),
+#    vertexes = cms.InputTag("offlinePrimaryVertices"),
+#    vertexes = cms.InputTag("unpackedTracksAndVertices"),
+#    algos = cms.VPSet(stdalgos),
+#    rho     = cms.InputTag("kt6PFJets", "rho"),
+#    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
+#    jec     = cms.string("AK4PFchs"),
+#    applyJec = cms.bool(True),
+#    inputIsCorrected = cms.bool(False),
+#    residualsFromTxt = cms.bool(False),
+#    residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
+#)
+
+#if release in ['76XMINIAOD']:
+#  process.puJetMvaRe.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+
+#if release in ['76X', '76XMINIAOD']:
+#  process.puJetMvaRe.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
 
 
 
@@ -1013,7 +1031,7 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
     ),
     destConfig = cms.PSet(
       includePileupID       = cms.bool(True), #rerunning the pu MVA on the jet collection created in miniAOD is possible in newer CMSSW versions but not yet in 72
-      inputPileupID         = cms.InputTag("puJetMvaRe", "fullDiscriminant"),
+      inputPileupID         = cms.InputTag("pileupJetIdEvaluator", "fullDiscriminant"),
       includeTrackBasedVars = cms.bool(False),
       inputTracks           = cms.InputTag("generalTracks"),
       inputVertices         = vtxLabel,
@@ -1087,7 +1105,8 @@ if release in ['76X', '76XMINIAOD']:
     process.ak4PFL3AbsoluteCHS+
     process.ak4PFResidualCHS+
     process.ak4PFJetsCHS+
-    process.puJetMvaRe+ 
+    process.pileupJetIdCalculator+
+    process.pileupJetIdEvaluator+ 
     process.jetPartons+
 #      process.pfJetPartonMatches+
     process.pfJetFlavourAssociation+
@@ -1919,6 +1938,7 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
+  process.icL1ExtraTauProducer+
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
   process.icPfMetSequence+
