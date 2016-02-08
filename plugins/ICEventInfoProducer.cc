@@ -199,14 +199,17 @@ void ICEventInfoProducer::produce(edm::Event& event,
     if (do_ht_){
       std::vector<lhef::HEPEUP::FiveVector> lheParticles = lhe_handle->hepeup().PUP;
       double lheHt = 0.;
+      unsigned nOutgoingPartons = 0;
       for(size_t idxPart = 0; idxPart < lheParticles.size();++idxPart){
        unsigned absPdgId = TMath::Abs(lhe_handle->hepeup().IDUP[idxPart]);
        unsigned status = lhe_handle->hepeup().ISTUP[idxPart];
        if(status==1 &&((absPdgId >=1 &&absPdgId<=6) || absPdgId == 21)){
          lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxPart][0],2) + TMath::Power(lheParticles[idxPart][1],2));
+         nOutgoingPartons++;
         }
       }
       info_->set_gen_ht(lheHt);
+      info_->set_n_outgoing_partons(nOutgoingPartons);
     }
     if (do_lhe_weights_) {
       double nominal_wt = lhe_handle->hepeup().XWGTUP;
