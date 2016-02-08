@@ -45,11 +45,13 @@ ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
   // isolator_ = new PFIsolationEstimator();
   // isolator_->initializePhotonIsolation(true);
   // isolator_->setConeSize(0.3);
-  if(do_iso_from_pat_){
-    consumes<edm::View<pat::Photon>>(input_);
-  } else {
-    consumes<edm::View<reco::Photon>>(input_);
-  }
+  consumes<edm::View<reco::Photon>>(input_);
+  consumes<edm::View<pat::Photon>>(input_);
+  //if(do_iso_from_pat_){
+  //  consumes<edm::View<pat::Photon>>(input_);
+  //} else {
+  //  consumes<edm::View<reco::Photon>>(input_);
+  //}
   consumes<edm::ValueMap<bool>>(input_electron_veto_);
   photons_ = new std::vector<ic::Photon>();
 
@@ -171,7 +173,7 @@ void ICPhotonProducer::produce(edm::Event& event,
       dest.set_dr03_pfiso_neutral(patsrc.neutralHadronIso());
       dest.set_dr03_pfiso_gamma(patsrc.photonIso());
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
-#if CMSSW_MINOR_VERSION >= 6
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 6)
       dest.set_dr03_pfiso_charged_all(patsrc.patParticleIso());
 #else
       dest.set_dr03_pfiso_charged_all(patsrc.particleIso());
@@ -186,7 +188,7 @@ void ICPhotonProducer::produce(edm::Event& event,
       dest.set_dr04_pfiso_neutral(patsrc.neutralHadronIso());
       dest.set_dr04_pfiso_gamma(patsrc.photonIso());
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
-#if CMSSW_MINOR_VERSION >= 6
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 6)
       dest.set_dr04_pfiso_charged_all(patsrc.patParticleIso());
 #else
       dest.set_dr04_pfiso_charged_all(patsrc.particleIso());

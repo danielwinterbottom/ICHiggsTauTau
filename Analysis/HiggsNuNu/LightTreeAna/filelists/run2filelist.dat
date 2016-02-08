@@ -1,47 +1,257 @@
+#50 ns data
+SINGLEMUONBPrompt 50nsSINGLEMUON MET_SingleMuon-2015B-PromptReco-v1.root
+SINGLEMUONBRereco 50nsSINGLEMUON MET_SingleMuon-2015B-17Jul2015-v1.root
 METBPrompt 50nsMET MET_MET-2015B-PromptReco-v1.root
 METBRereco 50nsMET MET_MET-2015B-17Jul2015-v1.root
 
+#25 ns data
 SingleMuonPrompt SINGLEMUON MET_SingleMuon-2015D-PromptReco-v4.root
 SingleMuonReReco SINGLEMUON MET_SingleMuon-2015D-05Oct-v1.root
 
+SinglePhotonPrompt SINGLEPHOTON MET_SinglePhoton-2015D-PromptReco-v4.root
+SinglePhotonReReco SINGLEPHOTON MET_SinglePhoton-2015D-05Oct-v1.root
 
-SINGLEMUONBPrompt 50nsSINGLEMUON MET_SingleMuon-2015B-PromptReco-v1.root
-SINGLEMUONBRereco 50nsSINGLEMUON MET_SingleMuon-2015B-17Jul2015-v1.root
+METPrompt MET MET_MET-2015D-PromptReco-v4.root
+METReReco MET MET_MET-2015D-05Oct-v1.root
 
 #SINGLEMUONDPrompt SINGLEMUON MET_SingleMuon-2015D-PromptReco-v3.root
 
-
-DYJetsToLL-M_10to50 DYJetsToLL MC_DYJetsToLL-M_10to50.root
-DYJetsToLL DYJetsToLL MC_DYJetsToLL.root
-
-Powheg-Htoinv-mH125Startupbx50 sig125 MC_Powheg-Htoinv-mH125Startupbx50.root
+#25ns signal MC
+Powheg-Htoinv-mH110Asympt25ns sig110 MC_Powheg-Htoinv-mH110Asympt25ns.root
+Powheg-Htoinv-mH125Asympt25ns sig125 MC_Powheg-Htoinv-mH125Asympt25ns.root
+Powheg-Htoinv-mH150Asympt25ns sig150 MC_Powheg-Htoinv-mH150Asympt25ns.root
+Powheg-Htoinv-mH200Asympt25ns sig200 MC_Powheg-Htoinv-mH200Asympt25ns.root
 Powheg-Htoinv-mH300Asympt25ns sig300 MC_Powheg-Htoinv-mH300Asympt25ns.root
+Powheg-Htoinv-mH400Asympt25ns sig400 MC_Powheg-Htoinv-mH400Asympt25ns.root
+Powheg-Htoinv-mH500Asympt25ns sig500 MC_Powheg-Htoinv-mH500Asympt25ns.root
 
-SingleT-s-amcatnlo-lep single-t MC_SingleT-s-amcatnlo-lep.root
-SingleT-tW-powheg-inc single-t MC_SingleT-tW-powheg-inc.root
-SingleTBar-tW-powheg-inc single-t MC_SingleTBar-tW-powheg-inc.root
+#25ns W+jets
+#WJetsToLNu-mg_enu WJets_enu MC_WJetsToLNu-mg_enu.root
+WJetsToLNu-mg_split00_enu WJets_enu MC_WJetsToLNu-mg_split00_enu.root
+WjetsToLNu-mg_split01_enu WJets_enu MC_WJetsToLNu-mg_split01_enu.root
+WjetsToLNu-mg_split02_enu WJets_enu MC_WJetsToLNu-mg_split02_enu.root
+WjetsToLNu-mg_split03_enu WJets_enu MC_WJetsToLNu-mg_split03_enu.root
+WjetsToLNu-mg_split04_enu WJets_enu MC_WJetsToLNu-mg_split04_enu.root
+WjetsToLNu-mg_split05_enu WJets_enu MC_WJetsToLNu-mg_split05_enu.root
+wjetsToLNu-mg_split06_enu WJets_enu MC_WJetsToLNu-mg_split06_enu.root
+wjetsToLNu-mg_split07_enu WJets_enu MC_WJetsToLNu-mg_split07_enu.root
+wjetsToLNu-mg_split08_enu WJets_enu MC_WJetsToLNu-mg_split08_enu.root
+wjetsToLNu-mg_split09_enu WJets_enu MC_WJetsToLNu-mg_split09_enu.root
+wjetsToLNu-mg_split10_enu WJets_enu MC_WJetsToLNu-mg_split10_enu.root
+wjetsToLNu-mg_split11_enu WJets_enu MC_WJetsToLNu-mg_split11_enu.root
+wjetsToLNu-mg_split12_enu WJets_enu MC_WJetsToLNu-mg_split12_enu.root
+wjetsToLNu-mg_split13_enu WJets_enu MC_WJetsToLNu-mg_split13_enu.root
+wjetsToLNu-mg_split14_enu WJets_enu MC_WJetsToLNu-mg_split14_enu.root
+wjetsToLNu-mg_split15_enu WJets_enu MC_WJetsToLNu-mg_split15_enu.root
+wjetsToLNu-mg_split16_enu WJets_enu MC_WJetsToLNu-mg_split16_enu.root
+#WJetsToLNu-mg-ht100to200_enu WJets_enu MC_WJetsToLNu-mg-ht100to200_enu.root
+WJetsToLNu-mg-ht100to200_split00_enu WJets_enu MC_WJetsToLNu-mg-ht100to200_split00_enu.root
+WJetsToLNu-mg-ht100to200_split01_enu WJets_enu MC_WJetsToLNu-mg-ht100to200_split01_enu.root
+WJetsToLNu-mg-ht100to200_split02_enu WJets_enu MC_WJetsToLNu-mg-ht100to200_split02_enu.root
+WJetsToLNu-mg-ht200to400_enu WJets_enu MC_WJetsToLNu-mg-ht200to400_enu.root
+WJetsToLNu-mg-ht400to600_enu WJets_enu MC_WJetsToLNu-mg-ht400to600_enu.root
+WJetsToLNu-mg-ht600toInf_enu WJets_enu MC_WJetsToLNu-mg-ht600toInf_enu.root
 
-TT-powheg ttpowheg MC_TT-powheg.root
-TTJets-mg Top MC_TTJets-mg.root
+#WJetsToLNu-mg_munu WJets_munu MC_WJetsToLNu-mg_munu.root
+wjetsToLNu-mg_split00_munu WJets_munu MC_WJetsToLNu-mg_split00_munu.root
+wjetsToLNu-mg_split01_munu WJets_munu MC_WJetsToLNu-mg_split01_munu.root
+wjetsToLNu-mg_split02_munu WJets_munu MC_WJetsToLNu-mg_split02_munu.root
+wjetsToLNu-mg_split03_munu WJets_munu MC_WJetsToLNu-mg_split03_munu.root
+wjetsToLNu-mg_split04_munu WJets_munu MC_WJetsToLNu-mg_split04_munu.root
+wjetsToLNu-mg_split05_munu WJets_munu MC_WJetsToLNu-mg_split05_munu.root
+wjetsToLNu-mg_split06_munu WJets_munu MC_WJetsToLNu-mg_split06_munu.root
+wjetsToLNu-mg_split07_munu WJets_munu MC_WJetsToLNu-mg_split07_munu.root
+wjetsToLNu-mg_split08_munu WJets_munu MC_WJetsToLNu-mg_split08_munu.root
+wjetsToLNu-mg_split09_munu WJets_munu MC_WJetsToLNu-mg_split09_munu.root
+wjetsToLNu-mg_split10_munu WJets_munu MC_WJetsToLNu-mg_split10_munu.root
+wjetsToLNu-mg_split11_munu WJets_munu MC_WJetsToLNu-mg_split11_munu.root
+WJetsToLNu-mg_split12_munu WJets_munu MC_WJetsToLNu-mg_split12_munu.root
+WJetsToLNu-mg_split13_munu WJets_munu MC_WJetsToLNu-mg_split13_munu.root
+WJetsToLNu-mg_split14_munu WJets_munu MC_WJetsToLNu-mg_split14_munu.root
+WJetsToLNu-mg_split15_munu WJets_munu MC_WJetsToLNu-mg_split15_munu.root
+WJetsToLNu-mg_split16_munu WJets_munu MC_WJetsToLNu-mg_split16_munu.root
+#WJetsToLNu-mg-ht100to200_munu WJets_munu MC_WJetsToLNu-mg-ht100to200_munu.root
+WJetsToLNu-mg-ht100to200_split00_munu WJets_munu MC_WJetsToLNu-mg-ht100to200_split00_munu.root
+WJetsToLNu-mg-ht100to200_split01_munu WJets_munu MC_WJetsToLNu-mg-ht100to200_split01_munu.root
+WJetsToLNu-mg-ht100to200_split02_munu WJets_munu MC_WJetsToLNu-mg-ht100to200_split02_munu.root
+WJetsToLNu-mg-ht200to400_munu WJets_munu MC_WJetsToLNu-mg-ht200to400_munu.root
+WJetsToLNu-mg-ht400to600_munu WJets_munu MC_WJetsToLNu-mg-ht400to600_munu.root
+WJetsToLNu-mg-ht600toInf_munu WJets_munu MC_WJetsToLNu-mg-ht600toInf_munu.root
 
-WJetsToLNu_enu WJets_enu MC_WJetsToLNu_enu.root
+#WJetsToLNu-mg_taunu WJets_taunu MC_WJetsToLNu-mg_taunu.root
+WJetsToLNu-mg_split00_taunu WJets_taunu MC_WJetsToLNu-mg_split00_taunu.root
+WJetsToLNu-mg_split01_taunu WJets_taunu MC_WJetsToLNu-mg_split01_taunu.root
+WJetsToLNu-mg_split02_taunu WJets_taunu MC_WJetsToLNu-mg_split02_taunu.root
+WJetsToLNu-mg_split03_taunu WJets_taunu MC_WJetsToLNu-mg_split03_taunu.root
+WJetsToLNu-mg_split04_taunu WJets_taunu MC_WJetsToLNu-mg_split04_taunu.root
+WJetsToLNu-mg_split05_taunu WJets_taunu MC_WJetsToLNu-mg_split05_taunu.root
+WJetsToLNu-mg_split06_taunu WJets_taunu MC_WJetsToLNu-mg_split06_taunu.root
+WJetsToLNu-mg_split07_taunu WJets_taunu MC_WJetsToLNu-mg_split07_taunu.root
+WJetsToLNu-mg_split08_taunu WJets_taunu MC_WJetsToLNu-mg_split08_taunu.root
+WJetsToLNu-mg_split09_taunu WJets_taunu MC_WJetsToLNu-mg_split09_taunu.root
+WJetsToLNu-mg_split10_taunu WJets_taunu MC_WJetsToLNu-mg_split10_taunu.root
+WJetsToLNu-mg_split11_taunu WJets_taunu MC_WJetsToLNu-mg_split11_taunu.root
+WJetsToLNu-mg_split12_taunu WJets_taunu MC_WJetsToLNu-mg_split12_taunu.root
+WJetsToLNu-mg_split13_taunu WJets_taunu MC_WJetsToLNu-mg_split13_taunu.root
+WJetsToLNu-mg_split14_taunu WJets_taunu MC_WJetsToLNu-mg_split14_taunu.root
+WJetsToLNu-mg_split15_taunu WJets_taunu MC_WJetsToLNu-mg_split15_taunu.root
+WJetsToLNu-mg_split16_taunu WJets_taunu MC_WJetsToLNu-mg_split16_taunu.root
+#WJetsToLNu-mg-ht100to200_taunu WJets_taunu MC_WJetsToLNu-mg-ht100to200_taunu.root
+WJetsToLNu-mg-ht100to200_split00_taunu WJets_taunu MC_WJetsToLNu-mg-ht100to200_split00_taunu.root
+WJetsToLNu-mg-ht100to200_split01_taunu WJets_taunu MC_WJetsToLNu-mg-ht100to200_split01_taunu.root
+WJetsToLNu-mg-ht100to200_split02_taunu WJets_taunu MC_WJetsToLNu-mg-ht100to200_split02_taunu.root
+WJetsToLNu-mg-ht200to400_taunu WJets_taunu MC_WJetsToLNu-mg-ht200to400_taunu.root
+WJetsToLNu-mg-ht400to600_taunu WJets_taunu MC_WJetsToLNu-mg-ht400to600_taunu.root
+WJetsToLNu-mg-ht600toInf_taunu WJets_taunu MC_WJetsToLNu-mg-ht600toInf_taunu.root
 
-WJetsToLNu_munu WJets_munu MC_WJetsToLNu_munu.root
+WJetsToLNu-nlo_enu_all WJets_nlo MC_WJetsToLNu-nlo_enu.root
+WJetsToLNu-nlo_munu_all WJets_nlo MC_WJetsToLNu-nlo_munu.root
+WJetsToLNu-nlo_taunu_all WJets_nlo MC_WJetsToLNu-nlo_taunu.root
 
-WJetsToLNu_taunu WJets_taunu MC_WJetsToLNu_taunu.root
+WJetsToLNu-nlo_enu WJets_nlo_enu MC_WJetsToLNu-nlo_enu.root
+WJetsToLNu-nlo_munu WJets_nlo_munu MC_WJetsToLNu-nlo_munu.root
+WJetsToLNu-nlo_taunu WJets_nlo_taunu MC_WJetsToLNu-nlo_taunu.root
 
-WJetsToLNu_enu-2 WJets MC_WJetsToLNu_enu.root
+#25ns DY/Z+jets
+DYJetsToLL-mg-Zpt150 ZJets_ll MC_DYJetsToLL-mg-Zpt150.root
+#DYJetsToLL-mg-m50 ZJets_ll MC_DYJetsToLL-mg-m50.root
+DYJetsToLL-mg-m50_split00 ZJets_ll MC_DYJetsToLL-mg-m50_split00.root
+DYJetsToLL-mg-m50_split01 ZJets_ll MC_DYJetsToLL-mg-m50_split01.root
+DYJetsToLL-mg-m50_split02 ZJets_ll MC_DYJetsToLL-mg-m50_split02.root
+DYJetsToLL-mg-m50-ht100to200 ZJets_ll MC_DYJetsToLL-mg-m50-ht100to200.root
+DYJetsToLL-mg-m50-ht200to400 ZJets_ll MC_DYJetsToLL-mg-m50-ht200to400.root
+DYJetsToLL-mg-m50-ht400to600 ZJets_ll MC_DYJetsToLL-mg-m50-ht400to600.root
+DYJetsToLL-mg-m50-ht600toInf ZJets_ll MC_DYJetsToLL-mg-m50-ht600toInf.root
 
-WJetsToLNu_munu-2 WJets MC_WJetsToLNu_munu.root
+#DYJetsToLL-mg-m5to50 ZJets_ll MC_DYJetsToLL-mg-m5to50.root
+DYJetsToLL-mg-m5to50_split00 ZJets_ll MC_DYJetsToLL-mg-m5to50_split00.root
+DYJetsToLL-mg-m5to50_split01 ZJets_ll MC_DYJetsToLL-mg-m5to50_split01.root
+DYJetsToLL-mg-m5to50_split02 ZJets_ll MC_DYJetsToLL-mg-m5to50_split02.root
+DYJetsToLL-mg-m5to50-ht100to200 ZJets_ll MC_DYJetsToLL-mg-m5to50-ht100to200.root
+DYJetsToLL-mg-m5to50-ht200to400 ZJets_ll MC_DYJetsToLL-mg-m5to50-ht200to400.root
+DYJetsToLL-mg-m5to50-ht400to600 ZJets_ll MC_DYJetsToLL-mg-m5to50-ht400to600.root
+DYJetsToLL-mg-m5to50-ht600toInf ZJets_ll MC_DYJetsToLL-mg-m5to50-ht600toInf.root
 
-WJetsToLNu_taunu-2 WJets MC_WJetsToLNu_taunu.root
+DYJetsToLL-nlo-m10to50 ZJets_nlo MC_DYJetsToLL-nlo-m10to50.root
+DYJetsToLL-nlo-m50 ZJets_nlo MC_DYJetsToLL-nlo-m50.root
 
+ZJetsToNuNu-mg-ht100to200 ZJets_nunu MC_ZJetsToNuNu-mg-ht100to200.root
+ZJetsToNuNu-mg-ht200to400 ZJets_nunu MC_ZJetsToNuNu-mg-ht200to400.root
+ZJetsToNuNu-mg-ht400to600 ZJets_nunu MC_ZJetsToNuNu-mg-ht400to600.root
+ZJetsToNuNu-mg-ht600toInf ZJets_nunu MC_ZJetsToNuNu-mg-ht600toInf.root
+
+#gamma+jets and QCD
+GJets-mg-ht40to100 GJets MC_GJets-mg-ht40to100.root
+GJets-mg-ht100to200 GJets MC_GJets-mg-ht100to200.root
+#GJets-mg-ht200to400 GJets MC_GJets-mg-ht200to400.root
+GJets-mg-ht200to400_split00 GJets MC_GJets-mg-ht200to400_split00.root
+GJets-mg-ht200to400_split01 GJets MC_GJets-mg-ht200to400_split01.root
+GJets-mg-ht200to400_split02 GJets MC_GJets-mg-ht200to400_split02.root
+GJets-mg-ht400to600 GJets MC_GJets-mg-ht400to600.root
+GJets-mg-ht600toInf GJets MC_GJets-mg-ht600toInf.root
+
+#QCD-mg-ht100to200 QCD MC_QCD-mg-ht100to200.root
+#QCD-mg-ht100to200_split00 QCD MC_QCD-mg-ht100to200_split00.root
+#QCD-mg-ht100to200_split01 QCD MC_QCD-mg-ht100to200_split01.root
+#QCD-mg-ht100to200_split02 QCD MC_QCD-mg-ht100to200_split02.root
+#QCD-mg-ht100to200_split03 QCD MC_QCD-mg-ht100to200_split03.root
+#QCD-mg-ht100to200_split04 QCD MC_QCD-mg-ht100to200_split04.root
+#QCD-mg-ht100to200_split05 QCD MC_QCD-mg-ht100to200_split05.root
+#QCD-mg-ht100to200_split06 QCD MC_QCD-mg-ht100to200_split06.root
+#QCD-mg-ht100to200_split07 QCD MC_QCD-mg-ht100to200_split07.root
+#QCD-mg-ht100to200_split08 QCD MC_QCD-mg-ht100to200_split08.root
+#QCD-mg-ht100to200_split09 QCD MC_QCD-mg-ht100to200_split09.root
+#QCD-mg-ht100to200_split10 QCD MC_QCD-mg-ht100to200_split10.root
+#QCD-mg-ht100to200_split11 QCD MC_QCD-mg-ht100to200_split11.root
+#QCD-mg-ht100to200_split12 QCD MC_QCD-mg-ht100to200_split12.root
+#QCD-mg-ht100to200_split13 QCD MC_QCD-mg-ht100to200_split13.root
+#QCD-mg-ht100to200_split14 QCD MC_QCD-mg-ht100to200_split14.root
+#QCD-mg-ht100to200_split15 QCD MC_QCD-mg-ht100to200_split15.root
+#QCD-mg-ht100to200_split16 QCD MC_QCD-mg-ht100to200_split16.root
+#QCD-mg-ht100to200_split17 QCD MC_QCD-mg-ht100to200_split17.root
+#QCD-mg-ht100to200_split18 QCD MC_QCD-mg-ht100to200_split18.root
+#QCD-mg-ht100to200_split19 QCD MC_QCD-mg-ht100to200_split19.root
+#QCD-mg-ht200to300 QCD MC_QCD-mg-ht200to300.root
+QCD-mg-ht200to300_split00 QCD MC_QCD-mg-ht200to300_split00.root
+QCD-mg-ht200to300_split01 QCD MC_QCD-mg-ht200to300_split01.root
+QCD-mg-ht200to300_split02 QCD MC_QCD-mg-ht200to300_split02.root
+QCD-mg-ht200to300_split03 QCD MC_QCD-mg-ht200to300_split03.root
+QCD-mg-ht200to300_split04 QCD MC_QCD-mg-ht200to300_split04.root
+#QCD-mg-ht300to500 QCD MC_QCD-mg-ht300to500.root
+QCD-mg-ht300to500_split00 QCD MC_QCD-mg-ht300to500_split00.root
+QCD-mg-ht300to500_split01 QCD MC_QCD-mg-ht300to500_split01.root
+QCD-mg-ht300to500_split02 QCD MC_QCD-mg-ht300to500_split02.root
+QCD-mg-ht300to500_split03 QCD MC_QCD-mg-ht300to500_split03.root
+QCD-mg-ht300to500_split04 QCD MC_QCD-mg-ht300to500_split04.root
+#QCD-mg-ht500to700 QCD MC_QCD-mg-ht500to700.root
+QCD-mg-ht500to700_split00 QCD MC_QCD-mg-ht500to700_split00.root
+QCD-mg-ht500to700_split01 QCD MC_QCD-mg-ht500to700_split01.root
+QCD-mg-ht500to700_split02 QCD MC_QCD-mg-ht500to700_split02.root
+QCD-mg-ht500to700_split03 QCD MC_QCD-mg-ht500to700_split03.root
+QCD-mg-ht500to700_split04 QCD MC_QCD-mg-ht500to700_split04.root
+#QCD-mg-ht700to1000 QCD MC_QCD-mg-ht700to1000.root
+QCD-mg-ht700to1000_split00 QCD MC_QCD-mg-ht700to1000_split00.root
+QCD-mg-ht700to1000_split01 QCD MC_QCD-mg-ht700to1000_split01.root
+QCD-mg-ht700to1000_split02 QCD MC_QCD-mg-ht700to1000_split02.root
+QCD-mg-ht700to1000_split03 QCD MC_QCD-mg-ht700to1000_split03.root
+QCD-mg-ht1000to1500 QCD MC_QCD-mg-ht1000to1500.root
+QCD-mg-ht1500to2000 QCD MC_QCD-mg-ht1500to2000.root
+QCD-mg-ht2000toInf QCD MC_QCD-mg-ht2000toInf.root
+
+#top
+SingleT-s-amcatnlo-lep Top MC_SingleT-s-amcatnlo-lep.root
+SingleT-t-powheg-lep Top MC_SingleT-t-powheg-lep.root
+SingleTBar-t-powheg-lep Top MC_SingleTBar-t-powheg-lep.root
+SingleT-tW-powheg-inc Top MC_SingleT-tW-powheg-inc.root
+SingleTBar-tW-powheg-inc Top MC_SingleTBar-tW-powheg-inc.root
+#TT-powheg Top MC_TT-powheg.root
+TT-powheg_split00 Top MC_TT-powheg_split00.root
+TT-powheg_split01 Top MC_TT-powheg_split01.root
+TT-powheg_split02 Top MC_TT-powheg_split02.root
+TT-powheg_split03 Top MC_TT-powheg_split03.root
+TT-powheg_split04 Top MC_TT-powheg_split04.root
+#TTJets-mg Top MC_TTJets-mg.root
+
+#TTJets-mg Top-mg MC_TTJets-mg.root
+
+#dibosons
+WW-pythia8 VV MC_WW-pythia8.root
+WZ-pythia8 VV MC_WZ-pythia8.root
+ZZ-pythia8 VV MC_ZZ-pythia8.root
+
+WW2L2Nu-powheg WW MC_WW2L2Nu-powheg.root
+WW4Q-powheg WW MC_WW4Q-powheg.root
+WWLNuQQ-powheg WW MC_WWLNuQQ-powheg.root
+WZLLQQ-mg WZ MC_WZLLQQ-mg.root
+WZLNuQQ-mg WZ MC_WZLNuQQ-mg.root
+ZZ4L-powheg ZZ MC_ZZ4L-powheg.root
+
+######################################################
+#old entries as of 24/11/2015
+#DYJetsToLL-M_10to50 DYJetsToLL MC_DYJetsToLL-M_10to50.root
+#DYJetsToLL DYJetsToLL MC_DYJetsToLL.root
+
+#Powheg-Htoinv-mH125Startupbx50 sig125 MC_Powheg-Htoinv-mH125Startupbx50.root
+#Powheg-Htoinv-mH300Asympt25ns sig300 MC_Powheg-Htoinv-mH300Asympt25ns.root
+
+#SingleT-s-amcatnlo-lep single-t MC_SingleT-s-amcatnlo-lep.root
+#SingleT-tW-powheg-inc single-t MC_SingleT-tW-powheg-inc.root
+#SingleTBar-tW-powheg-inc single-t MC_SingleTBar-tW-powheg-inc.root
+#TT-powheg ttpowheg MC_TT-powheg.root
+#TTJets-mg Top MC_TTJets-mg.root
+
+#WJetsToLNu_enu WJets_enu MC_WJetsToLNu_enu.root
+#WJetsToLNu_munu WJets_munu MC_WJetsToLNu_munu.root
+#WJetsToLNu_taunu WJets_taunu MC_WJetsToLNu_taunu.root
+#WJetsToLNu_enu-2 WJets MC_WJetsToLNu_enu.root
+#WJetsToLNu_munu-2 WJets MC_WJetsToLNu_munu.root
+#WJetsToLNu_taunu-2 WJets MC_WJetsToLNu_taunu.root
 
 #need to check overlaps
-WW-pythia8 VV MC_WW-pythia8.root
-WW2L2Nu-powheg VV MC_WW2L2Nu-powheg.root
-WW4Q-powheg VV MC_WW4Q-powheg.root
-WWLNuQQ-powheg VV MC_WWLNuQQ-powheg.root
-WZ-pythia8 VV MC_WZ-pythia8.root
-#WZLNuQQ-mg VV MC_WZLNuQQ-mg.root
-ZZ4L-powheg VV MC_ZZ4L-powheg.root
+#WW-pythia8 VV MC_WW-pythia8.root
+#WW2L2Nu-powheg VV MC_WW2L2Nu-powheg.root
+#WW4Q-powheg VV MC_WW4Q-powheg.root
+#WWLNuQQ-powheg VV MC_WWLNuQQ-powheg.root
+#WZ-pythia8 VV MC_WZ-pythia8.root
+##WZLNuQQ-mg VV MC_WZLNuQQ-mg.root
+#ZZ4L-powheg VV MC_ZZ4L-powheg.root

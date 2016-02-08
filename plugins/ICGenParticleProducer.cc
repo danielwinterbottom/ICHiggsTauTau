@@ -15,7 +15,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
-#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 4
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 4)
 #include "DataFormats/HepMCCandidate/interface/GenStatusFlags.h"
 #endif
 
@@ -57,7 +57,7 @@ void ICGenParticleProducer::produce(edm::Event& event,
     dest.set_index(static_cast<int>((parts_handle->refAt(i).key())));
     dest.set_pdgid(src.pdgId());
     dest.set_status(src.status());
-#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 4
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 4 )
     if (store_statusFlags_){
       reco::GenStatusFlags statusflags = src.statusFlags();
       if(statusflags.flags_.size()!=15){
@@ -92,7 +92,7 @@ void ICGenParticleProducer::produce(edm::Event& event,
 
 void ICGenParticleProducer::beginJob() {
   ic::StaticTree::tree_->Branch(branch_.c_str(), &particles_);
-#if !(CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 4)
+#if !(CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 4))
   if(store_statusFlags_){
     throw cms::Exception("OptionNotSupported")<<"status flags not supported for CMSSW versions before 7_4_X\n";
   }

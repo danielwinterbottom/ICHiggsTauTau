@@ -35,19 +35,24 @@ namespace ic {
     double max_data = data_->GetBinLowEdge(nbins_data) + data_->GetBinWidth(nbins_data);
     double max_mc = mc_->GetBinLowEdge(nbins_mc) + mc_->GetBinWidth(nbins_mc);
     unsigned nbins = nbins_data > nbins_mc ? nbins_data : nbins_mc;
+    double int_data = data_->Integral();
+    double int_mc = mc_->Integral();
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for PileupReweight" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     if (data_ && mc_) {
-      std::cout << "* Input data histogram has " << nbins_data << " bins in the range [" << min_data << "," << max_data << "]" << std::endl;
-      std::cout << "* Input MC histogram has " << nbins_mc << " bins in the range [" << min_mc << "," << max_mc << "]" << std::endl;
+      std::cout << "* Input data histogram has " << nbins_data << " bins in the range [" << min_data << "," << max_data << "], integral = " << int_data << std::endl;
+      std::cout << "* Input MC histogram has " << nbins_mc << " bins in the range [" << min_mc << "," << max_mc << "], integral = " << int_mc << std::endl;
       std::cout << "* Weights calculated for " << nbins << " bins" << std::endl;
       std::cout << "* Weight label in EventInfo is " << label_ << std::endl;
     } else {
       std::cout << "Invalid histogram!" << std::endl;
+      return 1;
     }
-    data_->Scale(1./data_->Integral());
-    mc_->Scale(1./mc_->Integral());
+    //data_->Sumw2();
+    //mc_->Sumw2();
+    data_->Scale(1./int_data);
+    mc_->Scale(1./int_mc);
     weights_ = (TH1*)data_->Clone();
     weights_->Divide(mc_);
     for (unsigned i = 0; i < nbins; ++i) {

@@ -438,7 +438,7 @@ namespace ic {
             tau_trg = (0.25 * tau20l_ee) + (0.59 * tau20m_ee) + (0.16 * tau20t_ee);
             tau_trg_mc = Efficiency(t_pt, 19.3862, 0.247148, 0.123187, 2.87108, 0.790894);
           }
-        } else if (mc_ == mc::spring15_74X){
+        } else if (mc_ == mc::spring15_74X || mc_ ==mc::fall15_76X){ //Fall15 just to exercise code, SF's are applicable to spring15 only! 
           if(e_pt<100){
             ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
             ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
@@ -555,7 +555,7 @@ namespace ic {
             tau_trg = (0.043 * tau10l_ee) + (0.359 * tau15l_ee) + (0.598 * tau20l_ee);
             tau_trg_mc = Efficiency(t_pt, 14.4451, 0.0790573, 0.0732472, 1.47046, 0.942028);
           }
-        } else if (mc_ == mc::spring15_74X){
+        } else if (mc_ == mc::spring15_74X || mc_ == mc::fall15_76X){ //fall15 only to exercise code, SF's are applicable to spring15 only
           if(pt<100){
             mu_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),mt_trig_data_->GetYaxis()->FindBin(pt));
             mu_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),mt_trig_mc_->GetYaxis()->FindBin(pt));
@@ -685,7 +685,7 @@ namespace ic {
             if (e_pt > 25.0 && e_pt <= 30.0)  { e_trg_mc = 0.967291667; e_trg = 0.9286; }
             if (e_pt > 30.0)                  { e_trg_mc = 0.983535354; e_trg = 0.9737; }
           }
-        } else if (mc_ == mc::spring15_74X){
+        } else if (mc_ == mc::spring15_74X || mc_ == mc::fall15_76X){
           if(e_pt<100){
             e_trg_17 = em_e17_trig_data_->GetBinContent(em_e17_trig_data_->GetXaxis()->FindBin(e_eta),em_e17_trig_data_->GetYaxis()->FindBin(e_pt));
             e_trg_17_mc = em_e17_trig_mc_->GetBinContent(em_e17_trig_mc_->GetXaxis()->FindBin(e_eta),em_e17_trig_mc_->GetYaxis()->FindBin(e_pt));
@@ -709,7 +709,7 @@ namespace ic {
             m_trg_8_mc = em_m8_trig_mc_->GetBinContent(em_m8_trig_mc_->GetXaxis()->FindBin(e_eta),(em_m8_trig_mc_->GetYaxis()->FindBin(m_pt)-1));
           }         
        }
-       if(mc_ !=mc::spring15_74X){
+       if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X){
         if (trg_applied_in_mc_) {
           m_trg = m_trg / m_trg_mc;
           e_trg = e_trg / e_trg_mc;
@@ -811,7 +811,7 @@ namespace ic {
           if (pt > 20.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.9462; ele_iso = 0.9875; }
           if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9826; ele_iso = 0.9845; }
           if (pt > 30.0 && sc_eta >= 1.479)               { ele_id = 0.9689; ele_iso = 0.9971; }
-        } else if (mc_ == mc::spring15_74X){
+        } else if (mc_ == mc::spring15_74X || mc_ ==mc::fall15_76X){
           if(pt<100){
             ele_idiso_data = et_idiso_data_->GetBinContent(et_idiso_data_->GetXaxis()->FindBin(sc_eta),et_idiso_data_->GetYaxis()->FindBin(pt));
             ele_idiso_mc = et_idiso_mc_->GetBinContent(et_idiso_mc_->GetXaxis()->FindBin(sc_eta),et_idiso_mc_->GetYaxis()->FindBin(pt));
@@ -821,7 +821,7 @@ namespace ic {
           }         
             ele_idiso = ele_idiso_data/ele_idiso_mc;
         }
-        if(mc_ != mc::spring15_74X){
+        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X){
           if (do_id_weights_) ele_iso = 1.0;
           weight *= (ele_id * ele_iso);
           event->Add("idweight_1", ele_id);
@@ -861,7 +861,7 @@ namespace ic {
           if (pt > 30.0 && m_eta < 0.8)                                 { mu_id = 0.9977; mu_iso = 0.9895; }
           if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9893; mu_iso = 0.9936; }
           if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9829; mu_iso = 0.9960; }
-        } else if (mc_ == mc::spring15_74X){
+        } else if (mc_ == mc::spring15_74X ||mc_ == mc::fall15_76X){
           if(pt<100){
             mu_idiso_data = mt_idiso_data_->GetBinContent(mt_idiso_data_->GetXaxis()->FindBin(m_eta),mt_idiso_data_->GetYaxis()->FindBin(pt));
             mu_idiso_mc = mt_idiso_mc_->GetBinContent(mt_idiso_mc_->GetXaxis()->FindBin(m_eta),mt_idiso_mc_->GetYaxis()->FindBin(pt));
@@ -871,7 +871,7 @@ namespace ic {
           }         
             mu_idiso = mu_idiso_data/mu_idiso_mc;
         }
-        if(mc_ != mc::spring15_74X){ 
+        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X){ 
           if (do_id_weights_) mu_iso = 1.0;
           weight *= (mu_id * mu_iso);
           event->Add("idweight_1", mu_id);
@@ -977,7 +977,7 @@ namespace ic {
             if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 1.0600;
             if (e_pt > 20.0)                  e_idiso = 1.0136;  
           }
-        } else if (mc_ == mc::spring15_74X){
+        } else if (mc_ == mc::spring15_74X || mc_ ==mc::fall15_76X){
           if(m_pt<100){
             m_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_pt));
             m_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_pt));
@@ -999,8 +999,13 @@ namespace ic {
          
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);
-        event->Add("idweight_1", e_idiso);
-        event->Add("idweight_2", m_idiso);
+        if(mc_!=mc::fall15_76X && mc_!=mc::spring15_74X){
+          event->Add("idweight_1", e_idiso);
+          event->Add("idweight_2", m_idiso);
+        } else { 
+          event->Add("idisoweight_1", e_idiso);
+          event->Add("idisoweight_2", m_idiso);
+        }
         event->Add("isoweight_1", double(1.0));
         event->Add("isoweight_2", double(1.0));
       } else if (channel_ == channel::mtmet) {

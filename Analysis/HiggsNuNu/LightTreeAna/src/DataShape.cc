@@ -1,5 +1,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataShape.h"
 #include <iostream>
+#include "TH1.h"
 #include "TH1F.h"
 #include "TCanvas.h"
 #include "TDirectory.h"
@@ -52,8 +53,6 @@ namespace ic{
     std::cout<<"  Getting shape"<<std::endl;
 
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
-      TH1F  datashape = filemanager->GetSetsShape(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
-      dir->cd();
       std::string histname;
       if(shapename_.size()==0){
 	std::vector<std::string> strs;
@@ -63,11 +62,26 @@ namespace ic{
       else{
 	histname=shapename_[iShape];
       }
-      if(iShape==0){
-	std::cout<<"  nevents: "<<Integral(&datashape)<<"+-"<<Error(&datashape)<<std::endl;
+      TH1F datashape;
+      TH2F datashape2D;
+      bool is2D = false;
+      if (histname.find(":")!=histname.npos) {
+	datashape2D=filemanager->GetSetsShape2D(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
+	is2D=true;
       }
-      datashape.SetName(histname.c_str());
-      datashape.Write();
+      else datashape = filemanager->GetSetsShape(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
+      dir->cd();
+      if(iShape==0){
+	if (!is2D) std::cout<<"  nevents: "<<Integral(&datashape)<<"+-"<<Error(&datashape)<<std::endl;
+	else std::cout<<"  nevents: "<<Integral(&datashape2D)<<"+-"<<Error(&datashape2D)<<std::endl;
+      }
+      if (is2D){
+	datashape2D.SetName(histname.c_str());
+	datashape2D.Write();
+      } else {
+	datashape.SetName(histname.c_str());
+	datashape.Write();
+      }
     }
     return 0;
   };
