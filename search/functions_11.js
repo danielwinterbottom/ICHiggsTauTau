@@ -137,6 +137,7 @@ var searchData=
   ['set_5fn60',['set_n60',['../classic_1_1_calo_jet.html#afc17c5223b58aab329ea65343209fa2c',1,'ic::CaloJet']]],
   ['set_5fn90',['set_n90',['../classic_1_1_calo_jet.html#a9c7410f49e15dbde26a3cd26a3556858',1,'ic::CaloJet']]],
   ['set_5fn_5fconstituents',['set_n_constituents',['../classic_1_1_gen_jet.html#ac914b5577c6a58b857aa57735895b4b6',1,'ic::GenJet']]],
+  ['set_5fn_5foutgoing_5fpartons',['set_n_outgoing_partons',['../classic_1_1_event_info.html#ad827701b2f4ce39d01f6d0aaceab1d69',1,'ic::EventInfo']]],
   ['set_5fname',['set_name',['../classic_1_1_trigger_path.html#a6a478173e132d8d18cc842033bb51bb0',1,'ic::TriggerPath']]],
   ['set_5fndof',['set_ndof',['../classic_1_1_vertex.html#a8dbaffe452137613f84cca7682a257ae',1,'ic::Vertex']]],
   ['set_5fneutral_5fem_5fenergy',['set_neutral_em_energy',['../classic_1_1_j_p_t_jet.html#ae68d2dfb7e246d1bfb078c707f2a7d44',1,'ic::JPTJet::set_neutral_em_energy()'],['../classic_1_1_p_f_jet.html#a32ea9ffaf84f40c75fd36a5f3f16d7ad',1,'ic::PFJet::set_neutral_em_energy()']]],
