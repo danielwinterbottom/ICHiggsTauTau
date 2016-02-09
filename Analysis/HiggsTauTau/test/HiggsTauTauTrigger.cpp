@@ -50,6 +50,7 @@
 #include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "HiggsTauTau/interface/BTagCheck.h"
 #include "HiggsTauTau/interface/HhhMetScale.h"
+#include "Modules/src/VariableHistograms.cc"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -282,8 +283,8 @@ int main(int argc, char* argv[]){
       muon_pt = 20.0;
       muon_eta = 2.1;
     } else {
-      elec_pt = 23.0;
-      elec_eta = 2.5;
+      elec_pt = 24.0;
+      elec_eta = 2.1;
       muon_pt = 18.0;
       muon_eta = 2.1;
     }
@@ -311,7 +312,7 @@ int main(int argc, char* argv[]){
     } else {
       elec_pt = 23.0;
       elec_eta = 2.5;
-      muon_pt = 18.0;
+      muon_pt = 19.0;
       muon_eta = 2.1;
     }
     tau_pt = 20.0;
@@ -339,7 +340,7 @@ int main(int argc, char* argv[]){
       muon_dxy = 0.045;
       elec_pt = 13.0;
       elec_eta = 2.5;
-      muon_pt = 9.5; //THIS IS NOT WHAT'S ON THE TWIKI! Only have MVAMET pairs with pt>9.5 
+      muon_pt = 10;
       muon_eta = 2.4;
     }
     if (special_mode == 22 || special_mode == 25) {
@@ -357,6 +358,12 @@ int main(int argc, char* argv[]){
       muon_dz = 999.;  
     }   
   }
+
+  if (channel == channel::tt){
+    tau_pt = 45;
+    tau_eta = 2.1;
+    tau_dz = 0.2;
+    }
 
   // Lower pt thresholds on electrons and taus when skimming, 
   // to allow for energy scale shifts later
@@ -527,7 +534,7 @@ int main(int argc, char* argv[]){
   */
   std::string jets_label="pfJetsPFlow";
   if(era==era::data_2015) jets_label="ak4PFJetsCHS";
-  /*
+ /* 
   string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
   ("JetEnergyCorrections")
@@ -537,7 +544,7 @@ int main(int argc, char* argv[]){
   .set_l2_file("input/jec/"+jec_payload+"_L2Relative_AK5PF.txt")
   .set_l3_file("input/jec/"+jec_payload+"_L3Absolute_AK5PF.txt")
   .set_res_file("input/jec/"+jec_payload+"_L2L3Residual_AK5PF.txt");
-  */
+ */ 
 /*
   string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
   string jes_input_set  = "SubTotalDataMC";
@@ -837,11 +844,13 @@ int main(int argc, char* argv[]){
     .set_input_label("taus")
     .set_predicate(bind(MinPtMaxEta, _1, tau_pt, tau_eta))
     .set_min(1);
+  if (channel == channel::tt) tauPtEtaFilter.set_min(2);
 
   SimpleFilter<Tau> tauDzFilter = SimpleFilter<Tau>("TauDzFilter")
     .set_input_label("taus")
     .set_predicate(bind(fabs, bind(&Tau::lead_dz_vertex, _1)) < tau_dz)
     .set_min(1);
+  if (channel == channel::tt) tauDzFilter.set_min(2); 
 
   std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
   if (strategy == strategy::paper2013) {
@@ -883,6 +892,12 @@ int main(int argc, char* argv[]){
       tau_anti_elec_discr_2 = "againstElectronVLooseMVA5";
       tau_anti_muon_discr   = "againstMuonTight3";
     }
+    if (channel == channel::tt ) {
+     tau_iso_discr = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
+     tau_anti_elec_discr_1 = "againstElectronVLooseMVA5";
+     tau_anti_elec_discr_2 = "againstElectronVLooseMVA5";
+     tau_anti_muon_discr = "againstMuonLoose3";
+    }
   }
 
   std::cout << "** Tau Discriminators **" << std::endl;
@@ -909,6 +924,10 @@ int main(int argc, char* argv[]){
     .set_input_label("taus")
     .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
     .set_min(1);
+    if (channel== channel::tt){
+      tauIsoFilter.set_min(2);
+      tauIsoFilter.set_predicate(    (bind(&Tau::GetTauID, _1, tau_iso_discr) < 1.0)&& (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5)); 
+    }
   if (strategy == strategy::paper2013) {
     double tau_3hit_cut = 1.5;
     if (special_mode == 4 || special_mode == 5) tau_3hit_cut = 10.;
@@ -924,7 +943,8 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
     .set_predicate( (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5) && (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_2) > 0.5) )                     
-    .set_input_label("taus").set_min(1); 
+    .set_input_label("taus").set_min(1);
+  if (channel == channel::tt) tauElRejectFilter.set_min(2); 
   if ( (channel == channel::et || channel == channel::etmet) && special_mode == 18) tauElRejectFilter
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5);
   if ( (channel == channel::et || channel == channel::etmet) && strategy == strategy::paper2013) tauElRejectFilter
@@ -933,6 +953,7 @@ int main(int argc, char* argv[]){
   SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
     .set_input_label("taus").set_min(1);
+  if (channel == channel::tt) tauMuRejectFilter.set_min(2);
   if ( (channel == channel::mt || channel == channel::mtmet) && strategy == strategy::paper2013) tauMuRejectFilter
     .set_predicate((bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
       && (bind(TauEoverP,_1, 0.2)));
@@ -965,6 +986,14 @@ int main(int argc, char* argv[]){
     .set_candidate_name_second("lepton2")
     .set_output_label("emtauCandidates");                                                        
 
+  CompositeProducer<Tau, Tau> tauTauPairProducer = CompositeProducer<Tau, Tau>
+    ("TauTauPairProducer")
+    .set_input_label_first("taus")
+    .set_input_label_second("taus")
+    .set_candidate_name_first("lepton1")
+    .set_candidate_name_second("lepton2")
+    .set_output_label("emtauCandidates");   
+
   SimpleFilter<CompositeCandidate> pairFilter = SimpleFilter<CompositeCandidate>("PairFilter")
     .set_input_label("emtauCandidates")
     .set_predicate( (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.5))
@@ -994,6 +1023,18 @@ int main(int argc, char* argv[]){
   
   CopyCollection<PFJet>
     filteredJetCopyCollection("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered");
+
+
+  // ------------------------------------------------------------------------------------
+  // Filter events with njets < 2
+  // ------------------------------------------------------------------------------------ 
+
+    SimpleCounter<PFJet> filter0JetEvents = SimpleCounter<PFJet>("Filter0JetEvents")
+    .set_input_label(jets_label)
+    .set_predicate(bind(MinPtMaxEta, _1, 30.0, 4.7) 
+    )
+    .set_min(2);
+    
   /*
   HhhBJetRegression hhhBJetRegression = HhhBJetRegression
   ("hhhBJetRegression")
@@ -1014,6 +1055,7 @@ int main(int argc, char* argv[]){
     .set_tau_scale(tau_shift)
     .set_allowed_tau_modes(allowed_tau_modes);
   if (channel == channel::em) httPairSelector.set_tau_scale(elec_shift);
+
   /*
   HTTRecoilCorrector httRecoilCorrector = HTTRecoilCorrector("HTTRecoilCorrector")
     .set_sample(output_name)
@@ -1141,6 +1183,7 @@ int main(int argc, char* argv[]){
     if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
   }
 
+  VariableHistograms variableHistograms = VariableHistograms("VariableHistograms", output_name);
 
   HTTSync httSync("HTTSync","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
@@ -1192,8 +1235,12 @@ int main(int argc, char* argv[]){
    eventChecker.CheckEvent(ch);
    httPrint.PrintEvent(ch);
   }
+
+
   httPrint.set_skip_events(false);
   if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
+
+
 
   //if(make_gen_plots) analysis.AddModule(&genLevelStudy);
   /*if ( (channel == channel::etmet || 
@@ -1237,7 +1284,25 @@ int main(int argc, char* argv[]){
 
                                   analysis.AddModule(&tauElPairProducer);
                                   analysis.AddModule(&pairFilter);
-  }
+  } 
+
+  if (channel == channel::tt) {
+                                  
+    if (!do_skim) {                              
+
+      if (special_mode != 18)     analysis.AddModule(&extraElectronVeto);
+      if (special_mode != 18)     analysis.AddModule(&extraMuonVeto);
+    }
+                                  analysis.AddModule(&tauPtEtaFilter);
+                                  analysis.AddModule(&tauDzFilter);
+ 
+                                  analysis.AddModule(&tauIsoFilter);
+                                  analysis.AddModule(&tauElRejectFilter);
+                                  analysis.AddModule(&tauMuRejectFilter);
+
+                                  analysis.AddModule(&tauTauPairProducer);
+                                  analysis.AddModule(&pairFilter);
+  } 
 
   if (channel == channel::mt || channel == channel::mtmet) {
                                   analysis.AddModule(&selMuonCopyCollection);
@@ -1295,7 +1360,7 @@ int main(int argc, char* argv[]){
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
 				  // if (jes_mode > 0 && !is_data && strategy != strategy::phys14) analysis.AddModule(&jetEnergyUncertainty);
-    //                            analysis.AddModule(&jetEnergyCorrections);
+                                  //analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
@@ -1338,8 +1403,10 @@ int main(int argc, char* argv[]){
     if(make_sync_ntuple && strategy==strategy::paper2013){
          analysis.AddModule(&httSync);
     }
-   
-    if (!quark_gluon_study)       analysis.AddModule(&httCategories);
+
+                                  analysis.AddModule(&filter0JetEvents);
+
+    //if (!quark_gluon_study)       analysis.AddModule(&httCategories);
                                   //analysis.AddModule(&btagCheck);
 
   }
@@ -1349,6 +1416,7 @@ int main(int argc, char* argv[]){
   }
   //  if(make_gen_plots) analysis.AddModule(&genLevelStudyPostAna);
 
+                                  analysis.AddModule(&variableHistograms);
 
   analysis.RunAnalysis();
   delete fs;
