@@ -926,7 +926,7 @@ BuildModule(svFitTest);
 }
 
 
- if(strategy_type == strategy::spring15 || strategy_type ==strategy::fall15){
+ if((strategy_type == strategy::spring15 || strategy_type ==strategy::fall15)&&channel!=channel::wmnu){
    TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_SingleEle_MC_eff");
    TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_SingleEle_Data_eff");
    TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_SingleMu_MC_eff");

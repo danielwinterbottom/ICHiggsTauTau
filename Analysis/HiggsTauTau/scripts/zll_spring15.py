@@ -61,10 +61,10 @@ if options.submit:  JOBSUBMIT=options.submit
 
 channels = options.channels
 
-CONFIG='scripts/Zll_config.json'
-#CONFIG='scripts/WMuNu_config.json'
+#CONFIG='scripts/Zll_config.json'
+CONFIG='scripts/WMuNu_config.json'
 
-FILELIST='filelists/Nov19_MC_74X'
+FILELIST='filelists/Oct30_MC_74X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -88,11 +88,11 @@ if options.proc_data or options.proc_all:
    'MuonEG-2015D-promptv4',
    'Tau-2015D-promptv4'
   ]
-  DATAFILELIST="./filelists/Nov19_Data_74X"
+  DATAFILELIST="./filelists/Oct30_Data_74X"
 
   for sa in data_samples:
       JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Nov19_Data_74X/\",\"sequences\":{\"zee\":[],\"zmm\":[],\"tpzmm\":[],\"tpzee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct30_Data_74X/\",\"sequences\":{\"zee\":[],\"zmm\":[],\"tpzmm\":[],\"tpzee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 30 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -106,7 +106,7 @@ if options.proc_bkg or options.proc_all or options.proc_tp:
     #'TTJets',
     'TT-ext',
     'WJetsToLNu-LO',
-		#'WJetsToLNu',
+		'WJetsToLNu',
     #'WWinclusive',
     #'ZZinclusive',
     #'WZinclusive',
