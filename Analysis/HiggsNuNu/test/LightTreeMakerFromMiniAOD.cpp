@@ -123,6 +123,7 @@ int main(int argc, char* argv[]){
   double mjjcut;
   double detajjcut;
 
+  unsigned debug;
   int randomseed;
 
   bool printEventList;  //print run,lumi,evt of events selected
@@ -203,6 +204,7 @@ int main(int argc, char* argv[]){
     ("useOldLT",         po::value<bool>(&useOldLT)->default_value(false))
     ("doTrigLT",         po::value<bool>(&doTrigLT)->default_value(false))
     ("doAllPairs",       po::value<bool>(&doAllPairs)->default_value(false))
+    ("debug",          po::value<unsigned>(&debug)->default_value(0))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -266,9 +268,13 @@ int main(int argc, char* argv[]){
   }
   checkfile.close();
 
+  bool isW = output_name.find("JetsToLNu") != output_name.npos ||
+    output_name.find("EWKW") != output_name.npos;
+
+
   //rename with _wstream.root properly
   std::string fullpath = output_folder+output_name;
-  if (output_name.find("JetsToLNu") != output_name.npos) {
+  if (isW) {
     std::string suffix=".root";
     std::size_t found = fullpath.find(suffix);
     if(found!=std::string::npos){
@@ -951,6 +957,7 @@ int main(int argc, char* argv[]){
 
   LightTreeAM lightTreeNew = LightTreeAM("LightTreeNew")
     .set_fs(fs)
+    .set_debug(debug)
     .set_met_label(mettype)
     .set_jet_label(jettype)
     .set_dijet_label("jjLeadingCandidates")
@@ -970,8 +977,7 @@ int main(int argc, char* argv[]){
   analysis.AddModule(&singleMet);
   if (!is_data) {
     //do W streaming to e,mu,tau
-    if (output_name.find("JetsToLNu") != output_name.npos ||
-	output_name.find("EWKW") != output_name.npos) {
+    if (isW) {
       if (wstream != "nunu") {
 	if (is2012) analysis.AddModule(&WtoLeptonFilter2012);
 	else analysis.AddModule(&WtoLeptonFilter);

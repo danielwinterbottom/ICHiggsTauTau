@@ -737,12 +737,18 @@ namespace ic {
     }
 
    if (channel_ == channel::tt && (mc_ == mc::spring15_74X || mc_ == mc::fall15_76X)){
+     /*std::vector<Candidate *> l1taus = event->GetPtrVec<Candidate>("l1isoTaus");
+     ic::erase_if(l1taus, !boost::bind(MinPtMaxEta, _1, 28.0, 999.0));*/
      for(unsigned i = 0; i < dileptons.size(); ++i){
        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
+       /*std::vector<Candidate *> match_taus;
+       match_taus.push_back(dileptons[i]->At(0));
+       match_taus.push_back(dileptons[i]->At(1));
+       bool match_l1_parts = (MatchByDR(match_taus,l1taus,0.5,true,true)).size() == 2*/
        //unsigned leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
        //unsigned leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
-       if (leg1_match && leg2_match){
+       if (leg1_match && leg2_match /*&& match_l1_parts*/){
          dileptons_pass.push_back(dileptons[i]);
          /*double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
          double leg1_trigger_object_eta = objs.at(leg1_match_index)->eta();

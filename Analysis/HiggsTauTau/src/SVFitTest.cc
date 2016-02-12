@@ -33,6 +33,7 @@ namespace ic {
     from_grid_ = false;
     read_svfit_mt_ = false;
     do_preselection_ = false;
+    tau_optimisation_ = false;
     read_all_ = false;
     dm1_ = -1;
     dm2_ = -1;
@@ -185,7 +186,9 @@ int SVFitTest::Execute(TreeEvent *event) {
  bool antiele_2_ = false;
  bool antimu_2_ = false;
  double iso_1_ = 0;
- double iso_2_ = 0;
+ double iso_2_ = 0; 
+ bool iso_discr_1_ = 0;
+ bool iso_discr_2_ = 0;
  //bool lbyMediumCombinedIsolation_1=0; 
  //bool lbyMediumCombinedIsolation_2=0; 
  bool lbyTightCombinedIsolation_1=0; 
@@ -201,6 +204,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBnewDMwLT");
+        if(!tau_optimisation_){
+          iso_discr_2_ = iso_2_ < 10;
+        }
         /*lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;*/
         bool lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
@@ -219,7 +226,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         lbyIsolationMVA3oldDMwLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwLTraw") : 0.;*/
         antiele_2_ = strategy_==strategy::spring15 ? lagainstElectronTightMVA5_2 : lagainstElectronTightMVA6_2;
         antimu_2_ = lagainstMuonLoose3_2;
-        if(antiele_2_>0 && antimu_2_>0 && iso_2_<10 && iso_1_<0.5) pass_presel = true;
+        if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
     }
     if(channel_ == channel::mt && do_preselection_) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
@@ -230,6 +237,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
         //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBnewDMwLT");
+        if(!tau_optimisation_){
+          iso_discr_2_ = iso_2_ < 10;
+        }
 /*        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
         lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
@@ -248,7 +259,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         lbyIsolationMVA3oldDMwLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwLTraw") : 0.;*/
         antiele_2_ = (strategy_ == strategy::spring15) ? lagainstElectronVLooseMVA5_2 : lagainstElectronVLooseMVA6_2;
         antimu_2_ = lagainstMuonTight3_2;
-        if(antiele_2_>0 && antimu_2_>0 && iso_2_<10 && iso_1_<0.5) pass_presel = true;
+        if(antiele_2_>0 && antimu_2_>0 && iso_discr_2_>0 && iso_1_<0.5) pass_presel = true;
     }
     if(channel_ == channel::em && do_preselection_) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -264,8 +275,14 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
         Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-        lbyTightCombinedIsolation_1 = tau1->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
-        lbyTightCombinedIsolation_2 = tau2->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
+        iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2v1DBnewDMwLT");
+        iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2v1DBnewDMwLT");
+        if(!tau_optimisation_){
+          lbyTightCombinedIsolation_1 = tau1->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
+          lbyTightCombinedIsolation_2 = tau2->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
+          iso_discr_2_ = lbyTightCombinedIsolation_2;
+          iso_discr_1_ = lbyTightCombinedIsolation_1;
+        }
         //lagainstElectronLooseMVA5_1 = tau1->HasTauID("againstElectronLooseMVA5") ? tau1->GetTauID("againstElectronLooseMVA5") : 0.;
         //lagainstElectronMediumMVA5_1 = tau1->HasTauID("againstElectronMediumMVA5") ? tau1->GetTauID("againstElectronMediumMVA5") : 0.;
         //bool lagainstElectronTightMVA5_1 = tau1->HasTauID("againstElectronTightMVA5") ? tau1->GetTauID("againstElectronTightMVA5") : 0.;
@@ -286,7 +303,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         antimu_1_ = lagainstMuonLoose3_1;
         antiele_2_ = (strategy_ == strategy::spring15) ? lagainstElectronVLooseMVA5_2 : lagainstElectronVLooseMVA6_2;
         antimu_2_ = lagainstMuonLoose3_2;
-        if(lbyTightCombinedIsolation_2>0.5 && lbyTightCombinedIsolation_1>0.5 && antiele_1_>0 && antimu_1_>0 && antiele_2_>0 && antimu_2_>0) pass_presel = true;
+        if(iso_discr_1_>0 && iso_discr_2_>0 && antiele_1_>0 && antimu_1_>0 && antiele_2_>0 && antimu_2_>0) pass_presel = true;
     }
 
 
@@ -385,6 +402,48 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
       } else if (fail_mode_ == 1) {
         std::cout << "Error, SVFitTest mass not found!" << std::endl;
         throw;
+      } else if (fail_mode_ == 3){
+        if (event_counter_%split_ == 0) {
+          if (out_file_) {
+          out_file_->Write();
+          delete out_tree_;
+          out_file_->Close();
+          delete out_file_;
+          out_file_ = NULL;
+        }
+        out_file_ = new TFile((total_path_.string()+"/svfit_"+outputadd_+"_"+boost::lexical_cast<std::string>(file_counter_)+"_missing_input.root").c_str(),"RECREATE");
+        out_tree_ = new TTree("svfit","svfit");
+        out_tree_->Branch("event", &out_event_, "event/i");
+        out_tree_->Branch("lumi", &out_lumi_, "lumi/i");
+        out_tree_->Branch("run", &out_run_, "run/i");
+        out_tree_->Branch("objects_hash", &out_objects_hash_, "objects_hash/l");
+        out_tree_->Branch("decay_mode", &decay_mode_);
+        out_tree_->Branch("lepton1", &out_cand1_);
+        out_tree_->Branch("dm1", &dm1_,"dm1/I");
+        out_tree_->Branch("lepton2", &out_cand2_);
+        out_tree_->Branch("dm2", &dm2_,"dm2/I");
+        out_tree_->Branch("met", &out_met_);
+        ++file_counter_;
+      }
+      //out_event_hash_ = event_hash;
+      if(channel_==channel::tt){
+       Tau * tau1 = dynamic_cast<Tau *>(dilepton.at(0)->GetCandidate("lepton1"));
+       dm1_ = tau1->decay_mode();
+       }
+      if(channel_==channel::tt || channel_==channel::et||channel_==channel::mt){
+       Tau * tau2 = dynamic_cast<Tau *>(dilepton.at(0)->GetCandidate("lepton2"));
+       dm2_ = tau2->decay_mode();
+      }
+
+      out_event_ = eventInfo->event();
+      out_lumi_ = eventInfo->lumi_block();
+      out_run_ = eventInfo->run();
+      out_objects_hash_ = objects_hash;
+      out_cand1_ = &c1;
+      out_cand2_ = &c2;
+      out_met_ = &met;
+      out_tree_->Fill();
+      ++event_counter_;
       } else {
         if(legacy_svfit_){
           std::cout << "Calculating mass on-the-fly" << std::endl;
