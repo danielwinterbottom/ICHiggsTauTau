@@ -830,7 +830,7 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(3)
-    .set_require_inputs_match(false)
+    .set_require_inputs_match(true)
     .set_split(7000)
     .set_dilepton_label("ditau")
     .set_met_label(met_label)
@@ -1687,7 +1687,7 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFinding") > 0.5;
 
       }));
-  } else if(strategy_type == strategy::phys14 || strategy_type == strategy::spring15 || strategy_type == strategy::fall15){
+  } else if(strategy_type == strategy::phys14 || strategy_type == strategy::spring15){
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
@@ -1698,7 +1698,18 @@ if(strategy_type == strategy::paper2013){
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
-  }
+  } else if (strategy_type == strategy::fall15){
+  BuildModule(SimpleFilter<Tau>("TauFilter")
+      .set_input_label(js["taus"].asString()).set_min(min_taus)
+      .set_predicate([=](Tau const* t) {
+        return  t->pt()                     >  tau_pt     &&
+                fabs(t->eta())              <  tau_eta    &&
+                fabs(t->lead_dz_vertex())   <  tau_dz     &&
+                fabs(t->charge())           == 1          &&
+                t->GetTauID("decayModeFinding") > 0.5;
+
+      }));
+   }
 
 if(js["do_tau_eff"].asBool()&&!js["make_sync_ntuple"].asBool()){
 BuildModule(HTTTauEfficiency("HTTTauEfficiency")
