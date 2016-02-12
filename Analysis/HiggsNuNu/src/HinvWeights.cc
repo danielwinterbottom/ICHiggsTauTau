@@ -1020,7 +1020,7 @@ namespace ic {//namespace
     }
     if (partons > 4) {
       std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
-      throw;
+    //throw;
     }
     return partons;
   }

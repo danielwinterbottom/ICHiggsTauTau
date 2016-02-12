@@ -84,6 +84,8 @@ Jet::~Jet() {}
     if (!is_set) {
       dict[CityHash64("combinedSecondaryVertexBJetTags")] =
           "combinedSecondaryVertexBJetTags";
+      dict[CityHash64("pfCombinedSecondaryVertexV2BJetTags")] =
+          "pfCombinedSecondaryVertexV2BJetTags";
       dict[CityHash64("combinedSecondaryVertexMVABJetTags")] =
           "combinedSecondaryVertexMVABJetTags";
       dict[CityHash64("jetBProbabilityBJetTags")] = "jetBProbabilityBJetTags";

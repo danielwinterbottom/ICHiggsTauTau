@@ -362,7 +362,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+dataextrasel);
 
   DataShape signal110("signal110");
-  signal110.set_dataset("sig110")
+  signal110.set_dataset("VBFH110")
     .set_dirname("qqH110")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
@@ -370,7 +370,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);  
 
   DataShape signal125("signal125");
-  signal125.set_dataset("sig125")
+  signal125.set_dataset("VBFH125")
     .set_dirname("qqH125")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
@@ -378,7 +378,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);  
 
   DataShape signal150("signal150");
-  signal150.set_dataset("sig150")
+  signal150.set_dataset("VBFH150")
     .set_dirname("qqH150")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
@@ -386,7 +386,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);  
 
   DataShape signal200("signal200");
-  signal200.set_dataset("sig200")
+  signal200.set_dataset("VBFH200")
     .set_dirname("qqH200")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
@@ -394,7 +394,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);  
 
   DataShape signal300("signal300");
-  signal300.set_dataset("sig300")
+  signal300.set_dataset("VBFH300")
     .set_dirname("qqH300")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
@@ -402,7 +402,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);  
 
   DataShape signal400("signal400");
-  signal400.set_dataset("sig400")
+  signal400.set_dataset("VBFH400")
     .set_dirname("qqH400")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
@@ -410,7 +410,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);  
 
   DataShape signal500("signal500");
-  signal500.set_dataset("sig500")
+  signal500.set_dataset("VBFH500")
     .set_dirname("qqH500")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
