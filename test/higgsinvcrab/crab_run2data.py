@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='160203'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='160211'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 config.section_('General')
 config.section_('Data')
@@ -53,7 +53,8 @@ if __name__ == '__main__':
 
     #!!TO BE UPDATED ON EACH PROCESSING
     #json='/vols/cms04/pjd12/invcmssws/run2ntuple/ammetwork/CMSSW_7_4_14/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt'
-    json= '/afs/cern.ch/work/a/amagnan/CMSSW_7_6_3_patch2/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt'
+    #json= '/afs/cern.ch/work/a/amagnan/CMSSW_7_6_3_patch2/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt'
+    json= '/afs/cern.ch/work/a/amagnan/CMSSW_7_6_3_patch2/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON.txt'
     firstrun='246908'
     maxrun='260627'#!!remember to update max run
     #lastrerecorun='258158'
