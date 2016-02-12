@@ -14,6 +14,7 @@ namespace ic {
 
   LightTreeAM::LightTreeAM(std::string const& name): ModuleBase(name){
     fs_ = NULL;
+    debug_ = 0;
     met_label_ = "pfMetType1Collection";
     jet_label_ = "pfJetsPFlow";
     dijet_label_ = "jjCandidates";
@@ -384,44 +385,55 @@ namespace ic {
     event_= eventInfo->event();
     n_vertices_=eventInfo->good_vertices();
 
+    if (debug_) {
+      std::cout << " Run " << run_ << " event " << event_ << " n_vtx = " << n_vertices_ << std::endl;
+    }
+
+
     ////////////////////////////////
     // Get trigger variables
     ////////////////////////////////
 
-    auto const& triggerPathPtrVec =
-      event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
+    if (is_data_){
+      auto const& triggerPathPtrVec =
+	event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
+      
+      for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
+	std::string name = triggerPathPtrVec[i]->name();
+	double prescale = triggerPathPtrVec[i]->prescale();
+	//if (name.find("Photon") != name.npos){
+	//std::cout << " Trigger " << name 
+	//<< " prescale " << prescale
+	//<< std::endl;
+	//}
+	if (prescale==1 && 
+	    ( (name.find("HLT_Photon") != name.npos &&
+	       (name.find("R9Id90_HE10_Iso") != name.npos ||
+		name.find("_PFMET") != name.npos)
+	       ) ||
+	      name.find("HLT_Photon175_v") != name.npos
+	      )
+	    ) pass_photontrigger_ = 1;
+	//HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_VBF_v2
+	//HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_PFMET40
+	//HLT_Photon36_R9Id90_HE10_IsoM
+	///HLT_Photon175_v*
+	//HLT_Photon135_PFMET100
+	
+	
+	if (name.find("HLT_IsoMu20_") != name.npos) pass_muontrigger_ = prescale;
+	if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140") != name.npos) pass_sigtrigger_ = prescale;
+	if (name.find("HLT_PFMET170_") != name.npos) pass_mettrigger_ = prescale;
+	if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80") != name.npos) pass_controltrigger_ = prescale;
+      }
+      if(do_trigskim_){
+	if(!(pass_muontrigger_==1 || pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0||pass_photontrigger_>0)){
+	  return 1;
+	}
+      }
 
-    for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
-      std::string name = triggerPathPtrVec[i]->name();
-      double prescale = triggerPathPtrVec[i]->prescale();
-      //if (name.find("Photon") != name.npos){
-      //std::cout << " Trigger " << name 
-      //<< " prescale " << prescale
-      //<< std::endl;
-      //}
-      if (prescale==1 && 
-	  ( (name.find("HLT_Photon") != name.npos &&
-	     (name.find("R9Id90_HE10_Iso") != name.npos ||
-	      name.find("_PFMET") != name.npos)
-	     ) ||
-	    name.find("HLT_Photon175_v") != name.npos
-	    )
-	  ) pass_photontrigger_ = 1;
-      //HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_VBF_v2
-      //HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_PFMET40
-      //HLT_Photon36_R9Id90_HE10_IsoM
-      ///HLT_Photon175_v*
-      //HLT_Photon135_PFMET100
-
-
-      if (name.find("HLT_IsoMu20_") != name.npos) pass_muontrigger_ = prescale;
-      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140") != name.npos) pass_sigtrigger_ = prescale;
-      if (name.find("HLT_PFMET170_") != name.npos) pass_mettrigger_ = prescale;
-      if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80") != name.npos) pass_controltrigger_ = prescale;
-    }
-    if(do_trigskim_){
-      if(!(pass_muontrigger_==1 || pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0||pass_photontrigger_>0)){
-	return 1;
+      if (debug_) {
+	std::cout << " Pass_muon " << pass_muontrigger_ << " pass sig " << pass_sigtrigger_ << std::endl;
       }
     }
 
@@ -459,6 +471,8 @@ namespace ic {
     total_weight_leptight_=wt*tightwt;
     
 
+    if (debug_) std::cout << " Event weight = " << wt << " pu up " << puweight_up_scale_ << " " << puweight_down_scale_ << std::endl;
+
     ////////////////////////////////
     // Get MET collections
     ////////////////////////////////
@@ -477,7 +491,7 @@ namespace ic {
     }
     Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
-    //!!if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
+    if(debug_ && l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
 
     ROOT::Math::PtEtaPhiEVector metvec = met->vector();
     ROOT::Math::PtEtaPhiEVector metnomuvec = metnomuons->vector();
@@ -488,17 +502,21 @@ namespace ic {
     met_y_ = metvec.Py();
     met_significance_ = met->et_sig();
     sumet_ = met->sum_et();
-    //std::cout << "l1metsize = " << l1met.size() << std::endl;
+    if (debug_) std::cout << "l1metsize = " << l1met.size() << std::endl;
     //data have 5 bx saved, 2 before, 2 after. 
     //MC has only 1 but 3 objects (not sure why...)
-    if(!is_data_) l1met_ = l1met[0]->pt();
-    else l1met_ = l1met[2]->pt();
+    //if(!is_data_)
+    l1met_ = l1met[0]->pt();
+    //else l1met_ = l1met[2]->pt();
     //}
     metnomuons_ = metnomuons->pt();
     metnomu_x_ = metnomuvec.Px();
     metnomu_y_ = metnomuvec.Py();
-    metnomu_significance_ = met_significance_/met_*metnomuons_;
+    if (met_>0) metnomu_significance_ = met_significance_/met_*metnomuons_;
+    else metnomu_significance_ = met_significance_;
     
+    if (debug_) std::cout << " Met = " << met_ << " metnomu = " << metnomuons_ << " l1met = " << l1met_ << std::endl;
+
    ////////////////////////////////
     // Get GenLevel collections
     ////////////////////////////////
@@ -564,7 +582,7 @@ namespace ic {
       std::sort(genTaus.begin(), genTaus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
       std::sort(genPhotons.begin(), genPhotons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
-
+      if (debug_) std::cout << " nElecs = " << genElecs.size() << " nMu = " << genMus.size() << std::endl;
     }//for MC
 
 
@@ -608,6 +626,12 @@ namespace ic {
       jet1metnomu_scalarprod_ = (jet1vec.Px()*metnomu_x_+jet1vec.Py()*metnomu_y_)/met_;
       jet2metnomu_scalarprod_ = (jet2vec.Px()*metnomu_x_+jet2vec.Py()*metnomu_y_)/met_;
 
+      if (debug_>1){
+	std::cout << " Jet1 = ";
+	jet1->Print();
+	std::cout << " Jet2 = ";
+	jet2->Print();
+      }
     }//jet pair exists
 
     std::vector<PFJet*> & jets = event->GetPtrVec<PFJet>(jet_label_);
@@ -628,7 +652,8 @@ namespace ic {
 	jet_E_[nJets_]=jets[i]->energy();
 	jet_eta_[nJets_]=jets[i]->eta();
 	jet_phi_[nJets_]=jets[i]->phi();
-	jet_csv_[nJets_]=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	jet_csv_[nJets_]=jets[i]->GetBDiscriminator("pfCombinedSecondaryVertexV2BJetTags");
+	//jet_csv_[nJets_]=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
 	jet_jetid_[nJets_]=PFJetID2015(jets[i]);
 	jet_puid_[nJets_]=PileupJetID(jets[i],2);
 	jet_flavour_[nJets_]=jets[i]->parton_flavour();
@@ -642,6 +667,10 @@ namespace ic {
 	  jet_genphi_[nJets_]=genvec[genid]->phi();
 	}
 	nJets_++;
+	if (debug_>1) {
+	  std::cout << " Jet " << i ;
+	  jets[i]->Print();
+	}
       }
       //do stuff for all jets
       ht_+=jetvec.Et();
@@ -705,6 +734,8 @@ namespace ic {
       jetunclet_mindphi_ = std::min(fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,unclVec)),
 				    fabs(ROOT::Math::VectorUtil::DeltaPhi(jet2vec,unclVec)));
     }
+
+    if (debug_) std::cout << " mht = " << mht_ << std::endl;
 
    ////////////////////////////////
     // Get Leptons collections
@@ -808,6 +839,8 @@ namespace ic {
     }
     lep_mt_ =sqrt(2*lep_pt*met->pt()*(1-cos(lep_phi-met->phi())));
 
+    if (debug_) std::cout << " nelecs = " << nselelectrons_ << " nselmuons = " << nselmuons_ << std::endl;
+
    ////////////////////////////////
     // Get Photon collections
     ////////////////////////////////
@@ -837,6 +870,8 @@ namespace ic {
       }
     }
 
+
+    if (debug_) std::cout << " nPhotons = " << nloosephotons_ << " " << nmediumphotons_ << " " << ntightphotons_ << std::endl;
 
     //IF PASSES CUTS FILL TREE    
     //if(do_noskim_){

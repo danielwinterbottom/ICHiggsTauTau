@@ -21,6 +21,7 @@ namespace ic {
   private:
 
     CLASS_MEMBER(LightTreeAM,fwlite::TFileService*, fs);
+    CLASS_MEMBER(LightTreeAM,unsigned, debug);
     CLASS_MEMBER(LightTreeAM,std::string, met_label);
     CLASS_MEMBER(LightTreeAM,std::string, jet_label);
     CLASS_MEMBER(LightTreeAM,std::string, dijet_label);

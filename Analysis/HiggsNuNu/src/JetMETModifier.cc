@@ -42,28 +42,6 @@ namespace ic {
     randomno = new TRandom3(randomseed_);
 
     std::cout << " --random seed: " << randomno->GetSeed() << std::endl;
-
-    //to reapply JEC on data
-    if (is_data_){
-      l1JetPar_  = new JetCorrectorParameters(jec_data_files_[0]);
-      l2JetPar_  = new JetCorrectorParameters(jec_data_files_[1]);
-      l3JetPar_  = new JetCorrectorParameters(jec_data_files_[2]);
-      resJetPar_ = new JetCorrectorParameters(jec_data_files_[3]); 
-    }
-    else {
-      l1JetPar_  = new JetCorrectorParameters(jec_mc_files_[0]);
-      l2JetPar_  = new JetCorrectorParameters(jec_mc_files_[1]);
-      l3JetPar_  = new JetCorrectorParameters(jec_mc_files_[2]);
-    }
-    //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
-    std::vector<JetCorrectorParameters> vPar;
-    vPar.push_back(*l1JetPar_);
-    vPar.push_back(*l2JetPar_);
-    vPar.push_back(*l3JetPar_);
-    if (is_data_) vPar.push_back(*resJetPar_);
-    jetCorrector_ = new FactorizedJetCorrector(vPar);
-    //to reapply JEC on MC
-
     std::cout << " -- Applying jetmetCor: " << std::endl;
     for (unsigned ic(0); ic< corVec_.size(); ++ic){
       //std::cout <<  corVec_[ic] << " ";
@@ -89,6 +67,37 @@ namespace ic {
 
     std::cout << " -- Applying jetmetSyst: " << syst_ << std::endl;
     
+
+    //to reapply JEC on data
+    if (is_data_ && reapplyJecData_){
+      if (jec_data_files_.size() != 4) {
+	std::cout << " -- Check JEC data filename vec, wrong size:" << jec_data_files_.size() << std::endl;
+	return 1;
+      }
+      l1JetPar_  = new JetCorrectorParameters(jec_data_files_[0]);
+      l2JetPar_  = new JetCorrectorParameters(jec_data_files_[1]);
+      l3JetPar_  = new JetCorrectorParameters(jec_data_files_[2]);
+      resJetPar_ = new JetCorrectorParameters(jec_data_files_[3]); 
+    }
+    else if (reapplyJecMC_) {
+      if (jec_mc_files_.size() != 3){
+	std::cout << " -- Check JEC MC filename vec, wrong size: " << jec_mc_files_.size() << std::endl;
+	return 1;
+      }
+      l1JetPar_  = new JetCorrectorParameters(jec_mc_files_[0]);
+      l2JetPar_  = new JetCorrectorParameters(jec_mc_files_[1]);
+      l3JetPar_  = new JetCorrectorParameters(jec_mc_files_[2]);
+    }
+    if (reapplyJecData_ || reapplyJecMC_){
+      //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
+      std::vector<JetCorrectorParameters> vPar;
+      vPar.push_back(*l1JetPar_);
+      vPar.push_back(*l2JetPar_);
+      vPar.push_back(*l3JetPar_);
+      if (is_data_) vPar.push_back(*resJetPar_);
+      jetCorrector_ = new FactorizedJetCorrector(vPar);
+    }
+
     jetCorUnc_ = new JetCorrectionUncertainty(*(new JetCorrectorParameters(jesuncfile_)));
     
     std::cout<<" -- Got parameters successfully"<<std::endl;
@@ -246,7 +255,7 @@ namespace ic {
       newjet = newjet*smearFact;
 
       //JES SYSTEMATICS
-      double jesVal = 1;
+      double jesVal = 0;
       if (syst_ == jetmetSyst::jesUp || syst_ == jetmetSyst::jesDown) jesVal = applyJESuncertainty(syst_ == jetmetSyst::jesUp?true:false,newjet);
  
       prevjet = newjet;

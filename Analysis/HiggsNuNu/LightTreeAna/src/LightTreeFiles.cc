@@ -386,7 +386,7 @@ namespace ic{
 	if(do_lumixs_weights_){
 	  lumixsweight=this->GetLumiXSWeight(files_[(*iter).first]);
 	}
-      
+	std::cout << "Set: " << setname << ", sample " << (*iter).first << ": " ;
 	TH1F temp=files_[(*iter).first].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
 	if(strcmp(temp.GetName(),"EMPTY")==0){
 	  continue;
@@ -426,6 +426,7 @@ namespace ic{
 	    if(do_lumixs_weights_){
 	      lumixsweight=this->GetLumiXSWeight(files_[(*iter).first]);
 	    }
+	    std::cout << "Set: " << setnames[iset] << ", sample " << (*iter).first << ": " ;
 	    TH1F temp=files_[(*iter).first].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
 	    if(strcmp(temp.GetName(),"EMPTY")==0){
 	      continue;

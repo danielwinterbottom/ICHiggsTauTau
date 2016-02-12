@@ -112,13 +112,13 @@ namespace ic {
     //For start of run 2 before data
     bkg_schemes_["tt_no_qcd"] = {
       PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
-      PlotBkgComponent("ewk","Electroweak",           {"W","VV"},   TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("ewk","Electroweak",           {"W","VV","ZL","ZJ"},   TColor::GetColor(222, 90,106)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
     };
     bkg_schemes_["tt_default"] = {
       PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
       PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
-      PlotBkgComponent("ewk","Electroweak",           {"W","VV"},   TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("ewk","Electroweak",           {"W","VV","ZL","ZJ"},   TColor::GetColor(222, 90,106)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
     };
     bkg_schemes_["mt_with_zj"] = {

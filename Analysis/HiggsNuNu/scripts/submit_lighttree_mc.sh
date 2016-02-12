@@ -3,8 +3,8 @@ DOCERN=0
 DOSUBMIT=0
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
-#MYEXEC=JetMETvalidation
-MYEXEC=LightTreeMakerFromMiniAOD
+MYEXEC=JetMETvalidation
+#MYEXEC=LightTreeMakerFromMiniAOD
 PRODUCTION=160203
 PRODUSER=amagnan
 JPTCUTVAL=70
@@ -30,83 +30,69 @@ CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
-for SYST in UESUP UESDOWN #central JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_160207
+  JOBDIRPREFIX=jobs_lighttree_160212
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160207
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160212
   #OUTPUTPREFIX=output_lighttree_160121
   OUTPUTDIR=$OUTPUTPREFIX/
+
+  if [ "$SYST" != "central" ]
+  then
+      JOBDIR=$JOBDIRPREFIX/$SYST/
+      OUTPUTDIR=$OUTPUTPREFIX/$SYST/
+  fi
   
   if [ "$SYST" = "JESUP" ]
       then
       SYSTOPTIONS="--dojessyst=true --jesupordown=true --dojersyst=false"
-      JOBDIR=$JOBDIRPREFIX/JESUP/
-      OUTPUTDIR=$OUTPUTPREFIX/JESUP/
   fi
   
   if [ "$SYST" = "JESDOWN" ]
       then
       SYSTOPTIONS="--dojessyst=true --jesupordown=false --dojersyst=false"
-	  JOBDIR=$JOBDIRPREFIX/JESDOWN/
-	  OUTPUTDIR=$OUTPUTPREFIX/JESDOWN/
   fi
   
   if [ "$SYST" = "JERBETTER" ]
       then
       SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=true"
-      JOBDIR=$JOBDIRPREFIX/JERBETTER/
-      OUTPUTDIR=$OUTPUTPREFIX/JERBETTER/
   fi
   
   if [ "$SYST" = "JERWORSE" ]
       then
       SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
-      JOBDIR=$JOBDIRPREFIX/JERWORSE/
-      OUTPUTDIR=$OUTPUTPREFIX/JERWORSE/
   fi
 
   if [ "$SYST" = "UESUP" ]
 	then
 	SYSTOPTIONS="--douessyst=true --uesupordown=true"
-	JOBDIR=$JOBDIRPREFIX/UESUP/  
-  	OUTPUTDIR=$OUTPUTPREFIX/UESUP/
   fi
 
   if [ "$SYST" = "UESDOWN" ]
 	then
 	SYSTOPTIONS="--douessyst=true --uesupordown=false"
-	JOBDIR=$JOBDIRPREFIX/UESDOWN/
-	OUTPUTDIR=$OUTPUTPREFIX/UESDOWN/
   fi
 
   if [ "$SYST" = "ELEEFFUP" ]
 	then
 	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=true"
-	JOBDIR=$JOBDIRPREFIX/ELEEFFUP/
-	OUTPUTDIR=$OUTPUTPREFIX/ELEEFFUP/
   fi
 
   if [ "$SYST" = "ELEEFFDOWN" ]
 	then
 	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=false"
-	JOBDIR=$JOBDIRPREFIX/ELEEFFDOWN/
-	OUTPUTDIR=$OUTPUTPREFIX/ELEEFFDOWN/
   fi
 
   if [ "$SYST" = "MUEFFUP" ]
 	then
 	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=true"
-	JOBDIR=$JOBDIRPREFIX/MUEFFUP/
-	OUTPUTDIR=$OUTPUTPREFIX/MUEFFUP/
   fi
 
   if [ "$SYST" = "MUEFFDOWN" ]
 	then
 	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
-	JOBDIR=$JOBDIRPREFIX/MUEFFDOWN/
-	OUTPUTDIR=$OUTPUTPREFIX/MUEFFDOWN/
   fi
 	
   echo "Config file: $CONFIG"
@@ -152,15 +138,33 @@ for SYST in UESUP UESDOWN #central JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDO
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
+#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJ*`
-#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
 	  do
       echo "Processing files in "$FILELIST
-      
+
       echo $FILELIST
       echo $FILELIST > tmp.txt
-      sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
+      
+      MCOPTION="--mc=fall15_76X"
+      PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
+      grep "151030" tmp.txt
+      if (( "$?" == "0" )); then
+	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/151030_MC
+	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/151030_MC_//" tmp.txt > tmp2.txt
+	  MCOPTION="--mc=spring15_74X"
+	  INPUTPARAMS="filelists/151030/Params151030.dat"
+      else
+	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
+	  MCOPTION="--mc=fall15_76X"
+	  INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
+      fi
+
+      echo $PREFIX
+
+
+      #sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
 	  
       JOB=MC_`sed "s/\.dat//" tmp2.txt`
       
@@ -191,7 +195,7 @@ for SYST in UESUP UESDOWN #central JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDO
 	    do
 	    WJOB=$JOB"_"$FLAVOUR
 	    
-	    $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh $GRIDSETUP
+	    $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" "$MCOPTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh $GRIDSETUP
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$WJOB.sh    
 	    else
@@ -200,7 +204,7 @@ for SYST in UESUP UESDOWN #central JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDO
 	  done
 	  
       else  
-	  $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh  $GRIDSETUP
+	  $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" "$MCOPTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh  $GRIDSETUP
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$JOB.sh
 	    else
