@@ -791,6 +791,11 @@ if(channel != channel::wmnu) {
     .set_input_label(jets_label)
     .set_reference_label("ditau")
     .set_min_dr(0.5));
+} else if (channel == channel::wmnu){
+  BuildModule(OverlapFilter<PFJet,Muon>("JetLeptonOverlapFilter")
+    .set_input_label(jets_label)
+    .set_reference_label("sel_muons")
+    .set_min_dr(0.5));
 }
 
 if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
@@ -969,11 +974,11 @@ BuildModule(svFitTest);
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
   }
 
-/*  if (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos && strategy_type==strategy::fall15){
-    httWeights.set_do_dy_soup(true);
+  if (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos && strategy_type==strategy::fall15){
+    httWeights.set_do_dy_soup(false);
     httWeights.SetDYTargetFractions(0.696628989, 0.204582155, 0.067178037, 0.020549051, 0.011061768); //Target fractions are xs_n-jet/xs_inclusive
     httWeights.SetDYInputYields(9004328.0,65314144.0 , 20019059.0, 5701878.0, 4189017.0);
-  }*/
+  }
 
   if (output_name.find("DYJetsToLL_M-50") != output_name.npos && strategy_type==strategy::spring15){
       httWeights.set_do_dy_soup_htbinned(true);
