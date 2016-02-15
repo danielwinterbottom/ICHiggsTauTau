@@ -77,6 +77,8 @@ class WMuNuCategories : public ModuleBase {
 
 
   unsigned n_jets_;
+  unsigned n_prebjets_;
+  unsigned n_taus_;
   unsigned n_bjets_;
   unsigned n_loose_bjets_;
   branch_var jpt_1_;     // Defined if n_jets >= 1
