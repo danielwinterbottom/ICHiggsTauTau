@@ -133,7 +133,7 @@ if SCHEME == 'run2_sm':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"
   scheme_et = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ''),
-    ("8",   "notwoprong",    "inclusivemtnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<40"')
+    ("8",   "inclusive",    "inclusivemt",  BINS_FINE, '--set_alias="sel:mt_1<40"')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ""),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
@@ -142,7 +142,7 @@ if SCHEME == 'run2_sm':
   ]
   scheme_mt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
-    ("8",   "notwoprong",    "inclusivemtnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<40"')
+    ("8",   "inclusive",    "inclusivemt",  BINS_FINE, '--set_alias="sel:mt_1<40"')
 #    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
@@ -223,11 +223,11 @@ if SCHEME == 'run2_mssm':
 
   scheme_et = [
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "notwoprong",  "notwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40"'),
 #    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, '--set_alias="sel:mt_1<30"'),
+    ("8",   "nobtag",    "nobtagnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<40"'),
+    ("8",   "btag",    "btagnotwoprong",  BINS, '--set_alias="sel:mt_1<40"'),
 #    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
@@ -235,11 +235,11 @@ if SCHEME == 'run2_mssm':
   ]
   scheme_mt = [
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "notwoprong",  "notwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, '--set_alias="sel:mt_1<30"'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
@@ -249,9 +249,9 @@ if SCHEME == 'run2_mssm':
 #    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE,  ''),
 #    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, ''),
 #    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, ''),
-    ("8",   "notwoprong",    "notwoprong",  BINS_FINE,  ''),
-    ("8",   "nobtagnotwoprong",    "nobtagnotwoprong",  BINS_FINE, ''),
-    ("8",   "btagnotwoprong",    "btagnotwoprong",  BINS, ''),
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
+    ("8",   "btag",    "btag",  BINS, ''),
 
   ]
   scheme_em = [

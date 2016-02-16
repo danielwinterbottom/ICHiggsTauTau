@@ -108,6 +108,10 @@ namespace ic {
       outtree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2);
       outtree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1);
       outtree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2);
+      outtree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2);
+      outtree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
 
@@ -440,28 +444,14 @@ namespace ic {
       synctree_->Branch("puppimt_1", &puppimt_1_.var_float, "puppimt_1/F");
       // Non-triggering electron ID MVA score
       synctree_->Branch("id_e_mva_nt_loose_1", &id_e_mva_nt_loose_1_, "id_e_mva_nt_loose_1/F");
-      synctree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1_,"mva_olddm_medium_1/F");
-      synctree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1_,"mva_olddm_tight_1/F");
-      synctree_->Branch("mva_newdm_medium_1",&lbyMediumIsolationMVArun2DBnewDMwLT_1_,"mva_newdm_medium_1/F");
-      synctree_->Branch("mva_newdm_tight_1",&lbyTightIsolationMVArun2DBnewDMwLT_1_,"mva_newdm_tight_1/F");
 
-      synctree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2_,"mva_olddm_medium_2/F");
-      synctree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2_,"mva_olddm_tight_2/F");
-      synctree_->Branch("mva_newdm_medium_2",&lbyMediumIsolationMVArun2DBnewDMwLT_2_,"mva_newdm_medium_2/F");
-      synctree_->Branch("mva_newdm_tight_2",&lbyTightIsolationMVArun2DBnewDMwLT_2_,"mva_newdm_tight_2/F");
-      /*synctree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_float,"trigger_object_pt_2/F");
-      synctree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_float,"trigger_object_eta_1/F");
-      synctree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_float,"trigger_object_pt_2/F");
-      synctree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_float,"trigger_object_eta_2/F");
-*/
+      synctree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_, "tau_decay_mode_2/I");
+      synctree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_,"tau_decay_mode_1/I");
 
-        synctree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_, "tau_decay_mode_2/I");
-        synctree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_,"tau_decay_mode_1/I");
-
-      synctree_->Branch("db_medium_1",&lbyMediumCombinedIsolation_1,"db_medium_1/O");
-      synctree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2,"db_medium_2/O");
-      synctree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1,"db_tight_1/O");
-      synctree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2,"db_tight_2/O");
+      synctree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1,"mva_olddm_tight_1/O");
+      synctree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
+      synctree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1,"mva_olddm_tight_1/O");
+      synctree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
 
       // Lepton 2 properties
       // pt (including effect of any energy scale corrections)
@@ -1143,7 +1133,7 @@ namespace ic {
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         lPhotonPtSum_1 = 0.;
-        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        iso_2_ = tau->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         mva_2_ = tau->GetTauID("againstElectronMVA6raw");
         l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
         lagainstElectronLooseMVA_2 = tau->HasTauID("againstElectronLooseMVA6") ? tau->GetTauID("againstElectronLooseMVA6") : 0.;
@@ -1282,7 +1272,7 @@ namespace ic {
         }
         mva_1_ = 0.0;
         lPhotonPtSum_1 = 0.;
-        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        iso_2_ = tau->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         mva_2_ = tau->GetTauID("againstElectronMVA6raw");
         l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
         lagainstElectronLooseMVA_2 = tau->HasTauID("againstElectronLooseMVA6") ? tau->GetTauID("againstElectronLooseMVA6") : 0.;
@@ -1448,9 +1438,9 @@ namespace ic {
 
       }
       if(strategy_ == strategy::fall15) {
-        iso_1_ = tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        iso_1_ = tau1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         mva_1_ = tau1->GetTauID("againstElectronMVA6raw");
-        iso_2_ = tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        iso_2_ = tau2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         mva_2_ = tau2->GetTauID("againstElectronMVA6raw");
         l3Hits_1 = tau1->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
         lagainstElectronLooseMVA_1 = tau1->HasTauID("againstElectronLooseMVA6") ? tau1->GetTauID("againstElectronLooseMVA6") : 0.;
