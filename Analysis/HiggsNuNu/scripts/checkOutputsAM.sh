@@ -1,8 +1,8 @@
 #!/bin/sh
 
-JOBDIR=jobs_lighttree_151111/
+JOBDIR=jobs_lighttree_160207/
 INJOBDIR=0
-PROD=151030
+PROD=160203
 
 while [ $# -gt 0 ] ; do
 
@@ -36,6 +36,7 @@ for LOGFILE in `ls $JOBDIR/*.log`
 do
     isData=0
     WSTREAM=""
+    SPLITSTREAM=""
     echo $LOGFILE | grep -q "MET_"
     if (( "$?" == 0 )); then
 	let isData=1
@@ -44,12 +45,26 @@ do
     echo $LOGFILE | grep -q "nu.log"
     if (( "$?" == 0 )); then
 	WSTREAM=`echo $LOGFILE | sed "s!$JOBDIR/.*_!_!" | sed "s/\.log//"`
+	#echo "wstream = $WSTREAM"
 	JOBFILE=`echo $LOGFILE | sed "s!$JOBDIR/!!" | sed "s/\.log//" | sed "s!$WSTREAM!!"`
+    fi
+    echo $LOGFILE | grep -q "split"
+    if (( "$?" == 0 )); then
+	echo $LOGFILE | grep -q "nu.log"
+	if (( "$?" == 0 )); then
+	    SPLITSTREAM=`echo $LOGFILE | sed "s!$JOBDIR/.*_split!_split!" | sed "s/\.log//" | sed "s!$WSTREAM!!"`
+	    #echo "split string = $SPLITSTREAM"
+	    JOBFILE=`echo $LOGFILE | sed "s!$JOBDIR/!!" | sed "s/\.log//" | sed "s!$WSTREAM!!" | sed "s!$SPLITSTREAM!!"`
+	else
+	    SPLITSTREAM=`echo $LOGFILE | sed "s!$JOBDIR/.*_split!_split!" | sed "s/\.log//"`
+	    #echo "split string = $SPLITSTREAM"
+	    JOBFILE=`echo $LOGFILE | sed "s!$JOBDIR/!!" | sed "s/\.log//" | sed "s!$SPLITSTREAM!!"`
+	fi
     fi
     grep -q "Processing Complete" $LOGFILE
     if (( "$?" == 1 )); then
-	echo "File $LOGFILE failed !"
-	let RESULT=1
+	echo "****File $LOGFILE failed !"
+	let RESULT=$RESULT+1
 	grep -q "Error opening the file" $LOGFILE
 	if (( "$?" == 0 )); then
 	    echo "--> Error opening a file, need to resubmit job $JOBDIR/${JOBFILE}${WSTREAM}.sh!"
@@ -66,22 +81,57 @@ do
     if (( "$?" == 0 )); then
 	grep -qi "nan" $LOGFILE | grep -v "value"
 	if (( "$?" == 0 )); then
-	    echo "File $LOGFILE failed ! Found NAN value."
-	    let RESULT=1
+	    echo "****File $LOGFILE failed ! Found NAN value."
+	    let RESULT=$RESULT+1
 	fi
     fi
-    ntotal=`grep "Processing Complete" $LOGFILE | sed 's!.*>>!!' | awk '{print $3}'`
-    npassed=`grep "LightTreeNew" $LOGFILE | awk '{print $2}'`
-    rejected=`echo "$ntotal-$npassed" | bc`
-    nfilelist=`grep "EVT_$JOBFILE:" filelists/$PROD/Params$PROD.dat | sed "s!EVT_$JOBFILE:!!"`
+
+    nfilelist=`grep "EVT_$JOBFILE:" filelists/$PROD/Params$PROD.dat | grep -v "#" | sed "s!EVT_$JOBFILE:!!"`
     missed=0
-    if (( "$isData" == "0" )); then
-	let missed=`echo "$nfilelist-$ntotal" | bc`
+
+    echo $LOGFILE | grep -q "split00"
+    if (( "$?" == 0 )); then
+	echo "adding together splitted files"
+	ntotal=0
+	npassed=0
+	rejected=0
+	for SPLITLOGFILE in `ls $JOBDIR/${JOBFILE}_split*${WSTREAM}.log`
+	do
+	    #echo "JOBFILE $JOBFILE adding $SPLITLOGFILE"
+	    let ntotal=$ntotal+`grep "Processing Complete" $SPLITLOGFILE | sed 's!.*>>!!' | awk '{print $3}'`
+	    let npassed=$npassed+`grep "LightTreeNew" $SPLITLOGFILE | awk '{print $2}'`
+	    let rejected=$rejected+`echo "$ntotal-$npassed" | bc`
+	done
+	if (( "$isData" == "0" )); then
+	    missed=`echo "$nfilelist-$ntotal" | bc`
+	fi
+	echo -e "-- Sample: "${JOBFILE}${WSTREAM}", Nfilelist="$nfilelist", Nprocessed="$ntotal", Npassed="$npassed", Nmissed="$missed", Nrejected="$rejected
+	if (( "$missed" != "0" )); then
+	    echo "****Problem with filelist EVT number! Please check."
+	    let RESULT=$RESULT+1
+	fi	
     fi
-    echo -e "-- Sample: "${JOBFILE}${WSTREAM}", Nfilelist="$nfilelist", Nprocessed="$ntotal", Npassed="$npassed", Nmissed="$missed", Nrejected="$rejected
+    echo $LOGFILE | grep -q "split"
+    if (( "$?" == 0 )); then
+	echo "skip"
+    else
+	ntotal=`grep "Processing Complete" $LOGFILE | sed 's!.*>>!!' | awk '{print $3}'`
+	npassed=`grep "LightTreeNew" $LOGFILE | awk '{print $2}'`
+	rejected=`echo "$ntotal-$npassed" | bc`
+	if (( "$isData" == "0" )); then
+	    missed=`echo "$nfilelist-$ntotal" | bc`
+	fi
+	echo -e "-- Sample: "${JOBFILE}${WSTREAM}", Nfilelist="$nfilelist", Nprocessed="$ntotal", Npassed="$npassed", Nmissed="$missed", Nrejected="$rejected
+	if (( "$missed" != "0" )); then
+	    echo "****Problem with filelist EVT number! Please check."
+	    let RESULT=$RESULT+1
+	fi
+    fi
 done
 
 if (( "$RESULT" == 0 )); then
     echo "-- All Clear !"
+else
+    echo "-- Found $RESULT problematic jobs."
 fi
 

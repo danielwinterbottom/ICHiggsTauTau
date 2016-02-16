@@ -21,6 +21,7 @@ namespace ic {
   private:
 
     CLASS_MEMBER(LightTreeAM,fwlite::TFileService*, fs);
+    CLASS_MEMBER(LightTreeAM,unsigned, debug);
     CLASS_MEMBER(LightTreeAM,std::string, met_label);
     CLASS_MEMBER(LightTreeAM,std::string, jet_label);
     CLASS_MEMBER(LightTreeAM,std::string, dijet_label);
@@ -39,6 +40,7 @@ namespace ic {
     unsigned lumi_;
     unsigned event_;
     double weight_nolep_;
+    double weight_trig_;
     double total_weight_lepveto_;
     double total_weight_leptight_;
     double puweight_up_scale_;
@@ -123,6 +125,8 @@ namespace ic {
     double jet1metnomu_scalarprod_;
     double jet2metnomu_scalarprod_;
 
+    double pass_muontrigger_;
+    double pass_photontrigger_;
     double pass_sigtrigger_;
     double pass_mettrigger_;
     double pass_controltrigger_;
@@ -137,7 +141,9 @@ namespace ic {
     int ntightphotons_;
 
     double m_mumu_;
+    double pt_mumu_;
     double m_ee_;
+    double pt_ee_;
     double m_mumu_gen_;
     double m_ee_gen_;
     double lep_mt_;

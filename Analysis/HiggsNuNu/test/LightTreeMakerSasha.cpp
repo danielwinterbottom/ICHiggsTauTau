@@ -582,28 +582,24 @@ int main(int argc, char* argv[]){
   // Jet Modules
   // ------------------------------------------------------------------------------------  
 
+  
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
-    .set_input_label("pfJetsPFlow")
     .set_met_label(mettype)
-    .set_dosmear(dosmear)
-    .set_doaltmatch(doaltmatch)
-    .set_doetsmear(doetsmear)
     .set_dogaus(dogaus)
     .set_dospring10gaus(dospring10gaus)
     .set_is_data(is_data)
-    .set_dojessyst(dojessyst)
-    .set_dodatajessyst(dodatajessyst)
-    .set_jesupordown(jesupordown)
-    .set_dojersyst(dojersyst)
-    .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
-    .set_dojerdebug(dojerdebug)
-    .set_douessyst(douessyst)
-    .set_uesupordown(uesupordown)
     .set_randomseed(randomseed)
     .set_fs(fs);
-  
+  std::vector<JetMETModifier::jetmetCor> corVec;
+  if (dosmear)    corVec.push_back(JetMETModifier::jetmetCor::smearMC);
+  ModifyJetMET.set_corVec(corVec);
+
+  if (dojessyst) ModifyJetMET.set_syst(jesupordown?JetMETModifier::jetmetSyst::jesUp:JetMETModifier::jetmetSyst::jesDown);
+  if (dojersyst) ModifyJetMET.set_syst(jerbetterorworse?JetMETModifier::jetmetSyst::jerBetter:JetMETModifier::jetmetSyst::jerWorse);
+  if (douessyst) ModifyJetMET.set_syst(uesupordown?JetMETModifier::jetmetSyst::uesUp:JetMETModifier::jetmetSyst::uesDown);
+
 
   
   

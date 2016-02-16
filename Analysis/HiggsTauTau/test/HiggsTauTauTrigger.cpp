@@ -24,7 +24,7 @@
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
-#include "HiggsTauTau/interface/HTTSyncTemp.h"
+//#include "HiggsTauTau/interface/HTTSyncTemp.h"
 #include "HiggsTauTau/interface/HTTPrint.h"
 #include "Modules/interface/MakeRunStats.h"
 #include "Modules/interface/EnergyShifter.h"
@@ -583,12 +583,12 @@ int main(int argc, char* argv[]){
   HTTEMuExtras emuExtras("EMuExtras");
   HTTEMuMVA emuMVA = HTTEMuMVA("EMuMVA");
   //Some attempts at MVA for the H->hh analysis, could possibly be used in the future
-  /*HhhEMuMVA HhhemuMVA = HhhEMuMVA("HhhEMuMVA");
-  HhhEMuMVABoth HhhemuMVABoth = HhhEMuMVABoth("HhhEMuMVABoth");
+  //HhhEMuMVA HhhemuMVA = HhhEMuMVA("HhhEMuMVA");
+  //HhhEMuMVABoth HhhemuMVABoth = HhhEMuMVABoth("HhhEMuMVABoth");
+
+  //HhhMTMVABoth HhhmtMVABoth = HhhMTMVABoth("HhhMTMVABoth"); 
+  //HhhMTMVACategory HhhmtMVACategory = HhhMTMVACategory("HhhMTMVACategory");
   
-  HhhMTMVABoth HhhmtMVABoth = HhhMTMVABoth("HhhMTMVABoth"); 
-  HhhMTMVACategory HhhmtMVACategory = HhhMTMVACategory("HhhMTMVACategory");
-  */
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
 
@@ -629,19 +629,20 @@ int main(int argc, char* argv[]){
       elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5, 1) >= 0.0); // Dummy function, will always pass
     } else {
       if (channel == channel::em) {
-        elec_idiso_func = bind(ElectronHTTIdPhys14, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5, 0)<0.15);
+        elec_idiso_func = bind(ElectronHTTIdSpring15, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5, 0)<0.15);
       } else {
-        elec_idiso_func = bind(ElectronHTTIdPhys14, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5, 0) < 0.1);
+        elec_idiso_func = bind(ElectronHTTIdSpring15, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5, 0) < 0.1);
       }
     } 
   }
+
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>("SelElectronFilter")
     .set_input_label("selElectrons")
     .set_predicate(
       bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
       bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
       bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
-      bind(elec_idiso_func, _1))
+      bind(elec_idiso_func, _1))//this last part is causing problems!
     .set_min(1);
   
   // Electron Veto
@@ -1188,8 +1189,8 @@ int main(int argc, char* argv[]){
   HTTSync httSync("HTTSync","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
 
-  HTTSyncTemp httSyncTemp("HTTSyncTemp","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
-  httSyncTemp.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label);
+  /*HTTSyncTemp httSyncTemp("HTTSyncTemp","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
+  httSyncTemp.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label);*/
 
 /*
   SVFit svfit("SVFit");
@@ -1397,9 +1398,9 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&hhhBJetRegression);
    }*/
    //if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
-    if (make_sync_ntuple && strategy==strategy::phys14){
+    /*if (make_sync_ntuple && strategy==strategy::phys14){
          analysis.AddModule(&httSyncTemp);
-    }
+    }*/
     if(make_sync_ntuple && strategy==strategy::paper2013){
          analysis.AddModule(&httSync);
     }

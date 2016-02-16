@@ -17,9 +17,8 @@
 int main(int argc, char* argv[]){
   // typedef ROOT::Math::PtEtaPhiEVector Vector;
 
-  if (!(argc == 2 || argc== 3)){
-    std::cout<<argc<<std::endl;
-    std::cerr << "Need 1 or 2 args: <input> [<run_legacy_svfit>]" << std::endl;
+  if (argc != 2 ){
+    std::cerr << "Need 1 arg: <input>" << std::endl;
     exit(1);
   }
 
@@ -29,10 +28,7 @@ int main(int argc, char* argv[]){
   // AutoLibraryLoader::enable();
 
   std::string input_file = argv[1];
-  bool run_legacy = false;
-  if(argc == 3){
-     run_legacy = atoi(argv[2]);
-    } 
+//  bool run_legacy = false;
   std::string output_file = input_file;
   bool MC=true; // Set to true to use Markov-Chain integration
   if (output_file.find("input.root") != input_file.npos) {
@@ -61,14 +57,14 @@ int main(int argc, char* argv[]){
   unsigned run = 0;
   ULong64_t objects_hash = 0;
   unsigned mode = 0;
-  int dm1 = -1;
-  int dm2 = -1;
+//  int dm1 = -1;
+ // int dm2 = -1;
   double svfit_mass;
   ic::Candidate *svfit_vector = NULL;
 
   TH1::AddDirectory(kFALSE);
 
- if(!run_legacy){
+/* if(!run_legacy){
   itree->SetBranchAddress("event", &event);
   itree->SetBranchAddress("lumi", &lumi);
   itree->SetBranchAddress("run", &run);
@@ -118,7 +114,7 @@ int main(int argc, char* argv[]){
   output->Close();
   delete output;
 
- }else{
+ }else{*/
   itree->SetBranchAddress("event", &event);
   itree->SetBranchAddress("lumi", &lumi);
   itree->SetBranchAddress("run", &run);
@@ -157,7 +153,7 @@ int main(int argc, char* argv[]){
   delete otree;
   output->Close();
   delete output;
-}
+//}
 
   input->Close();
   delete input;

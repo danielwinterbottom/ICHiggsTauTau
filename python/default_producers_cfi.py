@@ -508,6 +508,7 @@ icTriggerObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
 )
 ## [TriggerObject]
 
+
 ## [EventInfo]
 icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   branch              = cms.string("eventInfo"),
@@ -536,4 +537,50 @@ icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
 ## [Event]
 icEventProducer = cms.EDProducer('ICEventProducer')
 ## [Event]
+
+## [L1Object]
+icL1ObjectProducer = cms.EDProducer('ICL1ObjectProducer',
+    branch                    = cms.string("L1Objects"),
+    input                     = cms.InputTag("gsfElectrons"),
+    includeR9                 = cms.bool(False),
+    inputR9                   = cms.InputTag("icElectronR9Calculator"),
+    includeHcalSum            = cms.bool(False),
+    inputHcalSum              = cms.InputTag("icElectronHcalDepthCalculator"),
+    includeConversionMatches  = cms.bool(False),
+    inputConversionMatches    = cms.InputTag("icElectronConversionCalculator"),
+    includeVertexIP           = cms.bool(False),
+    inputVertices             = cms.InputTag("offlinePrimaryVertices"),
+    includeBeamspotIP         = cms.bool(False),
+    inputBeamspot             = cms.InputTag("offlineBeamSpot"),
+    includeFloats = cms.PSet(
+      # A named list of InputTags identifying edm::ValueMap<float>
+      # objects keyed on the input GsfElectron collection. The hash
+      # of the name and the float value will be stored. For example:
+      #   mvaNonTrigV0    = cms.InputTag("mvaNonTrigV0")
+    ),
+    includePFIso03           = cms.bool(False),
+    pfIso03 = cms.PSet(
+      chargedAll  = cms.InputTag("elPFIsoValueChargedAll03PFIdPFIso"),
+      charged     = cms.InputTag("elPFIsoValueCharged03PFIdPFIso"),
+      neutral     = cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"),
+      gamma       = cms.InputTag("elPFIsoValueGamma03PFIdPFIso"),
+      pu          = cms.InputTag("elPFIsoValuePU03PFIdPFIso")
+    ),
+    includePFIso04           = cms.bool(False),
+    pfIso04 = cms.PSet(
+      chargedAll  = cms.InputTag("elPFIsoValueChargedAll04PFIdPFIso"),
+      charged     = cms.InputTag("elPFIsoValueCharged04PFIdPFIso"),
+      neutral     = cms.InputTag("elPFIsoValueNeutral04PFIdPFIso"),
+      gamma       = cms.InputTag("elPFIsoValueGamma04PFIdPFIso"),
+      pu          = cms.InputTag("elPFIsoValuePU04PFIdPFIso")
+    ),
+   includeClusterIso       = cms.bool(False),
+   clusterIso = cms.PSet(
+     ecal        = cms.InputTag("elEcalPFClusterIso"),
+     hcal        = cms.InputTag("elHcalPFClusterIso")
+   )   
+)
+## [L1Object]
+
+
 

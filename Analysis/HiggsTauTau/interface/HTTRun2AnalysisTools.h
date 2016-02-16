@@ -33,7 +33,7 @@ namespace ic {
     
     public:
       //! Constructor specifying channel, year and the level of verbosity
-      HTTRun2Analysis(ic::channel ch, std::string year, int use_status_flags, int verbosity);
+      HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15);
 
       //! Add a single sample to the list of files that will be opened
       void AddSample(std::string const& sample);
@@ -251,15 +251,14 @@ namespace ic {
 
       void SetQCDRatio(double const& ratio);
       inline void SetVerbosity(unsigned const& verbosity) { verbosity_ = verbosity; }
-      inline void SetStatusFlags(unsigned const& use_status_flags) {use_status_flags_ = use_status_flags; }
 
     private:
       ic::channel ch_;
       std::string year_;
       std::string input_folder_;
-      unsigned use_status_flags_;
       unsigned verbosity_;
       double lumi_;
+      bool is_fall15_;
       std::string dy_soup_;
       double qcd_os_ss_factor_;
       std::vector<std::string> sample_names_;

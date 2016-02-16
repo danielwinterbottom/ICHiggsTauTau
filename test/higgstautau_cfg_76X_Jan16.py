@@ -74,7 +74,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("EventTree.root"),
+  fileName = cms.string("L1Objects.root"),
   closeFileFast = cms.untracked.bool(True)
 )
 
@@ -82,7 +82,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(-1)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -623,6 +623,37 @@ process.icElectronSequence += cms.Sequence(
   process.icElectronProducer
 )
 
+################################################################
+# L1 Objects
+################################################################
+
+process.icL1ObjectSequence = cms.Sequence()
+
+process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
+  branch                    = cms.string("L1Objects"),
+  input                     = cms.InputTag("selectedElectrons"),
+  includeConversionMatches  = cms.bool(True),
+  inputConversionMatches    = cms.InputTag("icElectronConversionCalculator"),
+  includeVertexIP           = cms.bool(True),
+  inputVertices             = vtxLabel,
+  includeBeamspotIP         = cms.bool(True),
+  inputBeamspot             = cms.InputTag("offlineBeamSpot"),
+  includeFloats = cms.PSet(
+     mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
+     mvaTrigSpring15       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values")
+  ),
+  includeClusterIso        = cms.bool(True),
+  includePFIso03           = cms.bool(True),
+  includePFIso04           = cms.bool(True)
+)
+
+
+if release in ['76X']:
+  process.icL1ObjectProducer.includeClusterIso = cms.bool(False)
+
+process.icL1ObjectSequence += cms.Sequence(
+  process.icL1ObjectProducer
+)
 
 ################################################################
 # Muons
@@ -1910,6 +1941,7 @@ process.p = cms.Path(
   process.icVertexSequence+
 # process.icPFSequence+
   process.icElectronSequence+
+  process.icL1ObjectSequence+
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
@@ -1928,4 +1960,5 @@ process.p = cms.Path(
 
 # process.schedule = cms.Schedule(process.patTriggerPath, process.p)
 process.schedule = cms.Schedule(process.p)
+
 

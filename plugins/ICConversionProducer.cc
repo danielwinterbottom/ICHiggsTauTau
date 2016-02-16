@@ -74,7 +74,7 @@ void ICConversionProducer::produce(edm::Event& event,
         dtrk.set_algorithm(trk->algo());
         dtrk.set_pt_err(trk->ptError());
         dtrk.set_quality(trk->qualityMask());
-#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 2
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION == 7 && CMSSW_MINOR_VERSION >= 2)
         dtrk.set_hits_miss_inner(
             trk->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
 #else

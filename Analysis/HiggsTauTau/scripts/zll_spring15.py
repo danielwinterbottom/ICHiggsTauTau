@@ -61,10 +61,10 @@ if options.submit:  JOBSUBMIT=options.submit
 
 channels = options.channels
 
-CONFIG='scripts/Zll_config.json'
-#CONFIG='scripts/WMuNu_config.json'
+#CONFIG='scripts/Zll_config.json'
+CONFIG='scripts/WMuNu_config.json'
 
-FILELIST='filelists/Nov19_MC_74X'
+FILELIST='filelists/Oct30_MC_74X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -106,7 +106,7 @@ if options.proc_bkg or options.proc_all or options.proc_tp:
     #'TTJets',
     'TT-ext',
     'WJetsToLNu-LO',
-		#'WJetsToLNu',
+		'WJetsToLNu',
     #'WWinclusive',
     #'ZZinclusive',
     #'WZinclusive',

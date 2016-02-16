@@ -16,7 +16,7 @@ ICJetFlavourCalculator::ICJetFlavourCalculator(
     : input_(config.getParameter<edm::InputTag>("input")),
       input_jet_flavour_(config.getParameter<edm::InputTag>("flavourMap")) {
   consumes<edm::View<reco::Jet>>(input_);
-  #if CMSSW_MAJOR_VERSION>=7 && CMSSW_MINOR_VERSION >=4
+  #if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION==7 && CMSSW_MINOR_VERSION >=4)
   consumes<reco::JetFlavourInfoMatchingCollection>(input_jet_flavour_);
   #else 
   consumes<reco::JetFlavourMatchingCollection>(input_jet_flavour_);
@@ -32,7 +32,7 @@ void ICJetFlavourCalculator::produce(edm::Event& event,
   edm::Handle <edm::View <reco::Jet> > jets_handle;
   event.getByLabel(input_, jets_handle);
 
-#if CMSSW_MAJOR_VERSION>=7 && CMSSW_MINOR_VERSION >=4 
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION==7 && CMSSW_MINOR_VERSION >=4 )
   edm::Handle<reco::JetFlavourInfoMatchingCollection> flavour_handle;
 #else
   edm::Handle<reco::JetFlavourMatchingCollection> flavour_handle;
@@ -42,7 +42,7 @@ void ICJetFlavourCalculator::produce(edm::Event& event,
   std::vector<int> dummy_vec(2,0);
   std::vector<std::vector<int>> values(jets_handle->size(), dummy_vec);
   for (unsigned i = 0; i < jets_handle->size(); ++i) {
-#if CMSSW_MAJOR_VERSION>=7 && CMSSW_MINOR_VERSION>=4
+#if CMSSW_MAJOR_VERSION > 7 || (CMSSW_MAJOR_VERSION==7 && CMSSW_MINOR_VERSION>=4)
     values[i].at(0) = (*flavour_handle)[jets_handle->refAt(i)].getPartonFlavour();
     values[i].at(1) = (*flavour_handle)[jets_handle->refAt(i)].getHadronFlavour();
 #else

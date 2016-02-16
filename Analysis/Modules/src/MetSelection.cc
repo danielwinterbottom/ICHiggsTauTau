@@ -54,14 +54,14 @@ namespace ic {
       passFilters = eventInfo->good_vertices() > 0;
       for (unsigned iF(0); iF<filters_.size(); ++iF){
 	//std::cout << "-- Filter " << filters_[iF] << " : " << eventInfo->filter_result(filters_[iF]) << std::endl;
-	if (filters_[iF].find("CSCTight")== filters_[iF].npos) {
-	  passFilters = passFilters && eventInfo->filter_result(filters_[iF]);
-	  if (eventInfo->filter_result(filters_[iF])) counters_[iF]++;
-	}
-	else {
-	  passFilters = passFilters && !eventInfo->filter_result(filters_[iF]);
-	  if (!eventInfo->filter_result(filters_[iF])) counters_[iF]++;
-	}
+	//if (filters_[iF].find("CSCTight")== filters_[iF].npos) {
+	passFilters = passFilters && eventInfo->filter_result(filters_[iF]);
+	if (eventInfo->filter_result(filters_[iF])) counters_[iF]++;
+	//}
+	//else {
+	//passFilters = passFilters && !eventInfo->filter_result(filters_[iF]);
+	//if (!eventInfo->filter_result(filters_[iF])) counters_[iF]++;
+	//}
       }
     }
 

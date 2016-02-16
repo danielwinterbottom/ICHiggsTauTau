@@ -38,19 +38,27 @@ class ICEventInfoProducer : public edm::EDProducer {
   edm::InputTag input_leptons_rho_;
   bool do_vertex_count_;
   edm::InputTag input_vertices_;
-  bool do_csc_filter_;
-  edm::InputTag input_csc_filter_;
   bool do_lhe_weights_;
   bool do_ht_;
-  bool do_filtersfromtrig_;
-  std::vector<std::pair<std::string, edm::InputTag> > filters_;
-  std::vector<std::string> filtersfromtrig_;
-  edm::InputTag filtersfromtrig_input_;
   std::vector<std::pair<std::string, edm::InputTag> > weights_;
   std::vector<std::pair<std::string, edm::InputTag> > gen_weights_;
-  std::set<std::string> invert_filter_logic_;
-  std::map<std::string, std::size_t> observed_filters_;
   std::vector<std::string> lhe_weight_labels_;
+
+  //3 ways to get event filters:
+  //1- CSC has special handle. Not active anymore for run II....
+  bool do_csc_filter_;
+  edm::InputTag input_csc_filter_;
+  //2- Bool filters from triggerResults handle, from miniAOD
+  bool do_filtersfromtrig_;
+  edm::InputTag filtersfromtrig_input_;
+  std::vector<std::string> filtersfromtrig_;
+  //3- Bool filters from specific collections - name starting with! will be inverted.
+  std::vector<std::pair<std::string, edm::InputTag> > filters_;
+  std::set<std::string> invert_filter_logic_;
+
+
+  //store all filters in one map 
+  std::map<std::string, std::size_t> observed_filters_;
 };
 
 #endif

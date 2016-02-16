@@ -55,6 +55,11 @@ namespace ic{
     filemanager_.set_infolder(infolder);
   };
 
+  void LTAnalyser::SetEosFolders(std::string datafolder, std::string mcfolder){
+    filemanager_.set_dataeosfolder(datafolder);
+    filemanager_.set_mceosfolder(mcfolder);
+  };
+
   void LTAnalyser::SetInputParams(std::string inputparams){
     filemanager_.set_input_params(inputparams);
   };

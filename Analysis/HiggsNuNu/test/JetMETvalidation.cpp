@@ -80,6 +80,7 @@ int main(int argc, char* argv[]){
   bool douessyst;                 // Do Unclustered MET Systematic Run
   bool uesupordown;               // If doing Unclustered MET Systematic Run, run with up or down correction (true for up, false for down) 
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
+  bool do2015tauid;                 // If doing cross check tau use alternate tau id discriminant
   bool taulepdiscrtight;          // Use tight electron and muon discriminants
   bool dojerdebug;                // Access runmetunc collections for debugging
   bool dotopreweighting;          // Do Top reweighting
@@ -89,6 +90,9 @@ int main(int argc, char* argv[]){
   string mettype;                 // MET input collection to be used
   string jettype;                 // JET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
+  bool reapplyJEC;                // Reapply JEC from txt files
+  string jecdata;                 // File list to get JEC to reapply offline
+
   bool doMetFilters;              // apply cleaning MET filters.
   string filters;
   //unsigned signal_region;       // DeltaPhi cut > 2.7
@@ -110,6 +114,8 @@ int main(int argc, char* argv[]){
   double jet1ptcut;               //jet1ptcut
   double jet2ptcut;               //jet2ptcut
   double jetptprecut;             //jetptprecut, should be the CJV threshold
+  double mjjcut;
+  double detajjcut;
 
   int randomseed;
 
@@ -117,6 +123,10 @@ int main(int argc, char* argv[]){
   bool printEventContent; //print event content of events selected
 
   bool turnoffpuid;
+
+  bool useOldLT;
+  bool doTrigLT;
+  bool doAllPairs;
 
  // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -142,6 +152,8 @@ int main(int argc, char* argv[]){
     ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(30.))
     ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(30.))
     ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(15.))
+    ("mjjcut",           po::value<double>(&mjjcut)->default_value(600.))
+    ("detajjcut",           po::value<double>(&detajjcut)->default_value(3.2))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
@@ -152,6 +164,7 @@ int main(int argc, char* argv[]){
     ("douessyst",           po::value<bool>(&douessyst)->default_value(false))
     ("uesupordown",         po::value<bool>(&uesupordown)->default_value(true))
     ("docrosschecktau",     po::value<bool>(&docrosschecktau)->default_value(false))
+    ("do2015tauid",         po::value<bool>(&do2015tauid)->default_value(true))
     ("taulepdiscrtight",    po::value<bool>(&taulepdiscrtight)->default_value(false))
     ("dojerdebug",          po::value<bool>(&dojerdebug)->default_value(false))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
@@ -178,7 +191,12 @@ int main(int argc, char* argv[]){
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("dospring10gaus",      po::value<bool>(&dospring10gaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
-    ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
+     ("reapplyJEC",          po::value<bool>(&reapplyJEC)->default_value(false))
+    ("jecdata",          po::value<string>(&jecdata)->default_value("input/jec/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"))
+   ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
+    ("useOldLT",         po::value<bool>(&useOldLT)->default_value(false))
+    ("doTrigLT",         po::value<bool>(&doTrigLT)->default_value(false))
+    ("doAllPairs",       po::value<bool>(&doAllPairs)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -187,6 +205,9 @@ int main(int argc, char* argv[]){
 
   vector<string> filtersVec;
   boost::split(filtersVec, filters, boost::is_any_of(","));
+
+  std::vector<string> jecdatafiles;
+  boost::split(jecdatafiles, jecdata, boost::is_any_of(","));
 
   // Some options must now be re-configured based on other options
   ic::era era           = String2Era(era_str);
@@ -296,7 +317,7 @@ int main(int argc, char* argv[]){
   if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
   if (mc == mc::summer12_52X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S7-600bins.root";
   if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
-  if (mc == mc::spring15_74X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
+  if (mc == mc::spring15_74X) mc_pu_file  = "input/pileup/MC_Spring15_PU25_Startup.root";
 
   string data_pu_file;
   if (era == era::data_2012_rereco) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
@@ -306,6 +327,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_moriond) data_pu_file   =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
+  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -496,25 +518,19 @@ int main(int argc, char* argv[]){
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
     .set_input_label(jettype)
+    .set_jec_data_files(jecdatafiles)
     .set_met_label(mettype)
-    .set_dosmear(dosmear)
-    .set_doaltmatch(doaltmatch)
-    .set_doetsmear(doetsmear)
     .set_dogaus(dogaus)
     .set_dospring10gaus(dospring10gaus)
     .set_is_data(is_data)
-    .set_dojessyst(dojessyst)
-    .set_dodatajessyst(dodatajessyst)
-    .set_jesupordown(jesupordown)
-    .set_dojersyst(dojersyst)
-    .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
-    .set_dojerdebug(dojerdebug)
-    .set_douessyst(douessyst)
-    .set_uesupordown(uesupordown)
     .set_randomseed(randomseed)
     .set_fs(fs);
-  
+  std::vector<JetMETModifier::jetmetCor> corVec;
+  if (reapplyJEC) corVec.push_back(JetMETModifier::jetmetCor::jecData);
+  if (dosmear)    corVec.push_back(JetMETModifier::jetmetCor::smearMC);
+  ModifyJetMET.set_corVec(corVec);
+
 
   CopyCollection<PFJet> alljetsCopyCollection("copytoalljets",jettype,"AllpfJetsPFlow");
   
@@ -574,7 +590,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
-  //SingleMetMaker singleMet = SingleMetMaker(mettype,mettype);
+  SingleMetMaker singleMet = SingleMetMaker(mettype,mettype);//+"Collection");
   MetSelection metFilters = MetSelection("MetFilters",mettype,doMetFilters,filtersVec,0);
   
 
@@ -606,11 +622,11 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_input_met("metNoMuons");
   if (!is_data) {
-    hinvWeights.set_do_trg_weights(dotrgeff)
-      .set_do_3dtrg_weights(do3dtrgeff)
-      .set_do_1dparkedtrg_weights(do1dparkedtrgeff)
-      .set_do_fitted1dparkedtrg_weights(dofitted1dparkedtrgeff)
-      .set_do_binnedin2d1dfittedtrg_weights(dobinnedin2d1dtrgeff)
+    hinvWeights.set_do_trg_weights(false)
+      .set_do_3dtrg_weights(false)
+      .set_do_1dparkedtrg_weights(false)
+      .set_do_fitted1dparkedtrg_weights(false)
+      .set_do_binnedin2d1dfittedtrg_weights(false)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(false);
     if(do3dtrgeff){

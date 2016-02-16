@@ -372,7 +372,8 @@ namespace ic {
   template <class T, class U>
     void getGenRecoMatches(const std::vector<T*> & recovec,
 			   const std::vector<U*> & genvec, 
-			   std::vector<std::pair<unsigned,bool> > & recotogenmatch){
+			   std::vector<std::pair<unsigned,bool> > & recotogenmatch,
+			   const double dRmin=1000){
     recotogenmatch.resize(recovec.size(),std::pair<unsigned,bool>(1000,false));
     unsigned nReco = recovec.size();
     unsigned nGen = genvec.size();
@@ -394,7 +395,7 @@ namespace ic {
 	nRecNotMatched++;
 	continue;
       }
-      recotogenmatch[i]=std::pair<unsigned,bool>(genvecid,true);
+      recotogenmatch[i]=std::pair<unsigned,bool>(genvecid,mindR<dRmin?true:false);
       ignoreIndex[genvecid] = true;
       //loop again to find minimum dpT/pT
       /*double ptgen = genvec[genvecid]->pt();

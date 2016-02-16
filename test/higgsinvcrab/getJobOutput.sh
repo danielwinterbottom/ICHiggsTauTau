@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$#" -ne "2" ]; then
-    echo "Usage: $0 <production name> <MC or MET>"
+    echo "Usage: $0 <production name> <MC or DATA>"
     exit 0
 fi
 
