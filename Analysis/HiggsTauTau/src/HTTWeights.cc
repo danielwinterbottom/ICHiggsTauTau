@@ -1194,17 +1194,23 @@ namespace ic {
     }
 
     if (do_dy_soup_) {
-      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      bool count_jets = false;
       unsigned partons = 0;
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        // std::cout << i << "\t" << parts[i]->status() << "\t" << parts[i]->pdgid() << "\t" << parts[i]->vector() << std::endl;
-        if (parts[i]->status() != 3) continue;
-        unsigned id = abs(parts[i]->pdgid());
-        if (count_jets) { 
-          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+      if(era_ != era::data_2015){
+        std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+        bool count_jets = false;
+      
+        for (unsigned i = 0; i < parts.size(); ++i) {
+          // std::cout << i << "\t" << parts[i]->status() << "\t" << parts[i]->pdgid() << "\t" << parts[i]->vector() << std::endl;
+          if (parts[i]->status() != 3) continue;
+          unsigned id = abs(parts[i]->pdgid());
+          if (count_jets) { 
+            if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+          }
+          if (id == 23) count_jets = true; 
         }
-        if (id == 23) count_jets = true; 
+      } else { 
+        EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+        partons = eventInfo->n_outgoing_partons();
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;

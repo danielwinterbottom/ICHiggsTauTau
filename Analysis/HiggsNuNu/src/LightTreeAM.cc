@@ -35,6 +35,7 @@ namespace ic {
 
     //initialise arrays fixed size
     jet_pt_ = new double[nJetsSave_];
+    jet_uncorpt_ = new double[nJetsSave_];
     jet_E_ = new double[nJetsSave_];
     jet_eta_ = new double[nJetsSave_];
     jet_phi_ = new double[nJetsSave_];
@@ -83,6 +84,7 @@ namespace ic {
 
     for (unsigned ij(0); ij<nJetsSave_;++ij){
       jet_pt_[ij] = -1;
+      jet_uncorpt_[ij] = -1;
       jet_E_[ij] = -1;
       jet_eta_[ij] = -5;
       jet_phi_[ij] = -5;
@@ -246,6 +248,7 @@ namespace ic {
       std::ostringstream label;
       label << "jet" << ij+1;
       outputTree_->Branch((label.str()+"_pt").c_str(),&jet_pt_[ij]);
+      outputTree_->Branch((label.str()+"_uncorpt").c_str(),&jet_uncorpt_[ij]);
       outputTree_->Branch((label.str()+"_E").c_str(),&jet_E_[ij]);
       outputTree_->Branch((label.str()+"_eta").c_str(),&jet_eta_[ij]);
       outputTree_->Branch((label.str()+"_phi").c_str(),&jet_phi_[ij]);
@@ -649,6 +652,8 @@ namespace ic {
       //just for first nJetsSave_ jets
       if (nJets_<nJetsSave_){
 	jet_pt_[nJets_]=jets[i]->pt();
+	jet_uncorpt_[nJets_]=jets[i]->uncorrected_energy()/jets[i]->energy()*jets[i]->pt();
+
 	jet_E_[nJets_]=jets[i]->energy();
 	jet_eta_[nJets_]=jets[i]->eta();
 	jet_phi_[nJets_]=jets[i]->phi();

@@ -1,12 +1,13 @@
 #!/bin/sh
 
-if [ "$#" -ne "2" ]; then
-    echo "Usage: $0 <production name> <MC or DATA>"
+if [ "$#" -ne "3" ]; then
+    echo "Usage: $0 <production name> <MC or DATA> <failed word: FAILED SUBMITTED QUEUED ..."
     exit 0
 fi
 
 PROD=$1
 DATAMC=$2
+FAILEDWORD=$3
 
 echo "Getting jobs in COMPLETED status"
 
@@ -49,7 +50,7 @@ do
 		fi
 	    fi
 	else
-	    grep "Task status" logfile | grep "FAILED"
+	    grep "Task status" logfile | grep $FAILEDWORD
 	    if (( "$?" == 0 )); then
 		grep -A 10 "Jobs status" logfile | grep "%"
 		echo " Would you like to resubmit ? If not, will make filelist. Choice: Y or N. Nothing means skip."
@@ -69,7 +70,7 @@ do
 		    echo "Skipping."
 		fi
 	    else
-		echo " -- Task $PROD/$DATAMC/$crabdir not in COMPLETED or FAILED status, skipping."
+		echo " -- Task $PROD/$DATAMC/$crabdir not in COMPLETED or $FAILEDWORD status, skipping."
 	    fi
 	fi
     else
