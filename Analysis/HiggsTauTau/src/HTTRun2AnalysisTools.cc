@@ -63,7 +63,7 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "1";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
-      alias_map_["baseline"]         = "(iso_1<0.1 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -87,11 +87,19 @@ namespace ic {
       alias_map_["mvaisop0p1"]        = "(iso_1<0.1&&iso_mva_new_2>0.1&&antiele_2&&antimu_2&&!leptonveto)";
 
       alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
       // Categories for iso studies
       alias_map_["incnotauiso"]      = "(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto&&"+alias_map_["notwoprong"]+")";
       alias_map_["dbloose"]          = "(db_loose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["dbmedium"]         = "(db_medium_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["dbtight"]         = "(db_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["btagdbloose"]          = "(db_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagdbmedium"]         = "(db_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagdbtight"]         = "(db_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["nobtagdbloose"]          = "(db_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagdbmedium"]         = "(db_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagdbtight"]         = "(db_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["puwloose"]          = "(puw_loose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["puwmedium"]         = "(puw_medium_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["puwtight"]         = "(puw_tight_2&&"+alias_map_["incnotauiso"]+")";
@@ -101,6 +109,18 @@ namespace ic {
       alias_map_["mvadboldtight"]     = "(mvadbold_tight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadboldvtight"]     = "(mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadboldvvtight"]    = "(mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["btagmvadboldvloose"]    = "(mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldloose"]     = "(mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldmedium"]    = "(mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldtight"]     = "(mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvtight"]     = "(mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvvtight"]    = "(mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["nobtagmvadboldvloose"]    = "(mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldloose"]     = "(mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldmedium"]    = "(mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldtight"]     = "(mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvtight"]     = "(mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvvtight"]    = "(mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
@@ -197,10 +217,10 @@ namespace ic {
       alias_map_["qcd_vloose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
-      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+
       alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
       alias_map_["btagpt20"] = "(n_lowpt_jets<=1 && n_bjets>=1)";
-      alias_map_["nobtag"] = "n_bjets==0";
+
       alias_map_["nobtagnotwoprong"] = "(n_bjets==0&&"+alias_map_["notwoprong"]+")";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
@@ -219,6 +239,8 @@ namespace ic {
       alias_map_["2jet1taghigh"] = "(n_jets>=2 && n_bjets==1)";
       alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
       alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto &&"+alias_map_["notwoprong"];
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -235,20 +257,38 @@ namespace ic {
       alias_map_["dbmedium"]         = "(db_medium_1&&db_medium_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["dbtight"]         = "(db_tight_1&&db_tight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["puwloose"]          = "(puw_loose_1&&puw_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["btagdbloose"]          = "(db_loose_1&&db_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagdbmedium"]         = "(db_medium_1&&db_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagdbtight"]         = "(db_tight_1&&db_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["nobtagdbloose"]          = "(db_loose_1&&db_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagdbmedium"]         = "(db_medium_1&&db_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagdbtight"]         = "(db_tight_1&&db_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["puwmedium"]         = "(puw_medium_1&&puw_medium_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["puwtight"]         = "(puw_tight_1&&puw_tight_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["mvadboldvloose"]    = "(mvadbold_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["mvadboldloose"]     = "(mvadbold_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["mvadboldmedium"]    = "(mvadbold_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["mvadboldtight"]     = "(mvadbold_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["mvadboldvtight"]     = "(mvadbold_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["mvadboldvvtight"]    = "(mvadbold_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["btagmvadboldvloose"]    = "(mvadbold_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldloose"]     = "(mvadbold_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldmedium"]    = "(mvadbold_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldtight"]     = "(mvadbold_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvtight"]     = "(mvadbold_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvvtight"]    = "(mvadbold_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["nobtagmvadboldvloose"]    = "(mvadbold_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldloose"]     = "(mvadbold_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldmedium"]    = "(mvadbold_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldtight"]     = "(mvadbold_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvtight"]     = "(mvadbold_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvvtight"]    = "(mvadbold_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_1&&mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_1&&mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_1&&mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewtight"]     = "(mvadbnew_tight_1&&mvadbnew_tight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewvtight"]     = "(mvadbnew_vtight_1&&mvadbnew_vtight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewvvtight"]    = "(mvadbnew_vvtight_1&&mvadbnew_vvtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvloose"]    = "(mvadbold_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldloose"]     = "(mvadbold_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldmedium"]    = "(mvadbold_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldtight"]     = "(mvadbold_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvtight"]     = "(mvadbold_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+")";
+      alias_map_["mvadboldvvtight"]    = "(mvadbold_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvapwoldvloose"]    = "(mvapwold_vloose_1&&mvapwold_vloose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvapwoldloose"]     = "(mvapwold_loose_1&&mvapwold_loose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvapwoldmedium"]    = "(mvapwold_medium_1&&mvapwold_medium_2&&"+alias_map_["incnotauiso"]+")";
@@ -265,15 +305,15 @@ namespace ic {
 
       // SM Categories
       alias_map_["inclusive"]         = "1";
-//      alias_map_["baseline"]          = "1";
+     // alias_map_["baseline"]          = "1";
 
-      alias_map_["baseline"]          = "db_tight_1>0.5 && db_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+
       alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
-      alias_map_["nobtag"] = "n_bjets==0";
+
       alias_map_["nobtagnotwoprong"] = "(n_bjets==0 &&"+alias_map_["notwoprong"]+")";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
@@ -467,8 +507,8 @@ namespace ic {
     samples_alias_map_["vv_samples"] = {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
      "WWTo1L1Nu2Q",
-     /*"VVTo2L2Nu","ZZTo2L2Q",*/"ZZTo4L",
-     /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/
+     /*"VVTo2L2Nu",*/"ZZTo2L2Q","ZZTo4L",
+     /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
     };
 
     if(!is_fall15_){
@@ -574,8 +614,8 @@ namespace ic {
    "DYJetsToLL_M-50-LO", 
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",
-   /*"VVTo2L2Nu","ZZTo2L2Q",*/"ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu",//"WZTo1L1Nu2Q",
+   /*"VVTo2L2Nu",*/"ZZTo2L2Q","ZZTo4L",
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "WJetsToLNu","TT-ext"/*,
    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
@@ -606,8 +646,8 @@ namespace ic {
    "DYJetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",//"VVTo2L2Nu",
-   /*"ZZTo2L2Q",*/"ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu",//"WZTo1L1Nu2Q",
+   "ZZTo2L2Q","ZZTo4L",
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext","WJetsToLNu"/*,
    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
@@ -637,8 +677,8 @@ namespace ic {
    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",*/
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",//"VVTo2L2Nu",
-   /*"ZZTo2L2Q",*/"ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu",//"WZTo1L1Nu2Q",
+   "ZZTo2L2Q","ZZTo4L",
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext"
    };
 

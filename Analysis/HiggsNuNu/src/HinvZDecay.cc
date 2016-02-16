@@ -4,30 +4,40 @@
 
 namespace ic {
 
-//   HinvZDecay::HinvZDecay(std::string const& name,
-// 			 unsigned flavour,
-// 			 double minMll, 
-// 			 double maxMll) : ModuleBase(name) {
-//     flavour_ = flavour;
-//     minMll_ = minMll;
-//     maxMll_ = maxMll;
-//     countStatus3_ = 0;
-//     doptinstead_ = false;
-//   }
+  HinvZDecay::HinvZDecay(std::string const& name,
+ 			 unsigned flavour,
+ 			 double minMll, 
+ 			 double maxMll) : ModuleBase(name) {
+     flavour_ = flavour;
+     min_ = minMll;
+     max_ = maxMll;
+     variable_ = cutVar::mass;
+     countStatus3_ = 0;
+  }
 
   HinvZDecay::HinvZDecay(std::string const& name,
 			 unsigned flavour,
-			 double minMll, 
-			 double maxMll, 
-			 bool doptinstead,
+			 double min, 
+			 double max, 
+			 cutVar variable,
 			 bool is2012) : ModuleBase(name) {
     flavour_ = flavour;
-    minMll_ = minMll;
-    maxMll_ = maxMll;
+    min_ = min;
+    max_ = max;
     countStatus3_ = 0;
-    doptinstead_ = doptinstead;
+    variable_ = variable;
     is2012_ = is2012;
     n0pt_ = 0;
+  }
+
+  HinvZDecay::HinvZDecay(std::string const& name,
+			 unsigned flavour,
+			 double min, 
+			 double max, 
+			 bool variable,
+			 bool is2012) : ModuleBase(name) {
+    if (variable) HinvZDecay(name,flavour,min,max,cutVar::pt,is2012);
+    else HinvZDecay(name,flavour,min,max,cutVar::mass,is2012);
   }
 
   HinvZDecay::~HinvZDecay() {
@@ -39,8 +49,9 @@ namespace ic {
     std::cout << "PreAnalysis Info for HinvZDecay" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "Flavour: " << flavour_ << std::endl;
-    if (!doptinstead_) std::cout << " Mass range kept: " << minMll_ << "-" << maxMll_ << std::endl;
-    else std::cout << " pT range kept: " << minMll_ << "-" << maxMll_ << std::endl;
+    if (variable_==cutVar::mass) std::cout << " Mass range kept: " << min_ << "-" << max_ << std::endl;
+    else if (variable_==cutVar::pt) std::cout << " pT range kept: " << min_ << "-" << max_ << std::endl;
+    else std::cout << " HT range kept: " << min_ << "-" << max_ << std::endl;
     std::cout << " Do 2012 selection: " << is2012_ << std::endl;
     countStatus3_ = 0;
 
@@ -50,6 +61,9 @@ namespace ic {
   int HinvZDecay::Execute(TreeEvent *event) {
 
     //std::cout << " --New event" << std::endl;
+
+    EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    double gen_ht = eventInfo->gen_ht() ;
 
     std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
 
@@ -136,14 +150,19 @@ namespace ic {
       exit(1);*/
     }
 
-    if(!doptinstead_){
-      if (mass >= minMll_ && mass < maxMll_){
+    if(variable_ == cutVar::mass){
+      if (mass >= min_ && mass < max_){
 	return 0;
       }
     }
-    else{
-      if (pt < maxMll_) countStatus3_++;
-      if (pt >= minMll_ && pt < maxMll_){
+    else if (variable_ == cutVar::pt){
+      if (pt < max_) countStatus3_++;
+      if (pt >= min_ && pt < max_){
+	return 0;
+      }
+    }
+    else if (variable_ == cutVar::ht){
+      if (gen_ht >= min_ && gen_ht < max_){
 	return 0;
       }
     }
@@ -156,9 +175,10 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PostAnalysis Info for HinvZDecay" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    std::cout << " -- Number of Z->ll pT<" << maxMll_ << ": " << countStatus3_ << std::endl;
-    std::cout << " -- Number of Z->ll pT=0 " << n0pt_ << std::endl;
-
+    if (variable_ == cutVar::pt){
+      std::cout << " -- Number of Z->ll pT<" << max_ << ": " << countStatus3_ << std::endl;
+      std::cout << " -- Number of Z->ll pT=0 " << n0pt_ << std::endl;
+    }
 
     return 0;
   }

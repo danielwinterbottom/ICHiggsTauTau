@@ -182,7 +182,7 @@ namespace ic {
     else if (partons == 1) count1Parton_++;
     else if (partons == 2) count2Parton_++;
     else if (partons == 3) count3Parton_++;
-    else if (partons == 4) count4Parton_++;
+    else if (partons >= 4) count4Parton_++;
 
     std::vector<GenJet *> genvec= event->GetPtrVec<GenJet>("genJets");
     std::sort(genvec.begin(), genvec.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));

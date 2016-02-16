@@ -319,8 +319,8 @@ namespace ic {
     Tau const* t2 = static_cast<Tau const*>(c2->At(1));
     /*double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
-    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
-    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
     //if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
     if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
@@ -341,8 +341,8 @@ namespace ic {
     Tau const* t2 = static_cast<Tau const*>(c2->At(1));
     /*double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
-    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
-    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
    // if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
     if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
@@ -373,8 +373,8 @@ namespace ic {
     Tau const* t1_2 = static_cast<Tau const*>(c2->At(0));
     /*double t1_iso1 = t1_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     double t1_iso2 = t1_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
-    double t1_iso1 = t1_1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
-    double t1_iso2 = t1_2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    double t1_iso1 = t1_1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    double t1_iso2 = t1_2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
     // If the iso is different we just use this
     //if (t1_iso1 != t1_iso2) return t1_iso1 < t1_iso2;
     if (t1_iso1 != t1_iso2) return t1_iso1 > t1_iso2;
@@ -385,8 +385,8 @@ namespace ic {
     Tau const* t2_2 = static_cast<Tau const*>(c2->At(1));
     /*double t2_iso1 = t2_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     double t2_iso2 = t2_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");*/
-    double t2_iso1 = t2_1->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
-    double t2_iso2 = t2_2->GetTauID("byIsolationMVArun2v1DBnewDMwLTraw");
+    double t2_iso1 = t2_1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    double t2_iso2 = t2_2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
     // If the iso is different we just use this
     //if (t2_iso1 != t2_iso2) return t2_iso1 < t2_iso2;
     if (t2_iso1 != t2_iso2) return t2_iso1 > t2_iso2;

@@ -599,6 +599,8 @@ namespace ic{
 	  ratio->GetYaxis()->SetTitle("Data/Bkg");
 	  ratio->GetYaxis()->SetTitleSize(0.19);
 	  ratio->Divide(den);
+	  
+
 	  gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
 

@@ -49,9 +49,11 @@ namespace ic {
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("met",               &mvamet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
+      outtree_->Branch("n_prebjets",        &n_prebjets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("mjj",               &mjj_.var_double);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
+      outtree_->Branch("n_taus",            &n_taus_);
       //Variables needed for control plots need only be generated for central systematics
       outtree_->Branch("n_vtx",             &n_vtx_);
       outtree_->Branch("pt_1",              &pt_1_.var_double);
@@ -92,6 +94,11 @@ namespace ic {
     std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMet");
     Met const* mets = met_vec.at(0);  
 
+    std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
+    std::sort(taus.begin(),taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    ic::erase_if(taus, !boost::bind(MinPtMaxEta, _1, 20.0, 2.3));
+    n_taus_ = taus.size();
+
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> corrected_jets;
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
@@ -100,6 +107,7 @@ namespace ic {
     ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
     std::vector<PFJet*> prebjets = lowpt_jets;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    n_prebjets_ = prebjets.size();
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     std::string btag_label="combinedSecondaryVertexBJetTags";
