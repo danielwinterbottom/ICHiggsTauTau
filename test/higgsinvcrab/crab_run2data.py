@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='160211'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='160213'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 config.section_('General')
 config.section_('Data')

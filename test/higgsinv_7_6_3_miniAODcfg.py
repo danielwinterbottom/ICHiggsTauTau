@@ -811,7 +811,8 @@ jetsrcconfig=cms.PSet(
   BTagDiscriminators        = cms.PSet(
     simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK4PFCHS"),
     simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK4PFCHS"),
-    combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS")
+    combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS"),
+    pfCombinedSecondaryVertexV2BJetTags = cms.InputTag("pfCombinedSecondaryVertexV2BJetTags")
     )
   )
 
@@ -896,10 +897,6 @@ process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
   )
 
 process.icPFJetSequence = cms.Sequence()
-
-process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet(
-  pfCombinedSecondaryVertexV2BJetTags = cms.InputTag("pfCombinedSecondaryVertexV2BJetTags")
-)
 
 process.icPFJetSequence += cms.Sequence(
   process.pfchs+
@@ -1142,12 +1139,12 @@ process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
   inputPrescales=cms.InputTag("patTrigger")
   )
 
-if isData:
-    process.icTriggerSequence += cms.Sequence(
-    #process.patTrigger+
-    #process.patTriggerEvent+
-    process.icTriggerPathProducer
-    )
+#if isData:
+process.icTriggerSequence += cms.Sequence(
+  #process.patTrigger+
+  #process.patTriggerEvent+
+  process.icTriggerPathProducer
+  )
 
 process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
   branch = cms.string("triggerObjectsPFMET170NoiseCleaned"),
