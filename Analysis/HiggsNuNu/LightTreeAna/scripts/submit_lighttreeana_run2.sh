@@ -26,9 +26,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_160212_nomindphi
+JOBDIRPREFIX=jobs_run2ana_160213_sig #_nomindphi
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_160212_nomindphi
+OUTPUTPREFIX=output_run2ana_160213_sig #_nomindphi
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -72,11 +72,11 @@ for syst in "" #PUUP PUDOWN JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in nunu munu #qcd enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in nunu qcd enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     OUTPUTNAME="$channels.root"
-    MINDPHICUT="alljetsmetnomu_mindphi\>=0.0"
+    MINDPHICUT="alljetsmetnomu_mindphi\>=2.3"
     if [ "$channels" = "qcd" ]; then
 	MINDPHICUT="alljetsmetnomu_mindphi\<0.5"
 	#MINDPHICUT="alljetsmetnomu_mindphi\>=0"

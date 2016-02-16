@@ -901,13 +901,13 @@ int main(int argc, char* argv[]){
     }
   }
 
-  if (output_name.find("JetsToLL") != output_name.npos &&
+  /*if (output_name.find("JetsToLL") != output_name.npos &&
       output_name.find("m50-ht") != output_name.npos){
     xsWeights.set_do_dy_soup_htbinned(false);
     xsWeights.set_do_dy_reweighting(false);
     xsWeights.SetDYTargetFractions(1,1,1,1,1);
     xsWeights.SetDYInputYields(9004328,0,962195,1069003,1031103);
-  }
+    }*/
 
   // ------------------------------------------------------------------------------------
   // Gen particle selection modules
@@ -924,7 +924,8 @@ int main(int argc, char* argv[]){
   WtoLeptonFilter2012.set_do_newstatuscodes(false);
   WtoLeptonFilter2012.set_do_statusflags(false);
 
-  HinvZDecay ZhighptFilter = HinvZDecay("ZhighptFilter",is2012?13:0,0,150,true,is2012);
+  HinvZDecay ZhighptFilter = HinvZDecay("ZhighptFilter",is2012?13:0,HinvZDecay::cutVar::pt,150,true,is2012);
+  HinvZDecay ZhighhtFilter = HinvZDecay("ZhighhtFilter",is2012?13:0,HinvZDecay::cutVar::ht,100,true,is2012);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
@@ -992,6 +993,9 @@ int main(int argc, char* argv[]){
     //Z pt <100 GeV cut for inclusive DY samples
     if(doincludehighptz && output_name.find("JetsToLL-mg-m50") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
       analysis.AddModule(&ZhighptFilter);
+    }
+    if(output_name.find("JetsToLL") != output_name.npos && output_name.find("JetsToLL-mg-m50-ht") == output_name.npos && output_name.find("Zpt150") == output_name.npos){
+      analysis.AddModule(&ZhighhtFilter);
     }
   }
    

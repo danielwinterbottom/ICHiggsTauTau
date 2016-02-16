@@ -171,6 +171,7 @@ int main(int argc, char* argv[]){
       }*/
     //shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
     shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
+    shape.push_back("alljetsmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
 
     /*if (channel=="munu"){
       shape.push_back("metnomuons*pow(sqrt(sumet-mu1_pt),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
@@ -232,6 +233,10 @@ int main(int argc, char* argv[]){
 
     shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
     shape.push_back("jet2_pt(28,70.,350.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
+    shape.push_back("jet1_uncorpt(47,80.,550.)");histTitle.push_back(";uncor p_{T}^{j1} (GeV);Events");
+    shape.push_back("jet2_uncorpt(28,70.,350.)");histTitle.push_back(";uncor p_{T}^{j2} (GeV);Events");
+    shape.push_back("jet1_eta(94,-4.7,4.7)");histTitle.push_back(";#eta^{j1} (GeV);Events");
+    shape.push_back("jet2_eta(94,-4.7,4.7)");histTitle.push_back(";#eta^{j2} (GeV);Events");
     shape.push_back("cjvjetpt(19,15.,205.)");histTitle.push_back(";p_{T}^{CJV jet} (GeV);Events");
     
     if(channel=="mumu") {
@@ -252,8 +257,8 @@ int main(int argc, char* argv[]){
     shape.push_back("dijet_deta(30,3.6,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
     shape.push_back("dijet_sumeta(30,-5,5)");histTitle.push_back(";#eta_{j1}+#eta_{j2};Events");
     
-    shape.push_back("jetmetnomu_mindphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
-    shape.push_back("alljetsmetnomu_mindphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
+    shape.push_back("jetmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
+    shape.push_back("alljetsmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
     shape.push_back("metnomu_significance(30,0.,300.)");histTitle.push_back(";S;Events");
     
     shape.push_back("jetunclet_mindphi(32,0,3.1416)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});Events");
@@ -417,6 +422,78 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
 
+  DataShape signal600("signal600");
+  signal500.set_dataset("VBFH600")
+    .set_dirname("qqH600")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape ggH110("ggH110");
+  ggH110.set_dataset("GluGluH110")
+    .set_dirname("ggH110")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape ggH125("ggH125");
+  ggH125.set_dataset("GluGluH125")
+    .set_dirname("ggH125")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape ggH150("ggH150");
+  ggH150.set_dataset("GluGluH150")
+    .set_dirname("ggH150")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape ggH200("ggH200");
+  ggH200.set_dataset("GluGluH200")
+    .set_dirname("ggH200")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape ggH300("ggH300");
+  ggH300.set_dataset("GluGluH300")
+    .set_dirname("ggH300")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape ggH400("ggH400");
+  ggH400.set_dataset("GluGluH400")
+    .set_dirname("ggH400")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);  
+
+  DataShape ggH500("ggH500");
+  ggH500.set_dataset("GluGluH500")
+    .set_dirname("ggH500")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape ggH600("ggH600");
+  ggH600.set_dataset("GluGluH600")
+    .set_dirname("ggH600")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
   DataShape vv("vv");
   vv.set_dataset("VV")
     .set_dirname("vv")
@@ -441,9 +518,41 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
 
+
+  DataShape qcdznunuraw("qcdznunuraw");
+  qcdznunuraw.set_dataset("ZJets_nunu")
+    .set_dirname("zvvqcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+
+  DataShape ewkznunuraw("ewkznunuraw");
+  ewkznunuraw.set_dataset("EWK_ZJets_nunu")
+    .set_dirname("zvvewk")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
   DataShape zmumuraw("zmumuraw");
   zmumuraw.set_dataset("ZJets_ll")
     .set_dirname("zmumu")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+  DataShape qcdzmumuraw("qcdzmumuraw");
+  qcdzmumuraw.set_dataset("ZJets_ll")
+    .set_dirname("zmumuqcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+  DataShape ewkzmumuraw("ewkzmumuraw");
+  ewkzmumuraw.set_dataset("EWK_ZJets_ll")
+    .set_dirname("zmumuewk")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
@@ -459,6 +568,22 @@ int main(int argc, char* argv[]){
 
   if (use_nlo)  wmunuraw.set_dataset("WJets_nlo_munu");
 
+  DataShape qcdwmunuraw("qcdwmunuraw");
+  qcdwmunuraw.set_dataset("WJets_munu")
+    .set_dirname("wmuqcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+  DataShape ewkwmunuraw("ewkwmunuraw");
+  ewkwmunuraw.set_dataset("EWK_WJets_munu")
+    .set_dirname("wmuewk")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+
   DataShape wenuraw("wenuraw");
   wenuraw.set_dataset("WJets_enu")
     .set_dirname("wel")
@@ -468,6 +593,21 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);
 
   if (use_nlo)  wenuraw.set_dataset("WJets_nlo_enu");
+  DataShape qcdwenuraw("qcdwenuraw");
+  qcdwenuraw.set_dataset("WJets_enu")
+    .set_dirname("welqcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+  DataShape ewkwenuraw("ewkwenuraw");
+  ewkwenuraw.set_dataset("EWK_WJets_enu")
+    .set_dirname("welewk")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
 
   DataShape wtaunuraw("wtaunuraw");
   wtaunuraw.set_dataset("WJets_taunu")
@@ -478,6 +618,21 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);
 
   if (use_nlo) wtaunuraw.set_dataset("WJets_nlo_taunu");
+  DataShape qcdwtaunuraw("qcdwtaunuraw");
+  qcdwtaunuraw.set_dataset("WJets_taunu")
+    .set_dirname("wtauqcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+  DataShape ewkwtaunuraw("ewkwtaunuraw");
+  ewkwtaunuraw.set_dataset("EWK_WJets_taunu")
+    .set_dirname("wtauewk")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
 
   DataShape qcdraw("qcdraw");
   qcdraw.set_dataset("QCD")
@@ -566,6 +721,24 @@ int main(int argc, char* argv[]){
     .set_legname("W#rightarrow#mu#nu")
     .set_sample("wmu");
   if(!do_mcbkg)wmunuele.set_has_dderrors(1);
+  LTPlotElement qcdwmunuele;
+  qcdwmunuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange-4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD W#rightarrow#mu#nu")
+    .set_sample("wmuqcd");
+  if(!do_mcbkg)qcdwmunuele.set_has_dderrors(1);
+  LTPlotElement ewkwmunuele;
+  ewkwmunuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange-3)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("EWK W#rightarrow#mu#nu")
+    .set_sample("wmuewk");
+  if(!do_mcbkg)ewkwmunuele.set_has_dderrors(1);
 
   LTPlotElement wenuele;
   wenuele.set_is_data(false)
@@ -576,6 +749,24 @@ int main(int argc, char* argv[]){
     .set_legname("W#rightarrow e#nu")
     .set_sample("wel");
   if(!do_mcbkg)wenuele.set_has_dderrors(1);
+  LTPlotElement qcdwenuele;
+  qcdwenuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD W#rightarrow e#nu")
+    .set_sample("welqcd");
+  if(!do_mcbkg)qcdwenuele.set_has_dderrors(1);
+  LTPlotElement ewkwenuele;
+  ewkwenuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange  + 1)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("EWK W#rightarrow e#nu")
+    .set_sample("welewk");
+  if(!do_mcbkg)ewkwenuele.set_has_dderrors(1);
 
 
   LTPlotElement wtaunuele;
@@ -587,6 +778,24 @@ int main(int argc, char* argv[]){
     .set_legname("W#rightarrow#tau#nu")
     .set_sample("wtau");
   if(!do_mcbkg)wtaunuele.set_has_dderrors(1);
+  LTPlotElement qcdwtaunuele;
+  qcdwtaunuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange + 4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD W#rightarrow#tau#nu")
+    .set_sample("wtauqcd");
+  if(!do_mcbkg)qcdwtaunuele.set_has_dderrors(1);
+  LTPlotElement ewkwtaunuele;
+  ewkwtaunuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kOrange + 5)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("EWK W#rightarrow#tau#nu")
+    .set_sample("wtauewk");
+  if(!do_mcbkg)ewkwtaunuele.set_has_dderrors(1);
 
 
   LTPlotElement zmumuele;
@@ -598,6 +807,24 @@ int main(int argc, char* argv[]){
     .set_legname("Z#rightarrow#mu#mu")
     .set_sample("zmumu");
   if(!do_mcbkg)zmumuele.set_has_dderrors(1);
+  LTPlotElement qcdzmumuele;
+  qcdzmumuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kAzure  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD Z#rightarrow#mu#mu")
+    .set_sample("zmumuqcd");
+  if(!do_mcbkg)qcdzmumuele.set_has_dderrors(1);
+  LTPlotElement ewkzmumuele;
+  ewkzmumuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kAzure  + 4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("EWK Z#rightarrow#mu#mu")
+    .set_sample("zmumuewk");
+  if(!do_mcbkg)ewkzmumuele.set_has_dderrors(1);
 
   LTPlotElement znunuele;
   znunuele.set_is_data(false)
@@ -608,6 +835,24 @@ int main(int argc, char* argv[]){
     .set_legname("Z#rightarrow#nu#nu")
     .set_sample("zvv");
   if(!do_mcbkg)znunuele.set_has_dderrors(1);
+  LTPlotElement qcdznunuele;
+  qcdznunuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kAzure  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD Z#rightarrow#nu#nu")
+    .set_sample("zvvqcd");
+  if(!do_mcbkg)qcdznunuele.set_has_dderrors(1);
+  LTPlotElement ewkznunuele;
+  ewkznunuele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kAzure  + 4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("EWK Z#rightarrow#nu#nu")
+    .set_sample("zvvewk");
+  if(!do_mcbkg)ewkznunuele.set_has_dderrors(1);
 
   LTPlotElement vvele;
   vvele.set_is_data(false)
@@ -668,19 +913,26 @@ int main(int argc, char* argv[]){
       elementvec.push_back(gjetsele);
     }
     if(channel!="mumu"){
-      elementvec.push_back(wmunuele);
-      elementvec.push_back(wenuele);
-      elementvec.push_back(wtaunuele);
+      elementvec.push_back(qcdwmunuele);
+      elementvec.push_back(qcdwenuele);
+      elementvec.push_back(qcdwtaunuele);
+      elementvec.push_back(ewkwmunuele);
+      elementvec.push_back(ewkwenuele);
+      elementvec.push_back(ewkwtaunuele);
     } //else {
-    if(channel!="nunu") elementvec.push_back(zmumuele);
+    if(channel!="nunu") {
+      elementvec.push_back(qcdzmumuele);
+      elementvec.push_back(ewkzmumuele);
+    }
     //}
     elementvec.push_back(topele);
     elementvec.push_back(qcdele);
     elementvec.push_back(vvele);
     if(channel!="mumu"&&channel!="enu"&&channel!="munu"&&channel!="taunu"){
       elementvec.push_back(sigele);
-      elementvec.push_back(znunuele);
-      //elementvec.push_back(ggHele);
+      elementvec.push_back(qcdznunuele);
+      //elementvec.push_back(ewkznunuele);
+      elementvec.push_back(ggHele);
     }
   }
 
@@ -706,17 +958,23 @@ int main(int argc, char* argv[]){
 
   std::vector<std::string> dirvec;
   if(!dataonly){
-    dirvec.push_back("wel");
-    dirvec.push_back("wmu");
-    dirvec.push_back("wtau");
-    dirvec.push_back("zmumu");
-    dirvec.push_back("zvv");
+    dirvec.push_back("welqcd");
+    dirvec.push_back("wmuqcd");
+    dirvec.push_back("wtauqcd");
+    dirvec.push_back("welewk");
+    dirvec.push_back("wmuewk");
+    dirvec.push_back("wtauewk");
+    dirvec.push_back("zmumuqcd");
+    dirvec.push_back("zmumuewk");
+    dirvec.push_back("zvvqcd");
+    dirvec.push_back("zvvewk");
     dirvec.push_back("gjets");
     dirvec.push_back("qcd");
     dirvec.push_back("vv");
     //dirvec.push_back("wg");  
     dirvec.push_back("top");
     dirvec.push_back("qqH125");
+    dirvec.push_back("ggH125");
   }
   if(!(channel=="nunu"&&runblind))dirvec.push_back("data_obs");
 
@@ -734,26 +992,40 @@ int main(int argc, char* argv[]){
 
     if(do_mcbkg){
       analysis->AddModule(&qcdraw);
-      analysis->AddModule(&wmunuraw);
-      analysis->AddModule(&wenuraw);
-      analysis->AddModule(&wtaunuraw);
+      analysis->AddModule(&qcdwmunuraw);
+      analysis->AddModule(&qcdwenuraw);
+      analysis->AddModule(&qcdwtaunuraw);
+      analysis->AddModule(&ewkwmunuraw);
+      analysis->AddModule(&ewkwenuraw);
+      analysis->AddModule(&ewkwtaunuraw);
       analysis->AddModule(&topraw);
       analysis->AddModule(&gjetsraw);
-      analysis->AddModule(&zmumuraw);
-      analysis->AddModule(&znunuraw);
+      analysis->AddModule(&qcdzmumuraw);
+      analysis->AddModule(&ewkzmumuraw);
+      analysis->AddModule(&qcdznunuraw);
+      //analysis->AddModule(&ewkznunuraw);
     }
     analysis->AddModule(&vv);
   }
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
 
   if(!dataonly){
+    analysis->AddModule(&ggH110);
+    analysis->AddModule(&ggH150);
+    analysis->AddModule(&ggH200);
+    analysis->AddModule(&ggH300);
+    analysis->AddModule(&ggH400);
+    analysis->AddModule(&ggH500);
+    analysis->AddModule(&ggH600);
     analysis->AddModule(&signal110);
     analysis->AddModule(&signal150);
     analysis->AddModule(&signal200);
     analysis->AddModule(&signal300);
     analysis->AddModule(&signal400);
     analysis->AddModule(&signal500);
+    analysis->AddModule(&signal600);
     analysis->AddModule(&signal125);
+    analysis->AddModule(&ggH125);
   }
   analysis->AddModule(&plotter);
   if(!dataonly) analysis->AddModule(&summary);

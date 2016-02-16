@@ -1,11 +1,11 @@
 #!/bin/sh
 DOCERN=0
-DOSUBMIT=0
+DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
-MYEXEC=JetMETvalidation
-#MYEXEC=LightTreeMakerFromMiniAOD
-PRODUCTION=160203
+#MYEXEC=JetMETvalidation
+MYEXEC=LightTreeMakerFromMiniAOD
+PRODUCTION=160213
 PRODUSER=amagnan
 JPTCUTVAL=70
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
@@ -30,12 +30,12 @@ CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
-for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN TRIGEFFUP TRIGEFFDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_160212
+  JOBDIRPREFIX=jobs_lighttree_160215
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160212
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160215
   #OUTPUTPREFIX=output_lighttree_160121
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -91,8 +91,18 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
   fi
 
   if [ "$SYST" = "MUEFFDOWN" ]
-	then
-	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
+  then
+      SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
+  fi
+
+  if [ "$SYST" = "TRIGEFFUP" ]
+  then
+      SYSTOPTIONS="--trg_weight_file=input/scale_factors/TrigEff2015D_MET1DFitHFBinned_76X_errup.root"
+  fi
+
+  if [ "$SYST" = "TRIGEFFDOWN" ]
+  then
+      SYSTOPTIONS="--trg_weight_file=input/scale_factors/TrigEff2015D_MET1DFitHFBinned_76X_errdown.root"
   fi
 	
   echo "Config file: $CONFIG"
@@ -138,9 +148,9 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
-#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJ*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
+#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
 	  do
       echo "Processing files in "$FILELIST
 

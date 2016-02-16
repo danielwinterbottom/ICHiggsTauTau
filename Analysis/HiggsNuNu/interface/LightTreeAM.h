@@ -66,6 +66,7 @@ namespace ic {
     std::vector<double> jet_genphi_;*/
 
     double* jet_pt_;
+    double* jet_uncorpt_;
     double* jet_E_;
     double* jet_eta_;
     double* jet_phi_;

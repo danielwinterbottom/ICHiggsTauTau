@@ -892,7 +892,7 @@ namespace ic {//namespace
 	if (partons == 1) eventInfo->set_weight("wsoup", w1_);
 	if (partons == 2) eventInfo->set_weight("wsoup", w2_);
 	if (partons == 3) eventInfo->set_weight("wsoup", w3_);
-	if (partons == 4) eventInfo->set_weight("wsoup", w4_);
+	if (partons >= 4) eventInfo->set_weight("wsoup", w4_);
 	
 	if (partons == 0) zeroParton = true;
       }
