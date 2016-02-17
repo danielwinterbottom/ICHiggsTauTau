@@ -877,7 +877,7 @@ int main(int argc, char* argv[]){
       xsWeights.SetWInputYields(0,10205377,4949568,1943664,1041358);
     }
   }
-  if (output_name.find("JetsToLL") != output_name.npos && 
+  if (output_name.find("JetsToLL-mg-m50") != output_name.npos && 
       output_name.find("PtZ-100-madgraph") == output_name.npos &&
       output_name.find("Zpt150") == output_name.npos && 
       output_name.find("DYJJ01") == output_name.npos && 
@@ -924,8 +924,8 @@ int main(int argc, char* argv[]){
   WtoLeptonFilter2012.set_do_newstatuscodes(false);
   WtoLeptonFilter2012.set_do_statusflags(false);
 
-  HinvZDecay ZhighptFilter = HinvZDecay("ZhighptFilter",is2012?13:0,HinvZDecay::cutVar::pt,150,true,is2012);
-  HinvZDecay ZhighhtFilter = HinvZDecay("ZhighhtFilter",is2012?13:0,HinvZDecay::cutVar::ht,100,true,is2012);
+  HinvZDecay ZhighptFilter = HinvZDecay("ZhighptFilter",is2012?13:0,0,150,HinvZDecay::cutVar::pt,is2012);
+  HinvZDecay ZhighhtFilter = HinvZDecay("ZhighhtFilter",is2012?13:0,0,100,HinvZDecay::cutVar::ht,is2012);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
@@ -994,7 +994,7 @@ int main(int argc, char* argv[]){
     if(doincludehighptz && output_name.find("JetsToLL-mg-m50") != output_name.npos && output_name.find("Zpt150") == output_name.npos){
       analysis.AddModule(&ZhighptFilter);
     }
-    if(output_name.find("JetsToLL") != output_name.npos && output_name.find("JetsToLL-mg-m50-ht") == output_name.npos && output_name.find("Zpt150") == output_name.npos){
+    if(output_name.find("JetsToLL") != output_name.npos && output_name.find("nlo") == output_name.npos && output_name.find("-ht") == output_name.npos && output_name.find("Zpt150") == output_name.npos){
       analysis.AddModule(&ZhighhtFilter);
     }
   }

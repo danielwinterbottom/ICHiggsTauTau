@@ -66,6 +66,15 @@ namespace ic {//namespace
     Alumi_=-1;
     BClumi_=-1;
     Dlumi_=-1;
+
+    errLabel.push_back("");
+    errLabel.push_back("_v0Up");
+    errLabel.push_back("_v0Down");
+    errLabel.push_back("_v1Up");
+    errLabel.push_back("_v1Down");
+    errLabel.push_back("_v2Up");
+    errLabel.push_back("_v2Down");
+
   }
 
   HinvWeights::~HinvWeights() {
@@ -223,9 +232,9 @@ namespace ic {//namespace
       else if(do_binnedin2d1dfittedtrg_weights_){
 	std::cout<<"Getting trigger efficiency functions"<<std::endl;
 	for(unsigned iVar1=0;iVar1<(binnedin2d1dfitweightvar1binning_.size()-1);iVar1++){
-	  std::vector<std::vector<TF1*> > thisfuncvectorvector;
+	  std::vector<std::vector<TF1*> > thisfuncvectorvector[7];
 	  for(unsigned iVar2=0;iVar2<(binnedin2d1dfitweightvar2binning_.size()-1);iVar2++){
-	    std::vector<TF1*> thisfuncvector;
+	    std::vector<TF1*> thisfuncvector[7];
 	    //HF bins
 	    for(unsigned iVar3=0;iVar3<(do_run2_?2:1);iVar3++){
 	      std::ostringstream convert;
@@ -233,17 +242,25 @@ namespace ic {//namespace
 	      if (do_run2_) convert<<iVar3+1;
 	      std::string histnumber=convert.str();
 	      if(!do_run2_){
-		thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"A").c_str()));
-		thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"BC").c_str()));
-		thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
+		thisfuncvector[0].push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"A").c_str()));
+		thisfuncvector[0].push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"BC").c_str()));
+		thisfuncvector[0].push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
 	      }
 	      else{
-		thisfuncvector.push_back((TF1*)gDirectory->Get(("fdata_"+binnedin2d1dfitweightvarorder_[2]+"_1d_"+histnumber+"Deff").c_str()));
+		for (unsigned iErr(0); iErr<7;++iErr){
+		  thisfuncvector[iErr].push_back((TF1*)gDirectory->Get(("fdata_"+binnedin2d1dfitweightvarorder_[2]+"_1d_"+histnumber+"Deff"+errLabel[iErr]).c_str()));
+		}
 	      }
 	    }
-	    thisfuncvectorvector.push_back(thisfuncvector);
+	    if(!do_run2_) thisfuncvectorvector[0].push_back(thisfuncvector[0]);
+	    for (unsigned iErr(0); iErr<7;++iErr){
+	      thisfuncvectorvector[iErr].push_back(thisfuncvector[iErr]);
+	    }
 	  }
-	  func_trigSF_binnedin2d.push_back(thisfuncvectorvector);
+	  if (!do_run2_) func_trigSF_binnedin2d[0].push_back(thisfuncvectorvector[0]);
+	  for (unsigned iErr(0); iErr<7;++iErr){
+	    func_trigSF_binnedin2d[iErr].push_back(thisfuncvectorvector[iErr]);
+	  }
 	}
 	std::cout<<"  done."<<std::endl;
       }
@@ -639,54 +656,57 @@ namespace ic {//namespace
 	  }
 	  if(var2bin==-10)var2bin=binnedin2d1dfitweightvar2binning_.size()-1;
 	}
-	double trgweights[3]={0,0,0};
-	double xmin,xmax;
-	if((var1bin!=-1)&&(var2bin!=-1)){
-	  //!!READ OUT WEIGHT FOR EACH RUN
-	  TF1* funcs[3]={0,0,0};
-	  for(unsigned iRun=0;iRun<nruns;iRun++){
-	    funcs[iRun]=func_trigSF_binnedin2d[var1bin-1][var2bin-1][iRun];
-	  }
-	  
-	   if (!hasJetsInHF) funcs[0]->GetRange(xmin,xmax);
-	   else funcs[1]->GetRange(xmin,xmax);
-	  
-	  //Get weight                                                                                                                                     
-	  for(unsigned iRun=0;iRun<nruns;iRun++){
-	    
-	    if(vars[2]<=xmax){
-	      if(vars[2]>=xmin){
-		trgweights[iRun]=funcs[iRun]->Eval(vars[2]);
-	      }
-	      else trgweights[iRun]=0;
+
+	for (unsigned iErr(0); iErr<7;++iErr){
+	  double trgweights[3]={0,0,0};
+	  double xmin,xmax;
+	  if((var1bin!=-1)&&(var2bin!=-1)){
+	    //!!READ OUT WEIGHT FOR EACH RUN
+	    TF1* funcs[3]={0,0,0};
+	    for(unsigned iRun=0;iRun<nruns;iRun++){
+	      funcs[iRun]=func_trigSF_binnedin2d[iErr][var1bin-1][var2bin-1][iRun];
 	    }
-	    else trgweights[iRun]=funcs[iRun]->Eval(xmax);
+	    
+	    if (!hasJetsInHF) funcs[0]->GetRange(xmin,xmax);
+	    else funcs[1]->GetRange(xmin,xmax);
+	    
+	    //Get weight                                                                                                                                     
+	    for(unsigned iRun=0;iRun<nruns;iRun++){
+	      
+	      if(vars[2]<=xmax){
+		if(vars[2]>=xmin){
+		  trgweights[iRun]=funcs[iRun]->Eval(vars[2]);
+		}
+		else trgweights[iRun]=0;
+	      }
+	      else trgweights[iRun]=funcs[iRun]->Eval(xmax);
+	    }
 	  }
-	}
-	else{
-	  for(unsigned iRun=0;iRun<nruns;iRun++){
-	    trgweights[iRun]=0;
+	  else{
+	    for(unsigned iRun=0;iRun<nruns;iRun++){
+	      trgweights[iRun]=0;
+	    }
 	  }
-	}
-	double trgweight;
-	if(!do_run2_){
-	  //LUMI WEIGHTED AVERAGE OVER RUNS                                                                                                      
-	  trgweight=(trgweights[0]*Alumi_+trgweights[1]*BClumi_+trgweights[2]*Dlumi_)/(Alumi_+BClumi_+Dlumi_);
-	}
-	else{
-	  if (!hasJetsInHF) trgweight=trgweights[0];
-	  else trgweight=trgweights[1];
-	}
-	/*if (var1bin>0&&var2bin>0) 
-	std::cout<<" Total Weight "<<trgweight
-		 <<" vars[0]=" << vars[0] << "(" << var1bin << ")"
-		 <<" vars[1]=" << vars[1] << "(" << var2bin << ")"
-		 <<" vars[2]=" << vars[2] << "(" << xmin << "," << xmax << ")"
-		 <<" hasJetsInHF=" << hasJetsInHF
-		 <<std::endl;   */                                                                                         
-	//SET TRIGGER WEIGHT                                                                                                                             
-	if (do_trg_weights_) eventInfo->set_weight("trig_2dbinned1d",trgweight);
-	else eventInfo->set_weight("!trig_2dbinned1d",trgweight);
+	  double trgweight;
+	  if(!do_run2_){
+	    //LUMI WEIGHTED AVERAGE OVER RUNS                                                                                                      
+	    trgweight=(trgweights[0]*Alumi_+trgweights[1]*BClumi_+trgweights[2]*Dlumi_)/(Alumi_+BClumi_+Dlumi_);
+	  }
+	  else{
+	    if (!hasJetsInHF) trgweight=trgweights[0];
+	    else trgweight=trgweights[1];
+	  }
+	  /*if (var1bin>0&&var2bin>0) 
+	    std::cout<<" Total Weight "<<trgweight
+	    <<" vars[0]=" << vars[0] << "(" << var1bin << ")"
+	    <<" vars[1]=" << vars[1] << "(" << var2bin << ")"
+	    <<" vars[2]=" << vars[2] << "(" << xmin << "," << xmax << ")"
+	    <<" hasJetsInHF=" << hasJetsInHF
+	    <<std::endl;   */                                                                                         
+	  //SET TRIGGER WEIGHT                                                                                                                             
+	  if (do_trg_weights_) eventInfo->set_weight(("trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
+	  else eventInfo->set_weight(("!trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
+	}//loop on errors
       }//2D-1D
       else{
 	double lMax = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(hist_trigSF_MjjHLT->GetNbinsX());

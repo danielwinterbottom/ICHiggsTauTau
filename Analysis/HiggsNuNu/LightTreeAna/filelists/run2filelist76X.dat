@@ -62,6 +62,8 @@ EWKWPlus2Jets_WToLNu_taunu EWK_WJets_taunu MC_EWKWPlus2Jets_WToLNu_taunu.root
 
 EWKZ2Jets_ZToLL EWK_ZJets_ll MC_EWKZ2Jets_ZToLL.root
 
+EWKZ2Jets_ZToNuNu EWK_ZJets_nunu MC_EWKZ2Jets_ZToNuNu.root
+
 GJets-mg-ht100to200_split00 GJets MC_GJets-mg-ht100to200_split00.root
 GJets-mg-ht100to200_split01 GJets MC_GJets-mg-ht100to200_split01.root
 GJets-mg-ht200to400_split00 GJets MC_GJets-mg-ht200to400_split00.root
@@ -90,8 +92,10 @@ Powheg-VBFHtoinv-mH400 VBFH400 MC_Powheg-VBFHtoinv-mH400.root
 Powheg-VBFHtoinv-mH500 VBFH500 MC_Powheg-VBFHtoinv-mH500.root
 Powheg-VBFHtoinv-mH600 VBFH600 MC_Powheg-VBFHtoinv-mH600.root
 
-QCD-mg-ht1000to1500 QCD MC_QCD-mg-ht1000to1500.root
-QCD-mg-ht1500to2000 QCD MC_QCD-mg-ht1500to2000.root
+QCD-mg-ht1000to1500_split00 QCD MC_QCD-mg-ht1000to1500_split00.root
+QCD-mg-ht1000to1500_split01 QCD MC_QCD-mg-ht1000to1500_split01.root
+QCD-mg-ht1500to2000_split00 QCD MC_QCD-mg-ht1500to2000_split00.root
+QCD-mg-ht1500to2000_split01 QCD MC_QCD-mg-ht1500to2000_split01.root
 QCD-mg-ht2000toInf QCD MC_QCD-mg-ht2000toInf.root
 QCD-mg-ht200to300_split00 QCD MC_QCD-mg-ht200to300_split00.root
 QCD-mg-ht200to300_split01 QCD MC_QCD-mg-ht200to300_split01.root
