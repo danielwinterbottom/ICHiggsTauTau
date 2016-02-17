@@ -11,8 +11,8 @@ DO4PARAMS=$2
 #infolder=output_parkedana
 #outfolder=cards_parkedana/
 #blind=false
-infolder=output_run2ana_160129
-outfolder=cards_run2ana_160129/
+infolder=output_run2ana_160216
+outfolder=cards_run2ana_160217/
 blind=true
 zvvstat=18
 mkdir -p $outfolder
