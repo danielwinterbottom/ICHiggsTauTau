@@ -307,7 +307,7 @@ namespace ic {
       alias_map_["inclusive"]         = "1";
      // alias_map_["baseline"]          = "1";
 
-      alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["baseline"]          = "mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
@@ -536,8 +536,8 @@ namespace ic {
  
    samples_alias_map_["ztt_shape_samples"]={
     "DYJetsToLL_M-50-LO"/*,
-    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"*/
+    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
+    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*/
    };
 
    if(!is_fall15_){
@@ -597,8 +597,8 @@ namespace ic {
 
    samples_alias_map_["ztt_samples"]={
      "DYJetsToLL_M-50-LO"/*,
-     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"*/
+     "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
+     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*/
    };
    if(!is_fall15_){
      samples_alias_map_["ztt_samples"]={
@@ -616,9 +616,9 @@ namespace ic {
    "WWTo1L1Nu2Q",
    /*"VVTo2L2Nu",*/"ZZTo2L2Q","ZZTo4L",
    /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "WJetsToLNu","TT-ext"/*,
-   "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+   "WJetsToLNu-LO","TT-ext"/*,
+   "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
+   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*//*,
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
   "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
    };
@@ -629,7 +629,7 @@ namespace ic {
      "WWTo1L1Nu2Q",
      "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
      "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-     "WJetsToLNu","TT-ext",
+     "WJetsToLNu-LO","TT-ext",
      "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
      "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
     "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
@@ -648,9 +648,9 @@ namespace ic {
    "WWTo1L1Nu2Q",//"VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
    /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT-ext","WJetsToLNu"/*,
-   "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+   "TT-ext","WJetsToLNu-LO"/*,
+   "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
+   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*//*,
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
   "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
 
@@ -662,7 +662,7 @@ namespace ic {
    "WWTo1L1Nu2Q","VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT-ext","WJetsToLNu",
+   "TT-ext","WJetsToLNu-LO",
    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
@@ -672,9 +672,9 @@ namespace ic {
   }
 
   samples_alias_map_["w_sub_samples"] = {
-   "DYJetsToLL_M-50-LO",
-   /*"DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",*/
+   "DYJetsToLL_M-50-LO"/*,
+   "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
+   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*/,
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",//"VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
@@ -696,7 +696,7 @@ namespace ic {
    }
 
 samples_alias_map_["wjets_samples"] = {
-  "WJetsToLNu"/*,
+  "WJetsToLNu-LO"/*,
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
   "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
  };

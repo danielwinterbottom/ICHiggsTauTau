@@ -248,6 +248,7 @@ if options.proc_bkg or options.proc_all:
     #'TTJets',
     'TT-ext',
     'WJetsToLNu',
+    'WJetsToLNu-LO',
 		#'WJetsToLNu',
     #'WWinclusive',
     #'ZZinclusive',
