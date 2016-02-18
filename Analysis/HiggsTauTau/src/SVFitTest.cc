@@ -99,7 +99,7 @@ namespace ic {
     if(!from_grid_){
       total_path_ = operator/(fullpath_, folder_p);
     } else {
-      if(read_all_){
+      if(read_all_ && run_mode_==2){
         std::string chan;
         if (channel_ == channel::et) chan = "_et_";
         if (channel_ == channel::mt) chan = "_mt_";

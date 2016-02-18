@@ -47,7 +47,7 @@ namespace ic {
     }
     if (ch_ == channel::tt){
       alias_map_["ztt_sel"] = "(gen_match_1==5&&gen_match_2==5)";
-      alias_map_["zl_sel"] = "(gen_match_2<5)";
+      alias_map_["zl_sel"] = "(gen_match_2<6&&gen_match_1<6&&!(gen_match_1==5&&gen_match_2==5))";
       alias_map_["zj_sel"] = "(gen_match_2==6||gen_match_1==6)";
     }
     if (ch_ == channel::em ){
