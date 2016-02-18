@@ -26,9 +26,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_160216 #_sig #_nomindphi
+JOBDIRPREFIX=jobs_run2ana_160217 #_sig #_nomindphi
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_160216 #_sig #_nomindphi
+OUTPUTPREFIX=output_run2ana_160217 #_sig #_nomindphi
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -67,16 +67,16 @@ echo "Using job-submission: " $JOBSUBMIT
 echo "JOB name = $JOB"
 #for syst in JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
 #for syst in "" PUUP PUDOWN
-for syst in "" PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN
+for syst in "" #PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN
 #for syst in JERBETTER JERWORSE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in nunu qcd enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in nunu munu #qcd enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     OUTPUTNAME="$channels.root"
-    MINDPHICUT="alljetsmetnomu_mindphi\>=1.0"
+    MINDPHICUT="alljetsmetnomu_mindphi\>=0.0"
     if [ "$channels" = "qcd" ]; then
 	MINDPHICUT="alljetsmetnomu_mindphi\<0.5"
 	#MINDPHICUT="alljetsmetnomu_mindphi\>=0"
