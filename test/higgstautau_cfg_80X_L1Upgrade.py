@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 process = cms.Process("MAIN")
 import sys
+from Configuration.StandardSequences.Eras import eras
 
 ################################################################
 # Read Options
@@ -20,7 +21,8 @@ opts.register('file',
 #'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file',
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
-'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/0AF323E8-EBB9-E511-961D-002590D0AF6C.root',parser.VarParsing.multiplicity.singleton,
+#'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/0AF323E8-EBB9-E511-961D-002590D0AF6C.root',parser.VarParsing.multiplicity.singleton,
+'root://xrootd.unl.edu///store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_1.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2_ext3-v1/10000/0041D4C0-D86E-E511-8D6B-001E67A3E8F9.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015C/SingleElectron/MINIAOD/PromptReco-v1/000/254/317/00000/C4F3838C-8345-E511-9AA9-02163E011FE4.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/164/00000/4633CC68-A326-E511-95D0-02163E0124EA.root', parser.VarParsing.multiplicity.singleton,
@@ -41,8 +43,36 @@ opts.register('release', '76XMINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT?")
 
+#########
+opts.register ('era',    'stage2',  parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string,  "The data taking Era: stage1 or stage2")
+opts.register ('sample', 'data',    parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string,  "The Sample type: data or mc")
+#opts.register ('output', 'DEFAULT', VarParsing.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string,  "The output file name")
+#opts.register ('max',    '',        VarParsing.VarParsing.multiplicity.singleton, parser.VarParsing.varType.int,     "The maximum number of events to process")
+
+opts.sample = "mc"
+#opts.max      = 1000
+#########
 
 opts.parseArguments()
+
+#########
+if (opts.era == 'stage1'):
+    print "INFO: runnings L1T Stage-1 (2015) Re-Emulation"
+    process = cms.Process("AnalysisDecays", eras.Run2_25ns)
+elif (opts.era == 'stage2'):
+    print "INFO: runnings L1T Stage-2 (2016) Re-Emulation"    
+    process = cms.Process("AnalysisDecays", eras.Run2_2016)
+else:
+    print "ERROR: unknown era:  ", opts.era, "\n"
+    exit(0)
+
+
+if (eras.stage1L1Trigger.isChosen()):
+    output_name ='L1Objects_stage1.root'
+if (eras.stage2L1Trigger.isChosen()):
+    output_name ='L1Objects_stage2.root'
+########
+
 infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
@@ -66,6 +96,59 @@ print 'isData      : '+str(isData)
 print 'doHT        : '+str(doHT)
 
 ################################################################
+### Aligment and condition
+################################################################
+# import of standard configurations
+process.load('Configuration.StandardSequences.Services_cff')
+
+# PostLS1 geometry used
+process.load('Configuration.Geometry.GeometryExtended2015Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2015_cff')
+############################
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+
+#   For stage-1, we are re-emulating L1T based on the conditions in the GT, so
+#   best for now to use MC GT, even when running over a data file, and just
+#   ignore the main DT TP emulator warnings...  (In future we'll override only
+#   L1T emulator related conditions, so you can use a data GT)
+if (eras.stage1L1Trigger.isChosen()):
+  
+  if opts.sample=="mc":
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
+
+  elif opts.sample=="data":
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
+
+# Note:  For stage-2, all conditions are overriden by local config file.  Use data tag: 
+
+if (eras.stage2L1Trigger.isChosen()):
+
+  if opts.sample=="mc":
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '') 
+
+  elif opts.sample=="data":
+    process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
+    process.GlobalTag.toGet = cms.VPSet(
+        cms.PSet(record = cms.string("DTCCBConfigRcd"),
+                 tag = cms.string("DTCCBConfig_NOSingleL_V05_mc"),
+                 connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+                 ),
+#        cms.PSet(record = cms.string("DTKeyedConfigListRcd"),
+#                 tag = cms.string("DTKeyedConfigContainer_NOSingleL_V05_mc"),
+#                 connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+#                 ),
+        cms.PSet(record = cms.string("DTT0Rcd"),
+                 tag = cms.string("DTt0_STARTUP_V02_mc"),
+                 connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+                 ),
+        cms.PSet(record = cms.string("DTTPGParametersRcd"),
+                 tag = cms.string("DTTPGParameters_V01_mc"),
+                 connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+                 ),
+        )
+
+################################################################
 # Standard setup
 ################################################################
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -82,7 +165,7 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("L1Objects.root"),
+  fileName = cms.string(output_name),
   closeFileFast = cms.untracked.bool(True)
 )
 
@@ -95,7 +178,7 @@ process.maxEvents = cms.untracked.PSet(
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
 
-process.options   = cms.untracked.PSet(
+process.opts   = cms.untracked.PSet(
   wantSummary = cms.untracked.bool(True)
 )
 
@@ -146,7 +229,31 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/164/00000/4633CC68-A326-E511-95D0-02163E0124EA.root'
 #'root://xrootd.unl.edu//store/data/Run2015B/Tau/MINIAOD/PromptReco-v1/000/251/642/00000/EC1989CD-EB2A-E511-8F15-02163E0146A4.root',
 
-infile
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_1.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_10.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_100.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_101.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_103.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_104.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_105.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_106.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_107.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_108.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_109.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_11.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_110.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_111.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_112.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_113.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_114.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_115.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_116.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_117.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_118.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_119.root',
+'/store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_12.root'
+
+#infile
 ))
 #process.GlobalTag.globaltag = cms.string(tag)
 
@@ -635,33 +742,22 @@ process.icElectronSequence += cms.Sequence(
 # L1 Objects
 ################################################################
 
-#process.icL1ObjectSequence = cms.Sequence()
+process.icL1ObjectSequence = cms.Sequence()
 
-##process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
- # branch                    = cms.string("L1Objects"),
- # input                     = cms.InputTag("selectedElectrons"),
- # includeConversionMatches  = cms.bool(True),
- # inputConversionMatches    = cms.InputTag("icElectronConversionCalculator"),
- # includeVertexIP           = cms.bool(True),
- # inputVertices             = vtxLabel,
- # includeBeamspotIP         = cms.bool(True),
- # inputBeamspot             = cms.InputTag("offlineBeamSpot"),
-  #includeFloats = cms.PSet(
-  #   mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
-  #   mvaTrigSpring15       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values")
-  #),
-  #includeClusterIso        = cms.bool(True),
-  #includePFIso03           = cms.bool(True),
-  #includePFIso04           = cms.bool(True)
-#)
+process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
+  input                     = cms.InputTag("l1extraParticles", "Isolated", "RECO"),
+  input_L1TEra       = cms.untracked.string  ("stage2"),
+  inputTag_L1TEGamma = cms.untracked.InputTag("simCaloStage2Digis"),
+  inputTag_L1TMuon   = cms.untracked.InputTag("simGmtStage2Digis"),
+  inputTag_L1TTau    = cms.untracked.InputTag("simCaloStage2Digis"),
+  inputTag_L1TJet    = cms.untracked.InputTag("simCaloStage2Digis"),
+  inputTag_L1TSum    = cms.untracked.InputTag("simCaloStage2Digis",""),
+  maxL1Upgrade = cms.uint32(1000)
+)
 
-
-#if release in ['76X']:
-#  process.icL1ObjectProducer.includeClusterIso = cms.bool(False)
-
-#process.icL1ObjectSequence += cms.Sequence(
- # process.icL1ObjectProducer
-#)
+process.icL1ObjectSequence += cms.Sequence(
+  process.icL1ObjectProducer
+)
 
 ################################################################
 # Muons
@@ -1942,14 +2038,14 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
- # process.ic74XSequence+
- # process.icMiniAODSequence+
- # process.icSelectionSequence+
- # process.pfParticleSelectionSequence+
+  process.ic74XSequence+
+  process.icMiniAODSequence+
+  #process.icSelectionSequence+
+  process.pfParticleSelectionSequence+
   #process.icVertexSequence+
 # process.icPFSequence+
   #process.icElectronSequence+
- # process.icL1ObjectSequence+
+  process.icL1ObjectSequence+
   #process.icMuonSequence+
   #process.icTauSequence+
   #process.icTauProducer+

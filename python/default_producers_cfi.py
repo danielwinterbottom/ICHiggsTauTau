@@ -1,5 +1,18 @@
 import FWCore.ParameterSet.Config as cms
 
+## [L1Object]
+icL1ObjectProducer = cms.EDProducer('ICL1ObjectProducer',
+  input   = cms.InputTag("l1extraParticles", "Isolated", "RECO"),
+  input_L1TEra       = cms.untracked.string  ("stage2"),
+  inputTag_L1TEGamma = cms.untracked.InputTag("simCaloStage2Digis"),
+  inputTag_L1TMuon   = cms.untracked.InputTag("simGmtStage2Digis"),
+  inputTag_L1TTau    = cms.untracked.InputTag("simCaloStage2Digis"),
+  inputTag_L1TJet    = cms.untracked.InputTag("simCaloStage2Digis"),
+  inputTag_L1TSum    = cms.untracked.InputTag("simCaloStage2Digis",""),
+  maxL1Upgrade = cms.uint32(1000)
+)
+## [L1Object]
+
 ## [Candidate]
 icCandidateProducer = cms.EDProducer('ICCandidateProducer',
   branch  = cms.string("l1EmIsolated"),
