@@ -30,12 +30,12 @@ CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
-for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN TRIGEFFUP TRIGEFFDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_160215
+  JOBDIRPREFIX=jobs_lighttree_160216
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160215
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160216
   #OUTPUTPREFIX=output_lighttree_160121
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -95,16 +95,6 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN TRIGEFFUP TR
       SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
   fi
 
-  if [ "$SYST" = "TRIGEFFUP" ]
-  then
-      SYSTOPTIONS="--trg_weight_file=input/scale_factors/TrigEff2015D_MET1DFitHFBinned_76X_errup.root"
-  fi
-
-  if [ "$SYST" = "TRIGEFFDOWN" ]
-  then
-      SYSTOPTIONS="--trg_weight_file=input/scale_factors/TrigEff2015D_MET1DFitHFBinned_76X_errdown.root"
-  fi
-	
   echo "Config file: $CONFIG"
   
   mkdir -p $JOBDIR

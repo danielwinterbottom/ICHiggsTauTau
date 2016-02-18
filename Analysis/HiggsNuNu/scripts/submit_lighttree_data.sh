@@ -36,9 +36,9 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP EL
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
-  JOBDIRPREFIX=jobs_lighttree_160215
+  JOBDIRPREFIX=jobs_lighttree_160216
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160215
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160216
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]

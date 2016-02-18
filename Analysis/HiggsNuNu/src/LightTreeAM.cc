@@ -73,7 +73,9 @@ namespace ic {
     lumi_=0;
     event_=0;
     weight_nolep_=1;
-    weight_trig_=1;
+    for (unsigned iT(0); iT<7; ++iT){
+      weight_trig_[iT]=1;
+    }
     total_weight_lepveto_ = 1;
     total_weight_leptight_ = 1;
     puweight_up_scale_=1;
@@ -236,7 +238,11 @@ namespace ic {
     outputTree_->Branch("lumi",&lumi_);
     outputTree_->Branch("event",&event_);
     outputTree_->Branch("weight_nolep",&weight_nolep_);
-    outputTree_->Branch("weight_trig",&weight_trig_);
+    for (unsigned iT(0); iT<7; ++iT){
+      std::ostringstream label;
+      label << "weight_trig_" << iT;
+      outputTree_->Branch(label.str().c_str(),&weight_trig_[iT]);
+    }
     outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("puweight_up_scale",&puweight_up_scale_);
@@ -458,7 +464,11 @@ namespace ic {
       pileupwt=eventInfo->weight("pileup");
       pileupwtup=eventInfo->weight("pileup_up");
       pileupwtdown=eventInfo->weight("pileup_down");
-      weight_trig_=eventInfo->weight("trig_2dbinned1d");
+
+      std::string label[7] = {"","_v0Up","_v0Down","_v1Up","_v1Down","_v2Up","_v2Down"};
+      for (unsigned iT(0); iT<7; ++iT){
+	weight_trig_[iT]=eventInfo->weight(("trig_2dbinned1d"+label[iT]).c_str());
+      }
     }
     if (pileupwt!=0) {
       puweight_up_scale_=pileupwtup/pileupwt;
