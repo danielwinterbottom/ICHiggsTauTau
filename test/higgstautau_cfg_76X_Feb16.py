@@ -100,23 +100,51 @@ process.options.allowUnschduled = cms.untracked.bool(True)
 ################################################################
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
-#if not isData:
-#  process.jec = cms.ESSource("PoolDBESSource",
-#    DBParameters = cms.PSet(
-#     messageLevel = cms.untracked.int32(0)
-#    ),
-#    timetype = cms.string('runnumber'),
-#    toGet = cms.VPSet(
-#    cms.PSet(
-#      record = cms.string('JetCorrectionsRecord'),
-#      tag = cms.string('JetCorrectorParametersCollection_Summer15_V5_MC_AK4PF'),
-#      label = cms.untracked.string('AK4PF')
-#      ),
-#    ),
-#    connect = cms.string('sqlite:Summer15_V5_MC.db')
-#  )
-#
-#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+if not isData:
+  process.jec = cms.ESSource("PoolDBESSource",
+    DBParameters = cms.PSet(
+     messageLevel = cms.untracked.int32(0)
+    ),
+    timetype = cms.string('runnumber'),
+    toGet = cms.VPSet(
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PF'),
+      label = cms.untracked.string('AK4PF')
+      ),
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PFchs'),
+      label = cms.untracked.string('AK4PFchs')
+      ),
+    ),
+    connect = cms.string('sqlite:Fall15_25nsV2_MC.db')
+  )
+
+  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
+else:
+  process.jec = cms.ESSource("PoolDBESSource",
+    DBParameters = cms.PSet(
+     messageLevel = cms.untracked.int32(0)
+    ),
+    timetype = cms.string('runnumber'),
+    toGet = cms.VPSet(
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PF'),
+      label = cms.untracked.string('AK4PF')
+      ),
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PFchs'),
+      label = cms.untracked.string('AK4PFchs')
+      ),
+    ),
+    connect = cms.string('sqlite:Fall15_25nsV2_DATA.db')
+  )
+
+  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
@@ -805,6 +833,9 @@ if not isData:
 # # Jets
 # ################################################################
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+
 if release in ['76XMINIAOD']:
   #rebuild ak4 chs jets as in  https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Jets
   process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
@@ -814,8 +845,19 @@ if release in ['76XMINIAOD']:
   #Also make non-chs jets:
   process.ak4PFJets = ak4PFJets.clone(src='packedPFCandidates',doAreaFastjet=True)
    
+  #Reapply JECs on miniAOD jets:
+  process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
+    src = cms.InputTag("slimmedJets"),
+    levels = ['L1FastJet','L2Relative','L3Absolute'],
+    payload = 'AK4PFchs')
+
+  process.patJetsReapplyJEC = patJetsUpdated.clone(
+    jetSource = cms.InputTag("slimmedJets"),
+    jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+    )
+ 
   process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
-      src = cms.InputTag("slimmedJets"),
+      src = cms.InputTag("patJetsReapplyJEC"),
       cut = cms.string("pt > 15")
       )
 
@@ -1093,6 +1135,8 @@ process.icPFJetSequence = cms.Sequence()
 if release in ['76XMINIAOD']:
   process.icPFJetSequence += cms.Sequence(
      process.pfchs+
+     process.patJetCorrFactorsReapplyJEC+
+     process.patJetsReapplyJEC+
      process.selectedSlimmedJetsAK4+
      process.unpackedTracksAndVertices+
      process.icPFJetProducerFromPat
@@ -1182,7 +1226,7 @@ runMVAMET(process)
 
 process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
   input = cms.InputTag("MVAMET","MVAMET"),
-  branch = cms.string("pfMVAMet"),
+  branch = cms.string("pfMVAMetVector"),
   includeCustomID = cms.bool(False),
   includeUserCandID = cms.bool(True),
   includeExternalMetsig = cms.bool(False),
@@ -1217,7 +1261,7 @@ process.icMvaMetSequence = cms.Sequence(
   process.slimmedMuonsTight+
   process.slimmedTausLoose+
   process.slimmedTausLooseCleaned+
-  process.slimmedJetsCleaned+
+  process.patJetsReapplyJECCleaned+
   process.pfNeutrals+
   process.neutralInJets+
   process.pfChargedPV+
@@ -1235,6 +1279,8 @@ process.icMvaMetSequence = cms.Sequence(
   process.ak4PFCHSL2RelativeCorrector+
   process.ak4PFCHSL3AbsoluteCorrector+
   process.ak4PFCHSL1FastL2L3Corrector+
+  process.ak4PFCHSResidualCorrector+
+  process.ak4PFCHSL1FastL2L3ResidualCorrector+
   process.ak4JetsForpfMET+
   process.ak4JetsForpfTrackMET+
   process.ak4JetsForpfPUMET+
@@ -1291,6 +1337,10 @@ process.icMvaMetSequence = cms.Sequence(
   process.MVAMET+
   process.icPfMVAMetProducer
   )
+
+if not isData:
+  process.icMvaMetSequence.remove(process.ak4PFCHSResidualCorrector)
+  process.icMvaMetSequence.remove(process.ak4PFCHSL1FastL2L3ResidualCorrector)
 
 ################################################################
 # Simulation only: GenParticles, GenJets, PileupInfo
@@ -1887,9 +1937,9 @@ process.p = cms.Path(
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
   process.icPfMetSequence+
-  process.icMvaMetSequence+
   process.icGenSequence+
   process.icPFJetSequence+
+  process.icMvaMetSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
