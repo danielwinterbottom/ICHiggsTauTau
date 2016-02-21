@@ -56,7 +56,7 @@ class EventInfo {
   inline double gen_ht() const { return gen_ht_; }
 
   /// Number of outgoing partons at generator level, used for combining n-jet binned samples with inclusive samples
-  inline double n_outgoing_partons() const { return n_outgoing_partons_; }
+  inline unsigned n_outgoing_partons() const { return n_outgoing_partons_; }
 
   /// Number of reconstructed vertices passing some baseline quality
   /// requirements
@@ -96,7 +96,7 @@ class EventInfo {
   inline void set_gen_ht(double const& gen_ht) { gen_ht_ = gen_ht; }
 
   /// @copybrief n_outgoing_partons()
-  inline void set_n_outgoing_partons(double const& n_outgoing_partons) { n_outgoing_partons_ = n_outgoing_partons; }
+  inline void set_n_outgoing_partons(unsigned const& n_outgoing_partons) { n_outgoing_partons_ = n_outgoing_partons; }
 
   /// @copybrief good_vertices()
   inline void set_good_vertices(unsigned const& good_vertices) {
