@@ -63,7 +63,7 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "1";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
-      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["baseline"]         = "(iso_1<0.1 &&mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -213,7 +213,7 @@ namespace ic {
       alias_map_["trk03iso0p09"]           = "(iso_1_trk03<0.09&&"+alias_map_["incnoiso"]+")";
       alias_map_["trk03iso0p08"]           = "(iso_1_trk03<0.08&&"+alias_map_["incnoiso"]+")";
       alias_map_["trk03iso0p07"]           = "(iso_1_trk03<0.07&&"+alias_map_["incnoiso"]+")";
-      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && db_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["qcd_vloose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && iso_2<10 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
@@ -508,7 +508,7 @@ namespace ic {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
      "WWTo1L1Nu2Q",
      /*"VVTo2L2Nu",*/"ZZTo2L2Q","ZZTo4L",
-     /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
+     /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/
     };
 
     if(!is_fall15_){
@@ -535,9 +535,9 @@ namespace ic {
 
  
    samples_alias_map_["ztt_shape_samples"]={
-    "DYJetsToLL_M-50-LO"/*,
+    "DYJetsToLL_M-50-LO",
     "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*/
+    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"
    };
 
    if(!is_fall15_){
@@ -596,9 +596,9 @@ namespace ic {
 
 
    samples_alias_map_["ztt_samples"]={
-     "DYJetsToLL_M-50-LO"/*,
+     "DYJetsToLL_M-50-LO",
      "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*/
+     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"
    };
    if(!is_fall15_){
      samples_alias_map_["ztt_samples"]={
@@ -615,10 +615,10 @@ namespace ic {
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",
    /*"VVTo2L2Nu",*/"ZZTo2L2Q","ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "WJetsToLNu-LO","TT-ext"/*,
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/,
+   "WJetsToLNu-LO","TT-ext",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*//*,
+   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
   "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
    };
@@ -647,10 +647,10 @@ namespace ic {
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",//"VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT-ext","WJetsToLNu-LO"/*,
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/,
+   "TT-ext","WJetsToLNu-LO",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*//*,
+   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
   "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
   "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
 
@@ -672,13 +672,13 @@ namespace ic {
   }
 
   samples_alias_map_["w_sub_samples"] = {
-   "DYJetsToLL_M-50-LO"/*,
+   "DYJetsToLL_M-50-LO",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"*/,
+   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",//"VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/,
    "TT-ext"
    };
 

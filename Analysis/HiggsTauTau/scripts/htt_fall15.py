@@ -265,7 +265,7 @@ if options.proc_bkg or options.proc_all:
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
-#    'DYJetsToLL',
+    #'DYJetsToLL',
     'DYJetsToLL_M-50-LO',
     'DY1JetsToLL_M-50-LO',
     'DY2JetsToLL_M-50-LO',
@@ -284,10 +284,15 @@ if options.proc_bkg or options.proc_all:
   for sa in central_samples:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-      if 'DYJetsToLL' in sa and scales:
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      nperjob = 60
+      if scales:
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        if 'TT-ext' in sa:
+          nperjob = 40
+      if 'DY' in sa and 'JetsToLL' in sa and scales:
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        nperjob = 40
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 60 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
@@ -426,7 +431,7 @@ if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
     JOB='%s_2015' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     if scales:
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     if os.path.exists('%(FILELIST)s_%(sa)s.dat' %vars()):
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 50
