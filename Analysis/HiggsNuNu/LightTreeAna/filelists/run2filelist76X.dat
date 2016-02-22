@@ -237,9 +237,9 @@ WJetsToLNu-mg_split14_taunu WJets_taunu MC_WJetsToLNu-mg_split14_taunu.root
 WJetsToLNu-mg_split15_enu WJets_enu MC_WJetsToLNu-mg_split15_enu.root
 WJetsToLNu-mg_split15_munu WJets_munu MC_WJetsToLNu-mg_split15_munu.root
 WJetsToLNu-mg_split15_taunu WJets_taunu MC_WJetsToLNu-mg_split15_taunu.root
-WJetsToLNu-mg_split16_enu WJets_enu MC_WJetsToLNu-mg_split16_enu.root
-WJetsToLNu-mg_split16_munu WJets_munu MC_WJetsToLNu-mg_split16_munu.root
-WJetsToLNu-mg_split16_taunu WJets_taunu MC_WJetsToLNu-mg_split16_taunu.root
+#WJetsToLNu-mg_split16_enu WJets_enu MC_WJetsToLNu-mg_split16_enu.root
+#WJetsToLNu-mg_split16_munu WJets_munu MC_WJetsToLNu-mg_split16_munu.root
+#WJetsToLNu-mg_split16_taunu WJets_taunu MC_WJetsToLNu-mg_split16_taunu.root
 
 WJetsToLNu-nlo_split00_enu WJets_nlo_enu MC_WJetsToLNu-nlo_split00_enu.root
 WJetsToLNu-nlo_split00_munu WJets_nlo_munu MC_WJetsToLNu-nlo_split00_munu.root

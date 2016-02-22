@@ -30,6 +30,7 @@ int main(int argc, char* argv[]){
   bool do_qcdfromnumber;
   bool do_ggh;
   bool do_ues;
+  bool do_separate_qcdewk;
   bool verbose;
   bool do_individualsystsummary;
   bool do_latex;
@@ -58,6 +59,7 @@ int main(int argc, char* argv[]){
     ("do_qcdfromnumber,q",       po::value<bool>(&do_qcdfromnumber)->default_value(true))
     ("do_ggh,g",                 po::value<bool>(&do_ggh)->default_value(true))
     ("do_ues,u",                 po::value<bool>(&do_ues)->default_value(true))
+    ("do_separate_qcdewk",       po::value<bool>(&do_separate_qcdewk)->default_value(true))
     ("verbose,v",                po::value<bool>(&verbose)->default_value(false))
     ("do_individualsystsummary", po::value<bool>(&do_individualsystsummary)->default_value(false))
     ("do_latex,l",               po::value<bool>(&do_latex)->default_value(false))
@@ -84,7 +86,7 @@ int main(int argc, char* argv[]){
 
   if (channel!="nunu") blind=false;
 
-  if (do_run2) do_ggh=false;
+  //if (do_run2) do_ggh=false;
 
   std::map<std::string,double > procsysttotal;
   std::map<std::string,double > procstattotal;
@@ -116,44 +118,64 @@ int main(int argc, char* argv[]){
   }
   std::vector<std::string> bkgprocesses;
   if (channel=="nunu") {
-    //if (do_run2) bkgprocesses.push_back("zvv");
-    //else {
-      bkgprocesses.push_back("zvvewk");
+    if (!do_separate_qcdewk) bkgprocesses.push_back("zvvqcd");
+    else {
       bkgprocesses.push_back("zvvqcd");
-      //}
+      bkgprocesses.push_back("zvvewk");
+    }
   }
   if (channel=="mumu") {
-    bkgprocesses.push_back("zmumuqcd");
-    bkgprocesses.push_back("zmumuewk");
+    if (!do_separate_qcdewk) bkgprocesses.push_back("zmumuqcd");
+    else {
+      bkgprocesses.push_back("zmumuqcd");
+      bkgprocesses.push_back("zmumuewk");
+    }
   }
-  bkgprocesses.push_back("wmuqcd");
-  bkgprocesses.push_back("wmuewk");
-  bkgprocesses.push_back("welqcd");
-  bkgprocesses.push_back("welewk");
-  bkgprocesses.push_back("wtauqcd");
-  bkgprocesses.push_back("wtauewk");
+  if (!do_separate_qcdewk) {
+    bkgprocesses.push_back("wmuqcd");
+    bkgprocesses.push_back("welqcd");
+    bkgprocesses.push_back("wtauqcd");
+  }
+  else {
+    bkgprocesses.push_back("wmuqcd");
+    bkgprocesses.push_back("wmuewk");
+    bkgprocesses.push_back("welqcd");
+    bkgprocesses.push_back("welewk");
+    bkgprocesses.push_back("wtauqcd");
+    bkgprocesses.push_back("wtauewk");
+  }
   bkgprocesses.push_back("top");
   if( do_run2 || (do_qcdfromshape && channel=="nunu")) bkgprocesses.push_back("qcd");
   bkgprocesses.push_back("vv");
-
+  
   std::vector<std::string> bkgprocesslatex;
   if (channel=="nunu"){
-    //if (do_run2) bkgprocesslatex.push_back("$Z\\rightarrow\\nu\\nu$");
-    //else {
-      bkgprocesslatex.push_back("$ewkZ\\rightarrow\\nu\\nu$");
+    if (!do_separate_qcdewk) bkgprocesslatex.push_back("$Z\\rightarrow\\nu\\nu$");
+    else {
       bkgprocesslatex.push_back("$qcdZ\\rightarrow\\nu\\nu$");
-      //}
+      bkgprocesslatex.push_back("$ewkZ\\rightarrow\\nu\\nu$");
+    }
   }
   if (channel=="mumu") {
-    bkgprocesslatex.push_back("$ewkZ\\rightarrow\\mu\\mu$");
-    bkgprocesslatex.push_back("$qcdZ\\rightarrow\\mu\\mu$");
+    if (!do_separate_qcdewk) bkgprocesslatex.push_back("$Z\\rightarrow\\mu\\mu$");
+    else {
+      bkgprocesslatex.push_back("$qcdZ\\rightarrow\\mu\\mu$");
+      bkgprocesslatex.push_back("$ewkZ\\rightarrow\\mu\\mu$");
+    }
   }
-  bkgprocesslatex.push_back("$ewkW\\rightarrow\\mu\\nu$");
-  bkgprocesslatex.push_back("$ewkW\\rightarrow e\\nu$");
-  bkgprocesslatex.push_back("$ewkW\\rightarrow\\tau\\nu$");
-  bkgprocesslatex.push_back("$qcdW\\rightarrow\\mu\\nu$");
-  bkgprocesslatex.push_back("$qcdW\\rightarrow e\\nu$");
-  bkgprocesslatex.push_back("$qcdW\\rightarrow\\tau\\nu$");
+  if (!do_separate_qcdewk) {
+    bkgprocesslatex.push_back("$W\\rightarrow\\mu\\nu$");
+    bkgprocesslatex.push_back("$W\\rightarrow e\\nu$");
+    bkgprocesslatex.push_back("$W\\rightarrow\\tau\\nu$");
+  }
+  else {    
+    bkgprocesslatex.push_back("$qcdW\\rightarrow\\mu\\nu$");
+    bkgprocesslatex.push_back("$ewkW\\rightarrow\\mu\\nu$");
+    bkgprocesslatex.push_back("$qcdW\\rightarrow e\\nu$");
+    bkgprocesslatex.push_back("$ewkW\\rightarrow e\\nu$");
+    bkgprocesslatex.push_back("$qcdW\\rightarrow\\tau\\nu$");
+    bkgprocesslatex.push_back("$ewkW\\rightarrow\\tau\\nu$");
+  }
   bkgprocesslatex.push_back("top");
   if( do_run2 || (do_qcdfromshape && channel=="nunu")) bkgprocesslatex.push_back("QCD multijet");
   bkgprocesslatex.push_back("VV");
@@ -193,9 +215,14 @@ int main(int argc, char* argv[]){
   if (mcBkgOnly) {
     //if (do_run2) lumi8tevprocsaffected.push_back("zvv");
     //else {
+    lumi8tevprocsaffected.push_back("zvv");
     lumi8tevprocsaffected.push_back("zvvewk");
     lumi8tevprocsaffected.push_back("zvvqcd");
       //}
+    lumi8tevprocsaffected.push_back("zmumu");
+    lumi8tevprocsaffected.push_back("wmu");
+    lumi8tevprocsaffected.push_back("wel");
+    lumi8tevprocsaffected.push_back("wtau");
     lumi8tevprocsaffected.push_back("zmumuqcd");
     lumi8tevprocsaffected.push_back("wmuqcd");
     lumi8tevprocsaffected.push_back("welqcd");
@@ -214,8 +241,8 @@ int main(int argc, char* argv[]){
     .set_procsaffected(lumi8tevprocsaffected)
     .set_constvalue(1.026);
 
-  std::vector<std::string> allprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumuqcd","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","qcd","wg","vv"};
-  std::vector<std::string> allprocsnotqcd={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumuqcd","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","wg","vv"};
+  std::vector<std::string> allprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zmumuqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","qcd","wg","vv"};
+  std::vector<std::string> allprocsnotqcd={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zmumuqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","wg","vv"};
   std::vector<std::string> ggHprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","ggH"};
   std::vector<std::string> qqHprocs={"qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","qqH"};
   Syst eleeff;
@@ -294,7 +321,7 @@ int main(int argc, char* argv[]){
   zvvmcstat.set_name("CMS_VBFHinv_zvv_norm")
     .set_latexname("$Z\\rightarrow\\nu\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
-    .set_procsaffected({"zvv"});
+    .set_procsaffected({"zvvqcd"});
 
   if (mcBkgOnly) zvvmcstat.set_type("fromMCstatlnN");
 
@@ -303,7 +330,7 @@ int main(int argc, char* argv[]){
     .set_latexname("W/Z from theory")
     .set_type("constlnN")
     .set_constvalue(wz_syst)
-    .set_procsaffected({"zmumu","zvv"});
+    .set_procsaffected({"zmumuqcd","zmumuewk","zvvqcd","zvvewk"});
 
   Syst zvvewkmcstat;
   zvvewkmcstat.set_name("CMS_VBFHinv_zvv_ewk_norm")
@@ -325,7 +352,7 @@ int main(int argc, char* argv[]){
   zmumumcstat.set_name("CMS_VBFHinv_zmumu_norm")
     .set_latexname("$Z\\rightarrow\\mu\\mu$ MC stat.")
     .set_type("fromMCstatlnN")
-    .set_procsaffected({"zmumu"});
+    .set_procsaffected({"zmumuqcd"});
   Syst zmumuqcdmcstat;
   zmumuqcdmcstat.set_name("CMS_VBFHinv_zmumu_qcd_norm")
     .set_latexname("$qcdZ\\rightarrow\\mu\\mu$ MC stat.")
@@ -356,7 +383,7 @@ int main(int argc, char* argv[]){
   welmcstat.set_name("CMS_VBFHinv_wel_norm")
     .set_latexname("$W\\rightarrow e\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
-    .set_procsaffected({"wel"});
+    .set_procsaffected({"welqcd"});
   if (mcBkgOnly) welmcstat.set_type("fromMCstatlnN");
   Syst welqcdmcstat;
   welqcdmcstat.set_name("CMS_VBFHinv_wel_qcd_norm")
@@ -382,7 +409,7 @@ int main(int argc, char* argv[]){
   wmumcstat.set_name("CMS_VBFHinv_wmu_norm")
     .set_latexname("$W\\rightarrow \\mu\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
-    .set_procsaffected({"wmu"});
+    .set_procsaffected({"wmuqcd"});
   if (mcBkgOnly) wmumcstat.set_type("fromMCstatlnN");
   Syst wmuqcdmcstat;
   wmuqcdmcstat.set_name("CMS_VBFHinv_wmu_qcd_norm")
@@ -422,7 +449,7 @@ int main(int argc, char* argv[]){
   wtaumcstat.set_name("CMS_VBFHinv_wtau_norm")
     .set_latexname("$W\\rightarrow\\tau\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
-    .set_procsaffected({"wtau"});
+    .set_procsaffected({"wtauqcd"});
   if (mcBkgOnly) wtaumcstat.set_type("fromMCstatlnN");
   Syst wtauqcdmcstat;
   wtauqcdmcstat.set_name("CMS_VBFHinv_wtau_qcd_norm")
@@ -510,6 +537,16 @@ int main(int argc, char* argv[]){
     .set_latexname(do_run2?"QCD MC stat.":"QCD FROM MC SHOULD NOT APPEAR IN FINAL RESULT")
     .set_type("fromMCstatlnN")
     .set_procsaffected({"qcd"});
+
+
+  Syst qcdextrap;
+  qcdextrap.set_name("CMS_VBFHinv_qcd_extrap")
+    .set_latexname("QCD control region extrapolation")
+    .set_procsaffected({"qcd"})
+    .set_type("constlnN")
+    .set_constvalue(2.0);
+
+
 
   Syst qcdfromnumerr;
   qcdfromnumerr.set_name("CMS_VBFHinv_qcd_norm")
@@ -611,15 +648,18 @@ int main(int argc, char* argv[]){
   if (channel=="nunu" || channel=="mumu") {
     //if (mcBkgOnly) systematics.push_back(zxsunc);
     if (channel=="nunu") {
-      //if (do_run2) systematics.push_back(zvvmcstat);
-      //else {
+      if (!do_separate_qcdewk) systematics.push_back(zvvmcstat);
+      else {
 	systematics.push_back(zvvewkmcstat);
 	systematics.push_back(zvvqcdmcstat);
-	//}
+      }
     }
     if (channel=="mumu") {
-      systematics.push_back(zmumuqcdmcstat);
-      systematics.push_back(zmumuewkmcstat);
+      if (!do_separate_qcdewk) systematics.push_back(zmumumcstat);
+      else {
+	systematics.push_back(zmumuqcdmcstat);
+	systematics.push_back(zmumuewkmcstat);
+      }
     }
     if (channel=="mumu" || channel=="nunu") {
       systematics.push_back(wzratio);
@@ -629,17 +669,26 @@ int main(int argc, char* argv[]){
     //systematics.push_back(mcfmzvv);
   }
   //if (mcBkgOnly) systematics.push_back(wxsunc);
-  systematics.push_back(wmuqcdmcstat);
-  systematics.push_back(wmuewkmcstat);
-  if (!mcBkgOnly) systematics.push_back(wmudatastat);
-  systematics.push_back(welqcdmcstat);
-  systematics.push_back(welewkmcstat);
-  if (!mcBkgOnly) systematics.push_back(weldatastat);
+  if (!do_separate_qcdewk){
+    systematics.push_back(wmumcstat);
+    systematics.push_back(welmcstat);
+    systematics.push_back(wtaumcstat);
+  }
+  else {
+    systematics.push_back(wmuqcdmcstat);
+    systematics.push_back(wmuewkmcstat);
+    systematics.push_back(welqcdmcstat);
+    systematics.push_back(welewkmcstat);
+    systematics.push_back(wtauqcdmcstat);
+    systematics.push_back(wtauewkmcstat);
+  }
   systematics.push_back(wtauideff);
   if (channel=="taunu") systematics.push_back(wtaujetmetextrap);
-  systematics.push_back(wtauqcdmcstat);
-  systematics.push_back(wtauewkmcstat);
-  if (!mcBkgOnly) systematics.push_back(wtaudatastat);
+  if (!mcBkgOnly) {
+    systematics.push_back(wmudatastat);
+    systematics.push_back(weldatastat);
+    systematics.push_back(wtaudatastat);
+  }
   if(do_datatop){
     systematics.push_back(topmcstat);
     if (!mcBkgOnly) systematics.push_back(topdatastat);
@@ -649,7 +698,10 @@ int main(int argc, char* argv[]){
     if (!mcBkgOnly) systematics.push_back(topmcsfunc);
   }
   if (mcBkgOnly) systematics.push_back(topxsunc);
-  if(do_run2 || do_qcdfromshape)systematics.push_back(qcdmcstat);
+  if(do_run2 || do_qcdfromshape){
+    systematics.push_back(qcdmcstat);
+    if (channel=="nunu") systematics.push_back(qcdextrap);
+  }
   if(!do_run2 && do_qcdfromnumber)systematics.push_back(qcdfromnumerr);
   //systematics.push_back(wgmcstat);
   systematics.push_back(vvmcstat);
@@ -812,6 +864,7 @@ int main(int argc, char* argv[]){
     double rate = 0;
     if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
       histo[iProc] = (TH1F*)dir->Get(histoToIntegrate.c_str());
+      std::cout << dirname << " overflows: " << histo[iProc]->GetBinContent(histo[iProc]->GetNbinsX()+1) << std::endl;
       rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX()+1);
       if (rate != rate) {
 	rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX());
@@ -929,10 +982,10 @@ int main(int argc, char* argv[]){
 	  else centralrate=bkgcentralrates[iProc-sigprocesses.size()];
 
 	  double downlnnfac=centralrate!=0?downrate/centralrate:0;
-	  if (downlnnfac<=0)downlnnfac=0.001;
+	  //if (downlnnfac<=0)downlnnfac=0.001;
 
 	  double uplnnfac=centralrate!=0?uprate/centralrate:0;
-	  if (uplnnfac<=0)uplnnfac=0.001;
+	  //if (uplnnfac<=0)uplnnfac=0.001;
 
 	  if (centralrate!=0 && (fabs(downlnnfac-1)>0.2 || fabs(uplnnfac-1)>0.2)){
 	    std::cout << " Process " << dirname << ", systematics " << systematics[iSyst].name() << " is more than 20%: down - central - up = "
@@ -940,19 +993,38 @@ int main(int argc, char* argv[]){
 	    std::cout << "Diff entries: " ;
 	    if (histoToIntegrate.find(":")==histoToIntegrate.npos){
 	      std::cout << downhisto->GetEntries() 
-			<< " - " << histo[iProc]->GetEntries()
+			<< " - " << histo[iProc]->GetEntries() << "(" << histo[iProc]->Integral() << ")"
 			<< " - " << uphisto->GetEntries() << std::endl;
 	    }
 	    else {
 	      std::cout << downhisto2D->GetEntries() 
 			<< " - " << histo2D[iProc]->GetEntries()
 			<< " - " << uphisto2D->GetEntries() << std::endl;
+
+	    }
+	    std::cout << "Diff overflows: " ;
+	    if (histoToIntegrate.find(":")==histoToIntegrate.npos){
+	      std::cout << downhisto->GetBinContent(0) 
+			<< " - " << histo[iProc]->GetBinContent(0)
+			<< " - " << uphisto->GetBinContent(0) << std::endl
+			<< downhisto->GetBinContent(downhisto->GetNbinsX()+1) 
+			<< " - " << histo[iProc]->GetBinContent(histo[iProc]->GetNbinsX()+1)
+			<< " - " << uphisto->GetBinContent(uphisto->GetNbinsX()+1) << std::endl;
+	    }
+	    else {
+	      std::cout << downhisto2D->GetBinContent(0,0) 
+			<< " - " << histo2D[iProc]->GetBinContent(0,0)
+			<< " - " << uphisto2D->GetBinContent(0,0) << std::endl
+			<< downhisto2D->GetBinContent(downhisto2D->GetNbinsX()+1,downhisto2D->GetNbinsY()+1) 
+			<< " - " << histo2D[iProc]->GetBinContent(histo2D[iProc]->GetNbinsX()+1,histo2D[iProc]->GetNbinsY()+1)
+			<< " - " << uphisto2D->GetBinContent(uphisto2D->GetNbinsX()+1,uphisto2D->GetNbinsY()+1) << std::endl;
+
 	    }
 	  }
 
-	  if (downlnnfac==downlnnfac) datacard<<"\t"<<downlnnfac;
+	  if (downlnnfac==downlnnfac && downlnnfac>0) datacard<<"\t"<<downlnnfac;
 	  else datacard<<"\t-";
-	  if (uplnnfac==uplnnfac) datacard<<"/"<<uplnnfac;
+	  if (uplnnfac==uplnnfac && uplnnfac>0) datacard<<"/"<<uplnnfac;
 	  else datacard<<"\t-";
 
 	  double error=(fabs(1-uplnnfac)+fabs(1-downlnnfac))/2;
@@ -1001,7 +1073,7 @@ int main(int argc, char* argv[]){
 	  double lnnfac=centralrate!=0?error/centralrate : 0;
 	  if (lnnfac!=lnnfac) std::cout << " nan for process " << dirname << std::endl;
 	  lnnfac=lnnfac+1;
-	  if (lnnfac==lnnfac) datacard<<"\t"<<lnnfac;
+	  if (lnnfac==lnnfac && lnnfac>0) datacard<<"\t"<<lnnfac;
 	  else datacard<<"\t-";
 	  double relerror=lnnfac-1;
 
@@ -1034,7 +1106,7 @@ int main(int argc, char* argv[]){
 	  TVectorD* errvec = (TVectorD*)dir->Get("normerrs");
 	  double lnnfac=(*errvec)[0];
 	  lnnfac=lnnfac+1;
-	  datacard<<"\t"<<lnnfac;
+	  if (lnnfac==lnnfac && lnnfac>0) datacard<<"\t"<<lnnfac;
 	  
 	  double error=lnnfac-1;
 	  double abserror=0;
