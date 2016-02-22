@@ -931,7 +931,7 @@ BuildModule(svFitTest);
 }
 
 
- if((strategy_type == strategy::spring15 || strategy_type ==strategy::fall15)&&channel!=channel::wmnu){
+ if(strategy_type == strategy::spring15 &&channel!=channel::wmnu){
    TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_SingleEle_MC_eff");
    TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_2015.root","/","Electron_SingleEle_Data_eff");
    TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_2015.root","/","Muon_SingleMu_MC_eff");
@@ -970,28 +970,74 @@ BuildModule(svFitTest);
     .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
     .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
-  if (!is_data && (js["make_sync_ntuple"].asBool() || strategy_type==strategy::spring15)) {
+  if (!is_data ) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
   }
 
-  if (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos && strategy_type==strategy::fall15){
-    httWeights.set_do_dy_soup(false);
-    httWeights.SetDYTargetFractions(0.696628989, 0.204582155, 0.067178037, 0.020549051, 0.011061768); //Target fractions are xs_n-jet/xs_inclusive
-    httWeights.SetDYInputYields(9004328.0,65314144.0 , 20019059.0, 5701878.0, 4189017.0);
-  }
-
-  if (output_name.find("DYJetsToLL_M-50") != output_name.npos && strategy_type==strategy::spring15){
+  if (output_name.find("DYJetsToLL_M-50") != output_name.npos){
       httWeights.set_do_dy_soup_htbinned(true);
       httWeights.SetDYInputCrossSections(4895,139.4,42.75,5.497,2.21);
       httWeights.SetDYInputYields(9042031,2725655,973937,1067758,998912);
     }
 
-    if (output_name.find("WJetsToLNu") != output_name.npos && strategy_type==strategy::spring15){
+    if (output_name.find("WJetsToLNu") != output_name.npos){
       httWeights.set_do_w_soup_htbinned(true);
       httWeights.SetWInputCrossSections(50690,1345,359.7,48.91,18.77);
       httWeights.SetWInputYields(72207128,10152718,5221599,1745914,1039152);
     }
    
+
+    BuildModule(httWeights);
+  }
+
+ if(strategy_type ==strategy::fall15&&channel!=channel::wmnu){
+   TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_SingleEle_MC_eff");
+   TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_SingleEle_Data_eff");
+   TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_SingleMu_MC_eff");
+   TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_SingleMu_Data_eff");
+   TH2D et_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_IdIso0p10_MC_eff");
+   TH2D et_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_IdIso0p10_Data_eff");
+   TH2D em_e_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_IdIso0p15_MC_eff");
+   TH2D em_e_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_IdIso0p15_Data_eff");
+   TH2D mt_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_IdIso0p10_MC_eff");
+   TH2D mt_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_IdIso0p10_Data_eff");
+   TH2D em_m_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_IdIso0p15_MC_eff");
+   TH2D em_m_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_IdIso0p15_Data_eff");
+   TH2D em_m17_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_Mu17_Data_eff");
+   TH2D em_m17_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_Mu17_MC_eff");
+   TH2D em_m8_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_Mu8_Data_eff");
+   TH2D em_m8_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_Fall15.root","/","Muon_Mu8_MC_eff");
+   TH2D em_e17_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_Ele17_Data_eff");
+   TH2D em_e17_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_Ele17_MC_eff");
+   TH2D em_e12_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_Ele12_Data_eff");
+   TH2D em_e12_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_Ele12_MC_eff");
+
+   HTTWeights httWeights = HTTWeights("HTTWeights")   
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_mc(mc_type)
+    .set_do_tau_id_weights(false)
+    .set_ditau_label("ditau")
+    .set_jets_label("ak4PFJetsCHS")
+    .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
+    .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+    .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
+    .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
+    .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
+    .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
+    .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
+    .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
+    .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
+    .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
+  if (!is_data ) {
+    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
+  }
+
+  if (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos){
+    httWeights.set_do_dy_soup(true);
+    httWeights.SetDYTargetFractions(0.696628989, 0.204582155, 0.067178037, 0.020549051, 0.011061768); //Target fractions are xs_n-jet/xs_inclusive
+    httWeights.SetDYInputYields(9004328.0,65314144.0 , 20019059.0, 5701878.0, 4189017.0);
+  }
 
     BuildModule(httWeights);
   }

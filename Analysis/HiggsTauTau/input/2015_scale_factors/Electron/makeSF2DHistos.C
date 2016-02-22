@@ -1,6 +1,6 @@
 void makeSF2DHistos(){
   TH1::AddDirectory(kFALSE);
-  TFile *fElectron_Ele12_eff = TFile::Open("Electron_Ele12_eff.root");
+  TFile *fElectron_Ele12_eff = TFile::Open("Electron_Ele12_fall15.root");
   TGraphAsymmErrors *ele12_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_Ele12_eff->Get("ZMassEtaLt1p48_MC"));
   TGraphAsymmErrors *ele12_highetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_Ele12_eff->Get("ZMassEtaGt1p48_MC"));
   TGraphAsymmErrors *ele12_lowetadata = dynamic_cast<TGraphAsymmErrors*>(fElectron_Ele12_eff->Get("ZMassEtaLt1p48_Data"));
@@ -12,7 +12,7 @@ void makeSF2DHistos(){
   for(i=0;i<nbins12;i++){
     ptbins12[i] = Ele12X[i]-Ele12EX[i];
   } 
-  ptbins12[nbins12] = 100;
+  ptbins12[nbins12] = 150;
   double etabins[3]= {0,1.48,2.6};
   TH2D *elec_ele12_mc = new TH2D("Electron_Ele12_MC_eff","Electron_Ele12_MC_eff",2,etabins,nbins12,ptbins12);
   TH2D *elec_ele12_data = new TH2D("Electron_Ele12_Data_eff","Electron_Ele12_Data_eff",2,etabins,nbins12,ptbins12);
@@ -29,7 +29,7 @@ void makeSF2DHistos(){
 
  fElectron_Ele12_eff->Close();
  
-  TFile *fElectron_Ele17_eff = TFile::Open("Electron_Ele17_eff.root");
+  TFile *fElectron_Ele17_eff = TFile::Open("Electron_Ele17_fall15.root");
   TGraphAsymmErrors *ele17_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_Ele17_eff->Get("ZMassEtaLt1p48_MC"));
   TGraphAsymmErrors *ele17_highetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_Ele17_eff->Get("ZMassEtaGt1p48_MC"));
   TGraphAsymmErrors *ele17_lowetadata = dynamic_cast<TGraphAsymmErrors*>(fElectron_Ele17_eff->Get("ZMassEtaLt1p48_Data"));
@@ -42,7 +42,7 @@ void makeSF2DHistos(){
   for(i=0;i<nbins17;i++){
     ptbins17[i] = Ele17X[i]-Ele17EX[i];
   } 
-  ptbins17[nbins17] = 100;
+  ptbins17[nbins17] = 150;
 
 
 
@@ -61,7 +61,7 @@ void makeSF2DHistos(){
 
  fElectron_Ele17_eff->Close();
 
-  TFile *fElectron_EleIdIso0p10_eff = TFile::Open("Electron_IdIso0p10_eff.root");
+  TFile *fElectron_EleIdIso0p10_eff = TFile::Open("Electron_IdIso0p1_fall15.root");
   TGraphAsymmErrors *eleIdIso0p10_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleIdIso0p10_eff->Get("ZMassEtaLt1p48_MC"));
   TGraphAsymmErrors *eleIdIso0p10_highetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleIdIso0p10_eff->Get("ZMassEtaGt1p48_MC"));
   TGraphAsymmErrors *eleIdIso0p10_lowetadata = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleIdIso0p10_eff->Get("ZMassEtaLt1p48_Data"));
@@ -92,7 +92,7 @@ void makeSF2DHistos(){
  fElectron_EleIdIso0p10_eff->Close();
 
 
-  TFile *fElectron_EleIdIso0p15_eff = TFile::Open("Electron_IdIso0p15_eff.root");
+  TFile *fElectron_EleIdIso0p15_eff = TFile::Open("Electron_IdIso0p15_fall15.root");
   TGraphAsymmErrors *eleIdIso0p15_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleIdIso0p15_eff->Get("ZMassEtaLt1p48_MC"));
   TGraphAsymmErrors *eleIdIso0p15_highetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleIdIso0p15_eff->Get("ZMassEtaGt1p48_MC"));
   TGraphAsymmErrors *eleIdIso0p15_lowetadata = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleIdIso0p15_eff->Get("ZMassEtaLt1p48_Data"));
@@ -123,7 +123,7 @@ void makeSF2DHistos(){
 
  fElectron_EleIdIso0p15_eff->Close();
 
-  TFile *fElectron_EleSingleEle_eff = TFile::Open("Electron_SingleEle_eff.root");
+  TFile *fElectron_EleSingleEle_eff = TFile::Open("Electron_Ele23_fall15.root");
   TGraphAsymmErrors *eleSingleEle_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleSingleEle_eff->Get("ZMassEtaLt1p48_MC"));
   TGraphAsymmErrors *eleSingleEle_highetamc = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleSingleEle_eff->Get("ZMassEtaGt1p48_MC"));
   TGraphAsymmErrors *eleSingleEle_lowetadata = dynamic_cast<TGraphAsymmErrors*>(fElectron_EleSingleEle_eff->Get("ZMassEtaLt1p48_Data"));
@@ -140,7 +140,7 @@ void makeSF2DHistos(){
   for(i=0;i<nbinsSingleEle;i++){
     ptbinsSingleEle[i] = EleSingleEleX[i]-EleSingleEleEX[i];
   } 
-  ptbinsSingleEle[nbinsSingleEle] = 100;
+  ptbinsSingleEle[nbinsSingleEle] = 150;
   TH2D *elec_eleSingleEle_mc = new TH2D("Electron_SingleEle_MC_eff","Electron_SingleEle_MC_eff",2,etabins,nbinsSingleEle,ptbinsSingleEle);
   TH2D *elec_eleSingleEle_data = new TH2D("Electron_SingleEle_Data_eff","Electron_SingleEle_Data_eff",2,etabins,nbinsSingleEle,ptbinsSingleEle);
 
@@ -154,7 +154,7 @@ void makeSF2DHistos(){
  fElectron_EleSingleEle_eff->Close();
 
 
- TFile *Ele_2DHistos = new TFile("Ele_2DHistos.root","RECREATE");
+ TFile *Ele_2DHistos = new TFile("Ele_2DHistos_fall15.root","RECREATE");
   elec_eleSingleEle_mc->Write();
   elec_eleSingleEle_data->Write();
   elec_eleIdIso0p15_mc->Write();
