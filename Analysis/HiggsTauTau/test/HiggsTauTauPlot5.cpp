@@ -313,8 +313,8 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (syst_tau_scale != "") {
         if(tau_es_study) {
-		    systematics.push_back(make_pair("/TSCALE_DOWN_"+syst_tau_scale, syst_tau_scale));
-		    systematics.push_back(make_pair("/TSCALE_UP_"+syst_tau_scale, "-"+syst_tau_scale));
+		    systematics.push_back(make_pair("/TSCALE_UP_"+syst_tau_scale, syst_tau_scale));
+		    systematics.push_back(make_pair("/TSCALE_DOWN_"+syst_tau_scale, "-"+syst_tau_scale));
         } else {
 		    systematics.push_back(make_pair("/TSCALE_DOWN", syst_tau_scale+"Down"));
 		    systematics.push_back(make_pair("/TSCALE_UP", syst_tau_scale+"Up"));
