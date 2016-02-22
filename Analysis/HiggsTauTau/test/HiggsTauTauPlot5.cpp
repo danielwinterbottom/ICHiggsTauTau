@@ -30,6 +30,7 @@ int main(int argc, char* argv[]){
 	string mssm_masses_str;												
 	string Hhh_masses_str;												
 	string syst_tau_scale;
+    bool tau_es_study;
 	string syst_met_scale;
 	string syst_eff_b;
 	string syst_fake_b;
@@ -84,6 +85,7 @@ int main(int argc, char* argv[]){
 	  ("mssm_masses",             po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("Hhh_masses",              po::value<string>(&Hhh_masses_str)->default_value(""))
 	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
+	  ("tau_es_study",          po::value<bool>(&tau_es_study)->default_value(false))
 	  ("syst_met_scale",          po::value<string>(&syst_met_scale)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_eff_t",      		    po::value<string>(&syst_eff_t)->default_value(""))
@@ -310,8 +312,13 @@ int main(int argc, char* argv[]){
 	// Add tau/electron energy scale systematics
 	// ************************************************************************
 	if (syst_tau_scale != "") {
-		systematics.push_back(make_pair("/TSCALE_DOWN", syst_tau_scale+"Down"));
-		systematics.push_back(make_pair("/TSCALE_UP", syst_tau_scale+"Up"));
+        if(tau_es_study) {
+		    systematics.push_back(make_pair("/TSCALE_DOWN_"+syst_tau_scale, syst_tau_scale));
+		    systematics.push_back(make_pair("/TSCALE_UP_"+syst_tau_scale, "-"+syst_tau_scale));
+        } else {
+		    systematics.push_back(make_pair("/TSCALE_DOWN", syst_tau_scale+"Down"));
+		    systematics.push_back(make_pair("/TSCALE_UP", syst_tau_scale+"Up"));
+        }
 	}
 	if (syst_eff_b != "") {
 		systematics.push_back(make_pair("/BTAG_DOWN", syst_eff_b+"Down"));

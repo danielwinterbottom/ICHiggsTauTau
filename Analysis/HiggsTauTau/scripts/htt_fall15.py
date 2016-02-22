@@ -72,6 +72,9 @@ parser.add_option("--list_backup", dest="slbackupname", type='string', default='
 parser.add_option("--scales", dest="scales", action='store_true', default=False,
                   help="Process tau ES up/down")
 
+parser.add_option("--taues_study", dest="taues_study", action='store_true', default=False,
+                  help="Run lots of tau ES shifts jsut for DY")
+
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
@@ -81,6 +84,7 @@ BACKUPNAME = options.slbackupname
 
 channels = options.channels
 scales = options.scales
+taues_study = options.taues_study
 
 
 
@@ -292,6 +296,12 @@ if options.proc_bkg or options.proc_all:
       if 'DY' in sa and 'JetsToLL' in sa and scales:
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         nperjob = 40
+      if 'DY' in sa and 'JetsToLL' in sa and taues_study:
+        CONFIG='scripts/taues_config.json'
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        nperjob = 10
+
+
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
