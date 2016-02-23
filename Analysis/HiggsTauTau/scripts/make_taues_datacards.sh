@@ -1,0 +1,9 @@
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_mssm_2015.cfg --channel=mt --set_alias="sel:mt_1<30."   --method=8 --cat="inclusive" --var="m_2(20,0,2)" --extra_pad=0.2  --x_axis_label="Tau Mass [GeV]" --datacard="inclusive"   --background_scheme="mt_with_zmm" $MT_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --folder=/srv/localstage/amd12/Feb12-Fall15SF/ --tau_es_scales="0,0.5,1,1.5,2,2.5,3"
+
+#./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_mssm_2015.cfg --channel=mt --set_alias="sel:mt_1<30. && tau_decay_mode_2==0"   --method=8 --cat="inclusive" --var="m_2(20,0,2)" --extra_pad=0.2  --x_axis_label="Tau Mass [GeV]" --datacard="1prong0pi0"   --background_scheme="mt_with_zmm" $MT_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --folder=/srv/localstage/amd12/Feb12-Fall15SF/ --tau_es_scales="0,0.5,1,1.5,2,2.5,3"
+
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_mssm_2015.cfg --channel=mt --set_alias="sel:mt_1<30. && tau_decay_mode_2==1"   --method=8 --cat="inclusive" --var="m_2(20,0,2)" --extra_pad=0.2  --x_axis_label="Tau Mass [GeV]" --datacard="1prong1pi0"   --background_scheme="mt_with_zmm" $MT_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --folder=/srv/localstage/amd12/Feb12-Fall15SF/ --tau_es_scales="0,0.5,1,1.5,2,2.5,3"
+
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_mssm_2015.cfg --channel=mt --set_alias="sel:mt_1<30. && tau_decay_mode_2==10"   --method=8 --cat="inclusive" --var="m_2(20,0,2)" --extra_pad=0.2  --x_axis_label="Tau Mass [GeV]" --datacard="3prong"   --background_scheme="mt_with_zmm" $MT_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --folder=/srv/localstage/amd12/Feb12-Fall15SF/ --tau_es_scales="0,0.5,1,1.5,2,2.5,3"
+
+hadd -f datacard_m_2_mt_2015_combined.root datacard_m_2_inclusive_mt_2015.root datacard_m_2_1prong1pi0_mt_2015.root datacard_m_2_3prong_mt_2015.root
