@@ -85,7 +85,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
   --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
   --norm_bins=true --datacard="inclusive"\
-  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
   --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
@@ -111,7 +111,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
   --method=8 --var="m_sv"["$SVSMBINS"] --cat="inclusive" \
  --x_axis_label="M_{#tau#tau} [GeV]" $EM_INC_SHIFT \
   --norm_bins=true --datacard="inclusive"\
-  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
   --method=8 --var="m_sv"["$SVSMBINS"] --cat="inclusive" \
@@ -169,7 +169,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
   --method=8 --cat="inclusive" --var="met(20,0,100)" --x_axis_label="MVA E_{T}^{miss} [GeV]" \
   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
   --norm_bins=true --datacard="inclusive" --extra_pad=0.2 \
-  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="met(20,0,100)" --x_axis_label="MVA E_{T}^{miss} [GeV]" \
@@ -191,7 +191,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
   --method=8 --cat="inclusive" --var="pfmet(20,0,100)" --x_axis_label="pf E_{T}^{miss} [GeV]" \
   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
   --norm_bins=true --datacard="inclusive" --extra_pad=0.2 \
-  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pfmet(20,0,100)" --x_axis_label="pf E_{T}^{miss} [GeV]" \
@@ -214,7 +214,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="inclusive" --var="pt_1(25,0,100)" \
   --x_axis_label="Electron p_{T} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pt_1(25,0,100)" \
@@ -237,7 +237,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="inclusive" --var="pt_2(25,0,100)" \
   --x_axis_label="Muon p_{T} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pt_2(25,0,100)" \
@@ -260,7 +260,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="inclusive" --var="pt_tt(30,0,300)" --extra_pad=0.3  \
   --x_axis_label="p_{T}^{#tau#tau} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pt_tt(30,0,300)" --extra_pad=0.3  \
@@ -282,7 +282,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="inclusive" --var="pt_tt(30,0,300)"  --extra_pad=0.3 \
   --x_axis_label="p_{T}^{#tau#tau} [GeV]" --datacard="inclusive" --log_y=true --draw_ratio=true \
-  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pt_tt(30,0,300)"  --extra_pad=0.3 \
@@ -305,7 +305,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20."\
   --method=8 --cat="inclusive" --var="eta_1(30,-3,3)" \
   --x_axis_label="Electron #eta" --datacard="inclusive" \
-  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1"\
   --method=8 --cat="inclusive" --var="eta_1(30,-3,3)" \
@@ -328,7 +328,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20."\
   --method=8 --cat="inclusive" --var="eta_2(30,-3,3)" \
   --x_axis_label="Muon #eta" --datacard="inclusive" \
-  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" $EM_INC_SHIFT --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1"\
   --method=8 --cat="inclusive" --var="eta_2(30,-3,3)" \
@@ -407,7 +407,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="inclusive" --var="n_jets(10,-0.5,9.5)"  --x_axis_label="Number of Jets" \
   --draw_ratio=true --log_y=true --extra_pad=0.3 --datacard="inclusive" \
-  --background_scheme="em_default" $EM_INC_SHIFT \
+  --background_scheme="em_default" $EM_INC_SHIFT --qcd_os_ss_factor=2 \
   --custom_y_axis_min=true --y_axis_min=0.99 --draw_error_band=true --auto_error_band=0.00001
 #
 #### n_bjets (log)
@@ -434,7 +434,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="inclusive" --var="n_bjets(5,-0.5,4.5)"  --x_axis_label="Number of b-tagged Jets" \
   --draw_ratio=true --log_y=true --extra_pad=0.3 --datacard="inclusive" \
-  --background_scheme="em_default" $EM_INC_SHIFT \
+  --background_scheme="em_default" $EM_INC_SHIFT --qcd_os_ss_factor=2 \
   --custom_y_axis_min=true --y_axis_min=0.99 --draw_error_band=true --auto_error_band=0.00001
 #
 #### mt_1 / pzeta
@@ -462,22 +462,22 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pzeta(48,-100,100)" --extra_pad=0.3 $EM_BAND_ONLY \
   --x_axis_label="D_{#zeta} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default" --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pfpzeta(48,-100,100)" --extra_pad=0.3 $EM_BAND_ONLY \
   --x_axis_label="D_{#zeta} (pfmet) [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default" --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pzetavis(25,0,50)"  $EM_BAND_ONLY \
   --x_axis_label="P_{#zeta}^{vis} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
  ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pzetamiss(25,-100,100)"  $EM_BAND_ONLY \
   --x_axis_label="#slash{P}_{#zeta} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default" --extra_pad=0.3 --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --extra_pad=0.3 --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 #
 # ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
 #  --method=8 --cat="inclusive" --var="em_gf_mva(40,-1,1)" --extra_pad=0.2 $EM_BAND_ONLY \
@@ -524,7 +524,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="inclusive" --var="n_vtx(30,0,30)" $EM_INC_SHIFT \
   --x_axis_label="Number of Vertices" --datacard="inclusive" --extra_pad=0.4 \
-  --background_scheme="em_default" --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 #### tau_decay_mode
 
@@ -577,7 +577,7 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="btag" --var="bpt_1(20,0,200)" $EM_BTAG_SHIFT \
   --x_axis_label="Leading b-tagged jet p_{T} [GeV]" --datacard="btag" \
-  --background_scheme="em_default" --extra_pad=0.3 --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --extra_pad=0.3 --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 #
 #### beta_1
 BETA_BINS="beta_1(10,-3,3)"
@@ -603,7 +603,7 @@ BETA_BINS="beta_1(10,-3,3)"
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="btag" --var=$BETA_BINS --extra_pad=0.3 \
   --x_axis_label="Leading b-tagged jet #eta" --datacard="btag" $EM_BTAG_SHIFT \
-  --background_scheme="em_default" --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 #
 #### bcsv
 
@@ -625,7 +625,7 @@ BETA_BINS="beta_1(10,-3,3)"
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:pzeta>-20." \
   --method=8 --cat="prebtag" --var="bcsv_1(25,0,1)" \
   --x_axis_label="CSV discriminator" --datacard="prebtag"  $EM_BTAG_SHIFT \
-  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001
+  --background_scheme="em_default" --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=2
 
 #### mjj
 
