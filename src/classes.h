@@ -40,6 +40,7 @@
 #include "UserCode/ICHiggsTauTau/interface/L1TMuon.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TTau.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TSum.hh"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;
@@ -112,6 +113,8 @@ namespace { struct dictionary {
   std::vector<ic::L1TTau>    dictL1TTauCollection;
   ic::L1TJet                 dictL1TJet;
   std::vector<ic::L1TJet>    dictL1TJetCollection;
+  ic::L1TSum                 dictL1TSum;
+  std::vector<ic::L1TSum>    dictL1TSumCollection;
   
 };
 }
