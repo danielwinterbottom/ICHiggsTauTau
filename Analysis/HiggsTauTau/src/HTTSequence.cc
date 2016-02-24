@@ -972,6 +972,7 @@ BuildModule(svFitTest);
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
   if (!is_data ) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
+    if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
   }
 
   if (output_name.find("DYJetsToLL_M-50") != output_name.npos){
