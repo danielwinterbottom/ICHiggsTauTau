@@ -8,6 +8,18 @@
 namespace ic {
   
   class L1TSum : public ic::L1TObject {
+    
+    enum SumType {
+      kTotalEt,
+      kTotalHt,
+      kMissingEt,
+      kMissingHt,
+      kTotalEtx,
+      kTotalEty,
+      kTotalHtx,
+      kTotalHty,
+    };
+    
   public:
     L1TSum();
     virtual ~L1TSum();
