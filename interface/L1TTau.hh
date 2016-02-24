@@ -17,10 +17,14 @@ namespace ic {
     virtual ~L1TTau();
     virtual void Print() const;
     
-    #ifndef SKIP_CINT_DICT
+  #ifndef SKIP_CINT_DICT
   public:
     ClassDef(L1TTau, 1);
-    #endif
+  #endif
+    
+  public:
+    short int isolation;
+    
   };
   
   typedef std::vector<ic::L1TTau> L1TTauCollection;

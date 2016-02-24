@@ -17,10 +17,15 @@ namespace ic {
     virtual ~L1TMuon();
     virtual void Print() const;
     
-    #ifndef SKIP_CINT_DICT
+  #ifndef SKIP_CINT_DICT
   public:
     ClassDef(L1TMuon, 1);
-    #endif
+  #endif
+    
+  public:
+    short int          charge;
+    unsigned short int isolation;
+    unsigned short int quality;
   };
   
   typedef std::vector<ic::L1TMuon> L1TMuonCollection;

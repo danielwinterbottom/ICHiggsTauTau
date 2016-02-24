@@ -17,10 +17,14 @@ namespace ic {
     virtual ~L1TEGamma();
     virtual void Print() const;
     
-    #ifndef SKIP_CINT_DICT
+  #ifndef SKIP_CINT_DICT
   public:
     ClassDef(L1TEGamma, 1);
-    #endif
+  #endif
+    
+  public:
+    short int isolation;
+    
   };
   
   typedef std::vector<ic::L1TEGamma> L1TEGammaCollection;
