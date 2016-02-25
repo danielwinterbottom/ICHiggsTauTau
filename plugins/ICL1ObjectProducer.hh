@@ -60,7 +60,6 @@ class ICL1ObjectProducer : public edm::EDProducer {//edm::Analyzer {
  private:
   virtual void beginJob();
   virtual void produce(edm::Event &, const edm::EventSetup &);
-  virtual void analyze(const edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
  public:
