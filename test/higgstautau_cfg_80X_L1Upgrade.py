@@ -22,7 +22,7 @@ opts.register('file',
 #opts.register('file',
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/0AF323E8-EBB9-E511-961D-002590D0AF6C.root',parser.VarParsing.multiplicity.singleton,
-'root://xrootd.unl.edu///store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000/VBFHToTauTau_M125_step1_v2_1.root',parser.VarParsing.multiplicity.singleton,
+'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/0AF323E8-EBB9-E511-961D-002590D0AF6C.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2_ext3-v1/10000/0041D4C0-D86E-E511-8D6B-001E67A3E8F9.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015C/SingleElectron/MINIAOD/PromptReco-v1/000/254/317/00000/C4F3838C-8345-E511-9AA9-02163E011FE4.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/164/00000/4633CC68-A326-E511-95D0-02163E0124EA.root', parser.VarParsing.multiplicity.singleton,
@@ -45,12 +45,10 @@ opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
 
 #########
 opts.register ('era',    'stage2',  parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string,  "The data taking Era: stage1 or stage2")
-opts.register ('sample', 'data',    parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string,  "The Sample type: data or mc")
-#opts.register ('output', 'DEFAULT', VarParsing.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string,  "The output file name")
-#opts.register ('max',    '',        VarParsing.VarParsing.multiplicity.singleton, parser.VarParsing.varType.int,     "The maximum number of events to process")
+opts.register ('sample', 'mc',    parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string,  "The Sample type: data or mc")
 
-opts.sample = "mc"
-#opts.max      = 1000
+#opts.sample = "mc"
+
 #########
 
 opts.parseArguments()
@@ -159,7 +157,7 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.Geometry.GeometryExtended2015Reco_cff')
 process.load('Configuration.Geometry.GeometryExtended2015_cff')
 ############################
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+#process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
@@ -173,7 +171,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(10000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -186,8 +184,8 @@ process.opts   = cms.untracked.PSet(
 ################################################################
 # Input files and global tags
 ################################################################
-process.load("CondCore.DBCommon.CondDBCommon_cfi")
-from CondCore.DBCommon.CondDBSetup_cfi import *
+#process.load("CondCore.DBCommon.CondDBCommon_cfi")
+#from CondCore.DBCommon.CondDBSetup_cfi import *
 #if not isData:
 #  process.jec = cms.ESSource("PoolDBESSource",
 #    DBParameters = cms.PSet(
@@ -206,7 +204,11 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 #
 #  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
-process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
+process.load('Configuration.StandardSequences.RawToDigi_cff')
+#process.load('Configuration.StandardSequences.SimL1Emulator_cff')
+process.load('L1Trigger.Configuration.L1TReEmulateFromRAW_cff')
+
+process.source = cms.Source("PoolSource", dropDescendantsOfDroppedBranches = cms.untracked.bool(False), fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/D61F7B94-676F-E511-9970-00221981B434.root',
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/103BC4D8-666F-E511-AAC3-00221981AF26.root'
@@ -745,7 +747,8 @@ process.icElectronSequence += cms.Sequence(
 process.icL1ObjectSequence = cms.Sequence()
 
 process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
-  input                     = cms.InputTag("l1extraParticles", "Isolated", "RECO"),
+  branch                    = cms.string("Candidates"),
+  input                     = cms.InputTag("simCaloStage2Digis"),
   input_L1TEra       = cms.untracked.string  ("stage2"),
   inputTag_L1TEGamma = cms.untracked.InputTag("simCaloStage2Digis"),
   inputTag_L1TMuon   = cms.untracked.InputTag("simGmtStage2Digis"),
@@ -1463,43 +1466,43 @@ process.ak4PFJets.doAreaFastjet = cms.bool(True)
 ################################################################
 # Simulation only: GenParticles, GenJets, PileupInfo
 ################################################################
-process.icGenSequence = cms.Sequence()
+#process.icGenSequence = cms.Sequence()
 
-#if release in ['74X']:
-process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
-    src = cms.InputTag("genParticles","","HLT"),
-    select = cms.vstring(
-        "drop  *", # this is the default
-        "++keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15", # keep leptons, with history
-        "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",   # keep neutrinos
-        "drop   status == 2",                                              # drop the shower part of the history
-        "+keep pdgId == 22 && status == 1 && (pt > 10 || isPromptFinalState())", # keep gamma above 10 GeV (or all prompt) and its first parent
-        "+keep abs(pdgId) == 11 && status == 1 && (pt > 3 || isPromptFinalState())", # keep first parent of electrons above 3 GeV (or prompt)
-        "keep++ abs(pdgId) == 15",                                         # but keep keep taus with decays
-	"drop  status > 30 && status < 70 ", 				   #remove pythia8 garbage
-	"drop  pdgId == 21 && pt < 5",                                    #remove pythia8 garbage
-        "drop   status == 2 && abs(pdgId) == 21",                          # but remove again gluons in the inheritance chain
-        "keep abs(pdgId) == 23 || abs(pdgId) == 24 || abs(pdgId) == 25 || abs(pdgId) == 6 || abs(pdgId) == 37 ",   # keep VIP(articles)s
-        "keep abs(pdgId) == 310 && abs(eta) < 2.5 && pt > 1 ",                                                     # keep K0
+##if release in ['74X']:
+#process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+#process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
+#    src = cms.InputTag("genParticles","","HLT"),
+#    select = cms.vstring(
+#        "drop  *", # this is the default
+#        "++keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15", # keep leptons, with history
+#        "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",   # keep neutrinos
+#        "drop   status == 2",                                              # drop the shower part of the history
+#        "+keep pdgId == 22 && status == 1 && (pt > 10 || isPromptFinalState())", # keep gamma above 10 GeV (or all prompt) and its first parent
+#        "+keep abs(pdgId) == 11 && status == 1 && (pt > 3 || isPromptFinalState())", # keep first parent of electrons above 3 GeV (or prompt)
+#        "keep++ abs(pdgId) == 15",                                         # but keep keep taus with decays
+#	"drop  status > 30 && status < 70 ", 				   #remove pythia8 garbage#
+#	"drop  pdgId == 21 && pt < 5",                                    #remove pythia8 garbage
+#        "drop   status == 2 && abs(pdgId) == 21",                          # but remove again gluons in the inheritance chain
+#        "keep abs(pdgId) == 23 || abs(pdgId) == 24 || abs(pdgId) == 25 || abs(pdgId) == 6 || abs(pdgId) == 37 ",   # keep VIP(articles)s
+#        "keep abs(pdgId) == 310 && abs(eta) < 2.5 && pt > 1 ",                                                     # keep K0
 # keep heavy flavour quarks for parton-based jet flavour
-	"keep (4 <= abs(pdgId) <= 5) & (status = 2 || status = 11 || status = 71 || status = 72)",
+#	"keep (4 <= abs(pdgId) <= 5) & (status = 2 || status = 11 || status = 71 || status = 72)",
 # keep light-flavour quarks and gluons for parton-based jet flavour
-	"keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5", 
+#	"keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5", 
 # keep b and c hadrons for hadron-based jet flavour
-	"keep (400 < abs(pdgId) < 600) || (4000 < abs(pdgId) < 6000)",
+#	"keep (400 < abs(pdgId) < 600) || (4000 < abs(pdgId) < 6000)",
 # additional c hadrons for jet fragmentation studies
-	"keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", 
+#	"keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", 
 # additional b hadrons for jet fragmentation studies
-	"keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543", 
+#	"keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543", 
 #keep SUSY particles
-	"keep (1000001 <= abs(pdgId) <= 1000039 ) || ( 2000001 <= abs(pdgId) <= 2000015)",
+#	"keep (1000001 <= abs(pdgId) <= 1000039 ) || ( 2000001 <= abs(pdgId) <= 2000015)",
 # keep protons 
-        "keep pdgId = 2212",
-        "keep status == 3 || ( 21 <= status <= 29) || ( 11 <= status <= 19)",  #keep event summary (status=3 for pythia6, 21 <= status <= 29 for pythia8)
-        "keep isHardProcess() || fromHardProcessFinalState() || fromHardProcessDecayed() || fromHardProcessBeforeFSR() || (statusFlags().fromHardProcess() && statusFlags().isLastCopy())",  #keep event summary based on status flags
-    )
-)
+#        "keep pdgId = 2212",
+ #       "keep status == 3 || ( 21 <= status <= 29) || ( 11 <= status <= 19)",  #keep event summary (status=3 for pythia6, 21 <= status <= 29 for pythia8)
+ #       "keep isHardProcess() || fromHardProcessFinalState() || fromHardProcessDecayed() || fromHardProcessBeforeFSR() || (statusFlags().fromHardProcess() && statusFlags().isLastCopy())",  #keep event summary based on status flags
+  #  )
+#)
  
 
 #process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner53X",
@@ -1515,88 +1518,88 @@ process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
 #  process.prunedGenParticles.src = cms.InputTag("prunedGenParticles", "", "PAT")
 
 
-process.icGenParticleProducer = producers.icGenParticleProducer.clone(
-  input   = cms.InputTag("prunedGenParticles"),
-  includeMothers = cms.bool(True),
-  includeDaughters = cms.bool(True),
-  includeStatusFlags = cms.bool(True)
-)
+#process.icGenParticleProducer = producers.icGenParticleProducer.clone(
+#  input   = cms.InputTag("prunedGenParticles"),
+#  includeMothers = cms.bool(True),
+#  includeDaughters = cms.bool(True),
+#  includeStatusFlags = cms.bool(True)
+#)
 
-if release in ['76XMINIAOD']:
-  process.icGenParticleProducer.input=cms.InputTag("prunedGenParticles","","PAT") #Store ALL pruned gen particles
-
-
-process.load("RecoJets.Configuration.GenJetParticles_cff")
-process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
-  1000022, 2000012, 2000014,
-  2000016, 1000039, 5000039,
-  4000012, 9900012, 9900014,
-  9900016, 39, 12, 14, 16
-)
-if release in ['76XMINIAOD']:
-  # But of course this won't work because genParticlesForJets(InputGenJetsParticleSelector)
-  # requires a vector<GenParticle> input. There's no alternative filter for the PackedGenParticle
-  # type at the moment. Probably we could make our own generic cut-string selector, but
-  # not in this package
-  process.genParticlesForJets.src = cms.InputTag("packedGenParticles")
-
-process.load("RecoJets.JetProducers.ak4GenJets_cfi")
-process.ak4GenJetsNoNuBSM  =  process.ak4GenJets.clone()
-
-if release in ['76XMINIAOD']:
-  process.ak4GenJetsNoNuBSM.src=cms.InputTag("packedGenParticles") #This still contains nus in 72, should be fixed in 74
-
-process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
-  src = cms.InputTag("ak4GenJetsNoNuBSM"),
-  cut = cms.string("pt > 10.0")
-)
-
-process.icGenJetProducer = producers.icGenJetProducer.clone(
-  branch  = cms.string("genJets"),
-  input   = cms.InputTag("selectedGenJets"),
-  inputGenParticles = cms.InputTag("genParticles"),
-  requestGenParticles = cms.bool(False)
-)
-
-if release in ['76XMINIAOD']:
-  process.icGenJetProducer.branch = cms.string("genJetsReclustered")
-  process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles","","PAT")
-  process.icGenJetProducer.isSlimmed  = cms.bool(True)
-  process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
-    branch = cms.string("genJets"),
-    input = cms.InputTag("slimmedGenJets"),
-    inputGenParticles=cms.InputTag("genParticles"),
-    requestGenParticles = cms.bool(False),
-    isSlimmed = cms.bool(True)
-  ) 
-
-process.icPileupInfoProducer = producers.icPileupInfoProducer.clone()
-if release in ['76XMINIAOD']:
-  process.icPileupInfoProducer.input=cms.InputTag("slimmedAddPileupInfo")
+#if release in ['76XMINIAOD']:
+#  process.icGenParticleProducer.input=cms.InputTag("prunedGenParticles","","PAT") #Store ALL pruned gen particles
 
 
-if not isData:
-  process.icGenSequence += (
-    process.prunedGenParticles+
-    process.icGenParticleProducer
-  )
-  if release in ['76XMINIAOD']:
-    process.icGenSequence.remove(process.prunedGenParticles)
-    process.icGenSequence += (
-      process.ak4GenJetsNoNuBSM+
-      process.selectedGenJets+
-      process.icGenJetProducer+
-      process.icGenJetProducerFromSlimmed+
-      process.icPileupInfoProducer
-    )
-  if release in [ '76X']:
-    process.icGenSequence += (
-      process.genParticlesForJets+
-      process.ak4GenJetsNoNuBSM+
-      process.selectedGenJets+
-      process.icGenJetProducer+
-      process.icPileupInfoProducer
-    )
+#process.load("RecoJets.Configuration.GenJetParticles_cff")
+#process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
+#  1000022, 2000012, 2000014,
+#  2000016, 1000039, 5000039,
+#  4000012, 9900012, 9900014,
+#  9900016, 39, 12, 14, 16
+#)
+#if release in ['76XMINIAOD']:
+#  # But of course this won't work because genParticlesForJets(InputGenJetsParticleSelector)
+#  # requires a vector<GenParticle> input. There's no alternative filter for the PackedGenParticle
+#  # type at the moment. Probably we could make our own generic cut-string selector, but
+#  # not in this package
+#  process.genParticlesForJets.src = cms.InputTag("packedGenParticles")
+
+#process.load("RecoJets.JetProducers.ak4GenJets_cfi")
+#process.ak4GenJetsNoNuBSM  =  process.ak4GenJets.clone()
+
+#if release in ['76XMINIAOD']:
+#  process.ak4GenJetsNoNuBSM.src=cms.InputTag("packedGenParticles") #This still contains nus in 72, should be fixed in 74
+
+#process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
+#  src = cms.InputTag("ak4GenJetsNoNuBSM"),
+#  cut = cms.string("pt > 10.0")
+#)
+
+#process.icGenJetProducer = producers.icGenJetProducer.clone(
+#  branch  = cms.string("genJets"),
+#  input   = cms.InputTag("selectedGenJets"),
+#  inputGenParticles = cms.InputTag("genParticles"),
+#  requestGenParticles = cms.bool(False)
+#)
+#
+#if release in ['76XMINIAOD']:
+#  process.icGenJetProducer.branch = cms.string("genJetsReclustered")
+#  process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles","","PAT")
+#  process.icGenJetProducer.isSlimmed  = cms.bool(True)
+#  process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
+#    branch = cms.string("genJets"),
+#    input = cms.InputTag("slimmedGenJets"),
+#    inputGenParticles=cms.InputTag("genParticles"),
+#    requestGenParticles = cms.bool(False),
+#    isSlimmed = cms.bool(True)
+#  ) 
+
+#process.icPileupInfoProducer = producers.icPileupInfoProducer.clone()
+#if release in ['76XMINIAOD']:
+#  process.icPileupInfoProducer.input=cms.InputTag("slimmedAddPileupInfo")
+
+
+#if not isData:
+#  process.icGenSequence += (
+#    process.prunedGenParticles+
+#    process.icGenParticleProducer
+#  )
+#  if release in ['76XMINIAOD']:
+#    process.icGenSequence.remove(process.prunedGenParticles)
+#    process.icGenSequence += (
+#      process.ak4GenJetsNoNuBSM+
+#      process.selectedGenJets+
+#      process.icGenJetProducer+
+#      process.icGenJetProducerFromSlimmed+
+#      process.icPileupInfoProducer
+#    )
+#  if release in [ '76X']:
+#    process.icGenSequence += (
+#      process.genParticlesForJets+
+#      process.ak4GenJetsNoNuBSM+
+#      process.selectedGenJets+
+#      process.icGenJetProducer+
+#      process.icPileupInfoProducer
+#    )
 
 #process.load("RecoJets.JetProducers.ak4GenJets_cfi")
 #process.ak4GenJetsNoNuBSM  =  process.ak4GenJets.clone()
@@ -1621,9 +1624,9 @@ if not isData:
 # ################################################################
 # # Trigger
 # ################################################################
-from PhysicsTools.PatAlgos.tools.trigTools import *
-process.icTriggerSequence = cms.Sequence()
-process.icTriggerObjectSequence = cms.Sequence()
+#from PhysicsTools.PatAlgos.tools.trigTools import *
+#process.icTriggerSequence = cms.Sequence()
+#process.icTriggerObjectSequence = cms.Sequence()
 # if release in ['42X', '53X']:
 #   process.patTriggerSequence = cms.Sequence()
 #   switchOnTrigger(process, sequence = 'patTriggerSequence', outputModule = '')
@@ -1640,40 +1643,40 @@ process.icTriggerObjectSequence = cms.Sequence()
 
 
 
-process.patTriggerPath = cms.Path()
-if release in ['76XMINIAOD']:
-  switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
-if release in ['74X']:
-  switchOnTrigger(process, outputModule = '')
+#process.patTriggerPath = cms.Path()
+#if release in ['76XMINIAOD']:
+#  switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
+#if release in ['74X']:
+#  switchOnTrigger(process, outputModule = '')
 
 
-if release in ['76X']:
-  process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
-    branch = cms.string("triggerPaths"),
-    input = cms.InputTag("patTriggerEvent")
-  )
+#if release in ['76X']:
+#  process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
+#    branch = cms.string("triggerPaths"),
+#    input = cms.InputTag("patTriggerEvent")
+#  )
 
 #  if isData:
-  process.icTriggerSequence += cms.Sequence(
-    process.patTrigger+
-    process.patTriggerEvent+
-   process.icTriggerPathProducer
-  )
+#  process.icTriggerSequence += cms.Sequence(
+#    process.patTrigger+
+#    process.patTriggerEvent+
+#   process.icTriggerPathProducer
+#  )
 
-if release in ['76XMINIAOD']:
-  process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
-   branch = cms.string("triggerPaths"),
-   input  = cms.InputTag("TriggerResults","","HLT"),
-   inputIsStandAlone = cms.bool(True),
-   inputPrescales = cms.InputTag("patTrigger")
-  )
+#if release in ['76XMINIAOD']:
+#  process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
+#   branch = cms.string("triggerPaths"),
+#   input  = cms.InputTag("TriggerResults","","HLT"),
+#   inputIsStandAlone = cms.bool(True),
+#   inputPrescales = cms.InputTag("patTrigger")
+#  )
 
-  if isData:
-    process.icTriggerSequence += cms.Sequence(
+#  if isData:
+#    process.icTriggerSequence += cms.Sequence(
      #process.patTrigger+
      #process.patTriggerEvent+
-     process.icTriggerPathProducer
-    )
+#     process.icTriggerPathProducer
+#    )
 
 
 process.icEle12Mu23ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1850,27 +1853,27 @@ process.icLooseTau50Met80ObjectProducer = producers.icTriggerObjectProducer.clon
       )
   
   
-process.icTriggerObjectSequence += cms.Sequence(
-      process.icEle12Mu23ObjectProducer +
-      process.icEle23Mu8ObjectProducer +
-      process.icEle12Mu17ObjectProducer +
-      process.icEle17Mu8ObjectProducer +
-      process.icEle22LooseTau20ObjectProducer +
-      process.icEle22GsfObjectProducer +
-      process.icEle23ObjectProducer +
-      process.icEle27GsfObjectProducer + 
-      process.icEle32TightGsfObjectProducer +
-      process.icIsoMu17LooseTau20ObjectProducer +
-      process.icIsoMu22ObjectProducer+
-      process.icIsoMu18ObjectProducer+
-#      process.icIsoMu24IterTrkObjectProducer +
-#      process.icIsoMu27IterTrkObjectProducer +
-      process.icIsoMu17IterTrkObjectProducer +
-      process.icDoubleMediumTau40ObjectProducer +
-      process.icDoubleMediumTau35ObjectProducer #+
-#      process.icLooseTau50Met120ObjectProducer +
-#      process.icLooseTau50Met80ObjectProducer
-      )
+#process.icTriggerObjectSequence += cms.Sequence(
+#      process.icEle12Mu23ObjectProducer +
+#      process.icEle23Mu8ObjectProducer +
+#      process.icEle12Mu17ObjectProducer +
+#      process.icEle17Mu8ObjectProducer +
+#      process.icEle22LooseTau20ObjectProducer +
+#      process.icEle22GsfObjectProducer +
+#      process.icEle23ObjectProducer +
+#      process.icEle27GsfObjectProducer + 
+#      process.icEle32TightGsfObjectProducer +
+#      process.icIsoMu17LooseTau20ObjectProducer +
+#      process.icIsoMu22ObjectProducer+
+#      process.icIsoMu18ObjectProducer+
+##      process.icIsoMu24IterTrkObjectProducer +
+##      process.icIsoMu27IterTrkObjectProducer +
+#      process.icIsoMu17IterTrkObjectProducer +
+#      process.icDoubleMediumTau40ObjectProducer +
+#      process.icDoubleMediumTau35ObjectProducer #+
+##      process.icLooseTau50Met120ObjectProducer +
+##      process.icLooseTau50Met80ObjectProducer
+#      )
 
 #if isData:
 #  process.icTriggerObjectSequence.remove(process.icEle22GsfObjectProducer)
@@ -1999,35 +2002,35 @@ process.icTriggerObjectSequence += cms.Sequence(
 
 
   
-if release in ['76XMINIAOD']:
-  for name in process.icTriggerObjectSequence.moduleNames():
-    mod = getattr(process, name)
-    mod.inputIsStandAlone = cms.bool(True)
-    mod.input = cms.InputTag("selectedPatTrigger")
+#if release in ['76XMINIAOD']:
+#  for name in process.icTriggerObjectSequence.moduleNames():
+#    mod = getattr(process, name)
+#    mod.inputIsStandAlone = cms.bool(True)
+#    mod.input = cms.InputTag("selectedPatTrigger")
 
 ################################################################
 # EventInfo
 ################################################################
-process.icEventInfoProducer = producers.icEventInfoProducer.clone(
-  includeJetRho       = cms.bool(True),
-  includeHT           = cms.bool(False),
-  lheProducer         = cms.InputTag("externalLHEProducer"),
-  inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
-  includeLeptonRho    = cms.bool(False),
-  inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
-  includeVertexCount  = cms.bool(True),
-  inputVertices       = vtxLabel,
-  includeCSCFilter    = cms.bool(False),
-  inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
-)
+#process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+#  includeJetRho       = cms.bool(True),
+#  includeHT           = cms.bool(False),
+#  lheProducer         = cms.InputTag("externalLHEProducer"),
+#  inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
+#  includeLeptonRho    = cms.bool(False),
+#  inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
+#  includeVertexCount  = cms.bool(True),
+#  inputVertices       = vtxLabel,
+#  includeCSCFilter    = cms.bool(False),
+#  inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+#)
 
-if doHT:
-  process.icEventInfoProducer.includeHT = cms.bool(True)
+#if doHT:
+#  process.icEventInfoProducer.includeHT = cms.bool(True)
   
 
-process.icEventInfoSequence = cms.Sequence(
-  process.icEventInfoProducer
-)
+#process.icEventInfoSequence = cms.Sequence(
+#  process.icEventInfoProducer
+#)
 
 
 ################################################################
@@ -2040,8 +2043,10 @@ process.icEventProducer = producers.icEventProducer.clone()
 process.p = cms.Path(
   process.ic74XSequence+
   process.icMiniAODSequence+
+  process.RawToDigi+        
+  process.L1TReEmulateFromRAW+  
   #process.icSelectionSequence+
-  process.pfParticleSelectionSequence+
+  #process.pfParticleSelectionSequence+
   #process.icVertexSequence+
 # process.icPFSequence+
   #process.icElectronSequence+
@@ -2053,14 +2058,36 @@ process.p = cms.Path(
  # process.icTrackSequence+
   #process.icPfMetSequence+
   #process.icMvaMetSequence+
-  process.icGenSequence+
+  #process.icGenSequence+
   #process.icPFJetSequence+
   #process.icTriggerSequence+
   #process.icTriggerObjectSequence+
-  process.icEventInfoSequence+
+  #process.icEventInfoSequence+f
   #process.patDefaultSequence+
   process.icEventProducer
 )
+
+
+# Re-emulating, so don't unpack L1T output, might not even exist...
+# Also, remove uneeded unpackers for speed.
+if (eras.stage2L1Trigger.isChosen()):
+    process.p.remove(process.gmtStage2Digis)
+    process.p.remove(process.caloStage2Digis)
+    process.p.remove(process.gtStage2Digis)
+    process.p.remove(process.siPixelDigis)
+    process.p.remove(process.siStripDigis)
+    process.p.remove(process.castorDigis)
+    process.p.remove(process.scalersRawToDigi)
+    process.p.remove(process.tcdsDigis)
+if (eras.stage1L1Trigger.isChosen()):
+    process.p.remove(process.caloStage1Digis)
+    process.p.remove(process.caloStage1FinalDigis)
+    process.p.remove(process.gtDigis)
+    process.p.remove(process.siPixelDigis)
+    process.p.remove(process.siStripDigis)
+    process.p.remove(process.castorDigis)
+    process.p.remove(process.scalersRawToDigi)
+    process.p.remove(process.tcdsDigis)
 
 # process.schedule = cms.Schedule(process.patTriggerPath, process.p)
 process.schedule = cms.Schedule(process.p)

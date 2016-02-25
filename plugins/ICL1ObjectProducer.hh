@@ -52,7 +52,7 @@
 /**
  * @brief See documentation [here](\ref objs-candidate)
  */
-class ICL1ObjectProducer : public edm::EDProducer {
+class ICL1ObjectProducer : public edm::EDProducer {//edm::Analyzer {
  public:
   explicit ICL1ObjectProducer(const edm::ParameterSet &);
   ~ICL1ObjectProducer();
@@ -68,8 +68,7 @@ class ICL1ObjectProducer : public edm::EDProducer {
   L1Analysis::L1AnalysisL1UpgradeDataFormat * l1UpgradeData;
 
  private:
-  std::vector<ic::Candidate> *candidates_;
-  edm::InputTag input_;
+
   std::string branch_;
   boost::hash<reco::Candidate const*> cand_hasher_;
 
