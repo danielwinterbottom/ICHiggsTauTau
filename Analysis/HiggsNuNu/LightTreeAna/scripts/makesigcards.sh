@@ -11,13 +11,13 @@ DO4PARAMS=$2
 #infolder=output_parkedana
 #outfolder=cards_parkedana/
 #blind=false
-infolder=output_run2ana_160129
-outfolder=cards_run2ana_160129/
+infolder=output_run2ana_160216
+outfolder=cards_run2ana_160217/
 blind=true
 zvvstat=18
 mkdir -p $outfolder
 
-for mass in 110 125 150 200 300 400 500
+for mass in 110 125 150 200 300 400 500 600
 do
     mkdir -p $outfolder/$mass
     for mindphicut in 1.01 1.21 1.41 1.61 1.81 2.01 2.11 2.21 2.31 2.41 2.51 2.61 2.81

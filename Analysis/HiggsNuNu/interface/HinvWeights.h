@@ -63,7 +63,8 @@ class HinvWeights : public ModuleBase {
   std::vector<TF1*> func_trigSF_MjjHLTvec;
   std::vector<TF1*> func_trigSF_JetHLTvec;
 
-  std::vector<std::vector<std::vector<TF1*> > > func_trigSF_binnedin2d;
+  std::vector<std::vector<std::vector<TF1*> > > func_trigSF_binnedin2d[7];
+  std::vector<std::string> errLabel;
 
   TH1F *hist_trigSF_METL1;
   TH1F *hist_trigSF_METHLT;

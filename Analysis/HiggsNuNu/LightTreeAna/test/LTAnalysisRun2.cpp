@@ -347,7 +347,14 @@ int main(int argc, char* argv[]){
   if(syst=="PUUP") mcweightpufactor="*puweight_up_scale";
   if(syst=="PUDOWN") mcweightpufactor="*puweight_down_scale";
   
-  if(channel=="taunu"||channel=="gamma") sigmcweight="total_weight_lepveto"+mcweightpufactor;
+  if (syst=="TRIG0UP") mcweightpufactor="*weight_trig_1/weight_trig_0";
+  if (syst=="TRIG0DOWN") mcweightpufactor="*weight_trig_2/weight_trig_0";
+  if (syst=="TRIG1UP") mcweightpufactor="*weight_trig_3/weight_trig_0";
+  if (syst=="TRIG1DOWN") mcweightpufactor="*weight_trig_4/weight_trig_0";
+  if (syst=="TRIG2UP") mcweightpufactor="*weight_trig_5/weight_trig_0";
+  if (syst=="TRIG2DOWN") mcweightpufactor="*weight_trig_6/weight_trig_0";
+
+  if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor;
   else sigmcweight="total_weight_leptight"+mcweightpufactor;
 
   std::string bothcentral="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)<3";
@@ -356,6 +363,7 @@ int main(int argc, char* argv[]){
   std::string j1forwardj2central="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)<3";
 
   std::string additionalcut=(syst=="PUUP")?("&&abs(puweight_up_scale)<200"): (syst=="PUDOWN")?("&&abs(puweight_down_scale)<10") : ("");
+  if (syst.find("TRIG")!=syst.npos) additionalcut="&&weight_trig_0>0";
   analysis->set_baseselection(basesel+additionalcut);
 
   //DATA SHAPE GENERATION
@@ -931,7 +939,7 @@ int main(int argc, char* argv[]){
     if(channel!="mumu"&&channel!="enu"&&channel!="munu"&&channel!="taunu"){
       elementvec.push_back(sigele);
       elementvec.push_back(qcdznunuele);
-      //elementvec.push_back(ewkznunuele);
+      elementvec.push_back(ewkznunuele);
       elementvec.push_back(ggHele);
     }
   }
@@ -1003,7 +1011,7 @@ int main(int argc, char* argv[]){
       analysis->AddModule(&qcdzmumuraw);
       analysis->AddModule(&ewkzmumuraw);
       analysis->AddModule(&qcdznunuraw);
-      //analysis->AddModule(&ewkznunuraw);
+      analysis->AddModule(&ewkznunuraw);
     }
     analysis->AddModule(&vv);
   }
