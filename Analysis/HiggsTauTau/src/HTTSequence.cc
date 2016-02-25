@@ -471,6 +471,32 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
+
+ if(output_name.find("WZJetsTo3LNu") != output_name.npos){ 
+  BuildModule(GenericModule("lowGenMLLEventVeto")
+   .set_function([](ic::TreeEvent *event){
+     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
+     std::vector<GenParticle *> sel_particles;
+     for (unsigned i=0; i < particles.size(); ++i){
+        std::vector<bool> status_flags_start = particles[i]->statusFlags();
+        if ( ((particles[i]->pt()>8&& ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13))) ||(abs(particles[i]->pdgid())==15)) && (status_flags_start[IsPrompt]) ){
+        sel_particles.push_back(particles[i]);
+      }
+    }
+    bool skip_evt=false;
+    for(unsigned i = 0; i<sel_particles.size(); ++i){
+      for(unsigned j = 0; j<i; ++j){
+        if(skip_evt==false){
+          if(((sel_particles[i]->vector()+sel_particles[j]->vector()).M() > 4) && (sel_particles[i]->vector()+sel_particles[j]->vector()).M() < 30) skip_evt=true;
+        }
+      }
+    }
+    if(skip_evt) return 1;
+    else return 0;
+   }));
+  }
+          
+
 /*  BuildModule(GenericModule("checkGoodVertices")
     .set_function([](ic::TreeEvent *event){
        std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
