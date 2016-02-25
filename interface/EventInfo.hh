@@ -55,6 +55,10 @@ class EventInfo {
   /// Generator level HT, used for combining HT binned samples with inclusive samples
   inline double gen_ht() const { return gen_ht_; }
 
+
+  /// Generator level M_ll
+  inline double gen_mll() const { return gen_mll_; }
+
   /// Number of outgoing partons at generator level, used for combining n-jet binned samples with inclusive samples
   inline unsigned n_outgoing_partons() const { return n_outgoing_partons_; }
 
@@ -94,6 +98,10 @@ class EventInfo {
 
   /// @copybrief gen_ht()
   inline void set_gen_ht(double const& gen_ht) { gen_ht_ = gen_ht; }
+
+
+  /// @copybrief gen_mll()
+  inline void set_gen_mll(double const& gen_mll) { gen_mll_ = gen_mll; }
 
   /// @copybrief n_outgoing_partons()
   inline void set_n_outgoing_partons(unsigned const& n_outgoing_partons) { n_outgoing_partons_ = n_outgoing_partons; }
@@ -261,6 +269,7 @@ class EventInfo {
   double lepton_rho_;
   double gen_ht_;
   unsigned n_outgoing_partons_;
+  double gen_mll_;
   SDMap weights_;
   SBMap weight_status_;
   unsigned good_vertices_;
@@ -268,7 +277,7 @@ class EventInfo {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 6);
+  ClassDef(EventInfo, 7);
  #endif
 };
 }
