@@ -812,6 +812,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       double xs = it->second.second;
       return ((xs*lumi_)/evt);
     } else {
+      std::cout << "[HTTRun2Analysis::GetLumiScale] Warning: lumi scale not found for sample " << sample << std::endl;
       return 1.0;
     }
   }
