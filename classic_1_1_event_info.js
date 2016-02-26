@@ -11,7 +11,8 @@ var classic_1_1_event_info =
     [ "jet_rho", "classic_1_1_event_info.html#a1daac9548292ff71d9046fbc9d88bc1a", null ],
     [ "lepton_rho", "classic_1_1_event_info.html#ac3dd24dd1b1bda60f956c6f07d5930ad", null ],
     [ "gen_ht", "classic_1_1_event_info.html#a1bed4d8ad92e7b1009c1e5014cf8ce31", null ],
-    [ "n_outgoing_partons", "classic_1_1_event_info.html#acde199993a36ffec6ced6f570ce67ab9", null ],
+    [ "gen_mll", "classic_1_1_event_info.html#a5a0b5bfdf5fb818c7d51eea87bb60f14", null ],
+    [ "n_outgoing_partons", "classic_1_1_event_info.html#a3f1450839fc78fff17e9eeb0bfec021b", null ],
     [ "good_vertices", "classic_1_1_event_info.html#aae5e0569348d30611291bf4c4eaf4c9c", null ],
     [ "set_is_data", "classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8", null ],
     [ "set_event", "classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c", null ],
@@ -21,7 +22,8 @@ var classic_1_1_event_info =
     [ "set_jet_rho", "classic_1_1_event_info.html#a42e344f79e53c3487399d18e0937c8f8", null ],
     [ "set_lepton_rho", "classic_1_1_event_info.html#a76acf01d2a32cd6cec54807da1d5d582", null ],
     [ "set_gen_ht", "classic_1_1_event_info.html#a9cc39e3a1fcd187e5d3ea64a2a652811", null ],
-    [ "set_n_outgoing_partons", "classic_1_1_event_info.html#ad827701b2f4ce39d01f6d0aaceab1d69", null ],
+    [ "set_gen_mll", "classic_1_1_event_info.html#ad1bf8c05ae859e29abdb19eac6d8ac06", null ],
+    [ "set_n_outgoing_partons", "classic_1_1_event_info.html#a9e93fe83ba9de0502ec96307d28b5f08", null ],
     [ "set_good_vertices", "classic_1_1_event_info.html#a2b6830f55112bd17730f34a6e2a2ab9b", null ],
     [ "weight", "classic_1_1_event_info.html#a27dd9956edbafacdb3aa5ffef4d1b1d9", null ],
     [ "weight_defined", "classic_1_1_event_info.html#a4f9ea5819774094c36e601125dc838f9", null ],
@@ -36,5 +38,5 @@ var classic_1_1_event_info =
     [ "set_filter_result", "classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40", null ],
     [ "filter_result", "classic_1_1_event_info.html#ae3e73bf521c31067e064151818218d10", null ],
     [ "total_filter_result", "classic_1_1_event_info.html#a09f0004aabaf1f44cb52b3f95833bff9", null ],
-    [ "ClassDef", "classic_1_1_event_info.html#a85d62aa812196a173a6a7caad63ecc2a", null ]
+    [ "ClassDef", "classic_1_1_event_info.html#aa4d755abf321bbefb6dd93a4f4750f9b", null ]
 ];
