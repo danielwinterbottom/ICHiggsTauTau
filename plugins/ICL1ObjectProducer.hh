@@ -49,6 +49,14 @@
 
 #include "L1Trigger/L1TNtuples/interface/L1AnalysisL1Upgrade.h"
 
+// ICHiggsTauTau Objects
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TEGamma.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TMuon.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TTau.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TSum.hh"
+
 /**
  * @brief See documentation [here](\ref objs-candidate)
  */
@@ -67,7 +75,13 @@ class ICL1ObjectProducer : public edm::EDProducer {//edm::Analyzer {
   L1Analysis::L1AnalysisL1UpgradeDataFormat * l1UpgradeData;
 
  private:
-
+     
+  std::vector<ic::L1TMuon> *L1Muons_;
+  std::vector<ic::L1TEGamma> *L1EGammas_;
+  std::vector<ic::L1TTau> *L1Taus_;
+  std::vector<ic::L1TJet> *L1Jets_;
+  std::vector<ic::L1TSum> *L1Sums_;
+  
   std::string branch_;
   boost::hash<reco::Candidate const*> cand_hasher_;
 
