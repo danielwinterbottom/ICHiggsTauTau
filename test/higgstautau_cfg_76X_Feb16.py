@@ -19,7 +19,8 @@ opts.register('file',
 #'root://xrootd.unl.edu//store/data/Run2015D/Tau/MINIAOD/16Dec2015-v1/00000/006DFE2F-B2B6-E511-A7B6-3417EBE65E39.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file',
-'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/044F8A3A-43B8-E511-8F98-0025904CF75A.root',parser.VarParsing.multiplicity.singleton,
+'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00D30F00-1EB8-E511-A3A0-FA163E2815B2.root',parser.VarParsing.multiplicity.singleton,
+#'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/044F8A3A-43B8-E511-8F98-0025904CF75A.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015D/SingleElectron/MINIAOD/16Dec2015-v1/20000/00050EF1-F9A6-E511-86B2-0025905A48D0.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/50000/12184969-3DB8-E511-879B-001E67504A65.root',parser.VarParsing.multiplicity.singleton,
@@ -42,7 +43,6 @@ opts.register('release', '76XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
-
 
 opts.parseArguments()
 infile      = opts.file
@@ -1221,7 +1221,7 @@ if release in ['76XMINIAOD']:
   process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
 
 from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
-runMVAMET(process)
+runMVAMET(process, jetCollectionPF='patJetsReapplyJEC')
 
 
 process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
@@ -1265,6 +1265,7 @@ process.icMvaMetSequence = cms.Sequence(
   process.pfNeutrals+
   process.neutralInJets+
   process.pfChargedPV+
+  process.pfChs+
   process.pfChargedPU+
   process.pfMETCands+
   process.pfTrackMETCands+
@@ -1908,7 +1909,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 
 if doHT:
   process.icEventInfoProducer.includeHT = cms.bool(True)
-  
+
 
 process.icEventInfoSequence = cms.Sequence(
   process.icEventInfoProducer
