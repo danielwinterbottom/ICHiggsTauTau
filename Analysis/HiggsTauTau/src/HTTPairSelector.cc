@@ -164,12 +164,20 @@ namespace ic {
       std::size_t id = 0;
       boost::hash_combine(id, result[0]->GetCandidate("lepton1")->id());
       boost::hash_combine(id, result[0]->GetCandidate("lepton2")->id());
+      std::size_t id_inv = 0;
+      boost::hash_combine(id_inv, result[0]->GetCandidate("lepton2")->id());
+      boost::hash_combine(id_inv, result[0]->GetCandidate("lepton1")->id());
       std::map<std::size_t, Met *>::const_iterator it = met_map.find(id);
+      std::map<std::size_t, Met *>::const_iterator it_inv = met_map.find(id_inv);
       if (it != met_map.end()) {
         Met * mva_met = it->second;
         event->Add("pfMVAMet", mva_met);
+      } else if (it_inv != met_map.end()){
+        //lepton1 <--> lepton2 (needed for fully hadronic)
+        Met * mva_met = it_inv->second;
+        event->Add("pfMVAMet", mva_met);
       } else {
-        std::cerr << "Could not find Met in collection for ID: " << id << std::endl;
+        std::cerr << "Could not find Met in collection for ID: " << id << " or " << id_inv <<std::endl;
         exit(0);
       }
     }
