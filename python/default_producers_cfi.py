@@ -455,6 +455,14 @@ icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
 )
 ## [GenParticle]
 
+
+## [GenParticle from LHE]
+icGenParticleFromLHEParticlesProducer = cms.EDProducer('ICGenParticleFromLHEParticlesProducer',
+  branch  = cms.string("lheParticles"),
+  input   = cms.InputTag("externalLHEProducer")
+)
+## [GenParticle from LHE]
+
 icGenVertexProducer = cms.EDProducer('ICGenVertexProducer',
   branch = cms.string("genVertices"),
   input = cms.InputTag("genParticles"),
