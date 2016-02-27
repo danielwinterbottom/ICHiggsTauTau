@@ -161,7 +161,8 @@ if options.proc_bkg or options.proc_all or options.proc_tp:
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
         file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
   else:
-    for sa in tandp_samples:
+    #for sa in tandp_samples:
+    for sa in central_samples:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"zee\":[],\"zmm\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))

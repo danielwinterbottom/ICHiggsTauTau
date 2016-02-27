@@ -54,7 +54,7 @@ namespace ic {
       alias_map_["ztt_sel"] = "(gen_match_1>2 && gen_match_2>3)";
       alias_map_["zll_sel"] = "(gen_match_1<3 || gen_match_2<4)";    
     }
-    if (ch_ == channel::zee||ch_==channel::zmm||ch_ ==channel::wmnu){
+    if (ch_ == channel::zee||ch_==channel::zmm||ch_ == channel::tpzee||ch_==channel::tpzmm||ch_ ==channel::wmnu){
       alias_map_["ztt_sel"] = "";
       alias_map_["zll_sel"] = "1.";
     }
@@ -479,6 +479,9 @@ namespace ic {
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
+    } else if (ch_ == channel::tpzmm || ch_ == channel::tpzee) {
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
     } else if (ch_ == channel::wmnu) {
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]         = "(iso_1<0.1)";
@@ -551,7 +554,7 @@ namespace ic {
    samples_alias_map_["data_samples"] = {
    "SingleElectron-2015D-prompt"
    };
-   if(ch_==channel::et || ch_==channel::zee){
+   if(ch_==channel::et || ch_==channel::zee|| ch_==channel::tpzee){
      samples_alias_map_["data_samples"] = {
       "SingleElectron-2015D"
      };
@@ -561,7 +564,7 @@ namespace ic {
        };
      }
    }
-   if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::wmnu){
+   if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::tpzmm || ch_==channel::wmnu){
      samples_alias_map_["data_samples"] = {
      "SingleMuon-2015D"
      };
@@ -1124,7 +1127,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     hmap[vv_map_label+postfix] = vv_pair;
     total_hist.Add(&hmap[vv_map_label+postfix].first,1.0);
     // Z->ll
-    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
+    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       std::string zl_sel, zj_sel;
       zl_sel= sel+"&&"+this->ResolveAlias("zl_sel");
       zj_sel= sel+"&&"+this->ResolveAlias("zj_sel");
@@ -1152,7 +1155,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       total_hist.Add(&hmap[zll_map_label+postfix].first,1.0);
     }
     // Z->tautau
-    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
+    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       std::string ztt_sel;
       ztt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
       auto ztt_pair = this->GenerateZTT(method, var, ztt_sel, cat, wt);
@@ -1171,7 +1174,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       total_hist.Add(&hmap["W"+postfix].first,1.0);
  //   }
     // QCD/Fakes
-    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
+    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
       std::string qcd_map_label = "QCD";
       //std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
