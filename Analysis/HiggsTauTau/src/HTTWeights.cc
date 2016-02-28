@@ -770,6 +770,26 @@ namespace ic {
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", double(1.0));
        }
+      } else if (channel_ == channel::tt){
+        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+        Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+        double pt_1 = tau1->pt();
+        double pt_2 = tau2->pt();
+        double tau1_trg = 1.0;
+        double tau1_trg_mc = 1.0;
+        double tau2_trg = 1.0;
+        double tau2_trg_mc = 1.0;
+        if (mc_ == mc::fall15_76X){
+          tau1_trg      = Efficiency(pt_1, 34.5412, 5.63353, 2.49242, 3.35896, 1.0);
+          tau1_trg_mc   = Efficiency(pt_1, 36.0274, 5.89434, 5.82870, 1.83737, 9.58000e-01);
+          tau2_trg      = Efficiency(pt_2, 34.5412, 5.63353, 2.49242, 3.35896, 1.0);
+          tau2_trg_mc   = Efficiency(pt_2, 36.0274, 5.89434, 5.82870, 1.83737, 9.58000e-01);
+         }
+        tau1_trg = tau1_trg / tau1_trg_mc;
+        tau2_trg = tau2_trg / tau2_trg_mc;
+        weight *= (tau1_trg*tau2_trg);
+        event->Add("trigweight_1", tau1_trg);
+        event->Add("trigweight_2", tau2_trg);
       } else if (channel_ == channel::mtmet) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
