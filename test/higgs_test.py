@@ -12,7 +12,7 @@ options.register ('sample', 'data',    VarParsing.VarParsing.multiplicity.single
 options.register ('output', 'DEFAULT', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string,  "The output file name")
 options.register ('max',    '',        VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int,     "The maximum number of events to process")
 
-options.max      = 10000
+options.max      = 100
 options.sample   = "mc"
 
 options.parseArguments()
@@ -102,6 +102,7 @@ if (eras.stage2L1Trigger.isChosen()):
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 #process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('L1Trigger.Configuration.L1TReEmulateFromRAW_cff')
+
 
 process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches = cms.untracked.bool(False),

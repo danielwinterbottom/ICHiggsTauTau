@@ -20,18 +20,10 @@
 
 // framework
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-
-// data formats
-#include "DataFormats/L1Trigger/interface/EGamma.h"
-#include "DataFormats/L1Trigger/interface/Tau.h"
-#include "DataFormats/L1Trigger/interface/Jet.h"
-#include "DataFormats/L1Trigger/interface/Muon.h"
-#include "DataFormats/L1Trigger/interface/EtSum.h"
 
 // ROOT output stuff
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -51,7 +43,7 @@
 #include "UserCode/ICHiggsTauTau/interface/L1TJet.hh"
 
 ICL1ObjectProducer::ICL1ObjectProducer(const edm::ParameterSet& pset)
-  :    branch_(pset.getParameter<std::string>("branch")) {
+ {
 
   m_L1TEra = pset.getUntrackedParameter<std::string>("input_L1TEra",string("stage2"));
   if(m_L1TEra == "stage1"){
@@ -71,7 +63,7 @@ ICL1ObjectProducer::ICL1ObjectProducer(const edm::ParameterSet& pset)
     m_EDToken_L1TSum    = consumes<l1t::EtSumBxCollection> (inputTag_Sum);
   }
   else if(m_L1TEra == "stage2"){
-    
+
     edm::InputTag inputTag_EG   = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TEGamma",edm::InputTag("simCaloStage2Digis"));
     edm::InputTag inputTag_Muon = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TMuon",  edm::InputTag("simGmtStage2Digis"));
     edm::InputTag inputTag_Tau  = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TTau",   edm::InputTag("simCaloStage2Digis"));
@@ -84,22 +76,12 @@ ICL1ObjectProducer::ICL1ObjectProducer(const edm::ParameterSet& pset)
     m_EDToken_L1TJet    = consumes<l1t::JetBxCollection>   (inputTag_Jet);
     m_EDToken_L1TSum    = consumes<l1t::EtSumBxCollection> (inputTag_Sum);
   }
- 
-  maxL1Upgrade_ = pset.getParameter<unsigned int>("maxL1Upgrade");
-  l1Upgrade = new L1Analysis::L1AnalysisL1Upgrade();
+
   L1Muons_ = new std::vector<ic::L1TMuon>();
   L1EGammas_ = new std::vector<ic::L1TEGamma>();
   L1Taus_ = new std::vector<ic::L1TTau>();
   L1Jets_ = new std::vector<ic::L1TJet>();
   L1Sums_ = new std::vector<ic::L1TSum>();
-  
-
-  l1UpgradeData = l1Upgrade->getData();
-  
-  // set up output
-  //tree_=fs_->make<TTree>("L1Objects", "L1ObjectsTree");
-  //tree_->Branch("L1Upgrade", "L1Analysis::L1AnalysisL1UpgradeDataFormat", &l1UpgradeData, 32000, 3);
-
 
 }
 
@@ -114,7 +96,6 @@ ICL1ObjectProducer::~ICL1ObjectProducer()
 
 void ICL1ObjectProducer::produce(edm::Event& iEvent,
                                    const edm::EventSetup& iSetup) {
-  l1Upgrade->Reset();
 
   edm::Handle<l1t::EGammaBxCollection> eg;
   edm::Handle<l1t::JetBxCollection> jet;
@@ -136,13 +117,13 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
 
 
   if (eg.isValid()){ 
-    //l1Upgrade->SetEm(eg, maxL1Upgrade_);
+
     
     for (int ibx = eg->getFirstBX(); ibx <= eg->getLastBX(); ++ibx) {
-        for (l1t::EGammaBxCollection::const_iterator it=eg->begin(ibx); it!=eg->end(ibx) && l1UpgradeData->nEGs<maxL1Upgrade_; it++){
+        for (l1t::EGammaBxCollection::const_iterator it=eg->begin(ibx); it!=eg->end(ibx); it++){
             ic::L1TEGamma thisEGamma;
             thisEGamma.isolation = it->hwIso();
-            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->et());
+            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
             thisEGamma.set_vector(tempVector);
             L1EGammas_->push_back(thisEGamma);
         }
@@ -151,13 +132,13 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
   } else {
     edm::LogWarning("MissingProduct") << "L1Upgrade Em not found. Branch will not be filled" << std::endl;
   }
+  
   if (jet.isValid()){ 
-    //l1Upgrade->SetJet(jet, maxL1Upgrade_);
     
     for (int ibx = jet->getFirstBX(); ibx <= jet->getLastBX(); ++ibx) {
-        for (l1t::JetBxCollection::const_iterator it=jet->begin(ibx); it!=jet->end(ibx) && l1UpgradeData->nJets<maxL1Upgrade_; it++){
+        for (l1t::JetBxCollection::const_iterator it=jet->begin(ibx); it!=jet->end(ibx); it++){
             ic::L1TJet thisJet;
-            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->et());
+            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
             thisJet.set_vector(tempVector);
             L1Jets_->push_back(thisJet);
         }
@@ -168,13 +149,13 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
   }
 
   if (sums.isValid()){ 
-    //l1Upgrade->SetSum(sums, maxL1Upgrade_);  
     
     for (int ibx = sums->getFirstBX(); ibx <= sums->getLastBX(); ++ibx) {
-        for (l1t::EtSumBxCollection::const_iterator it=sums->begin(ibx); it!=sums->end(ibx) && l1UpgradeData->nSums<maxL1Upgrade_; it++){
+        for (l1t::EtSumBxCollection::const_iterator it=sums->begin(ibx); it!=sums->end(ibx); it++){
             ic::L1TSum thisSum;
             int type = static_cast<int>( it->getType() );
             thisSum.sumType = type;
+            //std::cout << type << "    " << << std::endl;
             thisSum.et = it->et();
             thisSum.phi = it->phi();
             L1Sums_->push_back(thisSum);
@@ -186,15 +167,14 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
   }
 
   if (muon.isValid()){ 
-    //l1Upgrade->SetMuon(muon, maxL1Upgrade_);
     
     for (int ibx = muon->getFirstBX(); ibx <= muon->getLastBX(); ++ibx) {
-        for (l1t::MuonBxCollection::const_iterator it=muon->begin(ibx); it!=muon->end(ibx) && l1UpgradeData->nMuons<maxL1Upgrade_; it++){
+        for (l1t::MuonBxCollection::const_iterator it=muon->begin(ibx); it!=muon->end(ibx); it++){
             ic::L1TMuon thisMuon;
             thisMuon.isolation = it->hwIso();
             thisMuon.charge = it->charge(); 
             thisMuon.quality = it->hwQual();
-            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->et());
+            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
             thisMuon.set_vector(tempVector);
             L1Muons_->push_back(thisMuon);
         }
@@ -205,14 +185,13 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
     edm::LogWarning("MissingProduct") << "L1Upgrade Muons not found. Branch will not be filled" << std::endl;
   }
 
-  if (tau.isValid()){ //this was muon before not sure why???
-    //l1Upgrade->SetTau(tau, maxL1Upgrade_);
+  if (tau.isValid()){ 
     
     for (int ibx = tau->getFirstBX(); ibx <= tau->getLastBX(); ++ibx) {
-        for (l1t::TauBxCollection::const_iterator it=tau->begin(ibx); it!=tau->end(ibx) && l1UpgradeData->nTaus<maxL1Upgrade_; it++){
+        for (l1t::TauBxCollection::const_iterator it=tau->begin(ibx); it!=tau->end(ibx); it++){
             ic::L1TTau thisTau;
             thisTau.isolation = it->hwIso();
-            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->et());
+            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
             thisTau.set_vector(tempVector);
             L1Taus_->push_back(thisTau);
         }
@@ -222,18 +201,16 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
     edm::LogWarning("MissingProduct") << "L1Upgrade Tau not found. Branch will not be filled" << std::endl;
   }
 
-  tree_->Fill();
-
 }
 
 
 void ICL1ObjectProducer::beginJob() {
     
-  ic::StaticTree::tree_->Branch(branch_.c_str(), &L1Muons_);
-  ic::StaticTree::tree_->Branch(branch_.c_str(), &L1Taus_);
-  ic::StaticTree::tree_->Branch(branch_.c_str(), &L1EGammas_);
-  ic::StaticTree::tree_->Branch(branch_.c_str(), &L1Jets_);
-  ic::StaticTree::tree_->Branch(branch_.c_str(), &L1Sums_);
+  ic::StaticTree::tree_->Branch("L1Muon", &L1Muons_);
+  ic::StaticTree::tree_->Branch("L1Taus", &L1Taus_);
+  ic::StaticTree::tree_->Branch("L1EGammas", &L1EGammas_);
+  ic::StaticTree::tree_->Branch("L1Jets", &L1Jets_);
+  ic::StaticTree::tree_->Branch("L1Sums", &L1Sums_);
   
 }
 
