@@ -19,10 +19,8 @@ opts.register('file',
 #'root://xrootd.unl.edu//store/data/Run2015D/Tau/MINIAOD/16Dec2015-v1/00000/006DFE2F-B2B6-E511-A7B6-3417EBE65E39.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file',
-'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/044F8A3A-43B8-E511-8F98-0025904CF75A.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/data/Run2015D/SingleElectron/MINIAOD/16Dec2015-v1/20000/00050EF1-F9A6-E511-86B2-0025905A48D0.root',parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/50000/12184969-3DB8-E511-879B-001E67504A65.root',parser.VarParsing.multiplicity.singleton,
+'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/70000/0AF323E8-EBB9-E511-961D-002590D0AF6C.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2_ext3-v1/10000/0041D4C0-D86E-E511-8D6B-001E67A3E8F9.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015C/SingleElectron/MINIAOD/PromptReco-v1/000/254/317/00000/C4F3838C-8345-E511-9AA9-02163E011FE4.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/164/00000/4633CC68-A326-E511-95D0-02163E0124EA.root', parser.VarParsing.multiplicity.singleton,
@@ -41,7 +39,7 @@ opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
 opts.register('release', '76XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
-    parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
+    parser.VarParsing.varType.int, "Store HT?")
 
 
 opts.parseArguments()
@@ -76,7 +74,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("EventTree.root"),
+  fileName = cms.string("L1Objects.root"),
   closeFileFast = cms.untracked.bool(True)
 )
 
@@ -625,6 +623,37 @@ process.icElectronSequence += cms.Sequence(
   process.icElectronProducer
 )
 
+################################################################
+# L1 Objects
+################################################################
+
+process.icL1ObjectSequence = cms.Sequence()
+
+process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
+  branch                    = cms.string("L1Objects"),
+  input                     = cms.InputTag("selectedElectrons"),
+  includeConversionMatches  = cms.bool(True),
+  inputConversionMatches    = cms.InputTag("icElectronConversionCalculator"),
+  includeVertexIP           = cms.bool(True),
+  inputVertices             = vtxLabel,
+  includeBeamspotIP         = cms.bool(True),
+  inputBeamspot             = cms.InputTag("offlineBeamSpot"),
+  includeFloats = cms.PSet(
+     mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
+     mvaTrigSpring15       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values")
+  ),
+  includeClusterIso        = cms.bool(True),
+  includePFIso03           = cms.bool(True),
+  includePFIso04           = cms.bool(True)
+)
+
+
+if release in ['76X']:
+  process.icL1ObjectProducer.includeClusterIso = cms.bool(False)
+
+process.icL1ObjectSequence += cms.Sequence(
+  process.icL1ObjectProducer
+)
 
 ################################################################
 # Muons
@@ -786,15 +815,6 @@ process.icTauSequence = cms.Sequence(
   process.icTauProducer
 )
 
-################################################################
-# L1 Taus
-################################################################
-
-process.icL1ExtraTauProducer = cms.EDProducer("ICCandidateProducer",
-  branch                     = cms.string("l1isoTaus"),
-  input                      = cms.InputTag("l1extraParticles","IsoTau","RECO")
-)
-
 # ################################################################
 # # Jets
 # ################################################################
@@ -897,10 +917,7 @@ pfJECS = cms.PSet(
   L2Relative = cms.string("ak4PFL2RelativeCHS"),
   L3Absolute = cms.string("ak4PFL3AbsoluteCHS")
 )
-if isData: pfJECS = cms.PSet(
-  L1FastJet  = cms.string("ak4PFL1FastjetCHS"),
-  L2Relative = cms.string("ak4PFL2RelativeCHS"),
-  L3Absolute = cms.string("ak4PFL3AbsoluteCHS"),
+if isData: pfJECS.append(
   L2L3Residual = cms.string("ak4PFResidualCHS")
 )
 
@@ -968,41 +985,33 @@ if release in ['76XMINIAOD']:
  # Pileup ID
  # ---------
  # Recalculated puJetId isn't the same as miniaod stored - should investigate 
-#stdalgos = cms.VPSet()
-#from RecoJets.JetProducers.PileupJetIDParams_cfi import *
-#stdalgos = cms.VPSet(full_5x_chs,cutbased)
-process.load('RecoJets.JetProducers.PileupJetID_cfi')
+stdalgos = cms.VPSet()
+from RecoJets.JetProducers.PileupJetIDParams_cfi import *
+stdalgos = cms.VPSet(full_5x_chs,cutbased)
+
+process.puJetMvaRe = cms.EDProducer('PileupJetIdProducer',
+    produceJetIds = cms.bool(True),
+    jetids = cms.InputTag(""),
+    runMvas = cms.bool(True),
+    #jets = cms.InputTag("slimmedJets"),
+    jets = cms.InputTag("ak4PFJetsCHS"),
+    vertexes = cms.InputTag("offlinePrimaryVertices"),
+#    vertexes = cms.InputTag("unpackedTracksAndVertices"),
+    algos = cms.VPSet(stdalgos),
+#    rho     = cms.InputTag("kt6PFJets", "rho"),
+    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
+    jec     = cms.string("AK4PFchs"),
+    applyJec = cms.bool(True),
+    inputIsCorrected = cms.bool(False),
+    residualsFromTxt = cms.bool(False),
+    residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
+)
 
 if release in ['76XMINIAOD']:
-  process.pileupJetIdCalculator.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
-process.pileupJetIdCalculator.jets = cms.InputTag("ak4PFJetsCHS")
-process.pileupJetIdCalculator.rho = cms.InputTag("fixedGridRhoFastjetAll")
-process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
-process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
+  process.puJetMvaRe.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
 
-#process.puJetMvaRe = cms.EDProducer('PileupJetIdProducer',
-#    produceJetIds = cms.bool(True),
-#    jetids = cms.InputTag(""),
-#    runMvas = cms.bool(True),
-    #jets = cms.InputTag("slimmedJets"),
-#    jets = cms.InputTag("ak4PFJetsCHS"),
-#    vertexes = cms.InputTag("offlinePrimaryVertices"),
-#    vertexes = cms.InputTag("unpackedTracksAndVertices"),
-#    algos = cms.VPSet(stdalgos),
-#    rho     = cms.InputTag("kt6PFJets", "rho"),
-#    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
-#    jec     = cms.string("AK4PFchs"),
-#    applyJec = cms.bool(True),
-#    inputIsCorrected = cms.bool(False),
-#    residualsFromTxt = cms.bool(False),
-#    residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
-#)
-
-#if release in ['76XMINIAOD']:
-#  process.puJetMvaRe.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
-
-#if release in ['76X', '76XMINIAOD']:
-#  process.puJetMvaRe.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
+if release in ['76X', '76XMINIAOD']:
+  process.puJetMvaRe.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
 
 
 
@@ -1031,7 +1040,7 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
     ),
     destConfig = cms.PSet(
       includePileupID       = cms.bool(True), #rerunning the pu MVA on the jet collection created in miniAOD is possible in newer CMSSW versions but not yet in 72
-      inputPileupID         = cms.InputTag("pileupJetIdEvaluator", "fullDiscriminant"),
+      inputPileupID         = cms.InputTag("puJetMvaRe", "fullDiscriminant"),
       includeTrackBasedVars = cms.bool(False),
       inputTracks           = cms.InputTag("generalTracks"),
       inputVertices         = vtxLabel,
@@ -1105,8 +1114,7 @@ if release in ['76X', '76XMINIAOD']:
     process.ak4PFL3AbsoluteCHS+
     process.ak4PFResidualCHS+
     process.ak4PFJetsCHS+
-    process.pileupJetIdCalculator+
-    process.pileupJetIdEvaluator+ 
+    process.puJetMvaRe+ 
     process.jetPartons+
 #      process.pfJetPartonMatches+
     process.pfJetFlavourAssociation+
@@ -1120,6 +1128,7 @@ if release in ['76X', '76XMINIAOD']:
 
   if isData:
     process.icPFJetSequence.remove(process.jetPartons) 
+    process.icPFJetSequence.remove(process.pfJetPartonMatches)
     process.icPFJetSequence.remove(process.pfJetFlavourAssociation) 
     process.icPFJetSequence.remove(process.icPFJetFlavourCalculator)
 #if release in ['74XMINIAOD','7412MINIAOD']:
@@ -1712,9 +1721,6 @@ process.icDoubleMediumTau35ObjectProducer = producers.icTriggerObjectProducer.cl
    storeOnlyIfFired = cms.bool(False)
    )
 
-if isData :
-  process.icDoubleMediumTau35ObjectProducer.branch = cms.string("triggerObjectsDiTau35")
-
 process.icDoubleMediumTau40ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsDoubleMediumTau40"),
@@ -1935,10 +1941,10 @@ process.p = cms.Path(
   process.icVertexSequence+
 # process.icPFSequence+
   process.icElectronSequence+
+  process.icL1ObjectSequence+
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
-  process.icL1ExtraTauProducer+
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
   process.icPfMetSequence+
@@ -1954,4 +1960,5 @@ process.p = cms.Path(
 
 # process.schedule = cms.Schedule(process.patTriggerPath, process.p)
 process.schedule = cms.Schedule(process.p)
+
 

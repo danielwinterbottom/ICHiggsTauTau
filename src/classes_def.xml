@@ -66,4 +66,6 @@
   <class name="std::vector<ic::L1TTau>"/>
   <class name="ic::L1TJet"/>
   <class name="std::vector<ic::L1TJet>"/>
+  <class name="ic::L1TSum"/>
+  <class name="std::vector<ic::L1TSum>"/>
 </lcgdict>

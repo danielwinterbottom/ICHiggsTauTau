@@ -256,17 +256,17 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
     min_taus = 1;
    }
  }
- if (channel_str == "tt"){
+ if (channel_str == "tt"){//!!
   tau_pt = 45;
   if (strategy_type == strategy::fall15) tau_pt=40;
   tau_eta = 2.1;
-  tau_iso = 1.0;
+  tau_iso = 1.0;//!!
   tau_dz = 0.2;
-  min_taus = 2;
-  tau_iso_discr = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
-  tau_anti_elec_discr = "againstElectronVLooseMVA5";
-  tau_anti_muon_discr = "againstMuonLoose3";
-  pair_dr = 0.5;
+  min_taus = 2;//!!
+  tau_iso_discr = "byCombinedIsolationDeltaBetaCorrRaw3Hits";//!!
+  tau_anti_elec_discr = "againstElectronVLooseMVA5";//!!
+  tau_anti_muon_discr = "againstMuonLoose3";//!!
+  pair_dr = 0.5;//!!
   }
  if(channel_str == "zee"){
    elec_dz = 0.2;
