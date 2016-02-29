@@ -544,11 +544,21 @@ namespace ic {
    };
 
    if(!is_fall15_){
-     samples_alias_map_["ztt_shape_samples"]={
-      "DYJetsToLL_M-50-LO",
-      "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-      "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-     };
+     if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
+         samples_alias_map_["ztt_shape_samples"]={
+         "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+         };
+     } else {
+         samples_alias_map_["ztt_shape_samples"]={
+         "DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+         };
+     }
    }
 
    samples_alias_map_["data_samples"] = {
@@ -604,11 +614,21 @@ namespace ic {
      "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"
    };
    if(!is_fall15_){
-     samples_alias_map_["ztt_samples"]={
-     "DYJetsToLL_M-50-LO",
-     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-     };
+     if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
+         samples_alias_map_["ztt_samples"]={
+         "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+         };
+     } else {
+         samples_alias_map_["ztt_samples"]={
+         "DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+         };
+     }
    }
 
   
@@ -626,21 +646,40 @@ namespace ic {
   "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
    };
   if(!is_fall15_){
-    samples_alias_map_["qcd_sub_samples"] = {
-     "DYJetsToLL_M-50-LO", 
-     "T-tW", "Tbar-tW", "T-t","Tbar-t",
-     "WWTo1L1Nu2Q",
-     "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-     "WJetsToLNu-LO","TT-ext",
-     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-    "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-    "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-     };
-   }
-
-
+    if(ch_==channel::zee || ch_==channel::zmm) {
+        samples_alias_map_["qcd_sub_samples"] = {
+        "DYJetsToLL_M-50-LO",
+        "DYJetsToLL_M-5-LO",
+        "T-tW", "Tbar-tW", "T-t","Tbar-t",
+        "WWTo1L1Nu2Q","VVTo2L2Nu",
+        "ZZTo2L2Q","ZZTo4L",
+        "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+        "TT-ext","WJetsToLNu-LO",
+        "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+        "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+        "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+        "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+        "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+        "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+        };
+    } else {
+        samples_alias_map_["qcd_sub_samples"] = {
+        "DYJetsToLL_M-50-LO",
+        "DYJetsToLL_M-5-LO",
+        "T-tW", "Tbar-tW", "T-t","Tbar-t",
+        "WWTo1L1Nu2Q","VVTo2L2Nu",
+        "ZZTo2L2Q","ZZTo4L",
+        "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+        "TT-ext","WJetsToLNu-LO",
+        "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+        "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+        "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+        "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+        "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+        "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+        };
+      }
+     }
   }
   
 
@@ -659,17 +698,20 @@ namespace ic {
 
    };
   if(!is_fall15_){
-  samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL_M-50-LO",
-   "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWTo1L1Nu2Q","VVTo2L2Nu",
-   "ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT-ext","WJetsToLNu-LO",
-   "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-  "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+    samples_alias_map_["qcd_sub_samples"] = {
+    "DYJetsToLL_M-50-LO",
+    "DYJetsToLL_M-5-LO",
+    "T-tW", "Tbar-tW", "T-t","Tbar-t",
+    "WWTo1L1Nu2Q","VVTo2L2Nu",
+    "ZZTo2L2Q","ZZTo4L",
+    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+    "TT-ext","WJetsToLNu-LO",
+    "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+    "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+    "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+    "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
     };
    }
   }
@@ -686,16 +728,32 @@ namespace ic {
    };
 
    if(!is_fall15){
-    samples_alias_map_["w_sub_samples"] = {
-     "DYJetsToLL_M-50-LO",
-     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-     "T-tW", "Tbar-tW", "T-t","Tbar-t",
-     "WWTo1L1Nu2Q","VVTo2L2Nu",
-     "ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-     "TT-ext"
-     };
+    if(ch_==channel::zee || ch_==channel::zmm) {
+        samples_alias_map_["w_sub_samples"] = {
+         "DYJetsToLL_M-5-LO",
+         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+         "DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+         "T-tW", "Tbar-tW", "T-t","Tbar-t",
+         "WWTo1L1Nu2Q","VVTo2L2Nu",
+         "ZZTo2L2Q","ZZTo4L",
+         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+         "TT-ext"
+         };
+     } else {    
+        samples_alias_map_["w_sub_samples"] = {
+         "DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+         "T-tW", "Tbar-tW", "T-t","Tbar-t",
+         "WWTo1L1Nu2Q","VVTo2L2Nu",
+         "ZZTo2L2Q","ZZTo4L",
+         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+         "TT-ext"
+         };
+     }
    }
 
 samples_alias_map_["wjets_samples"] = {
