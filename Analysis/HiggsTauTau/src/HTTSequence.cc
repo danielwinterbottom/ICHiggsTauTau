@@ -1006,6 +1006,12 @@ BuildModule(svFitTest);
       httWeights.SetDYInputCrossSections(4895,139.4,42.75,5.497,2.21);
       httWeights.SetDYInputYields(9042031,2725655,973937,1067758,998912);
     }
+  
+  if (output_name.find("DYJetsToLL_M-5-") != output_name.npos || output_name.find("DYJetsToLL_M-5_") != output_name.npos){
+      httWeights.set_do_dy_soup_htbinned(true);
+      httWeights.SetDYInputCrossSections(71310,224.2,37.2,3.581,1.124);
+      httWeights.SetDYInputYields(9404398,1013479,1011756,998751,1007309);
+    }
 
     if (output_name.find("WJetsToLNu") != output_name.npos){
       httWeights.set_do_w_soup_htbinned(true);
