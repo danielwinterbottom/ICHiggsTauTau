@@ -16,6 +16,7 @@ var annotated =
     [ "ICEventInfoProducer", "class_i_c_event_info_producer.html", "class_i_c_event_info_producer" ],
     [ "ICEventProducer", "class_i_c_event_producer.html", "class_i_c_event_producer" ],
     [ "ICGenJetProducer", "class_i_c_gen_jet_producer.html", "class_i_c_gen_jet_producer" ],
+    [ "ICGenParticleFromLHEParticlesProducer", "class_i_c_gen_particle_from_l_h_e_particles_producer.html", "class_i_c_gen_particle_from_l_h_e_particles_producer" ],
     [ "ICGenParticleProducer", "class_i_c_gen_particle_producer.html", "class_i_c_gen_particle_producer" ],
     [ "ICGenTauProductProducer", "class_i_c_gen_tau_product_producer.html", "class_i_c_gen_tau_product_producer" ],
     [ "ICGenVertexProducer", "class_i_c_gen_vertex_producer.html", "class_i_c_gen_vertex_producer" ],

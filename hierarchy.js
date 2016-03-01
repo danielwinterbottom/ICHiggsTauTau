@@ -36,6 +36,7 @@ var hierarchy =
       [ "ICEventInfoProducer", "class_i_c_event_info_producer.html", null ],
       [ "ICEventProducer", "class_i_c_event_producer.html", null ],
       [ "ICGenJetProducer", "class_i_c_gen_jet_producer.html", null ],
+      [ "ICGenParticleFromLHEParticlesProducer", "class_i_c_gen_particle_from_l_h_e_particles_producer.html", null ],
       [ "ICGenParticleProducer", "class_i_c_gen_particle_producer.html", null ],
       [ "ICGenTauProductProducer", "class_i_c_gen_tau_product_producer.html", null ],
       [ "ICGenVertexProducer", "class_i_c_gen_vertex_producer.html", null ],

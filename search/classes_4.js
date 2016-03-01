@@ -11,6 +11,7 @@ var searchData=
   ['iceventinfoproducer',['ICEventInfoProducer',['../class_i_c_event_info_producer.html',1,'']]],
   ['iceventproducer',['ICEventProducer',['../class_i_c_event_producer.html',1,'']]],
   ['icgenjetproducer',['ICGenJetProducer',['../class_i_c_gen_jet_producer.html',1,'']]],
+  ['icgenparticlefromlheparticlesproducer',['ICGenParticleFromLHEParticlesProducer',['../class_i_c_gen_particle_from_l_h_e_particles_producer.html',1,'']]],
   ['icgenparticleproducer',['ICGenParticleProducer',['../class_i_c_gen_particle_producer.html',1,'']]],
   ['icgentauproductproducer',['ICGenTauProductProducer',['../class_i_c_gen_tau_product_producer.html',1,'']]],
   ['icgenvertexproducer',['ICGenVertexProducer',['../class_i_c_gen_vertex_producer.html',1,'']]],

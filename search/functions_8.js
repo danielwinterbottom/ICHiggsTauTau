@@ -11,6 +11,7 @@ var searchData=
   ['iceventinfoproducer',['ICEventInfoProducer',['../class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900',1,'ICEventInfoProducer']]],
   ['iceventproducer',['ICEventProducer',['../class_i_c_event_producer.html#ab018137acea92be97b8d6aff245e9d6a',1,'ICEventProducer']]],
   ['icgenjetproducer',['ICGenJetProducer',['../class_i_c_gen_jet_producer.html#a79df2612341cfb059d6eaf3af78c99a8',1,'ICGenJetProducer']]],
+  ['icgenparticlefromlheparticlesproducer',['ICGenParticleFromLHEParticlesProducer',['../class_i_c_gen_particle_from_l_h_e_particles_producer.html#ae09578c973329e421ed4384389c086bd',1,'ICGenParticleFromLHEParticlesProducer']]],
   ['icgenparticleproducer',['ICGenParticleProducer',['../class_i_c_gen_particle_producer.html#a99f84e0aa71d764073ad2cf8ff15e859',1,'ICGenParticleProducer']]],
   ['icgentauproductproducer',['ICGenTauProductProducer',['../class_i_c_gen_tau_product_producer.html#ab39861cd7d6840f49d73375871841250',1,'ICGenTauProductProducer']]],
   ['icgenvertexproducer',['ICGenVertexProducer',['../class_i_c_gen_vertex_producer.html#a22f42773008dabf992337e86bc7a07b4',1,'ICGenVertexProducer']]],

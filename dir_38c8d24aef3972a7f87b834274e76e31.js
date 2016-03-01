@@ -58,6 +58,10 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
     [ "ICGenJetProducer.hh", "_i_c_gen_jet_producer_8hh.html", [
       [ "ICGenJetProducer", "class_i_c_gen_jet_producer.html", "class_i_c_gen_jet_producer" ]
     ] ],
+    [ "ICGenParticleFromLHEParticlesProducer.cc", "_i_c_gen_particle_from_l_h_e_particles_producer_8cc.html", "_i_c_gen_particle_from_l_h_e_particles_producer_8cc" ],
+    [ "ICGenParticleFromLHEParticlesProducer.hh", "_i_c_gen_particle_from_l_h_e_particles_producer_8hh.html", [
+      [ "ICGenParticleFromLHEParticlesProducer", "class_i_c_gen_particle_from_l_h_e_particles_producer.html", "class_i_c_gen_particle_from_l_h_e_particles_producer" ]
+    ] ],
     [ "ICGenParticleProducer.cc", "_i_c_gen_particle_producer_8cc.html", "_i_c_gen_particle_producer_8cc" ],
     [ "ICGenParticleProducer.hh", "_i_c_gen_particle_producer_8hh.html", [
       [ "ICGenParticleProducer", "class_i_c_gen_particle_producer.html", "class_i_c_gen_particle_producer" ]
