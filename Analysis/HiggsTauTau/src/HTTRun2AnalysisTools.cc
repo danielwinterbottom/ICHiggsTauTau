@@ -504,7 +504,7 @@ namespace ic {
       alias_map_["sel"]                       = "1";
     }
 
-    alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL_M-50-LO";
+//    alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL_M-50-LO";
 
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
@@ -872,8 +872,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       double evt = it->second.first;
       double xs = it->second.second;
       return ((xs*lumi_)/evt);
-    } else {
+    } else if(sample.find("SingleMuon")==sample.npos && sample.find("SingleEle")==sample.npos && sample.find("MuonEG")==sample.npos && sample.find("Tau")==sample.npos){
       std::cout << "[HTTRun2Analysis::GetLumiScale] Warning: lumi scale not found for sample " << sample << std::endl;
+      return 1.0;
+    } else {
       return 1.0;
     }
   }
@@ -905,11 +907,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     Value ztt_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> ztt_samples = this->ResolveSamplesAlias("ztt_samples");
-    std::vector<std::string> ztt_shape_samples = this->ResolveSamplesAlias("ztt_samples");
+    if (verbosity_) {
+      std::cout << "ztt_samples: ";
+      for (unsigned i = 0; i < ztt_samples.size(); ++i) {
+        std::cout << ztt_samples[i];
+        if (i != ztt_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
+//    std::vector<std::string> ztt_shape_samples = this->ResolveSamplesAlias("ztt_samples");
     ztt_norm = this->GetLumiScaledRate(ztt_samples, sel, cat, wt) ;
     TH1F ztt_hist = this->GetLumiScaledShape(var, ztt_samples, sel, cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
+//    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+ //     % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
     return std::make_pair(ztt_hist, ztt_norm);
   }
@@ -921,9 +931,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> zl_samples = this->ResolveSamplesAlias("ztt_samples");
     zl_norm = this->GetLumiScaledRate(zl_samples, sel, cat, wt) ;
+    if (verbosity_) {
+      std::cout << "zl_samples: ";
+      for (unsigned i = 0; i < zl_samples.size(); ++i) {
+        std::cout << zl_samples[i];
+        if (i != zl_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
     TH1F zl_hist = this->GetLumiScaledShape(var, zl_samples, sel, cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % "DYJetsToLL" % sel % cat % wt;
+//    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+ //     % "DYJetsToLL" % sel % cat % wt;
     SetNorm(&zl_hist, zl_norm.first);
     return std::make_pair(zl_hist, zl_norm);
   }
@@ -944,8 +962,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
     zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt) ;
     TH1F zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % "zj_samples" % sel % cat % wt;
+//    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+ //     % "zj_samples" % sel % cat % wt;
     SetNorm(&zj_hist, zj_norm.first);
     return std::make_pair(zj_hist, zj_norm);
   }
@@ -955,10 +973,18 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     cat += "&&" + alias_map_["baseline"];
     Value zl_norm;
     std::vector<std::string> zll_samples = this->ResolveSamplesAlias("ztt_samples");
+    if (verbosity_) {
+      std::cout << "zll_samples: ";
+      for (unsigned i = 0; i < zll_samples.size(); ++i) {
+        std::cout << zll_samples[i];
+        if (i != zll_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
     zl_norm = this->GetLumiScaledRate(zll_samples, sel, cat, wt) ;
     TH1F zl_hist = this->GetLumiScaledShape(var, zll_samples, sel, cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % "DYJetsToLL" % sel % cat % wt;
+//    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+ //     % "DYJetsToLL" % sel % cat % wt;
     SetNorm(&zl_hist, zl_norm.first);
     return std::make_pair(zl_hist, zl_norm);
   }
