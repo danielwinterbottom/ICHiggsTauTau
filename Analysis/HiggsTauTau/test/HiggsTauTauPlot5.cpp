@@ -58,6 +58,7 @@ int main(int argc, char* argv[]){
   double qcd_os_ss_factor;
   string w_binned;
   bool interpolate;
+  bool no_central;
   string signal_bins;
   bool add_ztt_modes;
 
@@ -86,6 +87,7 @@ int main(int argc, char* argv[]){
 	  ("Hhh_masses",              po::value<string>(&Hhh_masses_str)->default_value(""))
 	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
 	  ("tau_es_scales",          po::value<string>(&tau_es_scales_str)->default_value(""))
+	  ("no_central", 	          po::value<bool>(&no_central)->default_value(false))
 	  ("syst_met_scale",          po::value<string>(&syst_met_scale)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_eff_t",      		    po::value<string>(&syst_eff_t)->default_value(""))
@@ -207,7 +209,7 @@ int main(int argc, char* argv[]){
   std::string sig_var = var;
   if (signal_bins != "") sig_var = reduced_var+signal_bins;
 
-	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
+ if(!no_central) ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
   
 
    
@@ -215,7 +217,7 @@ int main(int argc, char* argv[]){
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 	}
-	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
+	if(!no_central) ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 	ana.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "", 1.0);
 
 
@@ -852,7 +854,7 @@ int main(int argc, char* argv[]){
 
    //data->Divide(bkg_hist);
 
-	plot.GeneratePlot(hmap);
+  if(!no_central) plot.GeneratePlot(hmap);
 
   return 0;
 }
