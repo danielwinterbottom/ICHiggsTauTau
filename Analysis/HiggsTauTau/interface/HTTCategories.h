@@ -116,7 +116,7 @@ class HTTCategories : public ModuleBase {
   branch_var pzetamiss_;
   branch_var pfpzetamiss_;
   branch_var puppipzetamiss_;
-  double emu_dphi_;
+  double dphi_;
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;

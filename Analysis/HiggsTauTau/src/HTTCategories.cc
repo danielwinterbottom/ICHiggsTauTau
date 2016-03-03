@@ -269,6 +269,9 @@ namespace ic {
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
         outtree_->Branch("phi_2",             &phi_2_.var_double);
+        if (channel_ != channel::em){
+          outtree_->Branch("dphi",              &dphi_);
+        }
         outtree_->Branch("E_1",               &E_1_);
         outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
@@ -292,7 +295,7 @@ namespace ic {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
           outtree_->Branch("mt_ll",             &mt_ll_);
-          outtree_->Branch("emu_dphi",          &emu_dphi_);
+          outtree_->Branch("emu_dphi",          &dphi_);
           outtree_->Branch("emu_csv",           &emu_csv_);
           outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
           outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
@@ -990,14 +993,13 @@ namespace ic {
       id_e_mva_nt_loose_1_ = elec->GetIdIso("mvaNonTrigSpring15");
     }
 
-    emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
-
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
+    dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector()));
     E_1_ = lep1->energy();
     E_2_ = lep2->energy();
     m_1_ = lep1->M();
