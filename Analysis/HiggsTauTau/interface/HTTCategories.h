@@ -61,6 +61,7 @@ class HTTCategories : public ModuleBase {
   float rho_;
   float mc_weight_;
   float pu_weight_;
+  double wt_btag_;
   double wt_ggh_pt_up_;
   double wt_ggh_pt_down_;
   double wt_tau_fake_up_;
@@ -305,6 +306,7 @@ class HTTCategories : public ModuleBase {
   unsigned n_jets_;
   unsigned n_lowpt_jets_;
   unsigned n_bjets_;
+  unsigned n_retag_bjets_;
   unsigned n_loose_bjets_;
   unsigned n_jetsingap_; // Defined if n_jets >= 2
   unsigned n_jetsingap20_; // Defined if n_jets >= 2
@@ -328,12 +330,16 @@ class HTTCategories : public ModuleBase {
   float jctm_2_; 
   branch_var bpt_1_;     // Defined if n_bjets >= 1
   branch_var beta_1_;    // Defined if n_bjets >= 1
+  branch_var retag_bpt_1_;     // Defined if n_bjets >= 1
+  branch_var retag_beta_1_;    // Defined if n_bjets >= 1
   float bphi_1_;    // Defined if n_bjets >= 1
   float bmva_1_;
   float brawf_1_;
   branch_var bcsv_1_; 
   branch_var bpt_2_;     // Defined if n_bjets >= 2
   branch_var beta_2_;    // Defined if n_bjets >= 2
+  branch_var retag_bpt_2_;     // Defined if n_bjets >= 2
+  branch_var retag_beta_2_;    // Defined if n_bjets >= 2
   float bphi_2_;    // Defined if n_bjets >= 2
   float bmva_2_;
   float bcsv_2_; 

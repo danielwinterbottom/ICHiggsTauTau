@@ -49,6 +49,7 @@
 #include "HiggsTauTau/interface/VertexFilter.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/NvtxWeight.h"
+#include "HiggsTauTau/interface/BTagWeightRun2.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -771,7 +772,7 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     .set_ditau_label("ditau"));
 }
 
-if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
+if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -881,6 +882,17 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
 BuildModule(svFitTest);
 
 
+if(!is_data){
+
+ TH2F bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/btag_efficiencies.root","/","bbtag_eff");
+ TH2F cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/btag_efficiencies.root","/","cbtag_eff");
+ TH2F othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/btag_efficiencies.root","/","othbtag_eff");
+BuildModule(BTagWeightRun2("BTagWeightRun2")
+   .set_jet_label(jets_label)
+   .set_bbtag_eff(new TH2F(bbtag_eff))
+   .set_cbtag_eff(new TH2F(cbtag_eff))
+   .set_othbtag_eff(new TH2F(othbtag_eff)));
+}
 
  if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15 && strategy_type != strategy::fall15){
   HTTWeights httWeights = HTTWeights("HTTWeights")
