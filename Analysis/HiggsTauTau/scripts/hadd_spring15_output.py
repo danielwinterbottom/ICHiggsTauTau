@@ -32,6 +32,7 @@ sample_list = [
   'QCD_Ht1000to1500',
   'QCD_Ht1500to2000',
   'QCD_Ht2000toInf',
+  'QCDMuEnriched',
   'TTJets',
 	'TT',
   'TT-ext',

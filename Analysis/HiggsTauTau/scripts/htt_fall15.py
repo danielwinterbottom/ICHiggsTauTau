@@ -75,6 +75,9 @@ parser.add_option("--scales", dest="scales", action='store_true', default=False,
 parser.add_option("--taues_study", dest="taues_study", action='store_true', default=False,
                   help="Run lots of tau ES shifts jsut for DY")
 
+parser.add_option("--qcd_study", dest="qcd_study", action='store_true', default=False,
+                  help="Run QCD MC sample for QCD study")
+
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
@@ -285,6 +288,11 @@ if options.proc_bkg or options.proc_all:
     #'WJetsToLNu_HT600-Inf',
      ]
 
+if options.qcd_study:
+  FILELIST='filelists/Feb25_MC_76X'
+  central_samples = [
+    'QCDMuEnriched'
+     ]
   for sa in central_samples:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());

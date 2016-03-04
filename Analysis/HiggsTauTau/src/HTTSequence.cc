@@ -799,7 +799,7 @@ if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
 
 }
   
-    
+if(!js["qcd_study"].asBool()){    
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
     .set_input_label(jets_label);
     if(strategy_type == strategy::paper2013) {
@@ -809,19 +809,23 @@ if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     }
   BuildModule(jetIDFilter);
 
+}
+
 
   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
 
-if(channel != channel::wmnu) {
-  BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
-    .set_input_label(jets_label)
-    .set_reference_label("ditau")
-    .set_min_dr(0.5));
-} else if (channel == channel::wmnu){
-  BuildModule(OverlapFilter<PFJet,Muon>("JetLeptonOverlapFilter")
-    .set_input_label(jets_label)
-    .set_reference_label("sel_muons")
-    .set_min_dr(0.5));
+if(!js["qcd_study"].asBool()){
+    if(channel != channel::wmnu) {
+      BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+        .set_input_label(jets_label)
+        .set_reference_label("ditau")
+        .set_min_dr(0.5));
+    } else if (channel == channel::wmnu){
+      BuildModule(OverlapFilter<PFJet,Muon>("JetLeptonOverlapFilter")
+        .set_input_label(jets_label)
+        .set_reference_label("sel_muons")
+        .set_min_dr(0.5));
+    }
 }
 
 if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
@@ -1064,6 +1068,7 @@ BuildModule(svFitTest);
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
   if (!is_data ) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
+    if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
   }
 
   if (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos){
@@ -1135,6 +1140,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
     .set_iso_study(js["iso_study"].asBool())
     .set_tau_id_study(js["tau_id_study"].asBool())
+    .set_qcd_study(js["qcd_study"].asBool())
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)

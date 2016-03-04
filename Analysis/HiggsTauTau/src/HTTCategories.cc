@@ -31,6 +31,7 @@ namespace ic {
       tau_id_study_=false;
       is_embedded_=false;
       is_data_=false;
+      qcd_study_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
@@ -240,6 +241,10 @@ namespace ic {
        outtree_->Branch("iso_mvapw_old_2",&lbyIsolationMVArun2PWoldDMwLTraw_2.var_double);
        outtree_->Branch("olddm_1",&ldecayModeFindingOldDMs_1);
        outtree_->Branch("olddm_2",&ldecayModeFindingOldDMs_2);
+      }
+      if(qcd_study_){
+        outtree_->Branch("jet_flav_1", &jet_flav_1_);
+        outtree_->Branch("jet_flav_2", &jet_flav_2_);
       }
 
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
@@ -1611,6 +1616,21 @@ namespace ic {
     n_prebjets_ = prebjets.size();
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
+
+    if(qcd_study_ && channel_ == channel::mt){
+      std::vector<Candidate *> leading_lepton;
+      std::vector<Candidate *> subleading_lepton;
+      leading_lepton.push_back(ditau->GetCandidate("lepton1"));
+      subleading_lepton.push_back(ditau->GetCandidate("lepton2")); 
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(lowpt_jets, leading_lepton, 0.5, true, true);
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(lowpt_jets, subleading_lepton, 0.5, true, true);
+      if(mu_matches.size() > 0) {
+          jet_flav_1_ = (mu_matches.at(0)).first->parton_flavour();
+      } else jet_flav_1_ = -9999;
+      if(tau_matches.size() > 0) {
+          jet_flav_2_ = (tau_matches.at(0)).first->parton_flavour();
+      } else jet_flav_2_ = -9999;
+    }
 
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();
