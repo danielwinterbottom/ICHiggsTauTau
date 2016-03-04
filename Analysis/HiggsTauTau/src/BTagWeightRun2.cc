@@ -148,6 +148,7 @@ namespace ic {
       rand->SetSeed((int)((jets[i]->eta()+5)*100000));
       eta = jets[i]->eta();
       pt = jets[i]->pt();
+      jet_flavour = jets[i]->hadron_flavour();
       double eff = GetEff(jet_flavour,pt, fabs(eta));
       //Stupid implementation, need to fix
       if(jet_flavour == 5){
