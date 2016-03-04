@@ -95,7 +95,6 @@ namespace ic {
       outtree_->Branch("pfmet",             &pfmet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
-      outtree_->Branch("n_retag_bjets",           &n_retag_bjets_);
       outtree_->Branch("mjj",               &mjj_.var_double);
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
@@ -286,9 +285,7 @@ namespace ic {
         outtree_->Branch("jeta_1",            &jeta_1_.var_double);
         outtree_->Branch("jeta_2",            &jeta_2_.var_double);
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
-        outtree_->Branch("retag_bpt_1",       &retag_bpt_1_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
-        outtree_->Branch("retag_beta_1",      &retag_beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
 /*        outtree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_double);
         outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
@@ -827,7 +824,6 @@ namespace ic {
     std::vector<PFJet*> prebjets = lowpt_jets;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     std::vector<PFJet*> bjets = prebjets;
-    std::vector<PFJet*> retag_bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     std::string btag_label="combinedSecondaryVertexBJetTags";
     double btag_wp =  0.679;
@@ -852,7 +848,7 @@ namespace ic {
     // that say whether a jet should pass the WP or not
     if (event->Exists("retag_result")) {
       auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(retag_bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
       ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
     } else{ 
       ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
@@ -1617,7 +1613,6 @@ namespace ic {
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();
     n_bjets_ = bjets.size();
-    n_retag_bjets_ = retag_bjets.size();
     n_prebjets_ = prebjets.size();
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
@@ -1733,25 +1728,6 @@ namespace ic {
       beta_2_ = -9999;
       bphi_2_ = -9999;
       bmva_2_ = -9999;
-    }
-
-
-    if (n_retag_bjets_ >= 1) {
-      retag_bpt_1_ = retag_bjets[0]->pt();
-      retag_beta_1_ = retag_bjets[0]->eta();
-      
-    } else {
-      retag_bpt_1_ = -9999;
-      retag_beta_1_ = -9999;
-    }
-
-    if (n_retag_bjets_ >= 2) {
-      retag_bpt_2_ = retag_bjets[1]->pt();
-      retag_beta_2_ = retag_bjets[1]->eta();
-      
-    } else {
-      retag_bpt_2_ = -9999;
-      retag_beta_2_ = -9999;
     }
 
 

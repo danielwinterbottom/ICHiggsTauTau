@@ -92,6 +92,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
+  do_reshape=json["baseline"]["do_reshape"].asBool(); 
+  btag_mode=json["baseline"]["btag_mode"].asUInt();
+  bfake_mode=json["baseline"]["bfake_mode"].asUInt();
   if(js["mc"].asString()==""){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
   mc_str = js["mc"].asString();
   if(js["era"].asString()=="") {std::cout<<"ERROR: era not set"<<std::endl; exit(1);}
@@ -313,8 +316,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  moriond_tau_scale = json["moriond_tau_scale"].asBool();
  pu_id_training = json["pu_id_training"].asUInt();
  bjet_regr_correction = json["bjet_regr_correction"].asBool();
- btag_mode    = json["btag_mode"].asUInt();
- bfake_mode   = json["bfake_mode"].asUInt();
+ /*btag_mode    = json["btag_mode"].asUInt();
+ bfake_mode   = json["bfake_mode"].asUInt();*/
  if(json["baseline"]["mass_scale_mode"].asBool()==true){
    mass_shift = json["baseline"]["mass_shift"].asDouble();
  } else mass_shift=1.00;
@@ -891,7 +894,10 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
    .set_jet_label(jets_label)
    .set_bbtag_eff(new TH2F(bbtag_eff))
    .set_cbtag_eff(new TH2F(cbtag_eff))
-   .set_othbtag_eff(new TH2F(othbtag_eff)));
+   .set_othbtag_eff(new TH2F(othbtag_eff))
+   .set_do_reshape(do_reshape)
+   .set_btag_mode(btag_mode)
+   .set_bfake_mode(bfake_mode));
 }
 
  if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15 && strategy_type != strategy::fall15){
