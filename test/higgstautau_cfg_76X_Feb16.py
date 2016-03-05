@@ -19,9 +19,10 @@ opts.register('file',
 #'root://xrootd.unl.edu//store/data/Run2015D/Tau/MINIAOD/16Dec2015-v1/00000/006DFE2F-B2B6-E511-A7B6-3417EBE65E39.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file',
-'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00D30F00-1EB8-E511-A3A0-FA163E2815B2.root',parser.VarParsing.multiplicity.singleton,
+#'root://xrootd.unl.edu//store/data/Run2015D/SingleMuon/MINIAOD/16Dec2015-v1/10000/00006301-CAA8-E511-AD39-549F35AD8BC9.root',parser.VarParsing.multiplicity.singleton,
+#'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/00D30F00-1EB8-E511-A3A0-FA163E2815B2.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/044F8A3A-43B8-E511-8F98-0025904CF75A.root',parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
+'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/data/Run2015D/SingleElectron/MINIAOD/16Dec2015-v1/20000/00050EF1-F9A6-E511-86B2-0025905A48D0.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/50000/12184969-3DB8-E511-879B-001E67504A65.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2_ext3-v1/10000/0041D4C0-D86E-E511-8D6B-001E67A3E8F9.root',parser.VarParsing.multiplicity.singleton,
@@ -33,7 +34,8 @@ opts.register('file',
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
 #opts.register('globalTag', '76X_dataRun2_v15', parser.VarParsing.multiplicity.singleton,
-opts.register('globalTag', '76X_mcRun2_asymptotic_v12', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '76X_mcRun2_asymptotic_RunIIFall15DR76_v1', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag', '76X_dataRun2_16Dec2015_v0', parser.VarParsing.multiplicity.singleton,
 #opts.register('globalTag', '74X_mcRun2_asymptotic_v2', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
@@ -100,51 +102,51 @@ process.options.allowUnschduled = cms.untracked.bool(True)
 ################################################################
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
-if not isData:
-  process.jec = cms.ESSource("PoolDBESSource",
-    DBParameters = cms.PSet(
-     messageLevel = cms.untracked.int32(0)
-    ),
-    timetype = cms.string('runnumber'),
-    toGet = cms.VPSet(
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PF'),
-      label = cms.untracked.string('AK4PF')
-      ),
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PFchs'),
-      label = cms.untracked.string('AK4PFchs')
-      ),
-    ),
-    connect = cms.string('sqlite:Fall15_25nsV2_MC.db')
-  )
+#if not isData:
+#  process.jec = cms.ESSource("PoolDBESSource",
+#    DBParameters = cms.PSet(
+#     messageLevel = cms.untracked.int32(0)
+#    ),
+#    timetype = cms.string('runnumber'),
+#    toGet = cms.VPSet(
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PF'),
+#      label = cms.untracked.string('AK4PF')
+#      ),
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PFchs'),
+#      label = cms.untracked.string('AK4PFchs')
+#      ),
+#    ),
+#    connect = cms.string('sqlite:Fall15_25nsV2_MC.db')
+#  )
 
-  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
-else:
-  process.jec = cms.ESSource("PoolDBESSource",
-    DBParameters = cms.PSet(
-     messageLevel = cms.untracked.int32(0)
-    ),
-    timetype = cms.string('runnumber'),
-    toGet = cms.VPSet(
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PF'),
-      label = cms.untracked.string('AK4PF')
-      ),
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PFchs'),
-      label = cms.untracked.string('AK4PFchs')
-      ),
-    ),
-    connect = cms.string('sqlite:Fall15_25nsV2_DATA.db')
-  )
-
-  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+#else:
+#  process.jec = cms.ESSource("PoolDBESSource",
+#    DBParameters = cms.PSet(
+#     messageLevel = cms.untracked.int32(0)
+#    ),
+#    timetype = cms.string('runnumber'),
+#    toGet = cms.VPSet(
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PF'),
+#      label = cms.untracked.string('AK4PF')
+#      ),
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_DATA_AK4PFchs'),
+#      label = cms.untracked.string('AK4PFchs')
+#      ),
+#    ),
+#    connect = cms.string('sqlite:Fall15_25nsV2_DATA.db')
+#  )
+#
+#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
@@ -850,6 +852,8 @@ if release in ['76XMINIAOD']:
     src = cms.InputTag("slimmedJets"),
     levels = ['L1FastJet','L2Relative','L3Absolute'],
     payload = 'AK4PFchs')
+  if isData:
+      process.patJetCorrFactorsReapplyJEC.levels = ['L1FastJet','L2Relative','L3Absolute','L2L3Residual']
 
   process.patJetsReapplyJEC = patJetsUpdated.clone(
     jetSource = cms.InputTag("slimmedJets"),
@@ -1217,6 +1221,7 @@ process.icPfMetSequence = cms.Sequence(
 )
 
 if release in ['76XMINIAOD']:
+#  process.icPfMetProducer.input = cms.InputTag("patpfMETT1")
   process.icPfMetSequence.remove(process.pfMetRe)
   process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
 
@@ -1249,6 +1254,7 @@ process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
     ),
   inputCustomID = cms.InputTag("")
   )
+
 
 process.icMvaMetSequence = cms.Sequence(
   process.tauDecayProducts+
@@ -1405,6 +1411,8 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   includeStatusFlags = cms.bool(True)
 )
 
+process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone()
+
 if release in ['76XMINIAOD']:
   process.icGenParticleProducer.input=cms.InputTag("prunedGenParticles","","PAT") #Store ALL pruned gen particles
 
@@ -1479,6 +1487,11 @@ if not isData:
       process.selectedGenJets+
       process.icGenJetProducer+
       process.icPileupInfoProducer
+    )
+
+  if doHT:
+    process.icGenSequence += (
+      process.icGenParticleProducerFromLHEParticles
     )
 
 #process.load("RecoJets.JetProducers.ak4GenJets_cfi")
@@ -1937,10 +1950,10 @@ process.p = cms.Path(
 #  process.icL1ExtraTauProducer+
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
-  process.icPfMetSequence+
   process.icGenSequence+
   process.icPFJetSequence+
   process.icMvaMetSequence+
+  process.icPfMetSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
