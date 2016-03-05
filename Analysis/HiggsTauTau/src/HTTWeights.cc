@@ -361,12 +361,10 @@ namespace ic {
       event->Add("retag_result", retag_result);
     }
    
-   if (do_btag_weight_ && mc_==mc::fall15_76X){
     if(event->Exists("btag_evt_weight")){
        double wtbtag = event->Get<double>("btag_evt_weight");
        weight *= wtbtag;
      } 
-  }
 
     if (do_trg_weights_) {
       if (channel_ == channel::et) {
