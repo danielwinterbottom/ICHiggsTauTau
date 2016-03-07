@@ -144,11 +144,17 @@ namespace ic {
     unsigned jet_flavour = 0;
     double sf=0;
     double sub_sf=0;
+//    double use_pt=0;
     for (unsigned i = 0; i < jets.size(); ++i) {
       rand->SetSeed((int)((jets[i]->eta()+5)*100000));
       eta = jets[i]->eta();
       pt = jets[i]->pt();
       jet_flavour = jets[i]->hadron_flavour();
+/*      if(jet_flavour == 4|| jet_flavour==5){
+        use_pt = max(30, min(pt, 670)); 
+      } else {
+        use_pt = max(20, min(pt, 1000));
+      }*/
       double eff = GetEff(jet_flavour,pt, fabs(eta));
       //Stupid implementation, need to fix
       if(jet_flavour == 5){
@@ -247,7 +253,7 @@ namespace ic {
       if(sf < 1) {
         demoteProb_btag = fabs(1.0 - sf);
       } else {
-        promoteProb_btag = fabs(sf - 1.0)/((sf/eff) - 1.0);
+        promoteProb_btag = fabs(sf - 1.0)/((1./eff) - 1.0);
       }
       if (verbose) {
         std::cout << "Jet " << i << " " << jets[i]->vector() << "  csv: " << jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << "  hadron flavour: " << jets[i]->hadron_flavour() << std::endl;

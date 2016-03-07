@@ -1,10 +1,10 @@
 {
   "job": {
-    "filelist" : "filelists/Feb12_MC_76X_SUSYGluGluToBBHToTauTau_M-160.dat",
+    "filelist" : "filelists/Feb12_MC_76X_SUSYGluGluToHToTauTau_M-160.dat",
     "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Feb12_MC_76X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","tt","em"],
+    "channels":     ["et","tt","em","mt"],
     "sequences": {
       "all":  ["default"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
@@ -21,13 +21,13 @@
     "strategy"      : "fall15",
     "is_data"       : false,
     "is_embedded"   : false,
-    "save_output_jsons": true,
+    "save_output_jsons": false,
     "make_sync_ntuple" : false,
     "iso_study" : false,
     "tau_id_study":false,
     "add_Hhh_variables" : false,
     "get_effective" : false,
-    "do_btag_eff":true,
+    "do_btag_eff":false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "store_trigobjpt" :true,
@@ -42,7 +42,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/Feb12-BTagShifts/",
+    "output_folder" : "./output/Feb12-PromoteDemote/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToBBHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
