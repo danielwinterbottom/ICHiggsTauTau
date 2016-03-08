@@ -367,6 +367,7 @@ namespace ic {
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
+        if(era_ == era::data_2015) e_eta = fabs(elec->eta());
         double t_pt = tau->pt();
         double t_eta = fabs(tau->eta());
         double ele_trg = 1.0;
@@ -598,6 +599,7 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
+        if(era_ == era::data_2015) e_eta = fabs(elec->sc_eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double m_trg = 1.0;
@@ -857,6 +859,7 @@ namespace ic {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = elec->pt();
         double sc_eta = fabs(elec->sc_eta());
+        if(era_ == era::data_2015) sc_eta = fabs(elec->eta());
         double ele_id = 1.0;
         double ele_iso = 1.0;
         double ele_idiso_mc =1.0;
@@ -951,6 +954,7 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
+        if (era_ == era::data_2015) e_eta = fabs(elec->eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double m_idiso = 1.0;
