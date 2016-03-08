@@ -250,7 +250,7 @@ if options.proc_qcd:
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
-if options.proc_bkg or options.proc_all:
+if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     #'TTJets',
     'TT-ext',
@@ -288,35 +288,35 @@ if options.proc_bkg or options.proc_all:
     #'WJetsToLNu_HT600-Inf',
      ]
 
-if options.qcd_study:
-  FILELIST='filelists/Feb25_MC_76X'
-  central_samples = [
-    'QCDMuEnriched'
-     ]
+  if options.qcd_study:
+    FILELIST='filelists/Feb25_MC_76X'
+    central_samples = [
+      'QCDMuEnriched'
+       ]
 
-for sa in central_samples:
-    JOB='%s_2015' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-    nperjob = 60
-    if scales:
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-      if 'TT-ext' in sa:
+  for sa in central_samples:
+      JOB='%s_2015' % (sa)
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      nperjob = 60
+      if scales:
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        if 'TT-ext' in sa:
+          nperjob = 40
+      if 'DY' in sa and 'JetsToLL' in sa and scales:
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         nperjob = 40
-    if 'DY' in sa and 'JetsToLL' in sa and scales:
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-      nperjob = 40
-    if 'DY' in sa and 'JetsToLL' in sa and taues_study:
-      CONFIG='scripts/taues_config.json'
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-      nperjob = 10
+      if 'DY' in sa and 'JetsToLL' in sa and taues_study:
+        CONFIG='scripts/taues_config.json'
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        nperjob = 10
 
 
-    nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-
+      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+  
         
 #      if PRODUCTION=='June6' and (not options.do_2011):
 #        central_samples.remove('TTJets')
