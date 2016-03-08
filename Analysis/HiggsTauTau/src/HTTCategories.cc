@@ -113,6 +113,8 @@ namespace ic {
       outtree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2);
       outtree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1);
       outtree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2);
+      outtree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1);
       outtree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1);
