@@ -1417,8 +1417,6 @@ namespace ic {
           std::cerr << "Error making soup, event has " << zll_cands.size() << " Z->ll candidates, 2 expected!" <<std::endl;
           throw;
         } 
-        /*EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-        partons = eventInfo->n_outgoing_partons();*/
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
         throw;
