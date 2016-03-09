@@ -250,7 +250,7 @@ if options.proc_qcd:
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
-if options.proc_bkg or options.proc_all:
+if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     #'TTJets',
     'TT-ext',
@@ -320,7 +320,7 @@ if options.qcd_study:
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-
+  
         
 #      if PRODUCTION=='June6' and (not options.do_2011):
 #        central_samples.remove('TTJets')
