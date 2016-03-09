@@ -289,9 +289,14 @@ if options.proc_bkg or options.proc_all:
      ]
 
 if options.qcd_study:
-  FILELIST='filelists/Feb25_MC_76X'
+  #FILELIST='filelists/Feb25_MC_76X'
+  FILELIST='filelists/Mar05_MC_76X'
   central_samples = [
-    'QCDMuEnriched'
+ #   'QCDMuEnriched',
+    'QCDEMEnrichedPt15-20',
+    'QCDEMEnrichedPt20-30',
+    'QCDFlat',
+    'QCDbcToEPt20-30'
      ]
   for sa in central_samples:
       JOB='%s_2015' % (sa)

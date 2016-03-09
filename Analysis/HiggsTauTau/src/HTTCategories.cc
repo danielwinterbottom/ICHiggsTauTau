@@ -1617,7 +1617,7 @@ namespace ic {
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
 
-    if(qcd_study_ && channel_ == channel::mt){
+    if(qcd_study_ && (channel_ == channel::mt || channel_ == channel::et)){
       std::vector<Candidate *> leading_lepton;
       std::vector<Candidate *> subleading_lepton;
       leading_lepton.push_back(ditau->GetCandidate("lepton1"));
