@@ -449,6 +449,10 @@ void HTTSequence::BuildSequence(){
   //		to_check.push_back(addit_to_check.at(j));
 	 // }
    } 
+ if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
+   std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
+   throw;
+ }
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
     .set_fs(fs.get()));
