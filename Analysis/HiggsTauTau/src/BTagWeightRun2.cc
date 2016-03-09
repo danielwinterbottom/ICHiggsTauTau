@@ -75,60 +75,63 @@ namespace ic {
     double result = 1;
     for (unsigned i = 0; i < jets.size(); ++i) {
       double sf=0;
+      double csv = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+      if (csv < 0) csv = -0.05;
+      if (csv > 1) csv = 1;
       double eta = jets[i]->eta();
       unsigned jet_flavour = jets[i]->hadron_flavour();
       double pt = jets[i]->pt();
       if(jet_flavour == 5){
           if(btag_mode == 3){
-           sf = reader_jesup->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_jesup->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if(btag_mode == 4){
-           sf = reader_jesdown->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_jesdown->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 5){
-           sf = reader_lfup->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_lfup->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 6){
-           sf = reader_lfdown->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_lfdown->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 9){
-           sf = reader_hfstats1up->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_hfstats1up->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 10 ){
-           sf = reader_hfstats1down->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_hfstats1down->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 11){
-           sf = reader_hfstats2up->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_hfstats2up->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 12){
-           sf = reader_hfstats2down->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_hfstats2down->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else {
-           sf = reader_iterativefit->eval(BTagEntry::FLAV_B, fabs(eta), pt);
+           sf = reader_iterativefit->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           }
         } else if(jet_flavour == 4){
           if(btag_mode == 17){
-           sf = reader_cferr1up->eval(BTagEntry::FLAV_C, fabs(eta), pt);
+           sf = reader_cferr1up->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else if(btag_mode == 18){
-           sf = reader_cferr1down->eval(BTagEntry::FLAV_C, fabs(eta), pt);
+           sf = reader_cferr1down->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else if (btag_mode == 19){
-           sf = reader_cferr2up->eval(BTagEntry::FLAV_C, fabs(eta), pt);
+           sf = reader_cferr2up->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else if (btag_mode == 20){
-           sf = reader_cferr2down->eval(BTagEntry::FLAV_C, fabs(eta), pt);
+           sf = reader_cferr2down->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else {
             sf = 1; 
           }
         } else {
           if(btag_mode == 3){
-           sf = reader_jesup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_jesup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 4 ){
-           sf = reader_jesdown->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_jesdown->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 7){
-           sf = reader_hfup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_hfup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 8){
-           sf = reader_hfdown->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_hfdown->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 13){
-           sf = reader_lfstats1up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_lfstats1up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 14){
-           sf = reader_lfstats1down->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_lfstats1down->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 15){
-           sf = reader_lfstats2up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_lfstats2up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 16){
-           sf = reader_lfstats2down->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_lfstats2down->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else{
-           sf = reader_iterativefit->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt);
+           sf = reader_iterativefit->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           }
         }
        result *=sf;
