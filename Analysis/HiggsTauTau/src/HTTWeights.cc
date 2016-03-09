@@ -205,13 +205,13 @@ namespace ic {
       zf4_ = zxs4_/zxsinc_;
       zw0hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_);
       zw1lo_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
-      zw1hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn_inc_*zfhm1_) );
+      zw1hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn1_*zfhm1_) );
       zw2lo_ = (zn_inc_*zf2_) / ( (zn_inc_*zf2_) + zn2_ );
-      zw2hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn_inc_*zfhm2_));
+      zw2hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn2_*zfhm2_));
       zw3lo_ = (zn_inc_*zf3_) / ( (zn_inc_*zf3_) + zn3_ );
-      zw3hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn_inc_*zfhm3_));
+      zw3hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn3_*zfhm3_));
       zw4lo_ = (zn_inc_*zf4_) / ( (zn_inc_*zf4_) + zn4_ );
-      zw4hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn_inc_*zfhm4_));
+      zw4hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn4_*zfhm4_));
       std::cout << boost::format("w0hi=%-9.5f \n") % zw0hi_;
       std::cout << boost::format("w1lo=%-9.5f \n") % zw1lo_;
       std::cout << boost::format("w1hi=%-9.5f \n") % zw1hi_;
