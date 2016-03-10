@@ -15,7 +15,7 @@ options.register ('sample', 'data',    VarParsing.VarParsing.multiplicity.single
 options.register ('output', 'DEFAULT', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string,  "The output file name")
 options.register ('max',    '',        VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int,     "The maximum number of events to process")
 
-options.max      = 1000
+options.max      = 100
 options.sample   = "mc"
 
 options.parseArguments()
@@ -36,7 +36,7 @@ if (options.output == 'DEFAULT'):
     if (eras.stage1L1Trigger.isChosen()):
         options.output ='L1Objects_stage1.root'
     if (eras.stage2L1Trigger.isChosen()):
-        options.output ='L1Objects_stage2.root'
+        options.output ='L1Objects_stage2test.root'
 print "INFO: output: ", options.output
 
 print "INFO: max   : ", options.max
@@ -198,12 +198,23 @@ process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
 )
 
 ################################################################
+# EventInfo
+################################################################
+process.icL1EventInfoProducer = producers.icL1EventInfoProducer.clone()
+
+process.icL1EventInfoSequence = cms.Sequence(
+  process.icL1EventInfoProducer
+)
+
+
+################################################################
 # Event
 ################################################################
 process.icEventProducer = producers.icEventProducer.clone()
 
 process.icL1ObjectPath = cms.Path(
   process.icL1ObjectProducer+
+  process.icL1EventInfoSequence+
   process.icEventProducer
 )
 
