@@ -50,7 +50,8 @@
 #include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "HiggsTauTau/interface/BTagCheck.h"
 #include "HiggsTauTau/interface/HhhMetScale.h"
-#include "Modules/src/VariableHistograms.cc"
+#include "Modules/interface/L1VariableHistograms.h"
+
 
 using boost::lexical_cast;
 using boost::bind;
@@ -642,7 +643,7 @@ int main(int argc, char* argv[]){
       bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
       bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
       bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
-      bind(elec_idiso_func, _1))//this last part is causing problems!
+      bind(elec_idiso_func, _1))
     .set_min(1);
   
   // Electron Veto
@@ -1184,7 +1185,7 @@ int main(int argc, char* argv[]){
     if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
   }
 
-  VariableHistograms variableHistograms = VariableHistograms("VariableHistograms", output_name);
+  L1VariableHistograms l1VariableHistograms = L1VariableHistograms("L1VariableHistograms", output_name);
 
   HTTSync httSync("HTTSync","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
@@ -1239,14 +1240,14 @@ int main(int argc, char* argv[]){
 
 
   httPrint.set_skip_events(false);
-  if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
+  /*if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
 
 
 
   //if(make_gen_plots) analysis.AddModule(&genLevelStudy);
-  /*if ( (channel == channel::etmet || 
-        channel == channel::mtmet)
-        && !is_data )             analysis.AddModule(&httL1MetCorrector);*/ 
+  //if ( (channel == channel::etmet || 
+      //  channel == channel::mtmet)
+    //    && !is_data )             analysis.AddModule(&httL1MetCorrector); 
   //if (is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&lumiMask);
   //if (!is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&pileupWeight);
   //if (vh_filter_mode > 0)         analysis.AddModule(&vhFilter);
@@ -1352,12 +1353,12 @@ int main(int argc, char* argv[]){
   }
 
   if (!do_skim) {
-    /*if (!is_embedded && strategy != strategy::phys14)  { // Don't usually want trigger for embedded
-                                  analysis.AddModule(&httTriggerFilter);
-    }*/
-    /* if (is_embedded && strategy == strategy::paper2013 && era == era::data_2012_rereco) {
-                                  analysis.AddModule(&httTriggerFilter);
-				  }*/
+    //if (!is_embedded && strategy != strategy::phys14)  { // Don't usually want trigger for embedded
+     //                             analysis.AddModule(&httTriggerFilter);
+   // }
+    // if (is_embedded && strategy == strategy::paper2013 && era == era::data_2012_rereco) {
+                                  //analysis.AddModule(&httTriggerFilter);
+				 // }
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
 				  // if (jes_mode > 0 && !is_data && strategy != strategy::phys14) analysis.AddModule(&jetEnergyUncertainty);
@@ -1366,41 +1367,41 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
 				  // if(strategy != strategy::phys14) analysis.AddModule(&httRecoilCorrector);
-				  /*if(metscale_mode > 0 
-      && !is_data )               analysis.AddModule(&hhhMetScale);*/  
-
-				  /*if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) {
-                                  analysis.AddModule(&svfit);
-    }
-    if (!(svfit_override != "" && new_svfit_mode == 1)) {
-                                  analysis.AddModule(&svfitTest);
-    }*/
-    /*if (channel == channel::mtmet   // Only apply the L1 MET cut on MC and
-      && (!is_data || is_embedded)  // embedded, when not skimming or generating
-      && !do_skim  && !make_sync_ntuple        // svfit jobs
-      && new_svfit_mode != 1) {
-                                  analysis.AddModule(&httL1MetCut);
-				  }  */
+	//			  if(metscale_mode > 0 
+  //    && !is_data )               analysis.AddModule(&hhhMetScale);  
+//
+	//			  if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) {
+      //                            analysis.AddModule(&svfit);
+    //}
+    //if (!(svfit_override != "" && new_svfit_mode == 1)) {
+     //                             analysis.AddModule(&svfitTest);
+   // }
+    //if (channel == channel::mtmet   // Only apply the L1 MET cut on MC and
+     // && (!is_data || is_embedded)  // embedded, when not skimming or generating
+      //&& !do_skim  && !make_sync_ntuple        // svfit jobs
+    //  && new_svfit_mode != 1) {
+  //                                analysis.AddModule(&httL1MetCut);
+//				  }  
     //if(strategy != strategy::phys14) analysis.AddModule(&httWeights);
-/*   if (is_embedded && era == era::data_2012_rereco) {
-                                  analysis.AddModule(&rechitWeights);
-   }*/
+  // if (is_embedded && era == era::data_2012_rereco) {
+    //                              analysis.AddModule(&rechitWeights);
+  // }
    if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
 //                                  analysis.AddModule(&HhhemuMVA);
 //	          		  analysis.AddModule(&HhhemuMVABoth);
    }
-   /*if (strategy == strategy::paper2013 && channel ==channel::mt){
-                                  analysis.AddModule(&HhhmtMVABoth);
-                                  analysis.AddModule(&HhhmtMVACategory);
-   }*/
-   /*if(bjet_regr_correction) {
+   //if (strategy == strategy::paper2013 && channel ==channel::mt){
+       //                           analysis.AddModule(&HhhmtMVABoth);
+     //                             analysis.AddModule(&HhhmtMVACategory);
+   //}
+   //if(bjet_regr_correction) {
                                   analysis.AddModule(&hhhBJetRegression);
-   }*/
+   //}
    //if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
-    /*if (make_sync_ntuple && strategy==strategy::phys14){
-         analysis.AddModule(&httSyncTemp);
-    }*/
+    //if (make_sync_ntuple && strategy==strategy::phys14){
+     //    analysis.AddModule(&httSyncTemp);
+   // }
     if(make_sync_ntuple && strategy==strategy::paper2013){
          analysis.AddModule(&httSync);
     }
@@ -1416,8 +1417,8 @@ int main(int argc, char* argv[]){
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
   //  if(make_gen_plots) analysis.AddModule(&genLevelStudyPostAna);
-
-                                  analysis.AddModule(&variableHistograms);
+*/
+                                  analysis.AddModule(&l1VariableHistograms);
 
   analysis.RunAnalysis();
   delete fs;

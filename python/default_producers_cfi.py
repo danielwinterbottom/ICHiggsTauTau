@@ -547,6 +547,13 @@ icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
 )
 ## [EventInfo]
 
+## [L1EventInfo]
+icL1EventInfoProducer = cms.EDProducer('ICL1EventInfoProducer',
+  branch              = cms.string("eventInfo"),
+
+)
+## [L1EventInfo]
+
 ## [Event]
 icEventProducer = cms.EDProducer('ICEventProducer')
 ## [Event]
