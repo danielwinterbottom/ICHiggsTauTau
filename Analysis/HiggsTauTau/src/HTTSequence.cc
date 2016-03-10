@@ -32,6 +32,7 @@
 #include "HiggsTauTau/interface/BTagCheck.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
+#include "HiggsTauTau/interface/HTTRun2RecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
 #include "HiggsTauTau/interface/HTTEMuMVA.h"
@@ -854,6 +855,17 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      //option to take met scale uncertainty from recoil corrector files - off for now as files have over-inflated uncertainties
      //.set_met_scale_mode(metscale_mode)
      .set_w_hack(true));
+  }
+
+ if(strategy_type == strategy::fall15){
+    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label(met_label)
+     .set_jets_label(jets_label)
+     .set_strategy(strategy_type)
+     .set_dilepton_label("ditau"));
   }
 
   if(js["metscale_mode"].asUInt() > 0  && !is_data ){
