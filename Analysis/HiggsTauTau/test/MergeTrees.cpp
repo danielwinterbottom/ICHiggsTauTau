@@ -22,7 +22,6 @@
 #include "UserCode/ICHiggsTauTau/interface/L1TJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TSum.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
-#include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 
 int main(){
 
@@ -38,29 +37,32 @@ int main(){
   TString filename2;
   TChain *chIn2 = new TChain("icEventProducer/EventTree");
   std::ifstream infile2;
-  infile2.open("EventTreeAll.dat");
+  infile2.open("L1ObjectsAll.dat");
   while (infile2 >> filename2) chIn2->Add(filename2);
   infile2.close();
   
-  //unsigned nentries1 = chIn1->GetEntries();
-  unsigned nentries1 = 1000;
-  //unsigned nentries2 = chIn1->GetEntries();
-  unsigned nentries2 = 1000;
+  unsigned nentries1 = chIn1->GetEntries();
+  //unsigned nentries1 = 500;
+  unsigned nentries2 = chIn2->GetEntries();
+  std::cout << "Entires in chain 1 (Offline): " << nentries1 << std::endl;
+  std::cout << "Entires in chain 2 (L1): " << nentries2 << std::endl;
+  //unsigned nentries2 = 10;
+  
+  std::cout << "Cloning offline tree..." << std::endl;
 
   // Create output file and clone the first tree.
   TFile *fOut = new TFile("test/EventTreeMerged.root","RECREATE");
   TTree *tOut = chIn1->CloneTree(nentries1);
   
+  std::cout << "Finished cloning offline tree. Merging with L1 tree..." << std::endl;
+  
   // Get the eventInfo for both trees.
   ic::EventInfo *eventInfo1 = new ic::EventInfo();
   tOut->SetBranchAddress("eventInfo",&eventInfo1);
   ic::EventInfo *eventInfo2 = new ic::EventInfo();
-  chIn2->SetBranchAddress("eventInfo",&eventInfo2); 
+  chIn2->SetBranchAddress("eventInfo",&eventInfo2);
   
-  // Get new branches from tree 2.
-  std::vector<ic::Tau> *taus = new std::vector<ic::Tau>();
-  chIn2->SetBranchAddress("taus",&taus); //delete these after testing!
- 
+  // Get new branches from tree 2. 
   std::vector<ic::L1TTau> *l1taus = new std::vector<ic::L1TTau>();
   chIn2->SetBranchAddress("L1Taus",&l1taus);
   std::vector<ic::L1TMuon> *l1muons = new std::vector<ic::L1TMuon>();
@@ -71,14 +73,8 @@ int main(){
   chIn2->SetBranchAddress("L1Jets",&l1jets);
   std::vector<ic::L1TSum> *l1sums = new std::vector<ic::L1TSum>();
   chIn2->SetBranchAddress("L1Sums",&l1sums);
-
   
-  // Create new branches for new tree.
-  std::vector<ic::Tau> *tausnew = new std::vector<ic::Tau>();
-  TBranch *newBranch0 = tOut->Branch("tausNew", &tausnew);
-  ic::EventInfo *eventInfonew = new ic::EventInfo();
-  TBranch *newBranch = tOut->Branch("EventInfoNew", &eventInfonew);//delete these after testing!
-  
+  // Create new braches on new tree.
   std::vector<ic::L1TTau> *l1tausnew = new std::vector<ic::L1TTau>();
   TBranch *newBranch1 = tOut->Branch("L1Taus", &l1tausnew);
   std::vector<ic::L1TMuon> *l1muonsnew = new std::vector<ic::L1TMuon>();
@@ -90,20 +86,20 @@ int main(){
   std::vector<ic::L1TSum> *l1sumsnew = new std::vector<ic::L1TSum>();
   TBranch *newBranch5 = tOut->Branch("L1Sums", &l1sumsnew);
   
+  unsigned n_report = 10000;
+  
+  
   for(unsigned i=0; i<nentries1; i++){
-      
+
       tOut->GetEntry(i);
       
       for(unsigned j=0; j<nentries2; j++){
-          
+
           chIn2->GetEntry(j);
+          
           // If eventIDs match then fill new branch with copied branches.
           if(eventInfo1->event() == eventInfo2->event()){
-              tausnew = taus;
-              eventInfonew = eventInfo2;
-              newBranch0->Fill();
-              newBranch->Fill();//delete these after testing!
-              
+              if(i % n_report == 0) std::cout << "Finished merging " << i << "th event." << std::endl;
               l1tausnew = l1taus;
               l1muonsnew = l1muons;
               l1egammasnew = l1egammas;
@@ -114,6 +110,39 @@ int main(){
               newBranch3->Fill();
               newBranch4->Fill();
               newBranch5->Fill();
+              
+              // If a match is found it is likey that the next few preceeding events are also matched so this next part looks to match those events without doing the full loop.
+              bool proceed = true;
+              unsigned jtemp = j+1;
+              unsigned itemp = i+1;
+              
+              while(proceed){
+                  
+                  tOut->GetEntry(itemp);
+                  chIn2->GetEntry(jtemp);
+                  
+                  if(eventInfo1->event() == eventInfo2->event()){
+                      if(itemp % n_report == 0) std::cout << "Finished merging " << itemp << "th event." << std::endl;
+                      //continue filling  
+                      l1tausnew = l1taus;
+                      l1muonsnew = l1muons;
+                      l1egammasnew = l1egammas;
+                      l1jetsnew = l1jets;
+                      l1sumsnew = l1sums;
+                      newBranch1->Fill();
+                      newBranch2->Fill();
+                      newBranch3->Fill();
+                      newBranch4->Fill();
+                      newBranch5->Fill();
+                      itemp++;
+                      jtemp++;
+                  }
+                  else{
+                      i = itemp-1;
+                      j = jtemp-1;
+                      proceed = false;
+                  }
+              }
               
               break;
           }
