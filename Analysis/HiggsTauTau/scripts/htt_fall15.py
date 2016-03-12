@@ -107,7 +107,7 @@ CONFIG='scripts/config.json'
 #    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s_M-50.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
  
 
-FILELIST='filelists/Feb12_MC_76X'
+FILELIST='filelists/Mar05_MC_76X'
 #FILELIST13='filelists/July13_MC_76X'
 
 signal_mc = [ ]
@@ -214,11 +214,11 @@ if options.proc_data or options.proc_all:
   ]
 
 
-  DATAFILELIST="./filelists/Feb12_Data_76X"
+  DATAFILELIST="./filelists/Mar05_Data_76X"
 
   for sa in data_samples:
       JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Feb12_Data_76X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Mar05_Data_76X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 40 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -256,24 +256,29 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'TT-ext',
     'WJetsToLNu',
     'WJetsToLNu-LO',
+    'W1JetsToLNu-LO',
 		#'WJetsToLNu',
     #'WWinclusive',
     #'ZZinclusive',
     #'WZinclusive',
     'ZZTo4L',
-    #'VVTo2L2Nu',
+    'VVTo2L2Nu',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q',
     'WZJetsTo3LNu',
     'WZTo1L3Nu',
-    #'WZTo2L2Q',
+    'WZTo2L2Q',
     'WZTo1L1Nu2Q',
     'T-t',
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    #'DYJetsToLL',
+    'DYJetsToLL',
     'DYJetsToLL_M-50-LO',
+    'DYJetsToLL_M-10',
+    'DYJetsToLL_M-10-ext',
+    'DYJetsToLL_M-150-LO',
+    'DYJetsToLL_M-50-LO-ext',
     'DY1JetsToLL_M-50-LO',
     'DY2JetsToLL_M-50-LO',
     'DY3JetsToLL_M-50-LO',
@@ -298,12 +303,13 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       nperjob = 60
-      if scales:
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-        if 'TT-ext' in sa:
-          nperjob = 40
+#      if scales:
+#        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+#        if 'TT-ext' in sa:
+#          nperjob = 40
       if 'DY' in sa and 'JetsToLL' in sa and scales:
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+        #JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         nperjob = 40
       if 'DY' in sa and 'JetsToLL' in sa and taues_study:
         CONFIG='scripts/taues_config.json'
@@ -450,7 +456,8 @@ if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
     JOB='%s_2015' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     if scales:
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      #JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo\",\"scale_t_hi\",\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     if os.path.exists('%(FILELIST)s_%(sa)s.dat' %vars()):
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 50
