@@ -40,7 +40,6 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_vertex_count_(config.getParameter<bool>("includeVertexCount")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")),
-      do_ht_(config.getParameter<bool>("includeHT")),
       do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
       input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
       do_filtersfromtrig_(config.getParameter<bool>("includeFiltersFromTrig")),
@@ -105,7 +104,6 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
 
   PrintHeaderWithBranch(config, branch_);
   PrintOptional(1, do_lhe_weights_, "includeLHEWeights");
-  PrintOptional(1, do_ht_, "includeHT");
   PrintOptional(1, do_jets_rho_, "includeJetRho");
   PrintOptional(1, do_leptons_rho_, "includeLeptonRho");
   PrintOptional(1, do_vertex_count_, "includeVertexCount");
@@ -189,7 +187,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
       } else info_->set_weight("wt_mc_sign",-1);
     }
   }
-  if(do_lhe_weights_ || do_ht_){
+  if(do_lhe_weights_){
     event.getByLabel(lhe_collection_, lhe_handle); 
    /* Accessing global evt weights directly from the LHEEventProduct
       disabled and replaced by taking them from the GenEventInfoProduct
@@ -198,36 +196,12 @@ void ICEventInfoProducer::produce(edm::Event& event,
       info_->set_weight("wt_mc_sign",1);
       } else info_->set_weight("wt_mc_sign",-1);
     */
-    if (do_ht_){
-      std::vector<lhef::HEPEUP::FiveVector> lheParticles = lhe_handle->hepeup().PUP;
-      double lheHt = 0.;
-      unsigned nOutgoingPartons = 0;
-      std::vector<ROOT::Math::PxPyPzEVector> zll_cands;
-      for(size_t idxPart = 0; idxPart < lheParticles.size();++idxPart){
-       unsigned absPdgId = TMath::Abs(lhe_handle->hepeup().IDUP[idxPart]);
-       unsigned status = lhe_handle->hepeup().ISTUP[idxPart];
-       if(status==1 &&((absPdgId >=1 &&absPdgId<=6) || absPdgId == 21)){
-         lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxPart][0],2) + TMath::Power(lheParticles[idxPart][1],2));
-         nOutgoingPartons++;
-        }
-       if(status == 1 && (absPdgId ==11 || absPdgId == 13 || absPdgId ==15)){
-         zll_cands.push_back(ROOT::Math::PxPyPzEVector(lheParticles[idxPart][0],lheParticles[idxPart][1],lheParticles[idxPart][2],lheParticles[idxPart][3]));
-       }
-      }
-      if(zll_cands.size() == 2){
-        info_->set_gen_mll((zll_cands[0]+zll_cands[1]).M());
-      }
-      info_->set_gen_ht(lheHt);
-      info_->set_n_outgoing_partons(nOutgoingPartons);
-    }
-    if (do_lhe_weights_) {
       double nominal_wt = lhe_handle->hepeup().XWGTUP;
       for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
         info_->set_weight(lhe_handle->weights()[i].id,
                           lhe_handle->weights()[i].wgt / nominal_wt, false);
       }
     }
-  }
 
   for (unsigned i = 0; i < filters_.size(); ++i) {
     edm::Handle<bool> filter;
