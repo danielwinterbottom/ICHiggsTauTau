@@ -158,7 +158,7 @@ if SCHEME == 'run2_sm':
 #    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--qcd_os_ss_factor=2"')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, (
@@ -255,9 +255,9 @@ if SCHEME == 'run2_mssm':
 
   ]
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2')
   ]
   bkg_schemes = {
     'et' : 'et_default',

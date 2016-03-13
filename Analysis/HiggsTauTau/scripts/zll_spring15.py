@@ -61,10 +61,10 @@ if options.submit:  JOBSUBMIT=options.submit
 
 channels = options.channels
 
-#CONFIG='scripts/Zll_config.json'
-CONFIG='scripts/WMuNu_config.json'
+CONFIG='scripts/Zll_config.json'
+#CONFIG='scripts/WMuNu_config.json'
 
-FILELIST='filelists/Oct30_MC_74X'
+FILELIST='filelists/Nov19_MC_74X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -88,11 +88,11 @@ if options.proc_data or options.proc_all:
    'MuonEG-2015D-promptv4',
    'Tau-2015D-promptv4'
   ]
-  DATAFILELIST="./filelists/Oct30_Data_74X"
+  DATAFILELIST="./filelists/Nov19_Data_74X"
 
   for sa in data_samples:
       JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Oct30_Data_74X/\",\"sequences\":{\"zee\":[],\"zmm\":[],\"tpzmm\":[],\"tpzee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Nov19_Data_74X/\",\"sequences\":{\"zee\":[],\"zmm\":[],\"tpzmm\":[],\"tpzee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 30 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -106,18 +106,17 @@ if options.proc_bkg or options.proc_all or options.proc_tp:
     #'TTJets',
     'TT-ext',
     'WJetsToLNu-LO',
-		'WJetsToLNu',
+#		'WJetsToLNu',
     #'WWinclusive',
     #'ZZinclusive',
     #'WZinclusive',
-    'ZZTo2L2Nu',
     'ZZTo4L',
+    'VVTo2L2Nu',
     'ZZTo2L2Q',
-    'WWToLNuQQ',
-    'WWTo2L2Nu',
+    'WWTo1L1Nu2Q',
+    'WZJetsTo3LNu',
+   'WZTo1L3Nu',
     'WZTo2L2Q',
-    'WZTo3LNu',
-    'WZTo1L3Nu',
     'WZTo1L1Nu2Q',
     'T-t',
     'Tbar-t',
@@ -125,18 +124,31 @@ if options.proc_bkg or options.proc_all or options.proc_tp:
     'Tbar-tW',
     #'T-t',
     #'Tbar-t'
-#    'WZTo1L1Nu2Q',
-#    'WWTo2L2Nu',
-#    'WWTo4Q',
-#    'WWToLNuQQ',
-#    'ZZTo4L',
-#    'DYJetsToLL',
+    #'WZTo1L1Nu2Q',
+    #'WWTo2L2Nu',
+    #'WWTo4Q',
+    #'WWToLNuQQ',
+    #'ZZTo4L',
+    #'DYJetsToLL',
+    'DYJetsToLL_M-5-LO',
+    'DYJetsToLL_M-5_HT100-200',
+    'DYJetsToLL_M-5_HT200-400',
+    'DYJetsToLL_M-5_HT400-600',
+    'DYJetsToLL_M-5_HT600-Inf',
     'DYJetsToLL_M-50-LO',
-#    'DYJetsToLL_M-50_HT100-200',
-#    'WJetsToLNu_HT100-200',
-#    'WJetsToLNu_HT200-400',
-#    'WJetsToLNu_HT400-600',
-#    'WJetsToLNu_HT600-inf'
+    'DYJetsToLL_M-50_HT100-200',
+    'DYJetsToLL_M-50_HT200-400',
+    'DYJetsToLL_M-50_HT400-600',
+    'DYJetsToLL_M-50_HT600-Inf',
+    #'DYJetsToLL_M-50_HT100-200',
+    #'WJetsToLNu_HT100-200',
+    #'WJetsToLNu_HT200-400',
+    #'WJetsToLNu_HT400-600',
+    #'WJetsToLNu_HT600-inf'
+    'WJetsToLNu_HT100-200',
+    'WJetsToLNu_HT200-400',
+    'WJetsToLNu_HT400-600',
+    'WJetsToLNu_HT600-Inf',
      ]
       
   tandp_samples = [
@@ -154,7 +166,8 @@ if options.proc_bkg or options.proc_all or options.proc_tp:
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
         file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
   else:
-    for sa in tandp_samples:
+    #for sa in tandp_samples:
+    for sa in central_samples:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"zee\":[],\"zmm\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
