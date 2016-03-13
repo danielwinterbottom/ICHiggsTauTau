@@ -367,6 +367,7 @@ namespace ic {
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
+        if(era_ == era::data_2015) e_eta = fabs(elec->eta());
         double t_pt = tau->pt();
         double t_eta = fabs(tau->eta());
         double ele_trg = 1.0;
@@ -438,7 +439,7 @@ namespace ic {
             tau_trg = (0.25 * tau20l_ee) + (0.59 * tau20m_ee) + (0.16 * tau20t_ee);
             tau_trg_mc = Efficiency(t_pt, 19.3862, 0.247148, 0.123187, 2.87108, 0.790894);
           }
-        } else if (mc_ == mc::spring15_74X){ //Fall15 just to exercise code, SF's are applicable to spring15 only! 
+        } else if (mc_ == mc::spring15_74X){
           if(e_pt<100){
             ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
             ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
@@ -598,6 +599,7 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
+        if(era_ == era::data_2015) e_eta = fabs(elec->sc_eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double m_trg = 1.0;
@@ -770,6 +772,26 @@ namespace ic {
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", double(1.0));
        }
+      } else if (channel_ == channel::tt){
+        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+        Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+        double pt_1 = tau1->pt();
+        double pt_2 = tau2->pt();
+        double tau1_trg = 1.0;
+        double tau1_trg_mc = 1.0;
+        double tau2_trg = 1.0;
+        double tau2_trg_mc = 1.0;
+        if (mc_ == mc::fall15_76X){
+          tau1_trg      = Efficiency(pt_1, 34.5412, 5.63353, 2.49242, 3.35896, 1.0);
+          tau1_trg_mc   = Efficiency(pt_1, 36.0274, 5.89434, 5.82870, 1.83737, 9.58000e-01);
+          tau2_trg      = Efficiency(pt_2, 34.5412, 5.63353, 2.49242, 3.35896, 1.0);
+          tau2_trg_mc   = Efficiency(pt_2, 36.0274, 5.89434, 5.82870, 1.83737, 9.58000e-01);
+         }
+        tau1_trg = tau1_trg / tau1_trg_mc;
+        tau2_trg = tau2_trg / tau2_trg_mc;
+        weight *= (tau1_trg*tau2_trg);
+        event->Add("trigweight_1", tau1_trg);
+        event->Add("trigweight_2", tau2_trg);
       } else if (channel_ == channel::mtmet) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
@@ -837,6 +859,7 @@ namespace ic {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = elec->pt();
         double sc_eta = fabs(elec->sc_eta());
+        if(era_ == era::data_2015) sc_eta = fabs(elec->eta());
         double ele_id = 1.0;
         double ele_iso = 1.0;
         double ele_idiso_mc =1.0;
@@ -931,6 +954,7 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
+        if (era_ == era::data_2015) e_eta = fabs(elec->eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double m_idiso = 1.0;
@@ -1069,7 +1093,81 @@ namespace ic {
         event->Add("idweight_2", double(1.0));
         event->Add("isoweight_1", mu_iso);
         event->Add("isoweight_2", double(1.0));
-      }
+      } else if (channel_ == channel::zmm){
+        Muon const* muon_1 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
+        Muon const* muon_2 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
+        double m_1_pt = muon_1->pt();
+        double m_1_eta = fabs(muon_1->eta());
+        double m_2_pt = muon_2->pt();
+        double m_2_eta = fabs(muon_2->eta());
+        double m_1_idiso = 1.0;
+        double m_2_idiso = 1.0;
+        double m_1_idiso_mc = 1.0;
+        double m_1_idiso_data = 1.0;
+        double m_2_idiso_mc = 1.0;
+        double m_2_idiso_data = 1.0;
+        if (mc_ == mc::spring15_74X || mc_==mc::fall15_76X){
+          if(m_1_pt<100){
+            m_1_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_1_pt));
+            m_1_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_1_pt));
+          } else {
+            m_1_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_1_eta),(em_m_idiso_data_->GetYaxis()->FindBin(m_1_pt)-1));
+            m_1_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_1_eta),(em_m_idiso_mc_->GetYaxis()->FindBin(m_1_pt)-1));
+          }         
+          if(m_2_pt<100){
+            m_2_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_2_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_2_pt));
+            m_2_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_2_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_2_pt));
+          } else {
+            m_2_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_2_eta),(em_m_idiso_data_->GetYaxis()->FindBin(m_2_pt)-1));
+            m_2_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_2_eta),(em_m_idiso_mc_->GetYaxis()->FindBin(m_2_pt)-1));
+          }         
+
+            m_1_idiso = m_1_idiso_data/m_1_idiso_mc;
+            m_2_idiso = m_2_idiso_data/m_2_idiso_mc;
+        }
+        weight *= (m_1_idiso * m_2_idiso);
+        event->Add("idisoweight_1", m_1_idiso);
+        event->Add("idisoweight_2", m_2_idiso);
+        event->Add("isoweight_1", double(1.0));
+        event->Add("isoweight_2", double(1.0));
+    } else if (channel_ == channel::zee){
+        Electron const* ele_1 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
+        Electron const* ele_2 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton2"));
+        double e_1_pt = ele_1->pt();
+        double e_1_eta = fabs(ele_1->eta());
+        double e_2_pt = ele_2->pt();
+        double e_2_eta = fabs(ele_2->eta());
+        double e_1_idiso = 1.0;
+        double e_2_idiso = 1.0;
+        double e_1_idiso_mc = 1.0;
+        double e_1_idiso_data = 1.0;
+        double e_2_idiso_mc = 1.0;
+        double e_2_idiso_data = 1.0;
+        if (mc_ == mc::spring15_74X || mc_==mc::fall15_76X){
+          if(e_1_pt<100){
+            e_1_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_1_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_1_pt));
+            e_1_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_1_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_1_pt));
+          } else {
+            e_1_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_1_eta),(em_e_idiso_data_->GetYaxis()->FindBin(e_1_pt)-1));
+            e_1_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_1_eta),(em_e_idiso_mc_->GetYaxis()->FindBin(e_1_pt)-1));
+          }         
+          if(e_2_pt<100){
+            e_2_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_2_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_2_pt));
+            e_2_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_2_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_2_pt));
+          } else {
+            e_2_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_2_eta),(em_e_idiso_data_->GetYaxis()->FindBin(e_2_pt)-1));
+            e_2_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_2_eta),(em_e_idiso_mc_->GetYaxis()->FindBin(e_2_pt)-1));
+          }         
+
+            e_1_idiso = e_1_idiso_data/e_1_idiso_mc;
+            e_2_idiso = e_2_idiso_data/e_2_idiso_mc;
+        }
+        weight *= (e_1_idiso * e_2_idiso);
+        event->Add("idisoweight_1", e_1_idiso);
+        event->Add("idisoweight_2", e_2_idiso);
+        event->Add("isoweight_1", double(1.0));
+        event->Add("isoweight_2", double(1.0));
+       }
     }
     eventInfo->set_weight("lepton", weight);
 

@@ -54,7 +54,7 @@ namespace ic {
       alias_map_["ztt_sel"] = "(gen_match_1>2 && gen_match_2>3)";
       alias_map_["zll_sel"] = "(gen_match_1<3 || gen_match_2<4)";    
     }
-    if (ch_ == channel::zee||ch_==channel::zmm||ch_ ==channel::wmnu){
+    if (ch_ == channel::zee||ch_==channel::zmm||ch_ == channel::tpzee||ch_==channel::tpzmm||ch_ ==channel::wmnu){
       alias_map_["ztt_sel"] = "";
       alias_map_["zll_sel"] = "1.";
     }
@@ -308,6 +308,7 @@ namespace ic {
      // alias_map_["baseline"]          = "1";
 
       alias_map_["baseline"]          = "mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["tt_qcd_norm"]       = "mva_olddm_vtight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
@@ -479,6 +480,9 @@ namespace ic {
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
+    } else if (ch_ == channel::tpzmm || ch_ == channel::tpzee) {
+      alias_map_["inclusive"]         = "1";
+      alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
     } else if (ch_ == channel::wmnu) {
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]         = "(iso_1<0.1)";
@@ -501,7 +505,7 @@ namespace ic {
       alias_map_["sel"]                       = "1";
     }
 
-    alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL_M-50-LO";
+//    alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL_M-50-LO";
 
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
@@ -541,17 +545,27 @@ namespace ic {
    };
 
    if(!is_fall15_){
-     samples_alias_map_["ztt_shape_samples"]={
-      "DYJetsToLL_M-50-LO",
-      "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-      "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-     };
+     if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
+         samples_alias_map_["ztt_shape_samples"]={
+         "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+         };
+     } else {
+         samples_alias_map_["ztt_shape_samples"]={
+         "DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+         };
+     }
    }
 
    samples_alias_map_["data_samples"] = {
    "SingleElectron-2015D-prompt"
    };
-   if(ch_==channel::et || ch_==channel::zee){
+   if(ch_==channel::et || ch_==channel::zee|| ch_==channel::tpzee){
      samples_alias_map_["data_samples"] = {
       "SingleElectron-2015D"
      };
@@ -561,7 +575,7 @@ namespace ic {
        };
      }
    }
-   if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::wmnu){
+   if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::tpzmm || ch_==channel::wmnu){
      samples_alias_map_["data_samples"] = {
      "SingleMuon-2015D"
      };
@@ -601,11 +615,21 @@ namespace ic {
      "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"
    };
    if(!is_fall15_){
-     samples_alias_map_["ztt_samples"]={
-     "DYJetsToLL_M-50-LO",
-     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-     };
+     if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
+         samples_alias_map_["ztt_samples"]={
+         "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+         };
+     } else {
+         samples_alias_map_["ztt_samples"]={
+         "DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
+         };
+     }
    }
 
   
@@ -623,21 +647,40 @@ namespace ic {
   "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
    };
   if(!is_fall15_){
-    samples_alias_map_["qcd_sub_samples"] = {
-     "DYJetsToLL_M-50-LO", 
-     "T-tW", "Tbar-tW", "T-t","Tbar-t",
-     "WWTo1L1Nu2Q",
-     "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-     "WJetsToLNu-LO","TT-ext",
-     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-    "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-    "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-     };
-   }
-
-
+    if(ch_==channel::zee || ch_==channel::zmm) {
+        samples_alias_map_["qcd_sub_samples"] = {
+        "DYJetsToLL_M-50-LO",
+        "DYJetsToLL_M-5-LO",
+        "T-tW", "Tbar-tW", "T-t","Tbar-t",
+        "WWTo1L1Nu2Q","VVTo2L2Nu",
+        "ZZTo2L2Q","ZZTo4L",
+        "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+        "TT-ext","WJetsToLNu-LO",
+        "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+        "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+        "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+        "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+        "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+        "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+        };
+    } else {
+        samples_alias_map_["qcd_sub_samples"] = {
+        "DYJetsToLL_M-50-LO",
+        "DYJetsToLL_M-5-LO",
+        "T-tW", "Tbar-tW", "T-t","Tbar-t",
+        "WWTo1L1Nu2Q","VVTo2L2Nu",
+        "ZZTo2L2Q","ZZTo4L",
+        "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+        "TT-ext","WJetsToLNu-LO",
+        "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+        "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+        "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+        "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+        "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+        "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+        };
+      }
+     }
   }
   
 
@@ -656,17 +699,20 @@ namespace ic {
 
    };
   if(!is_fall15_){
-  samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL_M-50-LO",
-   "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWTo1L1Nu2Q","VVTo2L2Nu",
-   "ZZTo2L2Q","ZZTo4L",
-   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT-ext","WJetsToLNu-LO",
-   "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-   "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-  "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+    samples_alias_map_["qcd_sub_samples"] = {
+    "DYJetsToLL_M-50-LO",
+    "DYJetsToLL_M-5-LO",
+    "T-tW", "Tbar-tW", "T-t","Tbar-t",
+    "WWTo1L1Nu2Q","VVTo2L2Nu",
+    "ZZTo2L2Q","ZZTo4L",
+    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+    "TT-ext","WJetsToLNu-LO",
+    "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+    "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+    "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
+    "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
     };
    }
   }
@@ -683,16 +729,32 @@ namespace ic {
    };
 
    if(!is_fall15){
-    samples_alias_map_["w_sub_samples"] = {
-     "DYJetsToLL_M-50-LO",
-     "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-     "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-     "T-tW", "Tbar-tW", "T-t","Tbar-t",
-     "WWTo1L1Nu2Q","VVTo2L2Nu",
-     "ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-     "TT-ext"
-     };
+    if(ch_==channel::zee || ch_==channel::zmm) {
+        samples_alias_map_["w_sub_samples"] = {
+         "DYJetsToLL_M-5-LO",
+         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
+         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
+         "DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+         "T-tW", "Tbar-tW", "T-t","Tbar-t",
+         "WWTo1L1Nu2Q","VVTo2L2Nu",
+         "ZZTo2L2Q","ZZTo4L",
+         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+         "TT-ext"
+         };
+     } else {    
+        samples_alias_map_["w_sub_samples"] = {
+         "DYJetsToLL_M-50-LO",
+         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
+         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
+         "T-tW", "Tbar-tW", "T-t","Tbar-t",
+         "WWTo1L1Nu2Q","VVTo2L2Nu",
+         "ZZTo2L2Q","ZZTo4L",
+         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+         "TT-ext"
+         };
+     }
    }
 
 samples_alias_map_["wjets_samples"] = {
@@ -811,6 +873,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       double evt = it->second.first;
       double xs = it->second.second;
       return ((xs*lumi_)/evt);
+    } else if(sample.find("SingleMuon")==sample.npos && sample.find("SingleEle")==sample.npos && sample.find("MuonEG")==sample.npos && sample.find("Tau")==sample.npos){
+      std::cout << "[HTTRun2Analysis::GetLumiScale] Warning: lumi scale not found for sample " << sample << std::endl;
+      return 1.0;
     } else {
       return 1.0;
     }
@@ -843,11 +908,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     Value ztt_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> ztt_samples = this->ResolveSamplesAlias("ztt_samples");
-    std::vector<std::string> ztt_shape_samples = this->ResolveSamplesAlias("ztt_samples");
+    if (verbosity_) {
+      std::cout << "ztt_samples: ";
+      for (unsigned i = 0; i < ztt_samples.size(); ++i) {
+        std::cout << ztt_samples[i];
+        if (i != ztt_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
+//    std::vector<std::string> ztt_shape_samples = this->ResolveSamplesAlias("ztt_samples");
     ztt_norm = this->GetLumiScaledRate(ztt_samples, sel, cat, wt) ;
     TH1F ztt_hist = this->GetLumiScaledShape(var, ztt_samples, sel, cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
+//    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+ //     % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
     return std::make_pair(ztt_hist, ztt_norm);
   }
@@ -859,9 +932,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> zl_samples = this->ResolveSamplesAlias("ztt_samples");
     zl_norm = this->GetLumiScaledRate(zl_samples, sel, cat, wt) ;
+    if (verbosity_) {
+      std::cout << "zl_samples: ";
+      for (unsigned i = 0; i < zl_samples.size(); ++i) {
+        std::cout << zl_samples[i];
+        if (i != zl_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
     TH1F zl_hist = this->GetLumiScaledShape(var, zl_samples, sel, cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % "DYJetsToLL" % sel % cat % wt;
+//    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+ //     % "DYJetsToLL" % sel % cat % wt;
     SetNorm(&zl_hist, zl_norm.first);
     return std::make_pair(zl_hist, zl_norm);
   }
@@ -882,8 +963,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
     zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt) ;
     TH1F zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % "zj_samples" % sel % cat % wt;
+//    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+ //     % "zj_samples" % sel % cat % wt;
     SetNorm(&zj_hist, zj_norm.first);
     return std::make_pair(zj_hist, zj_norm);
   }
@@ -893,10 +974,18 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     cat += "&&" + alias_map_["baseline"];
     Value zl_norm;
     std::vector<std::string> zll_samples = this->ResolveSamplesAlias("ztt_samples");
+    if (verbosity_) {
+      std::cout << "zll_samples: ";
+      for (unsigned i = 0; i < zll_samples.size(); ++i) {
+        std::cout << zll_samples[i];
+        if (i != zll_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
     zl_norm = this->GetLumiScaledRate(zll_samples, sel, cat, wt) ;
     TH1F zl_hist = this->GetLumiScaledShape(var, zll_samples, sel, cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % "DYJetsToLL" % sel % cat % wt;
+//    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+ //     % "DYJetsToLL" % sel % cat % wt;
     SetNorm(&zl_hist, zl_norm.first);
     return std::make_pair(zl_hist, zl_norm);
   }
@@ -982,6 +1071,14 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = maincat;
+      std::string qcd_sdb_cat = maincat;
+      std::string qcd_extrap_sel = "!os && " + this->ResolveAlias("sel");
+      //Default QCD method for fully hadronic is different...
+      if(ch_ == channel::tt && method == 8){
+        qcd_sdb_sel = "os && " + this->ResolveAlias("sel");
+        qcd_sdb_cat = cat + "&&" + alias_map_["tt_qcd_norm"];
+      }
+      
       //Work out the W norm in the SS region separately if it is data driven
       Value w_ss_norm;
       std::vector<std::string> wjets_samples = this->ResolveSamplesAlias("wjets_samples");
@@ -996,15 +1093,27 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         w_ss_norm = std::make_pair(0.0,0.0);
       }
       
-      if(method == 8 || method == 9) {
-        qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
-      } else if (method == 10 || method == 11) {
-        qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,{
-          {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
-            return w_ss_norm;}
-          }
-        });
-      } 
+      if(ch_ != channel::tt){
+        if(method == 8 || method == 9) {
+          qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
+        } else if (method == 10 || method == 11) {
+          qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,{
+            {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
+              return w_ss_norm;}
+            }
+          });
+        } 
+      } else {
+        if(method == 8){
+          qcd_norm = this->GetRateViaTauTauQCDMethod(this->ResolveSamplesAlias("data_samples"),qcd_sdb_cat,qcd_cat,qcd_extrap_sel,qcd_sdb_sel,qcd_sdb_cat, qcd_sub_samples, wt, ValueFnMap());
+        } else if (method == 10){
+          qcd_norm = this->GetRateViaTauTauQCDMethod(this->ResolveSamplesAlias("data_samples"),qcd_sdb_cat,qcd_cat,qcd_extrap_sel,qcd_sdb_sel,qcd_sdb_cat, qcd_sub_samples, wt,{
+            {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
+              return w_ss_norm;}
+            }
+          });
+       }
+     }
       if (qcd_norm.first <= 0.0) {
         double default_rate = 0.0000001;
         std::cout << "[HTTRun2Analysis::GenerateQCD] Warning, QCD rate is negative (" 
@@ -1012,27 +1121,41 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         qcd_norm.first = default_rate;
       }
       std::string qcd_shape_cat = cat;
-      if (method == 8) {
-        qcd_shape_cat += "&&" + alias_map_["baseline"];
-        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
-      } else if(method == 10) {
-        qcd_shape_cat += "&&" + alias_map_["baseline"];
-        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
-        {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
-            return w_ss_norm;} 
+      if (ch_ != channel::tt){
+        if (method == 8) {
+          qcd_shape_cat += "&&" + alias_map_["baseline"];
+          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
+        } else if(method == 10) {
+         qcd_shape_cat += "&&" + alias_map_["baseline"];
+          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
+          {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
+              return w_ss_norm;} 
+            }
+          });
+        } else {
+          if (method == 9 || method == 11) {
+              qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
           }
-        });
-      } else {
-        if (method == 9 || method == 11) {
-            qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
-        }
-        qcd_hist = this->GetShape(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, wt);
+          qcd_hist = this->GetShape(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, wt);
 //        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
  //         % this->ResolveSamplesAlias("data_samples") % qcd_sdb_sel % qcd_shape_cat % wt;
-      }
+        }
+     } else {
+     if (method == 8){ 
+       qcd_shape_cat += "&&" + alias_map_["tt_qcd_norm"];
+       qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
+     } else if (method ==10){
+       qcd_shape_cat += "&&" + alias_map_["tt_qcd_norm"];
+          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
+          {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
+              return w_ss_norm;} 
+            }
+          });
+       }
+    }
     SetNorm(&qcd_hist, qcd_norm.first);
     return std::make_pair(qcd_hist, qcd_norm);
-  }
+   }
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs) {
     cat += "&&" + alias_map_["baseline"];
@@ -1123,7 +1246,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     hmap[vv_map_label+postfix] = vv_pair;
     total_hist.Add(&hmap[vv_map_label+postfix].first,1.0);
     // Z->ll
-    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
+    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       std::string zl_sel, zj_sel;
       zl_sel= sel+"&&"+this->ResolveAlias("zl_sel");
       zj_sel= sel+"&&"+this->ResolveAlias("zj_sel");
@@ -1151,7 +1274,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       total_hist.Add(&hmap[zll_map_label+postfix].first,1.0);
     }
     // Z->tautau
-    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
+    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       std::string ztt_sel;
       ztt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
       auto ztt_pair = this->GenerateZTT(method, var, ztt_sel, cat, wt);
@@ -1170,7 +1293,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       total_hist.Add(&hmap["W"+postfix].first,1.0);
  //   }
     // QCD/Fakes
-    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
+    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
       std::string qcd_map_label = "QCD";
       //std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
@@ -1417,6 +1540,50 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     return ValueDivide(num, den);
   }
 
+  HTTRun2Analysis::Value HTTRun2Analysis::DataSampleRatio(std::vector<std::string> const& sample, 
+                          std::string const& ref_selection, 
+                          std::string const& ref_category,
+                          std::string const& target_selection, 
+                          std::string const& target_category,  
+                          std::string const& weight,
+                          std::vector<std::string> const& subtr_samples,
+                          std::map<std::string, std::function<Value()>> func_dict) {
+    Value num = GetRate(sample, target_selection, target_category, weight);
+    Value total_bkg_num;
+    for (unsigned i = 0; i < subtr_samples.size(); ++i) {
+      Value bkr;
+      if (func_dict.count(subtr_samples[i])) {
+        bkr = ((*func_dict.find(subtr_samples[i])).second)(); // find and evaluate function
+      } else {
+        bkr = GetLumiScaledRate(subtr_samples[i], target_selection, target_category, weight);
+      }
+      if (verbosity_) PrintValue("-"+subtr_samples[i], bkr);
+      double new_err = std::sqrt((total_bkg_num.second * total_bkg_num.second) + (bkr.second * bkr.second));
+      total_bkg_num.first += bkr.first;
+      total_bkg_num.second = new_err;
+    }
+    double ratio_num_err = std::sqrt((total_bkg_num.second * total_bkg_num.second) + (num.second * num.second));
+    Value bkg_sub_num(num.first - total_bkg_num.first, ratio_num_err);
+    Value den = GetRate(sample, ref_selection, ref_category, weight);
+    Value total_bkg_den;
+    for (unsigned i = 0; i < subtr_samples.size(); ++i) {
+      Value bkr;
+      if (func_dict.count(subtr_samples[i])) {
+        bkr = ((*func_dict.find(subtr_samples[i])).second)(); // find and evaluate function
+      } else {
+        bkr = GetLumiScaledRate(subtr_samples[i], ref_selection, ref_category, weight);
+      }
+      if (verbosity_) PrintValue("-"+subtr_samples[i], bkr);
+      double new_err = std::sqrt((total_bkg_den.second * total_bkg_den.second) + (bkr.second * bkr.second));
+      total_bkg_den.first += bkr.first;
+      total_bkg_den.second = new_err;
+    }
+    double ratio_den_err = std::sqrt((total_bkg_den.second * total_bkg_den.second) + (den.second * den.second));
+    Value bkg_sub_den(den.first - total_bkg_num.first, ratio_den_err);
+    return ValueDivide(bkg_sub_num, bkg_sub_den);
+  }
+
+
   HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaRefEfficiency(std::string const& target_sample, 
                           std::string const& ref_sample,
                           std::string const& ref_selection, 
@@ -1493,6 +1660,49 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     if (verbosity_) PrintValue("ExtrapFactor", ratio);
     Value w_signal = ValueProduct(w_control, ratio);
     return w_signal;
+  }
+
+
+  HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaTauTauQCDMethod(std::vector<std::string> const& data_sample,
+                          std::string const& ratio_control_cat,
+                          std::string const& ratio_signal_cat,
+                          std::string const& ratio_sel,
+                          std::string const& control_sel,
+                          std::string const& cat,
+                          std::vector<std::string> const& sub_samples,
+                          std::string const& wt,
+                          std::map<std::string, std::function<Value()>> dict
+                          ) {
+    if (verbosity_) {
+      std::cout << "[HTTRun2Analysis::GetRateViaTauTauQCDMethod]\n";
+      std::cout << "ExtrapFactor:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat 
+                % ratio_control_cat % ratio_sel % wt;
+      std::cout << "Sideband:       " << boost::format("'%s','%s','%s'\n") %  control_sel % cat % wt;
+    }
+
+    Value ratio = DataSampleRatio(data_sample, ratio_sel, ratio_control_cat, ratio_sel, ratio_signal_cat, wt, sub_samples, dict);
+    Value data_control = GetRate(data_sample, control_sel, cat, wt);
+ //   if (verbosity_) PrintValue(data_sample, data_control);
+    Value total_bkg;
+    for (unsigned i = 0; i < sub_samples.size(); ++i) {
+      Value bkr;
+      if (dict.count(sub_samples[i])) {
+        bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
+      } else {
+        bkr = GetLumiScaledRate(sub_samples[i], control_sel, cat, wt);
+      }
+      if (verbosity_) PrintValue("-"+sub_samples[i], bkr);
+      double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
+      total_bkg.first += bkr.first;
+      total_bkg.second = new_err;
+    }
+    if (verbosity_) PrintValue("TotalBkg", total_bkg);
+    double qcd_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
+    Value qcd_control(data_control.first - total_bkg.first, qcd_control_err);
+    if (verbosity_) PrintValue("QCDSideband", qcd_control);
+    if (verbosity_) PrintValue("ExtrapFactor", ratio);
+    Value qcd_signal = ValueProduct(qcd_control, ratio);
+    return qcd_signal;
   }
 
   HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaQCDMethod(HTTRun2Analysis::Value const& ratio,

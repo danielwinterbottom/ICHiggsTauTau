@@ -31,6 +31,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, bool, iso_study)
   CLASS_MEMBER(HTTCategories, bool, tau_id_study)
+  CLASS_MEMBER(HTTCategories, bool, qcd_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
  
@@ -116,7 +117,7 @@ class HTTCategories : public ModuleBase {
   branch_var pzetamiss_;
   branch_var pfpzetamiss_;
   branch_var puppipzetamiss_;
-  double emu_dphi_;
+  double dphi_;
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
@@ -134,6 +135,8 @@ class HTTCategories : public ModuleBase {
   double E_2_;
   int q_1_;
   int q_2_;
+  int jet_flav_1_;
+  int jet_flav_2_;
   bool trigger_match_1_;
   bool trigger_match_2_;
   branch_var iso_1_;

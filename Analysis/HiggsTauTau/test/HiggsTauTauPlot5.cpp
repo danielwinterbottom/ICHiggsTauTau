@@ -30,7 +30,7 @@ int main(int argc, char* argv[]){
 	string mssm_masses_str;												
 	string Hhh_masses_str;												
 	string syst_tau_scale;
-    bool tau_es_study;
+    string tau_es_scales_str;
 	string syst_met_scale;
 	string syst_eff_b;
 	string syst_fake_b;
@@ -58,6 +58,7 @@ int main(int argc, char* argv[]){
   double qcd_os_ss_factor;
   string w_binned;
   bool interpolate;
+  bool no_central;
   string signal_bins;
   bool add_ztt_modes;
 
@@ -85,7 +86,8 @@ int main(int argc, char* argv[]){
 	  ("mssm_masses",             po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("Hhh_masses",              po::value<string>(&Hhh_masses_str)->default_value(""))
 	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
-	  ("tau_es_study",          po::value<bool>(&tau_es_study)->default_value(false))
+	  ("tau_es_scales",          po::value<string>(&tau_es_scales_str)->default_value(""))
+	  ("no_central", 	          po::value<bool>(&no_central)->default_value(false))
 	  ("syst_met_scale",          po::value<string>(&syst_met_scale)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_eff_t",      		    po::value<string>(&syst_eff_t)->default_value(""))
@@ -169,6 +171,8 @@ int main(int argc, char* argv[]){
 	if (mssm_masses_str != "") boost::split(mssm_masses, mssm_masses_str, boost::is_any_of(","));
 	std::vector<std::string> Hhh_masses;
 	if (Hhh_masses_str != "") boost::split(Hhh_masses, Hhh_masses_str, boost::is_any_of(","));
+	std::vector<std::string> tau_es_scales;
+	if (tau_es_scales_str != "") boost::split(tau_es_scales, tau_es_scales_str, boost::is_any_of(","));
 
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
@@ -205,7 +209,7 @@ int main(int argc, char* argv[]){
   std::string sig_var = var;
   if (signal_bins != "") sig_var = reduced_var+signal_bins;
 
-	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
+ if(!no_central) ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
   
 
    
@@ -213,7 +217,7 @@ int main(int argc, char* argv[]){
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 	}
-	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
+	if(!no_central) ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 	ana.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "", 1.0);
 
 
@@ -311,14 +315,15 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Add tau/electron energy scale systematics
 	// ************************************************************************
-	if (syst_tau_scale != "") {
-        if(tau_es_study) {
-		    systematics.push_back(make_pair("/TSCALE_UP_"+syst_tau_scale, syst_tau_scale));
-		    systematics.push_back(make_pair("/TSCALE_DOWN_"+syst_tau_scale, "-"+syst_tau_scale));
-        } else {
-		    systematics.push_back(make_pair("/TSCALE_DOWN", syst_tau_scale+"Down"));
-		    systematics.push_back(make_pair("/TSCALE_UP", syst_tau_scale+"Up"));
+    if(tau_es_scales_str !="") {
+        for(auto scale : tau_es_scales) {
+            systematics.push_back(make_pair("/TSCALE_UP_"+scale, scale));
+            systematics.push_back(make_pair("/TSCALE_DOWN_"+scale, "-"+scale));
         }
+    } 
+	if (syst_tau_scale != "") {
+        systematics.push_back(make_pair("/TSCALE_DOWN", syst_tau_scale+"Down"));
+        systematics.push_back(make_pair("/TSCALE_UP", syst_tau_scale+"Up"));
 	}
 	if (syst_eff_b != "") {
 		systematics.push_back(make_pair("/BTAG_DOWN", syst_eff_b+"Down"));
@@ -849,7 +854,7 @@ int main(int argc, char* argv[]){
 
    //data->Divide(bkg_hist);
 
-	plot.GeneratePlot(hmap);
+  if(!no_central) plot.GeneratePlot(hmap);
 
   return 0;
 }

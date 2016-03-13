@@ -51,6 +51,7 @@ namespace ic {
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange - 4)
     };
     bkg_schemes_["zee_default"] = {
+      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("ewk","Electroweak"          ,{"W","VV"}   ,TColor::GetColor(222, 90,106)),
       PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZLL"}  ,TColor::GetColor(100,182,232))
@@ -104,6 +105,7 @@ namespace ic {
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
     };
     bkg_schemes_["zmm_default"] = {
+      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
       PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
       PlotBkgComponent("ewk","Electroweak",           {"W","VV"},   TColor::GetColor(222, 90,106)),
       PlotBkgComponent("zll","Z#rightarrow#mu#mu",    {"ZLL"},  TColor::GetColor(100,182,232))

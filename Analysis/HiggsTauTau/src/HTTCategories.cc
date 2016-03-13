@@ -31,6 +31,7 @@ namespace ic {
       tau_id_study_=false;
       is_embedded_=false;
       is_data_=false;
+      qcd_study_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
@@ -112,6 +113,8 @@ namespace ic {
       outtree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2);
       outtree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1);
       outtree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2);
+      outtree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1);
       outtree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1);
@@ -241,6 +244,10 @@ namespace ic {
        outtree_->Branch("olddm_1",&ldecayModeFindingOldDMs_1);
        outtree_->Branch("olddm_2",&ldecayModeFindingOldDMs_2);
       }
+      if(qcd_study_){
+        outtree_->Branch("jet_flav_1", &jet_flav_1_);
+        outtree_->Branch("jet_flav_2", &jet_flav_2_);
+      }
 
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
         //Extra variables needed for tag and probe
@@ -269,6 +276,9 @@ namespace ic {
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
         outtree_->Branch("phi_2",             &phi_2_.var_double);
+        if (channel_ != channel::em){
+          outtree_->Branch("dphi",              &dphi_);
+        }
         outtree_->Branch("E_1",               &E_1_);
         outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
@@ -292,7 +302,7 @@ namespace ic {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
           outtree_->Branch("mt_ll",             &mt_ll_);
-          outtree_->Branch("emu_dphi",          &emu_dphi_);
+          outtree_->Branch("emu_dphi",          &dphi_);
           outtree_->Branch("emu_csv",           &emu_csv_);
           outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
           outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
@@ -990,14 +1000,13 @@ namespace ic {
       id_e_mva_nt_loose_1_ = elec->GetIdIso("mvaNonTrigSpring15");
     }
 
-    emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
-
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
+    dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector()));
     E_1_ = lep1->energy();
     E_2_ = lep2->energy();
     m_1_ = lep1->M();
@@ -1609,6 +1618,21 @@ namespace ic {
     n_prebjets_ = prebjets.size();
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
+
+    if(qcd_study_ && (channel_ == channel::mt || channel_ == channel::et)){
+      std::vector<Candidate *> leading_lepton;
+      std::vector<Candidate *> subleading_lepton;
+      leading_lepton.push_back(ditau->GetCandidate("lepton1"));
+      subleading_lepton.push_back(ditau->GetCandidate("lepton2")); 
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(lowpt_jets, leading_lepton, 0.5, true, true);
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(lowpt_jets, subleading_lepton, 0.5, true, true);
+      if(mu_matches.size() > 0) {
+          jet_flav_1_ = (mu_matches.at(0)).first->parton_flavour();
+      } else jet_flav_1_ = -9999;
+      if(tau_matches.size() > 0) {
+          jet_flav_2_ = (tau_matches.at(0)).first->parton_flavour();
+      } else jet_flav_2_ = -9999;
+    }
 
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();

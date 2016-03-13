@@ -75,6 +75,9 @@ parser.add_option("--scales", dest="scales", action='store_true', default=False,
 parser.add_option("--taues_study", dest="taues_study", action='store_true', default=False,
                   help="Run lots of tau ES shifts jsut for DY")
 
+parser.add_option("--qcd_study", dest="qcd_study", action='store_true', default=False,
+                  help="Run QCD MC sample for QCD study")
+
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
@@ -247,7 +250,7 @@ if options.proc_qcd:
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
-if options.proc_bkg or options.proc_all:
+if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     #'TTJets',
     'TT-ext',
@@ -285,6 +288,16 @@ if options.proc_bkg or options.proc_all:
     #'WJetsToLNu_HT600-Inf',
      ]
 
+if options.qcd_study:
+  #FILELIST='filelists/Feb25_MC_76X'
+  FILELIST='filelists/Mar05_MC_76X'
+  central_samples = [
+ #   'QCDMuEnriched',
+    'QCDEMEnrichedPt15-20',
+    'QCDEMEnrichedPt20-30',
+    'QCDFlat',
+    'QCDbcToEPt20-30'
+     ]
   for sa in central_samples:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
@@ -307,7 +320,7 @@ if options.proc_bkg or options.proc_all:
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-
+  
         
 #      if PRODUCTION=='June6' and (not options.do_2011):
 #        central_samples.remove('TTJets')

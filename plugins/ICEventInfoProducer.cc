@@ -2,6 +2,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "Math/Vector4D.h"
+#include "Math/Vector4Dfwd.h"
 #include "boost/format.hpp"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
@@ -200,6 +202,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
       std::vector<lhef::HEPEUP::FiveVector> lheParticles = lhe_handle->hepeup().PUP;
       double lheHt = 0.;
       unsigned nOutgoingPartons = 0;
+      std::vector<ROOT::Math::PxPyPzEVector> zll_cands;
       for(size_t idxPart = 0; idxPart < lheParticles.size();++idxPart){
        unsigned absPdgId = TMath::Abs(lhe_handle->hepeup().IDUP[idxPart]);
        unsigned status = lhe_handle->hepeup().ISTUP[idxPart];
@@ -207,6 +210,12 @@ void ICEventInfoProducer::produce(edm::Event& event,
          lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxPart][0],2) + TMath::Power(lheParticles[idxPart][1],2));
          nOutgoingPartons++;
         }
+       if(status == 1 && (absPdgId ==11 || absPdgId == 13 || absPdgId ==15)){
+         zll_cands.push_back(ROOT::Math::PxPyPzEVector(lheParticles[idxPart][0],lheParticles[idxPart][1],lheParticles[idxPart][2],lheParticles[idxPart][3]));
+       }
+      }
+      if(zll_cands.size() == 2){
+        info_->set_gen_mll((zll_cands[0]+zll_cands[1]).M());
       }
       info_->set_gen_ht(lheHt);
       info_->set_n_outgoing_partons(nOutgoingPartons);

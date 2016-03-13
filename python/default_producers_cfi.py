@@ -202,6 +202,7 @@ icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
   branch  = cms.string("pfMet"),
   input   = cms.InputTag("slimmedMETs"),
   includeCustomID = cms.bool(False),
+  includeUserCandID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
   doGenMet = cms.bool(False),
   includeExternalMetsig = cms.bool(False),
@@ -453,6 +454,14 @@ icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
   includeStatusFlags = cms.bool(False)
 )
 ## [GenParticle]
+
+
+## [GenParticle from LHE]
+icGenParticleFromLHEParticlesProducer = cms.EDProducer('ICGenParticleFromLHEParticlesProducer',
+  branch  = cms.string("lheParticles"),
+  input   = cms.InputTag("externalLHEProducer")
+)
+## [GenParticle from LHE]
 
 icGenVertexProducer = cms.EDProducer('ICGenVertexProducer',
   branch = cms.string("genVertices"),
