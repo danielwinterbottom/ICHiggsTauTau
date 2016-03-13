@@ -9,13 +9,13 @@ fi
 
 DOSUBMIT=$1
 DO4PARAMS=$2
-infolder=output_run2ana_160222
-outfolder=cards_run2ana_160222/
+infolder=output_run2ana_160224
+outfolder=cards_run2ana_160225/
 blind=true
 zvvstat=18
 mkdir -p $outfolder
 
-extraoptions="" #--do_ggh=false --do_separate_qcdewk=false"
+extraoptions="--do_ues=false" #--do_ggh=false --do_separate_qcdewk=false"
 
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
@@ -84,9 +84,9 @@ do
 
         for minjjcut in 801 901 1001 1101 1201 1301 1401 1501 1601 1701 1801 1901
         do
-            OUTNAME=$outfolder/$mass/vbfhinv_${mass}_8TeV_${mindphicut}_${minjjcut}.txt
+            OUTNAME=$outfolder/$mass/vbfhinv_${mass}_13TeV_${mindphicut}_${minjjcut}.txt
             if (( "$DO4PARAMS" == "1" )); then
-                OUTNAME=$outfolder/$mass/vbfhinv_${mass}_8TeV_${mindphicut}_${minjjcut}_4params.txt
+                OUTNAME=$outfolder/$mass/vbfhinv_${mass}_13TeV_${mindphicut}_${minjjcut}_4params.txt
             fi
 
             echo "./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m $mass --do_latex true --do_datatop false --zvvstat $zvvstat --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=alljetsmetnomu_mindphi:dijet_M $extraoptions  &> $outfolder/$mass/card_${mindphicut}_${minjjcut}.log" >> $OUTPUT

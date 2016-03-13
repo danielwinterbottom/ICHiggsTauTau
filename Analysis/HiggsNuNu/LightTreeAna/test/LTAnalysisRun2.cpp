@@ -15,7 +15,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/HistPlotter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/SummaryTable.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/EventList.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi.h"
+//#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/BkgSubDataNormShape.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/program_options.hpp"
@@ -24,6 +24,25 @@
 
 namespace po=boost::program_options;
 using namespace ic;
+
+double deltaPhi(double phi1,double phi2)
+{
+  double result = phi1 - phi2;
+  while (result > TMath::Pi()) result -= 2*TMath::Pi();
+  while (result <= -TMath::Pi()) result += 2*TMath::Pi();
+  return result;
+};
+double deltaR(double eta1,double phi1,double eta2,double phi2)
+{
+  double deta = eta1 - eta2;
+  double dphi = deltaPhi(phi1, phi2);
+  return std::sqrt(deta*deta + dphi*dphi);
+};
+double deltaRmin(double eta1,double phi1,double eta2,double phi2,double eta3,double phi3)
+{
+  return std::min(deltaR(eta1,phi1,eta3,phi3),deltaR(eta2,phi2,eta3,phi3));
+};
+
 
 int main(int argc, char* argv[]){
   /*##########################################
@@ -71,6 +90,8 @@ int main(int argc, char* argv[]){
 
   unsigned debug;
 
+  double lumiSF;
+
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
   po::variables_map vm;
@@ -113,6 +134,7 @@ int main(int argc, char* argv[]){
     ("metsigcut",                po::value<std::string>(&metsigcut)->default_value(">4.0"))
     ("histTitlePar",             po::value<std::string>(&histTitlePar)->default_value(";#Delta#phi(E_{T}^{miss},j);Events"))
     ("shapePar",                 po::value<std::string>(&shapePar)->default_value("alljetsmetnomu_mindphi(32,0.,3.1416)"))
+    ("lumiSF",                   po::value<double>(&lumiSF)->default_value(1.0))
     ;
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -323,7 +345,7 @@ int main(int argc, char* argv[]){
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
   std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
   std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";
+  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
   std::string gammacat="ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
   std::string toplcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";
   std::string topbcat = "(nselmuons>=1 || nselelectrons>=1)&&(jet1_csv>0.679||jet2_csv>0.679)&&(forward_tag_eta>2.8||forward_tag_eta<-2.8)";
@@ -361,21 +383,23 @@ int main(int argc, char* argv[]){
 
   std::string sigmcweight;
   std::string sig125mcweight;
-  std::string mcweightpufactordebug="*1./(weight_trig_1*weight_trig_2*weight_trig_3*weight_trig_4*weight_trig_5*weight_trig_6)";
-  std::string mcweightpufactor="";
-  if(syst=="PUUP") mcweightpufactor+="*puweight_up_scale";
-  if(syst=="PUDOWN") mcweightpufactor+="*puweight_down_scale";
-  
-  if (syst=="TRIG0UP") mcweightpufactor+="*weight_trig_1/weight_trig_0";
-  if (syst=="TRIG0DOWN") mcweightpufactor+="*weight_trig_2/weight_trig_0";
-  if (syst=="TRIG1UP") mcweightpufactor+="*weight_trig_3/weight_trig_0";
-  if (syst=="TRIG1DOWN") mcweightpufactor+="*weight_trig_4/weight_trig_0";
-  if (syst=="TRIG2UP") mcweightpufactor+="*weight_trig_5/weight_trig_0";
-  if (syst=="TRIG2DOWN") mcweightpufactor+="*weight_trig_6/weight_trig_0";
+  //std::string mcweightpufactordebug="*1./(weight_trig_1*weight_trig_2*weight_trig_3*weight_trig_4*weight_trig_5*weight_trig_6)";
 
-  if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor;//+mcweightpufactordebug;
-  else sigmcweight="total_weight_leptight"+mcweightpufactor;//+mcweightpufactordebug;
-  sig125mcweight="total_weight_lepveto"+mcweightpufactor;
+  std::ostringstream mcweightpufactor;
+  mcweightpufactor << "*" << lumiSF;
+  if(syst=="PUUP") mcweightpufactor << "*puweight_up_scale";
+  if(syst=="PUDOWN") mcweightpufactor << "*puweight_down_scale";
+  
+  if (syst=="TRIG0UP") mcweightpufactor<<"*weight_trig_1/weight_trig_0";
+  if (syst=="TRIG0DOWN") mcweightpufactor<<"*weight_trig_2/weight_trig_0";
+  if (syst=="TRIG1UP") mcweightpufactor<<"*weight_trig_3/weight_trig_0";
+  if (syst=="TRIG1DOWN") mcweightpufactor<<"*weight_trig_4/weight_trig_0";
+  if (syst=="TRIG2UP") mcweightpufactor<<"*weight_trig_5/weight_trig_0";
+  if (syst=="TRIG2DOWN") mcweightpufactor<<"*weight_trig_6/weight_trig_0";
+
+  if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor.str();//+mcweightpufactordebug;
+  else sigmcweight="total_weight_leptight"+mcweightpufactor.str();//+mcweightpufactordebug;
+  sig125mcweight="total_weight_lepveto"+mcweightpufactor.str();
 
   std::string bothcentral="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)<3";
   std::string bothforward="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)>=3";
@@ -451,7 +475,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);
 
   DataShape signal600("signal600");
-  signal500.set_dataset("VBFH600")
+  signal600.set_dataset("VBFH600")
     .set_dirname("qqH600")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
@@ -962,9 +986,11 @@ int main(int argc, char* argv[]){
     elementvec.push_back(topele);
     elementvec.push_back(qcdele);
     elementvec.push_back(vvele);
-    if(channel!="mumu"&&channel!="enu"&&channel!="munu"&&channel!="taunu"){
-      elementvec.push_back(qcdznunuele);
-      elementvec.push_back(ewkznunuele);
+    if(channel!="mumu"&&channel!="enu"&&channel!="munu"){
+      if (channel!="taunu"){
+	elementvec.push_back(qcdznunuele);
+	elementvec.push_back(ewkznunuele);
+      }
       elementvec.push_back(sigele);
       elementvec.push_back(ggHele);
     }

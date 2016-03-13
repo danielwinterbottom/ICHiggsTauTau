@@ -44,7 +44,8 @@ int main(int argc, char* argv[]){
   bool do_run2;
   bool do_4params;
   bool do_1param;
-  double wz_syst;
+  double wzqcd_syst;
+  double wzewk_syst;
   double minvarXcut;
   double minvarYcut;
   std::string histoToIntegrate;
@@ -72,7 +73,8 @@ int main(int argc, char* argv[]){
     ("do_run2",                  po::value<bool>(&do_run2)->default_value(false))
     ("do_4params",               po::value<bool>(&do_4params)->default_value(false))
     ("do_1param",                po::value<bool>(&do_1param)->default_value(true))
-    ("wz_syst",                  po::value<double>(&wz_syst)->default_value(1.15))
+    ("wzqcd_syst",               po::value<double>(&wzqcd_syst)->default_value(1.15))
+    ("wzewk_syst",               po::value<double>(&wzewk_syst)->default_value(1.15))
     ("minvarXcut",               po::value<double>(&minvarXcut)->default_value(1.0))
     ("minvarYcut",               po::value<double>(&minvarYcut)->default_value(1.0))
     ("histoToIntegrate",         po::value<std::string>(&histoToIntegrate)->default_value("alljetsmetnomu_mindphi"))
@@ -235,11 +237,11 @@ int main(int argc, char* argv[]){
     if (do_run2) lumi8tevprocsaffected.push_back("qcd");
   }
   Syst lumi8tev;
-  lumi8tev.set_name("lumi_8TeV")
+  lumi8tev.set_name("lumi_13TeV")
     .set_latexname("Luminosity")
     .set_type("constlnN")
     .set_procsaffected(lumi8tevprocsaffected)
-    .set_constvalue(1.026);
+    .set_constvalue(1.027);
 
   std::vector<std::string> allprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zmumuqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","qcd","wg","vv"};
   std::vector<std::string> allprocsnotqcd={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zmumuqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","wg","vv"};
@@ -325,12 +327,19 @@ int main(int argc, char* argv[]){
 
   if (mcBkgOnly) zvvmcstat.set_type("fromMCstatlnN");
 
-  Syst wzratio;
-  wzratio.set_name("CMS_WZ_ratio_from_theory")
+  Syst wzratioqcd;
+  wzratioqcd.set_name("CMS_WZQCD_ratio_from_theory")
     .set_latexname("W/Z from theory")
     .set_type("constlnN")
-    .set_constvalue(wz_syst)
-    .set_procsaffected({"zmumuqcd","zmumuewk","zvvqcd","zvvewk"});
+    .set_constvalue(wzqcd_syst)
+    .set_procsaffected({"zmumuqcd","zvvqcd"});
+
+  Syst wzratioewk;
+  wzratioewk.set_name("CMS_WZEWK_ratio_from_theory")
+    .set_latexname("W/Z from theory")
+    .set_type("constlnN")
+    .set_constvalue(wzewk_syst)
+    .set_procsaffected({"zmumuewk","zvvewk"});
 
   Syst zvvewkmcstat;
   zvvewkmcstat.set_name("CMS_VBFHinv_zvv_ewk_norm")
@@ -436,7 +445,7 @@ int main(int argc, char* argv[]){
     .set_latexname("Tau efficiency")
     .set_procsaffected({"wtauewk","wtauqcd"})
     .set_type("constlnN")
-    .set_constvalue(1.05);
+    .set_constvalue(1.06);
 
   Syst wtaujetmetextrap;
   wtaujetmetextrap.set_name("CMS_VBFHinv_tau_extrapfacunc")
@@ -523,7 +532,7 @@ int main(int argc, char* argv[]){
     .set_latexname("ggH pdf")
     .set_type("constlnN")
     .set_procsaffected(ggHprocs)
-    .set_constvalue(1.113);
+    .set_constvalue(1.031);
 
   Syst ggHUEPS;
   ggHUEPS.set_name("UEPS")
@@ -559,28 +568,28 @@ int main(int argc, char* argv[]){
     .set_latexname("VBF QCD scale")
     .set_type("constlnN")
     .set_procsaffected(qqHprocs);
-  if(mass=="110")qqHqcdscale.set_constvalue(1.02);
-  if(mass=="125")qqHqcdscale.set_constvalue(1.02);
-  if(mass=="150")qqHqcdscale.set_constvalue(1.025);
-  if(mass=="200")qqHqcdscale.set_constvalue(1.02);
-  if(mass=="300")qqHqcdscale.set_constvalue(1.02);
-  if(mass=="400")qqHqcdscale.set_constvalue(1.035);
-  if(mass=="500")qqHqcdscale.set_constvalue(1.035);
-  if(mass=="600")qqHqcdscale.set_constvalue(1.035);
+  if(mass=="110")qqHqcdscale.set_constvalue(1.004);
+  if(mass=="125")qqHqcdscale.set_constvalue(1.004);
+  if(mass=="150")qqHqcdscale.set_constvalue(1.004);
+  if(mass=="200")qqHqcdscale.set_constvalue(1.004);
+  if(mass=="300")qqHqcdscale.set_constvalue(1.004);
+  if(mass=="400")qqHqcdscale.set_constvalue(1.004);
+  if(mass=="500")qqHqcdscale.set_constvalue(1.004);
+  if(mass=="600")qqHqcdscale.set_constvalue(1.004);
 
   Syst qqHpdf;
   qqHpdf.set_name("pdf_qqbar")
     .set_latexname("VBF pdf")
     .set_type("constlnN")
     .set_procsaffected(qqHprocs);
-  if(mass=="110")qqHpdf.set_constvalue(1.0265);
-  if(mass=="125")qqHpdf.set_constvalue(1.027);
-  if(mass=="150")qqHpdf.set_constvalue(1.026);
-  if(mass=="200")qqHpdf.set_constvalue(1.026);
-  if(mass=="300")qqHpdf.set_constvalue(1.0255);
-  if(mass=="400")qqHpdf.set_constvalue(1.027);
-  if(mass=="500")qqHpdf.set_constvalue(1.027);
-  if(mass=="600")qqHpdf.set_constvalue(1.027);
+  if(mass=="110")qqHpdf.set_constvalue(1.021);
+  if(mass=="125")qqHpdf.set_constvalue(1.021);
+  if(mass=="150")qqHpdf.set_constvalue(1.021);
+  if(mass=="200")qqHpdf.set_constvalue(1.021);
+  if(mass=="300")qqHpdf.set_constvalue(1.021);
+  if(mass=="400")qqHpdf.set_constvalue(1.021);
+  if(mass=="500")qqHpdf.set_constvalue(1.021);
+  if(mass=="600")qqHpdf.set_constvalue(1.021);
 
   Syst vvmcstat;
   vvmcstat.set_name("CMS_VBFHinv_vv_norm")
@@ -662,7 +671,8 @@ int main(int argc, char* argv[]){
       }
     }
     if (channel=="mumu" || channel=="nunu") {
-      systematics.push_back(wzratio);
+      systematics.push_back(wzratioqcd);
+      systematics.push_back(wzratioewk);
     }
     //  systematics.push_back(zvvdatastat);
     if (!mcBkgOnly) systematics.push_back(zvvdatastatgmn);
@@ -1025,7 +1035,7 @@ int main(int argc, char* argv[]){
 	  if (downlnnfac==downlnnfac && downlnnfac>0) datacard<<"\t"<<downlnnfac;
 	  else datacard<<"\t-";
 	  if (uplnnfac==uplnnfac && uplnnfac>0) datacard<<"/"<<uplnnfac;
-	  else datacard<<"\t-";
+	  else datacard<<"/-";
 
 	  double error=(fabs(1-uplnnfac)+fabs(1-downlnnfac))/2;
 

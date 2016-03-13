@@ -22,8 +22,8 @@ dijet_M(15,800.,3000.)	;M_{jj} (GeV);Events
 dijet_dphi(15,0.,3.1416)	;#Delta#phi_{jj};Events
 dijet_deta(10,3.6,5.5)	;#Delta#eta_{jj};Events
 dijet_sumeta(20,-5,5)	;#eta_{j1}+#eta_{j2};Events
-jetmetnomu_mindphi(22,1.,3.1416)	;#Delta#phi(E_{T}^{miss},j_{1,2});Events
-alljetsmetnomu_mindphi(22,1.,3.1416)	;#Delta#phi(E_{T}^{miss},j);Events
+jetmetnomu_mindphi(8,2.3,3.1416)	;#Delta#phi(E_{T}^{miss},j_{1,2});Events
+alljetsmetnomu_mindphi(8,2.3,3.1416)	;#Delta#phi(E_{T}^{miss},j);Events
 metnomu_significance(20,0.,300.)	;S;Events
 jetunclet_mindphi(22,0,3.1416)	;min #Delta#phi(j,E_{T}^{uncl});Events
 metnomuunclet_dphi(22,0,3.1416)	;#Delta#phi(METnoMu,E_{T}^{uncl});Events
