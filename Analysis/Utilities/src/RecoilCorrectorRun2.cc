@@ -230,6 +230,7 @@ void RecoilCorrectorRun2::Correct(float MetPx,
   float metU1 = 0;
   float metU2 = 0;
 
+
   CalculateU1U2FromMet(MetPx,
 		       MetPy,
 		       genVPx,
@@ -275,8 +276,7 @@ void RecoilCorrectorRun2::Correct(float MetPx,
       
     metZParalData->GetQuantiles(nSumProb,q,sumProb);
 
-    float U1reco = float(q[0]);
-    U1 = U1reco;
+    U1 = float(q[0]);
     
   }
   else {
@@ -307,8 +307,7 @@ void RecoilCorrectorRun2::Correct(float MetPx,
     
     metZPerpData->GetQuantiles(nSumProb,q,sumProb);
 
-    float U2reco = float(q[0]);
-    U2 = U2reco;
+    U2 = float(q[0]);
       
   }
   else {
