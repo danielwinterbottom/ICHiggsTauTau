@@ -173,11 +173,10 @@ namespace ic {
   corrector_->Correct(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety);
   //Now stick this back into our met object:
   mvaMet->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
-  mvaMet->set_phi(atan(correctedMety/correctedMetx));
+  mvaMet->set_phi(atan2(correctedMety,correctedMetx));
   mvaMet->set_energy(sqrt(met_res_e*met_res_e+correctedMetx*correctedMetx+correctedMety*correctedMety));
 
-  
- 
+
     return 0;
   }
   int HTTRun2RecoilCorrector::PostAnalysis() {
