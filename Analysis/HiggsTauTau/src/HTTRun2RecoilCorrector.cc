@@ -13,12 +13,12 @@ namespace ic {
     strategy_(strategy::paper2013),
     mc_(mc::summer12_53X),
     era_(era::data_2012_rereco) {
-    dilepton_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
     jets_label_ = "pfJetsPFlow";
     sample_ = "";
     disable = true;
     is_ztt = false;
+    is_htt = false;
     is_wjets = false;
   }
 
@@ -35,7 +35,6 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "strategy"        % Strategy2String(strategy_);
     std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
-    std::cout << boost::format(param_fmt()) % "dilepton_label"  % dilepton_label_;
     std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
     std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
 
@@ -56,6 +55,11 @@ namespace ic {
       disable = false;
       is_ztt = true;
     }
+
+    if (sample_.find("HToTauTau")!=sample_.npos){
+     disable = true; //FIXME signal recoil corrections still to be implemented
+     is_htt = true;
+    }
     
     if (disable) {
       std::cout << boost::format(param_fmt()) % "enabled"      % false;
@@ -75,7 +79,10 @@ namespace ic {
 //    std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(dilepton_label_);
     Met * mvaMet = event->GetPtr<Met>(met_label_);
     std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
-    std::vector<GenParticle *> lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+    std::vector<GenParticle *> lhe_parts;
+    if(!is_htt){//Only have lheParticles for DY and W
+      lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+    }
     std::vector<GenParticle *> sel_lhe_parts;
     std::vector<GenParticle *> sel_gen_parts;
     double genpX=0;

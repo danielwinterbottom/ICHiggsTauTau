@@ -15,8 +15,8 @@ class HTTRun2RecoilCorrector : public ModuleBase {
   bool disable;
   bool is_ztt;
   bool is_wjets;
+  bool is_htt;
   RecoilCorrectorRun2 * corrector_;
-  CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, dilepton_label)
   CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, met_label)
   CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, jets_label)
   CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, sample)

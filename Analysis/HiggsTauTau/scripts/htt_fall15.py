@@ -186,7 +186,7 @@ if options.proc_qcd:
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     'TT-ext',
-    'WJetsToLNu',
+ #   'WJetsToLNu',
     'WJetsToLNu-LO',
     'W1JetsToLNu-LO',
     'ZZTo4L',
@@ -201,7 +201,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    'DYJetsToLL',
+ #   'DYJetsToLL',
     'DYJetsToLL_M-50-LO',
     'DYJetsToLL_M-10',
     'DYJetsToLL_M-10-ext',
@@ -228,9 +228,11 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
         nperjob = 40
       if 'DY' in sa and 'JetsToLL' in sa:
         FLATJSONPATCH=FLATJSONPATCHDYSIG
-        nperjob = 40
+        nperjob = 30
         if 'scale' in FLATJSONPATCH:
           nperjob = 20
+      if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
+        nperjob = 30
       if 'DY' in sa and 'JetsToLL' in sa and taues_study:
         FLATJSONPATCH=""
         CONFIG='scripts/taues_config.json'
