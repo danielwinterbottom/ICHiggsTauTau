@@ -262,7 +262,11 @@ void RecoilCorrectorRun2::Correct(float MetPx,
     double q[1];
     double sumProb[1];
     
-    sumProb[0] = metZParalMC->IntegralOneDim(_xminMetZParalMC[ZptBin][njets],U1,_epsrel,_epsabs,_error);
+    #if ROOT_VERSION_CODE > ROOT_VERSION(6,0,0) 
+      sumProb[0] = metZParalMC->IntegralOneDim(_xminMetZParalMC[ZptBin][njets],U1,_epsrel,_epsabs,_error);
+    #else 
+      sumProb[0] = 0
+    #endif
     
     if (sumProb[0]<0) {
       //	std::cout << "Warning ! ProbSum[0] = " << sumProb[0] << std::endl;
@@ -294,7 +298,11 @@ void RecoilCorrectorRun2::Correct(float MetPx,
     double q[1];
     double sumProb[1];
     
-    sumProb[0] = metZPerpMC->IntegralOneDim(_xminMetZPerpMC[ZptBin][njets],U2,_epsrel,_epsabs,_error);
+    #if ROOT_VERSION_CODE > ROOT_VERSION(6,0,0)
+      sumProb[0] = metZPerpMC->IntegralOneDim(_xminMetZPerpMC[ZptBin][njets],U2,_epsrel,_epsabs,_error);
+    #else
+      sumProb[0] = 0
+    #endif 
     
     if (sumProb[0]<0) {
       //	std::cout << "Warning ! ProbSum[0] = " << sumProb[0] << std::endl;

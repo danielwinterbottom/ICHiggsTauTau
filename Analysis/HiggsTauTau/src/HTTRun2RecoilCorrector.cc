@@ -40,7 +40,7 @@ namespace ic {
 
     std::string process_file;
     if (strategy_ ==strategy::fall15){
-      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining.root";
+      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
     }else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;
@@ -57,7 +57,7 @@ namespace ic {
     }
 
     if (sample_.find("HToTauTau")!=sample_.npos){
-     disable = true; //FIXME signal recoil corrections still to be implemented
+     disable = false;
      is_htt = true;
     }
     
@@ -92,16 +92,30 @@ namespace ic {
     bool has_tau = false;
 
     //Start with the generator Z/W pT, which we'll take from the lhe particles:
-    for(unsigned i = 0; i < lhe_parts.size() ; ++i){
-     if(lhe_parts[i]->status() != 1) continue;
-     unsigned id = abs(lhe_parts[i]->pdgid());
-     if(is_ztt){//For DY, we want es,mus and taus:
-       if (id == 11|| id ==13 || id ==15) sel_lhe_parts.push_back(lhe_parts[i]);
-       if (id == 15) has_tau = true;
-     } else if(is_wjets){//For WJets, we want all leptons:
-       if (id >= 11 && id <= 16) sel_lhe_parts.push_back(lhe_parts[i]);
-       if (id == 15) has_tau = true;
+    if(!is_htt){
+      for(unsigned i = 0; i < lhe_parts.size() ; ++i){
+       if(lhe_parts[i]->status() != 1) continue;
+       unsigned id = abs(lhe_parts[i]->pdgid());
+       if(is_ztt){//For DY, we want es,mus and taus:
+         if (id == 11|| id ==13 || id ==15) sel_lhe_parts.push_back(lhe_parts[i]);
+         if (id == 15) has_tau = true;
+       } else if(is_wjets){//For WJets, we want all leptons:
+         if (id >= 11 && id <= 16) sel_lhe_parts.push_back(lhe_parts[i]);
+         if (id == 15) has_tau = true;
+       }
      }
+    } else {//We don't have the lhe parts for H->tautau signal, so need to do something else here
+      has_tau=true;
+      for(unsigned i=0 ; i< parts.size(); ++i){
+        unsigned id = abs(parts[i]->pdgid());
+        if(id == 25 || id == 35 || id == 36){
+          if(parts[i]->pt()!=0) sel_lhe_parts.push_back(parts[i]);
+        }
+      }
+      if(sel_lhe_parts.size()!=1){
+        std::cerr<<"Warning: there should be exactly one h,H or A in the evt record"<<std::endl;
+        throw;
+      }
     }
 
    //Now loop through our selected particles and calculate genpX and genpY:
@@ -111,7 +125,7 @@ namespace ic {
    }
 
   //Now we need the visible gen pX and pY:
-  if(is_ztt){
+  if(is_ztt || is_htt){
    if(!has_tau){ //for DY that doesn't have a tau, gen pX,pY is the same as visible pX,pY
     vispX = genpX;
     vispY = genpY;
