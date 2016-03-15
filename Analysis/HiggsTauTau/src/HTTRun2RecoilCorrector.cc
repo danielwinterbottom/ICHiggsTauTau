@@ -109,7 +109,7 @@ namespace ic {
       for(unsigned i=0 ; i< parts.size(); ++i){
         unsigned id = abs(parts[i]->pdgid());
         if(id == 25 || id == 35 || id == 36){
-          if(parts[i]->pt()!=0) sel_lhe_parts.push_back(parts[i]);
+          if(parts[i]->status()!=22) sel_lhe_parts.push_back(parts[i]);
         }
       }
       if(sel_lhe_parts.size()!=1){
