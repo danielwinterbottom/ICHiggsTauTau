@@ -253,8 +253,10 @@ void RecoilCorrectorRun2::Correct(float MetPx,
   TF1 * metZParalData = _metZParalData[ZptBin][njets];
   TF1 * metZPerpData  = _metZPerpData[ZptBin][njets];
   
-  TF1 * metZParalMC   = _metZParalMC[ZptBin][njets];
-  TF1 * metZPerpMC     = _metZPerpMC[ZptBin][njets];
+  #if ROOT_VERSION_CODE > ROOT_VERSION(6,0,0)
+    TF1 * metZParalMC   = _metZParalMC[ZptBin][njets];
+    TF1 * metZPerpMC     = _metZPerpMC[ZptBin][njets];
+  #endif
   
   if (U1>_range*_xminMetZParal[ZptBin][njets]&&U1<_range*_xmaxMetZParal[ZptBin][njets]) {
     
@@ -265,7 +267,7 @@ void RecoilCorrectorRun2::Correct(float MetPx,
     #if ROOT_VERSION_CODE > ROOT_VERSION(6,0,0) 
       sumProb[0] = metZParalMC->IntegralOneDim(_xminMetZParalMC[ZptBin][njets],U1,_epsrel,_epsabs,_error);
     #else 
-      sumProb[0] = 0
+      sumProb[0] = 0;
     #endif
     
     if (sumProb[0]<0) {
@@ -301,7 +303,7 @@ void RecoilCorrectorRun2::Correct(float MetPx,
     #if ROOT_VERSION_CODE > ROOT_VERSION(6,0,0)
       sumProb[0] = metZPerpMC->IntegralOneDim(_xminMetZPerpMC[ZptBin][njets],U2,_epsrel,_epsabs,_error);
     #else
-      sumProb[0] = 0
+      sumProb[0] = 0;
     #endif 
     
     if (sumProb[0]<0) {
