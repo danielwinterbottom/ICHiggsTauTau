@@ -348,7 +348,11 @@ float RecoilCorrectorRun2::CorrectionsBySampling(float x, TF1 * funcMC, TF1 * fu
 
   float xmin = float(xminD);
 
+  #if ROOT_VERSION_CODE > ROOT_VERSION(6,0,0)
   sumProb[0] = funcMC->IntegralOneDim(xmin,xD,_epsrel,_epsabs,_error);
+  #else
+  sumProb[0] = 0;
+  #endif
   
   funcData->GetQuantiles(nSumProb,q,sumProb);
 
