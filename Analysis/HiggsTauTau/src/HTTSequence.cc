@@ -1090,7 +1090,7 @@ BuildModule(svFitTest);
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos) || output_name.find("DYJetsToLL_M-150-LO")!=output_name.npos){
     httWeights.set_do_dy_soup_high_mass(true);
     httWeights.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
-    httWeights.SetDYInputYieldsHighMass(7926922,65314144 , 20019059, 5701878, 4189017, 6079415);
+    httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);
   }
 
     BuildModule(httWeights);
