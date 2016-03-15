@@ -109,11 +109,16 @@ namespace ic {
       for(unsigned i=0 ; i< parts.size(); ++i){
         unsigned id = abs(parts[i]->pdgid());
         if(id == 25 || id == 35 || id == 36){
-          if(parts[i]->status()!=22) sel_lhe_parts.push_back(parts[i]);
+          std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
+          bool has_h_daughter = false;
+          for(unsigned j = 0; j<daughters.size(); ++j){
+           if(id == abs(daughters[j]->pdgid())) has_h_daughter=true;
+          }
+          if(!has_h_daughter) sel_lhe_parts.push_back(parts[i]);
         }
       }
       if(sel_lhe_parts.size()!=1){
-        std::cerr<<"Warning: there should be exactly one h,H or A in the evt record"<<std::endl;
+        std::cerr<<"There should be exactly one h,H or A in the event record"<<std::endl;
         throw;
       }
     }
