@@ -511,8 +511,8 @@ namespace ic {
     samples_alias_map_["vv_samples"] = {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
      "WWTo1L1Nu2Q",
-     /*"VVTo2L2Nu",*/"ZZTo2L2Q","ZZTo4L",
-     /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/
+     "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
+     "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
     };
 
     if(!is_fall15_){
@@ -539,9 +539,10 @@ namespace ic {
 
  
    samples_alias_map_["ztt_shape_samples"]={
-    "DYJetsToLL_M-50-LO",
+    "DYJetsToLL_M-50-LO-ext",
     "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"
+    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
+    "DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext"
    };
 
    if(!is_fall15_){
@@ -610,9 +611,10 @@ namespace ic {
 
 
    samples_alias_map_["ztt_samples"]={
-     "DYJetsToLL_M-50-LO",
+     "DYJetsToLL_M-50-LO-ext",
      "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"
+     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
+     "DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext"
    };
    if(!is_fall15_){
      if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
@@ -635,11 +637,11 @@ namespace ic {
   
  if(ch_!=channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL_M-50-LO", 
+   "DYJetsToLL_M-50-LO-ext","DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",
-   /*"VVTo2L2Nu",*/"ZZTo2L2Q","ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/,
+   "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "WJetsToLNu-LO","TT-ext",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
@@ -686,11 +688,11 @@ namespace ic {
 
  if(ch_==channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL_M-50-LO",
+   "DYJetsToLL_M-50-LO-ext","DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWTo1L1Nu2Q",//"VVTo2L2Nu",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/,
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext","WJetsToLNu-LO",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
@@ -718,13 +720,13 @@ namespace ic {
   }
 
   samples_alias_map_["w_sub_samples"] = {
-   "DYJetsToLL_M-50-LO",
+   "DYJetsToLL_M-50-LO-ext","DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-   "WWTo1L1Nu2Q",//"VVTo2L2Nu",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
-   /*"WZTo2L2Q",*/"WZJetsTo3LNu","WZTo1L3Nu"/*,"WZTo1L1Nu2Q"*/,
+   "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext"
    };
 

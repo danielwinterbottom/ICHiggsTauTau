@@ -1,7 +1,7 @@
 {
   "job": {
-    "filelist" : "filelists/Feb12_MC_76X_SUSYGluGluToHToTauTau_M-160.dat",
-    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Feb12_MC_76X/",
+    "filelist" : "filelists/Mar05_MC_76X_SUSYGluGluToHToTauTau_M-160.dat",
+    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Mar05_MC_76X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["mt","et","em","tt"],
@@ -42,15 +42,15 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/Feb12/",
+    "output_folder" : "./output/Mar05/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "svfit-76X-sync-3",
+    "svfit_folder"  : "svfit-76X-Mar05",
     "svfit_override" : "",
-    //"event_check_file":"checkevt.dat",
+   // "event_check_file":"check.txt",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 0,
@@ -137,6 +137,7 @@
       "baseline": {
         "addit_output_folder" : "TSCALE_DOWN",
         "tau_scale_mode": true,
+        "elec_es_shift": 0.99,
         "tau_es_shift": 0.97
       }
     },
@@ -144,23 +145,10 @@
       "baseline": {
         "addit_output_folder" : "TSCALE_UP",
         "tau_scale_mode": true,
+        "elec_es_shift": 1.01,
         "tau_es_shift": 1.03
       }
-    },
-    "scale_e_lo": {
-      "baseline": {
-        "addit_output_folder" : "TSCALE_DOWN",
-        "tau_scale_mode" : true,
-        "elec_es_shift": 0.99
-      }
-    },
-    "scale_e_hi": {
-      "baseline": {
-        "addit_output_folder" : "TSCALE_UP",
-        "tau_scale_mode": true,
-        "elec_es_shift": 1.01
-      }
-    },
+    }
 //    "scale_j_lo": {
 //      "baseline": {
 //        "addit_output_folder" : "JES_DOWN",
