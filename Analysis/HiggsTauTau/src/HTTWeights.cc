@@ -1421,15 +1421,19 @@ namespace ic {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
         throw;
       }
-      if (partons == 0 && gen_mll > 150) eventInfo->set_weight("dysoup",zw0hi_);
-      if (partons == 1 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw1lo_);
-      if (partons == 1 && gen_mll > 150) eventInfo->set_weight("dysoup", zw1hi_);
-      if (partons == 2 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw2lo_);
-      if (partons == 2 && gen_mll > 150) eventInfo->set_weight("dysoup", zw2hi_);
-      if (partons == 3 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw3lo_);
-      if (partons == 3 && gen_mll > 150) eventInfo->set_weight("dysoup", zw3hi_);
-      if (partons == 4 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw4lo_);
-      if (partons == 4 && gen_mll > 150) eventInfo->set_weight("dysoup", zw4hi_);
+       
+      unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+      bool is_ztt = true;
+      if(gen_match_1 < 3) is_ztt=false;
+      if (partons == 0 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup",zw0hi_);
+      if (partons == 1 && gen_mll <= 150 && !is_ztt) eventInfo->set_weight("dysoup", zw1lo_);
+      if (partons == 1 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw1hi_);
+      if (partons == 2 && gen_mll <= 150 && !is_ztt) eventInfo->set_weight("dysoup", zw2lo_);
+      if (partons == 2 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw2hi_);
+      if (partons == 3 && gen_mll <= 150 && !is_ztt) eventInfo->set_weight("dysoup", zw3lo_);
+      if (partons == 3 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw3hi_);
+      if (partons == 4 && gen_mll <= 150 && !is_ztt) eventInfo->set_weight("dysoup", zw4lo_);
+      if (partons == 4 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw4hi_);
     }
 
    if (do_w_soup_htbinned_){
