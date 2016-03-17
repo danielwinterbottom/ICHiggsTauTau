@@ -6,7 +6,7 @@
     "timings":      true,
     "channels":     ["et","tt","em","mt"],
     "sequences": {
-      "all":  ["default"]
+      "all":  []
 //      "et":   ["scale_t_lo", "scale_t_hi"],
 //      "mt":   ["scale_t_lo", "scale_t_hi"],
  //     "tt":   ["scale_t_lo", "scale_t_hi"],
@@ -42,7 +42,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/Feb12-PromoteDemote/",
+    "output_folder" : "./output/Feb12-BTagMethod1D/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToBBHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
@@ -68,7 +68,7 @@
       "tau_scale_mode"    : false,
       "jes_mode"          : 0,
       "btag_mode"         : 0,
-      "do_reshape"        : false,
+      "do_reshape"        : true,
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "elec_es_shift"     : 1.0,
@@ -277,25 +277,25 @@
     "scale_cferr1_lo": {
       "baseline": {
         "addit_output_folder" : "CFERR1_DOWN",
-        "btag_mode" :14 
+        "btag_mode" :18 
       }
     },
     "scale_cferr1_hi": {
       "baseline": {
         "addit_output_folder" : "CFERR1_UP",
-        "btag_mode" : 13 
+        "btag_mode" : 17 
       }
     },
     "scale_cferr2_lo": {
       "baseline": {
         "addit_output_folder" : "CFERR2_DOWN",
-        "btag_mode" :16 
+        "btag_mode" :20 
       }
     },
     "scale_cferr2_hi": {
       "baseline": {
         "addit_output_folder" : "CFERR2_UP",
-        "btag_mode" : 15 
+        "btag_mode" : 19 
       }
     },
     "default": {}
