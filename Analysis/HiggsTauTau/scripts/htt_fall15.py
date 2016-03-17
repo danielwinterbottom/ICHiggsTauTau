@@ -201,9 +201,9 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
- #   'DYJetsToLL',
-    'DYJetsToLL_M-50-LO',
-    'DYJetsToLL_M-10',
+#   'DYJetsToLL',
+#    'DYJetsToLL_M-50-LO',
+ #   'DYJetsToLL_M-10',
     'DYJetsToLL_M-10-ext',
     'DYJetsToLL_M-150-LO',
     'DYJetsToLL_M-50-LO-ext',
@@ -213,16 +213,16 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'DY4JetsToLL_M-50-LO',
      ]
 
-if options.qcd_study:
-  #FILELIST='filelists/Feb25_MC_76X'
-  FILELIST='filelists/Mar05_MC_76X'
-  central_samples = [
- #   'QCDMuEnriched',
-    'QCDEMEnrichedPt15-20',
-    'QCDEMEnrichedPt20-30',
-    'QCDFlat',
-    'QCDbcToEPt20-30'
-     ]
+  if options.qcd_study:
+    #FILELIST='filelists/Feb25_MC_76X'
+    FILELIST='filelists/Mar05_MC_76X'
+    central_samples = [
+   #   'QCDMuEnriched',
+      'QCDEMEnrichedPt15-20',
+      'QCDEMEnrichedPt20-30',
+      'QCDFlat',
+      'QCDbcToEPt20-30'
+       ]
   for sa in central_samples:
       JOB='%s_2015' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
