@@ -10,14 +10,8 @@
 #include "TH2D.h"
 #include "TFile.h"
 #include "TLorentzVector.h"
+#include "TDirectory.h"
 
-// ICHiggsTauTau Objects
-#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
-#include "UserCode/ICHiggsTauTau/interface/L1TEGamma.hh"
-#include "UserCode/ICHiggsTauTau/interface/L1TMuon.hh"
-#include "UserCode/ICHiggsTauTau/interface/L1TTau.hh"
-#include "UserCode/ICHiggsTauTau/interface/L1TJet.hh"
-#include "UserCode/ICHiggsTauTau/interface/L1TSum.hh"
 
 namespace ic {
 
@@ -31,73 +25,66 @@ namespace ic {
     std::string ditau_label_;
     std::string met_label_;
     
-    std::string l1jets_label_;
-    std::string l1electrons_label_;
-    std::string l1muons_label_;
-    std::string l1taus_label_;
-    std::string l1met_label_;
+    std::string HLT1_label_;
+    std::string HLT2_label_;
+    std::string HLT3_label_;
+    std::string HLT4_label_;
+    std::string HLT5_label_;
+    std::string HLT6_label_;
+    std::string HLT7_label_;
+    std::string HLT8_label_;
+    std::string HLT9_label_;
+    std::string HLT10_label_;
+    std::string HLT11_label_;
+    std::string HLT12_label_;
+    std::string HLT13_label_;
+    std::string HLT14_label_;
+    std::string HLT15_label_;
+ 
+
     
     std::string output_name_;
-    std::string output_name2_ = "L1_";
+    std::string output_name2_ = "Offline";
+    std::string output_folder_;
 
     int n_jets_;
     int n_electrons_;
     int n_muons_;
     int n_taus_;
     
-    int n_l1jets_;
-    int n_l1electrons_;
-    int n_l1muons_;
-    int n_l1taus_;
+    TH1D  *h_OfflineEtaGap;
+    TH1D  *h_OfflineMjjInv;
+    TH1D  *h_OfflineDeltaRjj;
+    TH1D  *h_OfflineDeltaPhijj;
+    TH1D  *h_OfflineMttVis;
+    TH1D  *h_OfflineDeltaPhitt;
+    TH1D  *h_OfflineDeltaEtatt;
+    TH1D  *h_OfflineDeltaRtt;
+    TH1D  *h_OfflineLeadTauPt;
+    TH1D  *h_OfflineSubLeadTauPt;
+    TH1D  *h_OfflineElectronPt;
+    TH1D  *h_OfflineMuonPt;
+    TH1D  *h_OfflineMET;
+    TH1D  *h_OfflineLeadJetPt;
+    TH1D  *h_OfflineLeadJetEta;
+    TH1D  *h_OfflineLeadJetPhi;
+    TH1D  *h_OfflineSubLeadJetPt;
+    TH1D  *h_OfflineSubLeadJetEta;
+    TH1D  *h_OfflineSubLeadJetPhi;
+    TH1D  *h_OfflineMinPhi;
 
-    TFile *fOut;
-    
-    TH1D  *h_EtaGap;
-    TH1D  *h_MjjInv;
-    TH1D  *h_DeltaRjj;
-    TH1D  *h_DeltaPhijj;
-    TH1D  *h_MttVis;
-    TH1D  *h_DeltaPhitt;
-    TH1D  *h_DeltaEtatt;
-    TH1D  *h_DeltaRtt;
-    TH1D  *h_LeadTauPt;
-    TH1D  *h_SubLeadTauPt;
-    TH1D  *h_ElectronPt;
-    TH1D  *h_MuonPt;
-    TH1D  *h_MET;
-    TH1D  *h_LeadJetPt;
-    TH1D  *h_LeadJetEta;
-    TH1D  *h_LeadJetPhi;
-    TH1D  *h_SubLeadJetPt;
-    TH1D  *h_SubLeadJetEta;
-    TH1D  *h_SubLeadJetPhi;
-    TH1D  *h_MinPhi;
-    
-    TH1D  *h_L1EtaGap;
-    TH1D  *h_L1MjjInv;
-    TH1D  *h_L1DeltaRjj;
-    TH1D  *h_L1DeltaPhijj;
-    TH1D  *h_L1LeadTauPt;
-    TH1D  *h_L1SubLeadTauPt;
-    TH1D  *h_L1ElectronPt;
-    TH1D  *h_L1MuonPt;
-    TH1D  *h_L1MET;
-    TH1D  *h_L1LeadJetPt;
-    TH1D  *h_L1LeadJetEta;
-    TH1D  *h_L1LeadJetPhi;
-    TH1D  *h_L1SubLeadJetPt;
-    TH1D  *h_L1SubLeadJetEta;
-    TH1D  *h_L1SubLeadJetPhi;
 
   public:
 
-    VariableHistograms(std::string const& name, std::string output_name);
+    VariableHistograms(std::string const& name, std::string output_name, std::string output_folder);
     virtual ~VariableHistograms();
 
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
     virtual void PrintInfo();
+    
+    TFile *fOffline;
     
   };
 

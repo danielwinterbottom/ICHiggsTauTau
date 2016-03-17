@@ -1,9 +1,7 @@
-
 #include "Modules/interface/VariableHistograms.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
-//#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/VariableHistograms.h"
 
 #include "TVector3.h"
 
@@ -11,85 +9,110 @@ namespace ic {
 
   
   VariableHistograms::VariableHistograms(std::string const& name, 
-                                         std::string output_name) : ModuleBase(name) {
-    
-    l1jets_label_ = "L1Jets"; 
-    l1electrons_label_ = "L1EGammas";
-    l1muons_label_ = "L1Muon"; 
-    l1taus_label_ = "L1Taus";  
-    l1met_label_ = "L1Sums";
+                                         std::string output_name, std::string output_folder) : ModuleBase(name) {
+    jets_label_ = "ak4PFJetsCHS"; 
+    electrons_label_ = "electrons";
+    muons_label_ = "muons"; 
+    taus_label_ = "taus";  
+    ditau_label_ = "emtauCandidates";
+    met_label_ = "pfMet";
+ 
     
     output_name_ = output_name;
+    output_folder_ = output_folder;
      
 
-    fOut = new TFile((output_name2_+output_name_).c_str(),"RECREATE");
-
-    //l1 histograms
+    fOffline = new TFile((output_name_).c_str(),"UPDATE");
+    //fOffline->mkdir(output_name2_.c_str(),"RECREATE");
+    //fOffline->cd(output_name2_.c_str());
     
-    h_L1EtaGap = new TH1D("L1EtaGap","L1EtaGap",100, 0,10); h_L1EtaGap->SetDirectory(fOut);
-    h_L1EtaGap->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta#eta|");
-    h_L1EtaGap->GetYaxis()->SetTitle("# Entries");
+    //offline histograms
+    h_OfflineEtaGap = new TH1D("EtaGap","EtaGap",100, 0,10); h_OfflineEtaGap->SetDirectory(fOffline);
+    h_OfflineEtaGap->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta#eta|");
+    h_OfflineEtaGap->GetYaxis()->SetTitle("# Entries");
 
-    h_L1MjjInv = new TH1D("L1Mjj","L1Mjj",100, 0,2500); h_L1MjjInv->SetDirectory(fOut);
-    h_L1MjjInv->GetXaxis()->SetTitle("M_{jj} [GeV]");
-    h_L1MjjInv->GetYaxis()->SetTitle("# Entries");
+    h_OfflineMjjInv = new TH1D("Mjj","Mjj",100, 0,2500); h_OfflineMjjInv->SetDirectory(fOffline);
+    h_OfflineMjjInv->GetXaxis()->SetTitle("M_{jj} [GeV]");
+    h_OfflineMjjInv->GetYaxis()->SetTitle("# Entries");
 
-    h_L1DeltaPhijj = new TH1D("L1DeltaPhijj","L1DeltaPhijj",100, 0,6.5); h_L1DeltaPhijj->SetDirectory(fOut);
-    h_L1DeltaPhijj->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta#phi|");
-    h_L1DeltaPhijj->GetYaxis()->SetTitle("# Entries");
+    h_OfflineDeltaPhijj = new TH1D("DeltaPhijj","DeltaPhijj",100, 0,6.5); h_OfflineDeltaPhijj->SetDirectory(fOffline);
+    h_OfflineDeltaPhijj->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta#phi|");
+    h_OfflineDeltaPhijj->GetYaxis()->SetTitle("# Entries");
 
-    h_L1DeltaRjj = new TH1D("L1DeltaRjj","L1DeltaRjj",100, 0,12); h_L1DeltaRjj->SetDirectory(fOut);
-    h_L1DeltaRjj->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta R|");
-    h_L1DeltaRjj->GetYaxis()->SetTitle("# Entries");
+    h_OfflineDeltaRjj = new TH1D("DeltaRjj","DeltaRjj",100, 0,12); h_OfflineDeltaRjj->SetDirectory(fOffline);
+    h_OfflineDeltaRjj->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta R|");
+    h_OfflineDeltaRjj->GetYaxis()->SetTitle("# Entries");
 
-    h_L1LeadTauPt = new TH1D("L1LeadTauPt","L1LeadTauPt",100, 0,200); h_L1LeadTauPt->SetDirectory(fOut);
-    h_L1LeadTauPt->GetXaxis()->SetTitle("Leading Tau P_{T} [GeV]");
-    h_L1LeadTauPt->GetYaxis()->SetTitle("# Entries");
+    h_OfflineMttVis = new TH1D("MttVis","MttVis",100, 0,200); h_OfflineMttVis->SetDirectory(fOffline);
+    h_OfflineMttVis->GetXaxis()->SetTitle("Visible M_{#tau#tau} [GeV]");
+    h_OfflineMttVis->GetYaxis()->SetTitle("# Entries");
 
-    h_L1SubLeadTauPt = new TH1D("L1SubLeadTauPt","L1SubLeadTauPt",100, 0,200); h_L1SubLeadTauPt->SetDirectory(fOut);
-    h_L1SubLeadTauPt->GetXaxis()->SetTitle("Sub-leading Tau P_{T} [GeV]");
-    h_L1SubLeadTauPt->GetYaxis()->SetTitle("# Entries");
+    h_OfflineDeltaPhitt = new TH1D("DeltaPhitt","DeltaPhitt",100, 0,6.5); h_OfflineDeltaPhitt->SetDirectory(fOffline);
+    h_OfflineDeltaPhitt->GetXaxis()->SetTitle("Tau Candidates |#Delta#phi|");
+    h_OfflineDeltaPhitt->GetYaxis()->SetTitle("# Entries");
 
-    h_L1ElectronPt = new TH1D("L1ElectronPt","L1ElectronPt",100, 0,200); h_L1ElectronPt->SetDirectory(fOut);
-    h_L1ElectronPt->GetXaxis()->SetTitle("Electron P_{T} [GeV]");
-    h_L1ElectronPt->GetYaxis()->SetTitle("# Entries");
+    h_OfflineDeltaRtt = new TH1D("DeltaRtt","DeltaRtt",100, 0,12); h_OfflineDeltaRtt->SetDirectory(fOffline);
+    h_OfflineDeltaRtt->GetXaxis()->SetTitle("Tau Candidates |#Delta R|");
+    h_OfflineDeltaRtt->GetYaxis()->SetTitle("# Entries");
 
-    h_L1MuonPt = new TH1D("L1MuonPt","L1MuonPt",100, 0,200); h_L1MuonPt->SetDirectory(fOut);
-    h_L1MuonPt->GetXaxis()->SetTitle("Muon P_{T} [GeV]");
-    h_L1MuonPt->GetYaxis()->SetTitle("# Entries");
+    h_OfflineDeltaEtatt = new TH1D("DeltaEtatt","DeltaEtatt",100, 0,10); h_OfflineDeltaEtatt->SetDirectory(fOffline);
+    h_OfflineDeltaEtatt->GetXaxis()->SetTitle("Tau Candidates |#Delta#eta|");
+    h_OfflineDeltaEtatt->GetYaxis()->SetTitle("# Entries");
 
-    h_L1MET = new TH1D("L1MET","L1MET",100, 0,200); h_L1MET->SetDirectory(fOut);
-    h_L1MET->GetXaxis()->SetTitle("MET [GeV]");
-    h_L1MET->GetYaxis()->SetTitle("# Entries");
+    h_OfflineLeadTauPt = new TH1D("LeadTauPt","LeadTauPt",100, 0,200); h_OfflineLeadTauPt->SetDirectory(fOffline);
+    h_OfflineLeadTauPt->GetXaxis()->SetTitle("Leading Tau P_{T} [GeV]");
+    h_OfflineLeadTauPt->GetYaxis()->SetTitle("# Entries");
 
-    h_L1SubLeadJetPt = new TH1D("L1SubLeadJetPt","L1SubLeadJetPt",100, 0,200); h_L1SubLeadJetPt->SetDirectory(fOut);
-    h_L1SubLeadJetPt->GetXaxis()->SetTitle("Sub-leading Jet P_{T} [GeV]");
-    h_L1SubLeadJetPt->GetYaxis()->SetTitle("# Entries");
+    h_OfflineSubLeadTauPt = new TH1D("SubLeadTauPt","SubLeadTauPt",100, 0,200); h_OfflineSubLeadTauPt->SetDirectory(fOffline);
+    h_OfflineSubLeadTauPt->GetXaxis()->SetTitle("Sub-leading Tau P_{T} [GeV]");
+    h_OfflineSubLeadTauPt->GetYaxis()->SetTitle("# Entries");
 
-    h_L1SubLeadJetEta = new TH1D("L1SubLeadJetEta","L1SubLeadJetEta",100, -5,5); h_L1SubLeadJetEta->SetDirectory(fOut);
-    h_L1SubLeadJetEta->GetXaxis()->SetTitle("Sub-leading Jet #eta");
-    h_L1SubLeadJetEta->GetYaxis()->SetTitle("# Entries");
+    h_OfflineElectronPt = new TH1D("ElectronPt","ElectronPt",100, 0,200); h_OfflineElectronPt->SetDirectory(fOffline);
+    h_OfflineElectronPt->GetXaxis()->SetTitle("Electron P_{T} [GeV]");
+    h_OfflineElectronPt->GetYaxis()->SetTitle("# Entries");
 
-    h_L1SubLeadJetPhi = new TH1D("L1SubLeadJetPhi","L1SubLeadJetPhi",100, -3.5,3.5); h_L1SubLeadJetPhi->SetDirectory(fOut);
-    h_L1SubLeadJetPhi->GetXaxis()->SetTitle("Sub-leading Jet #phi");
-    h_L1SubLeadJetPhi->GetYaxis()->SetTitle("# Entries");
+    h_OfflineMuonPt = new TH1D("MuonPt","MuonPt",100, 0,200); h_OfflineMuonPt->SetDirectory(fOffline);
+    h_OfflineMuonPt->GetXaxis()->SetTitle("Muon P_{T} [GeV]");
+    h_OfflineMuonPt->GetYaxis()->SetTitle("# Entries");
 
-    h_L1LeadJetPt = new TH1D("L1LeadJetPt","L1LeadJetPt",100, 0,200); h_L1LeadJetPt->SetDirectory(fOut);
-    h_L1LeadJetPt->GetXaxis()->SetTitle("Leading Jet P_{T} [GeV]");
-    h_L1LeadJetPt->GetYaxis()->SetTitle("# Entries");
+    h_OfflineMET = new TH1D("MET","MET",100, 0,200); h_OfflineMET->SetDirectory(fOffline);
+    h_OfflineMET->GetXaxis()->SetTitle("MET [GeV]");
+    h_OfflineMET->GetYaxis()->SetTitle("# Entries");
 
-    h_L1LeadJetEta = new TH1D("L1LeadJetEta","L1LeadJetEta",100, -5,5); h_L1LeadJetEta->SetDirectory(fOut);
-    h_L1LeadJetEta->GetXaxis()->SetTitle("Leading Jet #eta");
-    h_L1LeadJetEta->GetYaxis()->SetTitle("# Entries");
+    h_OfflineSubLeadJetPt = new TH1D("SubLeadJetPt","SubLeadJetPt",100, 0,200); h_OfflineSubLeadJetPt->SetDirectory(fOffline);
+    h_OfflineSubLeadJetPt->GetXaxis()->SetTitle("Sub-leading Jet P_{T} [GeV]");
+    h_OfflineSubLeadJetPt->GetYaxis()->SetTitle("# Entries");
 
-    h_L1LeadJetPhi = new TH1D("L1LeadJetPhi","L1LeadJetPhi",100, -3.5,3.5); h_L1LeadJetPhi->SetDirectory(fOut);
-    h_L1LeadJetPhi->GetXaxis()->SetTitle("Leading Jet #phi");
-    h_L1LeadJetPhi->GetYaxis()->SetTitle("# Entries");
+    h_OfflineSubLeadJetEta = new TH1D("SubLeadJetEta","SubLeadJetEta",100, -5,5); h_OfflineSubLeadJetEta->SetDirectory(fOffline);
+    h_OfflineSubLeadJetEta->GetXaxis()->SetTitle("Sub-leading Jet #eta");
+    h_OfflineSubLeadJetEta->GetYaxis()->SetTitle("# Entries");
+
+    h_OfflineSubLeadJetPhi = new TH1D("SubLeadJetPhi","SubLeadJetPhi",100, -3.5,3.5); h_OfflineSubLeadJetPhi->SetDirectory(fOffline);
+    h_OfflineSubLeadJetPhi->GetXaxis()->SetTitle("Sub-leading Jet #phi");
+    h_OfflineSubLeadJetPhi->GetYaxis()->SetTitle("# Entries");
+
+    h_OfflineLeadJetPt = new TH1D("LeadJetPt","LeadJetPt",100, 0,200); h_OfflineLeadJetPt->SetDirectory(fOffline);
+    h_OfflineLeadJetPt->GetXaxis()->SetTitle("Leading Jet P_{T} [GeV]");
+    h_OfflineLeadJetPt->GetYaxis()->SetTitle("# Entries");
+
+    h_OfflineLeadJetEta = new TH1D("LeadJetEta","LeadJetEta",100, -5,5); h_OfflineLeadJetEta->SetDirectory(fOffline);
+    h_OfflineLeadJetEta->GetXaxis()->SetTitle("Leading Jet #eta");
+    h_OfflineLeadJetEta->GetYaxis()->SetTitle("# Entries");
+
+    h_OfflineLeadJetPhi = new TH1D("LeadJetPhi","LeadJetPhi",100, -3.5,3.5); h_OfflineLeadJetPhi->SetDirectory(fOffline);
+    h_OfflineLeadJetPhi->GetXaxis()->SetTitle("Leading Jet #phi");
+    h_OfflineLeadJetPhi->GetYaxis()->SetTitle("# Entries");
+
+    h_OfflineMinPhi = new TH1D("MinPhi","MinPhi",100, 0,6.5); h_OfflineLeadJetPhi->SetDirectory(fOffline);
+    h_OfflineMinPhi->GetXaxis()->SetTitle("Min #Delta#phi");
+    h_OfflineMinPhi->GetYaxis()->SetTitle("# Entries");
+
 
   }
 
     VariableHistograms::~VariableHistograms(){
-      fOut->Write();
+      fOffline->Write();
+      fOffline->Close();
   }
   
   int VariableHistograms::PreAnalysis(){
@@ -100,92 +123,104 @@ namespace ic {
 
   int VariableHistograms::Execute(TreeEvent *event){
       
-      //L1
-      std::vector<ic::L1TJet*>  l1jets = event->GetPtrVec<ic::L1TJet>(l1jets_label_);
-      std::vector<ic::L1TEGamma*> l1electrons = event->GetPtrVec<ic::L1TEGamma>(l1electrons_label_);
-      std::vector<ic::L1TMuon*> l1muons = event->GetPtrVec<ic::L1TMuon>(l1muons_label_);
-      std::vector<ic::L1TTau*> l1taus = event->GetPtrVec<ic::L1TTau>(l1taus_label_);
-      std::vector<ic::L1TSum*> l1met_vec = event->GetPtrVec<ic::L1TSum>(l1met_label_);
-
-      n_l1jets_ = l1jets.size();
-      n_l1electrons_ = l1electrons.size();
-      n_l1muons_ = l1muons.size();
-      n_l1taus_ = l1taus.size();
-
-      double l1MET = l1met_vec[1]->et;
-      h_L1MET->Fill(l1MET);
-        
-      if(n_l1jets_ >= 2){
-        double l1eta_gap = fabs(l1jets[0]->vector().Rapidity()-l1jets[1]->vector().Rapidity());
-        h_L1EtaGap->Fill(l1eta_gap);
-
-        double l1phi_gap = fabs(l1jets[0]->vector().Phi()-l1jets[1]->vector().Phi());
-        h_L1DeltaPhijj->Fill(l1phi_gap);
-
-        double l1R_gap = sqrt(pow(l1jets[0]->vector().Phi()-l1jets[1]->vector().Phi(),2) + pow(l1jets[0]->vector().Rapidity()-l1jets[1]->vector().Rapidity(),2));
-        h_L1DeltaRjj->Fill(l1R_gap);
-
-        double l1Mij = (l1jets[0]->vector() + l1jets[1]->vector()).M();
-        h_L1MjjInv->Fill(l1Mij);
-      }
+      //offline 
       
-      if(n_l1jets_ >= 1){
+      std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>(jets_label_);
+      std::vector<Electron*> electrons = event->GetPtrVec<Electron>(electrons_label_);
+      std::vector<Muon*> muons = event->GetPtrVec<Muon>(muons_label_);
+      std::vector<Tau*> taus = event->GetPtrVec<Tau>(taus_label_);
+      std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
 
-        double l1LeadJPt = l1jets[0]->vector().Pt();
-        h_L1LeadJetPt->Fill(l1LeadJPt);
+      n_jets_ = jets.size();
+      n_electrons_ = electrons.size();
+      n_muons_ = muons.size();
+      n_taus_ = taus.size();
 
-        double l1LeadJEta = l1jets[0]->vector().Rapidity();
-        h_L1LeadJetEta->Fill(l1LeadJEta);
+      double MET = met_vec[0]->vector().pt();
+      h_OfflineMET->Fill(MET);
+
+      double eta_gap = fabs(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity());
+      h_OfflineEtaGap->Fill(eta_gap);
+
+      double phi_gap = fabs(jets[0]->vector().Phi()-jets[1]->vector().Phi());
+      h_OfflineDeltaPhijj->Fill(phi_gap);
+
+      double R_gap = sqrt(pow(jets[0]->vector().Phi()-jets[1]->vector().Phi(),2) + pow(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity(),2));
+      h_OfflineDeltaRjj->Fill(R_gap);
+
+      double Mij = (jets[0]->vector() + jets[1]->vector()).M();
+      h_OfflineMjjInv->Fill(Mij);
+
+      double LeadJPt = jets[0]->vector().Pt();
+      h_OfflineLeadJetPt->Fill(LeadJPt);
+
+      double LeadJEta = jets[0]->vector().Rapidity();
+      h_OfflineLeadJetEta->Fill(LeadJEta);
+  
+      double LeadJPhi = jets[0]->vector().Phi();
+      h_OfflineLeadJetPhi->Fill(LeadJPhi);
+
+      double SubLeadJPt = jets[1]->vector().Pt();
+      h_OfflineSubLeadJetPt->Fill(SubLeadJPt);
+
+      double SubLeadJEta = jets[1]->vector().Rapidity();
+      h_OfflineSubLeadJetEta->Fill(SubLeadJEta);
+  
+      double SubLeadJPhi = jets[1]->vector().Phi();
+      h_OfflineSubLeadJetPhi->Fill(SubLeadJPhi);
+
+      std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
+      CompositeCandidate const* ditau = ditau_vec.at(0);
+      Candidate const* lep1 = ditau->GetCandidate("lepton1");
+      Candidate const* lep2 = ditau->GetCandidate("lepton2");
+      double pt_1_ = lep1->pt();
+      double pt_2_ = lep2->pt();
+
+      double Mtt_Vis = (lep1->vector() + lep2->vector()).M();
+      h_OfflineMttVis->Fill(Mtt_Vis);
+
+      double DeltaPhi_tt = fabs(lep1->vector().Phi() - lep2->vector().Phi());
+      h_OfflineDeltaPhitt->Fill(DeltaPhi_tt);
+
+      double DeltaEta_tt = fabs(lep1->vector().Rapidity() - lep2->vector().Rapidity());
+      h_OfflineDeltaEtatt->Fill(DeltaEta_tt);
+
+      double DeltaR_tt = sqrt(pow(lep1->vector().Rapidity() - lep2->vector().Rapidity(),2) + pow(lep1->vector().Phi() - lep2->vector().Phi(),2));
+      h_OfflineDeltaRtt->Fill(DeltaR_tt);
+
+      if (n_electrons_ > 0){
+        double electronPt = electrons[0]->vector().pt();
+        if (electronPt == pt_1_ || electronPt == pt_2_) h_OfflineElectronPt->Fill(electronPt);
+      }
+
+      if (n_muons_ > 0){
+        double muonPt = muons[0]->vector().pt();
+        if (muonPt == pt_1_ || muonPt == pt_2_) h_OfflineMuonPt->Fill(muonPt);
+      }
+
+      if (n_taus_ > 0){
+        double tauPt = taus[0]->vector().pt();
+        if (tauPt == pt_1_ || tauPt == pt_2_) h_OfflineLeadTauPt->Fill(tauPt);
+      }
+
+      if (n_taus_ > 1){
+        double SubtauPt = taus[1]->vector().pt();
+        if (SubtauPt == pt_1_ || SubtauPt == pt_2_) h_OfflineSubLeadTauPt->Fill(SubtauPt);
+      }
+
+      double DetaPhiTemp = 0;
+      double MinDeltaPhi = 10000;
+
+      for(int i=0; i<2; i++){
+        DetaPhiTemp = fabs(lep1->vector().Phi() - jets[i]->vector().Phi());
+        if(DetaPhiTemp < MinDeltaPhi) MinDeltaPhi = DetaPhiTemp;
+
+        DetaPhiTemp = fabs(lep2->vector().Phi() - jets[i]->vector().Phi());
+        if(DetaPhiTemp < MinDeltaPhi) MinDeltaPhi = DetaPhiTemp;
+      }
+      h_OfflineMinPhi->Fill(MinDeltaPhi);
       
-        double l1LeadJPhi = l1jets[0]->vector().Phi();
-        h_L1LeadJetPhi->Fill(l1LeadJPhi);
-
-        double l1SubLeadJPt = l1jets[1]->vector().Pt();
-        h_L1SubLeadJetPt->Fill(l1SubLeadJPt);
-
-        double l1SubLeadJEta = l1jets[1]->vector().Rapidity();
-        h_L1SubLeadJetEta->Fill(l1SubLeadJEta);
-
-        double l1SubLeadJPhi = l1jets[1]->vector().Phi();
-        h_L1SubLeadJetPhi->Fill(l1SubLeadJPhi);
-      }
-      if(n_l1electrons_ >= 1){
-
-        double l1electronPt = l1electrons[0]->vector().pt();
-        h_L1ElectronPt->Fill(l1electronPt);
-      }
-      
-      if(n_l1muons_ >= 1){
-        double l1muonPt = l1muons[0]->vector().pt();
-        h_L1MuonPt->Fill(l1muonPt);
-      }
-
-      if(n_l1taus_ >= 1){
-          
-        double l1tauPt = l1taus[0]->vector().pt();
-        h_L1LeadTauPt->Fill(l1tauPt);
-      }
-      if(n_l1taus_ >= 2){
-        double l1SubtauPt = l1taus[1]->vector().pt();
-        h_L1SubLeadTauPt->Fill(l1SubtauPt);
-      }
-      
-      /*std::cout << "Jets momentum order:" << std::endl;
-      for(int i = 0; i<n_l1jets_; i++){
-          std::cout << l1jets[i]->vector().Pt() << std::endl;
-      }
-      std::cout << "Taus momentum order:" <<std::endl;
-      for(int i = 0; i<n_l1taus_;i++){
-          std::cout << l1taus[i]->vector().Pt() << std::endl;
-      }
-      std::cout << "Muons momentum order:" <<std::endl;
-      for(int i = 0; i<n_l1muons_;i++){
-          std::cout << l1muons[i]->vector().Pt() << std::endl;
-      }
-      std::cout << "Electrons momentum order:" <<std::endl;
-      for(int i = 0; i<n_l1electrons_;i++){
-          std::cout << l1electrons[i]->vector().Pt() << std::endl;
-      }*/
+    
       
       return 0;
   }

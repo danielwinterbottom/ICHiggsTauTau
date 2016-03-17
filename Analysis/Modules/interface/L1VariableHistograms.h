@@ -10,6 +10,7 @@
 #include "TH2D.h"
 #include "TFile.h"
 #include "TLorentzVector.h"
+#include "TDirectory.h"
 
 // ICHiggsTauTau Objects
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
@@ -38,7 +39,8 @@ namespace ic {
     std::string l1met_label_;
     
     std::string output_name_;
-    std::string output_name2_ = "L1_";
+    std::string output_name2_ = "L1T";
+    std::string output_folder_;
 
     int n_jets_;
     int n_electrons_;
@@ -49,55 +51,56 @@ namespace ic {
     int n_l1electrons_;
     int n_l1muons_;
     int n_l1taus_;
-
-    TFile *fOut;
     
-    TH1D  *h_EtaGap;
-    TH1D  *h_MjjInv;
-    TH1D  *h_DeltaRjj;
-    TH1D  *h_DeltaPhijj;
-    TH1D  *h_MttVis;
-    TH1D  *h_DeltaPhitt;
-    TH1D  *h_DeltaEtatt;
-    TH1D  *h_DeltaRtt;
-    TH1D  *h_LeadTauPt;
-    TH1D  *h_SubLeadTauPt;
-    TH1D  *h_ElectronPt;
-    TH1D  *h_MuonPt;
-    TH1D  *h_MET;
-    TH1D  *h_LeadJetPt;
-    TH1D  *h_LeadJetEta;
-    TH1D  *h_LeadJetPhi;
-    TH1D  *h_SubLeadJetPt;
-    TH1D  *h_SubLeadJetEta;
-    TH1D  *h_SubLeadJetPhi;
-    TH1D  *h_MinPhi;
+    TH1D  *h_L1TEtaGap;
+    TH1D  *h_L1TMjjInv;
+    TH1D  *h_L1TDeltaRjj;
+    TH1D  *h_L1TDeltaPhijj;
+    TH1D  *h_L1TMttVis;
+    TH1D  *h_L1TDeltaPhitt;
+    TH1D  *h_L1TDeltaEtatt;
+    TH1D  *h_L1TDeltaRtt;
+    TH1D  *h_L1TLeadTauPt;
+    TH1D  *h_L1TSubLeadTauPt;
+    TH1D  *h_L1TElectronPt;
+    TH1D  *h_L1TMuonPt;
+    TH1D  *h_L1TMET;
+    TH1D  *h_L1TLeadJetPt;
+    TH1D  *h_L1TLeadJetEta;
+    TH1D  *h_L1TLeadJetPhi;
+    TH1D  *h_L1TSubLeadJetPt;
+    TH1D  *h_L1TSubLeadJetEta;
+    TH1D  *h_L1TSubLeadJetPhi;
+    TH1D  *h_L1TMinPhi;
     
-    TH1D  *h_L1EtaGap;
-    TH1D  *h_L1MjjInv;
-    TH1D  *h_L1DeltaRjj;
-    TH1D  *h_L1DeltaPhijj;
-    TH1D  *h_L1LeadTauPt;
-    TH1D  *h_L1SubLeadTauPt;
-    TH1D  *h_L1ElectronPt;
-    TH1D  *h_L1MuonPt;
-    TH1D  *h_L1MET;
-    TH1D  *h_L1LeadJetPt;
-    TH1D  *h_L1LeadJetEta;
-    TH1D  *h_L1LeadJetPhi;
-    TH1D  *h_L1SubLeadJetPt;
-    TH1D  *h_L1SubLeadJetEta;
-    TH1D  *h_L1SubLeadJetPhi;
+    TH1D  *h_L1TL1EtaGap;
+    TH1D  *h_L1TL1MjjInv;
+    TH1D  *h_L1TL1DeltaRjj;
+    TH1D  *h_L1TL1DeltaPhijj;
+    TH1D  *h_L1TL1LeadTauPt;
+    TH1D  *h_L1TL1SubLeadTauPt;
+    TH1D  *h_L1TL1ElectronPt;
+    TH1D  *h_L1TL1MuonPt;
+    TH1D  *h_L1TL1MET;
+    TH1D  *h_L1TL1LeadJetPt;
+    TH1D  *h_L1TL1LeadJetEta;
+    TH1D  *h_L1TL1LeadJetPhi;
+    TH1D  *h_L1TL1SubLeadJetPt;
+    TH1D  *h_L1TL1SubLeadJetEta;
+    TH1D  *h_L1TL1SubLeadJetPhi;
+    
 
   public:
 
-    L1VariableHistograms(std::string const& name, std::string output_name);
+    L1VariableHistograms(std::string const& name, std::string output_name, std::string output_folder);
     virtual ~L1VariableHistograms();
 
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
     virtual void PrintInfo();
+    
+    TFile *fLT1;
     
   };
 
