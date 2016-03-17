@@ -13,9 +13,6 @@ class HTTRun2RecoilCorrector : public ModuleBase {
  private:
  // std::string jets_label_;
   bool disable;
-  bool is_ztt;
-  bool is_wjets;
-  bool is_htt;
   RecoilCorrectorRun2 * corrector_;
   CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, met_label)
   CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, jets_label)
@@ -24,6 +21,7 @@ class HTTRun2RecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HTTRun2RecoilCorrector, ic::strategy, strategy)
   CLASS_MEMBER(HTTRun2RecoilCorrector, ic::mc, mc)
   CLASS_MEMBER(HTTRun2RecoilCorrector, ic::era, era)
+  CLASS_MEMBER(HTTRun2RecoilCorrector, bool, use_quantile_map)
 
 
 

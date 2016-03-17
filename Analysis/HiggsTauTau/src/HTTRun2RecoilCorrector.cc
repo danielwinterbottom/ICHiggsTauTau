@@ -16,6 +16,7 @@ namespace ic {
     met_label_ = "pfMVAMet";
     jets_label_ = "pfJetsPFlow";
     sample_ = "";
+    use_quantile_map_ = false;
     disable = true;
   }
 
@@ -107,7 +108,11 @@ namespace ic {
   double mvaMete = mvaMet->energy();
   double met_res_e = sqrt(mvaMete*mvaMete-mvaMetx*mvaMetx-mvaMety*mvaMety);//As we can only set pt/eta/phi/energy, not px or py
   float correctedMetx, correctedMety;
-  corrector_->Correct(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety);
+  if(!use_quantile_map_){
+    corrector_->CorrectByMeanResolution(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+  } else {
+    corrector_->Correct(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+  }
   //Now stick this back into our met object:
   mvaMet->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
   mvaMet->set_phi(atan2(correctedMety,correctedMetx));

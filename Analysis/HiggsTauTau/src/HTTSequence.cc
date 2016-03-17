@@ -864,7 +864,8 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      .set_mc(mc_type)
      .set_met_label(met_label)
      .set_jets_label(jets_label)
-     .set_strategy(strategy_type));
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(false));
   }
 
   if(js["metscale_mode"].asUInt() > 0  && !is_data ){
