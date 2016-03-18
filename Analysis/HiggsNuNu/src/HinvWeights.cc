@@ -704,7 +704,7 @@ namespace ic {//namespace
 	    <<" hasJetsInHF=" << hasJetsInHF
 	    <<std::endl;   */                                                                                         
 	  //SET TRIGGER WEIGHT                                                                                                                             
-	  if (do_trg_weights_) eventInfo->set_weight(("trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
+	  if (do_trg_weights_ && iErr==0) eventInfo->set_weight(("trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
 	  else eventInfo->set_weight(("!trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
 	}//loop on errors
       }//2D-1D

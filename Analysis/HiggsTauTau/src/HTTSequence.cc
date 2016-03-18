@@ -32,6 +32,7 @@
 #include "HiggsTauTau/interface/BTagCheck.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
+#include "HiggsTauTau/interface/HTTRun2RecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
 #include "HiggsTauTau/interface/HTTEMuMVA.h"
@@ -449,6 +450,10 @@ void HTTSequence::BuildSequence(){
   //		to_check.push_back(addit_to_check.at(j));
 	 // }
    } 
+ if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
+   std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
+   throw;
+ }
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
     .set_fs(fs.get()));
@@ -472,22 +477,23 @@ void HTTSequence::BuildSequence(){
 }
 
 
- if(output_name.find("WZJetsTo3LNu") != output_name.npos){ 
+ if(output_name.find("WZJetsTo3LNu") != output_name.npos && mc_type == mc::fall15_76X){ 
   BuildModule(GenericModule("lowGenMLLEventVeto")
    .set_function([](ic::TreeEvent *event){
-     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
+     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("lheParticles");
      std::vector<GenParticle *> sel_particles;
      for (unsigned i=0; i < particles.size(); ++i){
-        std::vector<bool> status_flags_start = particles[i]->statusFlags();
-        if ( ((particles[i]->pt()>8&& ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13))) ||(abs(particles[i]->pdgid())==15)) && (status_flags_start[IsPrompt]) ){
+       if(particles[i]->status() != 1) continue;
+       unsigned id = abs(particles[i]->pdgid());
+       if( id == 11 || id == 13 || id == 15){
         sel_particles.push_back(particles[i]);
       }
     }
     bool skip_evt=false;
     for(unsigned i = 0; i<sel_particles.size(); ++i){
       for(unsigned j = 0; j<i; ++j){
-        if(skip_evt==false){
-          if(((sel_particles[i]->vector()+sel_particles[j]->vector()).M() > 4) && (sel_particles[i]->vector()+sel_particles[j]->vector()).M() < 30) skip_evt=true;
+        if(skip_evt==false && sel_particles[i]->pdgid()==-sel_particles[j]->pdgid()){
+          if((sel_particles[i]->vector()+sel_particles[j]->vector()).M() < 30)  skip_evt=true;
         }
       }
     }
@@ -788,7 +794,7 @@ if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     jes_input_set  = "SubTotalMC";
   }
   if (era_type == era::data_2015) {
-    jes_input_file = "input/jec/Summer15_25nsV5_DATA_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall15_25nsV2_DATA_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
@@ -844,6 +850,17 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      //option to take met scale uncertainty from recoil corrector files - off for now as files have over-inflated uncertainties
      //.set_met_scale_mode(metscale_mode)
      .set_w_hack(true));
+  }
+
+ if(strategy_type == strategy::fall15){
+    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label(met_label)
+     .set_jets_label(jets_label)
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(false));
   }
 
   if(js["metscale_mode"].asUInt() > 0  && !is_data ){
@@ -1066,10 +1083,10 @@ BuildModule(svFitTest);
     if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
   }
 
-  if (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos){
-    httWeights.set_do_dy_soup(true);
-    httWeights.SetDYTargetFractions(0.696628989, 0.204582155, 0.067178037, 0.020549051, 0.011061768); //Target fractions are xs_n-jet/xs_inclusive
-    httWeights.SetDYInputYields(9004328.0,65314144.0 , 20019059.0, 5701878.0, 4189017.0);
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos) || output_name.find("DYJetsToLL_M-150-LO")!=output_name.npos){
+    httWeights.set_do_dy_soup_high_mass(true);
+    httWeights.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
+    httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);
   }
 
     BuildModule(httWeights);

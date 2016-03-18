@@ -165,7 +165,12 @@ def runBuild(gh_user, gh_token, pr, config, req_user, do_clean=False):
 
   # Query the github api for info on this PR
   auth = (gh_user, gh_token)
-  pr_req = requests.get('%s/repos/%s/pulls/%i' % (opts.api, opts.repo, pr), auth=auth)
+  try:
+    pr_req = requests.get('%s/repos/%s/pulls/%i' % (opts.api, opts.repo, pr), auth=auth)
+  except requests.exceptions.RequestException as e:
+    # bail out at this point
+    print e
+    return
   if not pr_req.status_code == 200:
     print '>> Something went wrong with the github API request, aborting'
     print DumpJson(pr_req.json())
@@ -199,7 +204,10 @@ def runBuild(gh_user, gh_token, pr, config, req_user, do_clean=False):
         'description' : 'Started by %s on %s' % (req_user, thedate),
         'context'     : task
       }
-      status_resp = requests.post(statuses_url, auth=auth, data=json.dumps(payload))
+      try:
+        status_resp = requests.post(statuses_url, auth=auth, data=json.dumps(payload))
+      except requests.exceptions.RequestException as e:
+        print e
 
   # Run the actual jobs
   for task in config.keys():
@@ -237,23 +245,30 @@ def runBuild(gh_user, gh_token, pr, config, req_user, do_clean=False):
           outlog: { 'content': open(outlog, 'r').read() }
         }
       }
-      gist_resp = requests.patch('%s/gists/%s' % (opts.api, opts.gist), auth=auth, data=json.dumps(gist_payload))
-      raw_url = gist_resp.json()['files'][outlog]['raw_url']
-      payload = {
-        'state'       : state,
-        'target_url'  : raw_url,
-        'description' : 'Task started by %s on %s' % (req_user, thedate),
-        'context'     : task
-      }
-      status_resp = requests.post(statuses_url, auth=auth, data=json.dumps(payload))
+      try:
+        gist_resp = requests.patch('%s/gists/%s' % (opts.api, opts.gist), auth=auth, data=json.dumps(gist_payload))
+        raw_url = gist_resp.json()['files'][outlog]['raw_url']
+        payload = {
+          'state'       : state,
+          'target_url'  : raw_url,
+          'description' : 'Task started by %s on %s' % (req_user, thedate),
+          'context'     : task
+        }
+        status_resp = requests.post(statuses_url, auth=auth, data=json.dumps(payload))
+      except requests.exceptions.RequestException as e:
+        print e
 
 # Check if there is a valid comment
 def pollGitHub(gh_user, gh_token, begin, end):
   # We have to convert epoch time -> UTC time struct -> UTC string
   since_stamp = time.strftime(opts.time_fmt, time.gmtime(begin))
   auth = (gh_user, gh_token)
-  comments_json = requests.get('%s/repos/%s/issues/comments?since=%s' % (opts.api, opts.repo, since_stamp), auth=auth).json()
   ret = set()
+  try:
+    comments_json = requests.get('%s/repos/%s/issues/comments?since=%s' % (opts.api, opts.repo, since_stamp), auth=auth).json()
+  except requests.exceptions.RequestException as e:
+    print e
+    return set()
   all_prs = set()
   trg = opts.trigger.lower().strip()
   trg_clean = trg + ' clean'
@@ -268,14 +283,22 @@ def pollGitHub(gh_user, gh_token, begin, end):
         clean = True
       if comment not in [trg, trg_clean]:
           continue
-      issue_json = requests.get(com['issue_url'], auth=auth).json()
+      try:
+        issue_json = requests.get(com['issue_url'], auth=auth).json()
+      except requests.exceptions.RequestException as e:
+        print e
+        return set()
       is_pr = 'pull_request' in issue_json
       if not is_pr:
           continue
       pr = issue_json['number']
       user = com['user']['login']
       print '>> Received a build request on PR #' + str(pr) + ' from user ' + user
-      chk_req = requests.get(opts.collaborators_url+'/'+user, auth=auth)
+      try:
+        chk_req = requests.get(opts.collaborators_url+'/'+user, auth=auth)
+      except requests.exceptions.RequestException as e:
+        print e
+        return set()
       if chk_req.status_code == 204:
           print '>> This user is a collaborator on the repo so we are safe to proceed'
       else:
@@ -291,6 +314,8 @@ if __name__ == "__main__":
     if opts.mode == 'single':
         runBuild(opts.gh_user, opts.gh_token, opts.pr, opts.config, opts.gh_user, opts.clean)
     if opts.mode == 'poll':
+        print 'Polling, PID is %i' % os.getpid()
+        sys.stdout.flush()
         # Initial time frame will be [now, now+interval]
         interval  = opts.interval
         t_start   = time.time()
