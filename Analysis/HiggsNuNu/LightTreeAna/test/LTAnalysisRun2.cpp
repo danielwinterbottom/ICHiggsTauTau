@@ -15,7 +15,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/HistPlotter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/SummaryTable.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/EventList.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi.h"
+//#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/BkgSubDataNormShape.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/program_options.hpp"
@@ -24,6 +24,25 @@
 
 namespace po=boost::program_options;
 using namespace ic;
+
+double deltaPhi(double phi1,double phi2)
+{
+  double result = phi1 - phi2;
+  while (result > TMath::Pi()) result -= 2*TMath::Pi();
+  while (result <= -TMath::Pi()) result += 2*TMath::Pi();
+  return result;
+};
+double deltaR(double eta1,double phi1,double eta2,double phi2)
+{
+  double deta = eta1 - eta2;
+  double dphi = deltaPhi(phi1, phi2);
+  return std::sqrt(deta*deta + dphi*dphi);
+};
+double deltaRmin(double eta1,double phi1,double eta2,double phi2,double eta3,double phi3)
+{
+  return std::min(deltaR(eta1,phi1,eta3,phi3),deltaR(eta2,phi2,eta3,phi3));
+};
+
 
 int main(int argc, char* argv[]){
   /*##########################################
@@ -65,7 +84,13 @@ int main(int argc, char* argv[]){
   std::string jetmetdphicut;
   std::string metsigcut;
 
+
+  std::string histTitlePar;
+  std::string shapePar;
+
   unsigned debug;
+
+  double lumiSF;
 
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
@@ -104,16 +129,32 @@ int main(int argc, char* argv[]){
     ("runblindreg",              po::value<bool>(&runblindreg)->default_value(true))
     ("debug",                    po::value<unsigned>(&debug)->default_value(0))
     ("do_mcbkg",                 po::value<bool>(&do_mcbkg)->default_value(true))
-    ("use_nlo",                 po::value<bool>(&use_nlo)->default_value(false))
+    ("use_nlo",                  po::value<bool>(&use_nlo)->default_value(false))
     ("jetmetdphicut",            po::value<std::string>(&jetmetdphicut)->default_value("alljetsmetnomu_mindphi>1.0"))
-    ("metsigcut",               po::value<std::string>(&metsigcut)->default_value(">4.0"))
-
-
+    ("metsigcut",                po::value<std::string>(&metsigcut)->default_value(">4.0"))
+    ("histTitlePar",             po::value<std::string>(&histTitlePar)->default_value(";#Delta#phi(E_{T}^{miss},j);Events"))
+    ("shapePar",                 po::value<std::string>(&shapePar)->default_value("alljetsmetnomu_mindphi(32,0.,3.1416)"))
+    ("lumiSF",                   po::value<double>(&lumiSF)->default_value(1.0))
     ;
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
+
+
+  std::vector<std::string> histTitle;
+  boost::split(histTitle, histTitlePar, boost::is_any_of("!"));
+  std::vector<std::string> shape;
+  boost::split(shape, shapePar, boost::is_any_of("!"));
+
+  std::cout << " -- input shape string: " << shapePar << std::endl;
+  std::cout << " -- Processing " << shape.size() << " shapes." << std::endl;
+  for (unsigned iS(0);iS<shape.size();++iS){
+    //shape[iS] = "\""+shape[iS]+"\"";
+    std::cout << shape[iS] << std::endl;
+    //histTitle[iS] = "\""+histTitle[iS]+"\"";
+  }
+
 
   /*##########################################
   #                                          #
@@ -129,7 +170,7 @@ int main(int argc, char* argv[]){
   analysis->SetEosFolders(eos_path_data,eos_path_mc);
 
   analysis->AddFiles(filelist);
-  if(syst!="PUUP"&&syst!="PUDOWN"&&syst.size()!=0){
+  if(syst!="PUUP"&&syst!="PUDOWN"&&syst.find("TRIG")==syst.npos&&syst.size()!=0){
     std::cout<<"Syst, taking input from: "<<inputfolder<<"/"<<syst<<std::endl;
     analysis->SetInFolder(inputfolder+"/"+syst);
   }
@@ -157,31 +198,29 @@ int main(int argc, char* argv[]){
   #                                          #
   ##########################################*/
 
-  std::vector<std::string> histTitle;
-  std::vector<std::string> shape;
 
-  if (debug) {
-    /*shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
-    shape.push_back("jet2_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
-    if(channel=="enu" || channel=="munu" || channel=="taunu") {
-      shape.push_back("lep_mt(30,0.,150.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
-    }
-    else if(channel=="mumu"){
-      shape.push_back("m_mumu(12,60.,120.)");histTitle.push_back(";m_{#mu#mu};Events");
-      }*/
+  /*  if (debug) {
+    //shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
+    //shape.push_back("jet2_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
+    //if(channel=="enu" || channel=="munu" || channel=="taunu") {
+    //  shape.push_back("lep_mt(30,0.,150.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
+   // }
+   // else if(channel=="mumu"){
+     // shape.push_back("m_mumu(12,60.,120.)");histTitle.push_back(";m_{#mu#mu};Events");
+      //}
     //shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
     shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
     shape.push_back("alljetsmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
 
-    /*if (channel=="munu"){
-      shape.push_back("metnomuons*pow(sqrt(sumet-mu1_pt),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
-    }
-    else if (channel=="mumu"){
-      shape.push_back("metnomuons*pow(sqrt(sumet-mu1_pt-mu2_pt),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
-    }
-    else {
-      shape.push_back("metnomuons*pow(sqrt(sumet),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
-      }*/
+    //if (channel=="munu"){
+      //shape.push_back("metnomuons*pow(sqrt(sumet-mu1_pt),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
+    //}
+    //else if (channel=="mumu"){
+      //shape.push_back("metnomuons*pow(sqrt(sumet-mu1_pt-mu2_pt),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
+    //}
+    //else {
+      //shape.push_back("metnomuons*pow(sqrt(sumet),-1)(30,0.,15.)");histTitle.push_back(";S;Events");
+      //}
   }
   else {
     if(channel=="enu" || channel=="munu" || channel=="taunu" || channel=="topl" || channel=="topb"){
@@ -284,7 +323,7 @@ int main(int argc, char* argv[]){
 
     //mindR(tau,tagjets)
     //shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);Events");
-  }
+  }*/
 
   std::string dataextrasel;
   std::string mcextrasel;
@@ -306,7 +345,7 @@ int main(int argc, char* argv[]){
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
   std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
   std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";
+  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
   std::string gammacat="ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
   std::string toplcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";
   std::string topbcat = "(nselmuons>=1 || nselelectrons>=1)&&(jet1_csv>0.679||jet2_csv>0.679)&&(forward_tag_eta>2.8||forward_tag_eta<-2.8)";
@@ -343,19 +382,24 @@ int main(int argc, char* argv[]){
   }
 
   std::string sigmcweight;
-  std::string mcweightpufactor="";
-  if(syst=="PUUP") mcweightpufactor="*puweight_up_scale";
-  if(syst=="PUDOWN") mcweightpufactor="*puweight_down_scale";
-  
-  if (syst=="TRIG0UP") mcweightpufactor="*weight_trig_1/weight_trig_0";
-  if (syst=="TRIG0DOWN") mcweightpufactor="*weight_trig_2/weight_trig_0";
-  if (syst=="TRIG1UP") mcweightpufactor="*weight_trig_3/weight_trig_0";
-  if (syst=="TRIG1DOWN") mcweightpufactor="*weight_trig_4/weight_trig_0";
-  if (syst=="TRIG2UP") mcweightpufactor="*weight_trig_5/weight_trig_0";
-  if (syst=="TRIG2DOWN") mcweightpufactor="*weight_trig_6/weight_trig_0";
+  std::string sig125mcweight;
+  //std::string mcweightpufactordebug="*1./(weight_trig_1*weight_trig_2*weight_trig_3*weight_trig_4*weight_trig_5*weight_trig_6)";
 
-  if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor;
-  else sigmcweight="total_weight_leptight"+mcweightpufactor;
+  std::ostringstream mcweightpufactor;
+  mcweightpufactor << "*" << lumiSF;
+  if(syst=="PUUP") mcweightpufactor << "*puweight_up_scale";
+  if(syst=="PUDOWN") mcweightpufactor << "*puweight_down_scale";
+  
+  if (syst=="TRIG0UP") mcweightpufactor<<"*weight_trig_1/weight_trig_0";
+  if (syst=="TRIG0DOWN") mcweightpufactor<<"*weight_trig_2/weight_trig_0";
+  if (syst=="TRIG1UP") mcweightpufactor<<"*weight_trig_3/weight_trig_0";
+  if (syst=="TRIG1DOWN") mcweightpufactor<<"*weight_trig_4/weight_trig_0";
+  if (syst=="TRIG2UP") mcweightpufactor<<"*weight_trig_5/weight_trig_0";
+  if (syst=="TRIG2DOWN") mcweightpufactor<<"*weight_trig_6/weight_trig_0";
+
+  if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor.str();//+mcweightpufactordebug;
+  else sigmcweight="total_weight_leptight"+mcweightpufactor.str();//+mcweightpufactordebug;
+  sig125mcweight="total_weight_lepveto"+mcweightpufactor.str();
 
   std::string bothcentral="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)<3";
   std::string bothforward="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)>=3";
@@ -386,7 +430,7 @@ int main(int argc, char* argv[]){
   signal125.set_dataset("VBFH125")
     .set_dirname("qqH125")
     .set_shape(shape)
-    .set_dataweight(sigmcweight)
+    .set_dataweight(sig125mcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);  
 
@@ -431,7 +475,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);
 
   DataShape signal600("signal600");
-  signal500.set_dataset("VBFH600")
+  signal600.set_dataset("VBFH600")
     .set_dirname("qqH600")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
@@ -921,14 +965,20 @@ int main(int argc, char* argv[]){
       elementvec.push_back(gjetsele);
     }
     if(channel!="mumu"){
-      elementvec.push_back(qcdwmunuele);
-      elementvec.push_back(qcdwenuele);
-      elementvec.push_back(qcdwtaunuele);
-      elementvec.push_back(ewkwmunuele);
-      elementvec.push_back(ewkwenuele);
-      elementvec.push_back(ewkwtaunuele);
+      if (channel!="enu" && channel!="taunu"){
+	elementvec.push_back(qcdwmunuele);
+	elementvec.push_back(ewkwmunuele);
+      }
+      if (channel!="munu" && channel!="taunu"){
+	elementvec.push_back(qcdwenuele);
+	elementvec.push_back(ewkwenuele);
+      }
+      if (channel!="enu" && channel!="munu"){
+	elementvec.push_back(qcdwtaunuele);
+	elementvec.push_back(ewkwtaunuele);
+      }
     } //else {
-    if(channel!="nunu") {
+    if(channel=="mumu") {
       elementvec.push_back(qcdzmumuele);
       elementvec.push_back(ewkzmumuele);
     }
@@ -936,10 +986,12 @@ int main(int argc, char* argv[]){
     elementvec.push_back(topele);
     elementvec.push_back(qcdele);
     elementvec.push_back(vvele);
-    if(channel!="mumu"&&channel!="enu"&&channel!="munu"&&channel!="taunu"){
+    if(channel!="mumu"&&channel!="enu"&&channel!="munu"){
+      if (channel!="taunu"){
+	elementvec.push_back(qcdznunuele);
+	elementvec.push_back(ewkznunuele);
+      }
       elementvec.push_back(sigele);
-      elementvec.push_back(qcdznunuele);
-      elementvec.push_back(ewkznunuele);
       elementvec.push_back(ggHele);
     }
   }

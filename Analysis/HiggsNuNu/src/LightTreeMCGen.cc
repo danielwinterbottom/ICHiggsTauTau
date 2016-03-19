@@ -16,7 +16,7 @@ namespace ic {
     //set vectors, do not reset later!!!
     //Used for setting branch addresses...
     nSave_ = 15;
-    nJetsSave_ = 2;
+    nJetsSave_ = 4;
 
     //initialise arrays fixed size
     pdgid_ = new int[nSave_];

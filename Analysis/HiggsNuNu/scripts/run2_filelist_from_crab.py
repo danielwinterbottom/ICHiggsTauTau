@@ -20,9 +20,9 @@ out,err = p.communicate()
 lines=out.splitlines()
 
 #open filelist with name of crabtask
+print "DEBUG: "+lines[0]
 linebits=lines[0].split("/")
 #linebits = filter(None, linebits)
-#print lines[0]
 for ele in linebits: print ele+" / "
 prodname=linebits[7]
 samplename=linebits[9][5:]

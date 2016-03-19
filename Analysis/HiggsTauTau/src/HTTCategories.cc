@@ -31,6 +31,7 @@ namespace ic {
       tau_id_study_=false;
       is_embedded_=false;
       is_data_=false;
+      qcd_study_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
@@ -113,6 +114,12 @@ namespace ic {
       outtree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2);
       outtree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1);
       outtree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2);
+      outtree_->Branch("mva_olddm_vloose_1",&lbyVLooseIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_vloose_2",&lbyVLooseIsolationMVArun2DBoldDMwLT_2);
+      outtree_->Branch("mva_olddm_loose_1",&lbyLooseIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_loose_2",&lbyLooseIsolationMVArun2DBoldDMwLT_2);
+      outtree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1);
       outtree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1);
@@ -241,6 +248,10 @@ namespace ic {
        outtree_->Branch("iso_mvapw_old_2",&lbyIsolationMVArun2PWoldDMwLTraw_2.var_double);
        outtree_->Branch("olddm_1",&ldecayModeFindingOldDMs_1);
        outtree_->Branch("olddm_2",&ldecayModeFindingOldDMs_2);
+      }
+      if(qcd_study_){
+        outtree_->Branch("jet_flav_1", &jet_flav_1_);
+        outtree_->Branch("jet_flav_2", &jet_flav_2_);
       }
 
       if(channel_ == channel::tpzmm || channel_ == channel::tpzee){
@@ -815,6 +826,7 @@ namespace ic {
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mets = event->GetPtr<Met>(met_label_);
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>(jets_label_+"UnFiltered");
     std::vector<PFJet*> corrected_jets;
     if(bjet_regression_) corrected_jets = event->GetPtrVec<PFJet>(jets_label_+"Corrected");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
@@ -1616,6 +1628,21 @@ namespace ic {
     n_prebjets_ = prebjets.size();
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
+
+    if(qcd_study_ && (channel_ == channel::mt || channel_ == channel::et)){
+      std::vector<Candidate *> leading_lepton;
+      std::vector<Candidate *> subleading_lepton;
+      leading_lepton.push_back(ditau->GetCandidate("lepton1"));
+      subleading_lepton.push_back(ditau->GetCandidate("lepton2")); 
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(uncleaned_jets, leading_lepton, 0.5, true, true);
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(uncleaned_jets, subleading_lepton, 0.5, true, true);
+      if(mu_matches.size() > 0) {
+          jet_flav_1_ = (mu_matches.at(0)).first->parton_flavour();
+      } else jet_flav_1_ = -9999;
+      if(tau_matches.size() > 0) {
+          jet_flav_2_ = (tau_matches.at(0)).first->parton_flavour();
+      } else jet_flav_2_ = -9999;
+    }
 
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();
