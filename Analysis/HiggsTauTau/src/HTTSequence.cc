@@ -814,33 +814,28 @@ if(strategy_type==strategy::fall15&&!is_data&&js["do_btag_eff"].asBool()){
 
 }
   
-if(!js["qcd_study"].asBool()){    
-  SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
-    .set_input_label(jets_label);
-    if(strategy_type == strategy::paper2013) {
-      jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
-    } else {
-      jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
-    }
-  BuildModule(jetIDFilter);
+ BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
+SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
+.set_input_label(jets_label);
+if(strategy_type == strategy::paper2013) {
+  jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
+} else {
+  jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
 }
+BuildModule(jetIDFilter);
 
 
-  BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
-
-if(!js["qcd_study"].asBool()){
-    if(channel != channel::wmnu) {
-      BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
-        .set_input_label(jets_label)
-        .set_reference_label("ditau")
-        .set_min_dr(0.5));
-    } else if (channel == channel::wmnu){
-      BuildModule(OverlapFilter<PFJet,Muon>("JetLeptonOverlapFilter")
-        .set_input_label(jets_label)
-        .set_reference_label("sel_muons")
-        .set_min_dr(0.5));
-    }
+if(channel != channel::wmnu) {
+  BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+    .set_input_label(jets_label)
+    .set_reference_label("ditau")
+    .set_min_dr(0.5));
+} else if (channel == channel::wmnu){
+  BuildModule(OverlapFilter<PFJet,Muon>("JetLeptonOverlapFilter")
+    .set_input_label(jets_label)
+    .set_reference_label("sel_muons")
+    .set_min_dr(0.5));
 }
 
 if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){

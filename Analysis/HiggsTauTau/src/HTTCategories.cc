@@ -825,6 +825,7 @@ namespace ic {
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mets = event->GetPtr<Met>(met_label_);
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>(jets_label_+"UnFiltered");
     std::vector<PFJet*> corrected_jets;
     if(bjet_regression_) corrected_jets = event->GetPtrVec<PFJet>(jets_label_+"Corrected");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
@@ -1628,8 +1629,8 @@ namespace ic {
       std::vector<Candidate *> subleading_lepton;
       leading_lepton.push_back(ditau->GetCandidate("lepton1"));
       subleading_lepton.push_back(ditau->GetCandidate("lepton2")); 
-      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(lowpt_jets, leading_lepton, 0.5, true, true);
-      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(lowpt_jets, subleading_lepton, 0.5, true, true);
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(uncleaned_jets, leading_lepton, 0.5, true, true);
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(uncleaned_jets, subleading_lepton, 0.5, true, true);
       if(mu_matches.size() > 0) {
           jet_flav_1_ = (mu_matches.at(0)).first->parton_flavour();
       } else jet_flav_1_ = -9999;
