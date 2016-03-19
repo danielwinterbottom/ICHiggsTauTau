@@ -25,6 +25,7 @@
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h"
+#include "UserCode/ICHiggsTauTau/interface/MultiDraw.hh"
 #include "DataFormats/Common/interface/Wrapper.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
