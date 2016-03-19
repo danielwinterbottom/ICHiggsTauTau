@@ -910,8 +910,7 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
 BuildModule(svFitTest);
 
 
-if(!is_data){
-
+if(strategy_type == strategy::fall15 && !is_data){
  TH2F bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
  TH2F cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
  TH2F othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
