@@ -4,9 +4,9 @@
     "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Mar05_MC_76X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","tt","em","mt"],
+    "channels":     ["mt","et","em","tt"],
     "sequences": {
-      "all":  []
+      "all":  ["default"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
 //      "mt":   ["scale_t_lo", "scale_t_hi"],
  //     "tt":   ["scale_t_lo", "scale_t_hi"],
@@ -21,7 +21,7 @@
     "strategy"      : "fall15",
     "is_data"       : false,
     "is_embedded"   : false,
-    "save_output_jsons": false,
+    "save_output_jsons": true,
     "make_sync_ntuple" : false,
     "iso_study" : false,
     "tau_id_study":false,
@@ -44,7 +44,7 @@
     "do_tau_eff"    : false,
     "output_folder" : "./output/Mar05/",
     //"output_folder" : "./output/July27_NewGolden/",
-    "output_name"   : "SUSYGluGluToBBHToTauTau_M-160",
+    "output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
@@ -68,7 +68,7 @@
       "tau_scale_mode"    : false,
       "jes_mode"          : 0,
       "btag_mode"         : 0,
-      "do_reshape"        : true,
+      "do_reshape"        : false,
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "elec_es_shift"     : 1.0,
@@ -169,15 +169,15 @@
     "scale_j_lo": {
       "baseline": {
         "addit_output_folder" : "JES_DOWN",
-        "jes_mode" : 1,
-        "btag_mode" : 4
+        "jes_mode" : 1/*,
+        "btag_mode" : 4*/
       }
     },
     "scale_j_hi": {
       "baseline": {
         "addit_output_folder" : "JES_UP",
-        "jes_mode" : 2,
-        "btag_mode" : 3
+        "jes_mode" : 2/*,
+        "btag_mode" : 3*/
       }
     },
     "scale_b_lo": {
