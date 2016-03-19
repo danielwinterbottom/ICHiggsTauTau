@@ -27,9 +27,9 @@ class BTagWeightRun2 : public ModuleBase {
    CLASS_MEMBER(BTagWeightRun2, bool, do_reshape)
    CLASS_MEMBER(BTagWeightRun2, unsigned, btag_mode) 
    CLASS_MEMBER(BTagWeightRun2, unsigned, bfake_mode)
-   //1 Up 2 Down (promote-demote) || 
-   //3 JES Up 4 Jes Down 5 LF UP 6 LFDown  7 HFUp 8 HFDown 9HFStats1Up 10 HFStats1Down 11 HFStats2Up 12 HFStats2Down 13 LFStats1Up 14 LFStats1Down 
-   //15 LFStats2Up 16 LFStats2Down 17 CFErrIUp 18CFErr1Down 19 CFErr2Up 20 CFerr2Down
+   //1 Down 2 Up (promote-demote) || 
+   //3 JES Down 4 Jes Up 5 LF Down 6 LF Up  7 HF down 8 HFUp 9HFStats1Down 10 HFStats1Up 11 HFStats2Down 12 HFStats2Up 13 LFStats1Down 14 LFStats1Up 
+   //15 LFStats2Down 16 LFStats2Up 17 CFErrIDown 18CFErr1Up 19 CFErr2Down 20 CFerr2Up
 
   TRandom3  *rand;
   BTagCalibration* calib;

@@ -82,53 +82,53 @@ namespace ic {
       unsigned jet_flavour = jets[i]->hadron_flavour();
       double pt = jets[i]->pt();
       if(jet_flavour == 5){
-          if(btag_mode == 3){
+          if(btag_mode == 4){
            sf = reader_jesup->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
-          } else if(btag_mode == 4){
+          } else if(btag_mode == 3){
            sf = reader_jesdown->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
-          } else if (btag_mode == 5){
-           sf = reader_lfup->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 6){
+           sf = reader_lfup->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+          } else if (btag_mode == 5){
            sf = reader_lfdown->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
-          } else if (btag_mode == 9){
+          } else if (btag_mode == 10){
            sf = reader_hfstats1up->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
-          } else if (btag_mode == 10 ){
+          } else if (btag_mode == 9 ){
            sf = reader_hfstats1down->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
-          } else if (btag_mode == 11){
-           sf = reader_hfstats2up->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 12){
+           sf = reader_hfstats2up->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+          } else if (btag_mode == 11){
            sf = reader_hfstats2down->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else {
            sf = reader_iterativefit->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
           }
         } else if(jet_flavour == 4){
-          if(btag_mode == 17){
+          if(btag_mode == 18){
            sf = reader_cferr1up->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
-          } else if(btag_mode == 18){
+          } else if(btag_mode == 17){
            sf = reader_cferr1down->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
-          } else if (btag_mode == 19){
-           sf = reader_cferr2up->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else if (btag_mode == 20){
+           sf = reader_cferr2up->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
+          } else if (btag_mode == 19){
            sf = reader_cferr2down->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else {
             sf = 1; 
           }
         } else {
-          if(btag_mode == 3){
+          if(btag_mode == 4){
            sf = reader_jesup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
-          } else if (btag_mode == 4 ){
+          } else if (btag_mode == 3 ){
            sf = reader_jesdown->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
-          } else if (btag_mode == 7){
-           sf = reader_hfup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 8){
+           sf = reader_hfup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+          } else if (btag_mode == 7){
            sf = reader_hfdown->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
-          } else if (btag_mode == 13){
-           sf = reader_lfstats1up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 14){
+           sf = reader_lfstats1up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+          } else if (btag_mode == 13){
            sf = reader_lfstats1down->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
-          } else if (btag_mode == 15){
-           sf = reader_lfstats2up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 16){
+           sf = reader_lfstats2up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+          } else if (btag_mode == 15){
            sf = reader_lfstats2down->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else{
            sf = reader_iterativefit->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
@@ -147,26 +147,20 @@ namespace ic {
     unsigned jet_flavour = 0;
     double sf=0;
     double sub_sf=0;
-//    double use_pt=0;
     for (unsigned i = 0; i < jets.size(); ++i) {
       rand->SetSeed((int)((jets[i]->eta()+5)*100000));
       eta = jets[i]->eta();
       pt = jets[i]->pt();
       jet_flavour = jets[i]->hadron_flavour();
-/*      if(jet_flavour == 4|| jet_flavour==5){
-        use_pt = max(30, min(pt, 670)); 
-      } else {
-        use_pt = max(20, min(pt, 1000));
-      }*/
       double eff = GetEff(jet_flavour,pt, fabs(eta));
       //Stupid implementation, need to fix
       if(jet_flavour == 5){
         if(pt > 670){
-          if(btag_mode == 1){ //Need to double the uncertainty
+          if(btag_mode == 2){ //Need to double the uncertainty
            sf = reader_mujetsup->eval(BTagEntry::FLAV_B, eta, 670);
            sub_sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 670);
            sf = 2*(sf-sub_sf)+sub_sf;
-          } else if(btag_mode == 2){
+          } else if(btag_mode == 1){
            sf = reader_mujetsdown->eval(BTagEntry::FLAV_B, eta, 670);
            sub_sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 670);
            sf = 2*(sf-sub_sf)+sub_sf;
@@ -174,11 +168,11 @@ namespace ic {
             sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 670);
           }
          } else if (pt < 30){
-          if(btag_mode == 1){ //Need to double the uncertainty
+          if(btag_mode == 2){ //Need to double the uncertainty
            sf = reader_mujetsup->eval(BTagEntry::FLAV_B, eta, 30);
            sub_sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 30);
            sf = 2*(sf-sub_sf)+sub_sf;
-          } else if(btag_mode == 2){
+          } else if(btag_mode == 1){
            sf = reader_mujetsdown->eval(BTagEntry::FLAV_B, eta, 30);
            sub_sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 30);
            sf = 2*(sf-sub_sf)+sub_sf;
@@ -186,9 +180,9 @@ namespace ic {
            sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 30);
           }
          } else{
-          if(btag_mode == 1){ 
+          if(btag_mode == 2){ 
            sf = reader_mujetsup->eval(BTagEntry::FLAV_B, eta, pt);
-          } else if(btag_mode == 2){
+          } else if(btag_mode == 1){
            sf = reader_mujetsdown->eval(BTagEntry::FLAV_B, eta, pt);
           } else {
            sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, pt);
@@ -196,11 +190,11 @@ namespace ic {
          }
         } else if(jet_flavour == 4){
          if (pt > 670){
-          if(btag_mode == 1){ //Need to double the uncertainty
+          if(btag_mode == 2){ //Need to double the uncertainty
            sf = reader_mujetsup->eval(BTagEntry::FLAV_C, eta, 670);
            sub_sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 670);
            sf = 2*(sf-sub_sf)+sub_sf;
-          } else if(btag_mode == 2){
+          } else if(btag_mode == 1){
            sf = reader_mujetsdown->eval(BTagEntry::FLAV_C, eta, 670);
            sub_sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 670);
            sf = 2*(sf-sub_sf)+sub_sf;
@@ -208,11 +202,11 @@ namespace ic {
             sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 670);
           }
          } else if(pt<30){
-          if(btag_mode == 1){ //Need to double the uncertainty
+          if(btag_mode == 2){ //Need to double the uncertainty
            sf = reader_mujetsup->eval(BTagEntry::FLAV_C, eta, 30);
            sub_sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 30);
            sf = 2*(sf-sub_sf)+sub_sf;
-          } else if(btag_mode == 2){
+          } else if(btag_mode == 1){
            sf = reader_mujetsdown->eval(BTagEntry::FLAV_C, eta, 30);
            sub_sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 30);
            sf = 2*(sf-sub_sf)+sub_sf;
@@ -220,9 +214,9 @@ namespace ic {
             sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 30);
           }
         } else{
-          if(btag_mode == 1){ 
+          if(btag_mode == 2){ 
            sf = reader_mujetsup->eval(BTagEntry::FLAV_C, eta, pt);
-          } else if(btag_mode == 2){
+          } else if(btag_mode == 1){
            sf = reader_mujetsdown->eval(BTagEntry::FLAV_C, eta, pt);
           } else {
            sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, pt);
@@ -230,11 +224,11 @@ namespace ic {
        }
       } else {
          if (pt > 1000){
-           if(bfake_mode == 1){
+           if(bfake_mode == 2){
              sf = reader_inclup->eval(BTagEntry::FLAV_UDSG, eta, 1000);
              sub_sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, 1000);
              sf = 2*(sf-sub_sf)+sub_sf;
-           } else if(bfake_mode ==2 ){
+           } else if(bfake_mode ==1 ){
              sf = reader_incldown->eval(BTagEntry::FLAV_UDSG, eta, 1000);
              sub_sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, 1000);
              sf = 2*(sf-sub_sf)+sub_sf;
@@ -242,9 +236,9 @@ namespace ic {
             sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, 1000);
            }
           } else {
-           if(bfake_mode == 1){
+           if(bfake_mode == 2){
             sf = reader_inclup->eval(BTagEntry::FLAV_UDSG, eta, pt);
-           } else if(bfake_mode == 2){
+           } else if(bfake_mode == 1){
             sf = reader_incldown->eval(BTagEntry::FLAV_UDSG, eta, pt);
            } else{
              sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, pt);
