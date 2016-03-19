@@ -912,9 +912,9 @@ BuildModule(svFitTest);
 
 if(!is_data){
 
- TH2F bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/btag_efficiencies.root","/","bbtag_eff");
- TH2F cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/btag_efficiencies.root","/","cbtag_eff");
- TH2F othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/btag_efficiencies.root","/","othbtag_eff");
+ TH2F bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
+ TH2F cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
+ TH2F othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
 BuildModule(BTagWeightRun2("BTagWeightRun2")
    .set_jet_label(jets_label)
    .set_bbtag_eff(new TH2F(bbtag_eff))
