@@ -374,8 +374,8 @@ int main(int argc, char* argv[]){
 		systematics.push_back(make_pair("/CFERR1_UP", syst_eff_b_cferr1+"Up"));
 	}
 	if (syst_eff_b_cferr2 != "") {
-		systematics.push_back(make_pair("/LFSTATS2_DOWN", syst_eff_b_cferr2+"Down"));
-		systematics.push_back(make_pair("/LFSTATS2_UP", syst_eff_b_cferr2+"Up"));
+		systematics.push_back(make_pair("/CFERR2_DOWN", syst_eff_b_cferr2+"Down"));
+		systematics.push_back(make_pair("/CFERR2_UP", syst_eff_b_cferr2+"Up"));
 	}
 	if (syst_fake_b != "") {
 		systematics.push_back(make_pair("/BFAKE_DOWN", syst_fake_b+"Down"));
