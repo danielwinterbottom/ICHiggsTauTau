@@ -777,11 +777,20 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     .set_ditau_label("ditau"));
 }
 
-if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
+if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
     .set_fs(fs.get())
     .set_channel(channel)
     .set_do_legacy(true)
+    .set_jet_label(jets_label));
+}
+
+
+if(strategy_type==strategy::fall15&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_do_legacy(false)
     .set_jet_label(jets_label));
 }
 
