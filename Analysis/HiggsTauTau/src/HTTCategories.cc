@@ -61,6 +61,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
+      outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",              &mt_sv_.var_double);
@@ -866,6 +867,10 @@ namespace ic {
       ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
     } 
     
+    //Compare with btag shape reweighting:
+    if(event->Exists("btag_evt_weight")){
+     wt_btag_ = event->Get<double>("btag_evt_weight");
+    } 
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
     // for each new event

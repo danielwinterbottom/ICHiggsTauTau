@@ -33,6 +33,14 @@ int main(int argc, char* argv[]){
     string tau_es_scales_str;
 	string syst_met_scale;
 	string syst_eff_b;
+	string syst_eff_b_hf;
+	string syst_eff_b_hfstats1;
+	string syst_eff_b_hfstats2;
+	string syst_eff_b_lfstats2;
+	string syst_eff_b_lfstats1;
+	string syst_eff_b_lf;
+	string syst_eff_b_cferr1;
+	string syst_eff_b_cferr2;
 	string syst_fake_b;
 	string syst_scale_j;
 	string syst_qcd_shape;
@@ -90,6 +98,14 @@ int main(int argc, char* argv[]){
 	  ("no_central", 	          po::value<bool>(&no_central)->default_value(false))
 	  ("syst_met_scale",          po::value<string>(&syst_met_scale)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
+	  ("syst_eff_b_hf",    		    po::value<string>(&syst_eff_b_hf)->default_value(""))
+	  ("syst_eff_b_hfstats1",     po::value<string>(&syst_eff_b_hfstats1)->default_value(""))
+	  ("syst_eff_b_hfstats2",     po::value<string>(&syst_eff_b_hfstats2)->default_value(""))
+	  ("syst_eff_b_lf",    		    po::value<string>(&syst_eff_b_lf)->default_value(""))
+	  ("syst_eff_b_cferr1", 	    po::value<string>(&syst_eff_b_cferr1)->default_value(""))
+	  ("syst_eff_b_cferr2", 	    po::value<string>(&syst_eff_b_cferr2)->default_value(""))
+	  ("syst_eff_b_lfstats1",     po::value<string>(&syst_eff_b_lfstats1)->default_value(""))
+	  ("syst_eff_b_lfstats2",     po::value<string>(&syst_eff_b_lfstats2)->default_value(""))
 	  ("syst_eff_t",      		    po::value<string>(&syst_eff_t)->default_value(""))
 	  ("syst_fake_b",      		    po::value<string>(&syst_fake_b)->default_value(""))
 	  ("syst_scale_j",            po::value<string>(&syst_scale_j)->default_value(""))
@@ -328,6 +344,38 @@ int main(int argc, char* argv[]){
 	if (syst_eff_b != "") {
 		systematics.push_back(make_pair("/BTAG_DOWN", syst_eff_b+"Down"));
 		systematics.push_back(make_pair("/BTAG_UP", syst_eff_b+"Up"));
+	}
+	if (syst_eff_b_hf != "") {
+		systematics.push_back(make_pair("/HF_DOWN", syst_eff_b_hf+"Down"));
+		systematics.push_back(make_pair("/HF_UP", syst_eff_b_hf+"Up"));
+	}
+	if (syst_eff_b_hfstats1 != "") {
+		systematics.push_back(make_pair("/HFSTATS1_DOWN", syst_eff_b_hfstats1+"Down"));
+		systematics.push_back(make_pair("/HFSTATS1_UP", syst_eff_b_hfstats1+"Up"));
+	}
+	if (syst_eff_b_hfstats2 != "") {
+		systematics.push_back(make_pair("/HFSTATS2_DOWN", syst_eff_b_hfstats2+"Down"));
+		systematics.push_back(make_pair("/HFSTATS2_UP", syst_eff_b_hfstats2+"Up"));
+	}
+	if (syst_eff_b_lf != "") {
+		systematics.push_back(make_pair("/LF_DOWN", syst_eff_b_lf+"Down"));
+		systematics.push_back(make_pair("/LF_UP", syst_eff_b_lf+"Up"));
+	}
+	if (syst_eff_b_lfstats1 != "") {
+		systematics.push_back(make_pair("/LFSTATS1_DOWN", syst_eff_b_lfstats1+"Down"));
+		systematics.push_back(make_pair("/LFSTATS1_UP", syst_eff_b_lfstats1+"Up"));
+	}
+	if (syst_eff_b_lfstats2 != "") {
+		systematics.push_back(make_pair("/LFSTATS2_DOWN", syst_eff_b_lfstats2+"Down"));
+		systematics.push_back(make_pair("/LFSTATS2_UP", syst_eff_b_lfstats2+"Up"));
+	}
+	if (syst_eff_b_cferr1 != "") {
+		systematics.push_back(make_pair("/CFERR1_DOWN", syst_eff_b_cferr1+"Down"));
+		systematics.push_back(make_pair("/CFERR1_UP", syst_eff_b_cferr1+"Up"));
+	}
+	if (syst_eff_b_cferr2 != "") {
+		systematics.push_back(make_pair("/CFERR2_DOWN", syst_eff_b_cferr2+"Down"));
+		systematics.push_back(make_pair("/CFERR2_UP", syst_eff_b_cferr2+"Up"));
 	}
 	if (syst_fake_b != "") {
 		systematics.push_back(make_pair("/BFAKE_DOWN", syst_fake_b+"Down"));

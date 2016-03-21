@@ -382,7 +382,7 @@ namespace ic {
     }
     
     
-    if (do_btag_weight_) {
+    if (do_btag_weight_ && mc_!=mc::fall15_76X) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
       //double no_btag_weight = btag_weight.GetWeight(jets, "CSVM", 0, 0, is_2012_);
@@ -396,6 +396,11 @@ namespace ic {
       event->Add("inclusive_btag_weight", inclusive_btag_weight);
       event->Add("retag_result", retag_result);
     }
+   
+    if(event->Exists("btag_evt_weight")){
+       double wtbtag = event->Get<double>("btag_evt_weight");
+       weight *= wtbtag;
+     } 
 
     if (do_trg_weights_) {
       if (channel_ == channel::et) {
