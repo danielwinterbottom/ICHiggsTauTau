@@ -65,20 +65,6 @@ std::vector<CompositeCandidate*> & CompositeProducer(
   return event->GetPtrVec<CompositeCandidate>(output);
 }
 
-template <class Container, class Pred>
-Container copy_keep_if(Container& target, Pred pred) {
-  Container res = target;
-  keep_if(res, pred);
-  return res;
-}
-
-template <class Container, class Pred>
-Container& keep_if(Container& target, Pred pred) {
-  return boost::remove_erase_if(target, [&](typename Container::value_type const& x) {
-    return !pred(x);
-  });
-}
-
 class HTTPairStudy : public ModuleBase {
  private:
   CLASS_MEMBER(HTTPairStudy, ic::channel, channel)

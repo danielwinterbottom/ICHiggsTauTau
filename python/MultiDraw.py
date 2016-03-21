@@ -3,26 +3,26 @@
 This script injects a MultiDraw method into TTree when it is imported.
 """
 
-from ROOT import gROOT, gDirectory, TObject, TTree, TObjArray, TTreeFormula,\
-    TH1D, SetOwnership, TTreeFormulaManager, gSystem
-gSystem.Load('libUserCodeICHiggsTauTau')
+import ROOT
+# import re
+ROOT.gSystem.Load('libUserCodeICHiggsTauTau')
 
 
-def MakeTObjArray(theList):
+def MakeTObjArray(theList, takeOwnership=True):
     """Turn a python iterable into a ROOT TObjArray"""
 
-    result = TObjArray()
-    result.SetOwner()
+    result = ROOT.TObjArray()
+    if takeOwnership:
+        result.SetOwner()
 
     # Make PyROOT give up ownership of the things that are being placed in the
     # TObjArary. They get deleted because of result.SetOwner()
     for item in theList:
-        SetOwnership(item, False)
+        if takeOwnership:
+            ROOT.SetOwnership(item, False)
         result.Add(item)
 
     return result
-
-import re
 
 
 def MultiDraw(self, Formulae, CommonWeight="1"):
@@ -57,7 +57,7 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
     lastFormula, lastWeight = None, None
 
     # A weight common to everything being drawn
-    CommonWeightFormula = TTreeFormula("CommonWeight", CommonWeight, self)
+    CommonWeightFormula = ROOT.TTreeFormula("CommonWeight", CommonWeight, self)
     CommonWeightFormula.SetQuickLoad(True)
     if not CommonWeightFormula.GetTree():
         raise RuntimeError("TTreeFormula didn't compile: " + CommonWeight)
@@ -77,40 +77,55 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
         # print origFormula, weight
 
         # Pluck out histogram name and arguments
-        match = re.match(r"^(.*?)\s*>>\s*(.*?)\s*\(\s*(.*?)\s*\)$", origFormula)
-        if match:
+        # match = re.match(r"^(.*?)\s*>>\s*(.*?)\s*\(\s*(.*?)\s*\)$", origFormula)
+        # if match:
 
-            formula, name, arguments = match.groups()
-            arguments = re.split(",\s*", arguments)
+        #     formula, name, arguments = match.groups()
+        #     arguments = re.split(",\s*", arguments)
 
-            bins, minX, maxX = arguments
-            bins, minX, maxX = int(bins), float(minX), float(maxX)
+        #     bins, minX, maxX = arguments
+        #     bins, minX, maxX = int(bins), float(minX), float(maxX)
 
-            # Create histogram with name and arguments
-            hist = TH1D(name, name, bins, minX, maxX)
-            hist.Sumw2()
-        else:
-            # without arguments
-            match = re.match(r"^(.*?)\s*>>\s*(.*?)\s*$", origFormula)
-            if not match:
-                raise RuntimeError(
-                    "MultiDraw: Couldn't parse formula: '%s'" % origFormula)
+        #     # Create histogram with name and arguments
+        #     hist = TH1D(name, name, bins, minX, maxX)
+        #     hist.Sumw2()
+        # else:
+        #     # without arguments
+        #     match = re.match(r"^(.*?)\s*>>\s*(.*?)\s*$", origFormula)
+        #     if not match:
+        #         raise RuntimeError(
+        #             "MultiDraw: Couldn't parse formula: '%s'" % origFormula)
 
-            formula, name = match.groups()
-            # print formula, name
+        #     formula, name = match.groups()
+        #     # print formula, name
 
-            if name.startswith("+") and name[1:] in hists:
-                # Drawing additionally into a histogram
-                hist = hists[name[1:]]
-            else:
-                name = name[1:]
-                hist = gDirectory.Get(name)
-                if not hist:
-                    raise RuntimeError(
-                        "MultiDraw: Couldn't find histogram to fill '%s' in current directory." % name)
+        #     if name.startswith("+") and name[1:] in hists:
+        #         # Drawing additionally into a histogram
+        #         hist = hists[name[1:]]
+        #     else:
+        #         name = name[1:]
+        #         hist = gDirectory.Get(name)
+        #         if not hist:
+        #             raise RuntimeError(
+        #                 "MultiDraw: Couldn't find histogram to fill '%s' in current directory." % name)
 
-        if name not in hists:
-            hists[name] = hist
+        # if name not in hists:
+        #     hists[name] = hist
+
+        # Our way is simpler, require each variable to end in (...) or [...] to give the binning
+        # and always create a new hist
+        pos_open = origFormula.rfind('(')
+        pos_close = origFormula.rfind(')')
+        if pos_open is -1 or pos_close is -1 or pos_open > pos_close:
+            raise RuntimeError('You bus')
+        str_binning = [x.strip() for x in origFormula[pos_open+1:pos_close].split(',')]
+        binning = []
+        if len(str_binning) == 3:
+            binning = [int(str_binning[0]), float(str_binning[1]), float(str_binning[2])]
+        formula = origFormula[:pos_open].strip()
+        print binning
+        ROOT.TH1.AddDirectory(False)
+        hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *binning)
 
         results.append(hist)
 
@@ -121,22 +136,22 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
         # values
 
         if formula != lastFormula:
-            f = TTreeFormula("formula%i" % i, formula, self)
+            f = ROOT.TTreeFormula("formula%i" % i, formula, self)
             if not f.GetTree():
                 raise RuntimeError("TTreeFormula didn't compile: " + formula)
             f.SetQuickLoad(True)
             formulae.append(f)
         else:
-            formulae.append(TObject())
+            formulae.append(ROOT.TObject())
 
         if weight != lastWeight:
-            f = TTreeFormula("weight%i" % i, weight, self)
+            f = ROOT.TTreeFormula("weight%i" % i, weight, self)
             if not f.GetTree():
                 raise RuntimeError("TTreeFormula didn't compile: " + formula)
             f.SetQuickLoad(True)
             weights.append(f)
         else:
-            weights.append(TObject())
+            weights.append(ROOT.TObject())
 
         lastFormula, lastWeight = formula, weight
 
@@ -146,9 +161,9 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
     start = time()
 
     # Ensure that formulae are told when tree changes
-    fManager = TTreeFormulaManager()
+    fManager = ROOT.TTreeFormulaManager()
     for formula in formulae + weights + [CommonWeightFormula, ]:
-        if type(formula) == TTreeFormula:
+        if type(formula) == ROOT.TTreeFormula:
             fManager.Add(formula)
 
     fManager.Sync()
@@ -158,11 +173,11 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
     _MultiDraw(self, CommonWeightFormula,
                MakeTObjArray(formulae),
                MakeTObjArray(weights),
-               MakeTObjArray(results),
+               MakeTObjArray(results, takeOwnership=False),
                len(Formulae))
 
     print "Took %.2fs" % (time() - start), " " * 20
 
     return results
 
-TTree.MultiDraw = MultiDraw
+ROOT.TTree.MultiDraw = MultiDraw
