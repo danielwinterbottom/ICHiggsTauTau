@@ -63,11 +63,104 @@ namespace ic {
     unsigned n_l1muons_;
     unsigned n_l1taus_;
     
+    TH1D *h_mu_Mu_Efficiency;
+    TH1D *h_mu_Total;
+    TH1D *h_mu_Mu_PtDiff;
+    TH1D *h_mu_Mu_PtRes;
+    TH1D *h_mu_Mu_DeltaRRes;
+    
     TH1D *h_e_EG_Efficiency;
+    TH1D *h_e_IsoEG_Efficiency;
     TH1D *h_e_Total;
     TH1D *h_e_Tau_Efficiency;
     TH1D *h_e_IsoTau_Efficiency;
+    TH1D *h_e_NonIsoTau_Efficiency;
     TH1D *h_e_Jet_Efficiency;
+    TH1D *h_e_EG_PtRes;
+    TH1D *h_e_EG_DeltaRRes;
+    TH1D *h_e_EG_PtDiff;
+
+    TH1D *h_tau_EG_Efficiency;
+    TH1D *h_tau_IsoEG_Efficiency;
+    TH1D *h_tau_Total;
+    TH1D *h_tau_Tau_Efficiency;
+    TH1D *h_tau_Mu_Efficiency;
+    TH1D *h_tau_NonIsoTau_Efficiency;
+    TH1D *h_tau_IsoTau_Efficiency;
+    TH1D *h_tau_Jet_Efficiency;
+    TH1D *h_tau_Tau_PtRes;
+    TH1D *h_tau_IsoTau_PtRes;
+    TH1D *h_tau_Tau_PtDiff;
+    TH1D *h_tau_IsoTau_PtDiff;
+    TH1D *h_tau_Tau_DeltaRRes;
+    TH1D *h_tau_IsoTau_DeltaRRes;
+    TH1D *h_tautau_DeltaR;
+    
+    TH1D *h_jet_EG_Efficiency;
+    TH1D *h_jet_IsoEG_Efficiency;
+    TH1D *h_jet_Total;
+    TH1D *h_jet_Tau_Efficiency;
+    TH1D *h_jet_Mu_Efficiency;
+    TH1D *h_jet_NonIsoTau_Efficiency;
+    TH1D *h_jet_IsoTau_Efficiency;
+    TH1D *h_jet_Jet_Efficiency;
+    TH1D *h_jet_Jet_PtRes;
+    TH1D *h_jet_Jet_DeltaRRes;
+    TH1D *h_jet_Jet_PtDiff;
+    
+    TH1D *h_jetjet_Mjj_Efficiency;
+    TH1D *h_jetjet_Mjj_Total;
+    TH1D *h_jetjet_DeltaEta_Efficiency;
+    TH1D *h_jetjet_DeltaEta_Total;
+    
+    TH1D *h_tauJetComp;
+    TH1D *h_l1tauJetComp;
+    
+    TH1D *h_gentau_total;
+    TH1D *h_gentau_Tau;
+    TH1D *h_gentau_IsoTau;
+    TH1D *h_gentau_Jet;
+    TH1D *h_gentau_EG;
+    TH1D *h_gentau_IsoEG;
+    TH1D *h_gentau_IsoTauIsoEG;
+    TH1D *h_gentau_TauEG;
+    TH1D *h_gentau_IsoTauJet;
+    TH1D *h_gentau_TauJet;
+    TH1D *h_gentau_IsoTauIsoEGJet;
+    TH1D *h_gentau_TauEGJet;
+    
+    TH1D *h_genelectron_total;
+    TH1D *h_genelectron_Tau;
+    TH1D *h_genelectron_IsoTau;
+    TH1D *h_genelectron_Jet;
+    TH1D *h_genelectron_EG;
+    TH1D *h_genelectron_IsoEG;
+    TH1D *h_genelectron_IsoTauIsoEG;
+    TH1D *h_genelectron_TauEG;
+    TH1D *h_genelectron_IsoTauJet;
+    TH1D *h_genelectron_TauJet;
+    TH1D *h_genelectron_IsoTauIsoEGJet;
+    TH1D *h_genelectron_TauEGJet;
+    
+    TH1D *h_Mjj_em;
+    TH1D *h_Mjj_et;
+    TH1D *h_Mjj_mt;
+    TH1D *h_Mjj_tt;
+    
+    TH1D *h_DeltaEta_em;
+    TH1D *h_DeltaEta_et;
+    TH1D *h_DeltaEta_mt;
+    TH1D *h_DeltaEta_tt;
+    
+    TH1D *h_jet1_em;
+    TH1D *h_jet1_et;
+    TH1D *h_jet1_mt;
+    TH1D *h_jet1_tt;
+    
+    TH1D *h_jet2_em;
+    TH1D *h_jet2_et;
+    TH1D *h_jet2_mt;
+    TH1D *h_jet2_tt;
 
 
   public:
