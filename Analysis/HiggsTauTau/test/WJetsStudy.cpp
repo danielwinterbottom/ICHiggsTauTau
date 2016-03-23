@@ -30,7 +30,8 @@ int main(int argc, char* argv[]) {
 
   auto wjets_module = ic::WJetsStudy("WJetsStudy")
     .set_fs(fs)
-    .set_genparticle_label("genParticles");
+    .set_genparticle_label("genParticles")
+    .set_sample_name(js.get("sample_name", std::string("")).asString());
 
 
   analysis.AddModule(&wjets_module);

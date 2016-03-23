@@ -71,12 +71,16 @@ class WJetsStudy : public ModuleBase {
   // CLASS_MEMBER(WJetsStudy, ic::channel, channel)
   CLASS_MEMBER(WJetsStudy, fwlite::TFileService*, fs)
   CLASS_MEMBER(WJetsStudy, std::string, genparticle_label)
+  CLASS_MEMBER(WJetsStudy, std::string, sample_name)
 
   TTree * tree_;
   CandidateTreeVars lepton_;
   WeightSetVars scale_wts_;
+  WeightSetVars pdf_wts_;
   float mt_1_ = 0;
   float wt_ = 1.0;
+  unsigned n_jets_ = 0;
+  bool do_lhe_weights_ = true;
 
 
  public:

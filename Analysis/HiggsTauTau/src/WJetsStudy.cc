@@ -18,11 +18,21 @@ WJetsStudy::~WJetsStudy() { ; }
 
 int WJetsStudy::PreAnalysis() {
   if (fs_) {
-    tree_ = fs_->make<TTree>("qcdstudy", "qcdstudy");
+    tree_ = fs_->make<TTree>("wjetsstudy", "wjetsstudy");
     lepton_.SetTree(tree_, "", "_1");
-    scale_wts_.SetTree(tree_, 1001, 1009, "scale_wt_", "");
+    if (sample_name_ == "WJetsToLNuNLO") {
+      scale_wts_.SetTree(tree_, 1001, 1009, "scale_wt_", "");
+      pdf_wts_.SetTree(tree_, 2001, 2102, "pdf_wt_", "");
+    } else if (sample_name_ == "WJetsToLNuLO") {
+      scale_wts_.SetTree(tree_, 1, 9, "scale_wt_", "");
+      pdf_wts_.SetTree(tree_, 10, 110, "pdf_wt_", "");
+    } else {
+      std::cout << "[WJetsStudy] Warning, sample_name was not recognised, LHE weights will not be saved\n";
+      do_lhe_weights_ = false;
+    }
     tree_->Branch("mt_1", &mt_1_);
     tree_->Branch("wt", &wt_);
+    tree_->Branch("n_jets", &n_jets_);
   }
   return 0;
 }
@@ -68,7 +78,22 @@ int WJetsStudy::Execute(TreeEvent* event) {
   auto info = event->GetPtr<ic::EventInfo>("eventInfo");
   wt_ = info->total_weight();
 
-  scale_wts_.SetVals(info);
+  if (do_lhe_weights_) {
+    scale_wts_.SetVals(info);
+    pdf_wts_.SetVals(info);
+  }
+
+  auto jets = event->GetPtrVec<ic::PFJet>("ak4PFJetsCHS");
+
+  auto sel_jets = ic::copy_keep_if(jets, [&](ic::PFJet *p) {
+    return
+      p->pt()           > 30.0    &&
+      fabs(p->eta())    < 4.7     &&
+      ic::PFJetID2015(p)          &&
+      ic::MinDRToCollection(p, sel_muons, 0.5);
+  });
+
+  n_jets_ = sel_jets.size();
   /*
   0 muR=1.0 muF=1.0 <-- just the nominal
   1 muR=1.0 muF=2.0
