@@ -18,6 +18,7 @@ namespace ic {
     sample_ = "";
     use_quantile_map_ = false;
     disable = true;
+    is_wjets = false;
   }
 
   HTTRun2RecoilCorrector::~HTTRun2RecoilCorrector() {
@@ -46,6 +47,7 @@ namespace ic {
    
     if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) ){
       disable = false;
+      is_wjets = true;
     }
 
     if ( (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) ) {
@@ -103,6 +105,7 @@ namespace ic {
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
   unsigned njets = jets.size();
+  if(is_wjets) njets+=1;
   double mvaMetx = mvaMet->vector().px();
   double mvaMety = mvaMet->vector().py();
   double mvaMete = mvaMet->energy();

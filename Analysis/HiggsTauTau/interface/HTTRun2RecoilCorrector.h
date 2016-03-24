@@ -13,6 +13,7 @@ class HTTRun2RecoilCorrector : public ModuleBase {
  private:
  // std::string jets_label_;
   bool disable;
+  bool is_wjets;
   RecoilCorrectorRun2 * corrector_;
   CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, met_label)
   CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, jets_label)
