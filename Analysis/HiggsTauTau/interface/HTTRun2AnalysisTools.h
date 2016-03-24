@@ -239,6 +239,18 @@ namespace ic {
                               std::string const& wt,
                               std::map<std::string, std::function<Value()>> dict
                               );
+      Value GetRateViaWOSSSMethod(std::string const& w_sample,
+                              std::string const& ratio_cat,
+                              std::string const& ratio_control_sel,
+                              std::string const& ratio_signal_sel,
+                              std::vector<std::string> const& data_sample,
+                              std::string const& cat,
+                              std::string const& control_sel,
+                              std::vector<std::string> const& sub_samples,
+                              bool get_os,
+                              std::string const& wt,
+                              std::map<std::string, std::function<Value()>> dict
+                              );
       Value GetRateViaQCDMethod(Value const& ratio,
                               std::vector<std::string> const& data_sample,
                               std::string const& control_selection,
@@ -282,6 +294,7 @@ namespace ic {
       bool is_fall15_;
       std::string dy_soup_;
       double qcd_os_ss_factor_;
+      double w_os_ss_factor_;
       std::vector<std::string> sample_names_;
       std::vector<std::string> signal_masses_;
       std::map<std::string, std::pair<double, double>> sample_info_;
