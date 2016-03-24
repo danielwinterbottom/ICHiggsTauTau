@@ -129,14 +129,22 @@ int main(int argc, char* argv[]){
 	  ("check_ztt_top_frac",      po::value<bool>(&check_ztt_top_frac)->default_value(false))
 	  ("add_ztt_modes",           po::value<bool>(&add_ztt_modes)->default_value(false))
 	  ("scan_bins",               po::value<unsigned>(&scan_bins)->default_value(0))
-	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
+	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(-1));
 
-
+   
 	HTTPlot plot;
 	config.add(plot.GenerateOptions("")); // The string here is a prefix for the options parameters
 	po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
 	po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
 	po::notify(vm);
+
+
+  //If not overriding os_ss factor, default to different values for each channel:
+  if(qcd_os_ss_factor < 0){
+    if(String2Channel(channel_str) == channel::mt) qcd_os_ss_factor = 1.17;
+    else if(String2Channel(channel_str) == channel::em) qcd_os_ss_factor=2.00;
+    else qcd_os_ss_factor=1.00;
+  }
 
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 	std::cout << "HiggsTauTauPlot5" << std::endl;
