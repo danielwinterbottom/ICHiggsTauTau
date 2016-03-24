@@ -187,6 +187,15 @@ namespace ic {
                               std::string const& target_category,  
                               std::string const& weight);
 
+      Value DataSampleRatio(std::vector<std::string> const& sample, 
+                              std::string const& ref_selection, 
+                              std::string const& ref_category,
+                              std::string const& target_selection, 
+                              std::string const& target_category,  
+                              std::string const& weight,
+                              std::vector<std::string> const& subtr_samples,
+                              std::map<std::string, std::function<Value()>> func_dict);
+
       Value GetRateViaRefEfficiency(std::string const& target_sample, 
                               std::string const& ref_sample,
                               std::string const& ref_selection, 
@@ -238,6 +247,18 @@ namespace ic {
                               std::string const& weight,
                               std::map<std::string, std::function<Value()>> dict
                               );
+
+      Value GetRateViaTauTauQCDMethod(std::vector<std::string> const& data_sample,
+                          std::string const& ratio_control_cat,
+                          std::string const& ratio_signal_cat,
+                          std::string const& ratio_sel,
+                          std::string const& control_sel,
+                          std::string const& cat,
+                          std::vector<std::string> const& sub_samples,
+                          std::string const& wt,
+                          std::map<std::string, std::function<Value()>> dict
+                          ); 
+
 
       std::string ResolveAlias(std::string const& al);
       std::vector<std::string> ResolveSamplesAlias(std::string const& al);

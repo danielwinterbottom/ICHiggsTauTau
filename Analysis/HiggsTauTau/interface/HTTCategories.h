@@ -62,6 +62,7 @@ class HTTCategories : public ModuleBase {
   float rho_;
   float mc_weight_;
   float pu_weight_;
+  double wt_btag_;
   double wt_ggh_pt_up_;
   double wt_ggh_pt_down_;
   double wt_tau_fake_up_;

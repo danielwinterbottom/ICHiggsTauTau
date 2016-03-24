@@ -686,6 +686,7 @@ int main(int argc, char* argv[]){
     ("ModifyJetMET")
     .set_input_label(jettype)
     .set_jec_data_files(jecdatafiles)
+    .set_jec_mc_files(jecdatafiles)
     .set_met_label(mettype)
     .set_dogaus(dogaus)
     .set_dospring10gaus(dospring10gaus)
@@ -695,7 +696,8 @@ int main(int argc, char* argv[]){
     .set_run2(!is2012)
     .set_fs(fs);
   std::vector<JetMETModifier::jetmetCor> corVec;
-  if (reapplyJEC) corVec.push_back(JetMETModifier::jetmetCor::jecData);
+  if (reapplyJEC && is_data) corVec.push_back(JetMETModifier::jetmetCor::jecData);
+  if (reapplyJEC && !is_data) corVec.push_back(JetMETModifier::jetmetCor::jecMC);
   if (dosmear)    corVec.push_back(JetMETModifier::jetmetCor::smearMC);
   ModifyJetMET.set_corVec(corVec);
 
@@ -861,7 +863,7 @@ int main(int argc, char* argv[]){
     .set_fs(fs);
   
 
-  if (output_name.find("JetsToLNu") != output_name.npos) {
+  if (output_name.find("JetsToLNu") != output_name.npos && output_name.find("EWKW") == output_name.npos && output_name.find("nlo") == output_name.npos) {
 
     if (mc == mc::summer12_53X) {
       xsWeights.set_do_w_soup(true);
@@ -871,10 +873,11 @@ int main(int argc, char* argv[]){
       //xsWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
     }
     if (mc == mc::fall15_76X){
-      xsWeights.set_do_w_soup(false);
+      xsWeights.set_do_w_soup(true);
       xsWeights.set_do_w_reweighting(false);
-      xsWeights.SetWTargetFractions(1,1,1,1,1);
-      xsWeights.SetWInputYields(0,10205377,4949568,1943664,1041358);
+      //xsWeights.SetWTargetFractions(9.539946e-01,2.661281e-02,7.043996e-03,9.168533e-04,3.272767e-04);
+      xsWeights.SetWTargetFractions(9.64822231e-01,2.66852257e-02,7.15251541e-03,9.67786836e-04,3.72241002e-04);
+      xsWeights.SetWInputYields(47103549,10205377,4949568,1943664,1041358);
     }
   }
   if (output_name.find("JetsToLL-mg-m50") != output_name.npos && 
@@ -896,8 +899,8 @@ int main(int argc, char* argv[]){
     else if (mc == mc::fall15_76X){
       xsWeights.set_do_dy_soup(true);
       xsWeights.set_do_dy_reweighting(false);
-      xsWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
-      xsWeights.SetDYInputYields(9004328.0, 0.0, 20019059.0, 5701878.0, 4189017.0);
+      xsWeights.SetDYTargetFractions(0.696628989, 0.204582155, 0.067178037, 0.020549051, 0.011061768);
+      xsWeights.SetDYInputYields(9004328.0, 65314144.0, 19989058.0, 5701878.0, 4189017.0);
     }
   }
 

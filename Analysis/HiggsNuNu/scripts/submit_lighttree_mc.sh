@@ -33,9 +33,9 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_160216
+  JOBDIRPREFIX=jobs_lighttree_160221
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160216
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160221
   #OUTPUTPREFIX=output_lighttree_160121
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -138,8 +138,8 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELE
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
-#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJ*`
+#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
 	  do
       echo "Processing files in "$FILELIST
@@ -153,7 +153,7 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELE
       if (( "$?" == "0" )); then
 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/151030_MC
 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/151030_MC_//" tmp.txt > tmp2.txt
-	  MCOPTION="--mc=spring15_74X"
+	  MCOPTION="--mc=spring15_74X --reapplyJEC=false"
 	  INPUTPARAMS="filelists/151030/Params151030.dat"
       else
 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
@@ -195,7 +195,7 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELE
 	    do
 	    WJOB=$JOB"_"$FLAVOUR
 	    
-	    $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" "$MCOPTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh $GRIDSETUP
+	    $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" $MCOPTION --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh $GRIDSETUP
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$WJOB.sh    
 	    else
@@ -204,7 +204,7 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELE
 	  done
 	  
       else  
-	  $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" "$MCOPTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh  $GRIDSETUP
+	  $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" $MCOPTION --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE | tee $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh  $GRIDSETUP
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$JOB.sh
 	    else

@@ -32,6 +32,7 @@
 #include "HiggsTauTau/interface/BTagCheck.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
+#include "HiggsTauTau/interface/HTTRun2RecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
 #include "HiggsTauTau/interface/HTTEMuMVA.h"
@@ -49,6 +50,7 @@
 #include "HiggsTauTau/interface/VertexFilter.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/NvtxWeight.h"
+#include "HiggsTauTau/interface/BTagWeightRun2.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -91,6 +93,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
+  do_reshape=json["baseline"]["do_reshape"].asBool(); 
+  btag_mode=json["baseline"]["btag_mode"].asUInt();
+  bfake_mode=json["baseline"]["bfake_mode"].asUInt();
   if(js["mc"].asString()==""){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
   mc_str = js["mc"].asString();
   if(js["era"].asString()=="") {std::cout<<"ERROR: era not set"<<std::endl; exit(1);}
@@ -312,8 +317,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  moriond_tau_scale = json["moriond_tau_scale"].asBool();
  pu_id_training = json["pu_id_training"].asUInt();
  bjet_regr_correction = json["bjet_regr_correction"].asBool();
- btag_mode    = json["btag_mode"].asUInt();
- bfake_mode   = json["bfake_mode"].asUInt();
+ /*btag_mode    = json["btag_mode"].asUInt();
+ bfake_mode   = json["bfake_mode"].asUInt();*/
  if(json["baseline"]["mass_scale_mode"].asBool()==true){
    mass_shift = json["baseline"]["mass_shift"].asDouble();
  } else mass_shift=1.00;
@@ -449,6 +454,10 @@ void HTTSequence::BuildSequence(){
   //		to_check.push_back(addit_to_check.at(j));
 	 // }
    } 
+ if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
+   std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
+   throw;
+ }
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
     .set_fs(fs.get()));
@@ -472,22 +481,23 @@ void HTTSequence::BuildSequence(){
 }
 
 
- if(output_name.find("WZJetsTo3LNu") != output_name.npos){ 
+ if(output_name.find("WZJetsTo3LNu") != output_name.npos && mc_type == mc::fall15_76X){ 
   BuildModule(GenericModule("lowGenMLLEventVeto")
    .set_function([](ic::TreeEvent *event){
-     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
+     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("lheParticles");
      std::vector<GenParticle *> sel_particles;
      for (unsigned i=0; i < particles.size(); ++i){
-        std::vector<bool> status_flags_start = particles[i]->statusFlags();
-        if ( ((particles[i]->pt()>8&& ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13))) ||(abs(particles[i]->pdgid())==15)) && (status_flags_start[IsPrompt]) ){
+       if(particles[i]->status() != 1) continue;
+       unsigned id = abs(particles[i]->pdgid());
+       if( id == 11 || id == 13 || id == 15){
         sel_particles.push_back(particles[i]);
       }
     }
     bool skip_evt=false;
     for(unsigned i = 0; i<sel_particles.size(); ++i){
       for(unsigned j = 0; j<i; ++j){
-        if(skip_evt==false){
-          if(((sel_particles[i]->vector()+sel_particles[j]->vector()).M() > 4) && (sel_particles[i]->vector()+sel_particles[j]->vector()).M() < 30) skip_evt=true;
+        if(skip_evt==false && sel_particles[i]->pdgid()==-sel_particles[j]->pdgid()){
+          if((sel_particles[i]->vector()+sel_particles[j]->vector()).M() < 30)  skip_evt=true;
         }
       }
     }
@@ -771,11 +781,20 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     .set_ditau_label("ditau"));
 }
 
-if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
+if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
    BuildModule(BTagCheck("BTagCheck")
     .set_fs(fs.get())
     .set_channel(channel)
     .set_do_legacy(true)
+    .set_jet_label(jets_label));
+}
+
+
+if(strategy_type==strategy::fall15&&!is_data&&js["do_btag_eff"].asBool()){
+   BuildModule(BTagCheck("BTagCheck")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_do_legacy(false)
     .set_jet_label(jets_label));
 }
 
@@ -788,7 +807,7 @@ if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
     jes_input_set  = "SubTotalMC";
   }
   if (era_type == era::data_2015) {
-    jes_input_file = "input/jec/Summer15_25nsV5_DATA_UncertaintySources_AK4PFchs.txt";
+    jes_input_file = "input/jec/Fall15_25nsV2_DATA_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
@@ -799,33 +818,28 @@ if((strategy_type!=strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
 
 }
   
-if(!js["qcd_study"].asBool()){    
-  SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
-    .set_input_label(jets_label);
-    if(strategy_type == strategy::paper2013) {
-      jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
-    } else {
-      jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
-    }
-  BuildModule(jetIDFilter);
+ BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
+SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
+.set_input_label(jets_label);
+if(strategy_type == strategy::paper2013) {
+  jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
+} else {
+  jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
 }
+BuildModule(jetIDFilter);
 
 
-  BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
-
-if(!js["qcd_study"].asBool()){
-    if(channel != channel::wmnu) {
-      BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
-        .set_input_label(jets_label)
-        .set_reference_label("ditau")
-        .set_min_dr(0.5));
-    } else if (channel == channel::wmnu){
-      BuildModule(OverlapFilter<PFJet,Muon>("JetLeptonOverlapFilter")
-        .set_input_label(jets_label)
-        .set_reference_label("sel_muons")
-        .set_min_dr(0.5));
-    }
+if(channel != channel::wmnu) {
+  BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+    .set_input_label(jets_label)
+    .set_reference_label("ditau")
+    .set_min_dr(0.5));
+} else if (channel == channel::wmnu){
+  BuildModule(OverlapFilter<PFJet,Muon>("JetLeptonOverlapFilter")
+    .set_input_label(jets_label)
+    .set_reference_label("sel_muons")
+    .set_min_dr(0.5));
 }
 
 if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_data&&js["do_btag_eff"].asBool()){
@@ -849,6 +863,17 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      //option to take met scale uncertainty from recoil corrector files - off for now as files have over-inflated uncertainties
      //.set_met_scale_mode(metscale_mode)
      .set_w_hack(true));
+  }
+
+ if(strategy_type == strategy::fall15){
+    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label(met_label)
+     .set_jets_label(jets_label)
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(false));
   }
 
   if(js["metscale_mode"].asUInt() > 0  && !is_data ){
@@ -885,6 +910,19 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
 BuildModule(svFitTest);
 
 
+if(strategy_type == strategy::fall15 && !is_data){
+ TH2F bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
+ TH2F cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
+ TH2F othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
+BuildModule(BTagWeightRun2("BTagWeightRun2")
+   .set_jet_label(jets_label)
+   .set_bbtag_eff(new TH2F(bbtag_eff))
+   .set_cbtag_eff(new TH2F(cbtag_eff))
+   .set_othbtag_eff(new TH2F(othbtag_eff))
+   .set_do_reshape(do_reshape)
+   .set_btag_mode(btag_mode)
+   .set_bfake_mode(bfake_mode));
+}
 
  if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15 && strategy_type != strategy::fall15){
   HTTWeights httWeights = HTTWeights("HTTWeights")
@@ -1071,10 +1109,10 @@ BuildModule(svFitTest);
     if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
   }
 
-  if (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos){
-    httWeights.set_do_dy_soup(true);
-    httWeights.SetDYTargetFractions(0.696628989, 0.204582155, 0.067178037, 0.020549051, 0.011061768); //Target fractions are xs_n-jet/xs_inclusive
-    httWeights.SetDYInputYields(9004328.0,65314144.0 , 20019059.0, 5701878.0, 4189017.0);
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos) || output_name.find("DYJetsToLL_M-150-LO")!=output_name.npos){
+    httWeights.set_do_dy_soup_high_mass(true);
+    httWeights.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
+    httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);
   }
 
     BuildModule(httWeights);

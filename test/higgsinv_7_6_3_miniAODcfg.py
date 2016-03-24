@@ -775,7 +775,27 @@ if release in ['76XMINIAOD']:
   process.pfImpactParameterTagInfos.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
   process.pfImpactParameterTagInfos.candidates = cms.InputTag("packedPFCandidates")
 
-# Pileup ID !!DOESN'T WORK IN AK4PF AT THE MOMENT LOOK INTO IF WE USE THAT
+process.load("RecoJets.JetProducers.PileupJetID_cfi")
+process.pileupJetIdUpdated = process.pileupJetId.clone(
+  jets=cms.InputTag("slimmedJets"),
+  inputIsCorrected=True,
+  applyJec=True,
+  vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
+  )
+print process.pileupJetIdUpdated.dumpConfig()
+
+#reapply JEC example
+#process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+#process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+#  src = cms.InputTag("slimmedJets"),
+#  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
+#process.updatedJets = process.patJetsUpdated.clone(
+#  jetSource = cms.InputTag("slimmedJets"),
+#  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+#  )
+#process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
+
+
 stdalgoschs = cms.VPSet()
 from RecoJets.JetProducers.PileupJetIDParams_cfi import *
 stdalgoschs = cms.VPSet(full_5x_chs,cutbased)
@@ -868,7 +888,7 @@ process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
     ),
   destConfig = cms.PSet(
     includePileupID         = cms.bool(True),
-    inputPileupID           = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
+    inputPileupID           = cms.InputTag("pileupJetIdUpdated", "fullDiscriminant"),
     includeTrackBasedVars   = cms.bool(False),
     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),#!!check this and line below
     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),#!!
@@ -888,7 +908,7 @@ process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
     ),
   destConfig = cms.PSet(
     includePileupID         = cms.bool(False),
-    inputPileupID           = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
+    inputPileupID           = cms.InputTag("pileupJetIdUpdated", "fullDiscriminant"),
     includeTrackBasedVars   = cms.bool(False),
     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),#!!check this and line below
     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),#!!
@@ -911,7 +931,8 @@ process.icPFJetSequence += cms.Sequence(
   process.ak4PFL3AbsoluteCHS+
   process.ak4PFResidualCHS+
   process.ak4PFJetsCHS+
-  process.puJetMvaCHS
+  process.puJetMvaCHS+
+  process.pileupJetIdUpdated
 )
 
 if not isData:
