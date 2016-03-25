@@ -31,6 +31,7 @@ namespace ic {
 
   HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15) : ch_(ch), year_(year), verbosity_(verbosity), is_fall15_(is_fall15) {
     lumi_ = 1.;
+    do_ss_ = false;
     qcd_os_ss_factor_ = 1.06;
     if(ch_ == channel::et){
       w_os_ss_factor_ = 4.09;
@@ -67,6 +68,8 @@ namespace ic {
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "1";
+      alias_map_["nojet"]           ="(n_jets==0)";
+      alias_map_["njet"]           ="(n_jets>0)";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
       alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
 //      alias_map_["baseline"]          = "1";
@@ -1052,7 +1055,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
     } else if(method == 12 || method == 13){
      w_norm = this->GetRateViaWOSSSMethod(wjets_samples.at(0), w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
-        this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel_osss, w_sub_samples, true, wt, ValueFnMap());
+        this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel_osss, w_sub_samples, !do_ss_, wt, ValueFnMap());
     }
 
     std::string w_shape_cat = cat;

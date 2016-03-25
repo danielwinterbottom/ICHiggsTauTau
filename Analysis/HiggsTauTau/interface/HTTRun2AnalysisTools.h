@@ -284,6 +284,7 @@ namespace ic {
 
       void SetQCDRatio(double const& ratio);
       inline void SetVerbosity(unsigned const& verbosity) { verbosity_ = verbosity; }
+      inline void SetSS(){do_ss_ = true;}
 
     private:
       ic::channel ch_;
@@ -292,6 +293,7 @@ namespace ic {
       unsigned verbosity_;
       double lumi_;
       bool is_fall15_;
+      bool do_ss_;
       std::string dy_soup_;
       double qcd_os_ss_factor_;
       double w_os_ss_factor_;

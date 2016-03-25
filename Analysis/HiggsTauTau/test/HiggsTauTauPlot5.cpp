@@ -203,7 +203,10 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	HTTRun2Analysis ana(String2Channel(channel_str), "2015", verbosity,is_fall15);
     ana.SetQCDRatio(qcd_os_ss_factor);
-    if (do_ss) ana.SetQCDRatio(1.0);
+    if (do_ss){
+       ana.SetQCDRatio(1.0);
+       ana.SetSS();
+    }
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
 	if (add_sm_background != "") {
