@@ -865,7 +865,7 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      .set_w_hack(true));
   }
 
- if(strategy_type == strategy::fall15){
+ if(strategy_type == strategy::fall15 && channel!=channel::wmnu){
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1114,6 +1114,13 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     httWeights.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
     httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);
   }
+  
+/*  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+       output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+    httWeights.set_do_w_soup(true);
+    httWeights.SetWInputCrossSections(50690,9644.5,3144.5,954.8,485.6);
+    httWeights.SetWInputYields(47161328,45442170,30190119,18319765,8816492);
+  }*/
 
     BuildModule(httWeights);
   }

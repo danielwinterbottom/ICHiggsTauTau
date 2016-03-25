@@ -46,6 +46,10 @@ sample_list = [
   'DYJetsToLL_M-10-ext',
 	#'WJetsToLNu',
 	'WJetsToLNu-LO',
+	'W1JetsToLNu-LO',
+	'W2JetsToLNu-LO',
+	'W3JetsToLNu-LO',
+	'W4JetsToLNu-LO',
 	'T-tW',
 	'Tbar-tW',
   'T-t',
@@ -206,7 +210,7 @@ channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
-subdirs = ['TSCALE_DOWN','TSCALE_UP','JES_UP','JES_DOWN']
+subdirs = ['TSCALE_DOWN','TSCALE_UP','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN']
 
 nfiles={}
 

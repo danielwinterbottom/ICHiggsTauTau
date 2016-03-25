@@ -167,9 +167,25 @@ namespace ic {
       MuonFakeRateHist_PtEta->SetDirectory(0);
     }
 
-    if (do_w_soup_) {
+    if (do_w_soup_ && era_!=era::data_2015) {
       std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
       std::cout << "nInc = " << n_inc_ << std::endl;
+      w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
+      w2_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
+      w3_ = (n_inc_*f3_) / ( (n_inc_*f3_) + n3_ );
+      w4_ = (n_inc_*f4_) / ( (n_inc_*f4_) + n4_ );
+      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % f1_ % n1_ % w1_;
+      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % f2_ % n2_ % w2_;
+      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % f3_ % n3_ % w3_;
+      std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % f4_ % n4_ % w4_;
+    }
+    if (do_w_soup_ && era_ == era::data_2015) {
+      std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
+      std::cout << "nInc = " << n_inc_ << std::endl;
+      f1_ = wxs1_/wxs0_;
+      f2_ = wxs2_/wxs0_;
+      f3_ = wxs3_/wxs0_;
+      f4_ = wxs4_/wxs0_;
       w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
       w2_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
       w3_ = (n_inc_*f3_) / ( (n_inc_*f3_) + n3_ );
@@ -1354,16 +1370,25 @@ namespace ic {
     }
 
     if (do_w_soup_) {
-      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      bool count_jets = false;
       unsigned partons = 0;
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        if (parts[i]->status() != 3) continue;
-        unsigned id = abs(parts[i]->pdgid());
-        if (count_jets) { 
-          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+      if(era_ != era::data_2015){
+        std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+        bool count_jets = false;
+        for (unsigned i = 0; i < parts.size(); ++i) {
+          if (parts[i]->status() != 3) continue;
+          unsigned id = abs(parts[i]->pdgid());
+          if (count_jets) { 
+            if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+          }
+          if (id == 24) count_jets = true; 
         }
-        if (id == 24) count_jets = true; 
+      } else {
+        std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+        for(unsigned i = 0; i< lhe_parts.size(); ++i){
+         if(lhe_parts[i]->status() != 1) continue;
+         unsigned id = abs(lhe_parts[i]->pdgid());
+         if ((id >= 1 && id <=6) || id == 21) partons++;
+        }
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
@@ -1391,8 +1416,12 @@ namespace ic {
           if (id == 23) count_jets = true; 
         }
       } else { 
-        EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-        partons = eventInfo->n_outgoing_partons();
+        std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+        for(unsigned i = 0; i< lhe_parts.size(); ++i){
+         if(lhe_parts[i]->status() != 1) continue;
+         unsigned id = abs(lhe_parts[i]->pdgid());
+         if ((id >= 1 && id <=6) || id == 21) partons++;
+        }
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
