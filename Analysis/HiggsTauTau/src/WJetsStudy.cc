@@ -22,10 +22,10 @@ int WJetsStudy::PreAnalysis() {
     lepton_.SetTree(tree_, "", "_1");
     if (sample_name_ == "WJetsToLNuNLO") {
       scale_wts_.SetTree(tree_, 1001, 1009, "scale_wt_", "");
-      pdf_wts_.SetTree(tree_, 2001, 2102, "pdf_wt_", "");
+      pdf_wts_.SetTree(tree_, 2001, 2102, "pdf_wt_", ""); // 2101 and 2102 are alpha_s
     } else if (sample_name_ == "WJetsToLNuLO") {
       scale_wts_.SetTree(tree_, 1, 9, "scale_wt_", "");
-      pdf_wts_.SetTree(tree_, 10, 110, "pdf_wt_", "");
+      pdf_wts_.SetTree(tree_, 11, 110, "pdf_wt_", ""); // no alpha_s in LO sample
     } else {
       std::cout << "[WJetsStudy] Warning, sample_name was not recognised, LHE weights will not be saved\n";
       do_lhe_weights_ = false;
@@ -87,8 +87,8 @@ int WJetsStudy::Execute(TreeEvent* event) {
 
   auto sel_jets = ic::copy_keep_if(jets, [&](ic::PFJet *p) {
     return
-      p->pt()           > 30.0    &&
-      fabs(p->eta())    < 4.7     &&
+      p->pt()           > 20.0    &&
+      fabs(p->eta())    < 2.4     &&
       ic::PFJetID2015(p)          &&
       ic::MinDRToCollection(p, sel_muons, 0.5);
   });

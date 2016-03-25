@@ -18,9 +18,16 @@ int main(int argc, char* argv[]) {
       new fwlite::TFileService((js["output"].asString()));
 
   vector<string> files = ic::ParseFileLines(js["filelist"].asString());
+  vector<string> do_files;
+  unsigned file_offset = js.get("file_offset", 0).asUInt();
+  unsigned file_step = js.get("file_step", 1).asUInt();
   for (auto & f : files) f = js.get("file_prefix", std::string("")).asString() + f;
 
-  ic::AnalysisBase analysis("QCDStudy", files, "icEventProducer/EventTree",
+  for (unsigned i = file_offset; i < files.size(); i += file_step) {
+    do_files.push_back(files[i]);
+  }
+
+  ic::AnalysisBase analysis("QCDStudy", do_files, "icEventProducer/EventTree",
                             js["max_events"].asInt64());
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
