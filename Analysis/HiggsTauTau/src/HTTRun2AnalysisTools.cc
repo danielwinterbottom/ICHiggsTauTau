@@ -653,8 +653,8 @@ namespace ic {
    "WJetsToLNu-LO","TT-ext",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
-  "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
+   "W1JetsToLNu-LO","W2JetsToLNu-LO",
+   "W3JetsToLNu-LO","W4JetsToLNu-LO"*/
    };
   if(!is_fall15_){
     if(ch_==channel::zee || ch_==channel::zmm) {
@@ -704,9 +704,8 @@ namespace ic {
    "TT-ext","WJetsToLNu-LO",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
-  "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
-
+   "W1JetsToLNu-LO","W2JetsToLNu-LO",
+   "W3JetsToLNu-lO","W4JetsToLNu-LO"*/
    };
   if(!is_fall15_){
     samples_alias_map_["qcd_sub_samples"] = {
@@ -769,8 +768,8 @@ namespace ic {
 
 samples_alias_map_["wjets_samples"] = {
   "WJetsToLNu-LO"/*,
-  "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-  "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"*/
+  "W1JetsToLNu-LO","W2JetsToLNu-LO",
+  "W3JetsToLNu-LO","W4JetsToLNu-LO"*/
  };
 
 if(!is_fall15_){
