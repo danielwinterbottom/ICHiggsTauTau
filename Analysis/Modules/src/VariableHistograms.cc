@@ -9,101 +9,94 @@ namespace ic {
 
   
   VariableHistograms::VariableHistograms(std::string const& name, 
-                                         std::string output_name, std::string output_folder) : ModuleBase(name) {
+                                         fwlite::TFileService *fs) : ModuleBase(name) {
     jets_label_ = "ak4PFJetsCHS"; 
     electrons_label_ = "electrons";
     muons_label_ = "muons"; 
     taus_label_ = "taus";  
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMet";
- 
     
-    output_name_ = output_name;
-    output_folder_ = output_folder;
-     
-
-    fOffline = new TFile((output_name_).c_str(),"UPDATE");
-    //fOffline->mkdir(output_name2_.c_str(),"RECREATE");
-    //fOffline->cd(output_name2_.c_str());
+    TFileDirectory subDir = fs->mkdir("OfflineHistograms");
     
     //offline histograms
-    h_OfflineEtaGap = new TH1D("EtaGap","EtaGap",100, 0,10); h_OfflineEtaGap->SetDirectory(fOffline);
+    h_OfflineEtaGap = subDir.make<TH1D>("EtaGap","EtaGap",100, 0,10);
     h_OfflineEtaGap->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta#eta|");
     h_OfflineEtaGap->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineMjjInv = new TH1D("Mjj","Mjj",100, 0,2500); h_OfflineMjjInv->SetDirectory(fOffline);
+    h_OfflineMjjInv = subDir.make<TH1D>("Mjj","Mjj",100, 0,2500); 
     h_OfflineMjjInv->GetXaxis()->SetTitle("M_{jj} [GeV]");
     h_OfflineMjjInv->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineDeltaPhijj = new TH1D("DeltaPhijj","DeltaPhijj",100, 0,6.5); h_OfflineDeltaPhijj->SetDirectory(fOffline);
+    h_OfflineDeltaPhijj = subDir.make<TH1D>("DeltaPhijj","DeltaPhijj",100, 0,6.5); 
     h_OfflineDeltaPhijj->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta#phi|");
     h_OfflineDeltaPhijj->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineDeltaRjj = new TH1D("DeltaRjj","DeltaRjj",100, 0,12); h_OfflineDeltaRjj->SetDirectory(fOffline);
+    h_OfflineDeltaRjj = subDir.make<TH1D>("DeltaRjj","DeltaRjj",100, 0,12); 
     h_OfflineDeltaRjj->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta R|");
     h_OfflineDeltaRjj->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineMttVis = new TH1D("MttVis","MttVis",100, 0,200); h_OfflineMttVis->SetDirectory(fOffline);
+    h_OfflineMttVis = subDir.make<TH1D>("MttVis","MttVis",100, 0,200); 
     h_OfflineMttVis->GetXaxis()->SetTitle("Visible M_{#tau#tau} [GeV]");
     h_OfflineMttVis->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineDeltaPhitt = new TH1D("DeltaPhitt","DeltaPhitt",100, 0,6.5); h_OfflineDeltaPhitt->SetDirectory(fOffline);
+    h_OfflineDeltaPhitt = subDir.make<TH1D>("DeltaPhitt","DeltaPhitt",100, 0,6.5); 
     h_OfflineDeltaPhitt->GetXaxis()->SetTitle("Tau Candidates |#Delta#phi|");
     h_OfflineDeltaPhitt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineDeltaRtt = new TH1D("DeltaRtt","DeltaRtt",100, 0,12); h_OfflineDeltaRtt->SetDirectory(fOffline);
+    h_OfflineDeltaRtt = subDir.make<TH1D>("DeltaRtt","DeltaRtt",100, 0,12); 
     h_OfflineDeltaRtt->GetXaxis()->SetTitle("Tau Candidates |#Delta R|");
     h_OfflineDeltaRtt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineDeltaEtatt = new TH1D("DeltaEtatt","DeltaEtatt",100, 0,10); h_OfflineDeltaEtatt->SetDirectory(fOffline);
+    h_OfflineDeltaEtatt = subDir.make<TH1D>("DeltaEtatt","DeltaEtatt",100, 0,10); 
     h_OfflineDeltaEtatt->GetXaxis()->SetTitle("Tau Candidates |#Delta#eta|");
     h_OfflineDeltaEtatt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineLeadTauPt = new TH1D("LeadTauPt","LeadTauPt",100, 0,200); h_OfflineLeadTauPt->SetDirectory(fOffline);
+    h_OfflineLeadTauPt = subDir.make<TH1D>("LeadTauPt","LeadTauPt",100, 0,200);
     h_OfflineLeadTauPt->GetXaxis()->SetTitle("Leading Tau P_{T} [GeV]");
     h_OfflineLeadTauPt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineSubLeadTauPt = new TH1D("SubLeadTauPt","SubLeadTauPt",100, 0,200); h_OfflineSubLeadTauPt->SetDirectory(fOffline);
+    h_OfflineSubLeadTauPt = subDir.make<TH1D>("SubLeadTauPt","SubLeadTauPt",100, 0,200); 
     h_OfflineSubLeadTauPt->GetXaxis()->SetTitle("Sub-leading Tau P_{T} [GeV]");
     h_OfflineSubLeadTauPt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineElectronPt = new TH1D("ElectronPt","ElectronPt",100, 0,200); h_OfflineElectronPt->SetDirectory(fOffline);
+    h_OfflineElectronPt = subDir.make<TH1D>("ElectronPt","ElectronPt",100, 0,200); 
     h_OfflineElectronPt->GetXaxis()->SetTitle("Electron P_{T} [GeV]");
     h_OfflineElectronPt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineMuonPt = new TH1D("MuonPt","MuonPt",100, 0,200); h_OfflineMuonPt->SetDirectory(fOffline);
+    h_OfflineMuonPt = subDir.make<TH1D>("MuonPt","MuonPt",100, 0,200);
     h_OfflineMuonPt->GetXaxis()->SetTitle("Muon P_{T} [GeV]");
     h_OfflineMuonPt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineMET = new TH1D("MET","MET",100, 0,200); h_OfflineMET->SetDirectory(fOffline);
+    h_OfflineMET = subDir.make<TH1D>("MET","MET",100, 0,200);
     h_OfflineMET->GetXaxis()->SetTitle("MET [GeV]");
     h_OfflineMET->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineSubLeadJetPt = new TH1D("SubLeadJetPt","SubLeadJetPt",100, 0,200); h_OfflineSubLeadJetPt->SetDirectory(fOffline);
+    h_OfflineSubLeadJetPt = subDir.make<TH1D>("SubLeadJetPt","SubLeadJetPt",100, 0,200); 
     h_OfflineSubLeadJetPt->GetXaxis()->SetTitle("Sub-leading Jet P_{T} [GeV]");
     h_OfflineSubLeadJetPt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineSubLeadJetEta = new TH1D("SubLeadJetEta","SubLeadJetEta",100, -5,5); h_OfflineSubLeadJetEta->SetDirectory(fOffline);
+    h_OfflineSubLeadJetEta = subDir.make<TH1D>("SubLeadJetEta","SubLeadJetEta",100, -5,5); 
     h_OfflineSubLeadJetEta->GetXaxis()->SetTitle("Sub-leading Jet #eta");
     h_OfflineSubLeadJetEta->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineSubLeadJetPhi = new TH1D("SubLeadJetPhi","SubLeadJetPhi",100, -3.5,3.5); h_OfflineSubLeadJetPhi->SetDirectory(fOffline);
+    h_OfflineSubLeadJetPhi = subDir.make<TH1D>("SubLeadJetPhi","SubLeadJetPhi",100, -3.5,3.5); 
     h_OfflineSubLeadJetPhi->GetXaxis()->SetTitle("Sub-leading Jet #phi");
     h_OfflineSubLeadJetPhi->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineLeadJetPt = new TH1D("LeadJetPt","LeadJetPt",100, 0,200); h_OfflineLeadJetPt->SetDirectory(fOffline);
+    h_OfflineLeadJetPt = subDir.make<TH1D>("LeadJetPt","LeadJetPt",100, 0,200); 
     h_OfflineLeadJetPt->GetXaxis()->SetTitle("Leading Jet P_{T} [GeV]");
     h_OfflineLeadJetPt->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineLeadJetEta = new TH1D("LeadJetEta","LeadJetEta",100, -5,5); h_OfflineLeadJetEta->SetDirectory(fOffline);
+    h_OfflineLeadJetEta = subDir.make<TH1D>("LeadJetEta","LeadJetEta",100, -5,5); 
     h_OfflineLeadJetEta->GetXaxis()->SetTitle("Leading Jet #eta");
     h_OfflineLeadJetEta->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineLeadJetPhi = new TH1D("LeadJetPhi","LeadJetPhi",100, -3.5,3.5); h_OfflineLeadJetPhi->SetDirectory(fOffline);
+    h_OfflineLeadJetPhi = subDir.make<TH1D>("LeadJetPhi","LeadJetPhi",100, -3.5,3.5); 
     h_OfflineLeadJetPhi->GetXaxis()->SetTitle("Leading Jet #phi");
     h_OfflineLeadJetPhi->GetYaxis()->SetTitle("# Entries");
 
-    h_OfflineMinPhi = new TH1D("MinPhi","MinPhi",100, 0,6.5); h_OfflineLeadJetPhi->SetDirectory(fOffline);
+    h_OfflineMinPhi = subDir.make<TH1D>("MinPhi","MinPhi",100, 0,6.5); 
     h_OfflineMinPhi->GetXaxis()->SetTitle("Min #Delta#phi");
     h_OfflineMinPhi->GetYaxis()->SetTitle("# Entries");
 
@@ -111,13 +104,10 @@ namespace ic {
   }
 
     VariableHistograms::~VariableHistograms(){
-      fOffline->Write();
-      fOffline->Close();
+      ;
   }
   
   int VariableHistograms::PreAnalysis(){
-    std::cout << "** Output Histograms for n_jet >= 2 catagory **" << std::endl;
-
     return 0;
   }
 

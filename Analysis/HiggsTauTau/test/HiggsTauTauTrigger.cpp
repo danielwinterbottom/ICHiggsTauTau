@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include "boost/lexical_cast.hpp"
@@ -53,6 +54,9 @@
 #include "Modules/interface/L1VariableHistograms.h"
 #include "Modules/interface/VariableHistograms.h"
 #include "Modules/interface/Efficiency.h"
+#include "Modules/interface/L1TFilter.h"
+#include "Modules/interface/VBFFilter.h"
+#include "Modules/interface/GenChannelFilter.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -107,6 +111,8 @@ int main(int argc, char* argv[]){
   bool do_tau_eff;                // Run the tau efficiency module
   unsigned pu_id_training;        // Pileup jet id training
   unsigned vh_filter_mode;        // 0 = no filter, 1 = WH/ttH, 2 = ZH
+  unsigned inputnum;
+  string L1_infile_name;
 
   // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -155,7 +161,9 @@ int main(int argc, char* argv[]){
       ("do_tau_eff",          po::value<bool>(&do_tau_eff)->default_value(false))
       ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""))
       ("pu_id_training",      po::value<unsigned>(&pu_id_training)->default_value(1))
-      ("vh_filter_mode",      po::value<unsigned>(&vh_filter_mode)->default_value(0));
+      ("vh_filter_mode",      po::value<unsigned>(&vh_filter_mode)->default_value(0))
+      ("line",                po::value<unsigned>(&inputnum)->default_value(1))
+      ("l1input",             po::value<string>(&L1_infile_name)->default_value("InputTriggers.txt"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -192,7 +200,6 @@ int main(int argc, char* argv[]){
     output_folder += "MET_UP/";
     svfit_folder += "MET_UP/";
   }
-  
 
   std::cout << "-------------------------------------" << std::endl;
   std::cout << "HiggsToTauTau Analysis" << std::endl;
@@ -247,6 +254,46 @@ int main(int argc, char* argv[]){
   double elec_dz, muon_dz, elec_dxy, muon_dxy, tau_dz;
   double elec_pt, elec_eta, muon_pt, muon_eta, tau_pt, tau_eta;
   met_label = "pfMVAMet";
+  
+    L1Cuts l1Cuts;
+  
+  if(era == era::trigger_2016){
+      
+    std::ifstream L1_infile;
+    L1_infile.open (L1_infile_name);
+    unsigned i = 1;
+    double in[10];
+    while(L1_infile >> in[0] >> in[1] >> in[2] >> in[3] >> in[4] >> in[5] >> in[6] >> in[7] >> in[8] >> in[9]){
+      if(i == inputnum){
+        l1Cuts.EGPt = in[0];
+        l1Cuts.MuPt = in[1];
+        l1Cuts.Tau1Pt = in[2];
+        l1Cuts.Tau2Pt = in[3];
+        if(in[4] == 1) l1Cuts.IsoEG = true;
+        else l1Cuts.IsoEG = false;
+        if(in[5] == 1) l1Cuts.IsoTau = true;
+        else l1Cuts.IsoTau = false;
+        l1Cuts.Jet1Pt = in[6];
+        l1Cuts.Jet2Pt = in[7];
+        l1Cuts.Mjj = in[8];
+        l1Cuts.DeltaEta = in[9];
+        break;
+      }
+      i++;
+    }
+      
+  }
+  
+  OfflineCuts offlineCuts;
+  
+  offlineCuts.ElPt = l1Cuts.EGPt + 2.;
+  offlineCuts.MuPt = l1Cuts.MuPt + 2.;
+  offlineCuts.Tau1Pt = l1Cuts.Tau1Pt + 5.;
+  offlineCuts.Tau2Pt = l1Cuts.Tau2Pt + 5.;
+  offlineCuts.Mjj = std::max(l1Cuts.Mjj + 50., 500.);
+  offlineCuts.Jet1Pt = std::max(l1Cuts.Jet1Pt + 5., 30.);
+  offlineCuts.Jet2Pt = std::max(l1Cuts.Jet2Pt + 5., 30.);
+  offlineCuts.DeltaEta = std::max(l1Cuts.DeltaEta + 0.25, 3.5);
 
   if (channel == channel::et || channel == channel::etmet) {
     elec_dz = 0.2;
@@ -275,11 +322,11 @@ int main(int argc, char* argv[]){
     if (channel == channel::etmet) elec_pt = 13.0;
     
     if (era == era::trigger_2016) {
-      elec_pt = 0;
+      elec_pt = offlineCuts.ElPt;
       elec_eta = 2.1;
-      muon_pt = 0;
+      muon_pt = 18;
       muon_eta = 2.1; 
-      tau_pt = 0;
+      tau_pt = offlineCuts.Tau1Pt;
       tau_eta = 2.3;
   }
   }
@@ -313,11 +360,11 @@ int main(int argc, char* argv[]){
     if (channel == channel::mtmet) muon_pt = 9.0;
     
     if (era == era::trigger_2016) {
-      elec_pt = 0;
+      elec_pt = 23.0;
       elec_eta = 2.1;
-      muon_pt = 0;
+      muon_pt = offlineCuts.MuPt;
       muon_eta = 2.1; 
-      tau_pt = 0;
+      tau_pt = offlineCuts.Tau1Pt;
       tau_eta = 2.3;
   }
   }
@@ -360,11 +407,11 @@ int main(int argc, char* argv[]){
       muon_dz = 999.;  
     }
     if (era == era::trigger_2016) {
-      elec_pt = 0;
+      elec_pt = offlineCuts.ElPt;
       elec_eta = 2.1;
-      muon_pt = 0;
+      muon_pt = offlineCuts.MuPt;
       muon_eta = 2.1; 
-      tau_pt = 0;
+      tau_pt = 20;
       tau_eta = 2.3;
     }
   }
@@ -372,17 +419,17 @@ int main(int argc, char* argv[]){
 
   if (channel == channel::tt){
     tau_pt = 45;
-    tau_eta = 2.1;
+    tau_eta = 2.3;
     tau_dz = 0.2;
     if (era == era::trigger_2016) {
-      elec_pt = 0;
+      elec_pt = 23;
       elec_eta = 2.1;
-      muon_pt = 0;
+      muon_pt = 18;
       muon_eta = 2.1; 
-      tau_pt = 0;
-      tau_eta = 2.1;
+      tau_pt = offlineCuts.Tau1Pt;
+      tau_eta = 2.3;
   }
-    }
+    }  
 
   // Lower pt thresholds on electrons and taus when skimming, 
   // to allow for energy scale shifts later
@@ -442,6 +489,10 @@ int main(int argc, char* argv[]){
    httPrint.set_muon_label("muons");
    httPrint.set_jet_label("ak4PFJetsCHS");
   }
+  if(era == era::trigger_2016){
+   httPrint.set_muon_label("muons");
+   httPrint.set_jet_label("ak4PFJetsCHS");
+  }
 
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
@@ -455,6 +506,7 @@ int main(int argc, char* argv[]){
   //for now set phys14 to read the 2012 PU files, even though they are not used
   if (era == era::data_2015) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
   if (channel == channel::mtmet) data_pu_file       =  "input/pileup/Data_Pileup_2012_ReRecoD_All-600bins.root";
+  if (era == era::trigger_2016) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -463,9 +515,18 @@ int main(int argc, char* argv[]){
     std::cout << boost::format(param_fmt) % "mc_pu_file" % mc_pu_file;
     std::cout << boost::format(param_fmt) % "data_pu_file" % data_pu_file;
   }
+  
+  HTTTriggerFilter httTriggerFilter = HTTTriggerFilter("HTTTriggerFilter")
+    .set_channel(channel)
+    .set_mc(mc)
+    .set_era(era)
+    .set_is_data(is_data)
+    .set_is_embedded(is_embedded)
+    .set_pair_label("emtauCandidates");
 
   std::string jets_label="pfJetsPFlow";
   if(era==era::data_2015) jets_label="ak4PFJetsCHS";
+  if(era==era::trigger_2016) jets_label="ak4PFJetsCHS";
 
   // ------------------------------------------------------------------------------------
   // Electron Modules
@@ -590,6 +651,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   std::string muon_label="muonsPFlow";
   if(era == era::data_2015) muon_label="muons";
+  if(era == era::trigger_2016) muon_label="muons";
   CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons",muon_label,"selMuons");
 
   boost::function<bool (Muon const*)> muon_idiso_func;
@@ -916,17 +978,24 @@ int main(int argc, char* argv[]){
   
   CopyCollection<PFJet>
     filteredJetCopyCollection("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered");
-
-
+    
   // ------------------------------------------------------------------------------------
-  // Filter events with njets < 2
+  // Generator Channel Filter
   // ------------------------------------------------------------------------------------ 
 
-    SimpleCounter<PFJet> filter0JetEvents = SimpleCounter<PFJet>("Filter0JetEvents")
-    .set_input_label(jets_label)
-    .set_predicate(bind(MinPtMaxEta, _1, 30.0, 4.7) 
-    )
-    .set_min(2);
+  GenChannelFilter genChannelFilter = GenChannelFilter("GenChannelFilter", channel_str);
+  
+  // ------------------------------------------------------------------------------------
+  // VBF Filter 
+  // ------------------------------------------------------------------------------------ 
+    
+  VBFFilter vBFFilter = VBFFilter("VBFFilter", offlineCuts);
+    
+  // ------------------------------------------------------------------------------------
+  // L1 Trigger Filter
+  // ------------------------------------------------------------------------------------ 
+
+  L1TFilter l1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts);
 
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
@@ -967,8 +1036,8 @@ int main(int argc, char* argv[]){
     if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
   }
 
-  L1VariableHistograms l1VariableHistograms = L1VariableHistograms("L1VariableHistograms", output_name, output_folder);
-  VariableHistograms variableHistograms = VariableHistograms("VariableHistograms", output_name, output_folder);
+  L1VariableHistograms l1VariableHistograms = L1VariableHistograms("L1VariableHistograms", fs);
+  VariableHistograms variableHistograms = VariableHistograms("VariableHistograms", fs);
 
   HTTSync httSync("HTTSync","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
@@ -979,8 +1048,8 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Trigger Efficiencies
   // ------------------------------------------------------------------------------------ 
-  
-  Efficiency efficiency = Efficiency("Efficiency", output_name, output_folder);
+
+  Efficiency efficiency = Efficiency("Efficiency", fs);
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -993,7 +1062,7 @@ int main(int argc, char* argv[]){
    eventChecker.CheckEvent(ch);
    httPrint.PrintEvent(ch);
   }
-
+  
 
   httPrint.set_skip_events(false);
   if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
@@ -1007,8 +1076,11 @@ int main(int argc, char* argv[]){
   if (to_check.size() > 0)        analysis.AddModule(&httPrint);
   
                                   analysis.AddModule(&efficiency);
+                                  analysis.AddModule(&genChannelFilter);
+                                  analysis.AddModule(&l1TFilter);
+                                  analysis.AddModule(&l1VariableHistograms);
   
-
+  
   if (channel == channel::et || channel == channel::etmet) {
                                   analysis.AddModule(&selElectronCopyCollection);
                                   analysis.AddModule(&selElectronFilter);
@@ -1098,13 +1170,20 @@ int main(int argc, char* argv[]){
     }
   }
 
-  if (!do_skim && channel != channel::null) {
+  if (!do_skim ) {
+      //if (!is_embedded && strategy != strategy::phys14)  { // Don't usually want trigger for embedded
+       //                           analysis.AddModule(&httTriggerFilter);
+      //}
+      //if (is_embedded && strategy == strategy::paper2013 && era == era::data_2012_rereco) {
+        //                          analysis.AddModule(&httTriggerFilter);
+      //}
 
                                   analysis.AddModule(&httPairSelector);
 
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
+            
 
    if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
@@ -1116,8 +1195,8 @@ int main(int argc, char* argv[]){
     if(make_sync_ntuple && strategy==strategy::paper2013){
          analysis.AddModule(&httSync);
     }
-
-                                  analysis.AddModule(&filter0JetEvents);
+                                  analysis.AddModule(&vBFFilter);
+                                  analysis.AddModule(&variableHistograms);
 
   }
 
@@ -1125,8 +1204,6 @@ int main(int argc, char* argv[]){
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
 
-                                  //analysis.AddModule(&l1VariableHistograms);
-                                  //analysis.AddModule(&variableHistograms);
 
   analysis.RunAnalysis();
   delete fs;

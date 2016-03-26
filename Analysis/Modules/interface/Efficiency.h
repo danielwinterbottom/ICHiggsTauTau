@@ -12,6 +12,7 @@
 #include "TFile.h"
 #include "TLorentzVector.h"
 #include "TDirectory.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 
 // ICHiggsTauTau Objects
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
@@ -45,11 +46,6 @@ namespace ic {
     std::string l1met_label_;
     
     std::string genjets_label_;
- 
-    std::string output_name_;
-    std::string output_name2_ = "Efficiency";
-    std::string output_folder_;
-    
     
     unsigned n_genParticles_;
     unsigned n_genJets_;
@@ -94,7 +90,6 @@ namespace ic {
     TH1D *h_tau_IsoTau_PtDiff;
     TH1D *h_tau_Tau_DeltaRRes;
     TH1D *h_tau_IsoTau_DeltaRRes;
-    TH1D *h_tautau_DeltaR;
     
     TH1D *h_jet_EG_Efficiency;
     TH1D *h_jet_IsoEG_Efficiency;
@@ -108,64 +103,33 @@ namespace ic {
     TH1D *h_jet_Jet_DeltaRRes;
     TH1D *h_jet_Jet_PtDiff;
     
+    TH1D *h_jet_TauEG_Efficiency;
+    TH1D *h_jet_IsoTauIsoEG_Efficiency;
+    
     TH1D *h_jetjet_Mjj_Efficiency;
     TH1D *h_jetjet_Mjj_Total;
     TH1D *h_jetjet_DeltaEta_Efficiency;
     TH1D *h_jetjet_DeltaEta_Total;
     
-    TH1D *h_tauJetComp;
-    TH1D *h_l1tauJetComp;
+    TH1D *h_jettau_Mjj_Efficiency;
+    TH1D *h_jettau_Mjj_Total;
+    TH1D *h_jettau_DeltaEta_Efficiency;
+    TH1D *h_jettau_DeltaEta_Total;
     
-    TH1D *h_gentau_total;
-    TH1D *h_gentau_Tau;
-    TH1D *h_gentau_IsoTau;
-    TH1D *h_gentau_Jet;
-    TH1D *h_gentau_EG;
-    TH1D *h_gentau_IsoEG;
-    TH1D *h_gentau_IsoTauIsoEG;
-    TH1D *h_gentau_TauEG;
-    TH1D *h_gentau_IsoTauJet;
-    TH1D *h_gentau_TauJet;
-    TH1D *h_gentau_IsoTauIsoEGJet;
-    TH1D *h_gentau_TauEGJet;
+    TH1D *h_jetelectron_Mjj_Efficiency;
+    TH1D *h_jetelectron_Mjj_Total;
+    TH1D *h_jetelectron_DeltaEta_Efficiency;
+    TH1D *h_jetelectron_DeltaEta_Total;
     
-    TH1D *h_genelectron_total;
-    TH1D *h_genelectron_Tau;
-    TH1D *h_genelectron_IsoTau;
-    TH1D *h_genelectron_Jet;
-    TH1D *h_genelectron_EG;
-    TH1D *h_genelectron_IsoEG;
-    TH1D *h_genelectron_IsoTauIsoEG;
-    TH1D *h_genelectron_TauEG;
-    TH1D *h_genelectron_IsoTauJet;
-    TH1D *h_genelectron_TauJet;
-    TH1D *h_genelectron_IsoTauIsoEGJet;
-    TH1D *h_genelectron_TauEGJet;
+    TH1D  *h_METEfficiency;
+    TH1D  *h_MHTEfficiency;
     
-    TH1D *h_Mjj_em;
-    TH1D *h_Mjj_et;
-    TH1D *h_Mjj_mt;
-    TH1D *h_Mjj_tt;
-    
-    TH1D *h_DeltaEta_em;
-    TH1D *h_DeltaEta_et;
-    TH1D *h_DeltaEta_mt;
-    TH1D *h_DeltaEta_tt;
-    
-    TH1D *h_jet1_em;
-    TH1D *h_jet1_et;
-    TH1D *h_jet1_mt;
-    TH1D *h_jet1_tt;
-    
-    TH1D *h_jet2_em;
-    TH1D *h_jet2_et;
-    TH1D *h_jet2_mt;
-    TH1D *h_jet2_tt;
-
+    TH1D  *h_GenMETEfficiency;
+    TH1D  *h_GenMHTEfficiency;
 
   public:
 
-    Efficiency(std::string const& name, std::string output_name, std::string output_folder);
+    Efficiency(std::string const& name, fwlite::TFileService *fs);
     virtual ~Efficiency();
 
     virtual int PreAnalysis();

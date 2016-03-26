@@ -11,6 +11,7 @@
 #include "TFile.h"
 #include "TLorentzVector.h"
 #include "TDirectory.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 
 // ICHiggsTauTau Objects
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
@@ -37,10 +38,6 @@ namespace ic {
     std::string l1muons_label_;
     std::string l1taus_label_;
     std::string l1met_label_;
-    
-    std::string output_name_;
-    std::string output_name2_ = "L1T";
-    std::string output_folder_;
 
     int n_jets_;
     int n_electrons_;
@@ -92,15 +89,13 @@ namespace ic {
 
   public:
 
-    L1VariableHistograms(std::string const& name, std::string output_name, std::string output_folder);
+    L1VariableHistograms(std::string const& name, fwlite::TFileService *fs);
     virtual ~L1VariableHistograms();
 
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
     virtual void PrintInfo();
-    
-    TFile *fLT1;
     
   };
 

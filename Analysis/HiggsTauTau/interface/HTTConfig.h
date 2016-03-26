@@ -84,7 +84,8 @@ struct era_def {
 	enum type {
 		data_2011,				// Entire 2011 dataset, mixture of prompt and re-reco
 		data_2012_rereco,
-		data_2015
+		data_2015,
+                trigger_2016
 	};
 };
 typedef safe_enum<era_def> era;
@@ -93,7 +94,8 @@ inline std::string Era2String(era const& in) {
 	static std::map<era, std::string> conv = boost::assign::map_list_of
 		(era::data_2011, 					"data_2011")
 		(era::data_2012_rereco, 	"data_2012_rereco")
-		(era::data_2015, 	        "data_2015");
+		(era::data_2015, 	        "data_2015")
+                (era::trigger_2016, 	        "trigger_2016");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -106,7 +108,8 @@ inline era String2Era(std::string const& in) {
 	static std::map<std::string, era> conv = boost::assign::map_list_of
 	("data_2011",					era::data_2011)
 	("data_2012_rereco", 	era::data_2012_rereco)
-	("data_2015", 	era::data_2015);
+	("data_2015", 	era::data_2015)
+        ("trigger_2016", 	era::trigger_2016);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -169,7 +172,8 @@ struct channel_def {
         tpzmm,
         wmnu,
 		mtmet,
-		etmet
+		etmet,
+                null
 	};
 };
 typedef safe_enum<channel_def> channel;
@@ -186,7 +190,8 @@ inline std::string Channel2String(channel const& in) {
 		(channel::tpzmm, "tpzmm")
 		(channel::wmnu, "wmnu")
 		(channel::etmet, "etmet")
-		(channel::mtmet, "mtmet");
+		(channel::mtmet, "mtmet")
+                (channel::null, "null");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -207,7 +212,8 @@ inline channel String2Channel(std::string const& in) {
 	("tpzmm", channel::tpzmm)
 	("wmnu", channel::wmnu)
 	("etmet", channel::etmet)
-	("mtmet", channel::mtmet);
+	("mtmet", channel::mtmet)
+        ("null", channel::null);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

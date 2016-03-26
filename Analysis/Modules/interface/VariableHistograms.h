@@ -11,6 +11,7 @@
 #include "TFile.h"
 #include "TLorentzVector.h"
 #include "TDirectory.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 
 
 namespace ic {
@@ -40,12 +41,6 @@ namespace ic {
     std::string HLT13_label_;
     std::string HLT14_label_;
     std::string HLT15_label_;
- 
-
-    
-    std::string output_name_;
-    std::string output_name2_ = "Offline";
-    std::string output_folder_;
 
     int n_jets_;
     int n_electrons_;
@@ -76,15 +71,13 @@ namespace ic {
 
   public:
 
-    VariableHistograms(std::string const& name, std::string output_name, std::string output_folder);
+    VariableHistograms(std::string const& name, fwlite::TFileService *fs);
     virtual ~VariableHistograms();
 
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
     virtual void PrintInfo();
-    
-    TFile *fOffline;
     
   };
 
