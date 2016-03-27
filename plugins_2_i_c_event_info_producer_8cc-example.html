@@ -148,7 +148,9 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">      filtersfromtrig_input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputfiltersfromtrig&quot;</span>)),</div>
 <div class="line">      filtersfromtrig_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::vector&lt;<a class="code" href="namespacestd.html">std</a>::string&gt; &gt;(<span class="stringliteral">&quot;filtersfromtrig&quot;</span>))</div>
 <div class="line">{</div>
-<div class="line">      consumes&lt;LHERunInfoProduct&gt;({<span class="stringliteral">&quot;externalLHEProducer&quot;</span>});</div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
+<div class="line">      consumes&lt;LHERunInfoProduct, edm::InRun&gt;({<span class="stringliteral">&quot;externalLHEProducer&quot;</span>});</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">      consumes&lt;GenEventInfoProduct&gt;({<span class="stringliteral">&quot;generator&quot;</span>});</div>
 <div class="line">      consumes&lt;LHEEventProduct&gt;(lhe_collection_);</div>
 <div class="line">      consumes&lt;double&gt;(input_leptons_rho_);</div>

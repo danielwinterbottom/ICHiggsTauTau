@@ -1,5 +1,12 @@
 var NAVTREEINDEX5 =
 {
+"classic_1_1_tau.html#a4807508a0de13dae887662dcb9e81067":[10,0,1,21,18],
+"classic_1_1_tau.html#a48b2b3b2b7d2951941c92d3e8f5a4f0d":[10,0,1,21,27],
+"classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2":[10,0,1,21,25],
+"classic_1_1_tau.html#a643249296205bc8a24a1f033e001b5b2":[10,0,1,21,20],
+"classic_1_1_tau.html#a7a9183f6217949c65d2638e8e5146305":[10,0,1,21,12],
+"classic_1_1_tau.html#a8156b2c5b98700713b386d6941c700af":[10,0,1,21,23],
+"classic_1_1_tau.html#a8958d4db6296fa7e75f994d21441098e":[10,0,1,21,9],
 "classic_1_1_tau.html#a93a4e9e681aaabf133991bfe676c76fc":[10,0,1,21,8],
 "classic_1_1_tau.html#aa202f31c96ac8cbbe85587d7c94187da":[10,0,1,21,5],
 "classic_1_1_tau.html#aa5458736723cf74256ef3af8782c38dd":[10,0,1,21,4],
@@ -191,8 +198,8 @@ var NAVTREEINDEX5 =
 "index.html#overview":[0,0],
 "namespaceedm.html":[9,0,0],
 "namespaceedm.html":[10,0,0],
-"namespaceic.html":[9,0,1],
 "namespaceic.html":[10,0,1],
+"namespaceic.html":[9,0,1],
 "namespacemembers.html":[9,1,0],
 "namespacemembers_enum.html":[9,1,3],
 "namespacemembers_eval.html":[9,1,4],
@@ -242,12 +249,5 @@ var NAVTREEINDEX5 =
 "plugins_2_i_c_pileup_info_producer_8cc-example.html":[12,12],
 "plugins_2_i_c_secondary_vertex_producer_8cc-example.html":[12,13],
 "plugins_2_i_c_super_cluster_producer_8cc-example.html":[12,14],
-"plugins_2_i_c_tau_producer_8hh-example.html":[12,15],
-"plugins_2_i_c_track_producer_8cc-example.html":[12,16],
-"plugins_2_i_c_trigger_object_producer_8cc-example.html":[12,17],
-"plugins_2_i_c_trigger_path_producer_8cc-example.html":[12,18],
-"plugins_2_i_c_vertex_producer_8cc-example.html":[12,19],
-"struct_collection_i_d_and_size.html":[10,0,2],
-"struct_collection_i_d_and_size.html#a39a0153342bf6ab395b717450dfbe973":[10,0,2,1],
-"struct_collection_i_d_and_size.html#a516181674f8282ecb378991e36727305":[10,0,2,2]
+"plugins_2_i_c_tau_producer_8hh-example.html":[12,15]
 };

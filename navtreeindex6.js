@@ -1,5 +1,12 @@
 var NAVTREEINDEX6 =
 {
+"plugins_2_i_c_track_producer_8cc-example.html":[12,16],
+"plugins_2_i_c_trigger_object_producer_8cc-example.html":[12,17],
+"plugins_2_i_c_trigger_path_producer_8cc-example.html":[12,18],
+"plugins_2_i_c_vertex_producer_8cc-example.html":[12,19],
+"struct_collection_i_d_and_size.html":[10,0,2],
+"struct_collection_i_d_and_size.html#a39a0153342bf6ab395b717450dfbe973":[10,0,2,1],
+"struct_collection_i_d_and_size.html#a516181674f8282ecb378991e36727305":[10,0,2,2],
 "struct_collection_i_d_and_size.html#a7bccb708964ece3e140a7633fe7a400f":[10,0,2,0],
 "struct_collection_size.html":[10,0,3],
 "struct_collection_size.html#a7cb5406369f8705fff2b4e8694c314a2":[10,0,3,0],
