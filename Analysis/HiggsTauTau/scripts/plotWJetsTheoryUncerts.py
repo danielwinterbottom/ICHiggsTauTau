@@ -10,12 +10,12 @@ from time import time
 """
 Examples:
 
-python scripts/plotTest.py --sample WJetsToLNuNLO \\ 
+python scripts/plotWJetsTheoryUncerts.py --sample WJetsToLNuNLO \\ 
     --title-right 'WJetsToLNu (NLO)' --title-left 'QCD scale' \\
     --text '#splitline{W#rightarrow#mu#nu + #geq 1 jet}{selection}' \\
     --output mt_dist_WJetsToLNuNLO_1jet --selection 'n_jets>=1'
 
-python scripts/plotTest.py --sample WJetsToLNuNLO --mode 2 \\
+python scripts/plotWJetsTheoryUncerts.py --sample WJetsToLNuNLO --mode 2 \\
     --title-right 'WJetsToLNu (NLO)' --title-left '#alpha_{s}' \\
     --text '#splitline{W#rightarrow#mu#nu + 2 jets}{selection}' \\
     --output mt_as_WJetsToLNuNLO_2jet --selection 'n_jets>=2'
