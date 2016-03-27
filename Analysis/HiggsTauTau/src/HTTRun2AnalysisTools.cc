@@ -1058,6 +1058,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
 
     std::string w_shape_cat = cat;
+    //std::string w_shape_cat = "n_jets<=1&&n_loose_bjets>=1&&"+alias_map_["baseline"];
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
     TH1F w_hist = this->GetShape(var, wjets_samples, w_shape_sel, w_shape_cat, wt);
     //if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
@@ -1152,9 +1153,6 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         } else {
           if (method == 9 || method == 11 ||method == 13) {
               qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
-              std::cout<<"AAA"<<std::endl;
-              std::cout<<qcd_shape_cat<<std::endl;
-              std::cout<<qcd_sdb_sel<<std::endl;
           }
           qcd_hist = this->GetShape(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, wt);
 //        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
