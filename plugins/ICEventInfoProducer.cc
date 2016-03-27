@@ -47,7 +47,9 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")),
       filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig"))
 {
-      consumes<LHERunInfoProduct>({"externalLHEProducer"});
+#if CMSSW_MAJOR_VERSION >= 7
+      consumes<LHERunInfoProduct, edm::InRun>({"externalLHEProducer"});
+#endif
       consumes<GenEventInfoProduct>({"generator"});
       consumes<LHEEventProduct>(lhe_collection_);
       consumes<double>(input_leptons_rho_);
