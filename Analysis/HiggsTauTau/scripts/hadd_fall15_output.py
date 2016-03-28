@@ -234,19 +234,19 @@ for sa in sample_list:
         else :
           print "Incorrect number of files for sample %(sa)s_2015_%(ch)s!"%vars()
     for sdir in subdirs:
-      if os.path.isfile('./%(outputf)s/%(sdir)s/%(sa)s_2015_%(ch)s_0.root'%vars()):
+      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2015_%(ch)s_0.root'%vars()):
         print "Hadding in subdir %(sdir)s"%vars()
         if "%(sa)s_2015"%vars() in nfiles or ignore==True:
-          if ignore ==True or len(fnmatch.filter(os.listdir('./%(outputf)s/%(sdir)s'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
+          if ignore ==True or len(fnmatch.filter(os.listdir('%(outputf)s/%(sdir)s'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
             print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
-            os.system('hadd -f ./%(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2015.root ./%(outputf)s/%(sdir)s/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
+            os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2015.root %(outputf)s/%(sdir)s/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
             os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
             filetext = open("./haddout.txt").read()
             if 'Warning' in filetext or 'Error' in filetext:
               print "Hadd had a problem:"
               print filetext 
             else :
-              os.system('rm ./%(outputf)s/%(sdir)s/%(sa)s_2015_%(ch)s_*' %vars())
+              os.system('rm %(outputf)s/%(sdir)s/%(sa)s_2015_%(ch)s_*' %vars())
           else :
             print "Incorrect number of files for sample %(sa)s_2015_%(ch)s! in %(sdir)s"%vars()
 #        print "Incorrect number of files for sample %(sa)s_2015_%(ch)s!"%vars()

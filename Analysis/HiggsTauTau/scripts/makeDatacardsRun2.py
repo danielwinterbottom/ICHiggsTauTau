@@ -89,8 +89,8 @@ configmap={}
 
 for ind in range(0,len(lines)):
   configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
-
-SCHEME= configmap["signal_scheme"].rstrip('\n')
+if "signal_scheme" in configmap:
+  SCHEME= configmap["signal_scheme"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
 PARAMS=configmap["paramfile"].rstrip('\n')
 
@@ -118,10 +118,14 @@ extra_channel = {
 }
 if options.shape_systs:
   extra_channel = {
-      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_scale_j="CMS_scale_j_13TeV" ',
-      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_scale_j="CMS_scale_j_13TeV" ',
-      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_scale_j="CMS_scale_j_13TeV" ',
-      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_scale_j="CMS_scale_j_13TeV" '
+      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
+      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
+      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
+      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" '# --syst_scale_j="CMS_scale_j_13TeV" '
+      #"et" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
+      #"mt" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
+      #"tt" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
+      #"em" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
   }
 
 #################################################################
@@ -314,7 +318,7 @@ for ch in channels:
         ' --var="%(var)s%(bin)s" --norm_bins=true '
         ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
         ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
-        ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbose=false'
+        ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbosity=0'
         ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(extra)s' % vars())
   os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_%(var)s_*_%(ch)s_%(YEAR)s.root' % vars())
   os.system('rm datacard_%(var)s_*_%(ch)s_%(YEAR)s.root' % vars())
