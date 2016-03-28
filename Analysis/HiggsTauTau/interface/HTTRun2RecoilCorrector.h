@@ -23,6 +23,7 @@ class HTTRun2RecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HTTRun2RecoilCorrector, ic::mc, mc)
   CLASS_MEMBER(HTTRun2RecoilCorrector, ic::era, era)
   CLASS_MEMBER(HTTRun2RecoilCorrector, bool, use_quantile_map)
+  CLASS_MEMBER(HTTRun2RecoilCorrector, bool, store_boson_pt)
 
 
 

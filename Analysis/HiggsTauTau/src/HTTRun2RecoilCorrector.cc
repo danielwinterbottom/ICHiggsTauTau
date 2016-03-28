@@ -17,6 +17,7 @@ namespace ic {
     jets_label_ = "pfJetsPFlow";
     sample_ = "";
     use_quantile_map_ = false;
+    store_boson_pt_ = false;
     disable = true;
     is_wjets = false;
   }
@@ -101,6 +102,12 @@ namespace ic {
      vispY+= sel_vis_parts[i]->vector().py();
    }
 
+  if(store_boson_pt_){
+    event->Add("genpX", genpX);
+    event->Add("genpY", genpY);
+    event->Add("vispX", vispX);
+    event->Add("vispY", vispY);
+  }
 
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));

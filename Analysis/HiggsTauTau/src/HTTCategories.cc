@@ -616,6 +616,11 @@ namespace ic {
       //Puppi Met
       synctree_->Branch("puppimet",&puppimet_.var_float, "puppimet/F");
       synctree_->Branch("puppimetphi", &puppimet_phi_,"puppimet_phi/F");
+      //Gen/vis px/py for recoil corrections:
+      synctree_->Branch("genpX", &gen_px_, "genpX/F");
+      synctree_->Branch("genpY", &gen_py_, "genpY/F");
+      synctree_->Branch("vispX", &vis_px_, "vispX/F");
+      synctree_->Branch("vispY", &vis_py_, "vispY/F");
       // MVA MET
       synctree_->Branch("mvamet", &mvamet_.var_float, "mvamet/F");
       // MVA MET phi
@@ -1023,6 +1028,12 @@ namespace ic {
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
+    if(make_sync_ntuple_){
+      event->Exists("genpX") ? gen_px_ = event->Get<double>("genpX") : 0.;
+      event->Exists("genpY") ? gen_py_ = event->Get<double>("genpY") : 0.;
+      event->Exists("vispX") ? vis_px_ = event->Get<double>("vispX") : 0.;
+      event->Exists("vispY") ? vis_py_ = event->Get<double>("vispY") : 0.;
+    }
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvamet_ = mets->pt();
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvamet_phi_ = mets->phi();
 

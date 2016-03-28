@@ -182,6 +182,10 @@ class HTTCategories : public ModuleBase {
   float pfmetCov01_;
   float pfmetCov10_;
   float pfmetCov11_;
+  float gen_px_;
+  float gen_py_;
+  float vis_px_;
+  float vis_py_;
 
   // Tau ID variables
   float l3Hits_2 = 0;
