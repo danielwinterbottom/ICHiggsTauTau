@@ -88,7 +88,8 @@ with open("%(CFG)s"%vars(),"r") as cfgfile:
 configmap={}
 
 for ind in range(0,len(lines)):
-  configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
+  if len(lines[ind].split("="))>1:
+    configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
 if "signal_scheme" in configmap:
   SCHEME= configmap["signal_scheme"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
