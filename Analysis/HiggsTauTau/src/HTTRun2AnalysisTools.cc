@@ -676,14 +676,11 @@ namespace ic {
     } else {
         samples_alias_map_["qcd_sub_samples"] = {
         "DYJetsToLL_M-50-LO",
-        "DYJetsToLL_M-5-LO",
         "T-tW", "Tbar-tW", "T-t","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
         "ZZTo2L2Q","ZZTo4L",
         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
         "TT-ext","WJetsToLNu-LO",
-        "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-        "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
         "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",

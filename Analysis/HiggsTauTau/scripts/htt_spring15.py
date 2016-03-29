@@ -87,7 +87,7 @@ scales = options.scales
 
 
 
-CONFIG='scripts/config.json'
+CONFIG='scripts/config_74X.json'
 #if options.proc_data or options.proc_all:
 #  for ch in channels:
 #    if '0' in scales:
