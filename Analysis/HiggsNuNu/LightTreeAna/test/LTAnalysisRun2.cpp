@@ -384,8 +384,11 @@ int main(int argc, char* argv[]){
   std::string sigcat;
   std::string zextrasigcat;
 
+  //AMM uncomment for QCD mindphi plot in signal region!
+  //std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&metnomuons>0&&dijet_M>800&&"+jetmetdphicut;
   std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&metnomuons>200&&dijet_M>1100&&"+jetmetdphicut;
   //std::string nunuqcdcat=nunucat;
+  //AMM uncomment for QCD plot in signal region! except mindphi.
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1";
   std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
 
@@ -763,6 +766,7 @@ int main(int argc, char* argv[]){
     .set_shape(shape)
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
+    //AMM uncomment for QCD in signal region plots.
     //.set_cat(nunuqcdcat+mcextrasel);
     .set_cat(sigcat+mcextrasel);
 
@@ -792,6 +796,8 @@ int main(int argc, char* argv[]){
       thisshape.set_legleft(0.39);
       thisshape.set_legright(0.61);
     }
+    if (strs[0].find("alljetsmetnomu")!=strs[0].npos) thisshape.set_axisrangemultiplier((channel=="mumu"||channel=="nunu")?2:1.6);
+    if (strs[0].find("dijet_deta")!=strs[0].npos && channel=="nunu") thisshape.set_axisrangemultiplier(1.7);
 
     thisshape.set_histtitle(histTitle[ishape]);
     //    shapevec.push_back(strs[0]);
@@ -1023,8 +1029,10 @@ int main(int argc, char* argv[]){
   LTPlotElement qcdele;
   qcdele.set_is_data(false)
     .set_scale(getPostFitSF(channel,"QCD"))
-    //.set_scale(7.8/3.8)
-    //.set_scale(4.5/3.8)
+    //AMM uncomment for QCD in signal region plots mindphi.
+    //.set_scale(3.8/7.8)
+    //AMM uncomment for QCD in signal region plots all but mindphi.
+    //.set_scale(3.8/6.5)
     .set_color(kMagenta-10)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -1092,8 +1100,8 @@ int main(int argc, char* argv[]){
       if (channel!="taunu"){
 	elementvec.push_back(qcdznunuele);
 	elementvec.push_back(ewkznunuele);
+	elementvec.push_back(sigele);
       }
-      elementvec.push_back(sigele);
       //elementvec.push_back(ggHele);
     }
   }

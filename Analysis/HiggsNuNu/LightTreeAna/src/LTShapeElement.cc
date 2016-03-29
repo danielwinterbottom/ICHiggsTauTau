@@ -4,7 +4,7 @@ namespace ic{
 
   LTShapeElement::LTShapeElement(){
     dology_=false;
-    axisrangemultiplier_=1.2;
+    axisrangemultiplier_=1.5;
     legleft_=0.62;
     legright_=0.89;
   };

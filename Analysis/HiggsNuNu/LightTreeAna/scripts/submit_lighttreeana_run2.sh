@@ -26,9 +26,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_160325_sig #nomindphi
+JOBDIRPREFIX=jobs_run2ana_160329_sig #nomindphi
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_160325_sig #nomindphi
+OUTPUTPREFIX=output_run2ana_160329_sig #nomindphi
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -73,7 +73,7 @@ for syst in "" #PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOW
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in enu munu taunu mumu nunu #qcd enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in enu munu taunu mumu #nunu #qcd enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     #executable expect strings separated by "!"

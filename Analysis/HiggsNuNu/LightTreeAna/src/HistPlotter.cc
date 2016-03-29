@@ -27,6 +27,7 @@ namespace ic{
     ele->set_fill_color(ele->color());
     ele->set_fill_style(1001);
     ele->set_draw_fill(true);
+    ele->set_draw_fill_in_legend(true);
     ele->set_draw_marker(false);
     ele->set_draw_line(false);
     ele->set_line_width(2);
@@ -38,7 +39,7 @@ namespace ic{
     ele->set_fill_style(1001);
     ele->set_draw_fill(true);
     ele->set_draw_marker(false);
-    ele->set_draw_line(false);
+    ele->set_draw_line(true);
     ele->set_draw_stat_error_y(false);
     ele->set_draw_fill_in_legend(false);
     ele->set_line_style(1);
@@ -54,6 +55,7 @@ namespace ic{
     ele->set_fill_color(1);
     ele->set_fill_style(0);
     ele->set_draw_fill(false);
+    ele->set_draw_fill_in_legend(false);
     ele->set_line_width(2);
     ele->set_draw_marker(true);
     ele->set_draw_line(true);
@@ -135,7 +137,7 @@ namespace ic{
       lower->SetGridy();
     }
     else{
-      upper->SetBottomMargin(0.16);
+      upper->SetBottomMargin(0.17);
     }
     upper->Draw();
     c1->cd();
@@ -271,7 +273,8 @@ namespace ic{
 	  elements_[iElement].hist_ptr()->SetFillStyle(elements_[iElement].fill_style());
 	  elements_[iElement].hist_ptr()->SetLineColor(elements_[iElement].line_color());
 	  elements_[iElement].set_drawopts(elements_[iElement].drawopts()+"hist");
-	  elements_[iElement].set_legopts(elements_[iElement].legopts()+"f");
+	  if (elements_[iElement].draw_fill_in_legend()) elements_[iElement].set_legopts(elements_[iElement].legopts()+"f");
+	  else elements_[iElement].set_legopts(elements_[iElement].legopts()+"l");
 	}
 	
 	if(elements_[iElement].draw_line()){
@@ -336,7 +339,7 @@ namespace ic{
 	  stack->GetYaxis()->SetLabelSize(0.06);
  	  stack->GetYaxis()->SetTitleFont(62);
  	  stack->GetYaxis()->SetTitleSize(0.08);
- 	  stack->GetYaxis()->SetTitleOffset(0.450);
+ 	  stack->GetYaxis()->SetTitleOffset(0.60);
 	  if(do_ratio_){
 	    stack->GetXaxis()->SetLabelOffset(999);
 	    stack->GetXaxis()->SetLabelSize(0);
@@ -345,12 +348,13 @@ namespace ic{
  	    stack->GetXaxis()->SetLabelSize(0.06);
  	    stack->GetXaxis()->SetTitleFont(62);
  	    stack->GetXaxis()->SetTitleSize(0.08);
- 	    stack->GetXaxis()->SetTitleOffset(0.7);
+ 	    stack->GetXaxis()->SetTitleOffset(0.83);
 	    
 	    std::string xtitle;
 	    xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	    xtitle=xtitle.substr(0,xtitle.find(";"));
 	    stack->GetXaxis()->SetTitle(xtitle.c_str());
+	    stack->GetYaxis()->SetTitle("Events");
 	  }
 	  std::string ytitle;
 	  ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
@@ -358,11 +362,13 @@ namespace ic{
 	  ytitle=ytitle.substr(0,ytitle.find(";"));
 	  if(do_ratio_) stack->SetTitle((";;"+ytitle).c_str());
 	  else{
-	    std::string xtitle;
-            xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
-            xtitle=xtitle.substr(0,xtitle.find(";"));
-            stack->GetXaxis()->SetTitle(xtitle.c_str());
-	    stack->SetTitle((";"+xtitle+";"+ytitle).c_str());
+	    //std::string xtitle;
+            //xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+            //xtitle=xtitle.substr(0,xtitle.find(";"));
+            //stack->GetXaxis()->SetTitle(xtitle.c_str());
+            //stack->GetYaxis()->SetTitle(ytitle.c_str());
+	    //stack->SetTitle((";"+xtitle+";"+ytitle).c_str());
+	    stack->SetTitle(shapes_[iShape].histtitle().c_str());
 	  }
 	  //c1->Update();
 	}
@@ -410,7 +416,7 @@ namespace ic{
 		elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0.06);
 		elements_[iElement].hist_ptr()->GetXaxis()->SetTitleFont(62);
 		elements_[iElement].hist_ptr()->GetXaxis()->SetTitleSize(0.08);
-		elements_[iElement].hist_ptr()->GetXaxis()->SetTitleOffset(0.600);
+		elements_[iElement].hist_ptr()->GetXaxis()->SetTitleOffset(0.830);
 		std::string xtitle;
 		xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 		xtitle=xtitle.substr(0,xtitle.find(";"));
@@ -460,7 +466,7 @@ namespace ic{
 		g->GetXaxis()->SetLabelSize(0.06);
                 g->GetXaxis()->SetTitleFont(62);
                 g->GetXaxis()->SetTitleSize(0.08);
-                g->GetXaxis()->SetTitleOffset(0.600);
+                g->GetXaxis()->SetTitleOffset(0.830);
 		std::string xtitle;
 		xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 		xtitle=xtitle.substr(0,xtitle.find(";"));
