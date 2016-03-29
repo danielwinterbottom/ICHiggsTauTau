@@ -34,6 +34,7 @@ namespace ic {
     bfake_mode_               = 0;
     do_w_soup_                = false;
     do_dy_soup_               = false;
+    do_dy_soup_high_mass_     = false;
     do_dy_soup_htbinned_      = false;
     do_w_soup_htbinned_      = false;
     ggh_mass_                 = "";
@@ -103,6 +104,10 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
     std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
     std::cout << boost::format(param_fmt()) % "ditau_label"          % ditau_label_;
+    if (do_dy_soup_ && do_dy_soup_high_mass_){
+      std::cerr << "Error : need to choose one of do_dy_soup_ and do_dy_soup_high_mass_!"<<std::endl;
+      throw;
+    }
 
     if (do_tau_fake_weights_) {
      tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
@@ -162,9 +167,25 @@ namespace ic {
       MuonFakeRateHist_PtEta->SetDirectory(0);
     }
 
-    if (do_w_soup_) {
+    if (do_w_soup_ && era_!=era::data_2015) {
       std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
       std::cout << "nInc = " << n_inc_ << std::endl;
+      w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
+      w2_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
+      w3_ = (n_inc_*f3_) / ( (n_inc_*f3_) + n3_ );
+      w4_ = (n_inc_*f4_) / ( (n_inc_*f4_) + n4_ );
+      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % f1_ % n1_ % w1_;
+      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % f2_ % n2_ % w2_;
+      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % f3_ % n3_ % w3_;
+      std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % f4_ % n4_ % w4_;
+    }
+    if (do_w_soup_ && era_ == era::data_2015) {
+      std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
+      std::cout << "nInc = " << n_inc_ << std::endl;
+      f1_ = wxs1_/wxs0_;
+      f2_ = wxs2_/wxs0_;
+      f3_ = wxs3_/wxs0_;
+      f4_ = wxs4_/wxs0_;
       w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
       w2_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
       w3_ = (n_inc_*f3_) / ( (n_inc_*f3_) + n3_ );
@@ -185,6 +206,37 @@ namespace ic {
       std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % zf2_ % zn2_ % zw2_;
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_ % zw3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % zf4_ % zn4_ % zw4_;
+    }
+    if (do_dy_soup_high_mass_ ) {
+      std::cout << boost::format(param_fmt()) % "make_dy_soup_high_mass"      % true;
+      std::cout << "nInc = " << zn_inc_ << std::endl;
+      zfhm_ = zxshm_/zxsinc_;
+      zfhm1_ = zxshm_/zxs1_;
+      zfhm2_ = zxshm_/zxs2_;
+      zfhm3_ = zxshm_/zxs3_;
+      zfhm4_ = zxshm_/zxs4_;
+      zf1_ = zxs1_/zxsinc_;
+      zf2_ = zxs2_/zxsinc_;
+      zf3_ = zxs3_/zxsinc_;
+      zf4_ = zxs4_/zxsinc_;
+      zw0hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_);
+      zw1lo_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
+      zw1hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn1_*zfhm1_) );
+      zw2lo_ = (zn_inc_*zf2_) / ( (zn_inc_*zf2_) + zn2_ );
+      zw2hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn2_*zfhm2_));
+      zw3lo_ = (zn_inc_*zf3_) / ( (zn_inc_*zf3_) + zn3_ );
+      zw3hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn3_*zfhm3_));
+      zw4lo_ = (zn_inc_*zf4_) / ( (zn_inc_*zf4_) + zn4_ );
+      zw4hi_ = (zn_inc_*zfhm_) / ( (zn_inc_*zfhm_) + zn_hm_ + (zn4_*zfhm4_));
+      std::cout << boost::format("w0hi=%-9.5f \n") % zw0hi_;
+      std::cout << boost::format("w1lo=%-9.5f \n") % zw1lo_;
+      std::cout << boost::format("w1hi=%-9.5f \n") % zw1hi_;
+      std::cout << boost::format("w2lo=%-9.5f \n") % zw2lo_;
+      std::cout << boost::format("w2hi=%-9.5f \n") % zw2hi_;
+      std::cout << boost::format("w3lo=%-9.5f \n") % zw3lo_;
+      std::cout << boost::format("w3hi=%-9.5f \n") % zw3hi_;
+      std::cout << boost::format("w4lo=%-9.5f \n") % zw4lo_;
+      std::cout << boost::format("w4hi=%-9.5f \n") % zw4hi_;
     }
     if (do_w_soup_htbinned_ ) {
       std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
@@ -346,7 +398,7 @@ namespace ic {
     }
     
     
-    if (do_btag_weight_) {
+    if (do_btag_weight_ && mc_!=mc::fall15_76X) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
       //double no_btag_weight = btag_weight.GetWeight(jets, "CSVM", 0, 0, is_2012_);
@@ -360,6 +412,11 @@ namespace ic {
       event->Add("inclusive_btag_weight", inclusive_btag_weight);
       event->Add("retag_result", retag_result);
     }
+   
+    if(event->Exists("btag_evt_weight")){
+       double wtbtag = event->Get<double>("btag_evt_weight");
+       weight *= wtbtag;
+     } 
 
     if (do_trg_weights_) {
       if (channel_ == channel::et) {
@@ -1313,16 +1370,25 @@ namespace ic {
     }
 
     if (do_w_soup_) {
-      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      bool count_jets = false;
       unsigned partons = 0;
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        if (parts[i]->status() != 3) continue;
-        unsigned id = abs(parts[i]->pdgid());
-        if (count_jets) { 
-          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+      if(era_ != era::data_2015){
+        std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+        bool count_jets = false;
+        for (unsigned i = 0; i < parts.size(); ++i) {
+          if (parts[i]->status() != 3) continue;
+          unsigned id = abs(parts[i]->pdgid());
+          if (count_jets) { 
+            if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+          }
+          if (id == 24) count_jets = true; 
         }
-        if (id == 24) count_jets = true; 
+      } else {
+        std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+        for(unsigned i = 0; i< lhe_parts.size(); ++i){
+         if(lhe_parts[i]->status() != 1) continue;
+         unsigned id = abs(lhe_parts[i]->pdgid());
+         if ((id >= 1 && id <=6) || id == 21) partons++;
+        }
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
@@ -1350,8 +1416,12 @@ namespace ic {
           if (id == 23) count_jets = true; 
         }
       } else { 
-        EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-        partons = eventInfo->n_outgoing_partons();
+        std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+        for(unsigned i = 0; i< lhe_parts.size(); ++i){
+         if(lhe_parts[i]->status() != 1) continue;
+         unsigned id = abs(lhe_parts[i]->pdgid());
+         if ((id >= 1 && id <=6) || id == 21) partons++;
+        }
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
@@ -1361,6 +1431,47 @@ namespace ic {
       if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
       if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
       if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
+    }
+
+
+    if (do_dy_soup_high_mass_) {
+        unsigned partons = 0; 
+        double gen_mll = 0;
+        std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
+        std::vector<GenParticle*> zll_cands;
+        for(unsigned i = 0; i< lhe_parts.size(); ++i){
+         if(lhe_parts[i]->status() != 1) continue;
+         unsigned id = abs(lhe_parts[i]->pdgid());
+         if ((id >= 1 && id <=6) || id == 21) partons++;
+         if (id == 11|| id ==13 || id ==15) zll_cands.push_back(lhe_parts[i]);
+        }
+        if(zll_cands.size() == 2){
+         gen_mll = (zll_cands[0]->vector()+zll_cands[1]->vector()).M();
+        } else {
+          std::cerr << "Error making soup, event has " << zll_cands.size() << " Z->ll candidates, 2 expected!" <<std::endl;
+          throw;
+        } 
+      if (partons > 4) {
+        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+        throw;
+      }
+       
+      unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+      bool is_ztt = true;
+      if(gen_match_1 < 3) is_ztt=false;
+      if (partons == 0 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup",zw0hi_);
+      if (partons == 1 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw1lo_);
+      if (partons == 1 && gen_mll > 150 && !is_ztt) eventInfo->set_weight("dysoup", zw1lo_);
+      if (partons == 1 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw1hi_);
+      if (partons == 2 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw2lo_);
+      if (partons == 2 && gen_mll > 150 && !is_ztt) eventInfo->set_weight("dysoup", zw2lo_);
+      if (partons == 2 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw2hi_);
+      if (partons == 3 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw3lo_);
+      if (partons == 3 && gen_mll > 150 && !is_ztt) eventInfo->set_weight("dysoup", zw3lo_);
+      if (partons == 3 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw3hi_);
+      if (partons == 4 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw4lo_);
+      if (partons == 4 && gen_mll > 150 && !is_ztt) eventInfo->set_weight("dysoup", zw4lo_);
+      if (partons == 4 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw4hi_);
     }
 
    if (do_w_soup_htbinned_){
@@ -1423,12 +1534,31 @@ namespace ic {
     zn4_ = zn4;
   }
 
+  void HTTWeights::SetDYInputYieldsHighMass(double zn_inc, double zn1, double zn2, double zn3, double zn4, double zn_hm) {
+    zn_inc_ = zn_inc;
+    zn1_ = zn1;
+    zn2_ = zn2;
+    zn3_ = zn3;
+    zn4_ = zn4;
+    zn_hm_ = zn_hm;
+  }
+
   void HTTWeights::SetDYInputCrossSections(double zxs0, double zxs1, double zxs2, double zxs3, double zxs4) {
     zxs0_ = zxs0;
     zxs1_ = zxs1;
     zxs2_ = zxs2;
     zxs3_ = zxs3;
     zxs4_ = zxs4;
+  }
+
+
+  void HTTWeights::SetDYInputCrossSectionsHighMass(double zxsinc, double zxs1, double zxs2, double zxs3, double zxs4, double zxshm) {
+    zxsinc_ = zxsinc;
+    zxs1_ = zxs1;
+    zxs2_ = zxs2;
+    zxs3_ = zxs3;
+    zxs4_ = zxs4;
+    zxshm_ = zxshm;
   }
 
   void HTTWeights::SetWInputCrossSections(double wxs0, double wxs1, double wxs2, double wxs3, double wxs4) {

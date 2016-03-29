@@ -62,6 +62,7 @@ class HTTCategories : public ModuleBase {
   float rho_;
   float mc_weight_;
   float pu_weight_;
+  double wt_btag_;
   double wt_ggh_pt_up_;
   double wt_ggh_pt_down_;
   double wt_tau_fake_up_;
@@ -181,6 +182,10 @@ class HTTCategories : public ModuleBase {
   float pfmetCov01_;
   float pfmetCov10_;
   float pfmetCov11_;
+  float gen_px_;
+  float gen_py_;
+  float vis_px_;
+  float vis_py_;
 
   // Tau ID variables
   float l3Hits_2 = 0;

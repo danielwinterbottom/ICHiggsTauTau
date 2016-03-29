@@ -61,6 +61,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
+      outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",              &mt_sv_.var_double);
@@ -113,6 +114,10 @@ namespace ic {
       outtree_->Branch("db_medium_2",&lbyMediumCombinedIsolation_2);
       outtree_->Branch("db_tight_1",&lbyTightCombinedIsolation_1);
       outtree_->Branch("db_tight_2",&lbyTightCombinedIsolation_2);
+      outtree_->Branch("mva_olddm_vloose_1",&lbyVLooseIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_vloose_2",&lbyVLooseIsolationMVArun2DBoldDMwLT_2);
+      outtree_->Branch("mva_olddm_loose_1",&lbyLooseIsolationMVArun2DBoldDMwLT_1);
+      outtree_->Branch("mva_olddm_loose_2",&lbyLooseIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1);
       outtree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1);
@@ -611,6 +616,11 @@ namespace ic {
       //Puppi Met
       synctree_->Branch("puppimet",&puppimet_.var_float, "puppimet/F");
       synctree_->Branch("puppimetphi", &puppimet_phi_,"puppimet_phi/F");
+      //Gen/vis px/py for recoil corrections:
+      synctree_->Branch("genpX", &gen_px_, "genpX/F");
+      synctree_->Branch("genpY", &gen_py_, "genpY/F");
+      synctree_->Branch("vispX", &vis_px_, "vispX/F");
+      synctree_->Branch("vispY", &vis_py_, "vispY/F");
       // MVA MET
       synctree_->Branch("mvamet", &mvamet_.var_float, "mvamet/F");
       // MVA MET phi
@@ -821,6 +831,7 @@ namespace ic {
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mets = event->GetPtr<Met>(met_label_);
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>(jets_label_+"UnFiltered");
     std::vector<PFJet*> corrected_jets;
     if(bjet_regression_) corrected_jets = event->GetPtrVec<PFJet>(jets_label_+"Corrected");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
@@ -861,6 +872,10 @@ namespace ic {
       ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
     } 
     
+    //Compare with btag shape reweighting:
+    if(event->Exists("btag_evt_weight")){
+     wt_btag_ = event->Get<double>("btag_evt_weight");
+    } 
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
     // for each new event
@@ -1013,6 +1028,12 @@ namespace ic {
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
+    if(make_sync_ntuple_){
+      event->Exists("genpX") ? gen_px_ = event->Get<double>("genpX") : 0.;
+      event->Exists("genpY") ? gen_py_ = event->Get<double>("genpY") : 0.;
+      event->Exists("vispX") ? vis_px_ = event->Get<double>("vispX") : 0.;
+      event->Exists("vispY") ? vis_py_ = event->Get<double>("vispY") : 0.;
+    }
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvamet_ = mets->pt();
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvamet_phi_ = mets->phi();
 
@@ -1624,8 +1645,8 @@ namespace ic {
       std::vector<Candidate *> subleading_lepton;
       leading_lepton.push_back(ditau->GetCandidate("lepton1"));
       subleading_lepton.push_back(ditau->GetCandidate("lepton2")); 
-      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(lowpt_jets, leading_lepton, 0.5, true, true);
-      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(lowpt_jets, subleading_lepton, 0.5, true, true);
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(uncleaned_jets, leading_lepton, 0.5, true, true);
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(uncleaned_jets, subleading_lepton, 0.5, true, true);
       if(mu_matches.size() > 0) {
           jet_flav_1_ = (mu_matches.at(0)).first->parton_flavour();
       } else jet_flav_1_ = -9999;

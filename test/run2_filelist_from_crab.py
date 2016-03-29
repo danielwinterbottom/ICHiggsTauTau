@@ -35,9 +35,9 @@ if not options.no_report:
   repout,reperr = rep.communicate()
   replines=repout.splitlines()
   for repline in replines:
-      if repline[-21:]=="events have been read":
+      if "Number of events read" in repline:
           replinebits=repline.split(" ")
-          evoutstring="   "+replinebits[0]+" events have been processed"
+          evoutstring="   "+replinebits[-1]+" events have been processed"
           print evoutstring
 
 else:

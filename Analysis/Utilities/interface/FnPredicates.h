@@ -7,6 +7,7 @@
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
+#include "boost/range/algorithm_ext/erase.hpp"
 #include "Math/VectorUtil.h"
 #include "TVector3.h"
 
@@ -26,6 +27,26 @@ namespace ic {
                 t.begin(), t.end(),
                 [&](typename T::value_type const& x) { return !pred(x); }),
             t.end());
+  }
+
+  /**
+   * Remove elements from a container that return false from a given predicate
+   */
+  template <class Container, class Pred>
+  Container& keep_if(Container& target, Pred pred) {
+    return boost::remove_erase_if(target, [&](typename Container::value_type const& x) {
+      return !pred(x);
+    });
+  }
+
+  /**
+   * Copy a container, filter elements, then return this copy
+   */
+  template <class Container, class Pred>
+  Container copy_keep_if(Container& target, Pred pred) {
+    Container res = target;
+    keep_if(res, pred);
+    return res;
   }
 
   //Dummy
@@ -181,6 +202,7 @@ namespace ic {
   
   inline double GetEffectiveArea(Electron const* cand){
     double cand_eta = cand->eta();
+    using std::abs;
 //From   https://github.com/ikrav/cmssw/blob/egm_id_747_v2/RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt
     if(abs(cand_eta)<1.) return 0.1752;
     else if(abs(cand_eta)<1.479) return 0.1862;
@@ -195,6 +217,7 @@ namespace ic {
 
   inline double GetEffectiveArea(Muon const* cand){
      double cand_eta = cand->eta();
+     using std::abs;
     //From https://indico.cern.ch/event/451110/contribution/1/attachments/1165046/1679258/miniIsoEffectiveAreas_muonPOG_051015.pdf
     if(abs(cand_eta)<0.8) return 0.0735;
     else if(abs(cand_eta)<1.3) return 0.0619;
