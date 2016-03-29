@@ -1,8 +1,8 @@
 #!/bin/sh
 
-JOBDIR=jobs_lighttree_160207/
+JOBDIR=jobs_lighttree_160307/
 INJOBDIR=0
-PROD=160213
+PROD=160307
 
 while [ $# -gt 0 ] ; do
 

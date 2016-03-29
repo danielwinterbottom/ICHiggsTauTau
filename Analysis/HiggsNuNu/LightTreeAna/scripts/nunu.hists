@@ -7,7 +7,7 @@ jet2_uncorpt(28,70.,350.)	;uncor p_{T}^{j2} (GeV);Events
 jet1_eta(94,-4.7,4.7)	;#eta^{j1} (GeV);Events
 jet2_eta(94,-4.7,4.7)	;#eta^{j2} (GeV);Events
 cjvjetpt(19,15.,205.)	;p_{T}^{CJV jet} (GeV);Events
-metnomuons(25,200.,600.)	;MET_{no #mu} (GeV);Events
+metnomuons(25,200.,600.)	;E_{T,no-#mu}^{miss} (GeV);Events
 met(30,0.,550.)	;MET (GeV);Events
 l1met(30,0.,550.)	;L1MET (GeV);Events
 ht(30,100,1000)	;H_{T}^{p_{T}^{j}>15 GeV} (GeV);Events
@@ -17,7 +17,7 @@ dijet_dphi(15,0.,3.1416)	;#Delta#phi_{jj};Events
 dijet_deta(20,3.6,7.)	;#Delta#eta_{jj};Events
 dijet_sumeta(30,-5,5)	;#eta_{j1}+#eta_{j2};Events
 jetmetnomu_mindphi(12,2.3,3.1416)	;#Delta#phi(E_{T}^{miss},j_{1,2});Events
-alljetsmetnomu_mindphi(12,2.3,3.1416)	;#Delta#phi(E_{T}^{miss},j);Events
+alljetsmetnomu_mindphi(12,2.3,3.1416)	;#Delta#phi(E_{T,no-#mu}^{miss},j);Events
 metnomu_significance(30,0.,300.)	;S;Events
 jetunclet_mindphi(32,0,3.1416)	;min #Delta#phi(j,E_{T}^{uncl});Events
 metnomuunclet_dphi(32,0,3.1416)	;#Delta#phi(METnoMu,E_{T}^{uncl});Events

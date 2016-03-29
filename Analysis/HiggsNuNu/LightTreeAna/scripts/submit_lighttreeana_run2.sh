@@ -26,9 +26,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_160229_sig
+JOBDIRPREFIX=jobs_run2ana_160325_sig #nomindphi
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_160229_sig #nomindphi
+OUTPUTPREFIX=output_run2ana_160325_sig #nomindphi
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -67,22 +67,26 @@ echo "Using job-submission: " $JOBSUBMIT
 echo "JOB name = $JOB"
 #for syst in JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
 #for syst in "" PUUP PUDOWN
-for syst in PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN
+for syst in "" #PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN
 #for syst in UESDOWN
 #for syst in JERBETTER JERWORSE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in taunu #qcd enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in enu munu taunu mumu nunu #qcd enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     #executable expect strings separated by "!"
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
-    #HISTSTRING=";min#DeltaR(#tau,tag jets);Events"
-    #SHAPESTRING="mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)"
+    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
+    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
+    #HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events"
+    #SHAPESTRING="metnomuons(25,200.,600.)"
+    #HISTSTRING=";#Delta#phi(E_{T,no-#mu}^{miss},j);Events"
+    #SHAPESTRING="alljetsmetnomu_mindphi(12,2.3,3.1416)"
     echo "Making histograms: " $SHAPESTRING
     OUTPUTNAME="$channels.root"
     MINDPHICUT="alljetsmetnomu_mindphi\>=2.3"

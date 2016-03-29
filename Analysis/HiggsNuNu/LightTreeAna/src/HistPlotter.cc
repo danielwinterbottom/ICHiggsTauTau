@@ -36,9 +36,9 @@ namespace ic{
   }
   void HistPlotter::SetSignalStyle(ic::LTPlotElement* ele) {
     ele->set_fill_style(1001);
-    ele->set_draw_fill(false);
+    ele->set_draw_fill(true);
     ele->set_draw_marker(false);
-    ele->set_draw_line(true);
+    ele->set_draw_line(false);
     ele->set_draw_stat_error_y(false);
     ele->set_draw_fill_in_legend(false);
     ele->set_line_style(1);
@@ -72,6 +72,7 @@ namespace ic{
     add_underflows_=false;
     add_overflows_=false;
     outsuffix_="";
+    toterror_ = 0;
   };
 
   HistPlotter::~HistPlotter(){ ;};
@@ -134,11 +135,10 @@ namespace ic{
       lower->SetGridy();
     }
     else{
-      upper->SetBottomMargin(0.15);
+      upper->SetBottomMargin(0.16);
     }
     upper->Draw();
     c1->cd();
-
     //LOOP OVER ALL THE VARIABLES TO PLOT
     for(unsigned iShape=0;iShape<shapes_.size();iShape++){
       std::cout<<"  Drawing plot for "<<shapes_[iShape].name()<<std::endl;
@@ -151,6 +151,9 @@ namespace ic{
 
       THStack *stack=new THStack(("stack"+shapes_[iShape].name()).c_str(),("stacked "+shapes_[iShape].name()+" plots").c_str());
       bool stackempty=true;
+      bool first=true;
+
+      TH1F *tothisto=0;
       
       if(!do_ratio_) stack->SetTitle(shapes_[iShape].histtitle().c_str());
 
@@ -289,14 +292,26 @@ namespace ic{
 	//ADD STACKED HISTOS TO STACK
 	if((!elements_[iElement].is_data())&&elements_[iElement].in_stack()){
 	  stack->Add(elements_[iElement].hist_ptr());
+	  if (first) {
+	    tothisto=(TH1F*)(elements_[iElement].hist_ptr())->Clone(("totalerror"+shapes_[iShape].name()).c_str());
+	    first=false;
+	  }
+	  else tothisto->Add(elements_[iElement].hist_ptr());
 	}
 	
       }
       stacksdir->cd();
       stack->Write();
 
+      //set total error
+      if (tothisto){
+	for (int iB(1);iB<tothisto->GetNbinsX()+1;++iB){
+	  tothisto->SetBinError(iB,toterror_*tothisto->GetBinContent(iB));
+	}
+      }
+
       //Get maximum
-      bool first=true;
+      first=true;
       double ymax=0;
       if(!stackempty) ymax=stack->GetMaximum();
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
@@ -320,7 +335,7 @@ namespace ic{
 	  first=false;
 	  stack->GetYaxis()->SetLabelSize(0.06);
  	  stack->GetYaxis()->SetTitleFont(62);
- 	  stack->GetYaxis()->SetTitleSize(0.095);
+ 	  stack->GetYaxis()->SetTitleSize(0.08);
  	  stack->GetYaxis()->SetTitleOffset(0.450);
 	  if(do_ratio_){
 	    stack->GetXaxis()->SetLabelOffset(999);
@@ -329,7 +344,7 @@ namespace ic{
 	  else{
  	    stack->GetXaxis()->SetLabelSize(0.06);
  	    stack->GetXaxis()->SetTitleFont(62);
- 	    stack->GetXaxis()->SetTitleSize(0.095);
+ 	    stack->GetXaxis()->SetTitleSize(0.08);
  	    stack->GetXaxis()->SetTitleOffset(0.7);
 	    
 	    std::string xtitle;
@@ -355,6 +370,18 @@ namespace ic{
 	//c1->Update();
 	}
 
+      //drawing total stack with error band
+      if (tothisto){
+	tothisto->SetFillStyle(3004);
+	tothisto->SetFillColor(1);
+	tothisto->SetLineColor(1);
+	tothisto->Draw("E2same");
+	
+	TH1F *tothisto2 = (TH1F*)tothisto->Clone(("totline"+shapes_[iShape].name()).c_str());
+	tothisto2->SetFillStyle(0);
+	tothisto2->Draw("histsame");
+      }
+
       std::cout<<"    Drawing Unstacked.."<<std::endl;
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(do_debug_)std::cout<<"  "<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
@@ -373,7 +400,7 @@ namespace ic{
 	      //c1->Update();
 	      first=false;
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetLabelSize(0.06);
-	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitleSize(0.095);
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitleSize(0.08);
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitleFont(62);
 	      if(do_ratio_){
 		elements_[iElement].hist_ptr()->GetXaxis()->SetLabelOffset(999);
@@ -423,7 +450,7 @@ namespace ic{
 	      //c1->Update();
 	      first=false;
 	      g->GetYaxis()->SetLabelSize(0.06);
-	      g->GetYaxis()->SetTitleSize(0.095);
+	      g->GetYaxis()->SetTitleSize(0.08);
 	      g->GetYaxis()->SetTitleFont(62);
 	      if(do_ratio_){
 		g->GetXaxis()->SetLabelOffset(999);
@@ -432,7 +459,7 @@ namespace ic{
 	      else{
 		g->GetXaxis()->SetLabelSize(0.06);
                 g->GetXaxis()->SetTitleFont(62);
-                g->GetXaxis()->SetTitleSize(0.09);
+                g->GetXaxis()->SetTitleSize(0.08);
                 g->GetXaxis()->SetTitleOffset(0.600);
 		std::string xtitle;
 		xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
@@ -472,7 +499,7 @@ namespace ic{
       //c1->Update();
       //leg->Delete();
       if(do_debug_)std::cout<<"  Drawing CMS Logo"<<std::endl;      
-      DrawCMSLogoTest(upper,"CMS","preliminary",10);
+      DrawCMSLogoTest(upper,"CMS","Preliminary",10);
       upper->cd();
       //c1->Update();
       //DRAW RATIO PLOT
@@ -711,6 +738,11 @@ namespace ic{
       lsavepng << tmpstr << "_" << c1->GetName();
       if (shapes_[iShape].dology()) lsavepng << "_logy";
       lsavepng << ".png" ;
+      c1->Print((lsavepng.str()).c_str());
+      lsavepng.str("");
+      lsavepng << tmpstr << "_" << c1->GetName();
+      if (shapes_[iShape].dology()) lsavepng << "_logy";
+      lsavepng << ".C" ;
       c1->Print((lsavepng.str()).c_str());
 
       //WRITE TO FILE

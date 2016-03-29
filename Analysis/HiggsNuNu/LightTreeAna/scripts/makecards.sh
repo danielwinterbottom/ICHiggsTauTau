@@ -11,19 +11,21 @@ DO4PARAMS=$2
 #infolder=output_parkedana
 #outfolder=cards_parkedana/
 #blind=false
-infolder=output_run2ana_160223
+infolder=output_run2ana_160224/
 outfolder=cards_run2ana_160229/
-blind=true
+blind=false
 zvvstat=18
 mkdir -p $outfolder
 
 extraoptions="--do_ues=false" #--do_ggh=false --do_separate_qcdewk=false"
 
-for channel in taunu #qcd enu munu mumu #topl topb
+#for channel in nunu enu munu mumu #topl topb
+for channel in taunu qcd
 do
     mkdir -p $outfolder/$channel
 
-    for mindphicut in 2.31 #1.01 1.21 1.41 1.61 1.81 2.01 2.11 2.21 2.31 2.41 2.51 2.61 2.81
+    #for mindphicut in 2.31 #1.01 1.21 1.41 1.61 1.81 2.01 2.11 2.21 2.31 2.41 2.51 2.61 2.81
+    for mindphicut in -1.
     do
 	for minjjcut in 1101 #1601 #801 901 1001 1101 1201 1301 1401 1501 1601 1701 1801 1901
 	do

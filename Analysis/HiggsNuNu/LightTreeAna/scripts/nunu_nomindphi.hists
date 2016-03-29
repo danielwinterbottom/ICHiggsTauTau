@@ -6,6 +6,8 @@ jet1_uncorpt(47,80.,550.)	;uncor p_{T}^{j1} (GeV);Events
 jet2_uncorpt(28,70.,350.)	;uncor p_{T}^{j2} (GeV);Events
 jet1_eta(94,-4.7,4.7)	;#eta^{j1} (GeV);Events
 jet2_eta(94,-4.7,4.7)	;#eta^{j2} (GeV);Events
+jet1_tightpuid(2,0.,2.)	;Tight puID^{j1};Events
+jet2_tightpuid(2,0.,2.)	;Tight puID^{j2};Events
 cjvjetpt(19,15.,205.)	;p_{T}^{CJV jet} (GeV);Events
 metnomuons(25,200.,600.)	;MET_{no #mu} (GeV);Events
 met(30,0.,550.)	;MET (GeV);Events
