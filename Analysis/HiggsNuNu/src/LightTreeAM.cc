@@ -41,7 +41,8 @@ namespace ic {
     jet_phi_ = new double[nJetsSave_];
     jet_csv_ = new double[nJetsSave_];
     jet_jetid_ = new double[nJetsSave_];
-    jet_puid_ = new double[nJetsSave_];
+    jet_loosepuid_ = new double[nJetsSave_];
+    jet_tightpuid_ = new double[nJetsSave_];
     jet_flavour_ = new int[nJetsSave_];
 
     jet_genjet_mindR_ = new double[nJetsSave_];
@@ -92,7 +93,8 @@ namespace ic {
       jet_phi_[ij] = -5;
       jet_csv_[ij] = -1;
       jet_jetid_[ij] = -1;
-      jet_puid_[ij] = -1;
+      jet_loosepuid_[ij] = -1;
+      jet_tightpuid_[ij] = -1;
       jet_flavour_[ij] = 0;
       
       jet_genjet_mindR_[ij] = 99;
@@ -139,6 +141,7 @@ namespace ic {
     metnomuunclet_dphi_ = 0;
 
     alljetsmetnomu_mindphi_ = 0;
+    alljetsnotaumetnomu_mindphi_ = 0;
     jetmetnomu_mindphi_ = 0;
 
     dijetmetnomu_scalarSum_pt_ = 0;
@@ -151,6 +154,7 @@ namespace ic {
     pass_photontrigger_ = -1;
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
+    pass_metmhttrigger_ = -1;
     pass_controltrigger_ = -1;
 
     nvetomuons_=0;
@@ -260,7 +264,8 @@ namespace ic {
       outputTree_->Branch((label.str()+"_phi").c_str(),&jet_phi_[ij]);
       outputTree_->Branch((label.str()+"_csv").c_str(),&jet_csv_[ij]);
       outputTree_->Branch((label.str()+"_jetid").c_str(),&jet_jetid_[ij]);
-      outputTree_->Branch((label.str()+"_puid").c_str(),&jet_puid_[ij]);
+      outputTree_->Branch((label.str()+"_loosepuid").c_str(),&jet_loosepuid_[ij]);
+      outputTree_->Branch((label.str()+"_tightpuid").c_str(),&jet_tightpuid_[ij]);
       outputTree_->Branch((label.str()+"_genjet_mindR").c_str(),&jet_genjet_mindR_[ij]);
       outputTree_->Branch((label.str()+"_flavour").c_str(),&jet_flavour_[ij]);
       outputTree_->Branch((label.str()+"_genid").c_str(),&jet_genid_[ij]);
@@ -307,6 +312,7 @@ namespace ic {
 
     outputTree_->Branch("jetmetnomu_mindphi",&jetmetnomu_mindphi_);
     outputTree_->Branch("alljetsmetnomu_mindphi",&alljetsmetnomu_mindphi_);
+    outputTree_->Branch("alljetsnotaumetnomu_mindphi",&alljetsnotaumetnomu_mindphi_);
     outputTree_->Branch("dijetmetnomu_scalarSum_pt",&dijetmetnomu_scalarSum_pt_);
     outputTree_->Branch("dijetmetnomu_vectorialSum_pt",&dijetmetnomu_vectorialSum_pt_);
     outputTree_->Branch("dijetmetnomu_ptfraction",&dijetmetnomu_ptfraction_);
@@ -318,6 +324,7 @@ namespace ic {
     outputTree_->Branch("pass_photontrigger",&pass_photontrigger_);
     outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
     outputTree_->Branch("pass_mettrigger",&pass_mettrigger_);
+    outputTree_->Branch("pass_metmhttrigger",&pass_metmhttrigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
 
     outputTree_->Branch("nvetomuons",&nvetomuons_);
@@ -433,10 +440,11 @@ namespace ic {
 	if (name.find("HLT_IsoMu20_") != name.npos) pass_muontrigger_ = prescale;
 	if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140") != name.npos) pass_sigtrigger_ = prescale;
 	if (name.find("HLT_PFMET170_") != name.npos) pass_mettrigger_ = prescale;
+	if (name.find("HLT_PFMETNoMu90") != name.npos && name.find("PFMHTNoMu90") != name.npos) pass_metmhttrigger_ = prescale;
 	if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80") != name.npos) pass_controltrigger_ = prescale;
       }
       if(do_trigskim_){
-	if(!(pass_muontrigger_==1 || pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0||pass_photontrigger_>0)){
+	if(!(pass_muontrigger_==1 || pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0||pass_metmhttrigger_>0||pass_photontrigger_>0)){
 	  return 1;
 	}
       }
@@ -656,6 +664,11 @@ namespace ic {
 
     ROOT::Math::PtEtaPhiEVector mhtVec(0,0,0,0);
     alljetsmetnomu_mindphi_=jetmetnomu_mindphi_;
+    alljetsnotaumetnomu_mindphi_=1000;
+
+    std::vector<Tau*> const& taus=event->GetPtrVec<Tau>("taus");
+    ntaus_=taus.size();
+
 
     for (unsigned i = 0; i < jets.size(); ++i) {//loop on jets
       ROOT::Math::PtEtaPhiEVector jetvec = jets[i]->vector();
@@ -670,7 +683,8 @@ namespace ic {
 	jet_csv_[nJets_]=jets[i]->GetBDiscriminator("pfCombinedSecondaryVertexV2BJetTags");
 	//jet_csv_[nJets_]=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
 	jet_jetid_[nJets_]=PFJetID2015(jets[i]);
-	jet_puid_[nJets_]=PileupJetID(jets[i],2);
+	jet_loosepuid_[nJets_]=PileupJetID(jets[i],3,false);
+	jet_tightpuid_[nJets_]=PileupJetID(jets[i],3,true);
 	jet_flavour_[nJets_]=jets[i]->parton_flavour();
 	
 	if (!is_data_ && recotogenmatch[i].second){
@@ -723,8 +737,18 @@ namespace ic {
 	  ++n_jets_cjv_20EB_30EE_;
 	}
 	if(jets[i]->pt()>30.0){
-	  double thisjetmetnomudphi = fabs(ROOT::Math::VectorUtil::DeltaPhi(jets[i]->vector(),metnomuvec));
+	  double thisjetmetnomudphi = fabs(ROOT::Math::VectorUtil::DeltaPhi(jetvec,metnomuvec));
 	  if(thisjetmetnomudphi<alljetsmetnomu_mindphi_)alljetsmetnomu_mindphi_=thisjetmetnomudphi;
+	  //check matching with taus
+	  bool noTauMatch=true;
+	  for (unsigned itau = 0; itau < ntaus_; ++itau) {//loop on taus
+	    ROOT::Math::PtEtaPhiEVector tauvec = taus[itau]->vector();
+	    if (ROOT::Math::VectorUtil::DeltaR(tauvec,jetvec)<0.4){
+	      noTauMatch=false;
+	      break;
+	    }
+	  }//loop on taus
+	  if(noTauMatch && thisjetmetnomudphi<alljetsnotaumetnomu_mindphi_)alljetsnotaumetnomu_mindphi_=thisjetmetnomudphi;
 	}
       }
 
@@ -760,14 +784,12 @@ namespace ic {
     std::vector<Muon*> & selmuons=event->GetPtrVec<Muon>("selMuons");
     std::vector<Electron*> const& vetoelectrons=event->GetPtrVec<Electron>("vetoElectrons");
     std::vector<Electron*> & selelectrons=event->GetPtrVec<Electron>("selElectrons");
-    std::vector<Tau*> const& taus=event->GetPtrVec<Tau>("taus");
 
     if(!ignoreLeptons_) nvetomuons_=vetomuons.size();
     else nvetomuons_=0;
     nselmuons_=selmuons.size();
     nvetoelectrons_=vetoelectrons.size();
     nselelectrons_=selelectrons.size();
-    ntaus_=taus.size();
 
     std::sort(selmuons.begin(), selmuons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::sort(selelectrons.begin(), selelectrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));

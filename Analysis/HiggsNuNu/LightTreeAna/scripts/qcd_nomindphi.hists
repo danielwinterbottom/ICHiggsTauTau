@@ -9,7 +9,7 @@ jet2_eta(94,-4.7,4.7)	;#eta^{j2} (GeV);Events
 jet1_tightpuid(2,0.,2.)	;Tight puID^{j1};Events
 jet2_tightpuid(2,0.,2.)	;Tight puID^{j2};Events
 cjvjetpt(19,15.,205.)	;p_{T}^{CJV jet} (GeV);Events
-metnomuons(35,200.,550.)	;E_{T,no-#mu}^{miss} (GeV);Events
+metnomuons(35,200.,550.)	;MET_{no #mu} (GeV);Events
 met(30,0.,550.)	;MET (GeV);Events
 l1met(30,0.,550.)	;L1MET (GeV);Events
 ht(30,100,1000)	;H_{T}^{p_{T}^{j}>15 GeV} (GeV);Events

@@ -1,0 +1,4 @@
+metnomuons(10,200.,450.)	;E_{T,no-#mu}^{miss} (GeV);Events
+dijet_M(12,1100.,4000.)	;M_{jj} (GeV);Events
+dijet_deta(10,3.6,5.5)	;#Delta#eta_{jj};Events
+alljetsmetnomu_mindphi(8,2.3,3.1416)	;#Delta#phi(E_{T,no-#mu}^{miss},j);Events

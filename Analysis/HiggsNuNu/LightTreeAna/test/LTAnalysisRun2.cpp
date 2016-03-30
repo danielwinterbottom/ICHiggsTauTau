@@ -43,6 +43,50 @@ double deltaRmin(double eta1,double phi1,double eta2,double phi2,double eta3,dou
   return std::min(deltaR(eta1,phi1,eta3,phi3),deltaR(eta2,phi2,eta3,phi3));
 };
 
+double getPostFitSF(std::string channel, std::string process){
+
+  if (channel=="enu"){
+    if (process=="wewk") return 7.824/7.31107;
+    else if (process=="wqcd") return 16.32675/15.2317;
+    else if (process=="top") return 1.42998/1.43447;
+    else if (process=="VV") return 0.37785/0.375499;
+    else if (process=="QCD") return 1.;
+    else if (process=="error") return 2.82507/26.0124;
+  } else if (channel=="munu"){
+    if (process=="wewk") return 27.464/26.2531;
+    else if (process=="wqcd") return 52.87799/50.5378;
+    else if (process=="top") return 6.8237/6.82765;
+    else if (process=="VV") return 0.79000/0.775874;
+    else if (process=="QCD") return 4.5360/5.58472;
+    else if (process=="error") return 8.6861979/92.4918;
+  }else if (channel=="taunu"){
+    if (process=="wewk") return 5.23699/5.09101;
+    else if (process=="wqcd") return 11.4885/11.1967;
+    else if (process=="top") return 7.13003/7.10643;
+    else if (process=="VV") return 1.;
+    else if (process=="QCD") return 0.4229/0.519936;
+    else if (process=="error") return 3.210465/25.063774;
+  } else if (channel=="mumu"){
+    if (process=="zewk") return 2.10208/1.94073;
+    else if (process=="zqcd") return 3.7217/3.37843;
+    else if (process=="top") return 0.218995/0.219786;
+    else if (process=="VV") return 0.018013/0.0173571;
+    else if (process=="QCD") return 1.;
+    else if (process=="error") return 1.3153597/6.060841;
+  } else if (channel=="nunu"){
+    if (process=="wewk") return (5.53635+4.37434+5.617556)/(5.20467+4.17524+5.41536);
+    else if (process=="wqcd") return (9.504317+13.400+12.8982)/(8.81025+12.836+12.3952);
+    else if (process=="zewk") return 21.9927864/20.3972;
+    else if (process=="zqcd") return 40.42113/36.7616;
+    else if (process=="top") return 2.2525/2.25912;
+    else if (process=="VV") return 0.6799356/0.680839;
+    else if (process=="QCD") return 3.08484/3.80019;
+    else if (process=="error") return 27.1030/119.76226;
+  }
+
+  return 1;
+};
+
 
 int main(int argc, char* argv[]){
   /*##########################################
@@ -340,7 +384,13 @@ int main(int argc, char* argv[]){
   std::string sigcat;
   std::string zextrasigcat;
 
-  std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
+  //AMM uncomment for QCD mindphi plot in signal region!
+  //std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&metnomuons>0&&dijet_M>800&&"+jetmetdphicut;
+  std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&metnomuons>200&&dijet_M>1100&&"+jetmetdphicut;
+  //std::string nunuqcdcat=nunucat;
+  //AMM uncomment for QCD plot in signal region! except mindphi.
+  //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1";
+  std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
 
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
   std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
@@ -418,6 +468,14 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+dataextrasel);
 
+  DataShape totsignal125("totsignal125");
+  totsignal125.set_dataset("H125")
+    .set_dirname("sig125")
+    .set_shape(shape)
+    .set_dataweight(sig125mcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
   DataShape signal110("signal110");
   signal110.set_dataset("VBFH110")
     .set_dirname("qqH110")
@@ -425,6 +483,7 @@ int main(int argc, char* argv[]){
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);  
+
 
   DataShape signal125("signal125");
   signal125.set_dataset("VBFH125")
@@ -620,6 +679,21 @@ int main(int argc, char* argv[]){
 
   if (use_nlo)  wmunuraw.set_dataset("WJets_nlo_munu");
 
+  DataShape qcdwraw("qcdwraw");
+  qcdwraw.set_dataset("QCDWJets")
+    .set_dirname("wqcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+  DataShape ewkwraw("ewkwraw");
+  ewkwraw.set_dataset("EWKWJets")
+    .set_dirname("wewk")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
   DataShape qcdwmunuraw("qcdwmunuraw");
   qcdwmunuraw.set_dataset("WJets_munu")
     .set_dirname("wmuqcd")
@@ -692,6 +766,8 @@ int main(int argc, char* argv[]){
     .set_shape(shape)
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
+    //AMM uncomment for QCD in signal region plots.
+    //.set_cat(nunuqcdcat+mcextrasel);
     .set_cat(sigcat+mcextrasel);
 
   DataShape gjetsraw("gjetsraw");
@@ -710,6 +786,8 @@ int main(int argc, char* argv[]){
     boost::split(strs, shape[ishape], boost::is_any_of("("));
     LTShapeElement thisshape;
     thisshape.set_name(strs[0]);
+    thisshape.set_legleft(0.6);
+    thisshape.set_legright(0.89);
 
     //do not plot 2D hists....
     if (strs[0].find(":")!=strs[0].npos) continue;
@@ -718,6 +796,8 @@ int main(int argc, char* argv[]){
       thisshape.set_legleft(0.39);
       thisshape.set_legright(0.61);
     }
+    if (strs[0].find("alljetsmetnomu")!=strs[0].npos) thisshape.set_axisrangemultiplier((channel=="mumu"||channel=="nunu")?2:1.6);
+    if (strs[0].find("dijet_deta")!=strs[0].npos && channel=="nunu") thisshape.set_axisrangemultiplier(1.7);
 
     thisshape.set_histtitle(histTitle[ishape]);
     //    shapevec.push_back(strs[0]);
@@ -764,6 +844,27 @@ int main(int argc, char* argv[]){
       .set_blindrange(blindrange);
   }
 
+  //All W
+  LTPlotElement qcdwele;
+  qcdwele.set_is_data(false)
+    .set_scale(getPostFitSF(channel,"wqcd"))
+    .set_color(kOrange-4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD W#rightarrow l#nu")
+    .set_sample("wqcd");
+  if(!do_mcbkg)qcdwele.set_has_dderrors(1);
+  LTPlotElement ewkwele;
+  ewkwele.set_is_data(false)
+    .set_scale(getPostFitSF(channel,"wewk"))
+    .set_color(kOrange+2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("EWK W#rightarrow l#nu")
+    .set_sample("wewk");
+  if(!do_mcbkg)ewkwele.set_has_dderrors(1);
+
+  //separate W
   LTPlotElement wmunuele;
   wmunuele.set_is_data(false)
     .set_scale(1)
@@ -773,9 +874,10 @@ int main(int argc, char* argv[]){
     .set_legname("W#rightarrow#mu#nu")
     .set_sample("wmu");
   if(!do_mcbkg)wmunuele.set_has_dderrors(1);
+
   LTPlotElement qcdwmunuele;
   qcdwmunuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"wqcd"))
     .set_color(kOrange-4)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -784,7 +886,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)qcdwmunuele.set_has_dderrors(1);
   LTPlotElement ewkwmunuele;
   ewkwmunuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"wewk"))
     .set_color(kOrange-3)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -803,7 +905,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)wenuele.set_has_dderrors(1);
   LTPlotElement qcdwenuele;
   qcdwenuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"wqcd"))
     .set_color(kOrange  + 2)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -812,7 +914,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)qcdwenuele.set_has_dderrors(1);
   LTPlotElement ewkwenuele;
   ewkwenuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"wewk"))
     .set_color(kOrange  + 1)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -832,7 +934,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)wtaunuele.set_has_dderrors(1);
   LTPlotElement qcdwtaunuele;
   qcdwtaunuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"wqcd"))
     .set_color(kOrange + 4)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -841,7 +943,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)qcdwtaunuele.set_has_dderrors(1);
   LTPlotElement ewkwtaunuele;
   ewkwtaunuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"wewk"))
     .set_color(kOrange + 5)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -861,7 +963,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)zmumuele.set_has_dderrors(1);
   LTPlotElement qcdzmumuele;
   qcdzmumuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"zqcd"))
     .set_color(kAzure  + 2)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -870,7 +972,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)qcdzmumuele.set_has_dderrors(1);
   LTPlotElement ewkzmumuele;
   ewkzmumuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"zewk"))
     .set_color(kAzure  + 4)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -889,7 +991,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)znunuele.set_has_dderrors(1);
   LTPlotElement qcdznunuele;
   qcdznunuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"zqcd"))
     .set_color(kAzure  + 2)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -898,7 +1000,7 @@ int main(int argc, char* argv[]){
   if(!do_mcbkg)qcdznunuele.set_has_dderrors(1);
   LTPlotElement ewkznunuele;
   ewkznunuele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"zewk"))
     .set_color(kAzure  + 4)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -908,7 +1010,7 @@ int main(int argc, char* argv[]){
 
   LTPlotElement vvele;
   vvele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"VV"))
     .set_color(kGreen-5)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -917,7 +1019,7 @@ int main(int argc, char* argv[]){
 
   LTPlotElement topele;
   topele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"top"))
     .set_color(kBlue-8)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -926,7 +1028,11 @@ int main(int argc, char* argv[]){
 
   LTPlotElement qcdele;
   qcdele.set_is_data(false)
-    .set_scale(1)
+    .set_scale(getPostFitSF(channel,"QCD"))
+    //AMM uncomment for QCD in signal region plots mindphi.
+    //.set_scale(3.8/7.8)
+    //AMM uncomment for QCD in signal region plots all but mindphi.
+    //.set_scale(3.8/6.5)
     .set_color(kMagenta-10)
     .set_in_stack(true)
     .set_is_inratioden(true)
@@ -948,15 +1054,15 @@ int main(int argc, char* argv[]){
     .set_scale(1)
     .set_color(kRed)
     .set_in_stack(false)
-    .set_legname("Signal (x1)")
-    .set_sample("qqH125");
+    .set_legname("Signal")
+    .set_sample("sig125");
 
   LTPlotElement ggHele;
   ggHele.set_is_data(false)
     .set_scale(1)
     .set_color(kBlue)
     .set_in_stack(false)
-    .set_legname("gg#rightarrow H (x1)")
+    .set_legname("gg#rightarrow H")
     .set_sample("ggH125");
 
   if(!(channel=="nunu"&&runblind))elementvec.push_back(dataele);
@@ -964,7 +1070,11 @@ int main(int argc, char* argv[]){
     if (channel=="gamma"){
       elementvec.push_back(gjetsele);
     }
-    if(channel!="mumu"){
+    if (channel=="nunu"){
+	elementvec.push_back(qcdwele);
+	elementvec.push_back(ewkwele);
+    }
+    else if(channel!="mumu"){
       if (channel!="enu" && channel!="taunu"){
 	elementvec.push_back(qcdwmunuele);
 	elementvec.push_back(ewkwmunuele);
@@ -990,9 +1100,9 @@ int main(int argc, char* argv[]){
       if (channel!="taunu"){
 	elementvec.push_back(qcdznunuele);
 	elementvec.push_back(ewkznunuele);
+	elementvec.push_back(sigele);
       }
-      elementvec.push_back(sigele);
-      elementvec.push_back(ggHele);
+      //elementvec.push_back(ggHele);
     }
   }
 
@@ -1005,13 +1115,15 @@ int main(int argc, char* argv[]){
 
   HistPlotter plotter("plotter");
   plotter.set_dirname("ControlPlots")
-    .set_add_underflows(true)
+    //.set_add_underflows(true)
     .set_add_overflows(true)
     .set_elements(elementvec)
     //.set_histTitles(histTitle)
-    .set_shapes(shapevec);
-  if(!dataonly)    plotter.set_do_ratio(true);
-  else plotter.set_do_ratio(false);
+    .set_shapes(shapevec)
+    .set_toterror(getPostFitSF(channel,"error"));
+  //if(!dataonly)    plotter.set_do_ratio(true);
+  //else 
+  plotter.set_do_ratio(false);
   if(channel=="nunu"&&runblind)plotter.set_do_ratio(false);
 
   if (debug) plotter.set_do_debug(true);
@@ -1026,6 +1138,8 @@ int main(int argc, char* argv[]){
     dirvec.push_back("wtauewk");
     dirvec.push_back("zmumuqcd");
     dirvec.push_back("zmumuewk");
+    dirvec.push_back("wqcd");
+    dirvec.push_back("wewk");
     dirvec.push_back("zvvqcd");
     dirvec.push_back("zvvewk");
     dirvec.push_back("gjets");
@@ -1033,6 +1147,7 @@ int main(int argc, char* argv[]){
     dirvec.push_back("vv");
     //dirvec.push_back("wg");  
     dirvec.push_back("top");
+    dirvec.push_back("sig125");
     dirvec.push_back("qqH125");
     dirvec.push_back("ggH125");
   }
@@ -1058,6 +1173,8 @@ int main(int argc, char* argv[]){
       analysis->AddModule(&ewkwmunuraw);
       analysis->AddModule(&ewkwenuraw);
       analysis->AddModule(&ewkwtaunuraw);
+      analysis->AddModule(&qcdwraw);
+      analysis->AddModule(&ewkwraw);
       analysis->AddModule(&topraw);
       analysis->AddModule(&gjetsraw);
       analysis->AddModule(&qcdzmumuraw);
@@ -1086,6 +1203,7 @@ int main(int argc, char* argv[]){
     analysis->AddModule(&signal600);
     analysis->AddModule(&signal125);
     analysis->AddModule(&ggH125);
+    analysis->AddModule(&totsignal125);
   }
   analysis->AddModule(&plotter);
   if(!dataonly) analysis->AddModule(&summary);

@@ -711,7 +711,7 @@ int main(int argc, char* argv[]){
     ("JetIDFilter")
     .set_input_label(jettype);
     if(!turnoffpuid){
-      jetIDFilter.set_predicate((bind(PFJetID2015, _1)) && bind(PileupJetID, _1,2));
+      jetIDFilter.set_predicate((bind(PFJetID2015, _1)) && bind(PileupJetID, _1,is2012?2:3,true));
     }
     else{
       jetIDFilter.set_predicate(bind(PFJetID2015, _1));

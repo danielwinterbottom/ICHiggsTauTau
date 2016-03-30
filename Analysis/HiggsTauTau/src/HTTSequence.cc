@@ -823,7 +823,7 @@ if(strategy_type==strategy::fall15&&!is_data&&js["do_btag_eff"].asBool()){
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
 .set_input_label(jets_label);
 if(strategy_type == strategy::paper2013) {
-  jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
+  jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
 } else {
   jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
 }

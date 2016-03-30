@@ -30,12 +30,12 @@ CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
 
-for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_160221
+  JOBDIRPREFIX=jobs_lighttree_160317
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160221
+  OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160317
   #OUTPUTPREFIX=output_lighttree_160121
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -138,9 +138,9 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELE
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
-#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
-#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
+#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
 	  do
       echo "Processing files in "$FILELIST
 

@@ -126,8 +126,9 @@ namespace ic {
   // Particle-flow jet id without the HF energy in the neutral energy cut
   bool PFJetIDNoHFCut(PFJet const* jet);
   bool PUJetID(PFJet const* jet, bool is_2012);
-  // Pileup jet id cuts.  0 = 2011, 1 = 2012, 2 = 2012 (december training)
-  bool PileupJetID(PFJet const* jet, unsigned training);
+  // Pileup jet id cuts.  0 = 2011, 1 = 2012, 2 = 2012 (december training), 3 = 2015 training
+  //loose working points
+  bool PileupJetID(PFJet const* jet, unsigned training, bool doTight=false);
 
   bool IsReBTagged(Jet const* jet, std::map<std::size_t, bool> const& tag_map);
 

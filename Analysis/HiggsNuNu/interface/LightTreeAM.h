@@ -72,7 +72,8 @@ namespace ic {
     double* jet_phi_;
     double* jet_csv_;
     double* jet_jetid_;
-    double* jet_puid_;
+    double* jet_loosepuid_;
+    double* jet_tightpuid_;
     int* jet_flavour_;
 
     double* jet_genjet_mindR_;
@@ -118,6 +119,7 @@ namespace ic {
     double metnomuunclet_dphi_;
 
     double alljetsmetnomu_mindphi_;
+    double alljetsnotaumetnomu_mindphi_;
     double jetmetnomu_mindphi_;
 
     double dijetmetnomu_scalarSum_pt_;
@@ -130,16 +132,17 @@ namespace ic {
     double pass_photontrigger_;
     double pass_sigtrigger_;
     double pass_mettrigger_;
+    double pass_metmhttrigger_;
     double pass_controltrigger_;
 
-    int nvetomuons_;
-    int nselmuons_;
-    int nvetoelectrons_;
-    int nselelectrons_;
-    int ntaus_;
-    int nloosephotons_;
-    int nmediumphotons_;
-    int ntightphotons_;
+    unsigned nvetomuons_;
+    unsigned nselmuons_;
+    unsigned nvetoelectrons_;
+    unsigned nselelectrons_;
+    unsigned ntaus_;
+    unsigned nloosephotons_;
+    unsigned nmediumphotons_;
+    unsigned ntightphotons_;
 
     double m_mumu_;
     double pt_mumu_;
@@ -188,7 +191,7 @@ namespace ic {
     double gamma1_geneta_;
     double gamma1_genphi_;
 
-    int n_vertices_;
+    unsigned n_vertices_;
 
   public:
     LightTreeAM(std::string const& name);
