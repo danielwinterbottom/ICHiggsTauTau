@@ -273,10 +273,10 @@ namespace ic {
         //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
         //outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
         //outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
-        //outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
-        //outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
-        //outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
-        //outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
+        outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
+        outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
+        outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
+        outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);

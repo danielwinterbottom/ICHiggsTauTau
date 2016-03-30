@@ -1092,7 +1092,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_channel(channel)
     .set_era(era_type)
     .set_mc(mc_type)
-    .set_do_tau_id_weights(false)
+    .set_do_tau_id_weights(true)
     .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
     .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
@@ -1121,7 +1121,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
 /*  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
     httWeights.set_do_w_soup(true);
-    httWeights.SetWInputCrossSections(50690,9644.5,3144.5,954.8,485.6);
+    httWeights.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
     httWeights.SetWInputYields(47161328,45442170,30190119,18319765,8816492);
   }*/
 
