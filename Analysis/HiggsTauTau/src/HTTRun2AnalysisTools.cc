@@ -805,7 +805,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     lumi_ = parser.GetParam<double>("LUMI_2015_"+Channel2String(ch_));
     std::cout << "[HTTRun2Analysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
 //    if (verbosity_ > 1) std::cout << boost::format("%-25s %152 %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
-    if (verbosity_ > 1) std::cout << "-----------------------------------------------------------------------------------------\n";
+    if (verbosity_ > 2) std::cout << "-----------------------------------------------------------------------------------------\n";
     for (auto sample : sample_names_) {
       std::string lookup = sample;
       if (sample.find("Special") != sample.npos) {
@@ -854,7 +854,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       TFile *tmp_file = nullptr;
       if (boost::filesystem::exists(input_filename)) tmp_file = TFile::Open(input_filename.c_str());
       if (!tmp_file && fallback_folder != "") {
-        if (verbosity_ > 1) std::cout << "[HTTRun2Analysis::ReadTrees] " << input_filename << " not found, trying fallback folder" << std::endl;
+        if (verbosity_ > 2) std::cout << "[HTTRun2Analysis::ReadTrees] " << input_filename << " not found, trying fallback folder" << std::endl;
         input_filename = fallback_folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
         if (boost::filesystem::exists(input_filename)) tmp_file = TFile::Open(input_filename.c_str());
       }
@@ -862,7 +862,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         std::cout << "[HTTRun2Analysis::ReadTrees] Warning: " << input_filename << " cannot be opened" << std::endl;
         continue;
       }
-      if (verbosity_ > 1) result_summary.push_back((boost::format("%-70s %s %-30s\n") % input_filename % "-->" % label).str());
+      if (verbosity_ > 2) result_summary.push_back((boost::format("%-70s %s %-30s\n") % input_filename % "-->" % label).str());
       gDirectory->cd("/");
       TTree *tmp_tree = dynamic_cast<TTree*>(gDirectory->Get("ntuple"));
       if (!tmp_tree) {
@@ -1052,17 +1052,26 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     } else if(method == 10 || method == 11){
      w_norm = this->GetRateViaWMethod(wjets_samples.at(0), w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
-    } else if(method == 12 || method == 13){
+    } else if(method == 12 || method == 13 || method == 14){
      w_norm = this->GetRateViaWOSSSMethod(wjets_samples.at(0), w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel_osss, w_sub_samples, !do_ss_, wt, ValueFnMap());
     }
 
     std::string w_shape_cat = cat;
-    //std::string w_shape_cat = "n_jets<=1&&n_loose_bjets>=1&&"+alias_map_["baseline"];
+    if (method == 14) w_shape_cat = "n_jets<=1&&n_loose_bjets>=1&&"+alias_map_["baseline"];
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
     TH1F w_hist = this->GetShape(var, wjets_samples, w_shape_sel, w_shape_cat, wt);
     //if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
      // % wjets_samples % w_shape_sel % w_shape_cat % wt;
+    if(verbosity_ > 1){
+      std::string bin_delim="";
+      if(var.find("[")!=std::string::npos) bin_delim = "[";
+      if(var.find("(")!=std::string::npos) bin_delim = "(";
+      this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)), wjets_samples.at(0), w_shape_sel, cat,wjets_samples.at(0), w_shape_sel, w_shape_cat,wt);
+      TH1F default_w_hist = this->GetShape(var,wjets_samples,w_shape_sel, cat, wt);
+      std::cout << "ROOT KS test: "<< default_w_hist.KolmogorovTest(&w_hist) <<std::endl;
+    }
+
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
   }
@@ -1101,7 +1110,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
          if(method == 10 || method == 11) { 
           w_ss_norm = this->GetRateViaWMethod(wjets_samples.at(0), qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
-         }else if(method == 12 || method == 13){
+         }else if(method == 12 || method == 13 || method == 14){
           w_ss_norm = this->GetRateViaWOSSSMethod(wjets_samples.at(0), qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel_osss, w_sub_samples, false, wt, ValueFnMap());
         } else {
@@ -1114,7 +1123,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       if(ch_ != channel::tt){
         if(method == 8 || method == 9) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
-        } else if (method == 10 || method == 11 || method == 12 || method == 13) {
+        } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,{
             {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
               return w_ss_norm;}
@@ -1143,8 +1152,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         if (method == 8) {
           qcd_shape_cat += "&&" + alias_map_["baseline"];
           qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
-        } else if(method == 10 || method==12) {
-         qcd_shape_cat += "&&" + alias_map_["baseline"];
+        } else if(method == 10 || method==12 || method == 14) {
+          qcd_shape_cat += "&&" + alias_map_["baseline"];        
+            if(method == 14) qcd_shape_cat = "n_jets<=1 && n_loose_bjets>=1 &&" +alias_map_["baseline"];
           qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
           {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
               return w_ss_norm;} 
@@ -1171,6 +1181,23 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
           });
        }
     }
+
+    if(verbosity_ > 1) {
+      std::string bin_delim="";
+      if(var.find("[")!=std::string::npos) bin_delim = "[";
+      if(var.find("(")!=std::string::npos) bin_delim = "(";
+      std::string default_cat = cat;
+      default_cat  += "&&" +alias_map_["baseline"];
+      this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)), (this->ResolveSamplesAlias("data_samples")).at(0), qcd_sdb_sel, default_cat,(this->ResolveSamplesAlias("data_samples")).at(0), qcd_sdb_sel, qcd_shape_cat,wt); //Not exactly equivalent to comparison with default norm as below, but good to give an idea
+    //TH1F default_qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, cat, qcd_sub_samples, wt, ValueFnMap());
+      TH1F default_qcd_hist = this->GetShapeViaQCDMethod(var,this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, default_cat, qcd_sub_samples, wt, {
+        {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
+          return w_ss_norm;}
+         }
+        });
+      std::cout << "ROOT KS test: "<< default_qcd_hist.KolmogorovTest(&qcd_hist) <<std::endl;
+    }
+
     SetNorm(&qcd_hist, qcd_norm.first);
     return std::make_pair(qcd_hist, qcd_norm);
    }
@@ -1179,7 +1206,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     cat += "&&" + alias_map_["baseline"];
     Value signal_norm;
     if (xs > 0) {
-      if (verbosity_ > 1) std::cout << "[HTTRun2Analysis::GenerateSignal] " << sample << " scaled to lumi using cross section " << xs << " pb" << std::endl;
+      if (verbosity_ > 2) std::cout << "[HTTRun2Analysis::GenerateSignal] " << sample << " scaled to lumi using cross section " << xs << " pb" << std::endl;
       signal_norm = GetRate(sample, sel, cat, wt);
       signal_norm = ValueProduct(signal_norm, std::make_pair(this->GetLumiScaleFixedXS(sample, xs), 0.0));
     } else {
@@ -1463,7 +1490,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                                       std::string const& selection, 
                                       std::string const& category, 
                                       std::string const& weight) {
-    if(verbosity_>1){ std::cout << "--GetRate-- Sample:\"" << sample << "\" Selection:\"" << selection << "\" Category:\"" 
+    if(verbosity_>2){ std::cout << "--GetRate-- Sample:\"" << sample << "\" Selection:\"" << selection << "\" Category:\"" 
       << category << "\" Weight:\"" << weight << "\"" << std::endl;}
     std::string full_selection = BuildCutString(selection, category, weight);
     TH1::AddDirectory(true);
