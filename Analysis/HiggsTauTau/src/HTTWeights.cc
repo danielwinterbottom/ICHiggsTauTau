@@ -314,14 +314,27 @@ namespace ic {
       double top_wt_up = 1.0;
       double top_wt_down = 1.0;
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
+      if(era_ != era::data_2015){
+        for (unsigned i = 0; i < parts.size(); ++i) {
+          if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
+            double pt = parts[i]->pt();
+            pt = std::min(pt, 400.);
+            if (mc_ == mc::summer12_53X) top_wt *= std::exp(0.156-0.00137*pt);
+            if (mc_ == mc::fall11_42X)   top_wt *= std::exp(0.199-0.00166*pt);
+          }
+        }
+      } else {
+        for (unsigned i = 0; i < parts.size(); ++i){
+          std::vector<bool> status_flags = parts[i]->statusFlags();
+          unsigned id = abs(parts[i]->pdgid());
+          if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
           double pt = parts[i]->pt();
           pt = std::min(pt, 400.);
-          if (mc_ == mc::summer12_53X) top_wt *= std::exp(0.156-0.00137*pt);
-          if (mc_ == mc::fall11_42X)   top_wt *= std::exp(0.199-0.00166*pt);
+          if (mc_ == mc::fall15_76X) top_wt *= std::exp(0.156-0.00137*pt);
+          }
         }
       }
+          
       top_wt = std::sqrt(top_wt);
       top_wt_up = top_wt * top_wt;
       top_wt_down = 1.0;
