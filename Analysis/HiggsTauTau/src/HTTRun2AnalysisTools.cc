@@ -483,6 +483,7 @@ namespace ic {
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["ttcontrol"] = "(n_jets>=1 && n_bjets>=1 && pzeta<-50)";
+      alias_map_["ttcontrolpzetamet"] = "(pzeta<-20 && met>80)";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
@@ -652,9 +653,9 @@ namespace ic {
    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "WJetsToLNu-LO","TT-ext",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
+   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
-   "W3JetsToLNu-LO","W4JetsToLNu-LO"*/
+   "W3JetsToLNu-LO","W4JetsToLNu-LO"
    };
   if(!is_fall15_){
     if(ch_==channel::zee || ch_==channel::zmm) {
@@ -700,9 +701,9 @@ namespace ic {
    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext","WJetsToLNu-LO",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
+   "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
-   "W3JetsToLNu-lO","W4JetsToLNu-LO"*/
+   "W3JetsToLNu-lO","W4JetsToLNu-LO"
    };
   if(!is_fall15_){
     samples_alias_map_["qcd_sub_samples"] = {
@@ -764,9 +765,9 @@ namespace ic {
    }
 
 samples_alias_map_["wjets_samples"] = {
-  "WJetsToLNu-LO"/*,
+  "WJetsToLNu-LO",
   "W1JetsToLNu-LO","W2JetsToLNu-LO",
-  "W3JetsToLNu-LO","W4JetsToLNu-LO"*/
+  "W3JetsToLNu-LO","W4JetsToLNu-LO"
  };
 
 if(!is_fall15_){
@@ -1047,15 +1048,15 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     if(method == 8 || method == 9) {
       w_norm = this->GetLumiScaledRate(wjets_samples, sel, cat, wt);
     } else if(method == 10 || method == 11){
-     w_norm = this->GetRateViaWMethod(wjets_samples.at(0), w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+     w_norm = this->GetRateViaWMethod(wjets_samples, w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
     } else if(method == 12 || method == 13 || method == 14){
-     w_norm = this->GetRateViaWOSSSMethod(wjets_samples.at(0), w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+     w_norm = this->GetRateViaWOSSSMethod(wjets_samples, w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel_osss, w_sub_samples, !do_ss_, wt, ValueFnMap());
     }
 
     std::string w_shape_cat = cat;
-    if (method == 14) w_shape_cat = "n_jets<=1&&n_loose_bjets>=1&&"+alias_map_["baseline"];
+    if (method == 14) w_shape_cat = "n_jets<=2&&n_loose_bjets>=1&&"+alias_map_["baseline"];
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
     TH1F w_hist = this->GetShape(var, wjets_samples, w_shape_sel, w_shape_cat, wt);
     //if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
@@ -1105,10 +1106,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::vector<std::string> wjets_samples = this->ResolveSamplesAlias("wjets_samples");
       if(ch_ != channel::em) {
          if(method == 10 || method == 11) { 
-          w_ss_norm = this->GetRateViaWMethod(wjets_samples.at(0), qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+          w_ss_norm = this->GetRateViaWMethod(wjets_samples, qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
          }else if(method == 12 || method == 13 || method == 14){
-          w_ss_norm = this->GetRateViaWOSSSMethod(wjets_samples.at(0), qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+          w_ss_norm = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel_osss, w_sub_samples, false, wt, ValueFnMap());
         } else {
           w_ss_norm = std::make_pair(0.0,0.0);
@@ -1116,26 +1117,26 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       } else {
         w_ss_norm = std::make_pair(0.0,0.0);
       }
-      
+     
+     std::map<std::string,std::function<Value()>> wjets_ss_vals;
+     wjets_ss_vals[wjets_samples.at(0)] = [&]()->HTTRun2Analysis::Value {return w_ss_norm;};
+     for(unsigned i=1; i < wjets_samples.size(); ++i){ //we only have one dd w_ss_norm, so don't subtract anything for additional w+jet samples
+       wjets_ss_vals[wjets_samples.at(i)] = [&]()->HTTRun2Analysis::Value {return std::make_pair(0.0,0.0);};
+     }
+     
       if(ch_ != channel::tt){
         if(method == 8 || method == 9) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
         } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14) {
-          qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,{
-            {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
-              return w_ss_norm;}
-            }
-          });
+          qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,//{
+          wjets_ss_vals);
         } 
       } else {
         if(method == 8){
           qcd_norm = this->GetRateViaTauTauQCDMethod(this->ResolveSamplesAlias("data_samples"),qcd_sdb_cat,qcd_cat,qcd_extrap_sel,qcd_sdb_sel,qcd_sdb_cat, qcd_sub_samples, wt, ValueFnMap());
         } else if (method == 10){
-          qcd_norm = this->GetRateViaTauTauQCDMethod(this->ResolveSamplesAlias("data_samples"),qcd_sdb_cat,qcd_cat,qcd_extrap_sel,qcd_sdb_sel,qcd_sdb_cat, qcd_sub_samples, wt,{
-            {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
-              return w_ss_norm;}
-            }
-          });
+          qcd_norm = this->GetRateViaTauTauQCDMethod(this->ResolveSamplesAlias("data_samples"),qcd_sdb_cat,qcd_cat,qcd_extrap_sel,qcd_sdb_sel,qcd_sdb_cat, qcd_sub_samples, wt,//{
+          wjets_ss_vals);
        }
      }
       if (qcd_norm.first <= 0.0) {
@@ -1152,11 +1153,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         } else if(method == 10 || method==12 || method == 14) {
           qcd_shape_cat += "&&" + alias_map_["baseline"];        
             if(method == 14) qcd_shape_cat = "n_jets<=1 && n_loose_bjets>=1 &&" +alias_map_["baseline"];
-          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
-          {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
-              return w_ss_norm;} 
-            }
-          });
+          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, //{
+          wjets_ss_vals);
         } else {
           if (method == 9 || method == 11 ||method == 13) {
               qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
@@ -1171,11 +1169,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, ValueFnMap());
      } else if (method ==10){
        qcd_shape_cat += "&&" + alias_map_["tt_qcd_norm"];
-          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
-          {wjets_samples.at(0), [&]()->HTTRun2Analysis::Value {
-              return w_ss_norm;} 
-            }
-          });
+          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, //{
+          wjets_ss_vals);
        }
     }
 
@@ -1584,7 +1579,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     return result;
   }
 
-  HTTRun2Analysis::Value HTTRun2Analysis::SampleRatio(std::string const& sample, 
+  HTTRun2Analysis::Value HTTRun2Analysis::SampleRatio(std::vector<std::string> const& sample, 
                           std::string const& ref_selection, 
                           std::string const& ref_category,
                           std::string const& target_selection, 
@@ -1675,7 +1670,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   }
 
 
-  HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaWMethod(std::string const& w_sample,
+  HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaWMethod(std::vector<std::string> const& w_sample,
                           std::string const& ratio_cat,
                           std::string const& ratio_control_sel,
                           std::string const& ratio_signal_sel,
@@ -1688,11 +1683,11 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                           ) {
     if (verbosity_) {
       std::cout << "[HTTRun2Analysis::GetRateViaWMethod]\n";
-      std::cout << "ExtrapFactor:   " << boost::format("%s,'%s'/'%s','%s','%s'\n") % w_sample % ratio_signal_sel 
-                % ratio_control_sel % ratio_cat % wt;
+      //std::cout << "ExtrapFactor:   " << boost::format("%s,'%s'/'%s','%s','%s'\n") % w_sample % ratio_signal_sel 
+       //         % ratio_control_sel % ratio_cat % wt;
 //      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_sel % cat % wt;
     }
-    Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
+    Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt); 
     Value data_control = GetRate(data_sample, control_sel, cat, wt);
  //   if (verbosity_) PrintValue(data_sample, data_control);
     Value total_bkg;
@@ -1718,7 +1713,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   }
 
 
-  HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaWOSSSMethod(std::string const& w_sample,
+  HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaWOSSSMethod(std::vector<std::string> const& w_sample,
                           std::string const& ratio_cat,
                           std::string const& ratio_control_sel,
                           std::string const& ratio_signal_sel,
@@ -1732,8 +1727,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                           ) {
     if (verbosity_) {
       std::cout << "[HTTRun2Analysis::GetRateViaWMethod]\n";
-      std::cout << "ExtrapFactor:   " << boost::format("%s,'%s'/'%s','%s','%s'\n") % w_sample % ratio_signal_sel 
-                % ratio_control_sel % ratio_cat % wt;
+//      std::cout << "ExtrapFactor:   " << boost::format("%s,'%s'/'%s','%s','%s'\n") % w_sample % ratio_signal_sel 
+ //               % ratio_control_sel % ratio_cat % wt;
 //      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_sel % cat % wt;
     }
     std::string os_ctr_sel = "os && "+control_sel;

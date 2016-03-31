@@ -1119,12 +1119,12 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
 
   if (output_name.find("TT-ext") != output_name.npos) httWeights.set_do_topquark_weights(true);
   
-  /*if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
     httWeights.set_do_w_soup(true);
     httWeights.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
     httWeights.SetWInputYields(47161328,45442170,30190119,18319765,8816492);
-  }*/
+  }
 
     BuildModule(httWeights);
   }
