@@ -58,6 +58,7 @@ sample_list = [
   'WZinclusive',
   'ZZinclusive',
   'WZJetsTo3LNu',
+  'WZJetsToLLLNu',
   'VVTo2L2Nu',
   'WWTo1L1Nu2Q',
   'WWTo2L2Nu',
