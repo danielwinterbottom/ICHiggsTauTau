@@ -359,7 +359,8 @@ void HTTSequence::BuildSequence(){
                         || (output_name.find("AToZh")                 != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
                         || (output_name.find("Embedded")              != output_name.npos)
-                        || (output_name.find("RecHit")                != output_name.npos) );
+                        || (output_name.find("RecHit")                != output_name.npos) 
+                        || ((output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
 
@@ -1092,7 +1093,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_channel(channel)
     .set_era(era_type)
     .set_mc(mc_type)
-    .set_do_tau_id_weights(true)
+    .set_do_tau_id_weights(real_tau_sample)
     .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
     .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
@@ -1118,7 +1119,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
 
   if (output_name.find("TT-ext") != output_name.npos) httWeights.set_do_topquark_weights(true);
   
-/*  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+  /*if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
     httWeights.set_do_w_soup(true);
     httWeights.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);

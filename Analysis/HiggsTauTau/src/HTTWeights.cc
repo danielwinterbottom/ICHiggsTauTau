@@ -372,24 +372,26 @@ namespace ic {
           event->Add("wt_tau_id_down", weight_down);
         }
       } else {
-       double gen_match_2_pt = event->Get<double>("gen_match_2_pt");
-       unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-       double weight_up    = 1.0;
-       double weight_down  = 1.0;
-       double weight = 0;
-       if(gen_match_2 == 5){
-         weight = (0.20*gen_match_2_pt)/1000.;
-       }
-       /*FIXME: implement for tt channel:
-       if(channel_ == channel::tt){
-         double gen_match_1_pt = event->Get<double>("gen_match_1_pt");
-         unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-       }*/
-        weight_up   = 1.0 +weight;
-        weight_down = std::max(0.0, 1.0 - weight);
-        event->Add("wt_tau_id_up", weight_up);
-        event->Add("wt_tau_id_down", weight_down);
-      }   
+       if(channel_ != channel::em){
+         double gen_match_2_pt = event->Get<double>("gen_match_2_pt");
+         unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+         double weight_up    = 1.0;
+         double weight_down  = 1.0;
+         double weight = 0;
+         if(gen_match_2 == 5){
+           weight = (0.20*gen_match_2_pt)/1000.;
+         }
+         /*FIXME: implement for tt channel:
+         if(channel_ == channel::tt){
+           double gen_match_1_pt = event->Get<double>("gen_match_1_pt");
+           unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+         }*/
+          weight_up   = 1.0 +weight;
+          weight_down = std::max(0.0, 1.0 - weight);
+          event->Add("wt_tau_id_up", weight_up);
+          event->Add("wt_tau_id_down", weight_down);
+        }   
+      }
     }
     //A derived correction based on a input/MC discrepancy in the subleading b-jet eta in the emu ttbar control region. Used for a cross-check in H->hh analysis.
     if (do_top_jeteta_weights_) {
