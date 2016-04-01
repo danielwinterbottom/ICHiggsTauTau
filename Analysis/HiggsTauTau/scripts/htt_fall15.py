@@ -196,7 +196,6 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'VVTo2L2Nu',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q',
-    'WZJetsTo3LNu',
     'WZJetsToLLLNu',
     'WZTo1L3Nu',
     'WZTo2L2Q',
