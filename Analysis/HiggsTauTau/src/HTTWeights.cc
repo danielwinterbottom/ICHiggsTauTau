@@ -377,17 +377,22 @@ namespace ic {
          unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
          double weight_up    = 1.0;
          double weight_down  = 1.0;
-         double weight = 0;
+         double tau2_wt = 0;
          if(gen_match_2 == 5){
-           weight = (0.20*gen_match_2_pt)/1000.;
+           tau2_wt = (0.20*gen_match_2_pt)/1000.;
          }
-         /*FIXME: implement for tt channel:
-         if(channel_ == channel::tt){
+          weight_up   = 1.0 +tau2_wt;
+          weight_down = std::max(0.0, 1.0 - tau2_wt);
+          if(channel_ == channel::tt){
+           double tau1_wt = 0;
            double gen_match_1_pt = event->Get<double>("gen_match_1_pt");
            unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-         }*/
-          weight_up   = 1.0 +weight;
-          weight_down = std::max(0.0, 1.0 - weight);
+           if(gen_match_1 == 5){
+             tau1_wt = (0.20*gen_match_1_pt)/1000.;
+           }
+           weight_up = (1.0+tau2_wt)*(1.0+tau1_wt);
+           weight_down = std::max(0.0,(1.0-tau2_wt)*(1.0-tau1_wt));
+         }
           event->Add("wt_tau_id_up", weight_up);
           event->Add("wt_tau_id_down", weight_down);
         }   
