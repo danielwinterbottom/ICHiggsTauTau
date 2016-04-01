@@ -913,10 +913,21 @@ BuildModule(svFitTest);
 
 
 if(strategy_type == strategy::fall15 && !is_data){
- TH2F bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
- TH2F cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
- TH2F othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
+ TH2F bbtag_eff;
+ TH2F cbtag_eff;
+ TH2F othbtag_eff;
+
+ if(channel != channel::tt){
+   bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
+   cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
+   othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
+ } else {
+   bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_b");
+   cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
+   othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
+ }
 BuildModule(BTagWeightRun2("BTagWeightRun2")
+   .set_channel(channel)
    .set_jet_label(jets_label)
    .set_bbtag_eff(new TH2F(bbtag_eff))
    .set_cbtag_eff(new TH2F(cbtag_eff))

@@ -713,7 +713,7 @@ namespace ic {
       // The following properties are for the leading (in pt) CSV medium b-tagged
       // jet with pt > 20, |eta| < 2.4 after jet energy corrections, PF jet ID and
       // pileup jet ID are applied. Jets overlapping with either selected lepton
-      // are not counted
+      // are not counted NOTE in fully hadronic: CSV loose b-tagged jets!
 
       // Number of b-tagging jets passing above selections
       synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
@@ -858,8 +858,10 @@ namespace ic {
     if(strategy_ == strategy::fall15) btag_wp = 0.8;
     if(strategy_ == strategy::fall15) loose_btag_wp = 0.46;
 
-    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
-    //Extra set of jets which are CSV ordered is required for the H->hh analysis
+    if(channel_!= channel::tt){
+      ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+    } 
+   //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
     std::vector<PFJet*> bjets_csv = prebjets;
     std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
@@ -870,11 +872,16 @@ namespace ic {
     // that say whether a jet should pass the WP or not
     if (event->Exists("retag_result")) {
       auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-      ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+        ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
     } else{ 
-      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      if(channel_ != channel::tt){
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+        ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } else {
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+        ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+      }
     } 
     
     //Compare with btag shape reweighting:
@@ -1644,6 +1651,7 @@ namespace ic {
     n_prebjets_ = prebjets.size();
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
+    if (channel_ == channel::tt) n_loose_bjets_ = -1;
 
     if(qcd_study_ && (channel_ == channel::mt || channel_ == channel::et)){
       std::vector<Candidate *> leading_lepton;
