@@ -296,7 +296,7 @@ namespace ic {
       bool do_ss_;
       std::string dy_soup_;
       double qcd_os_ss_factor_;
-      double w_os_ss_factor_;
+//      double w_os_ss_factor_;
       std::vector<std::string> sample_names_;
       std::vector<std::string> signal_masses_;
       std::map<std::string, std::pair<double, double>> sample_info_;

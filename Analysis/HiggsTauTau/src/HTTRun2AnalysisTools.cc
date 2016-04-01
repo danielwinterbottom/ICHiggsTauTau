@@ -33,11 +33,11 @@ namespace ic {
     lumi_ = 1.;
     do_ss_ = false;
     qcd_os_ss_factor_ = 1.06;
-    if(ch_ == channel::et){
+    /*if(ch_ == channel::et){
       w_os_ss_factor_ = 4.09;
     } else if(ch_ == channel::mt){
       w_os_ss_factor_ = 3.76;
-    } else w_os_ss_factor_=1.0;
+    } else w_os_ss_factor_=1.0;*/
     using boost::range::push_back;
 
     //Sample splitting
@@ -1056,7 +1056,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
 
     std::string w_shape_cat = cat;
-    if (method == 14) w_shape_cat = "n_jets<=2&&n_loose_bjets>=1&&"+alias_map_["baseline"];
+    if (method == 14) w_shape_cat = "n_jets<=1&&n_loose_bjets>=1&&"+alias_map_["baseline"];
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
     TH1F w_hist = this->GetShape(var, wjets_samples, w_shape_sel, w_shape_cat, wt);
     //if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
@@ -1726,13 +1726,15 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                           std::map<std::string, std::function<Value()>> dict
                           ) {
     if (verbosity_) {
-      std::cout << "[HTTRun2Analysis::GetRateViaWMethod]\n";
+      std::cout << "[HTTRun2Analysis::GetRateViaWOSSSMethod]\n";
 //      std::cout << "ExtrapFactor:   " << boost::format("%s,'%s'/'%s','%s','%s'\n") % w_sample % ratio_signal_sel 
  //               % ratio_control_sel % ratio_cat % wt;
 //      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_sel % cat % wt;
     }
     std::string os_ctr_sel = "os && "+control_sel;
     std::string ss_ctr_sel = "!os && "+control_sel;
+    Value w_os_ss_ratio = SampleRatio(w_sample, "!os", ratio_cat, "os",ratio_cat,wt);
+    std::cout<<"W OS/SS ratio: "<<w_os_ss_ratio.first <<std::endl;
     Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
     Value data_control_os = GetRate(data_sample, os_ctr_sel, cat, wt);
     Value data_control_ss = GetRate(data_sample, ss_ctr_sel, cat, wt);
@@ -1763,19 +1765,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 //    double w_control_err = std::sqrt((total_bkg_os.second * total_bkg_os.second) + (data_control_os.second * data_control_os.second) + (data_control_ss.second *data_control_ss.second) + (total_bkg_ss.second * total_bkg_ss.second));
     double YOSterm = std::sqrt((total_bkg_os.second * total_bkg_os.second)+(data_control_os.second*data_control_os.second));
     double YSSterm = std::sqrt((total_bkg_os.second * total_bkg_os.second)+(data_control_os.second*data_control_os.second))*qcd_os_ss_factor_;
-    double RQterm = 0.1*qcd_os_ss_factor_*(std::sqrt((total_bkg_ss.second* total_bkg_ss.second)+(data_control_ss.second*data_control_ss.second))*w_os_ss_factor_-std::sqrt((total_bkg_os.second * total_bkg_os.second)+(data_control_os.second*data_control_os.second)))/(w_os_ss_factor_-qcd_os_ss_factor_);
-    double RWterm = 0.08*w_os_ss_factor_*(data_control_ss.first - total_bkg_ss.first);
+    double RQterm = 0.1*qcd_os_ss_factor_*(std::sqrt((total_bkg_ss.second* total_bkg_ss.second)+(data_control_ss.second*data_control_ss.second))*w_os_ss_ratio.first-std::sqrt((total_bkg_os.second * total_bkg_os.second)+(data_control_os.second*data_control_os.second)))/(w_os_ss_ratio.first-qcd_os_ss_factor_);
+    double RWterm = 0.08*w_os_ss_ratio.first*(data_control_ss.first - total_bkg_ss.first);
     if(get_os){
-      YOSterm *= w_os_ss_factor_;
-      YSSterm *= w_os_ss_factor_;
-      RQterm *= w_os_ss_factor_;
-      RWterm = 0.08*w_os_ss_factor_*(qcd_os_ss_factor_*qcd_os_ss_factor_*std::sqrt((total_bkg_ss.second* total_bkg_ss.second)+(data_control_ss.second*data_control_ss.second))-qcd_os_ss_factor_*std::sqrt((total_bkg_os.second * total_bkg_os.second)+(data_control_os.second*data_control_os.second)))/(w_os_ss_factor_-qcd_os_ss_factor_);
+      YOSterm *= w_os_ss_ratio.first;
+      YSSterm *= w_os_ss_ratio.first;
+      RQterm *= w_os_ss_ratio.first;
+      RWterm = 0.08*w_os_ss_ratio.first*(qcd_os_ss_factor_*qcd_os_ss_factor_*std::sqrt((total_bkg_ss.second* total_bkg_ss.second)+(data_control_ss.second*data_control_ss.second))-qcd_os_ss_factor_*std::sqrt((total_bkg_os.second * total_bkg_os.second)+(data_control_os.second*data_control_os.second)))/(w_os_ss_ratio.first-qcd_os_ss_factor_);
     }
-    double w_control_err = (std::sqrt(YOSterm*YOSterm + YSSterm*YSSterm + RQterm*RQterm + RWterm*RWterm))/(w_os_ss_factor_ - qcd_os_ss_factor_);
-    double w_control_first = ((data_control_os.first - total_bkg_os.first) - (data_control_ss.first - total_bkg_ss.first)*qcd_os_ss_factor_)/(w_os_ss_factor_-qcd_os_ss_factor_);
+    double w_control_err = (std::sqrt(YOSterm*YOSterm + YSSterm*YSSterm + RQterm*RQterm + RWterm*RWterm))/(w_os_ss_ratio.first - qcd_os_ss_factor_);
+    double w_control_first = ((data_control_os.first - total_bkg_os.first) - (data_control_ss.first - total_bkg_ss.first)*qcd_os_ss_factor_)/(w_os_ss_ratio.first-qcd_os_ss_factor_);
     
 
-    if(get_os) w_control_first*=w_os_ss_factor_;
+    if(get_os) w_control_first*=w_os_ss_ratio.first;
     Value w_control(w_control_first, w_control_err);
     if (verbosity_) PrintValue("WSideband", w_control);
     if (verbosity_) PrintValue("ExtrapFactor", ratio);
