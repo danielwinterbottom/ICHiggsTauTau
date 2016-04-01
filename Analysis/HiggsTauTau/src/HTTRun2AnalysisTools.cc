@@ -1119,11 +1119,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       }
      
      std::map<std::string,std::function<Value()>> wjets_ss_vals;
-     wjets_ss_vals[wjets_samples.at(0)] = [&]()->HTTRun2Analysis::Value {return w_ss_norm;};
-     for(unsigned i=1; i < wjets_samples.size(); ++i){ //we only have one dd w_ss_norm, so don't subtract anything for additional w+jet samples
-       wjets_ss_vals[wjets_samples.at(i)] = [&]()->HTTRun2Analysis::Value {return std::make_pair(0.0,0.0);};
-     }
-     
+     for(unsigned i=0; i< wjets_samples.size() ; ++i){ //We have wjets_samples.size() w+jets samples to subtract, but only one data driven norm
+      wjets_ss_vals[wjets_samples.at(i)] = [&]()->HTTRun2Analysis::Value{return std::make_pair(w_ss_norm.first/(wjets_samples.size()),w_ss_norm.second/std::sqrt(wjets_samples.size()));};
+    }
+       
       if(ch_ != channel::tt){
         if(method == 8 || method == 9) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
