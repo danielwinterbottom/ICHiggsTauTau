@@ -703,7 +703,7 @@ namespace ic {
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
-   "W3JetsToLNu-lO","W4JetsToLNu-LO"
+   "W3JetsToLNu-LO","W4JetsToLNu-LO"
    };
   if(!is_fall15_){
     samples_alias_map_["qcd_sub_samples"] = {
