@@ -234,14 +234,14 @@ if SCHEME == 'run2_mssm_nocrs':
   BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
 
   scheme_et = [
-    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
   ]
   scheme_mt = [
-    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
   ]
   scheme_tt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
