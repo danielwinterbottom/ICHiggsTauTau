@@ -51,6 +51,8 @@ parser.add_option("-e", dest="energy", type='string', default='13',
                   help="The C.O.M. energy is written into the datacard name, default is 13")
 parser.add_option("--shape_systs", dest="shape_systs", action='store_true', default=False,
                   help="Add systs shapes")
+parser.add_option("--norm_systs", dest="norm_systs", action='store_true', default=False,
+                  help="Add shapes for evaluating normalisation uncerts")
 
 (options, args) = parser.parse_args()
 
@@ -127,15 +129,17 @@ extra_channel_cr = {
 
 if options.shape_systs:
   extra_channel = {
-      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
-      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
-      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
-      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" '# --syst_scale_j="CMS_scale_j_13TeV" '
-      #"et" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
-#      "mt" : ' --syst_scale_j="CMS_scale_j_13TeV" '# --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
-      #"tt" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
-      #"em" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" ', 
+      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" ',
+      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" ',
+      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" '
   }
+
+if options.norm_systs:
+  extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
 
 #################################################################
 #### Old SM scheme
