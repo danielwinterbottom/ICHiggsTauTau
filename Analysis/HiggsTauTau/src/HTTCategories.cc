@@ -96,6 +96,7 @@ namespace ic {
       outtree_->Branch("pfmet",             &pfmet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
+      outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
       outtree_->Branch("mjj",               &mjj_.var_double);
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
@@ -289,7 +290,6 @@ namespace ic {
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
-        outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
         outtree_->Branch("jpt_1",             &jpt_1_.var_double);
         outtree_->Branch("j1_dm",             &j1_dm_);
         outtree_->Branch("jpt_2",             &jpt_2_.var_double);
