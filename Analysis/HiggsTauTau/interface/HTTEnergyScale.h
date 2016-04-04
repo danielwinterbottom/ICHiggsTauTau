@@ -16,6 +16,7 @@ class HTTEnergyScale : public ModuleBase {
   CLASS_MEMBER(HTTEnergyScale, bool , moriond_corrections)
   CLASS_MEMBER(HTTEnergyScale, std::string, input_label)
   CLASS_MEMBER(HTTEnergyScale, double, shift)
+  CLASS_MEMBER(HTTEnergyScale, double, shift_endcap)
 
 
  public:

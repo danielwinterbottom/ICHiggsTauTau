@@ -333,7 +333,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  //Need this to correctly set tau /elec ES
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
- } else tau_shift = json["baseline"]["elec_es_shift"].asDouble();
+ } else {
+ elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
+ elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
+ }
 
 
 
@@ -1440,9 +1443,20 @@ void HTTSequence::BuildEMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
- BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")
-      .set_input_label(js["electrons"].asString())
-      .set_shift(tau_shift));
+ if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15){
+   BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(tau_shift));
+ }
+
+ if(tau_scale_mode >0 && !is_data && strategy_type==strategy::fall15){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label("taus")
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_moriond_corrections(moriond_tau_scale));
+ }
 
   if (js["baseline"]["do_em_extras"].asBool()&&strategy_type==strategy::paper2013) {
     BuildModule(HTTEMuExtras("EMExtras"));
