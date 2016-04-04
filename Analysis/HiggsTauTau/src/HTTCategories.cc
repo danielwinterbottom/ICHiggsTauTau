@@ -858,9 +858,6 @@ namespace ic {
     if(strategy_ == strategy::fall15) btag_wp = 0.8;
     if(strategy_ == strategy::fall15) loose_btag_wp = 0.46;
 
-    if(channel_!= channel::tt){
-      ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
-    } 
    //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
     std::vector<PFJet*> bjets_csv = prebjets;
@@ -868,19 +865,31 @@ namespace ic {
     std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
 
+    //Sort out the loose (em,mt,et) or medium (tt) b-jets
+    if(channel_!= channel::tt){
+      ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+    } else {
+      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) <btag_wp);
+      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) <btag_wp);
+    }
+
+
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not
     if (event->Exists("retag_result")) {
       auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-        ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
+       if(channel_ != channel::tt){
+          ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+          ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
+       } else {
+          ic::erase_if(loose_bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      }
     } else{ 
       if(channel_ != channel::tt){
         ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
         ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
       } else {
-        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
-        ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+        ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
       }
     } 
     
@@ -1651,7 +1660,6 @@ namespace ic {
     n_prebjets_ = prebjets.size();
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
-    if (channel_ == channel::tt) n_loose_bjets_ = -1;
 
     if(qcd_study_ && (channel_ == channel::mt || channel_ == channel::et)){
       std::vector<Candidate *> leading_lepton;
@@ -1751,35 +1759,69 @@ namespace ic {
       n_jetsingap_lowpt_ = 9999;
     }
 
-    if (n_bjets_ >= 1) {
-      bpt_1_ = bjets[0]->pt();
-      brawf_1_ = bjets[0]->uncorrected_energy()/bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
-      beta_1_ = bjets[0]->eta();
-      bphi_1_ = bjets[0]->phi();
-      bmva_1_ = bjets[0]->pu_id_mva_value();
+    if (channel_ != channel::tt){
+      if (n_bjets_ >= 1) {
+        bpt_1_ = bjets[0]->pt();
+        brawf_1_ = bjets[0]->uncorrected_energy()/bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_1_ = bjets[0]->eta();
+        bphi_1_ = bjets[0]->phi();
+        bmva_1_ = bjets[0]->pu_id_mva_value();
       
-    } else {
-      bpt_1_ = -9999;
-      brawf_1_ = -9999;
-      beta_1_ = -9999;
-      bphi_1_ = -9999;
-      bmva_1_ = -9999;
+      } else {
+        bpt_1_ = -9999;
+        brawf_1_ = -9999;
+        beta_1_ = -9999;
+        bphi_1_ = -9999;
+        bmva_1_ = -9999;
+      }
+
+      if (n_bjets_ >= 2) {
+        bpt_2_ = bjets[1]->pt();
+        brawf_2_ = bjets[1]->uncorrected_energy()/bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_2_ = bjets[1]->eta();
+        bphi_2_ = bjets[1]->phi();
+        bmva_2_ = bjets[1]->pu_id_mva_value();
+      
+      } else {
+        bpt_2_ = -9999;
+        brawf_2_ = -9999;
+        beta_2_ = -9999;
+        bphi_2_ = -9999;
+        bmva_2_ = -9999;
+      }
+    } else {//We use the loose CSV wp for fully hadronic, so adjust definitions accordingly
+      if (n_loose_bjets_ >= 1) {
+        bpt_1_ = loose_bjets[0]->pt();
+        brawf_1_ = loose_bjets[0]->uncorrected_energy()/loose_bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_1_ = loose_bjets[0]->eta();
+        bphi_1_ = loose_bjets[0]->phi();
+        bmva_1_ = loose_bjets[0]->pu_id_mva_value();
+      
+      } else {
+        bpt_1_ = -9999;
+        brawf_1_ = -9999;
+        beta_1_ = -9999;
+        bphi_1_ = -9999;
+        bmva_1_ = -9999;
+      }
+
+      if (n_loose_bjets_ >= 2) {
+        bpt_2_ = loose_bjets[1]->pt();
+        brawf_2_ = loose_bjets[1]->uncorrected_energy()/loose_bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_2_ = loose_bjets[1]->eta();
+        bphi_2_ = loose_bjets[1]->phi();
+        bmva_2_ = loose_bjets[1]->pu_id_mva_value();
+      
+      } else {
+        bpt_2_ = -9999;
+        brawf_2_ = -9999;
+        beta_2_ = -9999;
+        bphi_2_ = -9999;
+        bmva_2_ = -9999;
+      }
+
     }
 
-    if (n_bjets_ >= 2) {
-      bpt_2_ = bjets[1]->pt();
-      brawf_2_ = bjets[1]->uncorrected_energy()/bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
-      beta_2_ = bjets[1]->eta();
-      bphi_2_ = bjets[1]->phi();
-      bmva_2_ = bjets[1]->pu_id_mva_value();
-      
-    } else {
-      bpt_2_ = -9999;
-      brawf_2_ = -9999;
-      beta_2_ = -9999;
-      bphi_2_ = -9999;
-      bmva_2_ = -9999;
-    }
 
 
     if (n_prebjets_ >= 1) {

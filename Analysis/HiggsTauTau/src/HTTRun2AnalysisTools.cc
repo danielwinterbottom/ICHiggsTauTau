@@ -247,8 +247,8 @@ namespace ic {
       alias_map_["2jet1taghigh"] = "(n_jets>=2 && n_bjets==1)";
       alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
-      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
-      alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["btag"] = "(n_jets<=1 && n_loose_bjets>=1)";
+      alias_map_["nobtag"] = "n_loose_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
       alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto &&"+alias_map_["notwoprong"];
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
