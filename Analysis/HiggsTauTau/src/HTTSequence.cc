@@ -334,6 +334,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
+ tau_shift = 1.0;//Just to set it to something
  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
  }
@@ -1451,10 +1452,11 @@ void HTTSequence::BuildEMPairs() {
 
  if(tau_scale_mode >0 && !is_data && strategy_type==strategy::fall15){
     BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
-        .set_input_label("taus")
+        .set_input_label(js["electrons"].asString())
         .set_shift(elec_shift_barrel)
         .set_shift_endcap(elec_shift_endcap)
         .set_strategy(strategy_type)
+        .set_channel(channel::em)
         .set_moriond_corrections(moriond_tau_scale));
  }
 
