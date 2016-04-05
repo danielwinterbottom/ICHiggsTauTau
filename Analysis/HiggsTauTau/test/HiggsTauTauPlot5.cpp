@@ -321,7 +321,7 @@ int main(int argc, char* argv[]){
   // ************************************************************************
 	// Tau ID Weights
 	// ************************************************************************
-/*	if (syst_eff_t != "") {
+	if (syst_eff_t != "") {
 		std::cout << "[HiggsTauTauPlot5] Adding high tau pT ID systematic..." << std::endl;
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
@@ -333,9 +333,20 @@ int main(int argc, char* argv[]){
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
     }
- 		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, sel, cat, "wt*wt_tau_id_up");
- 		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, sel, cat, "wt*wt_tau_id_down");
-	}*/
+
+    std::string ztt_sel;
+    if (channel_str == "et"){
+      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel+"&&"+ana.ResolveAlias("baseline");
+    }
+    if (channel_str == "mt"){
+      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel+"&&"+ana.ResolveAlias("baseline");
+    }
+    if (channel_str == "tt"){
+      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel+"&&"+ana.ResolveAlias("baseline");
+    }
+ 		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_up");
+ 		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_down");
+	}
 	
   vector<pair<string,string>> systematics;
 
