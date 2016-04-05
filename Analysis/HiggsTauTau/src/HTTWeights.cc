@@ -314,14 +314,27 @@ namespace ic {
       double top_wt_up = 1.0;
       double top_wt_down = 1.0;
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
+      if(era_ != era::data_2015){
+        for (unsigned i = 0; i < parts.size(); ++i) {
+          if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
+            double pt = parts[i]->pt();
+            pt = std::min(pt, 400.);
+            if (mc_ == mc::summer12_53X) top_wt *= std::exp(0.156-0.00137*pt);
+            if (mc_ == mc::fall11_42X)   top_wt *= std::exp(0.199-0.00166*pt);
+          }
+        }
+      } else {
+        for (unsigned i = 0; i < parts.size(); ++i){
+          std::vector<bool> status_flags = parts[i]->statusFlags();
+          unsigned id = abs(parts[i]->pdgid());
+          if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
           double pt = parts[i]->pt();
           pt = std::min(pt, 400.);
-          if (mc_ == mc::summer12_53X) top_wt *= std::exp(0.156-0.00137*pt);
-          if (mc_ == mc::fall11_42X)   top_wt *= std::exp(0.199-0.00166*pt);
+          if (mc_ == mc::fall15_76X) top_wt *= std::exp(0.156-0.00137*pt);
+          }
         }
       }
+          
       top_wt = std::sqrt(top_wt);
       top_wt_up = top_wt * top_wt;
       top_wt_down = 1.0;
@@ -342,20 +355,47 @@ namespace ic {
     }
 
     if (do_tau_id_weights_) {
-      std::vector<Candidate *> tau = { (dilepton[0]->GetCandidate("lepton2")) };
-      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_tau_collection_);
-      std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
-      std::vector<GenJet *> gen_taus_ptr;
-      for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
-      std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
-      double weight_up    = 1.0;
-      double weight_down  = 1.0;
-      if (matches.size() == 1) {
-        double weight = (0.20*matches[0].second->pt())/1000.;
-        weight_up   = 1.0 +weight;
-        weight_down = std::max(0.0, 1.0 - weight);
-        event->Add("wt_tau_id_up", weight_up);
-        event->Add("wt_tau_id_down", weight_down);
+      if(era_ != era::data_2015){
+        std::vector<Candidate *> tau = { (dilepton[0]->GetCandidate("lepton2")) };
+        std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_tau_collection_);
+        std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
+        std::vector<GenJet *> gen_taus_ptr;
+        for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+        std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
+        double weight_up    = 1.0;
+        double weight_down  = 1.0;
+        if (matches.size() == 1) {
+          double weight = (0.20*matches[0].second->pt())/1000.;
+          weight_up   = 1.0 +weight;
+          weight_down = std::max(0.0, 1.0 - weight);
+          event->Add("wt_tau_id_up", weight_up);
+          event->Add("wt_tau_id_down", weight_down);
+        }
+      } else {
+       if(channel_ != channel::em){
+         double gen_match_2_pt = event->Get<double>("gen_match_2_pt");
+         unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+         double weight_up    = 1.0;
+         double weight_down  = 1.0;
+         double tau2_wt = 0;
+         if(gen_match_2 == 5){
+           tau2_wt = (0.20*gen_match_2_pt)/1000.;
+         }
+          weight_up   = 1.0 +tau2_wt;
+          weight_down = std::max(0.0, 1.0 - tau2_wt);
+          if(channel_ == channel::tt){
+           double tau1_wt = 0;
+           double gen_match_1_pt = event->Get<double>("gen_match_1_pt");
+           unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+           if(gen_match_1 == 5){
+             tau1_wt = (0.20*gen_match_1_pt)/1000.;
+           }
+           weight_up = (1.0+tau2_wt)*(1.0+tau1_wt);
+           weight_down = std::max(0.0,(1.0-tau2_wt)*(1.0-tau1_wt));
+         }
+          event->Add("wt_tau_id_up", weight_up);
+          event->Add("wt_tau_id_down", weight_down);
+        }   
       }
     }
     //A derived correction based on a input/MC discrepancy in the subleading b-jet eta in the emu ttbar control region. Used for a cross-check in H->hh analysis.

@@ -51,6 +51,8 @@ parser.add_option("-e", dest="energy", type='string', default='13',
                   help="The C.O.M. energy is written into the datacard name, default is 13")
 parser.add_option("--shape_systs", dest="shape_systs", action='store_true', default=False,
                   help="Add systs shapes")
+parser.add_option("--norm_systs", dest="norm_systs", action='store_true', default=False,
+                  help="Add shapes for evaluating normalisation uncerts")
 
 (options, args) = parser.parse_args()
 
@@ -117,17 +119,27 @@ extra_channel = {
     "tt" : ' ',
     "em" : ' '
 }
+
+extra_channel_cr = {
+    "et" : ' ',
+    "mt" : ' ',
+    "tt" : ' ',
+    "em" : ' '
+}
+
 if options.shape_systs:
   extra_channel = {
-      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
-      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
-      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" ', #--syst_scale_j="CMS_scale_j_13TeV" ',
-      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" '# --syst_scale_j="CMS_scale_j_13TeV" '
-      #"et" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
-      #"mt" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
-      #"tt" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" ',
-      #"em" : ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" ', 
+      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" ',
+      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" ',
+      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" '
   }
+
+if options.norm_systs:
+  extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
 
 #################################################################
 #### Old SM scheme
@@ -217,43 +229,68 @@ if SCHEME == 'run2_Hhh':
   sig_scheme = 'run2_Hhh'
   ANA = 'Hhh'
 
+if SCHEME == 'run2_mssm_nocrs':
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+
+  scheme_et = [
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+  ]
+  scheme_mt = [
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+  ]
+  scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
+    ("8",   "btag",    "btag",  BINS, ''),
+
+  ]
+  scheme_em = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default'
+  }
+  sig_scheme = 'run2_mssm'
+  ANA = 'mssm'
+
+
 if SCHEME == 'run2_mssm':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
   BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
-#  MTTOTBINSFINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,450,500,550,600,700,1000,1300,1600,1900,2200,2500,3000,3500,4000]"
-#  MTTOTBINS="[0,40,80,120,160,200,240,280,320,360,400,450,500,550,600,700,1000,1500,2000,2500,3000,3500,4000]"
-#  if options.mttot or options.mtsv:
-#    BINS_FINE=MTTOTBINSFINE
-#    BINS=MTTOTBINS
 
   scheme_et = [
-#    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-#    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-#    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-#    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-#    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-#    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-#    ("8",   "btaghighnotwoprong",    "btaghighnotwoprong",  BINS, '--set_alias="sel:mt_1<30"')
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 --do_ss=true '),
+    ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 --do_ss=true '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("14",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 '),
+    ("14",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 --do_ss=true '),
+    ("14",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 --do_ss=true '),
   ]
   scheme_mt = [
-#    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
-#    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
-#    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
-#    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-#    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-#    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
-#    ("8",   "btaghighnotwoprong",    "btaghighnotwoprong",  BINS, '--set_alias="sel:mt_1<30"')
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("14",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 --do_ss=true '),
   ]
   scheme_tt = [
-#    ("8",   "inclusive",    "inclusive",  BINS_FINE if not options.mttot else MTTOTBINSFINE,  ''),
-#    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, ''),
-#    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, ''),
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
     ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
     ("8",   "btag",    "btag",  BINS, ''),
@@ -313,6 +350,8 @@ for ch in channels:
     bin     = x[3]
     opts    = x[4]
     extra = options.extra + extra_global + extra_channel[ch] + opts
+    if '_cr' in dc:
+      extra = options.extra + extra_global + extra_channel_cr[ch] + opts
 
     os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
         ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'

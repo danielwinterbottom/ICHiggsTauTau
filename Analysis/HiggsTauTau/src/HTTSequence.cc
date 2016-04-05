@@ -333,7 +333,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  //Need this to correctly set tau /elec ES
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
- } else tau_shift = json["baseline"]["elec_es_shift"].asDouble();
+ } else {
+ elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
+ elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
+ }
 
 
 
@@ -359,7 +362,8 @@ void HTTSequence::BuildSequence(){
                         || (output_name.find("AToZh")                 != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
                         || (output_name.find("Embedded")              != output_name.npos)
-                        || (output_name.find("RecHit")                != output_name.npos) );
+                        || (output_name.find("RecHit")                != output_name.npos) 
+                        || ((output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
 
@@ -823,7 +827,7 @@ if(strategy_type==strategy::fall15&&!is_data&&js["do_btag_eff"].asBool()){
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
 .set_input_label(jets_label);
 if(strategy_type == strategy::paper2013) {
-  jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
+  jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
 } else {
   jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
 }
@@ -912,10 +916,21 @@ BuildModule(svFitTest);
 
 
 if(strategy_type == strategy::fall15 && !is_data){
- TH2F bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
- TH2F cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
- TH2F othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
+ TH2F bbtag_eff;
+ TH2F cbtag_eff;
+ TH2F othbtag_eff;
+
+ if(channel != channel::tt){
+   bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
+   cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
+   othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
+ } else {
+   bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_b");
+   cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
+   othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
+ }
 BuildModule(BTagWeightRun2("BTagWeightRun2")
+   .set_channel(channel)
    .set_jet_label(jets_label)
    .set_bbtag_eff(new TH2F(bbtag_eff))
    .set_cbtag_eff(new TH2F(cbtag_eff))
@@ -1092,7 +1107,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_channel(channel)
     .set_era(era_type)
     .set_mc(mc_type)
-    .set_do_tau_id_weights(false)
+    .set_do_tau_id_weights(real_tau_sample)
     .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
     .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
@@ -1115,13 +1130,15 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     httWeights.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
     httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);
   }
+
+  if (output_name.find("TT-ext") != output_name.npos) httWeights.set_do_topquark_weights(true);
   
-/*  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
     httWeights.set_do_w_soup(true);
-    httWeights.SetWInputCrossSections(50690,9644.5,3144.5,954.8,485.6);
+    httWeights.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
     httWeights.SetWInputYields(47161328,45442170,30190119,18319765,8816492);
-  }*/
+  }
 
     BuildModule(httWeights);
   }
@@ -1426,9 +1443,20 @@ void HTTSequence::BuildEMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
- BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")
-      .set_input_label(js["electrons"].asString())
-      .set_shift(tau_shift));
+ if(tau_scale_mode > 0 && !is_data && strategy_type!=strategy::fall15){
+   BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(tau_shift));
+ }
+
+ if(tau_scale_mode >0 && !is_data && strategy_type==strategy::fall15){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label("taus")
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_moriond_corrections(moriond_tau_scale));
+ }
 
   if (js["baseline"]["do_em_extras"].asBool()&&strategy_type==strategy::paper2013) {
     BuildModule(HTTEMuExtras("EMExtras"));

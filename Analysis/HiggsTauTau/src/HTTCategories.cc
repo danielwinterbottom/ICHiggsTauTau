@@ -96,6 +96,7 @@ namespace ic {
       outtree_->Branch("pfmet",             &pfmet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
+      outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
       outtree_->Branch("mjj",               &mjj_.var_double);
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
@@ -273,10 +274,10 @@ namespace ic {
         //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
         //outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
         //outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
-        //outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
-        //outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
-        //outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
-        //outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
+        outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
+        outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
+        outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
+        outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
@@ -289,7 +290,6 @@ namespace ic {
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
-        outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
         outtree_->Branch("jpt_1",             &jpt_1_.var_double);
         outtree_->Branch("j1_dm",             &j1_dm_);
         outtree_->Branch("jpt_2",             &jpt_2_.var_double);
@@ -713,7 +713,7 @@ namespace ic {
       // The following properties are for the leading (in pt) CSV medium b-tagged
       // jet with pt > 20, |eta| < 2.4 after jet energy corrections, PF jet ID and
       // pileup jet ID are applied. Jets overlapping with either selected lepton
-      // are not counted
+      // are not counted NOTE in fully hadronic: CSV loose b-tagged jets!
 
       // Number of b-tagging jets passing above selections
       synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
@@ -825,7 +825,12 @@ namespace ic {
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
-    
+    if(channel_ == channel::tt){//Now order the taus by pT
+      if(lep1->pt() < lep2->pt()){
+        lep1 = ditau->GetCandidate("lepton2");  
+        lep2 = ditau->GetCandidate("lepton1");  
+      }
+    }
     Met const* mets = NULL;
     //MVA met doesnt exist for Z->ee and Z->mumu
     if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mets = event->GetPtr<Met>(met_label_);
@@ -853,23 +858,39 @@ namespace ic {
     if(strategy_ == strategy::fall15) btag_wp = 0.8;
     if(strategy_ == strategy::fall15) loose_btag_wp = 0.46;
 
-    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
-    //Extra set of jets which are CSV ordered is required for the H->hh analysis
+   //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
     std::vector<PFJet*> bjets_csv = prebjets;
     std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
     std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
 
+    //Sort out the loose (em,mt,et) or medium (tt) b-jets
+    if(channel_!= channel::tt){
+      ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+    } else {
+      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) <btag_wp);
+      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) <btag_wp);
+    }
+
+
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not
     if (event->Exists("retag_result")) {
       auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-      ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
+       if(channel_ != channel::tt){
+          ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+          ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
+       } else {
+          ic::erase_if(loose_bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      }
     } else{ 
-      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      if(channel_ != channel::tt){
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+        ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      } else {
+        ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+      }
     } 
     
     //Compare with btag shape reweighting:
@@ -1738,35 +1759,69 @@ namespace ic {
       n_jetsingap_lowpt_ = 9999;
     }
 
-    if (n_bjets_ >= 1) {
-      bpt_1_ = bjets[0]->pt();
-      brawf_1_ = bjets[0]->uncorrected_energy()/bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
-      beta_1_ = bjets[0]->eta();
-      bphi_1_ = bjets[0]->phi();
-      bmva_1_ = bjets[0]->pu_id_mva_value();
+    if (channel_ != channel::tt){
+      if (n_bjets_ >= 1) {
+        bpt_1_ = bjets[0]->pt();
+        brawf_1_ = bjets[0]->uncorrected_energy()/bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_1_ = bjets[0]->eta();
+        bphi_1_ = bjets[0]->phi();
+        bmva_1_ = bjets[0]->pu_id_mva_value();
       
-    } else {
-      bpt_1_ = -9999;
-      brawf_1_ = -9999;
-      beta_1_ = -9999;
-      bphi_1_ = -9999;
-      bmva_1_ = -9999;
+      } else {
+        bpt_1_ = -9999;
+        brawf_1_ = -9999;
+        beta_1_ = -9999;
+        bphi_1_ = -9999;
+        bmva_1_ = -9999;
+      }
+
+      if (n_bjets_ >= 2) {
+        bpt_2_ = bjets[1]->pt();
+        brawf_2_ = bjets[1]->uncorrected_energy()/bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_2_ = bjets[1]->eta();
+        bphi_2_ = bjets[1]->phi();
+        bmva_2_ = bjets[1]->pu_id_mva_value();
+      
+      } else {
+        bpt_2_ = -9999;
+        brawf_2_ = -9999;
+        beta_2_ = -9999;
+        bphi_2_ = -9999;
+        bmva_2_ = -9999;
+      }
+    } else {//We use the loose CSV wp for fully hadronic, so adjust definitions accordingly
+      if (n_loose_bjets_ >= 1) {
+        bpt_1_ = loose_bjets[0]->pt();
+        brawf_1_ = loose_bjets[0]->uncorrected_energy()/loose_bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_1_ = loose_bjets[0]->eta();
+        bphi_1_ = loose_bjets[0]->phi();
+        bmva_1_ = loose_bjets[0]->pu_id_mva_value();
+      
+      } else {
+        bpt_1_ = -9999;
+        brawf_1_ = -9999;
+        beta_1_ = -9999;
+        bphi_1_ = -9999;
+        bmva_1_ = -9999;
+      }
+
+      if (n_loose_bjets_ >= 2) {
+        bpt_2_ = loose_bjets[1]->pt();
+        brawf_2_ = loose_bjets[1]->uncorrected_energy()/loose_bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_2_ = loose_bjets[1]->eta();
+        bphi_2_ = loose_bjets[1]->phi();
+        bmva_2_ = loose_bjets[1]->pu_id_mva_value();
+      
+      } else {
+        bpt_2_ = -9999;
+        brawf_2_ = -9999;
+        beta_2_ = -9999;
+        bphi_2_ = -9999;
+        bmva_2_ = -9999;
+      }
+
     }
 
-    if (n_bjets_ >= 2) {
-      bpt_2_ = bjets[1]->pt();
-      brawf_2_ = bjets[1]->uncorrected_energy()/bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
-      beta_2_ = bjets[1]->eta();
-      bphi_2_ = bjets[1]->phi();
-      bmva_2_ = bjets[1]->pu_id_mva_value();
-      
-    } else {
-      bpt_2_ = -9999;
-      brawf_2_ = -9999;
-      beta_2_ = -9999;
-      bphi_2_ = -9999;
-      bmva_2_ = -9999;
-    }
 
 
     if (n_prebjets_ >= 1) {

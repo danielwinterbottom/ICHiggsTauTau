@@ -185,7 +185,7 @@ namespace ic {
    // ************************************************************************
    // Scale met for the tau energy scale shift
    // ************************************************************************
-    if (scale_met_for_tau_ && channel_ != channel::em) {
+    if (scale_met_for_tau_ && channel_ != channel::em && channel_ != channel::tt) {
       Met * met = event->GetPtr<Met>(met_label_);
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       double t_scale = tau_scale_;
@@ -210,18 +210,68 @@ namespace ic {
       ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
     }
+
+   // ************************************************************************
+   // Scale met for the tau energy scale shift in fully hadronic channel
+   // ************************************************************************
+    if (scale_met_for_tau_ && channel_ == channel::tt) {
+      Met * met = event->GetPtr<Met>(met_label_);
+      Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
+      Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
+      double t_scale_1 = tau_scale_;
+      double t_scale_2 = tau_scale_;
+      if (event->Exists("tau_scales")) {
+        std::map<std::size_t, double> const& tau_scales = event->Get< std::map<std::size_t, double>  > ("tau_scales");
+        std::map<std::size_t, double>::const_iterator it_1 = tau_scales.find(tau1->id());
+        std::map<std::size_t, double>::const_iterator it_2 = tau_scales.find(tau2->id());
+        if (it_1 != tau_scales.end()) {
+          t_scale_1 = it_1->second;
+        } else {
+          std::cout << "Scale for chosen tau not found!" << std::endl;
+          throw;
+        }
+        if (it_2 != tau_scales.end()) {
+          t_scale_2 = it_2->second;
+        } else {
+          std::cout << "Scale for chosen tau not found!" << std::endl;
+          throw;
+        }
+      }
+      double metx = met->vector().px();
+      double mety = met->vector().py();
+      double metet = met->vector().energy();
+      double dx_1 = tau1->vector().px() * (( 1. / t_scale_1) - 1.);
+      double dy_1 = tau1->vector().py() * (( 1. / t_scale_1) - 1.);
+      double dx_2 = tau2->vector().px() * (( 1. / t_scale_2) - 1.);
+      double dy_2 = tau2->vector().py() * (( 1. / t_scale_2) - 1.);
+      metx = metx + dx_1 + dx_2;
+      mety = mety + dy_1 + dy_2;
+      metet = sqrt(metx*metx + mety*mety);
+      ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+      met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+    }
     // ************************************************************************
     // Scale met for the electron energy scale shift
     // ************************************************************************
     if (scale_met_for_tau_ && channel_ == channel::em) {
       Met * met = event->GetPtr<Met>(met_label_);
-
+      double t_scale_ = tau_scale_;
       Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
+      if (event->Exists("elec_scales")) {
+        std::map<std::size_t, double> const& elec_scales = event->Get< std::map<std::size_t, double>  > ("elec_scales");
+        std::map<std::size_t, double>::const_iterator it = elec_scales.find(elec->id());
+        if (it != elec_scales.end()) {
+          t_scale_ = it->second;
+        } else {
+          std::cout << "Scale for chosen electron not found!" << std::endl;
+          throw;
+        }
+      }
       double metx = met->vector().px();
       double mety = met->vector().py();
       double metet = met->vector().energy();
-      double dx = elec->vector().px() * (( 1. / tau_scale_) - 1.);
-      double dy = elec->vector().py() * (( 1. / tau_scale_) - 1.);
+      double dx = elec->vector().px() * (( 1. / t_scale_) - 1.);
+      double dy = elec->vector().py() * (( 1. / t_scale_) - 1.);
       metx = metx + dx;
       mety = mety + dy;
       metet = sqrt(metx*metx + mety*mety);

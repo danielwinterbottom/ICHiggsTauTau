@@ -4,7 +4,7 @@
 #include <algorithm>
 
 namespace ic {
-  BTagWeightRun2::BTagWeightRun2(std::string const& name) : ModuleBase(name) {
+  BTagWeightRun2::BTagWeightRun2(std::string const& name) : ModuleBase(name), channel_(channel::et) {
     jet_label_ = "pfJetsPFlow";
     bbtag_eff_ = nullptr;
     cbtag_eff_ = nullptr;
@@ -19,13 +19,25 @@ namespace ic {
 
   int BTagWeightRun2::PreAnalysis() {
     calib  = new BTagCalibration("csvv2","./input/btag_sf/CSVv2.csv");
-    reader_incl = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","central");
-    reader_mujets = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","central");
+    if(channel_ != channel::tt){
+      reader_incl = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","central");
+      reader_mujets = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","central");
+    } else {
+      reader_incl = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "incl","central");
+      reader_mujets = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "mujets","central");
+    }
     reader_iterativefit = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","central");
-    reader_inclup = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","up");
-    reader_incldown = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","down");
-    reader_mujetsup = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","up");
-    reader_mujetsdown = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","down");
+    if(channel_ != channel::tt){
+      reader_inclup = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","up");
+      reader_incldown = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","down");
+      reader_mujetsup = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","up");
+      reader_mujetsdown = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","down");
+    } else {
+      reader_inclup = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "incl","up");
+      reader_incldown = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "incl","down");
+      reader_mujetsup = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "mujets","up");
+      reader_mujetsdown = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "mujets","down");
+    }
     reader_jesup = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","up_jes");
     reader_jesdown= new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","down_jes");
     reader_lfup = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","up_lf");
@@ -149,7 +161,7 @@ namespace ic {
     double sub_sf=0;
     for (unsigned i = 0; i < jets.size(); ++i) {
       rand->SetSeed((int)((jets[i]->eta()+5)*100000));
-      eta = jets[i]->eta();
+      eta = fabs(jets[i]->eta());
       pt = jets[i]->pt();
       jet_flavour = jets[i]->hadron_flavour();
       double eff = GetEff(jet_flavour,pt, fabs(eta));
@@ -258,7 +270,12 @@ namespace ic {
         std::cout << "-- efficiency: " << eff << std::endl;
         std::cout << "-- scale factor: " << sf << std::endl;
       }
-      bool passtag = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+      bool passtag;
+      if(channel_ != channel::tt){
+        passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+      } else {
+        passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.46;
+      }
       double randVal = rand->Uniform();
       if(passtag) {                       // if tagged
         if(demoteProb_btag > 0. && randVal < demoteProb_btag) {

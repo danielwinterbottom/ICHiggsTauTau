@@ -13,6 +13,7 @@
 #include "TH2.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagCalibrationStandalone.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "TRandom3.h"
 
 namespace ic {
@@ -20,6 +21,7 @@ namespace ic {
 
 class BTagWeightRun2 : public ModuleBase {
   private :
+   CLASS_MEMBER(BTagWeightRun2, ic::channel, channel)
    CLASS_MEMBER(BTagWeightRun2, std::string, jet_label)
    CLASS_MEMBER(BTagWeightRun2, TH2F*,bbtag_eff)
    CLASS_MEMBER(BTagWeightRun2, TH2F*,cbtag_eff)

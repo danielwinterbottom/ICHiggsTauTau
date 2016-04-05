@@ -186,7 +186,7 @@ if options.proc_qcd:
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     'TT-ext',
- #   'WJetsToLNu',
+    #'WJetsToLNu',
     'WJetsToLNu-LO',
     'W1JetsToLNu-LO',
     'W2JetsToLNu-LO',
@@ -196,7 +196,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'VVTo2L2Nu',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q',
-    'WZJetsTo3LNu',
+    'WZJetsToLLLNu',
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',

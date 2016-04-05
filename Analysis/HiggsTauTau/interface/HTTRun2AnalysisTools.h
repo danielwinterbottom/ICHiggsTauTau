@@ -180,7 +180,7 @@ namespace ic {
       // Sample ratio is only correctly defined if the events defined
       // by "target" and "ref" and mutually exclusive (and therefore 
       // can be treated as statistically independent populations)
-      Value SampleRatio(std::string const& sample, 
+      Value SampleRatio(std::vector<std::string> const& sample, 
                               std::string const& ref_selection, 
                               std::string const& ref_category,
                               std::string const& target_selection, 
@@ -228,7 +228,7 @@ namespace ic {
           3. The method returns the background-subtracted data yield (2)  
              multiplied by the extrapolation factor (1) 
       */
-      Value GetRateViaWMethod(std::string const& w_sample,
+      Value GetRateViaWMethod(std::vector<std::string> const& w_sample,
                               std::string const& ratio_cat,
                               std::string const& ratio_control_sel,
                               std::string const& ratio_signal_sel,
@@ -239,7 +239,7 @@ namespace ic {
                               std::string const& wt,
                               std::map<std::string, std::function<Value()>> dict
                               );
-      Value GetRateViaWOSSSMethod(std::string const& w_sample,
+      Value GetRateViaWOSSSMethod(std::vector<std::string> const& w_sample,
                               std::string const& ratio_cat,
                               std::string const& ratio_control_sel,
                               std::string const& ratio_signal_sel,
@@ -296,7 +296,7 @@ namespace ic {
       bool do_ss_;
       std::string dy_soup_;
       double qcd_os_ss_factor_;
-      double w_os_ss_factor_;
+//      double w_os_ss_factor_;
       std::vector<std::string> sample_names_;
       std::vector<std::string> signal_masses_;
       std::map<std::string, std::pair<double, double>> sample_info_;
