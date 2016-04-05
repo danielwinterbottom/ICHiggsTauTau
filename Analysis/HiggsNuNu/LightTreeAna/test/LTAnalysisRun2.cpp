@@ -385,12 +385,11 @@ int main(int argc, char* argv[]){
   std::string zextrasigcat;
 
   //AMM uncomment for QCD mindphi plot in signal region!
-  //std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&metnomuons>0&&dijet_M>800&&"+jetmetdphicut;
   std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&metnomuons>200&&dijet_M>1100&&"+jetmetdphicut;
   //std::string nunuqcdcat=nunucat;
   //AMM uncomment for QCD plot in signal region! except mindphi.
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1";
-  std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
+  //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
 
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
   std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
@@ -796,7 +795,7 @@ int main(int argc, char* argv[]){
       thisshape.set_legleft(0.39);
       thisshape.set_legright(0.61);
     }
-    if (strs[0].find("alljetsmetnomu")!=strs[0].npos) thisshape.set_axisrangemultiplier((channel=="mumu"||channel=="nunu")?2:1.6);
+    if (strs[0].find("alljetsmetnomu")!=strs[0].npos) thisshape.set_axisrangemultiplier((channel=="mumu"||channel=="nunu")?2.2:1.6);
     if (strs[0].find("dijet_deta")!=strs[0].npos && channel=="nunu") thisshape.set_axisrangemultiplier(1.7);
 
     thisshape.set_histtitle(histTitle[ishape]);
@@ -1030,7 +1029,7 @@ int main(int argc, char* argv[]){
   qcdele.set_is_data(false)
     .set_scale(getPostFitSF(channel,"QCD"))
     //AMM uncomment for QCD in signal region plots mindphi.
-    //.set_scale(3.8/7.8)
+    //.set_scale(3.8/7.9)
     //AMM uncomment for QCD in signal region plots all but mindphi.
     //.set_scale(3.8/6.5)
     .set_color(kMagenta-10)
@@ -1105,6 +1104,7 @@ int main(int argc, char* argv[]){
       //elementvec.push_back(ggHele);
     }
   }
+  //if(!(channel=="nunu"&&runblind))elementvec.push_back(dataele);
 
   if (debug){
     std::cout << " number of elements: " << elementvec.size() << std::endl;

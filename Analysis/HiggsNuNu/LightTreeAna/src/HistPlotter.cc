@@ -389,6 +389,7 @@ namespace ic{
       }
 
       std::cout<<"    Drawing Unstacked.."<<std::endl;
+      TGraphAsymmErrors * g = 0;
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(do_debug_)std::cout<<"  "<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
 	if(!(elements_[iElement].in_stack())){
@@ -436,7 +437,7 @@ namespace ic{
 	  //!!
 	  else{//For data do asymmetric data errors
 	    const double alpha = 1 - 0.6827;
-	    TGraphAsymmErrors * g = new TGraphAsymmErrors(elements_[iElement].hist_ptr());
+	    g = new TGraphAsymmErrors(elements_[iElement].hist_ptr());
 	    g->SetMarkerSize(1.1);
 	    g->SetMarkerStyle (20);
 
@@ -483,6 +484,7 @@ namespace ic{
 	  
 	}
       }
+      g->Draw("sameP");
       if(do_debug_)std::cout<<"  Drawing legend"<<std::endl;
 
       //SETUP AND DRAW THE LEGEND
@@ -495,6 +497,7 @@ namespace ic{
       leg->SetTextSize(0.06);
       leg->SetFillStyle(0);
       leg->SetLineColor(10);
+      leg->SetBorderSize(0);
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(do_debug_)std::cout<<"  Adding legend entry for: "<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
 	leg->AddEntry(elements_[iElement].hist_ptr(),elements_[iElement].hist_ptr()->GetName(),elements_[iElement].legopts().c_str());
