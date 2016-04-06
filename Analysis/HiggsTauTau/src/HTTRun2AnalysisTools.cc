@@ -1733,7 +1733,6 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     std::string os_ctr_sel = "os && "+control_sel;
     std::string ss_ctr_sel = "!os && "+control_sel;
     Value w_os_ss_ratio = SampleRatio(w_sample, "!os", ratio_cat, "os",ratio_cat,wt);
-    std::cout<<"W OS/SS ratio: "<<w_os_ss_ratio.first <<std::endl;
     Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
     Value data_control_os = GetRate(data_sample, os_ctr_sel, cat, wt);
     Value data_control_ss = GetRate(data_sample, ss_ctr_sel, cat, wt);
@@ -1780,6 +1779,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     Value w_control(w_control_first, w_control_err);
     if (verbosity_) PrintValue("WSideband", w_control);
     if (verbosity_) PrintValue("ExtrapFactor", ratio);
+    if (verbosity_) PrintValue("W OS/SS Ratio", w_os_ss_ratio);
     Value w_signal = ValueProduct(w_control, ratio);
     return w_signal;
   }
