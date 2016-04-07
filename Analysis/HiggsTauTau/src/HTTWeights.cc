@@ -48,7 +48,7 @@ namespace ic {
     do_tt_muon_weights_       = false;
     gen_tau_collection_       = "genParticlesTaus";
     jets_label_               = "pfJetsPFlow";
-    btag_label_ 	      = "combinedSecondaryVertexBJetTags";
+    btag_label_         = "combinedSecondaryVertexBJetTags";
     ditau_label_              = "emtauCandidates";
     mt_idiso_mc_              = nullptr;     
     mt_idiso_data_            = nullptr;     
@@ -237,6 +237,14 @@ namespace ic {
       std::cout << boost::format("w3hi=%-9.5f \n") % zw3hi_;
       std::cout << boost::format("w4lo=%-9.5f \n") % zw4lo_;
       std::cout << boost::format("w4hi=%-9.5f \n") % zw4hi_;
+
+      if (fs_) {
+        t_gen_info_ = fs_->make<TTree>("genweights", "genweights");
+        t_gen_info_->Branch("decay", &t_decay_);
+        t_gen_info_->Branch("mll", &t_mll_);
+        t_gen_info_->Branch("njets", &t_njets_);
+        t_gen_info_->Branch("wt", &t_wt_);
+      }
     }
     if (do_w_soup_htbinned_ ) {
       std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
@@ -275,7 +283,7 @@ namespace ic {
 
   int HTTWeights::Execute(TreeEvent *event) {
 
-    std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
+    std::vector<CompositeCandidate *> dilepton;
 
     double weight = 1.0;
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -1487,6 +1495,7 @@ namespace ic {
         }
         if(zll_cands.size() == 2){
          gen_mll = (zll_cands[0]->vector()+zll_cands[1]->vector()).M();
+         t_mll_ = gen_mll;
         } else {
           std::cerr << "Error making soup, event has " << zll_cands.size() << " Z->ll candidates, 2 expected!" <<std::endl;
           throw;
@@ -1495,10 +1504,26 @@ namespace ic {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
         throw;
       }
-       
-      unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-      bool is_ztt = true;
-      if(gen_match_1 < 3) is_ztt=false;
+      t_njets_ = partons;
+
+      t_decay_ = 0;  // ee, mumu, tautau
+      if (std::abs(zll_cands[0]->pdgid()) == 11 &&
+          std::abs(zll_cands[1]->pdgid()) == 11) {
+        t_decay_ = 0;
+      } else if (std::abs(zll_cands[0]->pdgid()) == 13 &&
+                 std::abs(zll_cands[1]->pdgid()) == 13) {
+        t_decay_ = 1;
+      } else if (std::abs(zll_cands[0]->pdgid()) == 15 &&
+                 std::abs(zll_cands[1]->pdgid()) == 15) {
+        t_decay_ = 2;
+      } else {
+        std::cerr << "Error!\n";
+        throw;
+      }
+
+      // unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+      bool is_ztt = (t_decay_ == 2);
+      // if(gen_match_1 < 3) is_ztt=false;
       if (partons == 0 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup",zw0hi_);
       if (partons == 1 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw1lo_);
       if (partons == 1 && gen_mll > 150 && !is_ztt) eventInfo->set_weight("dysoup", zw1lo_);
@@ -1512,6 +1537,8 @@ namespace ic {
       if (partons == 4 && gen_mll <= 150) eventInfo->set_weight("dysoup", zw4lo_);
       if (partons == 4 && gen_mll > 150 && !is_ztt) eventInfo->set_weight("dysoup", zw4lo_);
       if (partons == 4 && gen_mll > 150 && is_ztt) eventInfo->set_weight("dysoup", zw4hi_);
+      t_wt_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.;
+      t_gen_info_->Fill();
     }
 
    if (do_w_soup_htbinned_){
