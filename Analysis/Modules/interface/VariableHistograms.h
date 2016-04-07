@@ -67,11 +67,14 @@ namespace ic {
     TH1D  *h_OfflineSubLeadJetEta;
     TH1D  *h_OfflineSubLeadJetPhi;
     TH1D  *h_OfflineMinPhi;
+    
+    TH1D *h_JetsPtVectorSum;
+    TH1D *h_JetsPtScalarSum;
 
 
   public:
 
-    VariableHistograms(std::string const& name, fwlite::TFileService *fs);
+    VariableHistograms(std::string const& name, fwlite::TFileService *fs, std::string output_name);
     virtual ~VariableHistograms();
 
     virtual int PreAnalysis();

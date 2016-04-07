@@ -59,6 +59,15 @@ namespace ic {
     unsigned n_l1muons_;
     unsigned n_l1taus_;
     
+    double l1eCut;
+    double l1muCut;
+    double l1tauCut;
+    double l1jetCut;
+    double l1MjjCut;
+    double l1DeltaEtaCut;
+    double l1METCut;
+    double l1MHTCut;
+    
     TH1D *h_mu_Mu_Efficiency;
     TH1D *h_mu_Total;
     TH1D *h_mu_Mu_PtDiff;
@@ -90,6 +99,13 @@ namespace ic {
     TH1D *h_tau_IsoTau_PtDiff;
     TH1D *h_tau_Tau_DeltaRRes;
     TH1D *h_tau_IsoTau_DeltaRRes;
+    
+    TH1D *h_gentau_Tau_Efficiency;
+    TH1D *h_gentau_IsoTau_Efficiency;
+    TH1D *h_gentau_Tau_Matched_Efficiency;
+    TH1D *h_gentau_IsoTau_Matched_Efficiency;
+    TH1D *h_gentau_Total;
+    TH1D *h_gentau_Matched_Total;
     
     TH1D *h_jet_EG_Efficiency;
     TH1D *h_jet_IsoEG_Efficiency;
@@ -129,7 +145,7 @@ namespace ic {
 
   public:
 
-    Efficiency(std::string const& name, fwlite::TFileService *fs);
+    Efficiency(std::string const& name, fwlite::TFileService *fs, std::string output_name, int effNum);
     virtual ~Efficiency();
 
     virtual int PreAnalysis();

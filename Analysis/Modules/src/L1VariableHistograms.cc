@@ -18,7 +18,7 @@ namespace ic {
 
   
   L1VariableHistograms::L1VariableHistograms(std::string const& name, 
-                                         fwlite::TFileService *fs) : ModuleBase(name) {
+                                         fwlite::TFileService *fs, std::string output_name) : ModuleBase(name) {
     
     l1jets_label_ = "L1Jets"; 
     l1electrons_label_ = "L1EGammas";
@@ -26,7 +26,7 @@ namespace ic {
     l1taus_label_ = "L1Taus";  
     l1met_label_ = "L1Sums";
     
-    TFileDirectory subDir = fs->mkdir("L1THistograms");
+    TFileDirectory subDir = fs->mkdir(output_name.c_str());
 
     //l1 histograms
     
@@ -89,11 +89,64 @@ namespace ic {
     h_L1TL1LeadJetPhi = subDir.make<TH1D>("L1LeadJetPhi","L1LeadJetPhi",100, -3.5,3.5); 
     h_L1TL1LeadJetPhi->GetXaxis()->SetTitle("Leading Jet #phi");
     h_L1TL1LeadJetPhi->GetYaxis()->SetTitle("# Entries");
+    
+    h_L1TauMultiplicity = subDir.make<TH1D>("h_L1TauMultiplicity","h_L1TauMultiplicity",10, 0,10); 
+    h_L1TauMultiplicity->GetXaxis()->SetTitle("L1 Tau Multiplicity");
+    h_L1TauMultiplicity->GetYaxis()->SetTitle("# Entries");
+    
+    h_L1IsoTauMultiplicity = subDir.make<TH1D>("h_L1IsoTauMultiplicity","h_L1IsoTauMultiplicity",10, 0,10); 
+    h_L1IsoTauMultiplicity->GetXaxis()->SetTitle("L1 Iso-Tau Multiplicity");
+    h_L1IsoTauMultiplicity->GetYaxis()->SetTitle("# Entries");
+    
+    h_TauPtVsJetPt = subDir.make<TH2D>("h_TauPtVsJetPt","h_TauPtVsJetPt",100, 0,200, 100,0,200); 
+    h_TauPtVsJetPt->GetXaxis()->SetTitle("L1 Iso-Tau p_{T}");
+    h_TauPtVsJetPt->GetYaxis()->SetTitle("L1 Jet p_{T}");
+    
+    h_TauPtToNormalize = subDir.make<TH2D>("h_TauPtToNormalize","h_TauPtToNormalize",100,0,200,100,0,200); 
+    h_TauPtToNormalize->GetXaxis()->SetTitle("L1 Iso-Tau p_{T}");
+    h_TauPtToNormalize->GetYaxis()->SetTitle("Entries");
+    
+    h_LeadIsoTauIDProb = subDir.make<TH1D>("h_LeadIsoTauIDProb","h_LeadIsoTauIDProb",100, 0,200); 
+    h_LeadIsoTauIDProb->GetXaxis()->SetTitle("L1 iso-tau p_{T}");
+    h_LeadIsoTauIDProb->GetYaxis()->SetTitle("Probability is prompt tau");
+    
+    h_LeadIsoTauIDProbTotal = subDir.make<TH1D>("h_LeadIsoTauIDProbTotal","h_LeadIsoTauIDProbTotal",100, 0,200); 
+    h_LeadIsoTauIDProbTotal->GetXaxis()->SetTitle("L1 iso-tau p_{T}");
+    h_LeadIsoTauIDProbTotal->GetYaxis()->SetTitle("Probability is prompt tau");
+    
+    h_PtDiffGenMatched = subDir.make<TH1D>("h_PtDiffGenMatched","h_PtDiffGenMatched",200, -100,100); 
+    h_PtDiffGenMatched->GetXaxis()->SetTitle("L1 iso-tau p_{T} - L1 jet p_{T}");
+    h_PtDiffGenMatched->GetYaxis()->SetTitle("Entries");
+    
+    h_PtResGenMatched = subDir.make<TH1D>("h_PtResGenMatched","h_PtResGenMatched",100, -5,5); 
+    h_PtResGenMatched->GetXaxis()->SetTitle("(L1 iso-tau p_{T} - L1 jet p_{T}) / L1 iso-tau p_{T}");
+    h_PtResGenMatched->GetYaxis()->SetTitle("Entries");
+    
+    h_DeltaRResGenMatched = subDir.make<TH1D>("h_DeltaRResGenMatched","h_DeltaRResGenMatched",100, 0,1); 
+    h_DeltaRResGenMatched->GetXaxis()->SetTitle("#DeltaR L1 iso-tau p_{T} - L1 jet p_{T}");
+    h_DeltaRResGenMatched->GetYaxis()->SetTitle("Entries");
+    
+    h_PtDiffNotMatched = subDir.make<TH1D>("h_PtDiffNotMatched","h_PtDiffNotMatched",200, -100,100); 
+    h_PtDiffNotMatched->GetXaxis()->SetTitle("L1 iso-tau p_{T} - L1 jet p_{T}");
+    h_PtDiffNotMatched->GetYaxis()->SetTitle("Entries");
+    
+    h_PtResNotMatched = subDir.make<TH1D>("h_PtResNotMatched","h_PtResNotMatched",100, -5,5); 
+    h_PtResNotMatched->GetXaxis()->SetTitle("(L1 iso-tau p_{T} - L1 jet p_{T}) / L1 iso-tau p_{T}");
+    h_PtResNotMatched->GetYaxis()->SetTitle("Entries");
+    
+    h_DeltaRResNotMatched = subDir.make<TH1D>("h_DeltaRResNotMatched","h_DeltaRResNotMatched",100, 0,1); 
+    h_DeltaRResNotMatched->GetXaxis()->SetTitle("#DeltaR L1 iso-tau p_{T} - L1 jet p_{T}");
+    h_DeltaRResNotMatched->GetYaxis()->SetTitle("Entries");
+    
+    h_DeltaRMissID = subDir.make<TH1D>("h_DeltaRMissID","h_DeltaRMissID",100, 0,1); 
+    h_DeltaRMissID->GetXaxis()->SetTitle("#DeltaR L1 iso-tau p_{T} - L1 jet p_{T}");
+    h_DeltaRMissID->GetYaxis()->SetTitle("Entries");
 
   }
 
     L1VariableHistograms::~L1VariableHistograms(){
-      ;
+    ;  
+      
   }
   
   int L1VariableHistograms::PreAnalysis(){
@@ -118,9 +171,21 @@ namespace ic {
       n_l1electrons_ = l1electrons.size();
       n_l1muons_ = l1muons.size();
       n_l1taus_ = l1taus.size();
-
-      double l1MET = l1met_vec[1]->et;
-      h_L1TL1MET->Fill(l1MET);
+      
+      unsigned nL1Taus10=0;
+      unsigned nL1IsoTaus10=0;
+      
+      for(int i=0; i<n_l1taus_; i++){
+          if(l1taus[i]->vector().Pt() >= 10) nL1Taus10++;
+          if(l1taus[i]->vector().Pt() >= 10 && l1taus[i]->isolation == 1) nL1IsoTaus10++;
+      }
+      h_L1TauMultiplicity->Fill(nL1Taus10);
+      h_L1IsoTauMultiplicity->Fill(nL1IsoTaus10);
+      
+      if(l1met_vec.size() >0){
+          double l1MET = l1met_vec[1]->et;
+          h_L1TL1MET->Fill(l1MET);
+      }
         
       if(n_l1jets_ >= 2){
         double l1eta_gap = fabs(l1jets[0]->vector().Rapidity()-l1jets[1]->vector().Rapidity());
@@ -146,15 +211,16 @@ namespace ic {
       
         double l1LeadJPhi = l1jets[0]->vector().Phi();
         h_L1TL1LeadJetPhi->Fill(l1LeadJPhi);
+        if(n_l1jets_ > 1){
+            double l1SubLeadJPt = l1jets[1]->vector().Pt();
+            h_L1TL1SubLeadJetPt->Fill(l1SubLeadJPt);
 
-        double l1SubLeadJPt = l1jets[1]->vector().Pt();
-        h_L1TL1SubLeadJetPt->Fill(l1SubLeadJPt);
+            double l1SubLeadJEta = l1jets[1]->vector().Rapidity();
+            h_L1TL1SubLeadJetEta->Fill(l1SubLeadJEta);
 
-        double l1SubLeadJEta = l1jets[1]->vector().Rapidity();
-        h_L1TL1SubLeadJetEta->Fill(l1SubLeadJEta);
-
-        double l1SubLeadJPhi = l1jets[1]->vector().Phi();
-        h_L1TL1SubLeadJetPhi->Fill(l1SubLeadJPhi);
+            double l1SubLeadJPhi = l1jets[1]->vector().Phi();
+            h_L1TL1SubLeadJetPhi->Fill(l1SubLeadJPhi);
+        }
       }
       if(n_l1electrons_ >= 1){
 
@@ -177,12 +243,100 @@ namespace ic {
         h_L1TL1SubLeadTauPt->Fill(l1SubtauPt);
       }
       
- 
+      std::vector<ic::GenParticle*> GenParticles = event->GetPtrVec<ic::GenParticle>("genParticles");
+      unsigned n_genParticles_ = GenParticles.size();
+      
+      bool FoundLeadIsoTau = false;
+      
+      for(int i=0; i< n_l1taus_; i++){
+          
+          bool MatchedOffline = false;
+          bool MatchedL1Jet = false;
+          double DeltaRMax = 100000;
+          int l1jetIndex = -1;
+          int l1jetIndex2 = -1;
+          
+          
+          for(unsigned j=0; j< n_genParticles_; j++){
+         
+              int genID = std::fabs(GenParticles[j]->pdgid());
+              bool isPrompt = false;
+         
+              for(unsigned k=0; k < GenParticles[j]->mothers().size(); k++) {
+                  if(std::fabs(GenParticles[GenParticles[j]->mothers().at(k)]->pdgid()) == 25){
+                      if(genID == 15) isPrompt = true;
+                  }
+              }
+              
+              for(unsigned k=0; k < GenParticles[j]->daughters().size(); k++) {
+                  if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 13) isPrompt = false;
+                  if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 16) GenParticles[j]->set_vector(GenParticles[j]->vector() - GenParticles[GenParticles[j]->daughters().at(k)]->vector());
+              }
+             
+              double DeltaR = sqrt(pow(l1taus[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(l1taus[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+              
+              if(DeltaR < 0.5 && isPrompt) MatchedOffline = true;
+          }
+          
+          for(int j=0; j< n_l1jets_; j++){
+              double DeltaR = sqrt(pow(l1taus[i]->vector().Phi()-l1jets[j]->vector().Phi(),2) + pow(l1taus[i]->vector().Rapidity()-l1jets[j]->vector().Rapidity(),2));
+              if(DeltaR < 0.5 && DeltaR < DeltaRMax){
+                  MatchedL1Jet = true;
+                  DeltaRMax = DeltaR;
+                  l1jetIndex2 = l1jetIndex;
+                  l1jetIndex = j;
+              }
+          }
+          
+          if(MatchedL1Jet && MatchedOffline && l1taus[i]->isolation==1){ 
+              h_TauPtVsJetPt->Fill(l1taus[i]->vector().Pt(), l1jets[l1jetIndex]->vector().Pt());
+              for(unsigned j=0;j <=100; j++){
+                 double temp = j*2;
+                  h_TauPtToNormalize->Fill(l1taus[i]->vector().Pt(),temp);
+              }
+          }
+              
+          if(!FoundLeadIsoTau && l1taus[i]->isolation==1){
+              
+              FoundLeadIsoTau = true;
+              
+              if(l1jetIndex2 != -1){
+                  double DeltaR = sqrt(pow(l1taus[i]->vector().Phi()-l1jets[l1jetIndex2]->vector().Phi(),2) + pow(l1taus[i]->vector().Rapidity()-l1jets[l1jetIndex2]->vector().Rapidity(),2));
+                  h_DeltaRMissID->Fill(DeltaR);
+              }
+              
+              h_LeadIsoTauIDProbTotal->Fill(l1taus[i]->vector().Pt());
+              if(MatchedOffline) h_LeadIsoTauIDProb->Fill(l1taus[i]->vector().Pt());  
+                  
+                  if(MatchedOffline && MatchedL1Jet){ 
+                      double DeltaRRes = sqrt(pow(l1taus[i]->vector().Phi()-l1jets[l1jetIndex]->vector().Phi(),2) + pow(l1taus[i]->vector().Rapidity()-l1jets[l1jetIndex]->vector().Rapidity(),2));
+                      double PtDiff = l1taus[i]->vector().Pt()-l1jets[l1jetIndex]->vector().Pt();
+                      double PtRes = PtDiff / l1taus[i]->vector().Pt();
+                      h_PtDiffGenMatched->Fill(PtDiff);
+                      h_PtResGenMatched->Fill(PtRes);
+                      h_DeltaRResGenMatched->Fill(DeltaRRes);
+                  }
+                  else if(!MatchedOffline && MatchedL1Jet){
+                      double DeltaRRes = sqrt(pow(l1taus[i]->vector().Phi()-l1jets[l1jetIndex]->vector().Phi(),2) + pow(l1taus[i]->vector().Rapidity()-l1jets[l1jetIndex]->vector().Rapidity(),2));
+                      double PtDiff = l1taus[i]->vector().Pt()-l1jets[l1jetIndex]->vector().Pt();
+                      double PtRes = PtDiff / l1taus[i]->vector().Pt();
+                      h_PtDiffNotMatched->Fill(PtDiff);
+                      h_PtResNotMatched->Fill(PtRes);
+                      h_DeltaRResNotMatched->Fill(DeltaRRes);
+                  }
+          }
+          
+      }
+          
+      
       
       return 0;
   }
 
   int L1VariableHistograms::PostAnalysis(){
+    h_TauPtVsJetPt->Divide(h_TauPtToNormalize);
+    h_LeadIsoTauIDProb->Divide(h_LeadIsoTauIDProbTotal);
+    
     return 0;
   }
 

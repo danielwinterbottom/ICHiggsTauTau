@@ -54,7 +54,7 @@ int main(int argc, char* argv[]){
   TString filename2;
   TChain *chIn2 = new TChain("icEventProducer/EventTree");
   std::ifstream infile2;
-  infile2.open("L1ObjectsAll.dat");
+  infile2.open("TauTau_L1NTuplesV2_l1t-tsg-v4__METEtaRange3p0_v1.dat");
   while (infile2 >> filename2) chIn2->Add(filename2);
           
   infile2.close();
@@ -64,9 +64,12 @@ int main(int argc, char* argv[]){
   std::cout << "Cloning offline tree..." << std::endl;
 
   // Create output file and clone the first tree.
-  std::string outputfilename = Form("/vols/cms02/dw515/EventTreeMerged_%d.root", num);
+  std::string outputfilename = Form("/vols/cms02/dw515/HiggsTauTauEta/EventTreeMerged_%d.root", num);
   TFile *fOut = new TFile(outputfilename.c_str(),"RECREATE");
   TTree *tOut = chIn1->CloneTree();
+  //TBranch *b = tOut->GetBranch("L1Sums");
+  //tOut->GetListOfBranches()->Remove(b);
+  //tOut->GetListOfBranches()->Compress();
   unsigned nentries1 = tOut->GetEntries();
   std::cout << "Finished cloning offline tree. Merging with L1 tree..." << std::endl;
   
@@ -150,6 +153,15 @@ int main(int argc, char* argv[]){
                       newBranch5->Fill();
                       itemp++;
                       jtemp++;
+                      
+                      if(itemp == nentries1){
+                          proceed = false;
+                          i = itemp-1;
+                      }
+                      if(jtemp == nentries2){
+                          proceed = false;
+                          j = jtemp-1;
+                      }
                   }
                   else{
                       i = itemp-1;

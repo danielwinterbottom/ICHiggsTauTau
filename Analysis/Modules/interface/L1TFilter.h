@@ -25,24 +25,14 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 
-struct L1Cuts {
-  double EGPt = 0.;
-  double MuPt = 0.;
-  double Tau1Pt = 0.;
-  double Tau2Pt = 0.;
-  bool IsoEG = false;
-  bool IsoTau = false;
-  double Jet1Pt = 0.;
-  double Jet2Pt = 0.;
-  double Mjj = 0.;
-  double DeltaEta = 0.;
-};
+#include "Modules/interface/L1Cuts.h"
+
 
 namespace ic {
     
 class L1TFilter : public ModuleBase {
    public:
-      L1TFilter(std::string const& name, std::string channel, fwlite::TFileService *fs, L1Cuts l1Cuts);
+      L1TFilter(std::string const& name, std::string channel, fwlite::TFileService *fs, L1Cuts l1Cuts, std::string dirName);
       virtual ~L1TFilter(); 
       
       virtual int PreAnalysis();
@@ -65,6 +55,7 @@ class L1TFilter : public ModuleBase {
       
       double Jet1PtCut;
       double Jet2PtCut;
+      double Jet3PtCut;
       double DeltaEtaCut;
       double MjjCut;
       double EGPtCut;
@@ -72,10 +63,26 @@ class L1TFilter : public ModuleBase {
       double Tau2PtCut;
       double MuPtCut;
       
+      bool JetFilter;
       bool IsoTauFilter;
       bool IsoEGFilter;
       
       TH1D *h_L1Filter_Efficiency;
+      
+      TH1D *h_lead_l1Index_1;
+      TH1D *h_sublead_l1Index_1;
+      TH1D *h_lead_l1Index_2;
+      TH1D *h_sublead_l1Index_2;
+      
+      TH2D *h_jets_l1Index_1;
+      TH2D *h_jets_l1Index_2;
+      TH2D *h_jets_l1IndexGenMatch_1;
+      TH2D *h_jets_l1IndexGenMatch_2;
+      TH2D *h_jets_OfflineIndexGenMatch_1;
+      
+      TH1D *h_SignalEfficiency;
+      
+      TH1D *h_CorrectVBFJets;
 
 };
 }

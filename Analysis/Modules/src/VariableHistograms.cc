@@ -9,7 +9,7 @@ namespace ic {
 
   
   VariableHistograms::VariableHistograms(std::string const& name, 
-                                         fwlite::TFileService *fs) : ModuleBase(name) {
+                                         fwlite::TFileService *fs, std::string output_name) : ModuleBase(name) {
     jets_label_ = "ak4PFJetsCHS"; 
     electrons_label_ = "electrons";
     muons_label_ = "muons"; 
@@ -17,7 +17,7 @@ namespace ic {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMet";
     
-    TFileDirectory subDir = fs->mkdir("OfflineHistograms");
+    TFileDirectory subDir = fs->mkdir(output_name.c_str());
     
     //offline histograms
     h_OfflineEtaGap = subDir.make<TH1D>("EtaGap","EtaGap",100, 0,10);
@@ -99,6 +99,14 @@ namespace ic {
     h_OfflineMinPhi = subDir.make<TH1D>("MinPhi","MinPhi",100, 0,6.5); 
     h_OfflineMinPhi->GetXaxis()->SetTitle("Min #Delta#phi");
     h_OfflineMinPhi->GetYaxis()->SetTitle("# Entries");
+    
+    h_JetsPtScalarSum = subDir.make<TH1D>("JetsPtScalarSum","JetsPtScalarSum",100, 0,200); 
+    h_JetsPtScalarSum->GetXaxis()->SetTitle("Jets P_{T} Scalar Sum [GeV]");
+    h_JetsPtScalarSum->GetYaxis()->SetTitle("# Entries");
+    
+    h_JetsPtVectorSum = subDir.make<TH1D>("JetsPtVectorSum","JetsPtVectorSum",100, 0,200); 
+    h_JetsPtVectorSum->GetXaxis()->SetTitle("Jets P_{T} Vector Sum [GeV]");
+    h_JetsPtVectorSum->GetYaxis()->SetTitle("# Entries");
 
 
   }
@@ -129,35 +137,51 @@ namespace ic {
       double MET = met_vec[0]->vector().pt();
       h_OfflineMET->Fill(MET);
 
-      double eta_gap = fabs(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity());
-      h_OfflineEtaGap->Fill(eta_gap);
+      if(n_jets_ > 1){
+          
+          if(jets[0]->vector().Pt() > 20 && jets[0]->vector().Pt() >20){
+              double Mij = (jets[0]->vector() + jets[1]->vector()).M();
+              h_OfflineMjjInv->Fill(Mij);
+          
+              double eta_gap = fabs(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity());
+              h_OfflineEtaGap->Fill(eta_gap);
+          }
+          
+          double phi_gap = fabs(jets[0]->vector().Phi()-jets[1]->vector().Phi());
+          h_OfflineDeltaPhijj->Fill(phi_gap);
 
-      double phi_gap = fabs(jets[0]->vector().Phi()-jets[1]->vector().Phi());
-      h_OfflineDeltaPhijj->Fill(phi_gap);
+          double R_gap = sqrt(pow(jets[0]->vector().Phi()-jets[1]->vector().Phi(),2) + pow(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity(),2));
+          h_OfflineDeltaRjj->Fill(R_gap);
+          
+          double JetsPtVectorSum = (jets[0]->vector()+jets[1]->vector()).Pt();
+          h_JetsPtVectorSum->Fill(JetsPtVectorSum);
+      
+          double JetsPtScalarSum = jets[0]->vector().Pt() +jets[1]->vector().Pt();
+          h_JetsPtScalarSum->Fill(JetsPtScalarSum);
+          
+          double SubLeadJPt = jets[1]->vector().Pt();
+          h_OfflineSubLeadJetPt->Fill(SubLeadJPt);
 
-      double R_gap = sqrt(pow(jets[0]->vector().Phi()-jets[1]->vector().Phi(),2) + pow(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity(),2));
-      h_OfflineDeltaRjj->Fill(R_gap);
-
-      double Mij = (jets[0]->vector() + jets[1]->vector()).M();
-      h_OfflineMjjInv->Fill(Mij);
-
-      double LeadJPt = jets[0]->vector().Pt();
-      h_OfflineLeadJetPt->Fill(LeadJPt);
-
-      double LeadJEta = jets[0]->vector().Rapidity();
-      h_OfflineLeadJetEta->Fill(LeadJEta);
+          double SubLeadJEta = jets[1]->vector().Rapidity();
+          h_OfflineSubLeadJetEta->Fill(SubLeadJEta);
   
-      double LeadJPhi = jets[0]->vector().Phi();
-      h_OfflineLeadJetPhi->Fill(LeadJPhi);
+          double SubLeadJPhi = jets[1]->vector().Phi();
+          h_OfflineSubLeadJetPhi->Fill(SubLeadJPhi);
+      
+      }
+      
+      if(n_jets_ > 0){
+          
+          double LeadJPt = jets[0]->vector().Pt();
+          h_OfflineLeadJetPt->Fill(LeadJPt);
 
-      double SubLeadJPt = jets[1]->vector().Pt();
-      h_OfflineSubLeadJetPt->Fill(SubLeadJPt);
-
-      double SubLeadJEta = jets[1]->vector().Rapidity();
-      h_OfflineSubLeadJetEta->Fill(SubLeadJEta);
+          double LeadJEta = jets[0]->vector().Rapidity();
+          h_OfflineLeadJetEta->Fill(LeadJEta);
   
-      double SubLeadJPhi = jets[1]->vector().Phi();
-      h_OfflineSubLeadJetPhi->Fill(SubLeadJPhi);
+          double LeadJPhi = jets[0]->vector().Phi();
+          h_OfflineLeadJetPhi->Fill(LeadJPhi);
+      }
+      
 
       std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
       CompositeCandidate const* ditau = ditau_vec.at(0);
@@ -201,15 +225,16 @@ namespace ic {
       double DetaPhiTemp = 0;
       double MinDeltaPhi = 10000;
 
-      for(int i=0; i<2; i++){
-        DetaPhiTemp = fabs(lep1->vector().Phi() - jets[i]->vector().Phi());
-        if(DetaPhiTemp < MinDeltaPhi) MinDeltaPhi = DetaPhiTemp;
+      if(n_jets_ > 1){
+          for(int i=0; i<2; i++){
+            DetaPhiTemp = fabs(lep1->vector().Phi() - jets[i]->vector().Phi());
+            if(DetaPhiTemp < MinDeltaPhi) MinDeltaPhi = DetaPhiTemp;
 
-        DetaPhiTemp = fabs(lep2->vector().Phi() - jets[i]->vector().Phi());
-        if(DetaPhiTemp < MinDeltaPhi) MinDeltaPhi = DetaPhiTemp;
+            DetaPhiTemp = fabs(lep2->vector().Phi() - jets[i]->vector().Phi());
+            if(DetaPhiTemp < MinDeltaPhi) MinDeltaPhi = DetaPhiTemp;
+          }
+          h_OfflineMinPhi->Fill(MinDeltaPhi);
       }
-      h_OfflineMinPhi->Fill(MinDeltaPhi);
-      
     
       
       return 0;

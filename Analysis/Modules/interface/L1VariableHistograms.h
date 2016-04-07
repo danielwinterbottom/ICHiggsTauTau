@@ -85,11 +85,25 @@ namespace ic {
     TH1D  *h_L1TL1SubLeadJetPt;
     TH1D  *h_L1TL1SubLeadJetEta;
     TH1D  *h_L1TL1SubLeadJetPhi;
+    TH1D  *h_L1TauMultiplicity;
+    TH1D  *h_L1IsoTauMultiplicity;
     
+    TH1D *h_LeadIsoTauIDProb;
+    TH1D *h_LeadIsoTauIDProbTotal;
+    TH1D *h_PtDiffGenMatched;
+    TH1D *h_PtResGenMatched;
+    TH1D *h_DeltaRResGenMatched;
+    TH1D *h_PtDiffNotMatched;
+    TH1D *h_PtResNotMatched;
+    TH1D *h_DeltaRResNotMatched;
+    TH1D *h_DeltaRMissID;
+    
+    TH2D  *h_TauPtVsJetPt;
+    TH2D *h_TauPtToNormalize;
 
   public:
 
-    L1VariableHistograms(std::string const& name, fwlite::TFileService *fs);
+    L1VariableHistograms(std::string const& name, fwlite::TFileService *fs, std::string output_name);
     virtual ~L1VariableHistograms();
 
     virtual int PreAnalysis();
