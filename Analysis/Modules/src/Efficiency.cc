@@ -14,7 +14,7 @@ namespace ic {
 
   
   Efficiency::Efficiency(std::string const& name, 
-                                          fwlite::TFileService *fs, std::string output_name, int effNum) : ModuleBase(name) {
+                                          fwlite::TFileService *fs, std::string output_name, int effNum, std::string channel) : ModuleBase(name) {
     
     if(effNum == 1){
         l1eCut = 10;
@@ -55,6 +55,27 @@ namespace ic {
         l1DeltaEtaCut = 4.0;
         l1METCut = 40;
         l1MHTCut = 70;
+    }
+    
+    if(channel == "em"){
+        nPromptElectrons = 1;
+        nPromptMuons = 1;
+        nPromptTaus = 0;
+    }
+    if(channel == "et"){
+        nPromptElectrons = 1;
+        nPromptMuons = 0;
+        nPromptTaus = 1;
+    }
+    if(channel == "mt"){
+        nPromptElectrons = 0;
+        nPromptMuons = 1;
+        nPromptTaus = 1;
+    }
+    if(channel == "tt"){
+        nPromptElectrons = 0;
+        nPromptMuons = 0;
+        nPromptTaus = 2;
     }
                                               
     genParticles_label_ = "genParticles";
@@ -149,17 +170,33 @@ namespace ic {
     h_tau_Total->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
     h_tau_Total->GetYaxis()->SetTitle("Efficiency");
     
+    h_subtau_Total = subDir.make<TH1D>("h_subtau_Total","h_subtau_Total",100, 0,100); 
+    h_subtau_Total->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_subtau_Total->GetYaxis()->SetTitle("Efficiency");
+    
     h_tau_Tau_Efficiency = subDir.make<TH1D>("h_tau_Tau_Efficiency","h_tau_Tau_Efficiency",100, 0,100);
     h_tau_Tau_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
     h_tau_Tau_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_subtau_Tau_Efficiency = subDir.make<TH1D>("h_subtau_Tau_Efficiency","h_subtau_Tau_Efficiency",100, 0,100);
+    h_subtau_Tau_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_subtau_Tau_Efficiency->GetYaxis()->SetTitle("Efficiency");
     
     h_tau_NonIsoTau_Efficiency = subDir.make<TH1D>("h_tau_NonIsoTau_Efficiency","h_tau_NonIsoTau_Efficiency",100, 0,100);
     h_tau_NonIsoTau_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
     h_tau_NonIsoTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
     
+    h_subtau_NonIsoTau_Efficiency = subDir.make<TH1D>("h_subtau_NonIsoTau_Efficiency","h_subtau_NonIsoTau_Efficiency",100, 0,100);
+    h_subtau_NonIsoTau_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_subtau_NonIsoTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
     h_tau_IsoTau_Efficiency = subDir.make<TH1D>("h_tau_IsoTau_Efficiency","h_tau_IsoTau_Efficiency",100, 0,100);
     h_tau_IsoTau_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
     h_tau_IsoTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_subtau_IsoTau_Efficiency = subDir.make<TH1D>("h_subtau_IsoTau_Efficiency","h_subtau_IsoTau_Efficiency",100, 0,100);
+    h_subtau_IsoTau_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_subtau_IsoTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
     
     h_tau_Jet_Efficiency = subDir.make<TH1D>("h_tau_Jet_Efficiency","h_tau_Jet_Efficiency",100, 0,100);
     h_tau_Jet_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV]");
@@ -200,18 +237,6 @@ namespace ic {
     h_gentau_IsoTau_Efficiency = subDir.make<TH1D>("h_gentau_IsoTau_Efficiency","h_gentau_IsoTau_Efficiency",100, 0,100);
     h_gentau_IsoTau_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
     h_gentau_IsoTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
-    
-    h_gentau_Matched_Total = subDir.make<TH1D>("h_gentau_Matched_Total","h_gentau_Matched_Total",100, 0,100); 
-    h_gentau_Matched_Total->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
-    h_gentau_Matched_Total->GetYaxis()->SetTitle("Efficiency");
-    
-    h_gentau_Tau_Matched_Efficiency = subDir.make<TH1D>("h_gentau_Tau_Matched_Efficiency","h_gentau_Tau_Matched_Efficiency",100, 0,100);
-    h_gentau_Tau_Matched_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
-    h_gentau_Tau_Matched_Efficiency->GetYaxis()->SetTitle("Efficiency");
-    
-    h_gentau_IsoTau_Matched_Efficiency = subDir.make<TH1D>("h_gentau_IsoTau_Matched_Efficiency","h_gentau_IsoTau_Matched_Efficiency",100, 0,100);
-    h_gentau_IsoTau_Matched_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
-    h_gentau_IsoTau_Matched_Efficiency->GetYaxis()->SetTitle("Efficiency");
     
     h_jet_EG_Efficiency = subDir.make<TH1D>("h_jet_EG_Efficiency","h_jet_EG_Efficiency",100, 0,100); 
     h_jet_EG_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV] ");
@@ -373,9 +398,8 @@ namespace ic {
       n_taus_ = taus.size();
       n_genParticles_ = GenParticles.size();
       n_genJets_ = genjets.size();
-
       
-      for(unsigned i=0; i < n_electrons_; i++){
+      for(unsigned i=0; i < n_electrons_ && i < nPromptElectrons; i++){
                   
           bool eProceed = false;
                 
@@ -383,153 +407,115 @@ namespace ic {
           else eProceed = false;
 
           if(eProceed){
+                  
+              h_e_Total->Fill(electrons[i]->vector().Pt());
               
-              int eGenIndex = -1;
-              bool MatchedOffline = false;
+              // Check if electron fired EG trigger.
+              
+              bool MatchedL1 = false;
               double PtDiffelectron = 10000;
+              int eL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1electrons_; j++){
               
-              for(unsigned j=0; j< n_genParticles_; j++){
-
-                  int genID = std::fabs(GenParticles[j]->pdgid());
-                  bool isPrompt = false;
-                  
-                  for(unsigned k=0; k < GenParticles[j]->mothers().size(); k++) {
-                      if(std::fabs(GenParticles[GenParticles[j]->mothers().at(k)]->pdgid()) == 15){
-                          int ParentgenIndex = GenParticles[j]->mothers().at(k);
-                          int GPgenID = std::fabs(GenParticles[GenParticles[ParentgenIndex]->mothers().at(0)]->pdgid());
-                          if(genID == 11 && GPgenID == 25) isPrompt = true;
-                      }
-                  }
-                 
-                  double DeltaR = sqrt(pow(electrons[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(electrons[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
-                  double PtDiff = std::fabs(electrons[i]->vector().Pt() - GenParticles[j]->vector().Pt());
-                  
-                  if(DeltaR < 0.1 && PtDiff < PtDiffelectron && isPrompt){
+                  double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-electrons[i]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-electrons[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1electrons[j]->vector().Pt() - electrons[i]->vector().Pt());
+       
+                  if(DeltaR < 0.2 && PtDiff < PtDiffelectron){
                        PtDiffelectron = PtDiff;
-                       MatchedOffline = true;
-                       eGenIndex = j;
+                       MatchedL1 = true;
+                       eL1Index = j;
                   }
+                  
               }
               
-              if(MatchedOffline){
-                  
-                  h_e_Total->Fill(electrons[i]->vector().Pt());
-                  
-                  // Check if electron fired EG trigger.
-                  
-                  bool MatchedL1 = false;
-                  double PtDiffelectron = 10000;
-                  int eL1Index = -1;
-                  double EDeltaRRes;
-                  double EPtRes;
+              if(MatchedL1){ 
+                  bool L1EPtFired = false;
+                  double L1EPt = l1electrons[eL1Index]->vector().Pt();
+                  if(L1EPt >= l1eCut) L1EPtFired = true;
+                  if(L1EPtFired) h_e_EG_Efficiency->Fill(electrons[i]->vector().Pt());
+                  if(L1EPtFired && l1electrons[eL1Index]->isolation == 1) h_e_IsoEG_Efficiency->Fill(electrons[i]->vector().Pt());
+              }
+             
+              // Check if electron fired tau and iso-tau triggers.
               
-                  for(unsigned j=0; j < n_l1electrons_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-GenParticles[eGenIndex]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-GenParticles[eGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1electrons[j]->vector().Pt() - GenParticles[eGenIndex]->vector().Pt());
-       ;
-                      if(DeltaR < 0.2 && PtDiff < PtDiffelectron){
-                           PtDiffelectron = PtDiff;
-                           MatchedL1 = true;
-                           eL1Index = j;
-                           EDeltaRRes = DeltaR;
-                           EPtRes = l1electrons[j]->vector().Pt() - GenParticles[eGenIndex]->vector().Pt();
-                      }
-                      
+              bool MatchedTauL1 = false;
+              bool MatchedIsoTauL1 = false;
+              double PtDiffelectronTau = 10000;
+              double PtDiffelectronIsoTau = 10000;
+              int eTauL1Index = -1;
+              int eIsoTauL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1taus_; j++){
+              
+                  double DeltaR = sqrt(pow(l1taus[j]->vector().Phi() - electrons[i]->vector().Phi(),2) + pow(l1taus[j]->vector().Rapidity()-electrons[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1taus[j]->vector().Pt() - electrons[i]->vector().Pt());
+                  int tauIso = l1taus[j]->isolation;
+                  bool IsoTau = false;
+                  if(tauIso == 1) IsoTau = true;
+                  if(DeltaR < 0.2 && PtDiff < PtDiffelectronTau && !IsoTau){
+                       PtDiffelectronTau = PtDiff;
+                       MatchedTauL1 = true;
+                       eTauL1Index = j;
                   }
                   
-                  if(MatchedL1){ 
-                      h_e_EG_PtDiff->Fill(EPtRes);
-                      h_e_EG_PtRes->Fill(EPtRes/GenParticles[eGenIndex]->vector().Pt());
-                      h_e_EG_DeltaRRes->Fill(EDeltaRRes);
-                      bool L1EPtFired = false;
-                      double L1EPt = l1electrons[eL1Index]->vector().Pt();
-                      if(L1EPt >= l1eCut) L1EPtFired = true;
-                      if(L1EPtFired) h_e_EG_Efficiency->Fill(electrons[i]->vector().Pt());
-                      if(L1EPtFired && l1electrons[eL1Index]->isolation == 1) h_e_IsoEG_Efficiency->Fill(electrons[i]->vector().Pt());
+                  if(DeltaR < 0.2 && PtDiff < PtDiffelectronIsoTau && IsoTau){
+                       PtDiffelectronIsoTau = PtDiff;
+                       MatchedIsoTauL1 = true;
+                       eIsoTauL1Index = j;
                   }
-                 
-                  // Check if electron fired tau and iso-tau triggers.
-                  
-                  bool MatchedTauL1 = false;
-                  bool MatchedIsoTauL1 = false;
-                  double PtDiffelectronTau = 10000;
-                  double PtDiffelectronIsoTau = 10000;
-                  int eTauL1Index = -1;
-                  int eIsoTauL1Index = -1;
-              
-                  for(unsigned j=0; j < n_l1taus_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1taus[j]->vector().Phi()-GenParticles[eGenIndex]->vector().Phi(),2) + pow(l1taus[j]->vector().Rapidity()-GenParticles[eGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1taus[j]->vector().Pt() - GenParticles[eGenIndex]->vector().Pt());
-                      int tauIso = l1taus[j]->isolation;
-                      bool IsoTau = false;
-                      if(tauIso == 1) IsoTau = true;
-                      if(DeltaR < 0.2 && PtDiff < PtDiffelectronTau && !IsoTau){
-                           PtDiffelectronTau = PtDiff;
-                           MatchedTauL1 = true;
-                           eTauL1Index = j;
-                      }
-                      
-                      if(DeltaR < 0.2 && PtDiff < PtDiffelectronIsoTau && IsoTau){
-                           PtDiffelectronIsoTau = PtDiff;
-                           MatchedIsoTauL1 = true;
-                           eIsoTauL1Index = j;
-                      }
 
-                  }
-                  
-                  if(MatchedTauL1){ 
-                      bool L1TauPtFired = false;
-                      double L1TauPt = l1taus[eTauL1Index]->vector().Pt();
-                      if(L1TauPt >= l1tauCut) L1TauPtFired = true;
-                      if(L1TauPtFired) h_e_Tau_Efficiency->Fill(electrons[i]->vector().Pt());
-                      if(L1TauPtFired) h_e_NonIsoTau_Efficiency->Fill(electrons[i]->vector().Pt());
-                  }
-                  
-                  if(MatchedIsoTauL1){ 
-                      bool L1IsoTauPtFired = false;
-                      double L1IsoTauPt = l1taus[eIsoTauL1Index]->vector().Pt();
-                      if(L1IsoTauPt >= l1tauCut) L1IsoTauPtFired = true;
-                      if(L1IsoTauPtFired) h_e_IsoTau_Efficiency->Fill(electrons[i]->vector().Pt());
-                      if(L1IsoTauPtFired) h_e_Tau_Efficiency->Fill(electrons[i]->vector().Pt());
-                  }
-                  
-                  // Check if electron fired Jet trigger.
-
-                  bool MatchedJetL1 = false;
-                  double PtDiffelectronJet = 10000;
-                  //double DeltaRDiffelectronJet = 10000;
-                  int eJetL1Index = -1;
+              }
               
-                  for(unsigned j=0; j < n_l1jets_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1jets[j]->vector().Phi()-GenParticles[eGenIndex]->vector().Phi(),2) + pow(l1jets[j]->vector().Rapidity()-GenParticles[eGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1jets[j]->vector().Pt() - GenParticles[eGenIndex]->vector().Pt());
-                  
-                      if(DeltaR < 0.2 && PtDiff < PtDiffelectronJet){
-                           PtDiffelectronJet = PtDiff;
-                           MatchedJetL1 = true;
-                           eJetL1Index = j;
-                      }
-                      
+              if(MatchedTauL1){ 
+                  bool L1TauPtFired = false;
+                  double L1TauPt = l1taus[eTauL1Index]->vector().Pt();
+                  if(L1TauPt >= l1tauCut) L1TauPtFired = true;
+                  if(L1TauPtFired) h_e_Tau_Efficiency->Fill(electrons[i]->vector().Pt());
+                  if(L1TauPtFired) h_e_NonIsoTau_Efficiency->Fill(electrons[i]->vector().Pt());
+              }
+              
+              if(MatchedIsoTauL1){ 
+                  bool L1IsoTauPtFired = false;
+                  double L1IsoTauPt = l1taus[eIsoTauL1Index]->vector().Pt();
+                  if(L1IsoTauPt >= l1tauCut) L1IsoTauPtFired = true;
+                  if(L1IsoTauPtFired) h_e_IsoTau_Efficiency->Fill(electrons[i]->vector().Pt());
+                  if(L1IsoTauPtFired) h_e_Tau_Efficiency->Fill(electrons[i]->vector().Pt());
+              }
+              
+              // Check if electron fired Jet trigger.
+
+              bool MatchedJetL1 = false;
+              double PtDiffelectronJet = 10000;
+              //double DeltaRDiffelectronJet = 10000;
+              int eJetL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1jets_; j++){
+              
+                  double DeltaR = sqrt(pow(l1jets[j]->vector().Phi()-electrons[i]->vector().Phi(),2) + pow(l1jets[j]->vector().Rapidity()-electrons[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1jets[j]->vector().Pt() - electrons[i]->vector().Pt());
+              
+                  if(DeltaR < 0.2 && PtDiff < PtDiffelectronJet){
+                       PtDiffelectronJet = PtDiff;
+                       MatchedJetL1 = true;
+                       eJetL1Index = j;
                   }
                   
-                  if(MatchedJetL1){ 
-                      
-                      bool L1JetPtFired = false;
-                      double L1JetPt = l1jets[eJetL1Index]->vector().Pt();
-                      if(L1JetPt >= l1jetCut) L1JetPtFired = true;
-                      if(L1JetPtFired) h_e_Jet_Efficiency->Fill(electrons[i]->vector().Pt());
-                  }
+              }
+              
+              if(MatchedJetL1){ 
                   
+                  bool L1JetPtFired = false;
+                  double L1JetPt = l1jets[eJetL1Index]->vector().Pt();
+                  if(L1JetPt >= l1jetCut) L1JetPtFired = true;
+                  if(L1JetPtFired) h_e_Jet_Efficiency->Fill(electrons[i]->vector().Pt());
               }
           }
       }
       
       // Taus
       
-      for(unsigned i=0; i < n_taus_; i++){
+      for(unsigned i=0; i < n_taus_ && i < nPromptTaus; i++){
                   
           bool tauProceed = false;
 
@@ -547,187 +533,148 @@ namespace ic {
           }
 
           if(tauProceed){
+                  
+              if(i == 0) h_tau_Total->Fill(taus[i]->vector().Pt());
+              else if(i == 1) h_subtau_Total->Fill(taus[i]->vector().Pt());
+              // Check if tau fired EG trigger.
               
-              int tauGenIndex = -1;
-              bool MatchedOffline = false;
+              bool MatchedL1 = false;
               double PtDifftau = 10000;
+              int tauL1Index = -1;
+
+          
+              for(unsigned j=0; j < n_l1electrons_; j++){
               
-              for(unsigned j=0; j< n_genParticles_; j++){
-
-                  int genID = std::fabs(GenParticles[j]->pdgid());
-                  bool isPrompt = false;
-
-                  for(unsigned k=0; k < GenParticles[j]->mothers().size(); k++) {
-                      if(std::fabs(GenParticles[GenParticles[j]->mothers().at(k)]->pdgid()) == 25){
-                          if(genID == 15) isPrompt = true;
-                      }
-                  }
-                  
-                  for(unsigned k=0; k < GenParticles[j]->daughters().size(); k++) {
-                      if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 13) isPrompt = false;
-                      if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 16) GenParticles[j]->set_vector(GenParticles[j]->vector() - GenParticles[GenParticles[j]->daughters().at(k)]->vector());
-                  }
-                 
-                  double DeltaR = sqrt(pow(taus[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(taus[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
-                  double PtDiff = std::fabs(taus[i]->vector().Pt() - GenParticles[j]->vector().Pt());
-                  
-                  if(DeltaR < 0.2 && PtDiff < PtDifftau && isPrompt){
+                  double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-taus[i]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-taus[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1electrons[j]->vector().Pt() - taus[i]->vector().Pt());
+              
+                  if(DeltaR < 0.2 && PtDiff < PtDifftau){
                        PtDifftau = PtDiff;
-                       MatchedOffline = true;
-                       tauGenIndex = j;
+                       MatchedL1 = true;
+                       tauL1Index = j;
                   }
+                  
               }
               
-              if(MatchedOffline){
-                  
-                  h_tau_Total->Fill(taus[i]->vector().Pt());
-                  
-                  // Check if tau fired EG trigger.
-                  
-                  bool MatchedL1 = false;
-                  double PtDifftau = 10000;
-                  int tauL1Index = -1;
+              if(MatchedL1){ 
 
+                  bool L1EPtFired = false;
+                  double L1EPt = l1electrons[tauL1Index]->vector().Pt();
+                  if(L1EPt >= l1eCut) L1EPtFired = true;
+                  if(L1EPtFired) h_tau_EG_Efficiency->Fill(taus[i]->vector().Pt());
+                  if(L1EPtFired && l1electrons[tauL1Index]->isolation == 1) h_tau_IsoEG_Efficiency->Fill(taus[i]->vector().Pt());
+              }
+             
+              // Check if tau fired tau and iso-tau triggers.
               
-                  for(unsigned j=0; j < n_l1electrons_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-GenParticles[tauGenIndex]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-GenParticles[tauGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1electrons[j]->vector().Pt() - GenParticles[tauGenIndex]->vector().Pt());
-                  
-                      if(DeltaR < 0.2 && PtDiff < PtDifftau){
-                           PtDifftau = PtDiff;
-                           MatchedL1 = true;
-                           tauL1Index = j;
-                      }
-                      
-                  }
-                  
-                  if(MatchedL1){ 
-
-                      bool L1EPtFired = false;
-                      double L1EPt = l1electrons[tauL1Index]->vector().Pt();
-                      if(L1EPt >= l1eCut) L1EPtFired = true;
-                      if(L1EPtFired) h_tau_EG_Efficiency->Fill(taus[i]->vector().Pt());
-                      if(L1EPtFired && l1electrons[tauL1Index]->isolation == 1) h_tau_IsoEG_Efficiency->Fill(taus[i]->vector().Pt());
-                  }
-                 
-                  // Check if tau fired tau and iso-tau triggers.
-                  
-                  bool MatchedTauL1 = false;
-                  bool MatchedIsoTauL1 = false;
-                  double PtDifftauTau = 10000;
-                  double PtDifftauIsoTau = 10000;
-                  int tauTauL1Index = -1;
-                  int tauIsoTauL1Index = -1;
-                  double TauDeltaRRes;
-                  double IsoTauDeltaRRes;
-                  double TauPtRes;
-                  double IsoTauPtRes;
+              bool MatchedTauL1 = false;
+              bool MatchedIsoTauL1 = false;
+              double PtDifftauTau = 10000;
+              double PtDifftauIsoTau = 10000;
+              int tauTauL1Index = -1;
+              int tauIsoTauL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1taus_; j++){
               
-                  for(unsigned j=0; j < n_l1taus_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1taus[j]->vector().Phi()-GenParticles[tauGenIndex]->vector().Phi(),2) + pow(l1taus[j]->vector().Rapidity()-GenParticles[tauGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1taus[j]->vector().Pt() - GenParticles[tauGenIndex]->vector().Pt());
-                      int tauIso = l1taus[j]->isolation;
-                      bool IsoTau = false;
-                      if(tauIso == 1) IsoTau = true;
-                      if(DeltaR < 0.2 && PtDiff < PtDifftauTau && !IsoTau){
-                           PtDifftauTau = PtDiff;
-                           MatchedTauL1 = true;
-                           tauTauL1Index = j;
-                           TauDeltaRRes = DeltaR;
-                           TauPtRes = l1taus[j]->vector().Pt() - GenParticles[tauGenIndex]->vector().Pt();
-                      }
-                      
-                      if(DeltaR < 0.2 && PtDiff < PtDifftauIsoTau && IsoTau){
-                           PtDifftauIsoTau = PtDiff;
-                           MatchedIsoTauL1 = true;
-                           tauIsoTauL1Index = j;
-                           IsoTauDeltaRRes = DeltaR;
-                           IsoTauPtRes = l1taus[j]->vector().Pt() - GenParticles[tauGenIndex]->vector().Pt();
-                      }
-
+                  double DeltaR = sqrt(pow(l1taus[j]->vector().Phi()-taus[i]->vector().Phi(),2) + pow(l1taus[j]->vector().Rapidity()-taus[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1taus[j]->vector().Pt() - taus[i]->vector().Pt());
+                  int tauIso = l1taus[j]->isolation;
+                  bool IsoTau = false;
+                  if(tauIso == 1) IsoTau = true;
+                  if(DeltaR < 0.2 && PtDiff < PtDifftauTau && !IsoTau){
+                       PtDifftauTau = PtDiff;
+                       MatchedTauL1 = true;
+                       tauTauL1Index = j;
                   }
                   
-                  if(MatchedTauL1){ 
-                      h_tau_Tau_PtDiff->Fill(TauPtRes);
-                      h_tau_Tau_PtRes->Fill(TauPtRes/GenParticles[tauGenIndex]->vector().Pt());
-                      h_tau_Tau_DeltaRRes->Fill(TauDeltaRRes);
-                      bool L1TauPtFired = false;
-                      double L1TauPt = l1taus[tauTauL1Index]->vector().Pt();
-                      if(L1TauPt >= l1tauCut) L1TauPtFired = true;
+                  if(DeltaR < 0.2 && PtDiff < PtDifftauIsoTau && IsoTau){
+                       PtDifftauIsoTau = PtDiff;
+                       MatchedIsoTauL1 = true;
+                       tauIsoTauL1Index = j;
+                  }
+
+              }
+              
+              if(MatchedTauL1){ 
+                  bool L1TauPtFired = false;
+                  double L1TauPt = l1taus[tauTauL1Index]->vector().Pt();
+                  if(L1TauPt >= l1tauCut) L1TauPtFired = true;
+                  if(i==0){
                       if(L1TauPtFired) h_tau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
                       if(L1TauPtFired) h_tau_NonIsoTau_Efficiency->Fill(taus[i]->vector().Pt());
                   }
-                  
-                  if(MatchedIsoTauL1){ 
-                      h_tau_Tau_PtRes->Fill(IsoTauPtRes/GenParticles[tauGenIndex]->vector().Pt());
-                      h_tau_IsoTau_PtRes->Fill(IsoTauPtRes/GenParticles[tauGenIndex]->vector().Pt());
-                      h_tau_Tau_PtDiff->Fill(IsoTauPtRes);
-                      h_tau_IsoTau_PtDiff->Fill(IsoTauPtRes);
-                      h_tau_Tau_DeltaRRes->Fill(IsoTauDeltaRRes);
-                      h_tau_IsoTau_DeltaRRes->Fill(IsoTauDeltaRRes);
-                      bool L1IsoTauPtFired = false;
-                      double L1IsoTauPt = l1taus[tauIsoTauL1Index]->vector().Pt();
-                      if(L1IsoTauPt >= l1tauCut) L1IsoTauPtFired = true;
+                  else if(i==1){
+                      if(L1TauPtFired) h_subtau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
+                      if(L1TauPtFired) h_subtau_NonIsoTau_Efficiency->Fill(taus[i]->vector().Pt());
+                  }
+              }
+              
+              if(MatchedIsoTauL1){ 
+                  bool L1IsoTauPtFired = false;
+                  double L1IsoTauPt = l1taus[tauIsoTauL1Index]->vector().Pt();
+                  if(L1IsoTauPt >= l1tauCut) L1IsoTauPtFired = true;
+                  if(i==0){
                       if(L1IsoTauPtFired) h_tau_IsoTau_Efficiency->Fill(taus[i]->vector().Pt());
                       if(L1IsoTauPtFired) h_tau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
                   }
-                  
-                  // Check if tau fired Jet trigger.
+                  else if(i==1){
+                      if(L1IsoTauPtFired) h_subtau_IsoTau_Efficiency->Fill(taus[i]->vector().Pt());
+                      if(L1IsoTauPtFired) h_subtau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
+                  }
+              }
+              
+              // Check if tau fired Jet trigger.
 
-                  bool MatchedJetL1 = false;
-                  double PtDifftauJet = 10000;
-                  int tauJetL1Index = -1;
+              bool MatchedJetL1 = false;
+              double PtDifftauJet = 10000;
+              int tauJetL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1jets_; j++){
               
-                  for(unsigned j=0; j < n_l1jets_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1jets[j]->vector().Phi()-GenParticles[tauGenIndex]->vector().Phi(),2) + pow(l1jets[j]->vector().Rapidity()-GenParticles[tauGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1jets[j]->vector().Pt() - GenParticles[tauGenIndex]->vector().Pt());
-                  
-                      if(DeltaR < 0.2 && PtDiff < PtDifftauJet){
-                           PtDifftauJet = PtDiff;
-                           MatchedJetL1 = true;
-                           tauJetL1Index = j;
-                      }
-                      
-                  }
-                  
-                  if(MatchedJetL1){ 
-                      
-                      bool L1JetPtFired = false;
-                      double L1JetPt = l1jets[tauJetL1Index]->vector().Pt();
-                      if(L1JetPt >= l1jetCut) L1JetPtFired = true;
-                      if(L1JetPtFired) h_tau_Jet_Efficiency->Fill(taus[i]->vector().Pt());
-                  }
-                  
-                  // Check if tau fired Muon trigger.
-                  
-                  bool MatchedL1Mu = false;
-                  double PtDifftauMu = 10000;
-                  int tauMuL1Index = -1;
+                  double DeltaR = sqrt(pow(l1jets[j]->vector().Phi()-taus[i]->vector().Phi(),2) + pow(l1jets[j]->vector().Rapidity()-taus[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1jets[j]->vector().Pt() - taus[i]->vector().Pt());
               
-                  for(unsigned j=0; j < n_l1muons_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1muons[j]->vector().Phi()-GenParticles[tauGenIndex]->vector().Phi(),2) + pow(l1muons[j]->vector().Rapidity()-GenParticles[tauGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1muons[j]->vector().Pt() - GenParticles[tauGenIndex]->vector().Pt());
-                  
-                      if(DeltaR < 0.2 && PtDiff < PtDifftauMu){
-                          PtDifftauMu = PtDiff;
-                          MatchedL1Mu = true;
-                          tauMuL1Index = j;
-                      }
-                      
+                  if(DeltaR < 0.2 && PtDiff < PtDifftauJet){
+                       PtDifftauJet = PtDiff;
+                       MatchedJetL1 = true;
+                       tauJetL1Index = j;
                   }
                   
-                  if(MatchedL1Mu){ 
-                      
-                      bool L1MuPtFired = false;
-                      double L1MuPt = l1muons[tauMuL1Index]->vector().Pt();
-                      if(L1MuPt >= l1muCut) L1MuPtFired = true;
-                      if(L1MuPtFired) h_tau_Mu_Efficiency->Fill(taus[i]->vector().Pt());
+              }
+              
+              if(MatchedJetL1){ 
+                  
+                  bool L1JetPtFired = false;
+                  double L1JetPt = l1jets[tauJetL1Index]->vector().Pt();
+                  if(L1JetPt >= l1jetCut) L1JetPtFired = true;
+                  if(L1JetPtFired) h_tau_Jet_Efficiency->Fill(taus[i]->vector().Pt());
+              }
+              
+              // Check if tau fired Muon trigger.
+              
+              bool MatchedL1Mu = false;
+              double PtDifftauMu = 10000;
+              int tauMuL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1muons_; j++){
+              
+                  double DeltaR = sqrt(pow(l1muons[j]->vector().Phi()-taus[i]->vector().Phi(),2) + pow(l1muons[j]->vector().Rapidity()-taus[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1muons[j]->vector().Pt() - taus[i]->vector().Pt());
+              
+                  if(DeltaR < 0.2 && PtDiff < PtDifftauMu){
+                      PtDifftauMu = PtDiff;
+                      MatchedL1Mu = true;
+                      tauMuL1Index = j;
                   }
                   
+              }
+              
+              if(MatchedL1Mu){ 
+                  
+                  bool L1MuPtFired = false;
+                  double L1MuPt = l1muons[tauMuL1Index]->vector().Pt();
+                  if(L1MuPt >= l1muCut) L1MuPtFired = true;
+                  if(L1MuPtFired) h_tau_Mu_Efficiency->Fill(taus[i]->vector().Pt());
               }
           
           }
@@ -736,7 +683,7 @@ namespace ic {
       
       //Muons
       
-      for(unsigned i=0; i < n_muons_; i++){
+      for(unsigned i=0; i < n_muons_ && i< nPromptMuons; i++){
                   
           bool muProceed = false;
 
@@ -744,79 +691,40 @@ namespace ic {
           else muProceed = false;
 
           if(muProceed){
+                  
+              h_mu_Total->Fill(muons[i]->vector().Pt());
               
-              int muGenIndex = -1;
-              bool MatchedOffline = false;
+              // Check if muon fired Muon trigger.
+              
+              bool MatchedL1 = false;
               double PtDiffmuon = 10000;
+              int muL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1muons_; j++){
               
-              for(unsigned j=0; j< n_genParticles_; j++){
-
-                  int genID = std::fabs(GenParticles[j]->pdgid());
-                  bool isPrompt = false;
-                  //if((GenParticles[j]->statusFlags().at(0) == true || GenParticles[j]->statusFlags().at(5) == true) && genID == 13) isPrompt = true;
-                  for(unsigned k=0; k < GenParticles[j]->mothers().size(); k++) {
-                      if(std::fabs(GenParticles[GenParticles[j]->mothers().at(k)]->pdgid()) == 15){
-                          int ParentgenIndex = GenParticles[j]->mothers().at(k);
-                          int GPgenID = std::fabs(GenParticles[GenParticles[ParentgenIndex]->mothers().at(0)]->pdgid());
-                          if(genID == 13 && GPgenID == 25) isPrompt = true;
-                      }
-                  }
-                  
-                  double DeltaR = sqrt(pow(muons[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(muons[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
-                  double PtDiff = std::fabs(muons[i]->vector().Pt() - GenParticles[j]->vector().Pt());
-                  
-                  if(DeltaR < 0.1 && PtDiff < PtDiffmuon && isPrompt){
+                  double DeltaR = sqrt(pow(l1muons[j]->vector().Phi()-muons[i]->vector().Phi(),2) + pow(l1muons[j]->vector().Rapidity()-muons[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1muons[j]->vector().Pt() - muons[i]->vector().Pt());
+              
+                  if(DeltaR < 0.3 && PtDiff < PtDiffmuon){
                        PtDiffmuon = PtDiff;
-                       MatchedOffline = true;
-                       muGenIndex = j;
+                       MatchedL1 = true;
+                       muL1Index = j;
                   }
+                  
               }
               
-              if(MatchedOffline){
-                  
-                  h_mu_Total->Fill(muons[i]->vector().Pt());
-                  
-                  // Check if muon fired Muon trigger.
-                  
-                  bool MatchedL1 = false;
-                  double PtDiffmuon = 10000;
-                  int muL1Index = -1;
-                  double MuDeltaRRes;
-                  double MuPtRes;
-              
-                  for(unsigned j=0; j < n_l1muons_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1muons[j]->vector().Phi()-GenParticles[muGenIndex]->vector().Phi(),2) + pow(l1muons[j]->vector().Rapidity()-GenParticles[muGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1muons[j]->vector().Pt() - GenParticles[muGenIndex]->vector().Pt());
-                  
-                      if(DeltaR < 0.3 && PtDiff < PtDiffmuon){
-                           PtDiffmuon = PtDiff;
-                           MatchedL1 = true;
-                           muL1Index = j;
-                           MuDeltaRRes = DeltaR;
-                           MuPtRes = l1muons[j]->vector().Pt() - GenParticles[muGenIndex]->vector().Pt();
-                      }
-                      
-                  }
-                  
-                  if(MatchedL1){ 
-                      h_mu_Mu_PtRes->Fill(MuPtRes/GenParticles[muGenIndex]->vector().Pt());
-                      h_mu_Mu_PtDiff->Fill(MuPtRes);
-                      h_mu_Mu_DeltaRRes->Fill(MuDeltaRRes);
-                      bool L1MuPtFired = false;
-                      double L1MuPt = l1muons[muL1Index]->vector().Pt();
-                      if(L1MuPt >= l1muCut) L1MuPtFired = true;
-                      if(L1MuPtFired) h_mu_Mu_Efficiency->Fill(muons[i]->vector().Pt());
-                  }
-                 
-                  
-              }
+              if(MatchedL1){ 
+                  bool L1MuPtFired = false;
+                  double L1MuPt = l1muons[muL1Index]->vector().Pt();
+                  if(L1MuPt >= l1muCut) L1MuPtFired = true;
+                  if(L1MuPtFired) h_mu_Mu_Efficiency->Fill(muons[i]->vector().Pt());
+              }  
           }
       }
       
       // Jets
       
-      for(unsigned i=0; i < n_jets_; i++){
+      for(unsigned i=0; i < n_jets_ && i < 2; i++){
                   
           bool jetProceed = false;
           if(std::fabs(jets[i]->vector().Rapidity()) < 5) jetProceed = true;
@@ -839,207 +747,155 @@ namespace ic {
           
 
           if(jetProceed){
+
+              h_jet_Total->Fill(jets[i]->vector().Pt());
               
-              int jetGenIndex = -1;
-              bool MatchedOffline = false;
+              // Check if jet fired EG trigger.
+              
+              bool MatchedL1 = false;
               double PtDiffjet = 10000;
+              int jetL1Index = -1;
+
+          
+              for(unsigned j=0; j < n_l1electrons_; j++){
               
-              for(unsigned j=0; j<n_genJets_; j++){
-                  
-                  double DeltaR = sqrt(pow(jets[i]->vector().Phi()-genjets[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-genjets[j]->vector().Rapidity(),2));
-                  double PtDiff = std::fabs(jets[i]->vector().Pt() - genjets[j]->vector().Pt());
-                  
-                  if(DeltaR < 0.4 && PtDiff < PtDiffjet){
-                      PtDiffjet = PtDiff;
-                      MatchedOffline = true;
-                      jetGenIndex = j;
+                  double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-jets[i]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-jets[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1electrons[j]->vector().Pt() - jets[i]->vector().Pt());
+              
+                  if(DeltaR < 0.5 && PtDiff < PtDiffjet){
+                       PtDiffjet = PtDiff;
+                       MatchedL1 = true;
+                       jetL1Index = j;
                   }
                   
               }
               
-              for(unsigned j=0; j< n_genParticles_; j++){
+              if(MatchedL1){ 
 
-                  int genID = std::fabs(GenParticles[j]->pdgid());
-                  bool isPrompt = false;
-                  if((GenParticles[j]->statusFlags().at(0) == true || GenParticles[j]->statusFlags().at(5) == true) && (genID == 11 || genID == 13)) isPrompt = true;
-                  
-                  for(unsigned k=0; k < GenParticles[j]->mothers().size(); k++) {
-                      if(std::fabs(GenParticles[GenParticles[j]->mothers().at(k)]->pdgid()) == 25){
-                          if(genID == 15) isPrompt = true;
-                      }
+                  bool L1EPtFired = false;
+                  double L1EPt = l1electrons[jetL1Index]->vector().Pt();
+                  if(L1EPt >= l1eCut) L1EPtFired = true;
+                  if(L1EPtFired) h_jet_EG_Efficiency->Fill(jets[i]->vector().Pt());
+                  if(L1EPtFired && l1electrons[jetL1Index]->isolation == 1) h_jet_IsoEG_Efficiency->Fill(jets[i]->vector().Pt());
+              }
+             
+              // Check if jet fired tau and iso-tau triggers.
+              
+              bool MatchedTauL1 = false;
+              bool MatchedIsoTauL1 = false;
+              double PtDiffjetTau = 10000;
+              double PtDiffjetIsoTau = 10000;
+              int jetTauL1Index = -1;
+              int jetIsoTauL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1taus_; j++){
+              
+                  double DeltaR = sqrt(pow(l1taus[j]->vector().Phi()-jets[i]->vector().Phi(),2) + pow(l1taus[j]->vector().Rapidity()-jets[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1taus[j]->vector().Pt() - jets[i]->vector().Pt());
+                  int tauIso = l1taus[j]->isolation;
+                  bool IsoTau = false;
+                  if(tauIso == 1) IsoTau = true;
+                  if(DeltaR < 0.5 && PtDiff < PtDiffjetTau && !IsoTau){
+                       PtDiffjetTau = PtDiff;
+                       MatchedTauL1 = true;
+                       jetTauL1Index = j;
                   }
                   
-                  for(unsigned k=0; k < GenParticles[j]->daughters().size(); k++) {
-                      if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 13) isPrompt = false;
-                      if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 16) GenParticles[j]->set_vector(GenParticles[j]->vector() - GenParticles[GenParticles[j]->daughters().at(k)]->vector());
+                  if(DeltaR < 0.5 && PtDiff < PtDiffjetIsoTau && IsoTau){
+                       PtDiffjetIsoTau = PtDiff;
+                       MatchedIsoTauL1 = true;
+                       jetIsoTauL1Index = j;
                   }
-                 
-                  double DeltaR = sqrt(pow(jets[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
-                  
-                  if(DeltaR < 0.2 && isPrompt){
-                       MatchedOffline = false;
-                  }
+
               }
               
-              if(MatchedOffline){
-                  
-                  h_jet_Total->Fill(jets[i]->vector().Pt());
-                  
-                  // Check if jet fired EG trigger.
-                  
-                  bool MatchedL1 = false;
-                  double PtDiffjet = 10000;
-                  int jetL1Index = -1;
-
+              if(MatchedTauL1){ 
+                  bool L1TauPtFired = false;
+                  double L1TauPt = l1taus[jetTauL1Index]->vector().Pt();
+                  if(L1TauPt >= l1tauCut) L1TauPtFired = true;
+                  if(L1TauPtFired) h_jet_Tau_Efficiency->Fill(jets[i]->vector().Pt());
+                  if(L1TauPtFired) h_jet_NonIsoTau_Efficiency->Fill(jets[i]->vector().Pt());
+              }
               
-                  for(unsigned j=0; j < n_l1electrons_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-genjets[jetGenIndex]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-genjets[jetGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1electrons[j]->vector().Pt() - genjets[jetGenIndex]->vector().Pt());
-                  
-                      if(DeltaR < 0.5 && PtDiff < PtDiffjet){
-                           PtDiffjet = PtDiff;
-                           MatchedL1 = true;
-                           jetL1Index = j;
-                      }
-                      
-                  }
-                  
-                  if(MatchedL1){ 
-
-                      bool L1EPtFired = false;
-                      double L1EPt = l1electrons[jetL1Index]->vector().Pt();
-                      if(L1EPt >= l1eCut) L1EPtFired = true;
-                      if(L1EPtFired) h_jet_EG_Efficiency->Fill(jets[i]->vector().Pt());
-                      if(L1EPtFired && l1electrons[jetL1Index]->isolation == 1) h_jet_IsoEG_Efficiency->Fill(jets[i]->vector().Pt());
-                  }
-                 
-                  // Check if jet fired tau and iso-tau triggers.
-                  
-                  bool MatchedTauL1 = false;
-                  bool MatchedIsoTauL1 = false;
-                  double PtDiffjetTau = 10000;
-                  double PtDiffjetIsoTau = 10000;
-                  int jetTauL1Index = -1;
-                  int jetIsoTauL1Index = -1;
+              if(MatchedIsoTauL1){ 
+                  bool L1IsoTauPtFired = false;
+                  double L1IsoTauPt = l1taus[jetIsoTauL1Index]->vector().Pt();
+                  if(L1IsoTauPt >= l1tauCut) L1IsoTauPtFired = true;
+                  if(L1IsoTauPtFired) h_jet_IsoTau_Efficiency->Fill(jets[i]->vector().Pt());
+                  if(L1IsoTauPtFired) h_jet_Tau_Efficiency->Fill(jets[i]->vector().Pt());
+              }
               
-                  for(unsigned j=0; j < n_l1taus_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1taus[j]->vector().Phi()-genjets[jetGenIndex]->vector().Phi(),2) + pow(l1taus[j]->vector().Rapidity()-genjets[jetGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1taus[j]->vector().Pt() - genjets[jetGenIndex]->vector().Pt());
-                      int tauIso = l1taus[j]->isolation;
-                      bool IsoTau = false;
-                      if(tauIso == 1) IsoTau = true;
-                      if(DeltaR < 0.5 && PtDiff < PtDiffjetTau && !IsoTau){
-                           PtDiffjetTau = PtDiff;
-                           MatchedTauL1 = true;
-                           jetTauL1Index = j;
-                      }
-                      
-                      if(DeltaR < 0.5 && PtDiff < PtDiffjetIsoTau && IsoTau){
-                           PtDiffjetIsoTau = PtDiff;
-                           MatchedIsoTauL1 = true;
-                           jetIsoTauL1Index = j;
-                      }
-
-                  }
-                  
-                  if(MatchedTauL1){ 
-                      bool L1TauPtFired = false;
-                      double L1TauPt = l1taus[jetTauL1Index]->vector().Pt();
-                      if(L1TauPt >= l1tauCut) L1TauPtFired = true;
-                      if(L1TauPtFired) h_jet_Tau_Efficiency->Fill(jets[i]->vector().Pt());
-                      if(L1TauPtFired) h_jet_NonIsoTau_Efficiency->Fill(jets[i]->vector().Pt());
-                  }
-                  
-                  if(MatchedIsoTauL1){ 
-                      bool L1IsoTauPtFired = false;
-                      double L1IsoTauPt = l1taus[jetIsoTauL1Index]->vector().Pt();
-                      if(L1IsoTauPt >= l1tauCut) L1IsoTauPtFired = true;
-                      if(L1IsoTauPtFired) h_jet_IsoTau_Efficiency->Fill(jets[i]->vector().Pt());
-                      if(L1IsoTauPtFired) h_jet_Tau_Efficiency->Fill(jets[i]->vector().Pt());
-                  }
-                  
-                  if(MatchedTauL1 && MatchedL1){ 
-                      bool L1TauPtFired = false;
-                      bool L1ElectronPtFired = false;
-                      double L1TauPt = l1taus[jetTauL1Index]->vector().Pt();
-                      if(L1TauPt >= l1tauCut) L1TauPtFired = true;
-                      double L1ElectronPt = l1electrons[jetL1Index]->vector().Pt();
-                      if(L1ElectronPt >= l1eCut) L1ElectronPtFired = true;
-                      if(L1TauPtFired && L1ElectronPtFired) h_jet_TauEG_Efficiency->Fill(jets[i]->vector().Pt());
-                  }
-                  
-                  if(MatchedIsoTauL1 && MatchedL1 && l1electrons[jetL1Index]->isolation == 1){ 
-                      bool L1IsoTauPtFired = false;
-                      bool L1IsoElectronPtFired = false;
-                      double L1IsoTauPt = l1taus[jetIsoTauL1Index]->vector().Pt();
-                      if(L1IsoTauPt >= l1tauCut) L1IsoTauPtFired = true;
-                      double L1IsoElectronPt = l1electrons[jetL1Index]->vector().Pt();
-                      if(L1IsoElectronPt >= l1eCut) L1IsoElectronPtFired = true;
-                      if(L1IsoTauPtFired && L1IsoElectronPtFired) h_jet_IsoTauIsoEG_Efficiency->Fill(jets[i]->vector().Pt());
-                      if(L1IsoTauPtFired && L1IsoElectronPtFired) h_jet_TauEG_Efficiency->Fill(jets[i]->vector().Pt());
-                  }
-                  
-                  // Check if jet fired Jet trigger.
-
-                  bool MatchedJetL1 = false;
-                  double PtDiffjetJet = 10000;
-                  int jetJetL1Index = -1;
-                  double JetDeltaRRes;
-                  double JetPtRes;
+              if(MatchedTauL1 && MatchedL1){ 
+                  bool L1TauPtFired = false;
+                  bool L1ElectronPtFired = false;
+                  double L1TauPt = l1taus[jetTauL1Index]->vector().Pt();
+                  if(L1TauPt >= l1tauCut) L1TauPtFired = true;
+                  double L1ElectronPt = l1electrons[jetL1Index]->vector().Pt();
+                  if(L1ElectronPt >= l1eCut) L1ElectronPtFired = true;
+                  if(L1TauPtFired && L1ElectronPtFired) h_jet_TauEG_Efficiency->Fill(jets[i]->vector().Pt());
+              }
               
-                  for(unsigned j=0; j < n_l1jets_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1jets[j]->vector().Phi()- genjets[jetGenIndex]->vector().Phi(),2) + pow(l1jets[j]->vector().Rapidity()-genjets[jetGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1jets[j]->vector().Pt() - genjets[jetGenIndex]->vector().Pt());
-                  
-                      if(DeltaR < 0.5 && PtDiff < PtDiffjetJet){
-                           PtDiffjetJet = PtDiff;
-                           MatchedJetL1 = true;
-                           jetJetL1Index = j;
-                           JetDeltaRRes = DeltaR;
-                           JetPtRes = l1jets[j]->vector().Pt() - genjets[jetGenIndex]->vector().Pt();
-                      }
-                      
-                  }
-                  
-                  if(MatchedJetL1){ 
-                      h_jet_Jet_PtRes->Fill(JetPtRes/genjets[jetGenIndex]->vector().Pt());
-                      h_jet_Jet_PtDiff->Fill(JetPtRes);
-                      h_jet_Jet_DeltaRRes->Fill(JetDeltaRRes);
-                      bool L1JetPtFired = false;
-                      double L1JetPt = l1jets[jetJetL1Index]->vector().Pt();
-                      if(L1JetPt >= l1jetCut) L1JetPtFired = true;
-                      if(L1JetPtFired) h_jet_Jet_Efficiency->Fill(jets[i]->vector().Pt());
-                  }
-                  
-                  // Check if jet fired Muon trigger.
-                  
-                  bool MatchedL1Mu = false;
-                  double PtDiffjetMu = 10000;
-                  int jetMuL1Index = -1;
+              if(MatchedIsoTauL1 && MatchedL1 && l1electrons[jetL1Index]->isolation == 1){ 
+                  bool L1IsoTauPtFired = false;
+                  bool L1IsoElectronPtFired = false;
+                  double L1IsoTauPt = l1taus[jetIsoTauL1Index]->vector().Pt();
+                  if(L1IsoTauPt >= l1tauCut) L1IsoTauPtFired = true;
+                  double L1IsoElectronPt = l1electrons[jetL1Index]->vector().Pt();
+                  if(L1IsoElectronPt >= l1eCut) L1IsoElectronPtFired = true;
+                  if(L1IsoTauPtFired && L1IsoElectronPtFired) h_jet_IsoTauIsoEG_Efficiency->Fill(jets[i]->vector().Pt());
+                  if(L1IsoTauPtFired && L1IsoElectronPtFired) h_jet_TauEG_Efficiency->Fill(jets[i]->vector().Pt());
+              }
               
-                  for(unsigned j=0; j < n_l1muons_; j++){
-                  
-                      double DeltaR = sqrt(pow(l1muons[j]->vector().Phi()-genjets[jetGenIndex]->vector().Phi(),2) + pow(l1muons[j]->vector().Rapidity()-genjets[jetGenIndex]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(l1muons[j]->vector().Pt() - genjets[jetGenIndex]->vector().Pt());
-                  
-                      if(DeltaR < 0.5 && PtDiff < PtDiffjetMu){
-                          PtDiffjetMu = PtDiff;
-                          MatchedL1Mu = true;
-                          jetMuL1Index = j;
-                      }
-                      
+              // Check if jet fired Jet trigger.
+
+              bool MatchedJetL1 = false;
+              double PtDiffjetJet = 10000;
+              int jetJetL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1jets_; j++){
+              
+                  double DeltaR = sqrt(pow(l1jets[j]->vector().Phi()- jets[i]->vector().Phi(),2) + pow(l1jets[j]->vector().Rapidity()-jets[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1jets[j]->vector().Pt() - jets[i]->vector().Pt());
+              
+                  if(DeltaR < 0.5 && PtDiff < PtDiffjetJet){
+                       PtDiffjetJet = PtDiff;
+                       MatchedJetL1 = true;
+                       jetJetL1Index = j;
                   }
                   
-                  if(MatchedL1Mu){ 
-                      bool L1MuPtFired = false;
-                      double L1MuPt = l1muons[jetMuL1Index]->vector().Pt();
-                      if(L1MuPt >= l1muCut) L1MuPtFired = true;
-                      if(L1MuPtFired) h_jet_Mu_Efficiency->Fill(jets[i]->vector().Pt());
+              }
+              
+              if(MatchedJetL1){ 
+                  bool L1JetPtFired = false;
+                  double L1JetPt = l1jets[jetJetL1Index]->vector().Pt();
+                  if(L1JetPt >= l1jetCut) L1JetPtFired = true;
+                  if(L1JetPtFired) h_jet_Jet_Efficiency->Fill(jets[i]->vector().Pt());
+              }
+              
+              // Check if jet fired Muon trigger.
+              
+              bool MatchedL1Mu = false;
+              double PtDiffjetMu = 10000;
+              int jetMuL1Index = -1;
+          
+              for(unsigned j=0; j < n_l1muons_; j++){
+              
+                  double DeltaR = sqrt(pow(l1muons[j]->vector().Phi()-jets[i]->vector().Phi(),2) + pow(l1muons[j]->vector().Rapidity()-jets[i]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1muons[j]->vector().Pt() - jets[i]->vector().Pt());
+              
+                  if(DeltaR < 0.5 && PtDiff < PtDiffjetMu){
+                      PtDiffjetMu = PtDiff;
+                      MatchedL1Mu = true;
+                      jetMuL1Index = j;
                   }
                   
+              }
+              
+              if(MatchedL1Mu){ 
+                  bool L1MuPtFired = false;
+                  double L1MuPt = l1muons[jetMuL1Index]->vector().Pt();
+                  if(L1MuPt >= l1muCut) L1MuPtFired = true;
+                  if(L1MuPtFired) h_jet_Mu_Efficiency->Fill(jets[i]->vector().Pt());
               }
           
           }
@@ -1049,7 +905,7 @@ namespace ic {
       // Di-Jets
 
       
-      for(unsigned i=0; i < n_jets_; i++){
+      for(unsigned i=0; i < n_jets_ && i < 2; i++){
 
           bool jet1IsLepton = false;
           
@@ -1066,7 +922,7 @@ namespace ic {
               if(DeltaR < 0.1) jet1IsLepton = true;
           }
     
-          for(unsigned j=0; j<n_jets_; j++){
+          for(unsigned j=0; j<n_jets_ && j < 2; j++){
 
               bool jet2IsLepton = false;
               
@@ -1084,43 +940,8 @@ namespace ic {
               }
            
               if(i!=j && !jet1IsLepton && !jet2IsLepton && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(jets[j]->vector().Rapidity()) < 5){
-
-                  int jet1GenIndex = -1;
-                  bool Matched1Offline = false;
-                  double PtDiffjet1 = 10000;
-              
-                  for(unsigned k=0; k<n_genJets_; k++){
-
-                      double DeltaR = sqrt(pow(jets[i]->vector().Phi()-genjets[k]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-genjets[k]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(jets[i]->vector().Pt() - genjets[k]->vector().Pt());
                   
-                      if(DeltaR < 0.2 && PtDiff < PtDiffjet1){
-                          PtDiffjet1 = PtDiff;
-                          Matched1Offline = true;
-                          jet1GenIndex = k;
-                      }
-                  
-                  }
-                  
-                  int jet2GenIndex = -1;
-                  bool Matched2Offline = false;
-                  double PtDiffjet2 = 10000;
-                  
-                  for(unsigned k=0; k<n_genJets_; k++){
- 
-                      double DeltaR = sqrt(pow(jets[j]->vector().Phi()-genjets[k]->vector().Phi(),2) + pow(jets[j]->vector().Rapidity()-genjets[k]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(jets[j]->vector().Pt() - genjets[k]->vector().Pt());
-                  
-                      if(DeltaR < 0.2 && PtDiff < PtDiffjet2){
-                          PtDiffjet2 = PtDiff;
-                          Matched2Offline = true;
-                          jet2GenIndex = k;
-                      }
-                  
-                  }
-                  
-                  
-                  if(jets[i]->vector().Pt() > 30 && jets[j]->vector().Pt() > 30 && jet1GenIndex != jet2GenIndex && Matched1Offline && Matched2Offline){
+                  if(jets[i]->vector().Pt() > 20 && jets[j]->vector().Pt() > 20){
 
                       h_jetjet_Mjj_Total->Fill((jets[i]->vector() + jets[j]->vector()).M());
                       h_jetjet_DeltaEta_Total->Fill(std::fabs(jets[i]->vector().Rapidity() - jets[j]->vector().Rapidity()));
@@ -1131,8 +952,8 @@ namespace ic {
               
                       for(unsigned k=0; k < n_l1jets_; k++){
 
-                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- genjets[jet1GenIndex]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-genjets[jet1GenIndex]->vector().Rapidity(),2));
-                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - genjets[jet1GenIndex]->vector().Pt());
+                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- jets[i]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-jets[i]->vector().Rapidity(),2));
+                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - jets[i]->vector().Pt());
                   
                           if(DeltaR < 0.5 && PtDiff < PtDiffjet1Jet){
                                PtDiffjet1Jet = PtDiff;
@@ -1148,8 +969,8 @@ namespace ic {
               
                       for(unsigned k=0; k < n_l1jets_; k++){
                           
-                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- genjets[jet2GenIndex]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-genjets[jet2GenIndex]->vector().Rapidity(),2));
-                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - genjets[jet2GenIndex]->vector().Pt());
+                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- jets[j]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-jets[j]->vector().Rapidity(),2));
+                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - jets[j]->vector().Pt());
                   
                           if(DeltaR < 0.5 && PtDiff < PtDiffjet2Jet){
                                PtDiffjet2Jet = PtDiff;
@@ -1173,7 +994,7 @@ namespace ic {
       
       //Jet-Tau
       
-      for(unsigned i=0; i < n_jets_; i++){
+      for(unsigned i=0; i < n_jets_ && i < 2; i++){
 
           bool jet1IsLepton = false;
           
@@ -1190,7 +1011,7 @@ namespace ic {
               if(DeltaR < 0.1) jet1IsLepton = true;
           }
     
-          for(unsigned j=0; j<n_taus_; j++){
+          for(unsigned j=0; j<n_taus_ && j <nPromptTaus; j++){
 
               bool tauIsLepton = false;
 
@@ -1205,55 +1026,8 @@ namespace ic {
            
               if(!jet1IsLepton && !tauIsLepton && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(taus[j]->vector().Rapidity()) < 5){
 
-                  int jet1GenIndex = -1;
-                  bool Matched1Offline = false;
-                  double PtDiffjet1 = 10000;
-              
-                  for(unsigned k=0; k<n_genJets_; k++){
-
-                      double DeltaR = sqrt(pow(jets[i]->vector().Phi()-genjets[k]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-genjets[k]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(jets[i]->vector().Pt() - genjets[k]->vector().Pt());
                   
-                      if(DeltaR < 0.2 && PtDiff < PtDiffjet1){
-                          PtDiffjet1 = PtDiff;
-                          Matched1Offline = true;
-                          jet1GenIndex = k;
-                      }
-                  
-                  }
-                  
-                  int tauGenIndex = -1;
-                  bool Matched2Offline = false;
-                  double PtDifftau = 10000;
-                  
-                  for(unsigned k=0; k<n_genParticles_; k++){
-                      
-                      int genID = std::fabs(GenParticles[k]->pdgid());
-                      bool isPrompt = false;
-
-                      for(unsigned l=0; l < GenParticles[k]->mothers().size(); l++) {
-                          if(std::fabs(GenParticles[GenParticles[k]->mothers().at(l)]->pdgid()) == 25){
-                              if(genID == 15) isPrompt = true;
-                          }
-                      }
-                  
-                      for(unsigned l=0; l < GenParticles[k]->daughters().size(); l++) {
-                          if(std::fabs(GenParticles[GenParticles[k]->daughters().at(l)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[k]->daughters().at(l)]->pdgid()) == 13) isPrompt = false;
-                          if(std::fabs(GenParticles[GenParticles[k]->daughters().at(l)]->pdgid()) == 16) GenParticles[k]->set_vector(GenParticles[k]->vector() - GenParticles[GenParticles[k]->daughters().at(l)]->vector());
-                      }
- 
-                      double DeltaR = sqrt(pow(taus[j]->vector().Phi()-GenParticles[k]->vector().Phi(),2) + pow(taus[j]->vector().Rapidity()-GenParticles[k]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(taus[j]->vector().Pt() - GenParticles[k]->vector().Pt());
-                  
-                      if(DeltaR < 0.2 && PtDiff < PtDifftau && isPrompt){
-                          PtDifftau = PtDiff;
-                          Matched2Offline = true;
-                          tauGenIndex = k;
-                      }
-                  
-                  }
-                  
-                  if(Matched1Offline && Matched2Offline){
+                  if(jets[i]->vector().Pt() > 20){
 
                       h_jettau_Mjj_Total->Fill((jets[i]->vector() + taus[j]->vector()).M());
                       h_jettau_DeltaEta_Total->Fill(std::fabs(jets[i]->vector().Rapidity() - taus[j]->vector().Rapidity()));
@@ -1264,8 +1038,8 @@ namespace ic {
               
                       for(unsigned k=0; k < n_l1jets_; k++){
 
-                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- genjets[jet1GenIndex]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-genjets[jet1GenIndex]->vector().Rapidity(),2));
-                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - genjets[jet1GenIndex]->vector().Pt());
+                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- jets[i]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-jets[i]->vector().Rapidity(),2));
+                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - jets[i]->vector().Pt());
                   
                           if(DeltaR < 0.5 && PtDiff < PtDiffjet1Jet){
                                PtDiffjet1Jet = PtDiff;
@@ -1281,8 +1055,8 @@ namespace ic {
               
                       for(unsigned k=0; k < n_l1jets_; k++){
                           
-                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- GenParticles[tauGenIndex]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-GenParticles[tauGenIndex]->vector().Rapidity(),2));
-                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - GenParticles[tauGenIndex]->vector().Pt());
+                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- taus[j]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-taus[j]->vector().Rapidity(),2));
+                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - taus[j]->vector().Pt());
                   
                           if(DeltaR < 0.5 && PtDiff < PtDifftauJet){
                                PtDifftauJet = PtDiff;
@@ -1306,7 +1080,7 @@ namespace ic {
       
       // Jet-Electron
       
-      for(unsigned i=0; i < n_jets_; i++){
+      for(unsigned i=0; i < n_jets_ && i < 2; i++){
 
           bool jet1IsLepton = false;
           
@@ -1323,58 +1097,13 @@ namespace ic {
               if(DeltaR < 0.1) jet1IsLepton = true;
           }
     
-          for(unsigned j=0; j<n_electrons_; j++){
+          for(unsigned j=0; j<n_electrons_ && j <nPromptElectrons; j++){
 
            
               if(!jet1IsLepton && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(electrons[j]->vector().Rapidity()) < 5){
 
-                  int jet1GenIndex = -1;
-                  bool Matched1Offline = false;
-                  double PtDiffjet1 = 10000;
-              
-                  for(unsigned k=0; k<n_genJets_; k++){
-
-                      double DeltaR = sqrt(pow(jets[i]->vector().Phi()-genjets[k]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-genjets[k]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(jets[i]->vector().Pt() - genjets[k]->vector().Pt());
                   
-                      if(DeltaR < 0.2 && PtDiff < PtDiffjet1){
-                          PtDiffjet1 = PtDiff;
-                          Matched1Offline = true;
-                          jet1GenIndex = k;
-                      }
-                  
-                  }
-                  
-                  int electronGenIndex = -1;
-                  bool Matched2Offline = false;
-                  double PtDiffelectron = 10000;
-                  
-                  for(unsigned k=0; k<n_genParticles_; k++){
-                      
-                      int genID = std::fabs(GenParticles[k]->pdgid());
-                      bool isPrompt = false;
-
-                  
-                      for(unsigned l=0; l < GenParticles[k]->mothers().size(); l++) {
-                          if(std::fabs(GenParticles[GenParticles[k]->mothers().at(l)]->pdgid()) == 15){
-                              int ParentgenIndex = GenParticles[k]->mothers().at(l);
-                              int GPgenID = std::fabs(GenParticles[GenParticles[ParentgenIndex]->mothers().at(0)]->pdgid());
-                              if(genID == 11 && GPgenID == 25) isPrompt = true;
-                          }
-                      }
- 
-                      double DeltaR = sqrt(pow(electrons[j]->vector().Phi()-GenParticles[k]->vector().Phi(),2) + pow(electrons[j]->vector().Rapidity()-GenParticles[k]->vector().Rapidity(),2));
-                      double PtDiff = std::fabs(electrons[j]->vector().Pt() - GenParticles[k]->vector().Pt());
-                  
-                      if(DeltaR < 0.2 && PtDiff < PtDiffelectron && isPrompt){
-                          PtDiffelectron = PtDiff;
-                          Matched2Offline = true;
-                          electronGenIndex = k;
-                      }
-                  
-                  }
-                  
-                  if(Matched1Offline && Matched2Offline){
+                  if(jets[i]->vector().Pt() > 20){
 
                       h_jetelectron_Mjj_Total->Fill((jets[i]->vector() + electrons[j]->vector()).M());
                       h_jetelectron_DeltaEta_Total->Fill(std::fabs(jets[i]->vector().Rapidity() - electrons[j]->vector().Rapidity()));
@@ -1385,8 +1114,8 @@ namespace ic {
               
                       for(unsigned k=0; k < n_l1jets_; k++){
 
-                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- genjets[jet1GenIndex]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-genjets[jet1GenIndex]->vector().Rapidity(),2));
-                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - genjets[jet1GenIndex]->vector().Pt());
+                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- jets[i]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-jets[i]->vector().Rapidity(),2));
+                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - jets[i]->vector().Pt());
                   
                           if(DeltaR < 0.5 && PtDiff < PtDiffjet1Jet){
                                PtDiffjet1Jet = PtDiff;
@@ -1402,8 +1131,8 @@ namespace ic {
               
                       for(unsigned k=0; k < n_l1jets_; k++){
                           
-                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- GenParticles[electronGenIndex]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-GenParticles[electronGenIndex]->vector().Rapidity(),2));
-                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - GenParticles[electronGenIndex]->vector().Pt());
+                          double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- electrons[j]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-electrons[j]->vector().Rapidity(),2));
+                          double PtDiff = std::fabs(l1jets[k]->vector().Pt() - electrons[j]->vector().Pt());
                   
                           if(DeltaR < 0.5 && PtDiff < PtDiffelectronJet){
                                PtDiffelectronJet = PtDiff;
@@ -1446,7 +1175,6 @@ namespace ic {
         
           int genID = std::fabs(GenParticles[j]->pdgid());
           bool isPrompt = false;
-          bool matchedOffline = false;
         
           for(unsigned k=0; k < GenParticles[j]->mothers().size(); k++) {
               if(std::fabs(GenParticles[GenParticles[j]->mothers().at(k)]->pdgid()) == 25){
@@ -1459,15 +1187,9 @@ namespace ic {
               if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 16) GenParticles[j]->set_vector(GenParticles[j]->vector() - GenParticles[GenParticles[j]->daughters().at(k)]->vector());
           }
           
-          for(unsigned k=0; k < n_taus_; k++){
-              double DeltaR = sqrt(pow(taus[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(taus[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));    
-              if(DeltaR < 0.3) matchedOffline = true;
-          }
-          
           if(genID == 15 && isPrompt && std::fabs(GenParticles[j]->vector().Rapidity()) < 2.3){
               
               h_gentau_Total->Fill(GenParticles[j]->vector().Pt());
-              if(matchedOffline) h_gentau_Matched_Total->Fill(GenParticles[j]->vector().Pt());
               
               bool MatchedL1 = false;
               bool MatchedIsoL1 = false;
@@ -1482,11 +1204,9 @@ namespace ic {
               
               if(MatchedL1){
                   h_gentau_Tau_Efficiency->Fill(GenParticles[j]->vector().Pt());
-                  if(matchedOffline) h_gentau_Tau_Matched_Efficiency->Fill(GenParticles[j]->vector().Pt());
               
                   if(MatchedIsoL1){
                       h_gentau_IsoTau_Efficiency->Fill(GenParticles[j]->vector().Pt());
-                      if(matchedOffline) h_gentau_IsoTau_Matched_Efficiency->Fill(GenParticles[j]->vector().Pt());
                   }
               }
           }
@@ -1513,12 +1233,13 @@ namespace ic {
       h_tau_IsoTau_Efficiency->Divide(h_tau_Total);
       h_tau_Jet_Efficiency->Divide(h_tau_Total);
       
+      h_subtau_IsoTau_Efficiency->Divide(h_subtau_Total);
+      h_subtau_Tau_Efficiency->Divide(h_subtau_Total);
+      h_subtau_NonIsoTau_Efficiency->Divide(h_subtau_Total);
+      
       h_gentau_Tau_Efficiency->Divide(h_gentau_Total);
       h_gentau_IsoTau_Efficiency->Divide(h_gentau_Total);
-      
-      h_gentau_Tau_Matched_Efficiency->Divide(h_gentau_Matched_Total);
-      h_gentau_IsoTau_Matched_Efficiency->Divide(h_gentau_Matched_Total);
-      
+
       h_jet_EG_Efficiency->Divide(h_jet_Total);
       h_jet_IsoEG_Efficiency->Divide(h_jet_Total);
       h_jet_Mu_Efficiency->Divide(h_jet_Total);

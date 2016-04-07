@@ -68,6 +68,10 @@ namespace ic {
     double l1METCut;
     double l1MHTCut;
     
+    unsigned nPromptElectrons;
+    unsigned nPromptMuons;
+    unsigned nPromptTaus;
+    
     TH1D *h_mu_Mu_Efficiency;
     TH1D *h_mu_Total;
     TH1D *h_mu_Mu_PtDiff;
@@ -88,10 +92,14 @@ namespace ic {
     TH1D *h_tau_EG_Efficiency;
     TH1D *h_tau_IsoEG_Efficiency;
     TH1D *h_tau_Total;
+    TH1D *h_subtau_Total;
     TH1D *h_tau_Tau_Efficiency;
+    TH1D *h_subtau_Tau_Efficiency;
     TH1D *h_tau_Mu_Efficiency;
     TH1D *h_tau_NonIsoTau_Efficiency;
+    TH1D *h_subtau_NonIsoTau_Efficiency;
     TH1D *h_tau_IsoTau_Efficiency;
+    TH1D *h_subtau_IsoTau_Efficiency;
     TH1D *h_tau_Jet_Efficiency;
     TH1D *h_tau_Tau_PtRes;
     TH1D *h_tau_IsoTau_PtRes;
@@ -102,10 +110,7 @@ namespace ic {
     
     TH1D *h_gentau_Tau_Efficiency;
     TH1D *h_gentau_IsoTau_Efficiency;
-    TH1D *h_gentau_Tau_Matched_Efficiency;
-    TH1D *h_gentau_IsoTau_Matched_Efficiency;
     TH1D *h_gentau_Total;
-    TH1D *h_gentau_Matched_Total;
     
     TH1D *h_jet_EG_Efficiency;
     TH1D *h_jet_IsoEG_Efficiency;
@@ -145,7 +150,7 @@ namespace ic {
 
   public:
 
-    Efficiency(std::string const& name, fwlite::TFileService *fs, std::string output_name, int effNum);
+    Efficiency(std::string const& name, fwlite::TFileService *fs, std::string output_name, int effNum, std::string channel);
     virtual ~Efficiency();
 
     virtual int PreAnalysis();
