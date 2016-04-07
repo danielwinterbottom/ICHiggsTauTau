@@ -6,7 +6,7 @@
     "timings":      true,
     "channels":     ["mt","et","em","tt"],
     "sequences": {
-      "all":  ["default"]//,"scale_met_lo","scale_met_hi"]
+      "all":  ["default"]//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
 //      "mt":   ["scale_t_lo", "scale_t_hi"],
  //     "tt":   ["scale_t_lo", "scale_t_hi"],
@@ -55,8 +55,6 @@
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
-    "metscale_mode" : 0,
-    "metres_mode" : 0,
     "mva_met_mode"  : 1,
     "faked_tau_selector" : 0,
     "hadronic_tau_selector" : 0,
@@ -73,6 +71,8 @@
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "elec_es_shift"     : 1.0,
+      "metscale_mode"     : 0,
+      "metres_mode"       : 0,
       "mass_shift"        : 1.0,
       "do_em_extras"      : true,
       "di_elec_veto"      : false,
@@ -190,16 +190,16 @@
     "scale_met_hi": {
       "baseline": {
         "addit_output_folder" : "MET_SCALE_UP",
-        "metscale_mode" : 2/
+        "metscale_mode" : 2
       }
     },
-    "scale_met_lo": {
+    "res_met_lo": {
       "baseline": {
         "addit_output_folder" : "MET_RES_DOWN",
         "metres_mode" : 1
       }
     },
-    "scale_met_hi": {
+    "res_met_hi": {
       "baseline": {
         "addit_output_folder" : "MET_RES_UP",
         "metres_mode" : 2

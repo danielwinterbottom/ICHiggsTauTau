@@ -93,6 +93,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
+  metscale_mode=json["baseline"]["metscale_mode"].asUInt();
+  metres_mode=json["baseline"]["metres_mode"].asUInt();
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
@@ -870,6 +872,7 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      .set_w_hack(true));
   }
 
+
  if(strategy_type == strategy::fall15 && channel!=channel::wmnu){
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
@@ -879,8 +882,8 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
      .set_use_quantile_map(false)
-     .set_met_scale_mode(js["metscale_mode"].asUInt())
-     .set_met_res_mode(js["metres_mode"].asUInt())
+     .set_met_scale_mode(metscale_mode)
+     .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
   }
 
