@@ -20,6 +20,8 @@ namespace ic {
     store_boson_pt_ = false;
     disable = true;
     is_wjets = false;
+    met_scale_mode_ = 0;
+    met_res_mode_ = 0;
   }
 
   HTTRun2RecoilCorrector::~HTTRun2RecoilCorrector() {
@@ -39,8 +41,10 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
 
     std::string process_file;
+    std::string syst_file;
     if (strategy_ ==strategy::fall15){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
+      syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
     }else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;
@@ -65,6 +69,7 @@ namespace ic {
     } else {
       corrector_ = new RecoilCorrectorRun2(process_file);
     }
+    metSys_ = new MEtSys(syst_file);
 
     return 0;
   }
@@ -127,6 +132,50 @@ namespace ic {
   mvaMet->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
   mvaMet->set_phi(atan2(correctedMety,correctedMetx));
   mvaMet->set_energy(sqrt(met_res_e*met_res_e+correctedMetx*correctedMetx+correctedMety*correctedMety));
+    
+  //Apply systematic shifts to MET if requested  
+  if(met_scale_mode_ > 0 || met_res_mode_ >0) {
+    float mvamet_Shift_x, mvamet_Shift_y;
+    MEtSys::SysType sysType;
+    MEtSys::SysShift sysShift;
+    MEtSys::ProcessType processType;
+    if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("HToTauTau")!=sample_.npos ){
+        processType = MEtSys::ProcessType::BOSON;
+    }
+    
+    if(met_scale_mode_ == 1) {
+        sysType = MEtSys::SysType::Resolution;
+        sysShift = MEtSys::SysShift::Down;
+    }
+    if(met_scale_mode_ == 2) {
+        sysType = MEtSys::SysType::Resolution;
+        sysShift = MEtSys::SysShift::Up;
+    }
+    if(met_res_mode_ == 1) {
+        sysType = MEtSys::SysType::Response;
+        sysShift = MEtSys::SysShift::Down;
+    }
+    if(met_res_mode_ == 2) {
+        sysType = MEtSys::SysType::Response;
+        sysShift = MEtSys::SysShift::Up;
+    }
+    
+    metSys_->ApplyMEtSys(
+        correctedMetx,correctedMety, // (float) mva met, use RECOIL CORRECTED value for the Higgs / DY / W+Jets MC
+        float(genpX),float(genpY), // (float) transverse momentum of the full leptonic system
+        float(vispX),float(vispY), // (float) transverse momentum of the visible leptonic system
+        njets, // (int) number of jets : pT > 30 GeV, eta<4.7, loose PF JetID
+        processType, // (int) type of process 
+        sysType, // (int) type of systematic uncertainty
+        sysShift, // (int) direction of systematic shift
+        mvamet_Shift_x,mvamet_Shift_y // (float) shifted value of the mva met
+    );
+    mvaMet->set_pt(sqrt(mvamet_Shift_x*mvamet_Shift_x+mvamet_Shift_y*mvamet_Shift_y));
+    mvaMet->set_phi(atan2(mvamet_Shift_y,mvamet_Shift_x));
+    //is this right? maybe need to recalculate met_res_e to inc recoil corrs 
+    mvaMet->set_energy(sqrt(met_res_e*met_res_e+mvamet_Shift_x*mvamet_Shift_x+mvamet_Shift_y*mvamet_Shift_y));
+
+  }
 
 
     return 0;
