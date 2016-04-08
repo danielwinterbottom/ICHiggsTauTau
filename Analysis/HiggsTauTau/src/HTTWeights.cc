@@ -195,9 +195,25 @@ namespace ic {
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % f3_ % n3_ % w3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % f4_ % n4_ % w4_;
     }
-    if (do_dy_soup_ ) {
+    if (do_dy_soup_ && era_!=era::data_2015) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
       std::cout << "nInc = " << zn_inc_ << std::endl;
+      zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
+      zw2_ = (zn_inc_*zf2_) / ( (zn_inc_*zf2_) + zn2_ );
+      zw3_ = (zn_inc_*zf3_) / ( (zn_inc_*zf3_) + zn3_ );
+      zw4_ = (zn_inc_*zf4_) / ( (zn_inc_*zf4_) + zn4_ );
+      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % zf1_ % zn1_ % zw1_;
+      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % zf2_ % zn2_ % zw2_;
+      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_ % zw3_;
+      std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % zf4_ % zn4_ % zw4_;
+    }
+    if (do_dy_soup_ && era_==era::data_2015) {
+      std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
+      std::cout << "nInc = " << zn_inc_ << std::endl;
+      zf1_ = zxs1_/zxs0_;
+      zf2_ = zxs2_/zxs0_;
+      zf3_ = zxs3_/zxs0_;
+      zf4_ = zxs4_/zxs0_;
       zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
       zw2_ = (zn_inc_*zf2_) / ( (zn_inc_*zf2_) + zn2_ );
       zw3_ = (zn_inc_*zf3_) / ( (zn_inc_*zf3_) + zn3_ );
