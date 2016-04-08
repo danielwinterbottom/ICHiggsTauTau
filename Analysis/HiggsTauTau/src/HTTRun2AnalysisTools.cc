@@ -1265,8 +1265,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     auto data_pair = this->GenerateData(method, var, sel, cat, wt);
     PrintValue("data_obs"+postfix, data_pair.second);
     hmap["data_obs"+postfix] = data_pair;
-    //TOP - split in TTT and TTJ
-    std::string ttt_sel, ttj_sel;
+    //Splitting TT into TTT and TTJ - let's disable this for now
+    /*std::string ttt_sel, ttj_sel;
     ttt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
     ttj_sel = sel+"&&!"+this->ResolveAlias("ztt_sel");
     auto topt_pair = this->GenerateTOP(method, var, ttt_sel, cat, wt);
@@ -1274,17 +1274,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     PrintValue("TTT"+postfix, topt_pair.second);
     PrintValue("TTJ"+postfix, topj_pair.second);
     hmap["TTT"+postfix] = topt_pair;
-    hmap["TTJ"+postfix] = topj_pair;
-//    auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
+    hmap["TTJ"+postfix] = topj_pair;*/
+    auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
     std::string top_map_label = "TT";
-    //std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
-    Value tt_norm = ValueAdd(topt_pair.second, topj_pair.second);
+    /*Value tt_norm = ValueAdd(topt_pair.second, topj_pair.second);
     TH1F tt_hist = topt_pair.first;
     PrintValue(top_map_label+postfix, tt_norm);
-    tt_hist.Add(&topj_pair.first);
-//    total_bkr = ValueAdd(total_bkr, top_pair.second);
-    total_bkr = ValueAdd(total_bkr, tt_norm);
-    hmap[top_map_label+postfix] = std::make_pair(tt_hist, tt_norm);
+    tt_hist.Add(&topj_pair.first);*/
+    PrintValue(top_map_label+postfix, top_pair.second);
+    total_bkr = ValueAdd(total_bkr, top_pair.second);
+    //total_bkr = ValueAdd(total_bkr, tt_norm);
+    hmap[top_map_label+postfix] = top_pair;
     TH1F total_hist = hmap[top_map_label+postfix].first; 
     // Diboson
     auto vv_pair = this->GenerateVV(method, var, sel, cat, wt);

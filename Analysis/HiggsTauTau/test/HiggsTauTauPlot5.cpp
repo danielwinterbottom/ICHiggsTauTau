@@ -302,8 +302,8 @@ int main(int argc, char* argv[]){
 	if (syst_tquark != "") {
 		std::cout << "[HiggsTauTauPlot5] Adding top-quark weight systematic..." << std::endl;
     for (unsigned j = 0; j < vars.size(); ++j) {
-		  hmap["ttbar"+vars_postfix[j]+"_"+syst_tquark+"Up"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_up");
-		  hmap["ttbar"+vars_postfix[j]+"_"+syst_tquark+"Down"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_down");
+		  hmap["TT"+vars_postfix[j]+"_"+syst_tquark+"Up"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_up");
+		  hmap["TT"+vars_postfix[j]+"_"+syst_tquark+"Down"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_down");
     }
 	}
 
