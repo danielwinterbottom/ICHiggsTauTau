@@ -1736,6 +1736,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
     Value data_control_os = GetRate(data_sample, os_ctr_sel, cat, wt);
     Value data_control_ss = GetRate(data_sample, ss_ctr_sel, cat, wt);
+    if(verbosity_) PrintValue("DataControlOS", data_control_os);
+    if(verbosity_) PrintValue("DataControlSS", data_control_ss);
  //   if (verbosity_) PrintValue(data_sample, data_control);
     Value total_bkg_os;
     Value total_bkg_ss;
