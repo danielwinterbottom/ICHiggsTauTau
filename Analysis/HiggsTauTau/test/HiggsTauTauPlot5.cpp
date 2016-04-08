@@ -336,13 +336,13 @@ int main(int argc, char* argv[]){
 
     std::string ztt_sel;
     if (channel_str == "et"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel+"&&"+ana.ResolveAlias("baseline");
+      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
     }
     if (channel_str == "mt"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel+"&&"+ana.ResolveAlias("baseline");
+      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
     }
     if (channel_str == "tt"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel+"&&"+ana.ResolveAlias("baseline");
+      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
     }
  		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_up");
  		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_down");
@@ -417,6 +417,7 @@ int main(int argc, char* argv[]){
 		std::cout << "[HiggsTauTauPlot5] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
 		HTTRun2Analysis ana_syst(String2Channel(channel_str), "2015", verbosity,is_fall15);
         ana_syst.SetQCDRatio(qcd_os_ss_factor);
+        if(do_ss) ana_syst.SetSS();
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
 		if (add_sm_background != "") {
