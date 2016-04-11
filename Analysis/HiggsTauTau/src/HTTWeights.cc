@@ -46,6 +46,7 @@ namespace ic {
     do_top_jeteta_weights_    = false;
     do_tau_fake_weights_      = false;
     do_tt_muon_weights_       = false;
+    do_em_qcd_weights_        = false;
     gen_tau_collection_       = "genParticlesTaus";
     jets_label_               = "pfJetsPFlow";
     btag_label_ 	      = "combinedSecondaryVertexBJetTags";
@@ -70,6 +71,12 @@ namespace ic {
     et_trig_data_             = nullptr;
     mt_trig_mc_               = nullptr;
     mt_trig_data_             = nullptr;
+    em_qcd_cr1_lt2_           = nullptr;
+    em_qcd_cr1_2to4_          = nullptr;
+    em_qcd_cr1_gt4_           = nullptr;
+    em_qcd_cr2_lt2_           = nullptr;
+    em_qcd_cr2_2to4_          = nullptr;
+    em_qcd_cr2_gt4_           = nullptr;
   }
   HTTWeights::~HTTWeights() {
     ;
@@ -101,6 +108,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_top_jeteta_weights" % do_top_jeteta_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_fake_weights" % do_tau_fake_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_id_weights"   % do_tau_id_weights_;
+    std::cout << boost::format(param_fmt()) % "do_em_qcd_weights"   % do_em_qcd_weights_;
     std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
     std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
     std::cout << boost::format(param_fmt()) % "ditau_label"          % ditau_label_;
@@ -414,6 +422,42 @@ namespace ic {
         }   
       }
     }
+
+    if (do_em_qcd_weights_){
+      if(channel_ == channel::em){
+       Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1")); 
+       Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2")); 
+       double qcd_weight=1.0;
+       double qcd_weight_up=1.0;
+       double qcd_weight_down=1.0;
+       double elec_pt = elec->pt(); 
+       double muon_pt = muon->pt(); 
+       double deltaR = DR(elec,muon);
+       if(elec_pt > 100) elec_pt = 99.9;
+       if(elec_pt < 10) elec_pt = 10.1;
+       if(muon_pt > 100) muon_pt = 99.9;
+       if(muon_pt < 10) muon_pt = 10.1;
+       double lead_pt = std::max(elec_pt,muon_pt); 
+       double trail_pt = std::min(elec_pt,muon_pt); 
+       if(deltaR < 2){
+         qcd_weight = em_qcd_cr1_lt2_->Interpolate(lead_pt,trail_pt);
+         qcd_weight_up = em_qcd_cr2_lt2_->Interpolate(lead_pt,trail_pt);
+         qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+       } else if (deltaR <=4){
+         qcd_weight = em_qcd_cr1_2to4_->Interpolate(lead_pt,trail_pt);
+         qcd_weight_up = em_qcd_cr2_2to4_->Interpolate(lead_pt,trail_pt);
+         qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+       } else {
+         qcd_weight = em_qcd_cr1_gt4_->Interpolate(lead_pt,trail_pt);
+         qcd_weight_up = em_qcd_cr2_gt4_->Interpolate(lead_pt,trail_pt);
+         qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+       }
+       event->Add("wt_em_qcd",qcd_weight);
+       event->Add("wt_em_qcd_down",qcd_weight_down);
+       event->Add("wt_em_qcd_up",qcd_weight_up);
+     }
+   }
+    
     //A derived correction based on a input/MC discrepancy in the subleading b-jet eta in the emu ttbar control region. Used for a cross-check in H->hh analysis.
     if (do_top_jeteta_weights_) {
       std::vector<PFJet*> prebjets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection

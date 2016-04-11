@@ -136,6 +136,9 @@ namespace ic {
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
+        outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
+        outtree_->Branch("wt_em_qcd_up",      &wt_em_qcd_up_);
+        outtree_->Branch("wt_em_qcd_down",    &wt_em_qcd_down_);
         // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
       }
       if(add_Hhh_variables_) { 
@@ -782,6 +785,9 @@ namespace ic {
     wt_tquark_down_ = 1.0;
     wt_tau_id_up_ = 1.0;
     wt_tau_id_down_ = 1.0;
+    wt_em_qcd_ = 1.0;
+    wt_em_qcd_down_ = 1.0;
+    wt_em_qcd_up_ = 1.0;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
     if (event->Exists("wt_tau_fake_up"))    wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");
@@ -790,7 +796,9 @@ namespace ic {
     if (event->Exists("wt_tquark_down"))    wt_tquark_down_ = event->Get<double>("wt_tquark_down");
     if (event->Exists("wt_tau_id_up"))      wt_tau_id_up_   = event->Get<double>("wt_tau_id_up");
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
-    if (event->Exists("mc_weight_sign"))    std::cout<<event->Get<double>("mc_weight_sign");
+    if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
+    if (event->Exists("wt_em_qcd_up"))      wt_em_qcd_up_ = event->Get<double>("wt_em_qcd_up");
+    if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
   
   mc_weight_ = 0.0;
   if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
