@@ -18,7 +18,8 @@ namespace ic {
     sample_ = "";
     use_quantile_map_ = false;
     store_boson_pt_ = false;
-    disable = true;
+    disable_recoil_corrs = true;
+    disable_met_sys = true;
     is_wjets = false;
     met_scale_mode_ = 0;
     met_res_mode_ = 0;
@@ -49,34 +50,42 @@ namespace ic {
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;
     }
+
+   if(met_scale_mode_ > 0 || met_res_mode_ > 0) disable_met_sys =false;
    
     if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) ){
-      disable = false;
+      disable_recoil_corrs = false;
       is_wjets = true;
     }
 
     if ( (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) ) {
-      disable = false;
+      disable_recoil_corrs = false;
     }
 
     if (sample_.find("HToTauTau")!=sample_.npos){
-     disable = false;
+     disable_recoil_corrs = false;
     }
     
-    if (disable) {
-      std::cout << boost::format(param_fmt()) % "enabled"      % false;
+    if (disable_recoil_corrs) {
+      std::cout << boost::format(param_fmt()) % "Recoil corrs enabled"      % false;
       return 0;
     } else {
       corrector_ = new RecoilCorrectorRun2(process_file);
     }
-    metSys_ = new MEtSys(syst_file);
+
+    if (disable_met_sys){
+     std::cout << boost::format(param_fmt()) % "Met systs enabled"         % false;
+     return 0;
+    } else {
+      metSys_ = new MEtSys(syst_file);
+    }
 
     return 0;
   }
 
   int HTTRun2RecoilCorrector::Execute(TreeEvent *event) {
 
-    if (disable) return 0;
+    if (disable_recoil_corrs && disable_met_sys) return 0;
 
     // Get the stuff we need from the event
     Met * mvaMet = event->GetPtr<Met>(met_label_);
@@ -123,15 +132,20 @@ namespace ic {
   double mvaMete = mvaMet->energy();
   double met_res_e = sqrt(mvaMete*mvaMete-mvaMetx*mvaMetx-mvaMety*mvaMety);//As we can only set pt/eta/phi/energy, not px or py
   float correctedMetx, correctedMety;
-  if(!use_quantile_map_){
-    corrector_->CorrectByMeanResolution(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+  if(!disable_recoil_corrs){
+    if(!use_quantile_map_){
+      corrector_->CorrectByMeanResolution(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+    } else {
+      corrector_->Correct(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+    }
+    //Now stick this back into our met object:
+    mvaMet->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
+    mvaMet->set_phi(atan2(correctedMety,correctedMetx));
+    mvaMet->set_energy(sqrt(met_res_e*met_res_e+correctedMetx*correctedMetx+correctedMety*correctedMety));
   } else {
-    corrector_->Correct(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+    correctedMetx = mvaMetx;
+    correctedMety = mvaMety;
   }
-  //Now stick this back into our met object:
-  mvaMet->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
-  mvaMet->set_phi(atan2(correctedMety,correctedMetx));
-  mvaMet->set_energy(sqrt(met_res_e*met_res_e+correctedMetx*correctedMetx+correctedMety*correctedMety));
     
   //Apply systematic shifts to MET if requested  
   if(met_scale_mode_ > 0 || met_res_mode_ >0) {
@@ -172,7 +186,6 @@ namespace ic {
     );
     mvaMet->set_pt(sqrt(mvamet_Shift_x*mvamet_Shift_x+mvamet_Shift_y*mvamet_Shift_y));
     mvaMet->set_phi(atan2(mvamet_Shift_y,mvamet_Shift_x));
-    //is this right? maybe need to recalculate met_res_e to inc recoil corrs 
     mvaMet->set_energy(sqrt(met_res_e*met_res_e+mvamet_Shift_x*mvamet_Shift_x+mvamet_Shift_y*mvamet_Shift_y));
 
   }

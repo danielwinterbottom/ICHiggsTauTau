@@ -13,7 +13,8 @@ namespace ic {
 class HTTRun2RecoilCorrector : public ModuleBase {
  private:
  // std::string jets_label_;
-  bool disable;
+  bool disable_recoil_corrs;
+  bool disable_met_sys;
   bool is_wjets;
   RecoilCorrectorRun2 * corrector_;
   MEtSys * metSys_;
