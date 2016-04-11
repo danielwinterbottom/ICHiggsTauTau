@@ -112,9 +112,10 @@ int main(int argc, char* argv[]){
   bool do_tau_eff;                // Run the tau efficiency module
   unsigned pu_id_training;        // Pileup jet id training
   unsigned vh_filter_mode;        // 0 = no filter, 1 = WH/ttH, 2 = ZH
-  unsigned inputnum;
-  unsigned isZeroBias;
+  unsigned inputnum = 1;
+  unsigned isZeroBias = 0;
   string L1_infile_name;
+  unsigned makeEffPlots = 0;
 
   // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -165,7 +166,8 @@ int main(int argc, char* argv[]){
       ("pu_id_training",      po::value<unsigned>(&pu_id_training)->default_value(1))
       ("vh_filter_mode",      po::value<unsigned>(&vh_filter_mode)->default_value(0))
       ("line",                po::value<unsigned>(&inputnum)->default_value(1))
-      ("zb",                po::value<unsigned>(&isZeroBias)->default_value(0))
+      ("zb",                  po::value<unsigned>(&isZeroBias)->default_value(0))
+      ("MakeEffPlots",        po::value<unsigned>(&makeEffPlots)->default_value(0))
       ("l1input",             po::value<string>(&L1_infile_name)->default_value("InputTriggers.txt"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -1026,10 +1028,10 @@ int main(int argc, char* argv[]){
   // L1 Trigger Filter
   // ------------------------------------------------------------------------------------ 
 
-  L1TFilter l1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1TFilter");
-  L1TFilter l1TFilter2 = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1TFilterPostVBFFilter");
-  ZeroBiasL1TFilter zeroBiasL1TFilter = ZeroBiasL1TFilter("ZeroBiasL1TFilter", channel_str, fs, l1Cuts);
-
+  L1TFilter l1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1TFilter", 1);
+  L1TFilter l1TFilter2 = L1TFilter("L1TFilter2", channel_str, fs, l1Cuts, "L1TFilterPostVBFFilter", 1);
+  ZeroBiasL1TFilter zeroBiasL1TFilter = ZeroBiasL1TFilter("ZeroBiasL1TFilter", channel_str, fs, l1Cuts, "L1Muon", "ZeroBiasL1TFilter");
+  ZeroBiasL1TFilter zeroBiasL1TFilter2 = ZeroBiasL1TFilter("ZeroBiasL1TFilter2", channel_str, fs, l1Cuts, "L1Muons", "ZeroBiasL1TFilter2");
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------ 
@@ -1085,11 +1087,12 @@ int main(int argc, char* argv[]){
   // Trigger Efficiencies
   // ------------------------------------------------------------------------------------ 
 
-  Efficiency efficiency1 = Efficiency("Efficiency", fs, "TriggerEfficiencies1", 1);
-  Efficiency efficiency2 = Efficiency("Efficiency", fs, "TriggerEfficiencies2", 2);
-  Efficiency efficiency3 = Efficiency("Efficiency", fs, "TriggerEfficiencies3", 3);
-  Efficiency efficiency4 = Efficiency("Efficiency", fs, "TriggerEfficiencies4", 4);
-  Efficiency efficiency5 = Efficiency("Efficiency", fs, "TriggerEfficiencies5", 1);
+  Efficiency efficiency1 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies1", 1, channel_str, l1Cuts);
+  Efficiency efficiency2 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies2", 2, channel_str, l1Cuts);
+  Efficiency efficiency3 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies3", 3, channel_str, l1Cuts);
+  Efficiency efficiency4 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies4", 4, channel_str, l1Cuts);
+  Efficiency efficiency5 = Efficiency("Efficiency", fs, "SignalRegionEfficiencies", 5, channel_str, l1Cuts);
+
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------ 
@@ -1107,7 +1110,7 @@ int main(int argc, char* argv[]){
   if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
   
   if(isZeroBias == 1) analysis.AddModule(&zeroBiasL1TFilter);
-  else{
+  else if (isZeroBias ==0) {
     
       if (tau_scale_mode > 0 && channel != channel::em && !moriond_tau_scale && !do_skim)
                                       analysis.AddModule(&tauEnergyShifter);
@@ -1116,13 +1119,16 @@ int main(int argc, char* argv[]){
       if (moriond_tau_scale && channel != channel::em && (!is_data || is_embedded) && !do_skim)          
                                       analysis.AddModule(&httEnergyScale);
       if (to_check.size() > 0)        analysis.AddModule(&httPrint);
-                                      analysis.AddModule(&efficiency1);
-                                      //analysis.AddModule(&efficiency2);
-                                      //analysis.AddModule(&efficiency3);
-                                      //analysis.AddModule(&efficiency4);
+                                      
                                       analysis.AddModule(&genChannelFilter);
+                                      if(makeEffPlots == 1){
+                                          analysis.AddModule(&efficiency1);
+                                          analysis.AddModule(&efficiency2);
+                                          analysis.AddModule(&efficiency3);
+                                          analysis.AddModule(&efficiency4);
+                                      }
                                       analysis.AddModule(&l1VariableHistograms);
-                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilter);
+                                      //if(era == era::trigger_2016) analysis.AddModule(&l1TFilter);
       
       
       if (channel == channel::et || channel == channel::etmet) {
@@ -1242,8 +1248,11 @@ int main(int argc, char* argv[]){
                                       
                                       analysis.AddModule(&variableHistograms);
                                       analysis.AddModule(&vBFFilter);
-                                      analysis.AddModule(&efficiency5);
-                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilter2);
+                                      //if(era == era::trigger_2016) analysis.AddModule(&l1TFilter2);
+                                      //if(era == era::trigger_2016) analysis.AddModule(&zeroBiasL1TFilter2);
+                                      if(makeEffPlots == 1){
+                                          analysis.AddModule(&efficiency5);
+                                      }
                                       analysis.AddModule(&l1VariableHistograms2);
                                       analysis.AddModule(&variableHistograms2);
 
