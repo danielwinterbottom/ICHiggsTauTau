@@ -155,6 +155,10 @@ namespace ic {
     MEtSys::ProcessType processType;
     if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("HToTauTau")!=sample_.npos ){
         processType = MEtSys::ProcessType::BOSON;
+    } else if (sample_.find("TT")!=sample_.npos){
+       processType = MEtSys::ProcessType::TOP;
+    } else {
+       processType = MEtSys::ProcessType::EWK;
     }
     
     if(met_scale_mode_ == 1) {
