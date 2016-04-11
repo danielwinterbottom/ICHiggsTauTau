@@ -921,6 +921,17 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
 
 BuildModule(svFitTest);
 
+if(js["do_preselection"].asBool()){
+  BuildModule(GenericModule("PreselectionFilter")
+    .set_function([](ic::TreeEvent *event){
+      //Pass preselection in case we're accidentally not running any preselection in SVFitTest but somehow have
+      //requested preselection in the config anyway...
+      bool pass_presel = event->Exists("pass_preselection") ? event->Get<bool>("pass_preselection") : 1;
+      if (!pass_presel) return 1;
+      else return 0;
+     }));
+ }
+
 
 if(strategy_type == strategy::fall15 && !is_data){
  TH2F bbtag_eff;
