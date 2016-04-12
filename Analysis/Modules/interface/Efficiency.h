@@ -25,6 +25,8 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 
+#include "Modules/interface/L1Cuts.h"
+
 namespace ic {
 
   class Efficiency : public ModuleBase {
@@ -48,7 +50,7 @@ namespace ic {
     std::string genjets_label_;
     
     unsigned n_genParticles_;
-    unsigned n_genJets_;
+    unsigned n_genjets_;
     unsigned n_jets_;
     unsigned n_electrons_;
     unsigned n_muons_;
@@ -67,12 +69,16 @@ namespace ic {
     double l1DeltaEtaCut;
     double l1METCut;
     double l1MHTCut;
+    int EffNum;
     
     unsigned nPromptElectrons;
     unsigned nPromptMuons;
     unsigned nPromptTaus;
     
+    std::string channel_;
+    
     TH1D *h_mu_Mu_Efficiency;
+    TH1D *h_mu_IsoMu_Efficiency;
     TH1D *h_mu_Total;
     TH1D *h_mu_Mu_PtDiff;
     TH1D *h_mu_Mu_PtRes;
@@ -83,7 +89,6 @@ namespace ic {
     TH1D *h_e_Total;
     TH1D *h_e_Tau_Efficiency;
     TH1D *h_e_IsoTau_Efficiency;
-    TH1D *h_e_NonIsoTau_Efficiency;
     TH1D *h_e_Jet_Efficiency;
     TH1D *h_e_EG_PtRes;
     TH1D *h_e_EG_DeltaRRes;
@@ -96,30 +101,37 @@ namespace ic {
     TH1D *h_tau_Tau_Efficiency;
     TH1D *h_subtau_Tau_Efficiency;
     TH1D *h_tau_Mu_Efficiency;
-    TH1D *h_tau_NonIsoTau_Efficiency;
-    TH1D *h_subtau_NonIsoTau_Efficiency;
     TH1D *h_tau_IsoTau_Efficiency;
     TH1D *h_subtau_IsoTau_Efficiency;
     TH1D *h_tau_Jet_Efficiency;
     TH1D *h_tau_Tau_PtRes;
-    TH1D *h_tau_IsoTau_PtRes;
     TH1D *h_tau_Tau_PtDiff;
-    TH1D *h_tau_IsoTau_PtDiff;
     TH1D *h_tau_Tau_DeltaRRes;
-    TH1D *h_tau_IsoTau_DeltaRRes;
     
     TH1D *h_gentau_Tau_Efficiency;
     TH1D *h_gentau_IsoTau_Efficiency;
     TH1D *h_gentau_Total;
     
+    TH1D *h_gene_EG_Efficiency;
+    TH1D *h_gene_IsoEG_Efficiency;
+    TH1D *h_gene_Total;
+    
+    TH1D *h_genmu_Mu_Efficiency;
+    TH1D *h_genmu_IsoMu_Efficiency;
+    TH1D *h_genmu_Total;
+    
+    TH1D *h_genjet_Jet_Efficiency;
+    TH1D *h_genjet_Total;
+    
     TH1D *h_jet_EG_Efficiency;
     TH1D *h_jet_IsoEG_Efficiency;
     TH1D *h_jet_Total;
+    TH1D *h_subjet_Total;
     TH1D *h_jet_Tau_Efficiency;
     TH1D *h_jet_Mu_Efficiency;
-    TH1D *h_jet_NonIsoTau_Efficiency;
     TH1D *h_jet_IsoTau_Efficiency;
     TH1D *h_jet_Jet_Efficiency;
+    TH1D *h_subjet_Jet_Efficiency;
     TH1D *h_jet_Jet_PtRes;
     TH1D *h_jet_Jet_DeltaRRes;
     TH1D *h_jet_Jet_PtDiff;
@@ -150,7 +162,7 @@ namespace ic {
 
   public:
 
-    Efficiency(std::string const& name, fwlite::TFileService *fs, std::string output_name, int effNum, std::string channel);
+    Efficiency(std::string const& name, fwlite::TFileService *fs, std::string output_name, int effNum, std::string channel, struct L1Cuts l1Cuts);
     virtual ~Efficiency();
 
     virtual int PreAnalysis();

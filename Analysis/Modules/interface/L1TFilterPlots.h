@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_Module_ZeroBiasFilter_h
-#define ICHiggsTauTau_Module_ZeroBiasFilter_h
+#ifndef ICHiggsTauTau_Module_L1TFilterPlots_h
+#define ICHiggsTauTau_Module_L1TFilterPlots_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -14,7 +14,7 @@
 #include "TDirectory.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 
-// ICHiggsTauTau Objects 
+// ICHiggsTauTau Objects
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TEGamma.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TMuon.hh"
@@ -27,12 +27,13 @@
 
 #include "Modules/interface/L1Cuts.h"
 
+
 namespace ic {
     
-class ZeroBiasL1TFilter : public ModuleBase {
+class L1TFilterPlots : public ModuleBase {
    public:
-      ZeroBiasL1TFilter(std::string const& name, std::string channel, fwlite::TFileService *fs, L1Cuts l1Cuts, std::string L1MuTag, std::string subDirName);
-      virtual ~ZeroBiasL1TFilter(); 
+      L1TFilterPlots(std::string const& name, std::string channel, fwlite::TFileService *fs, L1Cuts l1Cuts, std::string dirName, int filterOpt);
+      virtual ~L1TFilterPlots(); 
       
       virtual int PreAnalysis();
       virtual int Execute(TreeEvent *event);
@@ -54,7 +55,6 @@ class ZeroBiasL1TFilter : public ModuleBase {
       
       double Jet1PtCut;
       double Jet2PtCut;
-      double Jet3PtCut;
       double DeltaEtaCut;
       double MjjCut;
       double EGPtCut;
@@ -62,12 +62,29 @@ class ZeroBiasL1TFilter : public ModuleBase {
       double Tau2PtCut;
       double MuPtCut;
       
+      bool JetFilter;
       bool IsoTauFilter;
       bool IsoEGFilter;
-      bool JetFilter;
+      bool IsoMuFilter;
+      bool CancelFilter;
       
       TH1D *h_L1Filter_Efficiency;
+      
+      TH1D *h_lead_l1Index_1;
+      TH1D *h_sublead_l1Index_1;
+      TH1D *h_lead_l1Index_2;
+      TH1D *h_sublead_l1Index_2;
+      
+      TH2D *h_jets_l1Index_1;
+      TH2D *h_jets_l1Index_2;
+      TH2D *h_jets_l1IndexGenMatch_1;
+      TH2D *h_jets_l1IndexGenMatch_2;
+      TH2D *h_jets_OfflineIndexGenMatch_1;
+      
       TH1D *h_SignalEfficiency;
+      
+      TH1D *h_CorrectVBFJets;
+      TH1D *h_VBFMultiplicity;
 
 };
 }

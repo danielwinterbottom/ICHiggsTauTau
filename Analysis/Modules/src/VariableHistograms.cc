@@ -17,6 +17,8 @@ namespace ic {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMet";
     
+
+    
     TFileDirectory subDir = fs->mkdir(output_name.c_str());
     
     //offline histograms
@@ -27,6 +29,10 @@ namespace ic {
     h_OfflineMjjInv = subDir.make<TH1D>("Mjj","Mjj",100, 0,2500); 
     h_OfflineMjjInv->GetXaxis()->SetTitle("M_{jj} [GeV]");
     h_OfflineMjjInv->GetYaxis()->SetTitle("# Entries");
+    
+    h_VBFMjj = subDir.make<TH1D>("h_VBFMjj","h_VBFMjj",100, 0,2500); 
+    h_VBFMjj->GetXaxis()->SetTitle("m_{jj} [GeV]");
+    h_VBFMjj->GetYaxis()->SetTitle("# Entries");
 
     h_OfflineDeltaPhijj = subDir.make<TH1D>("DeltaPhijj","DeltaPhijj",100, 0,6.5); 
     h_OfflineDeltaPhijj->GetXaxis()->SetTitle("Leading-Subleading Jets |#Delta#phi|");
@@ -112,7 +118,7 @@ namespace ic {
   }
 
     VariableHistograms::~VariableHistograms(){
-      ;
+        ;
   }
   
   int VariableHistograms::PreAnalysis(){
@@ -145,6 +151,8 @@ namespace ic {
           
               double eta_gap = fabs(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity());
               h_OfflineEtaGap->Fill(eta_gap);
+              
+              if(jets[0]->vector().Pt() >40 && jets[0]->vector().Pt() >40 && eta_gap > 2) h_VBFMjj->Fill(Mij);
           }
           
           double phi_gap = fabs(jets[0]->vector().Phi()-jets[1]->vector().Phi());

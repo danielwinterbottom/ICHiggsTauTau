@@ -41,6 +41,8 @@ namespace ic {
     std::string HLT13_label_;
     std::string HLT14_label_;
     std::string HLT15_label_;
+    
+    std::string channel_;
 
     int n_jets_;
     int n_electrons_;
@@ -70,6 +72,7 @@ namespace ic {
     
     TH1D *h_JetsPtVectorSum;
     TH1D *h_JetsPtScalarSum;
+    TH1D *h_VBFMjj;
 
 
   public:
