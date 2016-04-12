@@ -153,7 +153,7 @@ namespace ic {
     //Rest of code is not needed for Z->ee and Z->mumu channels    
     if(channel_ == channel::zee || channel_ == channel::zmm || channel_ == channel::tpzmm || channel_ == channel::tpzee) {
       dilepton = result;
-      return 0;
+ //     return 0;
     }
 
     // ************************************************************************
@@ -185,7 +185,7 @@ namespace ic {
    // ************************************************************************
    // Scale met for the tau energy scale shift
    // ************************************************************************
-    if (scale_met_for_tau_ && channel_ != channel::em && channel_ != channel::tt) {
+    if (scale_met_for_tau_ && channel_ != channel::em && channel_ != channel::tt && channel_ != channel::zmm && channel_ != channel::zee) {
       Met * met = event->GetPtr<Met>(met_label_);
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       double t_scale = tau_scale_;
@@ -286,7 +286,7 @@ namespace ic {
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
     if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15) {
-      if (faked_tau_selector_ > 0  && channel_ != channel::em) {
+      if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
         std::vector<GenParticle *> sel_particles;
         if (channel_ == channel::et || channel_ == channel::etmet) {

@@ -1342,7 +1342,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       total_hist.Add(&hmap["W"+postfix].first,1.0);
  //   }
     // QCD/Fakes
-    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
+    if(ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
       std::string qcd_map_label = "QCD";
       //std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
