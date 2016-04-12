@@ -322,40 +322,40 @@ namespace ic {//namespace
     }
     if (save_weights_){
       if(!do_idiso_err_){//Central value
-	fillVector("input/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
-	fillVector("input/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
-	fillVector("input/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+	fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
+	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
 	
-	fillVector("input/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
-	fillVector("input/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
-	fillVector("input/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-	fillVector("input/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-	fillVector("input/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-	fillVector("input/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
+	fillVector("input/scale_factors/Fall15_76X_mu_tight_id_SF.txt",muTight_idSF_);
+	fillVector("input/scale_factors/Fall15_76X_mu_tight_iso_SF.txt",muTight_isoSF_);
+	fillVector("input/scale_factors/Fall15_76X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+	fillVector("input/scale_factors/Fall15_76X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+	fillVector("input/scale_factors/Fall15_76X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+	fillVector("input/scale_factors/Fall15_76X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
       }
       else if(do_idiso_errmuore_){//Muon eff varied
-	fillVector("input/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
-	fillVector("input/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
-	fillVector("input/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+	fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
+	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
 	
-	fillVectorError("input/scale_factors/mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
+	fillVectorError("input/scale_factors/Fall15_76X_mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Fall15_76X_mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Fall15_76X_mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Fall15_76X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Fall15_76X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Fall15_76X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
       }
       else{//Electron eff varied
-	fillVectorError("input/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
 	
-	fillVector("input/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
-	fillVector("input/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
-	fillVector("input/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-	fillVector("input/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-	fillVector("input/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-	fillVector("input/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);    
+	fillVector("input/scale_factors/Fall15_76X_mu_tight_id_SF.txt",muTight_idSF_);
+	fillVector("input/scale_factors/Fall15_76X_mu_tight_iso_SF.txt",muTight_isoSF_);
+	fillVector("input/scale_factors/Fall15_76X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+	fillVector("input/scale_factors/Fall15_76X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+	fillVector("input/scale_factors/Fall15_76X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+	fillVector("input/scale_factors/Fall15_76X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);    
       }
       
       
@@ -1082,19 +1082,18 @@ namespace ic {//namespace
 
     unsigned etaBin = 0;
     if (fabs(eta) < 0.8) etaBin=0;
-    else if (fabs(eta) < 1.442) etaBin=1;
-    else if (fabs(eta) < 1.556) etaBin=2;
+    else if (fabs(eta) < 1.444) etaBin=1;
+    else if (fabs(eta) < 1.566) etaBin=2;
     else if (fabs(eta) < 2.0) etaBin=3;
     else etaBin=4;
     unsigned ptBin = 0;
-    if (pt<15) ptBin=0;
-    else if (pt<20) ptBin=1;
-    else if (pt<30) ptBin=2;
-    else if (pt<40) ptBin=3;
-    else if (pt<50) ptBin=4;
-    else ptBin=5;
+    if (pt<20) ptBin=0;
+    else if (pt<30) ptBin=1;
+    else if (pt<40) ptBin=2;
+    else if (pt<50) ptBin=3;
+    else ptBin=4;
     
-    return 6*etaBin+ptBin;
+    return 5*etaBin+ptBin;
 
   }
 
@@ -1102,20 +1101,18 @@ namespace ic {//namespace
     unsigned etaBin = 0;
     if (fabs(eta) < 0.9) etaBin=0;
     else if (fabs(eta) < 1.2) etaBin=1;
-    else etaBin=2;
+    else if (fabs(eta) < 2.1) etaBin=2;
+    else etaBin=3;
 
     unsigned ptBin = 0;
-    if (pt<20) ptBin=0;
-    else if (pt<25) ptBin=1;
-    else if (pt<30) ptBin=2;
-    else if (pt<35) ptBin=3;
-    else if (pt<40) ptBin=4;
-    else if (pt<50) ptBin=5;
-    else if (pt<60) ptBin=6;
-    else if (pt<90) ptBin=7;
-    else if (pt<140) ptBin=8;
-    else ptBin=9;
-    return 10*etaBin+ptBin;
+    if (pt<25) ptBin=0;
+    else if (pt<30) ptBin=1;
+    else if (pt<40) ptBin=2;
+    else if (pt<50) ptBin=3;
+    else if (pt<60) ptBin=4;
+    else if (pt<120) ptBin=5;
+    else ptBin=6;
+    return 7*etaBin+ptBin;
     //    else if (pt<300) ptBin=9;
     //else ptBin=10;
     //return 11*etaBin+ptBin;
