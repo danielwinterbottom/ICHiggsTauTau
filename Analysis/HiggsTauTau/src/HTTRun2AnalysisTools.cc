@@ -1045,7 +1045,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     
     Value w_norm;
     std::vector<std::string> wjets_samples = this->ResolveSamplesAlias("wjets_samples");
-    if(method == 8 || method == 9) {
+    if(method == 8 || method == 9 || method == 15) {
       w_norm = this->GetLumiScaledRate(wjets_samples, sel, cat, wt);
     } else if(method == 10 || method == 11){
      w_norm = this->GetRateViaWMethod(wjets_samples, w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
@@ -1129,6 +1129,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,//{
           wjets_ss_vals);
+        } else if (method == 15){
+         qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.0,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt+"*wt_em_qcd",ValueFnMap());
         } 
       } else {
         if(method == 8){
@@ -1154,6 +1156,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
             if(method == 14) qcd_shape_cat = "n_jets<=1 && n_loose_bjets>=1 &&" +alias_map_["baseline"];
           qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, //{
           wjets_ss_vals);
+        } else if (method == 15){
+          qcd_shape_cat += "&&" + alias_map_["baseline"];
+          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt+"*wt_em_qcd",ValueFnMap());
         } else {
           if (method == 9 || method == 11 ||method == 13) {
               qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
