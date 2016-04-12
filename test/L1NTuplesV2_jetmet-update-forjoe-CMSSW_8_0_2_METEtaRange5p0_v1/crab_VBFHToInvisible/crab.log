@@ -1,0 +1,390 @@
+############ options ############ 
+sample   =  mc
+max      =  1000
+sumRange =  5
+
+ ################################################################### 
+ # WARNING: this module is deprecated.                             # 
+ # Please use CondCore.CondDB.CondDB_cfi.py                        # 
+ ################################################################### 
+L1TRawToDigi Sequence configured for Stage-2 (2016) trigger. 
+# Conditions read from  CMS_CONDITIONS  via FrontierProd 
+L1TCalorimeter Sequence configured for Stage-2 (2016) trigger. 
+L1TMuon Sequence configured for Stage-2 (2016) trigger. 
+L1TGlobal Sequence configured for Stage-2 (2016) trigger. 
+L1TCalorimeter Conditions configured for Stage-2 (2016) trigger. 
+L1TMuon Conditions configured for Stage-2 (2016) trigger. 
+L1TGlobal Conditions configured for Stage-2 (2016) trigger. 
+L1TReEmul sequence:  
+simHcalTriggerPrimitiveDigis+simCaloStage2Layer1Digis+simCaloStage2Digis+simDtTriggerPrimitiveDigis+simCscTriggerPrimitiveDigis+simTwinMuxDigis+simBmtfDigis+simEmtfDigis+simOmtfDigis+simGmtCaloSumDigis+simMuonQualityAdjusterDigis+simGmtStage2Digis+simGtExtFakeStage2Digis+simGtStage2Digis
+cms.Schedule(csctfDigis+dttfDigis+gtDigis+caloStage1Digis+caloStage1FinalDigis+caloStage1LegacyFormatDigis+gctDigis+caloStage2Digis+gmtStage2Digis+gtStage2Digis+siPixelDigis+siStripDigis+ecalDigis+ecalPreshowerDigis+hcalDigis+muonCSCDigis+muonDTDigis+muonRPCDigis+castorDigis+scalersRawToDigi+tcdsDigis, MEtoEDMConverter, simHcalTriggerPrimitiveDigis+simCaloStage2Layer1Digis+simCaloStage2Digis+simDtTriggerPrimitiveDigis+simCscTriggerPrimitiveDigis+simTwinMuxDigis+simBmtfDigis+simEmtfDigis+simOmtfDigis+simGmtCaloSumDigis+simMuonQualityAdjusterDigis+simGmtStage2Digis+simGtExtFakeStage2Digis+simGtStage2Digis)
+DEBUG 2016-04-07 12:05:43,393: 	 Executing command: 'submit'
+DEBUG 2016-04-07 12:05:43,393: 	 Found CRAB cache file /home/hep/dw515/.crab3
+DEBUG 2016-04-07 12:05:43,483: 	 Checking credentials
+DEBUG 2016-04-07 12:05:43,484: 	 Found proxy file /home/hep/dw515/.MyProxy
+DEBUG 2016-04-07 12:05:43,484: 	 Getting proxy life time left
+DEBUG 2016-04-07 12:05:44,191: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -timeleft
+ output : 38698
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:05:44,998: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -actimeleft
+ output : 38698
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:05:44,999: 	 Proxy valid for 10:44:58 hours
+INFO 2016-04-07 12:05:44,999: 	 Will use CRAB configuration file crab_mc_VBFHToInvisible_sumRange5p0.py
+DEBUG 2016-04-07 12:05:44,999: 	 Loading CRAB configuration file.
+DEBUG 2016-04-07 12:05:47,912: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2016-04-07 12:05:48,093: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-04-07 12:05:48,093: 	 Checking credentials
+DEBUG 2016-04-07 12:05:48,093: 	 Found proxy file /home/hep/dw515/.MyProxy
+DEBUG 2016-04-07 12:05:48,093: 	 Getting proxy life time left
+DEBUG 2016-04-07 12:05:48,700: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -timeleft
+ output : 38694
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:05:49,207: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -actimeleft
+ output : 38693
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:05:49,208: 	 Proxy valid for 10:44:54 hours
+DEBUG 2016-04-07 12:05:49,814: 	 Executing : 
+ command : env X509_USER_PROXY=/home/hep/dw515/.MyProxy voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:05:50,441: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+DEBUG 2016-04-07 12:05:50,553: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-04-07 12:05:50,553: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-04-07 12:05:50,553: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom_cmsweb.cern.ch for credential name
+DEBUG 2016-04-07 12:05:51,058: 	 Executing : 
+ command : myproxy-info -l 46989fcfb307d57f345b27847bb53211581f4b4f -s myproxy.cern.ch
+ output : username: 46989fcfb307d57f345b27847bb53211581f4b4f
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  timeleft: 366:58:32  (15.3 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-04-07 12:05:51,059: 	 Myproxy is valid: 1321112
+DEBUG 2016-04-07 12:05:51,059: 	 Command use: submit
+DEBUG 2016-04-07 12:05:51,059: 	 Options use: ['--config=crab_mc_VBFHToInvisible_sumRange5p0.py']
+DEBUG 2016-04-07 12:05:51,699: 	 CRABClient version: 3.3.1602
+DEBUG 2016-04-07 12:05:51,699: 	 Instance is prod
+DEBUG 2016-04-07 12:05:51,699: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-04-07 12:05:51,699: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-04-07 12:05:51,699: 	 Started submission
+DEBUG 2016-04-07 12:05:51,699: 	 Working on /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible
+DEBUG 2016-04-07 12:05:52,345: 	 Loading required information from the environment
+DEBUG 2016-04-07 12:05:52,346: 	 Found CMSSW_8_0_2 for slc6_amd64_gcc493 with base /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2
+DEBUG 2016-04-07 12:05:52,373: 	 UNIQUE NAME: tarUUID cb711f34-c63a-44e7-92ea-ac56a707768a 
+DEBUG 2016-04-07 12:05:52,374: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.transferLogs = True
+config.General.transferOutputs = True
+config.General.workArea = 'L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1'
+config.General.requestName = 'VBFHToInvisible'
+config.section_('JobType')
+config.JobType.psetName = 'L1NTuplesv4_CMSSW_8_0_2_cfg.py'
+config.JobType.pluginName = 'ANALYSIS'
+config.JobType.pyCfgParams = ['sample=mc', 'sumRange=5']
+config.section_('Data')
+config.Data.inputDataset = '/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIIFall15DR76-25nsFlat10to25TSG_76X_mcRun2_asymptotic_v12-v1/GEN-SIM-RAW'
+config.Data.outputDatasetTag = 'L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1'
+config.Data.publication = False
+config.Data.unitsPerJob = 20000
+config.Data.inputDBS = 'global'
+config.Data.splitting = 'EventAwareLumiBased'
+config.Data.outLFNDirBase = '/store/user/dwinterb/'
+config.section_('Site')
+config.Site.storageSite = 'T2_UK_London_IC'
+config.section_('User')
+config.section_('Debug')
+
+DEBUG 2016-04-07 12:05:52,374: 	 self.config.JobType.psetName: L1NTuplesv4_CMSSW_8_0_2_cfg.py
+INFO 2016-04-07 12:05:52,374: 	 Importing CMSSW configuration L1NTuplesv4_CMSSW_8_0_2_cfg.py
+DEBUG 2016-04-07 12:05:52,375: 	 Additional parameters for the CMSSW configuration are: ['sample=mc', 'sumRange=5']
+INFO 2016-04-07 12:05:55,096: 	 Finished importing CMSSW configuration L1NTuplesv4_CMSSW_8_0_2_cfg.py
+DEBUG 2016-04-07 12:05:55,097: 	 Writing CMSSW configuration to /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible/inputs/PSet.py
+DEBUG 2016-04-07 12:05:55,832: 	 The following EDM output files will be collected: []
+DEBUG 2016-04-07 12:05:55,832: 	 The following TFile output files will be collected: ['L1Ntuple.root']
+DEBUG 2016-04-07 12:05:55,832: 	 The following user output files will be collected: []
+DEBUG 2016-04-07 12:05:55,832: 	 Loading required information from the environment
+DEBUG 2016-04-07 12:05:55,832: 	 Found CMSSW_8_0_2 for slc6_amd64_gcc493 with base /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2
+DEBUG 2016-04-07 12:05:55,832: 	 Making tarball in /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible/inputs/cb711f34-c63a-44e7-92ea-ac56a707768adefault.tgz
+DEBUG 2016-04-07 12:05:55,833: 	 Checking directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/lib
+DEBUG 2016-04-07 12:05:55,833: 	 Adding directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/lib to tarball
+DEBUG 2016-04-07 12:06:14,697: 	 Checking directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/biglib
+DEBUG 2016-04-07 12:06:14,698: 	 Adding directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/biglib to tarball
+DEBUG 2016-04-07 12:06:14,700: 	 Checking directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/module
+DEBUG 2016-04-07 12:06:15,139: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/CondFormats/L1TObjects/interface to tarball
+DEBUG 2016-04-07 12:06:15,370: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DataFormats/L1TMuon/interface to tarball
+DEBUG 2016-04-07 12:06:15,408: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DataFormats/L1Trigger/interface to tarball
+DEBUG 2016-04-07 12:06:15,456: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DataFormats/HLTReco/interface to tarball
+DEBUG 2016-04-07 12:06:15,485: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DataFormats/L1TCalorimeter/interface to tarball
+DEBUG 2016-04-07 12:06:15,497: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DataFormats/L1TGlobal/interface to tarball
+DEBUG 2016-04-07 12:06:15,569: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/EventFilter/L1TRawToDigi/interface to tarball
+DEBUG 2016-04-07 12:06:16,069: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TCalorimeter/interface to tarball
+DEBUG 2016-04-07 12:06:17,378: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TCalorimeter/data to tarball
+DEBUG 2016-04-07 12:06:17,624: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TGlobal/data to tarball
+DEBUG 2016-04-07 12:06:18,342: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TGlobal/interface to tarball
+DEBUG 2016-04-07 12:06:18,948: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TMuon/interface to tarball
+DEBUG 2016-04-07 12:06:19,013: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TMuon/data to tarball
+DEBUG 2016-04-07 12:06:20,067: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TMuonBarrel/interface to tarball
+DEBUG 2016-04-07 12:06:20,116: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TMuonEndCap/interface to tarball
+DEBUG 2016-04-07 12:06:20,230: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TMuonOverlap/interface to tarball
+DEBUG 2016-04-07 12:06:20,305: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/L1TNtuples/interface to tarball
+DEBUG 2016-04-07 12:06:20,468: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/L1Trigger/HardwareValidation/interface to tarball
+DEBUG 2016-04-07 12:06:20,558: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/Calibration/HcalAlCaRecoProducers/interface to tarball
+DEBUG 2016-04-07 12:06:20,623: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/Calibration/HcalIsolatedTrackReco/interface to tarball
+DEBUG 2016-04-07 12:06:20,665: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/Calibration/IsolatedParticles/interface to tarball
+DEBUG 2016-04-07 12:06:20,748: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/CaloOnlineTools/EcalTools/data to tarball
+DEBUG 2016-04-07 12:06:20,768: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/CaloOnlineTools/EcalTools/interface to tarball
+DEBUG 2016-04-07 12:06:20,835: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/CondCore/Utilities/interface to tarball
+DEBUG 2016-04-07 12:06:20,897: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DPGAnalysis/Skims/data to tarball
+DEBUG 2016-04-07 12:06:20,987: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DPGAnalysis/Skims/interface to tarball
+DEBUG 2016-04-07 12:06:21,111: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DQM/L1TMonitor/interface to tarball
+DEBUG 2016-04-07 12:06:21,200: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DQM/Physics/interface to tarball
+DEBUG 2016-04-07 12:06:21,254: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DQMOffline/Trigger/data to tarball
+DEBUG 2016-04-07 12:06:21,277: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/DQMOffline/Trigger/interface to tarball
+DEBUG 2016-04-07 12:06:21,439: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/ElectroWeakAnalysis/WENu/interface to tarball
+DEBUG 2016-04-07 12:06:21,476: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/ElectroWeakAnalysis/ZMuMu/interface to tarball
+DEBUG 2016-04-07 12:06:21,579: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTrigger/Egamma/interface to tarball
+DEBUG 2016-04-07 12:06:21,665: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTrigger/HLTanalyzers/interface to tarball
+DEBUG 2016-04-07 12:06:21,822: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTrigger/HLTcore/interface to tarball
+DEBUG 2016-04-07 12:06:21,869: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTrigger/HLTfilters/interface to tarball
+DEBUG 2016-04-07 12:06:21,900: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTrigger/JSONMonitoring/interface to tarball
+DEBUG 2016-04-07 12:06:21,920: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTrigger/JetMET/interface to tarball
+DEBUG 2016-04-07 12:06:22,004: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTrigger/Muon/interface to tarball
+DEBUG 2016-04-07 12:06:22,072: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTrigger/special/interface to tarball
+DEBUG 2016-04-07 12:06:22,137: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/Egamma/interface to tarball
+DEBUG 2016-04-07 12:06:22,181: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/Higgs/data to tarball
+DEBUG 2016-04-07 12:06:22,185: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/Higgs/interface to tarball
+DEBUG 2016-04-07 12:06:22,202: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/JetMET/data to tarball
+DEBUG 2016-04-07 12:06:22,217: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/JetMET/interface to tarball
+DEBUG 2016-04-07 12:06:22,238: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/Muon/data to tarball
+DEBUG 2016-04-07 12:06:22,242: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/Muon/interface to tarball
+DEBUG 2016-04-07 12:06:22,260: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/SUSYBSM/data to tarball
+DEBUG 2016-04-07 12:06:22,269: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/HLTriggerOffline/SUSYBSM/interface to tarball
+DEBUG 2016-04-07 12:06:22,348: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/MuonAnalysis/MuonAssociators/interface to tarball
+DEBUG 2016-04-07 12:06:22,376: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/QCDAnalysis/UEAnalysis/interface to tarball
+DEBUG 2016-04-07 12:06:22,396: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/RecoTauTag/HLTProducers/interface to tarball
+DEBUG 2016-04-07 12:06:22,438: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/RecoTracker/DeDx/interface to tarball
+DEBUG 2016-04-07 12:06:22,502: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/Core/interface to tarball
+DEBUG 2016-04-07 12:06:22,551: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface to tarball
+DEBUG 2016-04-07 12:06:23,023: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface to tarball
+DEBUG 2016-04-07 12:06:23,123: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/LegacySVFit/interface to tarball
+DEBUG 2016-04-07 12:06:23,278: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface to tarball
+DEBUG 2016-04-07 12:06:23,433: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/JetTauFakeRate/interface to tarball
+DEBUG 2016-04-07 12:06:23,458: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/Modules/interface to tarball
+DEBUG 2016-04-07 12:06:23,566: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface to tarball
+DEBUG 2016-04-07 12:06:23,589: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/Utilities/interface to tarball
+DEBUG 2016-04-07 12:06:23,651: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/Analysis/Zbb/interface to tarball
+DEBUG 2016-04-07 12:06:23,682: 	 Adding data directory /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/interface to tarball
+DEBUG 2016-04-07 12:06:24,214: 	 Uploading archive /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible/inputs/cb711f34-c63a-44e7-92ea-ac56a707768adefault.tgz to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2016-04-07 12:06:35,112: 	 Result uploading input files: 9ab44cca0f6a8fe716216aeeb0c3650cbc282761e0363a629ccc720682751d3d.tar.gz 
+INFO 2016-04-07 12:06:35,113: 	 Sending the request to the server
+DEBUG 2016-04-07 12:06:35,113: 	 Submitting {'maxjobruntime': 1250, 'ignorelocality': 0, 'savelogsflag': 1, 'useparent': 0, 'asyncdest': 'T2_UK_London_IC', 'algoargs': 20000, 'cachefilename': '9ab44cca0f6a8fe716216aeeb0c3650cbc282761e0363a629ccc720682751d3d.tar.gz', 'numcores': 1, 'addoutputfiles': [], 'generator': 'pythia', 'maxmemory': 2000, 'publishdbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', 'priority': 10, 'jobsw': 'CMSSW_8_0_2', 'edmoutfiles': [], 'userfiles': [], 'primarydataset': '', 'inputdata': '/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIIFall15DR76-25nsFlat10to25TSG_76X_mcRun2_asymptotic_v12-v1/GEN-SIM-RAW', 'lfn': '/store/user/dwinterb/', 'dryrun': 0, 'workflow': 'crab_VBFHToInvisible', 'adduserfiles': [], 'nonprodsw': 0, 'tfileoutfiles': ['L1Ntuple.root'], 'oneEventMode': 0, 'cacheurl': 'https://cmsweb.cern.ch/crabcache', 'saveoutput': 1, 'publication': 0, 'jobarch': 'slc6_amd64_gcc493', 'totalunits': 0, 'splitalgo': 'EventAwareLumiBased', 'nonvaliddata': 0, 'dbsurl': 'https://cmsweb.cern.ch/dbs/prod/global/DBSReader', 'publishgroupname': 0, 'jobtype': 'Analysis', 'publishname2': 'L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1'} 
+DEBUG 2016-04-07 12:06:35,113: 	 Encoded submit request: maxjobruntime=1250&ignorelocality=0&savelogsflag=1&useparent=0&asyncdest=T2_UK_London_IC&algoargs=20000&cachefilename=9ab44cca0f6a8fe716216aeeb0c3650cbc282761e0363a629ccc720682751d3d.tar.gz&numcores=1&generator=pythia&maxmemory=2000&publishdbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSWriter&priority=10&jobsw=CMSSW_8_0_2&primarydataset=&inputdata=%2FVBF_HToInvisible_M125_13TeV_powheg_pythia8%2FRunIIFall15DR76-25nsFlat10to25TSG_76X_mcRun2_asymptotic_v12-v1%2FGEN-SIM-RAW&lfn=%2Fstore%2Fuser%2Fdwinterb%2F&dryrun=0&workflow=crab_VBFHToInvisible&nonprodsw=0&oneEventMode=0&cacheurl=https%3A%2F%2Fcmsweb.cern.ch%2Fcrabcache&saveoutput=1&publication=0&jobarch=slc6_amd64_gcc493&totalunits=0&splitalgo=EventAwareLumiBased&nonvaliddata=0&dbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fglobal%2FDBSReader&publishgroupname=0&jobtype=Analysis&publishname2=L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1&tfileoutfiles=L1Ntuple.root
+DEBUG 2016-04-07 12:06:37,271: 	 Result: {'result': [{'RequestName': '160407_110635:dwinterb_crab_VBFHToInvisible'}]}
+INFO 2016-04-07 12:06:37,275: 	 Success: Your task has been delivered to the CRAB3 server.
+INFO 2016-04-07 12:06:37,275: 	 Task name: 160407_110635:dwinterb_crab_VBFHToInvisible
+INFO 2016-04-07 12:06:37,275: 	 Please use 'crab status' to check how the submission process proceeds.
+DEBUG 2016-04-07 12:06:37,275: 	 About to return
+INFO 2016-04-07 12:06:37,284: 	 Log file is /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible/crab.log
+DEBUG 2016-04-07 12:33:04,255: 	 Executing command: 'status'
+DEBUG 2016-04-07 12:33:04,258: 	 Found CRAB cache file /home/hep/dw515/.crab3
+DEBUG 2016-04-07 12:33:04,316: 	 Checking credentials
+DEBUG 2016-04-07 12:33:04,316: 	 Found proxy file /home/hep/dw515/.MyProxy
+DEBUG 2016-04-07 12:33:04,316: 	 Getting proxy life time left
+DEBUG 2016-04-07 12:33:04,923: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -timeleft
+ output : 37058
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:33:05,530: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -actimeleft
+ output : 37057
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:33:05,530: 	 Proxy valid for 10:17:38 hours
+DEBUG 2016-04-07 12:33:05,668: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-04-07 12:33:05,668: 	 Checking credentials
+DEBUG 2016-04-07 12:33:05,669: 	 Found proxy file /home/hep/dw515/.MyProxy
+DEBUG 2016-04-07 12:33:05,669: 	 Getting proxy life time left
+DEBUG 2016-04-07 12:33:06,275: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -timeleft
+ output : 37056
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:33:06,882: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -actimeleft
+ output : 37056
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 12:33:06,882: 	 Proxy valid for 10:17:36 hours
+DEBUG 2016-04-07 12:33:07,519: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+DEBUG 2016-04-07 12:33:07,634: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-04-07 12:33:07,634: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-04-07 12:33:07,634: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom_cmsweb.cern.ch for credential name
+DEBUG 2016-04-07 12:33:07,938: 	 Executing : 
+ command : myproxy-info -l 46989fcfb307d57f345b27847bb53211581f4b4f -s myproxy.cern.ch
+ output : username: 46989fcfb307d57f345b27847bb53211581f4b4f
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  timeleft: 366:31:16  (15.3 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-04-07 12:33:07,940: 	 Myproxy is valid: 1319476
+DEBUG 2016-04-07 12:33:07,940: 	 Command use: status
+DEBUG 2016-04-07 12:33:07,940: 	 Options use: ['-d', 'L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible/']
+DEBUG 2016-04-07 12:33:08,628: 	 CRABClient version: 3.3.1602
+DEBUG 2016-04-07 12:33:08,628: 	 Instance is prod
+DEBUG 2016-04-07 12:33:08,628: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-04-07 12:33:08,628: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-04-07 12:33:08,628: 	 Looking up detailed status of task 160407_110635:dwinterb_crab_VBFHToInvisible
+DEBUG 2016-04-07 12:33:09,846: 	 {'status': 'SUBMITTED', 'schedd': 'crab3-4@vocms066.cern.ch', 'jobsPerStatus': {'idle': 6}, 'jobs': {'1': {'State': 'idle'}, '3': {'State': 'idle'}, '2': {'State': 'idle'}, '5': {'State': 'idle'}, '4': {'State': 'idle'}, '6': {'State': 'idle'}}, 'publication': {'disabled': []}, 'taskWarningMsg': [], 'publicationFailures': {}, 'outdatasets': None, 'statusFailureMsg': '', 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb', 'totalJobdefs': 0, 'jobdefErrors': [], 'collector': 'cmssrv221.fnal.gov,vocms099.cern.ch', 'jobList': [['idle', 1], ['idle', 3], ['idle', 2], ['idle', 5], ['idle', 4], ['idle', 6]]}
+INFO 2016-04-07 12:33:09,847: 	 CRAB project directory:		/home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible
+INFO 2016-04-07 12:33:09,847: 	 Task name:			160407_110635:dwinterb_crab_VBFHToInvisible
+INFO 2016-04-07 12:33:09,847: 	 Grid scheduler:			crab3-4@vocms066.cern.ch
+INFO 2016-04-07 12:33:09,847: 	 Task status:			SUBMITTED
+INFO 2016-04-07 12:33:09,847: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=crab&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=160407_110635%3Adwinterb_crab_VBFHToInvisible
+INFO 2016-04-07 12:33:09,847: 	 
+Jobs status:			idle          100.0% (6/6)
+INFO 2016-04-07 12:33:09,847: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2016-04-07 12:33:09,850: 	 Log file is /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible/crab.log
+DEBUG 2016-04-07 22:39:32,034: 	 Executing command: 'status'
+DEBUG 2016-04-07 22:39:32,034: 	 Found CRAB cache file /home/hep/dw515/.crab3
+DEBUG 2016-04-07 22:39:32,079: 	 Checking credentials
+DEBUG 2016-04-07 22:39:32,079: 	 Found proxy file /home/hep/dw515/.MyProxy
+DEBUG 2016-04-07 22:39:32,079: 	 Getting proxy life time left
+DEBUG 2016-04-07 22:39:32,584: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -timeleft
+ output : 12190
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 22:39:33,090: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -actimeleft
+ output : 12189
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 22:39:33,090: 	 Proxy valid for 03:23:10 hours
+DEBUG 2016-04-07 22:39:33,214: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-04-07 22:39:33,214: 	 Checking credentials
+DEBUG 2016-04-07 22:39:33,215: 	 Found proxy file /home/hep/dw515/.MyProxy
+DEBUG 2016-04-07 22:39:33,215: 	 Getting proxy life time left
+DEBUG 2016-04-07 22:39:33,720: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -timeleft
+ output : 12189
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 22:39:34,226: 	 Executing : 
+ command : voms-proxy-info -file /home/hep/dw515/.MyProxy -actimeleft
+ output : 12188
+
+ error: Picked up _JAVA_OPTIONS: -Xms128m -Xmx512m
+
+ retcode : 0
+DEBUG 2016-04-07 22:39:34,226: 	 Proxy valid for 03:23:09 hours
+DEBUG 2016-04-07 22:39:34,626: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+DEBUG 2016-04-07 22:39:34,740: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-04-07 22:39:34,741: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-04-07 22:39:34,741: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom_cmsweb.cern.ch for credential name
+DEBUG 2016-04-07 22:39:35,046: 	 Executing : 
+ command : myproxy-info -l 46989fcfb307d57f345b27847bb53211581f4b4f -s myproxy.cern.ch
+ output : username: 46989fcfb307d57f345b27847bb53211581f4b4f
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dwinterb/CN=763953/CN=Daniel Winterbottom
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119).cern.ch
+  timeleft: 719:57:52  (30.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-04-07 22:39:35,047: 	 Myproxy is valid: 2591872
+DEBUG 2016-04-07 22:39:35,047: 	 Command use: status
+DEBUG 2016-04-07 22:39:35,047: 	 Options use: ['-d', 'L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible/']
+DEBUG 2016-04-07 22:39:35,429: 	 CRABClient version: 3.3.1602
+DEBUG 2016-04-07 22:39:35,429: 	 Instance is prod
+DEBUG 2016-04-07 22:39:35,429: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-04-07 22:39:35,429: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-04-07 22:39:35,429: 	 Looking up detailed status of task 160407_110635:dwinterb_crab_VBFHToInvisible
+DEBUG 2016-04-07 22:39:37,733: 	 {'status': 'SUBMITTED', 'schedd': 'crab3-4@vocms066.cern.ch', 'jobsPerStatus': {'idle': 6}, 'jobs': {'1': {'State': 'idle'}, '3': {'State': 'idle'}, '2': {'State': 'idle'}, '5': {'State': 'idle'}, '4': {'State': 'idle'}, '6': {'State': 'idle'}}, 'publication': {'disabled': []}, 'taskWarningMsg': [], 'publicationFailures': {}, 'outdatasets': None, 'statusFailureMsg': '', 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb', 'totalJobdefs': 0, 'jobdefErrors': [], 'collector': 'cmssrv221.fnal.gov,vocms099.cern.ch', 'jobList': [['idle', 1], ['idle', 3], ['idle', 2], ['idle', 5], ['idle', 4], ['idle', 6]]}
+INFO 2016-04-07 22:39:37,733: 	 CRAB project directory:		/home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible
+INFO 2016-04-07 22:39:37,733: 	 Task name:			160407_110635:dwinterb_crab_VBFHToInvisible
+INFO 2016-04-07 22:39:37,733: 	 Grid scheduler:			crab3-4@vocms066.cern.ch
+INFO 2016-04-07 22:39:37,733: 	 Task status:			SUBMITTED
+INFO 2016-04-07 22:39:37,733: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=crab&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=160407_110635%3Adwinterb_crab_VBFHToInvisible
+INFO 2016-04-07 22:39:37,733: 	 
+Jobs status:			idle          100.0% (6/6)
+INFO 2016-04-07 22:39:37,733: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2016-04-07 22:39:37,736: 	 Log file is /home/hep/dw515/NTupleProduction/jetmet-update-forjoe-CMSSW_8_0_2/CMSSW_8_0_2/src/UserCode/ICHiggsTauTau/test/L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange5p0_v1/crab_VBFHToInvisible/crab.log
