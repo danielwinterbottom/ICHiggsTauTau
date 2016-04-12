@@ -166,7 +166,9 @@ namespace ic {
 
 int SVFitTest::Execute(TreeEvent *event) {
 
-  if (run_mode_ == 0) return 0;
+  //Do run if run mode =0 and we're preselecting. Possibly move the preselection to a separate
+  //module at some point because this is a little bit silly.
+  if (run_mode_ == 0 && !do_preselection_) return 0;
 
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
   std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(dilepton_label_);
@@ -314,6 +316,9 @@ int SVFitTest::Execute(TreeEvent *event) {
 
 
 bool lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
+
+bool preselect_evt = pass_presel&&!lepton_veto_;
+event->Add("pass_preselection",preselect_evt);
 
 
 if(!do_preselection_ || (pass_presel&&!lepton_veto_)){

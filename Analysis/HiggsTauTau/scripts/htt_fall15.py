@@ -208,7 +208,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 #    'DYJetsToLL_M-50-LO',
  #   'DYJetsToLL_M-10',
     'DYJetsToLL_M-10-ext',
-    'DYJetsToLL_M-150-LO',
+    #'DYJetsToLL_M-150-LO',
     'DYJetsToLL_M-50-LO-ext',
     'DY1JetsToLL_M-50-LO',
     'DY2JetsToLL_M-50-LO',

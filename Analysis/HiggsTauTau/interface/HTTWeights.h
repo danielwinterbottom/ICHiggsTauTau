@@ -45,6 +45,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_dy_soup_htbinned)
   CLASS_MEMBER(HTTWeights, bool, do_tt_muon_weights)
   CLASS_MEMBER(HTTWeights, bool, do_tau_id_weights)
+  CLASS_MEMBER(HTTWeights, bool, do_em_qcd_weights)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_idiso_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_idiso_data)
   CLASS_MEMBER(HTTWeights, TH2D*, et_idiso_mc)
@@ -65,6 +66,12 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2D*, et_trig_data)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_trig_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_trig_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr1_lt2)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr1_2to4)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr1_gt4)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_lt2)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_2to4)
+  CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_gt4)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;

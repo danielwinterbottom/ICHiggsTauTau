@@ -93,6 +93,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
+  metscale_mode=json["baseline"]["metscale_mode"].asUInt();
+  metres_mode=json["baseline"]["metres_mode"].asUInt();
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
@@ -870,6 +872,7 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      .set_w_hack(true));
   }
 
+
  if(strategy_type == strategy::fall15 && channel!=channel::wmnu){
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
@@ -879,15 +882,18 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
      .set_use_quantile_map(false)
+     .set_met_scale_mode(metscale_mode)
+     .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
   }
 
+/*
   if(js["metscale_mode"].asUInt() > 0  && !is_data ){
    BuildModule(HhhMetScale("HhhMetScale")
      .set_met_scale_mode(js["metscale_mode"].asUInt())
      .set_met_label(met_label)
      .set_scale_shift(0.04));
-   }
+   }*/
 
 
   SVFitTest svFitTest  = SVFitTest("SVFitTest")
@@ -914,6 +920,17 @@ if((strategy_type==strategy::spring15||strategy_type==strategy::fall15)&&!is_dat
  }
 
 BuildModule(svFitTest);
+
+if(js["do_preselection"].asBool()){
+  BuildModule(GenericModule("PreselectionFilter")
+    .set_function([](ic::TreeEvent *event){
+      //Pass preselection in case we're accidentally not running any preselection in SVFitTest but somehow have
+      //requested preselection in the config anyway...
+      bool pass_presel = event->Exists("pass_preselection") ? event->Get<bool>("pass_preselection") : 1;
+      if (!pass_presel) return 1;
+      else return 0;
+     }));
+ }
 
 
 if(strategy_type == strategy::fall15 && !is_data){
@@ -1103,12 +1120,19 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
    TH2D em_e17_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_Ele17_MC_eff");
    TH2D em_e12_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_Ele12_Data_eff");
    TH2D em_e12_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_Fall15.root","/","Electron_Ele12_MC_eff");
+   TH2D em_qcd_cr1_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR1_dRLt2");
+   TH2D em_qcd_cr2_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR2_dRLt2");
+   TH2D em_qcd_cr1_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR1_dR2to4");
+   TH2D em_qcd_cr2_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR2_dR2to4");
+   TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR1_dRGt4");
+   TH2D em_qcd_cr2_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR2_dRGt4");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
     .set_era(era_type)
     .set_mc(mc_type)
     .set_do_tau_id_weights(real_tau_sample)
+    .set_do_em_qcd_weights(true)
     .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
     .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
@@ -1120,16 +1144,23 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
     .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
     .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
-    .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
+    .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data))
+    .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2))
+    .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
+    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4));
   if (!is_data ) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos) || output_name.find("DYJetsToLL_M-150-LO")!=output_name.npos){
-    httWeights.set_do_dy_soup_high_mass(true);
+    /*httWeights.set_do_dy_soup_high_mass(true);
     httWeights.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
-    httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);
+    httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);*/
+    //Removing high mass sample:
+    httWeights.set_do_dy_soup(true);
+    httWeights.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+    httWeights.SetDYInputYields(239058696,65314144 , 20019059, 5701878, 4189017);
   }
 
   if (output_name.find("TT-ext") != output_name.npos) httWeights.set_do_topquark_weights(true);

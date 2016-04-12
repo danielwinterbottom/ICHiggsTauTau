@@ -120,19 +120,13 @@ extra_channel = {
     "em" : ' '
 }
 
-extra_channel_cr = {
-    "et" : ' ',
-    "mt" : ' ',
-    "tt" : ' ',
-    "em" : ' '
-}
 
 if options.shape_systs:
   extra_channel = {
-      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" ', 
-      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" ',
-      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" ',
-      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" '
+      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ', 
+      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
+      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
+      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
   }
 
 if options.norm_systs:
@@ -241,7 +235,7 @@ if SCHEME == 'run2_mssm_nocrs':
   scheme_mt = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
     ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
-    ("12",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
   ]
   scheme_tt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
@@ -350,8 +344,6 @@ for ch in channels:
     bin     = x[3]
     opts    = x[4]
     extra = options.extra + extra_global + extra_channel[ch] + opts
-    if '_cr' in dc:
-      extra = options.extra + extra_global + extra_channel_cr[ch] + opts
 
     os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
         ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'

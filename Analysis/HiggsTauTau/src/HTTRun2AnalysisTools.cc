@@ -550,8 +550,8 @@ namespace ic {
    samples_alias_map_["ztt_shape_samples"]={
     "DYJetsToLL_M-50-LO-ext",
     "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
-    "DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext"
+    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
+    /"DYJetsToLL_M-150-LO"*/,"DYJetsToLL_M-10-ext"
    };
 
    if(!is_fall15_){
@@ -622,8 +622,8 @@ namespace ic {
    samples_alias_map_["ztt_samples"]={
      "DYJetsToLL_M-50-LO-ext",
      "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
-     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
-     "DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext"
+     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
+     "DYJetsToLL_M-150-LO"*/,"DYJetsToLL_M-10-ext"
    };
    if(!is_fall15_){
      if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
@@ -646,7 +646,7 @@ namespace ic {
   
  if(ch_!=channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL_M-50-LO-ext","DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext",
+   "DYJetsToLL_M-50-LO-ext",/*"DYJetsToLL_M-150-LO",*/"DYJetsToLL_M-10-ext",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q",
    "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
@@ -694,7 +694,7 @@ namespace ic {
 
  if(ch_==channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL_M-50-LO-ext","DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext",
+   "DYJetsToLL_M-50-LO-ext",/*"DYJetsToLL_M-150-LO",*/"DYJetsToLL_M-10-ext",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
    "WWTo1L1Nu2Q","VVTo2L2Nu",
    "ZZTo2L2Q","ZZTo4L",
@@ -725,7 +725,7 @@ namespace ic {
   }
 
   samples_alias_map_["w_sub_samples"] = {
-   "DYJetsToLL_M-50-LO-ext","DYJetsToLL_M-150-LO","DYJetsToLL_M-10-ext",
+   "DYJetsToLL_M-50-LO-ext",/*"DYJetsToLL_M-150-LO",*/"DYJetsToLL_M-10-ext",
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "T-tW", "Tbar-tW", "T-t","Tbar-t",
@@ -1045,7 +1045,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     
     Value w_norm;
     std::vector<std::string> wjets_samples = this->ResolveSamplesAlias("wjets_samples");
-    if(method == 8 || method == 9) {
+    if(method == 8 || method == 9 || method == 15) {
       w_norm = this->GetLumiScaledRate(wjets_samples, sel, cat, wt);
     } else if(method == 10 || method == 11){
      w_norm = this->GetRateViaWMethod(wjets_samples, w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
@@ -1129,6 +1129,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,//{
           wjets_ss_vals);
+        } else if (method == 15){
+         qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.0,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt+"*wt_em_qcd",ValueFnMap());
         } 
       } else {
         if(method == 8){
@@ -1154,6 +1156,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
             if(method == 14) qcd_shape_cat = "n_jets<=1 && n_loose_bjets>=1 &&" +alias_map_["baseline"];
           qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, //{
           wjets_ss_vals);
+        } else if (method == 15){
+          qcd_shape_cat += "&&" + alias_map_["baseline"];
+          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt+"*wt_em_qcd",ValueFnMap());
         } else {
           if (method == 9 || method == 11 ||method == 13) {
               qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
@@ -1265,8 +1270,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     auto data_pair = this->GenerateData(method, var, sel, cat, wt);
     PrintValue("data_obs"+postfix, data_pair.second);
     hmap["data_obs"+postfix] = data_pair;
-    //TOP - split in TTT and TTJ
-    std::string ttt_sel, ttj_sel;
+    //Splitting TT into TTT and TTJ - let's disable this for now
+    /*std::string ttt_sel, ttj_sel;
     ttt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
     ttj_sel = sel+"&&!"+this->ResolveAlias("ztt_sel");
     auto topt_pair = this->GenerateTOP(method, var, ttt_sel, cat, wt);
@@ -1274,17 +1279,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     PrintValue("TTT"+postfix, topt_pair.second);
     PrintValue("TTJ"+postfix, topj_pair.second);
     hmap["TTT"+postfix] = topt_pair;
-    hmap["TTJ"+postfix] = topj_pair;
-//    auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
+    hmap["TTJ"+postfix] = topj_pair;*/
+    auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
     std::string top_map_label = "TT";
-    //std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
-    Value tt_norm = ValueAdd(topt_pair.second, topj_pair.second);
+    /*Value tt_norm = ValueAdd(topt_pair.second, topj_pair.second);
     TH1F tt_hist = topt_pair.first;
     PrintValue(top_map_label+postfix, tt_norm);
-    tt_hist.Add(&topj_pair.first);
-//    total_bkr = ValueAdd(total_bkr, top_pair.second);
-    total_bkr = ValueAdd(total_bkr, tt_norm);
-    hmap[top_map_label+postfix] = std::make_pair(tt_hist, tt_norm);
+    tt_hist.Add(&topj_pair.first);*/
+    PrintValue(top_map_label+postfix, top_pair.second);
+    total_bkr = ValueAdd(total_bkr, top_pair.second);
+    //total_bkr = ValueAdd(total_bkr, tt_norm);
+    hmap[top_map_label+postfix] = top_pair;
     TH1F total_hist = hmap[top_map_label+postfix].first; 
     // Diboson
     auto vv_pair = this->GenerateVV(method, var, sel, cat, wt);
@@ -1736,6 +1741,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
     Value data_control_os = GetRate(data_sample, os_ctr_sel, cat, wt);
     Value data_control_ss = GetRate(data_sample, ss_ctr_sel, cat, wt);
+    if(verbosity_) PrintValue("DataControlOS", data_control_os);
+    if(verbosity_) PrintValue("DataControlSS", data_control_ss);
  //   if (verbosity_) PrintValue(data_sample, data_control);
     Value total_bkg_os;
     Value total_bkg_ss;
