@@ -440,16 +440,16 @@ namespace ic {
        double lead_pt = std::max(elec_pt,muon_pt); 
        double trail_pt = std::min(elec_pt,muon_pt); 
        if(deltaR < 2){
-         qcd_weight = em_qcd_cr1_lt2_->Interpolate(lead_pt,trail_pt);
-         qcd_weight_up = em_qcd_cr2_lt2_->Interpolate(lead_pt,trail_pt);
+         qcd_weight = em_qcd_cr1_lt2_->Interpolate(trail_pt,lead_pt);
+         qcd_weight_up = em_qcd_cr2_lt2_->Interpolate(trail_pt,lead_pt);
          qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
        } else if (deltaR <=4){
-         qcd_weight = em_qcd_cr1_2to4_->Interpolate(lead_pt,trail_pt);
-         qcd_weight_up = em_qcd_cr2_2to4_->Interpolate(lead_pt,trail_pt);
+         qcd_weight = em_qcd_cr1_2to4_->Interpolate(trail_pt,lead_pt);
+         qcd_weight_up = em_qcd_cr2_2to4_->Interpolate(trail_pt,lead_pt);
          qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
        } else {
-         qcd_weight = em_qcd_cr1_gt4_->Interpolate(lead_pt,trail_pt);
-         qcd_weight_up = em_qcd_cr2_gt4_->Interpolate(lead_pt,trail_pt);
+         qcd_weight = em_qcd_cr1_gt4_->Interpolate(trail_pt,lead_pt);
+         qcd_weight_up = em_qcd_cr2_gt4_->Interpolate(trail_pt,lead_pt);
          qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
        }
        event->Add("wt_em_qcd",qcd_weight);
