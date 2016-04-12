@@ -54,9 +54,10 @@
 #include "Modules/interface/L1VariableHistograms.h"
 #include "Modules/interface/VariableHistograms.h"
 #include "Modules/interface/Efficiency.h"
+#include "Modules/interface/L1TFilterPlots.h"
 #include "Modules/interface/L1TFilter.h"
-#include "Modules/interface/ZeroBiasL1TFilter.h"
 #include "Modules/interface/VBFFilter.h"
+#include "Modules/interface/VBFPlots.h"
 #include "Modules/interface/GenChannelFilter.h"
 
 using boost::lexical_cast;
@@ -276,11 +277,12 @@ int main(int argc, char* argv[]){
         l1Cuts.Tau2Pt = in[3];
         if(in[4] == 1) l1Cuts.IsoEG = true;
         else l1Cuts.IsoEG = false;
-        if(in[5] == 1) l1Cuts.IsoTau = true;
+        if(in[5] == 1) l1Cuts.IsoMu = true;
+        else l1Cuts.IsoMu = false;
+        if(in[6] == 1) l1Cuts.IsoTau = true;
         else l1Cuts.IsoTau = false;
-        l1Cuts.Jet1Pt = in[6];
-        l1Cuts.Jet2Pt = in[7];
-        l1Cuts.Jet3Pt = in[8];
+        l1Cuts.Jet1Pt = in[7];
+        l1Cuts.Jet2Pt = in[8];;
         l1Cuts.Mjj = in[9];
         l1Cuts.DeltaEta = in[10];
         if(in[11] == 1) l1Cuts.JetFilter = true;
@@ -1019,19 +1021,21 @@ int main(int argc, char* argv[]){
   GenChannelFilter genChannelFilter = GenChannelFilter("GenChannelFilter", channel_str);
   
   // ------------------------------------------------------------------------------------
-  // VBF Filter 
+  // VBF Filter + plots
   // ------------------------------------------------------------------------------------ 
     
   VBFFilter vBFFilter = VBFFilter("VBFFilter", offlineCuts);
+  
+  VBFPlots vBFPlots = VBFPlots("VBFPlots", fs, "VBFPlots");
     
   // ------------------------------------------------------------------------------------
   // L1 Trigger Filter
   // ------------------------------------------------------------------------------------ 
 
-  L1TFilter l1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1TFilter", 1);
-  L1TFilter l1TFilter2 = L1TFilter("L1TFilter2", channel_str, fs, l1Cuts, "L1TFilterPostVBFFilter", 1);
-  ZeroBiasL1TFilter zeroBiasL1TFilter = ZeroBiasL1TFilter("ZeroBiasL1TFilter", channel_str, fs, l1Cuts, "L1Muon", "ZeroBiasL1TFilter");
-  ZeroBiasL1TFilter zeroBiasL1TFilter2 = ZeroBiasL1TFilter("ZeroBiasL1TFilter2", channel_str, fs, l1Cuts, "L1Muons", "ZeroBiasL1TFilter2");
+  L1TFilterPlots l1TFilterPlots1 = L1TFilterPlots("L1TFilterPlots1", channel_str, fs, l1Cuts, "L1TFilterPlotsPreFiltering", 1);
+  L1TFilterPlots l1TFilterPlots2 = L1TFilterPlots("L1TFilterPlots2", channel_str, fs, l1Cuts, "L1TFilterPlotsPostVBFFilter", 1);
+  L1TFilter zeroBiasL1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1Muon", "ZeroBiasL1TFilter");
+  L1TFilter l1TFilter = L1TFilter("L1TFilter2", channel_str, fs, l1Cuts, "L1Muons", "L1TFilter");
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------ 
@@ -1120,7 +1124,9 @@ int main(int argc, char* argv[]){
                                       analysis.AddModule(&httEnergyScale);
       if (to_check.size() > 0)        analysis.AddModule(&httPrint);
                                       
+                                      analysis.AddModule(&vBFPlots);
                                       analysis.AddModule(&genChannelFilter);
+
                                       if(makeEffPlots == 1){
                                           analysis.AddModule(&efficiency1);
                                           analysis.AddModule(&efficiency2);
@@ -1128,7 +1134,7 @@ int main(int argc, char* argv[]){
                                           analysis.AddModule(&efficiency4);
                                       }
                                       analysis.AddModule(&l1VariableHistograms);
-                                      //if(era == era::trigger_2016) analysis.AddModule(&l1TFilter);
+                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots1);
       
       
       if (channel == channel::et || channel == channel::etmet) {
@@ -1248,8 +1254,8 @@ int main(int argc, char* argv[]){
                                       
                                       analysis.AddModule(&variableHistograms);
                                       analysis.AddModule(&vBFFilter);
-                                      //if(era == era::trigger_2016) analysis.AddModule(&l1TFilter2);
-                                      //if(era == era::trigger_2016) analysis.AddModule(&zeroBiasL1TFilter2);
+                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots2);
+                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilter);
                                       if(makeEffPlots == 1){
                                           analysis.AddModule(&efficiency5);
                                       }

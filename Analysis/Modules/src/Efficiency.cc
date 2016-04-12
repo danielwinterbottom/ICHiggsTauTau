@@ -665,7 +665,7 @@ namespace ic {
                   if(L1MuPt >= l1muCut) L1MuPtFired = true;
                   
                   if(DeltaR < 0.5 && L1MuPtFired) MatchedL1 = true;
-                  if(DeltaR < 0.5 && L1MuPtFired && l1muons[j]->isolation ==1) MatchedIsoL1 = true;
+                  if(DeltaR < 0.5 && L1MuPtFired && l1muons[j]->isolation >0) MatchedIsoL1 = true;
               }
               
               if(MatchedL1) h_mu_Mu_Efficiency->Fill(muons[i]->vector().Pt());
@@ -1122,7 +1122,7 @@ namespace ic {
                   double PtDiff = l1muons[k]->vector().Pt() - GenParticles[j]->vector().Pt();
                   if(DeltaR < 0.5){
                       MatchedL1 = true;
-                      if(l1muons[k]->isolation == 1) MatchedIsoL1 = true;
+                      if(l1muons[k]->isolation > 0) MatchedIsoL1 = true;
                       h_mu_Mu_DeltaRRes->Fill(DeltaR);
                       h_mu_Mu_PtDiff->Fill(PtDiff);
                       h_mu_Mu_PtRes->Fill(PtDiff/GenParticles[j]->vector().Pt());
