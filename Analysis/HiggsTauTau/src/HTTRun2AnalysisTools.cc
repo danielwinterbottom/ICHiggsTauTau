@@ -1435,6 +1435,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     gDirectory->Delete("htemp;*");
     auto rate = GetRate(sample, selection, category, weight);
     SetNorm(&result, rate.first);
+    if(result.Integral(1,result.GetNbinsX()) == 0) std::cout<<"Warning - no shape for process "<<sample<<std::endl;
     return result;
   }
 
