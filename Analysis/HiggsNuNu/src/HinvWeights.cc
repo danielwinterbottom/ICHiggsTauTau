@@ -1138,7 +1138,7 @@ namespace ic {//namespace
       double SFerrPlus = 0;
       double SFerrMinus = 0;
       lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
-      //!!std::cout<<"  "<<pTmin<<" "<<pTmax<<" "<<etaMin<<" "<<etaMax<<" "<<SF<<std::endl;//!!
+      //std::cout<<"  "<<pTmin<<" "<<pTmax<<" "<<etaMin<<" "<<etaMax<<" "<<SF<<std::endl;
 
       //protect against blank line at the end of the file
       if (pTmin > 1) aVector.push_back(SF);
