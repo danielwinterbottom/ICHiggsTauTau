@@ -244,9 +244,9 @@ if SCHEME == 'run2_mssm_nocrs':
 
   ]
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2')
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20" '),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -291,9 +291,9 @@ if SCHEME == 'run2_mssm':
 
   ]
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2')
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
   ]
   bkg_schemes = {
     'et' : 'et_default',
