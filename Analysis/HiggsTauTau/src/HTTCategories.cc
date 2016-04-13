@@ -840,8 +840,7 @@ namespace ic {
       }
     }
     Met const* mets = NULL;
-    //MVA met doesnt exist for Z->ee and Z->mumu
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mets = event->GetPtr<Met>(met_label_);
+    mets = event->GetPtr<Met>(met_label_);
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>(jets_label_+"UnFiltered");
@@ -1001,8 +1000,8 @@ namespace ic {
     }
 
 
-    //MVA met doesnt exist for Z->ee and Z->mumu
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pt_tt_ = (ditau->vector() + mets->vector()).pt();
+    pt_tt_ = (ditau->vector() + mets->vector()).pt();
+    if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
    
 
@@ -1021,14 +1020,13 @@ namespace ic {
     }
 
     mt_lep_ = MT(lep1,lep2);
-    //MVA met doesnt exist for Z->ee and Z->mumu
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_1_ = MT(lep1, mets);
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_2_ = MT(lep2, mets);
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_ll_ = MT(ditau, mets);
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pzeta_ = PZeta(ditau, mets, 0.85);
+    mt_1_ = MT(lep1, mets);
+    mt_2_ = MT(lep2, mets);
+    mt_ll_ = MT(ditau, mets);
+    mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
+    pzeta_ = PZeta(ditau, mets, 0.85);
     pzetavis_ = PZetaVis(ditau);
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) pzetamiss_ = PZeta(ditau, mets, 0.0);
+    pzetamiss_ = PZeta(ditau, mets, 0.0);
     //save some pfmet and puppi met versions as well for now
     pfmt_1_ = MT(lep1, pfmet);
     pfpzeta_ = PZeta(ditau, pfmet, 0.85);
@@ -1063,13 +1061,13 @@ namespace ic {
       event->Exists("vispX") ? vis_px_ = event->Get<double>("vispX") : 0.;
       event->Exists("vispY") ? vis_py_ = event->Get<double>("vispY") : 0.;
     }
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvamet_ = mets->pt();
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvamet_phi_ = mets->phi();
+    mvamet_ = mets->pt();
+    mvamet_phi_ = mets->phi();
 
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvametCov00_ = mets->xx_sig();
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvametCov10_ = mets->yx_sig();
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvametCov01_ = mets->xy_sig();
-    if(channel_ != channel::tpzee && channel_ != channel::tpzmm && channel_ != channel::zee && channel_ != channel::zmm) mvametCov11_ = mets->yy_sig();
+    mvametCov00_ = mets->xx_sig();
+    mvametCov10_ = mets->yx_sig();
+    mvametCov01_ = mets->xy_sig();
+    mvametCov11_ = mets->yy_sig();
     
     pfmet_ = pfmet->pt();
     pfmet_phi_ = pfmet->phi();

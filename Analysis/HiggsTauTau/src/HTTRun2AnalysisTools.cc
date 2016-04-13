@@ -1347,7 +1347,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       total_hist.Add(&hmap["W"+postfix].first,1.0);
  //   }
     // QCD/Fakes
-    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
+    if(ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
       std::string qcd_map_label = "QCD";
       //std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
@@ -1435,6 +1435,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     gDirectory->Delete("htemp;*");
     auto rate = GetRate(sample, selection, category, weight);
     SetNorm(&result, rate.first);
+    if(result.Integral(1,result.GetNbinsX()) == 0) std::cout<<"Warning - no shape for sample "<<sample<<std::endl;
     return result;
   }
 
@@ -1526,6 +1527,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     double sf = GetLumiScale(sample);
     result.first *= sf;
     result.second *= sf;
+    if(verbosity_ >0 ){
+      PrintValue(sample,result);
+    }
     return result;
   }
   std::pair<double, double> HTTRun2Analysis::GetLumiScaledRate(std::vector<std::string> const& samples, 

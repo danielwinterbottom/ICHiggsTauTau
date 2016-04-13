@@ -66,19 +66,18 @@ namespace ic {
      disable_recoil_corrs = false;
     }
     
-    if (disable_recoil_corrs) {
+    if (disable_recoil_corrs && disable_met_sys) {
       std::cout << boost::format(param_fmt()) % "Recoil corrs enabled"      % false;
+      std::cout << boost::format(param_fmt()) % "Met systs enabled"         % false;
       return 0;
     } else {
-      corrector_ = new RecoilCorrectorRun2(process_file);
+     if(!disable_recoil_corrs){
+       corrector_ = new RecoilCorrectorRun2(process_file);
     }
-
-    if (disable_met_sys){
-     std::cout << boost::format(param_fmt()) % "Met systs enabled"         % false;
-     return 0;
-    } else {
-      metSys_ = new MEtSys(syst_file);
-    }
+     if(!disable_met_sys){
+       metSys_ = new MEtSys(syst_file);
+     }
+   }
 
     return 0;
   }
