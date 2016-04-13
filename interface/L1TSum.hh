@@ -32,8 +32,6 @@ namespace ic {
     
   public:
     short int sumType;
-    float     et;
-    float     phi;
     
   };
   
