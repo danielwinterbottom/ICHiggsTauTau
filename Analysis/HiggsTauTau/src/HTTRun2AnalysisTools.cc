@@ -1435,7 +1435,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     gDirectory->Delete("htemp;*");
     auto rate = GetRate(sample, selection, category, weight);
     SetNorm(&result, rate.first);
-    if(result.Integral(1,result.GetNbinsX()) == 0) std::cout<<"Warning - no shape for process "<<sample<<std::endl;
+    if(result.Integral(1,result.GetNbinsX()) == 0) std::cout<<"Warning - no shape for sample "<<sample<<std::endl;
     return result;
   }
 
@@ -1527,6 +1527,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     double sf = GetLumiScale(sample);
     result.first *= sf;
     result.second *= sf;
+    if(verbosity_ >0 ){
+      PrintValue(sample,result);
+    }
     return result;
   }
   std::pair<double, double> HTTRun2Analysis::GetLumiScaledRate(std::vector<std::string> const& samples, 
@@ -1535,15 +1538,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                                       std::string const& weight) {
     auto result = GetLumiScaledRate(samples.at(0), selection, category, weight);
     double err_sqr = result.second * result.second;
-    if(verbosity_ >0 ){
-      PrintValue(samples.at(0),result);
-    }
     if (samples.size() > 1) {
       for (unsigned i = 1; i < samples.size(); ++i) {
         auto tmp = GetLumiScaledRate(samples.at(i), selection, category, weight);
-        if(verbosity_>0){
-          PrintValue(samples.at(i),tmp);
-        }
         result.first += tmp.first;
         err_sqr += (tmp.second * tmp.second);
       }
