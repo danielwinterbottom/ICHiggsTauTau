@@ -488,6 +488,8 @@ namespace ic {
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
       alias_map_["inclusive"]         = "1";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
     } else if (ch_ == channel::tpzmm || ch_ == channel::tpzee) {
       alias_map_["inclusive"]         = "1";
@@ -913,7 +915,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZTT] --------------------------------------------------------\n";
     cat += "&&" + alias_map_["baseline"];
     Value ztt_norm;
-    //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
+    std::string inclusive = this->ResolveAlias("inclusive") + "&&" + alias_map_["baseline"]; 
+    if(verbosity_) this->GetRateViaRefEfficiency(this->ResolveSamplesAlias("ztt_samples"), this->ResolveSamplesAlias("ztt_samples"), sel, inclusive, sel, cat, wt);
     std::vector<std::string> ztt_samples = this->ResolveSamplesAlias("ztt_samples");
     if (verbosity_) {
       std::cout << "ztt_samples: ";
@@ -979,7 +982,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZLL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZLL --------------------------------------------------------\n";
     cat += "&&" + alias_map_["baseline"];
+    std::string inclusive = this->ResolveAlias("inclusive") + "&&" + alias_map_["baseline"]; 
     Value zl_norm;
+    if(verbosity_) this->GetRateViaRefEfficiency(this->ResolveSamplesAlias("ztt_samples"), this->ResolveSamplesAlias("ztt_samples"), sel, inclusive, sel, cat, wt);
     std::vector<std::string> zll_samples = this->ResolveSamplesAlias("ztt_samples");
     if (verbosity_) {
       std::cout << "zll_samples: ";
@@ -1545,6 +1550,54 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     return result;
   }
 
+  std::pair<double, double> HTTRun2Analysis::SampleEfficiency(std::vector<std::string> const& samples, 
+                          std::string const& ref_selection, 
+                          std::string const& ref_category,
+                          std::string const& target_selection, 
+                          std::string const& target_category,  
+                          std::string const& weight) {
+    auto num = GetRate(samples, target_selection, target_category, weight);
+    auto den = GetRate(samples, ref_selection, ref_category, weight);
+    double num_eff = std::pow(num.first / num.second, 2.0) ;
+    unsigned num_eff_rounded = unsigned(num_eff+0.5);
+    double den_eff = std::pow(den.first / den.second, 2.0) ;
+    unsigned den_eff_rounded = unsigned(den_eff+0.5);
+    double eff = num.first / den.first;
+    TEfficiency teff;
+    double eff_err_up   = teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683,1)-(num_eff/den_eff);
+    double eff_err_down = (num_eff/den_eff)-teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683,0);
+    double eff_err = (eff_err_up/(num_eff/den_eff)) * eff;
+    if (num.first == 0.0) {
+      std::cout << "[HTTRun2Analysis::SampleEfficiency] Numerator is zero, setting error to zero" << std::endl;
+      eff_err = 0.0;
+    }
+    auto result = std::make_pair(eff, eff_err);
+    if (verbosity_ > 0) {
+      std::cout << "[HTTRun2Analysis::SampleEfficiency]" << std::endl;
+      std::cout << "Numerator:   "; 
+      if (samples.size() > 1) {
+        for (unsigned i = 1; i < samples.size(); ++i) {
+            std::cout << samples[i] << " ";
+        }
+      }
+      std::cout <<  target_selection << " " << target_category << " " << weight << std::endl;
+      std::cout << "Denominator: "; 
+      if (samples.size() > 1) {
+        for (unsigned i = 1; i < samples.size(); ++i) {
+            std::cout << samples[i] << " ";
+        }
+      }
+      std::cout <<  ref_selection << " " << ref_category << " " << weight << std::endl;
+      PrintValue("Numerator",num);
+      PrintValue("Denominator",den);
+      std::cout << "Effective Numerator:   " << num_eff_rounded << std::endl;
+      std::cout << "Effective Denominator: " << den_eff_rounded << std::endl;
+      std::cout << "Error down (relative): " << eff_err_down/(num_eff/den_eff) << std::endl;
+      std::cout << "Error up   (relative): " << eff_err_up/(num_eff/den_eff) << std::endl;
+    }
+    return result;
+  }
+  
   std::pair<double, double> HTTRun2Analysis::SampleEfficiency(std::string const& sample, 
                           std::string const& ref_selection, 
                           std::string const& ref_category,
@@ -1582,6 +1635,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
     return result;
   }
+
 
   HTTRun2Analysis::Value HTTRun2Analysis::SampleRatio(std::vector<std::string> const& sample, 
                           std::string const& ref_selection, 
@@ -1637,6 +1691,36 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     return ValueDivide(bkg_sub_num, bkg_sub_den);
   }
 
+  HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaRefEfficiency(std::vector<std::string> const& target_samples, 
+                          std::vector<std::string> const& ref_samples,
+                          std::string const& ref_selection, 
+                          std::string const& ref_category,
+                          std::string const& target_selection, 
+                          std::string const& target_category,  
+                          std::string const& weight) {
+    if (verbosity_) {
+      std::cout << "[HTTRun2Analysis::GetRateViaRefEfficiency]\n";
+      std::cout << "ReferenceRate:   " << ref_selection << " "; 
+      if (ref_samples.size() > 1) {
+        for (unsigned i = 1; i < ref_samples.size(); ++i) {
+            std::cout << ref_samples[i] << " ";
+        }
+      }
+      std::cout <<  ref_category << " " << weight << std::endl;;
+      std::cout << "Efficiency:   " << target_selection << " " ;
+      if (target_samples.size() > 1) {
+        for (unsigned i = 1; i < target_samples.size(); ++i) {
+            std::cout << target_samples[i] << " " ;
+        }
+      }
+      std::cout <<  target_category << " " << weight << std::endl;;
+    }
+    auto ref_rate = GetLumiScaledRate(ref_samples, ref_selection, ref_category, weight);
+    if (verbosity_) PrintValue("ReferenceRate", ref_rate);
+    auto target_eff = SampleEfficiency(target_samples, ref_selection, ref_category, target_selection, target_category, weight);
+    if (verbosity_) PrintValue("Efficiency", target_eff);
+    return ValueProduct(ref_rate, target_eff);
+  }
 
   HTTRun2Analysis::Value HTTRun2Analysis::GetRateViaRefEfficiency(std::string const& target_sample, 
                           std::string const& ref_sample,
@@ -1953,7 +2037,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   }
 
   void HTTRun2Analysis::PrintValue(std::string const& label, Value const& val) {
-    std::cout << (boost::format("%-45s %10.3f +/-   %10.3f  (%.4f)") % (label+":") % val.first % val.second % (val.second/val.first)) << std::endl;
+    //std::cout << (boost::format("%-45s %10.3f +/-   %10.3f  (%.4f)") % (label+":") % val.first % val.second % (val.second/val.first)) << std::endl;
+    std::cout << (boost::format("%-45s %10.5f +/-   %10.5f  (%.4f)") % (label+":") % val.first % val.second % (val.second/val.first)) << std::endl;
   }
 
   std::string HTTRun2Analysis::ResolveAlias(std::string const& al) {
