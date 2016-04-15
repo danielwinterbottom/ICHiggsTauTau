@@ -1126,6 +1126,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
    TH2D em_qcd_cr2_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR2_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR1_dRGt4");
    TH2D em_qcd_cr2_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu.root","/","QCDratio_CR2_dRGt4");
+   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights.root","/","zptmass_histo");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -1147,7 +1148,8 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data))
     .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2))
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
-    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4));
+    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4))
+    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
   if (!is_data ) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
@@ -1158,6 +1160,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     httWeights.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
     httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);*/
     //Removing high mass sample:
+    httWeights.set_do_zpt_weight(true);
     httWeights.set_do_dy_soup(true);
     httWeights.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
     httWeights.SetDYInputYields(239058696,65314144 , 20019059, 5701878, 4189017);
