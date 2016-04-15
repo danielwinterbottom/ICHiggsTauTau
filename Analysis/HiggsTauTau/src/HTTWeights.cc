@@ -524,12 +524,7 @@ namespace ic {
     if (do_zpt_weight_){
       double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
       double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
-      if(zmass>160&&zpt<240) zmass = 150;
-      if(zmass>160&&zpt>240) zmass = 110;
-      if(zmass<40&&zpt<380) zmass = 50;
-      if(zmass<80&&zpt>380&&zpt<400) zmass = 90;
-      if(zmass<80&&zpt>420) zmass = 90;
-      double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->GetXaxis()->FindBin(zpt),z_pt_mass_hist_->GetYaxis()->FindBin(zmass));
+      double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
       event->Add("zpt_weight",wtzpt);
       weight *= wtzpt;
     }
