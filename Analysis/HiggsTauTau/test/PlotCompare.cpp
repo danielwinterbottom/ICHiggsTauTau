@@ -183,7 +183,15 @@ int main(int argc, char* argv[]){
       std::cout << boost::format(param_fmt) % "color" % split[7];
 
       files.push_back(new TFile(split[2].c_str()));
+      if(!files.back()->IsOpen()){
+        std::cout<<"ERROR: File "<< split[2] <<" does not exist"<<std::endl;
+        exit(0);
+      }
       elements.emplace_back(split[0], files.back(), split[3], split[4], split[1]);
+      if(!elements.back().hist_ptr()){
+        std::cout<<"ERROR: No histogram "<<split[4] <<" in directory "<<split[3]<<std::endl;
+        exit(0);
+      }
     } else if (split.size() == 11 || split.size()==12){//For a branch of a TTree (need to specify the number of bins and x-axis range)
      if(ntrees==0){
        //Use the same binning for all trees (n_bins, x_low and x_up options taken from first input string calling for a plot from a TTree)
@@ -213,6 +221,10 @@ int main(int argc, char* argv[]){
 
 
       files.push_back(new TFile(split[2].c_str()));
+      if(!files.back()->IsOpen()){
+        std::cout<<"ERROR: File "<< split[2] <<" does not exist"<<std::endl;
+        exit(0);
+      }
       files.back()->cd();
       TTree *tree = dynamic_cast<TTree*>(gDirectory->Get(split[3].c_str()));
       hist_map[split[0].c_str()] = TH1F(split[0].c_str(),split[0].c_str(),n_bins,x_low,x_up);
