@@ -115,10 +115,10 @@ extra_global = ' '
 #### Apply these options for specific channels
 
 extra_channel = {
-    "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ', 
-    "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
-    "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
-    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
+    "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ', 
+    "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ',
+    "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ',
+    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ',
 }
 
 if options.no_shape_systs:

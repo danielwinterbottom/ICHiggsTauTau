@@ -557,10 +557,9 @@ namespace ic {
       bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
 
       err_element.hist_ptr()->SetMarkerSize(0);
-      //New transparent grey uncertainty bands
-      int new_idx = CreateTransparentColor(13, 0.5);
+      //Same as CH uncertainty bands:
+      int new_idx = CreateTransparentColor(13, 0.4);
       err_element.hist_ptr()->SetFillColor(new_idx);
-      err_element.hist_ptr()->SetFillStyle(3001);
       err_element.hist_ptr()->SetLineWidth(1);
       bkg_element.hist_ptr()->SetMarkerSize(0);
       bkg_element.hist_ptr()->SetFillColor(1);
