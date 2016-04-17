@@ -338,16 +338,7 @@ int main(int argc, char* argv[]){
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
     }
 
-    std::string ztt_sel;
-    if (channel_str == "et"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
-    if (channel_str == "mt"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
-    if (channel_str == "tt"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
+    std::string ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
  		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_up");
  		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_down");
 	}
@@ -356,16 +347,7 @@ int main(int argc, char* argv[]){
 	if (syst_zwt != "") {
 		std::cout << "[HiggsTauTauPlot5] Adding z-reweighting systematic..." << std::endl;
 
-    std::string ztt_sel;
-    if (channel_str == "et"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
-    if (channel_str == "mt"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
-    if (channel_str == "tt"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
+    std::string ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
     for (unsigned j = 0; j < vars.size(); ++j) {
 		  hmap["ZTT"+vars_postfix[j]+"_"+syst_zwt+"Up"] = ana.GenerateZTT(method, vars[j], ztt_sel, cat, "wt*wt_zpt_up");
 		  hmap["ZTT"+vars_postfix[j]+"_"+syst_zwt+"Down"] = ana.GenerateZTT(method, vars[j], ztt_sel, cat, "wt*wt_zpt_down");
