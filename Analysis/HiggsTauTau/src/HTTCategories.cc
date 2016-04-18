@@ -279,6 +279,8 @@ namespace ic {
         //outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
         outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
         outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
+        outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
+        outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
@@ -783,6 +785,8 @@ namespace ic {
     wt_tau_fake_down_ = 1.0;
     wt_tquark_up_ = 1.0;
     wt_tquark_down_ = 1.0;
+    wt_zpt_up_ = 1.0;
+    wt_zpt_down_ = 1.0;
     wt_tau_id_up_ = 1.0;
     wt_tau_id_down_ = 1.0;
     wt_em_qcd_ = 1.0;
@@ -794,6 +798,8 @@ namespace ic {
     if (event->Exists("wt_tau_fake_down"))  wt_tau_fake_down_ = event->Get<double>("wt_tau_fake_down");
     if (event->Exists("wt_tquark_up"))      wt_tquark_up_   = event->Get<double>("wt_tquark_up");
     if (event->Exists("wt_tquark_down"))    wt_tquark_down_ = event->Get<double>("wt_tquark_down");
+    if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
+    if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
     if (event->Exists("wt_tau_id_up"))      wt_tau_id_up_   = event->Get<double>("wt_tau_id_up");
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");

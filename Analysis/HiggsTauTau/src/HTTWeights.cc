@@ -525,8 +525,11 @@ namespace ic {
       double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
       double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
       double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
-      event->Add("zpt_weight",wtzpt);
-      weight *= wtzpt;
+      double wtzpt_down=1.0;
+      double wtzpt_up = wtzpt*wtzpt; 
+      eventInfo->set_weight("wt_zpt",wtzpt);
+      event->Add("wt_zpt_up",wtzpt_up/wtzpt);
+      event->Add("wt_zpt_down",wtzpt_down/wtzpt);
     }
 
     if (do_trg_weights_) {

@@ -49,8 +49,8 @@ parser.add_option("--mtsv", dest="mtsv", action='store_true', default=False,
 #                  help="Apply mass cuts on m_bb and m_tautau to 4 body mass for H->hh analysis.")
 parser.add_option("-e", dest="energy", type='string', default='13',
                   help="The C.O.M. energy is written into the datacard name, default is 13")
-parser.add_option("--shape_systs", dest="shape_systs", action='store_true', default=False,
-                  help="Add systs shapes")
+parser.add_option("--no_shape_systs", dest="no_shape_systs", action='store_true', default=False,
+                  help="Do not add shape systematics")
 parser.add_option("--norm_systs", dest="norm_systs", action='store_true', default=False,
                   help="Add shapes for evaluating normalisation uncerts")
 
@@ -113,21 +113,23 @@ if not options.params == "":
 extra_global = ' '
 
 #### Apply these options for specific channels
+
 extra_channel = {
-    "et" : ' ',
-    "mt" : ' ',
-    "tt" : ' ',
-    "em" : ' '
+    "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ', 
+    "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ',
+    "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ',
+    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ',
 }
 
-
-if options.shape_systs:
+if options.no_shape_systs:
   extra_channel = {
-      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ', 
-      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
-      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
-      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" ',
+      "et" : ' ',
+      "mt" : ' ',
+      "tt" : ' ',
+      "em" : ' '
   }
+
+
 
 if options.norm_systs:
   extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
