@@ -491,7 +491,14 @@ fi
   --custom_y_axis_min=true --y_axis_min=0.99 #--draw_error_band=true --auto_error_band=0.00001 --qcd_os_ss_factor=1.0
 
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1." \
-  --method=8 --cat="inclusive" --var="n_bjets(5,-0.5,4.5)"  --x_axis_label="Number of b-tagged Jets" \
+  --method=8 --cat="inclusive" --var="n_bjets(5,-0.5,4.5)"  --x_axis_label="Number of b-tagged Jets (medium) " \
+  --draw_ratio=true --log_y=true --extra_pad=0.3 --datacard="inclusive" \
+  --background_scheme="tt_default" $TT_INC_SHIFT \
+  --custom_y_axis_min=true --y_axis_min=0.99 #--draw_error_band=true --auto_error_band=0.00001
+
+
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=tt --set_alias="sel:1." \
+  --method=8 --cat="inclusive" --var="n_loose_bjets(5,-0.5,4.5)"  --x_axis_label="Number of b-tagged Jets" \
   --draw_ratio=true --log_y=true --extra_pad=0.3 --datacard="inclusive" \
   --background_scheme="tt_default" $TT_INC_SHIFT \
   --custom_y_axis_min=true --y_axis_min=0.99 #--draw_error_band=true --auto_error_band=0.00001
