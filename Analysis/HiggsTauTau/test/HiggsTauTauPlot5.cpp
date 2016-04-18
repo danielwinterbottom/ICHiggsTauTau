@@ -879,7 +879,7 @@ int main(int argc, char* argv[]){
 		double pb_lumi = ana.GetLumi();
     double fb_lumi = pb_lumi/1000.;
 		string com = "13";
-        plot.set_lumi_label((boost::format("%.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
+        plot.set_lumi_label((boost::format("%.1f fb^{-1} (%s TeV)") % fb_lumi % com).str());
         plot.set_cms_label("CMS");
         plot.set_cms_extra("Preliminary");
         std::string channel_fmt = ""; 
