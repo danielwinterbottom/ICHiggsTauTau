@@ -26,6 +26,7 @@ namespace ic {
         l1DeltaEtaCut = 2.5;
         l1METCut = 10;
         l1MHTCut = 40;
+        AvePtCut = 30;
     }
     else if(EffNum == 2){
         l1eCut = 15;
@@ -36,6 +37,7 @@ namespace ic {
         l1DeltaEtaCut = 3.0;
         l1METCut = 20;
         l1MHTCut = 50;
+        AvePtCut = 40;
     }
     else if(EffNum == 3){
         l1eCut = 20;
@@ -46,6 +48,7 @@ namespace ic {
         l1DeltaEtaCut = 3.5;
         l1METCut = 30;
         l1MHTCut = 60;
+        AvePtCut = 50;
     }
     else if(EffNum == 4){
         l1eCut = 25;
@@ -56,6 +59,7 @@ namespace ic {
         l1DeltaEtaCut = 4.0;
         l1METCut = 40;
         l1MHTCut = 70;
+        AvePtCut = 60;
     }
     
     else if(EffNum == 5){
@@ -334,6 +338,14 @@ namespace ic {
     h_jetjet_Mjj_Total = subDir.make<TH1D>("h_jetjet_Mjj_Total","h_jetjet_Mjj_Total",100, 0,1000);
     h_jetjet_Mjj_Total->GetXaxis()->SetTitle("m_{jj} [GeV]");
     h_jetjet_Mjj_Total->GetYaxis()->SetTitle("Efficiency");
+    
+    h_jetjet_AvePt_Efficiency = subDir.make<TH1D>("h_jetjet_AvePt_Efficiency","h_jetjet_AvePt_Efficiency",100, 0,200); 
+    h_jetjet_AvePt_Efficiency->GetXaxis()->SetTitle("Jets <p_{T}>_{jj} [GeV]");
+    h_jetjet_AvePt_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_jetjet_AvePt_Total = subDir.make<TH1D>("h_jetjet_AvePt_Total","h_jetjet_AvePt_Total",100, 0,200);
+    h_jetjet_AvePt_Total->GetXaxis()->SetTitle("Jets <p_{T}>_{jj} [GeV]");
+    h_jetjet_AvePt_Total->GetYaxis()->SetTitle("Efficiency");
     
     h_jettau_DeltaEta_Efficiency = subDir.make<TH1D>("h_jettau_DeltaEta_Efficiency","h_jettau_DeltaEta_Efficiency",100, 0,5); 
     h_jettau_DeltaEta_Efficiency->GetXaxis()->SetTitle("#Delta#eta");
@@ -797,9 +809,10 @@ namespace ic {
       }
       
       // Di-Jets
-
       
-      for(unsigned i=0; i < n_jets_ && i < 2; i++){
+      int count =0;
+      
+      for(unsigned i=0; i < n_jets_; i++){
           
           bool jetProceed = true;
           
@@ -812,7 +825,7 @@ namespace ic {
               if(DeltaR < 0.1) jetProceed = false;
           }
     
-          for(unsigned j=0; j<n_jets_ && j < 2; j++){
+          for(unsigned j=0; j<n_jets_; j++){
               
               for(unsigned k=0; k< n_taus_; k++){
                   double DeltaR = sqrt(pow(jets[j]->vector().Phi()-taus[k]->vector().Phi(),2) + pow(jets[j]->vector().Rapidity()-taus[k]->vector().Rapidity(),2));
@@ -825,10 +838,14 @@ namespace ic {
            
               if(i!=j && jetProceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(jets[j]->vector().Rapidity()) < 5){
                   
-                  if(jets[i]->vector().Pt() > 20 && jets[j]->vector().Pt() > 20){
+                  if(jets[i]->vector().Pt() > 20 && jets[j]->vector().Pt() > 20 && count == 0){
+                      
+                      count++;
 
                       h_jetjet_Mjj_Total->Fill((jets[i]->vector() + jets[j]->vector()).M());
                       h_jetjet_DeltaEta_Total->Fill(std::fabs(jets[i]->vector().Rapidity() - jets[j]->vector().Rapidity()));
+                      double AvePt = (jets[i]->vector().Pt()+jets[j]->vector().Pt())/2;
+                      h_jetjet_AvePt_Total->Fill(AvePt);
                       
                       bool Matched1JetL1 = false;
                       double PtDiffjet1Jet = 10000;
@@ -870,6 +887,8 @@ namespace ic {
                           if(Mjj >= l1MjjCut) h_jetjet_Mjj_Efficiency->Fill((jets[i]->vector() + jets[j]->vector()).M());
                           double DeltaEta = std::fabs(l1jets[jet1JetL1Index]->vector().Rapidity() - l1jets[jet2JetL1Index]->vector().Rapidity()); 
                           if(DeltaEta >= l1DeltaEtaCut) h_jetjet_DeltaEta_Efficiency->Fill(std::fabs(jets[i]->vector().Rapidity() - jets[j]->vector().Rapidity()));
+                          double AvePtL1 = (l1jets[jet1JetL1Index]->vector().Pt()+l1jets[jet2JetL1Index]->vector().Pt())/2;
+                          if(AvePtL1 >= AvePtCut) h_jetjet_AvePt_Efficiency->Fill(AvePt);
                       }
                   }
               }
@@ -1250,6 +1269,7 @@ namespace ic {
       
       h_jetjet_Mjj_Efficiency->Divide(h_jetjet_Mjj_Total);
       h_jetjet_DeltaEta_Efficiency->Divide(h_jetjet_DeltaEta_Total);
+      h_jetjet_AvePt_Efficiency->Divide(h_jetjet_AvePt_Total);
       
       h_jettau_Mjj_Efficiency->Divide(h_jettau_Mjj_Total);
       h_jettau_DeltaEta_Efficiency->Divide(h_jettau_DeltaEta_Total);

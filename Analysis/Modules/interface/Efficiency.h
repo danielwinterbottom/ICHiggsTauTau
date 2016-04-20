@@ -70,6 +70,7 @@ namespace ic {
     double l1METCut;
     double l1MHTCut;
     int EffNum;
+    double AvePtCut;
     
     unsigned nPromptElectrons;
     unsigned nPromptMuons;
@@ -143,6 +144,9 @@ namespace ic {
     TH1D *h_jetjet_Mjj_Total;
     TH1D *h_jetjet_DeltaEta_Efficiency;
     TH1D *h_jetjet_DeltaEta_Total;
+    
+    TH1D *h_jetjet_AvePt_Efficiency;
+    TH1D *h_jetjet_AvePt_Total;
     
     TH1D *h_jettau_Mjj_Efficiency;
     TH1D *h_jettau_Mjj_Total;

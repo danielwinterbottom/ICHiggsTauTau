@@ -45,6 +45,11 @@ namespace ic {
     h_SignalEfficiency = subDir.make<TH1D>("h_SignalEfficiency","h_SignalEfficiency",16, 0,16); 
     h_SignalEfficiency->GetXaxis()->SetTitle("");
     h_SignalEfficiency->GetYaxis()->SetTitle("Entries");
+    
+    h_METRates = subDir.make<TH1D>("h_METRates","h_METRates",100, 0,200); 
+    h_METRates->GetXaxis()->SetTitle("MET [GeV]");
+    h_METRates->GetYaxis()->SetTitle("Entries");
+
 
   }
 
@@ -74,6 +79,8 @@ namespace ic {
       n_l1electrons_ = l1electrons.size();
       n_l1muons_ = l1muons.size();
       n_l1taus_ = l1taus.size();
+      
+      h_METRates->Fill(l1met_vec[2]->et);
       
       // Filter Non-iso Particles is option is selected
       
@@ -209,6 +216,17 @@ namespace ic {
               if(n_l1electrons_ > 0) if(l1electrons[0]->vector().Pt() < EGPtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(2);
+          
+          /*if(n_l1muons_ < 1 || n_l1electrons_ < 1) Filter = true;
+          if(n_l1muons_ > 0 && n_l1electrons_ > 0){
+              bool dontfilter = false;
+              if((l1muons[0]->vector().Pt() >= 20 && l1electrons[0]->vector().Pt() >= 15 )||(l1muons[0]->vector().Pt() >= 5 && l1electrons[0]->vector().Pt() >= 20 ) ||(l1muons[0]->vector().Pt() >= 5 && l1electrons[0]->vector().Pt() >= 18 && l1electrons[0]->isolation)) dontfilter = true; 
+              if(!dontfilter) Filter = true; 
+          }
+          
+          if(!Filter) h_SignalEfficiency->Fill(1);
+          if(!Filter) h_SignalEfficiency->Fill(2);*/
+
       }
 
       if(channel_ == "et"){
@@ -252,18 +270,6 @@ namespace ic {
       
       
       // VBF Cuts
-
-      if(Jet1PtCut > 0){
-          if(n_l1jets_ <1) Filter = true;
-          if(n_l1jets_ >1) if(l1jets[0]->vector().Pt() < Jet1PtCut) Filter = true;
-      }
-      if(!Filter) h_SignalEfficiency->Fill(3);
-      
-      if(Jet2PtCut > 0){
-          if(n_l1jets_ <2) Filter = true;
-          if(n_l1jets_ >1) if(l1jets[1]->vector().Pt() < Jet2PtCut) Filter = true;
-      }
-      if(!Filter) h_SignalEfficiency->Fill(4);
       
       bool dontFilter = false;
          
@@ -276,23 +282,14 @@ namespace ic {
                  double Mjj = (l1jets[i]->vector() + l1jets[j]->vector()).M();
                  double DeltaEta = std::fabs(l1jets[i]->vector().Rapidity() - l1jets[j]->vector().Rapidity());
                      
-                 if(Mjj >=MjjCut && DeltaEta >= DeltaEtaCut && ((l1jets[i]->vector().Pt() >= Jet2PtCut && l1jets[j]->vector().Pt()>=Jet1PtCut) || (l1jets[j]->vector().Pt() >= Jet2PtCut && l1jets[i]->vector().Pt()>=Jet1PtCut))) dontFilter = true;        
+                 if(Mjj >=MjjCut && DeltaEta >= DeltaEtaCut && (l1jets[i]->vector().Pt()+l1jets[i]->vector().Pt())/2 >= Jet1PtCut ) dontFilter = true;        
              }
       
          }
 
          
          if(!dontFilter) Filter = true;
-         if(!Filter) h_SignalEfficiency->Fill(5);
-         
-         if(!JetFilter){
-             if(n_l1jets_ <3) Filter = true;
- 
-             if(n_l1jets_>2){
-                 for(unsigned i=0; i < 3; i++) if(l1jets[i]->vector().Pt() < 20) Filter = true; //change cut!!
-                 if(!Filter) h_SignalEfficiency->Fill(6);
-             }
-         }
+         if(!Filter) h_SignalEfficiency->Fill(3);
          
      }
  

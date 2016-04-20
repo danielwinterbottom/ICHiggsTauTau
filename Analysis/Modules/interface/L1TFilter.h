@@ -68,6 +68,7 @@ class L1TFilter : public ModuleBase {
       
       TH1D *h_L1Filter_Efficiency;
       TH1D *h_SignalEfficiency;
+      TH1D *h_METRates;
 
 };
 }
