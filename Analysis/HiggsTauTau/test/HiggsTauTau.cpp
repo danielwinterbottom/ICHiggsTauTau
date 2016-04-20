@@ -1295,6 +1295,7 @@ int main(int argc, char* argv[]){
       && (!is_data || is_embedded)  // embedded, when not skimming or generating
       && !do_skim  && !make_sync_ntuple        // svfit jobs
       && new_svfit_mode != 1) {
+        
                                   analysis.AddModule(&httL1MetCut);
     }  
    if(strategy != strategy::phys14) analysis.AddModule(&httWeights);

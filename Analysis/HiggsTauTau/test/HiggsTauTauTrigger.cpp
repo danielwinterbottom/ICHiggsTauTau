@@ -296,10 +296,10 @@ int main(int argc, char* argv[]){
   
   OfflineCuts offlineCuts;
   
-  offlineCuts.ElPt = l1Cuts.EGPt + 3.;
-  offlineCuts.MuPt = l1Cuts.MuPt + 2.;
-  offlineCuts.Tau1Pt = std::max(l1Cuts.Tau1Pt + 10.,20.);
-  offlineCuts.Tau2Pt = std::max(l1Cuts.Tau2Pt + 10.,20.);
+  offlineCuts.ElPt = std::max(l1Cuts.EGPt + 3., 10.);
+  offlineCuts.MuPt = std::max(l1Cuts.MuPt + 2., 5.);
+  offlineCuts.Tau1Pt = std::max(l1Cuts.Tau1Pt + 10., 20.);
+  offlineCuts.Tau2Pt = std::max(l1Cuts.Tau2Pt + 10., 20.);
   //offlineCuts.Mjj = std::max(l1Cuts.Mjj + 50., 500.);
   offlineCuts.Mjj = 500.;
   offlineCuts.Jet1Pt = 20.;
@@ -1026,7 +1026,10 @@ int main(int argc, char* argv[]){
     
   VBFFilter vBFFilter = VBFFilter("VBFFilter", offlineCuts);
   
-  VBFPlots vBFPlots = VBFPlots("VBFPlots", fs, "VBFPlots");
+  VBFPlots vBFPlots = VBFPlots("VBFPlots", fs, "VBFPlots",0);
+  VBFPlots vBFPlotsGenFiltered = VBFPlots("VBFPlots", fs, "VBFPlotsGenFiltered",0);
+  VBFPlots vBFPlots20 = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPt20",20);
+  VBFPlots vBFPlots30 = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPt30",30);
     
   // ------------------------------------------------------------------------------------
   // L1 Trigger Filter
@@ -1126,7 +1129,8 @@ int main(int argc, char* argv[]){
                                       
                                       analysis.AddModule(&vBFPlots);
                                       analysis.AddModule(&genChannelFilter);
-
+                                      analysis.AddModule(&vBFPlotsGenFiltered);
+      
                                       if(makeEffPlots == 1){
                                           analysis.AddModule(&efficiency1);
                                           analysis.AddModule(&efficiency2);
@@ -1251,7 +1255,8 @@ int main(int argc, char* argv[]){
         if(make_sync_ntuple && strategy==strategy::paper2013){
              analysis.AddModule(&httSync);
         }
-                                      
+                                      analysis.AddModule(&vBFPlots20);
+                                      analysis.AddModule(&vBFPlots30);
                                       analysis.AddModule(&variableHistograms);
                                       analysis.AddModule(&vBFFilter);
                                       if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots2);

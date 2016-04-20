@@ -183,7 +183,7 @@ namespace ic {
       h_L1IsoTauMultiplicity->Fill(nL1IsoTaus10);
       
       if(l1met_vec.size() >0){
-          double l1MET = l1met_vec[1]->et;
+          double l1MET = l1met_vec[2]->et;
           h_L1TL1MET->Fill(l1MET);
       }
         
