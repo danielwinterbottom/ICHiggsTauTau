@@ -2,7 +2,7 @@ from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 config = config()
 
 config.General.requestName     = 'ZeroBias'
-config.General.workArea        = 'L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange3p0_v1'
+config.General.workArea        = 'L1NTuplesV2_l1t-integration-v34_0-CMSSW_8_0_2_METEtaRange3p0_v1'
 config.General.transferOutputs = True
 config.General.transferLogs    = True
 
@@ -18,7 +18,7 @@ config.Data.splitting        = 'EventAwareLumiBased'
 config.Data.unitsPerJob      = 20000
 config.Data.outLFNDirBase    = '/store/user/%s/' % (getUsernameFromSiteDB())
 config.Data.publication      = False
-config.Data.outputDatasetTag = 'L1NTuplesV2_jetmet-update-forjoe-CMSSW_8_0_2_METEtaRange3p0_v1'
+config.Data.outputDatasetTag = 'L1NTuplesV2_l1t-integration-v34_0-CMSSW_8_0_2_METEtaRange3p0_v1'
 
 #config.Site.whitelist   = ["T2_UK_London_IC"]
 config.Site.storageSite = 'T2_UK_London_IC'
