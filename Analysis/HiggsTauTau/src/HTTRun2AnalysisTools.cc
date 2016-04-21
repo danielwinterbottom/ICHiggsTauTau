@@ -1363,6 +1363,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     // Print the total background yield
     PrintValue("Total"+postfix, total_bkr);
     //Until there is data, fill the data with sum of the backgrounds
+    hmap["total_bkg"+postfix] = std::make_pair(total_hist,total_bkr);
 //    hmap["data_obs"+postfix] = std::make_pair(total_hist,total_bkr);
     return;
   }
