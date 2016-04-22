@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_Module_Efficiency_h
-#define ICHiggsTauTau_Module_Efficiency_h
+#ifndef ICHiggsTauTau_Module_EfficiencyGenMatch_h
+#define ICHiggsTauTau_Module_EfficiencyGenMatch_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -29,7 +29,7 @@
 
 namespace ic {
 
-  class Efficiency : public ModuleBase {
+  class EfficiencyGenMatch : public ModuleBase {
   private:
 
     std::string genParticles_label_; 
@@ -166,8 +166,8 @@ namespace ic {
 
   public:
 
-    Efficiency(std::string const& name, fwlite::TFileService *fs, std::string output_name, int effNum, std::string channel, struct L1Cuts l1Cuts);
-    virtual ~Efficiency();
+    EfficiencyGenMatch(std::string const& name, fwlite::TFileService *fs, std::string output_name, int effNum, std::string channel, struct L1Cuts l1Cuts);
+    virtual ~EfficiencyGenMatch();
 
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);

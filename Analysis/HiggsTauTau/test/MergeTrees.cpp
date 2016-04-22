@@ -67,7 +67,7 @@ int main(int argc, char* argv[]){
   TString filename2;
   TChain *chIn2 = new TChain("icEventProducer/EventTree");
   std::ifstream infile2;
-  infile2.open("L1NTuplesV2_l1t-integration-v34_TauTau_Eta3.dat");
+  infile2.open("TauTau_L1NTuplesV2_l1t-tsg-v5__METEtaRange3p0_v1.dat");
   while (infile2 >> filename2) chIn2->Add(filename2);
           
   infile2.close();
@@ -77,67 +77,72 @@ int main(int argc, char* argv[]){
   std::cout << "Cloning offline tree..." << std::endl;
 
   // Create output file and clone the first tree.
-  std::string outputfilename = Form("/vols/cms02/dw515/l1t-integration-v34/HiggsTaTauEta3/EventTreeMerged_%d.root", num);
+  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/HiggsTaTauEta3/EventTreeMerged_%d.root", num);
   TFile *fOut = new TFile(outputfilename.c_str(),"RECREATE");
-  unsigned nentries1 = chIn1->GetEntries();
+  //unsigned nentries1 = chIn1->GetEntries();
+  unsigned nentries1 = 100;
   //unsigned nentries1 = 100;
   //TTree *tOut = new TTree("EventTree", "EventTree");
-  TTree *tOut = chIn1->CloneTree();
-  
+  TTree *tIn = chIn1->CloneTree(nentries1);
+  std::cout << "Finished cloaning offline tree..." << std::endl;
+  TTree *tOut = new TTree("EventTree", "EventTree");
   // Get the eventInfo for both trees.
 
   ic::EventInfo *eventInfo2 = new ic::EventInfo();
   chIn2->SetBranchAddress("eventInfo",&eventInfo2);
   ic::EventInfo  *eventInfo1 = new ic::EventInfo ();
-  tOut->SetBranchAddress("eventInfo",&eventInfo1);
+  tIn->SetBranchAddress("eventInfo",&eventInfo1);
   
   //get branches from tree 1
-  
-/*  std::vector<ic::Vertex> *vertices = new std::vector<ic::Vertex>();
-  chIn1->SetBranchAddress("vertices",&vertices);
+  std::cout << "Getting branches from offline tree..." << std::endl;
+  std::vector<ic::Vertex> *vertices = new std::vector<ic::Vertex>();
+  tIn->SetBranchAddress("vertices",&vertices);
   std::vector<ic::Vertex> *genVertices = new std::vector<ic::Vertex>(); 
-  chIn1->SetBranchAddress("genVertices",&genVertices);
+  tIn->SetBranchAddress("genVertices",&genVertices);
   std::vector<ic::Electron> *electrons = new std::vector<ic::Electron>();
-  chIn1->SetBranchAddress("electrons",&electrons);
+  tIn->SetBranchAddress("electrons",&electrons);
   std::vector<ic::Muon> *muons = new std::vector<ic::Muon>();
-  chIn1->SetBranchAddress("muons",&muons);
+  tIn->SetBranchAddress("muons",&muons);
   std::vector<ic::Tau> *taus = new std::vector<ic::Tau>();
-  chIn1->SetBranchAddress("taus",&taus);
+  tIn->SetBranchAddress("taus",&taus);
   std::vector<ic::Met> *pfmet = new std::vector<ic::Met>();
-  chIn1->SetBranchAddress("pfMet",&pfmet);
+  tIn->SetBranchAddress("pfMet",&pfmet);
   std::vector<ic::Met> *puppimet = new std::vector<ic::Met>();
-  chIn1->SetBranchAddress("puppiMet",&puppimet);
+  tIn->SetBranchAddress("puppiMet",&puppimet);
   std::vector<ic::Met> *pfMVAMetVector = new std::vector<ic::Met>();
-  chIn1->SetBranchAddress("pfMVAMetVector",&pfMVAMetVector);
+  tIn->SetBranchAddress("pfMVAMetVector",&pfMVAMetVector);
   std::vector<ic::Met> *pfMVAMet = new std::vector<ic::Met>();
-  chIn1->SetBranchAddress("pfMVAMet",&pfMVAMet);
+  tIn->SetBranchAddress("pfMVAMet",&pfMVAMet);
   std::vector<ic::GenParticle> *genParticles = new std::vector<ic::GenParticle>();
-  chIn1->SetBranchAddress("genParticles",&genParticles);
+  tIn->SetBranchAddress("genParticles",&genParticles);
   std::vector<ic::GenJet> *genJetsReclustered = new std::vector<ic::GenJet>();
-  chIn1->SetBranchAddress("genJetsReclustered",&genJetsReclustered);
+  tIn->SetBranchAddress("genJetsReclustered",&genJetsReclustered);
   std::vector<ic::GenJet> *genJets = new std::vector<ic::GenJet>();
-  chIn1->SetBranchAddress("genJets",&genJets);
+  tIn->SetBranchAddress("genJets",&genJets);
   std::vector<ic::PileupInfo> *pileupInfo = new std::vector<ic::PileupInfo>();
-  chIn1->SetBranchAddress("pileupInfo",&pileupInfo);
+  tIn->SetBranchAddress("pileupInfo",&pileupInfo);
   std::vector<ic::PFJet> *ak4PFJetsCHS = new std::vector<ic::PFJet>();
-  chIn1->SetBranchAddress("ak4PFJetsCHS",&ak4PFJetsCHS);
+  tIn->SetBranchAddress("ak4PFJetsCHS",&ak4PFJetsCHS);
   std::vector<ic::PFJet> *ak4PFJetsCHSReclustered = new std::vector<ic::PFJet>();
-  chIn1->SetBranchAddress("ak4PFJetsCHSReclustered",&ak4PFJetsCHSReclustered);
-  ic::EventInfo  *eventInfo1 = new ic::EventInfo ();
-  chIn1->SetBranchAddress("eventInfo",&eventInfo1);*/
+  tIn->SetBranchAddress("ak4PFJetsCHSReclustered",&ak4PFJetsCHSReclustered);
+
+  std::cout << "Finished getting branches from offline tree..." << std::endl;
   
+  std::cout << "Getting branches from L1 tree..." << std::endl;
   
   // Get new branches from tree 2. 
   std::vector<ic::L1TTau> *l1taus = new std::vector<ic::L1TTau>();
   chIn2->SetBranchAddress("L1Taus",&l1taus);
   std::vector<ic::L1TMuon> *l1muons = new std::vector<ic::L1TMuon>();
-  chIn2->SetBranchAddress("L1Muon",&l1muons);
+  chIn2->SetBranchAddress("L1Muons",&l1muons);
   std::vector<ic::L1TEGamma> *l1egammas = new std::vector<ic::L1TEGamma>();
   chIn2->SetBranchAddress("L1EGammas",&l1egammas);
   std::vector<ic::L1TJet> *l1jets = new std::vector<ic::L1TJet>();
   chIn2->SetBranchAddress("L1Jets",&l1jets);
   std::vector<ic::L1TSum> *l1sums = new std::vector<ic::L1TSum>();
   chIn2->SetBranchAddress("L1Sums",&l1sums);
+  
+  std::cout << "Finished getting branches from L1 tree..." << std::endl;
   
   /*std::vector<ic::L1TTau> *l1tausnew = new std::vector<ic::L1TTau>();
   tOut->Branch("L1Taus", &l1tausnew);
@@ -150,6 +155,8 @@ int main(int argc, char* argv[]){
   std::vector<ic::L1TSum> *l1sumsnew = new std::vector<ic::L1TSum>();
   tOut->Branch("L1Sums", &l1sumsnew);
   */
+  
+  std::cout << "Creating branches on output tree..." << std::endl;
   // Create new braches on new tree.
   std::vector<ic::L1TTau> *l1tausnew = new std::vector<ic::L1TTau>();
   TBranch *newBranch1 = tOut->Branch("L1Taus", &l1tausnew);
@@ -161,7 +168,7 @@ int main(int argc, char* argv[]){
   TBranch *newBranch4 = tOut->Branch("L1Jets", &l1jetsnew);
   std::vector<ic::L1TSum> *l1sumsnew = new std::vector<ic::L1TSum>();
   TBranch *newBranch5 = tOut->Branch("L1Sums", &l1sumsnew);
-  /*std::vector<ic::Vertex> *verticesnew = new std::vector<ic::Vertex>();
+  std::vector<ic::Vertex> *verticesnew = new std::vector<ic::Vertex>();
   TBranch *newBranch6 = tOut->Branch("vertices",&verticesnew);
   std::vector<ic::Vertex> *genVerticesnew = new std::vector<ic::Vertex>(); 
   TBranch *newBranch7 = tOut->Branch("genVertices",&genVerticesnew);
@@ -192,20 +199,21 @@ int main(int argc, char* argv[]){
   std::vector<ic::PFJet> *ak4PFJetsCHSReclusterednew = new std::vector<ic::PFJet>();
   TBranch *newBranch20 = tOut->Branch("ak4PFJetsCHSReclustered",&ak4PFJetsCHSReclusterednew);
   ic::EventInfo  *eventInfonew = new ic::EventInfo ();
-  TBranch *newBranch21 = tOut->Branch("eventInfo",&eventInfonew);*/
-  
+  TBranch *newBranch21 = tOut->Branch("eventInfo",&eventInfonew);
+  std::cout << "Finished creating branches on output tree..." << std::endl;
   unsigned n_report = 1000;
   unsigned NEventsMerged=0;
-
+  std::cout << "Merging trees..." << std::endl;
   for(unsigned i=0; i<nentries1; i++){
 
       //chIn1->GetEntry(i);
-      //std::cout << "i " << i << std::endl;
+      std::cout << "i " << i << std::endl;
 
       for(unsigned j=0; j<nentries2; j++){
           
-          tOut->GetEntry(i);
+          tIn->GetEntry(i);
           chIn2->GetEntry(j);  
+          //std::cout << "j " << j << std::endl;
           
           // If eventIDs match then fill new branch with copied branches.
           if(eventInfo1->event() == eventInfo2->event()){
@@ -221,7 +229,7 @@ int main(int argc, char* argv[]){
               l1egammasnew = l1egammas;
               l1jetsnew = l1jets;
               l1sumsnew = l1sums;
-              /*verticesnew = vertices;
+              verticesnew = vertices;
               genVerticesnew = genVertices;
               electronsnew = electrons;
               muonsnew = muons;
@@ -236,14 +244,14 @@ int main(int argc, char* argv[]){
               pileupInfonew = pileupInfo;
               ak4PFJetsCHSnew = ak4PFJetsCHS;
               ak4PFJetsCHSReclusterednew = ak4PFJetsCHSReclustered;
-              eventInfonew = eventInfo1;*/
+              eventInfonew = eventInfo1;
 
               newBranch1->Fill();
               newBranch2->Fill();
               newBranch3->Fill();
               newBranch4->Fill();
               newBranch5->Fill();
-              /*newBranch6->Fill();
+              newBranch6->Fill();
               newBranch7->Fill();
               newBranch8->Fill();
               newBranch9->Fill();
@@ -259,7 +267,7 @@ int main(int argc, char* argv[]){
               newBranch19->Fill();
               newBranch20->Fill();
               newBranch21->Fill();
-              */
+              
               //tOut->Fill();
               NEventsMerged++;
               
@@ -272,8 +280,9 @@ int main(int argc, char* argv[]){
               
               while(proceed){
                   
-                  tOut->GetEntry(itemp);
+                  tIn->GetEntry(itemp);
                   chIn2->GetEntry(jtemp);
+                  std::cout << "itemp " << i << std::endl;
                   
                   if(eventInfo1->event() == eventInfo2->event()){
                       if(itemp % n_report == 0) std::cout << "Finished merging " << itemp << "th event." << std::endl;
@@ -290,7 +299,7 @@ int main(int argc, char* argv[]){
                       l1egammasnew = l1egammas;
                       l1jetsnew = l1jets;
                       l1sumsnew = l1sums;
-                      /*verticesnew = vertices;
+                      verticesnew = vertices;
                       genVerticesnew = genVertices;
                       electronsnew = electrons;
                       muonsnew = muons;
@@ -305,14 +314,14 @@ int main(int argc, char* argv[]){
                       pileupInfonew = pileupInfo;
                       ak4PFJetsCHSnew = ak4PFJetsCHS;
                       ak4PFJetsCHSReclusterednew = ak4PFJetsCHSReclustered;
-                      eventInfonew = eventInfo1;*/
+                      eventInfonew = eventInfo1;
 
                       newBranch1->Fill();
                       newBranch2->Fill();
                       newBranch3->Fill();
                       newBranch4->Fill();
                       newBranch5->Fill();
-                      /*newBranch6->Fill();
+                      newBranch6->Fill();
                       newBranch7->Fill();
                       newBranch8->Fill();
                       newBranch9->Fill();
@@ -327,7 +336,7 @@ int main(int argc, char* argv[]){
                       newBranch18->Fill();
                       newBranch19->Fill();
                       newBranch20->Fill();
-                      newBranch21->Fill();*/
+                      newBranch21->Fill();
                       
                       //tOut->Fill();
                       NEventsMerged++;

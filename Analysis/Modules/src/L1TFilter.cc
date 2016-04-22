@@ -100,6 +100,11 @@ namespace ic {
       n_l1electrons_ = l1electrons.size();
       n_l1muons_ = l1muons.size();
       n_l1taus_ = l1taus.size();
+      
+      std::sort(l1taus.begin(),l1taus.end(),greater_Candidate());
+      std::sort(l1electrons.begin(),l1electrons.end(),greater_Candidate());
+      std::sort(l1muons.begin(),l1muons.end(),greater_Candidate());
+
 
       // Filter jest matched to electrons/taus
       
@@ -206,6 +211,7 @@ namespace ic {
       h_SignalEfficiency->Fill(0);
       
       if(channel_ == "em"){
+          
           if(MuPtCut > 0){
               if(n_l1muons_ < 1) Filter = true;
               if(n_l1muons_ > 0) if(l1muons[0]->vector().Pt() < MuPtCut) Filter = true;
@@ -220,9 +226,13 @@ namespace ic {
           /*if(n_l1muons_ < 1 || n_l1electrons_ < 1) Filter = true;
           if(n_l1muons_ > 0 && n_l1electrons_ > 0){
               bool dontfilter = false;
-              if((l1muons[0]->vector().Pt() >= 20 && l1electrons[0]->vector().Pt() >= 15 )||(l1muons[0]->vector().Pt() >= 5 && l1electrons[0]->vector().Pt() >= 20 ) ||(l1muons[0]->vector().Pt() >= 5 && l1electrons[0]->vector().Pt() >= 18 && l1electrons[0]->isolation)) dontfilter = true; 
+              for(unsigned i =0; i< n_l1muons_; i++){
+                  if((l1muons[0]->vector().Pt() >= 20 && l1electrons[0]->vector().Pt() >= 15 )||(l1muons[0]->vector().Pt() >= 5 && l1electrons[0]->vector().Pt() >= 20 )|| (l1muons[0]->vector().Pt() >= 5 && l1electrons[i]->vector().Pt() >= 18 && l1electrons[i]->isolation > 0)) dontfilter = true; 
+                      //||(l1muons[0]->vector().Pt() >= 5 && l1electrons[i]->vector().Pt() >= 18 && l1electrons[i]->isolation > 0)) dontfilter = true; 
+          }
               if(!dontfilter) Filter = true; 
           }
+          
           
           if(!Filter) h_SignalEfficiency->Fill(1);
           if(!Filter) h_SignalEfficiency->Fill(2);*/
@@ -240,6 +250,19 @@ namespace ic {
               if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() < Tau1PtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(2);
+          
+      /*if(n_l1electrons_ < 1) Filter = true;
+          if(n_l1electrons_ > 0){
+              bool dontfilter = false;
+              for(unsigned i =0; i< n_l1electrons_; i++){
+                   if((l1electrons[0]->vector().Pt() >= 40 )||(l1electrons[i]->vector().Pt() >= 22  && l1electrons[i]->isolation > 0)) dontfilter = true;    
+              }
+
+              if(!dontfilter) Filter = true; 
+          }
+          
+          if(!Filter) h_SignalEfficiency->Fill(1);
+          if(!Filter) h_SignalEfficiency->Fill(2);*/
       }
       
       if(channel_ == "mt"){

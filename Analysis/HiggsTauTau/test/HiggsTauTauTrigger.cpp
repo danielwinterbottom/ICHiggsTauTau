@@ -54,6 +54,7 @@
 #include "Modules/interface/L1VariableHistograms.h"
 #include "Modules/interface/VariableHistograms.h"
 #include "Modules/interface/Efficiency.h"
+#include "Modules/interface/EfficiencyGenMatch.h"
 #include "Modules/interface/L1TFilterPlots.h"
 #include "Modules/interface/L1TFilter.h"
 #include "Modules/interface/VBFFilter.h"
@@ -1099,6 +1100,11 @@ int main(int argc, char* argv[]){
   Efficiency efficiency3 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies3", 3, channel_str, l1Cuts);
   Efficiency efficiency4 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies4", 4, channel_str, l1Cuts);
   Efficiency efficiency5 = Efficiency("Efficiency", fs, "SignalRegionEfficiencies", 5, channel_str, l1Cuts);
+  
+  EfficiencyGenMatch efficiencyGenMatch1 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies1", 1, channel_str, l1Cuts);
+  EfficiencyGenMatch efficiencyGenMatch2 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies2", 2, channel_str, l1Cuts);
+  EfficiencyGenMatch efficiencyGenMatch3 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies3", 3, channel_str, l1Cuts);
+  EfficiencyGenMatch efficiencyGenMatch4 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies4", 4, channel_str, l1Cuts);
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -1128,6 +1134,12 @@ int main(int argc, char* argv[]){
       if (to_check.size() > 0)        analysis.AddModule(&httPrint);
                                       
                                       analysis.AddModule(&vBFPlots);
+                                      if(makeEffPlots == 1){
+                                          analysis.AddModule(&efficiencyGenMatch1);
+                                          analysis.AddModule(&efficiencyGenMatch2);
+                                          analysis.AddModule(&efficiencyGenMatch3);
+                                          analysis.AddModule(&efficiencyGenMatch4);
+                                      }
                                       analysis.AddModule(&genChannelFilter);
                                       analysis.AddModule(&vBFPlotsGenFiltered);
       

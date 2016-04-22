@@ -1,4 +1,4 @@
-#include "Modules/interface/Efficiency.h"
+#include "Modules/interface/EfficiencyGenMatch.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
@@ -13,7 +13,7 @@ struct greater_Candidate{
 namespace ic {
 
   
-  Efficiency::Efficiency(std::string const& name, 
+  EfficiencyGenMatch::EfficiencyGenMatch(std::string const& name, 
                                           fwlite::TFileService *fs, std::string output_name, int effNum, std::string channel, struct L1Cuts l1Cuts) : ModuleBase(name) {
     
     EffNum = effNum;
@@ -73,26 +73,9 @@ namespace ic {
         l1MHTCut = 70;
     }
     
-    if(channel == "em"){
-        nPromptElectrons = 1;
-        nPromptMuons = 1;
-        nPromptTaus = 0;
-    }
-    if(channel == "et"){
-        nPromptElectrons = 1;
-        nPromptMuons = 0;
-        nPromptTaus = 1;
-    }
-    if(channel == "mt"){
-        nPromptElectrons = 0;
-        nPromptMuons = 1;
-        nPromptTaus = 1;
-    }
-    if(channel == "tt"){
-        nPromptElectrons = 0;
-        nPromptMuons = 0;
-        nPromptTaus = 2;
-    }
+    nPromptElectrons = 1000;
+    nPromptMuons = 1000;
+    nPromptTaus = 1000;
                                               
     genParticles_label_ = "genParticles";
     jets_label_ = "ak4PFJetsCHS"; 
@@ -395,17 +378,18 @@ namespace ic {
     h_GenMHTEfficiency->GetXaxis()->SetTitle("MHT [GeV]");
     h_GenMHTEfficiency->GetYaxis()->SetTitle("Efficiency");
     
+    
   }
 
-    Efficiency::~Efficiency(){
+    EfficiencyGenMatch::~EfficiencyGenMatch(){
     ;
   }
   
-  int Efficiency::PreAnalysis(){
+  int EfficiencyGenMatch::PreAnalysis(){
       return 0;
   }
 
-  int Efficiency::Execute(TreeEvent *event){
+  int EfficiencyGenMatch::Execute(TreeEvent *event){
 
       
       std::vector<ic::GenJet*> genjets = event->GetPtrVec<ic::GenJet>(genjets_label_);
@@ -442,16 +426,19 @@ namespace ic {
       
       //Electrons
       
-      for(unsigned i=0; i < n_electrons_ && i < nPromptElectrons; i++){
+      for(unsigned i=0; i < n_electrons_; i++){
                   
           bool eProceed = false;
-                
-          if(std::fabs(electrons[i]->vector().Rapidity()) < 2.4) eProceed = true;
           
-          for(unsigned j=0; j< n_muons_; j++){
-              double DeltaR = sqrt(pow(electrons[i]->vector().Phi()-muons[j]->vector().Phi(),2) + pow(electrons[i]->vector().Rapidity()-muons[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) eProceed = false;
+          for(unsigned j=0; j< n_genParticles_; j++){
+              double DeltaR = sqrt(pow(electrons[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(electrons[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+              int ID = std::fabs(GenParticles[j]->pdgid());
+              bool isPrompt =  false;
+              if(GenParticles[j]->statusFlags().at(0) || GenParticles[j]->statusFlags().at(5)) isPrompt = true; 
+              if(DeltaR < 0.5 && isPrompt && ID == 11) eProceed = true;
           }
+          
+          if((std::fabs(electrons[i]->vector().Rapidity()) > 2.4)) eProceed = false;
 
           if(eProceed){
               
@@ -526,26 +513,31 @@ namespace ic {
       
       // Taus
       
-      for(unsigned i=0; i < n_taus_ && i < nPromptTaus; i++){
-                  
+      for(unsigned i=0; i < n_taus_; i++){
+          
           bool tauProceed = false;
+                  
+          for(unsigned j=0; j< n_genParticles_; j++){
+              int ID = std::fabs(GenParticles[j]->pdgid());
+              bool isPrompt =  false;
+              if(GenParticles[j]->statusFlags().at(0)) isPrompt = true; 
+              
+              ic::Candidate tausVis;
 
-          if(std::fabs(taus[i]->vector().Rapidity()) < 2.3) tauProceed = true;
-          
-          for(unsigned j=0; j< n_electrons_; j++){
-              double DeltaR = sqrt(pow(taus[i]->vector().Phi()-electrons[j]->vector().Phi(),2) + pow(taus[i]->vector().Rapidity()-electrons[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) tauProceed = false;
+              for(unsigned k=0; k < GenParticles[j]->daughters().size(); k++){
+                  if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 13) isPrompt = false;  
+                  if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 16) tausVis.set_vector(GenParticles[j]->vector() - GenParticles[GenParticles[j]->daughters().at(k)]->vector());
+              }
+              
+              double DeltaR = sqrt(pow(tausVis.vector().Phi()-taus[i]->vector().Phi(),2) + pow(tausVis.vector().Rapidity()-taus[i]->vector().Rapidity(),2));
+              if(DeltaR < 0.5 && isPrompt && ID == 15) tauProceed = true;
           }
           
-          for(unsigned j=0; j< n_muons_; j++){
-              double DeltaR = sqrt(pow(taus[i]->vector().Phi()-muons[j]->vector().Phi(),2) + pow(taus[i]->vector().Rapidity()-muons[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) tauProceed = false;
-          }
+          if((std::fabs(taus[i]->vector().Rapidity()) > 2.3)) tauProceed = false;
 
           if(tauProceed){
                   
-              if(i == 0) h_tau_Total->Fill(taus[i]->vector().Pt());
-              else if(i == 1) h_subtau_Total->Fill(taus[i]->vector().Pt());
+              h_tau_Total->Fill(taus[i]->vector().Pt());
               
               // Check if tau fired EG trigger.
               
@@ -595,23 +587,10 @@ namespace ic {
               }
               
               if(MatchedIsoTauL1){ 
-                  if(i==0){
-                      h_tau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
-                      h_tau_IsoTau_Efficiency->Fill(taus[i]->vector().Pt());
-                  }
-                  else if(i==1){
-                      h_subtau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
-                      h_subtau_IsoTau_Efficiency->Fill(taus[i]->vector().Pt());
-                  }
+                  h_tau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
+                  h_tau_IsoTau_Efficiency->Fill(taus[i]->vector().Pt());
               }
-              else if(!MatchedIsoTauL1 && MatchedTauL1){
-                  if(i==0){
-                      h_tau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
-                  }
-                  else if(i==1){
-                      h_subtau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
-                  }
-              }
+              else if(!MatchedIsoTauL1 && MatchedTauL1) h_tau_Tau_Efficiency->Fill(taus[i]->vector().Pt());
               
               // Check if tau fired Jet trigger.
 
@@ -653,11 +632,19 @@ namespace ic {
       
       //Muons
       
-      for(unsigned i=0; i < n_muons_ && i< nPromptMuons; i++){
+      for(unsigned i=0; i < n_muons_; i++){
                   
           bool muProceed = false;
-
-          if(std::fabs(muons[i]->vector().Rapidity()) < 2.4) muProceed = true;
+          
+          for(unsigned j=0; j< n_genParticles_; j++){
+              double DeltaR = sqrt(pow(muons[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(muons[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+              int ID = std::fabs(GenParticles[j]->pdgid());
+              bool isPrompt =  false;
+              if(GenParticles[j]->statusFlags().at(0) || GenParticles[j]->statusFlags().at(5)) isPrompt = true; 
+              if(DeltaR < 0.5 && isPrompt && ID == 13) muProceed = true;
+          }
+          
+          if((std::fabs(muons[i]->vector().Rapidity()) > 2.4)) muProceed = false;
 
           if(muProceed){
                   
@@ -687,29 +674,21 @@ namespace ic {
       
       // Jets
       
-      for(unsigned i=0; i < n_jets_ && i < 2; i++){
+      for(unsigned i=0; i < n_jets_; i++){
                   
           bool jetProceed = false;
-          if(std::fabs(jets[i]->vector().Rapidity()) < 5) jetProceed = true;
+
           
-          for(unsigned j=0; j< n_taus_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-taus[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-taus[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
-          }
-          for(unsigned j=0; j< n_electrons_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-electrons[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-electrons[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
+          for(unsigned j=5; j< 7 && j< n_genParticles_; j++){
+              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+              if(DeltaR < 0.5) jetProceed = true;
           }
           
-          for(unsigned j=0; j< n_muons_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-muons[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-muons[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
-          }
+          if((std::fabs(jets[i]->vector().Rapidity()) > 5.)) jetProceed = false;
 
           if(jetProceed){
 
-              if(i == 0) h_jet_Total->Fill(jets[i]->vector().Pt());
-              if(i == 1) h_subjet_Total->Fill(jets[i]->vector().Pt());
+              h_jet_Total->Fill(jets[i]->vector().Pt());
               
               // Check if jet fired EG trigger.
               
@@ -781,10 +760,7 @@ namespace ic {
                   
               }
               
-              if(MatchedJetL1){
-                  if(i==0) h_jet_Jet_Efficiency->Fill(jets[i]->vector().Pt());
-                  if(i==1) h_subjet_Jet_Efficiency->Fill(jets[i]->vector().Pt());
-              }  
+              if(MatchedJetL1) h_jet_Jet_Efficiency->Fill(jets[i]->vector().Pt());
               
               // Check if jet fired Muon trigger.
               
@@ -810,37 +786,28 @@ namespace ic {
       
       // Di-Jets
       
-      int count =0;
       
       for(unsigned i=0; i < n_jets_; i++){
           
-          bool jetProceed = true;
+          bool jet1Proceed = false;
+          bool jet2Proceed = false;
           
-          for(unsigned j=0; j< n_taus_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-taus[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-taus[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
-          }
-          for(unsigned j=0; j< n_electrons_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-electrons[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-electrons[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
+          for(unsigned j=5; j< 7 && j< n_genParticles_; j++){
+              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+              if(DeltaR < 0.5) jet1Proceed = true;
           }
     
           for(unsigned j=0; j<n_jets_; j++){
               
-              for(unsigned k=0; k< n_taus_; k++){
-                  double DeltaR = sqrt(pow(jets[j]->vector().Phi()-taus[k]->vector().Phi(),2) + pow(jets[j]->vector().Rapidity()-taus[k]->vector().Rapidity(),2));
-                  if(DeltaR < 0.1) jetProceed = false;
+              for(unsigned k=5;k< 7 && k< n_genParticles_; k++){
+                  double DeltaR = sqrt(pow(jets[j]->vector().Phi()-GenParticles[k]->vector().Phi(),2) + pow(jets[j]->vector().Rapidity()-GenParticles[k]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5) jet2Proceed = true;
               }
-              for(unsigned k=0; k< n_electrons_; k++){
-                  double DeltaR = sqrt(pow(jets[j]->vector().Phi()-electrons[k]->vector().Phi(),2) + pow(jets[j]->vector().Rapidity()-electrons[k]->vector().Rapidity(),2));
-                  if(DeltaR < 0.1) jetProceed = false;
-              }
-           //
-              if(i!=j && jetProceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(jets[j]->vector().Rapidity()) < 5){
+           
+              if(i!=j && jet1Proceed && jet2Proceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(jets[j]->vector().Rapidity()) < 5){
                   
-                  if(jets[i]->vector().Pt() > 20 && jets[j]->vector().Pt() > 20 && count == 0){
-                      
-                      count++;
+                  if(jets[i]->vector().Pt() > 20 && jets[j]->vector().Pt() > 20){
+
 
                       h_jetjet_Mjj_Total->Fill((jets[i]->vector() + jets[j]->vector()).M());
                       h_jetjet_DeltaEta_Total->Fill(std::fabs(jets[i]->vector().Rapidity() - jets[j]->vector().Rapidity()));
@@ -897,27 +864,36 @@ namespace ic {
       
       //Jet-Tau
       
-      for(unsigned i=0; i < n_jets_ && i < 2; i++){
+      for(unsigned i=0; i < n_jets_; i++){
 
           bool jetProceed = true;
           
-          for(unsigned j=0; j< n_taus_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-taus[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-taus[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
-          }
-          for(unsigned j=0; j< n_electrons_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-electrons[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-electrons[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
+          for(unsigned j=5; j< 7 && j< n_genParticles_; j++){
+              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+              if(DeltaR < 0.5) jetProceed = true;
           }
 
-          for(unsigned j=0; j<n_taus_ && j <nPromptTaus; j++){
+          for(unsigned j=0; j<n_taus_; j++){
               
-              for(unsigned k=0; k< n_electrons_; k++){
-                  double DeltaR = sqrt(pow(taus[j]->vector().Phi()-electrons[k]->vector().Phi(),2) + pow(taus[j]->vector().Rapidity()-electrons[k]->vector().Rapidity(),2));
-                  if(DeltaR < 0.1) jetProceed = false;
-              }
+          bool tauProceed = false;
+                  
+          for(unsigned l=0; l< n_genParticles_; l++){
+              int ID = std::fabs(GenParticles[l]->pdgid());
+              bool isPrompt =  false;
+              if(GenParticles[l]->statusFlags().at(0)) isPrompt = true; 
+              
+              ic::Candidate tausVis;
 
-              if(jetProceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(taus[j]->vector().Rapidity()) < 5){
+              for(unsigned k=0; k < GenParticles[l]->daughters().size(); k++){
+                  if(std::fabs(GenParticles[GenParticles[l]->daughters().at(k)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[l]->daughters().at(k)]->pdgid()) == 13) isPrompt = false;  
+                  if(std::fabs(GenParticles[GenParticles[l]->daughters().at(k)]->pdgid()) == 16) tausVis.set_vector(GenParticles[l]->vector() - GenParticles[GenParticles[l]->daughters().at(k)]->vector());
+              }
+              
+              double DeltaR = sqrt(pow(tausVis.vector().Phi()-taus[j]->vector().Phi(),2) + pow(tausVis.vector().Rapidity()-taus[j]->vector().Rapidity(),2));
+              if(DeltaR < 0.5 && isPrompt && ID == 15) tauProceed = true;
+          }
+
+              if(jetProceed && tauProceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(taus[j]->vector().Rapidity()) < 5){
                   
                   if(jets[i]->vector().Pt() > 20){
 
@@ -972,22 +948,28 @@ namespace ic {
       
       // Jet-Electron
       
-      for(unsigned i=0; i < n_jets_ && i < 2; i++){
+      for(unsigned i=0; i < n_jets_; i++){
 
           bool jetProceed = true;
           
-          for(unsigned j=0; j< n_taus_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-taus[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-taus[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
-          }
-          for(unsigned j=0; j< n_electrons_; j++){
-              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-electrons[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-electrons[j]->vector().Rapidity(),2));
-              if(DeltaR < 0.1) jetProceed = false;
+          for(unsigned j=5; j< 7 && j< n_genParticles_; j++){
+              double DeltaR = sqrt(pow(jets[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(jets[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+              if(DeltaR < 0.5) jetProceed = true;
           }
     
           for(unsigned j=0; j<n_electrons_ && j <nPromptElectrons; j++){
+              
+              bool eProceed = false;
+          
+                  for(unsigned k=0; k< n_genParticles_; k++){
+                      double DeltaR = sqrt(pow(electrons[j]->vector().Phi()-GenParticles[k]->vector().Phi(),2) + pow(electrons[j]->vector().Rapidity()-GenParticles[k]->vector().Rapidity(),2));
+                      int ID = std::fabs(GenParticles[k]->pdgid());
+                      bool isPrompt =  false;
+                      if(GenParticles[j]->statusFlags().at(0) || GenParticles[j]->statusFlags().at(5)) isPrompt = true; 
+                      if(DeltaR < 0.5 && isPrompt && ID == 11) eProceed = true;
+                  }
            
-              if(jetProceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(electrons[j]->vector().Rapidity()) < 5){
+              if(jetProceed && eProceed &&std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(electrons[j]->vector().Rapidity()) < 5){
                           
                   if(jets[i]->vector().Pt() > 20){
 
@@ -1221,7 +1203,7 @@ namespace ic {
       return 0;
   }
 
-  int Efficiency::PostAnalysis(){
+  int EfficiencyGenMatch::PostAnalysis(){
       h_mu_Mu_Efficiency->Divide(h_mu_Total);  
       h_mu_IsoMu_Efficiency->Divide(h_mu_Total); 
       
@@ -1282,7 +1264,7 @@ namespace ic {
     return 0;
   }
 
-  void Efficiency::PrintInfo(){
+  void EfficiencyGenMatch::PrintInfo(){
     ;
   }
   
