@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
   unsigned nentries2 = chIn2->GetEntries();
   unsigned nentries1 = tIn->GetEntries();
   
-  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/HiggsTaTauEta3/EventTreeMergedTest_%d.root", num);
+  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/HiggsTaTauEta3/EventTreeMerged_%d.root", num);
   TFile *fOut = new TFile(outputfilename.c_str(),"RECREATE");
   
   std::cout << "Cloaning offline tree." << std::endl;
