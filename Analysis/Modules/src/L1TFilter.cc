@@ -223,7 +223,7 @@ namespace ic {
           }
           if(!Filter) h_SignalEfficiency->Fill(2);
           
-          /*if(n_l1muons_ < 1 || n_l1electrons_ < 1) Filter = true;
+         /* if(n_l1muons_ < 1 || n_l1electrons_ < 1) Filter = true;
           if(n_l1muons_ > 0 && n_l1electrons_ > 0){
               bool dontfilter = false;
               for(unsigned i =0; i< n_l1muons_; i++){

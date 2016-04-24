@@ -1038,7 +1038,7 @@ int main(int argc, char* argv[]){
 
   L1TFilterPlots l1TFilterPlots1 = L1TFilterPlots("L1TFilterPlots1", channel_str, fs, l1Cuts, "L1TFilterPlotsPreFiltering", 1);
   L1TFilterPlots l1TFilterPlots2 = L1TFilterPlots("L1TFilterPlots2", channel_str, fs, l1Cuts, "L1TFilterPlotsPostVBFFilter", 1);
-  L1TFilter zeroBiasL1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1Muon", "ZeroBiasL1TFilter");
+  L1TFilter zeroBiasL1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1Muons", "ZeroBiasL1TFilter");
   L1TFilter l1TFilter = L1TFilter("L1TFilter2", channel_str, fs, l1Cuts, "L1Muons", "L1TFilter");
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules

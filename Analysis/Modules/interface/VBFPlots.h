@@ -115,7 +115,15 @@ class VBFPlots : public ModuleBase {
       TH1D *h_LeadJetPtResGenJet;
       TH1D *h_SubLeadJetPtResGenJet;
       TH1D *h_AveJetPtResGenJet;
-  
+      
+      TH1D *h_EtaJetRes;
+      TH1D *h_PhiJetRes;
+      TH2D *h_JetEtaVsPhi;
+      
+      TH1D *h_l1j1_Eta;
+      TH1D *h_l1j2_Eta;
+      TH1D *h_l1j1_Phi;
+      TH1D *h_l1j2_Phi;
 
 };
 }

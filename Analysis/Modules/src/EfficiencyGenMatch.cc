@@ -684,7 +684,7 @@ namespace ic {
               if(DeltaR < 0.5) jetProceed = true;
           }
           
-          if((std::fabs(jets[i]->vector().Rapidity()) > 5.)) jetProceed = false;
+          if((std::fabs(jets[i]->vector().Rapidity()) > 4.7)) jetProceed = false;
 
           if(jetProceed){
 
@@ -804,7 +804,7 @@ namespace ic {
                   if(DeltaR < 0.5) jet2Proceed = true;
               }
            
-              if(i!=j && jet1Proceed && jet2Proceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(jets[j]->vector().Rapidity()) < 5){
+              if(i!=j && jet1Proceed && jet2Proceed && std::fabs(jets[i]->vector().Rapidity()) < 4.7 && std::fabs(jets[j]->vector().Rapidity()) < 4.7){
                   
                   if(jets[i]->vector().Pt() > 20 && jets[j]->vector().Pt() > 20){
 
@@ -893,7 +893,7 @@ namespace ic {
               if(DeltaR < 0.5 && isPrompt && ID == 15) tauProceed = true;
           }
 
-              if(jetProceed && tauProceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(taus[j]->vector().Rapidity()) < 5){
+              if(jetProceed && tauProceed && std::fabs(jets[i]->vector().Rapidity()) < 4.7 && std::fabs(taus[j]->vector().Rapidity()) < 4.7){
                   
                   if(jets[i]->vector().Pt() > 20){
 
@@ -969,7 +969,7 @@ namespace ic {
                       if(DeltaR < 0.5 && isPrompt && ID == 11) eProceed = true;
                   }
            
-              if(jetProceed && eProceed &&std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(electrons[j]->vector().Rapidity()) < 5){
+              if(jetProceed && eProceed &&std::fabs(jets[i]->vector().Rapidity()) < 4.7 && std::fabs(electrons[j]->vector().Rapidity()) < 4.7){
                           
                   if(jets[i]->vector().Pt() > 20){
 

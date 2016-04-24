@@ -251,8 +251,36 @@ namespace ic {
     h_JetsDeltaEtaResGenJet->GetYaxis()->SetTitle("Entries");
     
     h_AveJetPtResGenJet = subDir.make<TH1D>("h_AveJetPtResGenJet","h_AveJetPtResGenJet",100, -2,2); 
-    h_AveJetPtResGenJet->GetXaxis()->SetTitle("Jets (l1 p_{T}- gen p_{T})/(gen p_{T}>)");
+    h_AveJetPtResGenJet->GetXaxis()->SetTitle("Jets (l1 <p_{T}>- gen <p_{T}>)/(gen <p_{T}>)");
     h_AveJetPtResGenJet->GetYaxis()->SetTitle("Entries");    
+    
+    h_EtaJetRes = subDir.make<TH1D>("h_EtaJetRes","h_EtaJetRes",100, -0.5,0.5); 
+    h_EtaJetRes->GetXaxis()->SetTitle("Jets (l1 #eta- gen #eta)/(gen #eta)");
+    h_EtaJetRes->GetYaxis()->SetTitle("Entries");  
+    
+    h_PhiJetRes = subDir.make<TH1D>("h_PhiJetRes","h_PhiJetRes",100, -0.5,0.5); 
+    h_PhiJetRes->GetXaxis()->SetTitle("Jets (l1 #phi- gen #phi)/(gen #phi)");
+    h_PhiJetRes->GetYaxis()->SetTitle("Entries");  
+    
+    h_JetEtaVsPhi = subDir.make<TH2D>("h_JetEtaVsPhi","h_JetEtaVsPhi",100, -3.2,3.2, 100, -5,5); 
+    h_JetEtaVsPhi->GetYaxis()->SetTitle("#eta");
+    h_JetEtaVsPhi->GetXaxis()->SetTitle("#phi"); 
+    
+    h_l1j1_Eta = subDir.make<TH1D>("h_l1j1_Eta","h_l1j1_Eta",100, -6,6); 
+    h_l1j1_Eta->GetXaxis()->SetTitle("Leading jet #eta");
+    h_l1j1_Eta->GetYaxis()->SetTitle("Entries");
+    
+    h_l1j2_Eta = subDir.make<TH1D>("h_l1j2_Eta","h_l1j2_Eta",100, -6,6); 
+    h_l1j2_Eta->GetXaxis()->SetTitle("Sub-Leading jet #eta");
+    h_l1j2_Eta->GetYaxis()->SetTitle("Entries");
+    
+    h_l1j1_Phi = subDir.make<TH1D>("h_l1j1_Phi","h_l1j1_Phi",100, -3.2,3.2); 
+    h_l1j1_Phi->GetXaxis()->SetTitle("Leading jet #phi");
+    h_l1j1_Phi->GetYaxis()->SetTitle("Entries");
+    
+    h_l1j2_Phi = subDir.make<TH1D>("h_l1j2_Phi","h_l1j2_Phi",100, -3.2,3.2); 
+    h_l1j2_Phi->GetXaxis()->SetTitle("Sub-Leading jet #phi");
+    h_l1j2_Phi->GetYaxis()->SetTitle("Entries");
     
     EventsTotal=0;
 
@@ -455,8 +483,8 @@ namespace ic {
               for(int j=i+1; j<NJets; j++){
                   
                   if(!(i == jetIndex1 || i == jetIndex2 || j == jetIndex1 || j == jetIndex2)){
-                      double EtaGap = std::fabs(jets[i]->vector().Rapidity() - jets[j]->vector().Rapidity());
-                      if(std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(jets[j]->vector().Rapidity()) < 5 && EtaGap > 3.5){
+                      //double EtaGap = std::fabs(jets[i]->vector().Rapidity() - jets[j]->vector().Rapidity());
+                      if(std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(jets[j]->vector().Rapidity()) < 5 ){
                           double Mjj = (jets[i]->vector() + jets[j]->vector()).M();
                           double DeltaEta = std::fabs(jets[i]->vector().Rapidity() - jets[j]->vector().Rapidity());
                           double Pt1 = jets[i]->vector().Pt();
@@ -491,8 +519,8 @@ namespace ic {
           }
           
           h_jets_Index->Fill(jetIndex1,jetIndex2);
-          double EtaGap = std::fabs(jets[jetIndex1]->vector().Rapidity() - jets[jetIndex2]->vector().Rapidity());
-          if(std::fabs(jets[jetIndex1]->vector().Rapidity()) < 5 && std::fabs(jets[jetIndex2]->vector().Rapidity()) < 5 && EtaGap > 3.5){
+          //double EtaGap = std::fabs(jets[jetIndex1]->vector().Rapidity() - jets[jetIndex2]->vector().Rapidity());
+          if(std::fabs(jets[jetIndex1]->vector().Rapidity()) < 5 && std::fabs(jets[jetIndex2]->vector().Rapidity()) < 5){
               
               double Mjj = (jets[jetIndex1]->vector() + jets[jetIndex2]->vector()).M();
               double DeltaEta = std::fabs(jets[jetIndex1]->vector().Rapidity() - jets[jetIndex2]->vector().Rapidity());
@@ -605,6 +633,19 @@ namespace ic {
               h_l1jj_AvePt->Fill(AvePt);
               h_AveJetPtResGenJet->Fill((AvePt-genAvePt)/genAvePt);
               
+              h_PhiJetRes->Fill((l1jets[l1jetIndex1]->vector().Phi() - genjets[genjetIndex1]->vector().Phi())/genjets[genjetIndex1]->vector().Phi());
+              h_PhiJetRes->Fill((l1jets[l1jetIndex2]->vector().Phi() - genjets[genjetIndex2]->vector().Phi())/genjets[genjetIndex2]->vector().Phi());
+              
+              h_EtaJetRes->Fill((l1jets[l1jetIndex1]->vector().Rapidity() - genjets[genjetIndex1]->vector().Rapidity())/genjets[genjetIndex1]->vector().Rapidity());
+              h_EtaJetRes->Fill((l1jets[l1jetIndex2]->vector().Rapidity() - genjets[genjetIndex2]->vector().Rapidity())/genjets[genjetIndex2]->vector().Rapidity());
+              
+              h_JetEtaVsPhi->Fill(l1jets[l1jetIndex1]->vector().Phi(),l1jets[l1jetIndex1]->vector().Rapidity());
+              h_JetEtaVsPhi->Fill(l1jets[l1jetIndex2]->vector().Phi(),l1jets[l1jetIndex2]->vector().Rapidity());
+              
+              h_l1j1_Eta->Fill(l1jets[l1jetIndex1]->vector().Rapidity());
+              h_l1j2_Eta->Fill(l1jets[l1jetIndex2]->vector().Rapidity());
+              h_l1j1_Phi->Fill(l1jets[l1jetIndex1]->vector().Phi());
+              h_l1j2_Phi->Fill(l1jets[l1jetIndex2]->vector().Phi());
           }
           
       }
