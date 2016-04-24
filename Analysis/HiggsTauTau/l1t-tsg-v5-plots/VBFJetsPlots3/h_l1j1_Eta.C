@@ -1,0 +1,163 @@
+void h_l1j1_Eta()
+{
+//=========Macro generated from canvas: c1/c1
+//=========  (Sun Apr 24 11:20:08 2016) by ROOT version6.06/01
+   TCanvas *c1 = new TCanvas("c1", "c1",516,52,850,850);
+   gStyle->SetOptStat(0);
+   gStyle->SetOptTitle(0);
+   c1->Range(0,0,1,1);
+   c1->SetFillColor(0);
+   c1->SetBorderMode(0);
+   c1->SetBorderSize(2);
+   c1->SetTickx(1);
+   c1->SetTicky(1);
+   c1->SetLeftMargin(0.125);
+   c1->SetRightMargin(0.125);
+   c1->SetFrameBorderMode(0);
+   
+   TH1D *h_l1j1_Eta__1 = new TH1D("h_l1j1_Eta__1","h_l1j1_Eta",50,-6,6);
+   h_l1j1_Eta__1->SetBinContent(6,4867.784);
+   h_l1j1_Eta__1->SetBinContent(7,5304.875);
+   h_l1j1_Eta__1->SetBinContent(8,17670.83);
+   h_l1j1_Eta__1->SetBinContent(9,13142.13);
+   h_l1j1_Eta__1->SetBinContent(10,16953.45);
+   h_l1j1_Eta__1->SetBinContent(11,36103.14);
+   h_l1j1_Eta__1->SetBinContent(12,17045.57);
+   h_l1j1_Eta__1->SetBinContent(14,47274.44);
+   h_l1j1_Eta__1->SetBinContent(15,19400.57);
+   h_l1j1_Eta__1->SetBinContent(16,44770.48);
+   h_l1j1_Eta__1->SetBinContent(17,32328.08);
+   h_l1j1_Eta__1->SetBinContent(18,35150.55);
+   h_l1j1_Eta__1->SetBinContent(19,21779.09);
+   h_l1j1_Eta__1->SetBinContent(20,31573.46);
+   h_l1j1_Eta__1->SetBinContent(21,30469.96);
+   h_l1j1_Eta__1->SetBinContent(22,29542.85);
+   h_l1j1_Eta__1->SetBinContent(23,18235.32);
+   h_l1j1_Eta__1->SetBinContent(24,27386.8);
+   h_l1j1_Eta__1->SetBinContent(25,27260.37);
+   h_l1j1_Eta__1->SetBinContent(26,27593.58);
+   h_l1j1_Eta__1->SetBinContent(27,27921.89);
+   h_l1j1_Eta__1->SetBinContent(28,18531.29);
+   h_l1j1_Eta__1->SetBinContent(29,29867.24);
+   h_l1j1_Eta__1->SetBinContent(30,30562.08);
+   h_l1j1_Eta__1->SetBinContent(31,32002.71);
+   h_l1j1_Eta__1->SetBinContent(32,21544.87);
+   h_l1j1_Eta__1->SetBinContent(33,34993.75);
+   h_l1j1_Eta__1->SetBinContent(34,32125.22);
+   h_l1j1_Eta__1->SetBinContent(35,44916.5);
+   h_l1j1_Eta__1->SetBinContent(36,19799.44);
+   h_l1j1_Eta__1->SetBinContent(37,47285.22);
+   h_l1j1_Eta__1->SetBinContent(39,16532.04);
+   h_l1j1_Eta__1->SetBinContent(40,36569.63);
+   h_l1j1_Eta__1->SetBinContent(41,16907.39);
+   h_l1j1_Eta__1->SetBinContent(42,13097.05);
+   h_l1j1_Eta__1->SetBinContent(43,18043.24);
+   h_l1j1_Eta__1->SetBinContent(44,5288.215);
+   h_l1j1_Eta__1->SetBinContent(45,5134.351);
+   h_l1j1_Eta__1->SetEntries(974440);
+
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
+   ci = TColor::GetColor("#99ccff");
+   h_l1j1_Eta__1->SetFillColor(ci);
+   h_l1j1_Eta__1->SetFillStyle(0);
+
+   ci = TColor::GetColor("#ff0000");
+   h_l1j1_Eta__1->SetLineColor(ci);
+   h_l1j1_Eta__1->SetLineWidth(3);
+   h_l1j1_Eta__1->GetXaxis()->SetTitle("Leading jet #eta");
+   h_l1j1_Eta__1->GetXaxis()->SetRange(1,100);
+   h_l1j1_Eta__1->GetXaxis()->SetLabelSize(0.035);
+   h_l1j1_Eta__1->GetXaxis()->SetTitleSize(0.035);
+   h_l1j1_Eta__1->GetYaxis()->SetTitle("Entries");
+   h_l1j1_Eta__1->GetYaxis()->SetLabelSize(0.035);
+   h_l1j1_Eta__1->GetYaxis()->SetTitleSize(0.035);
+   h_l1j1_Eta__1->GetYaxis()->SetTitleOffset(1.4);
+   h_l1j1_Eta__1->GetZaxis()->SetLabelFont(42);
+   h_l1j1_Eta__1->GetZaxis()->SetLabelSize(0.035);
+   h_l1j1_Eta__1->GetZaxis()->SetTitleSize(0.035);
+   h_l1j1_Eta__1->GetZaxis()->SetTitleFont(42);
+   h_l1j1_Eta__1->Draw("");
+   
+   TH1D *h_l1j1_Eta__2 = new TH1D("h_l1j1_Eta__2","h_l1j1_Eta",50,-6,6);
+   h_l1j1_Eta__2->SetBinContent(7,4939);
+   h_l1j1_Eta__2->SetBinContent(8,15950);
+   h_l1j1_Eta__2->SetBinContent(9,10680);
+   h_l1j1_Eta__2->SetBinContent(10,13051);
+   h_l1j1_Eta__2->SetBinContent(11,29892);
+   h_l1j1_Eta__2->SetBinContent(13,17204);
+   h_l1j1_Eta__2->SetBinContent(14,32164);
+   h_l1j1_Eta__2->SetBinContent(15,13226);
+   h_l1j1_Eta__2->SetBinContent(16,37431);
+   h_l1j1_Eta__2->SetBinContent(17,23523);
+   h_l1j1_Eta__2->SetBinContent(18,26106);
+   h_l1j1_Eta__2->SetBinContent(19,15702);
+   h_l1j1_Eta__2->SetBinContent(20,21952);
+   h_l1j1_Eta__2->SetBinContent(21,21708);
+   h_l1j1_Eta__2->SetBinContent(22,20644);
+   h_l1j1_Eta__2->SetBinContent(23,13032);
+   h_l1j1_Eta__2->SetBinContent(24,19572);
+   h_l1j1_Eta__2->SetBinContent(25,19478);
+   h_l1j1_Eta__2->SetBinContent(26,19647);
+   h_l1j1_Eta__2->SetBinContent(27,19885);
+   h_l1j1_Eta__2->SetBinContent(28,13199);
+   h_l1j1_Eta__2->SetBinContent(29,21015);
+   h_l1j1_Eta__2->SetBinContent(30,21936);
+   h_l1j1_Eta__2->SetBinContent(31,22297);
+   h_l1j1_Eta__2->SetBinContent(32,15482);
+   h_l1j1_Eta__2->SetBinContent(33,25962);
+   h_l1j1_Eta__2->SetBinContent(34,23158);
+   h_l1j1_Eta__2->SetBinContent(35,37229);
+   h_l1j1_Eta__2->SetBinContent(36,13444);
+   h_l1j1_Eta__2->SetBinContent(37,32249);
+   h_l1j1_Eta__2->SetBinContent(38,16826);
+   h_l1j1_Eta__2->SetBinContent(40,30304);
+   h_l1j1_Eta__2->SetBinContent(41,12908);
+   h_l1j1_Eta__2->SetBinContent(42,10615);
+   h_l1j1_Eta__2->SetBinContent(43,16196);
+   h_l1j1_Eta__2->SetBinContent(44,5042);
+   h_l1j1_Eta__2->SetEntries(713648);
+
+   ci = TColor::GetColor("#99ccff");
+   h_l1j1_Eta__2->SetFillColor(ci);
+   h_l1j1_Eta__2->SetFillStyle(0);
+
+   ci = TColor::GetColor("#000099");
+   h_l1j1_Eta__2->SetLineColor(ci);
+   h_l1j1_Eta__2->SetLineWidth(3);
+   h_l1j1_Eta__2->GetXaxis()->SetTitle("Leading jet #eta");
+   h_l1j1_Eta__2->GetXaxis()->SetRange(1,100);
+   h_l1j1_Eta__2->GetXaxis()->SetLabelSize(0.035);
+   h_l1j1_Eta__2->GetXaxis()->SetTitleSize(0.035);
+   h_l1j1_Eta__2->GetYaxis()->SetTitle("Entries");
+   h_l1j1_Eta__2->GetYaxis()->SetLabelOffset(100);
+   h_l1j1_Eta__2->GetYaxis()->SetLabelSize(0.035);
+   h_l1j1_Eta__2->GetYaxis()->SetTitleSize(0.035);
+   h_l1j1_Eta__2->GetYaxis()->SetTitleOffset(100);
+   h_l1j1_Eta__2->GetZaxis()->SetLabelFont(42);
+   h_l1j1_Eta__2->GetZaxis()->SetLabelSize(0.035);
+   h_l1j1_Eta__2->GetZaxis()->SetTitleSize(0.035);
+   h_l1j1_Eta__2->GetZaxis()->SetTitleFont(42);
+   h_l1j1_Eta__2->Draw("same");
+   TLatex *   tex = new TLatex(0.75,0.92,"l1t-tsg-v5");
+tex->SetNDC();
+
+   ci = TColor::GetColor("#000099");
+   tex->SetTextColor(ci);
+   tex->SetTextFont(44);
+   tex->SetTextSize(23);
+   tex->SetLineWidth(2);
+   tex->Draw();
+      tex = new TLatex(0.75,0.95,"l1t-tsg-v4");
+tex->SetNDC();
+
+   ci = TColor::GetColor("#ff0000");
+   tex->SetTextColor(ci);
+   tex->SetTextFont(44);
+   tex->SetTextSize(23);
+   tex->SetLineWidth(2);
+   tex->Draw();
+   c1->Modified();
+   c1->cd();
+   c1->SetSelected(c1);
+}
