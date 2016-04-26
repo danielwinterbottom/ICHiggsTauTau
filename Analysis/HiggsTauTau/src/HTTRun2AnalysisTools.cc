@@ -826,7 +826,11 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   void HTTRun2Analysis::AddSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
         sample_names_.push_back("GluGluHToTauTau_M-"+m);
-        //sample_names_.push_back("VBF_HToTauTau_M-"+m");
+        sample_names_.push_back("VBFHToTauTau_M-"+m);
+        sample_names_.push_back("WplusHToTauTau_M-"+m);
+        sample_names_.push_back("WminusHToTauTau_M-"+m);
+        sample_names_.push_back("ZHToTauTau_M-"+m);
+        sample_names_.push_back("TTHToTauTau_M-"+m);
     }
   }
 
@@ -1229,7 +1233,11 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                     double fixed_xs) {
     for (auto const& m : masses) {
         hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
-//      hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
+        hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBFHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
+        hmap["WplusH"+infix+m+postfix] = this->GenerateSignal("WplusHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
+        hmap["WminusH"+infix+m+postfix] = this->GenerateSignal("WminusHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
+        hmap["ZH"+infix+m+postfix] = this->GenerateSignal("ZHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
+        hmap["TTH"+infix+m+postfix] = this->GenerateSignal("TTHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
     }
   }
   
