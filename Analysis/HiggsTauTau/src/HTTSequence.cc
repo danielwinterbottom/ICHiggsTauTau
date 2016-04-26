@@ -1163,7 +1163,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     httWeights.set_do_zpt_weight(true);
     httWeights.set_do_dy_soup(true);
     httWeights.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-    httWeights.SetDYInputYields(239058696,65314144 , 20019059, 5701878, 4189017);
+    httWeights.SetDYInputYields(238776168,65314144 , 20019059, 5701878, 4189017);
   }
 
   if (output_name.find("TT-ext") != output_name.npos) httWeights.set_do_topquark_weights(true);
@@ -1172,7 +1172,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
     httWeights.set_do_w_soup(true);
     httWeights.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-    httWeights.SetWInputYields(47161328,45442170,30190119,18319765,8816492);
+    httWeights.SetWInputYields(47101324,45442170,30190119,18007936,8815779);
   }
 
     BuildModule(httWeights);
