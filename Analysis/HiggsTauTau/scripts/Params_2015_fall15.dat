@@ -86,6 +86,11 @@ XS_TT:831.76
 XS_TT-ext:831.76
 XS_GluGluToHToTauTau_M-130:1.0
 XS_GluGluHToTauTau_M-125:2.776
+XS_VBFHToTauTau_M-125:0.2371
+XS_WplusHToTauTau_M-125:0.05266
+XS_WminusHToTauTau_M-125:0.03340
+XS_ZHToTauTau_M-125:0.05542
+XS_TTHToTauTau_M-125:0.03188
 # Using 1pb for now for the higher mass samples which dont have values in the model files
 XS_SUSYGluGluToHToTauTau_M-90:1.0
 XS_SUSYGluGluToHToTauTau_M-100:1.0
@@ -248,6 +253,11 @@ EVT_TT:97994442
 EVT_TT-ext:187626200
 EVT_GluGluHToTauTau_M-125:1498800
 EVT_VBFHToTauTau_M-125:1497868
+EVT_WplusHToTauTau_M-125:441504
+EVT_WminusHToTauTau_M-125:438800
+EVT_ZHToTauTau_M-125:565366
+EVT_TTHToTauTau_M-125:232061
+EVT_TTHToTauTau_M-120:57717
 #ALL Radion are spring15 nrs
 EVT_GluGluToRadionToHHTo2B2Tau_M-250:49600
 EVT_GluGluToRadionToHHTo2B2Tau_M-260:50000
