@@ -244,7 +244,6 @@ int main(int argc, char* argv[]){
    
  ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (add_sm_background != "") {
-    std::cout<<"aaaa"<<std::endl;
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 	}
 	if(!no_central) ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
