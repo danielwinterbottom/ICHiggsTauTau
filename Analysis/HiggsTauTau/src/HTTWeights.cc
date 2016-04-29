@@ -1426,7 +1426,7 @@ namespace ic {
       eventInfo->set_weight("emu_m_fakerate", mufakerate);
     }
 
-    if (do_etau_fakerate_) {
+    if (do_etau_fakerate_ && era_!=era::data_2015) {
       std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
       ic::erase_if(parts, !(boost::bind(&GenParticle::status, _1) == 3));
       ic::erase_if(parts, ! ((boost::bind(&GenParticle::pdgid, _1) == 11)||(boost::bind(&GenParticle::pdgid, _1) == -11)) );
@@ -1459,6 +1459,16 @@ namespace ic {
             }
           }
         }
+      }
+    }
+
+    if (do_etau_fakerate_ && era_==era::data_2015) {
+      unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+      if(gm2_==1||gm2_==3){
+        if(fabs(tau->eta()) < 1.5){
+           eventInfo->set_weight("etau_fakerate",1.80);
+        } else eventInfo->set_weight("etau_fakerate",1.30);
       }
     }
 
