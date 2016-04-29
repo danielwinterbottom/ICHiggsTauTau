@@ -1138,9 +1138,11 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,//{
           wjets_ss_vals);
-        } else if (method == 15){
+        } else if (method == 15 && !do_ss_){
          qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.0,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt+"*wt_em_qcd",ValueFnMap());
-        } 
+        } else if (method ==15 && do_ss_){
+         qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.0,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,ValueFnMap());
+        }
       } else {
         if(method == 8){
           qcd_norm = this->GetRateViaTauTauQCDMethod(this->ResolveSamplesAlias("data_samples"),qcd_sdb_cat,qcd_cat,qcd_extrap_sel,qcd_sdb_sel,qcd_sdb_cat, qcd_sub_samples, wt, ValueFnMap());
@@ -1165,9 +1167,12 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
             if(method == 14) qcd_shape_cat = "n_jets<=1 && n_loose_bjets>=1 &&" +alias_map_["baseline"];
           qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, //{
           wjets_ss_vals);
-        } else if (method == 15){
+        } else if (method == 15 &&  !do_ss_){
           qcd_shape_cat += "&&" + alias_map_["baseline"];
           qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt+"*wt_em_qcd",ValueFnMap());
+        } else if (method == 15 && do_ss_){
+          qcd_shape_cat += "&&" + alias_map_["baseline"];
+          qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt,ValueFnMap());
         } else {
           if (method == 9 || method == 11 ||method == 13) {
               qcd_shape_cat += "&&" + this->ResolveAlias("qcd_loose_shape");
