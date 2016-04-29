@@ -1153,6 +1153,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
   if (!is_data ) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
+    if(channel == channel::et) httWeights.set_do_etau_fakerate(true);
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos) || output_name.find("DYJetsToLL_M-150-LO")!=output_name.npos){
