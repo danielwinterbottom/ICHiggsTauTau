@@ -73,9 +73,16 @@ namespace ic {
     };
     bkg_schemes_["em_default"] = {
       PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"QCD"}            ,TColor::GetColor(250,202,255)),
-      PlotBkgComponent("ewk","Electroweak"          ,{"VV"}              ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("ewk","Electroweak"          ,{"VV","W","ZLL"}              ,TColor::GetColor(222, 90,106)),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}            ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,TColor::GetColor(248,206,104))
+    };
+    bkg_schemes_["em_with_zmm"] = {
+      PlotBkgComponent("ewk","Diboson"          ,{"VV"}              ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("wjets","W+jets"          ,{"W"}              ,TColor::GetColor(300, 90,106)),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}            ,TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT","ZLL"}              ,TColor::GetColor(248,206,104)),
+      PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"QCD"}            ,TColor::GetColor(250,202,255))
     };
     //For start of run 2 before data
     bkg_schemes_["em_no_qcd"] = {
