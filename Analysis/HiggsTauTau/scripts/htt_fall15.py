@@ -222,6 +222,9 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'DY2JetsToLL_M-50-LO',
     'DY3JetsToLL_M-50-LO',
     'DY4JetsToLL_M-50-LO',
+    'WGToLNuG',
+    'WGstarToLNuEE',
+    'WGstarToLNuMuMu',
      ]
 
   if options.qcd_study:

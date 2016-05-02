@@ -523,7 +523,8 @@ namespace ic {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
      "WWTo1L1Nu2Q",
      "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q"
+     "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q",
+     "WGToLNuG"
     };
 
     if(!is_fall15_){
@@ -705,7 +706,8 @@ namespace ic {
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
-   "W3JetsToLNu-LO","W4JetsToLNu-LO"
+   "W3JetsToLNu-LO","W4JetsToLNu-LO",
+   "WGToLNuG"
    };
   if(!is_fall15_){
     samples_alias_map_["qcd_sub_samples"] = {
@@ -771,6 +773,13 @@ samples_alias_map_["wjets_samples"] = {
   "W1JetsToLNu-LO","W2JetsToLNu-LO",
   "W3JetsToLNu-LO","W4JetsToLNu-LO"
  };
+if(ch_==channel::em) {
+    samples_alias_map_["wjets_samples"] = {
+      "WJetsToLNu-LO",
+      "W1JetsToLNu-LO","W2JetsToLNu-LO",
+      "W3JetsToLNu-LO","W4JetsToLNu-LO"
+     };
+}
 
 if(!is_fall15_){
 
@@ -1372,6 +1381,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       PrintValue(qcd_map_label+postfix, qcd_pair.second);
       total_bkr = ValueAdd(total_bkr, qcd_pair.second);
       hmap[qcd_map_label+postfix] = qcd_pair;
+      total_hist.Add(&hmap["QCD"+postfix].first,1.0);
     }
     // Print the total background yield
     PrintValue("Total"+postfix, total_bkr);
