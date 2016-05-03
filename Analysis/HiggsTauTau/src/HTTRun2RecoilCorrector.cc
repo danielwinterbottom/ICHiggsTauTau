@@ -53,7 +53,7 @@ namespace ic {
 
    if(met_scale_mode_ > 0 || met_res_mode_ > 0) disable_met_sys =false;
    
-    if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) ){
+    if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) || (sample_.find("WG")!=sample_.npos)){
       disable_recoil_corrs = false;
       is_wjets = true;
     }
