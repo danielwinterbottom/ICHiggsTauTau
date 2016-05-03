@@ -523,8 +523,7 @@ namespace ic {
      "T-tW", "Tbar-tW", "T-t","Tbar-t",
      "WWTo1L1Nu2Q",
      "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-     "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-     "WGToLNuG"
+     "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q"
     };
 
     if(!is_fall15_){
@@ -543,6 +542,9 @@ namespace ic {
     };
   }*/
 
+    samples_alias_map_["wgam_samples"] = {
+     "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
+    };
 
 
     samples_alias_map_["top_samples"] = {
@@ -707,7 +709,7 @@ namespace ic {
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
    "W3JetsToLNu-LO","W4JetsToLNu-LO",
-   "WGToLNuG"
+   "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
    };
   if(!is_fall15_){
     samples_alias_map_["qcd_sub_samples"] = {
@@ -793,6 +795,7 @@ if(!is_fall15_){
 sample_names_={};
 push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("vv_samples"));
+push_back(sample_names_,this->ResolveSamplesAlias("wgam_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("wjets_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("top_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
@@ -1049,6 +1052,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       % "vv_samples" % sel % vv_shape_cat % wt;
     SetNorm(&vv_hist, vv_norm.first);
     return std::make_pair(vv_hist, vv_norm);
+  }
+  
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateWGamma(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateWGamma] ---------------------------------------------------------\n";
+    cat += "&&" + alias_map_["baseline"];
+    std::vector<std::string> wgam_samples = this->ResolveSamplesAlias("wgam_samples");
+    auto wgam_norm = this->GetLumiScaledRate(wgam_samples, sel, cat, wt);
+    std::string wgam_shape_cat = cat;
+    TH1F wgam_hist = this->GetLumiScaledShape(var, wgam_samples, sel, wgam_shape_cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % "wgam_samples" % sel % wgam_shape_cat % wt;
+    SetNorm(&wgam_hist, wgam_norm.first);
+    return std::make_pair(wgam_hist, wgam_norm);
   }
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
@@ -1366,13 +1382,34 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       hmap[ztt_map_label+postfix] = ztt_pair;
       total_hist.Add(&hmap[ztt_map_label+postfix].first,1.0);
     }    // W+jets
-//    if (ch_ != channel::em) {
+    if (ch_ != channel::em) {
       auto w_pair = this->GenerateW(method, var, sel, cat, wt);
       PrintValue("W"+postfix, w_pair.second);
       total_bkr = ValueAdd(total_bkr, w_pair.second);
       hmap["W"+postfix] = w_pair;
       total_hist.Add(&hmap["W"+postfix].first,1.0);
- //   }
+    }
+    else if (ch_ == channel::em) {
+      auto w_pair = this->GenerateW(method, var, sel, cat, wt);
+      PrintValue("WJets"+postfix, w_pair.second);
+      total_bkr = ValueAdd(total_bkr, w_pair.second);
+      hmap["WJets"+postfix] = w_pair;
+      total_hist.Add(&hmap["WJets"+postfix].first,1.0);
+      
+      auto wgam_pair = this->GenerateWGamma(method, var, sel, cat, wt);
+      PrintValue("WGam"+postfix, wgam_pair.second);
+      total_bkr = ValueAdd(total_bkr, wgam_pair.second);
+      hmap["WGam"+postfix] = wgam_pair;
+      total_hist.Add(&hmap["WGam"+postfix].first,1.0);
+      
+      TH1F total_W = hmap["WJets"+postfix].first; 
+      Value total_W_norm;
+      total_W_norm = ValueAdd(total_W_norm, w_pair.second);
+      total_W_norm = ValueAdd(total_W_norm, wgam_pair.second);
+      total_W.Add(&hmap["WGam"+postfix].first,1.0);
+      hmap["W"+postfix] = std::make_pair(total_W,total_W_norm);
+      PrintValue("W"+postfix, total_W_norm);
+    }
     // QCD/Fakes
     if(ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
       auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);

@@ -81,6 +81,7 @@ namespace ic {
       HistValuePair GenerateZLL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateWGamma(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs = -1.0);

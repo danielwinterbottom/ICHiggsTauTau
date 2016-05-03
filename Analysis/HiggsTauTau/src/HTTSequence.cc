@@ -588,6 +588,17 @@ void HTTSequence::BuildSequence(){
  BuildModule(lumiMask);
  }
 
+if(strategy_type == strategy::fall15 && output_name.find("WGToLNuG")!=output_name.npos){
+  SimpleCounter<GenParticle> wgammaStarFilter = SimpleCounter<GenParticle>("WgammaStarSelector")
+    .set_input_label("genParticles")
+    .set_predicate(
+      (bind(&GenParticle::status,_1) == 44) &&
+      (bind(abs,(bind(&GenParticle::pdgid, _1))) == 22))
+    .set_min(0).set_max(0);
+ 
+  BuildModule(wgammaStarFilter);
+}
+
 
 if(ztautau_mode > 0 && strategy_type != strategy::spring15 && strategy_type != strategy::fall15){
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")

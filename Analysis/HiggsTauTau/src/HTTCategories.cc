@@ -316,6 +316,8 @@ namespace ic {
           outtree_->Branch("emu_csv",           &emu_csv_);
           outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
           outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
+          outtree_->Branch("dz_1",              &dz_1_.var_double);
+          outtree_->Branch("dz_2",              &dz_2_.var_double);
         }
         if(add_Hhh_variables_) {
           outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);

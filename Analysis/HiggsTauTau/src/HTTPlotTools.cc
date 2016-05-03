@@ -79,7 +79,8 @@ namespace ic {
     };
     bkg_schemes_["em_with_zmm"] = {
       PlotBkgComponent("ewk","Diboson"          ,{"VV"}              ,TColor::GetColor(222, 90,106)),
-      PlotBkgComponent("wjets","W+jets"          ,{"W"}              ,TColor::GetColor(300, 90,106)),
+      PlotBkgComponent("wjets","W+jets"          ,{"WJets"}              ,TColor::GetColor(232, 54,38)),
+      PlotBkgComponent("wgam","W+#gamma"          ,{"WGam"}              ,TColor::GetColor(79, 14,60)),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}            ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT","ZLL"}              ,TColor::GetColor(248,206,104)),
       PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"QCD"}            ,TColor::GetColor(250,202,255))
