@@ -1,0 +1,111 @@
+***********************************************************************
+
+tautau signal efficiency vs rate for DoubleIsoTau20 + VBFJetsAve40Mjj450DeltaEta3 with different eta restrictions:
+
+1. No eta restrictions to jets or taus:
+
+signal efficiency =  0.00920405
+rate = 1.76225 kHz
+
+2. Iso taus restricted to < 2.1:
+
+signal efficiency = 0.00862236  (-6.3%)
+rate =  1.0959 kHz (-37.8%)
+
+3. Iso taus restricted to < 2.1 and at least 1 jet with eta > 2.1:
+
+signal efficiency =  0.00833887 (-9.4%)
+rate = 0.919674 kHz (-47.8%)
+
+4. Iso taus restricted to < 2.1 and both jets with eta > 2.1:
+
+signal efficiency = 0.00374 (-59.4%)
+rate = 0.143183  kHz (-91.9%)
+
+DoubleIsoTau28er Signal efficeincy = 0.0054567
+
+3. Has +52.8% increase in rate compared DoubleIsoTau28er.
+
+Combining 3. with DoubleIsoTau28er gives signal efficiency = 0.00908225
+this gives +66.4% total increase in signal efficiency.
+
+Seed DiJetAvePt40VecPt50Mjj450DeltaEta3_1Jeter_DoubleIsoTau15er rate vs efficincy:
+
+signal efficiency = 0.0106845
+rate = 1.00779 kHz
+
+Has +95.8% increase in signal efficiency compared to DoubleIsoMu28er.
+
+Combining with DoubleIsoMu28er gives a total efficiency = 0.0115119
+this gives +110.9% total increase in signal efficiency. 
+
+***********************************************************************
+
+etau signal efficiency vs rate for IsoEG7 + VBFJetsAve40Mjj400DeltaEta3 with different eta restrictions:
+
+1. No eta restrictions to jets or egammas:
+
+signal efficiency =  0.0200177
+rate = 1.0959 kHz
+
+2. Iso egamma restricted to < 2.1:
+
+signal efficiency = 0.019357  (-3.3%)
+rate =  0.748956 kHz (-31.7%)
+
+3. Iso egamma restricted to < 2.1 and at least 1 jet with eta > 2.1:
+
+signal efficiency = 0.0188056 (-6.1%)
+rate = 0.682872 kHz (-37.7%)
+
+4. Iso egamma restricted to < 2.1 and both jets with eta > 2.1:
+
+signal efficiency = 0.00838437 (-58.1%)
+rate = 0.0826055 kHz (-92.5%)
+
+SingleIsoEG22er OR SingleIsoEG24 OR SingleEG40 signal efficiency = 0.0154837 
+
+3. Has +21.5% increase in rate compared to single egamma triggers.
+
+Combining 3. with single egammas triggers gives signal efficiency = 0.021248
+this gives +37.2% total increase in signal efficiency.
+
+***********************************************************************
+
+mutau signal efficiency vs rate for Mu5 + VBFJetsAve40Mjj400DeltaEta3 with different eta restrictions:
+
+1. No eta restrictions to jets or muon:
+
+signal efficiency = 0.0423547 
+rate = 0.473605 kHz
+
+2. muon restricted to < 2.1:
+
+signal efficiency = 0.0407781 (-3.7%)
+rate = 0.396506 kHz (-16.3%)
+
+3. muon restricted to < 2.1 and at least 1 jet with eta > 2.1:
+
+signal efficiency = 0.0396818 (-6.3%)
+rate =  0.35245 kHz (-25.6%)
+
+SingleMu20er OR SingleMu22 signal efficiency = 0.028266
+
+1. Has +49.8% increase in rate compared to single muon triggers.
+
+Combining 1. with above triggers gives signal efficiency = 0.0451952
+this gives +59.9% total increase in signal efficiency.
+
+***********************************************************************
+
+emu signal efficiency for DiJetsAve40Mjj400DeltaEta3_Mu5 OR DiJetsAve40Mjj400DeltaEta3_1Jeter_IsoEG7er:
+
+signal efficiency =  0.0552317
+
+Mu20_EG15 OR Mu5_EG20 OR Mu5_IsoEG18 OR SingleMu20er OR SingleMu22 signal efficiency = 0.0534097
+
+Combined VBF triggers have +3.4% increase in rate compared to single muon/egamma triggers.
+
+Combining VBF with above triggers gives signal efficiency = 0.0580427 
+this gives +8.7% total increase in signal efficiency.
+

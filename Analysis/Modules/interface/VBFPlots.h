@@ -32,7 +32,7 @@ namespace ic {
     
 class VBFPlots : public ModuleBase {
    public:
-      VBFPlots(std::string const& name, fwlite::TFileService *fs, std::string output_name, double JetsMinPt);
+      VBFPlots(std::string const& name, fwlite::TFileService *fs, std::string output_name, double JetsMinPt, std::string channel);
       virtual ~VBFPlots(); 
       
       virtual int PreAnalysis();
@@ -49,6 +49,8 @@ class VBFPlots : public ModuleBase {
       
       unsigned EventsTotal;
       double JetsOfflineMinPt;
+      
+      std::string channel_;
       
       TH1D *h_q1_Pt;
       TH1D *h_q2_Pt;
@@ -124,6 +126,28 @@ class VBFPlots : public ModuleBase {
       TH1D *h_l1j2_Eta;
       TH1D *h_l1j1_Phi;
       TH1D *h_l1j2_Phi;
+      
+      TH1D* h_VBFJetsWithMaxVariables;
+      
+      TH1D *h_LeadJetEta_Cut;
+      TH1D *h_SubLeadJetEta_Cut;
+      TH2D *h_genjjEta2D;
+      TH2D *h_genjjEta2D_Cut;
+      
+      TH2D *h_l1jjEta2D;
+      TH2D *h_l1jjEta2D_Cut;
+      
+      TH2D *h_etauEta2D;
+      TH2D *h_tautauEta2D;
+      
+      TH1D *h_tauEta;
+      TH1D *h_muonEta;
+      TH1D *h_electronEta;
+      
+      TH1D *h_l1jj_VecPt_NonVBF;
+      TH1D *h_l1jj_VecPt;
+      TH1D *h_l1jj_Diff;
+      TH1D *h_l1jj_DiffOverSum;
 
 };
 }

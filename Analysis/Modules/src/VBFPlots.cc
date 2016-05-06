@@ -10,8 +10,10 @@ struct greater_Candidate{
 
 namespace ic {
 
-  VBFPlots::VBFPlots(std::string const& name, fwlite::TFileService *fs, std::string output_name, double JetsMinPt) : ModuleBase(name) {
+  VBFPlots::VBFPlots(std::string const& name, fwlite::TFileService *fs, std::string output_name, double JetsMinPt, std::string channel) : ModuleBase(name) {
       
+    
+    channel_ = channel;
       
     JetsOfflineMinPt = JetsMinPt;
     
@@ -96,6 +98,14 @@ namespace ic {
     h_l1jj_AvePt = subDir.make<TH1D>("h_l1jj_AvePt","h_l1jj_AvePt",150, 0,300); 
     h_l1jj_AvePt->GetXaxis()->SetTitle("Jets <p_{T}>_{jj} [GeV]");
     h_l1jj_AvePt->GetYaxis()->SetTitle("Entries");
+    
+    h_l1jj_VecPt = subDir.make<TH1D>("h_l1jj_VecPt","h_l1jj_VecPt",150, 0,300); 
+    h_l1jj_VecPt->GetXaxis()->SetTitle("Di-jet p_{T}_{jj} [GeV]");
+    h_l1jj_VecPt->GetYaxis()->SetTitle("Entries");
+    
+    h_l1jj_VecPt_NonVBF = subDir.make<TH1D>("h_l1jj_VecPt_NonVBF","h_l1jj_VecPt_NonVBF",150, 0,300); 
+    h_l1jj_VecPt_NonVBF->GetXaxis()->SetTitle("Di-jet p_{T}_{jj} [GeV]");
+    h_l1jj_VecPt_NonVBF->GetYaxis()->SetTitle("Entries");
     
     h_genjj_DeltaEta_NonVBF = subDir.make<TH1D>("h_genjj_DeltaEta_NonVBF","h_genjj_DeltaEta_NonVBF",100, 0,10);
     h_genjj_DeltaEta_NonVBF->GetXaxis()->SetTitle("|#Delta#eta_{jj}|");
@@ -192,11 +202,11 @@ namespace ic {
     h_PtDiffVsSubPt->GetXaxis()->SetTitle("Sub-Leading jet p_{T} [GeV]");
 
     h_LeadJetEta = subDir.make<TH1D>("h_LeadJetEta","h_LeadJetEta",100, -10,10); 
-    h_LeadJetEta->GetXaxis()->SetTitle("Leading jet #eta");
+    h_LeadJetEta->GetXaxis()->SetTitle("Gen leading jet #eta");
     h_LeadJetEta->GetYaxis()->SetTitle("Entries");
     
     h_SubLeadJetEta = subDir.make<TH1D>("h_SubLeadJetEta","h_SubLeadJetEta",100, -10,10); 
-    h_SubLeadJetEta->GetXaxis()->SetTitle("Sub-Leading jet #eta");
+    h_SubLeadJetEta->GetXaxis()->SetTitle("Gen sub-leading jet #eta");
     h_SubLeadJetEta->GetYaxis()->SetTitle("Entries");
     
     h_SubLeadJetPtRes = subDir.make<TH1D>("h_SubLeadJetPtRes","h_SubLeadJetPtRes",100, -2,2); 
@@ -282,6 +292,67 @@ namespace ic {
     h_l1j2_Phi->GetXaxis()->SetTitle("Sub-Leading jet #phi");
     h_l1j2_Phi->GetYaxis()->SetTitle("Entries");
     
+    h_VBFJetsWithMaxVariables = subDir.make<TH1D>("h_VBFJetsWithMaxVariables","h_VBFJetsWithMaxVariables",6, 0,6); 
+    h_VBFJetsWithMaxVariables->GetYaxis()->SetTitle("Entries");
+    h_VBFJetsWithMaxVariables->GetXaxis()->SetBinLabel(2,"Largest <p_{T}>");
+    h_VBFJetsWithMaxVariables->GetXaxis()->SetBinLabel(3,"Largest m_{jj}");
+    h_VBFJetsWithMaxVariables->GetXaxis()->SetBinLabel(4,"Largest |#Delat#eta|");
+    h_VBFJetsWithMaxVariables->GetXaxis()->SetBinLabel(5,"Largest Max p_{T}");
+    h_VBFJetsWithMaxVariables->GetXaxis()->SetBinLabel(1,"Total");
+    
+    h_LeadJetEta_Cut = subDir.make<TH1D>("h_LeadJetEta_Cut","h_LeadJetEta_Cut",100, -10,10); 
+    h_LeadJetEta_Cut->GetXaxis()->SetTitle("Gen leading jet #eta");
+    h_LeadJetEta_Cut->GetYaxis()->SetTitle("Entries");
+    
+    h_SubLeadJetEta_Cut = subDir.make<TH1D>("h_SubLeadJetEta_Cut","h_SubLeadJetEta_Cut",100, -10,10); 
+    h_SubLeadJetEta_Cut->GetXaxis()->SetTitle("Gen sub-leading jet #eta");
+    h_SubLeadJetEta_Cut->GetYaxis()->SetTitle("Entries");
+    
+    h_genjjEta2D = subDir.make<TH2D>("h_genjjEta2D","h_genjjEta2D",100, -10,10,100, -10,10); 
+    h_genjjEta2D->GetXaxis()->SetTitle("Gen leading jet #eta");
+    h_genjjEta2D->GetYaxis()->SetTitle("Gen sub-leading jet #eta");
+    
+    h_genjjEta2D_Cut = subDir.make<TH2D>("h_genjjEta2D_Cut","h_genjjEta2D_Cut",100, -10,10,100, -10,10); 
+    h_genjjEta2D_Cut->GetXaxis()->SetTitle("Gen leading jet #eta");
+    h_genjjEta2D_Cut->GetYaxis()->SetTitle("Gen sub-leading jet #eta");
+    
+    h_tauEta = subDir.make<TH1D>("h_tauEta","h_tauEta",100, -10,10); 
+    h_tauEta->GetXaxis()->SetTitle("Gen tau #eta");
+    h_tauEta->GetYaxis()->SetTitle("Entries");
+    
+    h_muonEta = subDir.make<TH1D>("h_muonEta","h_muonEta",100, -10,10); 
+    h_muonEta->GetXaxis()->SetTitle("Gen muon #eta");
+    h_muonEta->GetYaxis()->SetTitle("Entries");
+    
+    h_electronEta = subDir.make<TH1D>("h_electronEta","h_electronEta",100, -10,10); 
+    h_electronEta->GetXaxis()->SetTitle("Gen electron #eta");
+    h_electronEta->GetYaxis()->SetTitle("Entries");
+    
+    h_etauEta2D = subDir.make<TH2D>("h_etauEta2D","h_etauEta2D",100, -10,10,100, -10,10); 
+    h_etauEta2D->GetXaxis()->SetTitle("Gen tau #eta");
+    h_etauEta2D->GetYaxis()->SetTitle("Gen electron #eta");
+    
+    h_tautauEta2D = subDir.make<TH2D>("h_tautauEta2D","h_tautauEta2D",100, -10,10,100, -10,10); 
+    h_tautauEta2D->GetXaxis()->SetTitle("Gen leading tau_{vis} #eta");
+    h_tautauEta2D->GetYaxis()->SetTitle("Gen sub-leading tau_{vis} #eta");
+    
+    h_l1jjEta2D = subDir.make<TH2D>("h_l1jjEta2D","h_l1jjEta2D",100, -6,6,100, -6,6); 
+    h_l1jjEta2D->GetXaxis()->SetTitle("L1 leading VBF jet #eta");
+    h_l1jjEta2D->GetYaxis()->SetTitle("L1 sub-leading VBF jet #eta");
+    
+    h_l1jjEta2D_Cut = subDir.make<TH2D>("h_l1jjEta2D_Cut","h_l1jjEta2D_Cut",100, -6,6,100, -6,6); 
+    h_l1jjEta2D_Cut->GetXaxis()->SetTitle("L1 leading VBF jet #eta");
+    h_l1jjEta2D_Cut->GetYaxis()->SetTitle("L1 sub-leading VBF jet #eta");
+    
+    h_l1jj_DiffOverSum = subDir.make<TH1D>("h_l1jj_DiffOverSum","h_l1jj_DiffOverSum",100, 0,1); 
+    h_l1jj_DiffOverSum->GetXaxis()->SetTitle("Di-jet #Delta p_{T}/#Sigma p_{T} [GeV]");
+    h_l1jj_DiffOverSum->GetYaxis()->SetTitle("Entries");
+    
+    h_l1jj_Diff = subDir.make<TH1D>("h_l1jj_Diff","h_l1jj_Diff",100, 0,150); 
+    h_l1jj_Diff->GetXaxis()->SetTitle("Di-jet #Delta p_{T} [GeV]");
+    h_l1jj_Diff->GetYaxis()->SetTitle("Entries");
+    
+    
     EventsTotal=0;
 
   }
@@ -309,7 +380,63 @@ namespace ic {
   n_genjets_ = genjets.size();
   n_genParticles_ = GenParticles.size();
   n_l1jets_ = l1jets.size();
-
+  
+  double electronEta=0;
+  double tauEta=0;
+  double tau1Eta=0;
+  double tau2Eta=0;
+  double tau1Pt=0;
+  double tau2Pt=0;
+  int tauCount =0;
+  int electronCount=0;
+  
+  for(unsigned j=0; j< n_genParticles_; j++){
+      int ID = std::fabs(GenParticles[j]->pdgid());
+      bool isPrompt =  false;
+      if(GenParticles[j]->statusFlags().at(0) || GenParticles[j]->statusFlags().at(5)) isPrompt = true; 
+      
+      if(ID == 15){
+          
+          ic::Candidate tausVis;
+          
+          for(unsigned k=0; k < GenParticles[j]->daughters().size(); k++){
+              if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 13) isPrompt = false;  
+              if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 16) tausVis.set_vector(GenParticles[j]->vector() - GenParticles[GenParticles[j]->daughters().at(k)]->vector());
+          }
+          
+          if(isPrompt){
+              h_tauEta->Fill(tausVis.vector().Rapidity());
+              if(tauCount == 0){
+                  tauEta = tausVis.vector().Rapidity();
+                  tau1Eta = tausVis.vector().Rapidity(); 
+                  tau1Pt = tausVis.vector().Pt();
+              }
+              if(tauCount == 1){
+                  tau2Eta = tausVis.vector().Rapidity();
+                  tau2Pt = tausVis.vector().Pt();
+              }
+              tauCount++;
+          }
+      }
+      
+      if(ID == 11 && isPrompt){
+          h_electronEta->Fill(GenParticles[j]->vector().Rapidity());
+          if(electronCount == 0) electronEta = GenParticles[j]->vector().Rapidity();
+          electronCount++;
+      }
+      if(ID == 13 && isPrompt) h_muonEta->Fill(GenParticles[j]->vector().Rapidity());
+  }
+  
+  double temp;
+  if(tau2Pt > tau1Pt){
+      temp = tau1Eta;
+      tau1Eta = tau2Eta;
+      tau2Eta = temp;
+  }
+  
+  if(channel_ == "et" && tauCount > 0 && electronCount > 0) h_etauEta2D->Fill(tauEta, electronEta);
+  if(channel_ == "tt" && tauCount > 1) h_tautauEta2D->Fill(tau1Eta, tau2Eta);
+    
   if(n_jets_ > 1) if(jets[0]->vector().Pt() < JetsOfflineMinPt || jets[1]->vector().Pt() < JetsOfflineMinPt){
       return 0;
   }
@@ -334,10 +461,12 @@ namespace ic {
       h_qq_AvePt->Fill(AvePt);
   }
   
+  
   double DeltaRMin1 = 100000;
   double DeltaRMin2 = 100000;
   int genjetIndex1 = -1;
   int genjetIndex2 = -1;
+  
   
   for(unsigned i=0; i< n_genjets_; i++){
       
@@ -408,6 +537,19 @@ namespace ic {
       h_LeadJetEta->Fill(genjets[genjetIndex1]->vector().Rapidity());
       h_SubLeadJetEta->Fill(genjets[genjetIndex2]->vector().Rapidity());
       h_genjets_Index->Fill(genjetIndex1,genjetIndex2);
+      
+      h_genjjEta2D->Fill(genjets[genjetIndex1]->vector().Rapidity(), genjets[genjetIndex2]->vector().Rapidity());
+      
+      double genMjj = (genjets[genjetIndex1]->vector() + genjets[genjetIndex2]->vector()).M();
+      double genDeltaEta = std::fabs(genjets[genjetIndex1]->vector().Rapidity() - genjets[genjetIndex2]->vector().Rapidity());
+      
+      if(genMjj > 400. && genDeltaEta > 3.){
+          
+          h_LeadJetEta_Cut->Fill(genjets[genjetIndex1]->vector().Rapidity());
+          h_SubLeadJetEta_Cut->Fill(genjets[genjetIndex2]->vector().Rapidity());
+          h_genjjEta2D_Cut->Fill(genjets[genjetIndex1]->vector().Rapidity(), genjets[genjetIndex2]->vector().Rapidity());
+          
+      }
       
       if(std::fabs(genjets[genjetIndex1]->vector().Rapidity()) < 5 && std::fabs(genjets[genjetIndex2]->vector().Rapidity()) < 5){
           
@@ -577,6 +719,9 @@ namespace ic {
                           h_l1j2_Pt_NonVBF->Fill(Pt2);
                           h_l1jj_Mqq_NonVBF->Fill(Mjj);
                           h_l1jj_DeltaEta_NonVBF->Fill(DeltaEta);
+                          h_l1jj_VecPt_NonVBF->Fill((l1jets[i]->vector() + l1jets[j]->vector()).Pt());
+                          h_l1jj_DiffOverSum->Fill((l1jets[i]->vector().Pt() - l1jets[j]->vector().Pt())/(l1jets[i]->vector().Pt() + l1jets[j]->vector().Pt()));
+                          h_l1jj_Diff->Fill(std::fabs(l1jets[i]->vector().Pt() - l1jets[j]->vector().Pt()));
                       }
                   }
               }
@@ -619,6 +764,7 @@ namespace ic {
               h_l1j2_Pt->Fill(Pt2);
               h_l1jj_DeltaEta->Fill(DeltaEta);
               h_l1jj_Mqq->Fill(Mjj);
+              h_l1jj_VecPt->Fill((l1jets[l1jetIndex1]->vector() + l1jets[l1jetIndex2]->vector()).Pt());
               
               double genMjj = (genjets[genjetIndex1]->vector() + genjets[genjetIndex2]->vector()).M();
               double genDeltaEta = std::fabs(genjets[genjetIndex1]->vector().Rapidity() - genjets[genjetIndex2]->vector().Rapidity());
@@ -646,10 +792,46 @@ namespace ic {
               h_l1j2_Eta->Fill(l1jets[l1jetIndex2]->vector().Rapidity());
               h_l1j1_Phi->Fill(l1jets[l1jetIndex1]->vector().Phi());
               h_l1j2_Phi->Fill(l1jets[l1jetIndex2]->vector().Phi());
+              
+              bool largestAvePt =true;
+              bool largestMjj=true;
+              bool largestDeltaEta=true;
+              bool largestMaxPt=true;
+              
+              for(unsigned i=0; i<n_l1jets_; i++){
+                  for(unsigned j=i+1; j<n_l1jets_; j++){
+                      
+                      double MjjAll = (l1jets[i]->vector() + l1jets[j]->vector()).M();
+                      double DeltaEtaAll = std::fabs(l1jets[i]->vector().Rapidity() - l1jets[j]->vector().Rapidity());
+                      double AvePtAll = (l1jets[i]->vector().Pt() + l1jets[j]->vector().Pt())/2;
+                      double PtMaxAll = std::max(l1jets[i]->vector().Pt() , l1jets[j]->vector().Pt());
+                      
+                      if(MjjAll > Mjj) largestMjj = false;
+                      if(DeltaEtaAll > DeltaEta) largestDeltaEta =false;
+                      if(AvePtAll > AvePt) largestAvePt = false;
+                      if(PtMaxAll > std::max(l1jets[l1jetIndex1]->vector().Pt() , l1jets[l1jetIndex2]->vector().Pt())) largestMaxPt = false;
+                    
+                  }
+              }
+              
+              h_VBFJetsWithMaxVariables->Fill(0);
+              if(largestAvePt) h_VBFJetsWithMaxVariables->Fill(1);
+              if(largestMjj) h_VBFJetsWithMaxVariables->Fill(2);
+              if(largestDeltaEta) h_VBFJetsWithMaxVariables->Fill(3);
+              if(largestMaxPt) h_VBFJetsWithMaxVariables->Fill(4);
+              
+              h_l1jjEta2D->Fill(l1jets[l1jetIndex1]->vector().Rapidity(), l1jets[l1jetIndex2]->vector().Rapidity());
+              
+              double l1Mjj = (l1jets[l1jetIndex1]->vector() + l1jets[l1jetIndex2]->vector()).M();
+              double l1DeltaEta = std::fabs(l1jets[l1jetIndex1]->vector().Rapidity() - l1jets[l1jetIndex2]->vector().Rapidity());
+              
+              if(l1Mjj > 400. && l1DeltaEta > 3.) h_l1jjEta2D_Cut->Fill(l1jets[l1jetIndex1]->vector().Rapidity(), l1jets[l1jetIndex2]->vector().Rapidity());
           }
           
       }
   }
+  
+  
 
   return 0;
       

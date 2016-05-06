@@ -17,7 +17,6 @@ namespace ic {
   VBFFilter::VBFFilter(std::string const& name, struct OfflineCuts offlineCuts) : ModuleBase(name) {
 
     jets_label_ = "ak4PFJetsCHS"; 
-    
     JetPtCut = offlineCuts.Jet1Pt;
     EtaCut = 4.7;
     DeltaEtaCut = offlineCuts.DeltaEta;

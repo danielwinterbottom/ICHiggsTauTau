@@ -337,14 +337,12 @@ int main(int argc, char* argv[]){
     if (channel == channel::etmet) elec_pt = 13.0;
     
     if (era == era::trigger_2016) {
-      //elec_pt = offlineCuts.ElPt;
-      elec_pt = 0;
-      elec_eta = 2.1;
+      
+      elec_pt = offlineCuts.ElPt;
       muon_pt = 18;
       muon_eta = 2.4;
       elec_eta = 2.4;
       tau_pt = offlineCuts.Tau1Pt;
-      //tau_pt = 0;
       tau_eta = 2.3;
   }
   }
@@ -380,11 +378,9 @@ int main(int argc, char* argv[]){
     if (era == era::trigger_2016) {
       elec_pt = 23.0;
       muon_pt = offlineCuts.MuPt;
-      //muon_pt = 0;
       muon_eta = 2.4;
       elec_eta = 2.4; 
       tau_pt = offlineCuts.Tau1Pt;
-      //tau_pt = 0;
       tau_eta = 2.3;
   }
   }
@@ -428,9 +424,7 @@ int main(int argc, char* argv[]){
     }
     if (era == era::trigger_2016) {
       elec_pt = offlineCuts.ElPt;
-      //elec_pt = 0;
       muon_pt = offlineCuts.MuPt;
-      //muon_pt =0;
       muon_eta = 2.4;
       elec_eta = 2.4; 
       tau_pt = 20;
@@ -458,7 +452,6 @@ int main(int argc, char* argv[]){
       elec_eta = 2.4;
       muon_pt = 18;
       tau_pt = offlineCuts.Tau1Pt;
-      //tau_pt = 0;
       tau_eta = 2.3;
   }
     }  
@@ -624,7 +617,7 @@ int main(int argc, char* argv[]){
       }
     } 
   }
-
+    
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>("SelElectronFilter")
     .set_input_label("selElectrons")
     .set_predicate(
@@ -1027,10 +1020,11 @@ int main(int argc, char* argv[]){
     
   VBFFilter vBFFilter = VBFFilter("VBFFilter", offlineCuts);
   
-  VBFPlots vBFPlots = VBFPlots("VBFPlots", fs, "VBFPlots",0);
-  VBFPlots vBFPlotsGenFiltered = VBFPlots("VBFPlots", fs, "VBFPlotsGenFiltered",0);
-  VBFPlots vBFPlots20 = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPt20",20);
-  VBFPlots vBFPlots30 = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPt30",30);
+  VBFPlots vBFPlots = VBFPlots("VBFPlots", fs, "VBFPlots",0,channel_str);
+  VBFPlots vBFPlotsGenFiltered = VBFPlots("VBFPlots", fs, "VBFPlotsGenFiltered",0,channel_str);
+  VBFPlots vBFPlots20 = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPt20",20,channel_str);
+  VBFPlots vBFPlots30 = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPt30",30,channel_str);
+  VBFPlots vBFPlotsSR = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPtSignalRegion",0,channel_str);
     
   // ------------------------------------------------------------------------------------
   // L1 Trigger Filter
@@ -1038,7 +1032,7 @@ int main(int argc, char* argv[]){
 
   L1TFilterPlots l1TFilterPlots1 = L1TFilterPlots("L1TFilterPlots1", channel_str, fs, l1Cuts, "L1TFilterPlotsPreFiltering", 1);
   L1TFilterPlots l1TFilterPlots2 = L1TFilterPlots("L1TFilterPlots2", channel_str, fs, l1Cuts, "L1TFilterPlotsPostVBFFilter", 1);
-  L1TFilter zeroBiasL1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1Muons", "ZeroBiasL1TFilter");
+  L1TFilter zeroBiasL1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, "L1Muons", "ZeroBiasL1TFilter");//L1Muons
   L1TFilter l1TFilter = L1TFilter("L1TFilter2", channel_str, fs, l1Cuts, "L1Muons", "L1TFilter");
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
@@ -1095,11 +1089,7 @@ int main(int argc, char* argv[]){
   // Trigger Efficiencies
   // ------------------------------------------------------------------------------------ 
 
-  Efficiency efficiency1 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies1", 1, channel_str, l1Cuts);
-  Efficiency efficiency2 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies2", 2, channel_str, l1Cuts);
-  Efficiency efficiency3 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies3", 3, channel_str, l1Cuts);
-  Efficiency efficiency4 = Efficiency("Efficiency", fs, "Efficiencies/TriggerEfficiencies4", 4, channel_str, l1Cuts);
-  Efficiency efficiency5 = Efficiency("Efficiency", fs, "SignalRegionEfficiencies", 5, channel_str, l1Cuts);
+  EfficiencyGenMatch efficiencySR = EfficiencyGenMatch("EfficiencyGenMatch", fs, "SignalRegionEfficiencies", 5, channel_str, l1Cuts);
   
   EfficiencyGenMatch efficiencyGenMatch1 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies1", 1, channel_str, l1Cuts);
   EfficiencyGenMatch efficiencyGenMatch2 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies2", 2, channel_str, l1Cuts);
@@ -1132,7 +1122,7 @@ int main(int argc, char* argv[]){
       if (moriond_tau_scale && channel != channel::em && (!is_data || is_embedded) && !do_skim)          
                                       analysis.AddModule(&httEnergyScale);
       if (to_check.size() > 0)        analysis.AddModule(&httPrint);
-                                      
+      
                                       analysis.AddModule(&vBFPlots);
                                       if(makeEffPlots == 1){
                                           analysis.AddModule(&efficiencyGenMatch1);
@@ -1143,12 +1133,6 @@ int main(int argc, char* argv[]){
                                       analysis.AddModule(&genChannelFilter);
                                       analysis.AddModule(&vBFPlotsGenFiltered);
       
-                                      if(makeEffPlots == 1){
-                                          analysis.AddModule(&efficiency1);
-                                          analysis.AddModule(&efficiency2);
-                                          analysis.AddModule(&efficiency3);
-                                          analysis.AddModule(&efficiency4);
-                                      }
                                       analysis.AddModule(&l1VariableHistograms);
                                       if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots1);
       
@@ -1274,10 +1258,11 @@ int main(int argc, char* argv[]){
                                       if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots2);
                                       if(era == era::trigger_2016) analysis.AddModule(&l1TFilter);
                                       if(makeEffPlots == 1){
-                                          analysis.AddModule(&efficiency5);
+                                          analysis.AddModule(&efficiencySR);
                                       }
                                       analysis.AddModule(&l1VariableHistograms2);
                                       analysis.AddModule(&variableHistograms2);
+                                      analysis.AddModule(&vBFPlotsSR);
 
     
       }
