@@ -18,7 +18,7 @@ using namespace edm;
 using namespace std;
 
 ICVBFGenParticleProducer::ICVBFGenParticleProducer(const edm::ParameterSet& config)
-    : branch_(config.getParameter<std::string>("branch")){
+ {
   
   ps = config;
   
@@ -161,7 +161,7 @@ void ICVBFGenParticleProducer::produce(edm::Event& event,
 }
 
 void ICVBFGenParticleProducer::beginJob() {
-  ic::StaticTree::tree_->Branch(branch_.c_str(), &m_genAnalysisData);
+  ic::StaticTree::tree_->Branch("VBFgenParticles", &m_genAnalysisData);
 
 }
 
