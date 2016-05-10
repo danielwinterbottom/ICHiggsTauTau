@@ -91,6 +91,8 @@ namespace ic {
     h_electron2Pt = subDir.make<TH1D>("h_electron2Pt","h_electron2Pt",100, 0,200);
     h_muon1Pt = subDir.make<TH1D>("h_muon1Pt","h_muon1Pt",100, 0,200); 
     h_muon2Pt = subDir.make<TH1D>("h_muon2Pt","h_muon2Pt",100, 0,200);
+    h_jet1Pt = subDir.make<TH1D>("h_jet1Pt","h_jet1Pt",100, 0,200); 
+    h_jet2Pt = subDir.make<TH1D>("h_jet2Pt","h_jet2Pt",100, 0,200);
     h_jetsMjj = subDir.make<TH1D>("h_jetsMjj","h_jetsMjj",100, 0,1000); 
     h_jetsDeltaEta = subDir.make<TH1D>("h_jetsDeltaEta","h_jetsDeltaEta",100, 0,10); 
     h_jetsAvePt = subDir.make<TH1D>("h_jetsAvePt","h_jetsAvePt",100, 0,200); 

@@ -274,7 +274,7 @@ int main(int argc, char* argv[]){
     L1_infile.open (L1_infile_name);
     unsigned i = 1;
     double in[14];
-    while(L1_infile >> in[0] >> in[1] >> in[2] >> in[3] >> in[4] >> in[5] >> in[6] >> in[7] >> in[8] >> in[9] >> in[10] >> in[11]){
+    while(L1_infile >> in[0] >> in[1] >> in[2] >> in[3] >> in[4] >> in[5] >> in[6] >> in[7] >> in[8] >> in[9] >> in[10] >> in[11] >> in[12] >> in[13]){
       if(i == inputnum){
         l1Cuts.EGPt = in[0];
         l1Cuts.MuPt = in[1];

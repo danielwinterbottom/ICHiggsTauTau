@@ -111,6 +111,8 @@ class L1TFilter : public ModuleBase {
       TH1D *h_electron2Pt;
       TH1D *h_muon1Pt;
       TH1D *h_muon2Pt;
+      TH1D *h_jet1Pt;
+      TH1D *h_jet2Pt;
       TH1D *h_jetsMjj;  
       TH1D *h_jetsDeltaEta; 
       TH1D *h_jetsAvePt; 
