@@ -206,7 +206,7 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
 
 void ICL1ObjectProducer::beginJob() {
     
-  ic::StaticTree::tree_->Branch("L1Muon", &L1Muons_);
+  ic::StaticTree::tree_->Branch("L1Muons", &L1Muons_);
   ic::StaticTree::tree_->Branch("L1Taus", &L1Taus_);
   ic::StaticTree::tree_->Branch("L1EGammas", &L1EGammas_);
   ic::StaticTree::tree_->Branch("L1Jets", &L1Jets_);
