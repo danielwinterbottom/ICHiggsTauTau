@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
   std::string filenametemp;
   TChain *tIn = new TChain("icEventProducer/EventTree");
   std::ifstream infile1;
-  infile1.open("EventTreeAll.dat");
+  infile1.open("OfflineZJets.dat");
  
   int linenumber = 1;
   while(infile1 >> filenametemp){
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]){
   TString filename2;
   TChain *chIn2 = new TChain("icEventProducer/EventTree");
   std::ifstream infile2;
-  infile2.open("TauTau_L1NTuplesV2_l1t-tsg-v5__METEtaRange3p0_v1.dat");
+  infile2.open("L1ZJets.dat");
   while (infile2 >> filename2) chIn2->Add(filename2);
           
   infile2.close();
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
   unsigned nentries2 = chIn2->GetEntries();
   unsigned nentries1 = tIn->GetEntries();
   
-  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/HiggsTaTauEta3/EventTreeMerged_%d.root", num);
+  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/Z2LJets/EventTreeMerged_%d.root", num);
   TFile *fOut = new TFile(outputfilename.c_str(),"RECREATE");
   
   std::cout << "Cloaning offline tree." << std::endl;
@@ -120,76 +120,80 @@ int main(int argc, char* argv[]){
   
   std::cout << "Merging trees..." << std::endl;
   
-  for(unsigned i=0; i<nentries1; i++){
-
-      for(unsigned j=0; j<nentries2; j++){
-          
-          tIn->GetEntry(i);
-          chIn2->GetEntry(j);  
-          
-          // If eventIDs match then fill new branch with copied branches.
-          if(eventInfo1->event() == eventInfo2->event()){
   
-              l1tausnew = l1taus;
-              l1muonsnew = l1muons;
-              l1egammasnew = l1egammas;
-              l1jetsnew = l1jets;
-              l1sumsnew = l1sums;
+  for(unsigned i=0; i<nentries1; i++){
+    
+      tIn->GetEntry(i);
+      
+      if(eventInfo1->event() > 14000 && eventInfo1->event() < 80000000){
+          for(unsigned j=0; j<nentries2; j++){
               
-              tOut->Fill();
-              NEventsMerged++;
-
-              // If a match is found it is likey that the next few preceeding events are also matched so this next part looks to match those events without doing the full loop.
-              bool proceed = true;
-              unsigned jtemp = j+1;
-              unsigned itemp = i+1;
+              chIn2->GetEntry(j);  
               
-              while(proceed){
+              // If eventIDs match then fill new branch with copied branches.
+              if(eventInfo1->event() == eventInfo2->event()){
+          
+                  l1tausnew = l1taus;
+                  l1muonsnew = l1muons;
+                  l1egammasnew = l1egammas;
+                  l1jetsnew = l1jets;
+                  l1sumsnew = l1sums;
                   
-                  tIn->GetEntry(itemp);
-                  chIn2->GetEntry(jtemp);
+                  tOut->Fill();
+                  NEventsMerged++;
+          
+                  // If a match is found it is likey that the next few preceeding events are also matched so this next part looks to match those events without doing the full loop.
+                  bool proceed = true;
+                  unsigned jtemp = j+1;
+                  unsigned itemp = i+1;
                   
-                  if(eventInfo1->event() == eventInfo2->event()){
-                      if(itemp % n_report == 0) std::cout << "Finished merging " << itemp << "th event." << std::endl;
-                      //continue filling  
-                  
-                      l1tausnew = l1taus;
-                      l1muonsnew = l1muons;
-                      l1egammasnew = l1egammas;
-                      l1jetsnew = l1jets;
-                      l1sumsnew = l1sums;
+                  while(proceed){
                       
-                      tOut->Fill();
-                      NEventsMerged++;
-                      itemp++;
-                      jtemp++;
+                      tIn->GetEntry(itemp);
+                      chIn2->GetEntry(jtemp);
                       
-                      if(jtemp == nentries2){
-                          i = itemp -1;
+                      if(eventInfo1->event() == eventInfo2->event()){
+                          if(itemp % n_report == 0) std::cout << "Finished merging " << itemp << "th event." << std::endl;
+                          //continue filling  
+                      
+                          l1tausnew = l1taus;
+                          l1muonsnew = l1muons;
+                          l1egammasnew = l1egammas;
+                          l1jetsnew = l1jets;
+                          l1sumsnew = l1sums;
+                          
+                          tOut->Fill();
+                          NEventsMerged++;
+                          itemp++;
+                          jtemp++;
+                          
+                          if(jtemp == nentries2){
+                              i = itemp -1;
+                              proceed = false;
+                          }
+                          if(itemp == nentries1){
+                              
+                              tOut->Print();
+                              fOut->Write();  
+                              fOut->Close();
+                              
+                              std::cout << "Merged " << NEventsMerged << " out of " <<nentries1 << std::endl;
+                              std::cout << NEventsMerged/nentries1 << std::endl;
+                              return 0;
+                          }
+                          
+                      }
+                      else{
+                          i = itemp-1;
+                          j = jtemp-1;
                           proceed = false;
                       }
-                      if(itemp == nentries1){
-                          
-                          tOut->Print();
-                          fOut->Write();  
-                          fOut->Close();
-                          
-                          std::cout << "Merged " << NEventsMerged << " out of " <<nentries1 << std::endl;
-                          std::cout << NEventsMerged/nentries1 << std::endl;
-                          return 0;
-                      }
-                      
                   }
-                  else{
-                      i = itemp-1;
-                      j = jtemp-1;
-                      proceed = false;
-                  }
+                  
+                  break;
               }
               
-              break;
           }
-          
       }
   }
   

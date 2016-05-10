@@ -61,6 +61,7 @@
 #include "Modules/interface/VBFPlots.h"
 #include "Modules/interface/GenChannelFilter.h"
 #include "Modules/interface/FilterGoodEvents.h"
+#include "Modules/interface/ZPassOffline.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -273,7 +274,7 @@ int main(int argc, char* argv[]){
     std::ifstream L1_infile;
     L1_infile.open (L1_infile_name);
     unsigned i = 1;
-    double in[14];
+    double in[12];
     while(L1_infile >> in[0] >> in[1] >> in[2] >> in[3] >> in[4] >> in[5] >> in[6] >> in[7] >> in[8] >> in[9] >> in[10] >> in[11]){
       if(i == inputnum){
         l1Cuts.EGPt = in[0];
@@ -287,13 +288,11 @@ int main(int argc, char* argv[]){
         if(in[6] == 1) l1Cuts.IsoTau = true;
         else l1Cuts.IsoTau = false;
         l1Cuts.Jet1Pt = in[7];
-        l1Cuts.Jet2Pt = in[8];
+        l1Cuts.Jet2Pt = in[8];;
         l1Cuts.Mjj = in[9];
         l1Cuts.DeltaEta = in[10];
         if(in[11] == 1) l1Cuts.JetFilter = true;
         else l1Cuts.JetFilter = false;
-        l1Cuts.AvePt = in[12];
-        l1Cuts.VecPt = in[13];
         break;
       }
       i++;
@@ -483,7 +482,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "tau_dz" % tau_dz;
 
   // Create analysis object
-  std::string EventTreeName = "EventTree";
+  std::string EventTreeName = "icEventProducer/EventTree";
   if(isZeroBias == 1) EventTreeName = "icEventProducer/EventTree";
   if(version_number == 5) L1_Muon_branch = "L1Muons";
   ic::AnalysisBase analysis(
@@ -1034,14 +1033,9 @@ int main(int argc, char* argv[]){
   VBFPlots vBFPlots30 = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPt30",30,channel_str);
   VBFPlots vBFPlotsSR = VBFPlots("VBFPlots", fs, "VBFPlotsJetsPtSignalRegion",0,channel_str);
     
-  // ------------------------------------------------------------------------------------
-  // L1 Trigger Filter
-  // ------------------------------------------------------------------------------------ 
-
-  L1TFilterPlots l1TFilterPlots1 = L1TFilterPlots("L1TFilterPlots1", channel_str, fs, l1Cuts, "L1TFilterPlotsPreFiltering", 1);
-  L1TFilterPlots l1TFilterPlots2 = L1TFilterPlots("L1TFilterPlots2", channel_str, fs, l1Cuts, "L1TFilterPlotsPostVBFFilter", 1);
-  L1TFilter zeroBiasL1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, L1_Muon_branch, "ZeroBiasL1TFilter", isZeroBias);//L1Muons
-  L1TFilter l1TFilter = L1TFilter("L1TFilter2", channel_str, fs, l1Cuts, "L1Muons", "L1TFilter", isZeroBias);
+  L1TFilter zeroBiasL1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, L1_Muon_branch, "ZeroBiasL1TFilter", 0);//L1Muons
+  ZPassOffline zTotal = ZPassOffline("ZPassOffline", channel_str, fs, l1Cuts, L1_Muon_branch, "TotalOffline",0);
+  ZPassOffline zPass = ZPassOffline("ZPassOffline", channel_str, fs, l1Cuts, L1_Muon_branch, "PassOffline",1);
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------ 
@@ -1093,16 +1087,6 @@ int main(int argc, char* argv[]){
   BTagCheck btagCheck("BTagCheck");
   btagCheck.set_fs(fs);
   
-  // ------------------------------------------------------------------------------------
-  // Trigger Efficiencies
-  // ------------------------------------------------------------------------------------ 
-
-  EfficiencyGenMatch efficiencySR = EfficiencyGenMatch("EfficiencyGenMatch", fs, "SignalRegionEfficiencies", 5, channel_str, l1Cuts);
-  
-  EfficiencyGenMatch efficiencyGenMatch1 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies1", 1, channel_str, l1Cuts);
-  EfficiencyGenMatch efficiencyGenMatch2 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies2", 2, channel_str, l1Cuts);
-  EfficiencyGenMatch efficiencyGenMatch3 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies3", 3, channel_str, l1Cuts);
-  EfficiencyGenMatch efficiencyGenMatch4 = EfficiencyGenMatch("EfficiencyGenMatch", fs, "EfficienciesGenMatch/TriggerEfficiencies4", 4, channel_str, l1Cuts);
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -1120,7 +1104,9 @@ int main(int argc, char* argv[]){
   httPrint.set_skip_events(false);
   if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
   
-  if(isZeroBias == 1) analysis.AddModule(&zeroBiasL1TFilter);
+  if(isZeroBias == 1){
+      analysis.AddModule(&zeroBiasL1TFilter);
+  }
   else if (isZeroBias ==0) {
     
       if (tau_scale_mode > 0 && channel != channel::em && !moriond_tau_scale && !do_skim)
@@ -1131,18 +1117,8 @@ int main(int argc, char* argv[]){
                                     analysis.AddModule(&httEnergyScale);
       if (to_check.size() > 0)        analysis.AddModule(&httPrint);
       
-                                      analysis.AddModule(&vBFPlots);
-                                      if(makeEffPlots == 1){
-                                          analysis.AddModule(&efficiencyGenMatch1);
-                                          analysis.AddModule(&efficiencyGenMatch2);
-                                          analysis.AddModule(&efficiencyGenMatch3);
-                                          analysis.AddModule(&efficiencyGenMatch4);
-                                      }
                                       analysis.AddModule(&genChannelFilter);
-                                      analysis.AddModule(&vBFPlotsGenFiltered);
-      
-                                      analysis.AddModule(&l1VariableHistograms);
-                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots1);
+                                      analysis.AddModule(&zTotal);
       
       
       if (channel == channel::et || channel == channel::etmet) {
@@ -1259,19 +1235,10 @@ int main(int argc, char* argv[]){
         if(make_sync_ntuple && strategy==strategy::paper2013){
              analysis.AddModule(&httSync);
         }
-                                      analysis.AddModule(&vBFPlots20);
-                                      analysis.AddModule(&vBFPlots30);
-                                      analysis.AddModule(&variableHistograms);
+
                                       analysis.AddModule(&vBFFilter);
-                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots2);
-                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilter);
-                                      //analysis.AddModule(&goodEventsFilter);
-                                      if(makeEffPlots == 1){
-                                          analysis.AddModule(&efficiencySR);
-                                      }
-                                      analysis.AddModule(&l1VariableHistograms2);
-                                      analysis.AddModule(&variableHistograms2);
-                                      analysis.AddModule(&vBFPlotsSR);
+                                      analysis.AddModule(&zPass);
+
 
     
       }

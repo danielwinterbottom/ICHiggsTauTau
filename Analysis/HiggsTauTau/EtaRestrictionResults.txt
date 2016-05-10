@@ -5,22 +5,22 @@ tautau signal efficiency vs rate for DoubleIsoTau20 + VBFJetsAve40Mjj450DeltaEta
 1. No eta restrictions to jets or taus:
 
 signal efficiency =  0.00920405
-rate = 1.76225 kHz
+rate = 3.92215 kHz
 
 2. Iso taus restricted to < 2.1:
 
 signal efficiency = 0.00862236  (-6.3%)
-rate =  1.0959 kHz (-37.8%)
+rate =  2.2487 kHz (-42.7%)
 
 3. Iso taus restricted to < 2.1 and at least 1 jet with eta > 2.1:
 
 signal efficiency =  0.00833887 (-9.4%)
-rate = 0.919674 kHz (-47.8%)
+rate = 1.77804 kHz (-54.7%)
 
 4. Iso taus restricted to < 2.1 and both jets with eta > 2.1:
 
-signal efficiency = 0.00374 (-59.4%)
-rate = 0.143183  kHz (-91.9%)
+signal efficiency = 0.003551 (-61.4%)
+rate = 0.156886  kHz (-96.0%)
 
 DoubleIsoTau28er Signal efficeincy = 0.0054567
 

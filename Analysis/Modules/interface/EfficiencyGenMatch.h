@@ -163,6 +163,31 @@ namespace ic {
     
     TH1D  *h_GenMETEfficiency;
     TH1D  *h_GenMHTEfficiency;
+    
+    TH1D *h_genjet_EG_Efficiency;
+    TH1D *h_genjet_Tau_Efficiency;
+    TH1D *h_genjet_TauEG_Efficiency;
+    
+    TH1D *h_genjet_IsoEG_Efficiency;
+    TH1D *h_genjet_IsoTau_Efficiency;
+    TH1D *h_genjet_IsoTauIsoEG_Efficiency;
+    
+    TH1D *h_gene_EGJet_Efficiency;
+    TH1D *h_gene_EGTau_Efficiency;
+    TH1D *h_gene_EGTauJet_Efficiency;
+    TH1D *h_gene_IsoEGJet_Efficiency;
+    TH1D *h_gene_IsoEGIsoTau_Efficiency;
+    TH1D *h_gene_IsoEGIsoTauJet_Efficiency;
+    
+    TH1D *h_gentau_TauJet_Efficiency;
+    TH1D *h_gentau_TauEG_Efficiency;
+    TH1D *h_gentau_TauEGJet_Efficiency;
+    TH1D *h_gentau_IsoTauIsoEG_Efficiency;
+    TH1D *h_gentau_IsoTauJet_Efficiency;
+    TH1D *h_gentau_IsoTauIsoEGJet_Efficiency;
+    
+    TH1D *h_LeadJetPtPassMjj;
+    TH1D *h_SubLeadJetPtPassMjj;
 
   public:
 
