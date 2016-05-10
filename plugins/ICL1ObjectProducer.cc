@@ -109,12 +109,11 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
   iEvent.getByToken(m_EDToken_L1TMuon, muon);
   iEvent.getByToken(m_EDToken_L1TTau, tau);
 
-  L1Muons_->clear();
+  L1Muons_  ->clear();
   L1EGammas_->clear();
-  L1Taus_->clear();
-  L1Jets_->clear();
-  L1Sums_->clear();
-
+  L1Taus_   ->clear();
+  L1Jets_   ->clear();
+  L1Sums_   ->clear();
 
   if (eg.isValid()){ 
 
@@ -156,8 +155,8 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
             int type = static_cast<int>( it->getType() );
             thisSum.sumType = type;
             //std::cout << type << "    " << << std::endl;
-            thisSum.et = it->et();
-            thisSum.phi = it->phi();
+            ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
+            thisSum.set_vector(tempVector);
             L1Sums_->push_back(thisSum);
         }
     //}
@@ -197,6 +196,7 @@ void ICL1ObjectProducer::produce(edm::Event& iEvent,
         }
     //}
     
+
   } else {
     edm::LogWarning("MissingProduct") << "L1Upgrade Tau not found. Branch will not be filled" << std::endl;
   }
