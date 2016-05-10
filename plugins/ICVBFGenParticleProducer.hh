@@ -16,6 +16,8 @@
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include "UserCode/ICHiggsTauTau/interface/VBFHiggsGenAnalysisDataFormat.h"
+#include "TTree.h"
+#include "DataFormats/JetReco/interface/GenJetCollection.h"
 
 /**
  * @brief See documentation [here](\ref objs-genparticle)
@@ -34,9 +36,11 @@ class ICVBFGenParticleProducer : public edm::EDProducer {
   
   edm::ParameterSet ps;
   
+  TTree * tree_;
+  
   // Input tags
   edm::EDGetTokenT< edm::HepMCProduct >           m_InputTag_HepMCProduct;
-  edm::EDGetTokenT< reco::GenJetCollection >      m_inputTag_GenJetCollection;
+  edm::EDGetTokenT< reco::GenJetCollection > m_inputTag_GenJetCollection;
   edm::EDGetTokenT< reco::GenParticleCollection > m_inputTag_GenParticleCollection;
   
   VBFHiggs::GenAnalysisDataFormat *m_genAnalysisData; // Data for tree

@@ -41,6 +41,7 @@
 #include "UserCode/ICHiggsTauTau/interface/L1TTau.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TSum.hh"
+#include "UserCode/ICHiggsTauTau/interface/VBFHiggsGenAnalysisDataFormat.h"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;
@@ -115,6 +116,8 @@ namespace { struct dictionary {
   std::vector<ic::L1TJet>    dictL1TJetCollection;
   ic::L1TSum                 dictL1TSum;
   std::vector<ic::L1TSum>    dictL1TSumCollection;
+
+
   
 };
 }

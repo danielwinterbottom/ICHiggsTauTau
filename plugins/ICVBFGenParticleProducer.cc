@@ -26,6 +26,10 @@ ICVBFGenParticleProducer::ICVBFGenParticleProducer(const edm::ParameterSet& conf
   edm::InputTag inputTag_GenJetCollection      = ps.getUntrackedParameter<edm::InputTag>("inputTag_GenJetCollection",     edm::InputTag("ak4GenJetsNoNu"));  
   edm::InputTag inputTag_GenParticleCollection = ps.getUntrackedParameter<edm::InputTag>("inputTag_GenParticleCollection",edm::InputTag("genParticles")); 
   
+  m_InputTag_HepMCProduct          = consumes<edm::HepMCProduct>          (inputTag_HepMCProduct);
+  m_inputTag_GenJetCollection      = consumes<reco::GenJetCollection> (inputTag_GenJetCollection);
+  m_inputTag_GenParticleCollection = consumes<reco::GenParticleCollection>(inputTag_GenParticleCollection); 
+  
   m_genAnalysisData = new VBFHiggs::GenAnalysisDataFormat();
   
 }
@@ -36,11 +40,11 @@ void ICVBFGenParticleProducer::produce(edm::Event& event,
                                     const edm::EventSetup& setup) {
     
   m_genAnalysisData->reset();
-  
+
   Handle<reco::GenParticleCollection> genParticles;
   event.getByToken(m_inputTag_GenParticleCollection, genParticles);
   
-  Handle<edm::View<reco::GenJet> > jets_handle;
+  Handle<reco::GenJetCollection> jets_handle;
   event.getByToken(m_inputTag_GenJetCollection, jets_handle);
   
   ROOT::Math::PtEtaPhiEVector vecNeutrino(0,0,0,0);
@@ -59,36 +63,42 @@ void ICVBFGenParticleProducer::produce(edm::Event& event,
         
       if(p.mother()->pdgId() == 25){
           
+        bool isMu   = false;
+        bool isElec = false;
+          
         unsigned n = p.numberOfDaughters();
         for(size_t j = 0; j < n; ++ j) {
           const reco::GenParticle *d = (reco::GenParticle*) p.daughter( j );
           
           if(tauCount == 0){
-              if(fabs(p.pdgId())==12 || fabs(p.pdgId())==14 || fabs(p.pdgId())==16) m_genAnalysisData->tau1Invisproducts_   .push_back(*d);
-              else                                                                  m_genAnalysisData->tau1Visproducts_     .push_back(*d);
+              if(fabs(d->pdgId())==12 || fabs(d->pdgId())==14 || fabs(d->pdgId())==16) m_genAnalysisData->tau1Invisproducts_   .push_back(*d);
+              else                                                                     m_genAnalysisData->tau1Visproducts_     .push_back(*d);
           }                                                                                                                 
           if(tauCount == 1){                                                                                                
-              if(fabs(p.pdgId())==12 || fabs(p.pdgId())==14 || fabs(p.pdgId())==16) m_genAnalysisData->tau2Invisproducts_   .push_back(*d);
-              else                                                                  m_genAnalysisData->tau2Visproducts_     .push_back(*d);
+              if(fabs(d->pdgId())==12 || fabs(d->pdgId())==14 || fabs(d->pdgId())==16) m_genAnalysisData->tau2Invisproducts_   .push_back(*d);
+              else                                                                     m_genAnalysisData->tau2Visproducts_     .push_back(*d);
           }
           
-          if(fabs(p.pdgId())==11){
-              elecCount++;
+          if(fabs(d->pdgId())==11){
+              isElec = true;
               if(tauCount == 0) m_genAnalysisData->tau1_decayType = VBFHiggs::TauDecay::Ele;
               if(tauCount == 1) m_genAnalysisData->tau2_decayType = VBFHiggs::TauDecay::Ele;
           }
-          else if(fabs(p.pdgId())==13){
-              muCount++;
+          else if(fabs(d->pdgId())==13){
+              isMu = true;
               if(tauCount == 0) m_genAnalysisData->tau1_decayType = VBFHiggs::TauDecay::Muo;
               if(tauCount == 1) m_genAnalysisData->tau2_decayType = VBFHiggs::TauDecay::Muo;
           }
-          else{
-              if(tauCount == 0) m_genAnalysisData->tau1_decayType = VBFHiggs::TauDecay::Had;
-              if(tauCount == 1) m_genAnalysisData->tau2_decayType = VBFHiggs::TauDecay::Had;
-          }
-          
-          tauCount++;
+
         }
+        if(!isElec && !isMu){
+          if(tauCount == 0) m_genAnalysisData->tau1_decayType = VBFHiggs::TauDecay::Had;
+          if(tauCount == 1) m_genAnalysisData->tau2_decayType = VBFHiggs::TauDecay::Had;
+        }
+        
+        if(isElec) elecCount++;
+        if(isMu) muCount++;
+        tauCount++;
       }
     }
     
@@ -103,7 +113,7 @@ void ICVBFGenParticleProducer::produce(edm::Event& event,
       int genjetIndex = -1;
       double DeltaRMin = 1000000;
       
-      for(size_t j = 0; i< jets_handle->size(); ++j){
+      for(size_t j = 0; j< jets_handle->size(); ++j){
       
         const reco::GenJet & genjet = (*jets_handle)[j];
         
@@ -130,7 +140,7 @@ void ICVBFGenParticleProducer::produce(edm::Event& event,
       int genjetIndex = -1;
       double DeltaRMin = 1000000;
       
-      for(size_t j = 0; i< jets_handle->size(); ++j){
+      for(size_t j = 0; j< jets_handle->size(); ++j){
       
         const reco::GenJet & genjet = (*jets_handle)[j];
         

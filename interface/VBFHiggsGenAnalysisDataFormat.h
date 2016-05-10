@@ -1,6 +1,8 @@
 #ifndef CMSSW_VBFHiggsTauTau_GenParticleAnalysis_GenAnalysisVBFHiggsDataFormat
 #define CMSSW_VBFHiggsTauTau_GenParticleAnalysis_GenAnalysisVBFHiggsDataFormat
 
+#include "DataFormats/JetReco/interface/GenJet.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 #include <vector>
 
