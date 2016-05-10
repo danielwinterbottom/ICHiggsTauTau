@@ -13,12 +13,9 @@ icL1ObjectProducer = cms.EDProducer('ICL1ObjectProducer',
 )
 ## [L1Object]
 
-## [VBFGenParticles]
-icGenParticleProducer = cms.EDProducer('ICVBFGenParticleProducer',
-  branch = cms.string("VBFTriggerGenParticles")
-)
-## [VBFGenParticles]
-
+## [VBFGenParticle]
+icVBFGenParticleProducer = cms.EDProducer('ICVBFGenParticleProducer')
+## [VBFGenParticle]
 
 ## [Candidate]
 icCandidateProducer = cms.EDProducer('ICCandidateProducer',
