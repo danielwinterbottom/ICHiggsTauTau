@@ -1,7 +1,6 @@
 #ifndef ICHiggsTauTau_L1TMuon_hh
 #define ICHiggsTauTau_L1TMuon_hh
 
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 #include <vector>
@@ -11,7 +10,7 @@
 
 namespace ic {
   
-  class L1TMuon : public ic::Candidate, public ic::L1TObject {
+  class L1TMuon : public ic::L1TObject {
   public:
     L1TMuon();
     virtual ~L1TMuon();

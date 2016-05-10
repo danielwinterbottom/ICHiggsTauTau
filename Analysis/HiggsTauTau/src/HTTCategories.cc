@@ -70,6 +70,7 @@ namespace ic {
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
+      outtree_->Branch("m_2",               &m_2_.var_double);
       outtree_->Branch("pfmt_1",            &pfmt_1_.var_double);
       outtree_->Branch("puppimt_1",         &puppimt_1_.var_double);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
@@ -99,6 +100,9 @@ namespace ic {
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
+      outtree_->Branch("pt_1",              &pt_1_.var_double);
+      outtree_->Branch("eta_1",             &eta_1_.var_double);
+      outtree_->Branch("eta_2",             &eta_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
       outtree_->Branch("gen_match_1", &gen_match_1_);
       outtree_->Branch("gen_match_2", &gen_match_2_);
@@ -263,15 +267,11 @@ namespace ic {
         //outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("good_vtx",          &good_vtx_);
-        outtree_->Branch("pt_1",              &pt_1_.var_double);
-        outtree_->Branch("eta_1",             &eta_1_.var_double);
-        outtree_->Branch("eta_2",             &eta_2_.var_double);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
         outtree_->Branch("phi_2",             &phi_2_.var_double);
         outtree_->Branch("E_1",               &E_1_);
         outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
-        outtree_->Branch("m_2",               &m_2_.var_double);
         outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
         outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);

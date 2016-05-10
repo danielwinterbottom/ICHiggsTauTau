@@ -41,6 +41,7 @@ class ICMetProducer : public edm::EDProducer {
   boost::hash<T const*> met_hasher_;
   bool do_custom_id_;
   edm::InputTag inputID_;
+  bool store_id_from_user_cand_;
 
   struct SigTags {
     edm::InputTag metsig;
@@ -118,6 +119,7 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       do_custom_id_(config.getParameter<bool>("includeCustomID")),
       inputID_(config.getParameter<edm::InputTag>("inputCustomID")),
+      store_id_from_user_cand_(config.getParameter<bool>("includeUserCandID")),
       do_gen_met_(config.getParameter<bool>("doGenMet")),
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
       do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
@@ -236,6 +238,16 @@ void ICMetProducer<pat::MET>::constructSpecific(
     for (unsigned i = 0; i < mets_handle->size(); ++i) {
       pat::MET const& src = mets_handle->at(i);
       ic::Met& dest = met_->at(i);
+      if(store_id_from_user_cand_){
+        std::size_t id = 0;
+        std::vector<std::string> candidate_names = src.userCandNames(); 
+        for(unsigned j = 0; j < candidate_names.size(); ++j){
+          reco::CandidatePtr cand_ref = src.userCand(candidate_names.at(j));
+          boost::hash_combine(id, cand_ref.get());
+        }
+        dest.set_id(id);
+      }
+
 
       if (do_gen_met_){
 	dest.set_pt(src.genMET()->pt());

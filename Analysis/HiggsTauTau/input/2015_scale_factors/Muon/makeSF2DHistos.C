@@ -1,6 +1,6 @@
 void makeSF2DHistos(){
   TH1::AddDirectory(kFALSE);
-  TFile *fMuon_Mu8_eff = TFile::Open("Muon_Mu8_eff.root");
+  TFile *fMuon_Mu8_eff = TFile::Open("Muon_Mu8_fall15.root");
   TGraphAsymmErrors *mu12_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_Mu8_eff->Get("ZMassEtaLt0p9_MC"));
   TGraphAsymmErrors *mu12_medetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_Mu8_eff->Get("ZMassEta0p9to1p2_MC"));
   TGraphAsymmErrors *mu12_highetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_Mu8_eff->Get("ZMassEtaGt1p2_MC"));
@@ -14,7 +14,7 @@ void makeSF2DHistos(){
   for(i=0;i<nbins12;i++){
     ptbins12[i] = Mu8X[i]-Mu8EX[i];
   } 
-  ptbins12[nbins12] = 100;
+  ptbins12[nbins12] = 150;
   int nbinseta=3;
   double etabins[nbinseta+1];//
   etabins[0] = 0;
@@ -40,7 +40,7 @@ void makeSF2DHistos(){
 
  fMuon_Mu8_eff->Close();
  
-  TFile *fMuon_Mu17_eff = TFile::Open("Muon_Mu17_eff.root");
+  TFile *fMuon_Mu17_eff = TFile::Open("Muon_Mu17_fall15.root");
   TGraphAsymmErrors *mu17_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_Mu17_eff->Get("ZMassEtaLt0p9_MC"));
   TGraphAsymmErrors *mu17_medetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_Mu17_eff->Get("ZMassEta0p9to1p2_MC"));
   TGraphAsymmErrors *mu17_highetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_Mu17_eff->Get("ZMassEtaGt1p2_MC"));
@@ -55,7 +55,7 @@ void makeSF2DHistos(){
   for(i=0;i<nbins17;i++){
     ptbins17[i] = Mu17X[i]-Mu17EX[i];
   } 
-  ptbins17[nbins17] = 100;
+  ptbins17[nbins17] = 150;
 
 
 
@@ -78,7 +78,7 @@ void makeSF2DHistos(){
 
  fMuon_Mu17_eff->Close();
 
-  TFile *fMuon_MuonIdIso0p10_eff = TFile::Open("Muon_IdIso0p10_eff.root");
+  TFile *fMuon_MuonIdIso0p10_eff = TFile::Open("Muon_IdIso0p1_fall15.root");
   TGraphAsymmErrors *muIdIso0p10_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonIdIso0p10_eff->Get("ZMassEtaLt0p9_MC"));
   TGraphAsymmErrors *muIdIso0p10_medetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonIdIso0p10_eff->Get("ZMassEta0p9to1p2_MC"));
   TGraphAsymmErrors *muIdIso0p10_highetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonIdIso0p10_eff->Get("ZMassEtaGt1p2_MC"));
@@ -115,7 +115,7 @@ void makeSF2DHistos(){
  fMuon_MuonIdIso0p10_eff->Close();
 
 
-  TFile *fMuon_MuonIdIso0p15_eff = TFile::Open("Muon_IdIso0p15_eff.root");
+  TFile *fMuon_MuonIdIso0p15_eff = TFile::Open("Muon_IdIso0p15_fall15.root");
   TGraphAsymmErrors *muIdIso0p15_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonIdIso0p15_eff->Get("ZMassEtaLt0p9_MC"));
   TGraphAsymmErrors *muIdIso0p15_medetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonIdIso0p15_eff->Get("ZMassEta0p9to1p2_MC"));
   TGraphAsymmErrors *muIdIso0p15_highetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonIdIso0p15_eff->Get("ZMassEtaGt1p2_MC"));
@@ -152,7 +152,7 @@ void makeSF2DHistos(){
 
  fMuon_MuonIdIso0p15_eff->Close();
 
-  TFile *fMuon_MuonSingleMu_eff = TFile::Open("Muon_SingleMu_eff.root");
+  TFile *fMuon_MuonSingleMu_eff = TFile::Open("Muon_IsoMu18_fall15.root");
   TGraphAsymmErrors *muSingleMu_lowetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonSingleMu_eff->Get("ZMassEtaLt0p9_MC"));
   TGraphAsymmErrors *muSingleMu_medetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonSingleMu_eff->Get("ZMassEta0p9to1p2_MC"));
   TGraphAsymmErrors *muSingleMu_highetamc = dynamic_cast<TGraphAsymmErrors*>(fMuon_MuonSingleMu_eff->Get("ZMassEtaGt1p2_MC"));
@@ -173,7 +173,7 @@ void makeSF2DHistos(){
   for(i=0;i<nbinsSingleMu;i++){
     ptbinsSingleMu[i] = MuonSingleMuX[i]-MuonSingleMuEX[i];
   } 
-  ptbinsSingleMu[nbinsSingleMu] = 100;
+  ptbinsSingleMu[nbinsSingleMu] = 150;
   TH2D *muon_muSingleMu_mc = new TH2D("Muon_SingleMu_MC_eff","Muon_SingleMu_MC_eff",nbinseta,etabins,nbinsSingleMu,ptbinsSingleMu);
   TH2D *muon_muSingleMu_data = new TH2D("Muon_SingleMu_Data_eff","Muon_SingleMu_Data_eff",nbinseta,etabins,nbinsSingleMu,ptbinsSingleMu);
 
@@ -189,7 +189,7 @@ void makeSF2DHistos(){
  fMuon_MuonSingleMu_eff->Close();
 
 
- TFile *Muon_2DHistos = new TFile("Muon_2DHistos.root","RECREATE");
+ TFile *Muon_2DHistos = new TFile("Muon_2DHistos_fall15.root","RECREATE");
   muon_muSingleMu_mc->Write();
   muon_muSingleMu_data->Write();
   muon_muIdIso0p15_mc->Write();

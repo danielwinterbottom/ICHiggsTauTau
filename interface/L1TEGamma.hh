@@ -1,7 +1,6 @@
 #ifndef ICHiggsTauTau_L1TEGamma_hh
 #define ICHiggsTauTau_L1TEGamma_hh
 
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 #include <vector>
@@ -11,7 +10,7 @@
 
 namespace ic {
   
-  class L1TEGamma : public ic::Candidate, public ic::L1TObject {
+  class L1TEGamma : public ic::L1TObject {
   public:
     L1TEGamma();
     virtual ~L1TEGamma();

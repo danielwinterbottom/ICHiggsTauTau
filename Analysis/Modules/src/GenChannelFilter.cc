@@ -34,7 +34,7 @@ namespace ic {
               
           if(genID == 15){
               
-              if(std::fabs(GenParticles[GenParticles[j]->mothers().at(0)]->pdgid()) == 25){
+              if(std::fabs(GenParticles[GenParticles[j]->mothers().at(0)]->pdgid()) == 25 || std::fabs(GenParticles[GenParticles[j]->mothers().at(0)]->pdgid()) == 23){
                   bool isMuon = false;
                   bool isElectron = false;
             

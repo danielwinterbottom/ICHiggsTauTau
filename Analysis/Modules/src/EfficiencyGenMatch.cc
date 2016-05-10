@@ -51,15 +51,15 @@ namespace ic {
         AvePtCut = 50;
     }
     else if(EffNum == 4){
-        l1eCut = 25;
-        l1muCut = 25;
-        l1tauCut = 40;
-        l1jetCut = 70;
-        l1MjjCut = 600;
-        l1DeltaEtaCut = 4.0;
-        l1METCut = 40;
-        l1MHTCut = 70;
-        AvePtCut = 60;
+        l1eCut = 0;
+        l1muCut = 0;
+        l1tauCut = 0;
+        l1jetCut = 0;
+        l1MjjCut = 0;
+        l1DeltaEtaCut = 0;
+        l1METCut = 0;
+        l1MHTCut = 0;
+        AvePtCut = 0;
     }
     
     else if(EffNum == 5){
@@ -169,7 +169,32 @@ namespace ic {
     h_gene_EG_Efficiency = subDir.make<TH1D>("h_gene_EG_Efficiency","h_gene_EG_Efficiency",100, 0,100); 
     h_gene_EG_Efficiency->GetXaxis()->SetTitle("Gen-Electron p_{T} [GeV] ");
     h_gene_EG_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    //
+    h_gene_EGTau_Efficiency = subDir.make<TH1D>("h_gene_EGTau_Efficiency","h_gene_EGTau_Efficiency",100, 0,100); 
+    h_gene_EGTau_Efficiency->GetXaxis()->SetTitle("Gen-Electron p_{T} [GeV] ");
+    h_gene_EGTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
+
+    h_gene_EGJet_Efficiency = subDir.make<TH1D>("h_gene_EGJet_Efficiency","h_gene_EGJet_Efficiency",100, 0,100); 
+    h_gene_EGJet_Efficiency->GetXaxis()->SetTitle("Gen-Electron p_{T} [GeV] ");
+    h_gene_EGJet_Efficiency->GetYaxis()->SetTitle("Efficiency");
     
+    h_gene_EGTauJet_Efficiency = subDir.make<TH1D>("h_gene_EGTauJet_Efficiency","h_gene_EGTauJet_Efficiency",100, 0,100); 
+    h_gene_EGTauJet_Efficiency->GetXaxis()->SetTitle("Gen-Electron p_{T} [GeV] ");
+    h_gene_EGTauJet_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_gene_IsoEGIsoTau_Efficiency = subDir.make<TH1D>("h_gene_IsoEGIsoTau_Efficiency","h_gene_IsoEGIsoTau_Efficiency",100, 0,100); 
+    h_gene_IsoEGIsoTau_Efficiency->GetXaxis()->SetTitle("Gen-Electron p_{T} [GeV] ");
+    h_gene_IsoEGIsoTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
+
+    h_gene_IsoEGJet_Efficiency = subDir.make<TH1D>("h_gene_IsoEGJet_Efficiency","h_gene_IsoEGJet_Efficiency",100, 0,100); 
+    h_gene_IsoEGJet_Efficiency->GetXaxis()->SetTitle("Gen-Electron p_{T} [GeV] ");
+    h_gene_IsoEGJet_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_gene_IsoEGIsoTauJet_Efficiency = subDir.make<TH1D>("h_gene_IsoEGIsoTauJet_Efficiency","h_gene_IsoEGIsoTauJet_Efficiency",100, 0,100); 
+    h_gene_IsoEGIsoTauJet_Efficiency->GetXaxis()->SetTitle("Gen-Electron p_{T} [GeV] ");
+    h_gene_IsoEGIsoTauJet_Efficiency->GetYaxis()->SetTitle("Efficiency");
+
+    //
     h_gene_IsoEG_Efficiency = subDir.make<TH1D>("h_gene_IsoEG_Efficiency","h_gene_IsoEG_Efficiency",100, 0,100); 
     h_gene_IsoEG_Efficiency->GetXaxis()->SetTitle("Gen-Electron p_{T} [GeV] ");
     h_gene_IsoEG_Efficiency->GetYaxis()->SetTitle("Efficiency");
@@ -241,7 +266,31 @@ namespace ic {
     h_gentau_IsoTau_Efficiency = subDir.make<TH1D>("h_gentau_IsoTau_Efficiency","h_gentau_IsoTau_Efficiency",100, 0,100);
     h_gentau_IsoTau_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
     h_gentau_IsoTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    ///
+    h_gentau_TauEG_Efficiency = subDir.make<TH1D>("h_gentau_TauEG_Efficiency","h_gentau_TauEG_Efficiency",100, 0,100);
+    h_gentau_TauEG_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
+    h_gentau_TauEG_Efficiency->GetYaxis()->SetTitle("Efficiency");
     
+    h_gentau_TauJet_Efficiency = subDir.make<TH1D>("h_gentau_TauJet_Efficiency","h_gentau_TauJet_Efficiency",100, 0,100);
+    h_gentau_TauJet_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
+    h_gentau_TauJet_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_gentau_TauEGJet_Efficiency = subDir.make<TH1D>("h_gentau_TauEGJet_Efficiency","h_gentau_TauEGJet_Efficiency",100, 0,100);
+    h_gentau_TauEGJet_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
+    h_gentau_TauEGJet_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_gentau_IsoTauIsoEG_Efficiency = subDir.make<TH1D>("h_gentau_IsoTauIsoEG_Efficiency","h_gentau_IsoTauIsoEG_Efficiency",100, 0,100);
+    h_gentau_IsoTauIsoEG_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
+    h_gentau_IsoTauIsoEG_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_gentau_IsoTauJet_Efficiency = subDir.make<TH1D>("h_gentau_IsoTauJet_Efficiency","h_gentau_IsoTauJet_Efficiency",100, 0,100);
+    h_gentau_IsoTauJet_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
+    h_gentau_IsoTauJet_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_gentau_IsoTauIsoEGJet_Efficiency = subDir.make<TH1D>("h_gentau_IsoTauIsoEGJet_Efficiency","h_gentau_IsoTauIsoEGJet_Efficiency",100, 0,100);
+    h_gentau_IsoTauIsoEGJet_Efficiency->GetXaxis()->SetTitle("Gen-Tau p_{T} [GeV] ");
+    h_gentau_IsoTauIsoEGJet_Efficiency->GetYaxis()->SetTitle("Efficiency");    
+    ///
     h_jet_EG_Efficiency = subDir.make<TH1D>("h_jet_EG_Efficiency","h_jet_EG_Efficiency",100, 0,100); 
     h_jet_EG_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV] ");
     h_jet_EG_Efficiency->GetYaxis()->SetTitle("Efficiency");
@@ -277,6 +326,30 @@ namespace ic {
     h_genjet_Jet_Efficiency = subDir.make<TH1D>("h_genjet_Jet_Efficiency","h_genjet_Jet_Efficiency",100, 0,100);
     h_genjet_Jet_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV]");
     h_genjet_Jet_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_genjet_EG_Efficiency = subDir.make<TH1D>("h_genjet_EG_Efficiency","h_genjet_EG_Efficiency",100, 0,100);
+    h_genjet_EG_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV]");
+    h_genjet_EG_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_genjet_Tau_Efficiency = subDir.make<TH1D>("h_genjet_Tau_Efficiency","h_genjet_Tau_Efficiency",100, 0,100);
+    h_genjet_Tau_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV]");
+    h_genjet_Tau_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_genjet_TauEG_Efficiency = subDir.make<TH1D>("h_genjet_TauEG_Efficiency","h_genjet_TauEG_Efficiency",100, 0,100);
+    h_genjet_TauEG_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV]");
+    h_genjet_TauEG_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_genjet_IsoEG_Efficiency = subDir.make<TH1D>("h_genjet_IsoEG_Efficiency","h_genjet_IsoEG_Efficiency",100, 0,100);
+    h_genjet_IsoEG_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV]");
+    h_genjet_IsoEG_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_genjet_IsoTau_Efficiency = subDir.make<TH1D>("h_genjet_IsoTau_Efficiency","h_genjet_IsoTau_Efficiency",100, 0,100);
+    h_genjet_IsoTau_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV]");
+    h_genjet_IsoTau_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_genjet_IsoTauIsoEG_Efficiency = subDir.make<TH1D>("h_genjet_IsoTauIsoEG_Efficiency","h_genjet_IsoTauIsoEG_Efficiency",100, 0,100);
+    h_genjet_IsoTauIsoEG_Efficiency->GetXaxis()->SetTitle("Jet p_{T} [GeV]");
+    h_genjet_IsoTauIsoEG_Efficiency->GetYaxis()->SetTitle("Efficiency");
     
     h_genjet_Total = subDir.make<TH1D>("h_genjet_Total","h_genjet_Total",100, 0,100);
     h_genjet_Total->GetXaxis()->SetTitle("Jet p_{T} [GeV] ");
@@ -378,6 +451,13 @@ namespace ic {
     h_GenMHTEfficiency->GetXaxis()->SetTitle("MHT [GeV]");
     h_GenMHTEfficiency->GetYaxis()->SetTitle("Efficiency");
     
+    h_LeadJetPtPassMjj = subDir.make<TH1D>("h_LeadJetPtPassMjj","h_LeadJetPtPassMjj",100, 0,200);
+    h_LeadJetPtPassMjj->GetXaxis()->SetTitle("Leading jet p_{T} [GeV]");
+    h_LeadJetPtPassMjj->GetYaxis()->SetTitle("Efficiency");
+    
+    h_SubLeadJetPtPassMjj = subDir.make<TH1D>("h_SubLeadJetPtPassMjj","h_SubLeadJetPtPassMjj",100, 0,200);
+    h_SubLeadJetPtPassMjj->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
+    h_SubLeadJetPtPassMjj->GetYaxis()->SetTitle("Efficiency");
     
   }
 
@@ -426,16 +506,20 @@ namespace ic {
       
       //Electrons
       
-      for(unsigned i=0; i < n_electrons_; i++){
+     /* for(unsigned i=0; i < n_electrons_; i++){
                   
           bool eProceed = false;
+          int eGenIndex = -1;
           
           for(unsigned j=0; j< n_genParticles_; j++){
               double DeltaR = sqrt(pow(electrons[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(electrons[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
               int ID = std::fabs(GenParticles[j]->pdgid());
               bool isPrompt =  false;
-              if(GenParticles[j]->statusFlags().at(0) || GenParticles[j]->statusFlags().at(5)) isPrompt = true; 
-              if(DeltaR < 0.5 && isPrompt && ID == 11) eProceed = true;
+              if(GenParticles[j]->statusFlags().at(5)) isPrompt = true; 
+              if(DeltaR < 0.5 && isPrompt && ID == 11){
+                  eProceed = true;
+                  eGenIndex = j;
+              }
           }
           
           if((std::fabs(electrons[i]->vector().Rapidity()) > 2.4)) eProceed = false;
@@ -445,29 +529,45 @@ namespace ic {
               bool MatchedL1 = false;
               bool MatchedIsoL1 = false;
               bool L1EGPtFired = false;
-              
+              double PtDiffMax = 10000;
+              int l1EIndex = -1;
               for(unsigned j=0; j < n_l1electrons_; j++){
               
-                  double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-electrons[i]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-electrons[i]->vector().Rapidity(),2));
+                  double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-GenParticles[eGenIndex]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-GenParticles[eGenIndex]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(GenParticles[eGenIndex]->vector().Pt() - l1electrons[j]->vector().Pt());
                   
-                  int eIso = l1electrons[j]->isolation;
+                  if(DeltaR < 0.5 && PtDiff < PtDiffMax){
+                      PtDiffMax = PtDiff;
+                      l1EIndex = j;
+                      
+                  }
+                  
+              }
+              if(l1EIndex !=-1){
+                  int eIso = l1electrons[l1EIndex]->isolation;
                   bool IsoEG = false;
                   
-                  double L1EGPt = l1electrons[j]->vector().Pt();
+                  double L1EGPt = l1electrons[l1EIndex]->vector().Pt();
                   if(L1EGPt >= l1eCut) L1EGPtFired = true;
                   
                   if(eIso == 1) IsoEG = true;
-                  if(DeltaR < 0.5 && L1EGPtFired) MatchedL1 = true;
-                  if(DeltaR < 0.5 && IsoEG && L1EGPtFired) MatchedIsoL1 = true;
+                  if(L1EGPtFired) MatchedL1 = true;
+
+                  if(IsoEG && L1EGPtFired) MatchedIsoL1 = true;
               }
 
-              h_e_Total->Fill(electrons[i]->vector().Pt());
+              //h_e_Total->Fill(electrons[i]->vector().Pt());
+              //h_e_Total->Fill(GenParticles[eGenIndex]->vector().Pt());
               if(MatchedIsoL1){ 
-                  h_e_EG_Efficiency->Fill(electrons[i]->vector().Pt());
-                  h_e_IsoEG_Efficiency->Fill(electrons[i]->vector().Pt());
+                  //h_e_EG_Efficiency->Fill(electrons[i]->vector().Pt());
+                  //h_e_IsoEG_Efficiency->Fill(electrons[i]->vector().Pt());
+                  //h_e_EG_Efficiency->Fill(GenParticles[eGenIndex]->vector().Pt());
+                  //h_e_IsoEG_Efficiency->Fill(GenParticles[eGenIndex]->vector().Pt());
               }
-              else if(!MatchedIsoL1 && MatchedL1) h_e_EG_Efficiency->Fill(electrons[i]->vector().Pt());
-             
+              
+              //else if(!MatchedIsoL1 && MatchedL1) h_e_EG_Efficiency->Fill(electrons[i]->vector().Pt());
+              else if(!MatchedIsoL1 && MatchedL1) {;}
+              
               // Check if electron fired tau and iso-tau triggers.
               
               bool MatchedTauL1 = false;
@@ -509,13 +609,14 @@ namespace ic {
               
               if(MatchedJetL1) h_e_Jet_Efficiency->Fill(electrons[i]->vector().Pt());
           }
-      }
+      }*/
       
-      // Taus
+   /*   // Taus
       
       for(unsigned i=0; i < n_taus_; i++){
           
           bool tauProceed = false;
+          int tauGenIndex = -1;
                   
           for(unsigned j=0; j< n_genParticles_; j++){
               int ID = std::fabs(GenParticles[j]->pdgid());
@@ -530,7 +631,10 @@ namespace ic {
               }
               
               double DeltaR = sqrt(pow(tausVis.vector().Phi()-taus[i]->vector().Phi(),2) + pow(tausVis.vector().Rapidity()-taus[i]->vector().Rapidity(),2));
-              if(DeltaR < 0.5 && isPrompt && ID == 15) tauProceed = true;
+              if(DeltaR < 0.5 && isPrompt && ID == 15){
+                  tauProceed = true;
+                  tauGenIndex = j;
+                  }
           }
           
           if((std::fabs(taus[i]->vector().Rapidity()) > 2.3)) tauProceed = false;
@@ -543,21 +647,24 @@ namespace ic {
               
               bool MatchedL1 = false;
               bool MatchedL1Iso = false;
-              
+
               for(unsigned j=0; j < n_l1electrons_; j++){
+        
               
                   double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-taus[i]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-taus[i]->vector().Rapidity(),2));
-
+            
                   bool L1EPtFired = false;
                   double L1EPt = l1electrons[j]->vector().Pt();
                   if(L1EPt >= l1eCut) L1EPtFired = true;
                   bool isIso = false;
                   if(l1electrons[j]->isolation == 1) isIso = true; 
-              
+
                   if(DeltaR < 0.5 && L1EPtFired) MatchedL1 = true;
-                  if(DeltaR < 0.5 && L1EPtFired && isIso) MatchedL1Iso = true;
+                      
+                  if(DeltaR < 0.5 &&L1EPtFired && isIso) MatchedL1Iso = true;
                   
               }
+              
               
               if(MatchedL1) h_tau_EG_Efficiency->Fill(taus[i]->vector().Pt());
               if(MatchedL1Iso) h_tau_IsoEG_Efficiency->Fill(taus[i]->vector().Pt());
@@ -567,22 +674,36 @@ namespace ic {
               
               bool MatchedTauL1 = false;
               bool MatchedIsoTauL1 = false;
-
+              int tauL1Index = -1;
               bool L1TauPtFired = false;
+              double PtDiffMax = 10000;
               for(unsigned j=0; j < n_l1taus_; j++){
-              
-                  double DeltaR = sqrt(pow(l1taus[j]->vector().Phi()-taus[i]->vector().Phi(),2) + pow(l1taus[j]->vector().Rapidity()-taus[i]->vector().Rapidity(),2));
                   
-                  int tauIso = l1taus[j]->isolation;
+                  ic::Candidate tausVis;
+
+                  for(unsigned k=0; k < GenParticles[tauGenIndex]->daughters().size(); k++){
+                      if(std::fabs(GenParticles[GenParticles[tauGenIndex]->daughters().at(k)]->pdgid()) == 16) tausVis.set_vector(GenParticles[tauGenIndex]->vector() - GenParticles[GenParticles[tauGenIndex]->daughters().at(k)]->vector());
+                  }
+              
+                  double DeltaR = sqrt(pow(l1taus[j]->vector().Phi()-tausVis.vector().Phi(),2) + pow(l1taus[j]->vector().Rapidity()-tausVis.vector().Rapidity(),2));
+                  double PtDiff = std::fabs(l1taus[j]->vector().Pt() - tausVis.vector().Pt());
+                  if(DeltaR < 0.5 && PtDiff < PtDiffMax){
+                      tauL1Index = j;
+                      PtDiffMax = PtDiff;
+                  }
+              }
+              if(tauL1Index != -1){
+                  
+                  int tauIso = l1taus[tauL1Index]->isolation;
                   bool IsoTau = false;
                   
-                  double L1TauPt = l1taus[j]->vector().Pt();
+                  double L1TauPt = l1taus[tauL1Index]->vector().Pt();
                   if(L1TauPt >= l1tauCut) L1TauPtFired = true;
                   
                   if(tauIso == 1) IsoTau = true;
-                  if(DeltaR < 0.5 && L1TauPtFired) MatchedTauL1 = true;
+                  if(L1TauPtFired) MatchedTauL1 = true;
                   
-                  if(DeltaR < 0.5 && IsoTau && L1TauPtFired) MatchedIsoTauL1 = true;
+                  if(IsoTau && L1TauPtFired) MatchedIsoTauL1 = true;
 
               }
               
@@ -628,49 +749,78 @@ namespace ic {
           
           }
           
-      }
-      
+      }*/
+  /*    
       //Muons
       
       for(unsigned i=0; i < n_muons_; i++){
                   
           bool muProceed = false;
+          int muGenIndex = -1;
           
           for(unsigned j=0; j< n_genParticles_; j++){
               double DeltaR = sqrt(pow(muons[i]->vector().Phi()-GenParticles[j]->vector().Phi(),2) + pow(muons[i]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
               int ID = std::fabs(GenParticles[j]->pdgid());
               bool isPrompt =  false;
-              if(GenParticles[j]->statusFlags().at(0) || GenParticles[j]->statusFlags().at(5)) isPrompt = true; 
-              if(DeltaR < 0.5 && isPrompt && ID == 13) muProceed = true;
+              int MotherID = 0;
+              if(GenParticles[j]->mothers().size()>0) MotherID = std::fabs(GenParticles[GenParticles[j]->mothers().at(0)]->pdgid());
+              if(GenParticles[j]->statusFlags().at(5) && MotherID == 15) isPrompt = true; 
+              if(DeltaR < 0.5 && isPrompt && ID == 13){
+                  muProceed = true;
+                  muGenIndex = j;
+              }
           }
+          
           
           if((std::fabs(muons[i]->vector().Rapidity()) > 2.4)) muProceed = false;
 
           if(muProceed){
-                  
-              h_mu_Total->Fill(muons[i]->vector().Pt());
               
               // Check if muon fired Muon trigger.
               
               bool MatchedL1 = false;
               bool MatchedIsoL1 = false;
+              double PtDiffMax = 100000;
+              int l1MuIndex = -1;
+
           
               for(unsigned j=0; j < n_l1muons_; j++){
               
-                  double DeltaR = sqrt(pow(l1muons[j]->vector().Phi()-muons[i]->vector().Phi(),2) + pow(l1muons[j]->vector().Rapidity()-muons[i]->vector().Rapidity(),2));
-              
-                  bool L1MuPtFired = false;
-                  double L1MuPt = l1muons[j]->vector().Pt();
-                  if(L1MuPt >= l1muCut) L1MuPtFired = true;
+                  double DeltaR = sqrt(pow(l1muons[j]->vector().Phi()-GenParticles[muGenIndex]->vector().Phi(),2) + pow(l1muons[j]->vector().Rapidity()-GenParticles[muGenIndex]->vector().Rapidity(),2));
+                  double PtDiff = std::fabs(GenParticles[muGenIndex]->vector().Pt() - l1muons[j]->vector().Pt());
+
                   
-                  if(DeltaR < 0.5 && L1MuPtFired) MatchedL1 = true;
-                  if(DeltaR < 0.5 && L1MuPtFired && l1muons[j]->isolation >0) MatchedIsoL1 = true;
+                  if(DeltaR < 0.5 && PtDiff < PtDiffMax){
+                      PtDiffMax = PtDiff;
+                      l1MuIndex = j;
+                  }
               }
               
-              if(MatchedL1) h_mu_Mu_Efficiency->Fill(muons[i]->vector().Pt());
-              if(MatchedIsoL1) h_mu_IsoMu_Efficiency->Fill(muons[i]->vector().Pt());
+              if(l1MuIndex !=-1){
+                  int muIso = l1muons[l1MuIndex]->isolation;
+                  bool IsoMu = false;
+                  
+                  bool L1MuPtFired = false;
+                  
+                  double L1MuPt = l1muons[l1MuIndex]->vector().Pt();
+                  if(L1MuPt >= l1muCut) L1MuPtFired = true;
+                  
+                  if(muIso > 1) IsoMu = true;
+                  if(L1MuPtFired) MatchedL1 = true;
+
+                  if(IsoMu && L1MuPtFired) MatchedIsoL1 = true;
+              }
+
+              h_mu_Total->Fill(muons[i]->vector().Pt());
+              
+              if(MatchedIsoL1){
+                  h_mu_IsoMu_Efficiency->Fill(muons[i]->vector().Pt());
+                  h_mu_Mu_Efficiency->Fill(muons[i]->vector().Pt());
+              }
+              
+              else if(!MatchedIsoL1 && MatchedL1) h_mu_Mu_Efficiency->Fill(muons[i]->vector().Pt());
           }
-      }
+      }*/
       
       // Jets
       
@@ -684,7 +834,7 @@ namespace ic {
               if(DeltaR < 0.5) jetProceed = true;
           }
           
-          if((std::fabs(jets[i]->vector().Rapidity()) > 5.)) jetProceed = false;
+          if((std::fabs(jets[i]->vector().Rapidity()) > 4.7)) jetProceed = false;
 
           if(jetProceed){
 
@@ -804,7 +954,7 @@ namespace ic {
                   if(DeltaR < 0.5) jet2Proceed = true;
               }
            
-              if(i!=j && jet1Proceed && jet2Proceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(jets[j]->vector().Rapidity()) < 5){
+              if(i!=j && jet1Proceed && jet2Proceed && std::fabs(jets[i]->vector().Rapidity()) < 4.7 && std::fabs(jets[j]->vector().Rapidity()) < 4.7){
                   
                   if(jets[i]->vector().Pt() > 20 && jets[j]->vector().Pt() > 20){
 
@@ -851,7 +1001,13 @@ namespace ic {
                       
                       if(Matched1JetL1 && Matched2JetL1 && jet1JetL1Index != jet2JetL1Index){
                           double Mjj = (l1jets[jet1JetL1Index]->vector() + l1jets[jet2JetL1Index]->vector()).M(); 
-                          if(Mjj >= l1MjjCut) h_jetjet_Mjj_Efficiency->Fill((jets[i]->vector() + jets[j]->vector()).M());
+                          if(Mjj >= l1MjjCut){
+                              h_jetjet_Mjj_Efficiency->Fill((jets[i]->vector() + jets[j]->vector()).M());
+                              double LeadPt = std::max(l1jets[jet1JetL1Index]->vector().Pt(), l1jets[jet2JetL1Index]->vector().Pt());
+                              double SubLeadPt = std::min(l1jets[jet1JetL1Index]->vector().Pt(), l1jets[jet2JetL1Index]->vector().Pt());
+                              h_LeadJetPtPassMjj->Fill(LeadPt);
+                              h_SubLeadJetPtPassMjj->Fill(SubLeadPt);
+                          }
                           double DeltaEta = std::fabs(l1jets[jet1JetL1Index]->vector().Rapidity() - l1jets[jet2JetL1Index]->vector().Rapidity()); 
                           if(DeltaEta >= l1DeltaEtaCut) h_jetjet_DeltaEta_Efficiency->Fill(std::fabs(jets[i]->vector().Rapidity() - jets[j]->vector().Rapidity()));
                           double AvePtL1 = (l1jets[jet1JetL1Index]->vector().Pt()+l1jets[jet2JetL1Index]->vector().Pt())/2;
@@ -893,7 +1049,7 @@ namespace ic {
               if(DeltaR < 0.5 && isPrompt && ID == 15) tauProceed = true;
           }
 
-              if(jetProceed && tauProceed && std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(taus[j]->vector().Rapidity()) < 5){
+              if(jetProceed && tauProceed && std::fabs(jets[i]->vector().Rapidity()) < 4.7 && std::fabs(taus[j]->vector().Rapidity()) < 4.7){
                   
                   if(jets[i]->vector().Pt() > 20){
 
@@ -969,7 +1125,7 @@ namespace ic {
                       if(DeltaR < 0.5 && isPrompt && ID == 11) eProceed = true;
                   }
            
-              if(jetProceed && eProceed &&std::fabs(jets[i]->vector().Rapidity()) < 5 && std::fabs(electrons[j]->vector().Rapidity()) < 5){
+              if(jetProceed && eProceed &&std::fabs(jets[i]->vector().Rapidity()) < 4.7 && std::fabs(electrons[j]->vector().Rapidity()) < 4.7){
                           
                   if(jets[i]->vector().Pt() > 20){
 
@@ -1060,15 +1216,33 @@ namespace ic {
           
           if(genID == 15 && isPrompt && std::fabs(tausVis.vector().Rapidity()) < 2.3){
               
+              double DeltaRMax = 100000;
+              double tauPt = 0;
+              bool MatchedOffline = false;
+              
+              for(unsigned k=0; k< n_taus_; k++){
+                  double DeltaR = sqrt(pow(taus[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(taus[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5 && DeltaR < DeltaRMax){
+                      DeltaRMax = DeltaR;
+                      tauPt = taus[k]->vector().Pt();
+                      MatchedOffline = true;
+                  }
+              }
+              
               h_gentau_Total->Fill(tausVis.vector().Pt());
+              if(MatchedOffline) h_tau_Total->Fill(tauPt); //do this for all tau histograms!!!!!
               
               bool MatchedL1 = false;
               bool MatchedIsoL1 = false;
+              bool MatchedEG = false;
+              bool MatchedIsoEG = false;
+              bool MatchedJet = false;
+
               
               for(unsigned k=0; k<n_l1taus_; k++){
                   double DeltaR = sqrt(pow(l1taus[k]->vector().Phi()- tausVis.vector().Phi(),2) + pow(l1taus[k]->vector().Rapidity()-tausVis.vector().Rapidity(),2));
                   double PtDiff = l1taus[k]->vector().Pt() - tausVis.vector().Pt();
-                  if(DeltaR < 0.5){
+                  if(DeltaR < 0.5 && l1taus[k]->vector().Pt() >= l1tauCut){
                       MatchedL1 = true;
                       if(l1taus[k]->isolation == 1) MatchedIsoL1 = true;
                       h_tau_Tau_DeltaRRes->Fill(DeltaR);
@@ -1077,23 +1251,61 @@ namespace ic {
                   }
               }
               
+              for(unsigned k=0; k<n_l1electrons_; k++){
+                  double DeltaR = sqrt(pow(l1electrons[k]->vector().Phi()- tausVis.vector().Phi(),2) + pow(l1electrons[k]->vector().Rapidity()-tausVis.vector().Rapidity(),2));
+                  if(DeltaR < 0.5 && l1electrons[k]->vector().Pt() >= l1eCut){
+                      MatchedEG = true;
+                      if(l1electrons[k]->isolation == 1) MatchedIsoEG = true;
+                  }
+              }
+              
+              
+              for(unsigned k=0; k<n_l1jets_; k++){
+                  double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- tausVis.vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-tausVis.vector().Rapidity(),2));
+                  if(DeltaR < 0.5 && l1jets[k]->vector().Pt() >= l1jetCut) MatchedJet = true;
+              }
+              
               if(MatchedL1){
                   h_gentau_Tau_Efficiency->Fill(tausVis.vector().Pt());
-                  if(MatchedIsoL1) h_gentau_IsoTau_Efficiency->Fill(tausVis.vector().Pt());
+                  if(MatchedOffline) h_tau_Tau_Efficiency->Fill(tauPt);
+                  if(MatchedIsoL1){
+                      h_gentau_IsoTau_Efficiency->Fill(tausVis.vector().Pt());
+                      if(MatchedOffline) h_tau_IsoTau_Efficiency->Fill(tauPt);
+                  }
+              }
+              
+              if(MatchedL1 && MatchedEG) h_gentau_TauEG_Efficiency->Fill(tausVis.vector().Pt());
+              if(MatchedEG && MatchedOffline) h_tau_EG_Efficiency->Fill(tauPt);
+              if(MatchedL1 && MatchedJet) h_gentau_TauJet_Efficiency->Fill(tausVis.vector().Pt());
+              if(MatchedJet && MatchedOffline) h_tau_Jet_Efficiency->Fill(tauPt);
+              if(MatchedL1 && MatchedJet && MatchedEG) h_gentau_TauEGJet_Efficiency->Fill(tausVis.vector().Pt());
+                  
+              if(MatchedIsoL1 && MatchedIsoEG) h_gentau_IsoTauIsoEG_Efficiency->Fill(tausVis.vector().Pt());
+              if(MatchedIsoEG && MatchedOffline) h_tau_IsoEG_Efficiency->Fill(tauPt);
+              if(MatchedIsoL1 && MatchedJet){
+                  h_gentau_IsoTauJet_Efficiency->Fill(tausVis.vector().Pt());
+                  
+                  if(MatchedIsoL1 && MatchedJet && MatchedIsoEG) h_gentau_IsoTauIsoEGJet_Efficiency->Fill(tausVis.vector().Pt());
+
               }
           }
           
-          if(genID == 11 && std::fabs(GenParticles[j]->vector().Rapidity()) < 2.4){
+          //Gen-Electrons
+          
+          if(genID == 11 && std::fabs(GenParticles[j]->vector().Rapidity()) < 2.4 && GenParticles[j]->statusFlags().at(5)){
               
-              h_gene_Total->Fill(GenParticles[j]->vector().Pt());
+              //h_gene_Total->Fill(GenParticles[j]->vector().Pt());
               
               bool MatchedL1 = false;
               bool MatchedIsoL1 = false;
+              bool MatchedTau = false;
+              bool MatchedIsoTau = false;
+              bool MatchedJet = false;
               
               for(unsigned k=0; k<n_l1electrons_; k++){
                   double DeltaR = sqrt(pow(l1electrons[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(l1electrons[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
                   double PtDiff = l1electrons[k]->vector().Pt() - GenParticles[j]->vector().Pt();
-                  if(DeltaR < 0.5){
+                  if(DeltaR < 0.5 && l1electrons[k]->vector().Pt()>= l1eCut){
                       MatchedL1 = true;
                       if(l1taus[k]->isolation == 1) MatchedIsoL1 = true;
                       h_e_EG_DeltaRRes->Fill(DeltaR);
@@ -1102,18 +1314,75 @@ namespace ic {
                   }
               }
               
+              for(unsigned k=0; k<n_l1taus_; k++){
+                  double DeltaR = sqrt(pow(l1taus[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(l1taus[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5 && l1taus[k]->vector().Pt() >= l1tauCut){
+                      MatchedTau = true;
+                      if(l1taus[k]->isolation == 1) MatchedIsoTau = true;
+                  }
+              }
+              
+              for(unsigned k=0; k<n_l1jets_; k++){
+                  double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5 && l1jets[k]->vector().Pt() >= l1jetCut) MatchedJet = true;
+              }
+              
+              double DeltaRMax = 100000;
+              double ePt = 0;
+              bool MatchedOffline = false;
+              
+              for(unsigned k=0; k< n_electrons_; k++){
+                  double DeltaR = sqrt(pow(electrons[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(electrons[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5 && DeltaR < DeltaRMax){
+                      DeltaRMax = DeltaR;
+                      ePt = electrons[k]->vector().Pt();
+                      MatchedOffline = true;
+                  }
+              }
+              
+              h_gene_Total->Fill(GenParticles[j]->vector().Pt());
+              if(MatchedOffline) h_e_Total->Fill(ePt);
+              
               if(MatchedL1){
                   h_gene_EG_Efficiency->Fill(GenParticles[j]->vector().Pt());
+                  if(MatchedOffline) h_e_EG_Efficiency->Fill(ePt);
               
                   if(MatchedIsoL1){
                       h_gene_IsoEG_Efficiency->Fill(GenParticles[j]->vector().Pt());
+                      if(MatchedOffline) h_e_IsoEG_Efficiency->Fill(ePt);
                   }
               }
+              
+              if(MatchedL1 && MatchedTau) h_gene_EGTau_Efficiency->Fill(GenParticles[j]->vector().Pt());
+              if(MatchedTau && MatchedOffline) h_e_Tau_Efficiency->Fill(ePt);;
+
+              if(MatchedL1 && MatchedJet) h_gene_EGJet_Efficiency->Fill(GenParticles[j]->vector().Pt());
+              if(MatchedJet && MatchedOffline) h_e_Jet_Efficiency->Fill(ePt);
+              if(MatchedL1 && MatchedJet && MatchedTau) h_gene_EGTauJet_Efficiency->Fill(GenParticles[j]->vector().Pt());
+              if(MatchedIsoL1 && MatchedIsoTau) h_gene_IsoEGIsoTau_Efficiency->Fill(GenParticles[j]->vector().Pt());
+              if(MatchedIsoTau && MatchedOffline) h_e_IsoTau_Efficiency->Fill(ePt);
+              if(MatchedIsoL1 && MatchedJet) h_gene_IsoEGJet_Efficiency->Fill(GenParticles[j]->vector().Pt());
+              if(MatchedIsoL1 && MatchedJet && MatchedIsoTau) h_gene_IsoEGIsoTauJet_Efficiency->Fill(GenParticles[j]->vector().Pt());
+              
           }
           
-          if(genID == 13 && std::fabs(GenParticles[j]->vector().Rapidity()) < 2.4){
+          if(genID == 13 && std::fabs(GenParticles[j]->vector().Rapidity()) < 2.4 && GenParticles[j]->statusFlags().at(5)){
+              
+              double DeltaRMax = 100000;
+              double muPt = 0;
+              bool MatchedOffline = false;
+              
+              for(unsigned k=0; k< n_muons_; k++){
+                  double DeltaR = sqrt(pow(muons[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(muons[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5 && DeltaR < DeltaRMax){
+                      DeltaRMax = DeltaR;
+                      muPt = muons[k]->vector().Pt();
+                      MatchedOffline = true;
+                  }
+              }
               
               h_genmu_Total->Fill(GenParticles[j]->vector().Pt());
+              if(MatchedOffline) h_mu_Total->Fill(muPt);
               
               bool MatchedL1 = false;
               bool MatchedIsoL1 = false;
@@ -1121,7 +1390,7 @@ namespace ic {
               for(unsigned k=0; k<n_l1muons_; k++){
                   double DeltaR = sqrt(pow(l1muons[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(l1muons[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
                   double PtDiff = l1muons[k]->vector().Pt() - GenParticles[j]->vector().Pt();
-                  if(DeltaR < 0.5){
+                  if(DeltaR < 0.5 && l1muons[k]->vector().Pt() >= l1muCut){
                       MatchedL1 = true;
                       if(l1muons[k]->isolation > 0) MatchedIsoL1 = true;
                       h_mu_Mu_DeltaRRes->Fill(DeltaR);
@@ -1131,10 +1400,15 @@ namespace ic {
 
               }
               
-              if(MatchedL1) h_genmu_Mu_Efficiency->Fill(GenParticles[j]->vector().Pt());
-              if(MatchedIsoL1) h_genmu_IsoMu_Efficiency->Fill(GenParticles[j]->vector().Pt());
+              if(MatchedL1){
+                  h_genmu_Mu_Efficiency->Fill(GenParticles[j]->vector().Pt());
+                  if(MatchedOffline) h_mu_Mu_Efficiency->Fill(muPt);
+              }
+              if(MatchedIsoL1){
+                  h_genmu_IsoMu_Efficiency->Fill(GenParticles[j]->vector().Pt());
+                  if(MatchedOffline) h_mu_IsoMu_Efficiency->Fill(muPt);
+              }
           }
-          
    }
    
    for(int i= n_genjets_-1; i>=0; i--){
@@ -1182,6 +1456,10 @@ namespace ic {
            h_genjet_Total->Fill(genjets[j]->vector().Pt());
            
            bool MatchedL1 = false;
+           bool MatchedTau = false;
+           bool MatchedEG = false;
+           bool MatchedIsoTau = false;
+           bool MatchedIsoEG = false;
            
            for(unsigned k=0; k<n_l1jets_; k++){
                double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- genjets[j]->vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-genjets[j]->vector().Rapidity(),2));
@@ -1194,7 +1472,30 @@ namespace ic {
                }
            }
            
+           for(unsigned k=0; k<n_l1electrons_; k++){
+               double DeltaR = sqrt(pow(l1electrons[k]->vector().Phi()- genjets[j]->vector().Phi(),2) + pow(l1electrons[k]->vector().Rapidity()-genjets[j]->vector().Rapidity(),2));
+               if(DeltaR < 0.5){
+                   MatchedEG = true;
+                   if(l1electrons[k]->isolation >0) MatchedIsoEG = true;
+               }
+           }
+           
+           for(unsigned k=0; k<n_l1taus_; k++){
+               double DeltaR = sqrt(pow(l1taus[k]->vector().Phi()- genjets[j]->vector().Phi(),2) + pow(l1taus[k]->vector().Rapidity()-genjets[j]->vector().Rapidity(),2));
+               if(DeltaR < 0.5){
+                   MatchedTau = true;
+                   if(l1taus[k]->isolation > 0) MatchedIsoTau = true;
+               }
+           }
+           
            if(MatchedL1) h_genjet_Jet_Efficiency->Fill(genjets[j]->vector().Pt());
+           if(MatchedTau && MatchedL1) h_genjet_Tau_Efficiency->Fill(genjets[j]->vector().Pt());
+           if(MatchedEG && MatchedL1) h_genjet_EG_Efficiency->Fill(genjets[j]->vector().Pt());
+           if(MatchedTau && MatchedEG && MatchedL1) h_genjet_TauEG_Efficiency->Fill(genjets[j]->vector().Pt());
+           if(MatchedIsoTau && MatchedL1) h_genjet_IsoTau_Efficiency->Fill(genjets[j]->vector().Pt());
+           if(MatchedIsoEG && MatchedL1) h_genjet_IsoEG_Efficiency->Fill(genjets[j]->vector().Pt());
+           if(MatchedIsoTau && MatchedIsoEG && MatchedL1) h_genjet_IsoTauIsoEG_Efficiency->Fill(genjets[j]->vector().Pt());
+    
        }
        
    }
@@ -1228,13 +1529,33 @@ namespace ic {
       h_gentau_Tau_Efficiency->Divide(h_gentau_Total);
       h_gentau_IsoTau_Efficiency->Divide(h_gentau_Total);
       
+      h_gentau_TauJet_Efficiency->Divide(h_gentau_Total);
+      h_gentau_TauEG_Efficiency->Divide(h_gentau_Total);
+      h_gentau_TauEGJet_Efficiency->Divide(h_gentau_Total);
+      h_gentau_IsoTauIsoEG_Efficiency->Divide(h_gentau_Total);
+      h_gentau_IsoTauJet_Efficiency->Divide(h_gentau_Total);
+      h_gentau_IsoTauIsoEGJet_Efficiency->Divide(h_gentau_Total);
+      
       h_gene_EG_Efficiency->Divide(h_gene_Total);
       h_gene_IsoEG_Efficiency->Divide(h_gene_Total);
+      
+      h_gene_EGJet_Efficiency->Divide(h_gene_Total);
+      h_gene_EGTau_Efficiency->Divide(h_gene_Total);
+      h_gene_EGTauJet_Efficiency->Divide(h_gene_Total);
+      h_gene_IsoEGJet_Efficiency->Divide(h_gene_Total);
+      h_gene_IsoEGIsoTau_Efficiency->Divide(h_gene_Total);
+      h_gene_IsoEGIsoTauJet_Efficiency->Divide(h_gene_Total);
       
       h_genmu_Mu_Efficiency->Divide(h_genmu_Total);
       h_genmu_IsoMu_Efficiency->Divide(h_genmu_Total);
       
       h_genjet_Jet_Efficiency->Divide(h_genjet_Total);
+      h_genjet_EG_Efficiency->Divide(h_genjet_Total);
+      h_genjet_Tau_Efficiency->Divide(h_genjet_Total);
+      h_genjet_TauEG_Efficiency->Divide(h_genjet_Total);
+      h_genjet_IsoEG_Efficiency->Divide(h_genjet_Total);
+      h_genjet_IsoTau_Efficiency->Divide(h_genjet_Total);
+      h_genjet_IsoTauIsoEG_Efficiency->Divide(h_genjet_Total);
       
       h_jet_Jet_Efficiency->Divide(h_jet_Total);
       h_subjet_Jet_Efficiency->Divide(h_subjet_Total);

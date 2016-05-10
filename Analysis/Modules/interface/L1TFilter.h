@@ -24,6 +24,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 
 #include "Modules/interface/L1Cuts.h"
 
@@ -31,7 +32,7 @@ namespace ic {
     
 class L1TFilter : public ModuleBase {
    public:
-      L1TFilter(std::string const& name, std::string channel, fwlite::TFileService *fs, L1Cuts l1Cuts, std::string L1MuTag, std::string subDirName);
+      L1TFilter(std::string const& name, std::string channel, fwlite::TFileService *fs, L1Cuts l1Cuts, std::string L1MuTag, std::string subDirName, unsigned isZeroBias);
       virtual ~L1TFilter(); 
       
       virtual int PreAnalysis();
@@ -60,15 +61,62 @@ class L1TFilter : public ModuleBase {
       double Tau1PtCut;
       double Tau2PtCut;
       double MuPtCut;
+      double AvePtCut;
+      double VecPtCut;
       
       bool IsoTauFilter;
       bool IsoEGFilter;
       bool IsoMuFilter;
       bool JetFilter;
+      unsigned isZB;
       
       TH1D *h_L1Filter_Efficiency;
       TH1D *h_SignalEfficiency;
       TH1D *h_METRates;
+      
+      TH2D *h_DoubleIsoTauRate2D;
+      TH2D *h_DoubleTauRate2D;
+      TH2D *h_IsoTauTauRate2D;
+      
+      TH1D *h_DoubleIsoTauPt          ;
+      TH1D *h_DoubleTauPt             ;
+      TH1D *h_SingleEGPt              ;
+      TH1D *h_SingleIsoEGPt           ;
+      TH1D *h_SingleMuPt              ;
+      TH1D *h_SingleIsoMuPt           ;
+      TH1D *h_SingleJetPt             ;
+      TH1D *h_DoubleJetPt             ;
+      TH1D *h_DoubleJetMjj            ;
+      TH1D *h_DoubleJetDeltaEta       ;
+      TH1D *h_DoubleJetAvePt          ;
+      TH1D *h_DoubleJetVecPt          ;
+      
+      TH1D *h_l1jj_VecPt;
+      TH1D *h_l1jj_Diff;
+      TH1D *h_l1jj_DiffOverSum;
+      TH1D *h_tauEta_After;
+      TH1D *h_tauEta_Before;
+      
+      TH1D *h_tau1Eta; 
+      TH1D *h_tau2Eta; 
+      TH1D *h_electron1Eta; 
+      TH1D *h_electron2Eta;
+      TH1D *h_muon1Eta; 
+      TH1D *h_muon2Eta;
+      TH1D *h_jet1Eta; 
+      TH1D *h_jet2Eta; 
+      TH1D *h_tau1Pt;
+      TH1D *h_tau2Pt;
+      TH1D *h_electron1Pt;
+      TH1D *h_electron2Pt;
+      TH1D *h_muon1Pt;
+      TH1D *h_muon2Pt;
+      TH1D *h_jet1Pt;
+      TH1D *h_jet2Pt;
+      TH1D *h_jetsMjj;  
+      TH1D *h_jetsDeltaEta; 
+      TH1D *h_jetsAvePt; 
+      TH1D *h_jetsVecPt;
 
 };
 }
