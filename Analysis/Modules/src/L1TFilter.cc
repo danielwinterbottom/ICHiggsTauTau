@@ -356,7 +356,7 @@ namespace ic {
       bool dontFilter = true;
       bool doJetFilterLoop = false;
 
-      if(Jet1PtCut > 0 || Jet2PtCut > 0 || MjjCut > 0 || DeltaEtaCut > 0) doJetFilterLoop = true;
+      if(Jet1PtCut > 0 || Jet2PtCut > 0 || MjjCut > 0 || DeltaEtaCut > 0 || AvePtCut > 0 || VecPtCut > 0) doJetFilterLoop = true;
       if(doJetFilterLoop && n_l1jets_ < 2) Filter = true;
    
       if(n_l1jets_>1 && doJetFilterLoop){
