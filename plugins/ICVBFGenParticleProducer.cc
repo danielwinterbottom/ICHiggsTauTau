@@ -17,6 +17,21 @@
 using namespace edm;
 using namespace std;
 
+std::vector<reco::GenParticle> FamilyTree (std::vector<reco::GenParticle> &v, const reco::GenParticle p){
+    if(p.status() == 1){
+        if(!(fabs(p.pdgId())==12 || fabs(p.pdgId())==14 || fabs(p.pdgId())==16)){
+            v.push_back(p);
+        }
+    }
+    else{
+        for(size_t i = 0; i < p.numberOfDaughters(); ++i ){
+            const reco::GenParticle *d = (reco::GenParticle*) p.daughter( i );
+            FamilyTree(v,*d);
+        }
+    }
+    return v;
+}
+
 ICVBFGenParticleProducer::ICVBFGenParticleProducer(const edm::ParameterSet& config)
  {
   
@@ -103,12 +118,12 @@ void ICVBFGenParticleProducer::produce(edm::Event& event,
     }
     
     if(i == 5){
+        
       m_genAnalysisData->VBFParton1_ = p;
-      unsigned n = p.numberOfDaughters();
-      for(size_t j = 0; j < n; ++ j) {
-        const reco::GenParticle *d = (reco::GenParticle*) p.daughter( j );
-        if(d->status()==1 && !(fabs(d->pdgId())==12 || fabs(d->pdgId())==14 || fabs(d->pdgId())==16)) m_genAnalysisData->VBFParton1Visproducts_   .push_back(*d);
-      }
+      
+      std::vector<reco::GenParticle> family;
+      FamilyTree(family, p);
+      m_genAnalysisData->VBFParton1Visproducts_ = family;
       
       int genjetIndex = -1;
       double DeltaRMin = 1000000;
@@ -130,6 +145,11 @@ void ICVBFGenParticleProducer::produce(edm::Event& event,
       else m_genAnalysisData->VBFParton1Matched = false;
     }
     if(i == 6){
+        
+      std::vector<reco::GenParticle> family;
+      FamilyTree(family, p);
+      m_genAnalysisData->VBFParton2Visproducts_ = family;
+      
       m_genAnalysisData->VBFParton2_ = p;
       unsigned n = p.numberOfDaughters();
       for(size_t j = 0; j < n; ++ j) {
