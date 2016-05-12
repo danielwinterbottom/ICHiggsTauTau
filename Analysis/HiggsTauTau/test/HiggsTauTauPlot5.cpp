@@ -244,7 +244,7 @@ int main(int argc, char* argv[]){
    
  ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (add_sm_background != "") {
-		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
+		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "",1.0);
 	}
 	if(!no_central) ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 	ana.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "", 1.0);
@@ -330,12 +330,12 @@ int main(int argc, char* argv[]){
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     if (add_sm_background != "") {
-			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up");
+			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up",1.0);
     }
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     if (add_sm_background != "") {
-			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
+			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down",1.0);
     }
 
     std::string ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
@@ -436,7 +436,7 @@ int main(int argc, char* argv[]){
 		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
 		ana_syst.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "_"+syst.second, signal_xs);
 		if (add_sm_background != "") {
-			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
+			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second,1.0);
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		ana_syst.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
