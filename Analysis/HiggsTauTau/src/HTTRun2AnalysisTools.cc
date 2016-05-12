@@ -795,7 +795,9 @@ if(!is_fall15_){
 sample_names_={};
 push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("vv_samples"));
-push_back(sample_names_,this->ResolveSamplesAlias("wgam_samples"));
+if(ch_==channel::em){
+  push_back(sample_names_,this->ResolveSamplesAlias("wgam_samples"));
+}
 push_back(sample_names_,this->ResolveSamplesAlias("wjets_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("top_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
