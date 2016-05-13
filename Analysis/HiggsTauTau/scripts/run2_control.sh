@@ -20,20 +20,20 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 if [ "$POSTFIT" -gt "0" ]
   then
     echo "Applying SF's ..."
-    ET_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.01036 --shift_backgrounds=QCD:0.97707,TT:0.98411,VV:0.98437,W:1.47733,ZJ:0.92786,ZL:1.37040,ZTT:0.81560 "
-    MT_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.00711 --shift_backgrounds=QCD:0.90291,TT:0.99461,VV:0.98942,W:1.25993,ZJ:0.93176,ZL:1.87241,ZTT:0.88709 "
-    EM_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.00684 --shift_backgrounds=QCD:1.02079,TT:0.97237,VV:0.98234,W:0.99838,ZLL:0.95286,ZTT:0.91173 "
-    TT_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.02456 --shift_backgrounds=QCD:1.00606,TT:0.93180,VV:0.97842,W:1.01697,ZJ:0.98546,ZL:0.96595,ZTT:0.92505 "
-    ET_BAND_ONLY=" --draw_error_band=true --auto_error_band=0.01036 "
-    MT_BAND_ONLY=" --draw_error_band=true --auto_error_band=0.00711 "
-    EM_BAND_ONLY=" --draw_error_band=true --auto_error_band=0.00684 "
-    TT_BAND_ONLY=" --draw_error_band=true --auto_error_band=0.02456 "
+    ET_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.00955 --shift_backgrounds=QCD:0.95907,TT:0.98915,VV:0.99890,W:1.36437,ZJ:0.94658,ZL:1.23455,ZTT:0.82716 "
+    MT_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.00639 --shift_backgrounds=QCD:0.92584,TT:0.99849,VV:1.00291,W:1.14470,ZJ:0.933332,ZL:2.15012,ZTT:0.91593 "
+    EM_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.00703 --shift_backgrounds=QCD:1.02675,TT:0.97666,VV:0.99711,W:0.99394,ZLL:0.95320,ZTT:0.94639 "
+    TT_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.02749 --shift_backgrounds=QCD:1.00587,TT:0.92940,VV:0.98698,W:0.96714,ZJ:0.94345,ZL:0.96175,ZTT:0.97328 "
+    ET_BAND_ONLY=" --draw_error_band=true --auto_error_band=0.00955 "
+    MT_BAND_ONLY=" --draw_error_band=true --auto_error_band=0.00639 "
+    EM_BAND_ONLY=" --draw_error_band=true --auto_error_band=0.00703 "
+    TT_BAND_ONLY=" --draw_error_band=true --auto_error_band=0.02749 "
   else
    echo "Setting prefit uncertainty..."
-    ET_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.07559 " 
-    MT_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.08397 "
-    EM_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.07061 "
-    TT_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.10421 "
+    ET_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.07042 " 
+    MT_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.07767 "
+    EM_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.06390 "
+    TT_INC_SHIFT=" --draw_error_band=true --auto_error_band=0.09716 "
     ET_BAND_ONLY=$ET_INC_SHIFT
     MT_BAND_ONLY=$MT_INC_SHIFT
     EM_BAND_ONLY=$EM_INC_SHIFT
