@@ -53,7 +53,7 @@ namespace ic {
 
    if(met_scale_mode_ > 0 || met_res_mode_ > 0) disable_met_sys =false;
    
-    if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) ){
+    if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) || (sample_.find("WG")!=sample_.npos)){
       disable_recoil_corrs = false;
       is_wjets = true;
     }
@@ -66,19 +66,18 @@ namespace ic {
      disable_recoil_corrs = false;
     }
     
-    if (disable_recoil_corrs) {
+    if (disable_recoil_corrs && disable_met_sys) {
       std::cout << boost::format(param_fmt()) % "Recoil corrs enabled"      % false;
+      std::cout << boost::format(param_fmt()) % "Met systs enabled"         % false;
       return 0;
     } else {
-      corrector_ = new RecoilCorrectorRun2(process_file);
+     if(!disable_recoil_corrs){
+       corrector_ = new RecoilCorrectorRun2(process_file);
     }
-
-    if (disable_met_sys){
-     std::cout << boost::format(param_fmt()) % "Met systs enabled"         % false;
-     return 0;
-    } else {
-      metSys_ = new MEtSys(syst_file);
-    }
+     if(!disable_met_sys){
+       metSys_ = new MEtSys(syst_file);
+     }
+   }
 
     return 0;
   }
@@ -94,6 +93,8 @@ namespace ic {
     std::vector<GenParticle *> sel_vis_parts;
     double genpX=0;
     double genpY=0;
+    double genM=0;
+    double genpT=0;
     double vispX=0;
     double vispY=0;
     
@@ -105,10 +106,15 @@ namespace ic {
       if ( ( (id == 11 || id == 13 || id == 15) && status_flags[FromHardProcess] && status==1) || (status_flags[IsDirectHardProcessTauDecayProduct] && !(id==12||id==14||id==16))) sel_vis_parts.push_back(parts[i]);
    }
 
+   
+  ROOT::Math::PtEtaPhiEVector gen_boson;
    for( unsigned i = 0; i < sel_gen_parts.size() ; ++i){
      genpX+= sel_gen_parts[i]->vector().px();
      genpY+= sel_gen_parts[i]->vector().py();
+     gen_boson += sel_gen_parts[i]->vector();
    }
+    genpT = gen_boson.pt();
+    genM = gen_boson.M();
 
 
    for( unsigned i = 0; i < sel_vis_parts.size() ; ++i){
@@ -122,6 +128,9 @@ namespace ic {
     event->Add("vispX", vispX);
     event->Add("vispY", vispY);
   }
+
+  event->Add("genpT", genpT);
+  event->Add("genM", genM);
 
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));

@@ -2,7 +2,7 @@
 
 JOBDIR=jobs_lighttree_160307/
 INJOBDIR=0
-PROD=160307
+PROD=160213
 
 while [ $# -gt 0 ] ; do
 

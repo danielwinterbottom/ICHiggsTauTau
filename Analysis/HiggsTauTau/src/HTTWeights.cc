@@ -30,6 +30,7 @@ namespace ic {
     do_emu_m_fakerates_       = false;
     do_top_factors_           = false;
     do_btag_weight_           = false;
+    do_zpt_weight_            = false;
     btag_mode_                = 0;
     bfake_mode_               = 0;
     do_w_soup_                = false;
@@ -51,6 +52,7 @@ namespace ic {
     jets_label_               = "pfJetsPFlow";
     btag_label_ 	      = "combinedSecondaryVertexBJetTags";
     ditau_label_              = "emtauCandidates";
+    z_pt_mass_hist_            = nullptr;
     mt_idiso_mc_              = nullptr;     
     mt_idiso_data_            = nullptr;     
     et_idiso_mc_              = nullptr;     
@@ -102,6 +104,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_emu_m_fakerates"  % do_emu_m_fakerates_;
     std::cout << boost::format(param_fmt()) % "do_top_factors"      % do_top_factors_;
     std::cout << boost::format(param_fmt()) % "do_btag_weight"      % do_btag_weight_;
+    std::cout << boost::format(param_fmt()) % "do_zpt_weight"       % do_zpt_weight_;
     std::cout << boost::format(param_fmt()) % "btag_mode"           % btag_mode_;
     std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
     std::cout << boost::format(param_fmt()) % "do_topquark_weights" % do_topquark_weights_;
@@ -517,6 +520,17 @@ namespace ic {
        double wtbtag = event->Get<double>("btag_evt_weight");
        weight *= wtbtag;
      } 
+
+    if (do_zpt_weight_){
+      double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
+      double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
+      double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
+      double wtzpt_down=1.0;
+      double wtzpt_up = wtzpt*wtzpt; 
+      eventInfo->set_weight("wt_zpt",wtzpt);
+      event->Add("wt_zpt_up",wtzpt_up/wtzpt);
+      event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+    }
 
     if (do_trg_weights_) {
       if (channel_ == channel::et) {
@@ -1412,7 +1426,7 @@ namespace ic {
       eventInfo->set_weight("emu_m_fakerate", mufakerate);
     }
 
-    if (do_etau_fakerate_) {
+    if (do_etau_fakerate_ && era_!=era::data_2015) {
       std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
       ic::erase_if(parts, !(boost::bind(&GenParticle::status, _1) == 3));
       ic::erase_if(parts, ! ((boost::bind(&GenParticle::pdgid, _1) == 11)||(boost::bind(&GenParticle::pdgid, _1) == -11)) );
@@ -1445,6 +1459,16 @@ namespace ic {
             }
           }
         }
+      }
+    }
+
+    if (do_etau_fakerate_ && era_==era::data_2015) {
+      unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+      if(gm2_==1||gm2_==3){
+        if(fabs(tau->eta()) < 1.5){
+           eventInfo->set_weight("etau_fakerate",1.80);
+        } else eventInfo->set_weight("etau_fakerate",1.30);
       }
     }
 

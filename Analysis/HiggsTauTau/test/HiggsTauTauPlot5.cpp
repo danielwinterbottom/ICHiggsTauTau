@@ -46,6 +46,7 @@ int main(int argc, char* argv[]){
 	string syst_qcd_shape;
 	string syst_ggh_pt;
 	string syst_tquark;
+	string syst_zwt;
 	string syst_w_fake_rate;
 	string syst_eff_t;
 	string syst_zl_shift;
@@ -111,6 +112,7 @@ int main(int argc, char* argv[]){
 	  ("syst_scale_j",            po::value<string>(&syst_scale_j)->default_value(""))
 	  ("syst_ggh_pt",    			    po::value<string>(&syst_ggh_pt)->default_value(""))
 	  ("syst_tquark",    			    po::value<string>(&syst_tquark)->default_value(""))
+	  ("syst_zwt",    			      po::value<string>(&syst_zwt)->default_value(""))
 	  ("syst_w_fake_rate",   	    po::value<string>(&syst_w_fake_rate)->default_value(""))
 	  ("syst_zl_shift",    		    po::value<string>(&syst_zl_shift)->default_value(""))
 	  ("add_sm_background",       po::value<string>(&add_sm_background)->default_value(""))
@@ -242,7 +244,7 @@ int main(int argc, char* argv[]){
    
  ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (add_sm_background != "") {
-		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
+		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "",1.0);
 	}
 	if(!no_central) ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 	ana.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "", 1.0);
@@ -307,6 +309,8 @@ int main(int argc, char* argv[]){
     }
 	}
 
+
+
   // ************************************************************************
 	// W+jets fake-rate Reweighting
 	// ************************************************************************
@@ -326,26 +330,28 @@ int main(int argc, char* argv[]){
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     if (add_sm_background != "") {
-			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up");
+			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up",1.0);
     }
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     if (add_sm_background != "") {
-			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
+			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down",1.0);
     }
 
-    std::string ztt_sel;
-    if (channel_str == "et"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
-    if (channel_str == "mt"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
-    if (channel_str == "tt"){
-      ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
-    }
+    std::string ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
  		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_up");
  		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_down");
+	}
+
+
+	if (syst_zwt != "") {
+		std::cout << "[HiggsTauTauPlot5] Adding z-reweighting systematic..." << std::endl;
+
+    std::string ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
+    for (unsigned j = 0; j < vars.size(); ++j) {
+		  hmap["ZTT"+vars_postfix[j]+"_"+syst_zwt+"Up"] = ana.GenerateZTT(method, vars[j], ztt_sel, cat, "wt*wt_zpt_up");
+		  hmap["ZTT"+vars_postfix[j]+"_"+syst_zwt+"Down"] = ana.GenerateZTT(method, vars[j], ztt_sel, cat, "wt*wt_zpt_down");
+    }
 	}
 	
   vector<pair<string,string>> systematics;
@@ -430,7 +436,7 @@ int main(int argc, char* argv[]){
 		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
 		ana_syst.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "_"+syst.second, signal_xs);
 		if (add_sm_background != "") {
-			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
+			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second,1.0);
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		ana_syst.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
@@ -871,8 +877,9 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (auto_titles) {
 		double pb_lumi = ana.GetLumi();
+    double fb_lumi = pb_lumi/1000.;
 		string com = "13";
-        plot.set_lumi_label((boost::format("%.1f pb^{-1} at %s TeV") % pb_lumi % com).str());
+        plot.set_lumi_label((boost::format("%.1f fb^{-1} (%s TeV)") % fb_lumi % com).str());
         plot.set_cms_label("CMS");
         plot.set_cms_extra("Preliminary");
         std::string channel_fmt = ""; 

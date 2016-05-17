@@ -97,6 +97,9 @@ sample_list = [
 'DYJetsToLL_M-5_HT200-400',
 'DYJetsToLL_M-5_HT400-600',
 'DYJetsToLL_M-5_HT600-Inf',
+'WGToLNuG',
+'WGstarToLNuEE',
+'WGstarToLNuMuMu',
 #'DYJetsToLL-L',
 #'DYJetsToLL-J',
 #'DYJetsToTauTau-L',
@@ -206,7 +209,19 @@ sample_list = [
   'GluGluHToTauTau_M-120',
   'VBFHToTauTau_M-120',
   'VBFHToTauTau_M-125',
-  'VBFHToTauTau_M-130'
+  'VBFHToTauTau_M-130',
+  'ZHToTauTau_M-120',
+  'ZHToTauTau_M-125',
+  'ZHToTauTau_M-130',
+  'WminusHToTauTau_M-120',
+  'WminusHToTauTau_M-125',
+  'WminusHToTauTau_M-130',
+  'WplusHToTauTau_M-120',
+  'WplusHToTauTau_M-125',
+  'WplusHToTauTau_M-130',
+  'TTHToTauTau_M-120',
+  'TTHToTauTau_M-125',
+  'TTHToTauTau_M-130',
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']

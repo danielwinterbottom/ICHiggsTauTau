@@ -73,9 +73,17 @@ namespace ic {
     };
     bkg_schemes_["em_default"] = {
       PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"QCD"}            ,TColor::GetColor(250,202,255)),
-      PlotBkgComponent("ewk","Electroweak"          ,{"VV"}              ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("ewk","Electroweak"          ,{"VV","W","ZLL"}              ,TColor::GetColor(222, 90,106)),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}            ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,TColor::GetColor(248,206,104))
+    };
+    bkg_schemes_["em_with_zmm"] = {
+      PlotBkgComponent("ewk","Diboson"          ,{"VV"}              ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("wjets","W+jets"          ,{"WJets"}              ,TColor::GetColor(232, 54,38)),
+      PlotBkgComponent("wgam","W+#gamma"          ,{"WGam"}              ,TColor::GetColor(79, 14,60)),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}            ,TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT","ZLL"}              ,TColor::GetColor(248,206,104)),
+      PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"QCD"}            ,TColor::GetColor(250,202,255))
     };
     //For start of run 2 before data
     bkg_schemes_["em_no_qcd"] = {
@@ -557,10 +565,9 @@ namespace ic {
       bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
 
       err_element.hist_ptr()->SetMarkerSize(0);
-      //New transparent grey uncertainty bands
-      int new_idx = CreateTransparentColor(13, 0.5);
+      //Same as CH uncertainty bands:
+      int new_idx = CreateTransparentColor(13, 0.4);
       err_element.hist_ptr()->SetFillColor(new_idx);
-      err_element.hist_ptr()->SetFillStyle(3001);
       err_element.hist_ptr()->SetLineWidth(1);
       bkg_element.hist_ptr()->SetMarkerSize(0);
       bkg_element.hist_ptr()->SetFillColor(1);

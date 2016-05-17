@@ -81,6 +81,7 @@ namespace ic {
       HistValuePair GenerateZLL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateWGamma(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs = -1.0);
@@ -171,6 +172,12 @@ namespace ic {
       // Sample efficiency is only correctly defined if the
       // "target" selection and category gives a strict subset
       // of the events in the "reference" selection and category
+      Value SampleEfficiency(std::vector<std::string> const& samples, 
+                              std::string const& ref_selection, 
+                              std::string const& ref_category,
+                              std::string const& target_selection, 
+                              std::string const& target_category,  
+                              std::string const& weight);
       Value SampleEfficiency(std::string const& sample, 
                               std::string const& ref_selection, 
                               std::string const& ref_category,
@@ -196,6 +203,13 @@ namespace ic {
                               std::vector<std::string> const& subtr_samples,
                               std::map<std::string, std::function<Value()>> func_dict);
 
+      Value GetRateViaRefEfficiency(std::vector<std::string> const& target_samples, 
+                              std::vector<std::string> const& ref_samples,
+                              std::string const& ref_selection, 
+                              std::string const& ref_category,
+                              std::string const& target_selection, 
+                              std::string const& target_category,  
+                              std::string const& weight);
       Value GetRateViaRefEfficiency(std::string const& target_sample, 
                               std::string const& ref_sample,
                               std::string const& ref_selection, 

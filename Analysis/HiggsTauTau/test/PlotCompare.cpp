@@ -11,6 +11,8 @@
 #include "TH1.h"
 #include "TFile.h"
 #include "TTree.h"
+#include "TMVA/MethodBase.h"
+#include <iomanip>      
 
 namespace po = boost::program_options;
 
@@ -110,6 +112,7 @@ int main(int argc, char* argv[]){
   double y_axis_min;
   double y_axis_max;
   double extra_pad;
+  bool shape_compare;
 
   po::options_description config("Configuration");
   po::variables_map vm;
@@ -134,7 +137,8 @@ int main(int argc, char* argv[]){
     ("ratio_y_min",         po::value<double>(&ratio_y_min)->default_value(0.8))
     ("ratio_y_max",         po::value<double>(&ratio_y_max)->default_value(1.2))
     ("norm_bins",           po::value<bool>(&norm_bins)->default_value(false))
-    ("custom_y_axis_range",   po::value<bool>(&custom_y_axis_range)->default_value(false))
+    ("shape_compare",       po::value<bool>(&shape_compare)->default_value(false))
+    ("custom_y_axis_range", po::value<bool>(&custom_y_axis_range)->default_value(false))
     ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(0.0))
     ("y_axis_max",          po::value<double>(&y_axis_max)->default_value(1))
     ("extra_pad",           po::value<double>(&extra_pad)->default_value(1.15))
@@ -183,7 +187,15 @@ int main(int argc, char* argv[]){
       std::cout << boost::format(param_fmt) % "color" % split[7];
 
       files.push_back(new TFile(split[2].c_str()));
+      if(!files.back()->IsOpen()){
+        std::cout<<"ERROR: File "<< split[2] <<" does not exist"<<std::endl;
+        exit(0);
+      }
       elements.emplace_back(split[0], files.back(), split[3], split[4], split[1]);
+      if(!elements.back().hist_ptr()){
+        std::cout<<"ERROR: No histogram "<<split[4] <<" in directory "<<split[3]<<std::endl;
+        exit(0);
+      }
     } else if (split.size() == 11 || split.size()==12){//For a branch of a TTree (need to specify the number of bins and x-axis range)
      if(ntrees==0){
        //Use the same binning for all trees (n_bins, x_low and x_up options taken from first input string calling for a plot from a TTree)
@@ -213,6 +225,10 @@ int main(int argc, char* argv[]){
 
 
       files.push_back(new TFile(split[2].c_str()));
+      if(!files.back()->IsOpen()){
+        std::cout<<"ERROR: File "<< split[2] <<" does not exist"<<std::endl;
+        exit(0);
+      }
       files.back()->cd();
       TTree *tree = dynamic_cast<TTree*>(gDirectory->Get(split[3].c_str()));
       hist_map[split[0].c_str()] = TH1F(split[0].c_str(),split[0].c_str(),n_bins,x_low,x_up);
@@ -227,6 +243,7 @@ int main(int argc, char* argv[]){
     std::cout << boost::format(param_fmt) % "lumi" % lumi.back();
     rate.emplace_back(Integral(elements.back().hist_ptr()));
     std::cout << boost::format(param_fmt) % "rate" % rate.back();
+
 
     if (norm_mode == 3) {
       elements.back().hist_ptr()->Scale(1. / rate.back());
@@ -261,6 +278,23 @@ int main(int argc, char* argv[]){
     }
   ntrees++; 
   }
+
+  double sep;  
+  if(plots.size() == 2) {
+    TH1 * plot_1 = elements[0].hist_ptr();   
+    TH1 * plot_2 = elements[1].hist_ptr();
+    TMVA::MethodBase* base = NULL;
+    sep = base->TMVA::MethodBase::GetSeparation(plot_1, plot_2) ;
+
+  }
+
+/*  double OS_SS = rate[1]/rate[0];
+  double OS_SS_err = OS_SS*sqrt((pow((sqrt(rate[1])/rate[1]),2) + pow((sqrt(rate[0])/rate[0]),2)));
+  std::ostringstream out;
+  out << setprecision(4) << OS_SS;
+  std::ostringstream out_err;
+  out_err << setprecision(2) << OS_SS_err;*/
+
   
   marker_it = markers.begin();
   vector<string> rsplit;
@@ -314,8 +348,13 @@ int main(int argc, char* argv[]){
     compare.y_axis_max = y_axis_max;
   }
   
-  ic::TextElement text(channel,0.07,0.19,0.89);
+  std::ostringstream sep_string;
+  sep_string << setprecision(4) << sep;
+  ic::TextElement text(channel,0.04,0.19,0.89);
+  //ic::TextElement text("OS/SS="+out.str()+"+/-"+out_err.str(),0.04,0.18,0.89);
   compare.AddTextElement(text);
+  ic::TextElement separation("TMVA sep: " + sep_string.str(),0.03,0.69,0.59);
+  if(shape_compare) compare.AddTextElement(separation);
 
 
   compare.GeneratePlot();

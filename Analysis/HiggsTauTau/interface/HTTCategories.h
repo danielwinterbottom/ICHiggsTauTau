@@ -69,6 +69,8 @@ class HTTCategories : public ModuleBase {
   double wt_tau_fake_down_;
   double wt_tquark_up_;
   double wt_tquark_down_;
+  double wt_zpt_up_;
+  double wt_zpt_down_;
   double wt_tau_id_up_;
   double wt_tau_id_down_;
   double wt_em_qcd_;

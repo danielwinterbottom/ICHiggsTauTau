@@ -40,6 +40,9 @@ parser.add_option("--qcd", dest="proc_qcd", action='store_true', default=False,
 parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
                   help="Process signal SM mc samples")
 
+parser.add_option("--smbkg", dest="proc_smbkg", action='store_true', default=False,
+                  help="Process signal SM mc samples @ 125 GeV")
+
 parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False,
                   help="Process signal MSSM mc samples")
 
@@ -115,12 +118,17 @@ if os.path.isfile("./jobs/files_per_sample.txt"):
 
 file_persamp = open("./jobs/files_per_sample.txt", "w")
 
-if options.proc_sm or options.proc_all:
+if options.proc_sm or options.proc_all or options.proc_smbkg:
   masses = ['120','125','130']
-  if options.short_signal: masses = ['125']
+  if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
       'GluGluHToTauTau_M-'+mass,
+      'VBFHToTauTau_M-'+mass,
+      'ZHToTauTau_M-'+mass,
+      'WplusHToTauTau_M-'+mass,
+      'WminusHToTauTau_M-'+mass,
+      'TTHToTauTau_M-'+mass
     ]
 if options.proc_mssm or options.proc_all:
   masses = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']
@@ -214,6 +222,9 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'DY2JetsToLL_M-50-LO',
     'DY3JetsToLL_M-50-LO',
     'DY4JetsToLL_M-50-LO',
+    'WGToLNuG',
+    'WGstarToLNuEE',
+    'WGstarToLNuMuMu',
      ]
 
   if options.qcd_study:
@@ -254,7 +265,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
   
 
-if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
+if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hhh or options.proc_all:
   for sa in signal_mc:
     JOB='%s_2015' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
