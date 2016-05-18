@@ -1,8 +1,8 @@
 {
-TFile *f1 = new TFile("output/Trigger_2016/RateVsEffV5/DiJetAvg60Mjj855.root");
-TFile *f2 = new TFile("output/Trigger_2016/RateVsEffV5/DoubleIsoTau28er.root");
-TFile *f3 = new TFile("output/Trigger_2016/RateVsEffV5/SingleMu20er_em.root");
-TFile *f4 = new TFile("output/Trigger_2016/RateVsEffV5/SingleMu22_em.root");
+TFile *f1 = new TFile("output/Trigger_2016/RateVsEffV5/DiJetAve40Mjj400DeltaEta3_Mu5_em.root");//output/Trigger_2016/DY2JOffline/HTT_10.root
+TFile *f2 = new TFile("output/Trigger_2016/RateVsEffV5/Mu5_EG20.root");//output/Trigger_2016/RateVsEffV5/DoubleJet30DiJetMjj480_IsoTau40.root
+TFile *f3 = new TFile("output/Trigger_2016/RateVsEffV5/SingleMu20er.root");
+TFile *f4 = new TFile("output/Trigger_2016/RateVsEffV5/SingleMu22.root");
 TFile *f5 = new TFile("output/Trigger_2016/RateVsEffV5/Mu20_EG15.root");
 TFile *f6 = new TFile("output/Trigger_2016/RateVsEffV5/Mu5_EG20.root");
 TFile *f7 = new TFile("output/Trigger_2016/RateVsEffV5/Mu5_IsoEG18.root");
@@ -29,6 +29,7 @@ for(int i=1; i<= h1->GetNbinsX(); i++){
     if(h1->GetBinContent(i) > 0) Passcount++;         
 }
 double Total = 952407.;
+//Total = 210111.;
 
 double SignalEfficiency = Passcount/Total;
 

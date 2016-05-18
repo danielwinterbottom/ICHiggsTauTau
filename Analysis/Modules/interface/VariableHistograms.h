@@ -49,6 +49,8 @@ namespace ic {
     int n_muons_;
     int n_taus_;
     
+    std::string leadtaus_label;
+    
     TH1D  *h_OfflineEtaGap;
     TH1D  *h_OfflineMjjInv;
     TH1D  *h_OfflineDeltaRjj;
@@ -77,7 +79,7 @@ namespace ic {
 
   public:
 
-    VariableHistograms(std::string const& name, fwlite::TFileService *fs, std::string output_name);
+    VariableHistograms(std::string const& name, fwlite::TFileService *fs, std::string output_name, std::string channel);
     virtual ~VariableHistograms();
 
     virtual int PreAnalysis();

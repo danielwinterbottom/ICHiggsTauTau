@@ -115,11 +115,14 @@ int main(int argc, char* argv[]){
   bool do_tau_eff;                // Run the tau efficiency module
   unsigned pu_id_training;        // Pileup jet id training
   unsigned vh_filter_mode;        // 0 = no filter, 1 = WH/ttH, 2 = ZH
-  unsigned inputnum = 1;
-  unsigned isZeroBias = 0;
+  unsigned inputnum;
+  unsigned isZeroBias;
   string L1_infile_name;
-  unsigned makeEffPlots = 0;
+  unsigned makeEffPlots;
+  unsigned doAdditionalVBF;
+  unsigned doL1;
   unsigned version_number;
+  unsigned isDY;
   string L1_Muon_branch = "L1Muon";
 
   // Load the config
@@ -173,6 +176,9 @@ int main(int argc, char* argv[]){
       ("line",                po::value<unsigned>(&inputnum)->default_value(1))
       ("zb",                  po::value<unsigned>(&isZeroBias)->default_value(0))
       ("MakeEffPlots",        po::value<unsigned>(&makeEffPlots)->default_value(0))
+      ("DY",                  po::value<unsigned>(&isDY)->default_value(0))
+      ("offlineVBFCuts",      po::value<unsigned>(&doAdditionalVBF)->default_value(0))
+      ("doL1Selection",       po::value<unsigned>(&doL1)->default_value(1))
       ("l1input",             po::value<string>(&L1_infile_name)->default_value("InputTriggers.txt"))
       ("version",             po::value<unsigned>(&version_number)->default_value(5));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -264,6 +270,7 @@ int main(int argc, char* argv[]){
   std::string met_label;
   double elec_dz, muon_dz, elec_dxy, muon_dxy, tau_dz;
   double elec_pt, elec_eta, muon_pt, muon_eta, tau_pt, tau_eta;
+  double lead_tau_pt = 20;
   met_label = "pfMVAMet";
   
     L1Cuts l1Cuts;
@@ -273,8 +280,8 @@ int main(int argc, char* argv[]){
     std::ifstream L1_infile;
     L1_infile.open (L1_infile_name);
     unsigned i = 1;
-    double in[14];
-    while(L1_infile >> in[0] >> in[1] >> in[2] >> in[3] >> in[4] >> in[5] >> in[6] >> in[7] >> in[8] >> in[9] >> in[10] >> in[11] >> in[12] >> in[13]){
+    double in[15];
+    while(L1_infile >> in[0] >> in[1] >> in[2] >> in[3] >> in[4] >> in[5] >> in[6] >> in[7] >> in[8] >> in[9] >> in[10] >> in[11] >> in[12] >> in[13] >> in[14]){
       if(i == inputnum){
         l1Cuts.EGPt = in[0];
         l1Cuts.MuPt = in[1];
@@ -294,6 +301,8 @@ int main(int argc, char* argv[]){
         else l1Cuts.JetFilter = false;
         l1Cuts.AvePt = in[12];
         l1Cuts.VecPt = in[13];
+        if(in[14] == 1) l1Cuts.DeltaRFilter = true;
+        else l1Cuts.DeltaRFilter = false;
         break;
       }
       i++;
@@ -307,14 +316,24 @@ int main(int argc, char* argv[]){
   offlineCuts.MuPt = std::max(l1Cuts.MuPt + 2., 5.);
   offlineCuts.Tau1Pt = std::max(l1Cuts.Tau1Pt + 10., 20.);
   offlineCuts.Tau2Pt = std::max(l1Cuts.Tau2Pt + 10., 20.);
-  //offlineCuts.Mjj = std::max(l1Cuts.Mjj + 50., 500.);
+  //offlineCuts.ElPt = 0;
+  //offlineCuts.MuPt = 0;
+  //offlineCuts.Tau1Pt = 0;
+  //offlineCuts.Tau2Pt = 0;
+  //lead_tau_pt=0;
+
   offlineCuts.Mjj = 500.;
   offlineCuts.Jet1Pt = 20.;
   offlineCuts.Jet2Pt = 20.;
   offlineCuts.DeltaEta = 3.5;
-  //offlineCuts.Jet1Pt = std::max(l1Cuts.Jet1Pt + 10., 30.);
-  //offlineCuts.Jet2Pt = std::max(l1Cuts.Jet2Pt + 10., 30.);
-  //offlineCuts.DeltaEta = std::max(l1Cuts.DeltaEta + 0.25, 3.5);
+  if(doAdditionalVBF == 1){
+      offlineCuts.Jet1Pt = std::max(l1Cuts.Jet1Pt + 10., 20.);
+      offlineCuts.Jet2Pt = std::max(l1Cuts.Jet2Pt + 10., 20.);
+      offlineCuts.DeltaEta = std::max(l1Cuts.DeltaEta + 0.25, 3.5);
+      offlineCuts.Mjj = std::max(l1Cuts.Mjj + 50., 500.);
+      if(l1Cuts.AvePt > 0) offlineCuts.AvePt = l1Cuts.AvePt + 10.;
+      if(l1Cuts.VecPt > 0) offlineCuts.VecPt = l1Cuts.VecPt + 10.;
+  }
 
   if (channel == channel::et || channel == channel::etmet) {
     elec_dz = 0.2;
@@ -339,6 +358,7 @@ int main(int argc, char* argv[]){
       muon_eta = 2.1;
     }
     tau_pt = 20.0;
+
     tau_eta = 2.3;
     if (channel == channel::etmet) elec_pt = 13.0;
     
@@ -442,6 +462,7 @@ int main(int argc, char* argv[]){
   if (channel == channel::tt){
     //tau_pt = 45;
     tau_pt = 40;
+    lead_tau_pt =40;
     tau_eta = 2.3;
     tau_dz = 0.2;
     elec_pt = 23;
@@ -457,7 +478,8 @@ int main(int argc, char* argv[]){
       muon_eta = 2.4;
       elec_eta = 2.4;
       muon_pt = 18;
-      tau_pt = offlineCuts.Tau1Pt;
+      tau_pt = offlineCuts.Tau2Pt;
+      lead_tau_pt = offlineCuts.Tau1Pt;
       tau_eta = 2.3;
   }
     }  
@@ -479,12 +501,19 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "muon_dxy" % muon_dxy;
   std::cout << boost::format(param_fmt) % "muon_dz" % muon_dz;
   std::cout << boost::format(param_fmt) % "tau_pt" % tau_pt;
+  std::cout << boost::format(param_fmt) % "lead_tau_pt" % lead_tau_pt;
   std::cout << boost::format(param_fmt) % "tau_eta" % tau_eta;
   std::cout << boost::format(param_fmt) % "tau_dz" % tau_dz;
+  std::cout << boost::format(param_fmt) % "Jet1Pt" % offlineCuts.Jet1Pt;
+  std::cout << boost::format(param_fmt) % "Jet2Pt" % offlineCuts.Jet2Pt;
+  std::cout << boost::format(param_fmt) % "JetsAvgPt" % offlineCuts.AvePt;
+  std::cout << boost::format(param_fmt) % "JetsVecPt" % offlineCuts.VecPt;
+  std::cout << boost::format(param_fmt) % "Mjj" % offlineCuts.Mjj;
+  std::cout << boost::format(param_fmt) % "DeltaEta" % offlineCuts.DeltaEta;
 
   // Create analysis object
   std::string EventTreeName = "EventTree";
-  if(isZeroBias == 1) EventTreeName = "icEventProducer/EventTree";
+  if(isZeroBias == 1 || doL1==0) EventTreeName = "icEventProducer/EventTree";
   if(version_number == 5) L1_Muon_branch = "L1Muons";
   ic::AnalysisBase analysis(
     "HiggsTauTau",        // Analysis name
@@ -829,14 +858,27 @@ int main(int argc, char* argv[]){
     .set_strategy(strategy)
     .set_moriond_corrections(false);
     if (correct_es_sample) httEnergyScale.set_moriond_corrections(moriond_tau_scale);
-  
 
   SimpleFilter<Tau> tauPtEtaFilter = SimpleFilter<Tau>("TauPtEtaFilter")
     .set_input_label("taus")
     .set_predicate(bind(MinPtMaxEta, _1, tau_pt, tau_eta))
     .set_min(1);
   if (channel == channel::tt) tauPtEtaFilter.set_min(2);
-
+  
+  CopyCollection<Tau> copyToSelectLeadTau("CopyToSelectLeadTaus","taus","leadingtaus");
+  
+  SimpleFilter<Tau> leadtauPtEtaFilter = SimpleFilter<Tau>("LeadTauPtEtaFilter")
+    .set_input_label("leadingtaus")
+    .set_predicate(bind(MinPtMaxEta, _1, lead_tau_pt, tau_eta))
+    .set_min(1);
+  
+  //CopyCollection<Tau> copyToSelectLeadTau("CopyToSelectLeadTaus","taus","leadingtaus");
+  
+  //SimpleFilter<Tau> leadtauPtEtaFilter = SimpleFilter<Tau>("LeadTauPtEtaFilter")
+    //.set_input_label("leadingtaus")
+    //.set_predicate(bind(MinPtMaxEta, _1, lead_tau_pt, tau_eta))
+    //.set_min(1);
+      
   SimpleFilter<Tau> tauDzFilter = SimpleFilter<Tau>("TauDzFilter")
     .set_input_label("taus")
     .set_predicate(bind(fabs, bind(&Tau::lead_dz_vertex, _1)) < tau_dz)
@@ -1019,7 +1061,7 @@ int main(int argc, char* argv[]){
   // Generator Channel Filter
   // ------------------------------------------------------------------------------------ 
 
-  GenChannelFilter genChannelFilter = GenChannelFilter("GenChannelFilter", channel_str);
+  GenChannelFilter genChannelFilter = GenChannelFilter("GenChannelFilter", channel_str, isDY);
   FilterGoodEvents goodEventsFilter = FilterGoodEvents("GoodEventsFilter", channel_str);
   
   // ------------------------------------------------------------------------------------
@@ -1042,6 +1084,8 @@ int main(int argc, char* argv[]){
   L1TFilterPlots l1TFilterPlots2 = L1TFilterPlots("L1TFilterPlots2", channel_str, fs, l1Cuts, "L1TFilterPlotsPostVBFFilter", 1);
   L1TFilter zeroBiasL1TFilter = L1TFilter("L1TFilter", channel_str, fs, l1Cuts, L1_Muon_branch, "ZeroBiasL1TFilter", isZeroBias);//L1Muons
   L1TFilter l1TFilter = L1TFilter("L1TFilter2", channel_str, fs, l1Cuts, "L1Muons", "L1TFilter", isZeroBias);
+  L1TFilter l1TFilterTotal = L1TFilter("L1TFilterTotal", channel_str, fs, l1Cuts, "L1Muons", "L1TFilterTotal", isZeroBias);
+  
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------ 
@@ -1082,10 +1126,10 @@ int main(int argc, char* argv[]){
   }
 
   L1VariableHistograms l1VariableHistograms = L1VariableHistograms("L1VariableHistograms", fs, "L1THistogramsPreFiltering");
-  VariableHistograms variableHistograms = VariableHistograms("VariableHistograms", fs, "OfflineHistogramsPreFiltering");
+  VariableHistograms variableHistograms = VariableHistograms("VariableHistograms", fs, "OfflineHistogramsPreFiltering",channel_str);
   
   L1VariableHistograms l1VariableHistograms2 = L1VariableHistograms("L1VariableHistograms", fs, "L1THistogramsPostFiltering");
-  VariableHistograms variableHistograms2 = VariableHistograms("VariableHistograms", fs, "OfflineHistogramsPostFiltering");
+  VariableHistograms variableHistograms2 = VariableHistograms("VariableHistograms", fs, "OfflineHistogramsPostFiltering", channel_str);
 
   HTTSync httSync("HTTSync","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
@@ -1120,7 +1164,7 @@ int main(int argc, char* argv[]){
   httPrint.set_skip_events(false);
   if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
   
-  if(isZeroBias == 1) analysis.AddModule(&zeroBiasL1TFilter);
+  if(isZeroBias == 1 && doL1==1) analysis.AddModule(&zeroBiasL1TFilter);
   else if (isZeroBias ==0) {
     
       if (tau_scale_mode > 0 && channel != channel::em && !moriond_tau_scale && !do_skim)
@@ -1131,18 +1175,19 @@ int main(int argc, char* argv[]){
                                     analysis.AddModule(&httEnergyScale);
       if (to_check.size() > 0)        analysis.AddModule(&httPrint);
       
-                                      analysis.AddModule(&vBFPlots);
-                                      if(makeEffPlots == 1){
+                                      if(doL1 == 1) analysis.AddModule(&vBFPlots);
+                                      if(makeEffPlots == 1 && doL1 == 1){
                                           analysis.AddModule(&efficiencyGenMatch1);
                                           analysis.AddModule(&efficiencyGenMatch2);
                                           analysis.AddModule(&efficiencyGenMatch3);
                                           analysis.AddModule(&efficiencyGenMatch4);
                                       }
                                       analysis.AddModule(&genChannelFilter);
-                                      analysis.AddModule(&vBFPlotsGenFiltered);
+                                      if(era == era::trigger_2016 && doL1==1) analysis.AddModule(&l1TFilterTotal);//remove this after!
+                                      if(doL1 == 1) analysis.AddModule(&vBFPlotsGenFiltered);
       
-                                      analysis.AddModule(&l1VariableHistograms);
-                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots1);
+                                      if(doL1 == 1) analysis.AddModule(&l1VariableHistograms);
+                                      if(era == era::trigger_2016 && doL1==1) analysis.AddModule(&l1TFilterPlots1);
       
       
       if (channel == channel::et || channel == channel::etmet) {
@@ -1179,6 +1224,8 @@ int main(int argc, char* argv[]){
           if (special_mode != 18)     analysis.AddModule(&extraMuonVeto);
         }
                                       analysis.AddModule(&tauPtEtaFilter);
+                                      analysis.AddModule(&copyToSelectLeadTau);
+                                      analysis.AddModule(&leadtauPtEtaFilter);
                                       analysis.AddModule(&tauDzFilter);
      
                                       analysis.AddModule(&tauIsoFilter);
@@ -1187,6 +1234,7 @@ int main(int argc, char* argv[]){
     
                                       analysis.AddModule(&tauTauPairProducer);
                                       analysis.AddModule(&pairFilter);
+                                      
       } 
     
       if (channel == channel::mt || channel == channel::mtmet) {
@@ -1259,19 +1307,18 @@ int main(int argc, char* argv[]){
         if(make_sync_ntuple && strategy==strategy::paper2013){
              analysis.AddModule(&httSync);
         }
-                                      analysis.AddModule(&vBFPlots20);
-                                      analysis.AddModule(&vBFPlots30);
+
                                       analysis.AddModule(&variableHistograms);
                                       analysis.AddModule(&vBFFilter);
-                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilterPlots2);
-                                      if(era == era::trigger_2016) analysis.AddModule(&l1TFilter);
+                                      if(era == era::trigger_2016 && doL1==1) analysis.AddModule(&l1TFilterPlots2);
+                                      if(era == era::trigger_2016 && doL1==1) analysis.AddModule(&l1TFilter);
                                       //analysis.AddModule(&goodEventsFilter);
-                                      if(makeEffPlots == 1){
+                                      if(makeEffPlots == 1 && doL1 == 1){
                                           analysis.AddModule(&efficiencySR);
                                       }
-                                      analysis.AddModule(&l1VariableHistograms2);
+                                      if(doL1 == 1) analysis.AddModule(&l1VariableHistograms2);
                                       analysis.AddModule(&variableHistograms2);
-                                      analysis.AddModule(&vBFPlotsSR);
+                                      if(doL1 == 1) analysis.AddModule(&vBFPlotsSR);
 
     
       }

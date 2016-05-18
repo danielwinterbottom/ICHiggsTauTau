@@ -1,8 +1,8 @@
 void h_jet_Jet_DeltaRRes()
 {
 //=========Macro generated from canvas: c1/c1
-//=========  (Sat Apr 23 19:55:02 2016) by ROOT version6.06/01
-   TCanvas *c1 = new TCanvas("c1", "c1",904,191,850,850);
+//=========  (Sun Apr 24 22:11:29 2016) by ROOT version6.06/01
+   TCanvas *c1 = new TCanvas("c1", "c1",516,52,850,850);
    gStyle->SetOptStat(0);
    gStyle->SetOptTitle(0);
    c1->Range(-0.08333333,-12118.05,0.5833333,109062.5);

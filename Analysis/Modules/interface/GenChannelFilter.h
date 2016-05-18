@@ -18,7 +18,7 @@ namespace ic {
     
 class GenChannelFilter : public ModuleBase {
    public:
-      GenChannelFilter(std::string const& name, std::string channel);
+      GenChannelFilter(std::string const& name, std::string channel, unsigned isDY);
       virtual ~GenChannelFilter(); 
       
       virtual int PreAnalysis();
@@ -31,6 +31,7 @@ class GenChannelFilter : public ModuleBase {
       std::string channel_;
 
       unsigned n_genParticles_;    
+      bool DY;
 
 };
 }

@@ -30,6 +30,7 @@ namespace ic {
     JetFilter = l1Cuts.JetFilter;
     AvePtCut = l1Cuts.AvePt;
     VecPtCut = l1Cuts.VecPt;
+    DeltaRJetFilter = l1Cuts.DeltaRFilter;
     
     l1jets_label_ = "L1Jets"; 
     l1electrons_label_ = "L1EGammas";
@@ -44,6 +45,8 @@ namespace ic {
     h_SignalEfficiency->GetXaxis()->SetTitle("");
     h_SignalEfficiency->GetYaxis()->SetTitle("Entries");
     
+    h_SingleTauPt = subDir.make<TH1D>("h_SingleTauPt","h_SingleTauPt",200,0,200);
+    h_SingleIsoTauPt = subDir.make<TH1D>("h_SingleIsoTauPt","h_SingleIsoTauPt",200,0,200);
     h_DoubleTauPt = subDir.make<TH1D>("h_DoubleTauPt","h_DoubleTauPt",200,0,200);
     h_DoubleIsoTauPt = subDir.make<TH1D>("h_DoubleIsoTauPt","h_DoubleIsoTauPt",200,0,200);
     h_SingleEGPt = subDir.make<TH1D>("h_SingleEGPt","h_SingleEGPt",200,0,200);
@@ -56,6 +59,9 @@ namespace ic {
     h_DoubleJetDeltaEta = subDir.make<TH1D>("h_DoubleJetDeltaEta","h_DoubleJetDeltaEta",200,0,10);
     h_DoubleJetAvePt = subDir.make<TH1D>("h_DoubleJetAvePt","h_DoubleJetAvePt",200,0,200);
     h_DoubleJetVecPt = subDir.make<TH1D>("h_DoubleJetVecPt","h_DoubleJetVecPt",200,0,200);
+    
+    h_DoubleTauPt2D = subDir.make<TH2D>("h_DoubleTauPt2D","h_DoubleTauPt2D",200,0,200, 200, 0, 200);
+    h_DoubleIsoTauPt2D = subDir.make<TH2D>("h_DoubleIsoTauPt2D","h_DoubleIsoTauPt2D",200,0,200, 200, 0, 200);
     
     h_l1jj_VecPt = subDir.make<TH1D>("h_l1jj_VecPt","h_l1jj_VecPt",150, 0,300); 
     h_l1jj_VecPt->GetXaxis()->SetTitle("Di-jet p_{T}_{jj} [GeV]");
@@ -97,6 +103,18 @@ namespace ic {
     h_jetsDeltaEta = subDir.make<TH1D>("h_jetsDeltaEta","h_jetsDeltaEta",100, 0,10); 
     h_jetsAvePt = subDir.make<TH1D>("h_jetsAvePt","h_jetsAvePt",100, 0,200); 
     h_jetsVecPt = subDir.make<TH1D>("h_jetsVecPt","h_jetsVecPt",100, 0,200);
+    h_JetMultiplicity = subDir.make<TH1D>("h_JetMultiplicity","h_JetMultiplicity",10, 0,10);
+    h_Tau1Multiplicity = subDir.make<TH1D>("h_Tau1Multiplicity","h_Tau1Multiplicity",10, 0,10);
+    h_Tau2Multiplicity = subDir.make<TH1D>("h_Tau2Multiplicity","h_Tau2Multiplicity",10, 0,10);
+    h_MuonMultiplicity = subDir.make<TH1D>("h_MuonMultiplicity","h_MuonMultiplicity",10, 0,10);
+    h_EGMultiplicity = subDir.make<TH1D>("h_EGMultiplicity","h_EGMultiplicity",10, 0,10);
+    
+    h_LargestMjj = subDir.make<TH1D>("h_LargestMjj","h_LargestMjj",500, 0,5000);
+    h_LargestMjj_LeadPt = subDir.make<TH1D>("h_LargestMjj_LeadPt","h_LargestMjj_LeadPt",300, 0,300);
+    h_LargestMjj_SubLeadPt = subDir.make<TH1D>("h_LargestMjj_SubLeadPt","h_LargestMjj_SubLeadPt",200, 0,200);
+    h_LargestMjj_AvePt = subDir.make<TH1D>("h_LargestMjj_AvePt","h_LargestMjj_AvePt",200, 0,300);
+    h_LargestMjj_VecPt = subDir.make<TH1D>("h_LargestMjj_VecPt","h_LargestMjj_VecPt",500, 0,200);
+    h_LargestMjj_DeltaEta = subDir.make<TH1D>("h_LargestMjj_DeltaEta","h_LargestMjj_DeltaEta",200, 0,10);
     
   }
 
@@ -143,17 +161,16 @@ namespace ic {
       
       for(unsigned i=0; i< n_l1taus_; i++) if(l1taus[i]->vector().Pt() >= 20 && l1taus[i]->isolation == 1) h_tauEta_Before->Fill(l1taus[i]->vector().Rapidity());    
       
-      // Filter Non-iso Particles is option is selected
-      
-      /*if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() > 20){
-          std::cout << "Taus Pt, iso: " << std::endl;
-          for(unsigned i=0; i <n_l1taus_; i++){
-              std::cout << l1taus[i]->vector().Pt() << "  " << l1taus[i]->isolation<<std::endl;   
-          }
-      }*/
-      
-      if(n_l1taus_ > 1) h_DoubleTauPt->Fill(l1taus[1]->vector().Pt());
-      else h_DoubleTauPt->Fill(0);
+      if(n_l1taus_ > 0) h_SingleTauPt->Fill(l1taus[0]->vector().Pt());
+      else h_SingleTauPt->Fill(0);
+      if(n_l1taus_ > 1){
+          h_DoubleTauPt->Fill(l1taus[1]->vector().Pt());
+          h_DoubleTauPt2D->Fill(l1taus[0]->vector().Pt(),l1taus[1]->vector().Pt());
+      }
+      else{
+          h_DoubleTauPt->Fill(0.);
+          h_DoubleTauPt2D->Fill(0.,0.);
+      }
       if(n_l1electrons_ > 0) h_SingleEGPt->Fill(l1electrons[0]->vector().Pt());
       else h_SingleEGPt->Fill(0);
       if(n_l1muons_ > 0) h_SingleMuPt->Fill(l1muons[0]->vector().Pt());
@@ -193,21 +210,20 @@ namespace ic {
       std::sort(l1electrons.begin(),l1electrons.end(),greater_Candidate());
       std::sort(l1muons.begin(),l1muons.end(),greater_Candidate());
       
-      if(n_l1taus_ > 1) h_DoubleIsoTauPt->Fill(l1taus[1]->vector().Pt());
-      else h_DoubleIsoTauPt->Fill(0);
+      if(n_l1taus_ > 0) h_SingleIsoTauPt->Fill(l1taus[0]->vector().Pt());
+      else h_SingleIsoTauPt->Fill(0);
+      if(n_l1taus_ > 1){
+          h_DoubleIsoTauPt->Fill(l1taus[1]->vector().Pt());
+          h_DoubleIsoTauPt2D->Fill(l1taus[0]->vector().Pt(),l1taus[1]->vector().Pt());
+      }
+      else{
+          h_DoubleIsoTauPt->Fill(0);
+          h_DoubleIsoTauPt2D->Fill(0.,0.);
+      }
       if(n_l1electrons_ > 0) h_SingleIsoEGPt->Fill(l1electrons[0]->vector().Pt());
       else h_SingleIsoEGPt->Fill(0);
       if(n_l1muons_ > 0) h_SingleIsoMuPt->Fill(l1muons[0]->vector().Pt());
       else h_SingleIsoMuPt->Fill(0);
-      
-      /*if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() > 20){
-          std::cout << "IsoTaus Pt, iso: " << std::endl;
-          for(unsigned i=0; i <n_l1taus_; i++){
-              std::cout << l1taus[i]->vector().Pt() << "  " << l1taus[i]->isolation<<std::endl;     
-          }
-      }*/
-
-      // Filter jest matched to electrons/taus
       
       // Lepton selections
           
@@ -220,6 +236,12 @@ namespace ic {
           
           //if(JetFilter) EtaCut = 2.1;
           
+          for(int i= n_l1electrons_-1; i>=0; i--) if(std::fabs(l1electrons[i]->vector().Pt()) < EGPtCut) l1electrons.erase(l1electrons.begin()+i);
+          n_l1electrons_ = l1electrons.size();
+          
+          for(int i= n_l1muons_-1; i>=0; i--) if(std::fabs(l1muons[i]->vector().Pt()) < MuPtCut) l1muons.erase(l1muons.begin()+i);
+          n_l1muons_ = l1muons.size();
+          
           if(JetFilter){
               for(int i= n_l1muons_-1; i>=0; i--) if(std::fabs(l1muons[i]->vector().Rapidity()) > 2.1) l1muons.erase(l1muons.begin()+i);
               n_l1muons_ = l1muons.size();
@@ -234,12 +256,12 @@ namespace ic {
           
           if(MuPtCut > 0){
               if(n_l1muons_ < 1) Filter = true;
-              if(n_l1muons_ > 0) if(l1muons[0]->vector().Pt() < MuPtCut) Filter = true;
+              //if(n_l1muons_ > 0) if(l1muons[0]->vector().Pt() < MuPtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(1);
           if(EGPtCut > 0){
               if(n_l1electrons_ < 1) Filter = true;
-              if(n_l1electrons_ > 0) if(l1electrons[0]->vector().Pt() < EGPtCut) Filter = true;
+              //if(n_l1electrons_ > 0) if(l1electrons[0]->vector().Pt() < EGPtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(2);
 
@@ -247,54 +269,43 @@ namespace ic {
 
       if(channel_ == "et"){
           
-          if(JetFilter) EtaCut = 2.1;
+          //if(JetFilter) EtaCut = 2.1;
           
-          /*if(JetFilter){
-              for(int i= n_l1taus_-1; i>=0; i--) if(std::fabs(l1taus[i]->vector().Rapidity()) > 0) l1taus.erase(l1taus.begin()+i);
-              n_l1taus_ = l1taus.size();
-          }
-          std::sort(l1taus.begin(),l1taus.end(),greater_Candidate());
-          */
-          /*if(JetFilter){
-              for(int i= n_l1electrons_-1; i>=0; i--) if(std::fabs(l1electrons[i]->vector().Rapidity()) > 2.1) l1electrons.erase(l1electrons.begin()+i);
-              n_l1electrons_ = l1electrons.size();
-          }
-          std::sort(l1electrons.begin(),l1electrons.end(),greater_Candidate());*/
+          for(int i= n_l1electrons_-1; i>=0; i--) if(std::fabs(l1electrons[i]->vector().Pt()) < EGPtCut) l1electrons.erase(l1electrons.begin()+i);
+          n_l1electrons_ = l1electrons.size();
+          
+          for(int i= n_l1taus_-1; i>=0; i--) if(std::fabs(l1taus[i]->vector().Pt()) < Tau1PtCut) l1taus.erase(l1taus.begin()+i);
+          n_l1taus_ = l1taus.size();
           
           if(JetFilter){
               for(int i= n_l1electrons_-1; i>=0; i--) if(std::fabs(l1electrons[i]->vector().Rapidity()) > 2.1) l1electrons.erase(l1electrons.begin()+i);
               n_l1electrons_ = l1electrons.size();
-              std::sort(l1electrons.begin(),l1electrons.end(),greater_Candidate());
-              
-              /*for(int i= n_l1jets_-1; i>=0; i--){
-                  double DeltaR = sqrt(pow(l1electrons[0]->vector().Phi()-l1jets[i]->vector().Phi(),2) + pow(l1electrons[0]->vector().Rapidity()-l1jets[i]->vector().Rapidity(),2));
-                  if(DeltaR < 0.5) l1jets.erase(l1jets.begin()+i);
-              }
-              n_l1jets_ = l1jets.size();
-              std::sort(l1jets.begin(),l1jets.end(),greater_Candidate());*/
           }
           
-          
-          /*if(EGPtCut > 0 && Tau1PtCut > 0){
-              bool dontFilter = false;
+          if(JetFilter){
               
-              for(unsigned i=0; i<n_l1electrons_; i++){
-                  for(unsigned j=0; j<n_l1taus_; j++){
-                      double EtaSep = std::fabs(l1electrons[i]->vector().Rapidity() - l1taus[i]->vector().Rapidity());
-                      if(l1electrons[i]->vector().Pt() >= EGPtCut && l1taus[j]->vector().Pt() >= Tau1PtCut && EtaSep > 0.2) dontFilter = true;   
+              for(int i= n_l1jets_-1; i>=0; i--){
+                  
+                  for(unsigned j =0; j < n_l1electrons_; j++){
+                      double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-l1jets[i]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-l1jets[i]->vector().Rapidity(),2));
+                      if(DeltaR < 0.5 && l1electrons[j]->vector().Pt() >= EGPtCut){
+                          l1jets.erase(l1jets.begin()+i);
+                          break;
+                      }
                   }
               }
-              if(!dontFilter) Filter = true;
-          }*/
+              n_l1jets_ = l1jets.size();
+              std::sort(l1jets.begin(),l1jets.end(),greater_Candidate());
+          }
           
           if(EGPtCut > 0){
               if(n_l1electrons_ < 1) Filter = true;
-              if(n_l1electrons_ > 0) if(l1electrons[0]->vector().Pt() < EGPtCut) Filter = true;
+              //if(n_l1electrons_ > 0) if(l1electrons[0]->vector().Pt() < EGPtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(1);
           if(Tau1PtCut > 0){
               if(n_l1taus_ < 1) Filter = true;
-              if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() < Tau1PtCut) Filter = true;
+              //if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() < Tau1PtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(2);
           
@@ -304,50 +315,75 @@ namespace ic {
           
           if(JetFilter) EtaCut = 2.1;
           
+          for(int i= n_l1muons_-1; i>=0; i--) if(std::fabs(l1muons[i]->vector().Pt()) < MuPtCut) l1muons.erase(l1muons.begin()+i);
+          n_l1muons_ = l1muons.size();
+          
+          for(int i= n_l1taus_-1; i>=0; i--) if(std::fabs(l1taus[i]->vector().Pt()) < Tau1PtCut) l1taus.erase(l1taus.begin()+i);
+          n_l1taus_ = l1taus.size();
+          
           if(JetFilter){
               for(int i= n_l1muons_-1; i>=0; i--) if(std::fabs(l1muons[i]->vector().Rapidity()) > 2.1) l1muons.erase(l1muons.begin()+i);
               n_l1muons_ = l1muons.size();
           }
-          std::sort(l1muons.begin(),l1muons.end(),greater_Candidate());
           
           if(JetFilter){
               for(int i= n_l1taus_-1; i>=0; i--) if(std::fabs(l1taus[i]->vector().Rapidity()) > 2.1) l1taus.erase(l1taus.begin()+i);
               n_l1taus_ = l1taus.size();
           }
-          std::sort(l1taus.begin(),l1taus.end(),greater_Candidate());
                     
           if(MuPtCut > 0){
               if(n_l1muons_ < 1) Filter = true;
-              if(n_l1muons_ > 0) if(l1muons[0]->vector().Pt() < MuPtCut) Filter = true;
+              //if(n_l1muons_ > 0) if(l1muons[0]->vector().Pt() < MuPtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(1);
           if(Tau1PtCut > 0){
               if(n_l1taus_ < 1) Filter = true;
-              if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() < Tau1PtCut) Filter = true;
+              //if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() < Tau1PtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(2);
       }
       
       if(channel_ == "tt"){
           
-          if(JetFilter) EtaCut = 2.1;
+          //if(JetFilter) EtaCut = 2.1;
           
           if(JetFilter){
               for(int i= n_l1taus_-1; i>=0; i--) if(std::fabs(l1taus[i]->vector().Rapidity()) > 2.1) l1taus.erase(l1taus.begin()+i);
               n_l1taus_ = l1taus.size();
           }
-          std::sort(l1taus.begin(),l1taus.end(),greater_Candidate());
+          
+          std::vector<ic::L1TTau*> l1leadtaus;
+          for(int i= n_l1taus_-1; i>=0; i--){ 
+              if(std::fabs(l1taus[i]->vector().Pt()) < Tau2PtCut) l1taus.erase(l1taus.begin()+i);
+              if(std::fabs(l1taus[i]->vector().Pt()) >= Tau1PtCut) l1leadtaus.push_back(l1taus[i]);
+          }
+          
+          n_l1taus_ = l1taus.size();
+          n_l1leadtaus_ = l1leadtaus.size();
+          std::sort(l1leadtaus.begin(),l1leadtaus.end(),greater_Candidate());
         
           if(Tau1PtCut > 0){
-              if(n_l1taus_ < 1) Filter = true;
-              if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() < Tau1PtCut) Filter = true;
+              if(n_l1leadtaus_ < 1) Filter = true;
+              //if(n_l1taus_ > 0) if(l1taus[0]->vector().Pt() < Tau1PtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(1);
           if(Tau2PtCut > 0){
               if(n_l1taus_ < 2) Filter = true;
-              if(n_l1taus_ > 1) if(l1taus[1]->vector().Pt() < Tau2PtCut) Filter = true;
+              //if(n_l1taus_ > 1) if(l1taus[1]->vector().Pt() < Tau2PtCut) Filter = true;
           }
           if(!Filter) h_SignalEfficiency->Fill(2);
+          
+          if(n_l1leadtaus_ > 0 && DeltaRJetFilter){
+              
+              for(int i= n_l1jets_-1; i>=0; i--){
+          
+                  double DeltaR = sqrt(pow(l1leadtaus[0]->vector().Phi()-l1jets[i]->vector().Phi(),2) + pow(l1leadtaus[0]->vector().Rapidity()-l1jets[i]->vector().Rapidity(),2));
+                  if(DeltaR < 0.4 || l1jets[i]->vector().Pt() < Jet1PtCut){
+                      l1jets.erase(l1jets.begin()+i);
+                  }
+              }
+          }
+          n_l1jets_ = l1jets.size();
      }
       
       
@@ -357,9 +393,32 @@ namespace ic {
       bool doJetFilterLoop = false;
 
       if(Jet1PtCut > 0 || Jet2PtCut > 0 || MjjCut > 0 || DeltaEtaCut > 0 || AvePtCut > 0 || VecPtCut > 0) doJetFilterLoop = true;
+      
+          for(int i= n_l1jets_-1; i>=0; i--){
+          
+              if(l1jets[i]->vector().Pt() < Jet2PtCut){
+              l1jets.erase(l1jets.begin()+i);
+          }
+      }
+      
+      n_l1jets_ = l1jets.size();
+      std::sort(l1jets.begin(),l1jets.end(),greater_Candidate());
+      
+      if(doJetFilterLoop && n_l1jets_ < 1) Filter = true;
+      if(n_l1jets_>0 && doJetFilterLoop) if(l1jets[0]->vector().Pt() < Jet1PtCut) Filter = true;
       if(doJetFilterLoop && n_l1jets_ < 2) Filter = true;
+      
+      double LargestMjj=-1;
+      double LargestMjj_LeadPt = -1;
+      double LargestMjj_SubLeadPt = -1;
+      double LargestMjj_AvePt = -1;
+      double LargestMjj_VecPt = -1;
+      double LargestMjj_DeltaEta = -1;
+      
    
       if(n_l1jets_>1 && doJetFilterLoop){
+          
+         if(l1jets[0]->vector().Pt() < Jet1PtCut) Filter = true;
 
          dontFilter = false;
       
@@ -373,6 +432,14 @@ namespace ic {
                  if(Mjj >= MjjCut && DeltaEta >= DeltaEtaCut && (l1jets[i]->vector().Pt()+l1jets[j]->vector().Pt())/2 >= AvePtCut && (std::fabs(l1jets[i]->vector().Rapidity()) >= EtaCut || std::fabs(l1jets[j]->vector().Rapidity()) >= EtaCut) && (l1jets[i]->vector()+l1jets[j]->vector()).Pt() >= VecPtCut && l1jets[i]->vector().Pt() >= Jet1PtCut && l1jets[j]->vector().Pt() >= Jet2PtCut){
                      dontFilter = true;
                      h_jetsMjj->Fill(Mjj);
+                     if(Mjj > LargestMjj){
+                         LargestMjj = Mjj;
+                         LargestMjj_AvePt = (l1jets[i]->vector().Pt()+l1jets[j]->vector().Pt())/2;
+                         LargestMjj_VecPt = (l1jets[i]->vector()+l1jets[j]->vector()).Pt();
+                         LargestMjj_LeadPt = l1jets[i]->vector().Pt();
+                         LargestMjj_SubLeadPt = l1jets[j]->vector().Pt();
+                         LargestMjj_DeltaEta = DeltaEta;
+                     }
                      h_jetsDeltaEta->Fill(DeltaEta); 
                      h_jetsAvePt->Fill((l1jets[i]->vector().Pt()+l1jets[j]->vector().Pt())/2);
                      h_jetsVecPt->Fill((l1jets[i]->vector()+l1jets[j]->vector()).Pt());
@@ -382,7 +449,15 @@ namespace ic {
                      h_jet2Eta->Fill(std::max(Eta1,Eta2));
                  }
              }
-         }    
+         }   
+
+            
+         if(LargestMjj !=-1) h_LargestMjj->Fill(LargestMjj);
+         if(LargestMjj_SubLeadPt !=-1) h_LargestMjj_SubLeadPt->Fill(LargestMjj_SubLeadPt);
+         if(LargestMjj_LeadPt !=-1) h_LargestMjj_LeadPt->Fill(LargestMjj_LeadPt);
+         if(LargestMjj_AvePt !=-1) h_LargestMjj_AvePt->Fill(LargestMjj_AvePt);
+         if(LargestMjj_VecPt !=-1) h_LargestMjj_VecPt->Fill(LargestMjj_VecPt);
+         if(LargestMjj_DeltaEta !=-1) h_LargestMjj_DeltaEta->Fill(LargestMjj_DeltaEta);
      }
      
      if(!dontFilter) Filter = true; 
@@ -409,6 +484,15 @@ namespace ic {
          if(n_l1muons_ > 1) h_muon2Eta->Fill(l1muons[1]->vector().Rapidity()); 
          if(n_l1muons_ > 0) h_muon1Pt->Fill(l1muons[0]->vector().Pt()); 
          if(n_l1muons_ > 1) h_muon2Pt->Fill(l1muons[1]->vector().Pt());
+         
+         if(n_l1jets_ > 0) h_jet1Pt->Fill(l1jets[0]->vector().Pt()); 
+         if(n_l1jets_ > 1) h_jet2Pt->Fill(l1jets[1]->vector().Pt());
+         
+         h_JetMultiplicity  ->Fill(n_l1jets_);
+         h_Tau1Multiplicity  ->Fill(n_l1leadtaus_);
+         h_Tau2Multiplicity  ->Fill(n_l1taus_);
+         h_MuonMultiplicity ->Fill(n_l1muons_);
+         h_EGMultiplicity   ->Fill(n_l1electrons_);
     }   
 
      if(Filter) return 1;

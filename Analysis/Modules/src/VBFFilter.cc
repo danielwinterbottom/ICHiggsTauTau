@@ -17,10 +17,13 @@ namespace ic {
   VBFFilter::VBFFilter(std::string const& name, struct OfflineCuts offlineCuts) : ModuleBase(name) {
 
     jets_label_ = "ak4PFJetsCHS"; 
-    JetPtCut = offlineCuts.Jet1Pt;
+    Jet1PtCut = offlineCuts.Jet1Pt;
+    Jet2PtCut = offlineCuts.Jet2Pt;
     EtaCut = 4.7;
     DeltaEtaCut = offlineCuts.DeltaEta;
     MjjCut = offlineCuts.Mjj;
+    AvePtCut = offlineCuts.AvePt;
+    VecPtCut = offlineCuts.VecPt;
 
   }
 
@@ -48,33 +51,13 @@ namespace ic {
       if(n_jets_ > 1){
           double Mjj = (jets[0]->vector() + jets[1]->vector()).M();
           double DeltaEta = std::fabs(jets[0]->vector().Rapidity() - jets[1]->vector().Rapidity());
-          if(DeltaEta > 3.5 && Mjj > 500 && jets[0]->vector().Pt() > 20 && jets[1]->vector().Pt() > 20) dontFilter = true;
+          double AvePt = (jets[0]->vector().Pt() + jets[1]->vector().Pt())/2;
+          double VecPt = (jets[0]->vector() + jets[1]->vector()).Pt();
+          if(DeltaEta > DeltaEtaCut && Mjj > MjjCut && jets[0]->vector().Pt() > Jet1PtCut && jets[1]->vector().Pt() > Jet2PtCut && VecPt > VecPtCut && AvePt > AvePtCut) dontFilter = true;
                   
       }
       
       if(!dontFilter) Filter = true;
-      /*
-      unsigned jetCount=0;
-      
-      for(unsigned i=0; i<n_jets_; i++) if(jets[i]->vector().Pt() > JetPtCut && std::fabs(jets[i]->vector().Rapidity() < EtaCut)) jetCount++;  
-      
-      if(jetCount < 2) Filter = true;
-      
-      if(jetCount > 1){
-      
-          double Mjj = (jets[0]->vector() + jets[1]->vector()).M();
-          if(Mjj < MjjCut) Filter=true;
-          
-          double DeltaEta = std::fabs(jets[0]->vector().Rapidity() - jets[1]->vector().Rapidity());
-          if(DeltaEta < DeltaEtaCut) Filter = true;
-          
-          for(unsigned i=2; i<n_jets_; i++){
-              double jetsEtaMin = std::min(jets[0]->vector().Rapidity(), jets[1]->vector().Rapidity());
-              double jetsEtaMax = std::max(jets[0]->vector().Rapidity(), jets[1]->vector().Rapidity());
-              if(jets[i]->vector().Rapidity() > jetsEtaMin && jets[i]->vector().Rapidity() < jetsEtaMax && jets[i]->vector().Pt() > JetPtCut) Filter = true;    
-          }
-          
-      }*/
       
       if(Filter) return 1;
       else return 0;

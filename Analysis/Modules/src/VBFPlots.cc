@@ -352,6 +352,10 @@ namespace ic {
     h_l1jj_Diff->GetXaxis()->SetTitle("Di-jet #Delta p_{T} [GeV]");
     h_l1jj_Diff->GetYaxis()->SetTitle("Entries");
     
+    h_JetsMathedTo = subDir.make<TH1D>("h_JetsMathedTo","h_JetsMathedTo",6, 0,6);
+    h_JetsMathedTo_LeadMjj = subDir.make<TH1D>("h_JetsMathedTo_LeadMjj","h_JetsMathedTo_LeadMjj",6, 0,6);
+    h_JetsMathedTo_LeadMjjLeadAvePt = subDir.make<TH1D>("h_JetsMathedTo_LeadMjjLeadAvePt","h_JetsMathedTo_LeadMjjLeadAvePt",6, 0,6);
+    h_L1VBFMultiplicity = subDir.make<TH1D>("h_L1VBFMultiplicity","h_L1VBFMultiplicity",10, 0,10); 
     
     EventsTotal=0;
 
@@ -483,6 +487,148 @@ namespace ic {
       }
       
   }
+  
+  /////////////////////////////////
+  std::vector<ic::Candidate> PromptTausVis;
+  
+  for(unsigned i=0; i< n_genParticles_; i++){
+      
+      int genID = std::fabs(GenParticles[i]->pdgid());
+              
+      if(genID == 15){
+          
+          ic::Candidate tausVis;
+          
+          if(std::fabs(GenParticles[GenParticles[i]->mothers().at(0)]->pdgid()) == 25){
+              bool isMuon = false;
+              bool isElectron = false;
+        
+              for(unsigned l=0; l < GenParticles[i]->daughters().size(); l++) {
+                      if(std::fabs(GenParticles[GenParticles[i]->daughters().at(l)]->pdgid()) == 11) isElectron = true;
+                      if(std::fabs(GenParticles[GenParticles[i]->daughters().at(l)]->pdgid()) == 13) isMuon = true;
+                      if(std::fabs(GenParticles[GenParticles[i]->daughters().at(l)]->pdgid()) == 16) tausVis.set_vector(GenParticles[i]->vector() - GenParticles[GenParticles[i]->daughters().at(l)]->vector());
+              }
+              
+              if(!isMuon && isElectron) PromptTausVis.push_back(tausVis);
+              
+          }
+      }
+  }
+  
+  unsigned n_prompttaus_ = PromptTausVis.size();
+      
+
+  double LargestMjj = -1;
+  double LargestAvePt =-1;
+  unsigned VBFPassCount=0;
+  
+  for(unsigned i=0; i< n_l1jets_; i++){
+  
+      for(unsigned j=i+1; j< n_l1jets_; j++){
+  
+          double Mjj = (l1jets[i]->vector() + l1jets[j]->vector()).M();
+          double AvePt = (l1jets[i]->vector().Pt()+l1jets[j]->vector().Pt())/2;
+          
+          if(Mjj >= 855 && AvePt >= 60){
+              
+              VBFPassCount++;
+              
+              bool L1Jet1isVBF = false;
+              bool L1Jet2isVBF = false;
+              bool L1Jet1isPromptTau = false;
+              bool L1Jet2isPromptTau = false;
+              
+              bool LargestMjjL1Jet1isVBF = false;
+              bool LargestMjjL1Jet2isVBF = false;
+              bool LargestMjjL1Jet1isPromptTau = false;
+              bool LargestMjjL1Jet2isPromptTau = false;
+              
+              bool LargestAvePtL1Jet1isVBF = false;
+              bool LargestAvePtL1Jet2isVBF = false;
+              bool LargestAvePtL1Jet1isPromptTau = false;
+              bool LargestAvePtL1Jet2isPromptTau = false;
+              
+              if(Mjj > LargestMjj) LargestMjj = Mjj;
+              if(Mjj > LargestAvePt) LargestAvePt = AvePt;
+              
+              if(genjetIndex1 != -1){
+                  double DeltaR = sqrt(pow(genjets[genjetIndex1]->vector().Phi()-l1jets[i]->vector().Phi(),2) + pow(genjets[genjetIndex1]->vector().Rapidity()-l1jets[i]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5){
+                      L1Jet1isVBF = true;
+                      if(Mjj > LargestMjj) LargestMjjL1Jet1isVBF = true;
+                      if(Mjj > LargestAvePt) LargestAvePtL1Jet1isVBF = true;
+                  }
+              }
+              if(genjetIndex2 != -1){
+                  double DeltaR = sqrt(pow(genjets[genjetIndex2]->vector().Phi()-l1jets[i]->vector().Phi(),2) + pow(genjets[genjetIndex2]->vector().Rapidity()-l1jets[i]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5){
+                      L1Jet1isVBF = true;
+                      if(Mjj > LargestMjj) LargestMjjL1Jet1isVBF = true;
+                      if(Mjj > LargestAvePt) LargestAvePtL1Jet1isVBF = true;
+                  }
+              }
+              if(genjetIndex1 != -1){
+                  double DeltaR = sqrt(pow(genjets[genjetIndex1]->vector().Phi()-l1jets[j]->vector().Phi(),2) + pow(genjets[genjetIndex1]->vector().Rapidity()-l1jets[j]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5){
+                      L1Jet2isVBF = true;
+                      if(Mjj > LargestMjj) LargestMjjL1Jet2isVBF = true;
+                      if(Mjj > LargestAvePt) LargestAvePtL1Jet2isVBF = true;
+                  }
+              }
+              if(genjetIndex2 != -1){
+                  double DeltaR = sqrt(pow(genjets[genjetIndex2]->vector().Phi()-l1jets[j]->vector().Phi(),2) + pow(genjets[genjetIndex2]->vector().Rapidity()-l1jets[j]->vector().Rapidity(),2));
+                  if(DeltaR < 0.5){
+                      L1Jet2isVBF = true;
+                      if(Mjj > LargestMjj) LargestMjjL1Jet2isVBF = true;
+                      if(Mjj > LargestAvePt) LargestAvePtL1Jet2isVBF = true;
+                  }
+              }
+              
+              for(unsigned k=0; k< n_prompttaus_; k++){
+                  
+                  double DeltaR1 = sqrt(pow(PromptTausVis[k].vector().Phi()-l1jets[i]->vector().Phi(),2) + pow(PromptTausVis[k].vector().Rapidity()-l1jets[i]->vector().Rapidity(),2));
+                  if(DeltaR1 < 0.5){
+                      L1Jet1isPromptTau = true;
+                      if(Mjj > LargestMjj) LargestMjjL1Jet1isPromptTau = true;
+                      if(Mjj > LargestAvePt) LargestAvePtL1Jet1isPromptTau = true;
+                  }
+                  
+                  double DeltaR2 = sqrt(pow(PromptTausVis[k].vector().Phi()-l1jets[j]->vector().Phi(),2) + pow(PromptTausVis[k].vector().Rapidity()-l1jets[j]->vector().Rapidity(),2));
+                  if(DeltaR2 < 0.5){
+                      L1Jet2isPromptTau = true;
+                      if(Mjj > LargestMjj) LargestMjjL1Jet2isPromptTau = true;
+                      if(Mjj > LargestAvePt) LargestAvePtL1Jet2isPromptTau = true;
+                  }
+    
+              }
+              
+              if(L1Jet1isVBF && L1Jet1isVBF) h_JetsMathedTo->Fill(0);
+              else if((L1Jet1isVBF && L1Jet1isPromptTau) || (L1Jet2isVBF && L1Jet2isPromptTau)) h_JetsMathedTo->Fill(1);
+              else if(L1Jet1isPromptTau && L1Jet2isPromptTau) h_JetsMathedTo->Fill(2);
+              else if(L1Jet1isVBF || L1Jet2isVBF) h_JetsMathedTo->Fill(3);
+              else if(L1Jet1isPromptTau || L1Jet2isPromptTau) h_JetsMathedTo->Fill(4);
+              h_JetsMathedTo->Fill(5);
+              
+              if(LargestMjjL1Jet1isVBF && LargestMjjL1Jet1isVBF) h_JetsMathedTo_LeadMjj->Fill(0);
+              else if((LargestMjjL1Jet1isVBF && LargestMjjL1Jet1isPromptTau) || (LargestMjjL1Jet2isVBF && LargestMjjL1Jet2isPromptTau)) h_JetsMathedTo_LeadMjj->Fill(1);
+              else if(LargestMjjL1Jet1isPromptTau && LargestMjjL1Jet2isPromptTau) h_JetsMathedTo_LeadMjj->Fill(2);
+              else if(LargestMjjL1Jet1isVBF || LargestMjjL1Jet2isVBF) h_JetsMathedTo_LeadMjj->Fill(3);
+              else if(LargestMjjL1Jet1isPromptTau || LargestMjjL1Jet2isPromptTau) h_JetsMathedTo_LeadMjj->Fill(4);
+              h_JetsMathedTo_LeadMjj->Fill(5);
+              
+              if(LargestAvePtL1Jet1isVBF && LargestAvePtL1Jet1isVBF) h_JetsMathedTo_LeadMjjLeadAvePt->Fill(0);
+              else if((LargestAvePtL1Jet1isVBF && LargestAvePtL1Jet1isPromptTau) || (LargestAvePtL1Jet2isVBF && LargestAvePtL1Jet2isPromptTau)) h_JetsMathedTo_LeadMjjLeadAvePt->Fill(1);
+              else if(LargestAvePtL1Jet1isPromptTau && LargestAvePtL1Jet2isPromptTau) h_JetsMathedTo_LeadMjjLeadAvePt->Fill(2);
+              else if(LargestAvePtL1Jet1isVBF || LargestAvePtL1Jet2isVBF) h_JetsMathedTo_LeadMjjLeadAvePt->Fill(3);
+              else if(LargestAvePtL1Jet1isPromptTau || LargestAvePtL1Jet2isPromptTau) h_JetsMathedTo_LeadMjjLeadAvePt->Fill(4);
+              h_JetsMathedTo_LeadMjjLeadAvePt->Fill(5);
+
+          }
+      }
+  } 
+  
+  h_L1VBFMultiplicity->Fill(VBFPassCount);
+  /////////////////////////////////
   
   if(std::fabs(GenParticles[5]->vector().Rapidity())<5 && std::fabs(GenParticles[6]->vector().Rapidity())<5){
       if(genjetIndex1 != -1 && genjetIndex2 != -1) h_MatchedToGenStats->Fill(2);
@@ -792,6 +938,7 @@ namespace ic {
               h_l1j2_Eta->Fill(l1jets[l1jetIndex2]->vector().Rapidity());
               h_l1j1_Phi->Fill(l1jets[l1jetIndex1]->vector().Phi());
               h_l1j2_Phi->Fill(l1jets[l1jetIndex2]->vector().Phi());
+
               
               bool largestAvePt =true;
               bool largestMjj=true;

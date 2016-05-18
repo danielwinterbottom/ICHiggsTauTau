@@ -1,9 +1,9 @@
 {
-TString foldername = "l1t-tsg-v5-plots/jetjetEfficiencies/";
-TString histname = "h_jetelectron_DeltaEta_Efficiency";
-TString histnameTotal = "h_jetelectron_DeltaEta_Total";
+TString foldername = "l1t-tsg-v5-plots/electronEfficiencies/";
+TString histname = "h_e_IsoEG_Efficiency";
+TString histnameTotal = "h_e_Total";
 
-TFile *f1 = new TFile("output/Trigger_2016/EfficienciesV5/mtEfficienciesv5_2.root");
+TFile *f1 = new TFile("output/Trigger_2016/EfficienciesV5/mtEfficienciesv5_3.root");
 
 
 //output/Trigger_2016/EfficienciesV5/mtEfficienciesv5_2.root
@@ -17,6 +17,9 @@ TH1D *h2 = (TH1D*)f1->Get("EfficienciesGenMatch/TriggerEfficiencies2/"+histname)
 TH1D *h3 = (TH1D*)f1->Get("EfficienciesGenMatch/TriggerEfficiencies3/"+histname);
 TH1D *h4 = (TH1D*)f1->Get("EfficienciesGenMatch/TriggerEfficiencies4/"+histname);
 int rebinN =2;
+     //h1->Scale(2);
+     //h2->Scale(2);
+     //h3->Scale(2);
 h1->Multiply(htotal);
 h2->Multiply(htotal);
 h3->Multiply(htotal);
@@ -34,8 +37,8 @@ gStyle->SetOptStat(0);
 //h1->GetXaxis()->SetLimits(0,1);
 //h2->GetXaxis()->SetLimits(0,1);
 //h3->GetXaxis()->SetLimits(0,1);
-h1->GetXaxis()->SetTitle("Offline jets |#Delta#eta|_{je}");
-h1->GetYaxis()->SetTitle("Probability");
+h1->GetXaxis()->SetTitle("Offline electron p_{T} GeV");
+//h1->GetYaxis()->SetTitle("Probability");
 //h1->GetYaxis()->SetRangeUser(0, 1);
 //h1->GetXaxis()->SetRangeUser(0, 100);
 
@@ -156,12 +159,12 @@ for(int i=0; i < h4->GetSize() -1; i++){
 //gr4->Draw("same c");
   c1->SetGridx(1);
   c1->SetGridy(1);
-leg = new TLegend(0.16,0.64,0.48,0.84);
-//leg = new TLegend(0.51,0.2,0.84,0.4);
+//leg = new TLegend(0.16,0.64,0.48,0.84);
+leg = new TLegend(0.44,0.2,0.85,0.4);
 leg->SetTextSize(0.03);
-leg->AddEntry(h1,"L1 Jets |#Delta#eta|_{je} #geq 2.5 ","pl");
-leg->AddEntry(h2,"L1 Jets |#Delta#eta|_{je} #geq 3.0 ","pl");
-leg->AddEntry(h3,"L1 Jets |#Delta#eta|_{je} #geq 3.5 ","pl");
+leg->AddEntry(h1,"L1 IsoEG p_{T} #geq 10 GeV ","pl");
+leg->AddEntry(h2,"L1 IsoEG p_{T} #geq 15 GeV ","pl");
+leg->AddEntry(h3,"L1 IsoEG p_{T} #geq 20 GeV ","pl");
 //leg->AddEntry(h4,"L1 Jet #geq 40 GeV","pl");
 leg->Draw();
 
@@ -173,7 +176,7 @@ tex2->SetNDC();
    tex2->Draw();
 
       //////////TLatex *   tex3 = new TLatex(0.25,0.92,"Offline jet |#eta| < 4.7");
- TLatex *   tex3 = new TLatex(0.15,0.92,"Offline jets |#eta| < 4.7, p_{T} > 20 GeV");
+ TLatex *   tex3 = new TLatex(0.15,0.92,"Offline electron |#eta| < 2.4 ");
 tex3->SetNDC();
    tex3->SetTextFont(44);
    tex3->SetTextSize(23);

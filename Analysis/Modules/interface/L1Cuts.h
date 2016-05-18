@@ -16,6 +16,7 @@ struct L1Cuts {
   bool JetFilter = false;
   double AvePt = 0;
   double VecPt = 0;
+  bool DeltaRFilter = false;
 };
 
 

@@ -52,6 +52,7 @@ class L1TFilter : public ModuleBase {
       unsigned n_l1electrons_;
       unsigned n_l1muons_;
       unsigned n_l1taus_;
+      unsigned n_l1leadtaus_;
       
       double Jet1PtCut;
       double Jet2PtCut;
@@ -68,16 +69,15 @@ class L1TFilter : public ModuleBase {
       bool IsoEGFilter;
       bool IsoMuFilter;
       bool JetFilter;
+      bool DeltaRJetFilter;
       unsigned isZB;
       
       TH1D *h_L1Filter_Efficiency;
       TH1D *h_SignalEfficiency;
       TH1D *h_METRates;
       
-      TH2D *h_DoubleIsoTauRate2D;
-      TH2D *h_DoubleTauRate2D;
-      TH2D *h_IsoTauTauRate2D;
-      
+      TH1D *h_SingleIsoTauPt          ;
+      TH1D *h_SingleTauPt             ;
       TH1D *h_DoubleIsoTauPt          ;
       TH1D *h_DoubleTauPt             ;
       TH1D *h_SingleEGPt              ;
@@ -90,6 +90,9 @@ class L1TFilter : public ModuleBase {
       TH1D *h_DoubleJetDeltaEta       ;
       TH1D *h_DoubleJetAvePt          ;
       TH1D *h_DoubleJetVecPt          ;
+      
+      TH2D *h_DoubleIsoTauPt2D        ;
+      TH2D *h_DoubleTauPt2D           ;
       
       TH1D *h_l1jj_VecPt;
       TH1D *h_l1jj_Diff;
@@ -117,6 +120,18 @@ class L1TFilter : public ModuleBase {
       TH1D *h_jetsDeltaEta; 
       TH1D *h_jetsAvePt; 
       TH1D *h_jetsVecPt;
+      
+      TH1D *h_Tau1Multiplicity;
+      TH1D *h_Tau2Multiplicity;
+      TH1D *h_EGMultiplicity;
+      TH1D *h_MuonMultiplicity;
+      TH1D *h_JetMultiplicity;
+      TH1D *h_LargestMjj;
+      TH1D *h_LargestMjj_LeadPt;
+      TH1D *h_LargestMjj_SubLeadPt;
+      TH1D *h_LargestMjj_AvePt;
+      TH1D *h_LargestMjj_VecPt;
+      TH1D *h_LargestMjj_DeltaEta;
 
 };
 }

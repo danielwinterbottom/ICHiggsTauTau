@@ -3,13 +3,16 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 
+#include <iostream>
+#include <fstream>
+
 #include "TVector3.h"
 
 namespace ic {
 
   
   VariableHistograms::VariableHistograms(std::string const& name, 
-                                         fwlite::TFileService *fs, std::string output_name) : ModuleBase(name) {
+                                         fwlite::TFileService *fs, std::string output_name, std::string channel) : ModuleBase(name) {
     jets_label_ = "ak4PFJetsCHS"; 
     electrons_label_ = "electrons";
     muons_label_ = "muons"; 
@@ -17,6 +20,8 @@ namespace ic {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMet";
     
+    if(channel == "tt") leadtaus_label = "leadingtaus";
+    else leadtaus_label = "taus";
 
     
     TFileDirectory subDir = fs->mkdir(output_name.c_str());
@@ -107,7 +112,7 @@ namespace ic {
     h_OfflineMinPhi->GetYaxis()->SetTitle("# Entries");
     
     h_JetsPtScalarSum = subDir.make<TH1D>("JetsPtScalarSum","JetsPtScalarSum",100, 0,200); 
-    h_JetsPtScalarSum->GetXaxis()->SetTitle("Jets P_{T} Scalar Sum [GeV]");
+    h_JetsPtScalarSum->GetXaxis()->SetTitle("Jets <p_{T}> [GeV]");
     h_JetsPtScalarSum->GetYaxis()->SetTitle("# Entries");
     
     h_JetsPtVectorSum = subDir.make<TH1D>("JetsPtVectorSum","JetsPtVectorSum",100, 0,200); 
@@ -133,6 +138,7 @@ namespace ic {
       std::vector<Electron*> electrons = event->GetPtrVec<Electron>(electrons_label_);
       std::vector<Muon*> muons = event->GetPtrVec<Muon>(muons_label_);
       std::vector<Tau*> taus = event->GetPtrVec<Tau>(taus_label_);
+      std::vector<Tau*> leadingtaus = event->GetPtrVec<Tau>(leadtaus_label);
       std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
 
       n_jets_ = jets.size();
@@ -164,7 +170,7 @@ namespace ic {
           double JetsPtVectorSum = (jets[0]->vector()+jets[1]->vector()).Pt();
           h_JetsPtVectorSum->Fill(JetsPtVectorSum);
       
-          double JetsPtScalarSum = jets[0]->vector().Pt() +jets[1]->vector().Pt();
+          double JetsPtScalarSum = (jets[0]->vector().Pt() +jets[1]->vector().Pt())/2;
           h_JetsPtScalarSum->Fill(JetsPtScalarSum);
           
           double SubLeadJPt = jets[1]->vector().Pt();
@@ -221,13 +227,13 @@ namespace ic {
       }
 
       if (n_taus_ > 0){
-        double tauPt = taus[0]->vector().pt();
-        if (tauPt == pt_1_ || tauPt == pt_2_) h_OfflineLeadTauPt->Fill(tauPt);
+        double tauPt = leadingtaus[0]->vector().pt();
+        h_OfflineLeadTauPt->Fill(tauPt);
       }
 
-      if (n_taus_ > 1){
+      if (taus.size() > 1){
         double SubtauPt = taus[1]->vector().pt();
-        if (SubtauPt == pt_1_ || SubtauPt == pt_2_) h_OfflineSubLeadTauPt->Fill(SubtauPt);
+        h_OfflineSubLeadTauPt->Fill(SubtauPt);
       }
 
       double DetaPhiTemp = 0;
@@ -243,6 +249,15 @@ namespace ic {
           }
           h_OfflineMinPhi->Fill(MinDeltaPhi);
       }
+      
+     /* ic::EventInfo const* eventInfo = event->GetPtr<ic::EventInfo>("eventInfo");
+      
+      std::ofstream outfile1;
+      outfile1.open("PassedOffline.dat",std::ios_base::app);
+      
+      outfile1 << eventInfo->event() << '\n';
+      
+      outfile1.close();*/
     
       
       return 0;

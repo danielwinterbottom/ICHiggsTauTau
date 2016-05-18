@@ -131,7 +131,7 @@ class VBFPlots : public ModuleBase {
       
       TH1D *h_LeadJetEta_Cut;
       TH1D *h_SubLeadJetEta_Cut;
-      TH2D *h_genjjEta2D;
+      TH2D *h_genjjEta2D;                                                                                                                                                                               
       TH2D *h_genjjEta2D_Cut;
       
       TH2D *h_l1jjEta2D;
@@ -148,6 +148,11 @@ class VBFPlots : public ModuleBase {
       TH1D *h_l1jj_VecPt;
       TH1D *h_l1jj_Diff;
       TH1D *h_l1jj_DiffOverSum;
+      
+      TH1D *h_JetsMathedTo;
+      TH1D *h_JetsMathedTo_LeadMjj;
+      TH1D *h_JetsMathedTo_LeadMjjLeadAvePt;
+      TH1D *h_L1VBFMultiplicity;
 
 };
 }

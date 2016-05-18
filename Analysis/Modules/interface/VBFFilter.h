@@ -21,6 +21,8 @@ struct OfflineCuts {
   double Jet1Pt = 0.;
   double Jet2Pt = 0.;
   double DeltaEta = 0.;
+  double AvePt = 0.;
+  double VecPt = 0.;
 };
 
 namespace ic {
@@ -40,10 +42,13 @@ class VBFFilter : public ModuleBase {
 
       unsigned n_jets_;
       
-      double JetPtCut;
+      double Jet1PtCut;
+      double Jet2PtCut;
       double EtaCut;
       double DeltaEtaCut;
       double MjjCut;
+      double AvePtCut;
+      double VecPtCut;
 
 };
 }

@@ -4,9 +4,11 @@
 
 namespace ic {
 
-  GenChannelFilter::GenChannelFilter(std::string const& name, std::string channel) : ModuleBase(name) {
+  GenChannelFilter::GenChannelFilter(std::string const& name, std::string channel, unsigned isDY) : ModuleBase(name) {
     genParticles_label_ = "genParticles";
     channel_ = channel;
+    if(isDY==1) DY = true;
+    else DY = false;
   }
 
   GenChannelFilter::~GenChannelFilter() {
@@ -52,11 +54,13 @@ namespace ic {
 
       bool Filter = true;
       
-      if(channel_ == "em" && (nElectrons == 1 && nMuons == 1 && nHadTaus == 0)) Filter = false;
-      if(channel_ == "et" && (nElectrons == 1 && nMuons == 0 && nHadTaus == 1)) Filter = false;
-      if(channel_ == "mt" && (nElectrons == 0 && nMuons == 1 && nHadTaus == 1)) Filter = false;
-      if(channel_ == "tt" && (nElectrons == 0 && nMuons == 0 && nHadTaus == 2)) Filter = false;
-      
+      if(!DY){
+          if(channel_ == "em" && (nElectrons == 1 && nMuons == 1 && nHadTaus == 0)) Filter = false;
+          if(channel_ == "et" && (nElectrons == 1 && nMuons == 0 && nHadTaus == 1)) Filter = false;
+          if(channel_ == "mt" && (nElectrons == 0 && nMuons == 1 && nHadTaus == 1)) Filter = false;
+          if(channel_ == "tt" && (nElectrons == 0 && nMuons == 0 && nHadTaus == 2)) Filter = false;
+      }
+      else if(DY && (nHadTaus+nElectrons+nMuons) == 2) Filter = false;
       
       if(Filter) return 1;
       else return 0;

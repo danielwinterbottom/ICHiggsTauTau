@@ -32,3 +32,36 @@ Events Passing SingleTau128er:       0
 Events Passing all triggers:         5514      
 Total tautau Events:                 952407
 Signal Efficiency:                   0.0058
+
+Total Efficiencies
+
+etau:
+
+Events Passing SingleIsoEG22er:     78941
+Events Passing SingleIsoEG24:       84200
+Events Passing SingleEG40:          59410
+Total etau Events:                  219456 
+
+emu:
+
+Events Passing Mu20_EG15:       14252
+Events Passing Mu5_EG20:        20097
+Events Passing Mu5_IsoEG18:     16769
+Total emu Events:               57630
+
+mutau:
+
+Events Passing SingleMu20er:        90533
+Events Passing SingleMu22:          87091:
+Events Passing all triggers:        5939
+Total mutau Events:                 210111
+Signal Efficiency:                  0.0283
+
+tautau:
+
+Events Passing DoubleIsoTau28:       5197
+Events Passing DoubleTau50er:        1090
+Events Passing SingleTau128er:       0
+Events Passing all triggers:         5514
+Total tautau Events:                 952407
+
