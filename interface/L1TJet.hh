@@ -1,7 +1,6 @@
 #ifndef ICHiggsTauTau_L1TJet_hh
 #define ICHiggsTauTau_L1TJet_hh
 
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 #include <vector>
@@ -11,7 +10,7 @@
 
 namespace ic {
   
-  class L1TJet : public ic::Candidate, public ic::L1TObject {
+  class L1TJet : public ic::L1TObject {
   public:
     L1TJet();
     virtual ~L1TJet();

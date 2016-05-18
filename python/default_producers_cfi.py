@@ -13,6 +13,10 @@ icL1ObjectProducer = cms.EDProducer('ICL1ObjectProducer',
 )
 ## [L1Object]
 
+## [VBFGenParticle]
+icVBFGenParticleProducer = cms.EDProducer('ICVBFGenParticleProducer')
+## [VBFGenParticle]
+
 ## [Candidate]
 icCandidateProducer = cms.EDProducer('ICCandidateProducer',
   branch  = cms.string("l1EmIsolated"),
@@ -215,6 +219,7 @@ icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
   branch  = cms.string("pfMet"),
   input   = cms.InputTag("slimmedMETs"),
   includeCustomID = cms.bool(False),
+  includeUserCandID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
   doGenMet = cms.bool(False),
   includeExternalMetsig = cms.bool(False),

@@ -1,4 +1,5 @@
 <lcgdict>
+  <class name="VBFHiggs::GenAnalysisDataFormat"/>
   <class name="ic::Candidate"/>
   <class name="std::vector<ic::Candidate>"/>
   <class name="ic::PFCandidate"/>

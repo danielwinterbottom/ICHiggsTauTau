@@ -8,6 +8,7 @@
 namespace ic {
   
   class L1TSum : public ic::L1TObject {
+  public:
     
     enum SumType {
       kTotalEt,
@@ -20,7 +21,6 @@ namespace ic {
       kTotalHty,
     };
     
-  public:
     L1TSum();
     virtual ~L1TSum();
     virtual void Print() const;
@@ -32,8 +32,6 @@ namespace ic {
     
   public:
     short int sumType;
-    float     et;
-    float     phi;
     
   };
   

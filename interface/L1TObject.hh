@@ -1,6 +1,8 @@
 #ifndef ICHiggsTauTau_L1TObject_hh
 #define ICHiggsTauTau_L1TObject_hh
 
+#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+
 #include <vector>
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
@@ -8,7 +10,7 @@
 
 namespace ic {
 
-  class L1TObject {
+  class L1TObject : public ic::Candidate {
   public:
     L1TObject();
     virtual ~L1TObject();

@@ -118,10 +118,10 @@ extra_channel = {
 }
 if options.shape_systs:
   extra_channel = {
-      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" ',
-      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" ',
-      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" ',
-      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" '
+      "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_scale_j="CMS_scale_j_13TeV" ',
+      "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_scale_j="CMS_scale_j_13TeV" ',
+      "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_scale_j="CMS_scale_j_13TeV" ',
+      "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_scale_j="CMS_scale_j_13TeV" '
   }
 
 #################################################################
@@ -133,7 +133,7 @@ if SCHEME == 'run2_sm':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"
   scheme_et = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ''),
-    ("8",   "inclusive",    "inclusivemt",  BINS_FINE, '--set_alias="sel:mt_1<40"')
+    ("8",   "inclusive",    "inclusivemt40",  BINS_FINE, '--set_alias="sel:mt_1<40"')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ""),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
@@ -142,7 +142,7 @@ if SCHEME == 'run2_sm':
   ]
   scheme_mt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
-    ("8",   "inclusive",    "inclusivemt",  BINS_FINE, '--set_alias="sel:mt_1<40"')
+    ("8",   "inclusive",    "inclusivemt40",  BINS_FINE, '--set_alias="sel:mt_1<40"')
 #    ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
@@ -158,7 +158,7 @@ if SCHEME == 'run2_sm':
 #    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--qcd_os_ss_factor=2"')
 #    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
 #    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
 #    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, (
@@ -226,8 +226,8 @@ if SCHEME == 'run2_mssm':
     ("8",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40"'),
 #    ("8",   "nobtag",    "nobtag",  BINS_FINE if not options.mttot else MTTOTBINSFINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btag",    "btag",  BINS if not options.mttot else MTTOTBINS, '--set_alias="sel:mt_1<30"'),
-    ("8",   "nobtag",    "nobtagnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<40"'),
-    ("8",   "btag",    "btagnotwoprong",  BINS, '--set_alias="sel:mt_1<40"'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40"'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40"'),
 #    ("8",   "nobtaghigh",    "nobtaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "btaghigh",    "btaghigh",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
 #    ("8",   "nobtaghighnotwoprong",    "nobtaghighnotwoprong",  BINS_FINE, '--set_alias="sel:mt_1<30"'),
@@ -255,9 +255,9 @@ if SCHEME == 'run2_mssm':
 
   ]
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20" --qcd_os_ss_factor=2')
   ]
   bkg_schemes = {
     'et' : 'et_default',
