@@ -58,7 +58,6 @@ if options.sample=="mc":
 elif options.sample=="data":
   process.source.fileNames = cms.untracked.vstring('/store/data/Run2015D/ZeroBias1/RAW/v1/000/256/843/00000/FE8AD1BB-D05E-E511-B3A7-02163E01276B.root')
 
-
 process.options = cms.untracked.PSet(
 
 )
