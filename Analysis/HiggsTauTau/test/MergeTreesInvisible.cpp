@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
   std::string filenametemp;
   TChain *tIn = new TChain("icEventProducer/EventTree");
   std::ifstream infile1;
-  infile1.open("EventTreeAll.dat");
+  infile1.open("L1InvisibleEta3.dat");
  
   int linenumber = 1;
   while(infile1 >> filenametemp){
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]){
   TString filename2;
   TChain *chIn2 = new TChain("icEventProducer/EventTree");
   std::ifstream infile2;
-  infile2.open(".dat");
+  infile2.open("L1InvisibleEta5.dat");
   while (infile2 >> filename2) chIn2->Add(filename2);
           
   infile2.close();
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
   unsigned nentries2 = chIn2->GetEntries();
   unsigned nentries1 = tIn->GetEntries();
   
-  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/Z2LJets/EventTreeMerged_%d.root", num);
+  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/Invisible/BothSumRanges/EventTree_%d.root", num);
   TFile *fOut = new TFile(outputfilename.c_str(),"RECREATE");
   
   std::cout << "Cloaning offline tree." << std::endl;
@@ -84,15 +84,7 @@ int main(int argc, char* argv[]){
   
   std::cout << "Getting branches from L1 trees." << std::endl;
   
-  // Get new branches from tree 2. 
-  std::vector<ic::L1TTau> *l1taus = new std::vector<ic::L1TTau>();
-  chIn2->SetBranchAddress("L1Taus",&l1taus);
-  std::vector<ic::L1TMuon> *l1muons = new std::vector<ic::L1TMuon>();
-  chIn2->SetBranchAddress("L1Muons",&l1muons);
-  std::vector<ic::L1TEGamma> *l1egammas = new std::vector<ic::L1TEGamma>();
-  chIn2->SetBranchAddress("L1EGammas",&l1egammas);
-  std::vector<ic::L1TJet> *l1jets = new std::vector<ic::L1TJet>();
-  chIn2->SetBranchAddress("L1Jets",&l1jets);
+
   std::vector<ic::L1TSum> *l1sums = new std::vector<ic::L1TSum>();
   chIn2->SetBranchAddress("L1Sums",&l1sums);
   ic::EventInfo *eventInfo2 = new ic::EventInfo();
@@ -102,16 +94,8 @@ int main(int argc, char* argv[]){
   
   std::cout << "Creating new L1 branches on output tree." << std::endl;
   
-  std::vector<ic::L1TTau> *l1tausnew = new std::vector<ic::L1TTau>();
-  tOut->Branch("L1Taus", &l1tausnew);
-  std::vector<ic::L1TMuon> *l1muonsnew = new std::vector<ic::L1TMuon>();
-  tOut->Branch("L1Muons", &l1muonsnew);
-  std::vector<ic::L1TEGamma> *l1egammasnew = new std::vector<ic::L1TEGamma>();
-  tOut->Branch("L1EGammas", &l1egammasnew);
-  std::vector<ic::L1TJet> *l1jetsnew = new std::vector<ic::L1TJet>();
-  tOut->Branch("L1Jets", &l1jetsnew);
   std::vector<ic::L1TSum> *l1sumsnew = new std::vector<ic::L1TSum>();
-  tOut->Branch("L1Sums", &l1sumsnew);
+  tOut->Branch("L1SumsEtaRange5pt0", &l1sumsnew);
   
   std::cout << "Finished creating new L1 branches on output tree." << std::endl;
 
@@ -132,10 +116,6 @@ int main(int argc, char* argv[]){
           // If eventIDs match then fill new branch with copied branches.
           if(eventInfo1->event() == eventInfo2->event()){
       
-              l1tausnew = l1taus;
-              l1muonsnew = l1muons;
-              l1egammasnew = l1egammas;
-              l1jetsnew = l1jets;
               l1sumsnew = l1sums;
               
               tOut->Fill();
@@ -155,10 +135,6 @@ int main(int argc, char* argv[]){
                       if(itemp % n_report == 0) std::cout << "Finished merging " << itemp << "th event." << std::endl;
                       //continue filling  
                   
-                      l1tausnew = l1taus;
-                      l1muonsnew = l1muons;
-                      l1egammasnew = l1egammas;
-                      l1jetsnew = l1jets;
                       l1sumsnew = l1sums;
                       
                       tOut->Fill();
