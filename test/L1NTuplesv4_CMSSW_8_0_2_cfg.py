@@ -127,6 +127,12 @@ process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
 )
 
 ################################################################
+# VBFGenParticles
+################################################################
+if options.sample=="mc":
+  process.icVBFGenParticleProducer = producers.icVBFGenParticleProducer.clone()
+
+################################################################
 # EventInfo
 ################################################################
 process.icL1EventInfoProducer = producers.icL1EventInfoProducer.clone()
@@ -141,11 +147,19 @@ process.icL1EventInfoSequence = cms.Sequence(
 ################################################################
 process.icEventProducer = producers.icEventProducer.clone()
 
-process.icL1ObjectPath = cms.Path(
-  process.icL1ObjectProducer+
-  process.icL1EventInfoSequence+
-  process.icEventProducer
-)
+if options.sample=="mc":
+  process.icL1ObjectPath = cms.Path(
+    process.icL1ObjectProducer+
+    process.icVBFGenParticleProducer+
+    process.icL1EventInfoSequence+
+    process.icEventProducer
+  )
+elif options.sample=="data":
+  process.icL1ObjectPath = cms.Path(
+    process.icL1ObjectProducer+
+    process.icL1EventInfoSequence+
+    process.icEventProducer
+  )
 
 process.schedule.append(process.icL1ObjectPath)
 
