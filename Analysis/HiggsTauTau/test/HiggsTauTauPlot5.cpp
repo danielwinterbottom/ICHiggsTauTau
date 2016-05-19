@@ -429,7 +429,15 @@ int main(int argc, char* argv[]){
 		std::cout << "[HiggsTauTauPlot5] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
 		HTTRun2Analysis ana_syst(String2Channel(channel_str), "2015", verbosity,is_fall15);
         ana_syst.SetQCDRatio(qcd_os_ss_factor);
-        if(do_ss) ana_syst.SetSS();
+        if(do_ss) {
+            ana_syst.SetSS();
+            ana_syst.SetQCDRatio(1.0);
+            sel = "!os && "+ana_syst.ResolveAlias("sel");
+            ana_syst.SetAlias("w_os", "!os");
+            ana_syst.SetAlias("w_sdb_os", "!os");
+            ana_syst.SetAlias("w_vbf_os", "!os");
+            ana_syst.SetAlias("w_shape_os", "!os");
+        }
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
 		if (add_sm_background != "") {
