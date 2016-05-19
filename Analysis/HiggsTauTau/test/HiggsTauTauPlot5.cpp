@@ -32,6 +32,7 @@ int main(int argc, char* argv[]){
 	string syst_tau_scale;
     string tau_es_scales_str;
 	string syst_met_scale;
+	string syst_met_res;
 	string syst_eff_b;
 	string syst_eff_b_hf;
 	string syst_eff_b_hfstats1;
@@ -98,6 +99,7 @@ int main(int argc, char* argv[]){
 	  ("tau_es_scales",          po::value<string>(&tau_es_scales_str)->default_value(""))
 	  ("no_central", 	          po::value<bool>(&no_central)->default_value(false))
 	  ("syst_met_scale",          po::value<string>(&syst_met_scale)->default_value(""))
+	  ("syst_met_res",          po::value<string>(&syst_met_res)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_eff_b_hf",    		    po::value<string>(&syst_eff_b_hf)->default_value(""))
 	  ("syst_eff_b_hfstats1",     po::value<string>(&syst_eff_b_hfstats1)->default_value(""))
@@ -414,8 +416,12 @@ int main(int argc, char* argv[]){
 		systematics.push_back(make_pair("/JES_UP", syst_scale_j+"Up"));
 	}
 	if (syst_met_scale != "") {
-		systematics.push_back(make_pair("/MET_DOWN", syst_met_scale+"Down"));
-		systematics.push_back(make_pair("/MET_UP", syst_met_scale+"Up"));
+		systematics.push_back(make_pair("/MET_SCALE_DOWN", syst_met_scale+"Down"));
+		systematics.push_back(make_pair("/MET_SCALE_UP", syst_met_scale+"Up"));
+	}
+	if (syst_met_res != "") {
+		systematics.push_back(make_pair("/MET_RES_DOWN", syst_met_res+"Down"));
+		systematics.push_back(make_pair("/MET_RES_UP", syst_met_res+"Up"));
 	}
 
 	for (auto const& syst : systematics) {
@@ -501,94 +507,6 @@ int main(int argc, char* argv[]){
     hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, 0.));
   }
   
-  // ************************************************************************
-	// Subtract ttbar MC embedded from ZTT
-	// ************************************************************************
-  if (sub_ztt_top_shape) {
-	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-	std::cout << "[HiggsHTohhPlot] Subtracting TOP contamination from ZTT embedded using TT embedded shape..." << std::endl;	
-    std::string top_label = "TT";
-	std::string ztt_label = "ZTT";
-    
-    HTTRun2Analysis::Value embedded_ttbar = ana.GetLumiScaledRate("Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
-    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
-    TH1F ztt_hist = hmap[ztt_label].first;
-    HTTRun2Analysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
-    HTTRun2Analysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
-    HTTRun2Analysis::Value scaled_embedded = hmap[ztt_label].second;
-    double norm_sf = scaled_embedded.first / embedded_data.first;
-    double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
-    double embedded_ttbar_uncert = embedded_ttbar.second * norm_sf;
-    SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
-    hmap[top_label+"_emb"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-    ztt_hist.Add(&hmap[top_label+"_emb"].first, -1);
-    HTTRun2Analysis::Value ztt_norm = HTTRun2Analysis::ValueSubtract(hmap[ztt_label].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-    hmap[ztt_label].first = ztt_hist;
-    hmap[ztt_label] = make_pair(ztt_hist, ztt_norm);
-    HTTRun2Analysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
-    
-    //If systematics are included, make the same subtraction from the ZTT ones
-    if(syst_tau_scale!="") {
-        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_tau_scale+"Up"].first;
-        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Up = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_tau_scale+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_tau_scale+"Up"].first = ztt_hist_Up;
-        hmap[ztt_label+"_"+syst_tau_scale+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
-        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_tau_scale+"Down"].first;
-        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Down = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_tau_scale+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_tau_scale+"Down"].first = ztt_hist_Down;
-        hmap[ztt_label+"_"+syst_tau_scale+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
-    }
-    if(syst_scale_j!="") {
-        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_scale_j+"Up"].first;
-        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Up = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_scale_j+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_scale_j+"Up"].first = ztt_hist_Up;
-        hmap[ztt_label+"_"+syst_scale_j+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
-        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_scale_j+"Down"].first;
-        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Down = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_scale_j+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_scale_j+"Down"].first = ztt_hist_Down;
-        hmap[ztt_label+"_"+syst_scale_j+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
-    }
-    if(syst_met_scale!="") {
-        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_met_scale+"Up"].first;
-        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Up = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_met_scale+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_met_scale+"Up"].first = ztt_hist_Up;
-        hmap[ztt_label+"_"+syst_met_scale+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
-        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_met_scale+"Down"].first;
-        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Down = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_met_scale+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_met_scale+"Down"].first = ztt_hist_Down;
-        hmap[ztt_label+"_"+syst_met_scale+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
-    }
-    if(syst_eff_b!="") {
-        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_eff_b+"Up"].first;
-        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Up = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_eff_b+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_eff_b+"Up"].first = ztt_hist_Up;
-        hmap[ztt_label+"_"+syst_eff_b+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
-        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_eff_b+"Down"].first;
-        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Down = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_eff_b+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_eff_b+"Down"].first = ztt_hist_Down;
-        hmap[ztt_label+"_"+syst_eff_b+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
-    }
-    if(syst_fake_b!="") {
-        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_fake_b+"Up"].first;
-        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Up = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_fake_b+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_fake_b+"Up"].first = ztt_hist_Up;
-        hmap[ztt_label+"_"+syst_fake_b+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
-        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_fake_b+"Down"].first;
-        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
-        HTTRun2Analysis::Value ztt_norm_Down = HTTRun2Analysis::ValueSubtract(hmap[ztt_label+"_"+syst_fake_b+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-        hmap[ztt_label+"_"+syst_fake_b+"Down"].first = ztt_hist_Down;
-        hmap[ztt_label+"_"+syst_fake_b+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
-    }   
-  }
 
 
 	// ************************************************************************

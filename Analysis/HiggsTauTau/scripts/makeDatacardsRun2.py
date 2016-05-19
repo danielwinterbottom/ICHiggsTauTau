@@ -146,10 +146,14 @@ if options.no_shape_systs:
 
 
 if options.norm_systs:
-  extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
-  extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
-  extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
-  extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  #extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  #extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  #extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  #extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
 
 #################################################################
 #### Old SM scheme
