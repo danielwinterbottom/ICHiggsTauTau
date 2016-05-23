@@ -432,7 +432,7 @@ int main(int argc, char* argv[]){
         if(do_ss) {
             ana_syst.SetSS();
             ana_syst.SetQCDRatio(1.0);
-            sel = "!os && "+ana_syst.ResolveAlias("sel");
+            sel = "!os && "+ana.ResolveAlias("sel");
             ana_syst.SetAlias("w_os", "!os");
             ana_syst.SetAlias("w_sdb_os", "!os");
             ana_syst.SetAlias("w_vbf_os", "!os");
