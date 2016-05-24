@@ -78,6 +78,10 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_up_;
   float trigweight_1_;
   float trigweight_2_;
+  double wt_trig_up_1_;
+  double wt_trig_up_2_;
+  double wt_trig_down_1_;
+  double wt_trig_down_2_;
   float idisoweight_1_;
   float idisoweight_2_;
   float isoweight_1_;

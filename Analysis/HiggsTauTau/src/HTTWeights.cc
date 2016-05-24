@@ -950,19 +950,49 @@ namespace ic {
         double pt_2 = tau2->pt();
         double tau1_trg = 1.0;
         double tau1_trg_mc = 1.0;
+        double tau1_trg_up = 1.0;
+        double tau1_trg_mc_up = 1.0;
+        double tau1_trg_down = 1.0;
+        double tau1_trg_mc_down = 1.0;
         double tau2_trg = 1.0;
         double tau2_trg_mc = 1.0;
+        double tau2_trg_up = 1.0;
+        double tau2_trg_mc_up = 1.0;
+        double tau2_trg_down = 1.0;
+        double tau2_trg_mc_down = 1.0;
         if (mc_ == mc::fall15_76X){
           tau1_trg      = Efficiency(pt_1, 34.5412, 5.63353, 2.49242, 3.35896, 1.0);
           tau1_trg_mc   = Efficiency(pt_1, 36.0274, 5.89434, 5.82870, 1.83737, 9.58000e-01);
           tau2_trg      = Efficiency(pt_2, 34.5412, 5.63353, 2.49242, 3.35896, 1.0);
           tau2_trg_mc   = Efficiency(pt_2, 36.0274, 5.89434, 5.82870, 1.83737, 9.58000e-01);
+          tau1_trg_up        = Efficiency(pt_1, 33.1713, 5.66551, 1.87175, 8.07790, 1.0);
+          tau1_trg_mc_up     = Efficiency(pt_1, 35.6012, 5.98209, 6.09604, 1.68740, 9.87653e-01);
+          tau2_trg_up        = Efficiency(pt_2, 33.1713, 5.66551, 1.87175, 8.07790, 1.0);
+          tau2_trg_mc_up     = Efficiency(pt_2, 35.6012, 5.98209, 6.09604, 1.68740, 9.87653e-01);
+          tau1_trg_down      = Efficiency(pt_1, 35.6264, 5.30711, 2.81591, 2.40649, 9.99958e-01);
+          tau1_trg_mc_down   = Efficiency(pt_1, 36.2436, 5.58461, 5.12924, 2.05921, 9.32305e-01);
+          tau2_trg_down      = Efficiency(pt_2, 35.6264, 5.30711, 2.81591, 2.40649, 9.99958e-01);
+          tau2_trg_mc_down   = Efficiency(pt_2, 36.2436, 5.58461, 5.12924, 2.05921, 9.32305e-01);
          }
         tau1_trg = tau1_trg / tau1_trg_mc;
         tau2_trg = tau2_trg / tau2_trg_mc;
+        //Conservative up/down weights as 
+        tau1_trg_up = tau1_trg_up / tau1_trg_mc_down;
+        tau2_trg_up = tau2_trg_up / tau2_trg_mc_down;
+        tau1_trg_down = tau1_trg_down / tau1_trg_mc_up;
+        tau2_trg_down = tau2_trg_down / tau2_trg_mc_up;
+        //Want to apply this on top of the default weight:
+        tau1_trg_up = tau1_trg_up / tau1_trg;
+        tau2_trg_up = tau2_trg_up / tau2_trg;
+        tau1_trg_down = tau1_trg_down / tau1_trg;
+        tau2_trg_down = tau2_trg_down / tau2_trg;
         weight *= (tau1_trg*tau2_trg);
         event->Add("trigweight_1", tau1_trg);
         event->Add("trigweight_2", tau2_trg);
+        event->Add("trigweight_up_1", tau1_trg_up);
+        event->Add("trigweight_up_2", tau2_trg_up);
+        event->Add("trigweight_down_1", tau1_trg_down);
+        event->Add("trigweight_down_2", tau2_trg_down);
       } else if (channel_ == channel::mtmet) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();

@@ -47,6 +47,7 @@ int main(int argc, char* argv[]){
 	string syst_qcd_shape;
 	string syst_ggh_pt;
 	string syst_tquark;
+  string syst_tautrig;
 	string syst_zwt;
 	string syst_w_fake_rate;
 	string syst_eff_t;
@@ -114,6 +115,7 @@ int main(int argc, char* argv[]){
 	  ("syst_scale_j",            po::value<string>(&syst_scale_j)->default_value(""))
 	  ("syst_ggh_pt",    			    po::value<string>(&syst_ggh_pt)->default_value(""))
 	  ("syst_tquark",    			    po::value<string>(&syst_tquark)->default_value(""))
+	  ("syst_tautrig",  			    po::value<string>(&syst_tautrig)->default_value(""))
 	  ("syst_zwt",    			      po::value<string>(&syst_zwt)->default_value(""))
 	  ("syst_w_fake_rate",   	    po::value<string>(&syst_w_fake_rate)->default_value(""))
 	  ("syst_zl_shift",    		    po::value<string>(&syst_zl_shift)->default_value(""))
@@ -311,7 +313,40 @@ int main(int argc, char* argv[]){
     }
 	}
 
+   //************************************************************************
+   //Tau trigger uncert
+   //************************************************************************
+   if(syst_tautrig != "") {
+     std::cout << "[HiggsTauTauPlot5] Adding tau trigger systematic......" <<std::endl;
+    ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2", "", "_"+syst_tautrig+"Up", 1.0);
+    ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2", "", "_"+syst_tautrig+"Up", 1.0);
+    if (add_sm_background != "") {
+			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2", "_SM", "_"+syst_tautrig+"Up",1.0);
+    }
+    ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2", "", "_"+syst_tautrig+"Down", 1.0);
+    ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2", "", "_"+syst_tautrig+"Down", 1.0);
+    if (add_sm_background != "") {
+			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2", "_SM", "_"+syst_tautrig+"Down",1.0);
+    }
 
+    std::string ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
+    std::string zj_sel = ana.ResolveAlias("zj_sel")+"&&"+sel;
+    std::string zl_sel = ana.ResolveAlias("zl_sel")+"&&"+sel;
+    hmap["TT_"+syst_tautrig+"Up"] = ana.GenerateTOP(method, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2");
+    hmap["TT_"+syst_tautrig+"Down"] = ana.GenerateTOP(method, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2");
+    hmap["VV_"+syst_tautrig+"Up"] = ana.GenerateVV(method, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2");
+    hmap["VV_"+syst_tautrig+"Down"] = ana.GenerateVV(method, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2");
+    hmap["QCD_"+syst_tautrig+"Up"] = ana.GenerateQCD(method, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2");
+    hmap["QCD_"+syst_tautrig+"Down"] = ana.GenerateQCD(method, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2");
+    hmap["W_"+syst_tautrig+"Up"] = ana.GenerateW(method, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2");
+    hmap["W_"+syst_tautrig+"Down"] = ana.GenerateW(method, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2");
+ 		hmap["ZTT_"+syst_tautrig+"Up"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_trig_up_1*wt_trig_up_2");
+ 		hmap["ZTT_"+syst_tautrig+"Down"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_trig_down_1*wt_trig_down_2");
+ 		hmap["ZJ_"+syst_tautrig+"Up"] = ana.GenerateZTT(method, var, zj_sel, cat, "wt*wt_trig_up_1*wt_trig_up_2");
+ 		hmap["ZJ_"+syst_tautrig+"Down"] = ana.GenerateZTT(method, var, zj_sel, cat, "wt*wt_trig_down_1*wt_trig_down_2");
+ 		hmap["ZL_"+syst_tautrig+"Up"] = ana.GenerateZTT(method, var, zl_sel, cat, "wt*wt_trig_up_1*wt_trig_up_2");
+ 		hmap["ZL_"+syst_tautrig+"Down"] = ana.GenerateZTT(method, var, zl_sel, cat, "wt*wt_trig_down_1*wt_trig_down_2");
+    }
 
   // ************************************************************************
 	// W+jets fake-rate Reweighting
