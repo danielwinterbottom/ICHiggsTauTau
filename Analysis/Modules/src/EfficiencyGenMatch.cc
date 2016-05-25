@@ -27,6 +27,7 @@ namespace ic {
         l1METCut = 10;
         l1MHTCut = 40;
         AvePtCut = 30;
+        HtCut = 0;
     }
     else if(EffNum == 2){
         l1eCut = 15;
@@ -38,6 +39,7 @@ namespace ic {
         l1METCut = 20;
         l1MHTCut = 50;
         AvePtCut = 40;
+        HtCut = 200;
     }
     else if(EffNum == 3){
         l1eCut = 20;
@@ -49,17 +51,19 @@ namespace ic {
         l1METCut = 30;
         l1MHTCut = 60;
         AvePtCut = 50;
+        HtCut = 300;
     }
     else if(EffNum == 4){
         l1eCut = 0;
         l1muCut = 0;
         l1tauCut = 0;
-        l1jetCut = 0;
+        l1jetCut = 50;
         l1MjjCut = 0;
         l1DeltaEtaCut = 0;
         l1METCut = 0;
         l1MHTCut = 0;
         AvePtCut = 0;
+        HtCut = 400;
     }
     
     else if(EffNum == 5){
@@ -214,10 +218,6 @@ namespace ic {
     h_tau_Mu_Efficiency = subDir.make<TH1D>("h_tau_Mu_Efficiency","h_tau_Mu_Efficiency",100, 0,100);
     h_tau_Mu_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
     h_tau_Mu_Efficiency->GetYaxis()->SetTitle("Efficiency");
-    
-    h_tau_Total = subDir.make<TH1D>("h_tau_Total","h_tau_Total",100, 0,100); 
-    h_tau_Total->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
-    h_tau_Total->GetYaxis()->SetTitle("Efficiency");
     
     h_subtau_Total = subDir.make<TH1D>("h_subtau_Total","h_subtau_Total",100, 0,100); 
     h_subtau_Total->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
@@ -459,6 +459,34 @@ namespace ic {
     h_SubLeadJetPtPassMjj->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
     h_SubLeadJetPtPassMjj->GetYaxis()->SetTitle("Efficiency");
     
+    h_tau_Total = subDir.make<TH1D>("h_tau_Total","h_tau_Total",100, 0,100); 
+    h_tau_Total->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_tau_Total->GetYaxis()->SetTitle("Efficiency");
+    
+    h_leadtau_HTT_Total = subDir.make<TH1D>("h_leadtau_HTT_Total","h_leadtau_HTT_Total",100, 0,100); 
+    h_leadtau_HTT_Total->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_leadtau_HTT_Total->GetYaxis()->SetTitle("Efficiency");
+    
+    h_leadtau_HTT_Efficiency = subDir.make<TH1D>("h_leadtau_HTT_Efficiency","h_leadtau_HTT_Efficiency",100, 0,100); 
+    h_leadtau_HTT_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_leadtau_HTT_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_subleadtau_HTT_Total = subDir.make<TH1D>("h_subleadtau_HTT_Total","h_subleadtau_HTT_Total",100, 0,100); 
+    h_subleadtau_HTT_Total->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_subleadtau_HTT_Total->GetYaxis()->SetTitle("Efficiency");
+    
+    h_subleadtau_HTT_Efficiency = subDir.make<TH1D>("h_subleadtau_HTT_Efficiency","h_subleadtau_HTT_Efficiency",100, 0,100); 
+    h_subleadtau_HTT_Efficiency->GetXaxis()->SetTitle("Tau p_{T} [GeV] ");
+    h_subleadtau_HTT_Efficiency->GetYaxis()->SetTitle("Efficiency");
+    
+    h_tau_JetPt = subDir.make<TH2D>("h_tau_JetPt","h_tau_JetPt",100, 0,200, 100,  0,200); 
+    h_tau_JetPt->GetXaxis()->SetTitle("Gen tau p_{T} [GeV] ");
+    h_tau_JetPt->GetYaxis()->SetTitle("Offline jet p_{T} [GeV] ");
+    
+    h_tau_L1JetPt = subDir.make<TH2D>("h_tau_L1JetPt","h_tau_L1JetPt",100, 0,200, 100,  0,200); 
+    h_tau_L1JetPt->GetXaxis()->SetTitle("Gen tau p_{T} [GeV] ");
+    h_tau_L1JetPt->GetYaxis()->SetTitle("L1 jet p_{T} [GeV] ");
+    
   }
 
     EfficiencyGenMatch::~EfficiencyGenMatch(){
@@ -479,6 +507,7 @@ namespace ic {
       std::vector<ic::L1TMuon*> l1muons = event->GetPtrVec<ic::L1TMuon>(l1muons_label_);
       std::vector<ic::L1TTau*> l1taus = event->GetPtrVec<ic::L1TTau>(l1taus_label_);
       std::vector<ic::L1TSum*> l1met_vec = event->GetPtrVec<ic::L1TSum>(l1met_label_);
+      std::vector<ic::L1TSum*> l1sums = event->GetPtrVec<ic::L1TSum>("L1SumsEtaRange5pt0");
       
       std::sort(l1taus.begin(),l1taus.end(),greater_Candidate());
       std::sort(l1electrons.begin(),l1electrons.end(),greater_Candidate());
@@ -1178,7 +1207,7 @@ namespace ic {
           }
       }
       
-      //MET/MHT
+     /* //MET/MHT
       if(met_vec.size() > 0){
           double MET = met_vec[0]->vector().pt();
           h_GenMETEfficiency->Fill(MET);
@@ -1192,9 +1221,12 @@ namespace ic {
           h_GenMHTEfficiency->Fill(MHT->vector().pt());
           if(l1met_vec.size() > 2) if(l1met_vec[3]->et >= l1MHTCut) h_MHTEfficiency->Fill(MHT->vector().pt());
           
-      }
+      }*/
       
       //Gen Taus
+      
+      double SubLeadTauPt =-1;
+      double LeadTauPt    =-1;
       
       for(unsigned j=0; j< n_genParticles_; j++){
         
@@ -1217,17 +1249,40 @@ namespace ic {
           if(genID == 15 && isPrompt && std::fabs(tausVis.vector().Rapidity()) < 2.3){
               
               double DeltaRMax = 100000;
-              double tauPt = 0;
+              double tauPt = -1;
               bool MatchedOffline = false;
               
               for(unsigned k=0; k< n_taus_; k++){
-                  double DeltaR = sqrt(pow(taus[k]->vector().Phi()- GenParticles[j]->vector().Phi(),2) + pow(taus[k]->vector().Rapidity()-GenParticles[j]->vector().Rapidity(),2));
+                  double DeltaR = sqrt(pow(taus[k]->vector().Phi()- tausVis.vector().Phi(),2) + pow(taus[k]->vector().Rapidity()-tausVis.vector().Rapidity(),2));
                   if(DeltaR < 0.5 && DeltaR < DeltaRMax){
                       DeltaRMax = DeltaR;
                       tauPt = taus[k]->vector().Pt();
                       MatchedOffline = true;
                   }
+                  
               }
+              
+              for(unsigned k=0; k< n_jets_; k++){
+                  double DeltaR = sqrt(pow(jets[k]->vector().Phi()- tausVis.vector().Phi(),2) + pow(jets[k]->vector().Rapidity()-tausVis.vector().Rapidity(),2));
+                  if(DeltaR < 0.5 && DeltaR < DeltaRMax){
+                      h_tau_JetPt->Fill(tausVis.vector().Pt(), jets[k]->vector().Pt());
+                      break;
+                  }
+              }
+              
+              for(unsigned k=0; k< n_l1jets_; k++){
+                  double DeltaR = sqrt(pow(l1jets[k]->vector().Phi()- tausVis.vector().Phi(),2) + pow(l1jets[k]->vector().Rapidity()-tausVis.vector().Rapidity(),2));
+                  if(DeltaR < 0.5){
+                      h_tau_L1JetPt->Fill(tausVis.vector().Pt(), l1jets[k]->vector().Pt());
+                      break;
+                  }
+              }
+              
+              if(tauPt > LeadTauPt){
+                  SubLeadTauPt = LeadTauPt;
+                  LeadTauPt = tauPt;
+              }
+              else if (tauPt > SubLeadTauPt) SubLeadTauPt = tauPt;
               
               h_gentau_Total->Fill(tausVis.vector().Pt());
               if(MatchedOffline) h_tau_Total->Fill(tauPt); //do this for all tau histograms!!!!!
@@ -1411,6 +1466,16 @@ namespace ic {
           }
    }
    
+   if(LeadTauPt != -1)    h_leadtau_HTT_Total    ->Fill(LeadTauPt);
+   if(SubLeadTauPt != -1) h_subleadtau_HTT_Total ->Fill(SubLeadTauPt);
+   
+   if(l1sums.size() > 1){
+       if(l1sums[1]->vector().Pt() >= HtCut){
+           if(LeadTauPt != -1)    h_leadtau_HTT_Efficiency    ->Fill(LeadTauPt);
+           if(SubLeadTauPt != -1) h_subleadtau_HTT_Efficiency ->Fill(SubLeadTauPt);    
+       }
+   }
+   
    for(int i= n_genjets_-1; i>=0; i--){
           
           bool EraseGenJet = false;
@@ -1582,6 +1647,9 @@ namespace ic {
       
       h_METEfficiency->Divide(h_GenMETEfficiency);
       h_MHTEfficiency->Divide(h_GenMHTEfficiency);
+      
+      h_leadtau_HTT_Efficiency->Divide(h_leadtau_HTT_Total);
+      h_subleadtau_HTT_Efficiency->Divide(h_subleadtau_HTT_Total);
     return 0;
   }
 

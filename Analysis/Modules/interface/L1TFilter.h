@@ -65,6 +65,8 @@ class L1TFilter : public ModuleBase {
       double AvePtCut;
       double VecPtCut;
       
+      double HtCut;
+      
       bool IsoTauFilter;
       bool IsoEGFilter;
       bool IsoMuFilter;
@@ -132,7 +134,26 @@ class L1TFilter : public ModuleBase {
       TH1D *h_LargestMjj_AvePt;
       TH1D *h_LargestMjj_VecPt;
       TH1D *h_LargestMjj_DeltaEta;
-
+      
+      TH1D *h_Et;
+      TH1D *h_EtEta3;
+      TH1D *h_Ht;
+      TH1D *h_HtEta3;
+      TH1D *h_EtMinusJets;
+      TH1D *h_HtMinusJets;
+      TH1D *h_JetsOverHt;
+      TH1D *h_JetsOverEt;
+      TH1D *h_JetsOverHtMin;
+      TH1D *h_JetsOverHtMax;
+      TH1D *h_HtMinusJetsMin;
+      TH1D *h_HtMinusJetsMax;
+      
+      TH1D *h_l1jetDeltaPhi_BeforeBefore;
+      TH1D *h_l1jetDeltaPhi_Before;
+      TH1D *h_l1jetDeltaPhi_After;
+      
+      TH1D *h_DoubleJet30DeltaEta3pt25_Mjj;
+      TH1D *h_DoubleJet30DeltaEta3pt25_Mu5_Mjj;
 };
 }
 

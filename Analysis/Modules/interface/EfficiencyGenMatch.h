@@ -71,6 +71,7 @@ namespace ic {
     double l1MHTCut;
     int EffNum;
     double AvePtCut;
+    double HtCut;
     
     unsigned nPromptElectrons;
     unsigned nPromptMuons;
@@ -188,6 +189,13 @@ namespace ic {
     
     TH1D *h_LeadJetPtPassMjj;
     TH1D *h_SubLeadJetPtPassMjj;
+    
+    TH1D *h_leadtau_HTT_Total;
+    TH1D *h_leadtau_HTT_Efficiency;
+    TH1D *h_subleadtau_HTT_Total;
+    TH1D *h_subleadtau_HTT_Efficiency;
+    TH2D *h_tau_JetPt;
+    TH2D *h_tau_L1JetPt;
 
   public:
 

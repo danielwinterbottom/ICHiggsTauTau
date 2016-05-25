@@ -91,6 +91,14 @@ namespace ic {
     h_l1j1_Pt->GetXaxis()->SetTitle("Leading jet p_{T} [GeV]");
     h_l1j1_Pt->GetYaxis()->SetTitle("Entries");
     
+    h_l1j1_PtVsEta = subDir.make<TH2D>("h_l1j1_PtVsEta","h_l1j1_PtVsEta",100,-5,5,150, 0,300); 
+    h_l1j1_PtVsEta->GetXaxis()->SetTitle("#eta");
+    h_l1j1_PtVsEta->GetYaxis()->SetTitle("Leading jet p_{T} [GeV]");
+    
+    h_l1j2_PtVsEta = subDir.make<TH2D>("h_l1j2_PtVsEta","h_l1j2_PtVsEta",100,-5,5,150, 0,300); 
+    h_l1j2_PtVsEta->GetXaxis()->SetTitle("#eta");
+    h_l1j2_PtVsEta->GetYaxis()->SetTitle("Sub-Leading jet p_{T} [GeV] ");
+    
     h_l1j2_Pt = subDir.make<TH1D>("h_l1j2_Pt","h_l1j2_Pt",150, 0,300); 
     h_l1j2_Pt->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
     h_l1j2_Pt->GetYaxis()->SetTitle("Entries");
@@ -908,6 +916,8 @@ namespace ic {
               
               h_l1j1_Pt->Fill(Pt1);
               h_l1j2_Pt->Fill(Pt2);
+              h_l1j1_PtVsEta->Fill(l1jets[l1jetIndex1]->vector().Rapidity(),Pt1);
+              h_l1j2_PtVsEta->Fill(l1jets[l1jetIndex2]->vector().Rapidity(),Pt2);
               h_l1jj_DeltaEta->Fill(DeltaEta);
               h_l1jj_Mqq->Fill(Mjj);
               h_l1jj_VecPt->Fill((l1jets[l1jetIndex1]->vector() + l1jets[l1jetIndex2]->vector()).Pt());

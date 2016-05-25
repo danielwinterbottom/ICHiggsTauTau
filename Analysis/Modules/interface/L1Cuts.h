@@ -17,6 +17,7 @@ struct L1Cuts {
   double AvePt = 0;
   double VecPt = 0;
   bool DeltaRFilter = false;
+  double Ht = 0;
 };
 
 

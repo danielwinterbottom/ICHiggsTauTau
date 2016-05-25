@@ -153,6 +153,9 @@ class VBFPlots : public ModuleBase {
       TH1D *h_JetsMathedTo_LeadMjj;
       TH1D *h_JetsMathedTo_LeadMjjLeadAvePt;
       TH1D *h_L1VBFMultiplicity;
+      
+      TH2D *h_l1j1_PtVsEta;
+      TH2D *h_l1j2_PtVsEta;
 
 };
 }

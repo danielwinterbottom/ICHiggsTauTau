@@ -1041,7 +1041,7 @@ namespace ic {
       }
       
       //MET/MHT
-      if(met_vec.size() > 0){
+    /*  if(met_vec.size() > 0){
           double MET = met_vec[0]->vector().pt();
           h_GenMETEfficiency->Fill(MET);
           if(l1met_vec.size() > 1) if(l1met_vec[1]->et >= l1METCut) h_METEfficiency->Fill(MET);
@@ -1054,7 +1054,7 @@ namespace ic {
           h_GenMHTEfficiency->Fill(MHT->vector().pt());
           if(l1met_vec.size() > 2) if(l1met_vec[3]->et >= l1MHTCut) h_MHTEfficiency->Fill(MHT->vector().pt());
           
-      }
+      }*/
       
       //Gen Taus
       

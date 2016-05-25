@@ -31,6 +31,7 @@ namespace ic {
     AvePtCut = l1Cuts.AvePt;
     VecPtCut = l1Cuts.VecPt;
     DeltaRJetFilter = l1Cuts.DeltaRFilter;
+    HtCut = l1Cuts.Ht;
     
     l1jets_label_ = "L1Jets"; 
     l1electrons_label_ = "L1EGammas";
@@ -59,6 +60,9 @@ namespace ic {
     h_DoubleJetDeltaEta = subDir.make<TH1D>("h_DoubleJetDeltaEta","h_DoubleJetDeltaEta",200,0,10);
     h_DoubleJetAvePt = subDir.make<TH1D>("h_DoubleJetAvePt","h_DoubleJetAvePt",200,0,200);
     h_DoubleJetVecPt = subDir.make<TH1D>("h_DoubleJetVecPt","h_DoubleJetVecPt",200,0,200);
+    
+    h_DoubleJet30DeltaEta3pt25_Mu5_Mjj = subDir.make<TH1D>("h_DoubleJet30DeltaEta3pt25_Mu5_Mjj","h_DoubleJet30DeltaEta3pt25_Mu5_Mjj",200,0,1000);
+    h_DoubleJet30DeltaEta3pt25_Mjj = subDir.make<TH1D>("h_DoubleJet30DeltaEta3pt25_Mjj","h_DoubleJet30DeltaEta3pt25_Mjj",200,0,1000);
     
     h_DoubleTauPt2D = subDir.make<TH2D>("h_DoubleTauPt2D","h_DoubleTauPt2D",200,0,200, 200, 0, 200);
     h_DoubleIsoTauPt2D = subDir.make<TH2D>("h_DoubleIsoTauPt2D","h_DoubleIsoTauPt2D",200,0,200, 200, 0, 200);
@@ -116,6 +120,31 @@ namespace ic {
     h_LargestMjj_VecPt = subDir.make<TH1D>("h_LargestMjj_VecPt","h_LargestMjj_VecPt",500, 0,200);
     h_LargestMjj_DeltaEta = subDir.make<TH1D>("h_LargestMjj_DeltaEta","h_LargestMjj_DeltaEta",200, 0,10);
     
+    h_Ht = subDir.make<TH1D>("h_Ht","h_Ht",200, 0,1000);
+    h_HtEta3 = subDir.make<TH1D>("h_HtEta3","h_HtEta3",200, 0,1000);
+    h_Et = subDir.make<TH1D>("h_Et","h_Et",200, 0,1000);    
+    h_EtEta3 = subDir.make<TH1D>("h_EtEta3","h_EtEta3",200, 0,1000); 
+    h_HtMinusJets = subDir.make<TH1D>("h_HtMinusJets","h_HtMinusJets",400, -1000,1000);
+    h_EtMinusJets = subDir.make<TH1D>("h_EtMinusJets","h_EtMinusJets",400, -1000,1000);
+    h_JetsOverHt = subDir.make<TH1D>("h_JetsOverHt","h_JetsOverHt",200, 0,1);
+    h_JetsOverEt = subDir.make<TH1D>("h_JetsOverEt","h_JetsOverEt",200, 0,1);
+    h_JetsOverHtMin = subDir.make<TH1D>("h_JetsOverHtMin","h_JetsOverHtMin",200, 0,1);
+    h_HtMinusJetsMin = subDir.make<TH1D>("h_HtMinusJetsMin","h_HtMinusJetsMin",400, -1000,1000);
+    h_JetsOverHtMax = subDir.make<TH1D>("h_JetsOverHtMax","h_JetsOverHtMax",200, 0,1);
+    h_HtMinusJetsMax = subDir.make<TH1D>("h_HtMinusJetsMax","h_HtMinusJetsMax",400, -1000,1000);
+    
+    h_l1jetDeltaPhi_Before = subDir.make<TH1D>("h_l1jetDeltaPhi_Before","h_l1jetDeltaPhi_Before",200, 0,3.15);
+    h_l1jetDeltaPhi_Before->GetXaxis()->SetTitle("L1 jets #Delta#phi");
+    h_l1jetDeltaPhi_Before->GetYaxis()->SetTitle("Entries");
+    
+    h_l1jetDeltaPhi_BeforeBefore = subDir.make<TH1D>("h_l1jetDeltaPhi_BeforeBefore","h_l1jetDeltaPhi_BeforeBefore",200, 0,3.15);
+    h_l1jetDeltaPhi_BeforeBefore->GetXaxis()->SetTitle("L1 jets #Delta#phi");
+    h_l1jetDeltaPhi_BeforeBefore->GetYaxis()->SetTitle("Entries");
+    
+    h_l1jetDeltaPhi_After = subDir.make<TH1D>("h_l1jetDeltaPhi_After","h_l1jetDeltaPhi_After",200, 0,3.15);
+    h_l1jetDeltaPhi_After->GetXaxis()->SetTitle("L1 jets #Delta#phi");
+    h_l1jetDeltaPhi_After->GetYaxis()->SetTitle("Entries");
+    
   }
 
   L1TFilter::~L1TFilter() {
@@ -129,9 +158,9 @@ namespace ic {
 
   int L1TFilter::Execute(TreeEvent *event) {
       
-      ic::EventInfo* EventInfo = event->GetPtr<ic::EventInfo>("eventInfo");
+      //ic::EventInfo* EventInfo = event->GetPtr<ic::EventInfo>("eventInfo");
       
-      if(isZB == 1) if(EventInfo->run() != 259721) return 1;
+      //if(isZB == 1) if(EventInfo->run() != 259721) return 1;
       
       std::vector<ic::L1TJet*>  l1jets = event->GetPtrVec<ic::L1TJet>(l1jets_label_);
       std::vector<ic::L1TEGamma*> l1electrons = event->GetPtrVec<ic::L1TEGamma>(l1electrons_label_);
@@ -147,6 +176,9 @@ namespace ic {
       n_l1electrons_ = l1electrons.size();
       n_l1muons_ = l1muons.size();
       n_l1taus_ = l1taus.size();
+      
+      std::vector<ic::L1TSum*> l1sums = event->GetPtrVec<ic::L1TSum>("L1SumsEtaRange5pt0");
+      std::vector<ic::L1TSum*> l1sumsEta3 = event->GetPtrVec<ic::L1TSum>("L1Sums");
       
       if(n_l1jets_>1){
          for(unsigned i=0; i< n_l1jets_; i++){
@@ -179,8 +211,12 @@ namespace ic {
       else h_SingleJetPt->Fill(0);
       if(n_l1jets_ > 1) h_DoubleJetPt->Fill(l1jets[1]->vector().Pt());
       else h_DoubleJetPt->Fill(0);
-      if(n_l1jets_ > 1) h_DoubleJetMjj->Fill((l1jets[0]->vector()+l1jets[1]->vector()).M());
-      else h_DoubleJetMjj->Fill(0);
+      if(n_l1jets_ > 1){
+          h_DoubleJetMjj->Fill((l1jets[0]->vector()+l1jets[1]->vector()).M());
+      }
+      else{
+          h_DoubleJetMjj->Fill(0);
+      }
       if(n_l1jets_ > 1) h_DoubleJetDeltaEta->Fill(std::fabs(l1jets[0]->vector().Rapidity()-l1jets[1]->vector().Rapidity()));
       else h_DoubleJetDeltaEta->Fill(0);
       if(n_l1jets_ > 1) h_DoubleJetAvePt->Fill((l1jets[0]->vector().Pt()+l1jets[1]->vector().Pt())/2);
@@ -282,21 +318,17 @@ namespace ic {
               n_l1electrons_ = l1electrons.size();
           }
           
-          if(JetFilter){
+          if(n_l1electrons_ > 0 && DeltaRJetFilter){
               
               for(int i= n_l1jets_-1; i>=0; i--){
-                  
-                  for(unsigned j =0; j < n_l1electrons_; j++){
-                      double DeltaR = sqrt(pow(l1electrons[j]->vector().Phi()-l1jets[i]->vector().Phi(),2) + pow(l1electrons[j]->vector().Rapidity()-l1jets[i]->vector().Rapidity(),2));
-                      if(DeltaR < 0.5 && l1electrons[j]->vector().Pt() >= EGPtCut){
-                          l1jets.erase(l1jets.begin()+i);
-                          break;
-                      }
+          
+                  double DeltaR = sqrt(pow(l1electrons[0]->vector().Phi()-l1jets[i]->vector().Phi(),2) + pow(l1electrons[0]->vector().Rapidity()-l1jets[i]->vector().Rapidity(),2));
+                  if(DeltaR < 0.4 || l1jets[i]->vector().Pt() < Jet1PtCut){
+                      l1jets.erase(l1jets.begin()+i);
                   }
               }
-              n_l1jets_ = l1jets.size();
-              std::sort(l1jets.begin(),l1jets.end(),greater_Candidate());
           }
+          n_l1jets_ = l1jets.size();
           
           if(EGPtCut > 0){
               if(n_l1electrons_ < 1) Filter = true;
@@ -325,6 +357,8 @@ namespace ic {
               for(int i= n_l1muons_-1; i>=0; i--) if(std::fabs(l1muons[i]->vector().Rapidity()) > 2.1) l1muons.erase(l1muons.begin()+i);
               n_l1muons_ = l1muons.size();
           }
+          
+          EtaCut = 0;
           
           if(JetFilter){
               for(int i= n_l1taus_-1; i>=0; i--) if(std::fabs(l1taus[i]->vector().Rapidity()) > 2.1) l1taus.erase(l1taus.begin()+i);
@@ -385,7 +419,7 @@ namespace ic {
           }
           n_l1jets_ = l1jets.size();
      }
-      
+     
       
       // VBF Cuts
       
@@ -415,13 +449,18 @@ namespace ic {
       double LargestMjj_VecPt = -1;
       double LargestMjj_DeltaEta = -1;
       
+      double JetsOverHtMax = -1000000;
+      double JetsOverHtMin = 1000000;
+      double HtMinusJetsMin = 1000000;
+      double HtMinusJetsMax = -1000000;
+      
    
       if(n_l1jets_>1 && doJetFilterLoop){
           
          if(l1jets[0]->vector().Pt() < Jet1PtCut) Filter = true;
 
          dontFilter = false;
-      
+         
          for(unsigned i=0; i< n_l1jets_; i++){
        
              for(unsigned j=i+1; j< n_l1jets_; j++){
@@ -429,8 +468,25 @@ namespace ic {
                  double Mjj = (l1jets[i]->vector() + l1jets[j]->vector()).M();
                  double DeltaEta = std::fabs(l1jets[i]->vector().Rapidity() - l1jets[j]->vector().Rapidity());
                  
-                 if(Mjj >= MjjCut && DeltaEta >= DeltaEtaCut && (l1jets[i]->vector().Pt()+l1jets[j]->vector().Pt())/2 >= AvePtCut && (std::fabs(l1jets[i]->vector().Rapidity()) >= EtaCut || std::fabs(l1jets[j]->vector().Rapidity()) >= EtaCut) && (l1jets[i]->vector()+l1jets[j]->vector()).Pt() >= VecPtCut && l1jets[i]->vector().Pt() >= Jet1PtCut && l1jets[j]->vector().Pt() >= Jet2PtCut){
-                     dontFilter = true;
+                 double Phi1 = l1jets[i]->vector().Phi();
+                 double Phi2 = l1jets[j]->vector().Phi();
+                 
+                 double DeltaPhi = -1;
+                 if(Phi1*Phi2 >=0) DeltaPhi = std::fabs(Phi1 - Phi2);
+                 else DeltaPhi = std::min(std::fabs(Phi1 - Phi2), std::fabs(Phi2 - Phi1));
+                 
+                 h_l1jetDeltaPhi_BeforeBefore->Fill(DeltaPhi);
+                 
+                 if(JetFilter) EtaCut = 2.1;
+                 
+                 if(Mjj >= MjjCut && DeltaEta >= DeltaEtaCut && (l1jets[i]->vector().Pt()+l1jets[j]->vector().Pt())/2 >= AvePtCut && (std::fabs(l1jets[i]->vector().Rapidity()) >= EtaCut || std::fabs(l1jets[j]->vector().Rapidity()) >= EtaCut) && l1jets[i]->vector().Pt() >= Jet1PtCut && l1jets[j]->vector().Pt() >= Jet2PtCut){
+                     
+                     
+                     h_l1jetDeltaPhi_Before->Fill(DeltaPhi);
+                     if((l1jets[i]->vector()+l1jets[j]->vector()).Pt() >= VecPtCut){
+                         dontFilter = true;
+                         h_l1jetDeltaPhi_After->Fill(DeltaPhi);
+                     }
                      h_jetsMjj->Fill(Mjj);
                      if(Mjj > LargestMjj){
                          LargestMjj = Mjj;
@@ -447,12 +503,22 @@ namespace ic {
                      double Eta2 = std::fabs(l1jets[j]->vector().Rapidity());
                      h_jet1Eta->Fill(std::min(Eta1,Eta2));
                      h_jet2Eta->Fill(std::max(Eta1,Eta2));
+
+                     h_HtMinusJets->Fill(l1sums[1]->vector().Pt() - l1jets[i]->vector().Pt() - l1jets[j]->vector().Pt()); 
+                     h_EtMinusJets->Fill(l1sums[0]->vector().Pt() - l1jets[i]->vector().Pt() - l1jets[j]->vector().Pt()); 
+                     h_JetsOverHt->Fill((l1jets[i]->vector().Pt() + l1jets[j]->vector().Pt())/l1sums[1]->vector().Pt());
+                     h_JetsOverEt->Fill((l1jets[i]->vector().Pt() + l1jets[j]->vector().Pt())/l1sums[0]->vector().Pt());
+                     
+                     if(l1sums[1]->vector().Pt() - l1jets[i]->vector().Pt() - l1jets[j]->vector().Pt() > HtMinusJetsMax) HtMinusJetsMax = l1sums[1]->vector().Pt() - l1jets[i]->vector().Pt() - l1jets[j]->vector().Pt();
+                     if(l1sums[1]->vector().Pt() - l1jets[i]->vector().Pt() - l1jets[j]->vector().Pt() < HtMinusJetsMin) HtMinusJetsMin = l1sums[1]->vector().Pt() - l1jets[i]->vector().Pt() - l1jets[j]->vector().Pt();
+                     if( (l1jets[i]->vector().Pt() + l1jets[j]->vector().Pt())/l1sums[1]->vector().Pt() > JetsOverHtMax) JetsOverHtMax = (l1jets[i]->vector().Pt() + l1jets[j]->vector().Pt())/l1sums[1]->vector().Pt();
+                     if( (l1jets[i]->vector().Pt() + l1jets[j]->vector().Pt())/l1sums[1]->vector().Pt() < JetsOverHtMin) JetsOverHtMin = (l1jets[i]->vector().Pt() + l1jets[j]->vector().Pt())/l1sums[1]->vector().Pt();
+                     
                  }
              }
          }   
 
             
-         if(LargestMjj !=-1) h_LargestMjj->Fill(LargestMjj);
          if(LargestMjj_SubLeadPt !=-1) h_LargestMjj_SubLeadPt->Fill(LargestMjj_SubLeadPt);
          if(LargestMjj_LeadPt !=-1) h_LargestMjj_LeadPt->Fill(LargestMjj_LeadPt);
          if(LargestMjj_AvePt !=-1) h_LargestMjj_AvePt->Fill(LargestMjj_AvePt);
@@ -461,6 +527,11 @@ namespace ic {
      }
      
      if(!dontFilter) Filter = true; 
+     
+     if(l1sums.size() < 2){
+         Filter = true;
+     }
+     if(l1sums.size() > 1) if(l1sums[1]->vector().Pt() < HtCut) Filter = true;
      
      ic::EventInfo const* eventInfo = event->GetPtr<ic::EventInfo>("eventInfo");
      //1.06382e+09
@@ -493,6 +564,22 @@ namespace ic {
          h_Tau2Multiplicity  ->Fill(n_l1taus_);
          h_MuonMultiplicity ->Fill(n_l1muons_);
          h_EGMultiplicity   ->Fill(n_l1electrons_);
+         
+         h_Ht->Fill(l1sums[1]->vector().Pt());
+         h_Et->Fill(l1sums[0]->vector().Pt());
+         h_HtEta3->Fill(l1sumsEta3[1]->vector().Pt());
+         h_EtEta3->Fill(l1sumsEta3[0]->vector().Pt());
+         
+         h_JetsOverHtMin ->Fill(JetsOverHtMin);
+         h_JetsOverHtMax ->Fill(JetsOverHtMax);
+         h_HtMinusJetsMin->Fill(HtMinusJetsMin);
+         h_HtMinusJetsMax->Fill(HtMinusJetsMax);
+         
+         if(LargestMjj !=-1){
+             h_LargestMjj->Fill(LargestMjj);
+             h_DoubleJet30DeltaEta3pt25_Mu5_Mjj->Fill(LargestMjj);
+             h_DoubleJet30DeltaEta3pt25_Mjj->Fill(LargestMjj);
+         }
     }   
 
      if(Filter) return 1;

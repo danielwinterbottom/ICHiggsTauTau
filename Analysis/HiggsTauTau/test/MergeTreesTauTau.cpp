@@ -33,6 +33,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+//#include "UserCode/ICHiggsTauTau/interface/VBFHiggsGenAnalysisDataFormat.h"
 
 int main(int argc, char* argv[]){
   if(argc != 2){
@@ -73,8 +74,12 @@ int main(int argc, char* argv[]){
   
   unsigned nentries2 = chIn2->GetEntries();
   unsigned nentries1 = tIn->GetEntries();
+  //unsigned nentries1 = 200;
   
-  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/TauTau/OfflineMerged/EventTree_%d.root", num);
+  std::cout << "Entries in tree 1: " << nentries1 << std::endl;
+  std::cout << "Entries in tree 2: " << nentries2 << std::endl;
+  
+  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/TauTau/OfflineMerged/EventTree_%d.root", num);///vols/cms02/dw515/l1t-tsg-v5/TauTau/OfflineMerged/EventTree_%d.root
   TFile *fOut = new TFile(outputfilename.c_str(),"RECREATE");
   
   std::cout << "Cloaning offline tree." << std::endl;
@@ -84,6 +89,7 @@ int main(int argc, char* argv[]){
   
   std::cout << "Getting branches from L1 trees." << std::endl;
   
+
   // Get new branches from tree 2. 
   std::vector<ic::L1TTau> *l1taus = new std::vector<ic::L1TTau>();
   chIn2->SetBranchAddress("L1Taus",&l1taus);
@@ -99,6 +105,8 @@ int main(int argc, char* argv[]){
   chIn2->SetBranchAddress("L1SumsEtaRange5pt0",&l1sumseta5);
   ic::EventInfo *eventInfo2 = new ic::EventInfo();
   chIn2->SetBranchAddress("eventInfo",&eventInfo2);
+  //VBFHiggs::GenAnalysisDataFormat *VBFGenParticles = new VBFHiggs::GenAnalysisDataFormat();
+  //chIn2->SetBranchAddress("VBFgenParticles",&VBFGenParticles);
   
   std::cout << "Finished getting branches from L1 trees." << std::endl;
   
@@ -116,6 +124,8 @@ int main(int argc, char* argv[]){
   tOut->Branch("L1Sums", &l1sumsnew);
   std::vector<ic::L1TSum> *l1sumseta5new = new std::vector<ic::L1TSum>();
   tOut->Branch("L1SumsEtaRange5pt0", &l1sumseta5new);
+  //VBFHiggs::GenAnalysisDataFormat *VBFGenParticles2 = new VBFHiggs::GenAnalysisDataFormat();
+  //tOut->Branch("VBFgenParticles",&VBFGenParticles2);
   
   std::cout << "Finished creating new L1 branches on output tree." << std::endl;
 
@@ -142,10 +152,11 @@ int main(int argc, char* argv[]){
               l1jetsnew = l1jets;
               l1sumsnew = l1sums;
               l1sumseta5new = l1sumseta5;
+              //VBFGenParticles = VBFGenParticles2;
               
               tOut->Fill();
               NEventsMerged++;
-      
+                      
               // If a match is found it is likey that the next few preceeding events are also matched so this next part looks to match those events without doing the full loop.
               bool proceed = true;
               unsigned jtemp = j+1;
@@ -166,6 +177,7 @@ int main(int argc, char* argv[]){
                       l1jetsnew = l1jets;
                       l1sumsnew = l1sums;
                       l1sumseta5new = l1sumseta5;
+                      //VBFGenParticles = VBFGenParticles2;
                       
                       tOut->Fill();
                       NEventsMerged++;
@@ -178,7 +190,7 @@ int main(int argc, char* argv[]){
                       }
                       if(itemp == nentries1){
                           
-                          tOut->Print();
+                          //tOut->Print();
                           fOut->Write();  
                           fOut->Close();
                           
@@ -201,7 +213,7 @@ int main(int argc, char* argv[]){
       }
   }
   
-  tOut->Print();
+  //tOut->Print();
   fOut->Write();  
   fOut->Close();
   
