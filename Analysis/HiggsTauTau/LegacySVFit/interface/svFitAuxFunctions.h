@@ -53,9 +53,9 @@ namespace SVfit_namespace
 
   const double alphaZ = 1./128.9; // fine-structure constant @ Z0 mass
 
-  const double sinTheta_weinberg2 = 0.231;
-  const double sinTheta_weinberg = TMath::Sqrt(sinTheta_weinberg2);
-  const double cosTheta_weinberg = TMath::Sqrt(1. - sinTheta_weinberg2);
+  //const double sinTheta_weinberg2 = 0.231;
+  //const double sinTheta_weinberg = TMath::Sqrt(sinTheta_weinberg2);
+  //const double cosTheta_weinberg = TMath::Sqrt(1. - sinTheta_weinberg2);
   const double qTau  = -1.;
   //const double vTau  = (-1. + 4.*sinTheta_weinberg2)/(4.*sinTheta_weinberg*cosTheta_weinberg);     // -0.044
   //const double aTau  = -1./(4.*sinTheta_weinberg*cosTheta_weinberg);                               // -0.593
