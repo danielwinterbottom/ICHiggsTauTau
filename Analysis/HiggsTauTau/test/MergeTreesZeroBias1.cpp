@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
   std::string filenametemp;
   TChain *tIn = new TChain("icEventProducer/EventTree");
   std::ifstream infile1;
-  infile1.open("L1InvisibleEta3.dat");
+  infile1.open("ZeroBias1Eta3.dat");
  
   int linenumber = 1;
   while(infile1 >> filenametemp){
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]){
   TString filename2;
   TChain *chIn2 = new TChain("icEventProducer/EventTree");
   std::ifstream infile2;
-  infile2.open("L1InvisibleEta5.dat");
+  infile2.open("ZeroBias1Eta5.dat");
   while (infile2 >> filename2) chIn2->Add(filename2);
           
   infile2.close();
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]){
   std::cout << "Entries in tree 1: " << nentries1 << std::endl;
   std::cout << "Entries in tree 2: " << nentries2 << std::endl;
   
-  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/Invisible/BothSumRanges/EventTree_%d.root", num);
+  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/ZeroBias/BothSumRanges/EventTree1_%d.root", num);
   TFile *fOut = new TFile(outputfilename.c_str(),"RECREATE");
   
   std::cout << "Cloaning offline tree." << std::endl;
