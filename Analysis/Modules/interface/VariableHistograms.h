@@ -75,6 +75,30 @@ namespace ic {
     TH1D *h_JetsPtVectorSum;
     TH1D *h_JetsPtScalarSum;
     TH1D *h_VBFMjj;
+    
+    TH1D *h_pTT;
+    TH1D *h_pTTMinusVecPt;
+    TH1D *h_pTTMinusVecPtRes;
+    
+    TH1D *h_mVis_LOOSE;
+    TH1D *h_mVis_TIGHT;
+    
+    TH1D *h_VecPt_TIGHT;
+    TH1D *h_VecPt_LOOSE;
+    TH2D *h_pTTMinusVecPtResVsDiJetPt;
+    TH2D *h_DiJetPTMinusPTTResVsPTT;
+    TH1D *h_ElecPt_TIGHT;
+    TH1D   *h_MuPt_TIGHT;
+    TH1D *h_Tau1Pt_TIGHT;
+    TH1D *h_Tau2Pt_TIGHT;
+    TH1D *h_Jet1Pt_TIGHT;
+    TH1D *h_Jet2Pt_TIGHT;
+    TH1D *h_ElecPt_LOOSE;
+    TH1D   *h_MuPt_LOOSE;
+    TH1D *h_Tau1Pt_LOOSE;
+    TH1D *h_Tau2Pt_LOOSE;
+    TH1D *h_Jet1Pt_LOOSE;
+    TH1D *h_Jet2Pt_LOOSE;
 
 
   public:
