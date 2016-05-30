@@ -76,6 +76,8 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_;
   double wt_em_qcd_down_;
   double wt_em_qcd_up_;
+  double wt_nlo_pt_;
+  double nlo_pt_;
   float trigweight_1_;
   float trigweight_2_;
   double wt_trig_up_1_;
