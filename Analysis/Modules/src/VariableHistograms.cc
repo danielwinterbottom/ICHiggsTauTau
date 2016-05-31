@@ -118,6 +118,91 @@ namespace ic {
     h_JetsPtVectorSum = subDir.make<TH1D>("JetsPtVectorSum","JetsPtVectorSum",100, 0,200); 
     h_JetsPtVectorSum->GetXaxis()->SetTitle("Jets P_{T} Vector Sum [GeV]");
     h_JetsPtVectorSum->GetYaxis()->SetTitle("# Entries");
+    
+    h_pTT = subDir.make<TH1D>("h_pTT","h_pTT",100, 0,300); 
+    h_pTT->GetXaxis()->SetTitle("p_{TT} [GeV]");
+    h_pTT->GetYaxis()->SetTitle("# Entries");
+    
+    h_pTTMinusVecPt = subDir.make<TH1D>("h_pTTMinusVecPt","h_pTTMinusVecPt",100, 0,300); 
+    h_pTTMinusVecPt->GetXaxis()->SetTitle("p_{TT} - DiJetpt [GeV]");
+    h_pTTMinusVecPt->GetYaxis()->SetTitle("# Entries");
+    
+    h_pTTMinusVecPtRes = subDir.make<TH1D>("h_pTTMinusVecPtRes","h_pTTMinusVecPtRes",100, 0,5); 
+    h_pTTMinusVecPtRes->GetXaxis()->SetTitle("(p_{TT} - DiJetpt)/DiJetPt");
+    h_pTTMinusVecPtRes->GetYaxis()->SetTitle("# Entries");
+    
+    h_mVis_LOOSE = subDir.make<TH1D>("h_mVis_LOOSE","h_mVis_LOOSE",100, 0,200); 
+    h_mVis_LOOSE->GetXaxis()->SetTitle("m_{vis} [GeV]");
+    h_mVis_LOOSE->GetYaxis()->SetTitle("# Entries");
+    
+    h_mVis_TIGHT = subDir.make<TH1D>("h_mVis_TIGHT","h_mVis_TIGHT",100, 0,200); 
+    h_mVis_TIGHT->GetXaxis()->SetTitle("m_{vis} [GeV]");
+    h_mVis_TIGHT->GetYaxis()->SetTitle("# Entries");
+    
+    h_pTTMinusVecPtResVsDiJetPt = subDir.make<TH2D>("h_pTTMinusVecPtResVsDiJetPt","h_pTTMinusVecPtResVsDiJetPt", 100, 0, 300, 100, -2,2); 
+    h_pTTMinusVecPtResVsDiJetPt->GetXaxis()->SetTitle("DiJetPt [GeV]");
+    h_pTTMinusVecPtResVsDiJetPt->GetYaxis()->SetTitle("(p_{TT} - DiJetpt)/DiJetPt");
+    
+    h_DiJetPTMinusPTTResVsPTT = subDir.make<TH2D>("h_DiJetPTMinusPTTResVsPTT","h_DiJetPTMinusPTTResVsPTT", 100, 0, 300, 100, -2,2); 
+    h_DiJetPTMinusPTTResVsPTT->GetXaxis()->SetTitle("p_{TT} [GeV]");
+    h_DiJetPTMinusPTTResVsPTT->GetYaxis()->SetTitle("(p_{TT} - DiJetpt)/p_{TT}");
+    
+    h_ElecPt_LOOSE = subDir.make<TH1D>("h_ElecPt_LOOSE","h_ElecPt_LOOSE",200, 0,200); 
+    h_ElecPt_LOOSE->GetXaxis()->SetTitle("Electron p_{T} [GeV]");
+    h_ElecPt_LOOSE->GetYaxis()->SetTitle("# Entries");
+    
+    h_ElecPt_TIGHT = subDir.make<TH1D>("h_ElecPt_TIGHT","h_ElecPt_TIGHT",200, 0,200); 
+    h_ElecPt_TIGHT->GetXaxis()->SetTitle("Electron p_{T} [GeV]");
+    h_ElecPt_TIGHT->GetYaxis()->SetTitle("# Entries");
+    
+    h_ElecPt_LOOSE = subDir.make<TH1D>("h_ElecPt_LOOSE","h_ElecPt_LOOSE",200, 0,200); 
+    h_ElecPt_LOOSE->GetXaxis()->SetTitle("Electron p_{T} [GeV]");
+    h_ElecPt_LOOSE->GetYaxis()->SetTitle("# Entries");
+    
+    h_ElecPt_TIGHT = subDir.make<TH1D>("h_ElecPt_TIGHT","h_ElecPt_TIGHT",200, 0,200); 
+    h_ElecPt_TIGHT->GetXaxis()->SetTitle("Electron p_{T} [GeV]");
+    h_ElecPt_TIGHT->GetYaxis()->SetTitle("# Entries");
+    
+    h_MuPt_LOOSE = subDir.make<TH1D>("h_MuPt_LOOSE","h_MuPt_LOOSE",200, 0,200); 
+    h_MuPt_LOOSE->GetXaxis()->SetTitle("Muon p_{T} [GeV]");
+    h_MuPt_LOOSE->GetYaxis()->SetTitle("# Entries");
+    
+    h_MuPt_TIGHT = subDir.make<TH1D>("h_MuPt_TIGHT","h_MuPt_TIGHT",200, 0,200); 
+    h_MuPt_TIGHT->GetXaxis()->SetTitle("Muon p_{T} [GeV]");
+    h_MuPt_TIGHT->GetYaxis()->SetTitle("# Entries");
+    
+    h_Tau1Pt_LOOSE = subDir.make<TH1D>("h_Tau1Pt_LOOSE","h_Tau1Pt_LOOSE",200, 0,200); 
+    h_Tau1Pt_LOOSE->GetXaxis()->SetTitle("Lead tau p_{T} [GeV]");
+    h_Tau1Pt_LOOSE->GetYaxis()->SetTitle("# Entries");
+    
+    h_Tau1Pt_TIGHT = subDir.make<TH1D>("h_Tau1Pt_TIGHT","h_Tau1Pt_TIGHT",200, 0,200); 
+    h_Tau1Pt_TIGHT->GetXaxis()->SetTitle("Lead tau p_{T} [GeV]");
+    h_Tau1Pt_TIGHT->GetYaxis()->SetTitle("# Entries");
+    
+    h_Tau2Pt_LOOSE = subDir.make<TH1D>("h_Tau2Pt_LOOSE","h_Tau2Pt_LOOSE",200, 0,200); 
+    h_Tau2Pt_LOOSE->GetXaxis()->SetTitle("Sub-lead tau p_{T} [GeV]");
+    h_Tau2Pt_LOOSE->GetYaxis()->SetTitle("# Entries");
+    
+    h_Tau2Pt_TIGHT = subDir.make<TH1D>("h_Tau2Pt_TIGHT","h_Tau2Pt_TIGHT",200, 0,200); 
+    h_Tau2Pt_TIGHT->GetXaxis()->SetTitle("Sub-lead tau p_{T} [GeV]");
+    h_Tau2Pt_TIGHT->GetYaxis()->SetTitle("# Entries");
+    
+    h_Jet1Pt_LOOSE = subDir.make<TH1D>("h_Jet1Pt_LOOSE","h_Jet1Pt_LOOSE",200, 0,200); 
+    h_Jet1Pt_LOOSE->GetXaxis()->SetTitle("Lead jet p_{T} [GeV]");
+    h_Jet1Pt_LOOSE->GetYaxis()->SetTitle("# Entries");
+    
+    h_Jet1Pt_TIGHT = subDir.make<TH1D>("h_Jet1Pt_TIGHT","h_Jet1Pt_TIGHT",200, 0,200); 
+    h_Jet1Pt_TIGHT->GetXaxis()->SetTitle("Lead jet p_{T} [GeV]");
+    h_Jet1Pt_TIGHT->GetYaxis()->SetTitle("# Entries");
+      
+    h_Jet2Pt_LOOSE = subDir.make<TH1D>("h_Jet2Pt_LOOSE","h_Jet2Pt_LOOSE",200, 0,200); 
+    h_Jet2Pt_LOOSE->GetXaxis()->SetTitle("Sub-lead jet p_{T} [GeV]");
+    h_Jet2Pt_LOOSE->GetYaxis()->SetTitle("# Entries");
+      
+    h_Jet2Pt_TIGHT = subDir.make<TH1D>("h_Jet2Pt_TIGHT","h_Jet2Pt_TIGHT",200, 0,200); 
+    h_Jet2Pt_TIGHT->GetXaxis()->SetTitle("Sub-lead jet p_{T} [GeV]");
+    h_Jet2Pt_TIGHT->GetYaxis()->SetTitle("# Entries");
+
 
 
   }
@@ -148,17 +233,24 @@ namespace ic {
 
       double MET = met_vec[0]->vector().pt();
       h_OfflineMET->Fill(MET);
+      
+      double Mij=-1;
+      double eta_gap=-1;
+      double LeadJPt=-1;
+      double SubLeadJPt=-1;
 
       if(n_jets_ > 1){
           
-          if(jets[0]->vector().Pt() > 20 && jets[0]->vector().Pt() >20){
-              double Mij = (jets[0]->vector() + jets[1]->vector()).M();
+           Mij = (jets[0]->vector() + jets[1]->vector()).M();
+           eta_gap = fabs(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity());
+          
+          if(jets[0]->vector().Pt() > 30 && jets[0]->vector().Pt() >30){
               h_OfflineMjjInv->Fill(Mij);
           
-              double eta_gap = fabs(jets[0]->vector().Rapidity()-jets[1]->vector().Rapidity());
               h_OfflineEtaGap->Fill(eta_gap);
               
-              if(jets[0]->vector().Pt() >40 && jets[0]->vector().Pt() >40 && eta_gap > 2) h_VBFMjj->Fill(Mij);
+              if(jets[0]->vector().Pt() >30 && jets[0]->vector().Pt() >30 && eta_gap > 3.5) h_VBFMjj->Fill(Mij);
+            
           }
           
           double phi_gap = fabs(jets[0]->vector().Phi()-jets[1]->vector().Phi());
@@ -173,7 +265,7 @@ namespace ic {
           double JetsPtScalarSum = (jets[0]->vector().Pt() +jets[1]->vector().Pt())/2;
           h_JetsPtScalarSum->Fill(JetsPtScalarSum);
           
-          double SubLeadJPt = jets[1]->vector().Pt();
+          SubLeadJPt = jets[1]->vector().Pt();
           h_OfflineSubLeadJetPt->Fill(SubLeadJPt);
 
           double SubLeadJEta = jets[1]->vector().Rapidity();
@@ -186,7 +278,7 @@ namespace ic {
       
       if(n_jets_ > 0){
           
-          double LeadJPt = jets[0]->vector().Pt();
+          LeadJPt = jets[0]->vector().Pt();
           h_OfflineLeadJetPt->Fill(LeadJPt);
 
           double LeadJEta = jets[0]->vector().Rapidity();
@@ -206,6 +298,34 @@ namespace ic {
 
       double Mtt_Vis = (lep1->vector() + lep2->vector()).M();
       h_OfflineMttVis->Fill(Mtt_Vis);
+      
+      double Ptt = (met_vec[0]->vector() + lep1->vector() + lep2->vector()).Pt();
+      
+      bool VBFLoose = false;
+      bool VBFTight = false;
+      
+      if(eta_gap > 4 && Mij > 700 && Ptt > 100 && LeadJPt > 30 && SubLeadJPt >30) VBFTight = true;
+      else if (eta_gap > 3.5 && Mij > 500 && LeadJPt > 30 && SubLeadJPt >30) VBFLoose = true;
+      
+      if(VBFTight) h_mVis_TIGHT->Fill(Mtt_Vis);
+      else if (VBFLoose) h_mVis_LOOSE->Fill(Mtt_Vis);
+      
+      if(n_jets_ > 1){
+          double pTTMinusVecPt = Ptt - (jets[0]->vector() + jets[1]->vector()).Pt();
+          double pTTMinusVecPtRes = pTTMinusVecPt /(jets[0]->vector() + jets[1]->vector()).Pt();
+          h_pTTMinusVecPt->Fill(pTTMinusVecPt);
+          h_pTTMinusVecPtRes->Fill(pTTMinusVecPtRes);
+          h_pTTMinusVecPtResVsDiJetPt->Fill((jets[0]->vector() + jets[1]->vector()).Pt(), pTTMinusVecPtRes);
+          h_DiJetPTMinusPTTResVsPTT->Fill(Ptt, (Ptt - (jets[0]->vector() + jets[1]->vector()).Pt())/(jets[0]->vector() + jets[1]->vector()).Pt());
+          if(VBFLoose){
+              h_Jet1Pt_LOOSE->Fill(jets[0]->vector().Pt());
+              h_Jet2Pt_LOOSE->Fill(jets[1]->vector().Pt());
+          }
+          if(VBFTight){
+              h_Jet1Pt_TIGHT->Fill(jets[0]->vector().Pt());
+              h_Jet2Pt_TIGHT->Fill(jets[1]->vector().Pt());
+          }
+      }
 
       double DeltaPhi_tt = fabs(lep1->vector().Phi() - lep2->vector().Phi());
       h_OfflineDeltaPhitt->Fill(DeltaPhi_tt);
@@ -218,22 +338,34 @@ namespace ic {
 
       if (n_electrons_ > 0){
         double electronPt = electrons[0]->vector().pt();
-        if (electronPt == pt_1_ || electronPt == pt_2_) h_OfflineElectronPt->Fill(electronPt);
+        if (electronPt == pt_1_ || electronPt == pt_2_){
+            h_OfflineElectronPt->Fill(electronPt);
+            if(VBFLoose) h_ElecPt_LOOSE->Fill(electronPt);
+            if(VBFTight) h_ElecPt_TIGHT->Fill(electronPt);
+        }
       }
 
       if (n_muons_ > 0){
         double muonPt = muons[0]->vector().pt();
-        if (muonPt == pt_1_ || muonPt == pt_2_) h_OfflineMuonPt->Fill(muonPt);
+        if (muonPt == pt_1_ || muonPt == pt_2_){
+            h_OfflineMuonPt->Fill(muonPt);
+            if(VBFLoose) h_MuPt_LOOSE->Fill(muonPt);
+            if(VBFTight) h_MuPt_TIGHT->Fill(muonPt);
+        }
       }
 
       if (n_taus_ > 0){
         double tauPt = leadingtaus[0]->vector().pt();
         h_OfflineLeadTauPt->Fill(tauPt);
+        if(VBFLoose) h_Tau1Pt_LOOSE->Fill(tauPt);
+        if(VBFTight) h_Tau1Pt_TIGHT->Fill(tauPt);
       }
 
       if (taus.size() > 1){
         double SubtauPt = taus[1]->vector().pt();
         h_OfflineSubLeadTauPt->Fill(SubtauPt);
+        if(VBFLoose) h_Tau2Pt_LOOSE->Fill(SubtauPt);
+        if(VBFTight) h_Tau2Pt_TIGHT->Fill(SubtauPt);
       }
 
       double DetaPhiTemp = 0;
