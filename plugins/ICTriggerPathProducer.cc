@@ -136,7 +136,7 @@ void ICTriggerPathProducer::endJob() {
   // of the string hashes
   if (!save_strings_) {
     std::cout << std::string(78, '-') << "\n";
-    std::cout << boost::format("%56s  %20s\n")
+    std::cout << boost::format("%-56s  %20s\n")
         % "HLT Paths" % std::string("Hash Summmary");
     std::map<std::string, std::size_t>::const_iterator iter;
     for (iter = observed_paths_.begin(); iter != observed_paths_.end();
