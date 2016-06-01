@@ -217,8 +217,15 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_path_producer_8c
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
-<div class="line">  <span class="keywordflow">if</span> (save_strings_) path-&gt;<a name="a9"></a><a class="code" href="classic_1_1_trigger_path.html#a6a478173e132d8d18cc842033bb51bb0">set_name</a>(name);</div>
-<div class="line">  path-&gt;<a name="a10"></a><a class="code" href="classic_1_1_trigger_path.html#a4b028ecda9d27aee914911b377fd0ad1">set_id</a>(<a name="a11"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name));</div>
+<div class="line">  std::size_t hash = <a name="a9"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name);</div>
+<div class="line">  <span class="keywordflow">if</span> (save_strings_) {</div>
+<div class="line">    path-&gt;<a name="a10"></a><a class="code" href="classic_1_1_trigger_path.html#a6a478173e132d8d18cc842033bb51bb0">set_name</a>(name);</div>
+<div class="line">  } <span class="keywordflow">else</span> {</div>
+<div class="line">    <span class="keywordflow">if</span> (!observed_paths_.count(name)) {</div>
+<div class="line">      observed_paths_[name] = hash;</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
+<div class="line">  path-&gt;<a name="a11"></a><a class="code" href="classic_1_1_trigger_path.html#a4b028ecda9d27aee914911b377fd0ad1">set_id</a>(hash);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICTriggerPathProducer::beginJob() {</div>
@@ -226,6 +233,18 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_path_producer_8c
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICTriggerPathProducer::endJob() {</div>
+<div class="line">  <span class="comment">// If the trigger path strings were not saved print a summary</span></div>
+<div class="line">  <span class="comment">// of the string hashes</span></div>
+<div class="line">  <span class="keywordflow">if</span> (!save_strings_) {</div>
+<div class="line">    std::cout &lt;&lt; std::string(78, <span class="charliteral">&#39;-&#39;</span>) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line">    std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s  %20s\n&quot;</span>)</div>
+<div class="line">        % <span class="stringliteral">&quot;HLT Paths&quot;</span> % std::string(<span class="stringliteral">&quot;Hash Summmary&quot;</span>);</div>
+<div class="line">    std::map&lt;std::string, std::size_t&gt;::const_iterator iter;</div>
+<div class="line">    <span class="keywordflow">for</span> (iter = observed_paths_.begin(); iter != observed_paths_.end();</div>
+<div class="line">         ++iter) {</div>
+<div class="line">      std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s| %020i\n&quot;</span>) % iter-&gt;first % iter-&gt;second;</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// define this as a plug-in</span></div>
