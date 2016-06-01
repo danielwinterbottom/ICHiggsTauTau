@@ -32,7 +32,7 @@ class ICTriggerPathProducer : public edm::EDProducer {
   bool split_version_;
   bool input_is_standalone_;
   edm::InputTag input_prescales_;
-
+  std::map<std::string, std::size_t> observed_paths_;
 };
 
 #endif
