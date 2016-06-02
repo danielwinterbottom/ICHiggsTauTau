@@ -978,20 +978,20 @@ process.icPFJetSequence += cms.Sequence(
   process.ak4PFResidualCHS+
   process.ak4PFJetsCHS+
   process.btaggingSequenceAK4PFCHS+
-  process.puJetMvaCHS+
-  process.icPFJetProducer+ #Not from slimmed jets!
-  process.icPFJetProducerFromPat+
+  process.puJetMvaCHS
+  #process.icPFJetProducer+ #Not from slimmed jets!
+  #process.icPFJetProducerFromPat+
   
-  process.pileupJetIdCalculator+
-  process.pileupJetIdEvaluator+
+  #process.pileupJetIdCalculator+
+  #process.pileupJetIdEvaluator+
   
-  process.selectedSlimmedJetsPuppiAK4+
-  process.icPFJetProducerFromPatPuppi+
+  #process.selectedSlimmedJetsPuppiAK4+
+  #process.icPFJetProducerFromPatPuppi+
  
-#  process.patJetCorrFactorsReapplyJEC +
-#  process.patJetsReapplyJEC+
-#  process.selectedReJECSlimmedJetsAK4+
-  process.pileupJetIdUpdated
+##  process.patJetCorrFactorsReapplyJEC +
+##  process.patJetsReapplyJEC+
+##  process.selectedReJECSlimmedJetsAK4+
+  #process.pileupJetIdUpdated
 ) 
 
 if not isData:
@@ -1006,7 +1006,15 @@ if not isData:
     process.icPFchsJetFlavourCalculator
   )
 
-
+process.icPFJetSequence += cms.Sequence(
+  process.icPFJetProducer+ #Not from slimmed jets!
+  process.icPFJetProducerFromPat+
+  process.pileupJetIdCalculator+
+  process.pileupJetIdEvaluator+
+  process.selectedSlimmedJetsPuppiAK4+
+  process.icPFJetProducerFromPatPuppi+
+  process.pileupJetIdUpdated
+)
 
 ##################################################################                                                                                          
 #  MET                                                                                                                                                    
