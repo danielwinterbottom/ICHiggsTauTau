@@ -35,7 +35,7 @@ opts.register('file',
 
 #opts.register('globalTag', '76X_mcRun2_asymptotic_v12', parser.VarParsing.multiplicity.singleton,
 #    parser.VarParsing.varType.string, "global tag")
-opts.register('globalTag', '80X_dataRun2_Prompt_v1', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 
 #opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
