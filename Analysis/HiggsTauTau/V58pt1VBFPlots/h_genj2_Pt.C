@@ -1,0 +1,117 @@
+void h_genj2_Pt()
+{
+//=========Macro generated from canvas: c1/c1
+//=========  (Thu Jun  9 18:02:13 2016) by ROOT version6.06/01
+   TCanvas *c1 = new TCanvas("c1", "c1",904,191,850,850);
+   gStyle->SetOptStat(0);
+   gStyle->SetOptTitle(0);
+   c1->Range(0,0,1,1);
+   c1->SetFillColor(0);
+   c1->SetBorderMode(0);
+   c1->SetBorderSize(2);
+   c1->SetTickx(1);
+   c1->SetTicky(1);
+   c1->SetLeftMargin(0.125);
+   c1->SetRightMargin(0.125);
+   c1->SetFrameBorderMode(0);
+   
+   TH1D *h_genj2_Pt__1 = new TH1D("h_genj2_Pt__1","h_genj2_Pt",75,0,300);
+   h_genj2_Pt__1->SetBinContent(3,75317);
+   h_genj2_Pt__1->SetBinContent(4,84605);
+   h_genj2_Pt__1->SetBinContent(5,90948);
+   h_genj2_Pt__1->SetBinContent(6,93484);
+   h_genj2_Pt__1->SetBinContent(7,91251);
+   h_genj2_Pt__1->SetBinContent(8,86702);
+   h_genj2_Pt__1->SetBinContent(9,79786);
+   h_genj2_Pt__1->SetBinContent(10,72371);
+   h_genj2_Pt__1->SetBinContent(11,63716);
+   h_genj2_Pt__1->SetBinContent(12,56051);
+   h_genj2_Pt__1->SetBinContent(13,48652);
+   h_genj2_Pt__1->SetBinContent(14,42055);
+   h_genj2_Pt__1->SetBinContent(15,35737);
+   h_genj2_Pt__1->SetBinContent(16,30348);
+   h_genj2_Pt__1->SetBinContent(17,26046);
+   h_genj2_Pt__1->SetBinContent(18,21901);
+   h_genj2_Pt__1->SetBinContent(19,18519);
+   h_genj2_Pt__1->SetBinContent(20,15400);
+   h_genj2_Pt__1->SetBinContent(21,13166);
+   h_genj2_Pt__1->SetBinContent(22,10859);
+   h_genj2_Pt__1->SetBinContent(23,9356);
+   h_genj2_Pt__1->SetBinContent(24,7976);
+   h_genj2_Pt__1->SetBinContent(25,6728);
+   h_genj2_Pt__1->SetBinContent(26,5624);
+   h_genj2_Pt__1->SetBinContent(27,4807);
+   h_genj2_Pt__1->SetBinContent(28,4085);
+   h_genj2_Pt__1->SetBinContent(29,3540);
+   h_genj2_Pt__1->SetBinContent(30,2944);
+   h_genj2_Pt__1->SetBinContent(31,2534);
+   h_genj2_Pt__1->SetBinContent(32,2140);
+   h_genj2_Pt__1->SetBinContent(33,1921);
+   h_genj2_Pt__1->SetBinContent(34,1687);
+   h_genj2_Pt__1->SetBinContent(35,1371);
+   h_genj2_Pt__1->SetBinContent(36,1211);
+   h_genj2_Pt__1->SetBinContent(37,1019);
+   h_genj2_Pt__1->SetBinContent(38,880);
+   h_genj2_Pt__1->SetBinContent(39,753);
+   h_genj2_Pt__1->SetBinContent(40,688);
+   h_genj2_Pt__1->SetBinContent(41,567);
+   h_genj2_Pt__1->SetBinContent(42,517);
+   h_genj2_Pt__1->SetBinContent(43,473);
+   h_genj2_Pt__1->SetBinContent(44,402);
+   h_genj2_Pt__1->SetBinContent(45,331);
+   h_genj2_Pt__1->SetBinContent(46,297);
+   h_genj2_Pt__1->SetBinContent(47,258);
+   h_genj2_Pt__1->SetBinContent(48,194);
+   h_genj2_Pt__1->SetBinContent(49,203);
+   h_genj2_Pt__1->SetBinContent(50,177);
+   h_genj2_Pt__1->SetBinContent(51,117);
+   h_genj2_Pt__1->SetBinContent(52,149);
+   h_genj2_Pt__1->SetBinContent(53,107);
+   h_genj2_Pt__1->SetBinContent(54,100);
+   h_genj2_Pt__1->SetBinContent(55,90);
+   h_genj2_Pt__1->SetBinContent(56,82);
+   h_genj2_Pt__1->SetBinContent(57,95);
+   h_genj2_Pt__1->SetBinContent(58,67);
+   h_genj2_Pt__1->SetBinContent(59,60);
+   h_genj2_Pt__1->SetBinContent(60,63);
+   h_genj2_Pt__1->SetBinContent(61,58);
+   h_genj2_Pt__1->SetBinContent(62,40);
+   h_genj2_Pt__1->SetBinContent(63,46);
+   h_genj2_Pt__1->SetBinContent(64,34);
+   h_genj2_Pt__1->SetBinContent(65,36);
+   h_genj2_Pt__1->SetBinContent(66,27);
+   h_genj2_Pt__1->SetBinContent(67,13);
+   h_genj2_Pt__1->SetBinContent(68,38);
+   h_genj2_Pt__1->SetBinContent(69,34);
+   h_genj2_Pt__1->SetBinContent(70,16);
+   h_genj2_Pt__1->SetBinContent(71,18);
+   h_genj2_Pt__1->SetBinContent(72,20);
+   h_genj2_Pt__1->SetBinContent(73,19);
+   h_genj2_Pt__1->SetBinContent(74,7);
+   h_genj2_Pt__1->SetBinContent(75,12);
+   h_genj2_Pt__1->SetBinContent(76,146);
+   h_genj2_Pt__1->SetEntries(1121091);
+
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
+   ci = TColor::GetColor("#99ccff");
+   h_genj2_Pt__1->SetFillColor(ci);
+
+   ci = TColor::GetColor("#000099");
+   h_genj2_Pt__1->SetLineColor(ci);
+   h_genj2_Pt__1->SetLineWidth(3);
+   h_genj2_Pt__1->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
+   h_genj2_Pt__1->GetXaxis()->SetRange(1,150);
+   h_genj2_Pt__1->GetXaxis()->SetLabelSize(0.035);
+   h_genj2_Pt__1->GetXaxis()->SetTitleSize(0.035);
+   h_genj2_Pt__1->GetYaxis()->SetTitle("Normalized Entries");
+   h_genj2_Pt__1->GetYaxis()->SetLabelOffset(100);
+   h_genj2_Pt__1->GetYaxis()->SetLabelSize(0.035);
+   h_genj2_Pt__1->GetYaxis()->SetTitleSize(0.035);
+   h_genj2_Pt__1->GetZaxis()->SetLabelSize(0.035);
+   h_genj2_Pt__1->GetZaxis()->SetTitleSize(0.035);
+   h_genj2_Pt__1->Draw("");
+   c1->Modified();
+   c1->cd();
+   c1->SetSelected(c1);
+}

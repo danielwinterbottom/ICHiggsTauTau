@@ -1,0 +1,116 @@
+void h_j2_Pt()
+{
+//=========Macro generated from canvas: c1/c1
+//=========  (Thu Jun  9 18:03:49 2016) by ROOT version6.06/01
+   TCanvas *c1 = new TCanvas("c1", "c1",904,191,850,850);
+   gStyle->SetOptStat(0);
+   gStyle->SetOptTitle(0);
+   c1->Range(0,0,1,1);
+   c1->SetFillColor(0);
+   c1->SetBorderMode(0);
+   c1->SetBorderSize(2);
+   c1->SetTickx(1);
+   c1->SetTicky(1);
+   c1->SetLeftMargin(0.125);
+   c1->SetRightMargin(0.125);
+   c1->SetFrameBorderMode(0);
+   
+   TH1D *h_j2_Pt__1 = new TH1D("h_j2_Pt__1","h_j2_Pt",75,0,300);
+   h_j2_Pt__1->SetBinContent(4,21820);
+   h_j2_Pt__1->SetBinContent(5,90561);
+   h_j2_Pt__1->SetBinContent(6,93100);
+   h_j2_Pt__1->SetBinContent(7,90592);
+   h_j2_Pt__1->SetBinContent(8,85261);
+   h_j2_Pt__1->SetBinContent(9,78446);
+   h_j2_Pt__1->SetBinContent(10,70515);
+   h_j2_Pt__1->SetBinContent(11,62723);
+   h_j2_Pt__1->SetBinContent(12,54850);
+   h_j2_Pt__1->SetBinContent(13,47237);
+   h_j2_Pt__1->SetBinContent(14,40647);
+   h_j2_Pt__1->SetBinContent(15,34946);
+   h_j2_Pt__1->SetBinContent(16,29845);
+   h_j2_Pt__1->SetBinContent(17,24912);
+   h_j2_Pt__1->SetBinContent(18,21190);
+   h_j2_Pt__1->SetBinContent(19,17839);
+   h_j2_Pt__1->SetBinContent(20,14746);
+   h_j2_Pt__1->SetBinContent(21,12721);
+   h_j2_Pt__1->SetBinContent(22,10523);
+   h_j2_Pt__1->SetBinContent(23,8979);
+   h_j2_Pt__1->SetBinContent(24,7480);
+   h_j2_Pt__1->SetBinContent(25,6391);
+   h_j2_Pt__1->SetBinContent(26,5395);
+   h_j2_Pt__1->SetBinContent(27,4783);
+   h_j2_Pt__1->SetBinContent(28,3901);
+   h_j2_Pt__1->SetBinContent(29,3319);
+   h_j2_Pt__1->SetBinContent(30,2997);
+   h_j2_Pt__1->SetBinContent(31,2539);
+   h_j2_Pt__1->SetBinContent(32,2144);
+   h_j2_Pt__1->SetBinContent(33,1722);
+   h_j2_Pt__1->SetBinContent(34,1572);
+   h_j2_Pt__1->SetBinContent(35,1347);
+   h_j2_Pt__1->SetBinContent(36,1186);
+   h_j2_Pt__1->SetBinContent(37,1060);
+   h_j2_Pt__1->SetBinContent(38,837);
+   h_j2_Pt__1->SetBinContent(39,810);
+   h_j2_Pt__1->SetBinContent(40,658);
+   h_j2_Pt__1->SetBinContent(41,601);
+   h_j2_Pt__1->SetBinContent(42,530);
+   h_j2_Pt__1->SetBinContent(43,397);
+   h_j2_Pt__1->SetBinContent(44,385);
+   h_j2_Pt__1->SetBinContent(45,349);
+   h_j2_Pt__1->SetBinContent(46,316);
+   h_j2_Pt__1->SetBinContent(47,251);
+   h_j2_Pt__1->SetBinContent(48,227);
+   h_j2_Pt__1->SetBinContent(49,212);
+   h_j2_Pt__1->SetBinContent(50,176);
+   h_j2_Pt__1->SetBinContent(51,166);
+   h_j2_Pt__1->SetBinContent(52,139);
+   h_j2_Pt__1->SetBinContent(53,110);
+   h_j2_Pt__1->SetBinContent(54,104);
+   h_j2_Pt__1->SetBinContent(55,108);
+   h_j2_Pt__1->SetBinContent(56,95);
+   h_j2_Pt__1->SetBinContent(57,79);
+   h_j2_Pt__1->SetBinContent(58,71);
+   h_j2_Pt__1->SetBinContent(59,73);
+   h_j2_Pt__1->SetBinContent(60,52);
+   h_j2_Pt__1->SetBinContent(61,47);
+   h_j2_Pt__1->SetBinContent(62,63);
+   h_j2_Pt__1->SetBinContent(63,48);
+   h_j2_Pt__1->SetBinContent(64,38);
+   h_j2_Pt__1->SetBinContent(65,37);
+   h_j2_Pt__1->SetBinContent(66,31);
+   h_j2_Pt__1->SetBinContent(67,35);
+   h_j2_Pt__1->SetBinContent(68,27);
+   h_j2_Pt__1->SetBinContent(69,48);
+   h_j2_Pt__1->SetBinContent(70,16);
+   h_j2_Pt__1->SetBinContent(71,28);
+   h_j2_Pt__1->SetBinContent(72,17);
+   h_j2_Pt__1->SetBinContent(73,12);
+   h_j2_Pt__1->SetBinContent(74,12);
+   h_j2_Pt__1->SetBinContent(75,8);
+   h_j2_Pt__1->SetBinContent(76,183);
+   h_j2_Pt__1->SetEntries(964685);
+
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
+   ci = TColor::GetColor("#99ccff");
+   h_j2_Pt__1->SetFillColor(ci);
+
+   ci = TColor::GetColor("#000099");
+   h_j2_Pt__1->SetLineColor(ci);
+   h_j2_Pt__1->SetLineWidth(3);
+   h_j2_Pt__1->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
+   h_j2_Pt__1->GetXaxis()->SetRange(1,150);
+   h_j2_Pt__1->GetXaxis()->SetLabelSize(0.035);
+   h_j2_Pt__1->GetXaxis()->SetTitleSize(0.035);
+   h_j2_Pt__1->GetYaxis()->SetTitle("Normalized Entries");
+   h_j2_Pt__1->GetYaxis()->SetLabelOffset(100);
+   h_j2_Pt__1->GetYaxis()->SetLabelSize(0.035);
+   h_j2_Pt__1->GetYaxis()->SetTitleSize(0.035);
+   h_j2_Pt__1->GetZaxis()->SetLabelSize(0.035);
+   h_j2_Pt__1->GetZaxis()->SetTitleSize(0.035);
+   h_j2_Pt__1->Draw("");
+   c1->Modified();
+   c1->cd();
+   c1->SetSelected(c1);
+}
