@@ -64,7 +64,19 @@ namespace ic {
       alias_map_["ztt_sel"] = "";
       alias_map_["zll_sel"] = "1.";
     }
-
+    
+    //SM Categories
+    
+    alias_map_["inclusive"]                 = "1";
+    alias_map_["vbf"]                       = "(n_jets>=2 && jdeta>3.5 && n_jetsingap==0 && mjj>500.)";//&& mjj>500. && n_jetsingap==0 && jdeta>3.5
+    alias_map_["1jet_high_highhpt"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100.)";
+    alias_map_["1jet_high_lowhpt"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100.)";
+    alias_map_["1jet_low"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45.)";
+    alias_map_["1jet_medium"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45.)";
+    alias_map_["0jet_low"]                  = "(n_jets==0 && pt_2<=45.)";
+    alias_map_["0jet_medium"]               = "(!"+alias_map_["vbf"]+" && n_jets==0 && pt_2>30. && pt_2<=45.)";
+    alias_map_["0jet_high"]                 = "(n_jets==0 && pt_2>45.)";
+    
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "1";
@@ -223,7 +235,7 @@ namespace ic {
       alias_map_["trk03iso0p07"]           = "(iso_1_trk03<0.07&&"+alias_map_["incnoiso"]+")";
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["qcd_vloose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && !leptonveto)";
-      alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      //alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
 
       alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
@@ -338,7 +350,7 @@ namespace ic {
       alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:
-      alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      //alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
       alias_map_["incnoiso"]         = "!leptonveto";
       alias_map_["incnoisowmu"]         = "iso_2<0.15 && !leptonveto";

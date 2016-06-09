@@ -282,6 +282,11 @@ namespace ic {
        (boost::lexical_cast<std::string>(signal_scale_)+"#times GluGluH("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
        {"ggH"}, TColor::GetColor(0,18,255), false)
     };
+    sig_schemes_["run2_sm_stack"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times gg + VBF H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
+        {"ggH","qqH"}, TColor::GetColor(0,18,255), true)
+    };
 
     sig_schemes_["sm_nomult"] = {
       PlotSigComponent("sig",
