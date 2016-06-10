@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <typeinfo>
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -136,21 +137,39 @@ void ICL1TObjectProducer<ICL1TObj_template>::produce(edm::Event& iEvent,
       int i = 0;
       for (typename ICL1TObj_template::const_iterator it=generic_method->begin(ibx); it!=generic_method->end(ibx); it++){
        ic::ICL1TObject thisTObject;
+
+       if( typeid(it).name() == typeid(l1t::EGamma).name() ){
+         thisTObject.isolation = it->hwIso();  
+       }
+
+       if( typeid(it).name() == typeid(l1t::Jet).name() ){
+
+       }
        
-       int type = static_cast<int>( it->getType() );
-       thisTObject.sumType = type;
+       //if( typeid(it).name() == typeid(l1t::EtSum).name() ){
+       //  int type = static_cast<int>( it->getType() );
+       //  thisTObject.sumType = type;
+       //  //std::cout << type <<"    "<< std::endl;
+       //}
        
-       thisTObject.isolation = it->hwIso(); //valid for egamma, muon, tau   not for jet, sum
-       thisTObject.charge    = it->charge();//valid for muon                not for egamma, jet, sum
-       thisTObject.quality   = it->hwQual();//valid for muon                not for egamma, jet, sum
-       thisTObject.bx        = it->bx();
- 
+       
+       if( typeid(it).name() == typeid(l1t::Tau).name() ){  
+         thisTObject.isolation = it->hwIso();
+       }
+       
+       if( typeid(it).name() == typeid(l1t::Muon).name() ){
+         thisTObject.isolation = it->hwIso();
+         thisTObject.charge    = it->charge();
+         thisTObject.quality   = it->hwQual();
+         //thisTObject.bx        = it->bx();
+       }
+       
        ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
        thisTObject.set_vector(tempVector);
        ICL1TObj_->push_back(thisTObject);
-       std::cout << i <<" "<< it.bx() << std::endl;
-       std::cout << i <<" "<< it.pt() << std::endl;
-       std::cout << type <<"    "<< std::endl;
+       //std::cout << i <<" "<< it.bx() << std::endl;
+       //std::cout << i <<" "<< it.pt() << std::endl;
+       
        ++i;
      }
     }
@@ -174,4 +193,29 @@ void ICL1TObjectProducer<ICL1TObj_template>::beginJob() {
 template <class ICL1TObj_template>
 void ICL1TObjectProducer<ICL1TObj_template>::endJob() {}
 
-DEFINE_FWK_MODULE(ICL1TObjectProducer);
+//DEFINE_FWK_MODULE(ICL1TObjectProducer);
+
+
+typedef ICL1TObjectProducer<l1t::EGammaBxCollection> type_L1TEGamma;
+typedef ICL1TObjectProducer<l1t::JetBxCollection>    type_L1TJet;
+typedef ICL1TObjectProducer<l1t::EtSumBxCollection>  type_L1TSum;
+typedef ICL1TObjectProducer<l1t::MuonBxCollection>   type_L1TMuon;
+typedef ICL1TObjectProducer<l1t::TauBxCollection>    type_L1TTau;
+typedef ICL1TObjectProducer<l1t::TauBxCollection>    type_L1TTauIso;
+
+DEFINE_FWK_MODULE(type_L1TEGamma);
+DEFINE_FWK_MODULE(type_L1TJet);
+DEFINE_FWK_MODULE(type_L1TSum);
+DEFINE_FWK_MODULE(type_L1TMuon);
+DEFINE_FWK_MODULE(type_L1TTau);
+DEFINE_FWK_MODULE(type_L1TTauIso);
+
+
+
+
+
+
+
+
+
+
