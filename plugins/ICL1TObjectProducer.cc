@@ -40,8 +40,8 @@
 
 
 ICL1TObjectProducer::ICL1TObjectProducer(const edm::ParameterSet& pset) 
-: input_(pset.getParameter<edm::InputTag>("input")),
-branch_(pset.getParameter<std::string>("branch"))
+    : input_(pset.getParameter<edm::InputTag>("input")),
+      branch_(pset.getParameter<std::string>("branch"))
   {
   
     consumes<edm::View<ICL1TObj_template>>(input_);
@@ -126,24 +126,26 @@ void ICL1TObjectProducer::produce(edm::Event& iEvent,
   
 
   if (generic_method.isValid()){ 
- 
-    //for (int ibx = eg->getFirstBX(); ibx <= eg->getLastBX(); ++ibx) {
-    for (ICL1TObj_template::const_iterator it=generic_method->begin(0); it!=generic_method->end(0); it++){
+   for (int ibx = generic_method->getFirstBX(); ibx <= generic_method->getLastBX(); ++ibx) {
+    for (ICL1TObj_template::const_iterator it=generic_method->begin(ibx); it!=generic_method->end(ibx); it++){
       ic::ICL1TObject thisTObject;
       
       int type = static_cast<int>( it->getType() );
-      thisSum.sumType = type;
-      //std::cout << type << "    " << << std::endl;
+      thisTObject.sumType = type;
       
       thisTObject.isolation = it->hwIso(); //valid for egamma, muon, tau   not for jet, sum
-      thisTObject.charge    = it->charge();//valid for muon   not for egamma, jet, sum
-      thisTObject.quality   = it->hwQual();//valid for muon   not for egamma, jet, sum
-      
+      thisTObject.charge    = it->charge();//valid for muon                not for egamma, jet, sum
+      thisTObject.quality   = it->hwQual();//valid for muon                not for egamma, jet, sum
+      thisTObject.bx        = it->bx();
+
       ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
       thisTObject.set_vector(tempVector);
       ICL1TObj_->push_back(thisTObject);
+      std::cout << i <<" "<< it.bx() << std::endl;
+      std::cout << i <<" "<< it.pt() << std::endl;
+      std::cout << type <<"    "<< std::endl;
     }
-    //}
+   }
   } 
   else {
     edm::LogWarning("MissingProduct") << "L1Upgrade Em not found. Branch will not be filled" << std::endl;
