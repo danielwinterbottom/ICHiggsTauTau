@@ -40,13 +40,13 @@
 
 
 ICL1TObjectProducer::ICL1TObjectProducer(const edm::ParameterSet& pset) 
- : input_(config.getParameter<edm::InputTag>("input")),
-  branch_(config.getParameter<std::string>("branch"))
+: input_(pset.getParameter<edm::InputTag>("input")),
+branch_(pset.getParameter<std::string>("branch"))
   {
   
     consumes<edm::View<ICL1TObj_template>>(input_);
-    candidates_ = new std::vector<ic::Candidate>();
-    PrintHeaderWithProduces(config, input_, branch_);
+    ICL1TObj_ = new std::vector<ic::ICL1TObject>();
+    PrintHeaderWithProduces(pset, input_, branch_);
   
   m_L1TEra = pset.getUntrackedParameter<std::string>("input_L1TEra",string("stage2"));
   if(m_L1TEra == "stage1"){
@@ -126,8 +126,7 @@ void ICL1TObjectProducer::produce(edm::Event& iEvent,
   
 
   if (generic_method.isValid()){ 
-    
-    
+ 
     //for (int ibx = eg->getFirstBX(); ibx <= eg->getLastBX(); ++ibx) {
     for (ICL1TObj_template::const_iterator it=generic_method->begin(0); it!=generic_method->end(0); it++){
       ic::ICL1TObject thisTObject;
