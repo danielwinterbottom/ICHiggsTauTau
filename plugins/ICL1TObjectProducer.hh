@@ -71,8 +71,8 @@ class ICL1TObjectProducer : public edm::EDProducer {
 
  private:
      
-    std::vector<ic::ICL1TObject> *ICL1TObj_;
-  
+  std::vector<ic::ICL1TObject> *ICL1TObj_;
+  edm::InputTag input_;
   std::string branch_;
   boost::hash<reco::Candidate const*> cand_hasher_;
 

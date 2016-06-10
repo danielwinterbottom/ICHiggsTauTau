@@ -38,8 +38,8 @@
 // ICHiggsTauTau Objects
 #include "UserCode/ICHiggsTauTau/interface/ICL1TObject.hh"
 
-
-ICL1TObjectProducer::ICL1TObjectProducer(const edm::ParameterSet& pset) 
+template <class ICL1TObj_template>
+ICL1TObjectProducer<ICL1TObj_template>::ICL1TObjectProducer(const edm::ParameterSet& pset) 
     : input_(pset.getParameter<edm::InputTag>("input")),
       branch_(pset.getParameter<std::string>("branch"))
   {
@@ -80,7 +80,7 @@ ICL1TObjectProducer::ICL1TObjectProducer(const edm::ParameterSet& pset)
 //     m_EDToken_L1TSum    = consumes<l1t::EtSumBxCollection> (inputTag_Sum);
 //   }
 
-  edm::InputTag inputTag_TObject   = pset.getUntrackedParameter<edm::InputTag>("inputTag_"+branch_.str(),edm::InputTag("simCaloStage2Digis"));
+  edm::InputTag inputTag_TObject   = pset.getUntrackedParameter<edm::InputTag>( ("inputTag_"+branch_).c_str(), edm::InputTag("simCaloStage2Digis") );
   m_EDToken_L1TObj = consumes<ICL1TObj_template>(inputTag_TObject);
 
   
@@ -93,7 +93,8 @@ ICL1TObjectProducer::ICL1TObjectProducer(const edm::ParameterSet& pset)
 
 }
 
-ICL1TObjectProducer::~ICL1TObjectProducer() 
+template <class ICL1TObj_template>
+ICL1TObjectProducer<ICL1TObj_template>::~ICL1TObjectProducer() 
 {   
     delete ICL1TObj_;
     //delete L1Muons_;
@@ -103,7 +104,8 @@ ICL1TObjectProducer::~ICL1TObjectProducer()
     //delete L1Sums_;
 }
 
-void ICL1TObjectProducer::produce(edm::Event& iEvent,
+template <class ICL1TObj_template>
+void ICL1TObjectProducer<ICL1TObj_template>::produce(edm::Event& iEvent,
                                    const edm::EventSetup& iSetup) {
 
   edm::Handle<ICL1TObj_template> generic_method;
@@ -129,36 +131,38 @@ void ICL1TObjectProducer::produce(edm::Event& iEvent,
 
   
 
-  if (generic_method.isValid()){ 
-   for (int ibx = generic_method->getFirstBX(); ibx <= generic_method->getLastBX(); ++ibx) {
-    for (ICL1TObj_template::const_iterator it=generic_method->begin(ibx); it!=generic_method->end(ibx); it++){
-      ic::ICL1TObject thisTObject;
-      
-      int type = static_cast<int>( it->getType() );
-      thisTObject.sumType = type;
-      
-      thisTObject.isolation = it->hwIso(); //valid for egamma, muon, tau   not for jet, sum
-      thisTObject.charge    = it->charge();//valid for muon                not for egamma, jet, sum
-      thisTObject.quality   = it->hwQual();//valid for muon                not for egamma, jet, sum
-      thisTObject.bx        = it->bx();
-
-      ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
-      thisTObject.set_vector(tempVector);
-      ICL1TObj_->push_back(thisTObject);
-      std::cout << i <<" "<< it.bx() << std::endl;
-      std::cout << i <<" "<< it.pt() << std::endl;
-      std::cout << type <<"    "<< std::endl;
+   if (generic_method.isValid()){ 
+    for (int ibx = generic_method->getFirstBX(); ibx <= generic_method->getLastBX(); ++ibx) {
+      int i = 0;
+      for (typename ICL1TObj_template::const_iterator it=generic_method->begin(ibx); it!=generic_method->end(ibx); it++){
+       ic::ICL1TObject thisTObject;
+       
+       int type = static_cast<int>( it->getType() );
+       thisTObject.sumType = type;
+       
+       thisTObject.isolation = it->hwIso(); //valid for egamma, muon, tau   not for jet, sum
+       thisTObject.charge    = it->charge();//valid for muon                not for egamma, jet, sum
+       thisTObject.quality   = it->hwQual();//valid for muon                not for egamma, jet, sum
+       thisTObject.bx        = it->bx();
+ 
+       ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
+       thisTObject.set_vector(tempVector);
+       ICL1TObj_->push_back(thisTObject);
+       std::cout << i <<" "<< it.bx() << std::endl;
+       std::cout << i <<" "<< it.pt() << std::endl;
+       std::cout << type <<"    "<< std::endl;
+       ++i;
+     }
     }
+   } 
+   else {
+     edm::LogWarning("MissingProduct") << "L1Upgrade Em not found. Branch will not be filled" << std::endl;
    }
-  } 
-  else {
-    edm::LogWarning("MissingProduct") << "L1Upgrade Em not found. Branch will not be filled" << std::endl;
-  }
 }
 
-
-void ICL1TObjectProducer::beginJob() {
-  ic::StaticTree::tree_->Branch(branch_.str(),   &ICL1TObj_);  
+template <class ICL1TObj_template>
+void ICL1TObjectProducer<ICL1TObj_template>::beginJob() {
+  ic::StaticTree::tree_->Branch(branch_.c_str(),   &ICL1TObj_);  
   //ic::StaticTree::tree_->Branch("L1Muons",   &L1Muons_);
   //ic::StaticTree::tree_->Branch("L1Taus",    &L1Taus_);
   //ic::StaticTree::tree_->Branch("L1EGammas", &L1EGammas_);
@@ -167,6 +171,7 @@ void ICL1TObjectProducer::beginJob() {
   
 }
 
-void ICL1TObjectProducer::endJob() {}
+template <class ICL1TObj_template>
+void ICL1TObjectProducer<ICL1TObj_template>::endJob() {}
 
 DEFINE_FWK_MODULE(ICL1TObjectProducer);

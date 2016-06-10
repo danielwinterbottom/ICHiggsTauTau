@@ -2,7 +2,7 @@
 
 namespace ic {
   ICL1TObject::ICL1TObject() {;}
-  ICL1TObject::ICL1TObject(string name) { fName=name; }
+  //ICL1TObject::ICL1TObject(string name) { fName=name; }
   
   ICL1TObject::~ICL1TObject() {;}
   

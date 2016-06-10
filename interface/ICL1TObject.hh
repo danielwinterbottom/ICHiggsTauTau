@@ -26,11 +26,11 @@ namespace ic {
 
   public:
     ICL1TObject();
-    ICL1TObject(string);
+    //ICL1TObject(string);
     virtual ~ICL1TObject();
     virtual void Print() const;
-    string getName() { return fName; }
-    void setName( string name ) { fName=name; }
+    //string getName() { return fName; }
+    //void setName( string name ) { fName=name; }
     
     #ifndef SKIP_CINT_DICT
   public:
@@ -39,7 +39,7 @@ namespace ic {
   
   public:
     int                bx;
-    string             fName;
+    //string             fName;
     short int          sumType;
     short int          charge;
     unsigned short int isolation;
