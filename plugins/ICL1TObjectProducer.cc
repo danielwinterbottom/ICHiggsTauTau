@@ -131,116 +131,34 @@ void ICL1TObjectProducer::produce(edm::Event& iEvent,
     //for (int ibx = eg->getFirstBX(); ibx <= eg->getLastBX(); ++ibx) {
     for (ICL1TObj_template::const_iterator it=generic_method->begin(0); it!=generic_method->end(0); it++){
       ic::ICL1TObject thisTObject;
-      thisTObject.isolation = it->hwIso();
+      
+      int type = static_cast<int>( it->getType() );
+      thisSum.sumType = type;
+      //std::cout << type << "    " << << std::endl;
+      
+      thisTObject.isolation = it->hwIso(); //valid for egamma, muon, tau   not for jet, sum
+      thisTObject.charge    = it->charge();//valid for muon   not for egamma, jet, sum
+      thisTObject.quality   = it->hwQual();//valid for muon   not for egamma, jet, sum
+      
       ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
       thisTObject.set_vector(tempVector);
       ICL1TObj_->push_back(thisTObject);
     }
     //}
-    
-  } else {
+  } 
+  else {
     edm::LogWarning("MissingProduct") << "L1Upgrade Em not found. Branch will not be filled" << std::endl;
   }
-  
-  
-  
-  
-//   if (eg.isValid()){ 
-// 
-//     
-//     //for (int ibx = eg->getFirstBX(); ibx <= eg->getLastBX(); ++ibx) {
-//         for (l1t::EGammaBxCollection::const_iterator it=eg->begin(0); it!=eg->end(0); it++){
-//             ic::L1TEGamma thisEGamma;
-//             thisEGamma.isolation = it->hwIso();
-//             ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
-//             thisEGamma.set_vector(tempVector);
-//             L1EGammas_->push_back(thisEGamma);
-//         }
-//     //}
-//     
-//   } else {
-//     edm::LogWarning("MissingProduct") << "L1Upgrade Em not found. Branch will not be filled" << std::endl;
-//   }
-  
-//   if (jet.isValid()){ 
-//     
-//     //for (int ibx = jet->getFirstBX(); ibx <= jet->getLastBX(); ++ibx) {
-//         for (l1t::JetBxCollection::const_iterator it=jet->begin(0); it!=jet->end(0); it++){
-//             ic::L1TJet thisJet;
-//             ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
-//             thisJet.set_vector(tempVector);
-//             L1Jets_->push_back(thisJet);
-//         }
-//     //}
-//     
-//   } else {
-//     edm::LogWarning("MissingProduct") << "L1Upgrade Jets not found. Branch will not be filled" << std::endl;
-//   }
-// 
-//   if (sums.isValid()){ 
-//     
-//     //for (int ibx = sums->getFirstBX(); ibx <= sums->getLastBX(); ++ibx) {
-//         for (l1t::EtSumBxCollection::const_iterator it=sums->begin(0); it!=sums->end(0); it++){
-//             ic::L1TSum thisSum;
-//             int type = static_cast<int>( it->getType() );
-//             thisSum.sumType = type;
-//             //std::cout << type << "    " << << std::endl;
-//             ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
-//             thisSum.set_vector(tempVector);
-//             L1Sums_->push_back(thisSum);
-//         }
-//     //}
-//     
-//   } else {
-//     edm::LogWarning("MissingProduct") << "L1Upgrade EtSums not found. Branch will not be filled" << std::endl;
-//   }
-// 
-//   if (muon.isValid()){ 
-//     
-//     //for (int ibx = muon->getFirstBX(); ibx <= muon->getLastBX(); ++ibx) {
-//         for (l1t::MuonBxCollection::const_iterator it=muon->begin(0); it!=muon->end(0); it++){
-//             ic::L1TMuon thisMuon;
-//             thisMuon.isolation = it->hwIso();
-//             thisMuon.charge = it->charge(); 
-//             thisMuon.quality = it->hwQual();
-//             ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
-//             thisMuon.set_vector(tempVector);
-//             L1Muons_->push_back(thisMuon);
-//         }
-//     //}
-//     
-//     
-//   } else {
-//     edm::LogWarning("MissingProduct") << "L1Upgrade Muons not found. Branch will not be filled" << std::endl;
-//   }
-// 
-//   if (tau.isValid()){ 
-//     
-//     //for (int ibx = tau->getFirstBX(); ibx <= tau->getLastBX(); ++ibx) {
-//         for (l1t::TauBxCollection::const_iterator it=tau->begin(0); it!=tau->end(0); it++){
-//             ic::L1TTau thisTau;
-//             thisTau.isolation = it->hwIso();
-//             ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
-//             thisTau.set_vector(tempVector);
-//             L1Taus_->push_back(thisTau);
-//         }
-//     //}
-//     
-// 
-//   } else {
-//     edm::LogWarning("MissingProduct") << "L1Upgrade Tau not found. Branch will not be filled" << std::endl;
-//   }
-
 }
 
 
 void ICL1TObjectProducer::beginJob() {
   ic::StaticTree::tree_->Branch(branch_.str(),   &ICL1TObj_);  
-//   ic::StaticTree::tree_->Branch("L1Muons",   &L1Muons_);
-//   ic::StaticTree::tree_->Branch("L1Taus",    &L1Taus_);
-//   ic::StaticTree::tree_->Branch("L1EGammas", &L1EGammas_);
-//   ic::StaticTree::tree_->Branch("L1Jets",    &L1Jets_);
-//   ic::StaticTree::tree_->Branch("L1Sums",    &L1Sums_);
+  //ic::StaticTree::tree_->Branch("L1Muons",   &L1Muons_);
+  //ic::StaticTree::tree_->Branch("L1Taus",    &L1Taus_);
+  //ic::StaticTree::tree_->Branch("L1EGammas", &L1EGammas_);
+  //ic::StaticTree::tree_->Branch("L1Jets",    &L1Jets_);
+  //ic::StaticTree::tree_->Branch("L1Sums",    &L1Sums_);
   
 }
 
