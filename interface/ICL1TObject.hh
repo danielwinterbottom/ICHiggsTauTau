@@ -38,6 +38,7 @@ namespace ic {
     #endif
   
   public:
+    int                bx;
     string             fName;
     short int          sumType;
     short int          charge;
