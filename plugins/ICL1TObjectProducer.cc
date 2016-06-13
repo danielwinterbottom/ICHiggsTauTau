@@ -137,32 +137,44 @@ void ICL1TObjectProducer<ICL1TObj_template>::produce(edm::Event& iEvent,
       int i = 0;
       for (typename ICL1TObj_template::const_iterator it=generic_method->begin(ibx); it!=generic_method->end(ibx); it++){
        ic::ICL1TObject thisTObject;
-
-       if( typeid(it).name() == typeid(l1t::EGamma).name() ){
-         thisTObject.isolation = it->hwIso();  
-       }
-
-       if( typeid(it).name() == typeid(l1t::Jet).name() ){
-
-       }
+       thisTObject.isolation = it->hwIso();
+       thisTObject.charge    = it->charge();
+       thisTObject.quality   = it->hwQual();
+       //thisTObject.bx        = it->bx();
        
-       //if( typeid(it).name() == typeid(l1t::EtSum).name() ){
-       //  int type = static_cast<int>( it->getType() );
-       //  thisTObject.sumType = type;
-       //  //std::cout << type <<"    "<< std::endl;
-       //}
+       //TYPE& dynamic_cast<TYPE&> (object);
+       //TYPE* dynamic_cast<TYPE*> (object);
        
        
-       if( typeid(it).name() == typeid(l1t::Tau).name() ){  
-         thisTObject.isolation = it->hwIso();
-       }
        
-       if( typeid(it).name() == typeid(l1t::Muon).name() ){
-         thisTObject.isolation = it->hwIso();
-         thisTObject.charge    = it->charge();
-         thisTObject.quality   = it->hwQual();
-         //thisTObject.bx        = it->bx();
-       }
+       //////// if( typeid(it).name() == typeid(l1t::EGamma).name() ){
+       ////////   thisTObject.isolation = it->hwIso();  
+       //////// }
+       //////// 
+       //////// if( typeid(it).name() == typeid(l1t::Jet).name() ){
+       //////// 
+       //////// }
+       //////// 
+      // if( typeid(it).name() == typeid(l1t::EtSum).name() ){
+        // l1t::EtSum* newIt = &*it;
+         //int type = dynamic_cast<l1t::EtSum*>(it)->getType();
+         //const l1t::EtSum* myEtSum = &(*it) ;
+         dynamic_cast<l1t::EtSum*>(&(*it)) ;
+         //thisTObject.sumType = type;
+         //std::cout << type <<"    "<< std::endl;
+      // }
+       //////// 
+       //////// 
+       //////// if( typeid(it).name() == typeid(l1t::Tau).name() ){  
+       ////////   thisTObject.isolation = it->hwIso();
+       //////// }
+       //////// 
+       //////// if( typeid(it).name() == typeid(l1t::Muon).name() ){
+       ////////   thisTObject.isolation = it->hwIso();
+       ////////   thisTObject.charge    = it->charge();
+       ////////   thisTObject.quality   = it->hwQual();
+       ////////   //thisTObject.bx        = it->bx();
+       //////// }
        
        ROOT::Math::PtEtaPhiEVector tempVector(it->pt(), it->eta(),it->phi(), it->energy());
        thisTObject.set_vector(tempVector);
