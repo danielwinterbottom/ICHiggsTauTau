@@ -423,6 +423,12 @@ class HTTCategories : public ModuleBase {
 
   double em_gf_mva_;
   double em_vbf_mva_;
+  
+  branch_var jets_totpt_;
+  branch_var jetsplustt_totpt_;
+  branch_var pt_tt_totpt_minus_jets_totpt_;
+  branch_var jetsplustt_totpt_norm_;
+  branch_var pt_tt_totpt_minus_jets_totpt_norm_;
 
 
  public:
