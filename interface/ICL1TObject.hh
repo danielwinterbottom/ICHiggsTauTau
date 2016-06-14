@@ -26,20 +26,15 @@ namespace ic {
 
   public:
     ICL1TObject();
-    //ICL1TObject(string);
     virtual ~ICL1TObject();
     virtual void Print() const;
-    //string getName() { return fName; }
-    //void setName( string name ) { fName=name; }
-    
+
     #ifndef SKIP_CINT_DICT
   public:
     ClassDef(ICL1TObject, 1);
     #endif
   
   public:
-    int                bx;
-    //string             fName;
     short int          sumType;
     short int          charge;
     unsigned short int isolation;

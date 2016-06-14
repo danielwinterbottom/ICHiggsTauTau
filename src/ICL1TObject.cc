@@ -2,8 +2,6 @@
 
 namespace ic {
   ICL1TObject::ICL1TObject() {;}
-  //ICL1TObject::ICL1TObject(string name) { fName=name; }
-  
   ICL1TObject::~ICL1TObject() {;}
   
   void ICL1TObject::Print() const {Candidate::Print();}
