@@ -540,7 +540,7 @@ namespace ic {
        for(unsigned j = 0; j < unsigned(bkg_elements.size()); ++j){
            Nbackground += bkg_elements[j].hist_ptr()->GetBinContent(i+1);
        }
-       double systematic_par = 0.2;
+       double systematic_par = 0.09;
        double blind_metric = Nsignal/sqrt(Nbackground + pow(systematic_par*Nbackground,2)); 
        if(blind_metric > 0.5){
          data_hist->SetBinContent(i+1,0);
