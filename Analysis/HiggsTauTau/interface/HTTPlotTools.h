@@ -56,6 +56,7 @@ namespace ic {
     CLASS_MEMBER(HTTPlot,   double,         y_axis_min)
     CLASS_MEMBER(HTTPlot,   double,         extra_pad)
     CLASS_MEMBER(HTTPlot,   bool,           blind)
+    CLASS_MEMBER(HTTPlot,   bool,           autoblind)
     CLASS_MEMBER(HTTPlot,   double,         x_blind_min)
     CLASS_MEMBER(HTTPlot,   double,         x_blind_max)
     CLASS_MEMBER(HTTPlot,   bool,           log_y)
@@ -91,6 +92,7 @@ namespace ic {
       inline std::string draw_signal_tanb() const { return draw_signal_tanb_; }
       void AddTextElement(ic::TextElement & ele);
       inline bool blind() const { return blind_; }
+      inline bool autoblind() const { return autoblind_; }
       inline double x_blind_min() const { return x_blind_min_; }
       inline double x_blind_max() const { return x_blind_max_; }
       inline double extra_pad() const { return extra_pad_; }
