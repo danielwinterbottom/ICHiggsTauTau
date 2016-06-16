@@ -68,8 +68,8 @@ namespace ic {
     //SM Categories
     
     alias_map_["inclusive"]                 = "1";
-    alias_map_["vbf"]                       = "(n_jets>=2 && jdeta>3.5 && n_jetsingap==0 && mjj>500.)";
-    alias_map_["vbf_new"]                   = "(n_jets>=2 && jdeta>3.5 && mjj>500.)";
+    alias_map_["vbf"]                       = "(n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500.)";
+    alias_map_["vbf_hadhad"]                = "(n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500. && pt_tt>100.)";
     alias_map_["1jet_high_highhpt"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100.)";
     alias_map_["1jet_high_lowhpt"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100.)";
     alias_map_["1jet_low"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45.)";
@@ -82,8 +82,7 @@ namespace ic {
     alias_map_["1jet_high_lowhpt_incbveto"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100. && n_bjets==0)";
     alias_map_["1jet_low_incbveto"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45. && n_bjets==0)";
     alias_map_["1jet_medium_incbveto"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
-    alias_map_["vbf_vloose"]                         = "(n_jets>=2 && jdeta>3.0 && mjj>200.)";
-    alias_map_["vbf_vloose_plusvecpt"]               = "(n_jets>=2 && jdeta>3.0 && mjj>200. && jets_totpt>=80.)";
+
     
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
