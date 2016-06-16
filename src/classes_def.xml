@@ -38,6 +38,8 @@
   <class name="ic::EventInfo"/>
   <class name="ic::PileupInfo"/>
   <class name="std::vector<ic::PileupInfo>"/>
+  <class name="ic::ICL1TObject"/>
+  <class name="std::vector<ic::ICL1TObject>"/>
   <class name="ic::TriggerPath"/>
   <class name="std::vector<ic::TriggerPath>"/>
   <class name="ic::SuperCluster"/>
