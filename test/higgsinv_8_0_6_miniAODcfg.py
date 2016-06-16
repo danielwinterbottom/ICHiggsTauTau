@@ -51,21 +51,21 @@ opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
 
-
+opts.register('doBXloop', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Do loop on all BX?")
 
 opts.parseArguments()
 
 infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
-if not isData:
-  doHT      = opts.doHT
-else:
-  doHT      = 0
+if not isData: doHT = opts.doHT
+else: doHT = 0
 
 tag         = opts.globalTag
 release     = opts.release
-
+doBXloop    = opts.doBXloop
+if not doBXloop: doBXloop = 0
 
 if not release in ["76X", "80XMINIAOD"]:
   print 'Release not recognised, exiting!'
@@ -75,7 +75,7 @@ print 'isData      : '+str(isData)
 #print 'globalTag   : '+tag
 print 'globalTag   : '+str(tag)
 print 'doHT        : '+str(doHT)
-
+print 'doBXloop    : '+str(doBXloop)
 
 ################################################################                                                                                          
 # Standard setup                                                                                                                                           
@@ -591,7 +591,8 @@ process.icTauSequence = cms.Sequence(
 if isData:
   process.icL1TauProducer = cms.EDProducer("ICL1TObjectProducer<l1t::Tau>",
     branch = cms.string("l1tTau"),
-    input  = cms.InputTag("caloStage2Digis","Tau","RECO")
+    input  = cms.InputTag("caloStage2Digis","Tau","RECO"),
+    doBXloop = opts.doBXloop
   )
 
 ## riccardo ## process.icL1ExtraTauProducer = cms.EDProducer("ICCandidateProducer",
@@ -1294,21 +1295,25 @@ if isData:
   process.icL1EtSumProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EtSum>',
     branch = cms.string("l1tEtSum"),
     input = cms.InputTag("caloStage2Digis","EtSum","RECO"),
+    doBXloop = opts.doBXloop
   )
 
   process.icL1MuonsProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
     branch = cms.string("l1tMuon"),
     input = cms.InputTag("gmtStage2Digis","Muon","RECO"),
+    doBXloop = opts.doBXloop
   )
   
   process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
     branch = cms.string("l1tEGamma"),
     input = cms.InputTag("caloStage2Digis","EGamma","RECO"),
+    doBXloop = opts.doBXloop
   )
   
   process.icL1JetProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Jet>',
     branch = cms.string("l1tJet"),
     input = cms.InputTag("caloStage2Digis","Jet","RECO"),
+    doBXloop = opts.doBXloop
   )
   
   

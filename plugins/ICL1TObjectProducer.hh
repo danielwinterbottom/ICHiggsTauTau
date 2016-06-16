@@ -64,7 +64,8 @@ class ICL1TObjectProducer : public edm::EDProducer {
 
   edm::InputTag input_;
   std::string branch_;
-
+  int doBXloop_;
+  
   std::vector<ic::ICL1TObject> *ic_l1t_object_;
   edm::EDGetTokenT< BXVector<T> > m_EDToken_l1t_object;
 
@@ -82,15 +83,11 @@ class ICL1TObjectProducer : public edm::EDProducer {
 template <class T>
 ICL1TObjectProducer<T>::ICL1TObjectProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
-      branch_(config.getParameter<std::string>("branch")) {
-  
-  //consumes< BXVector<T> >(input_);
+      branch_(config.getParameter<std::string>("branch")),
+      doBXloop_(config.getParameter<int>("doBXloop")){
 
   ic_l1t_object_ = new std::vector<ic::ICL1TObject>();
-
   PrintHeaderWithProduces(config, input_, branch_);
-  
-  //edm::InputTag inputTag_TObject = config.getUntrackedParameter<edm::InputTag>( ("inputTag_"+branch_).c_str(), edm::InputTag("simCaloStage2Digis") );
   m_EDToken_l1t_object = consumes< BXVector<T> >(input_);
 
 }
@@ -111,28 +108,43 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
   edm::Handle< BXVector<T> > candidate_collection;
 
   event.getByToken(m_EDToken_l1t_object, candidate_collection);
-  //event.getByLabel(input_, candidate_collection);  //adding something which should work with older CMSSW versions you need to use getByLabel
   ic_l1t_object_->clear();
   ic_l1t_object_->resize(candidate_collection->size(), ic::ICL1TObject());
   
   unsigned counter_objects = 0;
   
   if (candidate_collection.isValid()){ 
-    //for (int ibx = candidate_collection->getFirstBX(); ibx <= candidate_collection->getLastBX(); ++ibx) {
-      //cout << "Processing ibx=" << ibx << endl;
+    if (doBXloop_ == 0){
       for (unsigned i = 0; i < candidate_collection->size(0); ++i){
         T const& src = candidate_collection->at(0,i);
         ic::ICL1TObject& dest = ic_l1t_object_->at(counter_objects);
         
         constructSpecific(src,dest);
-         
+        
         ROOT::Math::PtEtaPhiEVector tempVector( src.pt(), src.eta(), src.phi(), src.energy() );
         dest.set_vector(tempVector);
         ic_l1t_object_->push_back(dest);
         
         counter_objects++;
       }
-    //}
+    }
+    else{
+      for (int ibx = candidate_collection->getFirstBX(); ibx <= candidate_collection->getLastBX(); ++ibx) {
+        cout << "Processing ibx=" << ibx << endl;
+        for (unsigned i = 0; i < candidate_collection->size(ibx); ++i){
+          T const& src = candidate_collection->at(ibx,i);
+          ic::ICL1TObject& dest = ic_l1t_object_->at(counter_objects);
+          
+          constructSpecific(src,dest);
+           
+          ROOT::Math::PtEtaPhiEVector tempVector( src.pt(), src.eta(), src.phi(), src.energy() );
+          dest.set_vector(tempVector);
+          ic_l1t_object_->push_back(dest);
+          
+          counter_objects++;
+        }
+      }
+    }
   } 
   else {
     edm::LogWarning("MissingProduct ") << " L1Upgrade " << candidate_collection << " not found. Branch will not be filled." << std::endl;
@@ -198,8 +210,12 @@ void ICL1TObjectProducer<l1t::EtSum>::constructSpecific( l1t::EtSum const &src, 
                 
                 int type = static_cast<int>( src.getType() );
                 dest.setSumType(type);
-                std::cout << "The getSumType is: " << dest.getSumType() <<"    "<< std::endl;
-                std::cout << "The pt is:         " << src.pt()          <<"    "<< std::endl;
+                if (doBXloop_ != 0){
+                  
+                  std::cout << "The getSumType is: " << dest.getSumType() <<"    ";
+                  std::cout << "The pt is:         " << src.pt()          <<"    "<< std::endl;
+                
+                }
 }
 
 
@@ -210,6 +226,4 @@ void ICL1TObjectProducer<T>::beginJob() {
 
 template <class T>
 void ICL1TObjectProducer<T>::endJob() {}
-
-
 #endif
