@@ -28,13 +28,25 @@ namespace ic {
     ICL1TObject();
     virtual ~ICL1TObject();
     virtual void Print() const;
-
+    
+    void setSumType(short int value) { sumType = value; }
+    short int getSumType() { return sumType; }
+    
+    void setCharge(short int value) { charge = value; }
+    short int getCharge() { return charge; }
+    
+    void setIsolation(unsigned short int value) { isolation = value; }
+    unsigned short int getIsolation() { return isolation; }
+    
+    void setQuality(unsigned short int value) { quality = value; }
+    unsigned short int getQuality() { return quality; }
+    
     #ifndef SKIP_CINT_DICT
   public:
     ClassDef(ICL1TObject, 1);
     #endif
   
-  public:
+  private:
     short int          sumType;
     short int          charge;
     unsigned short int isolation;
