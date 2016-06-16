@@ -64,7 +64,7 @@ class ICL1TObjectProducer : public edm::EDProducer {
 
   edm::InputTag input_;
   std::string branch_;
-  int doBXloop_;
+  bool doBXloop_;
   
   std::vector<ic::ICL1TObject> *ic_l1t_object_;
   edm::EDGetTokenT< BXVector<T> > m_EDToken_l1t_object;
@@ -84,7 +84,7 @@ template <class T>
 ICL1TObjectProducer<T>::ICL1TObjectProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
-      doBXloop_(config.getParameter<int>("doBXloop")){
+      doBXloop_(config.getParameter<bool>("doBXloop")){
 
   ic_l1t_object_ = new std::vector<ic::ICL1TObject>();
   PrintHeaderWithProduces(config, input_, branch_);
@@ -114,23 +114,8 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
   unsigned counter_objects = 0;
   
   if (candidate_collection.isValid()){ 
-    if (doBXloop_ == 0){
-      for (unsigned i = 0; i < candidate_collection->size(0); ++i){
-        T const& src = candidate_collection->at(0,i);
-        ic::ICL1TObject& dest = ic_l1t_object_->at(counter_objects);
-        
-        constructSpecific(src,dest);
-        
-        ROOT::Math::PtEtaPhiEVector tempVector( src.pt(), src.eta(), src.phi(), src.energy() );
-        dest.set_vector(tempVector);
-        ic_l1t_object_->push_back(dest);
-        
-        counter_objects++;
-      }
-    }
-    else{
-      for (int ibx = candidate_collection->getFirstBX(); ibx <= candidate_collection->getLastBX(); ++ibx) {
-        cout << "Processing ibx=" << ibx << endl;
+    for (int ibx = ( doBXloop_ ? candidate_collection->getFirstBX() : 0 ); ibx <= ( doBXloop_ ? candidate_collection->getLastBX() : 0); ++ibx) {
+        // if (doBXloop_) {cout << "Processing ibx = " << ibx << endl;}
         for (unsigned i = 0; i < candidate_collection->size(ibx); ++i){
           T const& src = candidate_collection->at(ibx,i);
           ic::ICL1TObject& dest = ic_l1t_object_->at(counter_objects);
@@ -144,7 +129,6 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
           counter_objects++;
         }
       }
-    }
   } 
   else {
     edm::LogWarning("MissingProduct ") << " L1Upgrade " << candidate_collection << " not found. Branch will not be filled." << std::endl;
@@ -210,12 +194,10 @@ void ICL1TObjectProducer<l1t::EtSum>::constructSpecific( l1t::EtSum const &src, 
                 
                 int type = static_cast<int>( src.getType() );
                 dest.setSumType(type);
-                if (doBXloop_ != 0){
-                  
-                  std::cout << "The getSumType is: " << dest.getSumType() <<"    ";
-                  std::cout << "The pt is:         " << src.pt()          <<"    "<< std::endl;
-                
-                }
+                // if (doBXloop_) {
+                //   std::cout << "The getSumType is: " << dest.getSumType() <<"    ";
+                //   std::cout << "The pt is:         " << src.pt()          <<"    "<< std::endl;
+                // }
 }
 
 
