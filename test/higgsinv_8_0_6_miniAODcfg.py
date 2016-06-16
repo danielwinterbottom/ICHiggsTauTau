@@ -588,10 +588,16 @@ process.icTauSequence = cms.Sequence(
 # L1 Taus
 ################################################################
 
-process.icL1ExtraTauProducer = cms.EDProducer("ICCandidateProducer",
-  branch                     = cms.string("l1isoTaus"),
-  input                      = cms.InputTag("l1extraParticles","IsoTau","RECO")
-)
+if isData:
+  process.icL1TauProducer = cms.EDProducer("ICL1TObjectProducer<l1t::Tau>",
+    branch = cms.string("l1tTau"),
+    input  = cms.InputTag("caloStage2Digis","Tau","RECO")
+  )
+
+## riccardo ## process.icL1ExtraTauProducer = cms.EDProducer("ICCandidateProducer",
+## riccardo ##   branch                     = cms.string("l1isoTaus"),
+## riccardo ##   input                      = cms.InputTag("l1extraParticles","IsoTau","RECO")
+## riccardo ## )
 
 
 ##################################################################                                                                                          
@@ -1283,56 +1289,82 @@ for name in process.icTriggerObjectSequence.moduleNames():
 
 
 #L1 Extra information
-process.icL1ExtraMETProducer = cms.EDProducer('ICL1EtMissProducer',
-  branch = cms.string("l1extraMET"),
-  input = cms.InputTag("l1extraParticles","MET","RECO"),
+if isData:
+  
+  process.icL1EtSumProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EtSum>',
+    branch = cms.string("l1tEtSum"),
+    input = cms.InputTag("caloStage2Digis","EtSum","RECO"),
   )
 
-process.icL1ExtraMHTProducer = cms.EDProducer('ICL1EtMissProducer',
-  branch = cms.string("l1extraMHT"),
-  input = cms.InputTag("l1extraParticles","MHT","RECO"),
+  process.icL1MuonsProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
+    branch = cms.string("l1tMuon"),
+    input = cms.InputTag("gmtStage2Digis","Muon","RECO"),
   )
+  
+  process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+    branch = cms.string("l1tEGamma"),
+    input = cms.InputTag("caloStage2Digis","EGamma","RECO"),
+  )
+  
+  process.icL1JetProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Jet>',
+    branch = cms.string("l1tJet"),
+    input = cms.InputTag("caloStage2Digis","Jet","RECO"),
+  )
+  
+  
+  process.icL1Sequence = cms.Sequence(
+      process.icL1EtSumProducer+
+      ## riccardo ## process.icL1ExtraMETProducer+
+      ## riccardo ## process.icL1ExtraMHTProducer+
+      process.icL1MuonsProducer+
+      ## riccardo ## icL1ExtraMuonsProducer+
+      process.icL1EGammaProducer+
+      ## riccardo ## process.icL1ExtraEmIsolatedProducer+
+      ## riccardo ## process.icL1ExtraEmNonIsolatedProducer+
+      process.icL1JetProducer
+      ## riccardo ## process.icL1ExtraCentralJetProducer+
+      ## riccardo ## process.icL1ExtraForwardJetProducer
+      )
+  
+## riccardo ## process.icL1ExtraMETProducer = cms.EDProducer('ICL1EtMissProducer',
+## riccardo ##   branch = cms.string("l1extraMET"),
+## riccardo ##   input = cms.InputTag("l1extraParticles","MET","RECO"),
+## riccardo ##   )
+## riccardo ## 
+## riccardo ## process.icL1ExtraMHTProducer = cms.EDProducer('ICL1EtMissProducer',
+## riccardo ##   branch = cms.string("l1extraMHT"),
+## riccardo ##   input = cms.InputTag("l1extraParticles","MHT","RECO"),
+## riccardo ##   )
 
 #process.icL1ExtraHTTProducer = cms.EDProducer('ICCandidateProducer',
 #  branch = cms.string("l1extraHTT"),
 #  input = cms.InputTag("l1extraParticles","MHT","RECO"),
 #)
 
-process.icL1ExtraMuonsProducer = cms.EDProducer('ICCandidateFromL1MuonProducer',
-  branch = cms.string("l1extraMuons"),
-  input = cms.InputTag("l1extraParticles","","RECO"),
-  )
+## riccardo ## process.icL1ExtraMuonsProducer = cms.EDProducer('ICCandidateFromL1MuonProducer',
+## riccardo ##   branch = cms.string("l1extraMuons"),
+## riccardo ##   input = cms.InputTag("l1extraParticles","","RECO"),
+## riccardo ##   )
 
-process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICCandidateProducer',
-  branch = cms.string("l1extraEmIsolated"),
-  input = cms.InputTag("l1extraParticles","Isolated","RECO"),
-  )
+## riccardo ## process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICCandidateProducer',
+## riccardo ##   branch = cms.string("l1extraEmIsolated"),
+## riccardo ##   input = cms.InputTag("l1extraParticles","Isolated","RECO"),
+## riccardo ##   )
+## riccardo ## 
+## riccardo ## process.icL1ExtraEmNonIsolatedProducer = cms.EDProducer('ICCandidateProducer',
+## riccardo ##   branch = cms.string("l1extraEmNonIsolated"),
+## riccardo ##   input = cms.InputTag("l1extraParticles","NonIsolated","RECO"),
+## riccardo ##   )
 
-process.icL1ExtraEmNonIsolatedProducer = cms.EDProducer('ICCandidateProducer',
-  branch = cms.string("l1extraEmNonIsolated"),
-  input = cms.InputTag("l1extraParticles","NonIsolated","RECO"),
-  )
-
-process.icL1ExtraCentralJetProducer = cms.EDProducer('ICCandidateProducer',
-  branch = cms.string("l1extraCentralJets"),
-  input = cms.InputTag("l1extraParticles","Central","RECO"),
-)
-
-process.icL1ExtraForwardJetProducer = cms.EDProducer('ICCandidateProducer',
-  branch = cms.string("l1extraForwardJets"),
-  input = cms.InputTag("l1extraParticles","Forward","RECO"),
-)
-
-process.icL1ExtraSequence = cms.Sequence(
-    process.icL1ExtraMETProducer+
-    process.icL1ExtraMHTProducer+
-    process.icL1ExtraMuonsProducer+
-    process.icL1ExtraEmIsolatedProducer+
-    process.icL1ExtraEmNonIsolatedProducer+
-    process.icL1ExtraCentralJetProducer+
-    process.icL1ExtraForwardJetProducer
-    )
-
+## riccardo ## process.icL1ExtraCentralJetProducer = cms.EDProducer('ICCandidateProducer',
+## riccardo ##   branch = cms.string("l1extraCentralJets"),
+## riccardo ##   input = cms.InputTag("l1extraParticles","Central","RECO"),
+## riccardo ## )
+## riccardo ## 
+## riccardo ## process.icL1ExtraForwardJetProducer = cms.EDProducer('ICCandidateProducer',
+## riccardo ##   branch = cms.string("l1extraForwardJets"),
+## riccardo ##   input = cms.InputTag("l1extraParticles","Forward","RECO"),
+## riccardo ## )
 
 ################################################################
 # EventInfo
@@ -1377,13 +1409,13 @@ process.icEventInfoSequence = cms.Sequence(
 # process.HBHEISONoiseFilterResultProducer+
   process.icEventInfoProducer
 )
+
 ################################################################
 # Event
 ################################################################
 process.icEventProducer = producers.icEventProducer.clone()
 
-
-process.p = cms.Path(
+process.icProdSeq = cms.Sequence(
   process.ic80XSequence+
   process.icMiniAODSequence+
   process.icSelectionSequence+
@@ -1392,18 +1424,27 @@ process.p = cms.Path(
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauSequence+
-  process.icPhotonSequence+
-  process.icL1ExtraTauProducer+
+  process.icPhotonSequence
+)
+
+if isData:
+  process.icProdSeq += process.icL1TauProducer
+  
+process.icProdSeq += cms.Sequence(  
   process.icPFJetSequence+
   process.icGenSequence+
   process.icMetSequence+
   process.icEventInfoSequence+
   process.icTriggerSequence+
-  process.icTriggerObjectSequence+
-  process.icL1ExtraSequence+
-  process.icEventProducer
+  process.icTriggerObjectSequence
 )
 
+if isData:
+  process.icProdSeq += process.icL1Sequence
+  
+process.icProdSeq += process.icEventProducer
+
+process.p = cms.Path(process.icProdSeq)
 
 #process.out = cms.OutputModule("PoolOutputModule",
 #                               fileName = cms.untracked.string("edmdump.root")
