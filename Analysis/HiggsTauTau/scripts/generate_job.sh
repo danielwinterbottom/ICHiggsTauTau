@@ -22,4 +22,5 @@ then
 else
   echo "./$INPUT" >> $OUTPUT
 fi
+echo " $PWD/scripts/copy_to_final_destination.py " >> $OUTPUT 
 chmod +x $OUTPUT

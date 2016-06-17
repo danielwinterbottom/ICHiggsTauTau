@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include <cstdlib>
 // ROOT
 #include "TH1.h"
 // Objects
@@ -14,6 +15,7 @@
 //boost
 #include <boost/format.hpp>
 #include "boost/lexical_cast.hpp"
+#include "boost/filesystem.hpp"
 // Utilities
 #include "Utilities/interface/FnRootTools.h"
 // HTT-specific modules
@@ -66,14 +68,18 @@
 namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
-  addit_output_folder=json["baseline"]["addit_output_folder"].asString();
+  //addit_output_folder=json["baseline"]["addit_output_folder"].asString();
+  std::string temp_path = std::getenv("TMPDIR");
+  boost::filesystem::path testdir(temp_path);
+  bool on_batch_node = boost::filesystem::is_directory(testdir);
+  std::cout<<"On batch node "<<on_batch_node<<std::endl;
   if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else{std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
   svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   svfit_override = json["svfit_override"].asString();
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
-  output_folder=output_folder+"/"+addit_output_folder+"/";
+//  output_folder=output_folder+"/"+addit_output_folder+"/";
   lumimask_output_name=output_name + "_" +chan + "_" + postf; 
   //output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
   output_name=output_name + "_" + chan + "_" + postf + ".root";
@@ -84,8 +90,15 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  //   output_name="SYNCFILE"+output_name;
  // }
   if(!json["make_sync_ntuple"].asBool()) {
+    if(!on_batch_node){
       fs = std::make_shared<fwlite::TFileService>(
-       (output_folder+output_name).c_str());
+       (output_folder+"/"+addit_output_folder+"/"+output_name).c_str());
+    } else {
+       boost::filesystem::path additdir((temp_path+"/"+addit_output_folder).c_str());
+       boost::filesystem::create_directory(additdir);
+       fs = std::make_shared<fwlite::TFileService>(
+        (temp_path+"/"+addit_output_folder+"/"+output_name).c_str());
+      }
   } else {
       // do not create output file when making sync ntuples
       fs = NULL;

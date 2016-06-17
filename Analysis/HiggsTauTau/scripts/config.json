@@ -44,7 +44,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/Mar05-postpreapp/",
+    "output_folder" : "/vols/cms/amd12/testdir/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
@@ -66,6 +66,7 @@
     "mc_pu_file"    : "input/pileup/MC_Fall15_PU25_V1.root",
     "run_trg_filter": false,
     "baseline": {
+      "addit_output_folder": "tesst",
       "tau_scale_mode"    : false,
       "jes_mode"          : 0,
       "btag_mode"         : 0,
