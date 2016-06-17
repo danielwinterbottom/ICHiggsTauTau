@@ -597,11 +597,6 @@ if isData:
     doBXloop = cms.bool(v_doBXloop)
   )
 
-## riccardo ## process.icL1ExtraTauProducer = cms.EDProducer("ICCandidateProducer",
-## riccardo ##   branch                     = cms.string("l1isoTaus"),
-## riccardo ##   input                      = cms.InputTag("l1extraParticles","IsoTau","RECO")
-## riccardo ## )
-
 
 ##################################################################                                                                                          
 #  Photons
@@ -1321,57 +1316,12 @@ if isData:
   
   process.icL1Sequence = cms.Sequence(
       process.icL1EtSumProducer+
-      ## riccardo ## process.icL1ExtraMETProducer+
-      ## riccardo ## process.icL1ExtraMHTProducer+
       process.icL1MuonsProducer+
-      ## riccardo ## icL1ExtraMuonsProducer+
       process.icL1EGammaProducer+
-      ## riccardo ## process.icL1ExtraEmIsolatedProducer+
-      ## riccardo ## process.icL1ExtraEmNonIsolatedProducer+
       process.icL1JetProducer
-      ## riccardo ## process.icL1ExtraCentralJetProducer+
-      ## riccardo ## process.icL1ExtraForwardJetProducer
       )
-  
-## riccardo ## process.icL1ExtraMETProducer = cms.EDProducer('ICL1EtMissProducer',
-## riccardo ##   branch = cms.string("l1extraMET"),
-## riccardo ##   input = cms.InputTag("l1extraParticles","MET","RECO"),
-## riccardo ##   )
-## riccardo ## 
-## riccardo ## process.icL1ExtraMHTProducer = cms.EDProducer('ICL1EtMissProducer',
-## riccardo ##   branch = cms.string("l1extraMHT"),
-## riccardo ##   input = cms.InputTag("l1extraParticles","MHT","RECO"),
-## riccardo ##   )
 
-#process.icL1ExtraHTTProducer = cms.EDProducer('ICCandidateProducer',
-#  branch = cms.string("l1extraHTT"),
-#  input = cms.InputTag("l1extraParticles","MHT","RECO"),
-#)
 
-## riccardo ## process.icL1ExtraMuonsProducer = cms.EDProducer('ICCandidateFromL1MuonProducer',
-## riccardo ##   branch = cms.string("l1extraMuons"),
-## riccardo ##   input = cms.InputTag("l1extraParticles","","RECO"),
-## riccardo ##   )
-
-## riccardo ## process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICCandidateProducer',
-## riccardo ##   branch = cms.string("l1extraEmIsolated"),
-## riccardo ##   input = cms.InputTag("l1extraParticles","Isolated","RECO"),
-## riccardo ##   )
-## riccardo ## 
-## riccardo ## process.icL1ExtraEmNonIsolatedProducer = cms.EDProducer('ICCandidateProducer',
-## riccardo ##   branch = cms.string("l1extraEmNonIsolated"),
-## riccardo ##   input = cms.InputTag("l1extraParticles","NonIsolated","RECO"),
-## riccardo ##   )
-
-## riccardo ## process.icL1ExtraCentralJetProducer = cms.EDProducer('ICCandidateProducer',
-## riccardo ##   branch = cms.string("l1extraCentralJets"),
-## riccardo ##   input = cms.InputTag("l1extraParticles","Central","RECO"),
-## riccardo ## )
-## riccardo ## 
-## riccardo ## process.icL1ExtraForwardJetProducer = cms.EDProducer('ICCandidateProducer',
-## riccardo ##   branch = cms.string("l1extraForwardJets"),
-## riccardo ##   input = cms.InputTag("l1extraParticles","Forward","RECO"),
-## riccardo ## )
 
 ################################################################
 # EventInfo
