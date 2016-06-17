@@ -461,6 +461,25 @@ void HTTSequence::BuildSequence(){
   //		to_check.push_back(addit_to_check.at(j));
 	 // }
    } 
+
+
+// Defining good-lumi jsons
+  std::string data_json = "";
+  if (era_type == era::data_2011) {
+    if (channel == channel::em) {
+      data_json = "input/json/json_data_2011.txt";
+    } else{
+      data_json = "input/json/json_data_2011_et_mt.txt";
+    }
+  }             
+  if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
+  //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
+  if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
+  if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
+  //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
+  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
+
+
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
    std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
    throw;
@@ -470,7 +489,15 @@ void HTTSequence::BuildSequence(){
     .set_fs(fs.get()));
 /*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));*/
-  }else{
+  }else if(is_data && js["lumi_mask_only"].asBool()){
+   //LumiMask module  just for the mode in which we only write out the 
+   //output jsons
+   LumiMask lumiMask = LumiMask("LumiMask")
+     .set_produce_output_jsons(lumimask_output_name.c_str())
+     .set_input_file(data_json);
+ 
+    BuildModule(lumiMask);
+  } else{
 
   HTTPrint httPrint("HTTPrint");
   if(era_type==era::data_2015){
@@ -561,31 +588,18 @@ void HTTSequence::BuildSequence(){
   }
 
 
-  if(is_data && strategy_type!=strategy::phys14){
-  std::string data_json = "";
-  if (era_type == era::data_2011) {
-    if (channel == channel::em) {
-      data_json = "input/json/json_data_2011.txt";
-    } else{
-      data_json = "input/json/json_data_2011_et_mt.txt";
-    }
-  }             
-  if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
-  //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
-  if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
-  if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
-  //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
-  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
 
- LumiMask lumiMask = LumiMask("LumiMask")
-   .set_produce_output_jsons("")
-   .set_input_file(data_json);
+ //Build LumiMask module here - json file definition eralier in the code to be able to 
+ //run *just* this module
+ if(is_data && strategy_type!=strategy::phys14){
+   LumiMask lumiMask = LumiMask("LumiMask")
+     .set_produce_output_jsons("")
+     .set_input_file(data_json);
  
  if(js["save_output_jsons"].asBool()){
   lumiMask.set_produce_output_jsons(lumimask_output_name.c_str());
- }
- 
- BuildModule(lumiMask);
+   }
+  BuildModule(lumiMask);
  }
 
 if(strategy_type == strategy::fall15 && output_name.find("WGToLNuG")!=output_name.npos){
