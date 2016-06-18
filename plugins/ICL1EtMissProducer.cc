@@ -42,8 +42,7 @@ void ICL1EtMissProducer::produce(edm::Event& event,
     dest.set_phi(src.phi());
     dest.set_energy(src.etTotal());
     dest.set_charge(src.charge());
-    std::cout<<i<<" "<<src.bx()<<std::endl;
-    std::cout<<i<<" "<<src.pt()<<std::endl;
+    //std::cout<<i<<" "<<src.bx()<<std::endl;
   }
 }
 
