@@ -14,37 +14,19 @@ LumiMask::LumiMask(std::string const& name) : ModuleBase(name) {
 LumiMask::~LumiMask() { ; }
 
 int LumiMask::PreAnalysis() {
-  std::cout << "** PreAnalysis Info for LumiMask **" << std::endl;
+  PrintHeader("LumiMask");
   if (input_file_ != "") {
-    std::cout << "Parsing json file: " << input_file_ << std::endl;
+    PrintArg("input_file", input_file_);
     Json::Value js = ExtractJsonFromFile(input_file_);
-    for (auto const& key : js.getMemberNames()) {
-      Json::Value const& run_js = js[key];
-      unsigned run = boost::lexical_cast<unsigned>(key);
-      for (unsigned i = 0; i < run_js.size(); ++i) {
-        unsigned range_min = 0;
-        unsigned range_max = 0;
-        unsigned counted = 0;
-        for (unsigned j = 0; j < run_js[i].size(); ++j) {
-          ++counted;
-          if (counted == 1) range_min = run_js[i][j].asUInt();
-          if (counted == 2) range_max = run_js[i][j].asUInt();
-        }
-        if (counted != 2 || range_max < range_min) {
-          std::cout << "Something has gone wrong parsing the json file!\n";
-          throw;
-        } else {
-          for (unsigned i = range_min; i <= range_max; ++i)
-            input_json[run].insert(i);
-        }
-      }
-    }
+    FillJsonMapFromJson(input_json_, js);
   } else {
-    std::cout << "No json file specified!" << std::endl;
+    PrintArg("input_file", "-");
   }
   if (produce_output_jsons_ != "") {
-    std::cout << "Writing output jsons with name: " << produce_output_jsons_
-              << std::endl;
+    PrintArg("produce_output",
+             produce_output_jsons_ + "{_all,_accept_,reject}.json");
+  } else {
+    PrintArg("produce_output", false);
   }
   return 0;
 }
@@ -53,16 +35,20 @@ int LumiMask::Execute(TreeEvent* event) {
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
   unsigned run = eventInfo->run();
   unsigned ls = eventInfo->lumi_block();
-  all_json[run].insert(ls);
+  all_json_[run].insert(ls);
   bool accept = false;
-  if (input_json.find(run) != input_json.end()) {
-    if (input_json[run].find(ls) != input_json[run].end()) accept = true;
+  if (input_json_.find(run) != input_json_.end()) {
+    if (input_json_[run].find(ls) != input_json_[run].end()) accept = true;
+  }
+  // If no input json file was loaded we will also accept this event
+  if (input_file_ == "") {
+    accept = true;
   }
   if (accept) {
-    accept_json[run].insert(ls);
+    accept_json_[run].insert(ls);
     return 0;
   } else {
-    reject_json[run].insert(ls);
+    reject_json_[run].insert(ls);
     return 1;
   }
 
@@ -72,54 +58,71 @@ int LumiMask::PostAnalysis() {
   if (produce_output_jsons_ != "") {
     std::ofstream output;
     output.open((produce_output_jsons_ + "_all.json").c_str());
-    WriteJson(all_json, output);
+    WriteJson(all_json_, output);
     output.close();
     output.open((produce_output_jsons_ + "_accept.json").c_str());
-    WriteJson(accept_json, output);
+    WriteJson(accept_json_, output);
     output.close();
     output.open((produce_output_jsons_ + "_reject.json").c_str());
-    WriteJson(reject_json, output);
+    WriteJson(reject_json_, output);
     output.close();
   }
   return 0;
 }
 
-void LumiMask::WriteJson(JsonMap const& json, std::ofstream& output) {
-  for (JsonIt r_it = json.begin(); r_it != json.end(); ++r_it) {
-    if (r_it == json.begin()) {
-      output << "{\"";
-    } else {
-      output << " \"";
-    }
-    output << r_it->first << "\": [";
-    std::set<unsigned>::const_iterator it = r_it->second.begin();
-    while (it != r_it->second.end()) {
-      unsigned first_val = *it;
-      unsigned last_val = *it;
-      while (true) {
-        ++it;
-        if (it == r_it->second.end()) break;
-        if (*it == (last_val + 1)) {
-          last_val = *it;
-        } else {
-          break;
-        }
+void LumiMask::FillJsonMapFromJson(JsonMap & jsmap, Json::Value const& js) {
+  for (auto const& key : js.getMemberNames()) {
+    Json::Value const& run_js = js[key];
+    unsigned run = boost::lexical_cast<unsigned>(key);
+    for (unsigned i = 0; i < run_js.size(); ++i) {
+      if (run_js[i].size() != 2) {
+        throw std::runtime_error(
+            "[LumiMask] Lumi range not in the form [X,Y]");
       }
-      output << "[" << first_val << ", " << last_val << "]";
-      if (it != r_it->second.end()) {
-        output << ", ";
-      } else {
-        output << "]";
+      unsigned range_min = run_js[i][0].asUInt();
+      unsigned range_max = run_js[i][1].asUInt();
+      if (range_max < range_min) {
+        throw std::runtime_error(
+            "[LumiMask] Have lumi range [X,Y] where Y < X");
       }
-    }
-    JsonIt r_test = r_it;
-    ++r_test;
-    if (r_test == json.end()) {
-      output << "}" << std::endl;
-    } else {
-      output << "," << std::endl;
+      for (unsigned i = range_min; i <= range_max; ++i) {
+          jsmap[run].insert(i);
+      }
     }
   }
+}
+
+Json::Value LumiMask::JsonFromJsonMap(JsonMap const& jsmap) {
+  Json::Value js;
+  for (auto const& info : jsmap) {
+    auto const& run = boost::lexical_cast<std::string>(info.first);
+    auto const& lumis = info.second;
+    if (lumis.size() == 0) continue;
+    auto it = lumis.begin();
+    unsigned first_val = *it;
+    unsigned last_val = *it;
+    while (it != lumis.end()) {
+      ++it;
+      if (it != lumis.end() && *it == last_val + 1) {
+        last_val = *it;
+      } else {
+        Json::Value lumi_pair;
+        lumi_pair.append(first_val);
+        lumi_pair.append(last_val);
+        js[run].append(lumi_pair);
+        if (it != lumis.end()) {
+          first_val = *it;
+          last_val = *it;
+        }
+      }
+    }
+  }
+  return js;
+}
+
+void LumiMask::WriteJson(JsonMap const& json, std::ofstream& output) {
+  Json::StyledWriter writer;
+  output << writer.write(JsonFromJsonMap(json));
 }
 
 void LumiMask::PrintInfo() { ; }
