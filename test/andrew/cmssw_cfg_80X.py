@@ -89,10 +89,12 @@ process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
     )
 
 process.icEventProducer = producers.icEventProducer.clone()
+process.icHashTreeProducer = cms.EDProducer('ICHashTreeProducer')
 
 process.p = cms.Path(
     process.icTriggerPathProducer+
-    process.icEventProducer
+    process.icEventProducer+
+    process.icHashTreeProducer
 )
 
 process.schedule = cms.Schedule(process.p)
