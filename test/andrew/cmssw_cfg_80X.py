@@ -50,7 +50,7 @@ process.maxEvents = cms.untracked.PSet(
   input = cms.untracked.int32(3000)
 )
 
-process.MessageLogger.cerr.FwkReport.reportEvery = 50
+process.MessageLogger.cerr.FwkReport.reportEvery = 500
 
 process.options   = cms.untracked.PSet(
   wantSummary = cms.untracked.bool(True)
@@ -88,11 +88,25 @@ process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
     inputPrescales = cms.InputTag("patTrigger", "", "RECO")
     )
 
+process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+    includeJetRho       = cms.bool(False),
+    includeHT           = cms.bool(False),
+    lheProducer         = cms.InputTag("externalLHEProducer"),
+    inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
+    includeLeptonRho    = cms.bool(False),
+    inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
+    includeVertexCount  = cms.bool(True),
+    inputVertices       = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    includeCSCFilter    = cms.bool(False),
+    inputCSCFilter      = cms.InputTag("BeamHaloSummary")
+    )
+
 process.icEventProducer = producers.icEventProducer.clone()
 process.icHashTreeProducer = cms.EDProducer('ICHashTreeProducer')
 
 process.p = cms.Path(
     process.icTriggerPathProducer+
+    process.icEventInfoProducer+
     process.icEventProducer+
     process.icHashTreeProducer
 )
