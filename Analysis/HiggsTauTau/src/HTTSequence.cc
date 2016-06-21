@@ -691,23 +691,23 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
       }));
 
 
-  // Trigger filtering
-//    if (js["run_trg_filter"].asBool()) {
-// if(is_data){
-   if(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool()){
-    if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
-        BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-            .set_channel(channel)
-            .set_mc(mc_type)
-            .set_era(era_type)
-            .set_is_data(is_data)
-            .set_is_embedded(is_embedded)
-            .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-            .set_do_singlelepton(js["do_singlelepton"].asBool())
-            .set_pair_label("ditau"));
-      }
-   }
-// }
+//  // Trigger filtering
+////    if (js["run_trg_filter"].asBool()) {
+//// if(is_data){
+//   if(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool()){
+//    if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
+//        BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+//            .set_channel(channel)
+//            .set_mc(mc_type)
+//            .set_era(era_type)
+//            .set_is_data(is_data)
+//            .set_is_embedded(is_embedded)
+//            .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+//            .set_do_singlelepton(js["do_singlelepton"].asBool())
+//            .set_pair_label("ditau"));
+//      }
+//   }
+//// }
 }
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
@@ -974,7 +974,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_channel(channel)
     .set_era(era_type)
     .set_mc(mc_type)
-    .set_trg_applied_in_mc(true)
+    .set_trg_applied_in_mc(false)
     .set_do_trg_weights(false)
     .set_do_etau_fakerate(false)
     .set_do_mtau_fakerate(false)
@@ -989,7 +989,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_ditau_label("ditau")
     .set_do_btag_weight(false);
   if (!is_data) {
-    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
+    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(true);
     httWeights.set_do_btag_weight(true).set_btag_mode(btag_mode).set_bfake_mode(bfake_mode);
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
