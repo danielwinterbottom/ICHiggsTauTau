@@ -44,7 +44,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/Mar05-SMstudy/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/Mar05-No_mc_trigger/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
