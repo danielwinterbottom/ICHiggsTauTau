@@ -69,9 +69,9 @@ if __name__ == '__main__':
     rerecoparams=['isData=1','doHT=0','release=80XMINIAOD', 'globalTag=80X_dataRun2_Prompt_v8'] #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/
 
     #Run B
-    #tasks.append(('MET-2015D-16Dec-v1'           ,'/MET/Run2015D-16Dec2015-v1/MINIAOD'         ,json,rerecoparams,firstrun+'-'+maxrun))
-    #tasks.append(('SingleMuon-2015D-16Dec-v1'    ,'/SingleMuon/Run2015D-16Dec2015-v1/MINIAOD'  ,json,rerecoparams,firstrun+'-'+maxrun))
-    #tasks.append(('SinglePhoton-2015D-16Dec-v1'  ,'/SinglePhoton/Run2015D-16Dec2015-v1/MINIAOD',json,rerecoparams,firstrun+'-'+maxrun))
+    #           (('MET-2015D-16Dec-v1'           ,'/MET/Run2015D-16Dec2015-v1/MINIAOD'         ,json,rerecoparams,firstrun+'-'+maxrun))
+    #           (('SingleMuon-2015D-16Dec-v1'    ,'/SingleMuon/Run2015D-16Dec2015-v1/MINIAOD'  ,json,rerecoparams,firstrun+'-'+maxrun))
+    #           (('SinglePhoton-2015D-16Dec-v1'  ,'/SinglePhoton/Run2015D-16Dec2015-v1/MINIAOD',json,rerecoparams,firstrun+'-'+maxrun))
     tasks.append(('MET-2016B-PromptReco-v1'       ,'/MET/Run2016B-PromptReco-v1/MINIAOD'             ,rerecoparams,                   ))
     tasks.append(('MET-2016B-PromptReco-v2'       ,'/MET/Run2016B-PromptReco-v2/MINIAOD'             ,rerecoparams,                   ))
     tasks.append(('HTMHT-2016B-PromptReco-v1'     ,'/HTMHT/Run2016B-PromptReco-v1/MINIAOD'           ,rerecoparams,                   ))
