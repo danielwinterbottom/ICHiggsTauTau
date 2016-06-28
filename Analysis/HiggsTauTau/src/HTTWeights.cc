@@ -974,18 +974,20 @@ namespace ic {
           tau2_trg_down      = Efficiency(pt_2, 35.6264, 5.30711, 2.81591, 2.40649, 9.99958e-01);
           tau2_trg_mc_down   = Efficiency(pt_2, 36.2436, 5.58461, 5.12924, 2.05921, 9.32305e-01);
          }
-        tau1_trg = tau1_trg / tau1_trg_mc;
-        tau2_trg = tau2_trg / tau2_trg_mc;
-        //Conservative up/down weights as 
-        tau1_trg_up = tau1_trg_up / tau1_trg_mc_down;
-        tau2_trg_up = tau2_trg_up / tau2_trg_mc_down;
-        tau1_trg_down = tau1_trg_down / tau1_trg_mc_up;
-        tau2_trg_down = tau2_trg_down / tau2_trg_mc_up;
-        //Want to apply this on top of the default weight:
-        tau1_trg_up = tau1_trg_up / tau1_trg;
-        tau2_trg_up = tau2_trg_up / tau2_trg;
-        tau1_trg_down = tau1_trg_down / tau1_trg;
-        tau2_trg_down = tau2_trg_down / tau2_trg;
+        if(trg_applied_in_mc_){
+          tau1_trg = tau1_trg / tau1_trg_mc;
+          tau2_trg = tau2_trg / tau2_trg_mc;
+          //Conservative up/down weights as 
+          tau1_trg_up = tau1_trg_up / tau1_trg_mc_down;
+          tau2_trg_up = tau2_trg_up / tau2_trg_mc_down;
+          tau1_trg_down = tau1_trg_down / tau1_trg_mc_up;
+          tau2_trg_down = tau2_trg_down / tau2_trg_mc_up;
+          //Want to apply this on top of the default weight:
+          tau1_trg_up = tau1_trg_up / tau1_trg;
+          tau2_trg_up = tau2_trg_up / tau2_trg;
+          tau1_trg_down = tau1_trg_down / tau1_trg;
+          tau2_trg_down = tau2_trg_down / tau2_trg;
+        }
         weight *= (tau1_trg*tau2_trg);
         event->Add("trigweight_1", tau1_trg);
         event->Add("trigweight_2", tau2_trg);

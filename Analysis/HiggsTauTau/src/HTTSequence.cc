@@ -461,6 +461,25 @@ void HTTSequence::BuildSequence(){
   //		to_check.push_back(addit_to_check.at(j));
 	 // }
    } 
+
+
+// Defining good-lumi jsons
+  std::string data_json = "";
+  if (era_type == era::data_2011) {
+    if (channel == channel::em) {
+      data_json = "input/json/json_data_2011.txt";
+    } else{
+      data_json = "input/json/json_data_2011_et_mt.txt";
+    }
+  }             
+  if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
+  //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
+  if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
+  if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
+  //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
+  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
+
+
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
    std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
    throw;
@@ -470,7 +489,15 @@ void HTTSequence::BuildSequence(){
     .set_fs(fs.get()));
 /*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));*/
-  }else{
+  }else if(is_data && js["lumi_mask_only"].asBool()){
+   //LumiMask module  just for the mode in which we only write out the 
+   //output jsons
+   LumiMask lumiMask = LumiMask("LumiMask")
+     .set_produce_output_jsons(lumimask_output_name.c_str())
+     .set_input_file(data_json);
+ 
+    BuildModule(lumiMask);
+  } else{
 
   HTTPrint httPrint("HTTPrint");
   if(era_type==era::data_2015){
@@ -561,31 +588,18 @@ void HTTSequence::BuildSequence(){
   }
 
 
-  if(is_data && strategy_type!=strategy::phys14){
-  std::string data_json = "";
-  if (era_type == era::data_2011) {
-    if (channel == channel::em) {
-      data_json = "input/json/json_data_2011.txt";
-    } else{
-      data_json = "input/json/json_data_2011_et_mt.txt";
-    }
-  }             
-  if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
-  //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
-  if (era_type == era::data_2015&&output_name.find("2015C")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
-  if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
-  //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
-  if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
 
- LumiMask lumiMask = LumiMask("LumiMask")
-   .set_produce_output_jsons("")
-   .set_input_file(data_json);
+ //Build LumiMask module here - json file definition eralier in the code to be able to 
+ //run *just* this module
+ if(is_data && strategy_type!=strategy::phys14){
+   LumiMask lumiMask = LumiMask("LumiMask")
+     .set_produce_output_jsons("")
+     .set_input_file(data_json);
  
  if(js["save_output_jsons"].asBool()){
   lumiMask.set_produce_output_jsons(lumimask_output_name.c_str());
- }
- 
- BuildModule(lumiMask);
+   }
+  BuildModule(lumiMask);
  }
 
 if(strategy_type == strategy::fall15 && output_name.find("WGToLNuG")!=output_name.npos){
@@ -691,23 +705,24 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
       }));
 
 
-//  // Trigger filtering
-////    if (js["run_trg_filter"].asBool()) {
-//// if(is_data){
-//   if(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool()){
-//    if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
-//        BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-//            .set_channel(channel)
-//            .set_mc(mc_type)
-//            .set_era(era_type)
-//            .set_is_data(is_data)
-//            .set_is_embedded(is_embedded)
-//            .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-//            .set_do_singlelepton(js["do_singlelepton"].asBool())
-//            .set_pair_label("ditau"));
-//      }
-//   }
-//// }
+  // Trigger filtering
+//    if (js["run_trg_filter"].asBool()) {
+// if(is_data){
+   
+   if((is_data || js["trg_in_mc"].asBool()) && (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
+    if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
+        BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+            .set_channel(channel)
+            .set_mc(mc_type)
+            .set_era(era_type)
+            .set_is_data(is_data)
+            .set_is_embedded(is_embedded)
+            .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+            .set_do_singlelepton(js["do_singlelepton"].asBool())
+            .set_pair_label("ditau"));
+      }
+   }
+// }
 }
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
@@ -974,7 +989,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_channel(channel)
     .set_era(era_type)
     .set_mc(mc_type)
-    .set_trg_applied_in_mc(false)
+    .set_trg_applied_in_mc(true)
     .set_do_trg_weights(false)
     .set_do_etau_fakerate(false)
     .set_do_mtau_fakerate(false)
@@ -989,7 +1004,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_ditau_label("ditau")
     .set_do_btag_weight(false);
   if (!is_data) {
-    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(true);
+    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     httWeights.set_do_btag_weight(true).set_btag_mode(btag_mode).set_bfake_mode(bfake_mode);
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
@@ -1162,7 +1177,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4))
     .set_z_pt_mass_hist(new TH2D(z_pt_weights));
   if (!is_data ) {
-    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
+    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
     if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
     if(channel == channel::et) httWeights.set_do_etau_fakerate(true);
   }
@@ -1322,7 +1337,7 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
    } else if(strategy_type==strategy::phys14){
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
     } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15){
-      ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
+      ElecID = [](Electron const* e) { return ElectronHTTIdTrigSpring15(e, false); };
     }
 
 
@@ -1529,7 +1544,7 @@ void HTTSequence::BuildEMPairs() {
    } else if(strategy_type==strategy::phys14){
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
    } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15){
-      ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
+      ElecID = [](Electron const* e) { return ElectronHTTIdTrigSpring15(e, false); };
    }
 
 

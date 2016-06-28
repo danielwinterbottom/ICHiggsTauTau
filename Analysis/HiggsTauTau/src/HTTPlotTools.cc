@@ -528,6 +528,23 @@ namespace ic {
     }
     
     canv->Update();
+                                               
+    double NHsignal=0;
+    double NTbackground=0;
+    double NZTT=0;
+    for(unsigned j = 0; j < unsigned(sig_elements.size()); ++j){
+        NHsignal += sig_elements[j].hist_ptr()->Integral(0,sig_elements[j].hist_ptr()->GetNbinsX()+1)/signal_scale_;
+    }
+    for(unsigned j = 0; j < unsigned(bkg_elements.size()); ++j){
+        NTbackground +=  bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
+        if(j==unsigned(bkg_elements.size())-1) NZTT = bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
+    }
+    
+    std::cout << NHsignal     << std::endl;
+    std::cout << NTbackground << std::endl;
+    std::cout << NZTT         << std::endl; 
+    std::cout << NHsignal/sqrt(NTbackground) << std::endl;
+    std::cout << NZTT/sqrt(NTbackground - NZTT) << std::endl;
     
     // Blind data histogram using either auto-blinding or user specified range
     if(autoblind_){

@@ -911,12 +911,9 @@ namespace ic {
     if(!pass_preselection) return false;
     double idmva = elec->GetIdIso("mvaTrigSpring15");
     if (!loose_wp) {
-      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
-      if (eta >  0.8 && eta <= 1.479   && idmva > 0.89) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;
-/*      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
+      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.967910) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;*/
+      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;
     } else {
       if (eta <= 0.8                    && idmva > 0.972153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479    && idmva > 0.922126) pass_mva = true;
