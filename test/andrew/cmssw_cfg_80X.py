@@ -80,12 +80,12 @@ process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
 process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
     branch = cms.string("triggerPaths"),
-    input  = cms.InputTag("TriggerResults", "", "HLT"),
+    input  = cms.InputTag("TriggerResults", "", 'HLT' if isData else 'HLT2'),
     includeAcceptedOnly = cms.bool(False),
     saveStrings = cms.bool(False),
     splitVersion = cms.bool(True),
     inputIsStandAlone = cms.bool(True),
-    inputPrescales = cms.InputTag("patTrigger", "", "RECO")
+    inputPrescales = cms.InputTag("patTrigger", "", 'RECO' if isData else 'PAT')
     )
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
