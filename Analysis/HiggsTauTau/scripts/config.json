@@ -30,7 +30,7 @@
     "add_Hhh_variables" : false,
     "get_effective" : false,
     "do_btag_eff":false,
-    "trg_in_mc" : false,
+    "trg_in_mc" : true,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "store_trigobjpt" :true,
