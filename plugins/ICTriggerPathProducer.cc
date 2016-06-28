@@ -101,6 +101,18 @@ void ICTriggerPathProducer::produce(edm::Event& event,
   }
 }
 
+void ICTriggerPathProducer::beginRun(edm::Run const& run,
+                                       edm::EventSetup const& es) {
+  std::string proc = "HLT2";
+  bool changed = true;
+  bool res = hlt_config_.init(run, es, proc, changed);
+  if (!res)
+    throw std::runtime_error(
+        "HLTConfigProvider did not initialise correctly");
+  std::cout << hlt_config_.tableName() << "\n";
+}
+
+
 void ICTriggerPathProducer::SetNameInfo(std::string name,
                                         ic::TriggerPath* path) {
   if (split_version_) {
