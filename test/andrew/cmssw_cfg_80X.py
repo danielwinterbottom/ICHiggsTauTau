@@ -80,12 +80,14 @@ process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
 process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
     branch                  = cms.string("triggerPaths"),
-    input                   = cms.InputTag("TriggerResults", "", 'HLT' if isData else 'HLT2'),
+    input                   = cms.InputTag('TriggerResults', '', 'HLT' if isData else 'HLT2'),
     includeAcceptedOnly     = cms.bool(False),
     saveStrings             = cms.bool(False),
     splitVersion            = cms.bool(True),
     inputIsStandAlone       = cms.bool(True),
-    inputPrescales          = cms.InputTag("patTrigger", "", 'RECO' if isData else 'PAT')
+    inputPrescales          = cms.InputTag('patTrigger', '', 'RECO' if isData else 'PAT'),
+    prescaleFallback        = cms.bool(True),
+    hltProcess              = cms.string('HLT' if isData else 'HLT2')
     )
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
@@ -146,18 +148,19 @@ paths_2016_MC = [
     'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v'
 ]
 
-for path in paths_2016_MC:
-    shortname = path[4:-2]  # drop the HLT_ and _v parts
-    setattr(process, 'ic_%s_ObjectProducer' % shortname, producers.icTriggerObjectProducer.clone(
-        input               = cms.InputTag("selectedPatTrigger"),
-        inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2"),
-        branch              = cms.string("triggerObjects_%s" % shortname),
-        hltPath             = cms.string(path),
-        inputIsStandAlone   = cms.bool(True),
-        storeOnlyIfFired    = cms.bool(False)
+if not isData:
+    for path in paths_2016_MC:
+        shortname = path[4:-2]  # drop the HLT_ and _v parts
+        setattr(process, 'ic_%s_ObjectProducer' % shortname, producers.icTriggerObjectProducer.clone(
+            input               = cms.InputTag("selectedPatTrigger"),
+            inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2"),
+            branch              = cms.string("triggerObjects_%s" % shortname),
+            hltPath             = cms.string(path),
+            inputIsStandAlone   = cms.bool(True),
+            storeOnlyIfFired    = cms.bool(False)
 
-    ))
-    process.icTriggerObjectSequence += cms.Sequence(getattr(process, 'ic_%s_ObjectProducer' % shortname))
+        ))
+        process.icTriggerObjectSequence += cms.Sequence(getattr(process, 'ic_%s_ObjectProducer' % shortname))
 
 
 process.icEventProducer = producers.icEventProducer.clone()

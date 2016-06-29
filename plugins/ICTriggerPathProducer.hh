@@ -34,6 +34,8 @@ class ICTriggerPathProducer : public edm::EDProducer {
   bool split_version_;
   bool input_is_standalone_;
   edm::InputTag input_prescales_;
+  std::string hlt_process_;
+  bool prescale_fallback_;
   std::map<std::string, std::size_t> observed_paths_;
 
   HLTConfigProvider hlt_config_;
