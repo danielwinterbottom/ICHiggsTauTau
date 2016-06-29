@@ -107,7 +107,7 @@ paths_2016_MC = [
     'HLT_IsoMu18_v',
     'HLT_IsoMu20_v',
     'HLT_IsoMu22_v',
-    # 'HLT_IsoMu22_eta2p1_v',
+    'HLT_IsoMu22_eta2p1_v',
     'HLT_IsoMu24_v',
     'HLT_IsoMu27_v',
     'HLT_IsoTkMu18_v',
