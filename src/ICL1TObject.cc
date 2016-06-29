@@ -4,6 +4,9 @@ namespace ic {
   ICL1TObject::ICL1TObject() {;}
   ICL1TObject::~ICL1TObject() {;}
   
-  void ICL1TObject::Print() const {Candidate::Print();}
+  void ICL1TObject::Print() const {
+    std::cout << " -- bx " << bx_ << " ";
+    Candidate::Print();
+  }
   
 }

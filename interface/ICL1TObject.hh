@@ -12,45 +12,42 @@ namespace ic {
   
   class ICL1TObject : public ic::Candidate {
   public:
-    
-    enum SumType {
-      kTotalEt,          
-      kTotalHt,          
-      kMissingEt,        
-      kMissingHt,        
-      kTotalEtx,         
-      kTotalEty,         
-      kTotalHtx,         
-      kTotalHty,         
-    };
-
-  public:
     ICL1TObject();
     virtual ~ICL1TObject();
     virtual void Print() const;
+
+    inline void set_bx(int value){
+      bx_ = value;
+    };
+
+    inline int bx() const{
+      return bx_;
+    };
+
+    inline void setSumType(int value) { sumType = value; }
+    inline int getSumType() const { return sumType; }
     
-    void setSumType(short int value) { sumType = value; }
-    short int getSumType() { return sumType; }
+    inline void setCharge(short int value) { charge = value; }
+    inline short int getCharge() const { return charge; }
     
-    void setCharge(short int value) { charge = value; }
-    short int getCharge() { return charge; }
+    inline void setIsolation(unsigned short int value) { isolation = value; }
+    inline unsigned short int getIsolation() const { return isolation; }
     
-    void setIsolation(unsigned short int value) { isolation = value; }
-    unsigned short int getIsolation() { return isolation; }
+    inline void setQuality(unsigned short int value) { quality = value; }
+    inline unsigned short int getQuality() const { return quality; }
     
-    void setQuality(unsigned short int value) { quality = value; }
-    unsigned short int getQuality() { return quality; }
-    
-    #ifndef SKIP_CINT_DICT
-  public:
-    ClassDef(ICL1TObject, 1);
-    #endif
-  
   private:
-    short int          sumType;
+    int bx_;
+    int          sumType;
     short int          charge;
     unsigned short int isolation;
     unsigned short int quality;
+
+    #ifndef SKIP_CINT_DICT
+  public:
+    ClassDef(ICL1TObject, 2);
+    #endif
+  
   };
   
   typedef std::vector<ic::ICL1TObject> ICL1TObjectCollection;

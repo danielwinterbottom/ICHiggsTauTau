@@ -7,6 +7,7 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/interface/ICL1TObject.hh"
 #include "TVector3.h"
 
 
@@ -134,6 +135,7 @@ namespace ic {
     sumet_ = 0;
 
     l1met_ = 0;
+    l1mht_ = 0;
     met_ = 0;
     genmet_ = 0;
     genmetphi_ = 0;
@@ -337,6 +339,7 @@ namespace ic {
     outputTree_->Branch("sumet",&sumet_);
 
     outputTree_->Branch("l1met",&l1met_);
+    outputTree_->Branch("l1mht",&l1mht_);
     outputTree_->Branch("genmet",&genmet_);
     outputTree_->Branch("genmetphi",&genmetphi_);
     outputTree_->Branch("met",&met_);
@@ -604,9 +607,7 @@ namespace ic {
     }
     Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     Met const* metnoelectrons = event->GetPtr<Met>("metNoElectrons");
-    std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
-    if(debug_ && l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
-    
+
     ROOT::Math::PtEtaPhiEVector metvec = met->vector();
     ROOT::Math::PtEtaPhiEVector metnomuvec = metnomuons->vector();
     ROOT::Math::PtEtaPhiEVector metnoelvec = metnoelectrons->vector();
@@ -617,11 +618,11 @@ namespace ic {
     met_y_ = metvec.Py();
     met_significance_ = met->et_sig();
     sumet_ = met->sum_et();
-    if (debug_) std::cout << "l1metsize = " << l1met.size() << std::endl;
+    //if (debug_) std::cout << "l1metsize = " << l1met.size() << std::endl;
     //data have 5 bx saved, 2 before, 2 after. 
     //MC has only 1 but 3 objects (not sure why...)
     //if(!is_data_)
-    l1met_ = l1met[0]->pt();
+    //l1met_ = l1met[0]->pt();
     //else l1met_ = l1met[2]->pt();
     //}
     metnomuons_ = metnomuons->pt();
@@ -630,7 +631,6 @@ namespace ic {
     if (met_>0) metnomu_significance_ = met_significance_/met_*metnomuons_;
     else metnomu_significance_ = met_significance_;
     
-    if (debug_) std::cout << " Met = " << met_ << " metnomu = " << metnomuons_ << " l1met = " << l1met_ << std::endl;
 
     metnoelectrons_ = metnoelectrons->pt();
     metnoel_x_ = metnoelvec.Px();
@@ -638,8 +638,36 @@ namespace ic {
     if (met_>0) metnoel_significance_ = met_significance_/met_*metnoelectrons_;
     else metnoel_significance_ = met_significance_;
     
-    if (debug_) std::cout << " Met = " << met_ << " metnoel = " << metnoelectrons_ << " l1met = " << l1met_ << std::endl;
-   ////////////////////////////////
+    ////////////////////////////////
+    // L1 objects 
+    ////////////////////////////////
+
+    std::vector<ICL1TObject*> const& l1sum = event->GetPtrVec<ICL1TObject>("l1tEtSum");
+    //if(debug_ && l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
+    //std::cout << " -- new event: l1sum size = " << l1sum.size() << " PFMET = " << met_ << std::endl;
+    unsigned counterMet = 0;
+    unsigned counterMht = 0;
+    for (unsigned iL1(0); iL1<l1sum.size(); ++iL1){
+      ICL1TObject* l1obj = l1sum[iL1];
+      //std::cout << " -- sum " << iL1 << " type " << l1obj->getSumType() << " pt " << l1obj->pt() << " " << l1obj->phi() << std::endl;
+      
+      if (l1obj->getSumType()==2) {
+	if (counterMet==2) l1met_ = l1obj->pt();
+	counterMet++;
+      }
+      if (l1obj->getSumType()==3) {
+	if (counterMht==2) l1mht_ = l1obj->pt();
+	counterMht++;
+      }
+      if (counterMet>2 && counterMht>2) break;
+    }
+    if (counterMet!=3 || counterMht != 3){
+      std::cout << " *** Warning, found " << counterMet << " L1MET and " << counterMht << " L1MHT." << std::endl;
+    }
+    
+    if (debug_) std::cout << " Met = " << met_ << " metnomu = " << metnomuons_ << " metnoel = " << metnoelectrons_ << " l1met = " << l1met_ << std::endl;
+    
+    ////////////////////////////////
     // Get GenLevel collections
     ////////////////////////////////
 

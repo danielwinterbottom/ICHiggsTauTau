@@ -66,7 +66,7 @@ tag         = opts.globalTag
 release     = opts.release
 
 ##v_doBXloop  = False  ## False = not do the loop on all the possible BX; True = do it!
-v_doBXloop  = True  ## False = not do the loop on all the possible BX; True = do it!
+v_doBXloop  = False  ## False = not do the loop on all the possible BX; True = do it!
 
 
 if not release in ["76X", "80XMINIAOD"]:

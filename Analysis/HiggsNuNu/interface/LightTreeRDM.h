@@ -113,6 +113,7 @@ namespace ic {
     double sumet_;
 
     double l1met_;
+    double l1mht_;
     double met_;
     double genmet_;
     double genmetphi_;

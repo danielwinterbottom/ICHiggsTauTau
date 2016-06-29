@@ -1,6 +1,6 @@
 #!/bin/sh
 DOCERN=0
-DOSUBMIT=0
+DOSUBMIT=1
 MYEXEC=LightTreeMakerFromMiniAODRDM
 PRODUCTION=160617
 PRODUSER=rdimaria
@@ -34,9 +34,11 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP EL
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}
+  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}
+  JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}
+  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}
+  OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]
@@ -137,7 +139,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP EL
     fi    
 
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_SingleMuon*` 
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*` 
       do
       echo "Processing files in "$FILELIST
       
