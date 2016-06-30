@@ -163,12 +163,32 @@ if not isData:
         process.icTriggerObjectSequence += cms.Sequence(getattr(process, 'ic_%s_ObjectProducer' % shortname))
 
 
+process.icGenParticleProducer = producers.icGenParticleProducer.clone(
+    input               = cms.InputTag('prunedGenParticles', '', 'PAT'),
+    includeMothers      = cms.bool(True),
+    includeDaughters    = cms.bool(True),
+    includeStatusFlags  = cms.bool(True)
+)
+
+process.icPileupInfoProducer = producers.icPileupInfoProducer.clone(
+    input = cms.InputTag("slimmedAddPileupInfo")
+)
+
+process.icGenSequence = cms.Sequence()
+
+if not isData:
+    process.icGenSequence += (
+        process.icGenParticleProducer+
+        process.icPileupInfoProducer
+    )
+
 process.icEventProducer = producers.icEventProducer.clone()
 process.icHashTreeProducer = cms.EDProducer('ICHashTreeProducer')
 
 process.p = cms.Path(
     process.icTriggerPathProducer+
     process.icTriggerObjectSequence+
+    process.icGenSequence+
     process.icEventInfoProducer+
     process.icEventProducer+
     process.icHashTreeProducer
