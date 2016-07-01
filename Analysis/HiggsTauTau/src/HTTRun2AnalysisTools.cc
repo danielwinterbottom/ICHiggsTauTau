@@ -526,7 +526,14 @@ namespace ic {
      "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q"
     };
 
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){
+      samples_alias_map_["vv_samples"] = {
+       "T-tW", "Tbar-tW","Tbar-t",
+       "WWTo1L1Nu2Q",
+       "VVTo2L2Nu","ZZTo2L2Q",
+       "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q"
+      };
+    } else if(!is_fall15_){
       samples_alias_map_["vv_samples"] = {
        "T-tW", "Tbar-tW", "T-t","Tbar-t",
        "WWTo1L1Nu2Q",
@@ -550,6 +557,11 @@ namespace ic {
     samples_alias_map_["top_samples"] = {
      "TT-ext"
     };
+    if(year_.find("6")!=year_.npos){
+      samples_alias_map_["top_samples"] = {
+       "TT"
+      };
+    }
 
  
    samples_alias_map_["ztt_shape_samples"]={
@@ -558,8 +570,11 @@ namespace ic {
     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
     /"DYJetsToLL_M-150-LO"*/,"DYJetsToLL_M-10-ext"
    };
-
-   if(!is_fall15_){
+   if(year_.find("6")!=year_.npos){
+   samples_alias_map_["ztt_shape_samples"]={
+      "DYJetsToLL_M-50-LO"
+     };
+  }else if(!is_fall15_){
      if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
          samples_alias_map_["ztt_shape_samples"]={
          "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
@@ -584,7 +599,11 @@ namespace ic {
      samples_alias_map_["data_samples"] = {
       "SingleElectron-2015D"
      };
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){
+       samples_alias_map_["data_samples"] = {
+        "SingleElectron"
+       };
+    } else if(!is_fall15_){
        samples_alias_map_["data_samples"] = {
         "SingleElectron-2015D-promptv4","SingleElectron-2015D-Oct05"
        };
@@ -594,7 +613,11 @@ namespace ic {
      samples_alias_map_["data_samples"] = {
      "SingleMuon-2015D"
      };
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){
+     samples_alias_map_["data_samples"] = {
+       "SingleMuon"
+       };
+    } else if(!is_fall15_){
      samples_alias_map_["data_samples"] = {
      "SingleMuon-2015D-promptv4","SingleMuon-2015D-Oct05"
      };
@@ -604,7 +627,11 @@ namespace ic {
      samples_alias_map_["data_samples"] = {
       "Tau-2015D"
      };
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){ 
+      samples_alias_map_["data_samples"] = {
+        "Tau"
+      };
+    } else if(!is_fall15_){
      samples_alias_map_["data_samples"] = {
       "Tau-2015D-promptv4","Tau-2015D-Oct05"
      };
@@ -614,7 +641,11 @@ namespace ic {
     samples_alias_map_["data_samples"] = {
       "MuonEG-2015D"
     };
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){
+      samples_alias_map_["data_samples"] = {
+        "MuonEG"
+      };
+    } else if(!is_fall15_){
       samples_alias_map_["data_samples"] = {
         "MuonEG-2015D-promptv4","MuonEG-2015D-Oct05"
       };
@@ -630,7 +661,11 @@ namespace ic {
      "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
      "DYJetsToLL_M-150-LO"*/,"DYJetsToLL_M-10-ext"
    };
-   if(!is_fall15_){
+   if(year_.find("6")!=year_.npos){
+     samples_alias_map_["ztt_samples"]={
+       "DYJetsToLL-LO"
+     };
+   } else if(!is_fall15_){
      if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
          samples_alias_map_["ztt_samples"]={
          "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
@@ -662,7 +697,17 @@ namespace ic {
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
    "W3JetsToLNu-LO","W4JetsToLNu-LO"
    };
-  if(!is_fall15_){
+
+  if(year_.find("6")!=year_.npos){
+     samples_alias_map_["qcd_sub_samples"] = {
+        "DYJetsToLL-LO",
+        "T-tW", "Tbar-tW","Tbar-t",
+        "WWTo1L1Nu2Q","VVTo2L2Nu",
+        "ZZTo2L2Q",
+        "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+        "TT","WJetsToLNu-LO",
+        };
+  }else if(!is_fall15_){
     if(ch_==channel::zee || ch_==channel::zmm) {
         samples_alias_map_["qcd_sub_samples"] = {
         "DYJetsToLL_M-50-LO",
@@ -708,10 +753,19 @@ namespace ic {
    "DY1JetsToLL_M-50-LO","DY2JetsToLL_M-50-LO",
    "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO",
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
-   "W3JetsToLNu-LO","W4JetsToLNu-LO"/*,
-   "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"*/
+   "W3JetsToLNu-LO","W4JetsToLNu-LO",
+   "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
    };
-  if(!is_fall15_){
+  if(year_.find("6")!=year_.npos){
+  samples_alias_map_["qcd_sub_samples"] = {
+   "DYJetsToLL-LO",
+   "T-tW", "Tbar-tW", "Tbar-t",
+   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "ZZTo2L2Q",
+   "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "TT","WJetsToLNu-LO"
+   };
+  } else if(!is_fall15_){
     samples_alias_map_["qcd_sub_samples"] = {
     "DYJetsToLL_M-50-LO",
     "DYJetsToLL_M-5-LO",
@@ -740,8 +794,16 @@ namespace ic {
    "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext"
    };
-
-   if(!is_fall15){
+   if(year_.find("6")!=year_.npos){
+    samples_alias_map_["w_sub_samples"] = {
+     "DYJetsToLL-LO",
+     "T-tW", "Tbar-tW", "Tbar-t",
+     "WWTo1L1Nu2Q","VVTo2L2Nu",
+     "ZZTo2L2Q",
+     "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+     "TT"
+     };
+   } else if(!is_fall15){
     if(ch_==channel::zee || ch_==channel::zmm) {
         samples_alias_map_["w_sub_samples"] = {
          "DYJetsToLL_M-5-LO",
@@ -782,8 +844,11 @@ if(ch_==channel::em) {
       "W3JetsToLNu-LO","W4JetsToLNu-LO"
      };
 }
-
-if(!is_fall15_){
+if(year_.find("6")!=year_.npos){
+  samples_alias_map_["wjets_samples"] = {
+    "WJetsToLNu-LO"
+  };
+}else if(!is_fall15_){
 
   samples_alias_map_["wjets_samples"] = {
     "WJetsToLNu-LO",
@@ -816,7 +881,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     SimpleParamParser parser;
     parser.ParseFile(file);
     std::cout << "[HTTRun2Analysis::ParseParamFile] Extracting sample info from file " << file << std::endl;
-    lumi_ = parser.GetParam<double>("LUMI_2015_"+Channel2String(ch_));
+    lumi_ = parser.GetParam<double>("LUMI_"+year_+"_"+Channel2String(ch_));
     std::cout << "[HTTRun2Analysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
 //    if (verbosity_ > 1) std::cout << boost::format("%-25s %152 %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
     if (verbosity_ > 2) std::cout << "-----------------------------------------------------------------------------------------\n";

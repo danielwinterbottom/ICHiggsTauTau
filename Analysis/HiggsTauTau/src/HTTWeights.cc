@@ -178,7 +178,7 @@ namespace ic {
       MuonFakeRateHist_PtEta->SetDirectory(0);
     }
 
-    if (do_w_soup_ && era_!=era::data_2015) {
+    if (do_w_soup_ && era_!=era::data_2015 && era_!=era::data_2016) {
       std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
       std::cout << "nInc = " << n_inc_ << std::endl;
       w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
@@ -190,7 +190,7 @@ namespace ic {
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % f3_ % n3_ % w3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % f4_ % n4_ % w4_;
     }
-    if (do_w_soup_ && era_ == era::data_2015) {
+    if (do_w_soup_ && (era_ == era::data_2015 || era_ ==era::data_2016)) {
       std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
       std::cout << "nInc = " << n_inc_ << std::endl;
       f1_ = wxs1_/wxs0_;
@@ -206,7 +206,7 @@ namespace ic {
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % f3_ % n3_ % w3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % f4_ % n4_ % w4_;
     }
-    if (do_dy_soup_ && era_!=era::data_2015) {
+    if (do_dy_soup_ && era_!=era::data_2015 &&era_!=era::data_2016) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
       std::cout << "nInc = " << zn_inc_ << std::endl;
       zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
@@ -218,7 +218,7 @@ namespace ic {
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_ % zw3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % zf4_ % zn4_ % zw4_;
     }
-    if (do_dy_soup_ && era_==era::data_2015) {
+    if (do_dy_soup_ && (era_==era::data_2015||era_==era::data_2016)) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
       std::cout << "nInc = " << zn_inc_ << std::endl;
       zf1_ = zxs1_/zxs0_;
@@ -341,7 +341,7 @@ namespace ic {
       double top_wt_up = 1.0;
       double top_wt_down = 1.0;
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      if(era_ != era::data_2015){
+      if(era_ != era::data_2015 && era_!=era::data_2016){
         for (unsigned i = 0; i < parts.size(); ++i) {
           if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
             double pt = parts[i]->pt();
@@ -357,7 +357,7 @@ namespace ic {
           if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
           double pt = parts[i]->pt();
           pt = std::min(pt, 400.);
-          if (mc_ == mc::fall15_76X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X) top_wt *= std::exp(0.156-0.00137*pt);
           }
         }
       }
@@ -382,7 +382,7 @@ namespace ic {
     }
 
     if (do_tau_id_weights_) {
-      if(era_ != era::data_2015){
+      if(era_ != era::data_2015 && era_!=era::data_2016){
         std::vector<Candidate *> tau = { (dilepton[0]->GetCandidate("lepton2")) };
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_tau_collection_);
         std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
@@ -501,7 +501,7 @@ namespace ic {
     }
     
     
-    if (do_btag_weight_ && mc_!=mc::fall15_76X) {
+    if (do_btag_weight_ && mc_!=mc::fall15_76X && mc_!=mc::spring16_80X) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
       //double no_btag_weight = btag_weight.GetWeight(jets, "CSVM", 0, 0, is_2012_);
@@ -538,7 +538,7 @@ namespace ic {
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
-        if(era_ == era::data_2015) e_eta = fabs(elec->eta());
+        if(era_ == era::data_2015 || era_==era::data_2016) e_eta = fabs(elec->eta());
         double t_pt = tau->pt();
         double t_eta = fabs(tau->eta());
         double ele_trg = 1.0;
@@ -622,6 +622,16 @@ namespace ic {
           tau_trg_mc=1;
         } else if (mc_ == mc::fall15_76X){
           if(e_pt<150){
+            ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
+            ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
+          } else {
+            ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),(et_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+            ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),(et_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
+          }         
+          tau_trg=1;
+          tau_trg_mc=1;
+        } else if (mc_ == mc::spring16_80X){
+          if(e_pt<1000){
             ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
             ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
           } else {
@@ -757,7 +767,17 @@ namespace ic {
           }         
           tau_trg=1;
           tau_trg_mc=1;
-         }
+         } else if(mc_ == mc::spring16_80X){
+          if(pt<1000){
+            mu_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),mt_trig_data_->GetYaxis()->FindBin(pt));
+            mu_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),mt_trig_mc_->GetYaxis()->FindBin(pt));
+          } else {
+            mu_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),(mt_trig_data_->GetYaxis()->FindBin(pt)-1));
+            mu_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),(mt_trig_mc_->GetYaxis()->FindBin(pt)-1));
+          }         
+          tau_trg=1;
+          tau_trg_mc=1;
+        }
         if (trg_applied_in_mc_) {
           mu_trg = mu_trg / mu_trg_mc;
           tau_trg = tau_trg / tau_trg_mc;
@@ -770,7 +790,7 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
-        if(era_ == era::data_2015) e_eta = fabs(elec->sc_eta());
+        if(era_ == era::data_2015 || era_ == era::data_2016) e_eta = fabs(elec->sc_eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double m_trg = 1.0;
@@ -924,8 +944,31 @@ namespace ic {
             m_trg_8 = em_m8_trig_data_->GetBinContent(em_m8_trig_data_->GetXaxis()->FindBin(m_eta),(em_m8_trig_data_->GetYaxis()->FindBin(m_pt)-1));
             m_trg_8_mc = em_m8_trig_mc_->GetBinContent(em_m8_trig_mc_->GetXaxis()->FindBin(m_eta),(em_m8_trig_mc_->GetYaxis()->FindBin(m_pt)-1));
           }         
-       }
-       if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X){
+       } else if (mc_ == mc::spring16_80X){
+          if(e_pt<1000){
+            e_trg_17 = em_e17_trig_data_->GetBinContent(em_e17_trig_data_->GetXaxis()->FindBin(e_eta),em_e17_trig_data_->GetYaxis()->FindBin(e_pt));
+            e_trg_17_mc = em_e17_trig_mc_->GetBinContent(em_e17_trig_mc_->GetXaxis()->FindBin(e_eta),em_e17_trig_mc_->GetYaxis()->FindBin(e_pt));
+            e_trg_12 = em_e12_trig_data_->GetBinContent(em_e12_trig_data_->GetXaxis()->FindBin(e_eta),em_e12_trig_data_->GetYaxis()->FindBin(e_pt));
+            e_trg_12_mc = em_e12_trig_mc_->GetBinContent(em_e12_trig_mc_->GetXaxis()->FindBin(e_eta),em_e12_trig_mc_->GetYaxis()->FindBin(e_pt));
+          } else {
+            e_trg_17 = em_e17_trig_data_->GetBinContent(em_e17_trig_data_->GetXaxis()->FindBin(e_eta),(em_e17_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+            e_trg_17_mc = em_e17_trig_mc_->GetBinContent(em_e17_trig_mc_->GetXaxis()->FindBin(e_eta),(em_e17_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
+            e_trg_12 = em_e12_trig_data_->GetBinContent(em_e12_trig_data_->GetXaxis()->FindBin(e_eta),(em_e12_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+            e_trg_12_mc = em_e12_trig_mc_->GetBinContent(em_e12_trig_mc_->GetXaxis()->FindBin(e_eta),(em_e12_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
+          }         
+          if(m_pt<1000){
+            m_trg_17 = em_m17_trig_data_->GetBinContent(em_m17_trig_data_->GetXaxis()->FindBin(m_eta),em_m17_trig_data_->GetYaxis()->FindBin(m_pt));
+            m_trg_17_mc = em_m17_trig_mc_->GetBinContent(em_m17_trig_mc_->GetXaxis()->FindBin(m_eta),em_m17_trig_mc_->GetYaxis()->FindBin(m_pt));
+            m_trg_8 = em_m8_trig_data_->GetBinContent(em_m8_trig_data_->GetXaxis()->FindBin(m_eta),em_m8_trig_data_->GetYaxis()->FindBin(m_pt));
+            m_trg_8_mc = em_m8_trig_mc_->GetBinContent(em_m8_trig_mc_->GetXaxis()->FindBin(m_eta),em_m8_trig_mc_->GetYaxis()->FindBin(m_pt));
+          } else {
+            m_trg_17 = em_m17_trig_data_->GetBinContent(em_m17_trig_data_->GetXaxis()->FindBin(m_eta),(em_m17_trig_data_->GetYaxis()->FindBin(m_pt)-1));
+            m_trg_17_mc = em_m17_trig_mc_->GetBinContent(em_m17_trig_mc_->GetXaxis()->FindBin(m_eta),(em_m17_trig_mc_->GetYaxis()->FindBin(m_pt)-1));
+            m_trg_8 = em_m8_trig_data_->GetBinContent(em_m8_trig_data_->GetXaxis()->FindBin(m_eta),(em_m8_trig_data_->GetYaxis()->FindBin(m_pt)-1));
+            m_trg_8_mc = em_m8_trig_mc_->GetBinContent(em_m8_trig_mc_->GetXaxis()->FindBin(m_eta),(em_m8_trig_mc_->GetYaxis()->FindBin(m_pt)-1));
+          }         
+        }
+       if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X){
         if (trg_applied_in_mc_) {
           m_trg = m_trg / m_trg_mc;
           e_trg = e_trg / e_trg_mc;
@@ -1062,7 +1105,7 @@ namespace ic {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = elec->pt();
         double sc_eta = fabs(elec->sc_eta());
-        if(era_ == era::data_2015) sc_eta = fabs(elec->eta());
+        if(era_ == era::data_2015||era_ == era::data_2016) sc_eta = fabs(elec->eta());
         double ele_id = 1.0;
         double ele_iso = 1.0;
         double ele_idiso_mc =1.0;
@@ -1089,8 +1132,17 @@ namespace ic {
             ele_idiso_mc = et_idiso_mc_->GetBinContent(et_idiso_mc_->GetXaxis()->FindBin(sc_eta),(et_idiso_mc_->GetYaxis()->FindBin(pt)-1));
           }         
             ele_idiso = ele_idiso_data/ele_idiso_mc;
+        } else if (mc_ == mc::spring16_80X){
+          if(pt<1000){
+            ele_idiso_data = et_idiso_data_->GetBinContent(et_idiso_data_->GetXaxis()->FindBin(sc_eta),et_idiso_data_->GetYaxis()->FindBin(pt));
+            ele_idiso_mc = et_idiso_mc_->GetBinContent(et_idiso_mc_->GetXaxis()->FindBin(sc_eta),et_idiso_mc_->GetYaxis()->FindBin(pt));
+          } else {
+            ele_idiso_data = et_idiso_data_->GetBinContent(et_idiso_data_->GetXaxis()->FindBin(sc_eta),(et_idiso_data_->GetYaxis()->FindBin(pt)-1));
+            ele_idiso_mc = et_idiso_mc_->GetBinContent(et_idiso_mc_->GetXaxis()->FindBin(sc_eta),(et_idiso_mc_->GetYaxis()->FindBin(pt)-1));
+          }         
+            ele_idiso = ele_idiso_data/ele_idiso_mc;
         }
-        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X){
+        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X){
           if (do_id_weights_) ele_iso = 1.0;
           weight *= (ele_id * ele_iso);
           event->Add("idweight_1", ele_id);
@@ -1139,8 +1191,17 @@ namespace ic {
             mu_idiso_mc = mt_idiso_mc_->GetBinContent(mt_idiso_mc_->GetXaxis()->FindBin(m_eta),(mt_idiso_mc_->GetYaxis()->FindBin(pt)-1));
           }         
             mu_idiso = mu_idiso_data/mu_idiso_mc;
+        } else if(mc_ == mc::spring16_80X){
+          if(pt<1000){
+            mu_idiso_data = mt_idiso_data_->GetBinContent(mt_idiso_data_->GetXaxis()->FindBin(m_eta),mt_idiso_data_->GetYaxis()->FindBin(pt));
+            mu_idiso_mc = mt_idiso_mc_->GetBinContent(mt_idiso_mc_->GetXaxis()->FindBin(m_eta),mt_idiso_mc_->GetYaxis()->FindBin(pt));
+          } else {
+            mu_idiso_data = mt_idiso_data_->GetBinContent(mt_idiso_data_->GetXaxis()->FindBin(m_eta),(mt_idiso_data_->GetYaxis()->FindBin(pt)-1));
+            mu_idiso_mc = mt_idiso_mc_->GetBinContent(mt_idiso_mc_->GetXaxis()->FindBin(m_eta),(mt_idiso_mc_->GetYaxis()->FindBin(pt)-1));
+          }         
+            mu_idiso = mu_idiso_data/mu_idiso_mc;
         }
-        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X){ 
+        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X){ 
           if (do_id_weights_) mu_iso = 1.0;
           weight *= (mu_id * mu_iso);
           event->Add("idweight_1", mu_id);
@@ -1157,7 +1218,7 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
-        if (era_ == era::data_2015) e_eta = fabs(elec->eta());
+        if (era_ == era::data_2015 || era_ == era::data_2016) e_eta = fabs(elec->eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double m_idiso = 1.0;
@@ -1265,11 +1326,28 @@ namespace ic {
 
             m_idiso = m_idiso_data/m_idiso_mc;
             e_idiso = e_idiso_data/e_idiso_mc;
-        }
-         
+        } else if (mc_ == mc::spring16_80X){
+           if(m_pt<1000){
+            m_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_pt));
+            m_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_pt));
+          } else {
+            m_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_eta),(em_m_idiso_data_->GetYaxis()->FindBin(m_pt)-1));
+            m_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_eta),(em_m_idiso_mc_->GetYaxis()->FindBin(m_pt)-1));
+          }         
+          if(e_pt<1000){
+            e_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_pt));
+            e_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_pt));
+          } else {
+            e_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_eta),(em_e_idiso_data_->GetYaxis()->FindBin(e_pt)-1));
+            e_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_eta),(em_e_idiso_mc_->GetYaxis()->FindBin(e_pt)-1));
+          }         
+
+            m_idiso = m_idiso_data/m_idiso_mc;
+            e_idiso = e_idiso_data/e_idiso_mc;
+         }       
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);
-        if(mc_!=mc::fall15_76X && mc_!=mc::spring15_74X){
+        if(mc_!=mc::fall15_76X && mc_!=mc::spring15_74X && mc_!=mc::spring16_80X){
           event->Add("idweight_1", e_idiso);
           event->Add("idweight_2", m_idiso);
         } else { 
@@ -1327,6 +1405,24 @@ namespace ic {
 
             m_1_idiso = m_1_idiso_data/m_1_idiso_mc;
             m_2_idiso = m_2_idiso_data/m_2_idiso_mc;
+        } else if (mc_ == mc::spring16_80X){
+          if(m_1_pt<1000){
+            m_1_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_1_pt));
+            m_1_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_1_pt));
+          } else {
+            m_1_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_1_eta),(em_m_idiso_data_->GetYaxis()->FindBin(m_1_pt)-1));
+            m_1_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_1_eta),(em_m_idiso_mc_->GetYaxis()->FindBin(m_1_pt)-1));
+          }         
+          if(m_2_pt<1000){
+            m_2_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_2_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_2_pt));
+            m_2_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_2_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_2_pt));
+          } else {
+            m_2_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_2_eta),(em_m_idiso_data_->GetYaxis()->FindBin(m_2_pt)-1));
+            m_2_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_2_eta),(em_m_idiso_mc_->GetYaxis()->FindBin(m_2_pt)-1));
+          }         
+
+            m_1_idiso = m_1_idiso_data/m_1_idiso_mc;
+            m_2_idiso = m_2_idiso_data/m_2_idiso_mc;
         }
         weight *= (m_1_idiso * m_2_idiso);
         event->Add("idisoweight_1", m_1_idiso);
@@ -1346,7 +1442,7 @@ namespace ic {
         double e_1_idiso_data = 1.0;
         double e_2_idiso_mc = 1.0;
         double e_2_idiso_data = 1.0;
-        if (mc_ == mc::spring15_74X || mc_==mc::fall15_76X){
+        if (mc_ == mc::spring15_74X || mc_==mc::fall15_76X || mc_==mc::spring16_80X){
           if(e_1_pt<100){
             e_1_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_1_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_1_pt));
             e_1_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_1_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_1_pt));
@@ -1458,7 +1554,7 @@ namespace ic {
       eventInfo->set_weight("emu_m_fakerate", mufakerate);
     }
 
-    if (do_etau_fakerate_ && era_!=era::data_2015) {
+    if (do_etau_fakerate_ && era_!=era::data_2015 && era_!=era::data_2016) {
       std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
       ic::erase_if(parts, !(boost::bind(&GenParticle::status, _1) == 3));
       ic::erase_if(parts, ! ((boost::bind(&GenParticle::pdgid, _1) == 11)||(boost::bind(&GenParticle::pdgid, _1) == -11)) );
@@ -1494,7 +1590,7 @@ namespace ic {
       }
     }
 
-    if (do_etau_fakerate_ && era_==era::data_2015) {
+    if (do_etau_fakerate_ && (era_==era::data_2015||era_==era::data_2016)) {
       unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
       Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
       if(gm2_==1||gm2_==3){
@@ -1527,7 +1623,7 @@ namespace ic {
 
     if (do_w_soup_) {
       unsigned partons = 0;
-      if(era_ != era::data_2015){
+      if(era_ != era::data_2015 && era_ != era::data_2016){
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
         bool count_jets = false;
         for (unsigned i = 0; i < parts.size(); ++i) {
@@ -1558,7 +1654,7 @@ namespace ic {
 
     if (do_dy_soup_) {
       unsigned partons = 0;
-      if(era_ != era::data_2015){
+      if(era_ != era::data_2015&&era_!=era::data_2016){
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
         bool count_jets = false;
       

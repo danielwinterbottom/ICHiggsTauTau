@@ -128,7 +128,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      muon_dxy = 0.02;
      muon_dz = 0.1;
      pair_dr = 0.3;
-    if(era_type == era::data_2015){
+    if(era_type == era::data_2015 || era_type == era::data_2016){
        elec_dxy = 0.045;
        elec_dz = 0.2;
        muon_dxy = 0.045;
@@ -187,7 +187,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       tau_iso = 10;
     }
   }
-  if(era_type == era::data_2015){
+  if(era_type == era::data_2015 || era_type == era::data_2016){
    min_taus = 1;
    pair_dr = 0.5;
    elec_pt = 24;//Up from 23 to avoid turn on in new data trigger for first set of runs from run D
@@ -240,6 +240,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    }
   if (era_type == era::data_2015){
     muon_pt = 19.0;//Up from 18 to avoid trigger turn on in new data trigger
+    muon_eta = 2.1;
+    tau_pt = 20;
+    tau_eta = 2.3;
+    min_taus = 1;
+    pair_dr = 0.5;
+  } else if(era_type == era::data_2016){
+    muon_pt = 21.0;
     muon_eta = 2.1;
     tau_pt = 20;
     tau_eta = 2.3;
@@ -1205,6 +1212,71 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     BuildModule(httWeights);
   }
 
+ if(strategy_type ==strategy::spring16&&channel!=channel::wmnu){
+   TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_MC_eff");
+   TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_Data_eff");
+   TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu20_MC_eff");
+   TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu20_Data_eff");
+   TH2D et_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
+   TH2D et_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_Data_eff");
+   TH2D em_e_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
+   TH2D em_e_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_Data_eff");
+   TH2D mt_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_IdIso0p10_MC_eff");
+   TH2D mt_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_IdIso0p10_Data_eff");
+   TH2D em_m_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_IdIso0p10_MC_eff");
+   TH2D em_m_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_IdIso0p10_Data_eff");
+   TH2D em_m17_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_Mu17_Data_eff");
+   TH2D em_m17_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_Mu17_MC_eff");
+   TH2D em_m8_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_Mu8_Data_eff");
+   TH2D em_m8_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_Mu8_MC_eff");
+   TH2D em_e17_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_Ele17_Data_eff");
+   TH2D em_e17_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_Ele17_MC_eff");
+   TH2D em_e12_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_Ele12_Data_eff");
+   TH2D em_e12_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_Ele12_MC_eff");
+
+   HTTWeights httWeights = HTTWeights("HTTWeights")   
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_mc(mc_type)
+    .set_do_tau_id_weights(real_tau_sample)
+    .set_ditau_label("ditau")
+    .set_jets_label("ak4PFJetsCHS")
+    .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
+    .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+    .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
+    .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
+    .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
+    .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
+    .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
+    .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
+    .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
+    .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
+  if (!is_data ) {
+    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+    if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
+    if(channel == channel::et) httWeights.set_do_etau_fakerate(true);
+  }
+
+/*  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos) || output_name.find("DYJetsToLL_M-150-LO")!=output_name.npos){
+    httWeights.set_do_zpt_weight(true);
+    httWeights.set_do_dy_soup(true);
+    httWeights.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+    httWeights.SetDYInputYields(238776168,65314144 , 20019059, 5701878, 4189017);
+  }
+
+  if (output_name.find("TT-ext") != output_name.npos) httWeights.set_do_topquark_weights(true);
+  
+  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+       output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+    httWeights.set_do_w_soup(true);
+    httWeights.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+    httWeights.SetWInputYields(47101324,45442170,30190119,18007936,8815779);
+  }*/
+
+    BuildModule(httWeights);
+  }
+
+
  if (is_embedded && era_type == era::data_2012_rereco) {
    EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
     .set_genparticle_label("genParticlesEmbedded")
@@ -1262,7 +1334,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
-    .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
+    .set_sync_output_name("output/SYNCFILE_"+output_name)
     .set_iso_study(js["iso_study"].asBool())
     .set_tau_id_study(js["tau_id_study"].asBool())
     .set_qcd_study(js["qcd_study"].asBool())
