@@ -622,8 +622,8 @@ int main(int argc, char* argv[]){
     tau_id_discr          = "decayModeFindingNewDMs";
     tau_iso_discr         = "byTightCombinedIsolationDeltaBetaCorr3Hits";
     tau_anti_muon_discr   = "againstMuonTight3";
-    tau_anti_elec_discr_1 = "againstElectronTightMVA5";
-    tau_anti_elec_discr_2 = "againstElectronTightMVA5";
+    tau_anti_elec_discr_1 = "againstElectronTightMVA6";
+    tau_anti_elec_discr_2 = "againstElectronTightMVA6";
   }
   else{
     tau_id_discr          = "decayModeFinding";

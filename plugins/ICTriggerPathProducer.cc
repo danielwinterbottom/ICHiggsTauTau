@@ -116,8 +116,15 @@ void ICTriggerPathProducer::SetNameInfo(std::string name,
       }
     }
   }
-  if (save_strings_) path->set_name(name);
-  path->set_id(CityHash64(name));
+  std::size_t hash = CityHash64(name);
+  if (save_strings_) {
+    path->set_name(name);
+  } else {
+    if (!observed_paths_.count(name)) {
+      observed_paths_[name] = hash;
+    }
+  }
+  path->set_id(hash);
 }
 
 void ICTriggerPathProducer::beginJob() {
@@ -125,6 +132,18 @@ void ICTriggerPathProducer::beginJob() {
 }
 
 void ICTriggerPathProducer::endJob() {
+  // If the trigger path strings were not saved print a summary
+  // of the string hashes
+  if (!save_strings_) {
+    std::cout << std::string(78, '-') << "\n";
+    std::cout << boost::format("%-56s  %20s\n")
+        % "HLT Paths" % std::string("Hash Summmary");
+    std::map<std::string, std::size_t>::const_iterator iter;
+    for (iter = observed_paths_.begin(); iter != observed_paths_.end();
+         ++iter) {
+      std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
+    }
+  }
 }
 
 // define this as a plug-in

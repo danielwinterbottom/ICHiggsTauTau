@@ -32,6 +32,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, iso_study)
   CLASS_MEMBER(HTTCategories, bool, tau_id_study)
   CLASS_MEMBER(HTTCategories, bool, qcd_study)
+  CLASS_MEMBER(HTTCategories, bool, jetfake_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
  
@@ -342,7 +343,8 @@ class HTTCategories : public ModuleBase {
   float jlrm_1_; 
   float jlrm_2_; 
   float jctm_1_; 
-  float jctm_2_; 
+  float jctm_2_;
+  float nearjpt_1_;
   branch_var bpt_1_;     // Defined if n_bjets >= 1
   branch_var beta_1_;    // Defined if n_bjets >= 1
   float bphi_1_;    // Defined if n_bjets >= 1

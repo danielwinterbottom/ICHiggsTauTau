@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+import os
+
+CHANNELS = ['et', 'mt', 'em', 'tt']
+CATEGORIES = ['btag', 'nobtag']
+VARIABLES = [['mttot','m_{T,tot}'], ['mtsv','m_{T,#tau#tau}'], ['msv','m_{#tau#tau}']]
+
+for channel in CHANNELS :
+    for category in CATEGORIES :
+        for variable in VARIABLES :
+            cmd = './bin/PlotCompare -p "ggH2000:ggH2000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH2000:-1.0:2:4" -p "TT:TT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:TT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH2000_vs_TT" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH1000:ggH1000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH1000:-1.0:2:4" -p "TT:TT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:TT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH1000_vs_TT" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH700:ggH700:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH700:-1.0:2:4" -p "TT:TT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:TT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH700_vs_TT" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH2000:ggH2000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH2000:-1.0:2:4" -p "TT:TT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:TT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH2000_vs_TT_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH1000:ggH1000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH1000:-1.0:2:4" -p "TT:TT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:TT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH1000_vs_TT_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH700:ggH700:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH700:-1.0:2:4" -p "TT:TT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:TT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH700_vs_TT_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH2000:ggH2000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH2000:-1.0:2:4" -p "ZTT:ZTT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ZTT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH2000_vs_ZTT" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH1000:ggH1000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH1000:-1.0:2:4" -p "ZTT:ZTT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ZTT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH1000_vs_ZTT" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH700:ggH700:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH700:-1.0:2:4" -p "ZTT:ZTT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ZTT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH700_vs_ZTT" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH2000:ggH2000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH2000:-1.0:2:4" -p "ZTT:ZTT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ZTT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH2000_vs_ZTT_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH1000:ggH1000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH1000:-1.0:2:4" -p "ZTT:ZTT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ZTT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH1000_vs_ZTT_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH700:ggH700:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH700:-1.0:2:4" -p "ZTT:ZTT:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ZTT:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH700_vs_ZTT_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH2000:ggH2000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH2000:-1.0:2:4" -p "QCD:QCD:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:QCD:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH2000_vs_QCD" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH1000:ggH1000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH1000:-1.0:2:4" -p "QCD:QCD:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:QCD:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH1000_vs_QCD" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH700:ggH700:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH700:-1.0:2:4" -p "QCD:QCD:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:QCD:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH700_vs_QCD" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH2000:ggH2000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH2000:-1.0:2:4" -p "QCD:QCD:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:QCD:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH2000_vs_QCD_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH1000:ggH1000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH1000:-1.0:2:4" -p "QCD:QCD:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:QCD:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH1000_vs_QCD_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH700:ggH700:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH700:-1.0:2:4" -p "QCD:QCD:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:QCD:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH700_vs_QCD_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH2000:ggH2000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH2000:-1.0:2:4" -p "W:W:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:W:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH2000_vs_W" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH1000:ggH1000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH1000:-1.0:2:4" -p "W:W:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:W:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH1000_vs_W" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH700:ggH700:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH700:-1.0:2:4" -p "W:W:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:W:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH700_vs_W" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" '.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH2000:ggH2000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH2000:-1.0:2:4" -p "W:W:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:W:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH2000_vs_W_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH1000:ggH1000:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH1000:-1.0:2:4" -p "W:W:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:W:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH1000_vs_W_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 
+            cmd = './bin/PlotCompare -p "ggH700:ggH700:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:ggH700:-1.0:2:4" -p "W:W:htt_{0}.inputs-mssm-13TeV-{2}-160416.root:{0}_{1}:W:-1.0:2:2" --big_label="{0} {1}" --norm_mode=1 --outname="{0}_{1}_{2}_ggH700_vs_W_log" --norm_bins=true --x_axis_title="{3} (GeV)" --custom_y_axis_range=false  --y_axis_title="dN/d{3} (1/GeV)" --log_y=true'.format(channel,category,variable[0],variable[1])
+            os.system(cmd) 

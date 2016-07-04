@@ -45,11 +45,11 @@ n_machine1=int(math.ceil(float(njobs)/float(2)))
 n_machine2=njobs-n_machine1
 switched=0
 machine1jobs.write('cd %(cwd)s \n'%vars())
-machine1jobs.write('source /vols/cms/grid/setup.sh \n')
+machine1jobs.write('source /vols/grid/cms/setup.sh \n')
 machine1jobs.write('export PATH=/home/hep/amd12/bin/:$PATH \n')
 machine1jobs.write('ts -S 7 \n')
 machine2jobs.write('cd %(cwd)s \n'%vars())
-machine2jobs.write('source /vols/cms/grid/setup.sh \n')
+machine2jobs.write('source /vols/grid/cms/setup.sh \n')
 machine2jobs.write('export PATH=/home/hep/amd12/bin/:$PATH \n')
 machine2jobs.write('ts -S 7 \n')
 
