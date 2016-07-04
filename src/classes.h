@@ -34,7 +34,6 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "UserCode/ICHiggsTauTau/interface/HLTPath.hh"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;
@@ -96,8 +95,6 @@ namespace { struct dictionary {
   edm::Wrapper<reco::PFCandidateRefVector> dummy56;
   edm::ValueMap<std::vector<int> > dummy57;  
   edm::Wrapper<edm::ValueMap<std::vector<int> > > dummy58;
-  ic::HLTPath dummy59;
-  std::vector<ic::HLTPath> dummy60;  
 };
 }
 

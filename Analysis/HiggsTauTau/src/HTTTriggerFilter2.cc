@@ -9,9 +9,17 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-#include "UserCode/ICHiggsTauTau/interface/HLTPath.hh"
 #include "boost/bind.hpp"
 #include "boost/format.hpp"
+
+struct filters {
+  std::string path;  
+  std::string leg1_filter;
+  std::string leg2_filter;
+  std::string leg2_extra;
+  bool singleLepton_;
+  bool pass;
+}; 
 
 
 namespace ic {
@@ -38,8 +46,7 @@ namespace ic {
   }
 
   int HTTTriggerFilter2::Execute(TreeEvent *event) {
-      
-    std::vector<ic::HLTPath> leg_filters; 
+    std::vector<filters> leg_filters;
     std::string trig_obj_label;
 		std::string alt_trig_obj_label;
     std::string leg1_filter;
@@ -464,7 +471,7 @@ namespace ic {
            high_leg_pt = 24.;
           } else if (mc_ == mc::summer16_80X){
       
-          ic::HLTPath fil;
+          filters fil;
           fil.path          = "HLT_Ele23_WPLoose_Gsf_v";
           fil.leg1_filter   = "hltEle23WPLooseGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -860,7 +867,7 @@ namespace ic {
         return 1;
       }
     } else {
-        event->Add("HLTPaths", leg_filters);
+       // event->Add("HLTPaths", leg_filters);
         bool passedHLT = false;
         for(unsigned i=0; i<leg_filters.size(); ++i){
           if(leg_filters[i].pass) passedHLT = true;

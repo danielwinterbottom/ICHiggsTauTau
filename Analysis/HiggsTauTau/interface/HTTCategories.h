@@ -6,7 +6,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
-#include "UserCode/ICHiggsTauTau/interface/HLTPath.hh"
 
 #include <string>
 
@@ -435,7 +434,7 @@ class HTTCategories : public ModuleBase {
   branch_var pt_tt_totpt_minus_jets_totpt_norm_;
   
   std::string hltpaths_label_;
-  std::vector<ic::HLTPath> HLT_paths_;
+  //std::vector<ic::HLTPath> HLT_paths_;
 
 
  public:

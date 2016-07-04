@@ -138,7 +138,7 @@ namespace ic {
       outtree_->Branch("jetsplustt_totpt_norm",    &jetsplustt_totpt_norm_.var_double);
       outtree_->Branch("pt_tt_totpt_minus_jets_totpt_norm",    &pt_tt_totpt_minus_jets_totpt_norm_.var_double);
       
-      outtree_->Branch("HLT_paths",    &HLT_paths_);
+      //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
       outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
@@ -1118,10 +1118,10 @@ namespace ic {
     antiele_2_ = true;
     antimu_2_ = true;
     
-    if (mc_ == mc::summer16_80X){
-      std::vector<HLTPath> const& HLT_paths = event->Get<std::vector<HLTPath>>(hltpaths_label_);
-      HLT_paths_ = HLT_paths;
-    }
+    //if (mc_ == mc::summer16_80X){
+    //  std::vector<HLTPath> const& HLT_paths = event->Get<std::vector<HLTPath>>(hltpaths_label_);
+    //  HLT_paths_ = HLT_paths;
+    //}
     
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
