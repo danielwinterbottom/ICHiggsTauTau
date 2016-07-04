@@ -97,7 +97,7 @@ namespace ic {
           //2015 Triggers
           if (run >= 250985 && run <= 256464 && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos)) path_found = true;
           if (run >= 256630  && run <= 271035 && (name.find("HLT_IsoMu18_v") != name.npos)) path_found = true;
-          if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu20_v") != name.npos)) path_found = true;
+          if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu22_v") != name.npos)) path_found = true;
           //if (run >= 256630 /* && run <= xxxxx*/ && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu22_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::em) {
@@ -290,9 +290,9 @@ namespace ic {
           leg1_filter = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
           extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
-          alt_trig_obj_label = "triggerObjectsIsoMu20";
-          alt_leg1_filter =  "hltL3crIsoL1sMu18L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
-          high_leg_pt = 21.;
+          alt_trig_obj_label = "triggerObjectsIsoMu22";
+          alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
+          high_leg_pt = 23.;
         }
 
       }
@@ -634,7 +634,7 @@ namespace ic {
 
     std::vector<CompositeCandidate *> dileptons_pass;
 
-    if ((channel_ == channel::et || channel_ == channel::mt)&&mc_ != mc::phys14_72X&&mc_ != mc::spring15_74X && mc_ != mc::fall15_76X) {
+    if ((channel_ == channel::et || channel_ == channel::mt)&&mc_ != mc::phys14_72X&&mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X) {
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
         bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
@@ -643,7 +643,7 @@ namespace ic {
     }
 
     if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::zee || channel_ == channel::tpzee || channel_ == channel::tpzmm) 
-        &&(mc_ == mc::phys14_72X || mc_ == mc::spring15_74X || mc_ == mc::fall15_76X)) {
+        &&(mc_ == mc::phys14_72X || mc_ == mc::spring15_74X || mc_ == mc::fall15_76X || mc_ == mc::spring16_80X)) {
       std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
@@ -688,7 +688,7 @@ namespace ic {
     }
 
 
-    if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X) {
+    if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ !=mc::spring16_80X) {
       std::vector<TriggerObject *> const& em_alt_objs = event->GetPtrVec<TriggerObject>(em_alt_trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
@@ -705,7 +705,7 @@ namespace ic {
       }
     }
 
-   if (channel_ == channel::em && (mc_ == mc::phys14_72X||mc_ == mc::spring15_74X || mc_ == mc::fall15_76X)){
+   if (channel_ == channel::em && (mc_ == mc::phys14_72X||mc_ == mc::spring15_74X || mc_ == mc::fall15_76X ||mc_ == mc::spring16_80X)){
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       for(unsigned i = 0; i < dileptons.size(); ++i){
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
@@ -756,7 +756,7 @@ namespace ic {
       }
     }
 
-   if (channel_ == channel::tt && (mc_ == mc::spring15_74X || mc_ == mc::fall15_76X)){
+   if (channel_ == channel::tt && (mc_ == mc::spring15_74X || mc_ == mc::fall15_76X || mc_ == mc::spring16_80X)){
      std::vector<Candidate *> l1taus;
      if(!is_data_){
        l1taus = event->GetPtrVec<Candidate>("l1isoTaus");

@@ -246,7 +246,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
     min_taus = 1;
     pair_dr = 0.5;
   } else if(era_type == era::data_2016){
-    muon_pt = 21.0;
+    muon_pt = 23.0;
     muon_eta = 2.1;
     tau_pt = 20;
     tau_eta = 2.3;
@@ -1215,8 +1215,8 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
  if(strategy_type ==strategy::spring16&&channel!=channel::wmnu){
    TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_MC_eff");
    TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_Data_eff");
-   TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu20_MC_eff");
-   TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu20_Data_eff");
+   TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu22_MC_eff");
+   TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu22_Data_eff");
    TH2D et_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
    TH2D et_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_Data_eff");
    TH2D em_e_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
