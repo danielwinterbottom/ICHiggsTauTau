@@ -6,6 +6,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/interface/HLTPath.hh"
 
 #include <string>
 
@@ -21,6 +22,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, ic::channel, channel)
   CLASS_MEMBER(HTTCategories, ic::era, era)
   CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
+  CLASS_MEMBER(HTTCategories, ic::mc, mc)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
   CLASS_MEMBER(HTTCategories, bool, bjet_regression)
   CLASS_MEMBER(HTTCategories, bool, make_sync_ntuple)
@@ -431,6 +433,9 @@ class HTTCategories : public ModuleBase {
   branch_var pt_tt_totpt_minus_jets_totpt_;
   branch_var jetsplustt_totpt_norm_;
   branch_var pt_tt_totpt_minus_jets_totpt_norm_;
+  
+  std::string hltpaths_label_;
+  std::vector<ic::HLTPath> HLT_paths_;
 
 
  public:

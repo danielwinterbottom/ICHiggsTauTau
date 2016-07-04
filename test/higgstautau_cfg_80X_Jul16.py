@@ -88,7 +88,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1699,7 +1699,7 @@ if release in ['76X']:
 if release in ['80XMINIAOD']:
   process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
    branch = cms.string("triggerPaths"),
-   input  = cms.InputTag("TriggerResults","","HLT"),
+   input  = cms.InputTag("TriggerResults","","HLT2"),
    inputIsStandAlone = cms.bool(True),
    inputPrescales = cms.InputTag("patTrigger")
   )
@@ -1718,7 +1718,8 @@ process.icMu8Ele17ObjectProducer = producers.icTriggerObjectProducer.clone(
       branch = cms.string("triggerObjectsMu8Ele17"),
       hltPath = cms.string("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"),
       inputIsStandAlone = cms.bool(False),
-      storeOnlyIfFired = cms.bool(False)
+      storeOnlyIfFired = cms.bool(False),
+      inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
       )
 
 process.icMu8Ele23ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1726,7 +1727,8 @@ process.icMu8Ele23ObjectProducer = producers.icTriggerObjectProducer.clone(
       branch = cms.string("triggerObjectsMu8Ele23"),
       hltPath = cms.string("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"),
       inputIsStandAlone = cms.bool(False),
-      storeOnlyIfFired = cms.bool(False)
+      storeOnlyIfFired = cms.bool(False),
+      inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
       )
 
 process.icMu17Ele12ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1734,7 +1736,8 @@ process.icMu17Ele12ObjectProducer = producers.icTriggerObjectProducer.clone(
       branch = cms.string("triggerObjectsMu17Ele12"),
       hltPath = cms.string("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"),
       inputIsStandAlone = cms.bool(False),
-      storeOnlyIfFired = cms.bool(False)
+      storeOnlyIfFired = cms.bool(False),
+      inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
       )
 
 process.icMu23Ele12ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1742,7 +1745,8 @@ process.icMu23Ele12ObjectProducer = producers.icTriggerObjectProducer.clone(
       branch = cms.string("triggerObjectsMu23Ele12"),
       hltPath = cms.string("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"),
       inputIsStandAlone = cms.bool(False),
-      storeOnlyIfFired = cms.bool(False)
+      storeOnlyIfFired = cms.bool(False),
+      inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
       )
 
 process.icMu23Ele8ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1750,7 +1754,8 @@ process.icMu23Ele8ObjectProducer = producers.icTriggerObjectProducer.clone(
       branch = cms.string("triggerObjectsMu23Ele8"),
       hltPath = cms.string("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v"),
       inputIsStandAlone = cms.bool(False),
-      storeOnlyIfFired = cms.bool(False)
+      itoreOnlyIfFired = cms.bool(False),
+      inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
       )
 
 #####eletau#####
@@ -1760,7 +1765,8 @@ process.icEle23ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle23"),
     hltPath = cms.string("HLT_Ele23_WPLoose_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle24erObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1768,7 +1774,8 @@ process.icEle24erObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle24er"),
     hltPath = cms.string("HLT_Ele24_eta2p1_WPLoose_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle25WPTightObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1776,7 +1783,8 @@ process.icEle25WPTightObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle25WPTight"),
     hltPath = cms.string("HLT_Ele25_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle25erObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1784,7 +1792,8 @@ process.icEle25erObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle25er"),
     hltPath = cms.string("HLT_Ele25_eta2p1_WPLoose_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle25erWPTightObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1792,7 +1801,8 @@ process.icEle25erWPTightObjectProducer = producers.icTriggerObjectProducer.clone
     branch = cms.string("triggerObjectsEle25erWPTight"),
     hltPath = cms.string("HLT_Ele25_eta2p1_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle27ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1800,7 +1810,8 @@ process.icEle27ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle27"),
     hltPath = cms.string("HLT_Ele27_WPLoose_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle27WPTightObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1808,7 +1819,8 @@ process.icEle27WPTightObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle27WPTight"),
     hltPath = cms.string("HLT_Ele27_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle27erObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1816,7 +1828,8 @@ process.icEle27erObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle27er"),
     hltPath = cms.string("HLT_Ele27_eta2p1_WPLoose_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle27erWPTightObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1824,15 +1837,17 @@ process.icEle27erWPTightObjectProducer = producers.icTriggerObjectProducer.clone
     branch = cms.string("triggerObjectsEle27erWPTight"),
     hltPath = cms.string("HLT_Ele27_eta2p1_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle32WPTightObjectProducer = producers.icTriggerObjectProducer.clone(
     input = cms.InputTag("patTriggerEvent"),
     branch = cms.string("triggerObjectsEle32WPTight"),
-    hltPath = cms.string("HLT_Ele32_WPTight_Gsf_v"),
+    hltPath = cms.string("HLT_Ele32_eta2p1_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle22LooseTau20SingleL1 = producers.icTriggerObjectProducer.clone(
@@ -1840,7 +1855,8 @@ process.icEle22LooseTau20SingleL1 = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle22LooseTau20SingleL1"),
     hltPath = cms.string("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle24LooseTau20SingleL1 = producers.icTriggerObjectProducer.clone(
@@ -1848,7 +1864,8 @@ process.icEle24LooseTau20SingleL1 = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle24LooseTau20SingleL1"),
     hltPath = cms.string("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle24LooseTau20 = producers.icTriggerObjectProducer.clone(
@@ -1856,7 +1873,8 @@ process.icEle24LooseTau20 = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle24LooseTau20"),
     hltPath = cms.string("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle27LooseTau20SingleL1 = producers.icTriggerObjectProducer.clone(
@@ -1864,7 +1882,8 @@ process.icEle27LooseTau20SingleL1 = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle27LooseTau20SingleL1"),
     hltPath = cms.string("HLT_Ele27_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icEle32LooseTau20SingleL1 = producers.icTriggerObjectProducer.clone(
@@ -1872,7 +1891,8 @@ process.icEle32LooseTau20SingleL1 = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsEle32LooseTau20SingleL1"),
     hltPath = cms.string("HLT_Ele32_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 #####muotau#####
@@ -1882,7 +1902,8 @@ process.icIsoMu18ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoMu18"),
     hltPath = cms.string("HLT_IsoMu18_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1890,7 +1911,8 @@ process.icIsoMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoMu20"),
     hltPath = cms.string("HLT_IsoMu20_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1898,7 +1920,8 @@ process.icIsoMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoMu22"),
     hltPath = cms.string("HLT_IsoMu22_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu22erObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1906,7 +1929,8 @@ process.icIsoMu22erObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoMu22er"),
     hltPath = cms.string("HLT_IsoMu22_eta2p1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu24ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1914,7 +1938,8 @@ process.icIsoMu24ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoMu24"),
     hltPath = cms.string("HLT_IsoMu24_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu27ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1922,7 +1947,8 @@ process.icIsoMu27ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoMu27"),
     hltPath = cms.string("HLT_IsoMu27_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoTkMu18ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1930,7 +1956,8 @@ process.icIsoTkMu18ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoTkMu18"),
     hltPath = cms.string("HLT_IsoTkMu18_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoTkMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1938,7 +1965,8 @@ process.icIsoTkMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoTkMu20"),
     hltPath = cms.string("HLT_IsoTkMu20_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoTkMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1946,7 +1974,8 @@ process.icIsoTkMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoTkMu22"),
     hltPath = cms.string("HLT_IsoTkMu22_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoTkMu22erObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1954,7 +1983,8 @@ process.icIsoTkMu22erObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoTkMu22er"),
     hltPath = cms.string("HLT_IsoTkMu22_eta2p1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoTkMu24ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1962,7 +1992,8 @@ process.icIsoTkMu24ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoTkMu24"),
     hltPath = cms.string("HLT_IsoTkMu24_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoTkMu27ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1970,7 +2001,8 @@ process.icIsoTkMu27ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsIsoTkMu27"),
     hltPath = cms.string("HLT_IsoTkMu27_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu17erLooseIsoTau20SingleL1ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1978,7 +2010,8 @@ process.icIsoMu17erLooseIsoTau20SingleL1ObjectProducer = producers.icTriggerObje
     branch = cms.string("triggerObjectsIsoMu17erLooseIsoTau20_SingleL1"),
     hltPath = cms.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu17erLooseIsoTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1986,7 +2019,8 @@ process.icIsoMu17erLooseIsoTau20ObjectProducer = producers.icTriggerObjectProduc
     branch = cms.string("triggerObjectsIsoMu17erLooseIsoTau20"),
     hltPath = cms.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu19erLooseIsoTau20SingleL1ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1994,7 +2028,8 @@ process.icIsoMu19erLooseIsoTau20SingleL1ObjectProducer = producers.icTriggerObje
     branch = cms.string("triggerObjectsIsoMu19erLooseIsoTau20_SingleL1"),
     hltPath = cms.string("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu19erLooseIsoTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -2002,7 +2037,8 @@ process.icIsoMu19erLooseIsoTau20ObjectProducer = producers.icTriggerObjectProduc
     branch = cms.string("triggerObjectsIsoMu19erLooseIsoTau20"),
     hltPath = cms.string("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 process.icIsoMu21erLooseIsoTau20SingleL1ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -2010,7 +2046,8 @@ process.icIsoMu21erLooseIsoTau20SingleL1ObjectProducer = producers.icTriggerObje
     branch = cms.string("triggerObjectsIsoMu21erLooseIsoTau20_SingleL1"),
     hltPath = cms.string("HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v"),
     inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
+    storeOnlyIfFired = cms.bool(False),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
 #####tautau#####
@@ -2020,7 +2057,8 @@ process.icDoubleMediumTau32ObjectProducer = producers.icTriggerObjectProducer.cl
    branch = cms.string("triggerObjectsDoubleMediumTau32"),
    hltPath = cms.string("HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v"),
    inputIsStandAlone = cms.bool(False),
-   storeOnlyIfFired = cms.bool(False)
+   storeOnlyIfFired = cms.bool(False),
+   inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
    )
 
 process.icDoubleMediumTau35ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -2028,7 +2066,8 @@ process.icDoubleMediumTau35ObjectProducer = producers.icTriggerObjectProducer.cl
    branch = cms.string("triggerObjectsDoubleMediumTau35"),
    hltPath = cms.string("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v"),
    inputIsStandAlone = cms.bool(False),
-   storeOnlyIfFired = cms.bool(False)
+   storeOnlyIfFired = cms.bool(False),
+   inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
    )
 
 process.icDoubleMediumTau40ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -2036,7 +2075,8 @@ process.icDoubleMediumTau40ObjectProducer = producers.icTriggerObjectProducer.cl
       branch = cms.string("triggerObjectsDoubleMediumTau40"),
       hltPath = cms.string("HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v"),
       inputIsStandAlone = cms.bool(False),
-      storeOnlyIfFired = cms.bool(False)
+      storeOnlyIfFired = cms.bool(False),
+      inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
       )
   
 process.icTriggerObjectSequence += cms.Sequence(
@@ -2136,12 +2176,12 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
-  process.icL1ExtraTauProducer+
+  #process.icL1ExtraTauProducer+
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
-  process.icPfMetSequence+
+#  process.icPfMetSequence+
   process.icPFJetSequence+
-  process.icMvaMetSequence+
+#  process.icMvaMetSequence+
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+

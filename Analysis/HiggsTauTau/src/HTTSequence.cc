@@ -22,6 +22,7 @@
 #include "HiggsTauTau/interface/HTTMuonEfficiency.h"
 #include "HiggsTauTau/interface/HTTTauEfficiency.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
+#include "HiggsTauTau/interface/HTTTriggerFilter2.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
@@ -708,19 +709,35 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
 // if(is_data){
-   
-   if((is_data || js["trg_in_mc"].asBool()) && (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
-    if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
-        BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-            .set_channel(channel)
-            .set_mc(mc_type)
-            .set_era(era_type)
-            .set_is_data(is_data)
-            .set_is_embedded(is_embedded)
-            .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-            .set_do_singlelepton(js["do_singlelepton"].asBool())
-            .set_pair_label("ditau"));
-      }
+
+   if(js["store_hltpaths"].asBool()){
+     if(is_data || js["trg_in_mc"].asBool()){
+      if(is_data || js["trg_in_mc"].asBool()){
+          BuildModule(HTTTriggerFilter2("HTTTriggerFilter")
+              .set_channel(channel)
+              .set_mc(mc_type)
+              .set_era(era_type)
+              .set_is_data(is_data)
+              .set_is_embedded(is_embedded)
+              .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+              .set_do_singlelepton(js["do_singlelepton"].asBool())
+              .set_pair_label("ditau"));
+        }
+     }
+   } else {
+     if((is_data || js["trg_in_mc"].asBool()) && (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
+      if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
+          BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+              .set_channel(channel)
+              .set_mc(mc_type)
+              .set_era(era_type)
+              .set_is_data(is_data)
+              .set_is_embedded(is_embedded)
+              .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+              .set_do_singlelepton(js["do_singlelepton"].asBool())
+              .set_pair_label("ditau"));
+        }
+     }
    }
 // }
 }
@@ -1256,6 +1273,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_channel(channel)
     .set_era(era_type)
     .set_strategy(strategy_type)
+    .set_mc(mc_type)
     .set_ditau_label("ditau")
     .set_met_label(met_label)
     .set_jets_label(jets_label)

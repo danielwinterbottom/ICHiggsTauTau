@@ -83,4 +83,8 @@
 #pragma link C++ class ic::EventInfo+;
 
 #pragma link C++ class mithep::TH2DAsymErr+;
+
+#pragma link C++ class ic::HLTPath+;
+#pragma link C++ class std::vector<ic::HLTPath>+;
+
 #endif

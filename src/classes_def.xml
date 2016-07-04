@@ -56,5 +56,7 @@
   <class name="edm::Wrapper<reco::PFCandidateRefVector>"/>
   <class name="edm::ValueMap<std::vector<int>>"/>
   <class name="edm::Wrapper<edm::ValueMap<std::vector<int>>>"/>
+  <class name="ic::HLTpath"/>
+  <class name="std::vector<ic::HLTPath>"/>
   <function name="MultiDraw"/>
 </lcgdict>

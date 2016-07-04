@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_Module_HTTTriggerFilter22_h
-#define ICHiggsTauTau_Module_HTTTriggerFilter22_h
+#ifndef ICHiggsTauTau_Module_HTTTriggerFilter2_h
+#define ICHiggsTauTau_Module_HTTTriggerFilter2_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"

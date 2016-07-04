@@ -9,8 +9,10 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/interface/HLTPath.hh"
 #include "boost/bind.hpp"
 #include "boost/format.hpp"
+
 
 namespace ic {
 
@@ -36,7 +38,8 @@ namespace ic {
   }
 
   int HTTTriggerFilter2::Execute(TreeEvent *event) {
-
+      
+    std::vector<ic::HLTPath> leg_filters; 
     std::string trig_obj_label;
 		std::string alt_trig_obj_label;
     std::string leg1_filter;
@@ -459,7 +462,16 @@ namespace ic {
            alt_leg1_filter    = "hltEle23WPLooseGsfTrackIsoFilter";
            alt_min_online_pt = 0.;
            high_leg_pt = 24.;
-          }
+          } else if (mc_ == mc::summer16_80X){
+      
+          ic::HLTPath fil;
+          fil.path          = "HLT_Ele23_WPLoose_Gsf_v";
+          fil.leg1_filter   = "hltEle23WPLooseGsfTrackIsoFilter";
+          fil.leg2_filter   = "";
+          fil.leg2_extra    = "";
+          fil.singleLepton_ = true;
+          leg_filters.push_back(fil);
+      }
 
       } else if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
         if (mc_ == mc::fall11_42X) {
@@ -666,6 +678,37 @@ namespace ic {
         }
       }
     }
+    
+    if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::zee || channel_ == channel::tpzee || channel_ == channel::tpzmm) && mc_ == mc::summer16_80X) {
+      
+      for(unsigned i=0; i<leg_filters.size(); ++i){
+        std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
+        ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
+        for (unsigned j=0; i < dileptons.size(); ++j) {
+          bool leg1_match = false;
+          bool leg2_match = false;
+          if(leg_filters[i].singleLepton_){
+            bool highpt_leg = dileptons[j]->At(0)->pt()>high_leg_pt;
+            leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0),alt_objs, leg_filters[i].leg1_filter, 0.5).first;
+            if (leg1_match&&highpt_leg){
+              dileptons_pass.push_back(dileptons[j]);
+            }
+          } else if(!leg_filters[i].singleLepton_){
+            leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
+            leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;
+            if (leg1_match && leg2_match){
+              dileptons_pass.push_back(dileptons[j]);
+            }
+          }
+          
+        }
+        
+        if (dileptons_pass.size() > 1) leg_filters[i].pass = true;
+        else                           leg_filters[i].pass = false;
+        
+      }
+        
+    }
 
 
     if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X) {
@@ -808,12 +851,22 @@ namespace ic {
         if (true) dileptons_pass.push_back(dileptons[i]); // we'll apply this in HTTPairSelector instead
       }
     }
-
-    dileptons = dileptons_pass;
-    if (dileptons.size() >= 1) {
-      return 0;
+    
+    if (mc_ != mc::summer16_80X){
+      dileptons = dileptons_pass;
+      if (dileptons.size() >= 1) {
+        return 0;
+      } else {
+        return 1;
+      }
     } else {
-      return 1;
+        event->Add("HLTPaths", leg_filters);
+        bool passedHLT = false;
+        for(unsigned i=0; i<leg_filters.size(); ++i){
+          if(leg_filters[i].pass) passedHLT = true;
+        }
+        if (passedHLT) return 0;
+        else           return 1;
     }
 }
 

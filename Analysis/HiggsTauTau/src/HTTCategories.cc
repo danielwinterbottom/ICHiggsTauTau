@@ -17,10 +17,12 @@ namespace ic {
   HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), 
       channel_(channel::et), 
       era_(era::data_2012_rereco),
-      strategy_(strategy::paper2013) {
+      strategy_(strategy::paper2013),
+      mc_(mc::summer12_53X){
       ditau_label_ = "emtauCandidates";
       jets_label_ = "pfJetsPFlow";
       met_label_ = "pfMVAMetNoLeptons";
+      hltpaths_label_ = "HLTPaths";
       mass_shift_ = 1.0;
       fs_ = NULL;
       write_tree_ = true;
@@ -36,7 +38,7 @@ namespace ic {
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
-  }
+      }
 
   HTTCategories::~HTTCategories() {
     ;
@@ -51,6 +53,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
       std::cout << boost::format(param_fmt()) % "dilepton_label"  % ditau_label_;
       std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
+      std::cout << boost::format(param_fmt()) % "hltpaths_label"   % hltpaths_label_;
       std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
       std::cout << boost::format(param_fmt()) % "mass_shift"      % mass_shift_;
       std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
@@ -134,6 +137,8 @@ namespace ic {
       outtree_->Branch("pt_tt_totpt_minus_jets_totpt",    &pt_tt_totpt_minus_jets_totpt_.var_double);
       outtree_->Branch("jetsplustt_totpt_norm",    &jetsplustt_totpt_norm_.var_double);
       outtree_->Branch("pt_tt_totpt_minus_jets_totpt_norm",    &pt_tt_totpt_minus_jets_totpt_norm_.var_double);
+      
+      outtree_->Branch("HLT_paths",    &HLT_paths_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
       outtree_->Branch("subleading_lepton_match_pt",&subleading_lepton_match_pt_);
@@ -852,7 +857,7 @@ namespace ic {
    } else {
     signalweight_ = 0.;
    }
-
+    
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
@@ -1112,6 +1117,12 @@ namespace ic {
     antimu_1_ = true;
     antiele_2_ = true;
     antimu_2_ = true;
+    
+    if (mc_ == mc::summer16_80X){
+      std::vector<HLTPath> const& HLT_paths = event->Get<std::vector<HLTPath>>(hltpaths_label_);
+      HLT_paths_ = HLT_paths;
+    }
+    
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
@@ -1628,7 +1639,6 @@ namespace ic {
         lbyVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWoldDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
-
 
       }
     }
