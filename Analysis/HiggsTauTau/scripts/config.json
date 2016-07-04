@@ -31,7 +31,7 @@
     "get_effective" : false,
     "do_btag_eff":false,
     "trg_in_mc" : true,
-    "store_hltpaths": true;
+    "store_hltpaths": true,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "store_trigobjpt" :true,
