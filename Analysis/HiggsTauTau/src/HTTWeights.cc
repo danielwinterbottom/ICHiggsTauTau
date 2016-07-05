@@ -1080,8 +1080,82 @@ namespace ic {
         weight *= (mu_trg * tau_trg);
         event->Add("trigweight_1", mu_trg);
         event->Add("trigweight_2", tau_trg);
+      } else if (channel_ == channel::zee) {
+        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
+        double e_pt = elec->pt();
+        double e_eta = fabs(elec->sc_eta());
+        if(era_ == era::data_2015 || era_==era::data_2016) e_eta = fabs(elec->eta());
+        double ele_trg = 1.0;
+        double tau_trg = 1.0;
+        double ele_trg_mc = 1.0;
+        double tau_trg_mc = 1.0;
+        if (mc_ == mc::fall15_76X){
+          if(e_pt<150){
+            ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
+            ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
+          } else {
+            ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),(et_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+            ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),(et_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
+          }         
+          tau_trg=1;
+          tau_trg_mc=1;
+        } else if (mc_ == mc::spring16_80X){
+          if(e_pt<1000){
+            ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
+            ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
+          } else {
+            ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),(et_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+            ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),(et_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
+          }         
+          tau_trg=1;
+          tau_trg_mc=1;
+        }
+        if (trg_applied_in_mc_) {
+          ele_trg = ele_trg / ele_trg_mc;
+          tau_trg = tau_trg / tau_trg_mc;
+        }
+        weight *= (ele_trg * tau_trg);
+        event->Add("trigweight_1", ele_trg);
+        event->Add("trigweight_2", tau_trg);
+      } else if (channel_ == channel::zmm) {
+        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
+        double pt = muon->pt();
+        double m_eta = fabs(muon->eta());
+        double mu_trg = 1.0;
+        double tau_trg = 1.0;
+        double mu_trg_mc = 1.0;
+        double tau_trg_mc = 1.0;
+        if (mc_ == mc::fall15_76X){
+          if(pt<150){
+            mu_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),mt_trig_data_->GetYaxis()->FindBin(pt));
+            mu_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),mt_trig_mc_->GetYaxis()->FindBin(pt));
+          } else {
+            mu_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),(mt_trig_data_->GetYaxis()->FindBin(pt)-1));
+            mu_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),(mt_trig_mc_->GetYaxis()->FindBin(pt)-1));
+          }         
+          tau_trg=1;
+          tau_trg_mc=1;
+         } else if(mc_ == mc::spring16_80X){
+          if(pt<1000){
+            mu_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),mt_trig_data_->GetYaxis()->FindBin(pt));
+            mu_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),mt_trig_mc_->GetYaxis()->FindBin(pt));
+          } else {
+            mu_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),(mt_trig_data_->GetYaxis()->FindBin(pt)-1));
+            mu_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),(mt_trig_mc_->GetYaxis()->FindBin(pt)-1));
+          }         
+          tau_trg=1;
+          tau_trg_mc=1;
+        }
+        if (trg_applied_in_mc_) {
+          mu_trg = mu_trg / mu_trg_mc;
+          tau_trg = tau_trg / tau_trg_mc;
+        }
+        weight *= (mu_trg * tau_trg);
+        event->Add("trigweight_1", mu_trg);
+        event->Add("trigweight_2", tau_trg);
       }
     }
+    
     if (do_singlemu_trg_weights_) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double m_pt = muon->pt();
