@@ -1502,9 +1502,12 @@ void HTTSequence::BuildMTPairs() {
     } else { 
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else{
+   } else if (strategy_type!=strategy::spring16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
+   } else {
+    MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
+
     
 
 
@@ -1688,10 +1691,11 @@ if(strategy_type == strategy::paper2013) {
     } else { 
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else{
+   } else if (strategy_type!=strategy::spring16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
+   } else {
+    MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
    }
-    
 
 
 
@@ -1858,10 +1862,11 @@ void HTTSequence::BuildZMMPairs() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::spring16){
+  if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
+  } else if (strategy_type==strategy::spring16){
+    MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
   }
-
   BuildModule(SimpleFilter<Muon>("MuonFilter")
       .set_input_label("sel_muons").set_min(2)
       .set_predicate([=](Muon const* m) {
@@ -1893,8 +1898,10 @@ void HTTSequence::BuildTPZMMPairs() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15 ||strategy_type==strategy::spring16){
+  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
+  } else if (strategy_type==strategy::spring16){
+    MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
   }
 
   BuildModule(SimpleFilter<Muon>("ProbeFilter")
@@ -1939,8 +1946,10 @@ void HTTSequence::BuildWMuNu() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::spring16){
+  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
+  } else if(strategy_type == strategy::spring16){
+    MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
   }
 
   BuildModule(SimpleFilter<Muon>("MuonFilter")
@@ -2313,7 +2322,7 @@ void HTTSequence::BuildExtraMuonVeto(){
                 fabs(m->eta())          < veto_muon_eta   &&
                 fabs(m->dxy_vertex())   < veto_muon_dxy   &&
                 fabs(m->dz_vertex())    < veto_muon_dz    &&
-                MuonMedium(m)                     &&
+                MuonMediumHIPsafe(m)                     &&
                 PF04IsolationVal(m, 0.5,0) < 0.3;
       });
    }
