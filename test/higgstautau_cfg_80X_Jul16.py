@@ -1153,62 +1153,329 @@ if release in ['76X', '80XMINIAOD']:
 # ################################################################
 # # MVA MET and PF MET
 # ################################################################
-#process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-#process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
-#process.load("RecoJets.JetProducers.ak4PFJets_cfi")
-#
-#from RecoMET.METProducers.PFMET_cfi import pfMet
-#
-#process.pfMetRe = pfMet.clone(src = "particleFlow")
-#
-#if release in ['80XMINIAOD']:
-#  process.pfMetRe = pfMet.clone(src = "packedPFCandidates")
-#  process.pfMetRe.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
-#
-#if release in ['76X']:
-#  process.icPfMetProducer = producers.icMetProducer.clone(
-#                            input = cms.InputTag("pfMetRe"),
-#                            branch = cms.string("pfMet"),
-#                            includeCustomID = cms.bool(False),
-#                            inputCustomID = cms.InputTag("")
-#                            )
-#
-#if release in ['80XMINIAOD']:
-#  process.icPfMetProducer = producers.icMetFromPatProducer.clone(
-#                           branch = cms.string("pfMet"),
-#                           getUncorrectedMet=cms.bool(False)
-#                           )
-#  process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
-#                           input=cms.InputTag("slimmedMETsPuppi"),
-#                           branch = cms.string("puppiMet"),
-#                           getUncorrectedMet=cms.bool(False)
-#                           )
-#
-#
-#process.icPfMetSequence = cms.Sequence(
-#  process.pfMetRe+
-#  process.icPfMetProducer
+process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
+process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
+process.load("RecoJets.JetProducers.ak4PFJets_cfi")
+
+from RecoMET.METProducers.PFMET_cfi import pfMet
+
+process.pfMetRe = pfMet.clone(src = "particleFlow")
+
+if release in ['80XMINIAOD']:
+  process.pfMetRe = pfMet.clone(src = "packedPFCandidates")
+  process.pfMetRe.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
+
+if release in ['76X']:
+  process.icPfMetProducer = producers.icMetProducer.clone(
+                            input = cms.InputTag("pfMetRe"),
+                            branch = cms.string("pfMet"),
+                            includeCustomID = cms.bool(False),
+                            inputCustomID = cms.InputTag("")
+                            )
+
+if release in ['80XMINIAOD']:
+  process.icPfMetProducer = producers.icMetFromPatProducer.clone(
+                           branch = cms.string("pfMet"),
+                           getUncorrectedMet=cms.bool(False)
+                           )
+  process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
+                           input=cms.InputTag("slimmedMETsPuppi"),
+                           branch = cms.string("puppiMet"),
+                           getUncorrectedMet=cms.bool(False)
+                           )
+
+
+process.icPfMetSequence = cms.Sequence(
+  process.pfMetRe+
+  process.icPfMetProducer
+)
+
+if release in ['80XMINIAOD']:
+  process.icPfMetSequence.remove(process.pfMetRe)
+  process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
+
+from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
+runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
+
+
+process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
+  input = cms.InputTag("MVAMET","MVAMET"),
+  branch = cms.string("pfMVAMetVector"),
+  includeCustomID = cms.bool(False),
+  includeUserCandID = cms.bool(True),
+  includeExternalMetsig = cms.bool(False),
+  includeMetUncertainties = cms.bool(False),
+  metuncertainties = cms.vstring(),
+  metcorrections = cms.vstring(),
+  includeExternalMetsigMethod2 = cms.bool(False),
+  includeMetCorrections = cms.bool(False),
+  doGenMet = cms.bool(False),
+  metsig = cms.PSet(
+    metsig = cms.InputTag("METSignificance","METSignificance"),
+    metsigcov00 = cms.InputTag("METSignificance", "CovarianceMatrix00"),
+    metsigcov01 = cms.InputTag("METSignificance", "CovarianceMatrix01"),
+    metsigcov10 = cms.InputTag("METSignificance", "CovarianceMatrix10"),
+    metsigcov11 = cms.InputTag("METSignificance", "CovarianceMatrix11")
+    ),
+  metsig_method2 = cms.PSet(
+    metsig      = cms.InputTag("METSignificance","METSignificance"),
+    metsigcov = cms.InputTag("METSignificance","METCovariance")
+    ),
+  inputCustomID = cms.InputTag("")
+  )
+
+
+process.icMvaMetSequence = cms.Sequence(
+  process.tauDecayProducts+
+  process.egmGsfElectronIDs+
+  process.electronMVAValueMapProducer+
+  process.electronRegressionValueMapProducer+
+  process.photonIDValueMapProducer+
+  process.photonMVAValueMapProducer+
+  process.slimmedElectronsTight+
+  process.slimmedMuonsTight+
+  process.slimmedTausLoose+
+  process.slimmedTausLooseCleaned+
+  process.selectedUpdatedPatJetsUpdatedJECCleaned+
+  process.pfNeutrals+
+  process.neutralInJets+
+  process.pfChargedPV+
+  process.pfChs+
+  process.pfChargedPU+
+  process.pfMETCands+
+  process.pfTrackMETCands+
+  process.pfNoPUMETCands+
+  process.pfPUMETCands+
+  process.pfChargedPUMETCands+
+  process.pfNeutralPUMETCands+
+  process.pfNeutralPVMETCands+
+  process.pfNeutralUnclusteredMETCands+
+  process.pfPUCorrectedMETCands+
+  process.ak4PFCHSL1FastjetCorrector+
+  process.ak4PFCHSL2RelativeCorrector+
+  process.ak4PFCHSL3AbsoluteCorrector+
+  process.ak4PFCHSL1FastL2L3Corrector+
+  process.ak4PFCHSResidualCorrector+
+  process.ak4PFCHSL1FastL2L3ResidualCorrector+
+  process.ak4JetsForpfMET+
+  process.ak4JetsForpfTrackMET+
+  process.ak4JetsForpfPUMET+
+  process.ak4JetsForpfChargedPUMET+
+  process.ak4JetsForpfNeutralPUMET+
+  process.ak4JetsForpfNeutralPVMET+
+  process.ak4JetsForpfNeutralUnclusteredMET+
+  process.ak4JetsForpfPUCorrectedMET+
+  process.ak4JetsForpfNoPUMET+
+  process.corrpfMET+
+  process.corrpfTrackMET+
+  process.corrpfPUMET+
+  process.corrpfChargedPUMET+
+  process.corrpfNeutralPVMET+
+  process.corrpfNeutralUnclusteredMET+
+  process.corrpfNeutralPUMET+
+  process.corrpfPUCorrectedMET+
+  process.corrpfNoPUMET+
+  process.pfMET+
+  process.pfMETT1+
+  process.patpfMET+
+  process.pfTrackMET+
+  process.patpfTrackMET+
+  process.pfTrackMETT1+
+  process.patpfTrackMETT1+
+  process.pfPUCorrectedMET+
+  process.pfPUMET+
+  process.pfChargedPUMET+
+  process.pfNeutralPUMET+
+  process.patpfPUMET+
+  process.patpfChargedPUMET+
+  process.patpfNeutralPUMET+
+  process.pfNeutralPVMET+
+  process.pfNeutralUnclusteredMET+
+  process.patpfNeutralPVMET+
+  process.patpfNeutralUnclusteredMET+
+  process.patpfPUCorrectedMET+
+  process.pfPUMETT1+
+  process.patpfPUMETT1+
+  process.pfChargedPUMETT1+
+  process.pfNeutralPUMETT1+
+  process.patpfChargedPUMETT1+
+  process.patpfNeutralPUMETT1+
+  process.pfPUCorrectedMETT1+
+  process.patpfPUCorrectedMETT1+
+  process.pfNoPUMET+
+  process.patpfNoPUMET+
+  process.pfNoPUMETT1+
+  process.patpfNoPUMETT1+
+  process.patpfMETT1+
+  process.tauPFMET+
+  process.tauMET+
+  process.tausSignificance+
+  process.MVAMET+
+  process.icPfMVAMetProducer
+  )
+
+if not isData:
+  process.icMvaMetSequence.remove(process.ak4PFCHSResidualCorrector)
+  process.icMvaMetSequence.remove(process.ak4PFCHSL1FastL2L3ResidualCorrector)
+
+
+#from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_74X import mvaMetPairs
+
+if release in ['80XMINIAOD']:
+  process.ak4PFJets.src = cms.InputTag("packedPFCandidates")
+
+process.ak4PFJets.doAreaFastjet = cms.bool(True)
+
+#from JetMETCorrections.Configuration.DefaultJEC_cff import ak4PFJetsL1FastL2L3
+#from JetMETCorrections.Configuration.DefaultJEC_cff import ak4PFJetsL1FastL2L3
+
+#process.mvaMetPairsTT = mvaMetPairs.clone(
+# srcPFCandidates = cms.InputTag("packedPFCandidates"),
+# srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+# srcLeptons = cms.VInputTag(
+#   cms.InputTag("slimmedTaus","",""),
+#   cms.InputTag("slimmedTaus","",""),
+#  ),
+#  permuteLeptons = cms.bool(True)
 #)
-#
+
+
+#process.mvaMetPairsMT = mvaMetPairs.clone(
+# srcPFCandidates = cms.InputTag("packedPFCandidates"),
+# srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+# srcLeptons = cms.VInputTag(
+#   cms.InputTag("slimmedMuons","",""),
+#   cms.InputTag("slimmedTaus","",""),
+#  ),
+#  permuteLeptons = cms.bool(True)
+#)
+
+
+#process.mvaMetPairsET = mvaMetPairs.clone(
+# srcPFCandidates = cms.InputTag("packedPFCandidates"),
+# srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+# srcLeptons = cms.VInputTag(
+#   cms.InputTag("slimmedElectrons","",""),
+#   cms.InputTag("slimmedTaus","",""),
+#  ),
+#  permuteLeptons = cms.bool(True)
+#  )
+#process.mvaMetPairsEM = mvaMetPairs.clone(
+# srcPFCandidates = cms.InputTag("packedPFCandidates"),
+# srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+# srcLeptons = cms.VInputTag(
+#   cms.InputTag("slimmedElectrons","",""),
+#   cms.InputTag("slimmedMuons","",""),
+#  ),
+#  permuteLeptons = cms.bool(True)
+#  )
+#process.puJetIdForPFMVAMEt.rho = cms.InputTag("fixedGridRhoFastjetAll")
+
 #if release in ['80XMINIAOD']:
-#  process.icPfMetSequence.remove(process.pfMetRe)
-#  process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
+#  process.pfMVAMEt.srcPFCandidates = cms.InputTag("packedPFCandidates")
+#  process.pfMVAMEt.srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices")
+##process.pfMVAMEt.srcLeptons = cms.VInputTag("selectedElectrons","selectedMuons","selectedTaus")
+#  process.pfMVAMEt.srcLeptons = cms.VInputTag("slimmedElectrons","slimmedMuons","slimmedTaus")
+#  process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
+#  process.puJetIdForPFMVAMEt.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+#  process.mvaMetPairsEM.srcPFCandidates = cms.InputTag('packedPFCandidates')
+#  process.mvaMetPairsEM.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+#  process.mvaMetPairsEM.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
+#  process.mvaMetPairsET.srcPFCandidates = cms.InputTag('packedPFCandidates')
+#  process.mvaMetPairsET.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+#  process.mvaMetPairsET.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
+#  process.mvaMetPairsMT.srcPFCandidates = cms.InputTag('packedPFCandidates')
+#  process.mvaMetPairsMT.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+#  process.mvaMetPairsMT.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
+#  process.mvaMetPairsTT.srcPFCandidates = cms.InputTag('packedPFCandidates')
+#  process.mvaMetPairsTT.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+#  process.mvaMetPairsTT.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
 #
-#from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
-#runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
+
+
+#if release in ['76X']:
+#  process.pfMVAMEt.srcLeptons = cms.VInputTag("selectedElectrons","selectedMuons","selectedTaus")
+#  process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
+#  process.mvaMetPairsEM.srcLeptons = cms.VInputTag(
+#     cms.InputTag("selectedElectrons","",""),
+#     cms.InputTag("selectedMuons","",""),
+#  )
+#  process.mvaMetPairsEM.srcVertices = cms.InputTag("offlinePrimaryVertices")
+#  process.mvaMetPairsEM.srcPFCandidates = cms.InputTag("particleFlow")
+#  process.mvaMetPairsET.srcLeptons = cms.VInputTag(
+#     cms.InputTag("selectedElectrons","",""),
+#     cms.InputTag("selectedTaus","",""),
+#  )
+#  process.mvaMetPairsET.srcVertices = cms.InputTag("offlinePrimaryVertices")
+#  process.mvaMetPairsET.srcPFCandidates = cms.InputTag("particleFlow")
+#  process.mvaMetPairsMT.srcLeptons = cms.VInputTag(
+#     cms.InputTag("selectedMuons","",""),
+#     cms.InputTag("selectedTaus","",""),
+#  )
+#  process.mvaMetPairsMT.srcVertices = cms.InputTag("offlinePrimaryVertices")
+#  process.mvaMetPairsMT.srcPFCandidates = cms.InputTag("particleFlow")
+#  process.mvaMetPairsTT.srcLeptons = cms.VInputTag(
+#     cms.InputTag("selectedTaus","",""),
+#     cms.InputTag("selectedTaus","",""),
+#  )
+#  process.mvaMetPairsTT.srcVertices = cms.InputTag("offlinePrimaryVertices")
+#  process.mvaMetPairsTT.srcPFCandidates = cms.InputTag("particleFlow")
 #
+#process.icMvaMetConcatenate = cms.EDProducer("ICPATMETConcatenate",
+#   concatenate = cms.VInputTag(
+#     cms.InputTag("mvaMetPairsTT"),
+#     cms.InputTag("mvaMetPairsMT"),
+#     cms.InputTag("mvaMetPairsET"),
+#     cms.InputTag("mvaMetPairsEM")
+#   )
+#)
+#process.icMvaMetIDConcatenate = cms.EDProducer("ICIDConcatenate",
+#   concatenate = cms.VInputTag(
+#     cms.InputTag("mvaMetPairsTT", "MVAMetId"),
+#     cms.InputTag("mvaMetPairsMT", "MVAMetId"),
+#     cms.InputTag("mvaMetPairsET", "MVAMetId"),
+#     cms.InputTag("mvaMetPairsEM", "MVAMetId")
+#   )
+#)
+#process.icMvaMetPairsProducer = producers.icMetProducer.clone(
+#   branch  = cms.string("pfMVAMetVector"),
+#   input   = cms.InputTag("icMvaMetConcatenate"),
+#   includeCustomID = cms.bool(True),
+#   inputCustomID = cms.InputTag("icMvaMetIDConcatenate")
+#)
+
+
+#process.icMvaMetSequence = cms.Sequence(
+#   process.ak4PFL1FastL2L3ResidualCorrectorChain+
+#   process.ak4PFL1FastL2L3CorrectorChain+
+#   process.ak4PFJets+
+#   process.calibratedAK4PFJetsForPFMVAMEt+
+#   process.puJetIdForPFMVAMEt+
+#   process.mvaMetPairsTT+
+#   process.mvaMetPairsMT+
+#   process.mvaMetPairsET+
+#   process.mvaMetPairsEM+
+#   process.icMvaMetConcatenate+
+#   process.icMvaMetIDConcatenate+
+#   process.icMvaMetPairsProducer+ 
+#   process.pfMVAMEt
+#   )
 #
-#process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
-#  input = cms.InputTag("MVAMET","MVAMET"),
-#  branch = cms.string("pfMVAMetVector"),
+#if isData:
+#  process.icMvaMetSequence.remove(process.ak4PFL1FastL2L3CorrectorChain)
+#  process.calibratedAK4PFJetsForPFMVAMEt.correctors=cms.VInputTag("ak4PFL1FastL2L3ResidualCorrector")
+#
+#else :
+#  process.icMvaMetSequence.remove(process.ak4PFL1FastL2L3ResidualCorrectorChain)
+#
+#process.icPfMVAMetProducer = cms.EDProducer('ICPFMetProducer',
+#  input = cms.InputTag("pfMVAMEt"),
+#  branch = cms.string("pfMVAMet"),
 #  includeCustomID = cms.bool(False),
-#  includeUserCandID = cms.bool(True),
 #  includeExternalMetsig = cms.bool(False),
 #  includeMetUncertainties = cms.bool(False),
 #  metuncertainties = cms.vstring(),
-#  metcorrections = cms.vstring(),
 #  includeExternalMetsigMethod2 = cms.bool(False),
-#  includeMetCorrections = cms.bool(False),
 #  doGenMet = cms.bool(False),
 #  metsig = cms.PSet(
 #    metsig = cms.InputTag("METSignificance","METSignificance"),
@@ -1221,280 +1488,13 @@ if release in ['76X', '80XMINIAOD']:
 #    metsig      = cms.InputTag("METSignificance","METSignificance"),
 #    metsigcov = cms.InputTag("METSignificance","METCovariance")
 #    ),
-#  inputCustomID = cms.InputTag("")
+#  inputCustomID = cms.InputTag("MVAMetID")
 #  )
-#
-#
-#process.icMvaMetSequence = cms.Sequence(
-#  process.tauDecayProducts+
-#  process.egmGsfElectronIDs+
-#  process.electronMVAValueMapProducer+
-#  process.electronRegressionValueMapProducer+
-#  process.photonIDValueMapProducer+
-#  process.photonMVAValueMapProducer+
-#  process.slimmedElectronsTight+
-#  process.slimmedMuonsTight+
-#  process.slimmedTausLoose+
-#  process.slimmedTausLooseCleaned+
-#  process.selectedUpdatedPatJetsUpdatedJECCleaned+
-#  process.pfNeutrals+
-#  process.neutralInJets+
-#  process.pfChargedPV+
-#  process.pfChs+
-#  process.pfChargedPU+
-#  process.pfMETCands+
-#  process.pfTrackMETCands+
-#  process.pfNoPUMETCands+
-#  process.pfPUMETCands+
-#  process.pfChargedPUMETCands+
-#  process.pfNeutralPUMETCands+
-#  process.pfNeutralPVMETCands+
-#  process.pfNeutralUnclusteredMETCands+
-#  process.pfPUCorrectedMETCands+
-#  process.ak4PFCHSL1FastjetCorrector+
-#  process.ak4PFCHSL2RelativeCorrector+
-#  process.ak4PFCHSL3AbsoluteCorrector+
-#  process.ak4PFCHSL1FastL2L3Corrector+
-#  process.ak4PFCHSResidualCorrector+
-#  process.ak4PFCHSL1FastL2L3ResidualCorrector+
-#  process.ak4JetsForpfMET+
-#  process.ak4JetsForpfTrackMET+
-#  process.ak4JetsForpfPUMET+
-#  process.ak4JetsForpfChargedPUMET+
-#  process.ak4JetsForpfNeutralPUMET+
-#  process.ak4JetsForpfNeutralPVMET+
-#  process.ak4JetsForpfNeutralUnclusteredMET+
-#  process.ak4JetsForpfPUCorrectedMET+
-#  process.ak4JetsForpfNoPUMET+
-#  process.corrpfMET+
-#  process.corrpfTrackMET+
-#  process.corrpfPUMET+
-#  process.corrpfChargedPUMET+
-#  process.corrpfNeutralPVMET+
-#  process.corrpfNeutralUnclusteredMET+
-#  process.corrpfNeutralPUMET+
-#  process.corrpfPUCorrectedMET+
-#  process.corrpfNoPUMET+
-#  process.pfMET+
-#  process.pfMETT1+
-#  process.patpfMET+
-#  process.pfTrackMET+
-#  process.patpfTrackMET+
-#  process.pfTrackMETT1+
-#  process.patpfTrackMETT1+
-#  process.pfPUCorrectedMET+
-#  process.pfPUMET+
-#  process.pfChargedPUMET+
-#  process.pfNeutralPUMET+
-#  process.patpfPUMET+
-#  process.patpfChargedPUMET+
-#  process.patpfNeutralPUMET+
-#  process.pfNeutralPVMET+
-#  process.pfNeutralUnclusteredMET+
-#  process.patpfNeutralPVMET+
-#  process.patpfNeutralUnclusteredMET+
-#  process.patpfPUCorrectedMET+
-#  process.pfPUMETT1+
-#  process.patpfPUMETT1+
-#  process.pfChargedPUMETT1+
-#  process.pfNeutralPUMETT1+
-#  process.patpfChargedPUMETT1+
-#  process.patpfNeutralPUMETT1+
-#  process.pfPUCorrectedMETT1+
-#  process.patpfPUCorrectedMETT1+
-#  process.pfNoPUMET+
-#  process.patpfNoPUMET+
-#  process.pfNoPUMETT1+
-#  process.patpfNoPUMETT1+
-#  process.patpfMETT1+
-#  process.tauPFMET+
-#  process.tauMET+
-#  process.tausSignificance+
-#  process.MVAMET+
+
+
+#process.icMvaMetSequence += cms.Sequence(
 #  process.icPfMVAMetProducer
 #  )
-#
-#if not isData:
-#  process.icMvaMetSequence.remove(process.ak4PFCHSResidualCorrector)
-#  process.icMvaMetSequence.remove(process.ak4PFCHSL1FastL2L3ResidualCorrector)
-#
-#
-##from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_74X import mvaMetPairs
-#
-#if release in ['80XMINIAOD']:
-#  process.ak4PFJets.src = cms.InputTag("packedPFCandidates")
-#
-#process.ak4PFJets.doAreaFastjet = cms.bool(True)
-#
-##from JetMETCorrections.Configuration.DefaultJEC_cff import ak4PFJetsL1FastL2L3
-##from JetMETCorrections.Configuration.DefaultJEC_cff import ak4PFJetsL1FastL2L3
-#
-##process.mvaMetPairsTT = mvaMetPairs.clone(
-## srcPFCandidates = cms.InputTag("packedPFCandidates"),
-## srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-## srcLeptons = cms.VInputTag(
-##   cms.InputTag("slimmedTaus","",""),
-##   cms.InputTag("slimmedTaus","",""),
-##  ),
-##  permuteLeptons = cms.bool(True)
-##)
-#
-#
-##process.mvaMetPairsMT = mvaMetPairs.clone(
-## srcPFCandidates = cms.InputTag("packedPFCandidates"),
-## srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-## srcLeptons = cms.VInputTag(
-##   cms.InputTag("slimmedMuons","",""),
-##   cms.InputTag("slimmedTaus","",""),
-##  ),
-##  permuteLeptons = cms.bool(True)
-##)
-#
-#
-##process.mvaMetPairsET = mvaMetPairs.clone(
-## srcPFCandidates = cms.InputTag("packedPFCandidates"),
-## srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-## srcLeptons = cms.VInputTag(
-##   cms.InputTag("slimmedElectrons","",""),
-##   cms.InputTag("slimmedTaus","",""),
-##  ),
-##  permuteLeptons = cms.bool(True)
-##  )
-##process.mvaMetPairsEM = mvaMetPairs.clone(
-## srcPFCandidates = cms.InputTag("packedPFCandidates"),
-## srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-## srcLeptons = cms.VInputTag(
-##   cms.InputTag("slimmedElectrons","",""),
-##   cms.InputTag("slimmedMuons","",""),
-##  ),
-##  permuteLeptons = cms.bool(True)
-##  )
-##process.puJetIdForPFMVAMEt.rho = cms.InputTag("fixedGridRhoFastjetAll")
-#
-##if release in ['80XMINIAOD']:
-##  process.pfMVAMEt.srcPFCandidates = cms.InputTag("packedPFCandidates")
-##  process.pfMVAMEt.srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices")
-###process.pfMVAMEt.srcLeptons = cms.VInputTag("selectedElectrons","selectedMuons","selectedTaus")
-##  process.pfMVAMEt.srcLeptons = cms.VInputTag("slimmedElectrons","slimmedMuons","slimmedTaus")
-##  process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
-##  process.puJetIdForPFMVAMEt.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
-##  process.mvaMetPairsEM.srcPFCandidates = cms.InputTag('packedPFCandidates')
-##  process.mvaMetPairsEM.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
-##  process.mvaMetPairsEM.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
-##  process.mvaMetPairsET.srcPFCandidates = cms.InputTag('packedPFCandidates')
-##  process.mvaMetPairsET.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
-##  process.mvaMetPairsET.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
-##  process.mvaMetPairsMT.srcPFCandidates = cms.InputTag('packedPFCandidates')
-##  process.mvaMetPairsMT.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
-##  process.mvaMetPairsMT.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
-##  process.mvaMetPairsTT.srcPFCandidates = cms.InputTag('packedPFCandidates')
-##  process.mvaMetPairsTT.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
-##  process.mvaMetPairsTT.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
-##
-#
-#
-##if release in ['76X']:
-##  process.pfMVAMEt.srcLeptons = cms.VInputTag("selectedElectrons","selectedMuons","selectedTaus")
-##  process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
-##  process.mvaMetPairsEM.srcLeptons = cms.VInputTag(
-##     cms.InputTag("selectedElectrons","",""),
-##     cms.InputTag("selectedMuons","",""),
-##  )
-##  process.mvaMetPairsEM.srcVertices = cms.InputTag("offlinePrimaryVertices")
-##  process.mvaMetPairsEM.srcPFCandidates = cms.InputTag("particleFlow")
-##  process.mvaMetPairsET.srcLeptons = cms.VInputTag(
-##     cms.InputTag("selectedElectrons","",""),
-##     cms.InputTag("selectedTaus","",""),
-##  )
-##  process.mvaMetPairsET.srcVertices = cms.InputTag("offlinePrimaryVertices")
-##  process.mvaMetPairsET.srcPFCandidates = cms.InputTag("particleFlow")
-##  process.mvaMetPairsMT.srcLeptons = cms.VInputTag(
-##     cms.InputTag("selectedMuons","",""),
-##     cms.InputTag("selectedTaus","",""),
-##  )
-##  process.mvaMetPairsMT.srcVertices = cms.InputTag("offlinePrimaryVertices")
-##  process.mvaMetPairsMT.srcPFCandidates = cms.InputTag("particleFlow")
-##  process.mvaMetPairsTT.srcLeptons = cms.VInputTag(
-##     cms.InputTag("selectedTaus","",""),
-##     cms.InputTag("selectedTaus","",""),
-##  )
-##  process.mvaMetPairsTT.srcVertices = cms.InputTag("offlinePrimaryVertices")
-##  process.mvaMetPairsTT.srcPFCandidates = cms.InputTag("particleFlow")
-##
-##process.icMvaMetConcatenate = cms.EDProducer("ICPATMETConcatenate",
-##   concatenate = cms.VInputTag(
-##     cms.InputTag("mvaMetPairsTT"),
-##     cms.InputTag("mvaMetPairsMT"),
-##     cms.InputTag("mvaMetPairsET"),
-##     cms.InputTag("mvaMetPairsEM")
-##   )
-##)
-##process.icMvaMetIDConcatenate = cms.EDProducer("ICIDConcatenate",
-##   concatenate = cms.VInputTag(
-##     cms.InputTag("mvaMetPairsTT", "MVAMetId"),
-##     cms.InputTag("mvaMetPairsMT", "MVAMetId"),
-##     cms.InputTag("mvaMetPairsET", "MVAMetId"),
-##     cms.InputTag("mvaMetPairsEM", "MVAMetId")
-##   )
-##)
-##process.icMvaMetPairsProducer = producers.icMetProducer.clone(
-##   branch  = cms.string("pfMVAMetVector"),
-##   input   = cms.InputTag("icMvaMetConcatenate"),
-##   includeCustomID = cms.bool(True),
-##   inputCustomID = cms.InputTag("icMvaMetIDConcatenate")
-##)
-#
-#
-##process.icMvaMetSequence = cms.Sequence(
-##   process.ak4PFL1FastL2L3ResidualCorrectorChain+
-##   process.ak4PFL1FastL2L3CorrectorChain+
-##   process.ak4PFJets+
-##   process.calibratedAK4PFJetsForPFMVAMEt+
-##   process.puJetIdForPFMVAMEt+
-##   process.mvaMetPairsTT+
-##   process.mvaMetPairsMT+
-##   process.mvaMetPairsET+
-##   process.mvaMetPairsEM+
-##   process.icMvaMetConcatenate+
-##   process.icMvaMetIDConcatenate+
-##   process.icMvaMetPairsProducer+ 
-##   process.pfMVAMEt
-##   )
-##
-##if isData:
-##  process.icMvaMetSequence.remove(process.ak4PFL1FastL2L3CorrectorChain)
-##  process.calibratedAK4PFJetsForPFMVAMEt.correctors=cms.VInputTag("ak4PFL1FastL2L3ResidualCorrector")
-##
-##else :
-##  process.icMvaMetSequence.remove(process.ak4PFL1FastL2L3ResidualCorrectorChain)
-##
-##process.icPfMVAMetProducer = cms.EDProducer('ICPFMetProducer',
-##  input = cms.InputTag("pfMVAMEt"),
-##  branch = cms.string("pfMVAMet"),
-##  includeCustomID = cms.bool(False),
-##  includeExternalMetsig = cms.bool(False),
-##  includeMetUncertainties = cms.bool(False),
-##  metuncertainties = cms.vstring(),
-##  includeExternalMetsigMethod2 = cms.bool(False),
-##  doGenMet = cms.bool(False),
-##  metsig = cms.PSet(
-##    metsig = cms.InputTag("METSignificance","METSignificance"),
-##    metsigcov00 = cms.InputTag("METSignificance", "CovarianceMatrix00"),
-##    metsigcov01 = cms.InputTag("METSignificance", "CovarianceMatrix01"),
-##    metsigcov10 = cms.InputTag("METSignificance", "CovarianceMatrix10"),
-##    metsigcov11 = cms.InputTag("METSignificance", "CovarianceMatrix11")
-##    ),
-##  metsig_method2 = cms.PSet(
-##    metsig      = cms.InputTag("METSignificance","METSignificance"),
-##    metsigcov = cms.InputTag("METSignificance","METCovariance")
-##    ),
-##  inputCustomID = cms.InputTag("MVAMetID")
-##  )
-#
-#
-##process.icMvaMetSequence += cms.Sequence(
-##  process.icPfMVAMetProducer
-##  )
 
 ################################################################
 # Simulation only: GenParticles, GenJets, PileupInfo
