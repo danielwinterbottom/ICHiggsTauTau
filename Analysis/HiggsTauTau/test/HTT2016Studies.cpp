@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sys/stat.h>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Core/interface/AnalysisBase.h"
 #include "Utilities/interface/JsonTools.h"
@@ -14,12 +15,23 @@
 using std::string;
 using std::vector;
 
+
+// Stolen from:
+// http://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c
+bool exists(const std::string& name) {
+  struct stat buffer;
+  return (stat(name.c_str(), &buffer) == 0);
+}
+
 int main(int argc, char* argv[]) {
 
 
   Json::Value js = ic::MergedJson(argc, argv);
 
-  Json::Value js_unhash = ic::ExtractJsonFromFile("hash_map.json");
+  Json::Value js_unhash;
+  if (exists("hash_map.json")) {
+    js_unhash = ic::ExtractJsonFromFile("hash_map.json");
+  }
   std::map<std::size_t, std::string> unhash_map;
   for (auto val : js_unhash.getMemberNames()) {
     unhash_map[boost::lexical_cast<std::size_t>(val)] = js_unhash[val].asString();
