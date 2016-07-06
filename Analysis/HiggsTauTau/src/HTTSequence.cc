@@ -516,7 +516,7 @@ void HTTSequence::BuildSequence(){
 }
 
 
- if(output_name.find("WZJetsTo3LNu") != output_name.npos && mc_type == mc::fall15_76X){ 
+ if(output_name.find("WZJetsTo3LNu") != output_name.npos && (mc_type == mc::fall15_76X || mc_type == mc::summer16_80X)){ 
   BuildModule(GenericModule("lowGenMLLEventVeto")
    .set_function([](ic::TreeEvent *event){
      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("lheParticles");
