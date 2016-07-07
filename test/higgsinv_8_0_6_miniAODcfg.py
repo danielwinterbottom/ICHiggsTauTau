@@ -33,7 +33,7 @@ opts.register('file',
 
 
 #                           76X_mcRun2_asymptotic_v12
-opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_dataRun2_Prompt_v9', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag") #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Prompt_reconstruction_Global_Tag
 
 #opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
@@ -65,8 +65,8 @@ else:
 tag         = opts.globalTag
 release     = opts.release
 
-##v_doBXloop  = False  ## False = not do the loop on all the possible BX; True = do it!
 v_doBXloop  = False  ## False = not do the loop on all the possible BX; True = do it!
+##v_doBXloop  = True  ## False = not do the loop on all the possible BX; True = do it!
 
 
 if not release in ["76X", "80XMINIAOD"]:

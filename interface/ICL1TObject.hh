@@ -16,13 +16,8 @@ namespace ic {
     virtual ~ICL1TObject();
     virtual void Print() const;
 
-    inline void set_bx(int value){
-      bx_ = value;
-    };
-
-    inline int bx() const{
-      return bx_;
-    };
+    inline void set_bx(int value){ bx_ = value; };
+    inline int bx() const{ return bx_; };
 
     inline void setSumType(int value) { sumType = value; }
     inline int getSumType() const { return sumType; }
@@ -37,8 +32,8 @@ namespace ic {
     inline unsigned short int getQuality() const { return quality; }
     
   private:
-    int bx_;
-    int          sumType;
+    int                bx_;
+    int                sumType;
     short int          charge;
     unsigned short int isolation;
     unsigned short int quality;

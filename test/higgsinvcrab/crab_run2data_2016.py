@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='160617'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='160701'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 
 config.section_('General')
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     #tasks.append((taskname,dataset name from das,lumi mask,run range))
 
     #!!To be checked on each processing
-    rerecoparams=['isData=1','doHT=0','release=80XMINIAOD', 'globalTag=80X_dataRun2_Prompt_v8'] #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/
+    rerecoparams=['isData=1','doHT=0','release=80XMINIAOD', 'globalTag=80X_dataRun2_Prompt_v9'] #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/
 
     #Run B
     #           (('MET-2015D-16Dec-v1'           ,'/MET/Run2015D-16Dec2015-v1/MINIAOD'         ,json,rerecoparams,firstrun+'-'+maxrun))

@@ -109,7 +109,7 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
 
   event.getByToken(m_EDToken_l1t_object, candidate_collection);
   ic_l1t_object_->clear();
-  //std::cout << " candidate_collection size " << candidate_collection->size() << std::endl;
+  //std::cout << " -- The candidate_collection size is  " << candidate_collection->size() << std::endl;
   //size is nbx*nelements: total size....
   ic_l1t_object_->resize(candidate_collection->size(), ic::ICL1TObject());
 
@@ -117,14 +117,16 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
   
   if (candidate_collection.isValid()){ 
     for (int ibx = ( doBXloop_ ? candidate_collection->getFirstBX() : 0 ); ibx <= ( doBXloop_ ? candidate_collection->getLastBX() : 0); ++ibx) {
-      // if (doBXloop_) {
-      //std::cout << "Processing ibx = " << ibx << std::endl;
-      //}
+        //if (doBXloop_) {
+	//	std::cout << " -- Processing ibx = " << ibx << std::endl;
+	//}
         for (unsigned i = 0; i < candidate_collection->size(ibx); ++i){
           T const& src = candidate_collection->at(ibx,i);
           ic::ICL1TObject& dest = ic_l1t_object_->at(counter_objects);
-          dest.set_bx(ibx);
-          constructSpecific(src,dest);
+          
+	  dest.set_bx(ibx);
+          
+	  constructSpecific(src,dest);
            
           ROOT::Math::PtEtaPhiEVector tempVector( src.pt(), src.eta(), src.phi(), src.energy() );
           dest.set_vector(tempVector);
@@ -199,10 +201,10 @@ void ICL1TObjectProducer<l1t::EtSum>::constructSpecific( l1t::EtSum const &src, 
                 
                 int type = static_cast<int>( src.getType() );
                 dest.setSumType(type);
-                // if (doBXloop_) {
-		//std::cout << "The getSumType is: " << dest.getSumType() <<"    ";
-                //   std::cout << "The pt is:         " << src.pt()          <<"    "<< std::endl;
-                // }
+                //if (doBXloop_) {
+		//	std::cout << "The getSumType is: " << dest.getSumType() <<"    ";
+                //	std::cout << "The pt is:         " << src.pt()          <<"    "<< std::endl;
+                //}
 }
 
 
