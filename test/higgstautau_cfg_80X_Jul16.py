@@ -37,9 +37,9 @@ opts.register('file',
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
 #opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2', parser.VarParsing.multiplicity.singleton,
-opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 #opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
@@ -103,23 +103,49 @@ process.options   = cms.untracked.PSet(
 ################################################################
 process.load("CondCore.CondDB.CondDB_cfi")
 from CondCore.CondDB.CondDB_cfi import *
-#if not isData:
-#  process.jec = cms.ESSource("PoolDBESSource",
-#    DBParameters = cms.PSet(
-#     messageLevel = cms.untracked.int32(0)
-#    ),
-#    timetype = cms.string('runnumber'),
-#    toGet = cms.VPSet(
-#    cms.PSet(
-#      record = cms.string('JetCorrectionsRecord'),
-#      tag = cms.string('JetCorrectorParametersCollection_Summer15_V5_MC_AK4PF'),
-#      label = cms.untracked.string('AK4PF')
-#      ),
-#    ),
-#    connect = cms.string('sqlite:Summer15_V5_MC.db')
-#  )
-#
-#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+if not isData:
+  process.jec = cms.ESSource("PoolDBESSource",
+    DBParameters = cms.PSet(
+     messageLevel = cms.untracked.int32(0)
+    ),
+    timetype = cms.string('runnumber'),
+    toGet = cms.VPSet(
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PF'),
+      label = cms.untracked.string('AK4PF')
+      ),
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
+      label = cms.untracked.string('AK4PFchs')
+      ),
+    ),
+    connect = cms.string('sqlite:Spring16_25nsV3_MC.db')
+  )
+
+  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
+else :
+  process.jec = cms.ESSource("PoolDBESSource",
+    DBParameters = cms.PSet(
+     messageLevel = cms.untracked.int32(0)
+    ),
+    timetype = cms.string('runnumber'),
+    toGet = cms.VPSet(
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PF'),
+      label = cms.untracked.string('AK4PF')
+      ),
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
+      label = cms.untracked.string('AK4PFchs')
+      ),
+    ),
+    connect = cms.string('sqlite:Spring16_25nsV3_DATA.db')
+  )
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
@@ -1154,7 +1180,7 @@ if release in ['76X', '80XMINIAOD']:
 # # MVA MET and PF MET
 # ################################################################
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
+#process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
@@ -1196,7 +1222,8 @@ if release in ['80XMINIAOD']:
 
 from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
 runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
-
+process.MVAMET.srcLeptons = cms.VInputTag("slimmedMuons","slimmedElectrons","slimmedTaus")
+process.MVAMET.requireOS = cms.bool(False)
 
 process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
   input = cms.InputTag("MVAMET","MVAMET"),
@@ -1307,6 +1334,7 @@ process.icMvaMetSequence = cms.Sequence(
   process.pfNoPUMETT1+
   process.patpfNoPUMETT1+
   process.patpfMETT1+
+  process.allDecayProducts+
   process.tauPFMET+
   process.tauMET+
   process.tausSignificance+
@@ -2176,12 +2204,12 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
-  #process.icL1ExtraTauProducer+
+  process.icL1ExtraTauProducer+
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
-#  process.icPfMetSequence+
+  process.icPfMetSequence+
   process.icPFJetSequence+
-#  process.icMvaMetSequence+
+  process.icMvaMetSequence+
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+

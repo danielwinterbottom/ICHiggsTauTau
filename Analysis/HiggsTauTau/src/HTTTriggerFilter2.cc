@@ -47,6 +47,7 @@ namespace ic {
 
   int HTTTriggerFilter2::Execute(TreeEvent *event) {
     std::vector<filters> leg_filters;
+    std::vector<std::string> HLT_Paths;
     std::string trig_obj_label;
 		std::string alt_trig_obj_label;
     std::string leg1_filter;
@@ -867,11 +868,14 @@ namespace ic {
         return 1;
       }
     } else {
-       // event->Add("HLTPaths", leg_filters);
         bool passedHLT = false;
         for(unsigned i=0; i<leg_filters.size(); ++i){
-          if(leg_filters[i].pass) passedHLT = true;
+          if(leg_filters[i].pass){
+              passedHLT = true;
+              HLT_Paths.push_back(leg_filters[i].path);
+          }
         }
+        event->Add("HLTPaths", HLT_Paths);
         if (passedHLT) return 0;
         else           return 1;
     }
