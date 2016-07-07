@@ -821,8 +821,8 @@ process.icTauSequence = cms.Sequence(
 ################################################################
 
 process.icL1ExtraTauProducer = cms.EDProducer("ICCandidateProducer",
-  branch                     = cms.string("l1isoTaus"),
-  input                      = cms.InputTag("l1extraParticles","IsoTau","RECO")
+  branch                     = cms.string("l1Taus"),
+  input                      = cms.InputTag("caloStage2Digis","Tau","HLT2")
 )
 
 # ################################################################

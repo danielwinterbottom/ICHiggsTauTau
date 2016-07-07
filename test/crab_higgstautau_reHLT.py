@@ -8,8 +8,8 @@ config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_80X_Jul16.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-#config.JobType.inputFiles = ['Summer15_V5_MC.db']
-config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_dataRun2_Prompt_v8']
+config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
+config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_miniAODv2']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000 
@@ -23,6 +23,7 @@ config.section_('User')
 config.section_('Site')
 #config.Site.whitelist = ['T1_RU_JINR_Disk', 'T1_US_FNAL_MSS', 'T1_US_FNAL_Buffer']
 config.Site.storageSite = 'T2_UK_London_IC'
+config.JobType.allowUndistributedCMSSW = True
 
 if __name__ == '__main__':
 
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     tasks=list()
 
     tasks.append(('GluGluHToTauTau','/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
-    #tasks.append(('VBFHToTauTau','/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    tasks.append(('VBFHToTauTau','/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
 
 
     for task in tasks:
