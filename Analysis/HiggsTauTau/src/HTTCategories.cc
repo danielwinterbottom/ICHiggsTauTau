@@ -22,7 +22,6 @@ namespace ic {
       ditau_label_ = "emtauCandidates";
       jets_label_ = "pfJetsPFlow";
       met_label_ = "pfMVAMetNoLeptons";
-      hltpaths_label_ = "HLTPaths";
       mass_shift_ = 1.0;
       fs_ = NULL;
       write_tree_ = true;
@@ -53,7 +52,6 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
       std::cout << boost::format(param_fmt()) % "dilepton_label"  % ditau_label_;
       std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
-      std::cout << boost::format(param_fmt()) % "hltpaths_label"   % hltpaths_label_;
       std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
       std::cout << boost::format(param_fmt()) % "mass_shift"      % mass_shift_;
       std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
@@ -63,12 +61,78 @@ namespace ic {
 
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
+      if(channel_ == channel::em){
+        outtree_->Branch("HLT_Ele23_WPLoose_Gsf_v",                                &emHLTPath1_);
+        outtree_->Branch("HLT_Ele24_eta2p1_WPLoose_Gsf_v",                         &emHLTPath2_);
+        outtree_->Branch("HLT_Ele25_WPTight_Gsf_v",                                &emHLTPath3_);
+        outtree_->Branch("HLT_Ele25_eta2p1_WPLoose_Gsf_v",                         &emHLTPath4_);
+        outtree_->Branch("HLT_Ele25_eta2p1_WPTight_Gsf_v",                         &emHLTPath5_);
+        outtree_->Branch("HLT_Ele27_WPLoose_Gsf_v",                                &emHLTPath6_);
+        outtree_->Branch("HLT_Ele27_WPTight_Gsf_v",                                &emHLTPath7_);
+        outtree_->Branch("HLT_Ele27_eta2p1_WPLoose_Gsf_v",                         &emHLTPath8_);
+        outtree_->Branch("HLT_Ele27_eta2p1_WPTight_Gsf_v",                         &emHLTPath9_);
+        outtree_->Branch("HLT_Ele32_eta2p1_WPTight_Gsf_v",                         &emHLTPath10_);
+        outtree_->Branch("HLT_IsoMu18_v",                                          &emHLTPath11_);
+        outtree_->Branch("HLT_IsoMu20_v",                                          &emHLTPath12_);
+        outtree_->Branch("HLT_IsoMu22_v",                                          &emHLTPath13_);
+        outtree_->Branch("HLT_IsoMu22_eta2p1_v",                                   &emHLTPath14_);
+        outtree_->Branch("HLT_IsoMu27_v",                                          &emHLTPath15_);
+        outtree_->Branch("HLT_IsoTkMu18_v",                                        &emHLTPath16_);
+        outtree_->Branch("HLT_IsoTkMu20_v",                                        &emHLTPath17_);
+        outtree_->Branch("HLT_IsoTkMu22_eta2p1_v",                                 &emHLTPath18_);
+        outtree_->Branch("HLT_IsoTkMu22_v",                                        &emHLTPath19_);
+        outtree_->Branch("HLT_IsoTkMu24_v",                                        &emHLTPath20_);
+        outtree_->Branch("HLT_IsoTkMu27_v",                                        &emHLTPath21_);
+        outtree_->Branch("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v",       &emHLTPath22_);
+        outtree_->Branch("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v",       &emHLTPath23_);
+        outtree_->Branch("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v",      &emHLTPath24_);
+        outtree_->Branch("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v",      &emHLTPath25_);    
+        outtree_->Branch("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v",       &emHLTPath26_);
+      } else if(channel_ == channel::et){
+        outtree_->Branch("HLT_Ele23_WPLoose_Gsf_v",                                &etHLTPath1_);
+        outtree_->Branch("HLT_Ele24_eta2p1_WPLoose_Gsf_v",                         &etHLTPath2_);
+        outtree_->Branch("HLT_Ele25_WPTight_Gsf_v",                                &etHLTPath3_);
+        outtree_->Branch("HLT_Ele25_eta2p1_WPLoose_Gsf_v",                         &etHLTPath4_);
+        outtree_->Branch("HLT_Ele25_eta2p1_WPTight_Gsf_v",                         &etHLTPath5_);
+        outtree_->Branch("HLT_Ele27_WPLoose_Gsf_v",                                &etHLTPath6_);
+        outtree_->Branch("HLT_Ele27_WPTight_Gsf_v",                                &etHLTPath7_);
+        outtree_->Branch("HLT_Ele27_eta2p1_WPLoose_Gsf_v",                         &etHLTPath8_);
+        outtree_->Branch("HLT_Ele27_eta2p1_WPTight_Gsf_v",                         &etHLTPath9_);
+        outtree_->Branch("HLT_Ele32_eta2p1_WPTight_Gsf_v",                         &etHLTPath10_);
+        outtree_->Branch("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v",&etHLTPath11_);
+        outtree_->Branch("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v",&etHLTPath12_);
+        outtree_->Branch("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v",         &etHLTPath13_);
+        outtree_->Branch("HLT_Ele27_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v",&etHLTPath14_);
+        outtree_->Branch("HLT_Ele32_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v",&etHLTPath15_);
+
+      } else if(channel_ == channel::mt){
+        outtree_->Branch("HLT_IsoMu18_v",                                          &mtHLTPath1_);
+        outtree_->Branch("HLT_IsoMu20_v",                                          &mtHLTPath2_);
+        outtree_->Branch("HLT_IsoMu22_v",                                          &mtHLTPath3_);
+        outtree_->Branch("HLT_IsoMu22_eta2p1_v",                                   &mtHLTPath4_);
+        outtree_->Branch("HLT_IsoMu27_v",                                          &mtHLTPath5_);
+        outtree_->Branch("HLT_IsoTkMu18_v",                                        &mtHLTPath6_);
+        outtree_->Branch("HLT_IsoTkMu20_v",                                        &mtHLTPath7_);
+        outtree_->Branch("HLT_IsoTkMu22_eta2p1_v",                                 &mtHLTPath8_);
+        outtree_->Branch("HLT_IsoTkMu22_v",                                        &mtHLTPath9_);
+        outtree_->Branch("HLT_IsoTkMu24_v",                                        &mtHLTPath10_);
+        outtree_->Branch("HLT_IsoTkMu27_v",                                        &mtHLTPath11_);
+        outtree_->Branch("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v",          &mtHLTPath12_);
+        outtree_->Branch("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v",                   &mtHLTPath13_);
+        outtree_->Branch("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v",          &mtHLTPath14_);
+        outtree_->Branch("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v",                   &mtHLTPath15_);
+        outtree_->Branch("HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v",          &mtHLTPath16_);
+      } else if(channel_ == channel::tt){
+        outtree_->Branch("HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v",           &ttHLTPath1_);
+        outtree_->Branch("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v",           &ttHLTPath2_);
+        outtree_->Branch("HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v",           &ttHLTPath3_);
+      }
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
-      outtree_->Branch("mt_sv",              &mt_sv_.var_double);
+      outtree_->Branch("mt_sv",             &mt_sv_.var_double);
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
@@ -771,6 +835,73 @@ namespace ic {
   }
 
   int HTTCategories::Execute(TreeEvent *event) {
+      
+        
+    if(channel_ == channel::em){
+      emHLTPath1_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v");                         
+      emHLTPath2_  = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_v");                  
+      emHLTPath3_  = event->Get<bool>("HLT_Ele25_WPTight_Gsf_v");                         
+      emHLTPath4_  = event->Get<bool>("HLT_Ele25_eta2p1_WPLoose_Gsf_v");                  
+      emHLTPath5_  = event->Get<bool>("HLT_Ele25_eta2p1_WPTight_Gsf_v");                  
+      emHLTPath6_  = event->Get<bool>("HLT_Ele27_WPLoose_Gsf_v");                         
+      emHLTPath7_  = event->Get<bool>("HLT_Ele27_WPTight_Gsf_v");                         
+      emHLTPath8_  = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_v");                 
+      emHLTPath9_  = event->Get<bool>("HLT_Ele27_eta2p1_WPTight_Gsf_v");                  
+      emHLTPath10_ = event->Get<bool>("HLT_Ele32_eta2p1_WPTight_Gsf_v");                  
+      emHLTPath11_ = event->Get<bool>("HLT_IsoMu18_v");                                   
+      emHLTPath12_ = event->Get<bool>("HLT_IsoMu20_v");                                   
+      emHLTPath13_ = event->Get<bool>("HLT_IsoMu22_v");                                   
+      emHLTPath14_ = event->Get<bool>("HLT_IsoMu22_eta2p1_v");                            
+      emHLTPath15_ = event->Get<bool>("HLT_IsoMu27_v");                                   
+      emHLTPath16_ = event->Get<bool>("HLT_IsoTkMu18_v");                                 
+      emHLTPath17_ = event->Get<bool>("HLT_IsoTkMu20_v");                                 
+      emHLTPath18_ = event->Get<bool>("HLT_IsoTkMu22_eta2p1_v");                          
+      emHLTPath19_ = event->Get<bool>("HLT_IsoTkMu22_v");                                 
+      emHLTPath20_ = event->Get<bool>("HLT_IsoTkMu24_v");                                 
+      emHLTPath21_ = event->Get<bool>("HLT_IsoTkMu27_v");                                 
+      emHLTPath22_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v");
+      emHLTPath23_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v");
+      emHLTPath24_ = event->Get<bool>("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+      emHLTPath25_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v");    
+      emHLTPath26_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v");
+    } else if(channel_ == channel::et){
+      etHLTPath1_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v");                               
+      etHLTPath2_  = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_v");                        
+      etHLTPath3_  = event->Get<bool>("HLT_Ele25_WPTight_Gsf_v");                               
+      etHLTPath4_  = event->Get<bool>("HLT_Ele25_eta2p1_WPLoose_Gsf_v");                        
+      etHLTPath5_  = event->Get<bool>("HLT_Ele25_eta2p1_WPTight_Gsf_v");                        
+      etHLTPath6_  = event->Get<bool>("HLT_Ele27_WPLoose_Gsf_v");                               
+      etHLTPath7_  = event->Get<bool>("HLT_Ele27_WPTight_Gsf_v");                               
+      etHLTPath8_  = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_v");                        
+      etHLTPath9_  = event->Get<bool>("HLT_Ele27_eta2p1_WPTight_Gsf_v");                        
+      etHLTPath10_ = event->Get<bool>("HLT_Ele32_eta2p1_WPTight_Gsf_v");                        
+      etHLTPath11_ = event->Get<bool>("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
+      etHLTPath12_ = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
+      etHLTPath13_ = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v");        
+      etHLTPath14_ = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
+      etHLTPath15_ = event->Get<bool>("HLT_Ele32_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
+    } else if(channel_ == channel::mt){
+      mtHLTPath1_  = event->Get<bool>("HLT_IsoMu18_v");                               
+      mtHLTPath2_  = event->Get<bool>("HLT_IsoMu20_v");                               
+      mtHLTPath3_  = event->Get<bool>("HLT_IsoMu22_v");                               
+      mtHLTPath4_  = event->Get<bool>("HLT_IsoMu22_eta2p1_v");                        
+      mtHLTPath5_  = event->Get<bool>("HLT_IsoMu27_v");                         
+      mtHLTPath6_  = event->Get<bool>("HLT_IsoTkMu18_v");                             
+      mtHLTPath7_  = event->Get<bool>("HLT_IsoTkMu20_v");                            
+      mtHLTPath8_  = event->Get<bool>("HLT_IsoTkMu22_eta2p1_v");                      
+      mtHLTPath9_  = event->Get<bool>("HLT_IsoTkMu22_v");                             
+      mtHLTPath10_ = event->Get<bool>("HLT_IsoTkMu24_v");                             
+      mtHLTPath11_ = event->Get<bool>("HLT_IsoTkMu27_v");                             
+      mtHLTPath12_ = event->Get<bool>("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v");
+      mtHLTPath13_ = event->Get<bool>("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v");        
+      mtHLTPath14_ = event->Get<bool>("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v");
+      mtHLTPath15_ = event->Get<bool>("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v");        
+      mtHLTPath16_ = event->Get<bool>("HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v");
+    } else if(channel_ == channel::tt){
+      ttHLTPath1_  = event->Get<bool>("HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v");
+      ttHLTPath2_  = event->Get<bool>("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v");
+      ttHLTPath3_  = event->Get<bool>("HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v");
+    }
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -1117,11 +1248,6 @@ namespace ic {
     antimu_1_ = true;
     antiele_2_ = true;
     antimu_2_ = true;
-    
-    //if (mc_ == mc::summer16_80X){
-    //  std::vector<HLTPath> const& HLT_paths = event->Get<std::vector<HLTPath>>(hltpaths_label_);
-    //  HLT_paths_ = HLT_paths;
-    //}
     
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
