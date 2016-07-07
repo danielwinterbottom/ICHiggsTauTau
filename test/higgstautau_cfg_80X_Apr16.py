@@ -19,8 +19,9 @@ opts.register('file',
 #'root://xrootd.unl.edu//store/data/Run2015D/Tau/MINIAOD/16Dec2015-v1/00000/006DFE2F-B2B6-E511-A7B6-3417EBE65E39.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file',
-'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root',parser.VarParsing.multiplicity.singleton,
+#'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/0A349B7D-EA03-E611-9E67-0002C94D5504.root', parser.VarParsing.multiplicity.singleton,
+'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/004A6F0D-E624-E611-9637-02163E011CA0.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/DYJetsToTauTau_ForcedMuDecay_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/20000/10A0E93C-F901-E611-90F2-0025905A60B4.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext1-v1/20000/0017320C-7BFC-E511-9B2D-0CC47A4C8E34.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
@@ -35,10 +36,10 @@ opts.register('file',
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-#opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2', parser.VarParsing.multiplicity.singleton,
-opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 #opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
@@ -87,7 +88,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(10000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -102,24 +103,51 @@ process.options   = cms.untracked.PSet(
 ################################################################
 process.load("CondCore.CondDB.CondDB_cfi")
 from CondCore.CondDB.CondDB_cfi import *
-#if not isData:
-#  process.jec = cms.ESSource("PoolDBESSource",
-#    DBParameters = cms.PSet(
-#     messageLevel = cms.untracked.int32(0)
-#    ),
-#    timetype = cms.string('runnumber'),
-#    toGet = cms.VPSet(
-#    cms.PSet(
-#      record = cms.string('JetCorrectionsRecord'),
-#      tag = cms.string('JetCorrectorParametersCollection_Summer15_V5_MC_AK4PF'),
-#      label = cms.untracked.string('AK4PF')
-#      ),
-#    ),
-#    connect = cms.string('sqlite:Summer15_V5_MC.db')
-#  )
-#
-#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+if not isData:
+  process.jec = cms.ESSource("PoolDBESSource",
+    DBParameters = cms.PSet(
+     messageLevel = cms.untracked.int32(0)
+    ),
+    timetype = cms.string('runnumber'),
+    toGet = cms.VPSet(
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PF'),
+      label = cms.untracked.string('AK4PF')
+      ),
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
+      label = cms.untracked.string('AK4PFchs')
+      ),
+    ),
+    connect = cms.string('sqlite:Spring16_25nsV3_MC.db')
+  )
 
+  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
+else :
+  process.jec = cms.ESSource("PoolDBESSource",
+    DBParameters = cms.PSet(
+     messageLevel = cms.untracked.int32(0)
+    ),
+    timetype = cms.string('runnumber'),
+    toGet = cms.VPSet(
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PF'),
+      label = cms.untracked.string('AK4PF')
+      ),
+    cms.PSet(
+      record = cms.string('JetCorrectionsRecord'),
+      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
+      label = cms.untracked.string('AK4PFchs')
+      ),
+    ),
+    connect = cms.string('sqlite:Spring16_25nsV3_DATA.db')
+  )
+
+  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/D61F7B94-676F-E511-9970-00221981B434.root',
@@ -1153,7 +1181,7 @@ if release in ['76X', '80XMINIAOD']:
 # # MVA MET and PF MET
 # ################################################################
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
+#process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
@@ -1195,6 +1223,8 @@ if release in ['80XMINIAOD']:
 
 from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
 runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
+process.MVAMET.srcLeptons = cms.VInputTag("slimmedMuons","slimmedElectrons","slimmedTaus")
+process.MVAMET.requireOS = cms.bool(False)
 
 
 process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
@@ -1306,6 +1336,7 @@ process.icMvaMetSequence = cms.Sequence(
   process.pfNoPUMETT1+
   process.patpfNoPUMETT1+
   process.patpfMETT1+
+  process.allDecayProducts+
   process.tauPFMET+
   process.tauMET+
   process.tausSignificance+

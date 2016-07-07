@@ -2,26 +2,24 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='May24_Data_80X'
-#config.General.requestName = 'May13_MC'
+config.General.workArea='June29_Data_80X'
 config.section_('JobType')
-config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_8_0_5/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_80X_Apr16.py'
+config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_8_0_9/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_80X_Apr16.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-#config.JobType.inputFiles = ['Summer15_V5_MC.db']
+config.JobType.inputFiles = ['Spring16_25nsV3_DATA.db']
 config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_v8']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000 
 #config.Data.unitsPerJob = 1
-#config.Data.splitting = 'FileBased'
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.ignoreLocality=True
-config.Data.outLFNDirBase='/store/user/adewit/May24_Data_80X/'
+config.Data.ignoreLocality= True
+config.Data.outLFNDirBase='/store/user/adewit/June29_Data_80X/'
 config.section_('User')
 config.section_('Site')
-config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC']
+config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
 config.Site.storageSite = 'T2_UK_London_IC'
 
 if __name__ == '__main__':
@@ -44,10 +42,14 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    tasks.append(('Tau-2016B','/Tau/Run2016B-PromptReco-v2/MINIAOD'))
-    tasks.append(('SingleMuon-2016B','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'))
-    tasks.append(('SingleElectron-2016B','/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'))
-
+    tasks.append(('SingleElectronB','/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleMuonB','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'))
+    tasks.append(('TauB','/Tau/Run2016B-PromptReco-v2/MINIAOD'))
+    tasks.append(('MuonEGB','/MuonEG/Run2016B-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleElectronC','/SingleElectron/Run2016C-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleMuonC','/SingleMuon/Run2016C-PromptReco-v2/MINIAOD'))
+    tasks.append(('TauC','/Tau/Run2016C-PromptReco-v2/MINIAOD'))
+    tasks.append(('MuonEGC','/MuonEG/Run2016C-PromptReco-v2/MINIAOD'))
 
     for task in tasks:
         print task[0]
