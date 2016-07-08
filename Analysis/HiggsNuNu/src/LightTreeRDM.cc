@@ -7,7 +7,7 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-#include "UserCode/ICHiggsTauTau/interface/ICL1TObject.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "TVector3.h"
 
 
@@ -642,20 +642,20 @@ namespace ic {
     // L1 objects 
     ////////////////////////////////
 
-    std::vector<ICL1TObject*> const& l1sum = event->GetPtrVec<ICL1TObject>("l1tEtSum");
+    std::vector<L1TObject*> const& l1sum = event->GetPtrVec<L1TObject>("l1tEtSum");
     //if(debug_ && l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
     //std::cout << " -- new event: l1sum size = " << l1sum.size() << " PFMET = " << met_ << std::endl;
     unsigned counterMet = 0;
     unsigned counterMht = 0;
     for (unsigned iL1(0); iL1<l1sum.size(); ++iL1){
-      ICL1TObject* l1obj = l1sum[iL1];
-      //std::cout << " -- sum " << iL1 << " type " << l1obj->getSumType() << " pt " << l1obj->pt() << " " << l1obj->phi() << std::endl;
+      L1TObject* l1obj = l1sum[iL1];
+      //std::cout << " -- sum " << iL1 << " type " << l1obj->sumType() << " pt " << l1obj->pt() << " " << l1obj->phi() << std::endl;
       
-      if (l1obj->getSumType()==2) {
+      if (l1obj->sumType()==2) {
 	if (counterMet==2) l1met_ = l1obj->pt();
 	counterMet++;
       }
-      if (l1obj->getSumType()==3) {
+      if (l1obj->sumType()==3) {
 	if (counterMht==2) l1mht_ = l1obj->pt();
 	counterMht++;
       }
