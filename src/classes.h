@@ -26,7 +26,7 @@
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h"
 #include "UserCode/ICHiggsTauTau/interface/MultiDraw.hh"
-#include "UserCode/ICHiggsTauTau/interface/ICL1TObject.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "DataFormats/Common/interface/Wrapper.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
@@ -96,8 +96,8 @@ namespace { struct dictionary {
   edm::Wrapper<reco::PFCandidateRefVector> dummy56;
   edm::ValueMap<std::vector<int> > dummy57;  
   edm::Wrapper<edm::ValueMap<std::vector<int> > > dummy58; 
-  ic::ICL1TObject dictICL1TObject;
-  std::vector<ic::ICL1TObject> dictICL1TObjectCollection;
+  ic::L1TObject dictL1TObject;
+  std::vector<ic::L1TObject> dictL1TObjectCollection;
 };
 }
 

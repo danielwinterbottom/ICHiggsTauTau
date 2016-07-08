@@ -9,4 +9,4 @@ DICTIONARY += interface/Track.hh interface/LightTrack.hh interface/Vertex.hh
 DICTIONARY += interface/SecondaryVertex.hh interface/TriggerObject.hh interface/TriggerPath.hh
 DICTIONARY += interface/PileupInfo.hh interface/GenParticle.hh interface/GenJet.hh
 DICTIONARY += interface/SuperCluster.hh interface/EventInfo.hh interface/TH2DAsymErr.h
-DICTIONARY += interface/ICL1TObject.hh
+DICTIONARY += interface/L1TObject.hh

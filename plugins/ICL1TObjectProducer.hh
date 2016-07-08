@@ -44,7 +44,7 @@
 #include "TTree.h"                                                  
 
 // ICHiggsTauTau Objects
-#include "UserCode/ICHiggsTauTau/interface/ICL1TObject.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 
 
@@ -60,13 +60,13 @@ class ICL1TObjectProducer : public edm::EDProducer {
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
   
-  void constructSpecific(T const &src, ic::ICL1TObject &dest);
+  void constructSpecific(T const &src, ic::L1TObject &dest);
 
   edm::InputTag input_;
   std::string branch_;
   bool doBXloop_;
   
-  std::vector<ic::ICL1TObject> *ic_l1t_object_;
+  std::vector<ic::L1TObject> *ic_l1t_object_;
   edm::EDGetTokenT< BXVector<T> > m_EDToken_l1t_object;
 
   // output file
@@ -86,7 +86,7 @@ ICL1TObjectProducer<T>::ICL1TObjectProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       doBXloop_(config.getParameter<bool>("doBXloop")){
 
-  ic_l1t_object_ = new std::vector<ic::ICL1TObject>();
+  ic_l1t_object_ = new std::vector<ic::L1TObject>();
   PrintHeaderWithProduces(config, input_, branch_);
   m_EDToken_l1t_object = consumes< BXVector<T> >(input_);
 
@@ -111,7 +111,7 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
   ic_l1t_object_->clear();
   //std::cout << " -- The candidate_collection size is  " << candidate_collection->size() << std::endl;
   //size is nbx*nelements: total size....
-  ic_l1t_object_->resize(candidate_collection->size(), ic::ICL1TObject());
+  ic_l1t_object_->resize(candidate_collection->size(), ic::L1TObject());
 
   unsigned counter_objects = 0;
   
@@ -122,7 +122,7 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
 	//}
         for (unsigned i = 0; i < candidate_collection->size(ibx); ++i){
           T const& src = candidate_collection->at(ibx,i);
-          ic::ICL1TObject& dest = ic_l1t_object_->at(counter_objects);
+          ic::L1TObject& dest = ic_l1t_object_->at(counter_objects);
           
 	  dest.set_bx(ibx);
           
@@ -131,7 +131,7 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
           ROOT::Math::PtEtaPhiEVector tempVector( src.pt(), src.eta(), src.phi(), src.energy() );
           dest.set_vector(tempVector);
           //ic_l1t_object_->push_back(dest);
-	  //std::cout << " type " << dest.getSumType();
+	  //std::cout << " type " << dest.sumType();
 	  //dest.Print();
           counter_objects++;
         }
@@ -148,7 +148,7 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
 // Specific producers
 // ==================
 template <class T>
-void ICL1TObjectProducer<T>::constructSpecific(T const &src, ic::ICL1TObject &dest) {
+void ICL1TObjectProducer<T>::constructSpecific(T const &src, ic::L1TObject &dest) {
 
   // common 
 }
@@ -158,9 +158,9 @@ void ICL1TObjectProducer<T>::constructSpecific(T const &src, ic::ICL1TObject &de
 // EGamma
 // ======                                                               
 template <>
-void ICL1TObjectProducer<l1t::EGamma>::constructSpecific( l1t::EGamma const &src, ic::ICL1TObject &dest ) {
+void ICL1TObjectProducer<l1t::EGamma>::constructSpecific( l1t::EGamma const &src, ic::L1TObject &dest ) {
   
-  dest.setIsolation(src.hwIso());
+  dest.set_isolation(src.hwIso());
 }                                                               
 
 
@@ -168,16 +168,16 @@ void ICL1TObjectProducer<l1t::EGamma>::constructSpecific( l1t::EGamma const &src
 // Jet
 // ===
 template <>
-void ICL1TObjectProducer<l1t::Jet>::constructSpecific( l1t::Jet const &src, ic::ICL1TObject &dest ) {}                                                                                    
+void ICL1TObjectProducer<l1t::Jet>::constructSpecific( l1t::Jet const &src, ic::L1TObject &dest ) {}                                                                                    
 
 
 // ===
 // Tau
 // ===
 template <>
-void ICL1TObjectProducer<l1t::Tau>::constructSpecific( l1t::Tau const &src, ic::ICL1TObject &dest ) {
+void ICL1TObjectProducer<l1t::Tau>::constructSpecific( l1t::Tau const &src, ic::L1TObject &dest ) {
 
-  dest.setIsolation(src.hwIso());  
+  dest.set_isolation(src.hwIso());  
 }                                                               
 
 
@@ -185,11 +185,11 @@ void ICL1TObjectProducer<l1t::Tau>::constructSpecific( l1t::Tau const &src, ic::
 // Muon                                                                
 // ====                                                                
 template <>
-void ICL1TObjectProducer<l1t::Muon>::constructSpecific( l1t::Muon const &src, ic::ICL1TObject &dest ) {
+void ICL1TObjectProducer<l1t::Muon>::constructSpecific( l1t::Muon const &src, ic::L1TObject &dest ) {
                 
-  dest.setIsolation(src.hwIso());
-  dest.setCharge(src.charge());
-  dest.setQuality(src.hwQual());  
+  dest.set_isolation(src.hwIso());
+  dest.set_charge(src.charge());
+  dest.set_quality(src.hwQual());  
 }                                                               
 
 
@@ -197,13 +197,13 @@ void ICL1TObjectProducer<l1t::Muon>::constructSpecific( l1t::Muon const &src, ic
 // EtSum
 // =====
 template <>
-void ICL1TObjectProducer<l1t::EtSum>::constructSpecific( l1t::EtSum const &src, ic::ICL1TObject &dest ) {
+void ICL1TObjectProducer<l1t::EtSum>::constructSpecific( l1t::EtSum const &src, ic::L1TObject &dest ) {
                 
                 int type = static_cast<int>( src.getType() );
-                dest.setSumType(type);
+                dest.set_sumType(type);
                 //if (doBXloop_) {
-		//	std::cout << "The getSumType is: " << dest.getSumType() <<"    ";
-                //	std::cout << "The pt is:         " << src.pt()          <<"    "<< std::endl;
+		//	std::cout << "The sumType is: " << dest.sumType() <<"    ";
+                //	std::cout << "The pt is:      " << src.pt()       <<"    "<< std::endl;
                 //}
 }
 
