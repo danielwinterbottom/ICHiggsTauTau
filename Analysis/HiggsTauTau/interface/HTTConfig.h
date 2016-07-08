@@ -149,7 +149,8 @@ inline mc String2MC(std::string const& in) {
 	("summer12_53X",	mc::summer12_53X)
 	("phys14_72X",	mc::phys14_72X)
   ("spring15_74X", mc::spring15_74X)
-  ("fall15_76X", mc::fall15_76X);
+  ("fall15_76X", mc::fall15_76X)
+  ("summer16_80X",mc::summer16_80X);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

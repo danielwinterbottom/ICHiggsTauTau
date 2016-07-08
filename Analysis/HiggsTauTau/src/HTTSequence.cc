@@ -767,17 +767,15 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
      }
 
      if(is_data || js["trg_in_mc"].asBool()){
-      if(is_data || js["trg_in_mc"].asBool()){
-          BuildModule(HTTTriggerFilter2("HTTTriggerFilter")
-              .set_channel(channel)
-              .set_mc(mc_type)
-              .set_era(era_type)
-              .set_is_data(is_data)
-              .set_is_embedded(is_embedded)
-              .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-              .set_do_singlelepton(js["do_singlelepton"].asBool())
-              .set_pair_label("ditau"));
-        }
+       BuildModule(HTTTriggerFilter2("HTTTriggerFilter")
+           .set_channel(channel)
+           .set_mc(mc_type)
+           .set_era(era_type)
+           .set_is_data(is_data)
+           .set_is_embedded(is_embedded)
+           .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+           .set_do_singlelepton(js["do_singlelepton"].asBool())
+           .set_pair_label("ditau"));
      }
    } else {
      if((is_data || js["trg_in_mc"].asBool()) && (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){

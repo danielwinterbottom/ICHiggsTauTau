@@ -13,6 +13,7 @@
 #include "boost/format.hpp"
 
 struct filters {
+  std::string label;
   std::string path;  
   std::string leg1_filter;
   std::string leg2_filter;
@@ -63,6 +64,7 @@ namespace ic {
     std::string em_alt_leg2_filter;
     double alt_min_online_pt=0;
     double high_leg_pt = 0;
+    
 
     if (is_data_) { //Switch this part off temporarily as we don't have this vector in first processed data
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -462,7 +464,7 @@ namespace ic {
           alt_min_online_pt = 23.;
           high_leg_pt = 23.;
 
-					} else if (mc_ ==mc::fall15_76X){
+        } else if (mc_ ==mc::fall15_76X){
            trig_obj_label = "triggerObjectsEle22LooseTau20";
            leg1_filter    = "hltEle22WPLooseL1IsoEG20erTau20erGsfTrackIsoFilter";
            leg2_filter    = "hltPFTau20TrackLooseIso";
@@ -471,10 +473,11 @@ namespace ic {
            alt_leg1_filter    = "hltEle23WPLooseGsfTrackIsoFilter";
            alt_min_online_pt = 0.;
            high_leg_pt = 24.;
-          } else if (mc_ == mc::summer16_80X){
-      
+        } else if (mc_ == mc::summer16_80X){
+
             filters fil;
             
+            fil.label         = "triggerObjectsEle23";
             fil.path          = "HLT_Ele23_WPLoose_Gsf_v";
             fil.leg1_filter   = "hltEle23WPLooseGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -484,6 +487,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle24er";
             fil.path          = "HLT_Ele24_eta2p1_WPLoose_Gsf_v";
             fil.leg1_filter   = "hltSingleEle24WPLooseGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -493,6 +497,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle25WPTight";
             fil.path          = "HLT_Ele25_WPTight_Gsf_v";
             fil.leg1_filter   = "hltEle25WPTightGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -502,6 +507,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle25er";
             fil.path          = "HLT_Ele25_eta2p1_WPLoose_Gsf_v";
             fil.leg1_filter   = "hltEle25erWPLooseGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -511,6 +517,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle25erWPTight";
             fil.path          = "HLT_Ele25_eta2p1_WPTight_Gsf_v";
             fil.leg1_filter   = "hltEle25erWPTightGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -520,6 +527,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle27";
             fil.path          = "HLT_Ele27_WPLoose_Gsf_v";
             fil.leg1_filter   = "hltEle27noerWPLooseGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -529,6 +537,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle27WPTight";
             fil.path          = "HLT_Ele27_WPTight_Gsf_v";
             fil.leg1_filter   = "hltEle27WPTightGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -538,6 +547,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle27er";
             fil.path          = "HLT_Ele27_eta2p1_WPLoose_Gsf_v";
             fil.leg1_filter   = "hltEle27erWPLooseGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -547,6 +557,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle27erWPTight";
             fil.path          = "HLT_Ele27_eta2p1_WPTight_Gsf_v";
             fil.leg1_filter   = "hltEle27erWPTightGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -556,6 +567,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle32WPTight";
             fil.path          = "HLT_Ele32_eta2p1_WPTight_Gsf_v";
             fil.leg1_filter   = "hltEle32WPTightGsfTrackIsoFilter";
             fil.leg2_filter   = "";
@@ -565,6 +577,7 @@ namespace ic {
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle22LooseTau20SingleL1";
             fil.path          = "HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v";
             fil.leg1_filter   = "hltEle22WPLooseL1SingleIsoEG20erGsfTrackIsoFilter";
             fil.leg2_filter   = "hltPFTau20TrackLooseIso";
@@ -574,6 +587,7 @@ namespace ic {
             fil.lep2_pt = 20.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle24LooseTau20";
             fil.path          = "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v";
             fil.leg1_filter   = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
             fil.leg2_filter   = "hltPFTau20TrackLooseIso";
@@ -583,6 +597,7 @@ namespace ic {
             fil.lep2_pt = 20.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle24LooseTau20SingleL1";
             fil.path          = "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v";
             fil.leg1_filter   = "hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter";
             fil.leg2_filter   = "hltPFTau20TrackLooseIso";
@@ -592,6 +607,7 @@ namespace ic {
             fil.lep2_pt = 20.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle27LooseTau20SingleL1";
             fil.path          = "HLT_Ele27_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v";
             fil.leg1_filter   = "hltEle27erWPLooseGsfTrackIsoFilter";
             fil.leg2_filter   = "hltPFTau20TrackLooseIso";
@@ -601,6 +617,7 @@ namespace ic {
             fil.lep2_pt = 20.;
             leg_filters.push_back(fil);
             
+            fil.label         = "triggerObjectsEle32LooseTau20SingleL1";
             fil.path          = "HLT_Ele32_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v";
             fil.leg1_filter   = "hltEle32WPLooseGsfTrackIsoFilter";
             fil.leg2_filter   = "hltPFTau20TrackLooseIso";
@@ -1132,6 +1149,7 @@ namespace ic {
          leg_filters.push_back(fil);
        }
     }
+
       /*
       [2] HLT triggers in MC to "emulate" lepton legs of new triggers in data:
       - HLT_Mu8_v16, mu filter to match: hltL3fL1sMu3L3Filtered8 apply cut
@@ -1172,13 +1190,10 @@ namespace ic {
     }
 
     if (is_embedded_) return 0; // Don't do object matching for embedded events
-
     std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
-    std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
-
     std::vector<CompositeCandidate *> dileptons_pass;
-
     if ((channel_ == channel::et || channel_ == channel::mt)&&mc_ != mc::phys14_72X&&mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::summer16_80X) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
         bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
@@ -1188,6 +1203,7 @@ namespace ic {
 
     if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::zee || channel_ == channel::tpzee || channel_ == channel::tpzmm) 
         &&(mc_ == mc::phys14_72X || mc_ == mc::spring15_74X || mc_ == mc::fall15_76X)) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
       std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
@@ -1232,16 +1248,14 @@ namespace ic {
     }
     
     if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::em) && mc_ == mc::summer16_80X) {
-      
       for(unsigned i=0; i<leg_filters.size(); ++i){
-        std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
-        ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
+        std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(leg_filters[i].label);
         for (unsigned j=0; j < dileptons.size(); ++j) {
           bool leg1_match = false;
           bool leg2_match = false;
           if(leg_filters[i].singleLepton_){
             bool highpt_leg = dileptons[j]->At(0)->pt()>leg_filters[i].lep1_pt;
-            leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0),alt_objs, leg_filters[i].leg1_filter, 0.5).first;
+            leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0),objs, leg_filters[i].leg1_filter, 0.5).first;
             if (leg1_match&&highpt_leg){
               dileptons_pass.push_back(dileptons[j]);
             }
@@ -1262,7 +1276,7 @@ namespace ic {
           
         }
         
-        if (dileptons_pass.size() > 1) leg_filters[i].pass = true;
+        if (dileptons_pass.size() >= 1) leg_filters[i].pass = true;
         else                           leg_filters[i].pass = false;
         
       }
@@ -1271,6 +1285,7 @@ namespace ic {
 
 
     if (channel_ == channel::em && mc_ != mc::phys14_72X && mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::summer16_80X) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
       std::vector<TriggerObject *> const& em_alt_objs = event->GetPtrVec<TriggerObject>(em_alt_trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
@@ -1288,6 +1303,7 @@ namespace ic {
     }
 
    if (channel_ == channel::em && (mc_ == mc::phys14_72X||mc_ == mc::spring15_74X || mc_ == mc::fall15_76X)){
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       for(unsigned i = 0; i < dileptons.size(); ++i){
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
@@ -1331,6 +1347,7 @@ namespace ic {
     }
 
    if (channel_ == channel::tt && mc_ == mc::phys14_72X){
+     std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
      for(unsigned i = 0; i < dileptons.size(); ++i){
        bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5) && IsFilterMatched(dileptons[i]->At(0), objs, leg2_filter, 0.5) && IsFilterMatched(dileptons[i]->At(0), objs, extra_leg2_filter, 0.5);
        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg1_filter, 0.5) && IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5) && IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter, 0.5);
@@ -1339,6 +1356,7 @@ namespace ic {
     }
 
    if (channel_ == channel::tt && (mc_ == mc::spring15_74X || mc_ == mc::fall15_76X)){
+     std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
      std::vector<Candidate *> l1taus;
      if(!is_data_){
        l1taus = event->GetPtrVec<Candidate>("l1isoTaus");
@@ -1376,8 +1394,7 @@ namespace ic {
     if (channel_ == channel::tt && mc_ == mc::summer16_80X) {
       
       for(unsigned i=0; i<leg_filters.size(); ++i){
-        std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
-        ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
+        std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(leg_filters[i].label);
         for (unsigned j=0; j < dileptons.size(); ++j) {
           bool leg1_match = false;
           bool leg2_match = false;
@@ -1392,7 +1409,7 @@ namespace ic {
           
         }
         
-        if (dileptons_pass.size() > 1) leg_filters[i].pass = true;
+        if (dileptons_pass.size() >= 1) leg_filters[i].pass = true;
         else                           leg_filters[i].pass = false;
         
       }
@@ -1403,6 +1420,7 @@ namespace ic {
 
 
     if ( channel_ == channel::mtmet && is_data_) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
         bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
