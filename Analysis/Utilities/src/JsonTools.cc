@@ -12,6 +12,9 @@ Json::Value ExtractJsonFromFile(std::string const& file) {
   Json::Reader json_reader;
   std::fstream input;
   input.open(file);
+  if (!input.is_open()) {
+    throw std::runtime_error("[ExtractJsonFromFile] Unable to open file " + file);
+  }
   json_reader.parse(input, js);
   return js;
 }

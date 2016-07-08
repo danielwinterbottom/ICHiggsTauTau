@@ -502,6 +502,8 @@ icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
   saveStrings = cms.bool(True),
   splitVersion = cms.bool(False),
   inputIsStandAlone = cms.bool(False),
+  prescaleFallback = cms.bool(False),
+  hltProcess = cms.string('HLT'),
   inputPrescales = cms.InputTag("patTrigger", "", "PAT") # only used when inputIsStandAlone is true
 )
 ## [TriggerPath]

@@ -19,6 +19,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/ICHashTreeProducer.hh"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICTriggerObjectProducer::ICTriggerObjectProducer(
@@ -197,6 +198,7 @@ void ICTriggerObjectProducer::endJob() {
   std::map<std::string, std::size_t>::const_iterator iter;
   for (iter = observed_filters_.begin(); iter != observed_filters_.end();
        ++iter) {
+    ICHashTreeProducer::Add(iter->second, iter->first);
     std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
   }
 }
