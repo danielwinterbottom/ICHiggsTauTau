@@ -757,8 +757,10 @@ TriggerPath </h1>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;  saveStrings = cms.bool(<span class="keyword">True</span>),</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  splitVersion = cms.bool(<span class="keyword">False</span>),</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  inputIsStandAlone = cms.bool(<span class="keyword">False</span>),</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  inputPrescales = cms.InputTag(<span class="stringliteral">&quot;patTrigger&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;PAT&quot;</span>) <span class="comment"># only used when inputIsStandAlone is true</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;)</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  prescaleFallback = cms.bool(<span class="keyword">False</span>),</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  hltProcess = cms.string(<span class="stringliteral">&#39;HLT&#39;</span>),</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;  inputPrescales = cms.InputTag(<span class="stringliteral">&quot;patTrigger&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;PAT&quot;</span>) <span class="comment"># only used when inputIsStandAlone is true</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;)</div>
 </div><!-- fragment --> <h1><a class="anchor" id="objs-trig-obj"></a>
 TriggerObject </h1>
 <ul>

@@ -25,5 +25,6 @@ var namespaceic =
     [ "Track", "classic_1_1_track.html", "classic_1_1_track" ],
     [ "TriggerObject", "classic_1_1_trigger_object.html", "classic_1_1_trigger_object" ],
     [ "TriggerPath", "classic_1_1_trigger_path.html", "classic_1_1_trigger_path" ],
+    [ "Unhash", "classic_1_1_unhash.html", "classic_1_1_unhash" ],
     [ "Vertex", "classic_1_1_vertex.html", "classic_1_1_vertex" ]
 ];

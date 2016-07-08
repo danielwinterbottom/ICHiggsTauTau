@@ -202,6 +202,7 @@ var searchData=
   ['setcorrectedmet',['SetCorrectedMet',['../classic_1_1_met.html#a9683dbc11460e172cf88bf76726a43a7',1,'ic::Met']]],
   ['setidiso',['SetIdIso',['../classic_1_1_electron.html#a85f0953b8b9116800d14506ff60ed230',1,'ic::Electron::SetIdIso()'],['../classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15',1,'ic::Muon::SetIdIso()']]],
   ['setjecfactor',['SetJecFactor',['../classic_1_1_jet.html#a34bccbc602d25fef1801c14234d51734',1,'ic::Jet']]],
+  ['setmap',['SetMap',['../classic_1_1_unhash.html#a8154f36ae04a567cfeca8b7b6ae1cd2c',1,'ic::Unhash']]],
   ['setshiftedmet',['SetShiftedMet',['../classic_1_1_met.html#a31f9598d3dc1e2b37ff1380cf68b1982',1,'ic::Met']]],
   ['settauid',['SetTauID',['../classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2',1,'ic::Tau']]],
   ['settdrstyle',['SetTDRStyle',['../_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a',1,'Plotting_Style.h']]],
@@ -217,8 +218,8 @@ var searchData=
   ['statusflags',['statusFlags',['../classic_1_1_gen_particle.html#a5bbc3a00efff5fbaf2e8f4a890288813',1,'ic::GenParticle']]],
   ['sum_5fet',['sum_et',['../classic_1_1_met.html#a798b7613eb7ba69895464e3c9407c7ec',1,'ic::Met']]],
   ['sumet',['sumet',['../structic_1_1_met_1_1_basic_met.html#ac4c7b276ff46bf8248c2f6489f8d4d70',1,'ic::Met::BasicMet']]],
-  ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html#a3007fd9f8b0ed11a888865ef5dd3cddb',1,'ic::SuperCluster']]],
   ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html',1,'ic']]],
+  ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html#a3007fd9f8b0ed11a888865ef5dd3cddb',1,'ic::SuperCluster']]],
   ['supercluster_2ecc',['SuperCluster.cc',['../_super_cluster_8cc.html',1,'']]],
   ['supercluster_2ehh',['SuperCluster.hh',['../_super_cluster_8hh.html',1,'']]],
   ['superclustercollection',['SuperClusterCollection',['../namespaceic.html#a28792d2093cc4ef84dbc74d89405598c',1,'ic']]]

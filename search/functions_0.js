@@ -1,6 +1,7 @@
 var searchData=
 [
   ['accept',['accept',['../classic_1_1_trigger_path.html#ace972ccc8485b4c290bc248c79101905',1,'ic::TriggerPath']]],
+  ['add',['Add',['../class_i_c_hash_tree_producer.html#a3a52fd5f9c93a386a6f554a2992ad230',1,'ICHashTreeProducer']]],
   ['addcandidate',['AddCandidate',['../classic_1_1_composite_candidate.html#aee6953cf64b58faafdbd40fa1e8d3b5d',1,'ic::CompositeCandidate']]],
   ['addtrack',['AddTrack',['../classic_1_1_vertex.html#a13abf08edad7afb491375f3b83daf6c9',1,'ic::Vertex']]],
   ['addtrackcollection',['AddTrackCollection',['../struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4.html#aa85dccbce90f3e8b487c1d06a64eb863',1,'JetDestHelper&lt; ic::JPTJet &gt;']]],

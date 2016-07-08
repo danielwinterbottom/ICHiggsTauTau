@@ -198,6 +198,7 @@ var searchData=
   ['setcorrectedmet',['SetCorrectedMet',['../classic_1_1_met.html#a9683dbc11460e172cf88bf76726a43a7',1,'ic::Met']]],
   ['setidiso',['SetIdIso',['../classic_1_1_electron.html#a85f0953b8b9116800d14506ff60ed230',1,'ic::Electron::SetIdIso()'],['../classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15',1,'ic::Muon::SetIdIso()']]],
   ['setjecfactor',['SetJecFactor',['../classic_1_1_jet.html#a34bccbc602d25fef1801c14234d51734',1,'ic::Jet']]],
+  ['setmap',['SetMap',['../classic_1_1_unhash.html#a8154f36ae04a567cfeca8b7b6ae1cd2c',1,'ic::Unhash']]],
   ['setshiftedmet',['SetShiftedMet',['../classic_1_1_met.html#a31f9598d3dc1e2b37ff1380cf68b1982',1,'ic::Met']]],
   ['settauid',['SetTauID',['../classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2',1,'ic::Tau']]],
   ['settdrstyle',['SetTDRStyle',['../_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a',1,'Plotting_Style.h']]],

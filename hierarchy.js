@@ -40,6 +40,7 @@ var hierarchy =
       [ "ICGenParticleProducer", "class_i_c_gen_particle_producer.html", null ],
       [ "ICGenTauProductProducer", "class_i_c_gen_tau_product_producer.html", null ],
       [ "ICGenVertexProducer", "class_i_c_gen_vertex_producer.html", null ],
+      [ "ICHashTreeProducer", "class_i_c_hash_tree_producer.html", null ],
       [ "ICHttElecIsoCheck", "class_i_c_htt_elec_iso_check.html", null ],
       [ "ICHttMuonOverlapCheck", "class_i_c_htt_muon_overlap_check.html", null ],
       [ "ICJetFlavourCalculator", "class_i_c_jet_flavour_calculator.html", null ],
@@ -79,6 +80,7 @@ var hierarchy =
     [ "ic::SuperCluster", "classic_1_1_super_cluster.html", null ],
     [ "ic::Track", "classic_1_1_track.html", null ],
     [ "ic::TriggerPath", "classic_1_1_trigger_path.html", null ],
+    [ "ic::Unhash", "classic_1_1_unhash.html", null ],
     [ "ic::Vertex", "classic_1_1_vertex.html", [
       [ "ic::SecondaryVertex", "classic_1_1_secondary_vertex.html", null ]
     ] ]

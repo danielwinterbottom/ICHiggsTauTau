@@ -1,5 +1,17 @@
 var NAVTREEINDEX4 =
 {
+"classic_1_1_met.html#a8b5045331556aa799aa84f97c0378bd5":[10,0,1,12,11],
+"classic_1_1_met.html#a9683dbc11460e172cf88bf76726a43a7":[10,0,1,12,22],
+"classic_1_1_met.html#aa0872de40c1fd8206916de4c18e6f403":[10,0,1,12,10],
+"classic_1_1_met.html#aa9bc91887a202b8a0bd12a24426084a1":[10,0,1,12,3],
+"classic_1_1_met.html#ab53581ed653a3d97810e61d5e6f2a009":[10,0,1,12,2],
+"classic_1_1_met.html#ab54fe74ab45429477843ae1eef0e3c3a":[10,0,1,12,21],
+"classic_1_1_met.html#ac3c1219ee653f1d5654fbe23dc803939":[10,0,1,12,19],
+"classic_1_1_met.html#ac8d60a85418b39a077bcfe3c73791664":[10,0,1,12,16],
+"classic_1_1_met.html#ad8715d8f1e73f70fbb2396a236792e51":[10,0,1,12,15],
+"classic_1_1_met.html#adb270ac2d82799b2b905bbaa1fe72d24":[10,0,1,12,17],
+"classic_1_1_met.html#ae0fd54ccb249627f0fbb139374768594":[10,0,1,12,9],
+"classic_1_1_met.html#aea14ffaaf5333c847e9e6374ef0bc93d":[10,0,1,12,6],
 "classic_1_1_met.html#af6af07f1df3979365a497512fb3ce723":[10,0,1,12,13],
 "classic_1_1_met.html#afb587664ab5ef8a3293cb9188456d02d":[10,0,1,12,12],
 "classic_1_1_muon.html":[10,0,1,13],
@@ -237,17 +249,5 @@ var NAVTREEINDEX4 =
 "classic_1_1_super_cluster.html#ab29cc5484f9b75a76c089074dc58500c":[10,0,1,20,17],
 "classic_1_1_super_cluster.html#aca4e1992c70dd93316ee082c09fb54cb":[10,0,1,20,11],
 "classic_1_1_super_cluster.html#add2546e73de4e954ad9f7ebe621994e5":[10,0,1,20,14],
-"classic_1_1_super_cluster.html#aef84f2066d1d3b800c688c9c7d41a5ae":[10,0,1,20,6],
-"classic_1_1_super_cluster.html#af184820f91cc632038bd8b9cd8d71332":[10,0,1,20,20],
-"classic_1_1_tau.html":[10,0,1,21],
-"classic_1_1_tau.html#a03db37f5088a7c04afee7ac100bb7c09":[10,0,1,21,13],
-"classic_1_1_tau.html#a08dfe3a3d13a8a3b6b0e26cf84a53513":[10,0,1,21,6],
-"classic_1_1_tau.html#a1695409f503f585bf5c17e032971bda0":[10,0,1,21,11],
-"classic_1_1_tau.html#a1a805b86729b5396cfd916706cd0b708":[10,0,1,21,3],
-"classic_1_1_tau.html#a1bf81e17b76be4ac71c78c6a6632c980":[10,0,1,21,1],
-"classic_1_1_tau.html#a238f1840b67a94cee3915800a7d74dfc":[10,0,1,21,17],
-"classic_1_1_tau.html#a31e9ba066d6af422d817d071c9e07268":[10,0,1,21,21],
-"classic_1_1_tau.html#a341fe7709cc7bb7cc4941b4a5ee19c68":[10,0,1,21,19],
-"classic_1_1_tau.html#a34f1ea3d62b8fca3bf1438f4aa0a4653":[10,0,1,21,24],
-"classic_1_1_tau.html#a369ecb31f0e977466e3a4cdcab8b58e0":[10,0,1,21,0]
+"classic_1_1_super_cluster.html#aef84f2066d1d3b800c688c9c7d41a5ae":[10,0,1,20,6]
 };

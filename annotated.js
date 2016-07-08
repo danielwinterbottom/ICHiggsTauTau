@@ -20,6 +20,7 @@ var annotated =
     [ "ICGenParticleProducer", "class_i_c_gen_particle_producer.html", "class_i_c_gen_particle_producer" ],
     [ "ICGenTauProductProducer", "class_i_c_gen_tau_product_producer.html", "class_i_c_gen_tau_product_producer" ],
     [ "ICGenVertexProducer", "class_i_c_gen_vertex_producer.html", "class_i_c_gen_vertex_producer" ],
+    [ "ICHashTreeProducer", "class_i_c_hash_tree_producer.html", "class_i_c_hash_tree_producer" ],
     [ "ICHttElecIsoCheck", "class_i_c_htt_elec_iso_check.html", "class_i_c_htt_elec_iso_check" ],
     [ "ICHttMuonOverlapCheck", "class_i_c_htt_muon_overlap_check.html", "class_i_c_htt_muon_overlap_check" ],
     [ "ICJetFlavourCalculator", "class_i_c_jet_flavour_calculator.html", "class_i_c_jet_flavour_calculator" ],

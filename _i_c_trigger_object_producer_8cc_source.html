@@ -120,194 +120,196 @@ $(document).ready(function(){initNavTree('_i_c_trigger_object_producer_8cc_sourc
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">   24</a></span>&#160;<a class="code" href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer::ICTriggerObjectProducer</a>(</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      input_trigres_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputTriggerResults&quot;</span>)),</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;      hlt_path_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;hltPath&quot;</span>)),</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      store_only_if_fired_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;storeOnlyIfFired&quot;</span>)),</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      input_is_standalone_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;inputIsStandAlone&quot;</span>)) {</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keywordflow">if</span>(!input_is_standalone_){</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    consumes&lt;pat::TriggerEvent&gt;(input_);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    consumes&lt;pat::TriggerObjectStandAloneCollection&gt;(input_);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  }</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  consumes&lt;edm::TriggerResults&gt;(input_trigres_);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  objects_ = <span class="keyword">new</span> std::vector&lt;ic::TriggerObject&gt;();</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-15s : %-60s\n&quot;</span>) % <span class="stringliteral">&quot;Path&quot;</span> % hlt_path_;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, store_only_if_fired_, <span class="stringliteral">&quot;storeOnlyIfFired&quot;</span>);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, input_is_standalone_, <span class="stringliteral">&quot;inputIsStandAlone&quot;</span>);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">   45</a></span>&#160;<a class="code" href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">ICTriggerObjectProducer::~ICTriggerObjectProducer</a>() { <span class="keyword">delete</span> objects_; }</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">void</span> ICTriggerObjectProducer::produce(edm::Event&amp; event,</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                                      <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  objects_-&gt;clear();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="keywordflow">if</span> (!input_is_standalone_) {</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    edm::Handle&lt;pat::TriggerEvent&gt; trig_handle;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">event</span>.getByLabel(input_, trig_handle);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_i_c_hash_tree_producer_8hh.html">UserCode/ICHiggsTauTau/plugins/ICHashTreeProducer.hh</a>&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_consumes_8h.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">   25</a></span>&#160;<a class="code" href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer::ICTriggerObjectProducer</a>(</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    : input_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      input_trigres_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputTriggerResults&quot;</span>)),</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      hlt_path_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;hltPath&quot;</span>)),</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      store_only_if_fired_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;storeOnlyIfFired&quot;</span>)),</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      input_is_standalone_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;inputIsStandAlone&quot;</span>)) {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordflow">if</span>(!input_is_standalone_){</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    consumes&lt;pat::TriggerEvent&gt;(input_);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    consumes&lt;pat::TriggerObjectStandAloneCollection&gt;(input_);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  consumes&lt;edm::TriggerResults&gt;(input_trigres_);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  objects_ = <span class="keyword">new</span> std::vector&lt;ic::TriggerObject&gt;();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-15s : %-60s\n&quot;</span>) % <span class="stringliteral">&quot;Path&quot;</span> % hlt_path_;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, store_only_if_fired_, <span class="stringliteral">&quot;storeOnlyIfFired&quot;</span>);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, input_is_standalone_, <span class="stringliteral">&quot;inputIsStandAlone&quot;</span>);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">   46</a></span>&#160;<a class="code" href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">ICTriggerObjectProducer::~ICTriggerObjectProducer</a>() { <span class="keyword">delete</span> objects_; }</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keywordtype">void</span> ICTriggerObjectProducer::produce(edm::Event&amp; event,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                                      <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  objects_-&gt;clear();</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordflow">if</span> (!input_is_standalone_) {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    edm::Handle&lt;pat::TriggerEvent&gt; trig_handle;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">event</span>.getByLabel(input_, trig_handle);</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="comment">// Get a vector of all HLT paths</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    std::vector&lt;pat::TriggerPath&gt; <span class="keyword">const</span>* paths = trig_handle-&gt;paths();</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="comment">// Find the full label of the chosen HLT path (i.e. with the version number)</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">bool</span> fired = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    std::string full_name;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; paths-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;      std::string <span class="keyword">const</span>&amp; name = paths-&gt;at(i).name();</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      <span class="keywordflow">if</span> (name.find(hlt_path_) != name.npos) {</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        full_name = name;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">if</span> (store_only_if_fired_ &amp;&amp; !(paths-&gt;at(i).wasAccept())) fired = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">break</span>;  <span class="comment">// Stop loop after we find the first match</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;      }</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    }</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">if</span> (!fired) <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="comment">// Get a vector of the objects used in the chosen path</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    pat::TriggerObjectRefVector objects =</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        trig_handle-&gt;pathObjects(full_name, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    objects_-&gt;resize(objects.size(), <a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a>());</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; objects.size(); ++i) {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      pat::TriggerObject <span class="keyword">const</span>&amp; src = *(objects.at(i));</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      <a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a> &amp; dest = objects_-&gt;at(i);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(0);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(0);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      std::vector&lt;std::size_t&gt; filter_labels;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      <span class="comment">// Get the filters this object was used in</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      pat::TriggerFilterRefVector filters =</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;          trig_handle-&gt;objectFilters((objects)[i], <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> k = 0; k &lt; filters.size(); ++k) {</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="comment">// Only store the filter label if the filter was used in the chosen path</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">if</span> (!trig_handle-&gt;filterInPath(filters[k], full_name, <span class="keyword">false</span>)) <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        filter_labels.push_back(<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]-&gt;label()));</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        observed_filters_[filters[k]-&gt;label()] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]-&gt;label());</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;      }</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;      dest.<a class="code" href="classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e">set_filters</a>(filter_labels);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  } <span class="keywordflow">else</span> {  <span class="comment">// i.e. MiniAOD</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="comment">// We need to figure out the full HLT path name (typically hlt_path_ doesn&#39;t</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="comment">// contain the version number at the end). We don&#39;t have access to the full</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">// pat::TriggerEvent here, but we can get the same information from the</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="comment">// edm::TriggerResults instead.</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="comment">// This code was inspired by the example here:</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="comment">//  https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Trigger</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    edm::Handle&lt;edm::TriggerResults&gt; trigres_handle;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keyword">event</span>.getByLabel(input_trigres_, trigres_handle);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    edm::TriggerNames <span class="keyword">const</span>&amp; names = <span class="keyword">event</span>.triggerNames(*trigres_handle);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">bool</span> fired = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    std::string full_name;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = 0, n = trigres_handle-&gt;size(); i &lt; n; ++i) {</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;      std::string <span class="keyword">const</span>&amp; name = names.triggerName(i);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;      <span class="comment">// std::cout &lt;&lt; i &lt;&lt; &quot;\t&quot; &lt;&lt; name &lt;&lt; &quot;\n&quot;;</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;      <span class="keywordflow">if</span> (name.find(hlt_path_) != name.npos) {</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        full_name = name;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordflow">if</span> (store_only_if_fired_ &amp;&amp; !(trigres_handle-&gt;accept(i))) fired = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">break</span>;  <span class="comment">// Stop loop after we find the first match</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      }</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">if</span> (!fired) <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="comment">// Have to use the HLTConfigProvider to get the list of object-producing</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="comment">// filter modules that were run in this path</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    std::set&lt;std::string&gt; path_filters;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; filt_vec =</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        hlt_config_.saveTagsModules(full_name);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; filt_vec.size(); ++i)</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;      path_filters.insert(filt_vec[i]);</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    edm::Handle&lt;pat::TriggerObjectStandAloneCollection&gt; trigobj_handle;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keyword">event</span>.getByLabel(input_, trigobj_handle);</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; trigobj_handle-&gt;size(); ++i) {</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;      pat::TriggerObjectStandAlone src = trigobj_handle-&gt;at(i);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;      <span class="comment">// In MiniAOD the path names have to be unpacked, but this method</span></div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;      <span class="comment">// was only introduced in CMSSW_7_0_5</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;      src.unpackPathNames(names);</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;      std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; pathnames = src.pathNames();</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;      <span class="keywordtype">bool</span> obj_in_path = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; pathnames.size(); ++j) {</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordflow">if</span> (full_name == pathnames[j]) {</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;          obj_in_path = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;          <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        }</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;      }</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;      <span class="keywordflow">if</span> (!obj_in_path) <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;      <span class="comment">// Ok, so this object was used in the path - now we can add it to the</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;      <span class="comment">// output collection</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      objects_-&gt;push_back(<a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a>());</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      <a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a> &amp; dest = objects_-&gt;back();</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(0);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(0);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      <span class="comment">// Get the filters this object was used in</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;      std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; filters = src.filterLabels();</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      std::vector&lt;std::size_t&gt; filter_labels;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> k = 0; k &lt; filters.size(); ++k) {</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="comment">// Using the info we got from the HLTConfigProvider we can check if this</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="comment">// filter module was actually used in the path we are interested in</span></div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keywordflow">if</span> (!path_filters.count(filters[k])) <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        filter_labels.push_back(<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]));</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        observed_filters_[filters[k]] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]);</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;      }</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;      dest.<a class="code" href="classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e">set_filters</a>(filter_labels);</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  }</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;}</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="keywordtype">void</span> ICTriggerObjectProducer::beginRun(edm::Run <span class="keyword">const</span>&amp; run,</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                                       edm::EventSetup <span class="keyword">const</span>&amp; es) {</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  <span class="keywordflow">if</span> (input_is_standalone_) {</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    std::string proc =</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        input_trigres_.process() != <span class="stringliteral">&quot;&quot;</span> ? input_trigres_.process() : <span class="stringliteral">&quot;HLT&quot;</span>;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keywordtype">bool</span> changed = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordtype">bool</span> res = hlt_config_.init(run, es, proc, changed);</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordflow">if</span> (!res)</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;      <span class="keywordflow">throw</span> std::runtime_error(</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;          <span class="stringliteral">&quot;HLTConfigProvider did not initialise correctly&quot;</span>);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  }</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;}</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="comment">// Get a vector of all HLT paths</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    std::vector&lt;pat::TriggerPath&gt; <span class="keyword">const</span>* paths = trig_handle-&gt;paths();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="comment">// Find the full label of the chosen HLT path (i.e. with the version number)</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">bool</span> fired = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    std::string full_name;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; paths-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      std::string <span class="keyword">const</span>&amp; name = paths-&gt;at(i).name();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;      <span class="keywordflow">if</span> (name.find(hlt_path_) != name.npos) {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        full_name = name;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">if</span> (store_only_if_fired_ &amp;&amp; !(paths-&gt;at(i).wasAccept())) fired = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">break</span>;  <span class="comment">// Stop loop after we find the first match</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;      }</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordflow">if</span> (!fired) <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="comment">// Get a vector of the objects used in the chosen path</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    pat::TriggerObjectRefVector objects =</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        trig_handle-&gt;pathObjects(full_name, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    objects_-&gt;resize(objects.size(), <a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a>());</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; objects.size(); ++i) {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      pat::TriggerObject <span class="keyword">const</span>&amp; src = *(objects.at(i));</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      <a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a> &amp; dest = objects_-&gt;at(i);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(0);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(0);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;      std::vector&lt;std::size_t&gt; filter_labels;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      <span class="comment">// Get the filters this object was used in</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;      pat::TriggerFilterRefVector filters =</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;          trig_handle-&gt;objectFilters((objects)[i], <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> k = 0; k &lt; filters.size(); ++k) {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="comment">// Only store the filter label if the filter was used in the chosen path</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keywordflow">if</span> (!trig_handle-&gt;filterInPath(filters[k], full_name, <span class="keyword">false</span>)) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        filter_labels.push_back(<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]-&gt;label()));</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        observed_filters_[filters[k]-&gt;label()] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]-&gt;label());</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;      }</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;      dest.<a class="code" href="classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e">set_filters</a>(filter_labels);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  } <span class="keywordflow">else</span> {  <span class="comment">// i.e. MiniAOD</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="comment">// We need to figure out the full HLT path name (typically hlt_path_ doesn&#39;t</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">// contain the version number at the end). We don&#39;t have access to the full</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="comment">// pat::TriggerEvent here, but we can get the same information from the</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="comment">// edm::TriggerResults instead.</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="comment">// This code was inspired by the example here:</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="comment">//  https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Trigger</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    edm::Handle&lt;edm::TriggerResults&gt; trigres_handle;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">event</span>.getByLabel(input_trigres_, trigres_handle);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    edm::TriggerNames <span class="keyword">const</span>&amp; names = <span class="keyword">event</span>.triggerNames(*trigres_handle);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">bool</span> fired = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    std::string full_name;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = 0, n = trigres_handle-&gt;size(); i &lt; n; ++i) {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;      std::string <span class="keyword">const</span>&amp; name = names.triggerName(i);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;      <span class="comment">// std::cout &lt;&lt; i &lt;&lt; &quot;\t&quot; &lt;&lt; name &lt;&lt; &quot;\n&quot;;</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;      <span class="keywordflow">if</span> (name.find(hlt_path_) != name.npos) {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        full_name = name;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">if</span> (store_only_if_fired_ &amp;&amp; !(trigres_handle-&gt;accept(i))) fired = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">break</span>;  <span class="comment">// Stop loop after we find the first match</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;      }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordflow">if</span> (!fired) <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="comment">// Have to use the HLTConfigProvider to get the list of object-producing</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="comment">// filter modules that were run in this path</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    std::set&lt;std::string&gt; path_filters;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; filt_vec =</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        hlt_config_.saveTagsModules(full_name);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; filt_vec.size(); ++i)</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;      path_filters.insert(filt_vec[i]);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    edm::Handle&lt;pat::TriggerObjectStandAloneCollection&gt; trigobj_handle;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keyword">event</span>.getByLabel(input_, trigobj_handle);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; trigobj_handle-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      pat::TriggerObjectStandAlone src = trigobj_handle-&gt;at(i);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;      <span class="comment">// In MiniAOD the path names have to be unpacked, but this method</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;      <span class="comment">// was only introduced in CMSSW_7_0_5</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;      src.unpackPathNames(names);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;      std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; pathnames = src.pathNames();</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;      <span class="keywordtype">bool</span> obj_in_path = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; pathnames.size(); ++j) {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keywordflow">if</span> (full_name == pathnames[j]) {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;          obj_in_path = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;          <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        }</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;      }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;      <span class="keywordflow">if</span> (!obj_in_path) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;      <span class="comment">// Ok, so this object was used in the path - now we can add it to the</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      <span class="comment">// output collection</span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      objects_-&gt;push_back(<a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a>());</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      <a class="code" href="classic_1_1_trigger_object.html">ic::TriggerObject</a> &amp; dest = objects_-&gt;back();</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(0);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(0);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;      <span class="comment">// Get the filters this object was used in</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; filters = src.filterLabels();</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      std::vector&lt;std::size_t&gt; filter_labels;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> k = 0; k &lt; filters.size(); ++k) {</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="comment">// Using the info we got from the HLTConfigProvider we can check if this</span></div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="comment">// filter module was actually used in the path we are interested in</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        <span class="keywordflow">if</span> (!path_filters.count(filters[k])) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        filter_labels.push_back(<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]));</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        observed_filters_[filters[k]] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;      }</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;      dest.<a class="code" href="classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e">set_filters</a>(filter_labels);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    }</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  }</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;}</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="keywordtype">void</span> ICTriggerObjectProducer::beginRun(edm::Run <span class="keyword">const</span>&amp; run,</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                                       edm::EventSetup <span class="keyword">const</span>&amp; es) {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="keywordflow">if</span> (input_is_standalone_) {</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    std::string proc =</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        input_trigres_.process() != <span class="stringliteral">&quot;&quot;</span> ? input_trigres_.process() : <span class="stringliteral">&quot;HLT&quot;</span>;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordtype">bool</span> changed = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordtype">bool</span> res = hlt_config_.init(run, es, proc, changed);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keywordflow">if</span> (!res)</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;      <span class="keywordflow">throw</span> std::runtime_error(</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;          <span class="stringliteral">&quot;HLTConfigProvider did not initialise correctly&quot;</span>);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  }</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;}</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="keywordtype">void</span> ICTriggerObjectProducer::beginJob() {</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;objects_);</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;}</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="keywordtype">void</span> ICTriggerObjectProducer::endJob() {</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  std::cout &lt;&lt; std::string(78, <span class="charliteral">&#39;-&#39;</span>) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;Path: %-50s  %20s\n&quot;</span>)</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;      % hlt_path_ % std::string(<span class="stringliteral">&quot;Hash Summmary&quot;</span>);</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  std::map&lt;std::string, std::size_t&gt;::const_iterator iter;</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  <span class="keywordflow">for</span> (iter = observed_filters_.begin(); iter != observed_filters_.end();</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;       ++iter) {</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s| %020i\n&quot;</span>) % iter-&gt;first % iter-&gt;second;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  }</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;}</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<a class="code" href="_i_c_trigger_object_producer_8cc.html#aa9b10323198b26c5b270197099db316e">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_trigger_object_producer.html">ICTriggerObjectProducer</a>);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="keywordtype">void</span> ICTriggerObjectProducer::beginJob() {</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;objects_);</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;}</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="keywordtype">void</span> ICTriggerObjectProducer::endJob() {</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  std::cout &lt;&lt; std::string(78, <span class="charliteral">&#39;-&#39;</span>) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;Path: %-50s  %20s\n&quot;</span>)</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;      % hlt_path_ % std::string(<span class="stringliteral">&quot;Hash Summmary&quot;</span>);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  std::map&lt;std::string, std::size_t&gt;::const_iterator iter;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <span class="keywordflow">for</span> (iter = observed_filters_.begin(); iter != observed_filters_.end();</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;       ++iter) {</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <a class="code" href="class_i_c_hash_tree_producer.html#a3a52fd5f9c93a386a6f554a2992ad230">ICHashTreeProducer::Add</a>(iter-&gt;second, iter-&gt;first);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s| %020i\n&quot;</span>) % iter-&gt;first % iter-&gt;second;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  }</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;}</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="comment">// define this as a plug-in</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<a class="code" href="_i_c_trigger_object_producer_8cc.html#aa9b10323198b26c5b270197099db316e">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_trigger_object_producer.html">ICTriggerObjectProducer</a>);</div>
 <div class="ttc" id="_static_tree_8hh_html"><div class="ttname"><a href="_static_tree_8hh.html">StaticTree.hh</a></div></div>
-<div class="ttc" id="class_i_c_trigger_object_producer_html_a0bd76cc1d60127382e6ab6ab03510d80"><div class="ttname"><a href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">ICTriggerObjectProducer::~ICTriggerObjectProducer</a></div><div class="ttdeci">~ICTriggerObjectProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8cc_source.html#l00045">ICTriggerObjectProducer.cc:45</a></div></div>
+<div class="ttc" id="class_i_c_trigger_object_producer_html_a0bd76cc1d60127382e6ab6ab03510d80"><div class="ttname"><a href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">ICTriggerObjectProducer::~ICTriggerObjectProducer</a></div><div class="ttdeci">~ICTriggerObjectProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8cc_source.html#l00046">ICTriggerObjectProducer.cc:46</a></div></div>
 <div class="ttc" id="city_8h_html_ad1bd1546443b3e43413429c5b81d7c5e"><div class="ttname"><a href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a></div><div class="ttdeci">uint64 CityHash64(const char *buf, size_t len)</div><div class="ttdef"><b>Definition:</b> <a href="city_8cc_source.html#l00200">city.cc:200</a></div></div>
-<div class="ttc" id="class_i_c_trigger_object_producer_html_a81fd360891b054635b35dc0d3bb44cdc"><div class="ttname"><a href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer::ICTriggerObjectProducer</a></div><div class="ttdeci">ICTriggerObjectProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8cc_source.html#l00024">ICTriggerObjectProducer.cc:24</a></div></div>
+<div class="ttc" id="class_i_c_trigger_object_producer_html_a81fd360891b054635b35dc0d3bb44cdc"><div class="ttname"><a href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer::ICTriggerObjectProducer</a></div><div class="ttdeci">ICTriggerObjectProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8cc_source.html#l00025">ICTriggerObjectProducer.cc:25</a></div></div>
 <div class="ttc" id="classic_1_1_trigger_object_html_ab0d0a4572ca3c32fcdf11fd45477644e"><div class="ttname"><a href="classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e">ic::TriggerObject::set_filters</a></div><div class="ttdeci">void set_filters(std::vector&lt; std::size_t &gt; const &amp;filters)</div><div class="ttdoc">The list of filter label hashes this object was accepted by, typically restricted to the modules in s...</div><div class="ttdef"><b>Definition:</b> <a href="_trigger_object_8hh_source.html#l00030">TriggerObject.hh:30</a></div></div>
 <div class="ttc" id="city_8h_html"><div class="ttname"><a href="city_8h.html">city.h</a></div></div>
 <div class="ttc" id="class_i_c_trigger_object_producer_html"><div class="ttname"><a href="class_i_c_trigger_object_producer.html">ICTriggerObjectProducer</a></div><div class="ttdoc">See documentation here. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8hh_source.html#l00020">ICTriggerObjectProducer.hh:20</a></div></div>
@@ -316,6 +318,7 @@ $(document).ready(function(){initNavTree('_i_c_trigger_object_producer_8cc_sourc
 <div class="ttc" id="_print_config_tools_8h_html"><div class="ttname"><a href="_print_config_tools_8h.html">PrintConfigTools.h</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html_a48be819e85aff103998cdaaa488b8aa9"><div class="ttname"><a href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">ic::Candidate::set_id</a></div><div class="ttdeci">void set_id(std::size_t const &amp;id)</div><div class="ttdoc">Unique identifier. </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8hh_source.html#l00066">Candidate.hh:66</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html_a1ad59abd60b24bed580b2537e5628b4c"><div class="ttname"><a href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">ic::Candidate::set_charge</a></div><div class="ttdeci">void set_charge(int const &amp;charge)</div><div class="ttdoc">Electric charge. </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8hh_source.html#l00081">Candidate.hh:81</a></div></div>
+<div class="ttc" id="_i_c_hash_tree_producer_8hh_html"><div class="ttname"><a href="_i_c_hash_tree_producer_8hh.html">ICHashTreeProducer.hh</a></div></div>
 <div class="ttc" id="structic_1_1_static_tree_html_a4de6c928f155f091cca244c5931427fe"><div class="ttname"><a href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a></div><div class="ttdeci">static TTree * tree_</div><div class="ttdef"><b>Definition:</b> <a href="_static_tree_8hh_source.html#l00013">StaticTree.hh:13</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html_a4582570cd453ab48e2d62c5e7250277d"><div class="ttname"><a href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">ic::Candidate::set_energy</a></div><div class="ttdeci">void set_energy(double const &amp;energy)</div><div class="ttdoc">Direct access to the energy. </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8hh_source.html#l00078">Candidate.hh:78</a></div></div>
 <div class="ttc" id="_i_c_trigger_object_producer_8hh_html"><div class="ttname"><a href="_i_c_trigger_object_producer_8hh.html">ICTriggerObjectProducer.hh</a></div></div>
@@ -327,6 +330,7 @@ $(document).ready(function(){initNavTree('_i_c_trigger_object_producer_8cc_sourc
 <div class="ttc" id="classic_1_1_candidate_html_ab4d1ddc5f822b899ad13e0baafa3f4d7"><div class="ttname"><a href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">ic::Candidate::set_eta</a></div><div class="ttdeci">void set_eta(double const &amp;eta)</div><div class="ttdoc">Direct access to . </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8hh_source.html#l00072">Candidate.hh:72</a></div></div>
 <div class="ttc" id="_print_config_tools_8cc_html_a0332f7c54bd5110f2658ba8e11f17760"><div class="ttname"><a href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a></div><div class="ttdeci">void PrintHeaderWithProduces(edm::ParameterSet const &amp;config, edm::InputTag const &amp;in, std::string branch)</div><div class="ttdef"><b>Definition:</b> <a href="_print_config_tools_8cc_source.html#l00019">PrintConfigTools.cc:19</a></div></div>
 <div class="ttc" id="_i_c_trigger_object_producer_8cc_html_aa9b10323198b26c5b270197099db316e"><div class="ttname"><a href="_i_c_trigger_object_producer_8cc.html#aa9b10323198b26c5b270197099db316e">DEFINE_FWK_MODULE</a></div><div class="ttdeci">DEFINE_FWK_MODULE(ICTriggerObjectProducer)</div></div>
+<div class="ttc" id="class_i_c_hash_tree_producer_html_a3a52fd5f9c93a386a6f554a2992ad230"><div class="ttname"><a href="class_i_c_hash_tree_producer.html#a3a52fd5f9c93a386a6f554a2992ad230">ICHashTreeProducer::Add</a></div><div class="ttdeci">static void Add(std::size_t const &amp;id, std::string const &amp;str)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_hash_tree_producer_8cc_source.html#l00019">ICHashTreeProducer.cc:19</a></div></div>
 <div class="ttc" id="_trigger_object_8hh_html"><div class="ttname"><a href="_trigger_object_8hh.html">TriggerObject.hh</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
