@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='160708'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='160709'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 
 config.section_('General')
@@ -13,7 +13,7 @@ config.General.workArea=prod+'/DATA'
 
 config.Data.outLFNDirBase='/store/user/rdimaria/'+prod+'_DATA/'
 
-config.JobType.psetName ='/home/hep/rd1715/CMSSW_8_0_11/src/UserCode/ICHiggsTauTau/test/higgsinv_8_0_11_miniAODcfg.py'
+config.JobType.psetName ='/home/hep/rd1715/CMSSW_8_0_12/src/UserCode/ICHiggsTauTau/test/higgsinv_8_0_12_miniAODcfg.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 
