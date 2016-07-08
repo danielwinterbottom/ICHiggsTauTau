@@ -24,7 +24,8 @@ int main(int argc, char* argv[]){
 	unsigned verbosity;														// Verbose output, useful for diagnostic purposes
 	bool is_fall15;		
 	bool do_ss;                            		    // Tweaking some things for the paper
-	string datacard;             									// Channel, e.g. et
+	string datacard; 
+    string year; 
 	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
 	string shift_backgrounds;
 	bool auto_titles=true;
@@ -47,6 +48,7 @@ int main(int argc, char* argv[]){
 	  ("var",              		    po::value<string>(&var)->required())
 	  ("cat",             		    po::value<string>(&cat)->default_value(""))
 	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
+      ("year",                    po::value<string>(&year)->default_value("2015"))
 	  ("is_fall15",               po::value<bool>(&is_fall15)->default_value(true))
 	  ("do_ss", 	                po::value<bool>(&do_ss)->default_value(false))
 	  ("interpolate", 	          po::value<bool>(&interpolate)->default_value(false))
@@ -84,7 +86,7 @@ int main(int argc, char* argv[]){
 	begin_var = reduced_var.find("(");
 	if (begin_var != reduced_var.npos) reduced_var.erase(begin_var, reduced_var.npos);
 	if (plot.plot_name() == "") {
-		plot.set_plot_name(reduced_var+"_"+datacard+"_"+channel_str+("_2015"));
+		plot.set_plot_name(reduced_var+"_"+datacard+"_"+channel_str+("_"+year));
 	}
 	TH1::AddDirectory(false);
 
@@ -102,7 +104,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
 	// ************************************************************************
-	HTTRun2Analysis ana(String2Channel(channel_str), "2015", verbosity, is_fall15);
+	HTTRun2Analysis ana(String2Channel(channel_str), year, verbosity, is_fall15);
     ana.SetQCDRatio(qcd_os_ss_factor);
     if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
@@ -138,7 +140,7 @@ int main(int argc, char* argv[]){
 		std::string dc_mode_label;
 		if (channel_str == "zee") 			dc_mode_label = "Zee";
 		if (channel_str == "zmm") 			dc_mode_label = "Zmm";
-		std::string tfile_name = "datacard_"+reduced_var+"_"+datacard+"_"+channel_str+("_2015")+".root";
+		std::string tfile_name = "datacard_"+reduced_var+"_"+datacard+"_"+channel_str+("_"+year)+".root";
 		TFile dc_file(tfile_name.c_str(),"RECREATE");
 		dc_file.cd();
 		gDirectory->mkdir((dc_mode_label+"_"+datacard).c_str());
