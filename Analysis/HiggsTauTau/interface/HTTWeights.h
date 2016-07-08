@@ -18,6 +18,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, ic::era, era)
   CLASS_MEMBER(HTTWeights, bool, do_trg_weights)
   CLASS_MEMBER(HTTWeights, bool, trg_applied_in_mc)
+  CLASS_MEMBER(HTTWeights, bool, do_single_lepton_trg)
   CLASS_MEMBER(HTTWeights, bool, do_singlemu_trg_weights)
   CLASS_MEMBER(HTTWeights, bool, do_tau_mode_scale)
   CLASS_MEMBER(HTTWeights, bool, do_etau_fakerate)
