@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='160701'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='160708'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 
 config.section_('General')
@@ -13,7 +13,7 @@ config.General.workArea=prod+'/DATA'
 
 config.Data.outLFNDirBase='/store/user/rdimaria/'+prod+'_DATA/'
 
-config.JobType.psetName ='/home/hep/rd1715/CMSSW_8_0_6/src/UserCode/ICHiggsTauTau/test/higgsinv_8_0_6_miniAODcfg.py'
+config.JobType.psetName ='/home/hep/rd1715/CMSSW_8_0_11/src/UserCode/ICHiggsTauTau/test/higgsinv_8_0_11_miniAODcfg.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     #tasks.append((taskname,dataset name from das,lumi mask,run range))
 
     #!!To be checked on each processing
-    rerecoparams=['isData=1','doHT=0','release=80XMINIAOD', 'globalTag=80X_dataRun2_Prompt_v9'] #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/
+    rerecoparams=['isData=1','doHT=0','release=80XMINIAOD', 'globalTag=80X_dataRun2_Prompt_ICHEP16JEC_v0'] #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/
 
     #Run B
     #           (('MET-2015D-16Dec-v1'           ,'/MET/Run2015D-16Dec2015-v1/MINIAOD'         ,json,rerecoparams,firstrun+'-'+maxrun))
@@ -74,11 +74,13 @@ if __name__ == '__main__':
     #           (('SinglePhoton-2015D-16Dec-v1'  ,'/SinglePhoton/Run2015D-16Dec2015-v1/MINIAOD',json,rerecoparams,firstrun+'-'+maxrun))
     tasks.append(('MET-2016B-PromptReco-v1'       ,'/MET/Run2016B-PromptReco-v1/MINIAOD'             ,rerecoparams,                   ))
     tasks.append(('MET-2016B-PromptReco-v2'       ,'/MET/Run2016B-PromptReco-v2/MINIAOD'             ,rerecoparams,                   ))
+    tasks.append(('MET-2016C-PromptReco-v2'       ,'/MET/Run2016C-PromptReco-v2/MINIAOD'             ,rerecoparams,                   ))
     tasks.append(('HTMHT-2016B-PromptReco-v1'     ,'/HTMHT/Run2016B-PromptReco-v1/MINIAOD'           ,rerecoparams,                   ))
     tasks.append(('HTMHT-2016B-PromptReco-v2'     ,'/HTMHT/Run2016B-PromptReco-v2/MINIAOD'           ,rerecoparams,                   ))
+    tasks.append(('HTMHT-2016C-PromptReco-v2'     ,'/HTMHT/Run2016C-PromptReco-v2/MINIAOD'           ,rerecoparams,                   ))
     tasks.append(('SingleMuon-2016B-PromptReco-v1','/SingleMuon/Run2016B-PromptReco-v1/MINIAOD'      ,rerecoparams,                   ))
     tasks.append(('SingleMuon-2016B-PromptReco-v2','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'      ,rerecoparams,                   ))
-
+    tasks.append(('SingleMuon-2016C-PromptReco-v2','/SingleMuon/Run2016C-PromptReco-v2/MINIAOD'      ,rerecoparams,                   ))
 
 
     for task in tasks:
