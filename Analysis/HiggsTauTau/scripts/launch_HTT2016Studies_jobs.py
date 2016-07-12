@@ -42,11 +42,11 @@ for sa in SAMPLES:
         'filelists': filelists,
         'max_events': MAX_EVTS,
         # Lumi settings
-        'lumi_mask': 'Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt',
+        'lumi_mask': 'input/json/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt',
         'lumi_out': '%s/lumi_%s' % (OUTPUT, sa),
         # Hash map settings
         'hash_map_mode': 0,
-        'hash_map_input': 'input/hash_map.json',
+        'hash_map_input': 'input/string_hash/hash_map.json',
         'hash_map_output': 'hash_map_%s.json' % sa,
         # Trigger info settings
         'trigger_info_output': '%s/trigger_info_%s.json' % (OUTPUT, sa)
