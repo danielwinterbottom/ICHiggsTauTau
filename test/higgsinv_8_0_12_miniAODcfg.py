@@ -1239,13 +1239,13 @@ process.icTriggerSequence += cms.Sequence(
   process.icTriggerPathProducer
   )
 
-process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsPFMET170NoiseCleaned"),
-  input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_PFMET170_NoiseCleaned"),
-  inputIsStandAlone = cms.bool(False),
-  storeOnlyIfFired = cms.bool(True)
-  )
+#process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
+#  branch = cms.string("triggerObjectsPFMET170NoiseCleaned"),
+#  input   = cms.InputTag("patTriggerEvent"),
+#  hltPath = cms.string("HLT_PFMET170_NoiseCleaned"),
+#  inputIsStandAlone = cms.bool(False),
+#  storeOnlyIfFired = cms.bool(True)
+#  )
 
 process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer = producers.icTriggerObjectProducer.clone(
   branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140"),
@@ -1274,7 +1274,7 @@ process.icPFMETNoMu120PFMHTNoMu120IDTightObjectProducer = producers.icTriggerObj
 
 
 process.icTriggerObjectSequence += cms.Sequence(
-  process.icPFMET170NoiseCleanedObjectProducer+
+  #process.icPFMET170NoiseCleanedObjectProducer+
   process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer+
   process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer+
   process.icPFMETNoMu120PFMHTNoMu120IDTightObjectProducer
