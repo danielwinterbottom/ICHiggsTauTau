@@ -1,6 +1,7 @@
 import os
 import json
 import stat
+import copy
 from math import ceil
 from functools import partial
 from multiprocessing import Pool
@@ -53,7 +54,7 @@ class Jobs:
 
     def attach_job_args(self, group):
         group.add_argument('--job-mode', default=self.job_mode, choices=[
-                           'interactive', 'script', 'lxbatch', 'NAF'], help='Task execution mode')
+                           'interactive', 'script', 'lxbatch', 'NAF', 'ts'], help='Task execution mode')
         group.add_argument('--task-name', default=self.task_name,
                            help='Task name, used for job script and log filenames for batch system tasks')
         group.add_argument('--parallel', type=int, default=self.parallel,
@@ -83,7 +84,7 @@ class Jobs:
                 pass
             return i + 1
 
-    def add_filelist_split_jobs(self, prog, cfg, files_per_job):
+    def add_filelist_split_jobs(self, prog, cfg, files_per_job, output_cfgs):
         if 'filelist' in cfg:
             filelist = cfg['filelist']
             nfiles = self.file_len(filelist)
@@ -91,16 +92,18 @@ class Jobs:
             nfiles = 0
             for f in cfg['filelists']:
                 nfiles += self.file_len(f)
-        njobs = int(ceil(float(nfiles)/float(files_per_job)))
-        output_name = cfg['output']
+        if files_per_job <= 0:
+            njobs = 1
+        else:
+            njobs = int(ceil(float(nfiles)/float(files_per_job)))
         for n in xrange(njobs):
-            # output_name = cfg['output']
-            pos = output_name.rfind('.root')
-            # Replace .root with _JOB.root in the output filename
-            cfg['output'] = output_name[:pos] + '_%i.root' % n
-            cfg['file_offset'] = n
-            cfg['file_step'] = njobs
-            cmd = """%s '%s'""" % (prog, json.dumps(cfg))
+            final_cfg = copy.deepcopy(cfg)
+            for item in output_cfgs:
+                filename, extension = os.path.splitext(cfg[item])
+                final_cfg[item] = filename + ('_%i' % n) + extension
+            final_cfg['file_offset'] = n
+            final_cfg['file_step'] = njobs
+            cmd = """%s '%s'""" % (prog, json.dumps(final_cfg))
             self.job_queue.append(cmd)
             # print cmd
 
@@ -132,14 +135,14 @@ class Jobs:
             result = pool.map(
                 partial(run_command, self.dry_run), self.job_queue)
         script_list = []
-        if self.job_mode in ['script', 'lxbatch', 'NAF']:
+        if self.job_mode in ['script', 'lxbatch', 'NAF', 'ts']:
             for i, j in enumerate(range(0, len(self.job_queue), self.merge)):
                 script_name = 'job_%s_%i.sh' % (self.task_name, i)
                 # each job is given a slice from the list of combine commands of length 'merge'
                 # we also keep track of the files that were created in case submission to a
                 # batch system was also requested
                 self.create_job_script(
-                    self.job_queue[j:j + self.merge], script_name, self.job_mode == 'script')
+                    self.job_queue[j:j + self.merge], script_name, self.job_mode in ['script', 'ts'])
                 script_list.append(script_name)
         if self.job_mode == 'lxbatch':
             for script in script_list:
@@ -151,4 +154,9 @@ class Jobs:
                 full_script = os.path.abspath(script)
                 logname = full_script.replace('.sh', '_%J.log')
                 run_command(self.dry_run, 'qsub -o %s %s %s' % (logname, self.bopts, full_script))
+        if self.job_mode == 'ts':
+            for script in script_list:
+                full_script = os.path.abspath(script)
+                run_command(self.dry_run, 'ts bash -c "eval %s"' % (full_script))
+
         del self.job_queue[:]
