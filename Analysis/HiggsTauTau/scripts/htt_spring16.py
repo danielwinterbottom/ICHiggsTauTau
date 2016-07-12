@@ -110,7 +110,7 @@ FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 CONFIG='scripts/config2016.json'
 
 
-FILELIST='filelists/June19_MC_80X'
+FILELIST='filelists/July08_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -151,19 +151,23 @@ if options.proc_mssm or options.proc_all:
 
 if options.proc_data or options.proc_all or options.calc_lumi:
   data_samples = [
-   'SingleMuon',
-   'SingleElectron',
-   'MuonEG',
-   'Tau'
+   'SingleMuonB',
+   'SingleElectronB',
+   'MuonEGB',
+   'TauB',
+   'SingleMuonC',
+   'SingleElectronC',
+   'MuonEGC',
+   'TauC'
   ]
 
 
-  DATAFILELIST="./filelists/June19_Data_80X"
+  DATAFILELIST="./filelists/July08_Data_80X"
 
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/June19_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July08_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 1000 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -174,7 +178,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/June19_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July08_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -208,17 +212,14 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
-    #'TT',
-    #'WJetsToLNu',
+    'TT',
     'WJetsToLNu-LO',
     'VVTo2L2Nu',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q',
-    #'WZJetsToLLLNu',
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',
-    #'T-t',
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
