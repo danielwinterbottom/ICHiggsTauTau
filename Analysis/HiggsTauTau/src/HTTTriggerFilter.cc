@@ -672,9 +672,14 @@ namespace ic {
         } else if(do_singlelepton_) {
          bool highpt_leg = dileptons[i]->At(0)->pt()>high_leg_pt;
          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first;
+         bool highpt_leg2 = false;
+         if (channel_==channel::zmm || channel_ == channel::tpzmm || channel_ == channel::zee || channel_ == channel::tpzee){
+           leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first; 
+           highpt_leg2 = dileptons[i]->At(1)->pt()>high_leg_pt;
+         }
          //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).second;
 //					leg2_match = IsFilterMatched(dileptons[i]->At(1),alt_objs, alt_leg2_filter, 0.5);
-         if (leg1_match&&highpt_leg){
+         if ((leg1_match&&highpt_leg) || (leg2_match&&highpt_leg2)){
            dileptons_pass.push_back(dileptons[i]);	
           /* double trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
            double trigger_object_eta = alt_objs.at(leg1_match_index)->eta();

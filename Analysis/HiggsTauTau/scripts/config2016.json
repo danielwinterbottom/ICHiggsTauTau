@@ -1,11 +1,11 @@
 {
   "job": {
-    "filelist" : "filelists/June19_MC_80X_WZTo1L3Nu.dat",
+    "filelist" : "filelists/July08_MC_80X_WZTo1L3Nu.dat",
     //"filelist" : "filelists/June19_MC_80X_SUSYGluGluToHToTauTau_M-160.dat",
-    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/June19_MC_80X/",
+    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July08_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","tt","et"],
+    "channels":     ["mt","et","tt"],
     "sequences": {
       "all":  ["default"]//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
@@ -47,7 +47,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/June19/",
+    "output_folder" : "./output/July08/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "WZTo1L3Nu",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -66,7 +66,7 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2016_Jun29.root",
+    "data_pu_file"  : "input/pileup/Data_Pileup_2016_July11.root",
     "mc_pu_file"    : "input/pileup/MC_Spring16_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
