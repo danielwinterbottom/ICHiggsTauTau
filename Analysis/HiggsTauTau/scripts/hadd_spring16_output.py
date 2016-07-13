@@ -64,12 +64,18 @@ sample_list = [
     #'WJetsToLNu_HT200-400',
     #'WJetsToLNu_HT400-600',
     #'WJetsToLNu_HT600-Inf',
-   'SingleMuon',
-   'SingleElectron',
-   'MuonEG',
-   'Tau',
+   'SingleMuonB',
+   'SingleElectronB',
+   'MuonEGB',
+   'TauB',
+   'SingleMuonC',
+   'SingleElectronC',
+   'MuonEGC',
+   'TauC',
    'SUSYGluGluToHToTauTau_M-160',
    'SUSYGluGluToBBHToTauTau_M-160'
+   'SUSYGluGluToHToTauTau_M-500',
+   'SUSYGluGluToBBHToTauTau_M-500'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']

@@ -79,7 +79,8 @@ namespace ic {
           //if (run >= 193752/* //&& run <= xxxxx*/ //&& name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
        if (run >= 193752 && run <= 247600 && name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true; 
           //2015 triggers
-       if (run >= 250985 /*&& run <= 258654*/  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos) ) path_found = true;
+       if (run >= 250985 /*&& run <= 258654*/  && (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos) && do_singlelepton_) path_found = true;
+       if (run >= 250985 /*&& run <= 258654*/  && (name.find("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
        //if (run >= 258655/* &&run <=xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
        //if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v") != name.npos || name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v") != name.npos) ) path_found = true;
         }
@@ -97,7 +98,8 @@ namespace ic {
           //2015 Triggers
           if (run >= 250985 && run <= 256464 && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu24_eta2p1_v") != name.npos)) path_found = true;
           if (run >= 256630  && run <= 271035 && (name.find("HLT_IsoMu18_v") != name.npos)) path_found = true;
-          if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu22_v") != name.npos)) path_found = true;
+          if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu22_v") != name.npos) && do_singlelepton_) path_found = true;
+          if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v") != name.npos) && do_leptonplustau_) path_found = true;
           //if (run >= 256630 /* && run <= xxxxx*/ && (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos || name.find("HLT_IsoMu22_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::em) {
@@ -205,10 +207,10 @@ namespace ic {
           high_leg_pt = 24.;
         }
         if (run >= 271036 /*&& run <= xxxxx*/){
-          trig_obj_label = "triggerObjectsEle24LooseTau20";
-          leg1_filter = "hltEle24WPLooseL1IsoEG20erTau20erGsfTrackIsoFilter";
+          trig_obj_label = "triggerObjectsEle24LooseTau20SingleL1";
+          leg1_filter = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
-          extra_leg2_filter = "hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20";
+          extra_leg2_filter = "hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsEle23";
           alt_leg1_filter = "hltEle23WPLooseGsfTrackIsoFilter";
           high_leg_pt = 24.;
@@ -286,10 +288,10 @@ namespace ic {
           high_leg_pt = 19.;
         }
         if (run >= 271036 /*&& run <= xxxxxx*/) {
-          trig_obj_label = "triggerObjectsIsoMu17LooseTau20";
-          leg1_filter = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+          trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
+          leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
-          extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
+          extra_leg2_filter = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsIsoMu22";
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           high_leg_pt = 23.;
