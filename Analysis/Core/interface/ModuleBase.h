@@ -6,6 +6,7 @@
 #include <vector>                       // for vector
 #include "boost/bind.hpp"               // for bind
 #include "boost/function.hpp"
+#include "boost/format.hpp"
 namespace ic { class TreeEvent; }
 
 #define CLASS_MEMBER(classn,type,name)                                                \
@@ -21,6 +22,13 @@ class ModuleBase {
  private:
   std::string module_name_;
   unsigned events_processed_;
+
+ protected:
+  void PrintHeader(std::string const& classname);
+  template <class T>
+  void PrintArg(std::string const& name, T const& arg) {
+    std::cout << boost::format("%-15s : %-60s\n") % name % arg;
+  }
 
  public:
   ModuleBase(std::string const& name);
