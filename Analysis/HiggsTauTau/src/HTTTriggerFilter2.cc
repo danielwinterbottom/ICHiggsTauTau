@@ -587,7 +587,7 @@ namespace ic {
             fil.lep2_pt = 20.;
             leg_filters.push_back(fil);
             
-            fil.label         = "triggerObjectsEle24LooseTau20";
+            fil.label         = "triggerObjectsEle24LooseTau20SingleL1";
             fil.path          = "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v";
             fil.leg1_filter   = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
             fil.leg2_filter   = "hltPFTau20TrackLooseIso";
@@ -597,7 +597,7 @@ namespace ic {
             fil.lep2_pt = 20.;
             leg_filters.push_back(fil);
             
-            fil.label         = "triggerObjectsEle24LooseTau20SingleL1";
+            fil.label         = "triggerObjectsEle24LooseTau20";
             fil.path          = "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v";
             fil.leg1_filter   = "hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter";
             fil.leg2_filter   = "hltPFTau20TrackLooseIso";
@@ -671,6 +671,7 @@ namespace ic {
       
           filters fil;
           
+          fil.label         = "triggerObjectsIsoMu18";
           fil.path          = "HLT_IsoMu18_v";
           fil.leg1_filter   = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -680,6 +681,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu20";
           fil.path          = "HLT_IsoMu20_v";
           fil.leg1_filter   = "hltL3crIsoL1sMu18L1f0L2f10QL3f20QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -689,16 +691,8 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu22";
           fil.path          = "HLT_IsoMu22_v";
-          fil.leg1_filter   = "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
-          fil.leg2_extra    = "";
-          fil.singleLepton_ = true;
-          fil.lep1_pt = 23.;
-          fil.lep2_pt = 0.;
-          leg_filters.push_back(fil);
-          
-          fil.path          = "HLT_IsoMu22_eta2p1_v";
           fil.leg1_filter   = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
           fil.leg2_extra    = "";
@@ -707,6 +701,17 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu22er";
+          fil.path          = "HLT_IsoMu22_eta2p1_v";
+          fil.leg1_filter   = "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
+          fil.leg2_extra    = "";
+          fil.singleLepton_ = true;
+          fil.lep1_pt = 23.;
+          fil.lep2_pt = 0.;
+          leg_filters.push_back(fil);
+          
+          fil.label         = "triggerObjectsIsoMu27";
           fil.path          = "HLT_IsoMu27_v";
           fil.leg1_filter   = "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -716,6 +721,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu18";
           fil.path          = "HLT_IsoTkMu18_v";
           fil.leg1_filter   = "hltL3fL1sMu16L1f0Tkf18QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -725,6 +731,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu20";
           fil.path          = "HLT_IsoTkMu20_v";
           fil.leg1_filter   = "hltL3fL1sMu18L1f0Tkf20QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -734,6 +741,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu22er";
           fil.path          = "HLT_IsoTkMu22_eta2p1_v";
           fil.leg1_filter   = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -743,6 +751,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu22";
           fil.path          = "HLT_IsoTkMu22_v";
           fil.leg1_filter   = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -752,6 +761,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu24";
           fil.path          = "HLT_IsoTkMu24_v";
           fil.leg1_filter   = "hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -761,6 +771,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu27";
           fil.path          = "HLT_IsoTkMu27_v";
           fil.leg1_filter   = "hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "";
@@ -770,8 +781,9 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu17erLooseIsoTau20_SingleL1";
           fil.path          = "HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v";
-          fil.leg1_filter   = "hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "hltPFTau20TrackLooseIsoAgainstMuon";
           fil.leg2_extra    = "hltOverlapFilterSingleIsoMu17LooseIsoPFTau20";
           fil.singleLepton_ = false;
@@ -779,6 +791,7 @@ namespace ic {
           fil.lep2_pt = 20.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu17erLooseIsoTau20";
           fil.path          = "HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v";
           fil.leg1_filter   = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "hltPFTau20TrackLooseIsoAgainstMuon";
@@ -788,6 +801,7 @@ namespace ic {
           fil.lep2_pt = 20.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu19erLooseIsoTau20_SingleL1";
           fil.path          = "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v";
           fil.leg1_filter   = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "hltPFTau20TrackLooseIsoAgainstMuon";
@@ -797,8 +811,9 @@ namespace ic {
           fil.lep2_pt = 20.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu19erLooseIsoTau20";
           fil.path          = "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v";
-          fil.leg1_filter   = " hltL3crIsoL1sMu18erTauJet20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3crIsoL1sMu18erTauJet20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "hltPFTau20TrackLooseIsoAgainstMuon";
           fil.leg2_extra    = "hltOverlapFilterIsoMu19LooseIsoPFTau20";
           fil.singleLepton_ = false;
@@ -806,6 +821,7 @@ namespace ic {
           fil.lep2_pt = 20.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu21erLooseIsoTau20_SingleL1";
           fil.path          = "HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v";
           fil.leg1_filter   = "hltL3crIsoL1sSingleMu20erIorSingleMu22erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
           fil.leg2_filter   = "hltPFTau20TrackLooseIsoAgainstMuon";
@@ -864,6 +880,7 @@ namespace ic {
       
           filters fil;
           
+          fil.label         = "triggerObjectsEle23";
           fil.path          = "HLT_Ele23_WPLoose_Gsf_v";
           fil.leg1_filter   = "hltEle23WPLooseGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -873,6 +890,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle24er";
           fil.path          = "HLT_Ele24_eta2p1_WPLoose_Gsf_v";
           fil.leg1_filter   = "hltSingleEle24WPLooseGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -882,6 +900,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle25WPTight";
           fil.path          = "HLT_Ele25_WPTight_Gsf_v";
           fil.leg1_filter   = "hltEle25WPTightGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -891,6 +910,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle25er";
           fil.path          = "HLT_Ele25_eta2p1_WPLoose_Gsf_v";
           fil.leg1_filter   = "hltEle25erWPLooseGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -900,6 +920,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle25erWPTight";
           fil.path          = "HLT_Ele25_eta2p1_WPTight_Gsf_v";
           fil.leg1_filter   = "hltEle25erWPTightGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -909,6 +930,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle27";
           fil.path          = "HLT_Ele27_WPLoose_Gsf_v";
           fil.leg1_filter   = "hltEle27noerWPLooseGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -918,6 +940,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle27WPTight";
           fil.path          = "HLT_Ele27_WPTight_Gsf_v";
           fil.leg1_filter   = "hltEle27WPTightGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -927,6 +950,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle27er";
           fil.path          = "HLT_Ele27_eta2p1_WPLoose_Gsf_v";
           fil.leg1_filter   = "hltEle27erWPLooseGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -936,6 +960,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle27erWPTight";
           fil.path          = "HLT_Ele27_eta2p1_WPTight_Gsf_v";
           fil.leg1_filter   = "hltEle27erWPTightGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -945,6 +970,7 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsEle32WPTight";
           fil.path          = "HLT_Ele32_eta2p1_WPTight_Gsf_v";
           fil.leg1_filter   = "hltEle32WPTightGsfTrackIsoFilter";
           fil.leg2_filter   = "";
@@ -954,144 +980,160 @@ namespace ic {
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu18";
           fil.path          = "HLT_IsoMu18_v";
-          fil.leg1_filter   = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 19.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu20";
           fil.path          = "HLT_IsoMu20_v";
-          fil.leg1_filter   = "hltL3crIsoL1sMu18L1f0L2f10QL3f20QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3crIsoL1sMu18L1f0L2f10QL3f20QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 21.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu22";
           fil.path          = "HLT_IsoMu22_v";
-          fil.leg1_filter   = "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 23.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu22er";
           fil.path          = "HLT_IsoMu22_eta2p1_v";
-          fil.leg1_filter   = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 23.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoMu27";
           fil.path          = "HLT_IsoMu27_v";
-          fil.leg1_filter   = "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 28.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu18";
           fil.path          = "HLT_IsoTkMu18_v";
-          fil.leg1_filter   = "hltL3fL1sMu16L1f0Tkf18QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3fL1sMu16L1f0Tkf18QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 19.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu20";
           fil.path          = "HLT_IsoTkMu20_v";
-          fil.leg1_filter   = "hltL3fL1sMu18L1f0Tkf20QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3fL1sMu18L1f0Tkf20QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 21.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu22er";
           fil.path          = "HLT_IsoTkMu22_eta2p1_v";
-          fil.leg1_filter   = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 21.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu22";
           fil.path          = "HLT_IsoTkMu22_v";
-          fil.leg1_filter   = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 23.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu24";
           fil.path          = "HLT_IsoTkMu24_v";
-          fil.leg1_filter   = "hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 25.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsIsoTkMu27";
           fil.path          = "HLT_IsoTkMu27_v";
-          fil.leg1_filter   = "hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "";
+          fil.leg1_filter   = "";
+          fil.leg2_filter   = "hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 28.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsMu8Ele17";
           fil.path          = "HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
-          fil.leg2_filter   = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg1_filter   = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg2_filter   = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 18.;
           fil.lep2_pt = 9.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsMu8Ele23";
           fil.path          = "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
-          fil.leg2_filter   = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg1_filter   = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg2_filter   = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 24.;
           fil.lep2_pt = 9.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsMu17Ele12";
           fil.path          = "HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17";
-          fil.leg2_filter   = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg1_filter   = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg2_filter   = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 13.;
           fil.lep2_pt = 18.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsMu23Ele12";
           fil.path          = "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
-          fil.leg2_filter   = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg1_filter   = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg2_filter   = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 13.;
           fil.lep2_pt = 24.;
           leg_filters.push_back(fil);
           
+          fil.label         = "triggerObjectsMu23Ele8";
           fil.path          = "HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu23TrkIsoVVLEle8CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
-          fil.leg2_filter   = "hltMu23TrkIsoVVLEle8CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg1_filter   = "hltMu23TrkIsoVVLEle8CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+          fil.leg2_filter   = "hltMu23TrkIsoVVLEle8CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 9.;
@@ -1121,6 +1163,7 @@ namespace ic {
       
          filters fil;
          
+         fil.label         = "triggerObjectsDoubleMediumTau32";
          fil.path          = "HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v";
          fil.leg1_filter   = "hltDoublePFTau32TrackPt1MediumIsolationDz02Reg";
          fil.leg2_filter   = "hltDoublePFTau32TrackPt1MediumIsolationDz02Reg";
@@ -1130,6 +1173,7 @@ namespace ic {
          fil.lep2_pt = 0.;
          leg_filters.push_back(fil);
          
+         fil.label         = "triggerObjectsDoubleMediumTau35";
          fil.path          = "HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v";
          fil.leg1_filter   = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
          fil.leg2_filter   = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
@@ -1139,6 +1183,7 @@ namespace ic {
          fil.lep2_pt = 0.;
          leg_filters.push_back(fil);
          
+         fil.label         = "triggerObjectsDoubleMediumTau40";
          fil.path          = "HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v";
          fil.leg1_filter   = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
          fil.leg2_filter   = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
@@ -1249,14 +1294,22 @@ namespace ic {
     
     if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::em) && mc_ == mc::summer16_80X) {
       for(unsigned i=0; i<leg_filters.size(); ++i){
+        std::vector<CompositeCandidate *> dileptons_pass_reHLT;
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(leg_filters[i].label);
         for (unsigned j=0; j < dileptons.size(); ++j) {
           bool leg1_match = false;
           bool leg2_match = false;
           if(leg_filters[i].singleLepton_){
-            bool highpt_leg = dileptons[j]->At(0)->pt()>leg_filters[i].lep1_pt;
-            leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0),objs, leg_filters[i].leg1_filter, 0.5).first;
+            bool highpt_leg = false;
+            if(channel_ == channel::em && leg_filters[i].leg1_filter == "") {
+              highpt_leg = dileptons[j]->At(1)->pt()>leg_filters[i].lep1_pt;
+              leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(1),objs, leg_filters[i].leg2_filter, 0.5).first;
+            } else {
+              highpt_leg = dileptons[j]->At(0)->pt()>leg_filters[i].lep1_pt;
+              leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0),objs, leg_filters[i].leg1_filter, 0.5).first;
+            }
             if (leg1_match&&highpt_leg){
+              dileptons_pass_reHLT.push_back(dileptons[j]);
               dileptons_pass.push_back(dileptons[j]);
             }
           } else if(!leg_filters[i].singleLepton_){
@@ -1270,14 +1323,14 @@ namespace ic {
               leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;
             }
             if (leg1_match && leg2_match && highpt1_leg && highpt2_leg){
-              dileptons_pass.push_back(dileptons[j]);
+              dileptons_pass_reHLT.push_back(dileptons[j]);
             }
           }
           
         }
         
-        if (dileptons_pass.size() >= 1) leg_filters[i].pass = true;
-        else                           leg_filters[i].pass = false;
+        if (dileptons_pass_reHLT.size() >= 1) leg_filters[i].pass = true;
+        else                            leg_filters[i].pass = false;
         
       }
         
@@ -1394,6 +1447,8 @@ namespace ic {
     if (channel_ == channel::tt && mc_ == mc::summer16_80X) {
       
       for(unsigned i=0; i<leg_filters.size(); ++i){
+          
+        std::vector<CompositeCandidate *> dileptons_pass_reHLT;
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(leg_filters[i].label);
         for (unsigned j=0; j < dileptons.size(); ++j) {
           bool leg1_match = false;
@@ -1403,14 +1458,14 @@ namespace ic {
             leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first;
             leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first;
             if (leg1_match && leg2_match){
-              dileptons_pass.push_back(dileptons[j]);
+              dileptons_pass_reHLT.push_back(dileptons[j]);
             }
           }
           
         }
         
-        if (dileptons_pass.size() >= 1) leg_filters[i].pass = true;
-        else                           leg_filters[i].pass = false;
+        if (dileptons_pass_reHLT.size() >= 1) leg_filters[i].pass = true;
+        else                            leg_filters[i].pass = false;
         
       }
         
@@ -1465,7 +1520,7 @@ namespace ic {
     } else {
         bool passedHLT = false;
         for(unsigned i=0; i<leg_filters.size(); ++i){
-            event->Add(leg_filters[i].path, leg_filters[i].pass);
+          event->Add(leg_filters[i].path, leg_filters[i].pass);
           if(leg_filters[i].pass){
               passedHLT = true;
           }

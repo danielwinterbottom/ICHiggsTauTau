@@ -865,21 +865,21 @@ namespace ic {
       emHLTPath25_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v");    
       emHLTPath26_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v");
     } else if(channel_ == channel::et){
-      etHLTPath1_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v");                               
-      etHLTPath2_  = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_v");                        
-      etHLTPath3_  = event->Get<bool>("HLT_Ele25_WPTight_Gsf_v");                               
-      etHLTPath4_  = event->Get<bool>("HLT_Ele25_eta2p1_WPLoose_Gsf_v");                        
-      etHLTPath5_  = event->Get<bool>("HLT_Ele25_eta2p1_WPTight_Gsf_v");                        
-      etHLTPath6_  = event->Get<bool>("HLT_Ele27_WPLoose_Gsf_v");                               
-      etHLTPath7_  = event->Get<bool>("HLT_Ele27_WPTight_Gsf_v");                               
+      //etHLTPath1_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v");                               
+      //etHLTPath2_  = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_v");                        
+      //etHLTPath3_  = event->Get<bool>("HLT_Ele25_WPTight_Gsf_v");                               
+      //etHLTPath4_  = event->Get<bool>("HLT_Ele25_eta2p1_WPLoose_Gsf_v");                        
+      //etHLTPath5_  = event->Get<bool>("HLT_Ele25_eta2p1_WPTight_Gsf_v");                        
+      //etHLTPath6_  = event->Get<bool>("HLT_Ele27_WPLoose_Gsf_v");                               
+      //etHLTPath7_  = event->Get<bool>("HLT_Ele27_WPTight_Gsf_v");                               
       etHLTPath8_  = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_v");                        
-      etHLTPath9_  = event->Get<bool>("HLT_Ele27_eta2p1_WPTight_Gsf_v");                        
-      etHLTPath10_ = event->Get<bool>("HLT_Ele32_eta2p1_WPTight_Gsf_v");                        
-      etHLTPath11_ = event->Get<bool>("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
-      etHLTPath12_ = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
-      etHLTPath13_ = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v");        
-      etHLTPath14_ = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
-      etHLTPath15_ = event->Get<bool>("HLT_Ele32_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
+      //etHLTPath9_  = event->Get<bool>("HLT_Ele27_eta2p1_WPTight_Gsf_v");                        
+      //etHLTPath10_ = event->Get<bool>("HLT_Ele32_eta2p1_WPTight_Gsf_v");                        
+      //etHLTPath11_ = event->Get<bool>("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
+      //etHLTPath12_ = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
+      //etHLTPath13_ = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v");        
+      //etHLTPath14_ = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
+      //etHLTPath15_ = event->Get<bool>("HLT_Ele32_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v");
     } else if(channel_ == channel::mt){
       mtHLTPath1_  = event->Get<bool>("HLT_IsoMu18_v");                               
       mtHLTPath2_  = event->Get<bool>("HLT_IsoMu20_v");                               

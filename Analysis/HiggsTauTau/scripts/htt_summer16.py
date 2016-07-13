@@ -107,7 +107,7 @@ FLATJSONPATCHOTH = ''.join(flatjsonlist)
 FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 
 
-CONFIG='scripts/config.json'
+CONFIG='scripts/config2016reHLT.json'
 
 
 FILELIST='filelists/Jul03_MC_80X'
@@ -127,7 +127,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   for mass in masses :
     signal_mc += [
       'GluGluHToTauTau_M-'+mass,
-      #'VBFHToTauTau_M-'+mass,
+      'VBFHToTauTau_M-'+mass,
       #'ZHToTauTau_M-'+mass,
       #'WplusHToTauTau_M-'+mass,
       #'WminusHToTauTau_M-'+mass,
