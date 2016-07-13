@@ -602,7 +602,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){
        samples_alias_map_["data_samples"] = {
-        "SingleElectron"
+        "SingleElectronB","SingleElectronC"
        };
     } else if(!is_fall15_){
        samples_alias_map_["data_samples"] = {
@@ -616,7 +616,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){
      samples_alias_map_["data_samples"] = {
-       "SingleMuon"
+       "SingleMuonB","SingleMuonC"
        };
     } else if(!is_fall15_){
      samples_alias_map_["data_samples"] = {
@@ -630,7 +630,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){ 
       samples_alias_map_["data_samples"] = {
-        "Tau"
+        "TauB","TauC"
       };
     } else if(!is_fall15_){
      samples_alias_map_["data_samples"] = {
@@ -644,7 +644,7 @@ namespace ic {
     };
     if(year_.find("6")!=year_.npos){
       samples_alias_map_["data_samples"] = {
-        "MuonEG"
+        "MuonEGB","MuonEGC"
       };
     } else if(!is_fall15_){
       samples_alias_map_["data_samples"] = {
