@@ -111,7 +111,7 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
   ic_l1t_object_->clear();
   //std::cout << " -- The candidate_collection size is  " << candidate_collection->size() << std::endl;
   //size is nbx*nelements: total size....
-  ic_l1t_object_->resize(candidate_collection->size(), ic::L1TObject());
+  ic_l1t_object_->resize(doBXloop_? candidate_collection->size() : candidate_collection->size(0), ic::L1TObject());
 
   unsigned counter_objects = 0;
   

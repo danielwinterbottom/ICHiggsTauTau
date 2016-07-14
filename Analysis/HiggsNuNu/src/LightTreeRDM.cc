@@ -649,19 +649,21 @@ namespace ic {
     unsigned counterMht = 0;
     for (unsigned iL1(0); iL1<l1sum.size(); ++iL1){
       L1TObject* l1obj = l1sum[iL1];
-      //std::cout << " -- sum " << iL1 << " type " << l1obj->sumType() << " pt " << l1obj->pt() << " " << l1obj->phi() << std::endl;
-      
+      //std::cout << " -- sum " << iL1 << " bx " << l1obj->bx() << " type " << l1obj->sumType() << " pt " << l1obj->pt() << " " << l1obj->phi() << std::endl;
+      if (l1obj->bx()!=0) continue;
       if (l1obj->sumType()==2) {
-	if (counterMet==2) l1met_ = l1obj->pt();
+	//if (counterMet==2) 
+	l1met_ = l1obj->pt();
 	counterMet++;
       }
       if (l1obj->sumType()==3) {
-	if (counterMht==2) l1mht_ = l1obj->pt();
+	//if (counterMht==2) 
+	l1mht_ = l1obj->pt();
 	counterMht++;
       }
-      if (counterMet>2 && counterMht>2) break;
+      //if (counterMet>2 && counterMht>2) break;
     }
-    if (counterMet!=3 || counterMht != 3){
+    if (counterMet!=1 || counterMht != 1){
       std::cout << " *** Warning, found " << counterMet << " L1MET and " << counterMht << " L1MHT." << std::endl;
     }
     

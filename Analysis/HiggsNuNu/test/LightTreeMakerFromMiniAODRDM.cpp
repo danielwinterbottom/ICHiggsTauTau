@@ -370,15 +370,16 @@ int main(int argc, char* argv[]){
 
 
 
-//   string data_json;
+  string data_json;
 //   if (era == era::data_2011) data_json           =  "input/json/json_data_2011_et_mt.txt";
 //   if (era == era::data_2012_ichep) data_json     =  "input/json/data_2012_ichep.txt";
 //   if (era == era::data_2012_hcp) data_json       =  "input/json/data_2012_hcp.txt";
 //   if (era == era::data_2012_moriond) data_json   =  "input/json/data_2012_moriond.txt";
 //   if (era == era::data_2012_donly) data_json     =  "input/json/data_2012_donly.txt";
-//   LumiMask lumiMask = LumiMask("LumiMask")
-//     .set_produce_output_jsons("")
-//     .set_input_file(data_json);
+  if (era == era::data_2016) data_json     =  "input/json/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt";
+  LumiMask lumiMask = LumiMask("LumiMask")
+    .set_produce_output_jsons("")
+    .set_input_file(data_json);
 
   MakeRunStats runStats = MakeRunStats("RunStats")
     .set_output_name(fullpath+".runstats");
@@ -391,6 +392,7 @@ int main(int argc, char* argv[]){
   if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
   if (mc == mc::spring15_74X) mc_pu_file  = "input/pileup/MC_Spring15_PU25_Startup.root";
   if (mc == mc::fall15_76X) mc_pu_file  = "input/pileup/MC_Fall15_PU25_V1.root";
+  if (mc == mc::spring16_80X) mc_pu_file  = "input/pileup/MC_Spring16_PU25ns_V1.root";
 
   string data_pu_file;
   if (era == era::data_2012_rereco) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
@@ -401,6 +403,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
   if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
+  if (era == era::data_2016) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2016-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -423,6 +426,10 @@ int main(int argc, char* argv[]){
   else if(era == era::data_2015_25ns){
     data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb72d5_2015D_246908-260627-600bins.root", "/", "pileup");
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
+  }
+  else if(era == era::data_2016){
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb72d5_2016-600bins.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2016-600bins.root", "/", "pileup");
   }
 
   if (!is_data) {
@@ -979,6 +986,7 @@ int main(int argc, char* argv[]){
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
 
+  analysis.AddModule(&lumiMask);
 
   analysis.AddModule(&singleMet);
   if (!is_data) {
