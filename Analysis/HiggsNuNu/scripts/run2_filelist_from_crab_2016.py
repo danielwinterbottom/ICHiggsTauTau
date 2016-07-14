@@ -2,7 +2,7 @@
 import sys
 
 if (len(sys.argv)!=2):
-    print "Usage ./run2_filelist_from_crab.py CRAB_TASK"
+    print "Usage ./run2_filelist_from_crab_2016.py CRAB_TASK"
     exit()
 
 
