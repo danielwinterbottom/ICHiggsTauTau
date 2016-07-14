@@ -269,8 +269,10 @@ namespace ic {
         outtree_->Branch("dxy_2", &d0_2_.var_double);
         outtree_->Branch("dz_1", &dz_1_.var_double);
         outtree_->Branch("dz_2", &dz_2_.var_double);
-        outtree_->Branch("trigger_match_1", &trigger_match_1_);
-        outtree_->Branch("trigger_match_2", &trigger_match_2_);
+        outtree_->Branch("tag_trigger_match_1", &tag_trigger_match_1_);
+        outtree_->Branch("tag_trigger_match_2", &tag_trigger_match_2_);
+        outtree_->Branch("probe_trigger_match_1", &probe_trigger_match_1_);
+        outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -1887,8 +1889,10 @@ namespace ic {
     }
 
     if (channel_ == channel::tpzmm || channel_ == channel::tpzee){
-      trigger_match_1_ = event->Exists("tp_leg1_match") ? event->Get<bool>("tp_leg1_match") : 0;
-      trigger_match_2_ = event->Exists("tp_leg2_match") ? event->Get<bool>("tp_leg2_match") : 0;
+      tag_trigger_match_1_ = event->Exists("tp_tag_leg1_match") ? event->Get<bool>("tp_tag_leg1_match") : 0;
+      tag_trigger_match_2_ = event->Exists("tp_tag_leg2_match") ? event->Get<bool>("tp_tag_leg2_match") : 0;
+      probe_trigger_match_1_ = event->Exists("tp_probe_leg1_match") ? event->Get<bool>("tp_probe_leg1_match") : 0;
+      probe_trigger_match_2_ = event->Exists("tp_probe_leg2_match") ? event->Get<bool>("tp_probe_leg2_match") : 0;
     }
 
     Tau const* tau1 = dynamic_cast<Tau const*>(lep1);

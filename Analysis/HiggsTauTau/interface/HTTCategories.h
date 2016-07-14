@@ -148,8 +148,10 @@ class HTTCategories : public ModuleBase {
   int q_2_;
   int jet_flav_1_;
   int jet_flav_2_;
-  bool trigger_match_1_;
-  bool trigger_match_2_;
+  bool tag_trigger_match_1_;
+  bool tag_trigger_match_2_;
+  bool probe_trigger_match_1_;
+  bool probe_trigger_match_2_;
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
