@@ -216,21 +216,23 @@ class Jobs:
             for script in script_list:
                 full_script = os.path.abspath(script)
                 logname = full_script.replace('.sh', '_%J.log')
+                if self.tracking and not self.dry_run:
+                    os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
                 run_command(self.dry_run, 'bsub -o %s %s %s' % (logname, self.bopts, full_script))
         if self.job_mode == 'NAF':
             for script in script_list:
                 full_script = os.path.abspath(script)
                 logname = full_script.replace('.sh', '_$JOB_ID.log')
+                if self.tracking and not self.dry_run:
+                    os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
                 run_command(self.dry_run, """qsub -j y -o '%s' %s %s""" % (logname, self.bopts, full_script))
         if self.job_mode == 'ts':
             for script in script_list:
                 full_script = os.path.abspath(script)
+                if self.tracking and not self.dry_run:
+                    os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
                 run_command(self.dry_run, 'ts bash -c "eval %s"' % (full_script))
         if self.job_mode in ['lxbatch', 'NAF', 'ts'] and self.tracking:
-            if not self.dry_run:
-                for script in script_list:
-                    full_script = os.path.abspath(script)
-                    os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
             print '>> Status summary'
             for status in status_result:
                 counter = '[%i/%i]' % (len(status_result[status]), njobs)
