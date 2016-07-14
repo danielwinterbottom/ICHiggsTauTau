@@ -12,12 +12,13 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
 MAX_EVTS = -1
-FILES_PER_JOB = 50
+FILES_PER_JOB = 100
 
 SAMPLES = {
   'Tau': [
         'Tau-Run2016B-PromptReco-v1',
-        'Tau-Run2016B-PromptReco-v2'
+        'Tau-Run2016B-PromptReco-v2',
+        'Tau-Run2016C-PromptReco-v2'
         ],
   'SingleMuon': [
         'SingleMuon-Run2016B-PromptReco-v1',
@@ -29,6 +30,11 @@ SAMPLES = {
         'SingleElectron-Run2016B-PromptReco-v2',
         'SingleElectron-Run2016C-PromptReco-v2'
         ],
+  'MuonEG': [
+        'MuonEG-Run2016B-PromptReco-v1',
+        'MuonEG-Run2016B-PromptReco-v2',
+        'MuonEG-Run2016C-PromptReco-v2'
+        ]
 }
 
 OUTPUT = 'output/HTT2016Studies'
@@ -42,7 +48,7 @@ for sa in SAMPLES:
         'filelists': filelists,
         'max_events': MAX_EVTS,
         # Lumi settings
-        'lumi_mask': 'input/json/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt',
+        'lumi_mask': 'input/json/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt',
         'lumi_out': '%s/lumi_%s' % (OUTPUT, sa),
         # Hash map settings
         'hash_map_mode': 0,
