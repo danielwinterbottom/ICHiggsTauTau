@@ -142,7 +142,7 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       // was only introduced in CMSSW_7_0_5
       src.unpackPathNames(names);
 #endif
-      std::vector<std::string> const& pathnames = src.pathNames();
+      std::vector<std::string> const& pathnames = src.pathNames(false,false);
       bool obj_in_path = false;
       for (unsigned j = 0; j < pathnames.size(); ++j) {
         if (full_name == pathnames[j]) {
