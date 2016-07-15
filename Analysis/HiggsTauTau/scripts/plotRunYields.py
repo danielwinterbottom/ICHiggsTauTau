@@ -165,7 +165,7 @@ plot.Set(pads[0], Grid=(0, 1), Tickx=1, Ticky=1)
 plot.Set(yield_hist, LineWidth=2, MarkerSize=2, LineColor=ROOT.kRed, MarkerColor=ROOT.kRed)
 plot.Set(yield_hist.GetXaxis(), Title='', LabelSize=0)
 plot.Set(yield_hist.GetYaxis(), Title='Yield / pb^{-1}')
-yield_hist.Draw()
+yield_hist.Draw('P0')
 plot.FixBothRanges(pads[0], plot.GetAxisHist(pads[0]).GetMinimum(), 0.05, plot.GetAxisHist(pads[0]).GetMaximum(), 0.05)
 for i, run in enumerate(runs):
     if not prescale_ok[str(run)]:
