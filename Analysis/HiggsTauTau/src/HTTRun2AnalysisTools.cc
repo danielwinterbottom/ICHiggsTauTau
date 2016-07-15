@@ -250,6 +250,8 @@ namespace ic {
     } else if (ch_ == channel::tt) {
       alias_map_["btag"] = "(n_jets<=1 && n_loose_bjets>=1)";
       alias_map_["nobtag"] = "n_loose_bjets==0";
+      //alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      //alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
       alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -328,11 +330,11 @@ namespace ic {
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       //MSSM update analysis style categories:
-      alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45 && pt_2<60)";
-      alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>60)";
-      alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>45 && pt_2<60";
-      alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>60 && pt_2<80";
-      alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>80";
+      alias_map_["btaglow"] = "(pt_2<60 &&"+alias_map_["btag"]+")";
+      alias_map_["btaghigh"] = "(pt_2>60 &&"+alias_map_["btag"]+")";
+      alias_map_["nobtaglow"] = "(pt_2<60 &&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmed"] = "(pt_2>60 && pt_2<80 &&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtaghigh"] = "(pt_2>80 &&"+alias_map_["nobtag"]+")";
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "1";
