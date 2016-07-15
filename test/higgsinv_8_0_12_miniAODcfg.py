@@ -1239,6 +1239,8 @@ process.icTriggerSequence += cms.Sequence(
   process.icTriggerPathProducer
   )
 
+## It produces failures in the production of DATA_ntuples
+
 #process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
 #  branch = cms.string("triggerObjectsPFMET170NoiseCleaned"),
 #  input   = cms.InputTag("patTriggerEvent"),
