@@ -7,7 +7,7 @@ config.section_('JobType')
 config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_8_0_9/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_80X_Apr16.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.inputFiles = ['Spring16_25nsV3_DATA.db']
+#config.JobType.inputFiles = ['Spring16_25nsV3_DATA.db']
 config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_ICHEP16JEC_v0']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
@@ -19,7 +19,7 @@ config.Data.ignoreLocality= True
 config.Data.outLFNDirBase='/store/user/adewit/July08_Data_80X/'
 config.section_('User')
 config.section_('Site')
-config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
+config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
 config.Site.storageSite = 'T2_UK_London_IC'
 
 if __name__ == '__main__':
@@ -42,14 +42,18 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    tasks.append(('SingleElectronB','/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'))
-    tasks.append(('SingleMuonB','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'))
-    tasks.append(('TauB','/Tau/Run2016B-PromptReco-v2/MINIAOD'))
-    tasks.append(('MuonEGB','/MuonEG/Run2016B-PromptReco-v2/MINIAOD'))
-    tasks.append(('SingleElectronC','/SingleElectron/Run2016C-PromptReco-v2/MINIAOD'))
-    tasks.append(('SingleMuonC','/SingleMuon/Run2016C-PromptReco-v2/MINIAOD'))
-    tasks.append(('TauC','/Tau/Run2016C-PromptReco-v2/MINIAOD'))
-    tasks.append(('MuonEGC','/MuonEG/Run2016C-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleElectronB-v2','/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleMuonB-v2','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'))
+    tasks.append(('TauB-v2','/Tau/Run2016B-PromptReco-v2/MINIAOD'))
+    tasks.append(('MuonEGB-v2','/MuonEG/Run2016B-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleElectronC-v2','/SingleElectron/Run2016C-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleMuonC-v2','/SingleMuon/Run2016C-PromptReco-v2/MINIAOD'))
+    tasks.append(('TauC-v2','/Tau/Run2016C-PromptReco-v2/MINIAOD'))
+    tasks.append(('MuonEGC-v2','/MuonEG/Run2016C-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleElectronD','/SingleElectron/Run2016D-PromptReco-v2/MINIAOD'))
+    tasks.append(('SingleMuonD','/SingleMuon/Run2016D-PromptReco-v2/MINIAOD'))
+    tasks.append(('TauD','/Tau/Run2016D-PromptReco-v2/MINIAOD'))
+    tasks.append(('MuonEGD','/MuonEG/Run2016D-PromptReco-v2/MINIAOD'))
 
     for task in tasks:
         print task[0]
