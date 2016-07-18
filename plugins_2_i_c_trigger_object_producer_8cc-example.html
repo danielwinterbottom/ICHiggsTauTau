@@ -160,16 +160,18 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line"></div>
 <div class="line">    <span class="comment">// Find the full label of the chosen HLT path (i.e. with the version number)</span></div>
 <div class="line">    <span class="keywordtype">bool</span> fired = <span class="keyword">true</span>;</div>
+<div class="line">    <span class="keywordtype">bool</span> path_found = <span class="keyword">false</span>;</div>
 <div class="line">    std::string full_name;</div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; paths-&gt;size(); ++i) {</div>
 <div class="line">      std::string <span class="keyword">const</span>&amp; name = paths-&gt;at(i).name();</div>
 <div class="line">      <span class="keywordflow">if</span> (name.find(hlt_path_) != name.npos) {</div>
 <div class="line">        full_name = name;</div>
+<div class="line">        path_found = <span class="keyword">true</span>;</div>
 <div class="line">        <span class="keywordflow">if</span> (store_only_if_fired_ &amp;&amp; !(paths-&gt;at(i).wasAccept())) fired = <span class="keyword">false</span>;</div>
 <div class="line">        <span class="keywordflow">break</span>;  <span class="comment">// Stop loop after we find the first match</span></div>
 <div class="line">      }</div>
 <div class="line">    }</div>
-<div class="line">    <span class="keywordflow">if</span> (!fired) <span class="keywordflow">return</span>;</div>
+<div class="line">    <span class="keywordflow">if</span> (!fired || !path_found) <span class="keywordflow">return</span>;</div>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Get a vector of the objects used in the chosen path</span></div>
 <div class="line">    pat::TriggerObjectRefVector objects =</div>
@@ -209,6 +211,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line">    edm::TriggerNames <span class="keyword">const</span>&amp; names = <span class="keyword">event</span>.triggerNames(*trigres_handle);</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordtype">bool</span> fired = <span class="keyword">true</span>;</div>
+<div class="line">    <span class="keywordtype">bool</span> path_found = <span class="keyword">false</span>;</div>
 <div class="line">    std::string full_name;</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = 0, n = trigres_handle-&gt;size(); i &lt; n; ++i) {</div>
@@ -216,11 +219,12 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line">      <span class="comment">// std::cout &lt;&lt; i &lt;&lt; &quot;\t&quot; &lt;&lt; name &lt;&lt; &quot;\n&quot;;</span></div>
 <div class="line">      <span class="keywordflow">if</span> (name.find(hlt_path_) != name.npos) {</div>
 <div class="line">        full_name = name;</div>
+<div class="line">        path_found = <span class="keyword">true</span>;</div>
 <div class="line">        <span class="keywordflow">if</span> (store_only_if_fired_ &amp;&amp; !(trigres_handle-&gt;accept(i))) fired = <span class="keyword">false</span>;</div>
 <div class="line">        <span class="keywordflow">break</span>;  <span class="comment">// Stop loop after we find the first match</span></div>
 <div class="line">      }</div>
 <div class="line">    }</div>
-<div class="line">    <span class="keywordflow">if</span> (!fired) <span class="keywordflow">return</span>;</div>
+<div class="line">    <span class="keywordflow">if</span> (!fired || !path_found) <span class="keywordflow">return</span>;</div>
 <div class="line"></div>
 <div class="line">    <span class="comment">// Have to use the HLTConfigProvider to get the list of object-producing</span></div>
 <div class="line">    <span class="comment">// filter modules that were run in this path</span></div>
@@ -239,7 +243,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line">      <span class="comment">// was only introduced in CMSSW_7_0_5</span></div>
 <div class="line">      src.unpackPathNames(names);</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line">      std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; pathnames = src.pathNames();</div>
+<div class="line">      std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; pathnames = src.pathNames(<span class="keyword">false</span>,<span class="keyword">false</span>);</div>
 <div class="line">      <span class="keywordtype">bool</span> obj_in_path = <span class="keyword">false</span>;</div>
 <div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; pathnames.size(); ++j) {</div>
 <div class="line">        <span class="keywordflow">if</span> (full_name == pathnames[j]) {</div>
