@@ -715,7 +715,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
 // if(is_data){
-   
+ if(channel != channel::tpzmm &&channel !=channel::tpzee){  
    if((is_data || js["trg_in_mc"].asBool()) && (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
     if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
@@ -729,7 +729,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
             .set_pair_label("ditau"));
       }
    }
-// }
+ }
 }
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
@@ -782,32 +782,61 @@ if(channel != channel::wmnu) {
 if(channel == channel::tpzmm || channel == channel::tpzee){
   BuildModule(GenericModule("TPTriggerInformation")
     .set_function([=](ic::TreeEvent *event){
-       std::string trig_obj_label;
-       std::string tp_filter;
+       std::string trig_obj_label_tag;
+       std::string tp_filter_tag;
+       std::string trig_obj_label_probe;
+       std::string tp_filter_probe;
        if(channel_str == "tpzmm"){ 
          if(!is_data){
-           trig_obj_label = "triggerObjectsIsoMu17";
-           tp_filter = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+           trig_obj_label_tag = "triggerObjectsIsoMu17";
+           tp_filter_tag = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+           trig_obj_label_probe = "triggerObjectsIsoMu17";
+           tp_filter_probe = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
          } else {
-           trig_obj_label = "triggerObjectsIsoMu18";
-           tp_filter = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+           if(strategy_type != strategy::spring16){
+             trig_obj_label_tag = "triggerObjectsIsoMu18";
+             tp_filter_tag = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+             trig_obj_label_probe = "triggerObjectsIsoMu18";
+             tp_filter_probe = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+           } else {
+             trig_obj_label_tag = "triggerObjectsIsoMu22";
+             tp_filter_tag = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+             trig_obj_label_probe = "triggerObjectsIsoMu19LooseTau20SingleL1";
+             tp_filter_probe = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
+           }
          }
        } else if (channel_str == "tpzee"){
          if(!is_data){
-           trig_obj_label = "triggerObjectsEle22Gsf";
-           tp_filter = "hltSingleEle22WP75GsfTrackIsoFilter";
+           trig_obj_label_tag = "triggerObjectsEle22Gsf";
+           tp_filter_tag = "hltSingleEle22WP75GsfTrackIsoFilter";
+           trig_obj_label_probe = "triggerObjectsEle22Gsf";
+           tp_filter_probe = "hltSingleEle22WP75GsfTrackIsoFilter";
          } else {
-           trig_obj_label = "triggerObjectsEle23";
-           tp_filter = "hltEle23WPLooseGsfTrackIsoFilter";
+           if(strategy_type != strategy::spring16){
+             trig_obj_label_tag = "triggerObjectsEle23";
+             tp_filter_tag = "hltEle23WPLooseGsfTrackIsoFilter";
+             trig_obj_label_probe = "triggerObjectsEle23";
+             tp_filter_probe = "hltEle23WPLooseGsfTrackIsoFilter";
+            } else {
+             trig_obj_label_tag = "triggerObjectsEle25GsfTightEta2p1";
+             tp_filter_tag = "hltEle25erWPTightGsfTrackIsoFilter";
+             trig_obj_label_probe= "triggerObjectsEle24LooseTau20SingleL1";
+             tp_filter_probe = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
+           }
          }
        }
        std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>("ditau");
        CompositeCandidate const* ditau  = dileptons.at(0);
-       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
-       bool tp_leg1_match = IsFilterMatched(ditau->At(0), objs, tp_filter, 0.5);
-       bool tp_leg2_match = IsFilterMatched(ditau->At(1), objs, tp_filter, 0.5);
-       event->Add("tp_leg1_match",tp_leg1_match);
-       event->Add("tp_leg2_match",tp_leg2_match);
+       std::vector<TriggerObject *> const& objs_tag = event->GetPtrVec<TriggerObject>(trig_obj_label_tag);
+       std::vector<TriggerObject *> const& objs_probe = event->GetPtrVec<TriggerObject>(trig_obj_label_probe);
+       bool tp_tag_leg1_match = IsFilterMatched(ditau->At(0), objs_tag, tp_filter_tag, 0.5);
+       bool tp_tag_leg2_match = IsFilterMatched(ditau->At(1), objs_tag, tp_filter_tag, 0.5);
+       bool tp_probe_leg1_match = IsFilterMatched(ditau->At(0), objs_probe, tp_filter_probe, 0.5);
+       bool tp_probe_leg2_match = IsFilterMatched(ditau->At(1), objs_probe, tp_filter_probe, 0.5);
+       event->Add("tp_tag_leg1_match",tp_tag_leg1_match);
+       event->Add("tp_tag_leg2_match",tp_tag_leg2_match);
+       event->Add("tp_probe_leg1_match",tp_probe_leg1_match);
+       event->Add("tp_probe_leg2_match",tp_probe_leg2_match);
        return 0;
     }));
 
@@ -1215,8 +1244,12 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
  if(strategy_type ==strategy::spring16&&channel!=channel::wmnu){
    TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_MC_eff");
    TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_Data_eff");
+   TH2D et_xtrig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_MC_eff");
+   TH2D et_xtrig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_Data_eff");
    TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu22_MC_eff");
    TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu22_Data_eff");
+   TH2D mt_xtrig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu20_MC_eff");
+   TH2D mt_xtrig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu20_Data_eff");
    TH2D et_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
    TH2D et_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_Data_eff");
    TH2D em_e_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
@@ -1243,7 +1276,9 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_jets_label("ak4PFJetsCHS")
     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
     .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
+    .set_et_xtrig_mc(new TH2D(et_xtrig_mc)).set_et_xtrig_data(new TH2D(et_xtrig_data))
     .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+    .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
     .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
     .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
     .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
