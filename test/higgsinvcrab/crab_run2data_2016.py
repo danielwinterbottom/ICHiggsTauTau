@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='160718'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='160720'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 
 config.section_('General')
@@ -26,7 +26,7 @@ config.Data.splitting = 'EventAwareLumiBased'
 #config.Data.splitting = 'LumiBased'
 
 config.Data.publication = False
-config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_US_Purdue','T2_IT_Legnaro','T2_FR_GRIF_IRFU','T1_IT_CNAF','T2_BR_SPRACE','T1_UK_RAL','T1_RU_JINR','T2_EE_Estonia','T2_CN_Beijing','T2_RU_JINR']
+config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_US_Purdue','T2_IT_Legnaro','T2_FR_GRIF_IRFU','T1_IT_CNAF','T2_BR_SPRACE','T1_UK_RAL','T1_RU_JINR','T2_EE_Estonia','T2_CN_Beijing','T2_RU_JINR']
 config.Site.storageSite = 'T2_UK_London_IC'
 config.Data.ignoreLocality = True
 
@@ -75,15 +75,17 @@ if __name__ == '__main__':
     tasks.append(('MET-2016B-PromptReco-v2'       ,'/MET/Run2016B-PromptReco-v2/MINIAOD'             ,rerecoparams,                   ))
     tasks.append(('MET-2016C-PromptReco-v2'       ,'/MET/Run2016C-PromptReco-v2/MINIAOD'             ,rerecoparams,                   ))
     tasks.append(('MET-2016D-PromptReco-v2'       ,'/MET/Run2016D-PromptReco-v2/MINIAOD'             ,rerecoparams,                   ))
+    tasks.append(('MET-2016E-PromptReco-v2'       ,'/MET/Run2016E-PromptReco-v2/MINIAOD'             ,rerecoparams,                   ))
     tasks.append(('HTMHT-2016B-PromptReco-v1'     ,'/HTMHT/Run2016B-PromptReco-v1/MINIAOD'           ,rerecoparams,                   ))
     tasks.append(('HTMHT-2016B-PromptReco-v2'     ,'/HTMHT/Run2016B-PromptReco-v2/MINIAOD'           ,rerecoparams,                   ))
     tasks.append(('HTMHT-2016C-PromptReco-v2'     ,'/HTMHT/Run2016C-PromptReco-v2/MINIAOD'           ,rerecoparams,                   ))
     tasks.append(('HTMHT-2016D-PromptReco-v2'     ,'/HTMHT/Run2016D-PromptReco-v2/MINIAOD'           ,rerecoparams,                   ))  
+    tasks.append(('HTMHT-2016E-PromptReco-v2'     ,'/HTMHT/Run2016E-PromptReco-v2/MINIAOD'           ,rerecoparams,                   ))
     tasks.append(('SingleMuon-2016B-PromptReco-v1','/SingleMuon/Run2016B-PromptReco-v1/MINIAOD'      ,rerecoparams,                   ))
     tasks.append(('SingleMuon-2016B-PromptReco-v2','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'      ,rerecoparams,                   ))
     tasks.append(('SingleMuon-2016C-PromptReco-v2','/SingleMuon/Run2016C-PromptReco-v2/MINIAOD'      ,rerecoparams,                   ))
-    tasks.append(('SingleMuon-2016C-PromptReco-v2','/SingleMuon/Run2016D-PromptReco-v2/MINIAOD'      ,rerecoparams,                   ))
-
+    tasks.append(('SingleMuon-2016D-PromptReco-v2','/SingleMuon/Run2016D-PromptReco-v2/MINIAOD'      ,rerecoparams,                   ))
+    tasks.append(('SingleMuon-2016E-PromptReco-v2','/SingleMuon/Run2016E-PromptReco-v2/MINIAOD'      ,rerecoparams,                   ))
 
     for task in tasks:
         print task[0]
