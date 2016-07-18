@@ -1877,10 +1877,10 @@ namespace ic {
         mva_2_ = MuonMedium(muon2);
       }
       if(strategy_ == strategy::spring16){
-        iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
+        iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
-        mva_1_ = MuonMedium(muon1);
-        mva_2_ = MuonMedium(muon2);
+        mva_1_ = MuonMediumHIPsafe(muon1);
+        mva_2_ = MuonMediumHIPsafe(muon2);
       }
       d0_1_ = muon1->dxy_vertex();
       dz_1_ = muon1->dz_vertex();
