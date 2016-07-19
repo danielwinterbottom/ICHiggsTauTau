@@ -1,16 +1,17 @@
 #!/bin/sh
 DOCERN=0
 ### submit to the batch sistem at IC 1 -- 0 otherwise
-DOSUBMIT=1
+DOSUBMIT=0
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=JetMETvalidation
 ### Executable -- RDM stays for mine
 MYEXEC=LightTreeMakerFromMiniAODRDM
 ### Insert the date or leave  the same for test
-PRODUCTION=160213
-PRODUSER=amagnan
-JPTCUTVAL=70
+PRODUCTION=160709
+PRODUSER=rdimaria
+#PRODUSER=amagnan
+JPTCUTVAL=40
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh $DOCERN $MYEXEC $PRODUCTION"}
@@ -36,10 +37,11 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=/vols/cms02/rd1715/Hinvisible/jobs_lighttree_160425
+  #JOBDIRPREFIX=/vols/cms02/rd1715/Hinvisible/jobs_lighttree_160425
+  JOBDIRPREFIX=jobs_lighttree_160719
   JOBDIR=$JOBDIRPREFIX/
-  #OUTPUTPREFIX=/vols/cms02/magnan/Hinvisible/RunIILT/output_lighttree_160317
-  OUTPUTPREFIX=/vols/cms02/rd1715/Hinvisible/jobs_lighttree_160425
+  OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_160719
+  #OUTPUTPREFIX=/vols/cms02/rd1715/Hinvisible/jobs_lighttree_160425
   #OUTPUTPREFIX=output_lighttree_160121
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -106,7 +108,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
 
   cp $CONFIG $OUTPUTDIR
 
-  for QUEUEDIR in short medium #long
+  for QUEUEDIR in short #medium #long
     do
     if [ "$DOCERN" = "0" ]
 	then
@@ -161,7 +163,8 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
 	  INPUTPARAMS="filelists/151030/Params151030.dat"
       else
 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
-	  MCOPTION="--mc=fall15_76X"
+	  #MCOPTION="--mc=fall15_76X"
+	  MCOPTION="--mc=spring16_80X"
 	  INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
       fi
 

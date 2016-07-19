@@ -1,10 +1,13 @@
 ## Cross Sections #-1.0 for data
 XS_DATA_HTMHT-2016B-PromptReco-v1:-1.0
 XS_DATA_HTMHT-2016B-PromptReco-v2:-1.0
+XS_DATA_HTMHT-2016C-PromptReco-v2:-1.0
 XS_DATA_MET-2016B-PromptReco-v1:-1.0
 XS_DATA_MET-2016B-PromptReco-v2:-1.0
+XS_DATA_MET-2016C-PromptReco-v2:-1.0
 XS_DATA_SingleMuon-2016B-PromptReco-v1:-1.0
 XS_DATA_SingleMuon-2016B-PromptReco-v2:-1.0
+XS_DATA_SingleMuon-2016C-PromptReco-v2:-1.0
 XS_MC_Powheg-GluGluHtoinv-mH110:52.68
 XS_MC_Powheg-GluGluHtoinv-mH125:44.14
 XS_MC_Powheg-GluGluHtoinv-mH150:30.29

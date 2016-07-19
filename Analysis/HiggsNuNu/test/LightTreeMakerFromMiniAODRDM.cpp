@@ -986,7 +986,7 @@ int main(int argc, char* argv[]){
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
 
-  analysis.AddModule(&lumiMask);
+  if (is_data) analysis.AddModule(&lumiMask);
 
   analysis.AddModule(&singleMet);
   if (!is_data) {

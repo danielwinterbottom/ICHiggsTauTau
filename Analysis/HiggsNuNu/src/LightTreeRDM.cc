@@ -641,34 +641,40 @@ namespace ic {
     ////////////////////////////////
     // L1 objects 
     ////////////////////////////////
-
-    std::vector<L1TObject*> const& l1sum = event->GetPtrVec<L1TObject>("l1tEtSum");
-    //if(debug_ && l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
-    //std::cout << " -- new event: l1sum size = " << l1sum.size() << " PFMET = " << met_ << std::endl;
-    unsigned counterMet = 0;
-    unsigned counterMht = 0;
-    for (unsigned iL1(0); iL1<l1sum.size(); ++iL1){
-      L1TObject* l1obj = l1sum[iL1];
-      //std::cout << " -- sum " << iL1 << " bx " << l1obj->bx() << " type " << l1obj->sumType() << " pt " << l1obj->pt() << " " << l1obj->phi() << std::endl;
-      if (l1obj->bx()!=0) continue;
-      if (l1obj->sumType()==2) {
-	//if (counterMet==2) 
-	l1met_ = l1obj->pt();
-	counterMet++;
+    try{
+      std::vector<L1TObject*> const& l1sum = event->GetPtrVec<L1TObject>("l1tEtSum");
+      //if(debug_ && l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
+      //std::cout << " -- new event: l1sum size = " << l1sum.size() << " PFMET = " << met_ << std::endl;
+      unsigned counterMet = 0;
+      unsigned counterMht = 0;
+      for (unsigned iL1(0); iL1<l1sum.size(); ++iL1){
+	L1TObject* l1obj = l1sum[iL1];
+	//std::cout << " -- sum " << iL1 << " bx " << l1obj->bx() << " type " << l1obj->sumType() << " pt " << l1obj->pt() << " " << l1obj->phi() << std::endl;
+	if (l1obj->bx()!=0) continue;
+	if (l1obj->sumType()==2) {
+	  //if (counterMet==2) 
+	  l1met_ = l1obj->pt();
+	  counterMet++;
+	}
+	if (l1obj->sumType()==3) {
+	  //if (counterMht==2) 
+	  l1mht_ = l1obj->pt();
+	  counterMht++;
+	}
+	//if (counterMet>2 && counterMht>2) break;
       }
-      if (l1obj->sumType()==3) {
-	//if (counterMht==2) 
-	l1mht_ = l1obj->pt();
-	counterMht++;
+      if (counterMet!=1 || counterMht != 1){
+	std::cout << " *** Warning, found " << counterMet << " L1MET and " << counterMht << " L1MHT." << std::endl;
       }
-      //if (counterMet>2 && counterMht>2) break;
+      
+      if (debug_) std::cout << " Met = " << met_ << " metnomu = " << metnomuons_ << " metnoel = " << metnoelectrons_ << " l1met = " << l1met_ << std::endl;
+ 
+    } catch (...) {
+      static bool firsttime = true;
+      if (firsttime) std::cout << "No L1T trigger info in file, skipping.... " << std::endl;
+      firsttime = false; 
     }
-    if (counterMet!=1 || counterMht != 1){
-      std::cout << " *** Warning, found " << counterMet << " L1MET and " << counterMht << " L1MHT." << std::endl;
-    }
-    
-    if (debug_) std::cout << " Met = " << met_ << " metnomu = " << metnomuons_ << " metnoel = " << metnoelectrons_ << " l1met = " << l1met_ << std::endl;
-    
+   
     ////////////////////////////////
     // Get GenLevel collections
     ////////////////////////////////
