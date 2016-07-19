@@ -37,8 +37,8 @@ opts.register('file',
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-#opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2', parser.VarParsing.multiplicity.singleton,
-opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2_v1', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -104,51 +104,51 @@ process.options   = cms.untracked.PSet(
 ################################################################
 process.load("CondCore.CondDB.CondDB_cfi")
 from CondCore.CondDB.CondDB_cfi import *
-if not isData:
-  process.jec = cms.ESSource("PoolDBESSource",
-    DBParameters = cms.PSet(
-     messageLevel = cms.untracked.int32(0)
-    ),
-    timetype = cms.string('runnumber'),
-    toGet = cms.VPSet(
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PF'),
-      label = cms.untracked.string('AK4PF')
-      ),
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
-      label = cms.untracked.string('AK4PFchs')
-      ),
-    ),
-    connect = cms.string('sqlite:Spring16_25nsV3_MC.db')
-  )
+#if not isData:
+#  process.jec = cms.ESSource("PoolDBESSource",
+#    DBParameters = cms.PSet(
+#     messageLevel = cms.untracked.int32(0)
+#    ),
+#    timetype = cms.string('runnumber'),
+#    toGet = cms.VPSet(
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PF'),
+#      label = cms.untracked.string('AK4PF')
+#      ),
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
+#      label = cms.untracked.string('AK4PFchs')
+#      ),
+#    ),
+#    connect = cms.string('sqlite:Spring16_25nsV3_MC.db')
+#  )
+#
+#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
-  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
-
-else :
-  process.jec = cms.ESSource("PoolDBESSource",
-    DBParameters = cms.PSet(
-     messageLevel = cms.untracked.int32(0)
-    ),
-    timetype = cms.string('runnumber'),
-    toGet = cms.VPSet(
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PF'),
-      label = cms.untracked.string('AK4PF')
-      ),
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
-      label = cms.untracked.string('AK4PFchs')
-      ),
-    ),
-    connect = cms.string('sqlite:Spring16_25nsV3_DATA.db')
-  )
-
-  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+#else :
+#  process.jec = cms.ESSource("PoolDBESSource",
+#    DBParameters = cms.PSet(
+#     messageLevel = cms.untracked.int32(0)
+#    ),
+#    timetype = cms.string('runnumber'),
+#    toGet = cms.VPSet(
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PF'),
+#      label = cms.untracked.string('AK4PF')
+#      ),
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
+#      label = cms.untracked.string('AK4PFchs')
+#      ),
+#    ),
+#    connect = cms.string('sqlite:Spring16_25nsV3_DATA.db')
+#  )
+#
+#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/D61F7B94-676F-E511-9970-00221981B434.root',
@@ -1946,13 +1946,13 @@ process.icIsoMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
     storeOnlyIfFired = cms.bool(False)
     )
 
-#process.icIsoMu22Eta2p1ObjectProducer = producers.icTriggerObjectProducer.clone(
-#    input   = cms.InputTag("patTriggerEvent"),
-#    branch = cms.string("triggerObjectsIsoMu22Eta2p1"),
-#    hltPath = cms.string("HLT_IsoMu22_eta2p1_v"),
-#    inputIsStandAlone = cms.bool(False),
-#    storeOnlyIfFired = cms.bool(False)
-#    )
+process.icIsoMu22Eta2p1ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("patTriggerEvent"),
+    branch = cms.string("triggerObjectsIsoMu22Eta2p1"),
+    hltPath = cms.string("HLT_IsoMu22_eta2p1_v"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(False)
+    )
 
 
 process.icIsoMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -2070,7 +2070,7 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icIsoMu22ObjectProducer+
       process.icIsoMu18ObjectProducer+
       process.icIsoMu20ObjectProducer+
-#      process.icIsoMu22Eta2p1ObjectProducer+
+      process.icIsoMu22Eta2p1ObjectProducer+
       process.icIsoMu24ObjectProducer+
       process.icIsoMu27ObjectProducer+
       process.icIsoTkMu18ObjectProducer+
