@@ -10,18 +10,20 @@ opts = parser.VarParsing('analysis')
 opts.register('file', '',
     parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'input file')
-opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'global tag')
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, 'Process as data')
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'Release label')
-
+opts.register('hltPaths', 'Default', parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.string, 'Trigger object collections')
 opts.parseArguments()
 infile = opts.file
 isData = opts.isData
 tag  = opts.globalTag
 release = opts.release
+hltPaths = opts.hltPaths
 
 if not release in ['80XMINIAOD']:
   print 'Release not recognised, exiting!'
@@ -29,6 +31,7 @@ if not release in ['80XMINIAOD']:
 print 'release     : '+release
 print 'isData      : '+str(isData)
 print 'globalTag   : '+str(tag)
+print 'hltPaths    : '+str(hltPaths)
 
 # Some other flags
 doPFChargedAllIso = False
@@ -43,21 +46,22 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("EventTree.root"),
-  closeFileFast = cms.untracked.bool(True)
+    fileName = cms.string("EventTree.root"),
+    closeFileFast = cms.untracked.bool(True)
 )
 
 ################################################################
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(3000)
+    input = cms.untracked.int32(3000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 500
 
 process.options   = cms.untracked.PSet(
-  wantSummary = cms.untracked.bool(True)
+    wantSummary = cms.untracked.bool(True)
+    # allowUnscheduled = cms.untracked.bool(True)
 )
 
 
@@ -509,6 +513,123 @@ process.icTauSequence = cms.Sequence(
 
 
 ################################################################
+# Jets
+################################################################
+
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
+jec_list = ['L1FastJet','L2Relative','L3Absolute']
+updateJetCollection(
+    process,
+    jetSource = cms.InputTag("slimmedJets"),
+    labelName = "UpdatedJEC",
+    jetCorrections = ("AK4PFchs", cms.vstring((jec_list+['L2L3Residual']) if isData else jec_list), 'None')
+)
+
+process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
+    src = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+    cut = cms.string("pt > 15")
+)
+
+process.load("RecoJets.JetProducers.PileupJetID_cfi")
+process.pileupJetIdUpdated = process.pileupJetId.clone(
+    jets                = cms.InputTag("slimmedJets"),
+    inputIsCorrected    = cms.bool(True),
+    applyJec            = cms.bool(True),
+    vertexes            = cms.InputTag("offlineSlimmedPrimaryVertices")
+)
+
+process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
+
+if release in ['80XMINIAOD']:
+    process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+        branch                    = cms.string("ak4PFJetsCHS"),
+        input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+        srcConfig = producers.icPFJetFromPatProducer.srcConfig.clone(
+            isSlimmed               = cms.bool(True),
+            slimmedPileupIDLabel    = cms.string('pileupJetIdUpdated:fullDiscriminant'),
+            includeJetFlavour       = cms.bool(True),
+            includeJECs             = cms.bool(True),
+            inputSVInfo             = cms.InputTag(""),
+            requestSVInfo           = cms.bool(False)
+        ),
+       destConfig = producers.icPFJetFromPatProducer.destConfig.clone(
+            includePileupID         = cms.bool(True),
+            inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+            includeTrackBasedVars   = cms.bool(False),
+            inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+            inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+            requestTracks           = cms.bool(False)
+        )
+    )
+
+process.icPFJetSequence = cms.Sequence()
+
+if release in ['80XMINIAOD']:
+    process.icPFJetSequence += cms.Sequence(
+        process.pileupJetIdUpdated+
+        process.patJetCorrFactorsUpdatedJEC+
+        process.updatedPatJetsUpdatedJEC+
+        process.selectedUpdatedPatJetsUpdatedJEC+
+        process.selectedSlimmedJetsAK4+
+        # process.unpackedTracksAndVertices+
+        process.icPFJetProducerFromPat
+    )
+
+
+################################################################
+# MET
+################################################################
+process.icMetSequence = cms.Sequence()
+
+# Recreate type-1 PFMET with new JECs
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process, isData=bool(isData))
+# Use the newly corrected jets we produced above
+process.basicJetsForMet.src = cms.InputTag('updatedPatJetsUpdatedJEC')
+
+process.icPfMetProducer = producers.icMetFromPatProducer.clone(
+    branch            = cms.string("pfMet"),
+    input             = cms.InputTag("patPFMetT1"),
+    getUncorrectedMet = cms.bool(False)
+)
+
+process.icMetSequence += cms.Sequence(
+    process.pfMet+
+    process.basicJetsForMet+
+    process.jetSelectorForMet+
+    process.cleanedPatJets+
+    process.patPFMetT1T2Corr+
+    process.patPFMet+
+    process.patPFMetT1+
+    process.icPfMetProducer
+)
+
+# process.icPfMetOriginalProducer = producers.icMetFromPatProducer.clone(
+#     branch            = cms.string("pfMetOriginal"),
+#     input             = cms.InputTag("slimmedMETs"),
+#     getUncorrectedMet = cms.bool(False)
+# )
+
+# process.icMetSequence += cms.Sequence(
+#     process.icPfMetOriginalProducer
+# )
+
+from UserCode.ICHiggsTauTau.configure_mvamet_cff import configureMVAMET
+configureMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC', isData=bool(isData))
+process.icMetSequence += process.icMvaMetSequence
+
+process.icPfMVAMetProducer = producers.icMetFromPatProducer.clone(
+    input             = cms.InputTag("MVAMET", "MVAMET"),
+    branch            = cms.string("pfMVAMetVector"),
+    includeUserCandID = cms.bool(True)
+)
+process.icMetSequence += cms.Sequence(
+    process.icPfMVAMetProducer
+)
+
+
+################################################################
 # Triggers
 ################################################################
 
@@ -526,7 +647,7 @@ process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
 
 process.icTriggerObjectSequence = cms.Sequence()
 
-paths_2016_MC = [
+paths_2016_full = [
     'HLT_IsoMu18_v',
     'HLT_IsoMu20_v',
     'HLT_IsoMu22_v',
@@ -568,7 +689,50 @@ paths_2016_MC = [
     'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
     'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v'
 ]
-hlt_paths = paths_2016_MC
+
+paths_2016_reduced_muon = [
+    'HLT_IsoMu22_v',
+    'HLT_IsoMu22_eta2p1_v',
+    'HLT_IsoMu24_v',
+    'HLT_IsoTkMu22_eta2p1_v',
+    'HLT_IsoTkMu22_v',
+    'HLT_IsoTkMu24_v',
+    'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v',
+    'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v'
+]
+paths_2016_reduced_elec = [
+    'HLT_Ele25_WPTight_Gsf_v',
+    'HLT_Ele25_eta2p1_WPLoose_Gsf_v',
+    'HLT_Ele25_eta2p1_WPTight_Gsf_v',
+    'HLT_Ele27_WPTight_Gsf_v',
+    'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+    'HLT_Ele27_eta2p1_WPTight_Gsf_v',
+    'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v',
+    'HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v',
+    'HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v',
+]
+paths_2016_reduced_tau = [
+    'HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v',
+    'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v',
+]
+paths_2016_reduced_emu = [
+    'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v',
+    'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
+    'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+    'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+    'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v'
+]
+
+paths_dict = {
+    'Default':        [],
+    'SingleMuon':     (paths_2016_reduced_muon + paths_2016_reduced_tau + paths_2016_reduced_emu),
+    'SingleElectron': (paths_2016_reduced_elec + paths_2016_reduced_tau + paths_2016_reduced_emu),
+    'Tau':            paths_2016_reduced_tau,
+    'MuonEG':         paths_2016_reduced_emu,
+    'MCreHLT':        (paths_2016_reduced_muon + paths_2016_reduced_elec + paths_2016_reduced_emu + paths_2016_reduced_tau)
+}
+
+hlt_paths = paths_dict[hltPaths]
 
 for path in hlt_paths:
     shortname = path[4:-2]  # drop the HLT_ and _v parts
@@ -582,21 +746,10 @@ for path in hlt_paths:
     ))
     process.icTriggerObjectSequence += cms.Sequence(getattr(process, 'ic_%s_ObjectProducer' % shortname))
 
-process.icEventInfoProducer = producers.icEventInfoProducer.clone(
-    includeJetRho       = cms.bool(False),
-    includeHT           = cms.bool(False),
-    lheProducer         = cms.InputTag("externalLHEProducer"),
-    inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
-    includeLeptonRho    = cms.bool(False),
-    inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
-    includeVertexCount  = cms.bool(True),
-    inputVertices       = cms.InputTag("offlineSlimmedPrimaryVertices"),
-    includeCSCFilter    = cms.bool(False),
-    inputCSCFilter      = cms.InputTag("BeamHaloSummary")
-    )
 
-
-
+################################################################
+# Gen info
+################################################################
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
     input               = cms.InputTag('prunedGenParticles', '', 'PAT'),
     includeMothers      = cms.bool(True),
@@ -608,13 +761,46 @@ process.icPileupInfoProducer = producers.icPileupInfoProducer.clone(
     input = cms.InputTag("slimmedAddPileupInfo")
 )
 
+process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
+    src = cms.InputTag("slimmedGenJets"),
+    cut = cms.string("pt > 10.0")
+)
+
+process.icGenJetProducer = producers.icGenJetProducer.clone(
+    branch              = cms.string("genJets"),
+    input               = cms.InputTag("selectedGenJets"),
+    inputGenParticles   = cms.InputTag("genParticles"),
+    requestGenParticles = cms.bool(False),
+    isSlimmed           = cms.bool(True)
+)
+
 process.icGenSequence = cms.Sequence()
 
 if not isData:
     process.icGenSequence += (
         process.icGenParticleProducer+
+        process.selectedGenJets+
+        process.icGenJetProducer+
         process.icPileupInfoProducer
     )
+
+
+################################################################
+# Event info
+################################################################
+
+process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+    includeJetRho       = cms.bool(False),
+    includeHT           = cms.bool(False),
+    lheProducer         = cms.InputTag("externalLHEProducer"),
+    inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
+    includeLeptonRho    = cms.bool(False),
+    inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
+    includeVertexCount  = cms.bool(True),
+    inputVertices       = cms.InputTag("offlineSlimmedPrimaryVertices"),
+    includeCSCFilter    = cms.bool(False),
+    inputCSCFilter      = cms.InputTag("BeamHaloSummary")
+)
 
 process.icEventProducer = producers.icEventProducer.clone()
 process.icHashTreeProducer = cms.EDProducer('ICHashTreeProducer')
@@ -626,6 +812,8 @@ process.p = cms.Path(
     process.icElectronSequence+
     process.icMuonSequence+
     process.icTauSequence+
+    process.icPFJetSequence+
+    process.icMetSequence+
     process.icTriggerPathProducer+
     process.icTriggerObjectSequence+
     process.icGenSequence+
@@ -635,3 +823,4 @@ process.p = cms.Path(
 )
 
 process.schedule = cms.Schedule(process.p)
+# print process.dumpPython()
