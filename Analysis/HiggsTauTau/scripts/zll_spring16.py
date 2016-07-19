@@ -203,12 +203,12 @@ if options.proc_data or options.proc_all:
 #   'Tau-2016B-17Jul',
    'SingleMuonB',
    'SingleElectronB',
+#   'MuonEGB',
+#   'TauB',
    'SingleMuonC',
-   'SingleElectronC'
-   'MuonEGB',
-   'TauB'
-   'MuonEGC',
-   'TauC'
+   'SingleElectronC',
+#   'MuonEGC',
+#   'TauC'
   ]
 
 

@@ -31,6 +31,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, bool, iso_study)
   CLASS_MEMBER(HTTCategories, bool, tau_id_study)
+  CLASS_MEMBER(HTTCategories, bool, optimisation_study)
   CLASS_MEMBER(HTTCategories, bool, qcd_study)
   CLASS_MEMBER(HTTCategories, bool, jetfake_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
@@ -129,6 +130,8 @@ class HTTCategories : public ModuleBase {
   branch_var pfpzetamiss_;
   branch_var puppipzetamiss_;
   double dphi_;
+  double met_dphi_1_;
+  double met_dphi_2_;
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
