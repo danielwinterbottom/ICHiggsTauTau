@@ -36,6 +36,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_tau_fake_weights)
   CLASS_MEMBER(HTTWeights, int, btag_mode)
   CLASS_MEMBER(HTTWeights, int, bfake_mode)
+  CLASS_MEMBER(HTTWeights, int, tt_trg_iso_mode)
   CLASS_MEMBER(HTTWeights, std::string, ggh_mass)
   CLASS_MEMBER(HTTWeights, std::string, gen_tau_collection)
   CLASS_MEMBER(HTTWeights, std::string, jets_label)

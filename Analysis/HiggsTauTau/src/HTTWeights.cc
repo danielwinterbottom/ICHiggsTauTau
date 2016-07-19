@@ -35,6 +35,7 @@ namespace ic {
     do_zpt_weight_            = false;
     btag_mode_                = 0;
     bfake_mode_               = 0;
+    tt_trg_iso_mode_          = 0;
     do_w_soup_                = false;
     do_dy_soup_               = false;
     do_dy_soup_high_mass_     = false;
@@ -1123,17 +1124,52 @@ namespace ic {
          } else if(mc_ == mc::spring16_80X){
           unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
           unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-          if(gm1_ == 5){ //Using vtight iso
-            tau1_trg       = Efficiency(pt_1, 37.7850, 4.9361, 4.22634, 2.85533, 9.92196e-01);
-          } else {
-            tau1_trg       = Efficiency(pt_1, 39.6158, 7.87478, 3.99837, 6.70004, 7.57548e-01);
-          } 
-          if(gm2_ == 5){ //Using vtight iso:
-            tau2_trg       = Efficiency(pt_2, 37.7850, 4.9361, 4.22634, 2.85533, 9.92196e-01);
-          } else {
-            tau2_trg       = Efficiency(pt_2, 39.6158, 7.87478, 3.99837, 6.70004, 7.57548e-01);
-          } 
-        }
+          if(tt_trg_iso_mode_==0) {
+              if(gm1_ == 5){ //Using tight iso
+                tau1_trg       = Efficiency(pt_1, 38.1919, 5.38746, 4.44730, 7.39646, 9.33402e-01);
+              } else {
+                tau1_trg       = Efficiency(pt_1, 39.9131, 7.77317, 39.9403, 140.999, 7.84025E-01);
+              } 
+              if(gm2_ == 5){ //Using tight iso:
+                tau2_trg       = Efficiency(pt_2, 38.1919, 5.38746, 4.44730, 7.39646, 9.33402e-01);
+              } else {
+                tau2_trg       = Efficiency(pt_2, 39.9131, 7.77317, 39.9403, 140.999, 7.84025E-01);
+              } 
+            } else if (tt_trg_iso_mode_==1) {
+              if(gm1_ == 5){ //Using medium iso
+                tau1_trg       = Efficiency(pt_1, 38.1821, 5.33452, 4.42570, 4.70512, 9.45637E-01);
+              } else {
+                tau1_trg       = Efficiency(pt_1, 40.4241, 7.95194, 39.9649, 141.000, 8.00926E-01);
+              } 
+              if(gm2_ == 5){ //Using medium iso:
+                tau2_trg       = Efficiency(pt_2, 38.1821, 5.33452, 4.42570, 4.70512, 9.45637E-01);
+              } else {
+                tau2_trg       = Efficiency(pt_2, 40.4241, 7.95194, 39.9649, 141.000, 8.00926E-01);
+              } 
+            } else if (tt_trg_iso_mode_==2) {
+              if(gm1_ == 5){ //Using loose iso
+                tau1_trg       = Efficiency(pt_1, 38.5953, 5.74632, 5.08553, 5.45593, 9.42168E-01);
+              } else {
+                tau1_trg       = Efficiency(pt_1, 40.5980, 7.87581, 39.8818, 141.000, 7.98198E-01);
+              } 
+              if(gm2_ == 5){ //Using loose iso:
+                tau2_trg       = Efficiency(pt_2, 38.5953, 5.74632, 5.08553, 5.45593, 9.42168E-01);
+              } else {
+                tau2_trg       = Efficiency(pt_2, 40.5980, 7.87581, 39.8818, 141.000, 7.98198E-01);
+              } 
+            } else if (tt_trg_iso_mode_==3) {
+              if(gm1_ == 5){ //Using vloose iso
+                tau1_trg       = Efficiency(pt_1, 38.6057, 5.77127, 5.61388, 3.77719, 9.30159E-01);
+              } else {
+                tau1_trg       = Efficiency(pt_1, 41.0725, 7.94113, 39.3387, 141.000, 7.95249E-01);
+              } 
+              if(gm2_ == 5){ //Using vloose iso:
+                tau2_trg       = Efficiency(pt_2, 38.6057, 5.77127, 5.61388, 3.77719, 9.30159E-01);
+              } else {
+                tau2_trg       = Efficiency(pt_2, 41.0725, 7.94113, 39.3387, 141.000, 7.95249E-01);
+              }
+            }
+         }
         if(trg_applied_in_mc_){
           tau1_trg = tau1_trg / tau1_trg_mc;
           tau2_trg = tau2_trg / tau2_trg_mc;
