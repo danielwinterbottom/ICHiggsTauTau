@@ -16,7 +16,7 @@ opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, 'Process as data')
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'Release label')
-opts.register('hltPaths', 'Default', parser.VarParsing.multiplicity.singleton,
+opts.register('hltPaths', 'None', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'Trigger object collections')
 opts.parseArguments()
 infile = opts.file
@@ -587,6 +587,8 @@ from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMet
 runMetCorAndUncFromMiniAOD(process, isData=bool(isData))
 # Use the newly corrected jets we produced above
 process.basicJetsForMet.src = cms.InputTag('updatedPatJetsUpdatedJEC')
+if not isData:
+    process.patPFMet.addGenMET = cms.bool(False)
 
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
     branch            = cms.string("pfMet"),
@@ -724,7 +726,7 @@ paths_2016_reduced_emu = [
 ]
 
 paths_dict = {
-    'Default':        [],
+    'None':           [],
     'SingleMuon':     (paths_2016_reduced_muon + paths_2016_reduced_tau + paths_2016_reduced_emu),
     'SingleElectron': (paths_2016_reduced_elec + paths_2016_reduced_tau + paths_2016_reduced_emu),
     'Tau':            paths_2016_reduced_tau,
@@ -733,6 +735,12 @@ paths_dict = {
 }
 
 hlt_paths = paths_dict[hltPaths]
+
+if hltPaths != 'None':
+    process.icTriggerObjectSequence += cms.Sequence(
+        process.icTriggerPathProducer
+    )
+
 
 for path in hlt_paths:
     shortname = path[4:-2]  # drop the HLT_ and _v parts
@@ -790,9 +798,9 @@ if not isData:
 ################################################################
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
-    includeJetRho       = cms.bool(False),
     includeHT           = cms.bool(False),
     lheProducer         = cms.InputTag("externalLHEProducer"),
+    includeJetRho       = cms.bool(True),
     inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
     includeLeptonRho    = cms.bool(False),
     inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -801,6 +809,9 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeCSCFilter    = cms.bool(False),
     inputCSCFilter      = cms.InputTag("BeamHaloSummary")
 )
+
+# if not isData:
+#     process.icEventInfoProducer.includeLHEWeights = cms.bool(True)
 
 process.icEventProducer = producers.icEventProducer.clone()
 process.icHashTreeProducer = cms.EDProducer('ICHashTreeProducer')
@@ -814,7 +825,6 @@ process.p = cms.Path(
     process.icTauSequence+
     process.icPFJetSequence+
     process.icMetSequence+
-    process.icTriggerPathProducer+
     process.icTriggerObjectSequence+
     process.icGenSequence+
     process.icEventInfoProducer+
