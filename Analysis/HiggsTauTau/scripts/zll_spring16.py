@@ -101,7 +101,7 @@ CONFIG='scripts/Zll_config2016.json'
 #    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s_M-50.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
  
 
-FILELIST='filelists/June19_MC_80X'
+FILELIST='filelists/July08_MC_80X'
 #FILELIST13='filelists/July13_MC_80X'
 
 signal_mc = [ ]
@@ -201,18 +201,22 @@ if options.proc_data or options.proc_all:
 #   'MuonEG-2016B-17Jul',
 #   'SingleElectron-2016B-17Jul',
 #   'Tau-2016B-17Jul',
-   'SingleMuon',
-   'SingleElectron',
-   'MuonEG',
-   'Tau'
+   'SingleMuonB',
+   'SingleElectronB',
+   'SingleMuonC',
+   'SingleElectronC'
+   'MuonEGB',
+   'TauB'
+   'MuonEGC',
+   'TauC'
   ]
 
 
-  DATAFILELIST="./filelists/June19_Data_80X"
+  DATAFILELIST="./filelists/July08_Data_80X"
 
   for sa in data_samples:
       JOB='%s_2016' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/June19_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July08_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 40 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

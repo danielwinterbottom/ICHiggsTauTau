@@ -22,6 +22,7 @@ namespace ic {
     do_trg_weights_           = false;
     trg_applied_in_mc_        = false;
     do_single_lepton_trg_     = false;
+    do_cross_trg_             = false;
     do_singlemu_trg_weights_  = false;
     do_etau_fakerate_         = false;
     do_mtau_fakerate_         = false;
@@ -74,10 +75,14 @@ namespace ic {
     et_trig_data_             = nullptr;
     et_xtrig_mc_              = nullptr;
     et_xtrig_data_            = nullptr;
+    et_conditional_data_      = nullptr;
+    et_conditional_mc_        = nullptr;
     mt_trig_mc_               = nullptr;
     mt_trig_data_             = nullptr;
     mt_xtrig_mc_              = nullptr;
     mt_xtrig_data_            = nullptr;
+    mt_conditional_data_      = nullptr;
+    mt_conditional_mc_      = nullptr;
     em_qcd_cr1_lt2_           = nullptr;
     em_qcd_cr1_2to4_          = nullptr;
     em_qcd_cr1_gt4_           = nullptr;
@@ -636,7 +641,7 @@ namespace ic {
           tau_trg=1;
           tau_trg_mc=1;
         } else if (mc_ == mc::spring16_80X){
-          if(do_single_lepton_trg_){
+          if(do_single_lepton_trg_ && !do_cross_trg_){
             if(e_pt<1000){
               ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
               ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
@@ -646,7 +651,7 @@ namespace ic {
             }         
             tau_trg=1;
             tau_trg_mc=1;
-          } else {
+          } else if(do_cross_trg_ && !do_single_lepton_trg_){
             if(e_pt<1000){
               ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),et_xtrig_data_->GetYaxis()->FindBin(e_pt));
               ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),et_xtrig_mc_->GetYaxis()->FindBin(e_pt));
@@ -661,7 +666,37 @@ namespace ic {
             } else {
               tau_trg       = Efficiency(t_pt, 20.7216, 1.86861, 1.79281, 1.56784, 9.86642e-01);
             } 
-          }
+          } else if(do_cross_trg_ && do_single_lepton_trg_){
+            double ele_sgl_trg=1.0;
+            double ele_sgl_trg_mc=1.0;
+            double ele_cond_trg=1.0;
+            double ele_cond_trg_mc=1.0;
+            if(e_pt<1000){
+              ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),et_xtrig_data_->GetYaxis()->FindBin(e_pt));
+              ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),et_xtrig_mc_->GetYaxis()->FindBin(e_pt));
+              ele_sgl_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
+              ele_sgl_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
+              ele_cond_trg = et_conditional_data_->GetBinContent(et_conditional_data_->GetXaxis()->FindBin(e_eta),et_conditional_data_->GetYaxis()->FindBin(e_pt));
+              ele_cond_trg_mc = et_conditional_mc_->GetBinContent(et_conditional_mc_->GetXaxis()->FindBin(e_eta),et_conditional_mc_->GetYaxis()->FindBin(e_pt));
+            } else {
+              ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),(et_xtrig_data_->GetYaxis()->FindBin(e_pt)-1));
+              ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),(et_xtrig_mc_->GetYaxis()->FindBin(e_pt)-1));
+              ele_sgl_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),(et_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+              ele_sgl_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),(et_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
+              ele_cond_trg = et_conditional_data_->GetBinContent(et_conditional_data_->GetXaxis()->FindBin(e_eta),(et_conditional_data_->GetYaxis()->FindBin(e_pt)-1));
+              ele_cond_trg_mc = et_conditional_mc_->GetBinContent(et_conditional_mc_->GetXaxis()->FindBin(e_eta),(et_conditional_mc_->GetYaxis()->FindBin(e_pt)-1));
+            }         
+            tau_trg_mc=1;
+            unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+            if(gm2_ == 5){ //Using tight iso:
+              tau_trg       = Efficiency(t_pt, 21.1744, 0.773395, 0.705463, 1.65358, 1.0000);
+            } else {
+              tau_trg       = Efficiency(t_pt, 20.7216, 1.86861, 1.79281, 1.56784, 9.86642e-01);
+            } 
+            ele_trg = ele_sgl_trg+tau_trg*ele_trg-tau_trg*ele_cond_trg*ele_trg; //Conditional probability: P(single)+P(crosstrig)-P(crosstrig)*P(singlelept|muleg crosstrig)
+            ele_trg_mc = ele_sgl_trg_mc+tau_trg_mc*ele_trg_mc-tau_trg_mc*ele_cond_trg_mc*ele_trg_mc; //Conditional probability: P(single)+P(crosstrig)-P(crosstrig)*P(singlelept|muleg crosstrig)
+            tau_trg = 1.0; //In this case full weight is stored as ele_trg weight 
+          } 
         }
         if (trg_applied_in_mc_) {
           ele_trg = ele_trg / ele_trg_mc;
@@ -790,7 +825,7 @@ namespace ic {
           tau_trg=1;
           tau_trg_mc=1;
          } else if(mc_ == mc::spring16_80X){
-          if(do_single_lepton_trg_){
+          if(do_single_lepton_trg_ && !do_cross_trg_){
             if(pt<1000){
               mu_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),mt_trig_data_->GetYaxis()->FindBin(pt));
               mu_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),mt_trig_mc_->GetYaxis()->FindBin(pt));
@@ -800,7 +835,7 @@ namespace ic {
             }         
             tau_trg=1;
             tau_trg_mc=1;
-          } else {
+          } else if(do_cross_trg_ &&!do_single_lepton_trg_){
              if(pt<1000){
               mu_trg = mt_xtrig_data_->GetBinContent(mt_xtrig_data_->GetXaxis()->FindBin(m_eta),mt_xtrig_data_->GetYaxis()->FindBin(pt));
               mu_trg_mc = mt_xtrig_mc_->GetBinContent(mt_xtrig_mc_->GetXaxis()->FindBin(m_eta),mt_xtrig_mc_->GetYaxis()->FindBin(pt));
@@ -815,6 +850,36 @@ namespace ic {
             } else {
               tau_trg       = Efficiency(t_pt,  20.7216, 1.86861, 1.79281, 1.56784, 9.86642e-01);
             } 
+          } else if (do_single_lepton_trg_ && do_cross_trg_){
+            double mu_sgl_trg = 1.0;
+            double mu_sgl_trg_mc = 1.0;
+            double mu_cond_trg = 1.0;
+            double mu_cond_trg_mc = 1.0;
+             if(pt<1000){
+              mu_trg = mt_xtrig_data_->GetBinContent(mt_xtrig_data_->GetXaxis()->FindBin(m_eta),mt_xtrig_data_->GetYaxis()->FindBin(pt));
+              mu_trg_mc = mt_xtrig_mc_->GetBinContent(mt_xtrig_mc_->GetXaxis()->FindBin(m_eta),mt_xtrig_mc_->GetYaxis()->FindBin(pt));
+              mu_sgl_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),mt_trig_data_->GetYaxis()->FindBin(pt));
+              mu_sgl_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),mt_trig_mc_->GetYaxis()->FindBin(pt));
+              mu_cond_trg = mt_conditional_data_->GetBinContent(mt_conditional_data_->GetXaxis()->FindBin(m_eta),mt_conditional_data_->GetYaxis()->FindBin(pt));
+              mu_cond_trg_mc = mt_conditional_mc_->GetBinContent(mt_conditional_mc_->GetXaxis()->FindBin(m_eta),mt_conditional_mc_->GetYaxis()->FindBin(pt));
+            } else {
+              mu_trg = mt_xtrig_data_->GetBinContent(mt_xtrig_data_->GetXaxis()->FindBin(m_eta),(mt_xtrig_data_->GetYaxis()->FindBin(pt)-1));
+              mu_trg_mc = mt_xtrig_mc_->GetBinContent(mt_xtrig_mc_->GetXaxis()->FindBin(m_eta),(mt_xtrig_mc_->GetYaxis()->FindBin(pt)-1));
+              mu_sgl_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m_eta),mt_trig_data_->GetYaxis()->FindBin(pt)-1);
+              mu_sgl_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m_eta),mt_trig_mc_->GetYaxis()->FindBin(pt)-1);
+              mu_cond_trg = mt_conditional_data_->GetBinContent(mt_conditional_data_->GetXaxis()->FindBin(m_eta),mt_conditional_data_->GetYaxis()->FindBin(pt)-1);
+              mu_cond_trg_mc = mt_conditional_mc_->GetBinContent(mt_conditional_mc_->GetXaxis()->FindBin(m_eta),mt_conditional_mc_->GetYaxis()->FindBin(pt)-1);
+            }         
+            tau_trg_mc=1;
+            unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+            if(gm2_ == 5){ //Using tight iso:
+              tau_trg       = Efficiency(t_pt, 21.1744, 0.773395, 0.705463, 1.65358, 1.0000);
+            } else {
+              tau_trg       = Efficiency(t_pt,  20.7216, 1.86861, 1.79281, 1.56784, 9.86642e-01);
+            } 
+            mu_trg = mu_sgl_trg+tau_trg*mu_trg-tau_trg*mu_cond_trg*mu_trg; //Conditional probability: P(single)+P(crosstrig)-P(crosstrig)*P(singlelept|muleg crosstrig)
+            mu_trg_mc = mu_sgl_trg_mc+tau_trg_mc*mu_trg_mc-tau_trg_mc*mu_cond_trg_mc*mu_trg_mc; //Conditional probability: P(single)+P(crosstrig)-P(crosstrig)*P(singlelept|muleg crosstrig)
+            tau_trg = 1.0; //In this case full weight is stored as mu_trg weight 
           }
         }
         if (trg_applied_in_mc_) {
