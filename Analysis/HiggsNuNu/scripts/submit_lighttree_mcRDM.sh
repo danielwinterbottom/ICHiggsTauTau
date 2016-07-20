@@ -8,7 +8,7 @@ JETTYPE="pfJetsPFlow"
 ### Executable -- RDM stays for mine
 MYEXEC=LightTreeMakerFromMiniAODRDM
 ### Insert the date or leave  the same for test
-PRODUCTION=160709
+PRODUCTION=160715
 PRODUSER=rdimaria
 #PRODUSER=amagnan
 JPTCUTVAL=40
@@ -17,32 +17,34 @@ JPTCUTVAL=40
 : ${JOBWRAPPER:="./scripts/generate_job.sh $DOCERN $MYEXEC $PRODUCTION"}
 : ${JOBSUBMIT:="eval"}
 
-
 GRIDSETUP=1
+
 if [ "$DOCERN" = "0" ]
     then
-    JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
+    JOBSCRIPT="./scripts/submit_ic_batch_job.sh"
 else
     JOBSCRIPT="./scripts/submit_cern_batch_job.sh"
     GRIDSETUP=0
 fi
+export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
+
 
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
+CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 
 
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
-  do
+do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  #JOBDIRPREFIX=/vols/cms02/rd1715/Hinvisible/jobs_lighttree_160425
-  JOBDIRPREFIX=jobs_lighttree_160719
+
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}
+  #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_160719
-  #OUTPUTPREFIX=/vols/cms02/rd1715/Hinvisible/jobs_lighttree_160425
-  #OUTPUTPREFIX=output_lighttree_160121
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}
+  #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]
@@ -59,18 +61,18 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
   if [ "$SYST" = "JESDOWN" ]
       then
       SYSTOPTIONS="--dojessyst=true --jesupordown=false --dojersyst=false"
-  fi
+  fi  
   
   if [ "$SYST" = "JERBETTER" ]
       then
       SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=true"
-  fi
+  fi  
   
   if [ "$SYST" = "JERWORSE" ]
       then
       SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
-  fi
-
+  fi  
+  
   if [ "$SYST" = "UESUP" ]
 	then
 	SYSTOPTIONS="--douessyst=true --uesupordown=true"
@@ -82,27 +84,27 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
   fi
 
   if [ "$SYST" = "ELEEFFUP" ]
-	then
-	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=true"
+  then
+        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=true"
   fi
 
   if [ "$SYST" = "ELEEFFDOWN" ]
-	then
-	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=false"
+        then
+        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=false"
   fi
 
   if [ "$SYST" = "MUEFFUP" ]
-	then
-	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=true"
+        then
+        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=true"
   fi
 
   if [ "$SYST" = "MUEFFDOWN" ]
-  then
-      SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
+        then
+        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
   fi
 
+
   echo "Config file: $CONFIG"
-  
   mkdir -p $JOBDIR
   mkdir -p $OUTPUTDIR
 
@@ -114,59 +116,64 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
 	then
 	if [ "$QUEUEDIR" = "medium" ]
 	    then
-	    JOBQUEUE="hepmedium.q"
+	    JOBQUEUE="5:59:0"
 	elif [ "$QUEUEDIR" = "long" ]
 	    then
-	    JOBQUEUE="heplong.q"
+		JOBQUEUE="47:59:0"
 	else
-	    JOBQUEUE="hepshort.q"
+	    JOBQUEUE="2:59:0"
 	fi
     else
 	if [ "$QUEUEDIR" = "medium" ]
-	then
+	    then
 	    JOBQUEUE="1nd"
 	elif [ "$QUEUEDIR" = "long" ]
 	    then
 	    JOBQUEUE="2nd"
-	else
+            else
 	    JOBQUEUE="1nh"
 	fi
     fi
     export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
     echo "Using job-submission: " $JOBSUBMIT
-    
-    
+
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
-#    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/$PRODUCTION/MC/
     PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
     if [ "$PRODUCTION" = "Dec18" ]
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
+    
+    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
+    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
-#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
-#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
 	  do
       echo "Processing files in "$FILELIST
 
       echo $FILELIST
       echo $FILELIST > tmp.txt
       
-      MCOPTION="--mc=fall15_76X"
+      
+      MCOPTION="--mc=spring16_80X"
       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
-      grep "151030" tmp.txt
-      if (( "$?" == "0" )); then
-	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/151030_MC
-	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/151030_MC_//" tmp.txt > tmp2.txt
-	  MCOPTION="--mc=spring15_74X --reapplyJEC=false"
-	  INPUTPARAMS="filelists/151030/Params151030.dat"
-      else
-	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
-	  #MCOPTION="--mc=fall15_76X"
-	  MCOPTION="--mc=spring16_80X"
-	  INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
-      fi
+      sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
+      INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
+      
+#       MCOPTION="--mc=fall15_76X"
+#       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
+#       grep "151030" tmp.txt
+#       if (( "$?" == "0" )); then
+# 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/151030_MC
+# 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/151030_MC_//" tmp.txt > tmp2.txt
+# 	  MCOPTION="--mc=spring15_74X --reapplyJEC=false"
+# 	  INPUTPARAMS="filelists/151030/Params151030.dat"
+#       else
+# 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
+# 	  #MCOPTION="--mc=fall15_76X"
+# 	  MCOPTION="--mc=spring16_80X"
+# 	  INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
+#       fi
 
       echo $PREFIX
 
@@ -186,6 +193,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
       grep "Htoinv" tmp.txt
       if (( "$?" == 0 )); then
 	  JPTCUT=0
+	  MCOPTION="--mc=spring16_80X --donoskim=true"
       fi
 
       NEEDSSTREAM=0
@@ -221,7 +229,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
       rm tmp.txt tmp2.txt
       
     done
-	
+        
     
 #Process bkg common with HiggsTautau (ONLY NEEDED IN Mar20 and Apr04)
     DOSHARED=false
@@ -261,12 +269,6 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
 	  if (( "$?" == 0 )); then
 	      for FLAVOUR in enu munu taunu
 		do
-		#if [ "$PRODUCTION" = "Mar20" ]
-		#    then
-		#    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
-		#else
-		#    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/$PRODUCTION/
-		#fi
 		
 		WJOB=$JOB"_"$FLAVOUR
 		
@@ -294,7 +296,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
   done
   
 done
-  
+
 
 
 #if (( "$#" != "2" ))

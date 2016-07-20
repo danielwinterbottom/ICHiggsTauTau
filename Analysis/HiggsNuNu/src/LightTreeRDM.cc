@@ -505,7 +505,8 @@ namespace ic {
     // Get trigger variables
     ////////////////////////////////
 
-    if (is_data_){
+    //if (is_data_){
+    try {
       auto const& triggerPathPtrVec =
 	event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
       
@@ -547,6 +548,11 @@ namespace ic {
       if (debug_) {
 	std::cout << " Pass_muon " << pass_muontrigger_ << " pass sig " << pass_sigtrigger_ << std::endl;
       }
+    } catch (...) {
+      //static bool trgbits = true;
+      //if (trgbits) std::cout << " Trigger bits not filled ... " << std::endl;
+      std::cout << " Trigger bits not filled ... " << std::endl;
+      //trgbits = false; 
     }
 
     ////////////////////////////////
