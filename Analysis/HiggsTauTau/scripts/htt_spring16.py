@@ -49,6 +49,9 @@ parser.add_option("--smbkg", dest="proc_smbkg", action='store_true', default=Fal
 parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False,
                   help="Process signal MSSM mc samples")
 
+parser.add_option("--rehlt", dest="proc_rehlt", action='store_true', default=False,
+                  help="Process signal MSSM mc samples")
+
 parser.add_option("--Hhh", dest="proc_Hhh", action='store_true', default=False,
                   help="Process signal H->hh mc samples")
 
@@ -142,6 +145,32 @@ if options.proc_mssm or options.proc_all:
       'SUSYGluGluToBBHToTauTau_M-'+mass
     ]
 
+if options.proc_rehlt :
+  signal_mc += [
+     'reHLTSUSYGluGluToHToTauTau_M-90',
+     'reHLTSUSYGluGluToHToTauTau_M-1000',
+     'reHLTSUSYGluGluToHToTauTau_M-120',
+     'reHLTSUSYGluGluToHToTauTau_M-1200',
+     'reHLTSUSYGluGluToHToTauTau_M-130',
+     'reHLTSUSYGluGluToHToTauTau_M-1400',
+     'reHLTSUSYGluGluToHToTauTau_M-1600',
+     'reHLTSUSYGluGluToHToTauTau_M-180',
+     'reHLTSUSYGluGluToHToTauTau_M-2000',
+     'reHLTSUSYGluGluToHToTauTau_M-3200',
+     'reHLTSUSYGluGluToHToTauTau_M-350',
+     'reHLTSUSYGluGluToHToTauTau_M-700',
+     'reHLTSUSYGluGluToBBHToTauTau_M-140',
+     'reHLTSUSYGluGluToBBHToTauTau_M-1000',
+     'reHLTSUSYGluGluToBBHToTauTau_M-1200',
+     'reHLTSUSYGluGluToBBHToTauTau_M-180',
+     'reHLTSUSYGluGluToBBHToTauTau_M-300',
+     'reHLTSUSYGluGluToBBHToTauTau_M-500',
+     'reHLTSUSYGluGluToBBHToTauTau_M-600',
+     'reHLTSUSYGluGluToBBHToTauTau_M-700',
+     'reHLTSUSYGluGluToBBHToTauTau_M-80',
+     'reHLTSUSYGluGluToBBHToTauTau_M-90'
+  ]
+
 #if options.proc_Hhh:
 #  masses = ['250','260','270','280','300','320','340','350','400','450','500','550','600','650','700','800','900']
 #  for mass in masses :
@@ -153,12 +182,16 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   data_samples = [
    'SingleMuonB',
    'SingleElectronB',
-   'MuonEGB',
+#   'MuonEGB',
    'TauB',
    'SingleMuonC',
    'SingleElectronC',
-   'MuonEGC',
-   'TauC'
+#   'MuonEGC',
+   'TauC',
+   'SingleMuonD',
+   'SingleElectronD',
+#   'MuonEGD',
+   'TauD'
   ]
 
 
@@ -264,7 +297,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
   
 
-if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hhh or options.proc_all:
+if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hhh or options.proc_all or options.proc_rehlt:
   for sa in signal_mc:
     JOB='%s_2016' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());

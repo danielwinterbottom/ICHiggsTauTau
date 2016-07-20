@@ -481,8 +481,15 @@ namespace ic {
            alt_leg1_filter    = "hltEle23WPLooseGsfTrackIsoFilter";
            alt_min_online_pt = 0.;
            high_leg_pt = 24.;
+          } else if(mc_ == mc::spring16_80X){
+          trig_obj_label = "triggerObjectsEle24LooseTau20SingleL1";
+          leg1_filter = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
+          leg2_filter = "hltPFTau20TrackLooseIso";
+          extra_leg2_filter = "hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
+          alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
+          high_leg_pt = 26.;
           }
-
       } else if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
         if (mc_ == mc::fall11_42X) {
           trig_obj_label   = "triggerObjectsIsoMu15LooseTau15";
@@ -522,6 +529,14 @@ namespace ic {
           alt_leg2_filter = "";
           alt_min_online_pt = 0.;
           high_leg_pt = 19.;
+        } else if (mc_ ==mc::spring16_80X){
+          trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
+          leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
+          leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
+          extra_leg2_filter = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsIsoMu22";
+          alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+          high_leg_pt = 23.;
         }
       } else if (channel_ == channel::em) {
         if (mc_ == mc::fall11_42X) {

@@ -72,9 +72,6 @@ sample_list = [
    'SingleElectronC',
    'MuonEGC',
    'TauC',
-   'SUSYGluGluToHToTauTau_M-160',
-   'SUSYGluGluToBBHToTauTau_M-160'
-   'SUSYGluGluToHToTauTau_M-500',
    'SUSYGluGluToBBHToTauTau_M-500'
   'SUSYGluGluToBBHToTauTau_M-80',
   'SUSYGluGluToBBHToTauTau_M-90',
@@ -138,6 +135,28 @@ sample_list = [
   'SUSYGluGluToHToTauTau_M-2600',
   'SUSYGluGluToHToTauTau_M-2900',
   'SUSYGluGluToHToTauTau_M-3200',
+   'reHLTSUSYGluGluToHToTauTau_M-90',
+   'reHLTSUSYGluGluToHToTauTau_M-1000',
+   'reHLTSUSYGluGluToHToTauTau_M-120',
+   'reHLTSUSYGluGluToHToTauTau_M-1200',
+   'reHLTSUSYGluGluToHToTauTau_M-130',
+   'reHLTSUSYGluGluToHToTauTau_M-1400',
+   'reHLTSUSYGluGluToHToTauTau_M-1600',
+   'reHLTSUSYGluGluToHToTauTau_M-180',
+   'reHLTSUSYGluGluToHToTauTau_M-2000',
+   'reHLTSUSYGluGluToHToTauTau_M-3200',
+   'reHLTSUSYGluGluToHToTauTau_M-350',
+   'reHLTSUSYGluGluToHToTauTau_M-700',
+   'reHLTSUSYGluGluToBBHToTauTau_M-140',
+   'reHLTSUSYGluGluToBBHToTauTau_M-1000',
+   'reHLTSUSYGluGluToBBHToTauTau_M-1200',
+   'reHLTSUSYGluGluToBBHToTauTau_M-180',
+   'reHLTSUSYGluGluToBBHToTauTau_M-300',
+   'reHLTSUSYGluGluToBBHToTauTau_M-500',
+   'reHLTSUSYGluGluToBBHToTauTau_M-600',
+   'reHLTSUSYGluGluToBBHToTauTau_M-700',
+   'reHLTSUSYGluGluToBBHToTauTau_M-80',
+   'reHLTSUSYGluGluToBBHToTauTau_M-90'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
