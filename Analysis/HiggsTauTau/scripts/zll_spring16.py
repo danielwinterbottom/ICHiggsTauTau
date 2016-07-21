@@ -209,6 +209,8 @@ if options.proc_data or options.proc_all:
    'SingleElectronC',
 #   'MuonEGC',
 #   'TauC'
+   'SingleMuonD',
+   'SingleElectronD',
   ]
 
 
