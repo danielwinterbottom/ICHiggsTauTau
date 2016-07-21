@@ -477,8 +477,8 @@ int main(int argc, char* argv[]){
   }
   if(taulepdiscrtight){
     tau_anti_muon_discr   = "againstMuonTight3";
-    tau_anti_elec_discr_1 = "againstElectronTightMVA5";
-    tau_anti_elec_discr_2 = "againstElectronTightMVA5";
+    tau_anti_elec_discr_1 = "againstElectronTightMVA6";
+    tau_anti_elec_discr_2 = "againstElectronTightMVA6";
   }
   else{
     tau_anti_muon_discr   = "againstMuonLoose3";

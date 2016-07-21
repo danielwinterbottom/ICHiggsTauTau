@@ -1252,6 +1252,21 @@ namespace ic {
     return isMedium;
   }
 
+  bool MuonMediumHIPsafe(Muon const* muon) {
+    bool goodGlob = muon->is_global() && 
+      muon->gt_normalized_chi2() < 3 &&
+      muon->cq_chi2_localposition()<12 &&
+      muon->cq_trk_kink()<20;
+
+    bool isMedium =
+      muon->is_pf() &&
+      (muon->is_global()||muon->is_tracker()) && //Require loose muon except pf isolation should be done in individual analyses
+      muon->it_valid_fraction() > 0.49 && 
+      muon->segment_compatibility() > (goodGlob ? 0.303 : 0.451); 
+    return isMedium;
+  }
+
+
   bool MuonLoose(Muon const* muon) {
     bool isLoose = 
       muon->is_pf() &&

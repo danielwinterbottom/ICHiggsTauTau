@@ -1,4 +1,5 @@
 #include "../interface/TriggerPath.hh"
+#include "../interface/Unhash.h"
 #include <iostream>
 #include "boost/format.hpp"
 
@@ -9,7 +10,7 @@ TriggerPath::TriggerPath()
 TriggerPath::~TriggerPath() {}
 
 void TriggerPath::Print() const {
-  std::string name = name_ != "" ? name_ : "<path name not saved>";
+  std::string name = name_ != "" ? name_ : Unhash::Get(id_);
   std::cout << boost::format(
                    "%-65s accept=%-3i prescale=%-3i id=%-21i version=%-2i\n") %
                    name % accept_ % prescale_ % id_ % version_;

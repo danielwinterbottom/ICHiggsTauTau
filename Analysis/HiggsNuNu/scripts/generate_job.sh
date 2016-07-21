@@ -26,7 +26,7 @@ echo "echo \"Basedir: \$BASEDIR, sendir= $PWD\"" >> $OUTPUT
 echo "cd $PWD" >> $OUTPUT
 if (( "$GRIDSETUP" != "0" )); then
     echo "Grid setup is enabled."
-    echo "source /vols/cms/grid/setup.sh" >> $OUTPUT
+    echo "source /vols/grid/cms/setup.sh" >> $OUTPUT
 else 
     echo "Grid setup is disabled. Enabling EOS setup."
 fi

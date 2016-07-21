@@ -177,8 +177,15 @@ namespace ic {
         Met * mva_met = it_inv->second;
         event->Add("pfMVAMet", mva_met);
       } else {
-        std::cerr << "Could not find Met in collection for ID: " << id << " or " << id_inv <<std::endl;
-        exit(0);
+        //Temporary hack for 2016 data/MC, missing mva met for some pairs
+        if(strategy_ !=strategy::spring16){
+          std::cerr << "Could not find Met in collection for ID: " << id << " or " << id_inv <<std::endl;
+          exit(0);
+       } else {
+        std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
+        Met * pfmet = pfMet_vec.at(0);  
+        event->Add("pfMVAMet", pfmet);
+       }
       }
     }
     
@@ -285,7 +292,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15) {
+    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::spring16) {
       if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
         std::vector<GenParticle *> sel_particles;

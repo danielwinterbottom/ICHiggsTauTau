@@ -279,7 +279,7 @@ int main(int argc, char* argv[]){
   ntrees++; 
   }
 
-  double sep;  
+  double sep = 0.0;
   if(plots.size() == 2) {
     TH1 * plot_1 = elements[0].hist_ptr();   
     TH1 * plot_2 = elements[1].hist_ptr();
