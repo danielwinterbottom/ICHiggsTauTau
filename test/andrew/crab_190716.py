@@ -143,7 +143,9 @@ if __name__ == '__main__':
     ]
 
 
-    for task in tasks_bkg:
+    for task in tasks_bkg + tasks_sig +tasks_data:
+        #print task[1]
+        #continue
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
