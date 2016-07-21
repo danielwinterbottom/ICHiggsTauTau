@@ -48,7 +48,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/July08/",
+    "output_folder" : "./output/July08-13fb/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "WZTo1L3Nu",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -67,7 +67,7 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2016_July11.root",
+    "data_pu_file"  : "input/pileup/Data_Pileup_2016_July21.root",
     "mc_pu_file"    : "input/pileup/MC_Spring16_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
