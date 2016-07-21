@@ -468,7 +468,7 @@ namespace ic {//namespace
 
       //get 2 leading jets
       std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>("jjLeadingCandidates");
-      if (dijet_vec.size() > 0) {
+      if (dijet_vec.size() > 0) {//if dijets
 	
 	CompositeCandidate const* dijet = dijet_vec.at(0);
 	
@@ -606,7 +606,7 @@ namespace ic {//namespace
 	//SET TRIGGER WEIGHT
 	if (do_trg_weights_) eventInfo->set_weight("trig_1d",trgweight);
 	else eventInfo->set_weight("!trig_1d",trgweight);
-      }
+	}
       else if(do_binnedin2d1dfittedtrg_weights_){
 	if(l1met!=hltmet){
 	  std::cout<<"Error: you must use metnomuons for both l1met and hltmet"<<std::endl;
@@ -745,7 +745,6 @@ namespace ic {//namespace
 	//event->Add("trigweight_2", tau_trg);
       }
       }//dijet pair
-    
     }//do trig weights
     //else {
     //std::cout << " skipping trigger stuff" << std::endl;
