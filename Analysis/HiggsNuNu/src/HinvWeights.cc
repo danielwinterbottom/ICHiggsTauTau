@@ -744,7 +744,7 @@ namespace ic {//namespace
 	//event->Add("trigweight_1", ele_trg);
 	//event->Add("trigweight_2", tau_trg);
       }
-      }//dijet pair
+      }//if dijets //dijet pair
     }//do trig weights
     //else {
     //std::cout << " skipping trigger stuff" << std::endl;
