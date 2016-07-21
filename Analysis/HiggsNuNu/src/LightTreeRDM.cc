@@ -576,7 +576,8 @@ namespace ic {
 
       std::string label[7] = {"","_v0Up","_v0Down","_v1Up","_v1Down","_v2Up","_v2Down"};
       for (unsigned iT(0); iT<7; ++iT){
-	weight_trig_[iT]=eventInfo->weight(("trig_2dbinned1d"+label[iT]).c_str());
+	std::string thislabel = "trig_2dbinned1d"+label[iT];
+	weight_trig_[iT]=eventInfo->weight_defined(thislabel.c_str())?eventInfo->weight(thislabel.c_str()):0;
       }
     }
     if (pileupwt!=0) {
