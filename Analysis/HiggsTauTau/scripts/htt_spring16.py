@@ -4,6 +4,7 @@ import sys
 from optparse import OptionParser
 import os
 import math
+import json
 
 JOBWRAPPER      = './scripts/generate_job.sh'
 JOBSUBMIT       = 'true'
@@ -66,6 +67,8 @@ parser.add_option("--short_signal", dest="short_signal", action='store_true', de
 
 #parser.add_option("-c", "--channels", dest="channels", type='string', action='callback',callback=split_callback,
 #                  help="A comma separated list of channels to ignore.  Supported channels: For data_2015 %(CHANNELS_2015)s" % vars())
+parser.add_option("--no_json", dest="no_json", action='store_true', default=False,
+                  help="Do not read the channels to process from the json to decide which datasets to run on")
 
 parser.add_option("--list_backup", dest="slbackupname", type='string', default='prevlist',
                   help="Name you want to give to the previous files_per_samples file, in case you're resubmitting a subset of jobs")
@@ -89,6 +92,7 @@ BACKUPNAME = options.slbackupname
 #channels = options.channels
 scales = options.scales
 taues_study = options.taues_study
+no_json = options.no_json
 
 
 scale_list = scales.split(',')
@@ -111,7 +115,6 @@ FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 
 
 CONFIG='scripts/config2016.json'
-
 
 FILELIST='filelists/July08_MC_80X'
 
@@ -179,20 +182,39 @@ if options.proc_rehlt :
 #    ]
 
 if options.proc_data or options.proc_all or options.calc_lumi:
-  data_samples = [
-   'SingleMuonB',
-   'SingleElectronB',
-#   'MuonEGB',
-   'TauB',
-   'SingleMuonC',
-   'SingleElectronC',
-#   'MuonEGC',
-   'TauC',
-   'SingleMuonD',
-   'SingleElectronD',
-#   'MuonEGD',
-   'TauD'
-  ]
+  if not no_json:
+    with open(CONFIG,"r") as input:
+      with open ("config_for_python.json","w") as output:
+        for line in input:
+          if not '//' in line:
+            output.write(line)
+        output.close()
+      input.close()
+
+    with open("config_for_python.json") as config_file:
+      cfg = json.load(config_file)
+
+    channels=cfg["job"]["channels"]
+  else:
+    channels=['mt','et','tt','em']
+  
+
+  data_samples = []
+  data_eras = ['B','C','D']
+  for chn in channels:
+    for era in data_eras:
+      if 'mt' in chn:
+        data_samples+=[
+         'SingleMuon'+era]
+      if 'et' in chn:
+        data_samples+=[
+         'SingleElectron'+era]
+      if 'em' in chn:
+        data_samples+=[
+         'MuonEG'+era]
+      if 'tt' in chn:
+        data_samples+=[
+         'Tau'+era]
 
 
   DATAFILELIST="./filelists/July08_Data_80X"

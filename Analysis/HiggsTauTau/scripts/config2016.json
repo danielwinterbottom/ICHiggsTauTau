@@ -1,13 +1,13 @@
 {
   "job": {
     "filelist" : "filelists/July08_MC_80X_WZTo1L3Nu.dat",
-    //"filelist" : "filelists/June19_MC_80X_SUSYGluGluToHToTauTau_M-160.dat",
     "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July08_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","et","tt"],
+    "channels":     ["et","mt","tt"],
     "sequences": {
-      "all":  ["default"]//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
+      "all":  ["default"]
+//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
 //      "mt":   ["scale_t_lo", "scale_t_hi"],
  //     "tt":   ["scale_t_lo", "scale_t_hi"],
@@ -94,7 +94,7 @@
       "tau_anti_elec"     : "",
       "do_tau_anti_muon"  : false,
       "tau_anti_muon"     : "",
-      "elec_id"           : "CutBased" // "MVA:Loose", "MVA:Tight", "CutBased"
+      "elec_id"           : "CutBased" 
     }
   },
   "channels": {
@@ -179,15 +179,15 @@
     "scale_j_lo": {
       "baseline": {
         "addit_output_folder" : "JES_DOWN",
-        "jes_mode" : 1/*,
-        "btag_mode" : 3*/
+        "jes_mode" : 1
+//        "btag_mode" : 3
       }
     },
     "scale_j_hi": {
       "baseline": {
         "addit_output_folder" : "JES_UP",
-        "jes_mode" : 2/*,
-        "btag_mode" : 4*/
+        "jes_mode" : 2
+//        "btag_mode" : 4
       }
     },
     "scale_met_lo": {
