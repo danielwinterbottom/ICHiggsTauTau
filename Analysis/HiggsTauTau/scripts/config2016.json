@@ -35,6 +35,7 @@
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "store_trigobjpt" :true,
+    "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
     "do_preselection" : false,
