@@ -249,8 +249,8 @@ namespace ic {
       alias_map_["2jet1taghigh"] = "(n_jets>=2 && n_bjets==1)";
       alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
-      alias_map_["btag"] = "(n_jets<=1 && n_loose_bjets>=1)";
-      alias_map_["nobtag"] = "n_loose_bjets==0";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
       //alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       //alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
@@ -495,6 +495,7 @@ namespace ic {
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
+      if(ch_ == channel::zmm) alias_map_["baseline"] = "(iso_1<0.15&&iso_2<0.15)";
     } else if (ch_ == channel::tpzmm || ch_ == channel::tpzee) {
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
@@ -605,7 +606,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){
        samples_alias_map_["data_samples"] = {
-        "SingleElectronB","SingleElectronC"
+        "SingleElectronB","SingleElectronC","SingleElectronD"
        };
     } else if(!is_fall15_){
        samples_alias_map_["data_samples"] = {
@@ -619,7 +620,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){
      samples_alias_map_["data_samples"] = {
-       "SingleMuonB","SingleMuonC"
+       "SingleMuonB","SingleMuonC","SingleMuonD"
        };
     } else if(!is_fall15_){
      samples_alias_map_["data_samples"] = {
@@ -633,7 +634,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){ 
       samples_alias_map_["data_samples"] = {
-        "TauB","TauC"
+        "TauB","TauC","TauD"
       };
     } else if(!is_fall15_){
      samples_alias_map_["data_samples"] = {
