@@ -1,14 +1,14 @@
 #!/bin/sh
 DOCERN=0
 ### submit to the batch sistem at IC 1 -- 0 otherwise
-DOSUBMIT=0
+DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=JetMETvalidation
 ### Executable -- RDM stays for mine
 MYEXEC=LightTreeMakerFromMiniAODRDM
 ### Insert the date or leave  the same for test
-PRODUCTION=160715
+PRODUCTION=160709
 PRODUSER=rdimaria
 #PRODUSER=amagnan
 JPTCUTVAL=40
@@ -40,11 +40,11 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #ELEEFFUP EL
 do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
-  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}
-  JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}
+  #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
-  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}
-  OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}
+  #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]
@@ -110,7 +110,7 @@ do
 
   cp $CONFIG $OUTPUTDIR
 
-  for QUEUEDIR in short #medium #long
+  for QUEUEDIR in short medium #long
     do
     if [ "$DOCERN" = "0" ]
 	then
