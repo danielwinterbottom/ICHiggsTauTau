@@ -105,9 +105,9 @@ int main(int argc, char* argv[]){
   
   std::string filename1;
   if(signalType == "GluGlu"){
-    filename1 = "output/Jul03/LegsSeperate3/GluGluHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = "output/Jul03/LegsSeperate2/GluGluHToTauTau_M-125_"+channel+"_2015.root";
   } else if (signalType == "VBF") {
-    filename1 = "output/Jul03/LegsSeperate3/VBFHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = "output/Jul03/LegsSeperate2/VBFHToTauTau_M-125_"+channel+"_2015.root";
   }
   else {
     std::cout << "Incorrect signal input" << std::endl;
