@@ -95,6 +95,7 @@ var NAVTREEINDEX6 =
 "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#ac231d177650f1dd9c6f712f242a9b2a6":[10,0,48,3],
 "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#ae2a53cda3606b7fe62b5ba8783e65a26":[10,0,48,0],
 "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#aec6403995e5e4f9588a13f3b2e613750":[10,0,48,4],
+"struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#af461d6b873378d52fd954d9ff2969c68":[10,0,48,11],
 "structedm_1_1_consumes_collector.html":[10,0,0,0],
 "structedm_1_1_consumes_collector.html#ac7a1a1c1827c086ce93c5dd7c5e52946":[10,0,0,0,0],
 "structic_1_1_met_1_1_basic_met.html":[10,0,1,12,0],

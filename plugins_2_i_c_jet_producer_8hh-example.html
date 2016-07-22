@@ -512,8 +512,8 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line">    dest.<a class="code" href="classic_1_1_jet.html#ac41c56020d5cac0e375d052ff2f417ce">set_uncorrected_energy</a>(</div>
 <div class="line">        (src.jecSetsAvailable() ? src.jecFactor(0) : 1.) * src.energy());</div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.do_pu_id) {</div>
-<div class="line">      <span class="keywordflow">if</span> (src_.is_slimmed){</div>
-<div class="line">        dest.<a class="code" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">set_pu_id_mva_value</a>(src.userFloat(<span class="stringliteral">&quot;pileupJetId:fullDiscriminant&quot;</span>));</div>
+<div class="line">      <span class="keywordflow">if</span> (src_.is_slimmed) {</div>
+<div class="line">        dest.<a class="code" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">set_pu_id_mva_value</a>(src.userFloat(src_.slimmed_puid_label));</div>
 <div class="line">      } <span class="keywordflow">else</span> {</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">set_pu_id_mva_value</a>(</div>
 <div class="line">            (*pu_id_handle)[jets_handle-&gt;refAt(passed_[i])-&gt;originalObjectRef()]);</div>

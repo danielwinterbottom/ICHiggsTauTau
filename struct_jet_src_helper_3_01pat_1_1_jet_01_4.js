@@ -10,5 +10,6 @@ var struct_jet_src_helper_3_01pat_1_1_jet_01_4 =
     [ "include_jec_factors", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a9d756decc0ae844ef2f19a2621991fc4", null ],
     [ "input_sv_info", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a0b95d5b3e9142ba3e01a40f1b9039680", null ],
     [ "include_sv_info_ids", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a437dee537dca828b8ba19c6a0c38b2c1", null ],
-    [ "is_slimmed", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#ab7a5957f24228a1463787c1f62a4d844", null ]
+    [ "is_slimmed", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#ab7a5957f24228a1463787c1f62a4d844", null ],
+    [ "slimmed_puid_label", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#af461d6b873378d52fd954d9ff2969c68", null ]
 ];
