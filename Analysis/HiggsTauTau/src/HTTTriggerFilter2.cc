@@ -982,8 +982,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoMu18";
           fil.path          = "HLT_IsoMu18_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 19.;
@@ -992,8 +992,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoMu20";
           fil.path          = "HLT_IsoMu20_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3crIsoL1sMu18L1f0L2f10QL3f20QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3crIsoL1sMu18L1f0L2f10QL3f20QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 21.;
@@ -1002,8 +1002,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoMu22";
           fil.path          = "HLT_IsoMu22_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 23.;
@@ -1012,8 +1012,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoMu22er";
           fil.path          = "HLT_IsoMu22_eta2p1_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 23.;
@@ -1022,8 +1022,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoMu27";
           fil.path          = "HLT_IsoMu27_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 28.;
@@ -1032,8 +1032,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoTkMu18";
           fil.path          = "HLT_IsoTkMu18_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3fL1sMu16L1f0Tkf18QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3fL1sMu16L1f0Tkf18QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 19.;
@@ -1042,8 +1042,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoTkMu20";
           fil.path          = "HLT_IsoTkMu20_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3fL1sMu18L1f0Tkf20QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3fL1sMu18L1f0Tkf20QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 21.;
@@ -1052,8 +1052,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoTkMu22er";
           fil.path          = "HLT_IsoTkMu22_eta2p1_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 21.;
@@ -1062,8 +1062,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoTkMu22";
           fil.path          = "HLT_IsoTkMu22_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 23.;
@@ -1072,8 +1072,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoTkMu24";
           fil.path          = "HLT_IsoTkMu24_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 25.;
@@ -1082,18 +1082,19 @@ namespace ic {
           
           fil.label         = "triggerObjectsIsoTkMu27";
           fil.path          = "HLT_IsoTkMu27_v";
-          fil.leg1_filter   = "";
-          fil.leg2_filter   = "hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09";
+          fil.leg1_filter   = "hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09";
+          fil.leg2_filter   = "";
           fil.leg2_extra    = "";
           fil.singleLepton_ = true;
           fil.lep1_pt = 28.;
           fil.lep2_pt = 0.;
           leg_filters.push_back(fil);
           
+          
           fil.label         = "triggerObjectsMu8Ele17";
           fil.path          = "HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
-          fil.leg2_filter   = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+          fil.leg1_filter   = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+          fil.leg2_filter   = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 18.;
@@ -1102,8 +1103,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsMu8Ele23";
           fil.path          = "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
-          fil.leg2_filter   = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+          fil.leg1_filter   = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+          fil.leg2_filter   = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 24.;
@@ -1112,8 +1113,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsMu17Ele12";
           fil.path          = "HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
-          fil.leg2_filter   = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17";
+          fil.leg1_filter   = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17";
+          fil.leg2_filter   = "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 13.;
@@ -1122,8 +1123,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsMu23Ele12";
           fil.path          = "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
-          fil.leg2_filter   = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+          fil.leg1_filter   = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+          fil.leg2_filter   = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 13.;
@@ -1132,8 +1133,8 @@ namespace ic {
           
           fil.label         = "triggerObjectsMu23Ele8";
           fil.path          = "HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v";
-          fil.leg1_filter   = "hltMu23TrkIsoVVLEle8CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
-          fil.leg2_filter   = "hltMu23TrkIsoVVLEle8CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+          fil.leg1_filter   = "hltMu23TrkIsoVVLEle8CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+          fil.leg2_filter   = "hltMu23TrkIsoVVLEle8CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           fil.leg2_extra    = "";
           fil.singleLepton_ = false;
           fil.lep1_pt = 9.;
@@ -1167,7 +1168,7 @@ namespace ic {
          fil.path          = "HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v";
          fil.leg1_filter   = "hltDoublePFTau32TrackPt1MediumIsolationDz02Reg";
          fil.leg2_filter   = "hltDoublePFTau32TrackPt1MediumIsolationDz02Reg";
-         fil.leg2_extra    = "";
+         fil.leg2_extra    = "hltDoublePFTau32TrackPt1MediumIsolationDz02Reg";
          fil.singleLepton_ = false;
          fil.lep1_pt = 0.;
          fil.lep2_pt = 0.;
@@ -1177,7 +1178,7 @@ namespace ic {
          fil.path          = "HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v";
          fil.leg1_filter   = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
          fil.leg2_filter   = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-         fil.leg2_extra    = "";
+         fil.leg2_extra    = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
          fil.singleLepton_ = false;
          fil.lep1_pt = 0.;
          fil.lep2_pt = 0.;
@@ -1187,11 +1188,12 @@ namespace ic {
          fil.path          = "HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v";
          fil.leg1_filter   = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
          fil.leg2_filter   = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
-         fil.leg2_extra    = "";
+         fil.leg2_extra    = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
          fil.singleLepton_ = false;
          fil.lep1_pt = 0.;
          fil.lep2_pt = 0.;
          leg_filters.push_back(fil);
+         
        }
     }
 
@@ -1295,6 +1297,7 @@ namespace ic {
     if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::em) && mc_ == mc::summer16_80X) {
       for(unsigned i=0; i<leg_filters.size(); ++i){
         std::vector<CompositeCandidate *> dileptons_pass_reHLT;
+        CompositeCandidate dilepton;
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(leg_filters[i].label);
         for (unsigned j=0; j < dileptons.size(); ++j) {
           bool leg1_match = false;
@@ -1308,29 +1311,47 @@ namespace ic {
               highpt_leg = dileptons[j]->At(0)->pt()>leg_filters[i].lep1_pt;
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0),objs, leg_filters[i].leg1_filter, 0.5).first;
             }
+            std::string leg1_match_name = leg_filters[i].path+"_leg1_match";
+            std::string leg2_match_name = leg_filters[i].path+"_leg2_match";
+            event->Add(leg1_match_name, leg1_match);
+            event->Add(leg2_match_name, true);
+            //delete these lines below if you want to apply offline cut at trigger level
+            highpt_leg = true;
             if (leg1_match&&highpt_leg){
               dileptons_pass_reHLT.push_back(dileptons[j]);
-              dileptons_pass.push_back(dileptons[j]);
+              //dileptons_pass.push_back(dileptons[j]);
             }
           } else if(!leg_filters[i].singleLepton_){
             bool highpt1_leg = dileptons[j]->At(0)->pt()>leg_filters[i].lep1_pt;
             bool highpt2_leg = dileptons[j]->At(1)->pt()>leg_filters[i].lep2_pt;
+            //delete these lines below if you want to apply offline cut at trigger level
+            highpt1_leg = true;
+            highpt2_leg = true;
             if (channel_ == channel::em){
-              leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first;
-              leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first;
-            } else {
+              leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg1_filter, 0.5).first;
+              leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_filter, 0.5).first;
+            } else if (channel_ == channel::et){
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
               leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;
             }
+            else if (channel_ == channel::mt) {
+              leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
+              leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;
+            }
+            std::string leg1_match_name = leg_filters[i].path+"_leg1_match";
+            std::string leg2_match_name = leg_filters[i].path+"_leg2_match";
+            event->Add(leg1_match_name, IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first);
+            event->Add(leg2_match_name, leg2_match);
             if (leg1_match && leg2_match && highpt1_leg && highpt2_leg){
               dileptons_pass_reHLT.push_back(dileptons[j]);
+              //dileptons_pass.push_back(dileptons[j]);
             }
           }
           
         }
         
         if (dileptons_pass_reHLT.size() >= 1) leg_filters[i].pass = true;
-        else                            leg_filters[i].pass = false;
+        else                                  leg_filters[i].pass = false;
         
       }
         
@@ -1453,19 +1474,19 @@ namespace ic {
         for (unsigned j=0; j < dileptons.size(); ++j) {
           bool leg1_match = false;
           bool leg2_match = false;
-
-          if(!leg_filters[i].singleLepton_){
-            leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first;
-            leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first;
-            if (leg1_match && leg2_match){
-              dileptons_pass_reHLT.push_back(dileptons[j]);
-            }
+          leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first;
+          leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first;
+          std::string leg1_match_name = leg_filters[i].path+"_leg1_match";
+          std::string leg2_match_name = leg_filters[i].path+"_leg2_match";
+          event->Add(leg1_match_name, leg1_match);
+          event->Add(leg2_match_name, leg2_match);
+          if (leg1_match && leg2_match){
+            dileptons_pass_reHLT.push_back(dileptons[j]);
           }
-          
         }
         
         if (dileptons_pass_reHLT.size() >= 1) leg_filters[i].pass = true;
-        else                            leg_filters[i].pass = false;
+        else                                  leg_filters[i].pass = false;
         
       }
         
@@ -1526,7 +1547,7 @@ namespace ic {
           }
         }
         if (passedHLT) return 0;
-        else           return 1;
+        else           return 0;
     }
 }
 

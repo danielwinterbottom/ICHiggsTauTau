@@ -48,7 +48,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/Jul03/tempIso27Loose/",
+    "output_folder" : "./output/Jul03/LegsSeperate3/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "WZTo1L3Nu",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",

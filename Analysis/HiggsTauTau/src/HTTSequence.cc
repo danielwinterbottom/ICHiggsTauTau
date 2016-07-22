@@ -135,9 +135,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
          elec_dz = 0.2;
          muon_dxy = 0.045;
          muon_dz = 0.2;
-         elec_pt = 0.;
+         elec_pt = 6.;
          elec_eta = 2.5;
-         muon_pt = 0.;
+         muon_pt = 6.;
          muon_eta = 2.4;
        } else {
          elec_dxy = 0.045;
@@ -203,8 +203,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    if(js["store_hltpaths"].asBool()){
      min_taus = 1;
      pair_dr = 0.5;
-     elec_pt = 23;
-     elec_pt = 28;//temp delete after!
+     elec_pt = 20;
      elec_eta = 2.5;
      tau_pt  = 20;
      tau_eta = 2.3;
@@ -262,7 +261,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    }
   if (era_type == era::data_2015 || era_type == era::data_2016){
     if(js["store_hltpaths"].asBool()){
-      muon_pt = 18.0;//Up from 18 to avoid trigger turn on in new data trigger
+      muon_pt = 16.0;
       muon_eta = 2.4;
       tau_pt = 20;
       tau_eta = 2.3;
@@ -296,7 +295,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  }
  if (channel_str == "tt"){
   tau_pt = 45;
-  if (strategy_type == strategy::fall15 || strategy_type == strategy::spring16) tau_pt=40;
+  if (strategy_type == strategy::fall15 || strategy_type == strategy::spring16){
+      tau_pt=40;
+      if(js["store_hltpaths"].asBool()) tau_pt = 25;
+  }
   tau_eta = 2.1;
   tau_iso = 1.0;
   tau_dz = 0.2;
@@ -547,7 +549,7 @@ void HTTSequence::BuildSequence(){
 }
 
 
- if(output_name.find("WZJetsTo3LNu") != output_name.npos && (mc_type == mc::fall15_76X || mc_type == mc::summer16_80X)){ 
+ if(output_name.find("WZJetsTo3LNu") != output_name.npos && (mc_type == mc::fall15_76X)){ 
   BuildModule(GenericModule("lowGenMLLEventVeto")
    .set_function([](ic::TreeEvent *event){
      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("lheParticles");
@@ -741,8 +743,34 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 // if(is_data){
 
    if(js["store_hltpaths"].asBool()){
+       
+     if(channel != channel::wmnu) {
+       HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
+          .set_channel(channel)
+          .set_fs(fs.get())
+          .set_pair_label("ditau")
+          .set_met_label(met_label)
+          .set_strategy(strategy_type)
+          .set_mva_met_from_vector(mva_met_mode==1)
+          .set_faked_tau_selector(faked_tau_selector)
+          .set_hadronic_tau_selector(hadronic_tau_selector)
+          .set_ztt_mode(ztautau_mode)
+          .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
+          .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
+          .set_tau_scale(tau_shift)
+          .set_use_most_isolated((strategy_type != strategy::paper2013) && (!(channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee)))
+          .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
+          .set_allowed_tau_modes(allowed_tau_modes);
+      
+       if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::spring16){
+         httPairSelector.set_gen_taus_label("genParticles");
+        }
+        
+        BuildModule(httPairSelector);
+      }
 
-     if(is_data || js["trg_in_mc"].asBool()){
+     if(is_data || js["trg_in_mc"].asBool()){  
+         
        BuildModule(HTTTriggerFilter2("HTTTriggerFilter2")
            .set_channel(channel)
            .set_mc(mc_type)
@@ -752,6 +780,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
            .set_do_leptonplustau(js["do_leptonplustau"].asBool())
            .set_do_singlelepton(js["do_singlelepton"].asBool())
            .set_pair_label("ditau"));
+
      }
    } else {
      if((is_data || js["trg_in_mc"].asBool()) && (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
