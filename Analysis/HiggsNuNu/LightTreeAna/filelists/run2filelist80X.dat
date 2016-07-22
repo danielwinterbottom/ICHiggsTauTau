@@ -159,7 +159,7 @@ EWKWPlus2Jets_WToLNu_split00_munu_all EWKWJets MC_EWKWPlus2Jets_WToLNu_split00_m
 EWKWMinus2Jets_WToLNu_split00_taunu_all EWKWJets MC_EWKWMinus2Jets_WToLNu_split00_taunu.root
 EWKWPlus2Jets_WToLNu_split00_taunu_all EWKWJets MC_EWKWPlus2Jets_WToLNu_split00_taunu.root
 
-EWKZ2Jets_ZToLL EWK_ZJets_ll MC_MC_EWKZ2Jets_ZToLL_split00.root
+EWKZ2Jets_ZToLL EWK_ZJets_ll MC_EWKZ2Jets_ZToLL_split00.root
 EWKZ2Jets_ZToNuNu EWK_ZJets_nunu MC_EWKZ2Jets_ZToNuNu_split00.root
 
 GJets-mg-ht40to100_split00 GJets MC_GJets-mg-ht40to100_split00.root
@@ -440,12 +440,12 @@ WJetsToLNu-mg-ht400to600-v2-2_split01_enu WJets_enu MC_WJetsToLNu-mg-ht400to600-
 WJetsToLNu-mg-ht400to600-v2-2_split01_munu WJets_munu MC_WJetsToLNu-mg-ht400to600-v2-2_split01_munu.root
 WJetsToLNu-mg-ht400to600-v2-2_split01_taunu WJets_taunu MC_WJetsToLNu-mg-ht400to600-v2-2_split01_taunu.root
 
-WJetsToLNu-mg-ht600to800-v2-2_split00_enu WJets_enu MC_WJetsToLNu-mg-ht600to800-v2-2_split00_enu.root
-WJetsToLNu-mg-ht600to800-v2-2_split00_munu WJets_munu MC_WJetsToLNu-mg-ht600to800-v2-2_split00_munu.root
-WJetsToLNu-mg-ht600to800-v2-2_split00_taunu WJets_taunu MC_WJetsToLNu-mg-ht600to800-v2-2_split00_taunu.root
-WJetsToLNu-mg-ht600to800-v2-2_split01_enu WJets_enu MC_WJetsToLNu-mg-ht600to800-v2-2_split01_enu.root
-WJetsToLNu-mg-ht600to800-v2-2_split01_munu WJets_munu MC_WJetsToLNu-mg-ht600to800-v2-2_split01_munu.root
-WJetsToLNu-mg-ht600to800-v2-2_split01_taunu WJets_taunu MC_WJetsToLNu-mg-ht600to800-v2-2_split01_taunu.root
+WJetsToLNu-mg-ht600to800-v2_split00_enu WJets_enu MC_WJetsToLNu-mg-ht600to800-v2_split00_enu.root
+WJetsToLNu-mg-ht600to800-v2_split00_munu WJets_munu MC_WJetsToLNu-mg-ht600to800-v2_split00_munu.root
+WJetsToLNu-mg-ht600to800-v2_split00_taunu WJets_taunu MC_WJetsToLNu-mg-ht600to800-v2_split00_taunu.root
+WJetsToLNu-mg-ht600to800-v2_split01_enu WJets_enu MC_WJetsToLNu-mg-ht600to800-v2_split01_enu.root
+WJetsToLNu-mg-ht600to800-v2_split01_munu WJets_munu MC_WJetsToLNu-mg-ht600to800-v2_split01_munu.root
+WJetsToLNu-mg-ht600to800-v2_split01_taunu WJets_taunu MC_WJetsToLNu-mg-ht600to800-v2_split01_taunu.root
 
 WJetsToLNu-mg-ht800to1200-v2-1_split00_enu WJets_enu MC_WJetsToLNu-mg-ht800to1200-v2-1_split00_enu.root
 WJetsToLNu-mg-ht800to1200-v2-1_split00_munu WJets_munu MC_WJetsToLNu-mg-ht800to1200-v2-1_split00_munu.root
@@ -610,12 +610,12 @@ AllWJetsToLNu-mg-ht400to600-v2-2_split01_enu QCDWJets MC_WJetsToLNu-mg-ht400to60
 AllWJetsToLNu-mg-ht400to600-v2-2_split01_munu QCDWJets MC_WJetsToLNu-mg-ht400to600-v2-2_split01_munu.root
 AllWJetsToLNu-mg-ht400to600-v2-2_split01_taunu QCDWJets MC_WJetsToLNu-mg-ht400to600-v2-2_split01_taunu.root
 
-AllWJetsToLNu-mg-ht600to800-v2-2_split00_enu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2-2_split00_enu.root
-AllWJetsToLNu-mg-ht600to800-v2-2_split00_munu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2-2_split00_munu.root
-AllWJetsToLNu-mg-ht600to800-v2-2_split00_taunu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2-2_split00_taunu.root
-AllWJetsToLNu-mg-ht600to800-v2-2_split01_enu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2-2_split01_enu.root
-AllWJetsToLNu-mg-ht600to800-v2-2_split01_munu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2-2_split01_munu.root
-AllWJetsToLNu-mg-ht600to800-v2-2_split01_taunu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2-2_split01_taunu.root
+AllWJetsToLNu-mg-ht600to800-v2_split00_enu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2_split00_enu.root
+AllWJetsToLNu-mg-ht600to800-v2_split00_munu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2_split00_munu.root
+AllWJetsToLNu-mg-ht600to800-v2_split00_taunu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2_split00_taunu.root
+AllWJetsToLNu-mg-ht600to800-v2_split01_enu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2_split01_enu.root
+AllWJetsToLNu-mg-ht600to800-v2_split01_munu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2_split01_munu.root
+AllWJetsToLNu-mg-ht600to800-v2_split01_taunu QCDWJets MC_WJetsToLNu-mg-ht600to800-v2_split01_taunu.root
 
 AllWJetsToLNu-mg-ht800to1200-v2-1_split00_enu QCDWJets MC_WJetsToLNu-mg-ht800to1200-v2-1_split00_enu.root
 AllWJetsToLNu-mg-ht800to1200-v2-1_split00_munu QCDWJets MC_WJetsToLNu-mg-ht800to1200-v2-1_split00_munu.root
