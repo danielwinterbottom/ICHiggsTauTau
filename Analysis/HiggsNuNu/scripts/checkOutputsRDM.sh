@@ -1,8 +1,8 @@
 #!/bin/sh
 
-JOBDIR=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_160603/
+PROD=160709
+JOBDIR=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_$PROD/
 INJOBDIR=0
-PROD=160603
 
 while [ $# -gt 0 ] ; do
 
@@ -37,7 +37,15 @@ do
     isData=0
     WSTREAM=""
     SPLITSTREAM=""
-    echo $LOGFILE | grep -q "MET_"
+    echo $LOGFILE | grep -q "MET"
+    if (( "$?" == 0 )); then
+	let isData=1
+    fi
+    echo $LOGFILE | grep -q "HTMHT"
+    if (( "$?" == 0 )); then
+	let isData=1
+    fi
+    echo $LOGFILE | grep -q "SingleMuon"
     if (( "$?" == 0 )); then
 	let isData=1
     fi
@@ -68,11 +76,11 @@ do
 	grep -q "Error opening the file" $LOGFILE
 	if (( "$?" == 0 )); then
 	    echo "--> Error opening a file, need to resubmit job $JOBDIR/${JOBFILE}${WSTREAM}.sh!"
-	    echo "./scripts/submit_ic_batch_job.sh hepshort.q $JOBDIR/${JOBFILE}${WSTREAM}.sh"
+	    echo "./scripts/submit_ic_batch_job.sh 2:59:0 $JOBDIR/${JOBFILE}${WSTREAM}.sh"
 	else
 	    tail -5 $LOGFILE
 	    echo "--> Error: Please fix and resubmit with command:"
-	    echo "./scripts/submit_ic_batch_job.sh hepmedium.q $JOBDIR/${JOBFILE}${WSTREAM}.sh"
+	    echo "./scripts/submit_ic_batch_job.sh 5:59:0 $JOBDIR/${JOBFILE}${WSTREAM}.sh"
 	fi
 	#else
 	#    echo "File $LOGFILE succeeded !"
