@@ -12,10 +12,10 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
 MAX_EVTS = -1
-FILES_PER_JOB = 100
+FILES_PER_JOB = 50
 PROD='July19_'
 
-SAMPLES = {
+DATA_SAMPLES = {
   'Tau': [
         'Tau-Run2016B-PromptReco-v1',
         'Tau-Run2016B-PromptReco-v2',
@@ -42,6 +42,17 @@ SAMPLES = {
         ]
 }
 
+MC_SAMPLES = {
+    'DYJetsToLL': [
+        'DYJetsToLL'
+    ]
+}
+
+SAMPLES = {}
+SAMPLES.update(DATA_SAMPLES)
+SAMPLES.update(MC_SAMPLES)
+SEQUENCES = ['Zmm']
+
 OUTPUT = 'output/HTT2016Studies_July19'
 os.system('mkdir -p %s' % OUTPUT)
 
@@ -52,9 +63,14 @@ for sa in SAMPLES:
         'output': '%s/%s.root' % (OUTPUT, sa),
         'filelists': filelists,
         'max_events': MAX_EVTS,
+        'is_data': sa in DATA_SAMPLES.keys(),
+        'sequences': SEQUENCES,
         # Lumi settings
         'lumi_mask': 'input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt',
         'lumi_out': '%s/lumi_%s' % (OUTPUT, sa),
+        # Pileup weights
+        'data_pu': 'input/pileup/Data_Pileup_2016_63mb_Cert_271036-276811_NoL1T.root:pileup',
+        'mc_pu': 'input/pileup/MC_Spring16_PU25ns_V1.root:pileup',
         # Hash map settings
         'hash_map_mode': 0,
         'hash_map_input': 'input/string_hash/hash_map.json',
