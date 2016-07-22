@@ -31,6 +31,7 @@ namespace ic {
       optimisation_study_=false;
       tau_id_study_=false;
       is_embedded_=false;
+      add_nlo_weights_=false;
       is_data_=false;
       qcd_study_=false;
       jetfake_study_=false;
@@ -64,8 +65,10 @@ namespace ic {
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
-      outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
-      outtree_->Branch("nlo_pt",            &nlo_pt_);
+      if(add_nlo_weights_) {
+        outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
+        outtree_->Branch("nlo_pt",            &nlo_pt_);
+      }
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",              &mt_sv_.var_double);

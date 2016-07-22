@@ -557,11 +557,11 @@ void HTTSequence::BuildSequence(){
   }
 
 
-
+if(js["test_nlo_reweight"].asBool()) {
   nloweights::ReadFile();
   BuildModule(NLOWeighting("NLOWeights")
     .set_fs(fs.get()));
-
+}
 
 
 /*  BuildModule(GenericModule("checkGoodVertices")
@@ -1399,6 +1399,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_qcd_study(js["qcd_study"].asBool())
     .set_optimisation_study(js["optimisation_study"].asBool())
     .set_mass_shift(mass_shift)
+    .set_add_nlo_weights(js["test_nlo_reweight"].asBool())
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)
     .set_systematic_shift(addit_output_folder!="")
