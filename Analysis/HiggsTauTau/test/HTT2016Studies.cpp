@@ -23,14 +23,16 @@ bool exists(const std::string& name) {
   return (stat(name.c_str(), &buffer) == 0);
 }
 
+
 int main(int argc, char* argv[]) {
 
 
   Json::Value js = ic::MergedJson(argc, argv);
 
+  // Set the Unhash map if it exists
   Json::Value js_unhash;
-  if (exists("hash_map.json")) {
-    js_unhash = ic::ExtractJsonFromFile("hash_map.json");
+  if (exists(js["hash_map_input"].asString())) {
+    js_unhash = ic::ExtractJsonFromFile(js["hash_map_input"].asString());
   }
   std::map<std::size_t, std::string> unhash_map;
   for (auto val : js_unhash.getMemberNames()) {
@@ -40,6 +42,7 @@ int main(int argc, char* argv[]) {
 
   fwlite::TFileService fs((js["output"].asString()));
 
+  // Create the input filelist
   vector<string> files;
   for (auto const& filelist : js["filelists"]) {
     auto i_files = ic::ParseFileLines(filelist.asString());
@@ -55,6 +58,7 @@ int main(int argc, char* argv[]) {
     do_files.push_back(files[i]);
   }
 
+  // If we're going to make the hash map redirect the input tree
   std::string tree_name = "icEventProducer/EventTree";
   if (js["hash_map_mode"].asBool()) {
     tree_name = "icHashTreeProducer/HashTree";
@@ -88,7 +92,7 @@ int main(int argc, char* argv[]) {
     analysis.RunAnalysis();
     Json::StyledWriter writer;
     std::ofstream output;
-    output.open("hash_map.json");
+    output.open(js.get("hash_map_output", "hash_map_out.json").asString());
     output << writer.write(js_hash_map);
     output.close();
   } else {
