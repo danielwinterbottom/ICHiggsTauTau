@@ -200,6 +200,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
     }
   }
   if(era_type == era::data_2015 || era_type == era::data_2016){
+
    if(js["store_hltpaths"].asBool()){
      min_taus = 1;
      pair_dr = 0.5;
@@ -211,10 +212,12 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      min_taus = 1;
      pair_dr = 0.5;
      elec_pt = 24;//Up from 23 to avoid turn on in new data trigger for first set of runs from run D
+     if (era_type == era::data_2016) elec_pt = 25;
      elec_eta = 2.1;
      tau_pt  = 20;
      tau_eta = 2.3;
    }
+
    } else if (era_type == era::data_2011){
      elec_pt = 20;
      elec_eta = 2.1;
@@ -259,6 +262,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      tau_iso = 10.;
      }
    }
+
   if (era_type == era::data_2015 || era_type == era::data_2016){
     if(js["store_hltpaths"].asBool()){
       muon_pt = 16.0;
@@ -269,12 +273,14 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       pair_dr = 0.5;    
     } else {
       muon_pt = 19.0;//Up from 18 to avoid trigger turn on in new data trigger
+      if(era_type == era::data_2016) muon_pt = 20.;
       muon_eta = 2.1;
       tau_pt = 20;
       tau_eta = 2.3;
       min_taus = 1;
       pair_dr = 0.5;
     }
+
    } else if(era_type == era::data_2011){
     muon_pt = 17.0;
     muon_eta = 2.1;
@@ -511,7 +517,7 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
   //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
   if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
-  if (era_type == era::data_2016)  data_json= "input/json/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt";
+  if (era_type == era::data_2016)  data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt";
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -767,6 +773,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
         }
         
         BuildModule(httPairSelector);
+
       }
 
      if(is_data || js["trg_in_mc"].asBool()){  
@@ -797,7 +804,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
         }
      }
    }
-// }
+ }
 }
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
@@ -850,32 +857,61 @@ if(channel != channel::wmnu && !js["store_hltpaths"].asBool()) {
 if(channel == channel::tpzmm || channel == channel::tpzee){
   BuildModule(GenericModule("TPTriggerInformation")
     .set_function([=](ic::TreeEvent *event){
-       std::string trig_obj_label;
-       std::string tp_filter;
+       std::string trig_obj_label_tag;
+       std::string tp_filter_tag;
+       std::string trig_obj_label_probe;
+       std::string tp_filter_probe;
        if(channel_str == "tpzmm"){ 
          if(!is_data){
-           trig_obj_label = "triggerObjectsIsoMu17";
-           tp_filter = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+           trig_obj_label_tag = "triggerObjectsIsoMu17";
+           tp_filter_tag = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+           trig_obj_label_probe = "triggerObjectsIsoMu17";
+           tp_filter_probe = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
          } else {
-           trig_obj_label = "triggerObjectsIsoMu18";
-           tp_filter = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+           if(strategy_type != strategy::spring16){
+             trig_obj_label_tag = "triggerObjectsIsoMu18";
+             tp_filter_tag = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+             trig_obj_label_probe = "triggerObjectsIsoMu18";
+             tp_filter_probe = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+           } else {
+             trig_obj_label_tag = "triggerObjectsIsoMu22";
+             tp_filter_tag = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+             trig_obj_label_probe = "triggerObjectsIsoMu19LooseTau20SingleL1";
+             tp_filter_probe = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
+           }
          }
        } else if (channel_str == "tpzee"){
          if(!is_data){
-           trig_obj_label = "triggerObjectsEle22Gsf";
-           tp_filter = "hltSingleEle22WP75GsfTrackIsoFilter";
+           trig_obj_label_tag = "triggerObjectsEle22Gsf";
+           tp_filter_tag = "hltSingleEle22WP75GsfTrackIsoFilter";
+           trig_obj_label_probe = "triggerObjectsEle22Gsf";
+           tp_filter_probe = "hltSingleEle22WP75GsfTrackIsoFilter";
          } else {
-           trig_obj_label = "triggerObjectsEle23";
-           tp_filter = "hltEle23WPLooseGsfTrackIsoFilter";
+           if(strategy_type != strategy::spring16){
+             trig_obj_label_tag = "triggerObjectsEle23";
+             tp_filter_tag = "hltEle23WPLooseGsfTrackIsoFilter";
+             trig_obj_label_probe = "triggerObjectsEle23";
+             tp_filter_probe = "hltEle23WPLooseGsfTrackIsoFilter";
+            } else {
+             trig_obj_label_tag = "triggerObjectsEle25GsfTightEta2p1";
+             tp_filter_tag = "hltEle25erWPTightGsfTrackIsoFilter";
+             trig_obj_label_probe= "triggerObjectsEle24LooseTau20SingleL1";
+             tp_filter_probe = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
+           }
          }
        }
        std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>("ditau");
        CompositeCandidate const* ditau  = dileptons.at(0);
-       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
-       bool tp_leg1_match = IsFilterMatched(ditau->At(0), objs, tp_filter, 0.5);
-       bool tp_leg2_match = IsFilterMatched(ditau->At(1), objs, tp_filter, 0.5);
-       event->Add("tp_leg1_match",tp_leg1_match);
-       event->Add("tp_leg2_match",tp_leg2_match);
+       std::vector<TriggerObject *> const& objs_tag = event->GetPtrVec<TriggerObject>(trig_obj_label_tag);
+       std::vector<TriggerObject *> const& objs_probe = event->GetPtrVec<TriggerObject>(trig_obj_label_probe);
+       bool tp_tag_leg1_match = IsFilterMatched(ditau->At(0), objs_tag, tp_filter_tag, 0.5);
+       bool tp_tag_leg2_match = IsFilterMatched(ditau->At(1), objs_tag, tp_filter_tag, 0.5);
+       bool tp_probe_leg1_match = IsFilterMatched(ditau->At(0), objs_probe, tp_filter_probe, 0.5);
+       bool tp_probe_leg2_match = IsFilterMatched(ditau->At(1), objs_probe, tp_filter_probe, 0.5);
+       event->Add("tp_tag_leg1_match",tp_tag_leg1_match);
+       event->Add("tp_tag_leg2_match",tp_tag_leg2_match);
+       event->Add("tp_probe_leg1_match",tp_probe_leg1_match);
+       event->Add("tp_probe_leg2_match",tp_probe_leg2_match);
        return 0;
     }));
 
@@ -1281,10 +1317,18 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
   }
 
  if(strategy_type ==strategy::spring16&&channel!=channel::wmnu){
-   TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_MC_eff");
-   TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_SingleEle_Data_eff");
-   TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu22_MC_eff");
-   TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16.root","/","Muon_SingleMu22_Data_eff");
+   TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele25_Data_Eff");
+   TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele25_Data_Eff");
+   TH2D et_xtrig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele24_Data_Eff");
+   TH2D et_xtrig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele24_Data_Eff");
+   TH2D et_conditional_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_conditional.root","/","Ele25GivenEle24_Data_Eff");
+   TH2D et_conditional_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_conditional.root","/","Ele25GivenEle24_Data_Eff");
+   TH2D mt_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16temp.root","/","Mu22_Data_Eff");
+   TH2D mt_trig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16temp.root","/","Mu22_Data_Eff");
+   TH2D mt_xtrig_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16temp.root","/","Mu19_Data_Eff");
+   TH2D mt_xtrig_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_spring16temp.root","/","Mu19_Data_Eff");
+   TH2D mt_conditional_data = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_conditional.root","/","Mu22GivenMu19_Data_Eff");
+   TH2D mt_conditional_mc = GetFromTFile<TH2D>("input/scale_factors/Muon_SF_conditional.root","/","Mu22GivenMu19_Data_Eff");
    TH2D et_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
    TH2D et_idiso_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_Data_eff");
    TH2D em_e_idiso_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_IdIso0p10_MC_eff");
@@ -1309,8 +1353,15 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_do_tau_id_weights(real_tau_sample)
     .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
+    .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
+    .set_do_cross_trg(js["do_leptonplustau"].asBool())
+    .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
     .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
+    .set_et_xtrig_mc(new TH2D(et_xtrig_mc)).set_et_xtrig_data(new TH2D(et_xtrig_data))
+    .set_et_conditional_mc(new TH2D(et_conditional_mc)).set_et_conditional_data(new TH2D(et_conditional_data))
     .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+    .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
+    .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data))
     .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
     .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
     .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
@@ -1407,6 +1458,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_iso_study(js["iso_study"].asBool())
     .set_tau_id_study(js["tau_id_study"].asBool())
     .set_qcd_study(js["qcd_study"].asBool())
+    .set_optimisation_study(js["optimisation_study"].asBool())
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)

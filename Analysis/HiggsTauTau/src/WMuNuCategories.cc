@@ -114,8 +114,8 @@ namespace ic {
     double btag_wp =  0.679;
     if(strategy_ == strategy::phys14) btag_label = "combinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
-    if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    if(strategy_ == strategy::spring15) btag_wp = 0.814 ;
+    if(strategy_ == strategy::spring15 || strategy_ ==strategy::fall15 || strategy_ == strategy::spring16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::spring16) btag_wp = 0.814 ;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -143,7 +143,7 @@ namespace ic {
     Met const* pfmet = NULL;
     //slightly different pfMET format for new ntuples
     if(strategy_ == strategy::paper2013) pfmet = event->GetPtr<Met>("pfMet");
-    if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
+    if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ ==strategy::spring16) {
       std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
       pfmet = pfMet_vec.at(0);  
     }

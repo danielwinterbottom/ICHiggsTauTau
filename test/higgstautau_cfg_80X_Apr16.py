@@ -22,7 +22,8 @@ opts.register('file',
 #'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/0A349B7D-EA03-E611-9E67-0002C94D5504.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/004A6F0D-E624-E611-9637-02163E011CA0.root',parser.VarParsing.multiplicity.singleton,
-'root://cms-xrd-global.cern.ch//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/158/00000/02D9C19F-571A-E611-AD8E-02163E013732.root',parser.VarParsing.multiplicity.singleton,
+'root://cms-xrd-global.cern.ch//store/mc/RunIISpring16MiniAODv2/SUSYGluGluToHToTauTau_M-1600_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/20000/88D0067C-2A49-E611-884E-F04DA275C013.root', parser.VarParsing.multiplicity.singleton,
+#'root://cms-xrd-global.cern.ch//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/158/00000/02D9C19F-571A-E611-AD8E-02163E013732.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/DYJetsToTauTau_ForcedMuDecay_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/20000/10A0E93C-F901-E611-90F2-0025905A60B4.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext1-v1/20000/0017320C-7BFC-E511-9B2D-0CC47A4C8E34.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
@@ -37,16 +38,19 @@ opts.register('file',
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-#opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2', parser.VarParsing.multiplicity.singleton,
-opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2_v1', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 #opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
+opts.register('isReHLT', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Process as reHLT sample?")
+
 
 
 opts.parseArguments()
@@ -57,8 +61,10 @@ tag         = opts.globalTag
 release     = opts.release
 if not isData:
   doHT     = opts.doHT
+  isReHLT  = opts.isReHLT
 else:
   doHT     = 0
+  isReHLT  = 0
 #isEmbedded  = opts.isEmbedded
 #isTandP     = opts.isTandP
 #isZStudy    = opts.isZStudy
@@ -71,6 +77,7 @@ print 'release     : '+release
 print 'isData      : '+str(isData)
 print 'globalTag   : '+str(tag)
 print 'doHT        : '+str(doHT)
+print 'isReHLT     : '+str(isReHLT)
 
 ################################################################
 # Standard setup
@@ -104,51 +111,51 @@ process.options   = cms.untracked.PSet(
 ################################################################
 process.load("CondCore.CondDB.CondDB_cfi")
 from CondCore.CondDB.CondDB_cfi import *
-if not isData:
-  process.jec = cms.ESSource("PoolDBESSource",
-    DBParameters = cms.PSet(
-     messageLevel = cms.untracked.int32(0)
-    ),
-    timetype = cms.string('runnumber'),
-    toGet = cms.VPSet(
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PF'),
-      label = cms.untracked.string('AK4PF')
-      ),
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
-      label = cms.untracked.string('AK4PFchs')
-      ),
-    ),
-    connect = cms.string('sqlite:Spring16_25nsV3_MC.db')
-  )
+#if not isData:
+#  process.jec = cms.ESSource("PoolDBESSource",
+#    DBParameters = cms.PSet(
+#     messageLevel = cms.untracked.int32(0)
+#    ),
+#    timetype = cms.string('runnumber'),
+#    toGet = cms.VPSet(
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PF'),
+#      label = cms.untracked.string('AK4PF')
+#      ),
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
+#      label = cms.untracked.string('AK4PFchs')
+#      ),
+#    ),
+#    connect = cms.string('sqlite:Spring16_25nsV3_MC.db')
+#  )
+#
+#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
-  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
-
-else :
-  process.jec = cms.ESSource("PoolDBESSource",
-    DBParameters = cms.PSet(
-     messageLevel = cms.untracked.int32(0)
-    ),
-    timetype = cms.string('runnumber'),
-    toGet = cms.VPSet(
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PF'),
-      label = cms.untracked.string('AK4PF')
-      ),
-    cms.PSet(
-      record = cms.string('JetCorrectionsRecord'),
-      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
-      label = cms.untracked.string('AK4PFchs')
-      ),
-    ),
-    connect = cms.string('sqlite:Spring16_25nsV3_DATA.db')
-  )
-
-  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+#else :
+#  process.jec = cms.ESSource("PoolDBESSource",
+#    DBParameters = cms.PSet(
+#     messageLevel = cms.untracked.int32(0)
+#    ),
+#    timetype = cms.string('runnumber'),
+#    toGet = cms.VPSet(
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PF'),
+#      label = cms.untracked.string('AK4PF')
+#      ),
+#    cms.PSet(
+#      record = cms.string('JetCorrectionsRecord'),
+#      tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
+#      label = cms.untracked.string('AK4PFchs')
+#      ),
+#    ),
+#    connect = cms.string('sqlite:Spring16_25nsV3_DATA.db')
+#  )
+#
+#  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/D61F7B94-676F-E511-9970-00221981B434.root',
@@ -1194,8 +1201,13 @@ if release in ['76X']:
                             )
 
 if release in ['80XMINIAOD']:
-  process.icPfMetProducer = producers.icMetFromPatProducer.clone(
+  process.icRecorrectedPfMetProducer = producers.icMetFromPatProducer.clone(
+                           input=cms.InputTag("patpfMETT1"),
                            branch = cms.string("pfMet"),
+                           getUncorrectedMet=cms.bool(False)
+                           )
+  process.icPfMetProducer = producers.icMetFromPatProducer.clone(
+                           branch = cms.string("pfMetFromSlimmed"),
                            getUncorrectedMet=cms.bool(False)
                            )
   process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
@@ -1213,6 +1225,7 @@ process.icPfMetSequence = cms.Sequence(
 if release in ['80XMINIAOD']:
   process.icPfMetSequence.remove(process.pfMetRe)
   process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
+  process.icPfMetSequence+=cms.Sequence(process.icRecorrectedPfMetProducer)
 
 from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
 runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
@@ -1727,6 +1740,9 @@ if release in ['80XMINIAOD']:
    inputPrescales = cms.InputTag("patTrigger")
   )
 
+  if isReHLT:
+    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults","","HLT2")
+
   if isData:
     process.icTriggerSequence += cms.Sequence(
      #process.patTrigger+
@@ -1865,35 +1881,6 @@ process.icEle25TightGsfObjectProducer = producers.icTriggerObjectProducer.clone(
       )
 
 
-
-
-
-process.icEle23ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input = cms.InputTag("patTriggerEvent"),
-    branch = cms.string("triggerObjectsEle23"),
-    hltPath = cms.string("HLT_Ele23_WPLoose_Gsf_v"),
-    inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-  
-  
-process.icIsoMu17LooseTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
-      input   = cms.InputTag("patTriggerEvent"),
-      branch = cms.string("triggerObjectsIsoMu17LooseTau20"),
-      hltPath = cms.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
-      inputIsStandAlone = cms.bool(False),
-      storeOnlyIfFired = cms.bool(False)
-      )
-
-process.icIsoMu17LooseTau20SingleL1ObjectProducer = producers.icTriggerObjectProducer.clone(
-      input   = cms.InputTag("patTriggerEvent"),
-      branch = cms.string("triggerObjectsIsoMu17LooseTau20SingleL1"),
-      hltPath = cms.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v"),
-      inputIsStandAlone = cms.bool(False),
-      storeOnlyIfFired = cms.bool(False)
-      )
-
 process.icIsoMu19LooseTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsIsoMu19LooseTau20"),
@@ -1946,13 +1933,13 @@ process.icIsoMu22ObjectProducer = producers.icTriggerObjectProducer.clone(
     storeOnlyIfFired = cms.bool(False)
     )
 
-#process.icIsoMu22Eta2p1ObjectProducer = producers.icTriggerObjectProducer.clone(
-#    input   = cms.InputTag("patTriggerEvent"),
-#    branch = cms.string("triggerObjectsIsoMu22Eta2p1"),
-#    hltPath = cms.string("HLT_IsoMu22_eta2p1_v"),
-#    inputIsStandAlone = cms.bool(False),
-#    storeOnlyIfFired = cms.bool(False)
-#    )
+process.icIsoMu22Eta2p1ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("patTriggerEvent"),
+    branch = cms.string("triggerObjectsIsoMu22Eta2p1"),
+    hltPath = cms.string("HLT_IsoMu22_eta2p1_v"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(False)
+    )
 
 
 process.icIsoMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1963,13 +1950,6 @@ process.icIsoMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
     storeOnlyIfFired = cms.bool(False)
     )
 
-process.icIsoMu18ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input = cms.InputTag("patTriggerEvent"),
-    branch = cms.string("triggerObjectsIsoMu18"),
-    hltPath = cms.string("HLT_IsoMu18_v"),
-    inputIsStandAlone = cms.bool(False),
-    storeOnlyIfFired = cms.bool(False)
-    )
 
 process.icIsoTkMu18ObjectProducer = producers.icTriggerObjectProducer.clone(
     input = cms.InputTag("patTriggerEvent"),
@@ -2052,7 +2032,6 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icEle22LooseTau20SingleL1ObjectProducer +
       process.icEle27LooseTau20SingleL1ObjectProducer +
       process.icEle32LooseTau20SingleL1ObjectProducer +
-      process.icEle23ObjectProducer +
       process.icEle24GsfObjectProducer +
       process.icEle25TightGsfObjectProducer +
       process.icEle25TightEta2p1GsfObjectProducer +
@@ -2062,15 +2041,12 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icEle27Eta2p1LooseGsfObjectProducer + 
       process.icEle27Eta2p1TightGsfObjectProducer + 
       process.icEle32TightGsfObjectProducer +
-      process.icIsoMu17LooseTau20ObjectProducer +
-      process.icIsoMu17LooseTau20SingleL1ObjectProducer +
       process.icIsoMu19LooseTau20ObjectProducer +
       process.icIsoMu19LooseTau20SingleL1ObjectProducer +
       process.icIsoMu21LooseTau20SingleL1ObjectProducer +
       process.icIsoMu22ObjectProducer+
-      process.icIsoMu18ObjectProducer+
       process.icIsoMu20ObjectProducer+
-#      process.icIsoMu22Eta2p1ObjectProducer+
+      process.icIsoMu22Eta2p1ObjectProducer+
       process.icIsoMu24ObjectProducer+
       process.icIsoMu27ObjectProducer+
       process.icIsoTkMu18ObjectProducer+
@@ -2104,6 +2080,8 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputVertices       = vtxLabel,
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+  includeFiltersFromTrig = cms.bool(True),
+  filtersfromtrig     = cms.vstring("Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
 )
 
 if doHT:
@@ -2136,9 +2114,9 @@ process.p = cms.Path(
 #  process.icL1ExtraTauProducer+
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
-  process.icPfMetSequence+
   process.icPFJetSequence+
   process.icMvaMetSequence+
+  process.icPfMetSequence+
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
@@ -2147,7 +2125,7 @@ process.p = cms.Path(
   process.icEventProducer
 )
 
-if not isData:
+if not isData and not isReHLT:
   process.p.remove(process.icTriggerSequence)
   process.p.remove(process.icTriggerObjectSequence)
 

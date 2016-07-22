@@ -91,6 +91,8 @@ namespace ic {
       alias_map_["njet"]           ="(n_jets>0)";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
       alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -266,10 +268,12 @@ namespace ic {
       alias_map_["2jet1taghigh"] = "(n_jets>=2 && n_bjets==1)";
       alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
-      alias_map_["btag"] = "(n_jets<=1 && n_loose_bjets>=1)";
-      alias_map_["nobtag"] = "n_loose_bjets==0";
+      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      alias_map_["nobtag"] = "n_bjets==0";
+      //alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      //alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
-      alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto &&"+alias_map_["notwoprong"];
+      alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["inclelm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_loose_1>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -292,18 +296,18 @@ namespace ic {
       alias_map_["nobtagdbtight"]         = "(db_tight_1&&db_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["puwmedium"]         = "(puw_medium_1&&puw_medium_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["puwtight"]         = "(puw_tight_1&&puw_tight_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["btagmvadboldvloose"]    = "(mva_olddm_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldloose"]     = "(mva_olddm_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldmedium"]    = "(mva_olddm_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldtight"]     = "(mva_olddm_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldvtight"]     = "(mva_olddm_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldvvtight"]    = "(mva_olddm_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["nobtagmvadboldvloose"]    = "(mva_olddm_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldloose"]     = "(mva_olddm_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldmedium"]    = "(mva_olddm_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldtight"]     = "(mva_olddm_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldvtight"]     = "(mva_olddm_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldvvtight"]    = "(mva_olddm_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["btagmvadboldvloose"]    = "(mva_olddm_vloose_1&&mva_olddm_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldloose"]     = "(mva_olddm_loose_1&&mva_olddm_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldmedium"]    = "(mva_olddm_medium_1&&mva_olddm_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldtight"]     = "(mva_olddm_tight_1&&mva_olddm_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvtight"]     = "(mva_olddm_vtight_1&&mva_olddm_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvvtight"]    = "(mva_olddm_vvtight_1&&mva_olddm_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["nobtagmvadboldvloose"]    = "(mva_olddm_vloose_1&&mva_olddm_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldloose"]     = "(mva_olddm_loose_1&&mva_olddm_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldmedium"]    = "(mva_olddm_medium_1&&mva_olddm_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldtight"]     = "(mva_olddm_tight_1&&mva_olddm_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvtight"]     = "(mva_olddm_vtight_1&&mva_olddm_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvvtight"]    = "(mva_olddm_vvtight_1&&mva_olddm_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_1&&mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_1&&mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_1&&mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
@@ -346,11 +350,11 @@ namespace ic {
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       //MSSM update analysis style categories:
-      alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45 && pt_2<60)";
-      alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>60)";
-      alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>45 && pt_2<60";
-      alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>60 && pt_2<80";
-      alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>80";
+      alias_map_["btaglow"] = "(pt_2<60 &&"+alias_map_["btag"]+")";
+      alias_map_["btaghigh"] = "(pt_2>60 &&"+alias_map_["btag"]+")";
+      alias_map_["nobtaglow"] = "(pt_2<60 &&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmed"] = "(pt_2>60 && pt_2<80 &&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtaghigh"] = "(pt_2>80 &&"+alias_map_["nobtag"]+")";
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "1";
@@ -510,6 +514,7 @@ namespace ic {
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
+      if(ch_ == channel::zmm) alias_map_["baseline"] = "(iso_1<0.15&&iso_2<0.15)";
     } else if (ch_ == channel::tpzmm || ch_ == channel::tpzee) {
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
@@ -620,7 +625,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){
        samples_alias_map_["data_samples"] = {
-        "SingleElectron"
+        "SingleElectronB","SingleElectronC","SingleElectronD"
        };
     } else if(!is_fall15_){
        samples_alias_map_["data_samples"] = {
@@ -634,7 +639,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){
      samples_alias_map_["data_samples"] = {
-       "SingleMuon"
+       "SingleMuonB","SingleMuonC","SingleMuonD"
        };
     } else if(!is_fall15_){
      samples_alias_map_["data_samples"] = {
@@ -648,7 +653,7 @@ namespace ic {
      };
     if(year_.find("6")!=year_.npos){ 
       samples_alias_map_["data_samples"] = {
-        "Tau"
+        "TauB","TauC","TauD"
       };
     } else if(!is_fall15_){
      samples_alias_map_["data_samples"] = {
@@ -662,7 +667,7 @@ namespace ic {
     };
     if(year_.find("6")!=year_.npos){
       samples_alias_map_["data_samples"] = {
-        "MuonEG"
+        "MuonEGB","MuonEGC"
       };
     } else if(!is_fall15_){
       samples_alias_map_["data_samples"] = {
@@ -1197,6 +1202,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
     std::string maincat = cat + "&&" + alias_map_["baseline"];
+    std::string ttqcdcat = cat + "&&" + alias_map_["incnotauiso"];
     Value qcd_norm;
     TH1F qcd_hist;
 //    if (ch_ != channel::em) {
@@ -1218,7 +1224,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       //Default QCD method for fully hadronic is different...
       if(ch_ == channel::tt && method == 8){
         qcd_sdb_sel = "os && " + this->ResolveAlias("sel");
-        qcd_sdb_cat = cat + "&&" + alias_map_["tt_qcd_norm"];
+        qcd_sdb_cat = ttqcdcat + "&&" + alias_map_["tt_qcd_norm"];
       }
       
       //Work out the W norm in the SS region separately if it is data driven

@@ -29,6 +29,7 @@ namespace ic {
       make_sync_ntuple_ = false;
       sync_output_name_ = "SYNC.root";
       iso_study_=false;
+      optimisation_study_=false;
       tau_id_study_=false;
       is_embedded_=false;
       is_data_=false;
@@ -472,8 +473,10 @@ namespace ic {
         outtree_->Branch("dxy_2", &d0_2_.var_double);
         outtree_->Branch("dz_1", &dz_1_.var_double);
         outtree_->Branch("dz_2", &dz_2_.var_double);
-        outtree_->Branch("trigger_match_1", &trigger_match_1_);
-        outtree_->Branch("trigger_match_2", &trigger_match_2_);
+        outtree_->Branch("tag_trigger_match_1", &tag_trigger_match_1_);
+        outtree_->Branch("tag_trigger_match_2", &tag_trigger_match_2_);
+        outtree_->Branch("probe_trigger_match_1", &probe_trigger_match_1_);
+        outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -527,6 +530,13 @@ namespace ic {
           outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
           outtree_->Branch("dz_1",              &dz_1_.var_double);
           outtree_->Branch("dz_2",              &dz_2_.var_double);
+        } 
+        if (optimisation_study_){
+          outtree_->Branch("pzetavis",          &pzetavis_.var_double);
+          outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
+          outtree_->Branch("mt_ll",             &mt_ll_);
+          outtree_->Branch("met_dphi_1",             &met_dphi_1_);
+          outtree_->Branch("met_dphi_2",             &met_dphi_2_);
         }
         if(add_Hhh_variables_) {
           outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
@@ -1446,6 +1456,8 @@ namespace ic {
     pzeta_ = PZeta(ditau, mets, 0.85);
     pzetavis_ = PZetaVis(ditau);
     pzetamiss_ = PZeta(ditau, mets, 0.0);
+    met_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep1->vector()));
+    met_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep2->vector()));
     //save some pfmet and puppi met versions as well for now
     pfmt_1_ = MT(lep1, pfmet);
     pfpzeta_ = PZeta(ditau, pfmet, 0.85);
@@ -2276,10 +2288,10 @@ namespace ic {
         mva_2_ = MuonMedium(muon2);
       }
       if(strategy_ == strategy::spring16){
-        iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
+        iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
-        mva_1_ = MuonMedium(muon1);
-        mva_2_ = MuonMedium(muon2);
+        mva_1_ = MuonMediumHIPsafe(muon1);
+        mva_2_ = MuonMediumHIPsafe(muon2);
       }
       d0_1_ = muon1->dxy_vertex();
       dz_1_ = muon1->dz_vertex();
@@ -2288,8 +2300,10 @@ namespace ic {
     }
 
     if (channel_ == channel::tpzmm || channel_ == channel::tpzee){
-      trigger_match_1_ = event->Exists("tp_leg1_match") ? event->Get<bool>("tp_leg1_match") : 0;
-      trigger_match_2_ = event->Exists("tp_leg2_match") ? event->Get<bool>("tp_leg2_match") : 0;
+      tag_trigger_match_1_ = event->Exists("tp_tag_leg1_match") ? event->Get<bool>("tp_tag_leg1_match") : 0;
+      tag_trigger_match_2_ = event->Exists("tp_tag_leg2_match") ? event->Get<bool>("tp_tag_leg2_match") : 0;
+      probe_trigger_match_1_ = event->Exists("tp_probe_leg1_match") ? event->Get<bool>("tp_probe_leg1_match") : 0;
+      probe_trigger_match_2_ = event->Exists("tp_probe_leg2_match") ? event->Get<bool>("tp_probe_leg2_match") : 0;
     }
 
     Tau const* tau1 = dynamic_cast<Tau const*>(lep1);

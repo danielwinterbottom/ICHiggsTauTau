@@ -1,12 +1,12 @@
 {
   "job": {
-    "filelist" : "filelists/June19_MC_80X_WZTo1L3Nu.dat",
-    //"filelist" : "filelists/June19_MC_80X_SUSYGluGluToHToTauTau_M-160.dat",
-    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/June19_MC_80X/",
+    "filelist" : "filelists/July08_MC_80X_WZTo1L3Nu.dat",
+    //"filelist" : "filelists/July08_MC_80X_SUSYGluGluToHToTauTau_M-160.dat",
+    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July08_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-//    "channels":     ["zmm","zee","tpzmm","tpzee"],
-    "channels":     ["zmm", "zee"],
+    "channels":     ["tpzmm","tpzee"],
+//    "channels":     ["zmm", "zee"],
     "sequences": {
       "all":  ["default"]//,//,// "scale_j_lo", "scale_j_hi"],
 //      "et":   ["scale_t_lo", "scale_t_hi"],
@@ -40,7 +40,7 @@
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
     //"output_folder" : "./output/July27_OldGolden/",
-    "output_folder" : "./output/June19_Zll_trgindata_weights/",
+    "output_folder" : "./output/July08-TandP-July21/",
     "output_name"   : "WZTo1L3Nu",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
@@ -59,7 +59,7 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2016_Jun29.root",
+    "data_pu_file"  : "input/pileup/Data_Pileup_2016_July21.root",
     "mc_pu_file"    : "input/pileup/MC_Spring16_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
