@@ -31,6 +31,7 @@ namespace ic {
       optimisation_study_=false;
       tau_id_study_=false;
       is_embedded_=false;
+      add_nlo_weights_=false;
       is_data_=false;
       qcd_study_=false;
       jetfake_study_=false;
@@ -64,6 +65,10 @@ namespace ic {
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
+      if(add_nlo_weights_) {
+        outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
+        outtree_->Branch("nlo_pt",            &nlo_pt_);
+      }
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",              &mt_sv_.var_double);
@@ -810,6 +815,8 @@ namespace ic {
     wt_em_qcd_ = 1.0;
     wt_em_qcd_down_ = 1.0;
     wt_em_qcd_up_ = 1.0;
+    wt_nlo_pt_ = 1.0;
+    nlo_pt_ = 9999.;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
     if (event->Exists("wt_tau_fake_up"))    wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");
@@ -823,6 +830,9 @@ namespace ic {
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
     if (event->Exists("wt_em_qcd_up"))      wt_em_qcd_up_ = event->Get<double>("wt_em_qcd_up");
     if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
+    if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
+    if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
+
   
   mc_weight_ = 0.0;
   if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;

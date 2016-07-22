@@ -62,6 +62,7 @@
 #include "Modules/interface/PileupWeight.h"
 #include "Modules/interface/CheckEvents.h"
 #include "Modules/interface/GenericModule.h"
+#include "HiggsTauTau/interface/NLOWeighting.h"
 
 namespace ic {
 
@@ -554,7 +555,14 @@ void HTTSequence::BuildSequence(){
     else return 0;
    }));
   }
-          
+
+
+if(js["test_nlo_reweight"].asBool()) {
+  nloweights::ReadFile();
+  BuildModule(NLOWeighting("NLOWeights")
+    .set_fs(fs.get()));
+}
+
 
 /*  BuildModule(GenericModule("checkGoodVertices")
     .set_function([](ic::TreeEvent *event){
@@ -1391,6 +1399,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_qcd_study(js["qcd_study"].asBool())
     .set_optimisation_study(js["optimisation_study"].asBool())
     .set_mass_shift(mass_shift)
+    .set_add_nlo_weights(js["test_nlo_reweight"].asBool())
     .set_is_embedded(is_embedded)
     .set_is_data(is_data)
     .set_systematic_shift(addit_output_folder!="")
