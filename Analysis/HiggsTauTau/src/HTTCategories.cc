@@ -993,18 +993,6 @@ namespace ic {
       emHLTPath25_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v");    
       emHLTPath26_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v");
       
-      emHLTPath22_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_leg1_match");
-      emHLTPath23_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_leg1_match");
-      emHLTPath24_ = event->Get<bool>("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_leg1_match");
-      emHLTPath25_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_leg1_match");    
-      emHLTPath26_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_leg1_match");
-      
-      emHLTPath22_leg2_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_leg2_match");
-      emHLTPath23_leg2_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_leg2_match");
-      emHLTPath24_leg2_ = event->Get<bool>("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_leg2_match");
-      emHLTPath25_leg2_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_leg2_match");    
-      emHLTPath26_leg2_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_leg2_match");
-      
       emHLTPath1_leg1_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v_leg1_match");                               
       emHLTPath2_leg1_  = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_v_leg1_match");                        
       emHLTPath3_leg1_  = event->Get<bool>("HLT_Ele25_WPTight_Gsf_v_leg1_match");                               
@@ -1015,17 +1003,6 @@ namespace ic {
       emHLTPath8_leg1_  = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_v_leg1_match");                        
       emHLTPath9_leg1_  = event->Get<bool>("HLT_Ele27_eta2p1_WPTight_Gsf_v_leg1_match");                        
       emHLTPath10_leg1_ = event->Get<bool>("HLT_Ele32_eta2p1_WPTight_Gsf_v_leg1_match");                        
-      
-      emHLTPath1_leg2_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v_leg2_match");                               
-      emHLTPath2_leg2_  = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_v_leg2_match");                        
-      emHLTPath3_leg2_  = event->Get<bool>("HLT_Ele25_WPTight_Gsf_v_leg2_match");                               
-      emHLTPath4_leg2_  = event->Get<bool>("HLT_Ele25_eta2p1_WPLoose_Gsf_v_leg2_match");                        
-      emHLTPath5_leg2_  = event->Get<bool>("HLT_Ele25_eta2p1_WPTight_Gsf_v_leg2_match");                        
-      emHLTPath6_leg2_  = event->Get<bool>("HLT_Ele27_WPLoose_Gsf_v_leg2_match");                               
-      emHLTPath7_leg2_  = event->Get<bool>("HLT_Ele27_WPTight_Gsf_v_leg2_match");                               
-      emHLTPath8_leg2_  = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_v_leg2_match");                        
-      emHLTPath9_leg2_  = event->Get<bool>("HLT_Ele27_eta2p1_WPTight_Gsf_v_leg2_match");                        
-      
       emHLTPath11_leg1_ = event->Get<bool>("HLT_IsoMu18_v_leg1_match");                               
       emHLTPath12_leg1_ = event->Get<bool>("HLT_IsoMu20_v_leg1_match");                               
       emHLTPath13_leg1_ = event->Get<bool>("HLT_IsoMu22_v_leg1_match");                               
@@ -1037,7 +1014,22 @@ namespace ic {
       emHLTPath19_leg1_ = event->Get<bool>("HLT_IsoTkMu22_v_leg1_match");                             
       emHLTPath20_leg1_ = event->Get<bool>("HLT_IsoTkMu24_v_leg1_match");                             
       emHLTPath21_leg1_ = event->Get<bool>("HLT_IsoTkMu27_v_leg1_match");                             
-
+      emHLTPath22_leg1_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_leg1_match");
+      emHLTPath23_leg1_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_leg1_match");
+      emHLTPath24_leg1_ = event->Get<bool>("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_leg1_match");
+      emHLTPath25_leg1_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_leg1_match");    
+      emHLTPath26_leg1_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_leg1_match");
+      
+      emHLTPath1_leg2_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v_leg2_match");                               
+      emHLTPath2_leg2_  = event->Get<bool>("HLT_Ele24_eta2p1_WPLoose_Gsf_v_leg2_match");                        
+      emHLTPath3_leg2_  = event->Get<bool>("HLT_Ele25_WPTight_Gsf_v_leg2_match");                               
+      emHLTPath4_leg2_  = event->Get<bool>("HLT_Ele25_eta2p1_WPLoose_Gsf_v_leg2_match");                        
+      emHLTPath5_leg2_  = event->Get<bool>("HLT_Ele25_eta2p1_WPTight_Gsf_v_leg2_match");                        
+      emHLTPath6_leg2_  = event->Get<bool>("HLT_Ele27_WPLoose_Gsf_v_leg2_match");                               
+      emHLTPath7_leg2_  = event->Get<bool>("HLT_Ele27_WPTight_Gsf_v_leg2_match");                               
+      emHLTPath8_leg2_  = event->Get<bool>("HLT_Ele27_eta2p1_WPLoose_Gsf_v_leg2_match");                        
+      emHLTPath9_leg2_  = event->Get<bool>("HLT_Ele27_eta2p1_WPTight_Gsf_v_leg2_match");
+      emHLTPath10_leg2_ = event->Get<bool>("HLT_Ele32_eta2p1_WPTight_Gsf_v_leg2_match");
       emHLTPath11_leg2_  = event->Get<bool>("HLT_IsoMu18_v_leg2_match");                                    
       emHLTPath12_leg2_  = event->Get<bool>("HLT_IsoMu20_v_leg2_match");                                    
       emHLTPath13_leg2_  = event->Get<bool>("HLT_IsoMu22_v_leg2_match");                                    
@@ -1049,6 +1041,11 @@ namespace ic {
       emHLTPath19_leg2_  = event->Get<bool>("HLT_IsoTkMu22_v_leg2_match");                                  
       emHLTPath20_leg2_ = event->Get<bool>("HLT_IsoTkMu24_v_leg2_match");                                  
       emHLTPath21_leg2_ = event->Get<bool>("HLT_IsoTkMu27_v_leg2_match");                                  
+      emHLTPath22_leg2_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_leg2_match");
+      emHLTPath23_leg2_ = event->Get<bool>("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_leg2_match");
+      emHLTPath24_leg2_ = event->Get<bool>("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_leg2_match");
+      emHLTPath25_leg2_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_leg2_match");    
+      emHLTPath26_leg2_ = event->Get<bool>("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_leg2_match");
 
     } else if(channel_ == channel::et){
       etHLTPath1_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v");                               
