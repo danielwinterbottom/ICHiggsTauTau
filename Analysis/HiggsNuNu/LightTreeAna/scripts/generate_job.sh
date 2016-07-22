@@ -19,11 +19,11 @@ fi
 echo "cd $PWD" &> $OUTPUT
 if (( "$GRIDSETUP" != "0" )); then
     echo "Grid setup is enabled."
-    echo "source /vols/cms/grid/setup.sh" >> $OUTPUT
+    echo "source /vols/grid/cms/setup.sh" >> $OUTPUT
 else 
     echo "Grid setup is disabled."
 fi
-echo "export SCRAM_ARCH=slc5_amd64_gcc462" >> $OUTPUT
+echo "export SCRAM_ARCH=slc6_amd64_gcc530" >> $OUTPUT
 echo "eval \`scramv1 runtime -sh\`" >> $OUTPUT
 echo "source $PWD/scripts/setup_libs.sh" >> $OUTPUT
 echo "$INPUT" >> $OUTPUT
