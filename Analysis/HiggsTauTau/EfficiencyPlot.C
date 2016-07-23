@@ -1,16 +1,16 @@
 {
-TString foldername = "V58pt1Efficiencies/";
-TString histname = "h_MHTEfficiency";
-TString histnameTotal = "h_GenMHTEfficiency";
+TString foldername = "ProposalPlots/";
+TString histname = "h_jetjet_Mjj_Efficiency";
+TString histnameTotal = "h_jetjet_Mjj_Total";
 
-TFile *f1 = new TFile("output/Trigger_2016/V58pt1Efficiencies_MVAMet.root");
+TFile *f1 = new TFile("output/Trigger_2016/v58pt1_Efficiencies.root");
 
 TH1D *htotal = (TH1D*)f1->Get("EfficienciesGenMatch/TriggerEfficiencies1/"+histnameTotal);
 TH1D *h1 = (TH1D*)f1->Get("EfficienciesGenMatch/TriggerEfficiencies1/"+histname);
 TH1D *h2 = (TH1D*)f1->Get("EfficienciesGenMatch/TriggerEfficiencies2/"+histname);
 TH1D *h3 = (TH1D*)f1->Get("EfficienciesGenMatch/TriggerEfficiencies3/"+histname);
 
-int rebinN = 4;
+int rebinN = 3;
 htotal->Rebin(rebinN,"htotalnew");
 
 h1->Multiply(htotal);
@@ -30,8 +30,8 @@ gStyle->SetOptStat(0);
 gStyle->SetPadGridX(1);
 gStyle->SetPadGridY(1);
 
-//h1->GetXaxis()->SetRangeUser(0, 100);
-h1->GetXaxis()->SetTitle("offline MET [GeV]");
+//h1->GetXaxis()->SetRangeUser(0, 180);
+h1->GetXaxis()->SetTitle("offline M_{jj} [GeV]");
 
 h1->SetFillStyle(0);
 h1->SetMarkerStyle(33);
@@ -59,16 +59,18 @@ h3->SetLineWidth(2);
 h3->SetMarkerStyle(33);
 h3->SetMarkerSize(1.7);
 
+//h1->GetYaxis()->SetRangeUser(0,1.1);
+
 h1->Draw("P");
 h2->Draw("SAMEP");
 h3->Draw("SAMEP");
 
-//leg = new TLegend(0.47,0.28,0.85,0.48);
+leg = new TLegend(0.57,0.28,0.85,0.48);
 //leg = new TLegend(0.58,0.13,0.85,0.33);
-leg = new TLegend(0.15,0.72,0.38,0.88);
-leg->AddEntry(h1,"L1 MET #geq 30 GeV ","pl");
-leg->AddEntry(h2,"L1 MET #geq 60 GeV ","pl");
-leg->AddEntry(h3,"L1 MET #geq 90 GeV ","pl");
+//leg = new TLegend(0.15,0.72,0.38,0.88);
+leg->AddEntry(h1,"L1 M_{jj} #geq 400 GeV ","p");
+leg->AddEntry(h2,"L1 M_{jj} #geq 500 GeV ","p");
+leg->AddEntry(h3,"L1 M_{jj} #geq 600 GeV ","p");
 
 leg->Draw();
 
@@ -79,7 +81,7 @@ tex->SetTextSize(23);
 tex->SetLineWidth(2);
 tex->Draw();
 
-TLatex *   tex2 = new TLatex(0.15,0.92,"L1 MET no HF");
+TLatex *   tex2 = new TLatex(0.15,0.92,"offline jets |#eta| < 4.7, p_{T} > 30 GeV");
 tex2->SetNDC();
 tex2->SetTextFont(44);
 tex2->SetTextSize(23);

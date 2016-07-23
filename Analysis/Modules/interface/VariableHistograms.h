@@ -99,6 +99,14 @@ namespace ic {
     TH1D *h_Tau2Pt_LOOSE;
     TH1D *h_Jet1Pt_LOOSE;
     TH1D *h_Jet2Pt_LOOSE;
+    
+    TH1D *h_HPtRes;
+    TH1D *h_VBFPtRes;
+    TH1D *h_VBFPlusHPtRes;
+    TH1D *h_HadHadVBF;
+    
+    TH1D *h_bothtausmatched;
+
 
 
   public:

@@ -28,67 +28,79 @@ namespace ic {
     h_qq_Mqq->GetYaxis()->SetTitle("Entries");
 
     h_q1_Pt = subDir.make<TH1D>("h_q1_Pt","h_q1_Pt",150, 0,300); 
-    h_q1_Pt->GetXaxis()->SetTitle("Leading quark p_{T} [GeV]");
+    h_q1_Pt->GetXaxis()->SetTitle("leading quark p_{T} [GeV]");
     h_q1_Pt->GetYaxis()->SetTitle("Entries");
     
     h_q2_Pt = subDir.make<TH1D>("h_q2_Pt","h_q2_Pt",150, 0,300); 
-    h_q2_Pt->GetXaxis()->SetTitle("Sub-leading quark p_{T} [GeV]");
+    h_q2_Pt->GetXaxis()->SetTitle("sub-leading quark p_{T} [GeV]");
     h_q2_Pt->GetYaxis()->SetTitle("Entries");
     
     h_qq_AvePt = subDir.make<TH1D>("h_qq_AvePt","h_qq_AvePt",150, 0,300); 
-    h_qq_AvePt->GetXaxis()->SetTitle("Quarks <p_{T}>_{qq} [GeV]");
+    h_qq_AvePt->GetXaxis()->SetTitle("quarks AvgPt [GeV]");
     h_qq_AvePt->GetYaxis()->SetTitle("Entries");
     
+    h_qq_VecPt = subDir.make<TH1D>("h_qq_VecPt","h_qq_VecPt",150, 0,300); 
+    h_qq_VecPt->GetXaxis()->SetTitle("quarks VecPt [GeV]");
+    h_qq_VecPt->GetYaxis()->SetTitle("Entries");
+    
     h_genjj_DeltaEta = subDir.make<TH1D>("h_genjj_DeltaEta","h_genjj_DeltaEta",100, 0,10);
-    h_genjj_DeltaEta->GetXaxis()->SetTitle("|#Delta#eta_{jj}|");
+    h_genjj_DeltaEta->GetXaxis()->SetTitle("gen |#Delta#eta|");
     h_genjj_DeltaEta->GetYaxis()->SetTitle("Entries");
     
-    h_genjj_Mqq = subDir.make<TH1D>("h_genjj_Mqq","h_genjj_Mqq",100, 0,2000); 
-    h_genjj_Mqq->GetXaxis()->SetTitle("m_{jj} [GeV]");
+    h_genjj_Mqq = subDir.make<TH1D>("h_genjj_Mjj","h_genjj_Mjj",100, 0,2000); 
+    h_genjj_Mqq->GetXaxis()->SetTitle("gen m_{jj} [GeV]");
     h_genjj_Mqq->GetYaxis()->SetTitle("Entries");
 
     h_genj1_Pt = subDir.make<TH1D>("h_genj1_Pt","h_genj1_Pt",150, 0,300); 
-    h_genj1_Pt->GetXaxis()->SetTitle("Leading jet p_{T} [GeV]");
+    h_genj1_Pt->GetXaxis()->SetTitle("gen leading jet p_{T} [GeV]");
     h_genj1_Pt->GetYaxis()->SetTitle("Entries");
     
     h_genj2_Pt = subDir.make<TH1D>("h_genj2_Pt","h_genj2_Pt",150, 0,300); 
-    h_genj2_Pt->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
+    h_genj2_Pt->GetXaxis()->SetTitle("gen sub-leading jet p_{T} [GeV]");
     h_genj2_Pt->GetYaxis()->SetTitle("Entries");
     
     h_genjj_AvePt = subDir.make<TH1D>("h_genjj_AvePt","h_genjj_AvePt",150, 0,300); 
-    h_genjj_AvePt->GetXaxis()->SetTitle("Jets <p_{T}>_{jj} [GeV]");
+    h_genjj_AvePt->GetXaxis()->SetTitle("gen jets AvgPt [GeV]");
     h_genjj_AvePt->GetYaxis()->SetTitle("Entries");
     
+    h_genjj_VecPt = subDir.make<TH1D>("h_genjj_VecPt","h_genjj_VecPt",150, 0,300); 
+    h_genjj_VecPt->GetXaxis()->SetTitle("gen jets VecPt [GeV]");
+    h_genjj_VecPt->GetYaxis()->SetTitle("Entries");
+    
     h_jj_Mqq = subDir.make<TH1D>("h_jj_Mjj","h_jj_Mjj",100, 0,2000); 
-    h_jj_Mqq->GetXaxis()->SetTitle("m_{jj} [GeV]");
+    h_jj_Mqq->GetXaxis()->SetTitle("offline m_{jj} [GeV]");
     h_jj_Mqq->GetYaxis()->SetTitle("Entries");
     
     h_jj_DeltaEta = subDir.make<TH1D>("h_jj_DeltaEta","h_jj_DeltaEta",100, 0,10);
-    h_jj_DeltaEta->GetXaxis()->SetTitle("|#Delta#eta_{jj}|");
+    h_jj_DeltaEta->GetXaxis()->SetTitle("offline |#Delta#eta|");
     h_jj_DeltaEta->GetYaxis()->SetTitle("Entries");
 
     h_j1_Pt = subDir.make<TH1D>("h_j1_Pt","h_j1_Pt",150, 0,300); 
-    h_j1_Pt->GetXaxis()->SetTitle("Leading jet p_{T} [GeV]");
+    h_j1_Pt->GetXaxis()->SetTitle("offline leading jet p_{T} [GeV]");
     h_j1_Pt->GetYaxis()->SetTitle("Entries");
     
     h_j2_Pt = subDir.make<TH1D>("h_j2_Pt","h_j2_Pt",150, 0,300); 
-    h_j2_Pt->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
+    h_j2_Pt->GetXaxis()->SetTitle("offline sub-leading jet p_{T} [GeV]");
     h_j2_Pt->GetYaxis()->SetTitle("Entries");
     
     h_jj_AvePt = subDir.make<TH1D>("h_jj_AvePt","h_jj_AvePt",150, 0,300); 
-    h_jj_AvePt->GetXaxis()->SetTitle("Jets <p_{T}>_{jj} [GeV]");
+    h_jj_AvePt->GetXaxis()->SetTitle("offline jets AvgPt [GeV]");
     h_jj_AvePt->GetYaxis()->SetTitle("Entries");
     
+    h_jj_VecPt = subDir.make<TH1D>("h_jj_VecPt","h_jj_VecPt",150, 0,300); 
+    h_jj_VecPt->GetXaxis()->SetTitle("offline jets VecPt [GeV]");
+    h_jj_VecPt->GetYaxis()->SetTitle("Entries");
+    
     h_l1jj_Mqq = subDir.make<TH1D>("h_l1jj_l1Mjj","h_l1M_Mjj",100, 0,2000); 
-    h_l1jj_Mqq->GetXaxis()->SetTitle("m_{jj} [GeV]");
+    h_l1jj_Mqq->GetXaxis()->SetTitle("L1 m_{jj} [GeV]");
     h_l1jj_Mqq->GetYaxis()->SetTitle("Entries");
     
     h_l1jj_DeltaEta = subDir.make<TH1D>("h_l1jj_DeltaEta","h_l1jj_DeltaEta",100, 0,10);
-    h_l1jj_DeltaEta->GetXaxis()->SetTitle("|#Delta#eta_{jj}|");
+    h_l1jj_DeltaEta->GetXaxis()->SetTitle("L1 |#Delta#eta|");
     h_l1jj_DeltaEta->GetYaxis()->SetTitle("Entries");
 
     h_l1j1_Pt = subDir.make<TH1D>("h_l1j1_Pt","h_l1j1_Pt",150, 0,300); 
-    h_l1j1_Pt->GetXaxis()->SetTitle("Leading jet p_{T} [GeV]");
+    h_l1j1_Pt->GetXaxis()->SetTitle("L1 leading jet p_{T} [GeV]");
     h_l1j1_Pt->GetYaxis()->SetTitle("Entries");
     
     h_l1j1_PtVsEta = subDir.make<TH2D>("h_l1j1_PtVsEta","h_l1j1_PtVsEta",100,-5,5,150, 0,300); 
@@ -100,16 +112,17 @@ namespace ic {
     h_l1j2_PtVsEta->GetYaxis()->SetTitle("Sub-Leading jet p_{T} [GeV] ");
     
     h_l1j2_Pt = subDir.make<TH1D>("h_l1j2_Pt","h_l1j2_Pt",150, 0,300); 
-    h_l1j2_Pt->GetXaxis()->SetTitle("Sub-leading jet p_{T} [GeV]");
+    h_l1j2_Pt->GetXaxis()->SetTitle("L1 sub-leading jet p_{T} [GeV]");
     h_l1j2_Pt->GetYaxis()->SetTitle("Entries");
     
     h_l1jj_AvePt = subDir.make<TH1D>("h_l1jj_AvePt","h_l1jj_AvePt",150, 0,300); 
-    h_l1jj_AvePt->GetXaxis()->SetTitle("Jets <p_{T}>_{jj} [GeV]");
+    h_l1jj_AvePt->GetXaxis()->SetTitle("L1 jets AvgPt [GeV]");
     h_l1jj_AvePt->GetYaxis()->SetTitle("Entries");
     
     h_l1jj_VecPt = subDir.make<TH1D>("h_l1jj_VecPt","h_l1jj_VecPt",150, 0,300); 
-    h_l1jj_VecPt->GetXaxis()->SetTitle("Di-jet p_{T}_{jj} [GeV]");
+    h_l1jj_VecPt->GetXaxis()->SetTitle("L1 jets VecPt [GeV]");
     h_l1jj_VecPt->GetYaxis()->SetTitle("Entries");
+    
     
     h_l1jj_VecPt_NonVBF = subDir.make<TH1D>("h_l1jj_VecPt_NonVBF","h_l1jj_VecPt_NonVBF",150, 0,300); 
     h_l1jj_VecPt_NonVBF->GetXaxis()->SetTitle("Di-jet p_{T}_{jj} [GeV]");
@@ -272,6 +285,26 @@ namespace ic {
     h_AveJetPtResGenJet->GetXaxis()->SetTitle("Jets (l1 <p_{T}>- gen <p_{T}>)/(gen <p_{T}>)");
     h_AveJetPtResGenJet->GetYaxis()->SetTitle("Entries");    
     
+    h_VecJetPtResGenJet = subDir.make<TH1D>("h_VecJetPtResGenJet","h_VecJetPtResGenJet",100, -2,2); 
+    h_VecJetPtResGenJet->GetXaxis()->SetTitle("Jets (l1 VecPt- gen VecPT)/(gen VecPt)");
+    h_VecJetPtResGenJet->GetYaxis()->SetTitle("Entries");  
+    
+    h_VecJetPtResGenH = subDir.make<TH1D>("h_VecJetPtResGenH","h_VecJetPtResGenH",100, -2,2); 
+    h_VecJetPtResGenH->GetXaxis()->SetTitle("Jets (l1 VecPt- gen H Pt)/(gen H Pt)");
+    h_VecJetPtResGenH->GetYaxis()->SetTitle("Entries"); 
+    
+    h_L1METHFHiggsPtRes = subDir.make<TH1D>("h_L1METHFHiggsPtRes","h_L1METHFHiggsPtRes",100, -2,2);
+    h_L1METHFHiggsPtRes->GetXaxis()->SetTitle("(L1 MET - gen HigsPt)/(gen HiggsPt) [inc HF]");
+    h_L1METHFHiggsPtRes->GetYaxis()->SetTitle("Entries"); 
+    
+    h_L1METHiggsPtRes = subDir.make<TH1D>("h_L1METHiggsPtRes","h_L1METHiggsPtRes",100, -2,2);
+    h_L1METHiggsPtRes->GetXaxis()->SetTitle("(L1 MET - gen HigsPt)/(gen HiggsPt) [no HF]");
+    h_L1METHiggsPtRes->GetYaxis()->SetTitle("Entries"); 
+    
+    h_ETMResGenH = subDir.make<TH1D>("h_ETMResGenH","h_ETMResGenH",100, -3,3); 
+    h_ETMResGenH->GetXaxis()->SetTitle("Jets (l1 VecPt- gen H Pt)/(gen H Pt)");
+    h_ETMResGenH->GetYaxis()->SetTitle("Entries");
+    
     h_EtaJetRes = subDir.make<TH1D>("h_EtaJetRes","h_EtaJetRes",100, -0.5,0.5); 
     h_EtaJetRes->GetXaxis()->SetTitle("Jets (l1 #eta- gen #eta)/(gen #eta)");
     h_EtaJetRes->GetYaxis()->SetTitle("Entries");  
@@ -365,6 +398,11 @@ namespace ic {
     h_JetsMathedTo_LeadMjjLeadAvePt = subDir.make<TH1D>("h_JetsMathedTo_LeadMjjLeadAvePt","h_JetsMathedTo_LeadMjjLeadAvePt",6, 0,6);
     h_L1VBFMultiplicity = subDir.make<TH1D>("h_L1VBFMultiplicity","h_L1VBFMultiplicity",10, 0,10); 
     
+    h_HiggsPtVsL1VecPt = subDir.make<TH2D>("h_HiggsPtVsL1VecPt","h_HiggsPtVsL1VecPt",200,0,200,200,0,200);
+    h_HiggsPtVsL1MET = subDir.make<TH2D>("h_HiggsPtVsL1MET","h_HiggsPtVsL1MET",200,0,200,200,0,200);
+    h_HiggsPtVsL1METHF = subDir.make<TH2D>("h_HiggsPtVsL1METHF","h_HiggsPtVsL1METHF",200,0,200,200,0,200);
+    h_HiggsPtVsL1MHTHF = subDir.make<TH2D>("h_HiggsPtVsL1MHTHF","h_HiggsPtVsL1MHTHF",200,0,200,200,0,200);
+    
     EventsTotal=0;
 
   }
@@ -379,6 +417,7 @@ namespace ic {
   }
 
   int VBFPlots::Execute(TreeEvent *event) {
+  
       EventsTotal++;
       
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
@@ -387,6 +426,22 @@ namespace ic {
   std::vector<ic::L1TJet*>  l1jets = event->GetPtrVec<ic::L1TJet>("L1Jets");
   
   std::sort(l1jets.begin(),l1jets.end(),greater_Candidate());
+  
+  std::vector<ic::L1TSum*> l1sums = event->GetPtrVec<ic::L1TSum>("L1SumsEtaRange5pt0");
+  std::vector<ic::L1TSum*> l1sumsnohf = event->GetPtrVec<ic::L1TSum>("L1Sums");
+  
+  double METNoHF = -1;
+  double METHF = -1;
+  double MHTHF = -1;
+  
+  for(unsigned i=0; i< l1sumsnohf.size(); i++){
+      if(l1sumsnohf[i]->sumType==2) METNoHF = l1sumsnohf[i]->vector().Pt();    
+  }
+  
+  for(unsigned i=0; i< l1sums.size(); i++){
+      if(l1sums[i]->sumType==2) METHF = l1sums[i]->vector().Pt();    
+      if(l1sums[i]->sumType==3) MHTHF = l1sums[i]->vector().Pt();  
+  }
    
   n_jets_ = jets.size();
   n_genjets_ = genjets.size();
@@ -402,6 +457,10 @@ namespace ic {
   int tauCount =0;
   int electronCount=0;
   
+  int HiggsIndex = -1;
+  unsigned NMuons = 0;
+  double HPt = -1;
+  
   for(unsigned j=0; j< n_genParticles_; j++){
       int ID = std::fabs(GenParticles[j]->pdgid());
       bool isPrompt =  false;
@@ -412,8 +471,18 @@ namespace ic {
           ic::Candidate tausVis;
           
           for(unsigned k=0; k < GenParticles[j]->daughters().size(); k++){
-              if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 13) isPrompt = false;  
+              if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 11 || std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 13){
+                  isPrompt = false;
+                  if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 13) NMuons++;
+              }
               if(std::fabs(GenParticles[GenParticles[j]->daughters().at(k)]->pdgid()) == 16) tausVis.set_vector(GenParticles[j]->vector() - GenParticles[GenParticles[j]->daughters().at(k)]->vector());
+          }
+          
+          for(unsigned k = 0; k< GenParticles[j]->mothers().size(); k++){
+              if(std::fabs(GenParticles[GenParticles[j]->mothers().at(k)]->pdgid()) == 25){
+                  HiggsIndex = GenParticles[j]->mothers().at(k);
+                  HPt = GenParticles[HiggsIndex]->vector().Pt();
+              }
           }
           
           if(isPrompt){
@@ -459,6 +528,7 @@ namespace ic {
       double DeltaEta = std::fabs(GenParticles[5]->vector().Rapidity() - GenParticles[6]->vector().Rapidity());
       double Pt1 = GenParticles[5]->vector().Pt();
       double Pt2 = GenParticles[6]->vector().Pt();
+      double VecPt = (GenParticles[5]->vector()+GenParticles[6]->vector()).Pt();
       if(Pt1 < Pt2){
           double PtTemp = Pt1;
           Pt1 = Pt2;
@@ -471,6 +541,7 @@ namespace ic {
       h_qq_Mqq->Fill(Mqq);
       double AvePt = (Pt1 + Pt2)/2;
       h_qq_AvePt->Fill(AvePt);
+      h_qq_VecPt->Fill(VecPt);
   }
   
   
@@ -709,6 +780,7 @@ namespace ic {
           
           double Mjj = (genjets[genjetIndex1]->vector() + genjets[genjetIndex2]->vector()).M();
           double DeltaEta = std::fabs(genjets[genjetIndex1]->vector().Rapidity() - genjets[genjetIndex2]->vector().Rapidity());
+          double VecPt = (genjets[genjetIndex1]->vector() + genjets[genjetIndex2]->vector()).Pt();
           
           h_genj1_Pt->Fill(Pt1);
           h_genj2_Pt->Fill(Pt2);
@@ -717,6 +789,7 @@ namespace ic {
           
           double AvePt = (Pt1 + Pt2)/2;
           h_genjj_AvePt->Fill(AvePt);
+          h_genjj_VecPt->Fill(VecPt);
           
           double SubJetPtRes = (genjets[genjetIndex1]->vector().Pt() - GenParticles[PartonIndex1]->vector().Pt()) / (GenParticles[PartonIndex1]->vector().Pt());
           double JetPtRes = (genjets[genjetIndex2]->vector().Pt() - GenParticles[PartonIndex2]->vector().Pt()) / (GenParticles[PartonIndex2]->vector().Pt());
@@ -820,7 +893,8 @@ namespace ic {
               
               double Mjj = (jets[jetIndex1]->vector() + jets[jetIndex2]->vector()).M();
               double DeltaEta = std::fabs(jets[jetIndex1]->vector().Rapidity() - jets[jetIndex2]->vector().Rapidity());
-          
+              double VecPt = (jets[jetIndex1]->vector() + jets[jetIndex2]->vector()).Pt();
+              
               h_j1_Pt->Fill(Pt1);
               h_j2_Pt->Fill(Pt2);
               h_jj_DeltaEta->Fill(DeltaEta);
@@ -828,6 +902,7 @@ namespace ic {
               h_MjjVsDeltaEta_S->Fill(DeltaEta,Mjj);
               double AvePt = (Pt1 + Pt2)/2;
               h_jj_AvePt->Fill(AvePt);
+              h_jj_VecPt->Fill(VecPt);
           }
           
       }
@@ -934,6 +1009,14 @@ namespace ic {
               double AvePt = (Pt1 + Pt2)/2;
               h_l1jj_AvePt->Fill(AvePt);
               h_AveJetPtResGenJet->Fill((AvePt-genAvePt)/genAvePt);
+              double L1VecPt = (l1jets[l1jetIndex1]->vector()+l1jets[l1jetIndex2]->vector()).Pt();
+              double genVecPt = (genjets[genjetIndex1]->vector()+genjets[genjetIndex2]->vector()).Pt();
+              h_VecJetPtResGenJet->Fill((L1VecPt-genVecPt)/genVecPt);
+
+              if(HiggsIndex >= 0){
+                  double VecPtHPtRes = (L1VecPt - GenParticles[HiggsIndex]->vector().Pt())/GenParticles[HiggsIndex]->vector().Pt();              
+                  h_VecJetPtResGenH->Fill(VecPtHPtRes);
+              }
               
               h_PhiJetRes->Fill((l1jets[l1jetIndex1]->vector().Phi() - genjets[genjetIndex1]->vector().Phi())/genjets[genjetIndex1]->vector().Phi());
               h_PhiJetRes->Fill((l1jets[l1jetIndex2]->vector().Phi() - genjets[genjetIndex2]->vector().Phi())/genjets[genjetIndex2]->vector().Phi());
@@ -948,6 +1031,13 @@ namespace ic {
               h_l1j2_Eta->Fill(l1jets[l1jetIndex2]->vector().Rapidity());
               h_l1j1_Phi->Fill(l1jets[l1jetIndex1]->vector().Phi());
               h_l1j2_Phi->Fill(l1jets[l1jetIndex2]->vector().Phi());
+              
+              if(NMuons == 2){
+                  h_HiggsPtVsL1VecPt->Fill(L1VecPt,HPt);
+                  h_HiggsPtVsL1MET->Fill(METNoHF,HPt);
+                  h_HiggsPtVsL1METHF->Fill(METHF,HPt);
+                  h_HiggsPtVsL1MHTHF->Fill(MHTHF,HPt);
+              }
 
               
               bool largestAvePt =true;
@@ -988,7 +1078,13 @@ namespace ic {
       }
   }
   
-  
+  if(NMuons == 2 && HiggsIndex!=-1){
+      
+      h_L1METHFHiggsPtRes->Fill((METHF-HPt)/HPt);
+      h_L1METHiggsPtRes->Fill((METNoHF-HPt)/HPt);
+
+    
+  }
 
   return 0;
       

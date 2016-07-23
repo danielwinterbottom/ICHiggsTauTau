@@ -31,8 +31,6 @@ namespace ic {
 
   class EfficiencyGenMatch : public ModuleBase {
   private:
-
-    std::string genParticles_label_; 
     
     std::string jets_label_;
     std::string electrons_label_;
@@ -46,7 +44,9 @@ namespace ic {
     std::string l1muons_label_;
     std::string l1taus_label_;
     std::string l1met_label_;
+    std::string l1metNoHF_label_;
     
+    std::string genParticles_label_; 
     std::string genjets_label_;
     
     unsigned n_genParticles_;
@@ -68,10 +68,9 @@ namespace ic {
     double l1MjjCut;
     double l1DeltaEtaCut;
     double l1METCut;
-    double l1MHTCut;
     int EffNum;
     double AvePtCut;
-    double HtCut;
+    double VecPtCut;
     
     unsigned nPromptElectrons;
     unsigned nPromptMuons;
@@ -137,7 +136,6 @@ namespace ic {
     TH1D *h_jet_Jet_PtRes;
     TH1D *h_jet_Jet_DeltaRRes;
     TH1D *h_jet_Jet_PtDiff;
-    
     TH1D *h_jet_TauEG_Efficiency;
     TH1D *h_jet_IsoTauIsoEG_Efficiency;
     
@@ -145,25 +143,15 @@ namespace ic {
     TH1D *h_jetjet_Mjj_Total;
     TH1D *h_jetjet_DeltaEta_Efficiency;
     TH1D *h_jetjet_DeltaEta_Total;
-    
     TH1D *h_jetjet_AvePt_Efficiency;
     TH1D *h_jetjet_AvePt_Total;
+    TH1D *h_jetjet_VecPt_Efficiency;
+    TH1D *h_jetjet_VecPt_Total;
     
-    TH1D *h_jettau_Mjj_Efficiency;
-    TH1D *h_jettau_Mjj_Total;
-    TH1D *h_jettau_DeltaEta_Efficiency;
-    TH1D *h_jettau_DeltaEta_Total;
-    
-    TH1D *h_jetelectron_Mjj_Efficiency;
-    TH1D *h_jetelectron_Mjj_Total;
-    TH1D *h_jetelectron_DeltaEta_Efficiency;
-    TH1D *h_jetelectron_DeltaEta_Total;
-    
-    TH1D  *h_METEfficiency;
-    TH1D  *h_MHTEfficiency;
-    
-    TH1D  *h_GenMETEfficiency;
-    TH1D  *h_GenMHTEfficiency;
+    TH1D  *h_METNoHF_Efficiency;
+    TH1D  *h_METHF_Efficiency;
+    TH1D  *h_METNoHF_Total;
+    TH1D  *h_METHF_Total;
     
     TH1D *h_genjet_EG_Efficiency;
     TH1D *h_genjet_Tau_Efficiency;
@@ -186,16 +174,6 @@ namespace ic {
     TH1D *h_gentau_IsoTauIsoEG_Efficiency;
     TH1D *h_gentau_IsoTauJet_Efficiency;
     TH1D *h_gentau_IsoTauIsoEGJet_Efficiency;
-    
-    TH1D *h_LeadJetPtPassMjj;
-    TH1D *h_SubLeadJetPtPassMjj;
-    
-    TH1D *h_leadtau_HTT_Total;
-    TH1D *h_leadtau_HTT_Efficiency;
-    TH1D *h_subleadtau_HTT_Total;
-    TH1D *h_subleadtau_HTT_Efficiency;
-    TH2D *h_tau_JetPt;
-    TH2D *h_tau_L1JetPt;
 
   public:
 
@@ -206,8 +184,6 @@ namespace ic {
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
     virtual void PrintInfo();
-    
-    TFile *fEff;
     
   };
 

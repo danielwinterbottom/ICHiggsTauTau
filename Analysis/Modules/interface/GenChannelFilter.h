@@ -12,13 +12,14 @@
 #include "TFile.h"
 #include "TLorentzVector.h"
 #include "TDirectory.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 
 
 namespace ic {
     
 class GenChannelFilter : public ModuleBase {
    public:
-      GenChannelFilter(std::string const& name, std::string channel, unsigned isDY);
+      GenChannelFilter(std::string const& name, fwlite::TFileService *fs, std::string channel, unsigned isDY);
       virtual ~GenChannelFilter(); 
       
       virtual int PreAnalysis();
@@ -32,6 +33,8 @@ class GenChannelFilter : public ModuleBase {
 
       unsigned n_genParticles_;    
       bool DY;
+      
+      TH1D *h_PassedOffline;
 
 };
 }

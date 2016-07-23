@@ -2,11 +2,18 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TTau.hh"
 
 #include <iostream>
 #include <fstream>
 
 #include "TVector3.h"
+
+struct greater_Candidate{
+  bool operator() (const ic::Candidate *a,const ic::Candidate *b) {
+    return (a->pt() > b->pt());
+  }
+};
 
 namespace ic {
 
@@ -18,7 +25,7 @@ namespace ic {
     muons_label_ = "muons"; 
     taus_label_ = "taus";  
     ditau_label_ = "emtauCandidates";
-    met_label_ = "pfMet";
+    met_label_ = "pfMVAMet";
     
     if(channel == "tt") leadtaus_label = "leadingtaus";
     else leadtaus_label = "taus";
@@ -155,14 +162,6 @@ namespace ic {
     h_ElecPt_TIGHT->GetXaxis()->SetTitle("Electron p_{T} [GeV]");
     h_ElecPt_TIGHT->GetYaxis()->SetTitle("# Entries");
     
-    h_ElecPt_LOOSE = subDir.make<TH1D>("h_ElecPt_LOOSE","h_ElecPt_LOOSE",200, 0,200); 
-    h_ElecPt_LOOSE->GetXaxis()->SetTitle("Electron p_{T} [GeV]");
-    h_ElecPt_LOOSE->GetYaxis()->SetTitle("# Entries");
-    
-    h_ElecPt_TIGHT = subDir.make<TH1D>("h_ElecPt_TIGHT","h_ElecPt_TIGHT",200, 0,200); 
-    h_ElecPt_TIGHT->GetXaxis()->SetTitle("Electron p_{T} [GeV]");
-    h_ElecPt_TIGHT->GetYaxis()->SetTitle("# Entries");
-    
     h_MuPt_LOOSE = subDir.make<TH1D>("h_MuPt_LOOSE","h_MuPt_LOOSE",200, 0,200); 
     h_MuPt_LOOSE->GetXaxis()->SetTitle("Muon p_{T} [GeV]");
     h_MuPt_LOOSE->GetYaxis()->SetTitle("# Entries");
@@ -202,8 +201,22 @@ namespace ic {
     h_Jet2Pt_TIGHT = subDir.make<TH1D>("h_Jet2Pt_TIGHT","h_Jet2Pt_TIGHT",200, 0,200); 
     h_Jet2Pt_TIGHT->GetXaxis()->SetTitle("Sub-lead jet p_{T} [GeV]");
     h_Jet2Pt_TIGHT->GetYaxis()->SetTitle("# Entries");
+    
+    h_HPtRes = subDir.make<TH1D>("h_HPtRes","h_HPtRes",100, -5,5); 
+    h_HPtRes->GetXaxis()->SetTitle("(HPt - gen HPt)/(gen HPt)");
+    h_HPtRes->GetYaxis()->SetTitle("Entries");
 
-
+    h_VBFPtRes = subDir.make<TH1D>("h_VBFPtRes","h_VBFPtRes",100, -5,5); 
+    h_VBFPtRes->GetXaxis()->SetTitle("(VBFPt - gen VBFPt)/(gen VBFPt)");
+    h_VBFPtRes->GetYaxis()->SetTitle("Entries");
+    
+    h_VBFPlusHPtRes = subDir.make<TH1D>("h_VBFPlusHPtRes","h_VBFPlusHPtRes",100, -5,5); 
+    h_VBFPlusHPtRes->GetXaxis()->SetTitle("(VBFPlusHPt - gen VBFPlusHPt)/(gen VBFPlusHPt)");
+    h_VBFPlusHPtRes->GetYaxis()->SetTitle("Entries");
+    
+    h_HadHadVBF = subDir.make<TH1D>("h_HadHadVBF","h_HadHadVBF",2, 0,2);
+    
+    h_bothtausmatched = subDir.make<TH1D>("h_bothtausmatched","h_bothtausmatched",2, 0,2);
 
   }
 
@@ -216,6 +229,9 @@ namespace ic {
   }
 
   int VariableHistograms::Execute(TreeEvent *event){
+      
+      std::vector<ic::L1TTau*> l1taus = event->GetPtrVec<ic::L1TTau>("L1Taus");
+      std::sort(l1taus.begin(),l1taus.end(),greater_Candidate());
       
       //offline 
       
@@ -295,7 +311,22 @@ namespace ic {
       Candidate const* lep2 = ditau->GetCandidate("lepton2");
       double pt_1_ = lep1->pt();
       double pt_2_ = lep2->pt();
-
+      
+      bool tau1matched = false;
+      bool tau2matched = false;
+      
+      for(unsigned i = 0; i < l1taus.size(); i++){
+          if(std::fabs(l1taus[i]->vector().Rapidity()) <= 2.1 && l1taus[i]->isolation !=0 && l1taus[i]->vector().Pt() >= 28){
+              double DeltaR1 = std::fabs(pow(l1taus[i]->vector().Phi() - lep1->phi(),2) + pow(l1taus[i]->vector().Rapidity() - lep1->eta(),2));
+              if(DeltaR1 < 0.5) tau1matched = true;
+              double DeltaR2 = std::fabs(pow(l1taus[i]->vector().Phi() - lep2->phi(),2) + pow(l1taus[i]->vector().Rapidity() - lep2->eta(),2));
+              if(DeltaR2 < 0.5) tau2matched = true;
+          }
+      }
+      
+      h_bothtausmatched->Fill(0);
+      if(tau1matched && tau2matched) h_bothtausmatched->Fill(1);
+      
       double Mtt_Vis = (lep1->vector() + lep2->vector()).M();
       h_OfflineMttVis->Fill(Mtt_Vis);
       
@@ -303,6 +334,7 @@ namespace ic {
       
       bool VBFLoose = false;
       bool VBFTight = false;
+      bool HadHadVBF = false;
       
       if(eta_gap > 4 && Mij > 700 && Ptt > 100 && LeadJPt > 30 && SubLeadJPt >30) VBFTight = true;
       else if (eta_gap > 3.5 && Mij > 500 && LeadJPt > 30 && SubLeadJPt >30) VBFLoose = true;
@@ -310,9 +342,13 @@ namespace ic {
       if(VBFTight) h_mVis_TIGHT->Fill(Mtt_Vis);
       else if (VBFLoose) h_mVis_LOOSE->Fill(Mtt_Vis);
       
+      if(VBFTight || (VBFLoose && Ptt > 100)) HadHadVBF = true; 
+      h_HadHadVBF->Fill(HadHadVBF);
+      
       if(n_jets_ > 1){
           double pTTMinusVecPt = Ptt - (jets[0]->vector() + jets[1]->vector()).Pt();
           double pTTMinusVecPtRes = pTTMinusVecPt /(jets[0]->vector() + jets[1]->vector()).Pt();
+          h_pTT->Fill(Ptt);
           h_pTTMinusVecPt->Fill(pTTMinusVecPt);
           h_pTTMinusVecPtRes->Fill(pTTMinusVecPtRes);
           h_pTTMinusVecPtResVsDiJetPt->Fill((jets[0]->vector() + jets[1]->vector()).Pt(), pTTMinusVecPtRes);
@@ -381,6 +417,38 @@ namespace ic {
           }
           h_OfflineMinPhi->Fill(MinDeltaPhi);
       }
+      
+     std::vector<ic::GenParticle*> genParticles = event->GetPtrVec<ic::GenParticle>("genParticles");
+     
+     ic::Candidate VBFJets;
+     ic::Candidate Higgs;
+     
+     for(unsigned i=0; i< genParticles.size(); i++){
+         
+         if(i==5 || i==6) VBFJets.set_vector(VBFJets.vector() + genParticles[i]->vector());
+         if(std::fabs(genParticles[i]->pdgid())==25){
+             bool isHiggs = false;
+             for(unsigned j=0; j< genParticles[i]->daughters().size(); j++){
+                 if(std::fabs(genParticles[genParticles[i]->daughters().at(j)]->pdgid()) == 15) isHiggs=true;
+             }
+             if(isHiggs) Higgs.set_vector(genParticles[i]->vector());
+         }
+     }
+     
+     double GenHPt = Higgs.vector().Pt();
+     //double GenVBFPt = VBFJets.vector().Pt();
+     double GenVBFPlusHPt = (Higgs.vector()+VBFJets.vector()).Pt();
+     double HPt = (lep1->vector() + lep2->vector() + met_vec[0]->vector()).Pt();
+     
+     h_HPtRes->Fill((HPt-GenHPt)/GenHPt);
+     
+     if(n_jets_>=2){
+         double VBFPt = (jets[0]->vector() +jets[1]->vector()).Pt();
+         double VBFPlusHPt = (jets[0]->vector() +jets[1]->vector() + lep1->vector() + lep2->vector() + met_vec[0]->vector()).Pt();
+         
+         h_VBFPtRes->Fill((VBFPt-GenHPt)/GenHPt);
+         h_VBFPlusHPtRes->Fill((VBFPlusHPt-GenVBFPlusHPt)/GenVBFPlusHPt);
+     }
       
      /* ic::EventInfo const* eventInfo = event->GetPtr<ic::EventInfo>("eventInfo");
       

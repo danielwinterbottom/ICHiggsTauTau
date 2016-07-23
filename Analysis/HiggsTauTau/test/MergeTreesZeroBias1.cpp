@@ -77,7 +77,7 @@ int main(int argc, char* argv[]){
   std::cout << "Entries in tree 1: " << nentries1 << std::endl;
   std::cout << "Entries in tree 2: " << nentries2 << std::endl;
   
-  std::string outputfilename = Form("/vols/cms02/dw515/l1t-tsg-v5/ZeroBias/BothSumRanges/EventTree1_%d.root", num);
+  std::string outputfilename = Form("/vols/cms02/dw515/l1t-integration-v58pt1/ZeroBias/BothSumRanges/EventTree1_%d.root", num);
   TFile *fOut = new TFile(outputfilename.c_str(),"RECREATE");
   
   std::cout << "Cloaning offline tree." << std::endl;

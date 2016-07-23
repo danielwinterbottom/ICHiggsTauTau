@@ -74,8 +74,10 @@ class L1TFilter : public ModuleBase {
       bool DeltaRJetFilter;
       unsigned isZB;
       
-      TH1D *h_L1Filter_Efficiency;
-      TH1D *h_SignalEfficiency;
+      TH1D *h_TotalEvents;
+      TH1D *h_EventsPassedTrigger;
+      TH1D *h_EventsPassedTriggerPure;
+      TH1D *h_TriggersPassed;
       TH1D *h_METRates;
       
       TH1D *h_SingleIsoTauPt          ;
@@ -125,6 +127,7 @@ class L1TFilter : public ModuleBase {
       
       TH1D *h_Tau1Multiplicity;
       TH1D *h_Tau2Multiplicity;
+      TH1D *h_Mjj500Multiplicity;
       TH1D *h_EGMultiplicity;
       TH1D *h_MuonMultiplicity;
       TH1D *h_JetMultiplicity;
@@ -147,6 +150,11 @@ class L1TFilter : public ModuleBase {
       TH1D *h_JetsOverHtMax;
       TH1D *h_HtMinusJetsMin;
       TH1D *h_HtMinusJetsMax;
+      TH1D *h_MET_NOHF;
+      TH1D *h_MET_HF;
+      TH1D *h_MHT_HF;
+      TH1D *h_mvis;
+      TH1D *h_mvis_ISO;
       
       TH1D *h_l1jetDeltaPhi_BeforeBefore;
       TH1D *h_l1jetDeltaPhi_Before;
@@ -154,6 +162,24 @@ class L1TFilter : public ModuleBase {
       
       TH1D *h_DoubleJet30DeltaEta3pt25_Mjj;
       TH1D *h_DoubleJet30DeltaEta3pt25_Mu5_Mjj;
+      
+      TH1D *h_EtaProduct;
+      
+      TH1D *h_Mjj_AOCA;
+      TH1D *h_DeltaEta_AOCA;
+      TH1D *h_AvgPt_AOCA;
+      TH1D *h_VecPt_AOCA;
+      TH1D *h_jPt1_AOCA;
+      TH1D *h_jPt2_AOCA;
+      
+      TH1D *h_MHTHFVecPtRes;
+      
+      TH2D *h_VecPtVsETM;
+      
+      TH1D *h_partonsmatched;
+      
+      TH1D *h_tau_AvgPt;
+      TH1D *h_isotau_AvgPt;
 };
 }
 

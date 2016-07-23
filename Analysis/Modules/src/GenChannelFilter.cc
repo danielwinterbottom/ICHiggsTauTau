@@ -4,11 +4,16 @@
 
 namespace ic {
 
-  GenChannelFilter::GenChannelFilter(std::string const& name, std::string channel, unsigned isDY) : ModuleBase(name) {
+  GenChannelFilter::GenChannelFilter(std::string const& name, fwlite::TFileService *fs, std::string channel, unsigned isDY) : ModuleBase(name) {
     genParticles_label_ = "genParticles";
     channel_ = channel;
     if(isDY==1) DY = true;
     else DY = false;
+    
+    TFileDirectory subDir = fs->mkdir("PassedOffline");
+    
+    h_PassedOffline = subDir.make<TH1D>("h_PassedOffline","h_PassedOffline",2, 0,2);
+    
   }
 
   GenChannelFilter::~GenChannelFilter() {
@@ -16,7 +21,6 @@ namespace ic {
   }
 
   int GenChannelFilter::PreAnalysis() {
-
     return 0;
   }
 
@@ -63,7 +67,13 @@ namespace ic {
       else if(DY && (nHadTaus+nElectrons+nMuons) == 2) Filter = false;
       
       if(Filter) return 1;
-      else return 0;
+      else{
+          if(!DY){
+              bool *PassedOffline = event->GetPtr<bool>("PassedOffline");
+              h_PassedOffline->Fill(*PassedOffline);
+          }
+          return 0;
+      }
       
   }
   int GenChannelFilter::PostAnalysis() {

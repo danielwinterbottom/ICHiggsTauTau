@@ -57,16 +57,19 @@ class VBFPlots : public ModuleBase {
       TH1D *h_qq_Mqq;
       TH1D *h_qq_DeltaEta;
       TH1D *h_qq_AvePt;
+      TH1D *h_qq_VecPt;
       TH1D *h_genj1_Pt;
       TH1D *h_genj2_Pt;
       TH1D *h_genjj_Mqq;
       TH1D *h_genjj_DeltaEta;
       TH1D *h_genjj_AvePt;
+      TH1D *h_genjj_VecPt;
       TH1D *h_j1_Pt;
       TH1D *h_j2_Pt;
       TH1D *h_jj_Mqq;
       TH1D *h_jj_DeltaEta;
       TH1D *h_jj_AvePt;
+      TH1D *h_jj_VecPt;
       TH1D *h_l1j1_Pt;
       TH1D *h_l1j2_Pt;
       TH1D *h_l1jj_Mqq;
@@ -117,6 +120,7 @@ class VBFPlots : public ModuleBase {
       TH1D *h_LeadJetPtResGenJet;
       TH1D *h_SubLeadJetPtResGenJet;
       TH1D *h_AveJetPtResGenJet;
+      TH1D *h_VecJetPtResGenJet;
       
       TH1D *h_EtaJetRes;
       TH1D *h_PhiJetRes;
@@ -156,6 +160,17 @@ class VBFPlots : public ModuleBase {
       
       TH2D *h_l1j1_PtVsEta;
       TH2D *h_l1j2_PtVsEta;
+      
+      TH1D *h_VecJetPtResGenH;
+      TH1D *h_ETMResGenH;
+      
+      TH1D *h_L1METHiggsPtRes;
+      TH1D *h_L1METHFHiggsPtRes;
+      
+      TH2D *h_HiggsPtVsL1VecPt;
+      TH2D *h_HiggsPtVsL1MET;
+      TH2D *h_HiggsPtVsL1METHF;
+      TH2D *h_HiggsPtVsL1MHTHF;
 
 };
 }
