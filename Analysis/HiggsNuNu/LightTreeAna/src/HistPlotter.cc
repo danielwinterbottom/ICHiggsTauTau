@@ -484,7 +484,8 @@ namespace ic{
 	  
 	}
       }
-      g->Draw("sameP");
+      if ( g != 0 ){g->Draw("sameP");}
+      else{std::cout<<" -- g not defined! -- ISSUE "<<std::endl;}
       if(do_debug_)std::cout<<"  Drawing legend"<<std::endl;
 
       //SETUP AND DRAW THE LEGEND
@@ -732,6 +733,8 @@ namespace ic{
 	if (shapes_[iShape].dology()) lsave << "_logy";
       	lsave << ".pdf" ;
       }
+      std::cout << " -- Address of c1 "<< &c1 << std::endl;
+      std::cout << " -- Address of lsave "<< lsave.str() << std::endl;
       c1->Print(lsave.str().c_str());
       if (iShape==shapes_.size()-1) {
       	lsave << "]";
