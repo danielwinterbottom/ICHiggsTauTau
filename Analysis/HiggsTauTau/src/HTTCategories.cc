@@ -1476,6 +1476,24 @@ namespace ic {
        } 
        if (strategy_ == strategy::spring16){
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+          iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
+          iso_1_trk03_ = MuonTkIsoVal(muon);
+          iso_1_puw03_ = PUW03IsolationVal(muon);
+          iso_1_puw04_ = PUW04IsolationVal(muon);
+          iso_2_puw03_ = 0;
+          iso_2_puw04_ = 0;
+          iso_2_db03_ = 0;
+          iso_2_ea03_ = 0;
+          iso_2_trk03_ = 0;
+          iso_2_db04_ = 0;
+          iso_2_db03allch_ = 0;
+          iso_2_db04allch_ = 0;
+        }
         mva_1_ = 0.0;
         lPhotonPtSum_1 = 0.;
         iso_2_ = tau->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");

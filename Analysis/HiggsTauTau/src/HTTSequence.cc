@@ -730,7 +730,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
 // if(is_data){
- if(channel != channel::tpzmm &&channel !=channel::tpzee){  
+ if(channel != channel::tpzmm &&channel !=channel::tpzee && !js["qcd_study"].asBool()){  
    if((is_data || js["trg_in_mc"].asBool()) && (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
     if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
@@ -1228,7 +1228,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4))
     .set_z_pt_mass_hist(new TH2D(z_pt_weights));
   if (!is_data ) {
-    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+    httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
     if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
     if(channel == channel::et) httWeights.set_do_etau_fakerate(true);
   }
@@ -1313,7 +1313,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data))
     .set_ele_tracking_sf(new TH2F(ele_tracking_sf));
   if (!is_data ) {
-    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
+    httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
     //if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
     if(channel == channel::et) httWeights.set_do_etau_fakerate(true);
     if(channel == channel::et || channel==channel::em) httWeights.set_do_tracking_eff(true);
