@@ -47,7 +47,10 @@ namespace ic {
 
     ws_ = std::make_shared<RooWorkspace>(
         OpenFromTFile<RooWorkspace>(sf_workspace_));
-        return 0;
+
+    fns_["Mu22_Data_Eff"] = std::shared_ptr<RooFunctor>(
+      ws_->function("Mu22_Data_Eff")->functor(ws_->argSet("m_pt,m_eta")));
+    return 0;
   }
 
   int ZmmTreeProducer::Execute(TreeEvent *event) {
@@ -110,19 +113,14 @@ namespace ic {
 
     wt_trg = 1.0;
     if (!info->is_data()) {
-      ws_->var("m_pt")->setVal(lep_1->pt());
-      ws_->var("m_eta")->setVal(lep_1->eta());
-      float eff_1 = ws_->function("Mu22_Data_Eff")->getVal();
-      ws_->var("m_pt")->setVal(lep_2->pt());
-      ws_->var("m_eta")->setVal(lep_2->eta());
-      float eff_2 = ws_->function("Mu22_Data_Eff")->getVal();
+      float eff_1 = fns_["Mu22_Data_Eff"]->eval(std::vector<double>{lep_1->pt(), lep_1->eta()}.data());
+      float eff_2 = fns_["Mu22_Data_Eff"]->eval(std::vector<double>{lep_2->pt(), lep_2->eta()}.data());
       wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
     }
     info->set_weight("trg", wt_trg);
 
     wt = info->total_weight();
     wt_pu = info->weight_defined("pileup") ? info->weight("pileup") : 1.0;
-
 
     outtree_->Fill();
     return 0;
