@@ -288,12 +288,12 @@ int main(int argc, char* argv[]){
 
   }
 
-/*  double OS_SS = rate[1]/rate[0];
+  double OS_SS = rate[1]/rate[0];
   double OS_SS_err = OS_SS*sqrt((pow((sqrt(rate[1])/rate[1]),2) + pow((sqrt(rate[0])/rate[0]),2)));
   std::ostringstream out;
   out << setprecision(4) << OS_SS;
   std::ostringstream out_err;
-  out_err << setprecision(2) << OS_SS_err;*/
+  out_err << setprecision(2) << OS_SS_err;
 
   
   marker_it = markers.begin();
@@ -350,8 +350,8 @@ int main(int argc, char* argv[]){
   
   std::ostringstream sep_string;
   sep_string << setprecision(4) << sep;
-  ic::TextElement text(channel,0.04,0.19,0.89);
-  //ic::TextElement text("OS/SS="+out.str()+"+/-"+out_err.str(),0.04,0.18,0.89);
+  //ic::TextElement text(channel,0.04,0.19,0.89);
+  ic::TextElement text("OS/SS="+out.str()+"+/-"+out_err.str(),0.04,0.18,0.89);
   compare.AddTextElement(text);
   ic::TextElement separation("TMVA sep: " + sep_string.str(),0.03,0.69,0.59);
   if(shape_compare) compare.AddTextElement(separation);
