@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
     .set_input_label("sel_muons").set_min(2)
     .set_predicate([=](ic::Muon const* m) {
       return  m->pt()                 > 10.    &&
-              fabs(m->eta())          < 2.4    &&
+              fabs(m->eta())          < 2.1    &&
               fabs(m->dxy_vertex())   < 0.045  &&
               fabs(m->dz_vertex())    < 0.2    &&
               MuonMediumHIPsafe(m);
@@ -173,7 +173,7 @@ int main(int argc, char* argv[]) {
         .set_min(1)
         .set_predicate([=](ic::CompositeCandidate const* c) {
           return DeltaR(c->at(0)->vector(), c->at(1)->vector())
-              > 0.3;
+              > 0.5;
         })
     );
 
@@ -185,7 +185,10 @@ int main(int argc, char* argv[]) {
     }
 
 
-    seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer").set_fs(&fs));
+    seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")
+      .set_fs(&fs)
+      .set_sf_workspace("input/scale_factors/Muon_SF_spring16temp_workspace.root:ws")
+    );
     seq.InsertSequence("Zmm", analysis);
   }
 

@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <map>
+#include "RooRealVar.h"
 #include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
@@ -8,6 +9,7 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "Utilities/interface/FnPredicates.h"
 #include "Utilities/interface/FnPairs.h"
+#include "Utilities/interface/FnRootTools.h"
 
 namespace ic {
 
@@ -26,6 +28,7 @@ namespace ic {
 
       outtree_->Branch("wt",          &wt);
       outtree_->Branch("wt_pu",       &wt_pu);
+      outtree_->Branch("wt_trg",      &wt_trg);
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("os",          &os);
       outtree_->Branch("pt_1",        &pt_1);
@@ -39,15 +42,17 @@ namespace ic {
       outtree_->Branch("m_ll",        &m_ll);
       outtree_->Branch("pt_ll",       &pt_ll);
       outtree_->Branch("dr_ll",       &dr_ll);
-
       outtree_->Branch("trg_IsoMu22",       &trg_IsoMu22);
     }
-    return 0;
+
+    ws_ = std::make_shared<RooWorkspace>(
+        OpenFromTFile<RooWorkspace>(sf_workspace_));
+        return 0;
   }
 
   int ZmmTreeProducer::Execute(TreeEvent *event) {
     auto pairs = event->GetPtrVec<CompositeCandidate>("dimuon");
-    auto const* info = event->GetPtr<EventInfo>("eventInfo");
+    auto info = event->GetPtr<EventInfo>("eventInfo");
 
     // Take the pair closest to the Z mass
     std::sort(pairs.begin(), pairs.end(), [=](CompositeCandidate *c1, CompositeCandidate *c2) {
@@ -62,9 +67,6 @@ namespace ic {
 
     Muon const* lep_1 = dynamic_cast<Muon const*>(leptons[0]);
     Muon const* lep_2 = dynamic_cast<Muon const*>(leptons[1]);
-
-    wt = info->total_weight();
-    wt_pu = info->weight_defined("pileup") ? info->weight("pileup") : 1.0;
 
     n_vtx = info->good_vertices();
 
@@ -85,7 +87,7 @@ namespace ic {
     dr_ll = ROOT::Math::VectorUtil::DeltaR(lep_1->vector(), lep_2->vector());
 
     trg_IsoMu22 = false;
-    if (event->ExistsInTree("triggerPaths")) {
+    if (info->is_data()) {
       bool path_fired = false;
       auto const& trg_paths = event->GetPtrVec<TriggerPath>("triggerPaths");
       for (auto trg : trg_paths) {
@@ -105,6 +107,21 @@ namespace ic {
     } else {
       trg_IsoMu22 = true;
     }
+
+    wt_trg = 1.0;
+    if (!info->is_data()) {
+      ws_->var("m_pt")->setVal(lep_1->pt());
+      ws_->var("m_eta")->setVal(lep_1->eta());
+      float eff_1 = ws_->function("Mu22_Data_Eff")->getVal();
+      ws_->var("m_pt")->setVal(lep_2->pt());
+      ws_->var("m_eta")->setVal(lep_2->eta());
+      float eff_2 = ws_->function("Mu22_Data_Eff")->getVal();
+      wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
+    }
+    info->set_weight("trg", wt_trg);
+
+    wt = info->total_weight();
+    wt_pu = info->weight_defined("pileup") ? info->weight("pileup") : 1.0;
 
 
     outtree_->Fill();

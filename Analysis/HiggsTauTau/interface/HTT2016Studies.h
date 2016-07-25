@@ -1,9 +1,11 @@
 #ifndef HiggsTauTau_HTT2016Studies_h
 #define HiggsTauTau_HTT2016Studies_h
 #include <string>
+#include "RooWorkspace.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
+
 
 
 
@@ -12,10 +14,13 @@ namespace ic {
 class ZmmTreeProducer : public ModuleBase {
  private:
   CLASS_MEMBER(ZmmTreeProducer, fwlite::TFileService*, fs)
+  CLASS_MEMBER(ZmmTreeProducer, std::string, sf_workspace)
   TTree *outtree_;
+  std::shared_ptr<RooWorkspace> ws_;
 
   float wt;
   float wt_pu;
+  float wt_trg;
 
   int n_vtx;
 

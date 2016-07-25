@@ -56,6 +56,8 @@ SEQUENCES = ['Zmm']
 OUTPUT = 'output/HTT2016Studies_July19'
 os.system('mkdir -p %s' % OUTPUT)
 
+task = job_mgr.task_name
+
 for sa in SAMPLES:
     filelists = ['filelists/%s%s.dat' % (PROD, X) for X in SAMPLES[sa]]
     cfg = {
@@ -83,5 +85,5 @@ for sa in SAMPLES:
         cfg=cfg,
         files_per_job=FILES_PER_JOB,
         output_cfgs=['output', 'lumi_out', 'trigger_info_output'])
-
-job_mgr.flush_queue()
+    job_mgr.task_name = task + '-' + sa
+    job_mgr.flush_queue()
