@@ -65,6 +65,8 @@ parser.add_option("--no_shape_systs", dest="no_shape_systs", action='store_true'
                   help="Do not add shape systematics")
 parser.add_option("--norm_systs", dest="norm_systs", action='store_true', default=False,
                   help="Add shapes for evaluating normalisation uncerts")
+parser.add_option("--year", dest="year", type='string', default='',
+                  help="Output names are data-taking year dependent. This value is read from the config file if present")
 
 (options, args) = parser.parse_args()
 
@@ -93,7 +95,6 @@ BLIND = options.blind
 BLIND = "false"
 if options.blind: BLIND = "true"
 COM = options.energy
-YEAR = '2015'
 
 #Hacky config file parsing
 with open("%(CFG)s"%vars(),"r") as cfgfile:
@@ -106,6 +107,8 @@ for ind in range(0,len(lines)):
     configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
 if "signal_scheme" in configmap:
   SCHEME= configmap["signal_scheme"].rstrip('\n')
+if "year" in configmap:
+  YEAR=configmap["year"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
 PARAMS=configmap["paramfile"].rstrip('\n')
 
@@ -116,6 +119,8 @@ if not options.folder ==  "":
   FOLDER=options.folder
 if not options.params == "":
   PARAMS=options.params
+if not options.year == "":
+  YEAR=options.year
 
 
 ########## Set up schemes and options
@@ -316,6 +321,12 @@ if SCHEME == 'run2_mssm':
     ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
     ("8",   "btag",    "btag",  BINS, ''),
 
+#    ("8",   "inclusive",    "inclusive_med_med",  BINS_FINE,  '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "nobtag",    "nobtag_med_med",  BINS_FINE, '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "btag",    "btag_med_med",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "inclusive",    "inclusive_tight_med",  BINS_FINE,  '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "nobtag",    "nobtag_tight_med",  BINS_FINE, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "btag",    "btag_tight_med",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"')
   ]
   scheme_em = [
     ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),

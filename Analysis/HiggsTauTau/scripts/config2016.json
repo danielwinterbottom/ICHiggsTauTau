@@ -19,7 +19,7 @@
   "sequence": {
     "mc"            : "spring16_80X",
     "era"           : "data_2016",
-    "strategy"      : "spring16",
+    "strategy"      : "mssmspring16",
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
