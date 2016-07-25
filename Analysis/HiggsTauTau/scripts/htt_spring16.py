@@ -281,16 +281,16 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'DYJetsToLL-LO',
      ]
 
-#  if options.qcd_study:
+  if options.qcd_study:
     #FILELIST='filelists/Feb25_MC_76X'
-#    FILELIST='filelists/Mar05_MC_76X'
-#    central_samples = [
-#      'QCDMuEnriched',
-#      'QCDEMEnrichedPt15-20',
-#      'QCDEMEnrichedPt20-30',
-#      'QCDFlat',
-#      'QCDbcToEPt20-30'
-#       ]
+    FILELIST='filelists/July21_MC_80X'
+    central_samples = [
+      'QCDMuEnrichedPt15'
+  #    'QCDEMEnrichedPt15-20',
+  #    'QCDEMEnrichedPt20-30',
+  #    'QCDFlat',
+  #    'QCDbcToEPt20-30'
+       ]
   for sa in central_samples:
       JOB='%s_2016' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
@@ -305,6 +305,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
           nperjob = 20
 #      if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
 #        nperjob = 30
+      if 'QCD' in sa:
+          nperjob = 15
       if 'DY' in sa and 'JetsToLL' in sa and taues_study:
         FLATJSONPATCH=""
         CONFIG='scripts/taues_config.json'

@@ -27,6 +27,7 @@ ignore = options.ignore
 
 
 sample_list = [
+    'QCDMuEnrichedPt15',
     'TT',
     'WJetsToLNu-LO',
     'W1JetsToLNu-LO',
