@@ -31,6 +31,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_top_factors)
   CLASS_MEMBER(HTTWeights, bool, do_btag_weight)
   CLASS_MEMBER(HTTWeights, bool, do_zpt_weight)
+  CLASS_MEMBER(HTTWeights, bool, do_tracking_eff)
   CLASS_MEMBER(HTTWeights, bool, do_topquark_weights)
   CLASS_MEMBER(HTTWeights, bool, do_top_jeteta_weights)
   CLASS_MEMBER(HTTWeights, bool, do_tau_fake_weights)
@@ -85,6 +86,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_lt2)
   CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_2to4)
   CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_gt4)
+  CLASS_MEMBER(HTTWeights, TH2F*, ele_tracking_sf)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;

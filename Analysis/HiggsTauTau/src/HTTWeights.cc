@@ -33,6 +33,7 @@ namespace ic {
     do_top_factors_           = false;
     do_btag_weight_           = false;
     do_zpt_weight_            = false;
+    do_tracking_eff_          = false;
     btag_mode_                = 0;
     bfake_mode_               = 0;
     tt_trg_iso_mode_          = 0;
@@ -90,6 +91,7 @@ namespace ic {
     em_qcd_cr2_lt2_           = nullptr;
     em_qcd_cr2_2to4_          = nullptr;
     em_qcd_cr2_gt4_           = nullptr;
+    ele_tracking_sf_          = nullptr;
   }
   HTTWeights::~HTTWeights() {
     ;
@@ -542,6 +544,22 @@ namespace ic {
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
     }
+
+   if (do_tracking_eff_){
+     if(channel_ == channel::et || channel_ == channel::em){
+       Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
+       double e_pt = elec->pt();
+       double e_eta = elec->sc_eta(); //Not absolute!
+       double wt_tracking = 1.0;
+       if(e_pt < 200){
+         wt_tracking = ele_tracking_sf_->GetBinContent(ele_tracking_sf_->GetXaxis()->FindBin(e_eta),ele_tracking_sf_->GetYaxis()->FindBin(e_pt));
+       } else {
+         wt_tracking = ele_tracking_sf_->GetBinContent(ele_tracking_sf_->GetXaxis()->FindBin(e_eta),(ele_tracking_sf_->GetYaxis()->FindBin(e_pt)-1));
+       }
+      eventInfo->set_weight("wt_tracking_eff",wt_tracking);
+     }
+   }
+         
 
     if (do_trg_weights_) {
       if (channel_ == channel::et) {
