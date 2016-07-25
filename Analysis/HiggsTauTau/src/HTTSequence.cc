@@ -2204,7 +2204,7 @@ void HTTSequence::BuildDiElecVeto() {
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
-   } else if(strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){ 
+   } else if(strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){
        vetoElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
