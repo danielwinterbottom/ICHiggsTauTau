@@ -51,6 +51,8 @@ class ICTauProducer : public edm::EDProducer {
   bool do_vertex_ip_;
   bool request_trks_;
   std::map<std::string, std::size_t> observed_id_;
+  bool do_total_charged_;
+  std::string total_charged_label_;
 };
 
 // =============================
@@ -62,7 +64,9 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_vertex_ip_(config.getParameter<bool>("includeVertexIP")),
-      request_trks_(config.getParameter<bool>("requestTracks")) {
+      request_trks_(config.getParameter<bool>("requestTracks")),
+      do_total_charged_(config.getParameter<bool>("includeTotalCharged")),
+      total_charged_label_(config.getParameter<std::string>("totalChargedLabel")) {
   consumes<edm::View<T>>(input_);
   consumes<edm::View<reco::Vertex>>(input_vertices_);
   taus_ = new std::vector<ic::Tau>();
@@ -81,6 +85,7 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
 
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_vertex_ip_, "includeVertexIP");
+  PrintOptional(1, do_total_charged_, "includeTotalCharged");
   PrintOptional(1, request_trks_, "requestTracks");
 }
 
@@ -207,6 +212,13 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_lead_dxy_vertex(packedCand->dxy());
         dest.set_lead_p(packedCand->p());
       }
+    }
+    if (do_total_charged_ &&
+        src.signalChargedHadrCands().isNonnull() &&
+        src.isolationChargedHadrCands().isNonnull()) {
+      dest.SetTauID(total_charged_label_,
+        float(src.signalChargedHadrCands().size() + src.isolationChargedHadrCands().size()));
+      observed_id_[total_charged_label_] = CityHash64(total_charged_label_);
     }
 #endif
   }

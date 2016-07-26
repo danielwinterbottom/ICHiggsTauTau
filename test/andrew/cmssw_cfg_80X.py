@@ -498,13 +498,13 @@ process.icTauProducer = producers.icTauProducer.clone(
 )
 
 if release in ['80XMINIAOD']:
-  process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
-      branch          = cms.string("taus"),
-      input           = cms.InputTag("selectedTaus"),
-      inputVertices   = vtxLabel,
-      includeVertexIP = cms.bool(True),
-      requestTracks   = cms.bool(False),
-      tauIDs          = cms.PSet()
+  process.icTauProducer = producers.icTauFromPatProducer.clone(
+      branch              = cms.string("taus"),
+      input               = cms.InputTag("selectedTaus"),
+      inputVertices       = vtxLabel,
+      includeVertexIP     = cms.bool(True),
+      includeTotalCharged = cms.bool(True),
+      totalChargedLabel   = cms.string('totalCharged')
   )
 
 process.icTauSequence = cms.Sequence(
