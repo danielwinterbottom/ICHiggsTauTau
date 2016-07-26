@@ -115,7 +115,8 @@ process.load("CondCore.CondDB.CondDB_cfi")
 if not isData:                         
   process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
        ##                      CHECK WHAT TO USE
-                              'file:3881F5BF-3825-E611-92B1-0025905D1E0A.root'  ##SOMETHING SIMILAR IF LOCAL
+                              infile
+                              #'file:3881F5BF-3825-E611-92B1-0025905D1E0A.root'  ##SOMETHING SIMILAR IF LOCAL
                                 )
                               )
 else:
