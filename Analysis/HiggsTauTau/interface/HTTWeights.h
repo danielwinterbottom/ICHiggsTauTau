@@ -70,12 +70,16 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2D*, em_e12_trig_data)
   CLASS_MEMBER(HTTWeights, TH2D*, et_trig_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, et_trig_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, et_antiiso1_trig_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, et_antiiso2_trig_data)
   CLASS_MEMBER(HTTWeights, TH2D*, et_xtrig_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, et_xtrig_data)
   CLASS_MEMBER(HTTWeights, TH2D*, et_conditional_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, et_conditional_data)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_trig_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_trig_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, mt_antiiso1_trig_data)
+  CLASS_MEMBER(HTTWeights, TH2D*, mt_antiiso2_trig_data)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_xtrig_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_xtrig_data)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_conditional_mc)
@@ -87,6 +91,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_2to4)
   CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_gt4)
   CLASS_MEMBER(HTTWeights, TH2F*, ele_tracking_sf)
+  CLASS_MEMBER(HTTWeights, TH1D*, muon_tracking_sf)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
