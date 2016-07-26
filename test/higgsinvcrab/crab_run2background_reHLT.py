@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='160715'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='160801'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 
 config.section_('General')
@@ -27,7 +27,7 @@ config.Data.inputDataset = True # Allow CRAB to run over (the valid files of) th
 config.JobType.pyCfgParams = ['isData=0','doHT=0','release=80XMINIAOD','globalTag=80X_mcRun2_asymptotic_2016_miniAODv2_v1']   #!!TO BE CHECKED ON EACH PROCESSING
 
 config.Data.publication = False
-config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_US_Purdue','T2_IT_Legnaro','T2_FR_GRIF_IRFU','T1_IT_CNAF','T2_BR_SPRACE','T1_UK_RAL','T1_RU_JINR','T2_EE_Estonia','T2_CN_Beijing','T2_RU_JINR']
+config.Site.whitelist = ['T2_UK_London_IC','T2_CH_CERN','T2_FR_GRIF_LLR','T2_UK_SGrid_Bristol','T2_DE_DESY','T2_IT_Bari','T2_BE_IIHE','T2_US_UCSD','T2_US_MIT','T2_US_Wisconsin','T2_US_Florida','T2_IT_Rome','T2_FR_IPHC','T2_US_Purdue','T2_IT_Legnaro','T2_FR_GRIF_IRFU','T1_IT_CNAF','T2_BR_SPRACE','T1_UK_RAL','T1_RU_JINR','T2_EE_Estonia','T2_CN_Beijing','T2_RU_JINR','T2_KR_KNU','T1_US_FNAL','T2_IT_Pisa','T2_UK_London_Brunel','T1_DE_KIT','T1_ES_PIC','T1_FR_CCIN2P3','T2_ES_CIEMAT','T2_DE_RWTH','T2_CH_CSCS','T2_BR_UERJ','T2_BE_UCL','T2_IN_TIFR','T2_HU_Budapest','T2_FI_HIP','T2_ES_IFCA','T2_UA_KIPT','T2_TW_NCHC','T2_RU_IHEP','T2_PT_NCG_Lisbon','T2_PL_Swierk','T2_US_Nebraska','T2_US_Caltech','T2_UK_SGrid_RALPP']
 
 config.Site.storageSite = 'T2_UK_London_IC'
 
