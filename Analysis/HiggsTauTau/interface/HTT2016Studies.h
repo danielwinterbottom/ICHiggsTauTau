@@ -51,6 +51,45 @@ class ZmmTreeProducer : public ModuleBase {
   virtual void PrintInfo();
 
 };
+
+class ZmmTPTreeProducer : public ModuleBase {
+ private:
+  CLASS_MEMBER(ZmmTPTreeProducer, fwlite::TFileService*, fs)
+  CLASS_MEMBER(ZmmTPTreeProducer, std::string, sf_workspace)
+  TTree *outtree_;
+  std::shared_ptr<RooWorkspace> ws_;
+
+  float wt;
+
+  int n_vtx;
+
+  float pt_t;
+  float eta_t;
+  float phi_t;
+  bool id_t;
+  float iso_t;
+
+  float pt_p;
+  float eta_p;
+  float phi_p;
+  bool id_p;
+  float iso_p;
+
+  float m_ll;
+
+  bool trg_t_IsoMu22;
+  bool trg_p_IsoMu22;
+
+ public:
+  ZmmTPTreeProducer(std::string const& name);
+  virtual ~ZmmTPTreeProducer();
+
+  virtual int PreAnalysis();
+  virtual int Execute(TreeEvent *event);
+  virtual int PostAnalysis();
+  virtual void PrintInfo();
+
+};
 }
 
 

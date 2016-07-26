@@ -131,4 +131,101 @@ namespace ic {
   }
 
   void ZmmTreeProducer::PrintInfo() { }
+
+
+
+  ZmmTPTreeProducer::ZmmTPTreeProducer(std::string const& name)
+      : ModuleBase(name) {
+      fs_ = nullptr;
+  }
+
+  ZmmTPTreeProducer::~ZmmTPTreeProducer() {
+    ;
+  }
+
+  int ZmmTPTreeProducer::PreAnalysis() {
+    if (fs_) {
+      outtree_ = fs_->make<TTree>("ZmmTP","ZmmTP");
+
+      outtree_->Branch("wt",          &wt);
+      outtree_->Branch("n_vtx",       &n_vtx);
+      outtree_->Branch("pt_t",        &pt_t);
+      outtree_->Branch("eta_t",       &eta_t);
+      outtree_->Branch("phi_t",       &phi_t);
+      outtree_->Branch("id_t",        &id_t);
+      outtree_->Branch("iso_t",       &iso_t);
+      outtree_->Branch("pt_p",        &pt_p);
+      outtree_->Branch("eta_p",       &eta_p);
+      outtree_->Branch("phi_p",       &phi_p);
+      outtree_->Branch("id_p",        &id_p);
+      outtree_->Branch("iso_p",       &iso_p);
+      outtree_->Branch("m_ll",        &m_ll);
+      outtree_->Branch("trg_t_IsoMu22",       &trg_t_IsoMu22);
+      outtree_->Branch("trg_p_IsoMu22",       &trg_p_IsoMu22);
+    }
+
+    ws_ = std::make_shared<RooWorkspace>(
+        OpenFromTFile<RooWorkspace>(sf_workspace_));
+    return 0;
+  }
+
+  int ZmmTPTreeProducer::Execute(TreeEvent *event) {
+    auto pairs = event->GetPtrVec<CompositeCandidate>("dimuon");
+    auto info = event->GetPtr<EventInfo>("eventInfo");
+
+    n_vtx = info->good_vertices();
+    wt = info->total_weight();
+
+    for (auto pair : pairs) {
+      Muon const* mu_t = dynamic_cast<Muon const*>(pair->At(0));
+      Muon const* mu_p = dynamic_cast<Muon const*>(pair->At(1));
+      pt_t = mu_t->pt();
+      eta_t = mu_t->eta();
+      phi_t = mu_t->phi();
+      id_t = MuonMediumHIPsafe(mu_t) && fabs(mu_t->dxy_vertex()) < 0.045 && fabs(mu_t->dz_vertex()) < 0.2;
+      iso_t = PF04IsolationVal(mu_t, 0.5, 0);
+      pt_p = mu_p->pt();
+      eta_p = mu_p->eta();
+      phi_p = mu_p->phi();
+      id_p = MuonMediumHIPsafe(mu_p) && fabs(mu_p->dxy_vertex()) < 0.045 && fabs(mu_p->dz_vertex()) < 0.2;
+      iso_p = PF04IsolationVal(mu_p, 0.5, 0);
+      m_ll = pair->M();
+
+      trg_t_IsoMu22 = false;
+      trg_p_IsoMu22 = false;
+      if (info->is_data()) {
+        bool path_fired = false;
+        auto const& trg_paths = event->GetPtrVec<TriggerPath>("triggerPaths");
+        for (auto trg : trg_paths) {
+          if (trg->id() == CityHash64("HLT_IsoMu22_v") && trg->accept()) {
+            path_fired = true;
+            break;
+          }
+        }
+        bool obj_t_matched = false;
+        bool obj_p_matched = false;
+        if (path_fired) {
+          std::string filter = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+          auto const& trg_objs = event->GetPtrVec<TriggerObject>("triggerObjects_IsoMu22");
+          obj_t_matched = IsFilterMatched(mu_t, trg_objs, filter, 0.5);
+          obj_p_matched = IsFilterMatched(mu_p, trg_objs, filter, 0.5);
+        }
+        trg_t_IsoMu22 = path_fired && obj_t_matched;
+        trg_p_IsoMu22 = path_fired && obj_p_matched;
+      } else {
+        trg_t_IsoMu22 = true;
+        trg_p_IsoMu22 = true;
+      }
+      outtree_->Fill();
+    }
+
+
+    return 0;
+  }
+
+  int ZmmTPTreeProducer::PostAnalysis() {
+    return 0;
+  }
+
+  void ZmmTPTreeProducer::PrintInfo() { }
 }

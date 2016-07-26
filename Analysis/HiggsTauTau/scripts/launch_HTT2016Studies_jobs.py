@@ -51,7 +51,7 @@ MC_SAMPLES = {
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm']
+SEQUENCES = ['Zmm', 'ZmmTP', 'EffectiveEvents']
 
 OUTPUT = 'output/HTT2016Studies_July19'
 os.system('mkdir -p %s' % OUTPUT)

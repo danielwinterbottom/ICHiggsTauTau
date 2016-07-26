@@ -5,19 +5,21 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Core/interface/AnalysisBase.h"
 #include "Objects/interface/Muon.hh"
+#include "Objects/interface/Unhash.h"
 #include "Utilities/interface/JsonTools.h"
 #include "Utilities/interface/FnRootTools.h"
-#include "HiggsTauTau/interface/WJetsStudy.h"
-#include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "Modules/interface/LumiMask.h"
 #include "Modules/interface/GenericModule.h"
 #include "Modules/interface/TriggerInfo.h"
-#include "Objects/interface/Unhash.h"
 #include "Modules/interface/SimpleFilter.h"
 #include "Modules/interface/CopyCollection.h"
 #include "Modules/interface/OneCollCompositeProducer.h"
+#include "Modules/interface/CompositeProducer.h"
 #include "Modules/interface/OverlapFilter.h"
 #include "Modules/interface/PileupWeight.h"
+#include "HiggsTauTau/interface/WJetsStudy.h"
+#include "HiggsTauTau/interface/HTT2016Studies.h"
+#include "HiggsTauTau/interface/EffectiveEvents.h"
 
 
 using std::string;
@@ -144,6 +146,15 @@ int main(int argc, char* argv[]) {
     seqs["HashMap"].InsertSequence("HashMap", analysis);
   }
 
+  if (seqs.count("EffectiveEvents")) {
+    auto & seq = seqs["EffectiveEvents"];
+    if (!is_data) {
+      seq.BuildModule(ic::EffectiveEvents("EffectiveEvents")
+        .set_fs(&fs));
+    }
+    seq.InsertSequence("EffectiveEvents", analysis);
+  }
+
   if (seqs.count("Zmm")) {
     auto & seq = seqs["Zmm"];
 
@@ -190,6 +201,68 @@ int main(int argc, char* argv[]) {
       .set_sf_workspace("input/scale_factors/Muon_SF_spring16temp_workspace.root:ws")
     );
     seq.InsertSequence("Zmm", analysis);
+  }
+
+  if (seqs.count("ZmmTP")) {
+    auto & seq = seqs["ZmmTP"];
+
+
+    seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToTagMuons",
+        "muons", "tag_muons"));
+
+    seq.BuildModule(ic::SimpleFilter<ic::Muon>("TagMuonFilter")
+    .set_input_label("tag_muons").set_min(1)
+    .set_predicate([=](ic::Muon const* m) {
+      return  m->pt()                 > 23.    &&
+              fabs(m->eta())          < 2.4    &&
+              fabs(m->dxy_vertex())   < 0.045  &&
+              fabs(m->dz_vertex())    < 0.2    &&
+              MuonMediumHIPsafe(m)             &&
+              PF04IsolationVal(m, 0.5, false) < 0.2;
+    }));
+
+    seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToProbeMuons",
+        "muons", "probe_muons"));
+
+    seq.BuildModule(ic::SimpleFilter<ic::Muon>("ProbeMuonFilter")
+    .set_input_label("probe_muons").set_min(1)
+    .set_predicate([=](ic::Muon const* m) {
+      return  m->pt()                 > 20.    &&
+              fabs(m->eta())          < 2.4    &&
+              m->is_tracker();
+    }));
+
+    seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Muon>("ZMMPairProducer")
+        .set_input_label_first("tag_muons")
+        .set_input_label_second("probe_muons")
+        .set_candidate_name_first("tag")
+        .set_candidate_name_second("probe")
+        .set_output_label("dimuon")
+    );
+
+    using ROOT::Math::VectorUtil::DeltaR;
+    seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+        .set_input_label("dimuon")
+        .set_min(1)
+        .set_predicate([=](ic::CompositeCandidate const* c) {
+          return c->charge() == 0 &&
+            DeltaR(c->at(0)->vector(), c->at(1)->vector()) > 0.5;
+        })
+    );
+
+    // At this point we're done filtering, can calculate other things we nedd
+    if (!is_data) {
+      seq.BuildModule(puweight_module);
+    } else {
+      seq.BuildModule(lumimask_module);
+    }
+
+
+    seq.BuildModule(ic::ZmmTPTreeProducer("ZmmTPTreeProducer")
+      .set_fs(&fs)
+      .set_sf_workspace("input/scale_factors/Muon_SF_spring16temp_workspace.root:ws")
+    );
+    seq.InsertSequence("ZmmTP", analysis);
   }
 
   analysis.RunAnalysis();
