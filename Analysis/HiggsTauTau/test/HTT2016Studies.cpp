@@ -119,7 +119,8 @@ int main(int argc, char* argv[]) {
 
   auto puweight_module = ic::PileupWeight("PileupWeight")
     .set_data(&d_pu)
-    .set_mc(&m_pu);
+    .set_mc(&m_pu)
+    .set_print_weights(false);
 
   auto trigger_module = ic::TriggerInfo("TriggerInfo")
     .set_output_file(js.get("trigger_info_output", "trigger_info.json").asString());

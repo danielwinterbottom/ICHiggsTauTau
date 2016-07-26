@@ -12,7 +12,7 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
 MAX_EVTS = -1
-FILES_PER_JOB = 50
+FILES_PER_JOB = 100
 PROD='July19_'
 
 DATA_SAMPLES = {
@@ -43,22 +43,41 @@ DATA_SAMPLES = {
 }
 
 MC_SAMPLES = {
-    'DYJetsToLL': [
-        'DYJetsToLL'
-    ]
+    'DYJetsToLL':           ['DYJetsToLL'],
+    'DYJetsToLL_M-10to50':  ['DYJetsToLL_M-10to50'],
+    'TT':                   ['TT'],
+    'VVTo2L2Nu':            ['VVTo2L2Nu'],
+    'WWTo1L1Nu2Q':          ['WWTo1L1Nu2Q'],
+    'WZJToLLLNu':           ['WZJToLLLNu'],
+    'WZTo1L1Nu2Q':          ['WZTo1L1Nu2Q'],
+    'WZTo1L3Nu':            ['WZTo1L3Nu'],
+    'WZTo2L2Q':             ['WZTo2L2Q'],
+    'ZZTo2L2Q':             ['ZZTo2L2Q'],
+    'ZZTo4L':               ['ZZTo4L']
 }
 
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
 SEQUENCES = ['Zmm', 'ZmmTP', 'EffectiveEvents']
+WHITELIST = {
+    'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
+    'ZmmTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
+    'EffectiveEvents': list(MC_SAMPLES.keys())
+}
 
-OUTPUT = 'output/HTT2016Studies_July19'
+OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name
 os.system('mkdir -p %s' % OUTPUT)
 
 task = job_mgr.task_name
 
 for sa in SAMPLES:
+    doSample = False
+    for seq in SEQUENCES:
+        if sa in WHITELIST[seq]:
+            doSample = True
+    if not doSample:
+        continue
     filelists = ['filelists/%s%s.dat' % (PROD, X) for X in SAMPLES[sa]]
     cfg = {
         # General settings
