@@ -887,6 +887,13 @@ int main(int argc, char* argv[]){
       xsWeights.SetWTargetFractions(9.64822231e-01,2.66852257e-02,7.15251541e-03,9.67786836e-04,3.72241002e-04);
       xsWeights.SetWInputYields(47103549,10205377,4949568,1943664,1041358);
     }
+    if (mc == mc::spring16_80X){
+      xsWeights.set_do_w_soup(true);
+      xsWeights.set_do_w_reweighting(false);
+      xsWeights.SetWTargetFractions(9.65141122e-01,2.64511170e-02,7.07395326e-03,9.61876714e-04,2.36978418e-04,1.08184089e-04,2.61364578e-05,6.32466880e-07);
+      //EVT_MC_WJetsToLNu-mg-ht600 3722395+7854734+6545524+2507809=20630462
+      xsWeights.SetWInputYields(28210360,27487137,19851624,7432746,3722395,7854734,6545524,2507809);
+    }
   }
   if (output_name.find("JetsToLL-mg-m50") != output_name.npos && 
       output_name.find("PtZ-100-madgraph") == output_name.npos &&
@@ -909,6 +916,13 @@ int main(int argc, char* argv[]){
       xsWeights.set_do_dy_reweighting(false);
       xsWeights.SetDYTargetFractions(0.696628989, 0.204582155, 0.067178037, 0.020549051, 0.011061768);
       xsWeights.SetDYInputYields(9004328.0, 65314144.0, 19989058.0, 5701878.0, 4189017.0);
+    }
+    else if (mc == mc::spring16_80X){
+      xsWeights.set_do_dy_soup(true);
+      xsWeights.set_do_dy_reweighting(false);
+      xsWeights.SetDYTargetFractions(0.750730267, 0.168044214, 0.055234681, 0.016895704, 0.009095134);
+      //EVT_MC_DYJetsToLL and 1 2 3 4
+      xsWeights.SetDYInputYields(49847245, 65485168, 19695514, 5753813, 4101383);
     }
   }
 

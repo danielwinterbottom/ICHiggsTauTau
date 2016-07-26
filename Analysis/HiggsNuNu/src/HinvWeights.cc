@@ -147,6 +147,25 @@ namespace ic {//namespace
     }
 
     if (do_w_soup_) {
+      if (mc_ == mc::spring16_80X){
+      std::cout << "Making W Soup:" << std::endl;
+      std::cout << "nInc = " << n_inc_ << std::endl;
+      w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
+      w2_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
+      w3_ = (n_inc_*f3_) / ( (n_inc_*f3_) + n3_ );
+      w4_ = (n_inc_*f4_) / ( (n_inc_*f4_) + n4_ );
+      w5_ = (n_inc_*f5_) / ( (n_inc_*f5_) + n5_ );
+      w6_ = (n_inc_*f6_) / ( (n_inc_*f6_) + n6_ );
+      w7_ = (n_inc_*f7_) / ( (n_inc_*f7_) + n7_ );
+      std::cout << "f1 = " << f1_ << "\t" << "n1 = " << n1_ << "\t" << "w1 = " << w1_ << std::endl;
+      std::cout << "f2 = " << f2_ << "\t" << "n2 = " << n2_ << "\t" << "w2 = " << w2_ << std::endl;
+      std::cout << "f3 = " << f3_ << "\t" << "n3 = " << n3_ << "\t" << "w3 = " << w3_ << std::endl;
+      std::cout << "f4 = " << f4_ << "\t" << "n4 = " << n4_ << "\t" << "w4 = " << w4_ << std::endl;
+      std::cout << "f5 = " << f5_ << "\t" << "n5 = " << n5_ << "\t" << "w5 = " << w5_ << std::endl;
+      std::cout << "f6 = " << f6_ << "\t" << "n6 = " << n6_ << "\t" << "w6 = " << w6_ << std::endl;
+      std::cout << "f7 = " << f7_ << "\t" << "n7 = " << n7_ << "\t" << "w7 = " << w7_ << std::endl;
+      }
+      else{
       std::cout << "Making W Soup:" << std::endl;
       std::cout << "nInc = " << n_inc_ << std::endl;
       w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
@@ -157,6 +176,7 @@ namespace ic {//namespace
       std::cout << "f2 = " << f2_ << "\t" << "n2 = " << n2_ << "\t" << "w2 = " << w2_ << std::endl;
       std::cout << "f3 = " << f3_ << "\t" << "n3 = " << n3_ << "\t" << "w3 = " << w3_ << std::endl;
       std::cout << "f4 = " << f4_ << "\t" << "n4 = " << n4_ << "\t" << "w4 = " << w4_ << std::endl;
+      }
     }
     if (do_dy_soup_ || do_dy_soup_htbinned_) {
       std::cout << "Making DY Soup:" << std::endl;
@@ -904,6 +924,16 @@ namespace ic {//namespace
 	else if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("wsoup", w3_);
 	else if (gen_ht >= 600) eventInfo->set_weight("wsoup", w4_);
       }
+      else if (mc_ == mc::spring16_80X){
+        double gen_ht = eventInfo->gen_ht() ;
+        if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("wsoup", w1_);
+        else if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("wsoup", w2_);
+        else if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("wsoup", w3_);
+        else if (600 <= gen_ht &&gen_ht<800) eventInfo->set_weight("wsoup", w4_);
+        else if (800 <= gen_ht &&gen_ht<1200) eventInfo->set_weight("wsoup", w5_);
+        else if (1200 <= gen_ht &&gen_ht<2500) eventInfo->set_weight("wsoup", w6_);
+        else if (gen_ht >= 2500) eventInfo->set_weight("wsoup", w7_);
+      }
       else {
 	std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
 	unsigned partons = getPartonNumber(parts);//,24);
@@ -996,7 +1026,16 @@ namespace ic {//namespace
     f2_ = f2;
     f3_ = f3;
     f4_ = f4;
-
+  }
+  void HinvWeights::SetWTargetFractions(double f0, double f1, double f2, double f3, double f4, double f5, double f6, double f7) {
+    f0_ = f0;
+    f1_ = f1;
+    f2_ = f2;
+    f3_ = f3;
+    f4_ = f4;
+    f5_ = f5;
+    f6_ = f6;
+    f7_ = f7;
   }
   void HinvWeights::SetWInputYields(double n_inc, double n1, double n2, double n3, double n4) {
     n_inc_ = n_inc;
@@ -1005,14 +1044,22 @@ namespace ic {//namespace
     n3_ = n3;
     n4_ = n4;
   }
-
+  void HinvWeights::SetWInputYields(double n_inc, double n1, double n2, double n3, double n4, double n5, double n6, double n7) {
+    n_inc_ = n_inc;
+    n1_ = n1;
+    n2_ = n2;
+    n3_ = n3;
+    n4_ = n4;
+    n5_ = n5;
+    n6_ = n6;
+    n7_ = n7;
+  }
   void HinvWeights::SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4) {
     zf0_ = zf0;
     zf1_ = zf1;
     zf2_ = zf2;
     zf3_ = zf3;
     zf4_ = zf4;
-
   }
   void HinvWeights::SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4) {
     zn_inc_ = zn_inc;

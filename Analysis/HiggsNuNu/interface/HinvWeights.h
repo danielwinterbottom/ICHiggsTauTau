@@ -93,7 +93,7 @@ class HinvWeights : public ModuleBase {
   std::vector<double> muVeto_idisoDataEff_;
   std::vector<double> muVeto_idisoMCEff_;
 
-  double f0_,f1_,f2_,f3_,f4_,n_inc_,n1_,n2_,n3_,n4_,w0_,w1_,w2_,w3_,w4_;
+  double f0_,f1_,f2_,f3_,f4_,f5_,f6_,f7_,n_inc_,n1_,n2_,n3_,n4_,n5_,n6_,n7_,w0_,w1_,w2_,w3_,w4_,w5_,w6_,w7_;
   double zf0_,zf1_,zf2_,zf3_,zf4_,zn_inc_,zn1_,zn2_,zn3_,zn4_,zw0_,zw1_,zw2_,zw3_,zw4_;
 
   unsigned eventsWithGenElectron_;
@@ -116,7 +116,9 @@ class HinvWeights : public ModuleBase {
   virtual void PrintInfo();
   double Efficiency(double m, double m0, double sigma, double alpha, double n, double norm);
   void SetWTargetFractions(double f0, double f1, double f2, double f3, double f4);
+  void SetWTargetFractions(double f0, double f1, double f2, double f3, double f4, double f5, double f6, double f7);
   void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4);
+  void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4, double n5, double n6, double n7);
   void SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4);
   void SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4);
 
