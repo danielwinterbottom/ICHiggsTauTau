@@ -501,7 +501,7 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
   //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
   if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
-  if (era_type == era::data_2016)  data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt";
+  if (era_type == era::data_2016)  data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){

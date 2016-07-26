@@ -533,9 +533,9 @@ namespace ic {
 
     if(year_.find("6")!=year_.npos){
       samples_alias_map_["vv_samples"] = {
-       "T-tW", "Tbar-tW","Tbar-t",
+       "T-tW", "Tbar-tW","Tbar-t","T-t",
        "WWTo1L1Nu2Q",
-       "VVTo2L2Nu","ZZTo2L2Q",
+       "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
        "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q"
       };
     } else if(!is_fall15_){
