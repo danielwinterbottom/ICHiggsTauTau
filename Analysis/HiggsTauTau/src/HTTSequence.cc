@@ -1335,21 +1335,21 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     if(channel == channel::et || channel==channel::em || channel==channel::mt) httWeights.set_do_tracking_eff(true);
   }
 
-/*  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL_M-50") != output_name.npos) || output_name.find("DYJetsToLL_M-150-LO")!=output_name.npos){
-    httWeights.set_do_zpt_weight(true);
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+//    httWeights.set_do_zpt_weight(true);
     httWeights.set_do_dy_soup(true);
     httWeights.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-    httWeights.SetDYInputYields(238776168,65314144 , 20019059, 5701878, 4189017);
+    httWeights.SetDYInputYields(49877138,65485168 , 19695514, 5753813, 4115140);
   }
 
-  if (output_name.find("TT-ext") != output_name.npos) httWeights.set_do_topquark_weights(true);
+//  if (output_name.find("TT-ext") != output_name.npos) httWeights.set_do_topquark_weights(true);
   
   if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
     httWeights.set_do_w_soup(true);
     httWeights.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-    httWeights.SetWInputYields(47101324,45442170,30190119,18007936,8815779);
-  }*/
+    httWeights.SetWInputYields(28210360,39855520,29884200,19869053,9174756);
+  }
 
     BuildModule(httWeights);
   }

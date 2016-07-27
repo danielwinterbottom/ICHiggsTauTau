@@ -2002,13 +2002,16 @@ namespace ic {
           }
           if (id == 24) count_jets = true; 
         }
-      } else {
+      } else if(era_ == era::data_2015) {
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         for(unsigned i = 0; i< lhe_parts.size(); ++i){
          if(lhe_parts[i]->status() != 1) continue;
          unsigned id = abs(lhe_parts[i]->pdgid());
          if ((id >= 1 && id <=6) || id == 21) partons++;
         }
+      } else if(era_==era::data_2016) {
+         EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+         partons = eventInfo->n_outgoing_partons();
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
@@ -2035,13 +2038,16 @@ namespace ic {
           }
           if (id == 23) count_jets = true; 
         }
-      } else { 
+      } else if(era_ == era::data_2015){ 
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         for(unsigned i = 0; i< lhe_parts.size(); ++i){
          if(lhe_parts[i]->status() != 1) continue;
          unsigned id = abs(lhe_parts[i]->pdgid());
          if ((id >= 1 && id <=6) || id == 21) partons++;
         }
+      } else if(era_ == era::data_2016){
+         EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+         partons = eventInfo->n_outgoing_partons();
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
