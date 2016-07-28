@@ -6,7 +6,7 @@
 #include "Utilities/interface/JsonTools.h"
 #include "Utilities/interface/FnRootTools.h"
 #include "HiggsTauTau/interface/WJetsStudy.h"
-#include "HiggsTauTau/interface/HTTWeights.h"
+#include "HiggsTauTau/interface/HTTStitching.h"
 
 
 using std::string;
@@ -36,16 +36,14 @@ int main(int argc, char* argv[]) {
   analysis.RetryFileAfterFailure(7, 3);
   analysis.CalculateTimings(js.get("timings", false).asBool());
 
-  ic::HTTWeights httWeights = ic::HTTWeights("HTTWeights")
-    .set_jets_label("ak4PFJetsCHS")
-    .set_ditau_label("ditau")
+  ic::HTTStitching httStitching = ic::HTTStitching("HTTStitching")
     .set_fs(fs);
 
-  httWeights.set_do_dy_soup_high_mass(true);
-  httWeights.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
-  httWeights.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);
+  httStitching.set_do_dy_soup_high_mass(true);
+  httStitching.SetDYInputCrossSectionsHighMass(4954, 1012.5, 332.8, 101.8,54.8,6.7); //Target fractions are xs_n-jet/xs_inclusive
+  httStitching.SetDYInputYieldsHighMass(239058696,65314144 , 20019059, 5701878, 4189017, 6079415);
 
-  analysis.AddModule(&httWeights);
+  analysis.AddModule(&httStitching);
 
   analysis.RunAnalysis();
 

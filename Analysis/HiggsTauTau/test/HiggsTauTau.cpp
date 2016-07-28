@@ -19,6 +19,7 @@
 #include "Modules/interface/PileupWeight.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTWeights.h"
+#include "HiggsTauTau/interface/HTTStitching.h"
 #include "Modules/interface/QuarkGluonDiscriminatorStudy.h"
 #include "HiggsTauTau/interface/GenLevelStudy.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
@@ -1051,24 +1052,6 @@ int main(int argc, char* argv[]){
   if (output_name.find("TTJets") != output_name.npos) httWeights.set_do_topquark_weights(true);
   if (special_mode != 5 && output_name.find("WJetsToLNu") != output_name.npos) httWeights.set_do_tau_fake_weights(true);
 
-  if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
-    httWeights.set_do_w_soup(true);
-    if (mc == mc::fall11_42X) {
-      httWeights.SetWTargetFractions(0.752332, 0.171539, 0.0538005, 0.0159036, 0.00642444);
-      httWeights.SetWInputYields(81295381.0, 70712575.0, 25320546.0, 7541595.0, 12973738.0);
-    }
-    if (mc == mc::summer12_53X && strategy == strategy::paper2013) {
-      httWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
-      httWeights.SetWInputYields(76102995.0, 52926398.0, 64738774.0, 30780647.0, 13382803.0);
-    }
-  }
-  if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {
-    if (mc == mc::summer12_53X) {
-      httWeights.set_do_dy_soup(true);
-      httWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
-      httWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
-    }
-  }
   if ( (output_name.find("GluGluToHToTauTau_M-")          != output_name.npos ||
         output_name.find("GluGluToHToWWTo2LAndTau2Nu_M-") != output_name.npos ||
         output_name.find("GluGluToHToWWTo2L2Nu_M-")       != output_name.npos ||
@@ -1085,6 +1068,27 @@ int main(int argc, char* argv[]){
       }
       std::cout << "SM ggH Signal sample detected with mass: " << mass_string << std::endl;
       httWeights.set_ggh_mass(mass_string);
+    }
+  }
+    HTTStitching httStitching = HTTStitching("HTTStitching")  
+    .set_era(era)
+    .set_fs(fs);
+  if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
+    httStitching.set_do_w_soup(true);
+    if (mc == mc::fall11_42X) {
+      httStitching.SetWTargetFractions(0.752332, 0.171539, 0.0538005, 0.0159036, 0.00642444);
+      httStitching.SetWInputYields(81295381.0, 70712575.0, 25320546.0, 7541595.0, 12973738.0);
+    }
+    if (mc == mc::summer12_53X && strategy == strategy::paper2013) {
+      httStitching.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
+      httStitching.SetWInputYields(76102995.0, 52926398.0, 64738774.0, 30780647.0, 13382803.0);
+    }
+  }
+  if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {
+    if (mc == mc::summer12_53X) {
+      httStitching.set_do_dy_soup(true);
+      httStitching.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
+      httStitching.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
     }
   }
 
@@ -1298,6 +1302,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&httL1MetCut);
     }  
    if(strategy != strategy::phys14) analysis.AddModule(&httWeights);
+   if(strategy != strategy::phys14) analysis.AddModule(&httStitching);
    if (is_embedded && era == era::data_2012_rereco) {
                                   analysis.AddModule(&rechitWeights);
    }
