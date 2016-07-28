@@ -6,6 +6,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagWeight.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
+
 #include <string>
 
 
@@ -92,6 +94,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_gt4)
   CLASS_MEMBER(HTTWeights, TH2F*, ele_tracking_sf)
   CLASS_MEMBER(HTTWeights, TH1D*, muon_tracking_sf)
+  CLASS_MEMBER(HTTWeights, fwlite::TFileService*, fs)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
@@ -108,6 +111,12 @@ class HTTWeights : public ModuleBase {
   mithep::TH2DAsymErr* ElectronFakeRateHist_PtEta;
   BTagWeight btag_weight;
   TF1 *tau_fake_weights_;
+
+  TTree *t_gen_info_;
+  int t_decay_;
+  float t_mll_;
+  int t_njets_;
+  float t_wt_;
 
   double f0_,f1_,f2_,f3_,f4_,n_inc_,n1_,n2_,n3_,n4_,w0_,w1_,w2_,w3_,w4_;
   double zf0_,zf1_,zf2_,zf3_,zf4_,zn_inc_,zn1_,zn2_,zn3_,zn4_,zn_hm_,zw0_,zw1_,zw2_,zw3_,zw4_;
