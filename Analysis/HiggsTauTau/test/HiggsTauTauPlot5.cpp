@@ -505,6 +505,8 @@ int main(int argc, char* argv[]){
 			ana_syst.AddSMSignalSamples({add_sm_background});
 		}
 		ana_syst.AddMSSMSignalSamples(mssm_masses);
+		ana_syst.AddMSSMSignalSamplesBBH(bbh_masses);
+		ana_syst.AddMSSMSignalSamplesGGH(ggh_masses);
 		ana_syst.AddHhhSignalSamples(Hhh_masses);
 		ana_syst.ReadTrees(folder+syst.first, folder);
 		ana_syst.ParseParamFile(paramfile);
