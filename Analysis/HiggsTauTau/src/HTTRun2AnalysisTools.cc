@@ -716,9 +716,9 @@ namespace ic {
   /*if(year_.find("6")!=year_.npos){
      samples_alias_map_["qcd_sub_samples"] = {
         "DYJetsToLL-LO",
-        "T-tW", "Tbar-tW","Tbar-t",
+        "T-tW","T-t", "Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
-        "ZZTo2L2Q",
+        "ZZTo2L2Q","ZZTo4L",
         "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
         "TT","WJetsToLNu-LO",
         };*/
@@ -824,9 +824,9 @@ namespace ic {
    /*if(year_.find("6")!=year_.npos){
     samples_alias_map_["w_sub_samples"] = {
      "DYJetsToLL-LO",
-     "T-tW", "Tbar-tW", "Tbar-t",
+     "T-tW", "Tbar-tW","T-t", "Tbar-t",
      "WWTo1L1Nu2Q","VVTo2L2Nu",
-     "ZZTo2L2Q",
+     "ZZTo2L2Q","ZZTo4L",
      "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
      "TT"
      };*/
@@ -961,6 +961,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
     }
   }
+ 
+  void HTTRun2Analysis::AddMSSMSignalSamplesBBH(std::vector<std::string> masses){
+  for (auto m : masses) {
+        sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
+    }
+  }
+
+  void HTTRun2Analysis::AddMSSMSignalSamplesGGH(std::vector<std::string> masses){
+  for (auto m : masses) {
+        sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
+    }
+  }
+
 
   void HTTRun2Analysis::AddHhhSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
@@ -1396,6 +1409,37 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
+
+  void HTTRun2Analysis::FillMSSMSignalBBH(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+        hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+  void HTTRun2Analysis::FillMSSMSignalGGH(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+
+
 
   void HTTRun2Analysis::FillHhhSignal(HistValueMap & hmap, 
                     std::vector<std::string> const& masses,

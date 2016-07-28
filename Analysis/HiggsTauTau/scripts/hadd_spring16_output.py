@@ -77,7 +77,7 @@ sample_list = [
    'SingleElectronD',
    'MuonEGD',
    'TauD',
-   'SUSYGluGluToBBHToTauTau_M-500'
+   'SUSYGluGluToBBHToTauTau_M-500',
   'SUSYGluGluToBBHToTauTau_M-80',
   'SUSYGluGluToBBHToTauTau_M-90',
   'SUSYGluGluToBBHToTauTau_M-100',

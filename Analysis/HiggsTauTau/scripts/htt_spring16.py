@@ -140,8 +140,8 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
       'TTHToTauTau_M-'+mass
     ]
 if options.proc_mssm or options.proc_all:
-  gghmasses = ['120','130','160','180','350','450','500','700','1000','1200','1400','1600','2000','3200']
-  bbhmasses = ['80','90','110','140','160','180','250','300','500','600','700','1000','1200','2900']
+  gghmasses = ['90','100','120','130','160','180','350','450','500','700','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
+  bbhmasses = ['80','90','110','120','130','140','160','180','250','300','400','450','500','600','700','900','1000','1200','2900']
   if options.short_signal: 
     gghmasses = ['160']
     bbhmasses = ['160']
@@ -314,14 +314,16 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       JOB='%s_2016' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       FLATJSONPATCH=FLATJSONPATCHOTH
-      nperjob = 40
+      nperjob = 30
       if 'scale' in FLATJSONPATCH:
-        nperjob = 30
+        nperjob = 20
       if 'DY' in sa and 'JetsToLL' in sa:
         FLATJSONPATCH=FLATJSONPATCHDYSIG
         #nperjob = 30
       if 'TT' in sa:
           nperjob = 30
+        if 'scale' in FLATJSONPATCH:
+          nperjob = 15
 #      if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
 #        nperjob = 30
       if 'QCD' in sa:
