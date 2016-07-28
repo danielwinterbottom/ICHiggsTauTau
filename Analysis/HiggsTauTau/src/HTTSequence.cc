@@ -350,6 +350,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  new_svfit_mode = json["new_svfit_mode"].asUInt();
  kinfit_mode = json["kinfit_mode"].asUInt(); 
  mva_met_mode = json["mva_met_mode"].asUInt();
+ do_met_filters = json["do_met_filters"].asBool();
  faked_tau_selector = json["faked_tau_selector"].asUInt();
  ztautau_mode = json["ztautau_mode"].asUInt();
  vh_filter_mode = json["vh_filter_mode"].asUInt();
@@ -776,6 +777,19 @@ if(strategy_type != strategy::phys14){
    BuildModule(NvtxWeight("NvtxWeight")
        .set_vertex_dist(new TH1F(vertex_wts)));
  }*/
+
+if(do_met_filters && is_data){
+  BuildModule(GenericModule("MetFilters")
+    .set_function([=](ic::TreeEvent *event){
+       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+       std::vector<std::string> met_filters = {"Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter"};
+       bool pass_filters = true;
+       for(unsigned i=0;i<met_filters.size();++i){
+        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
+       }
+       return !pass_filters;
+    }));
+}
 
 if(channel != channel::wmnu) {
  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
