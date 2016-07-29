@@ -1334,6 +1334,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
     httStitching.SetWInputYields(47101324,45442170,30190119,18007936,8815779);
   }
+   BuildModule(httStitching);
 
   }
 
