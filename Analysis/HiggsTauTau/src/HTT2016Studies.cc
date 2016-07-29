@@ -45,11 +45,15 @@ namespace ic {
       outtree_->Branch("trg_IsoMu22",       &trg_IsoMu22);
     }
 
-    ws_ = std::make_shared<RooWorkspace>(
-        OpenFromTFile<RooWorkspace>(sf_workspace_));
-
-    fns_["Mu22_Data_Eff"] = std::shared_ptr<RooFunctor>(
-      ws_->function("Mu22_Data_Eff")->functor(ws_->argSet("m_pt,m_eta")));
+    TFile f(sf_workspace_.c_str());
+    ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+    f.Close();
+    fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_id_ratio")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_iso_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_iso_ratio")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_trg_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trg_data")->functor(ws_->argSet("m_pt,m_eta")));
     return 0;
   }
 
@@ -110,15 +114,23 @@ namespace ic {
     } else {
       trg_IsoMu22 = true;
     }
-
+    wt_id = 1.0;
+    wt_iso = 1.0;
     wt_trg = 1.0;
+    auto args_1 = std::vector<double>{lep_1->pt(), lep_1->eta()};
+    auto args_2 = std::vector<double>{lep_2->pt(), lep_2->eta()};
     if (!info->is_data()) {
-      float eff_1 = fns_["Mu22_Data_Eff"]->eval(std::vector<double>{lep_1->pt(), lep_1->eta()}.data());
-      float eff_2 = fns_["Mu22_Data_Eff"]->eval(std::vector<double>{lep_2->pt(), lep_2->eta()}.data());
+      float eff_1 = fns_["m_trg_data"]->eval(args_1.data());
+      float eff_2 = fns_["m_trg_data"]->eval(args_2.data());
       wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
+      wt_id = fns_["m_id_ratio"]->eval(args_1.data()) *
+              fns_["m_id_ratio"]->eval(args_2.data());
+      wt_iso = fns_["m_iso_ratio"]->eval(args_1.data()) *
+               fns_["m_iso_ratio"]->eval(args_2.data());
     }
     info->set_weight("trg", wt_trg);
-
+    info->set_weight("id", wt_id);
+    info->set_weight("iso", wt_iso);
     wt = info->total_weight();
     wt_pu = info->weight_defined("pileup") ? info->weight("pileup") : 1.0;
 
@@ -164,8 +176,9 @@ namespace ic {
       outtree_->Branch("trg_p_IsoMu22",       &trg_p_IsoMu22);
     }
 
-    ws_ = std::make_shared<RooWorkspace>(
-        OpenFromTFile<RooWorkspace>(sf_workspace_));
+    TFile f(sf_workspace_.c_str());
+    ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+    f.Close();
     return 0;
   }
 

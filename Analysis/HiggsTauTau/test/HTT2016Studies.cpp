@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
 
     seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")
       .set_fs(&fs)
-      .set_sf_workspace("input/scale_factors/Muon_SF_spring16temp_workspace.root:ws")
+      .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
     );
     seq.InsertSequence("Zmm", analysis);
   }
@@ -261,7 +261,7 @@ int main(int argc, char* argv[]) {
 
     seq.BuildModule(ic::ZmmTPTreeProducer("ZmmTPTreeProducer")
       .set_fs(&fs)
-      .set_sf_workspace("input/scale_factors/Muon_SF_spring16temp_workspace.root:ws")
+      .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
     );
     seq.InsertSequence("ZmmTP", analysis);
   }

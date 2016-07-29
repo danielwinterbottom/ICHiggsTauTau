@@ -19,6 +19,8 @@ class ZmmTreeProducer : public ModuleBase {
 
   float wt;
   float wt_pu;
+  float wt_id;
+  float wt_iso;
   float wt_trg;
 
   int n_vtx;
