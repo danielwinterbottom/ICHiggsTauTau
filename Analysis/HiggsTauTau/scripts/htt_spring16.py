@@ -288,6 +288,16 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'T-tW',
     'Tbar-tW',
     'DYJetsToLL-LO',
+    'DYJetsToLL_M-10-50-LO',
+    'DYJetsToLL_M-150-LO',
+    'DY1JetsToLL-LO',
+    'DY2JetsToLL-LO',
+    'DY3JetsToLL-LO',
+    'DY4JetsToLL-LO',
+    'W1JetsToLNu-LO',
+    'W2JetsToLNu-LO',
+    'W3JetsToLNu-LO',
+    'W4JetsToLNu-LO'
      ]
 
   if options.qcd_study:
@@ -310,6 +320,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       if 'DY' in sa and 'JetsToLL' in sa:
         FLATJSONPATCH=FLATJSONPATCHDYSIG
         #nperjob = 30
+      if 'TT' in sa:
+          nperjob = 30
         if 'scale' in FLATJSONPATCH:
           nperjob = 15
 #      if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
