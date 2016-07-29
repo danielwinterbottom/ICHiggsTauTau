@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 import ROOT
+import imp
+from array import array
+wsptools = imp.load_source('wsptools', 'scripts/workspaceTools.py')
+
+
+def GetFromTFile(str):
+    f = ROOT.TFile(str.split(':')[0])
+    obj = f.Get(str.split(':')[1]).Clone()
+    f.Close()
+    return obj
 
 # Boilerplate
 ROOT.PyConfig.IgnoreCommandLineOptions = True
@@ -8,78 +18,53 @@ ROOT.RooWorkspace.imp = getattr(ROOT.RooWorkspace, 'import')
 ROOT.TH1.AddDirectory(0)
 
 
-def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):
-    # Use the histogram name for this function unless a new name has
-    # been specified
-    if name is None:
-        name = hist.GetName()
-    # Bit of technical RooFit thing:
-    # We want to use two sets of x and y variables. The first set will be
-    # named specifically for the histogram in question. When we create the
-    # RooDataHist RooFit will adjust the ranges and binning of these
-    # RooRealVars to match the input histogram. We'll store these in
-    # 'h_arglist'. The second set will contain the variables that are actually
-    # used for looking up values in the RooHistFunc that will wrap around the
-    # RooDataHist. These variables can be used for different RooHistFuncs with
-    # different binnings and/or ranges in each, and could even be defined as
-    # functions of other variables. We'll store these in 'f_arglist'.
-    h_arglist = ROOT.RooArgList()
-    f_arglist = ROOT.RooArgList()
-    # Keep track of the relevant histogram axes (for the 1D, 2D or 3D cases)
-    axes = [hist.GetXaxis()]
-    if len(binvars) >= 2:
-        axes.append(hist.GetYaxis())
-    if len(binvars) >= 3:
-        axes.append(hist.GetZaxis())
-    for i, var in enumerate(binvars):
-        # If the axis variable doesn't exist in the workspace already we need
-        # to create it
-        if not wsp.arg(var):
-            # Check if the user has defined a function here
-            if var.startswith('expr::'):
-                funcarg = wsp.factory(var)
-                var = funcarg.GetName()
-            # otherwise create a normal variable
-            else:
-                wsp.factory('%s[0]' % var)
-        # If the bound option is set we first pass the axis variables through
-        # a function that adjusts the value to the xaxis minimum or maximum if
-        # the user has set a value outside the axis range
-        if bound:
-            f_arglist.add(wsp.factory('expr::%s_range_%s("TMath::Range(%f,%f,@0)", %s)' % (
-                name, var,
-                axes[i].GetBinLowEdge(1),
-                axes[i].GetBinUpEdge(axes[i].GetNbins()),
-                var)))
-        else:
-            f_arglist.add(wsp.arg(var))
-        # Now create the histogram-specific binning variable
-        h_arglist.add(wsp.factory('%s_binningvar_%s[0]' % (name, var)))
-    # First create the RooDataHist
-    rdh = ROOT.RooDataHist(name, hist.GetTitle(), h_arglist, hist)
-    # Then the RooHistFunc - it will create a 1->1 correspondence between the lookup variables
-    # (f_arglist) and the variables that defined the histogram binning (h_arglist)
-    rhf = ROOT.RooHistFunc(name, hist.GetTitle(), f_arglist, h_arglist, rdh)
-    # Finally we can import it into the workspace
-    wsp.imp(rhf)
+w = ROOT.RooWorkspace('w')
 
-file = ROOT.TFile('input/scale_factors/Muon_SF_spring16temp.root')
-hists = []
-hists.append(file.Get('Mu22_Data_Eff'))
-hists.append(file.Get('Mu19_Data_Eff'))
-file.Close()
+loc = 'output/tag_and_probe/'
+
+histsToWrap = [
+    (loc+'ZmmTP_Data_Fits_ID_pt_eta_bins.root:ID_pt_eta_bins',                          'm_id_data'),
+    (loc+'ZmmTP_DYJetsToLL_Fits_ID_pt_eta_bins.root:ID_pt_eta_bins',                    'm_id_mc'),
+    (loc+'ZmmTP_Data_Fits_Iso_pt_eta_bins.root:Iso_pt_eta_bins',                        'm_iso_data'),
+    (loc+'ZmmTP_DYJetsToLL_Fits_Iso_pt_eta_bins.root:Iso_pt_eta_bins',                  'm_iso_mc'),
+    (loc+'ZmmTP_Data_Fits_AIso1_pt_eta_bins.root:AIso1_pt_eta_bins',                    'm_aiso1_data'),
+    (loc+'ZmmTP_DYJetsToLL_Fits_AIso1_pt_eta_bins.root:AIso1_pt_eta_bins',              'm_aiso1_mc'),
+    (loc+'ZmmTP_Data_Fits_AIso2_pt_eta_bins.root:AIso2_pt_eta_bins',                    'm_aiso2_data'),
+    (loc+'ZmmTP_DYJetsToLL_Fits_AIso2_pt_eta_bins.root:AIso2_pt_eta_bins',              'm_aiso2_mc'),
+    (loc+'ZmmTP_Data_Fits_Trg_Iso_pt_eta_bins.root:Trg_Iso_pt_eta_bins',                'm_trg_data'),
+    (loc+'ZmmTP_Data_Fits_Trg_AIso1_pt_bins_inc_eta.root:Trg_AIso1_pt_bins_inc_eta',    'm_trg_aiso1_data'),
+    (loc+'ZmmTP_Data_Fits_Trg_AIso2_pt_bins_inc_eta.root:Trg_AIso2_pt_bins_inc_eta',    'm_trg_aiso2_data')
+]
+
+for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['m_pt', 'expr::m_abs_eta("TMath::Abs(@0)",m_eta[0])'],
+                          GetFromTFile(task[0]), name=task[1])
 
 
-ws = ROOT.RooWorkspace('ws')
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
+                                   'm_iso_binned_data', ['m_iso_data', 'm_aiso1_data', 'm_aiso2_data'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
+                                   'm_iso_binned_mc', ['m_iso_mc', 'm_aiso1_mc', 'm_aiso2_mc'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
+                                   'm_trg_binned_data', ['m_trg_data', 'm_trg_aiso1_data', 'm_trg_aiso2_data'])
 
-for hist in hists:
-    # Here we are saying that the x-axis lookup is done by taking the the abs
-    # value of m_eta first, and the y-axis lookup is just done directly with
-    # the m_pt variable
-    SafeWrapHist(ws, ['expr::m_abs_eta("TMath::Abs(@0)",m_eta[0])', 'm_pt'], hist)
+for t in ['id', 'iso', 'aiso1', 'aiso2', 'iso_binned']:
+    w.factory('expr::m_%s_ratio("@0/@1", m_%s_data, m_%s_mc)' % (t, t, t))
 
 
-ws.Print()
-ws.writeToFile('input/scale_factors/Muon_SF_spring16temp_workspace.root')
-# I don't know why I need to delete this but it segfaults if I don't
-ws.Delete()
+
+# fn = w.function('m_iso_binned_ratio').functor(ROOT.RooArgList(w.argSet('m_pt,m_eta,m_iso')))
+# for pars in [
+#     (20., 0.5, 0.1),
+#     (20., 0.5, 0.15),
+#     (20., 0.5, 0.20),
+#     (20., 0.5, 0.25),
+#     (20., 0.5, 0.35)]:
+#     print (pars[0], pars[1], pars[2], fn.eval(array('d', [pars[0], pars[1], pars[2]])))
+
+# out = ROOT.TFile('debug.root', 'RECREATE')
+# out.Close()
+
+w.Print()
+w.writeToFile('htt_scalefactors_v1.root')
+w.Delete()
