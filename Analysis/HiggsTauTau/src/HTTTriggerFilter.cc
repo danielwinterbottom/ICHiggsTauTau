@@ -52,6 +52,9 @@ namespace ic {
     double alt_min_online_pt=0;
     double high_leg_pt = 0;
 
+    bool isotrkmu_test=false;
+    bool singletau_test=true;
+
     if (is_data_) { //Switch this part off temporarily as we don't have this vector in first processed data
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
@@ -531,13 +534,31 @@ namespace ic {
           alt_min_online_pt = 0.;
           high_leg_pt = 19.;
         } else if (mc_ ==mc::spring16_80X){
-          trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
-          leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
-          leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
-          extra_leg2_filter = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20";
-          alt_trig_obj_label = "triggerObjectsIsoMu22";
-          alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
-          high_leg_pt = 23.;
+          if(!(isotrkmu_test || singletau_test)){
+              trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
+              leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
+              leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
+              extra_leg2_filter = "hltOverlapFilterSingleIsoMu19LooseIsoPFTau20";
+              alt_trig_obj_label = "triggerObjectsIsoMu22";
+              alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+              high_leg_pt = 23.;
+          }else if(isotrkmu_test){
+              trig_obj_label = "triggerObjectsIsoTkMu22";
+              leg1_filter = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
+              leg2_filter = "";
+              extra_leg2_filter = "";
+              alt_trig_obj_label = "triggerObjectsIsoMu22";
+              alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+              high_leg_pt = 23.;
+          }else if(singletau_test){
+              trig_obj_label = "triggerObjectsSingleTau140";
+              leg2_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
+              leg1_filter = "";
+              extra_leg2_filter = "";
+              alt_trig_obj_label = "triggerObjectsIsoMu22";
+              alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+              high_leg_pt = 23.;
+          }
         }
       } else if (channel_ == channel::em) {
         if (mc_ == mc::fall11_42X) {
@@ -670,11 +691,19 @@ namespace ic {
         //unsigned leg1_match_index = 0;
         //unsigned leg2_match_index = 0;
        if(do_leptonplustau_){
-         leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, extra_leg2_filter,0.5).first;
-         leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_leg2_filter,0.5).first;
+         if(!(isotrkmu_test || singletau_test)){
+            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, extra_leg2_filter,0.5).first;
+            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_leg2_filter,0.5).first;
+         } else if(isotrkmu_test){
+            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
+            leg2_match = true ;
+         } else if(singletau_test) {
+            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
+            leg1_match = true ;
+         }
          //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
          //leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
-         }
+       }
        if (leg1_match && leg2_match){
          dileptons_pass.push_back(dileptons[i]);
          /*double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
