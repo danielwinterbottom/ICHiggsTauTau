@@ -95,10 +95,10 @@ for sa in SAMPLES:
         'is_data': sa in DATA_SAMPLES.keys(),
         'sequences': seqs,
         # Lumi settings
-        'lumi_mask': 'input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt',
+        'lumi_mask': 'input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt',
         'lumi_out': '%s/lumi_%s' % (OUTPUT, sa),
         # Pileup weights
-        'data_pu': 'input/pileup/Data_Pileup_2016_63mb_Cert_271036-276811_NoL1T.root:pileup',
+        'data_pu': 'input/pileup/Data_Pileup_2016_69p2mb_Cert_271036-276811.root:pileup',
         'mc_pu': 'input/pileup/MC_Spring16_PU25ns_V1.root:pileup',
         # Hash map settings
         'hash_map_mode': 0,
