@@ -27,13 +27,14 @@ ignore = options.ignore
 
 
 sample_list = [
+    'QCDMuEnrichedPt15',
     'TT',
     'WJetsToLNu-LO',
     'W1JetsToLNu-LO',
     'W2JetsToLNu-LO',
     'W3JetsToLNu-LO',
     'W4JetsToLNu-LO',
-    #'ZZTo4L',
+    'ZZTo4L',
     'VVTo2L2Nu',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q',
@@ -41,7 +42,7 @@ sample_list = [
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',
-    #'T-t',
+    'T-t',
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
@@ -49,7 +50,7 @@ sample_list = [
     #'DYJetsToLL_M-10-ext',
     #'DYJetsToLL_M-150-LO',
     'DYJetsToLL-LO',
-    #'DYJetsToLL_M-50-LO',
+    'DYJetsToLL_M-10-50-LO',
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',
@@ -76,7 +77,7 @@ sample_list = [
    'SingleElectronD',
    'MuonEGD',
    'TauD',
-   'SUSYGluGluToBBHToTauTau_M-500'
+   'SUSYGluGluToBBHToTauTau_M-500',
   'SUSYGluGluToBBHToTauTau_M-80',
   'SUSYGluGluToBBHToTauTau_M-90',
   'SUSYGluGluToBBHToTauTau_M-100',

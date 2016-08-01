@@ -135,7 +135,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
     ]
 if options.proc_mssm or options.proc_all:
   masses = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']
-  if options.short_signal: masses = ['160']
+  if options.short_signal: masses = ['500']
   for mass in masses :
     signal_mc += [
       'SUSYGluGluToHToTauTau_M-'+mass,
