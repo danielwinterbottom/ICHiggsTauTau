@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import ROOT
 from array import array
+import math
 
 # Boilerplate
 ROOT.PyConfig.IgnoreCommandLineOptions = True
@@ -8,6 +9,18 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 ROOT.RooWorkspace.imp = getattr(ROOT.RooWorkspace, 'import')
 ROOT.TH1.AddDirectory(0)
 
+
+def TGraphAsymmErrorsToTH1D(graph):
+    nbins = graph.GetN()
+    bin_edges = []
+    for i in xrange(0, nbins):
+        bin_edges.append(graph.GetX()[i]-graph.GetEXlow()[i])
+    bin_edges.append(graph.GetX()[i]+graph.GetEXhigh()[nbins-1])
+    hist = ROOT.TH1D(graph.GetName(), graph.GetTitle(), nbins, array('d', bin_edges))
+    for i in xrange(1, nbins+1):
+        hist.SetBinContent(i, graph.GetY()[i-1])
+        hist.SetBinError(i, (graph.GetEYhigh()[i-1] + graph.GetEYlow()[i-1]) / 2.)
+    return hist
 
 def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):
     # Use the histogram name for this function unless a new name has
@@ -80,6 +93,40 @@ def MakeBinnedCategoryFuncMap(wsp, name, bins, funcName, funcs):
         expr.append('(@0==%i)*@%i' % (i, i+1))
     fn = wsp.factory('expr::%s("%s",%s_cat,%s)' % (funcName, '+'.join(expr), name, ','.join(funcs)))
     return fn
+
+
+def ProcessDESYLeptonSFs(filename, postfix, name):
+    f = ROOT.TFile(filename)
+    etaBinsH = f.Get('etaBinsH')
+    eta_bins = set()
+    pt_bins = set()
+    graphs = []
+    for i in xrange(1, etaBinsH.GetNbinsX()+1):
+        label = etaBinsH.GetXaxis().GetBinLabel(i)
+
+        graph = f.Get('ZMass%s_%s' % (label, postfix))
+        gr_bins = set()
+        for j in xrange(0, graph.GetN()):
+            gr_bins.add(graph.GetX()[j]-graph.GetEXlow()[j])
+            gr_bins.add(graph.GetX()[j]+graph.GetEXhigh()[j])
+        print 'Graph: %s, bins: %s' % (graph.GetName(), len(gr_bins))
+        graph.Print()
+        pt_bins.update(gr_bins)
+        graphs.append(graph)
+
+        eta_bins.add(etaBinsH.GetXaxis().GetBinLowEdge(i))
+        eta_bins.add(etaBinsH.GetXaxis().GetBinUpEdge(i))
+    result = ROOT.TH2D(name, name,
+                       len(pt_bins)-1, array('d', sorted(pt_bins)),
+                       len(eta_bins)-1, array('d', sorted(eta_bins)))
+    for i in xrange(1, len(eta_bins)):
+        for j in xrange(1, len(pt_bins)):
+                result.SetBinContent(j, i, graphs[i-1].GetY()[j-1])
+                result.SetBinError(j, i, (graphs[i-1].GetEYhigh()[j-1] + graphs[i-1].GetEYlow()[j-1]) / 2.)
+    result.Print('range')
+    return result
+
+
 
 # file = ROOT.TFile('input/scale_factors/Muon_SF_spring16temp.root')
 # hists = []
