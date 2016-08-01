@@ -59,10 +59,12 @@ MC_SAMPLES = {
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm', 'ZmmTP', 'EffectiveEvents']
+SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'EffectiveEvents']
 WHITELIST = {
     'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmmTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
+    'Zee': ['SingleElectron'] + list(MC_SAMPLES.keys()),
+    'ZeeTP': ['SingleElectron'] + list(MC_SAMPLES.keys()),
     'EffectiveEvents': list(MC_SAMPLES.keys())
 }
 
@@ -72,9 +74,15 @@ os.system('mkdir -p %s' % OUTPUT)
 task = job_mgr.task_name
 
 for sa in SAMPLES:
+    seqs = []
     doSample = False
     for seq in SEQUENCES:
-        if sa in WHITELIST[seq]:
+        if seq in WHITELIST:
+            if sa in WHITELIST[seq]:
+                seqs.append(seq)
+                doSample = True
+        else:
+            seqs.append(seq)
             doSample = True
     if not doSample:
         continue
@@ -85,7 +93,7 @@ for sa in SAMPLES:
         'filelists': filelists,
         'max_events': MAX_EVTS,
         'is_data': sa in DATA_SAMPLES.keys(),
-        'sequences': SEQUENCES,
+        'sequences': seqs,
         # Lumi settings
         'lumi_mask': 'input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt',
         'lumi_out': '%s/lumi_%s' % (OUTPUT, sa),

@@ -196,12 +196,58 @@ int main(int argc, char* argv[]) {
       seq.BuildModule(lumimask_module);
     }
 
-
     seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")
       .set_fs(&fs)
       .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
     );
     seq.InsertSequence("Zmm", analysis);
+  }
+
+  if (seqs.count("Zee")) {
+    auto & seq = seqs["Zee"];
+
+    seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToSelectedElecs",
+        "electrons", "sel_elecs"));
+
+    seq.BuildModule(ic::SimpleFilter<ic::Electron>("ElectronFilter")
+    .set_input_label("sel_elecs").set_min(2)
+    .set_predicate([=](ic::Electron const* e) {
+      return  e->pt()                 > 26.    &&
+              fabs(e->eta())          < 2.1    &&
+              fabs(e->dxy_vertex())   < 0.045  &&
+              fabs(e->dz_vertex())    < 0.2    &&
+              ElectronHTTIdSpring15(e, false);
+    }));
+
+    seq.BuildModule(ic::OneCollCompositeProducer<ic::Electron>("ZEEPairProducer")
+        .set_input_label("sel_elecs")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("dielec")
+    );
+
+    using ROOT::Math::VectorUtil::DeltaR;
+    seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+        .set_input_label("dielec")
+        .set_min(1)
+        .set_predicate([=](ic::CompositeCandidate const* c) {
+          return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+              > 0.5;
+        })
+    );
+
+    // At this point we're done filtering, can calculate other things we nedd
+    if (!is_data) {
+      seq.BuildModule(puweight_module);
+    } else {
+      seq.BuildModule(lumimask_module);
+    }
+
+    seq.BuildModule(ic::ZeeTreeProducer("ZeeTreeProducer")
+      .set_fs(&fs)
+      .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
+    );
+    seq.InsertSequence("Zee", analysis);
   }
 
   if (seqs.count("ZmmTP")) {
@@ -228,7 +274,7 @@ int main(int argc, char* argv[]) {
     seq.BuildModule(ic::SimpleFilter<ic::Muon>("ProbeMuonFilter")
     .set_input_label("probe_muons").set_min(1)
     .set_predicate([=](ic::Muon const* m) {
-      return  m->pt()                 > 20.    &&
+      return  m->pt()                 > 10.    &&
               fabs(m->eta())          < 2.4    &&
               m->is_tracker();
     }));
@@ -264,6 +310,67 @@ int main(int argc, char* argv[]) {
       .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
     );
     seq.InsertSequence("ZmmTP", analysis);
+  }
+
+  if (seqs.count("ZeeTP")) {
+    auto & seq = seqs["ZeeTP"];
+
+
+    seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToTagElecs",
+        "electrons", "tag_elecs"));
+
+    seq.BuildModule(ic::SimpleFilter<ic::Electron>("TagElectronFilter")
+    .set_input_label("tag_elecs").set_min(1)
+    .set_predicate([=](ic::Electron const* e) {
+      return  e->pt()                 > 26.    &&
+              fabs(e->eta())          < 2.1    &&
+              fabs(e->dxy_vertex())   < 0.045  &&
+              fabs(e->dz_vertex())    < 0.2    &&
+              ElectronHTTIdSpring15(e, false)  &&
+              PF03IsolationVal(e, 0.5, false) < 0.1;
+    }));
+
+    seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToProbeElecs",
+        "electrons", "probe_elecs"));
+
+    seq.BuildModule(ic::SimpleFilter<ic::Electron>("ProbeElectronFilter")
+    .set_input_label("probe_elecs").set_min(1)
+    .set_predicate([=](ic::Electron const* e) {
+      return  e->pt()                 > 10.    &&
+              fabs(e->eta())          < 2.5;
+    }));
+
+    seq.BuildModule(ic::CompositeProducer<ic::Electron, ic::Electron>("ZEEPairProducer")
+        .set_input_label_first("tag_elecs")
+        .set_input_label_second("probe_elecs")
+        .set_candidate_name_first("tag")
+        .set_candidate_name_second("probe")
+        .set_output_label("dielec")
+    );
+
+    using ROOT::Math::VectorUtil::DeltaR;
+    seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+        .set_input_label("dielec")
+        .set_min(1)
+        .set_predicate([=](ic::CompositeCandidate const* c) {
+          return c->charge() == 0 &&
+            DeltaR(c->at(0)->vector(), c->at(1)->vector()) > 0.5;
+        })
+    );
+
+    // At this point we're done filtering, can calculate other things we nedd
+    if (!is_data) {
+      seq.BuildModule(puweight_module);
+    } else {
+      seq.BuildModule(lumimask_module);
+    }
+
+
+    seq.BuildModule(ic::ZeeTPTreeProducer("ZeeTPTreeProducer")
+      .set_fs(&fs)
+      .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
+    );
+    seq.InsertSequence("ZeeTP", analysis);
   }
 
   analysis.RunAnalysis();
