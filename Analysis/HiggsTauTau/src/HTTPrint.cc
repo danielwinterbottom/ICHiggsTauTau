@@ -93,6 +93,7 @@ namespace ic {
       std::cout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
       std::cout << "-isTrackerMuon: " << muons[i]->is_tracker() << std::endl;
       std::cout << "-isPF: "<< muons[i]->is_pf() <<std::endl;
+      std::cout << "-Medium Muon ID: "<< MuonMediumHIPsafe(muons[i]) <<std::endl;
       std::cout << "-numberOfValidPixelHits: " << muons[i]->it_pixel_hits() << std::endl;
       std::cout << "-numberOfValidMuonHits: " << muons[i]->gt_valid_muon_hits() << std::endl;
       std::cout<< "-it valid fraciton: " <<muons[i]->it_valid_fraction()<<std::endl;
