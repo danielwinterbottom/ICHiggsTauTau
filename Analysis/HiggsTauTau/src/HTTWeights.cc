@@ -191,13 +191,21 @@ namespace ic {
         TFile f(scalefactor_file_.c_str());
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
-        if(do_trg_weights_) {
+        if(do_trg_weights_ || do_idiso_weights_) {
           fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
+             w_->function("e_idiso0p10_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
+             w_->function("e_idiso0p15_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          fns_["e_trgEle25eta2p1WPTight_desy_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("e_trgEle25eta2p1WPTight_desy_data")->functor(w_->argSet("e_pt,e_eta")));
         }
         if(do_tracking_eff_) {
           fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
@@ -463,13 +471,13 @@ namespace ic {
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
        double e_pt = elec->pt();
        double e_eta = elec->sc_eta(); //Not absolute!
-       double m_eta = muon->eta();
        if(e_pt < 200){
          wt_tracking *= ele_tracking_sf_->GetBinContent(ele_tracking_sf_->GetXaxis()->FindBin(e_eta),ele_tracking_sf_->GetYaxis()->FindBin(e_pt));
        } else {
          wt_tracking *= ele_tracking_sf_->GetBinContent(ele_tracking_sf_->GetXaxis()->FindBin(e_eta),(ele_tracking_sf_->GetYaxis()->FindBin(e_pt)-1));
        }
-       wt_tracking *= muon_tracking_sf_->GetBinContent(muon_tracking_sf_->GetXaxis()->FindBin(m_eta));
+       auto args = std::vector<double>{muon->eta()};
+       wt_tracking *= fns_["m_trk_ratio"]->eval(args.data());
       } 
       eventInfo->set_weight("wt_tracking_eff",wt_tracking);
     }
@@ -482,6 +490,8 @@ namespace ic {
         double e_pt = elec->pt();
         double e_iso = PF03IsolationVal(elec,0.5,0);
         double e_eta = fabs(elec->sc_eta());
+        //currently using eta instead of sc_eta
+        double e_signed_eta = elec->eta();
         if(era_ == era::data_2015 || era_==era::data_2016) e_eta = fabs(elec->eta());
         double t_pt = tau->pt();
         double t_eta = fabs(tau->eta());
@@ -575,84 +585,102 @@ namespace ic {
           tau_trg=1;
           tau_trg_mc=1;
         } else if (mc_ == mc::spring16_80X){
-          if(do_single_lepton_trg_ && !do_cross_trg_){
-            if(e_iso < 0.1){
-              if(e_pt<1000){
-                ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
-                //ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
+           if(scalefactor_file_==""){ 
+              if(do_single_lepton_trg_ && !do_cross_trg_){
+                if(e_iso < 0.1){
+                  if(e_pt<1000){
+                    ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
+                    //ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
+                  } else {
+                    ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),(et_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+                    //ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),(et_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
+                  }         
+                  tau_trg=1;
+                  tau_trg_mc=1;
+                }else if(e_iso <0.2){
+                  if(e_pt<1000){
+                    ele_trg = et_antiiso1_trig_data_->GetBinContent(et_antiiso1_trig_data_->GetXaxis()->FindBin(e_eta),et_antiiso1_trig_data_->GetYaxis()->FindBin(e_pt));
+                    //ele_trg_mc = et_trig_antiiso1_mc_->GetBinContent(et_trig_antiiso1_mc_->GetXaxis()->FindBin(e_eta),et_trig_antiiso1_mc_->GetYaxis()->FindBin(e_pt));
+                  } else {
+                    ele_trg = et_antiiso1_trig_data_->GetBinContent(et_antiiso1_trig_data_->GetXaxis()->FindBin(e_eta),(et_antiiso1_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+                    //ele_trg_mc = et_trig_antiiso1_mc_->GetBinContent(et_trig_antiiso1_mc_->GetXaxis()->FindBin(e_eta),(et_trig_antiiso1_mc_->GetYaxis()->FindBin(e_pt)-1));
+                  }         
+                  tau_trg=1;
+                  tau_trg_mc=1;
+               } else {//efficiencies only derived for iso<0.5!
+                  if(e_pt<1000){
+                    ele_trg = et_antiiso2_trig_data_->GetBinContent(et_antiiso2_trig_data_->GetXaxis()->FindBin(e_eta),et_antiiso2_trig_data_->GetYaxis()->FindBin(e_pt));
+                    //ele_trg_mc = et_trig_antiiso2_mc_->GetBinContent(et_trig_antiiso2_mc_->GetXaxis()->FindBin(e_eta),et_trig_antiiso2_mc_->GetYaxis()->FindBin(e_pt));
+                  } else {
+                    ele_trg = et_antiiso2_trig_data_->GetBinContent(et_antiiso2_trig_data_->GetXaxis()->FindBin(e_eta),(et_antiiso2_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+                    //ele_trg_mc = et_trig_antiiso2_mc_->GetBinContent(et_trig_antiiso2_mc_->GetXaxis()->FindBin(e_eta),(et_trig_antiiso2_mc_->GetYaxis()->FindBin(e_pt)-1));
+                  }         
+                  tau_trg=1;
+                  tau_trg_mc=1;
+                }
+              } else if(do_cross_trg_ && !do_single_lepton_trg_){
+                if(e_pt<1000){
+                  ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),et_xtrig_data_->GetYaxis()->FindBin(e_pt));
+                  ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),et_xtrig_mc_->GetYaxis()->FindBin(e_pt));
+                } else {
+                  ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),(et_xtrig_data_->GetYaxis()->FindBin(e_pt)-1));
+                  ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),(et_xtrig_mc_->GetYaxis()->FindBin(e_pt)-1));
+                }         
+                tau_trg_mc=1;
+                unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+                if(gm2_ == 5){ //Using tight iso:
+                  tau_trg       = Efficiency(t_pt, 21.1744, 0.773395, 0.705463, 1.65358, 1.0000);
+                } else {
+                  tau_trg       = Efficiency(t_pt, 20.7216, 1.86861, 1.79281, 1.56784, 9.86642e-01);
+                } 
+              } else if(do_cross_trg_ && do_single_lepton_trg_){
+                double ele_sgl_trg=1.0;
+                double ele_sgl_trg_mc=1.0;
+                double ele_cond_trg=1.0;
+                double ele_cond_trg_mc=1.0;
+                if(e_pt<1000){
+                  ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),et_xtrig_data_->GetYaxis()->FindBin(e_pt));
+                  ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),et_xtrig_mc_->GetYaxis()->FindBin(e_pt));
+                  ele_sgl_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
+                  ele_sgl_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
+                  ele_cond_trg = et_conditional_data_->GetBinContent(et_conditional_data_->GetXaxis()->FindBin(e_eta),et_conditional_data_->GetYaxis()->FindBin(e_pt));
+                  ele_cond_trg_mc = et_conditional_mc_->GetBinContent(et_conditional_mc_->GetXaxis()->FindBin(e_eta),et_conditional_mc_->GetYaxis()->FindBin(e_pt));
+                } else {
+                  ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),(et_xtrig_data_->GetYaxis()->FindBin(e_pt)-1));
+                  ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),(et_xtrig_mc_->GetYaxis()->FindBin(e_pt)-1));
+                  ele_sgl_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),(et_trig_data_->GetYaxis()->FindBin(e_pt)-1));
+                  ele_sgl_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),(et_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
+                  ele_cond_trg = et_conditional_data_->GetBinContent(et_conditional_data_->GetXaxis()->FindBin(e_eta),(et_conditional_data_->GetYaxis()->FindBin(e_pt)-1));
+                  ele_cond_trg_mc = et_conditional_mc_->GetBinContent(et_conditional_mc_->GetXaxis()->FindBin(e_eta),(et_conditional_mc_->GetYaxis()->FindBin(e_pt)-1));
+                }         
+                tau_trg_mc=1;
+                unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+                if(gm2_ == 5){ //Using tight iso:
+                  tau_trg       = Efficiency(t_pt, 21.1744, 0.773395, 0.705463, 1.65358, 1.0000);
+                } else {
+                  tau_trg       = Efficiency(t_pt, 20.7216, 1.86861, 1.79281, 1.56784, 9.86642e-01);
+                } 
+                ele_trg = ele_sgl_trg+tau_trg*ele_trg-tau_trg*ele_cond_trg*ele_trg; //Conditional probability: P(single)+P(crosstrig)-P(crosstrig)*P(singlelept|muleg crosstrig)
+                ele_trg_mc = ele_sgl_trg_mc+tau_trg_mc*ele_trg_mc-tau_trg_mc*ele_cond_trg_mc*ele_trg_mc; //Conditional probability: P(single)+P(crosstrig)-P(crosstrig)*P(singlelept|muleg crosstrig)
+                tau_trg = 1.0; //In this case full weight is stored as ele_trg weight 
+              } 
+            } else {
+              if(!do_cross_trg_ && do_single_lepton_trg_){
+                  tau_trg = 1;
+                  tau_trg_mc=1;
+                  auto args_1 = std::vector<double>{e_pt,e_signed_eta};
+                  ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_1.data());
+                 //  mu_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
+                 // mu_trg = 1;
+                  ele_trg_mc=1;
               } else {
-                ele_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),(et_trig_data_->GetYaxis()->FindBin(e_pt)-1));
-                //ele_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),(et_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
-              }         
-              tau_trg=1;
-              tau_trg_mc=1;
-            }else if(e_iso <0.2){
-              if(e_pt<1000){
-                ele_trg = et_antiiso1_trig_data_->GetBinContent(et_antiiso1_trig_data_->GetXaxis()->FindBin(e_eta),et_antiiso1_trig_data_->GetYaxis()->FindBin(e_pt));
-                //ele_trg_mc = et_trig_antiiso1_mc_->GetBinContent(et_trig_antiiso1_mc_->GetXaxis()->FindBin(e_eta),et_trig_antiiso1_mc_->GetYaxis()->FindBin(e_pt));
-              } else {
-                ele_trg = et_antiiso1_trig_data_->GetBinContent(et_antiiso1_trig_data_->GetXaxis()->FindBin(e_eta),(et_antiiso1_trig_data_->GetYaxis()->FindBin(e_pt)-1));
-                //ele_trg_mc = et_trig_antiiso1_mc_->GetBinContent(et_trig_antiiso1_mc_->GetXaxis()->FindBin(e_eta),(et_trig_antiiso1_mc_->GetYaxis()->FindBin(e_pt)-1));
-              }         
-              tau_trg=1;
-              tau_trg_mc=1;
-           } else {//efficiencies only derived for iso<0.5!
-              if(e_pt<1000){
-                ele_trg = et_antiiso2_trig_data_->GetBinContent(et_antiiso2_trig_data_->GetXaxis()->FindBin(e_eta),et_antiiso2_trig_data_->GetYaxis()->FindBin(e_pt));
-                //ele_trg_mc = et_trig_antiiso2_mc_->GetBinContent(et_trig_antiiso2_mc_->GetXaxis()->FindBin(e_eta),et_trig_antiiso2_mc_->GetYaxis()->FindBin(e_pt));
-              } else {
-                ele_trg = et_antiiso2_trig_data_->GetBinContent(et_antiiso2_trig_data_->GetXaxis()->FindBin(e_eta),(et_antiiso2_trig_data_->GetYaxis()->FindBin(e_pt)-1));
-                //ele_trg_mc = et_trig_antiiso2_mc_->GetBinContent(et_trig_antiiso2_mc_->GetXaxis()->FindBin(e_eta),(et_trig_antiiso2_mc_->GetYaxis()->FindBin(e_pt)-1));
-              }         
-              tau_trg=1;
-              tau_trg_mc=1;
-            }
-          } else if(do_cross_trg_ && !do_single_lepton_trg_){
-            if(e_pt<1000){
-              ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),et_xtrig_data_->GetYaxis()->FindBin(e_pt));
-              ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),et_xtrig_mc_->GetYaxis()->FindBin(e_pt));
-            } else {
-              ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),(et_xtrig_data_->GetYaxis()->FindBin(e_pt)-1));
-              ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),(et_xtrig_mc_->GetYaxis()->FindBin(e_pt)-1));
-            }         
-            tau_trg_mc=1;
-            unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-            if(gm2_ == 5){ //Using tight iso:
-              tau_trg       = Efficiency(t_pt, 21.1744, 0.773395, 0.705463, 1.65358, 1.0000);
-            } else {
-              tau_trg       = Efficiency(t_pt, 20.7216, 1.86861, 1.79281, 1.56784, 9.86642e-01);
-            } 
-          } else if(do_cross_trg_ && do_single_lepton_trg_){
-            double ele_sgl_trg=1.0;
-            double ele_sgl_trg_mc=1.0;
-            double ele_cond_trg=1.0;
-            double ele_cond_trg_mc=1.0;
-            if(e_pt<1000){
-              ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),et_xtrig_data_->GetYaxis()->FindBin(e_pt));
-              ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),et_xtrig_mc_->GetYaxis()->FindBin(e_pt));
-              ele_sgl_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),et_trig_data_->GetYaxis()->FindBin(e_pt));
-              ele_sgl_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),et_trig_mc_->GetYaxis()->FindBin(e_pt));
-              ele_cond_trg = et_conditional_data_->GetBinContent(et_conditional_data_->GetXaxis()->FindBin(e_eta),et_conditional_data_->GetYaxis()->FindBin(e_pt));
-              ele_cond_trg_mc = et_conditional_mc_->GetBinContent(et_conditional_mc_->GetXaxis()->FindBin(e_eta),et_conditional_mc_->GetYaxis()->FindBin(e_pt));
-            } else {
-              ele_trg = et_xtrig_data_->GetBinContent(et_xtrig_data_->GetXaxis()->FindBin(e_eta),(et_xtrig_data_->GetYaxis()->FindBin(e_pt)-1));
-              ele_trg_mc = et_xtrig_mc_->GetBinContent(et_xtrig_mc_->GetXaxis()->FindBin(e_eta),(et_xtrig_mc_->GetYaxis()->FindBin(e_pt)-1));
-              ele_sgl_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e_eta),(et_trig_data_->GetYaxis()->FindBin(e_pt)-1));
-              ele_sgl_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e_eta),(et_trig_mc_->GetYaxis()->FindBin(e_pt)-1));
-              ele_cond_trg = et_conditional_data_->GetBinContent(et_conditional_data_->GetXaxis()->FindBin(e_eta),(et_conditional_data_->GetYaxis()->FindBin(e_pt)-1));
-              ele_cond_trg_mc = et_conditional_mc_->GetBinContent(et_conditional_mc_->GetXaxis()->FindBin(e_eta),(et_conditional_mc_->GetYaxis()->FindBin(e_pt)-1));
-            }         
-            tau_trg_mc=1;
-            unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-            if(gm2_ == 5){ //Using tight iso:
-              tau_trg       = Efficiency(t_pt, 21.1744, 0.773395, 0.705463, 1.65358, 1.0000);
-            } else {
-              tau_trg       = Efficiency(t_pt, 20.7216, 1.86861, 1.79281, 1.56784, 9.86642e-01);
-            } 
-            ele_trg = ele_sgl_trg+tau_trg*ele_trg-tau_trg*ele_cond_trg*ele_trg; //Conditional probability: P(single)+P(crosstrig)-P(crosstrig)*P(singlelept|muleg crosstrig)
-            ele_trg_mc = ele_sgl_trg_mc+tau_trg_mc*ele_trg_mc-tau_trg_mc*ele_cond_trg_mc*ele_trg_mc; //Conditional probability: P(single)+P(crosstrig)-P(crosstrig)*P(singlelept|muleg crosstrig)
-            tau_trg = 1.0; //In this case full weight is stored as ele_trg weight 
-          } 
+                  std::cout << "Cross trigger not currently supported! Setting trigger efficiencies to 1" << std::endl;
+                  tau_trg=1;
+                  tau_trg_mc=1;
+                  ele_trg=1;
+                  ele_trg_mc=1;
+              }
+           }
         }
         if (trg_applied_in_mc_) {
           ele_trg = ele_trg / ele_trg_mc;
@@ -1340,7 +1368,6 @@ namespace ic {
         event->Add("trigweight_2", mu2_trg);
       }
     }
-    
     if (do_singlemu_trg_weights_) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double m_pt = muon->pt();
@@ -1364,6 +1391,8 @@ namespace ic {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = elec->pt();
         double sc_eta = fabs(elec->sc_eta());
+        //currently using eta instead of sc_eta
+        double e_signed_eta = elec->eta();
         if(era_ == era::data_2015||era_ == era::data_2016) sc_eta = fabs(elec->eta());
         double ele_id = 1.0;
         double ele_iso = 1.0;
@@ -1392,14 +1421,8 @@ namespace ic {
           }         
             ele_idiso = ele_idiso_data/ele_idiso_mc;
         } else if (mc_ == mc::spring16_80X){
-          if(pt<1000){
-            ele_idiso_data = et_idiso_data_->GetBinContent(et_idiso_data_->GetXaxis()->FindBin(sc_eta),et_idiso_data_->GetYaxis()->FindBin(pt));
-            ele_idiso_mc = et_idiso_mc_->GetBinContent(et_idiso_mc_->GetXaxis()->FindBin(sc_eta),et_idiso_mc_->GetYaxis()->FindBin(pt));
-          } else {
-            ele_idiso_data = et_idiso_data_->GetBinContent(et_idiso_data_->GetXaxis()->FindBin(sc_eta),(et_idiso_data_->GetYaxis()->FindBin(pt)-1));
-            ele_idiso_mc = et_idiso_mc_->GetBinContent(et_idiso_mc_->GetXaxis()->FindBin(sc_eta),(et_idiso_mc_->GetYaxis()->FindBin(pt)-1));
-          }         
-            ele_idiso = ele_idiso_data/ele_idiso_mc;
+           auto args_1 = std::vector<double>{pt,e_signed_eta};
+           ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data())  ;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X){
           if (do_id_weights_) ele_iso = 1.0;
@@ -1453,20 +1476,9 @@ namespace ic {
           }         
             mu_idiso = mu_idiso_data/mu_idiso_mc;
         } else if(mc_ == mc::spring16_80X){
-          if(scalefactor_file_==""){
-              if(pt<1000){
-                mu_idiso_data = mt_idiso_data_->GetBinContent(mt_idiso_data_->GetXaxis()->FindBin(m_eta),mt_idiso_data_->GetYaxis()->FindBin(pt));
-                mu_idiso_mc = mt_idiso_mc_->GetBinContent(mt_idiso_mc_->GetXaxis()->FindBin(m_eta),mt_idiso_mc_->GetYaxis()->FindBin(pt));
-              } else {
-                mu_idiso_data = mt_idiso_data_->GetBinContent(mt_idiso_data_->GetXaxis()->FindBin(m_eta),(mt_idiso_data_->GetYaxis()->FindBin(pt)-1));
-                mu_idiso_mc = mt_idiso_mc_->GetBinContent(mt_idiso_mc_->GetXaxis()->FindBin(m_eta),(mt_idiso_mc_->GetYaxis()->FindBin(pt)-1));
-              }         
-              mu_idiso = mu_idiso_data/mu_idiso_mc;
-          } else {
-             auto args_1 = std::vector<double>{pt,m_signed_eta};
-             auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
-             mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
-          }
+           auto args_1 = std::vector<double>{pt,m_signed_eta};
+           auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
+           mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X){ 
           if (do_id_weights_) mu_iso = 1.0;
@@ -1485,9 +1497,11 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
+        double e_signed_eta = elec->sc_eta();
         if (era_ == era::data_2015 || era_ == era::data_2016) e_eta = fabs(elec->eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
+        double m_signed_eta = muon->eta();
         double m_idiso = 1.0;
         double e_idiso = 1.0;
         double m_idiso_mc = 1.0;
@@ -1594,23 +1608,11 @@ namespace ic {
             m_idiso = m_idiso_data/m_idiso_mc;
             e_idiso = e_idiso_data/e_idiso_mc;
         } else if (mc_ == mc::spring16_80X){
-           if(m_pt<1000){
-            m_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_pt));
-            m_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_pt));
-          } else {
-            m_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_eta),(em_m_idiso_data_->GetYaxis()->FindBin(m_pt)-1));
-            m_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_eta),(em_m_idiso_mc_->GetYaxis()->FindBin(m_pt)-1));
-          }         
-          if(e_pt<1000){
-            e_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_eta),em_e_idiso_data_->GetYaxis()->FindBin(e_pt));
-            e_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_eta),em_e_idiso_mc_->GetYaxis()->FindBin(e_pt));
-          } else {
-            e_idiso_data = em_e_idiso_data_->GetBinContent(em_e_idiso_data_->GetXaxis()->FindBin(e_eta),(em_e_idiso_data_->GetYaxis()->FindBin(e_pt)-1));
-            e_idiso_mc = em_e_idiso_mc_->GetBinContent(em_e_idiso_mc_->GetXaxis()->FindBin(e_eta),(em_e_idiso_mc_->GetYaxis()->FindBin(e_pt)-1));
-          }         
-
-            m_idiso = m_idiso_data/m_idiso_mc;
-            e_idiso = e_idiso_data/e_idiso_mc;
+           auto args_1 = std::vector<double>{m_pt,m_signed_eta};
+           m_idiso = fns_["m_idiso0p20_desy_ratio"]->eval(args_1.data()) ;
+           
+           auto args_2 = std::vector<double>{e_pt,e_signed_eta};
+           e_idiso = fns_["e_idiso0p15_desy_ratio"]->eval(args_2.data()) ;
          }       
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);
