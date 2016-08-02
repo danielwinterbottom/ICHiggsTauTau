@@ -190,14 +190,12 @@ trees = {
     'Data': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_Zmm_July19/SingleMuon.root')
 }
 
-print andable
-print '%i/%i' % (len(andable), len(drawlist))
 
 # sys.exit(0)
 
 for sample in trees:
     outfile = ROOT.TFile('ZmmTP_%s.root' % sample, 'RECREATE')
-    hists = trees[sample].Draw(drawlist)
+    hists = trees[sample].Draw(drawlist, compiled=True)
 
     i = 0
     for cfg in bin_cfgs:
