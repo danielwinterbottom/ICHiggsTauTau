@@ -571,7 +571,7 @@ void HTTSequence::BuildSequence(){
   } else{
 
   HTTPrint httPrint("HTTPrint");
-  if(era_type==era::data_2015){
+  if(era_type==era::data_2015 || era_type==era::data_2016){
     httPrint.set_muon_label(js["muons"].asString());
     httPrint.set_jet_label(jets_label);
   }
@@ -1404,7 +1404,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
         .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
         .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/scalefactors_2016_v1.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v2.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);

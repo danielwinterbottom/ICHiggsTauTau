@@ -187,17 +187,24 @@ namespace ic {
       ElectronFakeRateHist_PtEta->SetDirectory(0);
       MuonFakeRateHist_PtEta->SetDirectory(0);
     }
-    if(do_trg_weights_ && scalefactor_file_!="") {
+    if(scalefactor_file_!="") {
         TFile f(scalefactor_file_.c_str());
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
-        fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
-            w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
-        fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
-            w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-        fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
-           w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        if(do_trg_weights_) {
+          fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+        }
+        if(do_tracking_eff_) {
+          fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
+        }
     }
+
     return 0;
   }
 
@@ -448,8 +455,8 @@ namespace ic {
      }
      if(channel_ == channel::mt){
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
-       double m_eta = muon->eta();
-       wt_tracking *= muon_tracking_sf_->GetBinContent(muon_tracking_sf_->GetXaxis()->FindBin(m_eta));
+       auto args = std::vector<double>{muon->eta()};
+       wt_tracking *= fns_["m_trk_ratio"]->eval(args.data());
      } 
      if(channel_ == channel::em){
        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));

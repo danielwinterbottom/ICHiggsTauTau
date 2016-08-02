@@ -109,12 +109,12 @@ namespace ic {
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoET) ;
         }
         if(channel_ ==  channel::mt) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoMT) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoMT) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoEM) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoEM) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::tt) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoTT) ;
@@ -136,10 +136,10 @@ namespace ic {
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoET) ;
         }
         if(channel_ ==  channel::mt) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoMT) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoEM) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::tt) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoTT) ;
@@ -384,12 +384,14 @@ namespace ic {
     return (t1->pt() > t2->pt());
   }
 
-  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
     // First we sort the electrons
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));
     Muon const* m2 = static_cast<Muon const*>(c2->At(0));
-    double m_iso1 = PF03IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF03IsolationVal(m2, 0.5, 0);
+    double m_iso1;
+    m_iso1 = PF03IsolationVal(m1, 0.5, 0) ? (strategy == strategy::fall15) : PF04IsolationVal(m1, 0.5, 0);
+    double m_iso2; 
+    m_iso2 = PF03IsolationVal(m2, 0.5, 0) ? (strategy == strategy::fall15) : PF04IsolationVal(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT
@@ -406,12 +408,14 @@ namespace ic {
     return (t1->pt() > t2->pt());
   }
 
-  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
     // First we sort the muons
     Muon const* m1 = static_cast<Muon const*>(c1->At(1));
     Muon const* m2 = static_cast<Muon const*>(c2->At(1));
-    double m_iso1 = PF03IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF03IsolationVal(m2, 0.5, 0);
+    double m_iso1; 
+    m_iso1 = PF03IsolationVal(m1, 0.5, 0) ? (strategy == strategy::fall15) : PF04IsolationVal(m1, 0.5, 0);
+    double m_iso2;
+    m_iso2 = PF03IsolationVal(m2, 0.5, 0) ? (strategy == strategy::fall15) : PF04IsolationVal(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT
