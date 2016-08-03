@@ -1261,9 +1261,9 @@ namespace ic {
                 tau1_trg = fns_["t_trgTightIsoSS_data"]->eval(args_1.data());
               } 
               if(gm2_ == 5){ 
-                tau2_trg = fns_["t_trgTightIso_data"]->eval(args_1.data());
+                tau2_trg = fns_["t_trgTightIso_data"]->eval(args_2.data());
               } else {
-                tau2_trg = fns_["t_trgTightIsoSS_data"]->eval(args_1.data());
+                tau2_trg = fns_["t_trgTightIsoSS_data"]->eval(args_2.data());
               } 
             } else if (tt_trg_iso_mode_==1) {
               if(gm1_ == 5){ //Using medium iso
