@@ -122,9 +122,37 @@ namespace ic {
         }
       }
       if (os_dilepton.size() > 0) { // Take OS in preference to SS
-        result.push_back(os_dilepton[0]);
+        if(!(channel_ ==  channel::tt)) { 
+            result.push_back(os_dilepton[0]);
+        } else{
+            CompositeCandidate *pt_sorted_pair = new CompositeCandidate();
+            Candidate * lep1 = os_dilepton[0]->GetCandidate("lepton1"); 
+            Candidate * lep2 = os_dilepton[0]->GetCandidate("lepton2");
+            if(lep2->pt()>=lep1->pt()) {
+                pt_sorted_pair->AddCandidate("lepton1",lep2); 
+                pt_sorted_pair->AddCandidate("lepton2",lep1); 
+            } else {
+                pt_sorted_pair->AddCandidate("lepton1",lep1); 
+                pt_sorted_pair->AddCandidate("lepton2",lep2); 
+            }
+            result.push_back(pt_sorted_pair);
+        }
       } else if (ss_dilepton.size() > 0) {
-        result.push_back(ss_dilepton[0]);
+        if(!(channel_ ==  channel::tt)) { 
+            result.push_back(ss_dilepton[0]);
+        } else {
+            CompositeCandidate *pt_sorted_pair = new CompositeCandidate();
+            Candidate * lep1 = os_dilepton[0]->GetCandidate("lepton1"); 
+            Candidate * lep2 = os_dilepton[0]->GetCandidate("lepton2");
+            if(lep2->pt()>=lep1->pt()) {
+                pt_sorted_pair->AddCandidate("lepton1",lep2); 
+                pt_sorted_pair->AddCandidate("lepton2",lep1); 
+            } else {
+                pt_sorted_pair->AddCandidate("lepton1",lep1); 
+                pt_sorted_pair->AddCandidate("lepton2",lep2); 
+            }
+            result.push_back(pt_sorted_pair);
+        }
       }
     } else {
       // The first pair should have the highest "scalar sum pt" 
@@ -146,7 +174,21 @@ namespace ic {
         }
       }
       if (nosign_dilepton.size() > 0) { // No preference for OS over SS
-        result.push_back(nosign_dilepton[0]);
+        if(!(channel_ ==  channel::tt)) { 
+            result.push_back(nosign_dilepton[0]);
+        } else {
+            CompositeCandidate *pt_sorted_pair = new CompositeCandidate();
+            Candidate * lep1 = nosign_dilepton[0]->GetCandidate("lepton1"); 
+            Candidate * lep2 = nosign_dilepton[0]->GetCandidate("lepton2");
+            if(lep2->pt()>=lep1->pt()) {
+                pt_sorted_pair->AddCandidate("lepton1",lep2); 
+                pt_sorted_pair->AddCandidate("lepton2",lep1); 
+            } else {
+                pt_sorted_pair->AddCandidate("lepton1",lep1); 
+                pt_sorted_pair->AddCandidate("lepton2",lep2); 
+            }
+            result.push_back(pt_sorted_pair);
+        }
       }
     }
     if (result.size() == 0) return 1;  //Require at least one dilepton

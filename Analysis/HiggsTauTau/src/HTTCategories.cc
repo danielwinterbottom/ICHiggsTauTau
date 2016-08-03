@@ -877,12 +877,6 @@ namespace ic {
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
-    if(channel_ == channel::tt){//Now order the taus by pT
-      if(lep1->pt() < lep2->pt()){
-        lep1 = ditau->GetCandidate("lepton2");  
-        lep2 = ditau->GetCandidate("lepton1");  
-      }
-    }
     Met const* mets = NULL;
     mets = event->GetPtr<Met>(met_label_);
 
