@@ -425,6 +425,10 @@ namespace ic {
       synctree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       // Total ID weight for lepton 2
       synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
+      // Tracking efficiency weightfor lepton 1
+      synctree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
+      // Tracking efficiency weight for lepton 2
+      synctree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_2/F");
       // Total iso weight for lepton 1
 //      synctree_->Branch("isoweight_1", &isoweight_1_, "isoweight_1/F");
       // Total iso weight for lepton 2
@@ -844,6 +848,8 @@ namespace ic {
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
   if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
+  if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 0.0;
+  if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
 //  if (event->Exists("isoweight_1")) isoweight_1_ = event->Get<double>("isoweight_1"); else isoweight_1_ = 0.0;
 //  if (event->Exists("isoweight_2")) isoweight_2_ = event->Get<double>("isoweight_2"); else isoweight_2_ = 0.0;
   if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;

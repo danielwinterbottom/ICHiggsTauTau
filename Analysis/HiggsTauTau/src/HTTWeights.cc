@@ -198,18 +198,20 @@ namespace ic {
               w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-          fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
-             w_->function("e_idiso0p10_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
-          fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["e_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("e_idiso0p15_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
+             w_->function("e_idiso0p10_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_trgEle25eta2p1WPTight_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trgEle25eta2p1WPTight_desy_data")->functor(w_->argSet("e_pt,e_eta")));
         }
         if(do_tracking_eff_) {
           fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
+          fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));
         }
     }
 
@@ -450,36 +452,31 @@ namespace ic {
     }
 
    if (do_tracking_eff_){
-       double wt_tracking = 1.0;
+       double tracking_wt_1 = 1.0;
+       double tracking_wt_2 = 1.0;
      if(channel_ == channel::et){
        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
-       double e_pt = elec->pt();
-       double e_eta = elec->sc_eta(); //Not absolute!
-       if(e_pt < 200){
-         wt_tracking *= ele_tracking_sf_->GetBinContent(ele_tracking_sf_->GetXaxis()->FindBin(e_eta),ele_tracking_sf_->GetYaxis()->FindBin(e_pt));
-       } else {
-         wt_tracking *= ele_tracking_sf_->GetBinContent(ele_tracking_sf_->GetXaxis()->FindBin(e_eta),(ele_tracking_sf_->GetYaxis()->FindBin(e_pt)-1));
-       }
+       auto args = std::vector<double>{elec->pt(),elec->sc_eta()};
+       tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
+       tracking_wt_2 = 1.0;
      }
      if(channel_ == channel::mt){
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
        auto args = std::vector<double>{muon->eta()};
-       wt_tracking *= fns_["m_trk_ratio"]->eval(args.data());
+       tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
+       tracking_wt_2 = 1.0;
      } 
      if(channel_ == channel::em){
        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
-       double e_pt = elec->pt();
-       double e_eta = elec->sc_eta(); //Not absolute!
-       if(e_pt < 200){
-         wt_tracking *= ele_tracking_sf_->GetBinContent(ele_tracking_sf_->GetXaxis()->FindBin(e_eta),ele_tracking_sf_->GetYaxis()->FindBin(e_pt));
-       } else {
-         wt_tracking *= ele_tracking_sf_->GetBinContent(ele_tracking_sf_->GetXaxis()->FindBin(e_eta),(ele_tracking_sf_->GetYaxis()->FindBin(e_pt)-1));
-       }
-       auto args = std::vector<double>{muon->eta()};
-       wt_tracking *= fns_["m_trk_ratio"]->eval(args.data());
-      } 
-      eventInfo->set_weight("wt_tracking_eff",wt_tracking);
+       auto args = std::vector<double>{elec->pt(),elec->sc_eta()};
+       tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
+       auto args_2 = std::vector<double>{muon->eta()};
+       tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
+      }
+      event->Add("trackingweight_1",tracking_wt_1);
+      event->Add("trackingweight_2",tracking_wt_2);
+      eventInfo->set_weight("wt_tracking_eff",tracking_wt_1*tracking_wt_2);
     }
          
 
@@ -670,8 +667,6 @@ namespace ic {
                   tau_trg_mc=1;
                   auto args_1 = std::vector<double>{e_pt,e_signed_eta};
                   ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_1.data());
-                 //  mu_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
-                 // mu_trg = 1;
                   ele_trg_mc=1;
               } else {
                   std::cout << "Cross trigger not currently supported! Setting trigger efficiencies to 1" << std::endl;
@@ -1497,7 +1492,7 @@ namespace ic {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
-        double e_signed_eta = elec->sc_eta();
+        double e_signed_eta = elec->eta();
         if (era_ == era::data_2015 || era_ == era::data_2016) e_eta = fabs(elec->eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
