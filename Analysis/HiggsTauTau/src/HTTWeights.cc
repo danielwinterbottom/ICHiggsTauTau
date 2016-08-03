@@ -198,8 +198,16 @@ namespace ic {
               w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["m_trgOR_binned_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trgOR_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+              w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+          fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           fns_["e_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("e_idiso0p15_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
@@ -503,8 +511,7 @@ namespace ic {
         double e_pt = elec->pt();
         double e_iso = PF03IsolationVal(elec,0.5,0);
         double e_eta = fabs(elec->sc_eta());
-        //currently using eta instead of sc_eta
-        double e_signed_eta = elec->eta();
+        double e_signed_eta = elec->sc_eta();
         if(era_ == era::data_2015 || era_==era::data_2016) e_eta = fabs(elec->eta());
         double t_pt = tau->pt();
         double t_eta = fabs(tau->eta());
@@ -681,8 +688,8 @@ namespace ic {
               if(!do_cross_trg_ && do_single_lepton_trg_){
                   tau_trg = 1;
                   tau_trg_mc=1;
-                  auto args_1 = std::vector<double>{e_pt,e_signed_eta};
-                  ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_1.data());
+                  auto args_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
+                  ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
                   ele_trg_mc=1;
               } else {
                   std::cout << "Cross trigger not currently supported! Setting trigger efficiencies to 1" << std::endl;
@@ -906,7 +913,7 @@ namespace ic {
                     tau_trg = 1;
                     tau_trg_mc=1;
                     auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};
-                    mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
+                    mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
                   //  mu_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
                    // mu_trg = 1;
                     mu_trg_mc=1;
@@ -1489,8 +1496,8 @@ namespace ic {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = elec->pt();
         double sc_eta = fabs(elec->sc_eta());
-        //currently using eta instead of sc_eta
-        double e_signed_eta = elec->eta();
+        double e_signed_eta = elec->sc_eta();
+        double e_iso = PF03IsolationVal(elec, 0.5, 0);
         if(era_ == era::data_2015||era_ == era::data_2016) sc_eta = fabs(elec->eta());
         double ele_id = 1.0;
         double ele_iso = 1.0;
@@ -1520,7 +1527,8 @@ namespace ic {
             ele_idiso = ele_idiso_data/ele_idiso_mc;
         } else if (mc_ == mc::spring16_80X){
            auto args_1 = std::vector<double>{pt,e_signed_eta};
-           ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data())  ;
+           auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
+           ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X){
           if (do_id_weights_) ele_iso = 1.0;
