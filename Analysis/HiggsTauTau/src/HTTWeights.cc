@@ -206,6 +206,22 @@ namespace ic {
              w_->function("e_idiso0p10_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_trgEle25eta2p1WPTight_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trgEle25eta2p1WPTight_desy_data")->functor(w_->argSet("e_pt,e_eta")));
+          fns_["t_trgLooseIso_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("t_trgLooseIso_data")->functor(w_->argSet("t_pt")));
+          fns_["t_trgMediumIso_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("t_trgMediumIso_data")->functor(w_->argSet("t_pt")));
+          fns_["t_trgTightIso_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("t_trgTightIso_data")->functor(w_->argSet("t_pt")));
+          fns_["t_trgVTightIso_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("t_trgVTightIso_data")->functor(w_->argSet("t_pt")));
+          fns_["t_trgLooseIsoSS_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("t_trgLooseIsoSS_data")->functor(w_->argSet("t_pt")));
+          fns_["t_trgMediumIsoSS_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("t_trgMediumIsoSS_data")->functor(w_->argSet("t_pt")));
+          fns_["t_trgTightIsoSS_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("t_trgTightIsoSS_data")->functor(w_->argSet("t_pt")));
+          fns_["t_trgVTightIsoSS_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("t_trgVTightIsoSS_data")->functor(w_->argSet("t_pt")));
         }
         if(do_tracking_eff_) {
           fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
@@ -1116,6 +1132,8 @@ namespace ic {
         Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
         double pt_1 = tau1->pt();
         double pt_2 = tau2->pt();
+        auto args_1 = std::vector<double>{pt_1};
+        auto args_2 = std::vector<double>{pt_2};
         double tau1_trg = 1.0;
         double tau1_trg_mc = 1.0;
         double tau1_trg_up = 1.0;
@@ -1231,16 +1249,15 @@ namespace ic {
               }*/ 
             }else if (tt_trg_iso_mode_==0){//Using tight iso
               if(gm1_ == 5){ 
-                tau1_trg       = Efficiency(pt_1, 38.210026, 5.254137, 6.8365367, 1.536495, 0.99999999);
+                tau1_trg = fns_["t_trgTightIso_data"]->eval(args_1.data());
               } else {
-                tau1_trg       = Efficiency(pt_1, 39.49414339, 7.81657, 12.07067098, 1.370566, 0.9285);
+                tau1_trg = fns_["t_trgTightIsoSS_data"]->eval(args_1.data());
               } 
               if(gm2_ == 5){ 
-                tau2_trg       = Efficiency(pt_2, 38.210026, 5.254137, 6.8365367, 1.536495, 0.99999999);
+                tau2_trg = fns_["t_trgTightIso_data"]->eval(args_1.data());
               } else {
-                tau2_trg       = Efficiency(pt_2, 39.49414339, 7.81657, 12.07067098, 1.370566, 0.9285);
+                tau2_trg = fns_["t_trgTightIsoSS_data"]->eval(args_1.data());
               } 
-
             } else if (tt_trg_iso_mode_==1) {
               if(gm1_ == 5){ //Using medium iso
                 tau1_trg       = Efficiency(pt_1, 38.2845, 5.3257, 6.450034, 1.6489256, 0.999998);

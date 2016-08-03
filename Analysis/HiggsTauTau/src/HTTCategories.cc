@@ -2075,37 +2075,7 @@ namespace ic {
       n_jetsingap_lowpt_ = 9999;
     }
 
-    if (channel_ != channel::tt){
-      if (n_bjets_ >= 1) {
-        bpt_1_ = bjets[0]->pt();
-        brawf_1_ = bjets[0]->uncorrected_energy()/bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
-        beta_1_ = bjets[0]->eta();
-        bphi_1_ = bjets[0]->phi();
-        bmva_1_ = bjets[0]->pu_id_mva_value();
-      
-      } else {
-        bpt_1_ = -9999;
-        brawf_1_ = -9999;
-        beta_1_ = -9999;
-        bphi_1_ = -9999;
-        bmva_1_ = -9999;
-      }
-
-      if (n_bjets_ >= 2) {
-        bpt_2_ = bjets[1]->pt();
-        brawf_2_ = bjets[1]->uncorrected_energy()/bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
-        beta_2_ = bjets[1]->eta();
-        bphi_2_ = bjets[1]->phi();
-        bmva_2_ = bjets[1]->pu_id_mva_value();
-      
-      } else {
-        bpt_2_ = -9999;
-        brawf_2_ = -9999;
-        beta_2_ = -9999;
-        bphi_2_ = -9999;
-        bmva_2_ = -9999;
-      }
-    } else {//We use the loose CSV wp for fully hadronic, so adjust definitions accordingly
+    if (channel_ == channel::tt && strategy_ == strategy::fall15){
       if (n_loose_bjets_ >= 1) {
         bpt_1_ = loose_bjets[0]->pt();
         brawf_1_ = loose_bjets[0]->uncorrected_energy()/loose_bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
@@ -2136,7 +2106,37 @@ namespace ic {
         bmva_2_ = -9999;
       }
 
-    }
+    } else {
+      if (n_bjets_ >= 1) {
+        bpt_1_ = bjets[0]->pt();
+        brawf_1_ = bjets[0]->uncorrected_energy()/bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_1_ = bjets[0]->eta();
+        bphi_1_ = bjets[0]->phi();
+        bmva_1_ = bjets[0]->pu_id_mva_value();
+      
+      } else {
+        bpt_1_ = -9999;
+        brawf_1_ = -9999;
+        beta_1_ = -9999;
+        bphi_1_ = -9999;
+        bmva_1_ = -9999;
+      }
+
+      if (n_bjets_ >= 2) {
+        bpt_2_ = bjets[1]->pt();
+        brawf_2_ = bjets[1]->uncorrected_energy()/bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_2_ = bjets[1]->eta();
+        bphi_2_ = bjets[1]->phi();
+        bmva_2_ = bjets[1]->pu_id_mva_value();
+      
+      } else {
+        bpt_2_ = -9999;
+        brawf_2_ = -9999;
+        beta_2_ = -9999;
+        bphi_2_ = -9999;
+        bmva_2_ = -9999;
+      }
+    } 
 
 
 
