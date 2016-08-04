@@ -233,7 +233,7 @@ class Jobs:
                     os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
                 run_command(self.dry_run, 'ts bash -c "eval %s"' % (full_script))
         if self.job_mode in ['lxbatch', 'NAF', 'ts'] and self.tracking:
-            print '>> Status summary'
+            print '>> Status summary: %s' % self.task_name
             for status in status_result:
                 counter = '[%i/%i]' % (len(status_result[status]), njobs)
                 print '%20s %10s' % (status, counter)

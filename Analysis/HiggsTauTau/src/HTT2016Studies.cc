@@ -374,7 +374,7 @@ namespace ic {
 
   int ZeeTPTreeProducer::PreAnalysis() {
     if (fs_) {
-      outtree_ = fs_->make<TTree>("ZmmTP","ZmmTP");
+      outtree_ = fs_->make<TTree>("ZeeTP","ZeeTP");
 
       outtree_->Branch("wt",          &wt);
       outtree_->Branch("n_vtx",       &n_vtx);
