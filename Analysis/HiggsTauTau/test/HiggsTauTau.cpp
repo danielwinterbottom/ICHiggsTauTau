@@ -454,7 +454,7 @@ int main(int argc, char* argv[]){
     .set_input_label("genParticles")
     .set_predicate(
       (bind(&GenParticle::status, _1) == 3) && 
-      (bind(abs,(bind(&GenParticle::pdgid, _1))) == 15))
+      (bind(::abs,(bind(&GenParticle::pdgid, _1))) == 15))
     .set_min(2);
   if (ztautau_mode == 2) zTauTauFilter.set_min(0).set_max(0);
 
@@ -621,8 +621,8 @@ int main(int argc, char* argv[]){
     .set_input_label("selElectrons")
     .set_predicate(
       bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
-      bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
-      bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
+      bind(::fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
+      bind(::fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
       bind(elec_idiso_func, _1))
     .set_min(1);
   
@@ -633,15 +633,15 @@ int main(int argc, char* argv[]){
     .set_input_label("vetoElectrons")
     .set_predicate(
       bind(MinPtMaxEta, _1, 15.0, 2.5) &&
-      bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
-      bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
+      bind(::fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
+      bind(::fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
       bind(Electron2011WP95ID, _1) &&
       bind(PF04IsolationVal<Electron>, _1, 0.5, 1) < 0.3);
   if(strategy == strategy::phys14) {
       vetoElectronFilter.set_predicate(
       bind(MinPtMaxEta, _1, 10.0, 2.5) &&
-      bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
-      bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
+      bind(::fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
+      bind(::fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
       bind(VetoElectronIDPhys14, _1) &&
       bind(PF04IsolationVal<Electron>, _1, 0.5, 0) < 0.3);
   }
@@ -663,14 +663,14 @@ int main(int argc, char* argv[]){
     .set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.5) 
                 && bind(ElectronHTTId, _1, true)
                 && bind(PF04IsolationVal<Electron>, _1, 0.5, 1) < 0.3
-                && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
-                && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2)
+                && bind(::fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
+                && bind(::fabs, bind(&Electron::dz_vertex, _1)) < 0.2)
     .set_min(0).set_max((channel == channel::et || channel == channel::etmet || channel == channel::em) ? 1 : 0);
     if(strategy == strategy::phys14) {
       extraElectronVeto.set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.5)
                 && bind(VetoElectronIDPhys14, _1)
-                && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
-                && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2
+                && bind(::fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
+                && bind(::fabs, bind(&Electron::dz_vertex, _1)) < 0.2
                 && bind(PF04IsolationVal<Electron>, _1, 0.5, 0) < 0.3);
     }
 
@@ -720,8 +720,8 @@ int main(int argc, char* argv[]){
     .set_input_label("selMuons")
     .set_predicate(
       bind(MinPtMaxEta, _1, muon_pt, muon_eta) && 
-      bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy &&
-      bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
+      bind(::fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy &&
+      bind(::fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(muon_idiso_func, _1))
     .set_min(1);
 
@@ -732,22 +732,22 @@ int main(int argc, char* argv[]){
     .set_input_label("vetoMuons")
     .set_predicate(
       bind(MinPtMaxEta, _1, 15.0, 2.4) &&
-      bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
-      bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
+      bind(::fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
+      bind(::fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(&Muon::is_global, _1) &&
       bind(PF04IsolationVal<Muon>, _1, 0.5, 1) < 0.3);
   if (strategy == strategy::paper2013){ 
     vetoMuonFilter.set_predicate(
       bind(MinPtMaxEta, _1, 15.0, 2.4) &&
-      bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
-      bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
+      bind(::fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
+      bind(::fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(&Muon::is_global, _1) && bind(&Muon::is_tracker, _1) &&
       bind(PF04IsolationVal<Muon>, _1, 0.5, 1) < 0.3);
   } else if(strategy == strategy::phys14){
     vetoMuonFilter.set_predicate(
       bind(MinPtMaxEta, _1, 15.0, 2.4) &&
-      bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
-      bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
+      bind(::fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
+      bind(::fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(&Muon::is_global, _1) && bind(&Muon::is_tracker, _1) &&
       bind(PF04IsolationVal<Muon>, _1, 0.5, 0) < 0.3);
  }
@@ -775,15 +775,15 @@ int main(int argc, char* argv[]){
   .set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.4) 
               && bind(MuonTight, _1) 
               && bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
-              && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
-              && (bind(fabs, bind(&Muon::dz_vertex, _1)) < 0.2))
+              && (bind(::fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
+              && (bind(::fabs, bind(&Muon::dz_vertex, _1)) < 0.2))
   .set_min(0).set_max((channel == channel::mt || channel == channel::mtmet || channel == channel::em) ? 1 : 0); 
   if(strategy == strategy::phys14) { 
     extraMuonVeto.set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.4)
               && bind(MuonMedium, _1) 
               && bind(PF04IsolationVal<Muon>, _1, 0.5, 0)< 0.3
-              && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
-              && (bind(fabs, bind(&Muon::dz_vertex, _1)) < 0.2));
+              && (bind(::fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
+              && (bind(::fabs, bind(&Muon::dz_vertex, _1)) < 0.2));
   }
 
   // ------------------------------------------------------------------------------------
@@ -829,7 +829,7 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<Tau> tauDzFilter = SimpleFilter<Tau>("TauDzFilter")
     .set_input_label("taus")
-    .set_predicate(bind(fabs, bind(&Tau::lead_dz_vertex, _1)) < tau_dz)
+    .set_predicate(bind(::fabs, bind(&Tau::lead_dz_vertex, _1)) < tau_dz)
     .set_min(1);
 
   std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
