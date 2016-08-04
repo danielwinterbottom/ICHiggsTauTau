@@ -182,6 +182,12 @@ namespace ic {
 
     TFile f(sf_workspace_.c_str());
     ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+    fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("e_id_ratio")->functor(ws_->argSet("e_pt,e_eta")));
+    fns_["e_iso_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("e_iso_ratio")->functor(ws_->argSet("e_pt,e_eta")));
+    fns_["e_trg_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("e_trg_data")->functor(ws_->argSet("e_pt,e_eta")));
     f.Close();
     return 0;
   }
@@ -239,17 +245,17 @@ namespace ic {
     wt_id = 1.0;
     wt_iso = 1.0;
     wt_trg = 1.0;
-    // auto args_1 = std::vector<double>{lep_1->pt(), lep_1->eta()};
-    // auto args_2 = std::vector<double>{lep_2->pt(), lep_2->eta()};
-    // if (!info->is_data()) {
-    //   float eff_1 = fns_["m_trg_data"]->eval(args_1.data());
-    //   float eff_2 = fns_["m_trg_data"]->eval(args_2.data());
-    //   wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
-    //   wt_id = fns_["m_id_ratio"]->eval(args_1.data()) *
-    //           fns_["m_id_ratio"]->eval(args_2.data());
-    //   wt_iso = fns_["m_iso_ratio"]->eval(args_1.data()) *
-    //            fns_["m_iso_ratio"]->eval(args_2.data());
-    // }
+    auto args_1 = std::vector<double>{lep_1->pt(), lep_1->sc_eta()};
+    auto args_2 = std::vector<double>{lep_2->pt(), lep_2->sc_eta()};
+    if (!info->is_data()) {
+      float eff_1 = fns_["e_trg_data"]->eval(args_1.data());
+      float eff_2 = fns_["e_trg_data"]->eval(args_2.data());
+      wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
+      wt_id = fns_["e_id_ratio"]->eval(args_1.data()) *
+              fns_["e_id_ratio"]->eval(args_2.data());
+      wt_iso = fns_["e_iso_ratio"]->eval(args_1.data()) *
+               fns_["e_iso_ratio"]->eval(args_2.data());
+    }
     info->set_weight("trg", wt_trg);
     info->set_weight("id", wt_id);
     info->set_weight("iso", wt_iso);

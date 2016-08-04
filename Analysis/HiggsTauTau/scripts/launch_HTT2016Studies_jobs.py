@@ -105,7 +105,9 @@ for sa in SAMPLES:
         'hash_map_input': 'input/string_hash/hash_map.json',
         'hash_map_output': 'hash_map_%s.json' % sa,
         # Trigger info settings
-        'trigger_info_output': '%s/trigger_info_%s.json' % (OUTPUT, sa)
+        'trigger_info_output': '%s/trigger_info_%s.json' % (OUTPUT, sa),
+        # Scale factors workspace
+        'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root'
     }
     job_mgr.add_filelist_split_jobs(
         prog=basedir+'/bin/HTT2016Studies',

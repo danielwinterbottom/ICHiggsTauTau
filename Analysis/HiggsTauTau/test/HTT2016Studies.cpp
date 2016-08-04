@@ -60,6 +60,7 @@ int main(int argc, char* argv[]) {
 
 
   bool is_data = js.get("is_data", false).asBool();
+  std::string sf_wsp = js["sf_wsp"].asString();
 
   // Set the Unhash map if it exists
   Json::Value js_unhash;
@@ -198,7 +199,7 @@ int main(int argc, char* argv[]) {
 
     seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")
       .set_fs(&fs)
-      .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
+      .set_sf_workspace(sf_wsp)
     );
     seq.InsertSequence("Zmm", analysis);
   }
@@ -245,7 +246,7 @@ int main(int argc, char* argv[]) {
 
     seq.BuildModule(ic::ZeeTreeProducer("ZeeTreeProducer")
       .set_fs(&fs)
-      .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
+      .set_sf_workspace(sf_wsp)
     );
     seq.InsertSequence("Zee", analysis);
   }
@@ -307,7 +308,7 @@ int main(int argc, char* argv[]) {
 
     seq.BuildModule(ic::ZmmTPTreeProducer("ZmmTPTreeProducer")
       .set_fs(&fs)
-      .set_sf_workspace("input/scale_factors/scalefactors_2016_v1.root")
+      .set_sf_workspace(sf_wsp)
     );
     seq.InsertSequence("ZmmTP", analysis);
   }
