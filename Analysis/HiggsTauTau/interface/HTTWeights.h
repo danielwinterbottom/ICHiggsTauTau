@@ -7,6 +7,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagWeight.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
+#include "RooWorkspace.h"
+#include "RooFunctor.h"
 
 #include <string>
 
@@ -89,6 +91,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2D*, em_qcd_cr2_gt4)
   CLASS_MEMBER(HTTWeights, TH2F*, ele_tracking_sf)
   CLASS_MEMBER(HTTWeights, TH1D*, muon_tracking_sf)
+  CLASS_MEMBER(HTTWeights, std::string, scalefactor_file)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
@@ -101,10 +104,12 @@ class HTTWeights : public ModuleBase {
   TH1F *ggh_hist_;
   TH1F *ggh_hist_up_;
   TH1F *ggh_hist_down_;
+  std::shared_ptr<RooWorkspace> w_;
   mithep::TH2DAsymErr* MuonFakeRateHist_PtEta;
   mithep::TH2DAsymErr* ElectronFakeRateHist_PtEta;
   BTagWeight btag_weight;
   TF1 *tau_fake_weights_;
+  std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
 
 
 
