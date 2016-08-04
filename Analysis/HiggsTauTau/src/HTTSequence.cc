@@ -65,6 +65,7 @@
 #include "Modules/interface/GenericModule.h"
 #include "HiggsTauTau/interface/NLOWeighting.h"
 
+
 namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
@@ -684,7 +685,7 @@ if(strategy_type == strategy::fall15 && output_name.find("WGToLNuG")!=output_nam
     .set_input_label("genParticles")
     .set_predicate(
       (bind(&GenParticle::status,_1) == 44) &&
-      (bind(abs,(bind(&GenParticle::pdgid, _1))) == 22))
+      (bind(::abs,(bind(&GenParticle::pdgid, _1))) == 22))
     .set_min(0).set_max(0);
  
   BuildModule(wgammaStarFilter);
@@ -696,7 +697,7 @@ if(ztautau_mode > 0 && strategy_type != strategy::spring15 && strategy_type != s
     .set_input_label("genParticles")
     .set_predicate(
       (bind(&GenParticle::status,_1) == 3) &&
-      (bind(abs,(bind(&GenParticle::pdgid, _1))) == 15))
+      (bind(::abs,(bind(&GenParticle::pdgid, _1))) == 15))
     .set_min(2);
   if (ztautau_mode == 2) zTauTauFilter.set_min(0).set_max(0);
  
