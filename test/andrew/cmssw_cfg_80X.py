@@ -630,6 +630,7 @@ process.icMetSequence += cms.Sequence(
     process.icPfMVAMetProducer
 )
 
+process.MVAMET.debug = cms.bool(False)
 
 ################################################################
 # Triggers
