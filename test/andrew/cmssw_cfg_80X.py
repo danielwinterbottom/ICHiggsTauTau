@@ -18,20 +18,24 @@ opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'Release label')
 opts.register('hltPaths', 'None', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'Trigger object collections')
+opts.register('lheParticles', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, 'Include the LHE particle collection')
 opts.parseArguments()
 infile = opts.file
 isData = opts.isData
 tag  = opts.globalTag
 release = opts.release
 hltPaths = opts.hltPaths
+lheParticles = bool(opts.lheParticles)
 
 if not release in ['80XMINIAOD']:
   print 'Release not recognised, exiting!'
   sys.exit(1)
-print 'release     : '+release
-print 'isData      : '+str(isData)
-print 'globalTag   : '+str(tag)
-print 'hltPaths    : '+str(hltPaths)
+print 'release      : '+release
+print 'isData       : '+str(isData)
+print 'globalTag    : '+str(tag)
+print 'hltPaths     : '+str(hltPaths)
+print 'lheParticles : '+str(lheParticles)
 
 # Some other flags
 doPFChargedAllIso = False
@@ -690,38 +694,40 @@ paths_2016_full = [
     'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
     'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
     'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-    'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v'
+    'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v',
+    'HLT_VLooseIsoPFTau120_Trk50_eta2p1_v',
+    'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v',
+    'HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v',
+    'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+    'HLT_Mu17_TrkIsoVVL_v',
+    'HLT_Mu8_TrkIsoVVL_v',
+    'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v'
 ]
 
 paths_2016_reduced_muon = [
     'HLT_IsoMu22_v',
-    'HLT_IsoMu22_eta2p1_v',
-    'HLT_IsoMu24_v',
-    'HLT_IsoTkMu22_eta2p1_v',
     'HLT_IsoTkMu22_v',
-    'HLT_IsoTkMu24_v',
     'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v',
-    'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v'
+    'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v',
+    'HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v',
+    'HLT_Mu17_TrkIsoVVL_v',
+    'HLT_Mu8_TrkIsoVVL_v'
 ]
 paths_2016_reduced_elec = [
-    'HLT_Ele25_WPTight_Gsf_v',
-    'HLT_Ele25_eta2p1_WPLoose_Gsf_v',
     'HLT_Ele25_eta2p1_WPTight_Gsf_v',
-    'HLT_Ele27_WPTight_Gsf_v',
-    'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
-    'HLT_Ele27_eta2p1_WPTight_Gsf_v',
     'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v',
     'HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v',
     'HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v',
+    'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+    'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v'
 ]
 paths_2016_reduced_tau = [
-    'HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v',
     'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v',
+    'HLT_VLooseIsoPFTau120_Trk50_eta2p1_v',
+    'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v'
 ]
 paths_2016_reduced_emu = [
-    'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v',
     'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
-    'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
     'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
     'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v'
 ]
@@ -783,6 +789,9 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
     isSlimmed           = cms.bool(True)
 )
 
+process.icLHEParticleProducer = producers.icGenParticleFromLHEParticlesProducer.clone()
+
+
 process.icGenSequence = cms.Sequence()
 
 if not isData:
@@ -792,7 +801,27 @@ if not isData:
         process.icGenJetProducer+
         process.icPileupInfoProducer
     )
+    if lheParticles:
+        process.icGenSequence += (
+            process.icLHEParticleProducer
+        )
 
+################################################################
+# MET filters
+################################################################
+
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+
+process.icMETFilterSequence = cms.Sequence(
+    process.BadPFMuonFilter+
+    process.BadChargedCandidateFilter
+)
 
 ################################################################
 # Event info
@@ -808,7 +837,19 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     includeVertexCount  = cms.bool(True),
     inputVertices       = cms.InputTag("offlineSlimmedPrimaryVertices"),
     includeCSCFilter    = cms.bool(False),
-    inputCSCFilter      = cms.InputTag("BeamHaloSummary")
+    inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+    filters = cms.PSet(
+        Flag_BadPFMuonFilter = cms.InputTag('BadPFMuonFilter'),
+        Flag_BadChargedCandidateFilter = cms.InputTag('BadChargedCandidateFilter')
+    ),
+    includeFiltersFromTrig = cms.bool(True),
+    filtersfromtrig     = cms.vstring(
+        "Flag_HBHENoiseFilter",
+        "Flag_HBHENoiseIsoFilter",
+        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+        "Flag_goodVertices",
+        "Flag_eeBadScFilter",
+        "Flag_globalTightHalo2016Filter")
 )
 
 # if not isData:
@@ -828,6 +869,7 @@ process.p = cms.Path(
     process.icMetSequence+
     process.icTriggerObjectSequence+
     process.icGenSequence+
+    process.icMETFilterSequence+
     process.icEventInfoProducer+
     process.icEventProducer+
     process.icHashTreeProducer
