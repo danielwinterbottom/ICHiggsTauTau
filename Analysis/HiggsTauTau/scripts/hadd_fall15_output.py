@@ -27,6 +27,7 @@ ignore = options.ignore
 
 
 sample_list = [
+  'QCD_Pt-15to80_MixedSamples_MuEnrichedPt5',
   'QCDMuEnriched',
   'QCD_Ht100to200',
   'QCD_Ht200to300',
