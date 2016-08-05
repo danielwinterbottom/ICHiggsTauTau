@@ -646,7 +646,7 @@ process.icTrackSequence = cms.Sequence()
 
 process.selectedTracks = cms.EDFilter("TrackRefSelector",
  src = cms.InputTag("unpackedTracksAndVertices"),
- cut = cms.string("pt > 20")
+ cut = cms.string("pt > 10")
 )
 
 process.icTrackProducer = producers.icTrackProducer.clone(
