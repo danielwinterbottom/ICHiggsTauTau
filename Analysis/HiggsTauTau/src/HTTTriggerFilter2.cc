@@ -1330,6 +1330,7 @@ namespace ic {
             if (channel_ == channel::em){
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg1_filter, 0.5).first;
               leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_filter, 0.5).first;
+          
             } else if (channel_ == channel::et){
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
               leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;

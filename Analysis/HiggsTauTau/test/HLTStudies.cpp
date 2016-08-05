@@ -20,16 +20,24 @@
 
 int main(int argc, char* argv[]){
 
-  if(argc < 4){
-    std::cout << "Wrong number of arguments, expected minimum 3 arguments." << std::endl;
+  if(argc < 5){
+    std::cout << "Wrong number of arguments, expected minimum 4 arguments." << std::endl;
     return 0;
   }
   std::string channel      = argv[1];
   std::string outputDir    = argv[2];
   std::string signalType   = argv[3];
+  unsigned DoLegsIndependent = 0;;
+  unsigned temp = std::atoi(argv[4]);
+  if(temp == 0 || temp ==1) DoLegsIndependent = temp;
+  else{
+    std::cout << "Wrong input for DoLegsIndependent, expected 0 or 1."<< std::endl;
+    return 0;    
+  }
+
   std::string TriggerName[2];
   
-  if(argc < 5){
+  if(argc < 6){
     if(channel == "mt") {
       TriggerName[0] = "HLT_IsoMu22_v"; 
       TriggerName[1] = "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v"; 
@@ -44,22 +52,25 @@ int main(int argc, char* argv[]){
       TriggerName[1] = "HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v"; 
     }
   }
-  else if(argc < 6){
-    TriggerName[0] = argv[4];
+  else if(argc < 7){
+    TriggerName[0] = argv[5];
     if(channel == "mt")      TriggerName[1] = "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v";
     else if(channel == "et") TriggerName[1] = "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v" ;
     else if(channel == "em") TriggerName[1] = "HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v";
     else if(channel == "tt") TriggerName[1] = "HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v";
   }
   else {
-   TriggerName[0] = argv[4];
-   TriggerName[1] = argv[5];   
+   TriggerName[0] = argv[5];
+   TriggerName[1] = argv[6];   
   }
   
   double ExtraEtaCut1[2] = {};
   double ExtraEtaCut2[2] = {};
   for(unsigned i = 0; i < 2 ; ++i){
     if     (TriggerName[i] == "HLT_IsoMu22_v"){
+      ExtraEtaCut1[i] = 2.4;
+      ExtraEtaCut2[i] = 2.3;
+    } else if (TriggerName[i] == "HLT_IsoTkMu22_v"){
       ExtraEtaCut1[i] = 2.4;
       ExtraEtaCut2[i] = 2.3;
     } else if(TriggerName[i] == "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v"){
@@ -105,9 +116,12 @@ int main(int argc, char* argv[]){
   
   std::string filename1;
   if(signalType == "GluGlu"){
-    filename1 = "output/Jul03/LegsSeperate2/GluGluHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = "output/Jul03/LegsSeperate4/GluGluHToTauTau_M-125_"+channel+"_2015.root";
+
   } else if (signalType == "VBF") {
-    filename1 = "output/Jul03/LegsSeperate2/VBFHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = "output/Jul03/LegsSeperate4/VBFHToTauTau_M-125_"+channel+"_2015.root";
+  } else if (signalType == "QCD"){
+    filename1 = "output/Jul03/LegsSeperate4/QCD_Pt-15to80_MixedSamples_MuEnrichedPt5_"+channel+"_2015.root";  
   }
   else {
     std::cout << "Incorrect signal input" << std::endl;
@@ -250,20 +264,29 @@ int main(int argc, char* argv[]){
         if(eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut1[0]) h_lep1pt_denum_trigger1->Fill(pt_1);
         if(eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut1[1]) h_lep1pt_denum_trigger2->Fill(pt_1);
       }
+      bool Trigger1Pass;
+      bool Trigger2Pass;
+      if(DoLegsIndependent == 0){
+        Trigger1Pass = PassedTrigger1;
+        Trigger2Pass = PassedTrigger2;
+      } else{
+        Trigger1Pass = true;
+        Trigger2Pass = true;
+      }
       if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1) h_lep2pt_denum_trigger1->Fill(pt_2);
       if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1) h_lep2pt_denum_trigger2->Fill(pt_2);
       if((eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0]) || (eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1])) h_lep1pt_denum_ORtrigger->Fill(pt_1);
       if((eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1) || (eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1)) h_lep2pt_denum_ORtrigger->Fill(pt_2);
 
         if(channel == "tt"){
-          if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg2) h_lep1_eff_trigger1->Fill(pt_1);
-          if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2) h_lep1_eff_trigger2->Fill(pt_1);
+          if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg2 && Trigger1Pass) h_lep1_eff_trigger1->Fill(pt_1);
+          if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2 && Trigger2Pass) h_lep1_eff_trigger2->Fill(pt_1);
         } else {
-          if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1) h_lep1_eff_trigger1->Fill(pt_1);
-          if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1) h_lep1_eff_trigger2->Fill(pt_1);
+          if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && Trigger1Pass) h_lep1_eff_trigger1->Fill(pt_1);
+          if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && Trigger2Pass) h_lep1_eff_trigger2->Fill(pt_1);
         }
-        if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg2) h_lep2_eff_trigger1->Fill(pt_2);
-        if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2) h_lep2_eff_trigger2->Fill(pt_2);
+        if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg2 && Trigger1Pass) h_lep2_eff_trigger1->Fill(pt_2);
+        if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2 && Trigger2Pass) h_lep2_eff_trigger2->Fill(pt_2);
 
         if((eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0] && PassedTrigger1_leg1) || (eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1] && PassedTrigger2_leg1)) h_lep1_eff_ORtrigger->Fill(pt_1);
         if((eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg1) || (eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2)) h_lep2_eff_ORtrigger->Fill(pt_2);
