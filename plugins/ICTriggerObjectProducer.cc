@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "boost/format.hpp"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -84,7 +85,6 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       dest.set_phi(src.phi());
       dest.set_energy(src.energy());
       dest.set_charge(0);
-      dest.set_id(0);
       std::vector<std::size_t> filter_labels;
 
       // Get the filters this object was used in
@@ -97,6 +97,18 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
         observed_filters_[filters[k]->label()] = CityHash64(filters[k]->label());
       }
       dest.set_filters(filter_labels);
+
+      // Assuming we can represent each trigger type as a short int, see here:
+      // github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/DataFormats/HLTReco/interface/TriggerTypeDefs.h
+      // we can pack four of these, each 16 bits, into the id() variable
+      // (64 bits).
+      ui64 packed_type;
+      packed_type.one = 0;
+      unsigned n_types = std::min(std::size_t(4), src.triggerObjectTypes().size());
+      for (unsigned t = 0; t < n_types; ++t) {
+        packed_type.four[t] = src.triggerObjectTypes()[t];
+      }
+      dest.set_id(packed_type.one);
     }
   } else {  // i.e. MiniAOD
     // We need to figure out the full HLT path name (typically hlt_path_ doesn't
@@ -161,7 +173,7 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       dest.set_phi(src.phi());
       dest.set_energy(src.energy());
       dest.set_charge(0);
-      dest.set_id(0);
+
       // Get the filters this object was used in
       std::vector<std::string> const& filters = src.filterLabels();
       std::vector<std::size_t> filter_labels;
@@ -173,6 +185,18 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
         observed_filters_[filters[k]] = CityHash64(filters[k]);
       }
       dest.set_filters(filter_labels);
+
+      // Assuming we can represent each trigger type as a short int, see here:
+      // github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/DataFormats/HLTReco/interface/TriggerTypeDefs.h
+      // we can pack four of these, each 16 bits, into the id() variable
+      // (64 bits).
+      ui64 packed_type;
+      packed_type.one = 0;
+      unsigned n_types = std::min(std::size_t(4), src.triggerObjectTypes().size());
+      for (unsigned t = 0; t < n_types; ++t) {
+        packed_type.four[t] = src.triggerObjectTypes()[t];
+      }
+      dest.set_id(packed_type.one);
     }
   }
 }

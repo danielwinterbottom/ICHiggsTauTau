@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <cstdint>
 #include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -37,6 +38,11 @@ class ICTriggerObjectProducer : public edm::EDProducer {
   bool input_is_standalone_;
   std::map<std::string, std::size_t> observed_filters_;
   HLTConfigProvider hlt_config_;
+
+  union ui64 {
+    uint64_t one;
+    int16_t four[4];
+  };
 };
 
 #endif
