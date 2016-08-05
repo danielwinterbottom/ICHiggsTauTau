@@ -103,6 +103,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line"><span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;boost/format.hpp&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;FWCore/Framework/interface/Event.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;FWCore/Framework/interface/EventSetup.h&quot;</span></div>
@@ -185,7 +186,6 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line">      dest.<a name="a7"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
 <div class="line">      dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
 <div class="line">      dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(0);</div>
-<div class="line">      dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(0);</div>
 <div class="line">      std::vector&lt;std::size_t&gt; filter_labels;</div>
 <div class="line"></div>
 <div class="line">      <span class="comment">// Get the filters this object was used in</span></div>
@@ -194,10 +194,22 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> k = 0; k &lt; filters.size(); ++k) {</div>
 <div class="line">        <span class="comment">// Only store the filter label if the filter was used in the chosen path</span></div>
 <div class="line">        <span class="keywordflow">if</span> (!trig_handle-&gt;filterInPath(filters[k], full_name, <span class="keyword">false</span>)) <span class="keywordflow">continue</span>;</div>
-<div class="line">        filter_labels.push_back(<a name="a11"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]-&gt;label()));</div>
+<div class="line">        filter_labels.push_back(<a name="a10"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]-&gt;label()));</div>
 <div class="line">        observed_filters_[filters[k]-&gt;label()] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]-&gt;label());</div>
 <div class="line">      }</div>
-<div class="line">      dest.<a name="a12"></a><a class="code" href="classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e">set_filters</a>(filter_labels);</div>
+<div class="line">      dest.<a name="a11"></a><a class="code" href="classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e">set_filters</a>(filter_labels);</div>
+<div class="line"></div>
+<div class="line">      <span class="comment">// Assuming we can represent each trigger type as a short int, see here:</span></div>
+<div class="line">      <span class="comment">// github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/DataFormats/HLTReco/interface/TriggerTypeDefs.h</span></div>
+<div class="line">      <span class="comment">// we can pack four of these, each 16 bits, into the id() variable</span></div>
+<div class="line">      <span class="comment">// (64 bits).</span></div>
+<div class="line">      ui64 packed_type;</div>
+<div class="line">      packed_type.one = 0;</div>
+<div class="line">      <span class="keywordtype">unsigned</span> n_types = std::min(std::size_t(4), src.triggerObjectTypes().size());</div>
+<div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> t = 0; t &lt; n_types; ++t) {</div>
+<div class="line">        packed_type.four[t] = src.triggerObjectTypes()[t];</div>
+<div class="line">      }</div>
+<div class="line">      dest.<a name="a12"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(packed_type.one);</div>
 <div class="line">    }</div>
 <div class="line">  } <span class="keywordflow">else</span> {  <span class="comment">// i.e. MiniAOD</span></div>
 <div class="line">    <span class="comment">// We need to figure out the full HLT path name (typically hlt_path_ doesn&#39;t</span></div>
@@ -262,7 +274,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(0);</div>
-<div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(0);</div>
+<div class="line"></div>
 <div class="line">      <span class="comment">// Get the filters this object was used in</span></div>
 <div class="line">      std::vector&lt;std::string&gt; <span class="keyword">const</span>&amp; filters = src.filterLabels();</div>
 <div class="line">      std::vector&lt;std::size_t&gt; filter_labels;</div>
@@ -274,6 +286,18 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_object_producer_
 <div class="line">        observed_filters_[filters[k]] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters[k]);</div>
 <div class="line">      }</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e">set_filters</a>(filter_labels);</div>
+<div class="line"></div>
+<div class="line">      <span class="comment">// Assuming we can represent each trigger type as a short int, see here:</span></div>
+<div class="line">      <span class="comment">// github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/DataFormats/HLTReco/interface/TriggerTypeDefs.h</span></div>
+<div class="line">      <span class="comment">// we can pack four of these, each 16 bits, into the id() variable</span></div>
+<div class="line">      <span class="comment">// (64 bits).</span></div>
+<div class="line">      ui64 packed_type;</div>
+<div class="line">      packed_type.one = 0;</div>
+<div class="line">      <span class="keywordtype">unsigned</span> n_types = std::min(std::size_t(4), src.triggerObjectTypes().size());</div>
+<div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> t = 0; t &lt; n_types; ++t) {</div>
+<div class="line">        packed_type.four[t] = src.triggerObjectTypes()[t];</div>
+<div class="line">      }</div>
+<div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(packed_type.one);</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>

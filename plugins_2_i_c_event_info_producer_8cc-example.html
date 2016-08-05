@@ -343,56 +343,58 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">    observed_filters_[filters_[i].first] = <a name="a18"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters_[i].first);</div>
 <div class="line">  }</div>
 <div class="line"></div>
-<div class="line">   <span class="keywordflow">if</span>(do_filtersfromtrig_){</div>
-<div class="line">     edm::Handle&lt;edm::TriggerResults&gt; triggerResults;</div>
-<div class="line">     <span class="keyword">event</span>.getByLabel(filtersfromtrig_input_,triggerResults);</div>
-<div class="line">     <span class="keywordflow">if</span>( !triggerResults.isValid() ){</div>
-<div class="line">       <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;TriggerNotValid&quot;</span>)&lt;&lt;<span class="stringliteral">&quot;Trigger Results is not valid\n&quot;</span>;</div>
-<div class="line">     }</div>
-<div class="line">     </div>
-<div class="line">     <span class="keyword">const</span> edm::TriggerNames &amp;triggerNames = <span class="keyword">event</span>.triggerNames(*triggerResults);</div>
-<div class="line">     <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> iTrigger=0;iTrigger&lt;triggerResults-&gt;size();iTrigger++){</div>
-<div class="line">       std::string trigName = triggerNames.triggerName(iTrigger);</div>
-<div class="line">       <span class="keywordtype">bool</span> pass = <span class="keyword">false</span>;</div>
-<div class="line">       <span class="keywordflow">if</span> (filtersfromtrig_.size()==1 &amp;&amp; filtersfromtrig_[0] == <span class="stringliteral">&quot;*&quot;</span>){</div>
-<div class="line">   <span class="comment">//copy all filters</span></div>
-<div class="line">   pass = <span class="keyword">true</span>;</div>
-<div class="line">       } <span class="keywordflow">else</span> {</div>
-<div class="line">   <span class="comment">//copy only filters given in input</span></div>
-<div class="line">   <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> iFilter=0;iFilter&lt;filtersfromtrig_.size();iFilter++){</div>
-<div class="line">     std::string filtername=filtersfromtrig_[iFilter];</div>
-<div class="line">     <span class="keywordflow">if</span>(filtername.find(trigName)!=std::string::npos) {</div>
-<div class="line">       pass = <span class="keyword">true</span>;</div>
-<div class="line">       <span class="keywordflow">break</span>;</div>
-<div class="line">     }</div>
-<div class="line">   }</div>
-<div class="line">   <span class="comment">//if (!pass) {</span></div>
-<div class="line">   <span class="comment">//throw cms::Exception(&quot;TriggerNotFound&quot;)&lt;&lt;trigName&lt;&lt;&quot; was not found in trigger results\n&quot;; </span></div>
-<div class="line">   <span class="comment">//} </span></div>
-<div class="line">       }</div>
-<div class="line">       <span class="keywordflow">if</span> (!pass) <span class="keywordflow">continue</span>;</div>
-<div class="line">       <span class="keywordflow">if</span>(!triggerResults-&gt;wasrun(iTrigger)){</div>
-<div class="line">   <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;TriggerNotRun&quot;</span>)&lt;&lt;trigName&lt;&lt;<span class="stringliteral">&quot; was not run\n&quot;</span>;</div>
-<div class="line">       }</div>
-<div class="line">       <span class="keywordtype">bool</span> filter_result=triggerResults-&gt;accept(iTrigger);</div>
-<div class="line">       <span class="keywordflow">if</span> (invert_filter_logic_.find(trigName) !=</div>
-<div class="line">     invert_filter_logic_.end())</div>
-<div class="line">   filter_result = !filter_result;</div>
+<div class="line">  <span class="keywordflow">if</span> (do_filtersfromtrig_) {</div>
+<div class="line">    edm::Handle&lt;edm::TriggerResults&gt; triggerResults;</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(filtersfromtrig_input_, triggerResults);</div>
+<div class="line">    <span class="keywordflow">if</span> (!triggerResults.isValid()) {</div>
+<div class="line">      <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;TriggerNotValid&quot;</span>)</div>
+<div class="line">          &lt;&lt; <span class="stringliteral">&quot;Trigger Results is not valid\n&quot;</span>;</div>
+<div class="line">    }</div>
 <div class="line"></div>
-<div class="line">       <span class="comment">//std::cout &lt;&lt; &quot; Filter &quot; &lt;&lt; trigName &lt;&lt; &quot; &quot; &lt;&lt; triggerResults-&gt;accept(iTrigger) &lt;&lt; &quot; &quot; &lt;&lt; filter_result &lt;&lt; std::endl;</span></div>
+<div class="line">    <span class="keyword">const</span> edm::TriggerNames&amp; triggerNames = <span class="keyword">event</span>.triggerNames(*triggerResults);</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> iTrigger = 0; iTrigger &lt; triggerResults-&gt;size(); iTrigger++) {</div>
+<div class="line">      std::string trigName = triggerNames.triggerName(iTrigger);</div>
+<div class="line">      <span class="keywordtype">bool</span> pass = <span class="keyword">false</span>;</div>
+<div class="line">      <span class="keywordflow">if</span> (filtersfromtrig_.size() == 1 &amp;&amp; filtersfromtrig_[0] == <span class="stringliteral">&quot;*&quot;</span>) {</div>
+<div class="line">        <span class="comment">// copy all filters</span></div>
+<div class="line">        pass = <span class="keyword">true</span>;</div>
+<div class="line">      } <span class="keywordflow">else</span> {</div>
+<div class="line">        <span class="comment">// copy only filters given in input</span></div>
+<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> iFilter = 0; iFilter &lt; filtersfromtrig_.size();</div>
+<div class="line">             iFilter++) {</div>
+<div class="line">          std::string filtername = filtersfromtrig_[iFilter];</div>
+<div class="line">          <span class="keywordflow">if</span> (filtername.find(trigName) != std::string::npos) {</div>
+<div class="line">            pass = <span class="keyword">true</span>;</div>
+<div class="line">            <span class="keywordflow">break</span>;</div>
+<div class="line">          }</div>
+<div class="line">        }</div>
+<div class="line">        <span class="comment">// if (!pass) {</span></div>
+<div class="line">        <span class="comment">// throw cms::Exception(&quot;TriggerNotFound&quot;)&lt;&lt;trigName&lt;&lt;&quot; was not found in</span></div>
+<div class="line">        <span class="comment">// trigger results\n&quot;;</span></div>
+<div class="line">        <span class="comment">//}</span></div>
+<div class="line">      }</div>
+<div class="line">      <span class="keywordflow">if</span> (!pass) <span class="keywordflow">continue</span>;</div>
+<div class="line">      <span class="keywordflow">if</span> (!triggerResults-&gt;wasrun(iTrigger)) {</div>
+<div class="line">        <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;TriggerNotRun&quot;</span>) &lt;&lt; trigName &lt;&lt; <span class="stringliteral">&quot; was not run\n&quot;</span>;</div>
+<div class="line">      }</div>
+<div class="line">      <span class="keywordtype">bool</span> filter_result = triggerResults-&gt;accept(iTrigger);</div>
+<div class="line">      <span class="keywordflow">if</span> (invert_filter_logic_.find(trigName) != invert_filter_logic_.end())</div>
+<div class="line">        filter_result = !filter_result;</div>
 <div class="line"></div>
-<div class="line">       info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(trigName, filter_result);</div>
-<div class="line">       observed_filters_[trigName] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(trigName);</div>
-<div class="line">     }<span class="comment">//loop on triggers</span></div>
-<div class="line">     </div>
-<div class="line">   }</div>
-<div class="line">   </div>
-<div class="line">   edm::Handle&lt;reco::BeamHaloSummary&gt; beam_halo_handle;</div>
-<div class="line">   <span class="keywordflow">if</span> (do_csc_filter_) {</div>
-<div class="line">     <span class="keyword">event</span>.getByLabel(input_csc_filter_, beam_halo_handle);</div>
-<div class="line">     info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>,</div>
-<div class="line">            beam_halo_handle-&gt;CSCTightHaloId());</div>
-<div class="line">     observed_filters_[<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>);</div>
+<div class="line">      <span class="comment">// std::cout &lt;&lt; &quot; Filter &quot; &lt;&lt; trigName &lt;&lt; &quot; &quot; &lt;&lt;</span></div>
+<div class="line">      <span class="comment">// triggerResults-&gt;accept(iTrigger) &lt;&lt; &quot; &quot; &lt;&lt; filter_result &lt;&lt; std::endl;</span></div>
+<div class="line"></div>
+<div class="line">      info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(trigName, filter_result);</div>
+<div class="line">      observed_filters_[trigName] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(trigName);</div>
+<div class="line">    }  <span class="comment">// loop on triggers</span></div>
+<div class="line">  }</div>
+<div class="line"></div>
+<div class="line">  edm::Handle&lt;reco::BeamHaloSummary&gt; beam_halo_handle;</div>
+<div class="line">  <span class="keywordflow">if</span> (do_csc_filter_) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(input_csc_filter_, beam_halo_handle);</div>
+<div class="line">    info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>,</div>
+<div class="line">                             beam_halo_handle-&gt;CSCTightHaloId());</div>
+<div class="line">    observed_filters_[<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>);</div>
 <div class="line">   }</div>
 <div class="line">}</div>
 <div class="line"></div>
