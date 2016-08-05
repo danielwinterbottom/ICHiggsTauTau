@@ -502,13 +502,13 @@ process.icTauProducer = producers.icTauProducer.clone(
 )
 
 if release in ['80XMINIAOD']:
-  process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
-      branch          = cms.string("taus"),
-      input           = cms.InputTag("selectedTaus"),
-      inputVertices   = vtxLabel,
-      includeVertexIP = cms.bool(True),
-      requestTracks   = cms.bool(False),
-      tauIDs          = cms.PSet()
+  process.icTauProducer = producers.icTauFromPatProducer.clone(
+      branch              = cms.string("taus"),
+      input               = cms.InputTag("selectedTaus"),
+      inputVertices       = vtxLabel,
+      includeVertexIP     = cms.bool(True),
+      includeTotalCharged = cms.bool(True),
+      totalChargedLabel   = cms.string('totalCharged')
   )
 
 process.icTauSequence = cms.Sequence(
@@ -635,6 +635,30 @@ process.icMetSequence += cms.Sequence(
 )
 
 process.MVAMET.debug = cms.bool(False)
+
+################################################################
+# Tracks
+################################################################
+
+process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
+process.icTrackSequence = cms.Sequence()
+
+
+process.selectedTracks = cms.EDFilter("TrackRefSelector",
+ src = cms.InputTag("unpackedTracksAndVertices"),
+ cut = cms.string("pt > 20")
+)
+
+process.icTrackProducer = producers.icTrackProducer.clone(
+ branch = cms.string("tracks"),
+ input  = cms.InputTag("selectedTracks")
+)
+
+process.icTrackSequence += cms.Sequence(
+    process.unpackedTracksAndVertices+
+    process.selectedTracks+
+    process.icTrackProducer
+)
 
 ################################################################
 # Triggers
@@ -867,6 +891,7 @@ process.p = cms.Path(
     process.icTauSequence+
     process.icPFJetSequence+
     process.icMetSequence+
+    process.icTrackSequence+
     process.icTriggerObjectSequence+
     process.icGenSequence+
     process.icMETFilterSequence+
