@@ -2,9 +2,9 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='July21_MC_80X'
+config.General.workArea='Aug06_MC_80X'
 config.section_('JobType')
-config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_8_0_9/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_80X_Apr16.py'
+config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_8_0_11/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_80X_Aug16.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
@@ -16,10 +16,11 @@ config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/adewit/July21_MC_80X/'
+config.Data.outLFNDirBase='/store/user/adewit/Aug06_MC_80X/'
 config.section_('User')
 config.section_('Site')
-config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT',  'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
+#config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT',  'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
+config.Site.blacklist = ['T2_US_*']
 config.Site.storageSite = 'T2_UK_London_IC'
 
 if __name__ == '__main__':
