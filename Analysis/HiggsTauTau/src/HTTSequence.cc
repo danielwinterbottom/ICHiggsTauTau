@@ -963,6 +963,11 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     jes_input_file = "input/jec/Fall15_25nsV2_DATA_UncertaintySources_AK4PFchs.txt";
     jes_input_set  = "Total";
   }
+  if (era_type == era::data_2016) {
+    jes_input_file = "input/jec/Spring16_25nsV6_DATA_UncertainySources_AK4PFchs.txt";
+    jes_input_set  = "Total";
+  }
+    
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
   .set_input_label(jets_label)
   .set_jes_shift_mode(jes_mode)
