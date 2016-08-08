@@ -34,6 +34,12 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TEGamma.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TMuon.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TTau.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TSum.hh"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;
@@ -95,6 +101,18 @@ namespace { struct dictionary {
   edm::Wrapper<reco::PFCandidateRefVector> dummy56;
   edm::ValueMap<std::vector<int> > dummy57;  
   edm::Wrapper<edm::ValueMap<std::vector<int> > > dummy58;
+  ic::L1TObject              dictL1TObject;
+  std::vector<ic::L1TObject> dictL1TObjectCollection;
+  ic::L1TEGamma              dictL1TEGamma;
+  std::vector<ic::L1TEGamma> dictL1TEGammaCollection;
+  ic::L1TMuon                dictL1TMuon;
+  std::vector<ic::L1TMuon>   dictL1TMuonCollection;
+  ic::L1TTau                 dictL1TTau;
+  std::vector<ic::L1TTau>    dictL1TTauCollection;
+  ic::L1TJet                 dictL1TJet;
+  std::vector<ic::L1TJet>    dictL1TJetCollection;
+  ic::L1TSum                 dictL1TSum;
+  std::vector<ic::L1TSum>    dictL1TSumCollection;
 };
 }
 
