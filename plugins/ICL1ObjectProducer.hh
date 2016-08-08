@@ -85,9 +85,6 @@ class ICL1ObjectProducer : public edm::EDProducer {//edm::Analyzer {
   std::string branch_;
   boost::hash<reco::Candidate const*> cand_hasher_;
 
-  unsigned maxL1Upgrade_;
-  std::string m_L1TEra;
-
   // output file
   edm::Service<TFileService> fs_;
   

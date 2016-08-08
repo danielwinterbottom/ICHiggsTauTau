@@ -22,6 +22,10 @@ struct filters {
   bool pass;
   double lep1_pt;
   double lep2_pt;
+  double leg1_extraHLTPt;
+  double leg2_extraHLTPt;
+  double leg1_extraL1Pt;
+  double leg2_extraL1Pt;
 }; 
 
 
@@ -1261,6 +1265,7 @@ namespace ic {
        if(do_leptonplustau_){
          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, extra_leg2_filter,0.5).first;
          leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_leg2_filter,0.5).first;
+         
          //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
          //leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
          }
@@ -1302,6 +1307,8 @@ namespace ic {
         for (unsigned j=0; j < dileptons.size(); ++j) {
           bool leg1_match = false;
           bool leg2_match = false;
+          unsigned leg1_match_index = 0;
+          unsigned leg2_match_index = 0;
           if(leg_filters[i].singleLepton_){
             bool highpt_leg = false;
             if(channel_ == channel::em && leg_filters[i].leg1_filter == "") {
@@ -1334,6 +1341,16 @@ namespace ic {
             } else if (channel_ == channel::et){
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
               leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;
+              leg1_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).second;
+              leg2_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).second;
+              bool applyAdditionalTriggerCuts_ = true;
+              if(applyAdditionalTriggerCuts_){
+                if(objs[leg1_match_index]->pt() < leg_filters[i].leg1_extraHLTPt) leg1_match = false;
+                if(objs[leg2_match_index]->pt() < leg_filters[i].leg2_extraHLTPt) leg2_match = false;
+                
+                std::cout << "leg1 HLT object Pt " << objs[leg1_match_index]->pt() << std::endl;
+                std::cout << "leg2 HLT object Pt " << objs[leg2_match_index]->pt() << std::endl;
+              }
             }
             else if (channel_ == channel::mt) {
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
