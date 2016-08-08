@@ -817,7 +817,7 @@ process.icTauSequence = cms.Sequence(
 )
 
 ################################################################
-# L1 Taus
+# L1 Particles
 ################################################################
 
 process.icL1ExtraTauProducer = cms.EDProducer("ICCandidateProducer",
@@ -1680,8 +1680,20 @@ if not isData:
 #    process.icGenJetProducerAK4
 #)
 
+################################################################
+# L1 Objects
+################################################################
 
+import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 
+process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
+  inputTag_L1TEGamma = cms.untracked.InputTag("caloStage2Digis","EGamma","HLT2"),
+  inputTag_L1TMuon   = cms.untracked.InputTag("gmtStage2Digis","Muon","HLT2"),
+  inputTag_L1TTau    = cms.untracked.InputTag("caloStage2Digis","Tau","HLT2"),
+  inputTag_L1TJet    = cms.untracked.InputTag("caloStage2Digis","Jet","HLT2"),
+  inputTag_L1TSum    = cms.untracked.InputTag("caloStage2Digis","EtSum","HLT2")
+)
+  
 # ################################################################
 # # Trigger
 # ################################################################
@@ -2186,6 +2198,8 @@ process.icEventInfoSequence = cms.Sequence(
 )
 
 
+
+
 ################################################################
 # Event
 ################################################################
@@ -2215,6 +2229,7 @@ process.p = cms.Path(
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
   #process.patDefaultSequence+
+  process.icL1ObjectProducer+
   process.icEventProducer
 )
 
