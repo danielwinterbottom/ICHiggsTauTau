@@ -156,11 +156,11 @@ int main(int argc, char* argv[]){
     ("wstream",               po::value<string>(&wstream)->default_value("nunu"))
     ("is_data",               po::value<bool>(&is_data)->required())
     ("mettype",               po::value<string>(&mettype)->default_value("pfMetType1"))
-    ("jet1ptcut",             po::value<double>(&jet1ptcut)->default_value(30.))
-    ("jet2ptcut",             po::value<double>(&jet2ptcut)->default_value(30.))
+    ("jet1ptcut",             po::value<double>(&jet1ptcut)->default_value(80.))
+    ("jet2ptcut",             po::value<double>(&jet2ptcut)->default_value(70.))
     ("jetptprecut",           po::value<double>(&jetptprecut)->default_value(15.))
-    ("mjjcut",                po::value<double>(&mjjcut)->default_value(600.))
-    ("detajjcut",             po::value<double>(&detajjcut)->default_value(3.2))
+    ("mjjcut",                po::value<double>(&mjjcut)->default_value(800.))
+    ("detajjcut",             po::value<double>(&detajjcut)->default_value(3.6))
     ("doMetFilters",          po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",               po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",             po::value<bool>(&dojessyst)->default_value(false))
@@ -187,9 +187,9 @@ int main(int argc, char* argv[]){
     ("doidisoerrupordown",    po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",       po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("dolumixsweight",        po::value<bool>(&dolumixsweight)->default_value(false))
-    ("inputparams",           po::value<string>(&inputparams)->default_value("filelists/Dec18/ParamsDec18.dat"))
+    ("inputparams",           po::value<string>(&inputparams)->default_value("filelists/160801/Params160801.dat"))
     ("jettype",               po::value<string>(&jettype)->default_value("pfJetsPFlow"))
-    ("trg_weight_file",       po::value<string>(&trg_weight_file)->default_value("input/scale_factors/DataMCWeight_53X_v1.root"))
+    ("trg_weight_file",       po::value<string>(&trg_weight_file)->default_value("input/scale_factors/TrigEff2016_MET1DFitHFBinned_errors_6fb.root"))
     ("trg_to_use",            po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"))
     ("printEventList",        po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",     po::value<bool>(&printEventContent)->default_value(false))
@@ -376,9 +376,14 @@ int main(int argc, char* argv[]){
 //   if (era == era::data_2012_hcp) data_json       =  "input/json/data_2012_hcp.txt";
 //   if (era == era::data_2012_moriond) data_json   =  "input/json/data_2012_moriond.txt";
 //   if (era == era::data_2012_donly) data_json     =  "input/json/data_2012_donly.txt";
-  if (era == era::data_2016) data_json     =  "input/json/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt";
+  
+  std::string mydebugoutput("/home/hep/rd1715/CMSSW_8_0_12/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/mydebugoutput");
+  std::string suffix = output_name.substr( 0 , output_name.find(".root") );
+  mydebugoutput.append(suffix);
+  
+  if (era == era::data_2016) data_json     =  "input/json/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt";
   LumiMask lumiMask = LumiMask("LumiMask")
-    .set_produce_output_jsons("")
+    .set_produce_output_jsons(mydebugoutput.c_str())
     .set_input_file(data_json);
 
   MakeRunStats runStats = MakeRunStats("RunStats")
@@ -403,7 +408,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
   if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
-  if (era == era::data_2016) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2016-600bins.root";
+  if (era == era::data_2016) data_pu_file   =  "input/pileup/Data_Pileup_mb63_2016-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -428,8 +433,8 @@ int main(int argc, char* argv[]){
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
   }
   else if(era == era::data_2016){
-    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb72d5_2016-600bins.root", "/", "pileup");
-    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2016-600bins.root", "/", "pileup");
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb66d2_2016-600bins.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb59d9_2016-600bins.root", "/", "pileup");
   }
 
   if (!is_data) {
@@ -451,12 +456,14 @@ int main(int argc, char* argv[]){
     .set_print_weights(false);
 
   //MAKE ele and mu eff weights like this
-
-//    HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
-//    dataMCTriggerPathFilter.set_is_data(is_data);
-//    dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
-//    dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
-
+  // This is needed when you want to study the MET trigger efficiencies (Filter Flag_* as well) at the LT stage. Once the study is done, comment it again!
+   // HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
+   // dataMCTriggerPathFilter.set_is_data(is_data);
+   // //dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"); 
+   // dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140");
+   // //dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+   // dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140");
+   
   // JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
 //   ("JetEnergyCorrections")
 //   .set_input_label(jettype)
@@ -1028,6 +1035,8 @@ int main(int argc, char* argv[]){
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   if (is_data) {
+    // see line 459
+    //analysis.AddModule(&dataMCTriggerPathFilter);
     analysis.AddModule(&metFilters);
     //74X only
     //analysis.AddModule(&cscTightHaloFilter);

@@ -57,7 +57,7 @@ if __name__ == '__main__':
     tasks=list()
 
     #!!TO BE UPDATED ON EACH PROCESSING
-    json= '/home/hep/rd1715/CMSSW_8_0_12/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt'
+    #json= '/home/hep/rd1715/CMSSW_8_0_12/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt'
     #firstrun='246908'
     #maxrun='260627'#!!remember to update max run
 
@@ -71,28 +71,31 @@ if __name__ == '__main__':
     #           (('MET-2015D-16Dec-v1'           ,'/MET/Run2015D-16Dec2015-v1/MINIAOD'         ,json,rerecoparams,firstrun+'-'+maxrun))
     #           (('SingleMuon-2015D-16Dec-v1'    ,'/SingleMuon/Run2015D-16Dec2015-v1/MINIAOD'  ,json,rerecoparams,firstrun+'-'+maxrun))
     #           (('SinglePhoton-2015D-16Dec-v1'  ,'/SinglePhoton/Run2015D-16Dec2015-v1/MINIAOD',json,rerecoparams,firstrun+'-'+maxrun))
-    tasks.append(('MET-2016B-PromptReco-v1'       ,'/MET/Run2016B-PromptReco-v1/MINIAOD'       ,json,rerecoparams,                   ))
-    tasks.append(('MET-2016B-PromptReco-v2'       ,'/MET/Run2016B-PromptReco-v2/MINIAOD'       ,json,rerecoparams,                   ))
-    tasks.append(('MET-2016C-PromptReco-v2'       ,'/MET/Run2016C-PromptReco-v2/MINIAOD'       ,json,rerecoparams,                   ))
-    tasks.append(('MET-2016D-PromptReco-v2'       ,'/MET/Run2016D-PromptReco-v2/MINIAOD'       ,json,rerecoparams,                   ))
-    #tasks.append(('MET-2016E-PromptReco-v2'       ,'/MET/Run2016E-PromptReco-v2/MINIAOD'       ,json,rerecoparams,                   ))
-    tasks.append(('HTMHT-2016B-PromptReco-v1'     ,'/HTMHT/Run2016B-PromptReco-v1/MINIAOD'     ,json,rerecoparams,                   ))
-    tasks.append(('HTMHT-2016B-PromptReco-v2'     ,'/HTMHT/Run2016B-PromptReco-v2/MINIAOD'     ,json,rerecoparams,                   ))
-    tasks.append(('HTMHT-2016C-PromptReco-v2'     ,'/HTMHT/Run2016C-PromptReco-v2/MINIAOD'     ,json,rerecoparams,                   ))
-    tasks.append(('HTMHT-2016D-PromptReco-v2'     ,'/HTMHT/Run2016D-PromptReco-v2/MINIAOD'     ,json,rerecoparams,                   ))  
-    #tasks.append(('HTMHT-2016E-PromptReco-v2'     ,'/HTMHT/Run2016E-PromptReco-v2/MINIAOD'     ,json,rerecoparams,                   ))
-    tasks.append(('SingleMuon-2016B-PromptReco-v1','/SingleMuon/Run2016B-PromptReco-v1/MINIAOD',json,rerecoparams,                   ))
-    tasks.append(('SingleMuon-2016B-PromptReco-v2','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD',json,rerecoparams,                   ))
-    tasks.append(('SingleMuon-2016C-PromptReco-v2','/SingleMuon/Run2016C-PromptReco-v2/MINIAOD',json,rerecoparams,                   ))
-    tasks.append(('SingleMuon-2016D-PromptReco-v2','/SingleMuon/Run2016D-PromptReco-v2/MINIAOD',json,rerecoparams,                   ))
-    #tasks.append(('SingleMuon-2016E-PromptReco-v2','/SingleMuon/Run2016E-PromptReco-v2/MINIAOD',json,rerecoparams,                   ))
+    #tasks.append(('MET-2016B-PromptReco-v1'       ,'/MET/Run2016B-PromptReco-v1/MINIAOD'            ,rerecoparams,                   ))
+    #tasks.append(('MET-2016B-PromptReco-v2'       ,'/MET/Run2016B-PromptReco-v2/MINIAOD'            ,rerecoparams,                   ))
+    #tasks.append(('MET-2016C-PromptReco-v2'       ,'/MET/Run2016C-PromptReco-v2/MINIAOD'            ,rerecoparams,                   ))
+    #tasks.append(('MET-2016D-PromptReco-v2'       ,'/MET/Run2016D-PromptReco-v2/MINIAOD'            ,rerecoparams,                   ))
+    #tasks.append(('MET-2016E-PromptReco-v2'       ,'/MET/Run2016E-PromptReco-v2/MINIAOD'            ,rerecoparams,                   ))
+    tasks.append(('MET-2016F-PromptReco-v2'       ,'/MET/Run2016F-PromptReco-v2/MINIAOD'            ,rerecoparams,                   ))
+    #tasks.append(('HTMHT-2016B-PromptReco-v1'     ,'/HTMHT/Run2016B-PromptReco-v1/MINIAOD'          ,rerecoparams,                   ))
+    #tasks.append(('HTMHT-2016B-PromptReco-v2'     ,'/HTMHT/Run2016B-PromptReco-v2/MINIAOD'          ,rerecoparams,                   ))
+    #tasks.append(('HTMHT-2016C-PromptReco-v2'     ,'/HTMHT/Run2016C-PromptReco-v2/MINIAOD'          ,rerecoparams,                   ))
+    #tasks.append(('HTMHT-2016D-PromptReco-v2'     ,'/HTMHT/Run2016D-PromptReco-v2/MINIAOD'          ,rerecoparams,                   ))
+    #tasks.append(('HTMHT-2016E-PromptReco-v2'     ,'/HTMHT/Run2016E-PromptReco-v2/MINIAOD'          ,rerecoparams,                   ))
+    tasks.append(('HTMHT-2016F-PromptReco-v2'     ,'/HTMHT/Run2016F-PromptReco-v2/MINIAOD'          ,rerecoparams,                   ))
+    #tasks.append(('SingleMuon-2016B-PromptReco-v1','/SingleMuon/Run2016B-PromptReco-v1/MINIAOD'     ,rerecoparams,                   ))
+    #tasks.append(('SingleMuon-2016B-PromptReco-v2','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
+    #tasks.append(('SingleMuon-2016C-PromptReco-v2','/SingleMuon/Run2016C-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
+    #tasks.append(('SingleMuon-2016D-PromptReco-v2','/SingleMuon/Run2016D-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
+    #tasks.append(('SingleMuon-2016E-PromptReco-v2','/SingleMuon/Run2016E-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
+    tasks.append(('SingleMuon-2016F-PromptReco-v2','/SingleMuon/Run2016F-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
 
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
-        config.Data.lumiMask = task[2]
-        config.JobType.pyCfgParams = task[3] ##changed from 3 to 2 since commented config.Data.lumiMask
+        #config.Data.lumiMask = task[2]
+        config.JobType.pyCfgParams = task[2] ##changed from 3 to 2 since commented config.Data.lumiMask
 
         #config.Data.runRange= task[4]       ##commented to run on the whole dataset
         submit(config)

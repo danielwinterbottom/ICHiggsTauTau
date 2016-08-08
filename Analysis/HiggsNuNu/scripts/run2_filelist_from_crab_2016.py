@@ -17,7 +17,9 @@ print "   Getting output list for task"
 #run command and get output split into lines
 p=subprocess.Popen(getoutputcommand,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)
 out,err = p.communicate()
+print " --- The out is: "+out
 lines=out.splitlines()
+print lines
 
 #open filelist with name of crabtask
 print "DEBUG: "+lines[0]

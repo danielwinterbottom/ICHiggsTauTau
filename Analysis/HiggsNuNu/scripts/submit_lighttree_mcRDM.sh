@@ -8,7 +8,7 @@ JETTYPE="pfJetsPFlow"
 ### Executable -- RDM stays for mine
 MYEXEC=LightTreeMakerFromMiniAODRDM
 ### Insert the date or leave  the same for test
-PRODUCTION=160709
+PRODUCTION=160801
 PRODUSER=rdimaria
 #PRODUSER=amagnan
 JPTCUTVAL=40

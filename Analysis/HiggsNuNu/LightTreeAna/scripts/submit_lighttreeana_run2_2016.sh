@@ -72,7 +72,7 @@ for syst in "" #PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOW
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in qcd #enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     #executable expect strings separated by "!"
@@ -86,6 +86,8 @@ do
     ## To test for one hist
     #HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events"
     #SHAPESTRING="metnomuons(25,200.,600.)"
+    #HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events!;Forward tag jet #eta;Events"
+    #SHAPESTRING="metnomuons(25,200.,600.)!forward_tag_eta(25,-5.,5.)"
     #HISTSTRING=";#Delta#phi(E_{T,no-#mu}^{miss},j);Events"
     #SHAPESTRING="alljetsmetnomu_mindphi(14,2.3,3.1416)"
     echo "Making histograms: " $SHAPESTRING

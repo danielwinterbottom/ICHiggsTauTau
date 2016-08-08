@@ -66,7 +66,7 @@ namespace ic{
   }
 
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
-    do_debug_=false;
+    do_debug_=true;
     do_norm_=false;
     do_ratio_=false;
     do_ratio_line_=false;
@@ -485,7 +485,10 @@ namespace ic{
 	}
       }
       if ( g != 0 ){g->Draw("sameP");}
-      else{std::cout<<" -- g not defined! -- ISSUE "<<std::endl;}
+      else {
+        std::cout<<" -- g not defined! -- ISSUE "<<std::endl;
+        std::cout<<" -- The element size is: " << elements_.size() <<std::endl;
+      }
       if(do_debug_)std::cout<<"  Drawing legend"<<std::endl;
 
       //SETUP AND DRAW THE LEGEND
@@ -714,7 +717,7 @@ namespace ic{
 	    upperLine->Draw();
 	  }
 	}
-	}
+      }
       //save as PDF
       //c1->Update();
       std::ostringstream lsave;
@@ -727,15 +730,17 @@ namespace ic{
       lsave << ".pdf" ;
       if (iShape==0) {
       	lsave << "[";
-      	c1->Print(lsave.str().c_str());//open the file
+      	c1->Print( lsave.str().c_str() );//open the file
       	lsave.str("");//reset for adding the first plot
       	lsave << tmpstr ;
 	if (shapes_[iShape].dology()) lsave << "_logy";
       	lsave << ".pdf" ;
       }
+
+      std::cout << " -- iShape " << iShape << std::endl;
       std::cout << " -- Address of c1 "<< &c1 << std::endl;
       std::cout << " -- Address of lsave "<< lsave.str() << std::endl;
-      c1->Print(lsave.str().c_str());
+      c1->SaveAs( lsave.str().c_str() );
       if (iShape==shapes_.size()-1) {
       	lsave << "]";
       	c1->Print(lsave.str().c_str());//close the file
