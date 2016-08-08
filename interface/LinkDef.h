@@ -83,5 +83,4 @@
 #pragma link C++ class ic::EventInfo+;
 
 #pragma link C++ class mithep::TH2DAsymErr+;
-
 #endif
