@@ -2,7 +2,7 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='July03_MC_80X'
+config.General.workArea='Aug08_MC_80X'
 #config.General.requestName = 'May13_MC'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_80X_Jul16.py'
@@ -18,7 +18,7 @@ config.Data.unitsPerJob = 30000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality=True
-config.Data.outLFNDirBase='/store/user/dwinterb/July03_MC_80X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/Aug08_MC_80X/'
 config.section_('User')
 config.section_('Site')
 #config.Site.whitelist = ['T1_RU_JINR_Disk', 'T1_US_FNAL_MSS', 'T1_US_FNAL_Buffer']
@@ -47,10 +47,10 @@ if __name__ == '__main__':
 
     tasks.append(('GluGluHToTauTau','/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
     tasks.append(('VBFHToTauTau','/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
-    tasks.append(('QCD_Pt-15to20_MuEnrichedPt5','/QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
-    tasks.append(('QCD_Pt-20to30_MuEnrichedPt5','/QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
-    tasks.append(('QCD_Pt-30to50_MuEnrichedPt5','/QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
-    tasks.append(('QCD_Pt-50to80_MuEnrichedPt5','/QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('QCD_Pt-15to20_MuEnrichedPt5','/QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('QCD_Pt-20to30_MuEnrichedPt5','/QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('QCD_Pt-30to50_MuEnrichedPt5','/QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('QCD_Pt-50to80_MuEnrichedPt5','/QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
 
     for task in tasks:
         print task[0]
