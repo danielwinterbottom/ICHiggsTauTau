@@ -1,39 +1,121 @@
-# import os
-# import json
-# import stat
-# import copy
-# import glob
-# from math import ceil
-# from functools import partial
-# from multiprocessing import Pool
-from collections import defaultdict
+
+from UserCode.ICHiggsTauTau.uncertainties import ufloat
+from collections import defaultdict, OrderedDict
 import ROOT
 import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
 
-"""
-BasicSelection: just a string
-NamedSelections: dict which we take the AND of
-
-The list of nodes should probably be a function so that
-modules can generate it dynamically if needed
-"""
+ROOT.TH1.AddDirectory(0)
 
 
-def LumiScale(info, data, sample):
-    if 'events' not in info[sample] or 'xs' not in info[sample]:
-        return 1.0
-    return info[data]['lumi'] / (info[sample]['events'] / info[sample]['xs'])
+def WriteToTFile(obj, file, path):
+    file.cd()
+    as_vec = path.split('/')
+    if len(as_vec) >= 1:
+        for i in xrange(0, len(as_vec)-1):
+            if not ROOT.gDirectory.GetDirectory(as_vec[i]):
+                ROOT.gDirectory.mkdir(as_vec[i])
+            ROOT.gDirectory.cd(as_vec[i])
+    if not ROOT.gDirectory.FindKey(as_vec[-1]):
+        obj.SetName(as_vec[-1])
+        ROOT.gDirectory.WriteTObject(obj, as_vec[-1])
+    ROOT.gDirectory.cd('/')
 
 
-def GetTreeLists(node, result=None):
-    if result is None:
-        result = defaultdict(list)
-    if node.__class__.from_external_tree:
-        result[node.sample].append((node.variable, node.selection, node))
-    else:
-        for subnode in node.subnodes:
-            GetTreeLists(subnode, result)
-    return result
+class Shape(object):
+    def __init__(self, hist, rate=None):
+        self.hist = hist  # will also set the rate to the integral of the hist
+        if rate is not None:
+            self.rate = rate
+
+    def _Int(self):
+        return self._hist.Integral(0, self._hist.GetNbinsX() + 1)
+
+    def _IntErr(self):
+            err = ROOT.Double()
+            val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, err)
+            return ufloat(val, err)
+
+    @property
+    def hist(self):
+        # print 'Getting hist for %s' % self.__repr__()
+        return self._hist
+
+    @hist.setter
+    def hist(self, hist):
+        # print 'Setting hist for %s ' % self.__repr__()
+        self._hist = hist.Clone()
+        self._rate = self._IntErr()
+
+    @property
+    def rate(self):
+        # print 'Getting rate for %s ' % self.__repr__()
+        return self._rate
+
+    @rate.setter
+    def rate(self, rate):
+        # print 'Setting rate to {:.3f}'.format(rate)
+        self._rate = rate
+        integral = self._Int()
+        if integral == 0.:
+            print 'Error, histogram integral is zero'
+            return
+        self._hist.Scale(rate.n / integral)
+
+    def copy(self):
+        return Shape(self.hist.Clone(), self.rate)
+
+    def __iadd__(self, other):
+        if isinstance(other, Shape):
+            self.hist.Add(other.hist)
+            self.rate += other.rate
+        else:
+            self.rate += other
+        return self
+
+    def __isub__(self, other):
+        if isinstance(other, Shape):
+            self.hist.Add(other.hist, -1)
+            self.rate -= other.rate
+        else:
+            self.rate -= other
+        return self
+
+    def __imul__(self, other):
+        self.rate *= other
+        return self
+
+    def __add__(self, other):
+        cpy = self.copy()
+        return cpy.__iadd__(other)
+
+    def __sub__(self, other):
+        cpy = self.copy()
+        return cpy.__isub__(other)
+
+    def __mul__(self, other):
+        cpy = self.copy()
+        return cpy.__imul__(other)
+
+    def Print(self):
+        self.hist.Print()
+        print 'Rate: {:.3f}'.format(self.rate)
+
+
+# def LumiScale(info, data, sample):
+#     if 'events' not in info[sample] or 'xs' not in info[sample]:
+#         return 1.0
+#     return info[data]['lumi'] / (info[sample]['events'] / info[sample]['xs'])
+
+
+# def GetTreeLists(node, result=None):
+#     if result is None:
+#         result = defaultdict(list)
+#     if node.__class__.from_external_tree:
+#         result[node.sample].append((node.variable, node.selection, node))
+#     else:
+#         for subnode in node.subnodes:
+#             GetTreeLists(subnode, result)
+#     return result
 
 
 class TTreeEvaluator:
@@ -67,12 +149,8 @@ class TChainEvaluator(TTreeEvaluator):
 
 
 class BaseNode:
-    from_external_tree = False
-
     def __init__(self, name):
         self.name = name
-        self.subnodes = []
-        self.objects = {}
 
     def GetNameStr(self):
         return '%s::%s' % (self.__class__.__name__, self.name)
@@ -80,92 +158,91 @@ class BaseNode:
     def GetInfoStr(self):
         return ''
 
-    def PrintTree(self, indent=0):
-        print '%s%s%s' % (' '*indent, self.GetNameStr(), self.GetInfoStr())
-        for node in self.subnodes:
-            node.PrintTree(indent=(indent+2))
+    def SubNodes(self):
+        return []
 
-    def GetObjects(self):
-        for node in self.subnodes:
-            self.objects.update(node.GetObjects())
-        return self.objects
+    def PrintTree(self, indent=0):
+        print '%s%s%s' % (' ' * indent, self.GetNameStr(), self.GetInfoStr())
+        for node in self.SubNodes():
+            node.PrintTree(indent=(indent + 2))
+
+    def AddRequests(self, manifest):
+        pass
+
+    def Objects(self):
+        return dict()
+
+    def Output(self, file, prefix=''):
+        objects = self.Objects()
+        for key, val in objects.iteritems():
+            WriteToTFile(val, file, '%s/%s' % (prefix, key))
+        for node in self.SubNodes():
+            node.Output(file, '%s/%s' % (prefix, self.name))
 
 
 class BasicNode(BaseNode):
-    from_external_tree = True
-
     def __init__(self, name, sample, variable, selection):
         BaseNode.__init__(self, name)
         self.sample = sample
         self.variable = variable
         self.selection = selection
+        self.factors = []
         self.shape = None
-        self.rate = None
 
     def GetInfoStr(self):
+        if self.shape is not None:
+            self.shape.Print()
         return '[%s, variable=%s, selection=%s]' % (self.sample, self.variable, self.selection)
 
-    def GetObjects(self):
-        self.shape.SetName(self.name)
-        self.objects[self.name] = self.shape
-        return self.objects
+    # This means processing to the point where we can hand our shape over
+    def Run(self):
+        for factor in self.factors:
+            self.shape *= factor
 
+    def AddRequests(self, manifest):
+        manifest.append((self.sample, self.variable, self.selection, self, 'shape'))
 
-class ScaledNode(BaseNode):
-    def __init__(self, name, **kwargs):
-        BaseNode.__init__(self, name)
-        self.scales = list(kwargs.values())
+    def Objects(self):
+        return {self.name: self.shape.hist}
 
-    def GetObjects(self):
-        self.shape = self.subnodes[0].shape.Clone()
-        self.shape.SetName(self.name)
-        sf = 1.0
-        for x in self.scales:
-            sf *= x
-        self.shape.Scale(sf)
-        self.objects[self.name] = self.shape
-        return self.objects
-
-    def GetInfoStr(self):
-        return '[%s]' % ','.join([str(x) for x in self.scales])
-
-
-
-class RootNode(BaseNode):
+class ListNode(BaseNode):
     def __init__(self, name):
         BaseNode.__init__(self, name)
-    #     self.objects = {}
+        self.nodes = OrderedDict()
 
-    # def GetObjects(self):
-    #     for node in self.subnodes:
-    #         self.objects.extend(node.GetObjects())
+    def __getitem__(self, key):
+        return self.nodes[key]
 
+    def AddNode(self, node):
+        self.nodes[node.name] = node
 
-"""
+    def SubNodes(self):
+        return self.nodes.values()
 
-ana.insertNode('ZTT', ScaledNode(LumiScaler(ana['ZTT'].sample))
-ana.addNode('VV', SummedNode(ana.selectByAttribute('diboson')))
-ana.cloneNode('VV', 'VVJ', AppendToSelection('gen_match_2 == 4'))
-
-
-ana.AddChainedNodes(name='ZTT', BasicNode(sample='DYJetsToLL'), ScaledNode(LumiScalar('DYJetsToLL')))
-
-
-Modify(ana, 'variable', 'pt_1(100,0,100)') --> is callable? no -> asign
-
-Modify(ana['VVJ'], 'selection', AddSelection('gen_match_2==4')) --> is callable, call on the attribute
+    def AddRequests(self, manifest):
+        for node in self.SubNodes():
+            node.AddRequests(manifest)
 
 
+class Analysis(object):
+    def __init__(self):
+        self.trees = {}
+        self.nodes = ListNode('analysis')
+        self.info = {}
 
-
-Step 1) Walk the entire tree starting from the root node
-Step 2) at each node, ask the node if it needs to get histograms from the evaluators
-Step 3) Node should give us the requests, we should keep track of what to return to each node
-Step 4) Then need to effectively walk the tree backwards, propagating the info from node to node until the root (collection) node is good
-
-Node negociation
-
-parent -> child: GetObject(): can you give me your object?
-child -> parent: No, return None
-
-"""
+    def Run(self):
+        manifest = []
+        self.nodes.AddRequests(manifest)
+        print manifest
+        drawdict = defaultdict(list)
+        outdict = defaultdict(list)
+        for entry in manifest:
+            drawdict[entry[0]].append(entry[1:3])
+            outdict[entry[0]].append(entry[3:5])
+        print drawdict
+        print outdict
+        for sample in drawdict:
+            print sample
+            res = self.trees[sample].Draw(drawdict[sample])
+            for i, hist in enumerate(res):
+                setattr(outdict[sample][i][0], outdict[sample][i][1], Shape(hist))
