@@ -45,37 +45,18 @@
 ICL1ObjectProducer::ICL1ObjectProducer(const edm::ParameterSet& pset)
  {
 
-  m_L1TEra = pset.getUntrackedParameter<std::string>("input_L1TEra",string("stage2"));
-  if(m_L1TEra == "stage1"){
-    
-    edm::InputTag inputTag_EGamma = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TEGamma",edm::InputTag("simCaloStage1FinalDigis"));
-    edm::InputTag inputTag_Muon   = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TMuon",  edm::InputTag("None"));
-    edm::InputTag inputTag_Tau    = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TTau",   edm::InputTag("simCaloStage1FinalDigis:rlxTaus"));
-    edm::InputTag inputTag_TauIso = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TTauIso",edm::InputTag("simCaloStage1FinalDigis:isoTaus"));
-    edm::InputTag inputTag_Jet    = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TJet",   edm::InputTag("simCaloStage1FinalDigis"));
-    edm::InputTag inputTag_Sum    = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TSum",   edm::InputTag("simCaloStage1FinalDigis"));
-    
-    m_EDToken_L1TEGamma = consumes<l1t::EGammaBxCollection>(inputTag_EGamma);
-    m_EDToken_L1TMuon   = consumes<l1t::MuonBxCollection>  (inputTag_Muon);
-    m_EDToken_L1TTau    = consumes<l1t::TauBxCollection>   (inputTag_Tau);
-    m_EDToken_L1TTauIso = consumes<l1t::TauBxCollection>   (inputTag_TauIso);
-    m_EDToken_L1TJet    = consumes<l1t::JetBxCollection>   (inputTag_Jet);
-    m_EDToken_L1TSum    = consumes<l1t::EtSumBxCollection> (inputTag_Sum);
-  }
-  else if(m_L1TEra == "stage2"){
-
-    edm::InputTag inputTag_EG   = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TEGamma",edm::InputTag("simCaloStage2Digis"));
-    edm::InputTag inputTag_Muon = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TMuon",  edm::InputTag("simGmtStage2Digis"));
-    edm::InputTag inputTag_Tau  = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TTau",   edm::InputTag("simCaloStage2Digis"));
-    edm::InputTag inputTag_Jet  = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TJet",   edm::InputTag("simCaloStage2Digis"));
-    edm::InputTag inputTag_Sum  = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TSum",   edm::InputTag("simCaloStage2Digis"));
-    
-    m_EDToken_L1TEGamma = consumes<l1t::EGammaBxCollection>(inputTag_EG);
-    m_EDToken_L1TMuon   = consumes<l1t::MuonBxCollection>  (inputTag_Muon);
-    m_EDToken_L1TTau    = consumes<l1t::TauBxCollection>   (inputTag_Tau);
-    m_EDToken_L1TJet    = consumes<l1t::JetBxCollection>   (inputTag_Jet);
-    m_EDToken_L1TSum    = consumes<l1t::EtSumBxCollection> (inputTag_Sum);
-  }
+  edm::InputTag inputTag_EG   = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TEGamma");
+  edm::InputTag inputTag_Muon = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TMuon");
+  //input_(config.getParameter<edm::InputTag>("input"))
+  edm::InputTag inputTag_Tau  = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TTau");
+  edm::InputTag inputTag_Jet  = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TJet");
+  edm::InputTag inputTag_Sum  = pset.getUntrackedParameter<edm::InputTag>("inputTag_L1TSum");
+  
+  m_EDToken_L1TEGamma = consumes<l1t::EGammaBxCollection>(inputTag_EG);
+  m_EDToken_L1TMuon   = consumes<l1t::MuonBxCollection>  (inputTag_Muon);
+  m_EDToken_L1TTau    = consumes<l1t::TauBxCollection>   (inputTag_Tau);
+  m_EDToken_L1TJet    = consumes<l1t::JetBxCollection>   (inputTag_Jet);
+  m_EDToken_L1TSum    = consumes<l1t::EtSumBxCollection> (inputTag_Sum);
 
   L1Muons_ = new std::vector<ic::L1TMuon>();
   L1EGammas_ = new std::vector<ic::L1TEGamma>();
