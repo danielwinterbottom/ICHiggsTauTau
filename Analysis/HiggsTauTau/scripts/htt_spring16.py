@@ -114,7 +114,7 @@ FLATJSONPATCHOTH = ''.join(flatjsonlist)
 FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 
 
-CONFIG='scripts/config2016.json'
+CONFIG='scripts/configsm2016.json'
 
 FILELIST='filelists/July08_MC_80X'
 
