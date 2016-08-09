@@ -29,6 +29,8 @@ int main(int argc, char* argv[]){
 	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
 	string sm_masses_str;													
 	string mssm_masses_str;												
+	string bbh_masses_str;												
+	string ggh_masses_str;												
 	string Hhh_masses_str;												
 	string syst_tau_scale;
     string tau_es_scales_str;
@@ -97,6 +99,8 @@ int main(int argc, char* argv[]){
 	  ("set_alias",               po::value<vector<string>>(&set_alias)->composing())
 	  ("sm_masses",               po::value<string>(&sm_masses_str)->default_value(""))
 	  ("mssm_masses",             po::value<string>(&mssm_masses_str)->default_value(""))
+	  ("ggh_masses",             po::value<string>(&ggh_masses_str)->default_value(""))
+	  ("bbh_masses",             po::value<string>(&bbh_masses_str)->default_value(""))
 	  ("Hhh_masses",              po::value<string>(&Hhh_masses_str)->default_value(""))
 	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
 	  ("tau_es_scales",          po::value<string>(&tau_es_scales_str)->default_value(""))
@@ -167,6 +171,8 @@ int main(int argc, char* argv[]){
 	std::cout << boost::format(param_fmt()) % "datacard"    % datacard;
 	std::cout << boost::format(param_fmt()) % "sm_masses" 	% sm_masses_str;
 	std::cout << boost::format(param_fmt()) % "mssm_masses" % mssm_masses_str;
+	std::cout << boost::format(param_fmt()) % "bbh_masses" % bbh_masses_str;
+	std::cout << boost::format(param_fmt()) % "ggh_masses" % ggh_masses_str;
 	std::cout << boost::format(param_fmt()) % "Hhh_masses" % Hhh_masses_str;
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
@@ -201,6 +207,10 @@ int main(int argc, char* argv[]){
 	if (sm_masses_str != "") boost::split(sm_masses, sm_masses_str, boost::is_any_of(","));
 	std::vector<std::string> mssm_masses;
 	if (mssm_masses_str != "") boost::split(mssm_masses, mssm_masses_str, boost::is_any_of(","));
+	std::vector<std::string> ggh_masses;
+	if (ggh_masses_str != "") boost::split(ggh_masses, ggh_masses_str, boost::is_any_of(","));
+	std::vector<std::string> bbh_masses;
+	if (bbh_masses_str != "") boost::split(bbh_masses, bbh_masses_str, boost::is_any_of(","));
 	std::vector<std::string> Hhh_masses;
 	if (Hhh_masses_str != "") boost::split(Hhh_masses, Hhh_masses_str, boost::is_any_of(","));
 	std::vector<std::string> tau_es_scales;
@@ -221,6 +231,8 @@ int main(int argc, char* argv[]){
 		ana.AddSMSignalSamples({add_sm_background});
 	}
 	ana.AddMSSMSignalSamples(mssm_masses);
+	ana.AddMSSMSignalSamplesGGH(ggh_masses);
+	ana.AddMSSMSignalSamplesBBH(bbh_masses);
   ana.AddHhhSignalSamples(Hhh_masses);
     //if (is_2012 && (check_ztt_top_frac || sub_ztt_top_shape)) ana.AddSample("Embedded-TTJets_FullLeptMGDecays");
 	ana.ReadTrees(folder);
@@ -253,6 +265,8 @@ int main(int argc, char* argv[]){
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "",1.0);
 	}
 	if(!no_central) ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
+	if(!no_central) ana.FillMSSMSignalGGH(hmap, ggh_masses, var, sel, cat, "wt", "", "", 1.0);
+	if(!no_central) ana.FillMSSMSignalBBH(hmap, bbh_masses, var, sel, cat, "wt", "", "", 1.0);
 	ana.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "", 1.0);
 
 
@@ -294,6 +308,8 @@ int main(int argc, char* argv[]){
 			ana.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", extra_binning[1]);
 			ana.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 			ana.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
+			ana.FillMSSMSignalBBH(hmap, bbh_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
+			ana.FillMSSMSignalGGH(hmap, ggh_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 			ana.FillHhhSignal(hmap, Hhh_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 		}
 	}
@@ -322,11 +338,15 @@ int main(int argc, char* argv[]){
      std::cout << "[HiggsTauTauPlot5] Adding tau trigger systematic......" <<std::endl;
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2", "", "_"+syst_tautrig+"Up", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2", "", "_"+syst_tautrig+"Up", 1.0);
+    ana.FillMSSMSignalGGH(hmap, ggh_masses, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2", "", "_"+syst_tautrig+"Up", 1.0);
+    ana.FillMSSMSignalBBH(hmap, bbh_masses, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2", "", "_"+syst_tautrig+"Up", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_trig_up_1*wt_trig_up_2", "_SM", "_"+syst_tautrig+"Up",1.0);
     }
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2", "", "_"+syst_tautrig+"Down", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2", "", "_"+syst_tautrig+"Down", 1.0);
+    ana.FillMSSMSignalGGH(hmap, ggh_masses, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2", "", "_"+syst_tautrig+"Down", 1.0);
+    ana.FillMSSMSignalBBH(hmap, bbh_masses, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2", "", "_"+syst_tautrig+"Down", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_trig_down_1*wt_trig_down_2", "_SM", "_"+syst_tautrig+"Down",1.0);
     }
@@ -368,11 +388,15 @@ int main(int argc, char* argv[]){
 		std::cout << "[HiggsTauTauPlot5] Adding high tau pT ID systematic..." << std::endl;
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
+    ana.FillMSSMSignalGGH(hmap, ggh_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
+    ana.FillMSSMSignalBBH(hmap, bbh_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up",1.0);
     }
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
+    ana.FillMSSMSignalBBH(hmap, bbh_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
+    ana.FillMSSMSignalGGH(hmap, ggh_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down",1.0);
     }
@@ -481,6 +505,8 @@ int main(int argc, char* argv[]){
 			ana_syst.AddSMSignalSamples({add_sm_background});
 		}
 		ana_syst.AddMSSMSignalSamples(mssm_masses);
+		ana_syst.AddMSSMSignalSamplesBBH(bbh_masses);
+		ana_syst.AddMSSMSignalSamplesGGH(ggh_masses);
 		ana_syst.AddHhhSignalSamples(Hhh_masses);
 		ana_syst.ReadTrees(folder+syst.first, folder);
 		ana_syst.ParseParamFile(paramfile);
@@ -490,11 +516,15 @@ int main(int argc, char* argv[]){
 			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second,1.0);
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		ana_syst.FillMSSMSignalBBH(hmap, bbh_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		ana_syst.FillMSSMSignalGGH(hmap, ggh_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		ana_syst.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		if (extra_binning.size() == 2) {
 			ana_syst.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", "_"+syst.second+extra_binning[1]);
 			ana_syst.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 			ana_syst.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
+			ana_syst.FillMSSMSignalGGH(hmap, ggh_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
+			ana_syst.FillMSSMSignalBBH(hmap, bbh_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 			ana_syst.FillHhhSignal(hmap, Hhh_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 		}
   }
@@ -779,6 +809,8 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "");
+	ana.FillMSSMSignalGGH(hmap, ggh_masses, var, sel, cat, "wt", "", "");
+	ana.FillMSSMSignalBBH(hmap, bbh_masses, var, sel, cat, "wt", "", "");
 	ana.FillHhhSignal(hmap, Hhh_masses, var, sel, cat, "wt", "", "");
 		for (auto m : sm_masses) {
      HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
@@ -789,6 +821,13 @@ int main(int argc, char* argv[]){
      HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
      HTTAnalysis::PrintValue("bbH"+m, hmap["bbH"+m].second);
     }
+    for (auto m : bbh_masses) {
+     HTTAnalysis::PrintValue("bbH"+m, hmap["bbH"+m].second);
+    }
+    for (auto m : ggh_masses) {
+     HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
+    }
+
     for (auto m : Hhh_masses) {
      HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
     }

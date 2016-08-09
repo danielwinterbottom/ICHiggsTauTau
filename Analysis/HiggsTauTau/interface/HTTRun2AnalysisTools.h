@@ -58,6 +58,8 @@ namespace ic {
       /*! \sa AddSMSignalSamples
       */
       void AddMSSMSignalSamples(std::vector<std::string> masses);
+      void AddMSSMSignalSamplesBBH(std::vector<std::string> masses);
+      void AddMSSMSignalSamplesGGH(std::vector<std::string> masses);
 
       void AddHhhSignalSamples(std::vector<std::string> masses);
 
@@ -104,6 +106,26 @@ namespace ic {
                         std::string const& infix,
                         std::string const& postfix,
                         double fixed_xs = -1.0);
+      void FillMSSMSignalGGH(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+
+      void FillMSSMSignalBBH(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+
       void FillHhhSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,

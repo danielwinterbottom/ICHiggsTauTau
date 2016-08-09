@@ -108,12 +108,12 @@ namespace ic {
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoET) ;
         }
         if(channel_ ==  channel::mt) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoMT) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoMT) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoEM) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoEM) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::tt) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoTT) ;
@@ -121,9 +121,37 @@ namespace ic {
         }
       }
       if (os_dilepton.size() > 0) { // Take OS in preference to SS
-        result.push_back(os_dilepton[0]);
+        if(!(channel_ ==  channel::tt)) { 
+            result.push_back(os_dilepton[0]);
+        } else{
+            CompositeCandidate *pt_sorted_pair = new CompositeCandidate();
+            Candidate * lep1 = os_dilepton[0]->GetCandidate("lepton1"); 
+            Candidate * lep2 = os_dilepton[0]->GetCandidate("lepton2");
+            if(lep2->pt()>=lep1->pt()) {
+                pt_sorted_pair->AddCandidate("lepton1",lep2); 
+                pt_sorted_pair->AddCandidate("lepton2",lep1); 
+            } else {
+                pt_sorted_pair->AddCandidate("lepton1",lep1); 
+                pt_sorted_pair->AddCandidate("lepton2",lep2); 
+            }
+            result.push_back(pt_sorted_pair);
+        }
       } else if (ss_dilepton.size() > 0) {
-        result.push_back(ss_dilepton[0]);
+        if(!(channel_ ==  channel::tt)) { 
+            result.push_back(ss_dilepton[0]);
+        } else {
+            CompositeCandidate *pt_sorted_pair = new CompositeCandidate();
+            Candidate * lep1 = os_dilepton[0]->GetCandidate("lepton1"); 
+            Candidate * lep2 = os_dilepton[0]->GetCandidate("lepton2");
+            if(lep2->pt()>=lep1->pt()) {
+                pt_sorted_pair->AddCandidate("lepton1",lep2); 
+                pt_sorted_pair->AddCandidate("lepton2",lep1); 
+            } else {
+                pt_sorted_pair->AddCandidate("lepton1",lep1); 
+                pt_sorted_pair->AddCandidate("lepton2",lep2); 
+            }
+            result.push_back(pt_sorted_pair);
+        }
       }
     } else {
       // The first pair should have the highest "scalar sum pt" 
@@ -135,17 +163,31 @@ namespace ic {
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoET) ;
         }
         if(channel_ ==  channel::mt) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoMT) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::em) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoEM) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
         }
         if(channel_ ==  channel::tt) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoTT) ;
         }
       }
       if (nosign_dilepton.size() > 0) { // No preference for OS over SS
-        result.push_back(nosign_dilepton[0]);
+        if(!(channel_ ==  channel::tt)) { 
+            result.push_back(nosign_dilepton[0]);
+        } else {
+            CompositeCandidate *pt_sorted_pair = new CompositeCandidate();
+            Candidate * lep1 = nosign_dilepton[0]->GetCandidate("lepton1"); 
+            Candidate * lep2 = nosign_dilepton[0]->GetCandidate("lepton2");
+            if(lep2->pt()>=lep1->pt()) {
+                pt_sorted_pair->AddCandidate("lepton1",lep2); 
+                pt_sorted_pair->AddCandidate("lepton2",lep1); 
+            } else {
+                pt_sorted_pair->AddCandidate("lepton1",lep1); 
+                pt_sorted_pair->AddCandidate("lepton2",lep2); 
+            }
+            result.push_back(pt_sorted_pair);
+        }
       }
     }
     if (result.size() == 0) return 1;  //Require at least one dilepton
@@ -176,15 +218,8 @@ namespace ic {
         Met * mva_met = it_inv->second;
         event->Add("pfMVAMet", mva_met);
       } else {
-        //Temporary hack for 2016 data/MC, missing mva met for some pairs
-        if(strategy_ !=strategy::spring16){
-          std::cerr << "Could not find Met in collection for ID: " << id << " or " << id_inv <<std::endl;
-          exit(0);
-       } else {
-        std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
-        Met * pfmet = pfMet_vec.at(0);  
-        event->Add("pfMVAMet", pfmet);
-       }
+        std::cerr << "Could not find Met in collection for ID: " << id << " or " << id_inv <<std::endl;
+        exit(0);
       }
     }
     
@@ -291,7 +326,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::spring16) {
+    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16) {
       if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
         std::vector<GenParticle *> sel_particles;
@@ -390,12 +425,14 @@ namespace ic {
     return (t1->pt() > t2->pt());
   }
 
-  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
     // First we sort the electrons
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));
     Muon const* m2 = static_cast<Muon const*>(c2->At(0));
-    double m_iso1 = PF03IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF03IsolationVal(m2, 0.5, 0);
+    double m_iso1;
+    m_iso1 = (strategy == strategy::fall15) ? PF03IsolationVal(m1, 0.5, 0) : PF04IsolationVal(m1, 0.5, 0);
+    double m_iso2; 
+    m_iso2 = (strategy == strategy::fall15) ? PF03IsolationVal(m1, 0.5, 0) : PF04IsolationVal(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT
@@ -412,12 +449,14 @@ namespace ic {
     return (t1->pt() > t2->pt());
   }
 
-  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
     // First we sort the muons
     Muon const* m1 = static_cast<Muon const*>(c1->At(1));
     Muon const* m2 = static_cast<Muon const*>(c2->At(1));
-    double m_iso1 = PF03IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF03IsolationVal(m2, 0.5, 0);
+    double m_iso1; 
+    m_iso1 = PF03IsolationVal(m1, 0.5, 0) ? (strategy == strategy::fall15) : PF04IsolationVal(m1, 0.5, 0);
+    double m_iso2;
+    m_iso2 = PF03IsolationVal(m2, 0.5, 0) ? (strategy == strategy::fall15) : PF04IsolationVal(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT

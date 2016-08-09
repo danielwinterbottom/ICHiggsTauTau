@@ -32,6 +32,7 @@ namespace ic {
       optimisation_study_=false;
       tau_id_study_=false;
       is_embedded_=false;
+      add_nlo_weights_=false;
       is_data_=false;
       qcd_study_=false;
       jetfake_study_=false;
@@ -268,6 +269,10 @@ namespace ic {
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
+      if(add_nlo_weights_) {
+        outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
+        outtree_->Branch("nlo_pt",            &nlo_pt_);
+      }
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",             &mt_sv_.var_double);
@@ -632,6 +637,10 @@ namespace ic {
       synctree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       // Total ID weight for lepton 2
       synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
+      // Tracking efficiency weightfor lepton 1
+      synctree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
+      // Tracking efficiency weight for lepton 2
+      synctree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_2/F");
       // Total iso weight for lepton 1
 //      synctree_->Branch("isoweight_1", &isoweight_1_, "isoweight_1/F");
       // Total iso weight for lepton 2
@@ -801,7 +810,7 @@ namespace ic {
           synctree_->Branch("decayModeFindingOldDMs_2",&ldecayModeFindingOldDMs_2,"decayModeFindingOldDMs_2/O");
 
       }
-      if(strategy_ == strategy::fall15||strategy_ == strategy::spring16) {
+      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16) {
           synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_1", &l3Hits_1,
                          "byCombinedIsolationDeltaBetaCorrRaw3Hits_1/F");
           synctree_->Branch("byIsolationMVA3newDMwoLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
@@ -1199,7 +1208,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::spring16) && !is_data_) ) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16) && !is_data_) ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -1228,6 +1237,8 @@ namespace ic {
     wt_em_qcd_ = 1.0;
     wt_em_qcd_down_ = 1.0;
     wt_em_qcd_up_ = 1.0;
+    wt_nlo_pt_ = 1.0;
+    nlo_pt_ = 9999.;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
     if (event->Exists("wt_tau_fake_up"))    wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");
@@ -1241,6 +1252,9 @@ namespace ic {
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
     if (event->Exists("wt_em_qcd_up"))      wt_em_qcd_up_ = event->Get<double>("wt_em_qcd_up");
     if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
+    if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
+    if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
+
   
   mc_weight_ = 0.0;
   if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
@@ -1252,6 +1266,8 @@ namespace ic {
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
   if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
+  if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 0.0;
+  if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
 //  if (event->Exists("isoweight_1")) isoweight_1_ = event->Get<double>("isoweight_1"); else isoweight_1_ = 0.0;
 //  if (event->Exists("isoweight_2")) isoweight_2_ = event->Get<double>("isoweight_2"); else isoweight_2_ = 0.0;
   if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
@@ -1279,12 +1295,6 @@ namespace ic {
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
-    if(channel_ == channel::tt){//Now order the taus by pT
-      if(lep1->pt() < lep2->pt()){
-        lep1 = ditau->GetCandidate("lepton2");  
-        lep2 = ditau->GetCandidate("lepton1");  
-      }
-    }
     Met const* mets = NULL;
     mets = event->GetPtr<Met>(met_label_);
 
@@ -1307,9 +1317,9 @@ namespace ic {
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::spring15) btag_wp = 0.89 ;
-    if(strategy_ == strategy::fall15 || strategy_ == strategy::spring16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    if(strategy_ == strategy::fall15 || strategy_ == strategy::spring16) btag_wp = 0.8;
-    if(strategy_ == strategy::fall15 || strategy_ == strategy::spring16) loose_btag_wp = 0.46;
+    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16) btag_wp = 0.8;
+    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16) loose_btag_wp = 0.46;
 
    //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -1688,7 +1698,7 @@ namespace ic {
         antiele_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonLoose3_2;
       }
-      if(strategy_ == strategy::spring16) {
+      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         lPhotonPtSum_1 = 0.;
@@ -1883,8 +1893,26 @@ namespace ic {
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
        } 
-       if (strategy_ == strategy::spring16){
+       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16){
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
+        if(iso_study_){
+          iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
+          iso_1_ea03_ = PF03EAIsolationVal(muon, eventInfo);
+          iso_1_db03allch_ = PF03IsolationVal(muon, 0.5, 1);
+          iso_1_db04allch_ = PF04IsolationVal(muon, 0.5, 1);
+          iso_1_db04_ = PF04IsolationVal(muon, 0.5, 0);
+          iso_1_trk03_ = MuonTkIsoVal(muon);
+          iso_1_puw03_ = PUW03IsolationVal(muon);
+          iso_1_puw04_ = PUW04IsolationVal(muon);
+          iso_2_puw03_ = 0;
+          iso_2_puw04_ = 0;
+          iso_2_db03_ = 0;
+          iso_2_ea03_ = 0;
+          iso_2_trk03_ = 0;
+          iso_2_db04_ = 0;
+          iso_2_db03allch_ = 0;
+          iso_2_db04allch_ = 0;
+        }
         mva_1_ = 0.0;
         lPhotonPtSum_1 = 0.;
         iso_2_ = tau->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
@@ -1975,7 +2003,7 @@ namespace ic {
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
-      if(strategy_ == strategy::spring16){
+      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16){
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
@@ -2168,7 +2196,7 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
 
       }
-      if(strategy_ == strategy::spring16) {
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16) {
         iso_1_ = tau1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         iso_2_ = tau2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         l3Hits_1 = tau1->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
@@ -2284,7 +2312,7 @@ namespace ic {
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::spring16) {
+      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
         mva_1_ = ElectronHTTIdSpring15(elec1, false);
@@ -2304,7 +2332,7 @@ namespace ic {
         mva_1_ = MuonMedium(muon1);
         mva_2_ = MuonMedium(muon2);
       }
-      if(strategy_ == strategy::spring16){
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16){
         iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
         mva_1_ = MuonMediumHIPsafe(muon1);
@@ -2470,37 +2498,7 @@ namespace ic {
       n_jetsingap_lowpt_ = 9999;
     }
 
-    if (channel_ != channel::tt){
-      if (n_bjets_ >= 1) {
-        bpt_1_ = bjets[0]->pt();
-        brawf_1_ = bjets[0]->uncorrected_energy()/bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
-        beta_1_ = bjets[0]->eta();
-        bphi_1_ = bjets[0]->phi();
-        bmva_1_ = bjets[0]->pu_id_mva_value();
-      
-      } else {
-        bpt_1_ = -9999;
-        brawf_1_ = -9999;
-        beta_1_ = -9999;
-        bphi_1_ = -9999;
-        bmva_1_ = -9999;
-      }
-
-      if (n_bjets_ >= 2) {
-        bpt_2_ = bjets[1]->pt();
-        brawf_2_ = bjets[1]->uncorrected_energy()/bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
-        beta_2_ = bjets[1]->eta();
-        bphi_2_ = bjets[1]->phi();
-        bmva_2_ = bjets[1]->pu_id_mva_value();
-      
-      } else {
-        bpt_2_ = -9999;
-        brawf_2_ = -9999;
-        beta_2_ = -9999;
-        bphi_2_ = -9999;
-        bmva_2_ = -9999;
-      }
-    } else {//We use the loose CSV wp for fully hadronic, so adjust definitions accordingly
+    if (channel_ == channel::tt && strategy_ == strategy::fall15){
       if (n_loose_bjets_ >= 1) {
         bpt_1_ = loose_bjets[0]->pt();
         brawf_1_ = loose_bjets[0]->uncorrected_energy()/loose_bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
@@ -2531,7 +2529,37 @@ namespace ic {
         bmva_2_ = -9999;
       }
 
-    }
+    } else {
+      if (n_bjets_ >= 1) {
+        bpt_1_ = bjets[0]->pt();
+        brawf_1_ = bjets[0]->uncorrected_energy()/bjets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_1_ = bjets[0]->eta();
+        bphi_1_ = bjets[0]->phi();
+        bmva_1_ = bjets[0]->pu_id_mva_value();
+      
+      } else {
+        bpt_1_ = -9999;
+        brawf_1_ = -9999;
+        beta_1_ = -9999;
+        bphi_1_ = -9999;
+        bmva_1_ = -9999;
+      }
+
+      if (n_bjets_ >= 2) {
+        bpt_2_ = bjets[1]->pt();
+        brawf_2_ = bjets[1]->uncorrected_energy()/bjets[1]->energy();//* (jets[0]->pt() / jets[0]->energy());
+        beta_2_ = bjets[1]->eta();
+        bphi_2_ = bjets[1]->phi();
+        bmva_2_ = bjets[1]->pu_id_mva_value();
+      
+      } else {
+        bpt_2_ = -9999;
+        brawf_2_ = -9999;
+        beta_2_ = -9999;
+        bphi_2_ = -9999;
+        bmva_2_ = -9999;
+      }
+    } 
 
 
 

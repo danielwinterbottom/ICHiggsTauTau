@@ -338,8 +338,8 @@ namespace ic {
       alias_map_["inclusive"]         = "1";
      // alias_map_["baseline"]          = "1";
 
-      alias_map_["baseline"]          = "mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
@@ -552,9 +552,9 @@ namespace ic {
 
     if(year_.find("6")!=year_.npos){
       samples_alias_map_["vv_samples"] = {
-       "T-tW", "Tbar-tW","Tbar-t",
+       "T-tW", "Tbar-tW","Tbar-t","T-t",
        "WWTo1L1Nu2Q",
-       "VVTo2L2Nu","ZZTo2L2Q",
+       "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
        "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q"
       };
     } else if(!is_fall15_){
@@ -594,9 +594,14 @@ namespace ic {
     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
     /"DYJetsToLL_M-150-LO"*/,"DYJetsToLL_M-10-ext"
    };
+/*   if(year_.find("6")!=year_.npos){
+   samples_alias_map_["ztt_shape_samples"]={
+      "DYJetsToLL_M-LO"
+     };*/
    if(year_.find("6")!=year_.npos){
    samples_alias_map_["ztt_shape_samples"]={
-      "DYJetsToLL_M-50-LO"
+      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
   }else if(!is_fall15_){
      if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
@@ -685,9 +690,14 @@ namespace ic {
      "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
      "DYJetsToLL_M-150-LO"*/,"DYJetsToLL_M-10-ext"
    };
-   if(year_.find("6")!=year_.npos){
+ /*  if(year_.find("6")!=year_.npos){
      samples_alias_map_["ztt_samples"]={
        "DYJetsToLL-LO"
+     };*/
+   if(year_.find("6")!=year_.npos){
+   samples_alias_map_["ztt_samples"]={
+      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
    } else if(!is_fall15_){
      if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
@@ -722,14 +732,26 @@ namespace ic {
    "W3JetsToLNu-LO","W4JetsToLNu-LO"
    };
 
-  if(year_.find("6")!=year_.npos){
+  /*if(year_.find("6")!=year_.npos){
      samples_alias_map_["qcd_sub_samples"] = {
         "DYJetsToLL-LO",
+        "T-tW","T-t", "Tbar-tW","Tbar-t",
+        "WWTo1L1Nu2Q","VVTo2L2Nu",
+        "ZZTo2L2Q","ZZTo4L",
+        "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+        "TT","WJetsToLNu-LO",
+        };*/
+  if(year_.find("6")!=year_.npos){
+     samples_alias_map_["qcd_sub_samples"] = {
+      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
         "T-tW", "Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
         "ZZTo2L2Q",
         "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
-        "TT","WJetsToLNu-LO",
+        "TT",
+        "WJetsToLNu-LO","W1JetsToLNu-LO","W2JetsToLNu-LO",
+        "W3JetsToLNu-LO","W4JetsToLNu-LO"
         };
   }else if(!is_fall15_){
     if(ch_==channel::zee || ch_==channel::zmm) {
@@ -818,9 +840,19 @@ namespace ic {
    "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext"
    };
-   if(year_.find("6")!=year_.npos){
+   /*if(year_.find("6")!=year_.npos){
     samples_alias_map_["w_sub_samples"] = {
      "DYJetsToLL-LO",
+     "T-tW", "Tbar-tW","T-t", "Tbar-t",
+     "WWTo1L1Nu2Q","VVTo2L2Nu",
+     "ZZTo2L2Q","ZZTo4L",
+     "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+     "TT"
+     };*/
+   if(year_.find("6")!=year_.npos){
+    samples_alias_map_["w_sub_samples"] = {
+      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
      "T-tW", "Tbar-tW", "Tbar-t",
      "WWTo1L1Nu2Q","VVTo2L2Nu",
      "ZZTo2L2Q",
@@ -868,9 +900,14 @@ if(ch_==channel::em) {
       "W3JetsToLNu-LO","W4JetsToLNu-LO"
      };
 }
-if(year_.find("6")!=year_.npos){
+/*if(year_.find("6")!=year_.npos){
   samples_alias_map_["wjets_samples"] = {
     "WJetsToLNu-LO"
+  };*/
+if(year_.find("6")!=year_.npos){
+  samples_alias_map_["wjets_samples"] = {
+    "WJetsToLNu-LO","W1JetsToLNu-LO","W2JetsToLNu-LO",
+    "W3JetsToLNu-LO","W4JetsToLNu-LO"
   };
 }else if(!is_fall15_){
 
@@ -943,6 +980,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
     }
   }
+ 
+  void HTTRun2Analysis::AddMSSMSignalSamplesBBH(std::vector<std::string> masses){
+  for (auto m : masses) {
+        sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
+    }
+  }
+
+  void HTTRun2Analysis::AddMSSMSignalSamplesGGH(std::vector<std::string> masses){
+  for (auto m : masses) {
+        sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
+    }
+  }
+
 
   void HTTRun2Analysis::AddHhhSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
@@ -1379,6 +1429,37 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
   }
 
+  void HTTRun2Analysis::FillMSSMSignalBBH(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+        hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+  void HTTRun2Analysis::FillMSSMSignalGGH(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+
+
+
   void HTTRun2Analysis::FillHhhSignal(HistValueMap & hmap, 
                     std::vector<std::string> const& masses,
                     std::string const& var,
@@ -1406,7 +1487,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     PrintValue("data_obs"+postfix, data_pair.second);
     hmap["data_obs"+postfix] = data_pair;
     //Splitting TT into TTT and TTJ - let's disable this for now
-    /*std::string ttt_sel, ttj_sel;
+    std::string ttt_sel, ttj_sel;
     ttt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
     ttj_sel = sel+"&&!"+this->ResolveAlias("ztt_sel");
     auto topt_pair = this->GenerateTOP(method, var, ttt_sel, cat, wt);
@@ -1414,25 +1495,35 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     PrintValue("TTT"+postfix, topt_pair.second);
     PrintValue("TTJ"+postfix, topj_pair.second);
     hmap["TTT"+postfix] = topt_pair;
-    hmap["TTJ"+postfix] = topj_pair;*/
-    auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
+    hmap["TTJ"+postfix] = topj_pair;
+    //auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
     std::string top_map_label = "TT";
-    /*Value tt_norm = ValueAdd(topt_pair.second, topj_pair.second);
+    Value tt_norm = ValueAdd(topt_pair.second, topj_pair.second);
     TH1F tt_hist = topt_pair.first;
     PrintValue(top_map_label+postfix, tt_norm);
-    tt_hist.Add(&topj_pair.first);*/
-    PrintValue(top_map_label+postfix, top_pair.second);
-    total_bkr = ValueAdd(total_bkr, top_pair.second);
-    //total_bkr = ValueAdd(total_bkr, tt_norm);
-    hmap[top_map_label+postfix] = top_pair;
+    tt_hist.Add(&topj_pair.first);
+    /*PrintValue(top_map_label+postfix, top_pair.second);
+    total_bkr = ValueAdd(total_bkr, top_pair.second);*/
+    total_bkr = ValueAdd(total_bkr, tt_norm);
+    hmap[top_map_label+postfix] = std::make_pair(tt_hist,tt_norm);
     TH1F total_hist = hmap[top_map_label+postfix].first; 
     // Diboson
-    auto vv_pair = this->GenerateVV(method, var, sel, cat, wt);
+    auto vvt_pair = this->GenerateVV(method, var, ttt_sel, cat, wt);
+    auto vvj_pair = this->GenerateVV(method, var, ttj_sel, cat, wt);
+    PrintValue("VVT"+postfix, vvt_pair.second);
+    PrintValue("VVJ"+postfix, vvj_pair.second);
+    hmap["VVT"+postfix] = vvt_pair;
+    hmap["VVJ"+postfix] = vvj_pair;
+    //auto vv_pair = this->GenerateVV(method, var, sel, cat, wt);
     std::string vv_map_label =  "VV";
-    //std::string vv_map_label = (ch_ == channel::em) ? "EWK" : "VV";
-    PrintValue(vv_map_label+postfix, vv_pair.second);
-    total_bkr = ValueAdd(total_bkr, vv_pair.second);
-    hmap[vv_map_label+postfix] = vv_pair;
+    Value vv_norm = ValueAdd(vvt_pair.second, vvj_pair.second);
+    TH1F vv_hist = vvt_pair.first;
+    PrintValue(vv_map_label+postfix, vv_norm);
+    vv_hist.Add(&vvj_pair.first);
+    /*PrintValue(vv_map_label+postfix, vv_pair.second);
+    total_bkr = ValueAdd(total_bkr, vv_pair.second);*/
+    total_bkr = ValueAdd(total_bkr, vv_norm);
+    hmap[vv_map_label+postfix] = std::make_pair(vv_hist, vv_norm);
     total_hist.Add(&hmap[vv_map_label+postfix].first,1.0);
     // Z->ll
     if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {

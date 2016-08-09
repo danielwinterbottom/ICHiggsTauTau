@@ -61,6 +61,7 @@
     "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 1,
+    "do_met_filters"  : 0,
     "faked_tau_selector" : 0,
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,

@@ -30,6 +30,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, systematic_shift)
   CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
   CLASS_MEMBER(HTTCategories, bool, do_HLT_Studies)
+  CLASS_MEMBER(HTTCategories, bool, add_nlo_weights)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, bool, iso_study)
   CLASS_MEMBER(HTTCategories, bool, tau_id_study)
@@ -80,6 +81,8 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_;
   double wt_em_qcd_down_;
   double wt_em_qcd_up_;
+  double wt_nlo_pt_;
+  double nlo_pt_;
   float trigweight_1_;
   float trigweight_2_;
   double wt_trig_up_1_;
@@ -88,6 +91,8 @@ class HTTCategories : public ModuleBase {
   double wt_trig_down_2_;
   float idisoweight_1_;
   float idisoweight_2_;
+  float trackingweight_1_;
+  float trackingweight_2_;
   float isoweight_1_;
   float isoweight_2_;
   float effweight_;

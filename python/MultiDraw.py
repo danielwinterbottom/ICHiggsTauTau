@@ -4,8 +4,17 @@ This script injects a MultiDraw method into TTree when it is imported.
 """
 
 import ROOT
+import sys
+import fileinput
+import random
+import string
+import os
 # import re
 ROOT.gSystem.Load('libUserCodeICHiggsTauTau')
+
+
+def randomword(length):
+   return ''.join(random.choice(string.lowercase) for i in range(length))
 
 
 def MakeTObjArray(theList, takeOwnership=True):
@@ -25,7 +34,7 @@ def MakeTObjArray(theList, takeOwnership=True):
     return result
 
 
-def MultiDraw(self, Formulae, CommonWeight="1"):
+def MultiDraw(self, Formulae, CommonWeight="1", Compiled=False):
     """Draws many histograms in one loop over a tree.
 
         Instead of:
@@ -52,9 +61,9 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
         Formulae = (CommonWeight, ) + Formulae
         CommonWeight = "1"
 
-    results, formulae, weights = [], [], []
+    results, formulae, weights, formulaeStr, weightsStr = [], [], [], [], []
 
-    lastFormula, lastWeight = None, None
+    # lastFormula, lastWeight = None, None
 
     # A weight common to everything being drawn
     CommonWeightFormula = ROOT.TTreeFormula("CommonWeight", CommonWeight, self)
@@ -62,8 +71,8 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
     if not CommonWeightFormula.GetTree():
         raise RuntimeError("TTreeFormula didn't compile: " + CommonWeight)
 
-    hists = {}
-    print Formulae
+    # hists = {}
+    # print Formulae
 
     for i, origFormula in enumerate(Formulae):
         print "Have an origFormula", origFormula
@@ -123,7 +132,6 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
         if len(str_binning) == 3:
             binning = [int(str_binning[0]), float(str_binning[1]), float(str_binning[2])]
         formula = origFormula[:pos_open].strip()
-        print binning
         ROOT.TH1.AddDirectory(False)
         hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *binning)
 
@@ -135,25 +143,64 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
         # The previous value is used. This saves the recomputing of identical
         # values
 
-        if formula != lastFormula:
-            f = ROOT.TTreeFormula("formula%i" % i, formula, self)
-            if not f.GetTree():
-                raise RuntimeError("TTreeFormula didn't compile: " + formula)
-            f.SetQuickLoad(True)
-            formulae.append(f)
-        else:
-            formulae.append(ROOT.TObject())
+        # if formula != lastFormula:
+        f = ROOT.TTreeFormula("formula%i" % i, formula, self)
+        if not f.GetTree():
+            raise RuntimeError("TTreeFormula didn't compile: " + formula)
+        f.SetQuickLoad(True)
+        formulae.append(f)
+        formulaeStr.append(formula)
+        # else:
+        #     formulae.append(ROOT.TObject())
 
-        if weight != lastWeight:
-            f = ROOT.TTreeFormula("weight%i" % i, weight, self)
-            if not f.GetTree():
-                raise RuntimeError("TTreeFormula didn't compile: " + formula)
-            f.SetQuickLoad(True)
-            weights.append(f)
-        else:
-            weights.append(ROOT.TObject())
+        # if weight != lastWeight:
+        f = ROOT.TTreeFormula("weight%i" % i, weight, self)
+        if not f.GetTree():
+            raise RuntimeError("TTreeFormula didn't compile: " + formula)
+        f.SetQuickLoad(True)
+        weights.append(f)
+        weightsStr.append(weight)
+        # else:
+        #     weights.append(ROOT.TObject())
 
-        lastFormula, lastWeight = formula, weight
+        # lastFormula, lastWeight = formula, weight
+
+    if Compiled:
+        fname = "%sSelector%s" % (self.GetName(), randomword(7))
+        self.MakeSelector(fname, "=legacy")
+        for line in fileinput.input('%s.h' % fname, inplace=1):
+            print line,
+            if line.startswith('#include <TSelector.h>'):
+                print '#include <TH1F.h>'
+                print '#include <TObjArray.h>'
+            if line.startswith('   virtual void    Terminate();'):
+                print '\n   TObjArray *hists;'
+
+        for line in fileinput.input('%s.C' % fname, inplace=1):
+            if line.startswith('   return kTRUE;'):
+                print '   %s::GetEntry(entry);' % fname
+                print '   double weight_value = 0.;'
+                for i, f in enumerate(formulaeStr):
+                    print '   weight_value = %s;' % (weightsStr[i])
+                    print '   if (weight_value) static_cast<TH1D*>(hists->UncheckedAt(%i))->Fill(%s, weight_value);' % (i, f)
+                    # print '  std::cout << "%i %s:" << %s << "\\n";' % (i, weightsStr[i], weightsStr[i])
+                print '   if (entry % 50000 == 0) {'
+                print '      std::cout << "Done " << (double(entry) / (double(fChain->GetEntries())) * 100.0) << "%    \\r";'
+                print '      std::cout.flush();'
+                print '   }'
+
+            print line,
+            if line.startswith('#include <TStyle.h>'):
+                print '#include<iostream>'
+                print 'using std::abs;'
+        ROOT.gROOT.LoadMacro('%s.C++' % fname)
+        selector = getattr(ROOT, fname)()
+        objarr = MakeTObjArray(results, takeOwnership=False)
+        selector.hists = objarr
+        self.Process(selector)
+        ROOT.gSystem.Unload('%s_C.so' % fname)
+        os.system('rm %s*' % fname)
+        return results
 
 
     from ROOT import MultiDraw as _MultiDraw

@@ -65,6 +65,8 @@ parser.add_option("--no_shape_systs", dest="no_shape_systs", action='store_true'
                   help="Do not add shape systematics")
 parser.add_option("--norm_systs", dest="norm_systs", action='store_true', default=False,
                   help="Add shapes for evaluating normalisation uncerts")
+parser.add_option("--year", dest="year", type='string', default='',
+                  help="Output names are data-taking year dependent. This value is read from the config file if present")
 
 (options, args) = parser.parse_args()
 
@@ -93,7 +95,6 @@ BLIND = options.blind
 BLIND = "false"
 if options.blind: BLIND = "true"
 COM = options.energy
-YEAR = '2015'
 
 #Hacky config file parsing
 with open("%(CFG)s"%vars(),"r") as cfgfile:
@@ -106,6 +107,8 @@ for ind in range(0,len(lines)):
     configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
 if "signal_scheme" in configmap:
   SCHEME= configmap["signal_scheme"].rstrip('\n')
+if "year" in configmap:
+  YEAR=configmap["year"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
 PARAMS=configmap["paramfile"].rstrip('\n')
 
@@ -116,6 +119,8 @@ if not options.folder ==  "":
   FOLDER=options.folder
 if not options.params == "":
   PARAMS=options.params
+if not options.year == "":
+  YEAR=options.year
 
 
 ########## Set up schemes and options
@@ -279,6 +284,43 @@ if SCHEME == 'run2_mssm_nocrs':
   sig_scheme = 'run2_mssm'
   ANA = 'mssm'
 
+if SCHEME == 'run2_mssm_2016_nocrs':
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+#  BINS_FINE_MTSV="[0,9.93847,19.8421,30.1921,39.6147,49.4733,60.2784,69.9045,79.0905,89.4836,101.242,109.027,120.346,129.599,139.564,150.295,161.851,170.045,178.654,187.698,202.13,223.114,252.433,271.843,300.063,323.135,347.981,403.552,503.981,599.075,694.743,786.038,889.33,1110.65,1288.02,1493.7,1689.99,1912.07,2110.56,2272.85,2508.8,2701.7,2909.43,3133.14,3291.76,3458.4,3724.32,3912.87]"
+#  BINS_MTSV="[0,19.8421,39.6147,60.2784,79.0905,101.242,120.346,139.564,161.851,178.654,202.13,252.433,300.063,347.981,403.552,503.981,694.743,889.33,1110.65,1288.02,1493.7,1689.99,1912.07,2110.56,2272.85,2508.8,2701.7,2909.43,3133.14,3291.76,3458.4,3724.32,3912.87]"
+
+  scheme_et = [
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 '),
+  ]
+  scheme_mt = [
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
+  ]
+  scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
+    ("8",   "btag",    "btag",  BINS, ''),
+
+  ]
+  scheme_em = [
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20" '),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default'
+  }
+  sig_scheme = 'run2_mssm'
+  ANA = 'mssm'
+
+
 
 if SCHEME == 'run2_mssm':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
@@ -316,6 +358,12 @@ if SCHEME == 'run2_mssm':
     ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
     ("8",   "btag",    "btag",  BINS, ''),
 
+#    ("8",   "inclusive",    "inclusive_med_med",  BINS_FINE,  '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "nobtag",    "nobtag_med_med",  BINS_FINE, '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "btag",    "btag_med_med",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "inclusive",    "inclusive_tight_med",  BINS_FINE,  '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "nobtag",    "nobtag_tight_med",  BINS_FINE, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "btag",    "btag_tight_med",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"')
   ]
   scheme_em = [
     ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
@@ -330,6 +378,64 @@ if SCHEME == 'run2_mssm':
   }
   sig_scheme = 'run2_mssm'
   ANA = 'mssm'
+
+if SCHEME == 'run2_mssm_2016':
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  if options.const:
+    BINS_FINE="(98,0,3920)"
+    BINS="(98,0,3920)"
+#  BINS_FINE_MTSV="[0,9.93847,19.8421,30.1921,39.6147,49.4733,60.2784,69.9045,79.0905,89.4836,101.242,109.027,120.346,129.599,139.564,150.295,161.851,170.045,178.654,187.698,202.13,223.114,252.433,271.843,300.063,323.135,347.981,403.552,503.981,599.075,694.743,786.038,889.33,1110.65,1288.02,1493.7,1689.99,1912.07,2110.56,2272.85,2508.8,2701.7,2909.43,3133.14,3291.76,3458.4,3724.32,3912.87]"
+#  BINS_MTSV="[0,19.8421,39.6147,60.2784,79.0905,101.242,120.346,139.564,161.851,178.654,202.13,252.433,300.063,347.981,403.552,503.981,694.743,889.33,1110.65,1288.02,1493.7,1689.99,1912.07,2110.56,2272.85,2508.8,2701.7,2909.43,3133.14,3291.76,3458.4,3724.32,3912.87]"
+
+  scheme_et = [
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 '),
+    ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 --do_ss=true '),
+    ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 --do_ss=true '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 '),
+    ("14",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 '),
+    ("14",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 --do_ss=true '),
+    ("14",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 --do_ss=true '),
+  ]
+  scheme_mt = [
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("14",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 --do_ss=true '),
+  ]
+  scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
+    ("8",   "btag",    "btag",  BINS, ''),
+
+#    ("8",   "inclusive",    "inclusive_med_med",  BINS_FINE,  '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "nobtag",    "nobtag_med_med",  BINS_FINE, '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "btag",    "btag_med_med",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "inclusive",    "inclusive_tight_med",  BINS_FINE,  '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "nobtag",    "nobtag_tight_med",  BINS_FINE, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"'),
+#    ("8",   "btag",    "btag_tight_med",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_medium_2>0.5&&mva_olddm_tight_2<0.5&&antiele_1&&antimu_1&&antiele_2&&antimu_2&&!leptonveto"')
+  ]
+  scheme_em = [
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default'
+  }
+  sig_scheme = 'run2_mssm'
+  ANA = 'mssm'
+
 
 if SCHEME == 'run2_mssm_taupt':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"

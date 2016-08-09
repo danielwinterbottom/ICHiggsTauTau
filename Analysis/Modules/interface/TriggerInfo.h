@@ -1,27 +1,19 @@
 #ifndef ICHiggsTauTau_Module_TriggerInfo_h
 #define ICHiggsTauTau_Module_TriggerInfo_h
 
-#include "Core/interface/TreeEvent.h"
-#include "Core/interface/ModuleBase.h"
-#include "Utilities/interface/JsonTools.h"
 #include <string>
+#include "Core/interface/ModuleBase.h"
+#include "Core/interface/TreeEvent.h"
+#include "Utilities/interface/JsonTools.h"
 
 namespace ic {
 
 struct TriggerPathInfo {
   int first_run;
   int last_run;
-  int lowest_prescale;
-  int highest_prescale;
-  std::map <unsigned, unsigned> yield_per_run;
-  std::map <unsigned, bool> unprescaled_per_run;
+  std::map<unsigned, unsigned> yield_per_run;
 
-
-  TriggerPathInfo()
-      : first_run(-1),
-        last_run(-1),
-        lowest_prescale(-1),
-        highest_prescale(-1) {}
+  TriggerPathInfo() : first_run(-1), last_run(-1) {}
 };
 
 /**

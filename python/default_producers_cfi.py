@@ -379,6 +379,7 @@ icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
     #### The srcConfig PSet when the input is a pat::Jet collection
      srcConfig = cms.PSet(
        isSlimmed                 = cms.bool(False),
+       slimmedPileupIDLabel      = cms.string('pileupJetId:fullDiscriminant'),
        includeJetFlavour         = cms.bool(False),
        includeJECs               = cms.bool(False),
        inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAOD"),
