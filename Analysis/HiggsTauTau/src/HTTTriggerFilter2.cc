@@ -490,6 +490,7 @@ namespace ic {
             fil.lep1_pt = 24.;
             fil.lep2_pt = 0.;
             leg_filters.push_back(fil);
+            //hltEGL1SingleEG40ORSingleIsoEG22erOrSingleIsoEG24erORSingleIsoEG24OrSingleIsoEG26Filter
             
             fil.label         = "triggerObjectsEle24er";
             fil.path          = "HLT_Ele24_eta2p1_WPLoose_Gsf_v";
@@ -1344,11 +1345,22 @@ namespace ic {
               leg1_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).second;
               leg2_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).second;
               bool applyAdditionalTriggerCuts_ = true;
+              if(i == 0) applyAdditionalTriggerCuts_ = true;
               if(applyAdditionalTriggerCuts_){
+                std::string L1filtername = "L1SingleEG40";
+                unsigned leg1_L1match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, L1filtername , 0.5).second;
+                //for(unsigned k=0; k<objs.size(); ++k){
+                //  std::vector<std::string> labels = objs[k]->filters();
+                //  for(unsigned p=0;p<labels.size();p++){
+                //    std::cout << labels[i] << std::endl;    
+                //  }
+                //  std::cout << "\n" << std::endl;;
+                //}
                 if(objs[leg1_match_index]->pt() < leg_filters[i].leg1_extraHLTPt) leg1_match = false;
                 if(objs[leg2_match_index]->pt() < leg_filters[i].leg2_extraHLTPt) leg2_match = false;
-                
+                std::cout << "leg1 L1 object Pt " << objs[leg1_L1match_index]->pt() << std::endl;
                 std::cout << "leg1 HLT object Pt " << objs[leg1_match_index]->pt() << std::endl;
+                std::cout << "leg1 offline Pt " << dileptons[j]->At(0)->vector().Pt() << std::endl;
                 std::cout << "leg2 HLT object Pt " << objs[leg2_match_index]->pt() << std::endl;
               }
             }
