@@ -5,7 +5,7 @@
     "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/dwinterb/July03_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et"],
+    "channels":     ["mt"],
     "sequences": {
       "all":  ["default"]//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
@@ -19,7 +19,7 @@
   "sequence": {
     "mc"            : "summer16_80X",
     "era"           : "data_2016",
-    "strategy"      : "spring16",
+    "strategy"      : "smspring16",
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,

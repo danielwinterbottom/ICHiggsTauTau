@@ -116,7 +116,7 @@ FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 
 CONFIG='scripts/configsm2016.json'
 
-FILELIST='filelists/July21_MC_80X'
+FILELIST='filelists/July08_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
