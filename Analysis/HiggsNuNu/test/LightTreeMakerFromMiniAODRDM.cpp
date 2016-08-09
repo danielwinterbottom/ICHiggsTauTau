@@ -190,7 +190,7 @@ int main(int argc, char* argv[]){
     ("inputparams",           po::value<string>(&inputparams)->default_value("filelists/160801/Params160801.dat"))
     ("jettype",               po::value<string>(&jettype)->default_value("pfJetsPFlow"))
     ("trg_weight_file",       po::value<string>(&trg_weight_file)->default_value("input/scale_factors/TrigEff2016_MET1DFitHFBinned_errors_6fb.root"))
-    ("trg_to_use",            po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"))
+    ("trg_to_use",            po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"))
     ("printEventList",        po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",     po::value<bool>(&printEventContent)->default_value(false))
     ("dosmear",               po::value<bool>(&dosmear)->default_value(false))
@@ -899,7 +899,7 @@ int main(int argc, char* argv[]){
       xsWeights.set_do_w_reweighting(false);
       xsWeights.SetWTargetFractions(9.65141122e-01,2.64511170e-02,7.07395326e-03,9.61876714e-04,2.36978418e-04,1.08184089e-04,2.61364578e-05,6.32466880e-07);
       //EVT_MC_WJetsToLNu-mg-ht600 3722395+7854734+6545524+2507809=20630462
-      xsWeights.SetWInputYields(28210360,27487137,19851624,7432746,3722395,7854734,6545524,2507809);
+      xsWeights.SetWInputYields(28210360,27546978,19851624,7432746,18133257,7854734,7063909,2507809);
     }
   }
   if (output_name.find("JetsToLL-mg-m50") != output_name.npos && 
@@ -929,7 +929,7 @@ int main(int argc, char* argv[]){
       xsWeights.set_do_dy_reweighting(false);
       xsWeights.SetDYTargetFractions(0.750730267, 0.168044214, 0.055234681, 0.016895704, 0.009095134);
       //EVT_MC_DYJetsToLL and 1 2 3 4
-      xsWeights.SetDYInputYields(49847245, 65485168, 19695514, 5753813, 4101383);
+      xsWeights.SetDYInputYields(49877138, 65485168, 19695514, 5753813, 4101383);
     }
   }
 
