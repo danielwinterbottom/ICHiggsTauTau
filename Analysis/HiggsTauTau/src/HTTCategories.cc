@@ -259,6 +259,10 @@ namespace ic {
        outtree_->Branch("iso_mvapw_old_2",&lbyIsolationMVArun2PWoldDMwLTraw_2.var_double);
        outtree_->Branch("olddm_1",&ldecayModeFindingOldDMs_1);
        outtree_->Branch("olddm_2",&ldecayModeFindingOldDMs_2);
+       outtree_->Branch("chargedIsoPtSum_1", &lchargedIsoPtSum_1);
+       outtree_->Branch("neutralIsoPtSum_1", &lneutralIsoPtSum_1);
+       outtree_->Branch("chargedIsoPtSum_2", &lchargedIsoPtSum_2);
+       outtree_->Branch("neutralIsoPtSum_2", &lneutralIsoPtSum_2);
       }
       if(qcd_study_){
         outtree_->Branch("jet_flav_1", &jet_flav_1_);
@@ -495,6 +499,8 @@ namespace ic {
       synctree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_, "tau_decay_mode_2/I");
       synctree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_,"tau_decay_mode_1/I");
 
+      synctree_->Branch("mva_olddm_medium_1",&lbyMediumIsolationMVArun2DBoldDMwLT_1,"mva_olddm_medium_1/O");
+      synctree_->Branch("mva_olddm_medium_2",&lbyMediumIsolationMVArun2DBoldDMwLT_2,"mva_olddm_medium_2/O");
       synctree_->Branch("mva_olddm_tight_1",&lbyTightIsolationMVArun2DBoldDMwLT_1,"mva_olddm_tight_1/O");
       synctree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
       synctree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1,"mva_olddm_tight_1/O");
