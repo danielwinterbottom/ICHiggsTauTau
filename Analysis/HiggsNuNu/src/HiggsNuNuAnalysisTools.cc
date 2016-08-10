@@ -322,6 +322,12 @@ namespace ic{
     return full_variable;
   }
 
+  TH1F GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
+    TH1F temp;
+    GetShape(temp,variable,selection,category,weight,ttree,false);
+    return temp;
+  }
+
   bool GetShape(TH1F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd){
     std::string full_variable= BuildVarString(variable);
     std::string full_selection = BuildCutString(selection, category, weight);
@@ -357,6 +363,13 @@ namespace ic{
 
     //gDirectory->Delete("htemp;*");
     return true;
+  }
+
+  TH2F GetShape2D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
+
+    TH2F temp;
+    GetShape2D(temp,variable,selection,category,weight,ttree,false);
+    return temp;
   }
 
   bool GetShape2D(TH2F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd){

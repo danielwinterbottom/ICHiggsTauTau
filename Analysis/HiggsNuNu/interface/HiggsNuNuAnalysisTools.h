@@ -41,6 +41,8 @@ namespace ic {
   std::string BuildVarString(std::string const& variable);
   bool GetShape(TH1F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd);
   bool GetShape2D(TH2F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd);
+  TH1F GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree);
+  TH2F GetShape2D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree);
   TH3F GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree);
 
 
