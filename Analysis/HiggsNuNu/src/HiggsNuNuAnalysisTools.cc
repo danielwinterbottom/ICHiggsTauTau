@@ -322,46 +322,83 @@ namespace ic{
     return full_variable;
   }
 
-  TH1F GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
+  bool GetShape(TH1F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd){
     std::string full_variable= BuildVarString(variable);
     std::string full_selection = BuildCutString(selection, category, weight);
     TH1::AddDirectory(true);
-    ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
-    TH1::AddDirectory(false);
-    TH1F* htemp = (TH1F*)gDirectory->Get("htemp");
-    if (!htemp) {
-      std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
-      std::cout<<"Returning empty histogram!"<<std::endl;
-      TH1F hshape;
-      hshape.SetName("ERROR");
-      return hshape;
+    int success = ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
+    if (success <0) {
+      std::cout << " -- Problem with TTree->Draw... return code is " << success << std::endl;
+      return false;
     }
-    TH1F hshape= (*htemp);
+    TH1F* myhtemp = (TH1F*)gDirectory->Get("htemp");
+    if (!myhtemp) {
+      std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
+      //std::cout<<"Returning empty histogram!"<<std::endl;
+      //TH1F hshape;
+      //shape.SetName("EMPTY");
+      return false;
+    }
+    //std::cout << variable << " nEvtsPerFile = " << myhtemp->GetEntries() << " " << myhtemp->Integral() << std::endl;
+    if (!toadd) {
+      myhtemp->SetDirectory(0); 
+      //TH1::AddDirectory(false);
+      shape= (*myhtemp);
+      shape.SetName("myshape");
+    }
+    else {
+      if (!shape.Add(myhtemp)) {
+	std::cout << " Failed adding shape." << std::endl;
+	return false;
+      }
+      gDirectory->Delete("htemp;*");
+    }
+    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral() << std::endl;
 
-    std::cout << variable << " nEvts = " << hshape.GetEntries() << " " << hshape.Integral() << std::endl;
-
-    gDirectory->Delete("htemp;*");
-    return hshape;
+    //gDirectory->Delete("htemp;*");
+    return true;
   }
 
-  TH2F GetShape2D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
+  bool GetShape2D(TH2F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd){
     std::string full_variable= BuildVarString(variable);
     std::string full_selection = BuildCutString(selection, category, weight);
     TH1::AddDirectory(true);
-    ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
-    TH1::AddDirectory(false);
-    TH2F* htemp = (TH2F*)gDirectory->Get("htemp");
-    if (!htemp) {
+    bool success = ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
+    if (success <0) {
+      std::cout << " -- Problem with TTree->Draw... return code is " << success << std::endl;
+      return false;
+    }
+    //TH1::AddDirectory(false);
+    TH2F* myhtemp = (TH2F*)gDirectory->Get("htemp");
+    if (!myhtemp) {
       std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
-      std::cout<<"Returning empty histogram!"<<std::endl;
-      TH2F hshape;
-      hshape.SetName("ERROR");
-      return hshape;
+      //std::cout<<"Returning empty histogram!"<<std::endl;
+      //TH2F hshape;
+      //hshape.SetName("EMPTY");
+      return false;
     }
-    TH2F hshape= (*htemp);
-    gDirectory->Delete("htemp;*");
-    return hshape;
+
+
+    std::cout << variable << " nEvtsPerFile = " << myhtemp->GetEntries() << " " << myhtemp->Integral() << std::endl;
+
+    if (!toadd) {
+      myhtemp->SetDirectory(0);
+      //TH1::AddDirectory(false);
+      shape = (*myhtemp);
+      shape.SetName("myshape");
     }
+    else {
+      if (!shape.Add(myhtemp)) {
+	std::cout << " Failed adding shape." << std::endl;
+        return false;
+      }
+      gDirectory->Delete("htemp;*");
+    }
+    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral() << std::endl;
+    
+    //gDirectory->Delete("myhtemp;*");
+    return true;
+  }
 
   TH3F GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
     std::string full_variable= BuildVarString(variable);
@@ -369,16 +406,16 @@ namespace ic{
     TH3::AddDirectory(true);
     ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
     TH3::AddDirectory(false);
-    TH3F* htemp = (TH3F*)gDirectory->Get("htemp");
-    if (!htemp) {
+    TH3F* myhtemp = (TH3F*)gDirectory->Get("htemp");
+    if (!myhtemp) {
       std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
       std::cout<<"Returning empty histogram!"<<std::endl;
       TH3F hshape;
-      hshape.SetName("ERROR");
+      hshape.SetName("EMPTY");
       return hshape;
     }
-    TH3F hshape= (*htemp);
-    gDirectory->Delete("htemp;*");
+    TH3F hshape= (*myhtemp);
+    gDirectory->Delete("myhtemp;*");
     return hshape;
   }
 

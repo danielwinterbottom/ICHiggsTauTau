@@ -29,13 +29,18 @@ namespace ic{
     std::cout<<"  Extra selection is: "<<cat_<<std::endl;
     std::cout<<"  Data weight is: "<<dataweight_<<std::endl;
     if((shapename_.size()!=shape_.size())&&shapename_.size()!=0){
-      std::cout<<"  WARNING: different numbers of shape names and shapes expect errors!"<<std::endl;
+      std::cout<<"  WARNING: different numbers of shape names " << shapename_.size() << " and shapes" << shape_.size() << "! Exiting..."<<std::endl;
+      return 1;
+    }
+    if (!fs_) {
+      std::cout << " Error in getting pointer to output file in DataShape, exiting! " << std::endl;
+      return 1;
     }
     return 0;
   };
 
   int DataShape::Run(LTFiles* filemanager){
-    std::cout<<module_name_<<":"<<std::endl;
+    std::cout<<"DataShape " << module_name_<<":"<<std::endl;
 
     TFile *file=fs_;
     TDirectory* dir;
