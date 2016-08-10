@@ -116,7 +116,7 @@ FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 
 CONFIG='scripts/configsm2016.json'
 
-FILELIST='filelists/Aug06_MC_80X'
+FILELIST='filelists/July21_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -128,16 +128,16 @@ if os.path.isfile("./jobs/files_per_sample.txt"):
 file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
-  masses = ['125']
+  masses = ['120','125','130']
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'GluGluHToTauTau_M-'+mass,
+      'GluGluToHToTauTau_M-'+mass, 
       'VBFHToTauTau_M-'+mass,
       'ZHToTauTau_M-'+mass,
-      'WplusHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass,
-      'TTHToTauTau_M-'+mass
+      'WplusHToTautau_M-'+mass,
+      'WminusHToTautau_M-'+mass,
+      'TTH_M-'+mass
     ]
 if options.proc_mssm or options.proc_all:
   gghmasses = ['90','100','120','130','160','180','350','450','500','700','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
@@ -204,7 +204,6 @@ if options.proc_data or options.proc_all or options.calc_lumi:
     channels=cfg["job"]["channels"]
   else:
     channels=['mt','et','tt','em']
-  
 
   data_samples = []
   data_eras = ['B','C','D']
