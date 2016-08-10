@@ -1698,4 +1698,17 @@ namespace ic {
     return sigPtoverPt*(sqrt(pow(fData,2)+pow(jerUnc,2)))*pT;
   }
   */
+  
+   std::set<int16_t> GetTriggerTypes(TriggerObject* obj){
+    
+     std::set<int16_t> types;
+     ui64 packed_type;
+     packed_type.one = obj->id();
+     
+     for(unsigned i=0; i<4; ++i){
+       int16_t type = packed_type.four[i];
+       if(type!=0) types.insert(type);
+     }
+     return types;
+  }
 } //namespace

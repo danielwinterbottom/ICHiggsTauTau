@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <cmath>
+#include <set>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include "boost/range/algorithm_ext/erase.hpp"
@@ -679,5 +680,13 @@ namespace ic {
   double ScaleReso(double pT, double eta, double jerUnc);
 
 */
+  
+  union ui64 {
+    uint64_t one;
+    int16_t four[4];
+  };
+  
+  std::set<int16_t> GetTriggerTypes(TriggerObject* obj);
+  
 } // namepsace
 #endif
