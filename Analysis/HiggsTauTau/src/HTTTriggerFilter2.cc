@@ -26,6 +26,7 @@ struct filters {
   double leg2_extraHLTPt;
   double leg1_extraL1Pt;
   double leg2_extraL1Pt;
+  std::string L1filtername;
 }; 
 
 
@@ -631,6 +632,38 @@ namespace ic {
             fil.lep1_pt = 33.;
             fil.lep2_pt = 20.;
             leg_filters.push_back(fil);
+            
+            fil.label         = "triggerObjectsEle24LooseTau20";
+            fil.path          = "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v";
+            fil.leg1_filter   = "hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter";
+            fil.leg2_filter   = "hltPFTau20TrackLooseIso";
+            fil.leg2_extra    = "hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20";
+            fil.singleLepton_ = false;
+            fil.lep1_pt = 25.;
+            fil.lep2_pt = 20.;
+            fil.leg1_extraHLTPt = 0;
+            fil.leg2_extraHLTPt = 30;
+            fil.leg1_extraL1Pt = 0.;
+            fil.leg2_extraL1Pt = 26.;
+            fil.L1filtername = "hltL1sIsoEG22erTau20erdEtaMin0p2";
+            leg_filters.push_back(fil);
+        
+            
+            fil.label         = "triggerObjectsEle32WPTight";
+            fil.path          = "HLT_Ele32_eta2p1_WPTight_Gsf_v_1pt45e34";
+            fil.leg1_filter   = "hltEle32WPTightGsfTrackIsoFilter";
+            fil.leg2_filter   = "";
+            fil.leg2_extra    = "";
+            fil.singleLepton_ = true;
+            fil.lep1_pt = 33.;
+            fil.lep2_pt = 0.;
+            fil.leg1_extraHLTPt = 0.;
+            fil.leg2_extraHLTPt = 0.;
+            fil.leg1_extraL1Pt = 30.;
+            fil.leg2_extraL1Pt = 0.;
+            fil.L1filtername = "hltL1sSingleEG40IorSingleIsoEG22erIorSingleIsoEG24er";
+            leg_filters.push_back(fil);
+            
       }
 
       } else if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
@@ -836,16 +869,50 @@ namespace ic {
           fil.lep2_pt = 20.;
           leg_filters.push_back(fil);
           
-          fil.label         = "triggerObjectsIsoMu21erLooseIsoTau20_SingleL1";
-          fil.path          = "HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v_1p45e34";
-          fil.leg1_filter   = "hltL3crIsoL1sSingleMu20erIorSingleMu22erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
-          fil.leg2_filter   = "hltPFTau20TrackLooseIsoAgainstMuon";
-          fil.leg2_extra    = "hltOverlapFilterSingleIsoMu21LooseIsoPFTau20";
-          fil.singleLepton_ = false;
-          fil.lep1_pt = 22.;
-          fil.lep2_pt = 20.;
-          fil.L1filtername = "hltL1sSingleMu20erIorSingleMu22er";
-          leg_filters.push_back(fil);
+          //fil.label         = "triggerObjectsIsoMu21erLooseIsoTau20_SingleL1";
+          //fil.path          = "HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_1p45e34";
+          //fil.leg1_filter   = "hltL3crIsoL1sSingleMu20erIorSingleMu22erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+          //fil.leg2_filter   = "hltPFTau20TrackLooseIsoAgainstMuon";
+          //fil.leg2_extra    = "hltOverlapFilterSingleIsoMu21LooseIsoPFTau20";
+          //fil.singleLepton_ = false;
+          //fil.lep1_pt = 22.;
+          //fil.lep2_pt = 20.;
+          //fil.leg1_extraHLTPt = 0;
+          //fil.leg2_extraHLTPt = 0;
+          //leg1_extraL1Pt = 20.;
+          //leg2_extraL1Pt = 0.;
+          //fil.L1filtername = "hltL1sSingleMu20erIorSingleMu22er";
+          //leg_filters.push_back(fil);
+          
+          //fil.label         = "triggerObjectsIsoMu22er";
+          //fil.path          = "HLT_IsoMu22_eta2p1_1p45e34";
+          //fil.leg1_filter   = "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+          //fil.leg2_filter   = "";
+          //fil.leg2_extra    = "";
+          //fil.singleLepton_ = true;
+          //fil.lep1_pt = 23.;
+          //fil.lep2_pt = 0.;
+          //fil.leg1_extraHLTPt = 0;
+          //fil.leg2_extraHLTPt = 0;
+          //leg1_extraL1Pt = 20.;
+          //leg2_extraL1Pt = 0.;
+          //fil.L1filtername = "hltL1sSingleMu20er";
+          //leg_filters.push_back(fil);
+          
+          //fil.label         = "triggerObjectsIsoMu27";
+          //fil.path          = "HLT_IsoMu27_1p45e34";
+          //fil.leg1_filter   = "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09";
+          //fil.leg2_filter   = "";
+          //fil.leg2_extra    = "";
+          //fil.singleLepton_ = true;
+          //fil.lep1_pt = 28.;
+          //fil.lep2_pt = 0.;
+          //fil.leg1_extraHLTPt = 0;
+          //fil.leg2_extraHLTPt = 0;
+          //leg1_extraL1Pt = 22.;
+          //leg2_extraL1Pt = 0.;
+          //fil.L1filtername = "hltL1sV0SingleMu22IorSingleMu25";
+          //leg_filters.push_back(fil);
                    
         }
       } else if (channel_ == channel::em) {
@@ -1317,6 +1384,7 @@ namespace ic {
         std::vector<CompositeCandidate *> dileptons_pass_reHLT;
         CompositeCandidate dilepton;
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(leg_filters[i].label);
+        //bool PassTrigger = false;
         for (unsigned j=0; j < dileptons.size(); ++j) {
           bool leg1_match = false;
           bool leg2_match = false;
@@ -1341,6 +1409,27 @@ namespace ic {
               dileptons_pass_reHLT.push_back(dileptons[j]);
               //dileptons_pass.push_back(dileptons[j]);
             }
+            
+            leg1_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).second;
+              leg2_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).second;
+              bool applyAdditionalTriggerCuts_ = false;
+              //if(leg_filters[i].path == "HLT_Ele32_eta2p1_WPTight_Gsf_v_1pt45e34") applyAdditionalTriggerCuts_ = true; 
+              if(applyAdditionalTriggerCuts_){
+                unsigned leg1_L1match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].L1filtername , 0.5).second;
+                if(leg_filters[i].leg1_extraHLTPt > 0){
+                  if(objs[leg1_match_index]->pt() < leg_filters[i].leg1_extraHLTPt) leg1_match = false;
+                }
+                if(leg_filters[i].leg1_extraL1Pt > 0){
+                  if(objs[leg1_L1match_index]->pt() < leg_filters[i].leg1_extraL1Pt) leg1_match = false;
+                }
+                bool leg1_L1match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].L1filtername , 0.5).first;
+                if(!leg1_L1match && leg1_match){
+                  std::cout << "leg1 failed L1 but passed HLT leg!" << std::endl;    
+                } else{
+                  std::cout << "blah" << std::endl;  
+                }
+              }
+              
           } else if(!leg_filters[i].singleLepton_){
             bool highpt1_leg = dileptons[j]->At(0)->pt()>leg_filters[i].lep1_pt;
             bool highpt2_leg = dileptons[j]->At(1)->pt()>leg_filters[i].lep2_pt;
@@ -1354,42 +1443,65 @@ namespace ic {
             } else if (channel_ == channel::et){
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
               leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;
-              //leg1_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).second;
-              //leg2_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).second;
-              //bool applyAdditionalTriggerCuts_ = true;
-              //if(i == 0) applyAdditionalTriggerCuts_ = true;
-              //if(applyAdditionalTriggerCuts_){
-                //std::string L1filtername = "L1SingleEG40";
-                //unsigned leg1_L1match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, L1filtername , 0.5).second;
-                //for(unsigned k=0; k<objs.size(); ++k){
-                //  std::vector<std::string> labels = objs[k]->filters();
-                //  for(unsigned p=0;p<labels.size();p++){
-                //    std::cout << labels[i] << std::endl;    
-                //  }
-                //  std::cout << "\n" << std::endl;;
+              
+              leg1_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).second;
+              leg2_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).second;
+              bool applyAdditionalTriggerCuts_ = false;
+              if(leg_filters[i].path == "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v") applyAdditionalTriggerCuts_ = true; 
+              if(applyAdditionalTriggerCuts_){
+                
+                unsigned leg1_L1match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].L1filtername , 0.5).second;
+                unsigned leg2_L1match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].L1filtername , 0.5).second;
+                if(leg_filters[i].leg1_extraHLTPt > 0){
+                  if(objs[leg1_match_index]->pt() < leg_filters[i].leg1_extraHLTPt) leg1_match = false;
+                }
+                if(leg_filters[i].leg2_extraHLTPt > 0){
+                  if(objs[leg2_match_index]->pt() < leg_filters[i].leg2_extraHLTPt) leg2_match = false;
+                }
+                if(leg_filters[i].leg1_extraL1Pt > 0){
+                  if(objs[leg1_L1match_index]->pt() < leg_filters[i].leg1_extraL1Pt) leg1_match = false;
+                }
+                if(leg_filters[i].leg2_extraL1Pt > 0){
+                  if(objs[leg2_L1match_index]->pt() < leg_filters[i].leg2_extraL1Pt) leg2_match = false;
+                }
+                //if(leg_filters[i].path == "HLT_Ele32_eta2p1_WPTight_Gsf_v_1pt45e34"){
+                //  std::vector<Candidate *> match_electrons;
+                //  match_electrons.push_back(dileptons[j]->At(0));
+                //  l1electrons = event->GetPtrVec<L1EGammas>("L1EGammas");
+                //  ic::erase_if(l1electrons, !boost::bind(MinPtMaxEta, _1, 34.0, 999.0));
+                //  bool match_l1_parts = (MatchByDR(match_electrons,l1electrons,0.5,true,true)).size() == 1;
+                //  
+                //  if(match_l1_parts && objs[leg1_match_index]->pt() >= leg_filters[i].leg1_extraHLTPt) PassTrigger = true;
+                //
                 //}
-                //if(objs[leg1_match_index]->pt() < leg_filters[i].leg1_extraHLTPt) leg1_match = false;
-                //if(objs[leg2_match_index]->pt() < leg_filters[i].leg2_extraHLTPt) leg2_match = false;
-                //std::cout << "leg1 L1 object Pt " << objs[leg1_L1match_index]->pt() << std::endl;
-                //std::cout << "leg1 HLT object Pt " << objs[leg1_match_index]->pt() << std::endl;
-                //std::cout << "leg1 offline Pt " << dileptons[j]->At(0)->vector().Pt() << std::endl;
-                //std::cout << "leg2 HLT object Pt " << objs[leg2_match_index]->pt() << std::endl;
-              //}
+                
+                /*if(true){
+                  uint64_t blah = objs[leg1_L1match_index]->id();
+                  std::cout << "union: " <<  blah << std::endl;
+                  
+                  for(unsigned t=0;t<objs.size();++t){
+                      std::cout << objs[t]->id() <<std::endl;
+                  }
+                  std::set<int16_t> lep1triggerTypes = GetTriggerTypes(objs[leg1_L1match_index]);
+                  std::set<int16_t> lep2triggerTypes = GetTriggerTypes(objs[leg2_L1match_index]);
+                  //std::cout << "electron trigger types: " << std::endl;
+                  std::cout << lep1triggerTypes.size() << std::endl;
+                  std::cout << lep2triggerTypes.size() << std::endl;
+                  //for(std::set<short>::iterator it=lep1triggerTypes.begin(); it!=lep1triggerTypes.end(); ++it){
+                  //  std::cout <<  *it << std::endl;   
+                  //}
+                  //std::cout << "tau trigger types: " << std::endl;
+                  //for(std::set<short>::iterator it=lep2triggerTypes.begin(); it!=lep2triggerTypes.end(); ++it){
+                  //  std::cout <<  *it << std::endl;   
+                 //}
+                  std::cout <<"\n";
+                }*/
+                //myset.find(x) != myset.end()
+              }
             }
             else if (channel_ == channel::mt) {
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
               leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;
-              
-              leg1_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).second;
-              leg2_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).second;
-              bool applyAdditionalTriggerCuts_ = true;
-              if(leg_filters[i].path == "HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v") applyAdditionalTriggerCuts_ = true;
-              if(applyAdditionalTriggerCuts_){
-                if(objs[leg1_match_index]->pt() < leg_filters[i].leg1_extraHLTPt) leg1_match = false;
-                if(objs[leg2_match_index]->pt() < leg_filters[i].leg2_extraHLTPt) leg2_match = false;
-
-                unsigned leg1_L1match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].L1filtername , 0.5).second;
-              }
             }
             std::string leg1_match_name = leg_filters[i].path+"_leg1_match";
             std::string leg2_match_name = leg_filters[i].path+"_leg2_match";
@@ -1405,6 +1517,8 @@ namespace ic {
         
         if (dileptons_pass_reHLT.size() >= 1) leg_filters[i].pass = true;
         else                                  leg_filters[i].pass = false;
+        
+        //if(!leg_filters[i].pass && PassTrigger) leg_filters[i].pass = true; //check this bit is doing what you think!
         
       }
         
