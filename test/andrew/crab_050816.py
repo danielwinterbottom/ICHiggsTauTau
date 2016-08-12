@@ -33,7 +33,7 @@ config.User.voGroup = 'dcms'
 
 config.section_('Site')
 config.Site.storageSite = 'T2_DE_DESY'
-#config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC']
+#config.Site.blacklist = [T2_US_Caltech,T2_DE_RWTH,T2_ES_IFCA']
 
 if __name__ == '__main__':
 
