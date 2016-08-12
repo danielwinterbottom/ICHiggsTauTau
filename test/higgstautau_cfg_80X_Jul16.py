@@ -1108,6 +1108,7 @@ if release in ['80XMINIAOD']:
       input                     = cms.InputTag("selectedSlimmedJetsAK4"),
       srcConfig = cms.PSet(
         isSlimmed               = cms.bool(True),
+        slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
         includeJetFlavour       = cms.bool(True),
         includeJECs             = cms.bool(True),
         inputSVInfo             = cms.InputTag(""),
