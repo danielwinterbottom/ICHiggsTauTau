@@ -128,8 +128,8 @@ if os.path.isfile("./jobs/files_per_sample.txt"):
 file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
-  masses = ['120','125','130']
-  if options.short_signal or options.proc_smbkg: masses = ['125']
+  masses = ['125']
+  if options.short_signal or options.proc_smbkg: masses = ['120','125','130']
   for mass in masses :
     signal_mc += [
       'GluGluToHToTauTau_M-'+mass, 
@@ -204,6 +204,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
     channels=cfg["job"]["channels"]
   else:
     channels=['mt','et','tt','em']
+  
 
   data_samples = []
   data_eras = ['B','C','D']

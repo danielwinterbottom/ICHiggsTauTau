@@ -110,7 +110,7 @@ FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 CONFIG='scripts/config2016reHLT.json'
 
 
-FILELIST='filelists/Jul03_MC_80X'
+FILELIST='filelists/Aug08_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -126,8 +126,8 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'GluGluHToTauTau_M-'+mass,
-      'VBFHToTauTau_M-'+mass,
+      'reHLT_GluGluHToTauTau_M-'+mass,
+      #'reHLT_VBFHToTauTau_M-'+mass,
       #'ZHToTauTau_M-'+mass,
       #'WplusHToTauTau_M-'+mass,
       #'WminusHToTauTau_M-'+mass,
