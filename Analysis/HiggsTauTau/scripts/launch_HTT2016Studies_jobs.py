@@ -13,7 +13,7 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
 
 MAX_EVTS = -1
 FILES_PER_JOB = 100
-PROD='July19_'
+PROD='Aug5_'
 
 DATA_SAMPLES = {
   'Tau': [

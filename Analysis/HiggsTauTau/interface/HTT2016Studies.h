@@ -1,17 +1,26 @@
 #ifndef HiggsTauTau_HTT2016Studies_h
 #define HiggsTauTau_HTT2016Studies_h
 #include <string>
+#include <cstdint>
 #include "RooWorkspace.h"
 #include "RooFunctor.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
 #include "Objects/interface/Candidate.hh"
+#include "Objects/interface/TriggerObject.hh"
 
 namespace ic {
 
 bool HLTPathCheck(ic::TreeEvent* event, std::string const& label,
                   std::string const& path);
+
+union ui64 {
+   uint64_t one;
+   int16_t four[4];
+ };
+
+std::set<int16_t> GetTriggerTypes(ic::TriggerObject* obj);
 
 class ZmmTreeProducer : public ModuleBase {
  private:
@@ -23,6 +32,7 @@ class ZmmTreeProducer : public ModuleBase {
 
   float wt;
   float wt_pu;
+  float wt_trk;
   float wt_id;
   float wt_iso;
   float wt_trg;
@@ -68,6 +78,7 @@ class ZeeTreeProducer : public ModuleBase {
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
 
   float wt;
+  float wt_trk;
   float wt_pu;
   float wt_id;
   float wt_iso;
@@ -114,6 +125,7 @@ class ZmmTPTreeProducer : public ModuleBase {
   float wt;
 
   int n_vtx;
+  int run;
 
   float pt_t;
   float eta_t;
@@ -121,6 +133,7 @@ class ZmmTPTreeProducer : public ModuleBase {
   bool id_t;
   float iso_t;
 
+  bool muon_p;
   float pt_p;
   float eta_p;
   float phi_p;
@@ -130,8 +143,12 @@ class ZmmTPTreeProducer : public ModuleBase {
   float m_ll;
 
   bool trg_t_IsoMu22;
+  bool trg_t_IsoMu19Tau; // Did something fire the L1 tau?
   bool trg_p_IsoMu22;
   bool trg_p_IsoTkMu22;
+  bool trg_p_PFTau120;
+  bool trg_p_IsoMu19TauL1;
+  bool trg_p_IsoMu19Tau;
 
  public:
   ZmmTPTreeProducer(std::string const& name);

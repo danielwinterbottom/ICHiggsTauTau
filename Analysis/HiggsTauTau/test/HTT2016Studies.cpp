@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
     .set_input_label("sel_muons").set_min(2)
     .set_predicate([=](ic::Muon const* m) {
       return  m->pt()                 > 10.    &&
-              fabs(m->eta())          < 2.1    &&
+              fabs(m->eta())          < 2.4    &&
               fabs(m->dxy_vertex())   < 0.045  &&
               fabs(m->dz_vertex())    < 0.2    &&
               MuonMediumHIPsafe(m);
@@ -213,8 +213,8 @@ int main(int argc, char* argv[]) {
     seq.BuildModule(ic::SimpleFilter<ic::Electron>("ElectronFilter")
     .set_input_label("sel_elecs").set_min(2)
     .set_predicate([=](ic::Electron const* e) {
-      return  e->pt()                 > 26.    &&
-              fabs(e->eta())          < 2.1    &&
+      return  e->pt()                 > 10.    &&
+              fabs(e->eta())          < 2.5    &&
               fabs(e->dxy_vertex())   < 0.045  &&
               fabs(e->dz_vertex())    < 0.2    &&
               ElectronHTTIdSpring15(e, false);
@@ -272,13 +272,43 @@ int main(int argc, char* argv[]) {
     seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToProbeMuons",
         "muons", "probe_muons"));
 
+    seq.BuildModule(ic::CopyCollection<ic::Track>("CopyToProbeTracks",
+        "tracks", "probe_tracks"));
+
     seq.BuildModule(ic::SimpleFilter<ic::Muon>("ProbeMuonFilter")
-    .set_input_label("probe_muons").set_min(1)
+    .set_input_label("probe_muons")
     .set_predicate([=](ic::Muon const* m) {
       return  m->pt()                 > 10.    &&
               fabs(m->eta())          < 2.4    &&
               m->is_tracker();
     }));
+
+    seq.BuildModule(ic::SimpleFilter<ic::Track>("ProbeTrackFilter")
+    .set_input_label("probe_tracks")
+    .set_predicate([=](ic::Track const* t) {
+      return  t->pt()                 > 10.    &&
+              fabs(t->eta())          < 2.4;
+    }));
+
+    seq.BuildModule(ic::GenericModule("TrackCandConverter").set_function([](ic::TreeEvent *evt) {
+      auto const& trks = evt->GetPtrVec<ic::Track>("probe_tracks");
+      std::vector<ic::Candidate> trk_cands;
+      for (auto trk : trks) {
+        ic::Candidate cand;
+        cand.set_vector(ROOT::Math::PtEtaPhiEVector(trk->vector()));
+        cand.set_charge(trk->charge());
+        trk_cands.push_back(cand);
+      }
+      evt->Add("probe_cands_prod", trk_cands);
+      auto & trk_prods = evt->Get<std::vector<ic::Candidate>>("probe_cands_prod");
+      std::vector<ic::Candidate *> cand_ptrs;
+      for (auto & cand : trk_prods) {
+        cand_ptrs.push_back(&cand);
+      }
+      evt->Add("probe_cands", cand_ptrs);
+      return 0;
+    })
+    );
 
     seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Muon>("ZMMPairProducer")
         .set_input_label_first("tag_muons")
@@ -288,10 +318,25 @@ int main(int argc, char* argv[]) {
         .set_output_label("dimuon")
     );
 
+    seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Candidate>("ZMTrkPairProducer")
+        .set_input_label_first("tag_muons")
+        .set_input_label_second("probe_cands")
+        .set_candidate_name_first("tag")
+        .set_candidate_name_second("probe")
+        .set_output_label("mutrk")
+    );
+
     using ROOT::Math::VectorUtil::DeltaR;
-    seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+    seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("ZMMPairFilter")
         .set_input_label("dimuon")
-        .set_min(1)
+        .set_predicate([=](ic::CompositeCandidate const* c) {
+          return c->charge() == 0 &&
+            DeltaR(c->at(0)->vector(), c->at(1)->vector()) > 0.5;
+        })
+    );
+
+    seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("MuTrkPairFilter")
+        .set_input_label("mutrk")
         .set_predicate([=](ic::CompositeCandidate const* c) {
           return c->charge() == 0 &&
             DeltaR(c->at(0)->vector(), c->at(1)->vector()) > 0.5;
