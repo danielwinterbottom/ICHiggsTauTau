@@ -18,13 +18,14 @@ class BTagCheck : public ModuleBase {
   CLASS_MEMBER(BTagCheck, std::string, jet_label)
   CLASS_MEMBER(BTagCheck, bool, do_legacy)
   CLASS_MEMBER(BTagCheck,ic::channel, channel)
+  CLASS_MEMBER(BTagCheck,ic::era, era)
   CLASS_MEMBER(BTagCheck,std::string, dilepton_label)
   Dynamic2DHistoSet * hists_;
   DynamicHistoSet * hists1d_;
   const BTagCalibration* calib;
   BTagCalibrationReader* reader_incl;
   BTagCalibrationReader* reader_mujets;
-  BTagCalibrationReader* reader_ttbar;
+  BTagCalibrationReader* reader_comb;
 //      BTagCalibration calib("csvv2","UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/btag_sf/CSVv2.csv");
  //   BTagCalibrationReader reader(&calib, BTagEntry::OP_MEDIUM, "comb","central");
 

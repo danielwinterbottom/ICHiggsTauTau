@@ -948,6 +948,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_fs(fs.get())
     .set_channel(channel)
     .set_do_legacy(false)
+    .set_era(era_type)
     .set_jet_label(jets_label));
 }
 
@@ -1100,6 +1101,7 @@ if(strategy_type == strategy::fall15 && !is_data){
  }
 BuildModule(BTagWeightRun2("BTagWeightRun2")
    .set_channel(channel)
+   .set_era(era_type)
    .set_jet_label(jets_label)
    .set_bbtag_eff(new TH2F(bbtag_eff))
    .set_cbtag_eff(new TH2F(cbtag_eff))
