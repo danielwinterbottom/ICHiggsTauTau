@@ -34,7 +34,7 @@ class BTagWeightRun2 : public ModuleBase {
    //15 LFStats2Down 16 LFStats2Up 17 CFErrIDown 18CFErr1Up 19 CFErr2Down 20 CFerr2Up
 
   TRandom3  *rand;
-  BTagCalibration* calib;
+  const BTagCalibration *calib;
   BTagCalibrationReader* reader_incl;
   BTagCalibrationReader* reader_mujets;
   BTagCalibrationReader* reader_iterativefit;

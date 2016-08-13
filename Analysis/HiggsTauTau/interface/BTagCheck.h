@@ -21,7 +21,7 @@ class BTagCheck : public ModuleBase {
   CLASS_MEMBER(BTagCheck,std::string, dilepton_label)
   Dynamic2DHistoSet * hists_;
   DynamicHistoSet * hists1d_;
-  BTagCalibration* calib;
+  const BTagCalibration* calib;
   BTagCalibrationReader* reader_incl;
   BTagCalibrationReader* reader_mujets;
   BTagCalibrationReader* reader_ttbar;

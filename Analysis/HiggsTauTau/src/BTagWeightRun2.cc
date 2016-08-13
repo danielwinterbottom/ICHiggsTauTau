@@ -18,16 +18,16 @@ namespace ic {
   }
 
   int BTagWeightRun2::PreAnalysis() {
-    calib  = new BTagCalibration("csvv2","./input/btag_sf/CSVv2.csv");
+    calib = new const BTagCalibration("csvv2","./input/btag_sf/CSVv2.csv");
     if(channel_ != channel::tt){
-      reader_incl = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","central");
-      reader_mujets = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","central");
+      reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
+      reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
     } else {
-      reader_incl = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "incl","central");
-      reader_mujets = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "mujets","central");
+      reader_incl = new BTagCalibrationReader(BTagEntry::OP_LOOSE, "central",{"up","down"});
+      reader_mujets = new BTagCalibrationReader(BTagEntry::OP_LOOSE, "central",{"up","down"});
     }
-    reader_iterativefit = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","central");
-    if(channel_ != channel::tt){
+    reader_iterativefit = new BTagCalibrationReader(BTagEntry::OP_RESHAPING, "central",{"up_jes","down_jes","up_lf","down_lf","up_hf","down_hf","up_hfstats1","down_hfstats1","up_hfstats2","down_hfstats2","up_lfstats1","down_lfstats1","up_lfstats2","down_lfstats2","up_cferr1","down_cferr1","up_cferr2","down_cferr2"});
+/*    if(channel_ != channel::tt){
       reader_inclup = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","up");
       reader_incldown = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","down");
       reader_mujetsup = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","up");
@@ -37,8 +37,8 @@ namespace ic {
       reader_incldown = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "incl","down");
       reader_mujetsup = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "mujets","up");
       reader_mujetsdown = new BTagCalibrationReader(calib, BTagEntry::OP_LOOSE, "mujets","down");
-    }
-    reader_jesup = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","up_jes");
+    }*/
+/*    reader_jesup = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","up_jes");
     reader_jesdown= new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","down_jes");
     reader_lfup = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","up_lf");
     reader_lfdown= new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","down_lf");
@@ -55,7 +55,19 @@ namespace ic {
     reader_cferr1up = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","up_cferr1");
     reader_cferr1down= new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","down_cferr1");
     reader_cferr2up = new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","up_cferr2");
-    reader_cferr2down= new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","down_cferr2");
+    reader_cferr2down= new BTagCalibrationReader(calib, BTagEntry::OP_RESHAPING, "iterativefit","down_cferr2");*/
+    reader_incl->load(*calib,BTagEntry::FLAV_B,"incl");
+    reader_incl->load(*calib,BTagEntry::FLAV_C,"incl");
+    reader_incl->load(*calib,BTagEntry::FLAV_UDSG,"incl");
+    reader_mujets->load(*calib,BTagEntry::FLAV_B,"mujets");
+    reader_mujets->load(*calib,BTagEntry::FLAV_C,"mujets");
+    reader_mujets->load(*calib,BTagEntry::FLAV_UDSG,"mujets");
+    reader_iterativefit->load(*calib,BTagEntry::FLAV_B,"iterativefit");
+    reader_iterativefit->load(*calib,BTagEntry::FLAV_C,"iterativefit");
+    reader_iterativefit->load(*calib,BTagEntry::FLAV_UDSG,"iterativefit");
+
+
+
 
     rand = new TRandom3(0);
     return 0;
@@ -95,55 +107,55 @@ namespace ic {
       double pt = jets[i]->pt();
       if(jet_flavour == 5){
           if(btag_mode == 4){
-           sf = reader_jesup->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_jes",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if(btag_mode == 3){
-           sf = reader_jesdown->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_jes",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 6){
-           sf = reader_lfup->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_lf",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 5){
-           sf = reader_lfdown->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_lf",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 10){
-           sf = reader_hfstats1up->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_hfstats1",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 9 ){
-           sf = reader_hfstats1down->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_hfstats1",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 12){
-           sf = reader_hfstats2up->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_hfstats2",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else if (btag_mode == 11){
-           sf = reader_hfstats2down->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_hfstats2",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           } else {
-           sf = reader_iterativefit->eval(BTagEntry::FLAV_B, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("central",BTagEntry::FLAV_B, fabs(eta), pt, csv);
           }
         } else if(jet_flavour == 4){
           if(btag_mode == 18){
-           sf = reader_cferr1up->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_cferr1",BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else if(btag_mode == 17){
-           sf = reader_cferr1down->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_cferr1",BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else if (btag_mode == 20){
-           sf = reader_cferr2up->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_cferr2",BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else if (btag_mode == 19){
-           sf = reader_cferr2down->eval(BTagEntry::FLAV_C, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_cferr2",BTagEntry::FLAV_C, fabs(eta), pt, csv);
           } else {
             sf = 1; 
           }
         } else {
           if(btag_mode == 4){
-           sf = reader_jesup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_jes",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 3 ){
-           sf = reader_jesdown->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_jes",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 8){
-           sf = reader_hfup->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_hf",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 7){
-           sf = reader_hfdown->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_hf",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 14){
-           sf = reader_lfstats1up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_lfstats1",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 13){
-           sf = reader_lfstats1down->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_lfstats1",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 16){
-           sf = reader_lfstats2up->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("up_lfstats2",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else if (btag_mode == 15){
-           sf = reader_lfstats2down->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("down_lfstats2",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           } else{
-           sf = reader_iterativefit->eval(BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
+           sf = reader_iterativefit->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, fabs(eta), pt, csv);
           }
         }
        result *=sf;
@@ -169,91 +181,91 @@ namespace ic {
       if(jet_flavour == 5){
         if(pt > 670){
           if(btag_mode == 2){ //Need to double the uncertainty
-           sf = reader_mujetsup->eval(BTagEntry::FLAV_B, eta, 670);
-           sub_sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 670);
+           sf = reader_mujets->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, 670);
+           sub_sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, 670);
            sf = 2*(sf-sub_sf)+sub_sf;
           } else if(btag_mode == 1){
-           sf = reader_mujetsdown->eval(BTagEntry::FLAV_B, eta, 670);
-           sub_sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 670);
+           sf = reader_mujets->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, 670);
+           sub_sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, 670);
            sf = 2*(sf-sub_sf)+sub_sf;
           } else {
-            sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 670);
+            sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, 670);
           }
          } else if (pt < 30){
           if(btag_mode == 2){ //Need to double the uncertainty
-           sf = reader_mujetsup->eval(BTagEntry::FLAV_B, eta, 30);
-           sub_sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 30);
+           sf = reader_mujets->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, 30);
+           sub_sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, 30);
            sf = 2*(sf-sub_sf)+sub_sf;
           } else if(btag_mode == 1){
-           sf = reader_mujetsdown->eval(BTagEntry::FLAV_B, eta, 30);
-           sub_sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 30);
+           sf = reader_mujets->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, 30);
+           sub_sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, 30);
            sf = 2*(sf-sub_sf)+sub_sf;
           } else {
-           sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 30);
+           sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, 30);
           }
          } else{
           if(btag_mode == 2){ 
-           sf = reader_mujetsup->eval(BTagEntry::FLAV_B, eta, pt);
+           sf = reader_mujets->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
           } else if(btag_mode == 1){
-           sf = reader_mujetsdown->eval(BTagEntry::FLAV_B, eta, pt);
+           sf = reader_mujets->eval_auto_bounds("down",BTagEntry::FLAV_B, eta, pt);
           } else {
-           sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, pt);
+           sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           }
          }
         } else if(jet_flavour == 4){
          if (pt > 670){
           if(btag_mode == 2){ //Need to double the uncertainty
-           sf = reader_mujetsup->eval(BTagEntry::FLAV_C, eta, 670);
-           sub_sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 670);
+           sf = reader_mujets->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, 670);
+           sub_sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, 670);
            sf = 2*(sf-sub_sf)+sub_sf;
           } else if(btag_mode == 1){
-           sf = reader_mujetsdown->eval(BTagEntry::FLAV_C, eta, 670);
-           sub_sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 670);
+           sf = reader_mujets->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, 670);
+           sub_sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, 670);
            sf = 2*(sf-sub_sf)+sub_sf;
           } else {
-            sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 670);
+            sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, 670);
           }
          } else if(pt<30){
           if(btag_mode == 2){ //Need to double the uncertainty
-           sf = reader_mujetsup->eval(BTagEntry::FLAV_C, eta, 30);
-           sub_sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 30);
+           sf = reader_mujets->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, 30);
+           sub_sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, 30);
            sf = 2*(sf-sub_sf)+sub_sf;
           } else if(btag_mode == 1){
-           sf = reader_mujetsdown->eval(BTagEntry::FLAV_C, eta, 30);
-           sub_sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 30);
+           sf = reader_mujets->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, 30);
+           sub_sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, 30);
            sf = 2*(sf-sub_sf)+sub_sf;
           } else {
-            sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 30);
+            sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, 30);
           }
         } else{
           if(btag_mode == 2){ 
-           sf = reader_mujetsup->eval(BTagEntry::FLAV_C, eta, pt);
+           sf = reader_mujets->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
           } else if(btag_mode == 1){
-           sf = reader_mujetsdown->eval(BTagEntry::FLAV_C, eta, pt);
+           sf = reader_mujets->eval_auto_bounds("down",BTagEntry::FLAV_C, eta, pt);
           } else {
-           sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, pt);
+           sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
          }
        }
       } else {
          if (pt > 1000){
            if(bfake_mode == 2){
-             sf = reader_inclup->eval(BTagEntry::FLAV_UDSG, eta, 1000);
-             sub_sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, 1000);
+             sf = reader_incl->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, 1000);
+             sub_sf = reader_incl->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, 1000);
              sf = 2*(sf-sub_sf)+sub_sf;
            } else if(bfake_mode ==1 ){
-             sf = reader_incldown->eval(BTagEntry::FLAV_UDSG, eta, 1000);
-             sub_sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, 1000);
+             sf = reader_incl->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, 1000);
+             sub_sf = reader_incl->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, 1000);
              sf = 2*(sf-sub_sf)+sub_sf;
            }else{
-            sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, 1000);
+            sf = reader_incl->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, 1000);
            }
           } else {
            if(bfake_mode == 2){
-            sf = reader_inclup->eval(BTagEntry::FLAV_UDSG, eta, pt);
+            sf = reader_incl->eval_auto_bounds("up",BTagEntry::FLAV_UDSG, eta, pt);
            } else if(bfake_mode == 1){
-            sf = reader_incldown->eval(BTagEntry::FLAV_UDSG, eta, pt);
+            sf = reader_incl->eval_auto_bounds("down",BTagEntry::FLAV_UDSG, eta, pt);
            } else{
-             sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, pt);
+             sf = reader_incl->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, pt);
            }
          }
         }

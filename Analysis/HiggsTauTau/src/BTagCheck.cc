@@ -64,10 +64,17 @@ namespace ic {
       outtree_->Branch("antimu_pass",&antimu_pass);
       outtree_->Branch("sf",&sf);
     }
-    calib  = new BTagCalibration("csvv2","./input/btag_sf/CSVv2.csv");
-    reader_incl = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl","central");
-    reader_mujets = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets","central");
+    calib  = new const BTagCalibration("csvv2","./input/btag_sf/CSVv2.csv");
+    reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "up",{});
+    reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "up",{});
+    reader_incl->load(*calib, BTagEntry::FLAV_B,"incl");
+    reader_incl->load(*calib, BTagEntry::FLAV_C,"incl");
+    reader_incl->load(*calib, BTagEntry::FLAV_UDSG,"incl");
+    reader_mujets->load(*calib, BTagEntry::FLAV_B,"mujets");
+    reader_mujets->load(*calib, BTagEntry::FLAV_C,"mujets");
+    reader_mujets->load(*calib, BTagEntry::FLAV_UDSG,"mujets");
 
+  
     return 0;
   }
 
@@ -161,11 +168,11 @@ namespace ic {
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
         if(jet_flavour == 5){
-          if(pt > 670){
-            sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 670);
+/*          if(pt > 670){
+            sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, 670);
           } else if (pt < 30){
-            sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, 30);
-          } else sf = reader_mujets->eval(BTagEntry::FLAV_B, eta, pt);
+            sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, 30.01);
+          } else */sf = reader_mujets->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
           hists_->Fill("NTot_bflav",pt,fabs(eta),wt);
           if(gen_match) hists_->Fill("NTot_bflav_genmatch",pt,fabs(eta),wt);
           if(csv>0.8){
@@ -174,20 +181,20 @@ namespace ic {
           }
         } else if(jet_flavour == 4){
           hists_->Fill("NTot_cflav",pt,eta,wt);
-          if (pt > 670){
-            sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 670);
+          /*if (pt > 670){
+            sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, 670);
           } else if(pt<30){
-            sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, 30);
-          } else sf = reader_mujets->eval(BTagEntry::FLAV_C, eta, pt);
+            sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, 30);
+          } else*/ sf = reader_mujets->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
           if(gen_match) hists_->Fill("NTot_cflav_genmatch",pt,fabs(eta),wt);
           if(csv>0.8){
             hists_->Fill("NBtag_cflav",pt,eta,wt);
             if(gen_match) hists_->Fill("NBtag_cflav_genmatch",pt,fabs(eta),wt);
           }
         } else {
-          if (pt > 1000){
-            sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, 1000);
-          } else sf = reader_incl->eval(BTagEntry::FLAV_UDSG, eta, pt);
+          /*if (pt > 1000){
+            sf = reader_incl->eval_auto_bounds("central",BTagEntry::FLAV_UDSG, eta, 1000);
+          } else*/ sf = reader_incl->eval_auto_bounds("up", BTagEntry::FLAV_UDSG, eta, pt);
           hists_->Fill("NTot_otherflav",pt,eta,wt);
           if(gen_match) hists_->Fill("NTot_otherflav_genmatch",pt,fabs(eta),wt);
           if(csv>0.8){
