@@ -722,10 +722,8 @@ paths_2016_full = [
     'HLT_VLooseIsoPFTau120_Trk50_eta2p1_v',
     'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v',
     'HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v',
-    'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-    'HLT_Mu17_TrkIsoVVL_v',
-    'HLT_Mu8_TrkIsoVVL_v',
-    'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v'
+    'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v',
+    'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v'
 ]
 
 paths_2016_reduced_muon = [
@@ -734,16 +732,14 @@ paths_2016_reduced_muon = [
     'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v',
     'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v',
     'HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v',
-    'HLT_Mu17_TrkIsoVVL_v',
-    'HLT_Mu8_TrkIsoVVL_v'
+    'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v'
 ]
 paths_2016_reduced_elec = [
     'HLT_Ele25_eta2p1_WPTight_Gsf_v',
     'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v',
     'HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v',
     'HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v',
-    'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-    'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v'
+    'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v'
 ]
 paths_2016_reduced_tau = [
     'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v',
