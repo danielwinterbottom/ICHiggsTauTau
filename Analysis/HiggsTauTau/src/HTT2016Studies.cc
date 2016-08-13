@@ -461,6 +461,18 @@ namespace ic {
       trg_p_PFTau120 = false;
       trg_p_IsoMu19TauL1 = false;
       trg_p_IsoMu19Tau = false;
+      if (info->is_data()) {
+        bool path_fired_IsoMu22 = HLTPathCheck(event, "triggerPaths", "HLT_IsoMu22_v");
+        std::string filter_IsoMu22 = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+        auto const& trg_objs_IsoMu22 = event->GetPtrVec<TriggerObject>("triggerObjects_IsoMu22");
+        trg_t_IsoMu22 = path_fired_IsoMu22 && IsFilterMatched(mu_t, trg_objs_IsoMu22, filter_IsoMu22, 0.5);
+      } else {
+        trg_t_IsoMu22 = true;
+        trg_t_IsoMu19Tau = true;
+        trg_p_IsoMu22 = true;
+        trg_p_IsoTkMu22 = true;
+        trg_p_PFTau120 = true;
+      }
       muon_p = false;
       outtree_->Fill();
     }

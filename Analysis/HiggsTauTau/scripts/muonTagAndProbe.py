@@ -13,7 +13,7 @@ bin_cfgs = [
     {
         'name': 'ID_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22',
+        'tag': 'muon_p && trg_t_IsoMu22',
         'probe': 'id_p',
         'binvar_x': 'pt_p',
         'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
@@ -23,7 +23,27 @@ bin_cfgs = [
     {
         'name': 'ID_pt_eta_bins',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22',
+        'tag': 'muon_p && trg_t_IsoMu22',
+        'probe': 'id_p',
+        'binvar_x': 'pt_p',
+        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'binvar_y': 'abs(eta_p)',
+        'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
+    },
+    {
+        'name': 'IDTrk_pt_bins_inc_eta',
+        'var': 'm_ll(50,75,125)',
+        'tag': '(!muon_p) && trg_t_IsoMu22',
+        'probe': 'id_p',
+        'binvar_x': 'pt_p',
+        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'binvar_y': 'eta_p',
+        'bins_y': [-2.4, 2.4]
+    },
+    {
+        'name': 'IDTrk_pt_eta_bins',
+        'var': 'm_ll(50,75,125)',
+        'tag': '(!muon_p) && trg_t_IsoMu22',
         'probe': 'id_p',
         'binvar_x': 'pt_p',
         'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
@@ -33,7 +53,7 @@ bin_cfgs = [
     {
         'name': 'Iso_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p < 0.15',
         'binvar_x': 'pt_p',
         'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
@@ -43,7 +63,7 @@ bin_cfgs = [
     {
         'name': 'Iso_pt_eta_bins',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p < 0.15',
         'binvar_x': 'pt_p',
         'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
@@ -53,7 +73,7 @@ bin_cfgs = [
     {
         'name': 'AIso1_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p >= 0.15 && iso_p < 0.25',
         'binvar_x': 'pt_p',
         'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 1000.],
@@ -63,7 +83,7 @@ bin_cfgs = [
     {
         'name': 'AIso1_pt_eta_bins',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p >= 0.15 && iso_p < 0.25',
         'binvar_x': 'pt_p',
         'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 1000.],
@@ -73,7 +93,7 @@ bin_cfgs = [
     {
         'name': 'AIso2_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p >= 0.25 && iso_p < 0.50',
         'binvar_x': 'pt_p',
         'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 1000.],
@@ -83,7 +103,7 @@ bin_cfgs = [
     {
         'name': 'AIso2_pt_eta_bins',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p >= 0.25 && iso_p < 0.50',
         'binvar_x': 'pt_p',
         'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 1000.],
@@ -93,7 +113,7 @@ bin_cfgs = [
     {
         'name': 'Trg_Iso_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p && iso_p < 0.15',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p < 0.15',
         'probe': 'trg_p_IsoMu22',
         'binvar_x': 'pt_p',
         'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
@@ -103,18 +123,57 @@ bin_cfgs = [
     {
         'name': 'Trg_Iso_pt_eta_bins',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p && iso_p < 0.15',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p < 0.15',
         'probe': 'trg_p_IsoMu22',
         'binvar_x': 'pt_p',
         'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
         'binvar_y': 'abs(eta_p)',
         'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
     },
-
+    {
+        'name': 'TrgMT_Iso_pt_bins_inc_eta',
+        'var': 'm_ll(50,75,125)',
+        'tag': 'muon_p && trg_t_IsoMu22 && trg_t_IsoMu19Tau && id_p && iso_p < 0.15',
+        'probe': 'trg_p_IsoMu19Tau',
+        'binvar_x': 'pt_p',
+        'bins_x': [17., 18., 19., 20., 21., 22., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'binvar_y': 'eta_p',
+        'bins_y': [-2.4, 2.4]
+    },
+    {
+        'name': 'TrgMT_Iso_pt_eta_bins',
+        'var': 'm_ll(50,75,125)',
+        'tag': 'muon_p && trg_t_IsoMu22 && trg_t_IsoMu19Tau && id_p && iso_p < 0.15',
+        'probe': 'trg_p_IsoMu19Tau',
+        'binvar_x': 'pt_p',
+        'bins_x': [17., 18., 19., 20., 21., 22., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'binvar_y': 'abs(eta_p)',
+        'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
+    },
+    {
+        'name': 'TrgMTL1_Iso_pt_bins_inc_eta',
+        'var': 'm_ll(50,75,125)',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p < 0.15',
+        'probe': 'trg_p_IsoMu19TauL1',
+        'binvar_x': 'pt_p',
+        'bins_x': [17., 18., 19., 20., 21., 22., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'binvar_y': 'eta_p',
+        'bins_y': [-2.4, 2.4]
+    },
+    {
+        'name': 'TrgMTL1_Iso_pt_eta_bins',
+        'var': 'm_ll(50,75,125)',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p < 0.15',
+        'probe': 'trg_p_IsoMu19TauL1',
+        'binvar_x': 'pt_p',
+        'bins_x': [17., 18., 19., 20., 21., 22., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'binvar_y': 'abs(eta_p)',
+        'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
+    },
     {
         'name': 'TrgOR_Iso_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p && iso_p < 0.15',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p < 0.15',
         'probe': 'trg_p_IsoMu22 || trg_p_IsoTkMu22',
         'binvar_x': 'pt_p',
         'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
@@ -124,8 +183,28 @@ bin_cfgs = [
     {
         'name': 'TrgOR_Iso_pt_eta_bins',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p && iso_p < 0.15',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p < 0.15',
         'probe': 'trg_p_IsoMu22 || trg_p_IsoTkMu22',
+        'binvar_x': 'pt_p',
+        'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'binvar_y': 'abs(eta_p)',
+        'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
+    },
+    {
+        'name': 'TrgOR3_Iso_pt_bins_inc_eta',
+        'var': 'm_ll(50,75,125)',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p < 0.15',
+        'probe': 'trg_p_IsoMu22 || trg_p_IsoTkMu22 || trg_p_PFTau120',
+        'binvar_x': 'pt_p',
+        'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'binvar_y': 'eta_p',
+        'bins_y': [-2.4, 2.4]
+    },
+    {
+        'name': 'TrgOR3_Iso_pt_eta_bins',
+        'var': 'm_ll(50,75,125)',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p < 0.15',
+        'probe': 'trg_p_IsoMu22 || trg_p_IsoTkMu22 || trg_p_PFTau120',
         'binvar_x': 'pt_p',
         'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
         'binvar_y': 'abs(eta_p)',
@@ -134,7 +213,7 @@ bin_cfgs = [
     {
         'name': 'Trg_AIso1_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p && iso_p >= 0.15 && iso_p < 0.25',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p >= 0.15 && iso_p < 0.25',
         'probe': 'trg_p_IsoMu22',
         'binvar_x': 'pt_p',
         'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 1000.],
@@ -144,7 +223,7 @@ bin_cfgs = [
     {
         'name': 'Trg_AIso2_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p && iso_p >= 0.25 && iso_p < 0.50',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p >= 0.25 && iso_p < 0.50',
         'probe': 'trg_p_IsoMu22',
         'binvar_x': 'pt_p',
         'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 1000.],
@@ -154,7 +233,7 @@ bin_cfgs = [
     {
         'name': 'TrgOR_AIso1_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p && iso_p >= 0.15 && iso_p < 0.25',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p >= 0.15 && iso_p < 0.25',
         'probe': 'trg_p_IsoMu22 || trg_p_IsoTkMu22',
         'binvar_x': 'pt_p',
         'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 1000.],
@@ -164,7 +243,7 @@ bin_cfgs = [
     {
         'name': 'TrgOR_AIso2_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': 'trg_t_IsoMu22 && id_p && iso_p >= 0.25 && iso_p < 0.50',
+        'tag': 'muon_p && trg_t_IsoMu22 && id_p && iso_p >= 0.25 && iso_p < 0.50',
         'probe': 'trg_p_IsoMu22 || trg_p_IsoTkMu22',
         'binvar_x': 'pt_p',
         'bins_x': [20., 21., 22., 23., 24., 25., 30., 40., 50., 60., 80., 100., 1000.],
@@ -207,8 +286,8 @@ for cfg in bin_cfgs:
 
 
 trees = {
-    'DYJetsToLL': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_July19/DYJetsToLL.root'),
-    'Data': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_July19/SingleMuon.root')
+    'DYJetsToLL': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_Aug5/DYJetsToLL.root'),
+    'Data': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_Aug5/SingleMuon.root')
 }
 
 
