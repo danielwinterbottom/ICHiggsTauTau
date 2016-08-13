@@ -1,0 +1,41 @@
+{
+  "SingleElectron": {
+    "lumi": 12918.140703927
+  },
+  "SingleMuon": {
+    "lumi": 12918.140703927
+  },
+  "DYJetsToLL": {
+    "xs": 6025.5
+  },
+  "DYJetsToLL_M-10to50": {
+    "xs": 18610.0
+  },
+  "TT": {
+    "xs": 831.76
+  },
+  "VVTo2L2Nu": {
+    "xs": 11.95
+  },
+  "WWTo1L1Nu2Q": {
+    "xs": 49.997
+  },
+  "WZJToLLLNu": {
+    "xs": 4.42965
+  },
+  "WZTo1L1Nu2Q": {
+    "xs": 10.71
+  },
+  "WZTo1L3Nu": {
+    "xs": 3.05
+  },
+  "WZTo2L2Q": {
+    "xs": 5.595
+  },
+  "ZZTo2L2Q": {
+    "xs": 3.22
+  },
+  "ZZTo4L": {
+    "xs": 1.212
+  }
+}
