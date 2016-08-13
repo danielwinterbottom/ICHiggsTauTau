@@ -540,6 +540,22 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
 
+  DataShape signal800("signal800");
+  signal800.set_dataset("VBFH800")
+    .set_dirname("qqH800")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape signal1000("signal1000");
+  signal1000.set_dataset("VBFH1000")
+    .set_dirname("qqH1000")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
   DataShape ggH110("ggH110");
   ggH110.set_dataset("GluGluH110")
     .set_dirname("ggH110")
@@ -599,6 +615,22 @@ int main(int argc, char* argv[]){
   DataShape ggH600("ggH600");
   ggH600.set_dataset("GluGluH600")
     .set_dirname("ggH600")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape ggH800("ggH800");
+  ggH800.set_dataset("GluGluH800")
+    .set_dirname("ggH800")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape ggH1000("ggH1000");
+  ggH1000.set_dataset("GluGluH1000")
+    .set_dirname("ggH1000")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
@@ -1194,6 +1226,8 @@ int main(int argc, char* argv[]){
     analysis->AddModule(&ggH400);
     analysis->AddModule(&ggH500);
     analysis->AddModule(&ggH600);
+    analysis->AddModule(&ggH800);
+    analysis->AddModule(&ggH1000);
     analysis->AddModule(&signal110);
     analysis->AddModule(&signal150);
     analysis->AddModule(&signal200);
@@ -1201,6 +1235,8 @@ int main(int argc, char* argv[]){
     analysis->AddModule(&signal400);
     analysis->AddModule(&signal500);
     analysis->AddModule(&signal600);
+    analysis->AddModule(&signal800);
+    analysis->AddModule(&signal1000);
     analysis->AddModule(&signal125);
     analysis->AddModule(&ggH125);
     analysis->AddModule(&totsignal125);
