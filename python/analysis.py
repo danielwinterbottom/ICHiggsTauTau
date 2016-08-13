@@ -2,6 +2,10 @@
 from UserCode.ICHiggsTauTau.uncertainties import ufloat
 from collections import defaultdict, OrderedDict
 import ROOT
+import glob
+import os
+import json
+import pprint
 import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
 
 ROOT.TH1.AddDirectory(0)
@@ -88,6 +92,8 @@ class Shape(object):
         cpy = self.copy()
         return cpy.__iadd__(other)
 
+    __radd__ = __add__
+
     def __sub__(self, other):
         cpy = self.copy()
         return cpy.__isub__(other)
@@ -97,8 +103,8 @@ class Shape(object):
         return cpy.__imul__(other)
 
     def Print(self):
-        self.hist.Print()
-        print 'Rate: {:.3f}'.format(self.rate)
+        # self.hist.Print()
+        print 'rate={:.3f}, entries={:g}, sum={:g}'.format(self.rate, self.hist.GetEntries(), self.hist.GetSumOfWeights())
 
 
 # def LumiScale(info, data, sample):
@@ -172,30 +178,45 @@ class BaseNode:
     def Objects(self):
         return dict()
 
+    def OutputPrefix(self):
+        return self.name
+
     def Output(self, file, prefix=''):
         objects = self.Objects()
         for key, val in objects.iteritems():
             WriteToTFile(val, file, '%s/%s' % (prefix, key))
         for node in self.SubNodes():
-            node.Output(file, '%s/%s' % (prefix, self.name))
+            node.Output(file, '%s/%s' % (prefix, self.OutputPrefix()))
+
+    def Run(self):
+        for node in self.SubNodes():
+            node.Run()
+        self.RunSelf()
+
+    def RunSelf(self):
+        pass
 
 
 class BasicNode(BaseNode):
-    def __init__(self, name, sample, variable, selection):
+    def __init__(self, name, sample, variable, selection, factors=list()):
         BaseNode.__init__(self, name)
         self.sample = sample
         self.variable = variable
         self.selection = selection
-        self.factors = []
+        self.factors = factors
         self.shape = None
 
     def GetInfoStr(self):
         if self.shape is not None:
             self.shape.Print()
-        return '[%s, variable=%s, selection=%s]' % (self.sample, self.variable, self.selection)
+        factors_str = ''
+        if len(self.factors) > 0:
+            factor_vals = [('%.4g' % x) for x in self.factors]
+            factors_str = ', factors=' + '*'.join(factor_vals)
+        return '[%s, variable=%s, selection=%s%s]' % (self.sample, self.variable, self.selection, factors_str)
 
     # This means processing to the point where we can hand our shape over
-    def Run(self):
+    def RunSelf(self):
         for factor in self.factors:
             self.shape *= factor
 
@@ -224,11 +245,27 @@ class ListNode(BaseNode):
             node.AddRequests(manifest)
 
 
+class SummedNode(ListNode):
+    def __init__(self, name):
+        ListNode.__init__(self, name)
+        self.shape = None
+
+    def RunSelf(self):
+        self.shape = sum([node.shape for node in self.nodes.values()])
+
+    def Objects(self):
+        return {self.name: self.shape.hist}
+
+    def OutputPrefix(self):
+        return self.name + '.subnodes'
+
+
 class Analysis(object):
     def __init__(self):
         self.trees = {}
         self.nodes = ListNode('analysis')
         self.info = {}
+        self.remaps = {}
 
     def Run(self):
         manifest = []
@@ -246,3 +283,36 @@ class Analysis(object):
             res = self.trees[sample].Draw(drawdict[sample])
             for i, hist in enumerate(res):
                 setattr(outdict[sample][i][0], outdict[sample][i][1], Shape(hist))
+        self.nodes.Run()
+
+    def AddSamples(self, dir, tree):
+        files = glob.glob(dir)
+        for f in files:
+            testf = ROOT.TFile(f)
+            if testf.Get(tree) != None:
+                name = os.path.splitext(os.path.basename(f))[0]
+                newname = name
+                if name in self.remaps:
+                    newname = self.remaps[name]
+                self.trees[newname] = TTreeEvaluator(tree, f)
+            testf.Close()
+
+    def AddInfo(self, file, scaleTo=None):
+        with open(file) as jsonfile:
+            info = json.load(jsonfile)
+        for sa in info:
+            name = sa
+            if sa in self.remaps:
+                name = self.remaps[sa]
+            if name in self.trees:
+                self.info[name] = info[sa]
+        if scaleTo is not None and scaleTo in self.info:
+            lumi = self.info[scaleTo]['lumi']
+            for name, data in self.info.iteritems():
+                if 'xs' in data and 'evt' in data:
+                    print name, data
+                    data['sf'] = lumi / (float(data['evt']) / float(data['xs']))
+                else:
+                    data['sf'] = 1.0
+        pprint.pprint(self.info)
+
