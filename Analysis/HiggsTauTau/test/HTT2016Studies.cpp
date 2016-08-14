@@ -419,6 +419,68 @@ int main(int argc, char* argv[]) {
     seq.InsertSequence("ZeeTP", analysis);
   }
 
+  if (seqs.count("ZmtTP")) {
+    auto & seq = seqs["ZmtTP"];
+
+    seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToSelectedMuons",
+        "muons", "sel_muons"));
+
+    seq.BuildModule(ic::SimpleFilter<ic::Muon>("MuonFilter")
+    .set_input_label("sel_muons").set_min(1)
+    .set_predicate([=](ic::Muon const* m) {
+      return  m->pt()                 > 23.    &&
+              fabs(m->eta())          < 2.1    &&
+              fabs(m->dxy_vertex())   < 0.045  &&
+              fabs(m->dz_vertex())    < 0.2    &&
+              MuonMediumHIPsafe(m)             &&
+              PF04IsolationVal(m, 0.5, 0) < 0.15;
+    }));
+
+    seq.BuildModule(ic::CopyCollection<ic::Tau>("CopyToSelectedTaus",
+        "taus", "sel_taus"));
+
+    seq.BuildModule(ic::SimpleFilter<ic::Tau>("TauFilter")
+    .set_input_label("sel_taus").set_min(1)
+    .set_predicate([=](ic::Tau const* t) {
+      return  t->pt()                     > 20.    &&
+              fabs(t->eta())              < 2.1    &&
+              fabs(t->lead_dz_vertex())   < 0.2    &&
+              abs(t->charge())            == 1     &&
+              t->GetTauID("decayModeFinding") > 0.5;
+    }));
+
+    seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Tau>("MTPairProducer")
+      .set_input_label_first("sel_muons")
+      .set_input_label_second("sel_taus")
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_output_label("ditau")
+    );
+
+    using ROOT::Math::VectorUtil::DeltaR;
+    seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+        .set_input_label("ditau")
+        .set_min(1)
+        .set_predicate([=](ic::CompositeCandidate const* c) {
+          return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+              > 0.5;
+        })
+    );
+
+    // At this point we're done filtering, can calculate other things we nedd
+    if (!is_data) {
+      seq.BuildModule(puweight_module);
+    } else {
+      seq.BuildModule(lumimask_module);
+    }
+
+    seq.BuildModule(ic::ZmtTPTreeProducer("ZmtTPTreeProducer")
+      .set_fs(&fs)
+      .set_sf_workspace(sf_wsp)
+    );
+    seq.InsertSequence("ZmtTP", analysis);
+  }
+
   analysis.RunAnalysis();
 
   if (seqs.count("HashMap")) {

@@ -8,7 +8,9 @@
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
 #include "Objects/interface/Candidate.hh"
+#include "Objects/interface/CompositeCandidate.hh"
 #include "Objects/interface/TriggerObject.hh"
+#include "HiggsTauTau/interface/HTTPairGenInfo.h"
 
 namespace ic {
 
@@ -21,6 +23,8 @@ union ui64 {
  };
 
 std::set<int16_t> GetTriggerTypes(ic::TriggerObject* obj);
+
+bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
 
 class ZmmTreeProducer : public ModuleBase {
  private:
@@ -200,6 +204,53 @@ class ZeeTPTreeProducer : public ModuleBase {
   virtual void PrintInfo();
 
 };
+
+class ZmtTPTreeProducer : public ModuleBase {
+ private:
+  CLASS_MEMBER(ZmtTPTreeProducer, fwlite::TFileService*, fs)
+  CLASS_MEMBER(ZmtTPTreeProducer, std::string, sf_workspace)
+  TTree *outtree_;
+  std::shared_ptr<RooWorkspace> ws_;
+  std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
+
+  HTTPairGenInfo geninfo_module_;
+
+  float wt;
+
+  int n_vtx;
+
+  float pt_m;
+  float eta_m;
+  float mt_m;
+
+  float pt_t;
+  float eta_t;
+  int dm_t;
+  bool anti_e_t;
+  bool anti_m_t;
+  bool vloose_t;
+  bool loose_t;
+  bool medium_t;
+  bool tight_t;
+  bool vtight_t;
+  bool vvtight_t;
+
+  unsigned gen_1;
+  unsigned gen_2;
+
+  int n_bjets;
+
+  float m_ll;
+
+ public:
+  ZmtTPTreeProducer(std::string const& name);
+  virtual ~ZmtTPTreeProducer();
+
+  virtual int PreAnalysis();
+  virtual int Execute(TreeEvent *event);
+  virtual int PostAnalysis();
+};
+
 }
 
 

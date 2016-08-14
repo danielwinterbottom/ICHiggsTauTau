@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <map>
+#include "boost/functional/hash.hpp"
 #include "RooRealVar.h"
 #include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
@@ -10,6 +11,7 @@
 #include "Utilities/interface/FnPredicates.h"
 #include "Utilities/interface/FnPairs.h"
 #include "Utilities/interface/FnRootTools.h"
+#include "HiggsTauTau/interface/HTTPairGenInfo.h"
 
 namespace ic {
 
@@ -556,6 +558,175 @@ namespace ic {
 
   void ZeeTPTreeProducer::PrintInfo() { }
 
+
+  // ZmtTP
+  ZmtTPTreeProducer::ZmtTPTreeProducer(std::string const& name)
+      : ModuleBase(name),
+        geninfo_module_("GenInfo") {
+    fs_ = nullptr;
+    geninfo_module_.set_ditau_label("sorted_ditau");
+  }
+
+  ZmtTPTreeProducer::~ZmtTPTreeProducer() {
+    ;
+  }
+
+  int ZmtTPTreeProducer::PreAnalysis() {
+    if (fs_) {
+      outtree_ = fs_->make<TTree>("ZmtTP", "ZmtTP");
+
+      outtree_->Branch("wt",          &wt);
+      outtree_->Branch("n_vtx",       &n_vtx);
+      outtree_->Branch("pt_m",        &pt_m);
+      outtree_->Branch("eta_m",       &eta_m);
+      outtree_->Branch("mt_m",        &mt_m);
+      outtree_->Branch("pt_t",        &pt_t);
+      outtree_->Branch("eta_t",       &eta_t);
+      outtree_->Branch("dm_t",        &dm_t);
+      outtree_->Branch("anti_e_t",    &anti_e_t);
+      outtree_->Branch("anti_m_t",    &anti_m_t);
+      outtree_->Branch("vloose_t",    &vloose_t);
+      outtree_->Branch("loose_t",     &loose_t);
+      outtree_->Branch("medium_t",    &medium_t);
+      outtree_->Branch("tight_t",     &tight_t);
+      outtree_->Branch("vtight_t",    &vtight_t);
+      outtree_->Branch("vvtight_t",   &vvtight_t);
+      outtree_->Branch("gen_1",       &gen_1);
+      outtree_->Branch("gen_2",       &gen_2);
+      outtree_->Branch("n_bjets",     &n_bjets);
+      outtree_->Branch("m_ll",        &m_ll);
+    }
+
+    TFile f(sf_workspace_.c_str());
+    ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+    f.Close();
+    fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trk_ratio")->functor(ws_->argSet("m_eta")));
+    fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_id_ratio")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_iso_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_iso_ratio")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_trgOR_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trgOR_data")->functor(ws_->argSet("m_pt,m_eta")));
+    return 0;
+  }
+
+  int ZmtTPTreeProducer::Execute(TreeEvent *event) {
+    typedef std::vector<double> v_double;
+
+    auto info = event->GetPtr<EventInfo>("eventInfo");
+    auto pairs = event->GetPtrVec<CompositeCandidate>("ditau");
+
+    if (info->is_data()) {
+      bool path_IsoMu22 = HLTPathCheck(event, "triggerPaths", "HLT_IsoMu22_v");
+      bool path_IsoTkMu22 = HLTPathCheck(event, "triggerPaths", "HLT_IsoTkMu22_v");
+
+      std::string filt_IsoMu22 = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
+      auto const& objs_IsoMu22 = event->GetPtrVec<TriggerObject>("triggerObjects_IsoMu22");
+      std::string filt_IsoTkMu22 = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
+      auto const& objs_IsoTkMu22 = event->GetPtrVec<TriggerObject>("triggerObjects_IsoTkMu22");
+
+      ic::keep_if(pairs, [&](ic::CompositeCandidate const* c) {
+        return (path_IsoMu22 && IsFilterMatched(c->At(0), objs_IsoMu22, filt_IsoMu22, 0.5)) ||
+               (path_IsoTkMu22 && IsFilterMatched(c->At(0), objs_IsoTkMu22, filt_IsoTkMu22, 0.5));
+      });
+    } else {
+      // Nothing at the moment...
+    }
+    if (pairs.size() == 0) return 1;
+
+    std::sort(pairs.begin(), pairs.end(), SortByIsoMT);
+    event->Add("sorted_ditau", pairs);
+
+    Muon const* muon = dynamic_cast<Muon const*>(pairs[0]->At(0));
+    Tau const* tau = dynamic_cast<Tau const*>(pairs[0]->At(1));
+
+    pt_m = muon->pt();
+    eta_m = muon->eta();
+
+    pt_t = tau->pt();
+    eta_t = tau->eta();
+    dm_t = tau->decay_mode();
+
+    anti_e_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
+    anti_m_t  = tau->GetTauID("againstMuonTight3") > 0.5;
+    vloose_t  = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    loose_t   = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    medium_t  = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    tight_t   = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    vtight_t  = tau->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    vvtight_t = tau->GetTauID("byVVTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
+
+    n_vtx = info->good_vertices();
+
+    // Get the MVA MET so we can calculate MT
+    Met *mva_met = nullptr;
+    auto const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+    std::size_t id = 0;
+    boost::hash_combine(id, muon->id());
+    boost::hash_combine(id, tau->id());
+    std::size_t id_inv = 0;
+    boost::hash_combine(id_inv, tau->id());
+    boost::hash_combine(id_inv, muon->id());
+    auto it = met_map.find(id);
+    auto it_inv = met_map.find(id_inv);
+    if (it != met_map.end()) {
+      mva_met = it->second;
+      // event->Add("pfMVAMet", mva_met);
+    } else if (it_inv != met_map.end()){
+      //lepton1 <--> lepton2 (needed for fully hadronic)
+      mva_met = it_inv->second;
+      // event->Add("pfMVAMet", mva_met);
+    } else {
+      throw::std::runtime_error("Could not find MVA MET!");
+    }
+    mt_m = MT(muon, mva_met);
+    m_ll = pairs[0]->M();
+
+    auto bjets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+    ic::keep_if(bjets, [&](PFJet *j) {
+      return j->pt()          > 20. &&
+             fabs(j->eta())   < 2.4 &&
+             PFJetID2015(j) &&
+             MinDRToCollection(j, pairs[0]->AsVector(), 0.5) &&
+             j->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+    });
+
+    n_bjets = bjets.size();
+
+
+    gen_1 = 0;
+    gen_2 = 0;
+    double wt_trk = 1.0;
+    double wt_id = 1.0;
+    double wt_iso = 1.0;
+    double wt_trg = 1.0;
+    auto args = std::vector<double>{muon->pt(), muon->eta()};
+    if (!info->is_data()) {
+      wt_trg = fns_["m_trgOR_data"]->eval(args.data());
+      wt_trk = fns_["m_trk_ratio"]->eval(v_double{muon->eta()}.data());
+      wt_id = fns_["m_id_ratio"]->eval(args.data());
+      wt_iso = fns_["m_iso_ratio"]->eval(args.data());
+      geninfo_module_.Execute(event);
+      gen_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+      gen_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+    }
+    info->set_weight("trk", wt_trk);
+    info->set_weight("trg", wt_trg);
+    info->set_weight("id", wt_id);
+    info->set_weight("iso", wt_iso);
+    wt = info->total_weight();
+
+    outtree_->Fill();
+
+    return 0;
+  }
+
+  int ZmtTPTreeProducer::PostAnalysis() {
+    return 0;
+  }
+
+
   bool HLTPathCheck(ic::TreeEvent* event, std::string const& label,
                     std::string const& path) {
     bool path_fired = false;
@@ -579,5 +750,20 @@ namespace ic {
       if (type != 0) types.insert(type);
     }
     return types;
+  }
+
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+    Muon const* m1 = static_cast<Muon const*>(c1->At(0));
+    Muon const* m2 = static_cast<Muon const*>(c2->At(0));
+    double m_iso1 = PF04IsolationVal(m1, 0.5, 0);
+    double m_iso2 = PF04IsolationVal(m2, 0.5, 0);
+    if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
+    if (m1->pt() != m2->pt()) return m1->pt() > m2->pt();
+    Tau const* t1 = static_cast<Tau const*>(c1->At(1));
+    Tau const* t2 = static_cast<Tau const*>(c2->At(1));
+    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
+    return (t1->pt() > t2->pt());
   }
 }

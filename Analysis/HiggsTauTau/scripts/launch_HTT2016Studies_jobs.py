@@ -12,7 +12,7 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
 MAX_EVTS = -1
-FILES_PER_JOB = 100
+FILES_PER_JOB = 50
 PROD='Aug5_'
 
 DATA_SAMPLES = {
@@ -53,18 +53,20 @@ MC_SAMPLES = {
     'WZTo1L3Nu':            ['WZTo1L3Nu'],
     'WZTo2L2Q':             ['WZTo2L2Q'],
     'ZZTo2L2Q':             ['ZZTo2L2Q'],
-    'ZZTo4L':               ['ZZTo4L']
+    'ZZTo4L':               ['ZZTo4L'],
+    'WJetsToLNu':           ['WJetsToLNu']
 }
 
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'EffectiveEvents']
+SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'EffectiveEvents']
 WHITELIST = {
     'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmmTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'Zee': ['SingleElectron'] + list(MC_SAMPLES.keys()),
     'ZeeTP': ['SingleElectron'] + list(MC_SAMPLES.keys()),
+    'ZmtTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'EffectiveEvents': list(MC_SAMPLES.keys())
 }
 
