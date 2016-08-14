@@ -11,6 +11,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "boost/bind.hpp"
 #include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/interface/L1TTau.hh"
 
 struct filters {
   std::string label;
@@ -1438,29 +1439,7 @@ namespace ic {
             } else if (channel_ == channel::et){
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
               leg2_match = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_extra,0.5).first;
-              
-              //unsigned leg1_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).second;
-              //unsigned leg2_match_index = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].leg2_filter, 0.5).second;
-              //bool applyAdditionalTriggerCuts_ = false;
-              //if(leg_filters[i].path == "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v") applyAdditionalTriggerCuts_ = true; 
-              //if(applyAdditionalTriggerCuts_){
-              //  
-              //  unsigned leg1_L1match_index = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].L1filtername , 0.5).second;
-              //  unsigned leg2_L1match_index = IsFilterMatchedWithIndex(dileptons[j]->At(1), objs, leg_filters[i].L1filtername , 0.5).second;
-              //  if(leg_filters[i].leg1_extraHLTPt > 0){
-              //    if(objs[leg1_match_index]->pt() < leg_filters[i].leg1_extraHLTPt) leg1_match = false;
-              //  }
-              //  if(leg_filters[i].leg2_extraHLTPt > 0){
-              //    if(objs[leg2_match_index]->pt() < leg_filters[i].leg2_extraHLTPt) leg2_match = false;
-              //  }
-              //  if(leg_filters[i].leg1_extraL1Pt > 0){
-              //    if(objs[leg1_L1match_index]->pt() < leg_filters[i].leg1_extraL1Pt) leg1_match = false;
-              //  }
-              //  if(leg_filters[i].leg2_extraL1Pt > 0){
-              //    if(objs[leg2_L1match_index]->pt() < leg_filters[i].leg2_extraL1Pt) leg2_match = false;
-              //  }
-              //
-              //}
+
             }
             else if (channel_ == channel::mt) {
               leg1_match = IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[j]->At(0), objs, leg_filters[i].leg2_extra,0.5).first;
@@ -1481,34 +1460,40 @@ namespace ic {
         
         if (dileptons_pass_reHLT.size() >= 1){
             leg_filters[i].pass = true;
+            
+            //unsigned leg2_match_index = IsFilterMatchedWithIndex(dileptons_pass_reHLT[0]->at(1), objs, leg_filters[i].leg2_filter, 0.5).second;
             if(leg_filters[i].path == "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v"){
-              unsigned leg1_L1match_index = IsFilterMatchedWithIndex(dileptons_pass_reHLT[0]->At(0), objs, leg_filters[i].L1filtername , 0.5).second;
-              unsigned leg2_L1match_index = IsFilterMatchedWithIndex(dileptons_pass_reHLT[0]->At(1), objs, leg_filters[i].L1filtername , 0.5).second;
               
-              uint64_t blah = objs[leg1_L1match_index]->id();
-              std::cout << "lep1 union: " <<  blah << std::endl;
-              std::set<int16_t> lep1triggerTypes = GetTriggerTypes(objs[leg1_L1match_index]);
-              std::cout << "lep1 unpacked union: " << std::endl;
-              for(std::set<short>::iterator it=lep1triggerTypes.begin(); it!=lep1triggerTypes.end(); ++it){
-                std::cout <<  *it << std::endl;   
-              }
-              if(lep1triggerTypes.find(-98) != lep1triggerTypes.end()) std::cout << "found L1 EGamma!" << std::endl;
-              
-              uint64_t blah2 = objs[leg2_L1match_index]->id();
-              std::cout << "lep2 union: " <<  blah2 << std::endl;
-              std::set<int16_t> lep2triggerTypes = GetTriggerTypes(objs[leg2_L1match_index]);
-              std::cout << "lep2 unpacked union: " << std::endl;
-              for(std::set<short>::iterator it=lep2triggerTypes.begin(); it!=lep2triggerTypes.end(); ++it){
-                std::cout <<  *it << std::endl;   
+              std::vector<unsigned> leg1_L1match_index = IsFilterMatchedWithMultipleIndexs(dileptons_pass_reHLT[0]->At(0), objs, leg_filters[i].L1filtername , 0.5).second; 
+              for(unsigned y=0; y<leg1_L1match_index.size(); ++y){
+                std::set<int16_t> lep1triggerTypes = GetTriggerTypes(objs[leg1_L1match_index[y]]);
+                if(lep1triggerTypes.find(-98) != lep1triggerTypes.end()) std::cout << "found L1 EGamma! Pt = " << objs[leg1_L1match_index[y]]->pt() << std::endl;
               }
               
-              if(lep2triggerTypes.find(-100) != lep2triggerTypes.end()) std::cout << "found L1 Tau!" << std::endl;
+              std::vector<unsigned> leg2_L1match_index = IsFilterMatchedWithMultipleIndexs(dileptons_pass_reHLT[0]->At(1), objs, leg_filters[i].L1filtername , 0.5).second;
+              bool noTau = true;
+              for(unsigned y=0; y<leg2_L1match_index.size(); ++y) {
+                std::set<int16_t> lep2triggerTypes = GetTriggerTypes(objs[leg2_L1match_index[y]]);  
+                if(lep2triggerTypes.find(-100) != lep2triggerTypes.end()){
+                  std::cout << "found L1 Tau! Pt = " << objs[leg2_L1match_index[y]]->pt() << std::endl;
+                  noTau = false;
+                }
+              }
+              
+              std::vector<unsigned> unmatched_taus;               
+              if(noTau){
+                std::cout << "No taus found matched to filter object, check for other L1 taus" << std::endl;
+
+                for(unsigned t=0; t<objs.size(); ++t){
+                  std::set<int16_t> types = GetTriggerTypes(objs[t]);
+                  if(types.find(-100) != types.end()) std::cout << "found tau (not matched)! Pt = " << objs[t]->pt() << std::endl;
+                }
+              }
               std::cout <<"\n";
             }
         }
         else                                  leg_filters[i].pass = false;
         
-        //if(!leg_filters[i].pass && PassTrigger) leg_filters[i].pass = true; //check this bit is doing what you think!
         
       }
         
