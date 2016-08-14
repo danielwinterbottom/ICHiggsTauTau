@@ -46,6 +46,21 @@ namespace ic {
     }
     return std::make_pair(false,0);
   }
+  
+  std::pair<bool,std::vector<unsigned>> IsFilterMatchedWithMultipleIndexs(Candidate const* cand, std::vector<TriggerObject*> const& objs, std::string const& filter, double const& max_dr){
+    std::size_t hash = CityHash64(filter);
+    std::vector<unsigned> index_vals;
+    bool matched = false;
+    for (unsigned i = 0; i < objs.size(); ++i) {
+      std::vector<std::size_t> const& labels = objs[i]->filters();
+      if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+      if (DR(cand, objs[i]) < max_dr){
+         index_vals.push_back(i);
+         matched = true;
+      }
+    }
+    return std::make_pair(matched,index_vals);
+  }
 
   bool VertexDz(Tau const* cand, double const& vertexZ) {
     return ( fabs(cand->vz() - vertexZ)==0) ; 
