@@ -26,9 +26,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_160801_with6fbTrigEff
+JOBDIRPREFIX=jobs_run2ana_160801_with6fbTrigEff_withOFUFandSumw2
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_160801_with6fbTrigEff
+OUTPUTPREFIX=output_run2ana_160801_with6fbTrigEff_withOFUFandSumw2
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -72,7 +72,7 @@ for syst in "" #PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOW
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in enu munu taunu mumu qcd nunu #qcd #enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     #executable expect strings separated by "!"
@@ -93,6 +93,7 @@ do
     echo "Making histograms: " $SHAPESTRING
     OUTPUTNAME="$channels.root"
     MINDPHICUT="alljetsmetnomu_mindphi\>=2.3"
+    #MINDPHICUT="alljetsmetnomu_mindphi\>=1."
     if [ "$channels" = "taunu" ]; then
 	MINDPHICUT="jetmetnomu_mindphi\>=1.0\&\&alljetsmetnomu_mindphi\<2.3"
     fi

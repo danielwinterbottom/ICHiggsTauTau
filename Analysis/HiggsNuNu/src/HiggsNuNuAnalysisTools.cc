@@ -352,6 +352,7 @@ namespace ic{
       //TH1::AddDirectory(false);
       shape= (*myhtemp);
       shape.SetName("myshape");
+      shape.Sumw2();
     }
     else {
       if (!shape.Add(myhtemp)) {
@@ -400,6 +401,7 @@ namespace ic{
       //TH1::AddDirectory(false);
       shape = (*myhtemp);
       shape.SetName("myshape");
+      shape.Sumw2();
     }
     else {
       if (!shape.Add(myhtemp)) {
