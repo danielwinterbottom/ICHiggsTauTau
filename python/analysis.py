@@ -260,6 +260,30 @@ class SummedNode(ListNode):
         return self.name + '.subnodes'
 
 
+class SubtractNode(BaseNode):
+    def __init__(self, name, initial, subtract):
+        BaseNode.__init__(self, name)
+        self.shape = None
+        self.initial_node = initial
+        self.subtract_node = subtract
+
+    def RunSelf(self):
+        self.shape = self.initial_node.shape - self.subtract_node.shape
+
+    def Objects(self):
+        return {self.name: self.shape.hist}
+
+    def OutputPrefix(self):
+        return self.name + '.subnodes'
+
+    def SubNodes(self):
+        return [self.initial_node, self.subtract_node]
+
+    def AddRequests(self, manifest):
+        for node in self.SubNodes():
+            node.AddRequests(manifest)
+
+
 class Analysis(object):
     def __init__(self):
         self.trees = {}
@@ -315,4 +339,21 @@ class Analysis(object):
                 else:
                     data['sf'] = 1.0
         pprint.pprint(self.info)
+
+    def BasicFactory(self, name, sample=None, var='', sel='', factors=[], scaleToLumi=True):
+        if sample is None:
+            sample = name
+        if scaleToLumi:
+            myfactors = factors[:]
+            myfactors.append(self.info[sample]['sf'])
+        return BasicNode(name, sample, var, sel, factors=myfactors)
+
+    def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True):
+        res = SummedNode(name)
+        for sa in samples:
+            res.AddNode(self.BasicFactory(sa, sa, var, sel, factors, scaleToLumi))
+        return res
+
+
+
 
