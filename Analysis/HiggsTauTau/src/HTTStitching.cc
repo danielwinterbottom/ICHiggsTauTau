@@ -202,7 +202,7 @@ namespace ic {
           }
           if (id == 24) count_jets = true; 
         }
-      } else if(era_ == era::data_2015) {
+      } else if(era_ == era::data_2015 || era_ == era::data_2016) {
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;
         for(unsigned i = 0; i< lhe_parts.size(); ++i){
@@ -212,12 +212,6 @@ namespace ic {
         }
           t_mll_ = gen_mll;
           t_decay_ = 0;  // ee, mumu, tautau
-      } else if(era_==era::data_2016) {
-         EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-         partons = eventInfo->n_outgoing_partons();
-         gen_mll = eventInfo->gen_mll();
-         t_mll_ = gen_mll;
-         t_decay_ = 0;  // ee, mumu, tautau
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
@@ -249,7 +243,7 @@ namespace ic {
           }
           if (id == 23) count_jets = true; 
         }
-      } else if(era_ == era::data_2015){ 
+      } else if(era_ == era::data_2015 || era_ == era::data_2016){ 
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;
         for(unsigned i = 0; i< lhe_parts.size(); ++i){
@@ -264,7 +258,7 @@ namespace ic {
         } else {
           std::cerr << "Error making soup, event has " << zll_cands.size() << " Z->ll candidates, 2 expected!" <<std::endl;
           throw;
-        } 
+        }
         t_decay_ = 0;  // ee, mumu, tautau
         if (std::abs(zll_cands[0]->pdgid()) == 11 &&
             std::abs(zll_cands[1]->pdgid()) == 11) {
@@ -279,12 +273,6 @@ namespace ic {
           std::cerr << "Error!\n";
           throw;
         }
-      } else if(era_ == era::data_2016){
-         EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-         partons = eventInfo->n_outgoing_partons();
-         gen_mll = eventInfo->gen_mll();
-         t_mll_ = gen_mll;
-         t_decay_ = 0;  // ee, mumu, tautau
       }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
