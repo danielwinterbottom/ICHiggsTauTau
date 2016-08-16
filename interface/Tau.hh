@@ -66,6 +66,26 @@ class Tau : public Candidate {
   inline std::vector<std::size_t> const& constituent_tracks() const {
     return constituent_tracks_;
   }
+
+  /// A vector referring to the signal PFCandidates
+  inline std::vector<std::size_t> const& sig_charged_cands() const {
+    return sig_charged_cands_;
+  }
+
+  /// A vector referring to the isolation PFCandidates
+  inline std::vector<std::size_t> const& iso_charged_cands() const {
+    return iso_charged_cands_;
+  }
+
+  /// A vector referring to the signal PFCandidates
+  inline std::vector<std::size_t> const& sig_gamma_cands() const {
+    return sig_gamma_cands_;
+  }
+
+  /// A vector referring to the isolation PFCandidates
+  inline std::vector<std::size_t> const& iso_gamma_cands() const {
+    return iso_gamma_cands_;
+  }
   /**@}*/
 
   /// @name Setters
@@ -117,6 +137,30 @@ class Tau : public Candidate {
       std::vector<std::size_t> const& constituent_tracks) {
     constituent_tracks_ = constituent_tracks;
   }
+
+  /// @copybrief iso_charged_cands()
+  inline void set_sig_charged_cands(
+      std::vector<std::size_t> const& sig_charged_cands) {
+    sig_charged_cands_ = sig_charged_cands;
+  }
+
+  /// @copybrief iso_charged_cands()
+  inline void set_iso_charged_cands(
+      std::vector<std::size_t> const& iso_charged_cands) {
+    iso_charged_cands_ = iso_charged_cands;
+  }
+
+  /// @copybrief iso_gamma_cands()
+  inline void set_sig_gamma_cands(
+      std::vector<std::size_t> const& sig_gamma_cands) {
+    sig_gamma_cands_ = sig_gamma_cands;
+  }
+
+  /// @copybrief iso_gamma_cands()
+  inline void set_iso_gamma_cands(
+      std::vector<std::size_t> const& iso_gamma_cands) {
+    iso_gamma_cands_ = iso_gamma_cands;
+  }
   /**@}*/
 
   /**
@@ -159,10 +203,14 @@ class Tau : public Candidate {
   Point ref_point_;
 
   std::vector<std::size_t> constituent_tracks_;
+  std::vector<std::size_t> sig_charged_cands_;
+  std::vector<std::size_t> iso_charged_cands_;
+  std::vector<std::size_t> sig_gamma_cands_;
+  std::vector<std::size_t> iso_gamma_cands_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Tau, 2);
+  ClassDef(Tau, 3);
  #endif
 };
 

@@ -103,11 +103,13 @@ if release in ['80XMINIAOD']:
         src = cms.InputTag("slimmedTaus"),
         cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFindingNewDMs") > 0.5')
         )
+    process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 
 process.icSelectionSequence = cms.Sequence(
     process.selectedElectrons+
     process.selectedMuons+
-    process.selectedTaus
+    process.selectedTaus+
+    process.unpackedTracksAndVertices
 )
 
 
@@ -508,11 +510,24 @@ if release in ['80XMINIAOD']:
       inputVertices       = vtxLabel,
       includeVertexIP     = cms.bool(True),
       includeTotalCharged = cms.bool(True),
-      totalChargedLabel   = cms.string('totalCharged')
+      totalChargedLabel   = cms.string('totalCharged'),
+      requestPFCandidates   = cms.bool(True),
+      inputPFCandidates     = cms.InputTag("packedPFCandidates"),
+      isSlimmed             = cms.bool(True)
+  )
+
+
+process.icPFProducer = producers.icPFFromPackedProducer.clone(
+    branch              = cms.string("pfCandidates"),
+    input               = cms.InputTag("icTauProducer", "requestedPFCandidates"),
+    requestTracks       = cms.bool(True),
+    requestGsfTracks    = cms.bool(False),
+    inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
   )
 
 process.icTauSequence = cms.Sequence(
-    process.icTauProducer
+    process.icTauProducer+
+    process.icPFProducer
 )
 
 
@@ -639,8 +654,6 @@ process.MVAMET.debug = cms.bool(False)
 ################################################################
 # Tracks
 ################################################################
-
-process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 process.icTrackSequence = cms.Sequence()
 
 
@@ -649,14 +662,21 @@ process.selectedTracks = cms.EDFilter("TrackRefSelector",
  cut = cms.string("pt > 10")
 )
 
+process.mergeTracks = cms.EDProducer("ICTrackMerger",
+    merge = cms.VInputTag(
+        cms.InputTag('selectedTracks'),
+        cms.InputTag('icPFProducer', 'requestedTracks')
+        )
+)
+
 process.icTrackProducer = producers.icTrackProducer.clone(
  branch = cms.string("tracks"),
- input  = cms.InputTag("selectedTracks")
+ input  = cms.InputTag("mergeTracks")
 )
 
 process.icTrackSequence += cms.Sequence(
-    process.unpackedTracksAndVertices+
     process.selectedTracks+
+    process.mergeTracks+
     process.icTrackProducer
 )
 

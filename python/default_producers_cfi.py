@@ -168,7 +168,10 @@ icTauProducer = cms.EDProducer("ICPFTauProducer",
     #
     # decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding"),
     # etc...
-  )
+  ),
+  requestPFCandidates   = cms.bool(False),
+  inputPFCandidates     = cms.InputTag("pfCandidates"),
+  isSlimmed             = cms.bool(False)
 )
 
 icTauFromPatProducer = cms.EDProducer("ICPFTauFromPatProducer",
@@ -179,7 +182,10 @@ icTauFromPatProducer = cms.EDProducer("ICPFTauFromPatProducer",
   requestTracks           = cms.bool(False),
   includeTotalCharged     = cms.bool(False),
   totalChargedLabel       = cms.string('totalCharged'),
-  tauIDs = cms.PSet()
+  tauIDs = cms.PSet(),
+  requestPFCandidates   = cms.bool(False),
+  inputPFCandidates     = cms.InputTag("packedPFCandidates"),
+  isSlimmed             = cms.bool(True)
 )
 ## [Tau]
 
