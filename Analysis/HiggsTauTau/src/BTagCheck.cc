@@ -75,9 +75,11 @@ namespace ic {
     reader_mujets->load(*calib, BTagEntry::FLAV_B,"mujets");
     reader_mujets->load(*calib, BTagEntry::FLAV_C,"mujets");
     reader_mujets->load(*calib, BTagEntry::FLAV_UDSG,"mujets");
-    reader_comb->load(*calib, BTagEntry::FLAV_B,"comb");
-    reader_comb->load(*calib, BTagEntry::FLAV_C,"comb");
-    reader_comb->load(*calib, BTagEntry::FLAV_UDSG,"comb");
+    if(era_ == era::data_2016){
+      reader_comb->load(*calib, BTagEntry::FLAV_B,"comb");
+      reader_comb->load(*calib, BTagEntry::FLAV_C,"comb");
+      reader_comb->load(*calib, BTagEntry::FLAV_UDSG,"comb");
+    }
     return 0;
   }
 

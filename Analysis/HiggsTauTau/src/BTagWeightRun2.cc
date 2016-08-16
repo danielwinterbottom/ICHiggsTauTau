@@ -21,10 +21,12 @@ namespace ic {
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
     if( era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
     calib = new const BTagCalibration("csvv2",csv_file_path);
+    if(era_ == era::data_2016){
+      reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
+    }
     if(channel_ != channel::tt || era_==era::data_2016){
       reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
       reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
-      reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
     } else {
       reader_incl = new BTagCalibrationReader(BTagEntry::OP_LOOSE, "central",{"up","down"});
       reader_mujets = new BTagCalibrationReader(BTagEntry::OP_LOOSE, "central",{"up","down"});
@@ -36,9 +38,11 @@ namespace ic {
     reader_mujets->load(*calib,BTagEntry::FLAV_B,"mujets");
     reader_mujets->load(*calib,BTagEntry::FLAV_C,"mujets");
     reader_mujets->load(*calib,BTagEntry::FLAV_UDSG,"mujets");
-    reader_comb->load(*calib,BTagEntry::FLAV_B,"comb");
-    reader_comb->load(*calib,BTagEntry::FLAV_C,"comb");
-    reader_comb->load(*calib,BTagEntry::FLAV_UDSG,"comb");
+    if(era_ == era::data_2016){
+      reader_comb->load(*calib,BTagEntry::FLAV_B,"comb");
+      reader_comb->load(*calib,BTagEntry::FLAV_C,"comb");
+      reader_comb->load(*calib,BTagEntry::FLAV_UDSG,"comb");
+    }
     reader_iterativefit->load(*calib,BTagEntry::FLAV_B,"iterativefit");
     reader_iterativefit->load(*calib,BTagEntry::FLAV_C,"iterativefit");
     reader_iterativefit->load(*calib,BTagEntry::FLAV_UDSG,"iterativefit");
