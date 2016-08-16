@@ -65,7 +65,9 @@ namespace ic {
       outtree_->Branch("antimu_pass",&antimu_pass);
       outtree_->Branch("sf",&sf);
     }
-    calib  = new const BTagCalibration("csvv2","./input/btag_sf/CSVv2.csv");
+    std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
+    if( era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    calib  = new const BTagCalibration("csvv2",csv_file_path);
     reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
