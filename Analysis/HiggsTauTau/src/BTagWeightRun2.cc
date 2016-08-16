@@ -18,7 +18,9 @@ namespace ic {
   }
 
   int BTagWeightRun2::PreAnalysis() {
-    calib = new const BTagCalibration("csvv2","./input/btag_sf/CSVv2.csv");
+    std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
+    if( era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    calib = new const BTagCalibration("csvv2",csv_file_path);
     if(channel_ != channel::tt || era_==era::data_2016){
       reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
       reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
