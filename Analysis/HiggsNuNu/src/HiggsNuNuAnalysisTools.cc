@@ -155,6 +155,7 @@ namespace ic{
   double Error(TH1F const* hist) {
     double err = 0.0;
     if (hist) {
+      //hist->Sumw2();
       hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
       if (err<0 || err != err) {
 	std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
@@ -186,6 +187,7 @@ namespace ic{
   double Error(TH2F const* hist) {
     double err = 0.0;
     if (hist) {
+      //hist->Sumw2();
       hist->IntegralAndError(0, hist->GetNbinsX()+1,0, hist->GetNbinsY() + 1, err);
       if (err<0 || err != err) {
 	std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
@@ -201,6 +203,7 @@ namespace ic{
   
   double IntegralWithError(TH1F const* hist, int binmin, int binmax, double &err){
     if (hist) {
+      //hist->Sumw2();
       double ltmp =hist->IntegralAndError(binmin, binmax, err);
       if (ltmp<0 || ltmp != ltmp) {
 	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
@@ -213,6 +216,7 @@ namespace ic{
 
   double IntegralWithError(TH1F const* hist, double err){
     if (hist) {
+      //hist->Sumw2();
       double ltmp =hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
       if (ltmp<0 || ltmp != ltmp) {
 	std::cout << " -- Warning: integral is " << ltmp << ". Remove overflows." << std::endl;
@@ -266,6 +270,7 @@ namespace ic{
   double Error(TH1F const* hist,int binmin,int binmax) {
     double err = 0.0;
     if (hist) {
+      //hist->Sumw2();
       hist->IntegralAndError(binmin, binmax, err);
       if (err<0 || err != err) {
 	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
@@ -278,6 +283,7 @@ namespace ic{
   double Error(TH2F const* hist,int xbinmin, int xbinmax, int ybinmin, int ybinmax) {
     double err = 0.0;
     if (hist) {
+      //hist->Sumw2();
       hist->IntegralAndError(xbinmin, xbinmax,ybinmin, ybinmax, err);
       if (err<0 || err != err) {
 	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
@@ -290,6 +296,7 @@ namespace ic{
   double Error(TH3F const* hist,int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax) {
     double err = 0.0;
     if (hist) {
+      //hist->Sumw2();
       hist->IntegralAndError(xbinmin, xbinmax,ybinmin, ybinmax,zbinmin, zbinmax, err);
       if (err<0 || err != err) {
 	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
