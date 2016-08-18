@@ -654,11 +654,29 @@ namespace ic {
       outtree_->Branch("tight_t",     &tight_t);
       outtree_->Branch("vtight_t",    &vtight_t);
       outtree_->Branch("vvtight_t",   &vvtight_t);
+      outtree_->Branch("cbiso_t",     &cbiso_t);
+      outtree_->Branch("chiso_t",     &chiso_t);
+      outtree_->Branch("ntiso_t",     &ntiso_t);
+      outtree_->Branch("puiso_t",     &puiso_t);
+      outtree_->Branch("pho_out_t",   &pho_out_t);
+      outtree_->Branch("n_iso_ph_0p5", &n_iso_ph_0p5);
+      outtree_->Branch("n_sig_ph_0p5", &n_sig_ph_0p5);
+      outtree_->Branch("n_iso_ph_1p0", &n_iso_ph_1p0);
+      outtree_->Branch("n_sig_ph_1p0", &n_sig_ph_1p0);
+      outtree_->Branch("n_iso_ph_1p5", &n_iso_ph_1p5);
+      outtree_->Branch("n_sig_ph_1p5", &n_sig_ph_1p5);
+      outtree_->Branch("n_iso_ph_2p0", &n_iso_ph_2p0);
+      outtree_->Branch("n_sig_ph_2p0", &n_sig_ph_2p0);
+      outtree_->Branch("trg_m_IsoMu19TauL1",    &trg_m_IsoMu19TauL1);
+      outtree_->Branch("trg_t_IsoMu19TauL1",    &trg_t_IsoMu19TauL1);
+      outtree_->Branch("trg_m_IsoMu19Tau ",     &trg_m_IsoMu19Tau);
+      outtree_->Branch("trg_t_IsoMu19Tau ",     &trg_t_IsoMu19Tau);
       outtree_->Branch("gen_1",       &gen_1);
       outtree_->Branch("gen_2",       &gen_2);
       outtree_->Branch("n_bjets",     &n_bjets);
       outtree_->Branch("os",          &os);
       outtree_->Branch("m_ll",        &m_ll);
+
     }
 
     TFile f(sf_workspace_.c_str());
@@ -712,17 +730,6 @@ namespace ic {
     eta_t = tau->eta();
     dm_t = tau->decay_mode();
 
-    // auto pfcands = event->GetIDMap<PFCandidate>("pfCandIDMap", "pfCandidates");
-    // auto tracks = event->GetIDMap<Track>("trackIDMap", "tracks");
-    // auto const& iso_gammas = tau->iso_charged_cands();
-    // double iso_neutral = 0.;
-    // for (auto id : iso_gammas) {
-    //   if (pfcands[id]->vector().Et() > 0.5) iso_neutral += pfcands[id]->pt();
-    //   for (auto tid : pfcands[id]->constituent_tracks()) {
-    //     tracks[tid]->Print();
-    //   }
-    // }
-    // std::cout << iso_neutral << "\t" << tau->GetTauID("neutralIsoPtSum") << "\n";
 
     anti_e_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
     anti_m_t  = tau->GetTauID("againstMuonTight3") > 0.5;
@@ -732,6 +739,91 @@ namespace ic {
     tight_t   = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
     vtight_t  = tau->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
     vvtight_t = tau->GetTauID("byVVTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    cbiso_t   = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    chiso_t   = tau->GetTauID("chargedIsoPtSum");
+    ntiso_t   = tau->GetTauID("neutralIsoPtSum");
+    puiso_t   = tau->GetTauID("puCorrPtSum");
+    pho_out_t = tau->GetTauID("photonPtSumOutsideSignalCone");
+
+    auto pfcands = event->GetIDMap<PFCandidate>("pfCandIDMap", "pfCandidates");
+    // auto tracks = event->GetIDMap<Track>("trackIDMap", "tracks");
+    auto const& iso_gammas = tau->iso_gamma_cands();
+    auto const& sig_gammas = tau->sig_gamma_cands();
+    n_iso_ph_0p5 = 0;
+    n_sig_ph_0p5 = 0;
+    n_iso_ph_1p0 = 0;
+    n_sig_ph_1p0 = 0;
+    n_iso_ph_1p5 = 0;
+    n_sig_ph_1p5 = 0;
+    n_iso_ph_2p0 = 0;
+    n_sig_ph_2p0 = 0;
+    for (auto id : iso_gammas) {
+      double et = pfcands[id]->vector().Et();
+      // double pt = pfcands[id]->pt();
+      if (et > 0.5) ++n_iso_ph_0p5;
+      if (et > 1.0) ++n_iso_ph_1p0;
+      if (et > 1.5) ++n_iso_ph_1p5;
+      if (et > 2.0) ++n_iso_ph_2p0;
+    }
+    for (auto id : sig_gammas) {
+      double et = pfcands[id]->vector().Et();
+      // double pt = pfcands[id]->pt();
+      if (et > 0.5) ++n_sig_ph_0p5;
+      if (et > 1.0) ++n_sig_ph_1p0;
+      if (et > 1.5) ++n_sig_ph_1p5;
+      if (et > 2.0) ++n_sig_ph_2p0;
+    }
+
+    trg_m_IsoMu19TauL1 = false;
+    trg_t_IsoMu19TauL1 = false;
+    trg_m_IsoMu19Tau = false;
+    trg_t_IsoMu19Tau = false;
+
+    if (info->is_data()) {
+      std::string filter_m_IsoMu19TauL1  = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
+      std::string filter_t_IsoMu19TauL1  = "hltPFTau20TrackLooseIsoAgainstMuon";
+      auto const& trg_objs_IsoMu19TauL1  = event->GetPtrVec<TriggerObject>("triggerObjects_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1");
+      trg_m_IsoMu19TauL1 = IsFilterMatched(muon, trg_objs_IsoMu19TauL1, filter_m_IsoMu19TauL1, 0.5);
+      trg_t_IsoMu19TauL1 = IsFilterMatched(tau, trg_objs_IsoMu19TauL1, filter_t_IsoMu19TauL1, 0.5);
+
+      std::string filter_m_IsoMu19Tau  = "hltL3crIsoL1sMu18erTauJet20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
+      std::string filter_t_IsoMu19Tau  = "hltPFTau20TrackLooseIsoAgainstMuon";
+      auto const& trg_objs_IsoMu19Tau  = event->GetPtrVec<TriggerObject>("triggerObjects_IsoMu19_eta2p1_LooseIsoPFTau20");
+      trg_m_IsoMu19Tau = false;
+      trg_t_IsoMu19Tau = false;
+      bool trg_t_IsoMU19Tau_L1matched = false;
+      bool trg_m_IsoMU19Tau_L1other = false;
+      for (auto obj : trg_objs_IsoMu19Tau) {
+        // First skip objects that don't come from the L1
+        auto const& filters = obj->filters();
+        if (std::find(filters.begin(), filters.end(),
+                      CityHash64("hltL1sMu18erTau20er")) == filters.end()) {
+          continue;
+        }
+        // Then skip L1 objects that aren't a tau
+        auto types = GetTriggerTypes(obj);
+        if (types.count(-100) == 0) continue;
+
+        // Finally check if the object is separated from the muon *and*
+        // the probe tau
+        if (DR(obj, muon) > 0.5 && DR(obj, tau) > 0.5) {
+          trg_m_IsoMU19Tau_L1other = true;
+        }
+        if (DR(obj, tau) < 0.5) {
+          trg_t_IsoMU19Tau_L1matched = true;
+        }
+      }
+      // Did the L1 x-seed fire (but with the tau part due to some other object in the event)
+      // Might not be necessary if the IsoMu22 firing guarantees the IsoMu19 part
+      trg_m_IsoMu19Tau = trg_m_IsoMU19Tau_L1other && IsFilterMatched(muon, trg_objs_IsoMu19Tau, filter_m_IsoMu19Tau, 0.5);
+      // Did the tau fire the L1 and HLT parts too?
+      trg_t_IsoMu19Tau = trg_t_IsoMU19Tau_L1matched && IsFilterMatched(tau, trg_objs_IsoMu19Tau, filter_t_IsoMu19Tau, 0.5);
+    } else {
+      trg_m_IsoMu19TauL1 = true;
+      trg_t_IsoMu19TauL1 = true;
+      trg_m_IsoMu19Tau = true;
+      trg_t_IsoMu19Tau = true;
+    }
 
     n_vtx = info->good_vertices();
 
