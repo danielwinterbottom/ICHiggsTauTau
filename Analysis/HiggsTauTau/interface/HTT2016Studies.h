@@ -245,6 +245,7 @@ class ZmtTPTreeProducer : public ModuleBase {
 
   int n_bjets;
 
+  bool os;
   float m_ll;
 
  public:

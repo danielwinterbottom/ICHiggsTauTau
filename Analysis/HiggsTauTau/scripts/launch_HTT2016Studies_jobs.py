@@ -13,7 +13,7 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
 
 MAX_EVTS = -1
 FILES_PER_JOB = 50
-PROD='Aug5_'
+PROD='Aug16_'
 
 DATA_SAMPLES = {
   'Tau': [
@@ -61,13 +61,19 @@ SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
 SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'EffectiveEvents']
+#SEQUENCES = ['HashMap']
+
+if 'HashMap' in SEQUENCES:
+  FILES_PER_JOB = 1E6
+
 WHITELIST = {
     'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmmTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'Zee': ['SingleElectron'] + list(MC_SAMPLES.keys()),
     'ZeeTP': ['SingleElectron'] + list(MC_SAMPLES.keys()),
     'ZmtTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
-    'EffectiveEvents': list(MC_SAMPLES.keys())
+    'EffectiveEvents': list(MC_SAMPLES.keys()),
+    'HashMap': list(DATA_SAMPLES.keys())
 }
 
 OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name

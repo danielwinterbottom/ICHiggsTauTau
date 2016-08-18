@@ -657,6 +657,7 @@ namespace ic {
       outtree_->Branch("gen_1",       &gen_1);
       outtree_->Branch("gen_2",       &gen_2);
       outtree_->Branch("n_bjets",     &n_bjets);
+      outtree_->Branch("os",          &os);
       outtree_->Branch("m_ll",        &m_ll);
     }
 
@@ -756,6 +757,7 @@ namespace ic {
       throw::std::runtime_error("Could not find MVA MET!");
     }
     mt_m = MT(muon, mva_met);
+    os = (pairs[0]->charge() == 0);
     m_ll = pairs[0]->M();
 
     auto bjets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
