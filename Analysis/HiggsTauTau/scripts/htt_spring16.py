@@ -116,7 +116,7 @@ FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 
 CONFIG='scripts/configsm2016.json'
 
-FILELIST='filelists/Aug06_MC_80X'
+FILELIST='filelists/Aug11_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -140,11 +140,11 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
       'TTH_M-'+mass
     ]
 if options.proc_mssm or options.proc_all:
-  gghmasses = ['90','100','120','130','160','180','350','450','500','700','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
-  bbhmasses = ['80','90','110','120','130','140','160','180','250','300','400','450','500','600','700','900','1000','1200','2900']
+  gghmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
+  bbhmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
   if options.short_signal: 
-    gghmasses = ['160']
-    bbhmasses = ['160']
+    gghmasses = ['500']
+    bbhmasses = ['500']
   for mass in gghmasses :
     signal_mc += [
       'SUSYGluGluToHToTauTau_M-'+mass,
@@ -224,12 +224,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
          'Tau'+era]
 
 
-  DATAFILELIST="./filelists/Aug06_Data_80X"
+  DATAFILELIST="./filelists/Aug11_Data_80X"
+
 
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July21_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/rlane/Aug11_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -240,7 +241,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July21_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/rlane/Aug11_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -302,7 +303,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 
   if options.qcd_study:
     #FILELIST='filelists/Feb25_MC_76X'
-    FILELIST='filelists/July21_MC_80X'
+    FILELIST='filelists/Aug11_MC_80X'
     central_samples = [
       'QCDMuEnrichedPt15'
   #    'QCDEMEnrichedPt15-20',
