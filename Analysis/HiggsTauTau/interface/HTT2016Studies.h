@@ -175,6 +175,7 @@ class ZeeTPTreeProducer : public ModuleBase {
   float wt;
 
   int n_vtx;
+  int run;
 
   float pt_t;
   float eta_t;
@@ -192,7 +193,11 @@ class ZeeTPTreeProducer : public ModuleBase {
   float m_ll;
 
   bool trg_t_Ele25eta2p1WPTight;
+  bool trg_t_Ele24Tau; // Did something fire the L1 tau?
   bool trg_p_Ele25eta2p1WPTight;
+  bool trg_p_PFTau120;
+  bool trg_p_Ele24TauL1;
+  bool trg_p_Ele24Tau;
 
  public:
   ZeeTPTreeProducer(std::string const& name);

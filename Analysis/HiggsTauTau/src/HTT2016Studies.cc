@@ -4,6 +4,7 @@
 #include "RooRealVar.h"
 #include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/Track.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
@@ -391,6 +392,7 @@ namespace ic {
         trg_p_IsoMu19TauL1 = IsFilterMatched(mu_p, trg_objs_IsoMu19TauL1, filter_IsoMu19TauL1, 0.5);
 
         // For the mu-tau L1 cross seed we have to take a bit more care. Need to check that something other than the probe muon
+        // fired the L1 tau part
         std::string filter_IsoMu19Tau  = "hltL3crIsoL1sMu18erTauJet20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
         auto const& trg_objs_IsoMu19Tau  = event->GetPtrVec<TriggerObject>("triggerObjects_IsoMu19_eta2p1_LooseIsoPFTau20");
         trg_t_IsoMu19Tau = false;
@@ -486,6 +488,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("ZeeTP","ZeeTP");
 
       outtree_->Branch("wt",          &wt);
+      outtree_->Branch("run",         &run);
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("pt_t",        &pt_t);
       outtree_->Branch("eta_t",       &eta_t);
@@ -499,8 +502,12 @@ namespace ic {
       outtree_->Branch("id_p",        &id_p);
       outtree_->Branch("iso_p",       &iso_p);
       outtree_->Branch("m_ll",        &m_ll);
-      outtree_->Branch("trg_t_Ele25eta2p1WPTight",       &trg_t_Ele25eta2p1WPTight);
-      outtree_->Branch("trg_p_Ele25eta2p1WPTight",       &trg_p_Ele25eta2p1WPTight);
+      outtree_->Branch("trg_t_Ele25eta2p1WPTight", &trg_t_Ele25eta2p1WPTight);
+      outtree_->Branch("trg_t_Ele24Tau",           &trg_t_Ele24Tau);
+      outtree_->Branch("trg_p_Ele25eta2p1WPTight", &trg_p_Ele25eta2p1WPTight);
+      outtree_->Branch("trg_p_PFTau120",           &trg_p_PFTau120);
+      outtree_->Branch("trg_p_Ele24TauL1",         &trg_p_Ele24TauL1);
+      outtree_->Branch("trg_p_Ele24Tau",           &trg_p_Ele24Tau);
     }
 
     TFile f(sf_workspace_.c_str());
@@ -512,6 +519,8 @@ namespace ic {
   int ZeeTPTreeProducer::Execute(TreeEvent *event) {
     auto pairs = event->GetPtrVec<CompositeCandidate>("dielec");
     auto info = event->GetPtr<EventInfo>("eventInfo");
+    run = info->run();
+
 
     n_vtx = info->good_vertices();
     wt = info->total_weight();
@@ -533,18 +542,60 @@ namespace ic {
       m_ll = pair->M();
 
       trg_t_Ele25eta2p1WPTight = false;
+      trg_t_Ele24Tau = false;
       trg_p_Ele25eta2p1WPTight = false;
+      trg_p_PFTau120 = false;
+      trg_p_Ele24TauL1 = false;
+      trg_p_Ele24Tau = false;
       if (info->is_data()) {
         bool path_fired_Ele25eta2p1WPTight = HLTPathCheck(event, "triggerPaths", "HLT_Ele25_eta2p1_WPTight_Gsf_v");
+        bool path_fired_PFTau120 = HLTPathCheck(event, "triggerPaths", "HLT_VLooseIsoPFTau120_Trk50_eta2p1_v");
 
         std::string filter_Ele25eta2p1WPTight = "hltEle25erWPTightGsfTrackIsoFilter";
         auto const& trg_objs_Ele25eta2p1WPTight = event->GetPtrVec<TriggerObject>("triggerObjects_Ele25_eta2p1_WPTight_Gsf");
 
         trg_t_Ele25eta2p1WPTight = path_fired_Ele25eta2p1WPTight && IsFilterMatched(el_t, trg_objs_Ele25eta2p1WPTight, filter_Ele25eta2p1WPTight, 0.5);
         trg_p_Ele25eta2p1WPTight = path_fired_Ele25eta2p1WPTight && IsFilterMatched(el_p, trg_objs_Ele25eta2p1WPTight, filter_Ele25eta2p1WPTight, 0.5);
+
+        std::string filter_PFTau120  = "hltPFTau120TrackPt50LooseAbsOrRelVLooseIso";
+        auto const& trg_objs_PFTau120  = event->GetPtrVec<TriggerObject>("triggerObjects_VLooseIsoPFTau120_Trk50_eta2p1");
+        trg_p_PFTau120 = path_fired_PFTau120 && IsFilterMatched(el_p, trg_objs_PFTau120, filter_PFTau120, 0.5);
+
+        std::string filter_Ele24TauL1  = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
+        auto const& trg_objs_Ele24TauL1  = event->GetPtrVec<TriggerObject>("triggerObjects_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1");
+        trg_p_Ele24TauL1 = IsFilterMatched(el_p, trg_objs_Ele24TauL1, filter_Ele24TauL1, 0.5);
+
+        // For the e-tau L1 cross seed we have to take a bit more care. Need to check that something other than the probe
+        // electron fired the L1 tau part
+        std::string filter_Ele24Tau  = "hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter";
+        auto const& trg_objs_Ele24Tau  = event->GetPtrVec<TriggerObject>("triggerObjects_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20");
+        trg_t_Ele24Tau = false;
+        for (auto obj : trg_objs_Ele24Tau) {
+          // First skip objects that don't come from the L1
+          auto const& filters = obj->filters();
+          if (std::find(filters.begin(), filters.end(),
+                        CityHash64("hltL1sIsoEG22erTau20erdEtaMin0p2")) == filters.end()) {
+            continue;
+          }
+          // Then skip L1 objects that aren't a tau
+          auto types = GetTriggerTypes(obj);
+          if (types.count(-100) == 0) continue;
+
+          // Finally check if the object is separated from the probe muon
+          if (DR(obj, el_p) > 0.5) {
+            trg_t_Ele24Tau = true;
+            break;
+          }
+        }
+        trg_p_Ele24Tau = trg_t_Ele24Tau && IsFilterMatched(el_p, trg_objs_Ele24Tau, filter_Ele24Tau, 0.5);
+
       } else {
         trg_t_Ele25eta2p1WPTight = true;
+        trg_t_Ele24Tau = true;
         trg_p_Ele25eta2p1WPTight = true;
+        trg_p_PFTau120 = true;
+        trg_p_Ele24TauL1 = true;
+        trg_p_Ele24Tau = true;
       }
       outtree_->Fill();
     }
@@ -647,6 +698,18 @@ namespace ic {
     pt_t = tau->pt();
     eta_t = tau->eta();
     dm_t = tau->decay_mode();
+
+    // auto pfcands = event->GetIDMap<PFCandidate>("pfCandIDMap", "pfCandidates");
+    // auto tracks = event->GetIDMap<Track>("trackIDMap", "tracks");
+    // auto const& iso_gammas = tau->iso_charged_cands();
+    // double iso_neutral = 0.;
+    // for (auto id : iso_gammas) {
+    //   if (pfcands[id]->vector().Et() > 0.5) iso_neutral += pfcands[id]->pt();
+    //   for (auto tid : pfcands[id]->constituent_tracks()) {
+    //     tracks[tid]->Print();
+    //   }
+    // }
+    // std::cout << iso_neutral << "\t" << tau->GetTauID("neutralIsoPtSum") << "\n";
 
     anti_e_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
     anti_m_t  = tau->GetTauID("againstMuonTight3") > 0.5;
