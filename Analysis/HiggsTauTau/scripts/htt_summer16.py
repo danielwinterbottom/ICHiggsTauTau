@@ -127,7 +127,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   for mass in masses :
     signal_mc += [
       'reHLT_GluGluHToTauTau_M-'+mass,
-      #'reHLT_VBFHToTauTau_M-'+mass,
+      'reHLT_VBFHToTauTau_M-'+mass,
       #'ZHToTauTau_M-'+mass,
       #'WplusHToTauTau_M-'+mass,
       #'WminusHToTauTau_M-'+mass,

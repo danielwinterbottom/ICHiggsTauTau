@@ -5,7 +5,7 @@
     "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/dwinterb/Aug08_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et"],
+    "channels":     ["et", "mt"],
     "sequences": {
       "all":  ["default"]//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
@@ -48,7 +48,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/test/",
+    "output_folder" : "./output/HighLumi_tausmatched/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "WZTo1L3Nu",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",

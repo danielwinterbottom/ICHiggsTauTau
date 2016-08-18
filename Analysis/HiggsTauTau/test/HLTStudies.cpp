@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
   std::string channel      = argv[1];
   std::string outputDir    = argv[2];
   std::string signalType   = argv[3];
-  unsigned DoLegsIndependent = 0;;
+  unsigned DoLegsIndependent = 0;
   unsigned temp = std::atoi(argv[4]);
   if(temp == 0 || temp ==1) DoLegsIndependent = temp;
   else{
@@ -100,6 +100,21 @@ int main(int argc, char* argv[]){
     } else if(TriggerName[i] == "HLT_DoubleMediumIsoPFTau32_Trk1_eta2p1_Reg_v"){
       ExtraEtaCut1[i] = 2.1;
       ExtraEtaCut2[i] = 2.1;
+    } else if(TriggerName[i] == "HLT_Ele32_eta2p1_WPTight_Gsf_v_1pt45e34"){
+      ExtraEtaCut1[i] = 2.1;
+      ExtraEtaCut2[i] = 2.3;
+    } else if(TriggerName[i] == "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v"){
+      ExtraEtaCut1[i] = 2.1;
+      ExtraEtaCut2[i] = 2.1;
+    } else if(TriggerName[i] == "HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v"){
+      ExtraEtaCut1[i] = 2.1;
+      ExtraEtaCut2[i] = 2.3;
+    } else if (TriggerName[i] == "HLT_IsoMu22_eta2p1_v"){
+      ExtraEtaCut2[i] = 2.3;
+      ExtraEtaCut1[i] = 2.1;
+    } else if (TriggerName[i] == "HLT_IsoMu27_v"){
+      ExtraEtaCut2[i] = 2.3;
+      ExtraEtaCut1[i] = 2.4;
     }
   }
  // 
@@ -116,10 +131,10 @@ int main(int argc, char* argv[]){
   
   std::string filename1;
   if(signalType == "GluGlu"){
-    filename1 = "output/Jul03/LegsSeperate4/GluGluHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = "output/HighLumi/reHLT_GluGluHToTauTau_M-125_"+channel+"_2015.root";
 
   } else if (signalType == "VBF") {
-    filename1 = "output/Jul03/LegsSeperate4/VBFHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = "output/Jul03/HighLumi/reHLT_VBFHToTauTau_M-125_"+channel+"_2015.root";
   } else if (signalType == "QCD"){
     filename1 = "output/Jul03/LegsSeperate4/QCD_Pt-15to80_MixedSamples_MuEnrichedPt5_"+channel+"_2015.root";  
   }
@@ -264,15 +279,13 @@ int main(int argc, char* argv[]){
         if(eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut1[0]) h_lep1pt_denum_trigger1->Fill(pt_1);
         if(eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut1[1]) h_lep1pt_denum_trigger2->Fill(pt_1);
       }
-      bool Trigger1Pass;
-      bool Trigger2Pass;
+      bool Trigger1Pass = true;
+      bool Trigger2Pass = true;
       if(DoLegsIndependent == 0){
         Trigger1Pass = PassedTrigger1;
         Trigger2Pass = PassedTrigger2;
-      } else{
-        Trigger1Pass = true;
-        Trigger2Pass = true;
       }
+
       if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1) h_lep2pt_denum_trigger1->Fill(pt_2);
       if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1) h_lep2pt_denum_trigger2->Fill(pt_2);
       if((eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0]) || (eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1])) h_lep1pt_denum_ORtrigger->Fill(pt_1);
@@ -349,7 +362,7 @@ int main(int argc, char* argv[]){
     h_lep1_eff_trigger1->GetYaxis()->SetRangeUser(0,1.1);
     h_lep1_eff_trigger1->Divide(h_lep1pt_denum_trigger1);
     h_lep1_eff_trigger1->Draw();
-    c1->Print((gr_name+".png").c_str());
+    c1->Print((outputDir+"/"+gr_name+".png").c_str());
     
     gr2 = new TGraphAsymmErrors(binnum);
     gr2->Divide(h_lep2_eff_trigger1, h_lep2pt_denum_trigger1);
@@ -366,7 +379,7 @@ int main(int argc, char* argv[]){
     h_lep2_eff_trigger1->GetYaxis()->SetRangeUser(0,1.1);
     h_lep2_eff_trigger1->Divide(h_lep2pt_denum_trigger1);
     h_lep2_eff_trigger1->Draw();
-    c1->Print((gr_name+".png").c_str());
+    c1->Print((outputDir+"/"+gr_name+".png").c_str());
   }
 
   //h_lep1_eff_trigger2->Draw();
@@ -391,7 +404,7 @@ int main(int argc, char* argv[]){
   h_lep1_eff_trigger2->GetYaxis()->SetRangeUser(0,1.1);
   h_lep1_eff_trigger2->Divide(h_lep1pt_denum_trigger2);
   h_lep1_eff_trigger2->Draw();
-  c1->Print((gr_name+".png").c_str());
+  c1->Print((outputDir+"/"+gr_name+".png").c_str());
   
   //h_lep2_eff_trigger2->Draw();
   //c1->Print("subleadtau_numerator.png");
@@ -415,7 +428,7 @@ int main(int argc, char* argv[]){
   h_lep2_eff_trigger2->GetYaxis()->SetRangeUser(0,1.1);
   h_lep2_eff_trigger2->Divide(h_lep2pt_denum_trigger2);
   h_lep2_eff_trigger2->Draw();
-  c1->Print((gr_name+".png").c_str());
+  c1->Print((outputDir+"/"+gr_name+".png").c_str());
   
   if(channel != "tt") {
     gr5 = new TGraphAsymmErrors(binnum);
@@ -433,7 +446,7 @@ int main(int argc, char* argv[]){
     h_lep1_eff_ORtrigger->GetYaxis()->SetRangeUser(0,1.1);
     h_lep1_eff_ORtrigger->Divide(h_lep1pt_denum_ORtrigger);
     h_lep1_eff_ORtrigger->Draw();
-    c1->Print((gr_name+".png").c_str());
+    c1->Print((outputDir+"/"+gr_name+".png").c_str());
     
     gr6 = new TGraphAsymmErrors(binnum);
     gr6->Divide(h_lep2_eff_ORtrigger, h_lep2pt_denum_ORtrigger);
@@ -450,7 +463,7 @@ int main(int argc, char* argv[]){
     h_lep2_eff_ORtrigger->GetYaxis()->SetRangeUser(0,1.1);
     h_lep2_eff_ORtrigger->Divide(h_lep2pt_denum_ORtrigger);
     h_lep2_eff_ORtrigger->Draw();
-    c1->Print((gr_name+".png").c_str());
+    c1->Print((outputDir+"/"+gr_name+".png").c_str());
     
   }
   

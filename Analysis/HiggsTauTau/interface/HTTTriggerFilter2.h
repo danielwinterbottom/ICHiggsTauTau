@@ -31,6 +31,9 @@ class HTTTriggerFilter2 : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+  
+  unsigned totalEventsPassed;
+  unsigned notMatched;
 
 };
 

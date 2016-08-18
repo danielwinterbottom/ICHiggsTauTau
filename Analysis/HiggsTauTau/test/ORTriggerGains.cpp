@@ -48,10 +48,10 @@ int main(int argc, char* argv[]){
   
   std::string filename1;
   if(signalType == "GluGlu"){
-    filename1 = "output/Jul03/GluGluHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = "output/HighLumi/reHLT_GluGluHToTauTau_M-125_"+channel+"_2015.root";
 
   } else if (signalType == "VBF") {
-    filename1 = "output/Jul03/LegsSeperate4/VBFHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = "output/HighLumi/reHLT_VBFHToTauTau_M-125_"+channel+"_2015.root";
   } else if (signalType == "QCD"){
     filename1 = "output/Jul03/LegsSeperate4/QCD_Pt-15to80_MixedSamples_MuEnrichedPt5_"+channel+"_2015.root";  
   }
@@ -163,6 +163,31 @@ int main(int argc, char* argv[]){
       ExtraEtaCut2[i] = 2.1;
       ExtraPtCut1[i] = 40;
       ExtraPtCut2[i] = 40;
+    } else if(TriggerName[i] == "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v"){
+      ExtraEtaCut1[i] = 2.1;
+      ExtraEtaCut2[i] = 2.1;
+      ExtraPtCut1[i] = 25;
+      ExtraPtCut2[i] = 40; //may have to change this cut need to look at efficiency curve for tau leg!
+    } else if(TriggerName[i] == "HLT_Ele32_eta2p1_WPTight_Gsf_v_1pt45e34"){
+      ExtraEtaCut1[i] = 2.1;
+      ExtraEtaCut2[i] = 2.3;
+      ExtraPtCut1[i] = 33;
+      ExtraPtCut2[i] = 0;
+    } else if(TriggerName[i] == "HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v"){
+      ExtraEtaCut1[i] = 2.1;
+      ExtraEtaCut2[i] = 2.3;
+      ExtraPtCut1[i]  = 22;
+      ExtraPtCut2[i]  = 20;
+    } else if (TriggerName[i] == "HLT_IsoMu22_eta2p1_v"){
+      ExtraEtaCut2[i] = 2.3;
+      ExtraPtCut2[i] = 20;
+      ExtraPtCut1[i] = 23;
+      ExtraEtaCut1[i] = 2.1;
+    } else if (TriggerName[i] == "HLT_IsoMu27_v"){
+      ExtraEtaCut2[i] = 2.3;
+      ExtraPtCut2[i] = 20;
+      ExtraPtCut1[i] = 28;
+      ExtraEtaCut1[i] = 2.4;
     }
   }
   

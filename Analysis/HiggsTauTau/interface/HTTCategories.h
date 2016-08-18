@@ -485,6 +485,8 @@ class HTTCategories : public ModuleBase {
   bool etHLTPath13_;
   bool etHLTPath14_;
   bool etHLTPath15_;
+  bool etHLTPath16_;
+  bool etHLTPath17_;
   bool mtHLTPath1_;
   bool mtHLTPath2_;
   bool mtHLTPath3_;
@@ -546,6 +548,8 @@ class HTTCategories : public ModuleBase {
   bool etHLTPath13_leg1_;
   bool etHLTPath14_leg1_;
   bool etHLTPath15_leg1_;
+  bool etHLTPath16_leg1_;
+  bool etHLTPath17_leg1_;
   bool mtHLTPath1_leg1_;
   bool mtHLTPath2_leg1_;
   bool mtHLTPath3_leg1_;
@@ -607,6 +611,8 @@ class HTTCategories : public ModuleBase {
   bool etHLTPath13_leg2_;
   bool etHLTPath14_leg2_;
   bool etHLTPath15_leg2_;
+  bool etHLTPath16_leg2_;
+  bool etHLTPath17_leg2_;
   bool mtHLTPath1_leg2_;
   bool mtHLTPath2_leg2_;
   bool mtHLTPath3_leg2_;
