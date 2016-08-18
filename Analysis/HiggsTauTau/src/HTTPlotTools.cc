@@ -230,7 +230,9 @@ namespace ic {
       ((prefix+"draw_error_band").c_str(),      po::value<bool>(&draw_error_band_)->default_value(false))
       ((prefix+"add_stat_error").c_str(),       po::value<bool>(&add_stat_error_)->default_value(true))
       ((prefix+"ratio_min").c_str(),            po::value<double>(&ratio_min_)->default_value(0.68))
-      ((prefix+"ratio_max").c_str(),            po::value<double>(&ratio_max_)->default_value(1.32));
+      ((prefix+"ratio_max").c_str(),            po::value<double>(&ratio_max_)->default_value(1.32))
+      ((prefix+"supress_output").c_str(),       po::value<bool>(&supress_output_)->default_value(false))
+      ((prefix+"sOverb_output_name").c_str(),   po::value<std::string>(&sOverb_output_name_)->default_value("outputTemp.txt"));
 
     return config_;
     // ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(-10))
@@ -540,11 +542,18 @@ namespace ic {
         if(j==unsigned(bkg_elements.size())-1) NZTT = bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
     }
     
-    std::cout << NHsignal     << std::endl;
-    std::cout << NTbackground << std::endl;
-    std::cout << NZTT         << std::endl; 
-    std::cout << NHsignal/sqrt(NTbackground) << std::endl;
-    std::cout << NZTT/sqrt(NTbackground - NZTT) << std::endl;
+    std::cout << "# signal events: " << NHsignal     << std::endl;
+    std::cout << "# background events: " << NTbackground << std::endl;
+    std::cout << "# ZTt: " << NZTT         << std::endl; 
+    std::cout << "S/sqrt(B) = " << NHsignal/sqrt(NTbackground) << std::endl;
+    std::cout << "NZTT/sqrt(NTbackground - NZTT) = " << NZTT/sqrt(NTbackground - NZTT) << std::endl;
+    
+    if(supress_output_){
+      std::ofstream outfile;
+      outfile.open(sOverb_output_name_);
+      outfile << NHsignal/sqrt(NTbackground);
+      outfile.close();
+    }
     
     // Blind data histogram using either auto-blinding or user specified range
     if(autoblind_){
@@ -665,9 +674,11 @@ namespace ic {
     FixOverlay();
     canv->Update();
     pads[0]->GetFrame()->Draw();
-    std::string log = log_y_ ? "_log" : "";  
-    canv->Print((plot_name_+log+".pdf").c_str());
-    canv->Print((plot_name_+log+".png").c_str());
+    std::string log = log_y_ ? "_log" : "";
+    if(!supress_output_){
+      canv->Print((plot_name_+log+".pdf").c_str());
+      canv->Print((plot_name_+log+".png").c_str());
+    }
   }
 
   void HTTPlot::AddTextElement(ic::TextElement & ele) {

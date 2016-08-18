@@ -69,6 +69,8 @@ namespace ic {
     
     alias_map_["inclusive"]                 = "1";
     alias_map_["vbf"]                       = "(n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500.)";
+    alias_map_["vbf_tight"]                 = "(n_lowpt_jets>=2 && jdeta>4. && n_jetsingap_lowpt==0 && mjj>700. && pt_tt>100. && n_bjets==0)";
+    alias_map_["vbf_loose"]                 = "(!"+alias_map_["vbf_tight"]+" && n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500. && n_bjets==0)";
     alias_map_["vbf_hadhad"]                = "(n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500. && pt_tt>100.)";
     alias_map_["1jet_high_highhpt"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100.)";
     alias_map_["1jet_high_lowhpt"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100.)";

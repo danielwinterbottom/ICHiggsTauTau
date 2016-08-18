@@ -75,6 +75,8 @@ namespace ic {
     CLASS_MEMBER(HTTPlot,   bool,           add_stat_error)
     CLASS_MEMBER(HTTPlot,   double,         ratio_min)
     CLASS_MEMBER(HTTPlot,   double,         ratio_max)
+    CLASS_MEMBER(HTTPlot,   bool,           supress_output)
+    CLASS_MEMBER(HTTPlot,   std::string,       sOverb_output_name)
 
     // CLASS_MEMBER(HTTPlot, bool, ztt_by_decay_mode)
     // CLASS_MEMBER(HTTPlot, bool, shift_backgrounds)
@@ -98,6 +100,7 @@ namespace ic {
       inline double extra_pad() const { return extra_pad_; }
       inline std::string x_axis_label() const { return x_axis_label_; }
       inline std::string y_axis_label() const { return y_axis_label_; }
+      inline bool supress_output() const { return supress_output_; }
     private:
       boost::program_options::options_description config_;
       std::map<std::string, std::vector<PlotBkgComponent>> bkg_schemes_;
