@@ -223,6 +223,8 @@ sample_list = [
   'TTHToTauTau_M-120',
   'TTHToTauTau_M-125',
   'TTHToTauTau_M-130',
+  'reHLT_GluGluHToTauTau_M-125',
+  'reHLT_VBFHToTauTau_M-125',
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']

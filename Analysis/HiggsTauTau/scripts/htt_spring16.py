@@ -116,7 +116,7 @@ FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 
 CONFIG='scripts/configsm2016.json'
 
-FILELIST='filelists/July21_MC_80X'
+FILELIST='filelists/Aug06_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -224,7 +224,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
          'Tau'+era]
 
 
-  DATAFILELIST="./filelists/July21_Data_80X"
+  DATAFILELIST="./filelists/Aug06_Data_80X"
 
   if options.calc_lumi:
     for sa in data_samples:

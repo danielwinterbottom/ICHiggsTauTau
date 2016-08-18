@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/July21_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
-    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July21_MC_80X/",
+    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Aug06_MC_80X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["et","mt","tt"],
