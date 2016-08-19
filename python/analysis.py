@@ -11,6 +11,27 @@ import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
 ROOT.TH1.AddDirectory(0)
 
 
+class Sel(object):
+    def __init__(self, **kwargs):
+        self.terms = kwargs
+
+    def __call__(self, **kwargs):
+        res = self.terms.copy()
+        res.update(kwargs)
+        return ' * '.join(['(' + x + ')' for x in res.values()])
+
+    def copy(self, **kwargs):
+        res = Sel(**self.terms)
+        res.update(**kwargs)
+        return res
+
+    def __getattr__(self, name):
+        return self.terms[name]
+
+    def update(self, **kwargs):
+        self.terms.update(kwargs)
+
+
 def WriteToTFile(obj, file, path):
     file.cd()
     as_vec = path.split('/')
@@ -294,14 +315,14 @@ class Analysis(object):
     def Run(self):
         manifest = []
         self.nodes.AddRequests(manifest)
-        print manifest
+        # print manifest
         drawdict = defaultdict(list)
         outdict = defaultdict(list)
         for entry in manifest:
             drawdict[entry[0]].append(entry[1:3])
             outdict[entry[0]].append(entry[3:5])
-        print drawdict
-        print outdict
+        # print drawdict
+        # print outdict
         for sample in drawdict:
             print sample
             res = self.trees[sample].Draw(drawdict[sample])
