@@ -11,6 +11,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTAnalysisTools.h"
 #include "boost/program_options.hpp"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/SOverBTools.h"
 
 namespace ic {
 
