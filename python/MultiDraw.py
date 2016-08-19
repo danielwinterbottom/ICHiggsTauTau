@@ -34,7 +34,7 @@ def MakeTObjArray(theList, takeOwnership=True):
     return result
 
 
-def MultiDraw(self, Formulae, CommonWeight="1", Compiled=False):
+def MultiDraw(self, Formulae, Compiled=False):
     """Draws many histograms in one loop over a tree.
 
         Instead of:
@@ -57,22 +57,9 @@ def MultiDraw(self, Formulae, CommonWeight="1", Compiled=False):
         string specifying the weight to be applied to that histogram only.
     """
 
-    if type(CommonWeight) == tuple:
-        Formulae = (CommonWeight, ) + Formulae
-        CommonWeight = "1"
-
     results, formulae, weights, formulaeStr, weightsStr = [], [], [], [], []
 
     # lastFormula, lastWeight = None, None
-
-    # A weight common to everything being drawn
-    CommonWeightFormula = ROOT.TTreeFormula("CommonWeight", CommonWeight, self)
-    CommonWeightFormula.SetQuickLoad(True)
-    if not CommonWeightFormula.GetTree():
-        raise RuntimeError("TTreeFormula didn't compile: " + CommonWeight)
-
-    # hists = {}
-    # print Formulae
 
     for i, origFormula in enumerate(Formulae):
         print "Have an origFormula", origFormula
@@ -82,44 +69,6 @@ def MultiDraw(self, Formulae, CommonWeight="1", Compiled=False):
             origFormula, weight = origFormula
         else:
             origFormula, weight = origFormula, "1"
-
-        # print origFormula, weight
-
-        # Pluck out histogram name and arguments
-        # match = re.match(r"^(.*?)\s*>>\s*(.*?)\s*\(\s*(.*?)\s*\)$", origFormula)
-        # if match:
-
-        #     formula, name, arguments = match.groups()
-        #     arguments = re.split(",\s*", arguments)
-
-        #     bins, minX, maxX = arguments
-        #     bins, minX, maxX = int(bins), float(minX), float(maxX)
-
-        #     # Create histogram with name and arguments
-        #     hist = TH1D(name, name, bins, minX, maxX)
-        #     hist.Sumw2()
-        # else:
-        #     # without arguments
-        #     match = re.match(r"^(.*?)\s*>>\s*(.*?)\s*$", origFormula)
-        #     if not match:
-        #         raise RuntimeError(
-        #             "MultiDraw: Couldn't parse formula: '%s'" % origFormula)
-
-        #     formula, name = match.groups()
-        #     # print formula, name
-
-        #     if name.startswith("+") and name[1:] in hists:
-        #         # Drawing additionally into a histogram
-        #         hist = hists[name[1:]]
-        #     else:
-        #         name = name[1:]
-        #         hist = gDirectory.Get(name)
-        #         if not hist:
-        #             raise RuntimeError(
-        #                 "MultiDraw: Couldn't find histogram to fill '%s' in current directory." % name)
-
-        # if name not in hists:
-        #     hists[name] = hist
 
         # Our way is simpler, require each variable to end in (...) or [...] to give the binning
         # and always create a new hist
@@ -145,6 +94,7 @@ def MultiDraw(self, Formulae, CommonWeight="1", Compiled=False):
 
         # if formula != lastFormula:
         f = ROOT.TTreeFormula("formula%i" % i, formula, self)
+        f.SetTitle(formula)
         if not f.GetTree():
             raise RuntimeError("TTreeFormula didn't compile: " + formula)
         f.SetQuickLoad(True)
@@ -155,6 +105,7 @@ def MultiDraw(self, Formulae, CommonWeight="1", Compiled=False):
 
         # if weight != lastWeight:
         f = ROOT.TTreeFormula("weight%i" % i, weight, self)
+        f.SetTitle(weight)
         if not f.GetTree():
             raise RuntimeError("TTreeFormula didn't compile: " + formula)
         f.SetQuickLoad(True)
@@ -209,7 +160,7 @@ def MultiDraw(self, Formulae, CommonWeight="1", Compiled=False):
 
     # Ensure that formulae are told when tree changes
     fManager = ROOT.TTreeFormulaManager()
-    for formula in formulae + weights + [CommonWeightFormula, ]:
+    for formula in formulae + weights:
         if type(formula) == ROOT.TTreeFormula:
             fManager.Add(formula)
 
@@ -217,7 +168,7 @@ def MultiDraw(self, Formulae, CommonWeight="1", Compiled=False):
     self.SetNotify(fManager)
 
     # Draw everything!
-    _MultiDraw(self, CommonWeightFormula,
+    _MultiDraw(self,
                MakeTObjArray(formulae),
                MakeTObjArray(weights),
                MakeTObjArray(results, takeOwnership=False),

@@ -10,6 +10,6 @@ class TTree;
 class TTreeFormula;
 class TObjArray;
 
-void MultiDraw(TTree *inTree, TTreeFormula *commonWeightFormula,
+void MultiDraw(TTree *inTree,
                TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists,
                UInt_t ListLen);
