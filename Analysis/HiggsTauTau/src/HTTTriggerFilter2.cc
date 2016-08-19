@@ -1467,12 +1467,17 @@ namespace ic {
                   if(objs[leg2_match_index]->pt() < leg_filters[i].leg2_extraHLTPt) leg2_match = false;
                 }
                 
+                int L1EGIndex = -1;
+                
                 bool noEG = true;
                 std::vector<unsigned> leg1_L1match_index = IsFilterMatchedWithMultipleIndexs(dileptons[j]->At(0), objs, leg_filters[i].L1filtername , 0.5).second; 
                 for(unsigned y=0; y<leg1_L1match_index.size(); ++y){
                   std::set<int16_t> lep1triggerTypes = GetTriggerTypes(objs[leg1_L1match_index[y]]);
                   if(lep1triggerTypes.find(-98) != lep1triggerTypes.end()){
-                    if(objs[leg1_L1match_index[y]]->pt() >= leg_filters[i].leg1_extraL1Pt ) noEG = false;
+                    if(objs[leg1_L1match_index[y]]->pt() >= leg_filters[i].leg1_extraL1Pt ){
+                      noEG = false;
+                      L1EGIndex = y;
+                    }
                   }
                 }
                 if(noEG) leg1_match = false;
@@ -1481,28 +1486,26 @@ namespace ic {
                 std::vector<ic::L1TEGamma*> l1electrons = event->GetPtrVec<ic::L1TEGamma>("L1EGammas");
                 
                 bool PassedL1 = false;
-        
-                for(unsigned eg=0; eg<l1electrons.size(); ++eg){
-                    
-                  for(unsigned ta=0; ta<l1taus.size(); ++ta){
-                    double dEta = std::fabs(l1electrons[eg]->vector().Rapidity() - l1taus[ta]->vector().Rapidity());  
-                    if(dEta > 0.2 && l1electrons[eg]->vector().Pt() >= leg_filters[i].leg1_extraL1Pt && l1taus[ta]->vector().Pt() >= leg_filters[i].leg2_extraL1Pt && l1electrons[eg]->isolation > 0 && l1taus[ta]->isolation >0 && std::fabs(l1electrons[eg]->vector().Rapidity())<2.1 && std::fabs(l1taus[ta]->vector().Rapidity())<2.1) PassedL1 = true;
-                    
-                    std::vector<ic::Candidate*>  match_electrons;
-                    std::vector<ic::L1TEGamma*> match_l1electrons;
-                    match_electrons.push_back(dileptons[j]->At(0));
-                    match_l1electrons.push_back(l1electrons[eg]);
-                    bool matched_egammma = (MatchByDR(match_electrons,match_l1electrons,0.5,true,true)).size() == 1;
-                    if(!matched_egammma) PassedL1 = false;
-                    
-                    std::vector<ic::Candidate*> match_taus;
-                    std::vector<ic::L1TTau*> match_l1taus;
-                    match_taus.push_back(dileptons[j]->At(1));
-                    match_l1taus.push_back(l1taus[ta]);
-                    bool matched_tau = (MatchByDR(match_taus,match_l1taus,0.5,true,true)).size() == 1;
-                    if(!matched_tau) PassedL1 = false;
-                  }
+                
+                std::vector<ic::L1TTau*> passed_l1_taus;
+                
+                for(unsigned ta=0; ta<l1taus.size(); ++ta){
+                  if(std::fabs(l1taus[ta]->vector().Rapidity())<=2.1 && l1taus[ta]->isolation !=0 && l1taus[ta]->vector().Pt() >= leg_filters[i].leg1_extraL1Pt) passed_l1_taus.push_back(l1taus[ta]);  
                 }
+                for(unsigned ta=0; ta<passed_l1_taus.size(); ++ta){
+                  //if(IsFilterMatchedWithIndex(passed_l1_taus[ta], objs, leg_filters[i].leg2_filter, 0.5).first) PassedL1 = true;
+                    std::vector<unsigned> indexes = IsFilterMatchedWithMultipleIndexs(passed_l1_taus[ta], objs, leg_filters[i].L1filtername, 0.5).second;
+                    for(unsigned b=0; b< indexes.size(); ++b){
+                      std::set<int16_t> lep1triggerTypes = GetTriggerTypes(objs[indexes[b]]);
+                      if(lep1triggerTypes.find(-100) != lep1triggerTypes.end()){
+                        if(L1EGIndex!=-1){
+                        double dEta = std::fabs(objs[L1EGIndex]->eta() - passed_l1_taus[ta]->vector().Rapidity());
+                        if(dEta>=0.2) PassedL1 = true;
+                        }
+                      }
+                    }
+                }
+                
                 if(!PassedL1){
                   leg2_match = false;
                   leg1_match = false;
@@ -1543,7 +1546,9 @@ namespace ic {
           
         }
         
-        if (dileptons_pass_reHLT.size() >= 1) leg_filters[i].pass = true;
+        if (dileptons_pass_reHLT.size() >= 1){
+          leg_filters[i].pass = true;
+        }
         else                                  leg_filters[i].pass = false;
         
         

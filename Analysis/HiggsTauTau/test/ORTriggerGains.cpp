@@ -167,7 +167,7 @@ int main(int argc, char* argv[]){
       ExtraEtaCut1[i] = 2.1;
       ExtraEtaCut2[i] = 2.1;
       ExtraPtCut1[i] = 25;
-      ExtraPtCut2[i] = 40; //may have to change this cut need to look at efficiency curve for tau leg!
+      ExtraPtCut2[i] = 35; //may have to change this cut need to look at efficiency curve for tau leg!
     } else if(TriggerName[i] == "HLT_Ele32_eta2p1_WPTight_Gsf_v_1pt45e34"){
       ExtraEtaCut1[i] = 2.1;
       ExtraEtaCut2[i] = 2.3;
