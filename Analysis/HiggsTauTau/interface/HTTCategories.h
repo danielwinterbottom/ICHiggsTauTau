@@ -219,6 +219,7 @@ class HTTCategories : public ModuleBase {
   float lbyIsolationMVA3newDMwLTraw_2 = 0;
   float lbyIsolationMVA3oldDMwLTraw_2 = 0;
   float lchargedIsoPtSum_2 = 0;
+  float lchargedRelIsoPtSum_2 = 0;
   float lneutralIsoPtSum_2 = 0;
   float lpuCorrPtSum_2 = 0;
   branch_var lPhotonPtSum_2;
@@ -237,6 +238,7 @@ class HTTCategories : public ModuleBase {
   float lbyIsolationMVA3newDMwLTraw_1 = 0;
   float lbyIsolationMVA3oldDMwLTraw_1 = 0;
   float lchargedIsoPtSum_1 = 0;
+  float lchargedRelIsoPtSum_1 = 0;
   float lneutralIsoPtSum_1 = 0;
   float lpuCorrPtSum_1 = 0;
   branch_var lPhotonPtSum_1;

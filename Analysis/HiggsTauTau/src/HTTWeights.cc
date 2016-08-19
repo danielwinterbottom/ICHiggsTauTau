@@ -202,6 +202,8 @@ namespace ic {
              w_->function("m_trgOR_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_idiso0p20_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
