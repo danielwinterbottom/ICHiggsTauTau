@@ -433,7 +433,7 @@ namespace ic {
     double m_iso1;
     m_iso1 = (strategy == strategy::fall15) ? PF03IsolationVal(m1, 0.5, 0) : PF04IsolationVal(m1, 0.5, 0);
     double m_iso2; 
-    m_iso2 = (strategy == strategy::fall15) ? PF03IsolationVal(m1, 0.5, 0) : PF04IsolationVal(m2, 0.5, 0);
+    m_iso2 = (strategy == strategy::fall15) ? PF03IsolationVal(m2, 0.5, 0) : PF04IsolationVal(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT
