@@ -22,4 +22,4 @@ for q in "${dEta_loose[@]}"; do for w in "${Mjj_loose[@]}"; do for e in "${HPt_l
     ((line_count++))
   fi
 done; done; done; done; done; done; done; done;
-qsub -q hep.q -l h_rt=0:60:0 -t 1-$line_count:1 scripts/runOptimizeCatogories.sh $channel $dirname
+qsub -q hep.q -l h_rt=0:30:0 -t 1-$line_count:1 scripts/runOptimizeCatogories.sh $channel $dirname

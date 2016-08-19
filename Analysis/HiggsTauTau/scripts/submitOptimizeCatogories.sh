@@ -17,4 +17,4 @@ for i in "${dEta[@]}"; do for j in "${Mjj[@]}"; do for k in "${HPt[@]}"; do for 
   echo $output_line >> $dirname/cutsInputTemp_$channel.txt
   ((line_count++))
 done; done; done; done; done;
-qsub -q hep.q -l h_rt=0:60:0 -t 1-$line_count:1 scripts/runOptimizeCatogories.sh $channel $dirname
+qsub -q hep.q -l h_rt=0:30:0 -t 1-$line_count:1 scripts/runOptimizeCatogories.sh $channel $dirname
