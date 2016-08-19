@@ -1,0 +1,102 @@
+#!/bin/bash
+#
+export channel=$1
+IFS='%'
+export now=$(date +"%Y_%m_%d_%H_%M")
+export dirname="1Jet/2Cat/tight/"$channel"_"$now
+mkdir -p $dirname
+rm $dirname/cutsInputTemp_$channel.txt
+declare -a dEta_loose=( 3 )
+declare -a Mjj_loose=( 400 450 )
+declare -a HPt_loose=( 0 )
+declare -a btag=("&& n_bjets==0")
+declare -a jetpt=( 30 )
+declare -a leadjetpt=( 30 )
+
+declare -a taupt_2=( 0 30 40 50 60 )
+declare -a taupt_tt_2=( 0 30 40 50 60 70 )
+declare -a HPt_2=( 0 20 40 )
+declare -a HPt_tt_2=( 0 50 100 150 200 )
+declare -a met_2=( 0 30 40 50 )
+declare -a tau2pt_2=( 0 30 40 50 )
+export line_count=1
+for q in "${dEta_loose[@]}"; do for w in "${Mjj_loose[@]}"; do for e in "${HPt_loose[@]}"; do for l in "${btag[@]}"; do for z in "${jetpt[@]}"; do for i in "${leadjetpt[@]}"; do
+  if [ $i -ge $z ]; then
+    if [ $channel == "et" ]; then
+      for k in "${HPt_2[@]}"; do for m in "${met_2[@]}"; do for j in "${taupt_2[@]}"; do
+        export output_line="n_lowpt_jets>=1 && jpt_1>"$i" && pt_2>"$j" && pt_tt>"$k" && met>"$m" "$l" && !(n_lowpt_jets>=2 && jdeta_lowpt>"$q" && mjj_lowpt>"$w" && pt_tt>="$e" "$l" && jpt_1>"$z" && jpt_2>"$z
+        echo $output_line >> $dirname/cutsInputTemp_$channel.txt
+        ((line_count++))
+        done; done; done;
+    elif [ $channel == "mt" ]; then
+      for k in "${HPt_2[@]}"; do for j in "${taupt_2[@]}"; do
+          export output_line="n_lowpt_jets>=1 && jpt_1>"$i" && pt_2>"$j" && pt_tt>"$k" "$l" && !(n_lowpt_jets>=2 && jdeta_lowpt>"$q" && mjj_lowpt>"$w" && pt_tt>="$e" "$l" && jpt_1>"$z" && jpt_2>"$z
+          echo $output_line >> $dirname/cutsInputTemp_$channel.txt
+          ((line_count++))
+        done; done;
+    elif [ $channel == "tt" ]; then
+      for c in "${tau2pt_2[@]}"; do for k in "${HPt_tt_2[@]}"; do for j in "${taupt_tt_2[@]}"; do
+        if [ $taupt_tt_2 -ge $tau2pt_2 ]; then
+          export output_line="n_lowpt_jets>=1 && jpt_1>"$i" && pt_1>"$j" && pt_2>"$c" && pt_tt>"$k" "$l" && !(n_lowpt_jets>=2 && jdeta_lowpt>"$q" && mjj_lowpt>"$w" && pt_tt>="$e" "$l" && jpt_1>"$z" && jpt_2>"$z
+          echo $output_line >> $dirname/cutsInputTemp_$channel.txt
+          ((line_count++))
+        fi
+      done; done; done;
+    fi
+  fi
+done; done; done; done; done; done; 
+qsub -q hep.q -l h_rt=0:60:0 -t 1-$line_count:1 scripts/runOptimizeCatogories.sh $channel $dirname
+
+export dirname="1Jet/2Cat/loose/"$channel"_"$now
+mkdir -p $dirname
+rm $dirname/cutsInputTemp_$channel.txt
+declare -a dEta_loose=( 3 )
+declare -a Mjj_loose=( 400 450 )
+declare -a HPt_loose=( 0 )
+declare -a btag=("&& n_bjets==0")
+declare -a jetpt=( 30 )
+declare -a leadjetpt=( 30 )
+declare -a taupt=( 0 30 40 50 )
+declare -a taupt_tt=( 0 30 40 50 )
+declare -a HPt=( 0 20 40 )
+declare -a HPt_tt=( 0 50 100 )
+declare -a met=( 0 20 30 )
+declare -a tau2pt=( 0 30 40 50 )
+
+declare -a taupt_2=( 0 30 40 50 60 )
+declare -a taupt_tt_2=( 0 30 40 50 60 70 )
+declare -a HPt_2=( 0 60 80 100 120 )
+declare -a HPt_tt_2=( 0 50 100 150 200 )
+declare -a met_2=( 0 30 40 50 )
+declare -a tau2pt_2=( 0 30 40 50 )
+export line_count=1
+for q in "${dEta_loose[@]}"; do for w in "${Mjj_loose[@]}"; do for e in "${HPt_loose[@]}"; do for l in "${btag[@]}"; do for z in "${jetpt[@]}"; do for i in "${leadjetpt[@]}"; do
+  if [ $i -ge $z ]; then
+    if [ $channel == "et" ]; then
+      for k in "${HPt_2[@]}"; do for m in "${met_2[@]}"; do for j in "${taupt_2[@]}"; do for k2 in "${HPt_2[@]}"; do for m2 in "${met[@]}"; do for j2 in "${taupt[@]}"; do
+        if [ $k -ge $k2 -a $j -ge $j2 -a $m -ge $m2 ]; then
+          export output_line="n_lowpt_jets>=1 && pt_tt>"$k2" && pt_2>"$j2" && met>"$m" && !(n_lowpt_jets>=1 && jpt_1>"$i" && pt_2>"$j" && pt_tt>"$k" && met>"$m" "$l") && !(n_lowpt_jets>=2 && jdeta_lowpt>"$q" && mjj_lowpt>"$w" && pt_tt>="$e" "$l" && jpt_1>"$z" && jpt_2>"$z")"
+          echo $output_line >> $dirname/cutsInputTemp_$channel.txt
+          ((line_count++))
+        fi
+        done; done; done; done; done; done;
+    elif [ $channel == "mt" ]; then
+      for k in "${HPt_2[@]}"; do for j in "${taupt_2[@]}"; do for k2 in "${HPt[@]}"; do for j2 in "${taupt[@]}"; do
+        if [ $k -ge $k2 -a $j -ge $j2 ]; then
+          export output_line="n_lowpt_jets>=1 && pt_tt>"$k2" && pt_2>"$j2" && !(n_lowpt_jets>=1 && jpt_1>"$i" && pt_2>"$j" && pt_tt>"$k" "$l") && !(n_lowpt_jets>=2 && jdeta_lowpt>"$q" && mjj_lowpt>"$w" && pt_tt>="$e" "$l" && jpt_1>"$z" && jpt_2>"$z")"
+          echo $output_line >> $dirname/cutsInputTemp_$channel.txt
+          ((line_count++))
+        fi
+        done; done; done; done
+    elif [ $channel == "tt" ]; then
+      for c in "${tau2pt_2[@]}"; do for k in "${HPt_tt_2[@]}"; do for j in "${taupt_tt_2[@]}"; do for c2 in "${tau2pt[@]}"; do for k2 in "${HPt_tt[@]}"; do for j2 in "${taupt_tt[@]}"; do
+        if [ $taupt_tt -ge $tau2pt -a $taupt_tt_2 -ge $tau2pt_2 -a $k -ge $k2 -a $j -ge $j2 -a $c -ge $c2 ]; then
+          export output_line="n_lowpt_jets>=1 && pt_tt>"$k2" && pt_1>"$j2" && pt_2>"$c" && !(n_lowpt_jets>=1 && jpt_1>"$i" && pt_1>"$j" && pt_2>"$c" && pt_tt>"$k" "$l") && !(n_lowpt_jets>=2 && jdeta_lowpt>"$q" && mjj_lowpt>"$w" && pt_tt>="$e" "$l" && jpt_1>"$z" && jpt_2>"$z")"
+          echo $output_line >> $dirname/cutsInputTemp_$channel.txt
+          ((line_count++))
+        fi
+      done; done; done; done; done; done;
+    fi
+  fi
+done; done; done; done; done; done; 
+qsub -q hep.q -l h_rt=0:60:0 -t 1-$line_count:1 scripts/runOptimizeCatogories.sh $channel $dirname

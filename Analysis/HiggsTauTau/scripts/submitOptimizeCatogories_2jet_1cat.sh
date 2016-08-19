@@ -3,7 +3,7 @@
 export channel=$1
 IFS='%'
 export now=$(date +"%Y_%m_%d_%H_%M")
-export dirname=$channel"_"$now
+export dirname="2Jet/1Cat/"$channel"_"$now
 mkdir -p $dirname
 rm $dirname/cutsInputTemp_$channel.txt
 declare -a dEta=( 3 3.5 4 )
