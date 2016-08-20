@@ -340,6 +340,7 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
@@ -487,7 +488,7 @@ namespace ic {
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["ttcontrolalt"] = "(n_jets>=1 && n_bjets>=1 && pzeta<-50)";
-      alias_map_["ttcontrol"] = "(pzeta<-40 && met>80)";
+      alias_map_["ttcontrol"] = "(pzeta<-60 && met>80)";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
