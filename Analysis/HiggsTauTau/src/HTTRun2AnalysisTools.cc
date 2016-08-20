@@ -555,8 +555,8 @@ namespace ic {
   }*/
 
     samples_alias_map_["wgam_samples"] = {
-     "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
-    };
+        "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
+     };
 
 
     samples_alias_map_["top_samples"] = {
@@ -653,7 +653,7 @@ namespace ic {
     };
     if(year_.find("6")!=year_.npos){
       samples_alias_map_["data_samples"] = {
-        "MuonEGB","MuonEGC"
+        "MuonEGB","MuonEGC","MuonEGD"
       };
     } else if(!is_fall15_){
       samples_alias_map_["data_samples"] = {
@@ -786,11 +786,15 @@ namespace ic {
   if(year_.find("6")!=year_.npos){
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL-LO",
+   "DY1JetsToLL-LO","DY2JetsToLL-LO",
+   "DY3JetsToLL-LO","DY4JetsToLL-LO",
    "T-tW", "Tbar-tW", "Tbar-t",
    "WWTo1L1Nu2Q","VVTo2L2Nu",
    "ZZTo2L2Q",
    "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT","WJetsToLNu-LO"
+   "TT","WJetsToLNu-LO",
+   "W1JetsToLNu-LO","W2JetsToLNu-LO",
+   "W3JetsToLNu-LO","W4JetsToLNu-LO"
    };
   } else if(!is_fall15_){
     samples_alias_map_["qcd_sub_samples"] = {
@@ -902,7 +906,7 @@ if(year_.find("6")!=year_.npos){
 sample_names_={};
 push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("vv_samples"));
-if(ch_==channel::em){
+if(ch_==channel::em && is_fall15_){
   push_back(sample_names_,this->ResolveSamplesAlias("wgam_samples"));
 }
 push_back(sample_names_,this->ResolveSamplesAlias("wjets_samples"));

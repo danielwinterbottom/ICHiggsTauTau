@@ -1935,11 +1935,23 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
 
+if(strategy_type == strategy::fall15){
   BuildModule(SimpleFilter<CompositeCandidate>("EMPairFilter")
       .set_input_label("ditau").set_min(1)
       .set_predicate([=](CompositeCandidate const* c) {
         return PairOneWithPt(c, 18.0);
       }));
+  }
+if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
+  BuildModule(SimpleFilter<CompositeCandidate>("EMPairFilter")
+      .set_input_label("ditau").set_min(1)
+      .set_predicate([=](CompositeCandidate const* c) {
+        return PairOneWithPt(c, 24.0);
+      }));
+  }
+
+
+
 }
 
 // --------------------------------------------------------------------------

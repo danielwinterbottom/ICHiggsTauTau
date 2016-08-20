@@ -206,10 +206,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16){
+        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
-        if(strategy_==strategy::fall15||tau_optimisation_){
+        if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         }
         if(!tau_optimisation_&&strategy_==strategy::spring15){
@@ -244,10 +244,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
         //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16){
+        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
-        if(tau_optimisation_||strategy_==strategy::fall15){
+        if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         }
         if(!tau_optimisation_&&strategy_==strategy::spring15){
