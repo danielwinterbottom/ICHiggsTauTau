@@ -248,10 +248,22 @@ class ZmtTPTreeProducer : public ModuleBase {
   bool cmb_m_t;
   bool cmb_t_t;
   float cbiso_t;
+  float cbiso_0p5_t;
+  float cbiso_1p0_t;
+  float cbiso_1p5_t;
+  float cbiso_2p0_t;
   float chiso_t;
   float ntiso_t;
+  float ntiso_0p5_t;
+  float ntiso_1p0_t;
+  float ntiso_1p5_t;
+  float ntiso_2p0_t;
   float puiso_t;
   float pho_out_t;
+  float pho_out_0p5_t;
+  float pho_out_1p0_t;
+  float pho_out_1p5_t;
+  float pho_out_2p0_t;
 
   unsigned n_iso_ph_0p5;
   unsigned n_sig_ph_0p5;

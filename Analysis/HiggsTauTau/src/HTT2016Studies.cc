@@ -659,10 +659,22 @@ namespace ic {
       outtree_->Branch("cmb_m_t",     &cmb_m_t);
       outtree_->Branch("cmb_t_t",     &cmb_t_t);
       outtree_->Branch("cbiso_t",     &cbiso_t);
+      outtree_->Branch("cbiso_0p5_t", &cbiso_0p5_t);
+      outtree_->Branch("cbiso_1p0_t", &cbiso_1p0_t);
+      outtree_->Branch("cbiso_1p5_t", &cbiso_1p5_t);
+      outtree_->Branch("cbiso_2p0_t", &cbiso_2p0_t);
       outtree_->Branch("chiso_t",     &chiso_t);
       outtree_->Branch("ntiso_t",     &ntiso_t);
+      outtree_->Branch("ntiso_0p5_t", &ntiso_0p5_t);
+      outtree_->Branch("ntiso_1p0_t", &ntiso_1p0_t);
+      outtree_->Branch("ntiso_1p5_t", &ntiso_1p5_t);
+      outtree_->Branch("ntiso_2p0_t", &ntiso_2p0_t);
       outtree_->Branch("puiso_t",     &puiso_t);
       outtree_->Branch("pho_out_t",   &pho_out_t);
+      outtree_->Branch("pho_out_0p5_t",   &pho_out_0p5_t);
+      outtree_->Branch("pho_out_1p0_t",   &pho_out_1p0_t);
+      outtree_->Branch("pho_out_1p5_t",   &pho_out_1p5_t);
+      outtree_->Branch("pho_out_2p0_t",   &pho_out_2p0_t);
       outtree_->Branch("n_iso_ph_0p5", &n_iso_ph_0p5);
       outtree_->Branch("n_sig_ph_0p5", &n_sig_ph_0p5);
       outtree_->Branch("n_iso_ph_1p0", &n_iso_ph_1p0);
@@ -733,7 +745,7 @@ namespace ic {
     pt_t = tau->pt();
     eta_t = tau->eta();
     dm_t = tau->decay_mode();
-
+    float cone = TMath::Max(TMath::Min(0.1, 3.0/pt_t), 0.05);
 
     anti_e_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
     anti_m_t  = tau->GetTauID("againstMuonTight3") > 0.5;
@@ -764,22 +776,76 @@ namespace ic {
     n_sig_ph_1p5 = 0;
     n_iso_ph_2p0 = 0;
     n_sig_ph_2p0 = 0;
+
+    ntiso_0p5_t = 0.;
+    pho_out_0p5_t = 0.;
+    ntiso_1p0_t = 0.;
+    pho_out_1p0_t = 0.;
+    ntiso_1p5_t = 0.;
+    pho_out_1p5_t = 0.;
+    ntiso_2p0_t = 0.;
+    pho_out_2p0_t = 0.;
     for (auto id : iso_gammas) {
       double et = pfcands[id]->vector().Et();
-      // double pt = pfcands[id]->pt();
-      if (et > 0.5) ++n_iso_ph_0p5;
-      if (et > 1.0) ++n_iso_ph_1p0;
-      if (et > 1.5) ++n_iso_ph_1p5;
-      if (et > 2.0) ++n_iso_ph_2p0;
+      double pt = pfcands[id]->pt();
+      if (et > 0.5) {
+        ++n_iso_ph_0p5;
+        ntiso_0p5_t += pt;
+      }
+      if (et > 1.0) {
+        ++n_iso_ph_1p0;
+        ntiso_1p0_t += pt;
+      }
+      if (et > 1.5) {
+        ++n_iso_ph_1p5;
+        ntiso_1p5_t += pt;
+      }
+      if (et > 2.0) {
+        ++n_iso_ph_2p0;
+        ntiso_2p0_t += pt;
+      }
     }
     for (auto id : sig_gammas) {
       double et = pfcands[id]->vector().Et();
-      // double pt = pfcands[id]->pt();
-      if (et > 0.5) ++n_sig_ph_0p5;
-      if (et > 1.0) ++n_sig_ph_1p0;
-      if (et > 1.5) ++n_sig_ph_1p5;
-      if (et > 2.0) ++n_sig_ph_2p0;
+      double pt = pfcands[id]->pt();
+      double dr = DR(pfcands[id], tau);
+      if (et > 0.5) {
+        ++n_sig_ph_0p5;
+        if (dr > cone) {
+          pho_out_0p5_t += pt;
+        }
+      }
+      if (et > 1.0) {
+        ++n_sig_ph_1p0;
+        if (dr > cone) {
+          pho_out_1p0_t += pt;
+        }
+      }
+      if (et > 1.5) {
+        ++n_sig_ph_1p5;
+        if (dr > cone) {
+          pho_out_1p5_t += pt;
+        }
+      }
+      if (et > 2.0) {
+        ++n_sig_ph_2p0;
+        if (dr > cone) {
+          pho_out_2p0_t += pt;
+        }
+      }
     }
+
+    cbiso_0p5_t = chiso_t + TMath::Max(0., ntiso_0p5_t - 0.2 * puiso_t);
+    cbiso_1p0_t = chiso_t + TMath::Max(0., ntiso_1p0_t - 0.2 * puiso_t);
+    cbiso_1p5_t = chiso_t + TMath::Max(0., ntiso_1p5_t - 0.2 * puiso_t);
+    cbiso_2p0_t = chiso_t + TMath::Max(0., ntiso_2p0_t - 0.2 * puiso_t);
+    // std::cout << "dm: " << dm_t << " nSigCh: " << tau->sig_charged_cands().size()
+    //           << " nSigNt: " << tau->sig_gamma_cands().size()
+    //           << " ntiso_0p5: " << ntiso_0p5_t << " ntiso: " << ntiso_t
+    //           << " cbiso_0p5: " << cbiso_0p5_t
+    //           << " cbiso: " << cbiso_t
+    //           << " pho_out_0p5: " << pho_out_0p5_t
+    //           << " pho_out: " << pho_out_t << "\n";
 
     trg_m_IsoMu19TauL1 = false;
     trg_t_IsoMu19TauL1 = false;
