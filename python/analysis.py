@@ -123,6 +123,8 @@ class Shape(object):
         cpy = self.copy()
         return cpy.__imul__(other)
 
+    __rmul__ = __mul__
+
     def Print(self):
         # self.hist.Print()
         print 'rate={:.3f}, entries={:g}, sum={:g}'.format(self.rate, self.hist.GetEntries(), self.hist.GetSumOfWeights())
@@ -313,7 +315,7 @@ class HttQCDNode(BaseNode):
         self.factor = factor
 
     def RunSelf(self):
-        self.shape = self.factor * (self.initial_node.shape - self.subtract_node.shape)
+        self.shape = self.factor * (self.data_node.shape - self.subtract_node.shape)
 
     def Objects(self):
         return {self.name: self.shape.hist}
@@ -322,7 +324,7 @@ class HttQCDNode(BaseNode):
         return self.name + '.subnodes'
 
     def SubNodes(self):
-        return [self.initial_node, self.subtract_node]
+        return [self.data_node, self.subtract_node]
 
     def AddRequests(self, manifest):
         for node in self.SubNodes():
@@ -335,6 +337,7 @@ class Analysis(object):
         self.nodes = ListNode('analysis')
         self.info = {}
         self.remaps = {}
+        self.compiled = False
 
     def Run(self):
         manifest = []
@@ -349,17 +352,24 @@ class Analysis(object):
         # print outdict
         for sample in drawdict:
             print sample
-            res = self.trees[sample].Draw(drawdict[sample])
+            res = self.trees[sample].Draw(drawdict[sample], compiled=self.compiled)
             for i, hist in enumerate(res):
                 setattr(outdict[sample][i][0], outdict[sample][i][1], Shape(hist))
         self.nodes.Run()
 
-    def AddSamples(self, dir, tree):
+    def AddSamples(self, dir, tree, fallback=None):
         files = glob.glob(dir)
+        if fallback is not None:
+          files += glob.glob(fallback)
+        seen_names = set()
         for f in files:
             testf = ROOT.TFile(f)
             if testf.Get(tree) != None:
                 name = os.path.splitext(os.path.basename(f))[0]
+                if name in seen_names:
+                    print '>> Skipping %s because we already loaded it' % f
+                    continue
+                seen_names.add(name)
                 newname = name
                 if name in self.remaps:
                     newname = self.remaps[name]
