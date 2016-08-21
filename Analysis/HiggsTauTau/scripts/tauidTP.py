@@ -94,7 +94,7 @@ for var in [('mt_m',         'mt_m(40,0,200)', '1'),
     nodename = var[0]
     v = var[1]
     ana.nodes.AddNode(ListNode(nodename))
-    StandardMT(ana, ana.nodes[nodename], v, Sel(sign='os', baseline='anti_e_t && anti_m_t && n_bjets==0', wt='wt', extra=var[2]))
+    StandardMT(ana, ana.nodes[nodename], v, Sel(sign='os', baseline='anti_e_t && anti_m_t && n_bjets==0', wt='wt', extra_baseline=var[2]))
 
 for var in [('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
             ('cmb_m',  'm_ll(32,40,200)', 'cmb_m_t', '1'),
@@ -125,7 +125,7 @@ for var in [('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
     probe = Sel(probe=var[2])
     dosel = sel
     if len(var) >= 4:
-        dosel = sel.copy(extra=var[3])
+        dosel = sel.copy(extra_baseline=var[3])
     TagAndProbeCats(ana, ana.nodes, nodename, v, dosel, probe)
     TagAndProbeCats(ana_scale_t_hi, ana_scale_t_hi.nodes, nodename, v, dosel, probe, pfix='_CMS_scale_tUp')
     TagAndProbeCats(ana_scale_t_lo, ana_scale_t_lo.nodes, nodename, v, dosel, probe, pfix='_CMS_scale_tDown')
