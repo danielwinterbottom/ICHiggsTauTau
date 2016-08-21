@@ -2,6 +2,8 @@
 #define HiggsTauTau_HTT2016Studies_h
 #include <string>
 #include <cstdint>
+#include "Math/Vector4D.h"
+#include "Math/Vector4Dfwd.h"
 #include "RooWorkspace.h"
 #include "RooFunctor.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
@@ -25,6 +27,8 @@ union ui64 {
 std::set<int16_t> GetTriggerTypes(ic::TriggerObject* obj);
 
 bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
+
+void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift);
 
 class ZmmTreeProducer : public ModuleBase {
  private:
@@ -227,18 +231,22 @@ class ZmtTPTreeProducer : public ModuleBase {
   float pt_m;
   float eta_m;
   float mt_m;
+  float pzeta;
 
   float pt_t;
   float eta_t;
   int dm_t;
   bool anti_e_t;
   bool anti_m_t;
-  bool vloose_t;
-  bool loose_t;
-  bool medium_t;
-  bool tight_t;
-  bool vtight_t;
-  bool vvtight_t;
+  bool mva_vl_t;
+  bool mva_l_t;
+  bool mva_m_t;
+  bool mva_t_t;
+  bool mva_vt_t;
+  bool mva_vvt_t;
+  bool cmb_l_t;
+  bool cmb_m_t;
+  bool cmb_t_t;
   float cbiso_t;
   float chiso_t;
   float ntiso_t;

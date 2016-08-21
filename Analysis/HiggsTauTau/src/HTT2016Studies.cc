@@ -643,17 +643,21 @@ namespace ic {
       outtree_->Branch("pt_m",        &pt_m);
       outtree_->Branch("eta_m",       &eta_m);
       outtree_->Branch("mt_m",        &mt_m);
+      outtree_->Branch("pzeta",       &pzeta);
       outtree_->Branch("pt_t",        &pt_t);
       outtree_->Branch("eta_t",       &eta_t);
       outtree_->Branch("dm_t",        &dm_t);
       outtree_->Branch("anti_e_t",    &anti_e_t);
       outtree_->Branch("anti_m_t",    &anti_m_t);
-      outtree_->Branch("vloose_t",    &vloose_t);
-      outtree_->Branch("loose_t",     &loose_t);
-      outtree_->Branch("medium_t",    &medium_t);
-      outtree_->Branch("tight_t",     &tight_t);
-      outtree_->Branch("vtight_t",    &vtight_t);
-      outtree_->Branch("vvtight_t",   &vvtight_t);
+      outtree_->Branch("mva_vl_t",    &mva_vl_t);
+      outtree_->Branch("mva_l_t",     &mva_l_t);
+      outtree_->Branch("mva_m_t",     &mva_m_t);
+      outtree_->Branch("mva_t_t",     &mva_t_t);
+      outtree_->Branch("mva_vt_t",    &mva_vt_t);
+      outtree_->Branch("mva_vvt_t",   &mva_vvt_t);
+      outtree_->Branch("cmb_l_t",     &cmb_l_t);
+      outtree_->Branch("cmb_m_t",     &cmb_m_t);
+      outtree_->Branch("cmb_t_t",     &cmb_t_t);
       outtree_->Branch("cbiso_t",     &cbiso_t);
       outtree_->Branch("chiso_t",     &chiso_t);
       outtree_->Branch("ntiso_t",     &ntiso_t);
@@ -733,12 +737,15 @@ namespace ic {
 
     anti_e_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
     anti_m_t  = tau->GetTauID("againstMuonTight3") > 0.5;
-    vloose_t  = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
-    loose_t   = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
-    medium_t  = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") > 0.5;
-    tight_t   = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
-    vtight_t  = tau->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
-    vvtight_t = tau->GetTauID("byVVTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    mva_vl_t  = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    mva_l_t   = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    mva_m_t   = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    mva_t_t   = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    mva_vt_t  = tau->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    mva_vvt_t = tau->GetTauID("byVVTightIsolationMVArun2v1DBoldDMwLT") > 0.5;
+    cmb_l_t   = tau->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") > 0.5;
+    cmb_m_t   = tau->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits") > 0.5;
+    cmb_t_t   = tau->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits") > 0.5;
     cbiso_t   = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
     chiso_t   = tau->GetTauID("chargedIsoPtSum");
     ntiso_t   = tau->GetTauID("neutralIsoPtSum");
@@ -848,7 +855,13 @@ namespace ic {
     } else {
       throw::std::runtime_error("Could not find MVA MET!");
     }
+
+    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    auto const& tau_es_shifts = event->Get<map_id_vec>("shifts_TauEnergyScale");
+    CorrectMETForShift(mva_met, tau_es_shifts.at(tau->id()));
+
     mt_m = MT(muon, mva_met);
+    pzeta = PZeta(pairs[0], mva_met, 0.85);
     os = (pairs[0]->charge() == 0);
     m_ll = pairs[0]->M();
 
@@ -934,5 +947,13 @@ namespace ic {
     double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
     if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
     return (t1->pt() > t2->pt());
+  }
+
+  void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift) {
+    double metx = met->vector().px() - shift.px();
+    double mety = met->vector().py() - shift.py();
+    double metet = sqrt(metx*metx + mety*mety);
+    ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+    met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
   }
 }

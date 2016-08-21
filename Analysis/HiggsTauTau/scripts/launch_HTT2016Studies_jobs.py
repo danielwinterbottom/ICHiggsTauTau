@@ -60,7 +60,7 @@ MC_SAMPLES = {
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'EffectiveEvents']
+SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
 #SEQUENCES = ['HashMap']
 
 if 'HashMap' in SEQUENCES:
@@ -72,12 +72,16 @@ WHITELIST = {
     'Zee': ['SingleElectron'] + list(MC_SAMPLES.keys()),
     'ZeeTP': ['SingleElectron'] + list(MC_SAMPLES.keys()),
     'ZmtTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
+    'ZmtTP/scale_t_hi': list(MC_SAMPLES.keys()),
+    'ZmtTP/scale_t_lo': list(MC_SAMPLES.keys()),
     'EffectiveEvents': list(MC_SAMPLES.keys()),
     'HashMap': list(DATA_SAMPLES.keys())
 }
 
 OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name
 os.system('mkdir -p %s' % OUTPUT)
+for seq in SEQUENCES:
+    os.system('mkdir -p %s/%s' % (OUTPUT, seq))
 
 task = job_mgr.task_name
 
@@ -97,7 +101,8 @@ for sa in SAMPLES:
     filelists = ['filelists/%s%s.dat' % (PROD, X) for X in SAMPLES[sa]]
     cfg = {
         # General settings
-        'output': '%s/%s.root' % (OUTPUT, sa),
+        'output_dir': '%s' % (OUTPUT),
+        'output_name': '%s.root' % (sa),
         'filelists': filelists,
         'max_events': MAX_EVTS,
         'is_data': sa in DATA_SAMPLES.keys(),
@@ -121,6 +126,6 @@ for sa in SAMPLES:
         prog=basedir+'/bin/HTT2016Studies',
         cfg=cfg,
         files_per_job=FILES_PER_JOB,
-        output_cfgs=['output', 'lumi_out', 'trigger_info_output'])
+        output_cfgs=['output_name', 'lumi_out', 'trigger_info_output'])
     job_mgr.task_name = task + '-' + sa
     job_mgr.flush_queue()
