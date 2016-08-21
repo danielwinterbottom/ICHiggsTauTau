@@ -9,30 +9,38 @@ ana = Analysis()
 ana.remaps = {
     'SingleMuon': 'data_obs'
 }
-ana.AddSamples('output/HTT2016Studies_Aug16/*.root', 'ZmtTP')
+ana.AddSamples('output/HTT2016Studies_Aug16/ZmtTP/*.root', 'ZmtTP')
 ana.AddInfo('params_Aug16.json', scaleTo='data_obs')
 # missing OS!
 
 
-def StandardMT(ana, node, var, sel):
+def StandardMT(ana, node, var, sel, pfix='', qcd_os_ss=1.0):
     vv_samples = ['VVTo2L2Nu', 'WWTo1L1Nu2Q', 'WZJToLLLNu',
         'WZTo1L1Nu2Q', 'WZTo1L3Nu', 'WZTo2L2Q', 'ZZTo2L2Q', 'ZZTo4L']
-    node.AddNode(BasicNode('data_obs', 'data_obs', v, sel()))
+
+    node.AddNode(BasicNode('data_obs' + pfix, 'data_obs', v, sel()))
+
     node.AddNode(ana.BasicFactory(
-        'ZTT', 'DYJetsToLL', v, sel(extra='gen_2==5')))
+        'ZTT' + pfix, 'DYJetsToLL', v, sel(extra='gen_2==5')))
+
     node.AddNode(ana.BasicFactory(
-        'ZL', 'DYJetsToLL', v, sel(extra='gen_2<5')))
+        'ZL' + pfix, 'DYJetsToLL', v, sel(extra='gen_2<5')))
+
     node.AddNode(ana.BasicFactory(
-        'ZJ', 'DYJetsToLL', v, sel(extra='gen_2==6')))
-    node.AddNode(ana.BasicFactory('W', 'WJetsToLNu', v, sel()))
-    node.AddNode(ana.BasicFactory('TT', 'TT', v, sel()))
-    node.AddNode(ana.SummedFactory('VV', vv_samples, v, sel()))
-    node.AddNode(SubtractNode('QCD',
-        ana.BasicFactory('data_obs', 'data_obs', v, sel(sign='!os')),
-        ana.SummedFactory(
-            'backgrounds', ['DYJetsToLL', 'WJetsToLNu', 'TT'], v, sel(sign='!os'))
-      ))
-    node['QCD'].subtract_node.AddNode(ana.SummedFactory('VV', vv_samples, v, sel(sign='!os')))
+        'ZJ' + pfix, 'DYJetsToLL', v, sel(extra='gen_2==6')))
+
+    node.AddNode(ana.BasicFactory('W' + pfix, 'WJetsToLNu', v, sel()))
+
+    node.AddNode(ana.BasicFactory('TT' + pfix, 'TT', v, sel()))
+
+    node.AddNode(ana.SummedFactory('VV' + pfix, vv_samples, v, sel()))
+
+    node.AddNode(HttQCDNode('QCD' + pfix,
+        ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os')),
+        ana.SummedFactory('backgrounds' + pfix,
+            ['DYJetsToLL', 'WJetsToLNu', 'TT'], v, sel(sign='!os')),
+        qcd_os_ss))
+    node['QCD' + pfix].subtract_node.AddNode(ana.SummedFactory('VV' + pfix, vv_samples, v, sel(sign='!os')))
 
 
 def TagAndProbeCats(ana, node, name, var, baseline, probe):
@@ -40,8 +48,8 @@ def TagAndProbeCats(ana, node, name, var, baseline, probe):
     node.AddNode(ListNode(name+'_fail'))
     pass_sel = baseline.copy(probe=probe())
     fail_sel = baseline.copy(probe='!(%s)' % probe())
-    StandardMT(ana, node[name+'_pass'], var, pass_sel)
-    StandardMT(ana, node[name+'_fail'], var, fail_sel)
+    StandardMT(ana, node[name+'_pass'], var, pass_sel, qcd_os_ss=1.17)
+    StandardMT(ana, node[name+'_fail'], var, fail_sel, qcd_os_ss=1.10)
 
 sel = Sel(sign='os', baseline='mt_m<40 && anti_e_t && anti_m_t', wt='wt')
 for var in [('chiso_t',         'chiso_t(50,0,20)'),
@@ -69,8 +77,15 @@ for var in [('chiso_t',         'chiso_t(50,0,20)'),
     ana.nodes.AddNode(ListNode(nodename))
     StandardMT(ana, ana.nodes[nodename], v, sel)
 
-for var in [('mva_tight', 'm_ll(50,0,250)', 'tight_t'),
-            ('mva_vtight', 'm_ll(50,0,250)', 'vtight_t'),
+# for var in [('mt_m',         'mt_m(40,0,200)'),
+#             ]:
+#     nodename = var[0]
+#     v = var[1]
+#     ana.nodes.AddNode(ListNode(nodename))
+#     StandardMT(ana, ana.nodes[nodename], v, Sel(sign='os', baseline='anti_e_t && anti_m_t && n_bjets==0 && tight_t', wt='wt'))
+
+for var in [('mva_t', 'm_ll(50,0,250)', 'mva_t_t'),
+            ('mva_vt', 'm_ll(50,0,250)', 'mva_vt_t'),
             ]:
     nodename = var[0]
     v = var[1]

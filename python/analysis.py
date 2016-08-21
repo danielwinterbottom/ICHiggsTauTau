@@ -304,6 +304,30 @@ class SubtractNode(BaseNode):
         for node in self.SubNodes():
             node.AddRequests(manifest)
 
+class HttQCDNode(BaseNode):
+    def __init__(self, name, data, subtract, factor):
+        BaseNode.__init__(self, name)
+        self.shape = None
+        self.data_node = data
+        self.subtract_node = subtract
+        self.factor = factor
+
+    def RunSelf(self):
+        self.shape = self.factor * (self.initial_node.shape - self.subtract_node.shape)
+
+    def Objects(self):
+        return {self.name: self.shape.hist}
+
+    def OutputPrefix(self):
+        return self.name + '.subnodes'
+
+    def SubNodes(self):
+        return [self.initial_node, self.subtract_node]
+
+    def AddRequests(self, manifest):
+        for node in self.SubNodes():
+            node.AddRequests(manifest)
+
 
 class Analysis(object):
     def __init__(self):
