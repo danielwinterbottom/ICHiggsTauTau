@@ -60,7 +60,8 @@ MC_SAMPLES = {
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
+SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
+#SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
 #SEQUENCES = ['HashMap']
 
 if 'HashMap' in SEQUENCES:

@@ -1,8 +1,16 @@
 import ROOT
+import argparse
 from UserCode.ICHiggsTauTau.analysis import *
 
-ROOT.TH1.SetDefaultSumw2(True)
+parser = argparse.ArgumentParser()
+parser.add_argument('--type', '-t', help='control, tp')
+parser.add_argument('--output', '-o', default='TauID_Basic', help='Output name')
+parser.add_argument('--qcd_os_ss', default=1.0, type=float)
 
+args = parser.parse_args()
+
+
+ROOT.TH1.SetDefaultSumw2(True)
 
 
 ana = Analysis()
@@ -62,31 +70,54 @@ def TagAndProbeCats(ana, node, name, var, baseline, probe, pfix=''):
     StandardMT(ana, node[name+'_fail'], var, fail_sel, pfix, qcd_os_ss=1.00)
 
 sel = Sel(sign='os', baseline='mt_m<40 && anti_e_t && anti_m_t', wt='wt')
-for var in [('chiso_t',         'chiso_t(50,0,20)'),
-            ('cbiso_t',         'cbiso_t(50,0,20)'),
-            ('ntiso_t',         'ntiso_t(50,0,20)'),
-            ('puiso_t',         'puiso_t(50,0,20)'),
-            ('pho_out_t',       'pho_out_t(50,0,20)'),
-            ('pho_out_t_ratio', 'pho_out_t/pt_t(50,0,1)'),
-            ('m_ll',            'm_ll(50,0,250)'),
-            ('n_iso_ph_0p5',    'n_iso_ph_0p5(20,-0.5,19.5)'),
-            ('n_iso_ph_1p0',    'n_iso_ph_1p0(20,-0.5,19.5)'),
-            ('n_iso_ph_1p5',    'n_iso_ph_1p5(20,-0.5,19.5)'),
-            ('n_iso_ph_2p0',    'n_iso_ph_2p0(20,-0.5,19.5)'),
-            ('n_sig_ph_0p5',    'n_sig_ph_0p5(20, 0.5,20.5)'),
-            ('n_sig_ph_1p0',    'n_sig_ph_1p0(20, 0.5,20.5)'),
-            ('n_sig_ph_1p5',    'n_sig_ph_1p5(20, 0.5,20.5)'),
-            ('n_sig_ph_2p0',    'n_sig_ph_2p0(20, 0.5,20.5)'),
-            ('n_sum_ph_0p5',    'n_sig_ph_0p5+n_iso_ph_0p5(25,-0.5,24.5)'),
-            ('n_sum_ph_1p0',    'n_sig_ph_1p0+n_iso_ph_1p0(25,-0.5,24.5)'),
-            ('n_sum_ph_1p5',    'n_sig_ph_1p5+n_iso_ph_1p5(25,-0.5,24.5)'),
-            ('n_sum_ph_2p0',    'n_sig_ph_2p0+n_iso_ph_2p0(25,-0.5,24.5)'),
-            ]:
-    nodename = var[0]
-    v = var[1]
-    ana.nodes.AddNode(ListNode(nodename))
-    StandardMT(ana, ana.nodes[nodename], v, sel)
 
+if args.type == 'control':
+    ana_list = [ana]
+    for var in [('chiso_t',         'chiso_t(50,0,20)'),
+                ('cbiso_t',         'cbiso_t(50,0,20)'),
+                ('cbiso_0p5_t',     'cbiso_0p5_t(50,0,20)'),
+                ('cbiso_1p0_t',     'cbiso_1p0_t(50,0,20)'),
+                ('cbiso_1p5_t',     'cbiso_1p5_t(50,0,20)'),
+                ('cbiso_2p0_t',     'cbiso_2p0_t(50,0,20)'),
+                ('ntiso_t',         'ntiso_t(50,0,20)'),
+                ('ntiso_0p5_t',     'ntiso_0p5_t(50,0,20)'),
+                ('ntiso_1p0_t',     'ntiso_1p0_t(50,0,20)'),
+                ('ntiso_1p5_t',     'ntiso_1p5_t(50,0,20)'),
+                ('ntiso_2p0_t',     'ntiso_2p0_t(50,0,20)'),
+                ('puiso_t',         'puiso_t(50,0,20)'),
+                ('pho_out_t',       'pho_out_t(50,0,20)'),
+                ('pho_out_0p5_t',   'pho_out_0p5_t(50,0,20)'),
+                ('pho_out_1p0_t',   'pho_out_1p0_t(50,0,20)'),
+                ('pho_out_1p5_t',   'pho_out_1p5_t(50,0,20)'),
+                ('pho_out_2p0_t',   'pho_out_2p0_t(50,0,20)'),
+                ('pho_out_t_ratio', 'pho_out_t/pt_t(50,0,1)'),
+                ('pho_out_0p5_t_ratio', 'pho_out_0p5_t/pt_t(50,0,1)'),
+                ('pho_out_1p0_t_ratio', 'pho_out_1p0_t/pt_t(50,0,1)'),
+                ('pho_out_1p5_t_ratio', 'pho_out_1p5_t/pt_t(50,0,1)'),
+                ('pho_out_2p0_t_ratio', 'pho_out_2p0_t/pt_t(50,0,1)'),
+                ('m_ll',            'm_ll(50,0,250)'),
+                ('n_iso_ph_0p5',    'n_iso_ph_0p5(20,-0.5,19.5)'),
+                ('n_iso_ph_1p0',    'n_iso_ph_1p0(20,-0.5,19.5)'),
+                ('n_iso_ph_1p5',    'n_iso_ph_1p5(20,-0.5,19.5)'),
+                ('n_iso_ph_2p0',    'n_iso_ph_2p0(20,-0.5,19.5)'),
+                ('n_sig_ph_0p5',    'n_sig_ph_0p5(20, 0.5,20.5)'),
+                ('n_sig_ph_1p0',    'n_sig_ph_1p0(20, 0.5,20.5)'),
+                ('n_sig_ph_1p5',    'n_sig_ph_1p5(20, 0.5,20.5)'),
+                ('n_sig_ph_2p0',    'n_sig_ph_2p0(20, 0.5,20.5)'),
+                ('n_sum_ph_0p5',    'n_sig_ph_0p5+n_iso_ph_0p5(25,-0.5,24.5)'),
+                ('n_sum_ph_1p0',    'n_sig_ph_1p0+n_iso_ph_1p0(25,-0.5,24.5)'),
+                ('n_sum_ph_1p5',    'n_sig_ph_1p5+n_iso_ph_1p5(25,-0.5,24.5)'),
+                ('n_sum_ph_2p0',    'n_sig_ph_2p0+n_iso_ph_2p0(25,-0.5,24.5)'),
+              ]:
+        nodename = var[0]
+        v = var[1]
+        dosel = sel
+        if args.extra is not None:
+            dosel = sel.copy(extra_baseline=args.extra)
+        ana.nodes.AddNode(ListNode(nodename))
+        StandardMT(ana, ana.nodes[nodename], v, dosel, qcd_os_ss=args.qcd_os_ss)
+
+"""
 for var in [('mt_m',         'mt_m(40,0,200)', '1'),
             ('pzeta',                 'pzeta(60,-200,100)', '1'),
             ('pzeta_after_mt',        'pzeta(60,-200,100)', 'mt_m<40'),
@@ -95,8 +126,12 @@ for var in [('mt_m',         'mt_m(40,0,200)', '1'),
     v = var[1]
     ana.nodes.AddNode(ListNode(nodename))
     StandardMT(ana, ana.nodes[nodename], v, Sel(sign='os', baseline='anti_e_t && anti_m_t && n_bjets==0', wt='wt', extra_baseline=var[2]))
+"""
 
-for var in [('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
+if args.type == 'tp':
+    ana_list = [ana, ana_scale_t_hi, ana_scale_t_lo]
+    for var in [
+            ('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
             ('cmb_m',  'm_ll(32,40,200)', 'cmb_m_t', '1'),
             ('cmb_t',  'm_ll(32,40,200)', 'cmb_t_t', '1'),
             ('mva_vl',  'm_ll(32,40,200)', 'mva_t_t', '1'),
@@ -107,32 +142,36 @@ for var in [('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
             ('mva_vvt', 'm_ll(32,40,200)', 'mva_vvt_t', '1'),
             ('mva_t_pt_20_30', 'm_ll(32,40,200)',  'mva_t_t', 'pt_t>20 && pt_t<=30'),
             ('mva_t_pt_30_40', 'm_ll(32,40,200)',  'mva_t_t', 'pt_t>30 && pt_t<=40'),
-            ('mva_t_pt_40_60', 'm_ll(32,40,200)',  'mva_t_t', 'pt_t>40 && pt_t<=60'),
-            ('mva_t_pt_60_100', 'm_ll(32,40,200)', 'mva_t_t', 'pt_t>60 && pt_t<=100'),
+            ('mva_t_pt_40_60', 'm_ll(16,40,200)',  'mva_t_t', 'pt_t>40 && pt_t<=60'),
+            ('mva_t_pt_60_100', 'm_ll(8,40,200)', 'mva_t_t', 'pt_t>60 && pt_t<=100'),
             ('cmb_t_pt_20_30', 'm_ll(32,40,200)',  'cmb_t_t', 'pt_t>20 && pt_t<=30'),
             ('cmb_t_pt_30_40', 'm_ll(32,40,200)',  'cmb_t_t', 'pt_t>30 && pt_t<=40'),
-            ('cmb_t_pt_40_60', 'm_ll(32,40,200)',  'cmb_t_t', 'pt_t>40 && pt_t<=60'),
-            ('cmb_t_pt_60_100', 'm_ll(32,40,200)', 'cmb_t_t', 'pt_t>60 && pt_t<=100'),
+            ('cmb_t_pt_40_60', 'm_ll(16,40,200)',  'cmb_t_t', 'pt_t>40 && pt_t<=60'),
+            ('cmb_t_pt_60_100', 'm_ll(8,40,200)', 'cmb_t_t', 'pt_t>60 && pt_t<=100'),
             ('mva_t_dm0', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==0'),
             ('mva_t_dm1', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==1'),
             ('mva_t_dm10', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==10'),
             ('cmb_t_dm0', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==0'),
             ('cmb_t_dm1', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==1'),
             ('cmb_t_dm10', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==10'),
+            ('cmb_0p5_t',  'm_ll(32,40,200)', 'cbiso_0p5_t<0.8 && (pho_out_0p5_t/pt_t)<0.1', '1'),
+            ('cmb_1p0_t',  'm_ll(32,40,200)', 'cbiso_1p0_t<0.8 && (pho_out_1p0_t/pt_t)<0.1', '1'),
+            ('cmb_1p5_t',  'm_ll(32,40,200)', 'cbiso_1p5_t<0.8 && (pho_out_1p5_t/pt_t)<0.1', '1'),
+            ('cmb_2p0_t',  'm_ll(32,40,200)', 'cbiso_2p0_t<0.8 && (pho_out_2p0_t/pt_t)<0.1', '1'),
             ]:
-    nodename = var[0]
-    v = var[1]
-    probe = Sel(probe=var[2])
-    dosel = sel
-    if len(var) >= 4:
-        dosel = sel.copy(extra_baseline=var[3])
-    TagAndProbeCats(ana, ana.nodes, nodename, v, dosel, probe)
-    TagAndProbeCats(ana_scale_t_hi, ana_scale_t_hi.nodes, nodename, v, dosel, probe, pfix='_CMS_scale_tUp')
-    TagAndProbeCats(ana_scale_t_lo, ana_scale_t_lo.nodes, nodename, v, dosel, probe, pfix='_CMS_scale_tDown')
+        nodename = var[0]
+        v = var[1]
+        probe = Sel(probe=var[2])
+        dosel = sel
+        if len(var) >= 4:
+            dosel = sel.copy(extra_baseline=var[3])
+        TagAndProbeCats(ana, ana.nodes, nodename, v, dosel, probe)
+        TagAndProbeCats(ana_scale_t_hi, ana_scale_t_hi.nodes, nodename, v, dosel, probe, pfix='_CMS_scale_tUp')
+        TagAndProbeCats(ana_scale_t_lo, ana_scale_t_lo.nodes, nodename, v, dosel, probe, pfix='_CMS_scale_tDown')
 
-outfile = ROOT.TFile('TauID_Basic.root', 'RECREATE')
+outfile = ROOT.TFile('%s.root' % args.output, 'RECREATE')
 
-for a in [ana, ana_scale_t_hi, ana_scale_t_lo]:
+for a in ana_list:
   a.nodes.PrintTree()
   a.compiled = True
   a.Run()
