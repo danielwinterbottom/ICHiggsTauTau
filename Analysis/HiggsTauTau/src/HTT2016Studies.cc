@@ -640,6 +640,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("ZmtTP", "ZmtTP");
 
       outtree_->Branch("wt",          &wt);
+      outtree_->Branch("wt_pu_hi",    &wt_pu_hi);
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("pt_m",        &pt_m);
       outtree_->Branch("eta_m",       &eta_m);
@@ -806,7 +807,7 @@ namespace ic {
     for (auto id : iso_gammas) {
       double et = pfcands[id]->vector().Et();
       double pt = pfcands[id]->pt();
-      double dr_c = DR(pfcands[id], charged);
+      double dr_c = DR(pfcands[id], &charged);
       if (et > 0.5) {
         ++n_iso_ph_0p5;
         ntiso_0p5_t += pt;
@@ -997,6 +998,7 @@ namespace ic {
     info->set_weight("id", wt_id);
     info->set_weight("iso", wt_iso);
     wt = info->total_weight();
+    wt_pu_hi = info->weight("pileup_hi") / info->weight("pileup");
 
     outtree_->Fill();
 

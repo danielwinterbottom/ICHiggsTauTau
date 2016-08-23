@@ -126,12 +126,19 @@ int main(int argc, char* argv[]) {
     .set_input_file(js.get("lumi_mask", "").asString());
 
   TH1D d_pu = ic::OpenFromTFile<TH1D>(js["data_pu"].asString());
+  TH1D d_pu_hi = ic::OpenFromTFile<TH1D>(js["data_pu_hi"].asString());
   TH1D m_pu = ic::OpenFromTFile<TH1D>(js["mc_pu"].asString());
 
   auto puweight_module = ic::PileupWeight("PileupWeight")
     .set_data(&d_pu)
     .set_mc(&m_pu)
     .set_print_weights(false);
+
+  auto puweight_module_hi = ic::PileupWeight("PileupWeight", "pileup_hi")
+    .set_data(&d_pu_hi)
+    .set_mc(&m_pu)
+    .set_print_weights(false)
+    .set_weight_is_active(false);
 
   auto trigger_module = ic::TriggerInfo("TriggerInfo")
     .set_output_file(js.get("trigger_info_output", "trigger_info.json").asString());
@@ -475,7 +482,7 @@ int main(int argc, char* argv[]) {
                   fabs(t->eta())              < 2.1    &&
                   fabs(t->lead_dz_vertex())   < 0.2    &&
                   abs(t->charge())            == 1     &&
-                  t->GetTauID("decayModeFinding") > 0.5;
+                  t->GetTauID(js["ZmtTP_tauDM"].asString()) > 0.5;
         }));
 
       seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Tau>("MTPairProducer")
@@ -499,6 +506,7 @@ int main(int argc, char* argv[]) {
       // At this point we're done filtering, can calculate other things we nedd
       if (!is_data) {
         seq.BuildModule(puweight_module);
+        seq.BuildModule(puweight_module_hi);
       } else {
         seq.BuildModule(lumimask_module);
       }

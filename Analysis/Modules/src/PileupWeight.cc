@@ -11,6 +11,7 @@ namespace ic {
     print_weights_  = false;
     label_          = "pileup";
     use_sampled_interactions_ = false;
+    weight_is_active_ = true;
   }
 
   PileupWeight::PileupWeight(std::string const& name,
@@ -21,6 +22,7 @@ namespace ic {
     print_weights_  = false;
     label_          = label;
     use_sampled_interactions_ = false;
+    weight_is_active_ = true;
   }
 
   PileupWeight::~PileupWeight() {
@@ -81,7 +83,7 @@ namespace ic {
     if (found_bin >= 1 && found_bin <= weights_->GetNbinsX()) {
       weight = weights_->GetBinContent(found_bin);
     }
-    eventInfo->set_weight(label_, weight);
+    eventInfo->set_weight(label_, weight, weight_is_active_);
     return 0;
   }
   int PileupWeight::PostAnalysis() {

@@ -113,6 +113,7 @@ for sa in SAMPLES:
         'lumi_out': '%s/lumi_%s' % (OUTPUT, sa),
         # Pileup weights
         'data_pu': 'input/pileup/Data_Pileup_2016_69p2mb_Cert_271036-276811.root:pileup',
+        'data_pu_hi': 'input/pileup/Data_Pileup_2016_80mb_Cert_271036-276811.root:pileup',
         'mc_pu': 'input/pileup/MC_Spring16_PU25ns_V1.root:pileup',
         # Hash map settings
         'hash_map_mode': 0,
@@ -121,7 +122,9 @@ for sa in SAMPLES:
         # Trigger info settings
         'trigger_info_output': '%s/trigger_info_%s.json' % (OUTPUT, sa),
         # Scale factors workspace
-        'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root'
+        'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root',
+        # ZmtTP decay mode selection
+        'ZmtTP_tauDM': 'decayModeFinding'
     }
     job_mgr.add_filelist_split_jobs(
         prog=basedir+'/bin/HTT2016Studies',

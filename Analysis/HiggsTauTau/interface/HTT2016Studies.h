@@ -225,6 +225,7 @@ class ZmtTPTreeProducer : public ModuleBase {
   HTTPairGenInfo geninfo_module_;
 
   float wt;
+  float wt_pu_hi;
 
   int n_vtx;
 
