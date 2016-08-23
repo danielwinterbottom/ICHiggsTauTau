@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <map>
+#include "TMath.h"
 #include "boost/functional/hash.hpp"
 #include "RooRealVar.h"
 #include "HiggsTauTau/interface/HTT2016Studies.h"
@@ -671,10 +672,16 @@ namespace ic {
       outtree_->Branch("ntiso_2p0_t", &ntiso_2p0_t);
       outtree_->Branch("puiso_t",     &puiso_t);
       outtree_->Branch("pho_out_t",   &pho_out_t);
+      outtree_->Branch("pho_out_0p0_t",   &pho_out_0p0_t);
       outtree_->Branch("pho_out_0p5_t",   &pho_out_0p5_t);
       outtree_->Branch("pho_out_1p0_t",   &pho_out_1p0_t);
       outtree_->Branch("pho_out_1p5_t",   &pho_out_1p5_t);
       outtree_->Branch("pho_out_2p0_t",   &pho_out_2p0_t);
+      outtree_->Branch("nt_density_0p0_0p1",   &nt_density_0p0_0p1);
+      outtree_->Branch("nt_density_0p1_0p2",   &nt_density_0p1_0p2);
+      outtree_->Branch("nt_density_0p2_0p3",   &nt_density_0p2_0p3);
+      outtree_->Branch("nt_density_0p3_0p4",   &nt_density_0p3_0p4);
+      outtree_->Branch("nt_density_0p4_0p5",   &nt_density_0p4_0p5);
       outtree_->Branch("n_iso_ph_0p5", &n_iso_ph_0p5);
       outtree_->Branch("n_sig_ph_0p5", &n_sig_ph_0p5);
       outtree_->Branch("n_iso_ph_1p0", &n_iso_ph_1p0);
@@ -768,6 +775,11 @@ namespace ic {
     // auto tracks = event->GetIDMap<Track>("trackIDMap", "tracks");
     auto const& iso_gammas = tau->iso_gamma_cands();
     auto const& sig_gammas = tau->sig_gamma_cands();
+    auto const& sig_charged = tau->sig_charged_cands();
+    ic::Candidate charged;
+    for (auto id : sig_charged) {
+      charged.set_vector(charged.vector() + pfcands[id]->vector());
+    }
     n_iso_ph_0p5 = 0;
     n_sig_ph_0p5 = 0;
     n_iso_ph_1p0 = 0;
@@ -778,16 +790,23 @@ namespace ic {
     n_sig_ph_2p0 = 0;
 
     ntiso_0p5_t = 0.;
-    pho_out_0p5_t = 0.;
     ntiso_1p0_t = 0.;
-    pho_out_1p0_t = 0.;
     ntiso_1p5_t = 0.;
-    pho_out_1p5_t = 0.;
     ntiso_2p0_t = 0.;
+    pho_out_0p0_t = 0.;
+    pho_out_0p5_t = 0.;
+    pho_out_1p0_t = 0.;
+    pho_out_1p5_t = 0.;
     pho_out_2p0_t = 0.;
+    nt_density_0p0_0p1 = 0.;
+    nt_density_0p1_0p2 = 0.;
+    nt_density_0p2_0p3 = 0.;
+    nt_density_0p3_0p4 = 0.;
+    nt_density_0p4_0p5 = 0.;
     for (auto id : iso_gammas) {
       double et = pfcands[id]->vector().Et();
       double pt = pfcands[id]->pt();
+      double dr_c = DR(pfcands[id], charged);
       if (et > 0.5) {
         ++n_iso_ph_0p5;
         ntiso_0p5_t += pt;
@@ -804,11 +823,25 @@ namespace ic {
         ++n_iso_ph_2p0;
         ntiso_2p0_t += pt;
       }
+      if (dr_c >= 0.0 && dr_c < 0.1) nt_density_0p0_0p1 += pt;
+      if (dr_c >= 0.1 && dr_c < 0.2) nt_density_0p1_0p2 += pt;
+      if (dr_c >= 0.2 && dr_c < 0.3) nt_density_0p2_0p3 += pt;
+      if (dr_c >= 0.3 && dr_c < 0.4) nt_density_0p3_0p4 += pt;
+      if (dr_c >= 0.4 && dr_c < 0.5) nt_density_0p4_0p5 += pt;
     }
+    nt_density_0p0_0p1 /= (TMath::Pi() * 0.1 * 0.1);
+    nt_density_0p1_0p2 /= (TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1));
+    nt_density_0p2_0p3 /= (TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2));
+    nt_density_0p3_0p4 /= (TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3));
+    nt_density_0p4_0p5 /= (TMath::Pi() * (0.5 * 0.5 - 0.4 * 0.4));
+
     for (auto id : sig_gammas) {
       double et = pfcands[id]->vector().Et();
       double pt = pfcands[id]->pt();
       double dr = DR(pfcands[id], tau);
+      if (dr > cone) {
+        pho_out_0p0_t += pt;
+      }
       if (et > 0.5) {
         ++n_sig_ph_0p5;
         if (dr > cone) {

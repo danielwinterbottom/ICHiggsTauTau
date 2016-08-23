@@ -260,10 +260,17 @@ class ZmtTPTreeProducer : public ModuleBase {
   float ntiso_2p0_t;
   float puiso_t;
   float pho_out_t;
+  float pho_out_0p0_t;
   float pho_out_0p5_t;
   float pho_out_1p0_t;
   float pho_out_1p5_t;
   float pho_out_2p0_t;
+
+  float nt_density_0p0_0p1;
+  float nt_density_0p1_0p2;
+  float nt_density_0p2_0p3;
+  float nt_density_0p3_0p4;
+  float nt_density_0p4_0p5;
 
   unsigned n_iso_ph_0p5;
   unsigned n_sig_ph_0p5;
