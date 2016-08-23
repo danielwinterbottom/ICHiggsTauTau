@@ -91,8 +91,9 @@ namespace ic {
     em_qcd_cr2_2to4_          = nullptr;
     em_qcd_cr2_gt4_           = nullptr;
     ele_tracking_sf_          = nullptr;
-    muon_tracking_sf_          = nullptr;
-    scalefactor_file_           = "";
+    muon_tracking_sf_         = nullptr;
+    scalefactor_file_         = "";
+    do_tau_id_sf_             = false;
   }
   HTTWeights::~HTTWeights() {
     ;
@@ -128,7 +129,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_em_qcd_weights"   % do_em_qcd_weights_;
     std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
     std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
-    std::cout << boost::format(param_fmt()) % "ditau_label"          % ditau_label_;
+    std::cout << boost::format(param_fmt()) % "ditau_label"         % ditau_label_;
+    std::cout << boost::format(param_fmt()) % "do_tau_id_sf"        % do_tau_id_sf_;
 
     if (do_tau_fake_weights_) {
      tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
@@ -2033,6 +2035,14 @@ namespace ic {
       if (tau->decay_mode() == 0 && era_ == era::data_2012_rereco) {
         eventInfo->set_weight("tau_mode_scale", 0.88);
       }
+    }
+    
+    if (do_tau_id_sf_){
+      double tau_id_sf = 0.84; 
+      if (channel_ == channel::et || channel_ == channel::mt){
+        eventInfo->set_weight("tau_id_sf",tau_id_sf);
+      } else if (channel_ == channel::tt){
+        eventInfo->set_weight("tau_id_sf",tau_id_sf*tau_id_sf);   
     }
 
 

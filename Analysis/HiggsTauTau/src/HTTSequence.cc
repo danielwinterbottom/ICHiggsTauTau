@@ -429,6 +429,14 @@ void HTTSequence::BuildSequence(){
   // Other flags
 
   real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
+                        || (output_name.find("HTT")                   != output_name.npos)
+                        || (output_name.find("HToTautau")             != output_name.npos)
+                        || (output_name.find("T-t")                   != output_name.npos)
+                        || (output_name.find("Tbar-t")                != output_name.npos)
+                        || (output_name.find("VVTo2L2Nu")             != output_name.npos)
+                        || (output_name.find("WZTo2L2Q")              != output_name.npos)
+                        || (output_name.find("ZZTo2L2Q")              != output_name.npos)
+                        || (output_name.find("ZZTo4L")                != output_name.npos)
                         || (output_name.find("HTohh")                 != output_name.npos)
                         || (output_name.find("AToZh")                 != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
@@ -1482,6 +1490,9 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
     .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
     .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data));
+    if(real_tau_sample){
+     httWeights.set_do_tau_id_sf(true);   
+    }
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
