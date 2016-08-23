@@ -62,7 +62,6 @@ def MultiDraw(self, Formulae, Compiled=False):
     # lastFormula, lastWeight = None, None
 
     for i, origFormula in enumerate(Formulae):
-        print "Have an origFormula", origFormula
 
         # Expand out origFormula and weight, otherwise just use weight of 1.
         if type(origFormula) == tuple:
@@ -72,6 +71,11 @@ def MultiDraw(self, Formulae, Compiled=False):
 
         # Our way is simpler, require each variable to end in (...) or [...] to give the binning
         # and always create a new hist
+
+        split_var = origFormula.split(';')
+        origFormula = split_var[0]
+        print "Formula: ", origFormula, weight
+
         pos_open = origFormula.rfind('(')
         pos_close = origFormula.rfind(')')
         if pos_open is -1 or pos_close is -1 or pos_open > pos_close:
@@ -83,6 +87,9 @@ def MultiDraw(self, Formulae, Compiled=False):
         formula = origFormula[:pos_open].strip()
         ROOT.TH1.AddDirectory(False)
         hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *binning)
+
+        if len(split_var) > 1:
+            hist.GetXaxis().SetTitle(split_var[1])
 
         results.append(hist)
 

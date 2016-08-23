@@ -2,10 +2,14 @@ import ROOT
 import argparse
 from UserCode.ICHiggsTauTau.analysis import *
 
+ROOT.PyConfig.IgnoreCommandLineOptions = True
+ROOT.gROOT.SetBatch(ROOT.kTRUE)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--type', '-t', help='control, tp')
 parser.add_argument('--output', '-o', default='TauID_Basic', help='Output name')
 parser.add_argument('--qcd_os_ss', default=1.0, type=float)
+parser.add_argument('--extra', default=None)
 
 args = parser.parse_args()
 
@@ -73,41 +77,41 @@ sel = Sel(sign='os', baseline='mt_m<40 && anti_e_t && anti_m_t', wt='wt')
 
 if args.type == 'control':
     ana_list = [ana]
-    for var in [('chiso_t',         'chiso_t(50,0,20)'),
-                ('cbiso_t',         'cbiso_t(50,0,20)'),
-                ('cbiso_0p5_t',     'cbiso_0p5_t(50,0,20)'),
-                ('cbiso_1p0_t',     'cbiso_1p0_t(50,0,20)'),
-                ('cbiso_1p5_t',     'cbiso_1p5_t(50,0,20)'),
-                ('cbiso_2p0_t',     'cbiso_2p0_t(50,0,20)'),
-                ('ntiso_t',         'ntiso_t(50,0,20)'),
-                ('ntiso_0p5_t',     'ntiso_0p5_t(50,0,20)'),
-                ('ntiso_1p0_t',     'ntiso_1p0_t(50,0,20)'),
-                ('ntiso_1p5_t',     'ntiso_1p5_t(50,0,20)'),
-                ('ntiso_2p0_t',     'ntiso_2p0_t(50,0,20)'),
-                ('puiso_t',         'puiso_t(50,0,20)'),
-                ('pho_out_t',       'pho_out_t(50,0,20)'),
-                ('pho_out_0p5_t',   'pho_out_0p5_t(50,0,20)'),
-                ('pho_out_1p0_t',   'pho_out_1p0_t(50,0,20)'),
-                ('pho_out_1p5_t',   'pho_out_1p5_t(50,0,20)'),
-                ('pho_out_2p0_t',   'pho_out_2p0_t(50,0,20)'),
-                ('pho_out_t_ratio', 'pho_out_t/pt_t(50,0,1)'),
-                ('pho_out_0p5_t_ratio', 'pho_out_0p5_t/pt_t(50,0,1)'),
-                ('pho_out_1p0_t_ratio', 'pho_out_1p0_t/pt_t(50,0,1)'),
-                ('pho_out_1p5_t_ratio', 'pho_out_1p5_t/pt_t(50,0,1)'),
-                ('pho_out_2p0_t_ratio', 'pho_out_2p0_t/pt_t(50,0,1)'),
-                ('m_ll',            'm_ll(50,0,250)'),
-                ('n_iso_ph_0p5',    'n_iso_ph_0p5(20,-0.5,19.5)'),
-                ('n_iso_ph_1p0',    'n_iso_ph_1p0(20,-0.5,19.5)'),
-                ('n_iso_ph_1p5',    'n_iso_ph_1p5(20,-0.5,19.5)'),
-                ('n_iso_ph_2p0',    'n_iso_ph_2p0(20,-0.5,19.5)'),
-                ('n_sig_ph_0p5',    'n_sig_ph_0p5(20, 0.5,20.5)'),
-                ('n_sig_ph_1p0',    'n_sig_ph_1p0(20, 0.5,20.5)'),
-                ('n_sig_ph_1p5',    'n_sig_ph_1p5(20, 0.5,20.5)'),
-                ('n_sig_ph_2p0',    'n_sig_ph_2p0(20, 0.5,20.5)'),
-                ('n_sum_ph_0p5',    'n_sig_ph_0p5+n_iso_ph_0p5(25,-0.5,24.5)'),
-                ('n_sum_ph_1p0',    'n_sig_ph_1p0+n_iso_ph_1p0(25,-0.5,24.5)'),
-                ('n_sum_ph_1p5',    'n_sig_ph_1p5+n_iso_ph_1p5(25,-0.5,24.5)'),
-                ('n_sum_ph_2p0',    'n_sig_ph_2p0+n_iso_ph_2p0(25,-0.5,24.5)'),
+    for var in [('chiso_t',         'chiso_t(50,0,20);Charged Iso:GeV'),
+                ('cbiso_t',         'cbiso_t(50,0,20);Combined Iso:GeV'),
+                ('cbiso_0p5_t',     'cbiso_0p5_t(50,0,20);Combined Iso (E_{T}^{#gamma}>0.5 GeV):GeV'),
+                ('cbiso_1p0_t',     'cbiso_1p0_t(50,0,20);Combined Iso (E_{T}^{#gamma}>1.0 GeV):GeV'),
+                ('cbiso_1p5_t',     'cbiso_1p5_t(50,0,20);Combined Iso (E_{T}^{#gamma}>1.5 GeV):GeV'),
+                ('cbiso_2p0_t',     'cbiso_2p0_t(50,0,20);Combined Iso (E_{T}^{#gamma}>2.0 GeV):GeV'),
+                ('ntiso_t',         'ntiso_t(50,0,20);Neutral Iso:GeV'),
+                ('ntiso_0p5_t',     'ntiso_0p5_t(50,0,20);Neutral Iso (E_{T}^{#gamma}>0.5 GeV):GeV'),
+                ('ntiso_1p0_t',     'ntiso_1p0_t(50,0,20);Neutral Iso (E_{T}^{#gamma}>1.0 GeV):GeV'),
+                ('ntiso_1p5_t',     'ntiso_1p5_t(50,0,20);Neutral Iso (E_{T}^{#gamma}>1.5 GeV):GeV'),
+                ('ntiso_2p0_t',     'ntiso_2p0_t(50,0,20);Neutral Iso (E_{T}^{#gamma}>2.0 GeV):GeV'),
+                ('puiso_t',         'puiso_t(50,0,20); Pileup Iso:GeV'),
+                ('pho_out_t',       'pho_out_t(50,0,20);PhotonOutside Iso:GeV'),
+                ('pho_out_0p5_t',   'pho_out_0p5_t(50,0,20);PhotonOutside Iso (E_{T}^{#gamma}>0.5 GeV):GeV'),
+                ('pho_out_1p0_t',   'pho_out_1p0_t(50,0,20);PhotonOutside Iso (E_{T}^{#gamma}>1.0 GeV):GeV'),
+                ('pho_out_1p5_t',   'pho_out_1p5_t(50,0,20);PhotonOutside Iso (E_{T}^{#gamma}>1.5 GeV):GeV'),
+                ('pho_out_2p0_t',   'pho_out_2p0_t(50,0,20);PhotonOutside Iso (E_{T}^{#gamma}>2.0 GeV):GeV'),
+                ('pho_out_t_ratio', 'pho_out_t/pt_t(50,0,1);PhotonOutside/p_{T}^{#tau}:'),
+                ('pho_out_0p5_t_ratio', 'pho_out_0p5_t/pt_t(50,0,1);PhotonOutside/p_{T}^{#tau} (E_{T}^{#gamma}>0.5 GeV):'),
+                ('pho_out_1p0_t_ratio', 'pho_out_1p0_t/pt_t(50,0,1);PhotonOutside/p_{T}^{#tau} (E_{T}^{#gamma}>1.0 GeV):'),
+                ('pho_out_1p5_t_ratio', 'pho_out_1p5_t/pt_t(50,0,1);PhotonOutside/p_{T}^{#tau} (E_{T}^{#gamma}>1.5 GeV):'),
+                ('pho_out_2p0_t_ratio', 'pho_out_2p0_t/pt_t(50,0,1);PhotonOutside/p_{T}^{#tau} (E_{T}^{#gamma}>2.0 GeV):'),
+                ('m_ll',            'm_ll(50,0,250);m_{#tau#tau}^{vis}:GeV'),
+                ('n_iso_ph_0p5',    'n_iso_ph_0p5(20,-0.5,19.5);nIsoPhotons (E_{T}^{#gamma}>0.5 GeV):'),
+                ('n_iso_ph_1p0',    'n_iso_ph_1p0(20,-0.5,19.5);nIsoPhotons (E_{T}^{#gamma}>1.0 GeV):'),
+                ('n_iso_ph_1p5',    'n_iso_ph_1p5(20,-0.5,19.5);nIsoPhotons (E_{T}^{#gamma}>1.5 GeV):'),
+                ('n_iso_ph_2p0',    'n_iso_ph_2p0(20,-0.5,19.5);nIsoPhotons (E_{T}^{#gamma}>2.0 GeV):'),
+                ('n_sig_ph_0p5',    'n_sig_ph_0p5(20, 0.5,20.5);nSigPhotons (E_{T}^{#gamma}>0.5 GeV):'),
+                ('n_sig_ph_1p0',    'n_sig_ph_1p0(20, 0.5,20.5);nSigPhotons (E_{T}^{#gamma}>1.0 GeV)'),
+                ('n_sig_ph_1p5',    'n_sig_ph_1p5(20, 0.5,20.5);nSigPhotons (E_{T}^{#gamma}>1.5 GeV)'),
+                ('n_sig_ph_2p0',    'n_sig_ph_2p0(20, 0.5,20.5);nSigPhotons (E_{T}^{#gamma}>2.0 GeV)'),
+                ('n_sum_ph_0p5',    'n_sig_ph_0p5+n_iso_ph_0p5(25,-0.5,24.5);nSumPhotons (E_{T}^{#gamma}>0.5 GeV)'),
+                ('n_sum_ph_1p0',    'n_sig_ph_1p0+n_iso_ph_1p0(25,-0.5,24.5);nSumPhotons (E_{T}^{#gamma}>1.0 GeV)'),
+                ('n_sum_ph_1p5',    'n_sig_ph_1p5+n_iso_ph_1p5(25,-0.5,24.5);nSumPhotons (E_{T}^{#gamma}>1.5 GeV)'),
+                ('n_sum_ph_2p0',    'n_sig_ph_2p0+n_iso_ph_2p0(25,-0.5,24.5);nSumPhotons (E_{T}^{#gamma}>2.0 GeV)'),
               ]:
         nodename = var[0]
         v = var[1]
@@ -134,7 +138,7 @@ if args.type == 'tp':
             ('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
             ('cmb_m',  'm_ll(32,40,200)', 'cmb_m_t', '1'),
             ('cmb_t',  'm_ll(32,40,200)', 'cmb_t_t', '1'),
-            ('mva_vl',  'm_ll(32,40,200)', 'mva_t_t', '1'),
+            ('mva_vl',  'm_ll(32,40,200)', 'mva_vl_t', '1'),
             ('mva_l',   'm_ll(32,40,200)', 'mva_l_t', '1'),
             ('mva_m',   'm_ll(32,40,200)', 'mva_m_t', '1'),
             ('mva_t',   'm_ll(32,40,200)', 'mva_t_t', '1'),
@@ -173,7 +177,7 @@ outfile = ROOT.TFile('%s.root' % args.output, 'RECREATE')
 
 for a in ana_list:
   a.nodes.PrintTree()
-  a.compiled = True
+  # a.compiled = True
   a.Run()
   a.nodes.Output(outfile)
 
