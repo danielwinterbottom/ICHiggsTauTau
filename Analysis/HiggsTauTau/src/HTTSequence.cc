@@ -1491,7 +1491,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
     .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data));
     if(real_tau_sample){
-     httWeights.set_do_tau_id_sf(true);   
+     httWeights.set_do_tau_id_sf(js["do_tau_id_sf"].asBool());   
     }
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))

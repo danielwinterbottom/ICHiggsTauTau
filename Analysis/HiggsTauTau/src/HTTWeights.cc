@@ -2040,9 +2040,10 @@ namespace ic {
     if (do_tau_id_sf_){
       double tau_id_sf = 0.84; 
       if (channel_ == channel::et || channel_ == channel::mt){
-        eventInfo->set_weight("tau_id_sf",tau_id_sf);
+        event->Add("wt_tau_id_sf", tau_id_sf);
       } else if (channel_ == channel::tt){
-        eventInfo->set_weight("tau_id_sf",tau_id_sf*tau_id_sf);   
+        event->Add("wt_tau_id_sf", tau_id_sf*tau_id_sf);  
+      }
     }
 
 

@@ -73,6 +73,7 @@ int main(int argc, char* argv[]){
   string w_binned;
   bool interpolate;
   bool no_central;
+  bool do_tauid_sf;
   string signal_bins;
   bool add_ztt_modes;
 
@@ -141,7 +142,8 @@ int main(int argc, char* argv[]){
 	  ("check_ztt_top_frac",      po::value<bool>(&check_ztt_top_frac)->default_value(false))
 	  ("add_ztt_modes",           po::value<bool>(&add_ztt_modes)->default_value(false))
 	  ("scan_bins",               po::value<unsigned>(&scan_bins)->default_value(0))
-	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(-1));
+	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(-1))
+          ("do_tauid_sf", 	          po::value<bool>(&do_tauid_sf)->default_value(false));
 
    
 	HTTPlot plot;
@@ -256,7 +258,15 @@ int main(int argc, char* argv[]){
   std::string sig_var = var;
   if (signal_bins != "") sig_var = reduced_var+signal_bins;
 
- if(!no_central) ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
+ if(!no_central){
+   if(!do_tauid_sf){
+     ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
+   } else {
+     ana.FillHistoMapRealTau(hmap, method, var, sel, cat, "wt*wt_tau_id_sf", "");
+     ana.FillHistoMapFakeTau(hmap, method, var, sel, cat, "wt", "");
+     ana.CombineRealAndFake(hmap, "");
+   }
+ }
   
 
    
