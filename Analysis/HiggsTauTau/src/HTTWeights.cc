@@ -2038,12 +2038,20 @@ namespace ic {
     }
     
     if (do_tau_id_sf_){
-      double tau_id_sf = 0.84; 
+      double tau_id_sf = 1;  
       if (channel_ == channel::et || channel_ == channel::mt){
-        event->Add("wt_tau_id_sf", tau_id_sf);
-      } else if (channel_ == channel::tt){
-        event->Add("wt_tau_id_sf", tau_id_sf*tau_id_sf);  
+        unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+        if(gen_match_2 == 5) tau_id_sf = 0.84;
+        else tau_id_sf = 1;
+      } else if (channel_ == channel::tt) {
+        unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+        unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+        if(gen_match_1 == 5 && gen_match_2 == 5) tau_id_sf = 0.84*0.84;
+        else if (gen_match_1 == 5 || gen_match_2 == 5) tau_id_sf = 0.84;
+        else tau_id_sf = 1;
       }
+      event->Add("wt_tau_id_sf", tau_id_sf);
+      eventInfo->set_weight("wt_tau_id_sf", tau_id_sf);
     }
 
 

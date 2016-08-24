@@ -92,9 +92,10 @@ namespace ic {
       alias_map_["nojet"]           ="(n_jets==0)";
       alias_map_["njet"]           ="(n_jets>0)";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
-      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      //alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"; //change this to loose for SM catogory optimisations - apply tighter cuts using set alias option
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -340,7 +341,8 @@ namespace ic {
       alias_map_["inclusive"]         = "1";
      // alias_map_["baseline"]          = "1";
 
-      alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      //alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["baseline"]          = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto"; //change this to loose for SM catogory optimisations - apply tighter cuts useing set alias option 
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -1612,236 +1614,6 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 //    hmap["data_obs"+postfix] = std::make_pair(total_hist,total_bkr);
     return;
   }
-  
-  
-    void HTTRun2Analysis::FillHistoMapRealTau(HistValueMap & hmap, unsigned method,
-                        std::string var,
-                        std::string sel,
-                        std::string cat,
-                        std::string wt,
-                        std::string postfix) {
-    Value total_bkr;
-    // Data
-    auto data_pair = this->GenerateData(method, var, sel, cat, wt);
-    //PrintValue("data_obs"+postfix, data_pair.second);
-    hmap["data_obs"+postfix] = data_pair;
-    
-    //Splitting TT into TTT
-    std::string ttt_sel;
-    ttt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
-    auto topt_pair = this->GenerateTOP(method, var, ttt_sel, cat, wt);
-    //PrintValue("TTT"+postfix, topt_pair.second);
-    hmap["TTT"+postfix] = topt_pair;
-
-    std::string topt_map_label = "TTT";
-    TH1F ttt_hist = topt_pair.first;
-
-    total_bkr = ValueAdd(total_bkr, topt_pair.second);
-    hmap[topt_map_label+postfix] = std::make_pair(ttt_hist,topt_pair.second);
-    TH1F total_hist = hmap[topt_map_label+postfix].first; 
-    
-    // Diboson
-    auto vvt_pair = this->GenerateVV(method, var, ttt_sel, cat, wt);
-    //PrintValue("VVT"+postfix, vvt_pair.second);
-    hmap["VVT"+postfix] = vvt_pair;
-
-    std::string vvt_map_label =  "VVT";
-    TH1F vvt_hist = vvt_pair.first;
-
-    total_bkr = ValueAdd(total_bkr, vvt_pair.second);
-    hmap[vvt_map_label+postfix] = std::make_pair(vvt_hist, vvt_pair.second);
-    total_hist.Add(&hmap[vvt_map_label+postfix].first,1.0);
-    
-    // Z->tautau
-    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
-      std::string ztt_sel;
-      ztt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
-      auto ztt_pair = this->GenerateZTT(method, var, ztt_sel, cat, wt);
-      std::string ztt_map_label = "ZTT";
-      //std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
-      //PrintValue(ztt_map_label+postfix, ztt_pair.second);
-      total_bkr = ValueAdd(total_bkr, ztt_pair.second);
-      hmap[ztt_map_label+postfix] = ztt_pair;
-      total_hist.Add(&hmap[ztt_map_label+postfix].first,1.0);
-    } 
-    // Print the total real tau background yield
-    //PrintValue("Total real tau"+postfix, total_bkr);
-    hmap["total_realtau_bkg"+postfix] = std::make_pair(total_hist,total_bkr); // add a print totals when you have seperated both!
-    return;
-  }
-  
-    void HTTRun2Analysis::FillHistoMapFakeTau(HistValueMap & hmap, unsigned method,
-                        std::string var,
-                        std::string sel,
-                        std::string cat,
-                        std::string wt,
-                        std::string postfix) {
-    Value total_bkr;
-    // Data
-    auto data_pair = this->GenerateData(method, var, sel, cat, wt);
-    //PrintValue("data_obs"+postfix, data_pair.second);
-    hmap["data_obs"+postfix] = data_pair;
-    
-    //Splitting TT into TTJ
-    std::string ttj_sel;
-    ttj_sel = sel+"&&!"+this->ResolveAlias("ztt_sel");
-    auto topj_pair = this->GenerateTOP(method, var, ttj_sel, cat, wt);
-    //PrintValue("TTJ"+postfix, topj_pair.second);
-    hmap["TTJ"+postfix] = topj_pair;
-    TH1F ttj_hist = topj_pair.first;
-    std::string topj_map_label = "TTJ";
-    total_bkr = ValueAdd(total_bkr, topj_pair.second);
-    hmap[topj_map_label+postfix] = std::make_pair(ttj_hist,topj_pair.second);
-    TH1F total_hist = hmap[topj_map_label+postfix].first; 
-    
-    // Diboson
-    auto vvj_pair = this->GenerateVV(method, var, ttj_sel, cat, wt);
-    //PrintValue("VVJ"+postfix, vvj_pair.second);
-    hmap["VVJ"+postfix] = vvj_pair;
-    std::string vvj_map_label =  "VVJ";
-    TH1F vvj_hist = vvj_pair.first;
-    total_bkr = ValueAdd(total_bkr, vvj_pair.second);
-    hmap[vvj_map_label+postfix] = std::make_pair(vvj_hist, vvj_pair.second);
-    total_hist.Add(&hmap[vvj_map_label+postfix].first,1.0);
-    
-    // Z->ll
-    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
-      std::string zl_sel, zj_sel;
-      zl_sel= sel+"&&"+this->ResolveAlias("zl_sel");
-      zj_sel= sel+"&&"+this->ResolveAlias("zj_sel");
-      auto zl_pair = this->GenerateZL(method, var, zl_sel, cat, wt);
-      auto zj_pair = this->GenerateZJ(method, var, zj_sel, cat, wt);
-      Value zll_norm = ValueAdd(zl_pair.second, zj_pair.second);
-      TH1F zll_hist = zl_pair.first;
-      zll_hist.Add(&zj_pair.first);
-      //PrintValue("ZLL"+postfix, zll_norm);
-      //PrintValue("ZL"+postfix, zl_pair.second);
-      //PrintValue("ZJ"+postfix, zj_pair.second);
-      total_bkr = ValueAdd(total_bkr, zll_norm);
-      hmap["ZLL"+postfix] = std::make_pair(zll_hist, zll_norm);
-      hmap["ZL"+postfix]  = zl_pair;
-      hmap["ZJ"+postfix]  = zj_pair;
-      total_hist.Add(&hmap["ZLL"+postfix].first,1.0);
-    } else {
-      std::string zll_sel;
-      zll_sel = sel+"&&"+this->ResolveAlias("zll_sel");
-      auto zll_pair = this->GenerateZLL(method, var, zll_sel, cat, wt);
-      std::string zll_map_label = "ZLL";
-      //PrintValue(zll_map_label+postfix, zll_pair.second);
-      total_bkr = ValueAdd(total_bkr, zll_pair.second);
-      hmap[zll_map_label+postfix] = zll_pair;
-      total_hist.Add(&hmap[zll_map_label+postfix].first,1.0);
-    }
-    // W+jets
-    if (ch_ != channel::em) {
-      auto w_pair = this->GenerateW(method, var, sel, cat, wt);
-      //PrintValue("W"+postfix, w_pair.second);
-      total_bkr = ValueAdd(total_bkr, w_pair.second);
-      hmap["W"+postfix] = w_pair;
-      total_hist.Add(&hmap["W"+postfix].first,1.0);
-    }
-    else if (ch_ == channel::em) {
-      auto w_pair = this->GenerateW(method, var, sel, cat, wt);
-      //PrintValue("WJets"+postfix, w_pair.second);
-      total_bkr = ValueAdd(total_bkr, w_pair.second);
-      hmap["WJets"+postfix] = w_pair;
-      total_hist.Add(&hmap["WJets"+postfix].first,1.0);
-      
-/*      auto wgam_pair = this->GenerateWGamma(method, var, sel, cat, wt);
-      PrintValue("WGam"+postfix, wgam_pair.second);
-      total_bkr = ValueAdd(total_bkr, wgam_pair.second);
-      hmap["WGam"+postfix] = wgam_pair;
-      total_hist.Add(&hmap["WGam"+postfix].first,1.0);*/
-      
-      TH1F total_W = hmap["WJets"+postfix].first; 
-      Value total_W_norm;
-      total_W_norm = ValueAdd(total_W_norm, w_pair.second);
-//      total_W_norm = ValueAdd(total_W_norm, wgam_pair.second);
- //     total_W.Add(&hmap["WGam"+postfix].first,1.0);
-      hmap["W"+postfix] = std::make_pair(total_W,total_W_norm);
-      //PrintValue("W"+postfix, total_W_norm);
-    }
-    // QCD/Fakes
-    if(ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
-      auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
-      std::string qcd_map_label = "QCD";
-      //std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
-      //PrintValue(qcd_map_label+postfix, qcd_pair.second);
-      total_bkr = ValueAdd(total_bkr, qcd_pair.second);
-      hmap[qcd_map_label+postfix] = qcd_pair;
-      total_hist.Add(&hmap["QCD"+postfix].first,1.0);
-    }
-    // Print the total fake tau background yield
-    //PrintValue("Total fake tau"+postfix, total_bkr);
-
-    hmap["total_faketau_bkg"+postfix] = std::make_pair(total_hist,total_bkr);
-
-    return;
-  }
-  
-  void HTTRun2Analysis::CombineRealAndFake(HistValueMap & hmap, std::string postfix) {
-        
-    std::string top_map_label = "TT";
-    Value tt_norm = ValueAdd(hmap["TTT"+postfix].second, hmap["TTJ"+postfix].second);
-    TH1F tt_hist = hmap["TTT"+postfix].first;
-    tt_hist.Add(&hmap["TTJ"+postfix].first);
-    hmap[top_map_label+postfix] = std::make_pair(tt_hist,tt_norm);
-    
-    std::string vv_map_label =  "VV";
-    Value vv_norm = ValueAdd(hmap["VVT"+postfix].second, hmap["VVJ"+postfix].second);
-    TH1F vv_hist = hmap["VVT"+postfix].first;
-    vv_hist.Add(&hmap["VVJ"+postfix].first);
-    hmap[vv_map_label+postfix] = std::make_pair(vv_hist, vv_norm);
-    
-    TH1F total_hist = hmap["total_realtau_bkg"+postfix].first;
-    total_hist.Add(&hmap["total_faketau_bkg"+postfix].first);
-    Value total_bkr = hmap["total_realtau_bkg"+postfix].second;
-    total_bkr = ValueAdd(total_bkr, hmap["total_faketau_bkg"+postfix].second);
-    hmap["total_bkg"+postfix] = std::make_pair(total_hist,total_bkr);
-
-    //Print Values
-    //Data
-    PrintValue("data_obs"+postfix, hmap["data_obs"+postfix].second);
-    //TT
-    PrintValue("TTT"+postfix, hmap["TTT"+postfix].second);
-    PrintValue("TTJ"+postfix, hmap["TTJ"+postfix].second);
-    PrintValue(top_map_label+postfix, tt_norm);
-    //VV
-    PrintValue("VVT"+postfix, hmap["VVT"+postfix].second);
-    PrintValue("VVJ"+postfix, hmap["VVJ"+postfix].second);
-    PrintValue(vv_map_label+postfix, vv_norm);
-    // Z->ll
-    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
-      PrintValue("ZLL"+postfix, hmap["ZLL"+postfix].second);
-      PrintValue("ZL"+postfix, hmap["ZL"+postfix].second);
-      PrintValue("ZJ"+postfix, hmap["ZJ"+postfix].second);
-    } else {
-      std::string zll_map_label = "ZLL";
-      PrintValue(zll_map_label+postfix, hmap["ZLL"+postfix].second);
-    }
-    // Z->tautau
-    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
-      std::string ztt_map_label = "ZTT";
-      PrintValue(ztt_map_label+postfix, hmap["ZTT"+postfix].second);
-    }    // W+jets
-    if (ch_ != channel::em) {
-      PrintValue("W"+postfix, hmap["W"+postfix].second);
-    }
-    else if (ch_ == channel::em) {
-      PrintValue("WJets"+postfix, hmap["WJets"+postfix].second);
-      PrintValue("W"+postfix, hmap["W"+postfix].second);
-    }
-    // QCD/Fakes
-    if(ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
-      std::string qcd_map_label = "QCD";
-      PrintValue(qcd_map_label+postfix, hmap["QCD"+postfix].second);
-    }
-    // Print the total background yield
-    PrintValue("Total"+postfix, total_bkr);
-    return;
-  }
-  
-  
 
   std::string HTTRun2Analysis::BuildCutString(std::string const& selection,
       std::string const& category,

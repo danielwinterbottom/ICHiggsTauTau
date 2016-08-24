@@ -40,7 +40,6 @@
     "recoil_corrector" : false,
     "do_preselection" : false,
     "force_old_effs" : false,
-    "do_tau_id_sf" : false,
     "electrons"     : "electrons",
     "muons"         : "muons",
     "taus"          : "taus",

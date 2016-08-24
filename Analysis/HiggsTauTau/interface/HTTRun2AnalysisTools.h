@@ -76,19 +76,6 @@ namespace ic {
                         std::string cat,
                         std::string wt,
                         std::string postfix);
-      void FillHistoMapRealTau(HistValueMap & hmap, unsigned method,
-                        std::string var,
-                        std::string sel,
-                        std::string cat,
-                        std::string wt,
-                        std::string postfix);
-      void FillHistoMapFakeTau(HistValueMap & hmap, unsigned method,
-                        std::string var,
-                        std::string sel,
-                        std::string cat,
-                        std::string wt,
-                        std::string postfix);
-      void CombineRealAndFake(HistValueMap & hmap, std::string postfix);
       HistValuePair GenerateData(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
