@@ -356,7 +356,7 @@ namespace ic {
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       if (mva_string_ == "loose"){
         alias_map_["baseline"]          = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";  
-        alias_map_["tt_qcd_norm"]       = "mva_olddm_vloose_1>0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+        alias_map_["tt_qcd_norm"]       = "mva_olddm_vloose_1>0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_loose_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       } else if (mva_string_ == "medium"){
         alias_map_["baseline"]          = "mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
         alias_map_["tt_qcd_norm"]       = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";

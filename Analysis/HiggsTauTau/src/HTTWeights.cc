@@ -2046,8 +2046,8 @@ namespace ic {
       } else if (channel_ == channel::tt) {
         unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
         unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-        if(gen_match_1 == 5 && gen_match_2 == 5) tau_id_sf = 0.84*0.84;
-        else if (gen_match_1 == 5 || gen_match_2 == 5) tau_id_sf = 0.84;
+        if(gen_match_1 == 5 && gen_match_2 == 5) tau_id_sf = 0.9*0.9;
+        else if (gen_match_1 == 5 || gen_match_2 == 5) tau_id_sf = 0.9;
         else tau_id_sf = 1;
       }
       event->Add("wt_tau_id_sf", tau_id_sf);

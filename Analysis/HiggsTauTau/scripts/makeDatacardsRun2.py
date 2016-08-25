@@ -211,6 +211,41 @@ if SCHEME == 'run2_sm':
   }
   sig_scheme = 'run2_sm'
   ANA = 'sm'
+  
+  ######new sm 2016
+  
+  if SCHEME == 'run2_sm_new':
+  scheme_et = [
+    ("12",   "inclusive",  "inclusive",   BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "vbf_loose",  "vbf_loose",   BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "vbf_tight",  "vbf_tight",   BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "1jet_loose", "1jet_loose",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "1jet_tight", "1jet_tight",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
+    ("12",   "0jet",       "0jet",        BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 ')
+  ]
+  scheme_mt = [
+    
+    ("12",   "inclusive",  "inclusive", BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),   
+    ("12",   "vbf_loose",  "vbf_loose", BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),  
+    ("12",   "vbf_tight",  "vbf_tight", BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),  
+    ("12",   "1jet_loose", "1jet_loose",BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),  
+    ("12",   "1jet_tight", "1jet_tight",BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),  
+    ("12",   "0jet",       "0jet",      BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 ') 
+
+  ]
+  scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+
+  ]
+
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'tt' : 'tt_default'
+  }
+
+  sig_scheme = 'run2_sm_new'
+  ANA = 'sm'
 
 if SCHEME == 'run2_Hhh':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
