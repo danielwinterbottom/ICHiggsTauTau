@@ -29,7 +29,7 @@
 
 namespace ic {
 
-  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15) : ch_(ch), year_(year), verbosity_(verbosity), is_fall15_(is_fall15) {
+  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15, std::string mva_string) : ch_(ch), year_(year), verbosity_(verbosity), is_fall15_(is_fall15), mva_string_(mva_string) {
     lumi_ = 1.;
     do_ss_ = false;
     qcd_os_ss_factor_ = 1.06;
@@ -96,6 +96,15 @@ namespace ic {
       if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"; //change this to loose for SM catogory optimisations - apply tighter cuts using set alias option
+      if (mva_string_ == "loose"){
+        alias_map_["baseline"]          = "(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
+      } else if (mva_string_ == "medium"){
+        alias_map_["baseline"]          = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
+      } else if (mva_string_ == "tight"){
+        alias_map_["baseline"]          = "(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
+      } else if (mva_string_ == "vtight"){
+        alias_map_["baseline"]          = "(iso_1<0.1  && mva_olddm_vtight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
+      }
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -342,8 +351,23 @@ namespace ic {
      // alias_map_["baseline"]          = "1";
 
       //alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      alias_map_["baseline"]          = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto"; //change this to loose for SM catogory optimisations - apply tighter cuts useing set alias option 
+
+      alias_map_["baseline"]          =   "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if (mva_string_ == "loose"){
+        alias_map_["baseline"]          = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";  
+        alias_map_["tt_qcd_norm"]       = "mva_olddm_vloose_1>0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      } else if (mva_string_ == "medium"){
+        alias_map_["baseline"]          = "mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+        alias_map_["tt_qcd_norm"]       = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      } else if (mva_string_ == "tight"){
+        alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+        alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      } else if (mva_string_ == "vtight"){
+        alias_map_["baseline"]          = "mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+        alias_map_["tt_qcd_norm"]       = "mva_olddm_tight_1>0.5 && mva_olddm_loose_2>0.5 && mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      }
+
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
@@ -1255,7 +1279,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
-    std::string maincat = cat + "&&" + alias_map_["baseline"];
+    std::string maincat = cat + "&&" +alias_map_["baseline"];
     std::string ttqcdcat = cat + "&&" + alias_map_["incnotauiso"];
     Value qcd_norm;
     TH1F qcd_hist;

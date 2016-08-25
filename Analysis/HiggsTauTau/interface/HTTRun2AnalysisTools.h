@@ -33,7 +33,7 @@ namespace ic {
     
     public:
       //! Constructor specifying channel, year and the level of verbosity
-      HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15);
+      HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15, std::string mva_string);
 
       //! Add a single sample to the list of files that will be opened
       void AddSample(std::string const& sample);
@@ -330,6 +330,7 @@ namespace ic {
       double lumi_;
       bool is_fall15_;
       bool do_ss_;
+      std::string mva_string_;
       std::string dy_soup_;
       double qcd_os_ss_factor_;
 //      double w_os_ss_factor_;
