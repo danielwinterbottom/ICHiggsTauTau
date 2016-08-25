@@ -93,7 +93,7 @@ int main(int argc, char* argv[]){
 	  ("cat",             		    po::value<string>(&cat)->default_value(""))
 	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
     ("year",                    po::value<string>(&year)->default_value("2015"))
-	  ("is_fall15",               po::value<bool>(&is_fall15)->default_value(true))
+	  ("is_fall15",               po::value<bool>(&is_fall15)->default_value(false))
 	  ("do_ss", 	                po::value<bool>(&do_ss)->default_value(false))
 	  ("interpolate", 	          po::value<bool>(&interpolate)->default_value(false))
 	  ("datacard",                po::value<string>(&datacard)->default_value(""))

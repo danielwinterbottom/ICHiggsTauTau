@@ -484,6 +484,8 @@ namespace ic {
        outtree_->Branch("neutralIsoPtSum_2", &lneutralIsoPtSum_2);
        outtree_->Branch("chargedRelIsoPtSum_1", &lchargedRelIsoPtSum_1);
        outtree_->Branch("chargedRelIsoPtSum_2", &lchargedRelIsoPtSum_2);
+       outtree_->Branch("db_iso_1", &l3Hits_1);
+       outtree_->Branch("db_iso_2", &l3Hits_2);
       }
       if(qcd_study_){
         outtree_->Branch("jet_flav_1", &jet_flav_1_);

@@ -387,6 +387,7 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:
       //alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
@@ -534,7 +535,7 @@ namespace ic {
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["ttcontrolalt"] = "(n_jets>=1 && n_bjets>=1 && pzeta<-50)";
-      alias_map_["ttcontrol"] = "(pzeta<-40 && met>80)";
+      alias_map_["ttcontrol"] = "(pzeta<-60 && met>80)";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
@@ -602,8 +603,8 @@ namespace ic {
   }*/
 
     samples_alias_map_["wgam_samples"] = {
-     "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
-    };
+        "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
+     };
 
 
     samples_alias_map_["top_samples"] = {
@@ -700,7 +701,7 @@ namespace ic {
     };
     if(year_.find("6")!=year_.npos){
       samples_alias_map_["data_samples"] = {
-        "MuonEGB","MuonEGC"
+        "MuonEGB","MuonEGC","MuonEGD"
       };
     } else if(!is_fall15_){
       samples_alias_map_["data_samples"] = {
@@ -833,11 +834,15 @@ namespace ic {
   if(year_.find("6")!=year_.npos){
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToLL-LO",
+   "DY1JetsToLL-LO","DY2JetsToLL-LO",
+   "DY3JetsToLL-LO","DY4JetsToLL-LO",
    "T-tW", "Tbar-tW", "Tbar-t",
    "WWTo1L1Nu2Q","VVTo2L2Nu",
    "ZZTo2L2Q",
    "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
-   "TT","WJetsToLNu-LO"
+   "TT","WJetsToLNu-LO",
+   "W1JetsToLNu-LO","W2JetsToLNu-LO",
+   "W3JetsToLNu-LO","W4JetsToLNu-LO"
    };
   } else if(!is_fall15_){
     samples_alias_map_["qcd_sub_samples"] = {
@@ -949,7 +954,7 @@ if(year_.find("6")!=year_.npos){
 sample_names_={};
 push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("vv_samples"));
-if(ch_==channel::em){
+if(ch_==channel::em && is_fall15_){
   push_back(sample_names_,this->ResolveSamplesAlias("wgam_samples"));
 }
 push_back(sample_names_,this->ResolveSamplesAlias("wjets_samples"));
