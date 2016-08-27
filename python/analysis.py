@@ -242,7 +242,7 @@ class BasicNode(BaseNode):
         if len(self.factors) > 0:
             factor_vals = [('%.4g' % x) for x in self.factors]
             factors_str = ', factors=' + '*'.join(factor_vals)
-        return '[%s, variable=%s, selection=%s%s]' % (self.sample, self.variable, self.selection, factors_str)
+        return '[%s, variable=%s, selection=%s%s]' % (self.sample, self.variable.split(';')[0], self.selection, factors_str)
 
     # This means processing to the point where we can hand our shape over
     def RunSelf(self):
@@ -278,6 +278,7 @@ class SummedNode(ListNode):
     def __init__(self, name):
         ListNode.__init__(self, name)
         self.shape = None
+        self.add_output_prefix = True
 
     def RunSelf(self):
         self.shape = sum([node.shape for node in self.nodes.values()])
@@ -286,7 +287,10 @@ class SummedNode(ListNode):
         return {self.name: self.shape.hist}
 
     def OutputPrefix(self):
-        return self.name + '.subnodes'
+        if self.add_output_prefix:
+            return self.name + '.subnodes'
+        else:
+            return ''
 
 
 class SubtractNode(BaseNode):
@@ -359,7 +363,10 @@ class Analysis(object):
         for sample in drawdict:
             print sample
             res = self.trees[sample].Draw(drawdict[sample], compiled=self.compiled)
+            res = [x for x in res if isinstance(x, ROOT.TH1)]
             for i, hist in enumerate(res):
+                # if not isinstance(hist, ROOT.TH1):
+                #     continue
                 setattr(outdict[sample][i][0], outdict[sample][i][1], Shape(hist))
         self.nodes.Run()
 

@@ -51,6 +51,18 @@ def MakeTObjArray(theList, takeOwnership=True):
     return result
 
 
+def GetBinningArgs(arg, is_variable):
+    if is_variable:
+        binning = split_vals(arg)
+        return [len(binning) - 1, array('d', binning)]
+    else:
+        str_binning = [x.strip() for x in arg.split(',')]
+        binning = []
+        if len(str_binning) == 3:
+            return [int(str_binning[0]), float(str_binning[1]), float(str_binning[2])]
+        else:
+            return None
+
 def MultiDraw(self, Formulae, Compiled=False):
     results, formulae, weights, formulaeStr, weightsStr = [], [], [], [], []
 
@@ -71,34 +83,54 @@ def MultiDraw(self, Formulae, Compiled=False):
         origFormula = split_var[0]
         print "Formula: ", origFormula, weight
 
-        var_binned = False;
+        var_binned_x = False
+        var_binned_y = False
+        is_2d = False
         if origFormula[-1] == ')':
             pos_open = origFormula.rfind('(')
             pos_close = origFormula.rfind(')')
         if origFormula[-1] == ']':
-            var_binned = True
+            var_binned_x = True
             pos_open = origFormula.rfind('[')
             pos_close = origFormula.rfind(']')
         if pos_open is -1 or pos_close is -1 or pos_open > pos_close:
             raise RuntimeError('You bus')
+        bin_args_x = GetBinningArgs(origFormula[pos_open+1:pos_close], var_binned_x)
         formula = origFormula[:pos_open].strip()
-        
-        if not var_binned:
-            str_binning = [x.strip() for x in origFormula[pos_open+1:pos_close].split(',')]
-            binning = []
-            if len(str_binning) == 3:
-                binning = [int(str_binning[0]), float(str_binning[1]), float(str_binning[2])]
-            ROOT.TH1.AddDirectory(False)
-            hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *binning)
+
+        # Check if this is a 2D histogram with syntax
+        # [var_y],[var_x],[binning_y],[binning_x]
+        if formula[-1] == ',':
+            is_2d = True
+            if formula[-2] == ')':
+                pos_open_y = formula.rfind('(')
+                pos_close_y = formula.rfind(')')
+            if origFormula[-2] == ']':
+                var_binned_y = True
+                pos_open_y = origFormula.rfind('[')
+                pos_close_y = origFormula.rfind(']')
+            if pos_open_y is -1 or pos_close_y is -1 or pos_open_y > pos_close_y:
+                raise RuntimeError('You bus')
+            bin_args_y = GetBinningArgs(formula[pos_open_y + 1:pos_close_y], var_binned_y)
+            formula = formula[:pos_open_y].split(',')
+            # print formula
         else:
-            binning = split_vals(origFormula[pos_open+1:pos_close])
-            print binning
-            ROOT.TH1.AddDirectory(False)
-            hist = ROOT.TH1D(origFormula+':'+weight, origFormula, len(binning)-1, array('d', binning)) 
+            formula = [formula]
+
+        ROOT.TH1.AddDirectory(False)
+        if not is_2d:
+            hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *bin_args_x)
+        else:
+            hist = ROOT.TH2F(origFormula+':'+weight, origFormula, *(bin_args_x + bin_args_y))
 
         if len(split_var) > 1:
             hist.GetXaxis().SetTitle(split_var[1])
+        if len(split_var) > 2:
+            hist.GetXaxis().SetTitle(split_var[2])
+            hist.GetYaxis().SetTitle(split_var[1])
 
+        if is_2d:
+            results.append(ROOT.TObject())
         results.append(hist)
 
         # The following two 'if' clauses check that the next formula is different
@@ -107,29 +139,23 @@ def MultiDraw(self, Formulae, Compiled=False):
         # The previous value is used. This saves the recomputing of identical
         # values
 
-        # if formula != lastFormula:
-        f = ROOT.TTreeFormula("formula%i" % i, formula, self)
-        f.SetTitle(formula)
-        if not f.GetTree():
-            raise RuntimeError("TTreeFormula didn't compile: " + formula)
-        f.SetQuickLoad(True)
-        formulae.append(f)
-        formulaeStr.append(formula)
-        # else:
-        #     formulae.append(ROOT.TObject())
+        for form in formula:
+            f = ROOT.TTreeFormula("formula%i" % i, form, self)
+            f.SetTitle(form)
+            if not f.GetTree():
+                raise RuntimeError("TTreeFormula didn't compile: " + form)
+            f.SetQuickLoad(True)
+            formulae.append(f)
+            formulaeStr.append(form)
 
-        # if weight != lastWeight:
-        f = ROOT.TTreeFormula("weight%i" % i, weight, self)
-        f.SetTitle(weight)
-        if not f.GetTree():
-            raise RuntimeError("TTreeFormula didn't compile: " + formula)
-        f.SetQuickLoad(True)
-        weights.append(f)
-        weightsStr.append(weight)
-        # else:
-        #     weights.append(ROOT.TObject())
+            f = ROOT.TTreeFormula("weight%i" % i, weight, self)
+            f.SetTitle(weight)
+            if not f.GetTree():
+                raise RuntimeError("TTreeFormula didn't compile: " + weight)
+            f.SetQuickLoad(True)
+            weights.append(f)
+            weightsStr.append(weight)
 
-        # lastFormula, lastWeight = formula, weight
 
     if Compiled:
         fname = "%sSelector%s" % (self.GetName(), randomword(7))
@@ -187,10 +213,9 @@ def MultiDraw(self, Formulae, Compiled=False):
                MakeTObjArray(formulae),
                MakeTObjArray(weights),
                MakeTObjArray(results, takeOwnership=False),
-               len(Formulae))
+               len(formulae))
 
     print "Took %.2fs" % (time() - start), " " * 20
-
     return results
 
 ROOT.TTree.MultiDraw = MultiDraw

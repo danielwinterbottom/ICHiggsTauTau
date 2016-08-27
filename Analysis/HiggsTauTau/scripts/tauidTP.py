@@ -62,6 +62,7 @@ def StandardMT(ana, node, var, sel, pfix='', qcd_os_ss=1.0):
         ana.SummedFactory('backgrounds' + pfix,
             ['DYJetsToLL', 'WJetsToLNu', 'TT'], v, sel(sign='!os')),
         qcd_os_ss))
+    node['QCD' + pfix].subtract_node.add_output_prefix = False
     node['QCD' + pfix].subtract_node.AddNode(ana.SummedFactory('VV' + pfix, vv_samples, v, sel(sign='!os')))
 
 
@@ -93,6 +94,7 @@ if args.type == 'control':
                     ('ntiso_1p5_t',     'ntiso_1p5_t(50,0,20);Neutral Iso (E_{T}^{#gamma}>1.5 GeV):GeV'),
                     ('ntiso_2p0_t',     'ntiso_2p0_t(50,0,20);Neutral Iso (E_{T}^{#gamma}>2.0 GeV):GeV'),
                     ('puiso_t',         'puiso_t(50,0,20); Pileup Iso:GeV'),
+                    ('ntiso_t_vs_puiso_t',  'ntiso_t,puiso_t(50,0,20),(50,0,20);Neutral Iso:GeV;Pileup Iso:GeV'),
                     ('pho_out_t',       'pho_out_t(50,0,20);PhotonOutside Iso:GeV'),
                     ('pho_out_0p5_t',   'pho_out_0p5_t(50,0,20);PhotonOutside Iso (E_{T}^{#gamma}>0.5 GeV):GeV'),
                     ('pho_out_1p0_t',   'pho_out_1p0_t(50,0,20);PhotonOutside Iso (E_{T}^{#gamma}>1.0 GeV):GeV'),

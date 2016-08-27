@@ -1,6 +1,7 @@
 #include "../interface/MultiDraw.hh"
 #include <iostream>
 #include "TH1D.h"
+#include "TH2F.h"
 #include "TStopwatch.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
@@ -13,7 +14,8 @@ void MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights,
 
   std::vector<TTreeFormula *> v_vars(ListLen, nullptr);
   std::vector<TTreeFormula *> v_weights(ListLen, nullptr);
-  std::vector<TH1D *> v_hists(ListLen);
+  std::vector<TH1D *> v_hists(ListLen, nullptr);
+  std::vector<TH2F *> v_hists2d(ListLen, nullptr);
 
   std::vector<double> r_vars(ListLen, 0.);
   std::vector<double> r_weights(ListLen, 0.);
@@ -49,7 +51,8 @@ void MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights,
       i_weights[idx] = idx;
     }
 
-    v_hists[idx] = static_cast<TH1D *>(Hists->At(idx));
+    v_hists[idx] = dynamic_cast<TH1D *>(Hists->At(idx));
+    v_hists2d[idx] = dynamic_cast<TH2F *>(Hists->At(idx));
   }
 
   double Value = 0.;
@@ -96,8 +99,14 @@ void MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights,
       }
       Value = r_vars[i_vars[j]];
       Weight = r_weights[i_weights[j]] * commonWeight;
-      if (Weight) {
+      if (v_hists[j] && Weight) {
         v_hists[j]->Fill(Value, Weight);
+      }
+      // If this is a 2D hist the current Value will be the x variable
+      // and the previous one (without a histogram in the array) is
+      // the y variable
+      if (v_hists2d[j] && j >= 1 && Weight) {
+        v_hists2d[j]->Fill(Value, r_vars[i_vars[j-1]], Weight);
       }
     }
   }
