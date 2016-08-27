@@ -53,12 +53,18 @@ class Shape(object):
             self.rate = rate
 
     def _Int(self):
-        return self._hist.Integral(0, self._hist.GetNbinsX() + 1)
+        if self._hist.GetDimension() == 1:
+            return self._hist.Integral(0, self._hist.GetNbinsX() + 1)
+        elif self._hist.GetDimension() == 2:
+            return self._hist.Integral(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1)
 
     def _IntErr(self):
-            err = ROOT.Double()
+        err = ROOT.Double()
+        if self._hist.GetDimension() == 1:
             val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, err)
-            return ufloat(val, err)
+        elif self._hist.GetDimension() == 2:
+            val = self._hist.IntegralAndError(0, self._hist.GetNbinsX() + 1, 0, self._hist.GetNbinsY() + 1, err)
+        return ufloat(val, err)
 
     @property
     def hist(self):

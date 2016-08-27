@@ -9,8 +9,25 @@ import fileinput
 import random
 import string
 import os
-# import re
+import re
+from array import array
 ROOT.gSystem.Load('libUserCodeICHiggsTauTau')
+
+def split_vals(vals):
+    """Converts a string '1:3|1,4,5' into a list [1, 2, 3, 4, 5]"""
+    res = set()
+    first = vals.split(',')
+    for f in first:
+        second = re.split('[:|]', f)
+        # print second
+        if len(second) == 1:
+            res.add(float(second[0]))
+        if len(second) == 3:
+            x1 = float(second[0])
+            while x1 < float(second[1]) + 1E-5:
+                res.add(x1)
+                x1 += float(second[2])
+    return sorted([x for x in res])
 
 
 def randomword(length):
@@ -35,28 +52,6 @@ def MakeTObjArray(theList, takeOwnership=True):
 
 
 def MultiDraw(self, Formulae, Compiled=False):
-    """Draws many histograms in one loop over a tree.
-
-        Instead of:
-        MyTree.Draw( "nlcts >> a(100, -1, 1)", "weightA" )
-        MyTree.Draw( "nlcts >> b(100, -1, 1)", "weightB" )
-
-        Do:
-        MyTree.MultiDraw( ( "nlcts >> a(100, -1, 1)", "weightA" ),
-                          ( "nlcts >> b(100, -1, 1)", "weightB" ) )
-
-        This is significantly faster when there are many histograms to be drawn.
-        The first parameter, CommonWeight, decides a weight given to all
-        histograms.
-
-        An arbitrary number of additional histograms may be specified. They can
-        either be specified with just a string containing the formula to be
-        drawn, the histogram name and bin configuration.
-
-        Alternatively it can be a tuple, with  said string, and an additional
-        string specifying the weight to be applied to that histogram only.
-    """
-
     results, formulae, weights, formulaeStr, weightsStr = [], [], [], [], []
 
     # lastFormula, lastWeight = None, None
@@ -76,17 +71,30 @@ def MultiDraw(self, Formulae, Compiled=False):
         origFormula = split_var[0]
         print "Formula: ", origFormula, weight
 
-        pos_open = origFormula.rfind('(')
-        pos_close = origFormula.rfind(')')
+        var_binned = False;
+        if origFormula[-1] == ')':
+            pos_open = origFormula.rfind('(')
+            pos_close = origFormula.rfind(')')
+        if origFormula[-1] == ']':
+            var_binned = True
+            pos_open = origFormula.rfind('[')
+            pos_close = origFormula.rfind(']')
         if pos_open is -1 or pos_close is -1 or pos_open > pos_close:
             raise RuntimeError('You bus')
-        str_binning = [x.strip() for x in origFormula[pos_open+1:pos_close].split(',')]
-        binning = []
-        if len(str_binning) == 3:
-            binning = [int(str_binning[0]), float(str_binning[1]), float(str_binning[2])]
         formula = origFormula[:pos_open].strip()
-        ROOT.TH1.AddDirectory(False)
-        hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *binning)
+        
+        if not var_binned:
+            str_binning = [x.strip() for x in origFormula[pos_open+1:pos_close].split(',')]
+            binning = []
+            if len(str_binning) == 3:
+                binning = [int(str_binning[0]), float(str_binning[1]), float(str_binning[2])]
+            ROOT.TH1.AddDirectory(False)
+            hist = ROOT.TH1D(origFormula+':'+weight, origFormula, *binning)
+        else:
+            binning = split_vals(origFormula[pos_open+1:pos_close])
+            print binning
+            ROOT.TH1.AddDirectory(False)
+            hist = ROOT.TH1D(origFormula+':'+weight, origFormula, len(binning)-1, array('d', binning)) 
 
         if len(split_var) > 1:
             hist.GetXaxis().SetTitle(split_var[1])

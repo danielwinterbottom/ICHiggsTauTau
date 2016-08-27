@@ -125,6 +125,7 @@ for sa in SAMPLES:
         'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root',
         # ZmtTP decay mode selection
         'ZmtTP_tauDM': 'decayModeFinding'
+        #'ZmtTP_tauDM': 'decayModeFindingNewDMs'
     }
     job_mgr.add_filelist_split_jobs(
         prog=basedir+'/bin/HTT2016Studies',
