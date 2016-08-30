@@ -29,7 +29,7 @@
 
 namespace ic {
 
-  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15, std::string mva_string) : ch_(ch), year_(year), verbosity_(verbosity), is_fall15_(is_fall15), mva_string_(mva_string) {
+  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15) : ch_(ch), year_(year), verbosity_(verbosity), is_fall15_(is_fall15) {
     lumi_ = 1.;
     do_ss_ = false;
     qcd_os_ss_factor_ = 1.06;
@@ -68,22 +68,39 @@ namespace ic {
     //SM Categories
     
     alias_map_["inclusive"]                 = "1";
-    alias_map_["vbf"]                       = "(n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500.)";
-    alias_map_["vbf_tight"]                 = "(n_lowpt_jets>=2 && jdeta>4. && n_jetsingap_lowpt==0 && mjj>700. && pt_tt>100. && n_bjets==0)";
-    alias_map_["vbf_loose"]                 = "(!"+alias_map_["vbf_tight"]+" && n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500. && n_bjets==0)";
-    alias_map_["vbf_hadhad"]                = "(n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500. && pt_tt>100.)";
-    alias_map_["1jet_high_highhpt"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100.)";
-    alias_map_["1jet_high_lowhpt"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100.)";
-    alias_map_["1jet_low"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45.)";
-    alias_map_["1jet_medium"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45.)";
-    alias_map_["0jet_low"]                  = "(n_jets==0 && pt_2<=45.)";
-    alias_map_["0jet_medium"]               = "(!"+alias_map_["vbf"]+" && n_jets==0 && pt_2>30. && pt_2<=45.)";
-    alias_map_["0jet_high"]                 = "(n_jets==0 && pt_2>45.)";
-    alias_map_["vbf_incbveto"]                       = "(n_jets>=2 && jdeta>3.5 && n_jetsingap==0 && mjj>500. && n_bjets==0)";
-    alias_map_["1jet_high_highhpt_incbveto"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100. && n_bjets==0)";
-    alias_map_["1jet_high_lowhpt_incbveto"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100. && n_bjets==0)";
-    alias_map_["1jet_low_incbveto"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45. && n_bjets==0)";
-    alias_map_["1jet_medium_incbveto"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
+    alias_map_["variable_cat"]      = "1";
+    alias_map_["vbf"]                       = "(n_jets>=2 && jdeta>3.5 && mjj>500 && pt_tt>=100 && n_bjets==0 && n_jetsingap==0)";
+    alias_map_["1jet"]                      = "(!"+alias_map_["vbf"]+" && n_jets>=1)";
+    alias_map_["0jet"]                      = "(!"+alias_map_["1jet"]+")";
+    
+    alias_map_["vbf_tight"]                 = "(n_lowpt_jets>=2 && jdeta_lowpt>4 && mjj_lowpt>800 && pt_tt>=100 && n_bjets==0 && jpt_1>30 && jpt_2>30)";
+    alias_map_["vbf_loose"]                 = "(!"+alias_map_["vbf_tight"]+" && n_lowpt_jets>=2 && jdeta_lowpt>3 && mjj_lowpt>400 && pt_tt>=0 && n_bjets==0 && jpt_1>30 && jpt_2>30)";
+    alias_map_["1jet_tight_mt"]             = "(!"+alias_map_["vbf_loose"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_2>60 && pt_tt>150 && n_bjets==0)";
+    alias_map_["1jet_loose_mt"]             = "(!"+alias_map_["vbf_loose"]+" && !"+alias_map_["1jet_tight_mt"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_tt>0 && pt_2>30)";
+    alias_map_["1jet_tight_et"]             = "(!"+alias_map_["vbf_loose"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_2>40 && pt_tt>150 && met>30 && n_bjets==0)";
+    alias_map_["1jet_loose_et"]             = "(!"+alias_map_["vbf_loose"]+" && !"+alias_map_["1jet_tight_et"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_tt>100 && pt_2>0 && met>30)";                  
+    alias_map_["0jet_et"]                   = "(!"+alias_map_["vbf_loose"]+" && !"+alias_map_["1jet_loose_et"]+")";
+    alias_map_["0jet_mt"]                   = "(!"+alias_map_["vbf_loose"]+" && !"+alias_map_["1jet_loose_mt"]+")";
+
+    alias_map_["vbf_tight_tt"]                 = "(n_lowpt_jets>=2 && jdeta_lowpt>4 && mjj_lowpt>600 && pt_tt>=150 && n_bjets==0 && jpt_1>30. && jpt_2>30.)";
+    alias_map_["vbf_loose_tt"]                 = "(!"+alias_map_["vbf_tight_tt"]+" && n_lowpt_jets>=2 && jdeta_lowpt>3 && mjj_lowpt>400 && pt_tt>=0 && n_bjets==0 && jpt_1>30. && jpt_2>30)";
+    alias_map_["1jet_tight_tt"]                = "(!"+alias_map_["vbf_loose_tt"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_1>50 && pt_2>0 && pt_tt>100 && n_bjets==0)";
+    alias_map_["1jet_loose_tt"]                = "(!"+alias_map_["vbf_loose_tt"]+" && !"+alias_map_["1jet_tight_tt"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_1>0 && pt_2>0 && pt_tt>0 && n_bjets==0)";
+    alias_map_["0jet_tt"]                      = "(!"+alias_map_["vbf_loose_tt"]+" && !"+alias_map_["1jet_loose_tt"]+")";
+    
+    //alias_map_["vbf_hadhad"]                = "(n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500. && pt_tt>100.)";
+    //alias_map_["1jet_high_highhpt"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100.)";
+    //alias_map_["1jet_high_lowhpt"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100.)";
+    //alias_map_["1jet_low"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45.)";
+    //alias_map_["1jet_medium"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45.)";
+    //alias_map_["0jet_low"]                  = "(n_jets==0 && pt_2<=45.)";
+    //alias_map_["0jet_medium"]               = "(!"+alias_map_["vbf"]+" && n_jets==0 && pt_2>30. && pt_2<=45.)";
+    //alias_map_["0jet_high"]                 = "(n_jets==0 && pt_2>45.)";
+    //alias_map_["vbf_incbveto"]                       = "(n_jets>=2 && jdeta>3.5 && n_jetsingap==0 && mjj>500. && n_bjets==0)";
+    //alias_map_["1jet_high_highhpt_incbveto"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100. && n_bjets==0)";
+    //alias_map_["1jet_high_lowhpt_incbveto"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100. && n_bjets==0)";
+    //alias_map_["1jet_low_incbveto"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45. && n_bjets==0)";
+    //alias_map_["1jet_medium_incbveto"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
 
     
     if (ch_ == channel::et || ch_ == channel::mt) {
@@ -95,16 +112,7 @@ namespace ic {
       //alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"; //change this to loose for SM catogory optimisations - apply tighter cuts using set alias option
-      if (mva_string_ == "loose"){
-        alias_map_["baseline"]          = "(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
-      } else if (mva_string_ == "medium"){
-        alias_map_["baseline"]          = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
-      } else if (mva_string_ == "tight"){
-        alias_map_["baseline"]          = "(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
-      } else if (mva_string_ == "vtight"){
-        alias_map_["baseline"]          = "(iso_1<0.1  && mva_olddm_vtight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
-      }
+      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -257,7 +265,6 @@ namespace ic {
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["qcd_vloose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && !leptonveto)";
       //alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
-      alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
 
       alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
       alias_map_["btagpt20"] = "(n_lowpt_jets<=1 && n_bjets>=1)";
@@ -348,25 +355,9 @@ namespace ic {
 
       // SM Categories
       alias_map_["inclusive"]         = "1";
-     // alias_map_["baseline"]          = "1";
-
-      //alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-
+     
       alias_map_["baseline"]          =   "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      if (mva_string_ == "loose"){
-        alias_map_["baseline"]          = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";  
-        alias_map_["tt_qcd_norm"]       = "mva_olddm_vloose_1>0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_loose_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      } else if (mva_string_ == "medium"){
-        alias_map_["baseline"]          = "mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-        alias_map_["tt_qcd_norm"]       = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      } else if (mva_string_ == "tight"){
-        alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-        alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      } else if (mva_string_ == "vtight"){
-        alias_map_["baseline"]          = "mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-        alias_map_["tt_qcd_norm"]       = "mva_olddm_tight_1>0.5 && mva_olddm_loose_2>0.5 && mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      }
 
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -391,7 +382,6 @@ namespace ic {
       alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:
       //alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
-      alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
       alias_map_["incnoiso"]         = "!leptonveto";
       alias_map_["incnoisowmu"]         = "iso_2<0.15 && !leptonveto";
       alias_map_["incnoisowe"]         = "iso_1<0.15 && !leptonveto";

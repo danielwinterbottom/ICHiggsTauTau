@@ -33,7 +33,6 @@ int main(int argc, char* argv[]){
 	string ggh_masses_str;												
 	string Hhh_masses_str;												
 	string syst_tau_scale;
-        string mva_string;
     string tau_es_scales_str;
 	string syst_met_scale;
 	string syst_met_res;
@@ -142,8 +141,7 @@ int main(int argc, char* argv[]){
 	  ("check_ztt_top_frac",      po::value<bool>(&check_ztt_top_frac)->default_value(false))
 	  ("add_ztt_modes",           po::value<bool>(&add_ztt_modes)->default_value(false))
 	  ("scan_bins",               po::value<unsigned>(&scan_bins)->default_value(0))
-	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(-1))
-          ("mva",  	              po::value<string>(&mva_string)->default_value("medium"));
+	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(-1));
 
    
 	HTTPlot plot;
@@ -221,7 +219,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
 	// ************************************************************************
-	HTTRun2Analysis ana(String2Channel(channel_str), year, verbosity,is_fall15, mva_string);
+	HTTRun2Analysis ana(String2Channel(channel_str), year, verbosity,is_fall15);
     ana.SetQCDRatio(qcd_os_ss_factor);
     if (do_ss){
        ana.SetQCDRatio(1.0);
@@ -488,7 +486,7 @@ int main(int argc, char* argv[]){
 	for (auto const& syst : systematics) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 		std::cout << "[HiggsTauTauPlot5] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
-		HTTRun2Analysis ana_syst(String2Channel(channel_str), year, verbosity,is_fall15, mva_string);
+		HTTRun2Analysis ana_syst(String2Channel(channel_str), year, verbosity,is_fall15);
         ana_syst.SetQCDRatio(qcd_os_ss_factor);
         if(do_ss) {
             ana_syst.SetSS();
