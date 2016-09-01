@@ -729,7 +729,7 @@ namespace ic {
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
         "T-tW", "Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
-        "ZZTo2L2Q",
+        "ZZTo2L2Q","WZJToLLLNu",
         "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
         "TT",
         "WJetsToLNu-LO","W1JetsToLNu-LO","W2JetsToLNu-LO",
@@ -791,7 +791,7 @@ namespace ic {
    "DY3JetsToLL-LO","DY4JetsToLL-LO",
    "T-tW", "Tbar-tW", "Tbar-t",
    "WWTo1L1Nu2Q","VVTo2L2Nu",
-   "ZZTo2L2Q",
+   "ZZTo2L2Q","WZJToLLLNu",
    "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT","WJetsToLNu-LO",
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
@@ -841,7 +841,7 @@ namespace ic {
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
      "T-tW", "Tbar-tW", "Tbar-t",
      "WWTo1L1Nu2Q","VVTo2L2Nu",
-     "ZZTo2L2Q",
+     "ZZTo2L2Q","WZJToLLLNu",
      "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
      "TT"
      };
