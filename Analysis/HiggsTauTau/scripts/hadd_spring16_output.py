@@ -38,7 +38,7 @@ sample_list = [
     'VVTo2L2Nu',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q',
-    #'WZJetsToLLLNu',
+    'WZJToLLLNu',
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',

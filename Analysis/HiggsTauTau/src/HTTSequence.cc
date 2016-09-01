@@ -395,6 +395,7 @@ void HTTSequence::BuildSequence(){
                         || ((output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
+  if (era_type == era::data_2016 && !is_data) real_tau_sample = ( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) ? false : true;
 
   std::cout << "-------------------------------------" << std::endl;
   std::cout << "HiggsToTauTau Analysis" << std::endl;
@@ -1385,6 +1386,7 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
     .set_era(era_type)
     .set_mc(mc_type)
     .set_do_tau_id_weights(real_tau_sample)
+    .set_do_tau_id_sf(real_tau_sample)
     .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())

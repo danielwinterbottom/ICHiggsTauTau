@@ -125,6 +125,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_top_jeteta_weights" % do_top_jeteta_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_fake_weights" % do_tau_fake_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_id_weights"   % do_tau_id_weights_;
+    std::cout << boost::format(param_fmt()) % "do_tau_id_sf"        % do_tau_id_sf_;
     std::cout << boost::format(param_fmt()) % "do_em_qcd_weights"   % do_em_qcd_weights_;
     std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
     std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
@@ -370,7 +371,27 @@ namespace ic {
         }   
       }
     }
-
+    if (do_tau_id_sf_) {
+      if (channel_ != channel::em) {
+        std::map<unsigned,double> tight_sfs;
+        tight_sfs[0] = 0.89; 
+        tight_sfs[1] = 0.88; 
+        tight_sfs[10] = 0.76; 
+        double tau_sf_1 = 1.0;
+        double tau_sf_2 = 1.0;
+        unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+        Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+        unsigned decay_mode_2 = tau2->decay_mode();
+        tau_sf_2 = (gen_match_2 == 5) ? tight_sfs[decay_mode_2] : 1.0;
+        if (channel_ == channel::tt) {
+          unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+          Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          unsigned decay_mode_1 = tau1->decay_mode();
+          tau_sf_1 = (gen_match_1 == 5) ? tight_sfs[decay_mode_1] : 1.0;
+        }
+       eventInfo->set_weight("wt_tau_id_sf",tau_sf_1*tau_sf_2);
+      } 
+    }
     if (do_em_qcd_weights_){
       if(channel_ == channel::em){
        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1")); 

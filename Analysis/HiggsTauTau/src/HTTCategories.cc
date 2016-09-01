@@ -1010,7 +1010,6 @@ namespace ic {
     if(event->Exists("leg2_trigger_obj_pt")) trigger_object_pt_2 = event->Get<double>("leg2_trigger_obj_pt");
     if(event->Exists("leg2_trigger_obj_eta")) trigger_object_eta_2 = event->Get<double>("leg2_trigger_obj_eta");
 */
-
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");
     } else {

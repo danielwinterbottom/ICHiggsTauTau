@@ -283,6 +283,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'ZZTo2L2Q',
     'ZZTo4L',
     'WWTo1L1Nu2Q',
+    'WZJToLLLNu',
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',
