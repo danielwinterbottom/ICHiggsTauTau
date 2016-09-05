@@ -14,6 +14,10 @@ var classic_1_1_tau =
     [ "vy", "classic_1_1_tau.html#a1695409f503f585bf5c17e032971bda0", null ],
     [ "vz", "classic_1_1_tau.html#a7a9183f6217949c65d2638e8e5146305", null ],
     [ "constituent_tracks", "classic_1_1_tau.html#a03db37f5088a7c04afee7ac100bb7c09", null ],
+    [ "sig_charged_cands", "classic_1_1_tau.html#aeed48660dd9e3381e0101050e3241d7e", null ],
+    [ "iso_charged_cands", "classic_1_1_tau.html#a7878a2fe59fba76907825491639ac82b", null ],
+    [ "sig_gamma_cands", "classic_1_1_tau.html#a10350473cc6e6c12e5cbf57941540cdc", null ],
+    [ "iso_gamma_cands", "classic_1_1_tau.html#a624b3e5714d857b703d2259361db1f95", null ],
     [ "set_tau_ids", "classic_1_1_tau.html#ae0ddb6ac89925fd444f6df256b292c4c", null ],
     [ "set_decay_mode", "classic_1_1_tau.html#aad2955cabb5f9c73c53726e2579c8b91", null ],
     [ "set_lead_ecal_energy", "classic_1_1_tau.html#afb5378312d0c74392640d6bf69de10de", null ],
@@ -25,8 +29,12 @@ var classic_1_1_tau =
     [ "set_vy", "classic_1_1_tau.html#afcf180ad7c1f091638c99952a4339468", null ],
     [ "set_vz", "classic_1_1_tau.html#a8156b2c5b98700713b386d6941c700af", null ],
     [ "set_constituent_tracks", "classic_1_1_tau.html#a34f1ea3d62b8fca3bf1438f4aa0a4653", null ],
+    [ "set_sig_charged_cands", "classic_1_1_tau.html#aace4f9417efcedaebb36078e5cf2df62", null ],
+    [ "set_iso_charged_cands", "classic_1_1_tau.html#a30caab4d4cce0ab112d5621b85e37cf5", null ],
+    [ "set_sig_gamma_cands", "classic_1_1_tau.html#a456442ccb385fea37e19515227d79c56", null ],
+    [ "set_iso_gamma_cands", "classic_1_1_tau.html#a3dc5829fa4d0cb04af6b871d922233c7", null ],
     [ "SetTauID", "classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2", null ],
     [ "HasTauID", "classic_1_1_tau.html#ab3f94de0cf0f218aa49861c6d9248861", null ],
     [ "GetTauID", "classic_1_1_tau.html#a48b2b3b2b7d2951941c92d3e8f5a4f0d", null ],
-    [ "ClassDef", "classic_1_1_tau.html#ae5db2c12d765d231532bac651373bfac", null ]
+    [ "ClassDef", "classic_1_1_tau.html#a0288127ce463a1d733c97808d5cc72bf", null ]
 ];

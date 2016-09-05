@@ -1,6 +1,5 @@
 var NAVTREEINDEX2 =
 {
-"annotated.html":[10,0],
 "build-system.html":[4],
 "build-system.html#build-system-dict":[4,5],
 "build-system.html#build-system-external":[4,3],
@@ -249,5 +248,6 @@ var NAVTREEINDEX2 =
 "classic_1_1_concatenate.html#a4e7f3da0c858ad7c87f0c3afabb4f32a":[10,0,1,3,1],
 "classic_1_1_concatenate.html#ad2d04dfc2a6e85edb56b9c3f5f72ed6c":[10,0,1,3,0],
 "classic_1_1_electron.html":[10,0,1,4],
-"classic_1_1_electron.html#a002c10c81c6c50a17f965f1b814d8208":[10,0,1,4,39]
+"classic_1_1_electron.html#a002c10c81c6c50a17f965f1b814d8208":[10,0,1,4,39],
+"classic_1_1_electron.html#a043b0d1d48bed8c8b1a30bfc62f14760":[10,0,1,4,10]
 };

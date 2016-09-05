@@ -20,7 +20,7 @@ var searchData=
   ['momentum',['momentum',['../classic_1_1_track.html#aba658f6a41d5773ee5073f8c4aeffbba',1,'ic::Track']]],
   ['mothers',['mothers',['../classic_1_1_gen_particle.html#aa9be74e052d3aa8da70e6cdc481fff2f',1,'ic::GenParticle']]],
   ['mu',['mu',['../namespaceic.html#a271a9a651d13961ab8c6e039f5552460a12747eb27b7660ae5e80230c0eab8f8f',1,'ic']]],
-  ['multidraw',['MultiDraw',['../_multi_draw_8hh.html#acb9819f7bc73c84da83532331b514a7f',1,'MultiDraw(TTree *inTree, TTreeFormula *commonWeightFormula, TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists, UInt_t ListLen):&#160;MultiDraw.cc'],['../_multi_draw_8cc.html#acb9819f7bc73c84da83532331b514a7f',1,'MultiDraw(TTree *inTree, TTreeFormula *commonWeightFormula, TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists, UInt_t ListLen):&#160;MultiDraw.cc']]],
+  ['multidraw',['MultiDraw',['../_multi_draw_8hh.html#a33da4072bb0a74c9b27c0e4df2b32bc1',1,'MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists, UInt_t ListLen):&#160;MultiDraw.cc'],['../_multi_draw_8cc.html#a33da4072bb0a74c9b27c0e4df2b32bc1',1,'MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists, UInt_t ListLen):&#160;MultiDraw.cc']]],
   ['multidraw_2ecc',['MultiDraw.cc',['../_multi_draw_8cc.html',1,'']]],
   ['multidraw_2ehh',['MultiDraw.hh',['../_multi_draw_8hh.html',1,'']]],
   ['muon',['Muon',['../classic_1_1_muon.html#a484600fe9da00b0c0bae7cd86de9356a',1,'ic::Muon']]],

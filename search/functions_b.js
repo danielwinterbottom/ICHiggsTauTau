@@ -11,7 +11,7 @@ var searchData=
   ['modtdrstyle',['ModTDRStyle',['../_plotting___style_8h.html#a7f6399c7470d5331ac4c464cb14c86e1',1,'ModTDRStyle(int width, int height, double t, double b, double l, double r):&#160;Plotting_Style.h'],['../_plotting___style_8h.html#a25f3f929fadd38fd9423aaa6ef6ddd51',1,'ModTDRStyle():&#160;Plotting_Style.h']]],
   ['momentum',['momentum',['../classic_1_1_track.html#aba658f6a41d5773ee5073f8c4aeffbba',1,'ic::Track']]],
   ['mothers',['mothers',['../classic_1_1_gen_particle.html#aa9be74e052d3aa8da70e6cdc481fff2f',1,'ic::GenParticle']]],
-  ['multidraw',['MultiDraw',['../_multi_draw_8hh.html#acb9819f7bc73c84da83532331b514a7f',1,'MultiDraw(TTree *inTree, TTreeFormula *commonWeightFormula, TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists, UInt_t ListLen):&#160;MultiDraw.cc'],['../_multi_draw_8cc.html#acb9819f7bc73c84da83532331b514a7f',1,'MultiDraw(TTree *inTree, TTreeFormula *commonWeightFormula, TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists, UInt_t ListLen):&#160;MultiDraw.cc']]],
+  ['multidraw',['MultiDraw',['../_multi_draw_8hh.html#a33da4072bb0a74c9b27c0e4df2b32bc1',1,'MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists, UInt_t ListLen):&#160;MultiDraw.cc'],['../_multi_draw_8cc.html#a33da4072bb0a74c9b27c0e4df2b32bc1',1,'MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists, UInt_t ListLen):&#160;MultiDraw.cc']]],
   ['muon',['Muon',['../classic_1_1_muon.html#a484600fe9da00b0c0bae7cd86de9356a',1,'ic::Muon']]],
   ['muon_5fenergy',['muon_energy',['../classic_1_1_p_f_jet.html#a299dbb1fb4eb510f16d0502d645b1a0a',1,'ic::PFJet']]],
   ['muon_5fenergy_5ffrac',['muon_energy_frac',['../classic_1_1_p_f_jet.html#a53c56cc6512768c2fc1dadac0d1b8cc5',1,'ic::PFJet']]],

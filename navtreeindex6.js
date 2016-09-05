@@ -1,5 +1,12 @@
 var NAVTREEINDEX6 =
 {
+"physics-objects.html#objs-vertex":[2,9],
+"physics-objects.html#obs-mva-elec-id":[2,19,3],
+"physics-objects.html#obs-non-standard":[2,19],
+"physics-objects.html#obs-pf-iso":[2,19,2],
+"physics-objects.html#obs-tau-reco":[2,19,1],
+"plugins_2_i_c_candidate_producer_8hh-example.html":[12,0],
+"plugins_2_i_c_electron_producer_8cc-example.html":[12,1],
 "plugins_2_i_c_event_info_producer_8cc-example.html":[12,2],
 "plugins_2_i_c_gen_jet_producer_8cc-example.html":[12,3],
 "plugins_2_i_c_gen_particle_producer_8cc-example.html":[12,4],

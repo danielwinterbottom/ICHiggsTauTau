@@ -392,24 +392,43 @@ Tau </h1>
 <td align="left"><a class="el" href="classic_1_1_tau.html#a93a4e9e681aaabf133991bfe676c76fc" title="Transverse impact parameter of the leading charged constituent track with the primary vertex...">ic::Tau::lead_dxy_vertex</a> <br />
  <a class="el" href="classic_1_1_tau.html#a8958d4db6296fa7e75f994d21441098e" title="Longitudinal impact parameter of the leading charged constituent track with the primary vertex...">ic::Tau::lead_dz_vertex</a> </td><td align="left">These must be calculated with respect to a user-specified reco::Vertex. The first vertex in the collection specified by the <code>inputVertices</code> option will be used when <code>includeVertexIP</code> is set to <code>True</code>. </td></tr>
 </table>
-<p><b>Example usage</b> </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;icTauProducer = cms.EDProducer(<span class="stringliteral">&quot;ICPFTauProducer&quot;</span>, <span class="comment"># or &quot;ICPFTauFromPatProducer&quot;</span></div>
+<p><b>Example usage</b> </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;icTauProducer = cms.EDProducer(<span class="stringliteral">&quot;ICPFTauProducer&quot;</span>,</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;  branch                  = cms.string(<span class="stringliteral">&quot;taus&quot;</span>),</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  input                   = cms.InputTag(<span class="stringliteral">&quot;hpsPFTauProducer&quot;</span>),</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;  inputVertices           = cms.InputTag(<span class="stringliteral">&quot;offlinePrimaryVertices&quot;</span>),</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;  includeVertexIP         = cms.bool(<span class="keyword">False</span>),</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  requestTracks           = cms.bool(<span class="keyword">False</span>),</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  tauIDs = cms.PSet(</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="comment"># Add a list of discriminators that should be loaded from the edm::Event.</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="comment"># Each discriminator will be stored as a float and associated to the hash</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="comment"># of the label string given here (e.g. &quot;decayModeFinding&quot; below). Some TauID</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="comment"># PSets have been defined in python/tau_discriminators_cfi.py, and these follow</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="comment"># the labelling convention used in the default PAT sequences.</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="comment"># Note that if the ICPFTauFromPatProducer is used this list will be ignored.</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="comment">#</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="comment"># decayModeFinding = cms.InputTag(&quot;hpsPFTauDiscriminationByDecayModeFinding&quot;),</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="comment"># etc...</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  )</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;)</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  includeTotalCharged     = cms.bool(<span class="keyword">False</span>),</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  totalChargedLabel       = cms.string(<span class="stringliteral">&#39;totalCharged&#39;</span>),</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  tauIDs = cms.PSet(</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="comment"># Add a list of discriminators that should be loaded from the edm::Event.</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="comment"># Each discriminator will be stored as a float and associated to the hash</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="comment"># of the label string given here (e.g. &quot;decayModeFinding&quot; below). Some TauID</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="comment"># PSets have been defined in python/tau_discriminators_cfi.py, and these follow</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="comment"># the labelling convention used in the default PAT sequences.</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="comment"># Note that if the ICPFTauFromPatProducer is used this list will be ignored.</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="comment">#</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="comment"># decayModeFinding = cms.InputTag(&quot;hpsPFTauDiscriminationByDecayModeFinding&quot;),</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="comment"># etc...</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  ),</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  requestPFCandidates   = cms.bool(<span class="keyword">False</span>),</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  inputPFCandidates     = cms.InputTag(<span class="stringliteral">&quot;pfCandidates&quot;</span>),</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  isSlimmed             = cms.bool(<span class="keyword">False</span>)</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;)</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;icTauFromPatProducer = cms.EDProducer(<span class="stringliteral">&quot;ICPFTauFromPatProducer&quot;</span>,</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  branch                  = cms.string(<span class="stringliteral">&quot;taus&quot;</span>),</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  input                   = cms.InputTag(<span class="stringliteral">&quot;slimmedTaus&quot;</span>),</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  inputVertices           = cms.InputTag(<span class="stringliteral">&quot;offlineSlimmedPrimaryVertices&quot;</span>),</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  includeVertexIP         = cms.bool(<span class="keyword">False</span>),</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  requestTracks           = cms.bool(<span class="keyword">False</span>),</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  includeTotalCharged     = cms.bool(<span class="keyword">False</span>),</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  totalChargedLabel       = cms.string(<span class="stringliteral">&#39;totalCharged&#39;</span>),</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  tauIDs = cms.PSet(),</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  requestPFCandidates   = cms.bool(<span class="keyword">False</span>),</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  inputPFCandidates     = cms.InputTag(<span class="stringliteral">&quot;packedPFCandidates&quot;</span>),</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  isSlimmed             = cms.bool(<span class="keyword">True</span>)</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;)</div>
 </div><!-- fragment --> <h1><a class="anchor" id="objs-met"></a>
 Missing Tranvserse Energy </h1>
 <ul>

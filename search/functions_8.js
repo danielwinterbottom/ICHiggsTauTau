@@ -51,6 +51,8 @@ var searchData=
   ['is_5fstandalone',['is_standalone',['../classic_1_1_muon.html#ad9aff35daecb837e2eb93946a843c116',1,'ic::Muon']]],
   ['is_5ftracker',['is_tracker',['../classic_1_1_muon.html#a879f3a9726c098ec0596f67b778cda79',1,'ic::Muon']]],
   ['isinitialized',['isInitialized',['../class_e_gamma_mva_ele_estimator_c_s_a14.html#aa75a00cc298e2d6329a47831aef735c9',1,'EGammaMvaEleEstimatorCSA14']]],
+  ['iso_5fcharged_5fcands',['iso_charged_cands',['../classic_1_1_tau.html#a7878a2fe59fba76907825491639ac82b',1,'ic::Tau']]],
+  ['iso_5fgamma_5fcands',['iso_gamma_cands',['../classic_1_1_tau.html#a624b3e5714d857b703d2259361db1f95',1,'ic::Tau']]],
   ['it_5flayers_5fwith_5fmeasurement',['it_layers_with_measurement',['../classic_1_1_muon.html#a64790683ab5d942d869e04270ca193d3',1,'ic::Muon']]],
   ['it_5fpixel_5fhits',['it_pixel_hits',['../classic_1_1_muon.html#aabf271825ce73aeb2210c93d65d995ad',1,'ic::Muon']]],
   ['it_5ftracker_5fhits',['it_tracker_hits',['../classic_1_1_muon.html#a8d42a64cd4c47950640c37e0f8774c34',1,'ic::Muon']]],

@@ -100,11 +100,11 @@ var NAVTREEINDEX =
 [
 "_calo_jet_8cc.html",
 "_i_c_pileup_info_producer_8cc.html",
-"annotated.html",
-"classic_1_1_electron.html#a043b0d1d48bed8c8b1a30bfc62f14760",
-"classic_1_1_met.html#a8b5045331556aa799aa84f97c0378bd5",
-"classic_1_1_super_cluster.html#af184820f91cc632038bd8b9cd8d71332",
-"plugins_2_i_c_event_info_producer_8cc-example.html"
+"build-system.html",
+"classic_1_1_electron.html#a04933129fc21da5b01b42776a1b06abb",
+"classic_1_1_met.html#a9683dbc11460e172cf88bf76726a43a7",
+"classic_1_1_tau.html",
+"physics-objects.html#objs-vertex"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

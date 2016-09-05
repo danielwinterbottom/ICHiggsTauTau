@@ -175,6 +175,8 @@ var searchData=
   ['isinitialized',['isInitialized',['../class_e_gamma_mva_ele_estimator_c_s_a14.html#aa75a00cc298e2d6329a47831aef735c9',1,'EGammaMvaEleEstimatorCSA14']]],
   ['islastcopy',['IsLastCopy',['../namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a46699a03dca556e4fe15cfe9c3643d54',1,'ic']]],
   ['islastcopybeforefsr',['IsLastCopyBeforeFSR',['../namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887ac68e741b467813ba09e490b47c0bf004',1,'ic']]],
+  ['iso_5fcharged_5fcands',['iso_charged_cands',['../classic_1_1_tau.html#a7878a2fe59fba76907825491639ac82b',1,'ic::Tau']]],
+  ['iso_5fgamma_5fcands',['iso_gamma_cands',['../classic_1_1_tau.html#a624b3e5714d857b703d2259361db1f95',1,'ic::Tau']]],
   ['isprompt',['IsPrompt',['../namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a6fd0712983a2951322db1b4ed8470c01',1,'ic']]],
   ['isprompttaudecayproduct',['IsPromptTauDecayProduct',['../namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887ad7cad1b997c44cf16866dcfe366f87b5',1,'ic']]],
   ['istaudecayproduct',['IsTauDecayProduct',['../namespaceic.html#ab64510d92d9a7fce1dd79813cfb4e887a2d72678c5ee3bcf48bebc2340e75e05d',1,'ic']]],

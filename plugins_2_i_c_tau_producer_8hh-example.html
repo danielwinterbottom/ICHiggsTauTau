@@ -143,12 +143,18 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">  std::string branch_;</div>
 <div class="line">  boost::hash&lt;T const*&gt; tau_hasher_;</div>
 <div class="line">  boost::hash&lt;reco::Track const*&gt; track_hasher_;</div>
+<div class="line">  boost::hash&lt;reco::Candidate const*&gt; cand_hasher_;</div>
 <div class="line">  edm::InputTag track_input_;</div>
 <div class="line">  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; tau_ids_;</div>
 <div class="line">  edm::InputTag input_vertices_;</div>
 <div class="line">  <span class="keywordtype">bool</span> do_vertex_ip_;</div>
 <div class="line">  <span class="keywordtype">bool</span> request_trks_;</div>
 <div class="line">  std::map&lt;std::string, std::size_t&gt; observed_id_;</div>
+<div class="line">  <span class="keywordtype">bool</span> do_total_charged_;</div>
+<div class="line">  std::string total_charged_label_;</div>
+<div class="line">  <span class="keywordtype">bool</span> request_cands_;</div>
+<div class="line">  edm::InputTag input_cands_;</div>
+<div class="line">  <span class="keywordtype">bool</span> is_slimmed_;</div>
 <div class="line">};</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// =============================</span></div>
@@ -160,7 +166,12 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
 <div class="line">      input_vertices_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
 <div class="line">      do_vertex_ip_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeVertexIP&quot;</span>)),</div>
-<div class="line">      request_trks_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestTracks&quot;</span>)) {</div>
+<div class="line">      request_trks_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestTracks&quot;</span>)),</div>
+<div class="line">      do_total_charged_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeTotalCharged&quot;</span>)),</div>
+<div class="line">      total_charged_label_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;totalChargedLabel&quot;</span>)),</div>
+<div class="line">      request_cands_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestPFCandidates&quot;</span>)),</div>
+<div class="line">      input_cands_(config.getParameter&lt;<a class="code" href="namespaceedm.html">edm</a>::InputTag&gt;(<span class="stringliteral">&quot;inputPFCandidates&quot;</span>)),</div>
+<div class="line">      is_slimmed_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;isSlimmed&quot;</span>)) {</div>
 <div class="line">  consumes&lt;edm::View&lt;T&gt;&gt;(input_);</div>
 <div class="line">  consumes&lt;edm::View&lt;reco::Vertex&gt;&gt;(input_vertices_);</div>
 <div class="line">  taus_ = <span class="keyword">new</span> std::vector&lt;ic::Tau&gt;();</div>
@@ -177,9 +188,23 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">    produces&lt;reco::TrackRefVector&gt;(<span class="stringliteral">&quot;requestedTracks&quot;</span>);</div>
 <div class="line">  }</div>
 <div class="line"></div>
+<div class="line">  <span class="keywordflow">if</span> (request_cands_) {</div>
+<div class="line">    consumes&lt;edm::View&lt;reco::Candidate&gt;&gt;(input_cands_);</div>
+<div class="line">    <span class="keywordflow">if</span> (is_slimmed_) {</div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
+<div class="line">      produces&lt;pat::PackedCandidateRefVector&gt;(<span class="stringliteral">&quot;requestedPFCandidates&quot;</span>);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line">    } <span class="keywordflow">else</span> {</div>
+<div class="line">      produces&lt;reco::PFCandidateRefVector&gt;(<span class="stringliteral">&quot;requestedPFCandidates&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
+<div class="line"></div>
 <div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
 <div class="line">  <a name="a4"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_ip_, <span class="stringliteral">&quot;includeVertexIP&quot;</span>);</div>
+<div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_total_charged_, <span class="stringliteral">&quot;includeTotalCharged&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, request_trks_, <span class="stringliteral">&quot;requestTracks&quot;</span>);</div>
+<div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, request_cands_, <span class="stringliteral">&quot;requestPFCandidates&quot;</span>);</div>
+<div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, is_slimmed_, <span class="stringliteral">&quot;isSlimmed&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
@@ -287,6 +312,17 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html">ICTauProducer&lt;pat::Tau&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;pat::Tau&gt; &gt; <span class="keyword">const</span>&amp; taus_handle, edm::Event&amp; event,</div>
 <div class="line">    <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"></div>
+<div class="line">  edm::Handle&lt;edm::View&lt;reco::Candidate&gt; &gt; cands_handle;</div>
+<div class="line">  <span class="keywordflow">if</span> (request_cands_) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(input_cands_, cands_handle);</div>
+<div class="line">  }</div>
+<div class="line"></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
+<div class="line">  std::auto_ptr&lt;pat::PackedCandidateRefVector&gt; cand_requests_slimmed(<span class="keyword">new</span> pat::PackedCandidateRefVector());</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line">  std::auto_ptr&lt;reco::PFCandidateRefVector&gt; cand_requests(<span class="keyword">new</span> reco::PFCandidateRefVector());</div>
+<div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; taus_handle-&gt;size(); ++i) {</div>
 <div class="line">    pat::Tau <span class="keyword">const</span>&amp; src = taus_handle-&gt;at(i);</div>
 <div class="line">    <a class="code" href="classic_1_1_tau.html">ic::Tau</a>&amp; dest = taus_-&gt;at(i);</div>
@@ -306,13 +342,74 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">        dest.<a class="code" href="classic_1_1_tau.html#a4807508a0de13dae887662dcb9e81067">set_lead_p</a>(packedCand-&gt;p());</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (do_total_charged_ &amp;&amp;</div>
+<div class="line">        src.signalChargedHadrCands().isNonnull() &amp;&amp;</div>
+<div class="line">        src.isolationChargedHadrCands().isNonnull()) {</div>
+<div class="line">      dest.<a class="code" href="classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2">SetTauID</a>(total_charged_label_,</div>
+<div class="line">        <span class="keywordtype">float</span>(src.signalChargedHadrCands().size() + src.isolationChargedHadrCands().size()));</div>
+<div class="line">      observed_id_[total_charged_label_] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(total_charged_label_);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (request_cands_) {</div>
+<div class="line">      <span class="keywordflow">if</span> (src.signalChargedHadrCands().isNonnull()) {</div>
+<div class="line">        <span class="keyword">auto</span> cands = src.signalChargedHadrCands();</div>
+<div class="line">        std::vector&lt;std::size_t&gt; ids;</div>
+<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> c = 0; c &lt; cands.size(); ++c) {</div>
+<div class="line">          cand_requests_slimmed-&gt;push_back(cands_handle-&gt;refAt(cands[c].key()).castTo&lt;pat::PackedCandidateRef&gt;());</div>
+<div class="line">          ids.push_back(cand_hasher_(&amp;(*(cands[c]))));</div>
+<div class="line">        }</div>
+<div class="line">        dest.<a name="a24"></a><a class="code" href="classic_1_1_tau.html#aace4f9417efcedaebb36078e5cf2df62">set_sig_charged_cands</a>(ids);</div>
+<div class="line">      }</div>
+<div class="line"></div>
+<div class="line">      <span class="keywordflow">if</span> (src.isolationChargedHadrCands().isNonnull()) {</div>
+<div class="line">        <span class="keyword">auto</span> cands = src.isolationChargedHadrCands();</div>
+<div class="line">        std::vector&lt;std::size_t&gt; ids;</div>
+<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> c = 0; c &lt; cands.size(); ++c) {</div>
+<div class="line">          cand_requests_slimmed-&gt;push_back(cands_handle-&gt;refAt(cands[c].key()).castTo&lt;pat::PackedCandidateRef&gt;());</div>
+<div class="line">          ids.push_back(cand_hasher_(&amp;(*(cands[c]))));</div>
+<div class="line">        }</div>
+<div class="line">        dest.<a name="a25"></a><a class="code" href="classic_1_1_tau.html#a30caab4d4cce0ab112d5621b85e37cf5">set_iso_charged_cands</a>(ids);</div>
+<div class="line">      }</div>
+<div class="line"></div>
+<div class="line">      <span class="keywordflow">if</span> (src.signalGammaCands().isNonnull()) {</div>
+<div class="line">        <span class="keyword">auto</span> cands = src.signalGammaCands();</div>
+<div class="line">        std::vector&lt;std::size_t&gt; ids;</div>
+<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> c = 0; c &lt; cands.size(); ++c) {</div>
+<div class="line">          cand_requests_slimmed-&gt;push_back(cands_handle-&gt;refAt(cands[c].key()).castTo&lt;pat::PackedCandidateRef&gt;());</div>
+<div class="line">          ids.push_back(cand_hasher_(&amp;(*(cands[c]))));</div>
+<div class="line">        }</div>
+<div class="line">        dest.<a name="a26"></a><a class="code" href="classic_1_1_tau.html#a456442ccb385fea37e19515227d79c56">set_sig_gamma_cands</a>(ids);</div>
+<div class="line">      }</div>
+<div class="line"></div>
+<div class="line">      <span class="keywordflow">if</span> (src.isolationGammaCands().isNonnull()) {</div>
+<div class="line">        <span class="keyword">auto</span> cands = src.isolationGammaCands();</div>
+<div class="line">        std::vector&lt;std::size_t&gt; ids;</div>
+<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> c = 0; c &lt; cands.size(); ++c) {</div>
+<div class="line">          cand_requests_slimmed-&gt;push_back(cands_handle-&gt;refAt(cands[c].key()).castTo&lt;pat::PackedCandidateRef&gt;());</div>
+<div class="line">          ids.push_back(cand_hasher_(&amp;(*(cands[c]))));</div>
+<div class="line">        }</div>
+<div class="line">        dest.<a name="a27"></a><a class="code" href="classic_1_1_tau.html#a3dc5829fa4d0cb04af6b871d922233c7">set_iso_gamma_cands</a>(ids);</div>
+<div class="line">      }</div>
+<div class="line">    }</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">  }</div>
+<div class="line"></div>
+<div class="line">  <span class="keywordflow">if</span> (request_cands_) {</div>
+<div class="line">    <span class="keywordflow">if</span> (is_slimmed_) {</div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
+<div class="line">      <span class="keyword">event</span>.put(cand_requests_slimmed, <span class="stringliteral">&quot;requestedPFCandidates&quot;</span>);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line">    } <span class="keywordflow">else</span> {</div>
+<div class="line">      <span class="keyword">event</span>.put(cand_requests, <span class="stringliteral">&quot;requestedPFCandidates&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
+<div class="line"></div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
 <div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html">ICTauProducer&lt;T&gt;::beginJob</a>() {</div>
-<div class="line">  <a name="a24"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;taus_);</div>
+<div class="line">  <a name="a28"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;taus_);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
