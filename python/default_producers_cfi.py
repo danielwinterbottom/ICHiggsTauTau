@@ -150,12 +150,14 @@ icPhotonProducer = cms.EDProducer('ICPhotonProducer',
 ## [Photon]
 
 ## [Tau]
-icTauProducer = cms.EDProducer("ICPFTauProducer", # or "ICPFTauFromPatProducer"
+icTauProducer = cms.EDProducer("ICPFTauProducer",
   branch                  = cms.string("taus"),
   input                   = cms.InputTag("hpsPFTauProducer"),
   inputVertices           = cms.InputTag("offlinePrimaryVertices"),
   includeVertexIP         = cms.bool(False),
   requestTracks           = cms.bool(False),
+  includeTotalCharged     = cms.bool(False),
+  totalChargedLabel       = cms.string('totalCharged'),
   tauIDs = cms.PSet(
     # Add a list of discriminators that should be loaded from the edm::Event.
     # Each discriminator will be stored as a float and associated to the hash
@@ -166,7 +168,24 @@ icTauProducer = cms.EDProducer("ICPFTauProducer", # or "ICPFTauFromPatProducer"
     #
     # decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding"),
     # etc...
-  )
+  ),
+  requestPFCandidates   = cms.bool(False),
+  inputPFCandidates     = cms.InputTag("pfCandidates"),
+  isSlimmed             = cms.bool(False)
+)
+
+icTauFromPatProducer = cms.EDProducer("ICPFTauFromPatProducer",
+  branch                  = cms.string("taus"),
+  input                   = cms.InputTag("slimmedTaus"),
+  inputVertices           = cms.InputTag("offlineSlimmedPrimaryVertices"),
+  includeVertexIP         = cms.bool(False),
+  requestTracks           = cms.bool(False),
+  includeTotalCharged     = cms.bool(False),
+  totalChargedLabel       = cms.string('totalCharged'),
+  tauIDs = cms.PSet(),
+  requestPFCandidates   = cms.bool(False),
+  inputPFCandidates     = cms.InputTag("packedPFCandidates"),
+  isSlimmed             = cms.bool(True)
 )
 ## [Tau]
 
