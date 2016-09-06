@@ -16,6 +16,7 @@ class PileupWeight : public ModuleBase {
   CLASS_MEMBER(PileupWeight, TH1*, mc)
   CLASS_MEMBER(PileupWeight, bool, print_weights)
   CLASS_MEMBER(PileupWeight, bool, use_sampled_interactions)
+  CLASS_MEMBER(PileupWeight, bool, weight_is_active)
   std::string label_;
 
  public:
