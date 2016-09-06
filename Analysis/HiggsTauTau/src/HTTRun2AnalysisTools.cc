@@ -1198,7 +1198,9 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     cat += "&&" + alias_map_["baseline"];
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+    std::string cat_nobtag = "n_jets <=1 &&"+alias_map_["baseline"];
     std::string w_extrap_cat = cat;
+    std::string w_extrap_cat_nobtag = cat_nobtag;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
     std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
@@ -1214,7 +1216,16 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     } else if(method == 12 || method == 13 || method == 14){
      w_norm = this->GetRateViaWOSSSMethod(wjets_samples, w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel_osss, w_sub_samples, !do_ss_, wt, ValueFnMap());
-    }
+    } else if(method == 16){
+     Value w_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, w_extrap_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
+        this->ResolveSamplesAlias("data_samples"),cat_nobtag, w_sdb_sel_osss,w_sub_samples,!do_ss_, wt, ValueFnMap());
+        std::string btag_extrap_sel;
+        btag_extrap_sel = do_ss_ ?  "!os && "+this->ResolveAlias("sel") : "os &&"+this->ResolveAlias("sel");
+        Value btag_norm = GetRate(wjets_samples, btag_extrap_sel, cat, wt);
+        Value nobtag_norm = GetRate(wjets_samples,btag_extrap_sel,cat_nobtag,wt);
+        Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+        w_norm = ValueProduct(w_norm_nobtag,btag_extrap_factor);
+   }
 
     std::string w_shape_cat = cat;
     if (method == 14) w_shape_cat = "n_jets<=1&&n_loose_bjets>=1&&"+alias_map_["baseline"];
@@ -1273,6 +1284,15 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
          }else if(method == 12 || method == 13 || method == 14){
           w_ss_norm = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel_osss, w_sub_samples, false, wt, ValueFnMap());
+         }else if(method==16){
+          std::string qcd_cat_nobtag = "n_jets<=1 &&"+alias_map_["baseline"];
+          Value w_ss_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
+             this->ResolveSamplesAlias("data_samples"),qcd_cat_nobtag, w_sdb_sel_osss,w_sub_samples,false, wt, ValueFnMap());
+         std::string os_sel_btag = "!os && " + this->ResolveAlias("sel");
+         Value btag_norm = GetRate(wjets_samples, os_sel_btag, qcd_cat, wt);
+         Value nobtag_norm = GetRate(wjets_samples,os_sel_btag,qcd_cat_nobtag,wt);
+         Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+         w_ss_norm = ValueProduct(btag_extrap_factor,w_ss_norm_nobtag);
         } else {
           w_ss_norm = std::make_pair(0.0,0.0);
         }
@@ -1288,7 +1308,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       if(ch_ != channel::tt){
         if(method == 8 || method == 9) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
-        } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14) {
+        } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14 || method == 16) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,//{
           wjets_ss_vals);
         } else if (method == 15 && !do_ss_){
