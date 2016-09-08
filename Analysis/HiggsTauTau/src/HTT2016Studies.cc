@@ -642,6 +642,7 @@ namespace ic {
       outtree_->Branch("wt",          &wt);
       outtree_->Branch("wt_pu_hi",    &wt_pu_hi);
       outtree_->Branch("n_vtx",       &n_vtx);
+      outtree_->Branch("rho",         &rho);
       outtree_->Branch("pt_m",        &pt_m);
       outtree_->Branch("eta_m",       &eta_m);
       outtree_->Branch("mt_m",        &mt_m);
@@ -683,6 +684,11 @@ namespace ic {
       outtree_->Branch("nt_density_0p2_0p3",   &nt_density_0p2_0p3);
       outtree_->Branch("nt_density_0p3_0p4",   &nt_density_0p3_0p4);
       outtree_->Branch("nt_density_0p4_0p5",   &nt_density_0p4_0p5);
+      outtree_->Branch("po_density_0p0_0p1",   &po_density_0p0_0p1);
+      outtree_->Branch("po_density_0p1_0p2",   &po_density_0p1_0p2);
+      outtree_->Branch("po_density_0p2_0p3",   &po_density_0p2_0p3);
+      outtree_->Branch("po_density_0p3_0p4",   &po_density_0p3_0p4);
+      outtree_->Branch("po_density_0p4_0p5",   &po_density_0p4_0p5);
       outtree_->Branch("n_iso_ph_0p5", &n_iso_ph_0p5);
       outtree_->Branch("n_sig_ph_0p5", &n_sig_ph_0p5);
       outtree_->Branch("n_iso_ph_1p0", &n_iso_ph_1p0);
@@ -804,6 +810,11 @@ namespace ic {
     nt_density_0p2_0p3 = 0.;
     nt_density_0p3_0p4 = 0.;
     nt_density_0p4_0p5 = 0.;
+    po_density_0p0_0p1 = 0.;
+    po_density_0p1_0p2 = 0.;
+    po_density_0p2_0p3 = 0.;
+    po_density_0p3_0p4 = 0.;
+    po_density_0p4_0p5 = 0.;
     for (auto id : iso_gammas) {
       double et = pfcands[id]->vector().Et();
       double pt = pfcands[id]->pt();
@@ -840,6 +851,7 @@ namespace ic {
       double et = pfcands[id]->vector().Et();
       double pt = pfcands[id]->pt();
       double dr = DR(pfcands[id], tau);
+      double dr_c = DR(pfcands[id], &charged);
       if (dr > cone) {
         pho_out_0p0_t += pt;
       }
@@ -867,7 +879,17 @@ namespace ic {
           pho_out_2p0_t += pt;
         }
       }
+      if (dr_c >= 0.0 && dr_c < 0.1) po_density_0p0_0p1 += pt;
+      if (dr_c >= 0.1 && dr_c < 0.2) po_density_0p1_0p2 += pt;
+      if (dr_c >= 0.2 && dr_c < 0.3) po_density_0p2_0p3 += pt;
+      if (dr_c >= 0.3 && dr_c < 0.4) po_density_0p3_0p4 += pt;
+      if (dr_c >= 0.4 && dr_c < 0.5) po_density_0p4_0p5 += pt;
     }
+    po_density_0p0_0p1 /= (TMath::Pi() * 0.1 * 0.1);
+    po_density_0p1_0p2 /= (TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1));
+    po_density_0p2_0p3 /= (TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2));
+    po_density_0p3_0p4 /= (TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3));
+    po_density_0p4_0p5 /= (TMath::Pi() * (0.5 * 0.5 - 0.4 * 0.4));
 
     cbiso_0p5_t = chiso_t + TMath::Max(0., ntiso_0p5_t - 0.2 * puiso_t);
     cbiso_1p0_t = chiso_t + TMath::Max(0., ntiso_1p0_t - 0.2 * puiso_t);
@@ -933,6 +955,7 @@ namespace ic {
     }
 
     n_vtx = info->good_vertices();
+    rho = info->jet_rho();
 
     // Get the MVA MET so we can calculate MT
     Met *mva_met = nullptr;
@@ -983,6 +1006,7 @@ namespace ic {
     double wt_id = 1.0;
     double wt_iso = 1.0;
     double wt_trg = 1.0;
+    wt_pu_hi = 1.0;
     auto args = std::vector<double>{muon->pt(), muon->eta()};
     if (!info->is_data()) {
       wt_trg = fns_["m_trgOR_data"]->eval(args.data());
@@ -992,13 +1016,15 @@ namespace ic {
       geninfo_module_.Execute(event);
       gen_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
       gen_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+      if (info->weight("pileup") > 0.) {
+        wt_pu_hi = info->weight("pileup_hi") / info->weight("pileup");
+      }
     }
     info->set_weight("trk", wt_trk);
     info->set_weight("trg", wt_trg);
     info->set_weight("id", wt_id);
     info->set_weight("iso", wt_iso);
     wt = info->total_weight();
-    wt_pu_hi = info->weight("pileup_hi") / info->weight("pileup");
 
     outtree_->Fill();
 

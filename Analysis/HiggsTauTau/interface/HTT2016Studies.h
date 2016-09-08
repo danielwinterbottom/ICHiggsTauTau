@@ -228,6 +228,7 @@ class ZmtTPTreeProducer : public ModuleBase {
   float wt_pu_hi;
 
   int n_vtx;
+  float rho;
 
   float pt_m;
   float eta_m;
@@ -272,6 +273,12 @@ class ZmtTPTreeProducer : public ModuleBase {
   float nt_density_0p2_0p3;
   float nt_density_0p3_0p4;
   float nt_density_0p4_0p5;
+
+  float po_density_0p0_0p1;
+  float po_density_0p1_0p2;
+  float po_density_0p2_0p3;
+  float po_density_0p3_0p4;
+  float po_density_0p4_0p5;
 
   unsigned n_iso_ph_0p5;
   unsigned n_sig_ph_0p5;
