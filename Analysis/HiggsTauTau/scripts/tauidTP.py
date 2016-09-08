@@ -21,17 +21,18 @@ ana = Analysis()
 ana.remaps = {
     'SingleMuon': 'data_obs'
 }
-ana.AddSamples('output/HTT2016Studies_Aug16/ZmtTP/*.root', 'ZmtTP')
+path = 'output/HTT2016Studies_Aug16/ZmtTP'
+ana.AddSamples('%s/*.root' % path, 'ZmtTP')
 ana.AddInfo('params_Aug16.json', scaleTo='data_obs')
 
 ana_scale_t_hi = Analysis()
 ana_scale_t_hi.remaps = ana.remaps
-ana_scale_t_hi.AddSamples('output/HTT2016Studies_Aug16/ZmtTP/scale_t_hi/*.root', 'ZmtTP', fallback='output/HTT2016Studies_Aug16/ZmtTP/*.root')
+ana_scale_t_hi.AddSamples('%s/scale_t_hi/*.root' % path, 'ZmtTP', fallback='%s/*.root' % path)
 ana_scale_t_hi.AddInfo('params_Aug16.json', scaleTo='data_obs')
 
 ana_scale_t_lo = Analysis()
 ana_scale_t_lo.remaps = ana.remaps
-ana_scale_t_lo.AddSamples('output/HTT2016Studies_Aug16/ZmtTP/scale_t_lo/*.root', 'ZmtTP', fallback='output/HTT2016Studies_Aug16/ZmtTP/*.root')
+ana_scale_t_lo.AddSamples('%s/scale_t_lo/*.root' % path, 'ZmtTP', fallback='%s/*.root' % path)
 ana_scale_t_lo.AddInfo('params_Aug16.json', scaleTo='data_obs')
 # missing OS!
 
@@ -78,11 +79,15 @@ sel = Sel(sign='os', baseline='mt_m<40 && anti_e_t && anti_m_t', wt='wt')
 
 if args.type == 'control':
     ana_list = [ana]
-    for selection in [('baseline',   '1'),
-                      ('chiso_lt2',  'chiso_t<2.0'),
-                      ('chiso_lt0p8',  'chiso_t<0.8')]:
+    for selection in [('baseline',    '1'),
+                      ('chiso_lt2',   'chiso_t<2.0'),
+                      ('chiso_lt0p8', 'chiso_t<0.8'),
+                      ('cbiso_lt0p8', 'cbiso_t<0.8')]:
         ana.nodes.AddNode(ListNode(selection[0]))
-        for var in [('chiso_t',         'chiso_t(50,0,20);Charged Iso:GeV'),
+        for var in [
+                    ('rho',             'rho(30,0,30);#rho:GeV'),
+                    ('dm_t',            'dm_t(12,-0.5,11.5);#tau_{h} decay mode:'),
+                    ('chiso_t',         'chiso_t(50,0,20);Charged Iso:GeV'),
                     ('cbiso_t',         'cbiso_t(50,0,20);Combined Iso:GeV'),
                     ('cbiso_0p5_t',     'cbiso_0p5_t(50,0,20);Combined Iso (E_{T}^{#gamma}>0.5 GeV):GeV'),
                     ('cbiso_1p0_t',     'cbiso_1p0_t(50,0,20);Combined Iso (E_{T}^{#gamma}>1.0 GeV):GeV'),
@@ -94,7 +99,8 @@ if args.type == 'control':
                     ('ntiso_1p5_t',     'ntiso_1p5_t(50,0,20);Neutral Iso (E_{T}^{#gamma}>1.5 GeV):GeV'),
                     ('ntiso_2p0_t',     'ntiso_2p0_t(50,0,20);Neutral Iso (E_{T}^{#gamma}>2.0 GeV):GeV'),
                     ('puiso_t',         'puiso_t(50,0,20); Pileup Iso:GeV'),
-                    ('ntiso_t_vs_puiso_t',  'ntiso_t,puiso_t(50,0,20),(50,0,20);Neutral Iso:GeV;Pileup Iso:GeV'),
+                    ('ntiso_t_vs_puiso_t',  'ntiso_t,puiso_t(30,0,30),(50,0,100);Neutral Iso:GeV;Pileup Iso:GeV'),
+                    ('pho_out_t_vs_puiso_t',  'pho_out_t,puiso_t(50,0,10),(50,0,100);PhotonOutside Iso:GeV;Pileup Iso:GeV'),
                     ('pho_out_t',       'pho_out_t(50,0,20);PhotonOutside Iso:GeV'),
                     ('pho_out_0p5_t',   'pho_out_0p5_t(50,0,20);PhotonOutside Iso (E_{T}^{#gamma}>0.5 GeV):GeV'),
                     ('pho_out_1p0_t',   'pho_out_1p0_t(50,0,20);PhotonOutside Iso (E_{T}^{#gamma}>1.0 GeV):GeV'),
@@ -125,6 +131,16 @@ if args.type == 'control':
                     ('nt_density_0p2_0p3', 'nt_density_0p2_0p3[0:10:2,10:20:5,20:100:10];Photon p_{T} density #DeltaR_{0.2}^{0.3}:GeV'),
                     ('nt_density_0p3_0p4', 'nt_density_0p3_0p4[0:10:2,10:20:5,20:100:10];Photon p_{T} density #DeltaR_{0.3}^{0.4}:GeV'),
                     ('nt_density_0p4_0p5', 'nt_density_0p4_0p5[0:10:2,10:20:5,20:100:10];Photon p_{T} density #DeltaR_{0.4}^{0.5}:GeV'),
+                    ('po_density_0p0_0p1', 'po_density_0p0_0p1[0:10:2,10:20:5,20:100:10];PhotonOutside p_{T} density #DeltaR_{0.0}^{0.1}:GeV'),
+                    ('po_density_0p1_0p2', 'po_density_0p1_0p2[0:10:2,10:20:5,20:100:10];PhotonOutside p_{T} density #DeltaR_{0.1}^{0.2}:GeV'),
+                    ('po_density_0p2_0p3', 'po_density_0p2_0p3[0:10:2,10:20:5,20:100:10];PhotonOutside p_{T} density #DeltaR_{0.2}^{0.3}:GeV'),
+                    ('po_density_0p3_0p4', 'po_density_0p3_0p4[0:10:2,10:20:5,20:100:10];PhotonOutside p_{T} density #DeltaR_{0.3}^{0.4}:GeV'),
+                    ('po_density_0p4_0p5', 'po_density_0p4_0p5[0:10:2,10:20:5,20:100:10];PhotonOutside p_{T} density #DeltaR_{0.4}^{0.5}:GeV'),
+                    ('tot_density_0p0_0p1', 'po_density_0p0_0p1+nt_density_0p0_0p1[0:10:2,10:20:5,20:100:10];Total Photon p_{T} density #DeltaR_{0.0}^{0.1}:GeV'),
+                    ('tot_density_0p1_0p2', 'po_density_0p1_0p2+nt_density_0p1_0p2[0:10:2,10:20:5,20:100:10];Total Photon p_{T} density #DeltaR_{0.1}^{0.2}:GeV'),
+                    ('tot_density_0p2_0p3', 'po_density_0p2_0p3+nt_density_0p2_0p3[0:10:2,10:20:5,20:100:10];Total Photon p_{T} density #DeltaR_{0.2}^{0.3}:GeV'),
+                    ('tot_density_0p3_0p4', 'po_density_0p3_0p4+nt_density_0p3_0p4[0:10:2,10:20:5,20:100:10];Total Photon p_{T} density #DeltaR_{0.3}^{0.4}:GeV'),
+                    ('tot_density_0p4_0p5', 'po_density_0p4_0p5+nt_density_0p4_0p5[0:10:2,10:20:5,20:100:10];Total Photon p_{T} density #DeltaR_{0.4}^{0.5}:GeV'),
                   ]:
             nodename = var[0]
             v = var[1]
@@ -148,6 +164,12 @@ for var in [('mt_m',         'mt_m(40,0,200)', '1'),
 if args.type == 'tp':
     ana_list = [ana, ana_scale_t_hi, ana_scale_t_lo]
     for var in [
+            ('cmb_m_2p5',  'm_ll(32,40,200)', 'cbiso_t < 2.5', '1'),
+            ('cmb_m_1p5',  'm_ll(32,40,200)', 'cbiso_t < 1.5', '1'),
+            ('cmb_t_0p8',  'm_ll(32,40,200)', 'cbiso_t < 0.8', '1'),
+            ('ch_m_2p5',  'm_ll(32,40,200)', 'chiso_t < 2.5', '1'),
+            ('ch_m_1p5',  'm_ll(32,40,200)', 'chiso_t < 1.5', '1'),
+            ('ch_t_0p8',  'm_ll(32,40,200)', 'chiso_t < 0.8', '1'),
             ('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
             ('cmb_m',  'm_ll(32,40,200)', 'cmb_m_t', '1'),
             ('cmb_t',  'm_ll(32,40,200)', 'cmb_t_t', '1'),
