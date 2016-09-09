@@ -650,6 +650,7 @@ namespace ic {
       outtree_->Branch("pt_t",        &pt_t);
       outtree_->Branch("eta_t",       &eta_t);
       outtree_->Branch("dm_t",        &dm_t);
+      outtree_->Branch("tot_ch_t",    &tot_ch_t);
       outtree_->Branch("anti_e_t",    &anti_e_t);
       outtree_->Branch("anti_m_t",    &anti_m_t);
       outtree_->Branch("mva_vl_t",    &mva_vl_t);
@@ -761,6 +762,7 @@ namespace ic {
     dm_t = tau->decay_mode();
     float cone = TMath::Max(TMath::Min(0.1, 3.0/pt_t), 0.05);
 
+    tot_ch_t  = tau->sig_charged_cands().size() + tau->iso_charged_cands().size();
     anti_e_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
     anti_m_t  = tau->GetTauID("againstMuonTight3") > 0.5;
     mva_vl_t  = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;

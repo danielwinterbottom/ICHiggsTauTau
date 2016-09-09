@@ -37,7 +37,7 @@ ana_scale_t_lo.AddInfo('params_Aug16.json', scaleTo='data_obs')
 # missing OS!
 
 
-def StandardMT(ana, node, var, sel, pfix='', qcd_os_ss=1.0):
+def StandardMT(ana, node, v, sel, pfix='', qcd_os_ss=1.0):
     vv_samples = ['VVTo2L2Nu', 'WWTo1L1Nu2Q', 'WZJToLLLNu',
         'WZTo1L1Nu2Q', 'WZTo1L3Nu', 'WZTo2L2Q', 'ZZTo2L2Q', 'ZZTo4L']
 
@@ -67,13 +67,13 @@ def StandardMT(ana, node, var, sel, pfix='', qcd_os_ss=1.0):
     node['QCD' + pfix].subtract_node.AddNode(ana.SummedFactory('VV' + pfix, vv_samples, v, sel(sign='!os')))
 
 
-def TagAndProbeCats(ana, node, name, var, baseline, probe, pfix=''):
+def TagAndProbeCats(ana, node, name, var_pass, var_fail, baseline, probe, pfix=''):
     node.AddNode(ListNode(name+'_pass'))
     node.AddNode(ListNode(name+'_fail'))
     pass_sel = baseline.copy(probe=probe())
     fail_sel = baseline.copy(probe='!(%s)' % probe())
-    StandardMT(ana, node[name+'_pass'], var, pass_sel, pfix, qcd_os_ss=1.17)
-    StandardMT(ana, node[name+'_fail'], var, fail_sel, pfix, qcd_os_ss=1.00)
+    StandardMT(ana, node[name+'_pass'], var_pass, pass_sel, pfix, qcd_os_ss=1.17)
+    StandardMT(ana, node[name+'_fail'], var_fail, fail_sel, pfix, qcd_os_ss=1.00)
 
 sel = Sel(sign='os', baseline='mt_m<40 && anti_e_t && anti_m_t', wt='wt')
 
@@ -190,6 +190,59 @@ if args.type == 'tp':
             ('mva_t_dm0', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==0'),
             ('mva_t_dm1', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==1'),
             ('mva_t_dm10', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==10'),
+            ('mva_m_dm0_pt30', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==0 && pt_t>30'),
+            ('mva_m_dm1_pt30', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==1 && pt_t>30'),
+            ('mva_m_dm10_pt30', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==10 && pt_t>30'),
+            ('mva_t_dm0_pt40', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==0 && pt_t>40'),
+            ('mva_t_dm1_pt40', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==1 && pt_t>40'),
+            ('mva_t_dm10_pt40', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==10 && pt_t>40'),
+            ('mva_m_dm0_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==0 && pt_t>30 && abs(eta_t)<1.5'),
+            ('mva_m_dm1_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==1 && pt_t>30 && abs(eta_t)<1.5'),
+            ('mva_m_dm10_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==10 && pt_t>30 && abs(eta_t)<1.5'),
+            ('mva_m_dm0_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==0 && pt_t>30 && abs(eta_t)>=1.5'),
+            ('mva_m_dm1_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==1 && pt_t>30 && abs(eta_t)>=1.5'),
+            ('mva_m_dm10_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==10 && pt_t>30 && abs(eta_t)>=1.5'),
+            ('mva_t_dm0_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)<1.5'),
+            ('mva_t_dm1_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)<1.5'),
+            ('mva_t_dm10_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)<1.5'),
+            ('mva_t_dm0_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)>=1.5'),
+            ('mva_t_dm1_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)>=1.5'),
+            ('mva_t_dm10_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)>=1.5'),
+            ('mva_t_dm0_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==0 && abs(eta_t)<1.5'),
+            ('mva_t_dm1_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==1 && abs(eta_t)<1.5'),
+            ('mva_t_dm10_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==10 && abs(eta_t)<1.5'),
+            ('mva_t_dm0_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && abs(eta_t)>=1.5'),
+            ('mva_t_dm1_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && abs(eta_t)>=1.5'),
+            ('mva_t_dm10_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && abs(eta_t)>=1.5'),
+            
+            ('nch_mva_t_dm0', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==0'),
+            ('nch_mva_t_dm1', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==1'),
+            ('nch_mva_t_dm10', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==10'),
+            ('nch_mva_m_dm0_pt30', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==0 && pt_t>30'),
+            ('nch_mva_m_dm1_pt30', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==1 && pt_t>30'),
+            ('nch_mva_m_dm10_pt30', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==10 && pt_t>30'),
+            ('nch_mva_t_dm0_pt40', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==0 && pt_t>40'),
+            ('nch_mva_t_dm1_pt40', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==1 && pt_t>40'),
+            ('nch_mva_t_dm10_pt40', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==10 && pt_t>40'),
+            ('nch_mva_m_dm0_pt30_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==0 && pt_t>30 && abs(eta_t)<1.5'),
+            ('nch_mva_m_dm1_pt30_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==1 && pt_t>30 && abs(eta_t)<1.5'),
+            ('nch_mva_m_dm10_pt30_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==10 && pt_t>30 && abs(eta_t)<1.5'),
+            ('nch_mva_m_dm0_pt30_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==0 && pt_t>30 && abs(eta_t)>=1.5'),
+            ('nch_mva_m_dm1_pt30_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==1 && pt_t>30 && abs(eta_t)>=1.5'),
+            ('nch_mva_m_dm10_pt30_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_m_t', 'dm_t==10 && pt_t>30 && abs(eta_t)>=1.5'),
+            ('nch_mva_t_dm0_pt40_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)<1.5'),
+            ('nch_mva_t_dm1_pt40_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)<1.5'),
+            ('nch_mva_t_dm10_pt40_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)<1.5'),
+            ('nch_mva_t_dm0_pt40_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)>=1.5'),
+            ('nch_mva_t_dm1_pt40_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)>=1.5'),
+            ('nch_mva_t_dm10_pt40_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)>=1.5'),
+            ('nch_mva_t_dm0_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==0 && abs(eta_t)<1.5'),
+            ('nch_mva_t_dm1_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==1 && abs(eta_t)<1.5'),
+            ('nch_mva_t_dm10_b', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==10 && abs(eta_t)<1.5'),
+            ('nch_mva_t_dm0_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==0 && abs(eta_t)>=1.5'),
+            ('nch_mva_t_dm1_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==1 && abs(eta_t)>=1.5'),
+            ('nch_mva_t_dm10_e', 'tot_ch_t(8,0.5,8.5);tot_ch_t(20,0.5,20.5)',  'mva_t_t', 'dm_t==10 && abs(eta_t)>=1.5'),
+
             ('cmb_t_dm0', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==0'),
             ('cmb_t_dm1', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==1'),
             ('cmb_t_dm10', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==10'),
@@ -199,20 +252,22 @@ if args.type == 'tp':
             ('cmb_2p0_t',  'm_ll(32,40,200)', 'cbiso_2p0_t<0.8 && (pho_out_2p0_t/pt_t)<0.1', '1'),
             ]:
         nodename = var[0]
-        v = var[1]
+        varnames = var[1].split(';')
+        v_pass = varnames[0]
+        v_fail = varnames[1] if len(varnames) > 1 else varnames[0]
         probe = Sel(probe=var[2])
         dosel = sel
         if len(var) >= 4:
             dosel = sel.copy(extra_baseline=var[3])
-        TagAndProbeCats(ana, ana.nodes, nodename, v, dosel, probe)
-        TagAndProbeCats(ana_scale_t_hi, ana_scale_t_hi.nodes, nodename, v, dosel, probe, pfix='_CMS_scale_tUp')
-        TagAndProbeCats(ana_scale_t_lo, ana_scale_t_lo.nodes, nodename, v, dosel, probe, pfix='_CMS_scale_tDown')
+        TagAndProbeCats(ana, ana.nodes, nodename, v_pass, v_fail, dosel, probe)
+        TagAndProbeCats(ana_scale_t_hi, ana_scale_t_hi.nodes, nodename, v_pass, v_fail, dosel, probe, pfix='_CMS_scale_tUp')
+        TagAndProbeCats(ana_scale_t_lo, ana_scale_t_lo.nodes, nodename, v_pass, v_fail, dosel, probe, pfix='_CMS_scale_tDown')
 
 outfile = ROOT.TFile('%s.root' % args.output, 'RECREATE')
 
 for a in ana_list:
   a.nodes.PrintTree()
-  # a.compiled = True
+  a.compiled = True
   a.Run()
   a.nodes.Output(outfile)
 

@@ -238,6 +238,7 @@ class ZmtTPTreeProducer : public ModuleBase {
   float pt_t;
   float eta_t;
   int dm_t;
+  int tot_ch_t;
   bool anti_e_t;
   bool anti_m_t;
   bool mva_vl_t;
