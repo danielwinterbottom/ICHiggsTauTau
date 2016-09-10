@@ -39,6 +39,7 @@ namespace ic {
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("os",          &os);
       outtree_->Branch("pt_1",        &pt_1);
+      outtree_->Branch("mvamet_et",   &mvamet_et);
       outtree_->Branch("eta_1",       &eta_1);
       outtree_->Branch("phi_1",       &phi_1);
       outtree_->Branch("iso_1",       &iso_1);
@@ -85,6 +86,27 @@ namespace ic {
 
     Muon const* lep_1 = dynamic_cast<Muon const*>(leptons[0]);
     Muon const* lep_2 = dynamic_cast<Muon const*>(leptons[1]);
+
+    // Get the MVA MET so we can calculate MT
+    Met *mva_met = nullptr;
+    auto const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+    std::size_t id = 0;
+    boost::hash_combine(id, lep_1->id());
+    boost::hash_combine(id, lep_2->id());
+    std::size_t id_inv = 0;
+    boost::hash_combine(id_inv, lep_2->id());
+    boost::hash_combine(id_inv, lep_1->id());
+    auto it = met_map.find(id);
+    auto it_inv = met_map.find(id_inv);
+    if (it != met_map.end()) {
+      mva_met = it->second;
+    } else if (it_inv != met_map.end()){
+      mva_met = it_inv->second;
+    } else {
+      throw::std::runtime_error("Could not find MVA MET!");
+    };
+
+    mvamet_et = mva_met->pt();
 
     n_vtx = info->good_vertices();
 

@@ -49,6 +49,8 @@ class ZmmTreeProducer : public ModuleBase {
 
   bool os;
 
+  float mvamet_et;
+  
   float pt_1;
   float eta_1;
   float phi_1;
