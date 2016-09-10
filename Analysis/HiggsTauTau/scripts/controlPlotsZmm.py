@@ -24,7 +24,7 @@ ana.AddInfo('scripts/params_Aug16.json', scaleTo='data_obs')
 vv_samples = ['VVTo2L2Nu', 'WWTo1L1Nu2Q', 'WZJToLLLNu',
      'WZTo1L1Nu2Q', 'WZTo1L3Nu', 'WZTo2L2Q', 'ZZTo2L2Q', 'ZZTo4L']
 
-sel = '(os && pt_1>23 && pt_2>20 && iso_1<0.15 && iso_2<0.15 && trg_IsoMu22) * wt'
+sel = '(os && pt_1>23 && pt_2>10 && iso_1<0.15 && iso_2<0.15 && (trg_IsoMu22)) * wt * wt_zpt * wt_top'
 for plot in ['m_ll(60,70,130)', 'pt_1(50,0,200)', 'pt_2(50,0,200)', 'eta_1(50,-2.4,2.4)', 'eta_2(50,-2.4,2.4)', 'mvamet_et(40,0,400)']:
     nodename = plot.split('(')[0]
     ana.nodes.AddNode(ListNode(nodename))
@@ -35,7 +35,7 @@ for plot in ['m_ll(60,70,130)', 'pt_1(50,0,200)', 'pt_2(50,0,200)', 'eta_1(50,-2
 ana.Run()
 ana.nodes.PrintTree()
 
-outfile = ROOT.TFile('test.root', 'RECREATE')
+outfile = ROOT.TFile('ZmmControl_RW.root', 'RECREATE')
 
 ana.nodes.Output(outfile)
 
