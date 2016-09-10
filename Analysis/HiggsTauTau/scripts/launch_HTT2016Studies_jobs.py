@@ -57,11 +57,21 @@ MC_SAMPLES = {
     'WJetsToLNu':           ['WJetsToLNu']
 }
 
+SAMPLE_CFG = {
+    'DYJetsToLL': {
+        'do_zpt_reweighting': True
+    },
+    'TT': {
+        'do_top_reweighting': True
+    }
+}
+
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-#SEQUENCES = ['Zmm']
-SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
+<<<<<<< HEAD
+SEQUENCES = ['Zmm']
+# SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
 #SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
 #SEQUENCES = ['HashMap']
 
@@ -125,11 +135,17 @@ for sa in SAMPLES:
         # Scale factors workspace
         'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root',
         # ZmtTP decay mode selection
-        'ZmtTP_tauDM': 'decayModeFinding'
-        #'ZmtTP_tauDM': 'decayModeFindingNewDMs'
+        'ZmtTP_tauDM': 'decayModeFinding',
+        #'ZmtTP_tauDM': 'decayModeFindingNewDMs',
+        # Data/MC corrections - global flags
+        'do_zpt_reweighting': False,
+        'do_top_reweighting': False
     }
+    if sa in SAMPLE_CFG:
+        cfg.update(SAMPLE_CFG[sa])
+
     job_mgr.add_filelist_split_jobs(
-        prog=basedir+'/bin/HTT2016Studies',
+        prog=basedir + '/bin/HTT2016Studies',
         cfg=cfg,
         files_per_job=FILES_PER_JOB,
         output_cfgs=['output_name', 'lumi_out', 'trigger_info_output'])

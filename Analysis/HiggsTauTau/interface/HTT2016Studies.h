@@ -30,13 +30,20 @@ bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
 
 void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift);
 
+double TopQuarkPtWeight(std::vector<GenParticle *> const& parts);
+
+ROOT::Math::PtEtaPhiEVector BuildGenBoson(std::vector<GenParticle *> const& parts);
+
 class ZmmTreeProducer : public ModuleBase {
  private:
   CLASS_MEMBER(ZmmTreeProducer, fwlite::TFileService*, fs)
   CLASS_MEMBER(ZmmTreeProducer, std::string, sf_workspace)
+  CLASS_MEMBER(ZmmTreeProducer, bool, do_zpt_reweighting)
+  CLASS_MEMBER(ZmmTreeProducer, bool, do_top_reweighting)
   TTree *outtree_;
   std::shared_ptr<RooWorkspace> ws_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
+  std::shared_ptr<TH2D> z_pt_mass_hist_;
 
   float wt;
   float wt_pu;
@@ -44,6 +51,8 @@ class ZmmTreeProducer : public ModuleBase {
   float wt_id;
   float wt_iso;
   float wt_trg;
+  float wt_zpt;
+  float wt_top;
 
   int n_vtx;
 

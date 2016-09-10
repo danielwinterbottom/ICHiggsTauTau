@@ -62,6 +62,8 @@ int main(int argc, char* argv[]) {
 
 
   bool is_data = js.get("is_data", false).asBool();
+  bool do_zpt_reweighting = js.get("do_zpt_reweighting", false).asBool();
+  bool do_top_reweighting = js.get("do_top_reweighting", false).asBool();
   std::string sf_wsp = js["sf_wsp"].asString();
 
   // Set the Unhash map if it exists
@@ -228,6 +230,8 @@ int main(int argc, char* argv[]) {
       seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")
         .set_fs(fs.at("Zmm").get())
         .set_sf_workspace(sf_wsp)
+        .set_do_zpt_reweighting(do_zpt_reweighting)
+        .set_do_top_reweighting(do_top_reweighting)
       );
       seq.InsertSequence("Zmm", analysis);
     }

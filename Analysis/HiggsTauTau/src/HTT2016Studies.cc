@@ -18,7 +18,9 @@
 namespace ic {
 
   ZmmTreeProducer::ZmmTreeProducer(std::string const& name)
-      : ModuleBase(name) {
+      : ModuleBase(name),
+        do_zpt_reweighting_(false),
+        do_top_reweighting_(false) {
       fs_ = nullptr;
   }
 
@@ -36,6 +38,8 @@ namespace ic {
       outtree_->Branch("wt_id",       &wt_id);
       outtree_->Branch("wt_iso",      &wt_iso);
       outtree_->Branch("wt_trg",      &wt_trg);
+      outtree_->Branch("wt_zpt",      &wt_zpt);
+      outtree_->Branch("wt_top",      &wt_top);
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("os",          &os);
       outtree_->Branch("pt_1",        &pt_1);
@@ -63,8 +67,13 @@ namespace ic {
       ws_->function("m_id_ratio")->functor(ws_->argSet("m_pt,m_eta")));
     fns_["m_iso_ratio"] = std::shared_ptr<RooFunctor>(
       ws_->function("m_iso_ratio")->functor(ws_->argSet("m_pt,m_eta")));
-    fns_["m_trg_data"] = std::shared_ptr<RooFunctor>(
-      ws_->function("m_trg_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_trgOR_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trgOR_data")->functor(ws_->argSet("m_pt,m_eta")));
+
+    if (do_zpt_reweighting_) {
+      z_pt_mass_hist_ = std::make_shared<TH2D>(ic::OpenFromTFile<TH2D>(
+          "input/zpt_weights/zpt_weights.root:zptmass_histo"));
+    }
     return 0;
   }
 
@@ -135,15 +144,15 @@ namespace ic {
 
       std::string filter_IsoMu22 = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
       auto const& trg_objs_IsoMu22 = event->GetPtrVec<TriggerObject>("triggerObjects_IsoMu22");
-      trg_IsoMu22 = path_fired_IsoMu22 &&
-        (IsFilterMatched(lep_1, trg_objs_IsoMu22, filter_IsoMu22, 0.5) ||
-         IsFilterMatched(lep_2, trg_objs_IsoMu22, filter_IsoMu22, 0.5));
+      trg_IsoMu22 =
+          path_fired_IsoMu22 &&
+          IsFilterMatched(lep_1, trg_objs_IsoMu22, filter_IsoMu22, 0.5);
 
       std::string filter_IsoTkMu22 = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
       auto const& trg_objs_IsoTkMu22 = event->GetPtrVec<TriggerObject>("triggerObjects_IsoTkMu22");
-      trg_IsoTkMu22 = path_fired_IsoTkMu22 &&
-        (IsFilterMatched(lep_1, trg_objs_IsoTkMu22, filter_IsoTkMu22, 0.5) ||
-         IsFilterMatched(lep_2, trg_objs_IsoTkMu22, filter_IsoTkMu22, 0.5));
+      trg_IsoTkMu22 =
+          path_fired_IsoTkMu22 &&
+          IsFilterMatched(lep_1, trg_objs_IsoTkMu22, filter_IsoTkMu22, 0.5);
     } else {
       trg_IsoMu22 = true;
       trg_IsoTkMu22 = true;
@@ -156,9 +165,10 @@ namespace ic {
     auto args_1 = std::vector<double>{lep_1->pt(), lep_1->eta()};
     auto args_2 = std::vector<double>{lep_2->pt(), lep_2->eta()};
     if (!info->is_data()) {
-      float eff_1 = fns_["m_trg_data"]->eval(args_1.data());
-      float eff_2 = fns_["m_trg_data"]->eval(args_2.data());
-      wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
+      float eff_1 = fns_["m_trgOR_data"]->eval(args_1.data());
+      // float eff_2 = fns_["m_trg_data"]->eval(args_2.data());
+      // wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
+      wt_trg = eff_1;
       wt_trk = fns_["m_trk_ratio"]->eval(v_double{lep_1->eta()}.data()) *
               fns_["m_trk_ratio"]->eval(v_double{lep_2->eta()}.data());
       wt_id = fns_["m_id_ratio"]->eval(args_1.data()) *
@@ -172,6 +182,23 @@ namespace ic {
     info->set_weight("iso", wt_iso);
     wt = info->total_weight();
     wt_pu = info->weight_defined("pileup") ? info->weight("pileup") : 1.0;
+
+    // DY reweighting
+    wt_zpt = 1.0;
+    if (do_zpt_reweighting_) {
+      auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      auto gen_boson = BuildGenBoson(parts);
+      wt_zpt = z_pt_mass_hist_->GetBinContent(
+          z_pt_mass_hist_->GetXaxis()->FindBin(gen_boson.M()),
+          z_pt_mass_hist_->GetYaxis()->FindBin(gen_boson.pt()));
+    }
+
+    // Top quark pT reweighting
+    wt_top = 1.0;
+    if (do_top_reweighting_) {
+      auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      wt_top = TopQuarkPtWeight(parts);
+    }
 
     outtree_->Fill();
     return 0;
@@ -1106,5 +1133,44 @@ namespace ic {
     double metet = sqrt(metx*metx + mety*mety);
     ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
     met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+  }
+
+  double TopQuarkPtWeight(std::vector<GenParticle *> const& parts) {
+    double top_wt = 1.0;
+    // double top_wt_up = 1.0;
+    // double top_wt_down = 1.0;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      std::vector<bool> status_flags = parts[i]->statusFlags();
+      unsigned id = abs(parts[i]->pdgid());
+      if (id == 6 && status_flags[FromHardProcess] &&
+          status_flags[IsLastCopy]) {
+        double pt = parts[i]->pt();
+        pt = std::min(pt, 400.);
+        top_wt *= std::exp(0.156 - 0.00137 * pt);
+      }
+    }
+    top_wt = std::sqrt(top_wt);
+    return top_wt;
+    // top_wt_up = top_wt * top_wt;
+    // top_wt_down = 1.0;
+    // event->Add("wt_tquark_up", top_wt_up / top_wt);
+    // event->Add("wt_tquark_down", top_wt_down / top_wt);
+    // eventInfo->set_weight("topquark_weight", top_wt);
+  }
+
+  ROOT::Math::PtEtaPhiEVector BuildGenBoson(
+      std::vector<GenParticle*> const& parts) {
+    ROOT::Math::PtEtaPhiEVector gen_boson;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      std::vector<bool> status_flags = parts[i]->statusFlags();
+      unsigned id = abs(parts[i]->pdgid());
+      unsigned status = abs(parts[i]->status());
+      if ((id >= 11 && id <= 16 && status_flags[FromHardProcess] &&
+           status == 1) ||
+          status_flags[IsDirectHardProcessTauDecayProduct]) {
+        gen_boson += parts[i]->vector();
+      }
+    }
+    return gen_boson;
   }
 }
