@@ -19,11 +19,11 @@ ana = Analysis()
 ana.remaps = {
     'SingleMuon': 'data_obs'
 }
-ana.AddSamples('output/HTT2016Studies_July19/*.root', 'Zmm')
-ana.AddInfo('params_July19.json', scaleTo='data_obs')
+ana.AddSamples('output/HTT2016Studies_Aug16/Zmm/*.root', 'Zmm')
+ana.AddInfo('scripts/params_Aug16.json', scaleTo='data_obs')
 
-sel = '(os && pt_1>20 && pt_2>20 && iso_1<0.15 && iso_2<0.15 && trg_IsoMu22) * wt'
-for plot in ['m_ll(60,70,130)', 'pt_1(50,0,200)', 'pt_2(50,0,200)', 'eta_1(50,-2.4,2.4)', 'eta_2(50,-2.4,2.4)']:
+sel = '(os && pt_1>23 && pt_2>20 && iso_1<0.15 && iso_2<0.15 && trg_IsoMu22) * wt'
+for plot in ['m_ll(60,70,130)', 'pt_1(50,0,200)', 'pt_2(50,0,200)', 'eta_1(50,-2.4,2.4)', 'eta_2(50,-2.4,2.4)', 'mvamet_et(40,0,400)']:
     nodename = plot.split('(')[0]
     ana.nodes.AddNode(ListNode(nodename))
     for sa in ana.trees:
