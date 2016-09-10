@@ -479,7 +479,7 @@ int main(int argc, char* argv[]) {
         .set_input_label("sel_taus").set_min(1)
         .set_predicate([=](ic::Tau const* t) {
           return  t->pt()                     > 20.    &&
-                  fabs(t->eta())              < 2.1    &&
+                  fabs(t->eta())              < 2.3    &&
                   fabs(t->lead_dz_vertex())   < 0.2    &&
                   abs(t->charge())            == 1     &&
                   t->GetTauID(js["ZmtTP_tauDM"].asString()) > 0.5;
