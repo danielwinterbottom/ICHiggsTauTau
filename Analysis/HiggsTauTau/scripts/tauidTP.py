@@ -28,12 +28,12 @@ ana.AddInfo('scripts/params_Aug16.json', scaleTo='data_obs')
 ana_scale_t_hi = Analysis()
 ana_scale_t_hi.remaps = ana.remaps
 ana_scale_t_hi.AddSamples('%s/scale_t_hi/*.root' % path, 'ZmtTP', fallback='%s/*.root' % path)
-ana_scale_t_hi.AddInfo('params_Aug16.json', scaleTo='data_obs')
+ana_scale_t_hi.AddInfo('scripts/params_Aug16.json', scaleTo='data_obs')
 
 ana_scale_t_lo = Analysis()
 ana_scale_t_lo.remaps = ana.remaps
 ana_scale_t_lo.AddSamples('%s/scale_t_lo/*.root' % path, 'ZmtTP', fallback='%s/*.root' % path)
-ana_scale_t_lo.AddInfo('params_Aug16.json', scaleTo='data_obs')
+ana_scale_t_lo.AddInfo('scripts/params_Aug16.json', scaleTo='data_obs')
 # missing OS!
 
 
