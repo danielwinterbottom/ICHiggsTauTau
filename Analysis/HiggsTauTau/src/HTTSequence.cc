@@ -396,6 +396,7 @@ void HTTSequence::BuildSequence(){
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
   if (era_type == era::data_2016 && !is_data) real_tau_sample = ( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) ? false : true;
+  if (channel == channel::zmm || channel == channel::zee) real_tau_sample = false;
 
   std::cout << "-------------------------------------" << std::endl;
   std::cout << "HiggsToTauTau Analysis" << std::endl;
@@ -838,6 +839,19 @@ if(do_met_filters && is_data){
        return !pass_filters;
     }));
 }
+if(do_met_filters){
+  BuildModule(GenericModule("MetFiltersRecoEffect")
+    .set_function([=](ic::TreeEvent *event){
+       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+       std::vector<std::string> met_filters = {"badChargedHadronFilter","badMuonFilter"};
+       bool pass_filters = true;
+       for(unsigned i=0;i<met_filters.size();++i){
+        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
+       }
+       return !pass_filters;
+    }));
+}
+
 
 if(channel != channel::wmnu) {
  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
@@ -1020,7 +1034,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
   }
 
 
- if(strategy_type == strategy::fall15 && channel!=channel::wmnu){
+ if((strategy_type == strategy::fall15/*|| strategy_type==strategy::mssmspring16*/) && channel!=channel::wmnu){
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1413,7 +1427,7 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v3.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v4.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);

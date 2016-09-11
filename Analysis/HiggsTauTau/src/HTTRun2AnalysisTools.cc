@@ -726,8 +726,8 @@ namespace ic {
   if(year_.find("6")!=year_.npos){
      samples_alias_map_["qcd_sub_samples"] = {
       "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
-      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
-        "T-tW", "Tbar-tW","Tbar-t",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO","ZZTo4L",
+        "T-tW","T-t","Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
         "ZZTo2L2Q","WZJToLLLNu",
         "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
@@ -789,8 +789,8 @@ namespace ic {
    "DYJetsToLL-LO",
    "DY1JetsToLL-LO","DY2JetsToLL-LO",
    "DY3JetsToLL-LO","DY4JetsToLL-LO",
-   "T-tW", "Tbar-tW", "Tbar-t",
-   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "T-tW", "Tbar-tW", "Tbar-t", "T-t",
+   "WWTo1L1Nu2Q","VVTo2L2Nu", "ZZTo4L",
    "ZZTo2L2Q","WZJToLLLNu",
    "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT","WJetsToLNu-LO",
@@ -839,8 +839,8 @@ namespace ic {
     samples_alias_map_["w_sub_samples"] = {
       "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
-     "T-tW", "Tbar-tW", "Tbar-t",
-     "WWTo1L1Nu2Q","VVTo2L2Nu",
+     "T-tW", "Tbar-tW", "Tbar-t","T-t",
+     "WWTo1L1Nu2Q","VVTo2L2Nu","ZZTo4L",
      "ZZTo2L2Q","WZJToLLLNu",
      "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
      "TT"
@@ -1496,6 +1496,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     std::string ttt_sel, ttj_sel;
     ttt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
     ttj_sel = sel+"&&!"+this->ResolveAlias("ztt_sel");
+    if(ch_ == channel::zmm || ch_==channel::zee){
+      ttt_sel = "0";
+      ttj_sel = sel;
+    }
     auto topt_pair = this->GenerateTOP(method, var, ttt_sel, cat, wt);
     auto topj_pair = this->GenerateTOP(method, var, ttj_sel, cat, wt);
     PrintValue("TTT"+postfix, topt_pair.second);
