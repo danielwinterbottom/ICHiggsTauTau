@@ -153,9 +153,15 @@ int main(int argc, char* argv[]){
 
   //If not overriding os_ss factor, default to different values for each channel:
   if(qcd_os_ss_factor < 0){
-    if(String2Channel(channel_str) == channel::mt) qcd_os_ss_factor = 1.17;
-    else if(String2Channel(channel_str) == channel::em) qcd_os_ss_factor=2.00;
-    else qcd_os_ss_factor=1.00;
+   if(year.find("6")!=year.npos){
+     if(String2Channel(channel_str) == channel::mt) qcd_os_ss_factor = 1.18;
+     else if(String2Channel(channel_str) == channel::et) qcd_os_ss_factor = 1.02;
+     else qcd_os_ss_factor=1.00;
+   } else {
+     if(String2Channel(channel_str) == channel::mt) qcd_os_ss_factor = 1.17;
+     else if(String2Channel(channel_str) == channel::em) qcd_os_ss_factor=2.00;
+     else qcd_os_ss_factor=1.00;
+   }
   }
 
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;

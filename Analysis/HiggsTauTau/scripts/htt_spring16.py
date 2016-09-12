@@ -104,8 +104,8 @@ for scale in scale_list:
   if scale == "default":
     flatjsonlist.append("^%(scale)s"%vars())
     flatjsonlistdysig.append("^%(scale)s"%vars())
-  elif scale == "scale_t":
-    flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
+#  elif scale == "scale_t":
+#    flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
   else:
     flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
     flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
