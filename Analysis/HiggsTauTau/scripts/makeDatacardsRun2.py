@@ -151,10 +151,14 @@ if options.no_shape_systs:
 
 
 if options.norm_systs:
-  extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
-  extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
-  extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
-  extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
+  #extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  #extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  #extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
+  #extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
   #extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
   #extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
   #extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_met_scale="CMS_scale_met_13TeV" --syst_met_res="CMS_scale_res_13TeV" '
@@ -394,10 +398,10 @@ if SCHEME == 'run2_mssm_2016':
     ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 '),
     ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 --do_ss=true '),
     ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 --do_ss=true '),
-    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 '),
-    ("14",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 '),
-    ("14",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 --do_ss=true '),
-    ("14",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 --do_ss=true '),
+    ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 '),
+    ("16",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 '),
+    ("16",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.0 --do_ss=true '),
+    ("16",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<50" --qcd_os_ss_factor=1.0 --do_ss=true '),
   ]
   scheme_mt = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
@@ -405,10 +409,10 @@ if SCHEME == 'run2_mssm_2016':
     ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
     ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
     ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 --do_ss=true '),
-    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
-    ("14",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
-    ("14",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
-    ("14",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),
+    ("16",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
+    ("16",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("16",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 --do_ss=true '),
   ]
   scheme_tt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
