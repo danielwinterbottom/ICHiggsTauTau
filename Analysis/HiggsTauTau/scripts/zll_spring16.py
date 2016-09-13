@@ -101,7 +101,7 @@ CONFIG='scripts/Zll_config2016.json'
 #    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s_M-50.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
  
 
-FILELIST='filelists/July21_MC_80X'
+FILELIST='filelists/Aug11_MC_80X'
 #FILELIST13='filelists/July13_MC_80X'
 
 signal_mc = [ ]
@@ -214,13 +214,15 @@ if options.proc_data or options.proc_all:
   ]
 
 
-  DATAFILELIST="./filelists/July21_Data_80X"
+  DATAFILELIST="./filelists/Aug11_Data_80X"
 
   for sa in data_samples:
       JOB='%s_2016' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July21_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Aug11_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 40 
+      if 'MuonEGB' in sa or 'MuonEGC' in sa or 'MuonEGD' in sa: 
+          JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/rlane/Aug11_Data_80X_v2/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
@@ -258,15 +260,15 @@ if options.proc_bkg or options.proc_all:
     'W2JetsToLNu-LO',
     'W3JetsToLNu-LO',
     'W4JetsToLNu-LO',
-    #'ZZTo4L',
+    'ZZTo4L',
     'VVTo2L2Nu',
     'ZZTo2L2Q',
     'WWTo1L1Nu2Q',
-    #'WZJetsToLLLNu',
+    'WZJToLLLNu',
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',
-    #'T-t',
+    'T-t',
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
@@ -274,6 +276,7 @@ if options.proc_bkg or options.proc_all:
     #'DYJetsToLL_M-10-ext',
     #'DYJetsToLL_M-150-LO',
     'DYJetsToLL-LO',
+    'DYJetsToLL_M-10-50-LO',
     #'DYJetsToLL_M-50-LO',
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
