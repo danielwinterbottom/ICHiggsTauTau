@@ -69,7 +69,8 @@ SAMPLE_CFG = {
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm']
+# SEQUENCES = ['Zmm']
+SEQUENCES = ['SM_et', 'SM_mt', 'SM_em', 'SM_tt']
 # SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
 #SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
 #SEQUENCES = ['HashMap']
@@ -85,6 +86,10 @@ WHITELIST = {
     'ZmtTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmtTP/scale_t_hi': list(MC_SAMPLES.keys()),
     'ZmtTP/scale_t_lo': list(MC_SAMPLES.keys()),
+    'SM_et': ['SingleElectron'] + list(MC_SAMPLES.keys()),
+    'SM_mt': ['SingleMuon'] + list(MC_SAMPLES.keys()),
+    'SM_em': ['MuonEG'] + list(MC_SAMPLES.keys()),
+    'SM_tt': ['Tau'] + list(MC_SAMPLES.keys()),
     'EffectiveEvents': list(MC_SAMPLES.keys()),
     'HashMap': list(DATA_SAMPLES.keys())
 }

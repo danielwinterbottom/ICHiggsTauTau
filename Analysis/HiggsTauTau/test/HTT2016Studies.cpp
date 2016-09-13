@@ -522,6 +522,273 @@ int main(int argc, char* argv[]) {
       seq.InsertSequence(fullseqn, analysis);
     }
 
+    if (seqn == "SM_mt") {
+      auto & seq = seqs[fullseqn];
+
+      seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToSelectedMuons",
+          "muons", "sel_muons"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Muon>("MuonFilter")
+        .set_input_label("sel_muons").set_min(1)
+        .set_predicate([=](ic::Muon const* m) {
+          return  m->pt()                 > 20.    &&
+                  fabs(m->eta())          < 2.1    &&
+                  fabs(m->dxy_vertex())   < 0.045  &&
+                  fabs(m->dz_vertex())    < 0.2    &&
+                  MuonMediumHIPsafe(m);
+        }));
+
+      double tau_es_shift = 1.00;
+      if (subseqn == "scale_t_lo") tau_es_shift = 0.97;
+      if (subseqn == "scale_t_hi") tau_es_shift = 1.03;
+      seq.BuildModule(ic::EnergyShifter<ic::Tau>("TauEnergyScale")
+        .set_input_label("taus")
+        .set_shift(tau_es_shift)
+        .set_save_shifts(true));
+
+      seq.BuildModule(ic::CopyCollection<ic::Tau>("CopyToSelectedTaus",
+          "taus", "sel_taus"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Tau>("TauFilter")
+        .set_input_label("sel_taus").set_min(1)
+        .set_predicate([=](ic::Tau const* t) {
+          return  t->pt()                     > 20.    &&
+                  fabs(t->eta())              < 2.3    &&
+                  fabs(t->lead_dz_vertex())   < 0.2    &&
+                  abs(t->charge())            == 1     &&
+                  t->GetTauID("decayModeFinding") > 0.5;
+        }));
+
+      seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Tau>("MTPairProducer")
+        .set_input_label_first("sel_muons")
+        .set_input_label_second("sel_taus")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau")
+      );
+
+      using ROOT::Math::VectorUtil::DeltaR;
+      seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+          .set_input_label("ditau")
+          .set_min(1)
+          .set_predicate([=](ic::CompositeCandidate const* c) {
+            return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+                > 0.5;
+          })
+      );
+
+      // Extra lepton veto flags
+
+      // Trigger flags
+
+      // At this point we're done filtering, can calculate other things we nedd
+      if (!is_data) {
+        seq.BuildModule(puweight_module);
+      } else {
+        seq.BuildModule(lumimask_module);
+      }
+
+      // seq.BuildModule(ic::SMTreeProducer("SMTreeProducer")
+      //   .set_channel(...)
+      //   .set_fs(fs.at(fullseqn).get())
+      //   .set_sf_workspace(sf_wsp)
+      // );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
+    if (seqn == "SM_et") {
+      auto & seq = seqs[fullseqn];
+
+      seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToSelectedElecs",
+          "electrons", "sel_elecs"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Electron>("ElectronFilter")
+      .set_input_label("sel_elecs").set_min(1)
+      .set_predicate([=](ic::Electron const* e) {
+        return  e->pt()                 > 25.    &&
+                fabs(e->eta())          < 2.1    &&
+                fabs(e->dxy_vertex())   < 0.045  &&
+                fabs(e->dz_vertex())    < 0.2    &&
+                ElectronHTTIdSpring15(e, false);
+      }));
+
+      double tau_es_shift = 1.00;
+      if (subseqn == "scale_t_lo") tau_es_shift = 0.97;
+      if (subseqn == "scale_t_hi") tau_es_shift = 1.03;
+      seq.BuildModule(ic::EnergyShifter<ic::Tau>("TauEnergyScale")
+        .set_input_label("taus")
+        .set_shift(tau_es_shift)
+        .set_save_shifts(true));
+
+      seq.BuildModule(ic::CopyCollection<ic::Tau>("CopyToSelectedTaus",
+          "taus", "sel_taus"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Tau>("TauFilter")
+        .set_input_label("sel_taus").set_min(1)
+        .set_predicate([=](ic::Tau const* t) {
+          return  t->pt()                     > 20.    &&
+                  fabs(t->eta())              < 2.3    &&
+                  fabs(t->lead_dz_vertex())   < 0.2    &&
+                  abs(t->charge())            == 1     &&
+                  t->GetTauID("decayModeFinding") > 0.5;
+        }));
+
+      seq.BuildModule(ic::CompositeProducer<ic::Electron, ic::Tau>("ETPairProducer")
+        .set_input_label_first("sel_elecs")
+        .set_input_label_second("sel_taus")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau")
+      );
+
+      using ROOT::Math::VectorUtil::DeltaR;
+      seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+          .set_input_label("ditau")
+          .set_min(1)
+          .set_predicate([=](ic::CompositeCandidate const* c) {
+            return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+                > 0.5;
+          })
+      );
+
+      // At this point we're done filtering, can calculate other things we nedd
+      if (!is_data) {
+        seq.BuildModule(puweight_module);
+      } else {
+        seq.BuildModule(lumimask_module);
+      }
+
+      // seq.BuildModule(ic::SMTreeProducer("SMTreeProducer")
+      //   .set_channel(...)
+      //   .set_fs(fs.at(fullseqn).get())
+      //   .set_sf_workspace(sf_wsp)
+      // );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
+    if (seqn == "SM_em") {
+      auto & seq = seqs[fullseqn];
+
+      seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToSelectedMuons",
+          "muons", "sel_muons"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Muon>("MuonFilter")
+        .set_input_label("sel_muons").set_min(1)
+        .set_predicate([=](ic::Muon const* m) {
+          return  m->pt()                 > 10.    &&
+                  fabs(m->eta())          < 2.4    &&
+                  fabs(m->dxy_vertex())   < 0.045  &&
+                  fabs(m->dz_vertex())    < 0.2    &&
+                  MuonMediumHIPsafe(m);
+        }));
+
+      seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToSelectedElecs",
+          "electrons", "sel_elecs"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Electron>("ElectronFilter")
+      .set_input_label("sel_elecs").set_min(1)
+      .set_predicate([=](ic::Electron const* e) {
+        return  e->pt()                 > 13.    &&
+                fabs(e->eta())          < 2.5    &&
+                fabs(e->dxy_vertex())   < 0.045  &&
+                fabs(e->dz_vertex())    < 0.2    &&
+                ElectronHTTIdSpring15(e, false);
+      }));
+
+      seq.BuildModule(ic::CompositeProducer<ic::Electron, ic::Muon>("EMPairProducer")
+        .set_input_label_first("sel_elecs")
+        .set_input_label_second("sel_muons")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau")
+      );
+
+      using ROOT::Math::VectorUtil::DeltaR;
+      seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+          .set_input_label("ditau")
+          .set_min(1)
+          .set_predicate([=](ic::CompositeCandidate const* c) {
+            return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+                > 0.3;
+          })
+      );
+
+      // Extra lepton veto flags
+
+      // Trigger flags
+
+      // At this point we're done filtering, can calculate other things we nedd
+      if (!is_data) {
+        seq.BuildModule(puweight_module);
+      } else {
+        seq.BuildModule(lumimask_module);
+      }
+
+      // seq.BuildModule(ic::SMTreeProducer("SMTreeProducer")
+      //   .set_channel(...)
+      //   .set_fs(fs.at(fullseqn).get())
+      //   .set_sf_workspace(sf_wsp)
+      // );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
+    if (seqn == "SM_tt") {
+      auto & seq = seqs[fullseqn];
+
+      double tau_es_shift = 1.00;
+      if (subseqn == "scale_t_lo") tau_es_shift = 0.97;
+      if (subseqn == "scale_t_hi") tau_es_shift = 1.03;
+      seq.BuildModule(ic::EnergyShifter<ic::Tau>("TauEnergyScale")
+        .set_input_label("taus")
+        .set_shift(tau_es_shift)
+        .set_save_shifts(true));
+
+      seq.BuildModule(ic::CopyCollection<ic::Tau>("CopyToSelectedTaus",
+          "taus", "sel_taus"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Tau>("TauFilter")
+        .set_input_label("sel_taus").set_min(2)
+        .set_predicate([=](ic::Tau const* t) {
+          return  t->pt()                     > 40.    &&
+                  fabs(t->eta())              < 2.1    &&
+                  fabs(t->lead_dz_vertex())   < 0.2    &&
+                  abs(t->charge())            == 1     &&
+                  t->GetTauID("decayModeFinding") > 0.5;
+        }));
+
+      seq.BuildModule(ic::CompositeProducer<ic::Tau, ic::Tau>("TTPairProducer")
+        .set_input_label_first("sel_taus")
+        .set_input_label_second("sel_taus")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau")
+      );
+
+      using ROOT::Math::VectorUtil::DeltaR;
+      seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+          .set_input_label("ditau")
+          .set_min(1)
+          .set_predicate([=](ic::CompositeCandidate const* c) {
+            return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+                > 0.5;
+          })
+      );
+
+      // At this point we're done filtering, can calculate other things we nedd
+      if (!is_data) {
+        seq.BuildModule(puweight_module);
+      } else {
+        seq.BuildModule(lumimask_module);
+      }
+
+      // seq.BuildModule(ic::SMTreeProducer("SMTreeProducer")
+      //   .set_channel(...)
+      //   .set_fs(fs.at(fullseqn).get())
+      //   .set_sf_workspace(sf_wsp)
+      // );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
 }
 
   analysis.RunAnalysis();
