@@ -368,6 +368,7 @@ namespace ic {
       outtree_->Branch("id_t",        &id_t);
       outtree_->Branch("iso_t",       &iso_t);
       outtree_->Branch("muon_p",      &muon_p);
+      outtree_->Branch("trk_p",       &trk_p);
       outtree_->Branch("pt_p",        &pt_p);
       outtree_->Branch("eta_p",       &eta_p);
       outtree_->Branch("id_p",        &id_p);
@@ -472,6 +473,13 @@ namespace ic {
         trg_p_PFTau120 = true;
       }
       muon_p = true;
+      // This is a hack for now: we'll pretend muons with pT < 20 are track probes
+      // for the purpose of the ID measurement until we get the J/Psi up and running
+      if (pt_p <= 20.) {
+        trk_p = true;
+      } else {
+        trk_p = false;
+      }
       outtree_->Fill();
     }
 
@@ -524,6 +532,11 @@ namespace ic {
         trg_p_PFTau120 = true;
       }
       muon_p = false;
+      trk_p = true;
+      // Temporary hack: for now skip the case with track pT < 20 GeV,
+      // not possible to measure this low for the ID in Z->mumu events,
+      // need to wait for the J/Psi
+      if (pt_p <= 20.) continue;
       outtree_->Fill();
     }
     return 0;

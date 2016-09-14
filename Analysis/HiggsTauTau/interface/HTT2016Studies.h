@@ -153,6 +153,7 @@ class ZmmTPTreeProducer : public ModuleBase {
   float iso_t;
 
   bool muon_p;
+  bool trk_p;
   float pt_p;
   float eta_p;
   float phi_p;

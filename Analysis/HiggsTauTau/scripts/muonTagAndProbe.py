@@ -33,7 +33,7 @@ bin_cfgs = [
     {
         'name': 'IDTrk_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': '(!muon_p) && trg_t_IsoMu22',
+        'tag': 'trk_p && trg_t_IsoMu22',
         'probe': 'id_p',
         'binvar_x': 'pt_p',
         'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
@@ -43,7 +43,7 @@ bin_cfgs = [
     {
         'name': 'IDTrk_pt_eta_bins',
         'var': 'm_ll(50,75,125)',
-        'tag': '(!muon_p) && trg_t_IsoMu22',
+        'tag': 'trk_p && trg_t_IsoMu22',
         'probe': 'id_p',
         'binvar_x': 'pt_p',
         'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
