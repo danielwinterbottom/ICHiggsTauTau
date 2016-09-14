@@ -298,6 +298,8 @@ if options.proc_bkg or options.proc_all:
       JOB='%s_2016' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       nperjob = 60
+      if 'TT' in sa:
+        nperjob = 30
       if scales:
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_j_lo\",\"scale_j_hi\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
         if 'TT-ext' in sa:
