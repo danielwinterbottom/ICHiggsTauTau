@@ -1034,7 +1034,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
   }
 
 
- if((strategy_type == strategy::fall15/*|| strategy_type==strategy::mssmspring16*/) && channel!=channel::wmnu){
+ if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16) && channel!=channel::wmnu){
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
