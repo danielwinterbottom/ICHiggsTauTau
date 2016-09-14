@@ -121,23 +121,3 @@ if doDeltaBeta:
         canvColz.Print('.png')
         canvColz.Print('.pdf')
 
-if doSfFit:
-    x_vals = [25, 35, 50, 70, 150]
-    y_vals = [0.87, 0.86, 0.90, 0.93, 0.85]
-    x_err =  [0, 0, 0, 0, 0]
-    y_err =  [0.05, 0.04, 0.07, 0.09, 0.12]
-    gr = ROOT.TGraphErrors(len(x_vals), array('d', x_vals), array('d', y_vals), array('d', x_err), array('d', y_err))
-    canv = ROOT.TCanvas(output + "_sf_fit", output + "_sf_fit")
-    pads = plot.OnePad()
-    axis = plot.CreateAxisHist(gr, False)
-    axis.GetXaxis().SetTitle('#tau_{h} p_{T} (GeV)')
-    axis.GetYaxis().SetTitle('Scale Factor')
-    pads[0].cd()
-    axis.Draw()
-    gr.Draw('PSAME')
-    gr.Fit('pol1', '', '3')
-    # text.Draw()
-    canv.Print('.png')
-    canv.Print('.pdf')
-
-
