@@ -1199,8 +1199,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     cat += "&&" + alias_map_["baseline"];
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
-    std::string cat_nobtag = "n_jets <=1 && "+alias_map_["baseline"];
-    //std::string cat_nobtag = "n_jets <=1 && n_lowpt_jets>=1 && "+alias_map_["baseline"];
+    //std::string cat_nobtag = "n_jets <=1 && "+alias_map_["baseline"];
+    std::string cat_nobtag = "n_jets <=1 && n_lowpt_jets>=1 && "+alias_map_["baseline"];
     std::string w_extrap_cat = cat;
     std::string w_extrap_cat_nobtag = cat_nobtag;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
@@ -1287,8 +1287,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
           w_ss_norm = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel_osss, w_sub_samples, false, wt, ValueFnMap());
          }else if(method==16){
-          std::string qcd_cat_nobtag = "n_jets<=1 && "+alias_map_["baseline"];
-          //std::string qcd_cat_nobtag = "n_jets<=1 && n_lowpt_jets>= 1 && "+alias_map_["baseline"];
+          //std::string qcd_cat_nobtag = "n_jets<=1 && "+alias_map_["baseline"];
+          std::string qcd_cat_nobtag = "n_jets<=1 && n_lowpt_jets>= 1 && "+alias_map_["baseline"];
           Value w_ss_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
              this->ResolveSamplesAlias("data_samples"),qcd_cat_nobtag, w_sdb_sel_osss,w_sub_samples,false, wt, ValueFnMap());
          std::string os_sel_btag = "!os && " + this->ResolveAlias("sel");
