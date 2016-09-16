@@ -43,18 +43,28 @@ DATA_SAMPLES = {
 }
 
 MC_SAMPLES = {
-    'DYJetsToLL':           ['DYJetsToLL'],
-    'DYJetsToLL_M-10to50':  ['DYJetsToLL_M-10to50'],
-    'TT':                   ['TT'],
-    'VVTo2L2Nu':            ['VVTo2L2Nu'],
-    'WWTo1L1Nu2Q':          ['WWTo1L1Nu2Q'],
-    'WZJToLLLNu':           ['WZJToLLLNu'],
-    'WZTo1L1Nu2Q':          ['WZTo1L1Nu2Q'],
-    'WZTo1L3Nu':            ['WZTo1L3Nu'],
-    'WZTo2L2Q':             ['WZTo2L2Q'],
-    'ZZTo2L2Q':             ['ZZTo2L2Q'],
-    'ZZTo4L':               ['ZZTo4L'],
-    'WJetsToLNu':           ['WJetsToLNu']
+    'DYJetsToLL':               ['DYJetsToLL'],
+    'DYJetsToLLSoup':           ['DYJetsToLL', 'DY1JetsToLL', 'DY2JetsToLL', 'DY3JetsToLL', 'DY4JetsToLL'],
+    'DYJetsToLL-NLO':           ['DYJetsToLL-NLO'],
+    'DYJetsToLL_M-10to50':      ['DYJetsToLL_M-10to50'],
+    'EWKWMinus2Jets_WToLNu':    ['EWKWMinus2Jets_WToLNu'],
+    'EWKWPlus2Jets_WToLNu':     ['EWKWPlus2Jets_WToLNu'],
+    'EWKZ2Jets_ZToLL':          ['EWKZ2Jets_ZToLL'],
+    'TT':                       ['TT'],
+    'ST_t-channel_antitop':     ['ST_t-channel_antitop'],
+    'ST_t-channel_top':         ['ST_t-channel_top'],
+    'ST_tW_antitop':            ['ST_tW_antitop'],
+    'ST_tW_top':                ['ST_tW_top'],
+    'VVTo2L2Nu':                ['VVTo2L2Nu'],
+    'WWTo1L1Nu2Q':              ['WWTo1L1Nu2Q'],
+    'WZJToLLLNu':               ['WZJToLLLNu'],
+    'WZTo1L1Nu2Q':              ['WZTo1L1Nu2Q'],
+    'WZTo1L3Nu':                ['WZTo1L3Nu'],
+    'WZTo2L2Q':                 ['WZTo2L2Q'],
+    'ZZTo2L2Q':                 ['ZZTo2L2Q'],
+    'ZZTo4L':                   ['ZZTo4L'],
+    'WJetsToLNu':               ['WJetsToLNu'],
+    'WJetsToLNuSoup':           ['WJetsToLNu', 'W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu']
 }
 
 SAMPLE_CFG = {
@@ -63,20 +73,34 @@ SAMPLE_CFG = {
     },
     'TT': {
         'do_top_reweighting': True
+    },
+    'DYJetsToLLSoup': {
+        'do_dyjets_stitching': True
+    },
+    'WJetsToLNuSoup': {
+        'do_wjets_stitching': True
     }
 }
 
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-# SEQUENCES = ['Zmm']
-SEQUENCES = ['SM_et', 'SM_mt', 'SM_em', 'SM_tt']
+SEQUENCES = ['Zmm']
+#SEQUENCES = ['SM_et', 'SM_mt', 'SM_em', 'SM_tt']
 # SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
 #SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
 #SEQUENCES = ['HashMap']
 
 if 'HashMap' in SEQUENCES:
   FILES_PER_JOB = 1E6
+
+if SEQUENCES == ['EffectiveEvents']:
+  actual_samples = {}
+  for subsamples in MC_SAMPLES.values():
+    for subsample in subsamples:
+      actual_samples[subsample] = [subsample]
+  SAMPLES = actual_samples
+  FILES_PER_JOB = 100
 
 WHITELIST = {
     'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
@@ -90,7 +114,7 @@ WHITELIST = {
     'SM_mt': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'SM_em': ['MuonEG'] + list(MC_SAMPLES.keys()),
     'SM_tt': ['Tau'] + list(MC_SAMPLES.keys()),
-    'EffectiveEvents': list(MC_SAMPLES.keys()),
+    'EffectiveEvents': list(SAMPLES.keys()),
     'HashMap': list(DATA_SAMPLES.keys())
 }
 

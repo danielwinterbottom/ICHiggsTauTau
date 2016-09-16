@@ -6,7 +6,21 @@
     "lumi": 12918.140703927
   },
   "DYJetsToLL": {
-    "xs": 5765.4
+    "xs": 5765.4,
+    "lo_xs": 5765.4,
+    "clone_to": ["DYJetsToLLSoup"]
+  },
+  "DY1JetsToLL": {
+    "lo_xs": 5765.4
+  },
+  "DY2JetsToLL": {
+    "lo_xs": 5765.4
+  },
+  "DY3JetsToLL": {
+    "lo_xs": 5765.4
+  },
+  "DY4JetsToLL": {
+    "lo_xs": 5765.4
   },
   "DYJetsToLL_M-10to50": {
     "xs": 18610.0
@@ -39,6 +53,7 @@
     "xs": 1.212
   },
   "WJetsToLNu": {
-    "xs": 61526.7
+    "xs": 61526.7,
+    "clone_to": ["WJetsToLNuSoup"]
   }
 }
