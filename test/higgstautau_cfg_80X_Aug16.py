@@ -1761,6 +1761,38 @@ if release in ['80XMINIAOD']:
      process.icTriggerPathProducer
     )
 
+process.icEle12Mu23ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle12Mu23"),
+      hltPath = cms.string("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+process.icEle12Mu17ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle12Mu17"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+process.icEle23Mu8ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle23Mu8"),
+      hltPath = cms.string("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+  
+process.icEle17Mu8ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle17Mu8"),
+      hltPath = cms.string("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
 process.icEle27LooseTau20SingleL1ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsEle27LooseTau20SingleL1"),
@@ -2056,6 +2088,10 @@ process.icSingleTau120ObjectProducer = producers.icTriggerObjectProducer.clone(
 
   
 process.icTriggerObjectSequence += cms.Sequence(
+      process.icEle12Mu23ObjectProducer +
+      process.icEle23Mu8ObjectProducer +
+      process.icEle12Mu17ObjectProducer +
+      process.icEle17Mu8ObjectProducer +
       process.icEle24LooseTau20ObjectProducer +
       process.icEle24LooseTau20SingleL1ObjectProducer +
       process.icEle22LooseTau20SingleL1ObjectProducer +
