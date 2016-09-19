@@ -1,6 +1,7 @@
 from UserCode.ICHiggsTauTau.jobs import Jobs
 import argparse
 import os
+import json
 
 job_mgr = Jobs()
 parser = argparse.ArgumentParser()
@@ -13,7 +14,7 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
 
 MAX_EVTS = -1
 FILES_PER_JOB = 30
-PROD='Aug16_'
+PROD='Aug16'
 
 DATA_SAMPLES = {
   'Tau': [
@@ -67,6 +68,9 @@ MC_SAMPLES = {
     'WJetsToLNuSoup':           ['WJetsToLNu', 'W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu']
 }
 
+with open('scripts/params_%s.json' % PROD) as jsonfile:
+    params = json.load(jsonfile)
+
 SAMPLE_CFG = {
     'DYJetsToLL': {
         'do_zpt_reweighting': True
@@ -75,12 +79,19 @@ SAMPLE_CFG = {
         'do_top_reweighting': True
     },
     'DYJetsToLLSoup': {
-        'do_dyjets_stitching': True
+        'do_dyjets_stitching': True,
+        'dyjets_stitching': {}
     },
     'WJetsToLNuSoup': {
-        'do_wjets_stitching': True
+        'do_wjets_stitching': True,
+        'wjets_stitching': {}
     }
 }
+for x in ['', '1', '2', '3', '4']:
+    SAMPLE_CFG['DYJetsToLLSoup']['dyjets_stitching']['evt_DY%sJetsToLL' % x] = params['DY%sJetsToLL' % x]['evt']
+    SAMPLE_CFG['DYJetsToLLSoup']['dyjets_stitching']['xs_DY%sJetsToLL' % x] = params['DY%sJetsToLL' % x]['lo_xs']
+    SAMPLE_CFG['WJetsToLNuSoup']['wjets_stitching']['evt_W%sJetsToLNu' % x] = params['W%sJetsToLNu' % x]['evt']
+    SAMPLE_CFG['WJetsToLNuSoup']['wjets_stitching']['xs_W%sJetsToLNu' % x] = params['W%sJetsToLNu' % x]['lo_xs']
 
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
@@ -138,7 +149,7 @@ for sa in SAMPLES:
             doSample = True
     if not doSample:
         continue
-    filelists = ['filelists/%s%s.dat' % (PROD, X) for X in SAMPLES[sa]]
+    filelists = ['filelists/%s_%s.dat' % (PROD, X) for X in SAMPLES[sa]]
     cfg = {
         # General settings
         'output_dir': '%s' % (OUTPUT),

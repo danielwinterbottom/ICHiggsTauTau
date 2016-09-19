@@ -22,6 +22,7 @@
 #include "HiggsTauTau/interface/WJetsStudy.h"
 #include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
+#include "HiggsTauTau/interface/SampleStitching.h"
 
 
 using std::string;
@@ -225,6 +226,26 @@ int main(int argc, char* argv[]) {
         seq.BuildModule(puweight_module);
       } else {
         seq.BuildModule(lumimask_module);
+      }
+
+      if (js.get("do_dyjets_stitching", false).asBool()) {
+        auto jss = js["dyjets_stitching"];
+        seq.BuildModule(ic::DYJetsStitching("DYJetsStitching")
+          .Set_DYJetsToLL(jss["evt_DYJetsToLL"].asUInt(), jss["xs_DYJetsToLL"].asDouble())
+          .Set_DY1JetsToLL(jss["evt_DY1JetsToLL"].asUInt(), jss["xs_DY1JetsToLL"].asDouble())
+          .Set_DY2JetsToLL(jss["evt_DY2JetsToLL"].asUInt(), jss["xs_DY2JetsToLL"].asDouble())
+          .Set_DY3JetsToLL(jss["evt_DY3JetsToLL"].asUInt(), jss["xs_DY3JetsToLL"].asDouble())
+          .Set_DY4JetsToLL(jss["evt_DY4JetsToLL"].asUInt(), jss["xs_DY4JetsToLL"].asDouble()));
+      }
+
+      if (js.get("do_wjets_stitching", false).asBool()) {
+        auto jss = js["wjets_stitching"];
+        seq.BuildModule(ic::WJetsStitching("WJetsStitching")
+          .Set_WJetsToLNu(jss["evt_WJetsToLNu"].asUInt(), jss["xs_WJetsToLNu"].asDouble())
+          .Set_W1JetsToLNu(jss["evt_W1JetsToLNu"].asUInt(), jss["xs_W1JetsToLNu"].asDouble())
+          .Set_W2JetsToLNu(jss["evt_W2JetsToLNu"].asUInt(), jss["xs_W2JetsToLNu"].asDouble())
+          .Set_W3JetsToLNu(jss["evt_W3JetsToLNu"].asUInt(), jss["xs_W3JetsToLNu"].asDouble())
+          .Set_W4JetsToLNu(jss["evt_W4JetsToLNu"].asUInt(), jss["xs_W4JetsToLNu"].asDouble()));
       }
 
       seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")

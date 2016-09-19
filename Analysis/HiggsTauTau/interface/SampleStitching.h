@@ -34,27 +34,29 @@ class DYJetsStitching : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
 
-  inline void Set_DYJetsToLL(unsigned evts, double xsec) {
+  inline DYJetsStitching & Set_DYJetsToLL(unsigned evts, double xsec) {
     lumi_DYJetsToLL_ = double(evts) / xsec;
+    return *this;
   }
-  inline void Set_DY1JetsToLL(unsigned evts, double xsec) {
+  inline DYJetsStitching & Set_DY1JetsToLL(unsigned evts, double xsec) {
     lumi_DY1JetsToLL_ = double(evts) / xsec;
-
+    return *this;
   }
-  inline void Set_DY2JetsToLL(unsigned evts, double xsec) {
+  inline DYJetsStitching & Set_DY2JetsToLL(unsigned evts, double xsec) {
     lumi_DY2JetsToLL_ = double(evts) / xsec;
-
+    return *this;
   }
-  inline void Set_DY3JetsToLL(unsigned evts, double xsec) {
+  inline DYJetsStitching & Set_DY3JetsToLL(unsigned evts, double xsec) {
     lumi_DY3JetsToLL_ = double(evts) / xsec;
-
+    return *this;
   }
-  inline void Set_DY4JetsToLL(unsigned evts, double xsec) {
+  inline DYJetsStitching & Set_DY4JetsToLL(unsigned evts, double xsec) {
     lumi_DY4JetsToLL_ = double(evts) / xsec;
-
+    return *this;
   }
-  inline void Set_DYJetsToTauTau_M150(unsigned evts, double xsec) {
+  inline DYJetsStitching & Set_DYJetsToTauTau_M150(unsigned evts, double xsec) {
     lumi_DYJetsToTauTau_M150_ = double(evts) / xsec;
+    return *this;
   }
 };
 
@@ -81,20 +83,25 @@ class WJetsStitching : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
 
-  inline void Set_WJetsToLNu(unsigned evts, double xsec) {
+  inline WJetsStitching & Set_WJetsToLNu(unsigned evts, double xsec) {
     lumi_WJetsToLNu_ = double(evts) / xsec;
+    return *this;
   }
-  inline void Set_W1JetsToLNu(unsigned evts, double xsec) {
+  inline WJetsStitching & Set_W1JetsToLNu(unsigned evts, double xsec) {
     lumi_W1JetsToLNu_ = double(evts) / xsec;
+    return *this;
   }
-  inline void Set_W2JetsToLNu(unsigned evts, double xsec) {
+  inline WJetsStitching & Set_W2JetsToLNu(unsigned evts, double xsec) {
     lumi_W2JetsToLNu_ = double(evts) / xsec;
+    return *this;
   }
-  inline void Set_W3JetsToLNu(unsigned evts, double xsec) {
+  inline WJetsStitching & Set_W3JetsToLNu(unsigned evts, double xsec) {
     lumi_W3JetsToLNu_ = double(evts) / xsec;
+    return *this;
   }
-  inline void Set_W4JetsToLNu(unsigned evts, double xsec) {
+  inline WJetsStitching & Set_W4JetsToLNu(unsigned evts, double xsec) {
     lumi_W4JetsToLNu_ = double(evts) / xsec;
+    return *this;
   }
 };
 
