@@ -898,8 +898,8 @@ int main(int argc, char* argv[]){
       xsWeights.set_do_w_soup(true);
       xsWeights.set_do_w_reweighting(false);
       xsWeights.SetWTargetFractions(9.65141122e-01,2.64511170e-02,7.07395326e-03,9.61876714e-04,2.36978418e-04,1.08184089e-04,2.61364578e-05,6.32466880e-07);
-      //EVT_MC_WJetsToLNu-mg-ht600 3722395+7854734+6545524+2507809=20630462
-      xsWeights.SetWInputYields(28210360,27546978,19851624,7432746,18133257,7854734,7063909,2507809);
+      //EVT_MC_WJetsToLNu-mg-ht600 3722395+7854734+6545524+2507809=20630462, 27546978+10231928=37778906
+      xsWeights.SetWInputYields(28210360,37778906,19851624,7432746,18133257,7854734,7063909,2507809);
     }
   }
   if (output_name.find("JetsToLL-mg-m50") != output_name.npos && 
