@@ -583,7 +583,7 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
    samples_alias_map_["ztt_shape_samples"]={
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
   }else if(!is_fall15_){
@@ -679,7 +679,7 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
    samples_alias_map_["ztt_samples"]={
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
    } else if(!is_fall15_){
@@ -726,7 +726,7 @@ namespace ic {
         };*/
   if(year_.find("6")!=year_.npos){
      samples_alias_map_["qcd_sub_samples"] = {
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO","ZZTo4L",
         "T-tW","T-t","Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
@@ -787,7 +787,7 @@ namespace ic {
    };
   if(year_.find("6")!=year_.npos){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL-LO",
+   "DYJetsToLL-LO-ext",
    "DY1JetsToLL-LO","DY2JetsToLL-LO",
    "DY3JetsToLL-LO","DY4JetsToLL-LO",
    "T-tW", "Tbar-tW", "Tbar-t", "T-t",
@@ -838,7 +838,7 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
     samples_alias_map_["w_sub_samples"] = {
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
      "T-tW", "Tbar-tW", "Tbar-t","T-t",
      "WWTo1L1Nu2Q","VVTo2L2Nu","ZZTo4L",

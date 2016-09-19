@@ -1469,10 +1469,10 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
     httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
     httStitching.SetWInputYields(28210360,39855520,29984239,19869053,9174756);
    }
-   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos )){
      httStitching.set_do_dy_soup(true);
      httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
-     httStitching.SetDYInputYields(48789591,65485168 , 19695514, 5753813, 4101383);
+     httStitching.SetDYInputYields(90951295,65485168 , 19695514, 5753813, 4101383);
    }
 
     
