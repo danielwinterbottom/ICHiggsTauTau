@@ -1,8 +1,50 @@
 {
-  "DYJetsToLL": {
-    "evt": 49877138,
+  "DY1JetsToLL": {
+    "evt": 65485168,
     "evt_m": 0,
-    "evt_p": 49877138,
+    "evt_p": 65485168,
+    "lo_xs": 1012.5
+  },
+  "DY2JetsToLL": {
+    "evt": 19695514,
+    "evt_m": 0,
+    "evt_p": 19695514,
+    "lo_xs": 332.8
+  },
+  "DY3JetsToLL": {
+    "evt": 5753813,
+    "evt_m": 0,
+    "evt_p": 5753813,
+    "lo_xs": 101.8
+  },
+  "DY4JetsToLL": {
+    "evt": 4101383,
+    "evt_m": 0,
+    "evt_p": 4101383,
+    "lo_xs": 54.8
+  },
+  "DYJetsToLL": {
+    "clone_to": [
+      "DYJetsToLLSoup"
+    ],
+    "evt": 91350867,
+    "evt_m": 0,
+    "evt_p": 91350867,
+    "lo_xs": 4954.0,
+    "xs": 5765.4
+  },
+  "DYJetsToLL-NLO": {
+    "evt": 69766946,
+    "evt_m": 17173260,
+    "evt_p": 86940206,
+    "xs": 5765.4
+  },
+  "DYJetsToLLSoup": {
+    "cloned_from": "DYJetsToLL",
+    "evt": 91350867,
+    "evt_m": 0,
+    "evt_p": 91350867,
+    "lo_xs": 4954.0,
     "xs": 5765.4
   },
   "DYJetsToLL_M-10to50": {
@@ -10,6 +52,48 @@
     "evt_m": 0,
     "evt_p": 35079788,
     "xs": 18610.0
+  },
+  "EWKWMinus2Jets_WToLNu": {
+    "evt": 490805,
+    "evt_m": 0,
+    "evt_p": 490805,
+    "xs": 20.25
+  },
+  "EWKWPlus2Jets_WToLNu": {
+    "evt": 496800,
+    "evt_m": 0,
+    "evt_p": 496800,
+    "xs": 25.62
+  },
+  "EWKZ2Jets_ZToLL": {
+    "evt": 139089,
+    "evt_m": 0,
+    "evt_p": 139089,
+    "xs": 3.987
+  },
+  "ST_t-channel_antitop": {
+    "evt": 1682400,
+    "evt_m": 0,
+    "evt_p": 1682400,
+    "xs": 80.95
+  },
+  "ST_t-channel_top": {
+    "evt": 3279200,
+    "evt_m": 0,
+    "evt_p": 3279200,
+    "xs": 136.02
+  },
+  "ST_tW_antitop": {
+    "evt": 985000,
+    "evt_m": 0,
+    "evt_p": 985000,
+    "xs": 35.6
+  },
+  "ST_tW_top": {
+    "evt": 998400,
+    "evt_m": 0,
+    "evt_p": 998400,
+    "xs": 35.6
   },
   "SingleElectron": {
     "lumi": 12918.140703927
@@ -24,57 +108,93 @@
     "xs": 831.76
   },
   "VVTo2L2Nu": {
-    "evt": 1729819,
-    "evt_m": 562709,
-    "evt_p": 2292528,
+    "evt": 1784398,
+    "evt_m": 580093,
+    "evt_p": 2364491,
     "xs": 11.95
   },
+  "W1JetsToLNu": {
+    "evt": 39855520,
+    "evt_m": 0,
+    "evt_p": 39855520,
+    "lo_xs": 9644.5
+  },
+  "W2JetsToLNu": {
+    "evt": 29984239,
+    "evt_m": 0,
+    "evt_p": 29984239,
+    "lo_xs": 3144.5
+  },
+  "W3JetsToLNu": {
+    "evt": 19869053,
+    "evt_m": 0,
+    "evt_p": 19869053,
+    "lo_xs": 954.8
+  },
+  "W4JetsToLNu": {
+    "evt": 9174756,
+    "evt_m": 0,
+    "evt_p": 9174756,
+    "lo_xs": 485.6
+  },
   "WJetsToLNu": {
+    "clone_to": [
+      "WJetsToLNuSoup"
+    ],
     "evt": 27910266,
     "evt_m": 0,
     "evt_p": 27910266,
+    "lo_xs": 50380.0,
+    "xs": 61526.7
+  },
+  "WJetsToLNuSoup": {
+    "cloned_from": "WJetsToLNu",
+    "evt": 27910266,
+    "evt_m": 0,
+    "evt_p": 27910266,
+    "lo_xs": 50380.0,
     "xs": 61526.7
   },
   "WWTo1L1Nu2Q": {
-    "evt": 3239275,
-    "evt_m": 981208,
-    "evt_p": 4220483,
+    "evt": 3260047,
+    "evt_m": 987609,
+    "evt_p": 4247656,
     "xs": 49.997
   },
   "WZJToLLLNu": {
-    "evt": 1201549,
-    "evt_m": 367975,
-    "evt_p": 1569524,
+    "evt": 1215913,
+    "evt_m": 372424,
+    "evt_p": 1588337,
     "xs": 4.42965
   },
   "WZTo1L1Nu2Q": {
-    "evt": 11466086,
-    "evt_m": 4138217,
-    "evt_p": 15604303,
+    "evt": 11325574,
+    "evt_m": 4087522,
+    "evt_p": 15413096,
     "xs": 10.71
   },
   "WZTo1L3Nu": {
-    "evt": 942046,
-    "evt_m": 380863,
-    "evt_p": 1322909,
+    "evt": 915022,
+    "evt_m": 369971,
+    "evt_p": 1284993,
     "xs": 3.05
   },
   "WZTo2L2Q": {
-    "evt": 15393496,
-    "evt_m": 5155580,
-    "evt_p": 20549076,
+    "evt": 15566485,
+    "evt_m": 5214836,
+    "evt_p": 20781321,
     "xs": 5.595
   },
   "ZZTo2L2Q": {
-    "evt": 9660541,
-    "evt_m": 2820577,
-    "evt_p": 12481118,
+    "evt": 9784835,
+    "evt_m": 2856873,
+    "evt_p": 12641708,
     "xs": 3.22
   },
   "ZZTo4L": {
-    "evt": 7416622,
-    "evt_m": 1665257,
-    "evt_p": 9081879,
+    "evt": 7141757,
+    "evt_m": 1603387,
+    "evt_p": 8745144,
     "xs": 1.212
   }
 }

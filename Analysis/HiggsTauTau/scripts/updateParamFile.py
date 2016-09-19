@@ -28,7 +28,13 @@ for file in args[2:]:
         js[name]['evt'] = e_p - e_m
         js[name]['evt_p'] = e_p
         js[name]['evt_m'] = e_m
-
+        if 'clone_to' in js[name]:
+            for clone in js[name]['clone_to']:
+                js[clone] = dict(js[name])
+                del js[clone]['clone_to']
+                js[clone]['cloned_from'] = name
+    else:
+        print 'Sample %s not in json file' % name
 
 jsondata = json.dumps(js, sort_keys=True, indent=2, separators=(',', ': '))
 
