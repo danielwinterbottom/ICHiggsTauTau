@@ -79,6 +79,7 @@ SAMPLE_CFG = {
         'do_top_reweighting': True
     },
     'DYJetsToLLSoup': {
+        'do_zpt_reweighting': True,
         'do_dyjets_stitching': True,
         'dyjets_stitching': {}
     },
@@ -172,7 +173,7 @@ for sa in SAMPLES:
         # Trigger info settings
         'trigger_info_output': '%s/trigger_info_%s.json' % (OUTPUT, sa),
         # Scale factors workspace
-        'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root',
+        'sf_wsp': 'input/scale_factors/htt_scalefactors_v4.root',
         # ZmtTP decay mode selection
         'ZmtTP_tauDM': 'decayModeFinding',
         #'ZmtTP_tauDM': 'decayModeFindingNewDMs',

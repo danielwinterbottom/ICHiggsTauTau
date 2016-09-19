@@ -69,11 +69,12 @@ namespace ic {
       ws_->function("m_iso_ratio")->functor(ws_->argSet("m_pt,m_eta")));
     fns_["m_trgOR_data"] = std::shared_ptr<RooFunctor>(
       ws_->function("m_trgOR_data")->functor(ws_->argSet("m_pt,m_eta")));
-
-    if (do_zpt_reweighting_) {
-      z_pt_mass_hist_ = std::make_shared<TH2D>(ic::OpenFromTFile<TH2D>(
-          "input/zpt_weights/zpt_weights.root:zptmass_histo"));
-    }
+    fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_idiso0p15_desy_ratio")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["zpt_weight"] = std::shared_ptr<RooFunctor>(
+      ws_->function("zpt_weight")->functor(ws_->argSet("z_gen_mass,z_gen_pt")));
     return 0;
   }
 
@@ -165,16 +166,16 @@ namespace ic {
     auto args_1 = std::vector<double>{lep_1->pt(), lep_1->eta()};
     auto args_2 = std::vector<double>{lep_2->pt(), lep_2->eta()};
     if (!info->is_data()) {
-      float eff_1 = fns_["m_trgOR_data"]->eval(args_1.data());
+      float eff_1 = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args_1.data());
       // float eff_2 = fns_["m_trg_data"]->eval(args_2.data());
       // wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
       wt_trg = eff_1;
       wt_trk = fns_["m_trk_ratio"]->eval(v_double{lep_1->eta()}.data()) *
               fns_["m_trk_ratio"]->eval(v_double{lep_2->eta()}.data());
-      wt_id = fns_["m_id_ratio"]->eval(args_1.data()) *
-              fns_["m_id_ratio"]->eval(args_2.data());
-      wt_iso = fns_["m_iso_ratio"]->eval(args_1.data()) *
-               fns_["m_iso_ratio"]->eval(args_2.data());
+      wt_id = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data()) *
+              fns_["m_idiso0p15_desy_ratio"]->eval(args_2.data());
+      // wt_iso = fns_["m_iso_ratio"]->eval(args_1.data()) *
+      //          fns_["m_iso_ratio"]->eval(args_2.data());
     }
     info->set_weight("trk", wt_trk);
     info->set_weight("trg", wt_trg);
@@ -188,9 +189,7 @@ namespace ic {
     if (do_zpt_reweighting_) {
       auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
       auto gen_boson = BuildGenBoson(parts);
-      wt_zpt = z_pt_mass_hist_->GetBinContent(
-          z_pt_mass_hist_->GetXaxis()->FindBin(gen_boson.M()),
-          z_pt_mass_hist_->GetYaxis()->FindBin(gen_boson.pt()));
+      wt_zpt = fns_["zpt_weight"]->eval(v_double{gen_boson.M(), gen_boson.pt()}.data());
     }
 
     // Top quark pT reweighting

@@ -43,7 +43,6 @@ class ZmmTreeProducer : public ModuleBase {
   TTree *outtree_;
   std::shared_ptr<RooWorkspace> ws_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
-  std::shared_ptr<TH2D> z_pt_mass_hist_;
 
   float wt;
   float wt_pu;
@@ -59,7 +58,7 @@ class ZmmTreeProducer : public ModuleBase {
   bool os;
 
   float mvamet_et;
-  
+
   float pt_1;
   float eta_1;
   float phi_1;
