@@ -122,6 +122,9 @@ namespace ic {
   bool PFJetID(PFJet const* jet);
   // Standard particle-flow jet id for 2015
   bool PFJetID2015(PFJet const* jet);
+  // Standard particle-flow jet id for 2016
+  bool PFJetID2016(PFJet const* jet);
+
 
   // Particle-flow jet id without the HF energy in the neutral energy cut
   bool PFJetIDNoHFCut(PFJet const* jet);

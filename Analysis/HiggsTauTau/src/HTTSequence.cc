@@ -990,8 +990,10 @@ SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
 .set_input_label(jets_label);
 if(strategy_type == strategy::paper2013) {
   jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
-} else {
+} else if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16){
   jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
+} else {
+  jetIDFilter.set_predicate(bind(PFJetID2016, _1));
 }
 BuildModule(jetIDFilter);
 

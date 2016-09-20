@@ -790,6 +790,7 @@ namespace ic {
    "DYJetsToLL-LO-ext",
    "DY1JetsToLL-LO","DY2JetsToLL-LO",
    "DY3JetsToLL-LO","DY4JetsToLL-LO",
+   "DYJetsToLL_M-10-50-LO",
    "T-tW", "Tbar-tW", "Tbar-t", "T-t",
    "WWTo1L1Nu2Q","VVTo2L2Nu", "ZZTo4L",
    "ZZTo2L2Q","WZJToLLLNu",
@@ -1226,6 +1227,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         Value btag_norm = GetRate(wjets_samples, btag_extrap_sel, cat, wt);
         Value nobtag_norm = GetRate(wjets_samples,btag_extrap_sel,cat_nobtag,wt);
         Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+        if (verbosity_) PrintValue("ExtrapFactor into full b-tag definition",btag_extrap_factor);
         w_norm = ValueProduct(w_norm_nobtag,btag_extrap_factor);
    }
 
@@ -1295,6 +1297,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
          Value btag_norm = GetRate(wjets_samples, os_sel_btag, qcd_cat, wt);
          Value nobtag_norm = GetRate(wjets_samples,os_sel_btag,qcd_cat_nobtag,wt);
          Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+         if (verbosity_) PrintValue("ExtrapFactor into full b-tag definition",btag_extrap_factor);
          w_ss_norm = ValueProduct(btag_extrap_factor,w_ss_norm_nobtag);
         } else {
           w_ss_norm = std::make_pair(0.0,0.0);
