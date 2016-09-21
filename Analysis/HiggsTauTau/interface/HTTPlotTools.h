@@ -78,6 +78,8 @@ namespace ic {
     CLASS_MEMBER(HTTPlot,   double,         ratio_max)
     CLASS_MEMBER(HTTPlot,   bool,           supress_output)
     CLASS_MEMBER(HTTPlot,   std::string,       sOverb_output_name)
+    CLASS_MEMBER(HTTPlot,   bool,           ams_scan)
+    CLASS_MEMBER(HTTPlot,    std::string,    ams_scan_output_name)
 
     // CLASS_MEMBER(HTTPlot, bool, ztt_by_decay_mode)
     // CLASS_MEMBER(HTTPlot, bool, shift_backgrounds)

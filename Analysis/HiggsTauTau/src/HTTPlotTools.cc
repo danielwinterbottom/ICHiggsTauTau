@@ -233,6 +233,8 @@ namespace ic {
       ((prefix+"ratio_min").c_str(),            po::value<double>(&ratio_min_)->default_value(0.68))
       ((prefix+"ratio_max").c_str(),            po::value<double>(&ratio_max_)->default_value(1.32))
       ((prefix+"supress_output").c_str(),       po::value<bool>(&supress_output_)->default_value(false))
+      ((prefix+"ams_scan").c_str(),             po::value<bool>(&ams_scan_)->default_value(false))
+      ((prefix+"ams_scan_output_name").c_str(), po::value<std::string>(&ams_scan_output_name_)->default_value("ams_scan_output.txt"))
       ((prefix+"sOverb_output_name").c_str(),   po::value<std::string>(&sOverb_output_name_)->default_value("outputTemp.txt"));
 
     return config_;
@@ -538,41 +540,61 @@ namespace ic {
     
     canv->Update();
                                                
-    double NHsignal=0;
-    double NTbackground=0;
-    double NZTT=0;
+    //double NHsignal=0;
+    //double NTbackground=0;
+    //double NZTT=0;
+    std::vector<double> ams_vec;
+    std::vector<double> scan_variable;
     TH1F *signal = new TH1F("signal", "signal", sig_elements[0].hist_ptr()->GetNbinsX(), sig_elements[0].hist_ptr()->GetXaxis()->GetXbins()->GetArray());
     TH1F *background = new TH1F("background", "background", bkg_elements[0].hist_ptr()->GetNbinsX(), bkg_elements[0].hist_ptr()->GetXaxis()->GetXbins()->GetArray());
+
     for(unsigned j = 0; j < unsigned(sig_elements.size()); ++j){
         signal->Add(sig_elements[j].hist_ptr());
-        NHsignal += sig_elements[j].hist_ptr()->Integral(0,sig_elements[j].hist_ptr()->GetNbinsX()+1)/signal_scale_;
+        //NHsignal += sig_elements[j].hist_ptr()->Integral(0,sig_elements[j].hist_ptr()->GetNbinsX()+1)/signal_scale_;
     }
     signal->Scale(1/signal_scale_);
     for(unsigned j = 0; j < unsigned(bkg_elements.size()); ++j){
         background->Add(bkg_elements[j].hist_ptr());
-        NTbackground +=  bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
-        if(j==unsigned(bkg_elements.size())-1) NZTT = bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
+        //NTbackground +=  bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
+        //if(j==unsigned(bkg_elements.size())-1) NZTT = bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
     }
     
-    ch::SOverBInfo Weights = ch::SOverBInfo(signal, background, 3500, 0.682);
+    unsigned max_scan_range = 1;
+    if(ams_scan_){
+      max_scan_range = signal->GetNbinsX()+1;    
+    }
     
-    std::cout << "# signal events: " << NHsignal     << std::endl;
-    std::cout <<  signal->Integral(0,signal->GetNbinsX()+1) << std::endl;
-    std::cout << "# background events: " << NTbackground << std::endl;
-    std::cout <<  background->Integral(0,background->GetNbinsX()+1) << std::endl;
-    std::cout << "# ZTt: " << NZTT         << std::endl; 
-    std::cout << "S/sqrt(B) = " << NHsignal/sqrt(NTbackground) << std::endl;
-    std::cout << "NZTT/sqrt(NTbackground - NZTT) = " << NZTT/sqrt(NTbackground - NZTT) << std::endl;
+    for(unsigned i = 1; i <= max_scan_range; ++i){
+      for(unsigned j = 1; j < i; ++j){
+        background->SetBinContent(j,0);
+        signal->SetBinContent(j,0); 
+      }
+      
+      ch::SOverBInfo Weights = ch::SOverBInfo(signal, background, 3500, 0.682);
+      
+      double s = Weights.s;
+      double b = Weights.b;
+      double AMS = TMath::Sqrt2()*TMath::Sqrt((s+b)*TMath::Log(1+s/b)-s);
+      ams_vec.push_back(AMS);
+      
+      double var = signal->GetXaxis()->GetBinUpEdge(i);
+      scan_variable.push_back(var);
+    }
     
-    double s = Weights.s;
-    double b = Weights.b;
-    double AMS = TMath::Sqrt2()*TMath::Sqrt((s+b)*TMath::Log(1+s/b)-s);
-    
-    if(supress_output_){
+    if(ams_scan_){
       std::ofstream outfile;
-      outfile.open(sOverb_output_name_);
-      outfile << AMS;
-      outfile.close();
+      outfile.open(ams_scan_output_name_);
+      for(unsigned i = 0; i < ams_vec.size(); ++i){
+        outfile << scan_variable[i] << "  " << ams_vec[i] << "\n";
+      }
+      outfile.close();    
+    }
+
+    if(supress_output_ && ams_vec.size()>0){
+        std::ofstream outfile;
+        outfile.open(sOverb_output_name_);
+        outfile << ams_vec[0];
+        outfile.close();
     }
     
     // Blind data histogram using either auto-blinding or user specified range
