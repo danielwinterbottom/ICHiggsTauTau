@@ -132,7 +132,6 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
     std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
     std::cout << boost::format(param_fmt()) % "ditau_label"         % ditau_label_;
-    std::cout << boost::format(param_fmt()) % "do_tau_id_sf"        % do_tau_id_sf_;
 
     if (do_tau_fake_weights_) {
      tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
@@ -2205,23 +2204,6 @@ namespace ic {
       if (tau->decay_mode() == 0 && era_ == era::data_2012_rereco) {
         eventInfo->set_weight("tau_mode_scale", 0.88);
       }
-    }
-    
-    if (do_tau_id_sf_){
-      double tau_id_sf = 1;  
-      if (channel_ == channel::et || channel_ == channel::mt){
-        unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-        if(gen_match_2 == 5) tau_id_sf = 0.84;
-        else tau_id_sf = 1;
-      } else if (channel_ == channel::tt) {
-        unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-        unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-        if(gen_match_1 == 5 && gen_match_2 == 5) tau_id_sf = 0.9*0.9;
-        else if (gen_match_1 == 5 || gen_match_2 == 5) tau_id_sf = 0.9;
-        else tau_id_sf = 1;
-      }
-      event->Add("wt_tau_id_sf", tau_id_sf);
-      eventInfo->set_weight("wt_tau_id_sf", tau_id_sf);
     }
 
 

@@ -950,7 +950,7 @@ if(do_met_filters){
 
 if(channel != channel::wmnu && !js["store_hltpaths"].asBool()) {
 
- HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
+  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
     .set_fs(fs.get())
     .set_pair_label("ditau")
@@ -967,8 +967,8 @@ if(channel != channel::wmnu && !js["store_hltpaths"].asBool()) {
     .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
     .set_allowed_tau_modes(allowed_tau_modes);
 
- if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
-   httPairSelector.set_gen_taus_label("genParticles");
+  if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
+    httPairSelector.set_gen_taus_label("genParticles");
   }
   
   BuildModule(httPairSelector);
