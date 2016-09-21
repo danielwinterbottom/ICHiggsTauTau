@@ -737,11 +737,10 @@ namespace ic {
                   tau_trg = 1;
                   tau_trg_mc=1;
                   auto args_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
-                 // auto args_desy = std::vector<double>{e_pt,e_signed_eta};
-                  /*if(e_iso<0.1){
+                  auto args_desy = std::vector<double>{e_pt,e_signed_eta};
+                  if(e_iso<0.1){
                     ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_desy.data());
-                  } else*/
-                  ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
+                  } else ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
                   ele_trg_mc=1;
               } else {
                   std::cout << "Cross trigger not currently supported! Setting trigger efficiencies to 1" << std::endl;
@@ -1609,10 +1608,9 @@ namespace ic {
         } else if (mc_ == mc::spring16_80X){
            auto args_1 = std::vector<double>{pt,e_signed_eta};
            auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
-           /*if(e_iso < 0.1){
+           if(e_iso < 0.1){
              ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data());
-           } else*/ 
-           ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
+           } else ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X){
           if (do_id_weights_) ele_iso = 1.0;
