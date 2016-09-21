@@ -1,24 +1,67 @@
 #include "../interface/MultiDraw.hh"
-#include "TTree.h"
-#include "TH1D.h"
-#include "TTreeFormula.h"
-#include "TStopwatch.h"
 #include <iostream>
+#include "TH1D.h"
+#include "TH2F.h"
+#include "TStopwatch.h"
+#include "TTree.h"
+#include "TTreeFormula.h"
+#include <map>
 
-void MultiDraw(TTree *inTree, TTreeFormula *commonWeightFormula,
-               TObjArray *Formulae, TObjArray *Weights, TObjArray *Hists,
-               UInt_t ListLen) {
-  Long64_t i = 0, NumEvents = inTree->GetEntries();
+void MultiDraw(TTree *inTree, TObjArray *Formulae, TObjArray *Weights,
+               TObjArray *Hists, UInt_t ListLen) {
+  unsigned long i = 0;
+  unsigned long NumEvents = inTree->GetEntries();
 
-// Get an Element from an array
-#define EL(type, array, index) dynamic_cast<type *>(array->At(index))
+  std::vector<TTreeFormula *> v_vars(ListLen, nullptr);
+  std::vector<TTreeFormula *> v_weights(ListLen, nullptr);
+  std::vector<TH1D *> v_hists(ListLen, nullptr);
+  std::vector<TH2F *> v_hists2d(ListLen, nullptr);
 
-  Double_t Value = 0, Weight = 0, commonWeight = 0,
-           treeWeight = inTree->GetWeight();
+  std::vector<double> r_vars(ListLen, 0.);
+  std::vector<double> r_weights(ListLen, 0.);
+  std::vector<unsigned> i_vars(ListLen, 0);
+  std::vector<unsigned> i_weights(ListLen, 0);
+  std::map<std::string, unsigned> map_vars;
+  std::map<std::string, unsigned> map_weights;
+
+  bool optimize = true;
+  for (unsigned idx = 0; idx < ListLen; ++idx) {
+    if (optimize) {
+      auto const& itv = map_vars.find(Formulae->At(idx)->GetTitle());
+      if (itv == map_vars.end()) {
+        map_vars[Formulae->At(idx)->GetTitle()] = idx;
+        v_vars[idx] = static_cast<TTreeFormula *>(Formulae->At(idx));
+        i_vars[idx] = idx;
+      } else {
+        i_vars[idx] = itv->second;
+      }
+
+      auto const& itw = map_weights.find(Weights->At(idx)->GetTitle());
+      if (itw == map_weights.end()) {
+        map_weights[Weights->At(idx)->GetTitle()] = idx;
+        v_weights[idx] = static_cast<TTreeFormula *>(Weights->At(idx));
+        i_weights[idx] = idx;
+      } else {
+        i_weights[idx] = itw->second;
+      }
+    } else {
+      v_vars[idx] = static_cast<TTreeFormula *>(Formulae->At(idx));
+      i_vars[idx] = idx;
+      v_weights[idx] = static_cast<TTreeFormula *>(Weights->At(idx));
+      i_weights[idx] = idx;
+    }
+
+    v_hists[idx] = dynamic_cast<TH1D *>(Hists->At(idx));
+    v_hists2d[idx] = dynamic_cast<TH2F *>(Hists->At(idx));
+  }
+
+  double Value = 0.;
+  double Weight = 0.;
+  double commonWeight = 1.;
+  double treeWeight = inTree->GetWeight();
   Int_t TreeNumber = -1;
 
   TStopwatch s;
-
   for (i = 0; i < NumEvents; i++) {
     // Display progress every 20000 events
     if (i % 20000 == 0) {
@@ -29,7 +72,8 @@ void MultiDraw(TTree *inTree, TTreeFormula *commonWeightFormula,
             minutes = (Int_t)(seconds / 60.);
       seconds -= (Int_t)(minutes * 60.);
 
-      std::cout << "Done " << (double(i) / (double(NumEvents)) * 100.0f) << "% ";
+      std::cout << "Done " << (double(i) / (double(NumEvents)) * 100.0f)
+                << "% ";
       if (minutes) std::cout << minutes << " minutes ";
       std::cout << seconds << " seconds remain.                            \r";
 
@@ -44,25 +88,26 @@ void MultiDraw(TTree *inTree, TTreeFormula *commonWeightFormula,
 
     inTree->LoadTree(inTree->GetEntryNumber(i));
 
-    commonWeight = commonWeightFormula->EvalInstance();
-
-    // Skip events with 0 weight
-    if (!commonWeight) continue;
-
     commonWeight *= treeWeight;
 
-    for (UInt_t j = 0; j < ListLen; j++) {
-      // If the Value or the Weight is the same as the previous, then it can be
-      // re-used.
-      // In which case, this element fails to dynamic_cast to a formula, and
-      // evaluates to NULL
-      if (EL(TTreeFormula, Formulae, j))
-        Value = EL(TTreeFormula, Formulae, j)->EvalInstance();
-
-      if (EL(TTreeFormula, Weights, j))
-        Weight = EL(TTreeFormula, Weights, j)->EvalInstance() * commonWeight;
-
-      if (Weight) EL(TH1D, Hists, j)->Fill(Value, Weight);
+    for (unsigned j = 0; j < ListLen; j++) {
+      if (v_vars[j]) {
+        r_vars[j] = v_vars[j]->EvalInstance();
+      }
+      if (v_weights[j]) {
+        r_weights[j] = v_weights[j]->EvalInstance();
+      }
+      Value = r_vars[i_vars[j]];
+      Weight = r_weights[i_weights[j]] * commonWeight;
+      if (v_hists[j] && Weight) {
+        v_hists[j]->Fill(Value, Weight);
+      }
+      // If this is a 2D hist the current Value will be the x variable
+      // and the previous one (without a histogram in the array) is
+      // the y variable
+      if (v_hists2d[j] && j >= 1 && Weight) {
+        v_hists2d[j]->Fill(Value, r_vars[i_vars[j-1]], Weight);
+      }
     }
   }
 }

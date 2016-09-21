@@ -1,5 +1,6 @@
 <library file="*.cc" name="UserCodeICHiggsTauTauplugins">
   <use name="UserCode/ICHiggsTauTau"/>
+  <use name="DataFormats/PatCandidates"/>
   <use name="FWCore/ServiceRegistry"/>
   <use name="MagneticField/Records"/>
   <use name="MagneticField/Engine"/>

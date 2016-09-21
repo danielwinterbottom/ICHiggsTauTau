@@ -413,6 +413,8 @@ class HTTCategories : public ModuleBase {
   float jdphi_;
   unsigned gen_match_1_;
   unsigned gen_match_2_;
+  double gen_match_1_pt_;
+  double gen_match_2_pt_;
   /*double leading_lepton_match_pt_;
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;

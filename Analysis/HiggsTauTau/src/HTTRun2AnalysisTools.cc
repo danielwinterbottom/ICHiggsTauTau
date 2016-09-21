@@ -355,9 +355,12 @@ namespace ic {
 
       // SM Categories
       alias_map_["inclusive"]         = "1";
-     
-      alias_map_["baseline"]          =   "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+
+     // alias_map_["baseline"]          = "1";
+
+      alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"]  = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
 
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -572,7 +575,7 @@ namespace ic {
     if(year_.find("6")!=year_.npos){
       samples_alias_map_["vv_samples"] = {
        "T-tW", "Tbar-tW","Tbar-t","T-t",
-       "WWTo1L1Nu2Q",
+       "WWTo1L1Nu2Q","WZJToLLLNu",
        "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
        "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q"
       };
@@ -619,7 +622,7 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
    samples_alias_map_["ztt_shape_samples"]={
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
   }else if(!is_fall15_){
@@ -715,7 +718,7 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
    samples_alias_map_["ztt_samples"]={
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
    } else if(!is_fall15_){
@@ -762,11 +765,11 @@ namespace ic {
         };*/
   if(year_.find("6")!=year_.npos){
      samples_alias_map_["qcd_sub_samples"] = {
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
-      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
-        "T-tW", "Tbar-tW","Tbar-t",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO","ZZTo4L",
+        "T-tW","T-t","Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
-        "ZZTo2L2Q",
+        "ZZTo2L2Q","WZJToLLLNu",
         "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
         "TT",
         "WJetsToLNu-LO","W1JetsToLNu-LO","W2JetsToLNu-LO",
@@ -823,12 +826,13 @@ namespace ic {
    };
   if(year_.find("6")!=year_.npos){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL-LO",
+   "DYJetsToLL-LO-ext",
    "DY1JetsToLL-LO","DY2JetsToLL-LO",
    "DY3JetsToLL-LO","DY4JetsToLL-LO",
-   "T-tW", "Tbar-tW", "Tbar-t",
-   "WWTo1L1Nu2Q","VVTo2L2Nu",
-   "ZZTo2L2Q",
+   "DYJetsToLL_M-10-50-LO",
+   "T-tW", "Tbar-tW", "Tbar-t", "T-t",
+   "WWTo1L1Nu2Q","VVTo2L2Nu", "ZZTo4L",
+   "ZZTo2L2Q","WZJToLLLNu",
    "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT","WJetsToLNu-LO",
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
@@ -874,11 +878,11 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
     samples_alias_map_["w_sub_samples"] = {
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
-     "T-tW", "Tbar-tW", "Tbar-t",
-     "WWTo1L1Nu2Q","VVTo2L2Nu",
-     "ZZTo2L2Q",
+     "T-tW", "Tbar-tW", "Tbar-t","T-t",
+     "WWTo1L1Nu2Q","VVTo2L2Nu","ZZTo4L",
+     "ZZTo2L2Q","WZJToLLLNu",
      "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
      "TT"
      };
@@ -1235,7 +1239,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     cat += "&&" + alias_map_["baseline"];
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+    //std::string cat_nobtag = "n_jets <=1 && "+alias_map_["baseline"];
+    std::string cat_nobtag = "n_jets <=1 && n_lowpt_jets>=1 && "+alias_map_["baseline"];
     std::string w_extrap_cat = cat;
+    std::string w_extrap_cat_nobtag = cat_nobtag;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
     std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
@@ -1251,7 +1258,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     } else if(method == 12 || method == 13 || method == 14){
      w_norm = this->GetRateViaWOSSSMethod(wjets_samples, w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel_osss, w_sub_samples, !do_ss_, wt, ValueFnMap());
-    }
+    } else if(method == 16){
+     Value w_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, w_extrap_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
+        this->ResolveSamplesAlias("data_samples"),cat_nobtag, w_sdb_sel_osss,w_sub_samples,!do_ss_, wt, ValueFnMap());
+        std::string btag_extrap_sel;
+        btag_extrap_sel = do_ss_ ?  "!os && "+this->ResolveAlias("sel") : "os &&"+this->ResolveAlias("sel");
+        Value btag_norm = GetRate(wjets_samples, btag_extrap_sel, cat, wt);
+        Value nobtag_norm = GetRate(wjets_samples,btag_extrap_sel,cat_nobtag,wt);
+        Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+        if (verbosity_) PrintValue("ExtrapFactor into full b-tag definition",btag_extrap_factor);
+        w_norm = ValueProduct(w_norm_nobtag,btag_extrap_factor);
+   }
 
     std::string w_shape_cat = cat;
     if (method == 14) w_shape_cat = "n_jets<=1&&n_loose_bjets>=1&&"+alias_map_["baseline"];
@@ -1310,6 +1327,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
          }else if(method == 12 || method == 13 || method == 14){
           w_ss_norm = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel_osss, w_sub_samples, false, wt, ValueFnMap());
+         }else if(method==16){
+          //std::string qcd_cat_nobtag = "n_jets<=1 && "+alias_map_["baseline"];
+          std::string qcd_cat_nobtag = "n_jets<=1 && n_lowpt_jets>= 1 && "+alias_map_["baseline"];
+          Value w_ss_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
+             this->ResolveSamplesAlias("data_samples"),qcd_cat_nobtag, w_sdb_sel_osss,w_sub_samples,false, wt, ValueFnMap());
+         std::string os_sel_btag = "!os && " + this->ResolveAlias("sel");
+         Value btag_norm = GetRate(wjets_samples, os_sel_btag, qcd_cat, wt);
+         Value nobtag_norm = GetRate(wjets_samples,os_sel_btag,qcd_cat_nobtag,wt);
+         Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+         if (verbosity_) PrintValue("ExtrapFactor into full b-tag definition",btag_extrap_factor);
+         w_ss_norm = ValueProduct(btag_extrap_factor,w_ss_norm_nobtag);
         } else {
           w_ss_norm = std::make_pair(0.0,0.0);
         }
@@ -1325,7 +1353,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       if(ch_ != channel::tt){
         if(method == 8 || method == 9) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
-        } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14) {
+        } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14 || method == 16) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,//{
           wjets_ss_vals);
         } else if (method == 15 && !do_ss_){
@@ -1513,6 +1541,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     std::string ttt_sel, ttj_sel;
     ttt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
     ttj_sel = sel+"&&!"+this->ResolveAlias("ztt_sel");
+    if(ch_ == channel::zmm || ch_==channel::zee){
+      ttt_sel = "0";
+      ttj_sel = sel;
+    }
     auto topt_pair = this->GenerateTOP(method, var, ttt_sel, cat, wt);
     auto topj_pair = this->GenerateTOP(method, var, ttj_sel, cat, wt);
     PrintValue("TTT"+postfix, topt_pair.second);

@@ -326,6 +326,8 @@ namespace ic {
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
       outtree_->Branch("gen_match_1", &gen_match_1_);
       outtree_->Branch("gen_match_2", &gen_match_2_);
+      outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
+      outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
       outtree_->Branch("db_loose_1",&lbyLooseCombinedIsolation_1);
       outtree_->Branch("db_loose_2",&lbyLooseCombinedIsolation_2);
       outtree_->Branch("db_medium_1",&lbyMediumCombinedIsolation_1);
@@ -1242,6 +1244,8 @@ namespace ic {
     rho_ = eventInfo->jet_rho();
     if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+    if(event->Exists("gen_match_1_pt")) gen_match_1_pt_ = event->Get<double>("gen_match_1_pt");
+    if(event->Exists("gen_match_2_pt")) gen_match_2_pt_ = event->Get<double>("gen_match_2_pt");
     /*if(event->Exists("leading_lepton_match_pt")) leading_lepton_match_pt_ = event->Get<double>("leading_lepton_match_pt");
     if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
     if(event->Exists("leading_lepton_match_DR")) leading_lepton_match_DR_ = event->Get<double>("leading_lepton_match_DR");
@@ -1354,32 +1358,45 @@ namespace ic {
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
 
     //Sort out the loose (em,mt,et) or medium (tt) b-jets
-    if(channel_!= channel::tt){
-      ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
-    } else {
-      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) <btag_wp);
-      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) <btag_wp);
-    }
-
-
-    // Instead of changing b-tag value in the promote/demote method we look for a map of bools
-    // that say whether a jet should pass the WP or not
-    if (event->Exists("retag_result")) {
-      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-       if(channel_ != channel::tt){
-          ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
-          ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
-       } else {
-          ic::erase_if(loose_bjets, !boost::bind(IsReBTagged, _1, retag_result));
+    if(era_ != era::data_2016){
+      if(channel_!= channel::tt){
+        ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+      } else {
+        ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) <btag_wp);
+        ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) <btag_wp);
       }
-    } else{ 
-      if(channel_ != channel::tt){
+      // Instead of changing b-tag value in the promote/demote method we look for a map of bools
+      // that say whether a jet should pass the WP or not
+      if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+         if(channel_ != channel::tt ){
+            ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+            ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
+         } else {
+            ic::erase_if(loose_bjets, !boost::bind(IsReBTagged, _1, retag_result));
+        }
+      } else{ 
+        if(channel_ != channel::tt){
+          ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+          ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+        } else {
+          ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+        }
+      } 
+    } else {
+      ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
+      // Instead of changing b-tag value in the promote/demote method we look for a map of bools
+      // that say whether a jet should pass the WP or not
+      if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+        ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+        ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
+      } else{ 
         ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
         ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-      } else {
-        ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < loose_btag_wp);
-      }
-    } 
+      } 
+    }
+
     
     //Compare with btag shape reweighting:
     if(event->Exists("btag_evt_weight")){
@@ -1443,7 +1460,6 @@ namespace ic {
     if(event->Exists("leg2_trigger_obj_pt")) trigger_object_pt_2 = event->Get<double>("leg2_trigger_obj_pt");
     if(event->Exists("leg2_trigger_obj_eta")) trigger_object_eta_2 = event->Get<double>("leg2_trigger_obj_eta");
 */
-
     if (event->Exists("svfitMass")) {
       m_sv_ = event->Get<double>("svfitMass");
     } else {

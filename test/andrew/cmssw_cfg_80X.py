@@ -103,11 +103,13 @@ if release in ['80XMINIAOD']:
         src = cms.InputTag("slimmedTaus"),
         cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFindingNewDMs") > 0.5')
         )
+    process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 
 process.icSelectionSequence = cms.Sequence(
     process.selectedElectrons+
     process.selectedMuons+
-    process.selectedTaus
+    process.selectedTaus+
+    process.unpackedTracksAndVertices
 )
 
 
@@ -502,17 +504,30 @@ process.icTauProducer = producers.icTauProducer.clone(
 )
 
 if release in ['80XMINIAOD']:
-  process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
-      branch          = cms.string("taus"),
-      input           = cms.InputTag("selectedTaus"),
-      inputVertices   = vtxLabel,
-      includeVertexIP = cms.bool(True),
-      requestTracks   = cms.bool(False),
-      tauIDs          = cms.PSet()
+  process.icTauProducer = producers.icTauFromPatProducer.clone(
+      branch              = cms.string("taus"),
+      input               = cms.InputTag("selectedTaus"),
+      inputVertices       = vtxLabel,
+      includeVertexIP     = cms.bool(True),
+      includeTotalCharged = cms.bool(True),
+      totalChargedLabel   = cms.string('totalCharged'),
+      requestPFCandidates   = cms.bool(True),
+      inputPFCandidates     = cms.InputTag("packedPFCandidates"),
+      isSlimmed             = cms.bool(True)
+  )
+
+
+process.icPFProducer = producers.icPFFromPackedProducer.clone(
+    branch              = cms.string("pfCandidates"),
+    input               = cms.InputTag("icTauProducer", "requestedPFCandidates"),
+    requestTracks       = cms.bool(True),
+    requestGsfTracks    = cms.bool(False),
+    inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
   )
 
 process.icTauSequence = cms.Sequence(
-    process.icTauProducer
+    process.icTauProducer+
+    process.icPFProducer
 )
 
 
@@ -637,6 +652,35 @@ process.icMetSequence += cms.Sequence(
 process.MVAMET.debug = cms.bool(False)
 
 ################################################################
+# Tracks
+################################################################
+process.icTrackSequence = cms.Sequence()
+
+
+process.selectedTracks = cms.EDFilter("TrackRefSelector",
+ src = cms.InputTag("unpackedTracksAndVertices"),
+ cut = cms.string("pt > 10")
+)
+
+process.mergeTracks = cms.EDProducer("ICTrackMerger",
+    merge = cms.VInputTag(
+        cms.InputTag('selectedTracks'),
+        cms.InputTag('icPFProducer', 'requestedTracks')
+        )
+)
+
+process.icTrackProducer = producers.icTrackProducer.clone(
+ branch = cms.string("tracks"),
+ input  = cms.InputTag("mergeTracks")
+)
+
+process.icTrackSequence += cms.Sequence(
+    process.selectedTracks+
+    process.mergeTracks+
+    process.icTrackProducer
+)
+
+################################################################
 # Triggers
 ################################################################
 
@@ -698,10 +742,8 @@ paths_2016_full = [
     'HLT_VLooseIsoPFTau120_Trk50_eta2p1_v',
     'HLT_VLooseIsoPFTau140_Trk50_eta2p1_v',
     'HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v',
-    'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-    'HLT_Mu17_TrkIsoVVL_v',
-    'HLT_Mu8_TrkIsoVVL_v',
-    'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v'
+    'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v',
+    'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v'
 ]
 
 paths_2016_reduced_muon = [
@@ -710,16 +752,14 @@ paths_2016_reduced_muon = [
     'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v',
     'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v',
     'HLT_IsoMu21_eta2p1_MediumIsoPFTau32_Trk1_eta2p1_Reg_v',
-    'HLT_Mu17_TrkIsoVVL_v',
-    'HLT_Mu8_TrkIsoVVL_v'
+    'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v'
 ]
 paths_2016_reduced_elec = [
     'HLT_Ele25_eta2p1_WPTight_Gsf_v',
     'HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v',
     'HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v',
     'HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v',
-    'HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-    'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v'
+    'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v'
 ]
 paths_2016_reduced_tau = [
     'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v',
@@ -813,10 +853,12 @@ if not isData:
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadPFMuonFilter.taggingMode = cms.bool(True)
 
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 
 process.icMETFilterSequence = cms.Sequence(
     process.BadPFMuonFilter+
@@ -867,6 +909,7 @@ process.p = cms.Path(
     process.icTauSequence+
     process.icPFJetSequence+
     process.icMetSequence+
+    process.icTrackSequence+
     process.icTriggerObjectSequence+
     process.icGenSequence+
     process.icMETFilterSequence+

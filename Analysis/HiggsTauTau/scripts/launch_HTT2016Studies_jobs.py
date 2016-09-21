@@ -12,8 +12,8 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
 MAX_EVTS = -1
-FILES_PER_JOB = 100
-PROD='July19_'
+FILES_PER_JOB = 40
+PROD='Aug16_'
 
 DATA_SAMPLES = {
   'Tau': [
@@ -53,23 +53,36 @@ MC_SAMPLES = {
     'WZTo1L3Nu':            ['WZTo1L3Nu'],
     'WZTo2L2Q':             ['WZTo2L2Q'],
     'ZZTo2L2Q':             ['ZZTo2L2Q'],
-    'ZZTo4L':               ['ZZTo4L']
+    'ZZTo4L':               ['ZZTo4L'],
+    'WJetsToLNu':           ['WJetsToLNu']
 }
 
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'EffectiveEvents']
+SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
+#SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
+#SEQUENCES = ['HashMap']
+
+if 'HashMap' in SEQUENCES:
+  FILES_PER_JOB = 1E6
+
 WHITELIST = {
     'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmmTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'Zee': ['SingleElectron'] + list(MC_SAMPLES.keys()),
     'ZeeTP': ['SingleElectron'] + list(MC_SAMPLES.keys()),
-    'EffectiveEvents': list(MC_SAMPLES.keys())
+    'ZmtTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
+    'ZmtTP/scale_t_hi': list(MC_SAMPLES.keys()),
+    'ZmtTP/scale_t_lo': list(MC_SAMPLES.keys()),
+    'EffectiveEvents': list(MC_SAMPLES.keys()),
+    'HashMap': list(DATA_SAMPLES.keys())
 }
 
 OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name
 os.system('mkdir -p %s' % OUTPUT)
+for seq in SEQUENCES:
+    os.system('mkdir -p %s/%s' % (OUTPUT, seq))
 
 task = job_mgr.task_name
 
@@ -89,7 +102,8 @@ for sa in SAMPLES:
     filelists = ['filelists/%s%s.dat' % (PROD, X) for X in SAMPLES[sa]]
     cfg = {
         # General settings
-        'output': '%s/%s.root' % (OUTPUT, sa),
+        'output_dir': '%s' % (OUTPUT),
+        'output_name': '%s.root' % (sa),
         'filelists': filelists,
         'max_events': MAX_EVTS,
         'is_data': sa in DATA_SAMPLES.keys(),
@@ -99,6 +113,7 @@ for sa in SAMPLES:
         'lumi_out': '%s/lumi_%s' % (OUTPUT, sa),
         # Pileup weights
         'data_pu': 'input/pileup/Data_Pileup_2016_69p2mb_Cert_271036-276811.root:pileup',
+        'data_pu_hi': 'input/pileup/Data_Pileup_2016_80mb_Cert_271036-276811.root:pileup',
         'mc_pu': 'input/pileup/MC_Spring16_PU25ns_V1.root:pileup',
         # Hash map settings
         'hash_map_mode': 0,
@@ -107,12 +122,15 @@ for sa in SAMPLES:
         # Trigger info settings
         'trigger_info_output': '%s/trigger_info_%s.json' % (OUTPUT, sa),
         # Scale factors workspace
-        'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root'
+        'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root',
+        # ZmtTP decay mode selection
+        'ZmtTP_tauDM': 'decayModeFinding'
+        #'ZmtTP_tauDM': 'decayModeFindingNewDMs'
     }
     job_mgr.add_filelist_split_jobs(
         prog=basedir+'/bin/HTT2016Studies',
         cfg=cfg,
         files_per_job=FILES_PER_JOB,
-        output_cfgs=['output', 'lumi_out', 'trigger_info_output'])
+        output_cfgs=['output_name', 'lumi_out', 'trigger_info_output'])
     job_mgr.task_name = task + '-' + sa
     job_mgr.flush_queue()
