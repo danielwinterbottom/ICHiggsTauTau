@@ -43,17 +43,19 @@ namespace ic {
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("os",          &os);
       outtree_->Branch("pt_1",        &pt_1);
-      outtree_->Branch("mvamet_et",   &mvamet_et);
       outtree_->Branch("eta_1",       &eta_1);
       outtree_->Branch("phi_1",       &phi_1);
       outtree_->Branch("iso_1",       &iso_1);
+      outtree_->Branch("gen_1",       &gen_1);
       outtree_->Branch("pt_2",        &pt_2);
       outtree_->Branch("eta_2",       &eta_2);
       outtree_->Branch("phi_2",       &phi_2);
       outtree_->Branch("iso_2",       &iso_2);
+      outtree_->Branch("gen_2",       &gen_2);
       outtree_->Branch("m_ll",        &m_ll);
       outtree_->Branch("pt_ll",       &pt_ll);
       outtree_->Branch("dr_ll",       &dr_ll);
+      outtree_->Branch("mvamet_et",   &mvamet_et);
       outtree_->Branch("trg_IsoMu22",       &trg_IsoMu22);
       outtree_->Branch("trg_IsoTkMu22",     &trg_IsoTkMu22);
     }
@@ -83,19 +85,29 @@ namespace ic {
     auto pairs = event->GetPtrVec<CompositeCandidate>("dimuon");
     auto info = event->GetPtr<EventInfo>("eventInfo");
 
-    // Take the pair closest to the Z mass
-    std::sort(pairs.begin(), pairs.end(), [=](CompositeCandidate *c1, CompositeCandidate *c2) {
-      return std::fabs(c1->M() - 91.1876) < std::fabs(c2->M() - 91.1876);
-    });
+    // // Take the pair closest to the Z mass
+    // std::sort(pairs.begin(), pairs.end(), [=](CompositeCandidate *c1, CompositeCandidate *c2) {
+    //   return std::fabs(c1->M() - 91.1876) < std::fabs(c2->M() - 91.1876);
+    // });
     auto const* pair = pairs.at(0);
 
     // Sort the pair by descending pT
-    std::vector<Candidate *> leptons = pair->AsVector();
-    std::sort(leptons.begin(), leptons.end(),
-        bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    if (pair->at(0)->pt() < pair->at(1)->pt()) {
+      std::cout << "Something has gone wrong here!\n";
+    }
+    // std::vector<Candidate *> leptons = pair->AsVector();
+    // std::sort(leptons.begin(), leptons.end(),
+    //     bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
-    Muon const* lep_1 = dynamic_cast<Muon const*>(leptons[0]);
-    Muon const* lep_2 = dynamic_cast<Muon const*>(leptons[1]);
+    Muon const* lep_1 = dynamic_cast<Muon const*>(pair->at(0));
+    Muon const* lep_2 = dynamic_cast<Muon const*>(pair->at(1));
+
+    gen_1 = 0;
+    gen_2 = 0;
+    if (!info->is_data()) {
+      gen_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+      gen_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+    }
 
     // Get the MVA MET so we can calculate MT
     Met *mva_met = nullptr;
@@ -1184,5 +1196,20 @@ namespace ic {
       }
     }
     return gen_boson;
+  }
+
+  bool SortMM(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+    Muon const* m1c1 = static_cast<Muon const*>(c1->At(0));
+    Muon const* m1c2 = static_cast<Muon const*>(c2->At(0));
+    Muon const* m2c1 = static_cast<Muon const*>(c1->At(1));
+    Muon const* m2c2 = static_cast<Muon const*>(c2->At(1));
+    double c1min = std::min(PF04IsolationVal(m1c1, 0.5), PF04IsolationVal(m2c1, 0.5));
+    double c1max = std::max(PF04IsolationVal(m1c1, 0.5), PF04IsolationVal(m2c1, 0.5));
+    double c2min = std::min(PF04IsolationVal(m1c2, 0.5), PF04IsolationVal(m2c2, 0.5));
+    double c2max = std::max(PF04IsolationVal(m1c2, 0.5), PF04IsolationVal(m2c2, 0.5));
+    if (c1min != c2min) return c1min < c2min;
+    if (c1max != c2max) return c1max < c2max;
+    if (m1c1->pt() != m1c2->pt()) return m1c1->pt() > m1c2->pt();
+    return m2c1->pt() > m2c2->pt();
   }
 }

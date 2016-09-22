@@ -97,7 +97,7 @@ for x in ['', '1', '2', '3', '4']:
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm']
+SEQUENCES = ['DYDebug']
 #SEQUENCES = ['SM_et', 'SM_mt', 'SM_em', 'SM_tt']
 # SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
 #SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
@@ -114,6 +114,19 @@ if SEQUENCES == ['EffectiveEvents']:
   SAMPLES = actual_samples
   FILES_PER_JOB = 100
 
+if SEQUENCES == ['DYDebug']:
+    SAMPLES = {
+        'DYJetsToLL':       ['DYJetsToLL'],
+        'DYJetsToLL-Old':   ['DYJetsToLL-Old'],
+        'DY1JetsToLL':      ['DY1JetsToLL'],
+        'DY2JetsToLL':      ['DY2JetsToLL'],
+        'DY3JetsToLL':      ['DY3JetsToLL'],
+        'DY4JetsToLL':      ['DY4JetsToLL']
+    }
+    for key in SAMPLES:
+        SAMPLE_CFG[key] = SAMPLE_CFG['DYJetsToLLSoup']
+
+
 WHITELIST = {
     'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmmTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
@@ -127,7 +140,8 @@ WHITELIST = {
     'SM_em': ['MuonEG'] + list(MC_SAMPLES.keys()),
     'SM_tt': ['Tau'] + list(MC_SAMPLES.keys()),
     'EffectiveEvents': list(SAMPLES.keys()),
-    'HashMap': list(DATA_SAMPLES.keys())
+    'HashMap': list(DATA_SAMPLES.keys()),
+    'DYDebug': list(SAMPLES.keys())
 }
 
 OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name

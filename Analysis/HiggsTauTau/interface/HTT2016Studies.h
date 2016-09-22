@@ -27,6 +27,7 @@ union ui64 {
 std::set<int16_t> GetTriggerTypes(ic::TriggerObject* obj);
 
 bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
+bool SortMM(CompositeCandidate const* c1, CompositeCandidate const* c2);
 
 void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift);
 
@@ -63,11 +64,13 @@ class ZmmTreeProducer : public ModuleBase {
   float eta_1;
   float phi_1;
   float iso_1;
+  int gen_1;
 
   float pt_2;
   float eta_2;
   float phi_2;
   float iso_2;
+  int gen_2;
 
   float m_ll;
   float pt_ll;

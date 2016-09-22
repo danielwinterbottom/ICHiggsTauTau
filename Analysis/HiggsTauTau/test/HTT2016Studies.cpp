@@ -23,6 +23,7 @@
 #include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/SampleStitching.h"
+#include "HiggsTauTau/interface/HTTPairGenInfo.h"
 
 
 using std::string;
@@ -188,6 +189,21 @@ int main(int argc, char* argv[]) {
       seq.InsertSequence("EffectiveEvents", analysis);
     }
 
+    if (fullseqn == "DYDebug") {
+      auto & seq = seqs["DYDebug"];
+      if (js.get("do_dyjets_stitching", false).asBool()) {
+        auto jss = js["dyjets_stitching"];
+        seq.BuildModule(ic::DYJetsStitching("DYJetsStitching")
+          .Set_DYJetsToLL(jss["evt_DYJetsToLL"].asUInt(), jss["xs_DYJetsToLL"].asDouble())
+          .Set_DY1JetsToLL(jss["evt_DY1JetsToLL"].asUInt(), jss["xs_DY1JetsToLL"].asDouble())
+          .Set_DY2JetsToLL(jss["evt_DY2JetsToLL"].asUInt(), jss["xs_DY2JetsToLL"].asDouble())
+          .Set_DY3JetsToLL(jss["evt_DY3JetsToLL"].asUInt(), jss["xs_DY3JetsToLL"].asDouble())
+          .Set_DY4JetsToLL(jss["evt_DY4JetsToLL"].asUInt(), jss["xs_DY4JetsToLL"].asDouble())
+          .set_fs(fs.at("DYDebug").get()));
+      }
+      seq.InsertSequence("DYDebug", analysis);
+    }
+
     if (fullseqn == "Zmm") {
       auto & seq = seqs["Zmm"];
 
@@ -204,8 +220,9 @@ int main(int argc, char* argv[]) {
                 MuonMediumHIPsafe(m);
       }));
 
-      seq.BuildModule(ic::OneCollCompositeProducer<ic::Muon>("ZMMPairProducer")
-          .set_input_label("sel_muons")
+      seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Muon>("ZMMPairProducer")
+          .set_input_label_first("sel_muons")
+          .set_input_label_second("sel_muons")
           .set_candidate_name_first("lepton1")
           .set_candidate_name_second("lepton2")
           .set_output_label("dimuon")
@@ -221,8 +238,21 @@ int main(int argc, char* argv[]) {
           })
       );
 
+      seq.BuildModule(ic::GenericModule("PairSorter")
+          .set_function(
+            [](ic::TreeEvent * evt) {
+              auto & pairs = evt->GetPtrVec<ic::CompositeCandidate>("dimuon");
+              std::sort(pairs.begin(), pairs.end(), ic::SortMM);
+              return 0;
+            }
+        ));
+
+
       // At this point we're done filtering, can calculate other things we nedd
       if (!is_data) {
+        seq.BuildModule(ic::HTTPairGenInfo("PairGenInfo")
+            .set_ditau_label("dimuon")
+        );
         seq.BuildModule(puweight_module);
       } else {
         seq.BuildModule(lumimask_module);
