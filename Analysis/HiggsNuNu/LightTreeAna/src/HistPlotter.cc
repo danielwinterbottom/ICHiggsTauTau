@@ -310,6 +310,7 @@ namespace ic{
       if (tothisto){
 	for (int iB(1);iB<tothisto->GetNbinsX()+1;++iB){
 	  tothisto->SetBinError(iB,toterror_*tothisto->GetBinContent(iB));
+          std::cout << " ---- DEBUG bin " << iB << " bin content: " << tothisto->GetBinContent(iB) << " error: " << tothisto->GetBinError(iB) << std::endl;
 	}
       }
 
@@ -636,15 +637,13 @@ namespace ic{
 	  }
 	  ratio->GetYaxis()->SetRangeUser(0,ratiomax);
 	  ratio->SetTitle("");
-	  ratio->GetYaxis()->SetTitle("Data/Bkg");
-	  ratio->GetYaxis()->SetTitleSize(0.19);
-	  ratio->Divide(den);
-	  
-
-	  gStyle->SetOptStat(0);
+          ratio->GetYaxis()->SetTitle("Data/Bkg");
+          ratio->GetYaxis()->SetTitleSize(0.19);
+          ratio->Divide(den);
+          
+          // This caused crash in the plots generation for the QCD CR; action -> line commented since already present at line 92
+	  //gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
-
-
 
 	  errorband->SetMarkerSize(0);
 	  errorband->SetFillColor(16);
@@ -673,9 +672,9 @@ namespace ic{
 	    //ratio->Fit("pol0","E");
 	    averageLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),Integral(num)/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),Integral(num)/Integral(den));
 	    averageupLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),(Integral(num)+sqrt(Integral(num)))/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),(Integral(num)+sqrt(Integral(num)))/Integral(den));
-	    averagedownLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),(Integral(num)-sqrt(Integral(num)))/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),(Integral(num)-sqrt(Integral(num)))/Integral(den));
+            averagedownLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),(Integral(num)-sqrt(Integral(num)))/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),(Integral(num)-sqrt(Integral(num)))/Integral(den));
 	    averageLine->SetLineColor(2);
-	    averageupLine->SetLineColor(3);
+            averageupLine->SetLineColor(3);
 	    averagedownLine->SetLineColor(3);
 	    averageupLine->SetLineStyle(3);
 	    averagedownLine->SetLineStyle(3);
