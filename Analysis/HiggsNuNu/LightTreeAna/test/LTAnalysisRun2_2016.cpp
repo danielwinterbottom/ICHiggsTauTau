@@ -43,7 +43,10 @@ double deltaRmin(double eta1,double phi1,double eta2,double phi2,double eta3,dou
   return std::min(deltaR(eta1,phi1,eta3,phi3),deltaR(eta2,phi2,eta3,phi3));
 };
 
-double getPostFitSF(std::string channel, std::string process){  return 1; // to be removed after test
+double getPostFitSF(std::string channel, std::string process){  
+  
+  if (process=="error") return -1; // to be removed after test
+  else return 1; // to be removed after test
 
   if (channel=="enu"){
     if (process=="wewk") return 7.824/7.31107;

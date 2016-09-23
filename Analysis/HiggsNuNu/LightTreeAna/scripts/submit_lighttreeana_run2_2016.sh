@@ -1,6 +1,6 @@
 #!/bin/sh
 DOCERN=0
-DOSUBMIT=0
+DOSUBMIT=1
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -26,9 +26,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_160801_with6fbTrigEff_DEBUG
+JOBDIRPREFIX=jobs_run2ana_160801_with6fbTrigEff
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_160801_with6fbTrigEff_DEBUG
+OUTPUTPREFIX=output_run2ana_160801_with6fbTrigEff
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -72,22 +72,22 @@ for syst in "" #PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOW
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in enu #munu taunu mumu qcd nunu #qcd #enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in enu munu taunu mumu qcd nunu #qcd #enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     #executable expect strings separated by "!"
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
     ## To produce all of the hist
-    ###################################################HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    ###################################################SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
     ## To test for one hist
     #HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events"
     #SHAPESTRING="metnomuons(25,200.,600.)"
-    HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events!;Forward tag jet #eta;Events"
-    SHAPESTRING="metnomuons(25,200.,600.)!forward_tag_eta(25,-5.,5.)"
+    #HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events!;Forward tag jet #eta;Events"
+    #SHAPESTRING="metnomuons(25,200.,600.)!forward_tag_eta(25,-5.,5.)"
     #HISTSTRING=";#Delta#phi(E_{T,no-#mu}^{miss},j);Events"
     #SHAPESTRING="alljetsmetnomu_mindphi(14,2.3,3.1416)"
     echo "Making histograms: " $SHAPESTRING

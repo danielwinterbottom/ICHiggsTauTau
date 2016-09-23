@@ -306,8 +306,8 @@ namespace ic{
       stacksdir->cd();
       stack->Write();
 
-      //set total error
-      if (tothisto){
+      //set total error // There was a bug here, producing error bars on MC on the same size of the yield
+      if (tothisto && toterror_>0){
 	for (int iB(1);iB<tothisto->GetNbinsX()+1;++iB){
 	  tothisto->SetBinError(iB,toterror_*tothisto->GetBinContent(iB));
           std::cout << " ---- DEBUG bin " << iB << " bin content: " << tothisto->GetBinContent(iB) << " error: " << tothisto->GetBinError(iB) << std::endl;
@@ -721,6 +721,7 @@ namespace ic{
       //c1->Update();
       std::ostringstream lsave;
       std::ostringstream lsavepng;
+      std::ostringstream lsavec;
       std::string tmpstr = file->GetName();
       tmpstr.erase(std::string(file->GetName()).find(".root"),5);
       tmpstr=tmpstr+outsuffix_;
@@ -732,14 +733,14 @@ namespace ic{
       	c1->Print( lsave.str().c_str() );//open the file
       	lsave.str("");//reset for adding the first plot
       	lsave << tmpstr ;
-	if (shapes_[iShape].dology()) lsave << "_logy";
+        if (shapes_[iShape].dology()) lsave << "_logy";
       	lsave << ".pdf" ;
       }
 
       std::cout << " -- iShape " << iShape << std::endl;
       std::cout << " -- Address of c1 "<< &c1 << std::endl;
       std::cout << " -- Address of lsave "<< lsave.str() << std::endl;
-      c1->SaveAs( lsave.str().c_str() );
+      c1->Print( lsave.str().c_str() );
       if (iShape==shapes_.size()-1) {
       	lsave << "]";
       	c1->Print(lsave.str().c_str());//close the file
@@ -755,11 +756,12 @@ namespace ic{
       if (shapes_[iShape].dology()) lsavepng << "_logy";
       lsavepng << ".png" ;
       c1->Print((lsavepng.str()).c_str());
-      lsavepng.str("");
-      lsavepng << tmpstr << "_" << c1->GetName();
-      if (shapes_[iShape].dology()) lsavepng << "_logy";
-      lsavepng << ".C" ;
-      c1->Print((lsavepng.str()).c_str());
+      
+      lsavec.str("");
+      lsavec << tmpstr << "_" << c1->GetName();
+      if (shapes_[iShape].dology()) lsavec << "_logy";
+      lsavec << ".C" ;
+      c1->Print((lsavec.str()).c_str());
 
       //WRITE TO FILE
       writedir->cd();
