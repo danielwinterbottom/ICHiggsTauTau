@@ -60,6 +60,8 @@ namespace ic {
       outtree_->Branch("trg_IsoTkMu22",     &trg_IsoTkMu22);
       outtree_->Branch("e_veto",       &e_veto);
       outtree_->Branch("m_veto",       &m_veto);
+      outtree_->Branch("n_jets",       &n_jets);
+      outtree_->Branch("n_bjets",      &n_bjets);
     }
 
     TFile f(sf_workspace_.c_str());
@@ -220,6 +222,22 @@ namespace ic {
 
     e_veto = event->Get<bool>("extra_elec_veto");
     m_veto = event->Get<bool>("extra_muon_veto");
+
+    auto jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+    ic::keep_if(jets, [&](PFJet * j) {
+      return ic::MinDRToCollection(j, pair->AsVector(), 0.5);
+    });
+    auto bjets = jets;
+    ic::keep_if(jets, [&](PFJet *j) {
+      return MinPtMaxEta(j, 30., 4.7);
+    });
+    ic::keep_if(bjets, [&](PFJet* j) {
+      return MinPtMaxEta(j, 20., 2.4) &&
+             j->GetBDiscriminator(
+                 "pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+    });
+    n_jets = jets.size();
+    n_bjets = bjets.size();
 
     outtree_->Fill();
     return 0;

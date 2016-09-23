@@ -82,6 +82,9 @@ class ZmmTreeProducer : public ModuleBase {
   bool e_veto;
   bool m_veto;
 
+  int n_jets;
+  int n_bjets;
+
  public:
   ZmmTreeProducer(std::string const& name);
   virtual ~ZmmTreeProducer();

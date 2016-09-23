@@ -241,7 +241,7 @@ int main(int argc, char* argv[]) {
           .set_min(1)
           .set_predicate([=](ic::CompositeCandidate const* c) {
             return DeltaR(c->at(0)->vector(), c->at(1)->vector())
-                > 0.5;
+                > 0.3;
           })
       );
 
@@ -320,6 +320,13 @@ int main(int argc, char* argv[]) {
                   fabs(e->dz_vertex())    < 0.2     &&
                   ElectronHTTIdSpring15(e, true)    &&
                   PF03IsolationVal(e, 0.5,0) < 0.3;
+        })
+      );
+
+      seq.BuildModule(ic::SimpleFilter<ic::PFJet>("JetIDFilter")
+        .set_input_label("ak4PFJetsCHS")
+        .set_predicate([](ic::PFJet const* j) {
+          return PFJetID2016(j);
         })
       );
 
