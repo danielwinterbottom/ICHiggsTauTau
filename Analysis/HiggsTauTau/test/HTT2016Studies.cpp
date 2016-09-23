@@ -24,12 +24,11 @@
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/SampleStitching.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
-
+#include "HiggsTauTau/interface/HTTFilter.h"
 
 using std::string;
 using std::vector;
 using std::set;
-
 
 // Stolen from:
 // http://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c
@@ -204,8 +203,16 @@ int main(int argc, char* argv[]) {
       seq.InsertSequence("DYDebug", analysis);
     }
 
-    if (fullseqn == "Zmm") {
-      auto & seq = seqs["Zmm"];
+    if (seqn == "Zmm") {
+      auto & seq = seqs[fullseqn];
+
+      double mu_es_shift = 1.00;
+      if (subseqn == "scale_m_lo") mu_es_shift = 0.99;
+      if (subseqn == "scale_m_hi") mu_es_shift = 1.01;
+      seq.BuildModule(ic::EnergyShifter<ic::Muon>("MuonEnergyScale")
+        .set_input_label("muons")
+        .set_shift(mu_es_shift)
+        .set_save_shifts(true));
 
       seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToSelectedMuons",
           "muons", "sel_muons"));
@@ -278,13 +285,51 @@ int main(int argc, char* argv[]) {
           .Set_W4JetsToLNu(jss["evt_W4JetsToLNu"].asUInt(), jss["xs_W4JetsToLNu"].asDouble()));
       }
 
+      seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToExtraMuons",
+          "muons", "extra_muons"));
+
+      seq.BuildModule(ic::HTTFilter<ic::Muon>("ExtraMuonFilter")
+        .set_input_label("extra_muons")
+        .set_veto_name("extra_muon_veto")
+        .set_min(0)
+        .set_max(2)
+        .set_no_filter(true)
+        .set_predicate([](ic::Muon const* m) {
+          return  m->pt()                 > 10.    &&
+                  fabs(m->eta())          < 2.4    &&
+                  fabs(m->dxy_vertex())   < 0.045  &&
+                  fabs(m->dz_vertex())    < 0.2    &&
+                  MuonMediumHIPsafe(m)             &&
+                  PF04IsolationVal(m, 0.5, 0) < 0.3;
+        })
+      );
+
+      seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToExtraElecs",
+          "electrons", "extra_elecs"));
+
+      seq.BuildModule(ic::HTTFilter<ic::Electron>("ExtraElecFilter")
+        .set_input_label("extra_elecs")
+        .set_veto_name("extra_elec_veto")
+        .set_min(0)
+        .set_max(0)
+        .set_no_filter(true)
+        .set_predicate([](ic::Electron const* e) {
+          return  e->pt()                 > 10.     &&
+                  fabs(e->eta())          < 2.5     &&
+                  fabs(e->dxy_vertex())   < 0.045   &&
+                  fabs(e->dz_vertex())    < 0.2     &&
+                  ElectronHTTIdSpring15(e, true)    &&
+                  PF03IsolationVal(e, 0.5,0) < 0.3;
+        })
+      );
+
       seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")
-        .set_fs(fs.at("Zmm").get())
+        .set_fs(fs.at(fullseqn).get())
         .set_sf_workspace(sf_wsp)
         .set_do_zpt_reweighting(do_zpt_reweighting)
         .set_do_top_reweighting(do_top_reweighting)
       );
-      seq.InsertSequence("Zmm", analysis);
+      seq.InsertSequence(fullseqn, analysis);
     }
 
     if (fullseqn == "Zee") {

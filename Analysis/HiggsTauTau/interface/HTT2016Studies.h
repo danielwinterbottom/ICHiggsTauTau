@@ -79,6 +79,9 @@ class ZmmTreeProducer : public ModuleBase {
   bool trg_IsoMu22;
   bool trg_IsoTkMu22;
 
+  bool e_veto;
+  bool m_veto;
+
  public:
   ZmmTreeProducer(std::string const& name);
   virtual ~ZmmTreeProducer();

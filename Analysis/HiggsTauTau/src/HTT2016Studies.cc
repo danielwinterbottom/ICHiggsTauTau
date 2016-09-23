@@ -58,6 +58,8 @@ namespace ic {
       outtree_->Branch("mvamet_et",   &mvamet_et);
       outtree_->Branch("trg_IsoMu22",       &trg_IsoMu22);
       outtree_->Branch("trg_IsoTkMu22",     &trg_IsoTkMu22);
+      outtree_->Branch("e_veto",       &e_veto);
+      outtree_->Branch("m_veto",       &m_veto);
     }
 
     TFile f(sf_workspace_.c_str());
@@ -127,6 +129,11 @@ namespace ic {
     } else {
       throw::std::runtime_error("Could not find MVA MET!");
     };
+
+    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    auto const& mu_es_shifts = event->Get<map_id_vec>("shifts_MuonEnergyScale");
+    CorrectMETForShift(mva_met, mu_es_shifts.at(lep_1->id()));
+    CorrectMETForShift(mva_met, mu_es_shifts.at(lep_2->id()));
 
     mvamet_et = mva_met->pt();
 
@@ -210,6 +217,9 @@ namespace ic {
       auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
       wt_top = TopQuarkPtWeight(parts);
     }
+
+    e_veto = event->Get<bool>("extra_elec_veto");
+    m_veto = event->Get<bool>("extra_muon_veto");
 
     outtree_->Fill();
     return 0;

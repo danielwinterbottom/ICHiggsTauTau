@@ -97,7 +97,7 @@ for x in ['', '1', '2', '3', '4']:
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['DYDebug']
+SEQUENCES = ['Zmm', 'Zmm/scale_m_hi', 'Zmm/scale_m_lo']
 #SEQUENCES = ['SM_et', 'SM_mt', 'SM_em', 'SM_tt']
 # SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
 #SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
@@ -128,6 +128,9 @@ if SEQUENCES == ['DYDebug']:
 
 
 WHITELIST = {
+    'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
+    'Zmm/scale_m_hi': list(MC_SAMPLES.keys()),
+    'Zmm/scale_m_lo': list(MC_SAMPLES.keys()),
     'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmmTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'Zee': ['SingleElectron'] + list(MC_SAMPLES.keys()),
@@ -187,7 +190,7 @@ for sa in SAMPLES:
         # Trigger info settings
         'trigger_info_output': '%s/trigger_info_%s.json' % (OUTPUT, sa),
         # Scale factors workspace
-        'sf_wsp': 'input/scale_factors/htt_scalefactors_v4.root',
+        'sf_wsp': 'input/scale_factors/htt_scalefactors_v5.root',
         # ZmtTP decay mode selection
         'ZmtTP_tauDM': 'decayModeFinding',
         #'ZmtTP_tauDM': 'decayModeFindingNewDMs',
