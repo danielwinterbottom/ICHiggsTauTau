@@ -104,8 +104,8 @@ for scale in scale_list:
   if scale == "default":
     flatjsonlist.append("^%(scale)s"%vars())
     flatjsonlistdysig.append("^%(scale)s"%vars())
-  elif scale == "scale_t":
-    flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
+#  elif scale == "scale_t":
+#    flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
   else:
     flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
     flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
@@ -291,9 +291,10 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    'DYJetsToLL-LO',
+    #'DYJetsToLL-LO',
+    'DYJetsToLL-LO-ext',
     'DYJetsToLL_M-10-50-LO',
-    'DYJetsToLL_M-150-LO',
+    #'DYJetsToLL_M-150-LO',
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',

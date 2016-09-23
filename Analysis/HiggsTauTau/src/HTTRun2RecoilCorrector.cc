@@ -46,7 +46,10 @@ namespace ic {
     if (strategy_ ==strategy::fall15){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
       syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
-    }else{
+    } else if (strategy_ == strategy::mssmspring16){
+      process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD.root";
+      syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root"; //2015 file, systs not available for 2016 yet!
+    } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;
     }

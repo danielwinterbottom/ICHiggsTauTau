@@ -125,7 +125,8 @@ namespace ic {
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
         antimu_pass = tau->GetTauID("againstMuonTight3");
-        if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+        if(era_ == era::data_2015 && iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
+        if(era_ == era::data_2016 && iso_1<0.15&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
     }
     if(channel_ == channel::em) { 
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -136,7 +137,8 @@ namespace ic {
         if(era_ != era::data_2016){
           iso_2 = PF03IsolationVal(muon, 0.5, 0);
         } else iso_2 = PF04IsolationVal(muon, 0.5, 0);
-        if(iso_1<0.15&&iso_2<0.15&&os>0) pass_presel=true;
+        if(era_ == era::data_2015 && iso_1<0.15&&iso_2<0.15&&os>0) pass_presel=true;
+        if(era_ == era::data_2016 && iso_1<0.2&&iso_2<0.15&&os>0) pass_presel=true;
     }
     if(channel_ == channel::tt) {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -191,7 +193,7 @@ namespace ic {
         if(jet_flavour == 5){
           if(era_!=era::data_2016){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
-          } else sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
+          } else sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           hists_->Fill("NTot_bflav",pt,fabs(eta),wt);
           if(gen_match) hists_->Fill("NTot_bflav_genmatch",pt,fabs(eta),wt);
           if(csv>0.8){

@@ -320,7 +320,8 @@ namespace ic {
      // alias_map_["baseline"]          = "1";
 
       alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"]  = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
@@ -582,7 +583,7 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
    samples_alias_map_["ztt_shape_samples"]={
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
   }else if(!is_fall15_){
@@ -678,7 +679,7 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
    samples_alias_map_["ztt_samples"]={
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
    } else if(!is_fall15_){
@@ -725,9 +726,9 @@ namespace ic {
         };*/
   if(year_.find("6")!=year_.npos){
      samples_alias_map_["qcd_sub_samples"] = {
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
-      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
-        "T-tW", "Tbar-tW","Tbar-t",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO","ZZTo4L",
+        "T-tW","T-t","Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
         "ZZTo2L2Q","WZJToLLLNu",
         "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
@@ -786,11 +787,12 @@ namespace ic {
    };
   if(year_.find("6")!=year_.npos){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToLL-LO",
+   "DYJetsToLL-LO-ext",
    "DY1JetsToLL-LO","DY2JetsToLL-LO",
    "DY3JetsToLL-LO","DY4JetsToLL-LO",
-   "T-tW", "Tbar-tW", "Tbar-t",
-   "WWTo1L1Nu2Q","VVTo2L2Nu",
+   "DYJetsToLL_M-10-50-LO",
+   "T-tW", "Tbar-tW", "Tbar-t", "T-t",
+   "WWTo1L1Nu2Q","VVTo2L2Nu", "ZZTo4L",
    "ZZTo2L2Q","WZJToLLLNu",
    "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT","WJetsToLNu-LO",
@@ -837,10 +839,10 @@ namespace ic {
      };*/
    if(year_.find("6")!=year_.npos){
     samples_alias_map_["w_sub_samples"] = {
-      "DYJetsToLL-LO","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
-     "T-tW", "Tbar-tW", "Tbar-t",
-     "WWTo1L1Nu2Q","VVTo2L2Nu",
+     "T-tW", "Tbar-tW", "Tbar-t","T-t",
+     "WWTo1L1Nu2Q","VVTo2L2Nu","ZZTo4L",
      "ZZTo2L2Q","WZJToLLLNu",
      "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
      "TT"
@@ -1198,7 +1200,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     cat += "&&" + alias_map_["baseline"];
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
-    std::string cat_nobtag = "n_jets <=1 &&"+alias_map_["baseline"];
+    //std::string cat_nobtag = "n_jets <=1 && "+alias_map_["baseline"];
+    std::string cat_nobtag = "n_jets <=1 && n_lowpt_jets>=1 && "+alias_map_["baseline"];
     std::string w_extrap_cat = cat;
     std::string w_extrap_cat_nobtag = cat_nobtag;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
@@ -1224,6 +1227,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         Value btag_norm = GetRate(wjets_samples, btag_extrap_sel, cat, wt);
         Value nobtag_norm = GetRate(wjets_samples,btag_extrap_sel,cat_nobtag,wt);
         Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+        if (verbosity_) PrintValue("ExtrapFactor into full b-tag definition",btag_extrap_factor);
         w_norm = ValueProduct(w_norm_nobtag,btag_extrap_factor);
    }
 
@@ -1285,13 +1289,15 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
           w_ss_norm = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel_osss, w_sub_samples, false, wt, ValueFnMap());
          }else if(method==16){
-          std::string qcd_cat_nobtag = "n_jets<=1 &&"+alias_map_["baseline"];
+          //std::string qcd_cat_nobtag = "n_jets<=1 && "+alias_map_["baseline"];
+          std::string qcd_cat_nobtag = "n_jets<=1 && n_lowpt_jets>= 1 && "+alias_map_["baseline"];
           Value w_ss_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
              this->ResolveSamplesAlias("data_samples"),qcd_cat_nobtag, w_sdb_sel_osss,w_sub_samples,false, wt, ValueFnMap());
          std::string os_sel_btag = "!os && " + this->ResolveAlias("sel");
          Value btag_norm = GetRate(wjets_samples, os_sel_btag, qcd_cat, wt);
          Value nobtag_norm = GetRate(wjets_samples,os_sel_btag,qcd_cat_nobtag,wt);
          Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+         if (verbosity_) PrintValue("ExtrapFactor into full b-tag definition",btag_extrap_factor);
          w_ss_norm = ValueProduct(btag_extrap_factor,w_ss_norm_nobtag);
         } else {
           w_ss_norm = std::make_pair(0.0,0.0);
@@ -1496,6 +1502,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     std::string ttt_sel, ttj_sel;
     ttt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
     ttj_sel = sel+"&&!"+this->ResolveAlias("ztt_sel");
+    if(ch_ == channel::zmm || ch_==channel::zee){
+      ttt_sel = "0";
+      ttj_sel = sel;
+    }
     auto topt_pair = this->GenerateTOP(method, var, ttt_sel, cat, wt);
     auto topj_pair = this->GenerateTOP(method, var, ttj_sel, cat, wt);
     PrintValue("TTT"+postfix, topt_pair.second);

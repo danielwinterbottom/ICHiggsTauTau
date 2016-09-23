@@ -153,9 +153,15 @@ int main(int argc, char* argv[]){
 
   //If not overriding os_ss factor, default to different values for each channel:
   if(qcd_os_ss_factor < 0){
-    if(String2Channel(channel_str) == channel::mt) qcd_os_ss_factor = 1.17;
-    else if(String2Channel(channel_str) == channel::em) qcd_os_ss_factor=2.00;
-    else qcd_os_ss_factor=1.00;
+   if(year.find("6")!=year.npos){
+     if(String2Channel(channel_str) == channel::mt) qcd_os_ss_factor = 1.18;
+     else if(String2Channel(channel_str) == channel::et) qcd_os_ss_factor = 1.02;
+     else qcd_os_ss_factor=1.00;
+   } else {
+     if(String2Channel(channel_str) == channel::mt) qcd_os_ss_factor = 1.17;
+     else if(String2Channel(channel_str) == channel::em) qcd_os_ss_factor=2.00;
+     else qcd_os_ss_factor=1.00;
+   }
   }
 
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
@@ -325,9 +331,15 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (syst_tquark != "") {
 		std::cout << "[HiggsTauTauPlot5] Adding top-quark weight systematic..." << std::endl;
+    std::string ttt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
+    std::string ttj_sel = sel+"&&!"+ana.ResolveAlias("ztt_sel");
     for (unsigned j = 0; j < vars.size(); ++j) {
 		  hmap["TT"+vars_postfix[j]+"_"+syst_tquark+"Up"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_up");
 		  hmap["TT"+vars_postfix[j]+"_"+syst_tquark+"Down"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_down");
+		  hmap["TTT"+vars_postfix[j]+"_"+syst_tquark+"Up"] = ana.GenerateTOP(method, vars[j], ttt_sel, cat, "wt*wt_tquark_up");
+		  hmap["TTT"+vars_postfix[j]+"_"+syst_tquark+"Down"] = ana.GenerateTOP(method, vars[j], ttt_sel, cat, "wt*wt_tquark_down");
+		  hmap["TTJ"+vars_postfix[j]+"_"+syst_tquark+"Up"] = ana.GenerateTOP(method, vars[j], ttj_sel, cat, "wt*wt_tquark_up");
+		  hmap["TTJ"+vars_postfix[j]+"_"+syst_tquark+"Down"] = ana.GenerateTOP(method, vars[j], ttj_sel, cat, "wt*wt_tquark_down");
     }
 	}
 
@@ -404,6 +416,11 @@ int main(int argc, char* argv[]){
     std::string ztt_sel = ana.ResolveAlias("ztt_sel")+"&&"+sel;
  		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_up");
  		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, ztt_sel, cat, "wt*wt_tau_id_down");
+ 		hmap["TTT_"+syst_eff_t+"Up"] = ana.GenerateTOP(method, var, ztt_sel, cat, "wt*wt_tau_id_up");
+ 		hmap["TTT_"+syst_eff_t+"Down"] = ana.GenerateTOP(method, var, ztt_sel, cat, "wt*wt_tau_id_down");
+ 		hmap["VVT_"+syst_eff_t+"Up"] = ana.GenerateVV(method, var, ztt_sel, cat, "wt*wt_tau_id_up");
+ 		hmap["VVT_"+syst_eff_t+"Down"] = ana.GenerateVV(method, var, ztt_sel, cat, "wt*wt_tau_id_down");
+
 	}
 
 
