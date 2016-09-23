@@ -91,6 +91,33 @@ LAYOUTS = {
             'color': ROOT.TColor.GetColor(248, 206, 104)
         }
         )
+    ],
+    "mm": [
+        ('QCD', {
+            'entries': ['QCD'],
+            'legend': 'Misidentified #mu',
+            'color': ROOT.TColor.GetColor(250, 202, 255)
+        }),
+        ('TT', {
+            'entries': ['TT'],
+            'legend': 't#bar{t}',
+            'color': ROOT.TColor.GetColor(155, 152, 204)
+        }),
+        ('EWK', {
+            'entries': ['VV', 'W'],
+            'legend': 'Electroweak',
+            'color': ROOT.TColor.GetColor(222, 90, 106)
+        }),
+        ('ZTT', {
+            'entries': ['ZTT'],
+            'legend': 'Z#rightarrow#tau#tau',
+            'color': ROOT.TColor.GetColor(248, 206, 104)
+        }),
+        ('ZLL', {
+            'entries': ['ZLL'],
+            'legend': 'Z#rightarrow#mu#mu',
+            'color': ROOT.TColor.GetColor(100, 192, 232)
+        })
     ]
 }
 

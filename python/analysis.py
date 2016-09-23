@@ -259,6 +259,7 @@ class ListNode(BaseNode):
     def __init__(self, name):
         BaseNode.__init__(self, name)
         self.nodes = OrderedDict()
+        self.add_output_prefix = True
 
     def __getitem__(self, key):
         return self.nodes[key]
@@ -273,12 +274,16 @@ class ListNode(BaseNode):
         for node in self.SubNodes():
             node.AddRequests(manifest)
 
+    def OutputPrefix(self):
+        if self.add_output_prefix:
+            return self.name
+        else:
+            return ''
 
 class SummedNode(ListNode):
     def __init__(self, name):
         ListNode.__init__(self, name)
         self.shape = None
-        self.add_output_prefix = True
 
     def RunSelf(self):
         self.shape = sum([node.shape for node in self.nodes.values()])

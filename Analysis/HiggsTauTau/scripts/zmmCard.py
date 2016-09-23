@@ -40,14 +40,22 @@ vv_samples = ['VVTo2L2Nu', 'WWTo1L1Nu2Q', 'WZJToLLLNu',
 
 
 def AddMCProcs(node, v, sel, pfix=''):
+    """
     node.AddNode(ana.BasicFactory(
-        'ZTT' + pfix, 'DYJetsToLL', v, sel(extra='gen_2==5')))
+        'ZTT' + pfix, 'DYJetsToLL', v, sel(extra='gen_1==4 && gen_2==4')))
 
     node.AddNode(ana.BasicFactory(
-        'ZL' + pfix, 'DYJetsToLL', v, sel(extra='gen_2<5')))
+        'ZL' + pfix, 'DYJetsToLL', v, sel(extra='gen_1==2 && gen_2==2')))
 
     node.AddNode(ana.BasicFactory(
-        'ZJ' + pfix, 'DYJetsToLL', v, sel(extra='gen_2==6')))
+        'ZJ' + pfix, 'DYJetsToLL', v, sel(extra='(gen_1!=2 && gen_1!=4) && (gen_2!=2 && gen_2!=4)')))
+    """
+    
+    node.AddNode(ana.BasicFactory(
+        'ZTT' + pfix, 'DYJetsToLL', v, sel(extra='gen_1>3 && gen_2>3')))
+
+    node.AddNode(ana.BasicFactory(
+        'ZLL' + pfix, 'DYJetsToLL', v, sel(extra='gen_1<4 || gen_2<4')))
 
     node.AddNode(ana.BasicFactory('W' + pfix, 'WJetsToLNu', v, sel()))
 
@@ -59,7 +67,7 @@ def AddMCProcs(node, v, sel, pfix=''):
 def StandardMM(ana, node, v, sel, pfix='', qcd_os_ss=2.0):
     node.AddNode(BasicNode('data_obs' + pfix, 'data_obs', v, sel()))
 
-    AddMCProcs(node)
+    AddMCProcs(node, v, sel, pfix)
 
     node.AddNode(HttQCDNode('QCD' + pfix,
         ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os')),
@@ -72,23 +80,28 @@ def StandardMM(ana, node, v, sel, pfix='', qcd_os_ss=2.0):
 sel = Sel(
     sign='os',
     masswindow='m_ll>60 && m_ll<120',
-    baseline='pt_1>23 && pt_2>20 && iso_1<0.15 && iso_2<0.15 && (trg_IsoMu22 || trg_IsoTkMu22))',
+    baseline='pt_1>23 && pt_2>20 && iso_1<0.15 && iso_2<0.15 && (trg_IsoMu22 || trg_IsoTkMu22)',
     wt='wt * wt_zpt * wt_top')
 
 ana_list = [ana, ana_scale_m_hi, ana_scale_m_lo]
 for var in [
-        ('m_ll',  'm_ll(60,60,120)', '1'),
+        ('zmm_inclusive',  'm_ll(20,80,100)', '1'),
+        ('zmm_nobtag',     'm_ll(20,80,100)', 'n_bjets==0'),
+        ('zmm_btag',       'm_ll(20,80,100)', 'n_bjets>=1 && n_jets <=1')
         ]:
     nodename = var[0]
     varname = var[1]
     dosel = sel.copy(category=var[2])
-    StandardMM(ana, ana.nodes, v_pass, v_fail, dosel, probe)
-    StandardMM(ana_scale_m_hi, ana_scale_m_hi.nodes, varname, dosel, pfix='_CMS_scale_mUp')
-    StandardMM(ana_scale_m_lo, ana_scale_m_lo.nodes, varname, dosel, pfix='_CMS_scale_mDown')
+    for a in ana_list:
+        a.nodes.AddNode(ListNode(nodename))
+    StandardMM(ana, ana.nodes[nodename], varname, dosel)
+    StandardMM(ana_scale_m_hi, ana_scale_m_hi.nodes[nodename], varname, dosel, pfix='_CMS_htt_muscale_13TeVUp')
+    StandardMM(ana_scale_m_lo, ana_scale_m_lo.nodes[nodename], varname, dosel, pfix='_CMS_htt_muscale_13TeVDown')
 
 outfile = ROOT.TFile('%s.root' % args.output, 'RECREATE')
 
 for a in ana_list:
+   a.nodes.add_output_prefix = False
    a.nodes.PrintTree()
    a.compiled = False
    a.Run()

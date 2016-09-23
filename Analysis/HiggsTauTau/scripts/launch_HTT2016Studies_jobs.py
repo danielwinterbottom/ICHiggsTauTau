@@ -13,7 +13,7 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
 MAX_EVTS = -1
-FILES_PER_JOB = 40
+FILES_PER_JOB = 30
 PROD='Aug16'
 
 DATA_SAMPLES = {
