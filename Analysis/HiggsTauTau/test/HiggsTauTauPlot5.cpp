@@ -263,6 +263,8 @@ int main(int argc, char* argv[]){
   if (signal_bins != "") sig_var = reduced_var+signal_bins;
 
  if(!no_central) ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
+  
+
    
  ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (add_sm_background != "") {
@@ -544,7 +546,7 @@ int main(int argc, char* argv[]){
 		}
   }
 
-	// ************************************************************************HTTRun2AnalysisHTTRun2Analysis
+	// ************************************************************************
 	// Reduce top yield to account for contamination in embedded
 	// ************************************************************************
 	if (sub_ztt_top_frac > 0.) {

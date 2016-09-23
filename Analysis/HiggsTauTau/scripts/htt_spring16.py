@@ -104,8 +104,8 @@ for scale in scale_list:
   if scale == "default":
     flatjsonlist.append("^%(scale)s"%vars())
     flatjsonlistdysig.append("^%(scale)s"%vars())
-  elif scale == "scale_t":
-    flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
+#  elif scale == "scale_t":
+#    flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
   else:
     flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
     flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
@@ -129,15 +129,15 @@ file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all or options.proc_smbkg:
   masses = ['125']
-  if options.short_signal or options.proc_smbkg: masses = ['120','125','130']
+  if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'GluGluToHToTauTau_M-'+mass, 
+      'GluGluHToTauTau_M-'+mass,
       'VBFHToTauTau_M-'+mass,
       'ZHToTauTau_M-'+mass,
-      'WplusHToTautau_M-'+mass,
-      'WminusHToTautau_M-'+mass,
-      'TTH_M-'+mass
+      'WplusHToTauTau_M-'+mass,
+      'WminusHToTauTau_M-'+mass,
+      'TTHToTauTau_M-'+mass
     ]
 if options.proc_mssm or options.proc_all:
   gghmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
@@ -226,7 +226,6 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   DATAFILELIST="./filelists/Aug11_Data_80X"
 
-
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
@@ -284,6 +283,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'ZZTo2L2Q',
     'ZZTo4L',
     'WWTo1L1Nu2Q',
+    'WZJToLLLNu',
     'WZTo1L3Nu',
     'WZTo2L2Q',
     'WZTo1L1Nu2Q',
@@ -291,9 +291,10 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    'DYJetsToLL-LO',
+    #'DYJetsToLL-LO',
+    'DYJetsToLL-LO-ext',
     'DYJetsToLL_M-10-50-LO',
-    'DYJetsToLL_M-150-LO',
+    #'DYJetsToLL_M-150-LO',
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',

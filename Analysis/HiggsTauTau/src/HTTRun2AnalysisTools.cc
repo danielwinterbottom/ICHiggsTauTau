@@ -65,10 +65,13 @@ namespace ic {
       alias_map_["zll_sel"] = "1.";
     }
     
-    //SM Categories
+    alias_map_["variable_cat"]      = "1";
+
+    if (ch_ == channel::et || ch_ == channel::mt) {
+      // SM Categories
+      //SM Categories
     
     alias_map_["inclusive"]                 = "1";
-    alias_map_["variable_cat"]      = "1";
     alias_map_["vbf"]                       = "(n_jets>=2 && jdeta>3.5 && mjj>500 && pt_tt>=100 && n_bjets==0 && n_jetsingap==0)";
     alias_map_["1jet"]                      = "(!"+alias_map_["vbf"]+" && n_jets>=1)";
     alias_map_["0jet"]                      = "(!"+alias_map_["1jet"]+")";
@@ -101,18 +104,16 @@ namespace ic {
     //alias_map_["1jet_high_lowhpt_incbveto"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100. && n_bjets==0)";
     //alias_map_["1jet_low_incbveto"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45. && n_bjets==0)";
     //alias_map_["1jet_medium_incbveto"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
-
-    
-    if (ch_ == channel::et || ch_ == channel::mt) {
-      // SM Categories
+  
+        
       alias_map_["inclusive"]         = "1";
       alias_map_["nojet"]           ="(n_jets==0)";
       alias_map_["njet"]           ="(n_jets>0)";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
-      //alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      
       if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -264,7 +265,8 @@ namespace ic {
       alias_map_["trk03iso0p07"]           = "(iso_1_trk03<0.07&&"+alias_map_["incnoiso"]+")";
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       alias_map_["qcd_vloose_shape"]         = "(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && !leptonveto)";
-      //alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
 
       alias_map_["btagnotwoprong"] = "(n_jets<=1 && n_bjets>=1&&"+alias_map_["notwoprong"]+")";
       alias_map_["btagpt20"] = "(n_lowpt_jets<=1 && n_bjets>=1)";
@@ -355,9 +357,8 @@ namespace ic {
 
       // SM Categories
       alias_map_["inclusive"]         = "1";
-
      // alias_map_["baseline"]          = "1";
-
+      
       alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"]  = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
@@ -384,7 +385,8 @@ namespace ic {
       if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:
-      //alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
       alias_map_["incnoiso"]         = "!leptonveto";
       alias_map_["incnoisowmu"]         = "iso_2<0.15 && !leptonveto";
       alias_map_["incnoisowe"]         = "iso_1<0.15 && !leptonveto";
@@ -992,12 +994,12 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   void HTTRun2Analysis::AddSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
-        sample_names_.push_back("GluGluToHToTauTau_M-"+m);
+        sample_names_.push_back("GluGluHToTauTau_M-"+m);
         sample_names_.push_back("VBFHToTauTau_M-"+m);
-        sample_names_.push_back("WplusHToTautau_M-"+m);
-        sample_names_.push_back("WminusHToTautau_M-"+m);
+        sample_names_.push_back("WplusHToTauTau_M-"+m);
+        sample_names_.push_back("WminusHToTauTau_M-"+m);
         sample_names_.push_back("ZHToTauTau_M-"+m);
-        sample_names_.push_back("TTH_M-"+m);
+        sample_names_.push_back("TTHToTauTau_M-"+m);
     }
   }
 
@@ -1291,7 +1293,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
-    std::string maincat = cat + "&&" +alias_map_["baseline"];
+    std::string maincat = cat + "&&" + alias_map_["baseline"];
     std::string ttqcdcat = cat + "&&" + alias_map_["incnotauiso"];
     Value qcd_norm;
     TH1F qcd_hist;
@@ -1455,12 +1457,12 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                     std::string const& postfix,
                     double fixed_xs) {
     for (auto const& m : masses) {
-        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
+        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
         hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBFHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
-        hmap["WplusH"+infix+m+postfix] = this->GenerateSignal("WplusHToTautau_M-"+m,        var, sel, cat, wt, fixed_xs);
-        hmap["WminusH"+infix+m+postfix] = this->GenerateSignal("WminusHToTautau_M-"+m,        var, sel, cat, wt, fixed_xs);
+        hmap["WplusH"+infix+m+postfix] = this->GenerateSignal("WplusHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
+        hmap["WminusH"+infix+m+postfix] = this->GenerateSignal("WminusHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
         hmap["ZH"+infix+m+postfix] = this->GenerateSignal("ZHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
-        hmap["TTH"+infix+m+postfix] = this->GenerateSignal("TTH_M-"+m,        var, sel, cat, wt, fixed_xs);
+        hmap["TTH"+infix+m+postfix] = this->GenerateSignal("TTHToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
     }
   }
   
