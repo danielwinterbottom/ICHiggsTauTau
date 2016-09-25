@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/rlane/Aug11_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et", "mt", "tt"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -51,8 +51,8 @@
     "do_tau_eff"    : false,
     "do_tau_id_sf"  : true,
     "output_folder" : "output/Aug11_PreSel_sv_v3/",
-    "new_svfit_mode" : 1,
-    "svfit_folder"  : "svfit_Aug11_PreSel_sv_v3/",
+    "new_svfit_mode" : 2,
+    "svfit_folder"  : "output/svfit_Aug11_PreSel_sv_v3_output/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",

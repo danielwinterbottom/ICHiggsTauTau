@@ -21,11 +21,12 @@ struct ProgramOptions{
   ProgramOptions(){
     dirname        = "";
     vbf_cat_num    = 2;
-    onejet_cat_num = 2;
+    onejet_cat_num = 3;
     RecreateOutput = false;
     MakePlots = false;
     NumberOfPlots = 1;
     channel = "mt";
+    variable = "m_vis";
   }
 
   std::string dirname;
@@ -35,6 +36,7 @@ struct ProgramOptions{
   bool MakePlots;
   unsigned NumberOfPlots;
   std::string channel;
+  std::string variable;
   
 };
 
@@ -59,82 +61,6 @@ int find_nth(std::string fullstring, int pos, std::string sub, int nth){
   size_t found_pos = fullstring.find(sub, pos);
   if(0 == nth || std::string::npos == found_pos)  return found_pos;
   return find_nth(fullstring, found_pos+1, sub, nth-1);
-}
-
-void find_cuts(std::string line, std::string start_char, std::string end_char, unsigned start_char_num, unsigned end_char_num, std::vector<Cut> &cuts, unsigned n_colon, std::string &exclude){
-  
-  int f = 0; int l = 0;
-  exclude = "";
-  if(n_colon != 0){
-    f = find_nth(line, 0, ": ", n_colon-1);
-    l = line.length();
-    line = line.substr(f + 2, l - f -2); 
-  }
-  if(n_colon == 0) f = find_nth(line, 0, " ", 5);
-  else f = find_nth(line, 0, " ", 3);
-
-  l = find_nth(line, 0, ":", 0);
-  if(l<0) l = line.length();
-  
-  std::string cut_string = line.substr(f + 1, l - f);
-  f = find_nth(cut_string, 0, "!(", 0);
-  if(f > -1){
-    std::reverse(cut_string.begin(), cut_string.end());
-    l = cut_string.length() - find_nth(cut_string, 0, ")", 0);
-    std::reverse(cut_string.begin(), cut_string.end());
-    exclude = cut_string.substr(f, l - f+1);
-  }
-  f = find_nth(cut_string, 0, start_char, start_char_num);
-  l = find_nth(cut_string, 0, end_char, end_char_num);
-  cut_string = cut_string.substr(f + start_char.length(), l - f - end_char.length());
-  for(int i=cut_string.length()-1; i>=0; --i){
-    if(isdigit(cut_string.at(i))){ break; }
-    else { cut_string.erase(i, 1);}
-  }
-  
-  unsigned count_space = 0;
-  for(unsigned i=0; i<cut_string.length(); ++i){
-    std::string temp = cut_string.substr(i, 1);
-    if(temp == " ") count_space++;
-  }
-  
-  for(unsigned i = 0; i<count_space; ++i){
-    std::string temp;  
-    if(start_char == "" && i == 0){
-      f = 0;
-      l = find_nth(cut_string, 0, " ", i);
-      temp = cut_string.substr(f, l - f);
-    }
-    else{
-      f = find_nth(cut_string, 0, " ", i);
-      l = find_nth(cut_string, 0, " ", 1 + i);
-      temp = cut_string.substr(f + 1, l - f - 1);
-    }
-    if((temp.find("n_jets") != std::string::npos && temp.find("n_jetsingap") == std::string::npos) || temp == "&&" ) continue;
-    Cut cut;
-    f = 0;
-    if(temp.find("==") != std::string::npos){  
-      cut.type = 0;
-      l = find_nth(temp, 0, "=", 0);
-      cut.name = temp.substr(f, l - f);
-      f = std::max(l,find_nth(temp, 0, "=", 1));
-    }
-    else if( temp.find("<") != std::string::npos){
-      cut.type = 1;
-      l = find_nth(temp, 0, "<", 0);
-      cut.name = temp.substr(f, l - f);
-      f = std::max(l,find_nth(temp, 0, "=", 0));
-    }
-    else if( temp.find(">") != std::string::npos){
-      cut.type = 2;
-      l = find_nth(temp, 0, ">", 0);
-      cut.name = temp.substr(f, l - f);
-      f = std::max(l,find_nth(temp, 0, "=", 0));
-    }
-    //cut.value = std::stod(temp.substr(f+1, temp.length() - f));
-    cut.value = temp.substr(f+1, temp.length() - f);
-    cuts.push_back(cut);
-  }
 }
 
 struct greater {
@@ -201,6 +127,8 @@ bool processArgs(int argc, char* argv[], ProgramOptions &opt){
       if(i+1<argc){i++; opt.NumberOfPlots = atoi(argv[i]);}
     } else if(arg == "--channel"){
       if(i+1<argc){i++; opt.channel = argv[i];}
+    } else if(arg == "--MassVariable"){
+      if(i+1<argc){i++; opt.variable = argv[i];}
     }
   }
   
@@ -220,6 +148,7 @@ int main(int argc, char* argv[]){
   std::cout << "MakePlots              = " << options.MakePlots       << std::endl;
   std::cout << "NumberOfPlots          = " << options.NumberOfPlots   << std::endl;
   std::cout << "channel                = " << options.channel         << std::endl;
+  std::cout << "MassVariable           = " << options.variable        << std::endl;
   std::cout << "===========================\n"                        << std::endl;
   
   std::string system_command;
@@ -579,184 +508,7 @@ int main(int argc, char* argv[]){
     SortFile(outfile_name, sortedfile_name);
     std::cout << "Finished combining 1Jet and VBF categories.." << std::endl;
   }
-  
-  if(options.MakePlots){
-    std::string input_name = options.dirname + "/combined1JetPlusVBF.txt";
-    std::ifstream input1(input_name.c_str());
-    std::string line1;
-    unsigned line_count = 1;
-    while (std::getline(input1,line1) && line_count <= options.NumberOfPlots){
-      system_command = "mkdir -p " + options.dirname + "/Plots";
-      std::string dir = Form("CutsCombo%u",line_count);
-      std::string filename = options.dirname + "/Plots/"+dir;
-      system_command = "mkdir -p " + filename;
-      system(system_command.c_str());
-      std::ofstream outfile((filename+"/CutsLine.txt").c_str());
-      outfile << line1;
-      outfile.close();
-      
-      int f = 0; int l = 0;
-      f = find_nth(line1, 0, " ", 1);
-      l = find_nth(line1, 0, " ", 2);
-      std::string mva = line1.substr(f + 1, l - f - 1);
-      f = find_nth(line1, 0, " ", 3);
-      l = find_nth(line1, 0, " ", 4);
-      std::string mt = line1.substr(f + 1, l - f - 1);
-      std::string mva_string;
-      std::string qcd_string;
-      
-      if(options.channel == "tt"){
-        if (mva == "loose"){
-          mva_string="--set_alias=baseline:(mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)"; 
-          qcd_string="--set_alias=\"tt_qcd_norm:(\"mva_olddm_vloose_1>0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_loose_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)";
-        } else if (mva == "medium"){
-          mva_string="--set_alias=baseline:(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)";
-          qcd_string="--set_alias=tt_qcd_norm:(mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)";
-        } else if (mva == "tight"){
-          mva_string="--set_alias=baseline:(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)";
-          qcd_string ="--set_alias=tt_qcd_norm:(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)";
-        } else if (mva == "vtight"){
-          mva_string="--set_alias=baseline:(mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)";
-          qcd_string="--set_alias=tt_qcd_norm:(mva_olddm_tight_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)";
-        }
-      }
-      else{
-        qcd_string = " ";
-        if (mva == "loose"){
-          mva_string="--set_alias=baseline:(iso_1<0.1 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-        } else if (mva == "medium"){
-          mva_string="--set_alias=baseline:(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-        } else if (mva == "tight"){
-          mva_string="--set_alias=baseline:(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-        } else if (mva == "vtight"){
-          mva_string="--set_alias=baseline:(iso_1<0.1 && mva_olddm_vtight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-        }
-      }
-      std::string mt_string=mt;
-      
-      std::vector<Category> categories;
-      std::vector<Cut> cuts;
-      std::string exclude;
-      
-      if(options.vbf_cat_num == 1){
-       Category cat;
-       cat.name = "VBFInclusive";
-       cuts.clear();
-       find_cuts(line1, "", ":", 0, 0, cuts, 0, exclude);
-       cat.cuts = cuts;
-       cat.exclude = exclude;
-       categories.push_back(cat);
-      } else if(options.vbf_cat_num == 2){
-        Category cat;
-        cat.name = "VBFLoose";
-        cuts.clear();
-        find_cuts(line1, "", "!", 0, 0, cuts, 0, exclude);
-        cat.cuts = cuts;
-        cat.exclude = exclude;
-        categories.push_back(cat);
-        
-        cat.name = "VBFTight";
-        cuts.clear();
-        find_cuts(line1, "!(", ")", 0, 0, cuts, 0, exclude);
-        cat.cuts = cuts;
-        cat.exclude = exclude;
-        categories.push_back(cat);
-      }
-      
-      if(options.onejet_cat_num == 1){
-       Category cat;
-       cat.name = "OneJetInclusive";
-       cuts.clear();
-       find_cuts(line1, "", "!", 0, 0, cuts, 1, exclude);
-       cat.cuts = cuts;
-       cat.exclude = exclude;
-       categories.push_back(cat);
-      } else if(options.onejet_cat_num == 2){
-        Category cat;
-        cat.name = "OneJetLoose";
-        cuts.clear();
-        find_cuts(line1, "", "!", 0, 0, cuts, 1, exclude);
-        cat.cuts = cuts;
-        cat.exclude = exclude;
-        categories.push_back(cat);
-        
-        cat.name = "OneJetTight";
-        cuts.clear();
-        find_cuts(line1, "!(", ")", 0, 0, cuts, 1, exclude);
-        cat.cuts = cuts;
-        cat.exclude = exclude;
-        categories.push_back(cat);
-      } else if(options.onejet_cat_num == 3){
-        Category cat;
-        cat.name = "OneJetLoose";
-        cuts.clear();
-        find_cuts(line1, "", "!", 0, 0, cuts, 1, exclude);
-        cat.cuts = cuts;
-        cat.exclude = exclude;
-        categories.push_back(cat);
-        
-        cat.name = "OneJetMedium";
-        cuts.clear();
-        find_cuts(line1, "!(", ")", 0, 0, cuts, 1, exclude);
-        cat.cuts = cuts;
-        cat.exclude = exclude;
-        categories.push_back(cat);
-        
-        cat.name = "OneJetTight";
-        cuts.clear();
-        find_cuts(line1, "!(", ")", 0, 0, cuts, 2, exclude);
-        cat.cuts = cuts;
-        cat.exclude = exclude;
-        categories.push_back(cat);
-      }
-      
-      //std::cout << line1 << std::endl;
-      //for(unsigned i=0; i< categories.size(); ++i){
-      //  std::cout << "Category name: " << categories[i].name << std::endl;
-      //  std::cout << "exclude: " << categories[i].exclude << std::endl;
-      //  for(unsigned j =0 ; j<categories[i].cuts.size(); ++j){
-      //    std::cout << "cut name: " << categories[i].cuts[j].name << std::endl;
-      //    std::cout << "cut type: " << categories[i].cuts[j].type << std::endl;
-      //    std::cout << "cut value: " << categories[i].cuts[j].value << std::endl;
-      //  }
-      //}
-      for(unsigned i=0; i<categories.size(); ++i){
-        std::string output_dirname = filename + "/"+categories[i].name;
-        system_command = "mkdir -p " + output_dirname;
-        system(system_command.c_str());
-        
-        for(unsigned j=0 ; j<categories[i].cuts.size(); ++j){
-          std::string ams_output_name = output_dirname+"/ams_scan_"+categories[i].cuts[j].name+".txt";
-          std::string alias_string;
-          unsigned count_cuts=0;
-          for(unsigned k=0 ; k<categories[i].cuts.size(); ++k){
-            if(k!=j){
-              std::string cuts_type_string;
-              if(categories[i].cuts[j].type == 0) cuts_type_string = "==";
-              else if(categories[i].cuts[j].type == 1) cuts_type_string = "<=";
-              else if(categories[i].cuts[j].type == 2) cuts_type_string = ">=";
-              if(count_cuts == 0) alias_string = categories[i].cuts[j].name + cuts_type_string + categories[i].cuts[j].value;
-              //else alias_string += " && "+categories[i].cuts[j].name+cuts_type_string+categories[i].cuts[j].value;
-              count_cuts++;    
-            }
-          }
-          if(categories[i].exclude != "") alias_string += " && "+categories[i].exclude;
-          
-          system_command = "./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_sm_2016.cfg --channel="+options.channel+" --method=8 --var=\"m_vis\"[\"0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250.260,270,280,290,300\"] --cat=variable_cat --blind=true  --x_blind_min=10 --x_blind_max=300 --background_scheme=mt_default --set_alias=\"sel:("+mt_string+")\" "+mva_string+" "+qcd_string+" --set_alias=\"variable_cat:("+alias_string+")\" --supress_output=true --ams_scan_output_name "+ams_output_name;
-          
-         //system_command = "./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_sm_2016.cfg --channel="+options.channel+" --method=8 --var=\"m_vis\"[\"0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250.260,270,280,290,300\"] --cat=variable_cat --x_axis_label=\"M_{#tau#tau} [GeV]\" --blind=true --x_blind_min=30 --x_blind_max=200 --background_scheme=mt_default --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001 --set_alias=\"sel:(\""+mt_string+"\")\" ";
-          
-          //./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_sm_2016.cfg --channel=mt --method=8 --var=m_vis[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250.260,270,280,290,300] --cat=variable_cat --x_axis_label=M_{#tau#tau} [GeV] --blind=true --x_blind_min=30 --x_blind_max=200 --background_scheme=mt_with_zmm --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001 --set_alias=sel:(mt_1<50) --set_alias=baseline:(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)   --set_alias=variable_cat:(n_jets>=2 && n_jetsingap==0 && n_bjets==0 && jdeta>=3 && mjj>=400 && pt_tt>=0) --supress_output=true --sOverb_output_name=mt_output/2016_09_14_18_20_16/2Jet/2Cat/tight/outputTemp_medium_mt50_1.txt
 
-          
-          std::cout << system_command << "\n\n" <<std::endl;
-          //system(system_command.c_str());
-        }
-      }
-      line_count++;
-    }
-    input1.close();
-  }
   
   return 0;
   

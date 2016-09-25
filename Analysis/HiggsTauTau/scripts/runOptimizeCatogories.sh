@@ -4,6 +4,7 @@ export channel=$1
 export dirname=$2
 export mva=$3
 export mt=$4
+export directory=$5
 IFS=$'\n'
 if [ "$channel" == "tt" ]; then
   if [ "$mva" == "loose" ]; then
@@ -47,7 +48,7 @@ elif [ "$channel" == "tt" ]; then
   export back="tt_default"
 fi
 
-cd /vols/cms/dw515/Offline/CMSSW_8_0_9/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau
+cd $directory
 source /vols/grid/cms/setup.sh
 eval `scramv1 runtime -sh`
 export count=1

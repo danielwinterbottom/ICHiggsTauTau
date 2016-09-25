@@ -50,19 +50,26 @@ echo "eval \`scramv1 runtime -sh\`" >> $dirname0/submitJobs.sh
 declare -a tau_id=( "medium" )
 declare -a dEta=( 3 4 )
 declare -a Mjj=( 400 500 600 700 800 900 1000 )
-declare -a HPt=( 0 40 80 120 140 180 )
-declare -a HPt_1jet=( 0 40 80 120 140 180 )
+declare -a HPt=( 0 40 80 100 120 140 160 180 )
+declare -a HPt_1jet=( 0 40 80 100 120 140 160 180 )
 declare -a taupt=( 0 30 40 50 60 )
-declare -a taupt_vbf=( 0 )
+declare -a taupt_vbf=( 20 30 )
 
 if [ "$channel" == "tt" ]; then
   declare -a mt=( -1 )
-  declare -a taupt_vbf=( 40 50 60 )
+  declare -a taupt_vbf=( 40 50 )
   declare -a taupt=( 40 50 60 )
+  declare -a tau_id=( "tight" )
 else
   declare -a mt=( 50 )
 fi
 
+if [ "$channel" == "et" ]; then
+  declare -a tau_id=( "tight" )
+  declare -a HPt=( 0 40 80 120 160 200 )
+  declare -a HPt_1jet=( 0 40 80 120 160 200 )
+  declare -a taupt=( 0 30 40 50 )
+fi
 #declare -a dEta=( 3 4 )
 #declare -a Mjj=( 400 500 600 700 800900 )
 #declare -a HPt=( 0 100 140 160 )
@@ -80,12 +87,13 @@ Mjj_2=("${Mjj[@]}")
 HPt_2=("${HPt[@]}")
 HPt_1jet_2=("${HPt_1jet[@]}")
 taupt_2=("${taupt[@]}")
+taupt_vbf_2=("${taupt_vbf[@]}")
 met_2=("${met[@]}")
 
 export line_count=0
 export line_count2=0
 export line_count3=0
-for i in "${dEta[@]}"; do for j in "${Mjj[@]}"; do for k in "${HPt[@]}"; do for l in "${taupt_vbf[@]}"
+for i in "${dEta[@]}"; do for j in "${Mjj[@]}"; do for k in "${HPt[@]}"; do for l in "${taupt_vbf[@]}"; do
   export output_line="n_jets>=2 && n_jetsingap==0 && n_bjets==0 && jdeta>="$i" && mjj>="$j" && pt_tt>="$k" && pt_1>="$l
   echo $output_line >> $dirname1/cutsInputTemp_$channel.txt
   ((line_count++))
@@ -125,31 +133,56 @@ for i in "${dEta[@]}"; do for j in "${Mjj[@]}"; do for k in "${HPt[@]}"; do for 
   
 done; done; done; done;
 
+export directory=$(pwd)
 
 for i in "${tau_id[@]}"; do for j in "${mt[@]}"; do
-   echo "qsub -q hep.q -l h_rt=0:5:0 -t 1-"$line_count":1 scripts/runOptimizeCategories.sh "$channel" "$dirname1" "$i" "$j >> $dirname0/submitJobs.sh
+   export split=$((line_count/75000+1))
+   for ((k=1; k<=$split; k++)); do
+     export minjob=$(((k-1)*75000+1))
+     export maxjob=$((k*75000))
+     if [ "$maxjob" -ge "$line_count" ]; then
+       export maxjob=$line_count
+     fi
+     echo "qsub -q hep.q -l h_rt=0:5:0 -t $minjob-"$maxjob":1 scripts/runOptimizeCategories.sh "$channel" "$dirname1" "$i" "$j >> $dirname0/submitJobs.sh
+   done
    ((total_jobs+=line_count))
 done; done
 
 if [ "$onejet_cats" -ge 1 ]; then
   for x in "${tau_id[@]}"; do for y in "${mt[@]}"; do
-     echo "qsub -q hep.q -l h_rt=0:5:0 -t 1-"$line_count2":1 scripts/runOptimizeCategories.sh "$channel" "$dirname3" "$x" "$y >> $dirname0/submitJobs.sh
+     export split=$((line_count2/75000+1))
+     for ((k=1; k<=$split; k++)); do
+       export minjob=$(((k-1)*75000+1))
+       export maxjob=$((k*75000))
+       if [ "$maxjob" -ge "$line_count2" ]; then
+         export maxjob=$line_count2
+       fi
+       echo "qsub -q hep.q -l h_rt=0:5:0 -t $minjob-"$maxjob":1 scripts/runOptimizeCategories.sh "$channel" "$dirname3" "$x" "$y >> $dirname0/submitJobs.sh
+     done
      ((total_jobs+=line_count2))
   done; done
 fi
 
 if [ "$onejet_cats" -ge 2 ]; then
   for x in "${tau_id[@]}"; do for y in "${mt[@]}"; do
-     echo "qsub -q hep.q -l h_rt=0:5:0 -t 1-"$line_count3":1 scripts/runOptimizeCategories.sh "$channel" "$dirname4" "$x" "$y >> $dirname0/submitJobs.sh
+     export split=$((line_count3/75000+1))
+     for ((k=1; k<=$split; k++)); do
+       export minjob=$(((k-1)*75000+1))
+       export maxjob=$((k*75000))
+       if [ "$maxjob" -ge "$line_count3" ]; then
+         export maxjob=$line_count3
+       fi
+       echo "qsub -q hep.q -l h_rt=0:5:0 -t $minjob-"$maxjob":1 scripts/runOptimizeCategories.sh "$channel" "$dirname4" "$x" "$y >> $dirname0/submitJobs.sh
+     done
      ((total_jobs+=line_count3))
   done; done
 fi
 
 if [ "$vbf_cats" == 2 ]; then
   export line_count=0
-  for i in "${dEta[@]}"; do for j in "${Mjj[@]}"; do for k in "${HPt[@]}"; do for l in "${taupt_vbf[@]}"
-    for i2 in "${dEta_2[@]}"; do for j2 in "${Mjj_2[@]}"; do for k2 in "${HPt_2[@]}"; do for l in "${taupt_vbf_2[@]}"
-      if [ \( "$i" -gt "$i2" -a "$j" -ge "$j2" -a "$k" -ge "$k2" -a "$l" -ge "$l2"\) -o \( "$j" -gt "$j2" -a "$i" -ge "$i2" -a "$k" -ge "$k2" -a "$l" -ge "$l2"\) -o \( "$k" -gt "$k2" -a "$i" -ge "$i2" -a "$j" -ge "$j2" -a "$l" -ge "$l2" \) -o \( "$l" -gt "$l2" -a "$k" -ge "$k2" -a "$i" -ge "$i2" -a "$j" -ge "$j2" \) ]; then
+  for i in "${dEta[@]}"; do for j in "${Mjj[@]}"; do for k in "${HPt[@]}"; do for l in "${taupt_vbf[@]}"; do
+    for i2 in "${dEta_2[@]}"; do for j2 in "${Mjj_2[@]}"; do for k2 in "${HPt_2[@]}"; do for l2 in "${taupt_vbf_2[@]}"; do
+      if [ \( "$i" -gt "$i2" -a "$j" -ge "$j2" -a "$k" -ge "$k2" -a "$l" -ge "$l2" \) -o \( "$j" -gt "$j2" -a "$i" -ge "$i2" -a "$k" -ge "$k2" -a "$l" -ge "$l2" \) -o \( "$k" -gt "$k2" -a "$i" -ge "$i2" -a "$j" -ge "$j2" -a "$l" -ge "$l2" \) -o \( "$l" -gt "$l2" -a "$k" -ge "$k2" -a "$i" -ge "$i2" -a "$j" -ge "$j2" \) ]; then
         export output_line_tight="!(n_jets>=2 && n_jetsingap==0 && n_bjets==0 && jdeta>="$i" && mjj>="$j" && pt_tt>="$k" && pt_1>="$l")"
         export output_line_loose="n_jets>=2 && n_jetsingap==0 && n_bjets==0 && jdeta>="$i2" && mjj>="$j2" && pt_tt>="$k2" && pt_1>="$l2
         export output_line=$output_line_loose" && "$output_line_tight
@@ -160,7 +193,15 @@ if [ "$vbf_cats" == 2 ]; then
   done; done; done; done
   
   for i in "${tau_id[@]}"; do for j in "${mt[@]}"; do
-     echo "qsub -q hep.q -l h_rt=0:5:0 -t 1-"$line_count":1 scripts/runOptimizeCategories.sh "$channel" "$dirname2" "$i" "$j >> $dirname0/submitJobs.sh
+     export split=$((line_count/75000+1))
+     for ((k=1; k<=$split; k++)); do
+       export minjob=$(((k-1)*75000+1))
+       export maxjob=$((k*75000))
+       if [ "$maxjob" -ge "$line_count" ]; then
+         export maxjob=$line_count
+       fi
+       echo "qsub -q hep.q -l h_rt=0:5:0 -t $minjob-"$maxjob":1 scripts/runOptimizeCategories.sh "$channel" "$dirname2" "$i" "$j >> $dirname0/submitJobs.sh
+     done
      ((total_jobs+=line_count))
   done; done
 fi
