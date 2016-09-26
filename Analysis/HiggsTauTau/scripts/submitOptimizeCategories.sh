@@ -4,7 +4,8 @@
 export channel=$1
 export vbf_cats=$2
 export onejet_cats=$3
-export submit=$4
+export zerojet_cats=$4
+export submit=$5
 IFS='%'
 
 export now=$(date +"%Y_%m_%d_%H_%M_%S")
@@ -39,6 +40,17 @@ elif [ "$onejet_cats" == 3 ]; then
   mkdir -p $dirname5
 fi
 
+if [ "$zerojet_cats" == 1 ]; then
+  export dirname6=$dirname0"/0Jet/1Cat/"
+  mkdir -p $dirname6
+elif [ "$zerojet_cats" == 2 ]; then
+  export dirname6=$dirname0"/0Jet/2Cat/tight"
+  export dirname7=$dirname0"/0Jet/2Cat/loose"
+  mkdir -p $dirname6
+  mkdir -p $dirname7
+fi
+
+
 export total_jobs=0
 rm $dirname0/submitJobs.sh
 echo "#!/bin/bash" >> $dirname0/submitJobs.sh
@@ -49,11 +61,12 @@ echo "eval \`scramv1 runtime -sh\`" >> $dirname0/submitJobs.sh
 
 declare -a tau_id=( "medium" )
 declare -a dEta=( 3 4 )
-declare -a Mjj=( 400 500 600 700 800 900 1000 )
-declare -a HPt=( 0 40 80 100 120 140 160 180 )
+declare -a Mjj=( 400 500 600 700 800 900 )
+declare -a HPt=( 0 40 80 100 120 140 )
 declare -a HPt_1jet=( 0 40 80 100 120 140 160 180 )
-declare -a taupt=( 0 30 40 50 60 )
+declare -a taupt=( 0 30 40 50 )
 declare -a taupt_vbf=( 20 30 )
+declare -a taupt_0jet=( 0 5 10 15 20 25 30 35 40 45 50 55 60 )
 
 if [ "$channel" == "tt" ]; then
   declare -a mt=( -1 )
@@ -66,15 +79,10 @@ fi
 
 if [ "$channel" == "et" ]; then
   declare -a tau_id=( "tight" )
-  declare -a HPt=( 0 40 80 120 160 200 )
-  declare -a HPt_1jet=( 0 40 80 120 160 200 )
+  declare -a HPt=( 0 40 80 100 120 140)
+  declare -a HPt_1jet=( 0 40 80 120 160 180)
   declare -a taupt=( 0 30 40 50 )
 fi
-#declare -a dEta=( 3 4 )
-#declare -a Mjj=( 400 500 600 700 800900 )
-#declare -a HPt=( 0 100 140 160 )
-#declare -a HPt_1jet=( 0 100 140 160 )
-#declare -a taupt=( 0  )
 
 if [ "$channel" == "et" ]; then
   declare -a met=( 0 20 30 40 )
@@ -88,6 +96,7 @@ HPt_2=("${HPt[@]}")
 HPt_1jet_2=("${HPt_1jet[@]}")
 taupt_2=("${taupt[@]}")
 taupt_vbf_2=("${taupt_vbf[@]}")
+taupt_0jet_2=("${taupt_0jet[@]}")
 met_2=("${met[@]}")
 
 export line_count=0
@@ -132,8 +141,6 @@ for i in "${dEta[@]}"; do for j in "${Mjj[@]}"; do for k in "${HPt[@]}"; do for 
   fi
   
 done; done; done; done;
-
-export directory=$(pwd)
 
 for i in "${tau_id[@]}"; do for j in "${mt[@]}"; do
    export split=$((line_count/75000+1))
@@ -201,6 +208,64 @@ if [ "$vbf_cats" == 2 ]; then
          export maxjob=$line_count
        fi
        echo "qsub -q hep.q -l h_rt=0:5:0 -t $minjob-"$maxjob":1 scripts/runOptimizeCategories.sh "$channel" "$dirname2" "$i" "$j >> $dirname0/submitJobs.sh
+     done
+     ((total_jobs+=line_count))
+  done; done
+fi
+
+if [ "$zerojet_cats" -ge 1 ]; then
+  
+  export line_count=0
+  for i in "${taupt_0jet[@]}"; do 
+    export output_line_tight="n_jets==0 && pt_1>="$i
+    export output_line=$output_line_tight
+    echo $output_line >> $dirname6/cutsInputTemp_$channel.txt
+    ((line_count++))
+  done
+  
+  for i in "${tau_id[@]}"; do for j in "${mt[@]}"; do
+     export split=$((line_count/75000+1))
+     for ((k=1; k<=$split; k++)); do
+       export minjob=$(((k-1)*75000+1))
+       export maxjob=$((k*75000))
+       if [ "$maxjob" -ge "$line_count" ]; then
+         export maxjob=$line_count
+       fi
+       echo "qsub -q hep.q -l h_rt=0:5:0 -t $minjob-"$maxjob":1 scripts/runOptimizeCategories.sh "$channel" "$dirname6" "$i" "$j >> $dirname0/submitJobs.sh
+     done
+     ((total_jobs+=line_count))
+  done; done
+fi
+  
+if [ "$zerojet_cats" == 2 ]; then
+
+  export line_count=0
+  for i in "${taupt_0jet[@]}"; do 
+    for i2 in "${taupt_0jet_2[@]}"; do
+      if [ "$i" -gt "$i2" ]; then
+        if [ "$channel" == "tt" ]; then
+          export output_line_tight="!(n_jets==0 && pt_1>="$i")"
+          export output_line_loose="n_jets==0 && pt_1>="$i2
+        else; then
+          export output_line_tight="!(n_jets==0 && pt_2>="$i")"
+          export output_line_loose="n_jets==0 && pt_2>="$i2
+        fi 
+          export output_line=$output_line_loose" && "$output_line_tight
+          echo $output_line >> $dirname7/cutsInputTemp_$channel.txt
+        ((line_count++))
+      fi
+    done
+  done
+  
+  for i in "${tau_id[@]}"; do for j in "${mt[@]}"; do
+     export split=$((line_count/75000+1))
+     for ((k=1; k<=$split; k++)); do
+       export minjob=$(((k-1)*75000+1))
+       export maxjob=$((k*75000))
+       if [ "$maxjob" -ge "$line_count" ]; then
+         export maxjob=$line_count
+       fi
+       echo "qsub -q hep.q -l h_rt=0:5:0 -t $minjob-"$maxjob":1 scripts/runOptimizeCategories.sh "$channel" "$dirname7" "$i" "$j >> $dirname0/submitJobs.sh
      done
      ((total_jobs+=line_count))
   done; done

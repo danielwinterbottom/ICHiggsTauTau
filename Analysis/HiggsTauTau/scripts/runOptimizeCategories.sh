@@ -62,7 +62,6 @@ while read line; do
   fi
   ((count++))
 done < $dirname/cutsInputTemp_$channel.txt
-export alias="1"
 ./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_sm_2016.cfg --channel=$channel --method=$method --var='m_vis'['10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250'] --cat=variable_cat --x_axis_label='M_{#tau#tau} [GeV]' --blind=true --x_blind_min=30 --x_blind_max=200 --background_scheme=$back --extra_pad=0.2 --draw_error_band=true --auto_error_band=0.00001 --set_alias='sel:('$mt_string')' $mva_string $qcd_string --set_alias='variable_cat:('$alias')' --supress_output=true --sOverb_output_name=$dirname/outputTemp_$mva"_mt"$mt"_"$num.txt
 paste <(cat $dirname/outputTemp_$mva'_mt'$mt'_'$num.txt) <(echo ' && '$iso_mt_string' && '$alias) > $dirname/output_$mva'_mt'$mt'_'$num.txt
 rm $dirname/outputTemp_$mva'_mt'$mt'_'$num.txt

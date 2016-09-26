@@ -71,6 +71,7 @@ namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
+  new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
     if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else {std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
     svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
@@ -391,7 +392,6 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  if(json["baseline"]["mass_scale_mode"].asBool()==true){
    mass_shift = json["baseline"]["mass_shift"].asDouble();
  } else mass_shift=1.00;
- new_svfit_mode = json["new_svfit_mode"].asUInt();
  kinfit_mode = json["kinfit_mode"].asUInt(); 
  mva_met_mode = json["mva_met_mode"].asUInt();
  do_met_filters = json["do_met_filters"].asBool();
@@ -1153,7 +1153,6 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_label(met_label)
      .set_scale_shift(0.04));
    }*/
-
 
   SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
