@@ -10,11 +10,14 @@
 
 int makeMuonRun2DTxtFiles(){//main
 
-  TFile *muId_ = new TFile("MuonID_Z_RunCD_Reco76X_Feb15.root");
-  TFile *muIso_ = new TFile("MuonIso_Z_RunCD_Reco76X_Feb15.root");
+  //TFile *muId_ = new TFile("MuonID_Z_RunCD_Reco76X_Feb15.root");
+  //TFile *muIso_ = new TFile("MuonIso_Z_RunCD_Reco76X_Feb15.root");
+  TFile *muId_ = TFile::Open("MuonID_Z_RunBCD_prompt80X_7p65.root");
+  TFile *muIso_ = TFile::Open("MuonIso_Z_RunBCD_prompt80X_7p65.root");
 
-  double extraIdSyst = 0.01;
+  double extraIdSyst = sqrt(pow(0.01,2)+pow(0.005,2)); //On top of the "usual" systematcis for ID (1%) from the tag-and-probe method documented here, due to the known effect of HIPs on tracker efficiency it is recommended to add an additinal 0.5% systematic in quadrature.
   double extraIsoSyst = 0.005;
+  double extraIsoSyst_tight = 0.01; //For what concerns isolation, the loose isolation working points are rather well modeled in term of pile-up, hence the standard (0.5%) prescription for systematcis holds, whereas it is suggested to increase that value to 1% for tight PF isolation, due to the difference between the sample used to deliver results and the ICHEP dataset.
 
   TH2F *hist_muon[4][3];
 
@@ -33,11 +36,11 @@ int makeMuonRun2DTxtFiles(){//main
   hist_muon[1][2] = (TH2F*)gDirectory->Get("abseta_pt_ratio");
 
 
-  muIso_->cd("MC_NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/efficienciesDATA/");
+  muIso_->cd("MC_NUM_LooseRelTkIso_DEN_LooseID_PAR_pt_spliteta_bin1/efficienciesDATA/");
   hist_muon[2][0] = (TH2F*)gDirectory->Get("abseta_pt_DATA");
-  muIso_->cd("MC_NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/efficienciesMC/");
+  muIso_->cd("MC_NUM_LooseRelTkIso_DEN_LooseID_PAR_pt_spliteta_bin1/efficienciesMC/");
   hist_muon[2][1] = (TH2F*)gDirectory->Get("abseta_pt_MC");
-  muIso_->cd("MC_NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1");
+  muIso_->cd("MC_NUM_LooseRelTkIso_DEN_LooseID_PAR_pt_spliteta_bin1");
   hist_muon[2][2] = (TH2F*)gDirectory->Get("abseta_pt_ratio");
 
   muIso_->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesDATA/");
@@ -70,8 +73,10 @@ int makeMuonRun2DTxtFiles(){//main
   }
 
   const unsigned nP = 4;
-  std::string prefix = "Fall15_76X_";
+  //std::string prefix = "Fall15_76X_";
+  std::string prefix = "Spring16_80X_";
   std::string lFileName[nP] = {"mu_loose_id","mu_tight_id","mu_loose_iso","mu_tight_iso"};
+  double lSystematic[nP]    = {extraIdSyst,extraIdSyst,extraIsoSyst,extraIsoSyst_tight};
   std::string lDataType[3] = {"data_eff","mc_eff","SF"};
   
   std::ostringstream lName;
@@ -87,8 +92,7 @@ int makeMuonRun2DTxtFiles(){//main
 	for (unsigned iPt(0); iPt<nPt; ++iPt){//loop on pT bins
 	  double val = hist_muon[iWP][iData]->GetBinContent(iEta+1,iPt+1);
 	  double err = hist_muon[iWP][iData]->GetBinError(iEta+1,iPt+1);
-	  if (iWP<2) err = sqrt(pow(err,2)+pow(extraIdSyst,2));
-	  else err = sqrt(pow(err,2)+pow(extraIsoSyst,2));
+          err = sqrt(pow(err,2)+pow(lSystematic[iWP],2));
 	  lOut << ptMin[iPt] << " " << ptMax[iPt] << " " << etaMin[iEta] << " " << etaMax[iEta] << " " << val << " " << err << " " << err << std::endl;
 	}//loop on pT bins
 	
@@ -99,7 +103,8 @@ int makeMuonRun2DTxtFiles(){//main
     
   }//loop on WP
   
-  
+  muId_->Close(); 
+  muIso_->Close();
   return 1;
 
 }//
