@@ -180,7 +180,13 @@ sample_list = [
    'reHLTSUSYGluGluToBBHToTauTau_M-600',
    'reHLTSUSYGluGluToBBHToTauTau_M-700',
    'reHLTSUSYGluGluToBBHToTauTau_M-80',
-   'reHLTSUSYGluGluToBBHToTauTau_M-90'
+   'reHLTSUSYGluGluToBBHToTauTau_M-90',
+   'GluGluHToTauTau_M-125',
+   'VBFHToTauTau_M-125',
+   'ZHToTauTau_M-125',
+   'WplusHToTauTau_M-125',
+   'WminusHToTauTau_M-125',
+   'TTHToTauTau_M-125'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
