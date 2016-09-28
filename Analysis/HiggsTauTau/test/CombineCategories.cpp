@@ -240,7 +240,7 @@ int main(int argc, char* argv[]){
   bool file_check;
   
   //////
-  file_check = file_exists(options.dirname+"/combinedZeroJetSorted.txt");
+  file_check = file_exists(options.dirname+"/combined0JetSorted.txt");
   if(options.RecreateOutput || !file_check){
     if(options.zerojet_cat_num == 2){  
       std::cout << "Combining 0 jet categories.." << std::endl;
@@ -675,11 +675,6 @@ int main(int argc, char* argv[]){
   
   if(options.MakePlots){
     std::cout << "Making plots.." << std::endl;
-    system_command = "mkdir -p " + options.dirname + "/Plots";
-    std::string dir = Form("CutsCombo%u",options.CutLine);
-    std::string filename = options.dirname + "/Plots/"+dir;
-    system_command = "mkdir -p " + filename;
-    system(system_command.c_str());
       
     std::vector<Category> categories;
     std::string mt_string;
@@ -689,13 +684,13 @@ int main(int argc, char* argv[]){
     std::ifstream input1(input_name.c_str());
     std::string line1;
     unsigned line_count = 1;
+    system_command = "mkdir -p " + options.dirname + "/Plots";
+    std::string dir = Form("CutsCombo%u",line_count);
+    std::string filename = options.dirname + "/Plots/"+dir;
+    system_command = "mkdir -p " + filename;
+    system(system_command.c_str());
     while (std::getline(input1,line1)){
       if(line_count != options.CutLine) continue;  
-      system_command = "mkdir -p " + options.dirname + "/Plots";
-      std::string dir = Form("CutsCombo%u",line_count);
-      std::string filename = options.dirname + "/Plots/"+dir;
-      system_command = "mkdir -p " + filename;
-      system(system_command.c_str());
       std::ofstream outfile((filename+"/CutsLine.txt").c_str());
       outfile << line1;
       outfile.close();
@@ -930,8 +925,7 @@ int main(int argc, char* argv[]){
         std::ostringstream  max_bin_string;
         max_bin_string << max_bin;
         system_command = "./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_sm_2016.cfg --channel="+options.channel+" --method="+method+" --var="+bin_string+" --cat=variable_cat --x_axis_label="+axis_label+" --blind=true  --x_blind_min=0 --x_blind_max="+max_bin_string.str()+" --set_alias=\'sel:("+mt_string+")\' "+mva_string+" "+qcd_string+" --set_alias=\'variable_cat:("+alias_string+")\' --signal_scale=100 --signal_scheme=run2_sm --background_scheme="+back;
-        std::cout << system_command << "\n" << std::endl;
-//"./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_sm_2016.cfg --channel="+options.channel+" --set_alias=\"sel:("+mt_string+")\" "+qcd_string+"  --method="+method+" --cat="+variable_cat+" --var="pt_2(25,0,100)"   --x_axis_label="+axis_label+"  --background_scheme="+back; 
+        std::cout << system_command << "\n" << std::endl; 
         
         system(system_command.c_str());
         plot_name = var+"__"+options.channel+"_2016";

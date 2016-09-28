@@ -66,45 +66,35 @@ namespace ic {
     }
     
     alias_map_["variable_cat"]      = "1";
+    alias_map_["inclusive"]                 = "1";
+    
+    if (ch_ == channel::et || ch_ == channel::mt){
+      alias_map_["vbf_run1"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";
+      alias_map_["vbf_tight_run1"] = "(n_jets>=2 && jdeta>4. && mjj>700 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
+      alias_map_["vbf_loose_run1"] = "(!"+alias_map_["vbf_tight_run1"]+" && n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";    
+      if(ch_ == channel::et){
+        alias_map_["1jet_loose_run1_et"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_2<=45))";
+        alias_map_["1jet_tight_run1_et"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_tt>100 && pt_2>45))";
+      } else if(ch_ == channel::mt){
+        alias_map_["1jet_loose_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2<=45)";
+        alias_map_["1jet_medium_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2>45 && pt_tt<=100)";
+        alias_map_["1jet_tight_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_2>45)";
+      }
+      alias_map_["0jet_loose_run1"] = "(n_jets==0 && pt_2<=45)";
+      alias_map_["0jet_tight_run1"] = "(n_jets==0 && pt_2>45)";
+    }
+    else if (ch_ == channel::tt){
+      alias_map_["vbf_run1_tt"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && pt_tt>100 && n_jetsingap==0)";
+      alias_map_["1jet_run1_tt"] = "(!"+alias_map_["vbf_tt_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100)";
+      alias_map_["1jet_loose_run1_tt"] = "(!"+alias_map_["vbf_tt_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_tt<=170)";
+      alias_map_["1jet_tight_run1_tt"] = "(!"+alias_map_["vbf_tt_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt>170 )";
+      alias_map_["0jet_run1_tt"] = "(!"+alias_map_["vbf_tt_run1"]+" && !"+alias_map_["1jet_run1_tt"]+" && n_jets>=0 && n_bjets==0)";
+    }
+
 
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       //SM Categories
-    
-    alias_map_["inclusive"]                 = "1";
-    alias_map_["vbf"]                       = "(n_jets>=2 && jdeta>3.5 && mjj>500 && pt_tt>=100 && n_bjets==0 && n_jetsingap==0)";
-    alias_map_["1jet"]                      = "(!"+alias_map_["vbf"]+" && n_jets>=1)";
-    alias_map_["0jet"]                      = "(!"+alias_map_["1jet"]+")";
-    
-    alias_map_["vbf_tight"]                 = "(n_lowpt_jets>=2 && jdeta_lowpt>4 && mjj_lowpt>800 && pt_tt>=100 && n_bjets==0 && jpt_1>30 && jpt_2>30)";
-    alias_map_["vbf_loose"]                 = "(!"+alias_map_["vbf_tight"]+" && n_lowpt_jets>=2 && jdeta_lowpt>3 && mjj_lowpt>400 && pt_tt>=0 && n_bjets==0 && jpt_1>30 && jpt_2>30)";
-    alias_map_["1jet_tight_mt"]             = "(!"+alias_map_["vbf_loose"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_2>60 && pt_tt>150 && n_bjets==0)";
-    alias_map_["1jet_loose_mt"]             = "(!"+alias_map_["vbf_loose"]+" && !"+alias_map_["1jet_tight_mt"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_tt>0 && pt_2>30)";
-    alias_map_["1jet_tight_et"]             = "(!"+alias_map_["vbf_loose"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_2>40 && pt_tt>150 && met>30 && n_bjets==0)";
-    alias_map_["1jet_loose_et"]             = "(!"+alias_map_["vbf_loose"]+" && !"+alias_map_["1jet_tight_et"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_tt>100 && pt_2>0 && met>30)";                  
-    alias_map_["0jet_et"]                   = "(!"+alias_map_["vbf_loose"]+" && !"+alias_map_["1jet_loose_et"]+")";
-    alias_map_["0jet_mt"]                   = "(!"+alias_map_["vbf_loose"]+" && !"+alias_map_["1jet_loose_mt"]+")";
-
-    alias_map_["vbf_tight_tt"]                 = "(n_lowpt_jets>=2 && jdeta_lowpt>4 && mjj_lowpt>600 && pt_tt>=150 && n_bjets==0 && jpt_1>30. && jpt_2>30.)";
-    alias_map_["vbf_loose_tt"]                 = "(!"+alias_map_["vbf_tight_tt"]+" && n_lowpt_jets>=2 && jdeta_lowpt>3 && mjj_lowpt>400 && pt_tt>=0 && n_bjets==0 && jpt_1>30. && jpt_2>30)";
-    alias_map_["1jet_tight_tt"]                = "(!"+alias_map_["vbf_loose_tt"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_1>50 && pt_2>0 && pt_tt>100 && n_bjets==0)";
-    alias_map_["1jet_loose_tt"]                = "(!"+alias_map_["vbf_loose_tt"]+" && !"+alias_map_["1jet_tight_tt"]+" && n_lowpt_jets>=1 && jpt_1>30 && pt_1>0 && pt_2>0 && pt_tt>0 && n_bjets==0)";
-    alias_map_["0jet_tt"]                      = "(!"+alias_map_["vbf_loose_tt"]+" && !"+alias_map_["1jet_loose_tt"]+")";
-    
-    //alias_map_["vbf_hadhad"]                = "(n_lowpt_jets>=2 && jdeta>3.5 && n_jetsingap_lowpt==0 && mjj>500. && pt_tt>100.)";
-    //alias_map_["1jet_high_highhpt"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100.)";
-    //alias_map_["1jet_high_lowhpt"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100.)";
-    //alias_map_["1jet_low"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45.)";
-    //alias_map_["1jet_medium"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45.)";
-    //alias_map_["0jet_low"]                  = "(n_jets==0 && pt_2<=45.)";
-    //alias_map_["0jet_medium"]               = "(!"+alias_map_["vbf"]+" && n_jets==0 && pt_2>30. && pt_2<=45.)";
-    //alias_map_["0jet_high"]                 = "(n_jets==0 && pt_2>45.)";
-    //alias_map_["vbf_incbveto"]                       = "(n_jets>=2 && jdeta>3.5 && n_jetsingap==0 && mjj>500. && n_bjets==0)";
-    //alias_map_["1jet_high_highhpt_incbveto"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt>100. && n_bjets==0)";
-    //alias_map_["1jet_high_lowhpt_incbveto"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>45. && pt_tt<=100. && n_bjets==0)";
-    //alias_map_["1jet_low_incbveto"]                  = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=45. && n_bjets==0)";
-    //alias_map_["1jet_medium_incbveto"]               = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
-  
         
       alias_map_["inclusive"]         = "1";
       alias_map_["nojet"]           ="(n_jets==0)";
@@ -113,7 +103,7 @@ namespace ic {
       alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       
       if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-      if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";

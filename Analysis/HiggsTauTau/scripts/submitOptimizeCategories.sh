@@ -246,7 +246,7 @@ if [ "$zerojet_cats" == 2 ]; then
         if [ "$channel" == "tt" ]; then
           export output_line_tight="!(n_jets==0 && pt_1>="$i")"
           export output_line_loose="n_jets==0 && pt_1>="$i2
-        else; then
+        else
           export output_line_tight="!(n_jets==0 && pt_2>="$i")"
           export output_line_loose="n_jets==0 && pt_2>="$i2
         fi 

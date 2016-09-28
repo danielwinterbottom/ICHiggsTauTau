@@ -218,34 +218,36 @@ if SCHEME == 'run2_sm':
   
   ######new sm 2016
   
-if SCHEME == 'run2_sm_new':
+if SCHEME == 'run2_sm_run1cats':
   BINS="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,350]"
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"  
   scheme_et = [
-    ("12",   "inclusive",  "inclusive",         BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-    ("12",   "vbf_loose",  "vbf_loose",         BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-    ("12",   "vbf_tight",  "vbf_tight",         BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-    ("12",   "1jet_loose_et", "1jet_loose_et",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-    ("12",   "1jet_tight_et", "1jet_tight_et",  BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 '),
-    ("12",   "0jet_et",       "0jet_et",        BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.0 ')
+    ("12",   "inclusive",  "inclusive",         BINS_FINE, '--set_alias="sel:mt_1<50"'),
+    ("12",   "vbf_loose_run1",  "vbf_loose_run1",         BINS, '--set_alias="sel:mt_1<50"'),
+    ("12",   "vbf_tight_run1",  "vbf_tight_run1",         BINS, '--set_alias="sel:mt_1<50"'),
+    ("12",   "1jet_medium_run1", "1jet_medium_run1",  BINS_FINE, '--set_alias="sel:mt_1<50"'),
+    ("12",   "1jet_tight_run1", "1jet_tight_run1",  BINS_FINE, '--set_alias="sel:mt_1<50"'),
+    ("12",   "0jet_loose_run1",       "0jet_loose_run1",        BINS_FINE, '--set_alias="sel:mt_1<50"'),
+    ("12",   "0jet_tight_run1",       "0jet_tight_run1",        BINS_FINE, '--set_alias="sel:mt_1<50"')
   ]
   scheme_mt = [
     
-    ("12",   "inclusive",  "inclusive",       BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),   
-    ("12",   "vbf_loose",  "vbf_loose",       BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),  
-    ("12",   "vbf_tight",  "vbf_tight",       BINS, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),  
-    ("12",   "1jet_loose_mt", "1jet_loose_mt",   BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),  
-    ("12",   "1jet_tight_mt", "1jet_tight_mt",   BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 '),  
-    ("12",   "0jet_mt",       "0jet_mt",      BINS_FINE, '--set_alias="sel:mt_1<40" --qcd_os_ss_factor=1.17 ') 
+    ("12",   "inclusive",  "inclusive",       BINS_FINE, '--set_alias="sel:mt_1<50"'),   
+    ("12",   "vbf_loose_run1",  "vbf_loose_run1",       BINS, '--set_alias="sel:mt_1<50"'),  
+    ("12",   "vbf_tight_run1",  "vbf_tight_run1",       BINS, '--set_alias="sel:mt_1<50"'),  
+    ("12",   "1jet_loose_run1_et", "1jet_loose_run1",   BINS_FINE, '--set_alias="sel:mt_1<50" '),
+    ("12",   "1jet_tight_run1_et", "1jet_medium_run1",   BINS_FINE, '--set_alias="sel:mt_1<50"'), 
+    ("12",   "1jet_tight_run1", "1jet_tight_run1",   BINS_FINE, '--set_alias="sel:mt_1<50"'),  
+    ("12",   "0jet_loose_run1",       "0jet_loose_run1",      BINS_FINE, '--set_alias="sel:mt_1<50"'), 
+    ("12",   "0jet_tight_run1",       "0jet_tight_run1",      BINS_FINE, '--set_alias="sel:mt_1<50"') 
 
   ]
   scheme_tt = [
     ("8",   "inclusive",       "inclusive",  BINS_FINE,  ''),
-    ("8",   "vbf_loose_tt",    "vbf_loose_tt",  BINS,  ''),
-    ("8",   "vbf_tight_tt",    "vbf_tight_tt",  BINS,  ''),
-    ("8",   "1jet_loose_tt",    "1jet_loose_tt",  BINS_FINE,  ''),
-    ("8",   "1jet_tight_tt",    "1jet_tight_tt",  BINS_FINE,  ''),
-    ("8",   "0jet_tt",          "0jet_tt",  BINS_FINE,  '')
+    ("8",   "vbf_run1_tt",    "vbf_run1_tt",  BINS,  ''),
+    ("8",   "1jet_loose_run1_tt",    "1jet_loose_run1_tt",  BINS_FINE,  ''),
+    ("8",   "1jet_tight_run1_tt",    "1jet_tight_run1_tt",  BINS_FINE,  ''),
+    ("8",   "0jet_run1_tt",          "0jet_run1_tt",  BINS_FINE,  '')
   ]
 
   bkg_schemes = {
