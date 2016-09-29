@@ -25,7 +25,6 @@ namespace ic {
     do_cross_trg_             = false;
     do_singlemu_trg_weights_  = false;
     do_etau_fakerate_         = false;
-    do_tau_id_sf_             = false;
     do_mtau_fakerate_         = false;
     do_idiso_weights_         = false;
     do_id_weights_            = false;
