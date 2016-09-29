@@ -21,7 +21,7 @@ int makeMuonRun2DTxtFiles(){//main
   double extraIsoSyst_tight = 0.01; //For what concerns isolation, the loose isolation working points are rather well modeled in term of pile-up, hence the standard (0.5%) prescription for systematcis holds, whereas it is suggested to increase that value to 1% for tight PF isolation, due to the difference between the sample used to deliver results and the ICHEP dataset.
 
   TH2F *hist_muon[4][3];
-  TH2F *hist_ratios[1];
+  TGraphAsymmErrors *hist_ratios[1];
 
   muId_->cd("MC_NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesDATA/");
   hist_muon[0][0] = (TH2F*)gDirectory->Get("abseta_pt_DATA");
@@ -60,41 +60,35 @@ int makeMuonRun2DTxtFiles(){//main
   hist_muon[3][2] = (TH2F*)gDirectory->Get("abseta_pt_ratio");
 
   muRatios_->cd();
-  hist_ratios[0] = (TH2F*)gDirectory->Get("ratio_eta");
+  hist_ratios[0] = (TGraphAsymmErrors*)gDirectory->Get("ratio_eta");
   
-  const unsigned nEtaRatios = hist_ratios[0]->GetXaxis()->GetNbins();
+  const unsigned nPts = hist_ratios[0]->GetN();
   
-  double etaMin_ratios[nEtaRatios];
-  double etaMax_ratios[nEtaRatios];
+  double etaMin_ratios[nPts];
+  double etaMax_ratios[nPts];
+  double Min_ratios[nPts];
+  double Max_ratios[nPts];
   
-  for (unsigned ie(0);ie<nEtaRatios;++ie){
-    etaMin_ratios[ie] = hist_ratios[0]->GetXaxis()->GetBinLowEdge(ie+1);
-    etaMax_ratios[ie] = hist_ratios[0]->GetXaxis()->GetBinLowEdge(ie+2);
-    std::cout << " -- For ratios: eta min " << etaMin_ratios[ie] << " max " << etaMax_ratios[ie] << std::endl;
-  }
-  
-  const unsigned nRatios = hist_ratios[0]->GetYaxis()->GetNbins();
-  
-  double Min_ratios[nRatios];
-  double Max_ratios[nRatios];
-  
-  for (unsigned ie(0);ie<nRatios;++ie){
-    Min_ratios[ie] = hist_ratios[0]->GetYaxis()->GetBinLowEdge(ie+1);
-    Max_ratios[ie] = hist_ratios[0]->GetYaxis()->GetBinLowEdge(ie+2);
-    std::cout << " -- For ratios: min " << Min_ratios[ie] << " max " << Max_ratios[ie] << std::endl;
-  }
+  double etaVal[nPts];
+  double val[nPts];
 
+  for (unsigned ie(0);ie<nPts;++ie){
+    hist_ratios[0]->GetPoint(ie,etaVal[ie],val[ie]);
+    std::cout << " -- central values " << etaVal[ie] << " " << val[ie] << std::endl;
+    etaMin_ratios[ie] = etaVal[ie]-hist_ratios[0]->GetErrorXlow(ie);
+    etaMax_ratios[ie] = etaVal[ie]+hist_ratios[0]->GetErrorXhigh(ie);
+    std::cout << " -- eta min " << etaMin_ratios[ie] << " max " << etaMax_ratios[ie] << std::endl;
+    Min_ratios[ie] = hist_ratios[0]->GetErrorYlow(ie);
+    Max_ratios[ie] = hist_ratios[0]->GetErrorYhigh(ie);
+    std::cout << " -- SF min " << Min_ratios[ie] << " max " << Max_ratios[ie] << std::endl;
+  }
+  
   std::ostringstream lName_ratios;
   lName_ratios.str("");
-  lName_ratios << "Spring16_80X_" << "mu_Ratios" << ".txt";
+  lName_ratios << "Spring16_80X_mu_trackingSF.txt";
   std::ofstream lOut_ratios(lName_ratios.str().c_str());
-  for (unsigned iEta_ratios(0); iEta_ratios<nEtaRatios; ++iEta_ratios){//loop on eta bin
-    for (unsigned i_ratios(0); i_ratios<nRatios; ++i_ratios){//loop on pT bins
-      double val_ratios = hist_ratios[0]->GetBinContent(iEta_ratios+1,i_ratios+1);
-      double err_ratios = hist_ratios[0]->GetBinError(iEta_ratios+1,i_ratios+1);
-      lOut_ratios << Min_ratios[i_ratios] << " " << Max_ratios[i_ratios] << " " << etaMin_ratios[iEta_ratios] << " " << etaMax_ratios[iEta_ratios] << " " << val_ratios << " " << err_ratios << std::endl;
-    }//loop on pT bins
-    
+  for (unsigned ibin(0); ibin<nPts; ++ibin){//loop on eta bin
+    lOut_ratios << etaMin_ratios[ibin] << " " << etaMax_ratios[ibin] << " " << val[ibin] << " " << Min_ratios[ibin] << " " << Max_ratios[ibin] << std::endl;
   }//loop on eta bin
   
 

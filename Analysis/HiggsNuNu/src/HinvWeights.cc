@@ -628,10 +628,10 @@ namespace ic {//namespace
 	else eventInfo->set_weight("!trig_1d",trgweight);
 	}
       else if(do_binnedin2d1dfittedtrg_weights_){
-	if(l1met!=hltmet){
-	  std::cout<<"Error: you must use metnomuons for both l1met and hltmet"<<std::endl;
-	  return 1;
-	}
+	//if(l1met!=hltmet){
+	//std::cout<<"Error: you must use metnomuons for both l1met and hltmet"<<std::endl;
+	//return 1;
+	//}
 	double vars[3];
 	bool found[3]={false,false,false};
 	//Get the 3 variables

@@ -408,7 +408,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
   if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
-  if (era == era::data_2016) data_pu_file   =  "input/pileup/12d9/Data_Pileup_mb63_2016-600bins.root";
+  if (era == era::data_2016) data_pu_file   =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -433,8 +433,8 @@ int main(int argc, char* argv[]){
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
   }
   else if(era == era::data_2016){
-    data_pu_up  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66d2_2016-600bins.root", "/", "pileup");
-    data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb59d9_2016-600bins.root", "/", "pileup");
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
   }
 
   if (!is_data) {

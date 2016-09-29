@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "TRandom3.h"
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <iostream>
 
@@ -28,65 +29,116 @@ namespace ic {
     reapplyJecData_ = false;
     reapplyJecMC_ = false;
     smear_ = false;
+
+    nRho_ = 5;
+
   }
 
   JetMETModifier::~JetMETModifier() {
     ;
   }
 
-  void JetMETModifier::fillVectorResolution(const std::string & aFileName, std::vector<double> & aVector){
+  void JetMETModifier::fillResFunc(const std::string & aFileName){
     //std::cout<<aFileName<<":"<<std::endl;//!!
+    resfunc_.clear();
+    resEta_.clear();
+    resRho_.clear();
+
     std::ifstream lInput;
     lInput.open(aFileName);
     if(!lInput.is_open()) {
-      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
-      //max expected size for e and mu is 33...
-      //aVector.resize(33,1);
+      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 0. Will not modify jet resolution for unmatched jets !!" << std::endl;
+      //max expected size is 130 = 5 rho * 26 eta
+      resfunc_.resize(130,0);
       return;
     }
     
     // read in first line
-    double first_nvar = 0.;
-    double etaMax = 0.;
-    double rhoMin = 0.;
-    double rhoMax = 0.;
-    int Nvar = 0;
-    double pTmin = 0.;
-    double pTmax = 0.;
-    double var0 = 0.;
-    double var1 = 0.;
-    double var2 = 0.;
-    double var3 = 0.;
-    lInput>>etaMin>>etaMax>>rhoMin>>rhoMax>>Nvar>>pTmin>>pTmax>>var0>>var1>>var2>>var3;
-    std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<rhoMin<<" "<<rhoMax<<" "<<Nvar<<" "<<pTmin<<" "<<pTmax<<" "<<var0<<" "<<var1<<" "<<var2<<" "<<var3<<std::endl;
-    
-    
+    std::string lHeader[7];
+    for (unsigned i(0); i<7;++i){
+      lInput>>lHeader[i];
+    }
+    std::cout << " -- Formula used for jet resolution: " << lHeader[5] << std::endl;
+
+    unsigned counter = 0;
     while(1){
       double etaMin = 0.;
       double etaMax = 0.;
       double rhoMin = 0.;
       double rhoMax = 0.;
-      int Nvar = 0;
+      int Npar = 0;
       double pTmin = 0.;
       double pTmax = 0.;
-      double var0 = 0.;
-      double var1 = 0.;
-      double var2 = 0.;
-      double var3 = 0.;
-      lInput>>etaMin>>etaMax>>rhoMin>>rhoMax>>Nvar>>pTmin>>pTmax>>var0>>var1>>var2>>var3;
-      std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<rhoMin<<" "<<rhoMax<<" "<<Nvar<<" "<<pTmin<<" "<<pTmax<<" "<<var0<<" "<<var1<<" "<<var2<<" "<<var3<<std::endl;
+      double par0 = 0.;
+      double par1 = 0.;
+      double par2 = 0.;
+      double par3 = 0.;
+      lInput>>etaMin>>etaMax>>rhoMin>>rhoMax>>Npar>>pTmin>>pTmax>>par0>>par1>>par2>>par3;
+      std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<rhoMin<<" "<<rhoMax<<" "<<Npar<<" "<<pTmin<<" "<<pTmax<<" "<<par0<<" "<<par1<<" "<<par2<<" "<<par3<<std::endl;
       
       //protect against blank line at the end of the file
-      if (pTmin > 1) aVector.push_back(SF);
-      if(lInput.eof()){
+      if (Npar > 1){
+	std::ostringstream label;
+	label << "resfunc_" << resfunc_.size();
+	TF1 *lFunc = new TF1(label.str().c_str(),lHeader[5].c_str(),pTmin,pTmax);
+	lFunc->SetParameters(par0,par1,par2,par3);
+	resfunc_.push_back(lFunc);
+	if (counter%nRho_==0) resEta_.push_back(etaMin);
+	if (counter<nRho_) resRho_.push_back(rhoMin);
+	counter++;
+      }
+      if(lInput.eof()){	
         break; 
       }
     }
     
-    std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
+    std::cout << " ---- Size of vector for file " << aFileName << " = " << resfunc_.size() << std::endl;
+
+    assert(resEta_.size()*resRho_.size() == resfunc_.size());
+
+    //add last vaue for eta and rho binning
+    resEta_.push_back(4.7);
+    resRho_.push_back(1000);
+
     lInput.close();
     
   }
+
+  unsigned JetMETModifier::getMCResBinNumber(const double & aEta, const double & aRho){
+
+    if (resEta_.size()==0 || resRho_.size()==0) {
+      std::cout << " -- Error, uninitialised arrays for finding MC resolution bin number! " << std::endl;
+      exit(1);
+    }
+    unsigned nEta = resEta_.size()-1;
+    unsigned nRho = resRho_.size()-1;
+    unsigned etabin = 0;
+    unsigned rhobin = 0;
+    for (unsigned ieta(0); ieta<nEta;++ieta){
+      if (aEta>=resEta_[ieta] &&  aEta<resEta_[ieta+1]) {
+	etabin = ieta;
+	break;
+      }
+    }
+    for (unsigned irho(0); irho<nRho;++irho){
+      if (aRho>=resRho_[irho] &&  aRho<resRho_[irho+1]) {
+	rhobin = irho;
+	break;
+      }
+    }
+
+
+    unsigned bin = nRho*etabin+rhobin;
+    //std::cout << " check bin: eta = " << aEta << " rho=" << aRho << " bineta = " << etabin << " rhobin= " << rhobin << " final bin = " << bin << std::endl;
+
+    if (bin >= resfunc_.size()){
+      std::cout << " -- ERROR! Wrong binning implemented for MC resolution" << __FILE__ << " line " << __LINE__ << std::endl;
+      exit(1);
+    } 
+    return bin;
+  }
+
+
   
   int JetMETModifier::PreAnalysis() {
     std::cout << "----------------------------------------" << std::endl;
@@ -189,52 +241,53 @@ namespace ic {
 
     //Jet resolution measurements
     if(dojetresmeasurement_){
-    int npts = 40;
-    int netas = 5;
-    std::string etas[5]={"0p0-0p5","0p5-1p1","1p1-1p7","1p7-2p3","2p3-5p0"};
-    //    int netas=10;
-    //std::string etas[10]={"0p0-0p5","0p5-1p0","1p0-1p5","1p5-2p0","2p0-2p5","2p5-3p0","3p0-3p5","3p5-4p0","4p0-4p5","4p5-9p9"};
-    //std::string pts[13]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};
-
-    //Set pts
-    for(int i=0;i<30;i++){
-      std::ostringstream convert;
-      convert << 2*i;
-      std::string binlow=convert.str();
-      std::ostringstream convert2;
-      convert2 << 2*(i+1);
-      std::string binhigh=convert2.str();
-      pts[i]=(binlow+"-"+binhigh);
-    } 
-    for(int i=30;i<37;i++){
-      std::ostringstream convert;
-      convert << ((i-30)*20)+60;
-      std::string binlow=convert.str();
-      std::ostringstream convert2;
-      convert2 << ((i-29)*20)+60;
-      std::string binhigh=convert2.str();
-      pts[i]=(binlow+"-"+binhigh);
-    }
-    pts[37]="200-250";
-    pts[38]="250-300";
-    pts[39]="300-inf";
-
-    for(int i =0;i<netas;i++){
-      for(int j=0;j<npts;j++){
-	recogenjetptratio[i][j] = dir4.make<TH1F>(("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),300,0.,3.);
+      int npts = 40;
+      int netas = 5;
+      std::string etas[5]={"0p0-0p5","0p5-1p1","1p1-1p7","1p7-2p3","2p3-5p0"};
+      //    int netas=10;
+      //std::string etas[10]={"0p0-0p5","0p5-1p0","1p0-1p5","1p5-2p0","2p0-2p5","2p5-3p0","3p0-3p5","3p5-4p0","4p0-4p5","4p5-9p9"};
+      //std::string pts[13]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};
+      
+      //Set pts
+      for(int i=0;i<30;i++){
+	std::ostringstream convert;
+	convert << 2*i;
+	std::string binlow=convert.str();
+	std::ostringstream convert2;
+	convert2 << 2*(i+1);
+	std::string binhigh=convert2.str();
+	pts[i]=(binlow+"-"+binhigh);
+      } 
+      for(int i=30;i<37;i++){
+	std::ostringstream convert;
+	convert << ((i-30)*20)+60;
+	std::string binlow=convert.str();
+	std::ostringstream convert2;
+	convert2 << ((i-29)*20)+60;
+	std::string binhigh=convert2.str();
+	pts[i]=(binlow+"-"+binhigh);
       }
-    }
-    TFile *resin=new TFile("input/MCres/MCresolutions.root","read");
-    for(int i=0;i<netas;i++){
-      resin->GetObject(("resforeta"+etas[i]).c_str(),res[i]);
-      resin->GetObject(("resfuncforeta"+etas[i]).c_str(),resfunc[i]);
-      resin->GetObject(("spring10resforeta"+etas[i]).c_str(),spring10resfunc[i]);
-    }
-    
-    fillVectorResolution("input/scale_factors/MYFILE.txt",JetPtResolution_);
+      pts[37]="200-250";
+      pts[38]="250-300";
+      pts[39]="300-inf";
+      
+      for(int i =0;i<netas;i++){
+	for(int j=0;j<npts;j++){
+	  recogenjetptratio[i][j] = dir4.make<TH1F>(("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),300,0.,3.);
+	}
+      }
+      
+    }      
 
-    
-    }
+    fillResFunc("input/MCres/Spring16_25nsV6_MC_PtResolution_AK4PFchs.txt");
+
+    //old code
+    //TFile *resin=new TFile("input/MCres/MCresolutions.root","read");
+    //for(int i=0;i<netas;i++){
+    //resin->GetObject(("resforeta"+etas[i]).c_str(),res[i]);
+    //resin->GetObject(("resfuncforeta"+etas[i]).c_str(),resfunc[i]);
+    //resin->GetObject(("spring10resforeta"+etas[i]).c_str(),spring10resfunc[i]);
+
     return 0;
   }
 
@@ -304,9 +357,9 @@ namespace ic {
 	int index = recotogenmatch[i].second ? recotogenmatch[i].first : -1;
 	GenJet* match = 0;
 	if (index != -1) match = genvec[index];
-	if (smear_) smearFact = applySmearing(0,match,newjet);
-	if (syst_ == jetmetSyst::jerBetter)  smearFact = applySmearing(-1,match,newjet);
-	else if (syst_ == jetmetSyst::jerWorse) smearFact = applySmearing(1,match,newjet);
+	if (smear_) smearFact = applySmearing(0,match,newjet,eventInfo->jet_rho());
+	if (syst_ == jetmetSyst::jerBetter)  smearFact = applySmearing(-1,match,newjet,eventInfo->jet_rho());
+	else if (syst_ == jetmetSyst::jerWorse) smearFact = applySmearing(1,match,newjet,eventInfo->jet_rho());
       }
 
       prevjet = newjet;
@@ -380,7 +433,8 @@ namespace ic {
 
   double JetMETModifier::applySmearing(const int error, 
 				       const GenJet* match,
-				       const ROOT::Math::PxPyPzEVector & oldjet){
+				       const ROOT::Math::PxPyPzEVector & oldjet,
+				       const double & aRho){
 
     double JERscalefac=1.;//if no match leave jet alone
     double JERcencorrfac=getJERcorrfac(fabs(oldjet.eta()),error,run2_);
@@ -399,21 +453,24 @@ namespace ic {
 	Smear50miss->Fill(1.);
       }
       if(dogaus_){//Do Gaussian smearing for JERWORSE
-	int etabin=-1;
-	if(fabs(oldjet.eta())<0.5)etabin=0;
-	else if(fabs(oldjet.eta())<1.1)etabin=1;
-	else if(fabs(oldjet.eta())<1.7)etabin=2;
-	else if(fabs(oldjet.eta())<2.3)etabin=3;
-	else if(fabs(oldjet.eta())<5.0)etabin=4;
+
+	unsigned binNumber = getMCResBinNumber(oldjet.eta(),aRho);
 	//std::cout<<"etabin is: "<<etabin<<std::endl;
 	double mcrespt=oldjet.pt();
-	if(mcrespt<20.)mcrespt=20.;
-	double sigmamc=(resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
-	double spring10sigmamc=(spring10resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
+	double ptmin=0,ptmax=0;
+	if (!resfunc_[binNumber]){
+	  return 1;
+	}
+	resfunc_[binNumber]->GetRange(ptmin,ptmax);
+	if(mcrespt<ptmin) mcrespt=ptmin;
+	if (mcrespt>ptmax) mcrespt=ptmax;
+	double sigmamc=(resfunc_[binNumber]->Eval(mcrespt)*oldjet.pt());
+	//double spring10sigmamc=(spring10resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
 	double gauscorr;
 	//std::cout<<"Jet pt and eta are: "<<oldjet.pt()<<" "<<oldjet.eta()<<"Sigma MC is: "<<sigmamc<<" "<<spring10sigmamc<<" Gaus corr is: "<<gauscorr<<std::endl;
-	if(!dospring10gaus_) gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
-	else gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
+	//if(!dospring10gaus_) 
+	gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
+	//else gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
 	double ptcorrected=oldjet.pt()+gauscorr;
 	JERscalefac=ptcorrected/oldjet.pt();
 	
