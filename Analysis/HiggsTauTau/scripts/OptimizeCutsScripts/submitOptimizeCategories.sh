@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+# This script generates a file containing a list of diferent cut strings for different category options. A submission script is generated that runs each of those strings over the IC batch returning the AMS as an output file. The channel, number of VBF categories (max 2), number of 1 jet categories (max 3), number of 0 jet categories (max 2) should be passed to the script as input parameters [1] [2] [3] and [4] respectivly. Input parameter [5] should be set to 1 to run the generated submission script.   
 
 export channel=$1
 export vbf_cats=$2

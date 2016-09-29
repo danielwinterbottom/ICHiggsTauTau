@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+# This script varies the tau isolation WP and transverse mass cut and runs runOptimizeCategories.sh script for each combination returning the AMS as an output 
 
 export channel=$1
 #IFS='%'

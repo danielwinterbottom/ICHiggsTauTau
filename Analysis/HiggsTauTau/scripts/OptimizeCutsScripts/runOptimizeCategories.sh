@@ -1,5 +1,6 @@
 #!/bin/bash
-#
+# This script reads in a cut string from an input file and runs HiggsTauTauPlot5 with the plot output supressed. Instead an output is returned containing teh cut string used and the AMS. Script requires input paramters specifying the channel [1], th directory containing the cut input file [2], the baseline tau isolation WP [3], and the transverse mass cut [4].
+
 export channel=$1
 export dirname=$2
 export mva=$3
