@@ -1,10 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Mar05_MC_76X_SUSYGluGluToHToTauTau_M-160.dat",
-    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/dwinterb/July03_MC_80X/",
-    "max_events":   100000,
+    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Mar05_MC_76X/",
+    "max_events":   -1,
     "timings":      true,
-    "channels":     ["et"],
+    "channels":     ["mt","et","tt","em"],
     "sequences": {
       "all":  ["default"]//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
@@ -16,7 +16,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
-    "mc"            : "summer16_80X",
+    "mc"            : "fall15_76X",
     "era"           : "data_2015",
     "strategy"      : "fall15",
     "is_data"       : false,
@@ -31,7 +31,6 @@
     "get_effective" : false,
     "do_btag_eff":false,
     "trg_in_mc" : true,
-    "store_hltpaths": true,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "store_trigobjpt" :true,
@@ -47,13 +46,13 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "./output/test/",
+    "output_folder" : "./output/Mar05-postpreapp/",
     //"output_folder" : "./output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/svfit-76X-postpreapp-output/",
+    "svfit_folder"  : "svfit-76X-postpreapp-output/",
     "svfit_override" : "",
 //    "event_check_file":"checkfile.dat",
     "pu_id_training": 2,

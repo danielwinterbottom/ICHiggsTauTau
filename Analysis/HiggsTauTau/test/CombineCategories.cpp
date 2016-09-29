@@ -28,7 +28,7 @@ struct ProgramOptions{
     MakePlots = false;
     CutLine = 1;
     channel = "mt";
-    variable = "m_vis";
+    variable = "m_sv";
   }
 
   std::string dirname;
