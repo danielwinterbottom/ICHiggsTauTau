@@ -399,8 +399,8 @@ if SCHEME == 'run2_mssm_2016':
     ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --do_ss=true '),
     ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<50"  --do_ss=true '),
     ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" '),
-    ("12",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --set_alias="btag:n_jets<=1&&n_lowpt_jets>=1" '),
-    ("12",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --do_ss=true --set_alias="btag:n_jets<=1&&n_lowpt_jets>=1" '),
+    ("16",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" '),
+    ("16",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --do_ss=true '),
     ("16",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<50" --do_ss=true '),
   ]
   scheme_mt = [
@@ -410,8 +410,8 @@ if SCHEME == 'run2_mssm_2016':
     ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70"  --do_ss=true '),
     ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<40" --do_ss=true '),
     ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" '),
-    ("12",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --set_alias="btag:n_jets<=1&&n_lowpt_jets>=1" '),
-    ("12",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70"  --do_ss=true --set_alias="btag:n_jets<=1&&n_lowpt_jets>=1" '),
+    ("16",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" '),
+    ("16",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70"  --do_ss=true '),
     ("16",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<40" --do_ss=true '),
   ]
   scheme_tt = [
