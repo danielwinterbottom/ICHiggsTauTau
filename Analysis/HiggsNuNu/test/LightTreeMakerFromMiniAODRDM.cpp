@@ -433,8 +433,8 @@ int main(int argc, char* argv[]){
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
   }
   else if(era == era::data_2016){
-    data_pu_up  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
-    data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
   }
 
   if (!is_data) {

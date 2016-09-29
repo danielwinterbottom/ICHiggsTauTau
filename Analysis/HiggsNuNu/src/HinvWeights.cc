@@ -342,6 +342,8 @@ namespace ic {//namespace
     }
     if (save_weights_){
       if(!do_idiso_err_){//Central value
+	//fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_);
+	//fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",e_gsfidSF_);
 	fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
 	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
 	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
