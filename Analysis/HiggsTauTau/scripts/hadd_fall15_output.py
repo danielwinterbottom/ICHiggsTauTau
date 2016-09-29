@@ -27,7 +27,6 @@ ignore = options.ignore
 
 
 sample_list = [
-  'QCD_Pt-15to80_MixedSamples_MuEnrichedPt5',
   'QCDMuEnriched',
   'QCD_Ht100to200',
   'QCD_Ht200to300',
@@ -223,8 +222,6 @@ sample_list = [
   'TTHToTauTau_M-120',
   'TTHToTauTau_M-125',
   'TTHToTauTau_M-130',
-  'reHLT_GluGluHToTauTau_M-125',
-  'reHLT_VBFHToTauTau_M-125',
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']

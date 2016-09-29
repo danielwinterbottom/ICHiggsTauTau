@@ -186,7 +186,10 @@ sample_list = [
    'ZHToTauTau_M-125',
    'WplusHToTauTau_M-125',
    'WminusHToTauTau_M-125',
-   'TTHToTauTau_M-125'
+   'TTHToTauTau_M-125',
+   'reHLT_GluGluHToTauTau_M-125',
+   'reHLT_VBFHToTauTau_M-125',
+   'QCD_Pt-15to80_MixedSamples_MuEnrichedPt5'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']

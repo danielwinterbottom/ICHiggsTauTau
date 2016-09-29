@@ -543,7 +543,7 @@ if SCHEME == 'run2_mssm_taupt':
 cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
-  #'em' : scheme_em,
+  'em' : scheme_em,
   'tt' : scheme_tt
 }
 
