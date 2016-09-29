@@ -17,7 +17,8 @@ namespace ic {
   HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), 
       channel_(channel::et), 
       era_(era::data_2012_rereco),
-      strategy_(strategy::paper2013) {
+      strategy_(strategy::paper2013),
+      mc_(mc::summer12_53X){
       ditau_label_ = "emtauCandidates";
       jets_label_ = "pfJetsPFlow";
       met_label_ = "pfMVAMetNoLeptons";
@@ -38,7 +39,8 @@ namespace ic {
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
-}
+      do_HLT_Studies_ = false;
+      }
 
   HTTCategories::~HTTCategories() {
     ;

@@ -811,8 +811,8 @@ namespace ic {
                 }
                 if(noEG) leg1_match = false;
                 
-                std::vector<ic::L1TTau*> l1taus = event->GetPtrVec<ic::L1TTau>("L1Taus");
-                std::vector<ic::L1TEGamma*> l1electrons = event->GetPtrVec<ic::L1TEGamma>("L1EGammas");
+                std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TTau>("L1Taus");
+                std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TEGamma>("L1EGammas");
                 
                 bool PassedL1 = false;
                 
