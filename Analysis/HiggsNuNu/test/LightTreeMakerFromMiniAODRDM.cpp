@@ -69,7 +69,7 @@ int main(int argc, char* argv[]){
 
   string era_str;                 // Analysis data-taking era
   string mc_str;                  // Analysis MC production
-  string prod;                    // Our prdocution string
+  string prod;                    // Our production string
 
   string wstream;                 // W stream: enu, munu or taunu, or nunu for everything
 
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]){
   bool doaltmatch;                // Do runmetuncertainties gen jet matching
   bool doetsmear;                 // Do runmetuncertainties smearing
   bool dogaus;                    // Do gaussian smearing for jets with no gen jet match
-  bool dospring10gaus;                    // Do gaussian smearing for jets with no gen jet match
+  bool dospring10gaus;            // Do gaussian smearing for jets with no gen jet match
   bool dojersyst;                 // Do Jet Energy Resolution Systematic Run
   bool jerbetterorworse;          // If doing Jet Energy Resolution Systematic Run, run with with better or worse (true for better, false for worse)
   bool douessyst;                 // Do Unclustered MET Systematic Run
@@ -198,9 +198,9 @@ int main(int argc, char* argv[]){
     ("doetsmear",             po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",                po::value<bool>(&dogaus)->default_value(false))
     ("dospring10gaus",        po::value<bool>(&dospring10gaus)->default_value(false))
-    ("jesuncfile",            po::value<string>(&jesuncfile)->default_value("input/jec/Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt"))
+    ("jesuncfile",            po::value<string>(&jesuncfile)->default_value("input/jec/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt"))
     ("reapplyJEC",            po::value<bool>(&reapplyJEC)->default_value(false))
-    ("jecdata",               po::value<string>(&jecdata)->default_value("input/jec/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"))
+    ("jecdata",               po::value<string>(&jecdata)->default_value("input/jec/Spring16_25nsV6_DATA_L1FastJet_AK4PFchs.txt,input/jec/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt,input/jec/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt,input/jec/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"))
     ("turnoffpuid",           po::value<bool>(&turnoffpuid)->default_value(false))
     ("useOldLT",              po::value<bool>(&useOldLT)->default_value(false))
     ("doTrigLT",              po::value<bool>(&doTrigLT)->default_value(false))
@@ -353,7 +353,7 @@ int main(int argc, char* argv[]){
     files,                // Input files
     "icEventProducer/EventTree", // TTree name
     max_events);          // Max. events to process (-1 = all)
-  
+
   // ------------------------------------------------------------------------------------
   // Misc Modules
   // ------------------------------------------------------------------------------------
@@ -726,10 +726,12 @@ int main(int argc, char* argv[]){
     ("JetIDFilter")
     .set_input_label(jettype);
     if(!turnoffpuid){
-      jetIDFilter.set_predicate((bind(PFJetID2015, _1)) && bind(PileupJetID, _1,is2012?2:3,true));
+      jetIDFilter.set_predicate((bind(PFJetID2016, _1)) && bind(PileupJetID, _1,is2012?2:3,true));
+      //jetIDFilter.set_predicate((bind(PFJetID2015, _1)) && bind(PileupJetID, _1,is2012?2:3,true));
     }
     else{
-      jetIDFilter.set_predicate(bind(PFJetID2015, _1));
+      jetIDFilter.set_predicate(bind(PFJetID2016, _1));
+      //jetIDFilter.set_predicate(bind(PFJetID2015, _1));
     }
     
   // Jet pT eta filter

@@ -346,36 +346,36 @@ namespace ic {//namespace
 	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
 	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
 	
-	fillVector("input/scale_factors/Fall15_76X_mu_tight_id_SF.txt",muTight_idSF_);
-	fillVector("input/scale_factors/Fall15_76X_mu_tight_iso_SF.txt",muTight_isoSF_);
-	fillVector("input/scale_factors/Fall15_76X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-	fillVector("input/scale_factors/Fall15_76X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-	fillVector("input/scale_factors/Fall15_76X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-	fillVector("input/scale_factors/Fall15_76X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
+        fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_);
+        fillVector("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
       }
       else if(do_idiso_errmuore_){//Muon eff varied
 	fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
 	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
 	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
 	
-	fillVectorError("input/scale_factors/Fall15_76X_mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/Fall15_76X_mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/Fall15_76X_mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/Fall15_76X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/Fall15_76X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/Fall15_76X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
+        fillVectorError("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
+        fillVectorError("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
+        fillVectorError("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
+        fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
+        fillVectorError("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
+        fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
       }
       else{//Electron eff varied
 	fillVectorError("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
 	fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
 	fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
 	
-	fillVector("input/scale_factors/Fall15_76X_mu_tight_id_SF.txt",muTight_idSF_);
-	fillVector("input/scale_factors/Fall15_76X_mu_tight_iso_SF.txt",muTight_isoSF_);
-	fillVector("input/scale_factors/Fall15_76X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-	fillVector("input/scale_factors/Fall15_76X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-	fillVector("input/scale_factors/Fall15_76X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-	fillVector("input/scale_factors/Fall15_76X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);    
+        fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_);
+        fillVector("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);    
       }
       
       

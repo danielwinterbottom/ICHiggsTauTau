@@ -856,10 +856,10 @@ process.puJetMvaCHS = cms.EDProducer('PileupJetIdProducer',
 
 #reapply JEC example
 #process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-#process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+#process.patJetCorrFactorsReapplyJEC = process.updatedPatJetCorrFactors.clone(
 #  src = cms.InputTag("slimmedJets"),
 #  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
-#process.updatedJets = process.patJetsUpdated.clone(
+#process.updatedJets = process.updatedPatJets.clone(
 #  jetSource = cms.InputTag("slimmedJets"),
 #  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
 #  )

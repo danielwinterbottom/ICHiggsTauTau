@@ -34,6 +34,60 @@ namespace ic {
     ;
   }
 
+  void JetMETModifier::fillVectorResolution(const std::string & aFileName, std::vector<double> & aVector){
+    //std::cout<<aFileName<<":"<<std::endl;//!!
+    std::ifstream lInput;
+    lInput.open(aFileName);
+    if(!lInput.is_open()) {
+      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
+      //max expected size for e and mu is 33...
+      //aVector.resize(33,1);
+      return;
+    }
+    
+    // read in first line
+    double first_nvar = 0.;
+    double etaMax = 0.;
+    double rhoMin = 0.;
+    double rhoMax = 0.;
+    int Nvar = 0;
+    double pTmin = 0.;
+    double pTmax = 0.;
+    double var0 = 0.;
+    double var1 = 0.;
+    double var2 = 0.;
+    double var3 = 0.;
+    lInput>>etaMin>>etaMax>>rhoMin>>rhoMax>>Nvar>>pTmin>>pTmax>>var0>>var1>>var2>>var3;
+    std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<rhoMin<<" "<<rhoMax<<" "<<Nvar<<" "<<pTmin<<" "<<pTmax<<" "<<var0<<" "<<var1<<" "<<var2<<" "<<var3<<std::endl;
+    
+    
+    while(1){
+      double etaMin = 0.;
+      double etaMax = 0.;
+      double rhoMin = 0.;
+      double rhoMax = 0.;
+      int Nvar = 0;
+      double pTmin = 0.;
+      double pTmax = 0.;
+      double var0 = 0.;
+      double var1 = 0.;
+      double var2 = 0.;
+      double var3 = 0.;
+      lInput>>etaMin>>etaMax>>rhoMin>>rhoMax>>Nvar>>pTmin>>pTmax>>var0>>var1>>var2>>var3;
+      std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<rhoMin<<" "<<rhoMax<<" "<<Nvar<<" "<<pTmin<<" "<<pTmax<<" "<<var0<<" "<<var1<<" "<<var2<<" "<<var3<<std::endl;
+      
+      //protect against blank line at the end of the file
+      if (pTmin > 1) aVector.push_back(SF);
+      if(lInput.eof()){
+        break; 
+      }
+    }
+    
+    std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
+    lInput.close();
+    
+  }
+  
   int JetMETModifier::PreAnalysis() {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for JetMETModifier" << std::endl;
@@ -66,7 +120,7 @@ namespace ic {
     }
 
     std::cout << " -- Applying jetmetSyst: " << syst_ << std::endl;
-    
+
 
     //to reapply JEC on data
     if (is_data_ && reapplyJecData_){
@@ -99,7 +153,7 @@ namespace ic {
     }
 
     jetCorUnc_ = new JetCorrectionUncertainty(*(new JetCorrectorParameters(jesuncfile_)));
-    
+
     std::cout<<" -- Got parameters successfully"<<std::endl;
     TFileDirectory const& dir = fs_->mkdir("JES");
     TFileDirectory const& dir2 = fs_->mkdir("Smear");
@@ -117,7 +171,7 @@ namespace ic {
     Smeargenmindr = dir2.make<TH1F>("Smeargenmindr","Smeargenmindr",1000,0.,10.);
     Smearjetgenjetptratio = dir2.make<TH1F>("Smearjetgenjetptratio","Smearjetgenjetptratio",100,0.,10.);
     Smearjetgenjetptratioetabin = dir2.make<TH2F>("Smearjetgenjetptratioetabin","Smearjetgenjetptratioetabin",100,0.,10.,100,-5.,5.);
-    
+
     //Runmetunccomparisons
     icjetrunmetjetptdiff = dir3.make<TH1F>("icjetrunmetjetptdiff","icjetrunmetjetptdiff",600,-30.,30.);
     icjetrunmetjetptratio = dir3.make<TH1F>("icjetrunmetjetptratio","icjetrunmetjetptratio",10100,0.,10.1);
@@ -132,7 +186,7 @@ namespace ic {
     matchedrunmetjetpt = dir3.make<TH1F>("matchedrunmetjetpt","matchedrunmetjetpt",10000,0.,1000.);
     matchednojerjetpt = dir3.make<TH1F>("matchednojerjetpt","matchednojerjetpt",10000,0.,1000.);
 
-    
+
     //Jet resolution measurements
     if(dojetresmeasurement_){
     int npts = 40;
@@ -176,6 +230,10 @@ namespace ic {
       resin->GetObject(("resfuncforeta"+etas[i]).c_str(),resfunc[i]);
       resin->GetObject(("spring10resforeta"+etas[i]).c_str(),spring10resfunc[i]);
     }
+    
+    fillVectorResolution("input/scale_factors/MYFILE.txt",JetPtResolution_);
+
+    
     }
     return 0;
   }
@@ -201,7 +259,7 @@ namespace ic {
     //GET MET AND JET COLLECTIONS
     std::vector<GenJet *> genvec;
     std::vector<std::pair<unsigned,bool> >  recotogenmatch;
-    
+
     if (!is_data_){
       genvec = event->GetPtrVec<GenJet>("genJets");
       getGenRecoMatches<PFJet,GenJet>(jetvec,genvec,recotogenmatch,0.4);
@@ -214,23 +272,23 @@ namespace ic {
     for (unsigned i = 0; i < jetvec.size(); ++i) {//LOOP OVER JET COLLECTION
       //std::cout << " - Before : Jet " << i ;
       //jetvec[i]->Print();
-      
+
       //Get jet information
       ROOT::Math::PxPyPzEVector  oldjet = ROOT::Math::PxPyPzEVector(jetvec[i]->vector());
       ROOT::Math::PxPyPzEVector  newjet;
       ROOT::Math::PxPyPzEVector  prevjet;
-      
+
       double oldcor = oldjet.E()/jetvec[i]->uncorrected_energy();
       //remove old correction using corrector
       //double oldcor = jetvec[i]->GetJecFactor("L1FastJet")*
       //jetvec[i]->GetJecFactor("L2Relative")*
       //jetvec[i]->GetJecFactor("L3Absolute")*
       //jetvec[i]->GetJecFactor("L2L3Residual");
-      
+
       ROOT::Math::PxPyPzEVector rawjet = 1./oldcor*oldjet;
 	
       //std::cout << " -- Check of removal of corrections: uncorE = "<< jetvec[i]->uncorrected_energy() << " rawjet E = " << rawjet.E() << std::endl;
-      
+
       //apply new correction
       double newcor = oldcor;
       if ( (is_data_ && reapplyJecData_) || 
@@ -267,10 +325,10 @@ namespace ic {
       //update jet and correspondingly the met.
       jetvec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
       sumetdiff += newjet.pt()-oldjet.pt();
-      
+
       //std::cout << " - After : Jet " << i ;
       //jetvec[i]->Print();
-      
+
       double dpx = newjet.px()-oldjet.px();
       double dpy = newjet.py()-oldjet.py();
       newmet.SetPx(newmet.px()-dpx);
@@ -301,7 +359,7 @@ namespace ic {
     //std::cout << " - MET after: ";
     //met->Print();
     JESmetdiff->Fill(newmet.energy()-oldmet.energy());
-    
+
     return 0;
   }
 
@@ -312,9 +370,9 @@ namespace ic {
     jetCorrector_->setJetPt(rawjet.pt());
     jetCorrector_->setJetA(jetarea);
     jetCorrector_->setRho(rho); 
-    
+
     //Step5 (Get the correction factor or a vector of the individual correction factors) 
-    
+
     return jetCorrector_->getCorrection();
     //vector<double> factors = JetCorrector_->getSubCorrections();
     //IMPORTANT: the getSubCorrections member function returns the vector of the subcorrections UP to the given level. For example in the example above, factors[0] is the L1 correction and factors[3] is the L1+L2+L3+Residual correction. 
@@ -323,7 +381,7 @@ namespace ic {
   double JetMETModifier::applySmearing(const int error, 
 				       const GenJet* match,
 				       const ROOT::Math::PxPyPzEVector & oldjet){
-    
+
     double JERscalefac=1.;//if no match leave jet alone
     double JERcencorrfac=getJERcorrfac(fabs(oldjet.eta()),error,run2_);
     if(match!=-0){//if gen jet match calculate correction factor for pt
@@ -362,7 +420,7 @@ namespace ic {
       }
     }
     return JERscalefac;
-  
+
   }
 
   double JetMETModifier::applyJESuncertainty(const bool doUp,
@@ -388,7 +446,7 @@ namespace ic {
   void JetMETModifier::applyUESuncertainty(ic::Candidate* uesCorrected,
 					   ROOT::Math::PxPyPzEVector & newmet,
 					   double & sumetdiff){
-    
+
     sumetdiff += uesCorrected->pt()-newmet.pt();
     newmet.SetPx(uesCorrected->pt() * cos(uesCorrected->phi()));
     newmet.SetPy(uesCorrected->pt() * sin(uesCorrected->phi()));
@@ -435,13 +493,16 @@ namespace ic {
       }
     }//run1
     else {
-      double val[7] = {1.061,1.088,1.106,1.126,1.343,1.303,1.320};
-      double err[7] = {0.023,0.029,0.030,0.094,0.123,0.111,0.286}; 
-      double etabounds[8] = {0,0.8,1.3,1.9,2.5,3,3.2,5};
-      for (unsigned id(0); id<7;++id){
+      //Run2 2015 13 TeV dataset
+      //double val[7] = {1.061,1.088,1.106,1.126,1.343,1.303,1.320};
+      //double err[7] = {0.023,0.029,0.030,0.094,0.123,0.111,0.286}; 
+      //double etabounds[8] = {0,0.8,1.3,1.9,2.5,3,3.2,5};
+      double val[13] = {1.122,1.167,1.168,1.029,1.115,1.041,1.167,1.094,1.168,1.266,1.595,0.998,1.226};
+      double err[13] = {0.026,0.048,0.046,0.066,0.030,0.062,0.086,0.093,0.120,0.132,0.175,0.066,0.145};
+      double etabounds[14] = {0.0,0.5,0.8,1.1,1.3,1.7,1.9,2.1,2.3,2.5,2.8,3.0,3.2,5.0};
+      for (unsigned id(0); id<13;++id){
 	if (abseta>=etabounds[id] && abseta<etabounds[id+1]) JERcencorrfac=val[id]+error*err[id];
       }
-
     }
     return JERcencorrfac;
   }
@@ -450,10 +511,10 @@ namespace ic {
   int JetMETModifier::PostAnalysis() {
     return 0;
   }
-  
+
   void JetMETModifier::PrintInfo() {
     ;
   }
-  
-  
+
+
 }

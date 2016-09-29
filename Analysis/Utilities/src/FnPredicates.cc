@@ -155,6 +155,31 @@ namespace ic {
     }
     return result;
   }
+  
+  bool PFJetID2016(PFJet const* jet) {
+    double eta = fabs(jet->eta());
+    double neutral_had_energy_frac = jet->neutral_had_energy() / jet->uncorrected_energy();
+  
+    if (eta <= 2.4) {
+      if(!(jet->charged_had_energy_frac() > 0.0)) return false;
+      if(!(jet->charged_multiplicity() > 0)) return false;
+      if(!(jet->charged_em_energy_frac() < 0.99)) return false;
+    }
+    if (eta <= 2.7) {
+      if(!(neutral_had_energy_frac < 0.99)) return false;
+      if(!(jet->neutral_em_energy_frac() < 0.99)) return false;
+      if(!(jet->charged_multiplicity()+jet->neutral_multiplicity() > 1)) return false;
+    }
+    if(eta > 2.7 && eta <= 3.0) {
+      if(!(jet->neutral_em_energy_frac() < 0.90)) return false;
+      if(!(jet->neutral_multiplicity() > 2)) return false;
+    }
+    if(eta > 3.0) {
+      if(!(jet->neutral_em_energy_frac() < 0.90)) return false;
+      if(!(jet->neutral_multiplicity() > 10)) return false;
+    }
+    return true;
+  }
 
 
   bool PUJetID(PFJet const* jet, bool is_2012) {
