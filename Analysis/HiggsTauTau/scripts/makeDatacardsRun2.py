@@ -600,13 +600,6 @@ for ch in channels:
         ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbosity=0'
         ' --paramfile=%(PARAMS)s --extra_pad=0.2 --folder=%(FOLDER)s %(extra)s' % vars())
     
-    print ('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
-        ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
-        ' --var="%(var)s%(bin)s" --norm_bins=true '
-        ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
-        ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
-        ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbosity=0'
-        ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(extra)s' % vars())
   varsplit = var.split('(')
   varname=varsplit[0]
   os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
