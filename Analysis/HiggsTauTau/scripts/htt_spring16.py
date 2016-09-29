@@ -82,6 +82,9 @@ parser.add_option("--taues_study", dest="taues_study", action='store_true', defa
 parser.add_option("--qcd_study", dest="qcd_study", action='store_true', default=False,
                   help="Run QCD MC sample for QCD study")
 
+parser.add_option("--analysis", dest="analysis", type='string', default='mssm',
+                  help="Specify whether trees are produced for mssm or sm analysis")
+
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
@@ -93,6 +96,7 @@ BACKUPNAME = options.slbackupname
 scales = options.scales
 taues_study = options.taues_study
 no_json = options.no_json
+analysis = options.analysis
 
 
 scale_list = scales.split(',')
@@ -112,10 +116,12 @@ for scale in scale_list:
 
 FLATJSONPATCHOTH = ''.join(flatjsonlist)
 FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
-
-
-CONFIG='scripts/configsm2016.json'
-
+ 
+if analysis == 'sm':
+  CONFIG='scripts/configsm2016.json'
+else:
+  CONFIG='scripts/config2016.json'
+  
 FILELIST='filelists/Aug11_MC_80X'
 
 signal_mc = [ ]
