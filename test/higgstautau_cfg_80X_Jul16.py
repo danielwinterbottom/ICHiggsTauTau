@@ -799,7 +799,10 @@ process.icTauProducer = producers.icTauProducer.clone(
   inputVertices           = vtxLabel,
   includeVertexIP         = cms.bool(True),
   requestTracks           = cms.bool(True),
+  includeTotalCharged     = cms.bool(False),
+  totalChargedLabel       = cms.string('totalCharged'),
   tauIDs = tauIDs.dynamicStripIds
+
 )
 
 if release in ['80XMINIAOD']:
@@ -809,6 +812,11 @@ if release in ['80XMINIAOD']:
     inputVertices           = vtxLabel,
     includeVertexIP         = cms.bool(True),
     requestTracks           = cms.bool(False),
+    includeTotalCharged     = cms.bool(False),
+    totalChargedLabel       = cms.string('totalCharged'),
+    requestPFCandidates   = cms.bool(False),
+    inputPFCandidates     = cms.InputTag("pfCandidates"),
+    isSlimmed             = cms.bool(False),
     tauIDs = cms.PSet()
 )
 
