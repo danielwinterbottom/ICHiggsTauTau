@@ -345,12 +345,6 @@ namespace ic {
       outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
       
-      outtree_->Branch("jets_totpt",          &jets_totpt_.var_double);
-      outtree_->Branch("jetsplustt_totpt",    &jetsplustt_totpt_.var_double);
-      outtree_->Branch("pt_tt_totpt_minus_jets_totpt",    &pt_tt_totpt_minus_jets_totpt_.var_double);
-      outtree_->Branch("jetsplustt_totpt_norm",    &jetsplustt_totpt_norm_.var_double);
-      outtree_->Branch("pt_tt_totpt_minus_jets_totpt_norm",    &pt_tt_totpt_minus_jets_totpt_norm_.var_double);
-      
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
@@ -2492,12 +2486,7 @@ namespace ic {
       double eta_low = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[1]->eta() : lowpt_jets[0]->eta();
       n_jetsingap_ = 0;
       n_jetsingap20_ = 0;
-      //Added Vairables for study - DW
-      jets_totpt_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
-      jetsplustt_totpt_ = (ditau->vector() + mets->vector() + lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
-      pt_tt_totpt_minus_jets_totpt_ = (ditau->vector() + mets->vector()).pt() - (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
-      jetsplustt_totpt_norm_ = (ditau->vector() + mets->vector() + lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt()/((ditau->vector() + mets->vector()).pt() + (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt());
-      pt_tt_totpt_minus_jets_totpt_norm_ = (ditau->vector() + mets->vector()).pt() - (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt()/((ditau->vector() + mets->vector()).pt() + (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt());
+ 
       if (n_lowpt_jets_ > 2) {
         for (unsigned i = 2; i < lowpt_jets.size(); ++i) {
          if (lowpt_jets[i]->pt() > 30.0 &&  lowpt_jets[i]->eta() > eta_low && lowpt_jets[i]->eta() < eta_high) ++n_jetsingap_;
@@ -2518,11 +2507,6 @@ namespace ic {
       jctm_2_ = -9999;
       n_jetsingap_ = 9999;
       n_jetsingap20_ = 9999;
-      jets_totpt_ = -9999;
-      jetsplustt_totpt_ = -9999;
-      pt_tt_totpt_minus_jets_totpt_ = -9999;
-      jetsplustt_totpt_norm_ = -9999;
-      pt_tt_totpt_minus_jets_totpt_norm_ = -9999;
     }
 
     if (n_lowpt_jets_ >= 2) {
