@@ -95,6 +95,7 @@ class HinvWeights : public ModuleBase {
   std::vector<double> muTight_idisoSF_;
   std::vector<double> muVeto_idisoDataEff_;
   std::vector<double> muVeto_idisoMCEff_;
+  std::vector<double> mu_TkSF_;
 
   std::vector<double> gsfbin_;
 
@@ -132,9 +133,12 @@ class HinvWeights : public ModuleBase {
   unsigned findElectronPtEtaBin(double pt, double eta);
   unsigned findGSFEtaBin(double eta);
   unsigned findMuonPtEtaBin(double pt, double eta);
+  unsigned findMuonEtaBin(double eta);
   void fillVector(const std::string & aFileName, std::vector<double> & aVector);
   void fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
-
+  void fillVectorTk(const std::string & aFileName, std::vector<double> & aVector);
+  void fillVectorErrorTk(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
+  
   double nloReweighting(const double & aMjj, const double & aYstar);
 
 
