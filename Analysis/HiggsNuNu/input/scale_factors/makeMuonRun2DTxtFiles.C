@@ -88,7 +88,7 @@ int makeMuonRun2DTxtFiles(){//main
   lName_ratios << "Spring16_80X_mu_trackingSF.txt";
   std::ofstream lOut_ratios(lName_ratios.str().c_str());
   for (unsigned ibin(0); ibin<nPts; ++ibin){//loop on eta bin
-    lOut_ratios << etaMin_ratios[ibin] << " " << etaMax_ratios[ibin] << " " << val[ibin] << " " << Min_ratios[ibin] << " " << Max_ratios[ibin] << std::endl;
+    lOut_ratios << "1 14000 " << etaMin_ratios[ibin] << " " << etaMax_ratios[ibin] << " " << val[ibin] << " " << Min_ratios[ibin] << " " << Max_ratios[ibin] << std::endl;
   }//loop on eta bin
   
 
