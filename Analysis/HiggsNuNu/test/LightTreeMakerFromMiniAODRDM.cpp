@@ -381,8 +381,8 @@ int main(int argc, char* argv[]){
   std::string suffix = output_name.substr( 0 , output_name.find(".root") );
   mydebugoutput.append(suffix);
   
-  //if (era == era::data_2016) data_json     =  "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
-  if (era == era::data_2016) data_json     =  "input/json/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt";
+  if (era == era::data_2016) data_json     =  "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
+  //if (era == era::data_2016) data_json     =  "input/json/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt";
   LumiMask lumiMask = LumiMask("LumiMask")
    //.set_produce_output_jsons(mydebugoutput.c_str())
     .set_input_file(data_json);
@@ -409,8 +409,8 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
   if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
-  //if (era == era::data_2016) data_pu_file   =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
-  if (era == era::data_2016) data_pu_file   =  "input/pileup/15d9/Data_Pileup_mb69d2_2016-600bins.root";
+  if (era == era::data_2016) data_pu_file   =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
+  //if (era == era::data_2016) data_pu_file   =  "input/pileup/15d9/Data_Pileup_mb69d2_2016-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -435,10 +435,10 @@ int main(int argc, char* argv[]){
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
   }
   else if(era == era::data_2016){
-    //data_pu_up  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
-    data_pu_up  = GetFromTFile<TH1D>("input/pileup/15d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
-    //data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
-    data_pu_down  = GetFromTFile<TH1D>("input/pileup/15d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    //data_pu_up  = GetFromTFile<TH1D>("input/pileup/15d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
+    //data_pu_down  = GetFromTFile<TH1D>("input/pileup/15d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
   }
 
   if (!is_data) {

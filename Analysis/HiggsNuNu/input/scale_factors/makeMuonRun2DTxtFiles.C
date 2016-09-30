@@ -88,7 +88,7 @@ int makeMuonRun2DTxtFiles(){//main
   lName_ratios << "Spring16_80X_mu_trackingSF.txt";
   std::ofstream lOut_ratios(lName_ratios.str().c_str());
   for (unsigned ibin(0); ibin<nPts; ++ibin){//loop on eta bin
-    lOut_ratios << "1 14000 " << etaMin_ratios[ibin] << " " << etaMax_ratios[ibin] << " " << val[ibin] << " " << Min_ratios[ibin] << " " << Max_ratios[ibin] << std::endl;
+    lOut_ratios << "10 14000 " << etaMin_ratios[ibin] << " " << etaMax_ratios[ibin] << " " << val[ibin] << " " << Min_ratios[ibin] << " " << Max_ratios[ibin] << std::endl;
   }//loop on eta bin
   
 
@@ -131,6 +131,18 @@ int makeMuonRun2DTxtFiles(){//main
       lName << prefix << lFileName[iWP] << "_" << lDataType[iData] << ".txt";
       std::ofstream lOut(lName.str().c_str());
       
+      //do negative eta
+      for (unsigned iEta(nEta); iEta>0; --iEta){//loop on eta bin
+	for (unsigned iPt(0); iPt<nPt; ++iPt){//loop on pT bins
+	  double val = hist_muon[iWP][iData]->GetBinContent(iEta,iPt+1);
+	  double err = hist_muon[iWP][iData]->GetBinError(iEta,iPt+1);
+          err = sqrt(pow(err,2)+pow(lSystematic[iWP],2));
+	  lOut << ptMin[iPt] << " " << ptMax[iPt] << " " << -etaMax[iEta-1] << " " << -etaMin[iEta-1] << " " << val << " " << err << " " << err << std::endl;
+	}//loop on pT bins
+	
+      }//loop on eta bin
+      
+      //do positive eta
       for (unsigned iEta(0); iEta<nEta; ++iEta){//loop on eta bin
 	for (unsigned iPt(0); iPt<nPt; ++iPt){//loop on pT bins
 	  double val = hist_muon[iWP][iData]->GetBinContent(iEta+1,iPt+1);

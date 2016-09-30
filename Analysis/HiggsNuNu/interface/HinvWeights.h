@@ -97,7 +97,15 @@ class HinvWeights : public ModuleBase {
   std::vector<double> muVeto_idisoMCEff_;
   std::vector<double> mu_TkSF_;
 
-  std::vector<double> gsfbin_;
+  std::vector<double> gsf_etabin_;
+  std::vector<double> gsf_ptbin_;
+  std::vector<double> e_etabin_;
+  std::vector<double> e_ptbin_;
+
+  std::vector<double> tk_etabin_;
+  std::vector<double> tk_ptbin_;
+  std::vector<double> mu_etabin_;
+  std::vector<double> mu_ptbin_;
 
   double f0_,f1_,f2_,f3_,f4_,f5_,f6_,f7_,n_inc_,n1_,n2_,n3_,n4_,n5_,n6_,n7_,w0_,w1_,w2_,w3_,w4_,w5_,w6_,w7_;
   double zf0_,zf1_,zf2_,zf3_,zf4_,zn_inc_,zn1_,zn2_,zn3_,zn4_,zw0_,zw1_,zw2_,zw3_,zw4_;
@@ -130,14 +138,16 @@ class HinvWeights : public ModuleBase {
 
   unsigned getPartonNumber(std::vector<GenParticle*> const& parts);
 
-  unsigned findElectronPtEtaBin(double pt, double eta);
-  unsigned findGSFEtaBin(double eta);
-  unsigned findMuonPtEtaBin(double pt, double eta);
-  unsigned findMuonEtaBin(double eta);
-  void fillVector(const std::string & aFileName, std::vector<double> & aVector);
+  unsigned findPtEtaBin(const double & pt, const double & eta, const std::vector<double> & ptbin, const std::vector<double> & etabin);
+
+  void fillVector(const std::string & aFileName, 
+		  const unsigned nPtBins,
+		  const unsigned nEtaBins,
+		  std::vector<double> & aVector,
+		  std::vector<double> & ptbin,
+		  std::vector<double> & etabin);
+
   void fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
-  void fillVectorTk(const std::string & aFileName, std::vector<double> & aVector);
-  void fillVectorErrorTk(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
   
   double nloReweighting(const double & aMjj, const double & aYstar);
 

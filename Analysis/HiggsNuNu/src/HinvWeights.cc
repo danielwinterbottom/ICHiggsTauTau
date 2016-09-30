@@ -341,45 +341,38 @@ namespace ic {//namespace
       }
     }
     if (save_weights_){
-      if(!do_idiso_err_){//Central value
-	fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_);
-	fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",e_gsfidSF_);
-	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
-	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
-	fillVector("input/scale_factors/Spring16_80X_gsf_id_data_eff.txt",e_gsfidDataEff_);
-	fillVector("input/scale_factors/Spring16_80X_gsf_id_mc_eff.txt",e_gsfidMCEff_);
+      std::vector<double> dummypt;
+      std::vector<double> dummyeta;
+      if(!do_idiso_err_ || (do_idiso_err_ && do_idiso_errmuore_) ){//Central value electrons
+	fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",5,10,eTight_idisoSF_,e_ptbin_,e_etabin_);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",1,28,e_gsfidSF_,gsf_ptbin_,gsf_etabin_);
+	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",5,10,eVeto_idisoDataEff_,dummypt,dummyeta);
+	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_mc_eff.txt",5,10,eVeto_idisoMCEff_,dummypt,dummyeta);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_data_eff.txt",1,28,e_gsfidDataEff_,dummypt,dummyeta);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_mc_eff.txt",1,28,e_gsfidMCEff_,dummypt,dummyeta);
 	//fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
 	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
 	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
-	
-        fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_);
-        fillVector("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
-        fillVectorTk("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_TkSF_);
       }
-      else if(do_idiso_errmuore_){//Muon eff varied
-	fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_);
-	fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",e_gsfidSF_);
-	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
-	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
-	fillVector("input/scale_factors/Spring16_80X_gsf_id_data_eff.txt",e_gsfidDataEff_);
-	fillVector("input/scale_factors/Spring16_80X_gsf_id_mc_eff.txt",e_gsfidMCEff_);
-	//fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
-	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
-	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
-	
+      if (!do_idiso_err_ || (do_idiso_err_ && !do_idiso_errmuore_) ){//Central value muons
+        fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",7,8,muTight_idSF_,mu_ptbin_,mu_etabin_);
+        fillVector("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",7,8,muTight_isoSF_,dummypt,dummyeta);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",7,8,muVeto_idDataEff_,dummypt,dummyeta);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",7,8,muVeto_isoDataEff_,dummypt,dummyeta);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",7,8,muVeto_idMCEff_,dummypt,dummyeta);
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",7,8,muVeto_isoMCEff_,dummypt,dummyeta);
+        fillVector("input/scale_factors/Spring16_80X_mu_trackingSF.txt",1,10,mu_TkSF_,tk_ptbin_,tk_etabin_);
+      }
+      if(do_idiso_err_ && do_idiso_errmuore_){//Muon eff varied
         fillVectorError("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);
-        fillVectorErrorTk("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_TkSF_,do_idiso_errupordown_);
+        fillVectorError("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_TkSF_,do_idiso_errupordown_);
       }
-      else{//Electron eff varied
+      else if (do_idiso_err_ && !do_idiso_errmuore_) {//Electron eff varied
 	fillVectorError("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
 	fillVectorError("input/scale_factors/Spring16_80X_gsf_id_SF.txt",e_gsfidSF_,do_idiso_errupordown_);
 	fillVectorError("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
@@ -389,14 +382,6 @@ namespace ic {//namespace
 	//fillVectorError("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
 	//fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
 	//fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
-	
-        fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_);
-        fillVector("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
-        fillVectorTk("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_TkSF_);
       }
       
       
@@ -843,8 +828,8 @@ namespace ic {//namespace
     std::vector<Electron*> const& elecs = event->GetPtrVec<Electron>("selElectrons");
     double ele_weight = 1.0;
     for (unsigned iEle(0); iEle<elecs.size();++iEle){
-      ele_weight *= eTight_idisoSF_[findElectronPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta())];
-      ele_weight *= e_gsfidSF_[findGSFEtaBin(elecs[iEle]->eta())];
+      ele_weight *= eTight_idisoSF_[findPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta(),e_ptbin_,e_etabin_)];
+      ele_weight *= e_gsfidSF_[findPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta(),gsf_ptbin_,gsf_etabin_)];
     }
     eventInfo->set_weight("!eleTight_idisoSF",ele_weight);
     tighteleweight->Fill(ele_weight);
@@ -854,8 +839,8 @@ namespace ic {//namespace
    std::vector<Muon*> const& mus = event->GetPtrVec<Muon>("selMuons");
     double mu_weight = 1.0;
     for (unsigned iEle(0); iEle<mus.size();++iEle){
-      unsigned lBin = findMuonPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta());
-      unsigned mBin = findMuonEtaBin(mus[iEle]->eta());
+      unsigned lBin = findPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta(),mu_ptbin_,mu_etabin_);
+      unsigned mBin = findPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta(),tk_ptbin_,tk_etabin_);
       mu_weight *= muTight_idisoSF_[lBin] * mu_TkSF_[mBin];
     }
     eventInfo->set_weight("!muTight_idisoSF",mu_weight);
@@ -897,8 +882,8 @@ namespace ic {//namespace
 	if (isTau) eventsWithGenElectronFromTau_++;
 	else eventsWithGenElectron_++;
 	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.4) {
-	  unsigned lBin = findElectronPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
-	  unsigned lBinGsf = findGSFEtaBin(genParts[iEle]->eta());
+	  unsigned lBin = findPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta(),e_ptbin_,e_etabin_);
+	  unsigned lBinGsf = findPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta(),gsf_ptbin_,gsf_etabin_);
 	  ele_veto_weight *= (1-(eVeto_idisoDataEff_[lBin]*e_gsfidDataEff_[lBinGsf]))/(1-(eVeto_idisoMCEff_[lBin]*e_gsfidMCEff_[lBinGsf]));
 	  if (isTau) eventsWithGenElectronFromTauInAcc_++;
 	  else eventsWithGenElectronInAcc_++;
@@ -911,7 +896,7 @@ namespace ic {//namespace
 	if (isTau) eventsWithGenMuonFromTau_++;
 	else eventsWithGenMuon_++;
 	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.1) {
-	  unsigned lBin = findMuonPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
+	  unsigned lBin = findPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta(),mu_ptbin_,mu_etabin_);
 	  mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
 	  //if(mu_veto_weight<0)std::cout<<"Below zero weight:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<std::endl;//!!
 	  //if(mu_veto_weight>10000)std::cout<<"Very high weight:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<" "<<genParts[iEle]->pt()<<" "<<genParts[iEle]->eta()<<std::endl;//!!
@@ -1142,94 +1127,58 @@ namespace ic {//namespace
     }
   }
 
-  unsigned HinvWeights::findGSFEtaBin(double aEta){
-    if (gsfbin_.size()!=29){
-      std::cout << "Error! GSF eta bin vector not filled properly. Expected size: 29, found : " << gsfbin_.size() 
-		<< " file " << __FILE__ << " line " << __LINE__
-		<< std::endl;
+  unsigned HinvWeights::findPtEtaBin(const double & aPt, const double & aEta, const std::vector<double> & ptbinvec, const std::vector<double> & etabinvec){
+    if (etabinvec.size()==0 || ptbinvec.size()==0) {
+      std::cout << " -- Error, uninitialised arrays for finding bin number! " << __FILE__ << " line " << __LINE__ << std::endl;
       exit(1);
     }
+
+    unsigned nEta = etabinvec.size()-1;
+    unsigned nPt = ptbinvec.size()-1;
     unsigned etabin = 0;
-    unsigned nEta = gsfbin_.size()-1;
+    unsigned ptbin = 0;
     for (unsigned ieta(0); ieta<nEta;++ieta){
-      if (aEta>=gsfbin_[ieta] &&  aEta<gsfbin_[ieta+1]) {
+      if (aEta>=etabinvec[ieta] &&  aEta<etabinvec[ieta+1]) {
 	etabin = ieta;
 	break;
       }
     }
-    return etabin;
+    for (unsigned ipt(0); ipt<nPt;++ipt){
+      if (aPt>=ptbinvec[ipt] &&  aPt<ptbinvec[ipt+1]) {
+	ptbin = ipt;
+	break;
+      }
+    }
+
+
+    unsigned bin = nPt*etabin+ptbin;
+    //std::cout << " check bin: eta = " << aEta << " pt=" << aPt << " bineta = " << etabin << " ptbin= " << ptbin << " final bin = " << bin << std::endl;
+
+    return bin;
   }
 
-  unsigned HinvWeights::findElectronPtEtaBin(double pt, double eta){
 
-    unsigned etaBin = 0;
-    if (fabs(eta) < 0.8) etaBin=0;
-    else if (fabs(eta) < 1.444) etaBin=1;
-    else if (fabs(eta) < 1.566) etaBin=2;
-    else if (fabs(eta) < 2.0) etaBin=3;
-    else etaBin=4;
-    unsigned ptBin = 0;
-    if (pt<20) ptBin=0;
-    else if (pt<30) ptBin=1;
-    else if (pt<40) ptBin=2;
-    else if (pt<50) ptBin=3;
-    else ptBin=4;
-    
-    return 5*etaBin+ptBin;
-
-  }
-
-  unsigned HinvWeights::findMuonPtEtaBin(double pt, double eta){
-    unsigned etaBin = 0;
-    if (fabs(eta) < 0.9) etaBin=0;
-    else if (fabs(eta) < 1.2) etaBin=1;
-    else if (fabs(eta) < 2.1) etaBin=2;
-    else etaBin=3;
-
-    unsigned ptBin = 0;
-    if (pt<25) ptBin=0;
-    else if (pt<30) ptBin=1;
-    else if (pt<40) ptBin=2;
-    else if (pt<50) ptBin=3;
-    else if (pt<60) ptBin=4;
-    else if (pt<120) ptBin=5;
-    else ptBin=6;
-    return 7*etaBin+ptBin;
-    //    else if (pt<300) ptBin=9;
-    //else ptBin=10;
-    //return 11*etaBin+ptBin;
-
-  }
-  
-  unsigned HinvWeights::findMuonEtaBin(double eta){
-    unsigned etaBin = 0;
-    if (eta>-2.4 && eta<=-2.1) etaBin=0;
-    else if (eta>-2.1 && eta<=-1.6) etaBin=1;
-    else if (eta>-1.6 && eta<=-1.1) etaBin=2;
-    else if (eta>-1.1 && eta<=-0.6) etaBin=3;
-    else if (eta>-0.6 && eta<=0.0) etaBin=4;
-    else if (eta>0.0 && eta<=0.6) etaBin=5;
-    else if (eta>0.6 && eta<=1.1) etaBin=6;
-    else if (eta>1.1 && eta<=1.6) etaBin=7;
-    else if (eta>1.6 && eta<=2.1) etaBin=8;
-    else if (eta>2.1 && eta<=2.4) etaBin=9;
-
-    return etaBin;
-  }
-
-  void HinvWeights::fillVector(const std::string & aFileName, std::vector<double> & aVector){
+  void HinvWeights::fillVector(const std::string & aFileName, 
+			       const unsigned nPtBins,
+			       const unsigned nEtaBins,
+			       std::vector<double> & aVector,
+			       std::vector<double> & ptbin,
+			       std::vector<double> & etabin){
     //std::cout<<aFileName<<":"<<std::endl;//!!
-    bool isGSF = aFileName.find("gsf_id_SF")!=aFileName.npos;
     aVector.clear();
-    if (isGSF) gsfbin_.clear();
+    ptbin.clear();
+    etabin.clear();
     std::ifstream lInput;
     lInput.open(aFileName);
     if(!lInput.is_open()) {
       std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
       //max expected size for e and mu is 33...
-      aVector.resize(33,1);
+      aVector.resize(nPtBins*nEtaBins,1);
       return;
     }
+
+    unsigned counter = 0;
+
     while(1){
       double pTmin = 0;
       double pTmax = 0;
@@ -1244,53 +1193,26 @@ namespace ic {//namespace
       //protect against blank line at the end of the file
       if (pTmin > 1) {
 	aVector.push_back(SF);
-	if (isGSF) gsfbin_.push_back(etaMin);
+	if (counter%nPtBins==0) etabin.push_back(etaMin);
+	if (counter<nPtBins) ptbin.push_back(pTmin);
+	counter++;
+	if (counter == nPtBins*nEtaBins) {
+	  etabin.push_back(etaMax);
+	  ptbin.push_back(pTmax);
+	}
       }
       if(lInput.eof()){
 	break; 
       }
     }
-    //last eta bin
-    if (isGSF) gsfbin_.push_back(2.5);
 
     std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
-    if (isGSF) std::cout << " ---- Size of gsf eta bin vector: " << gsfbin_.size() << std::endl;
+    std::cout << " ---- Size of pt bin vector: " << ptbin.size() << std::endl;
+    std::cout << " ---- Size of eta bin vector: " << etabin.size() << std::endl;
 
     lInput.close();
 
   }
-
-  void HinvWeights::fillVectorTk(const std::string & aFileName, std::vector<double> & aVector){
-    //std::cout<<aFileName<<":"<<std::endl;//!!
-    std::ifstream lInput;
-    lInput.open(aFileName);
-    if(!lInput.is_open()) {
-      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
-      //max expected size for e and mu is 33...
-      aVector.resize(33,1);
-      return;
-    }
-    while(1){
-      double etaMin = 0;
-      double etaMax = 0;
-      double SF = 0;
-      double SFerrPlus = 0;
-      double SFerrMinus = 0;
-      lInput>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
-      if(lInput.eof()){
-        break; 
-      }
-      //std::cout<<"  "<<etaMin<<" "<<etaMax<<" "<<SF<<std::endl;
-      
-      //protect against blank line at the end of the file
-      aVector.push_back(SF);
-    }
-    
-    std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
-    lInput.close();
-    
-  }
-  
 
   void HinvWeights::fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown){
     //std::cout<<aFileName<<":"<<std::endl;//!!
@@ -1331,41 +1253,6 @@ namespace ic {//namespace
 
   }
   
-  void HinvWeights::fillVectorErrorTk(const std::string & aFileName, std::vector<double> & aVector, bool upordown){
-    //std::cout<<aFileName<<":"<<std::endl;//!!
-    std::ifstream lInput;
-    lInput.open(aFileName);
-    if(!lInput.is_open()){
-      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
-      //max expected size for e and mu is 33...
-      aVector.resize(33,1);
-      return;
-    }
-    while(1){
-      double etaMin = 0;
-      double etaMax = 0;
-      double SF = 0;
-      double SFerrPlus = 0;
-      double SFerrMinus = 0;
-      lInput>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
-      if(lInput.eof()){
-        break; 
-      }
-      if(upordown){
-        //std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<SF+SFerrPlus<<std::endl;//!!
-        aVector.push_back(SF+SFerrPlus);
-      }
-      else{
-        //std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<SF-SFerrMinus<<std::endl;//!!
-        aVector.push_back(SF-SFerrMinus);
-      }
-    }
-    
-    std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
-    lInput.close();
-    
-  }
-
   double HinvWeights::nloReweighting(const double & aMjj, const double & aYstar){
 
     double weight = 1.0;
