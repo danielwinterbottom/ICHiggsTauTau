@@ -353,7 +353,6 @@ namespace ic {
       outtree_->Branch("subleading_lepton_match_DR",&subleading_lepton_match_DR_);*/
 
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
-      outtree_->Branch("wt_tau_id_sf",       &wt_tau_id_sf_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
@@ -1257,7 +1256,6 @@ namespace ic {
     wt_em_qcd_down_ = 1.0;
     wt_em_qcd_up_ = 1.0;
     wt_nlo_pt_ = 1.0;
-    wt_tau_id_sf_ = 1.0;
     nlo_pt_ = 9999.;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
@@ -1274,7 +1272,6 @@ namespace ic {
     if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
-    if (event->Exists("wt_tau_id_sf"))      wt_tau_id_sf_ = event->Get<double>("wt_tau_id_sf");
 
   
   mc_weight_ = 0.0;
