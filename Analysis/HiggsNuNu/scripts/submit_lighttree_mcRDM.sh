@@ -1,7 +1,7 @@
 #!/bin/sh
 DOCERN=0
 ### submit to the batch sistem at IC 1 -- 0 otherwise
-DOSUBMIT=0
+DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=JetMETvalidation
@@ -41,11 +41,13 @@ do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
   #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_with6fbTrigEff
-  JOBDIRPREFIX=jobs_lighttree_160929
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_160930
+  #JOBDIRPREFIX=jobs_lighttree_160929
   #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
   #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_with6fbTrigEff
-  OUTPUTPREFIX=output_lighttree_160929
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_160930
+  #OUTPUTPREFIX=output_lighttree_160929
   #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -149,8 +151,8 @@ do
     
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
-    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_WJetsToLNu-mg*`
+    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_WJetsToLNu-mg*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
 	  do
       echo "Processing files in "$FILELIST
 

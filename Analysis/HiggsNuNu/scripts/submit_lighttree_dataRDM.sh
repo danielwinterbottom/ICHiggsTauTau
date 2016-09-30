@@ -144,7 +144,7 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #UESUP UESDOWN ELEEFFUP EL
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_SingleMuon*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*HTMHT*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*M*T*`
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*MET*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*MET*`
       do
       echo "Processing files in "$FILELIST
       
