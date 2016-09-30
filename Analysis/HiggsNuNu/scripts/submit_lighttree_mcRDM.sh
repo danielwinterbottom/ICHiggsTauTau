@@ -149,7 +149,8 @@ do
     
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg*125*`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_WJetsToLNu-mg*`
 	  do
       echo "Processing files in "$FILELIST
 

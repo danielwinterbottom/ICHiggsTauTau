@@ -342,11 +342,15 @@ namespace ic {//namespace
     }
     if (save_weights_){
       if(!do_idiso_err_){//Central value
-	//fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_);
-	//fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",e_gsfidSF_);
-	fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
-	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
-	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+	fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",e_gsfidSF_);
+	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_data_eff.txt",e_gsfidDataEff_);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_mc_eff.txt",e_gsfidMCEff_);
+	//fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
+	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
 	
         fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_);
         fillVector("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_);
@@ -356,9 +360,15 @@ namespace ic {//namespace
         fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
       }
       else if(do_idiso_errmuore_){//Muon eff varied
-	fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
-	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
-	fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+	fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",e_gsfidSF_);
+	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_data_eff.txt",e_gsfidDataEff_);
+	fillVector("input/scale_factors/Spring16_80X_gsf_id_mc_eff.txt",e_gsfidMCEff_);
+	//fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
+	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
 	
         fillVectorError("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
@@ -368,9 +378,15 @@ namespace ic {//namespace
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
       }
       else{//Electron eff varied
-	fillVectorError("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
-	fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Spring16_80X_gsf_id_SF.txt",e_gsfidSF_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Spring16_80X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Spring16_80X_gsf_id_data_eff.txt",e_gsfidDataEff_,do_idiso_errupordown_);
+	fillVectorError("input/scale_factors/Spring16_80X_gsf_id_mc_eff.txt",e_gsfidMCEff_,do_idiso_errupordown_);
+	//fillVectorError("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
+	//fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
+	//fillVectorError("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
 	
         fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_);
         fillVector("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",muTight_isoSF_);
@@ -401,6 +417,13 @@ namespace ic {//namespace
 	if(eVeto_idisoMCEff_[iBin]>=1)eVeto_idisoMCEff_[iBin]=0.999;
 	if(eVeto_idisoDataEff_[iBin]<0)eVeto_idisoDataEff_[iBin]=0;
 	if(eVeto_idisoMCEff_[iBin]<0)eVeto_idisoMCEff_[iBin]=0;
+      }
+
+      for (unsigned iBin(0); iBin<e_gsfidDataEff_.size();++iBin){
+	if(e_gsfidDataEff_[iBin]>=1)e_gsfidDataEff_[iBin]=0.999;
+	if(e_gsfidMCEff_[iBin]>=1)e_gsfidMCEff_[iBin]=0.999;
+	if(e_gsfidDataEff_[iBin]<0)e_gsfidDataEff_[iBin]=0;
+	if(e_gsfidMCEff_[iBin]<0)e_gsfidMCEff_[iBin]=0;
       }
     
       
@@ -818,6 +841,7 @@ namespace ic {//namespace
     double ele_weight = 1.0;
     for (unsigned iEle(0); iEle<elecs.size();++iEle){
       ele_weight *= eTight_idisoSF_[findElectronPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta())];
+      ele_weight *= e_gsfidSF_[findGSFEtaBin(elecs[iEle]->eta())];
     }
     eventInfo->set_weight("!eleTight_idisoSF",ele_weight);
     tighteleweight->Fill(ele_weight);
@@ -852,58 +876,46 @@ namespace ic {//namespace
 
     for (unsigned iEle(0); iEle<genParts.size(); ++iEle){//loop on genparticles
 
-      if (genParts[iEle]->status()!=3) continue;
- 
+      //if (genParts[iEle]->status()!=3) continue;
+      unsigned id = abs(genParts[iEle]->pdgid());
+      std::vector<bool> flags=genParts[iEle]->statusFlags();
+      if (!( (flags[GenStatusBits::IsPrompt] && 
+	      flags[GenStatusBits::FromHardProcess] &&
+	      flags[GenStatusBits::IsFirstCopy]) ||
+	     (flags[GenStatusBits::IsDirectPromptTauDecayProduct]) 
+	     )) continue;
+
+      bool isTau = flags[GenStatusBits::IsDirectPromptTauDecayProduct];
+      if (id==15) eventsWithGenTau_++;
       //do Electrons
-      if (abs(genParts[iEle]->pdgid())==11){
-	eventsWithGenElectron_++;
+      if (id==11){
+	//std::cout << "Electron, status = " << genParts[iEle]->status() << std::endl;
+	if (isTau) eventsWithGenElectronFromTau_++;
+	else eventsWithGenElectron_++;
 	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.4) {
 	  unsigned lBin = findElectronPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
-	  ele_veto_weight *= (1-eVeto_idisoDataEff_[lBin])/(1-eVeto_idisoMCEff_[lBin]);
-	  eventsWithGenElectronInAcc_++;
+	  unsigned lBinGsf = findGSFEtaBin(genParts[iEle]->eta());
+	  ele_veto_weight *= (1-(eVeto_idisoDataEff_[lBin]*e_gsfidDataEff_[lBinGsf]))/(1-(eVeto_idisoMCEff_[lBin]*e_gsfidMCEff_[lBinGsf]));
+	  if (isTau) eventsWithGenElectronFromTauInAcc_++;
+	  else eventsWithGenElectronInAcc_++;
 	}
       }
 
       //doMuons
       if (abs(genParts[iEle]->pdgid())==13){
-	eventsWithGenMuon_++;
+	//std::cout << "Muon, status = " << genParts[iEle]->status() << std::endl;
+	if (isTau) eventsWithGenMuonFromTau_++;
+	else eventsWithGenMuon_++;
 	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.1) {
 	  unsigned lBin = findMuonPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
 	  mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
 	  //if(mu_veto_weight<0)std::cout<<"Below zero weight:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<std::endl;//!!
 	  //if(mu_veto_weight>10000)std::cout<<"Very high weight:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<" "<<genParts[iEle]->pt()<<" "<<genParts[iEle]->eta()<<std::endl;//!!
-	  eventsWithGenMuonInAcc_++;
+	  if (isTau) eventsWithGenMuonFromTauInAcc_++;
+	  else eventsWithGenMuonInAcc_++;
 	}
       }
-
-      //doTaus
-      if (abs(genParts[iEle]->pdgid())==15){
-	eventsWithGenTau_++;
-	//get the specific taus collection with daughters filled
-	std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
-	for (unsigned j = 0; j < taus.size(); ++j) {
-	  unsigned idDau = abs(taus[j]->pdgid());
-	  if (idDau==11) {
-	    eventsWithGenElectronFromTau_++;
-	    if (taus[j]->pt() > 10 && fabs(taus[j]->eta()) < 2.4){
-	      unsigned lBin = findElectronPtEtaBin(taus[j]->pt(),taus[j]->eta());
-	      ele_veto_weight *= (1-eVeto_idisoDataEff_[lBin])/(1-eVeto_idisoMCEff_[lBin]);
-	      eventsWithGenElectronFromTauInAcc_++;
-	    }
-	  }
-	  if (idDau==13) {
-	    eventsWithGenMuonFromTau_++;
-	    if (taus[j]->pt() > 10 && fabs(taus[j]->eta()) < 2.1){
-	      unsigned lBin = findMuonPtEtaBin(taus[j]->pt(),taus[j]->eta());
-	      mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
-	      //if(mu_veto_weight<0)std::cout<<"Below zero weight from tau:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<std::endl;//!!
-	      //if(mu_veto_weight>10000)std::cout<<"Very high weight from tau:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<" "<<genParts[iEle]->pt()<<" "<<genParts[iEle]->eta()<<std::endl;//!!
-	      eventsWithGenMuonFromTauInAcc_++;
-	    }
-	  }
-	}
-      }
-
+	      
     }//loop on genparticles
     vetoeleweight->Fill(ele_veto_weight);
     vetomuweight->Fill(mu_veto_weight);
@@ -1126,6 +1138,24 @@ namespace ic {//namespace
     }
   }
 
+  unsigned HinvWeights::findGSFEtaBin(double aEta){
+    if (gsfbin_.size()!=29){
+      std::cout << "Error! GSF eta bin vector not filled properly. Expected size: 29, found : " << gsfbin_.size() 
+		<< " file " << __FILE__ << " line " << __LINE__
+		<< std::endl;
+      exit(1);
+    }
+    unsigned etabin = 0;
+    unsigned nEta = gsfbin_.size()-1;
+    for (unsigned ieta(0); ieta<nEta;++ieta){
+      if (aEta>=gsfbin_[ieta] &&  aEta<gsfbin_[ieta+1]) {
+	etabin = ieta;
+	break;
+      }
+    }
+    return etabin;
+  }
+
   unsigned HinvWeights::findElectronPtEtaBin(double pt, double eta){
 
     unsigned etaBin = 0;
@@ -1169,6 +1199,9 @@ namespace ic {//namespace
 
   void HinvWeights::fillVector(const std::string & aFileName, std::vector<double> & aVector){
     //std::cout<<aFileName<<":"<<std::endl;//!!
+    bool isGSF = aFileName.find("gsf_id_SF")!=aFileName.npos;
+    aVector.clear();
+    if (isGSF) gsfbin_.clear();
     std::ifstream lInput;
     lInput.open(aFileName);
     if(!lInput.is_open()) {
@@ -1189,13 +1222,20 @@ namespace ic {//namespace
       //std::cout<<"  "<<pTmin<<" "<<pTmax<<" "<<etaMin<<" "<<etaMax<<" "<<SF<<std::endl;
 
       //protect against blank line at the end of the file
-      if (pTmin > 1) aVector.push_back(SF);
+      if (pTmin > 1) {
+	aVector.push_back(SF);
+	if (isGSF) gsfbin_.push_back(etaMin);
+      }
       if(lInput.eof()){
 	break; 
       }
     }
+    //last eta bin
+    if (isGSF) gsfbin_.push_back(2.5);
 
     std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
+    if (isGSF) std::cout << " ---- Size of gsf eta bin vector: " << gsfbin_.size() << std::endl;
+
     lInput.close();
 
   }

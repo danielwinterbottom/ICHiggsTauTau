@@ -74,7 +74,7 @@ namespace ic {
       double par2 = 0.;
       double par3 = 0.;
       lInput>>etaMin>>etaMax>>rhoMin>>rhoMax>>Npar>>pTmin>>pTmax>>par0>>par1>>par2>>par3;
-      std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<rhoMin<<" "<<rhoMax<<" "<<Npar<<" "<<pTmin<<" "<<pTmax<<" "<<par0<<" "<<par1<<" "<<par2<<" "<<par3<<std::endl;
+      //std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<rhoMin<<" "<<rhoMax<<" "<<Npar<<" "<<pTmin<<" "<<pTmax<<" "<<par0<<" "<<par1<<" "<<par2<<" "<<par3<<std::endl;
       
       //protect against blank line at the end of the file
       if (Npar > 1){
