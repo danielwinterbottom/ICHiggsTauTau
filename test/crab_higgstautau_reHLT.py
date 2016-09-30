@@ -2,7 +2,7 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Aug08_MC_80X'
+config.General.workArea='Aug11_MC_80X'
 #config.General.requestName = 'May13_MC'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_80X_Jul16.py'
@@ -18,7 +18,7 @@ config.Data.unitsPerJob = 30000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality=True
-config.Data.outLFNDirBase='/store/user/dwinterb/Aug08_MC_80X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/Aug11_MC_80X/'
 config.section_('User')
 config.section_('Site')
 #config.Site.whitelist = ['T1_RU_JINR_Disk', 'T1_US_FNAL_MSS', 'T1_US_FNAL_Buffer']
