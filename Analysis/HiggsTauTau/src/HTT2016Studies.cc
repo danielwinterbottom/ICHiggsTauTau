@@ -727,9 +727,9 @@ namespace ic {
   // ZmtTP
   ZmtTPTreeProducer::ZmtTPTreeProducer(std::string const& name)
       : ModuleBase(name),
-        geninfo_module_("GenInfo") {
+        do_zpt_reweighting_(false),
+        do_top_reweighting_(false) {
     fs_ = nullptr;
-    geninfo_module_.set_ditau_label("sorted_ditau");
   }
 
   ZmtTPTreeProducer::~ZmtTPTreeProducer() {
@@ -742,6 +742,10 @@ namespace ic {
 
       outtree_->Branch("wt",          &wt);
       outtree_->Branch("wt_pu_hi",    &wt_pu_hi);
+      outtree_->Branch("wt_mfr_l",    &wt_mfr_l);
+      outtree_->Branch("wt_mfr_t",    &wt_mfr_t);
+      outtree_->Branch("wt_zpt",      &wt_zpt);
+      outtree_->Branch("wt_top",      &wt_top);
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("rho",         &rho);
       outtree_->Branch("pt_m",        &pt_m);
@@ -752,8 +756,10 @@ namespace ic {
       outtree_->Branch("eta_t",       &eta_t);
       outtree_->Branch("dm_t",        &dm_t);
       outtree_->Branch("tot_ch_t",    &tot_ch_t);
-      outtree_->Branch("anti_e_t",    &anti_e_t);
-      outtree_->Branch("anti_m_t",    &anti_m_t);
+      outtree_->Branch("anti_e_vl_t",   &anti_e_vl_t);
+      outtree_->Branch("anti_e_t_t",    &anti_e_t_t);
+      outtree_->Branch("anti_m_t_t",    &anti_m_t_t);
+      outtree_->Branch("anti_m_l_t",    &anti_m_l_t);
       outtree_->Branch("mva_vl_t",    &mva_vl_t);
       outtree_->Branch("mva_l_t",     &mva_l_t);
       outtree_->Branch("mva_m_t",     &mva_m_t);
@@ -822,6 +828,16 @@ namespace ic {
       ws_->function("m_iso_ratio")->functor(ws_->argSet("m_pt,m_eta")));
     fns_["m_trgOR_data"] = std::shared_ptr<RooFunctor>(
       ws_->function("m_trgOR_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_idiso0p15_desy_ratio")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["zpt_weight"] = std::shared_ptr<RooFunctor>(
+      ws_->function("zpt_weight")->functor(ws_->argSet("z_gen_mass,z_gen_pt")));
+    fns_["t_muonfr_loose"] = std::shared_ptr<RooFunctor>(
+      ws_->function("t_muonfr_loose")->functor(ws_->argSet("t_pt,t_eta")));
+    fns_["t_muonfr_tight"] = std::shared_ptr<RooFunctor>(
+      ws_->function("t_muonfr_tight")->functor(ws_->argSet("t_pt,t_eta")));
     return 0;
   }
 
@@ -849,8 +865,8 @@ namespace ic {
     }
     if (pairs.size() == 0) return 1;
 
-    std::sort(pairs.begin(), pairs.end(), SortByIsoMT);
-    event->Add("sorted_ditau", pairs);
+    // std::sort(pairs.begin(), pairs.end(), SortByIsoMT);
+    // event->Add("sorted_ditau", pairs);
 
     Muon const* muon = dynamic_cast<Muon const*>(pairs[0]->At(0));
     Tau const* tau = dynamic_cast<Tau const*>(pairs[0]->At(1));
@@ -864,8 +880,10 @@ namespace ic {
     float cone = TMath::Max(TMath::Min(0.1, 3.0/pt_t), 0.05);
 
     tot_ch_t  = tau->sig_charged_cands().size() + tau->iso_charged_cands().size();
-    anti_e_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
-    anti_m_t  = tau->GetTauID("againstMuonTight3") > 0.5;
+    anti_e_vl_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
+    anti_m_t_t  = tau->GetTauID("againstMuonTight3") > 0.5;
+    anti_e_t_t  = tau->GetTauID("againstElectronTightMVA6") > 0.5;
+    anti_m_l_t  = tau->GetTauID("againstMuonLoose3") > 0.5;
     mva_vl_t  = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
     mva_l_t   = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
     mva_m_t   = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") > 0.5;
@@ -1095,7 +1113,7 @@ namespace ic {
     ic::keep_if(bjets, [&](PFJet *j) {
       return j->pt()          > 20. &&
              fabs(j->eta())   < 2.4 &&
-             PFJetID2015(j) &&
+             PFJetID2016(j) &&
              MinDRToCollection(j, pairs[0]->AsVector(), 0.5) &&
              j->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
     });
@@ -1109,24 +1127,49 @@ namespace ic {
     double wt_id = 1.0;
     double wt_iso = 1.0;
     double wt_trg = 1.0;
+    wt_mfr_l = 1.0;
+    wt_mfr_t = 1.0;
     wt_pu_hi = 1.0;
     auto args = std::vector<double>{muon->pt(), muon->eta()};
     if (!info->is_data()) {
-      wt_trg = fns_["m_trgOR_data"]->eval(args.data());
+      wt_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args.data());
+      // wt_trg = fns_["m_trgOR_data"]->eval(args.data());
       wt_trk = fns_["m_trk_ratio"]->eval(v_double{muon->eta()}.data());
-      wt_id = fns_["m_id_ratio"]->eval(args.data());
-      wt_iso = fns_["m_iso_ratio"]->eval(args.data());
-      geninfo_module_.Execute(event);
+      // wt_id = fns_["m_id_ratio"]->eval(args.data());
+      // wt_iso = fns_["m_iso_ratio"]->eval(args.data());
+      wt_id = fns_["m_idiso0p15_desy_ratio"]->eval(args.data());
+      // wt_id = fns_["m_id_ratio"]->eval(args.data());
+      // wt_iso = fns_["m_iso_ratio"]->eval(args.data());
       gen_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
       gen_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
       if (info->weight("pileup") > 0.) {
         wt_pu_hi = info->weight("pileup_hi") / info->weight("pileup");
+      }
+      if (gen_2 == 2 || gen_2 == 4) {
+        wt_mfr_l = fns_["t_muonfr_loose"]->eval(v_double{tau->pt(), tau->eta()}.data());
+        wt_mfr_t = fns_["t_muonfr_tight"]->eval(v_double{tau->pt(), tau->eta()}.data());
       }
     }
     info->set_weight("trk", wt_trk);
     info->set_weight("trg", wt_trg);
     info->set_weight("id", wt_id);
     info->set_weight("iso", wt_iso);
+
+    // DY reweighting
+    wt_zpt = 1.0;
+    if (do_zpt_reweighting_) {
+      auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      auto gen_boson = BuildGenBoson(parts);
+      wt_zpt = fns_["zpt_weight"]->eval(v_double{gen_boson.M(), gen_boson.pt()}.data());
+    }
+
+    // Top quark pT reweighting
+    wt_top = 1.0;
+    if (do_top_reweighting_) {
+      auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      wt_top = TopQuarkPtWeight(parts);
+    }
+
     wt = info->total_weight();
 
     outtree_->Fill();
@@ -1164,20 +1207,6 @@ namespace ic {
     return types;
   }
 
-  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
-    Muon const* m1 = static_cast<Muon const*>(c1->At(0));
-    Muon const* m2 = static_cast<Muon const*>(c2->At(0));
-    double m_iso1 = PF04IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF04IsolationVal(m2, 0.5, 0);
-    if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
-    if (m1->pt() != m2->pt()) return m1->pt() > m2->pt();
-    Tau const* t1 = static_cast<Tau const*>(c1->At(1));
-    Tau const* t2 = static_cast<Tau const*>(c2->At(1));
-    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
-    if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
-    return (t1->pt() > t2->pt());
-  }
 
   void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift) {
     double metx = met->vector().px() - shift.px();
@@ -1224,6 +1253,21 @@ namespace ic {
       }
     }
     return gen_boson;
+  }
+
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+    Muon const* m1 = static_cast<Muon const*>(c1->At(0));
+    Muon const* m2 = static_cast<Muon const*>(c2->At(0));
+    double m_iso1 = PF04IsolationVal(m1, 0.5, 0);
+    double m_iso2 = PF04IsolationVal(m2, 0.5, 0);
+    if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
+    if (m1->pt() != m2->pt()) return m1->pt() > m2->pt();
+    Tau const* t1 = static_cast<Tau const*>(c1->At(1));
+    Tau const* t2 = static_cast<Tau const*>(c2->At(1));
+    double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+    if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
+    return (t1->pt() > t2->pt());
   }
 
   bool SortMM(CompositeCandidate const* c1, CompositeCandidate const* c2) {

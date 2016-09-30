@@ -238,14 +238,18 @@ class ZmtTPTreeProducer : public ModuleBase {
  private:
   CLASS_MEMBER(ZmtTPTreeProducer, fwlite::TFileService*, fs)
   CLASS_MEMBER(ZmtTPTreeProducer, std::string, sf_workspace)
+  CLASS_MEMBER(ZmtTPTreeProducer, bool, do_zpt_reweighting)
+  CLASS_MEMBER(ZmtTPTreeProducer, bool, do_top_reweighting)
   TTree *outtree_;
   std::shared_ptr<RooWorkspace> ws_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
 
-  HTTPairGenInfo geninfo_module_;
-
   float wt;
   float wt_pu_hi;
+  float wt_mfr_l;
+  float wt_mfr_t;
+  float wt_zpt;
+  float wt_top;
 
   int n_vtx;
   float rho;
@@ -259,8 +263,10 @@ class ZmtTPTreeProducer : public ModuleBase {
   float eta_t;
   int dm_t;
   int tot_ch_t;
-  bool anti_e_t;
-  bool anti_m_t;
+  bool anti_e_vl_t;
+  bool anti_e_t_t;
+  bool anti_m_t_t;
+  bool anti_m_l_t;
   bool mva_vl_t;
   bool mva_l_t;
   bool mva_m_t;

@@ -58,6 +58,10 @@ class Sequence {
   }
 };
 
+void BuildLeptonVetoes(Sequence & seq, unsigned max_muons, unsigned max_elecs);
+void BuildDYStitching(Sequence & seq, Json::Value & js);
+void BuildWStitching(Sequence & seq, Json::Value & js);
+
 int main(int argc, char* argv[]) {
   Json::Value js = ic::MergedJson(argc, argv);
 
@@ -265,63 +269,10 @@ int main(int argc, char* argv[]) {
         seq.BuildModule(lumimask_module);
       }
 
-      if (js.get("do_dyjets_stitching", false).asBool()) {
-        auto jss = js["dyjets_stitching"];
-        seq.BuildModule(ic::DYJetsStitching("DYJetsStitching")
-          .Set_DYJetsToLL(jss["evt_DYJetsToLL"].asUInt(), jss["xs_DYJetsToLL"].asDouble())
-          .Set_DY1JetsToLL(jss["evt_DY1JetsToLL"].asUInt(), jss["xs_DY1JetsToLL"].asDouble())
-          .Set_DY2JetsToLL(jss["evt_DY2JetsToLL"].asUInt(), jss["xs_DY2JetsToLL"].asDouble())
-          .Set_DY3JetsToLL(jss["evt_DY3JetsToLL"].asUInt(), jss["xs_DY3JetsToLL"].asDouble())
-          .Set_DY4JetsToLL(jss["evt_DY4JetsToLL"].asUInt(), jss["xs_DY4JetsToLL"].asDouble()));
-      }
+      BuildDYStitching(seq, js);
+      BuildWStitching(seq, js);
 
-      if (js.get("do_wjets_stitching", false).asBool()) {
-        auto jss = js["wjets_stitching"];
-        seq.BuildModule(ic::WJetsStitching("WJetsStitching")
-          .Set_WJetsToLNu(jss["evt_WJetsToLNu"].asUInt(), jss["xs_WJetsToLNu"].asDouble())
-          .Set_W1JetsToLNu(jss["evt_W1JetsToLNu"].asUInt(), jss["xs_W1JetsToLNu"].asDouble())
-          .Set_W2JetsToLNu(jss["evt_W2JetsToLNu"].asUInt(), jss["xs_W2JetsToLNu"].asDouble())
-          .Set_W3JetsToLNu(jss["evt_W3JetsToLNu"].asUInt(), jss["xs_W3JetsToLNu"].asDouble())
-          .Set_W4JetsToLNu(jss["evt_W4JetsToLNu"].asUInt(), jss["xs_W4JetsToLNu"].asDouble()));
-      }
-
-      seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToExtraMuons",
-          "muons", "extra_muons"));
-
-      seq.BuildModule(ic::HTTFilter<ic::Muon>("ExtraMuonFilter")
-        .set_input_label("extra_muons")
-        .set_veto_name("extra_muon_veto")
-        .set_min(0)
-        .set_max(2)
-        .set_no_filter(true)
-        .set_predicate([](ic::Muon const* m) {
-          return  m->pt()                 > 10.    &&
-                  fabs(m->eta())          < 2.4    &&
-                  fabs(m->dxy_vertex())   < 0.045  &&
-                  fabs(m->dz_vertex())    < 0.2    &&
-                  MuonMediumHIPsafe(m)             &&
-                  PF04IsolationVal(m, 0.5, 0) < 0.3;
-        })
-      );
-
-      seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToExtraElecs",
-          "electrons", "extra_elecs"));
-
-      seq.BuildModule(ic::HTTFilter<ic::Electron>("ExtraElecFilter")
-        .set_input_label("extra_elecs")
-        .set_veto_name("extra_elec_veto")
-        .set_min(0)
-        .set_max(0)
-        .set_no_filter(true)
-        .set_predicate([](ic::Electron const* e) {
-          return  e->pt()                 > 10.     &&
-                  fabs(e->eta())          < 2.5     &&
-                  fabs(e->dxy_vertex())   < 0.045   &&
-                  fabs(e->dz_vertex())    < 0.2     &&
-                  ElectronHTTIdSpring15(e, true)    &&
-                  PF03IsolationVal(e, 0.5,0) < 0.3;
-        })
-      );
+      BuildLeptonVetoes(seq, /*max_muons=*/2, /*max_elecs=*/0);
 
       seq.BuildModule(ic::SimpleFilter<ic::PFJet>("JetIDFilter")
         .set_input_label("ak4PFJetsCHS")
@@ -610,17 +561,36 @@ int main(int argc, char* argv[]) {
           })
       );
 
+      seq.BuildModule(ic::GenericModule("PairSorter")
+          .set_function(
+            [](ic::TreeEvent * evt) {
+              auto & pairs = evt->GetPtrVec<ic::CompositeCandidate>("ditau");
+              std::sort(pairs.begin(), pairs.end(), ic::SortByIsoMT);
+              return 0;
+            })
+      );
+
       // At this point we're done filtering, can calculate other things we nedd
       if (!is_data) {
+        seq.BuildModule(ic::HTTPairGenInfo("PairGenInfo")
+            .set_ditau_label("ditau")
+        );
         seq.BuildModule(puweight_module);
         seq.BuildModule(puweight_module_hi);
       } else {
         seq.BuildModule(lumimask_module);
       }
 
+      BuildDYStitching(seq, js);
+      BuildWStitching(seq, js);
+
+      BuildLeptonVetoes(seq, /*max_muons=*/1, /*max_elecs=*/0);
+
       seq.BuildModule(ic::ZmtTPTreeProducer("ZmtTPTreeProducer")
         .set_fs(fs.at(fullseqn).get())
         .set_sf_workspace(sf_wsp)
+        .set_do_zpt_reweighting(do_zpt_reweighting)
+        .set_do_top_reweighting(do_top_reweighting)
       );
       seq.InsertSequence(fullseqn, analysis);
     }
@@ -905,4 +875,67 @@ int main(int argc, char* argv[]) {
   }
 
   return 0;
+}
+
+void BuildLeptonVetoes(Sequence & seq, unsigned max_muons, unsigned max_elecs) {
+  seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToExtraMuons",
+      "muons", "extra_muons"));
+
+  seq.BuildModule(ic::HTTFilter<ic::Muon>("ExtraMuonFilter")
+    .set_input_label("extra_muons")
+    .set_veto_name("extra_muon_veto")
+    .set_min(0)
+    .set_max(max_muons)
+    .set_no_filter(true)
+    .set_predicate([](ic::Muon const* m) {
+      return  m->pt()                 > 10.    &&
+              fabs(m->eta())          < 2.4    &&
+              fabs(m->dxy_vertex())   < 0.045  &&
+              fabs(m->dz_vertex())    < 0.2    &&
+              MuonMediumHIPsafe(m)             &&
+              PF04IsolationVal(m, 0.5, 0) < 0.3;
+    })
+  );
+
+  seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToExtraElecs",
+      "electrons", "extra_elecs"));
+
+  seq.BuildModule(ic::HTTFilter<ic::Electron>("ExtraElecFilter")
+    .set_input_label("extra_elecs")
+    .set_veto_name("extra_elec_veto")
+    .set_min(0)
+    .set_max(max_elecs)
+    .set_no_filter(true)
+    .set_predicate([](ic::Electron const* e) {
+      return  e->pt()                 > 10.     &&
+              fabs(e->eta())          < 2.5     &&
+              fabs(e->dxy_vertex())   < 0.045   &&
+              fabs(e->dz_vertex())    < 0.2     &&
+              ElectronHTTIdSpring15(e, true)    &&
+              PF03IsolationVal(e, 0.5,0) < 0.3;
+    })
+  );
+}
+void BuildDYStitching(Sequence & seq, Json::Value & js) {
+  if (js.get("do_dyjets_stitching", false).asBool()) {
+    auto jss = js["dyjets_stitching"];
+    seq.BuildModule(ic::DYJetsStitching("DYJetsStitching")
+      .Set_DYJetsToLL(jss["evt_DYJetsToLL"].asUInt(), jss["xs_DYJetsToLL"].asDouble())
+      .Set_DY1JetsToLL(jss["evt_DY1JetsToLL"].asUInt(), jss["xs_DY1JetsToLL"].asDouble())
+      .Set_DY2JetsToLL(jss["evt_DY2JetsToLL"].asUInt(), jss["xs_DY2JetsToLL"].asDouble())
+      .Set_DY3JetsToLL(jss["evt_DY3JetsToLL"].asUInt(), jss["xs_DY3JetsToLL"].asDouble())
+      .Set_DY4JetsToLL(jss["evt_DY4JetsToLL"].asUInt(), jss["xs_DY4JetsToLL"].asDouble()));
+  }
+}
+
+void BuildWStitching(Sequence & seq, Json::Value & js) {
+  if (js.get("do_wjets_stitching", false).asBool()) {
+    auto jss = js["wjets_stitching"];
+    seq.BuildModule(ic::WJetsStitching("WJetsStitching")
+      .Set_WJetsToLNu(jss["evt_WJetsToLNu"].asUInt(), jss["xs_WJetsToLNu"].asDouble())
+      .Set_W1JetsToLNu(jss["evt_W1JetsToLNu"].asUInt(), jss["xs_W1JetsToLNu"].asDouble())
+      .Set_W2JetsToLNu(jss["evt_W2JetsToLNu"].asUInt(), jss["xs_W2JetsToLNu"].asDouble())
+      .Set_W3JetsToLNu(jss["evt_W3JetsToLNu"].asUInt(), jss["xs_W3JetsToLNu"].asDouble())
+      .Set_W4JetsToLNu(jss["evt_W4JetsToLNu"].asUInt(), jss["xs_W4JetsToLNu"].asDouble()));
+  }
 }
