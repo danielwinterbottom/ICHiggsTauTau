@@ -433,19 +433,35 @@ namespace ic {
        if(muon_pt < 10) muon_pt = 10.1;
        double lead_pt = std::max(elec_pt,muon_pt); 
        double trail_pt = std::min(elec_pt,muon_pt); 
-       if(deltaR < 2){
-         qcd_weight = em_qcd_cr1_lt2_->Interpolate(trail_pt,lead_pt);
-         qcd_weight_up = em_qcd_cr2_lt2_->Interpolate(trail_pt,lead_pt);
-         qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-       } else if (deltaR <=4){
-         qcd_weight = em_qcd_cr1_2to4_->Interpolate(trail_pt,lead_pt);
-         qcd_weight_up = em_qcd_cr2_2to4_->Interpolate(trail_pt,lead_pt);
-         qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-       } else {
-         qcd_weight = em_qcd_cr1_gt4_->Interpolate(trail_pt,lead_pt);
-         qcd_weight_up = em_qcd_cr2_gt4_->Interpolate(trail_pt,lead_pt);
-         qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-       }
+       if(era_==era::data_2015){
+         if(deltaR < 2){
+           qcd_weight = em_qcd_cr1_lt2_->Interpolate(trail_pt,lead_pt);
+           qcd_weight_up = em_qcd_cr2_lt2_->Interpolate(trail_pt,lead_pt);
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+         } else if (deltaR <=4){
+           qcd_weight = em_qcd_cr1_2to4_->Interpolate(trail_pt,lead_pt);
+           qcd_weight_up = em_qcd_cr2_2to4_->Interpolate(trail_pt,lead_pt);
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+         } else {
+           qcd_weight = em_qcd_cr1_gt4_->Interpolate(trail_pt,lead_pt);
+           qcd_weight_up = em_qcd_cr2_gt4_->Interpolate(trail_pt,lead_pt);
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+         }
+       } else if (era_==era::data_2016){
+         if(deltaR < 2){
+           qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
+           qcd_weight_up = em_qcd_cr2_lt2_->GetBinContent(em_qcd_cr2_lt2_->FindBin(trail_pt,lead_pt));
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+         } else if (deltaR <=4){
+           qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
+           qcd_weight_up = em_qcd_cr2_2to4_->GetBinContent(em_qcd_cr2_2to4_->FindBin(trail_pt,lead_pt));
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+         } else {
+           qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
+           qcd_weight_up = em_qcd_cr2_gt4_->GetBinContent(em_qcd_cr2_gt4_->FindBin(trail_pt,lead_pt));
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+         }
+       }   
        event->Add("wt_em_qcd",qcd_weight);
        event->Add("wt_em_qcd_down",qcd_weight_down);
        event->Add("wt_em_qcd_up",qcd_weight_up);
