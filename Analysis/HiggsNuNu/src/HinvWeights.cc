@@ -354,6 +354,7 @@ namespace ic {//namespace
         fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
+        fillVectorTk("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_TkSF_);
       }
       else if(do_idiso_errmuore_){//Muon eff varied
 	fillVector("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_);
@@ -365,7 +366,8 @@ namespace ic {//namespace
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
-        fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
+        fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);
+        fillVectorErrorTk("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_TkSF_,do_idiso_errupordown_);
       }
       else{//Electron eff varied
 	fillVectorError("input/scale_factors/Fall15_76X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
@@ -377,7 +379,8 @@ namespace ic {//namespace
         fillVector("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",muVeto_idDataEff_);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);    
+        fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
+        fillVectorTk("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_TkSF_);
       }
       
       
@@ -828,7 +831,8 @@ namespace ic {//namespace
     double mu_weight = 1.0;
     for (unsigned iEle(0); iEle<mus.size();++iEle){
       unsigned lBin = findMuonPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta());
-      mu_weight *= muTight_idisoSF_[lBin];
+      unsigned mBin = findMuonEtaBin(mus[iEle]->eta());
+      mu_weight *= muTight_idisoSF_[lBin] * mu_TkSF_[mBin];
     }
     eventInfo->set_weight("!muTight_idisoSF",mu_weight);
     tightmuweight->Fill(mu_weight);
@@ -1166,6 +1170,22 @@ namespace ic {//namespace
     //return 11*etaBin+ptBin;
 
   }
+  
+  unsigned HinvWeights::findMuonEtaBin(double eta){
+    unsigned etaBin = 0;
+    if (eta>-2.4 && eta<=-2.1) etaBin=0;
+    else if (eta>-2.1 && eta<=-1.6) etaBin=1;
+    else if (eta>-1.6 && eta<=-1.1) etaBin=2;
+    else if (eta>-1.1 && eta<=-0.6) etaBin=3;
+    else if (eta>-0.6 && eta<=0.0) etaBin=4;
+    else if (eta>0.0 && eta<=0.6) etaBin=5;
+    else if (eta>0.6 && eta<=1.1) etaBin=6;
+    else if (eta>1.1 && eta<=1.6) etaBin=7;
+    else if (eta>1.6 && eta<=2.1) etaBin=8;
+    else if (eta>2.1 && eta<=2.4) etaBin=9;
+
+    return etaBin;
+  }
 
   void HinvWeights::fillVector(const std::string & aFileName, std::vector<double> & aVector){
     //std::cout<<aFileName<<":"<<std::endl;//!!
@@ -1200,6 +1220,37 @@ namespace ic {//namespace
 
   }
 
+  void HinvWeights::fillVectorTk(const std::string & aFileName, std::vector<double> & aVector){
+    //std::cout<<aFileName<<":"<<std::endl;//!!
+    std::ifstream lInput;
+    lInput.open(aFileName);
+    if(!lInput.is_open()) {
+      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
+      //max expected size for e and mu is 33...
+      aVector.resize(33,1);
+      return;
+    }
+    while(1){
+      double etaMin = 0;
+      double etaMax = 0;
+      double SF = 0;
+      double SFerrPlus = 0;
+      double SFerrMinus = 0;
+      lInput>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
+      if(lInput.eof()){
+        break; 
+      }
+      //std::cout<<"  "<<etaMin<<" "<<etaMax<<" "<<SF<<std::endl;
+      
+      //protect against blank line at the end of the file
+      aVector.push_back(SF);
+    }
+    
+    std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
+    lInput.close();
+    
+  }
+  
 
   void HinvWeights::fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown){
     //std::cout<<aFileName<<":"<<std::endl;//!!
@@ -1238,6 +1289,41 @@ namespace ic {//namespace
     std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
     lInput.close();
 
+  }
+  
+  void HinvWeights::fillVectorErrorTk(const std::string & aFileName, std::vector<double> & aVector, bool upordown){
+    //std::cout<<aFileName<<":"<<std::endl;//!!
+    std::ifstream lInput;
+    lInput.open(aFileName);
+    if(!lInput.is_open()){
+      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
+      //max expected size for e and mu is 33...
+      aVector.resize(33,1);
+      return;
+    }
+    while(1){
+      double etaMin = 0;
+      double etaMax = 0;
+      double SF = 0;
+      double SFerrPlus = 0;
+      double SFerrMinus = 0;
+      lInput>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
+      if(lInput.eof()){
+        break; 
+      }
+      if(upordown){
+        //std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<SF+SFerrPlus<<std::endl;//!!
+        aVector.push_back(SF+SFerrPlus);
+      }
+      else{
+        //std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<SF-SFerrMinus<<std::endl;//!!
+        aVector.push_back(SF-SFerrMinus);
+      }
+    }
+    
+    std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
+    lInput.close();
+    
   }
 
   double HinvWeights::nloReweighting(const double & aMjj, const double & aYstar){
