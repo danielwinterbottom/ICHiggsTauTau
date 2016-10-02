@@ -347,12 +347,6 @@ namespace ic {
       outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
       
-      outtree_->Branch("jets_totpt",          &jets_totpt_.var_double);
-      outtree_->Branch("jetsplustt_totpt",    &jetsplustt_totpt_.var_double);
-      outtree_->Branch("pt_tt_totpt_minus_jets_totpt",    &pt_tt_totpt_minus_jets_totpt_.var_double);
-      outtree_->Branch("jetsplustt_totpt_norm",    &jetsplustt_totpt_norm_.var_double);
-      outtree_->Branch("pt_tt_totpt_minus_jets_totpt_norm",    &pt_tt_totpt_minus_jets_totpt_norm_.var_double);
-      
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
@@ -361,7 +355,6 @@ namespace ic {
       outtree_->Branch("subleading_lepton_match_DR",&subleading_lepton_match_DR_);*/
 
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
-      outtree_->Branch("wt_tau_id_sf",       &wt_tau_id_sf_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
@@ -1265,7 +1258,6 @@ namespace ic {
     wt_em_qcd_down_ = 1.0;
     wt_em_qcd_up_ = 1.0;
     wt_nlo_pt_ = 1.0;
-    wt_tau_id_sf_ = 1.0;
     nlo_pt_ = 9999.;
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
@@ -1282,7 +1274,6 @@ namespace ic {
     if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
-    if (event->Exists("wt_tau_id_sf"))      wt_tau_id_sf_ = event->Get<double>("wt_tau_id_sf");
 
   
   mc_weight_ = 0.0;
@@ -2494,12 +2485,7 @@ namespace ic {
       double eta_low = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[1]->eta() : lowpt_jets[0]->eta();
       n_jetsingap_ = 0;
       n_jetsingap20_ = 0;
-      //Added Vairables for study - DW
-      jets_totpt_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
-      jetsplustt_totpt_ = (ditau->vector() + mets->vector() + lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
-      pt_tt_totpt_minus_jets_totpt_ = (ditau->vector() + mets->vector()).pt() - (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt();
-      jetsplustt_totpt_norm_ = (ditau->vector() + mets->vector() + lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt()/((ditau->vector() + mets->vector()).pt() + (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt());
-      pt_tt_totpt_minus_jets_totpt_norm_ = (ditau->vector() + mets->vector()).pt() - (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt()/((ditau->vector() + mets->vector()).pt() + (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).pt());
+ 
       if (n_lowpt_jets_ > 2) {
         for (unsigned i = 2; i < lowpt_jets.size(); ++i) {
          if (lowpt_jets[i]->pt() > 30.0 &&  lowpt_jets[i]->eta() > eta_low && lowpt_jets[i]->eta() < eta_high) ++n_jetsingap_;
@@ -2520,11 +2506,6 @@ namespace ic {
       jctm_2_ = -9999;
       n_jetsingap_ = 9999;
       n_jetsingap20_ = 9999;
-      jets_totpt_ = -9999;
-      jetsplustt_totpt_ = -9999;
-      pt_tt_totpt_minus_jets_totpt_ = -9999;
-      jetsplustt_totpt_norm_ = -9999;
-      pt_tt_totpt_minus_jets_totpt_norm_ = -9999;
     }
 
     if (n_lowpt_jets_ >= 2) {
