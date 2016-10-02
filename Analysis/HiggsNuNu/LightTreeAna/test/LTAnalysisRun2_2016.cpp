@@ -148,7 +148,7 @@ int main(int argc, char* argv[]){
   config.add_options()
     //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
-    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("/vols/cms/rd1715/HiggsToInv/output_lighttree_160801_with6fbTrigEff/"))
+    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("/vols/cms/rd1715/HiggsToInv/output_lighttree_output_lighttree_160930/"))
     ("eos_path_mc",           po::value<std::string>(&eos_path_mc)->default_value(""))
     //root://eoscms//eos/cms/store/user/amagnan/SkimFiles/151030/"))
     ("eos_path_data",           po::value<std::string>(&eos_path_data)->default_value(""))
@@ -161,7 +161,7 @@ int main(int argc, char* argv[]){
     ("datalist",                 po::value<bool>(&datalist)->default_value(false))
     ("do_list",                  po::value<bool>(&do_list)->default_value(false))
     ("listset",                  po::value<std::string>(&listset)->default_value("Top"))
-    ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=800&&jet1_pt>80&&dijet_deta>3.6&& jet2_pt>70&&metnomuons>200"))
+    ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=1100&&jet1_pt>80&&dijet_deta>3.6&& jet2_pt>70&&metnomuons>200"))
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
 
     ("runblind",                 po::value<bool>(&runblind)->default_value(true))
