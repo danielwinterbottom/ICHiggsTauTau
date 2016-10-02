@@ -100,7 +100,7 @@ namespace ic {
       alias_map_["nojet"]           ="(n_jets==0)";
       alias_map_["njet"]           ="(n_jets>0)";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
-      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["baseline"] = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       
       if(is_sm){
         if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
@@ -356,7 +356,7 @@ namespace ic {
       
       alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"]  = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"] = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
 
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -525,7 +525,7 @@ namespace ic {
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["ttcontrolalt"] = "(n_jets>=1 && n_bjets>=1 && pzeta<-50)";
-      alias_map_["ttcontrol"] = "(pzeta<-60 && met>80)";
+      alias_map_["ttcontrol"] = "(pzeta<-20 && met>80)";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
@@ -1174,7 +1174,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::string qcd_extrap_sel = "!os && " + this->ResolveAlias("sel");
       //Default QCD method for fully hadronic is different...
       if(ch_ == channel::tt && method == 8){
-        qcd_sdb_sel = "os && " + this->ResolveAlias("sel");
+        qcd_sdb_sel =  do_ss_ ? "!os &&" + this->ResolveAlias("sel") : "os && " + this->ResolveAlias("sel");
         qcd_sdb_cat = ttqcdcat + "&&" + alias_map_["tt_qcd_norm"];
       }
       
@@ -2054,6 +2054,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::cout << "[HTTRun2Analysis::GetRateViaTauTauQCDMethod]\n";
       std::cout << "ExtrapFactor:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat 
                 % ratio_control_cat % ratio_sel % wt;
+      std::cout << "ExtrapFactorOS:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat
       std::cout << "Sideband:       " << boost::format("'%s','%s','%s'\n") %  control_sel % cat % wt;
     }
 
