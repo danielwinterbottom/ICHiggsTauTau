@@ -29,7 +29,7 @@
 
 namespace ic {
 
-  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15) : ch_(ch), year_(year), verbosity_(verbosity), is_fall15_(is_fall15) {
+  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_sm) : ch_(ch), year_(year), verbosity_(verbosity), is_sm_(is_sm) {
     lumi_ = 1.;
     do_ss_ = false;
     qcd_os_ss_factor_ = 1.06;
@@ -64,16 +64,51 @@ namespace ic {
       alias_map_["ztt_sel"] = "";
       alias_map_["zll_sel"] = "1.";
     }
+    
+    alias_map_["variable_cat"]      = "1";
+    alias_map_["inclusive"]                 = "1";
+    
+    if (ch_ == channel::et || ch_ == channel::mt){
+      alias_map_["vbf_run1"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";
+      alias_map_["vbf_tight_run1"] = "(n_jets>=2 && jdeta>4. && mjj>700 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
+      alias_map_["vbf_loose_run1"] = "(!"+alias_map_["vbf_tight_run1"]+" && n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";    
+      if(ch_ == channel::et){
+        alias_map_["1jet_loose_run1_et"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_2<=45)";
+        alias_map_["1jet_tight_run1_et"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_tt>100 && pt_2>45)";
+      } else if(ch_ == channel::mt){
+        alias_map_["1jet_loose_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2<=45)";
+        alias_map_["1jet_medium_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt<=100 && pt_2>45)";
+        alias_map_["1jet_tight_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_2>45)";
+      }
+      alias_map_["0jet_loose_run1"] = "(n_jets==0 && pt_2<=45)";
+      alias_map_["0jet_tight_run1"] = "(n_jets==0 && pt_2>45)";
+    }
+    else if (ch_ == channel::tt){
+      alias_map_["vbf_run1_tt"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && pt_tt>100 && n_jetsingap==0)";
+      alias_map_["1jet_run1_tt"] = "(!"+alias_map_["vbf_run1_tt"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100)";
+      alias_map_["1jet_loose_run1_tt"] = "(!"+alias_map_["vbf_run1_tt"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_tt<=170)";
+      alias_map_["1jet_tight_run1_tt"] = "(!"+alias_map_["vbf_run1_tt"]+" && n_jets>=1 && n_bjets==0 && pt_tt>170 )";
+      alias_map_["0jet_run1_tt"] = "(!"+alias_map_["vbf_run1_tt"]+" && !"+alias_map_["1jet_run1_tt"]+" && n_jets>=0 && n_bjets==0)";
+    }
+
 
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
+      //SM Categories
+        
       alias_map_["inclusive"]         = "1";
       alias_map_["nojet"]           ="(n_jets==0)";
       alias_map_["njet"]           ="(n_jets>0)";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
-      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-      if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-      if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["baseline"] = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      
+      if(is_sm){
+        if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+        if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
+      } else{
+        if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+        if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      }
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -249,8 +284,10 @@ namespace ic {
       alias_map_["2jet1taghigh"] = "(n_jets>=2 && n_bjets==1)";
       alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
-      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
-      alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["btag"] = "(n_jets<=1 && n_loose_bjets>=1)";
+      alias_map_["nobtag"] = "n_loose_bjets==0";
+      if(year_.find("6")!=year_.npos) alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      if(year_.find("6")!=year_.npos) alias_map_["nobtag"] = "n_bjets==0";
       //alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       //alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
@@ -318,10 +355,12 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "1";
      // alias_map_["baseline"]          = "1";
-
-      alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      
+      alias_map_["baseline"]          = "mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
-      if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"]  = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"] = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
@@ -540,14 +579,7 @@ namespace ic {
        "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
        "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q"
       };
-    } else if(!is_fall15_){
-      samples_alias_map_["vv_samples"] = {
-       "T-tW", "Tbar-tW", "T-t","Tbar-t",
-       "WWTo1L1Nu2Q",
-       "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-       "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
-    };
-    }
+    } 
 /*  if(ch_==channel::em){
     samples_alias_map_["vv_samples"] = {
 //     "WZJetsTo3LNu",
@@ -586,23 +618,7 @@ namespace ic {
       "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
-  }else if(!is_fall15_){
-     if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
-         samples_alias_map_["ztt_shape_samples"]={
-         "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-         };
-     } else {
-         samples_alias_map_["ztt_shape_samples"]={
-         "DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-         };
-     }
-   }
+  }
 
    samples_alias_map_["data_samples"] = {
    "SingleElectron-2015D-prompt"
@@ -615,11 +631,7 @@ namespace ic {
        samples_alias_map_["data_samples"] = {
         "SingleElectronB","SingleElectronC","SingleElectronD"
        };
-    } else if(!is_fall15_){
-       samples_alias_map_["data_samples"] = {
-        "SingleElectron-2015D-promptv4","SingleElectron-2015D-Oct05"
-       };
-     }
+    }
    }
    if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::tpzmm || ch_==channel::wmnu){
      samples_alias_map_["data_samples"] = {
@@ -629,10 +641,6 @@ namespace ic {
      samples_alias_map_["data_samples"] = {
        "SingleMuonB","SingleMuonC","SingleMuonD"
        };
-    } else if(!is_fall15_){
-     samples_alias_map_["data_samples"] = {
-     "SingleMuon-2015D-promptv4","SingleMuon-2015D-Oct05"
-     };
     }
    }
    if(ch_==channel::tt){
@@ -643,11 +651,7 @@ namespace ic {
       samples_alias_map_["data_samples"] = {
         "TauB","TauC","TauD"
       };
-    } else if(!is_fall15_){
-     samples_alias_map_["data_samples"] = {
-      "Tau-2015D-promptv4","Tau-2015D-Oct05"
-     };
-    }
+    } 
    }
    if(ch_==channel::em){
     samples_alias_map_["data_samples"] = {
@@ -657,11 +661,7 @@ namespace ic {
       samples_alias_map_["data_samples"] = {
         "MuonEGB","MuonEGC","MuonEGD"
       };
-    } else if(!is_fall15_){
-      samples_alias_map_["data_samples"] = {
-        "MuonEG-2015D-promptv4","MuonEG-2015D-Oct05"
-      };
-    } 
+    }
    }
 
 
@@ -682,22 +682,6 @@ namespace ic {
       "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
       "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
      };
-   } else if(!is_fall15_){
-     if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
-         samples_alias_map_["ztt_samples"]={
-         "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-         };
-     } else {
-         samples_alias_map_["ztt_samples"]={
-         "DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-         };
-     }
    }
 
   
@@ -736,38 +720,7 @@ namespace ic {
         "WJetsToLNu-LO","W1JetsToLNu-LO","W2JetsToLNu-LO",
         "W3JetsToLNu-LO","W4JetsToLNu-LO"
         };
-  }else if(!is_fall15_){
-    if(ch_==channel::zee || ch_==channel::zmm) {
-        samples_alias_map_["qcd_sub_samples"] = {
-        "DYJetsToLL_M-50-LO",
-        "DYJetsToLL_M-5-LO",
-        "T-tW", "Tbar-tW", "T-t","Tbar-t",
-        "WWTo1L1Nu2Q","VVTo2L2Nu",
-        "ZZTo2L2Q","ZZTo4L",
-        "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-        "TT-ext","WJetsToLNu-LO",
-        "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-        "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-        "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-        "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-        "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-        "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-        };
-    } else {
-        samples_alias_map_["qcd_sub_samples"] = {
-        "DYJetsToLL_M-50-LO",
-        "T-tW", "Tbar-tW", "T-t","Tbar-t",
-        "WWTo1L1Nu2Q","VVTo2L2Nu",
-        "ZZTo2L2Q","ZZTo4L",
-        "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-        "TT-ext","WJetsToLNu-LO",
-        "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-        "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-        "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-        "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-        };
-      }
-     }
+  }
   }
   
 
@@ -799,23 +752,7 @@ namespace ic {
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
    "W3JetsToLNu-LO","W4JetsToLNu-LO"
    };
-  } else if(!is_fall15_){
-    samples_alias_map_["qcd_sub_samples"] = {
-    "DYJetsToLL_M-50-LO",
-    "DYJetsToLL_M-5-LO",
-    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-    "WWTo1L1Nu2Q","VVTo2L2Nu",
-    "ZZTo2L2Q","ZZTo4L",
-    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-    "TT-ext","WJetsToLNu-LO",
-    "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-    "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-    "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-    "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-    };
-   }
+  }
   }
 
   samples_alias_map_["w_sub_samples"] = {
@@ -847,34 +784,7 @@ namespace ic {
      "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
      "TT"
      };
-   } else if(!is_fall15){
-    if(ch_==channel::zee || ch_==channel::zmm) {
-        samples_alias_map_["w_sub_samples"] = {
-         "DYJetsToLL_M-5-LO",
-         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-         "DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-         "T-tW", "Tbar-tW", "T-t","Tbar-t",
-         "WWTo1L1Nu2Q","VVTo2L2Nu",
-         "ZZTo2L2Q","ZZTo4L",
-         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-         "TT-ext"
-         };
-     } else {    
-        samples_alias_map_["w_sub_samples"] = {
-         "DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-         "T-tW", "Tbar-tW", "T-t","Tbar-t",
-         "WWTo1L1Nu2Q","VVTo2L2Nu",
-         "ZZTo2L2Q","ZZTo4L",
-         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-         "TT-ext"
-         };
-     }
-   }
+   } 
 
 samples_alias_map_["wjets_samples"] = {
   "WJetsToLNu-LO",
@@ -897,19 +807,12 @@ if(year_.find("6")!=year_.npos){
     "WJetsToLNu-LO","W1JetsToLNu-LO","W2JetsToLNu-LO",
     "W3JetsToLNu-LO","W4JetsToLNu-LO"
   };
-}else if(!is_fall15_){
-
-  samples_alias_map_["wjets_samples"] = {
-    "WJetsToLNu-LO",
-    "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-    "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-   };
- }
+}
 
 sample_names_={};
 push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("vv_samples"));
-if(ch_==channel::em && is_fall15_){
+if(ch_==channel::em && year_.find("5")!=year_.npos){
   push_back(sample_names_,this->ResolveSamplesAlias("wgam_samples"));
 }
 push_back(sample_names_,this->ResolveSamplesAlias("wjets_samples"));
@@ -2151,11 +2054,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
                           std::map<std::string, std::function<Value()>> dict
                           ) {
     if (verbosity_) {
-
       std::cout << "[HTTRun2Analysis::GetRateViaTauTauQCDMethod]\n";
       std::cout << "ExtrapFactor:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat 
                 % ratio_control_cat % ratio_sel % wt;
-      std::cout << "ExtrapFactorOS:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat 
+      std::cout << "ExtrapFactorOS:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat
                 % cat % control_sel % wt;
       std::cout << "Sideband:       " << boost::format("'%s','%s','%s'\n") %  control_sel % cat % wt;
     }
