@@ -138,14 +138,14 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'GluGluHToTauTau_M-'+mass,
-      'VBFHToTauTau_M-'+mass,
-      'ZHToTauTau_M-'+mass,
-      'WplusHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass,
-      'TTHToTauTau_M-'+mass
-      #'reHLT_GluGluHToTauTau_M-'+mass,
-      #'reHLT_VBFHToTauTau_M-'+mass,
+     # 'GluGluHToTauTau_M-'+mass,
+     # 'VBFHToTauTau_M-'+mass,
+     # 'ZHToTauTau_M-'+mass,
+     # 'WplusHToTauTau_M-'+mass,
+     # 'WminusHToTauTau_M-'+mass,
+     # 'TTHToTauTau_M-'+mass
+      'reHLT_GluGluHToTauTau_M-'+mass,
+      'reHLT_VBFHToTauTau_M-'+mass,
     ]
 if options.proc_mssm or options.proc_all:
   gghmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']

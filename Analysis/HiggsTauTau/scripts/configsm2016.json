@@ -1,7 +1,8 @@
 {   
   "job": {
     "filelist" : "filelists/Aug11_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/rlane/Aug11_MC_80X/",
+    //"file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/rlane/Aug11_MC_80X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Aug11_MC_80X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["et","mt","tt"],
@@ -51,7 +52,7 @@
     "do_tau_eff"    : false,
     "do_tau_id_sf"  : true,
     "output_folder" : "output/Aug11_PreSel_sv_v4/",
-    "new_svfit_mode" : 2,
+    "new_svfit_mode" : 0,
     "svfit_folder"  : "output/svfit_output_Aug11_PreSel_sv_v4/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
