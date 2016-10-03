@@ -812,7 +812,7 @@ if(year_.find("6")!=year_.npos){
 sample_names_={};
 push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("vv_samples"));
-if(ch_==channel::em && year_.find("5")!=year_.npos){
+if(ch_==channel::em){
   push_back(sample_names_,this->ResolveSamplesAlias("wgam_samples"));
 }
 push_back(sample_names_,this->ResolveSamplesAlias("wjets_samples"));
@@ -1498,17 +1498,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       hmap["WJets"+postfix] = w_pair;
       total_hist.Add(&hmap["WJets"+postfix].first,1.0);
       
-/*      auto wgam_pair = this->GenerateWGamma(method, var, sel, cat, wt);
+      auto wgam_pair = this->GenerateWGamma(method, var, sel, cat, wt);
       PrintValue("WGam"+postfix, wgam_pair.second);
       total_bkr = ValueAdd(total_bkr, wgam_pair.second);
       hmap["WGam"+postfix] = wgam_pair;
-      total_hist.Add(&hmap["WGam"+postfix].first,1.0);*/
+      total_hist.Add(&hmap["WGam"+postfix].first,1.0);
       
       TH1F total_W = hmap["WJets"+postfix].first; 
       Value total_W_norm;
       total_W_norm = ValueAdd(total_W_norm, w_pair.second);
-//      total_W_norm = ValueAdd(total_W_norm, wgam_pair.second);
- //     total_W.Add(&hmap["WGam"+postfix].first,1.0);
+      total_W_norm = ValueAdd(total_W_norm, wgam_pair.second);
+      total_W.Add(&hmap["WGam"+postfix].first,1.0);
       hmap["W"+postfix] = std::make_pair(total_W,total_W_norm);
       PrintValue("W"+postfix, total_W_norm);
     }

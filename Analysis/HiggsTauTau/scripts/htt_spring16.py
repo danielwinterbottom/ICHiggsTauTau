@@ -310,7 +310,10 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'W1JetsToLNu-LO',
     'W2JetsToLNu-LO',
     'W3JetsToLNu-LO',
-    'W4JetsToLNu-LO'
+    'W4JetsToLNu-LO',
+    'WGToLNuG',
+    'WGstarToLNuEE',
+    'WGstarToLNuMuMu'
      ]
 
   if options.qcd_study:
