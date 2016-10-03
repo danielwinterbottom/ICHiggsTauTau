@@ -67,7 +67,7 @@ parser.add_option("--no_shape_systs", dest="no_shape_systs", action='store_true'
                   help="Do not add shape systematics")
 parser.add_option("--norm_systs", dest="norm_systs", action='store_true', default=False,
                   help="Add shapes for evaluating normalisation uncerts")
-parser.add_option("--year", dest="year", type='string', default='',
+parser.add_option("--year", dest="year", type='string', default='2015',
                   help="Output names are data-taking year dependent. This value is read from the config file if present")
 
 (options, args) = parser.parse_args()
