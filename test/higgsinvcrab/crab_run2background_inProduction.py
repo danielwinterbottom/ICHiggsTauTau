@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='160801'     #!!TO BE UPDATED ON EACH PROCESSING
+prod =''     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 
 config.section_('General')
@@ -13,13 +13,13 @@ config.General.workArea=prod+'/MC'
 
 config.Data.outLFNDirBase='/store/user/rdimaria/'+prod+'_MC/'
 
-config.JobType.psetName ='/home/hep/rd1715/CMSSW_8_0_12/src/UserCode/ICHiggsTauTau/test/higgsinv_8_0_12_miniAODcfg.py'
+config.JobType.psetName ='/home/hep/rd1715/CMSSW_8_0_20/src/UserCode/ICHiggsTauTau/test/higgsinv_8_0_20_miniAODcfg.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 
 config.Data.unitsPerJob  = 30000
 config.Data.splitting    = 'EventAwareLumiBased'
-config.Data.inputDataset = True # Allow CRAB to run over (the valid files of) the input dataset given in Data.inputDataset even if its status in DBS is not VALID. Defaults to False.
+#config.Data.inputDataset = True # Allow CRAB to run over (the valid files of) the input dataset given in Data.inputDataset even if its status in DBS is not VALID. Defaults to False.
 #config.Data.inputDataset = 'DUMMY'
 #config.Data.unitsPerJob = 1
 #config.Data.splitting = 'FileBased'
@@ -58,9 +58,8 @@ if __name__ == '__main__':
     #tasks.append((taskname,dataset name from das))
 
 
-    ### In PRODUCTION - finished
-    #tasks.append(('WJetsToLNu-mg-ht100to200','/WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v3/MINIAODSIM'))
-    tasks.append(('QCD-mg-VBFFilter','/QCD_Inclusive_VBFFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_VBFPostMGFilter_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM'))
+    ### In PRODUCTION
+
 
     for task in tasks:
         print task[0]

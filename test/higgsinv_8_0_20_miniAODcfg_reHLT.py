@@ -32,16 +32,14 @@ opts.register('file',
     parser.VarParsing.varType.string, "input file")
 
 
-#                           76X_mcRun2_asymptotic_v12
 opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2_v1', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag") #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Prompt_reconstruction_Global_Tag
 
 #opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
 #    parser.VarParsing.varType.int, "Process as data?")
-opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 
-#                         76XMINIAOD
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 
