@@ -12,6 +12,13 @@ var hierarchy =
         ] ],
         [ "ic::PFJet", "classic_1_1_p_f_jet.html", null ]
       ] ],
+      [ "ic::L1TObject", "classic_1_1_l1_t_object.html", [
+        [ "ic::L1TEGamma", "classic_1_1_l1_t_e_gamma.html", null ],
+        [ "ic::L1TJet", "classic_1_1_l1_t_jet.html", null ],
+        [ "ic::L1TMuon", "classic_1_1_l1_t_muon.html", null ],
+        [ "ic::L1TSum", "classic_1_1_l1_t_sum.html", null ],
+        [ "ic::L1TTau", "classic_1_1_l1_t_tau.html", null ]
+      ] ],
       [ "ic::Met", "classic_1_1_met.html", null ],
       [ "ic::Muon", "classic_1_1_muon.html", null ],
       [ "ic::PFCandidate", "classic_1_1_p_f_candidate.html", null ],
@@ -46,6 +53,7 @@ var hierarchy =
       [ "ICJetFlavourCalculator", "class_i_c_jet_flavour_calculator.html", null ],
       [ "ICJetProducer< T, U >", "class_i_c_jet_producer.html", null ],
       [ "ICL1EtMissProducer", "class_i_c_l1_et_miss_producer.html", null ],
+      [ "ICL1ObjectProducer", "class_i_c_l1_object_producer.html", null ],
       [ "ICLeptonIsolation< T >", "class_i_c_lepton_isolation.html", null ],
       [ "ICLightTrackProducer", "class_i_c_light_track_producer.html", null ],
       [ "ICMetProducer< T >", "class_i_c_met_producer.html", null ],

@@ -225,8 +225,9 @@ var searchData=
   ['statusflags',['statusFlags',['../classic_1_1_gen_particle.html#a5bbc3a00efff5fbaf2e8f4a890288813',1,'ic::GenParticle']]],
   ['sum_5fet',['sum_et',['../classic_1_1_met.html#a798b7613eb7ba69895464e3c9407c7ec',1,'ic::Met']]],
   ['sumet',['sumet',['../structic_1_1_met_1_1_basic_met.html#ac4c7b276ff46bf8248c2f6489f8d4d70',1,'ic::Met::BasicMet']]],
-  ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html',1,'ic']]],
+  ['sumtype',['SumType',['../classic_1_1_l1_t_sum.html#abaa9702c863e9381dfb04d039b49338b',1,'ic::L1TSum::SumType()'],['../classic_1_1_l1_t_sum.html#aeaf8293bd74cb7ab9cbd610e95f42953',1,'ic::L1TSum::sumType()']]],
   ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html#a3007fd9f8b0ed11a888865ef5dd3cddb',1,'ic::SuperCluster']]],
+  ['supercluster',['SuperCluster',['../classic_1_1_super_cluster.html',1,'ic']]],
   ['supercluster_2ecc',['SuperCluster.cc',['../_super_cluster_8cc.html',1,'']]],
   ['supercluster_2ehh',['SuperCluster.hh',['../_super_cluster_8hh.html',1,'']]],
   ['superclustercollection',['SuperClusterCollection',['../namespaceic.html#a28792d2093cc4ef84dbc74d89405598c',1,'ic']]]

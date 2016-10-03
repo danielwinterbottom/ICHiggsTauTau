@@ -99,12 +99,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_calo_jet_8cc.html",
-"_i_c_pileup_info_producer_8cc.html",
-"build-system.html",
-"classic_1_1_electron.html#a04933129fc21da5b01b42776a1b06abb",
-"classic_1_1_met.html#a9683dbc11460e172cf88bf76726a43a7",
-"classic_1_1_tau.html",
-"physics-objects.html#objs-vertex"
+"_i_c_photon_producer_8cc.html",
+"_super_cluster_8cc.html",
+"classic_1_1_candidate.html#a335fc63932fe160ac00bf416befa4e2d",
+"classic_1_1_jet.html#a561803400c101f1f6f31e3e20031442a",
+"classic_1_1_p_f_jet.html#aebcb4e7bcde0d99d6a18fddb4021c8e9",
+"functions_func_p.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

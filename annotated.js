@@ -26,6 +26,7 @@ var annotated =
     [ "ICJetFlavourCalculator", "class_i_c_jet_flavour_calculator.html", "class_i_c_jet_flavour_calculator" ],
     [ "ICJetProducer", "class_i_c_jet_producer.html", "class_i_c_jet_producer" ],
     [ "ICL1EtMissProducer", "class_i_c_l1_et_miss_producer.html", "class_i_c_l1_et_miss_producer" ],
+    [ "ICL1ObjectProducer", "class_i_c_l1_object_producer.html", "class_i_c_l1_object_producer" ],
     [ "ICLeptonIsolation", "class_i_c_lepton_isolation.html", "class_i_c_lepton_isolation" ],
     [ "ICLightTrackProducer", "class_i_c_light_track_producer.html", "class_i_c_light_track_producer" ],
     [ "ICMetProducer", "class_i_c_met_producer.html", "class_i_c_met_producer" ],
