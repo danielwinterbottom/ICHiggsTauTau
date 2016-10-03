@@ -21,6 +21,7 @@
     "mc"            : "spring16_80X",
     "era"           : "data_2016",
     "strategy"      : "smspring16",
+    "analysis"      : "sm",
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,

@@ -284,8 +284,10 @@ namespace ic {
       alias_map_["2jet1taghigh"] = "(n_jets>=2 && n_bjets==1)";
       alias_map_["2jet2taghigh"] = "(n_jets>=2 && n_bjets>=2)";
     } else if (ch_ == channel::tt) {
-      alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
-      alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["btag"] = "(n_jets<=1 && n_loose_bjets>=1)";
+      alias_map_["nobtag"] = "n_loose_bjets==0";
+      if(year_.find("6")!=year_.npos) alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      if(year_.find("6")!=year_.npos) alias_map_["nobtag"] = "n_bjets==0";
       //alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       //alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
@@ -354,7 +356,8 @@ namespace ic {
       alias_map_["inclusive"]         = "1";
      // alias_map_["baseline"]          = "1";
       
-      alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["baseline"]          = "mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"] = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
 
@@ -809,7 +812,7 @@ if(year_.find("6")!=year_.npos){
 sample_names_={};
 push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
 push_back(sample_names_,this->ResolveSamplesAlias("vv_samples"));
-if(ch_==channel::em && year_.find("5")!=year_.npos){
+if(ch_==channel::em){
   push_back(sample_names_,this->ResolveSamplesAlias("wgam_samples"));
 }
 push_back(sample_names_,this->ResolveSamplesAlias("wjets_samples"));
@@ -1495,17 +1498,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       hmap["WJets"+postfix] = w_pair;
       total_hist.Add(&hmap["WJets"+postfix].first,1.0);
       
-/*      auto wgam_pair = this->GenerateWGamma(method, var, sel, cat, wt);
+      auto wgam_pair = this->GenerateWGamma(method, var, sel, cat, wt);
       PrintValue("WGam"+postfix, wgam_pair.second);
       total_bkr = ValueAdd(total_bkr, wgam_pair.second);
       hmap["WGam"+postfix] = wgam_pair;
-      total_hist.Add(&hmap["WGam"+postfix].first,1.0);*/
+      total_hist.Add(&hmap["WGam"+postfix].first,1.0);
       
       TH1F total_W = hmap["WJets"+postfix].first; 
       Value total_W_norm;
       total_W_norm = ValueAdd(total_W_norm, w_pair.second);
-//      total_W_norm = ValueAdd(total_W_norm, wgam_pair.second);
- //     total_W.Add(&hmap["WGam"+postfix].first,1.0);
+      total_W_norm = ValueAdd(total_W_norm, wgam_pair.second);
+      total_W.Add(&hmap["WGam"+postfix].first,1.0);
       hmap["W"+postfix] = std::make_pair(total_W,total_W_norm);
       PrintValue("W"+postfix, total_W_norm);
     }
@@ -2055,10 +2058,12 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::cout << "ExtrapFactor:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat 
                 % ratio_control_cat % ratio_sel % wt;
       std::cout << "ExtrapFactorOS:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat
+                % cat % control_sel % wt;
       std::cout << "Sideband:       " << boost::format("'%s','%s','%s'\n") %  control_sel % cat % wt;
     }
 
     Value ratio = DataSampleRatio(data_sample, ratio_sel, ratio_control_cat, ratio_sel, ratio_signal_cat, wt, sub_samples, dict);
+    Value ratio_os = DataSampleRatio(data_sample, control_sel, cat, control_sel, ratio_signal_cat, wt, sub_samples, dict);
     Value data_control = GetRate(data_sample, control_sel, cat, wt);
  //   if (verbosity_) PrintValue(data_sample, data_control);
     Value total_bkg;
@@ -2079,6 +2084,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     Value qcd_control(data_control.first - total_bkg.first, qcd_control_err);
     if (verbosity_) PrintValue("QCDSideband", qcd_control);
     if (verbosity_) PrintValue("ExtrapFactor", ratio);
+    if (verbosity_) PrintValue("ExtrapFactorOS", ratio_os);
     Value qcd_signal = ValueProduct(qcd_control, ratio);
     return qcd_signal;
   }
