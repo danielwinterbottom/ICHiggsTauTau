@@ -48,9 +48,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % pair_label_;
     std::cout << boost::format(param_fmt()) % "is_data"         % is_data_;
-    std::cout << boost::format(param_fmt()) % "is_embedded"     % is_embedded_;
-    std::cout << boost::format(param_fmt()) % "do_leptonplustau" % do_leptonplustau_;
-    std::cout << boost::format(param_fmt()) % "do_singlelepton" % do_singlelepton_;
+
     
     totalEventsPassed = 0;
     notMatched = 0;
