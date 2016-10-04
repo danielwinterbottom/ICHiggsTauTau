@@ -109,6 +109,7 @@ for ind in range(0,len(lines)):
     configmap[lines[ind].split("=")[0]]=(lines[ind].split("=")[1])
 if "signal_scheme" in configmap:
   SCHEME= configmap["signal_scheme"].rstrip('\n')
+YEAR=2015
 if "year" in configmap:
   YEAR=configmap["year"].rstrip('\n')
 FOLDER=configmap["folder"].rstrip('\n')
