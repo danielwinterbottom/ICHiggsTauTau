@@ -19,10 +19,10 @@ namespace ic {
 bool HLTPathCheck(ic::TreeEvent* event, std::string const& label,
                   std::string const& path);
 
-union ui64 {
-   uint64_t one;
-   int16_t four[4];
- };
+//union ui64 {
+//   uint64_t one;
+//   int16_t four[4];
+// };
 
 std::set<int16_t> GetTriggerTypes(ic::TriggerObject* obj);
 

@@ -83,4 +83,25 @@
 #pragma link C++ class ic::EventInfo+;
 
 #pragma link C++ class mithep::TH2DAsymErr+;
+
+
+#pragma link C++ class ic::L1TObject+;
+#pragma link C++ class std::vector<ic::L1TObject>+;
+
+#pragma link C++ class ic::L1TMuon+;
+#pragma link C++ class std::vector<ic::L1TMuon>+;
+
+#pragma link C++ class ic::L1TTau+;
+#pragma link C++ class std::vector<ic::L1TTau>+;
+
+#pragma link C++ class ic::L1TEGamma+;
+#pragma link C++ class std::vector<ic::L1TEGamma>+;
+
+#pragma link C++ class ic::L1TSum+;
+#pragma link C++ class std::vector<ic::L1TSum>+;
+
+#pragma link C++ class ic::L1TJet+;
+#pragma link C++ class std::vector<ic::L1TJet>+;
+
+
 #endif
