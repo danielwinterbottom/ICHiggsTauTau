@@ -531,32 +531,33 @@ namespace ic {
     }
     
     canv->Update();
-                                               
-    double NHsignal=0;
-    double NTbackground=0;
-    TH1F *signal = new TH1F("signal", "signal", sig_elements[0].hist_ptr()->GetNbinsX(), sig_elements[0].hist_ptr()->GetXaxis()->GetXbins()->GetArray());
-    TH1F *background = new TH1F("background", "background", bkg_elements[0].hist_ptr()->GetNbinsX(), bkg_elements[0].hist_ptr()->GetXaxis()->GetXbins()->GetArray());
-    for(unsigned j = 0; j < unsigned(sig_elements.size()); ++j){
-        signal->Add(sig_elements[j].hist_ptr());
-        NHsignal += sig_elements[j].hist_ptr()->Integral(0,sig_elements[j].hist_ptr()->GetNbinsX()+1)/signal_scale_;
-    }
-    signal->Scale(1/signal_scale_);
-    for(unsigned j = 0; j < unsigned(bkg_elements.size()); ++j){
-        background->Add(bkg_elements[j].hist_ptr());
-        NTbackground +=  bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
-    }
+    if (sig_elements.size()>0){                                           
+      double NHsignal=0;
+      double NTbackground=0;
+      TH1F *signal = new TH1F("signal", "signal", sig_elements[0].hist_ptr()->GetNbinsX(), sig_elements[0].hist_ptr()->GetXaxis()->GetXbins()->GetArray());
+      TH1F *background = new TH1F("background", "background", bkg_elements[0].hist_ptr()->GetNbinsX(), bkg_elements[0].hist_ptr()->GetXaxis()->GetXbins()->GetArray());
+      for(unsigned j = 0; j < unsigned(sig_elements.size()); ++j){
+          signal->Add(sig_elements[j].hist_ptr());
+          NHsignal += sig_elements[j].hist_ptr()->Integral(0,sig_elements[j].hist_ptr()->GetNbinsX()+1)/signal_scale_;
+      }
+     signal->Scale(1/signal_scale_);
+      for(unsigned j = 0; j < unsigned(bkg_elements.size()); ++j){
+          background->Add(bkg_elements[j].hist_ptr());
+          NTbackground +=  bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
+      }
     
-    ch::SOverBInfo Weights = ch::SOverBInfo(signal, background, 3500, 0.682);
+      ch::SOverBInfo Weights = ch::SOverBInfo(signal, background, 3500, 0.682);
     
-    double s = Weights.s;
-    double b = Weights.b;
-    double AMS = TMath::Sqrt2()*TMath::Sqrt((s+b)*TMath::Log(1+s/b)-s);
+      double s = Weights.s;
+      double b = Weights.b;
+      double AMS = TMath::Sqrt2()*TMath::Sqrt((s+b)*TMath::Log(1+s/b)-s);
     
-    if(supress_output_){
-      std::ofstream outfile;
-      outfile.open(sOverb_output_name_);
-      outfile << AMS;
-      outfile.close();
+      if(supress_output_){
+        std::ofstream outfile;
+        outfile.open(sOverb_output_name_);
+        outfile << AMS;
+        outfile.close();
+      }
     }
     
     // Blind data histogram using either auto-blinding or user specified range
