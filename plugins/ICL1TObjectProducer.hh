@@ -68,12 +68,6 @@ class ICL1TObjectProducer : public edm::EDProducer {
   
   std::vector<ic::L1TObject> *ic_l1t_object_;
   edm::EDGetTokenT< BXVector<T> > m_EDToken_l1t_object;
-
-  // output file
-  edm::Service<TFileService> fs_;
-  
-  // tree
-  TTree * tree_;
 };
 
 
