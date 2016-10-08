@@ -272,6 +272,11 @@ namespace ic {
       }
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
+      if(do_theory_uncert_){
+        outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
+        outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
+        outtree_->Branch("alpha_s_wts", &alpha_s_wts_);
+      }
       outtree_->Branch("wt_btag",           &wt_btag_);
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
@@ -1001,8 +1006,7 @@ namespace ic {
   }
 
   int HTTCategories::Execute(TreeEvent *event) {
-      
-        
+
     if(channel_ == channel::em){
       if(do_HLT_Studies_){   
         emHLTPath1_  = event->Get<bool>("HLT_Ele23_WPLoose_Gsf_v");                         
@@ -1218,6 +1222,25 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    
+    if(do_theory_uncert_){
+      for(unsigned i=1001; i<=1009; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        scale_variation_wts_.push_back(wt_temp);
+      }
+      for(unsigned i=2001; i<=2100; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        NNPDF_wts_.push_back(wt_temp);
+      }
+      for(unsigned i=2101; i<=2102; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        alpha_s_wts_.push_back(wt_temp);
+      }
+    }
+    
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();

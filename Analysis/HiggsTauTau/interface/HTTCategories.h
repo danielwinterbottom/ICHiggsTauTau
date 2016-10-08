@@ -29,6 +29,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, systematic_shift)
   CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
   CLASS_MEMBER(HTTCategories, bool, do_HLT_Studies)
+  CLASS_MEMBER(HTTCategories, bool, do_theory_uncert)
   CLASS_MEMBER(HTTCategories, bool, add_nlo_weights)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, bool, iso_study)
@@ -60,6 +61,9 @@ class HTTCategories : public ModuleBase {
 
   // Event Properties
   branch_var wt_;
+  std::vector<double> scale_variation_wts_;
+  std::vector<double> NNPDF_wts_;
+  std::vector<double> alpha_s_wts_;
   int run_;
   unsigned long long event_;
   int lumi_;
