@@ -45,6 +45,11 @@ namespace ic {
     if(fs_){  
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
+      if(do_theory_uncert_){
+        outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
+        outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
+        outtree_->Branch("alpha_s_wts", &alpha_s_wts_);
+      }
       outtree_->Branch("pt_1"        , &pt_1_        );
       outtree_->Branch("pt_2"        , &pt_2_        );
       outtree_->Branch("eta_1"       , &eta_1_       );
@@ -74,6 +79,24 @@ namespace ic {
     
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     event_ = (unsigned long long) eventInfo->event();
+    
+    if(do_theory_uncert_){
+      for(unsigned i=1001; i<=1009; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        scale_variation_wts_.push_back(wt_temp);
+      }
+      for(unsigned i=2001; i<=2100; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        NNPDF_wts_.push_back(wt_temp);
+      }
+      for(unsigned i=2101; i<=2102; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        alpha_s_wts_.push_back(wt_temp);
+      }
+    }
     
     std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
     std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
