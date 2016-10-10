@@ -1544,6 +1544,11 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
   }
 
   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
+  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+       output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+    httWeights.set_do_tau_fake_weights(true);
+  }
+
   
 
     BuildModule(httWeights);
