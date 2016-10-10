@@ -27,10 +27,14 @@ class HTTGenAnalysis : public ModuleBase {
   CLASS_MEMBER(HTTGenAnalysis, double, max_e_eta    )
   CLASS_MEMBER(HTTGenAnalysis, double, max_mu_eta   )
   CLASS_MEMBER(HTTGenAnalysis, double, max_tau_eta  )
+  CLASS_MEMBER(HTTGenAnalysis, bool, do_theory_uncert)
   
   TTree *outtree_;
   
   unsigned long long event_;
+  std::vector<double> scale_variation_wts_;
+  std::vector<double> NNPDF_wts_;
+  std::vector<double> alpha_s_wts_;
   double pt_1_;
   double pt_2_;
   double eta_1_;
