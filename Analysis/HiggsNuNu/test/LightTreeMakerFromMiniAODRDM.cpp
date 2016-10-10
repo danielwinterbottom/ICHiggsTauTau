@@ -191,7 +191,7 @@ int main(int argc, char* argv[]){
     ("dolumixsweight",        po::value<bool>(&dolumixsweight)->default_value(false))
     ("inputparams",           po::value<string>(&inputparams)->default_value("filelists/161003/Params161003.dat"))
     ("jettype",               po::value<string>(&jettype)->default_value("pfJetsPFlow"))
-    ("trg_weight_file",       po::value<string>(&trg_weight_file)->default_value("input/scale_factors/TrigEff2016_MET1DFitHFBinned_errors_6fb_2.root"))
+    ("trg_weight_file",       po::value<string>(&trg_weight_file)->default_value("input/scale_factors/TrigEff2016_MET1DFitHFBinned_errors_12d9fb.root"))
     ("trg_to_use",            po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"))
     ("printEventList",        po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",     po::value<bool>(&printEventContent)->default_value(false))
@@ -379,7 +379,7 @@ int main(int argc, char* argv[]){
 //   if (era == era::data_2012_moriond) data_json   =  "input/json/data_2012_moriond.txt";
 //   if (era == era::data_2012_donly) data_json     =  "input/json/data_2012_donly.txt";
   
-  std::string mydebugoutput("/home/hep/rd1715/CMSSW_8_0_12/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/mydebugoutput");
+  std::string mydebugoutput("/home/hep/rd1715/CMSSW_8_0_20/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/mydebugoutput");
   std::string suffix = output_name.substr( 0 , output_name.find(".root") );
   mydebugoutput.append(suffix);
   

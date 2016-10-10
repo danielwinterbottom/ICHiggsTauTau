@@ -8,7 +8,7 @@ JETTYPE="pfJetsPFlow"
 ### Executable -- RDM stays for mine
 MYEXEC=LightTreeMakerFromMiniAODRDM
 ### Insert the date or leave  the same for test
-PRODUCTION=160801
+PRODUCTION=161003
 PRODUSER=rdimaria
 #PRODUSER=amagnan
 JPTCUTVAL=40
@@ -36,18 +36,17 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 
 
-#for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
-for SYST in MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
 do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
-  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_with6fbTrigEff
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161007
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP
+  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161007
   #JOBDIRPREFIX=jobs_lighttree_160929
   #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
-  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_with6fbTrigEff
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161007
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
+  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161007
   #OUTPUTPREFIX=output_lighttree_160929
   #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
@@ -150,8 +149,6 @@ do
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
     
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_WJetsToLNu-mg*`
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
 	  do
@@ -302,12 +299,8 @@ do
   done
   
 done
-
-
-
 #if (( "$#" != "2" ))
 #then
 #echo ""
 #    exit
 #fi
-
