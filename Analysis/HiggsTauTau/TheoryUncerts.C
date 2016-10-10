@@ -1,5 +1,5 @@
 {
-std::string filename = "/vols/cms/dw515/Offline/CMSSW_8_0_9/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Aug11_PreSel_sv_v5/GluGluHToTauTau_M-125_mt_2016.root";
+std::string filename = "";
 TFile *f0 = new TFile(filename.c_str());
 TTree *t0 = (TTree*)f0->Get("ntuple");
 THStack *hs = new THStack("hs","");
@@ -13,8 +13,9 @@ unsigned minindex;
 for(unsigned i=0; i<9; ++i){
   if(i==5 || i==7) continue;
   std::string wt_name = Form("wt*scale_variation_wts[%u]",i);
-  //std::string cut_string = "*(n_jets>=2 && jdeta>2 && mjj>200 && mt_1<40 && n_bjets>=0 && mva_olddm_medium_2>0.5)";
-  std::string cut_string = "*(n_jets==0 && mva_olddm_medium_2>0.5 && mt_1<40)";
+  std::cut_string="";
+  //cut_string = "*(n_jets>=2 && jdeta>2 && mjj>200 && mt_1<40 && n_bjets>=0 && mva_olddm_medium_2>0.5)";
+  //cut_string = "*(n_jets==0 && mva_olddm_medium_2>0.5 && mt_1<40)";
   wt_name+=cut_string;
   t0->Draw("m_vis>>h",wt_name.c_str(),"goff");
   t0->Draw(Form("m_vis>>h%i",i),wt_name.c_str(),"goff");
