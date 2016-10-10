@@ -344,6 +344,7 @@ namespace ic {
         event->Add("wt_tau_fake_up", weight_up);
         event->Add("wt_tau_fake_down", weight_down);
       } else {
+        //For 2016, use UP weight = down 20% per 100 GeV and vice-versa
         if(channel_ != channel::em){
           unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
           double weight_up = 1.0;
@@ -355,8 +356,8 @@ namespace ic {
             double pt_2 = tau2->pt();
             tau_2_wt = (0.20*pt_2)/100.;
           } 
-          weight_up = 1.0 + tau_2_wt;
-          weight_down = std::max(0.0, 1.0 - tau_2_wt);
+          weight_down = 1.0 + tau_2_wt;
+          weight_up = std::max(0.0, 1.0 - tau_2_wt);
           if (channel_ == channel::tt){
            unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
            if(gen_match_1 == 6){
@@ -364,8 +365,8 @@ namespace ic {
              double pt_1 = tau1->pt();
              tau_1_wt = (0.20*pt_1/100.);
            }
-           weight_up = (1.0+tau_2_wt)*(1.0+tau_1_wt);
-           weight_down = std::max(0.0, (1.0-tau_2_wt)*(1.0-tau_1_wt));
+           weight_down = (1.0+tau_2_wt)*(1.0+tau_1_wt);
+           weight_up = std::max(0.0, (1.0-tau_2_wt)*(1.0-tau_1_wt));
           }
          event->Add("wt_tau_fake_up", weight_up);
          event->Add("wt_tau_fake_down", weight_down);
