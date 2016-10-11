@@ -19,9 +19,6 @@ class HTTTriggerFilter2 : public ModuleBase {
   CLASS_MEMBER(HTTTriggerFilter2, ic::era, era)
   CLASS_MEMBER(HTTTriggerFilter2, std::string, pair_label)
   CLASS_MEMBER(HTTTriggerFilter2, bool, is_data)
-  CLASS_MEMBER(HTTTriggerFilter2, bool, is_embedded)
-  CLASS_MEMBER(HTTTriggerFilter2, bool, do_leptonplustau)
-  CLASS_MEMBER(HTTTriggerFilter2, bool, do_singlelepton)
 
  public:
   HTTTriggerFilter2(std::string const& name);

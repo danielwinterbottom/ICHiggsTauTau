@@ -799,7 +799,10 @@ process.icTauProducer = producers.icTauProducer.clone(
   inputVertices           = vtxLabel,
   includeVertexIP         = cms.bool(True),
   requestTracks           = cms.bool(True),
+  includeTotalCharged     = cms.bool(False),
+  totalChargedLabel       = cms.string('totalCharged'),
   tauIDs = tauIDs.dynamicStripIds
+
 )
 
 if release in ['80XMINIAOD']:
@@ -809,8 +812,13 @@ if release in ['80XMINIAOD']:
     inputVertices           = vtxLabel,
     includeVertexIP         = cms.bool(True),
     requestTracks           = cms.bool(False),
+    includeTotalCharged     = cms.bool(False),
+    totalChargedLabel       = cms.string('totalCharged'),
+    requestPFCandidates   = cms.bool(False),
+    inputPFCandidates     = cms.InputTag("pfCandidates"),
+    isSlimmed             = cms.bool(False),
     tauIDs = cms.PSet()
-  )
+)
 
 process.icTauSequence = cms.Sequence(
   process.icTauProducer
@@ -1685,14 +1693,18 @@ if not isData:
 # L1 Objects
 ################################################################
 
-import UserCode.ICHiggsTauTau.default_producers_cfi as producers
+v_doBXloop = False
 
-process.icL1ObjectProducer = producers.icL1ObjectProducer.clone(
-  inputTag_L1TEGamma = cms.untracked.InputTag("caloStage2Digis","EGamma","HLT2"),
-  inputTag_L1TMuon   = cms.untracked.InputTag("gmtStage2Digis","Muon","HLT2"),
-  inputTag_L1TTau    = cms.untracked.InputTag("caloStage2Digis","Tau","HLT2"),
-  inputTag_L1TJet    = cms.untracked.InputTag("caloStage2Digis","Jet","HLT2"),
-  inputTag_L1TSum    = cms.untracked.InputTag("caloStage2Digis","EtSum","HLT2")
+process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
+  branch = cms.string("L1EGammas"),
+  input = cms.InputTag("caloStage2Digis","EGamma","HLT2"),
+  doBXloop = cms.bool(v_doBXloop)
+)
+
+process.icL1TauProducer = cms.EDProducer("ICL1TObjectProducer<l1t::Tau>",
+    branch = cms.string("L1Taus"),
+    input  = cms.InputTag("caloStage2Digis","Tau","HLT2"),
+    doBXloop = cms.bool(v_doBXloop)
 )
   
 # ################################################################
@@ -2230,7 +2242,8 @@ process.p = cms.Path(
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
   #process.patDefaultSequence+
-  process.icL1ObjectProducer+
+  process.icL1EGammaProducer+
+  process.icL1TauProducer+
   process.icEventProducer
 )
 

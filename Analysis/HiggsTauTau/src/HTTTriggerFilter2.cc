@@ -11,8 +11,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "boost/bind.hpp"
 #include "boost/format.hpp"
-#include "UserCode/ICHiggsTauTau/interface/L1TTau.hh"
-#include "UserCode/ICHiggsTauTau/interface/L1TEGamma.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 struct filters {
   std::string label;
@@ -49,9 +48,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % pair_label_;
     std::cout << boost::format(param_fmt()) % "is_data"         % is_data_;
-    std::cout << boost::format(param_fmt()) % "is_embedded"     % is_embedded_;
-    std::cout << boost::format(param_fmt()) % "do_leptonplustau" % do_leptonplustau_;
-    std::cout << boost::format(param_fmt()) % "do_singlelepton" % do_singlelepton_;
+
     
     totalEventsPassed = 0;
     notMatched = 0;
@@ -811,15 +808,15 @@ namespace ic {
                 }
                 if(noEG) leg1_match = false;
                 
-                std::vector<ic::L1TTau*> l1taus = event->GetPtrVec<ic::L1TTau>("L1Taus");
-                std::vector<ic::L1TEGamma*> l1electrons = event->GetPtrVec<ic::L1TEGamma>("L1EGammas");
+                std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+                std::vector<ic::L1TObject*> l1electrons = event->GetPtrVec<ic::L1TObject>("L1EGammas");
                 
                 bool PassedL1 = false;
                 
-                std::vector<ic::L1TTau*> passed_l1_taus;
+                std::vector<ic::L1TObject*> passed_l1_taus;
                 
                 for(unsigned ta=0; ta<l1taus.size(); ++ta){
-                  if(std::fabs(l1taus[ta]->vector().Rapidity())<=2.1 && l1taus[ta]->isolation !=0 && l1taus[ta]->vector().Pt() >= leg_filters[i].leg1_extraL1Pt) passed_l1_taus.push_back(l1taus[ta]);  
+                  if(std::fabs(l1taus[ta]->vector().Rapidity())<=2.1 && l1taus[ta]->isolation() !=0 && l1taus[ta]->vector().Pt() >= leg_filters[i].leg1_extraL1Pt) passed_l1_taus.push_back(l1taus[ta]);  
                 }
                 for(unsigned ta=0; ta<passed_l1_taus.size(); ++ta){
                   //if(IsFilterMatchedWithIndex(passed_l1_taus[ta], objs, leg_filters[i].leg2_filter, 0.5).first) PassedL1 = true;
@@ -845,7 +842,7 @@ namespace ic {
                 for(unsigned eg=0; eg<l1electrons.size(); ++eg){
                   if(std::fabs(l1electrons[eg]->vector().Rapidity()) < 2.1){
                      if(l1electrons[eg]->vector().Pt()>EGPt) EGPt = l1electrons[eg]->vector().Pt(); 
-                     if(l1electrons[eg]->isolation !=0 && l1electrons[eg]->vector().Pt()>IsoEGPt) IsoEGPt = l1electrons[eg]->vector().Pt();  
+                     if(l1electrons[eg]->isolation() !=0 && l1electrons[eg]->vector().Pt()>IsoEGPt) IsoEGPt = l1electrons[eg]->vector().Pt();  
                   }
                 }
                 bool PassedIso30NonIso34 = false;
