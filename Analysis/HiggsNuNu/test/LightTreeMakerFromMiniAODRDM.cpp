@@ -87,7 +87,8 @@ int main(int argc, char* argv[]){
   bool douessyst;                 // Do Unclustered MET Systematic Run
   bool uesupordown;               // If doing Unclustered MET Systematic Run, run with up or down correction (true for up, false for down) 
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
-  bool do2015tauid;                 // If doing cross check tau use alternate tau id discriminant
+  bool do2015tauid;               // If doing cross check tau use alternate tau id discriminant
+  bool do2016tauid;               // If doing cross check tau use alternate tau id discriminant
   bool taulepdiscrtight;          // Use tight electron and muon discriminants
   bool dojerdebug;                // Access runmetunc collections for debugging
   bool dotopreweighting;          // Do Top reweighting
@@ -171,7 +172,8 @@ int main(int argc, char* argv[]){
     ("douessyst",             po::value<bool>(&douessyst)->default_value(false))
     ("uesupordown",           po::value<bool>(&uesupordown)->default_value(true))
     ("docrosschecktau",       po::value<bool>(&docrosschecktau)->default_value(false))
-    ("do2015tauid",           po::value<bool>(&do2015tauid)->default_value(true))
+    ("do2015tauid",           po::value<bool>(&do2015tauid)->default_value(false))
+    ("do2016tauid",           po::value<bool>(&do2016tauid)->default_value(true))
     ("taulepdiscrtight",      po::value<bool>(&taulepdiscrtight)->default_value(false))
     ("dojerdebug",            po::value<bool>(&dojerdebug)->default_value(false))
     ("dotrgeff",              po::value<bool>(&dotrgeff)->default_value(false))
@@ -187,9 +189,9 @@ int main(int argc, char* argv[]){
     ("doidisoerrupordown",    po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",       po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("dolumixsweight",        po::value<bool>(&dolumixsweight)->default_value(false))
-    ("inputparams",           po::value<string>(&inputparams)->default_value("filelists/160801/Params160801.dat"))
+    ("inputparams",           po::value<string>(&inputparams)->default_value("filelists/161003/Params161003.dat"))
     ("jettype",               po::value<string>(&jettype)->default_value("pfJetsPFlow"))
-    ("trg_weight_file",       po::value<string>(&trg_weight_file)->default_value("input/scale_factors/TrigEff2016_MET1DFitHFBinned_errors_6fb_2.root"))
+    ("trg_weight_file",       po::value<string>(&trg_weight_file)->default_value("input/scale_factors/TrigEff2016_MET1DFitHFBinned_errors_12d9fb.root"))
     ("trg_to_use",            po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"))
     ("printEventList",        po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",     po::value<bool>(&printEventContent)->default_value(false))
@@ -377,7 +379,7 @@ int main(int argc, char* argv[]){
 //   if (era == era::data_2012_moriond) data_json   =  "input/json/data_2012_moriond.txt";
 //   if (era == era::data_2012_donly) data_json     =  "input/json/data_2012_donly.txt";
   
-  std::string mydebugoutput("/home/hep/rd1715/CMSSW_8_0_12/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/mydebugoutput");
+  std::string mydebugoutput("/home/hep/rd1715/CMSSW_8_0_20/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/mydebugoutput");
   std::string suffix = output_name.substr( 0 , output_name.find(".root") );
   mydebugoutput.append(suffix);
   
@@ -637,6 +639,13 @@ int main(int argc, char* argv[]){
     .set_min(0);
 
   std::string tau_id_discr, tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
+  if(do2016tauid){
+    tau_id_discr          = "decayModeFinding";
+    tau_iso_discr         = "byMediumIsolationMVArun2v1DBoldDMwLT";
+    tau_anti_muon_discr   = "againstMuonLoose3";
+    tau_anti_elec_discr_1 = "againstElectronVLooseMVA6";
+    tau_anti_elec_discr_2 = "againstElectronVLooseMVA6";
+  }
   if(do2015tauid){
     tau_id_discr          = "decayModeFindingNewDMs";
     tau_iso_discr         = "byTightCombinedIsolationDeltaBetaCorr3Hits";

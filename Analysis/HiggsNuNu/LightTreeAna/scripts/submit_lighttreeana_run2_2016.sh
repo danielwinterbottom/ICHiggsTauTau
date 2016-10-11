@@ -26,9 +26,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_160801_with6fbTrigEff
+JOBDIRPREFIX=jobs_run2ana_161003_ICHEP
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_160801_with6fbTrigEff
+OUTPUTPREFIX=output_run2ana_161003_ICHEP
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"

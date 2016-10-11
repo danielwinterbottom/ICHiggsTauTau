@@ -1,14 +1,14 @@
 #!/bin/sh
 DOCERN=0
 ### submit to the batch sistem at IC 1 -- 0 otherwise
-DOSUBMIT=0
+DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=JetMETvalidation
 ### Executable -- RDM stays for mine
 MYEXEC=LightTreeMakerFromMiniAODRDM
 ### Insert the date or leave  the same for test
-PRODUCTION=160801
+PRODUCTION=161003
 PRODUSER=rdimaria
 #PRODUSER=amagnan
 JPTCUTVAL=40
@@ -36,16 +36,18 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 
 
-for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
 do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
-  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_with6fbTrigEff
-  JOBDIRPREFIX=jobs_lighttree_161011
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP
+  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161007
+  #JOBDIRPREFIX=jobs_lighttree_160929
   #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
-  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_with6fbTrigEff
-  OUTPUTPREFIX=output_lighttree_161011
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
+  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161007
+  #OUTPUTPREFIX=output_lighttree_160929
   #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -149,9 +151,9 @@ do
     
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_QCD-mg-ht700to1000*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
-    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
-	  do
+    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+    do
       echo "Processing files in "$FILELIST
 
       echo $FILELIST
@@ -299,12 +301,8 @@ do
   done
   
 done
-
-
-
 #if (( "$#" != "2" ))
 #then
 #echo ""
 #    exit
 #fi
-

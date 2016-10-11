@@ -13,7 +13,7 @@ config.General.workArea=prod+'/MC'
 
 config.Data.outLFNDirBase='/store/user/rdimaria/'+prod+'_MC/'
 
-config.JobType.psetName ='/home/hep/rd1715/CMSSW_8_0_12/src/UserCode/ICHiggsTauTau/test/higgsinv_8_0_12_miniAODcfg_reHLT.py'
+config.JobType.psetName ='/home/hep/rd1715/CMSSW_8_0_20/src/UserCode/ICHiggsTauTau/test/higgsinv_8_0_20_miniAODcfg_reHLT.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 
