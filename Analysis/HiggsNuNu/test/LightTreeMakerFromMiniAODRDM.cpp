@@ -452,11 +452,13 @@ int main(int argc, char* argv[]){
     .set_data(&data_pu)
     .set_mc(&mc_pu)
     .set_print_weights(false);
-  PileupWeight pileupWeight_up = PileupWeight("PileupWeight_up","!pileup_up")
+  PileupWeight pileupWeight_up = PileupWeight("PileupWeight_up","pileup_up")
+    .set_weight_is_active(false)
     .set_data(&data_pu_up)
     .set_mc(&mc_pu)
     .set_print_weights(false);
-  PileupWeight pileupWeight_down = PileupWeight("PileupWeight_down","!pileup_down")
+  PileupWeight pileupWeight_down = PileupWeight("PileupWeight_down","pileup_down")
+    .set_weight_is_active(false)
     .set_data(&data_pu_down)
     .set_mc(&mc_pu)
     .set_print_weights(false);
