@@ -307,27 +307,27 @@ namespace ic {
                   return (pu_id_mva_value > -0.45);
             } else return true;
       } else return true;
-    } else if (training == 3) {
-      if (pt > 20. && pt <= 30.) {
-            if (abs_eta < 2.5) {
-	      return (pu_id_mva_value > (doTight?0.05:-0.96));
-            } else if (abs_eta < 2.75) {
-	      return (pu_id_mva_value > (doTight?-0.37:-0.62));
-            } else if (abs_eta < 3.0) {
-	      return (pu_id_mva_value > (doTight?-0.23:-0.53));
-            } else if (abs_eta < 5.0) {
-	      return (pu_id_mva_value > (doTight?-0.21:-0.48));
-            } else return true;
+    } else if (training == 4) {
+      if (pt <= 30.) {
+	if (abs_eta < 2.5) {
+	  return (pu_id_mva_value > (doTight?0.69:0.18));
+	} else if (abs_eta < 2.75) {
+	  return (pu_id_mva_value > (doTight?-0.35:-0.55));
+	} else if (abs_eta < 3.0) {
+	  return (pu_id_mva_value > (doTight?-0.26:-0.42));
+	} else if (abs_eta < 5.0) {
+	  return (pu_id_mva_value > (doTight?-0.21:-0.36));
+	} else return true;
       } else if (pt > 30.) {
-            if (abs_eta < 2.5) {
-	      return (pu_id_mva_value > (doTight?0.52:-0.93));
-            } else if (abs_eta < 2.75) {
-	      return (pu_id_mva_value > (doTight?-0.18:-0.51));
-            } else if (abs_eta < 3.0) {
-	      return (pu_id_mva_value > (doTight?-0.04:-0.37));
-            } else if (abs_eta < 5.0) {
-	      return (pu_id_mva_value > (doTight?-0.02:-0.30));
-            } else return true;
+	if (abs_eta < 2.5) {
+	  return (pu_id_mva_value > (doTight?0.86:0.61));
+	} else if (abs_eta < 2.75) {
+	  return (pu_id_mva_value > (doTight?-0.10:-0.35));
+	} else if (abs_eta < 3.0) {
+	  return (pu_id_mva_value > (doTight?-0.05:-0.23));
+	} else if (abs_eta < 5.0) {
+	  return (pu_id_mva_value > (doTight?-0.01:-0.17));
+	} else return true;
       } else return true;
     } else {
       return true;
