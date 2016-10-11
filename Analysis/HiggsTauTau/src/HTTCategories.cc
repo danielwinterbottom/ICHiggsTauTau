@@ -1224,16 +1224,19 @@ namespace ic {
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     
     if(do_theory_uncert_){
+      scale_variation_wts_.clear();  
       for(unsigned i=1001; i<=1009; ++i){
         std::string label = Form("%u",i);
         double wt_temp = eventInfo->weight(label);
         scale_variation_wts_.push_back(wt_temp);
       }
+      NNPDF_wts_.clear();
       for(unsigned i=2001; i<=2100; ++i){
         std::string label = Form("%u",i);
         double wt_temp = eventInfo->weight(label);
         NNPDF_wts_.push_back(wt_temp);
       }
+      alpha_s_wts_.clear();
       for(unsigned i=2101; i<=2102; ++i){
         std::string label = Form("%u",i);
         double wt_temp = eventInfo->weight(label);
