@@ -308,6 +308,7 @@ namespace ic {
             } else return true;
       } else return true;
     } else if (training == 4) {
+      //reference: page 16 of https://indico.cern.ch/event/559594/contributions/2257924/attachments/1317046/1973307/PUID_JMAR_2016_07_26_v1.pdf
       if (pt <= 30.) {
 	if (abs_eta < 2.5) {
 	  return (pu_id_mva_value > (doTight?0.69:0.18));
