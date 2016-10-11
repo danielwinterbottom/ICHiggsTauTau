@@ -343,9 +343,11 @@ namespace ic {//namespace
     if (save_weights_){
       std::vector<double> dummypt;
       std::vector<double> dummyeta;
+      fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",5,10,eTight_idisoSF_,e_ptbin_,e_etabin_);
+      fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",1,28,e_gsfidSF_,gsf_ptbin_,gsf_etabin_);
+      fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",7,8,muTight_idSF_,mu_ptbin_,mu_etabin_);
+      fillVector("input/scale_factors/Spring16_80X_mu_trackingSF.txt",1,10,mu_TkSF_,tk_ptbin_,tk_etabin_);
       if(!do_idiso_err_ || (do_idiso_err_ && do_idiso_errmuore_) ){//Central value electrons
-	fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",5,10,eTight_idisoSF_,e_ptbin_,e_etabin_);
-	fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",1,28,e_gsfidSF_,gsf_ptbin_,gsf_etabin_);
 	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",5,10,eVeto_idisoDataEff_,dummypt,dummyeta);
 	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_mc_eff.txt",5,10,eVeto_idisoMCEff_,dummypt,dummyeta);
 	fillVector("input/scale_factors/Spring16_80X_gsf_id_data_eff.txt",1,28,e_gsfidDataEff_,dummypt,dummyeta);
@@ -355,13 +357,11 @@ namespace ic {//namespace
 	//fillVector("input/scale_factors/Fall15_76X_ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
       }
       if (!do_idiso_err_ || (do_idiso_err_ && !do_idiso_errmuore_) ){//Central value muons
-        fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",7,8,muTight_idSF_,mu_ptbin_,mu_etabin_);
         fillVector("input/scale_factors/Spring16_80X_mu_tight_iso_SF.txt",7,8,muTight_isoSF_,dummypt,dummyeta);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_id_data_eff.txt",7,8,muVeto_idDataEff_,dummypt,dummyeta);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",7,8,muVeto_isoDataEff_,dummypt,dummyeta);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",7,8,muVeto_idMCEff_,dummypt,dummyeta);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",7,8,muVeto_isoMCEff_,dummypt,dummyeta);
-        fillVector("input/scale_factors/Spring16_80X_mu_trackingSF.txt",1,10,mu_TkSF_,tk_ptbin_,tk_etabin_);
       }
       if(do_idiso_err_ && do_idiso_errmuore_){//Muon eff varied
         fillVectorError("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
