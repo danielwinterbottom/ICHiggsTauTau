@@ -646,7 +646,7 @@ int main(int argc, char* argv[]){
     tau_anti_elec_discr_1 = "againstElectronVLooseMVA6";
     tau_anti_elec_discr_2 = "againstElectronVLooseMVA6";
   }
-  if(do2015tauid){
+  else if(do2015tauid){
     tau_id_discr          = "decayModeFindingNewDMs";
     tau_iso_discr         = "byTightCombinedIsolationDeltaBetaCorr3Hits";
     tau_anti_muon_discr   = "againstMuonTight3";
