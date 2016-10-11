@@ -68,12 +68,6 @@ class ICL1TObjectProducer : public edm::EDProducer {
   
   std::vector<ic::L1TObject> *ic_l1t_object_;
   edm::EDGetTokenT< BXVector<T> > m_EDToken_l1t_object;
-
-  // output file
-  edm::Service<TFileService> fs_;
-  
-  // tree
-  TTree * tree_;
 };
 
 
@@ -111,7 +105,9 @@ void ICL1TObjectProducer<T>::produce(edm::Event& event, const edm::EventSetup& s
   ic_l1t_object_->clear();
   //std::cout << " -- The candidate_collection size is  " << candidate_collection->size() << std::endl;
   //size is nbx*nelements: total size....
-  ic_l1t_object_->resize(doBXloop_? candidate_collection->size() : candidate_collection->size(0), ic::L1TObject());
+  unsigned NObjectsAllBXs = 0;
+  for(int ibx = candidate_collection->getFirstBX(); ibx <= candidate_collection->getLastBX(); ++ibx) NObjectsAllBXs += candidate_collection->size(ibx); 
+  ic_l1t_object_->resize(doBXloop_? NObjectsAllBXs : candidate_collection->size(0), ic::L1TObject());
 
   unsigned counter_objects = 0;
   

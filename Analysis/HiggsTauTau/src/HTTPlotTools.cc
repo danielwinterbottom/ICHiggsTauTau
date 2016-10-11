@@ -17,6 +17,7 @@
 #include "TROOT.h"
 #include "TColor.h"
 #include "TEfficiency.h"
+#include "TMath.h"
 
 
 namespace ic {
@@ -217,19 +218,22 @@ namespace ic {
       ((prefix+"draw_signal_tanb").c_str(),     po::value<std::string>(&draw_signal_tanb_)->default_value(""))
       ((prefix+"cms_label").c_str(),            po::value<std::string>(&cms_label_)->default_value("CMS"))
       ((prefix+"cms_extra").c_str(),            po::value<std::string>(&cms_extra_)->default_value("Preliminary"))
-      ((prefix+"lumi_label").c_str(),            po::value<std::string>(&lumi_label_)->default_value("19.7 fb^{-1} at 8 TeV"))
+      ((prefix+"lumi_label").c_str(),           po::value<std::string>(&lumi_label_)->default_value("19.7 fb^{-1} at 8 TeV"))
       ((prefix+"signal_scale").c_str(),         po::value<unsigned>(&signal_scale_)->default_value(1))
       ((prefix+"log_y").c_str(),                po::value<bool>(&log_y_)->default_value(false))
       ((prefix+"draw_ratio").c_str(),           po::value<bool>(&draw_ratio_)->default_value(false))
       ((prefix+"norm_bins").c_str(),            po::value<bool>(&norm_bins_)->default_value(false))
       ((prefix+"blind").c_str(),                po::value<bool>(&blind_)->default_value(false))
+      ((prefix+"autoblind").c_str(),            po::value<bool>(&autoblind_)->default_value(false))
       ((prefix+"x_blind_min").c_str(),          po::value<double>(&x_blind_min_)->default_value(0))
       ((prefix+"x_blind_max").c_str(),          po::value<double>(&x_blind_max_)->default_value(0))
       ((prefix+"auto_error_band").c_str(),      po::value<double>(&auto_error_band_)->default_value(-1.0))
       ((prefix+"draw_error_band").c_str(),      po::value<bool>(&draw_error_band_)->default_value(false))
       ((prefix+"add_stat_error").c_str(),       po::value<bool>(&add_stat_error_)->default_value(true))
       ((prefix+"ratio_min").c_str(),            po::value<double>(&ratio_min_)->default_value(0.68))
-      ((prefix+"ratio_max").c_str(),            po::value<double>(&ratio_max_)->default_value(1.32));
+      ((prefix+"ratio_max").c_str(),            po::value<double>(&ratio_max_)->default_value(1.32))
+      ((prefix+"supress_output").c_str(),       po::value<bool>(&supress_output_)->default_value(false))
+      ((prefix+"sOverb_output_name").c_str(),   po::value<std::string>(&sOverb_output_name_)->default_value("outputTemp.txt"));
 
     return config_;
     // ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(-10))
@@ -278,9 +282,14 @@ namespace ic {
     };
 
    sig_schemes_["run2_sm"] = {
-     PlotSigComponent("sig", 
-       (boost::lexical_cast<std::string>(signal_scale_)+"#times GluGluH("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
-       {"ggH"}, TColor::GetColor(0,18,255), false)
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times SM H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
+        {"ggH","qqH","ZH","WplusH","WminusH","TTH" }, TColor::GetColor(0,18,255), false)
+    };
+    sig_schemes_["run2_sm_stack"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times SM H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
+        {"ggH","qqH","ZH","WplusH","WminusH","TTH" }, TColor::GetColor(0,18,255), true)
     };
 
     sig_schemes_["sm_nomult"] = {
@@ -386,19 +395,9 @@ namespace ic {
     ModTDRStyle();
     THStack thstack("stack","stack");
     
-    // First collect the data histogram and blind it if necessary
+    // First collect the data
     TH1F *data_hist = &hmap["data_obs"].first;
     if (norm_bins_) data_hist->Scale(1.0, "width");
-    if (blind_) {
-      for (int j = 0; j < data_hist->GetNbinsX(); ++j) {
-        double low_edge = data_hist->GetBinLowEdge(j+1);
-        double high_edge = data_hist->GetBinWidth(j+1)+data_hist->GetBinLowEdge(j+1);
-        if ((low_edge > x_blind_min_ && low_edge < x_blind_max_) || (high_edge > x_blind_min_ && high_edge < x_blind_max_)) {
-          data_hist->SetBinContent(j+1,0);
-          data_hist->SetBinError(j+1,0);
-        }
-      }
-    }
     
     // Setup canvas and 1/2 TPads as necessary
     TCanvas* canv = new TCanvas("c1", "c1");
@@ -532,7 +531,64 @@ namespace ic {
     }
     
     canv->Update();
-   
+    if (sig_elements.size()>0){                                           
+      double NHsignal=0;
+      double NTbackground=0;
+      TH1F *signal = new TH1F("signal", "signal", sig_elements[0].hist_ptr()->GetNbinsX(), sig_elements[0].hist_ptr()->GetXaxis()->GetXbins()->GetArray());
+      TH1F *background = new TH1F("background", "background", bkg_elements[0].hist_ptr()->GetNbinsX(), bkg_elements[0].hist_ptr()->GetXaxis()->GetXbins()->GetArray());
+      for(unsigned j = 0; j < unsigned(sig_elements.size()); ++j){
+          signal->Add(sig_elements[j].hist_ptr());
+          NHsignal += sig_elements[j].hist_ptr()->Integral(0,sig_elements[j].hist_ptr()->GetNbinsX()+1)/signal_scale_;
+      }
+     signal->Scale(1/signal_scale_);
+      for(unsigned j = 0; j < unsigned(bkg_elements.size()); ++j){
+          background->Add(bkg_elements[j].hist_ptr());
+          NTbackground +=  bkg_elements[j].hist_ptr()->Integral(0,bkg_elements[j].hist_ptr()->GetNbinsX()+1);
+      }
+    
+      ch::SOverBInfo Weights = ch::SOverBInfo(signal, background, 3500, 0.682);
+    
+      double s = Weights.s;
+      double b = Weights.b;
+      double AMS = TMath::Sqrt2()*TMath::Sqrt((s+b)*TMath::Log(1+s/b)-s);
+    
+      if(supress_output_){
+        std::ofstream outfile;
+        outfile.open(sOverb_output_name_);
+        outfile << AMS;
+        outfile.close();
+      }
+    }
+    
+    // Blind data histogram using either auto-blinding or user specified range
+    if(autoblind_){
+     for(unsigned i = 0; i < unsigned(data_hist->GetNbinsX()); ++i){
+       double Nsignal=0;
+       double Nbackground=0;
+       for(unsigned j = 0; j < unsigned(sig_elements.size()); ++j){
+           Nsignal += sig_elements[j].hist_ptr()->GetBinContent(i+1)/signal_scale_;
+       }
+       for(unsigned j = 0; j < unsigned(bkg_elements.size()); ++j){
+           Nbackground += bkg_elements[j].hist_ptr()->GetBinContent(i+1);
+       }
+       double systematic_par = 0.09;
+       double blind_metric = Nsignal/sqrt(Nbackground + pow(systematic_par*Nbackground,2)); 
+       if(blind_metric > 0.5){
+         data_hist->SetBinContent(i+1,0);
+         data_hist->SetBinError(i+1,0);
+       }
+     }
+    }else if (blind_) {
+      for (int j = 0; j < data_hist->GetNbinsX(); ++j) {
+        double low_edge = data_hist->GetBinLowEdge(j+1);
+        double high_edge = data_hist->GetBinWidth(j+1)+data_hist->GetBinLowEdge(j+1);
+        if ((low_edge > x_blind_min_ && low_edge < x_blind_max_) || (high_edge > x_blind_min_ && high_edge < x_blind_max_)) {
+          data_hist->SetBinContent(j+1,0);
+          data_hist->SetBinError(j+1,0);
+        }
+      }
+    }
+    
     //Uncertainty band
     TH1F error_band;
     TH1F bkg_total;
@@ -623,9 +679,11 @@ namespace ic {
     FixOverlay();
     canv->Update();
     pads[0]->GetFrame()->Draw();
-    std::string log = log_y_ ? "_log" : "";  
-    canv->Print((plot_name_+log+".pdf").c_str());
-    canv->Print((plot_name_+log+".png").c_str());
+    std::string log = log_y_ ? "_log" : "";
+    if(!supress_output_){
+      canv->Print((plot_name_+log+".pdf").c_str());
+      canv->Print((plot_name_+log+".png").c_str());
+    }
   }
 
   void HTTPlot::AddTextElement(ic::TextElement & ele) {

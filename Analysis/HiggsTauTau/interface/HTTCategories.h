@@ -28,9 +28,12 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, is_data)
   CLASS_MEMBER(HTTCategories, bool, systematic_shift)
   CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
+  CLASS_MEMBER(HTTCategories, bool, do_HLT_Studies)
+  CLASS_MEMBER(HTTCategories, bool, add_nlo_weights)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, bool, iso_study)
   CLASS_MEMBER(HTTCategories, bool, tau_id_study)
+  CLASS_MEMBER(HTTCategories, bool, optimisation_study)
   CLASS_MEMBER(HTTCategories, bool, qcd_study)
   CLASS_MEMBER(HTTCategories, bool, jetfake_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
@@ -77,6 +80,9 @@ class HTTCategories : public ModuleBase {
   double wt_em_qcd_;
   double wt_em_qcd_down_;
   double wt_em_qcd_up_;
+  double wt_nlo_pt_;
+  double wt_tau_id_sf_;
+  double nlo_pt_;
   float trigweight_1_;
   float trigweight_2_;
   double wt_trig_up_1_;
@@ -85,6 +91,8 @@ class HTTCategories : public ModuleBase {
   double wt_trig_down_2_;
   float idisoweight_1_;
   float idisoweight_2_;
+  float trackingweight_1_;
+  float trackingweight_2_;
   float isoweight_1_;
   float isoweight_2_;
   float effweight_;
@@ -129,6 +137,8 @@ class HTTCategories : public ModuleBase {
   branch_var pfpzetamiss_;
   branch_var puppipzetamiss_;
   double dphi_;
+  double met_dphi_1_;
+  double met_dphi_2_;
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
@@ -148,8 +158,10 @@ class HTTCategories : public ModuleBase {
   int q_2_;
   int jet_flav_1_;
   int jet_flav_2_;
-  bool trigger_match_1_;
-  bool trigger_match_2_;
+  bool tag_trigger_match_1_;
+  bool tag_trigger_match_2_;
+  bool probe_trigger_match_1_;
+  bool probe_trigger_match_2_;
   branch_var iso_1_;
   branch_var iso_2_;
   double iso_1_db03_;
@@ -209,6 +221,7 @@ class HTTCategories : public ModuleBase {
   float lbyIsolationMVA3newDMwLTraw_2 = 0;
   float lbyIsolationMVA3oldDMwLTraw_2 = 0;
   float lchargedIsoPtSum_2 = 0;
+  float lchargedRelIsoPtSum_2 = 0;
   float lneutralIsoPtSum_2 = 0;
   float lpuCorrPtSum_2 = 0;
   branch_var lPhotonPtSum_2;
@@ -227,6 +240,7 @@ class HTTCategories : public ModuleBase {
   float lbyIsolationMVA3newDMwLTraw_1 = 0;
   float lbyIsolationMVA3oldDMwLTraw_1 = 0;
   float lchargedIsoPtSum_1 = 0;
+  float lchargedRelIsoPtSum_1 = 0;
   float lneutralIsoPtSum_1 = 0;
   float lpuCorrPtSum_1 = 0;
   branch_var lPhotonPtSum_1;
@@ -398,6 +412,8 @@ class HTTCategories : public ModuleBase {
   float jdphi_;
   unsigned gen_match_1_;
   unsigned gen_match_2_;
+  double gen_match_1_pt_;
+  double gen_match_2_pt_;
   /*double leading_lepton_match_pt_;
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;
@@ -425,6 +441,195 @@ class HTTCategories : public ModuleBase {
 
   double em_gf_mva_;
   double em_vbf_mva_;
+  
+  bool emHLTPath1_;
+  bool emHLTPath2_;
+  bool emHLTPath3_;
+  bool emHLTPath4_;
+  bool emHLTPath5_;
+  bool emHLTPath6_;
+  bool emHLTPath7_;
+  bool emHLTPath8_;
+  bool emHLTPath9_;
+  bool emHLTPath10_;
+  bool emHLTPath11_;
+  bool emHLTPath12_;
+  bool emHLTPath13_;
+  bool emHLTPath14_;
+  bool emHLTPath15_;
+  bool emHLTPath16_;
+  bool emHLTPath17_;
+  bool emHLTPath18_;
+  bool emHLTPath19_;
+  bool emHLTPath20_;
+  bool emHLTPath21_;
+  bool emHLTPath22_;
+  bool emHLTPath23_;
+  bool emHLTPath24_;
+  bool emHLTPath25_;
+  bool emHLTPath26_;
+  bool etHLTPath1_;
+  bool etHLTPath2_;
+  bool etHLTPath3_;
+  bool etHLTPath4_;
+  bool etHLTPath5_;
+  bool etHLTPath6_;
+  bool etHLTPath7_;
+  bool etHLTPath8_;
+  bool etHLTPath9_;
+  bool etHLTPath10_;
+  bool etHLTPath11_;
+  bool etHLTPath12_;
+  bool etHLTPath13_;
+  bool etHLTPath14_;
+  bool etHLTPath15_;
+  bool etHLTPath16_;
+  bool etHLTPath17_;
+  bool mtHLTPath1_;
+  bool mtHLTPath2_;
+  bool mtHLTPath3_;
+  bool mtHLTPath4_;
+  bool mtHLTPath5_;
+  bool mtHLTPath6_;
+  bool mtHLTPath7_;
+  bool mtHLTPath8_;
+  bool mtHLTPath9_;
+  bool mtHLTPath10_;
+  bool mtHLTPath11_;
+  bool mtHLTPath12_;
+  bool mtHLTPath13_;
+  bool mtHLTPath14_;
+  bool mtHLTPath15_;
+  bool mtHLTPath16_;
+  bool ttHLTPath1_;
+  bool ttHLTPath2_;
+  bool ttHLTPath3_;
+  
+  bool emHLTPath1_leg1_;
+  bool emHLTPath2_leg1_;
+  bool emHLTPath3_leg1_;
+  bool emHLTPath4_leg1_;
+  bool emHLTPath5_leg1_;
+  bool emHLTPath6_leg1_;
+  bool emHLTPath7_leg1_;
+  bool emHLTPath8_leg1_;
+  bool emHLTPath9_leg1_;
+  bool emHLTPath10_leg1_;
+  bool emHLTPath11_leg1_;
+  bool emHLTPath12_leg1_;
+  bool emHLTPath13_leg1_;
+  bool emHLTPath14_leg1_;
+  bool emHLTPath15_leg1_;
+  bool emHLTPath16_leg1_;
+  bool emHLTPath17_leg1_;
+  bool emHLTPath18_leg1_;
+  bool emHLTPath19_leg1_;
+  bool emHLTPath20_leg1_;
+  bool emHLTPath21_leg1_;
+  bool emHLTPath22_leg1_;
+  bool emHLTPath23_leg1_;
+  bool emHLTPath24_leg1_;
+  bool emHLTPath25_leg1_;
+  bool emHLTPath26_leg1_;
+  bool etHLTPath1_leg1_;
+  bool etHLTPath2_leg1_;
+  bool etHLTPath3_leg1_;
+  bool etHLTPath4_leg1_;
+  bool etHLTPath5_leg1_;
+  bool etHLTPath6_leg1_;
+  bool etHLTPath7_leg1_;
+  bool etHLTPath8_leg1_;
+  bool etHLTPath9_leg1_;
+  bool etHLTPath10_leg1_;
+  bool etHLTPath11_leg1_;
+  bool etHLTPath12_leg1_;
+  bool etHLTPath13_leg1_;
+  bool etHLTPath14_leg1_;
+  bool etHLTPath15_leg1_;
+  bool etHLTPath16_leg1_;
+  bool etHLTPath17_leg1_;
+  bool mtHLTPath1_leg1_;
+  bool mtHLTPath2_leg1_;
+  bool mtHLTPath3_leg1_;
+  bool mtHLTPath4_leg1_;
+  bool mtHLTPath5_leg1_;
+  bool mtHLTPath6_leg1_;
+  bool mtHLTPath7_leg1_;
+  bool mtHLTPath8_leg1_;
+  bool mtHLTPath9_leg1_;
+  bool mtHLTPath10_leg1_;
+  bool mtHLTPath11_leg1_;
+  bool mtHLTPath12_leg1_;
+  bool mtHLTPath13_leg1_;
+  bool mtHLTPath14_leg1_;
+  bool mtHLTPath15_leg1_;
+  bool mtHLTPath16_leg1_;
+  bool ttHLTPath1_leg1_;
+  bool ttHLTPath2_leg1_;
+  bool ttHLTPath3_leg1_;
+  
+  bool emHLTPath1_leg2_;
+  bool emHLTPath2_leg2_;
+  bool emHLTPath3_leg2_;
+  bool emHLTPath4_leg2_;
+  bool emHLTPath5_leg2_;
+  bool emHLTPath6_leg2_;
+  bool emHLTPath7_leg2_;
+  bool emHLTPath8_leg2_;
+  bool emHLTPath9_leg2_;
+  bool emHLTPath10_leg2_;
+  bool emHLTPath11_leg2_;
+  bool emHLTPath12_leg2_;
+  bool emHLTPath13_leg2_;
+  bool emHLTPath14_leg2_;
+  bool emHLTPath15_leg2_;
+  bool emHLTPath16_leg2_;
+  bool emHLTPath17_leg2_;
+  bool emHLTPath18_leg2_;
+  bool emHLTPath19_leg2_;
+  bool emHLTPath20_leg2_;
+  bool emHLTPath21_leg2_;
+  bool emHLTPath22_leg2_;
+  bool emHLTPath23_leg2_;
+  bool emHLTPath24_leg2_;
+  bool emHLTPath25_leg2_;
+  bool emHLTPath26_leg2_;
+  bool etHLTPath1_leg2_;
+  bool etHLTPath2_leg2_;
+  bool etHLTPath3_leg2_;
+  bool etHLTPath4_leg2_;
+  bool etHLTPath5_leg2_;
+  bool etHLTPath6_leg2_;
+  bool etHLTPath7_leg2_;
+  bool etHLTPath8_leg2_;
+  bool etHLTPath9_leg2_;
+  bool etHLTPath10_leg2_;
+  bool etHLTPath11_leg2_;
+  bool etHLTPath12_leg2_;
+  bool etHLTPath13_leg2_;
+  bool etHLTPath14_leg2_;
+  bool etHLTPath15_leg2_;
+  bool etHLTPath16_leg2_;
+  bool etHLTPath17_leg2_;
+  bool mtHLTPath1_leg2_;
+  bool mtHLTPath2_leg2_;
+  bool mtHLTPath3_leg2_;
+  bool mtHLTPath4_leg2_;
+  bool mtHLTPath5_leg2_;
+  bool mtHLTPath6_leg2_;
+  bool mtHLTPath7_leg2_;
+  bool mtHLTPath8_leg2_;
+  bool mtHLTPath9_leg2_;
+  bool mtHLTPath10_leg2_;
+  bool mtHLTPath11_leg2_;
+  bool mtHLTPath12_leg2_;
+  bool mtHLTPath13_leg2_;
+  bool mtHLTPath14_leg2_;
+  bool mtHLTPath15_leg2_;
+  bool mtHLTPath16_leg2_;
+  bool ttHLTPath1_leg2_;
+  bool ttHLTPath2_leg2_;
+  bool ttHLTPath3_leg2_;
 
 
  public:

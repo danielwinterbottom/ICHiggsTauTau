@@ -45,12 +45,18 @@ class ICTauProducer : public edm::EDProducer {
   std::string branch_;
   boost::hash<T const*> tau_hasher_;
   boost::hash<reco::Track const*> track_hasher_;
+  boost::hash<reco::Candidate const*> cand_hasher_;
   edm::InputTag track_input_;
   std::vector<std::pair<std::string, edm::InputTag> > tau_ids_;
   edm::InputTag input_vertices_;
   bool do_vertex_ip_;
   bool request_trks_;
   std::map<std::string, std::size_t> observed_id_;
+  bool do_total_charged_;
+  std::string total_charged_label_;
+  bool request_cands_;
+  edm::InputTag input_cands_;
+  bool is_slimmed_;
 };
 
 // =============================
@@ -62,7 +68,12 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_vertex_ip_(config.getParameter<bool>("includeVertexIP")),
-      request_trks_(config.getParameter<bool>("requestTracks")) {
+      request_trks_(config.getParameter<bool>("requestTracks")),
+      do_total_charged_(config.getParameter<bool>("includeTotalCharged")),
+      total_charged_label_(config.getParameter<std::string>("totalChargedLabel")),
+      request_cands_(config.getParameter<bool>("requestPFCandidates")),
+      input_cands_(config.getParameter<edm::InputTag>("inputPFCandidates")),
+      is_slimmed_(config.getParameter<bool>("isSlimmed")) {
   consumes<edm::View<T>>(input_);
   consumes<edm::View<reco::Vertex>>(input_vertices_);
   taus_ = new std::vector<ic::Tau>();
@@ -79,9 +90,23 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
     produces<reco::TrackRefVector>("requestedTracks");
   }
 
+  if (request_cands_) {
+    consumes<edm::View<reco::Candidate>>(input_cands_);
+    if (is_slimmed_) {
+#if CMSSW_MAJOR_VERSION >= 7
+      produces<pat::PackedCandidateRefVector>("requestedPFCandidates");
+#endif
+    } else {
+      produces<reco::PFCandidateRefVector>("requestedPFCandidates");
+    }
+  }
+
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_vertex_ip_, "includeVertexIP");
+  PrintOptional(1, do_total_charged_, "includeTotalCharged");
   PrintOptional(1, request_trks_, "requestTracks");
+  PrintOptional(1, request_cands_, "requestPFCandidates");
+  PrintOptional(1, is_slimmed_, "isSlimmed");
 }
 
 template <class T>
@@ -189,6 +214,17 @@ template <>
 void ICTauProducer<pat::Tau>::constructSpecific(
     edm::Handle<edm::View<pat::Tau> > const& taus_handle, edm::Event& event,
     const edm::EventSetup& setup) {
+
+  edm::Handle<edm::View<reco::Candidate> > cands_handle;
+  if (request_cands_) {
+    event.getByLabel(input_cands_, cands_handle);
+  }
+
+#if CMSSW_MAJOR_VERSION >= 7
+  std::auto_ptr<pat::PackedCandidateRefVector> cand_requests_slimmed(new pat::PackedCandidateRefVector());
+#endif
+  std::auto_ptr<reco::PFCandidateRefVector> cand_requests(new reco::PFCandidateRefVector());
+
   for (unsigned i = 0; i < taus_handle->size(); ++i) {
     pat::Tau const& src = taus_handle->at(i);
     ic::Tau& dest = taus_->at(i);
@@ -208,8 +244,69 @@ void ICTauProducer<pat::Tau>::constructSpecific(
         dest.set_lead_p(packedCand->p());
       }
     }
+
+    if (do_total_charged_ &&
+        src.signalChargedHadrCands().isNonnull() &&
+        src.isolationChargedHadrCands().isNonnull()) {
+      dest.SetTauID(total_charged_label_,
+        float(src.signalChargedHadrCands().size() + src.isolationChargedHadrCands().size()));
+      observed_id_[total_charged_label_] = CityHash64(total_charged_label_);
+    }
+
+    if (request_cands_) {
+      if (src.signalChargedHadrCands().isNonnull()) {
+        auto cands = src.signalChargedHadrCands();
+        std::vector<std::size_t> ids;
+        for (unsigned c = 0; c < cands.size(); ++c) {
+          cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
+          ids.push_back(cand_hasher_(&(*(cands[c]))));
+        }
+        dest.set_sig_charged_cands(ids);
+      }
+
+      if (src.isolationChargedHadrCands().isNonnull()) {
+        auto cands = src.isolationChargedHadrCands();
+        std::vector<std::size_t> ids;
+        for (unsigned c = 0; c < cands.size(); ++c) {
+          cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
+          ids.push_back(cand_hasher_(&(*(cands[c]))));
+        }
+        dest.set_iso_charged_cands(ids);
+      }
+
+      if (src.signalGammaCands().isNonnull()) {
+        auto cands = src.signalGammaCands();
+        std::vector<std::size_t> ids;
+        for (unsigned c = 0; c < cands.size(); ++c) {
+          cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
+          ids.push_back(cand_hasher_(&(*(cands[c]))));
+        }
+        dest.set_sig_gamma_cands(ids);
+      }
+
+      if (src.isolationGammaCands().isNonnull()) {
+        auto cands = src.isolationGammaCands();
+        std::vector<std::size_t> ids;
+        for (unsigned c = 0; c < cands.size(); ++c) {
+          cand_requests_slimmed->push_back(cands_handle->refAt(cands[c].key()).castTo<pat::PackedCandidateRef>());
+          ids.push_back(cand_hasher_(&(*(cands[c]))));
+        }
+        dest.set_iso_gamma_cands(ids);
+      }
+    }
 #endif
   }
+
+  if (request_cands_) {
+    if (is_slimmed_) {
+#if CMSSW_MAJOR_VERSION >= 7
+      event.put(cand_requests_slimmed, "requestedPFCandidates");
+#endif
+    } else {
+      event.put(cand_requests, "requestedPFCandidates");
+    }
+  }
+
 }
 
 template <class T>

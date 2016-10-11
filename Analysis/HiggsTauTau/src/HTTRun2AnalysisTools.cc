@@ -29,7 +29,7 @@
 
 namespace ic {
 
-  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_fall15) : ch_(ch), year_(year), verbosity_(verbosity), is_fall15_(is_fall15) {
+  HTTRun2Analysis::HTTRun2Analysis(ic::channel ch, std::string year, int verbosity, bool is_sm) : ch_(ch), year_(year), verbosity_(verbosity), is_sm_(is_sm) {
     lumi_ = 1.;
     do_ss_ = false;
     qcd_os_ss_factor_ = 1.06;
@@ -64,14 +64,51 @@ namespace ic {
       alias_map_["ztt_sel"] = "";
       alias_map_["zll_sel"] = "1.";
     }
+    
+    alias_map_["variable_cat"]      = "1";
+    alias_map_["inclusive"]                 = "1";
+    
+    if (ch_ == channel::et || ch_ == channel::mt){
+      alias_map_["vbf_run1"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";
+      alias_map_["vbf_tight_run1"] = "(n_jets>=2 && jdeta>4. && mjj>700 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
+      alias_map_["vbf_loose_run1"] = "(!"+alias_map_["vbf_tight_run1"]+" && n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";    
+      if(ch_ == channel::et){
+        alias_map_["1jet_loose_run1_et"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_2<=45)";
+        alias_map_["1jet_tight_run1_et"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_tt>100 && pt_2>45)";
+      } else if(ch_ == channel::mt){
+        alias_map_["1jet_loose_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2<=45)";
+        alias_map_["1jet_medium_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt<=100 && pt_2>45)";
+        alias_map_["1jet_tight_run1"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_2>45)";
+      }
+      alias_map_["0jet_loose_run1"] = "(n_jets==0 && pt_2<=45)";
+      alias_map_["0jet_tight_run1"] = "(n_jets==0 && pt_2>45)";
+    }
+    else if (ch_ == channel::tt){
+      alias_map_["vbf_run1_tt"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && pt_tt>100 && n_jetsingap==0)";
+      alias_map_["1jet_run1_tt"] = "(!"+alias_map_["vbf_run1_tt"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100)";
+      alias_map_["1jet_loose_run1_tt"] = "(!"+alias_map_["vbf_run1_tt"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_tt<=170)";
+      alias_map_["1jet_tight_run1_tt"] = "(!"+alias_map_["vbf_run1_tt"]+" && n_jets>=1 && n_bjets==0 && pt_tt>170 )";
+      alias_map_["0jet_run1_tt"] = "(!"+alias_map_["vbf_run1_tt"]+" && !"+alias_map_["1jet_run1_tt"]+" && n_jets>=0 && n_bjets==0)";
+    }
+
 
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
+      //SM Categories
+        
       alias_map_["inclusive"]         = "1";
       alias_map_["nojet"]           ="(n_jets==0)";
       alias_map_["njet"]           ="(n_jets>0)";
       alias_map_["notwoprong"]       ="(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)";
-      alias_map_["baseline"]         = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["baseline"] = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      
+      if(is_sm){
+        if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+        if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";    
+      } else{
+        if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+        if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+      }
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -117,18 +154,18 @@ namespace ic {
       alias_map_["mvadboldtight"]     = "(mvadbold_tight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadboldvtight"]     = "(mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadboldvvtight"]    = "(mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["btagmvadboldvloose"]    = "(mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldloose"]     = "(mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldmedium"]    = "(mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldtight"]     = "(mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldvtight"]     = "(mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldvvtight"]    = "(mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["nobtagmvadboldvloose"]    = "(mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldloose"]     = "(mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldmedium"]    = "(mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldtight"]     = "(mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldvtight"]     = "(mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldvvtight"]    = "(mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["btagmvadboldvloose"]    = "(mva_olddm_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldloose"]     = "(mva_olddm_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldmedium"]    = "(mva_olddm_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldtight"]     = "(mva_olddm_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvtight"]     = "(mva_olddm_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvvtight"]    = "(mva_olddm_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["nobtagmvadboldvloose"]    = "(mva_olddm_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldloose"]     = "(mva_olddm_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldmedium"]    = "(mva_olddm_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldtight"]     = "(mva_olddm_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvtight"]     = "(mva_olddm_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvvtight"]    = "(mva_olddm_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
@@ -249,8 +286,12 @@ namespace ic {
     } else if (ch_ == channel::tt) {
       alias_map_["btag"] = "(n_jets<=1 && n_loose_bjets>=1)";
       alias_map_["nobtag"] = "n_loose_bjets==0";
+      if(year_.find("6")!=year_.npos) alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      if(year_.find("6")!=year_.npos) alias_map_["nobtag"] = "n_bjets==0";
+      //alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
+      //alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
-      alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto &&"+alias_map_["notwoprong"];
+      alias_map_["incnotauiso"]          = "antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["incvlelm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_loose_1>0 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<1&&iso_2<1 && antie_vloose_1>0 && antimu_tight_1>0 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
       alias_map_["inclelm"]         = "(iso_1<1&&iso_2<1 && antie_loose_1>0 && antimu_loose_1>0 && antie_loose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -273,18 +314,18 @@ namespace ic {
       alias_map_["nobtagdbtight"]         = "(db_tight_1&&db_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["puwmedium"]         = "(puw_medium_1&&puw_medium_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["puwtight"]         = "(puw_tight_1&&puw_tight_2&&"+alias_map_["incnotauiso"]+")";
-      alias_map_["btagmvadboldvloose"]    = "(mvadbold_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldloose"]     = "(mvadbold_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldmedium"]    = "(mvadbold_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldtight"]     = "(mvadbold_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldvtight"]     = "(mvadbold_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["btagmvadboldvvtight"]    = "(mvadbold_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
-      alias_map_["nobtagmvadboldvloose"]    = "(mvadbold_vloose_1&&mvadbold_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldloose"]     = "(mvadbold_loose_1&&mvadbold_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldmedium"]    = "(mvadbold_medium_1&&mvadbold_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldtight"]     = "(mvadbold_tight_1&&mvadbold_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldvtight"]     = "(mvadbold_vtight_1&&mvadbold_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
-      alias_map_["nobtagmvadboldvvtight"]    = "(mvadbold_vvtight_1&&mvadbold_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["btagmvadboldvloose"]    = "(mva_olddm_vloose_1&&mva_olddm_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldloose"]     = "(mva_olddm_loose_1&&mva_olddm_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldmedium"]    = "(mva_olddm_medium_1&&mva_olddm_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldtight"]     = "(mva_olddm_tight_1&&mva_olddm_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvtight"]     = "(mva_olddm_vtight_1&&mva_olddm_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["btagmvadboldvvtight"]    = "(mva_olddm_vvtight_1&&mva_olddm_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["btag"]+")";
+      alias_map_["nobtagmvadboldvloose"]    = "(mva_olddm_vloose_1&&mva_olddm_vloose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldloose"]     = "(mva_olddm_loose_1&&mva_olddm_loose_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldmedium"]    = "(mva_olddm_medium_1&&mva_olddm_medium_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldtight"]     = "(mva_olddm_tight_1&&mva_olddm_tight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvtight"]     = "(mva_olddm_vtight_1&&mva_olddm_vtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmvadboldvvtight"]    = "(mva_olddm_vvtight_1&&mva_olddm_vvtight_2&&"+alias_map_["incnotauiso"]+"&&"+alias_map_["nobtag"]+")";
       alias_map_["mvadbnewvloose"]    = "(mvadbnew_vloose_1&&mvadbnew_vloose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewloose"]     = "(mvadbnew_loose_1&&mvadbnew_loose_2&&"+alias_map_["incnotauiso"]+")";
       alias_map_["mvadbnewmedium"]    = "(mvadbnew_medium_1&&mvadbnew_medium_2&&"+alias_map_["incnotauiso"]+")";
@@ -314,9 +355,12 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "1";
      // alias_map_["baseline"]          = "1";
-
+      
       alias_map_["baseline"]          = "mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"] = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
@@ -327,15 +371,16 @@ namespace ic {
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
       //MSSM update analysis style categories:
-      alias_map_["btaglow"] = "(n_jets<=1 && n_bjets>=1 && pt_2>45 && pt_2<60)";
-      alias_map_["btaghigh"] = "(n_jets<=1 && n_bjets>=1 && pt_2>60)";
-      alias_map_["nobtaglow"] = "n_bjets==0 && pt_2>45 && pt_2<60";
-      alias_map_["nobtagmed"] = "n_bjets==0 && pt_2>60 && pt_2<80";
-      alias_map_["nobtaghigh"] = "n_bjets==0 && pt_2>80";
+      alias_map_["btaglow"] = "(pt_2<60 &&"+alias_map_["btag"]+")";
+      alias_map_["btaghigh"] = "(pt_2>60 &&"+alias_map_["btag"]+")";
+      alias_map_["nobtaglow"] = "(pt_2<60 &&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtagmed"] = "(pt_2>60 && pt_2<80 &&"+alias_map_["nobtag"]+")";
+      alias_map_["nobtaghigh"] = "(pt_2>80 &&"+alias_map_["nobtag"]+")";
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "iso_1<0.15 && iso_2<0.2 && !leptonveto";
       alias_map_["inclusivenolv"]         = "iso_1<0.15 && iso_2<0.15";
       //Categories can be added using inclusive alias as follows:
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
@@ -483,7 +528,7 @@ namespace ic {
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["ttcontrolalt"] = "(n_jets>=1 && n_bjets>=1 && pzeta<-50)";
-      alias_map_["ttcontrol"] = "(pzeta<-40 && met>80)";
+      alias_map_["ttcontrol"] = "(pzeta<-20 && met>80)";
       //for making CSV control plot
       alias_map_["prebtag"] = "(n_jets<=1 && n_prebjets>=1)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
@@ -491,6 +536,7 @@ namespace ic {
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
+      if(ch_ == channel::zmm) alias_map_["baseline"] = "(iso_1<0.15&&iso_2<0.15)";
     } else if (ch_ == channel::tpzmm || ch_ == channel::tpzee) {
       alias_map_["inclusive"]         = "1";
       alias_map_["baseline"]         = "(iso_1<0.1 && iso_2<0.1)";
@@ -526,14 +572,14 @@ namespace ic {
      "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q"
     };
 
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){
       samples_alias_map_["vv_samples"] = {
-       "T-tW", "Tbar-tW", "T-t","Tbar-t",
-       "WWTo1L1Nu2Q",
+       "T-tW", "Tbar-tW","Tbar-t","T-t",
+       "WWTo1L1Nu2Q","WZJToLLLNu",
        "VVTo2L2Nu","ZZTo2L2Q","ZZTo4L",
-       "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q"
-    };
-    }
+       "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q"
+      };
+    } 
 /*  if(ch_==channel::em){
     samples_alias_map_["vv_samples"] = {
 //     "WZJetsTo3LNu",
@@ -543,13 +589,18 @@ namespace ic {
   }*/
 
     samples_alias_map_["wgam_samples"] = {
-     "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
-    };
+        "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
+     };
 
 
     samples_alias_map_["top_samples"] = {
      "TT-ext"
     };
+    if(year_.find("6")!=year_.npos){
+      samples_alias_map_["top_samples"] = {
+       "TT"
+      };
+    }
 
  
    samples_alias_map_["ztt_shape_samples"]={
@@ -558,24 +609,16 @@ namespace ic {
     "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
     /"DYJetsToLL_M-150-LO"*/,"DYJetsToLL_M-10-ext"
    };
-
-   if(!is_fall15_){
-     if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
-         samples_alias_map_["ztt_shape_samples"]={
-         "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-         };
-     } else {
-         samples_alias_map_["ztt_shape_samples"]={
-         "DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-         };
-     }
-   }
+/*   if(year_.find("6")!=year_.npos){
+   samples_alias_map_["ztt_shape_samples"]={
+      "DYJetsToLL_M-LO"
+     };*/
+   if(year_.find("6")!=year_.npos){
+   samples_alias_map_["ztt_shape_samples"]={
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
+     };
+  }
 
    samples_alias_map_["data_samples"] = {
    "SingleElectron-2015D-prompt"
@@ -584,41 +627,41 @@ namespace ic {
      samples_alias_map_["data_samples"] = {
       "SingleElectron-2015D"
      };
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){
        samples_alias_map_["data_samples"] = {
-        "SingleElectron-2015D-promptv4","SingleElectron-2015D-Oct05"
+        "SingleElectronB","SingleElectronC","SingleElectronD"
        };
-     }
+    }
    }
    if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::tpzmm || ch_==channel::wmnu){
      samples_alias_map_["data_samples"] = {
      "SingleMuon-2015D"
      };
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){
      samples_alias_map_["data_samples"] = {
-     "SingleMuon-2015D-promptv4","SingleMuon-2015D-Oct05"
-     };
+       "SingleMuonB","SingleMuonC","SingleMuonD"
+       };
     }
    }
    if(ch_==channel::tt){
      samples_alias_map_["data_samples"] = {
       "Tau-2015D"
      };
-    if(!is_fall15_){
-     samples_alias_map_["data_samples"] = {
-      "Tau-2015D-promptv4","Tau-2015D-Oct05"
-     };
-    }
+    if(year_.find("6")!=year_.npos){ 
+      samples_alias_map_["data_samples"] = {
+        "TauB","TauC","TauD"
+      };
+    } 
    }
    if(ch_==channel::em){
     samples_alias_map_["data_samples"] = {
       "MuonEG-2015D"
     };
-    if(!is_fall15_){
+    if(year_.find("6")!=year_.npos){
       samples_alias_map_["data_samples"] = {
-        "MuonEG-2015D-promptv4","MuonEG-2015D-Oct05"
+        "MuonEGB","MuonEGC","MuonEGD"
       };
-    } 
+    }
    }
 
 
@@ -630,22 +673,15 @@ namespace ic {
      "DY3JetsToLL_M-50-LO","DY4JetsToLL_M-50-LO"/*,
      "DYJetsToLL_M-150-LO"*/,"DYJetsToLL_M-10-ext"
    };
-   if(!is_fall15_){
-     if(ch_ == channel::zee || ch_ == channel::zmm || ch_ == channel::em) {
-         samples_alias_map_["ztt_samples"]={
-         "DYJetsToLL_M-5-LO","DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-         };
-     } else {
-         samples_alias_map_["ztt_samples"]={
-         "DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf"
-         };
-     }
+ /*  if(year_.find("6")!=year_.npos){
+     samples_alias_map_["ztt_samples"]={
+       "DYJetsToLL-LO"
+     };*/
+   if(year_.find("6")!=year_.npos){
+   samples_alias_map_["ztt_samples"]={
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO"
+     };
    }
 
   
@@ -662,38 +698,29 @@ namespace ic {
    "W1JetsToLNu-LO","W2JetsToLNu-LO",
    "W3JetsToLNu-LO","W4JetsToLNu-LO"
    };
-  if(!is_fall15_){
-    if(ch_==channel::zee || ch_==channel::zmm) {
-        samples_alias_map_["qcd_sub_samples"] = {
-        "DYJetsToLL_M-50-LO",
-        "DYJetsToLL_M-5-LO",
-        "T-tW", "Tbar-tW", "T-t","Tbar-t",
+
+  /*if(year_.find("6")!=year_.npos){
+     samples_alias_map_["qcd_sub_samples"] = {
+        "DYJetsToLL-LO",
+        "T-tW","T-t", "Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
         "ZZTo2L2Q","ZZTo4L",
-        "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-        "TT-ext","WJetsToLNu-LO",
-        "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-        "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-        "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-        "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-        "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-        "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-        };
-    } else {
-        samples_alias_map_["qcd_sub_samples"] = {
-        "DYJetsToLL_M-50-LO",
-        "T-tW", "Tbar-tW", "T-t","Tbar-t",
+        "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+        "TT","WJetsToLNu-LO",
+        };*/
+  if(year_.find("6")!=year_.npos){
+     samples_alias_map_["qcd_sub_samples"] = {
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO","ZZTo4L",
+        "T-tW","T-t","Tbar-tW","Tbar-t",
         "WWTo1L1Nu2Q","VVTo2L2Nu",
-        "ZZTo2L2Q","ZZTo4L",
-        "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-        "TT-ext","WJetsToLNu-LO",
-        "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-        "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-        "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-        "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
+        "ZZTo2L2Q","WZJToLLLNu",
+        "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+        "TT",
+        "WJetsToLNu-LO","W1JetsToLNu-LO","W2JetsToLNu-LO",
+        "W3JetsToLNu-LO","W4JetsToLNu-LO"
         };
-      }
-     }
+  }
   }
   
 
@@ -711,23 +738,21 @@ namespace ic {
    "W3JetsToLNu-LO","W4JetsToLNu-LO",
    "WGToLNuG","WGstarToLNuEE","WGstarToLNuMuMu"
    };
-  if(!is_fall15_){
-    samples_alias_map_["qcd_sub_samples"] = {
-    "DYJetsToLL_M-50-LO",
-    "DYJetsToLL_M-5-LO",
-    "T-tW", "Tbar-tW", "T-t","Tbar-t",
-    "WWTo1L1Nu2Q","VVTo2L2Nu",
-    "ZZTo2L2Q","ZZTo4L",
-    "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-    "TT-ext","WJetsToLNu-LO",
-    "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-    "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-    "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-    "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-    "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-    "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-    };
-   }
+  if(year_.find("6")!=year_.npos){
+  samples_alias_map_["qcd_sub_samples"] = {
+   "DYJetsToLL-LO-ext",
+   "DY1JetsToLL-LO","DY2JetsToLL-LO",
+   "DY3JetsToLL-LO","DY4JetsToLL-LO",
+   "DYJetsToLL_M-10-50-LO",
+   "T-tW", "Tbar-tW", "Tbar-t", "T-t",
+   "WWTo1L1Nu2Q","VVTo2L2Nu", "ZZTo4L",
+   "ZZTo2L2Q","WZJToLLLNu",
+   "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+   "TT","WJetsToLNu-LO",
+   "W1JetsToLNu-LO","W2JetsToLNu-LO",
+   "W3JetsToLNu-LO","W4JetsToLNu-LO"
+   };
+  }
   }
 
   samples_alias_map_["w_sub_samples"] = {
@@ -740,35 +765,26 @@ namespace ic {
    "WZTo2L2Q","WZJetsToLLLNu","WZTo1L3Nu","WZTo1L1Nu2Q",
    "TT-ext"
    };
-
-   if(!is_fall15){
-    if(ch_==channel::zee || ch_==channel::zmm) {
-        samples_alias_map_["w_sub_samples"] = {
-         "DYJetsToLL_M-5-LO",
-         "DYJetsToLL_M-5_HT100-200","DYJetsToLL_M-5_HT200-400",
-         "DYJetsToLL_M-5_HT400-600","DYJetsToLL_M-5_HT600-Inf",
-         "DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-         "T-tW", "Tbar-tW", "T-t","Tbar-t",
-         "WWTo1L1Nu2Q","VVTo2L2Nu",
-         "ZZTo2L2Q","ZZTo4L",
-         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-         "TT-ext"
-         };
-     } else {    
-        samples_alias_map_["w_sub_samples"] = {
-         "DYJetsToLL_M-50-LO",
-         "DYJetsToLL_M-50_HT100-200","DYJetsToLL_M-50_HT200-400",
-         "DYJetsToLL_M-50_HT400-600","DYJetsToLL_M-50_HT600-Inf",
-         "T-tW", "Tbar-tW", "T-t","Tbar-t",
-         "WWTo1L1Nu2Q","VVTo2L2Nu",
-         "ZZTo2L2Q","ZZTo4L",
-         "WZTo2L2Q","WZJetsTo3LNu","WZTo1L3Nu","WZTo1L1Nu2Q",
-         "TT-ext"
-         };
-     }
-   }
+   /*if(year_.find("6")!=year_.npos){
+    samples_alias_map_["w_sub_samples"] = {
+     "DYJetsToLL-LO",
+     "T-tW", "Tbar-tW","T-t", "Tbar-t",
+     "WWTo1L1Nu2Q","VVTo2L2Nu",
+     "ZZTo2L2Q","ZZTo4L",
+     "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+     "TT"
+     };*/
+   if(year_.find("6")!=year_.npos){
+    samples_alias_map_["w_sub_samples"] = {
+      "DYJetsToLL-LO-ext","DY1JetsToLL-LO","DY2JetsToLL-LO","DY3JetsToLL-LO",
+      "DY4JetsToLL-LO","DYJetsToLL_M-10-50-LO",
+     "T-tW", "Tbar-tW", "Tbar-t","T-t",
+     "WWTo1L1Nu2Q","VVTo2L2Nu","ZZTo4L",
+     "ZZTo2L2Q","WZJToLLLNu",
+     "WZTo2L2Q","WZTo1L3Nu","WZTo1L1Nu2Q",
+     "TT"
+     };
+   } 
 
 samples_alias_map_["wjets_samples"] = {
   "WJetsToLNu-LO",
@@ -782,15 +798,16 @@ if(ch_==channel::em) {
       "W3JetsToLNu-LO","W4JetsToLNu-LO"
      };
 }
-
-if(!is_fall15_){
-
+/*if(year_.find("6")!=year_.npos){
   samples_alias_map_["wjets_samples"] = {
-    "WJetsToLNu-LO",
-    "WJetsToLNu_HT100-200","WJetsToLNu_HT200-400",
-    "WJetsToLNu_HT400-600","WJetsToLNu_HT600-Inf"
-   };
- }
+    "WJetsToLNu-LO"
+  };*/
+if(year_.find("6")!=year_.npos){
+  samples_alias_map_["wjets_samples"] = {
+    "WJetsToLNu-LO","W1JetsToLNu-LO","W2JetsToLNu-LO",
+    "W3JetsToLNu-LO","W4JetsToLNu-LO"
+  };
+}
 
 sample_names_={};
 push_back(sample_names_,this->ResolveSamplesAlias("ztt_samples"));
@@ -816,7 +833,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     SimpleParamParser parser;
     parser.ParseFile(file);
     std::cout << "[HTTRun2Analysis::ParseParamFile] Extracting sample info from file " << file << std::endl;
-    lumi_ = parser.GetParam<double>("LUMI_2015_"+Channel2String(ch_));
+    lumi_ = parser.GetParam<double>("LUMI_"+year_+"_"+Channel2String(ch_));
     std::cout << "[HTTRun2Analysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
 //    if (verbosity_ > 1) std::cout << boost::format("%-25s %152 %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
     if (verbosity_ > 2) std::cout << "-----------------------------------------------------------------------------------------\n";
@@ -854,6 +871,19 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
         sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
     }
   }
+ 
+  void HTTRun2Analysis::AddMSSMSignalSamplesBBH(std::vector<std::string> masses){
+  for (auto m : masses) {
+        sample_names_.push_back("SUSYGluGluToBBHToTauTau_M-"+m);
+    }
+  }
+
+  void HTTRun2Analysis::AddMSSMSignalSamplesGGH(std::vector<std::string> masses){
+  for (auto m : masses) {
+        sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
+    }
+  }
+
 
   void HTTRun2Analysis::AddHhhSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
@@ -1073,7 +1103,10 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     cat += "&&" + alias_map_["baseline"];
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+    //std::string cat_nobtag = "n_jets <=1 && "+alias_map_["baseline"];
+    std::string cat_nobtag = "n_jets <=1 && n_lowpt_jets>=1 && "+alias_map_["baseline"];
     std::string w_extrap_cat = cat;
+    std::string w_extrap_cat_nobtag = cat_nobtag;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
     std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
@@ -1089,7 +1122,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     } else if(method == 12 || method == 13 || method == 14){
      w_norm = this->GetRateViaWOSSSMethod(wjets_samples, w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         this->ResolveSamplesAlias("data_samples"), cat, w_sdb_sel_osss, w_sub_samples, !do_ss_, wt, ValueFnMap());
-    }
+    } else if(method == 16){
+     Value w_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, w_extrap_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
+        this->ResolveSamplesAlias("data_samples"),cat_nobtag, w_sdb_sel_osss,w_sub_samples,!do_ss_, wt, ValueFnMap());
+        std::string btag_extrap_sel;
+        btag_extrap_sel = do_ss_ ?  "!os && "+this->ResolveAlias("sel") : "os &&"+this->ResolveAlias("sel");
+        Value btag_norm = GetRate(wjets_samples, btag_extrap_sel, cat, wt);
+        Value nobtag_norm = GetRate(wjets_samples,btag_extrap_sel,cat_nobtag,wt);
+        Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+        if (verbosity_) PrintValue("ExtrapFactor into full b-tag definition",btag_extrap_factor);
+        w_norm = ValueProduct(w_norm_nobtag,btag_extrap_factor);
+   }
 
     std::string w_shape_cat = cat;
     if (method == 14) w_shape_cat = "n_jets<=1&&n_loose_bjets>=1&&"+alias_map_["baseline"];
@@ -1113,6 +1156,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
     std::string maincat = cat + "&&" + alias_map_["baseline"];
+    std::string ttqcdcat = cat + "&&" + alias_map_["incnotauiso"];
     Value qcd_norm;
     TH1F qcd_hist;
 //    if (ch_ != channel::em) {
@@ -1133,8 +1177,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::string qcd_extrap_sel = "!os && " + this->ResolveAlias("sel");
       //Default QCD method for fully hadronic is different...
       if(ch_ == channel::tt && method == 8){
-        qcd_sdb_sel = "os && " + this->ResolveAlias("sel");
-        qcd_sdb_cat = cat + "&&" + alias_map_["tt_qcd_norm"];
+        qcd_sdb_sel =  do_ss_ ? "!os &&" + this->ResolveAlias("sel") : "os && " + this->ResolveAlias("sel");
+        qcd_sdb_cat = ttqcdcat + "&&" + alias_map_["tt_qcd_norm"];
       }
       
       //Work out the W norm in the SS region separately if it is data driven
@@ -1147,6 +1191,17 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
          }else if(method == 12 || method == 13 || method == 14){
           w_ss_norm = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel_osss, w_sub_samples, false, wt, ValueFnMap());
+         }else if(method==16){
+          //std::string qcd_cat_nobtag = "n_jets<=1 && "+alias_map_["baseline"];
+          std::string qcd_cat_nobtag = "n_jets<=1 && n_lowpt_jets>= 1 && "+alias_map_["baseline"];
+          Value w_ss_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
+             this->ResolveSamplesAlias("data_samples"),qcd_cat_nobtag, w_sdb_sel_osss,w_sub_samples,false, wt, ValueFnMap());
+         std::string os_sel_btag = "!os && " + this->ResolveAlias("sel");
+         Value btag_norm = GetRate(wjets_samples, os_sel_btag, qcd_cat, wt);
+         Value nobtag_norm = GetRate(wjets_samples,os_sel_btag,qcd_cat_nobtag,wt);
+         Value btag_extrap_factor = ValueDivide(btag_norm,nobtag_norm);
+         if (verbosity_) PrintValue("ExtrapFactor into full b-tag definition",btag_extrap_factor);
+         w_ss_norm = ValueProduct(btag_extrap_factor,w_ss_norm_nobtag);
         } else {
           w_ss_norm = std::make_pair(0.0,0.0);
         }
@@ -1162,7 +1217,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       if(ch_ != channel::tt){
         if(method == 8 || method == 9) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, ValueFnMap());
-        } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14) {
+        } else if (method == 10 || method == 11 || method == 12 || method == 13 || method == 14 || method == 16) {
           qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt,//{
           wjets_ss_vals);
         } else if (method == 15 && !do_ss_){
@@ -1289,6 +1344,37 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
   }
 
+  void HTTRun2Analysis::FillMSSMSignalBBH(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+        hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+  void HTTRun2Analysis::FillMSSMSignalGGH(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+
+
+
   void HTTRun2Analysis::FillHhhSignal(HistValueMap & hmap, 
                     std::vector<std::string> const& masses,
                     std::string const& var,
@@ -1316,33 +1402,47 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     PrintValue("data_obs"+postfix, data_pair.second);
     hmap["data_obs"+postfix] = data_pair;
     //Splitting TT into TTT and TTJ - let's disable this for now
-    /*std::string ttt_sel, ttj_sel;
+    std::string ttt_sel, ttj_sel;
     ttt_sel = sel+"&&"+this->ResolveAlias("ztt_sel");
     ttj_sel = sel+"&&!"+this->ResolveAlias("ztt_sel");
+    if(ch_ == channel::zmm || ch_==channel::zee){
+      ttt_sel = "0";
+      ttj_sel = sel;
+    }
     auto topt_pair = this->GenerateTOP(method, var, ttt_sel, cat, wt);
     auto topj_pair = this->GenerateTOP(method, var, ttj_sel, cat, wt);
     PrintValue("TTT"+postfix, topt_pair.second);
     PrintValue("TTJ"+postfix, topj_pair.second);
     hmap["TTT"+postfix] = topt_pair;
-    hmap["TTJ"+postfix] = topj_pair;*/
-    auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
+    hmap["TTJ"+postfix] = topj_pair;
+    //auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
     std::string top_map_label = "TT";
-    /*Value tt_norm = ValueAdd(topt_pair.second, topj_pair.second);
+    Value tt_norm = ValueAdd(topt_pair.second, topj_pair.second);
     TH1F tt_hist = topt_pair.first;
     PrintValue(top_map_label+postfix, tt_norm);
-    tt_hist.Add(&topj_pair.first);*/
-    PrintValue(top_map_label+postfix, top_pair.second);
-    total_bkr = ValueAdd(total_bkr, top_pair.second);
-    //total_bkr = ValueAdd(total_bkr, tt_norm);
-    hmap[top_map_label+postfix] = top_pair;
+    tt_hist.Add(&topj_pair.first);
+    /*PrintValue(top_map_label+postfix, top_pair.second);
+    total_bkr = ValueAdd(total_bkr, top_pair.second);*/
+    total_bkr = ValueAdd(total_bkr, tt_norm);
+    hmap[top_map_label+postfix] = std::make_pair(tt_hist,tt_norm);
     TH1F total_hist = hmap[top_map_label+postfix].first; 
     // Diboson
-    auto vv_pair = this->GenerateVV(method, var, sel, cat, wt);
+    auto vvt_pair = this->GenerateVV(method, var, ttt_sel, cat, wt);
+    auto vvj_pair = this->GenerateVV(method, var, ttj_sel, cat, wt);
+    PrintValue("VVT"+postfix, vvt_pair.second);
+    PrintValue("VVJ"+postfix, vvj_pair.second);
+    hmap["VVT"+postfix] = vvt_pair;
+    hmap["VVJ"+postfix] = vvj_pair;
+    //auto vv_pair = this->GenerateVV(method, var, sel, cat, wt);
     std::string vv_map_label =  "VV";
-    //std::string vv_map_label = (ch_ == channel::em) ? "EWK" : "VV";
-    PrintValue(vv_map_label+postfix, vv_pair.second);
-    total_bkr = ValueAdd(total_bkr, vv_pair.second);
-    hmap[vv_map_label+postfix] = vv_pair;
+    Value vv_norm = ValueAdd(vvt_pair.second, vvj_pair.second);
+    TH1F vv_hist = vvt_pair.first;
+    PrintValue(vv_map_label+postfix, vv_norm);
+    vv_hist.Add(&vvj_pair.first);
+    /*PrintValue(vv_map_label+postfix, vv_pair.second);
+    total_bkr = ValueAdd(total_bkr, vv_pair.second);*/
+    total_bkr = ValueAdd(total_bkr, vv_norm);
+    hmap[vv_map_label+postfix] = std::make_pair(vv_hist, vv_norm);
     total_hist.Add(&hmap[vv_map_label+postfix].first,1.0);
     // Z->ll
     if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!= channel::tpzee && ch_!= channel::tpzmm && ch_!=channel::wmnu) {
@@ -1957,10 +2057,13 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       std::cout << "[HTTRun2Analysis::GetRateViaTauTauQCDMethod]\n";
       std::cout << "ExtrapFactor:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat 
                 % ratio_control_cat % ratio_sel % wt;
+      std::cout << "ExtrapFactorOS:   " << boost::format("'%s'/'%s','%s','%s'\n") % ratio_signal_cat
+                % cat % control_sel % wt;
       std::cout << "Sideband:       " << boost::format("'%s','%s','%s'\n") %  control_sel % cat % wt;
     }
 
     Value ratio = DataSampleRatio(data_sample, ratio_sel, ratio_control_cat, ratio_sel, ratio_signal_cat, wt, sub_samples, dict);
+    Value ratio_os = DataSampleRatio(data_sample, control_sel, cat, control_sel, ratio_signal_cat, wt, sub_samples, dict);
     Value data_control = GetRate(data_sample, control_sel, cat, wt);
  //   if (verbosity_) PrintValue(data_sample, data_control);
     Value total_bkg;
@@ -1981,6 +2084,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     Value qcd_control(data_control.first - total_bkg.first, qcd_control_err);
     if (verbosity_) PrintValue("QCDSideband", qcd_control);
     if (verbosity_) PrintValue("ExtrapFactor", ratio);
+    if (verbosity_) PrintValue("ExtrapFactorOS", ratio_os);
     Value qcd_signal = ValueProduct(qcd_control, ratio);
     return qcd_signal;
   }

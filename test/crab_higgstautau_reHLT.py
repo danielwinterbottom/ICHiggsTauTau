@@ -2,14 +2,14 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='May24_Data_80X'
+config.General.workArea='Aug11_MC_80X'
 #config.General.requestName = 'May13_MC'
 config.section_('JobType')
-config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_8_0_5/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_80X_Apr16.py'
+config.JobType.psetName = 'higgstautau_cfg_80X_Jul16.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-#config.JobType.inputFiles = ['Summer15_V5_MC.db']
-config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_v8']
+config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
+config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_miniAODv2']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000 
@@ -18,11 +18,12 @@ config.Data.unitsPerJob = 30000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality=True
-config.Data.outLFNDirBase='/store/user/adewit/May24_Data_80X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/Aug11_MC_80X/'
 config.section_('User')
 config.section_('Site')
-config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC']
+#config.Site.whitelist = ['T1_RU_JINR_Disk', 'T1_US_FNAL_MSS', 'T1_US_FNAL_Buffer']
 config.Site.storageSite = 'T2_UK_London_IC'
+config.JobType.allowUndistributedCMSSW = True
 
 if __name__ == '__main__':
 
@@ -44,10 +45,12 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    tasks.append(('Tau-2016B','/Tau/Run2016B-PromptReco-v2/MINIAOD'))
-    tasks.append(('SingleMuon-2016B','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'))
-    tasks.append(('SingleElectron-2016B','/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'))
-
+    tasks.append(('GluGluHToTauTau','/GluGluHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    tasks.append(('VBFHToTauTau','/VBFHToTauTau_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('QCD_Pt-15to20_MuEnrichedPt5','/QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('QCD_Pt-20to30_MuEnrichedPt5','/QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('QCD_Pt-30to50_MuEnrichedPt5','/QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('QCD_Pt-50to80_MuEnrichedPt5','/QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
 
     for task in tasks:
         print task[0]

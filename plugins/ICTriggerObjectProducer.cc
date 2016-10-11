@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "boost/format.hpp"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -19,6 +20,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/ICHashTreeProducer.hh"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICTriggerObjectProducer::ICTriggerObjectProducer(
@@ -58,16 +60,18 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
 
     // Find the full label of the chosen HLT path (i.e. with the version number)
     bool fired = true;
+    bool path_found = false;
     std::string full_name;
     for (unsigned i = 0; i < paths->size(); ++i) {
       std::string const& name = paths->at(i).name();
       if (name.find(hlt_path_) != name.npos) {
         full_name = name;
+        path_found = true;
         if (store_only_if_fired_ && !(paths->at(i).wasAccept())) fired = false;
         break;  // Stop loop after we find the first match
       }
     }
-    if (!fired) return;
+    if (!fired || !path_found) return;
 
     // Get a vector of the objects used in the chosen path
     pat::TriggerObjectRefVector objects =
@@ -81,7 +85,6 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       dest.set_phi(src.phi());
       dest.set_energy(src.energy());
       dest.set_charge(0);
-      dest.set_id(0);
       std::vector<std::size_t> filter_labels;
 
       // Get the filters this object was used in
@@ -94,6 +97,18 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
         observed_filters_[filters[k]->label()] = CityHash64(filters[k]->label());
       }
       dest.set_filters(filter_labels);
+
+      // Assuming we can represent each trigger type as a short int, see here:
+      // github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/DataFormats/HLTReco/interface/TriggerTypeDefs.h
+      // we can pack four of these, each 16 bits, into the id() variable
+      // (64 bits).
+      ui64 packed_type;
+      packed_type.one = 0;
+      unsigned n_types = std::min(std::size_t(4), src.triggerObjectTypes().size());
+      for (unsigned t = 0; t < n_types; ++t) {
+        packed_type.four[t] = src.triggerObjectTypes()[t];
+      }
+      dest.set_id(packed_type.one);
     }
   } else {  // i.e. MiniAOD
     // We need to figure out the full HLT path name (typically hlt_path_ doesn't
@@ -107,6 +122,7 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
     edm::TriggerNames const& names = event.triggerNames(*trigres_handle);
 
     bool fired = true;
+    bool path_found = false;
     std::string full_name;
 
     for (unsigned int i = 0, n = trigres_handle->size(); i < n; ++i) {
@@ -114,11 +130,12 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       // std::cout << i << "\t" << name << "\n";
       if (name.find(hlt_path_) != name.npos) {
         full_name = name;
+        path_found = true;
         if (store_only_if_fired_ && !(trigres_handle->accept(i))) fired = false;
         break;  // Stop loop after we find the first match
       }
     }
-    if (!fired) return;
+    if (!fired || !path_found) return;
 
     // Have to use the HLTConfigProvider to get the list of object-producing
     // filter modules that were run in this path
@@ -137,7 +154,7 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       // was only introduced in CMSSW_7_0_5
       src.unpackPathNames(names);
 #endif
-      std::vector<std::string> const& pathnames = src.pathNames();
+      std::vector<std::string> const& pathnames = src.pathNames(false,false);
       bool obj_in_path = false;
       for (unsigned j = 0; j < pathnames.size(); ++j) {
         if (full_name == pathnames[j]) {
@@ -156,7 +173,7 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       dest.set_phi(src.phi());
       dest.set_energy(src.energy());
       dest.set_charge(0);
-      dest.set_id(0);
+
       // Get the filters this object was used in
       std::vector<std::string> const& filters = src.filterLabels();
       std::vector<std::size_t> filter_labels;
@@ -168,6 +185,18 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
         observed_filters_[filters[k]] = CityHash64(filters[k]);
       }
       dest.set_filters(filter_labels);
+
+      // Assuming we can represent each trigger type as a short int, see here:
+      // github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/DataFormats/HLTReco/interface/TriggerTypeDefs.h
+      // we can pack four of these, each 16 bits, into the id() variable
+      // (64 bits).
+      ui64 packed_type;
+      packed_type.one = 0;
+      unsigned n_types = std::min(std::size_t(4), src.triggerObjectTypes().size());
+      for (unsigned t = 0; t < n_types; ++t) {
+        packed_type.four[t] = src.triggerObjectTypes()[t];
+      }
+      dest.set_id(packed_type.one);
     }
   }
 }
@@ -197,6 +226,7 @@ void ICTriggerObjectProducer::endJob() {
   std::map<std::string, std::size_t>::const_iterator iter;
   for (iter = observed_filters_.begin(); iter != observed_filters_.end();
        ++iter) {
+    ICHashTreeProducer::Add(iter->second, iter->first);
     std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
   }
 }

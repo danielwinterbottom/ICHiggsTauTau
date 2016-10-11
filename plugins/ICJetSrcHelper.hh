@@ -250,7 +250,8 @@ struct JetSrcHelper<pat::Jet> {
         include_jec_factors(config.getParameter<bool>("includeJECs")),
         input_sv_info((config.getParameter<edm::InputTag>("inputSVInfo"))),
         include_sv_info_ids(config.getParameter<bool>("requestSVInfo")),
-        is_slimmed(config.getParameter<bool>("isSlimmed")) {
+        is_slimmed(config.getParameter<bool>("isSlimmed")),
+        slimmed_puid_label(config.getParameter<std::string>("slimmedPileupIDLabel")) {
          collector.consumes<reco::SecondaryVertexTagInfoCollection>(input_sv_info);
        }
   void DoSetup(edm::EDProducer * prod) {
@@ -338,6 +339,7 @@ struct JetSrcHelper<pat::Jet> {
   edm::InputTag input_sv_info;
   bool include_sv_info_ids;
   bool is_slimmed;
+  std::string slimmed_puid_label;
 };
 
 #endif

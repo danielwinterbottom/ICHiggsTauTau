@@ -23,6 +23,8 @@ int HTTTauEfficiency::PreAnalysis() {
     outtree_->Branch("iso_mva_oldDMwoLTraw",&iso_mva_oldDMwoLTraw_);
     outtree_->Branch("iso_mva_oldDMwLTraw",&iso_mva_oldDMwLTraw_);
     outtree_->Branch("isoPhoSumPt",&iso_pho_sum_pt_);
+    outtree_->Branch("chargedIsoSumPt",&chargedIsoPtSum_);
+    outtree_->Branch("neutralIsoSumPt",&neutralIsoPtSum_);
     outtree_->Branch("iso_dbetacorr",&iso_dbetacorr_);
     outtree_->Branch("against_mu_tight",&against_mu_tight_);
     outtree_->Branch("against_mu_loose",&against_mu_loose_);
@@ -130,18 +132,20 @@ int HTTTauEfficiency::Execute(TreeEvent* event) {
   eta_ = taus.at(i)->eta();
   pt_ = taus.at(i)->pt();
 //  iso_mva_newDMwoLTraw_ = taus.at(i)->GetTauID("byIsolationMVA3newDMwoLTraw");
-  iso_mva_newDMwLTraw_ = taus.at(i)->GetTauID("byIsolationMVA3newDMwLTraw");
+ // iso_mva_newDMwLTraw_ = taus.at(i)->GetTauID("byIsolationMVA3newDMwLTraw");
  // iso_mva_oldDMwoLTraw_ = taus.at(i)->GetTauID("byIsolationMVA3oldDMwoLTraw");
-  iso_mva_oldDMwLTraw_ = taus.at(i)->GetTauID("byIsolationMVA3oldDMwLTraw");
+  iso_mva_oldDMwLTraw_ = taus.at(i)->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
   iso_dbetacorr_ = taus.at(i)->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
   against_mu_tight_ = taus.at(i)->GetTauID("againstMuonTight3");
   against_mu_loose_ = taus.at(i)->GetTauID("againstMuonLoose3");
-  against_ele_tight_ = taus.at(i)->GetTauID("againstElectronTightMVA5");
-  against_ele_loose_ = taus.at(i)->GetTauID("againstElectronLooseMVA5");
-  against_ele_vtight_ = taus.at(i)->GetTauID("againstElectronVTightMVA5");
-  against_ele_vloose_ = taus.at(i)->GetTauID("againstElectronVLooseMVA5");
-  against_ele_medium_ = taus.at(i)->GetTauID("againstElectronMediumMVA5");
+  against_ele_tight_ = taus.at(i)->GetTauID("againstElectronTightMVA6");
+  against_ele_loose_ = taus.at(i)->GetTauID("againstElectronLooseMVA6");
+  against_ele_vtight_ = taus.at(i)->GetTauID("againstElectronVTightMVA6");
+  against_ele_vloose_ = taus.at(i)->GetTauID("againstElectronVLooseMVA6");
+  against_ele_medium_ = taus.at(i)->GetTauID("againstElectronMediumMVA6");
   iso_pho_sum_pt_ = taus.at(i)->GetTauID("photonPtSumOutsideSignalCone");
+  chargedIsoPtSum_ = taus.at(i)->GetTauID("chargedIsoPtSum");
+  neutralIsoPtSum_ = taus.at(i)->GetTauID("neutralIsoPtSum");
   dm_finding_old_ = taus.at(i)->GetTauID("decayModeFinding");
   dm_ = taus.at(i)->decay_mode();
   

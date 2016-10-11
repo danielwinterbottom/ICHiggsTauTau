@@ -46,6 +46,21 @@ namespace ic {
     }
     return std::make_pair(false,0);
   }
+  
+  std::pair<bool,std::vector<unsigned>> IsFilterMatchedWithMultipleIndexs(Candidate const* cand, std::vector<TriggerObject*> const& objs, std::string const& filter, double const& max_dr){
+    std::size_t hash = CityHash64(filter);
+    std::vector<unsigned> index_vals;
+    bool matched = false;
+    for (unsigned i = 0; i < objs.size(); ++i) {
+      std::vector<std::size_t> const& labels = objs[i]->filters();
+      if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+      if (DR(cand, objs[i]) < max_dr){
+         index_vals.push_back(i);
+         matched = true;
+      }
+    }
+    return std::make_pair(matched,index_vals);
+  }
 
   bool VertexDz(Tau const* cand, double const& vertexZ) {
     return ( fabs(cand->vz() - vertexZ)==0) ; 
@@ -180,6 +195,36 @@ namespace ic {
     }
     return true;
   }
+
+  bool PFJetID2016(PFJet const* jet) {
+    double eta = fabs(jet->eta());
+    bool result = false;
+
+    double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
+//    int n_pf = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
+
+    if (eta <= 2.4) {
+      result = neutralFrac   < 0.99
+      && jet->neutral_em_energy_frac()    < 0.99
+            && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
+            && jet->charged_had_energy_frac()   > 0.0
+            && jet->charged_multiplicity()      > 0
+            && jet->charged_em_energy_frac()    < 0.99;
+    } else if (eta <= 2.7){
+      result = neutralFrac < 0.99
+            && jet->neutral_em_energy_frac()   < 0.99
+            && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
+    } else if(eta<=3.0){
+      result = jet->neutral_em_energy_frac()    < 0.90
+            && jet->neutral_multiplicity() > 2;
+    }
+    else{
+      result = jet->neutral_em_energy_frac()    < 0.90
+	    && jet->neutral_multiplicity()>10;
+    }
+    return result;
+  }
+
 
 
   bool PUJetID(PFJet const* jet, bool is_2012) {
@@ -936,12 +981,9 @@ namespace ic {
     if(!pass_preselection) return false;
     double idmva = elec->GetIdIso("mvaTrigSpring15");
     if (!loose_wp) {
-      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
-      if (eta >  0.8 && eta <= 1.479   && idmva > 0.89) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;
-/*      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
+      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.967910) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;*/
+      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;
     } else {
       if (eta <= 0.8                    && idmva > 0.972153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479    && idmva > 0.922126) pass_mva = true;
@@ -1276,6 +1318,21 @@ namespace ic {
       muon->segment_compatibility() > (goodGlob ? 0.303 : 0.451); 
     return isMedium;
   }
+
+  bool MuonMediumHIPsafe(Muon const* muon) {
+    bool goodGlob = muon->is_global() && 
+      muon->gt_normalized_chi2() < 3 &&
+      muon->cq_chi2_localposition()<12 &&
+      muon->cq_trk_kink()<20;
+
+    bool isMedium =
+      muon->is_pf() &&
+      (muon->is_global()||muon->is_tracker()) && //Require loose muon except pf isolation should be done in individual analyses
+      muon->it_valid_fraction() > 0.49 && 
+      muon->segment_compatibility() > (goodGlob ? 0.303 : 0.451); 
+    return isMedium;
+  }
+
 
   bool MuonLoose(Muon const* muon) {
     bool isLoose = 
@@ -1711,4 +1768,17 @@ namespace ic {
     return sigPtoverPt*(sqrt(pow(fData,2)+pow(jerUnc,2)))*pT;
   }
   */
+  
+   std::set<int16_t> GetTriggerTypes(TriggerObject* obj){
+    
+     std::set<int16_t> types;
+     ui64 packed_type;
+     packed_type.one = obj->id();
+     
+     for(unsigned i=0; i<4; ++i){
+       int16_t type = packed_type.four[i];
+       if(type!=0) types.insert(type);
+     }
+     return types;
+  }
 } //namespace

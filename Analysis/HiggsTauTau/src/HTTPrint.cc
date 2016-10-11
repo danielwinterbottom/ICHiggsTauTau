@@ -70,18 +70,19 @@ namespace ic {
       std::cout << "-decayModeFinding: " << taus[i]->GetTauID("decayModeFinding") << std::endl;
       std::cout << "-decayModeFindingNewDMs: " << taus[i]->GetTauID("decayModeFindingNewDMs") << std::endl;
       std::cout << "-byCombinedIsolationDeltaBetaCorrRaw3Hits: " << taus[i]->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") << std::endl;
-      std::cout << "-byIsolationMVAraw: " << taus[i]->GetTauID("byIsolationMVAraw") << std::endl;
-      std::cout << "-byLooseIsolationMVA: " << taus[i]->GetTauID("byLooseIsolationMVA") << std::endl;
-      std::cout << "-byLooseIsolationMVA2: " << taus[i]->GetTauID("byLooseIsolationMVA2") << std::endl;
-      std::cout << "-againstElectronLoose: " << taus[i]->GetTauID("againstElectronLoose") << std::endl;
-      std::cout << "-againstElectronMVA: " << taus[i]->GetTauID("againstElectronMVA") << std::endl;
-      std::cout << "-againstElectronTightMVA2: " << taus[i]->GetTauID("againstElectronTightMVA2") << std::endl;
-      std::cout << "-againstElectronTightMVA3: " << taus[i]->GetTauID("againstElectronTightMVA3") << std::endl;
-      std::cout << "-againstElectronMVA3category: " << taus[i]->GetTauID("againstElectronMVA3category") << std::endl;
-      std::cout << "-againstElectronMVA3raw: " << taus[i]->GetTauID("againstElectronMVA3raw") << std::endl;
-      std::cout << "-againstMuonTight: " << taus[i]->GetTauID("againstMuonTight") << std::endl;
-      std::cout << "-againstMuonTight2: " << taus[i]->GetTauID("againstMuonTight2") << std::endl;
-      std::cout << "-againstMuonLoose: " << taus[i]->GetTauID("againstMuonLoose") << std::endl;
+      std::cout << "-byIsolationMVAraw: " << taus[i]->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw") << std::endl;
+ //     std::cout << "-byLooseIsolationMVA: " << taus[i]->GetTauID("byLooseIsolationMVA") << std::endl;
+//      std::cout << "-byLooseIsolationMVA2: " << taus[i]->GetTauID("byLooseIsolationMVA2") << std::endl;
+      std::cout << "-againstElectronLooseMVA6: " << taus[i]->GetTauID("againstElectronLooseMVA6") << std::endl;
+      std::cout << "-againstElectronTightMVA6: " << taus[i]->GetTauID("againstElectronTightMVA6") << std::endl;
+  //    std::cout << "-againstElectronMVA: " << taus[i]->GetTauID("againstElectronMVA") << std::endl;
+  //    std::cout << "-againstElectronTightMVA2: " << taus[i]->GetTauID("againstElectronTightMVA2") << std::endl;
+  //    std::cout << "-againstElectronTightMVA3: " << taus[i]->GetTauID("againstElectronTightMVA3") << std::endl;
+  //    std::cout << "-againstElectronMVA3category: " << taus[i]->GetTauID("againstElectronMVA3category") << std::endl;
+ //     std::cout << "-againstElectronMVA3raw: " << taus[i]->GetTauID("againstElectronMVA3raw") << std::endl;
+      std::cout << "-againstMuonTight3: " << taus[i]->GetTauID("againstMuonTight3") << std::endl;
+//      std::cout << "-againstMuonTight2: " << taus[i]->GetTauID("againstMuonTight2") << std::endl;
+      std::cout << "-againstMuonLoose3: " << taus[i]->GetTauID("againstMuonLoose3") << std::endl;
     }
     
     for (unsigned i = 0; i < muons.size(); ++i) {
@@ -92,6 +93,7 @@ namespace ic {
       std::cout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
       std::cout << "-isTrackerMuon: " << muons[i]->is_tracker() << std::endl;
       std::cout << "-isPF: "<< muons[i]->is_pf() <<std::endl;
+      std::cout << "-Medium Muon ID: "<< MuonMediumHIPsafe(muons[i]) <<std::endl;
       std::cout << "-numberOfValidPixelHits: " << muons[i]->it_pixel_hits() << std::endl;
       std::cout << "-numberOfValidMuonHits: " << muons[i]->gt_valid_muon_hits() << std::endl;
       std::cout<< "-it valid fraciton: " <<muons[i]->it_valid_fraction()<<std::endl;
@@ -101,17 +103,17 @@ namespace ic {
       std::cout << "-trackerLayersWithMeasurement: " << muons[i]->it_layers_with_measurement() << std::endl;
       std::cout << "-normalizedChi2: " << muons[i]->gt_normalized_chi2() << std::endl;
       std::cout << "-numberOfMatchedStations: " << muons[i]->matched_stations() << std::endl;
-      std::cout << "-dr03_tk_sum_pt: " << muons[i]->dr03_tk_sum_pt() << std::endl;
-      std::cout << "-dr03_ecal_rechit_sum_et: " << muons[i]->dr03_ecal_rechit_sum_et() << std::endl;
-      std::cout << "-dr03_hcal_tower_sum_et: " << muons[i]->dr03_hcal_tower_sum_et() << std::endl;
-      std::cout << "-dr03_pfiso_charged_all " << muons[i]->dr04_pfiso_charged_all() << std::endl;
-      std::cout << "-dr03_pfiso_charged " << muons[i]->dr03_pfiso_charged() << std::endl;
-      std::cout << "-dr03_pfiso_neutral " << muons[i]->dr03_pfiso_neutral() << std::endl;
-      std::cout << "-dr03_pfiso_gamma " << muons[i]->dr03_pfiso_gamma() << std::endl;
-      std::cout << "-dr03_pfiso_pu " << muons[i]->dr03_pfiso_pu() << std::endl;
+ //     std::cout << "-dr04_tk_sum_pt: " << muons[i]->dr04_tk_sum_pt() << std::endl;
+ //     std::cout << "-dr04_ecal_rechit_sum_et: " << muons[i]->dr04_ecal_rechit_sum_et() << std::endl;
+  //    std::cout << "-dr04_hcal_tower_sum_et: " << muons[i]->dr04_hcal_tower_sum_et() << std::endl;
+      std::cout << "-dr04_pfiso_charged_all " << muons[i]->dr04_pfiso_charged_all() << std::endl;
+      std::cout << "-dr04_pfiso_charged " << muons[i]->dr04_pfiso_charged() << std::endl;
+      std::cout << "-dr04_pfiso_neutral " << muons[i]->dr04_pfiso_neutral() << std::endl;
+      std::cout << "-dr04_pfiso_gamma " << muons[i]->dr04_pfiso_gamma() << std::endl;
+      std::cout << "-dr04_pfiso_pu " << muons[i]->dr04_pfiso_pu() << std::endl;
 
-      double iso =  muons[i]->dr03_pfiso_charged() 
-      + std::max(muons[i]->dr03_pfiso_neutral() + muons[i]->dr03_pfiso_gamma() - 0.5 * muons[i]->dr03_pfiso_pu(), 0.0);
+      double iso =  muons[i]->dr04_pfiso_charged() 
+      + std::max(muons[i]->dr04_pfiso_neutral() + muons[i]->dr04_pfiso_gamma() - 0.5 * muons[i]->dr04_pfiso_pu(), 0.0);
       std::cout << "-dr04_pfiso_dbeta_sum: " << iso << std::endl;
       iso = iso / muons[i]->pt();
       std::cout << "-dr04_pfiso_dbeta_rel: " << iso << std::endl;
@@ -129,14 +131,14 @@ namespace ic {
       std::cout << "dxyVertex "<<elecs[i]->dxy_vertex()<<std::endl;
       std::cout<< "dzVertex "<<elecs[i]->dz_vertex() <<std::endl;
       elecs[i]->Print();
-      double iso =  (elecs[i]->dr03_pfiso_charged() 
-      + std::max(elecs[i]->dr03_pfiso_neutral() + elecs[i]->dr03_pfiso_gamma() - 0.5 * elecs[i]->dr03_pfiso_pu(), 0.0)) / elecs[i]->pt();
+      double iso =  (elecs[i]->dr04_pfiso_charged() 
+      + std::max(elecs[i]->dr04_pfiso_neutral() + elecs[i]->dr04_pfiso_gamma() - 0.5 * elecs[i]->dr04_pfiso_pu(), 0.0)) / elecs[i]->pt();
       std::cout << "-rel_iso_03_dbeta: " << iso << std::endl;
       std::cout << "-id_mvaNonTrigSpring15: " << elecs[i]->GetIdIso("mvaNonTrigSpring15") << std::endl;
       std::cout << "-id_mvaTrigV0: " << elecs[i]->GetIdIso("mvaTrigV0") << std::endl;
-      std::cout << "-dr03_tk_sum_pt: " << elecs[i]->dr03_tk_sum_pt() << std::endl;
-      std::cout << "-dr03_ecal_rechit_sum_et: " << elecs[i]->dr03_ecal_rechit_sum_et() << std::endl;
-      std::cout << "-dr03_hcal_tower_sum_et: " << elecs[i]->dr03_hcal_tower_sum_et() << std::endl;
+//      std::cout << "-dr04_tk_sum_pt: " << elecs[i]->dr04_tk_sum_pt() << std::endl;
+//      std::cout << "-dr04_ecal_rechit_sum_et: " << elecs[i]->dr04_ecal_rechit_sum_et() << std::endl;
+ //     std::cout << "-dr04_hcal_tower_sum_et: " << elecs[i]->dr04_hcal_tower_sum_et() << std::endl;
       std::cout << "-Pass MVAMET Preselection?: " << MVAMETElectron(elecs[i]) << std::endl;
     }
 

@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <cmath>
+#include <set>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include "boost/range/algorithm_ext/erase.hpp"
@@ -125,6 +126,7 @@ namespace ic {
   // Standard particle-flow jet id for 2016
   bool PFJetID2016(PFJet const* jet);
 
+
   // Particle-flow jet id without the HF energy in the neutral energy cut
   bool PFJetIDNoHFCut(PFJet const* jet);
   bool PUJetID(PFJet const* jet, bool is_2012);
@@ -143,7 +145,7 @@ namespace ic {
 
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
   std::pair <bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
-
+  std::pair <bool,std::vector<unsigned>> IsFilterMatchedWithMultipleIndexs(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
 
   template<class T>
   double PF04IsolationVal(T const* cand, double const& dbeta, bool allcharged) {
@@ -287,6 +289,7 @@ namespace ic {
 
   bool MuonTight(Muon const* muon);
   bool MuonMedium(Muon const* muon);
+  bool MuonMediumHIPsafe(Muon const* muon);
   bool MuonLoose(Muon const* muon);
   bool MuonIso(Muon const* muon);
   bool MuonTkIso(Muon const* muon);
@@ -680,5 +683,13 @@ namespace ic {
   double ScaleReso(double pT, double eta, double jerUnc);
 
 */
+  
+  union ui64 {
+    uint64_t one;
+    int16_t four[4];
+  };
+  
+  std::set<int16_t> GetTriggerTypes(TriggerObject* obj);
+  
 } // namepsace
 #endif
