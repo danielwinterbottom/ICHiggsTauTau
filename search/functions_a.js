@@ -1,11 +1,6 @@
 var searchData=
 [
-  ['l1tegamma',['L1TEGamma',['../classic_1_1_l1_t_e_gamma.html#aacda2e76ec1faab6f2eb679e7dfdc935',1,'ic::L1TEGamma']]],
-  ['l1tjet',['L1TJet',['../classic_1_1_l1_t_jet.html#a29527c3c9cd84e971cb0df299398b3ec',1,'ic::L1TJet']]],
-  ['l1tmuon',['L1TMuon',['../classic_1_1_l1_t_muon.html#ac1108583201b7db843b94f6b62f46f08',1,'ic::L1TMuon']]],
   ['l1tobject',['L1TObject',['../classic_1_1_l1_t_object.html#aacbcfdd320802dab747b576eb842b757',1,'ic::L1TObject']]],
-  ['l1tsum',['L1TSum',['../classic_1_1_l1_t_sum.html#a79e3e6b246e04b773ce787754bdc1105',1,'ic::L1TSum']]],
-  ['l1ttau',['L1TTau',['../classic_1_1_l1_t_tau.html#a432225aec4185e92df46673ddd9697dc',1,'ic::L1TTau']]],
   ['lead_5fdxy_5fvertex',['lead_dxy_vertex',['../classic_1_1_tau.html#a93a4e9e681aaabf133991bfe676c76fc',1,'ic::Tau']]],
   ['lead_5fdz_5fvertex',['lead_dz_vertex',['../classic_1_1_tau.html#a8958d4db6296fa7e75f994d21441098e',1,'ic::Tau']]],
   ['lead_5fecal_5fenergy',['lead_ecal_energy',['../classic_1_1_tau.html#aa202f31c96ac8cbbe85587d7c94187da',1,'ic::Tau']]],

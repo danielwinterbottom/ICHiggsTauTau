@@ -12,9 +12,9 @@ var indexSectionsWithContent =
   2: "ei",
   3: "bceghijlmnoprstuv",
   4: "abcdefghijlmnopqrstuvwxy~",
-  5: "acdhijlpqrstv",
+  5: "acdhijlprstv",
   6: "cegijlmprstuv",
-  7: "gmps",
+  7: "gmp",
   8: "efghikmntx",
   9: "lu",
   10: "acdhinpt"

@@ -8,5 +8,6 @@ var searchData=
   ['bindvariables',['bindVariables',['../class_e_gamma_mva_ele_estimator_c_s_a14.html#a5c3a39b631bf2cf63ce0ac7db2d923e0',1,'EGammaMvaEleEstimatorCSA14']]],
   ['buildsystem_2emd',['BuildSystem.md',['../_build_system_8md.html',1,'']]],
   ['buildtrkvtxmap',['BuildTrkVtxMap',['../_i_c_jet_dest_helper_8hh.html#acca43eada309143017b94c219d14cee8',1,'ICJetDestHelper.hh']]],
-  ['bunch_5fcrossing',['bunch_crossing',['../classic_1_1_event_info.html#a3c9e6f6f4e91e7035caf770062877477',1,'ic::EventInfo::bunch_crossing()'],['../classic_1_1_pileup_info.html#a57b12051485c00914352e58aa346a45f',1,'ic::PileupInfo::bunch_crossing()']]]
+  ['bunch_5fcrossing',['bunch_crossing',['../classic_1_1_event_info.html#a3c9e6f6f4e91e7035caf770062877477',1,'ic::EventInfo::bunch_crossing()'],['../classic_1_1_pileup_info.html#a57b12051485c00914352e58aa346a45f',1,'ic::PileupInfo::bunch_crossing()']]],
+  ['bx',['bx',['../classic_1_1_l1_t_object.html#aab06c1a26709880c29235e43b28ec633',1,'ic::L1TObject']]]
 ];

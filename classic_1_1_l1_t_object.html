@@ -111,12 +111,7 @@ $(document).ready(function(){initNavTree('classic_1_1_l1_t_object.html','');});
  <div class="center">
   <img src="classic_1_1_l1_t_object.png" usemap="#ic::L1TObject_map" alt=""/>
   <map id="ic::L1TObject_map" name="ic::L1TObject_map">
-<area href="classic_1_1_candidate.html" title="Stores a four-momentum, charge and identifier, and is the base class for most other physics objects..." alt="ic::Candidate" shape="rect" coords="216,0,314,24"/>
-<area href="classic_1_1_l1_t_e_gamma.html" alt="ic::L1TEGamma" shape="rect" coords="0,112,98,136"/>
-<area href="classic_1_1_l1_t_jet.html" alt="ic::L1TJet" shape="rect" coords="108,112,206,136"/>
-<area href="classic_1_1_l1_t_muon.html" alt="ic::L1TMuon" shape="rect" coords="216,112,314,136"/>
-<area href="classic_1_1_l1_t_sum.html" alt="ic::L1TSum" shape="rect" coords="324,112,422,136"/>
-<area href="classic_1_1_l1_t_tau.html" alt="ic::L1TTau" shape="rect" coords="432,112,530,136"/>
+<area href="classic_1_1_candidate.html" title="Stores a four-momentum, charge and identifier, and is the base class for most other physics objects..." alt="ic::Candidate" shape="rect" coords="0,0,86,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -126,15 +121,35 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aacbcfdd320802dab747b576eb842b757"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebbde621fa40c1b7ff1faf1609bee7bb"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#aebbde621fa40c1b7ff1faf1609bee7bb">~L1TObject</a> ()</td></tr>
 <tr class="separator:aebbde621fa40c1b7ff1faf1609bee7bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4972a2ef74894def97f36226aa5a46c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#ac4972a2ef74894def97f36226aa5a46c">ClassDef</a> (<a class="el" href="classic_1_1_l1_t_object.html">L1TObject</a>, 1)</td></tr>
-<tr class="separator:ac4972a2ef74894def97f36226aa5a46c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa83ad6d492c7cf42bd36ecccf11343ba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#aa83ad6d492c7cf42bd36ecccf11343ba">Print</a> () const </td></tr>
+<tr class="separator:aa83ad6d492c7cf42bd36ecccf11343ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfb6807876e7ff0fe35ce353f18c8d05"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#adfb6807876e7ff0fe35ce353f18c8d05">set_bx</a> (int value)</td></tr>
+<tr class="separator:adfb6807876e7ff0fe35ce353f18c8d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab06c1a26709880c29235e43b28ec633"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#aab06c1a26709880c29235e43b28ec633">bx</a> () const </td></tr>
+<tr class="separator:aab06c1a26709880c29235e43b28ec633"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3aaea3bfcd21bfd4947b0f771a0ac10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#af3aaea3bfcd21bfd4947b0f771a0ac10">set_sumType</a> (int value)</td></tr>
+<tr class="separator:af3aaea3bfcd21bfd4947b0f771a0ac10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad811186e89def69eadddbdf53ff1d0c2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#ad811186e89def69eadddbdf53ff1d0c2">sumType</a> () const </td></tr>
+<tr class="separator:ad811186e89def69eadddbdf53ff1d0c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf0a67bb376548c1dfe85d50c20260b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#abf0a67bb376548c1dfe85d50c20260b7">set_charge</a> (short int value)</td></tr>
+<tr class="separator:abf0a67bb376548c1dfe85d50c20260b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a350afb01b8dab275e44bfccc5fce5b7c"><td class="memItemLeft" align="right" valign="top">short int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#a350afb01b8dab275e44bfccc5fce5b7c">charge</a> () const </td></tr>
+<tr class="separator:a350afb01b8dab275e44bfccc5fce5b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a095bebf8fa16531059bb862aa6872466"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#a095bebf8fa16531059bb862aa6872466">set_isolation</a> (unsigned short int value)</td></tr>
+<tr class="separator:a095bebf8fa16531059bb862aa6872466"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68bf6da7ebaaff49630f048ea2bf13fe"><td class="memItemLeft" align="right" valign="top">unsigned short int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#a68bf6da7ebaaff49630f048ea2bf13fe">isolation</a> () const </td></tr>
+<tr class="separator:a68bf6da7ebaaff49630f048ea2bf13fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0cfd79743076ff362560a78e20486c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#ac0cfd79743076ff362560a78e20486c5">set_quality</a> (unsigned short int value)</td></tr>
+<tr class="separator:ac0cfd79743076ff362560a78e20486c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40b8d04d4682b0a6e377b82699e4f37c"><td class="memItemLeft" align="right" valign="top">unsigned short int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#a40b8d04d4682b0a6e377b82699e4f37c">quality</a> () const </td></tr>
+<tr class="separator:a40b8d04d4682b0a6e377b82699e4f37c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a4d4093455f7142fb13b520ec192439"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_l1_t_object.html#a4a4d4093455f7142fb13b520ec192439">ClassDef</a> (<a class="el" href="classic_1_1_l1_t_object.html">L1TObject</a>, 2)</td></tr>
+<tr class="separator:a4a4d4093455f7142fb13b520ec192439"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classic_1_1_candidate"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classic_1_1_candidate')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classic_1_1_candidate.html">ic::Candidate</a></td></tr>
 <tr class="memitem:a14eeb5331ec064bbb6d84554af167e94 inherit pub_methods_classic_1_1_candidate"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_candidate.html#a14eeb5331ec064bbb6d84554af167e94">Candidate</a> ()</td></tr>
 <tr class="separator:a14eeb5331ec064bbb6d84554af167e94 inherit pub_methods_classic_1_1_candidate"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a348703b63bae68ff598317c575214d0e inherit pub_methods_classic_1_1_candidate"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_candidate.html#a348703b63bae68ff598317c575214d0e">~Candidate</a> ()</td></tr>
 <tr class="separator:a348703b63bae68ff598317c575214d0e inherit pub_methods_classic_1_1_candidate"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad96b680fd5080c7ae34e977541784dc6 inherit pub_methods_classic_1_1_candidate"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">Print</a> () const </td></tr>
-<tr class="separator:ad96b680fd5080c7ae34e977541784dc6 inherit pub_methods_classic_1_1_candidate"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefe95c558731cdfcef68ebb2f6d0b857 inherit pub_methods_classic_1_1_candidate"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_candidate.html#aefe95c558731cdfcef68ebb2f6d0b857">ClassDef</a> (<a class="el" href="classic_1_1_candidate.html">Candidate</a>, 2)</td></tr>
 <tr class="separator:aefe95c558731cdfcef68ebb2f6d0b857 inherit pub_methods_classic_1_1_candidate"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a416c4cf0462ad4cbe8f2e053c72e1ed0 inherit pub_methods_classic_1_1_candidate"><td class="memItemLeft" align="right" valign="top">Vector const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_candidate.html#a416c4cf0462ad4cbe8f2e053c72e1ed0">vector</a> () const </td></tr>
@@ -225,12 +240,294 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_l1_t_object_8cc_source.html#l00006">6</a> of file <a class="el" href="_l1_t_object_8cc_source.html">L1TObject.cc</a>.</p>
+<p>Definition at line <a class="el" href="_l1_t_object_8cc_source.html#l00005">5</a> of file <a class="el" href="_l1_t_object_8cc_source.html">L1TObject.cc</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ac4972a2ef74894def97f36226aa5a46c"></a>
+<a class="anchor" id="aa83ad6d492c7cf42bd36ecccf11343ba"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::L1TObject::Print </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">ic::Candidate</a>.</p>
+
+<p>Definition at line <a class="el" href="_l1_t_object_8cc_source.html#l00007">7</a> of file <a class="el" href="_l1_t_object_8cc_source.html">L1TObject.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adfb6807876e7ff0fe35ce353f18c8d05"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::L1TObject::set_bx </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00019">19</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aab06c1a26709880c29235e43b28ec633"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ic::L1TObject::bx </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00020">20</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af3aaea3bfcd21bfd4947b0f771a0ac10"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::L1TObject::set_sumType </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00022">22</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad811186e89def69eadddbdf53ff1d0c2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ic::L1TObject::sumType </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00023">23</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abf0a67bb376548c1dfe85d50c20260b7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::L1TObject::set_charge </td>
+          <td>(</td>
+          <td class="paramtype">short int&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00025">25</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a350afb01b8dab275e44bfccc5fce5b7c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">short int ic::L1TObject::charge </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00026">26</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a095bebf8fa16531059bb862aa6872466"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::L1TObject::set_isolation </td>
+          <td>(</td>
+          <td class="paramtype">unsigned short int&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00028">28</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a68bf6da7ebaaff49630f048ea2bf13fe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned short int ic::L1TObject::isolation </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00029">29</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac0cfd79743076ff362560a78e20486c5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::L1TObject::set_quality </td>
+          <td>(</td>
+          <td class="paramtype">unsigned short int&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00031">31</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a40b8d04d4682b0a6e377b82699e4f37c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned short int ic::L1TObject::quality </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_l1_t_object_8hh_source.html#l00032">32</a> of file <a class="el" href="_l1_t_object_8hh_source.html">L1TObject.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4a4d4093455f7142fb13b520ec192439"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -243,7 +540,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">1&#160;</td>
+          <td class="paramtype">2&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>

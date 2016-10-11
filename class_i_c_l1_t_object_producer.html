@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>Imperial Analysis: plugins/ICL1ObjectProducer.cc File Reference</title>
+<title>Imperial Analysis: ICL1TObjectProducer&lt; T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -77,7 +77,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('_i_c_l1_object_producer_8cc.html','');});
+$(document).ready(function(){initNavTree('class_i_c_l1_t_object_producer.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -96,65 +96,88 @@ $(document).ready(function(){initNavTree('_i_c_l1_object_producer_8cc.html','');
 
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
-<div class="title">ICL1ObjectProducer.cc File Reference</div>  </div>
+<div class="title">ICL1TObjectProducer&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="_i_c_l1_object_producer_8hh_source.html">UserCode/ICHiggsTauTau/plugins/ICL1ObjectProducer.hh</a>&quot;</code><br />
-<code>#include &lt;memory&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &quot;FWCore/Framework/interface/Event.h&quot;</code><br />
-<code>#include &quot;FWCore/Framework/interface/EventSetup.h&quot;</code><br />
-<code>#include &quot;FWCore/Framework/interface/MakerMacros.h&quot;</code><br />
-<code>#include &quot;FWCore/ParameterSet/interface/ParameterSet.h&quot;</code><br />
-<code>#include &quot;FWCore/Utilities/interface/InputTag.h&quot;</code><br />
-<code>#include &quot;DataFormats/Common/interface/Handle.h&quot;</code><br />
-<code>#include &quot;DataFormats/Common/interface/View.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="_static_tree_8hh_source.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_candidate_8hh_source.html">UserCode/ICHiggsTauTau/interface/Candidate.hh</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="city_8h_source.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_consumes_8h_source.html">UserCode/ICHiggsTauTau/plugins/Consumes.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_print_config_tools_8h_source.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</code><br />
-<code>#include &quot;FWCore/Framework/interface/Frameworkfwd.h&quot;</code><br />
-<code>#include &quot;FWCore/MessageLogger/interface/MessageLogger.h&quot;</code><br />
-<code>#include &quot;FWCore/ServiceRegistry/interface/Service.h&quot;</code><br />
-<code>#include &quot;CommonTools/UtilAlgos/interface/TFileService.h&quot;</code><br />
-<code>#include &quot;TTree.h&quot;</code><br />
-<code>#include &quot;L1Trigger/L1TNtuples/interface/L1AnalysisL1Upgrade.h&quot;</code><br />
-<code>#include &quot;L1Trigger/L1TNtuples/interface/L1AnalysisL1UpgradeDataFormat.h&quot;</code><br />
-<code>#include &quot;L1Trigger/L1TNtuples/interface/L1AnalysisEventDataFormat.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="_l1_t_object_8hh_source.html">UserCode/ICHiggsTauTau/interface/L1TObject.hh</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_l1_t_e_gamma_8hh_source.html">UserCode/ICHiggsTauTau/interface/L1TEGamma.hh</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_l1_t_muon_8hh_source.html">UserCode/ICHiggsTauTau/interface/L1TMuon.hh</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_l1_t_tau_8hh_source.html">UserCode/ICHiggsTauTau/interface/L1TTau.hh</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_l1_t_jet_8hh_source.html">UserCode/ICHiggsTauTau/interface/L1TJet.hh</a>&quot;</code><br />
+
+<p><code>#include &quot;<a class="el" href="_i_c_l1_t_object_producer_8hh_source.html">UserCode/ICHiggsTauTau/plugins/ICL1TObjectProducer.hh</a>&quot;</code></p>
+<div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-0-trigger" src="closed.png" alt="+"/> Inheritance diagram for ICL1TObjectProducer&lt; T &gt;:</div>
+<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
 </div>
-<p><a href="_i_c_l1_object_producer_8cc_source.html">Go to the source code of this file.</a></p>
+<div id="dynsection-0-content" class="dyncontent" style="display:none;">
+ <div class="center">
+  <img src="class_i_c_l1_t_object_producer.png" usemap="#ICL1TObjectProducer&lt; T &gt;_map" alt=""/>
+  <map id="ICL1TObjectProducer&lt; T &gt;_map" name="ICL1TObjectProducer&lt; T &gt;_map">
+</map>
+ </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:aa0e54b21f9d53fbb766d990f59023b25"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_i_c_l1_object_producer_8cc.html#aa0e54b21f9d53fbb766d990f59023b25">DEFINE_FWK_MODULE</a> (<a class="el" href="class_i_c_l1_object_producer.html">ICL1ObjectProducer</a>)</td></tr>
-<tr class="separator:aa0e54b21f9d53fbb766d990f59023b25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:adcd293092380cd82ce751b7c7d03093f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_l1_t_object_producer.html#adcd293092380cd82ce751b7c7d03093f">ICL1TObjectProducer</a> (const edm::ParameterSet &amp;)</td></tr>
+<tr class="separator:adcd293092380cd82ce751b7c7d03093f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52eeb7cb139d67641e2a16327822dd24"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_l1_t_object_producer.html#a52eeb7cb139d67641e2a16327822dd24">~ICL1TObjectProducer</a> ()</td></tr>
+<tr class="separator:a52eeb7cb139d67641e2a16327822dd24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="aa0e54b21f9d53fbb766d990f59023b25"></a>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class T&gt;<br />
+class ICL1TObjectProducer&lt; T &gt;</h3>
+
+
+<p>Definition at line <a class="el" href="_i_c_l1_t_object_producer_8hh_source.html#l00052">52</a> of file <a class="el" href="_i_c_l1_t_object_producer_8hh_source.html">ICL1TObjectProducer.hh</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="adcd293092380cd82ce751b7c7d03093f"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">DEFINE_FWK_MODULE </td>
+          <td class="memname"><a class="el" href="class_i_c_l1_t_object_producer.html">ICL1TObjectProducer</a>&lt; T &gt;::<a class="el" href="class_i_c_l1_t_object_producer.html">ICL1TObjectProducer</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_i_c_l1_object_producer.html">ICL1ObjectProducer</a>&#160;</td>
+          <td class="paramtype">const edm::ParameterSet &amp;&#160;</td>
+          <td class="paramname"><em>config</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_i_c_l1_t_object_producer_8hh_source.html#l00078">78</a> of file <a class="el" href="_i_c_l1_t_object_producer_8hh_source.html">ICL1TObjectProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a52eeb7cb139d67641e2a16327822dd24"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_i_c_l1_t_object_producer.html">ICL1TObjectProducer</a>&lt; T &gt;::~<a class="el" href="class_i_c_l1_t_object_producer.html">ICL1TObjectProducer</a> </td>
+          <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Definition at line <a class="el" href="_i_c_l1_t_object_producer_8hh_source.html#l00090">90</a> of file <a class="el" href="_i_c_l1_t_object_producer_8hh_source.html">ICL1TObjectProducer.hh</a>.</p>
+
 </div>
 </div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>plugins/<a class="el" href="_i_c_l1_t_object_producer_8hh_source.html">ICL1TObjectProducer.hh</a></li>
+</ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
