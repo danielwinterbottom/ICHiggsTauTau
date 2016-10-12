@@ -50,6 +50,7 @@
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
     "do_tau_id_sf"  : true,
+    "store_hltpaths" : false,
     "output_folder" : "output/Aug11_PreSel_sv_v4/",
     "new_svfit_mode" : 2,
     "svfit_folder"  : "output/svfit_output_Aug11_PreSel_sv_v4/",
