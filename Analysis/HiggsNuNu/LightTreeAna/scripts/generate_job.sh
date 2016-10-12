@@ -26,6 +26,7 @@ fi
 echo "export SCRAM_ARCH=slc6_amd64_gcc530" >> $OUTPUT
 echo "eval \`scramv1 runtime -sh\`" >> $OUTPUT
 echo "source $PWD/scripts/setup_libs.sh" >> $OUTPUT
-echo "ulimit -v 8000000" >> $OUTPUT
+#echo "ulimit -v 8000000" >> $OUTPUT
+echo "ulimit -s unlimited" >> $OUTPUT
 echo "$INPUT" >> $OUTPUT
 chmod +x $OUTPUT
