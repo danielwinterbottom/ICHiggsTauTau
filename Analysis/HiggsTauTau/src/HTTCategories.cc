@@ -276,6 +276,9 @@ namespace ic {
         outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
         outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
         outtree_->Branch("alpha_s_wts", &alpha_s_wts_);
+        outtree_->Branch("CT10_wts", &CT10_wts_);
+        outtree_->Branch("CT10_alpha_s_wts", &CT10_alpha_s_wts_);
+        outtree_->Branch("MMHT_wts", &MMHT_wts_);
       }
       outtree_->Branch("wt_btag",           &wt_btag_);
       if(add_nlo_weights_) {
@@ -1241,6 +1244,24 @@ namespace ic {
         std::string label = Form("%u",i);
         double wt_temp = eventInfo->weight(label);
         alpha_s_wts_.push_back(wt_temp);
+      }
+      CT10_wts_.clear();
+      for(unsigned i=3001; i<=3053; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        CT10_wts_.push_back(wt_temp);
+      }
+      CT10_alpha_s_wts_.clear();
+      for(unsigned i=3054; i<=3055; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        CT10_alpha_s_wts_.push_back(wt_temp);
+      }
+      MMHT_wts_.clear();
+      for(unsigned i=4001; i<=4056; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        MMHT_wts_.push_back(wt_temp);
       }
     }
     

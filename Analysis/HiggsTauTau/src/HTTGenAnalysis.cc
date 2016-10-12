@@ -49,7 +49,11 @@ namespace ic {
         outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
         outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
         outtree_->Branch("alpha_s_wts", &alpha_s_wts_);
+        outtree_->Branch("CT10_wts", &CT10_wts_);
+        outtree_->Branch("CT10_alpha_s_wts", &CT10_alpha_s_wts_);
+        outtree_->Branch("MMHT_wts", &MMHT_wts_);
       }
+      outtree_->Branch("passed"       ,&passed_       );
       outtree_->Branch("pt_1"        , &pt_1_        );
       outtree_->Branch("pt_2"        , &pt_2_        );
       outtree_->Branch("eta_1"       , &eta_1_       );
@@ -98,6 +102,24 @@ namespace ic {
         std::string label = Form("%u",i);
         double wt_temp = eventInfo->weight(label);
         alpha_s_wts_.push_back(wt_temp);
+      }
+      CT10_wts_.clear();
+      for(unsigned i=3001; i<=3053; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        CT10_wts_.push_back(wt_temp);
+      }
+      CT10_alpha_s_wts_.clear();
+      for(unsigned i=3054; i<=3055; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        CT10_alpha_s_wts_.push_back(wt_temp);
+      }
+      MMHT_wts_.clear();
+      for(unsigned i=4001; i<=4056; ++i){
+        std::string label = Form("%u",i);
+        double wt_temp = eventInfo->weight(label);
+        MMHT_wts_.push_back(wt_temp);
       }
     }
     
@@ -180,33 +202,32 @@ namespace ic {
     pt_2_ = -9999.;
     ic::Candidate lep1;
     ic::Candidate lep2;
-    bool passed = false;
     if(channel_str_ == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
         lep1 = electrons[0];
         lep2 = muons[0];
-        passed = true;
+        passed_ = true;
       }
     } else if(channel_str_ == "et"){
       if(electrons.size() == 1 && taus.size() == 1){
         lep1 = electrons[0];
         lep2 = taus[0];
-        passed = true;
+        passed_ = true;
       }
     } else if(channel_str_ == "mt"){
       if(muons.size() == 1 && taus.size() == 1){
         lep1 = muons[0];
         lep2 = taus[0];
-        passed = true;
+        passed_ = true;
       }
     } else if(channel_str_ == "tt"){
       if(taus.size() == 2){
         lep1 = taus[0];
         lep2 = taus[1];
-        passed = true;
+        passed_ = true;
       }
     }
-    if(passed){
+    if(passed_){
       pt_1_  = lep1.vector().Pt();
       pt_2_  = lep2.vector().Pt();
       eta_1_ = lep1.vector().Rapidity();
@@ -223,6 +244,18 @@ namespace ic {
         mt_1_ = MT(&lep2, &met);
         mt_2_ = MT(&lep1, &met);  
       }
+    } else {
+      pt_1_  = -9999;
+      pt_2_  = -9999;
+      eta_1_ = -9999;
+      eta_2_ = -9999;
+      phi_1_ = -9999;
+      phi_2_ = -9999;
+      met_   = -9999;
+      pt_tt_ = -9999;
+      m_vis_ = -9999;
+      mt_1_ = -9999;
+      mt_2_ = -9999;   
     }
     
     std::vector<ic::GenJet> filtered_jets;
@@ -269,7 +302,7 @@ namespace ic {
       }
     }
 
-    if(fs_ && passed) outtree_->Fill();
+    if(fs_) outtree_->Fill();
     
     return 0;
   }

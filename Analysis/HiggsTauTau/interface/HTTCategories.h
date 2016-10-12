@@ -64,6 +64,10 @@ class HTTCategories : public ModuleBase {
   std::vector<double> scale_variation_wts_;
   std::vector<double> NNPDF_wts_;
   std::vector<double> alpha_s_wts_;
+  std::vector<double> CT10_wts_;
+  std::vector<double> CT10_alpha_s_wts_;
+  std::vector<double> MMHT_wts_;
+
   int run_;
   unsigned long long event_;
   int lumi_;
