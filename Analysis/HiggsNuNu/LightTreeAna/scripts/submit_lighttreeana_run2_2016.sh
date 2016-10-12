@@ -66,7 +66,7 @@ echo "Using job-submission: " $JOBSUBMIT
 echo "JOB name = $JOB"
 #for syst in JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
 #for syst in "" PUUP PUDOWN
-for syst in "" #PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN
+for syst in "" PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN
 #for syst in UESDOWN
 #for syst in JERBETTER JERWORSE
 do
@@ -79,8 +79,11 @@ do
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
     ## To produce all of the hist
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
+    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    ## To produce hist for datacards
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_cards.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_cards.hists`
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
     ## To test for one hist
@@ -116,22 +119,10 @@ do
 	$JOBWRAPPER "./bin/LTAnalysisRun2_2016 --cfg=$CONFIG --channel=$channels --histTitlePar='$HISTSTRING' --shapePar='$SHAPESTRING' --syst=$syst -o $OUTPUTDIR$syst/$OUTPUTNAME --jetmetdphicut=$MINDPHICUT &> $JOBDIR$syst/$JOB.log" $JOBDIR$syst/$JOB.sh $GRIDSETUP
 	#fi
     fi
-    if [ "$syst" = "" ]
-	then
-	if [ "$DOSUBMIT" = "1" ]; then 
-	    $JOBSUBMIT $JOBDIR$syst/$JOB.sh
-	else 
-	    echo "$JOBSUBMIT $JOBDIR$syst/$JOB.sh"
-	fi
-    else
-	#if [ "$channels" = "nunu" ]
-	    #then
-	    if [ "$DOSUBMIT" = "1" ]; then 
-		$JOBSUBMIT $JOBDIR$syst/$JOB.sh
-	    else
-		echo "$JOBSUBMIT $JOBDIR$syst/$JOB.sh"
-	    fi
-	#fi
+    if [ "$DOSUBMIT" = "1" ]; then 
+	$JOBSUBMIT $JOBDIR$syst/$JOB.sh
+    else 
+	echo "$JOBSUBMIT $JOBDIR$syst/$JOB.sh"
     fi
   done
 done
