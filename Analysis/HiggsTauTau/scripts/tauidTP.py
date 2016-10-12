@@ -36,35 +36,58 @@ ana_scale_t_lo.AddSamples('%s/scale_t_lo/*.root' % path, 'ZmtTP', fallback='%s/*
 ana_scale_t_lo.AddInfo('scripts/params_Aug16.json', scaleTo='data_obs')
 # missing OS!
 
+vv_samples = ['VVTo2L2Nu', 'WWTo1L1Nu2Q', 'WZJToLLLNu',
+    'WZTo1L1Nu2Q', 'WZTo1L3Nu', 'WZTo2L2Q', 'ZZTo2L2Q', 'ZZTo4L',
+    'ST_t-channel_antitop', 'ST_t-channel_top', 'ST_tW_antitop', 'ST_tW_top']
+zll_sample = 'DYJetsToLLSoup'
+w_sample = 'WJetsToLNuSoup'
 
-def StandardMT(ana, node, v, sel, pfix='', qcd_os_ss=1.0):
-    vv_samples = ['VVTo2L2Nu', 'WWTo1L1Nu2Q', 'WZJToLLLNu',
-        'WZTo1L1Nu2Q', 'WZTo1L3Nu', 'WZTo2L2Q', 'ZZTo2L2Q', 'ZZTo4L']
-
-    node.AddNode(BasicNode('data_obs' + pfix, 'data_obs', v, sel()))
+def AddMCProcs(node, v, sel, pfix=''):
+    node.AddNode(ana.BasicFactory(
+        'ZTT' + pfix, zll_sample, v, sel(extra='gen_2==5')))
 
     node.AddNode(ana.BasicFactory(
-        'ZTT' + pfix, 'DYJetsToLL', v, sel(extra='gen_2==5')))
+        'ZL' + pfix, zll_sample, v, sel(extra='gen_2<5')))
 
     node.AddNode(ana.BasicFactory(
-        'ZL' + pfix, 'DYJetsToLL', v, sel(extra='gen_2<5')))
+        'ZJ' + pfix, zll_sample, v, sel(extra='gen_2==6')))
 
-    node.AddNode(ana.BasicFactory(
-        'ZJ' + pfix, 'DYJetsToLL', v, sel(extra='gen_2==6')))
-
-    node.AddNode(ana.BasicFactory('W' + pfix, 'WJetsToLNu', v, sel()))
+    #node.AddNode(ana.BasicFactory('W' + pfix, w_sample, v, sel()))
 
     node.AddNode(ana.BasicFactory('TT' + pfix, 'TT', v, sel()))
 
     node.AddNode(ana.SummedFactory('VV' + pfix, vv_samples, v, sel()))
+    
 
-    node.AddNode(HttQCDNode('QCD' + pfix,
-        ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os')),
-        ana.SummedFactory('backgrounds' + pfix,
-            ['DYJetsToLL', 'WJetsToLNu', 'TT'], v, sel(sign='!os')),
-        qcd_os_ss))
-    node['QCD' + pfix].subtract_node.add_output_prefix = False
-    node['QCD' + pfix].subtract_node.AddNode(ana.SummedFactory('VV' + pfix, vv_samples, v, sel(sign='!os')))
+def StandardMT(ana, node, v, sel, pfix='', qcd_os_ss=1.0):
+    node.AddNode(BasicNode('data_obs' + pfix, 'data_obs', v, sel()))
+    
+    AddMCProcs(node, v, sel, pfix)
+    
+    node.AddNode(HttWQCDCombinedNode('W+QCD', 'W' + pfix, 'QCD' + pfix,
+        data_lMT_SS = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os')),
+        data_hMT_OS = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='os', mt='mt_m>70')),
+        data_hMT_SS = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os', mt='mt_m>70')),
+        sub_lMT_SS = ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign='!os')),
+        sub_hMT_OS = ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign='!os')),
+        sub_hMT_SS = ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign='!os')),
+        w_lMT_OS = ana.BasicFactory('lMT_OS.W' + pfix, w_sample, v, sel()),
+        w_lMT_SS = ana.BasicFactory('lMT_SS.W' + pfix, w_sample, v, sel(sign='!os')),
+        w_hMT_OS = ana.BasicFactory('hMT_OS.W' + pfix, w_sample, v, sel(sign='os', mt='mt_m>70')),
+        w_hMT_SS = ana.BasicFactory('hMT_SS.W' + pfix, w_sample, v, sel(sign='!os', mt='mt_m>70')),
+        qcd_os_ss = qcd_os_ss))
+    
+    #node.AddNode(HttQCDNode('QCD' + pfix,
+    #    ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os')),
+    #    ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign='!os')),
+    #    qcd_os_ss))
+    #node['QCD' + pfix].subtract_node.add_output_prefix = False
+    AddMCProcs(node['W+QCD'].sub_lMT_SS, v, sel.copy(sign='!os'), pfix)
+    AddMCProcs(node['W+QCD'].sub_hMT_OS, v, sel.copy(sign='os', mt='mt_m>70'), pfix)
+    AddMCProcs(node['W+QCD'].sub_hMT_SS, v, sel.copy(sign='!os', mt='mt_m>70'), pfix)
+    node['W+QCD'].sub_lMT_SS.add_output_prefix = False
+    node['W+QCD'].sub_hMT_OS.add_output_prefix = False
+    node['W+QCD'].sub_hMT_SS.add_output_prefix = False
 
 
 def TagAndProbeCats(ana, node, name, var_pass, var_fail, baseline, probe, pfix=''):
@@ -75,7 +98,7 @@ def TagAndProbeCats(ana, node, name, var_pass, var_fail, baseline, probe, pfix='
     StandardMT(ana, node[name+'_pass'], var_pass, pass_sel, pfix, qcd_os_ss=1.17)
     StandardMT(ana, node[name+'_fail'], var_fail, fail_sel, pfix, qcd_os_ss=1.00)
 
-sel = Sel(sign='os', baseline='mt_m<40 && anti_e_t && anti_m_t', wt='wt')
+sel = Sel(sign='os', mt='mt_m<40', baseline='anti_e_vl_t && anti_m_t_t', wt='wt * wt_zpt * wt_top')
 
 if args.type == 'control':
     ana_list = [ana]
@@ -164,41 +187,46 @@ for var in [('mt_m',         'mt_m(40,0,200)', '1'),
 if args.type == 'tp':
     ana_list = [ana, ana_scale_t_hi, ana_scale_t_lo]
     for var in [
-            ('cmb_m_2p5',  'm_ll(32,40,200)', 'cbiso_t < 2.5', '1'),
-            ('cmb_m_1p5',  'm_ll(32,40,200)', 'cbiso_t < 1.5', '1'),
-            ('cmb_t_0p8',  'm_ll(32,40,200)', 'cbiso_t < 0.8', '1'),
-            ('ch_m_2p5',  'm_ll(32,40,200)', 'chiso_t < 2.5', '1'),
-            ('ch_m_1p5',  'm_ll(32,40,200)', 'chiso_t < 1.5', '1'),
-            ('ch_t_0p8',  'm_ll(32,40,200)', 'chiso_t < 0.8', '1'),
-            ('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
+            #('cmb_m_2p5',  'm_ll(32,40,200)', 'cbiso_t < 2.5', '1'),
+            #('cmb_m_1p5',  'm_ll(32,40,200)', 'cbiso_t < 1.5', '1'),
+            #('cmb_t_0p8',  'm_ll(32,40,200)', 'cbiso_t < 0.8', '1'),
+            #('ch_m_2p5',  'm_ll(32,40,200)', 'chiso_t < 2.5', '1'),
+            #('ch_m_1p5',  'm_ll(32,40,200)', 'chiso_t < 1.5', '1'),
+            #('ch_t_0p8',  'm_ll(32,40,200)', 'chiso_t < 0.8', '1'),
+            #('cmb_l',  'm_ll(32,40,200)', 'cmb_l_t', '1'),
+            
             ('cmb_m',  'm_ll(32,40,200)', 'cmb_m_t', '1'),
             ('cmb_t',  'm_ll(32,40,200)', 'cmb_t_t', '1'),
             ('mva_vl',  'm_ll(32,40,200)', 'mva_vl_t', '1'),
             ('mva_l',   'm_ll(32,40,200)', 'mva_l_t', '1'),
             ('mva_m',   'm_ll(32,40,200)', 'mva_m_t', '1'),
+            ('mva_m_mfr',   'm_ll(32,40,200)', 'mva_m_t', 'wt_mfr_t'),
             ('mva_t',   'm_ll(32,40,200)', 'mva_t_t', '1'),
             ('mva_vt',  'm_ll(32,40,200)', 'mva_vt_t', '1'),
             ('mva_vvt', 'm_ll(32,40,200)', 'mva_vvt_t', '1'),
-            ('mva_t_pt20_30', 'm_ll(32,40,200)',  'mva_t_t', 'pt_t>20 && pt_t<=30'),
-            ('mva_t_pt30_40', 'm_ll(32,40,200)',  'mva_t_t', 'pt_t>30 && pt_t<=40'),
-            ('mva_t_pt40_60', 'm_ll(16,40,200)',  'mva_t_t', 'pt_t>40 && pt_t<=60'),
-            ('mva_t_pt60_100', 'm_ll(8,40,200)', 'mva_t_t', 'pt_t>60 && pt_t<=100'),
-            ('mva_m_pt20_30', 'm_ll(32,40,200)',  'mva_m_t', 'pt_t>20 && pt_t<=30'),
-            ('mva_m_pt30_40', 'm_ll(32,40,200)',  'mva_m_t', 'pt_t>30 && pt_t<=40'),
-            ('mva_m_pt40_60', 'm_ll(16,40,200)',  'mva_m_t', 'pt_t>40 && pt_t<=60'),
-            ('mva_m_pt60_100', 'm_ll(8,40,200)', 'mva_m_t', 'pt_t>60 && pt_t<=100'),
-            ('pt_mva_t_pt20_30',  'pt_t(40,20,100)',  'mva_t_t', 'pt_t>20 && pt_t<=30'),
-            ('pt_mva_t_pt30_40',  'pt_t(40,20,100)',  'mva_t_t', 'pt_t>30 && pt_t<=40'),
-            ('pt_mva_t_pt40_60',  'pt_t(40,20,100)',  'mva_t_t', 'pt_t>40 && pt_t<=60'),
-            ('pt_mva_t_pt60_100', 'pt_t(40,20,100)',  'mva_t_t', 'pt_t>60 && pt_t<=100'),
-            ('pt_mva_m_pt20_30',  'pt_t(40,20,100)',  'mva_m_t', 'pt_t>20 && pt_t<=30'),
-            ('pt_mva_m_pt30_40',  'pt_t(40,20,100)',  'mva_m_t', 'pt_t>30 && pt_t<=40'),
-            ('pt_mva_m_pt40_60',  'pt_t(40,20,100)',  'mva_m_t', 'pt_t>40 && pt_t<=60'),
-            ('pt_mva_m_pt60_100', 'pt_t(40,20,100)',  'mva_m_t', 'pt_t>60 && pt_t<=100'),
-            ('cmb_t_pt20_30', 'm_ll(32,40,200)',  'cmb_t_t', 'pt_t>20 && pt_t<=30'),
-            ('cmb_t_pt30_40', 'm_ll(32,40,200)',  'cmb_t_t', 'pt_t>30 && pt_t<=40'),
-            ('cmb_t_pt40_60', 'm_ll(16,40,200)',  'cmb_t_t', 'pt_t>40 && pt_t<=60'),
-            ('cmb_t_pt60_100', 'm_ll(8,40,200)', 'cmb_t_t', 'pt_t>60 && pt_t<=100'),
+            
+            #('mva_t_pt20_30', 'm_ll(32,40,200)',  'mva_t_t', 'pt_t>20 && pt_t<=30'),
+            #('mva_t_pt30_40', 'm_ll(32,40,200)',  'mva_t_t', 'pt_t>30 && pt_t<=40'),
+            #('mva_t_pt40_60', 'm_ll(16,40,200)',  'mva_t_t', 'pt_t>40 && pt_t<=60'),
+            #('mva_t_pt60_100', 'm_ll(8,40,200)', 'mva_t_t', 'pt_t>60 && pt_t<=100'),
+            #('mva_m_pt20_30', 'm_ll(32,40,200)',  'mva_m_t', 'pt_t>20 && pt_t<=30'),
+            #('mva_m_pt30_40', 'm_ll(32,40,200)',  'mva_m_t', 'pt_t>30 && pt_t<=40'),
+            #('mva_m_pt40_60', 'm_ll(16,40,200)',  'mva_m_t', 'pt_t>40 && pt_t<=60'),
+            #('mva_m_pt60_100', 'm_ll(8,40,200)', 'mva_m_t', 'pt_t>60 && pt_t<=100'),
+            #('pt_mva_t_pt20_30',  'pt_t(40,20,100)',  'mva_t_t', 'pt_t>20 && pt_t<=30'),
+            #('pt_mva_t_pt30_40',  'pt_t(40,20,100)',  'mva_t_t', 'pt_t>30 && pt_t<=40'),
+            #('pt_mva_t_pt40_60',  'pt_t(40,20,100)',  'mva_t_t', 'pt_t>40 && pt_t<=60'),
+            #('pt_mva_t_pt60_100', 'pt_t(40,20,100)',  'mva_t_t', 'pt_t>60 && pt_t<=100'),
+            #('pt_mva_m_pt20_30',  'pt_t(40,20,100)',  'mva_m_t', 'pt_t>20 && pt_t<=30'),
+            #('pt_mva_m_pt30_40',  'pt_t(40,20,100)',  'mva_m_t', 'pt_t>30 && pt_t<=40'),
+            #('pt_mva_m_pt40_60',  'pt_t(40,20,100)',  'mva_m_t', 'pt_t>40 && pt_t<=60'),
+            #('pt_mva_m_pt60_100', 'pt_t(40,20,100)',  'mva_m_t', 'pt_t>60 && pt_t<=100'),
+            #('cmb_t_pt20_30', 'm_ll(32,40,200)',  'cmb_t_t', 'pt_t>20 && pt_t<=30'),
+            #('cmb_t_pt30_40', 'm_ll(32,40,200)',  'cmb_t_t', 'pt_t>30 && pt_t<=40'),
+            #('cmb_t_pt40_60', 'm_ll(16,40,200)',  'cmb_t_t', 'pt_t>40 && pt_t<=60'),
+            #('cmb_t_pt60_100', 'm_ll(8,40,200)', 'cmb_t_t', 'pt_t>60 && pt_t<=100'),
+
+
             ('mva_t_dm0', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==0'),
             ('mva_t_dm1', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==1'),
             ('mva_t_dm10', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==10'),
@@ -213,31 +241,33 @@ if args.type == 'tp':
             ('mva_t_dm0_pt40_eta2p1', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)<2.1'),
             ('mva_t_dm1_pt40_eta2p1', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)<2.1'),
             ('mva_t_dm10_pt40_eta2p1', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)<2.1'),
-            ('mva_m_dm0_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==0 && pt_t>30 && abs(eta_t)<1.5'),
-            ('mva_m_dm1_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==1 && pt_t>30 && abs(eta_t)<1.5'),
-            ('mva_m_dm10_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==10 && pt_t>30 && abs(eta_t)<1.5'),
-            ('mva_m_dm0_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==0 && pt_t>30 && abs(eta_t)>=1.5'),
-            ('mva_m_dm1_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==1 && pt_t>30 && abs(eta_t)>=1.5'),
-            ('mva_m_dm10_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==10 && pt_t>30 && abs(eta_t)>=1.5'),
-            ('mva_t_dm0_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)<1.5'),
-            ('mva_t_dm1_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)<1.5'),
-            ('mva_t_dm10_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)<1.5'),
-            ('mva_t_dm0_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)>=1.5'),
-            ('mva_t_dm1_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)>=1.5'),
-            ('mva_t_dm10_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)>=1.5'),
-            ('mva_t_dm0_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==0 && abs(eta_t)<1.5'),
-            ('mva_t_dm1_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==1 && abs(eta_t)<1.5'),
-            ('mva_t_dm10_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==10 && abs(eta_t)<1.5'),
-            ('mva_t_dm0_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && abs(eta_t)>=1.5'),
-            ('mva_t_dm1_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && abs(eta_t)>=1.5'),
-            ('mva_t_dm10_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && abs(eta_t)>=1.5'),
-            ('cmb_t_dm0', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==0'),
-            ('cmb_t_dm1', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==1'),
-            ('cmb_t_dm10', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==10'),
-            ('cmb_0p5_t',  'm_ll(32,40,200)', 'cbiso_0p5_t<0.8 && (pho_out_0p5_t/pt_t)<0.1', '1'),
-            ('cmb_1p0_t',  'm_ll(32,40,200)', 'cbiso_1p0_t<0.8 && (pho_out_1p0_t/pt_t)<0.1', '1'),
-            ('cmb_1p5_t',  'm_ll(32,40,200)', 'cbiso_1p5_t<0.8 && (pho_out_1p5_t/pt_t)<0.1', '1'),
-            ('cmb_2p0_t',  'm_ll(32,40,200)', 'cbiso_2p0_t<0.8 && (pho_out_2p0_t/pt_t)<0.1', '1'),
+            
+            
+            #('mva_m_dm0_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==0 && pt_t>30 && abs(eta_t)<1.5'),
+            #('mva_m_dm1_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==1 && pt_t>30 && abs(eta_t)<1.5'),
+            #('mva_m_dm10_pt30_b', 'm_ll(32,40,200)',  'mva_m_t', 'dm_t==10 && pt_t>30 && abs(eta_t)<1.5'),
+            #('mva_m_dm0_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==0 && pt_t>30 && abs(eta_t)>=1.5'),
+            #('mva_m_dm1_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==1 && pt_t>30 && abs(eta_t)>=1.5'),
+            #('mva_m_dm10_pt30_e', 'm_ll(16,40,200)',  'mva_m_t', 'dm_t==10 && pt_t>30 && abs(eta_t)>=1.5'),
+            #('mva_t_dm0_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)<1.5'),
+            #('mva_t_dm1_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)<1.5'),
+            #('mva_t_dm10_pt40_b', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)<1.5'),
+            #('mva_t_dm0_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && pt_t>40 && abs(eta_t)>=1.5'),
+            #('mva_t_dm1_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && pt_t>40 && abs(eta_t)>=1.5'),
+            #('mva_t_dm10_pt40_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && pt_t>40 && abs(eta_t)>=1.5'),
+            #('mva_t_dm0_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==0 && abs(eta_t)<1.5'),
+            #('mva_t_dm1_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==1 && abs(eta_t)<1.5'),
+            #('mva_t_dm10_b', 'm_ll(32,40,200)',  'mva_t_t', 'dm_t==10 && abs(eta_t)<1.5'),
+            #('mva_t_dm0_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==0 && abs(eta_t)>=1.5'),
+            #('mva_t_dm1_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==1 && abs(eta_t)>=1.5'),
+            #('mva_t_dm10_e', 'm_ll(16,40,200)',  'mva_t_t', 'dm_t==10 && abs(eta_t)>=1.5'),
+            #('cmb_t_dm0', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==0'),
+            #('cmb_t_dm1', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==1'),
+            #('cmb_t_dm10', 'm_ll(32,40,200)',  'cmb_t_t', 'dm_t==10'),
+            #('cmb_0p5_t',  'm_ll(32,40,200)', 'cbiso_0p5_t<0.8 && (pho_out_0p5_t/pt_t)<0.1', '1'),
+            #('cmb_1p0_t',  'm_ll(32,40,200)', 'cbiso_1p0_t<0.8 && (pho_out_1p0_t/pt_t)<0.1', '1'),
+            #('cmb_1p5_t',  'm_ll(32,40,200)', 'cbiso_1p5_t<0.8 && (pho_out_1p5_t/pt_t)<0.1', '1'),
+            #('cmb_2p0_t',  'm_ll(32,40,200)', 'cbiso_2p0_t<0.8 && (pho_out_2p0_t/pt_t)<0.1', '1'),
             ]:
         nodename = var[0]
         varnames = var[1].split(';')
@@ -255,7 +285,7 @@ outfile = ROOT.TFile('%s.root' % args.output, 'RECREATE')
 
 for a in ana_list:
   a.nodes.PrintTree()
-  a.compiled = True
+  a.compiled = False
   a.Run()
   a.nodes.Output(outfile)
 

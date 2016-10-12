@@ -45,6 +45,7 @@ DATA_SAMPLES = {
 
 MC_SAMPLES = {
     'DYJetsToLL':               ['DYJetsToLL'],
+    'DYJetsToLL-Old':               ['DYJetsToLL-Old'],
     'DYJetsToLLSoup':           ['DYJetsToLL', 'DY1JetsToLL', 'DY2JetsToLL', 'DY3JetsToLL', 'DY4JetsToLL'],
     'DYJetsToLL-NLO':           ['DYJetsToLL-NLO'],
     'DYJetsToLL_M-10to50':      ['DYJetsToLL_M-10to50'],
@@ -97,9 +98,9 @@ for x in ['', '1', '2', '3', '4']:
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-SEQUENCES = ['Zmm', 'Zmm/scale_m_hi', 'Zmm/scale_m_lo']
+#SEQUENCES = ['Zmm', 'Zmm/scale_m_hi', 'Zmm/scale_m_lo']
 #SEQUENCES = ['SM_et', 'SM_mt', 'SM_em', 'SM_tt']
-# SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
+SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
 #SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
 #SEQUENCES = ['HashMap']
 

@@ -6,7 +6,9 @@ import glob
 import os
 import json
 import pprint
+import sys
 import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
+import numpy as np
 
 ROOT.TH1.AddDirectory(0)
 
@@ -207,7 +209,7 @@ class BaseNode:
     def Objects(self):
         return dict()
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         return self.name
 
     def Output(self, file, prefix=''):
@@ -215,7 +217,7 @@ class BaseNode:
         for key, val in objects.iteritems():
             WriteToTFile(val, file, '%s/%s' % (prefix, key))
         for node in self.SubNodes():
-            node.Output(file, '%s/%s' % (prefix, self.OutputPrefix()))
+            node.Output(file, '%s/%s' % (prefix, self.OutputPrefix(node)))
 
     def Run(self):
         for node in self.SubNodes():
@@ -274,7 +276,7 @@ class ListNode(BaseNode):
         for node in self.SubNodes():
             node.AddRequests(manifest)
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         if self.add_output_prefix:
             return self.name
         else:
@@ -291,7 +293,7 @@ class SummedNode(ListNode):
     def Objects(self):
         return {self.name: self.shape.hist}
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         if self.add_output_prefix:
             return self.name + '.subnodes'
         else:
@@ -311,7 +313,7 @@ class SubtractNode(BaseNode):
     def Objects(self):
         return {self.name: self.shape.hist}
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         return self.name + '.subnodes'
 
     def SubNodes(self):
@@ -335,7 +337,7 @@ class HttQCDNode(BaseNode):
     def Objects(self):
         return {self.name: self.shape.hist}
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         return self.name + '.subnodes'
 
     def SubNodes(self):
@@ -345,6 +347,96 @@ class HttQCDNode(BaseNode):
         for node in self.SubNodes():
             node.AddRequests(manifest)
 
+class HttWQCDCombinedNode(BaseNode):
+    def __init__(self, name, name_w, name_qcd, data_lMT_SS, data_hMT_OS, data_hMT_SS, sub_lMT_SS, sub_hMT_OS, sub_hMT_SS, w_lMT_OS, w_lMT_SS, w_hMT_OS, w_hMT_SS, qcd_os_ss):
+        BaseNode.__init__(self, name)
+        self.name_w = name_w
+        self.name_qcd = name_qcd
+        self.qcd_lMT_SS = None
+        self.qcd_lMT_OS = None
+        self.qcd_hMT_SS = None
+        self.qcd_hMT_OS = None
+        self.w_lMT_SS = None
+        self.w_lMT_OS = None
+        self.w_hMT_SS = None
+        self.w_hMT_OS = None
+        self.data_lMT_SS = data_lMT_SS
+        self.data_hMT_OS = data_hMT_OS
+        self.data_hMT_SS = data_hMT_SS
+        self.sub_lMT_SS = sub_lMT_SS
+        self.sub_hMT_OS = sub_hMT_OS
+        self.sub_hMT_SS = sub_hMT_SS
+        self.wMC_lMT_OS = w_lMT_OS
+        self.wMC_lMT_SS = w_lMT_SS
+        self.wMC_hMT_OS = w_hMT_OS
+        self.wMC_hMT_SS = w_hMT_SS
+        self.qcd_os_ss = qcd_os_ss
+
+    def RunSelf(self):
+        # N_OS = R_W * N_SS_W + R_QCD * N_SS_QCD
+        # N_SS = N_SS_W + N_SS_QCD
+
+        w_os_ss = self.wMC_hMT_OS.shape.rate / self.wMC_hMT_SS.shape.rate
+        qcd_os_ss = self.qcd_os_ss
+        n_os = (self.data_hMT_OS.shape - self.sub_hMT_OS.shape).rate
+        n_ss = (self.data_hMT_SS.shape - self.sub_hMT_SS.shape).rate
+        print 'w_os_ss: %s' % w_os_ss
+        print 'n_os: %s' % n_os
+        print 'n_ss: %s' % n_ss
+        n = np.array([n_os.n, n_ss.n])
+        vals = np.array([[w_os_ss.n, qcd_os_ss], [1, 1]])
+        x = np.linalg.solve(vals, n)
+        print 'n_SS_W:   %s' % x[0]
+        print 'n_SS_QCD: %s' % x[1]
+        print 'n_OS_W:   %f' % (float(x[0]) * w_os_ss.n)
+        print 'n_OS_QCD: %f' % (float(x[1]) * qcd_os_ss)
+        w_data_mc = (float(x[0]) / self.wMC_hMT_SS.shape.rate.n)
+        print 'W data/MC: %f' % w_data_mc
+
+        self.w_lMT_OS = self.wMC_lMT_OS.shape * w_data_mc
+        self.w_lMT_SS = self.wMC_lMT_SS.shape * w_data_mc
+        self.w_hMT_OS = self.wMC_hMT_OS.shape * w_data_mc
+        self.w_hMT_SS = self.wMC_hMT_SS.shape * w_data_mc
+
+        print 'n_ss_lowmT:   %s' % self.data_lMT_SS.shape.rate
+        print 'sub_ss_lowmT: %s' % self.sub_lMT_SS.shape.rate
+        print 'w_ss_lowmT:   %s' % self.w_lMT_SS.rate
+
+        self.qcd_lMT_SS = self.data_lMT_SS.shape - self.sub_lMT_SS.shape - self.w_lMT_SS
+        self.qcd_lMT_OS = qcd_os_ss * self.qcd_lMT_SS
+        self.qcd_hMT_SS = self.data_hMT_SS.shape - self.sub_hMT_SS.shape - self.w_hMT_SS
+        self.qcd_hMT_OS = qcd_os_ss * self.qcd_hMT_SS
+
+
+        #self.shape = self.factor * (self.data_node.shape - self.subtract_node.shape)
+
+    def Objects(self):
+        return {
+            self.name_w: self.w_lMT_OS.hist,
+            self.name_qcd: self.qcd_lMT_OS.hist,
+            self.OutputPrefix(self.data_lMT_SS) + '/' + self.name_w: self.w_lMT_SS.hist,
+            self.OutputPrefix(self.data_lMT_SS) + '/' +  self.name_qcd: self.qcd_lMT_SS.hist,
+            self.OutputPrefix(self.data_hMT_OS) + '/' + self.name_w: self.w_hMT_OS.hist,
+            self.OutputPrefix(self.data_hMT_OS) + '/' +  self.name_qcd: self.qcd_hMT_OS.hist,
+            self.OutputPrefix(self.data_hMT_SS) + '/' + self.name_w: self.w_hMT_SS.hist,
+            self.OutputPrefix(self.data_hMT_SS) + '/' +  self.name_qcd: self.qcd_hMT_SS.hist
+            }
+
+    def OutputPrefix(self, node):
+        if node in [self.data_lMT_SS, self.sub_lMT_SS]:
+            return self.name + '.lMT_SS'
+        if node in [self.data_hMT_SS, self.sub_hMT_SS]:
+            return self.name + '.hMT_SS'
+        if node in [self.data_hMT_OS, self.sub_hMT_OS]:
+            return self.name + '.hMT_OS'
+        return self.name + '.subnodes'
+
+    def SubNodes(self):
+        return [self.data_lMT_SS, self.data_hMT_OS, self.data_hMT_SS, self.sub_lMT_SS, self.sub_hMT_OS, self.sub_hMT_SS, self.wMC_lMT_OS, self.wMC_lMT_SS, self.wMC_hMT_OS, self.wMC_hMT_SS]
+
+    def AddRequests(self, manifest):
+        for node in self.SubNodes():
+            node.AddRequests(manifest)
 
 class Analysis(object):
     def __init__(self):
