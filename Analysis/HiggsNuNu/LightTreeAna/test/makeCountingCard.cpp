@@ -1293,11 +1293,11 @@ datacard<<std::endl;
       datacard<<"WZ_xsection rateParam ch1 zvvqcd 1"<<std::endl;
       //}
 
-    datacard<<"WZ_xsection rateParam ch1 mumuqcd 1"<<std::endl;
+    datacard<<"WZ_xsection rateParam ch1 zmumuqcd 1"<<std::endl;
     datacard<<"WZ_xsection rateParam ch1 wmuqcd 1"<<std::endl;
     datacard<<"WZ_xsection rateParam ch1 welqcd 1"<<std::endl;
     datacard<<"WZ_xsection rateParam ch1 wtauqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 mumuewk 1"<<std::endl;
+    datacard<<"WZ_xsection rateParam ch1 zmumuewk 1"<<std::endl;
     datacard<<"WZ_xsection rateParam ch1 wmuewk 1"<<std::endl;
     datacard<<"WZ_xsection rateParam ch1 welewk 1"<<std::endl;
     datacard<<"WZ_xsection rateParam ch1 wtauewk 1"<<std::endl;
