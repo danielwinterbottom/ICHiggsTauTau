@@ -571,19 +571,49 @@ process.icMuonSequence += cms.Sequence(
 ################################################################                                                                                            
 import UserCode.ICHiggsTauTau.tau_discriminators_cfi as tauIDs
 
-#make and store taus
-process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
-  branch                  = cms.string("taus"),
+process.icTauProducer = producers.icTauProducer.clone(
   input                   = cms.InputTag("selectedPFTaus"),
   inputVertices           = vtxLabel,
   includeVertexIP         = cms.bool(True),
-  requestTracks           = cms.bool(False),
-  tauIDs = cms.PSet()
+  requestTracks           = cms.bool(True),
+  includeTotalCharged     = cms.bool(False),
+  totalChargedLabel       = cms.string('totalCharged'),
+  tauIDs = tauIDs.dynamicStripIds
+
+)
+
+if release in ['80XMINIAOD']:
+  process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
+    branch                  = cms.string("taus"),
+    input                   = cms.InputTag("selectedPFTaus"),
+    inputVertices           = vtxLabel,
+    includeVertexIP         = cms.bool(True),
+    requestTracks           = cms.bool(False),
+    includeTotalCharged     = cms.bool(False),
+    totalChargedLabel       = cms.string('totalCharged'),
+    requestPFCandidates   = cms.bool(False),
+    inputPFCandidates     = cms.InputTag("pfCandidates"),
+    isSlimmed             = cms.bool(False),
+    tauIDs = cms.PSet()
 )
 
 process.icTauSequence = cms.Sequence(
   process.icTauProducer
 )
+
+##make and store taus
+#process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
+#  branch                  = cms.string("taus"),
+#  input                   = cms.InputTag("selectedPFTaus"),
+#  inputVertices           = vtxLabel,
+#  includeVertexIP         = cms.bool(True),
+#  requestTracks           = cms.bool(False),
+#  tauIDs = cms.PSet()
+#)
+#
+#process.icTauSequence = cms.Sequence(
+#  process.icTauProducer
+#)
 
 ################################################################
 # L1 Taus
@@ -929,6 +959,7 @@ process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
   input                     = cms.InputTag("selectedSlimmedJetsAK4"),
   srcConfig = cms.PSet(
     isSlimmed               = cms.bool(True),
+    slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
     includeJetFlavour       = cms.bool(True),
     includeJECs             = cms.bool(True),
     JECs                    = pfchsJECS,
@@ -950,6 +981,7 @@ process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
   input                     = cms.InputTag("selectedSlimmedJetsPuppiAK4"),
   srcConfig = cms.PSet(
     isSlimmed               = cms.bool(True),
+    slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
     includeJetFlavour       = cms.bool(True),
     includeJECs             = cms.bool(True),
     inputSVInfo             = cms.InputTag(""),
