@@ -94,7 +94,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -434,8 +434,8 @@ process.icElectronProducer = producers.icElectronProducer.clone(
 )
 
 
-if release in ['80XMINIAOD']:
-  process.icElectronProducer.includeClusterIso = cms.bool(False)
+#if release in ['80XMINIAOD']:
+#  process.icElectronProducer.includeClusterIso = cms.bool(False)
 
 process.icElectronSequence += cms.Sequence(
   process.icElectronConversionCalculator+
@@ -562,6 +562,8 @@ process.icMuonProducer = producers.icMuonProducer.clone(
   includePFIso04           = cms.bool(True),
 )
 
+if release in ['80XMINIAOD']: process.icMuonProducer.isPF = cms.bool(False)
+
 process.icMuonSequence += cms.Sequence(
   process.icMuonProducer
 )
@@ -572,7 +574,7 @@ process.icMuonSequence += cms.Sequence(
 import UserCode.ICHiggsTauTau.tau_discriminators_cfi as tauIDs
 
 #make and store taus
-process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
+process.icTauProducer = producers.icTauProducer.clone(
   branch                  = cms.string("taus"),
   input                   = cms.InputTag("selectedPFTaus"),
   inputVertices           = vtxLabel,
@@ -630,42 +632,37 @@ process.icPhotonSequence += cms.Sequence(
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 
 #Make ak4 CHS jets:#rebuild ak4 chs jets as in  https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Jets
+
 process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
-process.pfchs=cms.EDFilter("CandPtrSelector",src=cms.InputTag("packedPFCandidates"),cut=cms.string("fromPV"))
-process.ak4PFJetsCHS = ak4PFJets.clone(src='pfchs',doAreaFastjet=True)
 
-#reapply JEC
-# from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-# process.load('PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff')
-# process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-#   src = cms.InputTag("slimmedJets"),
-#   levels = ['L1FastJet', 
-#         'L2Relative', 
-#         'L3Absolute'],
-#   payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
-
-# from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-# process.patJetsReapplyJEC = process.patJetsUpdated.clone(
-#   jetSource = cms.InputTag("slimmedJets"),
-#   jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-#   )
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
+  #Reapply JECs:
+if not isData:
+  updateJetCollection(
+    process,
+    jetSource = cms.InputTag("slimmedJets"),
+    labelName = "UpdatedJEC",
+    jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None')
+    )
+else:
+  updateJetCollection(
+    process,
+    jetSource = cms.InputTag("slimmedJets"),
+    labelName = "UpdatedJEC",
+    jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute','L2L3Residual']), 'None')
+    )
+  
 
 #Also make non-chs jets:
 #process.ak4PFJets = ak4PFJets.clone(src='packedPFCandidates',doAreaFastjet=True)
  
 #Get slimmedJets direct from miniAOD
 process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
-                                              src = cms.InputTag("slimmedJets"),
+                                              #src = cms.InputTag("slimmedJets"),
+                                              src = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
                                               cut = cms.string("pt > 15")
                                               )
-
-#Get re-jec'd slimmed jets
-#process.selectedReJECSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
-#                                              src = cms.InputTag("patJetsReapplyJEC"),
-#                                              cut = cms.string("pt > 15")
-#                                              )
 
 #Get slimmedJetsPuppi direct from miniAOD
 process.selectedSlimmedJetsPuppiAK4 = cms.EDFilter("PATJetRefSelector",
@@ -673,47 +670,29 @@ process.selectedSlimmedJetsPuppiAK4 = cms.EDFilter("PATJetRefSelector",
                                               cut = cms.string("pt > 15")
                                               )
 
-# get parton flavour by matching to genjets for reclustered
-#CHS
-#process.jetPartonsforCHS = cms.EDProducer("PartonSelector",
- #                                   src = cms.InputTag("prunedGenParticles"),
-  #                                  withLeptons = cms.bool(False)
-   #                                 )
-
-#process.pfchsJetPartonMatches = cms.EDProducer("JetPartonMatcher",
- #                                           jets = cms.InputTag("ak4PFJetsCHS"),
-  #                                          coneSizeToAssociate = cms.double(0.3),
-   #                                         partons = cms.InputTag("jetPartonsforCHS")
-    #                                        )
-
-#process.pfchsJetFlavourAssociation = cms.EDProducer("JetFlavourIdentifier",
-                                                 #srcByReference = cms.InputTag("pfchsJetPartonMatches"),
-                                                 #physicsDefinition = cms.bool(False)
-                                                 #)
-
 # select hadrons and partons for the jet flavour
-process.selectedHadronsAndPartons = cms.EDProducer('HadronAndPartonSelector',
-    src = cms.InputTag("generator"),
-    particles = cms.InputTag("prunedGenParticles"),
-    partonMode = cms.string("Auto")
-)
+#process.selectedHadronsAndPartons = cms.EDProducer('HadronAndPartonSelector',
+#    src = cms.InputTag("generator"),
+#    particles = cms.InputTag("prunedGenParticles"),
+#    partonMode = cms.string("Auto")
+#)
 
-process.pfchsJetFlavourAssociation = cms.EDProducer("JetFlavourClustering",
-    jets                     = cms.InputTag("ak4PFJetsCHS"),
-    bHadrons                 = cms.InputTag("selectedHadronsAndPartons","bHadrons"),
-    cHadrons                 = cms.InputTag("selectedHadronsAndPartons","cHadrons"),
-    partons                  = cms.InputTag("selectedHadronsAndPartons","algorithmicPartons"),
-    leptons                  = cms.InputTag("selectedHadronsAndPartons","leptons"),
-    jetAlgorithm             = cms.string("AntiKt"),
-    rParam                   = cms.double(0.4),
-    ghostRescaling           = cms.double(1e-18),
-    hadronFlavourHasPriority = cms.bool(False)
-)
+#process.pfchsJetFlavourAssociation = cms.EDProducer("JetFlavourClustering",
+#    jets                     = cms.InputTag("ak4PFJetsCHS"),
+#    bHadrons                 = cms.InputTag("selectedHadronsAndPartons","bHadrons"),
+#    cHadrons                 = cms.InputTag("selectedHadronsAndPartons","cHadrons"),
+#    partons                  = cms.InputTag("selectedHadronsAndPartons","algorithmicPartons"),
+#    leptons                  = cms.InputTag("selectedHadronsAndPartons","leptons"),
+#    jetAlgorithm             = cms.string("AntiKt"),
+#    rParam                   = cms.double(0.4),
+#    ghostRescaling           = cms.double(1e-18),
+#    hadronFlavourHasPriority = cms.bool(False)
+#)
 
-process.icPFchsJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
-    input       = cms.InputTag("ak4PFJetsCHS"),
-    flavourMap  = cms.InputTag("pfchsJetFlavourAssociation")
-  )
+#process.icPFchsJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
+#    input       = cms.InputTag("ak4PFJetsCHS"),
+#    flavourMap  = cms.InputTag("pfchsJetFlavourAssociation")
+#  )
 
 
 # Jet energy corrections for reclustered
@@ -759,49 +738,49 @@ process.load("RecoJets.JetAssociationProducers.ak4JTA_cff")
 from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAtVertex
 process.load("RecoBTag.Configuration.RecoBTag_cff")
 import RecoBTag.Configuration.RecoBTag_cff as btag
-process.jetTracksAssociatorAtVertexAK4PFCHS = ak4JetTracksAssociatorAtVertex.clone(
-  jets   = cms.InputTag("ak4PFJetsCHS"),
-  tracks = cms.InputTag("unpackedTracksAndVertices"),
-  pvSrc  = cms.InputTag("unpackedTracksAndVertices")
-  )
+#process.jetTracksAssociatorAtVertexAK4PFCHS = ak4JetTracksAssociatorAtVertex.clone(
+#  jets   = cms.InputTag("ak4PFJetsCHS"),
+#  tracks = cms.InputTag("unpackedTracksAndVertices"),
+#  pvSrc  = cms.InputTag("unpackedTracksAndVertices")
+#  )
 
-process.impactParameterTagInfosAK4PFCHS = btag.pfImpactParameterTagInfos.clone(
-  #jetTracks = cms.InputTag('jetTracksAssociatorAtVertexAK4PF'),
-  computeGhostTrack=cms.bool(False),
-  candidates=cms.InputTag("packedPFCandidates"),
-  primaryVertex = cms.InputTag("unpackedTracksAndVertices")
-  )
+#process.impactParameterTagInfosAK4PFCHS = btag.pfImpactParameterTagInfos.clone(
+#  #jetTracks = cms.InputTag('jetTracksAssociatorAtVertexAK4PF'),
+#  computeGhostTrack=cms.bool(False),
+#  candidates=cms.InputTag("packedPFCandidates"),
+#  primaryVertex = cms.InputTag("unpackedTracksAndVertices")
+#  )
 
-process.secondaryVertexTagInfosAK4PFCHS = btag.pfSecondaryVertexTagInfos.clone(
-  trackIPTagInfos = cms.InputTag('impactParameterTagInfosAK4PFCHS')
-  )
+#process.secondaryVertexTagInfosAK4PFCHS = btag.pfSecondaryVertexTagInfos.clone(
+#  trackIPTagInfos = cms.InputTag('impactParameterTagInfosAK4PFCHS')
+#  )
 
 ##Btag discriminators need to be properly updated
 
-process.simpleSecondaryVertexHighEffBJetTagsAK4PFCHS = btag.pfSimpleSecondaryVertexHighEffBJetTags.clone (
-  tagInfos = cms.VInputTag('secondaryVertexTagInfosAK4PFCHS')
-  )
-process.simpleSecondaryVertexHighPurBJetTagsAK4PFCHS = btag.pfSimpleSecondaryVertexHighPurBJetTags.clone (
-  tagInfos = cms.VInputTag('secondaryVertexTagInfosAK4PFCHS')
-  )
-process.combinedSecondaryVertexBJetTagsAK4PFCHS      = btag.pfCombinedSecondaryVertexV2BJetTags.clone (
-  tagInfos = cms.VInputTag('impactParameterTagInfosAK4PFCHS', 'secondaryVertexTagInfosAK4PFCHS')
-  )
+#process.simpleSecondaryVertexHighEffBJetTagsAK4PFCHS = btag.pfSimpleSecondaryVertexHighEffBJetTags.clone (
+#  tagInfos = cms.VInputTag('secondaryVertexTagInfosAK4PFCHS')
+#  )
+#process.simpleSecondaryVertexHighPurBJetTagsAK4PFCHS = btag.pfSimpleSecondaryVertexHighPurBJetTags.clone (
+#  tagInfos = cms.VInputTag('secondaryVertexTagInfosAK4PFCHS')
+#  )
+#process.combinedSecondaryVertexBJetTagsAK4PFCHS      = btag.pfCombinedSecondaryVertexV2BJetTags.clone (
+#  tagInfos = cms.VInputTag('impactParameterTagInfosAK4PFCHS', 'secondaryVertexTagInfosAK4PFCHS')
+#  )
 
-process.btaggingSequenceAK4PFCHS = cms.Sequence(
-  process.jetTracksAssociatorAtVertexAK4PFCHS
-  +process.impactParameterTagInfosAK4PFCHS
-  +process.secondaryVertexTagInfosAK4PFCHS
-  +process.simpleSecondaryVertexHighEffBJetTagsAK4PFCHS
-  +process.simpleSecondaryVertexHighPurBJetTagsAK4PFCHS
-  +process.combinedSecondaryVertexBJetTagsAK4PFCHS
- )
+#process.btaggingSequenceAK4PFCHS = cms.Sequence(
+#  process.jetTracksAssociatorAtVertexAK4PFCHS
+#  +process.impactParameterTagInfosAK4PFCHS
+#  +process.secondaryVertexTagInfosAK4PFCHS
+#  +process.simpleSecondaryVertexHighEffBJetTagsAK4PFCHS
+#  +process.simpleSecondaryVertexHighPurBJetTagsAK4PFCHS
+#  +process.combinedSecondaryVertexBJetTagsAK4PFCHS
+# )
 
-process.btaggingSequenceAK4PFCHS += cms.Sequence(
-  process.pfImpactParameterTagInfos+
-  process.pfSecondaryVertexTagInfos+
-  process.pfCombinedSecondaryVertexV2BJetTags
-)
+#process.btaggingSequenceAK4PFCHS += cms.Sequence(
+#  process.pfImpactParameterTagInfos+
+#  process.pfSecondaryVertexTagInfos+
+#  process.pfCombinedSecondaryVertexV2BJetTags
+#)
 
 if release in ['80XMINIAOD']:
   process.pfImpactParameterTagInfos.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
@@ -812,21 +791,8 @@ if release in ['80XMINIAOD']:
   
 # Pileup ID
 # ---------
-# Recalculated puJetId isn't the same as miniaod stored - should investigate 
 
 process.load("RecoJets.JetProducers.PileupJetID_cfi")
-process.pileupJetIdUpdated = process.pileupJetId.clone(
-  jets=cms.InputTag("slimmedJets"),
-  inputIsCorrected=True,
-  applyJec=True,
-  vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
-  )
-#print process.pileupJetIdUpdated.dumpConfig() ##WHY IS THIS HERE?
-
-stdalgoschs = cms.VPSet()
-from RecoJets.JetProducers.PileupJetIDParams_cfi import *
-stdalgoschs = cms.VPSet(full_5x_chs,cutbased)
-
 
 if release in ['80XMINIAOD']:
   process.pileupJetIdCalculator.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
@@ -835,112 +801,37 @@ if release in ['80XMINIAOD']:
   process.pileupJetIdEvaluator.jets      = cms.InputTag("ak4PFJetsCHS")
   process.pileupJetIdEvaluator.rho       = cms.InputTag("fixedGridRhoFastjetAll")
 
-process.puJetMvaCHS = cms.EDProducer('PileupJetIdProducer',
-                                  produceJetIds = cms.bool(True),
-                                  jetids = cms.InputTag(""),
-                                  runMvas = cms.bool(True),
-                                  #jets = cms.InputTag("slimmedJets"),
-                                  jets = cms.InputTag("ak4PFJetsCHS"),
-                                  vertexes = cms.InputTag("offlineSlimmedPrimaryVertices"),
-                                  algos = cms.VPSet(stdalgoschs),
-                                  rho     = cms.InputTag("fixedGridRhoFastjetAll"),
-                                  jec     = cms.string("AK4PFchs"),
-                                  applyJec = cms.bool(True),
-                                  inputIsCorrected = cms.bool(False),
-                                  residualsFromTxt = cms.bool(False),
-                                  residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
-                                  )
 
-
-#reapply JEC example
-#process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-#process.patJetCorrFactorsReapplyJEC = process.updatedPatJetCorrFactors.clone(
-#  src = cms.InputTag("slimmedJets"),
-#  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
-#process.updatedJets = process.updatedPatJets.clone(
-#  jetSource = cms.InputTag("slimmedJets"),
-#  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-#  )
-#process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
-
-
-
-# Produce and store reclustered CHS
-jetsrcconfig=cms.PSet(
-  includeJetFlavour         = cms.bool(True),
-  inputJetFlavour           = cms.InputTag("icPFchsJetFlavourCalculator"),
-  applyJECs                 = cms.bool(True),
-  includeJECs               = cms.bool(True),
-  JECs                      = pfchsJECS,
-  applyCutAfterJECs         = cms.bool(True),
-  cutAfterJECs              = cms.string("pt > 15.0"),
-  inputSVInfo               = cms.InputTag(""),
-  requestSVInfo             = cms.bool(False),
-  BTagDiscriminators        = cms.PSet(
-    simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK4PFCHS"),
-    simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK4PFCHS"),
-    combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS"),
-    pfCombinedSecondaryVertexV2BJetTags  = cms.InputTag("pfCombinedSecondaryVertexV2BJetTags")
-    )
+process.pileupJetIdUpdated = process.pileupJetId.clone(
+  jets=cms.InputTag("slimmedJets"),
+  inputIsCorrected=True,
+  applyJec=True,
+  vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
   )
+print process.pileupJetId.dumpConfig()
+print process.pileupJetIdUpdated.dumpConfig()
 
-
-if isData:
-  jetsrcconfig.includeJetFlavour = cms.bool(False)
-
-process.icPFJetProducer = producers.icPFJetProducer.clone(
-  branch                    = cms.string("pfJetsPFlowreclustered"),
-  input                     = cms.InputTag("ak4PFJetsCHS"),
-  srcConfig = jetsrcconfig,
-  destConfig = cms.PSet(
-    includePileupID       = cms.bool(True), 
-    inputPileupID         = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
-    includeTrackBasedVars = cms.bool(False),
-    inputTracks           = cms.InputTag("generalTracks"),
-    inputVertices         = vtxLabel,
-    requestTracks         = cms.bool(False)
-    )
-  )
-
-#Produce and store jets from MiniAOD with updated JEC
-# process.icReJECPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
-#   branch                    = cms.string("pfJetsPFlowReJEC"),
-#   input                     = cms.InputTag("selectedReJECSlimmedJetsAK4"),
-#   srcConfig = cms.PSet(
-#     isSlimmed               = cms.bool(True),
-#     includeJetFlavour       = cms.bool(True),
-#     includeJECs             = cms.bool(False),
-#     inputSVInfo             = cms.InputTag(""),
-#     requestSVInfo           = cms.bool(False)
-#     ),
-#   destConfig = cms.PSet(
-#     includePileupID         = cms.bool(True),
-#     inputPileupID           = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
-#     includeTrackBasedVars   = cms.bool(False),
-#     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),#!!check this and line below
-#     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),#!!
-#     requestTracks           = cms.bool(False)
-#     )
-#   )
+process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
 
 #Produce and store jets taken straight from miniAOD
 process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
-  branch                    = cms.string("pfJetsPFlow"),
+  branch                    = cms.string("ak4PFJetsCHS"),
   input                     = cms.InputTag("selectedSlimmedJetsAK4"),
   srcConfig = cms.PSet(
     isSlimmed               = cms.bool(True),
+    #slimmedPileupIDLabel    = cms.string('pileupJetIdUpdated:fullDiscriminant'),
+    slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
     includeJetFlavour       = cms.bool(True),
     includeJECs             = cms.bool(True),
-    JECs                    = pfchsJECS,
     inputSVInfo             = cms.InputTag(""),
     requestSVInfo           = cms.bool(False)
     ),
   destConfig = cms.PSet(
     includePileupID         = cms.bool(True),
-    inputPileupID           = cms.InputTag("pileupJetIdUpdated", "fullDiscriminant"),
+    inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
     includeTrackBasedVars   = cms.bool(False),
-    inputTracks             = cms.InputTag("unpackedTracksAndVertices"),#!!check this and line below
-    inputVertices           = cms.InputTag("unpackedTracksAndVertices"),#!!
+    inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+    inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
     requestTracks           = cms.bool(False)
     )
   )
@@ -957,7 +848,7 @@ process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
     ),
   destConfig = cms.PSet(
     includePileupID         = cms.bool(False),
-    inputPileupID           = cms.InputTag("pileupJetIdUpdated", "fullDiscriminant"),
+    inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
     includeTrackBasedVars   = cms.bool(False),
     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),#!!check this and line below
     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),#!!
@@ -967,16 +858,19 @@ process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
 
 process.icPFJetSequence = cms.Sequence()
 process.icPFJetSequence += cms.Sequence(
-  process.pfchs+
+  process.pileupJetIdUpdated+
+  process.patJetCorrFactorsUpdatedJEC+
+  process.updatedPatJetsUpdatedJEC+
+  process.selectedUpdatedPatJetsUpdatedJEC+  
   process.selectedSlimmedJetsAK4+
-  process.unpackedTracksAndVertices+
-  process.ak4PFL1FastjetCHS+
-  process.ak4PFL2RelativeCHS+
-  process.ak4PFL3AbsoluteCHS+  
-  process.ak4PFResidualCHS+
-  process.ak4PFJetsCHS+
-  process.btaggingSequenceAK4PFCHS+
-  process.puJetMvaCHS
+  process.unpackedTracksAndVertices
+  #process.ak4PFL1FastjetCHS+
+  #process.ak4PFL2RelativeCHS+
+  #process.ak4PFL3AbsoluteCHS+  
+  #process.ak4PFResidualCHS+
+  #process.ak4PFJetsCHS+
+  #process.btaggingSequenceAK4PFCHS+
+  #process.puJetMvaCHS
   #process.icPFJetProducer+ #Not from slimmed jets!
   #process.icPFJetProducerFromPat+
   
@@ -992,26 +886,26 @@ process.icPFJetSequence += cms.Sequence(
   #process.pileupJetIdUpdated
 ) 
 
-if not isData:
-  process.icPFJetSequence.remove(process.ak4PFResidualCHS)
+#if not isData:
+#  process.icPFJetSequence.remove(process.ak4PFResidualCHS)
 
-if not isData:
-  process.icPFJetSequence += cms.Sequence(
+#if not isData:
+ # process.icPFJetSequence += cms.Sequence(
     #process.jetPartonsforCHS+
     #process.pfchsJetPartonMatches+
-    process.selectedHadronsAndPartons+
-    process.pfchsJetFlavourAssociation+
-    process.icPFchsJetFlavourCalculator
-  )
+  #  process.selectedHadronsAndPartons+
+   # process.pfchsJetFlavourAssociation+
+    #process.icPFchsJetFlavourCalculator
+  #)
 
 process.icPFJetSequence += cms.Sequence(
-  process.icPFJetProducer+ #Not from slimmed jets!
+  #process.icPFJetProducer+ #Not from slimmed jets!
   process.icPFJetProducerFromPat+
   process.pileupJetIdCalculator+
   process.pileupJetIdEvaluator+
   process.selectedSlimmedJetsPuppiAK4+
-  process.icPFJetProducerFromPatPuppi+
-  process.pileupJetIdUpdated
+  process.icPFJetProducerFromPatPuppi
+  #process.pileupJetIdUpdated
 )
 
 ##################################################################                                                                                          
@@ -1056,9 +950,20 @@ process.icGenMetProducer = producers.icMetFromPatProducer.clone(
   doGenMet = cms.bool(True)
   )
 
-#get type 1 met straight from miniAOD !!update to take in output of met significance calculator
+#remake type1 met with updated JEC
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+if isData:
+  runMetCorAndUncFromMiniAOD(process,
+                             isData=True
+                             )
+else:
+  runMetCorAndUncFromMiniAOD(process,
+                             isData=False
+                             )
+
+
 process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
-  input = cms.InputTag("slimmedMETs"),
+  input = cms.InputTag("slimmedMETs","","MAIN"),
   branch = cms.string("pfMetType1Collection"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
@@ -1068,8 +973,33 @@ process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
   )
 
 #puppi met, need to update significance....
+
+from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+makePuppiesFromMiniAOD( process );
+
+if isData:
+  runMetCorAndUncFromMiniAOD(process,
+                             isData=True,
+                             metType="Puppi",
+                             pfCandColl=cms.InputTag("puppiForMET"),
+                             recoMetFromPFCs=True,
+                             reclusterJets=True,
+                             jetFlavor="AK4PFPuppi",
+                             postfix="Puppi"
+                             )
+else:
+  runMetCorAndUncFromMiniAOD(process,
+                             isData=False,
+                             metType="Puppi",
+                             pfCandColl=cms.InputTag("puppiForMET"),
+                             recoMetFromPFCs=True,
+                             reclusterJets=True,
+                             jetFlavor="AK4PFPuppi",
+                             postfix="Puppi"
+                             )
+
 process.icPfMetPuppiProducer = producers.icMetFromPatProducer.clone(
-  input = cms.InputTag("slimmedMETsPuppi"),
+  input = cms.InputTag("slimmedMETsPuppi","","MAIN"),
   branch = cms.string("pfMetPuppiCollection"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
@@ -1141,6 +1071,9 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   includeStatusFlags = cms.bool(True)
 )
 
+process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone()
+
+
 #process.icGenParticleTauProducer = producers.icGenParticleProducer.clone(
 #  input   = cms.InputTag("prunedGenParticlesTaus"),
 #  branch = cms.string("genParticlesTaus"),
@@ -1209,7 +1142,10 @@ if not isData:
       process.icPileupInfoProducer
     )
 
-
+if doHT:
+    process.icGenSequence += (
+      process.icGenParticleProducerFromLHEParticles
+)
 ##################################################################                                                                                          
 #!! Trigger                                                                                                                                                 
 #!! Need to get L1 extra
@@ -1336,6 +1272,13 @@ if isData:
 
 #process.HBHEISONoiseFilterResultProducer = process.HBHENoiseFilterResultProducer.clone()
 #process.HBHEISONoiseFilterResultProducer.defaultDecision = cms.string("HBHEIsoNoiseFilterResult")
+#Load the MET filters here
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
@@ -1351,22 +1294,28 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeFiltersFromTrig = cms.bool(True),
   inputfiltersfromtrig = cms.InputTag("TriggerResults","","RECO"),
   filtersfromtrig     = cms.vstring("*"),
+  filters             = cms.PSet(
+    badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
+    badMuonFilter          = cms.InputTag("BadPFMuonFilter")
+    ),
   #filters             = cms.PSet(
-   # Flag_HBHENoiseFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
-   # Flag_HBHENoiseIsoFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
-   # )
+  # Flag_HBHENoiseFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
+  # Flag_HBHENoiseIsoFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
+  # )
 )
 
 
-if doHT:
-  process.icEventInfoProducer.includeHT = cms.bool(True)
+#if doHT:
+ # process.icEventInfoProducer.includeHT = cms.bool(True)
 
  
 process.icEventInfoSequence = cms.Sequence(
 #  process.HBHENoiseFilterResultProducer+
 # process.HBHEISONoiseFilterResultProducer+
+  process.BadPFMuonFilter+
+  process.BadChargedCandidateFilter+ 
   process.icEventInfoProducer
-)
+  )
 
 ################################################################
 # Event

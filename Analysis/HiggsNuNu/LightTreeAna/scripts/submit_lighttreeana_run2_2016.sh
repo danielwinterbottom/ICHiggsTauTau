@@ -26,9 +26,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_161003_ICHEP_datacard
+JOBDIRPREFIX=jobs_run2ana_161003_ICHEP #_datacard
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_161003_ICHEP_datacard
+OUTPUTPREFIX=output_run2ana_161003_ICHEP #_datacard
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -67,22 +67,22 @@ echo "JOB name = $JOB"
 #for syst in JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
 #for syst in "" PUUP PUDOWN
 #for syst in "" PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN
-for syst in "" JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN
+for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in enu munu taunu mumu qcd nunu #qcd #enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in qcd #enu munu taunu mumu qcd nunu #qcd #enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     #executable expect strings separated by "!"
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
     ## To produce all of the hist
-    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
     ## To produce all of the hist for datacard
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_datacard.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_datacard.hists`
+    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_datacard.hists`
+    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_datacard.hists`
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
     ## To test for one hist
