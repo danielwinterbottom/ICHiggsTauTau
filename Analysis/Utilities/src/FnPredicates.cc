@@ -46,6 +46,21 @@ namespace ic {
     }
     return std::make_pair(false,0);
   }
+  
+  std::pair<bool,std::vector<unsigned>> IsFilterMatchedWithMultipleIndexs(Candidate const* cand, std::vector<TriggerObject*> const& objs, std::string const& filter, double const& max_dr){
+    std::size_t hash = CityHash64(filter);
+    std::vector<unsigned> index_vals;
+    bool matched = false;
+    for (unsigned i = 0; i < objs.size(); ++i) {
+      std::vector<std::size_t> const& labels = objs[i]->filters();
+      if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+      if (DR(cand, objs[i]) < max_dr){
+         index_vals.push_back(i);
+         matched = true;
+      }
+    }
+    return std::make_pair(matched,index_vals);
+  }
 
   bool VertexDz(Tau const* cand, double const& vertexZ) {
     return ( fabs(cand->vz() - vertexZ)==0) ; 
@@ -941,12 +956,9 @@ namespace ic {
     if(!pass_preselection) return false;
     double idmva = elec->GetIdIso("mvaTrigSpring15");
     if (!loose_wp) {
-      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
-      if (eta >  0.8 && eta <= 1.479   && idmva > 0.89) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;
-/*      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
+      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.967910) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;*/
+      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;
     } else {
       if (eta <= 0.8                    && idmva > 0.972153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479    && idmva > 0.922126) pass_mva = true;
@@ -1731,4 +1743,17 @@ namespace ic {
     return sigPtoverPt*(sqrt(pow(fData,2)+pow(jerUnc,2)))*pT;
   }
   */
+  
+   std::set<int16_t> GetTriggerTypes(TriggerObject* obj){
+    
+     std::set<int16_t> types;
+     ui64 packed_type;
+     packed_type.one = obj->id();
+     
+     for(unsigned i=0; i<4; ++i){
+       int16_t type = packed_type.four[i];
+       if(type!=0) types.insert(type);
+     }
+     return types;
+  }
 } //namespace

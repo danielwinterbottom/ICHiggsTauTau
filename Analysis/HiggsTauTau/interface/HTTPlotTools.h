@@ -11,6 +11,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTAnalysisTools.h"
 #include "boost/program_options.hpp"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/SOverBTools.h"
 
 namespace ic {
 
@@ -56,6 +57,7 @@ namespace ic {
     CLASS_MEMBER(HTTPlot,   double,         y_axis_min)
     CLASS_MEMBER(HTTPlot,   double,         extra_pad)
     CLASS_MEMBER(HTTPlot,   bool,           blind)
+    CLASS_MEMBER(HTTPlot,   bool,           autoblind)
     CLASS_MEMBER(HTTPlot,   double,         x_blind_min)
     CLASS_MEMBER(HTTPlot,   double,         x_blind_max)
     CLASS_MEMBER(HTTPlot,   bool,           log_y)
@@ -74,6 +76,10 @@ namespace ic {
     CLASS_MEMBER(HTTPlot,   bool,           add_stat_error)
     CLASS_MEMBER(HTTPlot,   double,         ratio_min)
     CLASS_MEMBER(HTTPlot,   double,         ratio_max)
+    CLASS_MEMBER(HTTPlot,   bool,           supress_output)
+    CLASS_MEMBER(HTTPlot,   std::string,       sOverb_output_name)
+    CLASS_MEMBER(HTTPlot,   bool,           ams_scan)
+    CLASS_MEMBER(HTTPlot,    std::string,    ams_scan_output_name)
 
     // CLASS_MEMBER(HTTPlot, bool, ztt_by_decay_mode)
     // CLASS_MEMBER(HTTPlot, bool, shift_backgrounds)
@@ -91,11 +97,13 @@ namespace ic {
       inline std::string draw_signal_tanb() const { return draw_signal_tanb_; }
       void AddTextElement(ic::TextElement & ele);
       inline bool blind() const { return blind_; }
+      inline bool autoblind() const { return autoblind_; }
       inline double x_blind_min() const { return x_blind_min_; }
       inline double x_blind_max() const { return x_blind_max_; }
       inline double extra_pad() const { return extra_pad_; }
       inline std::string x_axis_label() const { return x_axis_label_; }
       inline std::string y_axis_label() const { return y_axis_label_; }
+      inline bool supress_output() const { return supress_output_; }
     private:
       boost::program_options::options_description config_;
       std::map<std::string, std::vector<PlotBkgComponent>> bkg_schemes_;

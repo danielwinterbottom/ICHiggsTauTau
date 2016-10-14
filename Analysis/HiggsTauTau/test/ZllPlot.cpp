@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 	string var;																		// Use background methods for chosen category
 	string cat;																		// Use background methods for chosen category
 	unsigned verbosity;														// Verbose output, useful for diagnostic purposes
-	bool is_fall15;		
+	bool is_sm;		
 	bool do_ss;                            		    // Tweaking some things for the paper
 	string datacard; 
     string year; 
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
 	  ("cat",             		    po::value<string>(&cat)->default_value(""))
 	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
       ("year",                    po::value<string>(&year)->default_value("2015"))
-	  ("is_fall15",               po::value<bool>(&is_fall15)->default_value(true))
+	  ("is_sm",               po::value<bool>(&is_sm)->default_value(true))
 	  ("do_ss", 	                po::value<bool>(&do_ss)->default_value(false))
 	  ("interpolate", 	          po::value<bool>(&interpolate)->default_value(false))
 	  ("datacard",                po::value<string>(&datacard)->default_value(""))
@@ -104,7 +104,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
 	// ************************************************************************
-	HTTRun2Analysis ana(String2Channel(channel_str), year, verbosity, is_fall15);
+	HTTRun2Analysis ana(String2Channel(channel_str), year, verbosity, is_sm);
     ana.SetQCDRatio(qcd_os_ss_factor);
     if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);

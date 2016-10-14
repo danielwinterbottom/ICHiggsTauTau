@@ -27,6 +27,24 @@ ignore = options.ignore
 
 
 sample_list = [
+    'GluGluHToTauTau_M-120',
+    'GluGluHToTauTau_M-125',
+    'GluGluHToTauTau_M-130',
+    'TTHToTauTau_M-120',
+    'TTHToTauTau_M-125',
+    'TTHToTauTau_M-130',
+    'VBFHToTauTau_M-120',
+    'VBFHToTauTau_M-125',
+    'VBFHToTauTau_M-130',
+    'WminusHToTauTau_M-120',
+    'WminusHToTauTau_M-125',
+    'WminusHToTauTau_M-130',
+    'WplusHToTauTau_M-120',
+    'WplusHToTauTau_M-125',
+    'WplusHToTauTau_M-130',
+    'ZHToTauTau_M-120',
+    'ZHToTauTau_M-125',
+    'ZHToTauTau_M-130',
     'QCDMuEnrichedPt15',
     'TT',
     'WJetsToLNu-LO',
@@ -34,6 +52,9 @@ sample_list = [
     'W2JetsToLNu-LO',
     'W3JetsToLNu-LO',
     'W4JetsToLNu-LO',
+    'WGToLNuG',
+    'WGstarToLNuEE',
+    'WGstarToLNuMuMu',
     'ZZTo4L',
     'VVTo2L2Nu',
     'ZZTo2L2Q',
@@ -162,7 +183,16 @@ sample_list = [
    'reHLTSUSYGluGluToBBHToTauTau_M-600',
    'reHLTSUSYGluGluToBBHToTauTau_M-700',
    'reHLTSUSYGluGluToBBHToTauTau_M-80',
-   'reHLTSUSYGluGluToBBHToTauTau_M-90'
+   'reHLTSUSYGluGluToBBHToTauTau_M-90',
+   'GluGluHToTauTau_M-125',
+   'VBFHToTauTau_M-125',
+   'ZHToTauTau_M-125',
+   'WplusHToTauTau_M-125',
+   'WminusHToTauTau_M-125',
+   'TTHToTauTau_M-125',
+   'reHLT_GluGluHToTauTau_M-125',
+   'reHLT_VBFHToTauTau_M-125',
+   'QCD_Pt-15to80_MixedSamples_MuEnrichedPt5'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
