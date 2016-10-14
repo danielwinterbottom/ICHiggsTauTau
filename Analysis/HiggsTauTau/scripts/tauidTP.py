@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--type', '-t', help='control, tp')
 parser.add_argument('--output', '-o', default='TauID_Basic', help='Output name')
 parser.add_argument('--qcd_os_ss', default=1.0, type=float)
+parser.add_argument('--wqcd-strategy', default='simultaneous')
 parser.add_argument('--extra', default=None)
 
 args = parser.parse_args()
@@ -57,38 +58,36 @@ def AddMCProcs(node, v, sel, pfix=''):
     node.AddNode(ana.BasicFactory('TT' + pfix, 'TT', v, sel()))
 
     node.AddNode(ana.SummedFactory('VV' + pfix, vv_samples, v, sel()))
+
+
+def AddWQCD(node, v, sel, sel_ss, sel_hmt, qcd_os_ss, strategy, pfix=''):
+    node.AddNode(HttWQCDCombinedNode('W+QCD', 'W' + pfix, 'QCD' + pfix,
+        data_lmt_ss = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign=sel_ss)),
+        data_hmt_os = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(mt=sel_hmt)),
+        data_hmt_ss = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign=sel_ss, mt=sel_hmt)),
+        sub_lmt_ss = ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign=sel_ss)),
+        sub_hmt_os = ana.SummedFactory('backgrounds' + pfix, [], v, sel(mt=sel_hmt)),
+        sub_hmt_ss = ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign=sel_ss, mt=sel_hmt)),
+        w_lmt_os = ana.BasicFactory('lmt_os.W' + pfix, w_sample, v, sel()),
+        w_lmt_ss = ana.BasicFactory('lmt_ss.W' + pfix, w_sample, v, sel(sign=sel_ss)),
+        w_hmt_os = ana.BasicFactory('hmt_os.W' + pfix, w_sample, v, sel(mt=sel_hmt)),
+        w_hmt_ss = ana.BasicFactory('hmt_ss.W' + pfix, w_sample, v, sel(sign=sel_ss, mt=sel_hmt)),
+        qcd_os_ss = qcd_os_ss,
+        strategy = strategy))
+
+    AddMCProcs(node['W+QCD'].sub_lmt_ss, v, sel.copy(sign=sel_ss), pfix)
+    AddMCProcs(node['W+QCD'].sub_hmt_os, v, sel.copy(mt=sel_hmt), pfix)
+    AddMCProcs(node['W+QCD'].sub_hmt_ss, v, sel.copy(sign=sel_ss, mt=sel_hmt), pfix)
+    node['W+QCD'].sub_lmt_ss.add_output_prefix = False
+    node['W+QCD'].sub_hmt_os.add_output_prefix = False
+    node['W+QCD'].sub_hmt_ss.add_output_prefix = False
     
 
 def StandardMT(ana, node, v, sel, pfix='', qcd_os_ss=1.0):
     node.AddNode(BasicNode('data_obs' + pfix, 'data_obs', v, sel()))
-    
     AddMCProcs(node, v, sel, pfix)
+    AddWQCD(node, v, sel, sel_ss='!os', sel_hmt='mt_m>70', qcd_os_ss=qcd_os_ss, strategy=args.wqcd_strategy, pfix=pfix)
     
-    node.AddNode(HttWQCDCombinedNode('W+QCD', 'W' + pfix, 'QCD' + pfix,
-        data_lMT_SS = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os')),
-        data_hMT_OS = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='os', mt='mt_m>70')),
-        data_hMT_SS = ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os', mt='mt_m>70')),
-        sub_lMT_SS = ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign='!os')),
-        sub_hMT_OS = ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign='!os')),
-        sub_hMT_SS = ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign='!os')),
-        w_lMT_OS = ana.BasicFactory('lMT_OS.W' + pfix, w_sample, v, sel()),
-        w_lMT_SS = ana.BasicFactory('lMT_SS.W' + pfix, w_sample, v, sel(sign='!os')),
-        w_hMT_OS = ana.BasicFactory('hMT_OS.W' + pfix, w_sample, v, sel(sign='os', mt='mt_m>70')),
-        w_hMT_SS = ana.BasicFactory('hMT_SS.W' + pfix, w_sample, v, sel(sign='!os', mt='mt_m>70')),
-        qcd_os_ss = qcd_os_ss))
-    
-    #node.AddNode(HttQCDNode('QCD' + pfix,
-    #    ana.BasicFactory('data_obs' + pfix, 'data_obs', v, sel(sign='!os')),
-    #    ana.SummedFactory('backgrounds' + pfix, [], v, sel(sign='!os')),
-    #    qcd_os_ss))
-    #node['QCD' + pfix].subtract_node.add_output_prefix = False
-    AddMCProcs(node['W+QCD'].sub_lMT_SS, v, sel.copy(sign='!os'), pfix)
-    AddMCProcs(node['W+QCD'].sub_hMT_OS, v, sel.copy(sign='os', mt='mt_m>70'), pfix)
-    AddMCProcs(node['W+QCD'].sub_hMT_SS, v, sel.copy(sign='!os', mt='mt_m>70'), pfix)
-    node['W+QCD'].sub_lMT_SS.add_output_prefix = False
-    node['W+QCD'].sub_hMT_OS.add_output_prefix = False
-    node['W+QCD'].sub_hMT_SS.add_output_prefix = False
-
 
 def TagAndProbeCats(ana, node, name, var_pass, var_fail, baseline, probe, pfix=''):
     node.AddNode(ListNode(name+'_pass'))
@@ -173,16 +172,21 @@ if args.type == 'control':
             ana.nodes[selection[0]].AddNode(ListNode(nodename))
             StandardMT(ana, ana.nodes[selection[0]][nodename], v, dosel, qcd_os_ss=args.qcd_os_ss)
 
-"""
-for var in [('mt_m',         'mt_m(40,0,200)', '1'),
-            ('pzeta',                 'pzeta(60,-200,100)', '1'),
-            ('pzeta_after_mt',        'pzeta(60,-200,100)', 'mt_m<40'),
-            ]:
-    nodename = var[0]
-    v = var[1]
-    ana.nodes.AddNode(ListNode(nodename))
-    StandardMT(ana, ana.nodes[nodename], v, Sel(sign='os', baseline='anti_e_t && anti_m_t && n_bjets==0', wt='wt', extra_baseline=var[2]))
-"""
+if args.type == 'mtstudy':
+    sel = Sel(sign='os', mt='1', baseline='anti_e_vl_t && anti_m_t_t', wt='wt * wt_zpt * wt_top')
+    ana_list = [ana]
+    for selection in [('baseline',    'mva_m_t && pt_t>30')]:
+        ana.nodes.AddNode(ListNode(selection[0]))
+        for var in [
+                    ('mt_m',             'mt_m(20,0,160);m_{T}:GeV'),
+                  ]:
+            nodename = var[0]
+            v = var[1]
+            dosel = sel.copy(extra_selection=selection[1])
+            if args.extra is not None:
+                dosel = dosel.copy(extra_baseline=args.extra)
+            ana.nodes[selection[0]].AddNode(ListNode(nodename))
+            StandardMT(ana, ana.nodes[selection[0]][nodename], v, dosel, qcd_os_ss=args.qcd_os_ss)
 
 if args.type == 'tp':
     ana_list = [ana, ana_scale_t_hi, ana_scale_t_lo]
