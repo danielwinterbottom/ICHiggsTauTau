@@ -202,6 +202,7 @@ namespace ic {
     pt_2_ = -9999.;
     ic::Candidate lep1;
     ic::Candidate lep2;
+    passed_ = false;
     if(channel_str_ == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
         lep1 = electrons[0];
