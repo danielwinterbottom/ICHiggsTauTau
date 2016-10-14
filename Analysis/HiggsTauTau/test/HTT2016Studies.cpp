@@ -514,12 +514,12 @@ int main(int argc, char* argv[]) {
       seq.BuildModule(ic::SimpleFilter<ic::Muon>("MuonFilter")
         .set_input_label("sel_muons").set_min(1)
         .set_predicate([=](ic::Muon const* m) {
-          return  m->pt()                 > 25.    &&
+          return  m->pt()                 > 23.    &&
                   fabs(m->eta())          < 2.1    &&
                   fabs(m->dxy_vertex())   < 0.045  &&
                   fabs(m->dz_vertex())    < 0.2    &&
                   MuonMediumHIPsafe(m)             &&
-                  PF04IsolationVal(m, 0.5, 0) < 0.10;
+                  PF04IsolationVal(m, 0.5, 0) < 0.15;
         }));
 
       double tau_es_shift = 1.00;

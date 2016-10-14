@@ -324,6 +324,9 @@ class ZmtTPTreeProducer : public ModuleBase {
   unsigned gen_1;
   unsigned gen_2;
 
+  bool e_veto;
+  bool m_veto;
+
   int n_bjets;
 
   bool os;

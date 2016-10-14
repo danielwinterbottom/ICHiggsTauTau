@@ -811,6 +811,8 @@ namespace ic {
       outtree_->Branch("trg_t_IsoMu19Tau ",     &trg_t_IsoMu19Tau);
       outtree_->Branch("gen_1",       &gen_1);
       outtree_->Branch("gen_2",       &gen_2);
+      outtree_->Branch("e_veto",       &e_veto);
+      outtree_->Branch("m_veto",       &m_veto);
       outtree_->Branch("n_bjets",     &n_bjets);
       outtree_->Branch("os",          &os);
       outtree_->Branch("m_ll",        &m_ll);
@@ -1154,6 +1156,9 @@ namespace ic {
     info->set_weight("trg", wt_trg);
     info->set_weight("id", wt_id);
     info->set_weight("iso", wt_iso);
+
+    e_veto = event->Get<bool>("extra_elec_veto");
+    m_veto = event->Get<bool>("extra_muon_veto");
 
     // DY reweighting
     wt_zpt = 1.0;

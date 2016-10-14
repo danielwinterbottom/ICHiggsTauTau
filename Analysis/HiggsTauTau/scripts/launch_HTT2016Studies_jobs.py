@@ -13,7 +13,7 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
 MAX_EVTS = -1
-FILES_PER_JOB = 30
+FILES_PER_JOB = 20
 PROD='Aug16'
 
 DATA_SAMPLES = {
@@ -44,10 +44,10 @@ DATA_SAMPLES = {
 }
 
 MC_SAMPLES = {
-    'DYJetsToLL':               ['DYJetsToLL'],
-    'DYJetsToLL-Old':               ['DYJetsToLL-Old'],
+    #'DYJetsToLL':               ['DYJetsToLL'],
+    #'DYJetsToLL-Old':               ['DYJetsToLL-Old'],
     'DYJetsToLLSoup':           ['DYJetsToLL', 'DY1JetsToLL', 'DY2JetsToLL', 'DY3JetsToLL', 'DY4JetsToLL'],
-    'DYJetsToLL-NLO':           ['DYJetsToLL-NLO'],
+    #'DYJetsToLL-NLO':           ['DYJetsToLL-NLO'],
     'DYJetsToLL_M-10to50':      ['DYJetsToLL_M-10to50'],
     'EWKWMinus2Jets_WToLNu':    ['EWKWMinus2Jets_WToLNu'],
     'EWKWPlus2Jets_WToLNu':     ['EWKWPlus2Jets_WToLNu'],
@@ -65,7 +65,7 @@ MC_SAMPLES = {
     'WZTo2L2Q':                 ['WZTo2L2Q'],
     'ZZTo2L2Q':                 ['ZZTo2L2Q'],
     'ZZTo4L':                   ['ZZTo4L'],
-    'WJetsToLNu':               ['WJetsToLNu'],
+    #'WJetsToLNu':               ['WJetsToLNu'],
     'WJetsToLNuSoup':           ['WJetsToLNu', 'W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu']
 }
 
