@@ -35,6 +35,21 @@ double TopQuarkPtWeight(std::vector<GenParticle *> const& parts);
 
 ROOT::Math::PtEtaPhiEVector BuildGenBoson(std::vector<GenParticle *> const& parts);
 
+class SelectMVAMET : public ModuleBase {
+ private:
+  CLASS_MEMBER(SelectMVAMET, std::string, pairs_label)
+  CLASS_MEMBER(SelectMVAMET, std::string, met_label)
+  CLASS_MEMBER(SelectMVAMET, std::string, met_target)
+  CLASS_MEMBER(SelectMVAMET, std::string, correct_for_lepton1)
+  CLASS_MEMBER(SelectMVAMET, std::string, correct_for_lepton2)
+
+  public:
+   SelectMVAMET(std::string const& name);
+   virtual ~SelectMVAMET();
+
+   virtual int Execute(TreeEvent *event);
+};
+
 class ZmmTreeProducer : public ModuleBase {
  private:
   CLASS_MEMBER(ZmmTreeProducer, fwlite::TFileService*, fs)
@@ -250,6 +265,7 @@ class ZmtTPTreeProducer : public ModuleBase {
   float wt_mfr_t;
   float wt_zpt;
   float wt_top;
+  float wt_tauid;
 
   int n_vtx;
   float rho;
@@ -328,6 +344,7 @@ class ZmtTPTreeProducer : public ModuleBase {
   bool m_veto;
 
   int n_bjets;
+  int n_uncorr_bjets;
 
   bool os;
   float m_ll;

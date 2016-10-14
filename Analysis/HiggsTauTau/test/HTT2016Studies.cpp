@@ -25,6 +25,8 @@
 #include "HiggsTauTau/interface/SampleStitching.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
 #include "HiggsTauTau/interface/HTTFilter.h"
+#include "HiggsTauTau/interface/BTagWeightRun2.h"
+#include "HiggsTauTau/interface/HTTRun2RecoilCorrector.h"
 
 using std::string;
 using std::vector;
@@ -149,6 +151,11 @@ int main(int argc, char* argv[]) {
 
   auto trigger_module = ic::TriggerInfo("TriggerInfo")
     .set_output_file(js.get("trigger_info_output", "trigger_info.json").asString());
+
+  // B-tagging efficiencies for reweighting
+  TH2F bbtag_eff = ic::OpenFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root:btag_eff_b");
+  TH2F cbtag_eff = ic::OpenFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root:btag_eff_c");
+  TH2F othbtag_eff = ic::OpenFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root:btag_eff_oth");
 
   Json::Value js_hash_map;
 
@@ -570,13 +577,41 @@ int main(int argc, char* argv[]) {
             })
       );
 
-      // At this point we're done filtering, can calculate other things we nedd
+      seq.BuildModule(ic::SelectMVAMET("SelectMVAMET")
+          .set_pairs_label("ditau")
+          .set_met_label("pfMVAMetVector")
+          .set_met_target("mvamet")
+          .set_correct_for_lepton2("shifts_TauEnergyScale")
+      );
+      // At this point we're done filtering, can calculate other things we need
       if (!is_data) {
         seq.BuildModule(ic::HTTPairGenInfo("PairGenInfo")
             .set_ditau_label("ditau")
         );
         seq.BuildModule(puweight_module);
         seq.BuildModule(puweight_module_hi);
+
+        seq.BuildModule(ic::HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+            .set_sample("DYJetsToLL")
+            .set_channel(ic::channel::mt)
+            .set_mc(ic::mc::spring16_80X)
+            .set_met_label("mvamet")
+            .set_jets_label("ak4PFJetsCHS")
+            .set_strategy(ic::strategy::mssmspring16)
+            .set_use_quantile_map(false)
+        );
+
+        seq.BuildModule(ic::BTagWeightRun2("BTagWeightRun2")
+            .set_channel(ic::channel::mt)
+            .set_era(ic::era::data_2016)
+            .set_jet_label("ak4PFJetsCHS")
+            .set_bbtag_eff(&bbtag_eff)
+            .set_cbtag_eff(&cbtag_eff)
+            .set_othbtag_eff(&othbtag_eff)
+            .set_do_reshape(false)
+            .set_btag_mode(0)
+            .set_bfake_mode(0)
+        );
       } else {
         seq.BuildModule(lumimask_module);
       }
@@ -585,6 +620,7 @@ int main(int argc, char* argv[]) {
       BuildWStitching(seq, js);
 
       BuildLeptonVetoes(seq, /*max_muons=*/1, /*max_elecs=*/0);
+
 
       seq.BuildModule(ic::ZmtTPTreeProducer("ZmtTPTreeProducer")
         .set_fs(fs.at(fullseqn).get())

@@ -17,6 +17,54 @@
 
 namespace ic {
 
+  SelectMVAMET::SelectMVAMET(std::string const& name)
+      : ModuleBase(name),
+        pairs_label_("ditau"),
+        met_label_("pfMVAMetVector"),
+        met_target_("mvamet"),
+        correct_for_lepton1_(""),
+        correct_for_lepton2_("") {};
+
+  SelectMVAMET::~SelectMVAMET() { ; }
+
+  int SelectMVAMET::Execute(TreeEvent *event) {
+    // Get the MVA MET
+    Met *mvamet = nullptr;
+    auto pairs = event->GetPtrVec<CompositeCandidate>(pairs_label_);
+    auto const& met_map = event->GetIDMap<Met>(met_label_);
+    std::size_t id = 0;
+    boost::hash_combine(id, pairs.at(0)->at(0)->id());
+    boost::hash_combine(id, pairs.at(0)->at(1)->id());
+    std::size_t id_inv = 0;
+    boost::hash_combine(id_inv, pairs.at(0)->at(1)->id());
+    boost::hash_combine(id_inv, pairs.at(0)->at(0)->id());
+    auto it = met_map.find(id);
+    auto it_inv = met_map.find(id_inv);
+    if (it != met_map.end()) {
+      mvamet = it->second;
+      // event->Add("pfMVAMet", mva_met);
+    } else if (it_inv != met_map.end()){
+      //lepton1 <--> lepton2 (needed for fully hadronic)
+      mvamet = it_inv->second;
+      // event->Add("pfMVAMet", mva_met);
+    } else {
+      throw::std::runtime_error("Could not find MVA MET!");
+    }
+
+    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    if (correct_for_lepton1_ != "") {
+      auto const& es_shifts1 = event->Get<map_id_vec>(correct_for_lepton1_);
+      CorrectMETForShift(mvamet, es_shifts1.at(pairs.at(0)->at(0)->id()));
+    }
+    if (correct_for_lepton2_ != "") {
+      auto const& es_shifts2 = event->Get<map_id_vec>(correct_for_lepton2_);
+      CorrectMETForShift(mvamet, es_shifts2.at(pairs.at(0)->at(1)->id()));
+    }
+
+    event->Add(met_target_, mvamet);
+    return 0;
+  }
+
   ZmmTreeProducer::ZmmTreeProducer(std::string const& name)
       : ModuleBase(name),
         do_zpt_reweighting_(false),
@@ -746,6 +794,7 @@ namespace ic {
       outtree_->Branch("wt_mfr_t",    &wt_mfr_t);
       outtree_->Branch("wt_zpt",      &wt_zpt);
       outtree_->Branch("wt_top",      &wt_top);
+      outtree_->Branch("wt_tauid",    &wt_tauid);
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("rho",         &rho);
       outtree_->Branch("pt_m",        &pt_m);
@@ -814,6 +863,7 @@ namespace ic {
       outtree_->Branch("e_veto",       &e_veto);
       outtree_->Branch("m_veto",       &m_veto);
       outtree_->Branch("n_bjets",     &n_bjets);
+      outtree_->Branch("n_uncorr_bjets", &n_uncorr_bjets);
       outtree_->Branch("os",          &os);
       outtree_->Branch("m_ll",        &m_ll);
 
@@ -840,6 +890,8 @@ namespace ic {
       ws_->function("t_muonfr_loose")->functor(ws_->argSet("t_pt,t_eta")));
     fns_["t_muonfr_tight"] = std::shared_ptr<RooFunctor>(
       ws_->function("t_muonfr_tight")->functor(ws_->argSet("t_pt,t_eta")));
+    fns_["t_iso_mva_m_pt30_sf"] = std::shared_ptr<RooFunctor>(
+      ws_->function("t_iso_mva_m_pt30_sf")->functor(ws_->argSet("t_pt,t_eta,t_dm")));
     return 0;
   }
 
@@ -1081,30 +1133,30 @@ namespace ic {
     rho = info->jet_rho();
 
     // Get the MVA MET so we can calculate MT
-    Met *mva_met = nullptr;
-    auto const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
-    std::size_t id = 0;
-    boost::hash_combine(id, muon->id());
-    boost::hash_combine(id, tau->id());
-    std::size_t id_inv = 0;
-    boost::hash_combine(id_inv, tau->id());
-    boost::hash_combine(id_inv, muon->id());
-    auto it = met_map.find(id);
-    auto it_inv = met_map.find(id_inv);
-    if (it != met_map.end()) {
-      mva_met = it->second;
-      // event->Add("pfMVAMet", mva_met);
-    } else if (it_inv != met_map.end()){
-      //lepton1 <--> lepton2 (needed for fully hadronic)
-      mva_met = it_inv->second;
-      // event->Add("pfMVAMet", mva_met);
-    } else {
-      throw::std::runtime_error("Could not find MVA MET!");
-    }
+    Met *mva_met = event->GetPtr<Met>("mvamet");
+    // auto const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+    // std::size_t id = 0;
+    // boost::hash_combine(id, muon->id());
+    // boost::hash_combine(id, tau->id());
+    // std::size_t id_inv = 0;
+    // boost::hash_combine(id_inv, tau->id());
+    // boost::hash_combine(id_inv, muon->id());
+    // auto it = met_map.find(id);
+    // auto it_inv = met_map.find(id_inv);
+    // if (it != met_map.end()) {
+    //   mva_met = it->second;
+    //   // event->Add("pfMVAMet", mva_met);
+    // } else if (it_inv != met_map.end()){
+    //   //lepton1 <--> lepton2 (needed for fully hadronic)
+    //   mva_met = it_inv->second;
+    //   // event->Add("pfMVAMet", mva_met);
+    // } else {
+    //   throw::std::runtime_error("Could not find MVA MET!");
+    // }
 
-    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
-    auto const& tau_es_shifts = event->Get<map_id_vec>("shifts_TauEnergyScale");
-    CorrectMETForShift(mva_met, tau_es_shifts.at(tau->id()));
+    // typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    // auto const& tau_es_shifts = event->Get<map_id_vec>("shifts_TauEnergyScale");
+    // CorrectMETForShift(mva_met, tau_es_shifts.at(tau->id()));
 
     mt_m = MT(muon, mva_met);
     pzeta = PZeta(pairs[0], mva_met, 0.85);
@@ -1116,9 +1168,21 @@ namespace ic {
       return j->pt()          > 20. &&
              fabs(j->eta())   < 2.4 &&
              PFJetID2016(j) &&
-             MinDRToCollection(j, pairs[0]->AsVector(), 0.5) &&
-             j->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+             MinDRToCollection(j, pairs[0]->AsVector(), 0.5);
     });
+    auto retag_bjets = bjets;
+    ic::keep_if(bjets, [&](PFJet *j) {
+      return j->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+    });
+    n_bjets = bjets.size();
+    n_uncorr_bjets = n_bjets;
+    if (!info->is_data()) {
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
+      ic::keep_if(retag_bjets, [&](PFJet *j) {
+        return IsReBTagged(j, retag_result);
+      });
+      n_uncorr_bjets = retag_bjets.size();
+    }
 
     n_bjets = bjets.size();
 
@@ -1132,6 +1196,7 @@ namespace ic {
     wt_mfr_l = 1.0;
     wt_mfr_t = 1.0;
     wt_pu_hi = 1.0;
+    wt_tauid = 1.0;
     auto args = std::vector<double>{muon->pt(), muon->eta()};
     if (!info->is_data()) {
       wt_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args.data());
@@ -1150,6 +1215,9 @@ namespace ic {
       if (gen_2 == 2 || gen_2 == 4) {
         wt_mfr_l = fns_["t_muonfr_loose"]->eval(v_double{tau->pt(), tau->eta()}.data());
         wt_mfr_t = fns_["t_muonfr_tight"]->eval(v_double{tau->pt(), tau->eta()}.data());
+      }
+      if (gen_2 == 5) {
+        wt_tauid = fns_["t_iso_mva_m_pt30_sf"]->eval(v_double{tau->pt(), tau->eta(), double(tau->decay_mode())}.data());
       }
     }
     info->set_weight("trk", wt_trk);
