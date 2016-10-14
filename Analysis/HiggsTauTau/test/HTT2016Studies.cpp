@@ -592,7 +592,7 @@ int main(int argc, char* argv[]) {
         seq.BuildModule(puweight_module_hi);
 
         seq.BuildModule(ic::HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
-            .set_sample("DYJetsToLL")
+            .set_sample(js.get("recoil_sample", "NoCorrection").asString())
             .set_channel(ic::channel::mt)
             .set_mc(ic::mc::spring16_80X)
             .set_met_label("mvamet")

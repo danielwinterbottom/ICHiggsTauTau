@@ -74,7 +74,8 @@ with open('scripts/params_%s.json' % PROD) as jsonfile:
 
 SAMPLE_CFG = {
     'DYJetsToLL': {
-        'do_zpt_reweighting': True
+        'do_zpt_reweighting': True,
+        'recoil_sample': 'DYJetsToLL'
     },
     'TT': {
         'do_top_reweighting': True
@@ -82,11 +83,16 @@ SAMPLE_CFG = {
     'DYJetsToLLSoup': {
         'do_zpt_reweighting': True,
         'do_dyjets_stitching': True,
-        'dyjets_stitching': {}
+        'dyjets_stitching': {},
+        'recoil_sample': 'DYJetsToLL'
     },
     'WJetsToLNuSoup': {
         'do_wjets_stitching': True,
-        'wjets_stitching': {}
+        'wjets_stitching': {},
+        'recoil_sample': 'WJetsToLNu'
+    },
+    'WJetsToLNu': {
+        'recoil_sample': 'WJetsToLNu'
     }
 }
 for x in ['', '1', '2', '3', '4']:
