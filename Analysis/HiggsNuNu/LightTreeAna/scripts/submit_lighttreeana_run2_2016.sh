@@ -26,9 +26,11 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_161003_ICHEP #_datacard
+#JOBDIRPREFIX=jobs_run2ana_161003_ICHEP #_datacard
+JOBDIRPREFIX=jobs_run2ana_161015
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_161003_ICHEP #_datacard
+#OUTPUTPREFIX=output_run2ana_161003_ICHEP #_datacard
+OUTPUTPREFIX=output_run2ana_161015
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -64,14 +66,13 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-submission: " $JOBSUBMIT
 
 echo "JOB name = $JOB"
-#for syst in JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
-#for syst in "" PUUP PUDOWN
-#for syst in "" PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN
-for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN
+for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN UESUP UESDOWN
+#for syst in JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN UESUP UESDOWN
+#for syst in UESUP
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in qcd #enu munu taunu mumu qcd nunu #qcd #enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
+  for channels in qcd enu munu taunu mumu nunu #qcd #enu munu taunu mumu nunu qcd #enu munu taunu mumu #nunu topl topb #top gamma #qcd
     do
     JOB=$channels
     #executable expect strings separated by "!"

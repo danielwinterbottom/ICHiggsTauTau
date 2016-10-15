@@ -34,12 +34,12 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEE
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP_withSYS
-  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161007
+  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP_withSYS
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161015
   #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP_withSYS
-  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161007
+  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP_withSYS
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161015
   #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -140,7 +140,6 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEE
         PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/DATA
     fi    
 
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_SingleMuon*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*HTMHT*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*M*T*`

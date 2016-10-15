@@ -8,11 +8,8 @@ fi
 
 DOSUBMIT=$1
 DO4PARAMS=$2
-#infolder=output_parkedana
-#outfolder=cards_parkedana/
-#blind=false
-infolder=output_run2ana_161003_ICHEP_datacard/
-outfolder=cards_run2ana_161003_ICHEP_datacard/
+infolder=output_run2ana_161003_ICHEP/ #_datacard/
+outfolder=cards_run2ana_161003_ICHEP/ #_datacard/
 blind=true
 #zvvstat=18
 mkdir -p $outfolder
