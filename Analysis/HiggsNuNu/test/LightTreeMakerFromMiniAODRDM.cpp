@@ -753,6 +753,11 @@ int main(int argc, char* argv[]){
   SimpleFilter<PFJet> jetPtEtaFilter = SimpleFilter<PFJet>
     ("JetPtEtaFilter")
     .set_input_label(jettype).set_predicate(bind(MinPtMaxEta, _1, jetptprecut, 4.7));
+  
+  // Jet eta filter - cut on 3.0<eta<3.2
+  SimpleFilter<PFJet> jetEtaFilter = SimpleFilter<PFJet>
+    ("JetEtaFilter")
+    .set_input_label(jettype).set_predicate(bind(EtaOutsideRange, _1, 3.0, 3.2));
 
 
   CJVFilter FilterCJV = CJVFilter("FilterCJV")
@@ -1115,6 +1120,7 @@ int main(int argc, char* argv[]){
   
   //filter jets
   analysis.AddModule(&jetPtEtaFilter);
+  analysis.AddModule(&jetEtaFilter);
   
   //if (printEventContent) analysis.AddModule(&hinvPrint);
   //two-leading jet pair production before plotting

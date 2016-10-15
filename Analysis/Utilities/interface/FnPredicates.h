@@ -61,6 +61,7 @@ namespace ic {
   // Candidate
   //----------------------------------------------------------
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta);
+  bool EtaOutsideRange(Candidate const* cand, double const& minEtaCut, double const& maxEtaCut);
   bool VertexDz(Tau const* cand, double const& vertexZ);
   //----------------------------------------------------------
   // Vertex

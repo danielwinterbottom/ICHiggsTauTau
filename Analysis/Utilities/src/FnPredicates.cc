@@ -70,6 +70,10 @@ namespace ic {
     return ( (cand->pt() > minPt) && (std::fabs(cand->eta()) < maxEta) ); 
   }
 
+  bool EtaOutsideRange(Candidate const* cand, double const& minEtaCut, double const& maxEtaCut) {
+    return ( (std::fabs(cand->eta()) < minEtaCut) || (std::fabs(cand->eta()) > maxEtaCut) ); 
+  }
+
 
   bool CSVMediumWP(Jet const* cand, double const& minDiscri) {
     return (cand->GetBDiscriminator("combinedSecondaryVertexBJetTags") > minDiscri);
