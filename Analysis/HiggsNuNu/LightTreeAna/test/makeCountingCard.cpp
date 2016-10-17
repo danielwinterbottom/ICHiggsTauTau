@@ -53,7 +53,7 @@ int main(int argc, char* argv[]){
   po::options_description config("Configuration");
   config.add_options()
     //Input output and config options                                                                                                                   
-    ("input_folder,i",           po::value<std::string>(&indir)->default_value("output_run2ana_161003_ICHEP_datacard"))
+    ("input_folder,i",           po::value<std::string>(&indir)->default_value("output_run2ana_161015"))
     ("outname,o",                po::value<std::string>(&outname)->default_value("vbfhinv.txt"))
     ("blind",                    po::value<bool>(&blind)->default_value(true))
     ("do_qcdfromshape,s",        po::value<bool>(&do_qcdfromshape)->default_value(false))

@@ -9,14 +9,14 @@ fi
 DOSUBMIT=$1
 DO4PARAMS=$2
 infolder=output_run2ana_161003_ICHEP/ #_datacard/
-outfolder=cards_run2ana_161003_ICHEP/ #_datacard/
+outfolder=cards_run2ana_161003_ICHEP-QCD/ #_datacard/
 blind=true
 #zvvstat=18
 mkdir -p $outfolder
 
 extraoptions="--do_ues=false" #--do_ggh=false --do_separate_qcdewk=false"
 
-for channel in nunu enu munu mumu taunu qcd #topl topb
+for channel in qcd #nunu enu munu mumu taunu #qcd #topl topb
 do
     echo " ********************************"
     echo " *** Processing channel $channel"
