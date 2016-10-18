@@ -514,39 +514,38 @@ $(document).ready(function(){initNavTree('_i_c_jet_producer_8hh_source.html','')
 <div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;    <span class="keywordflow">if</span> (dest_.do_pu_id) {</div>
 <div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;      <span class="keywordflow">if</span> (src_.is_slimmed) {</div>
 <div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;        dest.<a class="code" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">set_pu_id_mva_value</a>(src.userFloat(src_.slimmed_puid_label));</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;  <span class="comment">//std::cout &lt;&lt; &quot; -- jet &quot; &lt;&lt; i &lt;&lt; &quot; pt &quot; &lt;&lt; dest.pt() &lt;&lt; &quot; pumva = &quot; &lt;&lt; dest.pu_id_mva_value() &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        dest.<a class="code" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">set_pu_id_mva_value</a>(</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;            (*pu_id_handle)[jets_handle-&gt;refAt(passed_[i])-&gt;originalObjectRef()]);</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;      }</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;   }</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    <span class="keywordflow">if</span> (dest_.request_trks) {</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;      <a class="code" href="_i_c_jet_dest_helper_8hh.html#a980e8e55f381968aacecc4a75a1d9aa4">FillPFTracksAndRequest</a>(&amp;dest, src.getPFConstituents(),</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                             track_requests.get(), &amp;(dest_.track_hasher));</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    }</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordflow">if</span> (dest_.do_trk_vars &amp;&amp; trk_handle-&gt;size() &gt; 0) {</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;      <a class="code" href="_i_c_jet_dest_helper_8hh.html#aef85ed523f50d9c15f6b9646260fb3d8">FillPFTrackVars</a>(&amp;dest, src.getPFConstituents(), trk_handle, vtx_handle,</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                      trk_vtx_map);</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    }</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;  }</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;  <span class="keywordflow">if</span> (dest_.request_trks) {</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    <span class="keyword">event</span>.put(track_requests, <span class="stringliteral">&quot;requestedTracks&quot;</span>);</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;  }</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;}</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;T, U&gt;::beginJob</a>() {</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;jets_);</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;}</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;T, U&gt;::endJob</a>() {</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;}</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;      } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        dest.<a class="code" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">set_pu_id_mva_value</a>(</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;            (*pu_id_handle)[jets_handle-&gt;refAt(passed_[i])-&gt;originalObjectRef()]);</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;      }</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;   }</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    <span class="keywordflow">if</span> (dest_.request_trks) {</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;      <a class="code" href="_i_c_jet_dest_helper_8hh.html#a980e8e55f381968aacecc4a75a1d9aa4">FillPFTracksAndRequest</a>(&amp;dest, src.getPFConstituents(),</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                             track_requests.get(), &amp;(dest_.track_hasher));</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    }</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="keywordflow">if</span> (dest_.do_trk_vars &amp;&amp; trk_handle-&gt;size() &gt; 0) {</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;      <a class="code" href="_i_c_jet_dest_helper_8hh.html#aef85ed523f50d9c15f6b9646260fb3d8">FillPFTrackVars</a>(&amp;dest, src.getPFConstituents(), trk_handle, vtx_handle,</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                      trk_vtx_map);</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    }</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;  }</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;  <span class="keywordflow">if</span> (dest_.request_trks) {</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    <span class="keyword">event</span>.put(track_requests, <span class="stringliteral">&quot;requestedTracks&quot;</span>);</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;  }</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;}</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;T, U&gt;::beginJob</a>() {</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;jets_);</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;}</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;T, U&gt;::endJob</a>() {</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;}</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;</div>
 <div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="class_i_c_jet_producer_html_ab1eb00adce6cd9424ae8a5e8677f1ffc"><div class="ttname"><a href="class_i_c_jet_producer.html#ab1eb00adce6cd9424ae8a5e8677f1ffc">ICJetProducer::~ICJetProducer</a></div><div class="ttdeci">~ICJetProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_jet_producer_8hh_source.html#l00084">ICJetProducer.hh:84</a></div></div>
 <div class="ttc" id="_static_tree_8hh_html"><div class="ttname"><a href="_static_tree_8hh.html">StaticTree.hh</a></div></div>
 <div class="ttc" id="classic_1_1_calo_jet_html_a1cff7c85fcc57712baf080e38811f595"><div class="ttname"><a href="classic_1_1_calo_jet.html#a1cff7c85fcc57712baf080e38811f595">ic::CaloJet::set_id_loose</a></div><div class="ttdeci">void set_id_loose(bool const &amp;id_loose)</div><div class="ttdoc">Flag indicates if the jet passes the loose ID. </div><div class="ttdef"><b>Definition:</b> <a href="_calo_jet_8hh_source.html#l00157">CaloJet.hh:157</a></div></div>
