@@ -826,10 +826,10 @@ process.load("RecoJets.JetProducers.PileupJetID_cfi")
 
 if release in ['80XMINIAOD']:
   process.pileupJetIdCalculator.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
-  process.pileupJetIdCalculator.jets     = cms.InputTag("ak4PFJetsCHS")
-  process.pileupJetIdCalculator.rho      = cms.InputTag("fixedGridRhoFastjetAll")
-  process.pileupJetIdEvaluator.jets      = cms.InputTag("ak4PFJetsCHS")
-  process.pileupJetIdEvaluator.rho       = cms.InputTag("fixedGridRhoFastjetAll")
+  process.pileupJetIdCalculator.jets     = cms.InputTag("slimmedJets")
+#  process.pileupJetIdCalculator.rho      = cms.InputTag("fixedGridRhoFastjetAll")
+  process.pileupJetIdEvaluator.jets      = cms.InputTag("slimmedJets")
+#  process.pileupJetIdEvaluator.rho       = cms.InputTag("fixedGridRhoFastjetAll")
 
 
 process.pileupJetIdUpdated = process.pileupJetId.clone(
@@ -838,19 +838,20 @@ process.pileupJetIdUpdated = process.pileupJetId.clone(
   applyJec=True,
   vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
   )
-print process.pileupJetId.dumpConfig()
-print process.pileupJetIdUpdated.dumpConfig()
+#print process.pileupJetId.dumpConfig()
+#print process.pileupJetIdUpdated.dumpConfig()
 
 process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
 
 #Produce and store jets taken straight from miniAOD
 process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
-  branch                    = cms.string("ak4PFJetsCHS"),
+  branch                    = cms.string("pfJetsPFlow"),
   input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+  #input                     = cms.InputTag("slimmedJets"),
   srcConfig = cms.PSet(
     isSlimmed               = cms.bool(True),
-    #slimmedPileupIDLabel    = cms.string('pileupJetIdUpdated:fullDiscriminant'),
-    slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+    slimmedPileupIDLabel    = cms.string('pileupJetIdUpdated:fullDiscriminant'),
+    #slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
     includeJetFlavour       = cms.bool(True),
     includeJECs             = cms.bool(True),
     inputSVInfo             = cms.InputTag(""),
@@ -982,19 +983,19 @@ process.icGenMetProducer = producers.icMetFromPatProducer.clone(
   )
 
 #remake type1 met with updated JEC
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-if isData:
-  runMetCorAndUncFromMiniAOD(process,
-                             isData=True
-                             )
-else:
-  runMetCorAndUncFromMiniAOD(process,
-                             isData=False
-                             )
+#from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+#runMetCorAndUncFromMiniAOD(process, 
+#                           isData=bool(isData))
 
+# Use the newly corrected jets we produced above
+#process.basicJetsForMet.src = cms.InputTag('updatedPatJetsUpdatedJEC')
+
+#if not isData:
+#    process.patPFMet.addGenMET = cms.bool(False)
 
 process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
-  input = cms.InputTag("slimmedMETs","","MAIN"),
+  input = cms.InputTag("slimmedMETs"),
+  #input = cms.InputTag("patPFMetT1"),
   branch = cms.string("pfMetType1Collection"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
@@ -1005,32 +1006,22 @@ process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
 
 #puppi met, need to update significance....
 
-from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
-makePuppiesFromMiniAOD( process );
+#from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+#makePuppiesFromMiniAOD( process );
 
-if isData:
-  runMetCorAndUncFromMiniAOD(process,
-                             isData=True,
-                             metType="Puppi",
-                             pfCandColl=cms.InputTag("puppiForMET"),
-                             recoMetFromPFCs=True,
-                             reclusterJets=True,
-                             jetFlavor="AK4PFPuppi",
-                             postfix="Puppi"
-                             )
-else:
-  runMetCorAndUncFromMiniAOD(process,
-                             isData=False,
-                             metType="Puppi",
-                             pfCandColl=cms.InputTag("puppiForMET"),
-                             recoMetFromPFCs=True,
-                             reclusterJets=True,
-                             jetFlavor="AK4PFPuppi",
-                             postfix="Puppi"
-                             )
+#runMetCorAndUncFromMiniAOD(process,
+#                           isData=bool(isData),
+#                           metType="Puppi",
+#                           pfCandColl=cms.InputTag("puppiForMET"),
+#                           recoMetFromPFCs=True,
+#                           reclusterJets=True,
+#                           jetFlavor="AK4PFPuppi",
+#                           postfix="Puppi"
+#                           )
 
 process.icPfMetPuppiProducer = producers.icMetFromPatProducer.clone(
-  input = cms.InputTag("slimmedMETsPuppi","","MAIN"),
+  #input = cms.InputTag("patPFMetT1Puppi"),
+  input = cms.InputTag("slimmedMETsPuppi"),
   branch = cms.string("pfMetPuppiCollection"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag(""),
