@@ -346,7 +346,7 @@ namespace ic {//namespace
       fillVector("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",5,10,eTight_idisoSF_,e_ptbin_,e_etabin_);
       fillVector("input/scale_factors/Spring16_80X_gsf_id_SF.txt",1,28,e_gsfidSF_,gsf_ptbin_,gsf_etabin_);
       fillVector("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",7,8,muTight_idSF_,mu_ptbin_,mu_etabin_);
-      fillVector("input/scale_factors/Spring16_80X_mu_trackingSF.txt",1,10,mu_TkSF_,tk_ptbin_,tk_etabin_);
+      fillVector("input/scale_factors/Spring16_80X_mu_trackingSF.txt",1,10,mu_tkSF_,tk_ptbin_,tk_etabin_);
       if(!do_idiso_err_ || (do_idiso_err_ && do_idiso_errmuore_) ){//Central value electrons
 	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_data_eff.txt",5,10,eVeto_idisoDataEff_,dummypt,dummyeta);
 	fillVector("input/scale_factors/Spring16_80X_ele_veto_id_mc_eff.txt",5,10,eVeto_idisoMCEff_,dummypt,dummyeta);
@@ -362,6 +362,8 @@ namespace ic {//namespace
         fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",7,8,muVeto_isoDataEff_,dummypt,dummyeta);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",7,8,muVeto_idMCEff_,dummypt,dummyeta);
         fillVector("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",7,8,muVeto_isoMCEff_,dummypt,dummyeta);
+	//for tracking, MC is 1, SF=dataEff
+	fillVector("input/scale_factors/Spring16_80X_mu_trackingSF.txt",1,10,mu_tkDataEff_,dummypt,dummyeta);
       }
       if(do_idiso_err_ && do_idiso_errmuore_){//Muon eff varied
         fillVectorError("input/scale_factors/Spring16_80X_mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
@@ -370,7 +372,8 @@ namespace ic {//namespace
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
         fillVectorError("input/scale_factors/Spring16_80X_mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);
-        fillVectorError("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_TkSF_,do_idiso_errupordown_);
+        fillVectorError("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_tkSF_,do_idiso_errupordown_);
+        fillVectorError("input/scale_factors/Spring16_80X_mu_trackingSF.txt",mu_tkDataEff_,do_idiso_errupordown_);
       }
       else if (do_idiso_err_ && !do_idiso_errmuore_) {//Electron eff varied
 	fillVectorError("input/scale_factors/Spring16_80X_ele_tight_id_SF.txt",eTight_idisoSF_,do_idiso_errupordown_);
@@ -387,10 +390,10 @@ namespace ic {//namespace
       
       for (unsigned iBin(0); iBin<muTight_idSF_.size();++iBin){
 	muTight_idisoSF_.push_back(muTight_idSF_[iBin]*muTight_isoSF_[iBin]);
-	if(muVeto_idDataEff_[iBin]>=1)muVeto_idDataEff_[iBin]=0.999;
-	if(muVeto_isoDataEff_[iBin]>=1)muVeto_isoDataEff_[iBin]=0.999;
-	if(muVeto_idMCEff_[iBin]>=1)muVeto_idMCEff_[iBin]=0.999;
-	if(muVeto_isoMCEff_[iBin]>=1)muVeto_isoMCEff_[iBin]=0.999;
+	if(muVeto_idDataEff_[iBin]>=1)muVeto_idDataEff_[iBin]=0.99999;
+	if(muVeto_isoDataEff_[iBin]>=1)muVeto_isoDataEff_[iBin]=0.99999;
+	if(muVeto_idMCEff_[iBin]>=1)muVeto_idMCEff_[iBin]=0.99999;
+	if(muVeto_isoMCEff_[iBin]>=1)muVeto_isoMCEff_[iBin]=0.99999;
 	if(muVeto_idDataEff_[iBin]<0)muVeto_idDataEff_[iBin]=0;
 	if(muVeto_isoDataEff_[iBin]<0)muVeto_isoDataEff_[iBin]=0;
 	if(muVeto_idMCEff_[iBin]<0)muVeto_idMCEff_[iBin]=0;
@@ -399,21 +402,27 @@ namespace ic {//namespace
 	muVeto_idisoMCEff_.push_back(muVeto_idMCEff_[iBin]*muVeto_isoMCEff_[iBin]);
 	//std::cout<<muVeto_idisoMCEff_.back()<<" "<<muVeto_idisoDataEff_.back()<<" "<<muTight_idisoSF_.back()<<std::endl;//!!
       }
+
+      for (unsigned iBin(0); iBin<e_gsfidDataEff_.size();++iBin){
+	if(mu_tkDataEff_[iBin]>=1)mu_tkDataEff_[iBin]=0.99999;
+	if(mu_tkDataEff_[iBin]<0)mu_tkDataEff_[iBin]=0;
+      }
+    
       
       for (unsigned iBin(0); iBin<eVeto_idisoDataEff_.size();++iBin){
-	if(eVeto_idisoDataEff_[iBin]>=1)eVeto_idisoDataEff_[iBin]=0.999;
-	if(eVeto_idisoMCEff_[iBin]>=1)eVeto_idisoMCEff_[iBin]=0.999;
+	if(eVeto_idisoDataEff_[iBin]>=1)eVeto_idisoDataEff_[iBin]=0.99999;
+	if(eVeto_idisoMCEff_[iBin]>=1)eVeto_idisoMCEff_[iBin]=0.99999;
 	if(eVeto_idisoDataEff_[iBin]<0)eVeto_idisoDataEff_[iBin]=0;
 	if(eVeto_idisoMCEff_[iBin]<0)eVeto_idisoMCEff_[iBin]=0;
       }
 
       for (unsigned iBin(0); iBin<e_gsfidDataEff_.size();++iBin){
-	if(e_gsfidDataEff_[iBin]>=1)e_gsfidDataEff_[iBin]=0.999;
-	if(e_gsfidMCEff_[iBin]>=1)e_gsfidMCEff_[iBin]=0.999;
+	if(e_gsfidDataEff_[iBin]>=1)e_gsfidDataEff_[iBin]=0.99999;
+	if(e_gsfidMCEff_[iBin]>=1)e_gsfidMCEff_[iBin]=0.99999;
 	if(e_gsfidDataEff_[iBin]<0)e_gsfidDataEff_[iBin]=0;
 	if(e_gsfidMCEff_[iBin]<0)e_gsfidMCEff_[iBin]=0;
       }
-    
+
       
       eventsWithGenElectron_ = 0;
       eventsWithGenElectronFromTau_ = 0;
@@ -841,7 +850,7 @@ namespace ic {//namespace
     for (unsigned iEle(0); iEle<mus.size();++iEle){
       unsigned lBin = findPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta(),mu_ptbin_,mu_etabin_);
       unsigned mBin = findPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta(),tk_ptbin_,tk_etabin_);
-      mu_weight *= muTight_idisoSF_[lBin] * mu_TkSF_[mBin];
+      mu_weight *= muTight_idisoSF_[lBin] * mu_tkSF_[mBin];
     }
     eventInfo->set_weight("!muTight_idisoSF",mu_weight);
     tightmuweight->Fill(mu_weight);
@@ -897,7 +906,8 @@ namespace ic {//namespace
 	else eventsWithGenMuon_++;
 	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.1) {
 	  unsigned lBin = findPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta(),mu_ptbin_,mu_etabin_);
-	  mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
+	  unsigned lBinTk = findPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta(),tk_ptbin_,tk_etabin_);
+	  mu_veto_weight *= (1-(muVeto_idisoDataEff_[lBin]*mu_tkDataEff_[lBinTk]))/(1-muVeto_idisoMCEff_[lBin]);
 	  //if(mu_veto_weight<0)std::cout<<"Below zero weight:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<std::endl;//!!
 	  //if(mu_veto_weight>10000)std::cout<<"Very high weight:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<" "<<genParts[iEle]->pt()<<" "<<genParts[iEle]->eta()<<std::endl;//!!
 	  if (isTau) eventsWithGenMuonFromTauInAcc_++;
