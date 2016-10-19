@@ -873,9 +873,6 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
            .set_mc(mc_type)
            .set_era(era_type)
            .set_is_data(is_data)
-           .set_is_embedded(is_embedded)
-           .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-           .set_do_singlelepton(js["do_singlelepton"].asBool())
            .set_pair_label("ditau"));
 
      }
@@ -1551,6 +1548,11 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
   }
 
   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
+  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+       output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+    httWeights.set_do_tau_fake_weights(true);
+  }
+
   
 
     BuildModule(httWeights);
@@ -1646,7 +1648,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_is_data(is_data)
     .set_systematic_shift(addit_output_folder!="")
     .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
-    .set_do_HLT_Studies(js["store_hltpaths"].asBool())
+    .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
     //Good to avoid accidentally overwriting existing output files when syncing
     .set_write_tree(!js["make_sync_ntuple"].asBool()));
 

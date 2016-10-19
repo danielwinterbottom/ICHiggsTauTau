@@ -58,15 +58,5 @@
   <class name="edm::Wrapper<edm::ValueMap<std::vector<int>>>"/>
   <class name="ic::L1TObject"/>
   <class name="std::vector<ic::L1TObject>"/>
-  <class name="ic::L1TEGamma"/>
-  <class name="std::vector<ic::L1TEGamma>"/>
-  <class name="ic::L1TMuon"/>
-  <class name="std::vector<ic::L1TMuon>"/>
-  <class name="ic::L1TTau"/>
-  <class name="std::vector<ic::L1TTau>"/>
-  <class name="ic::L1TJet"/>
-  <class name="std::vector<ic::L1TJet>"/>
-  <class name="ic::L1TSum"/>
-  <class name="std::vector<ic::L1TSum>"/>
   <function name="MultiDraw"/>
 </lcgdict>

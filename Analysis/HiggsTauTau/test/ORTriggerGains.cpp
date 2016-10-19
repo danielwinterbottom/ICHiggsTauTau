@@ -32,28 +32,30 @@ int main(int argc, char* argv[]){
   }
   std::string channel      = argv[1];
   std::string signalType   = argv[2];
+  std::string inputfile    = argv[3];
   std::string TriggerName[10];
   
-  unsigned numberofTriggers = argc - 3;
+  unsigned numberofTriggers = argc - 4;
   std::cout << "Numbers of triggers to process = " << numberofTriggers << std::endl;
   for(unsigned i=0; i<numberofTriggers; ++i){
-    TriggerName[i] = argv[3 + i];
+    TriggerName[i] = argv[4 + i];
   }
   
-  std::cout << "Channel: "            << channel        << std::endl;
+  std::cout << "Channel:       "      << channel  << std::endl;
   std::cout << "Signal Sample: "      << signalType     << std::endl;
+  std::cout << "Input file:    "      << inputfile      << std::endl;
   for(unsigned i=0; i<numberofTriggers; ++i){
     std::cout << "Trigger " << i+1 << ": " << TriggerName[i] << std::endl;
   }
   
   std::string filename1;
   if(signalType == "GluGlu"){
-    filename1 = "output/HighLumi/reHLT_GluGluHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = inputfile+"/reHLT_GluGluHToTauTau_M-125_"+channel+"_2016.root";
 
   } else if (signalType == "VBF") {
-    filename1 = "output/HighLumi/reHLT_VBFHToTauTau_M-125_"+channel+"_2015.root";
+    filename1 = inputfile+"/reHLT_VBFHToTauTau_M-125_"+channel+"_2016.root";
   } else if (signalType == "QCD"){
-    filename1 = "output/Jul03/LegsSeperate4/QCD_Pt-15to80_MixedSamples_MuEnrichedPt5_"+channel+"_2015.root";  
+    filename1 = inputfile+"/QCD_Pt-15to80_MixedSamples_MuEnrichedPt5_"+channel+"_2016.root";  
   }
   else {
     std::cout << "Incorrect signal input" << std::endl;
@@ -167,7 +169,7 @@ int main(int argc, char* argv[]){
       ExtraEtaCut1[i] = 2.1;
       ExtraEtaCut2[i] = 2.1;
       ExtraPtCut1[i] = 25;
-      ExtraPtCut2[i] = 35; //may have to change this cut need to look at efficiency curve for tau leg!
+      ExtraPtCut2[i] = 35; 
     } else if(TriggerName[i] == "HLT_Ele32_eta2p1_WPTight_Gsf_v_1pt45e34"){
       ExtraEtaCut1[i] = 2.1;
       ExtraEtaCut2[i] = 2.3;
