@@ -233,6 +233,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
        elec_pt = 26;
        tau_pt = 30;
       }
+      if (strategy_type == strategy::smspring16){
+       elec_pt = 26;
+      }
    }
 
    } else if (era_type == era::data_2011){
@@ -297,7 +300,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       pair_dr = 0.5;    
     } else{
       muon_pt = 20.0; //cross trigger
-      muon_eta = 2.1;
+      if (strategy_type == strategy::smspring16) muon_eta = 2.4;
+      else muon_eta = 2.1;
       tau_pt = 20;
       tau_eta = 2.3;
       min_taus = 1;
@@ -305,6 +309,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       if(strategy_type == strategy::mssmspring16){
         tau_pt = 30;
         muon_pt = 23;
+      }
+      if (strategy_type == strategy::smspring16){
+       muon_pt = 23;
       }
     }
 
@@ -1630,7 +1637,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
-    .set_sync_output_name("output/SYNCFILE_"+output_name)
+    .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
     .set_iso_study(js["iso_study"].asBool())
     .set_tau_id_study(js["tau_id_study"].asBool())
     .set_qcd_study(js["qcd_study"].asBool())
