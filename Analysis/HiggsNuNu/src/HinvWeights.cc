@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTFromLHEParticles.h"
 #include "TMath.h"
 #include "TSystem.h"
 #include "TFile.h"
@@ -441,17 +442,8 @@ namespace ic {//namespace
   int HinvWeights::Execute(TreeEvent *event) {
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
-    std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
-    unsigned nOutgoingPartons = 0;
-    double lheHT = 0.;
-    for(size_t idxPart = 0; idxPart < lheParticles.size();++idxPart){
-      unsigned absPdgId = TMath::Abs(lheParticles[idxPart]->pdgid());
-      if(lheParticles[idxPart]->status()==1 &&((absPdgId >=1 &&absPdgId<=6) || absPdgId == 21)){
-        //lheHT += TMath::Sqrt(TMath::Power(lheParticles[idxPart][0],2) + TMath::Power(lheParticles[idxPart][1],2));
-        lheHT += lheParticles[idxPart]->pt();
-        nOutgoingPartons++;
-      }
-    }
+     std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
+     double lheHT = HTFromLHEParticles(lheParticles);
 
     if(do_lumixs_weights_){
       //std::cout<<"weight before lumixs: "<<eventInfo->total_weight()<<std::endl;

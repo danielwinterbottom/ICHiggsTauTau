@@ -7,6 +7,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagWeight.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTFromLHEParticles.h"
 #include <string>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "TH3F.h"

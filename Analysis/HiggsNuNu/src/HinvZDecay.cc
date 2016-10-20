@@ -1,6 +1,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTFromLHEParticles.h"
 
 namespace ic {
 
@@ -62,8 +63,12 @@ namespace ic {
 
     //std::cout << " --New event" << std::endl;
 
-    EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    double gen_ht = eventInfo->gen_ht() ;
+    //EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    //double gen_ht = eventInfo->gen_ht() ;
+    std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
+    double lheHT = HTFromLHEParticles(lheParticles);
+    double gen_ht = lheHT;
+
 
     std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
 
