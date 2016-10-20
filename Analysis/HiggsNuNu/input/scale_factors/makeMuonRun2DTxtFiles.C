@@ -87,6 +87,9 @@ int makeMuonRun2DTxtFiles(){//main
   
 
   const unsigned nEta = hist_muon[0][0]->GetXaxis()->GetNbins();
+  const unsigned nEtaBis = hist_muon[2][0]->GetXaxis()->GetNbins();
+
+  if (nEtaBis != nEta) std::cout << " WARNING! Different eta binning for Loose Iso, please check!" << std::endl;
 
   double etaMin[nEta];
   double etaMax[nEta];
@@ -96,8 +99,15 @@ int makeMuonRun2DTxtFiles(){//main
     etaMax[ie] = hist_muon[0][0]->GetXaxis()->GetBinLowEdge(ie+2);
     std::cout << "eta min " << etaMin[ie] << " max " << etaMax[ie] << std::endl;
   }
+  for (unsigned ie(0);ie<nEtaBis;++ie){
+    double etaMinBis = hist_muon[2][0]->GetXaxis()->GetBinLowEdge(ie+1);
+    double etaMaxBis = hist_muon[2][0]->GetXaxis()->GetBinLowEdge(ie+2);
+    std::cout << "BIS eta min " << etaMinBis << " max " << etaMaxBis << std::endl;
+  }
 
   const unsigned nPt = hist_muon[0][0]->GetYaxis()->GetNbins();
+  const unsigned nPtBis = hist_muon[2][0]->GetYaxis()->GetNbins();
+  if (nPt != nPtBis) std::cout << " WARNING! Different pT binning for Loose Iso, please check!" << std::endl;
 
   double ptMin[nPt];
   double ptMax[nPt];
@@ -106,6 +116,11 @@ int makeMuonRun2DTxtFiles(){//main
     ptMin[ie] = hist_muon[0][0]->GetYaxis()->GetBinLowEdge(ie+1);
     ptMax[ie] = hist_muon[0][0]->GetYaxis()->GetBinLowEdge(ie+2);
     std::cout << "pt min " << ptMin[ie] << " max " << ptMax[ie] << std::endl;
+  }
+  for (unsigned ie(0);ie<nPtBis;++ie){
+    double ptMinBis = hist_muon[2][0]->GetYaxis()->GetBinLowEdge(ie+1);
+    double ptMaxBis = hist_muon[2][0]->GetYaxis()->GetBinLowEdge(ie+2);
+    std::cout << "BIS pt min " << ptMinBis << " max " << ptMaxBis << std::endl;
   }
 
   const unsigned nP = 4;
@@ -130,8 +145,15 @@ int makeMuonRun2DTxtFiles(){//main
 	for (unsigned iPt(0); iPt<nPt; ++iPt){//loop on pT bins
 	  double val = hist_muon[iWP][iData]->GetBinContent(iEta,iPt+1);
 	  double err = hist_muon[iWP][iData]->GetBinError(iEta,iPt+1);
+	  if (iWP==2 && iPt==nPt-1){
+	    val = hist_muon[iWP][iData]->GetBinContent(iEta,iPt);
+	    err = hist_muon[iWP][iData]->GetBinError(iEta,iPt);
+	  }
           err = sqrt(pow(err,2)+pow(lSystematic[iWP],2));
-	  lOut << ptMin[iPt] << " " << ptMax[iPt] << " " << -etaMax[iEta-1] << " " << -etaMin[iEta-1] << " " << val << " " << err << " " << err << std::endl;
+	  std::ostringstream lstr;
+	  lstr << ptMin[iPt] << " " << ptMax[iPt] << " " << -etaMax[iEta-1] << " " << -etaMin[iEta-1] << " " << val << " " << err << " " << err << std::endl;
+	  lOut << lstr.str();
+	  if (iWP==2) std::cout << lDataType[iData] << " " << lstr.str();
 	}//loop on pT bins
 	
       }//loop on eta bin
@@ -141,6 +163,10 @@ int makeMuonRun2DTxtFiles(){//main
 	for (unsigned iPt(0); iPt<nPt; ++iPt){//loop on pT bins
 	  double val = hist_muon[iWP][iData]->GetBinContent(iEta+1,iPt+1);
 	  double err = hist_muon[iWP][iData]->GetBinError(iEta+1,iPt+1);
+	  if (iWP==2 && iPt==nPt-1){
+	    val = hist_muon[iWP][iData]->GetBinContent(iEta+1,iPt);
+	    err = hist_muon[iWP][iData]->GetBinError(iEta+1,iPt);
+	  }
           err = sqrt(pow(err,2)+pow(lSystematic[iWP],2));
 	  lOut << ptMin[iPt] << " " << ptMax[iPt] << " " << etaMin[iEta] << " " << etaMax[iEta] << " " << val << " " << err << " " << err << std::endl;
 	}//loop on pT bins
