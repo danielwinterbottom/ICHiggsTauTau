@@ -1093,7 +1093,9 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   includeStatusFlags = cms.bool(True)
 )
 
-process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone()
+process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone(
+##  input   = cms.InputTag("externalLHEProducer","","LHE")
+)
 
 
 #process.icGenParticleTauProducer = producers.icGenParticleProducer.clone(
@@ -1296,9 +1298,9 @@ if isData:
 #process.HBHEISONoiseFilterResultProducer.defaultDecision = cms.string("HBHEIsoNoiseFilterResult")
 #Load the MET filters here
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 

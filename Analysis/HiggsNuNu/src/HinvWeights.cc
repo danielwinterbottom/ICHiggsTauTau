@@ -441,6 +441,18 @@ namespace ic {//namespace
   int HinvWeights::Execute(TreeEvent *event) {
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
+    std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
+    unsigned nOutgoingPartons = 0;
+    double lheHT = 0.;
+    for(size_t idxPart = 0; idxPart < lheParticles.size();++idxPart){
+      unsigned absPdgId = TMath::Abs(lheParticles[idxPart]->pdgid());
+      if(lheParticles[idxPart]->status()==1 &&((absPdgId >=1 &&absPdgId<=6) || absPdgId == 21)){
+        //lheHT += TMath::Sqrt(TMath::Power(lheParticles[idxPart][0],2) + TMath::Power(lheParticles[idxPart][1],2));
+        lheHT += lheParticles[idxPart]->pt();
+        nOutgoingPartons++;
+      }
+    }
+
     if(do_lumixs_weights_){
       //std::cout<<"weight before lumixs: "<<eventInfo->total_weight()<<std::endl;
       //std::cout<<"intended lumixsweight: "<<lumixsweight<<std::endl;
@@ -931,14 +943,15 @@ namespace ic {//namespace
 
     if (do_w_soup_) {
       if (mc_ == mc::fall15_76X){
-	double gen_ht = eventInfo->gen_ht() ;
+	//double gen_ht = eventInfo->gen_ht() ;
+  double gen_ht = lheHT;
 	if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("wsoup", w1_);
 	else if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("wsoup", w2_);
 	else if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("wsoup", w3_);
 	else if (gen_ht >= 600) eventInfo->set_weight("wsoup", w4_);
       }
       else if (mc_ == mc::spring16_80X){
-        double gen_ht = eventInfo->gen_ht() ;
+        double gen_ht = lheHT;
         if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("wsoup", w1_);
         else if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("wsoup", w2_);
         else if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("wsoup", w3_);
@@ -997,7 +1010,7 @@ namespace ic {//namespace
     }
 
     if (do_dy_soup_htbinned_){
-      double gen_ht = eventInfo->gen_ht() ;
+      double gen_ht = lheHT;
       if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("dysoup", zw1_);
       if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("dysoup", zw2_);
       if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("dysoup", zw3_);
