@@ -1319,7 +1319,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputfiltersfromtrig = cms.InputTag("TriggerResults","","RECO"),
   filtersfromtrig     = cms.vstring("*"),
   filters             = cms.PSet(
-    badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
+    badChargedHadronFilter = cms.InputTag("BadChargedCandidateFilter"),
     badMuonFilter          = cms.InputTag("BadPFMuonFilter")
     ),
   #filters             = cms.PSet(
