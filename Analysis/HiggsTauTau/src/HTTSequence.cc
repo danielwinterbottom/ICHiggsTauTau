@@ -30,6 +30,7 @@
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
+#include "HiggsTauTau/interface/HTTGenAnalysis.h"
 #include "HiggsTauTau/interface/BTagCheck.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
@@ -628,6 +629,23 @@ void HTTSequence::BuildSequence(){
   if (to_check.size() > 0){
   BuildModule(eventChecker);
   BuildModule(httPrint);  
+}
+
+if(!is_data && js["do_gen_analysis"].asBool()){
+  BuildModule(HTTGenAnalysis("HTTGenAnalysis")
+    .set_fs(fs.get())
+    .set_channel_str(channel_str)
+    .set_min_jet_pt(30.)
+    .set_max_jet_eta(4.7)
+    .set_min_e_pt(elec_pt)
+    .set_min_mu_pt(muon_pt)
+    .set_min_tau1_pt(tau_pt)
+    .set_min_tau2_pt(tau_pt)
+    .set_max_e_eta(elec_eta)
+    .set_max_mu_eta(muon_eta)
+    .set_max_tau_eta(tau_eta)
+    .set_do_theory_uncert(js["do_theory_uncert"].asBool())
+  );
 }
 
 
@@ -1640,6 +1658,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_systematic_shift(addit_output_folder!="")
     .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
     .set_do_HLT_Studies(js["store_hltpaths"].asBool())
+    .set_do_theory_uncert(js["do_theory_uncert"].asBool())
     //Good to avoid accidentally overwriting existing output files when syncing
     .set_write_tree(!js["make_sync_ntuple"].asBool()));
 

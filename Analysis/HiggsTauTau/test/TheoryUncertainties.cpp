@@ -13,6 +13,8 @@
 #include "TStyle.h"
 #include "TROOT.h"
 #include "TRint.h"
+#include "TGaxis.h"
+#include "TLatex.h"
 
 // C++ includes
 #include <iostream>
@@ -115,7 +117,7 @@ void SetStyle(){
   myStyle->SetPadTickX(1);
   myStyle->SetPadTickY(1);
   myStyle->SetFrameBorderMode(0);
-  myStyle->SetLineWidth(3);
+  myStyle->SetLineWidth(1);
   myStyle->SetOptStat(1110);
   myStyle->SetStatX(0.9);
   myStyle->SetStatY(0.93);
@@ -129,35 +131,118 @@ void SetStyle(){
   myStyle->SetOptTitle(0);
   myStyle->SetHistLineStyle(0);
   myStyle->SetHistLineWidth(3);
-  myStyle->SetMarkerSize(0);
-  myStyle->SetMarkerStyle(1);
+  myStyle->SetMarkerSize(0.9);
+  myStyle->SetMarkerStyle(20);
   gROOT->SetStyle("MyStyle");
   gROOT->UseCurrentStyle();
   gROOT->ForceStyle();    
 }
 
-void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries, std::string out_name){
-
+void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries, std::string out_name, bool ratio, bool Normalize, std::string title, bool intLabels){
+  bool doLegend = legend_entries.size() > 0;
   SetStyle();
-  
+  TGaxis::SetMaxDigits(3);
   THStack *hs = new THStack("hs","");
   TCanvas *c1 = new TCanvas();
   double ymin = 0.8 - 0.05*hists.size();
-  TLegend *leg = new TLegend(0.55,ymin,0.8,0.8);
+  TLegend *leg = new TLegend(0.65,ymin,0.8,0.8);
   leg->SetTextSize(0.03);
+  leg->SetFillStyle(0);
   for(unsigned i=0; i<hists.size(); ++i){
-    hists[i]->SetLineColor(i+1);
-    hists[i]->SetMarkerColor(i+1);
-    hs->Add(hists[i]);
+    int col_num = i+1;
+    if(col_num==7) col_num = 9;
+    hists[i]->SetLineColor(col_num);
+    hists[i]->SetMarkerColor(col_num);
+    for(unsigned j=0; j<(unsigned)hists[i]->GetNbinsX()+1; ++j){
+      hists[i]->SetBinError(j,0.00001);    
+    } //get rid of vartical xerror bars by setting them to small value - purley for aesthetic reasons
+    TH1D *htemp = (TH1D*)hists[i]->Clone();
+    if(Normalize){
+      double norm = 1./hists[0]->Integral();
+      htemp->Scale(norm);
+      hists[i]->GetYaxis()->SetTitle("Normalized Entries");
+    }
+    hs->Add(htemp);
     std::string leg_string = "";
     if(i<legend_entries.size()) leg_string = legend_entries[i];
-    leg->AddEntry(hists[i],leg_string.c_str(),"l");
+    leg->AddEntry(hists[i],leg_string.c_str(),"lp");
   }
-  hs->Draw("nostack p");
-  hs->GetXaxis()->SetTitle(hists[0]->GetXaxis()->GetTitle());
-  hs->GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
-  c1->Update();
-  leg->Draw();
+  
+  if(!ratio){
+    hs->Draw("nostack p");
+    hs->GetXaxis()->SetTitle(hists[0]->GetXaxis()->GetTitle());
+    hs->GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
+    if(intLabels){
+     TGaxis *axis = (TGaxis*)hs->GetXaxis();
+     axis->SetOption("I");
+    }
+    hs->Draw("nostack p");
+    c1->Update();
+    if(doLegend) leg->Draw();
+  } else{
+   TPad *pad1 = new TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
+   pad1->SetBottomMargin(0);
+   pad1->SetFillStyle(4000);
+   pad1->SetFrameFillStyle(4000);       
+   pad1->Draw();             
+   pad1->cd();
+   hs->Draw("nostack p");
+   float scale1 = pad1->GetAbsHNDC();
+   hs->GetYaxis()->SetLabelSize(hs->GetYaxis()->GetLabelSize()/scale1);
+   hs->GetYaxis()->SetTitleSize(hs->GetYaxis()->GetTitleSize()/scale1);
+   hs->GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
+   hs->GetYaxis()->SetTitleOffset(1.1);
+   hs->SetMinimum(hs->GetMaximum()/100000);
+   hs->Draw("nostack p");
+   c1->Update();
+   if(doLegend) leg->Draw();
+    
+   THStack *hs_ratio = new THStack("hs_ratio","");
+   TH1D *h_denum = (TH1D*)hists[0]->Clone();
+   h_denum->Sumw2();
+   for(unsigned i=0; i<hists.size(); ++i){
+     TH1D *htemp = (TH1D*)hists[i]->Clone();
+     htemp->Divide(h_denum);
+     hs_ratio->Add((TH1D*)htemp->Clone());
+   }
+   c1->cd(); 
+   TPad *pad2 = new TPad("pad2", "pad2", 0, 0.02, 1, 0.3);
+   pad2->SetFillStyle(4000);
+   pad2->SetFrameFillStyle(4000); 
+   pad2->SetTopMargin(0);
+   pad2->SetBottomMargin(0.2);
+   pad2->Draw();
+   pad2->cd();
+   hs_ratio->Draw("nostack p"); 
+   float scale = pad2->GetAbsHNDC();
+   pad2->SetBottomMargin(0.3); 
+   hs_ratio->GetXaxis()->SetTitle(hists[0]->GetXaxis()->GetTitle());
+   if(intLabels){
+     hs_ratio->GetXaxis()->SetNdivisions(hists[0]->GetNbinsX()+1,0,0);
+   }
+   hs_ratio->GetYaxis()->SetTitle("Ratio");
+   hs_ratio->GetYaxis()->SetTitleOffset(0.4);
+   hs_ratio->GetYaxis()->CenterTitle();
+   hs_ratio->GetXaxis()->SetLabelSize(hs_ratio->GetXaxis()->GetLabelSize()/scale);
+   hs_ratio->GetYaxis()->SetLabelSize(hs_ratio->GetYaxis()->GetLabelSize()/scale);
+   hs_ratio->GetXaxis()->SetTitleSize(hs_ratio->GetXaxis()->GetTitleSize()/scale);
+   hs_ratio->GetYaxis()->SetTitleSize(hs_ratio->GetYaxis()->GetTitleSize()/scale);
+   hs_ratio->SetMinimum(0.7);
+   hs_ratio->SetMaximum(1.3);
+   hs_ratio->GetYaxis()->SetNdivisions(3,5,0);
+   hs_ratio->Draw("nostack p"); 
+   pad2->Update();
+   c1->Update();
+   c1->cd();  
+  }
+  
+  TLatex *tex = new TLatex(0.7,0.95,(title).c_str());
+  tex->SetNDC();
+  tex->SetTextFont(44);
+  tex->SetTextSize(23);
+  tex->SetLineWidth(2);
+  tex->Draw();
+  
   c1->Print((out_name+".pdf").c_str());
   
 }
@@ -173,7 +258,7 @@ int main(int argc, char* argv[]){
   po::notify(vm);
   po::options_description config("Configuration");
   config.add_options()
-        ("input",                  po::value<std::string>(&options.input)->default_value("/vols/cms/dw515/Offline/CMSSW_8_0_9/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Aug11_PreSel_sv_v6/GluGluHToTauTau_M-125_mt_2016.root"))
+        ("input",                  po::value<std::string>(&options.input)->default_value("/vols/cms/dw515/Offline/CMSSW_8_0_9/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Aug11_PreSel_sv_v6/VBFHToTauTau_M-125_mt_2016.root"))
         ("outputFilename",         po::value<std::string>(&options.outputFilename)->default_value("theory_output"))
         ("makePlots",              po::value<bool>(&options.makePlots)->default_value(false))
         ("channel",                po::value<std::string>(&options.channel)->default_value("mt"))
@@ -205,47 +290,48 @@ int main(int argc, char* argv[]){
   }
   
   if(options.makePlots) SetStyle();
-  std::map<std::string, std::tuple<std::string,double,double>> labels_map_;
-  labels_map_["m_vis"] = std::make_tuple("M_{vis} [GeV]",0,300);
-  labels_map_["m_sv"] = std::make_tuple("M_{SVFit} [GeV]",0,300);
-  labels_map_["mt_1"] = std::make_tuple("M_{T} [GeV]",0,200);
+  std::map<std::string, std::tuple<std::string,int,double,double>> labels_map_;
+  labels_map_["m_vis"] = std::make_tuple("M_{vis} [GeV]",50,0,200);
+  labels_map_["m_sv"] = std::make_tuple("M_{SVFit} [GeV]",50,0,200);
+  labels_map_["mt_1"] = std::make_tuple("M_{T} [GeV]",30,0,200);
   if(options.channel == "em"){
-    labels_map_["pt_1"] = std::make_tuple("electron p_{T} [GeV]",0,200);
-    labels_map_["pt_2"] = std::make_tuple("muon p_{T} [GeV]",0,200);
-    labels_map_["eta_1"] = std::make_tuple("electron #eta",-3,3);
-    labels_map_["eta_2"] = std::make_tuple("muon #eta",-3,3);
+    labels_map_["pt_1"] = std::make_tuple("electron p_{T} [GeV]",30,0,150);
+    labels_map_["pt_2"] = std::make_tuple("muon p_{T} [GeV]",30,0,150);
+    labels_map_["eta_1"] = std::make_tuple("electron #eta",25,-3,3);
+    labels_map_["eta_2"] = std::make_tuple("muon #eta",25,-3,3);
   } else if(options.channel == "et"){
-    labels_map_["pt_1"] = std::make_tuple("electron p_{T} [GeV]",0,200);
-    labels_map_["pt_2"] = std::make_tuple("tau p_{T} [GeV]",0,200);
-    labels_map_["eta_1"] = std::make_tuple("electron #eta",-3,3);
-    labels_map_["eta_2"] = std::make_tuple("tau #eta",-3,3);
+    labels_map_["pt_1"] = std::make_tuple("electron p_{T} [GeV]",30,0,150);
+    labels_map_["pt_2"] = std::make_tuple("tau p_{T} [GeV]",30,0,150);
+    labels_map_["eta_1"] = std::make_tuple("electron #eta",25,-3,3);
+    labels_map_["eta_2"] = std::make_tuple("tau #eta",25,-3,3);
   } else if(options.channel == "mt"){
-    labels_map_["pt_1"] = std::make_tuple("muon p_{T} [GeV]",0,200);
-    labels_map_["pt_2"] = std::make_tuple("tau p_{T} [GeV]",0,200);
-    labels_map_["eta_1"] = std::make_tuple("muon #eta",-3,3);
-    labels_map_["eta_2"] = std::make_tuple("tau #eta",-3,3);
+    labels_map_["pt_1"] = std::make_tuple("muon p_{T} [GeV]",30,0,150);
+    labels_map_["pt_2"] = std::make_tuple("tau p_{T} [GeV]",30,0,150);
+    labels_map_["eta_1"] = std::make_tuple("muon #eta",25,-3,3);
+    labels_map_["eta_2"] = std::make_tuple("tau #eta",25,-3,3);
   } else if(options.channel == "tt"){
-    labels_map_["pt_1"] = std::make_tuple("leading tau p_{T} [GeV]",0,200);
-    labels_map_["pt_2"] = std::make_tuple("sub-leading tau p_{T} [GeV]",0,200);
-    labels_map_["eta_1"] = std::make_tuple("leading tau #eta",-3,3);
-    labels_map_["eta_2"] = std::make_tuple("sub-leading tau #eta",-3,3);
+    labels_map_["pt_1"] = std::make_tuple("leading tau p_{T} [GeV]",30,0,150);
+    labels_map_["pt_2"] = std::make_tuple("sub-leading tau p_{T} [GeV]",30,0,150);
+    labels_map_["eta_1"] = std::make_tuple("leading tau #eta",25,-3,3);
+    labels_map_["eta_2"] = std::make_tuple("sub-leading tau #eta",25,-3,3);
   }
-  labels_map_["jpt_1"] = std::make_tuple("leading jet p_{T} [GeV]",0,200);
-  labels_map_["jpt_2"] = std::make_tuple("sub-leading jet p_{T} [GeV]",0,200);
-  labels_map_["jeta_1"] = std::make_tuple("leading jet #eta",-6,6);
-  labels_map_["jeta_2"] = std::make_tuple("sub-leading jet #eta",-6,6);
-  labels_map_["mjj"] = std::make_tuple("M_{jj} [GeV]",0,1000);
-  labels_map_["jdeta"] = std::make_tuple("#Delat#eta_{jj}",0,10);
-  labels_map_["n_jets"] = std::make_tuple("Number of jets",0,5);
-  labels_map_["n_jetsingap"] = std::make_tuple("Number of jets in gap",0,5);
-  
+  labels_map_["pt_tt"] = std::make_tuple("Higgs p_{T} [GeV]",30,0,200);
+  labels_map_["jpt_1"] = std::make_tuple("leading jet p_{T} [GeV]",30,0,200);
+  labels_map_["jpt_2"] = std::make_tuple("sub-leading jet p_{T} [GeV]",30,0,200);
+  labels_map_["jeta_1"] = std::make_tuple("leading jet #eta",30,-6,6);
+  labels_map_["jeta_2"] = std::make_tuple("sub-leading jet #eta",30,-6,6);
+  labels_map_["mjj"] = std::make_tuple("M_{jj} [GeV]",30,0,1000);
+  labels_map_["jdeta"] = std::make_tuple("#Delta#eta_{jj}",25,0,10);
+  labels_map_["n_jets"] = std::make_tuple("Number of jets",5,0,5);
+  labels_map_["n_jetsingap"] = std::make_tuple("Number of jets in gap",5,0,5);
+  if(!options.doGen) labels_map_["n_bjets"] = std::make_tuple("Number of b-jets",5,0,5);
   std::map<std::string, std::string> alias_map_;
   
   alias_map_["inclusive"] = "(1)";
-  
+  alias_map_["baseline"] = "(1)";  
   if(options.doGen){
     if(options.channel == "em" || options.channel == "et" || options.channel == "mt"){
-      alias_map_["baseline"] = "(mt_1<50)";
+      alias_map_["baseline"] = "(mt_1<50 && passed)";
     } else if (options.channel == "tt"){
       alias_map_["baseline"] = "(passed)";
     }
@@ -259,20 +345,60 @@ int main(int argc, char* argv[]){
     }  
   }
   
-  alias_map_["vbf"] = "(n_jets>=2 && jdeta>2 && mjj>200)";
-  alias_map_["1jethigh"] = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35)";
-  alias_map_["1jetlow"] = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35)";
-  alias_map_["0jethigh"] = "(!"+alias_map_["vbf"]+" && !"+alias_map_["1jethigh"]+" && !"+alias_map_["1jetlow"]+" && pt_2>35)";
-  alias_map_["0jetlow"] = "(!"+alias_map_["vbf"]+" && !"+alias_map_["1jethigh"]+" && !"+alias_map_["1jetlow"]+" && pt_2<=35)";
+  alias_map_["vbf_r"] = "(n_jets>=2 && jdeta>2 && mjj>200)";
+  alias_map_["1jethigh"] = "(!"+alias_map_["vbf_r"]+" && n_jets>=1 && pt_2>35)";
+  alias_map_["1jetlow"] = "(!"+alias_map_["vbf_r"]+" && n_jets>=1 && pt_2<=35)";
+  alias_map_["0jethigh"] = "(!"+alias_map_["vbf_r"]+" && !"+alias_map_["1jethigh"]+" && !"+alias_map_["1jetlow"]+" && pt_2>35)";
+  alias_map_["0jetlow"] = "(!"+alias_map_["vbf_r"]+" && !"+alias_map_["1jethigh"]+" && !"+alias_map_["1jetlow"]+" && pt_2<=35)";
+  
+  if(!options.doGen){
+    alias_map_["vbf_vtight"] = "(n_jets>=2 && jdeta>4. && mjj>800 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
+    alias_map_["vbf_vvtight"] = "(n_jets>=2 && jdeta>4. && mjj>900 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
+    if (options.channel == "em" || options.channel == "et" || options.channel == "mt"){
+      alias_map_["vbf_run1"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";
+      alias_map_["vbf_tight"] = "(n_jets>=2 && jdeta>4. && mjj>700 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
+      alias_map_["vbf_loose"] = "(!"+alias_map_["vbf_tight"]+" && n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";    
+      if(options.channel == "et"){
+        alias_map_["1jet_low"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_2<=45)";
+        alias_map_["1jet_high_boosted"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_tt>100 && pt_2>45)";
+      } else if(options.channel == "mt"){
+        alias_map_["1jet_low"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2<=45)";
+        alias_map_["1jet_high"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt<=100 && pt_2>45)";
+        alias_map_["1jet_high_boosted"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_2>45)";
+      } else if(options.channel == "em"){
+        alias_map_["1jet_low"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2<=45)";
+        alias_map_["1jet_high"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2>45)";
+      }
+      if(options.channel == "em"){
+        alias_map_["0jet_low"] = "(n_jets==0 && pt_2<=35)";
+        alias_map_["0jet_high"] = "(n_jets==0 && pt_2>35)";
+      } else{
+        alias_map_["0jet_low"] = "(n_jets==0 && pt_2<=45)";
+        alias_map_["0jet_high"] = "(n_jets==0 && pt_2>45)";
+      }
+    }
+    else if (options.channel == "tt"){
+      alias_map_["vbf"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && pt_tt>100 && n_jetsingap==0)";
+      alias_map_["1jet_run1_tt"] = "(!"+alias_map_["vbf"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100)";
+      alias_map_["1jet_lowboost"] = "(!"+alias_map_["vbf"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_tt<=170)";
+      alias_map_["1jet_highboost"] = "(!"+alias_map_["vbf"]+" && n_jets>=1 && n_bjets==0 && pt_tt>170 )";
+      alias_map_["0jet"] = "(!"+alias_map_["vbf"]+" && !"+alias_map_["1jet_run1_tt"]+" && n_jets>=0 && n_bjets==0)";
+    }
+  }
   
   TFile *f0 = new TFile(options.input.c_str());
   TTree *gen_tree = (TTree*)f0->Get("gen_ntuple");
-  TH1D *h0 = new TH1D("h0","",50,std::get<1>(labels_map_[options.variable]),std::get<2>(labels_map_[options.variable]));
+  TH1D *h0 = new TH1D("h0","",std::get<1>(labels_map_[options.variable]),std::get<2>(labels_map_[options.variable]),std::get<3>(labels_map_[options.variable]));
   gen_tree->Draw((options.variable+">>h0").c_str(),"","goff");
 
   double nominal_wt = h0->Integral(0,h0->GetNbinsX()+1);
   
-  TH1D *htemp = new TH1D("htemp","",50,std::get<1>(labels_map_[options.variable]),std::get<2>(labels_map_[options.variable]));
+  TH1D *htemp = new TH1D("htemp","",std::get<1>(labels_map_[options.variable]),std::get<2>(labels_map_[options.variable]),std::get<3>(labels_map_[options.variable]));
+  TH1D *h_nnpdf = new TH1D("h_nnpdf","",100,0,100);
+  h_nnpdf->GetYaxis()->SetTitle("Acceptance");
+  h_nnpdf->GetYaxis()->SetTitle("PDF Member");
+  TH1D *h_ct10 = new TH1D("h_ct10","",50,0,50);
+  TH1D *h_mmht = new TH1D("h_mmht","",50,0,50);
   
   std::vector<double> scale_variation_addwt;
   if(options.doScale){
@@ -402,7 +528,7 @@ int main(int argc, char* argv[]){
   if(options.doGen) tree_name = "gen_ntuple";
   else              tree_name = "ntuple"; 
   TTree *tree = (TTree*)f0->Get(tree_name.c_str());
-  TH1D *h_noweight = new TH1D("h_noweight","",50,std::get<1>(labels_map_[options.variable]),std::get<2>(labels_map_[options.variable])); 
+  TH1D *h_noweight = new TH1D("h_noweight","",std::get<1>(labels_map_[options.variable]),std::get<2>(labels_map_[options.variable]),std::get<3>(labels_map_[options.variable])); 
   h_noweight->GetXaxis()->SetTitle((std::get<0>(labels_map_[options.variable])).c_str());
   h_noweight->GetYaxis()->SetTitle("Entries");
   typedef std::map<std::string, std::string>::iterator it_type;
@@ -410,18 +536,23 @@ int main(int argc, char* argv[]){
   std::string uncert_output_name = options.outputFilename+"/uncertainties.txt";
   std::ofstream uncert_output(uncert_output_name);
   uncert_output << "Cat";
-  if(options.doScale) uncert_output << "\t\tScale";
-  if(options.doPDF) uncert_output << "\t\tPDF";
-  if(options.doAlphaS) uncert_output << "\t\tAlpha_S";
+  if(options.doScale) uncert_output << "\tScale";
+  if(options.doPDF) uncert_output << "\tNNPDF";
+  if(options.doPDF) uncert_output << "\tPDF";
+  if(options.doAlphaS) uncert_output << "\tAlpha_S";
   uncert_output << std::endl;
   
   for(it_type iterator = alias_map_.begin(); iterator != alias_map_.end(); iterator++) {
     
     double scale_uncert;
     double pdf_uncert;
+    double nnpdf_uncert;
     double alpha_s_uncert;
+    
+    bool intLabels = options.variable=="n_jets" || options.variable=="n_jetsingap" || options.variable=="n_bjets";
       
     std::cout << "Category: " << iterator->first << std::endl;
+    std::string title = options.channel+" "+iterator->first;
     
     std::string cat;
     if(iterator->first == "inclusive") cat = "*("+iterator->second+")";
@@ -453,7 +584,7 @@ int main(int argc, char* argv[]){
       }
       
       if(options.makePlots){
-        std::string out_name = options.outputFilename+"/"+options.variable+"_scale_variations_"+iterator->first;
+        std::string out_name = options.outputFilename+"/"+options.variable+"_"+options.channel+"_scale_variations_"+iterator->first;
         std::vector<std::string> legend_entries;
         legend_entries.push_back("#mu_{R}=1, #mu_{F}=1"    );
         legend_entries.push_back("#mu_{R}=1, #mu_{F}=2"    );
@@ -462,7 +593,7 @@ int main(int argc, char* argv[]){
         legend_entries.push_back("#mu_{R}=2, #mu_{F}=2"    );
         legend_entries.push_back("#mu_{R}=0.5, #mu_{F}=1"  );
         legend_entries.push_back("#mu_{R}=0.5, #mu_{F}=0.5");
-        DrawHist(hists, legend_entries, out_name);
+        DrawHist(hists, legend_entries, out_name, true,true,title,intLabels);
       }
       
       scale_uncert = (Amax_scale-Amin_scale)/(2*A);
@@ -470,6 +601,8 @@ int main(int argc, char* argv[]){
     }
     
     if(options.doPDF){
+        
+      std::vector<TH1D*> hists;
       
       std::vector<double> DeltaMax;
       std::vector<double> DeltaMin;
@@ -485,11 +618,48 @@ int main(int argc, char* argv[]){
         double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
         if(wt_sum > A) APlus.push_back(wt_sum);
         else if(wt_sum < A) AMinus.push_back(wt_sum);
+        if(options.makePlots){
+          h_nnpdf->SetBinContent(i,wt_sum);    
+        }
       }
+      if(options.makePlots) hists.push_back(h_nnpdf);
       double DeltaMax_NNPDF = A + StandDev(APlus,A);
       double DeltaMin_NNPDF = A - StandDev(AMinus,A);
       DeltaMax.push_back(DeltaMax_NNPDF);
       DeltaMin.push_back(DeltaMin_NNPDF);
+      
+      if(options.makePlots){
+        std::vector<double> A_all;
+        A_all.push_back(A);
+        A_all.insert(A_all.end(), AMinus.begin(), AMinus.end());
+        A_all.insert(A_all.end(), APlus.begin(), APlus.end());
+        TH1D *h = new TH1D("h","",20,0.95,1.05);
+        for(unsigned i=0; i<A_all.size(); ++i){
+          h->Fill(A_all[i]/A);    
+        }
+        SetStyle();
+        h->SetStats(100001100);
+        h->SetLineColor(4);
+        h->GetYaxis()->SetTitle("Entries");
+        h->GetXaxis()->SetTitle("A_{pdf-member}/A_{default}");
+        TCanvas *c1 = new TCanvas();
+        h->Draw();
+        TLatex *tex = new TLatex(0.7,0.95,(title).c_str());
+        tex->SetNDC();
+        tex->SetTextFont(44);
+        tex->SetTextSize(23);
+        tex->SetLineWidth(2);
+        tex->Draw();
+        std::string out_name = options.outputFilename+"/"+options.channel+"_nnpdf_spread_"+iterator->first;
+        c1->Print((out_name+".pdf").c_str());
+        delete h;
+      }
+      
+      
+      nnpdf_uncert = (DeltaMax_NNPDF - DeltaMin_NNPDF)/(2*A);
+      std::cout << "A:" << A << std::endl;
+      std::cout << "nnpdf + = " << (A + StandDev(APlus,A)) << std::endl;
+      std::cout << "nnpdf - = " << (A - StandDev(AMinus,A)) << std::endl;
       
       std::vector<double> A_CT10;
       double a0_CT10=0;
@@ -502,12 +672,19 @@ int main(int argc, char* argv[]){
         double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
         if(i == 0) a0_CT10 = wt_sum;
         else A_CT10.push_back(wt_sum);
+        if(options.makePlots){
+          h_ct10->SetBinContent(i,wt_sum);    
+        }
       }
+      if(options.makePlots) hists.push_back(h_ct10);
       std::pair<double,double> CT10_uncert = PDFUncert(A_CT10,a0_CT10, 1.645);
       double DeltaMax_CT10 = a0_CT10 + CT10_uncert.first;
       double DeltaMin_CT10 = a0_CT10 - CT10_uncert.second;
       DeltaMax.push_back(DeltaMax_CT10);
       DeltaMin.push_back(DeltaMin_CT10);
+      
+      std::cout << "ct10 + = " << (DeltaMax_CT10) << std::endl;
+      std::cout << "ct10 - = " << (DeltaMin_CT10) << std::endl;
       
       std::vector<double> A_MMHT;
       double a0_MMHT=0;
@@ -520,17 +697,34 @@ int main(int argc, char* argv[]){
         double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
         if(i == 0) a0_MMHT = wt_sum;
         else A_MMHT.push_back(wt_sum);
+        if(options.makePlots){
+          h_mmht->SetBinContent(i,wt_sum);    
+        }
       }
+      if(options.makePlots) hists.push_back(h_mmht);
       std::pair<double,double> MMHT_uncert = PDFUncert(A_MMHT,a0_MMHT, 1);
       double DeltaMax_MMHT = a0_MMHT + MMHT_uncert.first;
       double DeltaMin_MMHT = a0_MMHT - MMHT_uncert.second;
       DeltaMax.push_back(DeltaMax_MMHT);
       DeltaMin.push_back(DeltaMin_MMHT);
       
+      std::cout << "mmht10 + = " << (DeltaMax_MMHT) << std::endl;
+      std::cout << "mmht10 - = " << (DeltaMin_MMHT) << std::endl;
+      
       std::sort(DeltaMax.begin(), DeltaMax.end(), greater());
       std::sort(DeltaMin.begin(), DeltaMin.end(), less_than());
       
+      if(options.makePlots){
+        std::string out_name = options.outputFilename+"/"+options.variable+"_"+options.channel+"_pdf_acceptance_"+iterator->first;
+        std::vector<std::string> legend_entries;
+        legend_entries.push_back("NNPDF");
+        legend_entries.push_back("CT10");
+        legend_entries.push_back("MMHT");
+        DrawHist(hists, legend_entries, out_name, false,false, title, intLabels);
+      }
+      
       pdf_uncert = (DeltaMax[0] - DeltaMin[0])/(2*A);
+      std::cout << "NNPDF Uncertainty = " << nnpdf_uncert*100 << std::endl;
       std::cout << "PDF Uncertainty = " << pdf_uncert*100 << " %" << std::endl;
     }
     
@@ -555,22 +749,23 @@ int main(int argc, char* argv[]){
         }
       }
       if(options.makePlots){
-        std::string out_name = options.outputFilename+"/"+options.variable+"_alpha_s_"+iterator->first;
+        std::string out_name = options.outputFilename+"/"+options.variable+"_"+options.channel+"_alpha_s_"+iterator->first;
         std::vector<std::string> legend_entries;
         legend_entries.push_back("#alpha_{s} = 0.118");
         legend_entries.push_back("#alpha_{s} = 0.117");
         legend_entries.push_back("#alpha_{s} = 0.119");
-        DrawHist(hists, legend_entries, out_name);
+        DrawHist(hists, legend_entries, out_name, true,true, title, intLabels);
       }
       
-      alpha_s_uncert = (Amax_as-Amin_as)/(2*A);
+      alpha_s_uncert = 1.5*(Amax_as-Amin_as)/(2*A);
       std::cout << "Alpha_s Uncertainty = " << alpha_s_uncert*100 << " %" << std::endl;
     }
 
     uncert_output << iterator->first;
-    if(options.doScale) uncert_output << "\t\t" << scale_uncert;
-    if(options.doPDF) uncert_output << "\t\t" << pdf_uncert;
-    if(options.doAlphaS) uncert_output << "\t\t" << alpha_s_uncert;
+    if(options.doScale) uncert_output << "\t" << scale_uncert;
+    if(options.doPDF) uncert_output << "\t" << nnpdf_uncert;
+    if(options.doPDF) uncert_output << "\t" << pdf_uncert;
+    if(options.doAlphaS) uncert_output << "\t" << alpha_s_uncert;
     uncert_output << std::endl;
     
   }
