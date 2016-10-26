@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='161101'     #!!TO BE UPDATED ON EACH PROCESSING
+prod ='161031'     #!!TO BE UPDATED ON EACH PROCESSING
 config = Configuration()
 
 config.section_('General')
@@ -196,8 +196,22 @@ if __name__ == '__main__':
     tasks.append(('QCD-mg-ht1500to2000-ext1','/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/MINIAODSIM'))
     tasks.append(('QCD-mg-ht2000toInf','/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM'))
     tasks.append(('QCD-mg-ht2000toInf-ext1','/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/MINIAODSIM'))
-
+    #dataset dataset=/QCD_Inclusive*/*RunIISpring16MiniAODv2*/* status=*
     tasks.append(('QCD-mg-VBFFilter','/QCD_Inclusive_VBFFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_VBFPostMGFilter_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM'))
+
+
+    ### reHLT
+    #tasks.append(('Powheg-VBFHtoinv-mH110-reHLT','/VBF_HToInvisible_M110_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH125-reHLT','/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH150-reHLT','/VBF_HToInvisible_M150_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH200-reHLT','/VBF_HToInvisible_M200_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH300-reHLT','/VBF_HToInvisible_M300_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH400-reHLT','/VBF_HToInvisible_M400_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH500-reHLT','/VBF_HToInvisible_M500_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH600-reHLT','/VBF_HToInvisible_M600_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH800-reHLT','/VBF_HToInvisible_M800_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+    #tasks.append(('Powheg-VBFHtoinv-mH1000-reHLT','/VBF_HToInvisible_M1000_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'))
+
 
     for task in tasks:
         print task[0]
@@ -225,4 +239,7 @@ if __name__ == '__main__':
           config.JobType.pyCfgParams = ['isData=0','doHT=1','release=80XMINIAOD','globalTag=80X_mcRun2_asymptotic_2016_miniAODv2_v1']
         if "WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM" in task[1]:
           config.JobType.pyCfgParams = ['isData=0','doHT=1','release=80XMINIAOD','globalTag=80X_mcRun2_asymptotic_2016_miniAODv2_v1']
+
+        if "reHLT" in task[1]:
+          config.JobType.pyCfgParams = ['isData=0','isReHLT=1','release=80XMINIAOD','globalTag=80X_mcRun2_asymptotic_2016_miniAODv2_v1']
         submit(config)

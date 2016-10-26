@@ -35,8 +35,6 @@ opts.register('file',
 opts.register('globalTag', '80X_dataRun2_Prompt_v14', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag") #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Prompt_reconstruction_Global_Tag
 
-#opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
-#    parser.VarParsing.varType.int, "Process as data?")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 
@@ -49,19 +47,21 @@ opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
 
+opts.register('isReHLT', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Process as reHLT sample?")
 
 opts.parseArguments()
-
 infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
-if not isData:
-  doHT      = opts.doHT
-else:
-  doHT      = 0
-
 tag         = opts.globalTag
 release     = opts.release
+if not isData:
+  doHT      = opts.doHT
+  isReHLT   = opts.isReHLT
+else:
+  doHT      = 0
+  isReHLT   = 0
 
 v_doBXloop  = False  ## False = not do the loop on all the possible BX; True = do it!
 ##v_doBXloop  = True  ## False = not do the loop on all the possible BX; True = do it!
@@ -72,10 +72,9 @@ if not release in ["76X", "80XMINIAOD"]:
   sys.exit(1)
 print 'release     : '+release
 print 'isData      : '+str(isData)
-#print 'globalTag   : '+tag
 print 'globalTag   : '+str(tag)
 print 'doHT        : '+str(doHT)
-
+print 'isReHLT     : '+str(isReHLT)
 
 ################################################################                                                                                          
 # Standard setup                                                                                                                                           
@@ -94,7 +93,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -621,12 +620,14 @@ process.icTauSequence = cms.Sequence(
 # L1 Taus
 ################################################################
 
-if isData:
+if isData or isReHLT:
   process.icL1TauProducer = cms.EDProducer("ICL1TObjectProducer<l1t::Tau>",
     branch = cms.string("l1tTau"),
     input  = cms.InputTag("caloStage2Digis","Tau","RECO"),
     doBXloop = cms.bool(v_doBXloop)
   )
+  if isReHLT:
+    process.icL1TauProducer.input = cms.InputTag("caloStage2Digis","Tau","HLT2")
 
 
 ##################################################################                                                                                          
@@ -815,10 +816,10 @@ import RecoBTag.Configuration.RecoBTag_cff as btag
 if release in ['80XMINIAOD']:
   process.pfImpactParameterTagInfos.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
   process.pfImpactParameterTagInfos.candidates = cms.InputTag("packedPFCandidates")
-  
-  
-  
-  
+
+
+
+
 # Pileup ID
 # ---------
 
@@ -1183,13 +1184,15 @@ process.patTriggerPath = cms.Path()
 if release in ['80XMINIAOD']:
   switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
 
-
 process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
   branch = cms.string("triggerPaths"),
   inputIsStandAlone = cms.bool(True),
   input = cms.InputTag("TriggerResults", "", "HLT"),
   inputPrescales=cms.InputTag("patTrigger")
   )
+
+if isReHLT:
+  process.icTriggerPathProducer.input = cms.InputTag("TriggerResults", "", "HLT2")
 
 
 process.icTriggerSequence += cms.Sequence(
@@ -1208,30 +1211,58 @@ process.icTriggerSequence += cms.Sequence(
 #  storeOnlyIfFired = cms.bool(True)
 #  )
 
-process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140"),
-  input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"),
-  inputIsStandAlone = cms.bool(False),
-  storeOnlyIfFired = cms.bool(True)
-  )
+if not isReHLT:
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True)
+    )
 
-process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80"),
-  input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80"),
-  inputIsStandAlone = cms.bool(False),
-  storeOnlyIfFired = cms.bool(True)
-  )
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True)
+    )
 
-process.icPFMETNoMu120PFMHTNoMu120IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsPFMETNoMu120PFMHTNoMu120IDTight"),
-  input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight"),
-  inputIsStandAlone = cms.bool(False),
-  storeOnlyIfFired = cms.bool(True)
-  )
+  process.icPFMETNoMu120PFMHTNoMu120IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsPFMETNoMu120PFMHTNoMu120IDTight"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True)
+    )
 
+if isReHLT:
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
+    )
+
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
+    )
+
+  process.icPFMETNoMu120PFMHTNoMu120IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsPFMETNoMu120PFMHTNoMu120IDTight"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
+    )
 
 
 process.icTriggerObjectSequence += cms.Sequence(
@@ -1241,40 +1272,53 @@ process.icTriggerObjectSequence += cms.Sequence(
   process.icPFMETNoMu120PFMHTNoMu120IDTightObjectProducer
   )
 
-for name in process.icTriggerObjectSequence.moduleNames():
-  mod = getattr(process, name)
-  mod.inputIsStandAlone = cms.bool(True)
-  mod.input = cms.InputTag("selectedPatTrigger")
+if release in ['80XMINIAOD']:
+  for name in process.icTriggerObjectSequence.moduleNames():
+    mod = getattr(process, name)
+    mod.inputIsStandAlone = cms.bool(True)
+    mod.input = cms.InputTag("selectedPatTrigger")
+  if isReHLT:
+    for name in process.icTriggerObjectSequence.moduleNames():
+      mod = getattr(process, name)
+      mod.inputTriggerResults = cms.InputTag("TriggerResults", "","HLT2")
+
 
 
 #L1 Extra information
-if isData:
-  
+
+if isData or isReHLT:
   process.icL1EtSumProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EtSum>',
     branch = cms.string("l1tEtSum"),
     input = cms.InputTag("caloStage2Digis","EtSum","RECO"),
     doBXloop = cms.bool(v_doBXloop)
   )
+  if isReHLT:
+    process.icL1EtSumProducer.input = cms.InputTag("caloStage2Digis","EtSum","HLT2")
 
   process.icL1MuonsProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
     branch = cms.string("l1tMuon"),
     input = cms.InputTag("gmtStage2Digis","Muon","RECO"),
     doBXloop = cms.bool(v_doBXloop)
   )
-  
+  if isReHLT:
+    process.icL1MuonsProducer.input = cms.InputTag("gmtStage2Digis","Muon","HLT2")
+
   process.icL1EGammaProducer = cms.EDProducer('ICL1TObjectProducer<l1t::EGamma>',
     branch = cms.string("l1tEGamma"),
     input = cms.InputTag("caloStage2Digis","EGamma","RECO"),
     doBXloop = cms.bool(v_doBXloop)
   )
-  
+  if isReHLT:
+    process.icL1EGammaProducer.input = cms.InputTag("caloStage2Digis","EGamma","HLT2")
+
   process.icL1JetProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Jet>',
     branch = cms.string("l1tJet"),
     input = cms.InputTag("caloStage2Digis","Jet","RECO"),
     doBXloop = cms.bool(v_doBXloop)
   )
-  
-  
+  if isReHLT:
+    process.icL1JetProducer.input = cms.InputTag("caloStage2Digis","Jet","HLT2")
+
   process.icL1Sequence = cms.Sequence(
       process.icL1EtSumProducer+
       process.icL1MuonsProducer+
@@ -1300,9 +1344,11 @@ if isData:
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadPFMuonFilter.taggingMode = cms.bool(True)
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
@@ -1358,21 +1404,21 @@ process.icProdSeq = cms.Sequence(
   process.icPhotonSequence
 )
 
-if isData:
+if isData or isReHLT:
   process.icProdSeq += process.icL1TauProducer
-  
-process.icProdSeq += cms.Sequence(  
+
+process.icProdSeq += cms.Sequence(
   process.icPFJetSequence+
   process.icGenSequence+
   process.icMetSequence+
-  process.icEventInfoSequence+
   process.icTriggerSequence+
-  process.icTriggerObjectSequence
+  process.icTriggerObjectSequence+
+  process.icEventInfoSequence
 )
 
-if isData:
+if isData or isReHLT:
   process.icProdSeq += process.icL1Sequence
-  
+
 process.icProdSeq += process.icEventProducer
 
 process.p = cms.Path(process.icProdSeq)
