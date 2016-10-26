@@ -20,19 +20,17 @@ namespace ic {
     unsigned evt;
 
     bool operator==(const RunLumiEvent & rhs){
-      if (run == rhs.run &&
-	  lumi == rhs.lumi &&
-	  evt == rhs.evt) return true;
+      if (run == rhs.run && lumi == rhs.lumi && evt == rhs.evt) return true;
       return false;
     }
 
     bool operator<(const RunLumiEvent & rhs) const{
       if (run < rhs.run) return true;
       else if (run == rhs.run){
-	if (lumi < rhs.lumi) return true;
-	else if (lumi == rhs.lumi){
-	  if (evt < rhs.evt) return true;
-	}
+        if (lumi < rhs.lumi) return true;
+        else if (lumi == rhs.lumi){
+          if (evt < rhs.evt) return true;
+        }
       }
       return false;
     }
@@ -57,9 +55,6 @@ class HinvPrint : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
   void PrintEvent(unsigned run, unsigned lumi, unsigned evt);
-
-
-
 };
 
 }

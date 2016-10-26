@@ -150,7 +150,7 @@ class HinvWeights : public ModuleBase {
 		  std::vector<double> & etabin);
 
   void fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
-  
+
   double nloReweighting(const double & aMjj, const double & aYstar);
 
 

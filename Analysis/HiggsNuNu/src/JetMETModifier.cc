@@ -52,7 +52,7 @@ namespace ic {
       resfunc_.resize(130,0);
       return;
     }
-    
+
     // read in first line
     std::string lHeader[7];
     for (unsigned i(0); i<7;++i){
@@ -75,23 +75,23 @@ namespace ic {
       double par3 = 0.;
       lInput>>etaMin>>etaMax>>rhoMin>>rhoMax>>Npar>>pTmin>>pTmax>>par0>>par1>>par2>>par3;
       //std::cout<<" "<<etaMin<<" "<<etaMax<<" "<<rhoMin<<" "<<rhoMax<<" "<<Npar<<" "<<pTmin<<" "<<pTmax<<" "<<par0<<" "<<par1<<" "<<par2<<" "<<par3<<std::endl;
-      
+
       //protect against blank line at the end of the file
       if (Npar > 1){
-	std::ostringstream label;
-	label << "resfunc_" << resfunc_.size();
-	TF1 *lFunc = new TF1(label.str().c_str(),lHeader[5].c_str(),pTmin,pTmax);
-	lFunc->SetParameters(par0,par1,par2,par3);
-	resfunc_.push_back(lFunc);
-	if (counter%nRho_==0) resEta_.push_back(etaMin);
-	if (counter<nRho_) resRho_.push_back(rhoMin);
-	counter++;
+        std::ostringstream label;
+        label << "resfunc_" << resfunc_.size();
+        TF1 *lFunc = new TF1(label.str().c_str(),lHeader[5].c_str(),pTmin,pTmax);
+        lFunc->SetParameters(par0,par1,par2,par3);
+        resfunc_.push_back(lFunc);
+        if (counter%nRho_==0) resEta_.push_back(etaMin);
+        if (counter<nRho_) resRho_.push_back(rhoMin);
+        counter++;
       }
-      if(lInput.eof()){	
-        break; 
+      if(lInput.eof()){
+        break;
       }
     }
-    
+
     std::cout << " ---- Size of vector for file " << aFileName << " = " << resfunc_.size() << std::endl;
 
     assert(resEta_.size()*resRho_.size() == resfunc_.size());
@@ -101,7 +101,7 @@ namespace ic {
     resRho_.push_back(1000);
 
     lInput.close();
-    
+
   }
 
   unsigned JetMETModifier::getMCResBinNumber(const double & aEta, const double & aRho){
@@ -116,14 +116,14 @@ namespace ic {
     unsigned rhobin = 0;
     for (unsigned ieta(0); ieta<nEta;++ieta){
       if (aEta>=resEta_[ieta] &&  aEta<resEta_[ieta+1]) {
-	etabin = ieta;
-	break;
+        etabin = ieta;
+        break;
       }
     }
     for (unsigned irho(0); irho<nRho;++irho){
       if (aRho>=resRho_[irho] &&  aRho<resRho_[irho+1]) {
-	rhobin = irho;
-	break;
+        rhobin = irho;
+        break;
       }
     }
 
@@ -139,7 +139,6 @@ namespace ic {
   }
 
 
-  
   int JetMETModifier::PreAnalysis() {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for JetMETModifier" << std::endl;
@@ -152,22 +151,22 @@ namespace ic {
     for (unsigned ic(0); ic< corVec_.size(); ++ic){
       //std::cout <<  corVec_[ic] << " ";
       if (corVec_[ic]==jetmetCor::jecData){
-	reapplyJecData_ = true;
-	std::cout << " -- Reapplying JEC on data using corrections from files:" << std::endl;
-	for (unsigned i(0); i<jec_data_files_.size();++i){
-	  std::cout << jec_data_files_[i] << std::endl;
-	}
+        reapplyJecData_ = true;
+        std::cout << " -- Reapplying JEC on data using corrections from files:" << std::endl;
+        for (unsigned i(0); i<jec_data_files_.size();++i){
+          std::cout << jec_data_files_[i] << std::endl;
+        }
       }
       else if (corVec_[ic]==jetmetCor::jecMC){
-	reapplyJecMC_ = true;
-	std::cout << " -- Reapplying JEC on MC using corrections from files:" << std::endl;
-	for (unsigned i(0); i<jec_mc_files_.size();++i){
-	  std::cout << jec_mc_files_[i] << std::endl;
-	}
+        reapplyJecMC_ = true;
+        std::cout << " -- Reapplying JEC on MC using corrections from files:" << std::endl;
+        for (unsigned i(0); i<jec_mc_files_.size();++i){
+          std::cout << jec_mc_files_[i] << std::endl;
+        }
       }
       if (corVec_[ic]==jetmetCor::smearMC){
-	std::cout << " -- smearing MC jets"  << std::endl;
-	smear_ = true;
+        std::cout << " -- smearing MC jets"  << std::endl;
+        smear_ = true;
       }
     }
 
@@ -177,8 +176,8 @@ namespace ic {
     //to reapply JEC on data
     if (is_data_ && reapplyJecData_){
       if (jec_data_files_.size() != 4) {
-	std::cout << " -- Check JEC data filename vec, wrong size:" << jec_data_files_.size() << std::endl;
-	return 1;
+        std::cout << " -- Check JEC data filename vec, wrong size:" << jec_data_files_.size() << std::endl;
+        return 1;
       }
       l1JetPar_  = new JetCorrectorParameters(jec_data_files_[0]);
       l2JetPar_  = new JetCorrectorParameters(jec_data_files_[1]);
@@ -187,8 +186,8 @@ namespace ic {
     }
     else if (reapplyJecMC_) {
       if (jec_mc_files_.size() != 3){
-	std::cout << " -- Check JEC MC filename vec, wrong size: " << jec_mc_files_.size() << std::endl;
-	return 1;
+        std::cout << " -- Check JEC MC filename vec, wrong size: " << jec_mc_files_.size() << std::endl;
+        return 1;
       }
       l1JetPar_  = new JetCorrectorParameters(jec_mc_files_[0]);
       l2JetPar_  = new JetCorrectorParameters(jec_mc_files_[1]);
@@ -247,37 +246,36 @@ namespace ic {
       //    int netas=10;
       //std::string etas[10]={"0p0-0p5","0p5-1p0","1p0-1p5","1p5-2p0","2p0-2p5","2p5-3p0","3p0-3p5","3p5-4p0","4p0-4p5","4p5-9p9"};
       //std::string pts[13]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};
-      
+
       //Set pts
       for(int i=0;i<30;i++){
-	std::ostringstream convert;
-	convert << 2*i;
-	std::string binlow=convert.str();
-	std::ostringstream convert2;
-	convert2 << 2*(i+1);
-	std::string binhigh=convert2.str();
-	pts[i]=(binlow+"-"+binhigh);
-      } 
+        std::ostringstream convert;
+        convert << 2*i;
+        std::string binlow=convert.str();
+        std::ostringstream convert2;
+        convert2 << 2*(i+1);
+        std::string binhigh=convert2.str();
+        pts[i]=(binlow+"-"+binhigh);
+      }
       for(int i=30;i<37;i++){
-	std::ostringstream convert;
-	convert << ((i-30)*20)+60;
-	std::string binlow=convert.str();
-	std::ostringstream convert2;
-	convert2 << ((i-29)*20)+60;
-	std::string binhigh=convert2.str();
-	pts[i]=(binlow+"-"+binhigh);
+        std::ostringstream convert;
+        convert << ((i-30)*20)+60;
+        std::string binlow=convert.str();
+        std::ostringstream convert2;
+        convert2 << ((i-29)*20)+60;
+        std::string binhigh=convert2.str();
+        pts[i]=(binlow+"-"+binhigh);
       }
       pts[37]="200-250";
       pts[38]="250-300";
       pts[39]="300-inf";
-      
+
       for(int i =0;i<netas;i++){
-	for(int j=0;j<npts;j++){
-	  recogenjetptratio[i][j] = dir4.make<TH1F>(("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),300,0.,3.);
-	}
+        for(int j=0;j<npts;j++){
+          recogenjetptratio[i][j] = dir4.make<TH1F>(("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),300,0.,3.);
+        }
       }
-      
-    }      
+    }
 
     fillResFunc("input/MCres/Spring16_25nsV6_MC_PtResolution_AK4PFchs.txt");
 
@@ -305,8 +303,8 @@ namespace ic {
       //std::cout << " Met vec not found..." << std::endl;
       met = event->GetPtr<Met>(met_label_);
       if (!met) {
-	std::cerr << " -- Found no MET " << met_label_ << " in event! Exiting..." << std::endl;
-	exit(1);
+        std::cerr << " -- Found no MET " << met_label_ << " in event! Exiting..." << std::endl;
+        exit(1);
       }
     }
     //GET MET AND JET COLLECTIONS
@@ -339,14 +337,13 @@ namespace ic {
       //jetvec[i]->GetJecFactor("L2L3Residual");
 
       ROOT::Math::PxPyPzEVector rawjet = 1./oldcor*oldjet;
-	
+
       //std::cout << " -- Check of removal of corrections: uncorE = "<< jetvec[i]->uncorrected_energy() << " rawjet E = " << rawjet.E() << std::endl;
 
       //apply new correction
       double newcor = oldcor;
-      if ( (is_data_ && reapplyJecData_) || 
-	   (!is_data_ && reapplyJecMC_) ) {
-	newcor = applyCorrection(rawjet,jetvec[i]->jet_area(),eventInfo->jet_rho());
+      if ( (is_data_ && reapplyJecData_) || (!is_data_ && reapplyJecMC_) ) {
+        newcor = applyCorrection(rawjet,jetvec[i]->jet_area(),eventInfo->jet_rho());
       }
       prevjet = oldjet;
       newjet = newcor/oldcor*oldjet;
@@ -354,12 +351,12 @@ namespace ic {
       double smearFact = 1;
       //-1 = jerbetter, 0 = smear, +1 = jerworse
       if (!is_data_){
-	int index = recotogenmatch[i].second ? recotogenmatch[i].first : -1;
-	GenJet* match = 0;
-	if (index != -1) match = genvec[index];
-	if (smear_) smearFact = applySmearing(0,match,newjet,eventInfo->jet_rho());
-	if (syst_ == jetmetSyst::jerBetter)  smearFact = applySmearing(-1,match,newjet,eventInfo->jet_rho());
-	else if (syst_ == jetmetSyst::jerWorse) smearFact = applySmearing(1,match,newjet,eventInfo->jet_rho());
+        int index = recotogenmatch[i].second ? recotogenmatch[i].first : -1;
+        GenJet* match = 0;
+        if (index != -1) match = genvec[index];
+        if (smear_) smearFact = applySmearing(0,match,newjet,eventInfo->jet_rho());
+        if (syst_ == jetmetSyst::jerBetter)  smearFact = applySmearing(-1,match,newjet,eventInfo->jet_rho());
+        else if (syst_ == jetmetSyst::jerWorse) smearFact = applySmearing(1,match,newjet,eventInfo->jet_rho());
       }
 
       prevjet = newjet;
@@ -368,7 +365,7 @@ namespace ic {
       //JES SYSTEMATICS
       double jesVal = 0;
       if (syst_ == jetmetSyst::jesUp || syst_ == jetmetSyst::jesDown) jesVal = applyJESuncertainty(syst_ == jetmetSyst::jesUp?true:false,newjet);
- 
+
       prevjet = newjet;
       newjet = newjet*(1+jesVal);
 
@@ -387,19 +384,20 @@ namespace ic {
       newmet.SetPx(newmet.px()-dpx);
       newmet.SetPy(newmet.py()-dpy);
       newmet.SetE(newmet.pt());
-    }//end of loop over jets
+    }//endof LOOP OVER JET COLLECTION
+
     //Get Unclustered MET for UES Systematic
     if (syst_ == jetmetSyst::uesUp || syst_ == jetmetSyst::uesDown){
       if (!run2_) {
-	std::string ues_label_ = syst_ == jetmetSyst::uesUp ? "pfMetUnclusteredEnUp" : "pfMetUnclusteredEnDown";
-	ic::Candidate* uesCorrected = event->GetPtr<ic::Candidate>(ues_label_);
-	applyUESuncertainty(uesCorrected,newmet,sumetdiff);
+        std::string ues_label_ = syst_ == jetmetSyst::uesUp ? "pfMetUnclusteredEnUp" : "pfMetUnclusteredEnDown";
+        ic::Candidate* uesCorrected = event->GetPtr<ic::Candidate>(ues_label_);
+        applyUESuncertainty(uesCorrected,newmet,sumetdiff);
       }
       else {
-	std::string ues_label_ = syst_ == jetmetSyst::uesUp ? "UnclusteredEnUp" : "UnclusteredEnDown";
-	const Met::BasicMet & shiftedMet = met->GetShiftedMet(ues_label_);
-	const Met::BasicMet & centralMet =  met->GetShiftedMet("NoShift");
-	applyUESuncertainty(shiftedMet,centralMet,newmet,sumetdiff);
+        std::string ues_label_ = syst_ == jetmetSyst::uesUp ? "UnclusteredEnUp" : "UnclusteredEnDown";
+        const Met::BasicMet & shiftedMet = met->GetShiftedMet(ues_label_);
+        const Met::BasicMet & centralMet =  met->GetShiftedMet("NoShift");
+        applyUESuncertainty(shiftedMet,centralMet,newmet,sumetdiff);
       }
     }
 
@@ -416,9 +414,7 @@ namespace ic {
     return 0;
   }
 
-  double JetMETModifier::applyCorrection(const ROOT::Math::PxPyPzEVector & rawjet,
-					 const double & jetarea,
-					 const double & rho){
+  double JetMETModifier::applyCorrection(const ROOT::Math::PxPyPzEVector & rawjet,const double & jetarea,const double & rho){
     jetCorrector_->setJetEta(rawjet.eta());
     jetCorrector_->setJetPt(rawjet.pt());
     jetCorrector_->setJetA(jetarea);
@@ -450,38 +446,36 @@ namespace ic {
     }
     else{//Jets with no gen match
       if(oldjet.pt()>50.){
-	Smear50miss->Fill(1.);
+        Smear50miss->Fill(1.);
       }
       if(dogaus_){//Do Gaussian smearing for JERWORSE
 
-	unsigned binNumber = getMCResBinNumber(oldjet.eta(),aRho);
-	//std::cout<<"etabin is: "<<etabin<<std::endl;
-	double mcrespt=oldjet.pt();
-	double ptmin=0,ptmax=0;
-	if (!resfunc_[binNumber]){
-	  return 1;
-	}
-	resfunc_[binNumber]->GetRange(ptmin,ptmax);
-	if(mcrespt<ptmin) mcrespt=ptmin;
-	if (mcrespt>ptmax) mcrespt=ptmax;
-	double sigmamc=(resfunc_[binNumber]->Eval(mcrespt)*oldjet.pt());
-	//double spring10sigmamc=(spring10resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
-	double gauscorr;
-	//std::cout<<"Jet pt and eta are: "<<oldjet.pt()<<" "<<oldjet.eta()<<"Sigma MC is: "<<sigmamc<<" "<<spring10sigmamc<<" Gaus corr is: "<<gauscorr<<std::endl;
-	//if(!dospring10gaus_) 
-	gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
-	//else gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
-	double ptcorrected=oldjet.pt()+gauscorr;
-	JERscalefac=ptcorrected/oldjet.pt();
-	
-      }
+        unsigned binNumber = getMCResBinNumber(oldjet.eta(),aRho);
+        //std::cout<<"etabin is: "<<etabin<<std::endl;
+        double mcrespt=oldjet.pt();
+        double ptmin=0,ptmax=0;
+        if (!resfunc_[binNumber]){
+          return 1;
+        }
+        resfunc_[binNumber]->GetRange(ptmin,ptmax);
+        if(mcrespt<ptmin) mcrespt=ptmin;
+        if (mcrespt>ptmax) mcrespt=ptmax;
+        double sigmamc=(resfunc_[binNumber]->Eval(mcrespt)*oldjet.pt());
+        //double spring10sigmamc=(spring10resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
+        double gauscorr;
+        //std::cout<<"Jet pt and eta are: "<<oldjet.pt()<<" "<<oldjet.eta()<<"Sigma MC is: "<<sigmamc<<" "<<spring10sigmamc<<" Gaus corr is: "<<gauscorr<<std::endl;
+        //if(!dospring10gaus_) 
+        gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
+        //else gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
+        double ptcorrected=oldjet.pt()+gauscorr;
+        JERscalefac=ptcorrected/oldjet.pt();
+      }//endof Do Gaussian smearing for JERWORSE
     }
     return JERscalefac;
 
   }
 
-  double JetMETModifier::applyJESuncertainty(const bool doUp,
-					     const ROOT::Math::PxPyPzEVector & newjet){
+  double JetMETModifier::applyJESuncertainty(const bool doUp,const ROOT::Math::PxPyPzEVector & newjet){
     //Get JES uncertainty
     jetCorUnc_->setJetPt(newjet.pt());
     // Catch the few events with |Eta| > 5.4 and apply the extremal uncertainty
@@ -500,9 +494,7 @@ namespace ic {
 
 
 
-  void JetMETModifier::applyUESuncertainty(ic::Candidate* uesCorrected,
-					   ROOT::Math::PxPyPzEVector & newmet,
-					   double & sumetdiff){
+  void JetMETModifier::applyUESuncertainty(ic::Candidate* uesCorrected,ROOT::Math::PxPyPzEVector & newmet,double & sumetdiff){
 
     sumetdiff += uesCorrected->pt()-newmet.pt();
     newmet.SetPx(uesCorrected->pt() * cos(uesCorrected->phi()));
@@ -522,43 +514,43 @@ namespace ic {
 
   }
 
-  double JetMETModifier::getJERcorrfac(const double & abseta,
-				       const int error,
-				       const bool run2){
+  double JetMETModifier::getJERcorrfac(const double & abseta,const int error,const bool run2){
     double JERcencorrfac=1;
-    if (!run2){
+    if (!run2){//Run1
       if (error==0) {
-	if(abseta< 0.5)JERcencorrfac=1.052;
-	else if(abseta<1.1)JERcencorrfac=1.057;
-	else if(abseta<1.7)JERcencorrfac=1.096;
-	else if(abseta<2.3)JERcencorrfac=1.134;
-	else if(abseta<5.0)JERcencorrfac=1.288;
+        if(abseta< 0.5)JERcencorrfac=1.052;
+        else if(abseta<1.1)JERcencorrfac=1.057;
+        else if(abseta<1.7)JERcencorrfac=1.096;
+        else if(abseta<2.3)JERcencorrfac=1.134;
+        else if(abseta<5.0)JERcencorrfac=1.288;
       }
       else if (error==-1){
-	if(abseta<0.5)JERcencorrfac=0.990;
-	else if(abseta<1.1)JERcencorrfac=1.001;
-	else if(abseta<1.7)JERcencorrfac=1.032;
-	else if(abseta<2.3)JERcencorrfac=1.042;
-	else if(abseta<5.0)JERcencorrfac=1.089;
+        if(abseta<0.5)JERcencorrfac=0.990;
+        else if(abseta<1.1)JERcencorrfac=1.001;
+        else if(abseta<1.7)JERcencorrfac=1.032;
+        else if(abseta<2.3)JERcencorrfac=1.042;
+        else if(abseta<5.0)JERcencorrfac=1.089;
       }
       else if (error==1){
-	if(abseta<0.5)JERcencorrfac=1.115;
-	else if(abseta<1.1)JERcencorrfac=1.114;
-	else if(abseta<1.7)JERcencorrfac=1.161;
-	else if(abseta<2.3)JERcencorrfac=1.228;
-	else if(abseta<5.0)JERcencorrfac=1.488;	      
+        if(abseta<0.5)JERcencorrfac=1.115;
+        else if(abseta<1.1)JERcencorrfac=1.114;
+        else if(abseta<1.7)JERcencorrfac=1.161;
+        else if(abseta<2.3)JERcencorrfac=1.228;
+        else if(abseta<5.0)JERcencorrfac=1.488;
       }
-    }//run1
+    }//Run1
     else {
       //Run2 2015 13 TeV dataset
       //double val[7] = {1.061,1.088,1.106,1.126,1.343,1.303,1.320};
       //double err[7] = {0.023,0.029,0.030,0.094,0.123,0.111,0.286}; 
       //double etabounds[8] = {0,0.8,1.3,1.9,2.5,3,3.2,5};
+
+      //Run2 2016 -- https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution#JER_Scaling_factors_and_Uncertai
       double val[13] = {1.122,1.167,1.168,1.029,1.115,1.041,1.167,1.094,1.168,1.266,1.595,0.998,1.226};
       double err[13] = {0.026,0.048,0.046,0.066,0.030,0.062,0.086,0.093,0.120,0.132,0.175,0.066,0.145};
       double etabounds[14] = {0.0,0.5,0.8,1.1,1.3,1.7,1.9,2.1,2.3,2.5,2.8,3.0,3.2,5.0};
       for (unsigned id(0); id<13;++id){
-	if (abseta>=etabounds[id] && abseta<etabounds[id+1]) JERcencorrfac=val[id]+error*err[id];
+        if (abseta>=etabounds[id] && abseta<etabounds[id+1]) JERcencorrfac=val[id]+error*err[id];
       }
     }
     return JERcencorrfac;
@@ -572,6 +564,5 @@ namespace ic {
   void JetMETModifier::PrintInfo() {
     ;
   }
-
 
 }

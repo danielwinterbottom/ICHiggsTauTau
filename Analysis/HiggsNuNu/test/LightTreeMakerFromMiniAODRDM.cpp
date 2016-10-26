@@ -163,7 +163,7 @@ int main(int argc, char* argv[]){
     ("mjjcut",                po::value<double>(&mjjcut)->default_value(800.))
     ("detajjcut",             po::value<double>(&detajjcut)->default_value(3.6))
     ("doMetFilters",          po::value<bool>(&doMetFilters)->default_value(false))
-    ("filters",               po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
+    ("filters",               po::value<string> (&filters)->default_value(""))
     ("dojessyst",             po::value<bool>(&dojessyst)->default_value(false))
     ("dodatajessyst",         po::value<bool>(&dodatajessyst)->default_value(false))
     ("jesupordown",           po::value<bool>(&jesupordown)->default_value(true))
@@ -1056,7 +1056,7 @@ int main(int argc, char* argv[]){
   }
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);
-  if (is_data) {
+  if (true) { //it was "is_data"; now changed to apply on MC badChargedHadronFilter & badMuonFilter; but be careful to change correctly the cfg file
     // see line 459
     //analysis.AddModule(&dataMCTriggerPathFilter);
     analysis.AddModule(&metFilters);

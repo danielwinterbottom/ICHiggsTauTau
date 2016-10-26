@@ -103,15 +103,16 @@ namespace ic{
       latex.SetTextAlign(align_);
       latex.DrawLatex(posX_, posY_, cmsText);
       if (writeExtraText) {
-	latex.SetTextFont(extraTextFont);
-	latex.SetTextAlign(align_);
-	latex.SetTextSize(extraTextSize * t * pad_ratio);
-	latex.DrawLatex(posX_, posY_ - relExtraDY * cmsTextSize * t, extraText);
+        latex.SetTextFont(extraTextFont);
+        latex.SetTextAlign(align_);
+        latex.SetTextSize(extraTextSize * t * pad_ratio);
+        latex.DrawLatex(posX_, posY_ - relExtraDY * cmsTextSize * t, extraText);
       }
-    } else if (writeExtraText) {
+    }
+    else if (writeExtraText) {
       if (iPosX == 0) {
-	posX_ = l + relPosX * (1 - l - r);
-	posY_ = 1 - t + lumiTextOffset * t;
+        posX_ = l + relPosX * (1 - l - r);
+        posY_ = 1 - t + lumiTextOffset * t;
       }
       latex.SetTextFont(extraTextFont);
       latex.SetTextSize(extraTextSize * t * pad_ratio);
@@ -124,32 +125,34 @@ namespace ic{
   void DrawCMSLogoTest(TPad* pad, TString cmsText, TString extraText, int iPosX) {
     DrawCMSLogoTest(pad, cmsText, extraText, iPosX, 0.045, 0.035, 1.2);
   }
-  
 
-  
+
+
   double Integral(TH1F const* hist) {
     if (hist) {
       double ltmp =hist->Integral(0, hist->GetNbinsX() + 1);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Removing overflows. " << std::endl;
-	ltmp = hist->Integral(1, hist->GetNbinsX());
-	if (ltmp<0 || ltmp != ltmp) {
-	  std::cout << " -- Warning: integral is " << ltmp << ". Removing bins with nans." << std::endl;
-	  ltmp=0;
-	  for (int iB(0); iB<hist->GetNbinsX() + 2; ++iB){
-	    if (hist->GetBinContent(iB)!=hist->GetBinContent(iB)) continue;
-	    ltmp += hist->GetBinContent(iB);
-	    //std::cout << " bin " << iB << " content " << hist->GetBinContent(iB) << std::endl;
-	  }
-	  if (ltmp<0 || ltmp != ltmp) {
-	    std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	    ltmp=0;
-	  }
-	}
+        std::cout << " -- Warning: integral is " << ltmp << ". Removing overflows. " << std::endl;
+        ltmp = hist->Integral(1, hist->GetNbinsX());
+        if (ltmp<0 || ltmp != ltmp) {
+          std::cout << " -- Warning: integral is " << ltmp << ". Removing bins with nans." << std::endl;
+          ltmp=0;
+
+          for (int iB(0); iB<hist->GetNbinsX() + 2; ++iB){
+            if (hist->GetBinContent(iB)!=hist->GetBinContent(iB)) continue;
+            ltmp += hist->GetBinContent(iB);
+            //std::cout << " bin " << iB << " content " << hist->GetBinContent(iB) << std::endl;
+          }
+
+          if (ltmp<0 || ltmp != ltmp) {
+            std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+            ltmp=0;
+          }
+        }
       }
       return ltmp;
     }
-  else return 0;
+    else return 0;
   }
 
   double Error(TH1F const* hist) {
@@ -158,26 +161,27 @@ namespace ic{
       //hist->Sumw2();
       hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
       if (err<0 || err != err) {
-	std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
-	hist->IntegralAndError(1, hist->GetNbinsX(), err);
-	if (err<0 || err != err) {
-	  std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
-	  err=0;
-	}
+        std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
+        hist->IntegralAndError(1, hist->GetNbinsX(), err);
+        if (err<0 || err != err) {
+          std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+          err=0;
+        }
       }
     }
     return err;
   }
+
   double Integral(TH2F const* hist) {
     if (hist) {
       double ltmp =hist->Integral(0, hist->GetNbinsX() + 1, 0, hist->GetNbinsY() + 1);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Removing overflows. " << std::endl;
-	ltmp = hist->Integral(1, hist->GetNbinsX(),1,hist->GetNbinsY());
-	if (ltmp<0 || ltmp != ltmp) {
-	  std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	  ltmp=0;
-	}
+        std::cout << " -- Warning: integral is " << ltmp << ". Removing overflows. " << std::endl;
+        ltmp = hist->Integral(1, hist->GetNbinsX(),1,hist->GetNbinsY());
+        if (ltmp<0 || ltmp != ltmp) {
+          std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+          ltmp=0;
+        }
       }
       return ltmp;
     }
@@ -190,24 +194,24 @@ namespace ic{
       //hist->Sumw2();
       hist->IntegralAndError(0, hist->GetNbinsX()+1,0, hist->GetNbinsY() + 1, err);
       if (err<0 || err != err) {
-	std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
-	hist->IntegralAndError(1, hist->GetNbinsX(),1,hist->GetNbinsY(), err);
-	if (err<0 || err != err) {
-	  std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
-	  err=0;
-	}
+        std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
+        hist->IntegralAndError(1, hist->GetNbinsX(),1,hist->GetNbinsY(), err);
+        if (err<0 || err != err) {
+          std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+          err=0;
+        }
       }
     }
     return err;
   }
-  
+
   double IntegralWithError(TH1F const* hist, int binmin, int binmax, double &err){
     if (hist) {
       //hist->Sumw2();
       double ltmp =hist->IntegralAndError(binmin, binmax, err);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	ltmp=0;
+        std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+        ltmp=0;
       }
       return ltmp;
     }
@@ -219,24 +223,24 @@ namespace ic{
       //hist->Sumw2();
       double ltmp =hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Remove overflows." << std::endl;
-	ltmp=hist->IntegralAndError(1, hist->GetNbinsX(), err);
-	if (ltmp<0 || ltmp != ltmp) {
-	  std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	  ltmp=0;
-	}
+        std::cout << " -- Warning: integral is " << ltmp << ". Remove overflows." << std::endl;
+        ltmp=hist->IntegralAndError(1, hist->GetNbinsX(), err);
+        if (ltmp<0 || ltmp != ltmp) {
+          std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+          ltmp=0;
+        }
       }
       return ltmp;
     }
     else return 0;
   }
-  
+
   double Integral(TH1F const* hist, int binmin, int binmax){
     if (hist) {
       double ltmp =hist->Integral(binmin, binmax);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	ltmp=0;
+        std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+        ltmp=0;
       }
       return ltmp;
     }
@@ -247,34 +251,34 @@ namespace ic{
     if (hist) {
       double ltmp =hist->Integral(xbinmin, xbinmax,ybinmin, ybinmax);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	ltmp=0;
+        std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+        ltmp=0;
       }
       return ltmp;
     }
     else return 0;
   }
-  
+
   double Integral(TH3F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax){
     if (hist) {
       double ltmp =hist->Integral(xbinmin, xbinmax,ybinmin, ybinmax,zbinmin, zbinmax);
       if (ltmp<0 || ltmp != ltmp) {
-	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
-	ltmp=0;
+        std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+        ltmp=0;
       }
       return ltmp;
     }
     else return 0;
   }
-  
+
   double Error(TH1F const* hist,int binmin,int binmax) {
     double err = 0.0;
     if (hist) {
       //hist->Sumw2();
       hist->IntegralAndError(binmin, binmax, err);
       if (err<0 || err != err) {
-	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
-	err=0;
+        std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+        err=0;
       }
     }
     return err;
@@ -286,8 +290,8 @@ namespace ic{
       //hist->Sumw2();
       hist->IntegralAndError(xbinmin, xbinmax,ybinmin, ybinmax, err);
       if (err<0 || err != err) {
-	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
-	err=0;
+        std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+        err=0;
       }
     }
     return err;
@@ -299,19 +303,17 @@ namespace ic{
       //hist->Sumw2();
       hist->IntegralAndError(xbinmin, xbinmax,ybinmin, ybinmax,zbinmin, zbinmax, err);
       if (err<0 || err != err) {
-	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
-	err=0;
+        std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+        err=0;
       }
     }
     return err;
   }
-  
-  std::string BuildCutString(std::string const& selection,
-			     std::string const& category,
-			     std::string const& weight) {
+
+  std::string BuildCutString(std::string const& selection,std::string const& category,std::string const& weight) {
     std::string full_selection;
     if (weight != "" && (selection != "" || category != "")) full_selection += "( ";
-    
+
     if (selection != "")                    full_selection += ("(" + selection + ")");
     if (selection != "" && category != "")  full_selection += " && ";
     if (category != "")                     full_selection += ("(" + category + ")");
@@ -363,8 +365,8 @@ namespace ic{
     }
     else {
       if (!shape.Add(myhtemp)) {
-	std::cout << " Failed adding shape." << std::endl;
-	return false;
+        std::cout << " Failed adding shape." << std::endl;
+        return false;
       }
       gDirectory->Delete("htemp;*");
     }
@@ -412,13 +414,13 @@ namespace ic{
     }
     else {
       if (!shape.Add(myhtemp)) {
-	std::cout << " Failed adding shape." << std::endl;
+        std::cout << " Failed adding shape." << std::endl;
         return false;
       }
       gDirectory->Delete("htemp;*");
     }
     std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral() << std::endl;
-    
+
     //gDirectory->Delete("myhtemp;*");
     return true;
   }

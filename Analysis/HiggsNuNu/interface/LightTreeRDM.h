@@ -39,7 +39,7 @@ namespace ic {
     unsigned countZee_;
 
     TTree *outputTree_;
-    
+
     unsigned run_;
     unsigned lumi_;
     unsigned event_;
@@ -109,7 +109,7 @@ namespace ic {
     double dijet_dphi_;
     double forward_tag_eta_;
     double central_tag_eta_;
-    
+
     double sumet_;
 
     double l1met_;
@@ -146,13 +146,13 @@ namespace ic {
     double alljetsmetnoel_mindphi_;
     double alljetsnotaumetnoel_mindphi_;
     double jetmetnoel_mindphi_;
-    
+
     double dijetmetnomu_scalarSum_pt_;
     double dijetmetnomu_vectorialSum_pt_;
     double dijetmetnomu_ptfraction_;
     double jet1metnomu_scalarprod_;
     double jet2metnomu_scalarprod_;
-    
+
     double dijetmetnoel_scalarSum_pt_;
     double dijetmetnoel_vectorialSum_pt_;
     double dijetmetnoel_ptfraction_;
@@ -183,15 +183,15 @@ namespace ic {
     double m_ee_gen_;
     double lep_mt_;
 
-//  Define gen_mu1_*    
-        
-    double gen_mu1_pt_;    
-    double gen_mu1_eta_;    
-    double gen_mu1_phi_;    
+//  Define gen_mu1_*
+
+    double gen_mu1_pt_;
+    double gen_mu1_eta_;
+    double gen_mu1_phi_;
     double gen_mu1_mindR_j1_;
     double gen_mu1_mindR_j2_;
 
-    
+
     double mu1_pt_;
     double mu1_eta_;
     double mu1_phi_;
@@ -208,14 +208,14 @@ namespace ic {
     double mu2_genphi_;
 
 //  Define gen_ele1_*
-    
+
     double gen_ele1_pt_;
     double gen_ele1_eta_;
     double gen_ele1_phi_;
     double gen_ele1_mindR_j1_;
     double gen_ele1_mindR_j2_;
 
-    
+
     double ele1_pt_;
     double ele1_eta_;
     double ele1_phi_;

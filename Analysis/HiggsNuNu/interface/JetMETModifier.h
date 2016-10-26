@@ -23,7 +23,7 @@
 class TRandom3;
 
 namespace ic {
-  
+
   class JetMETModifier : public ModuleBase {
 
   public:
@@ -42,7 +42,7 @@ namespace ic {
       uesUp=5,
       uesDown=6
     };
-  
+
   private:
 
     JetCorrectionUncertainty *jetCorUnc_;
@@ -126,7 +126,7 @@ namespace ic {
 			 const GenJet* match,
 			 const ROOT::Math::PxPyPzEVector & oldjet,
 			 const double & rho);
-    
+
     double getJERcorrfac(const double & abseta,
                          const int error,
                          const bool run2);
@@ -146,7 +146,7 @@ namespace ic {
   public: 
 
     JetMETModifier(std::string const& name);
-    virtual ~JetMETModifier();    
+    virtual ~JetMETModifier();
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
@@ -161,8 +161,7 @@ namespace ic {
     };
 
   };
-  	  
-  
+
 }
 
 #endif
