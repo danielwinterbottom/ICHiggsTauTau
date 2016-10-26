@@ -149,7 +149,9 @@ namespace ic {
       std::vector<ic::GenParticle> family;
       FamilyTree(family, part, gen_particles);
       
-      if(family.size() == 1){
+      unsigned onememberID = 0;
+      if(family.size() == 1) onememberID = std::fabs(family[0].pdgid());
+      if(onememberID == 11 || onememberID == 13){
         higgs_products.push_back(family[0]);
         unsigned familyID = std::fabs(family[0].pdgid());
         if     (familyID == 11) decay_types.push_back("e");
@@ -158,14 +160,15 @@ namespace ic {
         decay_types.push_back("t");  
         ic::GenParticle had_tau;
         int charge = 0;
-        int pdgid = part.pdgid();
+        int pdgid = 15;//part.pdgid();
         for(unsigned j=0; j<family.size(); ++j){
           had_tau.set_vector(had_tau.vector() + family[j].vector());
           charge += family[j].charge();
         }
-          had_tau.set_charge(charge);
-          had_tau.set_pdgid(pdgid);
-          higgs_products.push_back(had_tau);
+        pdgid = 15;
+        had_tau.set_charge(charge);
+        had_tau.set_pdgid(pdgid);
+        higgs_products.push_back(had_tau);
       }
     }
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
@@ -187,7 +190,8 @@ namespace ic {
       } else if(ID == 13){
         if(pt > min_mu_pt_ && eta < max_mu_eta_) muons.push_back(higgs_products[i]);  
       } else if(ID == 15){
-        if(pt > min_tau_pt[i] && eta < max_tau_eta_) taus.push_back(higgs_products[i]);  
+        if(pt > min_tau_pt[i] && eta < max_tau_eta_) taus.push_back(higgs_products[i]);
+      } else{
       }
     }
     
@@ -228,6 +232,7 @@ namespace ic {
         passed_ = true;
       }
     }
+
     if(passed_){
       pt_1_  = lep1.vector().Pt();
       pt_2_  = lep2.vector().Pt();
