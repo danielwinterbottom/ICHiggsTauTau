@@ -191,7 +191,7 @@ int main(int argc, char* argv[]){
     ("doidisoerrupordown",    po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",       po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("dolumixsweight",        po::value<bool>(&dolumixsweight)->default_value(false))
-    ("inputparams",           po::value<string>(&inputparams)->default_value("filelists/161003/Params161003.dat"))
+    ("inputparams",           po::value<string>(&inputparams)->default_value("filelists/161031/Params161031.dat"))
     ("jettype",               po::value<string>(&jettype)->default_value("pfJetsPFlow"))
     ("trg_weight_file",       po::value<string>(&trg_weight_file)->default_value("input/scale_factors/TrigEff2016_MET1DFitHFBinned_errors_12d9fb.root"))
     ("trg_to_use",            po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140"))
@@ -380,12 +380,16 @@ int main(int argc, char* argv[]){
 //   if (era == era::data_2012_hcp) data_json       =  "input/json/data_2012_hcp.txt";
 //   if (era == era::data_2012_moriond) data_json   =  "input/json/data_2012_moriond.txt";
 //   if (era == era::data_2012_donly) data_json     =  "input/json/data_2012_donly.txt";
-  
+
   std::string mydebugoutput("/home/hep/rd1715/CMSSW_8_0_20/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/mydebugoutput");
   std::string suffix = output_name.substr( 0 , output_name.find(".root") );
   mydebugoutput.append(suffix);
-  
+
+  // current prod 12d9 /fb
   if (era == era::data_2016) data_json     =  "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
+  // next prod 27d66 /fb
+  //if (era == era::data_2016) data_json     =  "input/json/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON.txt";
+  // old prod 15d9 /fb
   //if (era == era::data_2016) data_json     =  "input/json/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt";
   LumiMask lumiMask = LumiMask("LumiMask")
    //.set_produce_output_jsons(mydebugoutput.c_str())
@@ -413,7 +417,11 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_donly) data_pu_file   =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
   if (era == era::data_2015_25ns) data_pu_file    =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
+  // current prod 12d9 /fb
   if (era == era::data_2016) data_pu_file         =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
+  // next prod 27d66 /fb
+  //if (era == era::data_2016) data_pu_file         =  "input/pileup/27d66/Data_Pileup_mb69d2_2016-600bins.root";
+  // old prod 15d9 /fb
   //if (era == era::data_2016) data_pu_file         =  "input/pileup/15d9/Data_Pileup_mb69d2_2016-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
@@ -439,8 +447,13 @@ int main(int argc, char* argv[]){
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
   }
   else if(era == era::data_2016){
+    // current prod 12d9 /fb
     data_pu_up  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    // next prod 27d66 /fb
+    //data_pu_up  = GetFromTFile<TH1D>("input/pileup/27d66/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
+    //data_pu_down  = GetFromTFile<TH1D>("input/pileup/27d66/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    // old prod 15d9 /fb
     //data_pu_up  = GetFromTFile<TH1D>("input/pileup/15d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
     //data_pu_down  = GetFromTFile<TH1D>("input/pileup/15d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
   }
