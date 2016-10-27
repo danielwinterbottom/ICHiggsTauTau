@@ -48,6 +48,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTreeTrig.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/SetDoW.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/SetDoDY.h"
 
 
 using boost::lexical_cast;
@@ -57,7 +59,7 @@ using std::string;
 using std::vector;
 using namespace ic;
 int main(int argc, char* argv[]){
-  
+
   // Configurable parameters
   string cfg;                     // The configuration file
   int max_events;                 // Maximum number of events to process
@@ -73,7 +75,7 @@ int main(int argc, char* argv[]){
 
   string wstream;                 // W stream: enu, munu or taunu, or nunu for everything
 
-  bool is_data;                   // true = data, false = mc         
+  bool is_data;                   // true = data, false = mc
   bool dojessyst;                 // Do Jet Energy Scale Systematic Run
   bool dodatajessyst;             // Do Alternate Data Jet Energy Scale Method Systematic Run
   bool jesupordown;               // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
@@ -394,25 +396,25 @@ int main(int argc, char* argv[]){
 
   
   string mc_pu_file;
-  if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
-  if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
-  if (mc == mc::summer12_52X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S7-600bins.root";
-  if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
-  if (mc == mc::spring15_74X) mc_pu_file  = "input/pileup/MC_Spring15_PU25_Startup.root";
-  if (mc == mc::fall15_76X) mc_pu_file  = "input/pileup/MC_Fall15_PU25_V1.root";
-  if (mc == mc::spring16_80X) mc_pu_file  = "input/pileup/MC_Spring16_PU25ns_V1.root";
+  if (mc == mc::fall11_42X) mc_pu_file   = "input/pileup/MC_Fall11_PU_S6-500bins.root";
+  if (mc == mc::summer12_53X) mc_pu_file = "input/pileup/MC_Summer12_PU_S10-600bins.root";
+  if (mc == mc::summer12_52X) mc_pu_file = "input/pileup/MC_Summer12_PU_S7-600bins.root";
+  if (mc == mc::phys14_72X) mc_pu_file   = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
+  if (mc == mc::spring15_74X) mc_pu_file = "input/pileup/MC_Spring15_PU25_Startup.root";
+  if (mc == mc::fall15_76X) mc_pu_file   = "input/pileup/MC_Fall15_PU25_V1.root";
+  if (mc == mc::spring16_80X) mc_pu_file = "input/pileup/MC_Spring16_PU25ns_V1.root";
 
   string data_pu_file;
-  if (era == era::data_2012_rereco) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
-  if (era == era::data_2011) data_pu_file     =  "input/pileup/Data_Pileup_2011_HCP-500bins.root";
-  if (era == era::data_2012_ichep) data_pu_file     =  "input/pileup/Data_Pileup_2012.root";
-  if (era == era::data_2012_hcp) data_pu_file       =  "input/pileup/Data_Pileup_2012_HCP-600bins.root";
-  if (era == era::data_2012_moriond) data_pu_file   =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
-  if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
-  if (era == era::data_2015_50ns) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
-  if (era == era::data_2015_25ns) data_pu_file   =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
-  if (era == era::data_2016) data_pu_file   =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
-  //if (era == era::data_2016) data_pu_file   =  "input/pileup/15d9/Data_Pileup_mb69d2_2016-600bins.root";
+  if (era == era::data_2012_rereco) data_pu_file  =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
+  if (era == era::data_2011) data_pu_file         =  "input/pileup/Data_Pileup_2011_HCP-500bins.root";
+  if (era == era::data_2012_ichep) data_pu_file   =  "input/pileup/Data_Pileup_2012.root";
+  if (era == era::data_2012_hcp) data_pu_file     =  "input/pileup/Data_Pileup_2012_HCP-600bins.root";
+  if (era == era::data_2012_moriond) data_pu_file =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
+  if (era == era::data_2012_donly) data_pu_file   =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
+  if (era == era::data_2015_50ns) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
+  if (era == era::data_2015_25ns) data_pu_file    =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
+  if (era == era::data_2016) data_pu_file         =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
+  //if (era == era::data_2016) data_pu_file         =  "input/pileup/15d9/Data_Pileup_mb69d2_2016-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -482,9 +484,7 @@ int main(int argc, char* argv[]){
   
   std::vector<string> inputVec;
   inputVec.push_back("input/halofilters/allevents.txt");
-  MetEventFilters cscTightHaloFilter = MetEventFilters("CscTightHaloFilter",
-						       inputVec,
-						       doMetFilters);
+  MetEventFilters cscTightHaloFilter = MetEventFilters("CscTightHaloFilter",inputVec,doMetFilters);
 
 
   SimpleFilter<Vertex> goodVertexFilter = SimpleFilter<Vertex>("goodVertexFilter")
@@ -898,61 +898,22 @@ int main(int argc, char* argv[]){
     .set_input_params(inputparams)
     .set_sample_name(output_name)
     .set_fs(fs);
-  
 
-  if (output_name.find("JetsToLNu") != output_name.npos && output_name.find("EWKW") == output_name.npos && output_name.find("nlo") == output_name.npos) {
 
-    if (mc == mc::summer12_53X) {
-      xsWeights.set_do_w_soup(true);
-      xsWeights.set_do_w_reweighting(false);
-      xsWeights.SetWTargetFractions(0.74069073, 0.1776316, 0.0575658, 0.0170724, 0.00703947);
-      xsWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
-      //xsWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
-    }
-    if (mc == mc::fall15_76X){
-      xsWeights.set_do_w_soup(true);
-      xsWeights.set_do_w_reweighting(false);
-      //xsWeights.SetWTargetFractions(9.539946e-01,2.661281e-02,7.043996e-03,9.168533e-04,3.272767e-04);
-      xsWeights.SetWTargetFractions(9.64822231e-01,2.66852257e-02,7.15251541e-03,9.67786836e-04,3.72241002e-04);
-      xsWeights.SetWInputYields(47103549,10205377,4949568,1943664,1041358);
-    }
-    if (mc == mc::spring16_80X){
-      xsWeights.set_do_w_soup(true);
-      xsWeights.set_do_w_reweighting(false);
-      xsWeights.SetWTargetFractions(9.65141122e-01,2.64511170e-02,7.07395326e-03,9.61876714e-04,2.36978418e-04,1.08184089e-04,2.61364578e-05,6.32466880e-07);
-      //EVT_MC_WJetsToLNu-mg-ht600 3722395+7854734+6545524+2507809=20630462, 27546978+10231928=37778906
-      xsWeights.SetWInputYields(28210360,37778906,19851624,7432746,18133257,7854734,7063909,2507809);
-    }
+  if (output_name.find("JetsToLNu") != output_name.npos &&
+      output_name.find("EWKW") == output_name.npos &&
+      output_name.find("nlo") == output_name.npos) {
+
+    SetDoW( mc, &xsWeights );
   }
-  if (output_name.find("JetsToLL-mg-m50") != output_name.npos && 
+
+  if (output_name.find("JetsToLL-mg-m50") != output_name.npos &&
       output_name.find("PtZ-100-madgraph") == output_name.npos &&
-      output_name.find("Zpt150") == output_name.npos && 
-      output_name.find("DYJJ01") == output_name.npos && 
+      output_name.find("Zpt150") == output_name.npos &&
+      output_name.find("DYJJ01") == output_name.npos &&
       output_name.find("m50-ht") == output_name.npos) {
-    if (mc == mc::summer12_53X) {
-      xsWeights.set_do_dy_soup(true);
-      xsWeights.set_do_dy_reweighting(false);
-      xsWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
-      if(prod=="Apr04"){
-	xsWeights.SetDYInputYields(30459503.0, 23970248.0, 21852156.0, 11015445.0, 6402827.0);
-      }
-      else{
-	xsWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
-      }
-    }
-    else if (mc == mc::fall15_76X){
-      xsWeights.set_do_dy_soup(true);
-      xsWeights.set_do_dy_reweighting(false);
-      xsWeights.SetDYTargetFractions(0.696628989, 0.204582155, 0.067178037, 0.020549051, 0.011061768);
-      xsWeights.SetDYInputYields(9004328.0, 65314144.0, 19989058.0, 5701878.0, 4189017.0);
-    }
-    else if (mc == mc::spring16_80X){
-      xsWeights.set_do_dy_soup(true);
-      xsWeights.set_do_dy_reweighting(false);
-      xsWeights.SetDYTargetFractions(0.750730267, 0.168044214, 0.055234681, 0.016895704, 0.009095134);
-      //EVT_MC_DYJetsToLL and 1 2 3 4
-      xsWeights.SetDYInputYields(49877138, 65485168, 19695514, 5753813, 4101383);
-    }
+
+    SetDoDY( mc, &xsWeights );
   }
 
   /*if (output_name.find("JetsToLL") != output_name.npos &&
@@ -1117,44 +1078,44 @@ int main(int argc, char* argv[]){
   analysis.AddModule(&tauIsoFilter);
   analysis.AddModule(&tauElRejectFilter);
   analysis.AddModule(&tauMuRejectFilter);
-  
+
   //filter jets
   analysis.AddModule(&jetPtEtaFilter);
-  analysis.AddModule(&jetEtaFilter);
-  
+  //analysis.AddModule(&jetEtaFilter);
+
   //if (printEventContent) analysis.AddModule(&hinvPrint);
   //two-leading jet pair production before plotting
   analysis.AddModule(&jjLeadingPairProducer);
   if (doAllPairs) analysis.AddModule(&jjAllPairProducer);
 
   //if (printEventContent) analysis.AddModule(&hinvPrint);
-  
+
   //analysis.AddModule(&hinvPrint);
-  
+
   //Need two jets and metnomuons to apply trigger weights.
   //need sel leptons to apply idiso weights
   if (!is_data) analysis.AddModule(&hinvWeights);
-  
+
     //if (printEventList) analysis.AddModule(&hinvPrintList);
 
   //record the number of jets in the gap
   analysis.AddModule(&jetPairFilter);
   analysis.AddModule(&FilterCJV);
-  
+
   //jet pair selection
   //if (printEventList) analysis.AddModule(&hinvPrintList);
-  
+
   //write tree
-  if (useOldLT) analysis.AddModule(&lightTree);  
-  else analysis.AddModule(&lightTreeNew);  
-  
+  if (useOldLT) analysis.AddModule(&lightTree);
+  else analysis.AddModule(&lightTreeNew);
+
   if (!useOldLT && doTrigLT) analysis.AddModule(&lightTreeTrig);
 
   // Run analysis
   analysis.RetryFileAfterFailure(60,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
   analysis.StopOnFileFailure(true);
   analysis.SetTTreeCaching(true); 
-  
+
   analysis.RunAnalysis();
   delete fs;
   return 0;
