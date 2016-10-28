@@ -151,7 +151,7 @@ namespace ic {
       
       unsigned onememberID = 0;
       if(family.size() == 1) onememberID = std::fabs(family[0].pdgid());
-      if(onememberID == 11 || onememberID == 13){
+      if(family.size() == 1 && (onememberID == 11 || onememberID == 13)){
         higgs_products.push_back(family[0]);
         unsigned familyID = std::fabs(family[0].pdgid());
         if     (familyID == 11) decay_types.push_back("e");
@@ -171,6 +171,9 @@ namespace ic {
         higgs_products.push_back(had_tau);
       }
     }
+    
+    if(higgs_products.size() !=2) std::cout << "n higgs products = " << higgs_products.size() << std::endl; 
+
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
 
     std::vector<ic::GenParticle> electrons;
@@ -191,7 +194,6 @@ namespace ic {
         if(pt > min_mu_pt_ && eta < max_mu_eta_) muons.push_back(higgs_products[i]);  
       } else if(ID == 15){
         if(pt > min_tau_pt[i] && eta < max_tau_eta_) taus.push_back(higgs_products[i]);
-      } else{
       }
     }
     
