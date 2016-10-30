@@ -1,7 +1,7 @@
 #!/bin/sh
 DOCERN=0
 ### submit to the batch sistem at IC 1 -- 0 otherwise
-DOSUBMIT=0
+DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=JetMETvalidation
@@ -45,12 +45,12 @@ do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
   #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP_withSYS
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161031_ICHEP
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161031_test1
   #JOBDIRPREFIX=jobs_lighttree_160929
   #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
   #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP_withSYS
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161031_ICHEP
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161031_test1
   #OUTPUTPREFIX=output_lighttree_160929
   #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
@@ -152,7 +152,7 @@ do
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
-    
+
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
@@ -161,13 +161,13 @@ do
 
       echo $FILELIST
       echo $FILELIST > tmp.txt
-      
-      
+
+
       MCOPTION="--mc=spring16_80X"
       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
       sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
       INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
-      
+
 #       MCOPTION="--mc=fall15_76X"
 #       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
 #       grep "151030" tmp.txt
@@ -187,16 +187,16 @@ do
 
 
       #sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
-	  
+
       JOB=MC_`sed "s/\.dat//" tmp2.txt`
-      
+
       echo "JOB name = $JOB"
-      
+
 	  # grep "JetsToLL" tmp.txt
 # 	  if (( "$?" != 0 )); then
 # 	      continue
 # 	  fi
-      
+
       JPTCUT=$JPTCUTVAL
       grep "Htoinv" tmp.txt
       if (( "$?" == 0 )); then
@@ -217,28 +217,28 @@ do
 	  for FLAVOUR in enu munu taunu
 	    do
 	    WJOB=$JOB"_"$FLAVOUR
-	    
+
 	    $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" $MCOPTION --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh $GRIDSETUP
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$WJOB.sh    
 	    else
 		echo "$JOBSUBMIT $JOBDIR/$WJOB.sh"
-	    fi                                                                                  
+	    fi
 	  done
-	  
-      else  
+
+      else
 	  $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" $MCOPTION --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh  $GRIDSETUP
 	    if [ "$DOSUBMIT" = "1" ]; then 
 		$JOBSUBMIT $JOBDIR/$JOB.sh
 	    else
 		echo "$JOBSUBMIT $JOBDIR/$JOB.sh"
-	    fi                                                                                  
+	    fi
       fi
       rm tmp.txt tmp2.txt
-      
+
     done
-        
-    
+
+
 #Process bkg common with HiggsTautau (ONLY NEEDED IN Mar20 and Apr04)
     DOSHARED=false
     if [ "$PRODUCTION" = "Mar20" ]
@@ -254,25 +254,25 @@ do
 	    FILELISTPREFIX=Apr04_MCtaushared_
 	fi
     fi
-    
+
     for FILELIST in filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*
 	  do
       if [ "$DOSHARED" = "true" ]
 	  then
 	  echo "Processing files in "$FILELIST
-	  
+
 	  echo $FILELIST > tmp.txt
-	  
+
 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${FILELISTPREFIX}//" tmp.txt > tmp2.txt
 	      JOB=MC_`sed "s/\.dat//" tmp2.txt`
-	      
+
 	  echo "JOB name = $JOB"
-	      
+
 # 	  grep "JetsToLL" tmp.txt
 # 	  if (( "$?" != 0 )); then
 # 	      #continue
 # 	  fi
-	      
+
 	  grep  "JetsToLNu" tmp.txt
 	  if (( "$?" == 0 )); then
 	      for FLAVOUR in enu munu taunu
@@ -285,9 +285,9 @@ do
 		    $JOBSUBMIT $JOBDIR/$WJOB.sh
 		else
 		    echo "$JOBSUBMIT $JOBDIR/$WJOB.sh"
-		fi                                                                                  
+		fi
 	      done
-	  else  
+	  else
 	      $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --jet1ptcut="$JPTCUT" --jet2ptcut="$JPTCUT" --jettype=$JETTYPE &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh $GRIDSETUP
 	      if [ "$DOSUBMIT" = "1" ]; then 
 		  $JOBSUBMIT $JOBDIR/$JOB.sh
@@ -295,14 +295,14 @@ do
 		  echo "$JOBSUBMIT $JOBDIR/$JOB.sh"
 	      fi
 	  fi
-	  
+
 	  rm tmp.txt tmp2.txt
       fi
-      
+
     done
-    
+
   done
-  
+
 done
 #if (( "$#" != "2" ))
 #then
