@@ -1,6 +1,6 @@
 #!/bin/sh
 DOCERN=0
-DOSUBMIT=0
+DOSUBMIT=1
 MYEXEC=LightTreeMakerFromMiniAODRDM
 PRODUCTION=161031
 PRODUSER=rdimaria
@@ -30,16 +30,16 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 
 
-for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
+for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
-  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP_withSYS
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161031_ICHEP
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP
+  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161031_full_cut
   #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
-  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP_withSYS
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161031_ICHEP
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
+  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161031_full_cut
   #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -48,27 +48,27 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
       JOBDIR=$JOBDIRPREFIX/$SYST/
       OUTPUTDIR=$OUTPUTPREFIX/$SYST/
   fi
-  
+
   if [ "$SYST" = "JESUP" ]
       then
       SYSTOPTIONS="--dojessyst=true --jesupordown=true"
   fi
-  
+
   if [ "$SYST" = "JESDOWN" ]
       then
       SYSTOPTIONS="--dojessyst=true --jesupordown=false"
-  fi  
-  
+  fi
+
   if [ "$SYST" = "JERBETTER" ]
       then
       SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=true"
-  fi  
-  
+  fi
+
   if [ "$SYST" = "JERWORSE" ]
       then
       SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
-  fi  
-  
+  fi
+
   if [ "$SYST" = "UESUP" ]
 	then
 	SYSTOPTIONS="--douessyst=true --uesupordown=true"
@@ -98,8 +98,8 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
         then
         SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
   fi
-  
-  
+
+
   echo "Config file: $CONFIG"
   mkdir -p $JOBDIR
   mkdir -p $OUTPUTDIR
@@ -138,35 +138,35 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
     if [ "$PRODUCTION" = "Dec18" ]
     then
         PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/DATA
-    fi    
+    fi
 
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_SingleMuon*`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_SingleMuon*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*HTMHT*`
     ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*M*T*`
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*MET*`
       do
       echo "Processing files in "$FILELIST
-      
+
       echo $FILELIST > tmp.txt
       sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_DATA_//" tmp.txt > tmp2.txt
-      
+
       JOB=DATA_`sed "s/\.dat//" tmp2.txt`
-      
+
       echo "JOB name = $JOB"
-      
+
       $JOBWRAPPER $JOBDIR $OUTPUTDIR "./bin/$MYEXEC --cfg=$CONFIG --prod="$PRODUCTION" --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --input_params=$INPUTPARAMS --jet1ptcut="$JPTCUTVAL" --jet2ptcut="$JPTCUTVAL" &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh $GRIDSETUP
       if [ "$DOSUBMIT" = "1" ]; then 
 	  $JOBSUBMIT $JOBDIR/$JOB.sh
       else
 	  echo "$JOBSUBMIT $JOBDIR/$JOB.sh"
-      fi 
-      
+      fi
+
       rm tmp.txt tmp2.txt
-      
+
     done
-        
+
   done
-  
+
 done
 #if (( "$#" != "2" ))
 #then

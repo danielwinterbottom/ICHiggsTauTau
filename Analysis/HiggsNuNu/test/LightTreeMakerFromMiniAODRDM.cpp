@@ -288,12 +288,12 @@ int main(int argc, char* argv[]){
     fullpath = fullpath+"_"+wstream+".root";
   }
   fwlite::TFileService *fs = new fwlite::TFileService(fullpath.c_str());
-  
+
   bool ignoreLeptons=false;
   if (output_name.find("iglep") != output_name.npos) {
     ignoreLeptons = true;
   }
-   
+
   double elec_dz, elec_dxy;
   double muon_dz, muon_dxy;
   double veto_elec_dz, veto_elec_dxy;
@@ -301,7 +301,7 @@ int main(int argc, char* argv[]){
   double elec_pt, elec_eta, muon_pt, muon_eta;
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   double loose_photon_pt, loose_photon_eta, medium_photon_pt, medium_photon_eta, tight_photon_pt, tight_photon_eta;
-  
+
   double muon_iso = is2012 ? 0.12 : 0.1;//0.15 -> too loose
   double veto_muon_iso = is2012 ? 0.2 : 0.15;//0.25 -> too loose??
 
@@ -313,12 +313,12 @@ int main(int argc, char* argv[]){
   muon_dxy = 0.045;//is2012 ? 0.045 : 0.2;
   veto_muon_dz = 0.5;
   veto_muon_dxy = 0.2;
-  
+
   elec_pt = 20.0;
   elec_eta = 2.4;
   muon_pt = 20.0;
   muon_eta = 2.1;
-  
+
   veto_elec_pt = 10.0;
   veto_elec_eta = 2.4;
   veto_muon_pt = 10.0;
@@ -349,8 +349,8 @@ int main(int argc, char* argv[]){
   std::cout << boost::format("%-15s %-10s\n") % "muon_iso:" % muon_iso;
   std::cout << boost::format("%-15s %-10s\n") % "veto_muon_iso:" % veto_muon_iso;
 
-  
-  
+
+
   // Create analysis object
   ic::AnalysisBase analysis(
     "HiggsNuNu",        // Analysis name
@@ -398,7 +398,7 @@ int main(int argc, char* argv[]){
   MakeRunStats runStats = MakeRunStats("RunStats")
     .set_output_name(fullpath+".runstats");
 
-  
+
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file   = "input/pileup/MC_Fall11_PU_S6-500bins.root";
   if (mc == mc::summer12_53X) mc_pu_file = "input/pileup/MC_Summer12_PU_S10-600bins.root";
