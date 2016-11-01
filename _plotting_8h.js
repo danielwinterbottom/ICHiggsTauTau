@@ -18,6 +18,7 @@ var _plotting_8h =
     [ "UnitAxes", "_plotting_8h.html#a434781fa740199ba94f267d8263cc1a2", null ],
     [ "PositionedLegend", "_plotting_8h.html#a658a1da4505b61eb5a0f0db01c01e161", null ],
     [ "DrawHorizontalLine", "_plotting_8h.html#aa8adc566a12b3c090d1e1ff3330f7c98", null ],
+    [ "DrawVerticalLine", "_plotting_8h.html#a67da7890a70aedab868a67cc7517468d", null ],
     [ "DrawTitle", "_plotting_8h.html#a39767958a52b4be5820816be7b1bb9bf", null ],
     [ "DrawCMSLogo", "_plotting_8h.html#ac9a2d10dbb78251b4757aba40f73fa68", null ],
     [ "DrawCMSLogo", "_plotting_8h.html#a99344cc5028c90aaafacea9ec5eab9d2", null ],

@@ -33,6 +33,7 @@ var searchData=
   ['drawcmslogo',['DrawCMSLogo',['../_plotting_8h.html#ac9a2d10dbb78251b4757aba40f73fa68',1,'DrawCMSLogo(TPad *pad, TString cmsText, TString extraText, int iPosX, float relPosX, float relPosY, float relExtraDY):&#160;Plotting.h'],['../_plotting_8h.html#a99344cc5028c90aaafacea9ec5eab9d2',1,'DrawCMSLogo(TPad *pad, TString cmsText, TString extraText, int iPosX):&#160;Plotting.h']]],
   ['drawhorizontalline',['DrawHorizontalLine',['../_plotting_8h.html#aa8adc566a12b3c090d1e1ff3330f7c98',1,'Plotting.h']]],
   ['drawtitle',['DrawTitle',['../_plotting_8h.html#a39767958a52b4be5820816be7b1bb9bf',1,'Plotting.h']]],
+  ['drawverticalline',['DrawVerticalLine',['../_plotting_8h.html#a67da7890a70aedab868a67cc7517468d',1,'Plotting.h']]],
   ['dxy',['dxy',['../classic_1_1_track.html#a0996780197b63e97bcf50a64fcc63e73',1,'ic::Track']]],
   ['dxy_5fbeamspot',['dxy_beamspot',['../classic_1_1_electron.html#a2885eea3b4796c606b7eb49383169880',1,'ic::Electron::dxy_beamspot()'],['../classic_1_1_muon.html#a69f6ce11bf71ea6062d6ceb5e1401b73',1,'ic::Muon::dxy_beamspot()']]],
   ['dxy_5fvertex',['dxy_vertex',['../classic_1_1_electron.html#a730e63ccb7ad0cf8f70ddcc87de1107f',1,'ic::Electron::dxy_vertex()'],['../classic_1_1_muon.html#a22e1f3fd3ce1e61ed068501835e8a9dd',1,'ic::Muon::dxy_vertex()']]],

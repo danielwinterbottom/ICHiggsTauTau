@@ -1,5 +1,6 @@
 var NAVTREEINDEX5 =
 {
+"classic_1_1_secondary_vertex.html#a02dd169414380e6ffd973dfb7c014155":[10,0,1,19,4],
 "classic_1_1_secondary_vertex.html#a06050a4ff5bd9f2332001796bf847e35":[10,0,1,19,2],
 "classic_1_1_secondary_vertex.html#a06f7e8abcbed1430d4456feba55eeafe":[10,0,1,19,1],
 "classic_1_1_secondary_vertex.html#a24fc32c0938578c5f6b56a80953f1ae8":[10,0,1,19,7],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "index.html":[0],
 "index.html":[],
 "index.html#getting-started":[0,1],
-"index.html#overview":[0,0],
-"namespaceedm.html":[10,0,0]
+"index.html#overview":[0,0]
 };
