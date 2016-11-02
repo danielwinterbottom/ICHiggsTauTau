@@ -283,15 +283,23 @@ namespace ic {
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
+      outtree_->Branch("pfpt_tt",          &pfpt_tt_.var_double);
+      outtree_->Branch("mvapt_tt",         &mvapt_tt_.var_double);
       outtree_->Branch("mt_tot",            &mt_tot_.var_double);
+      outtree_->Branch("pfmt_tot",          &pfmt_tot_.var_double);
+      outtree_->Branch("mvamt_tot",         &mvamt_tot_.var_double);
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
       outtree_->Branch("m_2",               &m_2_.var_double);
       outtree_->Branch("pfmt_1",            &pfmt_1_.var_double);
+      outtree_->Branch("pfmt_2",            &pfmt_2_.var_double);
+      outtree_->Branch("mvamt_1",           &mvamt_1_.var_double);
+      outtree_->Branch("mvamt_2",           &mvamt_2_.var_double);
       outtree_->Branch("puppimt_1",         &puppimt_1_.var_double);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
       outtree_->Branch("pfpzeta",           &pfpzeta_.var_double);
+      outtree_->Branch("mvapzeta",          &mvapzeta_.var_double);
       outtree_->Branch("puppipzeta",        &puppipzeta_.var_double);
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
@@ -1345,6 +1353,8 @@ namespace ic {
     std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
     std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
+    
+    std::cout << "info for event number: " << event_ << std::endl;
 
     //Sort out the loose (em,mt,et) or medium (tt) b-jets
     if(era_ != era::data_2016){
@@ -1485,8 +1495,15 @@ namespace ic {
       }
     }
 
+    pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
+    mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
+    if(strategy_ == strategy::smspring16){
+      pt_tt_ = pfpt_tt_;
+      
+    } else {
+      pt_tt_ = mvapt_tt_;
+    }
 
-    pt_tt_ = (ditau->vector() + mets->vector()).pt();
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
    
@@ -1506,19 +1523,37 @@ namespace ic {
     }
 
     mt_lep_ = MT(lep1,lep2);
-    mt_1_ = MT(lep1, mets);
-    mt_2_ = MT(lep2, mets);
     mt_ll_ = MT(ditau, mets);
-    mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
-    pzeta_ = PZeta(ditau, mets, 0.85);
+    mvapzeta_ = PZeta(ditau, mets, 0.85);
+    mvapzetamiss_ = PZeta(ditau, mets, 0.0);
+    pfpzeta_ = PZeta(ditau, pfmet, 0.85);
+    pfpzetamiss_ = PZeta(ditau, pfmet, 0.0);
     pzetavis_ = PZetaVis(ditau);
-    pzetamiss_ = PZeta(ditau, mets, 0.0);
+    if(strategy_ == strategy::smspring16){
+      pzeta_ = pfpzeta_;
+      pzetamiss_ = pfpzetamiss_;
+    } else{
+      pzeta_ = mvapzeta_;
+      pzetamiss_ = mvapzetamiss_;
+    }
     met_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep1->vector()));
     met_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep2->vector()));
     //save some pfmet and puppi met versions as well for now
     pfmt_1_ = MT(lep1, pfmet);
-    pfpzeta_ = PZeta(ditau, pfmet, 0.85);
-    pfpzetamiss_ = PZeta(ditau, pfmet, 0.0);
+    pfmt_2_ = MT(lep2, pfmet);
+    mvamt_1_ = MT(lep1, mets);
+    mvamt_2_ = MT(lep2, mets);
+    pfmt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(pfmt_2_.var_double,2)+pow(pfmt_1_.var_double,2));
+    mvamt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mvamt_2_.var_double,2)+pow(mvamt_1_.var_double,2));
+    if(strategy_ == strategy::smspring16){
+      mt_1_ = pfmt_1_;
+      mt_2_ = pfmt_2_;
+      mt_tot_ = pfmt_tot_;
+    } else{
+      mt_1_ = mvamt_1_;
+      mt_2_ = mvamt_2_;
+      mt_tot_ = mvamt_tot_;
+    }
     if(puppimet != NULL){
       puppimt_1_ = MT(lep1, puppimet);
       puppipzeta_ = PZeta(ditau, puppimet, 0.85);
