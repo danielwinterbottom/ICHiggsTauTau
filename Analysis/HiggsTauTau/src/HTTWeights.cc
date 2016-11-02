@@ -333,45 +333,15 @@ namespace ic {
       eventInfo->set_weight("topquark_weight", top_wt);
     }
     
-    if (do_tau_fake_weights_){
-      if(era_ != era::data_2016){
-        Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
-        double fake_pt = tau->pt() < 200. ? tau->pt() : 200.;
-        double fake_weight = tau_fake_weights_->Eval(fake_pt);
-        eventInfo->set_weight("tau_fake_weight",fake_weight);
-        double weight_up   = (fake_weight + 0.5*(1.0-fake_weight)) / fake_weight;
-        double weight_down = (fake_weight - 0.5*(1.0-fake_weight)) / fake_weight;
-        event->Add("wt_tau_fake_up", weight_up);
-        event->Add("wt_tau_fake_down", weight_down);
-      } else {
-        //For 2016, use UP weight = down 20% per 100 GeV and vice-versa
-        if(channel_ != channel::em){
-          unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-          double weight_up = 1.0;
-          double weight_down = 1.0;
-          double tau_1_wt=0;
-          double tau_2_wt=0;
-          if(gen_match_2 == 6){
-            Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
-            double pt_2 = tau2->pt();
-            tau_2_wt = (0.20*pt_2)/100.;
-          } 
-          weight_down = 1.0 + tau_2_wt;
-          weight_up = std::max(0.0, 1.0 - tau_2_wt);
-          if (channel_ == channel::tt){
-           unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-           if(gen_match_1 == 6){
-             Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-             double pt_1 = tau1->pt();
-             tau_1_wt = (0.20*pt_1/100.);
-           }
-           weight_down = (1.0+tau_2_wt)*(1.0+tau_1_wt);
-           weight_up = std::max(0.0, (1.0-tau_2_wt)*(1.0-tau_1_wt));
-          }
-         event->Add("wt_tau_fake_up", weight_up);
-         event->Add("wt_tau_fake_down", weight_down);
-        }
-      }
+    if (do_tau_fake_weights_) {
+      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+      double fake_pt = tau->pt() < 200. ? tau->pt() : 200.;
+      double fake_weight = tau_fake_weights_->Eval(fake_pt);
+      eventInfo->set_weight("tau_fake_weight",fake_weight);
+      double weight_up   = (fake_weight + 0.5*(1.0-fake_weight)) / fake_weight;
+      double weight_down = (fake_weight - 0.5*(1.0-fake_weight)) / fake_weight;
+      event->Add("wt_tau_fake_up", weight_up);
+      event->Add("wt_tau_fake_down", weight_down);
     }
 
     if (do_tau_id_weights_) {
@@ -2258,6 +2228,7 @@ namespace ic {
         eventInfo->set_weight("tau_mode_scale", 0.88);
       }
     }
+
 
     return 0;
   }

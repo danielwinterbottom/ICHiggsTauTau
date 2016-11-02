@@ -1353,8 +1353,6 @@ namespace ic {
     std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label) > bind(&PFJet::GetBDiscriminator, _2, btag_label));
     std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
     if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
-    
-    std::cout << "info for event number: " << event_ << std::endl;
 
     //Sort out the loose (em,mt,et) or medium (tt) b-jets
     if(era_ != era::data_2016){
@@ -2471,14 +2469,12 @@ namespace ic {
           jet_flav_2_ = (tau_matches.at(0)).first->parton_flavour();
       } else jet_flav_2_ = -9999;
     }
-
     
-
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();
       jeta_1_ = lowpt_jets[0]->eta();
       jphi_1_ = lowpt_jets[0]->phi();
-      jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+      jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/lowpt_jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
       jptunc_1_ = 0.0;
       jmva_1_ = lowpt_jets[0]->pu_id_mva_value();
       jlrm_1_ = lowpt_jets[0]->linear_radial_moment();
@@ -2506,7 +2502,7 @@ namespace ic {
       jpt_2_ = lowpt_jets[1]->pt();
       jeta_2_ = lowpt_jets[1]->eta();
       jphi_2_ = lowpt_jets[1]->phi();
-      jrawf_2_ = lowpt_jets[1]->uncorrected_energy()/jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
+      jrawf_2_ = lowpt_jets[1]->uncorrected_energy()/lowpt_jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
       jptunc_2_ = 0.0;
       jmva_2_ = lowpt_jets[1]->pu_id_mva_value();
       jlrm_2_ = lowpt_jets[1]->linear_radial_moment();

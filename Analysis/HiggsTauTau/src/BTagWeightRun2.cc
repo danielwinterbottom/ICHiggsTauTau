@@ -152,7 +152,7 @@ namespace ic {
     unsigned jet_flavour = 0;
     double sf=0;
     for (unsigned i = 0; i < jets.size(); ++i) {
-      rand->SetSeed((int)(((float)jets[i]->eta()+5)*100000));
+      rand->SetSeed((int)((jets[i]->eta()+5)*100000));
       eta = fabs(jets[i]->eta());
       pt = jets[i]->pt();
       jet_flavour = jets[i]->hadron_flavour();
