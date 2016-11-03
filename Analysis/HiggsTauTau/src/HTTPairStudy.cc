@@ -23,7 +23,7 @@ HTTPairStudy::HTTPairStudy(std::string const& name)
   selected_matched_pairs = 0;
   selected_anymatched_pairs = 0;
   trig_filter_
-    .set_mc(ic::mc::summer12_53X)
+    .set_mc(ic::mc::spring16_80X)
     .set_is_data(false)
     .set_is_embedded(false);
 }

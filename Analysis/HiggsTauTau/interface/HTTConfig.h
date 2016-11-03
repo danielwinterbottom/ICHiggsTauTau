@@ -44,9 +44,6 @@ public:
 
 struct strategy_def {
 	enum type {
-		paper2013,				// Strategy for the final paper in 2013
-		phys14,				// Strategy for running on phys14 samples
-    spring15,    //Strategy for running on spring15 samples
     fall15,    //Strategy for running on fall15 samples
     mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
     smspring16    //Strategy for running on spring16 samples, SM analysis
@@ -56,9 +53,6 @@ typedef safe_enum<strategy_def> strategy;
 
 inline std::string Strategy2String(strategy const& in) {
 	static std::map<strategy, std::string> conv = boost::assign::map_list_of
-		(strategy::paper2013, 	"paper2013")
-		(strategy::phys14, 	"phys14")
-    (strategy::spring15, "spring15")
     (strategy::fall15, "fall15")
     (strategy::mssmspring16, "mssmspring16")
     (strategy::smspring16, "smspring16");
@@ -72,9 +66,6 @@ inline std::string Strategy2String(strategy const& in) {
 
 inline strategy String2Strategy(std::string const& in) {
 	static std::map<std::string, strategy> conv = boost::assign::map_list_of
-	("paper2013", 	strategy::paper2013)
-	("phys14", 	strategy::phys14)
-  ("spring15", strategy::spring15)
   ("fall15", strategy::fall15)
   ("mssmspring16", strategy::mssmspring16)
   ("smspring16", strategy::smspring16);
@@ -88,8 +79,6 @@ inline strategy String2Strategy(std::string const& in) {
 
 struct era_def {
 	enum type {
-		data_2011,				// Entire 2011 dataset, mixture of prompt and re-reco
-		data_2012_rereco,
 		data_2015,
 		data_2016
 	};
@@ -98,8 +87,6 @@ typedef safe_enum<era_def> era;
 
 inline std::string Era2String(era const& in) {
 	static std::map<era, std::string> conv = boost::assign::map_list_of
-		(era::data_2011, 					"data_2011")
-		(era::data_2012_rereco, 	"data_2012_rereco")
 		(era::data_2015, 	        "data_2015")
 		(era::data_2016, 	        "data_2016");
 	if (conv.find(in) != conv.end()) {
@@ -112,8 +99,6 @@ inline std::string Era2String(era const& in) {
 
 inline era String2Era(std::string const& in) {
 	static std::map<std::string, era> conv = boost::assign::map_list_of
-	("data_2011",					era::data_2011)
-	("data_2012_rereco", 	era::data_2012_rereco)
 	("data_2015", 	era::data_2015)
 	("data_2016", 	era::data_2016);
 	if (conv.find(in) != conv.end()) {
@@ -126,10 +111,6 @@ inline era String2Era(std::string const& in) {
 
 struct mc_def {
 	enum type {
-		fall11_42X,				// 42X MC
-		summer12_53X,			// 53X MC
-		phys14_72X,			// 72X MC
-    spring15_74X,      //74X MC 
     fall15_76X,      //76X MC 
     spring16_80X      //76X MC 
 	};
@@ -138,10 +119,6 @@ typedef safe_enum <mc_def> mc;
 
 inline std::string MC2String(mc const& in) {
 	static std::map<mc, std::string> conv = boost::assign::map_list_of
-		(mc::fall11_42X, "fall11_42X")
-		(mc::summer12_53X, "summer12_53X")
-		(mc::phys14_72X, "phys14_72X")
-    (mc::spring15_74X, "spring15_74X")
     (mc::fall15_76X, "fall15_76X")
     (mc::spring16_80X, "spring16_80X");
 
@@ -154,10 +131,6 @@ inline std::string MC2String(mc const& in) {
 }
 inline mc String2MC(std::string const& in) {
 	static std::map<std::string, mc> conv = boost::assign::map_list_of
-	("fall11_42X",		mc::fall11_42X)
-	("summer12_53X",	mc::summer12_53X)
-	("phys14_72X",	mc::phys14_72X)
-  ("spring15_74X", mc::spring15_74X)
   ("fall15_76X", mc::fall15_76X)
   ("spring16_80X", mc::spring16_80X);
 
@@ -178,11 +151,9 @@ struct channel_def {
 		tt,
 		zee,
 		zmm,
-        tpzee,
-        tpzmm,
-        wmnu,
-		mtmet,
-		etmet
+    tpzee,
+    tpzmm,
+    wmnu
 	};
 };
 typedef safe_enum<channel_def> channel;
@@ -197,9 +168,7 @@ inline std::string Channel2String(channel const& in) {
 		(channel::zmm, "zmm")
 		(channel::tpzee, "tpzee")
 		(channel::tpzmm, "tpzmm")
-		(channel::wmnu, "wmnu")
-		(channel::etmet, "etmet")
-		(channel::mtmet, "mtmet");
+		(channel::wmnu, "wmnu");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -218,9 +187,7 @@ inline channel String2Channel(std::string const& in) {
 	("zmm", channel::zmm)
 	("tpzee", channel::tpzee)
 	("tpzmm", channel::tpzmm)
-	("wmnu", channel::wmnu)
-	("etmet", channel::etmet)
-	("mtmet", channel::mtmet);
+	("wmnu", channel::wmnu);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

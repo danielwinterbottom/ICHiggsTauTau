@@ -10,9 +10,9 @@ namespace ic {
 
   HTTRun2RecoilCorrector::HTTRun2RecoilCorrector(std::string const& name) : ModuleBase(name), 
     channel_(channel::et),
-    strategy_(strategy::paper2013),
-    mc_(mc::summer12_53X),
-    era_(era::data_2012_rereco) {
+    strategy_(strategy::smspring16),
+    mc_(mc::spring16_80X),
+    era_(era::data_2016) {
     met_label_ = "pfMVAMet";
     jets_label_ = "pfJetsPFlow";
     sample_ = "";

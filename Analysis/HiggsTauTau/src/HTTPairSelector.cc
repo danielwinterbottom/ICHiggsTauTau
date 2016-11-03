@@ -9,7 +9,7 @@
 
 namespace ic {
 
-  HTTPairSelector::HTTPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et),strategy_(strategy::paper2013) {
+  HTTPairSelector::HTTPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et),strategy_(strategy::smspring16) {
     pair_label_ = "emtauCandidates";
     mva_met_from_vector_ = true;
     faked_tau_selector_ = 0;
@@ -327,53 +327,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16) {
-      if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
-        std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
-        std::vector<GenParticle *> sel_particles;
-        if (channel_ == channel::et || channel_ == channel::etmet) {
-          // Add all status 3 electrons with pT > 8 to sel_particles
-          for (unsigned i = 0; i < particles.size(); ++i) {
-            if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
-          }
-        } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
-          // Add all status 3 muons with pT > 8 to sel_particles
-         for (unsigned i = 0; i < particles.size(); ++i) {
-           if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
-         } 
-        }
-        // Get the reco tau from the pair
-        std::vector<Candidate *> tau;
-        if(channel_ == channel::tt){
-          tau.push_back(result[0]->GetCandidate("lepton1"));
-        }
-        tau.push_back(result[0]->GetCandidate("lepton2"));
-        // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
-        std::vector<std::pair<Candidate*, GenParticle*> > matches = MatchByDR(tau, sel_particles, 0.5, true, true);
-        // If we want ZL and there's no match, fail the event
-        if (faked_tau_selector_ == 1 && matches.size() == 0) return 1;
-        // If we want ZJ and there is a match, fail the event
-        if (faked_tau_selector_ == 2 && matches.size() > 0) return 1;
-      }
-      if (hadronic_tau_selector_ > 0 && channel_ != channel::em) {
-        std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
-        std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
-        std::vector<GenJet *> gen_taus_ptr;
-        for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
-        ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));
-        std::vector<Candidate *> tau;
-        tau.push_back(result[0]->GetCandidate("lepton2"));
-        // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
-        std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
-        // If we want ZL and there's no match, fail the event
-        if (hadronic_tau_selector_ == 1 && matches.size() == 0) return 1;
-        if (fs_ && matches.size() == 1) {
-          hists_[0]->Fill("pt_gen_reco", matches[0].second->pt(), matches[0].first->pt(), 1);
-        }
-        // If we want ZJ and there is a match, fail the event
-        if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
-      }
-    }
+
 
      
     // ************************************************************************

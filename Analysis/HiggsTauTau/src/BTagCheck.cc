@@ -7,7 +7,7 @@
 namespace ic {
 
   BTagCheck::BTagCheck(std::string const& name) : ModuleBase(name),channel_(channel::et), 
-    era_(era::data_2012_rereco) {
+    era_(era::data_2016) {
     fs_ = NULL;
     jet_label_ = "pfJetsPFlow";
     do_legacy_ = true;

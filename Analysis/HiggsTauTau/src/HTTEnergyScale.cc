@@ -6,7 +6,7 @@
 
 namespace ic {
 
-  HTTEnergyScale::HTTEnergyScale(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::paper2013) {
+  HTTEnergyScale::HTTEnergyScale(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::smspring16) {
     moriond_corrections_ = false;
   }
 
@@ -37,17 +37,9 @@ namespace ic {
           if (dm == 0) {
             central_shift = 1.00;
           } else if (dm == 1 || dm == 2) {
-            if (strategy_ == strategy::paper2013) {
-              central_shift = 1.012;
-            } else if (strategy_ != strategy::phys14) {
-              central_shift = 1.015 + 0.001 * TMath::Min(TMath::Max(pt-45. ,0.),10.0);
-            }
+            central_shift = 1.015 + 0.001 * TMath::Min(TMath::Max(pt-45. ,0.),10.0);
           } else if (dm == 10) {
-            if (strategy_ == strategy::paper2013) {
-              central_shift = 1.012;
-            } else if (strategy_!=strategy::phys14){
-              central_shift = 1.012 + 0.001 * TMath::Min(TMath::Max(pt-32. ,0.),18.0);
-            }
+            central_shift = 1.012 + 0.001 * TMath::Min(TMath::Max(pt-32. ,0.),18.0);
           }
         } else {
           central_shift = 1.00;
