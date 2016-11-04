@@ -1,9 +1,11 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTGenAnalysis.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 
-std::vector<ic::GenParticle> FamilyTree (std::vector<ic::GenParticle> &v, ic::GenParticle p, std::vector<ic::GenParticle*> gen_particles){
-  if(p.status() == 1){
+std::vector<ic::GenParticle> FamilyTree (std::vector<ic::GenParticle> &v, ic::GenParticle p, std::vector<ic::GenParticle*> gen_particles, unsigned &outputID){ 
+  if(p.daughters().size() == 0){
     unsigned ID = std::fabs(p.pdgid());
+    if(ID == 11) outputID = 11;
+    else if(ID == 13) outputID = 13;
     if(!(ID==12 || ID==14 || ID==16)){
       v.push_back(p);
     }
@@ -11,7 +13,7 @@ std::vector<ic::GenParticle> FamilyTree (std::vector<ic::GenParticle> &v, ic::Ge
   else{
     for(size_t i = 0; i < p.daughters().size(); ++i ){
       ic::GenParticle d = *gen_particles[p.daughters().at(i)];
-      FamilyTree(v,d, gen_particles);
+      FamilyTree(v,d, gen_particles, outputID);
     }
   }
   return v;
@@ -65,6 +67,8 @@ namespace ic {
       outtree_->Branch("pt_tt"       , &pt_tt_       );
       outtree_->Branch("mt_1"        , &mt_1_        );
       outtree_->Branch("mt_2"        , &mt_2_        );
+      outtree_->Branch("pzeta"       , &pzeta_       );
+      outtree_->Branch("n_bjets"     , &n_bjets_     );
       outtree_->Branch("n_jets"      , &n_jets_      );
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
       outtree_->Branch("jpt_1"       , &jpt_1_       );
@@ -76,6 +80,12 @@ namespace ic {
       outtree_->Branch("mjj"         , &mjj_         );
       outtree_->Branch("jdeta"       , &jdeta_       );
     }
+    count_ee_ = 0;
+    count_em_ = 0;
+    count_et_ = 0;
+    count_mm_ = 0;
+    count_mt_ = 0;
+    count_tt_ = 0;
     return 0;
   }
 
@@ -137,42 +147,36 @@ namespace ic {
       ic::GenParticle higgs_product;
       
       unsigned genID = std::fabs(part.pdgid());
-      
+      bool status_flag_t = part.statusFlags().at(0);
+      bool status_flag_tlc = part.statusFlags().at(13);
+
       // add neutrinos 4-vectors to get gen met
       if(genID == 12 || genID == 14 || genID == 16) met.set_vector(met.vector() + part.vector());
       
-      // check if particle is a tau, if it is and mother is a Higgs find stable visible daughters
-      if(genID != 15) continue;
-      unsigned motherID = std::fabs(gen_particles[part.mothers().at(0)]->pdgid());
-      if(motherID != 25) continue;
+      if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
 
       std::vector<ic::GenParticle> family;
-      FamilyTree(family, part, gen_particles);
-      
-      unsigned onememberID = 0;
-      if(family.size() == 1) onememberID = std::fabs(family[0].pdgid());
-      if(family.size() == 1 && (onememberID == 11 || onememberID == 13)){
+      unsigned outputID = 15;
+      FamilyTree(family, part, gen_particles, outputID);
+      if(family.size()==1 && (outputID ==11 || outputID ==13)){
         higgs_products.push_back(family[0]);
-        unsigned familyID = std::fabs(family[0].pdgid());
-        if     (familyID == 11) decay_types.push_back("e");
-        else if(familyID == 13) decay_types.push_back("m");
+        if (outputID == 11) {decay_types.push_back("e");}  
+        else if (outputID == 13) {decay_types.push_back("m");}
       } else {
         decay_types.push_back("t");  
         ic::GenParticle had_tau;
         int charge = 0;
-        int pdgid = 15;//part.pdgid();
+        int pdgid = 15;
         for(unsigned j=0; j<family.size(); ++j){
           had_tau.set_vector(had_tau.vector() + family[j].vector());
           charge += family[j].charge();
         }
-        pdgid = 15;
+        pdgid = 15*charge;
         had_tau.set_charge(charge);
         had_tau.set_pdgid(pdgid);
         higgs_products.push_back(had_tau);
       }
     }
-    
-    if(higgs_products.size() !=2) std::cout << "n higgs products = " << higgs_products.size() << std::endl; 
 
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
 
@@ -199,16 +203,24 @@ namespace ic {
     
     //size of decay_types vector should always be 2 but added this if statement just to be sure
     std::string decayType = "";
-    if(decay_types.size()==2){
-      std::sort(decay_types.begin(),decay_types.end(),swap_labels());
-      decayType = decay_types[0]+decay_types[1];
+    std::sort(decay_types.begin(),decay_types.end(),swap_labels());
+    for(unsigned i=0; i< decay_types.size(); ++i){
+      decayType += decay_types[i];
     }
+    
+    if(decayType == "ee") count_ee_++;
+    if(decayType == "em") count_em_++;
+    if(decayType == "et") count_et_++;
+    if(decayType == "mm") count_mm_++;
+    if(decayType == "mt") count_mt_++;
+    if(decayType == "tt") count_tt_++;
     
     pt_1_ = -9999.;
     pt_2_ = -9999.;
     ic::Candidate lep1;
     ic::Candidate lep2;
     passed_ = false;
+
     if(channel_str_ == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
         lep1 = electrons[0];
@@ -245,6 +257,7 @@ namespace ic {
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
       m_vis_ = (lep1.vector()+lep2.vector()).M();
+      n_bjets_ = 0;
       if(pt_1_ >= pt_2_){
         mt_1_ = MT(&lep1, &met);
         mt_2_ = MT(&lep2, &met);
@@ -252,7 +265,12 @@ namespace ic {
         mt_1_ = MT(&lep2, &met);
         mt_2_ = MT(&lep1, &met);  
       }
+      ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
+      ditau->AddCandidate("lep1",&lep1);
+      ditau->AddCandidate("lep2",&lep2);
+      pzeta_ = PZeta(ditau, &met , 0.85);
     } else {
+      n_bjets_ = -9999;  
       pt_1_  = -9999;
       pt_2_  = -9999;
       eta_1_ = -9999;
@@ -263,7 +281,8 @@ namespace ic {
       pt_tt_ = -9999;
       m_vis_ = -9999;
       mt_1_ = -9999;
-      mt_2_ = -9999;   
+      mt_2_ = -9999;
+      pzeta_ = -9999;
     }
     
     std::vector<ic::GenJet> filtered_jets;
@@ -315,6 +334,12 @@ namespace ic {
     return 0;
   }
   int HTTGenAnalysis::PostAnalysis() {
+    std::cout << "ee count = " << count_ee_ << std::endl;
+    std::cout << "em count = " << count_em_ << std::endl;
+    std::cout << "et count = " << count_et_ << std::endl;
+    std::cout << "mm count = " << count_mm_ << std::endl;
+    std::cout << "mt count = " << count_mt_ << std::endl;
+    std::cout << "tt count = " << count_tt_ << std::endl;
     return 0;
   }
 

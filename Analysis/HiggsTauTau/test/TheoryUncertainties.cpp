@@ -47,6 +47,8 @@ struct ProgramOptions{
   std::string cfg;
   bool        RecreateRenorm;
   bool        doAcceptance;
+  bool        do2D;
+  std::string sample;
   
 };
 
@@ -164,7 +166,7 @@ void SetStyle(){
   gROOT->ForceStyle();    
 }
 
-void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries, std::string out_name, bool ratio, bool Normalize, std::string title, bool intLabels, bool log){
+void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries, std::string out_name, bool ratio, bool Normalize, std::string title, bool intLabels, bool log, double ratio_range){
   bool doLegend = legend_entries.size() > 0;
   SetStyle();
   TGaxis::SetMaxDigits(3);
@@ -253,8 +255,10 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
    hs_ratio->GetYaxis()->SetLabelSize(hs_ratio->GetYaxis()->GetLabelSize()/scale);
    hs_ratio->GetXaxis()->SetTitleSize(hs_ratio->GetXaxis()->GetTitleSize()/scale);
    hs_ratio->GetYaxis()->SetTitleSize(hs_ratio->GetYaxis()->GetTitleSize()/scale);
-   hs_ratio->SetMinimum(0.7);
-   hs_ratio->SetMaximum(1.3);
+   double ratio_max = 1+ratio_range;
+   double ratio_min = 1-ratio_range;
+   hs_ratio->SetMinimum(ratio_min);
+   hs_ratio->SetMaximum(ratio_max);
    hs_ratio->GetYaxis()->SetNdivisions(3,5,0);
    hs_ratio->Draw("nostack p"); 
    pad2->Update();
@@ -295,7 +299,9 @@ int main(int argc, char* argv[]){
         ("doPDF",                  po::value<bool>(&options.doPDF)->default_value(true))
         ("doAlphaS",               po::value<bool>(&options.doAlphaS)->default_value(true))
         ("RecreateRenorm",         po::value<bool>(&options.RecreateRenorm)->default_value(false))
-        ("doAcceptance",           po::value<bool>(&options.doAcceptance)->default_value(false));
+        ("doAcceptance",           po::value<bool>(&options.doAcceptance)->default_value(false))
+        ("do2D",                   po::value<bool>(&options.do2D)->default_value(false))
+        ("sample",                 po::value<std::string>(&options.sample)->default_value("default"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(options.cfg.c_str(), config), vm);
   po::notify(vm);
@@ -313,6 +319,8 @@ int main(int argc, char* argv[]){
   std::cout << "doAlphaS       = " << options.doAlphaS       << std::endl;
   std::cout << "RecreateRenorm = " << options.RecreateRenorm << std::endl;
   std::cout << "doAcceptance   = " << options.doAcceptance   << std::endl;
+  std::cout << "do2D           = " << options.do2D           << std::endl;
+  std::cout << "sample         = " << options.sample         << std::endl;
   
   if(!file_exists(options.outputDirname)){
     std::cout << "Output folder does not exist! Exiting." << std::endl;
@@ -401,7 +409,7 @@ int main(int argc, char* argv[]){
   alias_map_["baseline"] = "(1)";  
   if(options.doGen){
     if(options.channel == "em" || options.channel == "et" || options.channel == "mt"){
-      if(options.channel == "em") alias_map_["baseline"] = "(mt_1<50 && passed && pt_1>13 && pt_2>10 && eta_1<2.5 && eta_2<2.4)";
+      if(options.channel == "em") alias_map_["baseline"] = "(passed && pt_1>13 && pt_2>10 && eta_1<2.5 && eta_2<2.4)";
       else if(options.channel == "et") alias_map_["baseline"] = "(mt_1<50 && passed && pt_1>26 && pt_2>20 && eta_1<2.1 && eta_2<2.3)";
       else if(options.channel == "mt") alias_map_["baseline"] = "(mt_1<50 && passed && pt_1>23 && pt_2>20 && eta_1<2.4 && eta_2<2.3)";
     } else if (options.channel == "tt"){
@@ -409,47 +417,140 @@ int main(int argc, char* argv[]){
     }
   } else{
     if(options.channel == "em"){
-      alias_map_["baseline"] = "(iso_1<0.15 && iso_2<0.15 && !leptonveto && mt_1<50)";
+      alias_map_["baseline"] = "(iso_1<0.15 && iso_2<0.2 && !leptonveto)";
     } else if (options.channel == "et" || options.channel == "mt"){
-      alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && mt_1<50)";    
+      alias_map_["baseline"] = "(iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && mt_1<50)";    
+    } else if (options.channel == "mt"){
+      alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && mt_1<50)";    
     } else if (options.channel == "tt"){
       alias_map_["baseline"] = "(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)";
     }
   }
   
-  if(!options.doGen){
-    alias_map_["vbf_vtight"] = "(n_jets>=2 && jdeta>4. && mjj>800 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
-    alias_map_["vbf_vvtight"] = "(n_jets>=2 && jdeta>4. && mjj>900 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
-    if (options.channel == "em" || options.channel == "et" || options.channel == "mt"){
-      alias_map_["vbf_run1"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";
-      alias_map_["vbf_tight"] = "(n_jets>=2 && jdeta>4. && mjj>700 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
-      alias_map_["vbf_loose"] = "(!"+alias_map_["vbf_tight"]+" && n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";    
+  if(!options.doGen && !options.do2D){
+    if (options.channel == "em" || options.channel == "et" || options.channel == "mt"){   
       if(options.channel == "et"){
-        alias_map_["1jet_low"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_2<=45)";
-        alias_map_["1jet_high_boosted"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && met>30 && pt_tt>100 && pt_2>45)";
+        alias_map_["vbf_high"] = "(n_jets==2 && mjj>800 && pt_tt>100)";
+        alias_map_["vbf_low"] = "(n_jets==2 && mjj>500 && (mjj<800 || pt_tt<100))";
+        alias_map_["1jet_high"] = "((n_jets==1 || (n_jets==2 && mjj<500)) && pt_tt>140)";
+        alias_map_["1jet_low"] = "(n_jets==1 || (n_jets==2 && mjj<500)) && ((pt_2>30 && pt_2<40) || (pt_2>40 && pt_tt<140))";
+        alias_map_["0jet_high"] = "(pt_2>50 && n_jets==0)";
+        alias_map_["0jet_low"] = "(pt_2>20 && pt_2<50 && n_jets==0)";
       } else if(options.channel == "mt"){
-        alias_map_["1jet_low"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2<=45)";
-        alias_map_["1jet_high"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt<=100 && pt_2>45)";
-        alias_map_["1jet_high_boosted"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_2>45)";
+        alias_map_["vbf_high"] = "(n_jets==2 && mjj>800 && pt_tt>100)";
+        alias_map_["vbf_low"] = "(n_jets==2 && mjj>500 && (mjj<800 || pt_tt<100))";
+        alias_map_["1jet_high"] = "((n_jets==1 || (n_jets==2 && mjj<500)) && pt_tt>140)";
+        alias_map_["1jet_low"] = "(n_jets==1 || (n_jets==2 && mjj<500)) && ((pt_2>30 && pt_2<40) || (pt_2>40 && pt_tt<140))";
+        alias_map_["0jet_high"] = "(pt_2>50 && n_jets==0)";
+        alias_map_["0jet_low"] = "(pt_2>20 && pt_2<50 && n_jets==0)";
       } else if(options.channel == "em"){
-        alias_map_["1jet_low"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2<=45)";
-        alias_map_["1jet_high"] = "(!"+alias_map_["vbf_run1"]+" && n_jets>=1 && n_bjets==0 && pt_2>45)";
-      }
-      if(options.channel == "em"){
-        alias_map_["0jet_low"] = "(n_jets==0 && pt_2<=35)";
-        alias_map_["0jet_high"] = "(n_jets==0 && pt_2>35)";
-      } else{
-        alias_map_["0jet_low"] = "(n_jets==0 && pt_2<=45)";
-        alias_map_["0jet_high"] = "(n_jets==0 && pt_2>45)";
+        alias_map_["vbf_high"] = "(pt_2>15 && n_jets==2 && mjj>800 && pzeta>-10)";
+        alias_map_["vbf_low"] = "(pt_2>15 && n_jets==2 && mjj>500 && mjj<800 && pzeta>-10)";
+        alias_map_["1jet_high"] = "(pt_2>35 && (n_jets==1 || (n_jets==2 && mjj < 500)) && pzeta>-35)";
+        alias_map_["1jet_low"] = "(pt_2>15 && pt_2<35 && pzeta>-35 && (n_jets==1 || (n_jets==2 && mjj < 500)))";
+        alias_map_["0jet_high"] = "(pt_2>35 && n_jets==0 && pzeta>-35)";
+        alias_map_["0jet_low"] = "(pt_2>15 && pt_2<35 && pzeta>-35 && n_jets==0)";
       }
     }
     else if (options.channel == "tt"){
-      alias_map_["vbf"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && pt_tt>100 && n_jetsingap==0)";
-      alias_map_["1jet_run1_tt"] = "(!"+alias_map_["vbf"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100)";
-      alias_map_["1jet_lowboost"] = "(!"+alias_map_["vbf"]+" && n_jets>=1 && n_bjets==0 && pt_tt>100 && pt_tt<=170)";
-      alias_map_["1jet_highboost"] = "(!"+alias_map_["vbf"]+" && n_jets>=1 && n_bjets==0 && pt_tt>170 )";
-      alias_map_["0jet"] = "(!"+alias_map_["vbf"]+" && !"+alias_map_["1jet_run1_tt"]+" && n_jets>=0 && n_bjets==0)";
+      alias_map_["vbf_high"] = "(pt_1>50 && n_jets>=2 && pt_tt>100 && mjj>500 && jdeta>2.5 && n_jetsingap<1)";
+      alias_map_["vbf_low"] = "(pt_1>50 && n_jets>=2 && jdeta>2.5 && n_jetsingap < 1)*((pt_tt<100 && mjj>300) || (pt_tt>100 && mjj>300 && mjj<500))";
+      alias_map_["1jet_high"] = "(pt_1>50 && pt_tt>170)*(n_jets==1 || (n_jets>=2 && !(mjj>300 && jdeta>2.5 && n_jetsingap<1)))";
+      alias_map_["1jet_low"] = "(pt_1>50 && pt_tt>100 && pt_tt<170)*(n_jets==1 || (n_jets>=2 && !(mjj>300 && jdeta>2.5 && n_jetsingap<1)))";
+      alias_map_["0jet"] = "(pt_1>50 && n_jets==0)";
     }
+  }
+  
+  if(options.do2D){
+      
+    std::vector<double> mjj_2D;
+    std::vector<double> pt_tt_2D;
+    std::vector<double> pt_2D;
+      
+    if(options.channel == "et" || options.channel == "mt" || options.channel == "em"){
+      mjj_2D = {300,700,1100,1500,3000};
+      pt_tt_2D = {0,100,150,200,250,300,500};
+      if(options.channel == "em") pt_2D = {15,20,25,30,35,300};
+      else pt_2D = {30,35,40,45,50,55,300}; 
+    } else if (options.channel == "tt"){
+      mjj_2D = {0,300,500,800};
+      pt_tt_2D = {0,100,170,300};
+      pt_2D = {50};  
+    }
+    
+    std::string cat_0jet;
+    std::string cat_1jet;
+    std::string cat_vbf; 
+      
+    if(options.channel == "et" || options.channel == "mt"){
+      cat_0jet = "(pt_2>30 && n_jets==0)";
+      cat_1jet = "(pt_2>30 && (n_jets==1 || (n_jets==2 && mjj<300) || n_jets>2)) ";
+      cat_vbf  = "(pt_2>30 && n_jets==2 && mjj>300)"; 
+    } else if(options.channel == "em"){
+      cat_0jet = "(pt_2>15 && pzeta>-35 && n_jets==0)";
+      cat_1jet = "(pt_2>15 && pzeta>-35 && (n_jets==1 || (n_jets==2 && mjj<300) || n_jets>2)) ";
+      cat_vbf  = "(pt_2>15 && pzeta>-10 && n_jets==2 && mjj>300)"; 
+    } else if(options.channel == "tt"){
+      cat_0jet = "(pt_1>50 && n_jets==0)";
+      cat_1jet = "((pt_1>50 && n_jets==1 || ((n_jets>=2)* !(jdeta>2.5 && n_jetsingap<1 && pt_tt>100)))) ";
+      cat_vbf  = "((pt_1>50 && n_jets>=2)*(jdeta>2.5 && n_jetsingap<1 && pt_tt>100))"; 
+    }
+    
+    unsigned count_cats=10;
+    
+    for(unsigned i=0; i<pt_2D.size(); ++i){
+       double min = pt_2D[i];
+       double max;
+       std::string alias_cut;
+       std::string alias_string;
+       unsigned lep_num=2;
+       if(options.channel == "tt") lep_num=1;
+       if(i!=pt_2D.size()-1){
+         max = pt_2D[i+1];
+         alias_cut = Form("*(pt_%u>%.0f && pt_%u<=%.0f)",lep_num,min,lep_num,max);
+         alias_string = Form("%u0jet_pt=%.0f:%.0f",count_cats,min,max);
+       } else {
+         alias_cut = Form("*(pt_%u>%.0f)",lep_num,min);  
+         alias_string = Form("%u0jet_pt=%.0f:inf",count_cats,min);
+       } 
+       alias_map_[alias_string] = cat_0jet+alias_cut;
+       count_cats++;
+    }
+    
+    for(unsigned i=0; i<pt_tt_2D.size(); ++i){
+       double min = pt_tt_2D[i];
+       double max;
+       std::string alias_cut;
+       std::string alias_string;
+       if(i!=pt_tt_2D.size()-1){
+         max = pt_tt_2D[i+1];
+         alias_cut = Form("*(pt_tt>%.0f && pt_tt<=%.0f)",min,max);
+         alias_string = Form("%u1jet_ptH=%.0f:%.0f",count_cats,min,max);
+       } else {
+         alias_cut = Form("*(pt_tt>%.0f)",min);  
+         alias_string = Form("%u1jet_ptH=%.0f:inf",count_cats,min);
+       } 
+       alias_map_[alias_string] = cat_1jet+alias_cut;
+       count_cats++;
+    }
+    
+    for(unsigned i=0; i<mjj_2D.size(); ++i){
+       double min = mjj_2D[i];
+       double max;
+       std::string alias_cut;
+       std::string alias_string;
+       if(i!=mjj_2D.size()-1){
+         max = mjj_2D[i+1];
+         alias_cut = Form("*(mjj>%.0f && mjj<=%.0f)",min,max);
+         alias_string = Form("%uvbf_mjj=%.0f:%.0f",count_cats,min,max);
+       } else {
+         alias_cut = Form("*(mjj>%.0f)",min);  
+         alias_string = Form("%uvbf_mjj=%.0f:inf",count_cats,min);
+       } 
+       alias_map_[alias_string] = cat_vbf+alias_cut;
+       count_cats++;
+    }
+
   }
   
   TFile *f0 = new TFile(options.input.c_str());
@@ -458,6 +559,7 @@ int main(int argc, char* argv[]){
   if(options.doGen) tree_name = "gen_ntuple";
   else              tree_name = "ntuple"; 
   TTree *tree = (TTree*)f0->Get(tree_name.c_str());
+
   double E_res1_ = -9999;
   double E_res2_ = -9999;
   double pt_res1_ = -9999;
@@ -696,42 +798,75 @@ int main(int argc, char* argv[]){
   
   std::string uncert_output_name = options.outputDirname+"/"+options.outputFilename;
   std::ofstream uncert_output(uncert_output_name);
+  
   uncert_output << "Cat";
-  if(options.doScale) uncert_output << "\tScale";
-  if(options.doPDF) uncert_output << "\tNNPDF";
+  if(options.doScale) uncert_output << "\tScale\tScale_error";
+  if(options.doPDF) uncert_output << "\tNNPDF\tNNPDF_error";
   if(options.doPDF) uncert_output << "\tPDF";
-  if(options.doAlphaS) uncert_output << "\tAlpha_S";
-  if(options.doAcceptance) uncert_output << "\tAcceptance";
+  if(options.doAlphaS) uncert_output << "\tAlpha_S\tAlpha_S_error";
+  if(options.doAcceptance) uncert_output << "\tAcceptance\tAcceptance_error";
   uncert_output << std::endl;
+  
+  //TFile *f = new TFile((options.outputDirname+"/AcceptancePlots.root").c_str(),"UPDATE");
   
   for(it_type iterator = alias_map_.begin(); iterator != alias_map_.end(); iterator++) {
     
     double scale_uncert;
+    double scale_uncert_error;
     double pdf_uncert;
     double nnpdf_uncert;
+    double nnpdf_uncert_error;
     double alpha_s_uncert;
+    double alpha_s_uncert_error;
     
     bool intLabels = options.variable=="n_jets" || options.variable=="n_jetsingap" || options.variable=="n_bjets";
-      
-    std::cout << "Category: " << iterator->first << std::endl;
-    std::string title = options.channel+" "+iterator->first;
+    
+    std::string cat_string = iterator->first;
+    std::cout << cat_string << std::endl;
+    if(options.do2D && cat_string!="inclusive" && cat_string !="baseline"){
+      cat_string.erase(cat_string.begin(),cat_string.begin()+2);
+    }
+    std::cout << cat_string << std::endl;
+    
+    std::cout << "Category: " << cat_string << std::endl;
+    std::string title = options.channel+" "+cat_string;
     
     std::string cat;
-    if(iterator->first == "inclusive") cat = "*("+iterator->second+")";
+    if(cat_string == "inclusive") cat = "*("+iterator->second+")";
     else cat = "*("+iterator->second+" && "+alias_map_["baseline"]+")";
-
+    
     tree->Draw((options.variable+">>h_noweight").c_str(),("1"+cat).c_str(),"goff");
     double A = h_noweight->Integral(0,h_noweight->GetNbinsX()+1);
     
+    bool check_non_zero = A>0;
+    
+    double A_error;
+    h_noweight->IntegralAndError(0,h_noweight->GetNbinsX()+1,A_error);
+    
     double fract_acceptance=0;
+    double fract_acceptance_error=0;
     if(options.doAcceptance){
       fract_acceptance  = A/total_inclusive;
-      std::cout << "Category Acceptance = " << fract_acceptance*100 << " %" << std::endl;
+      fract_acceptance_error = fract_acceptance * A_error/A;
+      std::cout << "Category Acceptance = " << fract_acceptance*100 << " % +/- " << fract_acceptance_error*100 << " %" << std::endl;
+      
+      if(options.makePlots && cat_string=="baseline"){
+        TFile *f = new TFile((options.outputDirname+"/AcceptancePlots.root").c_str(),"UPDATE");
+        std::string new_name = options.variable+"_"+"_"+options.channel+"_"+options.sample;
+        TH1D *h_to_write = new TH1D(new_name.c_str(),"",std::get<1>(labels_map_[options.variable]),std::get<2>(labels_map_[options.variable]),std::get<3>(labels_map_[options.variable])); 
+        tree->Draw((options.variable+">>"+new_name).c_str(),("1"+cat).c_str(),"goff");
+        h_to_write->Write();
+        delete h_to_write;
+        f->Close();
+        delete f;
+      }
     }
     
     if(options.doScale){
       double Amin_scale = A;
       double Amax_scale = A;
+      unsigned max_index = 0;
+      unsigned min_index = 0;
       
       std::vector<TH1D*> hists;
       if(options.makePlots) hists.push_back((TH1D*)h_noweight->Clone());
@@ -744,15 +879,33 @@ int main(int argc, char* argv[]){
         wt_name+=cat;
         tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
         double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
-        Amin_scale = std::min(wt_sum,Amin_scale);
-        Amax_scale = std::max(wt_sum,Amax_scale);
+        if(wt_sum > Amax_scale){
+          max_index = i;
+          Amax_scale = wt_sum;
+        }
+        if(wt_sum < Amin_scale){
+          min_index = i;
+          Amin_scale = wt_sum;
+        }
         if(options.makePlots){
           hists.push_back((TH1D*)htemp->Clone());
         }
       }
       
+      scale_uncert = (Amax_scale-Amin_scale)/(2*A);
+      
+      std::string wt_name = Form("(scale_variation_wts[%u]*%f - scale_variation_wts[%u]*%f)",max_index,scale_variation_addwt[max_index],min_index,scale_variation_addwt[min_index]);
+      wt_name+=cat;
+      tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");
+      double MaxDiff_error;
+      htemp->IntegralAndError(0,htemp->GetNbinsX()+1,MaxDiff_error);
+      
+      scale_uncert_error = scale_uncert*MaxDiff_error/(Amax_scale-Amin_scale);
+
+      std::cout << "Scale Uncertainty = " << scale_uncert*100 << " % +/- " << scale_uncert_error*100 << " %" << std::endl;
+      
       if(options.makePlots){
-        std::string out_name = options.outputDirname+"/"+options.variable+"_"+options.channel+"_scale_variations_"+iterator->first;
+        std::string out_name = options.outputDirname+"/"+options.variable+"_"+options.channel+"_scale_variations_"+cat_string;
         std::vector<std::string> legend_entries;
         legend_entries.push_back("#mu_{R}=1, #mu_{F}=1"    );
         legend_entries.push_back("#mu_{R}=1, #mu_{F}=2"    );
@@ -761,11 +914,8 @@ int main(int argc, char* argv[]){
         legend_entries.push_back("#mu_{R}=2, #mu_{F}=2"    );
         legend_entries.push_back("#mu_{R}=0.5, #mu_{F}=1"  );
         legend_entries.push_back("#mu_{R}=0.5, #mu_{F}=0.5");
-        DrawHist(hists, legend_entries, out_name, true,true,title,intLabels,false);
+        DrawHist(hists, legend_entries, out_name, true,true,title,intLabels,false,0.6);
       }
-      
-      scale_uncert = (Amax_scale-Amin_scale)/(2*A);
-      std::cout << "Scale Uncertainty = " << scale_uncert*100 << " %" <<std::endl;
     }
     
     if(options.doPDF){
@@ -782,9 +932,9 @@ int main(int argc, char* argv[]){
         std::string wt_name = Form("NNPDF_wts[%u]",i);
         wt_name+="*"+add_wt;
         wt_name+=cat;
-        tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
+        tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff"); 
         double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
-        if(wt_sum > A) APlus.push_back(wt_sum);
+        if(wt_sum >= A) APlus.push_back(wt_sum);
         else if(wt_sum < A) AMinus.push_back(wt_sum);
         if(options.makePlots){
           h_nnpdf->SetBinContent(i,wt_sum);    
@@ -796,15 +946,20 @@ int main(int argc, char* argv[]){
       DeltaMax.push_back(DeltaMax_NNPDF);
       DeltaMin.push_back(DeltaMin_NNPDF);
       
+      std::vector<double> A_all;
+      A_all.push_back(A);
+      A_all.insert(A_all.end(), AMinus.begin(), AMinus.end());
+      A_all.insert(A_all.end(), APlus.begin(), APlus.end());
+      TH1D *h = new TH1D("h","",20,0.95,1.05);
+      for(unsigned i=0; i<A_all.size(); ++i){
+        h->Fill(A_all[i]/A);    
+      }
+      nnpdf_uncert = h->GetRMS();
+      nnpdf_uncert_error = h->GetRMSError();
+      
+      std::cout << "NNPDF Uncertainty = " << nnpdf_uncert*100 << " % +/- " << nnpdf_uncert_error*100 << " %" << std::endl;
+      
       if(options.makePlots){
-        std::vector<double> A_all;
-        A_all.push_back(A);
-        A_all.insert(A_all.end(), AMinus.begin(), AMinus.end());
-        A_all.insert(A_all.end(), APlus.begin(), APlus.end());
-        TH1D *h = new TH1D("h","",20,0.95,1.05);
-        for(unsigned i=0; i<A_all.size(); ++i){
-          h->Fill(A_all[i]/A);    
-        }
         SetStyle();
         h->SetStats(100001100);
         h->SetLineColor(4);
@@ -818,13 +973,11 @@ int main(int argc, char* argv[]){
         tex->SetTextSize(23);
         tex->SetLineWidth(2);
         tex->Draw();
-        std::string out_name = options.outputDirname+"/"+options.channel+"_nnpdf_spread_"+iterator->first;
+        std::string out_name = options.outputDirname+"/"+options.channel+"_nnpdf_spread_"+cat_string;
         c1->Print((out_name+".pdf").c_str());
-        delete h;
       }
+      delete h;
       
-      
-      nnpdf_uncert = (DeltaMax_NNPDF - DeltaMin_NNPDF)/(2*A);
       std::cout << "A:" << A << std::endl;
       std::cout << "nnpdf + = " << (A + StandDev(APlus,A)) << std::endl;
       std::cout << "nnpdf - = " << (A - StandDev(AMinus,A)) << std::endl;
@@ -883,22 +1036,23 @@ int main(int argc, char* argv[]){
       std::sort(DeltaMin.begin(), DeltaMin.end(), less_than());
       
       if(options.makePlots){
-        std::string out_name = options.outputDirname+"/"+options.variable+"_"+options.channel+"_pdf_acceptance_"+iterator->first;
+        std::string out_name = options.outputDirname+"/"+options.variable+"_"+options.channel+"_pdf_acceptance_"+cat_string;
         std::vector<std::string> legend_entries;
         legend_entries.push_back("NNPDF");
         legend_entries.push_back("CT10");
         legend_entries.push_back("MMHT");
-        DrawHist(hists, legend_entries, out_name, false,false, title, intLabels,false);
+        DrawHist(hists, legend_entries, out_name, false,false, title, intLabels,false,0.6);
       }
       
       pdf_uncert = (DeltaMax[0] - DeltaMin[0])/(2*A);
-      std::cout << "NNPDF Uncertainty = " << nnpdf_uncert*100 << std::endl;
       std::cout << "PDF Uncertainty = " << pdf_uncert*100 << " %" << std::endl;
     }
     
     if(options.doAlphaS){
       double Amin_as = A;
       double Amax_as = A;
+      int min_index = -1;
+      int max_index = -1;
       
       std::vector<TH1D*> hists;
       if(options.makePlots) hists.push_back((TH1D*)h_noweight->Clone());
@@ -910,36 +1064,62 @@ int main(int argc, char* argv[]){
         wt_name+=cat;
         tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
         double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
-        Amin_as = std::min(wt_sum,Amin_as);
-        Amax_as = std::max(wt_sum,Amax_as);
+        
+        if(wt_sum > Amax_as){
+          max_index = i;
+          Amax_as = wt_sum;
+        }
+        if(wt_sum < Amin_as){
+          min_index = i;
+          Amin_as = wt_sum;
+        }
         if(options.makePlots){
           hists.push_back((TH1D*)htemp->Clone());
         }
       }
       if(options.makePlots){
-        std::string out_name = options.outputDirname+"/"+options.variable+"_"+options.channel+"_alpha_s_"+iterator->first;
+        std::string out_name = options.outputDirname+"/"+options.variable+"_"+options.channel+"_alpha_s_"+cat_string;
         std::vector<std::string> legend_entries;
         legend_entries.push_back("#alpha_{s} = 0.118");
         legend_entries.push_back("#alpha_{s} = 0.117");
         legend_entries.push_back("#alpha_{s} = 0.119");
-        DrawHist(hists, legend_entries, out_name, true,true, title, intLabels,false);
+        DrawHist(hists, legend_entries, out_name, true,true, title, intLabels,false,0.006);
       }
       
       alpha_s_uncert = 1.5*(Amax_as-Amin_as)/(2*A);
-      std::cout << "Alpha_s Uncertainty = " << alpha_s_uncert*100 << " %" << std::endl;
+      
+      std::string max_weight_string;
+      if(max_index != -1) max_weight_string = Form("alpha_s_wts[%u]*%f",max_index,alpha_s_variation_addwt[max_index]);
+      else max_weight_string = "1";
+      std::string min_weight_string;
+      if(min_index != -1) min_weight_string = Form("alpha_s_wts[%u]*%f",min_index,alpha_s_variation_addwt[min_index]);
+      else min_weight_string = "1";
+      std::string wt_name = "("+max_weight_string+"-"+min_weight_string+")";
+      wt_name+=cat;
+      tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");
+      double MaxDiff_error;
+      htemp->IntegralAndError(0,htemp->GetNbinsX()+1,MaxDiff_error);
+      
+      alpha_s_uncert_error = alpha_s_uncert*MaxDiff_error/(Amax_as-Amin_as);
+      
+      std::cout << "Alpha_s Uncertainty = " << alpha_s_uncert*100 << " % +/- " << alpha_s_uncert_error*100 << " %" << std::endl;
     }
-
-    uncert_output << iterator->first;
-    if(options.doScale) uncert_output << "\t" << scale_uncert;
-    if(options.doPDF) uncert_output << "\t" << nnpdf_uncert;
-    if(options.doPDF) uncert_output << "\t" << pdf_uncert;
-    if(options.doAlphaS) uncert_output << "\t" << alpha_s_uncert;
-    if(options.doAcceptance) uncert_output << "\t" << fract_acceptance;
-    uncert_output << std::endl;
+    
+    if(check_non_zero){
+      uncert_output << cat_string;
+      if(options.doScale) uncert_output << "\t" << scale_uncert << "\t" << scale_uncert_error;
+      if(options.doPDF) uncert_output << "\t" << nnpdf_uncert << "\t" << nnpdf_uncert_error;
+      if(options.doPDF) uncert_output << "\t" << pdf_uncert;
+      if(options.doAlphaS) uncert_output << "\t" << alpha_s_uncert << "\t" << alpha_s_uncert_error;
+      if(options.doAcceptance) uncert_output << "\t" << fract_acceptance << "\t" << fract_acceptance_error;
+      uncert_output << std::endl;
+    }
     
   }
   uncert_output.close();
   
+  //f->Close();
+  f0->Close();
   
   return 0;
 }

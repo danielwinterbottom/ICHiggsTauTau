@@ -9,6 +9,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 
 #include <string>
 
@@ -38,7 +39,14 @@ class HTTGenAnalysis : public ModuleBase {
   std::vector<double> CT10_wts_;
   std::vector<double> CT10_alpha_s_wts_;
   std::vector<double> MMHT_wts_;
-
+  
+  unsigned count_ee_;
+  unsigned count_em_;
+  unsigned count_et_;
+  unsigned count_mm_;
+  unsigned count_mt_;
+  unsigned count_tt_;
+  
   bool passed_;
   double pt_1_;
   double pt_2_;
@@ -49,6 +57,8 @@ class HTTGenAnalysis : public ModuleBase {
   double met_;
   double mt_1_;
   double mt_2_;
+  double pzeta_;
+  double n_bjets_;
   unsigned n_jets_;
   unsigned n_jetsingap_;
   double jpt_1_;  
