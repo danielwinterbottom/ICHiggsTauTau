@@ -120,9 +120,9 @@ FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
 if analysis == 'sm':
   CONFIG='scripts/configsm2016.json'
 else:
-  CONFIG='scripts/config2016.json'
+  CONFIG='scripts/tempconfig.json'
   
-FILELIST='filelists/Aug11_MC_80X'
+FILELIST='filelists/Oct06_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -140,12 +140,19 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
     signal_mc += [
       'GluGluHToTauTau_M-'+mass,
       'VBFHToTauTau_M-'+mass,
-      'ZHToTauTau_M-'+mass,
-      'WplusHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass,
-      'TTHToTauTau_M-'+mass
-     # 'reHLT_GluGluHToTauTau_M-'+mass,
-     # 'reHLT_VBFHToTauTau_M-'+mass,
+      'GluGluHToTauTau_PythiaFragment_Up_M-'+mass,
+      'VBFHToTauTau_PythiaFragment_Up_M-'+mass,
+      'GluGluHToTauTau_PythiaFragment_Down_M-'+mass,
+      'VBFHToTauTau_PythiaFragment_Down_M-'+mass,
+      'GluGluHToTauTau_herwigpp_M-'+mass,
+      'VBFHToTauTau_herwigpp_M-'+mass,
+      'VBFHToTauTau_amcatnlo_M-'+mass,
+      #'ZHToTauTau_M-'+mass,
+      #'WplusHToTauTau_M-'+mass,
+      #'WminusHToTauTau_M-'+mass,
+      #'TTHToTauTau_M-'+mass
+      #'reHLT_GluGluHToTauTau_M-'+mass,
+      #'reHLT_VBFHToTauTau_M-'+mass,
     ]
 if options.proc_mssm or options.proc_all:
   gghmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
@@ -365,7 +372,7 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
     FLATJSONPATCH=FLATJSONPATCHDYSIG
     if os.path.exists('%(FILELIST)s_%(sa)s.dat' %vars()):
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 50
+      nperjob = 1
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())

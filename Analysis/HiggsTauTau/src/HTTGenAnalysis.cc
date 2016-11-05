@@ -47,6 +47,7 @@ namespace ic {
     if(fs_){  
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
+      outtree_->Branch("wt"       , &wt_       );
       if(do_theory_uncert_){
         outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
         outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
@@ -93,6 +94,7 @@ namespace ic {
     
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     event_ = (unsigned long long) eventInfo->event();
+    wt_ = 1;
     
     if(do_theory_uncert_){
       scale_variation_wts_.clear();

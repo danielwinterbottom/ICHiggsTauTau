@@ -1,15 +1,5 @@
 import FWCore.ParameterSet.Config as cms
 
-## [L1Object]
-icL1ObjectProducer = cms.EDProducer('ICL1ObjectProducer',
-  inputTag_L1TEGamma = cms.untracked.InputTag("caloStage2Digis","EGamma","HLT2"),
-  inputTag_L1TMuon   = cms.untracked.InputTag("gmtStage2Digis","Muon","HLT2"),
-  inputTag_L1TTau    = cms.untracked.InputTag("caloStage2Digis","Tau","HLT2"),
-  inputTag_L1TJet    = cms.untracked.InputTag("caloStage2Digis","Jet","HLT2"),
-  inputTag_L1TSum    = cms.untracked.InputTag("caloStage2Digis","EtSum","HLT2")
-)
-## [L1Object]
-
 ## [Candidate]
 icCandidateProducer = cms.EDProducer('ICCandidateProducer',
   branch  = cms.string("l1EmIsolated"),

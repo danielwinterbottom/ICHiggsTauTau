@@ -234,6 +234,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
        elec_pt = 26;
        tau_pt = 30;
       }
+      if (strategy_type == strategy::smspring16){
+       elec_pt = 26;
+      }
    }
 
    } else if (era_type == era::data_2011){
@@ -298,7 +301,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       pair_dr = 0.5;    
     } else{
       muon_pt = 20.0; //cross trigger
-      muon_eta = 2.1;
+      if (strategy_type == strategy::smspring16) muon_eta = 2.4;
+      else muon_eta = 2.1;
       tau_pt = 20;
       tau_eta = 2.3;
       min_taus = 1;
@@ -306,6 +310,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       if(strategy_type == strategy::mssmspring16){
         tau_pt = 30;
         muon_pt = 23;
+      }
+      if (strategy_type == strategy::smspring16){
+       muon_pt = 23;
       }
     }
 
@@ -891,9 +898,6 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
            .set_mc(mc_type)
            .set_era(era_type)
            .set_is_data(is_data)
-           .set_is_embedded(is_embedded)
-           .set_do_leptonplustau(js["do_leptonplustau"].asBool())
-           .set_do_singlelepton(js["do_singlelepton"].asBool())
            .set_pair_label("ditau"));
 
      }
@@ -1569,6 +1573,11 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
   }
 
   if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
+  if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+       output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+    httWeights.set_do_tau_fake_weights(true);
+  }
+
   
 
     BuildModule(httWeights);
@@ -1653,7 +1662,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
-    .set_sync_output_name("output/SYNCFILE_"+output_name)
+    .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
     .set_iso_study(js["iso_study"].asBool())
     .set_tau_id_study(js["tau_id_study"].asBool())
     .set_qcd_study(js["qcd_study"].asBool())
@@ -1664,8 +1673,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_is_data(is_data)
     .set_systematic_shift(addit_output_folder!="")
     .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
-    .set_do_HLT_Studies(js["store_hltpaths"].asBool())
     .set_do_theory_uncert(js["do_theory_uncert"].asBool())
+    .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
     //Good to avoid accidentally overwriting existing output files when syncing
     .set_write_tree(!js["make_sync_ntuple"].asBool()));
 

@@ -71,6 +71,7 @@ class HTTGenAnalysis : public ModuleBase {
   double jdeta_;
   double m_vis_;
   double pt_tt_;
+  double wt_;
   
  public:
   HTTGenAnalysis(std::string const& name);
