@@ -1492,6 +1492,7 @@ namespace ic {
         puppimet = puppiMet_vec.at(0);
       }
     }
+    if(strategy_ == strategy::smspring16) pfmet = event->GetPtr<Met>("pfMET");
 
     pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
     mvapt_tt_ = (ditau->vector() + mets->vector()).pt();

@@ -46,8 +46,12 @@ namespace ic {
     if (strategy_ ==strategy::fall15){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
       syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
-    } else if (strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16){
+    } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
+      if(met_label_ == "pfMET"){
+          process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeIPFMET_2016BCD.root";
+          std::cout << "blah!" << std::endl;
+      }
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root"; //2015 file, systs not available for 2016 yet!
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
@@ -124,16 +128,16 @@ namespace ic {
      vispX+= sel_vis_parts[i]->vector().px();
      vispY+= sel_vis_parts[i]->vector().py();
    }
-
+  
   if(store_boson_pt_){
-    event->Add("genpX", genpX);
-    event->Add("genpY", genpY);
-    event->Add("vispX", vispX);
-    event->Add("vispY", vispY);
+    if(!event->ExistsInEvent("genpX")) event->Add("genpX", genpX);
+    if(!event->ExistsInEvent("genpY")) event->Add("genpY", genpY);
+    if(!event->ExistsInEvent("vispX")) event->Add("vispX", vispX);
+    if(!event->ExistsInEvent("vispY")) event->Add("vispY", vispY);
   }
 
-  event->Add("genpT", genpT);
-  event->Add("genM", genM);
+  if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);
+  if(!event->ExistsInEvent("genM")) event->Add("genM", genM);
 
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
