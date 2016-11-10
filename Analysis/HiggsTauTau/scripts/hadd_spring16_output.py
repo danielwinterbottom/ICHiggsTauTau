@@ -192,7 +192,14 @@ sample_list = [
    'TTHToTauTau_M-125',
    'reHLT_GluGluHToTauTau_M-125',
    'reHLT_VBFHToTauTau_M-125',
-   'QCD_Pt-15to80_MixedSamples_MuEnrichedPt5'
+   'QCD_Pt-15to80_MixedSamples_MuEnrichedPt5',
+   'GluGluHToTauTau_PythiaFragment_Up_M-125',
+   'VBFHToTauTau_PythiaFragment_Up_M-125',
+   'GluGluHToTauTau_PythiaFragment_Down_M-125',
+   'VBFHToTauTau_PythiaFragment_Down_M-125',
+   'GluGluHToTauTau_herwigpp_M-125',
+   'VBFHToTauTau_herwigpp_M-125',
+   'VBFHToTauTau_amcatnlo_M-125'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']

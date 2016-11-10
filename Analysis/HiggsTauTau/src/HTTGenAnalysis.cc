@@ -71,6 +71,7 @@ namespace ic {
       outtree_->Branch("pzeta"       , &pzeta_       );
       outtree_->Branch("n_bjets"     , &n_bjets_     );
       outtree_->Branch("n_jets"      , &n_jets_      );
+      outtree_->Branch("n_jets_nofilter"      , &n_jets_nofilter_      );
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
       outtree_->Branch("jpt_1"       , &jpt_1_       );
       outtree_->Branch("jpt_2"       , &jpt_2_       );
@@ -95,6 +96,8 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
+    
+    wt_ = eventInfo->weight("wt_mc_sign");
     
     if(do_theory_uncert_){
       scale_variation_wts_.clear();
@@ -260,13 +263,9 @@ namespace ic {
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
       m_vis_ = (lep1.vector()+lep2.vector()).M();
       n_bjets_ = 0;
-      if(pt_1_ >= pt_2_){
-        mt_1_ = MT(&lep1, &met);
-        mt_2_ = MT(&lep2, &met);
-      } else{
-        mt_1_ = MT(&lep2, &met);
-        mt_2_ = MT(&lep1, &met);  
-      }
+      mt_1_ = MT(&lep1, &met);
+      mt_2_ = MT(&lep2, &met);
+
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
       ditau->AddCandidate("lep1",&lep1);
       ditau->AddCandidate("lep2",&lep2);
@@ -288,7 +287,9 @@ namespace ic {
     }
     
     std::vector<ic::GenJet> filtered_jets;
-
+    
+    n_jets_nofilter_ = gen_jets.size();
+    //std::cout << n_jets_nofilter_ << std::endl; 
     for(unsigned i=0; i<gen_jets.size(); ++i){
       ic::GenJet jet = *gen_jets[i];
       double jetPt = jet.vector().Pt();

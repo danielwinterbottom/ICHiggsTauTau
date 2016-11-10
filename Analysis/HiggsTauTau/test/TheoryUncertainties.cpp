@@ -427,7 +427,7 @@ int main(int argc, char* argv[]){
     }
   }
   
-  if(!options.doGen && !options.do2D){
+  if(!options.do2D){
     if (options.channel == "em" || options.channel == "et" || options.channel == "mt"){   
       if(options.channel == "et"){
         alias_map_["vbf_high"] = "(n_jets==2 && mjj>800 && pt_tt>100)";
@@ -525,10 +525,10 @@ int main(int argc, char* argv[]){
        if(i!=pt_tt_2D.size()-1){
          max = pt_tt_2D[i+1];
          alias_cut = Form("*(pt_tt>%.0f && pt_tt<=%.0f)",min,max);
-         alias_string = Form("%u1jet_ptH=%.0f:%.0f",count_cats,min,max);
+         alias_string = Form("%uboosted_ptH=%.0f:%.0f",count_cats,min,max);
        } else {
          alias_cut = Form("*(pt_tt>%.0f)",min);  
-         alias_string = Form("%u1jet_ptH=%.0f:inf",count_cats,min);
+         alias_string = Form("%uboosted_ptH=%.0f:inf",count_cats,min);
        } 
        alias_map_[alias_string] = cat_1jet+alias_cut;
        count_cats++;
@@ -662,7 +662,7 @@ int main(int argc, char* argv[]){
   
   double total_inclusive = 0;
   if(options.doAcceptance){
-    gen_tree->Draw("event>>htemp","","goff");  
+    gen_tree->Draw("event>>htemp","wt","goff");  
     total_inclusive = htemp->Integral(0,htemp->GetNbinsX()+1);
   }
   
@@ -835,7 +835,7 @@ int main(int argc, char* argv[]){
     if(cat_string == "inclusive") cat = "*("+iterator->second+")";
     else cat = "*("+iterator->second+" && "+alias_map_["baseline"]+")";
     
-    tree->Draw((options.variable+">>h_noweight").c_str(),("1"+cat).c_str(),"goff");
+    tree->Draw((options.variable+">>h_noweight").c_str(),("wt"+cat).c_str(),"goff");
     double A = h_noweight->Integral(0,h_noweight->GetNbinsX()+1);
     
     bool check_non_zero = A>0;
@@ -847,6 +847,7 @@ int main(int argc, char* argv[]){
     double fract_acceptance_error=0;
     if(options.doAcceptance){
       fract_acceptance  = A/total_inclusive;
+      std::cout << A << "   " << total_inclusive << std::endl;
       fract_acceptance_error = fract_acceptance * A_error/A;
       std::cout << "Category Acceptance = " << fract_acceptance*100 << " % +/- " << fract_acceptance_error*100 << " %" << std::endl;
       
@@ -854,7 +855,8 @@ int main(int argc, char* argv[]){
         TFile *f = new TFile((options.outputDirname+"/AcceptancePlots.root").c_str(),"UPDATE");
         std::string new_name = options.variable+"_"+"_"+options.channel+"_"+options.sample;
         TH1D *h_to_write = new TH1D(new_name.c_str(),"",std::get<1>(labels_map_[options.variable]),std::get<2>(labels_map_[options.variable]),std::get<3>(labels_map_[options.variable])); 
-        tree->Draw((options.variable+">>"+new_name).c_str(),("1"+cat).c_str(),"goff");
+        tree->Draw((options.variable+">>"+new_name).c_str(),("wt"+cat).c_str(),"goff");
+        h_to_write->Scale(1/total_inclusive);
         h_to_write->Write();
         delete h_to_write;
         f->Close();
@@ -874,7 +876,7 @@ int main(int argc, char* argv[]){
       for(unsigned i=0; i<9; ++i){
         if(i==0 || i==5 || i==7) continue;
         std::string add_wt = Form("%f",scale_variation_addwt[i]);
-        std::string wt_name = Form("scale_variation_wts[%u]",i);
+        std::string wt_name = Form("wt*scale_variation_wts[%u]",i);
         wt_name+="*"+add_wt;
         wt_name+=cat;
         tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
@@ -894,7 +896,7 @@ int main(int argc, char* argv[]){
       
       scale_uncert = (Amax_scale-Amin_scale)/(2*A);
       
-      std::string wt_name = Form("(scale_variation_wts[%u]*%f - scale_variation_wts[%u]*%f)",max_index,scale_variation_addwt[max_index],min_index,scale_variation_addwt[min_index]);
+      std::string wt_name = Form("wt*(scale_variation_wts[%u]*%f - scale_variation_wts[%u]*%f)",max_index,scale_variation_addwt[max_index],min_index,scale_variation_addwt[min_index]);
       wt_name+=cat;
       tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");
       double MaxDiff_error;
@@ -906,6 +908,7 @@ int main(int argc, char* argv[]){
       
       if(options.makePlots){
         std::string out_name = options.outputDirname+"/"+options.variable+"_"+options.channel+"_scale_variations_"+cat_string;
+        if(options.doGen) out_name = options.outputDirname+"/gen_"+options.variable+"_"+options.channel+"_scale_variations_"+cat_string;
         std::vector<std::string> legend_entries;
         legend_entries.push_back("#mu_{R}=1, #mu_{F}=1"    );
         legend_entries.push_back("#mu_{R}=1, #mu_{F}=2"    );
@@ -929,7 +932,7 @@ int main(int argc, char* argv[]){
       std::vector<double> APlus;
       for(unsigned i=0; i<100; ++i){
         std::string add_wt = Form("%f",NNPDF_addwt[i]);
-        std::string wt_name = Form("NNPDF_wts[%u]",i);
+        std::string wt_name = Form("wt*NNPDF_wts[%u]",i);
         wt_name+="*"+add_wt;
         wt_name+=cat;
         tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff"); 
@@ -986,7 +989,7 @@ int main(int argc, char* argv[]){
       double a0_CT10=0;
       for(unsigned i=0; i<51; ++i){
         std::string add_wt = Form("%f",CT10_addwt[i]);
-        std::string wt_name = Form("CT10_wts[%u]",i);
+        std::string wt_name = Form("wt*CT10_wts[%u]",i);
         wt_name+="*"+add_wt;
         wt_name+=cat;
         tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
@@ -1011,7 +1014,7 @@ int main(int argc, char* argv[]){
       double a0_MMHT=0;
       for(unsigned i=0; i<51; ++i){
         std::string add_wt = Form("%f",MMHT_addwt[i]);
-        std::string wt_name = Form("MMHT_wts[%u]",i);
+        std::string wt_name = Form("wt*MMHT_wts[%u]",i);
         wt_name+="*"+add_wt;
         wt_name+=cat;
         tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
@@ -1059,7 +1062,7 @@ int main(int argc, char* argv[]){
       
       for(unsigned i=0; i<2; ++i){
         std::string add_wt = Form("%f",alpha_s_variation_addwt[i]);
-        std::string wt_name = Form("alpha_s_wts[%u]",i);
+        std::string wt_name = Form("wt*alpha_s_wts[%u]",i);
         wt_name+="*"+add_wt;
         wt_name+=cat;
         tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
@@ -1079,6 +1082,7 @@ int main(int argc, char* argv[]){
       }
       if(options.makePlots){
         std::string out_name = options.outputDirname+"/"+options.variable+"_"+options.channel+"_alpha_s_"+cat_string;
+        if(options.doGen) out_name = options.outputDirname+"/gen_"+options.variable+"_"+options.channel+"_alpha_s_"+cat_string;
         std::vector<std::string> legend_entries;
         legend_entries.push_back("#alpha_{s} = 0.118");
         legend_entries.push_back("#alpha_{s} = 0.117");
@@ -1094,7 +1098,7 @@ int main(int argc, char* argv[]){
       std::string min_weight_string;
       if(min_index != -1) min_weight_string = Form("alpha_s_wts[%u]*%f",min_index,alpha_s_variation_addwt[min_index]);
       else min_weight_string = "1";
-      std::string wt_name = "("+max_weight_string+"-"+min_weight_string+")";
+      std::string wt_name = "wt*("+max_weight_string+"-"+min_weight_string+")";
       wt_name+=cat;
       tree->Draw((options.variable+">>htemp").c_str(),wt_name.c_str(),"goff");
       double MaxDiff_error;

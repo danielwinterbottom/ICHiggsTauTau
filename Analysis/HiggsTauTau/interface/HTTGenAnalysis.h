@@ -59,6 +59,7 @@ class HTTGenAnalysis : public ModuleBase {
   double mt_2_;
   double pzeta_;
   double n_bjets_;
+  unsigned n_jets_nofilter_;
   unsigned n_jets_;
   unsigned n_jetsingap_;
   double jpt_1_;  

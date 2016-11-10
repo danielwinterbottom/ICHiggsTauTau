@@ -146,7 +146,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
       'VBFHToTauTau_PythiaFragment_Down_M-'+mass,
       'GluGluHToTauTau_herwigpp_M-'+mass,
       'VBFHToTauTau_herwigpp_M-'+mass,
-      'VBFHToTauTau_amcatnlo_M-'+mass,
+      #'VBFHToTauTau_amcatnlo_M-'+mass,
       #'ZHToTauTau_M-'+mass,
       #'WplusHToTauTau_M-'+mass,
       #'WminusHToTauTau_M-'+mass,
