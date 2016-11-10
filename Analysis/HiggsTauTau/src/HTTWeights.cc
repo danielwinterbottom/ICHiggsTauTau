@@ -1653,10 +1653,9 @@ namespace ic {
             ele_idiso = ele_idiso_data/ele_idiso_mc;
 
         } else if (mc_ == mc::spring16_80X){
-           e_signed_eta = elec->eta();
            auto args_1 = std::vector<double>{pt,e_signed_eta};
            auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
-           if(e_iso < 0.1 || true){ // 'true' only for sync since most group dont use anti isolated SFs
+           if(e_iso < 0.1){
              ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data());
            } else ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
         }
@@ -1715,7 +1714,7 @@ namespace ic {
         } else if(mc_ == mc::spring16_80X){
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
-           if(m_iso<0.15 || true){ // 'true' only for sync since most group dont use anti isolated SFs
+           if(m_iso<0.15){
              mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
            } else mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
         }

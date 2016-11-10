@@ -950,7 +950,7 @@ if(channel != channel::wmnu && !js["store_hltpaths"].asBool()) {
     .set_channel(channel)
     .set_fs(fs.get())
     .set_pair_label("ditau")
-    .set_met_label(met_label)
+    .set_met_label("pfMET")
     .set_strategy(strategy_type)
     .set_mva_met_from_vector(mva_met_mode==1)
     .set_faked_tau_selector(faked_tau_selector)

@@ -50,8 +50,8 @@ namespace ic {
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
       if(met_label_ == "pfMET"){
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeIPFMET_2016BCD.root";
-          std::cout << "blah!" << std::endl;
       }
+      std::cout << "process file = " << process_file << std::endl;
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root"; //2015 file, systs not available for 2016 yet!
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
@@ -155,9 +155,21 @@ namespace ic {
       corrector_->Correct(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
     }
     //Now stick this back into our met object:
+    //if(met_label_ == "pfMET"){
+    //   std::cout<< "Before Recoil corrections:" << std::endl;
+    //   std::cout << "MET Pt = " << mvaMet->pt() << std::endl;
+    //   std::cout << "MET phi = " << mvaMet->phi() << std::endl;
+    //   std::cout << "MET Energy = " << mvaMet->energy() << std::endl;
+    //}
     mvaMet->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
     mvaMet->set_phi(atan2(correctedMety,correctedMetx));
     mvaMet->set_energy(sqrt(met_res_e*met_res_e+correctedMetx*correctedMetx+correctedMety*correctedMety));
+    //if(met_label_ == "pfMET"){
+    //   std::cout<< "After Recoil corrections:" << std::endl;
+    //   std::cout << "MET Pt = " << mvaMet->pt() << std::endl;
+    //   std::cout << "MET phi = " << mvaMet->phi() << std::endl;
+    //   std::cout << "MET Energy = " << mvaMet->energy() << std::endl;
+    //}
   } else {
     correctedMetx = mvaMetx;
     correctedMety = mvaMety;

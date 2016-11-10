@@ -224,7 +224,7 @@ namespace ic {
       }
     }
    
-    std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
+    std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     Met *pfmet = pfMet_vec.at(0); 
     event->Add("pfMET", pfmet);
    
