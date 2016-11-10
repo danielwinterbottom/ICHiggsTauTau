@@ -48,6 +48,10 @@ namespace ic {
       syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
     } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
+      if(met_label_ == "pfMET"){
+          process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeIPFMET_2016BCD.root";
+      }
+      std::cout << "process file = " << process_file << std::endl;
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root"; //2015 file, systs not available for 2016 yet!
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
@@ -124,16 +128,16 @@ namespace ic {
      vispX+= sel_vis_parts[i]->vector().px();
      vispY+= sel_vis_parts[i]->vector().py();
    }
-
+  
   if(store_boson_pt_){
-    event->Add("genpX", genpX);
-    event->Add("genpY", genpY);
-    event->Add("vispX", vispX);
-    event->Add("vispY", vispY);
+    if(!event->ExistsInEvent("genpX")) event->Add("genpX", genpX);
+    if(!event->ExistsInEvent("genpY")) event->Add("genpY", genpY);
+    if(!event->ExistsInEvent("vispX")) event->Add("vispX", vispX);
+    if(!event->ExistsInEvent("vispY")) event->Add("vispY", vispY);
   }
 
-  event->Add("genpT", genpT);
-  event->Add("genM", genM);
+  if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);
+  if(!event->ExistsInEvent("genM")) event->Add("genM", genM);
 
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
@@ -151,9 +155,21 @@ namespace ic {
       corrector_->Correct(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
     }
     //Now stick this back into our met object:
+    //if(met_label_ == "pfMET"){
+    //   std::cout<< "Before Recoil corrections:" << std::endl;
+    //   std::cout << "MET Pt = " << mvaMet->pt() << std::endl;
+    //   std::cout << "MET phi = " << mvaMet->phi() << std::endl;
+    //   std::cout << "MET Energy = " << mvaMet->energy() << std::endl;
+    //}
     mvaMet->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
     mvaMet->set_phi(atan2(correctedMety,correctedMetx));
     mvaMet->set_energy(sqrt(met_res_e*met_res_e+correctedMetx*correctedMetx+correctedMety*correctedMety));
+    //if(met_label_ == "pfMET"){
+    //   std::cout<< "After Recoil corrections:" << std::endl;
+    //   std::cout << "MET Pt = " << mvaMet->pt() << std::endl;
+    //   std::cout << "MET phi = " << mvaMet->phi() << std::endl;
+    //   std::cout << "MET Energy = " << mvaMet->energy() << std::endl;
+    //}
   } else {
     correctedMetx = mvaMetx;
     correctedMety = mvaMety;
