@@ -73,7 +73,7 @@ namespace ic {
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
     };
     bkg_schemes_["em_default"] = {
-      PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"QCD"}            ,TColor::GetColor(250,202,255)),
+      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}            ,TColor::GetColor(250,202,255)),
       PlotBkgComponent("ewk","Electroweak"          ,{"VV","W","ZLL"}              ,TColor::GetColor(222, 90,106)),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}            ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,TColor::GetColor(248,206,104))
@@ -679,6 +679,24 @@ namespace ic {
     FixOverlay();
     canv->Update();
     pads[0]->GetFrame()->Draw();
+
+/*    TLine *line = new TLine(30., 0., 30., 40);  
+    line->SetLineStyle(3);
+    line->SetLineWidth(3);
+    line->SetLineColor(1);
+//    DrawVerticalLine(pads[0],line,40,16000); //mT
+//    DrawVerticalLine(pads[0],line,70,16000); //mT
+    DrawVerticalLine(pads[0],line,-20,24000); //Dzeta
+    TLatex *ex_latex = new TLatex();
+    ex_latex->SetTextSize(0.03);
+    ex_latex->SetTextFont(62);
+//    ex_latex->SetTextAlign(31);
+//    ex_latex->DrawLatex(36,14300,"#splitline{Signal}{region}"); // mutau mT 
+    ex_latex->SetTextAlign(11);
+   // ex_latex->DrawLatex(75,9300,"#splitline{High-m_{T}}{control region}"); //mutau mT
+    ex_latex->DrawLatex(-15,18500,"Signal region"); //DZeta
+    canv->Update();*/
+
     std::string log = log_y_ ? "_log" : "";
     if(!supress_output_){
       canv->Print((plot_name_+log+".pdf").c_str());
