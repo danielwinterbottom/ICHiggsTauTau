@@ -52,10 +52,6 @@ namespace ic {
 
     //EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
     //double gen_ht = eventInfo->gen_ht() ;
-    std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
-    double lheHT = HTFromLHEParticles(lheParticles);
-    double gen_ht = lheHT;
-
 
     std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
 
@@ -147,8 +143,15 @@ namespace ic {
       }
     }
     else if (variable_ == cutVar::ht){
+      try{
+      std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
+      double lheHT = HTFromLHEParticles(lheParticles);
+      double gen_ht = lheHT;
       if (gen_ht >= min_ && gen_ht < max_){
         return 0;
+      }
+      } catch (...) {
+        //std::cout << " -- lheParticles branch not found, go ahead ... " << std::endl;
       }
     }
     return 1;

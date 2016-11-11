@@ -8,8 +8,8 @@ fi
 
 DOSUBMIT=$1
 DO4PARAMS=$2
-infolder=output_run2ana_161003_ICHEP/ #_datacard/
-outfolder=cards_run2ana_161003_ICHEP_sig/ #_datacard/
+infolder=output_run2ana_161031_full/ #_datacard/
+outfolder=cards_run2ana_161031_full_sig/ #_datacard/
 blind=true
 #zvvstat=18
 zvvstat=0

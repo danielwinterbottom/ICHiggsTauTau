@@ -263,7 +263,7 @@ int main(int argc, char* argv[]){
     return 1;
   }
   for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
-  
+
   // Create ROOT output fileservice
   std::ofstream checkfile;
   checkfile.open((output_folder+"tmp.txt").c_str());
@@ -302,8 +302,8 @@ int main(int argc, char* argv[]){
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   double loose_photon_pt, loose_photon_eta, medium_photon_pt, medium_photon_eta, tight_photon_pt, tight_photon_eta;
 
-  double muon_iso = is2012 ? 0.12 : 0.1;//0.15 -> too loose
-  double veto_muon_iso = is2012 ? 0.2 : 0.15;//0.25 -> too loose??
+  double muon_iso = is2012 ? 0.12 : 0.15;//0.1;//0.15 -> too loose
+  double veto_muon_iso = is2012 ? 0.2 : 0.25;//0.15;//0.25 -> too loose??
 
   elec_dz = 0.1;
   elec_dxy = 0.02;
@@ -315,14 +315,14 @@ int main(int argc, char* argv[]){
   veto_muon_dxy = 0.2;
 
   elec_pt = 20.0;
-  elec_eta = 2.4;
+  elec_eta = 2.5;//2.4;
   muon_pt = 20.0;
-  muon_eta = 2.1;
+  muon_eta = 2.4;//2.1;
 
   veto_elec_pt = 10.0;
-  veto_elec_eta = 2.4;
+  veto_elec_eta = 2.5;//2.4;
   veto_muon_pt = 10.0;
-  veto_muon_eta = 2.1;
+  veto_muon_eta = 2.4;//2.1;
 
   loose_photon_pt = 15;
   loose_photon_eta = 2.5;
@@ -361,7 +361,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Misc Modules
   // ------------------------------------------------------------------------------------
-  
+
 
 
   //print the event content
@@ -429,7 +429,7 @@ int main(int argc, char* argv[]){
 
   TH1D data_pu_up;
   TH1D data_pu_down;
-  
+
   if(era==era::data_2012_moriond){
     data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
@@ -583,7 +583,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Muon Modules
   // ------------------------------------------------------------------------------------
-  
+
   // Muon Veto
   CopyCollection<Muon> vetoMuonCopyCollection("CopyToVetoMuons","muons","vetoMuons");
 
@@ -761,12 +761,12 @@ int main(int argc, char* argv[]){
       jetIDFilter.set_predicate(bind(PFJetID2016, _1));
       //jetIDFilter.set_predicate(bind(PFJetID2015, _1));
     }
-    
+
   // Jet pT eta filter
   SimpleFilter<PFJet> jetPtEtaFilter = SimpleFilter<PFJet>
     ("JetPtEtaFilter")
     .set_input_label(jettype).set_predicate(bind(MinPtMaxEta, _1, jetptprecut, 4.7));
-  
+
   // Jet eta filter - cut on 3.0<eta<3.2
   SimpleFilter<PFJet> jetEtaFilter = SimpleFilter<PFJet>
     ("JetEtaFilter")
@@ -804,7 +804,7 @@ int main(int argc, char* argv[]){
     .set_candidate_name_first("jet1")
     .set_candidate_name_second("jet2")
     .set_select_leading_pair(true)
-    .set_output_label("jjLeadingCandidates");                                                        
+    .set_output_label("jjLeadingCandidates");
 
   OneCollCompositeProducer<PFJet> jjAllPairProducer = OneCollCompositeProducer<PFJet>
     ("JetJetAllPairProducer")
@@ -812,7 +812,7 @@ int main(int argc, char* argv[]){
     .set_candidate_name_first("jet1")
     .set_candidate_name_second("jet2")
     .set_select_leading_pair(false)
-    .set_output_label("jjAllCandidates");                                                        
+    .set_output_label("jjAllCandidates");
 
   int npairs=1;
   if(donoskim)npairs=0;
@@ -826,7 +826,7 @@ int main(int argc, char* argv[]){
   if(!donoskim && !doAllPairs){
     jetPairFilter.set_predicate(bind(OrderedPairPtSelection, _1,jet1ptcut, jet2ptcut, cutaboveorbelow) && !bind(PairDEtaLessThan, _1, detajjcut) && bind(PairMassInRange, _1,mjjcut,100000) );
   }
-  
+
   if (doAllPairs) {
     jetPairFilter.set_input_label("jjAllCandidates");
     jetPairFilter.set_predicate(!bind(PairDEtaLessThan, _1, 3.2) && bind(PairMassInRange, _1,600,100000) && bind(PairPtSelection, _1,30,30)  );
@@ -1028,7 +1028,7 @@ int main(int argc, char* argv[]){
       analysis.AddModule(&ZhighhtFilter);
     }
   }
-   
+
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   if (true) { //it was "is_data"; now changed to apply on MC badChargedHadronFilter & badMuonFilter; but be careful to change correctly the cfg file
     // see line 459
@@ -1043,7 +1043,7 @@ int main(int argc, char* argv[]){
   analysis.AddModule(&jetIDFilter);
   //don't want pile-up jets to calculate HT,MHT...
   analysis.AddModule(&alljetsCopyCollection);
-  
+
   //prepare collections of photons
   analysis.AddModule(&loosePhotonCopyCollection);
   analysis.AddModule(&loosePhotonFilter);
@@ -1051,14 +1051,14 @@ int main(int argc, char* argv[]){
   analysis.AddModule(&mediumPhotonFilter);
   analysis.AddModule(&tightPhotonCopyCollection);
   analysis.AddModule(&tightPhotonFilter);
-  
+
   //prepare collections of veto leptons
   analysis.AddModule(&vetoElectronCopyCollection);
   analysis.AddModule(&vetoElectronFilter);
   analysis.AddModule(&vetoElectronIso);
   analysis.AddModule(&vetoMuonCopyCollection);
   analysis.AddModule(&vetoMuonFilter);
-  
+
   //filter leptons before making jet pairs and changing MET...
   analysis.AddModule(&selElectronCopyCollection);
   analysis.AddModule(&selElectronFilter);
@@ -1066,26 +1066,26 @@ int main(int argc, char* argv[]){
   analysis.AddModule(&selMuonCopyCollection);
   analysis.AddModule(&selMuonFilter);
   analysis.AddModule(&elecMuonOverlapFilter);
-  
+
   //filter taus for plots
   analysis.AddModule(&tauPtEtaFilter);
-  
+
   //if (printEventList) analysis.AddModule(&hinvPrintList);
-  
+
   //Module to do jet smearing and systematics
   //analysis.AddModule(&jecStudy);
   analysis.AddModule(&ModifyJetMET);
-  
+
   //deal with removing overlap with selected leptons
   analysis.AddModule(&jetMuonOverlapFilter);
   analysis.AddModule(&jetElecOverlapFilter);
   //no need to clean taus, we don't do it in the signal selection.
-  
+
   //add met without leptons for plots
   analysis.AddModule(&metNoMuons);
   analysis.AddModule(&metNoElectrons);
   analysis.AddModule(&metNoENoMu);
-  
+
   //filter taus
   analysis.AddModule(&tauDzFilter);
   analysis.AddModule(&tauIsoFilter);

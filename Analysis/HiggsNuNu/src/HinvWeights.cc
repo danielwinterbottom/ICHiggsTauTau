@@ -440,9 +440,6 @@ namespace ic {//namespace
   int HinvWeights::Execute(TreeEvent *event) {
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
-     std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
-     double lheHT = HTFromLHEParticles(lheParticles);
-
     if(do_lumixs_weights_){
       //std::cout<<"weight before lumixs: "<<eventInfo->total_weight()<<std::endl;
       //std::cout<<"intended lumixsweight: "<<lumixsweight<<std::endl;
@@ -930,6 +927,10 @@ namespace ic {//namespace
     bool zeroParton = false;
 
     if (do_w_soup_) {
+      try{
+        std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
+        double lheHT = HTFromLHEParticles(lheParticles);
+
       if (mc_ == mc::fall15_76X){
         //double gen_ht = eventInfo->gen_ht() ;
         double gen_ht = lheHT;
@@ -958,6 +959,9 @@ namespace ic {//namespace
         if (partons >= 4) eventInfo->set_weight("wsoup", w4_);
 
         if (partons == 0) zeroParton = true;
+      }
+      } catch (...) {
+        //std::cout << " -- lheParticles branch not found, go ahead ... " << std::endl;
       }
     }
 
@@ -998,11 +1002,18 @@ namespace ic {//namespace
     }
 
     if (do_dy_soup_htbinned_){
+      try{
+        std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
+        double lheHT = HTFromLHEParticles(lheParticles);
+
       double gen_ht = lheHT;
       if (100 <= gen_ht&&gen_ht <200) eventInfo->set_weight("dysoup", zw1_);
       if (200 <= gen_ht&&gen_ht <400) eventInfo->set_weight("dysoup", zw2_);
       if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("dysoup", zw3_);
       if (gen_ht >= 600) eventInfo->set_weight("dysoup", zw4_);
+      } catch (...) {
+        //std::cout << " -- lheParticles branch not found, go ahead ... " << std::endl;
+      }
     }
 
     if (!save_weights_) event->Add("NoParton",zeroParton);
@@ -1087,6 +1098,7 @@ namespace ic {//namespace
 
     //bool count_jets = false;
     unsigned partons = 0;
+    unsigned n_partons = 0;
     for (unsigned i = 0; i < parts.size(); ++i) {
       unsigned id = abs(parts[i]->pdgid());
       std::vector<bool> flags=parts[i]->statusFlags();
@@ -1094,10 +1106,13 @@ namespace ic {//namespace
       //if (count_jets) {
       if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
       //}
-      //if (id == bosonid) count_jets = true; 
+      //if (id == bosonid) count_jets = true;
     }
     if (partons > 4) {
-      std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+      ++n_partons;
+      //std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+      //std::cout << " -- Warning making soup, event has " << partons << " partons!" << std::endl;
+      //[31/10/16, 14:04:29] Anne-Marie Magnan: it's fine, it's just that at ME level I guess I was expecting at some point to have no more than 4 but pythia history tracking has changed so maybe we have now sometimes partons from PS....
     //throw;
     }
     return partons;

@@ -44,13 +44,13 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
 do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
-  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP_withSYS
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161031_test1
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP_test
+  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161031_full
   #JOBDIRPREFIX=jobs_lighttree_160929
   #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
-  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP_withSYS
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161031_test1
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP_test
+  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161031_full
   #OUTPUTPREFIX=output_lighttree_160929
   #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
   OUTPUTDIR=$OUTPUTPREFIX/
@@ -60,27 +60,27 @@ do
       JOBDIR=$JOBDIRPREFIX/$SYST/
       OUTPUTDIR=$OUTPUTPREFIX/$SYST/
   fi
-  
+
   if [ "$SYST" = "JESUP" ]
       then
       SYSTOPTIONS="--dojessyst=true --jesupordown=true --dojersyst=false"
   fi
-  
+
   if [ "$SYST" = "JESDOWN" ]
       then
       SYSTOPTIONS="--dojessyst=true --jesupordown=false --dojersyst=false"
-  fi  
-  
+  fi
+
   if [ "$SYST" = "JERBETTER" ]
       then
       SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=true"
-  fi  
-  
+  fi
+
   if [ "$SYST" = "JERWORSE" ]
       then
       SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
-  fi  
-  
+  fi
+
   if [ "$SYST" = "UESUP" ]
 	then
 	SYSTOPTIONS="--douessyst=true --uesupordown=true"
@@ -147,14 +147,16 @@ do
 
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
-    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
+    #PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
+    PREFIX=root://gfe02.grid.hep.ph.ic.ac.uk:1095//store/user/${PRODUSER}/${PRODUCTION}_MC
     if [ "$PRODUCTION" = "Dec18" ]
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
 
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_WJetsToLNu-mg*`
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*MC_DYJetsToLL-mg-m10to50*`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_EWK*`
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
     do
       echo "Processing files in "$FILELIST
@@ -164,7 +166,8 @@ do
 
 
       MCOPTION="--mc=spring16_80X"
-      PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
+      #PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
+      PREFIX=root://gfe02.grid.hep.ph.ic.ac.uk:1095//store/user/${PRODUSER}/${PRODUCTION}_MC
       sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
       INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 
