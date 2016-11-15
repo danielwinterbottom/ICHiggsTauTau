@@ -1,6 +1,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau//interface/city.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/ElectronEffectiveArea.h"
 
 #include <boost/lexical_cast.hpp>
 #include "TRandom2.h"
@@ -68,6 +69,10 @@ namespace ic {
 
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta) {
     return ( (cand->pt() > minPt) && (std::fabs(cand->eta()) < maxEta) ); 
+  }
+
+  bool MinPtMaxSCEta(Electron const* cand, double const& minPt, double const& maxEta) {
+    return ( (cand->pt() > minPt) && (std::fabs(cand->sc_eta()) < maxEta) ); 
   }
 
   bool EtaOutsideRange(Candidate const* cand, double const& minEtaCut, double const& maxEtaCut) {
@@ -658,7 +663,7 @@ namespace ic {
         && elec->hadronic_over_em()         <0.0597
         && ooemoop                          <0.012
         && elec->gsf_tk_nhits()             <=2
-     //   && fabs(elec->dxy_vertex())         <0.060279
+	      //   && fabs(elec->dxy_vertex())         <0.060279
 	      //  && fabs(elec->dz_vertex())          <0.800538
 	      //  && dbiso/elec->pt()                 <0.164369
         ) ||
@@ -674,6 +679,82 @@ namespace ic {
    //     && dbiso/elec->pt()                 <0.212604
         ) )
         );
+
+  }
+
+  bool TightElectronFullIDSpring15(Electron const* elec, double const& rho) {//function for spring15 ID 25ns !! needs updating
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    double lEA = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+
+    double relisoWithEA = (elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - rho*lEA))/elec->pt();
+
+    return(
+	   !elec->has_matched_conversion()
+	   && ( (in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0101
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00926
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.0336
+		 && elec->hadronic_over_em()         <0.0597
+		 && ooemoop                          <0.012
+		 && elec->gsf_tk_nhits()             <=2
+		 && fabs(elec->dxy_vertex())         <0.0111
+		 && fabs(elec->dz_vertex())          <0.0466
+		 && relisoWithEA                     <0.0354
+		 ) ||
+		(!in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0279
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00724
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.0918
+		 && elec->hadronic_over_em()         <0.0615
+		 && ooemoop                          <0.00999
+		 && elec->gsf_tk_nhits()             <=1
+		 && fabs(elec->dxy_vertex())         <0.0351
+		 && fabs(elec->dz_vertex())          <0.417
+		 && relisoWithEA                     <0.0646
+		 ) )
+	   );
+
+  }
+
+  bool VetoElectronFullIDSpring15(Electron const* elec, double const& rho) {//function for spring15 ID 25ns !! needs updating
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    double lEA = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+
+    double relisoWithEA = (elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - rho*lEA))/elec->pt();
+
+    return(
+	   !elec->has_matched_conversion()
+	   && ( (in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0114
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.0152
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.216
+		 && elec->hadronic_over_em()         <0.181
+		 && ooemoop                          <0.207
+		 && elec->gsf_tk_nhits()             <=2
+		 && fabs(elec->dxy_vertex())         <0.0564
+		 && fabs(elec->dz_vertex())          <0.472
+		 && relisoWithEA                     <0.126
+		 ) ||
+		(!in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0352
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.0113
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.237
+		 && elec->hadronic_over_em()         <0.116
+		 && ooemoop                          <0.174
+		 && elec->gsf_tk_nhits()             <=3
+		 && fabs(elec->dxy_vertex())         <0.222
+		 && fabs(elec->dz_vertex())          <0.921
+		 && relisoWithEA                     <0.144
+		 ) )
+	   );
 
   }
 
@@ -1270,7 +1351,8 @@ namespace ic {
 
   bool MuonTight(Muon const* muon) {
     bool tightCut = ( 
-        muon->is_global() && 
+        muon->is_global() &&
+	muon->is_pf() &&
         //muon->is_tracker() &&
         //muon->it_tracker_hits() > 10 &&
         muon->it_pixel_hits() > 0 &&

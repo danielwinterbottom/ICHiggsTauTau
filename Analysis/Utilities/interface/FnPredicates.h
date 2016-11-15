@@ -61,6 +61,7 @@ namespace ic {
   // Candidate
   //----------------------------------------------------------
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta);
+  bool MinPtMaxSCEta(Electron const* cand, double const& minPt, double const& maxEta);
   bool EtaOutsideRange(Candidate const* cand, double const& minEtaCut, double const& maxEtaCut);
   bool VertexDz(Tau const* cand, double const& vertexZ);
   //----------------------------------------------------------
@@ -83,6 +84,8 @@ namespace ic {
   bool TightElectronIDSpring15(Electron const* elec);
   bool VetoElectronIDPhys14(Electron const* elec);
   bool VetoElectronIDSpring15(Electron const* elec);
+  bool TightElectronFullIDSpring15(Electron const* elec, double const& rho);
+  bool VetoElectronFullIDSpring15(Electron const* elec, double const& rho);
   bool VetoElectronID(Electron const* elec);
   bool ElectronSimpleWP85Iso(Electron const* elec);
   bool ElectronSimpleWP85ID(Electron const* elec);

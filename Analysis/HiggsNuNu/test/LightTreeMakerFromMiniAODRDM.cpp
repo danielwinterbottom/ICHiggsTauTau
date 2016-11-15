@@ -309,8 +309,8 @@ int main(int argc, char* argv[]){
   elec_dxy = 0.02;
   veto_elec_dz = 0.2;
   veto_elec_dxy = 0.04;
-  muon_dz = 0.2;//is2012 ? 0.2 : 0.5;
-  muon_dxy = 0.045;//is2012 ? 0.045 : 0.2;
+  muon_dz = is2012 ? 0.2 : 0.5;
+  muon_dxy = is2012 ? 0.045 : 0.2;
   veto_muon_dz = 0.5;
   veto_muon_dxy = 0.2;
 
@@ -346,6 +346,8 @@ int main(int argc, char* argv[]){
   std::cout << boost::format("%-15s %-10s\n") % "veto muon_eta:" % veto_muon_eta;
   std::cout << boost::format("%-15s %-10s\n") % "muon_dxy:" % muon_dxy;
   std::cout << boost::format("%-15s %-10s\n") % "muon_dz:" % muon_dz;
+  std::cout << boost::format("%-15s %-10s\n") % "veto_muon_dxy:" % veto_muon_dxy;
+  std::cout << boost::format("%-15s %-10s\n") % "veto_muon_dz:" % veto_muon_dz;
   std::cout << boost::format("%-15s %-10s\n") % "muon_iso:" % muon_iso;
   std::cout << boost::format("%-15s %-10s\n") % "veto_muon_iso:" % veto_muon_iso;
 
@@ -549,13 +551,14 @@ int main(int argc, char* argv[]){
   // Electron Veto
   CopyCollection<Electron>  vetoElectronCopyCollection("CopyToVetoElectrons","electrons","vetoElectrons");
 
-  SimpleFilter<Electron> vetoElectronFilter = SimpleFilter<Electron>
+  ComplexFilter<Electron,EventInfo,double> vetoElectronFilter = ComplexFilter<Electron,EventInfo,double>
     ("VetoElectronPtEtaFilter")
-    .set_input_label("vetoElectrons").set_predicate(bind(MinPtMaxEta, _1, veto_elec_pt, veto_elec_eta) &&
-						    bind(VetoElectronIDSpring15, _1) && 
-						    bind(fabs, bind(&Electron::dxy_vertex, _1)) < veto_elec_dxy && 
-						    bind(fabs, bind(&Electron::dz_vertex, _1)) < veto_elec_dz
+    .set_primary_input_label("vetoElectrons").set_predicate(bind(MinPtMaxSCEta, _1, veto_elec_pt, veto_elec_eta) &&
+							    bind(VetoElectronFullIDSpring15, _1, _2)// && 
+    //                                              bind(fabs, bind(&Electron::dxy_vertex, _1)) < veto_elec_dxy && 
+    //						    bind(fabs, bind(&Electron::dz_vertex, _1)) < veto_elec_dz
 						    )
+    .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::lepton_rho,_1))						   
     .set_min(0)
     .set_max(999);
 
@@ -563,13 +566,14 @@ int main(int argc, char* argv[]){
  
   //electron selection 
   CopyCollection<Electron>  selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
-  SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>
+  ComplexFilter<Electron,EventInfo,double> selElectronFilter = ComplexFilter<Electron,EventInfo,double>
     ("SelElectronPtEtaFilter")
-    .set_input_label("selElectrons").set_predicate(bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
-						   bind(TightElectronIDSpring15, _1) &&
-						   bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
-						   bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
+    .set_primary_input_label("selElectrons").set_predicate(bind(MinPtMaxSCEta, _1, elec_pt, elec_eta) &&
+						   bind(TightElectronFullIDSpring15, _1, _2)// &&
+						   //bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
+						   //bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
 						   )
+    .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::lepton_rho,_1))						   
     .set_min(0)
     .set_max(999);
 
@@ -592,9 +596,9 @@ int main(int argc, char* argv[]){
     .set_input_label("vetoMuons")
     .set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
 		   bind(MuonLoose, _1) &&
-		   bind(PF03IsolationVal<Muon>, _1, 0.5, false) < veto_muon_iso
-		   && bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
-		   && bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
+		   bind(PF04IsolationVal<Muon>, _1, 0.5, false) < veto_muon_iso
+		   //&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
+		   //&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
 		   )
     .set_min(0)
     .set_max(999);
@@ -617,8 +621,8 @@ int main(int argc, char* argv[]){
     ("SelMuonPtEtaFilter")
     .set_input_label("selMuons").set_predicate(bind(MinPtMaxEta, _1, muon_pt, muon_eta) &&
 					       bind(MuonTight, _1) && 
-					       bind(PF03IsolationVal<Muon>, _1, 0.5, false) < muon_iso &&
-					       bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
+					       bind(PF04IsolationVal<Muon>, _1, 0.5, false) < muon_iso
+					       && bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
 					       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
 					       )
     .set_min(0)
@@ -786,17 +790,17 @@ int main(int argc, char* argv[]){
   OverlapFilter<PFJet, Electron> jetElecOverlapFilter = OverlapFilter<PFJet, Electron>("jetElecOverlapFilter")
     .set_input_label(jettype)
     .set_reference_label("vetoElectrons")
-    .set_min_dr(0.5);
+    .set_min_dr(0.4);
 
   OverlapFilter<PFJet, Muon> jetMuonOverlapFilter = OverlapFilter<PFJet, Muon>("jetMuonOverlapFilter")
     .set_input_label(jettype)
     .set_reference_label("vetoMuons") //NoIso")
-    .set_min_dr(0.5);
+    .set_min_dr(0.4);
 
   OverlapFilter<PFJet, Tau> jetTauOverlapFilter = OverlapFilter<PFJet, Tau>("jetTauOverlapFilter")
     .set_input_label(jettype)
     .set_reference_label("taus") //NoIso")
-    .set_min_dr(0.5);
+    .set_min_dr(0.4);
 
   OneCollCompositeProducer<PFJet> jjLeadingPairProducer = OneCollCompositeProducer<PFJet>
     ("JetJetLeadingPairProducer")
@@ -1055,14 +1059,14 @@ int main(int argc, char* argv[]){
   //prepare collections of veto leptons
   analysis.AddModule(&vetoElectronCopyCollection);
   analysis.AddModule(&vetoElectronFilter);
-  analysis.AddModule(&vetoElectronIso);
+  //analysis.AddModule(&vetoElectronIso);
   analysis.AddModule(&vetoMuonCopyCollection);
   analysis.AddModule(&vetoMuonFilter);
 
   //filter leptons before making jet pairs and changing MET...
   analysis.AddModule(&selElectronCopyCollection);
   analysis.AddModule(&selElectronFilter);
-  analysis.AddModule(&selElectronIso);
+  //analysis.AddModule(&selElectronIso);
   analysis.AddModule(&selMuonCopyCollection);
   analysis.AddModule(&selMuonFilter);
   analysis.AddModule(&elecMuonOverlapFilter);
