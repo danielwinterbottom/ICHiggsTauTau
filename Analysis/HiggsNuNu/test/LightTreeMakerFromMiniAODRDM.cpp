@@ -74,7 +74,9 @@ int main(int argc, char* argv[]){
   string prod;                    // Our production string
 
   string wstream;                 // W stream: enu, munu or taunu, or nunu for everything
-
+  bool doICHEP2016;               // true = ICHEP dataset only
+  bool doLastJSON;                // true = take last JSON 
+  bool dojetEtaCut;               // true = cut eta region between 3 and 3.2
   bool is_data;                   // true = data, false = mc
   bool dojessyst;                 // Do Jet Energy Scale Systematic Run
   bool dodatajessyst;             // Do Alternate Data Jet Energy Scale Method Systematic Run
@@ -157,6 +159,9 @@ int main(int argc, char* argv[]){
     ("mc",                    po::value<string>(&mc_str)->required())
     ("prod",                  po::value<string>(&prod)->required())
     ("wstream",               po::value<string>(&wstream)->default_value("nunu"))
+    ("doICHEP2016",           po::value<bool>(&doICHEP2016)->default_value(false))
+    ("doLastJSON",            po::value<bool>(&doLastJSON)->default_value(false))
+    ("dojetEtaCut",           po::value<bool>(&dojetEtaCut)->default_value(false))
     ("is_data",               po::value<bool>(&is_data)->required())
     ("mettype",               po::value<string>(&mettype)->default_value("pfMetType1"))
     ("jet1ptcut",             po::value<double>(&jet1ptcut)->default_value(80.))
@@ -238,6 +243,9 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "mc" % mc_str;
   std::cout << boost::format(param_fmt) % "prod" % prod;
   std::cout << boost::format(param_fmt) % "wstream" % wstream;
+  std::cout << boost::format(param_fmt) % "doICHEP2016" % doICHEP2016;
+  std::cout << boost::format(param_fmt) % "doLastJSON" % doLastJSON;
+  std::cout << boost::format(param_fmt) % "dojetEtaCut" % dojetEtaCut;
   std::cout << boost::format(param_fmt) % "is_data" % is_data;
   std::cout << boost::format(param_fmt) % "doMetFilters" % doMetFilters;
   std::cout << boost::format(param_fmt) % "filters" % filters;
@@ -302,7 +310,7 @@ int main(int argc, char* argv[]){
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   double loose_photon_pt, loose_photon_eta, medium_photon_pt, medium_photon_eta, tight_photon_pt, tight_photon_eta;
 
-  double muon_iso = is2012 ? 0.12 : 0.15;//0.1;//0.15 -> too loose
+  double muon_iso = is2012 ? 0.12 : 0.1;//0.1;//0.15 -> too loose
   double veto_muon_iso = is2012 ? 0.2 : 0.25;//0.15;//0.25 -> too loose??
 
   elec_dz = 0.1;
@@ -387,12 +395,15 @@ int main(int argc, char* argv[]){
   std::string suffix = output_name.substr( 0 , output_name.find(".root") );
   mydebugoutput.append(suffix);
 
-  // current prod 12d9 /fb
-  if (era == era::data_2016) data_json     =  "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
-  // next prod 27d66 /fb
-  //if (era == era::data_2016) data_json     =  "input/json/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON.txt";
-  // old prod 15d9 /fb
-  //if (era == era::data_2016) data_json     =  "input/json/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt";
+  if (era == era::data_2016){
+    if (doICHEP2016){ // 12d9 /fb
+      data_json     =  "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
+    }
+    else if (doLastJSON){ // 27d66 /fb
+      data_json     =  "input/json/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON.txt";
+    }
+  }
+
   LumiMask lumiMask = LumiMask("LumiMask")
    //.set_produce_output_jsons(mydebugoutput.c_str())
     .set_input_file(data_json);
@@ -419,12 +430,14 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_donly) data_pu_file   =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2015_50ns) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";//!!FIX WITH NEW PU
   if (era == era::data_2015_25ns) data_pu_file    =  "input/pileup/Data_Pileup_mb69_2015D_246908-260627-600bins.root";
-  // current prod 12d9 /fb
-  if (era == era::data_2016) data_pu_file         =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
-  // next prod 27d66 /fb
-  //if (era == era::data_2016) data_pu_file         =  "input/pileup/27d66/Data_Pileup_mb69d2_2016-600bins.root";
-  // old prod 15d9 /fb
-  //if (era == era::data_2016) data_pu_file         =  "input/pileup/15d9/Data_Pileup_mb69d2_2016-600bins.root";
+  if (era == era::data_2016){
+    if (doICHEP2016){ // 12d9 /fb
+      data_pu_file         =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
+    }
+    else if (doLastJSON){ // 27d66 /fb
+      data_pu_file         =  "input/pileup/27d66/Data_Pileup_mb69d2_2016-600bins.root";
+    }
+  }
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -449,15 +462,14 @@ int main(int argc, char* argv[]){
     data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_mb65d6_2015D_246908-260627-600bins.root", "/", "pileup");
   }
   else if(era == era::data_2016){
-    // current prod 12d9 /fb
-    data_pu_up  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
-    data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
-    // next prod 27d66 /fb
-    //data_pu_up  = GetFromTFile<TH1D>("input/pileup/27d66/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
-    //data_pu_down  = GetFromTFile<TH1D>("input/pileup/27d66/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
-    // old prod 15d9 /fb
-    //data_pu_up  = GetFromTFile<TH1D>("input/pileup/15d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
-    //data_pu_down  = GetFromTFile<TH1D>("input/pileup/15d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    if (doICHEP2016){ // 12d9 /fb
+      data_pu_up    = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
+      data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    }
+    else if (doLastJSON){ // 27d66 /fb
+      data_pu_up    = GetFromTFile<TH1D>("input/pileup/27d66/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
+      data_pu_down  = GetFromTFile<TH1D>("input/pileup/27d66/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    }
   }
 
   if (!is_data) {
@@ -1098,7 +1110,9 @@ int main(int argc, char* argv[]){
 
   //filter jets
   analysis.AddModule(&jetPtEtaFilter);
-  //analysis.AddModule(&jetEtaFilter);
+  if(dojetEtaCut){
+    analysis.AddModule(&jetEtaFilter);
+  }
 
   //if (printEventContent) analysis.AddModule(&hinvPrint);
   //two-leading jet pair production before plotting
