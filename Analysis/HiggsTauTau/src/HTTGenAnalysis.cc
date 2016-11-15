@@ -66,6 +66,7 @@ namespace ic {
       outtree_->Branch("met"         , &met_         );
       outtree_->Branch("m_vis"       , &m_vis_       );
       outtree_->Branch("pt_tt"       , &pt_tt_       );
+      outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("mt_1"        , &mt_1_        );
       outtree_->Branch("mt_2"        , &mt_2_        );
       outtree_->Branch("pzeta"       , &pzeta_       );
@@ -146,7 +147,10 @@ namespace ic {
     std::vector<ic::GenParticle> prompt_leptons;
     std::vector<std::string> decay_types;
     
+    HiggsPt_=-9999;
     for(unsigned i=0; i<gen_particles.size(); ++i){
+        
+      if(gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] && gen_particles[i]->pdgid() == 25) {HiggsPt_ = gen_particles[i]->pt();}
       
       ic::GenParticle part = *gen_particles[i];
       ic::GenParticle higgs_product;

@@ -73,6 +73,7 @@ class HTTGenAnalysis : public ModuleBase {
   double m_vis_;
   double pt_tt_;
   double wt_;
+  double HiggsPt_;
   
  public:
   HTTGenAnalysis(std::string const& name);

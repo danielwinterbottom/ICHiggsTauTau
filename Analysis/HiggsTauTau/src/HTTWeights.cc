@@ -274,7 +274,7 @@ namespace ic {
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
       GenParticle const* higgs = NULL;
       for (unsigned i = 0; i < parts.size(); ++i) {
-        if (parts[i]->status() == 3 && parts[i]->pdgid() == 25) {
+        if (parts[i]->status() == 3 && parts[i]->pdgid() == 25) { //parts[i]->statusFlags()[FromHardProcessBeforeFSR] change status ==3 to this??
           higgs = parts[i];
           break;
         }

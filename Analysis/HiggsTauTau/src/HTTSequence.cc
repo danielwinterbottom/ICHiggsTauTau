@@ -1197,7 +1197,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_require_inputs_match(true)
     .set_split(7000)
     .set_dilepton_label("ditau")
-    .set_met_label(met_label)
+    .set_met_label("pfMET")
     .set_fullpath(svfit_folder)
     .set_legacy_svfit(true)
     .set_do_preselection(false)
