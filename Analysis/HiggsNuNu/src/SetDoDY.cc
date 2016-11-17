@@ -12,11 +12,11 @@ void SetDoDY(ic::mc mc, HinvWeights* xsWeights){
 
   if (mc == mc::spring16_80X){
     //XS_MC_DYJetsToLL and 1 2 3 4
-    TF_oneMinusAll = 0.750730267;
-    TF_htBin1      = 0.168044214;
-    TF_htBin2      = 0.055234681;
-    TF_htBin3      = 0.016895704;
-    TF_htBin4      = 0.009095134;
+    TF_oneMinusAll = 0.739828;
+    TF_htBin1      = 0.175356;
+    TF_htBin2      = 0.0573421;
+    TF_htBin3      = 0.0179172;
+    TF_htBin4      = 0.00955701;
 
     //EVT_MC_DYJetsToLL and 1 2 3 4
     IY_Inclusive   = 49877138;

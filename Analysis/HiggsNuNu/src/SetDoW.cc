@@ -12,14 +12,14 @@ void SetDoW(ic::mc mc, HinvWeights* xsWeights){
 
   if (mc == mc::spring16_80X){
     //XS_MC_WJetsToLNu-mg*
-    TF_oneMinusAll = 9.65141122e-01;
-    TF_htBin1      = 2.64511170e-02;
-    TF_htBin2      = 7.07395326e-03;
-    TF_htBin3      = 9.61876714e-04;
-    TF_htBin4      = 2.36978418e-04;
-    TF_htBin5      = 1.08184089e-04;
-    TF_htBin6      = 2.61364578e-05;
-    TF_htBin7      = 6.32466880e-07;
+    TF_oneMinusAll = 0.971164;
+    TF_htBin1      = 0.0218614;
+    TF_htBin2      = 0.00587794;
+    TF_htBin3      = 0.000789241;
+    TF_htBin4      = 0.000195483;
+    TF_htBin5      = 8.92920e-05;
+    TF_htBin6      = 2.16487e-05;
+    TF_htBin7      = 5.24458e-07;
 
     //EVT_MC_WJetsToLNu-mg*
     IY_Inclusive   = 28210360;
