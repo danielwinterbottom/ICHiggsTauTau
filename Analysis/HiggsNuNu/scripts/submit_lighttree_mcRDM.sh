@@ -45,14 +45,13 @@ do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
   #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161115_ICHEP
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161117_ICHEP
   #JOBDIRPREFIX=jobs_lighttree_160929
-  #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
   JOBDIR=$JOBDIRPREFIX/
   #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161115_ICHEP
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161117_ICHEP
   #OUTPUTPREFIX=output_lighttree_160929
-  OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_161114
+  #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_161114
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]
@@ -156,8 +155,8 @@ do
 
     #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*MC_DYJetsToLL-mg-m10to50*`
     #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_EWK*`
-    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_EWK*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
     do
       echo "Processing files in "$FILELIST
 
