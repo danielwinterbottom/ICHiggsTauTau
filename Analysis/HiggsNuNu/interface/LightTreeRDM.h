@@ -242,6 +242,9 @@ namespace ic {
 
     unsigned n_vertices_;
 
+    // lheParticles
+    double lheHT_;
+
   public:
     LightTreeRDM(std::string const& name);
     virtual ~LightTreeRDM();

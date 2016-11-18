@@ -9,6 +9,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "TVector3.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTFromLHEParticles.h"
 
 
 namespace ic {
@@ -262,6 +263,10 @@ namespace ic {
     gamma1_genphi_=-5;
 
     n_vertices_=0;
+
+
+    // lheParticles
+    lheHT_=0;
   }
 
   LightTreeRDM::~LightTreeRDM(){
@@ -474,6 +479,10 @@ namespace ic {
     outputTree_->Branch("gen_ele1_mindR_j1",&gen_ele1_mindR_j1_);
     outputTree_->Branch("gen_ele1_mindR_j2",&gen_ele1_mindR_j2_);
 
+
+    // lheParticles
+    outputTree_->Branch("lheHT",&lheHT_);
+
     return 0;
   }
 
@@ -682,6 +691,15 @@ namespace ic {
     std::vector<GenJet *> genvec;
 
     if(!is_data_){
+
+      // lheParticles and HT
+      try{
+        std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
+        double lheHT = HTFromLHEParticles(lheParticles);
+        lheHT_ = lheHT;
+      } catch (...) {
+        //std::cout << " -- lheParticles branch not found, go ahead ... " << std::endl;
+      }
 
       genvec= event->GetPtrVec<GenJet>("genJets");
       std::sort(genvec.begin(), genvec.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
