@@ -791,7 +791,6 @@ namespace ic {
         double e_trg_12 = 1.0;
         double e_trg_12_mc = 1.0;
         double e_trg = 1.0;
-        double e_trg_mc = 1.0;
         if (mc_ == mc::fall15_76X){
           if(e_pt<150){
             e_trg_17 = em_e17_trig_data_->GetBinContent(em_e17_trig_data_->GetXaxis()->FindBin(e_eta),em_e17_trig_data_->GetYaxis()->FindBin(e_pt));

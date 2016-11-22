@@ -92,10 +92,6 @@
       "max_extra_muons"   : 1,
       "tau_es_corr"       : false,
       "lep_iso"           : true,
-      "do_tau_anti_elec"  : false,
-      "tau_anti_elec"     : "",
-      "do_tau_anti_muon"  : false,
-      "tau_anti_muon"     : "",
       "elec_id"           : "CutBased" 
     }
   },

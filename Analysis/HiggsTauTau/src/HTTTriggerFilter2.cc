@@ -33,7 +33,7 @@ struct filters {
 
 namespace ic {
 
-  HTTTriggerFilter2::HTTTriggerFilter2(std::string const& name) : ModuleBase(name), channel_(channel::zee), mc_(mc::summer12_53X), era_(era::data_2015) {
+  HTTTriggerFilter2::HTTTriggerFilter2(std::string const& name) : ModuleBase(name), channel_(channel::zee), mc_(mc::fall15_76X), era_(era::data_2015) {
   }
 
   HTTTriggerFilter2::~HTTTriggerFilter2() {

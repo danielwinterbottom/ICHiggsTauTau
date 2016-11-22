@@ -60,7 +60,6 @@ namespace ic {
 
       unsigned run = eventInfo->run();
       bool path_found     = false;
-      bool fallback_found = false;
       auto const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPaths");
 
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {

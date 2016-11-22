@@ -191,8 +191,6 @@ int SVFitTest::Execute(TreeEvent *event) {
  bool iso_discr_2_ = 0;
  //bool lbyMediumCombinedIsolation_1=0; 
  //bool lbyMediumCombinedIsolation_2=0; 
- bool lbyTightCombinedIsolation_1=0; 
- bool lbyTightCombinedIsolation_2=0; 
  bool pass_presel = false;
 
     if(channel_ == channel::et && do_preselection_) { 
