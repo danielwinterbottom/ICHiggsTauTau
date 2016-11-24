@@ -695,8 +695,7 @@ namespace ic {
       // lheParticles and HT
       try{
         std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
-        double lheHT = HTFromLHEParticles(lheParticles);
-        lheHT_ = lheHT;
+        lheHT_ = HTFromLHEParticles(lheParticles);
       } catch (...) {
         //std::cout << " -- lheParticles branch not found, go ahead ... " << std::endl;
       }
