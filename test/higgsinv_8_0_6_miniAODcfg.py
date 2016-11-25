@@ -14,10 +14,10 @@ import sys
 # Define some strings                                                                                                                          
 ################################################################                                                                                           
 electronLabel = cms.InputTag("slimmedElectrons")
-muonLabel = cms.InputTag("slimmedMuons")
-photonLabel = cms.InputTag("slimmedPhotons")
-tauLabel = cms.InputTag("slimmedTaus")
-vtxLabel = cms.InputTag("offlineSlimmedPrimaryVertices")
+muonLabel     = cms.InputTag("slimmedMuons")
+photonLabel   = cms.InputTag("slimmedPhotons")
+tauLabel      = cms.InputTag("slimmedTaus")
+vtxLabel      = cms.InputTag("offlineSlimmedPrimaryVertices")
 
 ################################################################                                                                                         
 # Setup and Read Options                                                                                                                          
@@ -28,23 +28,20 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file',
               0, parser.VarParsing.multiplicity.singleton,
-              #Htautau uses
               #'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root',parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
 
 
-#opts.register('globalTag', '76X_mcRun2_asymptotic_v12', parser.VarParsing.multiplicity.singleton,
-#    parser.VarParsing.varType.string, "global tag")
+#                           76X_mcRun2_asymptotic_v12
 opts.register('globalTag', '80X_dataRun2_Prompt_v8', parser.VarParsing.multiplicity.singleton,
-    parser.VarParsing.varType.string, "global tag")
+    parser.VarParsing.varType.string, "global tag") #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Prompt_reconstruction_Global_Tag
 
 #opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
 #    parser.VarParsing.varType.int, "Process as data?")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 
-#opts.register('release', '76XMINIAOD', parser.VarParsing.multiplicity.singleton,
-#    parser.VarParsing.varType.string, "Release label")
+#                         76XMINIAOD
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 
@@ -56,18 +53,19 @@ opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
 
 
 
-
-
 opts.parseArguments()
+
 infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
+if not isData:
+  doHT      = opts.doHT
+else:
+  doHT      = 0
+
 tag         = opts.globalTag
 release     = opts.release
-if not isData:
-  doHT     = opts.doHT
-else:
-  doHT     = 0
+
 
 if not release in ["76X", "80XMINIAOD"]:
   print 'Release not recognised, exiting!'
@@ -88,7 +86,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("EventTree.root"),
+  fileName      = cms.string("EventTree.root"),
   closeFileFast = cms.untracked.bool(True)
 )
 
@@ -115,15 +113,12 @@ process.load("CondCore.CondDB.CondDB_cfi")
 if not isData:                         
   process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
        ##                      CHECK WHAT TO USE
-                              #'file:mc_vbfh_test_Fall15.root'
-                              'file:3881F5BF-3825-E611-92B1-0025905D1E0A.root'
+                              'file:3881F5BF-3825-E611-92B1-0025905D1E0A.root'  ##SOMETHING SIMILAR IF LOCA
                                 )
                               )
 else:
   process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
        ##                      CHECK WHAT TO USE
-                              #'file:datafile_test_miniaodv2_16dec15.root'
-                              #'file:00EA1DB2-90AA-E511-AEEE-0025905C2CE6.root' ##SOMETHING SIMILAR IF LOCAL                    
                               infile
                                 )
                               )

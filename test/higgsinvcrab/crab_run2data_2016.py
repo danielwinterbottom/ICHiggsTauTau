@@ -27,6 +27,7 @@ config.Data.splitting = 'EventAwareLumiBased'
 
 config.Data.publication = False
 config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_US_Purdue','T2_IT_Legnaro','T2_FR_GRIF_IRFU']
+
 config.Site.storageSite = 'T2_UK_London_IC'
 config.Data.ignoreLocality = True
 
@@ -65,7 +66,7 @@ if __name__ == '__main__':
     #tasks.append((taskname,dataset name from das,lumi mask,run range))
 
     #!!To be checked on each processing
-    rerecoparams=['isData=1','doHT=0','release=80XMINIAOD', 'globalTag=80X_dataRun2_Prompt_v1']
+    rerecoparams=['isData=1','doHT=0','release=80XMINIAOD', 'globalTag=80X_dataRun2_Prompt_v8'] #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/
 
     #Run B
     #tasks.append(('MET-2015D-16Dec-v1'           ,'/MET/Run2015D-16Dec2015-v1/MINIAOD'         ,json,rerecoparams,firstrun+'-'+maxrun))
