@@ -35,7 +35,6 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;
