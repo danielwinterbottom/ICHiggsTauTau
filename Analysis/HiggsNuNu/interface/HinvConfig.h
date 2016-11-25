@@ -78,7 +78,8 @@ struct era_def {
 		data_2012_rereco,// Rereco dataset for 2012
 		data_2012_donly, 	// 2012D prompt only
 		data_2015_50ns, 	// 2015 50ns
-		data_2015_25ns 	// 2015 25ns
+		data_2015_25ns, 	// 2015 25ns
+		data_2016 	// 2016
 
 	};
 };
@@ -93,7 +94,8 @@ inline std::string Era2String(era const& in) {
 		(era::data_2012_rereco, 	"data_2012_rereco")
 		(era::data_2012_donly, 		"data_2012_donly")
 		(era::data_2015_50ns, 		"data_2015_50ns")
-		(era::data_2015_25ns, 		"data_2015_25ns");
+		(era::data_2015_25ns, 		"data_2015_25ns")
+	        (era::data_2016, 		"data_2016");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -111,7 +113,8 @@ inline era String2Era(std::string const& in) {
 	("data_2012_rereco", era::data_2012_rereco)
 	("data_2012_donly", 	era::data_2012_donly)
 	("data_2015_50ns", 	era::data_2015_50ns)
-	("data_2015_25ns", 	era::data_2015_25ns);
+	("data_2015_25ns", 	era::data_2015_25ns)
+	("data_2016",   	era::data_2016);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -127,7 +130,8 @@ struct mc_def {
 		summer12_52X,			// 52X MC
 		phys14_72X,			// 72X MC
 		spring15_74X,			// 74X MC
-		fall15_76X			// 76X MC
+		fall15_76X,			// 76X MC
+		spring16_80X			// 80X MC
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -139,7 +143,8 @@ inline std::string MC2String(mc const& in) {
 		(mc::summer12_52X, "summer12_52X")
 		(mc::phys14_72X, "phys14_72X")
 		(mc::spring15_74X, "spring15_74X")
-		(mc::fall15_76X, "fall15_76X");
+		(mc::fall15_76X, "fall15_76X")
+		(mc::spring16_80X, "spring16_80X");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -155,7 +160,8 @@ inline mc String2MC(std::string const& in) {
 	("summer12_52X",	mc::summer12_52X)
 	("phys14_72X",	        mc::phys14_72X)
 	("spring15_74X",	mc::spring15_74X)
-	("fall15_76X",  	mc::fall15_76X);
+	("fall15_76X",  	mc::fall15_76X)
+	("spring16_80X",  	mc::spring16_80X);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

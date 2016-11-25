@@ -31,8 +31,8 @@ namespace ic{
     int AddFriend(std::string,std::string);
     TEntryList GetEntryList(std::string const&, std::string const&, std::string const&);
     TTree* GetSubTree(TEntryList);
-    TH1F GetShape(std::string const&, std::string const&, std::string const&, std::string const&);
-    TH2F GetShape2D(std::string const&, std::string const&, std::string const&, std::string const&);
+    bool GetShape(TH1F & shape, std::string const&, std::string const&, std::string const&, std::string const&, const bool);
+    bool GetShape2D(TH2F & shape, std::string const&, std::string const&, std::string const&, std::string const&, const bool);
     TH3F GetShape3D(std::string const&, std::string const&, std::string const&, std::string const&);
     TTree* GetTree();
   };
@@ -78,12 +78,16 @@ namespace ic{
 
     int AddFriend(std::string,TTree*);
     int AddFriend(std::string,std::string,std::string);
+    bool GetShape(TH1F &shape, std::string,std::string const&, std::string const&, std::string const&, std::string const&, const bool);
+    bool GetSetShape(TH1F & shape, std::string,std::string const&, std::string const&, std::string const&, std::string const&,const bool, const bool);
     TH1F GetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
-    TH1F GetSetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
-    TH1F GetSetsShape(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,bool);
+    TH1F GetSetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&,const bool);
+    TH1F GetSetsShape(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,const bool);
+    bool GetShape2D(TH2F & shape,std::string,std::string const&, std::string const&, std::string const&, std::string const&, const bool);
+    bool GetSetShape2D(TH2F & shape, std::string,std::string const&, std::string const&, std::string const&, std::string const&,const bool, const bool);
     TH2F GetShape2D(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
-    TH2F GetSetShape2D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
-    TH2F GetSetsShape2D(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,bool);
+    TH2F GetSetShape2D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,const bool);
+    TH2F GetSetsShape2D(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,const bool);
     TH3F GetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetSetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
   };

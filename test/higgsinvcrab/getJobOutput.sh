@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$#" -ne "3" ]; then
-    echo "Usage: $0 <production name> <MC or DATA> <failed word: FAILED SUBMITTED QUEUED ..."
+    echo "Usage: $0 <production name> <MC or DATA> <failed word: FAILED SUBMITTED QUEUED ...>"
     exit 0
 fi
 
@@ -22,7 +22,7 @@ do
 	if (( "$?" == 0 )); then
 	    grep "Jobs status" logfile | grep -e "finished *100.0%"
 	    if (( "$?" == 0 )); then
-		../../Analysis/HiggsNuNu/scripts/run2_filelist_from_crab.py $PROD/$DATAMC/$crabdir/
+		../../Analysis/HiggsNuNu/scripts/run2_filelist_from_crab_2016.py $PROD/$DATAMC/$crabdir/
 		ls ${PROD}_${DATAMC}_$SAMPLE.dat
 		if (( "$?" == 0 )); then
 		    echo "Sample Processed, nFiles=" `cat ${PROD}_${DATAMC}_$SAMPLE.dat | wc -l`" "`cat ${PROD}_${DATAMC}_${SAMPLE}_report.dat` > $PROD/$DATAMC/$crabdir/PROCESSED
@@ -38,7 +38,7 @@ do
 		    crab resubmit $PROD/$DATAMC/$crabdir
 		elif [ "$doresubmit" = "N" ]; then
 		    echo "Getting filelists anyway:"
-		    ../../Analysis/HiggsNuNu/scripts/run2_filelist_from_crab.py $PROD/$DATAMC/$crabdir/
+		    ../../Analysis/HiggsNuNu/scripts/run2_filelist_from_crab_2016.py $PROD/$DATAMC/$crabdir/
 		    ls ${PROD}_${DATAMC}_$SAMPLE.dat
 		    if (( "$?" == 0 )); then
 			echo "Sample Failed but Processed, nFiles=" `cat ${PROD}_${DATAMC}_$SAMPLE.dat | wc -l`" "`cat ${PROD}_${DATAMC}_${SAMPLE}_report.dat` > $PROD/$DATAMC/$crabdir/PROCESSED
@@ -59,7 +59,7 @@ do
 		    crab resubmit $PROD/$DATAMC/$crabdir
 		elif [ "$doresubmit" = "N" ]; then
 		    echo "Getting filelists anyway:"
-		    ../../Analysis/HiggsNuNu/scripts/run2_filelist_from_crab.py $PROD/$DATAMC/$crabdir/
+		    ../../Analysis/HiggsNuNu/scripts/run2_filelist_from_crab_2016.py $PROD/$DATAMC/$crabdir/
 		    ls ${PROD}_${DATAMC}_$SAMPLE.dat
 		    if (( "$?" == 0 )); then
 			echo "Sample Failed but Processed, nFiles=" `cat ${PROD}_${DATAMC}_$SAMPLE.dat | wc -l`" "`cat ${PROD}_${DATAMC}_${SAMPLE}_report.dat` > $PROD/$DATAMC/$crabdir/PROCESSED
@@ -78,11 +78,3 @@ do
     fi
 
 done
-
-
-#Jobs status:                    finished      100.0% (23/23)
-#Task status:
-
-
-
-#  LocalWords:  DATAMC
