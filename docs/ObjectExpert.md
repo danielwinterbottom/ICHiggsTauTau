@@ -69,6 +69,17 @@ https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVPileUpDescription#Pileup_Inform
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation#Recommendation_for_13_TeV_Data (main recommendation page)    
 https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods (b-tag scale factor application methods)
 
+Navigating McM:
+---------------
 
+Sometimes you'll notice something odd about your MC samples and you'll want to check what settings they were produced with. Unfortunately this means having to battle with McM - some hints here...   
 
+* Access McM: https://cms-pdmv.cern.ch/mcm/    
+* Click `Request`
+* Click `Select View`, then hit `Select All` and then `Save selection`
+* Click `Output Dataset` and dump the full name of the dataset you're interested in, as shown on DAS, in the search box; hit search
+* Some of the information you might be interested may already be shown in one of the boxes (scroll to the right to see them all).The `actions` section is your best friend when it comes to finding the initial settings, though.
 
+To find information on the chain via which the dataset was produced, hit the icon underneath `Actions` that looks like a sideways bar chart. This will open information on the chains used to produce the sample, clicking the first clickable link under `Chain` will give you the first file in the chain used to create the dataset (could be an LHE file for example). Now click the `get test command` button, which is the little tick in a circle (again under `actions`). Somewhere in the command that gives there will be a line `curl -s --insecure <some linke to cms-pdmv.cern.ch/mcm/...` Clicking that link will display a link to the card used for production.
+
+In some cases you might be able to find the information you need by clicking the `get dictionary` button, the first icon from the left under `actions`. 
