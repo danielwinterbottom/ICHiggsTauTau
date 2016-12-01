@@ -11,6 +11,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Photon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
+#include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 
@@ -101,6 +102,7 @@ namespace ic {
     unsigned n_jets_cjv_20EB_30EE_;
     unsigned n_jets_15_;
     unsigned n_jets_30_;
+    unsigned n_jets_csv2medium_;
     double cjvjetpt_;
 
     double dijet_M_;
@@ -170,6 +172,7 @@ namespace ic {
     unsigned nselmuons_;
     unsigned nvetoelectrons_;
     unsigned nselelectrons_;
+    unsigned nvetotaus_;
     unsigned ntaus_;
     unsigned nloosephotons_;
     unsigned nmediumphotons_;
@@ -177,8 +180,10 @@ namespace ic {
 
     double m_mumu_;
     double pt_mumu_;
+    bool   oppsign_mumu_;
     double m_ee_;
     double pt_ee_;
+    bool   oppsign_ee_;
     double m_mumu_gen_;
     double m_ee_gen_;
     double lep_mt_;
@@ -195,13 +200,16 @@ namespace ic {
     double mu1_pt_;
     double mu1_eta_;
     double mu1_phi_;
+    bool   mu1_isTight_;
     double mu1_genmindR_;
     double mu1_genpt_;
     double mu1_geneta_;
     double mu1_genphi_;
+
     double mu2_pt_;
     double mu2_eta_;
     double mu2_phi_;
+    bool   mu2_isTight_;
     double mu2_genmindR_;
     double mu2_genpt_;
     double mu2_geneta_;
@@ -219,18 +227,38 @@ namespace ic {
     double ele1_pt_;
     double ele1_eta_;
     double ele1_phi_;
+    bool   ele1_isTight_;
     double ele1_genmindR_;
     double ele1_genpt_;
     double ele1_geneta_;
     double ele1_genphi_;
 
+    double ele2_pt_;
+    double ele2_eta_;
+    double ele2_phi_;
+    bool   ele2_isTight_;
+    double ele2_genmindR_;
+    double ele2_genpt_;
+    double ele2_geneta_;
+    double ele2_genphi_;
+
     double tau1_pt_;
     double tau1_eta_;
     double tau1_phi_;
+    bool   tau1_isTight_;
     double tau1_genmindR_;
     double tau1_genpt_;
     double tau1_geneta_;
     double tau1_genphi_;
+
+    double vetotau1_pt_;
+    double vetotau1_eta_;
+    double vetotau1_phi_;
+    bool   vetotau1_isTight_;
+    double vetotau1_genmindR_;
+    double vetotau1_genpt_;
+    double vetotau1_geneta_;
+    double vetotau1_genphi_;
 
     double gamma1_pt_;
     double gamma1_eta_;
@@ -252,6 +280,9 @@ namespace ic {
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
     virtual void PrintInfo();
+    bool isTightMuon(Muon* veto,std::vector<Muon*> sel);
+    bool isTightElectron(Electron* veto,std::vector<Electron*> sel);
+    bool isTightTau(Tau* veto,std::vector<Tau*> sel);
 
    };
 

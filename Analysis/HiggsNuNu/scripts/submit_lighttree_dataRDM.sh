@@ -4,7 +4,7 @@ DOSUBMIT=1
 MYEXEC=LightTreeMakerFromMiniAODRDM
 PRODUCTION=161031
 PRODUSER=rdimaria
-JPTCUTVAL=40
+JPTCUTVAL=30
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -36,12 +36,12 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELE
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
   #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161115_ICHEP
-  #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
+  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161115_ICHEP
+  JOBDIRPREFIX=jobs_lighttree_161129
   JOBDIR=$JOBDIRPREFIX/
   #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161115_ICHEP
-  #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
+  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161115_ICHEP
+  OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_161129
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]
