@@ -165,7 +165,10 @@ namespace ic {
     double pass_photontrigger_;
     double pass_sigtrigger_;
     double pass_mettrigger_;
-    double pass_metmhttrigger_;
+    double pass_metmht90trigger_;
+    double pass_metmht100trigger_;
+    double pass_metmht110trigger_;
+    double pass_metmht120trigger_;
     double pass_controltrigger_;
 
     unsigned nvetomuons_;
@@ -269,6 +272,9 @@ namespace ic {
     double gamma1_genphi_;
 
     unsigned n_vertices_;
+
+    // lheParticles
+    double lheHT_;
 
   public:
     LightTreeRDM(std::string const& name);

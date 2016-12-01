@@ -688,6 +688,9 @@ int main(int argc, char* argv[]){
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  zmumuraw.set_dataset("ZJets_ll_nlo");
+
   DataShape qcdzmumuraw("qcdzmumuraw");
   qcdzmumuraw.set_dataset("ZJets_ll")
     .set_dirname("zmumuqcd")
@@ -695,6 +698,9 @@ int main(int argc, char* argv[]){
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  qcdzmumuraw.set_dataset("ZJets_ll_nlo");
+
   DataShape ewkzmumuraw("ewkzmumuraw");
   ewkzmumuraw.set_dataset("EWK_ZJets_ll")
     .set_dirname("zmumuewk")
@@ -720,6 +726,9 @@ int main(int argc, char* argv[]){
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  qcdwraw.set_dataset("QCDWJets_nlo");
+
   DataShape ewkwraw("ewkwraw");
   ewkwraw.set_dataset("EWKWJets")
     .set_dirname("wewk")
@@ -735,6 +744,9 @@ int main(int argc, char* argv[]){
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  qcdwmunuraw.set_dataset("WJets_nlo_munu");
+
   DataShape ewkwmunuraw("ewkwmunuraw");
   ewkwmunuraw.set_dataset("EWK_WJets_munu")
     .set_dirname("wmuewk")
@@ -742,7 +754,6 @@ int main(int argc, char* argv[]){
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
-
 
   DataShape wenuraw("wenuraw");
   wenuraw.set_dataset("WJets_enu")
@@ -753,6 +764,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);
 
   if (use_nlo)  wenuraw.set_dataset("WJets_nlo_enu");
+
   DataShape qcdwenuraw("qcdwenuraw");
   qcdwenuraw.set_dataset("WJets_enu")
     .set_dirname("welqcd")
@@ -760,6 +772,9 @@ int main(int argc, char* argv[]){
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  qcdwenuraw.set_dataset("WJets_nlo_enu");
+
   DataShape ewkwenuraw("ewkwenuraw");
   ewkwenuraw.set_dataset("EWK_WJets_enu")
     .set_dirname("welewk")
@@ -778,6 +793,7 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+mcextrasel);
 
   if (use_nlo) wtaunuraw.set_dataset("WJets_nlo_taunu");
+
   DataShape qcdwtaunuraw("qcdwtaunuraw");
   qcdwtaunuraw.set_dataset("WJets_taunu")
     .set_dirname("wtauqcd")
@@ -785,6 +801,9 @@ int main(int argc, char* argv[]){
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo) qcdwtaunuraw.set_dataset("WJets_nlo_taunu");
+
   DataShape ewkwtaunuraw("ewkwtaunuraw");
   ewkwtaunuraw.set_dataset("EWK_WJets_taunu")
     .set_dirname("wtauewk")

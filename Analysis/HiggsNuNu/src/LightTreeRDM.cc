@@ -9,6 +9,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "TVector3.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTFromLHEParticles.h"
 
 
 namespace ic {
@@ -186,7 +187,10 @@ namespace ic {
     pass_photontrigger_ = -1;
     pass_sigtrigger_ = -1;
     pass_mettrigger_ = -1;
-    pass_metmhttrigger_ = -1;
+    pass_metmht90trigger_ = -1;
+    pass_metmht100trigger_ = -1;
+    pass_metmht110trigger_ = -1;
+    pass_metmht120trigger_ = -1;
     pass_controltrigger_ = -1;
 
     nvetomuons_=0;
@@ -288,6 +292,10 @@ namespace ic {
     gamma1_genphi_=-5;
 
     n_vertices_=0;
+
+
+    // lheParticles
+    lheHT_=0;
   }
 
   LightTreeRDM::~LightTreeRDM(){
@@ -414,7 +422,10 @@ namespace ic {
     outputTree_->Branch("pass_photontrigger",&pass_photontrigger_);
     outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
     outputTree_->Branch("pass_mettrigger",&pass_mettrigger_);
-    outputTree_->Branch("pass_metmhttrigger",&pass_metmhttrigger_);
+    outputTree_->Branch("pass_metmht90trigger",&pass_metmht90trigger_);
+    outputTree_->Branch("pass_metmht100trigger",&pass_metmht100trigger_);
+    outputTree_->Branch("pass_metmht110trigger",&pass_metmht110trigger_);
+    outputTree_->Branch("pass_metmht120trigger",&pass_metmht120trigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
 
     outputTree_->Branch("nvetomuons",&nvetomuons_);
@@ -526,6 +537,10 @@ namespace ic {
     outputTree_->Branch("gen_ele1_mindR_j1",&gen_ele1_mindR_j1_);
     outputTree_->Branch("gen_ele1_mindR_j2",&gen_ele1_mindR_j2_);
 
+
+    // lheParticles
+    outputTree_->Branch("lheHT",&lheHT_);
+
     return 0;
   }
 
@@ -578,16 +593,32 @@ namespace ic {
         if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140") != name.npos) pass_sigtrigger_ = prescale;
         if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80") != name.npos) pass_controltrigger_ = prescale;
         if (name.find("HLT_PFMET170_") != name.npos) pass_mettrigger_ = prescale;
-        if (name.find("HLT_PFMETNoMu120") != name.npos && name.find("PFMHTNoMu120") != name.npos) pass_metmhttrigger_ = prescale;
+        if (name.find("HLT_PFMETNoMu90") != name.npos && name.find("PFMHTNoMu90") != name.npos) pass_metmht90trigger_ = prescale;
+        if (name.find("HLT_PFMETNoMu100") != name.npos && name.find("PFMHTNoMu100") != name.npos) pass_metmht100trigger_ = prescale;
+        if (name.find("HLT_PFMETNoMu110") != name.npos && name.find("PFMHTNoMu110") != name.npos) pass_metmht110trigger_ = prescale;
+        if (name.find("HLT_PFMETNoMu120") != name.npos && name.find("PFMHTNoMu120") != name.npos) pass_metmht120trigger_ = prescale;
       }
       if(do_trigskim_){
-        if(!(pass_muontrigger_==1 || pass_sigtrigger_>0||pass_controltrigger_>0||pass_mettrigger_>0||pass_metmhttrigger_>0||pass_photontrigger_>0)){
+        if(!(pass_muontrigger_==1     ||
+             pass_sigtrigger_>0       ||
+             pass_controltrigger_>0   ||
+             pass_mettrigger_>0       ||
+             pass_metmht90trigger_>0  ||
+             pass_metmht100trigger_>0 ||
+             pass_metmht110trigger_>0 ||
+             pass_metmht120trigger_>0 ||
+             pass_photontrigger_>0     )){
           return 1;
         }
       }
 
       if (debug_) {
-        std::cout << " Pass_muon " << pass_muontrigger_ << " pass sig " << pass_sigtrigger_ << std::endl;
+        std::cout << " -- Pass Sig         " << pass_sigtrigger_  << std::endl;
+        std::cout << " -- Pass Muon        " << pass_muontrigger_ << std::endl;
+        std::cout << " -- Pass MET-MHT 90  " << pass_metmht90trigger_  << std::endl;
+        std::cout << " -- Pass MET-MHT 100 " << pass_metmht100trigger_ << std::endl;
+        std::cout << " -- Pass MET-MHT 110 " << pass_metmht110trigger_ << std::endl;
+        std::cout << " -- Pass MET-MHT 120 " << pass_metmht120trigger_ << std::endl;
       }
     } catch (...) {
       //static bool trgbits = true;
@@ -734,6 +765,14 @@ namespace ic {
     std::vector<GenJet *> genvec;
 
     if(!is_data_){
+
+      // lheParticles and HT
+      try{
+        std::vector<GenParticle *> const& lheParticles = event->GetPtrVec<GenParticle>("lheParticles");
+        lheHT_ = HTFromLHEParticles(lheParticles);
+      } catch (...) {
+        //std::cout << " -- lheParticles branch not found, go ahead ... " << std::endl;
+      }
 
       genvec= event->GetPtrVec<GenJet>("genJets");
       std::sort(genvec.begin(), genvec.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));

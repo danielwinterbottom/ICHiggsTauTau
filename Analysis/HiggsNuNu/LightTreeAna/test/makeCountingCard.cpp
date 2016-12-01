@@ -1287,24 +1287,25 @@ datacard<<std::endl;
     if (channel=="topl" || channel=="topb") datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
   }
   else if (do_1param){
-    //if (do_run2) datacard<<"WZ_xsection rateParam ch1 zvv 1"<<std::endl;
-    //else {
+
+      datacard<<"WZ_xsection rateParam ch1 wmuqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 welqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 wtauqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 wmuewk 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 welewk 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 wtauewk 1"<<std::endl;
+      datacard<<"QCD_xsection rateParam ch1 qcd 1"<<std::endl;
+
+    if (channel=="mumu"){
+      datacard<<"WZ_xsection rateParam ch1 zmumuqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 zmumuewk 1"<<std::endl;
+    }
+    if (channel=="nunu"){
       datacard<<"WZ_xsection rateParam ch1 zvvewk 1"<<std::endl;
       datacard<<"WZ_xsection rateParam ch1 zvvqcd 1"<<std::endl;
-      //}
-
-    datacard<<"WZ_xsection rateParam ch1 zmumuqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 wmuqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 welqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 wtauqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 zmumuewk 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 wmuewk 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 welewk 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 wtauewk 1"<<std::endl;
-    datacard<<"QCD_xsection rateParam ch1 qcd 1"<<std::endl;
-    if (channel=="topl" || channel=="topb") datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
+    }
   }
 
-  datacard.close();  
+  datacard.close();
 
 }

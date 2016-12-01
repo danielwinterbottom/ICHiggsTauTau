@@ -183,31 +183,67 @@ namespace ic {
   bool PFJetID2016(PFJet const* jet) {
     double eta = fabs(jet->eta());
     bool result = false;
-    
+
     double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
     //    int n_pf = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
-    
+
+
+    // From Raffaele: in mono-jet we are applying more stringent selection (than the standard PF Jet ID selection) to kill the noise in the SR:
+    // 1) |eta| < 2.5: charged hadron fraction > 0.1
+    //                 neutral hadron fraction < 0.8 (required in 1-jet events; for VBF we could also not apply it)
+    // 2) |eta| [3,3.2]: neutral hadron fraction < 0.96 (in this way, I saw the spikes have been killed; it should work sufficiently well even when you invert the cut in min-dphi(jet met) < 0.5)
+
+    // From Riccardo: as a consequence, I'm gonna change from:
+    //if (eta <= 2.4) {
+    //  result = neutralFrac   < 0.99
+    //  && jet->neutral_em_energy_frac()    < 0.99
+    //  && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
+    //  && jet->charged_had_energy_frac()   > 0.0
+    //  && jet->charged_multiplicity()      > 0
+    //  && jet->charged_em_energy_frac()    < 0.99;
+    //} else if (eta <= 2.7){
+    //  result = neutralFrac < 0.99
+    //  && jet->neutral_em_energy_frac()   < 0.99
+    //  && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
+    //} else if(eta<=3.0){
+    //  result = jet->neutral_em_energy_frac()    < 0.90
+    //  && jet->neutral_multiplicity() > 2;
+    //}
+    //else{
+    //  result = jet->neutral_em_energy_frac()    < 0.90
+    //  && jet->neutral_multiplicity()>10;
+    //}
+
+    //to:
     if (eta <= 2.4) {
-      result = neutralFrac   < 0.99
+      result = neutralFrac   < 0.8
       && jet->neutral_em_energy_frac()    < 0.99
       && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
-      && jet->charged_had_energy_frac()   > 0.0
+      && jet->charged_had_energy_frac()   > 0.1
       && jet->charged_multiplicity()      > 0
       && jet->charged_em_energy_frac()    < 0.99;
+    } else if (eta <= 2.5){
+      result = neutralFrac < 0.8
+      && jet->neutral_em_energy_frac()   < 0.99
+      && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
     } else if (eta <= 2.7){
       result = neutralFrac < 0.99
       && jet->neutral_em_energy_frac()   < 0.99
       && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
-    } else if(eta<=3.0){
+    } else if(eta < 3.0){
       result = jet->neutral_em_energy_frac()    < 0.90
       && jet->neutral_multiplicity() > 2;
+    } else if(eta <= 3.2){
+      result = neutralFrac   < 0.96
+      && jet->neutral_em_energy_frac()    < 0.90
+      && jet->neutral_multiplicity() > 10;
     }
     else{
       result = jet->neutral_em_energy_frac()    < 0.90
       && jet->neutral_multiplicity()>10;
     }
     return result;
-  } 
+  }
 
   bool PUJetID(PFJet const* jet, bool is_2012) {
     // Pt2030_Loose   = cms.vdouble(-0.80,-0.85,-0.84,-0.85),

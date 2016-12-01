@@ -276,6 +276,7 @@ if options.proc_bkg or options.proc_all:
     #'DYJetsToLL_M-10-ext',
     #'DYJetsToLL_M-150-LO',
     'DYJetsToLL-LO',
+    'DYJetsToLL-LO-ext',
     'DYJetsToLL_M-10-50-LO',
     #'DYJetsToLL_M-50-LO',
     'DY1JetsToLL-LO',
