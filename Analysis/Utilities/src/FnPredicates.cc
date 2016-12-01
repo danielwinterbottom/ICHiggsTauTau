@@ -233,10 +233,6 @@ namespace ic {
     } else if(eta < 3.0){
       result = jet->neutral_em_energy_frac()    < 0.90
       && jet->neutral_multiplicity() > 2;
-    } else if(eta == 3.0){
-      result = neutralFrac   < 0.96
-      && jet->neutral_em_energy_frac()    < 0.90
-      && jet->neutral_multiplicity() > 2;
     } else if(eta <= 3.2){
       result = neutralFrac   < 0.96
       && jet->neutral_em_energy_frac()    < 0.90
