@@ -193,6 +193,7 @@ namespace ic {
     pass_metmht110trigger_ = -1;
     pass_metmht120trigger_ = -1;
     pass_controltrigger_ = -1;
+    pass_singleEltrigger_ = -1;
 
     nvetomuons_=0;
     nselmuons_=0;
@@ -429,6 +430,7 @@ namespace ic {
     outputTree_->Branch("pass_metmht110trigger",&pass_metmht110trigger_);
     outputTree_->Branch("pass_metmht120trigger",&pass_metmht120trigger_);
     outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
+    outputTree_->Branch("pass_singleEltrigger",&pass_singleEltrigger_);
 
     outputTree_->Branch("nvetomuons",&nvetomuons_);
     outputTree_->Branch("nselmuons",&nselmuons_);
@@ -599,6 +601,11 @@ namespace ic {
         if (name.find("HLT_PFMETNoMu100") != name.npos && name.find("PFMHTNoMu100") != name.npos) pass_metmht100trigger_ = prescale;
         if (name.find("HLT_PFMETNoMu110") != name.npos && name.find("PFMHTNoMu110") != name.npos) pass_metmht110trigger_ = prescale;
         if (name.find("HLT_PFMETNoMu120") != name.npos && name.find("PFMHTNoMu120") != name.npos) pass_metmht120trigger_ = prescale;
+        if (name.find("HLT_Ele23_WPLoose_Gsf_v") != name.npos ||
+            name.find("HLT_Ele27_WPLoose_Gsf_v") != name.npos ||
+            name.find("HLT_Ele27_eta2p1_WPLoose_Gsf_v") != name.npos ||
+            name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos ||
+            name.find("HLT_Ele35_WPLoose_Gsf_v") != name.npos ) pass_singleEltrigger_ = prescale;
       }
       if(do_trigskim_){
         if(!(pass_muontrigger_==1     ||
@@ -609,14 +616,16 @@ namespace ic {
              pass_metmht100trigger_>0 ||
              pass_metmht110trigger_>0 ||
              pass_metmht120trigger_>0 ||
-             pass_photontrigger_>0     )){
+             pass_photontrigger_>0    ||
+             pass_singleEltrigger_>0    )){
           return 1;
         }
       }
 
       if (debug_) {
-        std::cout << " -- Pass Sig         " << pass_sigtrigger_  << std::endl;
-        std::cout << " -- Pass Muon        " << pass_muontrigger_ << std::endl;
+        std::cout << " -- Pass Sig         " << pass_sigtrigger_       << std::endl;
+        std::cout << " -- Pass Muon        " << pass_muontrigger_      << std::endl;
+        std::cout << " -- Pass Electron    " << pass_singleEltrigger_  << std::endl;
         std::cout << " -- Pass MET-MHT 90  " << pass_metmht90trigger_  << std::endl;
         std::cout << " -- Pass MET-MHT 100 " << pass_metmht100trigger_ << std::endl;
         std::cout << " -- Pass MET-MHT 110 " << pass_metmht110trigger_ << std::endl;
@@ -939,13 +948,13 @@ namespace ic {
       ROOT::Math::PtEtaPhiEVector jetvec = jets[i]->vector();
       //just for first nJetsSave_ jets
       if (nJets_<nJetsSave_){
-        jet_pt_[nJets_]=jets[i]->pt();
-        jet_uncorpt_[nJets_]=jets[i]->uncorrected_energy()/jets[i]->energy()*jets[i]->pt();
-	jet_neutralfrac_[nJets_] = jets[i]->neutral_had_energy() / jets[i]->uncorrected_energy();
+        jet_pt_[nJets_]          = jets[i]->pt();
+        jet_uncorpt_[nJets_]     = jets[i]->uncorrected_energy()/jets[i]->energy()*jets[i]->pt();
+        jet_neutralfrac_[nJets_] = jets[i]->neutral_had_energy()/jets[i]->uncorrected_energy();
 
-        jet_E_[nJets_]=jets[i]->energy();
-        jet_eta_[nJets_]=jets[i]->eta();
-        jet_phi_[nJets_]=jets[i]->phi();
+        jet_E_[nJets_]   =jets[i]->energy();
+        jet_eta_[nJets_] =jets[i]->eta();
+        jet_phi_[nJets_] =jets[i]->phi();
 	
 	/*std::map<std::size_t, float> btaglist = jets[i]->b_discriminators();
 	std::map<std::size_t, float>::iterator btagiter = btaglist.begin();
@@ -954,13 +963,13 @@ namespace ic {
 	  }*/
 
         //jet_csv_[nJets_]=jets[i]->GetBDiscriminator("pfCombinedSecondaryVertexV2BJetTags");
-	jet_csv_[nJets_]=jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         //jet_csv_[nJets_]=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-        jet_jetid_[nJets_]=PFJetID2016(jets[i]);
         //jet_jetid_[nJets_]=PFJetID2015(jets[i]);
-        jet_loosepuid_[nJets_]=PileupJetID(jets[i],4,false);
-        jet_tightpuid_[nJets_]=PileupJetID(jets[i],4,true);
-        jet_flavour_[nJets_]=jets[i]->parton_flavour();
+        jet_csv_[nJets_]       = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+        jet_jetid_[nJets_]     = PFJetID2016(jets[i]);
+        jet_loosepuid_[nJets_] = PileupJetID(jets[i],4,false);
+        jet_tightpuid_[nJets_] = PileupJetID(jets[i],4,true);
+        jet_flavour_[nJets_]   = jets[i]->parton_flavour();
 
         if (!is_data_ && recotogenmatch[i].second){
           unsigned genid = recotogenmatch[i].first;
@@ -1140,10 +1149,10 @@ namespace ic {
         mu2_pt_=vetomuons[1]->pt();
         mu2_eta_=vetomuons[1]->eta();
         mu2_phi_=vetomuons[1]->phi();
-	mu2_isTight_ = isTightMuon(vetomuons[1],selmuons);
+        mu2_isTight_ = isTightMuon(vetomuons[1],selmuons);
         m_mumu_=((vetomuons.at(0)->vector())+(vetomuons.at(1)->vector())).M();
         pt_mumu_=((vetomuons.at(0)->vector())+(vetomuons.at(1)->vector())).Pt();
-	oppsign_mumu_ = vetomuons.at(0)->charge() != vetomuons.at(1)->charge();
+        oppsign_mumu_ = vetomuons.at(0)->charge() != vetomuons.at(1)->charge();
         if (!is_data_ && recotogen_muons[1].second){
           unsigned genid = recotogen_muons[1].first;
           mu2_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genMus[genid]->vector(),vetomuons[1]->vector());

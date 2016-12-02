@@ -171,6 +171,7 @@ namespace ic {
     int pass_metmht110trigger_;
     int pass_metmht120trigger_;
     int pass_controltrigger_;
+    int pass_singleEltrigger_;
 
     unsigned nvetomuons_;
     unsigned nselmuons_;
