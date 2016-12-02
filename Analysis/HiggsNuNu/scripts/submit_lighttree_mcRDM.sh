@@ -152,9 +152,9 @@ do
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
 
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
     #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_EWK*`
-    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
     do
       echo "Processing files in "$FILELIST
 

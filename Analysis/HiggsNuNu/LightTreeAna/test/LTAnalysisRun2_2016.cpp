@@ -376,7 +376,9 @@ int main(int argc, char* argv[]){
   std::string mcextrasel;
 
   if (channel!="gamma"){
-    if(!do_mettrig) dataextrasel="&&(pass_sigtrigger==1)";
+    //if(!do_mettrig) dataextrasel="&&(pass_sigtrigger==1)";
+    //for metmht trigger
+    if(!do_mettrig) dataextrasel="&&(pass_metmht90trigger==1 || pass_metmht100trigger==1 || pass_metmht110trigger==1 || pass_metmht120trigger==1)";
     else dataextrasel="&&(pass_mettrigger==1)";
   }
   else {
@@ -394,7 +396,7 @@ int main(int argc, char* argv[]){
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1";
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
 
-  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
+  std::string mumucat="nselmuons>=1&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&oppsign_mumu&&"+jetmetdphicut;
   std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
   std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
   std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
