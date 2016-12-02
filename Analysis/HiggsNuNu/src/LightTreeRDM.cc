@@ -47,6 +47,7 @@ namespace ic {
     jet_loosepuid_ = new double[nJetsSave_];
     jet_tightpuid_ = new double[nJetsSave_];
     jet_flavour_ = new int[nJetsSave_];
+    jet_neutralfrac_ = new double[nJetsSave_];
 
     jet_genjet_mindR_ = new double[nJetsSave_];
     jet_genid_ = new unsigned[nJetsSave_];
@@ -112,7 +113,7 @@ namespace ic {
       jet_loosepuid_[ij] = -1;
       jet_tightpuid_[ij] = -1;
       jet_flavour_[ij] = 0;
-
+      jet_neutralfrac_[ij] = -1;
       jet_genjet_mindR_[ij] = 99;
       jet_genid_[ij] = 1000;
       jet_genpt_[ij] = -1;
@@ -124,6 +125,7 @@ namespace ic {
     n_jets_cjv_20EB_30EE_ = 0;
     n_jets_15_ = 0;
     n_jets_30_ = 0;
+    n_jets_csv2medium_ = 0;
     cjvjetpt_=-1;
 
     dijet_M_ = 0;
@@ -196,6 +198,7 @@ namespace ic {
     nselmuons_=0;
     nvetoelectrons_=0;
     nselelectrons_=0;
+    nvetotaus_=0;
     ntaus_=0;
     nloosephotons_=0;
     nmediumphotons_=0;
@@ -203,8 +206,10 @@ namespace ic {
 
     m_mumu_=-1;
     pt_mumu_=-1;
+    oppsign_mumu_=false;
     m_ee_=-1;
     pt_ee_=-1;
+    oppsign_ee_=false;
     m_mumu_gen_=-1;
     m_ee_gen_=-1;
     lep_mt_=-1;
@@ -220,6 +225,7 @@ namespace ic {
     mu1_pt_=-1;
     mu1_eta_=-5;
     mu1_phi_=-5;
+    mu1_isTight_=false;
     mu1_genmindR_=99;
     mu1_genpt_=-1;
     mu1_geneta_=-5;
@@ -227,6 +233,7 @@ namespace ic {
     mu2_pt_=-1;
     mu2_eta_=-5;
     mu2_phi_=-5;
+    mu2_isTight_=false;
     mu2_genmindR_=99;
     mu2_genpt_=-1;
     mu2_geneta_=-5;
@@ -244,18 +251,38 @@ namespace ic {
     ele1_pt_=-1;
     ele1_eta_=-5;
     ele1_phi_=-5;
+    ele1_isTight_=false;
     ele1_genmindR_=99;
     ele1_genpt_=-1;
     ele1_geneta_=-5;
     ele1_genphi_=-5;
 
+    ele2_pt_=-1;
+    ele2_eta_=-5;
+    ele2_phi_=-5;
+    ele2_isTight_=false;
+    ele2_genmindR_=99;
+    ele2_genpt_=-1;
+    ele2_geneta_=-5;
+    ele2_genphi_=-5;
+
     tau1_pt_=-1;
     tau1_eta_=-5;
     tau1_phi_=-5;
+    tau1_isTight_=false;
     tau1_genmindR_=99;
     tau1_genpt_=-1;
     tau1_geneta_=-5;
     tau1_genphi_=-5;
+
+    vetotau1_pt_=-1;
+    vetotau1_eta_=-5;
+    vetotau1_phi_=-5;
+    vetotau1_isTight_=false;
+    vetotau1_genmindR_=99;
+    vetotau1_genpt_=-1;
+    vetotau1_geneta_=-5;
+    vetotau1_genphi_=-5;
 
     gamma1_pt_=-1;
     gamma1_eta_=-5;
@@ -323,6 +350,7 @@ namespace ic {
       outputTree_->Branch((label.str()+"_jetid").c_str(),&jet_jetid_[ij]);
       outputTree_->Branch((label.str()+"_loosepuid").c_str(),&jet_loosepuid_[ij]);
       outputTree_->Branch((label.str()+"_tightpuid").c_str(),&jet_tightpuid_[ij]);
+      outputTree_->Branch((label.str()+"_neutralfrac").c_str(),&jet_neutralfrac_[ij]);
       outputTree_->Branch((label.str()+"_genjet_mindR").c_str(),&jet_genjet_mindR_[ij]);
       outputTree_->Branch((label.str()+"_flavour").c_str(),&jet_flavour_[ij]);
       outputTree_->Branch((label.str()+"_genid").c_str(),&jet_genid_[ij]);
@@ -334,6 +362,7 @@ namespace ic {
     outputTree_->Branch("n_jets_cjv_30",&n_jets_cjv_30_);
     outputTree_->Branch("n_jets_cjv_20EB_30EE",&n_jets_cjv_20EB_30EE_);
     outputTree_->Branch("n_jets_15",&n_jets_15_);
+    outputTree_->Branch("n_jets_csv2medium",&n_jets_csv2medium_);
     outputTree_->Branch("n_jets_30",&n_jets_30_);
     outputTree_->Branch("cjvjetpt",&cjvjetpt_);
 
@@ -405,6 +434,7 @@ namespace ic {
     outputTree_->Branch("nselmuons",&nselmuons_);
     outputTree_->Branch("nvetoelectrons",&nvetoelectrons_);
     outputTree_->Branch("nselelectrons",&nselelectrons_);
+    outputTree_->Branch("nvetotaus",&nvetotaus_);
     outputTree_->Branch("ntaus",&ntaus_);
     outputTree_->Branch("nloosephotons",&nloosephotons_);
     outputTree_->Branch("nmediumphotons",&nmediumphotons_);
@@ -412,8 +442,10 @@ namespace ic {
 
     outputTree_->Branch("m_mumu",&m_mumu_);
     outputTree_->Branch("pt_mumu",&pt_mumu_);
+    outputTree_->Branch("oppsign_mumu",&oppsign_mumu_);
     outputTree_->Branch("m_ee",&m_ee_);
     outputTree_->Branch("pt_ee",&pt_ee_);
+    outputTree_->Branch("oppsign_ee",&oppsign_ee_);
     outputTree_->Branch("m_mumu_gen",&m_mumu_gen_);
     outputTree_->Branch("m_ee_gen",&m_ee_gen_);
     outputTree_->Branch("lep_mt",&lep_mt_);
@@ -421,6 +453,7 @@ namespace ic {
     outputTree_->Branch("mu1_pt",&mu1_pt_);
     outputTree_->Branch("mu1_eta",&mu1_eta_);
     outputTree_->Branch("mu1_phi",&mu1_phi_);
+    outputTree_->Branch("mu1_isTight",&mu1_isTight_);
     outputTree_->Branch("mu1_genmindR",&mu1_genmindR_);
     outputTree_->Branch("mu1_genpt",&mu1_genpt_);
     outputTree_->Branch("mu1_geneta",&mu1_geneta_);
@@ -429,6 +462,7 @@ namespace ic {
     outputTree_->Branch("mu2_pt",&mu2_pt_);
     outputTree_->Branch("mu2_eta",&mu2_eta_);
     outputTree_->Branch("mu2_phi",&mu2_phi_);
+    outputTree_->Branch("mu2_isTight",&mu2_isTight_);
     outputTree_->Branch("mu2_genmindR",&mu2_genmindR_);
     outputTree_->Branch("mu2_genpt",&mu2_genpt_);
     outputTree_->Branch("mu2_geneta",&mu2_geneta_);
@@ -437,18 +471,38 @@ namespace ic {
     outputTree_->Branch("ele1_pt",&ele1_pt_);
     outputTree_->Branch("ele1_eta",&ele1_eta_);
     outputTree_->Branch("ele1_phi",&ele1_phi_);
+    outputTree_->Branch("ele1_isTight",&ele1_isTight_);
     outputTree_->Branch("ele1_genmindR",&ele1_genmindR_);
     outputTree_->Branch("ele1_genpt",&ele1_genpt_);
     outputTree_->Branch("ele1_geneta",&ele1_geneta_);
     outputTree_->Branch("ele1_genphi",&ele1_genphi_);
 
+    outputTree_->Branch("ele2_pt",&ele2_pt_);
+    outputTree_->Branch("ele2_eta",&ele2_eta_);
+    outputTree_->Branch("ele2_phi",&ele2_phi_);
+    outputTree_->Branch("ele2_isTight",&ele2_isTight_);
+    outputTree_->Branch("ele2_genmindR",&ele2_genmindR_);
+    outputTree_->Branch("ele2_genpt",&ele2_genpt_);
+    outputTree_->Branch("ele2_geneta",&ele2_geneta_);
+    outputTree_->Branch("ele2_genphi",&ele2_genphi_);
+
     outputTree_->Branch("tau1_pt",&tau1_pt_);
     outputTree_->Branch("tau1_eta",&tau1_eta_);
     outputTree_->Branch("tau1_phi",&tau1_phi_);
+    outputTree_->Branch("tau1_isTight",&tau1_isTight_);
     outputTree_->Branch("tau1_genmindR",&tau1_genmindR_);
     outputTree_->Branch("tau1_genpt",&tau1_genpt_);
     outputTree_->Branch("tau1_geneta",&tau1_geneta_);
     outputTree_->Branch("tau1_genphi",&tau1_genphi_);
+
+    outputTree_->Branch("vetotau1_pt",&vetotau1_pt_);
+    outputTree_->Branch("vetotau1_eta",&vetotau1_eta_);
+    outputTree_->Branch("vetotau1_phi",&vetotau1_phi_);
+    outputTree_->Branch("vetotau1_isTight",&vetotau1_isTight_);
+    outputTree_->Branch("vetotau1_genmindR",&vetotau1_genmindR_);
+    outputTree_->Branch("vetotau1_genpt",&vetotau1_genpt_);
+    outputTree_->Branch("vetotau1_geneta",&vetotau1_geneta_);
+    outputTree_->Branch("vetotau1_genphi",&vetotau1_genphi_);
 
     outputTree_->Branch("gamma1_pt",&gamma1_pt_);
     outputTree_->Branch("gamma1_eta",&gamma1_eta_);
@@ -874,8 +928,11 @@ namespace ic {
     alljetsmetnoel_mindphi_=jetmetnoel_mindphi_;
     alljetsnotaumetnoel_mindphi_=1000;
 
-    std::vector<Tau*> const& taus=event->GetPtrVec<Tau>("taus");
+    std::vector<Tau*> & taus=event->GetPtrVec<Tau>("taus");
     ntaus_=taus.size();
+    std::vector<Tau*> & vetotaus=event->GetPtrVec<Tau>("vetoTaus");
+    nvetotaus_=vetotaus.size();
+
 
 
     for (unsigned i = 0; i < jets.size(); ++i) {//Loop on jets
@@ -884,16 +941,25 @@ namespace ic {
       if (nJets_<nJetsSave_){
         jet_pt_[nJets_]=jets[i]->pt();
         jet_uncorpt_[nJets_]=jets[i]->uncorrected_energy()/jets[i]->energy()*jets[i]->pt();
+	jet_neutralfrac_[nJets_] = jets[i]->neutral_had_energy() / jets[i]->uncorrected_energy();
 
         jet_E_[nJets_]=jets[i]->energy();
         jet_eta_[nJets_]=jets[i]->eta();
         jet_phi_[nJets_]=jets[i]->phi();
-        jet_csv_[nJets_]=jets[i]->GetBDiscriminator("pfCombinedSecondaryVertexV2BJetTags");
+	
+	/*std::map<std::size_t, float> btaglist = jets[i]->b_discriminators();
+	std::map<std::size_t, float>::iterator btagiter = btaglist.begin();
+	for (unsigned ib=0; btagiter != btaglist.end();++ib,++btagiter){
+	  std::cout << " tagger " << ib << " " << (btagiter->first) << " " << btagiter->second << std::endl;
+	  }*/
+
+        //jet_csv_[nJets_]=jets[i]->GetBDiscriminator("pfCombinedSecondaryVertexV2BJetTags");
+	jet_csv_[nJets_]=jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         //jet_csv_[nJets_]=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
         jet_jetid_[nJets_]=PFJetID2016(jets[i]);
         //jet_jetid_[nJets_]=PFJetID2015(jets[i]);
-        jet_loosepuid_[nJets_]=PileupJetID(jets[i],3,false);
-        jet_tightpuid_[nJets_]=PileupJetID(jets[i],3,true);
+        jet_loosepuid_[nJets_]=PileupJetID(jets[i],4,false);
+        jet_tightpuid_[nJets_]=PileupJetID(jets[i],4,true);
         jet_flavour_[nJets_]=jets[i]->parton_flavour();
 
         if (!is_data_ && recotogenmatch[i].second){
@@ -917,7 +983,7 @@ namespace ic {
 
       if(jets[i]->pt()>15) n_jets_15_++;
       if(jets[i]->pt()>30) n_jets_30_++;
-
+      if (fabs(jets[i]->eta())<2.4 && jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8) n_jets_csv2medium_++;
       //3rd jet
       if (i > 1) {
         double eta_high = -5;
@@ -945,7 +1011,7 @@ namespace ic {
             isInCentralGap){
           ++n_jets_cjv_20EB_30EE_;
         }
-        if(jets[i]->pt()>30.0){
+        if(jets[i]->pt()>30.0 && n_jets_30_<=5){
           double thisjetmetnomudphi = fabs(ROOT::Math::VectorUtil::DeltaPhi(jetvec,metnomuvec));
           if(thisjetmetnomudphi<alljetsmetnomu_mindphi_)alljetsmetnomu_mindphi_=thisjetmetnomudphi;
           //check matching with taus
@@ -993,9 +1059,9 @@ namespace ic {
     // Get Leptons collections //
     /////////////////////////////
 
-    std::vector<Muon*> const& vetomuons=event->GetPtrVec<Muon>("vetoMuons");
+    std::vector<Muon*> & vetomuons=event->GetPtrVec<Muon>("vetoMuons");
     std::vector<Muon*> & selmuons=event->GetPtrVec<Muon>("selMuons");
-    std::vector<Electron*> const& vetoelectrons=event->GetPtrVec<Electron>("vetoElectrons");
+    std::vector<Electron*> & vetoelectrons=event->GetPtrVec<Electron>("vetoElectrons");
     std::vector<Electron*> & selelectrons=event->GetPtrVec<Electron>("selElectrons");
 
     for (unsigned vetoelectronselements = 0; vetoelectronselements<vetoelectrons.size(); ++vetoelectronselements){
@@ -1028,79 +1094,104 @@ namespace ic {
     nselmuons_=selmuons.size();
     nvetoelectrons_=vetoelectrons.size();
     nselelectrons_=selelectrons.size();
+    //fill lepton info using veto objects: veto=tight when requiring ==1 tight....
+    //allows to use one loose one tight for mumu selection
 
-    std::sort(selmuons.begin(), selmuons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-    std::sort(selelectrons.begin(), selelectrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::sort(vetomuons.begin(), vetomuons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::sort(vetoelectrons.begin(), vetoelectrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::sort(vetotaus.begin(), vetotaus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
     std::vector<std::pair<unsigned,bool> > recotogen_elecs;
-    recotogen_elecs.resize(selelectrons.size(),std::pair<unsigned,bool>(1000,false));
-    if (!is_data_) getGenRecoMatches<Electron,Candidate>(selelectrons,genElecs,recotogen_elecs);
+    recotogen_elecs.resize(vetoelectrons.size(),std::pair<unsigned,bool>(1000,false));
+    if (!is_data_) getGenRecoMatches<Electron,Candidate>(vetoelectrons,genElecs,recotogen_elecs);
 
     std::vector<std::pair<unsigned,bool> > recotogen_muons;
-    recotogen_muons.resize(selmuons.size(),std::pair<unsigned,bool>(1000,false));
-    if (!is_data_) getGenRecoMatches<Muon,Candidate>(selmuons,genMus,recotogen_muons);
+    recotogen_muons.resize(vetomuons.size(),std::pair<unsigned,bool>(1000,false));
+    if (!is_data_) getGenRecoMatches<Muon,Candidate>(vetomuons,genMus,recotogen_muons);
 
     std::vector<std::pair<unsigned,bool> > recotogen_taus;
     recotogen_taus.resize(taus.size(),std::pair<unsigned,bool>(1000,false));
     if (!is_data_) getGenRecoMatches<Tau,Candidate>(taus,genTaus,recotogen_taus);
 
+    std::vector<std::pair<unsigned,bool> > recotogen_vetotaus;
+    recotogen_vetotaus.resize(vetotaus.size(),std::pair<unsigned,bool>(1000,false));
+    if (!is_data_) getGenRecoMatches<Tau,Candidate>(vetotaus,genTaus,recotogen_vetotaus);
+
     double lep_pt=0;
     double lep_phi=0;
-    if(nselmuons_>=1){
-      mu1_pt_=selmuons[0]->pt();
-      mu1_eta_=selmuons[0]->eta();
-      mu1_phi_=selmuons[0]->phi();
-      if (nselelectrons_==0&&ntaus_==0){
+    if(nvetomuons_>=1){
+      mu1_pt_=vetomuons[0]->pt();
+      mu1_eta_=vetomuons[0]->eta();
+      mu1_phi_=vetomuons[0]->phi();
+      mu1_isTight_ = isTightMuon(vetomuons[0],selmuons);
+      if (nvetoelectrons_==0&&ntaus_==0){
         lep_pt=mu1_pt_;
         lep_phi=mu1_phi_;
       }
       if (!is_data_ && recotogen_muons[0].second){
         unsigned genid = recotogen_muons[0].first;
-        mu1_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genMus[genid]->vector(),selmuons[0]->vector());
+        mu1_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genMus[genid]->vector(),vetomuons[0]->vector());
         mu1_genpt_=genMus[genid]->pt();
         mu1_geneta_=genMus[genid]->eta();
         mu1_genphi_=genMus[genid]->phi();
       }
-      if(nselmuons_>=2){
-        mu2_pt_=selmuons[1]->pt();
-        mu2_eta_=selmuons[1]->eta();
-        mu2_phi_=selmuons[1]->phi();
-        m_mumu_=((selmuons.at(0)->vector())+(selmuons.at(1)->vector())).M();
-        pt_mumu_=((selmuons.at(0)->vector())+(selmuons.at(1)->vector())).Pt();
+      if(nvetomuons_>=2){
+        mu2_pt_=vetomuons[1]->pt();
+        mu2_eta_=vetomuons[1]->eta();
+        mu2_phi_=vetomuons[1]->phi();
+	mu2_isTight_ = isTightMuon(vetomuons[1],selmuons);
+        m_mumu_=((vetomuons.at(0)->vector())+(vetomuons.at(1)->vector())).M();
+        pt_mumu_=((vetomuons.at(0)->vector())+(vetomuons.at(1)->vector())).Pt();
+	oppsign_mumu_ = vetomuons.at(0)->charge() != vetomuons.at(1)->charge();
         if (!is_data_ && recotogen_muons[1].second){
           unsigned genid = recotogen_muons[1].first;
-          mu2_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genMus[genid]->vector(),selmuons[1]->vector());
+          mu2_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genMus[genid]->vector(),vetomuons[1]->vector());
           mu2_genpt_=genMus[genid]->pt();
           mu2_geneta_=genMus[genid]->eta();
           mu2_genphi_=genMus[genid]->phi();
         }
       }
     }
-    if(nselelectrons_>=1){
-      ele1_pt_=selelectrons[0]->pt();
-      ele1_eta_=selelectrons[0]->eta();
-      ele1_phi_=selelectrons[0]->phi();
-      if (nselmuons_==0&&ntaus_==0){
+    if(nvetoelectrons_>=1){
+      ele1_pt_=vetoelectrons[0]->pt();
+      ele1_eta_=vetoelectrons[0]->eta();
+      ele1_phi_=vetoelectrons[0]->phi();
+      ele1_isTight_ = isTightElectron(vetoelectrons[0],selelectrons);
+      if (nvetomuons_==0&&ntaus_==0){
         lep_pt=ele1_pt_;
         lep_phi=ele1_phi_;
       }
       if (!is_data_ && recotogen_elecs[0].second){
         unsigned genid = recotogen_elecs[0].first;
-        ele1_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genElecs[genid]->vector(),selelectrons[0]->vector());
+        ele1_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genElecs[genid]->vector(),vetoelectrons[0]->vector());
         ele1_genpt_=genElecs[genid]->pt();
         ele1_geneta_=genElecs[genid]->eta();
         ele1_genphi_=genElecs[genid]->phi();
       }
-      if(nselelectrons_>=2){
-        m_ee_=((selelectrons.at(0)->vector())+(selelectrons.at(1)->vector())).M();
-        pt_ee_=((selelectrons.at(0)->vector())+(selelectrons.at(1)->vector())).Pt();
+      if(nvetoelectrons_>=2){
+	ele2_pt_=vetoelectrons[1]->pt();
+	ele2_eta_=vetoelectrons[1]->eta();
+	ele2_phi_=vetoelectrons[1]->phi();
+	ele2_isTight_ = isTightElectron(vetoelectrons[1],selelectrons);
+	if (!is_data_ && recotogen_elecs[1].second){
+	  unsigned genid = recotogen_elecs[1].first;
+	  ele2_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genElecs[genid]->vector(),vetoelectrons[1]->vector());
+	  ele2_genpt_=genElecs[genid]->pt();
+	  ele2_geneta_=genElecs[genid]->eta();
+	  ele2_genphi_=genElecs[genid]->phi();
+	}
+        m_ee_=((vetoelectrons.at(0)->vector())+(vetoelectrons.at(1)->vector())).M();
+        pt_ee_=((vetoelectrons.at(0)->vector())+(vetoelectrons.at(1)->vector())).Pt();
+	oppsign_ee_ = vetoelectrons.at(0)->charge() != vetoelectrons.at(1)->charge();
       }
     }
     if(ntaus_>=1){
       tau1_pt_=taus[0]->pt();
       tau1_eta_=taus[0]->eta();
       tau1_phi_=taus[0]->phi();
-      if (nselelectrons_==0&&nselmuons_==0){
+      tau1_isTight_ = true;
+      if (nvetoelectrons_==0&&nvetomuons_==0){
         lep_pt=tau1_pt_;
         lep_phi=tau1_phi_;
       }
@@ -1112,9 +1203,24 @@ namespace ic {
         tau1_genphi_=genTaus[genid]->phi();
       }
     }
+    if(nvetotaus_>=1){
+      vetotau1_pt_=vetotaus[0]->pt();
+      vetotau1_eta_=vetotaus[0]->eta();
+      vetotau1_phi_=vetotaus[0]->phi();
+      vetotau1_isTight_ = isTightTau(vetotaus[0],taus);
+      if (!is_data_ && recotogen_vetotaus[0].second){
+        unsigned genid = recotogen_vetotaus[0].first;
+        vetotau1_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genTaus[genid]->vector(),vetotaus[0]->vector());
+        vetotau1_genpt_=genTaus[genid]->pt();
+        vetotau1_geneta_=genTaus[genid]->eta();
+        vetotau1_genphi_=genTaus[genid]->phi();
+      }
+    }
+
+
     lep_mt_ =sqrt(2*lep_pt*met->pt()*(1-cos(lep_phi-met->phi())));
 
-    if (debug_) std::cout << " nelecs = " << nselelectrons_ << " nselmuons = " << nselmuons_ << std::endl;
+    if (debug_) std::cout << " nelecs = " << nvetoelectrons_ << " nvetomuons = " << nvetomuons_ << std::endl;
 
     ////////////////////////////
     // Get Photon collections //
@@ -1231,6 +1337,35 @@ namespace ic {
     ;
   }
 
+  bool LightTreeRDM::isTightMuon(Muon* veto,std::vector<Muon*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
+
+  bool LightTreeRDM::isTightElectron(Electron* veto,std::vector<Electron*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
+
+  bool LightTreeRDM::isTightTau(Tau* veto,std::vector<Tau*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
 
 }//namespace
 

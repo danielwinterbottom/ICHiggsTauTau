@@ -45,7 +45,8 @@ namespace ic {//namespace
     thisvar2binning.push_back(1000);
     thisvar2binning.push_back(5000);
     binnedin2d1dfitweightvar2binning_ = thisvar2binning;
-    do_run2_                =false;
+    do_run2_                =true;
+    do_metmht_ = true;
     trg_applied_in_mc_      = false;
     do_idiso_tight_weights_ = false;
     do_idiso_veto_weights_  = false;
@@ -258,7 +259,7 @@ namespace ic {//namespace
             //HF bins
             for(unsigned iVar3=0;iVar3<(do_run2_?2:1);iVar3++){
               std::ostringstream convert;
-              convert<<iVar1+1<<iVar2+1;
+              if (!do_metmht_) convert<<iVar1+1<<iVar2+1;
               if (do_run2_) convert<<iVar3+1;
               std::string histnumber=convert.str();
               if(!do_run2_){
@@ -268,7 +269,8 @@ namespace ic {//namespace
               }
               else{
                 for (unsigned iErr(0); iErr<7;++iErr){
-                  thisfuncvector[iErr].push_back((TF1*)gDirectory->Get(("fdata_"+binnedin2d1dfitweightvarorder_[2]+"_1d_"+histnumber+"Deff"+errLabel[iErr]).c_str()));
+                  if (!do_metmht_) thisfuncvector[iErr].push_back((TF1*)gDirectory->Get(("fdata_"+binnedin2d1dfitweightvarorder_[2]+"_1d_"+histnumber+"Deff"+errLabel[iErr]).c_str()));
+		  else thisfuncvector[iErr].push_back((TF1*)gDirectory->Get(("METMHT_BIN"+histnumber+errLabel[iErr]).c_str()));
                 }
               }
             }
