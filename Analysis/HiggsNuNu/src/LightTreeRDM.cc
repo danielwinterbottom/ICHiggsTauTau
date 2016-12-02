@@ -47,6 +47,7 @@ namespace ic {
     jet_loosepuid_ = new double[nJetsSave_];
     jet_tightpuid_ = new double[nJetsSave_];
     jet_flavour_ = new int[nJetsSave_];
+    jet_neutralfrac_ = new double[nJetsSave_];
 
     jet_genjet_mindR_ = new double[nJetsSave_];
     jet_genid_ = new unsigned[nJetsSave_];
@@ -112,7 +113,7 @@ namespace ic {
       jet_loosepuid_[ij] = -1;
       jet_tightpuid_[ij] = -1;
       jet_flavour_[ij] = 0;
-
+      jet_neutralfrac_[ij] = -1;
       jet_genjet_mindR_[ij] = 99;
       jet_genid_[ij] = 1000;
       jet_genpt_[ij] = -1;
@@ -349,6 +350,7 @@ namespace ic {
       outputTree_->Branch((label.str()+"_jetid").c_str(),&jet_jetid_[ij]);
       outputTree_->Branch((label.str()+"_loosepuid").c_str(),&jet_loosepuid_[ij]);
       outputTree_->Branch((label.str()+"_tightpuid").c_str(),&jet_tightpuid_[ij]);
+      outputTree_->Branch((label.str()+"_neutralfrac").c_str(),&jet_neutralfrac_[ij]);
       outputTree_->Branch((label.str()+"_genjet_mindR").c_str(),&jet_genjet_mindR_[ij]);
       outputTree_->Branch((label.str()+"_flavour").c_str(),&jet_flavour_[ij]);
       outputTree_->Branch((label.str()+"_genid").c_str(),&jet_genid_[ij]);
@@ -939,6 +941,7 @@ namespace ic {
       if (nJets_<nJetsSave_){
         jet_pt_[nJets_]=jets[i]->pt();
         jet_uncorpt_[nJets_]=jets[i]->uncorrected_energy()/jets[i]->energy()*jets[i]->pt();
+	jet_neutralfrac_[nJets_] = jets[i]->neutral_had_energy() / jets[i]->uncorrected_energy();
 
         jet_E_[nJets_]=jets[i]->energy();
         jet_eta_[nJets_]=jets[i]->eta();

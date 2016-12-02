@@ -918,13 +918,18 @@ int main(int argc, char* argv[]){
     .set_input_met("metNoMuons");
   if (!is_data) {
     std::vector<double> jptbinning;
-    jptbinning.push_back(70);
-    jptbinning.push_back(80);
-    jptbinning.push_back(1000);
+    //jptbinning.push_back(70);
+    //jptbinning.push_back(80);
+    //jptbinning.push_back(1000);
+    //for metmht
+    jptbinning.push_back(0);
+    jptbinning.push_back(7000);
     std::vector<double> mjjbinning;
-    mjjbinning.push_back(800);
-    mjjbinning.push_back(1000);
-    mjjbinning.push_back(10000);
+    //mjjbinning.push_back(800);
+    //mjjbinning.push_back(1000);
+    //mjjbinning.push_back(10000);
+    mjjbinning.push_back(0);
+    mjjbinning.push_back(14000);
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_do_3dtrg_weights(do3dtrgeff)
       .set_do_1dparkedtrg_weights(do1dparkedtrgeff)
@@ -933,6 +938,7 @@ int main(int argc, char* argv[]){
       .set_binnedin2d1dfitweightvar1binning(jptbinning)
       .set_binnedin2d1dfitweightvar2binning(mjjbinning)
       .set_do_run2(true)
+      .set_do_metmht(true)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(false);
     if(do3dtrgeff){

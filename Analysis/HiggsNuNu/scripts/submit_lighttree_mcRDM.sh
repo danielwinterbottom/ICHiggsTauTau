@@ -1,7 +1,7 @@
 #!/bin/sh
 DOCERN=0
 ### submit to the batch sistem at IC 1 -- 0 otherwise
-DOSUBMIT=1
+DOSUBMIT=0
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=JetMETvalidation
@@ -11,7 +11,7 @@ MYEXEC=LightTreeMakerFromMiniAODRDM
 PRODUCTION=161031
 PRODUSER=rdimaria
 #PRODUSER=amagnan
-JPTCUTVAL=30
+JPTCUTVAL=40
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh $DOCERN $MYEXEC $PRODUCTION"}
@@ -44,13 +44,13 @@ for SYST in central #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
 do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161121_ICHEP_cut
-  #JOBDIRPREFIX=jobs_lighttree_160929
+  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161121_ICHEP_cut
+  JOBDIRPREFIX=jobs_lighttree_161201
   JOBDIR=$JOBDIRPREFIX/
   #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161121_ICHEP_cut
+  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161121_ICHEP_cut
   #OUTPUTPREFIX=output_lighttree_160929
-  #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_161114
+  OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_161201
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]
@@ -152,9 +152,9 @@ do
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
 
-    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
     #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_EWK*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
     do
       echo "Processing files in "$FILELIST
 

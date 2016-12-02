@@ -91,6 +91,7 @@ namespace ic {
     double* jet_loosepuid_;
     double* jet_tightpuid_;
     int* jet_flavour_;
+    double* jet_neutralfrac_;
 
     double* jet_genjet_mindR_;
     unsigned* jet_genid_;
@@ -161,15 +162,15 @@ namespace ic {
     double jet1metnoel_scalarprod_;
     double jet2metnoel_scalarprod_;
 
-    double pass_muontrigger_;
-    double pass_photontrigger_;
-    double pass_sigtrigger_;
-    double pass_mettrigger_;
-    double pass_metmht90trigger_;
-    double pass_metmht100trigger_;
-    double pass_metmht110trigger_;
-    double pass_metmht120trigger_;
-    double pass_controltrigger_;
+    int pass_muontrigger_;
+    int pass_photontrigger_;
+    int pass_sigtrigger_;
+    int pass_mettrigger_;
+    int pass_metmht90trigger_;
+    int pass_metmht100trigger_;
+    int pass_metmht110trigger_;
+    int pass_metmht120trigger_;
+    int pass_controltrigger_;
 
     unsigned nvetomuons_;
     unsigned nselmuons_;
