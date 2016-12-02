@@ -288,9 +288,6 @@ namespace ic {
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
     virtual void PrintInfo();
-    bool isTightMuon(Muon* veto,std::vector<Muon*> sel);
-    bool isTightElectron(Electron* veto,std::vector<Electron*> sel);
-    bool isTightTau(Tau* veto,std::vector<Tau*> sel);
 
    };
 

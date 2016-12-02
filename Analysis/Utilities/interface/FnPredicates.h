@@ -69,6 +69,11 @@ namespace ic {
   //----------------------------------------------------------
   bool GoodVertex(Vertex const* vertex);
 
+  //
+  bool isTightMuon(Muon* veto,std::vector<Muon*> sel);
+  bool isTightElectron(Electron* veto,std::vector<Electron*> sel);
+  bool isTightTau(Tau* veto,std::vector<Tau*> sel);
+
   //----------------------------------------------------------
   // Electron
   //----------------------------------------------------------

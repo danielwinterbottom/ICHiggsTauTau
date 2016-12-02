@@ -10,6 +10,36 @@
 #include <set>
 
 namespace ic {
+  bool isTightMuon(Muon* veto,std::vector<Muon*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
+
+  bool isTightElectron(Electron* veto,std::vector<Electron*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
+
+  bool isTightTau(Tau* veto,std::vector<Tau*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
+
 
   bool GoodVertex(Vertex const* vertex) {
     if (     vertex->ndof() > 4 

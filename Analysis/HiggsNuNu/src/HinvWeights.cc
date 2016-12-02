@@ -842,6 +842,15 @@ namespace ic {//namespace
       ele_weight *= eTight_idisoSF_[findPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta(),e_ptbin_,e_etabin_)];
       ele_weight *= e_gsfidSF_[findPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta(),gsf_ptbin_,gsf_etabin_)];
     }
+    //add veto which are not tight
+    std::vector<Electron*> const& loose = event->GetPtrVec<Electron>("vetoElectrons");
+    for (unsigned iEle(0); iEle<loose.size();++iEle){
+      //check overlap with tight
+      if (isTightElectron(loose[iEle],elecs)) continue;
+      unsigned lBin = findPtEtaBin(loose[iEle]->pt(),loose[iEle]->eta(),e_ptbin_,e_etabin_);
+      ele_weight *= eVeto_idisoDataEff_[lBin]/eVeto_idisoMCEff_[lBin];
+      ele_weight *= e_gsfidSF_[findPtEtaBin(loose[iEle]->pt(),loose[iEle]->eta(),gsf_ptbin_,gsf_etabin_)];
+    }
     eventInfo->set_weight("!eleTight_idisoSF",ele_weight);
     tighteleweight->Fill(ele_weight);
 
@@ -853,6 +862,15 @@ namespace ic {//namespace
       unsigned lBin = findPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta(),mu_ptbin_,mu_etabin_);
       unsigned mBin = findPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta(),tk_ptbin_,tk_etabin_);
       mu_weight *= muTight_idisoSF_[lBin] * mu_tkSF_[mBin];
+    }
+    //add veto which are not tight
+    std::vector<Muon*> const& loosemus = event->GetPtrVec<Muon>("vetoMuons");
+    for (unsigned iEle(0); iEle<loosemus.size();++iEle){
+      //check overlap with tight
+      if (isTightMuon(loosemus[iEle],mus)) continue;
+      unsigned lBin = findPtEtaBin(loosemus[iEle]->pt(),loosemus[iEle]->eta(),mu_ptbin_,mu_etabin_);
+      unsigned mBin = findPtEtaBin(loosemus[iEle]->pt(),loosemus[iEle]->eta(),tk_ptbin_,tk_etabin_);
+      mu_weight *= muVeto_idisoDataEff_[lBin]/muVeto_idisoMCEff_[lBin] * mu_tkSF_[mBin];
     }
     eventInfo->set_weight("!muTight_idisoSF",mu_weight);
     tightmuweight->Fill(mu_weight);

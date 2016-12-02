@@ -1346,35 +1346,5 @@ namespace ic {
     ;
   }
 
-  bool LightTreeRDM::isTightMuon(Muon* veto,std::vector<Muon*> sel){
-    double mindr=10;
-    for (unsigned i(0);i<sel.size();++i){
-      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
-      if (dR<mindr) mindr=dR;
-    }
-    if (mindr<0.05) return true;
-    return false;
-  }
-
-  bool LightTreeRDM::isTightElectron(Electron* veto,std::vector<Electron*> sel){
-    double mindr=10;
-    for (unsigned i(0);i<sel.size();++i){
-      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
-      if (dR<mindr) mindr=dR;
-    }
-    if (mindr<0.05) return true;
-    return false;
-  }
-
-  bool LightTreeRDM::isTightTau(Tau* veto,std::vector<Tau*> sel){
-    double mindr=10;
-    for (unsigned i(0);i<sel.size();++i){
-      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
-      if (dR<mindr) mindr=dR;
-    }
-    if (mindr<0.05) return true;
-    return false;
-  }
-
 }//namespace
 
