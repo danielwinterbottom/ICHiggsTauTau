@@ -1,7 +1,7 @@
 #!/bin/sh
 DOCERN=0
 ### submit to the batch sistem at IC 1 -- 0 otherwise
-DOSUBMIT=0
+DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
 #MYEXEC=JetMETvalidation
