@@ -99,6 +99,12 @@ if __name__ == '__main__':
     ##tasks.append(('SingleMuon-2016H-PromptReco-v1','/SingleMuon/Run2016H-PromptReco-v1/MINIAOD'     ,rerecoparams,                   ))
     ##tasks.append(('SingleMuon-2016H-PromptReco-v2','/SingleMuon/Run2016H-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
 
+    tasks.append(('SingleElectron-2016B-PromptReco-v2','/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
+    tasks.append(('SingleElectron-2016C-PromptReco-v2','/SingleElectron/Run2016C-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
+    tasks.append(('SingleElectron-2016D-PromptReco-v2','/SingleElectron/Run2016D-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
+    tasks.append(('SingleElectron-2016E-PromptReco-v2','/SingleElectron/Run2016E-PromptReco-v2/MINIAOD'     ,rerecoparams,                   ))
+    tasks.append(('SingleElectron-2016F-PromptReco-v1','/SingleElectron/Run2016F-PromptReco-v1/MINIAOD'     ,rerecoparams,                   ))
+
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
