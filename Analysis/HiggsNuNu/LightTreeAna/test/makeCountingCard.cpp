@@ -349,14 +349,14 @@ int main(int argc, char* argv[]){
     .set_latexname("W/Z from theory")
     .set_type("constlnN")
     .set_constvalue(wzqcd_syst)
-    .set_procsaffected({"zmumuqcd","zvvqcd"});
+    .set_procsaffected({"zeeqcd","zmumuqcd","zvvqcd"});
 
   Syst wzratioewk;
   wzratioewk.set_name("CMS_WZEWK_ratio_from_theory")
     .set_latexname("W/Z from theory")
     .set_type("constlnN")
     .set_constvalue(wzewk_syst)
-    .set_procsaffected({"zmumuewk","zvvewk"});
+    .set_procsaffected({"zeeewk","zmumuewk","zvvewk"});
 
   Syst zvvewkmcstat;
   zvvewkmcstat.set_name("CMS_VBFHinv_zvv_ewk_norm")
