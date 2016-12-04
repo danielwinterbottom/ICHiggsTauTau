@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
   bool dodatajessyst;             // Do Alternate Data Jet Energy Scale Method Systematic Run
   bool jesupordown;               // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
   bool dosmear;                   // Do Smearing
+  bool doType1Cor;                // Do type1 corrections (for single e from tautau group)
   bool doaltmatch;                // Do runmetuncertainties gen jet matching
   bool doetsmear;                 // Do runmetuncertainties smearing
   bool dogaus;                    // Do gaussian smearing for jets with no gen jet match
@@ -203,6 +204,7 @@ int main(int argc, char* argv[]){
     ("printEventList",        po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",     po::value<bool>(&printEventContent)->default_value(false))
     ("dosmear",               po::value<bool>(&dosmear)->default_value(false))
+    ("doType1Cor",            po::value<bool>(&doType1Cor)->default_value(false))
     ("doaltmatch",            po::value<bool>(&doaltmatch)->default_value(false))
     ("doetsmear",             po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",                po::value<bool>(&dogaus)->default_value(false))
@@ -787,6 +789,7 @@ int main(int argc, char* argv[]){
   if (reapplyJEC && is_data) corVec.push_back(JetMETModifier::jetmetCor::jecData);
   if (reapplyJEC && !is_data) corVec.push_back(JetMETModifier::jetmetCor::jecMC);
   if (dosmear)    corVec.push_back(JetMETModifier::jetmetCor::smearMC);
+  if (doType1Cor) corVec.push_back(JetMETModifier::jetmetCor::type1cor);
   ModifyJetMET.set_corVec(corVec);
 
   if (dojessyst) ModifyJetMET.set_syst(jesupordown?JetMETModifier::jetmetSyst::jesUp:JetMETModifier::jetmetSyst::jesDown);
@@ -1056,7 +1059,8 @@ int main(int argc, char* argv[]){
 
   if (is_data) analysis.AddModule(&lumiMask);
 
-  analysis.AddModule(&singleMet);
+  //fix for single elec files
+  if (!doType1Cor) analysis.AddModule(&singleMet);
   if (!is_data) {
     //do W streaming to e,mu,tau
     if (isW) {
@@ -1091,17 +1095,24 @@ int main(int argc, char* argv[]){
 
   if(!donoskim) analysis.AddModule(&goodVertexFilter);
   //jet modules
+  //Module to do jet smearing and systematics
+  //analysis.AddModule(&jecStudy);
+  analysis.AddModule(&ModifyJetMET);
+
   analysis.AddModule(&jetIDFilter);
   //don't want pile-up jets to calculate HT,MHT...
   analysis.AddModule(&alljetsCopyCollection);
 
   //prepare collections of photons
-  analysis.AddModule(&loosePhotonCopyCollection);
-  analysis.AddModule(&loosePhotonFilter);
-  analysis.AddModule(&mediumPhotonCopyCollection);
-  analysis.AddModule(&mediumPhotonFilter);
-  analysis.AddModule(&tightPhotonCopyCollection);
-  analysis.AddModule(&tightPhotonFilter);
+  //no photons in tautau single ele data files...
+  if (!doType1Cor){
+    analysis.AddModule(&loosePhotonCopyCollection);
+    analysis.AddModule(&loosePhotonFilter);
+    analysis.AddModule(&mediumPhotonCopyCollection);
+    analysis.AddModule(&mediumPhotonFilter);
+    analysis.AddModule(&tightPhotonCopyCollection);
+    analysis.AddModule(&tightPhotonFilter);
+  }
 
   //prepare collections of veto leptons
   analysis.AddModule(&vetoElectronCopyCollection);
@@ -1123,9 +1134,6 @@ int main(int argc, char* argv[]){
 
   //if (printEventList) analysis.AddModule(&hinvPrintList);
 
-  //Module to do jet smearing and systematics
-  //analysis.AddModule(&jecStudy);
-  analysis.AddModule(&ModifyJetMET);
 
   //deal with removing overlap with selected leptons
   analysis.AddModule(&jetMuonOverlapFilter);

@@ -29,6 +29,7 @@ namespace ic {
     reapplyJecData_ = false;
     reapplyJecMC_ = false;
     smear_ = false;
+    type1cor_ = false;
 
     nRho_ = 5;
 
@@ -168,13 +169,17 @@ namespace ic {
         std::cout << " -- smearing MC jets"  << std::endl;
         smear_ = true;
       }
+      if (corVec_[ic]==jetmetCor::type1cor){
+        std::cout << " -- Added type1 cor to MET"  << std::endl;
+        type1cor_ = true;
+      }
     }
 
     std::cout << " -- Applying jetmetSyst: " << syst_ << std::endl;
 
 
     //to reapply JEC on data
-    if (is_data_ && reapplyJecData_){
+    if (is_data_ && (reapplyJecData_ || type1cor_) ){
       if (jec_data_files_.size() != 4) {
         std::cout << " -- Check JEC data filename vec, wrong size:" << jec_data_files_.size() << std::endl;
         return 1;
@@ -184,7 +189,7 @@ namespace ic {
       l3JetPar_  = new JetCorrectorParameters(jec_data_files_[2]);
       resJetPar_ = new JetCorrectorParameters(jec_data_files_[3]); 
     }
-    else if (reapplyJecMC_) {
+    else if (reapplyJecMC_ || type1cor_) {
       if (jec_mc_files_.size() != 3){
         std::cout << " -- Check JEC MC filename vec, wrong size: " << jec_mc_files_.size() << std::endl;
         return 1;
@@ -193,7 +198,7 @@ namespace ic {
       l2JetPar_  = new JetCorrectorParameters(jec_mc_files_[1]);
       l3JetPar_  = new JetCorrectorParameters(jec_mc_files_[2]);
     }
-    if (reapplyJecData_ || reapplyJecMC_){
+    if (reapplyJecData_ || reapplyJecMC_ || type1cor_){
       //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
       std::vector<JetCorrectorParameters> vPar;
       vPar.push_back(*l1JetPar_);
@@ -291,7 +296,7 @@ namespace ic {
 
   int JetMETModifier::Execute(TreeEvent *event) {
 
-    if (is_data_ && !reapplyJecData_) return 0;
+    if (is_data_ && !reapplyJecData_ && !type1cor_) return 0;
 
     std::vector<PFJet *> & jetvec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -342,7 +347,7 @@ namespace ic {
 
       //apply new correction
       double newcor = oldcor;
-      if ( (is_data_ && reapplyJecData_) || (!is_data_ && reapplyJecMC_) ) {
+      if ( (is_data_ && (reapplyJecData_ || type1cor)) || (!is_data_ && (reapplyJecMC_ || type1cor_) ) ) {
         newcor = applyCorrection(rawjet,jetvec[i]->jet_area(),eventInfo->jet_rho());
       }
       prevjet = oldjet;
@@ -381,6 +386,10 @@ namespace ic {
 
       double dpx = newjet.px()-oldjet.px();
       double dpy = newjet.py()-oldjet.py();
+      if (type1cor_){
+	dpx = newjet.px()-rawjet.px();
+	dpy = newjet.py()-rawjet.py();
+      }
       newmet.SetPx(newmet.px()-dpx);
       newmet.SetPy(newmet.py()-dpy);
       newmet.SetE(newmet.pt());
