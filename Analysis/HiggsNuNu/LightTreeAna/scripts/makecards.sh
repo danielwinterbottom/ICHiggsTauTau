@@ -16,7 +16,7 @@ mkdir -p $outfolder
 
 extraoptions="--do_ues=false" #--do_ggh=false --do_separate_qcdewk=false"
 
-for channel in qcd nunu enu munu mumu taunu #qcd #topl topb
+for channel in ee qcd nunu enu munu mumu taunu #qcd #topl topb
 do
     echo " ********************************"
     echo " *** Processing channel $channel"

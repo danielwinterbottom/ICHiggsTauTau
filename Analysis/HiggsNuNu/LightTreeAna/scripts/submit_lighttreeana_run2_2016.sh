@@ -71,17 +71,17 @@ for syst in "" JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEF
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in ee enu #qcd enu munu taunu mumu ee nunu #qcd #topl topb top gamma
+  for channels in qcd enu munu taunu mumu ee nunu #qcd #topl topb top gamma
     do
     JOB=$channels
     #executable expect strings separated by "!"
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
     ## To produce all of the hist
-    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
+    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
     ## To test for one hist
     #HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events"
     #SHAPESTRING="metnomuons(25,200.,600.)"
