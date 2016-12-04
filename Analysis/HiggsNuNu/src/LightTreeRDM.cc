@@ -1238,46 +1238,49 @@ namespace ic {
     ////////////////////////////
     // Get Photon collections //
     ////////////////////////////
-
-    std::vector<Photon*>  const& loosephotons=event->GetPtrVec<Photon>("loosePhotons");
-    std::vector<Photon*>  const& mediumphotons=event->GetPtrVec<Photon>("mediumPhotons");
-    std::vector<Photon*>  & tightphotons=event->GetPtrVec<Photon>("tightPhotons");
-    nloosephotons_=loosephotons.size();
-    nmediumphotons_=mediumphotons.size();
-    ntightphotons_=tightphotons.size();
-    std::sort(tightphotons.begin(), tightphotons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-
-    std::vector<std::pair<unsigned,bool> > recotogen_photons;
-    recotogen_photons.resize(tightphotons.size(),std::pair<unsigned,bool>(1000,false));
-    if (!is_data_) getGenRecoMatches<Photon,Candidate>(tightphotons,genPhotons,recotogen_photons);
-
-     for (unsigned loosephotonselements = 0; loosephotonselements<loosephotons.size(); ++loosephotonselements){
-      mynewloosephotons_.push_back(*loosephotons[loosephotonselements]);
-     }
-
-     for (unsigned mediumphotonselements = 0; mediumphotonselements<mediumphotons.size(); ++mediumphotonselements){
-      mynewmediumphotons_.push_back(*mediumphotons[mediumphotonselements]);
-     }
-
-     for (unsigned tightphotonselements = 0; tightphotonselements<tightphotons.size(); ++tightphotonselements){
-      mynewtightphotons_.push_back(*tightphotons[tightphotonselements]);
-     }
-
-    if(ntightphotons_>=1){
-      gamma1_pt_=tightphotons[0]->pt();
-      gamma1_eta_=tightphotons[0]->eta();
-      gamma1_phi_=tightphotons[0]->phi();
-      if (!is_data_ && recotogen_photons[0].second){
-        unsigned genid = recotogen_photons[0].first;
-        gamma1_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genPhotons[genid]->vector(),tightphotons[0]->vector());
-        gamma1_genpt_=genPhotons[genid]->pt();
-        gamma1_geneta_=genPhotons[genid]->eta();
-        gamma1_genphi_=genPhotons[genid]->phi();
+    try {
+      std::vector<Photon*>  const& loosephotons=event->GetPtrVec<Photon>("loosePhotons");
+      std::vector<Photon*>  const& mediumphotons=event->GetPtrVec<Photon>("mediumPhotons");
+      std::vector<Photon*>  & tightphotons=event->GetPtrVec<Photon>("tightPhotons");
+      nloosephotons_=loosephotons.size();
+      nmediumphotons_=mediumphotons.size();
+      ntightphotons_=tightphotons.size();
+      std::sort(tightphotons.begin(), tightphotons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+      
+      std::vector<std::pair<unsigned,bool> > recotogen_photons;
+      recotogen_photons.resize(tightphotons.size(),std::pair<unsigned,bool>(1000,false));
+      if (!is_data_) getGenRecoMatches<Photon,Candidate>(tightphotons,genPhotons,recotogen_photons);
+      
+      for (unsigned loosephotonselements = 0; loosephotonselements<loosephotons.size(); ++loosephotonselements){
+	mynewloosephotons_.push_back(*loosephotons[loosephotonselements]);
       }
+      
+      for (unsigned mediumphotonselements = 0; mediumphotonselements<mediumphotons.size(); ++mediumphotonselements){
+	mynewmediumphotons_.push_back(*mediumphotons[mediumphotonselements]);
+      }
+      
+      for (unsigned tightphotonselements = 0; tightphotonselements<tightphotons.size(); ++tightphotonselements){
+	mynewtightphotons_.push_back(*tightphotons[tightphotonselements]);
+      }
+      
+      if(ntightphotons_>=1){
+	gamma1_pt_=tightphotons[0]->pt();
+	gamma1_eta_=tightphotons[0]->eta();
+	gamma1_phi_=tightphotons[0]->phi();
+	if (!is_data_ && recotogen_photons[0].second){
+	  unsigned genid = recotogen_photons[0].first;
+	  gamma1_genmindR_ = ROOT::Math::VectorUtil::DeltaR(genPhotons[genid]->vector(),tightphotons[0]->vector());
+	  gamma1_genpt_=genPhotons[genid]->pt();
+	  gamma1_geneta_=genPhotons[genid]->eta();
+	  gamma1_genphi_=genPhotons[genid]->phi();
+	}
+      }
+      
+      
+      if (debug_) std::cout << " nPhotons = " << nloosephotons_ << " " << nmediumphotons_ << " " << ntightphotons_ << std::endl;
+    } catch (...) {
+      //if photon collections not there, ignore....
     }
-
-
-    if (debug_) std::cout << " nPhotons = " << nloosephotons_ << " " << nmediumphotons_ << " " << ntightphotons_ << std::endl;
 
     //IF PASSES CUTS FILL TREE    
     //if(do_noskim_){

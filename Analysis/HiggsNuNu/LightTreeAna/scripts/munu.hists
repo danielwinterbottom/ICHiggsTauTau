@@ -1,12 +1,12 @@
 lep_mt(18,0.,180.)	;m_{T}(lepton+MET) (GeV);Events
 mu1_pt(22,20.,350.)	;p_{T}(muon) (GeV);Events
-mu1_eta(20,-2.1,2.1)	;#eta(muon) (GeV);Events
+mu1_eta(20,-2.5,2.5)	;#eta(muon) (GeV);Events
 metnomuons*pow(sqrt(sumet-mu1_pt),-1)(30,0.,15.)	;S;Events
 n_vertices(40,0,40)	;n_{vtx};Events
 jet1_pt(32,80.,560.)	;p_{T}^{j1} (GeV);Events
-jet2_pt(16,70.,310.)	;p_{T}^{j2} (GeV);Events
+jet2_pt(16,40.,310.)	;p_{T}^{j2} (GeV);Events
 jet1_uncorpt(32,80.,560.)	;uncor p_{T}^{j1} (GeV);Events
-jet2_uncorpt(16,70.,310.)	;uncor p_{T}^{j2} (GeV);Events
+jet2_uncorpt(16,40.,310.)	;uncor p_{T}^{j2} (GeV);Events
 jet1_eta(47,-4.7,4.7)	;#eta^{j1} (GeV);Events
 jet2_eta(47,-4.7,4.7)	;#eta^{j2} (GeV);Events
 cjvjetpt(19,15.,205.)	;p_{T}^{CJV jet} (GeV);Events

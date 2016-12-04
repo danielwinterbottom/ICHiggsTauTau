@@ -107,6 +107,7 @@ int main(int argc, char* argv[]){
   std::string inputparams;
   std::string filelist;
   std::string basesel;
+  std::string baseselele;
 
   std::string channel;
   std::string syst;
@@ -162,6 +163,7 @@ int main(int argc, char* argv[]){
     ("do_list",                  po::value<bool>(&do_list)->default_value(false))
     ("listset",                  po::value<std::string>(&listset)->default_value("Top"))
     ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=1100&&jet1_pt>80&&dijet_deta>3.6&& jet2_pt>70&&metnomuons>200"))
+    ("baseselele",               po::value<std::string>(&baseselele)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=1100&&jet1_pt>80&&dijet_deta>3.6&& jet2_pt>70&&metnoelectrons>200"))
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
 
     ("runblind",                 po::value<bool>(&runblind)->default_value(true))
@@ -228,6 +230,7 @@ int main(int argc, char* argv[]){
   analysis->SetInputParams(inputparams);
 
   std::cout<<"Base selection: "<<basesel<<std::endl;
+  std::cout<<"Base selection for electrons: "<<baseselele<<std::endl;
 
   //add metsig cut
   std::string metsigsel;
@@ -235,7 +238,8 @@ int main(int argc, char* argv[]){
   else if (channel=="munu") metsigsel="&& metnomuons/sqrt(sumet-mu1_pt)>"+metsigcut;
   else metsigsel="&& metnomuons/sqrt(sumet)>"+metsigcut;
 
-  basesel = basesel;//+metsigsel;
+  if (channel=="ee" || channel=="enu") basesel = baseselele;//+metsigsel;
+  else basesel = basesel;//+metsigsel;
 
   analysis->set_baseselection(basesel);
   
@@ -375,7 +379,10 @@ int main(int argc, char* argv[]){
   std::string dataextrasel;
   std::string mcextrasel;
 
-  if (channel!="gamma"){
+  if (channel=="ee" || channel=="enu"){
+    dataextrasel="&&(pass_singleEltrigger==1)";
+  }
+  else if (channel!="gamma"){
     //if(!do_mettrig) dataextrasel="&&(pass_sigtrigger==1)";
     //for metmht trigger
     if(!do_mettrig) dataextrasel="&&(pass_metmht90trigger==1 || pass_metmht100trigger==1 || pass_metmht110trigger==1 || pass_metmht120trigger==1)";
@@ -396,9 +403,10 @@ int main(int argc, char* argv[]){
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1";
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
 
+  std::string eecat="nselelectrons>=1&&nvetoelectrons==2&&nvetomuons==0&&m_ee>60&&m_ee<120&&oppsign_ee&&ele1_pt>40&&"+jetmetdphicut;
   std::string mumucat="nselmuons>=1&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&oppsign_mumu&&"+jetmetdphicut;
   std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
-  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
+  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&ele1_pt>40&&"+jetmetdphicut;
   std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
   std::string gammacat="ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
   std::string toplcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";
@@ -410,6 +418,9 @@ int main(int argc, char* argv[]){
   else {
     if(channel=="mumu"){//zmumu
       sigcat=mumucat;
+    }
+    else if(channel=="ee"){//zee
+      sigcat=eecat;
     }
     else if(channel=="munu"){//wmu
       sigcat=munucat;
@@ -452,8 +463,12 @@ int main(int argc, char* argv[]){
   if (syst=="TRIG2DOWN") mcweightpufactor<<"*weight_trig_6/weight_trig_0";
 
   if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor.str();//+mcweightpufactordebug;
+  //remove trigger weight for e channels which do not use signal trigger
+  else if (channel=="ee" || channel=="enu") sigmcweight="total_weight_leptight/weight_trig_0"+mcweightpufactor.str();//+mcweightpufactordebug;
   else sigmcweight="total_weight_leptight"+mcweightpufactor.str();//+mcweightpufactordebug;
   sig125mcweight="total_weight_lepveto"+mcweightpufactor.str();
+
+  if (channel=="ee" || channel == "enu") dataset="SingleElectron";
 
   std::string bothcentral="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)<3";
   std::string bothforward="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)>=3";
@@ -693,6 +708,16 @@ int main(int argc, char* argv[]){
 
   if (use_nlo)  zmumuraw.set_dataset("ZJets_ll_nlo");
 
+  DataShape zeeraw("zeeraw");
+  zeeraw.set_dataset("ZJets_ll")
+    .set_dirname("zee")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  zeeraw.set_dataset("ZJets_ll_nlo");
+
   DataShape qcdzmumuraw("qcdzmumuraw");
   qcdzmumuraw.set_dataset("ZJets_ll")
     .set_dirname("zmumuqcd")
@@ -706,6 +731,24 @@ int main(int argc, char* argv[]){
   DataShape ewkzmumuraw("ewkzmumuraw");
   ewkzmumuraw.set_dataset("EWK_ZJets_ll")
     .set_dirname("zmumuewk")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape qcdzeeraw("qcdzeeraw");
+  qcdzeeraw.set_dataset("ZJets_ll")
+    .set_dirname("zeeqcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  qcdzeeraw.set_dataset("ZJets_ll_nlo");
+
+  DataShape ewkzeeraw("ewkzeeraw");
+  ewkzeeraw.set_dataset("EWK_ZJets_ll")
+    .set_dirname("zeeewk")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
@@ -1035,6 +1078,34 @@ int main(int argc, char* argv[]){
     .set_sample("zmumuewk");
   if(!do_mcbkg)ewkzmumuele.set_has_dderrors(1);
 
+  LTPlotElement zeeele;
+  zeeele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kAzure  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("Z#rightarrow#mu#mu")
+    .set_sample("zee");
+  if(!do_mcbkg)zeeele.set_has_dderrors(1);
+  LTPlotElement qcdzeeele;
+  qcdzeeele.set_is_data(false)
+    .set_scale(getPostFitSF(channel,"zqcd"))
+    .set_color(kAzure  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD Z#rightarrow#mu#mu")
+    .set_sample("zeeqcd");
+  if(!do_mcbkg)qcdzeeele.set_has_dderrors(1);
+  LTPlotElement ewkzeeele;
+  ewkzeeele.set_is_data(false)
+    .set_scale(getPostFitSF(channel,"zewk"))
+    .set_color(kAzure  + 4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("EWK Z#rightarrow#mu#mu")
+    .set_sample("zeeewk");
+  if(!do_mcbkg)ewkzeeele.set_has_dderrors(1);
+
   LTPlotElement znunuele;
   znunuele.set_is_data(false)
     .set_scale(1)
@@ -1129,7 +1200,7 @@ int main(int argc, char* argv[]){
 	elementvec.push_back(qcdwele);
 	elementvec.push_back(ewkwele);
     }
-    else if(channel!="mumu"){
+    else if(channel!="mumu" && channel != "ee"){
       if (channel!="enu" && channel!="taunu"){
 	elementvec.push_back(qcdwmunuele);
 	elementvec.push_back(ewkwmunuele);
@@ -1147,11 +1218,15 @@ int main(int argc, char* argv[]){
       elementvec.push_back(qcdzmumuele);
       elementvec.push_back(ewkzmumuele);
     }
+    else if(channel=="ee") {
+      elementvec.push_back(qcdzeeele);
+      elementvec.push_back(ewkzeeele);
+    }
     //}
     elementvec.push_back(topele);
     elementvec.push_back(qcdele);
     elementvec.push_back(vvele);
-    if(channel!="mumu"&&channel!="enu"&&channel!="munu"){
+    if(channel!="mumu"&&channel!="ee"&&channel!="enu"&&channel!="munu"){
       if (channel!="taunu"){
 	elementvec.push_back(qcdznunuele);
 	elementvec.push_back(ewkznunuele);
@@ -1193,6 +1268,8 @@ int main(int argc, char* argv[]){
     dirvec.push_back("wtauewk");
     dirvec.push_back("zmumuqcd");
     dirvec.push_back("zmumuewk");
+    dirvec.push_back("zeeqcd");
+    dirvec.push_back("zeeewk");
     dirvec.push_back("wqcd");
     dirvec.push_back("wewk");
     dirvec.push_back("zvvqcd");
@@ -1234,6 +1311,8 @@ int main(int argc, char* argv[]){
       analysis->AddModule(&gjetsraw);
       analysis->AddModule(&qcdzmumuraw);
       analysis->AddModule(&ewkzmumuraw);
+      analysis->AddModule(&qcdzeeraw);
+      analysis->AddModule(&ewkzeeraw);
       analysis->AddModule(&qcdznunuraw);
       analysis->AddModule(&ewkznunuraw);
     }

@@ -1,9 +1,9 @@
 metnomuons*pow(sqrt(sumet),-1)(30,0.,15.)	;S;Events
 n_vertices(40,0,40)	;n_{vtx};Events
 jet1_pt(47,80.,550.)	;p_{T}^{j1} (GeV);Events
-jet2_pt(28,70.,350.)	;p_{T}^{j2} (GeV);Events
+jet2_pt(28,40.,350.)	;p_{T}^{j2} (GeV);Events
 jet1_uncorpt(47,80.,550.)	;uncor p_{T}^{j1} (GeV);Events
-jet2_uncorpt(28,70.,350.)	;uncor p_{T}^{j2} (GeV);Events
+jet2_uncorpt(28,40.,350.)	;uncor p_{T}^{j2} (GeV);Events
 jet1_eta(94,-4.7,4.7)	;#eta^{j1} (GeV);Events
 jet2_eta(94,-4.7,4.7)	;#eta^{j2} (GeV);Events
 cjvjetpt(19,15.,205.)	;p_{T}^{CJV jet} (GeV);Events

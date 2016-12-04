@@ -4,9 +4,9 @@ tau1_eta(15,-2.3,2.3)	;#eta(tau) (GeV);Events
 metnomuons*pow(sqrt(sumet),-1)(10,0.,15.)	;S;Events
 n_vertices(20,0,40)	;n_{vtx};Events
 jet1_pt(16,80.,400.)	;p_{T}^{j1} (GeV);Events
-jet2_pt(9,70.,250.)	;p_{T}^{j2} (GeV);Events
+jet2_pt(9,40.,250.)	;p_{T}^{j2} (GeV);Events
 jet1_uncorpt(16,80.,400.)	;uncor p_{T}^{j1} (GeV);Events
-jet2_uncorpt(9,70.,250.)	;uncor p_{T}^{j2} (GeV);Events
+jet2_uncorpt(9,40.,250.)	;uncor p_{T}^{j2} (GeV);Events
 jet1_eta(20,-4.7,4.7)	;#eta^{j1} (GeV);Events
 jet2_eta(20,-4.7,4.7)	;#eta^{j2} (GeV);Events
 cjvjetpt(19,15.,205.)	;p_{T}^{CJV jet} (GeV);Events

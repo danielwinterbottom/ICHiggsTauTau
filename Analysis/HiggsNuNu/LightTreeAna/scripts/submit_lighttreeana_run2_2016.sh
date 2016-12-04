@@ -71,7 +71,7 @@ for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in qcd enu munu taunu mumu nunu #qcd #topl topb top gamma
+  for channels in qcd enu munu taunu mumu ee nunu #qcd #topl topb top gamma
     do
     JOB=$channels
     #executable expect strings separated by "!"
@@ -102,6 +102,12 @@ do
     if [ "$channels" = "qcd" ]; then
 	MINDPHICUT="alljetsmetnomu_mindphi\<0.5"
 	#MINDPHICUT="alljetsmetnomu_mindphi\>=0"
+    fi
+    if [ "$channels" = "ee" ]; then
+	MINDPHICUT="alljetsmetnoel_mindphi\>2.3"
+    fi
+    if [ "$channels" = "enu" ]; then
+	MINDPHICUT="alljetsmetnoel_mindphi\>2.3"
     fi
     if [ "$syst" = "" ]
 	then
