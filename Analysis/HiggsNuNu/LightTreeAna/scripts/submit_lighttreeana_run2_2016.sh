@@ -26,10 +26,10 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_TESTcontrol
+JOBDIRPREFIX=jobs_run2ana_TEST
 #JOBDIRPREFIX=jobs_run2ana_161121_ICHEP
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_TESTcontrol
+OUTPUTPREFIX=output_run2ana_TEST
 #OUTPUTPREFIX=output_run2ana_161121_ICHEP
 OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -71,15 +71,15 @@ for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in qcd enu munu taunu mumu nunu #qcd #topl topb top gamma
+  for channels in qcd #enu munu taunu mumu nunu #qcd #topl topb top gamma
     do
     JOB=$channels
     #executable expect strings separated by "!"
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
     ## To produce all of the hist
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_2016_2.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_2016_2.hists`
     ## To produce all of the hist for datacard
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_datacard.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_datacard.hists`
