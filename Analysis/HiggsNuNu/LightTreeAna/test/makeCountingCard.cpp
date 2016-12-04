@@ -378,7 +378,7 @@ int main(int argc, char* argv[]){
   zmumumcstat.set_name("CMS_VBFHinv_zmumu_norm")
     .set_latexname("$Z\\rightarrow\\mu\\mu$ MC stat.")
     .set_type("fromMCstatlnN")
-    .set_procsaffected({"zmumuqcd"});
+    .set_procsaffected({"zmumu"});
   Syst zmumuqcdmcstat;
   zmumuqcdmcstat.set_name("CMS_VBFHinv_zmumu_qcd_norm")
     .set_latexname("$qcdZ\\rightarrow\\mu\\mu$ MC stat.")
@@ -390,12 +390,11 @@ int main(int argc, char* argv[]){
     .set_type("fromMCstatlnN")
     .set_procsaffected({"zmumuewk"});
 
-
   Syst zeemcstat;
   zeemcstat.set_name("CMS_VBFHinv_zee_norm")
     .set_latexname("$Z\\rightarrow ee$ MC stat.")
     .set_type("fromMCstatlnN")
-    .set_procsaffected({"zeeqcd"});
+    .set_procsaffected({"zee"});
   Syst zeeqcdmcstat;
   zeeqcdmcstat.set_name("CMS_VBFHinv_zee_qcd_norm")
     .set_latexname("$qcdZ\\rightarrow ee$ MC stat.")
