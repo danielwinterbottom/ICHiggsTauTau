@@ -8,15 +8,15 @@ fi
 
 DOSUBMIT=$1
 DO4PARAMS=$2
-infolder=output_run2ana_161121_ICHEP_NLO_cut/
-outfolder=cards_run2ana_161121_ICHEP_NLO_cut/
+infolder=output_run2ana_161205_ICHEP/
+outfolder=cards_run2ana_161205_ICHEP/
 blind=true
 #zvvstat=18
 mkdir -p $outfolder
 
 extraoptions="--do_ues=false" #--do_ggh=false --do_separate_qcdewk=false"
 
-for channel in ee qcd nunu enu munu mumu taunu #qcd #topl topb
+for channel in enu ee #qcd enu munu taunu mumu ee nunu #qcd #topl topb
 do
     echo " ********************************"
     echo " *** Processing channel $channel"
@@ -35,6 +35,16 @@ do
 	mindphicut=2.3
     fi
     echo "channel $channel, mindphicut: $mindphicut"
+
+    HistToIntegrate="alljetsmetnomu_mindphi:dijet_M"
+    if [ "$channel" == "ee" ]; then
+      HistToIntegrate="alljetsmetnoel_mindphi:dijet_M"
+    elif [ "$channel" == "enu" ]; then
+      HistToIntegrate="alljetsmetnoel_mindphi:dijet_M"
+    else
+      HistToIntegrate="alljetsmetnomu_mindphi:dijet_M"
+    fi
+    echo "channel $channel, HistToIntegrate: $HistToIntegrate"
 	
     for minjjcut in 1101 #1601 #801 901 1001 1101 1201 1301 1401 1501 1601 1701 1801 1901
     do
@@ -43,11 +53,10 @@ do
 	    OUTNAME=$outfolder/$channel/vbfhinv_${channel}_13TeV_${mindphicut}_${minjjcut}_4params.txt
 	fi
 	if (( "$DOSUBMIT" == "0" )); then
-	    echo "./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m 125 --channel $channel --do_latex true --do_datatop false --zvvstat 0 --qcdrate 0 --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=alljetsmetnomu_mindphi:dijet_M $extraoptions | tee $outfolder/$channel/card_${mindphicut}_${minjjcut}.log"
+	    echo "./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m 125 --channel $channel --do_latex true --do_datatop false --zvvstat 0 --qcdrate 0 --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=$HistToIntegrate $extraoptions | tee $outfolder/$channel/card_${mindphicut}_${minjjcut}.log"
 	else
-	    ./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m 125 --channel $channel --do_latex true --do_datatop false --zvvstat 0 --qcdrate 0 --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=alljetsmetnomu_mindphi:dijet_M $extraoptions | tee $outfolder/$channel/card_${mindphicut}_${minjjcut}.log
+	    ./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m 125 --channel $channel --do_latex true --do_datatop false --zvvstat 0 --qcdrate 0 --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=$HistToIntegrate $extraoptions | tee $outfolder/$channel/card_${mindphicut}_${minjjcut}.log
 	fi
     done
 #done
 done
-
