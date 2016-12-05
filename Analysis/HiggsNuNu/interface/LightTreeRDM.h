@@ -44,8 +44,10 @@ namespace ic {
     unsigned run_;
     unsigned lumi_;
     unsigned event_;
-    double weight_nolep_;
+    double weight_nolepnotrig_;
     double weight_trig_[7];
+    double weight_lepveto_;
+    double weight_leptight_;
     double total_weight_lepveto_;
     double total_weight_leptight_;
     double puweight_up_scale_;

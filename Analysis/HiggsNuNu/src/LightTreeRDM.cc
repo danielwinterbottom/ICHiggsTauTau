@@ -79,10 +79,12 @@ namespace ic {
     run_=0;
     lumi_=0;
     event_=0;
-    weight_nolep_=1;
+    weight_nolepnotrig_=1;
     for (unsigned iT(0); iT<7; ++iT){
       weight_trig_[iT]=1;
     }
+    weight_lepveto_ = 1;
+    weight_leptight_ = 1;
     total_weight_lepveto_ = 1;
     total_weight_leptight_ = 1;
     puweight_up_scale_=1;
@@ -328,12 +330,14 @@ namespace ic {
     outputTree_->Branch("run",&run_);
     outputTree_->Branch("lumi",&lumi_);
     outputTree_->Branch("event",&event_);
-    outputTree_->Branch("weight_nolep",&weight_nolep_);
+    outputTree_->Branch("weight_nolepnotrig",&weight_nolepnotrig_);
     for (unsigned iT(0); iT<7; ++iT){
       std::ostringstream label;
       label << "weight_trig_" << iT;
       outputTree_->Branch(label.str().c_str(),&weight_trig_[iT]);
     }
+    outputTree_->Branch("weight_lepveto",&weight_lepveto_);
+    outputTree_->Branch("weight_leptight",&weight_leptight_);
     outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("puweight_up_scale",&puweight_up_scale_);
@@ -646,16 +650,15 @@ namespace ic {
     /////////////////
 
     double wt = eventInfo->total_weight();
+    //eventInfo->Print();
 
-    double vetowt=1;
-    double tightwt=1;
     double pileupwt=1;
     double pileupwtup=1;
     double pileupwtdown=1;
 
     if(!is_data_){
-      vetowt= eventInfo->weight("idisoVeto");
-      tightwt = eventInfo->weight("idisoTight");
+      weight_lepveto_= eventInfo->weight("idisoVeto");
+      weight_leptight_ = eventInfo->weight("idisoTight");
       pileupwt=eventInfo->weight("pileup");
       pileupwtup=eventInfo->weight("pileup_up");
       pileupwtdown=eventInfo->weight("pileup_down");
@@ -674,10 +677,10 @@ namespace ic {
       puweight_up_scale_=1;
       puweight_down_scale_=1;
     }
-    weight_nolep_ = wt;
-    total_weight_lepveto_ =wt*vetowt;
-    if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<vetowt<<std::endl;//!!
-    total_weight_leptight_=wt*tightwt;
+    weight_nolepnotrig_ = eventInfo->weight("pileup")*eventInfo->weight("lumixs")*eventInfo->weight("wt_mc_sign");
+    total_weight_lepveto_ =wt*weight_lepveto_;
+    if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<weight_lepveto_<<std::endl;//!!
+    total_weight_leptight_=wt*weight_leptight_;
 
 
     if (debug_) std::cout << " Event weight = " << wt << " pu up " << puweight_up_scale_ << " " << puweight_down_scale_ << std::endl;
