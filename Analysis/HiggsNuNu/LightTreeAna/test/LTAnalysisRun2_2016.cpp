@@ -464,7 +464,7 @@ int main(int argc, char* argv[]){
 
   if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor.str();//+mcweightpufactordebug;
   //remove trigger weight for e channels which do not use signal trigger
-  else if (channel=="ee" || channel=="enu") sigmcweight="total_weight_leptight/weight_trig_0"+mcweightpufactor.str();//+mcweightpufactordebug;
+  else if (channel=="ee" || channel=="enu") sigmcweight="weight_leptight*weight_trig_0*weight_nolepnotrig"+mcweightpufactor.str();//+mcweightpufactordebug;
   else sigmcweight="total_weight_leptight"+mcweightpufactor.str();//+mcweightpufactordebug;
   sig125mcweight="total_weight_lepveto"+mcweightpufactor.str();
 
