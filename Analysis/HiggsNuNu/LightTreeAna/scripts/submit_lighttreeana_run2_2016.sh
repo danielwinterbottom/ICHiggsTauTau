@@ -26,10 +26,10 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_TESTcontrol
+JOBDIRPREFIX=jobs_run2ana_161205_ICHEP
 #JOBDIRPREFIX=jobs_run2ana_161121_ICHEP
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_TESTcontrol
+OUTPUTPREFIX=output_run2ana_161205_ICHEP
 #OUTPUTPREFIX=output_run2ana_161121_ICHEP
 OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -66,12 +66,12 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-submission: " $JOBSUBMIT
 
 echo "JOB name = $JOB"
-for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN UESUP UESDOWN
+for syst in "" JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN UESUP UESDOWN
 #for syst in JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN TRIG0UP TRIG0DOWN TRIG1UP TRIG1DOWN TRIG2UP TRIG2DOWN UESUP UESDOWN
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in ee enu #qcd enu munu taunu mumu ee nunu #qcd #topl topb top gamma
+  for channels in qcd enu munu taunu mumu ee nunu #qcd #topl topb top gamma
     do
     JOB=$channels
     #executable expect strings separated by "!"

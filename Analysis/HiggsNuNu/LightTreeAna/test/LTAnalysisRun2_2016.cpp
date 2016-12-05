@@ -1084,7 +1084,7 @@ int main(int argc, char* argv[]){
     .set_color(kAzure  + 2)
     .set_in_stack(true)
     .set_is_inratioden(true)
-    .set_legname("Z#rightarrow#mu#mu")
+    .set_legname("Z#rightarrow ee")
     .set_sample("zee");
   if(!do_mcbkg)zeeele.set_has_dderrors(1);
   LTPlotElement qcdzeeele;
@@ -1093,7 +1093,7 @@ int main(int argc, char* argv[]){
     .set_color(kAzure  + 2)
     .set_in_stack(true)
     .set_is_inratioden(true)
-    .set_legname("QCD Z#rightarrow#mu#mu")
+    .set_legname("QCD Z#rightarrow ee")
     .set_sample("zeeqcd");
   if(!do_mcbkg)qcdzeeele.set_has_dderrors(1);
   LTPlotElement ewkzeeele;
@@ -1102,7 +1102,7 @@ int main(int argc, char* argv[]){
     .set_color(kAzure  + 4)
     .set_in_stack(true)
     .set_is_inratioden(true)
-    .set_legname("EWK Z#rightarrow#mu#mu")
+    .set_legname("EWK Z#rightarrow ee")
     .set_sample("zeeewk");
   if(!do_mcbkg)ewkzeeele.set_has_dderrors(1);
 
