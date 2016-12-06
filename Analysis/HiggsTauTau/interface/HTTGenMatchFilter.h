@@ -6,6 +6,7 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 
 
 #include <string>
@@ -16,8 +17,7 @@ class HTTGenMatchFilter : public ModuleBase {
  private:
   CLASS_MEMBER(HTTGenMatchFilter, std::string, input_vec_label)
   CLASS_MEMBER(HTTGenMatchFilter, std::string, output_vec_label)
-  CLASS_MEMBER(HTTGenMatchFilter, unsigned, gen_match)
-
+  CLASS_MEMBER(HTTGenMatchFilter, ic::mcorigin, gen_match)
  public:
   HTTGenMatchFilter(std::string const& name);
   virtual ~HTTGenMatchFilter();

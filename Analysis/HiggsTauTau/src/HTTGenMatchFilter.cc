@@ -10,10 +10,9 @@
 
 namespace ic {
 
-  HTTGenMatchFilter::HTTGenMatchFilter(std::string const& name) : ModuleBase(name) {
+  HTTGenMatchFilter::HTTGenMatchFilter(std::string const& name) : ModuleBase(name), gen_match_(mcorigin::tauHad) {
     input_vec_label_  = "taus";
     output_vec_label_ = "genmatched_taus";
-    gen_match_        = 6;
   }
 
   HTTGenMatchFilter::~HTTGenMatchFilter() {
@@ -26,8 +25,8 @@ namespace ic {
 
   int HTTGenMatchFilter::Execute(TreeEvent *event) {
     
-    std::vector<Candidate*> input_vec = event->GetPtrVec<CompositeCandidate>(input_vec_label_);
-    std::vector<Candidate*> output_vec = event->GetPtrVec<CompositeCandidate>(output_vec_label_);
+    std::vector<Candidate*> input_vec = event->GetPtrVec<Candidate>(input_vec_label_);
+    std::vector<Candidate*> output_vec;
 
     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
     std::vector<GenParticle *> sel_particles;
@@ -51,7 +50,6 @@ namespace ic {
       std::vector<std::pair<Candidate*, GenJet*> > tau_match  = MatchByDR(lepton, gen_taus_ptr, 0.2, true, true);
       
       mcorigin gen_match_1 = mcorigin::fake;
-      mcorigin gen_match_2 = mcorigin::fake;
       int leptonsize = lepton_match.size();
       int tausize = tau_match.size();
       
@@ -86,7 +84,7 @@ namespace ic {
       std::cout << "mcorigin::tauHad = " << mcorigin::tauHad << std::endl;
       if(gen_match_1 == gen_match_) output_vec.push_back(input_vec[i]);
    }
-
+    event->Add(output_vec_label_, output_vec);
     return 0;
   }
   int HTTGenMatchFilter::PostAnalysis() {
