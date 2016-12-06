@@ -208,33 +208,6 @@ int main(int /*argc*/, char* /*argv*/[]){
   det_region_["barrel2"] = "(fabs(eta) > 0.8 && fabs(eta) <= 1.479 && pt > 10)";
   det_region_["endcap"] = "(fabs(eta) > 1.479 && pt > 10)";
   
-  //TGraph *promptE_roc_2015 = ROCCurve(tree, promptE_sel, "(pt>10)","electronmvaID");
-  //TGraph *tauE_roc_2015 = ROCCurve(tree, tauE_sel, "(pt>10)","electronmvaID");
-  //TGraph *promptE_roc_2016 = ROCCurve(tree, promptE_sel, "(pt>10)","id_2016");
-  //TGraph *tauE_roc_2016 = ROCCurve(tree, tauE_sel, "(pt>10)","id_2016");
-  //
-  //std::vector<TGraph*> tauE_comp;
-  //std::vector<std::string> tauE_comp_leg;
-  //tauE_comp.push_back((TGraph*)tauE_roc_2016->Clone());
-  //tauE_comp_leg.push_back("GeneralPurpose MVA 2016");
-  //tauE_comp.push_back((TGraph*)tauE_roc_2015->Clone());
-  //tauE_comp_leg.push_back("Non-Triggering MVA 2015");
-  //
-  //std::vector<TGraph*> promptE_comp;
-  //std::vector<std::string> promptE_comp_leg;
-  //promptE_comp.push_back((TGraph*)promptE_roc_2016->Clone());
-  //promptE_comp_leg.push_back("General Purpose MVA 2016");
-  //promptE_comp.push_back((TGraph*)promptE_roc_2015->Clone());
-  //promptE_comp_leg.push_back("Non-Triggering MVA 2015");
-  //
-  //DrawMultiGraph(tauE_comp, "tauE_comp",tauE_comp_leg,"");
-  //DrawMultiGraph(promptE_comp, "promptE_comp",promptE_comp_leg,"");
-  //
-  //DrawGraph(promptE_roc_2015, "promptE_2015");
-  //DrawGraph(tauE_roc_2015, "tauE_2015");
-  //DrawGraph(promptE_roc_2016, "promptE_2016");
-  //DrawGraph(tauE_roc_2016, "tauE_2016");
-  
   typedef std::map<std::string, std::string>::iterator it_type;
   for(it_type iterator = det_region_.begin(); iterator != det_region_.end(); iterator++){
     std::string title = iterator->first;
