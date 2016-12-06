@@ -38,6 +38,7 @@ if __name__ == '__main__':
             crabCommand('submit', config = config)
         except HTTPException, hte:
             print hte.headers
+            
 
     #############################################################################################
     ## From now on that's what users should modify: this is the a-la-CRAB2 configuration part. ##
