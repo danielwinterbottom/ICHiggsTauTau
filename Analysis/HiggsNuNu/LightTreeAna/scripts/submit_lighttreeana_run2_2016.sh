@@ -71,7 +71,7 @@ for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in enu ee #qcd enu munu taunu mumu ee nunu #qcd #topl topb top gamma
+  for channels in enu #qcd enu munu taunu mumu ee nunu #qcd #topl topb top gamma
     do
     JOB=$channels
     #executable expect strings separated by "!"
