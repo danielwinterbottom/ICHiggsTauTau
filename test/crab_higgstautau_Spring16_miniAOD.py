@@ -23,6 +23,7 @@ config.section_('Site')
 #config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
 #config.Site.blacklist = ['T2_US_*']
 config.Site.storageSite = 'T2_UK_London_IC'
+config.JobType.allowUndistributedCMSSW = True
 
 if __name__ == '__main__':
 
