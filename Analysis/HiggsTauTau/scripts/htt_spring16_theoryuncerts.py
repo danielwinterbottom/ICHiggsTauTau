@@ -139,14 +139,15 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   for mass in masses :
     signal_mc += [
       'GluGluHToTauTau_M-'+mass,
-      'VBFHToTauTau_M-'+mass,
-      'GluGluHToTauTau_PythiaFragment_Up_M-'+mass,
-      'VBFHToTauTau_PythiaFragment_Up_M-'+mass,
-      'GluGluHToTauTau_PythiaFragment_Down_M-'+mass,
-      'VBFHToTauTau_PythiaFragment_Down_M-'+mass,
-      'GluGluHToTauTau_herwigpp_M-'+mass,
-      'VBFHToTauTau_herwigpp_M-'+mass,
-      #'VBFHToTauTau_amcatnlo_M-'+mass,
+     # 'VBFHToTauTau_M-'+mass,
+     # 'GluGluHToTauTau_PythiaFragment_Up_M-'+mass,
+     # 'VBFHToTauTau_PythiaFragment_Up_M-'+mass,
+     # 'GluGluHToTauTau_PythiaFragment_Down_M-'+mass,
+     # 'VBFHToTauTau_PythiaFragment_Down_M-'+mass,
+     # 'GluGluHToTauTau_herwigpp_M-'+mass,
+     # 'VBFHToTauTau_herwigpp_M-'+mass,
+     # 'VBFHToTauTau_amcatnlo_M-'+mass,
+     
       #'ZHToTauTau_M-'+mass,
       #'WplusHToTauTau_M-'+mass,
       #'WminusHToTauTau_M-'+mass,

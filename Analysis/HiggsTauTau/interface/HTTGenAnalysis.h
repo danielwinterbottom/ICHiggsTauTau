@@ -64,6 +64,7 @@ class HTTGenAnalysis : public ModuleBase {
   unsigned n_jetsingap_;
   double jpt_1_;  
   double jpt_2_;  
+  double jpt_3_;
   double jeta_1_; 
   double jeta_2_; 
   double jphi_1_;
@@ -74,6 +75,28 @@ class HTTGenAnalysis : public ModuleBase {
   double pt_tt_;
   double wt_;
   double HiggsPt_;
+  double FirstHiggsPt_;
+  std::string decayType;
+  double wt_ggh_pt_           ;
+  double wt_ggh_pt_up_        ;
+  double wt_ggh_pt_down_      ;
+  double wt_ggh_pt_herwig_    ;
+  double wt_ggh_pt_amc_       ;
+  double wt_ggh_pt_pythiaup_  ;
+  double wt_ggh_pt_pythiadown_;
+  double wt_ggh_pt_scalehigh_ ;
+  double wt_ggh_pt_scalelow_  ;
+  
+  TFile *ggh_weights_;
+  TH1F *ggh_hist_;
+  TH1F *ggh_hist_up_;
+  TH1F *ggh_hist_down_;
+  TH1F *ggh_herwig_hist_;
+  TH1F *ggh_amcnlo_hist_;
+  TH1F *ggh_pythiaup_hist_;
+  TH1F *ggh_pythiadown_hist_;
+  TH1F *ggh_scalehigh_;
+  TH1F *ggh_scalelow_;
   
  public:
   HTTGenAnalysis(std::string const& name);

@@ -206,6 +206,7 @@ if(infile.is_open()){
 }     
 h1->Scale(1/h1->Integral());
 
+
 fout1->cd();
 
 TH1D *h2 = (TH1D*)h1->Rebin(bin_num,"h2",bins_array); 
@@ -241,7 +242,13 @@ h2->Write("HqT2p0_PtSpectrum");
 //}
 //DrawHist(scale_hists, legend_entries, "scale_reweight_error_all", true, false, "", false, false, 0.3, false);
 
-TH1D *hscale_temp = new TH1D("hscale_temp","",250,0,500);
+std::vector<double> bins2;
+for(double i=0; i<=300; i+=10) bins2.push_back(i);
+double* bins_array2 = &bins2[0];
+int  binnum2 = bins2.size()-1;
+
+TH1D *hscale_temp = new TH1D("hscale_temp","",150,0,300);
+//TH1D *hblah = new TH1D("hblah","",binnum2,bins_array2);
 for(unsigned i=0; i<7; ++i){
   if(!(i==0 || i==3 || i==6)) continue;
   std::string file_name = Form("HqToutput/ScaleNew/HqtSpectrum_ScaleNew_%u.out",i);    
@@ -255,20 +262,64 @@ for(unsigned i=0; i<7; ++i){
     }
     infile.close();
   }     
-  hscale_temp->Scale(1/hscale_temp->Integral());
+  //hscale_temp->Scale(1/hscale_temp->Integral());
   for(unsigned i =1; i<= hscale_temp->GetNbinsX();++i){
     hscale_temp->SetBinError(i,0);
   }
-  scale_hists.push_back((TH1D*)hscale_temp->Clone());
-  if(i==0) legend_entries.push_back("scale down");
-  if(i==6) legend_entries.push_back("scale up");
+  //scale_hists.push_back((TH1D*)hscale_temp->Clone());
+  //if(i==0) legend_entries.push_back("scale down");
+  //if(i==6) legend_entries.push_back("scale up");
   if(i==3) {
-    legend_entries.push_back("nominal");  
+    TH1D *hblah = (TH1D*)hscale_temp->Rebin(binnum2,"hblah",bins_array2);
+    std::cout << hblah->Integral() << std::endl;
+    scale_hists.push_back((TH1D*)hblah->Clone());  
+    legend_entries.push_back("HqT2.0");  
     std::reverse( scale_hists.begin(), scale_hists.end() );
     std::reverse( legend_entries.begin(), legend_entries.end() );    
   }
 }
-////DrawHist(scale_hists, legend_entries, "scale_reweight_error", true, false, "", false, false, 0.3, false);
+for(unsigned i=0; i< scale_hists.size(); ++i){
+  //TH1D *hblah = new TH1D();
+  //scale_hists[i]->Rebin(binnum2,"hblah",bins_array2);
+  //scale_hists[i] = (TH1D*)hblah->Clone();
+    scale_hists[i]->Scale(1/scale_hists[i]->Integral());
+}
+
+TH1D *h_hres = new TH1D("h_hres","",30,0,300);
+
+std::string file_name_hres = "HResoutput/HResSpectrum.out.top";    
+ifstream infile2 (file_name_hres);
+if(infile2.is_open()){
+  double Pt; double bin; double error;
+  for(unsigned i=0; i<707; ++i) infile2.ignore(10000,'\n');
+  while ( infile2 >> Pt >> bin >> error ){
+    //if(bin < 0) bin=0;
+    std::cout << "Pt = " << Pt << " val = " << bin << std::endl;
+    if(Pt<=300){
+      h_hres->SetBinContent(h_hres->FindBin(Pt),bin);
+      h_hres->SetBinError(h_hres->FindBin(Pt),error);
+    }
+  }
+  infile2.close();
+}     
+h_hres->Scale(1/(h_hres->Integral()));
+
+TFile *fin = new TFile("/vols/cms/dw515/Offline/output/GenComps/GluGluHToTauTau_M-125_mt_2016.root");
+TTree *gen_tree = (TTree*)fin->Get("gen_ntuple");
+  
+htemp = new TH1D("htemp","",30,0,300);
+gen_tree->Draw("HiggsPt>>htemp","wt","goff");
+//htemp->Rebin(5);
+htemp->Scale(1/(htemp->Integral()));
+
+//std::string file_prefix = "/vols/cms/dw515/Offline/output/GenComps/GluGluHToTauTau_M-125_mt_2016.root
+scale_hists.push_back((TH1D*)htemp->Clone());
+legend_entries.push_back("PowHeg");
+std::reverse( scale_hists.begin(), scale_hists.end() );
+std::reverse( legend_entries.begin(), legend_entries.end() ); 
+scale_hists.push_back((TH1D*)h_hres);
+legend_entries.push_back("HRes2.3");
+DrawHist(scale_hists, legend_entries, "scale_reweight_error", true, false, "", false, false, 0.3, false);
 
 //std::vector<TH1D*> pdf_hists;
 //std::vector<std::string> pdflegend_entries;
@@ -318,92 +369,92 @@ for(unsigned i=0; i<7; ++i){
 //pdflegend_entries={"nominal","pdf up","pdf down"};
 //DrawHist(pdf_var_hists, pdflegend_entries, "pdf_reweight_error", true, false, "", false, false, 0.015, false);
 
-std::string file_prefix = "/vols/cms/dw515/Offline/output/GenComps/";    
-std::map<std::string, std::string>  filenames_;
-filenames_["aMC"]             = file_prefix+"GluGluHToTauTau_amcatnlo_M-125_mt_2016.root"; 
-filenames_["Powheg"]              = file_prefix+"GluGluHToTauTau_M-125_mt_2016.root";
-filenames_["PythiaFragmentDown"]  = file_prefix+"GluGluHToTauTau_PythiaFragment_Down_M-125_mt_2016.root";
-filenames_["PythiaFragmentUp"]    = file_prefix+"GluGluHToTauTau_PythiaFragment_Up_M-125_mt_2016.root";
-filenames_["Herwig"]            = file_prefix+"GluGluHToTauTau_herwigpp_M-125_mt_2016.root";    
-
-typedef std::map<std::string, std::string>::iterator it_type;
-for(it_type iterator = filenames_.begin(); iterator != filenames_.end(); iterator++){
-  TFile *fin = new TFile(iterator->second.c_str());
-  TTree *gen_tree = (TTree*)fin->Get("gen_ntuple");
-  
-  htemp = new TH1D("htemp","",bin_num,bins_array);
-  htemp->GetXaxis()->SetTitle("Higgs p_{T} [GeV]");
-  std::string wt_string = "wt";
-  gen_tree->Draw("HiggsPt>>htemp",wt_string.c_str(),"goff");
-  htemp->Scale(1/htemp->Integral());
-  hout->Divide(h2,htemp);
-  for(unsigned i =1; i<= hout->GetNbinsX();++i){
-    hout->SetBinError(i,0);
-  }
-  fout1->cd();
-  hout->Write((iterator->first+"_Nominal").c_str()); 
-  
-  if(iterator->first == "Powheg"){
-    fout2->cd();
-    hout->Write("Nominal");
-    fout1->cd();
-    //TH1D *h2 = (TH1D*)h1->Rebin(bin_num,"h2",bins_array);
-    hout->Divide((TH1D*)scale_hists[1]->Rebin(bin_num,"",bins_array),htemp);
-    for(unsigned i =1; i<= hout->GetNbinsX();++i){
-      hout->SetBinError(i,0);
-      if(hout->GetBinContent(i)<0){
-        hout->SetBinContent(i,hout->GetBinContent(i+1));
-      }
-    }
-    hout->Write("Powheg_ScaleDown");
-    fout2->cd();
-    hout->Write("Down");
-    fout1->cd();
-    hout->Divide((TH1D*)scale_hists[2]->Rebin(bin_num,"",bins_array),htemp);
-    for(unsigned i =1; i<= hout->GetNbinsX();++i){
-      hout->SetBinError(i,0);
-      if(hout->GetBinContent(i)<0){
-        hout->SetBinContent(i,hout->GetBinContent(i+1));
-      }
-    }
-    hout->Write("Powheg_ScaleUp");
-    fout2->cd();
-    hout->Write("Up");
-    fout1->cd();
-    
-    for(unsigned i=0; i<9; ++i){
-      if(!(i==4 || i==8)) continue;
-          //0=low, 6= scale high
-      std::string wt_name = Form("wt*scale_variation_wts[%u]",i);
-      delete htemp;
-      htemp = new TH1D("htemp","",bin_num,bins_array);
-      gen_tree->Draw("HiggsPt>>htemp",wt_name.c_str(),"goff");
-      std::cout << htemp->Integral() << std::endl;
-      htemp->Scale(1/htemp->Integral());
-      hout->Divide(h2,htemp);
-      std::string hist_name;
-      if(i==4) hist_name = iterator->first+"_Nominal_ScaleHigh";
-      if(i==8) hist_name = iterator->first+"_Nominal_ScaleLow";
-      fout1->cd();
-      for(unsigned i =1; i<= hout->GetNbinsX();++i){
-        hout->SetBinError(i,0);
-      }
-      hout->Write(hist_name.c_str());
-    }
-   // 
-   // for(unsigned i=0; i<100; ++i){
-   //   std::string wt_name = Form("wt*NNPDF_wts[%u]",i);
-   //   gen_tree->Draw("HiggsPt>>htemp",wt_name.c_str(),"goff");
-   //   htemp->Scale(1/htemp->Integral(0,htemp->GetNbinsX()));
-   //   hout->Divide(h2,htemp);
-   //   std::string hist_name = iterator->first+Form("_NNPDF_%u",i);
-   //   fout1->cd();
-   //   hout->Write(hist_name.c_str());
-   //   htemp->Write((hist_name+"_PtSpectrum").c_str());
-   // }
-  }
-
-}
+//std::string file_prefix = "/vols/cms/dw515/Offline/output/GenComps/";    
+//std::map<std::string, std::string>  filenames_;
+//filenames_["aMC"]             = file_prefix+"GluGluHToTauTau_amcatnlo_M-125_mt_2016.root"; 
+//filenames_["Powheg"]              = file_prefix+"GluGluHToTauTau_M-125_mt_2016.root";
+//filenames_["PythiaFragmentDown"]  = file_prefix+"GluGluHToTauTau_PythiaFragment_Down_M-125_mt_2016.root";
+//filenames_["PythiaFragmentUp"]    = file_prefix+"GluGluHToTauTau_PythiaFragment_Up_M-125_mt_2016.root";
+//filenames_["Herwig"]            = file_prefix+"GluGluHToTauTau_herwigpp_M-125_mt_2016.root";    
+//
+//typedef std::map<std::string, std::string>::iterator it_type;
+//for(it_type iterator = filenames_.begin(); iterator != filenames_.end(); iterator++){
+//  TFile *fin = new TFile(iterator->second.c_str());
+//  TTree *gen_tree = (TTree*)fin->Get("gen_ntuple");
+//  
+//  htemp = new TH1D("htemp","",bin_num,bins_array);
+//  htemp->GetXaxis()->SetTitle("Higgs p_{T} [GeV]");
+//  std::string wt_string = "wt";
+//  gen_tree->Draw("HiggsPt>>htemp",wt_string.c_str(),"goff");
+//  htemp->Scale(1/htemp->Integral());
+//  hout->Divide(h2,htemp);
+//  for(unsigned i =1; i<= hout->GetNbinsX();++i){
+//    hout->SetBinError(i,0);
+//  }
+//  fout1->cd();
+//  hout->Write((iterator->first+"_Nominal").c_str()); 
+//  
+//  if(iterator->first == "Powheg"){
+//    fout2->cd();
+//    hout->Write("Nominal");
+//    fout1->cd();
+//    //TH1D *h2 = (TH1D*)h1->Rebin(bin_num,"h2",bins_array);
+//    hout->Divide((TH1D*)scale_hists[1]->Rebin(bin_num,"",bins_array),htemp);
+//    for(unsigned i =1; i<= hout->GetNbinsX();++i){
+//      hout->SetBinError(i,0);
+//      if(hout->GetBinContent(i)<0){
+//        hout->SetBinContent(i,hout->GetBinContent(i+1));
+//      }
+//    }
+//    hout->Write("Powheg_ScaleDown");
+//    fout2->cd();
+//    hout->Write("Down");
+//    fout1->cd();
+//    hout->Divide((TH1D*)scale_hists[2]->Rebin(bin_num,"",bins_array),htemp);
+//    for(unsigned i =1; i<= hout->GetNbinsX();++i){
+//      hout->SetBinError(i,0);
+//      if(hout->GetBinContent(i)<0){
+//        hout->SetBinContent(i,hout->GetBinContent(i+1));
+//      }
+//    }
+//    hout->Write("Powheg_ScaleUp");
+//    fout2->cd();
+//    hout->Write("Up");
+//    fout1->cd();
+//    
+//    for(unsigned i=0; i<9; ++i){
+//      if(!(i==4 || i==8)) continue;
+//          //0=low, 6= scale high
+//      std::string wt_name = Form("wt*scale_variation_wts[%u]",i);
+//      delete htemp;
+//      htemp = new TH1D("htemp","",bin_num,bins_array);
+//      gen_tree->Draw("HiggsPt>>htemp",wt_name.c_str(),"goff");
+//      std::cout << htemp->Integral() << std::endl;
+//      htemp->Scale(1/htemp->Integral());
+//      hout->Divide(h2,htemp);
+//      std::string hist_name;
+//      if(i==4) hist_name = iterator->first+"_Nominal_ScaleHigh";
+//      if(i==8) hist_name = iterator->first+"_Nominal_ScaleLow";
+//      fout1->cd();
+//      for(unsigned i =1; i<= hout->GetNbinsX();++i){
+//        hout->SetBinError(i,0);
+//      }
+//      hout->Write(hist_name.c_str());
+//    }
+//   // 
+//   // for(unsigned i=0; i<100; ++i){
+//   //   std::string wt_name = Form("wt*NNPDF_wts[%u]",i);
+//   //   gen_tree->Draw("HiggsPt>>htemp",wt_name.c_str(),"goff");
+//   //   htemp->Scale(1/htemp->Integral(0,htemp->GetNbinsX()));
+//   //   hout->Divide(h2,htemp);
+//   //   std::string hist_name = iterator->first+Form("_NNPDF_%u",i);
+//   //   fout1->cd();
+//   //   hout->Write(hist_name.c_str());
+//   //   htemp->Write((hist_name+"_PtSpectrum").c_str());
+//   // }
+//  }
+//
+//}
 
 fout1->Close();    
 fout2->Close(); 

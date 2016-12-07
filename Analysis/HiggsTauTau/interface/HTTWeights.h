@@ -105,6 +105,12 @@ class HTTWeights : public ModuleBase {
   TH1F *ggh_hist_;
   TH1F *ggh_hist_up_;
   TH1F *ggh_hist_down_;
+  TH1F *ggh_herwig_hist_;
+  TH1F *ggh_amcnlo_hist_;
+  TH1F *ggh_pythiaup_hist_;
+  TH1F *ggh_pythiadown_hist_;
+  TH1F *ggh_scalehigh_;
+  TH1F *ggh_scalelow_;
   std::shared_ptr<RooWorkspace> w_;
   mithep::TH2DAsymErr* MuonFakeRateHist_PtEta;
   mithep::TH2DAsymErr* ElectronFakeRateHist_PtEta;

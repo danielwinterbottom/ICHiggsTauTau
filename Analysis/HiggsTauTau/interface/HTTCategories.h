@@ -75,8 +75,6 @@ class HTTCategories : public ModuleBase {
   float mc_weight_;
   float pu_weight_;
   double wt_btag_;
-  double wt_ggh_pt_up_;
-  double wt_ggh_pt_down_;
   double wt_tau_fake_up_;
   double wt_tau_fake_down_;
   double wt_tquark_up_;
@@ -649,6 +647,16 @@ class HTTCategories : public ModuleBase {
   bool ttHLTPath1_leg2_;
   bool ttHLTPath2_leg2_;
   bool ttHLTPath3_leg2_;
+  
+  double wt_ggh_pt_           ;
+  double wt_ggh_pt_up_        ;
+  double wt_ggh_pt_down_      ;
+  double wt_ggh_pt_herwig_    ;
+  double wt_ggh_pt_amc_       ;
+  double wt_ggh_pt_pythiaup_  ;
+  double wt_ggh_pt_pythiadown_;
+  double wt_ggh_pt_scalehigh_ ;
+  double wt_ggh_pt_scalelow_  ;
 
 
  public:

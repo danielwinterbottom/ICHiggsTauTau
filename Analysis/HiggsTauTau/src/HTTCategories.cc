@@ -62,6 +62,15 @@ namespace ic {
 
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
+      outtree_->Branch("wt_ggh_pt", &wt_ggh_pt_           );
+      outtree_->Branch("wt_ggh_pt_up", &wt_ggh_pt_up_        );
+      outtree_->Branch("wt_ggh_pt_down", &wt_ggh_pt_down_      );
+      outtree_->Branch("wt_ggh_pt_herwig", &wt_ggh_pt_herwig_    );
+      outtree_->Branch("wt_ggh_pt_amc", &wt_ggh_pt_amc_       );
+      outtree_->Branch("wt_ggh_pt_pythiaup", &wt_ggh_pt_pythiaup_  );
+      outtree_->Branch("wt_ggh_pt_pythiadown", &wt_ggh_pt_pythiadown_);
+      outtree_->Branch("wt_ggh_pt_scalehigh", &wt_ggh_pt_scalehigh_ );
+      outtree_->Branch("wt_ggh_pt_scalelow", &wt_ggh_pt_scalelow_  );
       if(channel_ == channel::em){
         if(do_HLT_Studies_){  
           outtree_->Branch("HLT_Ele23_WPLoose_Gsf_v",                                &emHLTPath1_);
@@ -1312,8 +1321,17 @@ namespace ic {
     wt_em_qcd_up_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
-    if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
-    if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
+    wt_ggh_pt_            = 1;
+    wt_ggh_pt_up_         = 1;
+    wt_ggh_pt_down_       = 1;
+    wt_ggh_pt_herwig_     = 1;
+    wt_ggh_pt_amc_        = 1;
+    wt_ggh_pt_pythiaup_   = 1;
+    wt_ggh_pt_pythiadown_ = 1;
+    wt_ggh_pt_scalehigh_  = 1;
+    wt_ggh_pt_scalelow_   = 1;
+    //if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
+    //if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
     if (event->Exists("wt_tau_fake_up"))    wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");
     if (event->Exists("wt_tau_fake_down"))  wt_tau_fake_down_ = event->Get<double>("wt_tau_fake_down");
     if (event->Exists("wt_tquark_up"))      wt_tquark_up_   = event->Get<double>("wt_tquark_up");
@@ -1327,6 +1345,16 @@ namespace ic {
     if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
+    
+    if (event->Exists("wt_ggh_pt_")) wt_ggh_pt_            = event->Get<double>("wt_ggh_pt_");
+    if (event->Exists("wt_ggh_pt_up")) wt_ggh_pt_up_         = event->Get<double>("wt_ggh_pt_up");
+    if (event->Exists("wt_ggh_pt_down")) wt_ggh_pt_down_       = event->Get<double>("wt_ggh_pt_down");
+    if (event->Exists("wt_ggh_pt_herwig")) wt_ggh_pt_herwig_     = event->Get<double>("wt_ggh_pt_herwig");
+    if (event->Exists("wt_ggh_pt_amc")) wt_ggh_pt_amc_        = event->Get<double>("wt_ggh_pt_amc");
+    if (event->Exists("wt_ggh_pt_pythiaup")) wt_ggh_pt_pythiaup_   = event->Get<double>("wt_ggh_pt_pythiaup");
+    if (event->Exists("wt_ggh_pt_pythiadown")) wt_ggh_pt_pythiadown_ = event->Get<double>("wt_ggh_pt_pythiadown");
+    if (event->Exists("wt_ggh_pt_scalehigh")) wt_ggh_pt_scalehigh_  = event->Get<double>("wt_ggh_pt_scalehigh");
+    if (event->Exists("wt_ggh_pt_scalelow")) wt_ggh_pt_scalelow_   = event->Get<double>("wt_ggh_pt_scalelow");
 
   
   mc_weight_ = 0.0;

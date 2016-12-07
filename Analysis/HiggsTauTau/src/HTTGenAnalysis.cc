@@ -48,6 +48,9 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("wt"       , &wt_       );
       if(do_theory_uncert_){
         outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
         outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
@@ -67,6 +70,7 @@ namespace ic {
       outtree_->Branch("m_vis"       , &m_vis_       );
       outtree_->Branch("pt_tt"       , &pt_tt_       );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
+      outtree_->Branch("FirstHiggsPt" , &FirstHiggsPt_     );
       outtree_->Branch("mt_1"        , &mt_1_        );
       outtree_->Branch("mt_2"        , &mt_2_        );
       outtree_->Branch("pzeta"       , &pzeta_       );
@@ -76,12 +80,23 @@ namespace ic {
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
       outtree_->Branch("jpt_1"       , &jpt_1_       );
       outtree_->Branch("jpt_2"       , &jpt_2_       );
+      outtree_->Branch("jpt_3"       , &jpt_3_       );
       outtree_->Branch("jeta_1"      , &jeta_1_      );
       outtree_->Branch("jeta_2"      , &jeta_2_      );
       outtree_->Branch("jphi_1"      , &jphi_1_      );
       outtree_->Branch("jphi_2"      , &jphi_2_      );
       outtree_->Branch("mjj"         , &mjj_         );
       outtree_->Branch("jdeta"       , &jdeta_       );
+      outtree_->Branch("higgsDecay"  , &decayType    );
+      outtree_->Branch("wt_ggh_pt", &wt_ggh_pt_           );
+      outtree_->Branch("wt_ggh_pt_up", &wt_ggh_pt_up_        );
+      outtree_->Branch("wt_ggh_pt_down", &wt_ggh_pt_down_      );
+      outtree_->Branch("wt_ggh_pt_herwig", &wt_ggh_pt_herwig_    );
+      outtree_->Branch("wt_ggh_pt_amc", &wt_ggh_pt_amc_       );
+      outtree_->Branch("wt_ggh_pt_pythiaup", &wt_ggh_pt_pythiaup_  );
+      outtree_->Branch("wt_ggh_pt_pythiadown", &wt_ggh_pt_pythiadown_);
+      outtree_->Branch("wt_ggh_pt_scalehigh", &wt_ggh_pt_scalehigh_ );
+      outtree_->Branch("wt_ggh_pt_scalelow", &wt_ggh_pt_scalelow_  );
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -89,6 +104,19 @@ namespace ic {
     count_mm_ = 0;
     count_mt_ = 0;
     count_tt_ = 0;
+    
+    std::string file = "input/ggh_weights/HqT_weight_pTH_summer16_80X_AllSamples.root";
+    ggh_weights_ = new TFile(file.c_str());
+    ggh_weights_->cd();
+    ggh_hist_ = (TH1F*)gDirectory->Get("Powheg_Nominal");
+    ggh_hist_up_ = (TH1F*)gDirectory->Get("Powheg_ScaleUp");
+    ggh_hist_down_ = (TH1F*)gDirectory->Get("Powheg_ScaleDown");
+    ggh_herwig_hist_      = (TH1F*)gDirectory->Get("Herwig_Nominal"            );
+    ggh_amcnlo_hist_      = (TH1F*)gDirectory->Get("aMC_Nominal"           );
+    ggh_pythiaup_hist_    = (TH1F*)gDirectory->Get("PythiaFragmentUp_Nominal"  );
+    ggh_pythiadown_hist_ = (TH1F*)gDirectory->Get("PythiaFragmentDown_Nominal");
+    ggh_scalehigh_        = (TH1F*)gDirectory->Get("Powheg_Nominal_ScaleHigh"   );
+    ggh_scalelow_         = (TH1F*)gDirectory->Get("Powheg_Nominal_ScaleLow"   );
     return 0;
   }
 
@@ -99,6 +127,16 @@ namespace ic {
     wt_ = 1;
     
     wt_ = eventInfo->weight("wt_mc_sign");
+    wt_ggh_pt_            = 1;
+    wt_ggh_pt_up_         = 1;
+    wt_ggh_pt_down_       = 1;
+    wt_ggh_pt_herwig_     = 1;
+    wt_ggh_pt_amc_        = 1;
+    wt_ggh_pt_pythiaup_   = 1;
+    wt_ggh_pt_pythiadown_ = 1;
+    wt_ggh_pt_scalehigh_  = 1;
+    wt_ggh_pt_scalelow_   = 1;
+    
     
     if(do_theory_uncert_){
       scale_variation_wts_.clear();
@@ -148,9 +186,30 @@ namespace ic {
     std::vector<std::string> decay_types;
     
     HiggsPt_=-9999;
+    FirstHiggsPt_ = -9999;
     for(unsigned i=0; i<gen_particles.size(); ++i){
-        
-      if(gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] && gen_particles[i]->pdgid() == 25) {HiggsPt_ = gen_particles[i]->pt();}
+      if(gen_particles[i]->pdgid() == 25 && gen_particles[gen_particles[i]->mothers()[0]]->pdgid()!=25){FirstHiggsPt_ = gen_particles[i]->pt();}
+      if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
+          HiggsPt_ = gen_particles[i]->pt();
+          if(gen_particles[i]->daughters().size() > 2){
+            for(unsigned j=0; j<gen_particles[i]->daughters().size(); ++j){
+              std::cout << gen_particles[gen_particles[i]->daughters()[j]]->pdgid() << std::endl;
+            }
+          }
+      }
+
+      int fbin = ggh_hist_->FindBin(HiggsPt_);
+      if (fbin > 0 && fbin <= ggh_hist_->GetNbinsX()) {
+        wt_ggh_pt_            = ggh_hist_->GetBinContent(fbin);
+        wt_ggh_pt_up_         = ggh_hist_up_->GetBinContent(fbin)  ;
+        wt_ggh_pt_down_       = ggh_hist_down_->GetBinContent(fbin);
+        wt_ggh_pt_herwig_     = ggh_herwig_hist_->GetBinContent(fbin);
+        wt_ggh_pt_amc_        = ggh_amcnlo_hist_->GetBinContent(fbin);
+        wt_ggh_pt_pythiaup_   = ggh_pythiaup_hist_->GetBinContent(fbin);
+        wt_ggh_pt_pythiadown_ = ggh_pythiadown_hist_->GetBinContent(fbin);
+        wt_ggh_pt_scalehigh_  = ggh_scalehigh_->GetBinContent(fbin);
+        wt_ggh_pt_scalelow_   = ggh_scalelow_->GetBinContent(fbin);
+      }
       
       ic::GenParticle part = *gen_particles[i];
       ic::GenParticle higgs_product;
@@ -160,10 +219,17 @@ namespace ic {
       bool status_flag_tlc = part.statusFlags().at(13);
 
       // add neutrinos 4-vectors to get gen met
-      if(genID == 12 || genID == 14 || genID == 16) met.set_vector(met.vector() + part.vector());
+      if(genID == 12 || genID == 14 || genID == 16){
+        met.set_vector(met.vector() + part.vector());
+        continue;
+      }
+      
+      //if(genID == 24) std::cout << "Found a W" << std::endl;
+      //if(genID == 23) std::cout << "Found a Z" << std::endl;
+      //if(genID == 22) std::cout << "Found a photon" << std::endl;
+      //if (!(( genId == 15 && part.statusFlags()[FromHardProcess] && part.status()==1) || (part.statusFlags()[IsDirectHardProcessTauDecayProduct] ))) continue;
       
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
-
       std::vector<ic::GenParticle> family;
       unsigned outputID = 15;
       FamilyTree(family, part, gen_particles, outputID);
@@ -186,6 +252,7 @@ namespace ic {
         higgs_products.push_back(had_tau);
       }
     }
+    //check how higgs decay products are found! (especially for aMC@NLO)
 
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
 
@@ -211,7 +278,7 @@ namespace ic {
     }
     
     //size of decay_types vector should always be 2 but added this if statement just to be sure
-    std::string decayType = "";
+    decayType = "";
     std::sort(decay_types.begin(),decay_types.end(),swap_labels());
     for(unsigned i=0; i< decay_types.size(); ++i){
       decayType += decay_types[i];
@@ -291,19 +358,24 @@ namespace ic {
     }
     
     std::vector<ic::GenJet> filtered_jets;
-    
-    n_jets_nofilter_ = gen_jets.size();
-    //std::cout << n_jets_nofilter_ << std::endl; 
+     
     for(unsigned i=0; i<gen_jets.size(); ++i){
       ic::GenJet jet = *gen_jets[i];
       double jetPt = jet.vector().Pt();
       double jetEta = std::fabs(jet.vector().Rapidity());
+      if(jetPt > min_jet_pt_ && jetEta < max_jet_eta_) filtered_jets.push_back(jet); 
+    }
+    
+    n_jets_nofilter_ = filtered_jets.size();
+    
+    for(unsigned i=0; i<filtered_jets.size(); ++i){
+      ic::GenJet jet = filtered_jets[i];
       bool MatchedToPrompt = false;
       for(unsigned j=0; j<higgs_products.size(); ++j){
         if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
       }
-      //select jets above minimum pt threshold that aren't matched to Higgs decay products
-      if(jetPt > min_jet_pt_ && jetEta < max_jet_eta_ && !MatchedToPrompt) filtered_jets.push_back(jet); 
+      //remove jets that are matched to Higgs decay products
+      if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
     }
 
     n_jets_ = filtered_jets.size();
@@ -311,6 +383,7 @@ namespace ic {
     jeta_1_      = -9999;
     jphi_1_      = -9999;
     jpt_2_       = -9999;
+    jpt_3_       = -9999;
     jeta_2_      = -9999;
     jphi_2_      = -9999;
     mjj_         = -9999;
@@ -334,6 +407,9 @@ namespace ic {
          double jeta_3 = filtered_jets[i].vector().Rapidity();
          if(jeta_3 > min_jeta && jeta_3 < max_jeta) n_jetsingap_++;    
       }
+    }
+    if(n_jets_ > 2){
+      jpt_3_  = filtered_jets[2].vector().Pt();      
     }
 
     if(fs_) outtree_->Fill();

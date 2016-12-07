@@ -166,7 +166,25 @@ namespace ic {
       ggh_hist_up_ = (TH1F*)gDirectory->Get("Up");
       ggh_hist_down_ = (TH1F*)gDirectory->Get("Down");
     }
+    ggh_mass_="125";
 
+    if (ggh_mass_ != "" && mc_ == mc::spring16_80X) {
+
+      std::string file = "input/ggh_weights/HqT_weight_pTH_summer16_80X_AllSamples.root";
+      std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
+      ggh_weights_ = new TFile(file.c_str());
+      ggh_weights_->cd();
+      ggh_hist_ = (TH1F*)gDirectory->Get("Powheg_Nominal");
+      ggh_hist_up_ = (TH1F*)gDirectory->Get("Powheg_ScaleUp");
+      ggh_hist_down_ = (TH1F*)gDirectory->Get("Powheg_ScaleDown");
+      ggh_herwig_hist_      = (TH1F*)gDirectory->Get("Herwig_Nominal"            );
+      ggh_amcnlo_hist_      = (TH1F*)gDirectory->Get("aMC_Nominal"           );
+      ggh_pythiaup_hist_    = (TH1F*)gDirectory->Get("PythiaFragmentUp_Nominal"  );
+      ggh_pythiadown_hist_ = (TH1F*)gDirectory->Get("PythiaFragmentDown_Nominal");
+      ggh_scalehigh_        = (TH1F*)gDirectory->Get("Powheg_Nominal_ScaleLow"   );
+      ggh_scalelow_         = (TH1F*)gDirectory->Get("Powheg_Nominal_ScaleLow"   );
+    }
+    
     if (do_emu_e_fakerates_ || do_emu_m_fakerates_) {
       std::string electron_fr_file, muon_fr_file;
       if (era_ == era::data_2012_rereco) {
@@ -274,7 +292,7 @@ namespace ic {
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
       GenParticle const* higgs = NULL;
       for (unsigned i = 0; i < parts.size(); ++i) {
-        if (parts[i]->status() == 3 && parts[i]->pdgid() == 25) { //parts[i]->statusFlags()[FromHardProcessBeforeFSR] change status ==3 to this??
+        if((parts[i]->statusFlags()[FromHardProcessBeforeFSR] || parts[i]->statusFlags()[IsLastCopy]) && parts[i]->pdgid() == 25){
           higgs = parts[i];
           break;
         }
@@ -290,13 +308,34 @@ namespace ic {
         pt_weight =  ggh_hist_->GetBinContent(fbin);
         //std::cout << "pt: " << h_pt << "\tweight: " <<  pt_weight << std::endl;
       }
-      eventInfo->set_weight("ggh", pt_weight);
+      //eventInfo->set_weight("ggh", pt_weight);
+      //eventInfo->set_weight("wt_ggh_pt", pt_weight);
       if (mc_ == mc::summer12_53X || mc_ == mc::fall11_42X) {
         double weight_up   = ggh_hist_up_->GetBinContent(fbin)   / pt_weight;
         double weight_down = ggh_hist_down_->GetBinContent(fbin) / pt_weight;
         event->Add("wt_ggh_pt_up", weight_up);
         event->Add("wt_ggh_pt_down", weight_down);
       }
+      if (mc_ == mc::spring16_80X) {
+        double weight_up   = ggh_hist_up_->GetBinContent(fbin)  ;
+        double weight_down = ggh_hist_down_->GetBinContent(fbin);
+        double weight_herwig = ggh_herwig_hist_->GetBinContent(fbin);
+        double weight_amc = ggh_amcnlo_hist_->GetBinContent(fbin);
+        double weight_pythiaup = ggh_pythiaup_hist_->GetBinContent(fbin);
+        double weight_pythiadown = ggh_pythiadown_hist_->GetBinContent(fbin);
+        double weight_scalehigh = ggh_scalehigh_->GetBinContent(fbin);
+        double weight_scalelow = ggh_scalelow_->GetBinContent(fbin);
+        event->Add("wt_ggh_pt_", pt_weight);
+        event->Add("wt_ggh_pt_up", weight_up);
+        event->Add("wt_ggh_pt_down", weight_down);
+        event->Add("wt_ggh_pt_herwig", weight_herwig);
+        event->Add("wt_ggh_pt_amc", weight_amc);
+        event->Add("wt_ggh_pt_pythiaup", weight_pythiaup);
+        event->Add("wt_ggh_pt_pythiadown", weight_pythiadown);
+        event->Add("wt_ggh_pt_scalehigh", weight_scalehigh);
+        event->Add("wt_ggh_pt_scalelow", weight_scalelow);
+      }
+              
     }
 
     if (do_topquark_weights_) {
