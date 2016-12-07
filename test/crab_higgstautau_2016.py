@@ -47,7 +47,6 @@ if __name__ == '__main__':
     
     tasks.append(('SingleElectronB','/SingleElectron/Run2016B-PromptReco-v2/MINIAOD'))
     tasks.append(('SingleMuonB','/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'))
-    
     tasks.append(('TauB','/Tau/Run2016B-PromptReco-v2/MINIAOD'))
     tasks.append(('MuonEGB','/MuonEG/Run2016B-PromptReco-v2/MINIAOD'))
     tasks.append(('SingleElectronC','/SingleElectron/Run2016C-PromptReco-v2/MINIAOD'))
@@ -111,14 +110,14 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
         if "ReReco" in task[0]:
             if "Run2016B" in task[1]:
-               config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', '80X_dataRun2_2016SeptRepro_v4'] 
+                config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_2016SeptRepro_v4']
             else:
-                config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', '80X_dataRun2_2016SeptRepro_v3']
+                config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_2016SeptRepro_v3']
         else:
             if "Run2016H" in task[1]:
                 config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_v14']
             else:
-            config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_ICHEP16JEC_v0']
+                config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_ICHEP16JEC_v0']
         #submit(config)
         p = Process(target=submit, args=(config,))
         p.start()
