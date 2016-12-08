@@ -16,7 +16,7 @@ bin_cfgs = [
         'tag': 'muon_p && trg_t_IsoMu22',
         'probe': 'id_p',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
         'binvar_y': 'eta_p',
         'bins_y': [-2.4, 2.4]
     },
@@ -26,27 +26,27 @@ bin_cfgs = [
         'tag': 'muon_p && trg_t_IsoMu22',
         'probe': 'id_p',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
         'binvar_y': 'abs(eta_p)',
         'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
     },
     {
         'name': 'IDTrk_pt_bins_inc_eta',
         'var': 'm_ll(50,75,125)',
-        'tag': '(!muon_p) && trg_t_IsoMu22',
+        'tag': 'trk_p && trg_t_IsoMu22',
         'probe': 'id_p',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
         'binvar_y': 'eta_p',
         'bins_y': [-2.4, 2.4]
     },
     {
         'name': 'IDTrk_pt_eta_bins',
         'var': 'm_ll(50,75,125)',
-        'tag': '(!muon_p) && trg_t_IsoMu22',
+        'tag': 'trk_p && trg_t_IsoMu22',
         'probe': 'id_p',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
         'binvar_y': 'abs(eta_p)',
         'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
     },
@@ -56,7 +56,7 @@ bin_cfgs = [
         'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p < 0.15',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
         'binvar_y': 'eta_p',
         'bins_y': [-2.4, 2.4]
     },
@@ -66,7 +66,7 @@ bin_cfgs = [
         'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p < 0.15',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 200., 1000.],
         'binvar_y': 'abs(eta_p)',
         'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
     },
@@ -76,7 +76,7 @@ bin_cfgs = [
         'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p >= 0.15 && iso_p < 0.25',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 1000.],
         'binvar_y': 'eta_p',
         'bins_y': [-2.4, 2.4]
     },
@@ -86,7 +86,7 @@ bin_cfgs = [
         'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p >= 0.15 && iso_p < 0.25',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 1000.],
         'binvar_y': 'abs(eta_p)',
         'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
     },
@@ -96,7 +96,7 @@ bin_cfgs = [
         'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p >= 0.25 && iso_p < 0.50',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 1000.],
         'binvar_y': 'eta_p',
         'bins_y': [-2.4, 2.4]
     },
@@ -106,7 +106,7 @@ bin_cfgs = [
         'tag': 'muon_p && trg_t_IsoMu22 && id_p',
         'probe': 'iso_p >= 0.25 && iso_p < 0.50',
         'binvar_x': 'pt_p',
-        'bins_x': [20., 25., 30., 40., 50., 60., 80., 100., 1000.],
+        'bins_x': [10., 15., 20., 25., 30., 40., 50., 60., 80., 100., 1000.],
         'binvar_y': 'abs(eta_p)',
         'bins_y': [0, 0.9, 1.2, 2.1, 2.4]
     },
@@ -286,8 +286,8 @@ for cfg in bin_cfgs:
 
 
 trees = {
-    'DYJetsToLL': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_Aug5/DYJetsToLL.root'),
-    'Data': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_Aug5/SingleMuon.root')
+    'DYJetsToLL': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_Aug16/ZmmTP/DYJetsToLL.root'),
+    'Data': analysis.TTreeEvaluator('ZmmTP', 'output/HTT2016Studies_Aug16/ZmmTP/SingleMuon.root')
 }
 
 

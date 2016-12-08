@@ -6,7 +6,9 @@ import glob
 import os
 import json
 import pprint
+import sys
 import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
+import numpy as np
 
 ROOT.TH1.AddDirectory(0)
 
@@ -207,7 +209,7 @@ class BaseNode:
     def Objects(self):
         return dict()
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         return self.name
 
     def Output(self, file, prefix=''):
@@ -215,7 +217,7 @@ class BaseNode:
         for key, val in objects.iteritems():
             WriteToTFile(val, file, '%s/%s' % (prefix, key))
         for node in self.SubNodes():
-            node.Output(file, '%s/%s' % (prefix, self.OutputPrefix()))
+            node.Output(file, '%s/%s' % (prefix, self.OutputPrefix(node)))
 
     def Run(self):
         for node in self.SubNodes():
@@ -259,6 +261,7 @@ class ListNode(BaseNode):
     def __init__(self, name):
         BaseNode.__init__(self, name)
         self.nodes = OrderedDict()
+        self.add_output_prefix = True
 
     def __getitem__(self, key):
         return self.nodes[key]
@@ -273,12 +276,16 @@ class ListNode(BaseNode):
         for node in self.SubNodes():
             node.AddRequests(manifest)
 
+    def OutputPrefix(self, node=None):
+        if self.add_output_prefix:
+            return self.name
+        else:
+            return ''
 
 class SummedNode(ListNode):
     def __init__(self, name):
         ListNode.__init__(self, name)
         self.shape = None
-        self.add_output_prefix = True
 
     def RunSelf(self):
         self.shape = sum([node.shape for node in self.nodes.values()])
@@ -286,7 +293,7 @@ class SummedNode(ListNode):
     def Objects(self):
         return {self.name: self.shape.hist}
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         if self.add_output_prefix:
             return self.name + '.subnodes'
         else:
@@ -306,7 +313,7 @@ class SubtractNode(BaseNode):
     def Objects(self):
         return {self.name: self.shape.hist}
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         return self.name + '.subnodes'
 
     def SubNodes(self):
@@ -330,7 +337,7 @@ class HttQCDNode(BaseNode):
     def Objects(self):
         return {self.name: self.shape.hist}
 
-    def OutputPrefix(self):
+    def OutputPrefix(self, node=None):
         return self.name + '.subnodes'
 
     def SubNodes(self):
@@ -340,6 +347,143 @@ class HttQCDNode(BaseNode):
         for node in self.SubNodes():
             node.AddRequests(manifest)
 
+class HttWQCDCombinedNode(BaseNode):
+    def __init__(self, name, name_w, name_qcd,
+                 data_lmt_ss, data_hmt_os, data_hmt_ss,
+                 sub_lmt_ss, sub_hmt_os, sub_hmt_ss,
+                 w_lmt_os, w_lmt_ss, w_hmt_os, w_hmt_ss,
+                 qcd_os_ss, strategy='simultaneous'):
+        BaseNode.__init__(self, name)
+        self.name_w = name_w
+        self.name_qcd = name_qcd
+        self.qcd_lmt_ss = None
+        self.qcd_lmt_os = None
+        self.qcd_hmt_ss = None
+        self.qcd_hmt_os = None
+        self.w_lmt_ss = None
+        self.w_lmt_os = None
+        self.w_hmt_ss = None
+        self.w_hmt_os = None
+        self.data_lmt_ss = data_lmt_ss
+        self.data_hmt_os = data_hmt_os
+        self.data_hmt_ss = data_hmt_ss
+        self.sub_lmt_ss = sub_lmt_ss
+        self.sub_hmt_os = sub_hmt_os
+        self.sub_hmt_ss = sub_hmt_ss
+        self.w_mc_lmt_os = w_lmt_os
+        self.w_mc_lmt_ss = w_lmt_ss
+        self.w_mc_hmt_os = w_hmt_os
+        self.w_mc_hmt_ss = w_hmt_ss
+        self.qcd_os_ss = qcd_os_ss
+        # Strategies:
+        #   simultaneous: the new method of solving for W/QCD in high mT
+        #           run1: Assumes no QCD in the high MT regions
+        #             mc: simply takes the W from MC, no QCD in the high mT region
+        self.strategy = strategy
+
+
+    def RunSelf(self):
+
+        # First need the number of data-subtracted high mt events in os and ss
+        n_hmt_os = (self.data_hmt_os.shape - self.sub_hmt_os.shape).rate
+        n_hmt_ss = (self.data_hmt_ss.shape - self.sub_hmt_ss.shape).rate
+
+        # Next part is strategy dependent
+        if self.strategy == 'simultaneous':
+            # Solve the simultaneous eqns:
+            # n_hmt_os = w_os_ss * n_ss_w + qcd_os_ss * n_ss_qcd
+            # n_hmt_ss = n_ss_w + n_ss_qcd
+
+            # We take the W OS/SS ratio from the MC in the high mT region
+            w_os_ss = self.w_mc_hmt_os.shape.rate / self.w_mc_hmt_ss.shape.rate
+            # The QCD OS/SS ratio is supplied by the user
+            qcd_os_ss = self.qcd_os_ss
+
+            n = np.array([n_hmt_os.n, n_hmt_ss.n])
+            vals = np.array([[w_os_ss.n, qcd_os_ss], [1, 1]])
+            x = np.linalg.solve(vals, n)
+            n_ss_w = x[0]
+            n_ss_qcd = x[1]
+
+            # From this get a global W scale factor from MC->data
+            w_data_mc_ss = n_ss_w / self.w_mc_hmt_ss.shape.rate.n
+            w_data_mc_os = w_data_mc_ss
+
+            print 'n_hmt_os:  %s' % n_hmt_os
+            print 'n_hmt_ss:  %s' % n_hmt_ss
+            print 'w_os_ss:   %s' % w_os_ss
+            print 'n_ss_w:    %s' % n_ss_w
+            print 'n_ss_qcd:  %s' % n_ss_qcd
+            print 'n_os_w:    %f' % (n_ss_w * w_os_ss.n)
+            print 'n_os_qcd:  %f' % (n_ss_qcd * qcd_os_ss)
+            print 'w_data_mc: %f' % w_data_mc_ss
+        elif self.strategy == 'run1':
+            # Assume data-bkg in each high mt region is just W
+            w_data_mc_os = n_os.n / self.w_mc_hmt_os.shape.rate.n
+            w_data_mc_ss = n_ss.n / self.w_mc_hmt_ss.shape.rate.n
+
+            print 'n_hmt_os:     %s' % n_hmt_os
+            print 'n_hmt_ss:     %s' % n_hmt_ss
+            print 'w_data_mc_os: %f' % w_data_mc_os
+            print 'w_data_mc_ss: %f' % w_data_mc_ss
+        elif self.strategy == 'mc':
+            # MC normalisation as-is
+            w_data_mc_os = 1.0
+            w_data_mc_ss = 1.0
+        else:
+            raise RuntimeError('Strategy not recognised!')
+
+        self.w_lmt_os = self.w_mc_lmt_os.shape * w_data_mc_os
+        self.w_lmt_ss = self.w_mc_lmt_ss.shape * w_data_mc_ss
+        self.w_hmt_os = self.w_mc_hmt_os.shape * w_data_mc_os
+        self.w_hmt_ss = self.w_mc_hmt_ss.shape * w_data_mc_ss
+
+        # Low mt SS QCD always defined as data - bkkgs - W
+        self.qcd_lmt_ss = self.data_lmt_ss.shape - self.sub_lmt_ss.shape - self.w_lmt_ss
+        # Low mt OS QCD always defined as SS QCD * qcd_os_ss
+        self.qcd_lmt_os = self.qcd_os_ss * self.qcd_lmt_ss
+
+        print 'data_lmt_ss:   %s' % self.data_lmt_ss.shape.rate
+        print 'sub_lmt_ss:    %s' % self.sub_lmt_ss.shape.rate
+        print 'w_lmt_ss:      %s' % self.w_lmt_ss.rate
+
+        if self.strategy == 'simultaneous':
+            self.qcd_hmt_ss = self.data_hmt_ss.shape - self.sub_hmt_ss.shape - self.w_hmt_ss
+            self.qcd_hmt_os = qcd_os_ss * self.qcd_hmt_ss
+        elif self.strategy in ['run1', 'mc']:
+            # No QCD in the high mT regions
+            self.qcd_hmt_ss = self.data_hmt_ss.shape * 0.0
+            self.qcd_hmt_os = self.data_hmt_os.shape * 0.0
+
+    def Objects(self):
+        return {
+            self.name_w: self.w_lmt_os.hist,
+            self.name_qcd: self.qcd_lmt_os.hist,
+            self.OutputPrefix(self.data_lmt_ss) + '/' + self.name_w: self.w_lmt_ss.hist,
+            self.OutputPrefix(self.data_lmt_ss) + '/' +  self.name_qcd: self.qcd_lmt_ss.hist,
+            self.OutputPrefix(self.data_hmt_os) + '/' + self.name_w: self.w_hmt_os.hist,
+            self.OutputPrefix(self.data_hmt_os) + '/' +  self.name_qcd: self.qcd_hmt_os.hist,
+            self.OutputPrefix(self.data_hmt_ss) + '/' + self.name_w: self.w_hmt_ss.hist,
+            self.OutputPrefix(self.data_hmt_ss) + '/' +  self.name_qcd: self.qcd_hmt_ss.hist
+            }
+
+    def OutputPrefix(self, node):
+        if node in [self.data_lmt_ss, self.sub_lmt_ss]:
+            return self.name + '.lmt_ss'
+        if node in [self.data_hmt_ss, self.sub_hmt_ss]:
+            return self.name + '.hmt_ss'
+        if node in [self.data_hmt_os, self.sub_hmt_os]:
+            return self.name + '.hmt_os'
+        return self.name + '.subnodes'
+
+    def SubNodes(self):
+        return [self.data_lmt_ss, self.data_hmt_os, self.data_hmt_ss,
+                self.sub_lmt_ss, self.sub_hmt_os, self.sub_hmt_ss,
+                self.w_mc_lmt_os, self.w_mc_lmt_ss, self.w_mc_hmt_os, self.w_mc_hmt_ss]
+
+    def AddRequests(self, manifest):
+        for node in self.SubNodes():
+            node.AddRequests(manifest)
 
 class Analysis(object):
     def __init__(self):
@@ -402,11 +546,11 @@ class Analysis(object):
             lumi = self.info[scaleTo]['lumi']
             for name, data in self.info.iteritems():
                 if 'xs' in data and 'evt' in data:
-                    print name, data
+                    #print name, data
                     data['sf'] = lumi / (float(data['evt']) / float(data['xs']))
                 else:
                     data['sf'] = 1.0
-        pprint.pprint(self.info)
+        #pprint.pprint(self.info)
 
     def BasicFactory(self, name, sample=None, var='', sel='', factors=[], scaleToLumi=True):
         if sample is None:
@@ -421,7 +565,4 @@ class Analysis(object):
         for sa in samples:
             res.AddNode(self.BasicFactory(sa, sa, var, sel, factors, scaleToLumi))
         return res
-
-
-
 

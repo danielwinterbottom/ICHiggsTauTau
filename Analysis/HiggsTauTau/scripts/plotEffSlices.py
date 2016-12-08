@@ -81,6 +81,7 @@ for i in xrange(1, hist.GetNbinsY()+1):
     axis.SetMinimum(float(args.y_range.split(',')[0]))
     axis.SetMaximum(float(args.y_range.split(',')[1]))
     pads[0].SetGrid(1, 1)
+    pads[0].SetLogx(True)
     latex.SetTextSize(0.04)
 
     text.AddText(args.title)
@@ -95,6 +96,7 @@ for i in xrange(1, hist.GetNbinsY()+1):
 
     if args.ratio_to is not None:
         pads[1].cd()
+        pads[1].SetLogx(True)
         ratios = []
         for slice in slices:
             ratios.append(slice.Clone())

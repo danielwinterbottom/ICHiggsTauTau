@@ -27,13 +27,35 @@ bool HLTPathCheck(ic::TreeEvent* event, std::string const& label,
 std::set<int16_t> GetTriggerTypes(ic::TriggerObject* obj);
 
 bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
+bool SortMM(CompositeCandidate const* c1, CompositeCandidate const* c2);
 
 void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift);
+
+double TopQuarkPtWeight(std::vector<GenParticle *> const& parts);
+
+ROOT::Math::PtEtaPhiEVector BuildGenBoson(std::vector<GenParticle *> const& parts);
+
+class SelectMVAMET : public ModuleBase {
+ private:
+  CLASS_MEMBER(SelectMVAMET, std::string, pairs_label)
+  CLASS_MEMBER(SelectMVAMET, std::string, met_label)
+  CLASS_MEMBER(SelectMVAMET, std::string, met_target)
+  CLASS_MEMBER(SelectMVAMET, std::string, correct_for_lepton1)
+  CLASS_MEMBER(SelectMVAMET, std::string, correct_for_lepton2)
+
+  public:
+   SelectMVAMET(std::string const& name);
+   virtual ~SelectMVAMET();
+
+   virtual int Execute(TreeEvent *event);
+};
 
 class ZmmTreeProducer : public ModuleBase {
  private:
   CLASS_MEMBER(ZmmTreeProducer, fwlite::TFileService*, fs)
   CLASS_MEMBER(ZmmTreeProducer, std::string, sf_workspace)
+  CLASS_MEMBER(ZmmTreeProducer, bool, do_zpt_reweighting)
+  CLASS_MEMBER(ZmmTreeProducer, bool, do_top_reweighting)
   TTree *outtree_;
   std::shared_ptr<RooWorkspace> ws_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
@@ -44,20 +66,26 @@ class ZmmTreeProducer : public ModuleBase {
   float wt_id;
   float wt_iso;
   float wt_trg;
+  float wt_zpt;
+  float wt_top;
 
   int n_vtx;
 
   bool os;
 
+  float mvamet_et;
+
   float pt_1;
   float eta_1;
   float phi_1;
   float iso_1;
+  int gen_1;
 
   float pt_2;
   float eta_2;
   float phi_2;
   float iso_2;
+  int gen_2;
 
   float m_ll;
   float pt_ll;
@@ -65,6 +93,12 @@ class ZmmTreeProducer : public ModuleBase {
 
   bool trg_IsoMu22;
   bool trg_IsoTkMu22;
+
+  bool e_veto;
+  bool m_veto;
+
+  int n_jets;
+  int n_bjets;
 
  public:
   ZmmTreeProducer(std::string const& name);
@@ -142,6 +176,7 @@ class ZmmTPTreeProducer : public ModuleBase {
   float iso_t;
 
   bool muon_p;
+  bool trk_p;
   float pt_p;
   float eta_p;
   float phi_p;
@@ -218,16 +253,22 @@ class ZmtTPTreeProducer : public ModuleBase {
  private:
   CLASS_MEMBER(ZmtTPTreeProducer, fwlite::TFileService*, fs)
   CLASS_MEMBER(ZmtTPTreeProducer, std::string, sf_workspace)
+  CLASS_MEMBER(ZmtTPTreeProducer, bool, do_zpt_reweighting)
+  CLASS_MEMBER(ZmtTPTreeProducer, bool, do_top_reweighting)
   TTree *outtree_;
   std::shared_ptr<RooWorkspace> ws_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
 
-  HTTPairGenInfo geninfo_module_;
-
   float wt;
   float wt_pu_hi;
+  float wt_mfr_l;
+  float wt_mfr_t;
+  float wt_zpt;
+  float wt_top;
+  float wt_tauid;
 
   int n_vtx;
+  float rho;
 
   float pt_m;
   float eta_m;
@@ -237,8 +278,11 @@ class ZmtTPTreeProducer : public ModuleBase {
   float pt_t;
   float eta_t;
   int dm_t;
-  bool anti_e_t;
-  bool anti_m_t;
+  int tot_ch_t;
+  bool anti_e_vl_t;
+  bool anti_e_t_t;
+  bool anti_m_t_t;
+  bool anti_m_l_t;
   bool mva_vl_t;
   bool mva_l_t;
   bool mva_m_t;
@@ -273,6 +317,12 @@ class ZmtTPTreeProducer : public ModuleBase {
   float nt_density_0p3_0p4;
   float nt_density_0p4_0p5;
 
+  float po_density_0p0_0p1;
+  float po_density_0p1_0p2;
+  float po_density_0p2_0p3;
+  float po_density_0p3_0p4;
+  float po_density_0p4_0p5;
+
   unsigned n_iso_ph_0p5;
   unsigned n_sig_ph_0p5;
   unsigned n_iso_ph_1p0;
@@ -290,7 +340,11 @@ class ZmtTPTreeProducer : public ModuleBase {
   unsigned gen_1;
   unsigned gen_2;
 
+  bool e_veto;
+  bool m_veto;
+
   int n_bjets;
+  int n_uncorr_bjets;
 
   bool os;
   float m_ll;

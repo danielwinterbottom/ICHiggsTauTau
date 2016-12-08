@@ -772,12 +772,17 @@ paths_2016_reduced_emu = [
     'HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v'
 ]
 
+paths_2016_reduced_charmonium = [
+    'HLT_Mu7p5_Track2_Jpsi_v'
+]
+
 paths_dict = {
     'None':           [],
     'SingleMuon':     (paths_2016_reduced_muon + paths_2016_reduced_tau + paths_2016_reduced_emu),
     'SingleElectron': (paths_2016_reduced_elec + paths_2016_reduced_tau + paths_2016_reduced_emu),
     'Tau':            paths_2016_reduced_tau,
     'MuonEG':         paths_2016_reduced_emu,
+    'Charmonium':     paths_2016_reduced_charmonium,
     'MCreHLT':        (paths_2016_reduced_muon + paths_2016_reduced_elec + paths_2016_reduced_emu + paths_2016_reduced_tau)
 }
 

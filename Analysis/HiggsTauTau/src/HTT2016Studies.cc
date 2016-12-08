@@ -17,8 +17,58 @@
 
 namespace ic {
 
+  SelectMVAMET::SelectMVAMET(std::string const& name)
+      : ModuleBase(name),
+        pairs_label_("ditau"),
+        met_label_("pfMVAMetVector"),
+        met_target_("mvamet"),
+        correct_for_lepton1_(""),
+        correct_for_lepton2_("") {};
+
+  SelectMVAMET::~SelectMVAMET() { ; }
+
+  int SelectMVAMET::Execute(TreeEvent *event) {
+    // Get the MVA MET
+    Met *mvamet = nullptr;
+    auto pairs = event->GetPtrVec<CompositeCandidate>(pairs_label_);
+    auto const& met_map = event->GetIDMap<Met>(met_label_);
+    std::size_t id = 0;
+    boost::hash_combine(id, pairs.at(0)->at(0)->id());
+    boost::hash_combine(id, pairs.at(0)->at(1)->id());
+    std::size_t id_inv = 0;
+    boost::hash_combine(id_inv, pairs.at(0)->at(1)->id());
+    boost::hash_combine(id_inv, pairs.at(0)->at(0)->id());
+    auto it = met_map.find(id);
+    auto it_inv = met_map.find(id_inv);
+    if (it != met_map.end()) {
+      mvamet = it->second;
+      // event->Add("pfMVAMet", mva_met);
+    } else if (it_inv != met_map.end()){
+      //lepton1 <--> lepton2 (needed for fully hadronic)
+      mvamet = it_inv->second;
+      // event->Add("pfMVAMet", mva_met);
+    } else {
+      throw::std::runtime_error("Could not find MVA MET!");
+    }
+
+    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    if (correct_for_lepton1_ != "") {
+      auto const& es_shifts1 = event->Get<map_id_vec>(correct_for_lepton1_);
+      CorrectMETForShift(mvamet, es_shifts1.at(pairs.at(0)->at(0)->id()));
+    }
+    if (correct_for_lepton2_ != "") {
+      auto const& es_shifts2 = event->Get<map_id_vec>(correct_for_lepton2_);
+      CorrectMETForShift(mvamet, es_shifts2.at(pairs.at(0)->at(1)->id()));
+    }
+
+    event->Add(met_target_, mvamet);
+    return 0;
+  }
+
   ZmmTreeProducer::ZmmTreeProducer(std::string const& name)
-      : ModuleBase(name) {
+      : ModuleBase(name),
+        do_zpt_reweighting_(false),
+        do_top_reweighting_(false) {
       fs_ = nullptr;
   }
 
@@ -36,21 +86,30 @@ namespace ic {
       outtree_->Branch("wt_id",       &wt_id);
       outtree_->Branch("wt_iso",      &wt_iso);
       outtree_->Branch("wt_trg",      &wt_trg);
+      outtree_->Branch("wt_zpt",      &wt_zpt);
+      outtree_->Branch("wt_top",      &wt_top);
       outtree_->Branch("n_vtx",       &n_vtx);
       outtree_->Branch("os",          &os);
       outtree_->Branch("pt_1",        &pt_1);
       outtree_->Branch("eta_1",       &eta_1);
       outtree_->Branch("phi_1",       &phi_1);
       outtree_->Branch("iso_1",       &iso_1);
+      outtree_->Branch("gen_1",       &gen_1);
       outtree_->Branch("pt_2",        &pt_2);
       outtree_->Branch("eta_2",       &eta_2);
       outtree_->Branch("phi_2",       &phi_2);
       outtree_->Branch("iso_2",       &iso_2);
+      outtree_->Branch("gen_2",       &gen_2);
       outtree_->Branch("m_ll",        &m_ll);
       outtree_->Branch("pt_ll",       &pt_ll);
       outtree_->Branch("dr_ll",       &dr_ll);
+      outtree_->Branch("mvamet_et",   &mvamet_et);
       outtree_->Branch("trg_IsoMu22",       &trg_IsoMu22);
       outtree_->Branch("trg_IsoTkMu22",     &trg_IsoTkMu22);
+      outtree_->Branch("e_veto",       &e_veto);
+      outtree_->Branch("m_veto",       &m_veto);
+      outtree_->Branch("n_jets",       &n_jets);
+      outtree_->Branch("n_bjets",      &n_bjets);
     }
 
     TFile f(sf_workspace_.c_str());
@@ -62,8 +121,14 @@ namespace ic {
       ws_->function("m_id_ratio")->functor(ws_->argSet("m_pt,m_eta")));
     fns_["m_iso_ratio"] = std::shared_ptr<RooFunctor>(
       ws_->function("m_iso_ratio")->functor(ws_->argSet("m_pt,m_eta")));
-    fns_["m_trg_data"] = std::shared_ptr<RooFunctor>(
-      ws_->function("m_trg_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_trgOR_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trgOR_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_idiso0p15_desy_ratio")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["zpt_weight"] = std::shared_ptr<RooFunctor>(
+      ws_->function("zpt_weight")->functor(ws_->argSet("z_gen_mass,z_gen_pt")));
     return 0;
   }
 
@@ -72,19 +137,55 @@ namespace ic {
     auto pairs = event->GetPtrVec<CompositeCandidate>("dimuon");
     auto info = event->GetPtr<EventInfo>("eventInfo");
 
-    // Take the pair closest to the Z mass
-    std::sort(pairs.begin(), pairs.end(), [=](CompositeCandidate *c1, CompositeCandidate *c2) {
-      return std::fabs(c1->M() - 91.1876) < std::fabs(c2->M() - 91.1876);
-    });
+    // // Take the pair closest to the Z mass
+    // std::sort(pairs.begin(), pairs.end(), [=](CompositeCandidate *c1, CompositeCandidate *c2) {
+    //   return std::fabs(c1->M() - 91.1876) < std::fabs(c2->M() - 91.1876);
+    // });
     auto const* pair = pairs.at(0);
 
     // Sort the pair by descending pT
-    std::vector<Candidate *> leptons = pair->AsVector();
-    std::sort(leptons.begin(), leptons.end(),
-        bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    if (pair->at(0)->pt() < pair->at(1)->pt()) {
+      std::cout << "Something has gone wrong here!\n";
+    }
+    // std::vector<Candidate *> leptons = pair->AsVector();
+    // std::sort(leptons.begin(), leptons.end(),
+    //     bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
-    Muon const* lep_1 = dynamic_cast<Muon const*>(leptons[0]);
-    Muon const* lep_2 = dynamic_cast<Muon const*>(leptons[1]);
+    Muon const* lep_1 = dynamic_cast<Muon const*>(pair->at(0));
+    Muon const* lep_2 = dynamic_cast<Muon const*>(pair->at(1));
+
+    gen_1 = 0;
+    gen_2 = 0;
+    if (!info->is_data()) {
+      gen_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+      gen_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+    }
+
+    // Get the MVA MET so we can calculate MT
+    Met *mva_met = nullptr;
+    auto const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+    std::size_t id = 0;
+    boost::hash_combine(id, lep_1->id());
+    boost::hash_combine(id, lep_2->id());
+    std::size_t id_inv = 0;
+    boost::hash_combine(id_inv, lep_2->id());
+    boost::hash_combine(id_inv, lep_1->id());
+    auto it = met_map.find(id);
+    auto it_inv = met_map.find(id_inv);
+    if (it != met_map.end()) {
+      mva_met = it->second;
+    } else if (it_inv != met_map.end()){
+      mva_met = it_inv->second;
+    } else {
+      throw::std::runtime_error("Could not find MVA MET!");
+    };
+
+    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    auto const& mu_es_shifts = event->Get<map_id_vec>("shifts_MuonEnergyScale");
+    CorrectMETForShift(mva_met, mu_es_shifts.at(lep_1->id()));
+    CorrectMETForShift(mva_met, mu_es_shifts.at(lep_2->id()));
+
+    mvamet_et = mva_met->pt();
 
     n_vtx = info->good_vertices();
 
@@ -113,15 +214,15 @@ namespace ic {
 
       std::string filter_IsoMu22 = "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09";
       auto const& trg_objs_IsoMu22 = event->GetPtrVec<TriggerObject>("triggerObjects_IsoMu22");
-      trg_IsoMu22 = path_fired_IsoMu22 &&
-        (IsFilterMatched(lep_1, trg_objs_IsoMu22, filter_IsoMu22, 0.5) ||
-         IsFilterMatched(lep_2, trg_objs_IsoMu22, filter_IsoMu22, 0.5));
+      trg_IsoMu22 =
+          path_fired_IsoMu22 &&
+          IsFilterMatched(lep_1, trg_objs_IsoMu22, filter_IsoMu22, 0.5);
 
       std::string filter_IsoTkMu22 = "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
       auto const& trg_objs_IsoTkMu22 = event->GetPtrVec<TriggerObject>("triggerObjects_IsoTkMu22");
-      trg_IsoTkMu22 = path_fired_IsoTkMu22 &&
-        (IsFilterMatched(lep_1, trg_objs_IsoTkMu22, filter_IsoTkMu22, 0.5) ||
-         IsFilterMatched(lep_2, trg_objs_IsoTkMu22, filter_IsoTkMu22, 0.5));
+      trg_IsoTkMu22 =
+          path_fired_IsoTkMu22 &&
+          IsFilterMatched(lep_1, trg_objs_IsoTkMu22, filter_IsoTkMu22, 0.5);
     } else {
       trg_IsoMu22 = true;
       trg_IsoTkMu22 = true;
@@ -134,15 +235,16 @@ namespace ic {
     auto args_1 = std::vector<double>{lep_1->pt(), lep_1->eta()};
     auto args_2 = std::vector<double>{lep_2->pt(), lep_2->eta()};
     if (!info->is_data()) {
-      float eff_1 = fns_["m_trg_data"]->eval(args_1.data());
-      float eff_2 = fns_["m_trg_data"]->eval(args_2.data());
-      wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
+      float eff_1 = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args_1.data());
+      // float eff_2 = fns_["m_trg_data"]->eval(args_2.data());
+      // wt_trg = eff_1 + eff_2 - eff_1 * eff_2;
+      wt_trg = eff_1;
       wt_trk = fns_["m_trk_ratio"]->eval(v_double{lep_1->eta()}.data()) *
               fns_["m_trk_ratio"]->eval(v_double{lep_2->eta()}.data());
-      wt_id = fns_["m_id_ratio"]->eval(args_1.data()) *
-              fns_["m_id_ratio"]->eval(args_2.data());
-      wt_iso = fns_["m_iso_ratio"]->eval(args_1.data()) *
-               fns_["m_iso_ratio"]->eval(args_2.data());
+      wt_id = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data()) *
+              fns_["m_idiso0p15_desy_ratio"]->eval(args_2.data());
+      // wt_iso = fns_["m_iso_ratio"]->eval(args_1.data()) *
+      //          fns_["m_iso_ratio"]->eval(args_2.data());
     }
     info->set_weight("trk", wt_trk);
     info->set_weight("trg", wt_trg);
@@ -150,6 +252,40 @@ namespace ic {
     info->set_weight("iso", wt_iso);
     wt = info->total_weight();
     wt_pu = info->weight_defined("pileup") ? info->weight("pileup") : 1.0;
+
+    // DY reweighting
+    wt_zpt = 1.0;
+    if (do_zpt_reweighting_) {
+      auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      auto gen_boson = BuildGenBoson(parts);
+      wt_zpt = fns_["zpt_weight"]->eval(v_double{gen_boson.M(), gen_boson.pt()}.data());
+    }
+
+    // Top quark pT reweighting
+    wt_top = 1.0;
+    if (do_top_reweighting_) {
+      auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      wt_top = TopQuarkPtWeight(parts);
+    }
+
+    e_veto = event->Get<bool>("extra_elec_veto");
+    m_veto = event->Get<bool>("extra_muon_veto");
+
+    auto jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+    ic::keep_if(jets, [&](PFJet * j) {
+      return ic::MinDRToCollection(j, pair->AsVector(), 0.5);
+    });
+    auto bjets = jets;
+    ic::keep_if(jets, [&](PFJet *j) {
+      return MinPtMaxEta(j, 30., 4.7);
+    });
+    ic::keep_if(bjets, [&](PFJet* j) {
+      return MinPtMaxEta(j, 20., 2.4) &&
+             j->GetBDiscriminator(
+                 "pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+    });
+    n_jets = jets.size();
+    n_bjets = bjets.size();
 
     outtree_->Fill();
     return 0;
@@ -319,6 +455,7 @@ namespace ic {
       outtree_->Branch("id_t",        &id_t);
       outtree_->Branch("iso_t",       &iso_t);
       outtree_->Branch("muon_p",      &muon_p);
+      outtree_->Branch("trk_p",       &trk_p);
       outtree_->Branch("pt_p",        &pt_p);
       outtree_->Branch("eta_p",       &eta_p);
       outtree_->Branch("id_p",        &id_p);
@@ -423,6 +560,13 @@ namespace ic {
         trg_p_PFTau120 = true;
       }
       muon_p = true;
+      // This is a hack for now: we'll pretend muons with pT < 20 are track probes
+      // for the purpose of the ID measurement until we get the J/Psi up and running
+      if (pt_p <= 20.) {
+        trk_p = true;
+      } else {
+        trk_p = false;
+      }
       outtree_->Fill();
     }
 
@@ -475,6 +619,11 @@ namespace ic {
         trg_p_PFTau120 = true;
       }
       muon_p = false;
+      trk_p = true;
+      // Temporary hack: for now skip the case with track pT < 20 GeV,
+      // not possible to measure this low for the ID in Z->mumu events,
+      // need to wait for the J/Psi
+      if (pt_p <= 20.) continue;
       outtree_->Fill();
     }
     return 0;
@@ -626,9 +775,9 @@ namespace ic {
   // ZmtTP
   ZmtTPTreeProducer::ZmtTPTreeProducer(std::string const& name)
       : ModuleBase(name),
-        geninfo_module_("GenInfo") {
+        do_zpt_reweighting_(false),
+        do_top_reweighting_(false) {
     fs_ = nullptr;
-    geninfo_module_.set_ditau_label("sorted_ditau");
   }
 
   ZmtTPTreeProducer::~ZmtTPTreeProducer() {
@@ -641,7 +790,13 @@ namespace ic {
 
       outtree_->Branch("wt",          &wt);
       outtree_->Branch("wt_pu_hi",    &wt_pu_hi);
+      outtree_->Branch("wt_mfr_l",    &wt_mfr_l);
+      outtree_->Branch("wt_mfr_t",    &wt_mfr_t);
+      outtree_->Branch("wt_zpt",      &wt_zpt);
+      outtree_->Branch("wt_top",      &wt_top);
+      outtree_->Branch("wt_tauid",    &wt_tauid);
       outtree_->Branch("n_vtx",       &n_vtx);
+      outtree_->Branch("rho",         &rho);
       outtree_->Branch("pt_m",        &pt_m);
       outtree_->Branch("eta_m",       &eta_m);
       outtree_->Branch("mt_m",        &mt_m);
@@ -649,8 +804,11 @@ namespace ic {
       outtree_->Branch("pt_t",        &pt_t);
       outtree_->Branch("eta_t",       &eta_t);
       outtree_->Branch("dm_t",        &dm_t);
-      outtree_->Branch("anti_e_t",    &anti_e_t);
-      outtree_->Branch("anti_m_t",    &anti_m_t);
+      outtree_->Branch("tot_ch_t",    &tot_ch_t);
+      outtree_->Branch("anti_e_vl_t",   &anti_e_vl_t);
+      outtree_->Branch("anti_e_t_t",    &anti_e_t_t);
+      outtree_->Branch("anti_m_t_t",    &anti_m_t_t);
+      outtree_->Branch("anti_m_l_t",    &anti_m_l_t);
       outtree_->Branch("mva_vl_t",    &mva_vl_t);
       outtree_->Branch("mva_l_t",     &mva_l_t);
       outtree_->Branch("mva_m_t",     &mva_m_t);
@@ -683,6 +841,11 @@ namespace ic {
       outtree_->Branch("nt_density_0p2_0p3",   &nt_density_0p2_0p3);
       outtree_->Branch("nt_density_0p3_0p4",   &nt_density_0p3_0p4);
       outtree_->Branch("nt_density_0p4_0p5",   &nt_density_0p4_0p5);
+      outtree_->Branch("po_density_0p0_0p1",   &po_density_0p0_0p1);
+      outtree_->Branch("po_density_0p1_0p2",   &po_density_0p1_0p2);
+      outtree_->Branch("po_density_0p2_0p3",   &po_density_0p2_0p3);
+      outtree_->Branch("po_density_0p3_0p4",   &po_density_0p3_0p4);
+      outtree_->Branch("po_density_0p4_0p5",   &po_density_0p4_0p5);
       outtree_->Branch("n_iso_ph_0p5", &n_iso_ph_0p5);
       outtree_->Branch("n_sig_ph_0p5", &n_sig_ph_0p5);
       outtree_->Branch("n_iso_ph_1p0", &n_iso_ph_1p0);
@@ -697,7 +860,10 @@ namespace ic {
       outtree_->Branch("trg_t_IsoMu19Tau ",     &trg_t_IsoMu19Tau);
       outtree_->Branch("gen_1",       &gen_1);
       outtree_->Branch("gen_2",       &gen_2);
+      outtree_->Branch("e_veto",       &e_veto);
+      outtree_->Branch("m_veto",       &m_veto);
       outtree_->Branch("n_bjets",     &n_bjets);
+      outtree_->Branch("n_uncorr_bjets", &n_uncorr_bjets);
       outtree_->Branch("os",          &os);
       outtree_->Branch("m_ll",        &m_ll);
 
@@ -714,6 +880,18 @@ namespace ic {
       ws_->function("m_iso_ratio")->functor(ws_->argSet("m_pt,m_eta")));
     fns_["m_trgOR_data"] = std::shared_ptr<RooFunctor>(
       ws_->function("m_trgOR_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_idiso0p15_desy_ratio")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
+      ws_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(ws_->argSet("m_pt,m_eta")));
+    fns_["zpt_weight"] = std::shared_ptr<RooFunctor>(
+      ws_->function("zpt_weight")->functor(ws_->argSet("z_gen_mass,z_gen_pt")));
+    fns_["t_muonfr_loose"] = std::shared_ptr<RooFunctor>(
+      ws_->function("t_muonfr_loose")->functor(ws_->argSet("t_pt,t_eta")));
+    fns_["t_muonfr_tight"] = std::shared_ptr<RooFunctor>(
+      ws_->function("t_muonfr_tight")->functor(ws_->argSet("t_pt,t_eta")));
+    fns_["t_iso_mva_m_pt30_sf"] = std::shared_ptr<RooFunctor>(
+      ws_->function("t_iso_mva_m_pt30_sf")->functor(ws_->argSet("t_pt,t_eta,t_dm")));
     return 0;
   }
 
@@ -741,8 +919,8 @@ namespace ic {
     }
     if (pairs.size() == 0) return 1;
 
-    std::sort(pairs.begin(), pairs.end(), SortByIsoMT);
-    event->Add("sorted_ditau", pairs);
+    // std::sort(pairs.begin(), pairs.end(), SortByIsoMT);
+    // event->Add("sorted_ditau", pairs);
 
     Muon const* muon = dynamic_cast<Muon const*>(pairs[0]->At(0));
     Tau const* tau = dynamic_cast<Tau const*>(pairs[0]->At(1));
@@ -755,8 +933,11 @@ namespace ic {
     dm_t = tau->decay_mode();
     float cone = TMath::Max(TMath::Min(0.1, 3.0/pt_t), 0.05);
 
-    anti_e_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
-    anti_m_t  = tau->GetTauID("againstMuonTight3") > 0.5;
+    tot_ch_t  = tau->sig_charged_cands().size() + tau->iso_charged_cands().size();
+    anti_e_vl_t  = tau->GetTauID("againstElectronVLooseMVA6") > 0.5;
+    anti_m_t_t  = tau->GetTauID("againstMuonTight3") > 0.5;
+    anti_e_t_t  = tau->GetTauID("againstElectronTightMVA6") > 0.5;
+    anti_m_l_t  = tau->GetTauID("againstMuonLoose3") > 0.5;
     mva_vl_t  = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
     mva_l_t   = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") > 0.5;
     mva_m_t   = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") > 0.5;
@@ -804,6 +985,11 @@ namespace ic {
     nt_density_0p2_0p3 = 0.;
     nt_density_0p3_0p4 = 0.;
     nt_density_0p4_0p5 = 0.;
+    po_density_0p0_0p1 = 0.;
+    po_density_0p1_0p2 = 0.;
+    po_density_0p2_0p3 = 0.;
+    po_density_0p3_0p4 = 0.;
+    po_density_0p4_0p5 = 0.;
     for (auto id : iso_gammas) {
       double et = pfcands[id]->vector().Et();
       double pt = pfcands[id]->pt();
@@ -840,6 +1026,7 @@ namespace ic {
       double et = pfcands[id]->vector().Et();
       double pt = pfcands[id]->pt();
       double dr = DR(pfcands[id], tau);
+      double dr_c = DR(pfcands[id], &charged);
       if (dr > cone) {
         pho_out_0p0_t += pt;
       }
@@ -867,7 +1054,17 @@ namespace ic {
           pho_out_2p0_t += pt;
         }
       }
+      if (dr_c >= 0.0 && dr_c < 0.1) po_density_0p0_0p1 += pt;
+      if (dr_c >= 0.1 && dr_c < 0.2) po_density_0p1_0p2 += pt;
+      if (dr_c >= 0.2 && dr_c < 0.3) po_density_0p2_0p3 += pt;
+      if (dr_c >= 0.3 && dr_c < 0.4) po_density_0p3_0p4 += pt;
+      if (dr_c >= 0.4 && dr_c < 0.5) po_density_0p4_0p5 += pt;
     }
+    po_density_0p0_0p1 /= (TMath::Pi() * 0.1 * 0.1);
+    po_density_0p1_0p2 /= (TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1));
+    po_density_0p2_0p3 /= (TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2));
+    po_density_0p3_0p4 /= (TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3));
+    po_density_0p4_0p5 /= (TMath::Pi() * (0.5 * 0.5 - 0.4 * 0.4));
 
     cbiso_0p5_t = chiso_t + TMath::Max(0., ntiso_0p5_t - 0.2 * puiso_t);
     cbiso_1p0_t = chiso_t + TMath::Max(0., ntiso_1p0_t - 0.2 * puiso_t);
@@ -933,32 +1130,33 @@ namespace ic {
     }
 
     n_vtx = info->good_vertices();
+    rho = info->jet_rho();
 
     // Get the MVA MET so we can calculate MT
-    Met *mva_met = nullptr;
-    auto const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
-    std::size_t id = 0;
-    boost::hash_combine(id, muon->id());
-    boost::hash_combine(id, tau->id());
-    std::size_t id_inv = 0;
-    boost::hash_combine(id_inv, tau->id());
-    boost::hash_combine(id_inv, muon->id());
-    auto it = met_map.find(id);
-    auto it_inv = met_map.find(id_inv);
-    if (it != met_map.end()) {
-      mva_met = it->second;
-      // event->Add("pfMVAMet", mva_met);
-    } else if (it_inv != met_map.end()){
-      //lepton1 <--> lepton2 (needed for fully hadronic)
-      mva_met = it_inv->second;
-      // event->Add("pfMVAMet", mva_met);
-    } else {
-      throw::std::runtime_error("Could not find MVA MET!");
-    }
+    Met *mva_met = event->GetPtr<Met>("mvamet");
+    // auto const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+    // std::size_t id = 0;
+    // boost::hash_combine(id, muon->id());
+    // boost::hash_combine(id, tau->id());
+    // std::size_t id_inv = 0;
+    // boost::hash_combine(id_inv, tau->id());
+    // boost::hash_combine(id_inv, muon->id());
+    // auto it = met_map.find(id);
+    // auto it_inv = met_map.find(id_inv);
+    // if (it != met_map.end()) {
+    //   mva_met = it->second;
+    //   // event->Add("pfMVAMet", mva_met);
+    // } else if (it_inv != met_map.end()){
+    //   //lepton1 <--> lepton2 (needed for fully hadronic)
+    //   mva_met = it_inv->second;
+    //   // event->Add("pfMVAMet", mva_met);
+    // } else {
+    //   throw::std::runtime_error("Could not find MVA MET!");
+    // }
 
-    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
-    auto const& tau_es_shifts = event->Get<map_id_vec>("shifts_TauEnergyScale");
-    CorrectMETForShift(mva_met, tau_es_shifts.at(tau->id()));
+    // typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    // auto const& tau_es_shifts = event->Get<map_id_vec>("shifts_TauEnergyScale");
+    // CorrectMETForShift(mva_met, tau_es_shifts.at(tau->id()));
 
     mt_m = MT(muon, mva_met);
     pzeta = PZeta(pairs[0], mva_met, 0.85);
@@ -969,10 +1167,22 @@ namespace ic {
     ic::keep_if(bjets, [&](PFJet *j) {
       return j->pt()          > 20. &&
              fabs(j->eta())   < 2.4 &&
-             PFJetID2015(j) &&
-             MinDRToCollection(j, pairs[0]->AsVector(), 0.5) &&
-             j->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+             PFJetID2016(j) &&
+             MinDRToCollection(j, pairs[0]->AsVector(), 0.5);
     });
+    auto retag_bjets = bjets;
+    ic::keep_if(bjets, [&](PFJet *j) {
+      return j->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+    });
+    n_bjets = bjets.size();
+    n_uncorr_bjets = n_bjets;
+    if (!info->is_data()) {
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
+      ic::keep_if(retag_bjets, [&](PFJet *j) {
+        return IsReBTagged(j, retag_result);
+      });
+      n_uncorr_bjets = retag_bjets.size();
+    }
 
     n_bjets = bjets.size();
 
@@ -983,22 +1193,57 @@ namespace ic {
     double wt_id = 1.0;
     double wt_iso = 1.0;
     double wt_trg = 1.0;
+    wt_mfr_l = 1.0;
+    wt_mfr_t = 1.0;
+    wt_pu_hi = 1.0;
+    wt_tauid = 1.0;
     auto args = std::vector<double>{muon->pt(), muon->eta()};
     if (!info->is_data()) {
-      wt_trg = fns_["m_trgOR_data"]->eval(args.data());
+      wt_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args.data());
+      // wt_trg = fns_["m_trgOR_data"]->eval(args.data());
       wt_trk = fns_["m_trk_ratio"]->eval(v_double{muon->eta()}.data());
-      wt_id = fns_["m_id_ratio"]->eval(args.data());
-      wt_iso = fns_["m_iso_ratio"]->eval(args.data());
-      geninfo_module_.Execute(event);
+      // wt_id = fns_["m_id_ratio"]->eval(args.data());
+      // wt_iso = fns_["m_iso_ratio"]->eval(args.data());
+      wt_id = fns_["m_idiso0p15_desy_ratio"]->eval(args.data());
+      // wt_id = fns_["m_id_ratio"]->eval(args.data());
+      // wt_iso = fns_["m_iso_ratio"]->eval(args.data());
       gen_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
       gen_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+      if (info->weight("pileup") > 0.) {
+        wt_pu_hi = info->weight("pileup_hi") / info->weight("pileup");
+      }
+      if (gen_2 == 2 || gen_2 == 4) {
+        wt_mfr_l = fns_["t_muonfr_loose"]->eval(v_double{tau->pt(), tau->eta()}.data());
+        wt_mfr_t = fns_["t_muonfr_tight"]->eval(v_double{tau->pt(), tau->eta()}.data());
+      }
+      if (gen_2 == 5) {
+        wt_tauid = fns_["t_iso_mva_m_pt30_sf"]->eval(v_double{tau->pt(), tau->eta(), double(tau->decay_mode())}.data());
+      }
     }
     info->set_weight("trk", wt_trk);
     info->set_weight("trg", wt_trg);
     info->set_weight("id", wt_id);
     info->set_weight("iso", wt_iso);
+
+    e_veto = event->Get<bool>("extra_elec_veto");
+    m_veto = event->Get<bool>("extra_muon_veto");
+
+    // DY reweighting
+    wt_zpt = 1.0;
+    if (do_zpt_reweighting_) {
+      auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      auto gen_boson = BuildGenBoson(parts);
+      wt_zpt = fns_["zpt_weight"]->eval(v_double{gen_boson.M(), gen_boson.pt()}.data());
+    }
+
+    // Top quark pT reweighting
+    wt_top = 1.0;
+    if (do_top_reweighting_) {
+      auto const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      wt_top = TopQuarkPtWeight(parts);
+    }
+
     wt = info->total_weight();
-    wt_pu_hi = info->weight("pileup_hi") / info->weight("pileup");
 
     outtree_->Fill();
 
@@ -1035,6 +1280,54 @@ namespace ic {
     return types;
   }
 
+
+  void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift) {
+    double metx = met->vector().px() - shift.px();
+    double mety = met->vector().py() - shift.py();
+    double metet = sqrt(metx*metx + mety*mety);
+    ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+    met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+  }
+
+  double TopQuarkPtWeight(std::vector<GenParticle *> const& parts) {
+    double top_wt = 1.0;
+    // double top_wt_up = 1.0;
+    // double top_wt_down = 1.0;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      std::vector<bool> status_flags = parts[i]->statusFlags();
+      unsigned id = abs(parts[i]->pdgid());
+      if (id == 6 && status_flags[FromHardProcess] &&
+          status_flags[IsLastCopy]) {
+        double pt = parts[i]->pt();
+        pt = std::min(pt, 400.);
+        top_wt *= std::exp(0.156 - 0.00137 * pt);
+      }
+    }
+    top_wt = std::sqrt(top_wt);
+    return top_wt;
+    // top_wt_up = top_wt * top_wt;
+    // top_wt_down = 1.0;
+    // event->Add("wt_tquark_up", top_wt_up / top_wt);
+    // event->Add("wt_tquark_down", top_wt_down / top_wt);
+    // eventInfo->set_weight("topquark_weight", top_wt);
+  }
+
+  ROOT::Math::PtEtaPhiEVector BuildGenBoson(
+      std::vector<GenParticle*> const& parts) {
+    ROOT::Math::PtEtaPhiEVector gen_boson;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      std::vector<bool> status_flags = parts[i]->statusFlags();
+      unsigned id = abs(parts[i]->pdgid());
+      unsigned status = abs(parts[i]->status());
+      if ((id >= 11 && id <= 16 && status_flags[FromHardProcess] &&
+           status == 1) ||
+          status_flags[IsDirectHardProcessTauDecayProduct]) {
+        gen_boson += parts[i]->vector();
+      }
+    }
+    return gen_boson;
+  }
+
   bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));
     Muon const* m2 = static_cast<Muon const*>(c2->At(0));
@@ -1050,11 +1343,18 @@ namespace ic {
     return (t1->pt() > t2->pt());
   }
 
-  void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift) {
-    double metx = met->vector().px() - shift.px();
-    double mety = met->vector().py() - shift.py();
-    double metet = sqrt(metx*metx + mety*mety);
-    ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
-    met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+  bool SortMM(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+    Muon const* m1c1 = static_cast<Muon const*>(c1->At(0));
+    Muon const* m1c2 = static_cast<Muon const*>(c2->At(0));
+    Muon const* m2c1 = static_cast<Muon const*>(c1->At(1));
+    Muon const* m2c2 = static_cast<Muon const*>(c2->At(1));
+    double c1min = std::min(PF04IsolationVal(m1c1, 0.5), PF04IsolationVal(m2c1, 0.5));
+    double c1max = std::max(PF04IsolationVal(m1c1, 0.5), PF04IsolationVal(m2c1, 0.5));
+    double c2min = std::min(PF04IsolationVal(m1c2, 0.5), PF04IsolationVal(m2c2, 0.5));
+    double c2max = std::max(PF04IsolationVal(m1c2, 0.5), PF04IsolationVal(m2c2, 0.5));
+    if (c1min != c2min) return c1min < c2min;
+    if (c1max != c2max) return c1max < c2max;
+    if (m1c1->pt() != m1c2->pt()) return m1c1->pt() > m1c2->pt();
+    return m2c1->pt() > m2c2->pt();
   }
 }

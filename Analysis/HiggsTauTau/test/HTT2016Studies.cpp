@@ -22,12 +22,15 @@
 #include "HiggsTauTau/interface/WJetsStudy.h"
 #include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
-
+#include "HiggsTauTau/interface/SampleStitching.h"
+#include "HiggsTauTau/interface/HTTPairGenInfo.h"
+#include "HiggsTauTau/interface/HTTFilter.h"
+#include "HiggsTauTau/interface/BTagWeightRun2.h"
+#include "HiggsTauTau/interface/HTTRun2RecoilCorrector.h"
 
 using std::string;
 using std::vector;
 using std::set;
-
 
 // Stolen from:
 // http://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c
@@ -57,11 +60,17 @@ class Sequence {
   }
 };
 
+void BuildLeptonVetoes(Sequence & seq, unsigned max_muons, unsigned max_elecs);
+void BuildDYStitching(Sequence & seq, Json::Value & js);
+void BuildWStitching(Sequence & seq, Json::Value & js);
+
 int main(int argc, char* argv[]) {
   Json::Value js = ic::MergedJson(argc, argv);
 
 
   bool is_data = js.get("is_data", false).asBool();
+  bool do_zpt_reweighting = js.get("do_zpt_reweighting", false).asBool();
+  bool do_top_reweighting = js.get("do_top_reweighting", false).asBool();
   std::string sf_wsp = js["sf_wsp"].asString();
 
   // Set the Unhash map if it exists
@@ -143,6 +152,11 @@ int main(int argc, char* argv[]) {
   auto trigger_module = ic::TriggerInfo("TriggerInfo")
     .set_output_file(js.get("trigger_info_output", "trigger_info.json").asString());
 
+  // B-tagging efficiencies for reweighting
+  TH2F bbtag_eff = ic::OpenFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root:btag_eff_b");
+  TH2F cbtag_eff = ic::OpenFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root:btag_eff_c");
+  TH2F othbtag_eff = ic::OpenFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root:btag_eff_oth");
+
   Json::Value js_hash_map;
 
   for (auto const& seqnjs : js["sequences"]) {
@@ -185,8 +199,31 @@ int main(int argc, char* argv[]) {
       seq.InsertSequence("EffectiveEvents", analysis);
     }
 
-    if (fullseqn == "Zmm") {
-      auto & seq = seqs["Zmm"];
+    if (fullseqn == "DYDebug") {
+      auto & seq = seqs["DYDebug"];
+      if (js.get("do_dyjets_stitching", false).asBool()) {
+        auto jss = js["dyjets_stitching"];
+        seq.BuildModule(ic::DYJetsStitching("DYJetsStitching")
+          .Set_DYJetsToLL(jss["evt_DYJetsToLL"].asUInt(), jss["xs_DYJetsToLL"].asDouble())
+          .Set_DY1JetsToLL(jss["evt_DY1JetsToLL"].asUInt(), jss["xs_DY1JetsToLL"].asDouble())
+          .Set_DY2JetsToLL(jss["evt_DY2JetsToLL"].asUInt(), jss["xs_DY2JetsToLL"].asDouble())
+          .Set_DY3JetsToLL(jss["evt_DY3JetsToLL"].asUInt(), jss["xs_DY3JetsToLL"].asDouble())
+          .Set_DY4JetsToLL(jss["evt_DY4JetsToLL"].asUInt(), jss["xs_DY4JetsToLL"].asDouble())
+          .set_fs(fs.at("DYDebug").get()));
+      }
+      seq.InsertSequence("DYDebug", analysis);
+    }
+
+    if (seqn == "Zmm") {
+      auto & seq = seqs[fullseqn];
+
+      double mu_es_shift = 1.00;
+      if (subseqn == "scale_m_lo") mu_es_shift = 0.99;
+      if (subseqn == "scale_m_hi") mu_es_shift = 1.01;
+      seq.BuildModule(ic::EnergyShifter<ic::Muon>("MuonEnergyScale")
+        .set_input_label("muons")
+        .set_shift(mu_es_shift)
+        .set_save_shifts(true));
 
       seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToSelectedMuons",
           "muons", "sel_muons"));
@@ -201,8 +238,9 @@ int main(int argc, char* argv[]) {
                 MuonMediumHIPsafe(m);
       }));
 
-      seq.BuildModule(ic::OneCollCompositeProducer<ic::Muon>("ZMMPairProducer")
-          .set_input_label("sel_muons")
+      seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Muon>("ZMMPairProducer")
+          .set_input_label_first("sel_muons")
+          .set_input_label_second("sel_muons")
           .set_candidate_name_first("lepton1")
           .set_candidate_name_second("lepton2")
           .set_output_label("dimuon")
@@ -214,22 +252,49 @@ int main(int argc, char* argv[]) {
           .set_min(1)
           .set_predicate([=](ic::CompositeCandidate const* c) {
             return DeltaR(c->at(0)->vector(), c->at(1)->vector())
-                > 0.5;
+                > 0.3;
           })
       );
 
+      seq.BuildModule(ic::GenericModule("PairSorter")
+          .set_function(
+            [](ic::TreeEvent * evt) {
+              auto & pairs = evt->GetPtrVec<ic::CompositeCandidate>("dimuon");
+              std::sort(pairs.begin(), pairs.end(), ic::SortMM);
+              return 0;
+            }
+        ));
+
+
       // At this point we're done filtering, can calculate other things we nedd
       if (!is_data) {
+        seq.BuildModule(ic::HTTPairGenInfo("PairGenInfo")
+            .set_ditau_label("dimuon")
+        );
         seq.BuildModule(puweight_module);
       } else {
         seq.BuildModule(lumimask_module);
       }
 
-      seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")
-        .set_fs(fs.at("Zmm").get())
-        .set_sf_workspace(sf_wsp)
+      BuildDYStitching(seq, js);
+      BuildWStitching(seq, js);
+
+      BuildLeptonVetoes(seq, /*max_muons=*/2, /*max_elecs=*/0);
+
+      seq.BuildModule(ic::SimpleFilter<ic::PFJet>("JetIDFilter")
+        .set_input_label("ak4PFJetsCHS")
+        .set_predicate([](ic::PFJet const* j) {
+          return PFJetID2016(j);
+        })
       );
-      seq.InsertSequence("Zmm", analysis);
+
+      seq.BuildModule(ic::ZmmTreeProducer("ZmmTreeProducer")
+        .set_fs(fs.at(fullseqn).get())
+        .set_sf_workspace(sf_wsp)
+        .set_do_zpt_reweighting(do_zpt_reweighting)
+        .set_do_top_reweighting(do_top_reweighting)
+      );
+      seq.InsertSequence(fullseqn, analysis);
     }
 
     if (fullseqn == "Zee") {
@@ -456,12 +521,12 @@ int main(int argc, char* argv[]) {
       seq.BuildModule(ic::SimpleFilter<ic::Muon>("MuonFilter")
         .set_input_label("sel_muons").set_min(1)
         .set_predicate([=](ic::Muon const* m) {
-          return  m->pt()                 > 25.    &&
+          return  m->pt()                 > 23.    &&
                   fabs(m->eta())          < 2.1    &&
                   fabs(m->dxy_vertex())   < 0.045  &&
                   fabs(m->dz_vertex())    < 0.2    &&
                   MuonMediumHIPsafe(m)             &&
-                  PF04IsolationVal(m, 0.5, 0) < 0.10;
+                  PF04IsolationVal(m, 0.5, 0) < 0.15;
         }));
 
       double tau_es_shift = 1.00;
@@ -479,7 +544,7 @@ int main(int argc, char* argv[]) {
         .set_input_label("sel_taus").set_min(1)
         .set_predicate([=](ic::Tau const* t) {
           return  t->pt()                     > 20.    &&
-                  fabs(t->eta())              < 2.1    &&
+                  fabs(t->eta())              < 2.3    &&
                   fabs(t->lead_dz_vertex())   < 0.2    &&
                   abs(t->charge())            == 1     &&
                   t->GetTauID(js["ZmtTP_tauDM"].asString()) > 0.5;
@@ -503,18 +568,333 @@ int main(int argc, char* argv[]) {
           })
       );
 
-      // At this point we're done filtering, can calculate other things we nedd
+      seq.BuildModule(ic::GenericModule("PairSorter")
+          .set_function(
+            [](ic::TreeEvent * evt) {
+              auto & pairs = evt->GetPtrVec<ic::CompositeCandidate>("ditau");
+              std::sort(pairs.begin(), pairs.end(), ic::SortByIsoMT);
+              return 0;
+            })
+      );
+
+      seq.BuildModule(ic::SelectMVAMET("SelectMVAMET")
+          .set_pairs_label("ditau")
+          .set_met_label("pfMVAMetVector")
+          .set_met_target("mvamet")
+          .set_correct_for_lepton2("shifts_TauEnergyScale")
+      );
+      // At this point we're done filtering, can calculate other things we need
       if (!is_data) {
+        seq.BuildModule(ic::HTTPairGenInfo("PairGenInfo")
+            .set_ditau_label("ditau")
+        );
         seq.BuildModule(puweight_module);
         seq.BuildModule(puweight_module_hi);
+
+        seq.BuildModule(ic::HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+            .set_sample(js.get("recoil_sample", "NoCorrection").asString())
+            .set_channel(ic::channel::mt)
+            .set_mc(ic::mc::spring16_80X)
+            .set_met_label("mvamet")
+            .set_jets_label("ak4PFJetsCHS")
+            .set_strategy(ic::strategy::mssmspring16)
+            .set_use_quantile_map(false)
+        );
+
+        seq.BuildModule(ic::BTagWeightRun2("BTagWeightRun2")
+            .set_channel(ic::channel::mt)
+            .set_era(ic::era::data_2016)
+            .set_jet_label("ak4PFJetsCHS")
+            .set_bbtag_eff(&bbtag_eff)
+            .set_cbtag_eff(&cbtag_eff)
+            .set_othbtag_eff(&othbtag_eff)
+            .set_do_reshape(false)
+            .set_btag_mode(0)
+            .set_bfake_mode(0)
+        );
       } else {
         seq.BuildModule(lumimask_module);
       }
 
+      BuildDYStitching(seq, js);
+      BuildWStitching(seq, js);
+
+      BuildLeptonVetoes(seq, /*max_muons=*/1, /*max_elecs=*/0);
+
+
       seq.BuildModule(ic::ZmtTPTreeProducer("ZmtTPTreeProducer")
         .set_fs(fs.at(fullseqn).get())
         .set_sf_workspace(sf_wsp)
+        .set_do_zpt_reweighting(do_zpt_reweighting)
+        .set_do_top_reweighting(do_top_reweighting)
       );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
+    if (seqn == "SM_mt") {
+      auto & seq = seqs[fullseqn];
+
+      seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToSelectedMuons",
+          "muons", "sel_muons"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Muon>("MuonFilter")
+        .set_input_label("sel_muons").set_min(1)
+        .set_predicate([=](ic::Muon const* m) {
+          return  m->pt()                 > 20.    &&
+                  fabs(m->eta())          < 2.1    &&
+                  fabs(m->dxy_vertex())   < 0.045  &&
+                  fabs(m->dz_vertex())    < 0.2    &&
+                  MuonMediumHIPsafe(m);
+        }));
+
+      double tau_es_shift = 1.00;
+      if (subseqn == "scale_t_lo") tau_es_shift = 0.97;
+      if (subseqn == "scale_t_hi") tau_es_shift = 1.03;
+      seq.BuildModule(ic::EnergyShifter<ic::Tau>("TauEnergyScale")
+        .set_input_label("taus")
+        .set_shift(tau_es_shift)
+        .set_save_shifts(true));
+
+      seq.BuildModule(ic::CopyCollection<ic::Tau>("CopyToSelectedTaus",
+          "taus", "sel_taus"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Tau>("TauFilter")
+        .set_input_label("sel_taus").set_min(1)
+        .set_predicate([=](ic::Tau const* t) {
+          return  t->pt()                     > 20.    &&
+                  fabs(t->eta())              < 2.3    &&
+                  fabs(t->lead_dz_vertex())   < 0.2    &&
+                  abs(t->charge())            == 1     &&
+                  t->GetTauID("decayModeFinding") > 0.5;
+        }));
+
+      seq.BuildModule(ic::CompositeProducer<ic::Muon, ic::Tau>("MTPairProducer")
+        .set_input_label_first("sel_muons")
+        .set_input_label_second("sel_taus")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau")
+      );
+
+      using ROOT::Math::VectorUtil::DeltaR;
+      seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+          .set_input_label("ditau")
+          .set_min(1)
+          .set_predicate([=](ic::CompositeCandidate const* c) {
+            return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+                > 0.5;
+          })
+      );
+
+      // Extra lepton veto flags
+
+      // Trigger flags
+
+      // At this point we're done filtering, can calculate other things we nedd
+      if (!is_data) {
+        seq.BuildModule(puweight_module);
+      } else {
+        seq.BuildModule(lumimask_module);
+      }
+
+      // seq.BuildModule(ic::SMTreeProducer("SMTreeProducer")
+      //   .set_channel(...)
+      //   .set_fs(fs.at(fullseqn).get())
+      //   .set_sf_workspace(sf_wsp)
+      // );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
+    if (seqn == "SM_et") {
+      auto & seq = seqs[fullseqn];
+
+      seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToSelectedElecs",
+          "electrons", "sel_elecs"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Electron>("ElectronFilter")
+      .set_input_label("sel_elecs").set_min(1)
+      .set_predicate([=](ic::Electron const* e) {
+        return  e->pt()                 > 25.    &&
+                fabs(e->eta())          < 2.1    &&
+                fabs(e->dxy_vertex())   < 0.045  &&
+                fabs(e->dz_vertex())    < 0.2    &&
+                ElectronHTTIdSpring15(e, false);
+      }));
+
+      double tau_es_shift = 1.00;
+      if (subseqn == "scale_t_lo") tau_es_shift = 0.97;
+      if (subseqn == "scale_t_hi") tau_es_shift = 1.03;
+      seq.BuildModule(ic::EnergyShifter<ic::Tau>("TauEnergyScale")
+        .set_input_label("taus")
+        .set_shift(tau_es_shift)
+        .set_save_shifts(true));
+
+      seq.BuildModule(ic::CopyCollection<ic::Tau>("CopyToSelectedTaus",
+          "taus", "sel_taus"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Tau>("TauFilter")
+        .set_input_label("sel_taus").set_min(1)
+        .set_predicate([=](ic::Tau const* t) {
+          return  t->pt()                     > 20.    &&
+                  fabs(t->eta())              < 2.3    &&
+                  fabs(t->lead_dz_vertex())   < 0.2    &&
+                  abs(t->charge())            == 1     &&
+                  t->GetTauID("decayModeFinding") > 0.5;
+        }));
+
+      seq.BuildModule(ic::CompositeProducer<ic::Electron, ic::Tau>("ETPairProducer")
+        .set_input_label_first("sel_elecs")
+        .set_input_label_second("sel_taus")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau")
+      );
+
+      using ROOT::Math::VectorUtil::DeltaR;
+      seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+          .set_input_label("ditau")
+          .set_min(1)
+          .set_predicate([=](ic::CompositeCandidate const* c) {
+            return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+                > 0.5;
+          })
+      );
+
+      // At this point we're done filtering, can calculate other things we nedd
+      if (!is_data) {
+        seq.BuildModule(puweight_module);
+      } else {
+        seq.BuildModule(lumimask_module);
+      }
+
+      // seq.BuildModule(ic::SMTreeProducer("SMTreeProducer")
+      //   .set_channel(...)
+      //   .set_fs(fs.at(fullseqn).get())
+      //   .set_sf_workspace(sf_wsp)
+      // );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
+    if (seqn == "SM_em") {
+      auto & seq = seqs[fullseqn];
+
+      seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToSelectedMuons",
+          "muons", "sel_muons"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Muon>("MuonFilter")
+        .set_input_label("sel_muons").set_min(1)
+        .set_predicate([=](ic::Muon const* m) {
+          return  m->pt()                 > 10.    &&
+                  fabs(m->eta())          < 2.4    &&
+                  fabs(m->dxy_vertex())   < 0.045  &&
+                  fabs(m->dz_vertex())    < 0.2    &&
+                  MuonMediumHIPsafe(m);
+        }));
+
+      seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToSelectedElecs",
+          "electrons", "sel_elecs"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Electron>("ElectronFilter")
+      .set_input_label("sel_elecs").set_min(1)
+      .set_predicate([=](ic::Electron const* e) {
+        return  e->pt()                 > 13.    &&
+                fabs(e->eta())          < 2.5    &&
+                fabs(e->dxy_vertex())   < 0.045  &&
+                fabs(e->dz_vertex())    < 0.2    &&
+                ElectronHTTIdSpring15(e, false);
+      }));
+
+      seq.BuildModule(ic::CompositeProducer<ic::Electron, ic::Muon>("EMPairProducer")
+        .set_input_label_first("sel_elecs")
+        .set_input_label_second("sel_muons")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau")
+      );
+
+      using ROOT::Math::VectorUtil::DeltaR;
+      seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+          .set_input_label("ditau")
+          .set_min(1)
+          .set_predicate([=](ic::CompositeCandidate const* c) {
+            return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+                > 0.3;
+          })
+      );
+
+      // Extra lepton veto flags
+
+      // Trigger flags
+
+      // At this point we're done filtering, can calculate other things we nedd
+      if (!is_data) {
+        seq.BuildModule(puweight_module);
+      } else {
+        seq.BuildModule(lumimask_module);
+      }
+
+      // seq.BuildModule(ic::SMTreeProducer("SMTreeProducer")
+      //   .set_channel(...)
+      //   .set_fs(fs.at(fullseqn).get())
+      //   .set_sf_workspace(sf_wsp)
+      // );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
+    if (seqn == "SM_tt") {
+      auto & seq = seqs[fullseqn];
+
+      double tau_es_shift = 1.00;
+      if (subseqn == "scale_t_lo") tau_es_shift = 0.97;
+      if (subseqn == "scale_t_hi") tau_es_shift = 1.03;
+      seq.BuildModule(ic::EnergyShifter<ic::Tau>("TauEnergyScale")
+        .set_input_label("taus")
+        .set_shift(tau_es_shift)
+        .set_save_shifts(true));
+
+      seq.BuildModule(ic::CopyCollection<ic::Tau>("CopyToSelectedTaus",
+          "taus", "sel_taus"));
+
+      seq.BuildModule(ic::SimpleFilter<ic::Tau>("TauFilter")
+        .set_input_label("sel_taus").set_min(2)
+        .set_predicate([=](ic::Tau const* t) {
+          return  t->pt()                     > 40.    &&
+                  fabs(t->eta())              < 2.1    &&
+                  fabs(t->lead_dz_vertex())   < 0.2    &&
+                  abs(t->charge())            == 1     &&
+                  t->GetTauID("decayModeFinding") > 0.5;
+        }));
+
+      seq.BuildModule(ic::CompositeProducer<ic::Tau, ic::Tau>("TTPairProducer")
+        .set_input_label_first("sel_taus")
+        .set_input_label_second("sel_taus")
+        .set_candidate_name_first("lepton1")
+        .set_candidate_name_second("lepton2")
+        .set_output_label("ditau")
+      );
+
+      using ROOT::Math::VectorUtil::DeltaR;
+      seq.BuildModule(ic::SimpleFilter<ic::CompositeCandidate>("PairFilter")
+          .set_input_label("ditau")
+          .set_min(1)
+          .set_predicate([=](ic::CompositeCandidate const* c) {
+            return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+                > 0.5;
+          })
+      );
+
+      // At this point we're done filtering, can calculate other things we nedd
+      if (!is_data) {
+        seq.BuildModule(puweight_module);
+      } else {
+        seq.BuildModule(lumimask_module);
+      }
+
+      // seq.BuildModule(ic::SMTreeProducer("SMTreeProducer")
+      //   .set_channel(...)
+      //   .set_fs(fs.at(fullseqn).get())
+      //   .set_sf_workspace(sf_wsp)
+      // );
       seq.InsertSequence(fullseqn, analysis);
     }
 
@@ -531,4 +911,67 @@ int main(int argc, char* argv[]) {
   }
 
   return 0;
+}
+
+void BuildLeptonVetoes(Sequence & seq, unsigned max_muons, unsigned max_elecs) {
+  seq.BuildModule(ic::CopyCollection<ic::Muon>("CopyToExtraMuons",
+      "muons", "extra_muons"));
+
+  seq.BuildModule(ic::HTTFilter<ic::Muon>("ExtraMuonFilter")
+    .set_input_label("extra_muons")
+    .set_veto_name("extra_muon_veto")
+    .set_min(0)
+    .set_max(max_muons)
+    .set_no_filter(true)
+    .set_predicate([](ic::Muon const* m) {
+      return  m->pt()                 > 10.    &&
+              fabs(m->eta())          < 2.4    &&
+              fabs(m->dxy_vertex())   < 0.045  &&
+              fabs(m->dz_vertex())    < 0.2    &&
+              MuonMediumHIPsafe(m)             &&
+              PF04IsolationVal(m, 0.5, 0) < 0.3;
+    })
+  );
+
+  seq.BuildModule(ic::CopyCollection<ic::Electron>("CopyToExtraElecs",
+      "electrons", "extra_elecs"));
+
+  seq.BuildModule(ic::HTTFilter<ic::Electron>("ExtraElecFilter")
+    .set_input_label("extra_elecs")
+    .set_veto_name("extra_elec_veto")
+    .set_min(0)
+    .set_max(max_elecs)
+    .set_no_filter(true)
+    .set_predicate([](ic::Electron const* e) {
+      return  e->pt()                 > 10.     &&
+              fabs(e->eta())          < 2.5     &&
+              fabs(e->dxy_vertex())   < 0.045   &&
+              fabs(e->dz_vertex())    < 0.2     &&
+              ElectronHTTIdSpring15(e, true)    &&
+              PF03IsolationVal(e, 0.5,0) < 0.3;
+    })
+  );
+}
+void BuildDYStitching(Sequence & seq, Json::Value & js) {
+  if (js.get("do_dyjets_stitching", false).asBool()) {
+    auto jss = js["dyjets_stitching"];
+    seq.BuildModule(ic::DYJetsStitching("DYJetsStitching")
+      .Set_DYJetsToLL(jss["evt_DYJetsToLL"].asUInt(), jss["xs_DYJetsToLL"].asDouble())
+      .Set_DY1JetsToLL(jss["evt_DY1JetsToLL"].asUInt(), jss["xs_DY1JetsToLL"].asDouble())
+      .Set_DY2JetsToLL(jss["evt_DY2JetsToLL"].asUInt(), jss["xs_DY2JetsToLL"].asDouble())
+      .Set_DY3JetsToLL(jss["evt_DY3JetsToLL"].asUInt(), jss["xs_DY3JetsToLL"].asDouble())
+      .Set_DY4JetsToLL(jss["evt_DY4JetsToLL"].asUInt(), jss["xs_DY4JetsToLL"].asDouble()));
+  }
+}
+
+void BuildWStitching(Sequence & seq, Json::Value & js) {
+  if (js.get("do_wjets_stitching", false).asBool()) {
+    auto jss = js["wjets_stitching"];
+    seq.BuildModule(ic::WJetsStitching("WJetsStitching")
+      .Set_WJetsToLNu(jss["evt_WJetsToLNu"].asUInt(), jss["xs_WJetsToLNu"].asDouble())
+      .Set_W1JetsToLNu(jss["evt_W1JetsToLNu"].asUInt(), jss["xs_W1JetsToLNu"].asDouble())
+      .Set_W2JetsToLNu(jss["evt_W2JetsToLNu"].asUInt(), jss["xs_W2JetsToLNu"].asDouble())
+      .Set_W3JetsToLNu(jss["evt_W3JetsToLNu"].asUInt(), jss["xs_W3JetsToLNu"].asDouble())
+      .Set_W4JetsToLNu(jss["evt_W4JetsToLNu"].asUInt(), jss["xs_W4JetsToLNu"].asDouble()));
+  }
 }

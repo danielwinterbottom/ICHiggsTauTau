@@ -24,10 +24,17 @@ for file in args[2:]:
     e_m = t.GetEntries('wt<0')
     e_eff = e_p - e_m
     print '%-40s %15i %15i %15i %15i' % (name, e_all, e_p, e_m, e_eff)
-    js[name]['evt'] = e_p - e_m
-    js[name]['evt_p'] = e_p
-    js[name]['evt_m'] = e_m
-
+    if name in js:
+        js[name]['evt'] = e_p - e_m
+        js[name]['evt_p'] = e_p
+        js[name]['evt_m'] = e_m
+        if 'clone_to' in js[name]:
+            for clone in js[name]['clone_to']:
+                js[clone] = dict(js[name])
+                del js[clone]['clone_to']
+                js[clone]['cloned_from'] = name
+    else:
+        print 'Sample %s not in json file' % name
 
 jsondata = json.dumps(js, sort_keys=True, indent=2, separators=(',', ': '))
 

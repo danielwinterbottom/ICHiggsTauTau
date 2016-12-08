@@ -2,7 +2,7 @@
 import ROOT
 import CombineHarvester.CombineTools.plotting as plot
 from UserCode.ICHiggsTauTau.uncertainties import ufloat
-import UserCode.ICHiggsTauTau.MultiDraw
+import UserCode.ICHiggsTauTau.MultiDraw as MultiDraw
 import argparse
 
 
@@ -32,15 +32,21 @@ parser.add_argument('--type', default=0, type=int)
 
 args = parser.parse_args()
 
-path = 'results'
+path = 'output/HTT2016Studies_Aug16/DYDebug/'
 
 files = [
-    'DYJetsToLL_M-50-LO-ext',
-    'DY1JetsToLL_M-50-LO',
-    'DY2JetsToLL_M-50-LO',
-    'DY3JetsToLL_M-50-LO',
-    'DY4JetsToLL_M-50-LO',
-    'DYJetsToLL_M-150-LO'
+    # 'DYJetsToLL_M-50-LO-ext',
+    # 'DY1JetsToLL_M-50-LO',
+    # 'DY2JetsToLL_M-50-LO',
+    # 'DY3JetsToLL_M-50-LO',
+    # 'DY4JetsToLL_M-50-LO',
+    # 'DYJetsToLL_M-150-LO'
+    'DYJetsToLL-Old',
+    'DYJetsToLL',
+    # 'DY1JetsToLL',
+    # 'DY2JetsToLL',
+    # 'DY3JetsToLL',
+    # 'DY4JetsToLL'
 ]
 
 # Uncomment to just print the sample yields
@@ -53,21 +59,21 @@ files = [
 ROOT.TH1.SetDefaultSumw2(True) # Why do I need to do this here?
 
 if args.type == 0:
-    ch_stitched = ROOT.TChain('genweights')
+    ch_stitched = ROOT.TChain('dyjets_stitching')
     for f in files:
         ch_stitched.Add('%s/%s.root' % (path, f))
 
-    ch_inc = ROOT.TChain('genweights')
+    ch_inc = ROOT.TChain('dyjets_stitching')
     ch_inc.Add('%s/%s.root' % (path, 'DYJetsToLL_M-50-LO-ext'))
 
-    res_stitched = ch_stitched.MultiDraw([(args.var, 'wt*(%s)' % args.selection)])
-    res_inc = ch_inc.MultiDraw([(args.var, '1*(%s)' % args.selection)])
+    res_stitched = MultiDraw.MultiDraw(ch_stitched, [(args.var, 'wt*(%s)' % args.selection)])
+    res_inc = MultiDraw.MultiDraw(ch_inc, [(args.var, '1*(%s)' % args.selection)])
 elif args.type == 1:
     res = []
     for f in files:
         fin = ROOT.TFile('%s/%s.root' % (path, f))
-        t = fin.Get('genweights')
-        res.extend(t.MultiDraw([(args.var, '1*(%s)' % args.selection)]))
+        t = fin.Get('dyjets_stitching')
+        res.extend(MultiDraw.MultiDraw(t, [(args.var, '1*(%s)' % args.selection)]))
 
 canv = ROOT.TCanvas(args.output, args.output)
 pads = plot.TwoPadSplit(0.30, 0.01, 0.01)
@@ -88,6 +94,7 @@ elif args.type == 1:
         if args.norm and res[i].Integral(0, res[i].GetNbinsX() + 1) > 0.:
             res[i].Scale(1 / res[i].Integral(0, res[i].GetNbinsX() + 1))
         legend.AddEntry(res[i], f, 'L')
+        res[i].Print('range')
         res[i].Draw('SAME')
 
 plot.FixTopRange(pads[0], plot.GetPadYMax(pads[0]), 0.40)

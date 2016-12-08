@@ -14,6 +14,7 @@ parser.add_argument('--bkg-model', default='Exponential')
 parser.add_argument('--title', default='Muon ID Efficiency')
 parser.add_argument('--postfix', default='')
 parser.add_argument('--plot-dir', '-p', default='./')
+parser.add_argument('--bin-replace', default=None) #(100,2.3,80,2.3)
 args = parser.parse_args()
 
 
@@ -223,6 +224,20 @@ for b in bins:
 
     canv.Print('%s/%s.png' % (args.plot_dir, canv.GetName()))
     canv.Print('%s/%s.pdf' % (args.plot_dir, canv.GetName()))
+
+if args.bin_replace is not None:
+    replacements = args.bin_replace.split(':')
+    for rep in replacements:
+        bins = [float(x) for x in rep.split(',')]
+        dest_bin_x = hist.GetXaxis().FindFixBin(bins[0])
+        dest_bin_y = hist.GetYaxis().FindFixBin(bins[1])
+        src_bin_x = hist.GetXaxis().FindFixBin(bins[2])
+        src_bin_y = hist.GetYaxis().FindFixBin(bins[3])
+        dest_val, dest_err = hist.GetBinContent(dest_bin_x, dest_bin_y), hist.GetBinError(dest_bin_x, dest_bin_y)
+        src_val, src_err = hist.GetBinContent(src_bin_x, src_bin_y), hist.GetBinError(src_bin_x, src_bin_y)
+        print 'Replacing content of bin %g,%g (%g +/- %g) with %g,%g (%g +/- %g)' % (dest_bin_x, dest_bin_y, dest_val, dest_err, src_bin_x, src_bin_y, src_val, src_err)
+        hist.SetBinContent(dest_bin_x, dest_bin_y, src_val)
+        hist.SetBinError(dest_bin_x, dest_bin_y, src_err)
 
 outfile = ROOT.TFile(filename.replace('.root', '_Fits_%s%s.root' % (name, args.postfix)), 'RECREATE')
 hist.Write()
