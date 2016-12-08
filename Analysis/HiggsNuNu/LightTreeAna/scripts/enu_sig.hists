@@ -1,3 +1,4 @@
+lep_mt(18,0.,180.)	;m_{T}(lepton+MET) (GeV);Events
 metnoelectrons(15,200.,575.)	;E_{T,no-el}^{miss} (GeV);Events
 dijet_M(15,1100.,3500.)	;M_{jj} (GeV);Events
 dijet_deta(15,3.6,6.5)	;#Delta#eta_{jj};Events
