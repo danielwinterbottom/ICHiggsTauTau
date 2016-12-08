@@ -36,8 +36,8 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 
 
-for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
-#for SYST in JESUP JESDOWN JERBETTER
+#for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in JESUP JESDOWN JERBETTER
 #for SYST in JERWORSE UESUP UESDOWN
 #for SYST in ELEEFFUP ELEEFFDOWN
 #for SYST in MUEFFUP MUEFFDOWN
@@ -45,10 +45,10 @@ do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
   #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161205_ICHEP
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161207_ICHEP
   JOBDIR=$JOBDIRPREFIX/
   #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161205_ICHEP
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161207_ICHEP
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]
@@ -145,13 +145,13 @@ do
 #Signal files and DYtoNuNu
     #PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
     PREFIX=root://gfe02.grid.hep.ph.ic.ac.uk:1095//store/user/${PRODUSER}/${PRODUCTION}_MC
+
     if [ "$PRODUCTION" = "Dec18" ]
     then
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/MC
     fi
 
     #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
-    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_EWK*`
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
     do
       echo "Processing files in "$FILELIST
