@@ -31,14 +31,14 @@ namespace ic {
       outName << ".txt" ;
       foutList_.open(outName.str());
       if (!foutList_.is_open()){
-	std::cerr << " -- Failed to open file " << outName.str() << " for printing event list." << std::endl;
-	if (is_data_){
-	  foutList_ << "Run lumiBlock Event" << std::endl;
-	}
-	else {
-	  foutList_ << "Event TotalWeight PUWeight TrigWeight IdIsoWeight" << std::endl;
-	}
-	throw;
+        std::cerr << " -- Failed to open file " << outName.str() << " for printing event list." << std::endl;
+        if (is_data_){
+          foutList_ << "Run lumiBlock Event" << std::endl;
+        }
+        else {
+          foutList_ << "Event TotalWeight PUWeight TrigWeight IdIsoWeight" << std::endl;
+        }
+        throw;
       }
     }
     return 0;
@@ -58,10 +58,10 @@ namespace ic {
 
     if (runLumiEvt_) {
       if (is_data_){
-	foutList_ << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
+        foutList_ << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
       }
       else {
-	foutList_ << eventInfo->event() << " " << eventInfo->total_weight() << " " << eventInfo->weight("pileup") << " " << eventInfo->weight("trigger")<< " " << eventInfo->weight("idisoTight") << std::endl;
+        foutList_ << eventInfo->event() << " " << eventInfo->total_weight() << " " << eventInfo->weight("pileup") << " " << eventInfo->weight("trigger")<< " " << eventInfo->weight("idisoTight") << std::endl;
       }
       //std::cout << "-- Event passed: " << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
       return 0; 
@@ -85,8 +85,8 @@ namespace ic {
       outName << "output_synch/Run" << eventInfo->run() << "_Lumi" << eventInfo->lumi_block() << "_Event" << eventInfo->event() << ".txt" ;
       std::ofstream fout(outName.str());
       if (!fout.is_open()){
-	std::cerr << " -- Failed to open file " << outName.str() << " for printing event " << eventInfo->event() << std::endl;
-	throw;
+        std::cerr << " -- Failed to open file " << outName.str() << " for printing event " << eventInfo->event() << std::endl;
+        throw;
       }
       std::vector<Muon*> const& muons = event->GetPtrVec<Muon>("muonsPFlow");
       fout << "-----------------------------------------" << std::endl;
@@ -105,26 +105,27 @@ namespace ic {
       fout << "-----------------------------------------" << std::endl;
 
       for (unsigned i = 0; i < muons.size(); ++i) {
-	fout << "Muon " << i << " " << muons[i]->vector() << std::endl;
-	fout << "-dxyVertex: " << muons[i]->dxy_vertex() << std::endl;
-	fout << "-dzVertex: " << muons[i]->dz_vertex() << std::endl;
-	fout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
-	fout << "-isTrackerMuon: " << muons[i]->is_tracker() << std::endl;
-	fout << "-numberOfValidPixelHits: " << muons[i]->it_pixel_hits() << std::endl;
-	fout << "-numberOfValidMuonHits: " << muons[i]->gt_valid_muon_hits() << std::endl;
-	fout << "-trackerLayersWithMeasurement: " << muons[i]->it_layers_with_measurement() << std::endl;
-	fout << "-normalizedChi2: " << muons[i]->gt_normalized_chi2() << std::endl;
-	fout << "-numberOfMatchedStations: " << muons[i]->matched_stations() << std::endl;
-	fout << "-Muon is tight: " << MuonTight(muons[i]) << std::endl;
-	fout << "-dr04_pfiso_charged_all " << muons[i]->dr04_pfiso_charged_all() << std::endl;
-	fout << "-dr04_pfiso_charged " << muons[i]->dr04_pfiso_charged() << std::endl;
-	fout << "-dr04_pfiso_neutral " << muons[i]->dr04_pfiso_neutral() << std::endl;
-	fout << "-dr04_pfiso_gamma " << muons[i]->dr04_pfiso_gamma() << std::endl;
-	fout << "-dr04_pfiso_pu " << muons[i]->dr04_pfiso_pu() << std::endl;
-	double iso =  muons[i]->dr04_pfiso_charged_all() 
-                  + std::max(muons[i]->dr04_pfiso_neutral() + muons[i]->dr04_pfiso_gamma() - 0.5 * muons[i]->dr04_pfiso_pu(), 0.0);
-	iso = iso / muons[i]->pt();
-	fout << "-isolation " << iso << std::endl;
+        fout << "Muon " << i << " " << muons[i]->vector() << std::endl;
+        fout << "-dxyVertex: " << muons[i]->dxy_vertex() << std::endl;
+        fout << "-dzVertex: " << muons[i]->dz_vertex() << std::endl;
+        fout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
+        fout << "-isTrackerMuon: " << muons[i]->is_tracker() << std::endl;
+        fout << "-numberOfValidPixelHits: " << muons[i]->it_pixel_hits() << std::endl;
+        fout << "-numberOfValidMuonHits: " << muons[i]->gt_valid_muon_hits() << std::endl;
+        fout << "-trackerLayersWithMeasurement: " << muons[i]->it_layers_with_measurement() << std::endl;
+        fout << "-normalizedChi2: " << muons[i]->gt_normalized_chi2() << std::endl;
+        fout << "-numberOfMatchedStations: " << muons[i]->matched_stations() << std::endl;
+        fout << "-Muon is tight: " << MuonTight(muons[i]) << std::endl;
+        fout << "-dr04_pfiso_charged_all " << muons[i]->dr04_pfiso_charged_all() << std::endl;
+        fout << "-dr04_pfiso_charged " << muons[i]->dr04_pfiso_charged() << std::endl;
+        fout << "-dr04_pfiso_neutral " << muons[i]->dr04_pfiso_neutral() << std::endl;
+        fout << "-dr04_pfiso_gamma " << muons[i]->dr04_pfiso_gamma() << std::endl;
+        fout << "-dr04_pfiso_pu " << muons[i]->dr04_pfiso_pu() << std::endl;
+
+        double iso =  muons[i]->dr04_pfiso_charged_all() + std::max(muons[i]->dr04_pfiso_neutral() + muons[i]->dr04_pfiso_gamma() - 0.5 * muons[i]->dr04_pfiso_pu(), 0.0);
+        iso = iso / muons[i]->pt();
+
+        fout << "-isolation " << iso << std::endl;
 
       }
 
@@ -134,21 +135,21 @@ namespace ic {
       fout << "-----------------------------------------" << std::endl;
 
       for (unsigned i = 0; i < elecs.size(); ++i) {
-	fout << "Elec electrons" << i << " " << elecs[i]->vector() << std::endl;
-	elecs[i]->Print();
-	fout << "-dxyVertex: " << elecs[i]->dxy_vertex() << std::endl;
-	fout << "-dzVertex: " << elecs[i]->dz_vertex() << std::endl;
-	fout << "-VetoElectronID: " << VetoElectronID(elecs[i]) << std::endl;
-	fout << "-TightElectronID=Electron2011WP70ID: " << Electron2011WP70ID(elecs[i]) << std::endl;
-	fout << "-dr03_pfiso_charged " << elecs[i]->dr03_pfiso_charged() << std::endl;
-	fout << "-dr03_pfiso_neutral " << elecs[i]->dr03_pfiso_neutral() << std::endl;
-	fout << "-dr03_pfiso_gamma " << elecs[i]->dr03_pfiso_gamma() << std::endl;	
+        fout << "Elec electrons" << i << " " << elecs[i]->vector() << std::endl;
+        elecs[i]->Print();
+        fout << "-dxyVertex: " << elecs[i]->dxy_vertex() << std::endl;
+        fout << "-dzVertex: " << elecs[i]->dz_vertex() << std::endl;
+        fout << "-VetoElectronID: " << VetoElectronID(elecs[i]) << std::endl;
+        fout << "-TightElectronID=Electron2011WP70ID: " << Electron2011WP70ID(elecs[i]) << std::endl;
+        fout << "-dr03_pfiso_charged " << elecs[i]->dr03_pfiso_charged() << std::endl;
+        fout << "-dr03_pfiso_neutral " << elecs[i]->dr03_pfiso_neutral() << std::endl;
+        fout << "-dr03_pfiso_gamma " << elecs[i]->dr03_pfiso_gamma() << std::endl;	
 
-	float lEffArea = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elecs[i]->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
-	double lIso = elecs[i]->dr03_pfiso_charged()
-	  + std::max(elecs[i]->dr03_pfiso_gamma() + elecs[i]->dr03_pfiso_neutral() - eventInfo->lepton_rho() * lEffArea, 0.);
-	lIso = lIso / elecs[i]->pt();
-	fout << "-isolation " << lIso << std::endl;
+        float lEffArea = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elecs[i]->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+
+        double lIso = elecs[i]->dr03_pfiso_charged() + std::max(elecs[i]->dr03_pfiso_gamma() + elecs[i]->dr03_pfiso_neutral() - eventInfo->lepton_rho() * lEffArea, 0.);
+        lIso = lIso / elecs[i]->pt();
+        fout << "-isolation " << lIso << std::endl;
 
       }
 
@@ -271,7 +272,7 @@ namespace ic {
     foutList_.close();
     return 0;
   }
-  
+
   void HinvPrint::PrintInfo() {
     ;
   }

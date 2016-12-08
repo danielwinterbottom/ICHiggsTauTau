@@ -66,7 +66,7 @@ namespace ic{
   }
 
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
-    do_debug_=false;
+    do_debug_=true;
     do_norm_=false;
     do_ratio_=false;
     do_ratio_line_=false;
@@ -306,10 +306,11 @@ namespace ic{
       stacksdir->cd();
       stack->Write();
 
-      //set total error
-      if (tothisto){
+      //set total error // There was a bug here, producing error bars on MC on the same size of the yield
+      if (tothisto && toterror_>0){
 	for (int iB(1);iB<tothisto->GetNbinsX()+1;++iB){
 	  tothisto->SetBinError(iB,toterror_*tothisto->GetBinContent(iB));
+          std::cout << " ---- DEBUG bin " << iB << " bin content: " << tothisto->GetBinContent(iB) << " error: " << tothisto->GetBinError(iB) << std::endl;
 	}
       }
 
@@ -484,7 +485,11 @@ namespace ic{
 	  
 	}
       }
-      g->Draw("sameP");
+      if ( g != 0 ){g->Draw("sameP");}
+      else {
+        std::cout<<" -- g not defined! -- ISSUE "<<std::endl;
+        std::cout<<" -- The element size is: " << elements_.size() <<std::endl;
+      }
       if(do_debug_)std::cout<<"  Drawing legend"<<std::endl;
 
       //SETUP AND DRAW THE LEGEND
@@ -632,15 +637,13 @@ namespace ic{
 	  }
 	  ratio->GetYaxis()->SetRangeUser(0,ratiomax);
 	  ratio->SetTitle("");
-	  ratio->GetYaxis()->SetTitle("Data/Bkg");
-	  ratio->GetYaxis()->SetTitleSize(0.19);
-	  ratio->Divide(den);
-	  
-
-	  gStyle->SetOptStat(0);
+          ratio->GetYaxis()->SetTitle("Data/Bkg");
+          ratio->GetYaxis()->SetTitleSize(0.19);
+          ratio->Divide(den);
+          
+          // This caused crash in the plots generation for the QCD CR; action -> line commented since already present at line 92
+	  //gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
-
-
 
 	  errorband->SetMarkerSize(0);
 	  errorband->SetFillColor(16);
@@ -669,9 +672,9 @@ namespace ic{
 	    //ratio->Fit("pol0","E");
 	    averageLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),Integral(num)/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),Integral(num)/Integral(den));
 	    averageupLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),(Integral(num)+sqrt(Integral(num)))/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),(Integral(num)+sqrt(Integral(num)))/Integral(den));
-	    averagedownLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),(Integral(num)-sqrt(Integral(num)))/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),(Integral(num)-sqrt(Integral(num)))/Integral(den));
+            averagedownLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),(Integral(num)-sqrt(Integral(num)))/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),(Integral(num)-sqrt(Integral(num)))/Integral(den));
 	    averageLine->SetLineColor(2);
-	    averageupLine->SetLineColor(3);
+            averageupLine->SetLineColor(3);
 	    averagedownLine->SetLineColor(3);
 	    averageupLine->SetLineStyle(3);
 	    averagedownLine->SetLineStyle(3);
@@ -713,11 +716,12 @@ namespace ic{
 	    upperLine->Draw();
 	  }
 	}
-	}
+      }
       //save as PDF
       //c1->Update();
       std::ostringstream lsave;
       std::ostringstream lsavepng;
+      std::ostringstream lsavec;
       std::string tmpstr = file->GetName();
       tmpstr.erase(std::string(file->GetName()).find(".root"),5);
       tmpstr=tmpstr+outsuffix_;
@@ -726,13 +730,17 @@ namespace ic{
       lsave << ".pdf" ;
       if (iShape==0) {
       	lsave << "[";
-      	c1->Print(lsave.str().c_str());//open the file
+      	c1->Print( lsave.str().c_str() );//open the file
       	lsave.str("");//reset for adding the first plot
       	lsave << tmpstr ;
-	if (shapes_[iShape].dology()) lsave << "_logy";
+        if (shapes_[iShape].dology()) lsave << "_logy";
       	lsave << ".pdf" ;
       }
-      c1->Print(lsave.str().c_str());
+
+      std::cout << " -- iShape " << iShape << std::endl;
+      std::cout << " -- Address of c1 "<< &c1 << std::endl;
+      std::cout << " -- Address of lsave "<< lsave.str() << std::endl;
+      c1->Print( lsave.str().c_str() );
       if (iShape==shapes_.size()-1) {
       	lsave << "]";
       	c1->Print(lsave.str().c_str());//close the file
@@ -748,11 +756,12 @@ namespace ic{
       if (shapes_[iShape].dology()) lsavepng << "_logy";
       lsavepng << ".png" ;
       c1->Print((lsavepng.str()).c_str());
-      lsavepng.str("");
-      lsavepng << tmpstr << "_" << c1->GetName();
-      if (shapes_[iShape].dology()) lsavepng << "_logy";
-      lsavepng << ".C" ;
-      c1->Print((lsavepng.str()).c_str());
+      
+      lsavec.str("");
+      lsavec << tmpstr << "_" << c1->GetName();
+      if (shapes_[iShape].dology()) lsavec << "_logy";
+      lsavec << ".C" ;
+      c1->Print((lsavec.str()).c_str());
 
       //WRITE TO FILE
       writedir->cd();

@@ -420,6 +420,7 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     if (dest_.do_pu_id) {
       if (src_.is_slimmed) {
         dest.set_pu_id_mva_value(src.userFloat(src_.slimmed_puid_label));
+	//std::cout << " -- jet " << i << " pt " << dest.pt() << " pumva = " << dest.pu_id_mva_value() << std::endl;
       } else {
         dest.set_pu_id_mva_value(
             (*pu_id_handle)[jets_handle->refAt(passed_[i])->originalObjectRef()]);

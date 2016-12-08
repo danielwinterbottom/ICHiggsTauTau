@@ -53,7 +53,7 @@ int main(int argc, char* argv[]){
   po::options_description config("Configuration");
   config.add_options()
     //Input output and config options                                                                                                                   
-    ("input_folder,i",           po::value<std::string>(&indir)->default_value("output_contplots_alljets15metsig4cjvmjj1100"))
+    ("input_folder,i",           po::value<std::string>(&indir)->default_value("output_run2ana_161015"))
     ("outname,o",                po::value<std::string>(&outname)->default_value("vbfhinv.txt"))
     ("blind",                    po::value<bool>(&blind)->default_value(true))
     ("do_qcdfromshape,s",        po::value<bool>(&do_qcdfromshape)->default_value(false))
@@ -73,8 +73,8 @@ int main(int argc, char* argv[]){
     ("do_run2",                  po::value<bool>(&do_run2)->default_value(false))
     ("do_4params",               po::value<bool>(&do_4params)->default_value(false))
     ("do_1param",                po::value<bool>(&do_1param)->default_value(true))
-    ("wzqcd_syst",               po::value<double>(&wzqcd_syst)->default_value(1.15))
-    ("wzewk_syst",               po::value<double>(&wzewk_syst)->default_value(1.15))
+    ("wzqcd_syst",               po::value<double>(&wzqcd_syst)->default_value(1.30))
+    ("wzewk_syst",               po::value<double>(&wzewk_syst)->default_value(1.30))
     ("minvarXcut",               po::value<double>(&minvarXcut)->default_value(1.0))
     ("minvarYcut",               po::value<double>(&minvarYcut)->default_value(1.0))
     ("histoToIntegrate",         po::value<std::string>(&histoToIntegrate)->default_value("alljetsmetnomu_mindphi"))
@@ -241,7 +241,7 @@ int main(int argc, char* argv[]){
     .set_latexname("Luminosity")
     .set_type("constlnN")
     .set_procsaffected(lumi8tevprocsaffected)
-    .set_constvalue(1.027);
+    .set_constvalue(1.062);
 
   std::vector<std::string> allprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zmumuqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","qcd","wg","vv"};
   std::vector<std::string> allprocsnotqcd={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zmumuqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","wg","vv"};
@@ -1287,24 +1287,25 @@ datacard<<std::endl;
     if (channel=="topl" || channel=="topb") datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
   }
   else if (do_1param){
-    //if (do_run2) datacard<<"WZ_xsection rateParam ch1 zvv 1"<<std::endl;
-    //else {
+
+      datacard<<"WZ_xsection rateParam ch1 wmuqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 welqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 wtauqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 wmuewk 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 welewk 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 wtauewk 1"<<std::endl;
+      datacard<<"QCD_xsection rateParam ch1 qcd 1"<<std::endl;
+
+    if (channel=="mumu"){
+      datacard<<"WZ_xsection rateParam ch1 zmumuqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 zmumuewk 1"<<std::endl;
+    }
+    if (channel=="nunu"){
       datacard<<"WZ_xsection rateParam ch1 zvvewk 1"<<std::endl;
       datacard<<"WZ_xsection rateParam ch1 zvvqcd 1"<<std::endl;
-      //}
-
-    datacard<<"WZ_xsection rateParam ch1 mumuqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 wmuqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 welqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 wtauqcd 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 mumuewk 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 wmuewk 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 welewk 1"<<std::endl;
-    datacard<<"WZ_xsection rateParam ch1 wtauewk 1"<<std::endl;
-    datacard<<"QCD_xsection rateParam ch1 qcd 1"<<std::endl;
-    if (channel=="topl" || channel=="topb") datacard<<"Top_xsection rateParam ch1 top 1"<<std::endl;
+    }
   }
 
-  datacard.close();  
+  datacard.close();
 
 }
