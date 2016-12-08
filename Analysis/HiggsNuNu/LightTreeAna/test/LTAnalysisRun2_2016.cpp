@@ -128,6 +128,8 @@ int main(int argc, char* argv[]){
   bool do_logy;
   bool do_mcbkg;
   bool use_nlo;
+  bool do_tauveto;
+  bool do_bveto;
 
   std::string jetmetdphicut;
   std::string metsigcut;
@@ -171,7 +173,7 @@ int main(int argc, char* argv[]){
     ("do_latex",                 po::value<bool>(&do_latex)->default_value(false))
 
     ("do_mettrig",               po::value<bool>(&do_mettrig)->default_value(false))
-    ("apply_trig_in_mc",               po::value<bool>(&apply_trig_in_mc)->default_value(false))
+    ("apply_trig_in_mc",         po::value<bool>(&apply_trig_in_mc)->default_value(false))
 
     ("do_logy",                  po::value<bool>(&do_logy)->default_value(false))
     ("blindcutreg",              po::value<bool>(&blindcutreg)->default_value(true))
@@ -184,6 +186,8 @@ int main(int argc, char* argv[]){
     ("histTitlePar",             po::value<std::string>(&histTitlePar)->default_value(";#Delta#phi(E_{T}^{miss},j);Events"))
     ("shapePar",                 po::value<std::string>(&shapePar)->default_value("alljetsmetnomu_mindphi(32,0.,3.1416)"))
     ("lumiSF",                   po::value<double>(&lumiSF)->default_value(1.0))
+    ("do_tauveto",               po::value<bool>(&do_tauveto)->default_value(false))
+    ("do_bveto",                 po::value<bool>(&do_bveto)->default_value(false))
     ;
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -229,8 +233,8 @@ int main(int argc, char* argv[]){
   }
   analysis->SetInputParams(inputparams);
 
-  std::cout<<"Base selection: "<<basesel<<std::endl;
-  std::cout<<"Base selection for electrons: "<<baseselele<<std::endl;
+  std::cout << " -- Base selection:               " << basesel    << std::endl;
+  std::cout << " -- Base selection for electrons: " << baseselele << std::endl;
 
   //add metsig cut
   std::string metsigsel;
@@ -242,7 +246,7 @@ int main(int argc, char* argv[]){
   else basesel = basesel;//+metsigsel;
 
   analysis->set_baseselection(basesel);
-  
+
   /*##########################################
   #                                          #
   #            DEFINE MODULES                #
@@ -385,32 +389,54 @@ int main(int argc, char* argv[]){
   else if (channel!="gamma"){
     //if(!do_mettrig) dataextrasel="&&(pass_sigtrigger==1)";
     //for metmht trigger
-    if(!do_mettrig) dataextrasel="&&(pass_metmht90trigger==1 || pass_metmht100trigger==1 || pass_metmht110trigger==1 || pass_metmht120trigger==1)";
-    else dataextrasel="&&(pass_mettrigger==1)";
+    if(!do_mettrig){
+      dataextrasel="&&(pass_metmht90trigger==1 || pass_metmht100trigger==1 || pass_metmht110trigger==1 || pass_metmht120trigger==1)";
+    }
+    else {
+      dataextrasel="&&(pass_mettrigger==1)";
+    }
   }
   else {
     dataextrasel="&&(pass_photontrigger==1)";
   }
+
   if (apply_trig_in_mc) mcextrasel=dataextrasel;
 
   std::string sigcat;
   std::string zextrasigcat;
 
+  std::string tauveto;
+  std::string bveto;
+
+
+  if (do_tauveto){
+    tauveto="&&nvetotaus==0";
+  } else {
+    tauveto="";
+  }
+  if (do_bveto){
+    bveto="&&n_jets_csv2medium==0";
+  } else {
+    bveto="";
+  }
+
   //AMM uncomment for QCD mindphi plot in signal region!
-  std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&metnomuons>200&&dijet_M>1100&&"+jetmetdphicut;
+  std::string nunucat  = "nvetomuons==0&&nvetoelectrons==0&&metnomuons>200&&dijet_M>1100&&"+jetmetdphicut+tauveto+bveto;
   //std::string nunuqcdcat=nunucat;
   //AMM uncomment for QCD plot in signal region! except mindphi.
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1";
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
 
-  std::string eecat="nselelectrons>=1&&nvetoelectrons==2&&nvetomuons==0&&m_ee>60&&m_ee<120&&oppsign_ee&&ele1_pt>40&&"+jetmetdphicut;
-  std::string mumucat="nselmuons>=1&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&oppsign_mumu&&"+jetmetdphicut;
-  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
-  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&ele1_pt>40&&"+jetmetdphicut;
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
-  std::string gammacat="ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
-  std::string toplcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";
-  std::string topbcat = "(nselmuons>=1 || nselelectrons>=1)&&(jet1_csv>0.679||jet2_csv>0.679)&&(forward_tag_eta>2.8||forward_tag_eta<-2.8)";
+  std::string enucat   = "nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&ele1_pt>40&&"+jetmetdphicut+tauveto+bveto;
+  std::string munucat  = "nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut+tauveto+bveto;
+  std::string taunucat = "ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut+bveto;
+
+  std::string eecat    = "nselelectrons>=1&&nvetoelectrons==2&&nvetomuons==0&&m_ee>60&&m_ee<120&&oppsign_ee&&ele1_pt>40&&"+jetmetdphicut+tauveto+bveto;
+  std::string mumucat  = "nselmuons>=1&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&oppsign_mumu&&"+jetmetdphicut+tauveto+bveto;
+
+  std::string gammacat = "ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut+tauveto+bveto;
+  std::string toplcat  = "nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1"+tauveto+bveto;
+  std::string topbcat  = "(nselmuons>=1 || nselelectrons>=1)&&(jet1_csv>0.679||jet2_csv>0.679)&&(forward_tag_eta>2.8||forward_tag_eta<-2.8)"+tauveto+bveto;
 
   if(channel=="nunu" || channel=="qcd"){//nunu
     sigcat=nunucat;
@@ -464,7 +490,7 @@ int main(int argc, char* argv[]){
 
   if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor.str();//+mcweightpufactordebug;
   //remove trigger weight for e channels which do not use signal trigger
-  else if (channel=="ee" || channel=="enu") sigmcweight="weight_leptight*weight_trig_0*weight_nolepnotrig"+mcweightpufactor.str();//+mcweightpufactordebug;
+  else if (channel=="ee" || channel=="enu") sigmcweight="weight_leptight*weight_nolepnotrig"+mcweightpufactor.str();//+mcweightpufactordebug;
   else sigmcweight="total_weight_leptight"+mcweightpufactor.str();//+mcweightpufactordebug;
   sig125mcweight="total_weight_lepveto"+mcweightpufactor.str();
 

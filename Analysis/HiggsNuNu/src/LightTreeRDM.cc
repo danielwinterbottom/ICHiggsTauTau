@@ -677,11 +677,23 @@ namespace ic {
       puweight_up_scale_=1;
       puweight_down_scale_=1;
     }
-    weight_nolepnotrig_ = eventInfo->weight("pileup")*eventInfo->weight("lumixs")*eventInfo->weight("wt_mc_sign");
-    total_weight_lepveto_ =wt*weight_lepveto_;
-    if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<weight_lepveto_<<std::endl;//!!
-    total_weight_leptight_=wt*weight_leptight_;
+    // Just for info: weight_trig_[0] = eventInfo->weight(trig_2dbinned1d)
+    weight_nolepnotrig_ = wt;
+    total_weight_lepveto_ =wt*weight_lepveto_*weight_trig_[0];
+    total_weight_leptight_=wt*weight_leptight_*weight_trig_[0];
 
+    if(total_weight_lepveto_!=total_weight_lepveto_){
+      std::cout << " -- NAN lepveto weight: " << total_weight_lepveto_ << " " << wt << " " << weight_lepveto_ << " " << weight_trig_[0] << std::endl;//!!
+    }
+
+    //std::cout << " -- eventInfo->total_weight() : " << eventInfo->total_weight() << std::endl;
+    //std::cout << " -- weight_nolepnotrig_ = eventInfo->weight(pileup)*eventInfo->weight(lumixs)*eventInfo->weight(wt_mc_sign) : " << eventInfo->weight("pileup")*eventInfo->weight("lumixs")*eventInfo->weight("wt_mc_sign") << std::endl;
+    //std::cout << " -- total_weight_leptight_ = wt*weight_leptight_ : " << total_weight_leptight_ << std::endl;
+    //std::cout << " -- wt (=eventInfo->total_weight())  : " << wt << std::endl;
+    //std::cout << " -- weight_leptight_ : " << weight_leptight_ << std::endl;
+    //std::cout << " -- trig_2dbinned1d : " << eventInfo->weight("trig_2dbinned1d") << std::endl;
+    //std::cout << " -- What should be total_weight decomposed = eventInfo->weight(pileup)*eventInfo->weight(lumixs)*eventInfo->weight(wt_mc_sign)*eventInfo->weight(trig_2dbinned1d) : " << eventInfo->weight("pileup")*eventInfo->weight("lumixs")*eventInfo->weight("wt_mc_sign")*eventInfo->weight("trig_2dbinned1d") << std::endl;
+    //std::cout << " -- What should be weight_trig_0 : " << weight_trig_[0] << std::endl;
 
     if (debug_) std::cout << " Event weight = " << wt << " pu up " << puweight_up_scale_ << " " << puweight_down_scale_ << std::endl;
 

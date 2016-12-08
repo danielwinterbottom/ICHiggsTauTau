@@ -746,10 +746,10 @@ namespace ic {//namespace
               <<" vars[1]=" << vars[1] << "(" << var2bin << ")"
               <<" vars[2]=" << vars[2] << "(" << xmin << "," << xmax << ")"
               <<" hasJetsInHF=" << hasJetsInHF
-              <<std::endl;   */                                                                                         
-            //SET TRIGGER WEIGHT                                                                                                                             
-            if (do_trg_weights_ && iErr==0) eventInfo->set_weight(("trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
-            else eventInfo->set_weight(("!trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
+              <<std::endl;   */
+            //SET TRIGGER WEIGHT
+            eventInfo->set_weight(("!trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
+
           }//endof Loop on errors
         }//2D-1D
         else{
