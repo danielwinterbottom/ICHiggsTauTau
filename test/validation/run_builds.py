@@ -214,16 +214,17 @@ def runBuild(gh_user, gh_token, pr, config, req_user, do_clean=False):
     params = config[task]
     print ">>>> Running task: " + task
     outlogf = open('%s.log' % task, 'w')
+    build_dir = params["build_root"] + gh_user + '/'
     if do_clean:
       command = './run_builds.sh %s %s %s %s %s %s %s' % (
-        params["build_root"], params["cmssw_env_script"],
+        build_dir, params["cmssw_env_script"],
         params["cmssw_version"], params["cmssw_user"],
         params["cmssw_branch"], pr, params["clean_script"])
       print '>>>> Command: ' + command
       job = subprocess.Popen(command, shell=True, stdout=outlogf, stderr=subprocess.STDOUT)
       job.communicate()
     command = './run_builds.sh %s %s %s %s %s %s %s' % (
-      params["build_root"], params["cmssw_env_script"],
+      build_dir, params["cmssw_env_script"],
       params["cmssw_version"], params["cmssw_user"],
       params["cmssw_branch"], pr, params["test_script"])
     print '>>>> Command: ' + command
