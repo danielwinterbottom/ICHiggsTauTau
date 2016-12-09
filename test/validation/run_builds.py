@@ -231,6 +231,7 @@ def runBuild(gh_user, gh_token, pr, config, req_user, do_clean=False):
     job = subprocess.Popen(command, shell=True, stdout=outlogf, stderr=subprocess.STDOUT)
     job.communicate()
     status[task] = job.returncode
+    os.chmod('%s.log' % task, 0664)
 
   print 'Task Results'
   print '------------'
