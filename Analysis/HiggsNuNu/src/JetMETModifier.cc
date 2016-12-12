@@ -189,7 +189,7 @@ namespace ic {
       l3JetPar_  = new JetCorrectorParameters(jec_data_files_[2]);
       resJetPar_ = new JetCorrectorParameters(jec_data_files_[3]); 
     }
-    else if (reapplyJecMC_ || type1cor_) {
+    else if (reapplyJecMC_) {
       if (jec_mc_files_.size() != 3){
         std::cout << " -- Check JEC MC filename vec, wrong size: " << jec_mc_files_.size() << std::endl;
         return 1;
@@ -347,7 +347,7 @@ namespace ic {
 
       //apply new correction
       double newcor = oldcor;
-      if ( (is_data_ && (reapplyJecData_ || type1cor)) || (!is_data_ && (reapplyJecMC_ || type1cor_) ) ) {
+      if ( (is_data_ && (reapplyJecData_ || type1cor_)) || (!is_data_ && reapplyJecMC_) ) {
         newcor = applyCorrection(rawjet,jetvec[i]->jet_area(),eventInfo->jet_rho());
       }
       prevjet = oldjet;
@@ -386,7 +386,7 @@ namespace ic {
 
       double dpx = newjet.px()-oldjet.px();
       double dpy = newjet.py()-oldjet.py();
-      if (type1cor_){
+      if (false){// Riccardo, 12/12/2016: It was type1cor_. Changed after discussion with AM on how to avoid SingleElectron ntuples from Htautau group crashing.
 	dpx = newjet.px()-rawjet.px();
 	dpy = newjet.py()-rawjet.py();
       }
