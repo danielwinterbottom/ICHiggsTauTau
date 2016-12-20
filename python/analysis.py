@@ -514,7 +514,7 @@ class Analysis(object):
                 setattr(outdict[sample][i][0], outdict[sample][i][1], Shape(hist))
         self.nodes.Run()
 
-    def AddSamples(self, dir, tree, fallback=None):
+    def AddSamples(self, dir, tree, fallback=None,sample_name=None):
         files = glob.glob(dir)
         if fallback is not None:
           files += glob.glob(fallback)
@@ -522,7 +522,10 @@ class Analysis(object):
         for f in files:
             testf = ROOT.TFile(f)
             if testf.Get(tree) != None:
-                name = os.path.splitext(os.path.basename(f))[0]
+                if sample_name is not None:
+                    name = sample_name
+                else:
+                    name = os.path.splitext(os.path.basename(f))[0]
                 if name in seen_names:
                     print '>> Skipping %s because we already loaded it' % f
                     continue
@@ -532,6 +535,7 @@ class Analysis(object):
                     newname = self.remaps[name]
                 self.trees[newname] = TTreeEvaluator(tree, f)
             testf.Close()
+            #print self.trees
 
     def AddInfo(self, file, scaleTo=None):
         with open(file) as jsonfile:
@@ -540,7 +544,7 @@ class Analysis(object):
             name = sa
             if sa in self.remaps:
                 name = self.remaps[sa]
-            if name in self.trees:
+            if name in self.trees or name == 'data_obs':
                 self.info[name] = info[sa]
         if scaleTo is not None and scaleTo in self.info:
             lumi = self.info[scaleTo]['lumi']
@@ -548,6 +552,8 @@ class Analysis(object):
                 if 'xs' in data and 'evt' in data:
                     #print name, data
                     data['sf'] = lumi / (float(data['evt']) / float(data['xs']))
+                elif 'lo_xs' in data and 'evt' in data:
+                    data['sf'] = lumi / (float(data['evt']) / float(data['lo_xs']))
                 else:
                     data['sf'] = 1.0
         #pprint.pprint(self.info)
@@ -557,7 +563,10 @@ class Analysis(object):
             sample = name
         if scaleToLumi:
             myfactors = factors[:]
-            myfactors.append(self.info[sample]['sf'])
+            if sample in self.info:
+                myfactors.append(self.info[sample]['sf'])
+            else:
+                myfactors.append(1.0)
         return BasicNode(name, sample, var, sel, factors=myfactors)
 
     def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True):
