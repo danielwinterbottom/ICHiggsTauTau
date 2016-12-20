@@ -950,7 +950,7 @@ if(channel != channel::wmnu && !js["store_hltpaths"].asBool()) {
     .set_channel(channel)
     .set_fs(fs.get())
     .set_pair_label("ditau")
-    .set_met_label(met_label)
+    .set_met_label("pfMET")
     .set_strategy(strategy_type)
     .set_mva_met_from_vector(mva_met_mode==1)
     .set_faked_tau_selector(faked_tau_selector)
@@ -1128,7 +1128,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
   }
 
 
- if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16) && channel!=channel::wmnu){
+ if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16) && channel!=channel::wmnu){
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1140,6 +1140,19 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
+    
+    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label("pfMET")
+     .set_jets_label(jets_label)
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(false)
+     .set_met_scale_mode(metscale_mode)
+     .set_met_res_mode(metres_mode)
+     .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
+
   }
 
 /*
@@ -1187,7 +1200,7 @@ if(js["do_preselection"].asBool()){
  }
 
 
-if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16) && !is_data){
+if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16) && !is_data){
  TH2F bbtag_eff;
  TH2F cbtag_eff;
  TH2F othbtag_eff;
