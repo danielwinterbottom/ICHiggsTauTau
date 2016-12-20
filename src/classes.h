@@ -26,6 +26,7 @@
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h"
 #include "UserCode/ICHiggsTauTau/interface/MultiDraw.hh"
+#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 #include "DataFormats/Common/interface/Wrapper.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
@@ -34,7 +35,6 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "UserCode/ICHiggsTauTau/interface/L1TObject.hh"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;

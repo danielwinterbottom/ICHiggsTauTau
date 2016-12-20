@@ -23,7 +23,7 @@
 class TRandom3;
 
 namespace ic {
-  
+
   class JetMETModifier : public ModuleBase {
 
   public:
@@ -42,7 +42,7 @@ namespace ic {
       uesUp=5,
       uesDown=6
     };
-  
+
   private:
 
     JetCorrectionUncertainty *jetCorUnc_;
@@ -102,12 +102,21 @@ namespace ic {
     std::string pts[70];
     TH1F* recogenjetptratio[5][70]; //BINNED JET 
     TGraphErrors* res[5]; 
-    TF1* resfunc[5];
     TF1* spring10resfunc[5]; 
 
     bool reapplyJecData_;
     bool reapplyJecMC_;
     bool smear_;
+
+    unsigned nRho_;
+
+    std::vector<TF1*> resfunc_;
+    std::vector<double> resEta_;
+    std::vector<double> resRho_;
+
+    void fillResFunc(const std::string & aFileName);
+
+    unsigned getMCResBinNumber(const double & aEta, const double & aRho);
 
     double applyCorrection(const ROOT::Math::PxPyPzEVector & rawjet,
 			   const double & jetarea,
@@ -115,8 +124,9 @@ namespace ic {
 
     double applySmearing(const int error, 
 			 const GenJet* match,
-			 const ROOT::Math::PxPyPzEVector & oldjet);
-    
+			 const ROOT::Math::PxPyPzEVector & oldjet,
+			 const double & rho);
+
     double getJERcorrfac(const double & abseta,
                          const int error,
                          const bool run2);
@@ -136,7 +146,7 @@ namespace ic {
   public: 
 
     JetMETModifier(std::string const& name);
-    virtual ~JetMETModifier();    
+    virtual ~JetMETModifier();
     virtual int PreAnalysis();
     virtual int Execute(TreeEvent *event);
     virtual int PostAnalysis();
@@ -151,8 +161,7 @@ namespace ic {
     };
 
   };
-  	  
-  
+
 }
 
 #endif

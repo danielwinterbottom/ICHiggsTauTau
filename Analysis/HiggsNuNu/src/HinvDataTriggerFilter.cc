@@ -39,18 +39,17 @@ namespace ic {
 
     bool path_found = false;
     //std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
-  
+
     if (is_data_) {
 
-      auto const& triggerPathPtrVec = 
-	event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
+      auto const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
       //EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings
       //unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings
- 
+
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
-	std::string name = triggerPathPtrVec[i]->name();
-	triggerPathPtrVec[i]->prescale();
-	if (name.find(trigger_path_) != name.npos) path_found = true; 
+        std::string name = triggerPathPtrVec[i]->name();
+        triggerPathPtrVec[i]->prescale();
+        if (name.find(trigger_path_) != name.npos) path_found = true; 
       }
 
       //if ( (objs.size()== 0) && path_found ) counter1_++;
@@ -60,7 +59,7 @@ namespace ic {
     //for MC
     else {
       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
-     if (objs.size() > 0) path_found=true;
+      if (objs.size() > 0) path_found=true;
       //ic::erase_if(elmus, !boost::bind(IsFilterMatched, _1, objs, elmu_filter, 0.5));
       //ic::erase_if(taus, !boost::bind(IsFilterMatched, _1, objs, tau_filter, 0.5));
     } // do obj match

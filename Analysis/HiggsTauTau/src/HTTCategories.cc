@@ -283,15 +283,23 @@ namespace ic {
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
+      outtree_->Branch("pfpt_tt",          &pfpt_tt_.var_double);
+      outtree_->Branch("mvapt_tt",         &mvapt_tt_.var_double);
       outtree_->Branch("mt_tot",            &mt_tot_.var_double);
+      outtree_->Branch("pfmt_tot",          &pfmt_tot_.var_double);
+      outtree_->Branch("mvamt_tot",         &mvamt_tot_.var_double);
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
       outtree_->Branch("m_2",               &m_2_.var_double);
       outtree_->Branch("pfmt_1",            &pfmt_1_.var_double);
+      outtree_->Branch("pfmt_2",            &pfmt_2_.var_double);
+      outtree_->Branch("mvamt_1",           &mvamt_1_.var_double);
+      outtree_->Branch("mvamt_2",           &mvamt_2_.var_double);
       outtree_->Branch("puppimt_1",         &puppimt_1_.var_double);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
       outtree_->Branch("pfpzeta",           &pfpzeta_.var_double);
+      outtree_->Branch("mvapzeta",          &mvapzeta_.var_double);
       outtree_->Branch("puppipzeta",        &puppipzeta_.var_double);
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
@@ -1484,9 +1492,17 @@ namespace ic {
         puppimet = puppiMet_vec.at(0);
       }
     }
+    if(strategy_ == strategy::smspring16) pfmet = event->GetPtr<Met>("pfMET");
 
+    pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
+    mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
+    if(strategy_ == strategy::smspring16){
+      pt_tt_ = pfpt_tt_;
+      
+    } else {
+      pt_tt_ = mvapt_tt_;
+    }
 
-    pt_tt_ = (ditau->vector() + mets->vector()).pt();
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
    
@@ -1506,19 +1522,37 @@ namespace ic {
     }
 
     mt_lep_ = MT(lep1,lep2);
-    mt_1_ = MT(lep1, mets);
-    mt_2_ = MT(lep2, mets);
     mt_ll_ = MT(ditau, mets);
-    mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
-    pzeta_ = PZeta(ditau, mets, 0.85);
+    mvapzeta_ = PZeta(ditau, mets, 0.85);
+    mvapzetamiss_ = PZeta(ditau, mets, 0.0);
+    pfpzeta_ = PZeta(ditau, pfmet, 0.85);
+    pfpzetamiss_ = PZeta(ditau, pfmet, 0.0);
     pzetavis_ = PZetaVis(ditau);
-    pzetamiss_ = PZeta(ditau, mets, 0.0);
+    if(strategy_ == strategy::smspring16){
+      pzeta_ = pfpzeta_;
+      pzetamiss_ = pfpzetamiss_;
+    } else{
+      pzeta_ = mvapzeta_;
+      pzetamiss_ = mvapzetamiss_;
+    }
     met_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep1->vector()));
     met_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep2->vector()));
     //save some pfmet and puppi met versions as well for now
     pfmt_1_ = MT(lep1, pfmet);
-    pfpzeta_ = PZeta(ditau, pfmet, 0.85);
-    pfpzetamiss_ = PZeta(ditau, pfmet, 0.0);
+    pfmt_2_ = MT(lep2, pfmet);
+    mvamt_1_ = MT(lep1, mets);
+    mvamt_2_ = MT(lep2, mets);
+    pfmt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(pfmt_2_.var_double,2)+pow(pfmt_1_.var_double,2));
+    mvamt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mvamt_2_.var_double,2)+pow(mvamt_1_.var_double,2));
+    if(strategy_ == strategy::smspring16){
+      mt_1_ = pfmt_1_;
+      mt_2_ = pfmt_2_;
+      mt_tot_ = pfmt_tot_;
+    } else{
+      mt_1_ = mvamt_1_;
+      mt_2_ = mvamt_2_;
+      mt_tot_ = mvamt_tot_;
+    }
     if(puppimet != NULL){
       puppimt_1_ = MT(lep1, puppimet);
       puppipzeta_ = PZeta(ditau, puppimet, 0.85);
@@ -2436,14 +2470,12 @@ namespace ic {
           jet_flav_2_ = (tau_matches.at(0)).first->parton_flavour();
       } else jet_flav_2_ = -9999;
     }
-
     
-
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();
       jeta_1_ = lowpt_jets[0]->eta();
       jphi_1_ = lowpt_jets[0]->phi();
-      jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+      jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/lowpt_jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
       jptunc_1_ = 0.0;
       jmva_1_ = lowpt_jets[0]->pu_id_mva_value();
       jlrm_1_ = lowpt_jets[0]->linear_radial_moment();
@@ -2471,7 +2503,7 @@ namespace ic {
       jpt_2_ = lowpt_jets[1]->pt();
       jeta_2_ = lowpt_jets[1]->eta();
       jphi_2_ = lowpt_jets[1]->phi();
-      jrawf_2_ = lowpt_jets[1]->uncorrected_energy()/jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
+      jrawf_2_ = lowpt_jets[1]->uncorrected_energy()/lowpt_jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
       jptunc_2_ = 0.0;
       jmva_2_ = lowpt_jets[1]->pu_id_mva_value();
       jlrm_2_ = lowpt_jets[1]->linear_radial_moment();

@@ -23,9 +23,10 @@ namespace ic {
       return *this;
     }
     virtual DataShape & set_dataset(std::string const& dataset) {
-      std::vector<std::string> datasets;
-      datasets.push_back(dataset);
-      dataset_ = datasets;
+      //std::vector<std::string> datasets;
+      //datasets.push_back(dataset);
+      //dataset_ = datasets;
+      dataset_.push_back(dataset);
       return *this;
     }
     DataShape(std::string);
