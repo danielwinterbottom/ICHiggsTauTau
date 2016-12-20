@@ -30,6 +30,7 @@ var classic_1_1_electron =
     [ "conv_dcot", "classic_1_1_electron.html#a6ed720ac3ae78eca92580e44becd151b", null ],
     [ "f_brem", "classic_1_1_electron.html#a1b059f60be7ceb7cae8648dd5ba6ea7f", null ],
     [ "sc_eta", "classic_1_1_electron.html#a1cd2914eeb616b17422466e217f808e6", null ],
+    [ "sc_seed_eta", "classic_1_1_electron.html#a1bbc3e3ef79aae61804cc58bb7a5f31a", null ],
     [ "sc_theta", "classic_1_1_electron.html#a4c819f183a1822ad89281187d7407745", null ],
     [ "sc_energy", "classic_1_1_electron.html#a6d295e6239f2395d16454688f00a2508", null ],
     [ "sc_e_over_p", "classic_1_1_electron.html#a8e407cf5a193397c7ce40e56ad2b153c", null ],
@@ -70,6 +71,7 @@ var classic_1_1_electron =
     [ "set_conv_dcot", "classic_1_1_electron.html#a2a54619419d7716b4ff44bec4f94938d", null ],
     [ "set_f_brem", "classic_1_1_electron.html#a6c43f82036d0d08c524fe3eb0af57df7", null ],
     [ "set_sc_eta", "classic_1_1_electron.html#a5cd916503364ef84963f4d50d48201a8", null ],
+    [ "set_sc_seed_eta", "classic_1_1_electron.html#acea59c9a2bacfa97a98568b7d414f056", null ],
     [ "set_sc_theta", "classic_1_1_electron.html#a9990ae1d52732a70d41f2efd838762bb", null ],
     [ "set_sc_energy", "classic_1_1_electron.html#adff9d7f28d96e41c5d6a72700588ac18", null ],
     [ "set_sc_e_over_p", "classic_1_1_electron.html#a71c92b9d12f8709b9c6b0a529a6b0641", null ],
@@ -86,5 +88,5 @@ var classic_1_1_electron =
     [ "SetIdIso", "classic_1_1_electron.html#a85f0953b8b9116800d14506ff60ed230", null ],
     [ "HasIdIso", "classic_1_1_electron.html#a0ebe6ecff16252c2ff47572879569dd1", null ],
     [ "GetIdIso", "classic_1_1_electron.html#a88d7ed9fef58f89cdabd2854167dc537", null ],
-    [ "ClassDef", "classic_1_1_electron.html#ab3c899765856f90c70250f1a2bf861a7", null ]
+    [ "ClassDef", "classic_1_1_electron.html#a246b8d4a9656ad14f47c3a8d73384445", null ]
 ];

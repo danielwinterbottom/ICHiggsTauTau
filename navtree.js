@@ -102,9 +102,9 @@ var NAVTREEINDEX =
 "_i_c_photon_electron_veto_calculator_8cc.html#acd8677bd77d74bbd65d174c248a68112",
 "_trigger_path_8cc.html",
 "classic_1_1_composite_candidate.html#a3fcb1d12684d3658af6434a10063ab76",
-"classic_1_1_l1_t_object.html#aacbcfdd320802dab747b576eb842b757",
-"classic_1_1_secondary_vertex.html#a02dd169414380e6ffd973dfb7c014155",
-"namespaceedm.html"
+"classic_1_1_l1_t_object.html#aa83ad6d492c7cf42bd36ecccf11343ba",
+"classic_1_1_pileup_info.html#af8996abd11f6e03510199538c8571a2d",
+"index.html#getting-started"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

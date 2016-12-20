@@ -1,5 +1,7 @@
 var NAVTREEINDEX5 =
 {
+"classic_1_1_pileup_info.html#af8996abd11f6e03510199538c8571a2d":[10,0,1,18,0],
+"classic_1_1_secondary_vertex.html":[10,0,1,19],
 "classic_1_1_secondary_vertex.html#a02dd169414380e6ffd973dfb7c014155":[10,0,1,19,4],
 "classic_1_1_secondary_vertex.html#a06050a4ff5bd9f2332001796bf847e35":[10,0,1,19,2],
 "classic_1_1_secondary_vertex.html#a06f7e8abcbed1430d4456feba55eeafe":[10,0,1,19,1],
@@ -175,8 +177,8 @@ var NAVTREEINDEX5 =
 "dir_ced57927e25818266a2bcd819cbb464b.html":[11,0,0,1,0],
 "examples.html":[12],
 "files.html":[11,0],
-"functions.html":[10,2,0],
 "functions.html":[10,2,0,0],
+"functions.html":[10,2,0],
 "functions_b.html":[10,2,0,1],
 "functions_c.html":[10,2,0,2],
 "functions_d.html":[10,2,0,3],
@@ -184,8 +186,8 @@ var NAVTREEINDEX5 =
 "functions_enum.html":[10,2,4],
 "functions_eval.html":[10,2,5],
 "functions_f.html":[10,2,0,5],
-"functions_func.html":[10,2,1],
 "functions_func.html":[10,2,1,0],
+"functions_func.html":[10,2,1],
 "functions_func_b.html":[10,2,1,1],
 "functions_func_c.html":[10,2,1,2],
 "functions_func_d.html":[10,2,1,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX5 =
 "higgs-to-tau-tau.html#htt-ntuple-production":[5,0],
 "higgs-to-tau-tau.html#htt-skimming":[5,1],
 "index.html":[0],
-"index.html":[],
-"index.html#getting-started":[0,1],
-"index.html#overview":[0,0]
+"index.html":[]
 };
