@@ -24,6 +24,7 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <sstream> 
 #include <cstdlib>
 #include <math.h> 
 
@@ -31,6 +32,62 @@
 #include "boost/program_options.hpp"
 
 namespace po = boost::program_options;
+
+std::vector<std::string> SeperateString(std::string str){
+  std::vector<std::string> string_vec;
+  std::string word;
+  std::stringstream stream(str);
+  while( getline(stream, word, ',') ){
+    string_vec.push_back(word);
+  }
+  return string_vec;
+}
+
+std::pair<TH1D*, TH1D*> StandDev(std::vector<TH1D*> hist_vec) {
+   
+  TH1D* hist_up = (TH1D*)hist_vec[0]->Clone();
+  TH1D* hist_down = (TH1D*)hist_vec[0]->Clone();
+  
+  for(unsigned j=1; j<=(unsigned)hist_vec[0]->GetNbinsX();++j){
+    std::vector<double> a;
+    for(unsigned k=0; k<hist_vec.size(); ++k){
+      double bin_content = hist_vec[k]->GetBinContent(j);
+      a.push_back(bin_content);    
+    }
+    unsigned N = a.size();
+    double mean=0;
+    for(unsigned i=0; i<N; ++i){
+      mean+=a[i];
+    }
+    mean=mean/N;
+    double sum=0; 
+    for(unsigned i=0; i<N; ++i){
+      sum+=pow(a[i]-mean,2);  
+    }
+    sum = sum/N;
+    double sd = sqrt(sum);
+    
+    hist_up->SetBinContent(j,hist_up->GetBinContent(j)+sd);
+    hist_down->SetBinContent(j,hist_down->GetBinContent(j)-sd);
+    
+  }
+  return std::make_pair(hist_up,hist_down);
+}
+
+inline bool file_exists(const std::string& name){
+  std::ifstream f(name.c_str());
+  return f.good();
+}
+
+inline bool check_lines(const std::string& name, unsigned lines){
+  std::ifstream file(name); 
+  std::size_t lines_count =0;
+   std::string line;
+   while (std::getline(file , line)) ++lines_count;
+   file.close();
+   return lines_count == lines;
+}
+
 void SetStyle(){
   TStyle *myStyle  = new TStyle("MyStyle","");
   myStyle->SetCanvasBorderMode(0);
@@ -78,7 +135,7 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
   TCanvas *c1 = new TCanvas();
   if(log) c1->SetLogy();
   double ymin = 0.87 - 0.05*hists.size();
-  TLegend *leg = new TLegend(0.65,ymin,0.87,0.87);
+  TLegend *leg = new TLegend(0.60,ymin,0.87,0.87);
   if(bottomLeg){
     double ymax = 0.1 + 0.05*hists.size();
     leg = new TLegend(0.75,0.1,0.87,ymax);    
@@ -196,6 +253,11 @@ int main(int argc, char* argv[]){
   std::string outputDirname;
   bool doGen;
   bool do2DBinning;
+  bool doPDF;
+  bool doScale;
+  bool RecreateRenorm;
+  double RatioSize;
+  std::string SamplesToSkip;
   
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->default_value("config.cfg"));
@@ -208,7 +270,12 @@ int main(int argc, char* argv[]){
         ("cat",                    po::value<std::string>(&cat)->default_value("inclusive"))
         ("channel",                po::value<std::string>(&channel)->default_value("mt"))
         ("doGen",                  po::value<bool>(&doGen)->default_value(true))
+        ("doPDF",                  po::value<bool>(&doPDF)->default_value(false))
+        ("doScale",                po::value<bool>(&doScale)->default_value(false))
+        ("RecreateRenorm",         po::value<bool>(&RecreateRenorm)->default_value(false))
         ("do2DBinning",            po::value<bool>(&do2DBinning)->default_value(false))
+        ("RatioSize",              po::value<double>(&RatioSize)->default_value(0.15))
+        ("SamplesToSkip",          po::value<std::string>(&SamplesToSkip)->default_value(""))
         ("variable",               po::value<std::string>(&variable)->default_value("m_vis"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -220,6 +287,11 @@ int main(int argc, char* argv[]){
   std::cout << "channel        = " << channel        << std::endl;
   std::cout << "variable       = " << variable       << std::endl;
   std::cout << "doGen          = " << doGen          << std::endl;
+  std::cout << "doPDF          = " << doPDF          << std::endl;
+  std::cout << "doScale        = " << doScale        << std::endl;
+  std::cout << "RecreateRenorm = " << RecreateRenorm << std::endl;
+  std::cout << "RatioSize      = " << RatioSize      << std::endl;
+  std::cout << "SamplesToSkip  = " << SamplesToSkip  << std::endl;
   std::cout << "do2DBinning    = " << do2DBinning    << std::endl;
  
   std::map<std::string, std::tuple<std::string,int,double,double>> labels_map_;
@@ -302,6 +374,7 @@ int main(int argc, char* argv[]){
   }
   labels_map_["pt_tt"] = std::make_tuple("Higgs p_{T} [GeV]",10,0,300);
   labels_map_["HiggsPt"] = std::make_tuple("Higgs p_{T} [GeV]",10,0,300);
+  labels_map_["FirstHiggsPt"] = std::make_tuple("FirstHiggsPt p_{T} [GeV]",10,0,300);
   labels_map_["jpt_1"] = std::make_tuple("leading jet p_{T} [GeV]",30,0,200);
   labels_map_["jpt_2"] = std::make_tuple("sub-leading jet p_{T} [GeV]",30,0,200);
   labels_map_["jeta_1"] = std::make_tuple("leading jet #eta",30,-6,6);
@@ -322,7 +395,7 @@ int main(int argc, char* argv[]){
   //alias_map_["0jet"] = "(n_jets==0)";
   //alias_map_["1jet"] = "(n_jets==1)";
   //alias_map_["2jet"] = "(n_jets==2)";
-  //alias_map_["njetge2"] = "(n_jets>=2)";
+  alias_map_["njetge2"] = "(n_jets>=2)";
   //alias_map_["njetge2_CJV"] = "(n_jets>=2 && n_jetsingap==0)";
   
   if(channel == "em"){
@@ -409,13 +482,18 @@ int main(int argc, char* argv[]){
       alias_map_["vbf"]  = "((pt_1>50 && n_jets>=2)*(jdeta>2.5 && n_jetsingap<1 && pt_tt>100))*"+alias_map_["baseline"]; 
     }
     
+  alias_map_["central_jets"] = "(fabs(jeta_1)<2 && fabs(jeta_2)<2)";
+    
   alias_map_["tau_iso!=tight"] = "(mva_olddm_tight_2<0.5)";   
   if(channel == "tt") alias_map_["tau_iso!=tight"] = "(mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5)";
     
   std::vector<std::string> sig = {"ggH", "qqH"};
-  std::string file_prefix = "/vols/cms/dw515/Offline/output/GenComps/";
+  std::string file_prefix = "/vols/cms/dw515/Offline/output/PartonShower8/";
   
   TH1D *htemp;
+  
+  std::vector<std::string> skip;
+  skip=SeperateString(SamplesToSkip);
   
   for(unsigned i=0; i<sig.size(); ++i){
       
@@ -424,10 +502,10 @@ int main(int argc, char* argv[]){
     if(sig[i] == "ggH") sig_string = "GluGlu";
     if(sig[i] == "qqH") sig_string = "VBF";
     filenames_["aMC@NLO"]             = file_prefix+sig_string+"HToTauTau_amcatnlo_M-125_"+channel+"_2016.root"; 
-    filenames_["PowHeg"]              = file_prefix+sig_string+"HToTauTau_M-125_"+channel+"_2016.root";
-    filenames_["PythiaFragmentDown"] = file_prefix+sig_string+"HToTauTau_PythiaFragment_Down_M-125_"+channel+"_2016.root";
-    filenames_["PythiaFragmentUp"]   = file_prefix+sig_string+"HToTauTau_PythiaFragment_Up_M-125_"+channel+"_2016.root";
-    filenames_["Herwig++"]             = file_prefix+sig_string+"HToTauTau_herwigpp_M-125_"+channel+"_2016.root";
+    filenames_["PowHeg_Pythia"]              = file_prefix+sig_string+"HToTauTau_M-125_"+channel+"_2016.root";
+    filenames_["PowHeg_PythiaFragDown"] = file_prefix+sig_string+"HToTauTau_PythiaFragment_Down_M-125_"+channel+"_2016.root";
+    filenames_["PowHeg_PythiaFragUp"]   = file_prefix+sig_string+"HToTauTau_PythiaFragment_Up_M-125_"+channel+"_2016.root";
+    filenames_["PowHeg_Herwig++"]             = file_prefix+sig_string+"HToTauTau_herwigpp_M-125_"+channel+"_2016.root";
     
     typedef std::map<std::string, std::string>::iterator it_type;
     
@@ -435,6 +513,15 @@ int main(int argc, char* argv[]){
     std::vector<std::string> legend_entries;
     
     for(it_type iterator = filenames_.begin(); iterator != filenames_.end(); iterator++){
+        
+      bool skip_sample = false;
+      for(unsigned i=0; i<skip.size(); ++i){
+        if (iterator->first.find(skip[i]) != std::string::npos){
+          skip_sample = true;
+        }
+      }
+      if(skip_sample) continue;
+        
       TFile *f0 = new TFile(iterator->second.c_str());
       TTree *gen_tree = (TTree*)f0->Get("gen_ntuple");
       std::string tree_name;
@@ -476,7 +563,6 @@ int main(int argc, char* argv[]){
         if(variable == "pt_1") bins = {50};  
       }
       
-      //bins={300,3000};
       double* bins_array = &bins[0];
       
       int  binnum = bins.size()-1;
@@ -486,7 +572,6 @@ int main(int argc, char* argv[]){
         htemp = new TH1D("htemp","",std::get<1>(labels_map_[variable]),std::get<2>(labels_map_[variable]),std::get<3>(labels_map_[variable]));
       }
       htemp->Sumw2();
-      //std::string wt_string = "wt";
       std::string wt_string = "wt";
       gen_tree->Draw("event>>htemp",wt_string.c_str(),"goff");
       
@@ -495,22 +580,127 @@ int main(int argc, char* argv[]){
       std::cout << alias_map_[cat] << std::endl;
       tree->Draw((variable+">>htemp").c_str(),wt_string.c_str(),"goff");
       htemp->Scale(1/total_inclusive);
-      //std::cout << iterator->first << std::endl;
-      //for(int k=0; k<= htemp->GetNbinsX();++k){
-      //  std::cout << "bin " << k << std::endl;
-      //  std::cout << "bin error " << htemp->GetBinError(k) << std::endl;
-      //  std::cout << "bin value " << htemp->GetBinContent(k) << std::endl;
-      //}
     
       htemp->GetXaxis()->SetTitle((std::get<0>(labels_map_[variable])).c_str());
       htemp->GetYaxis()->SetTitle("Normalized Entries");
       if(!doGen && iterator->first == "aMC@NLO") continue;
       hists.push_back((TH1D*)htemp->Clone());
       legend_entries.push_back(iterator->first);
-      if(iterator->first == "PowHeg"){
+      if(iterator->first == "PowHeg_Pythia"){
         std::reverse( hists.begin(), hists.end() );
         std::reverse( legend_entries.begin(), legend_entries.end() );
       }
+      
+      if(iterator->first == "PowHeg_Pythia"){
+        if(doPDF){
+          std::string default_wt = wt_string;  
+          double nominal_wt = total_inclusive;
+          std::vector<double> NNPDF_addwt;
+            
+          std::string input_name;
+          bool file_check;
+          input_name = outputDirname+"/NNPDF_addwt.txt";
+          file_check = file_exists(input_name) && check_lines(input_name,100);
+          if(!file_check || RecreateRenorm){
+            std::cout << "Creating new NNPDF remormalization file: " << input_name << std::endl;
+            std::ofstream output(input_name);
+            for(unsigned i=0; i<100; ++i){
+              std::string wt_name = Form("%s*NNPDF_wts[%u]",default_wt.c_str(),i);
+              gen_tree->Draw("event>>htemp",wt_name.c_str(),"goff");  
+              double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
+              NNPDF_addwt.push_back(nominal_wt/wt_sum);
+              output << nominal_wt/wt_sum << std::endl;
+            }
+            output.close();
+          } else{
+            std::cout << "Using existing NNPDF remormalization weights from file: " << input_name << ". Use option --RecreateRenorm to force new remormalization." << std::endl;
+            std::ifstream input(input_name);
+            double temp;
+            while(input >> temp){
+              NNPDF_addwt.push_back(temp);
+            }
+            input.close();  
+          }
+          
+          std::vector<TH1D*> hists_vec;
+          
+          tree->Draw((variable+">>htemp").c_str(),wt_string.c_str(),"goff");
+          htemp->Scale(1/total_inclusive);
+          hists_vec.push_back((TH1D*) htemp->Clone());
+
+          for(unsigned i=0; i<100; ++i){
+            std::string add_wt = Form("%f",NNPDF_addwt[i]);
+            std::string wt_name = Form("%s*NNPDF_wts[%u]",default_wt.c_str(),i);
+            wt_name+="*"+add_wt;
+            wt_name+="*"+alias_map_[cat];
+            tree->Draw((variable+">>htemp").c_str(),wt_name.c_str(),"goff"); 
+            htemp->Scale(1/total_inclusive);
+            hists_vec.push_back((TH1D*) htemp->Clone());
+
+          }
+
+          std::pair<TH1D*, TH1D*> pdf_pair = StandDev(hists_vec);
+          
+          std::vector<TH1D*> hists_pdf;
+          hists_pdf.push_back(pdf_pair.first);
+          hists_pdf.push_back(pdf_pair.second);
+          
+          hists.push_back(pdf_pair.first);
+          legend_entries.push_back("pdf up");
+          hists.push_back(pdf_pair.second);
+          legend_entries.push_back("pdf down");
+  
+        } 
+        
+        if(doScale){
+          std::string default_wt = wt_string;
+          double nominal_wt = total_inclusive;
+          std::vector<double> scale_variation_addwt;
+          std::string input_name = outputDirname+"/scale_variation_addwt.txt";
+          bool file_check = file_exists(input_name) && check_lines(input_name,9);
+          if(!file_check || RecreateRenorm){
+            std::cout << "Creating new scale remormalization file: " << input_name << std::endl;
+            std::ofstream output(input_name);
+            for(unsigned i=0; i<9; ++i){
+              std::string wt_name = Form("%s*scale_variation_wts[%u]",default_wt.c_str(),i);
+
+              gen_tree->Draw("event>>htemp",wt_name.c_str(),"goff");  
+              double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
+              scale_variation_addwt.push_back(nominal_wt/wt_sum);
+              output << nominal_wt/wt_sum << std::endl;
+            }
+            output.close();
+          } else{
+            std::cout << "Using existing scale remormalization weights from file: " << input_name << ". Use option --RecreateRenorm to force new remormalization." << std::endl;
+            std::ifstream input(input_name);
+            double temp;
+            while(input >> temp){
+              scale_variation_addwt.push_back(temp);
+            }
+            input.close();
+          }
+          
+          
+          for(unsigned i=0; i<9; ++i){
+            if(i==0 || i==5 || i==7) continue;
+            std::string add_wt = Form("%f",scale_variation_addwt[i]);
+            std::string wt_name = Form("%s*scale_variation_wts[%u]",default_wt.c_str(),i);
+
+            wt_name+="*"+add_wt;
+            wt_name+="*"+alias_map_[cat];
+            tree->Draw((variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
+            htemp->Scale(1/total_inclusive);
+
+            if(i == 4 || i == 8) hists.push_back((TH1D*)htemp->Clone());
+          }
+          
+          legend_entries.push_back("scale up");
+          legend_entries.push_back("scale down");
+
+        }
+        
+      }
+      
     }
     
     //SetStyle();
@@ -519,7 +709,7 @@ int main(int argc, char* argv[]){
     std::string title = cat;
     title = "";
     bool bottomLeg = variable.find("mva_olddm_")!=std::string::npos;
-    DrawHist(hists, legend_entries, out_name, true,false,title,intLabels,false,0.15, bottomLeg);
+    DrawHist(hists, legend_entries, out_name, true,false,title,intLabels,false,RatioSize, bottomLeg);
   }
   
   return 0;

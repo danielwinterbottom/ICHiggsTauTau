@@ -625,29 +625,16 @@ int main(int argc, char* argv[]){
        alias_map_[alias_string] = cat_vbf+alias_cut;
        count_cats++;
     }
-    //alias_map_["00vbf_test"]  = "(pt_2>30 && n_jets>=2 && mjj>300)";
-    //alias_map_["00gt2jet"]  = "(n_jets>=2)";
-    //alias_map_["00gt3jet"]  = "(n_jets>=3)";
-    //alias_map_["002jet"]  = "(n_jets==2)";
-    //alias_map_["00gt1jet"]  = "(n_jets>=1)";
-    //alias_map_["001jet"]  = "(n_jets==1)";
-    //alias_map_["00gt0jet"]  = "(n_jets>=0)";
-    //alias_map_["000jet"]  = "(n_jets==0)";
-    //alias_map_["000jetingapgt0"]  = "(n_jets==2 && n_jetsingap>=0)";
-    //alias_map_["000jetingapgt1"]  = "(n_jets==2 && n_jetsingap>=1)";
-    //alias_map_["baseline"] = "(1)";
   }
   
-  std::string vbfcuts = "";
   if(options.doST){
-    //double cross_section_error = 3.9/100;
+
     alias_map_.clear();
-    alias_map_["vbfcuts"]  = "(n_jets==2 && mjj>300)";    
-    //alias_map_["gt2jet"] = "(n_jets>=2)";//\\*"+twojetcuts;
-    //alias_map_["gt3jet"] = "(n_jets>=3)";//*"+twojetcuts;
-    //alias_map_["gt0jet"] = "(n_jets>=0)";
-    //alias_map_["gt1jet"] = "(n_jets>=1)";
-    alias_map_["baseline"] = "(passed)";
+    alias_map_["baseline"] = "(mt_1<50 && genpt_1>60 && genpt_2>60 && geneta_1<2.3 && geneta_2<2.3)";
+    alias_map_["0jet"]    = "(n_jets==0)";
+    alias_map_["boosted"] = "((n_jets==1 || (n_jets==2 && mjj<300) || n_jets>2)) ";
+    alias_map_["vbf"]     = "(n_jets==2 && mjj>300)"; 
+
   }
   
   
@@ -760,7 +747,7 @@ int main(int argc, char* argv[]){
   
   double total_inclusive = 0;
   if(options.doAcceptance){
-    if(options.doGen) gen_tree->Draw("event>>htemp",(default_wt+"*passed").c_str(),"goff");
+    if(options.doGen) gen_tree->Draw("event>>htemp",(default_wt).c_str(),"goff");
     else gen_tree->Draw("event>>htemp",default_wt.c_str(),"goff");  
     total_inclusive = htemp->Integral(0,htemp->GetNbinsX()+1);
   }
@@ -895,7 +882,7 @@ int main(int argc, char* argv[]){
     std::cout << cat << std::endl;
     tree->Draw((options.variable+">>h_noweight").c_str(),(default_wt+cat).c_str(),"goff");
     
-    if(options.doGen) tree->Draw("event>>htemp",(default_wt+"*passed"+cat).c_str(),"goff");  
+    if(options.doGen) tree->Draw("event>>htemp",(default_wt+cat).c_str(),"goff");  
     else tree->Draw("event>>htemp",(default_wt+cat).c_str(),"goff"); 
     double A = htemp->Integral(0,htemp->GetNbinsX()+1);
     bool check_non_zero = A>0;

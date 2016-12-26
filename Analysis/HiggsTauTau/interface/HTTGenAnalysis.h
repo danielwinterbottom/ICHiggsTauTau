@@ -86,7 +86,11 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ggh_pt_pythiadown_;
   double wt_ggh_pt_scalehigh_ ;
   double wt_ggh_pt_scalelow_  ;
-  
+  double genpt_1_;
+  double genpt_2_;
+  double geneta_1_;
+  double geneta_2_;
+ 
   TFile *ggh_weights_;
   TH1F *ggh_hist_;
   TH1F *ggh_hist_up_;

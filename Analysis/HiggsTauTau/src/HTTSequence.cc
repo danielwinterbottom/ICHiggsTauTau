@@ -642,7 +642,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
   BuildModule(HTTGenAnalysis("HTTGenAnalysis")
     .set_fs(fs.get())
     .set_channel_str(channel_str)
-    .set_min_jet_pt(0.)
+    .set_min_jet_pt(30.)
     .set_max_jet_eta(4.7)
     //.set_min_e_pt(elec_pt)
     //.set_min_mu_pt(muon_pt)

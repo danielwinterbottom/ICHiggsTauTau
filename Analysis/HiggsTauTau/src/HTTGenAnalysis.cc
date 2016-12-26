@@ -88,6 +88,10 @@ namespace ic {
       outtree_->Branch("mjj"         , &mjj_         );
       outtree_->Branch("jdeta"       , &jdeta_       );
       outtree_->Branch("higgsDecay"  , &decayType    );
+      outtree_->Branch("genpt_1"     , &genpt_1_        );
+      outtree_->Branch("genpt_2"     , &genpt_2_        );
+      outtree_->Branch("geneta_2"    , &geneta_2_       );
+      outtree_->Branch("geneta_1"    , &geneta_1_       );
       outtree_->Branch("wt_ggh_pt", &wt_ggh_pt_           );
       outtree_->Branch("wt_ggh_pt_up", &wt_ggh_pt_up_        );
       outtree_->Branch("wt_ggh_pt_down", &wt_ggh_pt_down_      );
@@ -181,9 +185,11 @@ namespace ic {
     std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
 
     std::vector<ic::GenParticle> higgs_products;
+    std::vector<ic::GenParticle> gen_taus;
     ic::Candidate met; 
     std::vector<ic::GenParticle> prompt_leptons;
     std::vector<std::string> decay_types;
+
     
     HiggsPt_=-9999;
     FirstHiggsPt_ = -9999;
@@ -191,11 +197,6 @@ namespace ic {
       if(gen_particles[i]->pdgid() == 25 && gen_particles[gen_particles[i]->mothers()[0]]->pdgid()!=25){FirstHiggsPt_ = gen_particles[i]->pt();}
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
-          if(gen_particles[i]->daughters().size() > 2){
-            for(unsigned j=0; j<gen_particles[i]->daughters().size(); ++j){
-              std::cout << gen_particles[gen_particles[i]->daughters()[j]]->pdgid() << std::endl;
-            }
-          }
       }
 
       int fbin = ggh_hist_->FindBin(HiggsPt_);
@@ -224,12 +225,8 @@ namespace ic {
         continue;
       }
       
-      //if(genID == 24) std::cout << "Found a W" << std::endl;
-      //if(genID == 23) std::cout << "Found a Z" << std::endl;
-      //if(genID == 22) std::cout << "Found a photon" << std::endl;
-      //if (!(( genId == 15 && part.statusFlags()[FromHardProcess] && part.status()==1) || (part.statusFlags()[IsDirectHardProcessTauDecayProduct] ))) continue;
-      
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
+      gen_taus.push_back(part);
       std::vector<ic::GenParticle> family;
       unsigned outputID = 15;
       FamilyTree(family, part, gen_particles, outputID);
@@ -252,10 +249,22 @@ namespace ic {
         higgs_products.push_back(had_tau);
       }
     }
-    //check how higgs decay products are found! (especially for aMC@NLO)
 
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
-
+    std::sort(gen_taus.begin(),gen_taus.end(),PtComparator());
+    
+    if(gen_taus.size()>=2){
+      genpt_1_ = gen_taus[0].vector().Pt();
+      genpt_2_ = gen_taus[1].vector().Pt();
+      geneta_1_ = gen_taus[0].vector().Rapidity();
+      geneta_2_ = gen_taus[1].vector().Rapidity();
+    } else {
+      genpt_1_ =  -9999;
+      genpt_2_ =  -9999;
+      geneta_1_ = -9999;
+      geneta_2_ = -9999; 
+    }
+    
     std::vector<ic::GenParticle> electrons;
     std::vector<ic::GenParticle> muons;
     std::vector<ic::GenParticle> taus;
