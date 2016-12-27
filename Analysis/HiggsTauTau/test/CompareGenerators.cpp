@@ -162,7 +162,7 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
     if(legend_entries[i] == "scale_up") error_name = "QCD Scale uncertainty";
     if(legend_entries[i] == "pdf_up") error_name = "PDF uncertainty";
     if(legend_entries[i] == "scale_up" || legend_entries[i] == "pdf_up"){
-      hists[i]->SetLineColor(10);
+      //hists[i]->SetLineColor(10);
       hists[i]->SetLineWidth(0);
       hists[i]->SetMarkerStyle(0);
       hists[i]->SetFillStyle(1001);
@@ -174,7 +174,7 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
     }
     if(legend_entries[i] == "scale_down" || legend_entries[i] == "pdf_down"){
       hists[i]->SetLineColor(10);
-      hists[i]->SetLineWidth(0);
+      hists[i]->SetLineWidth(1);
       hists[i]->SetMarkerStyle(0);
       hists[i]->SetFillStyle(1001);
       hists[i]->SetFillColor(10);
