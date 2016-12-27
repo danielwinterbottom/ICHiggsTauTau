@@ -300,6 +300,7 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
    }
    hs_ratio->Draw("nostack pe same");
    
+   
    float scale = pad2->GetAbsHNDC();
    pad2->SetBottomMargin(0.3); 
    hs_ratio->GetXaxis()->SetTitle(hists[0]->GetXaxis()->GetTitle());
@@ -319,6 +320,8 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
    hs_ratio->SetMaximum(ratio_max);
    hs_ratio->GetYaxis()->SetNdivisions(3,5,0);
    hs_ratio->Draw("nostack pe same"); 
+   
+   gPad->RedrawAxis();
    pad2->Update();
    c1->Update();
    c1->cd();  
