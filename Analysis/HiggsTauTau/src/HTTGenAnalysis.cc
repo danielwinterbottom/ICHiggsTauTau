@@ -101,6 +101,7 @@ namespace ic {
       outtree_->Branch("wt_ggh_pt_pythiadown", &wt_ggh_pt_pythiadown_);
       outtree_->Branch("wt_ggh_pt_scalehigh", &wt_ggh_pt_scalehigh_ );
       outtree_->Branch("wt_ggh_pt_scalelow", &wt_ggh_pt_scalelow_  );
+      outtree_->Branch("hasFSR", &hasFSR_  );
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -193,6 +194,7 @@ namespace ic {
     
     HiggsPt_=-9999;
     FirstHiggsPt_ = -9999;
+    hasFSR_ = false;
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if(gen_particles[i]->pdgid() == 25 && gen_particles[gen_particles[i]->mothers()[0]]->pdgid()!=25){FirstHiggsPt_ = gen_particles[i]->pt();}
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
@@ -223,6 +225,14 @@ namespace ic {
       if(genID == 12 || genID == 14 || genID == 16){
         met.set_vector(met.vector() + part.vector());
         continue;
+      }
+      
+      if(genID == 25){
+        for(unsigned j=0; j<part.daughters().size(); ++j){
+          ic::GenParticle d = *gen_particles[part.daughters().at(j)];
+          unsigned daughterID = std::fabs(d.pdgid());
+          if(daughterID == 22) hasFSR_ = true;
+        }
       }
       
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;

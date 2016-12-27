@@ -90,6 +90,7 @@ class HTTGenAnalysis : public ModuleBase {
   double genpt_2_;
   double geneta_1_;
   double geneta_2_;
+  bool hasFSR_;
  
   TFile *ggh_weights_;
   TH1F *ggh_hist_;

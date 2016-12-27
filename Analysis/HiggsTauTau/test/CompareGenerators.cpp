@@ -33,6 +33,11 @@
 
 namespace po = boost::program_options;
 
+struct greater {
+    template<class T>
+    bool operator()(T const &a, T const &b) const { return a > b; }
+};
+
 std::vector<std::string> SeperateString(std::string str){
   std::vector<std::string> string_vec;
   std::string word;
@@ -69,6 +74,27 @@ std::pair<TH1D*, TH1D*> StandDev(std::vector<TH1D*> hist_vec) {
     
     hist_up->SetBinContent(j,hist_up->GetBinContent(j)+sd);
     hist_down->SetBinContent(j,hist_down->GetBinContent(j)-sd);
+    
+  }
+  return std::make_pair(hist_up,hist_down);
+}
+
+std::pair<TH1D*, TH1D*> ScaleError(std::vector<TH1D*> hist_vec) {
+   
+  TH1D* hist_up = (TH1D*)hist_vec[0]->Clone();
+  TH1D* hist_down = (TH1D*)hist_vec[0]->Clone();
+  
+  for(unsigned j=1; j<=(unsigned)hist_vec[0]->GetNbinsX();++j){
+    std::vector<double> a;
+    for(unsigned k=0; k<hist_vec.size(); ++k){
+      double bin_content = hist_vec[k]->GetBinContent(j);
+      a.push_back(bin_content);    
+    }
+    std::sort(a.begin(), a.end(), greater());
+
+    
+    hist_up->SetBinContent(j,a.front());
+    hist_down->SetBinContent(j,a.back());
     
   }
   return std::make_pair(hist_up,hist_down);
@@ -128,10 +154,44 @@ void SetStyle(){
 }
 
 void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries, std::string out_name, bool ratio, bool Normalize, std::string title, bool intLabels, bool log, double ratio_range, bool bottomLeg){
-  bool doLegend = legend_entries.size() > 0;
   SetStyle();
+  std::vector<TH1D*> error_hists;
+  std::string error_name = "";
+  for(unsigned i=0; i<legend_entries.size(); ++i){
+    double norm = 1./hists[0]->Integral();
+    if(legend_entries[i] == "scale_up") error_name = "QCD Scale uncertainty";
+    if(legend_entries[i] == "pdf_up") error_name = "PDF uncertainty";
+    if(legend_entries[i] == "scale_up" || legend_entries[i] == "pdf_up"){
+      hists[i]->SetLineColor(10);
+      hists[i]->SetLineWidth(0);
+      hists[i]->SetMarkerStyle(0);
+      hists[i]->SetFillStyle(1001);
+      hists[i]->SetFillColor(16);
+      if(Normalize) hists[i]->Scale(norm);
+      error_hists.insert(error_hists.begin(),(TH1D*)hists[i]->Clone());
+      hists.erase (hists.begin()+i);
+      legend_entries.erase (legend_entries.begin()+i);
+    }
+    if(legend_entries[i] == "scale_down" || legend_entries[i] == "pdf_down"){
+      hists[i]->SetLineColor(10);
+      hists[i]->SetLineWidth(0);
+      hists[i]->SetMarkerStyle(0);
+      hists[i]->SetFillStyle(1001);
+      hists[i]->SetFillColor(10);
+      if(Normalize) hists[i]->Scale(norm);
+      error_hists.push_back((TH1D*)hists[i]->Clone()); 
+      hists.erase (hists.begin()+i);
+      legend_entries.erase (legend_entries.begin()+i);
+    }
+  }
+  bool doLegend = legend_entries.size() > 0;
   TGaxis::SetMaxDigits(3);
   THStack *hs = new THStack("hs","");
+  if(error_hists.size()==2){
+    hs->Add((TH1D*)error_hists[0]->Clone());
+    hs->Add((TH1D*)error_hists[1]->Clone());
+  }
+  
   TCanvas *c1 = new TCanvas();
   if(log) c1->SetLogy();
   double ymin = 0.87 - 0.05*hists.size();
@@ -147,9 +207,9 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
     if(col_num==7) col_num = 9;
     hists[i]->SetLineColor(col_num);
     hists[i]->SetMarkerColor(col_num);
-    //for(unsigned j=0; j<(unsigned)hists[i]->GetNbinsX()+1; ++j){
-    //  hists[i]->SetBinError(j,0.00001);    
-    //} //get rid of vartical xerror bars by setting them to small value - purley for aesthetic reasons
+    for(unsigned j=0; j<(unsigned)hists[i]->GetNbinsX()+1; ++j){
+      hists[i]->SetBinError(j,0.00001);    
+    } //get rid of vartical xerror bars by setting them to small value - purley for aesthetic reasons
     TH1D *htemp = (TH1D*)hists[i]->Clone();
     if(Normalize){
       double norm = 1./hists[0]->Integral();
@@ -162,15 +222,26 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
     leg->AddEntry(hists[i],leg_string.c_str(),"lpe");
   }
   
+  if(error_hists.size()==2){
+    leg->AddEntry(error_hists[0],error_name.c_str(),"f");      
+  }
+  
   if(!ratio){
     hs->Draw("nostack pe");
+    
+    if(error_hists.size()==2){
+      error_hists[0]->Draw("HISTsame");
+      error_hists[1]->Draw("HISTsame");
+    }
+    hs->Draw("nostack pe same");
+    
     hs->GetXaxis()->SetTitle(hists[0]->GetXaxis()->GetTitle());
     hs->GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
     if(intLabels){
      TGaxis *axis = (TGaxis*)hs->GetXaxis();
      axis->SetOption("I");
     }
-    hs->Draw("nostack pe");
+    hs->Draw("nostack pe same");
     c1->Update();
     if(doLegend) leg->Draw();
   } else{
@@ -180,14 +251,24 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
    pad1->SetFrameFillStyle(4000);       
    pad1->Draw();             
    pad1->cd();
+   //hs->Draw("nostack pe");
    hs->Draw("nostack pe");
+   
+   if(error_hists.size()==2){
+     error_hists[0]->Draw("HISTsame");
+     error_hists[1]->Draw("HISTsame");
+   }
+   hs->Draw("nostack pe same");
+   
    float scale1 = pad1->GetAbsHNDC();
    hs->GetYaxis()->SetLabelSize(hs->GetYaxis()->GetLabelSize()/scale1);
    hs->GetYaxis()->SetTitleSize(hs->GetYaxis()->GetTitleSize()/scale1);
    hs->GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
    hs->GetYaxis()->SetTitleOffset(1.1);
    hs->SetMinimum(hs->GetMaximum()/100000);
-   hs->Draw("nostack pe");
+   //hs->Draw("nostack pe");
+   hs->Draw("nostack pe same");
+   gPad->RedrawAxis();
    c1->Update();
    if(doLegend) leg->Draw();
     
@@ -206,7 +287,19 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
    pad2->SetBottomMargin(0.2);
    pad2->Draw();
    pad2->cd();
-   hs_ratio->Draw("nostack pe"); 
+   hs_ratio->Draw("nostack pe");
+   
+   if(error_hists.size()==2){
+     std::vector<TH1D*> ratio_error_hists;
+     ratio_error_hists.push_back((TH1D*)error_hists[0]->Clone());
+     ratio_error_hists.push_back((TH1D*)error_hists[1]->Clone());
+     ratio_error_hists[0]->Divide(h_denum);
+     ratio_error_hists[1]->Divide(h_denum);
+     ratio_error_hists[0]->Draw("HISTsame");
+     ratio_error_hists[1]->Draw("HISTsame");
+   }
+   hs_ratio->Draw("nostack pe same");
+   
    float scale = pad2->GetAbsHNDC();
    pad2->SetBottomMargin(0.3); 
    hs_ratio->GetXaxis()->SetTitle(hists[0]->GetXaxis()->GetTitle());
@@ -225,7 +318,7 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
    hs_ratio->SetMinimum(ratio_min);
    hs_ratio->SetMaximum(ratio_max);
    hs_ratio->GetYaxis()->SetNdivisions(3,5,0);
-   hs_ratio->Draw("nostack pe"); 
+   hs_ratio->Draw("nostack pe same"); 
    pad2->Update();
    c1->Update();
    c1->cd();  
@@ -488,7 +581,7 @@ int main(int argc, char* argv[]){
   if(channel == "tt") alias_map_["tau_iso!=tight"] = "(mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5)";
     
   std::vector<std::string> sig = {"ggH", "qqH"};
-  std::string file_prefix = "/vols/cms/dw515/Offline/output/PartonShower8/";
+  std::string file_prefix = "/vols/cms/dw515/Offline/output/PartonShower9/";
   
   TH1D *htemp;
   
@@ -572,11 +665,11 @@ int main(int argc, char* argv[]){
         htemp = new TH1D("htemp","",std::get<1>(labels_map_[variable]),std::get<2>(labels_map_[variable]),std::get<3>(labels_map_[variable]));
       }
       htemp->Sumw2();
-      std::string wt_string = "wt";
-      gen_tree->Draw("event>>htemp",wt_string.c_str(),"goff");
+      std::string default_wt = "wt";
+      gen_tree->Draw("event>>htemp",default_wt.c_str(),"goff");
       
       double total_inclusive = htemp->Integral(0,htemp->GetNbinsX()+1);
-      wt_string = "wt*"+alias_map_[cat];
+      std::string wt_string = default_wt+="*"+alias_map_[cat];
       std::cout << alias_map_[cat] << std::endl;
       tree->Draw((variable+">>htemp").c_str(),wt_string.c_str(),"goff");
       htemp->Scale(1/total_inclusive);
@@ -593,7 +686,6 @@ int main(int argc, char* argv[]){
       
       if(iterator->first == "PowHeg_Pythia"){
         if(doPDF){
-          std::string default_wt = wt_string;  
           double nominal_wt = total_inclusive;
           std::vector<double> NNPDF_addwt;
             
@@ -646,14 +738,13 @@ int main(int argc, char* argv[]){
           hists_pdf.push_back(pdf_pair.second);
           
           hists.push_back(pdf_pair.first);
-          legend_entries.push_back("pdf up");
+          legend_entries.push_back("pdf_up");
           hists.push_back(pdf_pair.second);
-          legend_entries.push_back("pdf down");
+          legend_entries.push_back("pdf_down");
   
         } 
         
         if(doScale){
-          std::string default_wt = wt_string;
           double nominal_wt = total_inclusive;
           std::vector<double> scale_variation_addwt;
           std::string input_name = outputDirname+"/scale_variation_addwt.txt";
@@ -680,9 +771,10 @@ int main(int argc, char* argv[]){
             input.close();
           }
           
+          std::vector<TH1D*> scale_hists;
           
           for(unsigned i=0; i<9; ++i){
-            if(i==0 || i==5 || i==7) continue;
+            if(i==5 || i==7) continue;
             std::string add_wt = Form("%f",scale_variation_addwt[i]);
             std::string wt_name = Form("%s*scale_variation_wts[%u]",default_wt.c_str(),i);
 
@@ -690,20 +782,19 @@ int main(int argc, char* argv[]){
             wt_name+="*"+alias_map_[cat];
             tree->Draw((variable+">>htemp").c_str(),wt_name.c_str(),"goff");  
             htemp->Scale(1/total_inclusive);
-
-            if(i == 4 || i == 8) hists.push_back((TH1D*)htemp->Clone());
+            scale_hists.push_back((TH1D*)htemp->Clone());
           }
           
-          legend_entries.push_back("scale up");
-          legend_entries.push_back("scale down");
+          std::pair<TH1D*, TH1D*> scale_errors = ScaleError(scale_hists);
+          hists.push_back((TH1D*) scale_errors.first->Clone());
+          hists.push_back((TH1D*) scale_errors.second->Clone());
+          legend_entries.push_back("scale_up");
+          legend_entries.push_back("scale_down");
 
         }
-        
       }
-      
     }
     
-    //SetStyle();
     std::string out_name = outputDirname+"/"+variable+"_"+channel+"_"+cat+"_"+sig[i]+"_generator_compare";
     bool intLabels = variable=="n_jets" || variable=="n_jets_nofilter" || variable=="n_jetsingap" || variable=="n_bjets" || variable=="mva_olddm_vloose_2" || variable=="mva_olddm_tight_2";
     std::string title = cat;
