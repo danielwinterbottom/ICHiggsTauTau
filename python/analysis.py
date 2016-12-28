@@ -484,6 +484,31 @@ class HttWQCDCombinedNode(BaseNode):
     def AddRequests(self, manifest):
         for node in self.SubNodes():
             node.AddRequests(manifest)
+            
+class HttWNode(BaseNode):
+    def __init__(self, name, data, subtract, w_control, w_signal):
+        BaseNode.__init__(self, name)
+        self.shape = None
+        self.data_node = data
+        self.subtract_node = subtract
+        self.w_control_node = w_control
+        self.w_signal_node = w_signal
+
+    def RunSelf(self):
+        self.shape = (self.data_node.shape.rate.n - self.subtract_node.shape.rate.n)/self.w_control_node.shape.rate.n * self.w_signal_node.shape 
+
+    def Objects(self):
+        return {self.name: self.shape.hist}
+
+    def OutputPrefix(self, node=None):
+        return self.name + '.subnodes'
+
+    def SubNodes(self):
+        return [self.data_node, self.subtract_node, self.w_control_node , self.w_signal_node]
+
+    def AddRequests(self, manifest):
+        for node in self.SubNodes():
+            node.AddRequests(manifest)
 
 class Analysis(object):
     def __init__(self):
