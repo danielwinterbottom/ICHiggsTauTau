@@ -509,6 +509,40 @@ class HttWNode(BaseNode):
     def AddRequests(self, manifest):
         for node in self.SubNodes():
             node.AddRequests(manifest)
+            
+class HttWOSSSNode(BaseNode):
+    def __init__(self, name, data_os, subtract_os, data_ss, subtract_ss, w_control, w_signal, w_os, w_ss, qcd_factor=1, get_os=False):
+        BaseNode.__init__(self, name)
+        self.shape = None
+        self.data_os_node = data_os
+        self.subtract_os_node = subtract_os
+        self.data_ss_node = data_ss
+        self.subtract_ss_node = subtract_ss
+        self.w_control_node = w_control
+        self.w_signal_node = w_signal
+        self.w_os_node = w_os
+        self.w_ss_node = w_ss
+        self.qcd_factor = qcd_factor
+        self.get_os = get_os
+
+    def RunSelf(self):
+        w_factor = self.w_os_node.shape.rate.n/self.w_ss_node.shape.rate.n
+        self.shape = ((self.data_os_node.shape.rate.n - self.subtract_os_node.shape.rate.n) - (self.data_ss_node.shape.rate.n - self.subtract_ss_node.shape.rate.n)*self.qcd_factor)/(w_factor-self.qcd_factor)/self.w_control_node.shape.rate.n * self.w_signal_node.shape
+        if self.get_os:
+            self.shape *=w_factor
+        
+    def Objects(self):
+        return {self.name: self.shape.hist}
+
+    def OutputPrefix(self, node=None):
+        return self.name + '.subnodes'
+
+    def SubNodes(self):
+        return [self.data_os_node, self.subtract_os_node, self.data_ss_node, self.subtract_ss_node, self.w_control_node, self.w_signal_node, self.w_os_node, self.w_ss_node]
+
+    def AddRequests(self, manifest):
+        for node in self.SubNodes():
+            node.AddRequests(manifest)
 
 class Analysis(object):
     def __init__(self):

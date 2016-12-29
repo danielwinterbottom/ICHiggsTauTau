@@ -89,7 +89,11 @@ if options.channel == 'tt':
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
 
-cats['inclusive'] = '(1)'    
+cats['inclusive'] = '(1)' 
+
+cats['w_os'] = 'os'
+cats['w_sdb'] = 'mt_1>70.'
+cats['w_sdb_os'] = 'os'
     
 # Add data sample names
 if options.channel == 'mt': 
@@ -118,7 +122,7 @@ wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-
 
 # Add all data and MC filenames
 for sample_name in ztt_samples + data_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + qcd_sub_samples + w_sub_samples + wjets_samples:
-    ana.AddSamples(options.input_folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None,sample_name)
+    ana.AddSamples(options.input_folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
 ana.AddInfo(options.param_file, scaleTo='data_obs')
 
 cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
@@ -168,7 +172,36 @@ def GenerateVV(ana, samples=[], plot='', wt='', sel='', cat='', vv_sels={}):
 def GenerateWG(ana, samples=[], plot='', wt='', sel='', cat='', wg_sel=''):
   full_selection = BuildCutString(wt, sel, cat, 'os', wg_sel)
   ana.nodes[nodename].AddNode(ana.SummedFactory('WGam', samples, plot, full_selection))
-
+  
+def GenerateW(ana, samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', w_sel='', method=8, qcd_factor=1, get_os=False):
+  full_selection = BuildCutString(wt, sel, cat, 'os', w_sel)
+  if method == 8 or method == 9 or method == 15:
+      ana.nodes[nodename].AddNode(ana.SummedFactory('W', samples, plot, full_selection))
+  elif method == 10 or method == 11:
+      control_sel = cats['w_sdb']+' && '+ cats['w_sdb_os']
+      w_control_full_selection = BuildCutString('wt', control_sel, cat)
+      ana.nodes[nodename].AddNode(HttWNode('W',
+        ana.SummedFactory('data_obs', data, plot, w_control_full_selection),
+        ana.SummedFactory('backgrounds', sub_samples, plot, w_control_full_selection),
+        ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
+        ana.SummedFactory('w_signal', samples, plot, full_selection)))
+  elif method == 12 or method == 13 or method == 14:
+      ss_selection = BuildCutString(wt, '', cat, '!os', w_sel)
+      os_selection = BuildCutString(wt, '', cat, 'os', w_sel)
+      control_sel = cats['w_sdb']
+      w_control_full_selection_os = BuildCutString('wt', control_sel, cat)
+      w_control_full_selection_ss = BuildCutString('wt', control_sel, cat, '!os')
+      ana.nodes[nodename].AddNode(HttWOSSSNode('W',
+        ana.SummedFactory('data_os_obs', data, plot, w_control_full_selection_os),
+        ana.SummedFactory('backgrounds_os', sub_samples, plot, w_control_full_selection_os),
+        ana.SummedFactory('data_ss_obs', data_samples, plot, w_control_full_selection_ss),
+        ana.SummedFactory('backgrounds_ss', sub_samples, plot, w_control_full_selection_ss),
+        ana.SummedFactory('w_control', samples, plot, w_control_full_selection_os),
+        ana.SummedFactory('w_signal', samples, plot, full_selection),
+        ana.SummedFactory('w_os', samples, plot, os_selection),
+        ana.SummedFactory('w_ss', samples, plot, ss_selection),
+        qcd_factor,
+        get_os))
 
 ana.nodes.AddNode(ListNode(nodename))
 
@@ -180,6 +213,7 @@ GenerateTop(ana, top_samples, plot, 'wt', sel, cat, top_sels)
 GenerateVV(ana, vv_samples, plot, 'wt', sel, cat, vv_sels)  
 if options.channel == 'em':
     GenerateWG(ana, wgam_samples, plot, 'wt', sel, cat, '')
+GenerateW(ana, wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, '', 12, 1.18, True)
 
 ana.Run()
 ana.nodes.PrintTree()
