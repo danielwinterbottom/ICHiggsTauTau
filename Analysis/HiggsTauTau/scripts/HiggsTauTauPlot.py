@@ -173,8 +173,12 @@ def GenerateWG(ana, samples=[], plot='', wt='', sel='', cat='', wg_sel=''):
   full_selection = BuildCutString(wt, sel, cat, 'os', wg_sel)
   ana.nodes[nodename].AddNode(ana.SummedFactory('WGam', samples, plot, full_selection))
   
-def GenerateW(ana, samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', w_sel='', method=8, qcd_factor=1, get_os=False):
+def GenerateW(ana, samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', w_sel='', method=8, qcd_factor=1.18, get_os=True):
   full_selection = BuildCutString(wt, sel, cat, 'os', w_sel)
+  shape_cat = cat;
+  if method == 14:
+      w_shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
+  shape_selection = BuildCutString(wt, sel, shape_cat, 'os', w_sel)
   if method == 8 or method == 9 or method == 15:
       ana.nodes[nodename].AddNode(ana.SummedFactory('W', samples, plot, full_selection))
   elif method == 10 or method == 11:
@@ -184,13 +188,37 @@ def GenerateW(ana, samples=[], data=[], sub_samples=[], plot='', wt='', sel='', 
         ana.SummedFactory('data_obs', data, plot, w_control_full_selection),
         ana.SummedFactory('backgrounds', sub_samples, plot, w_control_full_selection),
         ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
-        ana.SummedFactory('w_signal', samples, plot, full_selection)))
-  elif method == 12 or method == 13 or method == 14:
-      ss_selection = BuildCutString(wt, '', cat, '!os', w_sel)
-      os_selection = BuildCutString(wt, '', cat, 'os', w_sel)
-      control_sel = cats['w_sdb']
-      w_control_full_selection_os = BuildCutString('wt', control_sel, cat)
-      w_control_full_selection_ss = BuildCutString('wt', control_sel, cat, '!os')
+        ana.SummedFactory('w_signal', samples, plot, full_selection),
+        ana.SummedFactory('w_shape', samples, plot, shape_selection)))
+  elif method == 12 or method == 13 or method == 14 or method == 16:
+      if method == 16:
+          cat_nobtag = '(n_jets <=1 && n_lowpt_jets>=1)*('+cats['baseline']+')'
+          full_selection = BuildCutString(wt, sel, cat_nobtag, 'os', w_sel)
+          ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', w_sel)
+          os_selection = BuildCutString(wt, '', cat_nobtag, 'os', w_sel)
+          control_sel = cats['w_sdb']
+          w_control_full_selection_os = BuildCutString('wt', control_sel, cat_nobtag)
+          w_control_full_selection_ss = BuildCutString('wt', control_sel, cat_nobtag, '!os')
+          
+          if get_os:
+              btag_extrap_sel_num = BuildCutString(wt, sel, cat, 'os', w_sel)
+              btag_extrap_sel_den = BuildCutString(wt, sel, cat_nobtag, 'os', w_sel)
+          else:
+              btag_extrap_sel_num = BuildCutString(wt, sel, cat, '!os', w_sel)
+              btag_extrap_sel_den = BuildCutString(wt, sel, cat_nobtag, '!os', w_sel)
+              
+          btag_extrap_num_node = ana.SummedFactory('btag', wjets_samples, plot, btag_extrap_sel_num)
+          btag_extrap_den_node = ana.SummedFactory('no_btag', wjets_samples, plot, btag_extrap_sel_den)
+          
+      else:
+          ss_selection = BuildCutString(wt, '', cat, '!os', w_sel)
+          os_selection = BuildCutString(wt, '', cat, 'os', w_sel)
+          control_sel = cats['w_sdb']
+          w_control_full_selection_os = BuildCutString('wt', control_sel, cat)
+          w_control_full_selection_ss = BuildCutString('wt', control_sel, cat, '!os')
+          btag_extrap_num_node = None
+          btag_extrap_den_node = None
+          
       ana.nodes[nodename].AddNode(HttWOSSSNode('W',
         ana.SummedFactory('data_os_obs', data, plot, w_control_full_selection_os),
         ana.SummedFactory('backgrounds_os', sub_samples, plot, w_control_full_selection_os),
@@ -200,8 +228,11 @@ def GenerateW(ana, samples=[], data=[], sub_samples=[], plot='', wt='', sel='', 
         ana.SummedFactory('w_signal', samples, plot, full_selection),
         ana.SummedFactory('w_os', samples, plot, os_selection),
         ana.SummedFactory('w_ss', samples, plot, ss_selection),
+        ana.SummedFactory('w_shape', samples, plot, shape_selection),
         qcd_factor,
-        get_os))
+        get_os,
+        btag_extrap_num_node,
+        btag_extrap_den_node))          
 
 ana.nodes.AddNode(ListNode(nodename))
 
@@ -213,7 +244,7 @@ GenerateTop(ana, top_samples, plot, 'wt', sel, cat, top_sels)
 GenerateVV(ana, vv_samples, plot, 'wt', sel, cat, vv_sels)  
 if options.channel == 'em':
     GenerateWG(ana, wgam_samples, plot, 'wt', sel, cat, '')
-GenerateW(ana, wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, '', 12, 1.18, True)
+GenerateW(ana, wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, '', 12)
 
 ana.Run()
 ana.nodes.PrintTree()
