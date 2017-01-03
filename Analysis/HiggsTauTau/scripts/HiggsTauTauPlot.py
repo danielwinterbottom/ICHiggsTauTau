@@ -127,8 +127,8 @@ ana.AddInfo(options.param_file, scaleTo='data_obs')
 
 cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
 sel = options.sel
-#plot = 'm_vis(7,0,140)' # set this under option
-plot = 'os(2,0,2)'
+plot = 'm_vis(7,0,140)' # set this under option
+#plot = 'os(2,0,2)'
 nodename = plot.split('(')[0]
 
 def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
@@ -177,8 +177,9 @@ def GenerateW(ana, samples=[], data=[], sub_samples=[], plot='', wt='', sel='', 
   full_selection = BuildCutString(wt, sel, cat, 'os', w_sel)
   shape_cat = cat;
   if method == 14:
-      w_shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
+      shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
   shape_selection = BuildCutString(wt, sel, shape_cat, 'os', w_sel)
+  
   if method == 8 or method == 9 or method == 15:
       ana.nodes[nodename].AddNode(ana.SummedFactory('W', samples, plot, full_selection))
   elif method == 10 or method == 11:
@@ -244,7 +245,7 @@ GenerateTop(ana, top_samples, plot, 'wt', sel, cat, top_sels)
 GenerateVV(ana, vv_samples, plot, 'wt', sel, cat, vv_sels)  
 if options.channel == 'em':
     GenerateWG(ana, wgam_samples, plot, 'wt', sel, cat, '')
-GenerateW(ana, wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, '', 12)
+GenerateW(ana, wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, '', 14)
 
 ana.Run()
 ana.nodes.PrintTree()

@@ -493,9 +493,10 @@ class HttWNode(BaseNode):
         self.subtract_node = subtract
         self.w_control_node = w_control
         self.w_signal_node = w_signal
+        self.w_shape = w_shape
 
     def RunSelf(self):
-        self.shape = (self.data_node.shape.rate.n - self.subtract_node.shape.rate.n)/self.w_control_node.shape.rate.n * self.w_signal_node.shape 
+        self.shape = (self.data_node.shape.rate.n - self.subtract_node.shape.rate.n)/self.w_control_node.shape.rate.n * self.w_signal_node.shape.rate.n / self.w_shape.rate.n * self.w_shape
 
     def Objects(self):
         return {self.name: self.shape.hist}
@@ -504,14 +505,14 @@ class HttWNode(BaseNode):
         return self.name + '.subnodes'
 
     def SubNodes(self):
-        return [self.data_node, self.subtract_node, self.w_control_node , self.w_signal_node]
+        return [self.data_node, self.subtract_node, self.w_control_node , self.w_signal_node, self.w_shape]
 
     def AddRequests(self, manifest):
         for node in self.SubNodes():
             node.AddRequests(manifest)
             
 class HttWOSSSNode(BaseNode):
-    def __init__(self, name, data_os, subtract_os, data_ss, subtract_ss, w_control, w_signal, w_os, w_ss, qcd_factor=1, get_os=False):
+    def __init__(self, name, data_os, subtract_os, data_ss, subtract_ss, w_control, w_signal, w_os, w_ss, w_shape, qcd_factor=1, get_os=False, btag_extrap_num_node = None, btag_extrap_den_node = None):
         BaseNode.__init__(self, name)
         self.shape = None
         self.data_os_node = data_os
@@ -522,14 +523,19 @@ class HttWOSSSNode(BaseNode):
         self.w_signal_node = w_signal
         self.w_os_node = w_os
         self.w_ss_node = w_ss
+        self.w_shape = w_shape
         self.qcd_factor = qcd_factor
         self.get_os = get_os
+        self.btag_extrap_num_node = btag_extrap_num_node
+        self.btag_extrap_den_node = btag_extrap_den_node
 
     def RunSelf(self):
         w_factor = self.w_os_node.shape.rate.n/self.w_ss_node.shape.rate.n
-        self.shape = ((self.data_os_node.shape.rate.n - self.subtract_os_node.shape.rate.n) - (self.data_ss_node.shape.rate.n - self.subtract_ss_node.shape.rate.n)*self.qcd_factor)/(w_factor-self.qcd_factor)/self.w_control_node.shape.rate.n * self.w_signal_node.shape
+        self.shape = ((self.data_os_node.shape.rate.n - self.subtract_os_node.shape.rate.n) - (self.data_ss_node.shape.rate.n - self.subtract_ss_node.shape.rate.n)*self.qcd_factor)/(w_factor-self.qcd_factor)/self.w_control_node.shape.rate.n * self.w_signal_node.shape.rate.n /self.w_shape.shape.rate.n * self.w_shape.shape
         if self.get_os:
             self.shape *=w_factor
+        if self.btag_extrap_num_node is not None and self.btag_extrap_den_node is not None:
+            self.shape *= self.btag_extrap_num_node.shape.rate.n / self.btag_extrap_den_node.shape.rate.n
         
     def Objects(self):
         return {self.name: self.shape.hist}
@@ -538,7 +544,10 @@ class HttWOSSSNode(BaseNode):
         return self.name + '.subnodes'
 
     def SubNodes(self):
-        return [self.data_os_node, self.subtract_os_node, self.data_ss_node, self.subtract_ss_node, self.w_control_node, self.w_signal_node, self.w_os_node, self.w_ss_node]
+        if self.btag_extrap_num_node is not None and self.btag_extrap_den_node is not None:
+            return [self.data_os_node, self.subtract_os_node, self.data_ss_node, self.subtract_ss_node, self.w_control_node, self.w_signal_node, self.w_os_node, self.w_ss_node, self.w_shape, self.btag_extrap_num_node, self.btag_extrap_den_node]
+        else:
+            return [self.data_os_node, self.subtract_os_node, self.data_ss_node, self.subtract_ss_node, self.w_control_node, self.w_signal_node, self.w_os_node, self.w_ss_node, self.w_shape]
 
     def AddRequests(self, manifest):
         for node in self.SubNodes():
