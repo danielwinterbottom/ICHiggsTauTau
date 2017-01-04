@@ -297,6 +297,15 @@ int main(int argc, char* argv[]) {
       seq.InsertSequence(fullseqn, analysis);
     }
 
+    if (seqn == "Theory") {
+      auto & seq = seqs[fullseqn];
+
+      seq.BuildModule(ic::TheoryTreeProducer("TheoryTreeProducer")
+        .set_fs(fs.at(fullseqn).get())
+      );
+      seq.InsertSequence(fullseqn, analysis);
+    }
+
     if (fullseqn == "Zee") {
       auto & seq = seqs["Zee"];
 

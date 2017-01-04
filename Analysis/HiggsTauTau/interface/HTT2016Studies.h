@@ -50,6 +50,31 @@ class SelectMVAMET : public ModuleBase {
    virtual int Execute(TreeEvent *event);
 };
 
+class TheoryTreeProducer : public ModuleBase {
+ private:
+  CLASS_MEMBER(TheoryTreeProducer, fwlite::TFileService*, fs)
+  TTree *outtree_;
+
+  float pt_h;
+  float pt_ditau;
+  float pt_taup;
+  float pt_taum;
+  float pt_vistaup;
+  float pt_vistaum;
+  int njets;
+  float mjj;
+
+ public:
+  TheoryTreeProducer(std::string const& name);
+  virtual ~TheoryTreeProducer();
+
+  virtual int PreAnalysis();
+  virtual int Execute(TreeEvent *event);
+  virtual int PostAnalysis();
+  virtual void PrintInfo();
+
+};
+
 class ZmmTreeProducer : public ModuleBase {
  private:
   CLASS_MEMBER(ZmmTreeProducer, fwlite::TFileService*, fs)

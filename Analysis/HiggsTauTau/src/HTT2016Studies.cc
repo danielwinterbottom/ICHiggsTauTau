@@ -2,6 +2,7 @@
 #include <map>
 #include "TMath.h"
 #include "boost/functional/hash.hpp"
+#include "boost/lexical_cast.hpp"
 #include "RooRealVar.h"
 #include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
@@ -64,6 +65,122 @@ namespace ic {
     event->Add(met_target_, mvamet);
     return 0;
   }
+
+
+  TheoryTreeProducer::TheoryTreeProducer(std::string const& name)
+      : ModuleBase(name) {
+      fs_ = nullptr;
+  }
+
+  TheoryTreeProducer::~TheoryTreeProducer() {
+    ;
+  }
+
+  int TheoryTreeProducer::PreAnalysis() {
+    if (fs_) {
+      outtree_ = fs_->make<TTree>("Theory","Theory");
+      outtree_->Branch("pt_h",         &pt_h);
+      outtree_->Branch("pt_ditau",     &pt_ditau);
+      outtree_->Branch("pt_taup",      &pt_taup);
+      outtree_->Branch("pt_taum",      &pt_taum);
+      outtree_->Branch("pt_vistaup",   &pt_vistaup);
+      outtree_->Branch("njets", &njets);
+      outtree_->Branch("mjj",   &mjj);
+    }
+    return 0;
+  }
+
+  int TheoryTreeProducer::Execute(TreeEvent *event) {
+
+    auto parts = event->GetPtrVec<GenParticle>("genParticles");
+    ic::GenParticle *last_h = nullptr;
+    ic::GenParticle *last_taup = nullptr;
+    ic::GenParticle *last_taum = nullptr;
+
+
+
+    for (auto p : parts) {
+      auto const& flags = p->statusFlags();
+      if (std::abs(p->pdgid()) == 25 && flags[IsLastCopy]) {
+        if (!last_h) {
+          last_h = p;
+        } else {
+          std::cout << ">> Found duplicate last Higgs\n";
+        }
+      }
+      // p->Print();
+      // std::cout << "  isLastCopy: " << p->statusFlags()[GenStatusBits::IsLastCopy] << "\n";
+    }
+    auto h_daughters = ExtractDaughtersRecursive(last_h, parts);
+    for (auto p : h_daughters) {
+      auto const& flags = p->statusFlags();
+      if ((p->pdgid()) == +15 && flags[IsLastCopy]) {
+        if (!last_taup) {
+          last_taup = p;
+        } else {
+          std::cout << ">> Found duplicate last taup\n";
+        }
+      }
+      if ((p->pdgid()) == -15 && flags[IsLastCopy]) {
+        if (!last_taum) {
+          last_taum = p;
+        } else {
+          std::cout << ">> Found duplicate last taum\n";
+        }
+      }
+    };
+    ic::CompositeCandidate ditau;
+    ditau.AddCandidate("taup", last_taup);
+    ditau.AddCandidate("taum", last_taum);
+
+    auto taup_stable_daughters = ExtractStableDaughters(last_taup, h_daughters);
+    auto taum_stable_daughters = ExtractStableDaughters(last_taum, h_daughters);
+    ic::erase_if(taup_stable_daughters, [](GenParticle *p) {
+      return (abs(p->pdgid()) == 12 || abs(p->pdgid()) == 14 || abs(p->pdgid()) == 16);
+    });
+    ic::erase_if(taum_stable_daughters, [](GenParticle *p) {
+      return (abs(p->pdgid()) == 12 || abs(p->pdgid()) == 14 || abs(p->pdgid()) == 16);
+    });
+    ic::CompositeCandidate visp;
+    for (auto p : taup_stable_daughters) {
+      visp.AddCandidate(boost::lexical_cast<std::string>(p->index()), p);
+    }
+    ic::CompositeCandidate vism;
+    for (auto p : taum_stable_daughters) {
+      vism.AddCandidate(boost::lexical_cast<std::string>(p->index()), p);
+    }
+
+    auto genjets = event->GetPtrVec<GenJet>("genJets");
+    std::vector<Candidate *> vis_taus{&visp, &vism};
+    ic::keep_if(genjets, [&](GenJet *j) {
+      return MinPtMaxEta(j, 30., 4.7) && MinDRToCollection(j, vis_taus, 0.5);
+    });
+    std::sort(genjets.begin(), genjets.end(), [](GenJet *j1, GenJet *j2) {
+      return j1->pt() > j2->pt();
+    });
+    pt_h = last_h->pt();
+    pt_ditau = ditau.pt();
+    pt_taup = last_taup->pt();
+    pt_taum = last_taum->pt();
+    pt_vistaup = visp.pt();
+    pt_vistaum = vism.pt();
+
+    njets = genjets.size();
+    if (njets >= 2) {
+      mjj = (genjets[0]->vector() + genjets[1]->vector()).M();
+    } else {
+      mjj = 0.;
+    }
+    outtree_->Fill();
+    return 0;
+  }
+
+  int TheoryTreeProducer::PostAnalysis() {
+    return 0;
+  }
+
+  void TheoryTreeProducer::PrintInfo() { }
+
 
   ZmmTreeProducer::ZmmTreeProducer(std::string const& name)
       : ModuleBase(name),
