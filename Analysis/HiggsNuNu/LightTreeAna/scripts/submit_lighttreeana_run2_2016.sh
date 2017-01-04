@@ -7,8 +7,6 @@ DOSUBMIT=1
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
 
-#export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
-
 GRIDSETUP=1
 if [ "$DOCERN" = "0" ]
     then
@@ -24,11 +22,11 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultRun2Config.cfg
-QUEUEDIR=short #medium #medium long
+QUEUEDIR=short #medium long
 
-JOBDIRPREFIX=jobs_run2ana_161212_ICHEP
+JOBDIRPREFIX=jobs_run2ana_161215_ICHEP_debug
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_161212_ICHEP
+OUTPUTPREFIX=output_run2ana_161215_ICHEP_debug
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -69,15 +67,18 @@ for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in qcd enu munu taunu mumu ee nunu #qcd #topl topb top gamma
+  for channels in ee #qcd enu munu taunu mumu ee nunu
     do
     JOB=$channels
+    #To debug
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_debug.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_debug.hists`
     #executable expect strings separated by "!"
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
     ## To produce all of the hist
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
+    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
     ## To produce all of the hist for datacard
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_datacard.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_datacard.hists`

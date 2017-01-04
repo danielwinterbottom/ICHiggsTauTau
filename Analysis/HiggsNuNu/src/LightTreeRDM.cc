@@ -1117,10 +1117,15 @@ namespace ic {
     for (unsigned elements = 0; elements<vetoelectrons.size(); ++elements){
     mynewvetoelectrons_.push_back(*vetoelectrons[elements]);
     }*/
-    if(!ignoreLeptons_) nvetomuons_=vetomuons.size();
-    else nvetomuons_=0;
+    if(!ignoreLeptons_){
+      nvetomuons_=vetomuons.size();
+      nvetoelectrons_=vetoelectrons.size();
+    }
+    else {
+      nvetomuons_=0;
+      nvetoelectrons_=0;
+    }
     nselmuons_=selmuons.size();
-    nvetoelectrons_=vetoelectrons.size();
     nselelectrons_=selelectrons.size();
     //fill lepton info using veto objects: veto=tight when requiring ==1 tight....
     //allows to use one loose one tight for mumu selection
