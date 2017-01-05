@@ -189,8 +189,8 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
   if method in [8, 9, 15]:
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
   elif method in [10, 11]:
-      control_sel = cats['w_sdb']+' && '+ cats['w_sdb_os']
-      w_control_full_selection = BuildCutString('wt', control_sel, cat)
+      control_sel = cats['w_sdb']+' && '+ OSSS
+      w_control_full_selection = BuildCutString('wt', control_sel, cat, OSSS)
       w_node = HttWNode(name,
         ana.SummedFactory('data_obs', data, plot, w_control_full_selection),
         ana.SummedFactory('backgrounds', sub_samples, plot, w_control_full_selection),
@@ -273,8 +273,7 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
         
         full_selection = BuildCutString(weight, qcd_sdb_sel, qcd_cat, '')
         subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
-
-        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, weight, qcd_sdb_sel, qcd_cat, method, 1.18, False)
+        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, method, 1.18, False)
         subtract_node.AddNode(w_node)
     
     ana.nodes[nodename].AddNode(HttQCDNode('QCD',
@@ -294,12 +293,12 @@ GenerateTop(ana, top_samples, plot, 'wt', sel, cat, top_sels)
 GenerateVV(ana, vv_samples, plot, 'wt', sel, cat, vv_sels)  
 if options.channel == 'em':
     GenerateWG(ana, wgam_samples, plot, 'wt', sel, cat, '')
-GenerateW(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, 14)
+GenerateW(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, 10)
 
 if options.channel == 'em':
     GenerateQCD(ana, data_samples, qcd_sub_samples, [], plot, 'wt', sel, cat, 8)
 else:
-    GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, 8)
+    GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, 12)
 
 ana.Run()
 ana.nodes.PrintTree()
