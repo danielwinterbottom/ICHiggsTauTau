@@ -486,7 +486,7 @@ class HttWQCDCombinedNode(BaseNode):
             node.AddRequests(manifest)
             
 class HttWNode(BaseNode):
-    def __init__(self, name, data, subtract, w_control, w_signal):
+    def __init__(self, name, data, subtract, w_control, w_signal, w_shape):
         BaseNode.__init__(self, name)
         self.shape = None
         self.data_node = data
@@ -512,7 +512,7 @@ class HttWNode(BaseNode):
             node.AddRequests(manifest)
             
 class HttWOSSSNode(BaseNode):
-    def __init__(self, name, data_os, subtract_os, data_ss, subtract_ss, w_control, w_signal, w_os, w_ss, w_shape, qcd_factor=1, get_os=False, btag_extrap_num_node = None, btag_extrap_den_node = None):
+    def __init__(self, name, data_os, subtract_os, data_ss, subtract_ss, w_control, w_signal, w_os, w_ss, w_shape, qcd_factor=1, get_os=True, btag_extrap_num_node = None, btag_extrap_den_node = None):
         BaseNode.__init__(self, name)
         self.shape = None
         self.data_os_node = data_os
@@ -620,8 +620,6 @@ class Analysis(object):
                 if 'xs' in data and 'evt' in data:
                     #print name, data
                     data['sf'] = lumi / (float(data['evt']) / float(data['xs']))
-                elif 'lo_xs' in data and 'evt' in data:
-                    data['sf'] = lumi / (float(data['evt']) / float(data['lo_xs']))
                 else:
                     data['sf'] = 1.0
         #pprint.pprint(self.info)

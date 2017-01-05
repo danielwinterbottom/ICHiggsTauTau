@@ -113,9 +113,11 @@ top_samples = ['TT']
 ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
 
 if options.channel == 'em': 
-    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+    #qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
 else:
-    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+    #qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
     
 w_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
 wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
@@ -127,8 +129,8 @@ ana.AddInfo(options.param_file, scaleTo='data_obs')
 
 cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
 sel = options.sel
-plot = 'm_vis(7,0,140)' # set this under option
-#plot = 'os(2,0,2)'
+#plot = 'm_vis(7,0,140)' # set this under option
+plot = 'os(2,0,2)'
 nodename = plot.split('(')[0]
 
 def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
@@ -172,55 +174,54 @@ def GenerateVV(ana, samples=[], plot='', wt='', sel='', cat='', vv_sels={}):
 def GenerateWG(ana, samples=[], plot='', wt='', sel='', cat='', wg_sel=''):
   full_selection = BuildCutString(wt, sel, cat, 'os', wg_sel)
   ana.nodes[nodename].AddNode(ana.SummedFactory('WGam', samples, plot, full_selection))
-  
-def GenerateW(ana, samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', w_sel='', method=8, qcd_factor=1.18, get_os=True):
-  full_selection = BuildCutString(wt, sel, cat, 'os', w_sel)
-  shape_cat = cat;
+
+def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=1.18, get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, '')
+  shape_cat = cat
   if method == 14:
       shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
-  shape_selection = BuildCutString(wt, sel, shape_cat, 'os', w_sel)
+  shape_selection = BuildCutString(wt, sel, shape_cat, 'os', '')
   
-  if method == 8 or method == 9 or method == 15:
-      ana.nodes[nodename].AddNode(ana.SummedFactory('W', samples, plot, full_selection))
-  elif method == 10 or method == 11:
+  if method in [8, 9, 15]:
+      w_node = ana.SummedFactory(name, samples, plot, full_selection)
+  elif method in [10, 11]:
       control_sel = cats['w_sdb']+' && '+ cats['w_sdb_os']
       w_control_full_selection = BuildCutString('wt', control_sel, cat)
-      ana.nodes[nodename].AddNode(HttWNode('W',
+      w_node = HttWNode(name,
         ana.SummedFactory('data_obs', data, plot, w_control_full_selection),
         ana.SummedFactory('backgrounds', sub_samples, plot, w_control_full_selection),
         ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
         ana.SummedFactory('w_signal', samples, plot, full_selection),
-        ana.SummedFactory('w_shape', samples, plot, shape_selection)))
-  elif method == 12 or method == 13 or method == 14 or method == 16:
+        ana.SummedFactory('w_shape', samples, plot, shape_selection))
+  elif method in [12, 13, 14, 16]:
       if method == 16:
           cat_nobtag = '(n_jets <=1 && n_lowpt_jets>=1)*('+cats['baseline']+')'
-          full_selection = BuildCutString(wt, sel, cat_nobtag, 'os', w_sel)
-          ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', w_sel)
-          os_selection = BuildCutString(wt, '', cat_nobtag, 'os', w_sel)
+          full_selection = BuildCutString(wt, sel, cat_nobtag, OSSS, '')
+          ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', '')
+          os_selection = BuildCutString(wt, '', cat_nobtag, 'os', '')
           control_sel = cats['w_sdb']
           w_control_full_selection_os = BuildCutString('wt', control_sel, cat_nobtag)
           w_control_full_selection_ss = BuildCutString('wt', control_sel, cat_nobtag, '!os')
-          
-          if get_os:
-              btag_extrap_sel_num = BuildCutString(wt, sel, cat, 'os', w_sel)
-              btag_extrap_sel_den = BuildCutString(wt, sel, cat_nobtag, 'os', w_sel)
-          else:
-              btag_extrap_sel_num = BuildCutString(wt, sel, cat, '!os', w_sel)
-              btag_extrap_sel_den = BuildCutString(wt, sel, cat_nobtag, '!os', w_sel)
+          btag_extrap_sel_num = BuildCutString(wt, sel, cat, OSSS, '')
+          btag_extrap_sel_den = BuildCutString(wt, sel, cat_nobtag, OSSS, '')
               
-          btag_extrap_num_node = ana.SummedFactory('btag', wjets_samples, plot, btag_extrap_sel_num)
-          btag_extrap_den_node = ana.SummedFactory('no_btag', wjets_samples, plot, btag_extrap_sel_den)
+          btag_extrap_num_node = ana.SummedFactory('btag', samples, plot, btag_extrap_sel_num)
+          btag_extrap_den_node = ana.SummedFactory('no_btag', samples, plot, btag_extrap_sel_den)
           
       else:
-          ss_selection = BuildCutString(wt, '', cat, '!os', w_sel)
-          os_selection = BuildCutString(wt, '', cat, 'os', w_sel)
+          ss_selection = BuildCutString(wt, '', cat, '!os', '')
+          os_selection = BuildCutString(wt, '', cat, 'os', '')
           control_sel = cats['w_sdb']
           w_control_full_selection_os = BuildCutString('wt', control_sel, cat)
           w_control_full_selection_ss = BuildCutString('wt', control_sel, cat, '!os')
           btag_extrap_num_node = None
           btag_extrap_den_node = None
           
-      ana.nodes[nodename].AddNode(HttWOSSSNode('W',
+      w_node = HttWOSSSNode(name,
         ana.SummedFactory('data_os_obs', data, plot, w_control_full_selection_os),
         ana.SummedFactory('backgrounds_os', sub_samples, plot, w_control_full_selection_os),
         ana.SummedFactory('data_ss_obs', data_samples, plot, w_control_full_selection_ss),
@@ -233,7 +234,55 @@ def GenerateW(ana, samples=[], data=[], sub_samples=[], plot='', wt='', sel='', 
         qcd_factor,
         get_os,
         btag_extrap_num_node,
-        btag_extrap_den_node))          
+        btag_extrap_den_node) 
+  return w_node
+
+def GenerateW(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=1.18, get_os=True):
+  w_node = GetWNode(ana, name, samples, data, sub_samples, plot, wt, sel, cat, method, qcd_factor, get_os)
+  ana.nodes[nodename].AddNode(w_node)
+      
+def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=1.18, get_os=True):
+    tt_qcd_norm = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+    if options.channel == 'et' or options.channel == 'mt':
+        ttqcdcat = '('+cats[options.cat]+')*(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto)*(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)'
+    elif options.channel == 'tt':
+        ttqcdcat = '('+cats[options.cat]+')*(antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        
+    qcd_sdb_sel = '(!os && ' + sel + ')'
+    w_extrp_sdb_sel = '(!os && '+ cats['w_sdb'] + ')'
+    w_extrp_sig_sel = '(!os && ' + sel + ')'
+    w_sdb_sel = '(!os && ' + cats['w_sdb'] + ')'
+    w_sdb_sel_osss = cats['w_sdb']
+    qcd_cat = cat
+    qcd_sdb_cat = cat
+    qcd_extrap_sel = '(!os && ' + sel + ')'
+
+    if options.channel == 'tt' and method == 8:
+        if get_os: 
+            qcd_sdb_sel =  '(os && ' + sel + ')'
+        qcd_sdb_cat = ttqcdcat + tt_qcd_norm 
+    
+    if options.channel != 'tt': 
+        qcd_os_ss_factor = qcd_factor
+        weight = wt
+            
+        if method == 15:
+            qcd_os_ss_factor = 1
+            if get_os:
+                weight = wt+'wt_em_qcd'
+        
+        full_selection = BuildCutString(weight, qcd_sdb_sel, qcd_cat, '')
+        subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
+
+        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, weight, qcd_sdb_sel, qcd_cat, method, 1.18, False)
+        subtract_node.AddNode(w_node)
+    
+    ana.nodes[nodename].AddNode(HttQCDNode('QCD',
+        ana.SummedFactory('data_ss', data, plot, full_selection),
+        subtract_node,
+        qcd_os_ss_factor))
+        
+    
 
 ana.nodes.AddNode(ListNode(nodename))
 
@@ -245,7 +294,12 @@ GenerateTop(ana, top_samples, plot, 'wt', sel, cat, top_sels)
 GenerateVV(ana, vv_samples, plot, 'wt', sel, cat, vv_sels)  
 if options.channel == 'em':
     GenerateWG(ana, wgam_samples, plot, 'wt', sel, cat, '')
-GenerateW(ana, wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, '', 14)
+GenerateW(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, 14)
+
+if options.channel == 'em':
+    GenerateQCD(ana, data_samples, qcd_sub_samples, [], plot, 'wt', sel, cat, 8)
+else:
+    GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, 8)
 
 ana.Run()
 ana.nodes.PrintTree()
