@@ -8,6 +8,7 @@ from optparse import OptionParser
 
 CHANNELS= ['et', 'mt', 'em','tt']
 ANALYSIS= ['sm','mssm']
+METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16]
 
 parser = OptionParser()
 parser.add_option("--channel", dest="channel", type='string', default='mt',
@@ -26,6 +27,8 @@ parser.add_option("-s", "--sel", dest="sel", type='string', default='',
     help="Selection")
 parser.add_option("-a", "--analysis", dest="analysis", type='string', default='sm',
     help="Analysis.  Supported options: %(CHANNELS)s" % vars())
+parser.add_option("-m", "--method", dest="method", type='int', default=14,
+    help="Method.  Supported options: %(METHODS)s" % vars())
 (options, args) = parser.parse_args()
 
 print '################### Options ###################'
@@ -37,6 +40,7 @@ print 'cat          = ' + options.cat
 print 'year         = ' + options.year
 print 'sel          = ' + options.sel
 print 'analysis     = ' + options.analysis
+print 'method       =' ,  options.method
 print '###############################################'
 
 ROOT.TH1.SetDefaultSumw2(True)
@@ -73,7 +77,6 @@ vv_sels['vvt_sel'] = z_sels['ztt_sel']
 vv_sels['vvj_sel'] = '!('+z_sels['ztt_sel']+')'
     
 cats = {}
-
 if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -90,7 +93,6 @@ elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
 
 cats['inclusive'] = '(1)' 
-
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
 cats['w_sdb_os'] = 'os'
@@ -113,10 +115,8 @@ top_samples = ['TT']
 ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
 
 if options.channel == 'em': 
-    #qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
     qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
 else:
-    #qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
     qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
     
 w_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
@@ -200,10 +200,11 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
   elif method in [12, 13, 14, 16]:
       if method == 16:
           cat_nobtag = '(n_jets <=1 && n_lowpt_jets>=1)*('+cats['baseline']+')'
-          full_selection = BuildCutString(wt, sel, cat_nobtag, OSSS, '')
+          full_selection = BuildCutString(wt, sel, cat_nobtag, OSSS)
           ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', '')
           os_selection = BuildCutString(wt, '', cat_nobtag, 'os', '')
           control_sel = cats['w_sdb']
+          w_control_full_selection = BuildCutString('wt', control_sel, cat_nobtag, OSSS)
           w_control_full_selection_os = BuildCutString('wt', control_sel, cat_nobtag)
           w_control_full_selection_ss = BuildCutString('wt', control_sel, cat_nobtag, '!os')
           btag_extrap_sel_num = BuildCutString(wt, sel, cat, OSSS, '')
@@ -213,9 +214,11 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
           btag_extrap_den_node = ana.SummedFactory('no_btag', samples, plot, btag_extrap_sel_den)
           
       else:
+          full_selection = BuildCutString(wt, sel, cat, OSSS)
           ss_selection = BuildCutString(wt, '', cat, '!os', '')
           os_selection = BuildCutString(wt, '', cat, 'os', '')
           control_sel = cats['w_sdb']
+          w_control_full_selection = BuildCutString('wt', control_sel, cat, OSSS)
           w_control_full_selection_os = BuildCutString('wt', control_sel, cat)
           w_control_full_selection_ss = BuildCutString('wt', control_sel, cat, '!os')
           btag_extrap_num_node = None
@@ -226,7 +229,7 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
         ana.SummedFactory('backgrounds_os', sub_samples, plot, w_control_full_selection_os),
         ana.SummedFactory('data_ss_obs', data_samples, plot, w_control_full_selection_ss),
         ana.SummedFactory('backgrounds_ss', sub_samples, plot, w_control_full_selection_ss),
-        ana.SummedFactory('w_control', samples, plot, w_control_full_selection_os),
+        ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
         ana.SummedFactory('w_signal', samples, plot, full_selection),
         ana.SummedFactory('w_os', samples, plot, os_selection),
         ana.SummedFactory('w_ss', samples, plot, ss_selection),
@@ -262,18 +265,21 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
             qcd_sdb_sel =  '(os && ' + sel + ')'
         qcd_sdb_cat = ttqcdcat + tt_qcd_norm 
     
-    if options.channel != 'tt': 
-        qcd_os_ss_factor = qcd_factor
+    if options.channel != 'tt':
+        if options.channel == 'em':
+            qcd_os_ss_factor = 1
+        else:
+            qcd_os_ss_factor = qcd_factor
         weight = wt
             
         if method == 15:
             qcd_os_ss_factor = 1
             if get_os:
-                weight = wt+'wt_em_qcd'
+                weight = wt+'*wt_em_qcd'
         
         full_selection = BuildCutString(weight, qcd_sdb_sel, qcd_cat, '')
         subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
-        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, method, 1.18, False)
+        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, weight, sel, cat, method, 1.18, False)
         subtract_node.AddNode(w_node)
     
     ana.nodes[nodename].AddNode(HttQCDNode('QCD',
@@ -281,8 +287,6 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
         subtract_node,
         qcd_os_ss_factor))
         
-    
-
 ana.nodes.AddNode(ListNode(nodename))
 
 full_selection = BuildCutString('wt', sel, cat)
@@ -293,15 +297,14 @@ GenerateTop(ana, top_samples, plot, 'wt', sel, cat, top_sels)
 GenerateVV(ana, vv_samples, plot, 'wt', sel, cat, vv_sels)  
 if options.channel == 'em':
     GenerateWG(ana, wgam_samples, plot, 'wt', sel, cat, '')
-GenerateW(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, 10)
-
+GenerateW(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
 if options.channel == 'em':
-    GenerateQCD(ana, data_samples, qcd_sub_samples, [], plot, 'wt', sel, cat, 8)
+    GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
 else:
-    GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, 12)
+    GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
 
 ana.Run()
-ana.nodes.PrintTree()
+#ana.nodes.PrintTree()
 output_name = options.output_folder+"/"+nodename+"_"+options.cat+"_"+options.channel+".root"
 outfile = ROOT.TFile(output_name, 'RECREATE')
 
