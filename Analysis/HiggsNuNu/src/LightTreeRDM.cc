@@ -47,8 +47,12 @@ namespace ic {
     jet_loosepuid_ = new double[nJetsSave_];
     jet_tightpuid_ = new double[nJetsSave_];
     jet_flavour_ = new int[nJetsSave_];
-    jet_neutralfrac_ = new double[nJetsSave_];
-    jet_chargedfrac_ = new double[nJetsSave_];
+    jet_neutralhadfrac_ = new double[nJetsSave_];
+    jet_neutralemfrac_ = new double[nJetsSave_];
+    jet_chargedemfrac_ = new double[nJetsSave_];
+    jet_chargedhadfrac_ = new double[nJetsSave_];
+    jet_chargedmult_ = new unsigned[nJetsSave_];
+    jet_neutralmult_ = new unsigned[nJetsSave_];
 
     jet_genjet_mindR_ = new double[nJetsSave_];
     jet_genid_ = new unsigned[nJetsSave_];
@@ -116,8 +120,12 @@ namespace ic {
       jet_loosepuid_[ij] = -1;
       jet_tightpuid_[ij] = -1;
       jet_flavour_[ij] = 0;
-      jet_neutralfrac_[ij] = -1;
-      jet_chargedfrac_[ij] = -1;
+      jet_neutralhadfrac_[ij] = -1;
+      jet_neutralemfrac_[ij] = -1;
+      jet_chargedemfrac_[ij] = -1;
+      jet_chargedhadfrac_[ij] = -1;
+      jet_chargedmult_[ij] = 0;
+      jet_neutralmult_[ij] = 0;
       jet_genjet_mindR_[ij] = 99;
       jet_genid_[ij] = 1000;
       jet_genpt_[ij] = -1;
@@ -357,8 +365,14 @@ namespace ic {
       outputTree_->Branch((label.str()+"_jetid").c_str(),&jet_jetid_[ij]);
       outputTree_->Branch((label.str()+"_loosepuid").c_str(),&jet_loosepuid_[ij]);
       outputTree_->Branch((label.str()+"_tightpuid").c_str(),&jet_tightpuid_[ij]);
-      outputTree_->Branch((label.str()+"_neutralfrac").c_str(),&jet_neutralfrac_[ij]);
-      outputTree_->Branch((label.str()+"_chargedfrac").c_str(),&jet_chargedfrac_[ij]);
+
+      outputTree_->Branch((label.str()+"_neutralhadfrac").c_str(),&jet_neutralhadfrac_[ij]);
+      outputTree_->Branch((label.str()+"_neutralemfrac").c_str(),&jet_neutralemfrac_[ij]);
+      outputTree_->Branch((label.str()+"_chargedemfrac").c_str(),&jet_chargedemfrac_[ij]);
+      outputTree_->Branch((label.str()+"_chargedhadfrac").c_str(),&jet_chargedhadfrac_[ij]);
+      outputTree_->Branch((label.str()+"_chargedmult").c_str(),&jet_chargedmult_[ij]);
+      outputTree_->Branch((label.str()+"_neutralmult").c_str(),&jet_neutralmult_[ij]);
+
       outputTree_->Branch((label.str()+"_genjet_mindR").c_str(),&jet_genjet_mindR_[ij]);
       outputTree_->Branch((label.str()+"_flavour").c_str(),&jet_flavour_[ij]);
       outputTree_->Branch((label.str()+"_genid").c_str(),&jet_genid_[ij]);
@@ -968,8 +982,12 @@ namespace ic {
       if (nJets_<nJetsSave_){
         jet_pt_[nJets_]          = jets[i]->pt();
         jet_uncorpt_[nJets_]     = jets[i]->uncorrected_energy()/jets[i]->energy()*jets[i]->pt();
-        jet_neutralfrac_[nJets_] = jets[i]->neutral_had_energy()/jets[i]->uncorrected_energy();
-        jet_chargedfrac_[nJets_] = jets[i]->charged_had_energy_frac();
+        jet_neutralhadfrac_[nJets_] = jets[i]->neutral_had_energy()/jets[i]->uncorrected_energy();
+        jet_chargedhadfrac_[nJets_] = jets[i]->charged_had_energy_frac();
+	jet_neutralemfrac_[nJets_] = jets[i]->neutral_em_energy_frac();
+	jet_chargedemfrac_[nJets_] = jets[i]->charged_em_energy_frac();
+	jet_chargedmult_[nJets_] = jets[i]->charged_multiplicity();
+	jet_neutralmult_[nJets_] = jets[i]->neutral_multiplicity();
 
         jet_E_[nJets_]   =jets[i]->energy();
         jet_eta_[nJets_] =jets[i]->eta();

@@ -93,8 +93,13 @@ namespace ic {
     double* jet_loosepuid_;
     double* jet_tightpuid_;
     int* jet_flavour_;
-    double* jet_neutralfrac_;
-    double* jet_chargedfrac_;
+    double* jet_neutralhadfrac_;
+    double* jet_neutralemfrac_;
+    double* jet_chargedemfrac_;
+    double* jet_chargedhadfrac_;
+    unsigned* jet_chargedmult_;
+    unsigned* jet_neutralmult_;
+
 
     double* jet_genjet_mindR_;
     unsigned* jet_genid_;
