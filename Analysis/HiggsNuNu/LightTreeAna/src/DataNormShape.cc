@@ -13,8 +13,8 @@ namespace ic{
   DataNormShape::DataNormShape(std::string name) : LTModule(name){
     sigmcweight_="total_weight_lepveto";
     contmcweight_="total_weight_leptight";
-    contmczweight_="weight_nolep";
-    contdataweight_="weight_nolep";
+    contmczweight_="weight_nolepnotrig*weight_trig_0";
+    contdataweight_="weight_nolepnotrig*weight_trig_0";
     contdataextrasel_="";
     contmcextrasel_="";
     contbkgextrasel_="";

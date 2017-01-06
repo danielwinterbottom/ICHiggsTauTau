@@ -9,7 +9,7 @@
 namespace ic{
 
   DataShape::DataShape(std::string name) : LTModule(name){
-    dataweight_="weight_nolep";
+    dataweight_="weight_nolepnotrig*weight_trig_0";
     std::vector<std::string> shapes;
     shapes.push_back("jet2_pt(200,0.,1000.)");
     shape_=shapes;
