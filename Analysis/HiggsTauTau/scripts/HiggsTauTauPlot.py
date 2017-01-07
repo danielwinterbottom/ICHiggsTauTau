@@ -97,6 +97,7 @@ cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     
 # Add data sample names
 if options.channel == 'mt': 
@@ -130,8 +131,8 @@ ana.AddInfo(options.param_file, scaleTo='data_obs')
 
 cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
 sel = options.sel
-#plot = 'm_vis(7,0,140)' # set this under option
-plot = 'os(2,0,2)'
+plot = 'm_vis(7,0,140)' # set this under option
+#plot = 'os(2,0,2)'
 nodename = plot.split('(')[0]
 
 def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
@@ -185,7 +186,8 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
   shape_cat = cat
   if method == 14:
       shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
-  shape_selection = BuildCutString(wt, sel, shape_cat, 'os', '')
+  shape_selection = BuildCutString(wt, sel, shape_cat, OSSS, '')
+  print "w_shape selection = ", shape_selection
   
   if method in [8, 9, 15]:
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
@@ -198,6 +200,10 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
         ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
         ana.SummedFactory('w_signal', samples, plot, full_selection),
         ana.SummedFactory('w_shape', samples, plot, shape_selection))
+      print name
+      #print "samples:"
+      #print samples
+      print "shape_selection = ", shape_selection
   elif method in [12, 13, 14, 16]:
       if method == 16:
           cat_nobtag = '(n_jets <=1 && n_lowpt_jets>=1)*('+cats['baseline']+')'
@@ -261,7 +267,21 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
     qcd_sdb_cat = cat
     qcd_extrap_sel = '(!os && ' + sel + ')'
     
+    shape_node = None
+    
     if options.channel != 'tt':
+        
+        if method in [9, 11, 13]:
+            shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
+            shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
+            shape_node = ana.SummedFactory('shape', data, plot, shape_selection)
+        if method in [14]:
+            shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
+            shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
+            bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
+            bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, 1.18, False))
+            shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
+        
         if options.channel == 'em':
             qcd_os_ss_factor = 1
         else:
@@ -278,15 +298,25 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
         subtract_node.AddNode(w_node)
         
         ana.nodes[nodename].AddNode(HttQCDNode('QCD',
-        ana.SummedFactory('data_ss', data, plot, full_selection),
-        subtract_node,
-        qcd_os_ss_factor))
+          ana.SummedFactory('data_ss', data, plot, full_selection),
+          subtract_node,
+          qcd_os_ss_factor,
+          shape_node))
         
     else:
+        OSSS = False
         if method == 8:
             if get_os: 
                 qcd_sdb_sel =  '(os && ' + sel + ')'
+                OSSS = True
             qcd_sdb_cat = ttqcdcat+'*'+tt_qcd_norm 
+            
+        shape_cat = '('+cats[options.cat]+')*('+cats['tt_qcd_norm']+')'
+        shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
+        bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
+        bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, 1.18, OSSS))
+        shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
+            
         full_selection = BuildCutString('wt', qcd_sdb_sel, qcd_sdb_cat, '')
         subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
         if method == 8:
@@ -314,11 +344,12 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
         #using num category for bkgs subtracted from denumerator to match cpp plotting code but is this correct?? - perhaps this should also use den selections? (see *)
         
         ana.nodes[nodename].AddNode(HttQCDNode('QCD',
-        ana.SummedFactory('data_ss', data, plot, full_selection),
-        subtract_node,
-        1,
-        num_node,
-        den_node))
+          ana.SummedFactory('data_ss', data, plot, full_selection),
+          subtract_node,
+          1,
+          shape_node,
+          num_node,
+          den_node))
 
 ana.nodes.AddNode(ListNode(nodename))
 
@@ -331,10 +362,7 @@ GenerateVV(ana, vv_samples, plot, 'wt', sel, cat, vv_sels)
 if options.channel == 'em':
     GenerateWG(ana, wgam_samples, plot, 'wt', sel, cat, '')
 GenerateW(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
-if options.channel == 'em':
-    GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
-else:
-    GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
+GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
 
 ana.Run()
 #ana.nodes.PrintTree()
