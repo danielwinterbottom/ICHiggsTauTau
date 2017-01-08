@@ -207,9 +207,9 @@ void DrawHist(std::vector<TH1D*> hists, std::vector<std::string> legend_entries,
     if(col_num==7) col_num = 9;
     hists[i]->SetLineColor(col_num);
     hists[i]->SetMarkerColor(col_num);
-    for(unsigned j=0; j<(unsigned)hists[i]->GetNbinsX()+1; ++j){
-      hists[i]->SetBinError(j,0.00001);    
-    } //get rid of vartical xerror bars by setting them to small value - purley for aesthetic reasons
+    //for(unsigned j=0; j<(unsigned)hists[i]->GetNbinsX()+1; ++j){
+    //  hists[i]->SetBinError(j,0.00001);    
+    //} //get rid of vartical xerror bars by setting them to small value - purley for aesthetic reasons
     TH1D *htemp = (TH1D*)hists[i]->Clone();
     if(Normalize){
       double norm = 1./hists[0]->Integral();
@@ -352,7 +352,8 @@ int main(int argc, char* argv[]){
   bool doPDF;
   bool doScale;
   bool RecreateRenorm;
-  double RatioSize;
+  double ggRatioSize;
+  double qqRatioSize;
   std::string SamplesToSkip;
   
   po::options_description preconfig("Pre-Configuration");
@@ -370,7 +371,8 @@ int main(int argc, char* argv[]){
         ("doScale",                po::value<bool>(&doScale)->default_value(false))
         ("RecreateRenorm",         po::value<bool>(&RecreateRenorm)->default_value(false))
         ("do2DBinning",            po::value<bool>(&do2DBinning)->default_value(false))
-        ("RatioSize",              po::value<double>(&RatioSize)->default_value(0.15))
+        ("ggRatioSize",            po::value<double>(&ggRatioSize)->default_value(0.3))
+        ("qqRatioSize",            po::value<double>(&qqRatioSize)->default_value(0.03))
         ("SamplesToSkip",          po::value<std::string>(&SamplesToSkip)->default_value(""))
         ("variable",               po::value<std::string>(&variable)->default_value("m_vis"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -386,7 +388,8 @@ int main(int argc, char* argv[]){
   std::cout << "doPDF          = " << doPDF          << std::endl;
   std::cout << "doScale        = " << doScale        << std::endl;
   std::cout << "RecreateRenorm = " << RecreateRenorm << std::endl;
-  std::cout << "RatioSize      = " << RatioSize      << std::endl;
+  std::cout << "ggRatioSize    = " << ggRatioSize    << std::endl;
+  std::cout << "qqRatioSize    = " << qqRatioSize    << std::endl;
   std::cout << "SamplesToSkip  = " << SamplesToSkip  << std::endl;
   std::cout << "do2DBinning    = " << do2DBinning    << std::endl;
  
@@ -583,6 +586,7 @@ int main(int argc, char* argv[]){
   alias_map_["tau_iso!=tight"] = "(mva_olddm_tight_2<0.5)";   
   if(channel == "tt") alias_map_["tau_iso!=tight"] = "(mva_olddm_tight_1<0.5 && mva_olddm_tight_2<0.5)";
     
+  //std::vector<std::string> sig = {"qqH"};
   std::vector<std::string> sig = {"ggH", "qqH"};
   std::string file_prefix = "/vols/cms/dw515/Offline/output/PartonShower9/";
   
@@ -673,7 +677,6 @@ int main(int argc, char* argv[]){
       
       double total_inclusive = htemp->Integral(0,htemp->GetNbinsX()+1);
       std::string wt_string = default_wt+="*"+alias_map_[cat];
-      std::cout << alias_map_[cat] << std::endl;
       tree->Draw((variable+">>htemp").c_str(),wt_string.c_str(),"goff");
       htemp->Scale(1/total_inclusive);
     
@@ -694,7 +697,7 @@ int main(int argc, char* argv[]){
             
           std::string input_name;
           bool file_check;
-          input_name = outputDirname+"/NNPDF_addwt.txt";
+          input_name = outputDirname+"/NNPDF_addwt_"+sig[i]+".txt";
           file_check = file_exists(input_name) && check_lines(input_name,100);
           if(!file_check || RecreateRenorm){
             std::cout << "Creating new NNPDF remormalization file: " << input_name << std::endl;
@@ -750,7 +753,7 @@ int main(int argc, char* argv[]){
         if(doScale){
           double nominal_wt = total_inclusive;
           std::vector<double> scale_variation_addwt;
-          std::string input_name = outputDirname+"/scale_variation_addwt.txt";
+          std::string input_name = outputDirname+"/scale_variation_addwt_"+sig[i]+".txt";
           bool file_check = file_exists(input_name) && check_lines(input_name,9);
           if(!file_check || RecreateRenorm){
             std::cout << "Creating new scale remormalization file: " << input_name << std::endl;
@@ -799,10 +802,15 @@ int main(int argc, char* argv[]){
     }
     
     std::string out_name = outputDirname+"/"+variable+"_"+channel+"_"+cat+"_"+sig[i]+"_generator_compare";
+    if(doPDF) out_name = outputDirname+"/"+variable+"_"+channel+"_"+cat+"_"+sig[i]+"_generator_compare_withpdf";
+    if(doScale) out_name = outputDirname+"/"+variable+"_"+channel+"_"+cat+"_"+sig[i]+"_generator_compare_withscale";
     bool intLabels = variable=="n_jets" || variable=="n_jets_nofilter" || variable=="n_jetsingap" || variable=="n_bjets" || variable=="mva_olddm_vloose_2" || variable=="mva_olddm_tight_2";
     std::string title = cat;
     title = "";
     bool bottomLeg = variable.find("mva_olddm_")!=std::string::npos;
+    double RatioSize = 0.3;
+    if(sig[i] == "ggH") RatioSize = ggRatioSize;
+    if(sig[i] == "qqH") RatioSize = qqRatioSize;
     DrawHist(hists, legend_entries, out_name, true,false,title,intLabels,false,RatioSize, bottomLeg);
   }
   
