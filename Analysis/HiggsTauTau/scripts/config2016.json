@@ -6,8 +6,8 @@
     "timings":      true,
     "channels":     ["tt","et","mt"],
     "sequences": {
-      "all":  ["default"]
-//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
+    "all":  ["default"]
+//,"scale_met_hi","scale_met_lo","res_met_high","res_met_lo"]
 //      "et":   ["scale_t_lo", "scale_t_hi"],
 //      "mt":   ["scale_t_lo", "scale_t_hi"],
  //     "tt":   ["scale_t_lo", "scale_t_hi"],
@@ -49,7 +49,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "/vols/cms/amd12/CMSSW_7_6_3/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/Aug11-1309-presel/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Jan08/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",

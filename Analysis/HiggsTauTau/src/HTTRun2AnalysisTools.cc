@@ -67,8 +67,12 @@ namespace ic {
     
     alias_map_["variable_cat"]      = "1";
     alias_map_["inclusive"]                 = "1";
+    alias_map_["mt"] = "1";
+    alias_map_ ["btag_wnobtag"] = "n_jets<=1 && n_lowpt_jets>=1 ";
     
     if (ch_ == channel::et || ch_ == channel::mt){
+        
+        
       alias_map_["vbf_run1"] = "(n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";
       alias_map_["vbf_tight_run1"] = "(n_jets>=2 && jdeta>4. && mjj>700 && n_bjets==0 && n_jetsingap==0 && pt_tt>100)";
       alias_map_["vbf_loose_run1"] = "(!"+alias_map_["vbf_tight_run1"]+" && n_jets>=2 && jdeta>3.5 && mjj>500 && n_bjets==0 && n_jetsingap==0)";    
@@ -108,7 +112,14 @@ namespace ic {
       } else{
         if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
         if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+        // set to the following tempoarily for studies!
+        if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+        if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       }
+      
+      if(ch_ == channel::et) alias_map_["mt"] = "(mt_1>30)";
+      else if(ch_ == channel::mt) alias_map_["mt"] = "(mt_1>40)";
+      
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
       alias_map_["incvletm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_tight_2>0 && !leptonveto)";
@@ -133,7 +144,15 @@ namespace ic {
 
       alias_map_["inclusivenolv"]         = "(iso_1<0.1&&iso_2<1.5 && antiele_2 && antimu_2)";
       alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
-      alias_map_["nobtag"] = "n_bjets==0";
+      alias_map_["nobtag"] = "(n_bjets==0)";
+      
+      //tighter cats (tighten tau isolation and mt cut)
+      alias_map_["btag_tight"] = "("+alias_map_["btag"]+" && mva_olddm_tight_2>0.5 )";
+      alias_map_["btag_loose"] = alias_map_["btag"] + "&& ("+ alias_map_["mt"] + " || mva_olddm_tight_2<0.5)";
+      
+      alias_map_["nobtag_tight"] = "("+alias_map_["nobtag"]+" && mva_olddm_tight_2>0.5 )";
+      alias_map_["nobtag_loose"] = alias_map_["nobtag"] + "&& ("+ alias_map_["mt"] + " || mva_olddm_tight_2<0.5)";
+      
       // Categories for iso studies
       alias_map_["incnotauiso"]      = "(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto&&"+alias_map_["notwoprong"]+")";
       alias_map_["dbloose"]          = "(db_loose_2&&"+alias_map_["incnotauiso"]+")";
@@ -288,6 +307,14 @@ namespace ic {
       alias_map_["nobtag"] = "n_loose_bjets==0";
       if(year_.find("6")!=year_.npos) alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       if(year_.find("6")!=year_.npos) alias_map_["nobtag"] = "n_bjets==0";
+      
+      //tighter cats (tighten tau isolation and mt cut)
+      alias_map_["btag_tight"] = "("+alias_map_["btag"]+" && mva_olddm_tight_2>0.5 )";
+      alias_map_["btag_loose"] = alias_map_["btag"] + "&& (mva_olddm_tight_2<0.5)";
+      
+      alias_map_["nobtag_tight"] = "("+alias_map_["nobtag"]+" && mva_olddm_tight_2>0.5 )";
+      alias_map_["nobtag_loose"] = alias_map_["nobtag"] + "&& (mva_olddm_tight_2<0.5)";
+      
       //alias_map_["btag"] = "(n_jets<=1 && n_bjets>=1)";
       //alias_map_["nobtag"] = "n_bjets==0";
       alias_map_["notwoprong"]      ="(tau_decay_mode_1!=5&&tau_decay_mode_2!=5&&tau_decay_mode_1!=6&&tau_decay_mode_2!=6)";
@@ -360,6 +387,9 @@ namespace ic {
       if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       alias_map_["tt_qcd_norm"]       = "mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_vtight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
       if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"] = "mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      // set to the following tempoarily for studies!
+      if(year_.find("6")!=year_.npos) alias_map_["baseline"]          = "mva_olddm_loose_1>0.5 && mva_olddm_loose_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      if(year_.find("6")!=year_.npos) alias_map_["tt_qcd_norm"] = "mva_olddm_loose_1>0.5 && mva_olddm_vloose_2>0.5 &&mva_olddm_loose_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
 
       alias_map_["inclusivenolv"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
       //alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2";
@@ -998,6 +1028,8 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       }
       std::cout << std::endl;
     }
+    std::cout << "cat = " << cat << std::endl;
+    std::cout << "sel = " << sel << std::endl;
     TH1F zl_hist = this->GetLumiScaledShape(var, zl_samples, sel, cat, wt);
 //    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
  //     % "DYJetsToLL" % sel % cat % wt;
@@ -1104,7 +1136,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     //std::string cat_nobtag = "n_jets <=1 && "+alias_map_["baseline"];
-    std::string cat_nobtag = "n_jets <=1 && n_lowpt_jets>=1 && "+alias_map_["baseline"];
+    std::string cat_nobtag = alias_map_ ["btag_wnobtag"]+" && "+alias_map_["baseline"];
     std::string w_extrap_cat = cat;
     std::string w_extrap_cat_nobtag = cat_nobtag;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
@@ -1193,7 +1225,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
               this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel_osss, w_sub_samples, false, wt, ValueFnMap());
          }else if(method==16){
           //std::string qcd_cat_nobtag = "n_jets<=1 && "+alias_map_["baseline"];
-          std::string qcd_cat_nobtag = "n_jets<=1 && n_lowpt_jets>= 1 && "+alias_map_["baseline"];
+          std::string qcd_cat_nobtag = alias_map_ ["btag_wnobtag"]+" && "+alias_map_["baseline"];
           Value w_ss_norm_nobtag = this->GetRateViaWOSSSMethod(wjets_samples, qcd_cat_nobtag, w_extrp_sdb_sel, w_extrp_sig_sel,
              this->ResolveSamplesAlias("data_samples"),qcd_cat_nobtag, w_sdb_sel_osss,w_sub_samples,false, wt, ValueFnMap());
          std::string os_sel_btag = "!os && " + this->ResolveAlias("sel");
