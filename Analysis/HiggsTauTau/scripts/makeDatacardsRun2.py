@@ -578,7 +578,7 @@ if SCHEME == 'run2_mssm_tauisocats':
     ("12",   "nobtag_loose",    "nobtag_loose",  BINS_FINE, '--set_alias="sel:mt_1<60"  '),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, '--set_alias="sel:mt_1<30"  '),
     ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" '),
-    ("16",   "btag_loose",    "btag_loose",  BINS_FINE, '--set_alias="sel:mt_1<60" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && (mt_1>30 + || mva_olddm_tight_2<0.5))"' ),
+    ("16",   "btag_loose",    "btag_loose",  BINS_FINE, '--set_alias="sel:mt_1<60" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && (mt_1>30 || mva_olddm_tight_2<0.5))"' ),
     ("16",   "btag_tight",    "btag_tight",  BINS_FINE, '--set_alias="sel:mt_1<30" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && mva_olddm_tight_2>0.5)'),
   ]
   scheme_mt = [
@@ -587,7 +587,7 @@ if SCHEME == 'run2_mssm_tauisocats':
     ("12",   "nobtag_loose",    "nobtag_loose",  BINS, '--set_alias="sel:mt_1<70" '),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS, '--set_alias="sel:mt_1<40" '),
     ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" '),
-    ("16",   "btag_loose",    "btag_loose",  BINS, '--set_alias="sel:mt_1<70" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && (mt_1>40 + || mva_olddm_tight_2<0.5))"'),
+    ("16",   "btag_loose",    "btag_loose",  BINS, '--set_alias="sel:mt_1<70" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && (mt_1>40  || mva_olddm_tight_2<0.5))"'),
     ("16",   "btag_tight",    "btag_tight",  BINS, '--set_alias="sel:mt_1<40" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && mva_olddm_tight_2>0.5)'),
 
   ]
