@@ -1148,6 +1148,31 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       TH1F default_w_hist = this->GetShape(var,wjets_samples,w_shape_sel, cat, wt);
       std::cout << "ROOT KS test: "<< default_w_hist.KolmogorovTest(&w_hist) <<std::endl;
     }
+    
+    ////////
+    
+    std::map<std::string,std::function<Value()>> wjets_ss_vals;
+    
+    //w_ss_norm = this->GetRateViaWMethod(wjets_samples, qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+    //          this->ResolveSamplesAlias("data_samples"), qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+    
+    Value w_ss_norm = std::make_pair(1.0,0.0);
+    
+    for(unsigned i=0; i< wjets_samples.size() ; ++i){ //We have wjets_samples.size() w+jets samples to subtract, but only one data driven norm
+      wjets_ss_vals[wjets_samples.at(i)] = [&]()->HTTRun2Analysis::Value{return std::make_pair(w_ss_norm.first/(wjets_samples.size()),w_ss_norm.second/std::sqrt(wjets_samples.size()));};
+    }
+    
+    //TH1F w_hist_test = this->GetShape(var, wjets_samples, "!os && mt_1<50", "(1)", "wt");
+    TH1F w_hist_test = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), "!os && mt_1<50", "(1)", this->ResolveSamplesAlias("qcd_sub_samples"), "wt", wjets_ss_vals);
+    
+    //qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveSamplesAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, //{
+          //wjets_ss_vals);
+    
+    for(unsigned i=1; i<=(unsigned)w_hist_test.GetNbinsX(); ++i){
+      std::cout << "w_test bin " << i << " = " << w_hist_test.GetBinContent(i) << std::endl;    
+    }
+    
+    ////////
 
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
@@ -1291,6 +1316,11 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
     }
 
     SetNorm(&qcd_hist, qcd_norm.first);
+    
+    for(unsigned i=1; i<=(unsigned)qcd_hist.GetNbinsX(); ++i){
+      std::cout << "bin " << i << " = " << qcd_hist.GetBinContent(i) << std::endl;    
+    }
+    
     return std::make_pair(qcd_hist, qcd_norm);
    }
 
@@ -2139,17 +2169,30 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
 
     }
     TH1F result = GetLumiScaledShape(variable, data_sample, selection, category, weight);
+    TH1F result2 = GetLumiScaledShape(variable, data_sample, selection, category, weight);
+    SetNorm(&result2, 0);
+    double norm = 0;
     for (unsigned i = 0; i < sub_samples.size(); ++i) {
       if (dict.count(sub_samples[i])) {
         Value bkr_rate = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
         TH1F tmp = GetShape(variable, sub_samples.at(i), selection, category, weight);
-        SetNorm(&tmp, bkr_rate.first);
-        result.Add(&tmp, -1.);
+        std::cout << "sample = " << sub_samples.at(i) << std::endl;
+        std::cout << bkr_rate.first << std::endl;
+        norm = bkr_rate.first;
+        //SetNorm(&tmp, bkr_rate.first);//setting the norm is responsible for the shape differences!!!!! 
+        //result.Add(&tmp, -1.);
+        result2.Add(&tmp, 1.);
       } else {
       TH1F tmp = GetLumiScaledShape(variable, sub_samples[i], selection, category, weight);
       result.Add(&tmp, -1.);
      }
     }
+     SetNorm(&result2, norm*5);  
+     result.Add(&result2, -1.);
+     for(unsigned i=1; i<=(unsigned)result2.GetNbinsX(); ++i){
+      std::cout << "w bin " << i << " = " << result2.GetBinContent(i) << std::endl;    
+    }
+    
     return result;
   }
 

@@ -509,8 +509,6 @@ class HttWNode(BaseNode):
         self.w_shape = w_shape
 
     def RunSelf(self):
-        print self.name
-        print "self.w_shape.shape.rate.n =", self.w_shape.shape.rate.n
         self.shape = (self.data_node.shape.rate.n - self.subtract_node.shape.rate.n)/self.w_control_node.shape.rate.n * self.w_signal_node.shape .rate.n / self.w_shape.shape.rate.n * self.w_shape.shape
 
     def Objects(self):

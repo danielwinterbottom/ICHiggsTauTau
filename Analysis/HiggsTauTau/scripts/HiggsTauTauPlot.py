@@ -187,7 +187,6 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
   if method == 14:
       shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
   shape_selection = BuildCutString(wt, sel, shape_cat, OSSS, '')
-  print "w_shape selection = ", shape_selection
   
   if method in [8, 9, 15]:
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
@@ -200,10 +199,6 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
         ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
         ana.SummedFactory('w_signal', samples, plot, full_selection),
         ana.SummedFactory('w_shape', samples, plot, shape_selection))
-      print name
-      #print "samples:"
-      #print samples
-      print "shape_selection = ", shape_selection
   elif method in [12, 13, 14, 16]:
       if method == 16:
           cat_nobtag = '(n_jets <=1 && n_lowpt_jets>=1)*('+cats['baseline']+')'
@@ -271,12 +266,18 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
     
     if options.channel != 'tt':
         
-        if method in [9, 11, 13]:
-            shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
+        if method in [9, 11, 13, 16]:
+            if method == 16:
+                shape_cat = cats[options.cat]
+            else:
+                shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
             shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
             shape_node = ana.SummedFactory('shape', data, plot, shape_selection)
-        if method in [14]:
-            shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
+        if method in [10, 12, 14]:
+            if method == 14:
+                shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
+            else: 
+                shape_cat = cat
             shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
             bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
             bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, 1.18, False))
