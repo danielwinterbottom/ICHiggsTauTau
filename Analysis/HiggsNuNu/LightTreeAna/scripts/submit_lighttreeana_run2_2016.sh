@@ -1,6 +1,6 @@
 #!/bin/sh
 DOCERN=0
-DOSUBMIT=1
+DOSUBMIT=0
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -24,9 +24,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium long
 
-JOBDIRPREFIX=jobs_run2ana_161215_ICHEP_debug
+JOBDIRPREFIX=jobs_run2ana_170106
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_161215_ICHEP_debug
+OUTPUTPREFIX=output_run2ana_170106
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -67,12 +67,12 @@ for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in ee #qcd enu munu taunu mumu ee nunu
+  for channels in enu #qcd enu munu taunu mumu ee nunu
     do
     JOB=$channels
     #To debug
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_debug.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_debug.hists`
+    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_debug.hists`
+    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_debug.hists`
     #executable expect strings separated by "!"
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
@@ -82,8 +82,8 @@ do
     ## To produce all of the hist for datacard
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_datacard.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_datacard.hists`
-    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
-    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
     ## To test for one hist
     #HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events"
     #SHAPESTRING="metnomuons(25,200.,600.)"

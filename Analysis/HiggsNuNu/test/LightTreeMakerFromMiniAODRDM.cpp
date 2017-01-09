@@ -568,10 +568,10 @@ int main(int argc, char* argv[]){
   ComplexFilter<Electron,EventInfo,double> vetoElectronFilter = ComplexFilter<Electron,EventInfo,double>
     ("VetoElectronPtEtaFilter")
     .set_primary_input_label("vetoElectrons").set_predicate(bind(MinPtMaxSCEta, _1, veto_elec_pt, veto_elec_eta) &&
-							    bind(VetoElectronFullIDSpring15, _1, _2)// && 
-    //                                              bind(fabs, bind(&Electron::dxy_vertex, _1)) < veto_elec_dxy && 
-    //						    bind(fabs, bind(&Electron::dz_vertex, _1)) < veto_elec_dz
-						    )
+							    bind(VetoElectronFullID16, _1, _2)// && 
+							    //bind(fabs, bind(&Electron::dxy_vertex, _1)) < veto_elec_dxy && 
+							    //bind(fabs, bind(&Electron::dz_vertex, _1)) < veto_elec_dz
+							    )
     .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))						   
     .set_min(0)
     .set_max(999);
@@ -583,17 +583,21 @@ int main(int argc, char* argv[]){
   ComplexFilter<Electron,EventInfo,double> selElectronFilter = ComplexFilter<Electron,EventInfo,double>
     ("SelElectronPtEtaFilter")
     .set_primary_input_label("selElectrons").set_predicate(bind(MinPtMaxSCEta, _1, elec_pt, elec_eta) &&
-						   bind(TightElectronFullIDSpring15, _1, _2)// &&
-						   //bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
-						   //bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
-						   )
+							   bind(TightElectronFullID16, _1, _2) //&&
+							   //bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
+							   //bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
+							   )
     .set_secondary_input_label("eventInfo").set_secondary_predicate(bind(&EventInfo::jet_rho,_1))						   
     .set_min(0)
     .set_max(999);
 
   EffectiveAreaIsolationFilter selElectronIso = EffectiveAreaIsolationFilter("SelElectronIso","selElectrons",0.10);
 
-  OverlapFilter<Electron, Muon> elecMuonOverlapFilter = OverlapFilter<Electron, Muon>("ElecMuonOverlapFilter")
+  OverlapFilter<Electron, Muon> vetoelecMuonOverlapFilter = OverlapFilter<Electron, Muon>("VetoElecMuonOverlapFilter")
+    .set_input_label("vetoElectrons")
+    .set_reference_label("vetoMuons")
+    .set_min_dr(0.3);
+  OverlapFilter<Electron, Muon> selelecMuonOverlapFilter = OverlapFilter<Electron, Muon>("SelElecMuonOverlapFilter")
     .set_input_label("selElectrons")
     .set_reference_label("vetoMuons")
     .set_min_dr(0.3);
@@ -1127,7 +1131,8 @@ int main(int argc, char* argv[]){
   //analysis.AddModule(&selElectronIso);
   analysis.AddModule(&selMuonCopyCollection);
   analysis.AddModule(&selMuonFilter);
-  analysis.AddModule(&elecMuonOverlapFilter);
+  analysis.AddModule(&vetoelecMuonOverlapFilter);
+  analysis.AddModule(&selelecMuonOverlapFilter);
 
   //filter taus for plots
   analysis.AddModule(&tauPtEtaFilter);

@@ -822,6 +822,84 @@ namespace ic {
 
   }
 
+  bool TightElectronFullID16(Electron const* elec, double const& rho) {//function for 2016 id
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    //double lEA = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+    double lEA = getTotalEA(elec->sc_eta());
+
+    double relisoWithEA = (elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - rho*lEA))/elec->pt();
+
+    return(
+	   !elec->has_matched_conversion()
+	   && ( (in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.00998
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00306
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.0816
+		 && elec->hadronic_over_em()         <0.0414
+		 && ooemoop                          <0.0129
+		 && elec->gsf_tk_nhits()             <=1
+		 && relisoWithEA                     <0.0588
+		 && fabs(elec->dxy_vertex())         <0.05
+		 && fabs(elec->dz_vertex())          <0.1
+		 ) ||
+		(!in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0292
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00605
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.0394
+		 && elec->hadronic_over_em()         <0.0641
+		 && ooemoop                          <0.0129
+		 && elec->gsf_tk_nhits()             <=1
+		 && relisoWithEA                     <0.0571
+		 && fabs(elec->dxy_vertex())         <0.1
+		 && fabs(elec->dz_vertex())          <0.2
+		 ) )
+	   );
+
+  }
+
+  bool VetoElectronFullID16(Electron const* elec, double const& rho) {//function for 2016 id
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    //double lEA = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+    double lEA = getTotalEA(elec->sc_eta());
+
+    double relisoWithEA = (elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - rho*lEA))/elec->pt();
+
+    return(
+	   !elec->has_matched_conversion()
+	   && ( (in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0115
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00749
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.228
+		 && elec->hadronic_over_em()         <0.356
+		 && ooemoop                          <0.299
+		 && elec->gsf_tk_nhits()             <=2
+		 && relisoWithEA                     <0.175
+		 && fabs(elec->dxy_vertex())         <0.05
+		 && fabs(elec->dz_vertex())          <0.1
+		 ) ||
+		(!in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.037
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00895
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.213
+		 && elec->hadronic_over_em()         <0.211
+		 && ooemoop                          <0.15
+		 && elec->gsf_tk_nhits()             <=3
+		 && relisoWithEA                     <0.159
+		 && fabs(elec->dxy_vertex())         <0.1
+		 && fabs(elec->dz_vertex())          <0.2
+		 ) )
+	   );
+
+  }
+
   bool VetoElectronIDPhys14(Electron const* elec){
     bool in_barrel = true;
     if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;

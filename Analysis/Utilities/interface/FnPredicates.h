@@ -102,6 +102,9 @@ namespace ic {
   bool ElectronHTTIdTrigSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
 
+  bool TightElectronFullID16(Electron const* elec, double const& rho);
+  bool VetoElectronFullID16(Electron const* elec, double const& rho);
+
   double getTotalEA(const double & eta);
   std::pair<double,double> getEA(const double & eta);
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
