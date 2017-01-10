@@ -195,12 +195,16 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
   elif method in [10, 11]:
       control_sel = cats['w_sdb']+' && '+ OSSS
       w_control_full_selection = BuildCutString('wt', control_sel, cat, OSSS)
+      if shape_selection == full_selection:
+          w_shape = None
+      else:    
+          w_shape = ana.SummedFactory('w_shape', samples, plot, shape_selection)
       w_node = HttWNode(name,
         ana.SummedFactory('data_obs', data, plot, w_control_full_selection),
         ana.SummedFactory('backgrounds', sub_samples, plot, w_control_full_selection),
         ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
         ana.SummedFactory('w_signal', samples, plot, full_selection),
-        ana.SummedFactory('w_shape', samples, plot, shape_selection))
+        w_shape)
   elif method in [12, 13, 14, 16]:
       if method == 16:
           cat_nobtag = '(n_jets <=1 && n_lowpt_jets>=1)*('+cats['baseline']+')'
@@ -227,7 +231,11 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
           w_control_full_selection_ss = BuildCutString('wt', control_sel, cat, '!os')
           btag_extrap_num_node = None
           btag_extrap_den_node = None
-          
+      
+      if shape_selection == full_selection:
+          w_shape = None
+      else:    
+          w_shape = ana.SummedFactory('w_shape', samples, plot, shape_selection)
       w_node = HttWOSSSNode(name,
         ana.SummedFactory('data_os_obs', data, plot, w_control_full_selection_os),
         ana.SummedFactory('backgrounds_os', sub_samples, plot, w_control_full_selection_os),
@@ -237,7 +245,7 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
         ana.SummedFactory('w_signal', samples, plot, full_selection),
         ana.SummedFactory('w_os', samples, plot, os_selection),
         ana.SummedFactory('w_ss', samples, plot, ss_selection),
-        ana.SummedFactory('w_shape', samples, plot, shape_selection),
+        w_shape,
         qcd_factor,
         get_os,
         btag_extrap_num_node,
