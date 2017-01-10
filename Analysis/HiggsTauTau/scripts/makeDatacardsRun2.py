@@ -573,30 +573,30 @@ if SCHEME == 'run2_mssm_tauisocats':
 #  BINS_MTSV="[0,19.8421,39.6147,60.2784,79.0905,101.242,120.346,139.564,161.851,178.654,202.13,252.433,300.063,347.981,403.552,503.981,694.743,889.33,1110.65,1288.02,1493.7,1689.99,1912.07,2110.56,2272.85,2508.8,2701.7,2909.43,3133.14,3291.76,3458.4,3724.32,3912.87]"
 
   scheme_et = [
-    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<50" '),
-    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<50"  '),
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<50"  --set_alias="baseline:(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
     ("12",   "nobtag_loose",    "nobtag_loose",  BINS_FINE, '--set_alias="sel:mt_1<60"  '),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, '--set_alias="sel:mt_1<30"  '),
-    ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" '),
+    ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
     ("16",   "btag_loose",    "btag_loose",  BINS_FINE, '--set_alias="sel:mt_1<60" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && (mt_1>30 || mva_olddm_tight_2<0.5))"' ),
     ("16",   "btag_tight",    "btag_tight",  BINS_FINE, '--set_alias="sel:mt_1<30" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && mva_olddm_tight_2>0.5)'),
   ]
   scheme_mt = [
-    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" '),
-    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" '),
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<40" --set_alias="baseline:"(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
     ("12",   "nobtag_loose",    "nobtag_loose",  BINS, '--set_alias="sel:mt_1<70" '),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS, '--set_alias="sel:mt_1<40" '),
-    ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" '),
+    ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:"(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
     ("16",   "btag_loose",    "btag_loose",  BINS, '--set_alias="sel:mt_1<70" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && (mt_1>40  || mva_olddm_tight_2<0.5))"'),
     ("16",   "btag_tight",    "btag_tight",  BINS, '--set_alias="sel:mt_1<40" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && mva_olddm_tight_2>0.5)'),
 
   ]
   scheme_tt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
-    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="baseline:(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)"'),
     ("8",   "nobtag_tight",    "nobtag_loose",  BINS_FINE, ''),
     ("8",   "nobtag_loose",    "nobtag_tight",  BINS_FINE, ''),
-    ("8",   "btag",    "btag",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_vloose_2>0.5 &&mva_olddm_medium_2<0.5&&antiele_1 && antimu_1 && antiele_2 &&antimu_2 && leptonveto<0.5"'),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_vloose_2>0.5 &&mva_olddm_medium_2<0.5&&antiele_1 && antimu_1 && antiele_2 &&antimu_2 && leptonveto<0.5" --set_alias="baseline:(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)"'),
     ("8",   "btag_loose",    "btag_tight",  BINS, '--set_alias="baseline:mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto" --set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_vloose_2>0.5 &&mva_olddm_medium_2<0.5&&antiele_1 && antimu_1 && antiele_2 &&antimu_2 && leptonveto<0.5"'),  
     ("8",   "btag_tight",    "btag_tight",  BINS, '--set_alias="baseline:mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto" --set_alias="tt_qcd_norm:mva_olddm_medium_1>0.5&&mva_olddm_vloose_2>0.5 &&mva_olddm_medium_2<0.5&&antiele_1 && antimu_1 && antiele_2 &&antimu_2 && leptonveto<0.5"'),
   ]
