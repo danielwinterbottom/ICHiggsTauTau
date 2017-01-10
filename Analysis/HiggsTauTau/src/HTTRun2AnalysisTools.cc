@@ -1854,7 +1854,7 @@ push_back(sample_names_,this->ResolveSamplesAlias("data_samples"));
       total_bkg_den.second = new_err;
     }
     double ratio_den_err = std::sqrt((total_bkg_den.second * total_bkg_den.second) + (den.second * den.second));
-    Value bkg_sub_den(den.first - total_bkg_num.first, ratio_den_err);
+    Value bkg_sub_den(den.first - total_bkg_den.first, ratio_den_err);
     return ValueDivide(bkg_sub_num, bkg_sub_den);
   }
 
