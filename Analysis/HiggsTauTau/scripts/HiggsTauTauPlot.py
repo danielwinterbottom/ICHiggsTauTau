@@ -323,7 +323,7 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
         if method == 8:
             w_node = GetWNode(ana, 'Wos', wjets_samples, data_samples, w_sub_samples, plot, 'wt', qcd_sdb_sel, qcd_sdb_cat, method, 1.18, get_os)
         else:
-            w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, 1.18, False)    #check for method == 10!!!!!!!
+            w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, 1.18, False)
         subtract_node.AddNode(w_node)
         num_selection = BuildCutString('wt', sel, qcd_cat, '!os')
         den_selection = BuildCutString('wt', sel, qcd_sdb_cat, '!os')
@@ -337,12 +337,11 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
                      w_num_node)
         den_node = SubtractNode('ratio_den',
                      ana.SummedFactory('data_den', data, plot, den_selection),
-                     ana.SummedFactory('bkg_den', qcd_sub_samples, plot, num_selection)) # *should be den_selection instead of num_selection?
-        w_den_node = GetWNode(ana, 'W_den', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_cat, method, 1.18, False) # *should be qcd_sdb_cat instead of qcd_cat?
+                     ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
+        w_den_node = GetWNode(ana, 'W_den', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, 1.18, False)
         den_node = SubtractNode('ratio_den',
                      den_node,
                      w_den_node) 
-        #using num category for bkgs subtracted from denumerator to match cpp plotting code but is this correct?? - perhaps this should also use den selections? (see *)
         
         ana.nodes[nodename].AddNode(HttQCDNode('QCD',
           ana.SummedFactory('data_ss', data, plot, full_selection),
