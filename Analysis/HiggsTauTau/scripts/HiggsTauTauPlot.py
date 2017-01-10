@@ -31,6 +31,7 @@ parser.add_option("-m", "--method", dest="method", type='int', default=14,
     help="Method.  Supported options: %(METHODS)s" % vars())
 (options, args) = parser.parse_args()
 
+print ''
 print '################### Options ###################'
 print 'channel      = ' + options.channel
 print 'outputfolder = ' + options.output_folder
@@ -42,6 +43,7 @@ print 'sel          = ' + options.sel
 print 'analysis     = ' + options.analysis
 print 'method       =' ,  options.method
 print '###############################################'
+print ''
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -350,6 +352,26 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
           shape_node,
           num_node,
           den_node))
+        
+def PrintSummary(nodename='', signal_strings=[], data_strings=[]):
+    print ''
+    print '################### Summary ###################'
+    nodes = ana.nodes[nodename].SubNodes()
+    bkg_total = ufloat(0,0)
+    sig_total = ufloat(0.000000001,0.000000001)
+    for node in nodes:
+        per_err = node.shape.rate.s/node.shape.rate.n
+        print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err
+        if node.name in signal_strings:
+            sig_total += node.shape.rate
+        elif node.name not in data_strings:
+            bkg_total += node.shape.rate
+    per_err = bkg_total.s/bkg_total.n
+    print 'Total bkg'.ljust(10) , ("%.2f" % bkg_total.n).ljust(10), '+/-'.ljust(5), ("%.2f" % bkg_total.s).ljust(7), "(%.4f)" % per_err
+    per_err = sig_total.s/sig_total.n
+    print 'Total sig'.ljust(10) , ("%.2f" % sig_total.n).ljust(10), '+/-'.ljust(5), ("%.2f" % sig_total.s).ljust(7), "(%.4f)" % per_err
+    print '###############################################'
+    print ''
 
 ana.nodes.AddNode(ListNode(nodename))
 
@@ -365,7 +387,10 @@ GenerateW(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel,
 GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
 
 ana.Run()
-#ana.nodes.PrintTree()
+
+signal_strings = ['blah']
+PrintSummary(nodename, signal_strings, ['data_obs'])
+
 output_name = options.output_folder+"/"+nodename+"_"+options.cat+"_"+options.channel+".root"
 outfile = ROOT.TFile(output_name, 'RECREATE')
 
