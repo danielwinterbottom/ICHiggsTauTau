@@ -27,10 +27,14 @@ parser.add_option("-s", "--sel", dest="sel", type='string', default='(1)',
     help="Selection")
 parser.add_option("-a", "--analysis", dest="analysis", type='string', default='sm',
     help="Analysis.  Supported options: %(CHANNELS)s" % vars())
-parser.add_option("-m", "--method", dest="method", type='int', default=14,
+parser.add_option("-m", "--method", dest="method", type='int', default=8,
     help="Method.  Supported options: %(METHODS)s" % vars())
+parser.add_option("--signalmasses", dest="signalmasses", type='string', default='125',
+    help="Comma seperated list of signal masses.")
 parser.add_option("-r", "--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type='float', default=-1,
     help="QCD OS/SS ratio")
+parser.add_option("--sm_bkg", dest="sm_bkg", default=False,
+    help="Add SM Higgs background for MSSM")
 (options, args) = parser.parse_args()
 
 print ''
@@ -43,8 +47,10 @@ print 'cat             = ' + options.cat
 print 'year            = ' + options.year
 print 'sel             = ' + options.sel
 print 'analysis        = ' + options.analysis
-print 'method          =' ,  options.method
-print 'qcd_os_ss_ratio =' ,  options.qcd_os_ss_ratio
+print 'method          ='  ,  options.method
+print 'signalmasses    = ' +  options.signalmasses
+print 'qcd_os_ss_ratio ='  ,  options.qcd_os_ss_ratio
+print 'sm_bkg          ='  ,  options.sm_bkg
 print '###############################################'
 print ''
 
@@ -61,6 +67,8 @@ else:
         qcd_os_ss_ratio = 1.18
     else:
         qcd_os_ss_ratio = 1.0
+        
+masses = options.signalmasses.split(',')
 
 ana.remaps = {
     'SingleMuon': 'data_obs'
@@ -139,9 +147,31 @@ else:
 w_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
 wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
 
+sm_samples = { 'ggH' : 'GluGluHToTauTau', 'qqH' : 'VBFHToTauTau', 'WplusH' : 'WplusHToTauTau', 'WminusH' : 'WminusHToTauTau', 'ZH' : 'ZHToTauTau', 'TTH' : 'TTHToTauTau' }
+mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau', 'bbH' : 'SUSYGluGluToBBHToTauTau' }
+Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
+
 # Add all data and MC filenames
 for sample_name in ztt_samples + data_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + qcd_sub_samples + w_sub_samples + wjets_samples:
     ana.AddSamples(options.input_folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+    
+if options.analysis == 'sm':
+    signal_samples = sm_samples
+elif options.analysis == 'mssm':
+    signal_samples = mssm_samples
+elif options.analysis == 'Hhh':
+    signal_samples = Hhh_samples
+
+for mass in masses:
+    for key in signal_samples:
+        sample_name = signal_samples[key]+'_M-'+mass
+        ana.AddSamples(options.input_folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+
+if options.sm_bkg:
+    for key in sm_samples:
+        sample_name = sm_samples[key]+'_M-125'
+        ana.AddSamples(options.input_folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+        
 ana.AddInfo(options.param_file, scaleTo='data_obs')
 
 cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
@@ -164,33 +194,40 @@ def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
         full_selection += '*('+cat+')'
     return full_selection 
 
-def GenerateZ(ana, samples=[], plot='', wt='', sel='', cat='', z_sels={}):
+def GenerateZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}):
     full_selection = BuildCutString(wt, sel, cat, 'os', z_sels['ztt_sel'])
-    ana.nodes[nodename].AddNode(ana.SummedFactory('ZTT', samples, plot, full_selection))
+    ana.nodes[nodename].AddNode(ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection))
     if options.channel == 'em':
         full_selection = BuildCutString(wt, sel, cat, 'os', z_sels['zll_sel'])
-        ana.nodes[nodename].AddNode(ana.SummedFactory('ZLL', samples, plot, full_selection))
+        ana.nodes[nodename].AddNode(ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection))
     else:
         full_selection = BuildCutString(wt, sel, cat, 'os', z_sels['zl_sel'])
-        ana.nodes[nodename].AddNode(ana.SummedFactory('ZL', samples, plot, full_selection))
+        ana.nodes[nodename].AddNode(ana.SummedFactory('ZL'+add_name, samples, plot, full_selection))
         full_selection = BuildCutString(wt, sel, cat, 'os', z_sels['zj_sel'])
-        ana.nodes[nodename].AddNode(ana.SummedFactory('ZJ', samples, plot, full_selection))
+        ana.nodes[nodename].AddNode(ana.SummedFactory('ZJ'+add_name, samples, plot, full_selection))
+        full_selection = BuildCutString(wt, sel, cat, 'os', z_sels['zl_sel']+'||'+z_sels['zj_sel'])
+        ana.nodes[nodename].AddNode(ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection))
         
-def GenerateTop(ana, samples=[], plot='', wt='', sel='', cat='', top_sels={}):
+def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}):
   full_selection = BuildCutString(wt, sel, cat, 'os', top_sels['ttt_sel'])
-  ana.nodes[nodename].AddNode(ana.SummedFactory('TTT', samples, plot, full_selection))
+  ana.nodes[nodename].AddNode(ana.SummedFactory('TTT'+add_name, samples, plot, full_selection))
   full_selection = BuildCutString(wt, sel, cat, 'os', top_sels['ttj_sel'])
-  ana.nodes[nodename].AddNode(ana.SummedFactory('TTJ', samples, plot, full_selection))
+  ana.nodes[nodename].AddNode(ana.SummedFactory('TTJ'+add_name, samples, plot, full_selection))
+  full_selection = BuildCutString(wt, sel, cat, 'os', top_sels['ttt_sel']+'||'+top_sels['ttj_sel'])
+  ana.nodes[nodename].AddNode(ana.SummedFactory('TT'+add_name, samples, plot, full_selection))
 
-def GenerateVV(ana, samples=[], plot='', wt='', sel='', cat='', vv_sels={}):
+def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}):
   full_selection = BuildCutString(wt, sel, cat, 'os', vv_sels['vvt_sel'])
-  ana.nodes[nodename].AddNode(ana.SummedFactory('VVT', samples, plot, full_selection))
+  ana.nodes[nodename].AddNode(ana.SummedFactory('VVT'+add_name, samples, plot, full_selection))
   full_selection = BuildCutString(wt, sel, cat, 'os', vv_sels['vvj_sel'])
-  ana.nodes[nodename].AddNode(ana.SummedFactory('VVJ', samples, plot, full_selection))
+  ana.nodes[nodename].AddNode(ana.SummedFactory('VVJ'+add_name, samples, plot, full_selection))
+  full_selection = BuildCutString(wt, sel, cat, 'os', vv_sels['vvt_sel']+'||'+vv_sels['vvj_sel'])
+  ana.nodes[nodename].AddNode(ana.SummedFactory('VV'+add_name, samples, plot, full_selection))
   
-def GenerateWG(ana, samples=[], plot='', wt='', sel='', cat='', wg_sel=''):
-  full_selection = BuildCutString(wt, sel, cat, 'os', wg_sel)
-  ana.nodes[nodename].AddNode(ana.SummedFactory('WGam', samples, plot, full_selection))
+def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
+  full_selection = BuildCutString(wt, sel, cat, 'os')
+  wg_node = ana.SummedFactory('WGam'+add_name, samples, plot, full_selection)
+  return wg_node
 
 def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
   if get_os:
@@ -265,11 +302,19 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
         btag_extrap_den_node) 
   return w_node
 
-def GenerateW(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
-  w_node = GetWNode(ana, name, samples, data, sub_samples, plot, wt, sel, cat, method, qcd_factor, get_os)
-  ana.nodes[nodename].AddNode(w_node)
+def GenerateW(ana, name='W', add_name='', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
+  w_node_name = name  
+  if options.channel == 'em':
+      w_total_node = SummedNode('W'+add_name)
+      w_total_node.AddNode(GetWGNode(ana, add_name, wgam_samples, plot, wt, sel, cat))
+      ana.nodes[nodename].AddNode(GetWGNode(ana, add_name, wgam_samples, plot, wt, sel, cat))
+      w_node_name = name+'J'
+  ana.nodes[nodename].AddNode(GetWNode(ana, w_node_name+add_name, samples, data, sub_samples, plot, wt, sel, cat, method, qcd_factor, get_os))
+  if options.channel == 'em':
+      w_total_node.AddNode(GetWNode(ana, w_node_name+add_name, samples, data, sub_samples, plot, wt, sel, cat, method, qcd_factor, get_os))
+      ana.nodes[nodename].AddNode(w_total_node)
       
-def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
+def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
     tt_qcd_norm = cats['tt_qcd_norm']
     if options.channel == 'et' or options.channel == 'mt':
         ttqcdcat = '('+cats[options.cat]+')*(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto)*(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)'
@@ -374,18 +419,48 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
           num_node,
           den_node))
         
-def PrintSummary(nodename='', signal_strings=[], data_strings=[]):
+def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', sm_bkg = False):
+    full_selection = BuildCutString(wt, sel, cat, 'os')
+    for mass in masses:  
+        if sm_bkg:
+            add_str = '_SM'+mass
+        else:
+            add_str = mass
+        for key in sm_samples:
+            sample_name = sm_samples[key]+'_M-'+mass
+            ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_str+add_name, sample_name, plot, full_selection))
+            
+def GenerateMSSMSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel='', cat='', do_ggH=True, do_bbH=True):
+    full_selection = BuildCutString(wt, sel, cat, 'os')
+    for mass in masses:
+        for key in mssm_samples:
+            if key == 'ggH' and not do_ggH:
+                continue
+            if key == 'bbH' and not do_bbH:
+                continue
+            sample_name = mssm_samples[key]+'_M-'+mass
+            ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
+        
+def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel='', cat=''):
+    full_selection = BuildCutString(wt, sel, cat, 'os')
+    for mass in masses:
+        for key in Hhh_samples:
+            sample_name = Hhh_samples[key]+'_M-'+mass
+            ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
+        
+def PrintSummary(nodename='', data_strings=['data_obs']):
+    nosum_bkgs = ['ZJ', 'ZL', 'VVT', 'VVJ', 'TTT', 'TTJ', 'WGam', 'WJ']
     print ''
     print '################### Summary ###################'
     nodes = ana.nodes[nodename].SubNodes()
-    bkg_total = ufloat(0,0)
+    bkg_total = ufloat(0.000000001,0.000000001)
     sig_total = ufloat(0.000000001,0.000000001)
     for node in nodes:
         per_err = node.shape.rate.s/node.shape.rate.n
         print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err
-        if node.name in signal_strings:
+        if True in [node.name.find(sig) != -1 for sig in signal_samples.keys()]:
             sig_total += node.shape.rate
-        elif node.name not in data_strings:
+        elif node.name not in data_strings and node.name not in nosum_bkgs:
             bkg_total += node.shape.rate
     per_err = bkg_total.s/bkg_total.n
     print 'Total bkg'.ljust(10) , ("%.2f" % bkg_total.n).ljust(10), '+/-'.ljust(5), ("%.2f" % bkg_total.s).ljust(7), "(%.4f)" % per_err
@@ -399,18 +474,24 @@ ana.nodes.AddNode(ListNode(nodename))
 full_selection = BuildCutString('wt', sel, cat)
 ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot, full_selection))
 
-GenerateZ(ana, ztt_samples, plot, 'wt', sel, cat, z_sels)                                 
-GenerateTop(ana, top_samples, plot, 'wt', sel, cat, top_sels)  
-GenerateVV(ana, vv_samples, plot, 'wt', sel, cat, vv_sels)  
-if options.channel == 'em':
-    GenerateWG(ana, wgam_samples, plot, 'wt', sel, cat, '')
-GenerateW(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
-GenerateQCD(ana, data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
+GenerateZ(ana, '', ztt_samples, plot, 'wt', sel, cat, z_sels)                                 
+GenerateTop(ana, '', top_samples, plot, 'wt', sel, cat, top_sels)  
+GenerateVV(ana, '', vv_samples, plot, 'wt', sel, cat, vv_sels)  
+GenerateW(ana, 'W', '', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
+GenerateQCD(ana, '', data_samples, qcd_sub_samples, w_sub_samples, plot, 'wt', sel, cat, options.method)
+                                                   #def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', sm_bkg = False):
+if options.analysis == 'sm':
+    GenerateSMSignal(ana, '', plot, masses, 'wt', sel, cat)
+elif options.analysis == 'mssm':
+    GenerateMSSMSignal(ana, '', plot, masses, 'wt', sel)
+    if options.sm_bkg:
+        GenerateSMSignal(ana, '', plot, ['125'],  'wt', sel, cat, options.sm_bkg)  
+elif options.analysis == 'Hhh':
+    GenerateHhhSignal(ana, '', masses, plot, 'wt', sel)
 
 ana.Run()
 
-signal_strings = ['blah']
-PrintSummary(nodename, signal_strings, ['data_obs'])
+PrintSummary(nodename)
 
 output_name = options.output_folder+"/"+nodename+"_"+options.cat+"_"+options.channel+".root"
 outfile = ROOT.TFile(output_name, 'RECREATE')
