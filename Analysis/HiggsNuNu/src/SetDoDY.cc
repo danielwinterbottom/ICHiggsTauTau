@@ -59,7 +59,7 @@ void SetDoDY(ic::mc mc, HinvWeights* xsWeights){
   }
 
   xsWeights->set_do_dy_soup(true);
-  xsWeights->set_do_dy_reweighting(false);
+  xsWeights->set_do_dy_reweighting(true);
   xsWeights->SetDYTargetFractions(TF_oneMinusAll,TF_htBin1,TF_htBin2,TF_htBin3,TF_htBin4);
   xsWeights->SetDYInputYields(IY_Inclusive,IY_htBin1,IY_htBin2,IY_htBin3,IY_htBin4);
 }

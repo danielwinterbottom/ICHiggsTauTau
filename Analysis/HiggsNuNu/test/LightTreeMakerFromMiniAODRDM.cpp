@@ -987,6 +987,11 @@ int main(int argc, char* argv[]){
     SetDoDY( mc, &xsWeights );
   }
 
+  if (output_name.find("JetsToLL") != output_name.npos ||
+      output_name.find("JetsToNuNu") != output_name.npos) {
+    xsWeights.set_do_dy_reweighting(true);
+  }
+
   /*if (output_name.find("JetsToLL") != output_name.npos &&
       output_name.find("m50-ht") != output_name.npos){
     xsWeights.set_do_dy_soup_htbinned(false);

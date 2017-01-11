@@ -32,7 +32,7 @@ void SetDoW(ic::mc mc, HinvWeights* xsWeights){
     IY_htBin7      = 2507809;
 
     xsWeights->set_do_w_soup(true);
-    xsWeights->set_do_w_reweighting(false);
+    xsWeights->set_do_w_reweighting(true);
     xsWeights->SetWTargetFractions(TF_oneMinusAll,TF_htBin1,TF_htBin2,TF_htBin3,TF_htBin4,TF_htBin5,TF_htBin6,TF_htBin7);
     xsWeights->SetWInputYields(IY_Inclusive,IY_htBin1,IY_htBin2,IY_htBin3,IY_htBin4,IY_htBin5,IY_htBin6,IY_htBin7);
   }
