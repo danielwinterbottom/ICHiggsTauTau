@@ -29,25 +29,38 @@ parser.add_option("-a", "--analysis", dest="analysis", type='string', default='s
     help="Analysis.  Supported options: %(CHANNELS)s" % vars())
 parser.add_option("-m", "--method", dest="method", type='int', default=14,
     help="Method.  Supported options: %(METHODS)s" % vars())
+parser.add_option("-r", "--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type='float', default=-1,
+    help="QCD OS/SS ratio")
 (options, args) = parser.parse_args()
 
 print ''
 print '################### Options ###################'
-print 'channel      = ' + options.channel
-print 'outputfolder = ' + options.output_folder
-print 'inputfolder  = ' + options.input_folder
-print 'paramfile    = ' + options.param_file
-print 'cat          = ' + options.cat
-print 'year         = ' + options.year
-print 'sel          = ' + options.sel
-print 'analysis     = ' + options.analysis
-print 'method       =' ,  options.method
+print 'channel         = ' + options.channel
+print 'outputfolder    = ' + options.output_folder
+print 'inputfolder     = ' + options.input_folder
+print 'paramfile       = ' + options.param_file
+print 'cat             = ' + options.cat
+print 'year            = ' + options.year
+print 'sel             = ' + options.sel
+print 'analysis        = ' + options.analysis
+print 'method          =' ,  options.method
+print 'qcd_os_ss_ratio =' ,  options.qcd_os_ss_ratio
 print '###############################################'
 print ''
 
 ROOT.TH1.SetDefaultSumw2(True)
 
 ana = Analysis()
+
+if options.qcd_os_ss_ratio > 0:
+    qcd_os_ss_ratio = options.qcd_os_ss_ratio
+else:
+    if options.channel == 'et':
+        qcd_os_ss_ratio = 1.02
+    elif options.channel == 'mt':
+        qcd_os_ss_ratio = 1.18
+    else:
+        qcd_os_ss_ratio = 1.0
 
 ana.remaps = {
     'SingleMuon': 'data_obs'
@@ -179,7 +192,7 @@ def GenerateWG(ana, samples=[], plot='', wt='', sel='', cat='', wg_sel=''):
   full_selection = BuildCutString(wt, sel, cat, 'os', wg_sel)
   ana.nodes[nodename].AddNode(ana.SummedFactory('WGam', samples, plot, full_selection))
 
-def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=1.18, get_os=True):
+def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
   if get_os:
       OSSS = 'os'
   else:
@@ -252,11 +265,11 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
         btag_extrap_den_node) 
   return w_node
 
-def GenerateW(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=1.18, get_os=True):
+def GenerateW(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
   w_node = GetWNode(ana, name, samples, data, sub_samples, plot, wt, sel, cat, method, qcd_factor, get_os)
   ana.nodes[nodename].AddNode(w_node)
       
-def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=1.18, get_os=True):
+def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
     tt_qcd_norm = cats['tt_qcd_norm']
     if options.channel == 'et' or options.channel == 'mt':
         ttqcdcat = '('+cats[options.cat]+')*(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto)*(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)'
@@ -290,7 +303,7 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
                 shape_cat = cat
             shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
             bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-            bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, 1.18, False))
+            bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, qcd_os_ss_ratio, False))
             shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
         
         if options.channel == 'em':
@@ -305,7 +318,7 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
         
         full_selection = BuildCutString(weight, qcd_sdb_sel, qcd_cat, '')
         subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
-        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, weight, sel, cat, method, 1.18, False)
+        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, weight, sel, cat, method, qcd_os_ss_ratio, False)
         subtract_node.AddNode(w_node)
         
         ana.nodes[nodename].AddNode(HttQCDNode('QCD',
@@ -325,15 +338,15 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
         shape_cat = '('+cats[options.cat]+')*('+cats['tt_qcd_norm']+')'
         shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
         bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-        bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, 1.18, OSSS))
+        bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, qcd_os_ss_ratio, OSSS))
         shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
             
         full_selection = BuildCutString('wt', qcd_sdb_sel, qcd_sdb_cat, '')
         subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
         if method == 8:
-            w_node = GetWNode(ana, 'Wos', wjets_samples, data_samples, w_sub_samples, plot, 'wt', qcd_sdb_sel, qcd_sdb_cat, method, 1.18, get_os)
+            w_node = GetWNode(ana, 'Wos', wjets_samples, data_samples, w_sub_samples, plot, 'wt', qcd_sdb_sel, qcd_sdb_cat, method, qcd_os_ss_ratio, get_os)
         else:
-            w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, 1.18, False)
+            w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
         subtract_node.AddNode(w_node)
         num_selection = BuildCutString('wt', sel, qcd_cat, '!os')
         den_selection = BuildCutString('wt', sel, qcd_sdb_cat, '!os')
@@ -341,14 +354,14 @@ def GenerateQCD(ana, data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt=
         num_node = SubtractNode('ratio_num',
                      ana.SummedFactory('data_num', data, plot, num_selection),
                      ana.SummedFactory('bkg_num', qcd_sub_samples, plot, num_selection))
-        w_num_node = GetWNode(ana, 'W_num', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_cat, method, 1.18, False)
+        w_num_node = GetWNode(ana, 'W_num', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_cat, method, qcd_os_ss_ratio, False)
         num_node = SubtractNode('ratio_num',
                      num_node,
                      w_num_node)
         den_node = SubtractNode('ratio_den',
                      ana.SummedFactory('data_den', data, plot, den_selection),
                      ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
-        w_den_node = GetWNode(ana, 'W_den', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, 1.18, False)
+        w_den_node = GetWNode(ana, 'W_den', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
         den_node = SubtractNode('ratio_den',
                      den_node,
                      w_den_node) 
