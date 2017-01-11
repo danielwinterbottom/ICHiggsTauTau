@@ -57,10 +57,10 @@ class HinvWeights : public ModuleBase {
 
   CLASS_MEMBER(HinvWeights, std::string, kfactors_file)
   TFile *kfactors_;
-  std::vector<TH1F*> hist_kfactors_N_W;
-  std::vector<TH1F*> hist_kfactors_D_W;
-  std::vector<TH1F*> hist_kfactors_N_Z;
-  std::vector<TH1F*> hist_kfactors_D_Z;
+  TH1F *hist_kfactors_N_W;
+  TH1F *hist_kfactors_D_W;
+  TH1F *hist_kfactors_N_Z;
+  TH1F *hist_kfactors_D_Z;
 
   TFile *triggerSF_;
   std::vector<TH1F*> hist_trigSF_METL1vec;

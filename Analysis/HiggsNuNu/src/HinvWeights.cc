@@ -199,13 +199,13 @@ namespace ic {//namespace
 
       if (do_w_reweighting_) {
         std::cout << "Applying reweighting of W events to NLO MCFM." << std::endl;
-        hist_kfactors_N_W.push_back((TH1F*)gDirectory->Get("EWKcorr/W"));
-        hist_kfactors_D_W.push_back((TH1F*)gDirectory->Get("WJets_LO/inv_pt"));
+        hist_kfactors_N_W = (TH1F*)gDirectory->Get("EWKcorr/W");
+        hist_kfactors_D_W = (TH1F*)gDirectory->Get("WJets_LO/inv_pt");
       }
       if (do_dy_reweighting_) {
         std::cout << "Applying reweighting of DY events to NLO MCFM." << std::endl;
-        hist_kfactors_N_Z.push_back((TH1F*)gDirectory->Get("EWKcorr/Z"));
-        hist_kfactors_D_Z.push_back((TH1F*)gDirectory->Get("ZJets_LO/inv_pt"));
+        hist_kfactors_N_Z = (TH1F*)gDirectory->Get("EWKcorr/Z");
+        hist_kfactors_D_Z = (TH1F*)gDirectory->Get("ZJets_LO/inv_pt");
       }
     }
 
@@ -995,8 +995,7 @@ namespace ic {//namespace
     }
 
     if (do_w_reweighting_ || do_dy_reweighting_) {
-      double w_Reweight = 1.0;
-      double z_Reweight = 1.0;
+      double v_nlo_Reweight = 1.0;
       double v_pt = 0.0;
 
       std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
@@ -1009,17 +1008,27 @@ namespace ic {//namespace
                 flags[GenStatusBits::FromHardProcess] && 
                 flags[GenStatusBits::IsFirstCopy]) ) continue;
         v_pt = parts[idxPart]->pt();
+        if (v_pt<150) {
+          std::cout << " -- Underflow! v_pt = "<< v_pt << " has been re-set to v_pt = 151.0" << std::endl;
+          v_pt = 151.0;
+        }
+        if (v_pt>=1250) {
+          std::cout << " -- Overflow! v_pt = "<< v_pt << " has been re-set to v_pt = 1249.0" << std::endl;
+          v_pt = 1249.0;
+        }
 
         if (absPdgId==24) {
-          w_Reweight = (hist_kfactors_N_W->GetBinContent(hist_kfactors_N_W->FindBin(v_pt)))/(hist_kfactors_D_W->GetBinContent(hist_kfactors_D_W->FindBin(v_pt)));
+          v_nlo_Reweight = (hist_kfactors_N_W->GetBinContent(hist_kfactors_N_W->FindBin(v_pt)))/(hist_kfactors_D_W->GetBinContent(hist_kfactors_D_W->FindBin(v_pt)));
+          std::cout << " -- The NLO weight of W is v_nlo_Reweight = "<< v_nlo_Reweight << std::endl;
         } 
         if (absPdgId==23) {
-          z_Reweight = (hist_kfactors_N_Z->GetBinContent(hist_kfactors_N_Z->FindBin(v_pt)))/(hist_kfactors_D_Z->GetBinContent(hist_kfactors_D_Z->FindBin(v_pt)));
+          v_nlo_Reweight = (hist_kfactors_N_Z->GetBinContent(hist_kfactors_N_Z->FindBin(v_pt)))/(hist_kfactors_D_Z->GetBinContent(hist_kfactors_D_Z->FindBin(v_pt)));
+          std::cout << " -- The NLO weight of Z is v_nlo_Reweight = "<< v_nlo_Reweight << std::endl;
         } 
       }
 
 
-      eventInfo->set_weight("vReweighting", vReweight);
+      eventInfo->set_weight("!v_nlo_Reweighting", v_nlo_Reweight);
 
     }
 

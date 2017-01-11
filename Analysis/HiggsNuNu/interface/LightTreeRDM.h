@@ -52,6 +52,7 @@ namespace ic {
     double total_weight_leptight_;
     double puweight_up_scale_;
     double puweight_down_scale_;
+    double v_nlo_Reweight_;
 
     unsigned nJetsSave_;
     unsigned nJets_;

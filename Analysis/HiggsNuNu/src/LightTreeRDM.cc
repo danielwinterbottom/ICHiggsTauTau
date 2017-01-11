@@ -93,6 +93,7 @@ namespace ic {
     total_weight_leptight_ = 1;
     puweight_up_scale_=1;
     puweight_down_scale_=1;
+    v_nlo_Reweight_=1;
 
     nJets_ = 0;
     nGenJets_ = 0;
@@ -351,6 +352,7 @@ namespace ic {
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("puweight_up_scale",&puweight_up_scale_);
     outputTree_->Branch("puweight_down_scale",&puweight_down_scale_);
+    outputTree_->Branch("v_nlo_Reweight",&v_nlo_Reweight_);
 
     outputTree_->Branch("nGenJets",&nGenJets_);
 
@@ -673,6 +675,7 @@ namespace ic {
     double pileupwtdown=1;
 
     if(!is_data_){
+      v_nlo_Reweight_= eventInfo->weight("v_nlo_Reweighting");
       weight_lepveto_= eventInfo->weight("idisoVeto");
       weight_leptight_ = eventInfo->weight("idisoTight");
       pileupwt=eventInfo->weight("pileup");
