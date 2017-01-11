@@ -152,6 +152,7 @@ namespace ic {
     l1met_ = 0;
     l1mht_ = 0;
     met_ = 0;
+    calomet_ = 0;
     genmet_ = 0;
     genmetphi_ = 0;
     metnomuons_ =0;
@@ -402,6 +403,7 @@ namespace ic {
     outputTree_->Branch("genmet",&genmet_);
     outputTree_->Branch("genmetphi",&genmetphi_);
     outputTree_->Branch("met",&met_);
+    outputTree_->Branch("calomet",&calomet_);
     outputTree_->Branch("met_x",&met_x_);
     outputTree_->Branch("met_y",&met_y_);
     outputTree_->Branch("met_significance",&met_significance_);
@@ -736,6 +738,10 @@ namespace ic {
 
 
     met_ = met->pt();
+    const Met::BasicMet & caloMet = met->GetCorrectedMet("RawCalo");
+    calomet_ = caloMet.pt();
+    //std::cout << " Check: met = " << met_ << " calomet = " << calomet_ << std::endl;
+
     met_x_ = metvec.Px();
     met_y_ = metvec.Py();
     met_significance_ = met->et_sig();

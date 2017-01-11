@@ -1,6 +1,6 @@
 #!/bin/sh
 DOCERN=0
-DOSUBMIT=0
+DOSUBMIT=1
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -24,9 +24,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium long
 
-JOBDIRPREFIX=jobs_run2ana_170106
+JOBDIRPREFIX=jobs_run2ana_170110 #_noMETsel
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_170106
+OUTPUTPREFIX=output_run2ana_170110 #_noMETsel
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -67,7 +67,7 @@ for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in enu #qcd enu munu taunu mumu ee nunu
+  for channels in enu ee munu #ee mumu taunu qcd #nunu
     do
     JOB=$channels
     #To debug
@@ -77,13 +77,13 @@ do
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
     ## To produce all of the hist
-    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
     ## To produce all of the hist for datacard
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_datacard.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_datacard.hists`
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
+    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
+    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
     ## To test for one hist
     #HISTSTRING=";E_{T,no-#mu}^{miss} (GeV);Events"
     #SHAPESTRING="metnomuons(25,200.,600.)"
@@ -93,6 +93,7 @@ do
     #SHAPESTRING="alljetsmetnomu_mindphi(14,2.3,3.1416)"
     echo "Making histograms: " $SHAPESTRING
     OUTPUTNAME="$channels.root"
+    #MINDPHICUT="alljetsmetnomu_mindphi\>=0"
     MINDPHICUT="alljetsmetnomu_mindphi\>=2.3"
     #MINDPHICUT="alljetsmetnomu_mindphi\>=1."
     if [ "$channels" = "taunu" ]; then
@@ -103,10 +104,12 @@ do
 	#MINDPHICUT="alljetsmetnomu_mindphi\>=0"
     fi
     if [ "$channels" = "ee" ]; then
-	MINDPHICUT="alljetsmetnoel_mindphi\>2.3"
+	#MINDPHICUT="alljetsmetnoel_mindphi\>=0"
+	MINDPHICUT="alljetsmetnoel_mindphi\>=2.3"
     fi
     if [ "$channels" = "enu" ]; then
-	MINDPHICUT="alljetsmetnoel_mindphi\>2.3"
+	#MINDPHICUT="alljetsmetnoel_mindphi\>=0"
+	MINDPHICUT="alljetsmetnoel_mindphi\>=2.3"
     fi
     if [ "$syst" = "" ]
 	then
