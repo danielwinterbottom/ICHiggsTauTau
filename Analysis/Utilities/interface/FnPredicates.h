@@ -101,6 +101,7 @@ namespace ic {
   bool ElectronHTTIdSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdTrigSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp);
 
   bool TightElectronFullID16(Electron const* elec, double const& rho);
   bool VetoElectronFullID16(Electron const* elec, double const& rho);

@@ -46,8 +46,12 @@ namespace ic {
     if (strategy_ ==strategy::fall15){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
       syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
-    } else if (strategy_ == strategy::mssmspring16){
+    } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
+      if(met_label_ == "pfMET"){
+          process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeIPFMET_2016BCD.root";
+      }
+      std::cout << "process file = " << process_file << std::endl;
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root"; //2015 file, systs not available for 2016 yet!
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
@@ -90,7 +94,7 @@ namespace ic {
     if (disable_recoil_corrs && disable_met_sys) return 0;
 
     // Get the stuff we need from the event
-    Met * mvaMet = event->GetPtr<Met>(met_label_);
+    Met * met = event->GetPtr<Met>(met_label_);
     std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
     std::vector<GenParticle *> sel_gen_parts;
     std::vector<GenParticle *> sel_vis_parts;
@@ -124,44 +128,44 @@ namespace ic {
      vispX+= sel_vis_parts[i]->vector().px();
      vispY+= sel_vis_parts[i]->vector().py();
    }
-
+  
   if(store_boson_pt_){
-    event->Add("genpX", genpX);
-    event->Add("genpY", genpY);
-    event->Add("vispX", vispX);
-    event->Add("vispY", vispY);
+    if(!event->ExistsInEvent("genpX")) event->Add("genpX", genpX);
+    if(!event->ExistsInEvent("genpY")) event->Add("genpY", genpY);
+    if(!event->ExistsInEvent("vispX")) event->Add("vispX", vispX);
+    if(!event->ExistsInEvent("vispY")) event->Add("vispY", vispY);
   }
 
-  event->Add("genpT", genpT);
-  event->Add("genM", genM);
+  if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);
+  if(!event->ExistsInEvent("genM")) event->Add("genM", genM);
 
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
   unsigned njets = jets.size();
   if(is_wjets) njets+=1;
-  double mvaMetx = mvaMet->vector().px();
-  double mvaMety = mvaMet->vector().py();
-  double mvaMete = mvaMet->energy();
-  double met_res_e = sqrt(mvaMete*mvaMete-mvaMetx*mvaMetx-mvaMety*mvaMety);//As we can only set pt/eta/phi/energy, not px or py
+  double Metx = met->vector().px();
+  double Mety = met->vector().py();
+  double Mete = met->energy();
+  double met_res_e = sqrt(Mete*Mete-Metx*Metx-Mety*Mety);//As we can only set pt/eta/phi/energy, not px or py
   float correctedMetx, correctedMety;
   if(!disable_recoil_corrs){
     if(!use_quantile_map_){
-      corrector_->CorrectByMeanResolution(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+      corrector_->CorrectByMeanResolution(Metx,Mety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
     } else {
-      corrector_->Correct(mvaMetx,mvaMety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
+      corrector_->Correct(Metx,Mety,genpX,genpY,vispX,vispY,njets,correctedMetx,correctedMety); 
     }
     //Now stick this back into our met object:
-    mvaMet->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
-    mvaMet->set_phi(atan2(correctedMety,correctedMetx));
-    mvaMet->set_energy(sqrt(met_res_e*met_res_e+correctedMetx*correctedMetx+correctedMety*correctedMety));
+    met->set_pt(sqrt(correctedMetx*correctedMetx+correctedMety*correctedMety));
+    met->set_phi(atan2(correctedMety,correctedMetx));
+    met->set_energy(sqrt(met_res_e*met_res_e+correctedMetx*correctedMetx+correctedMety*correctedMety));
   } else {
-    correctedMetx = mvaMetx;
-    correctedMety = mvaMety;
+    correctedMetx = Metx;
+    correctedMety = Mety;
   }
     
   //Apply systematic shifts to MET if requested  
   if(met_scale_mode_ > 0 || met_res_mode_ >0) {
-    float mvamet_Shift_x, mvamet_Shift_y;
+    float met_Shift_x, met_Shift_y;
     MEtSys::SysType sysType;
     MEtSys::SysShift sysShift;
     MEtSys::ProcessType processType;
@@ -198,11 +202,11 @@ namespace ic {
         processType, // (int) type of process 
         sysType, // (int) type of systematic uncertainty
         sysShift, // (int) direction of systematic shift
-        mvamet_Shift_x,mvamet_Shift_y // (float) shifted value of the mva met
+        met_Shift_x,met_Shift_y // (float) shifted value of the mva met
     );
-    mvaMet->set_pt(sqrt(mvamet_Shift_x*mvamet_Shift_x+mvamet_Shift_y*mvamet_Shift_y));
-    mvaMet->set_phi(atan2(mvamet_Shift_y,mvamet_Shift_x));
-    mvaMet->set_energy(sqrt(met_res_e*met_res_e+mvamet_Shift_x*mvamet_Shift_x+mvamet_Shift_y*mvamet_Shift_y));
+    met->set_pt(sqrt(met_Shift_x*met_Shift_x+met_Shift_y*met_Shift_y));
+    met->set_phi(atan2(met_Shift_y,met_Shift_x));
+    met->set_energy(sqrt(met_res_e*met_res_e+met_Shift_x*met_Shift_x+met_Shift_y*met_Shift_y));
 
   }
 
