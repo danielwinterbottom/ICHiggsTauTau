@@ -65,6 +65,7 @@ namespace ic {//namespace
     input_met_ = "metNoMuons";
     input_jet_ = "pfJetsPFlow";
     trg_weight_file_="input/scale_factors/DataMCWeight_53X_v1.root";
+    kfactors_file_="input/scale_factors/kfactors.root";
     Alumi_  = -1;
     BClumi_ = -1;
     Dlumi_  = -1;
@@ -192,12 +193,20 @@ namespace ic {//namespace
       std::cout << "f3 = " << zf3_ << "\t" << "n3 = " << zn3_ << "\t" << "w3 = " << zw3_ << std::endl;
       std::cout << "f4 = " << zf4_ << "\t" << "n4 = " << zn4_ << "\t" << "w4 = " << zw4_ << std::endl;
     }
+    if (do_w_reweighting_ || do_dy_reweighting_) {
 
-    if (do_w_reweighting_) {
-      std::cout << "Applying reweighting of W events to NLO MCFM." << std::endl;
-    }
-    if (do_dy_reweighting_) {
-      std::cout << "Applying reweighting of DY events to NLO MCFM." << std::endl;
+      kfactors_ = new TFile(kfactors_file_.c_str());
+
+      if (do_w_reweighting_) {
+        std::cout << "Applying reweighting of W events to NLO MCFM." << std::endl;
+        hist_kfactors_N_W.push_back((TH1F*)gDirectory->Get("EWKcorr/W"));
+        hist_kfactors_D_W.push_back((TH1F*)gDirectory->Get("WJets_LO/inv_pt"));
+      }
+      if (do_dy_reweighting_) {
+        std::cout << "Applying reweighting of DY events to NLO MCFM." << std::endl;
+        hist_kfactors_N_Z.push_back((TH1F*)gDirectory->Get("EWKcorr/Z"));
+        hist_kfactors_D_Z.push_back((TH1F*)gDirectory->Get("ZJets_LO/inv_pt"));
+      }
     }
 
 
@@ -986,25 +995,29 @@ namespace ic {//namespace
     }
 
     if (do_w_reweighting_ || do_dy_reweighting_) {
-      double vReweight = 1.0;
+      double w_Reweight = 1.0;
+      double z_Reweight = 1.0;
+      double v_pt = 0.0;
 
-      std::vector<GenJet *> genjets = event->GetPtrVec<GenJet>("genJets");
-      if (genjets.size() > 1) {
-        double lMjj = (genjets[0]->vector()+genjets[1]->vector()).M();
+      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
 
-        GenParticle* lBoson = 0;
-        std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      for (size_t idxPart = 0; idxPart < parts.size(); ++idxPart) {
 
-        for (unsigned i = 0; i < parts.size(); ++i) {
-          if (parts[i]->status() != 3) continue;
-          unsigned id = abs(parts[i]->pdgid());
-          if (id==24 || id==23) lBoson = parts[i];
-        }
-        if (lBoson){
-          double y_star = fabs(lBoson->vector().Rapidity() - (genjets[0]->vector().Rapidity()+genjets[1]->vector().Rapidity())/2.);
-          vReweight = nloReweighting(lMjj,y_star);
-        }
+        unsigned absPdgId = TMath::Abs(parts[idxPart]->pdgid());
+        std::vector<bool> flags = parts[idxPart]->statusFlags();
+        if ( !(flags[GenStatusBits::IsHardProcess] && 
+                flags[GenStatusBits::FromHardProcess] && 
+                flags[GenStatusBits::IsFirstCopy]) ) continue;
+        v_pt = parts[idxPart]->pt();
+
+        if (absPdgId==24) {
+          w_Reweight = (hist_kfactors_N_W->GetBinContent(hist_kfactors_N_W->FindBin(v_pt)))/(hist_kfactors_D_W->GetBinContent(hist_kfactors_D_W->FindBin(v_pt)));
+        } 
+        if (absPdgId==23) {
+          z_Reweight = (hist_kfactors_N_Z->GetBinContent(hist_kfactors_N_Z->FindBin(v_pt)))/(hist_kfactors_D_Z->GetBinContent(hist_kfactors_D_Z->FindBin(v_pt)));
+        } 
       }
+
 
       eventInfo->set_weight("vReweighting", vReweight);
 
