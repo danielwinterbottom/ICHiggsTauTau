@@ -27,6 +27,8 @@ parser.add_option("-s", "--sel", dest="sel", type='string', default='(1)',
     help="Selection")
 parser.add_option("-a", "--analysis", dest="analysis", type='string', default='sm',
     help="Analysis.  Supported options: %(CHANNELS)s" % vars())
+parser.add_option("-v", "--var", dest="var", type='string', default='m_vis(7,0,140)',
+    help="Variable to plot")
 parser.add_option("-m", "--method", dest="method", type='int', default=8,
     help="Method.  Supported options: %(METHODS)s" % vars())
 parser.add_option("--signalmasses", dest="signalmasses", type='string', default='125',
@@ -51,6 +53,7 @@ print 'cat             = ' + options.cat
 print 'year            = ' + options.year
 print 'sel             = ' + options.sel
 print 'analysis        = ' + options.analysis
+print 'var             = ' + options.var
 print 'method          ='  ,  options.method
 print 'signalmasses    = ' +  options.signalmasses
 print 'qcd_os_ss_ratio ='  ,  options.qcd_os_ss_ratio
@@ -371,7 +374,6 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
     print ''
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
-    print samples_to_skip
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
     doVVJ = 'VVJ' not in samples_to_skip
@@ -541,9 +543,7 @@ for systematic in systematics:
     
     cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
     sel = options.sel
-    #plot = 'm_vis(7,0,140)' # set this under option
-    plot = 'os(2,0,2)'
-    #nodename = plot.split('(')[0]
+    plot = options.var
     nodename = options.channel+'_'+options.cat
     
     ana.nodes.AddNode(ListNode(nodename))
@@ -569,7 +569,8 @@ for systematic in systematics:
         outfile.cd('analysis/'+nodename)
         nodes = ana.nodes[nodename].SubNodes()
         for i in ['TT', 'VV', 'Z']:
-            sum_hist = ROOT.TH1F()
+            sum_hist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
+            sum_hist.Reset()
             j = 'T'
             outname = i
             if i is 'Z':
@@ -581,7 +582,8 @@ for systematic in systematics:
             sum_hist.SetName(outname)
             sum_hist.Write()
         
-        total_bkg = ROOT.TH1F()
+        total_bkg = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
+        total_bkg.Reset()
         for node in nodes:
             if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs':
                 total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
