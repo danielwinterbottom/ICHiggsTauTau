@@ -41,29 +41,46 @@ parser.add_option("--syst_tau_scale", dest="syst_tau_scale", type='string', defa
     help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_option("--syst_eff_t", dest="syst_eff_t", type='string', default='',
     help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
+parser.add_option("--syst_tquark", dest="syst_tquark", type='string', default='',
+    help="If this string is set then the top-quark weight systematic is performed with the set string appended to the resulting histogram name")
+parser.add_option("--syst_zwt", dest="syst_zwt", type='string', default='',
+    help="If this string is set then the z-reweighting systematic is performed with the set string appended to the resulting histogram name")
+parser.add_option("--syst_w_fake_rate", dest="syst_w_fake_rate", type='string', default='',
+    help="If this string is set then the W+jets fake-rate systematic is performed with the set string appended to the resulting histogram name")
+parser.add_option("--syst_scale_j", dest="syst_scale_j", type='string', default='',
+    help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
+parser.add_option("--syst_eff_b", dest="syst_eff_b", type='string', default='',
+    help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
+parser.add_option("--syst_fake_b", dest="syst_fake_b", type='string', default='',
+    help="If this string is set then the b-tag fake-rate systematic is performed with the set string appended to the resulting histogram name")
 (options, args) = parser.parse_args()
+
 
 print ''
 print '################### Options ###################'
-print 'channel         = ' + options.channel
-print 'outputfolder    = ' + options.output_folder
-print 'inputfolder     = ' + options.input_folder
-print 'paramfile       = ' + options.param_file
-print 'cat             = ' + options.cat
-print 'year            = ' + options.year
-print 'sel             = ' + options.sel
-print 'analysis        = ' + options.analysis
-print 'var             = ' + options.var
-print 'method          ='  ,  options.method
-print 'signalmasses    = ' +  options.signalmasses
-print 'qcd_os_ss_ratio ='  ,  options.qcd_os_ss_ratio
-print 'sm_bkg          ='  ,  options.sm_bkg
-print 'syst_tau_scale  ='  ,  options.syst_tau_scale
-print 'syst_eff_t      ='  ,  options.syst_eff_t
+print 'channel          = ' + options.channel
+print 'outputfolder     = ' + options.output_folder
+print 'inputfolder      = ' + options.input_folder
+print 'paramfile        = ' + options.param_file
+print 'cat              = ' + options.cat
+print 'year             = ' + options.year
+print 'sel              = ' + options.sel
+print 'analysis         = ' + options.analysis
+print 'var              = ' + options.var
+print 'method           ='  ,  options.method
+print 'signalmasses     = ' +  options.signalmasses
+print 'qcd_os_ss_ratio  ='  ,  options.qcd_os_ss_ratio
+print 'sm_bkg           ='  ,  options.sm_bkg
+print 'syst_tau_scale   ='  ,  options.syst_tau_scale
+print 'syst_eff_t       ='  ,  options.syst_eff_t
+print 'syst_tquark      ='  ,  options.syst_tquark
+print 'syst_zwt         ='  ,  options.syst_zwt
+print 'syst_w_fake_rate ='  ,  options.syst_w_fake_rate
+print 'syst_scale_j     ='  ,  options.syst_scale_j
+print 'syst_eff_b       ='  ,  options.syst_eff_b
+print 'syst_fake_b      ='  ,  options.syst_fake_b
 print '###############################################'
 print ''
-
-# Set qcd_os_ss_ratio
         
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
@@ -383,7 +400,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
         GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)                                
     if 'ZLL' not in samples_to_skip:
         GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
-    if ['TT'] not in samples_to_skip:    
+    if 'TT' not in samples_to_skip:    
         GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, doTTT, doTTJ)  
     if 'VV' not in samples_to_skip:
         GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, doVVT, doVVJ)  
@@ -489,8 +506,28 @@ if options.syst_tau_scale != '':
     systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'UP', 'wt', [])
     systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'DOWN', 'wt', [])
 if options.syst_eff_t != '':
-    systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'UP', 'wt*wt_tau_id_up', ['ZLL', 'VVJ', 'TTJ', 'QCD', 'W'] )
-    systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'DOWN', 'wt*wt_tau_id_down', ['ZLL', 'VVJ', 'TTJ', 'QCD', 'W'])
+    systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'UP', 'wt*wt_tau_id_up', ['ZLL','VVJ','TTJ','QCD','W'] )
+    systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'DOWN', 'wt*wt_tau_id_down', ['ZLL','VVJ','TTJ','QCD','W'])
+if options.syst_tquark != '':
+    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'UP', 'wt*wt_tquark_up', ['ZTT','ZLL','VV','QCD','W','signal'])
+    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'DOWN', 'wt*wt_tquark_down', ['ZTT','ZLL','VV','QCD','W', 'signal'])    
+if options.syst_zwt != '':
+    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'UP', 'wt*wt_zpt_up', ['ZLL','VV','TT','QCD','W','signal'])
+    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'DOWN', 'wt*wt_zpt_down', ['ZLL','VV','TT','QCD','W','signal'])
+if options.syst_w_fake_rate != '':
+    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'UP', 'wt*wt_tau_fake_up', ['ZTT','ZLL','VV','TT','QCD','signal'])
+    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'DOWN', 'wt*wt_tau_fake_down', ['ZTT','ZLL','VV','TT','QCD','signal'])
+if options.syst_scale_j != '':
+    systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'UP', 'wt', [])
+    systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'DOWN', 'wt', [])
+if options.syst_eff_b != '':
+    systematics['syst_eff_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'UP', 'wt', [])
+    systematics['syst_scale_j_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'DOWN', 'wt', [])
+if options.syst_fake_b != '':
+    systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'UP', 'wt', [])
+    systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'DOWN', 'wt', [])
+
+print systematics
 
 for systematic in systematics:
     
@@ -589,5 +626,15 @@ for systematic in systematics:
                 total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
         total_bkg.SetName('total_bkg')
         total_bkg.Write()
+        outfile.cd()
+        
+    if systematic is 'syst_tquark_up' or systematic is 'syst_tquark_down':
+        outfile.cd('analysis/'+nodename)
+        sum_hist = ana.nodes[nodename].nodes['TTT'+add_name].shape.hist.Clone()
+        sum_hist.Add(ana.nodes[nodename].nodes['TTJ'+add_name].shape.hist.Clone())
+        sum_hist.SetName('TT'+add_name)
+        sum_hist.Write()
+        outfile.cd()
+        
     
 
