@@ -312,6 +312,9 @@ namespace ic {
 
     // lheParticles
     lheHT_=0;
+
+    // Boson pt
+    boson_pt_=-50;
   }
 
   LightTreeRDM::~LightTreeRDM(){
@@ -570,6 +573,9 @@ namespace ic {
     // lheParticles
     outputTree_->Branch("lheHT",&lheHT_);
 
+    // Boson pt
+    outputTree_->Branch("boson_pt",&boson_pt_);
+
     return 0;
   }
 
@@ -675,7 +681,7 @@ namespace ic {
     double pileupwtdown=1;
 
     if(!is_data_){
-      v_nlo_Reweight_= eventInfo->weight("v_nlo_Reweighting");
+      v_nlo_Reweight_= eventInfo->weight_defined("v_nlo_Reweighting")?eventInfo->weight("v_nlo_Reweighting"):1;
       weight_lepveto_= eventInfo->weight("idisoVeto");
       weight_leptight_ = eventInfo->weight("idisoTight");
       pileupwt=eventInfo->weight("pileup");
@@ -843,7 +849,10 @@ namespace ic {
         int id = parts[iGenPart]->pdgid();
         std::vector<bool> flags=parts[iGenPart]->statusFlags();
         if (flags[GenStatusBits::IsHardProcess] && flags[GenStatusBits::FromHardProcess] && flags[GenStatusBits::IsFirstCopy]){
-          //parts[iGenPart]->Print();
+
+          if (abs(id)==24 || abs(id)==23){// W+- || Z
+            boson_pt_ = parts[iGenPart]->pt();
+          }
           if (abs(id)==15){
             genTaus.push_back(parts[iGenPart]);
           }

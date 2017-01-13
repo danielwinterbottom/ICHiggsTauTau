@@ -401,8 +401,8 @@ int main(int argc, char* argv[]){
     if (doICHEP2016){ // 12d9 /fb
       data_json     =  "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
     }
-    else if (doLastJSON){ // 27d66 /fb
-      data_json     =  "input/json/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON.txt";
+    else if (doLastJSON){ // 36d77 /fb
+      data_json     =  "input/json/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt";
     }
   }
 
@@ -436,8 +436,8 @@ int main(int argc, char* argv[]){
     if (doICHEP2016){ // 12d9 /fb
       data_pu_file         =  "input/pileup/12d9/Data_Pileup_mb69d2_2016-600bins.root";
     }
-    else if (doLastJSON){ // 27d66 /fb
-      data_pu_file         =  "input/pileup/27d66/Data_Pileup_mb69d2_2016-600bins.root";
+    else if (doLastJSON){ // 36d77 /fb
+      data_pu_file         =  "input/pileup/36d77/Data_Pileup_mb69d2_2016-600bins.root";
     }
   }
 
@@ -468,9 +468,9 @@ int main(int argc, char* argv[]){
       data_pu_up    = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
       data_pu_down  = GetFromTFile<TH1D>("input/pileup/12d9/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
     }
-    else if (doLastJSON){ // 27d66 /fb
-      data_pu_up    = GetFromTFile<TH1D>("input/pileup/27d66/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
-      data_pu_down  = GetFromTFile<TH1D>("input/pileup/27d66/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
+    else if (doLastJSON){ // 36d77 /fb
+      data_pu_up    = GetFromTFile<TH1D>("input/pileup/36d77/Data_Pileup_mb72d4_2016-600bins.root", "/", "pileup");
+      data_pu_down  = GetFromTFile<TH1D>("input/pileup/36d77/Data_Pileup_mb66_2016-600bins.root", "/", "pileup");
     }
   }
 
@@ -987,9 +987,13 @@ int main(int argc, char* argv[]){
     SetDoDY( mc, &xsWeights );
   }
 
-  if (output_name.find("JetsToLL") != output_name.npos ||
+  if (output_name.find("JetsToLL-mg-m50-ht") != output_name.npos ||
       output_name.find("JetsToNuNu") != output_name.npos) {
     xsWeights.set_do_dy_reweighting(true);
+  }
+
+  if (output_name.find("JetsToLNu-mg-ht") != output_name.npos) {
+    xsWeights.set_do_w_reweighting(true);
   }
 
   /*if (output_name.find("JetsToLL") != output_name.npos &&

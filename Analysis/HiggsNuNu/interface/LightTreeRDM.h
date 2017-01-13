@@ -288,6 +288,9 @@ namespace ic {
     // lheParticles
     double lheHT_;
 
+    // Boson pt
+    double boson_pt_;
+
   public:
     LightTreeRDM(std::string const& name);
     virtual ~LightTreeRDM();
