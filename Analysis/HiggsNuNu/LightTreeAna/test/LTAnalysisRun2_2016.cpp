@@ -427,7 +427,7 @@ int main(int argc, char* argv[]){
   }
 
   if (do_met_cut){
-    met_cut="&&met>50";
+    met_cut="&&met>70";
   } else {
     met_cut="";
   }
