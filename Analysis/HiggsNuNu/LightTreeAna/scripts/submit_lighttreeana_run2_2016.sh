@@ -24,9 +24,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultRun2Config.cfg
 QUEUEDIR=short #medium long
 
-JOBDIRPREFIX=jobs_run2ana_170110 #_noMETsel
+JOBDIRPREFIX=jobs_run2ana_170111_noMETcut
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_170110 #_noMETsel
+OUTPUTPREFIX=output_run2ana_170111_noMETcut
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -67,7 +67,7 @@ for syst in "" #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUE
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in enu ee munu #ee mumu taunu qcd #nunu
+  for channels in enu #munu ee mumu taunu qcd #nunu
     do
     JOB=$channels
     #To debug

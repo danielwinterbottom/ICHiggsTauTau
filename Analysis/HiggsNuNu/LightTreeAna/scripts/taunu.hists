@@ -3,9 +3,9 @@ tau1_pt(9,20.,200.)	;p_{T}(tau) (GeV);Events
 tau1_eta(15,-2.3,2.3)	;#eta(tau) (GeV);Events
 metnomuons*pow(sqrt(sumet),-1)(10,0.,15.)	;S;Events
 n_vertices(20,0,40)	;n_{vtx};Events
-jet1_pt(16,80.,400.)	;p_{T}^{j1} (GeV);Events
+jet1_pt(16,40.,400.)	;p_{T}^{j1} (GeV);Events
 jet2_pt(9,40.,250.)	;p_{T}^{j2} (GeV);Events
-jet1_uncorpt(16,80.,400.)	;uncor p_{T}^{j1} (GeV);Events
+jet1_uncorpt(16,40.,400.)	;uncor p_{T}^{j1} (GeV);Events
 jet2_uncorpt(9,40.,250.)	;uncor p_{T}^{j2} (GeV);Events
 jet1_eta(20,-4.7,4.7)	;#eta^{j1} (GeV);Events
 jet2_eta(20,-4.7,4.7)	;#eta^{j2} (GeV);Events
@@ -15,7 +15,7 @@ met(20,0.,550.)	;MET (GeV);Events
 l1met(20,0.,550.)	;L1MET (GeV);Events
 ht(20,100,1000)	;H_{T}^{p_{T}^{j}>15 GeV} (GeV);Events
 ht30(20,100,1000)	;H_{T}^{p_{T}^{j}>30 GeV} (GeV);Events
-dijet_M(10,1100.,2600.)	;M_{jj} (GeV);Events
+dijet_M(10,800.,2600.)	;M_{jj} (GeV);Events
 dijet_dphi(15,0.,3.1416)	;#Delta#phi_{jj};Events
 dijet_deta(10,3.6,6.)	;#Delta#eta_{jj};Events
 dijet_sumeta(30,-5,5)	;#eta_{j1}+#eta_{j2};Events

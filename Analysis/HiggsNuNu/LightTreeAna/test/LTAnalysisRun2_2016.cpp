@@ -130,7 +130,7 @@ int main(int argc, char* argv[]){
   bool use_nlo;
   bool do_tauveto;
   bool do_bveto;
-  bool do_met_cut;
+  double met_cutval;
   bool do_lep_mt_cut;
 
   std::string jetmetdphicut;
@@ -190,7 +190,7 @@ int main(int argc, char* argv[]){
     ("lumiSF",                   po::value<double>(&lumiSF)->default_value(1.0))
     ("do_tauveto",               po::value<bool>(&do_tauveto)->default_value(false))
     ("do_bveto",                 po::value<bool>(&do_bveto)->default_value(false))
-    ("do_met_cut",               po::value<bool>(&do_met_cut)->default_value(false))
+    ("met_cutval",               po::value<double>(&met_cutval)->default_value(0))
     ("do_lep_mt_cut",            po::value<bool>(&do_lep_mt_cut)->default_value(false))
     ;
 
@@ -426,8 +426,10 @@ int main(int argc, char* argv[]){
     bveto="";
   }
 
-  if (do_met_cut){
-    met_cut="&&met>50";
+  if (met_cutval>0){
+    std::ostringstream ltmp;
+    ltmp << "&&met>" << met_cutval;
+    met_cut=ltmp.str();
   } else {
     met_cut="";
   }

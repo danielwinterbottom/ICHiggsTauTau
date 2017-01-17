@@ -18,7 +18,7 @@ l1met(20,0.,550.)	;L1MET (GeV);Events
 ht(20,100,1000)	;H_{T}^{p_{T}^{j}>15 GeV} (GeV);Events
 ht30(20,100,1000)	;H_{T}^{p_{T}^{j}>30 GeV} (GeV);Events
 metnoelectrons(50,0.,500.)	;E_{T,no-el}^{miss} (GeV);Events
-dijet_M(24,600.,3000.)	;M_{jj} (GeV);Events
+dijet_M(24,800.,3000.)	;M_{jj} (GeV);Events
 dijet_dphi(15,0.,3.1416)	;#Delta#phi_{jj};Events
 dijet_deta(10,3.6,5.5)	;#Delta#eta_{jj};Events
 dijet_sumeta(20,-5,5)	;#eta_{j1}+#eta_{j2};Events
