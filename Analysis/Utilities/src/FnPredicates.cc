@@ -1146,6 +1146,26 @@ namespace ic {
     return pass_mva;
   }
   
+  bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp) {
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;      
+    if (elec->gsf_tk_nhits() > 1) return false;              
+    bool pass_mva = false;
+    double eta = fabs(elec->sc_eta());
+    double pt = fabs(elec->pt());
+    double idmva = elec->GetIdIso("generalPurposeMVASpring16");
+    if (!loose_wp) {
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.941 ) pass_mva = true;
+      if (eta > 0.8 && eta <= 1.479 && pt > 10    && idmva > 0.899 ) pass_mva = true;
+      if (eta > 1.479 && pt > 10                  && idmva > 0.758 ) pass_mva = true;
+    } else {
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.837 ) pass_mva = true;
+      if (eta > 0.8 && eta <= 1.479 && pt > 10    && idmva > 0.715 ) pass_mva = true;
+      if (eta > 1.479 && pt > 10                  && idmva > 0.357 ) pass_mva = true;
+    }
+    return pass_mva;
+  }
+  
  double PUW03IsolationVal(Muon const* muon){
    double charged_iso = muon->dr03_pfiso_charged();
    double neutral_weighted = muon->GetIdIso("neutral_pfweighted_iso_03");

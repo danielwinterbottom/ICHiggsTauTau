@@ -1,16 +1,11 @@
 #!/bin/sh
 DOCERN=0
-### submit to the batch sistem at IC 1 -- 0 otherwise
 DOSUBMIT=1
 #JETTYPE="ak4SlimmedJetsPuppi"
 JETTYPE="pfJetsPFlow"
-#MYEXEC=JetMETvalidation
-### Executable -- RDM stays for mine
 MYEXEC=LightTreeMakerFromMiniAODRDM
-### Insert the date or leave  the same for test
 PRODUCTION=161031
 PRODUSER=rdimaria
-#PRODUSER=amagnan
 JPTCUTVAL=40
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -36,22 +31,21 @@ INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
 
 
-for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+#for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
 #for SYST in JESUP JESDOWN JERBETTER
 #for SYST in JERWORSE UESUP UESDOWN
 #for SYST in ELEEFFUP ELEEFFDOWN
-#for SYST in MUEFFUP MUEFFDOWN
+for SYST in MUEFFUP MUEFFDOWN
 do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
 
   #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP
-
-  #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161216_ICHEP
-  JOBDIRPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/jobs_lighttree_170111_noskim
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_170113_ICHEP
+  #JOBDIRPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/jobs_lighttree_170111
   JOBDIR=$JOBDIRPREFIX/
   #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
-  #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161216_ICHEP
-  OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_170111_noskim
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_170113_ICHEP
+  #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_170111
 
   OUTPUTDIR=$OUTPUTPREFIX/
 
@@ -145,8 +139,6 @@ do
     export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
     echo "Using job-submission: " $JOBSUBMIT
 
-#Process HiggsNuNu specific backgrounds
-#Signal files and DYtoNuNu
     #PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
     PREFIX=root://gfe02.grid.hep.ph.ic.ac.uk:1095//store/user/${PRODUSER}/${PRODUCTION}_MC
 
@@ -156,9 +148,9 @@ do
     fi
 
     #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_Powheg-VBF*125.dat`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_EWK*`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_EWK*`
     #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*NuNu*`
-    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/*_MC_*`
 
     do
       echo "Processing files in "$FILELIST
@@ -172,21 +164,6 @@ do
       PREFIX=root://gfe02.grid.hep.ph.ic.ac.uk:1095//store/user/${PRODUSER}/${PRODUCTION}_MC
       sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
       INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
-
-#       MCOPTION="--mc=fall15_76X"
-#       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_MC
-#       grep "151030" tmp.txt
-#       if (( "$?" == "0" )); then
-# 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/151030_MC
-# 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/151030_MC_//" tmp.txt > tmp2.txt
-# 	  MCOPTION="--mc=spring15_74X --reapplyJEC=false"
-# 	  INPUTPARAMS="filelists/151030/Params151030.dat"
-#       else
-# 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
-# 	  #MCOPTION="--mc=fall15_76X"
-# 	  MCOPTION="--mc=spring16_80X"
-# 	  INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
-#       fi
 
       echo $PREFIX
 
