@@ -513,6 +513,9 @@ int main(int argc, char* argv[]){
   else sigmcweight="total_weight_leptight"+mcweightpufactor.str();//+mcweightpufactordebug;
   sig125mcweight="total_weight_lepveto"+mcweightpufactor.str();
 
+  //add NLO reweighting
+  sigmcweight=sigmcweight+"*v_nlo_Reweight";
+
   if (channel=="ee" || channel == "enu") dataset="SingleElectron";
 
   std::string bothcentral="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)<3";
