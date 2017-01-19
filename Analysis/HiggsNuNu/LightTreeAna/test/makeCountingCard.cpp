@@ -48,6 +48,10 @@ int main(int argc, char* argv[]){
   double wzewk_syst;
   double minvarXcut;
   double minvarYcut;
+  double minvarZcut;
+  double maxvarXcut;
+  double maxvarYcut;
+  double maxvarZcut;
   std::string histoToIntegrate;
   po::variables_map vm;
   po::options_description config("Configuration");
@@ -75,8 +79,12 @@ int main(int argc, char* argv[]){
     ("do_1param",                po::value<bool>(&do_1param)->default_value(true))
     ("wzqcd_syst",               po::value<double>(&wzqcd_syst)->default_value(1.30))
     ("wzewk_syst",               po::value<double>(&wzewk_syst)->default_value(1.30))
-    ("minvarXcut",               po::value<double>(&minvarXcut)->default_value(1.0))
-    ("minvarYcut",               po::value<double>(&minvarYcut)->default_value(1.0))
+    ("minvarXcut",               po::value<double>(&minvarXcut)->default_value(0))
+    ("minvarYcut",               po::value<double>(&minvarYcut)->default_value(0))
+    ("minvarZcut",               po::value<double>(&minvarZcut)->default_value(0))
+    ("maxvarXcut",               po::value<double>(&maxvarXcut)->default_value(14000))
+    ("maxvarYcut",               po::value<double>(&maxvarYcut)->default_value(14000))
+    ("maxvarZcut",               po::value<double>(&maxvarZcut)->default_value(14000))
     ("histoToIntegrate",         po::value<std::string>(&histoToIntegrate)->default_value("alljetsmetnomu_mindphi"))
 
 ;
@@ -802,21 +810,31 @@ int main(int argc, char* argv[]){
     }
     dir->cd();
     double rate = 0;
-    if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+    size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+    if (nD==0) {
       TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
       if (!histo) {
 	std::cout<<"Error: No histogram " << histoToIntegrate << " found for "<<dirname<<" exiting"<<std::endl; 
 	return 1;
       }
-      rate=histo->Integral(histo->FindBin(minvarXcut), histo->GetNbinsX() + 1);
+      rate=histo->Integral(histo->FindBin(minvarXcut), histo->FindBin(maxvarXcut));
     }
-    else {
+    else if (nD==1){
       TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
       if (!histo) {
 	std::cout<<"Error: No histogram " << histoToIntegrate << " found for "<<dirname<<" exiting"<<std::endl;
         return 1;
       }
-      rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetNbinsX() + 1, histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
+      rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetXaxis()->FindBin(maxvarXcut), histo->GetYaxis()->FindBin(minvarYcut), histo->GetYaxis()->FindBin(maxvarYcut));
+
+    }
+    else if (nD==2){
+      TH3F* histo = (TH3F*)dir->Get(histoToIntegrate.c_str());
+      if (!histo) {
+	std::cout<<"Error: No histogram " << histoToIntegrate << " found for "<<dirname<<" exiting"<<std::endl;
+        return 1;
+      }
+      rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetXaxis()->FindBin(maxvarXcut), histo->GetYaxis()->FindBin(minvarYcut),histo->GetYaxis()->FindBin(maxvarYcut), histo->GetZaxis()->FindBin(minvarZcut),histo->GetZaxis()->FindBin(maxvarZcut));
 
     }
     datacard<<"observation "<<rate<<std::endl;
@@ -840,12 +858,17 @@ int main(int argc, char* argv[]){
       }
       dir->cd();
       double rate = 0;
-      if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+      size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+      if (nD==0){
 	TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
-	rate=histo->Integral(histo->FindBin(minvarXcut), histo->GetNbinsX() + 1);
-      } else {
+	rate=histo->Integral(histo->FindBin(minvarXcut), histo->FindBin(maxvarXcut));
+      } else if (nD==1){
 	TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
-	rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetNbinsX() + 1, histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
+	rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetXaxis()->FindBin(maxvarXcut), histo->GetYaxis()->FindBin(minvarYcut), histo->GetYaxis()->FindBin(maxvarYcut));
+      }
+      else if (nD==2){
+	TH3F* histo = (TH3F*)dir->Get(histoToIntegrate.c_str());
+	rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetXaxis()->FindBin(maxvarXcut), histo->GetYaxis()->FindBin(minvarYcut),histo->GetYaxis()->FindBin(maxvarYcut), histo->GetZaxis()->FindBin(minvarZcut),histo->GetZaxis()->FindBin(maxvarZcut));
       }
       totalbkgs+=rate;
     }
@@ -895,6 +918,7 @@ int main(int argc, char* argv[]){
   datacard<<"rate\t\t";
   TH1F* histo[100];
   TH2F* histo2D[100];
+  TH3F* histo3D[100];
   for(unsigned iProc=0;iProc<(sigprocesses.size()+bkgprocesses.size());iProc++){
     std::string dirname;
     if(iProc<sigprocesses.size())dirname=sigprocesses[iProc];
@@ -912,26 +936,38 @@ int main(int argc, char* argv[]){
     }
     dir->cd();
     double rate = 0;
-    if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+    size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+    if (nD==0){
       histo[iProc] = (TH1F*)dir->Get(histoToIntegrate.c_str());
       std::cout << dirname << " overflows: " << histo[iProc]->GetBinContent(histo[iProc]->GetNbinsX()+1) << std::endl;
-      rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX()+1);
+      rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->FindBin(maxvarXcut));
       if (rate != rate) {
-	rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX());
-	if (rate!=rate){
-	  std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
-	  rate=0;
-	}
+	//rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX());
+	//if (rate!=rate){
+	std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
+	rate=0;
+	//}
       }
-    } else {
+    } else if (nD==1){
       histo2D[iProc] = (TH2F*)dir->Get(histoToIntegrate.c_str());
-      rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX()+1,histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY()+1);
+      rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetXaxis()->FindBin(maxvarXcut),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetYaxis()->FindBin(maxvarYcut));
       if (rate != rate) {
-	rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX(),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY());
-	if (rate!=rate){
-	  std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
-	  rate=0;
-	}
+	//rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX(),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY());
+	//if (rate!=rate){
+	std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
+	rate=0;
+	//}
+      }
+    }
+    else if (nD==2){
+      histo3D[iProc] = (TH3F*)dir->Get(histoToIntegrate.c_str());
+      rate=Integral(histo3D[iProc],histo3D[iProc]->GetXaxis()->FindBin(minvarXcut),histo3D[iProc]->GetXaxis()->FindBin(maxvarXcut),histo3D[iProc]->GetYaxis()->FindBin(minvarYcut),histo3D[iProc]->GetYaxis()->FindBin(maxvarYcut),histo3D[iProc]->GetZaxis()->FindBin(minvarZcut),histo3D[iProc]->GetZaxis()->FindBin(maxvarZcut));
+      if (rate != rate) {
+	//rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX(),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY());
+	//if (rate!=rate){
+	std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
+	rate=0;
+	//}
       }
     }
     if(iProc<sigprocesses.size())sigcentralrates.push_back(rate);
@@ -1015,16 +1051,25 @@ int main(int argc, char* argv[]){
 	  TH1F* downhisto=0;
 	  TH2F* uphisto2D=0;
 	  TH2F* downhisto2D=0;
-	  if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+	  TH3F* uphisto3D=0;
+	  TH3F* downhisto3D=0;
+	  size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+	  if (nD==0) {
 	    uphisto = (TH1F*)updir->Get(histoToIntegrate.c_str());
-	    uprate=Integral(uphisto,uphisto->FindBin(minvarXcut),uphisto->GetNbinsX()+1);
+	    uprate=Integral(uphisto,uphisto->FindBin(minvarXcut),uphisto->FindBin(maxvarXcut));
 	    downhisto = (TH1F*)downdir->Get(histoToIntegrate.c_str());
-	    downrate=Integral(downhisto,downhisto->FindBin(minvarXcut),downhisto->GetNbinsX()+1);
-	  } else {
+	    downrate=Integral(downhisto,downhisto->FindBin(minvarXcut),downhisto->FindBin(maxvarXcut));
+	  } else if (nD==1){
 	    uphisto2D = (TH2F*)updir->Get(histoToIntegrate.c_str());
-	    uprate=Integral(uphisto2D,uphisto2D->GetXaxis()->FindBin(minvarXcut),uphisto2D->GetNbinsX()+1,uphisto2D->GetYaxis()->FindBin(minvarYcut),uphisto2D->GetNbinsY()+1);
+	    uprate=Integral(uphisto2D,uphisto2D->GetXaxis()->FindBin(minvarXcut),uphisto2D->GetXaxis()->FindBin(maxvarXcut),uphisto2D->GetYaxis()->FindBin(minvarYcut),uphisto2D->GetYaxis()->FindBin(maxvarYcut));
 	    downhisto2D = (TH2F*)downdir->Get(histoToIntegrate.c_str());
-	    downrate=Integral(downhisto2D,downhisto2D->GetXaxis()->FindBin(minvarXcut),downhisto2D->GetNbinsX()+1,downhisto2D->GetYaxis()->FindBin(minvarYcut),downhisto2D->GetNbinsY()+1);
+	    downrate=Integral(downhisto2D,downhisto2D->GetXaxis()->FindBin(minvarXcut),downhisto2D->GetXaxis()->FindBin(maxvarXcut),downhisto2D->GetYaxis()->FindBin(minvarYcut),downhisto2D->GetYaxis()->FindBin(maxvarYcut));
+	  }
+	  else if (nD==2){
+	    uphisto3D = (TH3F*)updir->Get(histoToIntegrate.c_str());
+	    uprate=Integral(uphisto3D,uphisto3D->GetXaxis()->FindBin(minvarXcut),uphisto3D->GetXaxis()->FindBin(maxvarXcut),uphisto3D->GetYaxis()->FindBin(minvarYcut),uphisto3D->GetYaxis()->FindBin(maxvarYcut),uphisto3D->GetZaxis()->FindBin(minvarZcut),uphisto3D->GetZaxis()->FindBin(maxvarZcut));
+	    downhisto3D = (TH3F*)downdir->Get(histoToIntegrate.c_str());
+	    downrate=Integral(downhisto3D,downhisto3D->GetXaxis()->FindBin(minvarXcut),downhisto3D->GetXaxis()->FindBin(maxvarXcut),downhisto3D->GetYaxis()->FindBin(minvarYcut),downhisto3D->GetYaxis()->FindBin(maxvarYcut),downhisto3D->GetZaxis()->FindBin(minvarZcut),downhisto3D->GetZaxis()->FindBin(maxvarZcut));
 	  }
 
 	  double centralrate;
@@ -1041,19 +1086,26 @@ int main(int argc, char* argv[]){
 	    std::cout << " Process " << dirname << ", systematics " << systematics[iSyst].name() << " is more than 20%: down - central - up = "
 		      << downrate << " - " << centralrate << " - " << uprate << std::endl;
 	    std::cout << "Diff entries: " ;
-	    if (histoToIntegrate.find(":")==histoToIntegrate.npos){
+	    size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+	    if (nD==0){
 	      std::cout << downhisto->GetEntries() 
 			<< " - " << histo[iProc]->GetEntries() << "(" << histo[iProc]->Integral() << ")"
 			<< " - " << uphisto->GetEntries() << std::endl;
 	    }
-	    else {
+	    else if (nD==1){
 	      std::cout << downhisto2D->GetEntries() 
 			<< " - " << histo2D[iProc]->GetEntries()
 			<< " - " << uphisto2D->GetEntries() << std::endl;
 
 	    }
+	    else if (nD==2){
+	      std::cout << downhisto3D->GetEntries() 
+			<< " - " << histo3D[iProc]->GetEntries()
+			<< " - " << uphisto3D->GetEntries() << std::endl;
+
+	    }
 	    std::cout << "Diff overflows: " ;
-	    if (histoToIntegrate.find(":")==histoToIntegrate.npos){
+	    if (nD==0){
 	      std::cout << downhisto->GetBinContent(0) 
 			<< " - " << histo[iProc]->GetBinContent(0)
 			<< " - " << uphisto->GetBinContent(0) << std::endl
@@ -1061,13 +1113,22 @@ int main(int argc, char* argv[]){
 			<< " - " << histo[iProc]->GetBinContent(histo[iProc]->GetNbinsX()+1)
 			<< " - " << uphisto->GetBinContent(uphisto->GetNbinsX()+1) << std::endl;
 	    }
-	    else {
+	    else if (nD==1){
 	      std::cout << downhisto2D->GetBinContent(0,0) 
 			<< " - " << histo2D[iProc]->GetBinContent(0,0)
 			<< " - " << uphisto2D->GetBinContent(0,0) << std::endl
 			<< downhisto2D->GetBinContent(downhisto2D->GetNbinsX()+1,downhisto2D->GetNbinsY()+1) 
 			<< " - " << histo2D[iProc]->GetBinContent(histo2D[iProc]->GetNbinsX()+1,histo2D[iProc]->GetNbinsY()+1)
 			<< " - " << uphisto2D->GetBinContent(uphisto2D->GetNbinsX()+1,uphisto2D->GetNbinsY()+1) << std::endl;
+
+	    }
+	    else if (nD==2){
+	      std::cout << downhisto3D->GetBinContent(0,0) 
+			<< " - " << histo3D[iProc]->GetBinContent(0,0)
+			<< " - " << uphisto3D->GetBinContent(0,0) << std::endl
+			<< downhisto3D->GetBinContent(downhisto3D->GetNbinsX()+1,downhisto3D->GetNbinsY()+1) 
+			<< " - " << histo3D[iProc]->GetBinContent(histo3D[iProc]->GetNbinsX()+1,histo3D[iProc]->GetNbinsY()+1)
+			<< " - " << uphisto3D->GetBinContent(uphisto3D->GetNbinsX()+1,uphisto3D->GetNbinsY()+1) << std::endl;
 
 	    }
 	  }
@@ -1107,14 +1168,29 @@ int main(int argc, char* argv[]){
 	  TDirectory* dir=nunu->GetDirectory(dirname.c_str());	  
 	  dir->cd();
 	  double error = 0;
-	  if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+	  size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+	  if (nD==0) {
 	    TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
-	    error=Error(histo,histo->FindBin(minvarXcut),histo->GetNbinsX()+1);
-	    if (error!=error) error=Error(histo,histo->FindBin(minvarXcut),histo->GetNbinsX());
-	  } else {
+	    error=Error(histo,histo->FindBin(minvarXcut),histo->FindBin(maxvarXcut));
+	    if (error!=error) {
+	      std::cout << " Warning, nan error for " << dirname << std::endl;
+	      error = 0;
+	    }
+	  } else if (nD==1){
 	    TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
-	    error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetNbinsX()+1,histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
-	    if (error!=error) error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetNbinsX(),histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY());
+	    error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetXaxis()->FindBin(maxvarXcut),histo->GetYaxis()->FindBin(minvarYcut), histo->GetYaxis()->FindBin(maxvarYcut));
+	    if (error!=error){
+	      std::cout << " Warning, nan error for " << dirname << std::endl;
+	      error = 0;
+	    } 
+	  }
+	  else if (nD==2){
+	    TH3F* histo = (TH3F*)dir->Get(histoToIntegrate.c_str());
+	    error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetXaxis()->FindBin(maxvarXcut),histo->GetYaxis()->FindBin(minvarYcut), histo->GetYaxis()->FindBin(maxvarYcut),histo->GetZaxis()->FindBin(minvarZcut), histo->GetZaxis()->FindBin(maxvarZcut));
+	    if (error!=error){
+	      std::cout << " Warning, nan error for " << dirname << std::endl;
+	      error = 0;
+	    } 
 	  }
 
 	  double centralrate;
