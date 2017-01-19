@@ -167,11 +167,10 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     ic::Muon & dest = muons_->at(i);
 
     for (unsigned j = 0; j < n_bad_muons; ++j) {
-
       if( muons_handle->ptrAt(i) == (*bad_quality_muons_handle)[j] ) {
         dest.SetIdIso(input_bad_quality_muons_.label(),1);
-      } else {
-        dest.SetIdIso(input_bad_quality_muons_.label(),0);
+        //std::cout << " ---- input_bad_quality_muons_.label() = " << input_bad_quality_muons_.label() << std::endl;
+        // output: input_bad_quality_muons_.label() = badGlobalMuonTagger
       }
     }
 

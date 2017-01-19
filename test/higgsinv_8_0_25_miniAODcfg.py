@@ -32,7 +32,7 @@ opts.register('file',
     parser.VarParsing.varType.string, "input file")
 
 
-opts.register('globalTag', '80X_dataRun2_2016SeptRepro_v4', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_dataRun2_2016SeptRepro_v6', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag") #to be frequently updated from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Prompt_reconstruction_Global_Tag
 
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
@@ -93,7 +93,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(10000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -533,7 +533,7 @@ process.muonPFIsolationValuesSequence +=cms.Sequence(
 )
 
 
-process.icMuonSequence                += cms.Sequence(
+process.icMuonSequence += cms.Sequence(
     process.pfDeltaBetaWeightingSequence+
     process.muPFIsoDepositChargedAll+
     process.muPFIsoDepositNeutral+
@@ -542,6 +542,15 @@ process.icMuonSequence                += cms.Sequence(
     )
 
 #make and store ic muon object
+
+process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
+process.badGlobalMuonTagger.muons = muonLabel
+process.badGlobalMuonTagger.vtx   = vtxLabel
+process.badGlobalMuonTagger.taggingMode = cms.bool(True)
+process.cloneGlobalMuonTagger.muons = muonLabel
+process.cloneGlobalMuonTagger.vtx   = vtxLabel
+process.cloneGlobalMuonTagger.taggingMode = cms.bool(True)
+
 process.icMuonProducer = producers.icMuonProducer.clone(
   branch                    = cms.string("muons"),
   input                     = cms.InputTag("selectedPFMuons"),
@@ -561,9 +570,22 @@ process.icMuonProducer = producers.icMuonProducer.clone(
   includePFIso04           = cms.bool(True),
 )
 
-if release in ['80XMINIAOD']: process.icMuonProducer.isPF = cms.bool(False)
+if release in ['80XMINIAOD']:
+  process.icMuonProducer.isPF = cms.bool(False)
+  process.icMuonProducer.selectBadQualityMuons = cms.bool(True)
+  process.icMuonProducer.inputBadQualityMuons  = cms.InputTag("badGlobalMuonTagger","bad")
+
 
 process.icMuonSequence += cms.Sequence(
+# So in this case the 100 events you are checking simply do not contain any bad muons.
+# Because these modules select bad events, the event fails the filters if it does not have any bad muons.
+# This is why you arre using ~ to invert the behaviour of the filters.
+# If you look at  https://github.com/gpetruc/cmssw/blob/badMuonFilters_80X_v2/RecoMET/METFilters/plugins/BadGlobalMuonTagger.cc#L118-L125 you see that the opposite is true when you switch on tagging mode: if tagging mode is set to true then events always pass the filter, and so if you use ~ all of the events will fail the filter.
+# So you should redefine noBadGlobalMuons as (process.badGlobalMuonTagger + process.cloneGlobalMuonTagger).
+# See also https://hypernews.cern.ch/HyperNews/CMS/get/physics-validation/2786/2/1.html.
+#  process.noBadGlobalMuons+
+  process.badGlobalMuonTagger+ 
+  process.cloneGlobalMuonTagger+
   process.icMuonProducer
 )
 
@@ -839,10 +861,18 @@ process.pileupJetIdUpdated = process.pileupJetId.clone(
   applyJec=True,
   vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
   )
-#print process.pileupJetId.dumpConfig()
+
 #print process.pileupJetIdUpdated.dumpConfig()
 
-process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+process.patJetCorrFactorsReapplyJEC = process.updatedPatJetCorrFactors.clone(
+  src = cms.InputTag("slimmedJets"),
+  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
+process.updatedJets = process.updatedPatJets.clone(
+  jetSource = cms.InputTag("slimmedJets"),
+  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+  )
+process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
 
 #Produce and store jets taken straight from miniAOD
 process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
@@ -892,11 +922,11 @@ process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
 process.icPFJetSequence = cms.Sequence()
 process.icPFJetSequence += cms.Sequence(
   process.pileupJetIdUpdated+
-  process.patJetCorrFactorsUpdatedJEC+
-  process.updatedPatJetsUpdatedJEC+
-  process.selectedUpdatedPatJetsUpdatedJEC+  
+  process.patJetCorrFactorsReapplyJEC+
+  process.updatedJets+
+  process.selectedUpdatedPatJetsUpdatedJEC+
   process.selectedSlimmedJetsAK4+
-  process.unpackedTracksAndVertices
+  process.unpackedTracksAndVertices+
   #process.ak4PFL1FastjetCHS+
   #process.ak4PFL2RelativeCHS+
   #process.ak4PFL3AbsoluteCHS+  
@@ -904,41 +934,15 @@ process.icPFJetSequence += cms.Sequence(
   #process.ak4PFJetsCHS+
   #process.btaggingSequenceAK4PFCHS+
   #process.puJetMvaCHS
-  #process.icPFJetProducer+ #Not from slimmed jets!
-  #process.icPFJetProducerFromPat+
-  
-  #process.pileupJetIdCalculator+
-  #process.pileupJetIdEvaluator+
-  
-  #process.selectedSlimmedJetsPuppiAK4+
-  #process.icPFJetProducerFromPatPuppi+
- 
-##  process.patJetCorrFactorsReapplyJEC +
-##  process.patJetsReapplyJEC+
-##  process.selectedReJECSlimmedJetsAK4+
-  #process.pileupJetIdUpdated
-) 
-
-#if not isData:
-#  process.icPFJetSequence.remove(process.ak4PFResidualCHS)
-
-#if not isData:
- # process.icPFJetSequence += cms.Sequence(
-    #process.jetPartonsforCHS+
-    #process.pfchsJetPartonMatches+
-  #  process.selectedHadronsAndPartons+
-   # process.pfchsJetFlavourAssociation+
-    #process.icPFchsJetFlavourCalculator
-  #)
-
-process.icPFJetSequence += cms.Sequence(
+  #process.patJetCorrFactorsReapplyJEC +
+  #process.patJetsReapplyJEC+
+  #process.selectedReJECSlimmedJetsAK4+
   #process.icPFJetProducer+ #Not from slimmed jets!
   process.icPFJetProducerFromPat+
   process.pileupJetIdCalculator+
   process.pileupJetIdEvaluator+
   process.selectedSlimmedJetsPuppiAK4+
   process.icPFJetProducerFromPatPuppi
-  #process.pileupJetIdUpdated
 )
 
 ##################################################################                                                                                          
@@ -1404,18 +1408,6 @@ process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
-
-#### To be checked
-#process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
-#process.badGlobalMuonTagger.muons = muonLabel
-#process.badGlobalMuonTagger.vtx   = vtxLabel
-#process.badGlobalMuonTagger.taggingMode = cms.bool(True)
-#process.cloneGlobalMuonTagger.muons = muonLabel
-#process.cloneGlobalMuonTagger.vtx   = vtxLabel
-#process.cloneGlobalMuonTagger.taggingMode = cms.bool(True)
-
-#process.dataRequirements = cms.Sequence()
-          #process.dataRequirements += process.noBadGlobalMuons
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
