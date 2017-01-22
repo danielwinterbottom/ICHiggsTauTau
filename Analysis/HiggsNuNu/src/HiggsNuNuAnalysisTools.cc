@@ -208,6 +208,39 @@ namespace ic{
     return err;
   }
 
+  double Integral(TH3F const* hist) {
+    if (hist) {
+      double ltmp =hist->Integral(0, hist->GetNbinsX() + 1, 0, hist->GetNbinsY() + 1,0, hist->GetNbinsZ() + 1);
+      if (ltmp<0 || ltmp != ltmp) {
+        std::cout << " -- Warning: integral is " << ltmp << ". Removing overflows. " << std::endl;
+        ltmp = hist->Integral(1, hist->GetNbinsX(),1,hist->GetNbinsY(),1,hist->GetNbinsZ());
+        if (ltmp<0 || ltmp != ltmp) {
+          std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+          ltmp=0;
+        }
+      }
+      return ltmp;
+    }
+  else return 0;
+  }
+
+  double Error(TH3F const* hist) {
+    double err = 0.0;
+    if (hist) {
+      //hist->Sumw2();
+      hist->IntegralAndError(0, hist->GetNbinsX()+1,0, hist->GetNbinsY() + 1, 0, hist->GetNbinsZ() + 1,err);
+      if (err<0 || err != err) {
+        std::cout << " -- Warning: error on integral is " << err << ". Removing overflows." << std::endl;
+        hist->IntegralAndError(1, hist->GetNbinsX(),1,hist->GetNbinsY(), 1,hist->GetNbinsZ(), err);
+        if (err<0 || err != err) {
+          std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+          err=0;
+        }
+      }
+    }
+    return err;
+  }
+
   double IntegralWithError(TH1F const* hist, int binmin, int binmax, double &err){
     if (hist) {
       //hist->Sumw2();
@@ -429,22 +462,51 @@ namespace ic{
   }
 
   TH3F GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
+    TH3F temp;
+    GetShape3D(temp,variable,selection,category,weight,ttree,false);
+    return temp;
+  }
+
+  bool GetShape3D(TH3F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd){
     std::string full_variable= BuildVarString(variable);
     std::string full_selection = BuildCutString(selection, category, weight);
-    TH3::AddDirectory(true);
-    ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
-    TH3::AddDirectory(false);
+    TH1::AddDirectory(true);
+    bool success = ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
+    if (success <0) {
+      std::cout << " -- Problem with TTree->Draw... return code is " << success << std::endl;
+      return false;
+    }
+    //TH1::AddDirectory(false);
     TH3F* myhtemp = (TH3F*)gDirectory->Get("htemp");
     if (!myhtemp) {
       std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
-      std::cout<<"Returning empty histogram!"<<std::endl;
-      TH3F hshape;
-      hshape.SetName("EMPTY");
-      return hshape;
+      //std::cout<<"Returning empty histogram!"<<std::endl;
+      //TH2F hshape;
+      //hshape.SetName("EMPTY");
+      return false;
     }
-    TH3F hshape= (*myhtemp);
-    gDirectory->Delete("myhtemp;*");
-    return hshape;
+
+    std::cout << variable << " nEvtsPerFile = " << myhtemp->GetEntries() << " " << myhtemp->Integral() << std::endl;
+
+    if (!toadd) {
+      myhtemp->SetDirectory(0);
+      //TH1::AddDirectory(false);
+      shape = (*myhtemp);
+      shape.SetName("myshape");
+      shape.Sumw2();
+    }
+    else {
+      if (!shape.Add(myhtemp)) {
+        std::cout << " Failed adding shape." << std::endl;
+        return false;
+      }
+      gDirectory->Delete("htemp;*");
+    }
+    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral() << std::endl;
+
+    //gDirectory->Delete("myhtemp;*");
+    return true;
   }
+
 
 }
