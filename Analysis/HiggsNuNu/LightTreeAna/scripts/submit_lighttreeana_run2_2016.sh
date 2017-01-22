@@ -21,7 +21,8 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/DefaultRun2Config.cfg
+#CONFIG=scripts/DefaultRun2Config.cfg
+CONFIG=scripts/DefaultRun2Config_jet70.cfg
 QUEUEDIR=short #medium long
 
 JOBDIRPREFIX=jobs_run2ana_170117_ICHEP
