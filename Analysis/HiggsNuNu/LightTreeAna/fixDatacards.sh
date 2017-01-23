@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in cards_run2ana_170117/
+for dir in cards_run2ana_TEST
   do cd $dir
   echo $dir:
 

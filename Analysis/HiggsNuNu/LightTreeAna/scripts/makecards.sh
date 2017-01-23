@@ -8,8 +8,8 @@ fi
 
 DOSUBMIT=$1
 DO4PARAMS=$2
-infolder=output_run2ana_170117/
-outfolder=cards_run2ana_170117/
+infolder=output_run2ana_170123/
+outfolder=cards_run2ana_170123/
 blind=true
 #zvvstat=18
 mkdir -p $outfolder
