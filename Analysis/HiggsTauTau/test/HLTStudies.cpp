@@ -177,7 +177,9 @@ int main(int argc, char* argv[]){
   double eta_1;
   tIn->SetBranchAddress("eta_1",&eta_1);  
   double eta_2;
-  tIn->SetBranchAddress("eta_2",&eta_2); 
+  tIn->SetBranchAddress("eta_2",&eta_2);
+  double weight;
+  tIn->SetBranchAddress("wt",&weight);
   
   bool PassedTrigger1;
   bool PassedTrigger2;
@@ -265,19 +267,19 @@ int main(int argc, char* argv[]){
     else if (channel == "tt" && mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto) PassedBaseLine = true;
     else if (channel == "em" && iso_1<0.15 && iso_2<0.15 && !leptonveto) PassedBaseLine = true;
     if(PassedBaseLine){
-      h_lep1pt->Fill(pt_1);
-      h_lep2pt->Fill(pt_2);
+      h_lep1pt->Fill(pt_1,weight);
+      h_lep2pt->Fill(pt_2,weight);
       countTotal++;
       if(PassedTrigger1) countTrigger1++;
       if(PassedTrigger2) countTrigger2++;
       if(PassedTrigger1 || PassedTrigger2) countCross++;
       
       if(channel == "tt"){
-        if(eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0] && PassedTrigger1_leg2) h_lep1pt_denum_trigger1->Fill(pt_1);
-        if(eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1] && PassedTrigger2_leg2) h_lep1pt_denum_trigger2->Fill(pt_1);
+        if(eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0] && PassedTrigger1_leg2) h_lep1pt_denum_trigger1->Fill(pt_1,weight);
+        if(eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1] && PassedTrigger2_leg2) h_lep1pt_denum_trigger2->Fill(pt_1,weight);
       } else{
-        if(eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut1[0]) h_lep1pt_denum_trigger1->Fill(pt_1);
-        if(eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut1[1]) h_lep1pt_denum_trigger2->Fill(pt_1);
+        if(eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut1[0]) h_lep1pt_denum_trigger1->Fill(pt_1,weight);
+        if(eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut1[1]) h_lep1pt_denum_trigger2->Fill(pt_1,weight);
       }
       bool Trigger1Pass = true;
       bool Trigger2Pass = true;
@@ -286,23 +288,23 @@ int main(int argc, char* argv[]){
         Trigger2Pass = PassedTrigger2;
       }
 
-      if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1) h_lep2pt_denum_trigger1->Fill(pt_2);
-      if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1) h_lep2pt_denum_trigger2->Fill(pt_2);
-      if((eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0]) || (eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1])) h_lep1pt_denum_ORtrigger->Fill(pt_1);
-      if((eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1) || (eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1)) h_lep2pt_denum_ORtrigger->Fill(pt_2);
+      if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1) h_lep2pt_denum_trigger1->Fill(pt_2,weight);
+      if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1) h_lep2pt_denum_trigger2->Fill(pt_2,weight);
+      if((eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0]) || (eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1])) h_lep1pt_denum_ORtrigger->Fill(pt_1,weight);
+      if((eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1) || (eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1)) h_lep2pt_denum_ORtrigger->Fill(pt_2,weight);
 
         if(channel == "tt"){
-          if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg2 && Trigger1Pass) h_lep1_eff_trigger1->Fill(pt_1);
-          if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2 && Trigger2Pass) h_lep1_eff_trigger2->Fill(pt_1);
+          if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg2 && Trigger1Pass) h_lep1_eff_trigger1->Fill(pt_1,weight);
+          if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2 && Trigger2Pass) h_lep1_eff_trigger2->Fill(pt_1,weight);
         } else {
-          if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && Trigger1Pass) h_lep1_eff_trigger1->Fill(pt_1);
-          if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && Trigger2Pass) h_lep1_eff_trigger2->Fill(pt_1);
+          if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && Trigger1Pass) h_lep1_eff_trigger1->Fill(pt_1,weight);
+          if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && Trigger2Pass) h_lep1_eff_trigger2->Fill(pt_1,weight);
         }
-        if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg2 && Trigger1Pass) h_lep2_eff_trigger1->Fill(pt_2);
-        if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2 && Trigger2Pass) h_lep2_eff_trigger2->Fill(pt_2);
+        if(eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg2 && Trigger1Pass) h_lep2_eff_trigger1->Fill(pt_2,weight);
+        if(eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2 && Trigger2Pass) h_lep2_eff_trigger2->Fill(pt_2,weight);
 
-        if((eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0] && PassedTrigger1_leg1) || (eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1] && PassedTrigger2_leg1)) h_lep1_eff_ORtrigger->Fill(pt_1);
-        if((eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg1) || (eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2)) h_lep2_eff_ORtrigger->Fill(pt_2);
+        if((eta_1  < ExtraEtaCut1[0] && eta_2  < ExtraEtaCut2[0] && PassedTrigger1_leg1) || (eta_1  < ExtraEtaCut1[1] && eta_2  < ExtraEtaCut2[1] && PassedTrigger2_leg1)) h_lep1_eff_ORtrigger->Fill(pt_1,weight);
+        if((eta_2  < ExtraEtaCut2[0] && eta_1  < ExtraEtaCut1[0] && PassedTrigger1_leg1 && PassedTrigger1_leg1) || (eta_2  < ExtraEtaCut2[1] && eta_1  < ExtraEtaCut1[1] && PassedTrigger2_leg1 && PassedTrigger2_leg2)) h_lep2_eff_ORtrigger->Fill(pt_2,weight);
     }
   }
   

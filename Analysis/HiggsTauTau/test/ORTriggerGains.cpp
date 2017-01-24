@@ -98,6 +98,9 @@ int main(int argc, char* argv[]){
   double eta_2;
   tIn->SetBranchAddress("eta_2",&eta_2); 
   
+  double weight;
+  tIn->SetBranchAddress("wt",&weight); 
+  
   bool PassedTrigger[10];
   
   for(unsigned i=0; i<numberofTriggers; ++i){
@@ -193,9 +196,9 @@ int main(int argc, char* argv[]){
     }
   }
   
-  unsigned countTotal = 0;
-  unsigned countTrigger[10] = { 0 };
-  unsigned countCross = 0;
+  double countTotal = 0;
+  double countTrigger[10] = { 0 };
+  double countCross = 0;
   
   for(unsigned i=0; i<nentries1; ++i){
     tIn->GetEntry(i);
@@ -204,13 +207,13 @@ int main(int argc, char* argv[]){
     else if (channel == "tt" && mva_olddm_vtight_1>0.5 && mva_olddm_vtight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto) PassedBaseLine = true;
     else if (channel == "em" && iso_1<0.15 && iso_2<0.15 && !leptonveto) PassedBaseLine = true;
     if(PassedBaseLine){
-      countTotal++;
+      countTotal+=weight;
       bool AlreadyCounted = false;
       for(unsigned j=0; j<numberofTriggers; ++j){
         if(PassedTrigger[j] && pt_1 > ExtraPtCut1[j] && pt_2 > ExtraPtCut2[j] && std::fabs(eta_1) < ExtraEtaCut1[j] && std::fabs(eta_2) < ExtraEtaCut2[j]){
-          countTrigger[j]++;
+          countTrigger[j]+=weight;
           if(!AlreadyCounted){
-            countCross++;
+            countCross+=weight;
             AlreadyCounted = true;
           }
         }
