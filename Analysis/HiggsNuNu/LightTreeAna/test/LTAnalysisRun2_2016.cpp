@@ -514,7 +514,7 @@ int main(int argc, char* argv[]){
   sig125mcweight="total_weight_lepveto"+mcweightpufactor.str();
 
   //add NLO reweighting
-  sigmcweight=sigmcweight+"*v_nlo_Reweight";
+  //sigmcweight=sigmcweight+"*v_nlo_Reweight";
 
   if (channel=="ee" || channel == "enu") dataset="SingleElectron";
 
