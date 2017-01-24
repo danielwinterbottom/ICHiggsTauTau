@@ -406,7 +406,7 @@ namespace ic{
       }
       gDirectory->Delete("htemp;*");
     }
-    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral() << std::endl;
+    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral(0,shape.GetNbinsX()+1) << std::endl;
 
     //gDirectory->Delete("htemp;*");
     return true;
@@ -439,7 +439,7 @@ namespace ic{
     }
 
 
-    std::cout << variable << " nEvtsPerFile = " << myhtemp->GetEntries() << " " << myhtemp->Integral() << std::endl;
+    std::cout << variable << " nEvtsPerFile = " << myhtemp->GetEntries() << " " << myhtemp->Integral(0,myhtemp->GetNbinsX()+1) << std::endl;
 
     if (!toadd) {
       myhtemp->SetDirectory(0);
@@ -455,7 +455,7 @@ namespace ic{
       }
       gDirectory->Delete("htemp;*");
     }
-    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral() << std::endl;
+    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral(0,shape.GetNbinsX()+1) << std::endl;
 
     //gDirectory->Delete("myhtemp;*");
     return true;
@@ -486,7 +486,7 @@ namespace ic{
       return false;
     }
 
-    std::cout << variable << " nEvtsPerFile = " << myhtemp->GetEntries() << " " << myhtemp->Integral() << std::endl;
+    std::cout << variable << " nEvtsPerFile = " << myhtemp->GetEntries() << " " << myhtemp->Integral(0,myhtemp->GetNbinsX()+1) << std::endl;
 
     if (!toadd) {
       myhtemp->SetDirectory(0);
@@ -502,7 +502,7 @@ namespace ic{
       }
       gDirectory->Delete("htemp;*");
     }
-    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral() << std::endl;
+    std::cout << variable << " nEvtsIntegrated = " << shape.GetEntries() << " " << shape.Integral(0,shape.GetNbinsX()+1) << std::endl;
 
     //gDirectory->Delete("myhtemp;*");
     return true;
