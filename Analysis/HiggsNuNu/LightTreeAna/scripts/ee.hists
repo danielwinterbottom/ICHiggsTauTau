@@ -4,7 +4,6 @@ ele1_pt(22,20.,360.)	;p_{T}(lead electron) (GeV);Events
 ele1_eta(30,-2.5,2.5)	;#eta(lead electron) (GeV);Events
 ele2_pt(17,20.,275.)	;p_{T}(sublead electron) (GeV);Events
 ele2_eta(30,-2.5,2.5)	;#eta(sublead electron) (GeV);Events 
-metnoelectrons*pow(sqrt(sumet-ele1_pt-ele2_pt),-1)(15,0.,15.)	;S;Events
 n_vertices(20,0,40)	;n_{vtx};Events
 jet1_pt(28,40.,500.)	;p_{T}^{j1} (GeV);Events
 jet2_pt(12,40.,250.)	;p_{T}^{j2} (GeV);Events
@@ -14,7 +13,6 @@ jet1_eta(25,-5,5)	;#eta^{j1} (GeV);Events
 jet2_eta(25,-5,5)	;#eta^{j2} (GeV);Events
 cjvjetpt(19,15.,205.)	;p_{T}^{CJV jet} (GeV);Events
 met(20,0.,550.)	;MET (GeV);Events
-l1met(20,0.,550.)	;L1MET (GeV);Events
 ht(20,100,1000)	;H_{T}^{p_{T}^{j}>15 GeV} (GeV);Events
 ht30(20,100,1000)	;H_{T}^{p_{T}^{j}>30 GeV} (GeV);Events
 metnoelectrons(50,0.,500.)	;E_{T,no-el}^{miss} (GeV);Events
@@ -25,7 +23,6 @@ dijet_sumeta(20,-5,5)	;#eta_{j1}+#eta_{j2};Events
 jetmetnoel_mindphi(8,2.3,3.1416)	;#Delta#phi(E_{T}^{miss},j_{1,2});Events
 alljetsmetnoel_mindphi(20,0,3.1416)	;#Delta#phi(E_{T,no-el}^{miss},j);Events
 n_jets_cjv_30(5,0,5)	;CJV jets (30 GeV);Events
-n_jets_cjv_20EB_30EE(5,0,5)	;CJV jets (20 GeV EB, 30 GeV EE);Events
 jet1_csv(21,0.,1.)	;Jet 1 CSV;Events
 jet2_csv(21,0.,1.)	;Jet 2 CSV;Events
 jet3_csv(21,0.,1.)	;Jet 3 CSV;Events
