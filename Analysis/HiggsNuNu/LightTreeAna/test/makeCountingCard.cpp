@@ -24,6 +24,7 @@ Syst::Syst(){
 };
 
 int main(int argc, char* argv[]){
+  bool do_tau_veto_unc;
   bool blind=true;
   bool do_datatop;
   bool do_qcdfromshape;
@@ -60,6 +61,7 @@ int main(int argc, char* argv[]){
     ("input_folder,i",           po::value<std::string>(&indir)->default_value("output_run2ana_161015"))
     ("outname,o",                po::value<std::string>(&outname)->default_value("vbfhinv.txt"))
     ("blind",                    po::value<bool>(&blind)->default_value(true))
+    ("do_tau_veto_unc",          po::value<bool>(&do_tau_veto_unc)->default_value(false))
     ("do_qcdfromshape,s",        po::value<bool>(&do_qcdfromshape)->default_value(false))
     ("do_qcdfromnumber,q",       po::value<bool>(&do_qcdfromnumber)->default_value(true))
     ("do_ggh,g",                 po::value<bool>(&do_ggh)->default_value(true))
@@ -234,6 +236,19 @@ int main(int argc, char* argv[]){
 
   //SYSTEMATICS
   std::vector<Syst> systematics;
+
+  std::vector<std::string> tau_veto_unc_affected;
+
+  tau_veto_unc_affected.push_back("wtau");
+  tau_veto_unc_affected.push_back("wtauqcd");
+  tau_veto_unc_affected.push_back("wtauewk");
+
+  Syst tau_veto_unc;
+  tau_veto_unc.set_name("tau_veto_unc")
+  .set_latexname("tau veto uncertainty")
+  .set_type("constlnN")
+  .set_procsaffected(tau_veto_unc_affected)
+  .set_constvalue(1.030);
 
   std::vector<std::string> lumi8tevprocsaffected={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","wg","vv","qcd"};
   if (mcBkgOnly) {
@@ -678,6 +693,10 @@ int main(int argc, char* argv[]){
     .set_type("constlnN")
     .set_procsaffected({"zvv"})
     .set_constvalue(1.2);
+
+  if (do_tau_veto_unc) {
+    systematics.push_back(tau_veto_unc);
+  }
 
   systematics.push_back(lumi8tev);
   if (!do_run2)  systematics.push_back(eleeff);

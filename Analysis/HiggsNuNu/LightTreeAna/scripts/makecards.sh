@@ -8,8 +8,9 @@ fi
 
 DOSUBMIT=$1
 DO4PARAMS=$2
-infolder=output_run2ana_170123/
-outfolder=cards_run2ana_170123/
+infolder=output_run2ana_170124/
+outfolder=cards_run2ana_170124/
+do_tau_veto_unc=false
 blind=true
 #zvvstat=18
 mkdir -p $outfolder
@@ -53,9 +54,9 @@ do
 	    OUTNAME=$outfolder/$channel/vbfhinv_${channel}_13TeV_${mindphicut}_${minjjcut}_4params.txt
 	fi
 	if (( "$DOSUBMIT" == "0" )); then
-	    echo "./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m 125 --channel $channel --do_latex true --do_datatop false --zvvstat 0 --qcdrate 0 --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=$HistToIntegrate $extraoptions | tee $outfolder/$channel/card_${mindphicut}_${minjjcut}.log"
+	    echo "./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m 125 --channel $channel --do_latex true --do_datatop false --zvvstat 0 --qcdrate 0 --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=$HistToIntegrate --do_tau_veto_unc=$do_tau_veto_unc $extraoptions | tee $outfolder/$channel/card_${mindphicut}_${minjjcut}.log"
 	else
-	    ./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m 125 --channel $channel --do_latex true --do_datatop false --zvvstat 0 --qcdrate 0 --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=$HistToIntegrate $extraoptions | tee $outfolder/$channel/card_${mindphicut}_${minjjcut}.log
+	    ./bin/makeCountingCard -i $infolder --blind=$blind -o $OUTNAME -m 125 --channel $channel --do_latex true --do_datatop false --zvvstat 0 --qcdrate 0 --mcBkgOnly=true --do_run2=true --do_4params=$DO4PARAMS --minvarXcut=$minjjcut --minvarYcut=$mindphicut --histoToIntegrate=$HistToIntegrate --do_tau_veto_unc=$do_tau_veto_unc $extraoptions | tee $outfolder/$channel/card_${mindphicut}_${minjjcut}.log
 	fi
     done
 #done
