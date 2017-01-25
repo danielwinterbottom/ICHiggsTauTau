@@ -39,8 +39,10 @@ int main(int argc, char* argv[]){
   
   if(argc < 6){
     if(channel == "mt") {
-      TriggerName[0] = "HLT_IsoMu22_v"; 
-      TriggerName[1] = "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v"; 
+      //TriggerName[0] = "HLT_IsoMu22_v"; 
+      //TriggerName[1] = "HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v"; 
+      TriggerName[0] = "HLT_VLooseIsoPFTau120_Trk50_eta2p1_v"; 
+      TriggerName[1] = "HLT_VLooseIsoPFTau140_Trk50_eta2p1_v"; 
     } else if(channel == "et") {
       TriggerName[0] = "HLT_Ele25_eta2p1_WPTight_Gsf_v"; 
       TriggerName[1] = "HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v"; 
@@ -137,6 +139,8 @@ int main(int argc, char* argv[]){
     filename1 = "output/Jul03/HighLumi/reHLT_VBFHToTauTau_M-125_"+channel+"_2015.root";
   } else if (signalType == "QCD"){
     filename1 = "output/Jul03/LegsSeperate4/QCD_Pt-15to80_MixedSamples_MuEnrichedPt5_"+channel+"_2015.root";  
+  } else if (signalType == "SUSYGluGlu"){
+    filename1="/vols/cms/dw515/Offline/output/MSSM/TriggerStudies/SUSYGluGluToHToTauTau_M-3200_"+channel+"_2016.root ";    
   }
   else {
     std::cout << "Incorrect signal input" << std::endl;
@@ -210,7 +214,8 @@ int main(int argc, char* argv[]){
   c1->SetTickx(1);
   c1->SetTicky(1);
   
-  float bins[21] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,30,34,40,48,56,70,100};
+  //float bins[21] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,30,34,40,48,56,70,100};
+  float bins[10] = {0,20,40,60,80,100,120,140,160,180};
   int   binnum = sizeof(bins)/sizeof(float) - 1;
   
   

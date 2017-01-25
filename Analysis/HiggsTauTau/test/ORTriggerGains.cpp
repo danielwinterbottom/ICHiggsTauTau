@@ -26,24 +26,26 @@ struct greater_Candidate{
 
 int main(int argc, char* argv[]){
 
-  if(argc < 4){
+  if(argc < 5){
     std::cout << "Wrong number of arguments, expected minimum 3 arguments." << std::endl;
     return 0;
   }
   std::string channel      = argv[1];
   std::string signalType   = argv[2];
   std::string inputfile    = argv[3];
+  std::string signalMass   = argv[4];
   std::string TriggerName[10];
   
-  unsigned numberofTriggers = argc - 4;
+  unsigned numberofTriggers = argc - 5;
   std::cout << "Numbers of triggers to process = " << numberofTriggers << std::endl;
   for(unsigned i=0; i<numberofTriggers; ++i){
-    TriggerName[i] = argv[4 + i];
+    TriggerName[i] = argv[5 + i];
   }
   
-  std::cout << "Channel:       "      << channel  << std::endl;
+  std::cout << "Channel:       "      << channel        << std::endl;
   std::cout << "Signal Sample: "      << signalType     << std::endl;
   std::cout << "Input file:    "      << inputfile      << std::endl;
+  std::cout << "signalMass:    "      << signalMass     << std::endl;
   for(unsigned i=0; i<numberofTriggers; ++i){
     std::cout << "Trigger " << i+1 << ": " << TriggerName[i] << std::endl;
   }
@@ -56,7 +58,11 @@ int main(int argc, char* argv[]){
     filename1 = inputfile+"/reHLT_VBFHToTauTau_M-125_"+channel+"_2016.root";
   } else if (signalType == "QCD"){
     filename1 = inputfile+"/QCD_Pt-15to80_MixedSamples_MuEnrichedPt5_"+channel+"_2016.root";  
-  }
+  } else if (signalType == "SUSYGluGlu"){
+    filename1 = inputfile+"/SUSYGluGluToHToTauTau_M-"+signalMass+"_"+channel+"_2016.root";
+  } else if (signalType == "SUSYBB"){
+    filename1 = inputfile+"/SUSYGluGluToBBHToTauTau_M-"+signalMass+"_"+channel+"_2016.root";
+  } 
   else {
     std::cout << "Incorrect signal input" << std::endl;
     return 0;
@@ -113,6 +119,49 @@ int main(int argc, char* argv[]){
   double ExtraPtCut2[10] = { 0 };
   
   for(unsigned i=0; i <numberofTriggers; i++){
+      
+    if (TriggerName[i] == "HLT_VLooseIsoPFTau120_Trk50_eta2p1_v"){
+      if(channel == "mt"){
+        ExtraPtCut1[i] = 10;
+        ExtraEtaCut1[i] = 2.4;
+        ExtraPtCut2[i] = 125;
+        ExtraEtaCut2[i] = 2.1;
+      }
+      else if (channel == "et"){
+        ExtraPtCut1[i] = 15;
+        ExtraEtaCut1[i] = 2.5;
+        ExtraPtCut2[i] = 125;
+        ExtraEtaCut2[i] = 2.1;
+      }
+      else if (channel == "tt"){
+        ExtraPtCut1[i] = 0;
+        ExtraEtaCut1[i] = 2.5;
+        ExtraPtCut2[i] = 0;
+        ExtraEtaCut2[i] = 2.5;
+      }
+    }
+    
+    else if (TriggerName[i] == "HLT_VLooseIsoPFTau140_Trk50_eta2p1_v"){
+      if(channel == "mt"){
+        ExtraPtCut1[i] = 10;
+        ExtraEtaCut1[i] = 2.4;
+        ExtraPtCut2[i] = 145;
+        ExtraEtaCut2[i] = 2.1;
+      }
+      else if (channel == "et"){
+        ExtraPtCut1[i] = 15;
+        ExtraEtaCut1[i] = 2.5;
+        ExtraPtCut2[i] = 145;
+        ExtraEtaCut2[i] = 2.1;
+      }
+      else if (channel == "tt"){
+        ExtraPtCut1[i] = 0;
+        ExtraEtaCut1[i] = 2.5;
+        ExtraPtCut2[i] = 0;
+        ExtraEtaCut2[i] = 2.5;
+      }
+    }
+      
     if (TriggerName[i] == "HLT_IsoMu22_v"){
       if(channel == "mt"){
         ExtraEtaCut2[i] = 2.3;
@@ -193,6 +242,11 @@ int main(int argc, char* argv[]){
       ExtraPtCut2[i] = 20;
       ExtraPtCut1[i] = 28;
       ExtraEtaCut1[i] = 2.4;
+    } else if (TriggerName[i] == "HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v"){
+      ExtraEtaCut2[i] = 2.5;
+      ExtraPtCut2[i] = 0;
+      ExtraPtCut1[i] = 0;
+      ExtraEtaCut1[i] = 2.5;
     }
   }
   

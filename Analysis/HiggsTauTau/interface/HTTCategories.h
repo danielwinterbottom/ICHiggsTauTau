@@ -453,6 +453,13 @@ class HTTCategories : public ModuleBase {
   double em_gf_mva_;
   double em_vbf_mva_;
   
+  bool singleTauPath1_;
+  bool singleTauPath2_;
+  bool singleTauPath1_leg1_;
+  bool singleTauPath1_leg2_;
+  bool singleTauPath2_leg1_;
+  bool singleTauPath2_leg2_;
+  
   bool emHLTPath1_;
   bool emHLTPath2_;
   bool emHLTPath3_;
