@@ -25,6 +25,8 @@ parser.add_option("-y", "--year", dest="year", type='string', default='2016',
     help="Year")
 parser.add_option("-s", "--sel", dest="sel", type='string', default='(1)',
     help="Selection")
+parser.add_option("--set_alias", action="append", dest="set_alias", type='string', default=[],
+    help="Overwrite alias selection using this options. Specify with the form --set_alias=nameofaliastoreset:newselection")
 parser.add_option("-a", "--analysis", dest="analysis", type='string', default='sm',
     help="Analysis.  Supported options: %(CHANNELS)s" % vars())
 parser.add_option("-v", "--var", dest="var", type='string', default='m_vis(7,0,140)',
@@ -443,6 +445,16 @@ cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
+# Overwrite any category selections if the --set_alias option is used
+for i in options.set_alias:
+    cat_to_overwrite = i.split(':')[0]
+    overwrite_with = i.split(':')[1]
+    print 'Overwriting alias: \"'+cat_to_overwrite+'\" with selection: \"'+overwrite_with+'\"'
+    if cat_to_overwrite == 'sel':
+        options.sel = overwrite_with
+    else:
+        cats[cat_to_overwrite] = overwrite_with
+
 # Additional selections to seperate MC samples by gen flags
 
 z_sels = {}
@@ -527,7 +539,11 @@ if options.syst_fake_b != '':
     systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'UP', 'wt', [])
     systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'DOWN', 'wt', [])
 
-print systematics
+# Create output file
+var_name = options.var.split('[')[0]
+var_name = var_name.split('(')[0]
+output_name = options.output_folder+'/datacard_'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year+'.root'
+outfile = ROOT.TFile(output_name, 'RECREATE')
 
 for systematic in systematics:
     
@@ -541,9 +557,15 @@ for systematic in systematics:
     
     ana = Analysis()
     
-    ana.remaps = {
-        'SingleMuon': 'data_obs'
-    }#need to make sure this is set correctly for all channels!!!!
+    ana.remaps = {}
+    if options.channel == 'em':
+        ana.remaps['MuonEG'] = 'data_obs'
+    elif options.channel == 'mt':
+        ana.remaps['SingleMuon'] = 'data_obs'
+    elif options.channel == 'et':
+        ana.remaps['SingleElectron'] = 'data_obs'
+    elif options.channel == 'tt':
+        ana.remaps['Tau'] = 'data_obs'
     
     mc_input_folder_name = options.input_folder
     if add_folder_name != '':
@@ -597,8 +619,6 @@ for systematic in systematics:
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
-    output_name = options.output_folder+"/"+nodename+"_"+options.cat+"_"+options.channel+".root"
-    outfile = ROOT.TFile(output_name, 'RECREATE')
     ana.nodes.Output(outfile)
     
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
@@ -635,6 +655,3 @@ for systematic in systematics:
         sum_hist.SetName('TT'+add_name)
         sum_hist.Write()
         outfile.cd()
-        
-    
-
