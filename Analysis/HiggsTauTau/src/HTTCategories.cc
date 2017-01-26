@@ -284,22 +284,17 @@ namespace ic {
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
       outtree_->Branch("pfpt_tt",          &pfpt_tt_.var_double);
-      outtree_->Branch("mvapt_tt",         &mvapt_tt_.var_double);
       outtree_->Branch("mt_tot",            &mt_tot_.var_double);
       outtree_->Branch("pfmt_tot",          &pfmt_tot_.var_double);
-      outtree_->Branch("mvamt_tot",         &mvamt_tot_.var_double);
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
       outtree_->Branch("m_2",               &m_2_.var_double);
       outtree_->Branch("pfmt_1",            &pfmt_1_.var_double);
       outtree_->Branch("pfmt_2",            &pfmt_2_.var_double);
-      outtree_->Branch("mvamt_1",           &mvamt_1_.var_double);
-      outtree_->Branch("mvamt_2",           &mvamt_2_.var_double);
       outtree_->Branch("puppimt_1",         &puppimt_1_.var_double);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
       outtree_->Branch("pfpzeta",           &pfpzeta_.var_double);
-      outtree_->Branch("mvapzeta",          &mvapzeta_.var_double);
       outtree_->Branch("puppipzeta",        &puppipzeta_.var_double);
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
@@ -315,7 +310,7 @@ namespace ic {
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("minimal_extraelec_veto",    &minimal_extraelec_veto_);
       outtree_->Branch("minimal_extramuon_veto",    &minimal_extramuon_veto_);
-      outtree_->Branch("met",               &mvamet_.var_double);
+      outtree_->Branch("met",               &met_.var_double);
       outtree_->Branch("pfmet",             &pfmet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
@@ -534,7 +529,7 @@ namespace ic {
         outtree_->Branch("E_1",               &E_1_);
         outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
-        outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
+        outtree_->Branch("met_phi",           &met_phi_.var_double);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
         outtree_->Branch("jpt_1",             &jpt_1_.var_double);
         outtree_->Branch("nearjpt_1",             &nearjpt_1_);
@@ -867,14 +862,14 @@ namespace ic {
 
       }
       // Uncorrected PF MET (not used in analysis)
-      synctree_->Branch("met", &pfmet_.var_float, "pfmet/F");
+      synctree_->Branch("met", &met_.var_float, "pfmet/F");
       // Uncorrected PF MET phi (not used in analysis)
-      synctree_->Branch("metphi", &pfmet_phi_, "pfmet_phi/F");
+      synctree_->Branch("metphi", &met_phi_, "pfmet_phi/F");
       // Elements of the PF MET covariance matrix (not used in analysis)
-      synctree_->Branch("metcov00", &pfmetCov00_, "pfmetCov00/F");
-      synctree_->Branch("metcov01", &pfmetCov01_, "pfmetCov01/F");
-      synctree_->Branch("metcov10", &pfmetCov10_, "pfmetCov10/F");
-      synctree_->Branch("metcov11", &pfmetCov11_, "pfmetCov11/F");
+      synctree_->Branch("metcov00", &metCov00_, "metCov00/F");
+      synctree_->Branch("metcov01", &metCov01_, "metCov01/F");
+      synctree_->Branch("metcov10", &metCov10_, "metCov10/F");
+      synctree_->Branch("metcov11", &metCov11_, "metCov11/F");
       //Puppi Met
       synctree_->Branch("puppimet",&puppimet_.var_float, "puppimet/F");
       synctree_->Branch("puppimetphi", &puppimet_phi_,"puppimet_phi/F");
@@ -883,15 +878,6 @@ namespace ic {
       synctree_->Branch("genpY", &gen_py_, "genpY/F");
       synctree_->Branch("vispX", &vis_px_, "vispX/F");
       synctree_->Branch("vispY", &vis_py_, "vispY/F");
-      // MVA MET
-      synctree_->Branch("mvamet", &mvamet_.var_float, "mvamet/F");
-      // MVA MET phi
-      synctree_->Branch("mvametphi", &mvamet_phi_.var_float, "mvamet_phi/F");
-      // Elements of the MVA MET covariance matrix
-      synctree_->Branch("mvacov00", &mvametCov00_, "mvametCov00/F");
-      synctree_->Branch("mvacov01", &mvametCov01_, "mvametCov01/F");
-      synctree_->Branch("mvacov10", &mvametCov10_, "mvametCov10/F");
-      synctree_->Branch("mvacov11", &mvametCov11_, "mvametCov11/F");
 
       // pt of the di-tau + MET system
       synctree_->Branch("pt_tt", &pt_tt_.var_float, "pt_tt/F");
@@ -1492,16 +1478,11 @@ namespace ic {
         puppimet = puppiMet_vec.at(0);
       }
     }
-    if(strategy_ == strategy::smspring16) pfmet = event->GetPtr<Met>("pfMET");
+    if(strategy_ == strategy::smspring16 || strategy_ == strategy::mssmspring16) pfmet = event->GetPtr<Met>("pfMET");
 
     pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
-    mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
-    if(strategy_ == strategy::smspring16){
-      pt_tt_ = pfpt_tt_;
-      
-    } else {
-      pt_tt_ = mvapt_tt_;
-    }
+    //mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
+    pt_tt_ = (ditau->vector() + mets->vector()).pt();
 
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
@@ -1523,36 +1504,22 @@ namespace ic {
 
     mt_lep_ = MT(lep1,lep2);
     mt_ll_ = MT(ditau, mets);
-    mvapzeta_ = PZeta(ditau, mets, 0.85);
-    mvapzetamiss_ = PZeta(ditau, mets, 0.0);
+    pzeta_ = PZeta(ditau, mets, 0.85);
+    pzetamiss_ = PZeta(ditau, mets, 0.0);
     pfpzeta_ = PZeta(ditau, pfmet, 0.85);
     pfpzetamiss_ = PZeta(ditau, pfmet, 0.0);
     pzetavis_ = PZetaVis(ditau);
-    if(strategy_ == strategy::smspring16){
-      pzeta_ = pfpzeta_;
-      pzetamiss_ = pfpzetamiss_;
-    } else{
-      pzeta_ = mvapzeta_;
-      pzetamiss_ = mvapzetamiss_;
-    }
+
     met_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep1->vector()));
     met_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep2->vector()));
     //save some pfmet and puppi met versions as well for now
     pfmt_1_ = MT(lep1, pfmet);
     pfmt_2_ = MT(lep2, pfmet);
-    mvamt_1_ = MT(lep1, mets);
-    mvamt_2_ = MT(lep2, mets);
     pfmt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(pfmt_2_.var_double,2)+pow(pfmt_1_.var_double,2));
-    mvamt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mvamt_2_.var_double,2)+pow(mvamt_1_.var_double,2));
-    if(strategy_ == strategy::smspring16){
-      mt_1_ = pfmt_1_;
-      mt_2_ = pfmt_2_;
-      mt_tot_ = pfmt_tot_;
-    } else{
-      mt_1_ = mvamt_1_;
-      mt_2_ = mvamt_2_;
-      mt_tot_ = mvamt_tot_;
-    }
+    mt_1_ = MT(lep1, mets);
+    mt_2_ = MT(lep2, mets);
+    mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
+
     if(puppimet != NULL){
       puppimt_1_ = MT(lep1, puppimet);
       puppipzeta_ = PZeta(ditau, puppimet, 0.85);
@@ -1583,13 +1550,13 @@ namespace ic {
       event->Exists("vispX") ? vis_px_ = event->Get<double>("vispX") : 0.;
       event->Exists("vispY") ? vis_py_ = event->Get<double>("vispY") : 0.;
     }
-    mvamet_ = mets->pt();
-    mvamet_phi_ = mets->phi();
+    met_ = mets->pt();
+    met_phi_ = mets->phi();
 
-    mvametCov00_ = mets->xx_sig();
-    mvametCov10_ = mets->yx_sig();
-    mvametCov01_ = mets->xy_sig();
-    mvametCov11_ = mets->yy_sig();
+    metCov00_ = mets->xx_sig();
+    metCov10_ = mets->yx_sig();
+    metCov01_ = mets->xy_sig();
+    metCov11_ = mets->yy_sig();
     
     pfmet_ = pfmet->pt();
     pfmet_phi_ = pfmet->phi();
