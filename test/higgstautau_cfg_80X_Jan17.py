@@ -7,7 +7,8 @@ import sys
 ################################################################
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
-opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/0863B733-1A39-E611-AF47-0025905C53D8.root', parser.VarParsing.multiplicity.singleton,
+#opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/0863B733-1A39-E611-AF47-0025905C53D8.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/4C466283-6BC0-E611-B3AE-001517FB25E4.root', parser.VarParsing.multiplicity.singleton,              
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016F/SingleMuon/MINIAOD/PromptReco-v1/000/277/932/00000/084865EB-1859-E611-BDA7-02163E011A89.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v2/000/281/265/00000/28861171-6E82-E611-9CAF-02163E0141FA.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/Tau/MINIAOD/PromptReco-v3/000/284/036/00000/36B9BD65-5B9F-E611-820B-02163E0126D3.root', parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string, "input file")
@@ -23,8 +24,10 @@ opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
-opts.register('isReHLT', 0, parser.VarParsing.multiplicity.singleton,
+opts.register('isReHLT', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as reHLT sample?")
+opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Produce LHE weights for sample")
 
 
 
@@ -34,6 +37,7 @@ if not infile: infile = "file:/tmp/file.root"
 isData      = opts.isData
 tag         = opts.globalTag
 release     = opts.release
+doLHEWeights = opts.LHEWeights
 if not isData:
   doHT     = opts.doHT
   isReHLT  = opts.isReHLT
@@ -1637,7 +1641,7 @@ if release in ['80XMINIAOD']:
   )
 
   if isReHLT:
-    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults","","HLT2")
+    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults","","HLT")
 
   if isData:
     process.icTriggerSequence += cms.Sequence(
@@ -2171,7 +2175,7 @@ if release in ['80XMINIAOD']:
   if isReHLT:
     for name in process.icTriggerObjectSequence.moduleNames():
       mod = getattr(process, name)
-      mod.inputTriggerResults = cms.InputTag("TriggerResults", "","HLT2")
+      mod.inputTriggerResults = cms.InputTag("TriggerResults", "","HLT")
 
 ################################################################
 # EventInfo
@@ -2188,6 +2192,7 @@ process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
+  includeLHEWeights   = cms.bool(doLHEWeights),
   includeHT           = cms.bool(False),
   lheProducer         = cms.InputTag("externalLHEProducer"),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
