@@ -25,9 +25,9 @@ CONFIG=scripts/DefaultRun2Config.cfg
 
 QUEUEDIR=short #medium long
 
-JOBDIRPREFIX=jobs_run2ana_170125_NLOreweight/
+JOBDIRPREFIX=jobs_run2ana_170125/
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_170125_NLOreweight/
+OUTPUTPREFIX=output_run2ana_170125/
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -75,11 +75,11 @@ do
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_nomindphi.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_nomindphi.hists`
     ## To produce all of the hist
-    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
-    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
+    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}.hists`
+    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}.hists`
     ## To produce all of the hist for datacard
-    #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_datacard.hists`
-    #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_datacard.hists`
+    HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_datacard.hists`
+    SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_datacard.hists`
     #HISTSTRING=`awk '{FS="\t"}{ORS="!"}{print $2}' scripts/${channels}_sig.hists`
     #SHAPESTRING=`awk '{ORS="!"}{print $1}' scripts/${channels}_sig.hists`
     ## To test for one hist
@@ -91,31 +91,22 @@ do
     #SHAPESTRING="alljetsmetnomu_mindphi(14,2.3,3.1416)"
     echo "Making histograms: " $SHAPESTRING
     OUTPUTNAME="$channels.root"
-    #MINDPHICUT="alljetsmetnomu_mindphi\>=0"
-    ############MINDPHICUT="alljetsmetnomu_mindphi\>=0.5"
-    MINDPHICUT="alljetsmetnomu_mindphi\>=2.3"
-    #MINDPHICUT="alljetsmetnomu_mindphi\>=1."
+    MINDPHICUT="alljetsmetnomu_mindphi\>=0.5"
     if [ "$channels" = "taunu" ]; then
-	############MINDPHICUT="jetmetnomu_mindphi\>=1.0" #\&\&alljetsmetnomu_mindphi\<2.3"
-	MINDPHICUT="jetmetnomu_mindphi\>=1.0\&\&alljetsmetnomu_mindphi\<2.3"
+      MINDPHICUT="jetmetnomu_mindphi\>=1.0" #\&\&alljetsmetnomu_mindphi\<2.3"
     fi
     if [ "$channels" = "qcd" ]; then
-	MINDPHICUT="alljetsmetnomu_mindphi\<0.5"
-	#MINDPHICUT="alljetsmetnomu_mindphi\>=0"
+      MINDPHICUT="alljetsmetnomu_mindphi\<0.5"
     fi
     if [ "$channels" = "ee" ]; then
-	#MINDPHICUT="alljetsmetnoel_mindphi\>=0"
-	############MINDPHICUT="alljetsmetnoel_mindphi\>=0.5"
-	MINDPHICUT="alljetsmetnoel_mindphi\>=2.3"
+      MINDPHICUT="alljetsmetnoel_mindphi\>=0.5"
     fi
     if [ "$channels" = "enu" ]; then
-	#MINDPHICUT="alljetsmetnoel_mindphi\>=0"
-	############MINDPHICUT="alljetsmetnoel_mindphi\>=0.5"
-	MINDPHICUT="alljetsmetnoel_mindphi\>=2.3"
+      MINDPHICUT="alljetsmetnoel_mindphi\>=0.5"
     fi
     if [ "$syst" = "" ]
-	then
-	$JOBWRAPPER "./bin/LTAnalysisRun2_2016 --cfg=$CONFIG --channel=$channels --histTitlePar='$HISTSTRING' --shapePar='$SHAPESTRING' -o $OUTPUTDIR$syst/$OUTPUTNAME --jetmetdphicut=$MINDPHICUT &> $JOBDIR$syst/$JOB.log" $JOBDIR$syst/$JOB.sh $GRIDSETUP
+      then
+      $JOBWRAPPER "./bin/LTAnalysisRun2_2016 --cfg=$CONFIG --channel=$channels --histTitlePar='$HISTSTRING' --shapePar='$SHAPESTRING' -o $OUTPUTDIR$syst/$OUTPUTNAME --jetmetdphicut=$MINDPHICUT &> $JOBDIR$syst/$JOB.log" $JOBDIR$syst/$JOB.sh $GRIDSETUP
     else
 	#if [ "$channels" = "nunu" ]
 	   # then
@@ -125,13 +116,13 @@ do
 	#SHAPESTRING="forward_tag_eta(25,-5.,5.)"
 	#echo "Making histograms: " $SHAPESTRING
 
-	$JOBWRAPPER "./bin/LTAnalysisRun2_2016 --cfg=$CONFIG --channel=$channels --histTitlePar='$HISTSTRING' --shapePar='$SHAPESTRING' --syst=$syst -o $OUTPUTDIR$syst/$OUTPUTNAME --jetmetdphicut=$MINDPHICUT &> $JOBDIR$syst/$JOB.log" $JOBDIR$syst/$JOB.sh $GRIDSETUP
+      $JOBWRAPPER "./bin/LTAnalysisRun2_2016 --cfg=$CONFIG --channel=$channels --histTitlePar='$HISTSTRING' --shapePar='$SHAPESTRING' --syst=$syst -o $OUTPUTDIR$syst/$OUTPUTNAME --jetmetdphicut=$MINDPHICUT &> $JOBDIR$syst/$JOB.log" $JOBDIR$syst/$JOB.sh $GRIDSETUP
 	#fi
     fi
     if [ "$DOSUBMIT" = "1" ]; then 
-	$JOBSUBMIT $JOBDIR$syst/$JOB.sh
+      $JOBSUBMIT $JOBDIR$syst/$JOB.sh
     else 
-	echo "$JOBSUBMIT $JOBDIR$syst/$JOB.sh"
+      echo "$JOBSUBMIT $JOBDIR$syst/$JOB.sh"
     fi
   done
 done

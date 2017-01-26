@@ -8,8 +8,8 @@ fi
 
 DOSUBMIT=$1
 DO4PARAMS=$2
-infolder=output_run2ana_170124/
-outfolder=cards_run2ana_170124/
+infolder=output_run2ana_170125_NLOreweight/
+outfolder=cards_run2ana_170125_NLOreweight/
 do_tau_veto_unc=false
 blind=true
 #zvvstat=18
