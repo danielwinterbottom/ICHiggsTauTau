@@ -113,8 +113,8 @@ namespace ic {
         if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
         if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
         // set to the following tempoarily for studies!
-        if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
-        if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+        if(ch_ == channel::mt && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
+        if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       }
       
       if(ch_ == channel::et) alias_map_["mt"] = "(mt_1>40)";
