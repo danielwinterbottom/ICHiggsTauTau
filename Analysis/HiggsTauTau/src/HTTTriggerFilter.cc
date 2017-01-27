@@ -418,6 +418,15 @@ namespace ic {
           leg2_filter = "hltIsoEle13PFTau20TrackLooseIso";
         }
       }
+      
+      //single tau trigger  
+      if (channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt){
+        if(run >= 271036 /*&& run <= xxxxxx*/){  
+          singletau_trg_obj_label = "triggerObjectsSingleTau120";
+          min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
+          singletau_leg1_filter = "hltPFTau120TrackPt50LooseAbsOrRelVLooseIso";
+        }
+      }  
     /*} else if(is_data_ && era_==era::data_2015){
      if(channel_ == channel::tt){
        trig_obj_label = "triggerObjectsDoubleMediumTau40";
@@ -455,9 +464,9 @@ namespace ic {
     } else {
       //single tau trigger  
       if (channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt){
-        std::string singletau_trg_obj_label;
+        singletau_trg_obj_label = "triggerObjectsSingleTau120";
         min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
-        singletau_leg1_filter = "";
+        singletau_leg1_filter = "hltPFTau120TrackPt50LooseAbsOrRelVLooseIso";
       }  
         
       if (channel_ == channel::et || channel_ == channel::zee || channel_ ==  channel::tpzee) {
