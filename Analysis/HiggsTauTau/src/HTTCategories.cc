@@ -347,6 +347,11 @@ namespace ic {
       outtree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
+      outtree_->Branch("trg_singleelectron",    &trg_singleelectron_);
+      outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
+      outtree_->Branch("trg_doubletau",    &trg_doubletau_);
+      outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      outtree_->Branch("trg_singletau",    &trg_singletau_);
       
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -989,6 +994,12 @@ namespace ic {
       synctree_->Branch("bcsv_2", &bcsv_2_, "bcsv_2/F");
 
       synctree_->Branch("brawf_2", &brawf_2_, "brawf_2/F");
+      
+      synctree_->Branch("trg_singleelectron",    &trg_singleelectron_);
+      synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
+      synctree_->Branch("trg_doubletau",    &trg_doubletau_);
+      synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      synctree_->Branch("trg_singletau",    &trg_singletau_);
 
     }
     return 0;
@@ -1207,6 +1218,13 @@ namespace ic {
         ttHLTPath3_leg2_  = event->Get<bool>("HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v_leg2_match");
       }
     }
+    
+    trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
+    trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
+    trg_doubletau_      = event->Get<bool>("trg_doubletau");
+    trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
+    trg_singletau_      = event->Get<bool>("trg_singletau");
+    
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -1471,7 +1489,7 @@ namespace ic {
     //slightly different met format for new ntuples
     if(strategy_ == strategy::paper2013) pfmet = event->GetPtr<Met>("pfMet");
     if(strategy_ != strategy::paper2013) {
-      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
+      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
       pfmet = pfMet_vec.at(0);  
       if(event->ExistsInTree("puppiMet")){
         std::vector<Met*> puppiMet_vec = event->GetPtrVec<Met>("puppiMet");

@@ -634,6 +634,12 @@ class HTTCategories : public ModuleBase {
   bool ttHLTPath1_leg2_;
   bool ttHLTPath2_leg2_;
   bool ttHLTPath3_leg2_;
+  
+  bool trg_singleelectron_;
+  bool trg_singlemuon_;
+  bool trg_muonelectron_;
+  bool trg_doubletau_;
+  bool trg_singletau_;
 
 
  public:
