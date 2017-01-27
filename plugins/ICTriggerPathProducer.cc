@@ -162,6 +162,7 @@ void ICTriggerPathProducer::beginRun(edm::Run const& run,
                                        edm::EventSetup const& es) {
   bool changed = true;
   bool res = hlt_config_.init(run, es, hlt_process_, changed);
+  std::cout << "Menu: " << hlt_config_.tableName() << "\n";
   if (!res)
     throw std::runtime_error(
         "HLTConfigProvider did not initialise correctly");
