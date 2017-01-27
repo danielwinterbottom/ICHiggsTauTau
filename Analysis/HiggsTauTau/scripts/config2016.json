@@ -17,7 +17,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
-    "mc"            : "spring16_80X",
+    "mc"            : "summer16_80X",
     "era"           : "data_2016",
     "strategy"      : "mssmspring16",
     "is_data"       : false,
@@ -34,6 +34,7 @@
     "trg_in_mc" : false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
+    "do_singletau"    :true,
     "store_trigobjpt" :true,
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,

@@ -320,7 +320,7 @@ namespace ic {
           if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
           double pt = parts[i]->pt();
           pt = std::min(pt, 400.);
-          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) top_wt *= std::exp(0.156-0.00137*pt);
           }
         }
       }
@@ -508,7 +508,7 @@ namespace ic {
     }
     
     
-    if (do_btag_weight_ && mc_!=mc::fall15_76X && mc_!=mc::spring16_80X ) {
+    if (do_btag_weight_ && mc_!=mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
       //double no_btag_weight = btag_weight.GetWeight(jets, "CSVM", 0, 0, is_2012_);
@@ -669,7 +669,7 @@ namespace ic {
           tau_trg=1;
           tau_trg_mc=1;
 
-        } else if (mc_ == mc::spring16_80X){
+        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
            if(scalefactor_file_==""){ 
               if(do_single_lepton_trg_ && !do_cross_trg_){
                 if(e_iso < 0.1){
@@ -898,7 +898,7 @@ namespace ic {
           tau_trg=1;
           tau_trg_mc=1;
 
-         } else if(mc_ == mc::spring16_80X){
+         } else if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
           if(scalefactor_file_=="") {
               if(do_single_lepton_trg_ && !do_cross_trg_){
                 if(m_iso<0.15){
@@ -1167,7 +1167,7 @@ namespace ic {
             m_trg_8_mc = em_m8_trig_mc_->GetBinContent(em_m8_trig_mc_->GetXaxis()->FindBin(m_eta),(em_m8_trig_mc_->GetYaxis()->FindBin(m_pt)-1));
           }         
 
-       } else if (mc_ == mc::spring16_80X){
+       } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
       /*    if(e_pt<1000){
 
             e_trg_17 = em_e17_trig_data_->GetBinContent(em_e17_trig_data_->GetXaxis()->FindBin(e_eta),em_e17_trig_data_->GetYaxis()->FindBin(e_pt));
@@ -1199,7 +1199,7 @@ namespace ic {
           e_trg_17 = fns_["e_trgEle23leg_desy_data"]->eval(args_1.data());
           e_trg_12  = fns_["e_trgEle12leg_desy_data"]->eval(args_1.data());
         }
-       if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X ){
+       if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
 
         if (trg_applied_in_mc_) {
           m_trg = m_trg / m_trg_mc;
@@ -1250,7 +1250,7 @@ namespace ic {
           tau1_trg_mc_down   = Efficiency(pt_1, 36.2436, 5.58461, 5.12924, 2.05921, 9.32305e-01);
           tau2_trg_down      = Efficiency(pt_2, 35.6264, 5.30711, 2.81591, 2.40649, 9.99958e-01);
           tau2_trg_mc_down   = Efficiency(pt_2, 36.2436, 5.58461, 5.12924, 2.05921, 9.32305e-01);
-         } else if(mc_ == mc::spring16_80X){
+         } else if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
           unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
           unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
           if(tt_trg_iso_mode_==4) {
@@ -1479,7 +1479,7 @@ namespace ic {
             ele2_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e2_eta),(et_trig_data_->GetYaxis()->FindBin(e2_pt)-1));
             ele2_trg_mc = et_trig_mc_->GetBinContent(et_trig_mc_->GetXaxis()->FindBin(e2_eta),(et_trig_mc_->GetYaxis()->FindBin(e2_pt)-1));
           }
-        } else if (mc_ == mc::spring16_80X){
+        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
           if(scalefactor_file_==""){
               if(e1_pt<1000){
                 ele1_trg = et_trig_data_->GetBinContent(et_trig_data_->GetXaxis()->FindBin(e1_eta),et_trig_data_->GetYaxis()->FindBin(e1_pt));
@@ -1553,7 +1553,7 @@ namespace ic {
             mu2_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m2_eta),(mt_trig_data_->GetYaxis()->FindBin(pt2)-1));
             mu2_trg_mc = mt_trig_mc_->GetBinContent(mt_trig_mc_->GetXaxis()->FindBin(m2_eta),(mt_trig_mc_->GetYaxis()->FindBin(pt2)-1));
           }
-         } else if(mc_ == mc::spring16_80X){
+         } else if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
           if(scalefactor_file_==""){
            if(pt1<1000){
               mu1_trg = mt_trig_data_->GetBinContent(mt_trig_data_->GetXaxis()->FindBin(m1_eta),mt_trig_data_->GetYaxis()->FindBin(pt1));
@@ -1652,14 +1652,14 @@ namespace ic {
           }         
             ele_idiso = ele_idiso_data/ele_idiso_mc;
 
-        } else if (mc_ == mc::spring16_80X){
+        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
            auto args_1 = std::vector<double>{pt,e_signed_eta};
            auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
            if(e_iso < 0.1){
              ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data());
            } else ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
         }
-        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X){
+        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
           if (do_id_weights_) ele_iso = 1.0;
           weight *= (ele_id * ele_iso);
           event->Add("idweight_1", ele_id);
@@ -1711,14 +1711,14 @@ namespace ic {
           }         
             mu_idiso = mu_idiso_data/mu_idiso_mc;
 
-        } else if(mc_ == mc::spring16_80X){
+        } else if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
            if(m_iso<0.15){
              mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
            } else mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
         }
-        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X){ 
+        if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X && mc_ != mc::summer16_80X){ 
           if (do_id_weights_) mu_iso = 1.0;
           weight *= (mu_id * mu_iso);
           event->Add("idweight_1", mu_id);
@@ -1846,7 +1846,7 @@ namespace ic {
             m_idiso = m_idiso_data/m_idiso_mc;
             e_idiso = e_idiso_data/e_idiso_mc;
 
-        } else if (mc_ == mc::spring16_80X){
+        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
            auto args_1 = std::vector<double>{m_pt,m_signed_eta};
            m_idiso = fns_["m_idiso0p20_desy_ratio"]->eval(args_1.data()) ;
            
@@ -1856,7 +1856,7 @@ namespace ic {
          }       
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);
-        if(mc_!=mc::fall15_76X && mc_!=mc::spring15_74X && mc_!=mc::spring16_80X){
+        if(mc_!=mc::fall15_76X && mc_!=mc::spring15_74X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
           event->Add("idweight_1", e_idiso);
           event->Add("idweight_2", m_idiso);
         } else { 
@@ -1918,7 +1918,7 @@ namespace ic {
 
             m_1_idiso = m_1_idiso_data/m_1_idiso_mc;
             m_2_idiso = m_2_idiso_data/m_2_idiso_mc;
-        } else if (mc_ == mc::spring16_80X){
+        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
            auto args1_1 = std::vector<double>{m_1_pt,m_1_signed_eta};
            auto args1_2 = std::vector<double>{m_1_pt,m_1_signed_eta,m_1_iso};
            auto args2_1 = std::vector<double>{m_2_pt,m_2_signed_eta};
@@ -1984,7 +1984,7 @@ namespace ic {
 
             e_1_idiso = e_1_idiso_data/e_1_idiso_mc;
             e_2_idiso = e_2_idiso_data/e_2_idiso_mc;
-        } else if (mc_ == mc::spring16_80X){
+        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
            auto args1_1 = std::vector<double>{e_1_pt,e_1_signed_eta};
            auto args1_2 = std::vector<double>{e_1_pt,e_1_signed_eta,e_1_iso};
            auto args2_1 = std::vector<double>{e_2_pt,e_2_signed_eta};
