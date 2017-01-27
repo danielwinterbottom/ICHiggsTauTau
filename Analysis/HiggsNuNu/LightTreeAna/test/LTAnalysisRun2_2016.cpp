@@ -440,7 +440,7 @@ int main(int argc, char* argv[]){
   }
 
   //AMM uncomment for QCD mindphi plot in signal region!
-  std::string nunucat  = "nvetomuons==0&&nvetoelectrons==0&&metnomuons>200&&dijet_M>1100&&"+jetmetdphicut+tauveto+bveto;
+  std::string nunucat  = "nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut+tauveto+bveto;
   //std::string nunuqcdcat=nunucat;
   //AMM uncomment for QCD plot in signal region! except mindphi.
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1";

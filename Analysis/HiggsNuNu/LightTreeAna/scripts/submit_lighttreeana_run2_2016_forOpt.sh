@@ -25,9 +25,9 @@ CONFIG=scripts/DefaultRun2Config.cfg
 
 QUEUEDIR=short #medium long
 
-JOBDIRPREFIX=jobs_run2ana_170125/
+JOBDIRPREFIX=jobs_run2ana_170127/
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_170125/
+OUTPUTPREFIX=output_run2ana_170127/
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
