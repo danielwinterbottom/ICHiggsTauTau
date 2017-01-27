@@ -838,33 +838,33 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
 //    if (js["run_trg_filter"].asBool()) {
 // if(is_data){
 
+   if(channel != channel::wmnu) {
+   
+     HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
+       .set_channel(channel)
+       .set_fs(fs.get())
+       .set_pair_label("ditau")
+       .set_met_label("pfMET")
+       .set_strategy(strategy_type)
+       .set_mva_met_from_vector(mva_met_mode==1)
+       .set_faked_tau_selector(faked_tau_selector)
+       .set_hadronic_tau_selector(hadronic_tau_selector)
+       .set_ztt_mode(ztautau_mode)
+       .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
+       .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
+       .set_tau_scale(tau_shift)
+       .set_use_most_isolated((strategy_type != strategy::paper2013) && (!(channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee)))
+       .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
+       .set_allowed_tau_modes(allowed_tau_modes);
+   
+     if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
+       httPairSelector.set_gen_taus_label("genParticles");
+     }
+     
+     BuildModule(httPairSelector);
+   }
+   
    if(js["store_hltpaths"].asBool()){
-       
-     if(channel != channel::wmnu) {
-       HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
-          .set_channel(channel)
-          .set_fs(fs.get())
-          .set_pair_label("ditau")
-          .set_met_label("blah")
-          .set_strategy(strategy_type)
-          .set_mva_met_from_vector(mva_met_mode==1)
-          .set_faked_tau_selector(faked_tau_selector)
-          .set_hadronic_tau_selector(hadronic_tau_selector)
-          .set_ztt_mode(ztautau_mode)
-          .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
-          .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
-          .set_tau_scale(tau_shift)
-          .set_use_most_isolated((strategy_type != strategy::paper2013) && (!(channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee)))
-          .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
-          .set_allowed_tau_modes(allowed_tau_modes);
-      
-       if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
-         httPairSelector.set_gen_taus_label("genParticles");
-        }
-        
-        BuildModule(httPairSelector);
-
-      }
 
      if(is_data || js["trg_in_mc"].asBool()){  
          
@@ -888,6 +888,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
                .set_is_embedded(is_embedded)
                .set_do_leptonplustau(js["do_leptonplustau"].asBool())
                .set_do_singlelepton(js["do_singlelepton"].asBool())
+               .set_do_filter(false)
                .set_pair_label("ditau"));
        }
      }
@@ -943,32 +944,6 @@ if(do_met_filters){
     }));
 }
 
-
-if(channel != channel::wmnu && !js["store_hltpaths"].asBool()) {
-
-  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
-    .set_channel(channel)
-    .set_fs(fs.get())
-    .set_pair_label("ditau")
-    .set_met_label(met_label)
-    .set_strategy(strategy_type)
-    .set_mva_met_from_vector(mva_met_mode==1)
-    .set_faked_tau_selector(faked_tau_selector)
-    .set_hadronic_tau_selector(hadronic_tau_selector)
-    .set_ztt_mode(ztautau_mode)
-    .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
-    .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
-    .set_tau_scale(tau_shift)
-    .set_use_most_isolated((strategy_type != strategy::paper2013) && (!(channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee)))
-    .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
-    .set_allowed_tau_modes(allowed_tau_modes);
-
-  if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
-    httPairSelector.set_gen_taus_label("genParticles");
-  }
-  
-  BuildModule(httPairSelector);
-}
 
 if(channel == channel::tpzmm || channel == channel::tpzee){
   BuildModule(GenericModule("TPTriggerInformation")
@@ -1134,6 +1109,18 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_channel(channel)
      .set_mc(mc_type)
      .set_met_label(met_label)
+     .set_jets_label(jets_label)
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(false)
+     .set_met_scale_mode(metscale_mode)
+     .set_met_res_mode(metres_mode)
+     .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
+    
+    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label("pfMET")
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
      .set_use_quantile_map(false)
