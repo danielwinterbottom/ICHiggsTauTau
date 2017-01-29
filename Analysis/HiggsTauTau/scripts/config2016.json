@@ -39,7 +39,7 @@
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
-    "do_preselection" : true,
+    "do_preselection" : false,
     "force_old_effs" : false,
     "electrons"     : "electrons",
     "muons"         : "muons",
@@ -70,7 +70,7 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2016_69p2mb_Cert_271036-276811.root",
+    "data_pu_file"  : "input/pileup/Data_Pileup_2016_271036-284044_13TeVMoriond17_23Sep2016ReReco_69p2mbMinBiasXS.root",
     "mc_pu_file"    : "input/pileup/MC_Spring16_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
