@@ -1,0 +1,377 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head id="ctl00_ctl00_NICEMasterPageHead"><meta name="viewport" content="width=device-width, target-densityDpi=160dpi, initial-scale=1" /><meta name="MobileOptimized" content="width" /><meta name="HandheldFriendly" content="true" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta http-equiv="cleartype" content="on" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><link href="https://framework.web.cern.ch/framework/2.0/fonts/PTMonoWeb/PTM55Fstylesheet.css" rel="Stylesheet" type="text/css" /><link href="https://framework.web.cern.ch/framework/2.0/fonts/PTSansWeb/PTSansWeb.css" rel="Stylesheet" type="text/css" /><link href="https://framework.web.cern.ch/framework/2.0/fonts/PTSerifWeb/PTSerifWeb.css" rel="Stylesheet" type="text/css" />
+
+    
+    <link href="/adfs/ls/MasterPages/toolbar/css/toolbar.css" rel="stylesheet" type="text/css" />
+    <!--[if lt IE 8]>
+        <link href="/adfs/ls/MasterPages/toolbar/css/toolbar-ie.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+
+    
+    <title>Cern Authentication</title>
+    <link href="/adfs/ls/favicon.ico" rel="ICON" type="image/x-icon" />
+    <link href="/adfs/ls/favicon.ico" rel="SHORTCUT ICON" type="image/x-icon" />
+    <meta name="application-name" content="sso-management" />
+    
+  <script language="javascript" type="text/javascript">
+    function showhide2fa() {
+      if (document.getElementById('ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_div2FAAuthSystems').style.display == 'inline') {
+        document.getElementById('ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_div2FAAuthSystems').style.display = 'none';
+        document.getElementById('ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_href2FAAuthSystems').textContent = '[show]';
+      } else {
+        document.getElementById('ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_div2FAAuthSystems').style.display = 'inline';
+        document.getElementById('ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_href2FAAuthSystems').textContent = '[hide]';
+      }
+    }
+    function showhidedebug() {
+      document.getElementById('ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_divDebug').style.display = 'block';
+      document.getElementById('ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_hrefShowDebug').style.display = 'none';
+    }
+  </script>
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  
+
+  <script type="text/javascript" src="js/improvedDropDown.js"></script>
+
+
+<link href="App_Themes/Default/01-CernWeb-General.css" type="text/css" rel="stylesheet" /><link href="App_Themes/Default/02-CernWeb-Header.css" type="text/css" rel="stylesheet" /><link href="App_Themes/Default/03-CernWeb-OISStyle.css" type="text/css" rel="stylesheet" /><link href="App_Themes/Default/06-CustomStyle.css" type="text/css" rel="stylesheet" /><link href="App_Themes/Default/07-default-ImprovedDropDown.css" type="text/css" rel="stylesheet" /><link href="App_Themes/Default/10-CernWeb-SmallDevices.css" type="text/css" rel="stylesheet" /><meta name="robots" content="noindex, nofollow, noarchive" /><title>
+
+</title></head>
+
+   
+
+
+<body id="ctl00_ctl00_NICEMasterPageBody">
+  <form name="aspnetForm" method="post" action="/adfs/ls/?wa=wsignin1.0&amp;wreply=https%3A%2F%2Ftwiki.cern.ch%2FShibboleth.sso%2FADFS&amp;wct=2017-01-30T17%3A42%3A45Z&amp;wtrealm=https%3A%2F%2Ftwiki.cern.ch%2FShibboleth.sso%2FADFS&amp;wctx=cookie%3A1485798165_638e" id="aspnetForm">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTcwMDIwMTIzOA8WAh4TVmFsaWRhdGVSZXF1ZXN0TW9kZQIBZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WAQVNY3RsMDAkY3RsMDAkTklDRU1hc3RlclBhZ2VCb2R5Q29udGVudCRTaXRlQ29udGVudFBsYWNlaG9sZGVyJGNoa1JlbWVtYmVyTG9naW55zGggmjUO9MyY8SuFAsq3+JmijA==" />
+
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="0EE29E36" /><input type="hidden" name="__db" value="14" />
+
+    
+    <div id="ctl00_ctl00_pnlToolbar">
+	
+
+	 <div id="cern-toolbar">
+		    <h1><a href="http://cern.ch" title="CERN">CERN <span>Accelerating science</span></a></h1>
+		    <ul class="cern-signedin">
+                <li class="cern-accountlinks active"><a class="cern-account" title="Sign in to your CERN account">Sign in</a></li>
+			    <li><a class="cern-directory" href="http://cern.ch/directory" title="Search CERN resources and browse the directory">Directory</a></li>
+		    </ul>
+	    </div>
+
+	
+</div>
+      
+    
+    <div id="ctl00_ctl00_pnlHeader">
+	
+        <div id="header" >
+            <div id="ctl00_ctl00_HeaderTitle" class="bgHeaderImage page">
+                <h2 id="site-name">
+    <a href="/" title="Home" rel="home">CERN Single Sign-On</a>
+</h2>
+                <h3 id="site-slogan">
+    Sign in with a CERN account, a Federation account or a public service account
+</h3>
+	        </div>
+
+            <div id="main-navigation" class="page">
+                
+
+            </div>
+        </div>
+    
+</div>
+
+    
+    <div id="page">
+        
+    
+    
+
+  
+  
+
+  
+  
+
+  
+  <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlCernAuthentication">
+	
+    <div class="box_auth">
+      <div class="signinwith fullWidth">Sign in with your CERN account</div>
+      <div class="smaller note important">Reminder: you have agreed to comply with the <a href="http://cern.ch/ComputingRules">CERN computing rules</a></div>
+
+      <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlForm">
+		
+        <div class="oneAuthType">Use credentials</div>
+        <div class="oneAuth">
+          <table>
+            <tr>
+              <td class="box_login smaller" style="color: gray;">Username or Email address</td>
+              <td class="box_password smaller" style="color: gray;">Password</td>
+              <td class="box_signinbutton"></td>
+            </tr>
+            <tr>
+              <td class="box_login">
+                <input name="ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$txtFormsLogin" type="text" id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_txtFormsLogin" title="Enter your Username or Email Address" /></td>
+              <td class="box_password">
+                <input name="ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$txtFormsPassword" type="password" id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_txtFormsPassword" /></td>
+              <td class="box_signinbutton">
+                <input type="submit" name="ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$btnFormsLogin" value="Sign in" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$btnFormsLogin&quot;, &quot;&quot;, true, &quot;credentials&quot;, &quot;&quot;, false, false))" id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_btnFormsLogin" class="button_signin" /></td>
+            </tr>
+
+            <tr>
+              <td class="box_login smaller">
+                <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlForm1">
+			
+                  <span class="subtle"><input id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_chkRememberLogin" type="checkbox" name="ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$chkRememberLogin" /><label for="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_chkRememberLogin">Remember Username or Email Address</label></span>
+                
+		</div>
+              </td>
+              <td class="box_password smaller" style="vertical-align: bottom;"><a href="https://account.cern.ch/account/Help/?kbid=053010" target="_blank">Need password help ?</a></td>
+              <td class="box_signinbutton"></td>
+            </tr>
+
+            <tr>
+              <td colspan="3" class="message error">
+                <span id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_lblFormsError"></span>
+                &nbsp;
+                &nbsp;
+              </td>
+            </tr>
+          </table>
+        </div>
+      
+	</div>
+
+      <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlOneClickAuthentication">
+		
+        <div class="oneAuthType">Use one-click authentication</div>
+
+        <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlNTLM">
+			
+
+          <div class="oneAuth">
+            <table>
+              <tr>
+                <td rowspan="2" class="fedicon">
+                  <img src="/adfs/ls/images/federation/ieff2.png" alt="Kerberos based authentication" /></td>
+                <td class="fedtitle">
+                  <a id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_hlNTLM2" href="auth/integrated/?wa=wsignin1.0&amp;wreply=https%3A%2F%2Ftwiki.cern.ch%2FShibboleth.sso%2FADFS&amp;wct=2017-01-30T17%3A42%3A45Z&amp;wtrealm=https%3A%2F%2Ftwiki.cern.ch%2FShibboleth.sso%2FADFS&amp;wctx=cookie%3A1485798165_638e">Sign in using your current Windows/Kerberos credentials</a>
+                  <a id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_hlNTLMAutologon" title="Enables Autologon with current Windows/Kerberos Credentials. Click Logout in the Application to disable." href="javascript:__doPostBack(&#39;ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$hlNTLMAutologon&#39;,&#39;&#39;)">[autologon]</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="fedtext">Use your current authentication token. You need Internet Explorer on CERN Windows or Firefox on SLC (<a href="http://linux.web.cern.ch/linux/scientific5/docs/rhel/Deployment_Guide/sso-config-firefox.html" target="_blank" style="color: #777777;">Firefox help here</a>).</td>
+              </tr>
+            </table>
+          </div>
+
+        
+		</div>
+
+        <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlCertificates">
+			
+          <div class="oneAuth">
+            <table>
+              <tr>
+                <td rowspan="2" class="fedicon">
+                  <img src="/adfs/ls/images/federation/eugridpma.png" border="0" alt="Certificate authentication" /></td>
+                <td class="fedtitle">
+                  <a id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_hlCertificateAuth" title="Don&#39;t forget to first map your Certificate to your CERN Account on http://ca.cern.ch ." href="auth/sslclient/?wa=wsignin1.0&amp;wreply=https%3A%2F%2Ftwiki.cern.ch%2FShibboleth.sso%2FADFS&amp;wct=2017-01-30T17%3A42%3A45Z&amp;wtrealm=https%3A%2F%2Ftwiki.cern.ch%2FShibboleth.sso%2FADFS&amp;wctx=cookie%3A1485798165_638e">Sign in using your Certificate</a>
+                  <a onclick="javascript:return confirm(&#39;Warning: please ensure you successfully authenticated with your Certificate by clicking on \&#39;Sign in using your Certificate\&#39; before enabling autologon.\r\nIf autologon is enabled with a bad Certificate your will have to Clear your Browser\&#39;s cookies to disable the feature.\r\nClick Ok to proceed with autologon enabling or Cancel if you are unsure or don\&#39;t understand this message.&#39;);" id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_hlCertificateAutologon" title="Enables Autologon with Certificate. Click Logout in the Application to disable. Don&#39;t forget to first map your Certificate to your CERN Account on http://ca.cern.ch ." href="javascript:__doPostBack(&#39;ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$hlCertificateAutologon&#39;,&#39;&#39;)">[autologon]</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="fedtext">Use a EuGridPMA trusted certificate. Don't forget to first <a href="http://cern.ch/accountmap" target="_blank" style="color: #777777;">map your Certificate to your CERN Account</a>.</td>
+              </tr>
+            </table>
+          </div>
+        
+		</div>
+      
+	</div>
+
+      
+
+      <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnl2FAsystems">
+		
+        <div class="oneAuthType">
+          Use strong two factor authentication 
+                <a href="javascript:showhide2fa();" id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_href2FAAuthSystems" style="font-weight:normal;color:#777777;display:inline;">[show]</a>
+        </div>
+        <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_div2FAAuthSystems" class="oneAuth" style="display:none;">
+          <table id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_tbl2FAsystems" border="0" width="100%">
+			<tr>
+				<td class="fedrow"><table class="fedtable" border="0">
+					<tr>
+						<td class="fedicon" rowspan="2"><a href="javascript:__doPostBack(&#39;ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$ctl02&#39;,&#39;&#39;)"><img src="/adfs/ls/images/federation/fingerprint.png" border="0" ></a></td><td class="fedtitle"><a href="javascript:__doPostBack(&#39;ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$ctl03&#39;,&#39;&#39;)">Two Factor Authentication</a></td>
+					</tr><tr>
+						<td class="fedtext">Two factor authentication using your CERN credentials and a verification code like SMS code or Google Authenticator, a device like Yubikeys or Smartcards or biometry.</td>
+					</tr>
+				</table></td>
+			</tr>
+		</table>
+        </div>
+      
+	</div>
+    </div>
+  
+</div>
+
+  
+  <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlPublicService">
+	
+    <div class="box_auth">
+      <div class="signinwith fullWidth">Sign in with a public service account</div>
+      <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlPublicServiceList">
+		
+        <div class="oneAuth">
+          <table id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_tblPublicServices" border="0" width="100%">
+			<tr>
+				<td class="fedrow"><table class="fedtable" border="0">
+					<tr>
+						<td class="fedicon" rowspan="2"><a href="javascript:__doPostBack(&#39;ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$ctl05&#39;,&#39;&#39;)"><img src="/adfs/ls/images/federation/fbgl.png" border="0" ></a></td><td class="fedtitle"><a href="javascript:__doPostBack(&#39;ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$ctl06&#39;,&#39;&#39;)">Facebook, Google, Live, etc.</a></td>
+					</tr><tr>
+						<td class="fedtext">Authenticate using an external account provider such as Facebook, Google, Live, Yahoo, Orange.</td>
+					</tr>
+				</table></td>
+			</tr>
+		</table>
+        </div>
+      
+	</div>
+    </div>
+  
+</div>
+
+  
+  <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_pnlFederation">
+	
+    <div class="box_auth">
+      <div class="signinwith fullWidth">Sign in with your organization or institution account</div>
+
+      <div class="oneAuth" style="margin-top: 2px;">
+        <table>
+          <tr>
+            <td class="fedicon">
+              <img src="/adfs/ls/images/federation/eduGAIN50.png" border="0" alt="Federation authentication" /></td>
+
+            <td>
+              <select name="ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$drpFederation" id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_drpFederation" class="improvedDropDown-dropdownlist">
+		<option value="-">Enter the name of the organisation you are affiliated with...</option>
+		<option value="http://adfs.fom.nl/adfs/services/trust" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADzSURBVDhP5ZKvjgIxEIfnQIFAYHH3GggMknfAodnFktvwDEiCaDsDKQkGxQLJuTt16p7g3DkeoXTKZNmQTRZIUHym32+yf35tCk9B42Ii+pIoRV3RQrTGibW2xe6f7YRhHmXoVzRDKdMXLUcjHUUfQyF9h1XTTxgwq1VVLCNJkoroBcRlTxvchzDY1CH6qkGcOnDuLaxMvHOI2M7yNTNrm6JnovRTDOZqMfQvTiWWwH+I039WbWgdZqPdKHzAtwi5DOdcBeLtn0Qe8FaKGxDRu6g/s9yhRb5JdGhxI2NMA4a3bqEAf4nGovfB7fwF+5CYA+AE1exgvh7A5awAAAAASUVORK5CYII=" data-category="EduGain">FOM-bureau</option>
+		<option value="https://aai-logon.switch.ch/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAH/SURBVDhPYwCBj7u6zvx4cNobzCEHvF2R9/FJrer/D7u6Nv/7/kEZKkw8eLeq4OPjMsn/j8ul/r/odfjx9dz6lv///3NBpQmDd2uKnz8qFvn/pFrp/+NKOTB+vSDu0c8n50OhSvCDf68eSL5bWzb/cY3q38cVMv+f1AANAtJP6zX+f9jcuPfn5+faUKX4wa87J01ez4048rhSFuyKJ9WKYG8967b+/eXk0n6gt/ihSnEDoCLGb+dWR77oc3wE0vwUaMjTKqBhFdL/38wKffHz/vFEkBqoctzg//+nXD8PTm541GL09V61xv97NZr/71Uo/79fp/3/4aqa419fPzOBKsUOQLYs2Xo23Ma/+LaRU/J7Y5fU97p2Se91bBLeF5W1XH3y8KEvVCkmOHj6tpFHcs8hVu3k/yw6aWDMoJr4X8W96ue8dcc7//37xwtVigru338pkVa3YC6vUcZfZs2k/1z6af+ZgLSIee7/yt7VO16//qgOVYoKgCayd83eWiZtX/SRUSMRrBFkO7tuyv/A7Cn3zl99FABVih3ktyy9zKAc+59DN/U/h17qf5Ahhv7139bsOlMHNJwTqgw3SKiY/ZFRPeE/E1CjhHXB/5bpm9a+e/dNHipNGCSUz/7IDNQcXTLz2rW7L1yhwsSD9Nr5j+euOVAMjDpWqBCRgIEBAIjPD+8t9JPeAAAAAElFTkSuQmCC" data-category="Switch AAI">SWITCH</option>
+		<option value="https://aai-logon.unibas.ch/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABpSURBVDhPtYwLCoAwDEN7wd7/OEplkXRLVwb6YETzqf2Cu1/j80V5CS50B8pjCFiVF1rCI6byHxCevjFfmQvtAKDEqrxQiSorL3QLD4P5fwGF0zfmmSrcjgAKrMoLXeBAlbo80R34ELMbQayX4aIc6d4AAAAASUVORK5CYII=" data-category="Switch AAI">Universit&#228;t Basel</option>
+		<option value="https://aai-logon.vho-switchaai.ch/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAH/SURBVDhPYwCBj7u6zvx4cNobzCEHvF2R9/FJrer/D7u6Nv/7/kEZKkw8eLeq4OPjMsn/j8ul/r/odfjx9dz6lv///3NBpQmDd2uKnz8qFvn/pFrp/+NKOTB+vSDu0c8n50OhSvCDf68eSL5bWzb/cY3q38cVMv+f1AANAtJP6zX+f9jcuPfn5+faUKX4wa87J01ez4048rhSFuyKJ9WKYG8967b+/eXk0n6gt/ihSnEDoCLGb+dWR77oc3wE0vwUaMjTKqBhFdL/38wKffHz/vFEkBqoctzg//+nXD8PTm541GL09V61xv97NZr/71Uo/79fp/3/4aqa419fPzOBKsUOQLYs2Xo23Ma/+LaRU/J7Y5fU97p2Se91bBLeF5W1XH3y8KEvVCkmOHj6tpFHcs8hVu3k/yw6aWDMoJr4X8W96ue8dcc7//37xwtVigru338pkVa3YC6vUcZfZs2k/1z6af+ZgLSIee7/yt7VO16//qgOVYoKgCayd83eWiZtX/SRUSMRrBFkO7tuyv/A7Cn3zl99FABVih3ktyy9zKAc+59DN/U/h17qf5Ahhv7139bsOlMHNJwTqgw3SKiY/ZFRPeE/E1CjhHXB/5bpm9a+e/dNHipNGCSUz/7IDNQcXTLz2rW7L1yhwsSD9Nr5j+euOVAMjDpWqBCRgIEBAIjPD+8t9JPeAAAAAElFTkSuQmCC" data-category="Switch AAI">VHO - Virtual Home Organization</option>
+		<option value="https://clueless.restena.lu/simplesamlphp/saml2/idp/metadata.php" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFmSURBVDhPpZI/SwMxGMYPFAo6OKgogt9AcBFcFBxcxFF0E6E66NxRsFsXp0MFk9y1vomX5NJB6NDBpV9DP0Q3JxXrm2vOttc7i/jAjwtvnufe/PP+IgCYZ0oAleLIlUZFFf9gWvTGUOKdSnghEj6NMVPOPpAt5gYdoYEt66t2qtNEw26g+Vo6l/xg2Gy5l2L/mvNZ7NjJzhHNX/se2EjCoebrWVMRfrtdspnDoRWPdU+hWrxRJbZ93y/hGVwi/boSz0yyJTyvL6xdeWFTbmbDkyDGzCXLT5VnSsFOPaIe9qwPuz8lgTzlhbM4a7GwWzcviJ27zjJZTPELqrlBNI5jph8rbup3MQkVGkMNuyFQC2L8WiJbQyScO+u4WCxOMFC24DZOkzE+FHt4gYJj3MYZkaJMIn7gIqPC+9wppvEzvjWNZRcZKGpFC3eqvlpXKsHeMWmRGT8OF9PaMDcyWLH+9FX+U573Db5on5mjyRmqAAAAAElFTkSuQmCC" data-category="EduGain">RESTENA Staff</option>
+		<option value="https://coreen-idp.kreonet.net/idp/simplesamlphp" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIjSURBVDhPpZNNTBNBFMdXb1wMHsAYITGetIAEjhgO6kE8eKLEk4kxEj3ogQuEi9wg8Ug8dLffpZ/UpppWxYIgi6YFt91sK2J6MHrRIGxLy4eQSNb3nzCbcmviSyb//7yZ9+ub2anw33Fvpdx1+2MlAj+mlhuvzut/2EK9cWux/KPtzaYB/2ilcpP7YrF4CqppWgu0UCi0QlVVPYeRy+WaoELnzKbBiya+bA9xH41GHxqGcSIQCLzAnPQl1Ov1xo/GOFRAAS+yJteecU8FUiwWa45EItOYi6LI8lCbzYbxHmoCJr/uXWkTlw6sH0qz2BgMBkUCjBCgAXOXy8UAKEokEr0AQE1A99sNvd2l/MImBABut3sfPpVKjfh8PnYUAEKhUCsAUBOA0fXq5wI2IQCg+AvvcDhkj8czSndyEgC/368DAD0G6H69fgwgSdIhvN1uXwuHww+SyeQF3AFdXhUAqAnonNmotE+p31g1BQDU9nd46mCXhhaPx4fRAd1LHwBQE/A4V7VaxKXDO5ktdw2gn751I36VulilY7wDAOsAyLJsMQFI3niel7gHgD7laYJ8pqOwHHWxXgtgvqPmIT1drQ5zTzf8BEpFeXpUaXin06lQJ/mjvAdrwvWF0m9eNJQt93OPpwrNZrOX0un0GXhFUS5mMhkLPOXOY024u7w10LeozyM5+GnnbM+cfgBfd4zRt72v7bI/DN7+Nbl0mS3UFYLwD1jIoM+DPQqGAAAAAElFTkSuQmCC" data-category="EduGain">COREEN set.ID by KAFE</option>
+		<option value="https://eduid.ch/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADkSURBVDhPYxh48OD5e0VR3Yb/IJxcvOo/SEzZqgPMR8ZSRs3/jT0m/E+vWLv09qMPKmDNIECsAchY16Xvycv//3kIGqBp3/1/yeozqSA8cc6hcku/KXBDFq89l0LQADOvSWA+DGzYcQVuQEv/nnawICkG7D92F25AYcPG2WBBcg0oqN80ByxIigE7D9yEG1DUsGkmWJAUA7qnH4Ab0DppbwtYEJ8BKtYd/1sm7m0F4ayKtYtBaQGmdtm6C0kEDcCFVW063v7794+bJAPE9Br/6zr3/o/IXLL1xv3XGmDNwwEwMAAA9PkdtSDlRCgAAAAASUVORK5CYII=" data-category="Switch AAI">SWITCH edu-ID</option>
+		<option value="https://fim.temple.edu/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAF5SURBVDhPlZLLSkJRFIZ9kKDALvQAzRpEk6BhWA2CKJoUvUI16DI2X8AaSARmhhpdLbNmhk2CLNSIcKaDBC066ur8vy7ZaQ764Gfts9biO4fNcXi7hkQDnN09bVFazwgFmeApYw7M5PP55kzRGQWBkUkGbK5vyK53RxKJBKOLIBIOswL0MKfgZT8k6eAJBw/JJKtiCky0R0FofFaszy82VDDtcsm9/QaP291RgJ3mJVqlMgcqwMLl+QUFC3Pz7K2trLICzJGmAAEquI3HpWBfHgSK+SU4Y6ejQDEFW/YFKyrrKNjz+RhToHjc2xRg3lGABeQvgc6QNsFrNsu6vLjEHEcifDbRGUJBJngm79G7xvh/UHA0NiMHwxNsZNJp1ptYjBUE/P7GSeQqGpVSqcTPH3D21gVvp9cMaBVY39YvQa1WowA/UcWy6oLD0SkGFD+KrCrAm0zBYF9/UwAchcdn0ZiU7SWQekpJsViXgkqlItVqVXK5nP0k8gN0Cw+cGj94dAAAAABJRU5ErkJggg==" data-category="EduGain">Temple University</option>
+		<option value="https://idp.dfn.de/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABPSURBVDhPpZAxDgAwCAJ9Zl/Yb1LcTHQoEnqE3GQaAJ8Bu0sFdpcK7C4V2F0qxGE5RB5hpcxdytylzF3i8isceEKeYTBKhVEqjFJhlL8ADyZVUz8lly0AAAAAAElFTkSuQmCC" data-category="EduGain">DFN Office</option>
+		<option value="https://idp.gla.ac.uk/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHDSURBVDhPlZHNS1RRGIevuWhh6iZdFuKqhWl6U9RJB5qZjEKhUSdpmlshM0bi90cLISZlmLJgUFIUdZIgSjICN34sgmgRoonOmAR3YFT8SOxfmKfj9eIiGub2wMvhHN7z8HvPkf7F5t4h8Upvic+3NRWpwKXVm5kvLK9HOJXrPDnT2+JzLFCYflZGKLLDz+gu6SX1/yfwd1iR5RrSTR6ybE0kCWFa0V3jguwbdSgzV0m67OLx8wDnrjjJOK+nSMSRwPu1HPmtjQt2B+9fmOl/WUFstZDkPMWowIzlo5WChmpuurtZmjVpgrPFYoxEaCPUOpA9dpJlF0PBVoLjFqrv2TldaPQXxMVsh0OsCpWtQ9peq3wDCULqtvZYFytuIV1yMf/JjpRTx+SPfVJM7sQCjbw7LKxvMbVxwMjcCiVKH8Vd42RYHhkTZFobKXs6xZnBMNemI9g+bIo0TqK7B5/1FgOIMVKLFOoDoxwlKn3QazC+oDPwju1fv8Uv3MfTUkm520csFuN7WE2cYDGkcrvrFS3+SZr7Jmh+Mkqb7zXtviBV4lxvi89iWMUs4maZG6hqC1DTMYDSM8z1h3483rG/BJL0B33YIWOlT4dXAAAAAElFTkSuQmCC" data-category="EduGain">University of Glasgow</option>
+		<option value="https://idp.heanet.ie/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFoSURBVDhPYxgQMH/9fgEokzwg41p0H8okHXjn9P+fv/5IAogtYp/7HyxICggpnvJ/xqID+xm0YtA06yf8B2MYGxfQS/iv4V7y/9CxW/OhIlAA1DR77cEGGBtMYwPq0f8Xrjr6f9aSg/uhIlAA1DRz9X7cBkDFAoum/W+euOl/57RtaGqACpIb5oEFw8umgWkp1wKIIpBmqAHr957975828b9fSj/CABajpPsgBROX7noP4u84drEALAEE3JbpEM1QA0BAw6f6v7p3OcIAMAAqmLkW4gUJ53yEJFBczr0YxQA+45T/U5bswRIGQANsE9pQTFb3r4TwoQYUdi9HkUcAkAIYRgPspiko4kBDIIFNdeCY3Nmw9+Q1sN/Ci6c7LNkCSbIg0DlvK1i8bc6W/9sPXwS7YPuRi3B5MJgNDIO56w/933jwfENh97L/vQu3w506fdW+/8u3H2/oX75fAcRvnLHhf37/fAEA59OvJqhO+mkAAAAASUVORK5CYII=" data-category="EduGain">HEAnet Staff</option>
+		<option value="https://idp.lboro.ac.uk/simplesaml/saml2/idp/metadata.php" logo="/adfs/ls/images/blank16.gif" data-category="EduGain">Loughborough University</option>
+		<option value="https://idp.scc.kit.edu/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHOSURBVDhPlZI/SBxBFMafgmIhqUKOA5n9FzCF4UhpLalSWCkhFqlSCArKFaKFVxhs1JtZYxQFFaK5mzm8pA2GpBE7IaCgIFxjCkOKKEFJE1y/2Z09bz0RffBx+7733u/mzS7dNzzLGnOZ9cVl9r5r2WfGviXKfhupmacmIwzNeZYdxDL2DZHLNZISAyTFX5J807j0mDk9dwMo8RUKqir4z7TtOE7qboCi341/vqgCpJCmQh6zD24GLC42macoFB+/AvD/tJF3tQ3AQj1A7yz5FjRkHKIgaED+qeYU89p2LetlPUDx/prGZSrlmkO/NNeK2l5U4/+oPPWIMZZOAsr5NIZOq4CoeZsKIhXWi76H/I+Bv9UWvofDK0CR2yiuh3smIOIovn08P4/qAOFUWGMpuYIONeug4X141Bgi+TkpvzesS5E1/rDDWF89IA59dCUmr601YS51DfppZTJ2BNCvSt+09Acx0BE2xbHmP0B9BPplIJ/p4/RD9O/g+TU+6wqOVfOatCT/jd8ShvppY/ZJCFpdbQlzKSrQLql3nci/e7a9ovf6kQBcl+TH6Clg4A3UDu8V8m8k84OpF11TGnBSN3SbsD/0ARc73TKZHb0EsUQ3g8jlBHkAAAAASUVORK5CYII=" data-category="EduGain">Karlsruhe Institute of Technology (KIT)</option>
+		<option value="https://idp2.bth.se/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFmSURBVDhPrVI9SwNBED2/Sqs0t7uze+WBjcq1QgrBykp/hq2kEWwCoj/CVittRBuxthJBKxFR0cZGRWwMYnwzN5cscsYUPpjMzJvPnVwyCHnemGTtvWsLMQyI7EYIdhFFHUiXyLTAnbKt8Y4k/kSW2VnWRO5YiF+ABqtqjqnugyhtqinA1LtYRxgF96W2JHS9t9fqqi8ihdjqtuIkAYC9jZotcZxzS2IAVSILCnUDexnzkgiIXUO+Q95Q9Agt1yeiJpqd4f3PkBdJBBC/5+4XLExYa2ciyUGNM88wxgRsOl3FmYsH9y7qPe0hsM+CaTe6yXmft4eaysOP1HC7cB7EiYAGH4jxE5+U6iGEdAp8+U8URTHBGk3WhPgDuMdrCG5Z3RJZlqXoeMUTlaoF4p/emwV164FPeZ4b8YqqRYhoXVOGwgj/hECb3vvBE/8VWHWHNdZdwVFPcLCD8glmjt+Ob4EkUZAk3+dRaCAbaP7hAAAAAElFTkSuQmCC" data-category="EduGain">Blekinge Institute of Technology</option>
+		<option value="https://idp3.it.gu.se/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFMSURBVDhPnZOxSsRAEIY3B2IrtsrOXHa1sBKCaG1x9cGutidiZ2PhQxzCqWgShQPPVmzExicQFUEFiyssLA70IQR1ZrLXWJn9IMz8k5nJ7CRRTOKLH3FioQYXwY0jccWD8v3pICPwvZnE57dBReBPFpQrWkHVpDOYUi5fTlx5xjLVelXi/4XOP6DxP8hepoBfBvAx1fhkEVspwJEFuOI8io8M4jrlvFUa2qmGe3mFdL0on3ezLJvgJKPxgAq+zayxnMxQwV6w5/PN5lLw29Kg4cpN2sEuB+cAFrmBBexzA5pgJSR3xWr8ZMvQQ175CBIge2qtnRxPQKOO/kxQNaAJJEDIBGot32CR+LLHO7Aab6jBHTXa5x1Q0qEka3yXHWh8Jn/IxUbDNd+j4nxIx9gWEYP8C/54K8j6NHy5M/4O4nBlJ3hx0AKrZdRGqV8PPF0gLq3yVgAAAABJRU5ErkJggg==" data-category="EduGain">University of Gothenburg</option>
+		<option value="https://idpv3.lu.se/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAI9SURBVDhPbVPPaxNREN6DV/0PPFQQcvfk2YOgN/HHURFv1YMieOilXkU86MFDBFGMiBGrlRLbg21VNC1SixoRrMGq2KabNCS7ye7bfbuf37x9u4TiwGRe5vd8M+sgDRGGQyBKAcSACEN8CxX/k4xFZD+0xXAyR586kTRIgAmyTkJFEtKIGmkCZxgH+Lr0Eq+eVZAkOxIYOdoVacfbSemYuA00389YbU6jpf5HYmcHSBTqL+6j83kOQRBAa4001dYhhsCjlCIHhW4w8KCigU2gPWC4gdbqNGHQiKLIsLQnyfpduslolvIJtI7Mmwm28HH+ETYbNVqtI4Xfo2Qj585MZFFiImuy4L3dDtBnbSb4hfL1cdRrZTpmq1t+t46DB05gYa6JmecfsmA2Jfz2dQv9DnDzRgV//zCB6jVx7dJJ9H6u0lGZYpsbCqeOTWCXM4bH1Xm4bSAgFmtfOG0IM9bT6jICJR2kXXxffEhs6KUVNDO0tjSuXL6HfWOHMHn1LkI6esSstP84uhyN0GB2tgGVpLIFD2tvHsD7UTez7tm9F3fKVRw9fB5DzlgqHUEsmPgpZDmnz140UF0Yn2TSPhOEHlZqt7G+NJWBRfakHJ27275pObZ62Q7VBaApQWEHBK6zgsYCL9FYBcj8+mRVieEcSQkyNmt3fO7iW30Ki9NlflQjRsv506zA/je5zIMfk9Rr//6EJ5VbRlEUyzknWXEemEuyIweqBy7P2OWJutYgHhzeSDkAkujNiKQiEfAPj9HBhax0S/EAAAAASUVORK5CYII=" data-category="EduGain">Lund University</option>
+		<option value="https://login.ktu.lt/simplesaml/saml2/idp/metadata.php" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABwSURBVDhPYxhU4D+JeCMQowCQIClgOBugDqVhQB9KowOcBqhBaRB/PRC/B/Mg4CyUBgG8BvwBYh4wj4EhCEqDANEGgACMj0z/hDDBgHaBaAzE1kCsA+bhBjgNmATES4C4F8zDDbAaQArGMIAMwMAAAPWZOIdZhq0rAAAAAElFTkSuQmCC" data-category="EduGain">Kaunas University of Technology</option>
+		<option value="https://nerckwshibba.nerc.ac.uk/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHcSURBVDhPYwj25f+PDx8/wfF/335OnJi6BgR680LZfHA+0QYE+fD9f/rk9v8AT67/u3bMB/NfvnxInAGVpe5gDbdvnvkf6MX9//u3z//Pndn1f+/uJXADjhxV+793HzuYvXcfx//DR5SBbG6IAf/+/QUbsGRhA9g1Gcn6/0EAxAYZ8PLV2v/7Dsj+f/FyJdiA8+eD/3/4cOj/yVMmEAMePboONaARYkCS3v8zp3fCDbh4Kfz/gwed/5+/WAa0nfX/w4e9/9+92/P/xEkDiAG+blxgA04e3wzW9Pv3r/9+HpxwAx49mvT/46fT/0+fsf9/6LD4/917WIEuOIwwAIRBBvz69QPM/vr14393Rwa4ASBbIRgWBuz/9+xlBGJmhAG+7uz/Fy+oB7P//v37PyfdCG7Ahw9HwRpfvdoApl+/3vL//AWP/9euZyIMePTwOjwMSgvs4a4BB+LLtf+3bWf4f+9e0/+duxiAmgP+X7kSA3QBK8IAEFiyABILQT68YD7IWyADXr/eBOaDXAJy9qnT1kCaC9WA5rogsCJ3B4jfYyOUgNH7D2zAiZOGQKz3/+AhUbAXQPTp05ZANgfCgBA/gf/5WWZIyZn/f3WZB9gAkCZcGG4ALkxjAzj/AwBqZmZWFwoVqwAAAABJRU5ErkJggg==" data-category="EduGain">NERC</option>
+		<option value="https://weblogin.uu.se/idp/shibboleth" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFzSURBVDhPtZJBSwJRFEb7VW0KoghcBlEmpShKhBSEixRyrCSrXahhJTpJii5bGIYtQyJzNk0xEmrZOBGUsxpGCUG/Bnlk5QhFeDYP7vvuuZfHG8A/6a+g1WigzgtoNZuk0k1PAbeyiqcgjcsxDZjpOcilR3LzHVVBORAEozWgEonhxmIF56DAWpeVlVok0UFVkFcaePoYmaFRXGkmkJucaW8h5e9JooOqgHM4UVbWLx+G8bDrx53NDnZhCe+vbyTRQVXwcpIEu2gDZ3cq03XKdH37VKPnIwqxBDLD48hNzeJicIRUu+kp+C1dgv1AALFoFHQoBJPBiArPt2titQqdVktSHboEhUIBpWIRsiyjXqvhLJXCLcvC7/VCFEU0f3yqT0FRabrOZhGhaWx7PGAYBmaTCUa9Ae71DRwoW+x4tuCiKLicFOn6IpAkCXQ4jGdBwJ7P1548b7YowiOsUS6cJpM4T6ex6XYjEY+Trn484t8APgDSC6jIOnp2RAAAAABJRU5ErkJggg==" data-category="EduGain">Uppsala University</option>
+		<option value="urn:mace:incommon:northwestern.edu" logo="/adfs/ls/images/blank16.gif" data-category="EduGain">Northwestern University</option>
+		<option value="urn:mace:incommon:osu.edu" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHHSURBVDhPY9jo7fp/Bj8H2RhswAJl2f8nm+sxJOfJif+fKy2CIQ7Cx2rKwTTcBStM9VAUEMIwg+EGzBTi/n+2q+3/TEGu/4vUFf4fLikAi4PotQ5WcP46J5v/hwpzwGy4AYu1lMEaQQJLtFX/L1SR/X977Sowf39mKpgGgT8/fsA1fnn2FEyDDQABmAQIg8Df37////ryGa4JBB7t3omibpmBFsSAry+eo0j8+vIFqwv+//uHom6WCC8iDP78/Pl/k7fb/7fXroL5L04eB9Nnu9vBNAjMEub5/+PD+/8b3J3+X54xFSwON+BQUd7/G0sXoWCQOAiji8Mw3ABQoMEUg/C2sEAw/fLsmf9fX75AkUPHcBeA/Hdr5TIwG2bAejeH/3fWrYErhuGfHz78//nxI5gNNwCGV5jogQ2ARRMIHyrOQ1GDjMEGzJUS/j9fQfL/hSkT/i8z1P5/f+um/+d6O+GKQACkbo29JRgfrSgBYxQDQJxNUNdsCw34v8nH7f+OqND/u+IiwRgkvtbR+v9qazMwH5TwZovyoXphmaHW/5enT/4/0VD9/0BeJlgMlIQvz5oOjvPv797C1d5ZuxpMY4QBaZjjPwCZkjC8/O8C6gAAAABJRU5ErkJggg==" data-category="EduGain">Ohio State University</option>
+		<option value="urn:mace:incommon:uchicago.edu" logo="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAENSURBVDhPzZKtTgNBFIUnaYIkKFLRnTM/tw2swpBU8ABoFIJHQDSpB1FXgQKDQyIwGFBITAWPwQMgUATOHS7NkrRNFtHwJZt7zpnZ2dk74/4HyYeHjPBp1iXgOgP3zD7qut5g1IkxDphNy7gPZ1qzj6daHQfGP6HSB/bon7IP71JV2WLHRfZNFgQYFpE8bvjCSzFEF8iIk+wxs2gh/MBrEQnhrfkLrZEQzlk63+4PcPsXgnBpVpt4zOco93pikWYjk6pvtYqPJyXQDjcntIY7eGYjH822h928Siltm50DYMvkalJVHfDods0uhQt2Tf6GO7gzuRI96gGwY3Y5vJmHJuc0MxHZ1Lpo3rpx7gsN5iyUc+RjbgAAAABJRU5ErkJggg==" data-category="EduGain">University of Chicago</option>
+		<option value="https://www.egi.eu/idp/shibboleth" logo="/adfs/ls/images/federation/egi.png" data-category="Other">EGI</option>
+
+	</select>
+            </td>
+            <td>
+              <input type="submit" name="ctl00$ctl00$NICEMasterPageBodyContent$SiteContentPlaceholder$btnSelectFederation" value="Go" id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_btnSelectFederation" class="improvedDropDown-button" /></td>
+          </tr>
+        </table>
+
+        <script language="javascript" type="text/javascript">
+          // Handle optgroups 
+          var groups = {};
+          $("select option[data-category]").each(function () {
+            groups[$.trim($(this).attr("data-category"))] = true;
+          });
+          $.each(groups, function (c) {
+            $("select option[data-category='" + c + "']").wrapAll('<optgroup label="' + c + '">');
+          });
+
+          // Apply the improvedDropDown styling
+          $('#ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_drpFederation').improveDropDown({
+            iconPath: '/adfs/ls/images/drop_icon.png',
+            noMatchesText: 'No organisation found for this search text',
+            noItemsText: 'No organisation available'
+          });
+
+        </script>
+      </div>
+      <div>
+        <a href="http://sirtfi.cern.ch?sp=cern" target="_blank">Why is my organisation not listed?</a>
+      </div>
+    </div>
+  
+</div>
+
+  <a href="javascript:showhidedebug();" id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_hrefShowDebug" style="font-weight: normal; color: white; font-size: smaller;">[show debug information]</a>
+  <div id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_divDebug" class="box_auth" style="display: none; border-color: #ffd800; background-color: white;">
+    <div class="signinwith fullWidth">Debug</div>
+    <div style="font-size: x-small;">
+      Server: ADFS12
+      <br />
+      User Agent: Wget/1.12 (linux-gnu)
+    </div>
+  </div>
+  <span id="ctl00_ctl00_NICEMasterPageBodyContent_SiteContentPlaceholder_lblInfo"></span>
+
+
+
+    </div>
+
+    
+    <div id="ctl00_ctl00_pnlFooter">
+	
+        <div id="footer">
+            <div class="page">
+                <div class="region-footer-first">
+                        <h2>Related sites</h2>
+                        
+    <ul>
+        <li class="leaf"><a href="https://account.cern.ch/account/Help/?kbid=053010" target="_blank">Need password help ?</a></li>
+        <li class="leaf"><a href="http://cern.ch/account" target="_blank">Create/Check your account</a></li>
+        <li class="leaf"><a href="https://www.cern.ch/ssoutils/Disclaimer/UserSettings.aspx" target="_blank">EduGain disclaimer settings</a></li>
+        <li class="leaf"><a href="http://www.cern.ch/service-portal" target="_blank">Service Desk</a> <span class='subtle'>+41 22 76 77777</span></li>
+        <li class="leaf"><a href="https://cern.service-now.com/service-portal/ssb.do?area=IT" target="_blank">Computing Status Board</a></li>
+        <li id="ctl00_ctl00_NICEMasterPageRelatedSites_lblIPv6" class="leaf">Connection using <a href="https://cern.ch/ipv6" target="_blank">IPv6</a></li>
+    </ul>
+    
+    <div style="visibility: hidden">
+        <img src="//piwik-login.web.cern.ch/piwik.php?idsite=2536&rec=1" style="border: 0" alt="" />
+    </div>
+
+                </div>
+
+                <div class="cern-logo">
+                    <a href="http://cern.ch" title="CERN" rel="CERN" ><img class="footer_logo_img" border="0" src="Images/cern-logo-large.png" alt="CERN" border="0" /></a>
+                </div>
+            </div>
+        </div>
+    
+</div>
+    
+  </form>
+
+</body>
+</html>
