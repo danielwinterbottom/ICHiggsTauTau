@@ -867,9 +867,9 @@ namespace ic {
 
       }
       // Uncorrected PF MET (not used in analysis)
-      synctree_->Branch("met", &met_.var_float, "pfmet/F");
+      synctree_->Branch("met", &met_.var_float, "met/F");
       // Uncorrected PF MET phi (not used in analysis)
-      synctree_->Branch("metphi", &met_phi_, "pfmet_phi/F");
+      synctree_->Branch("metphi", &met_phi_.var_float, "met_phi/F");
       // Elements of the PF MET covariance matrix (not used in analysis)
       synctree_->Branch("metcov00", &metCov00_, "metCov00/F");
       synctree_->Branch("metcov01", &metCov01_, "metCov01/F");
@@ -1568,8 +1568,8 @@ namespace ic {
       event->Exists("vispX") ? vis_px_ = event->Get<double>("vispX") : 0.;
       event->Exists("vispY") ? vis_py_ = event->Get<double>("vispY") : 0.;
     }
-    met_ = mets->pt();
-    met_phi_ = mets->phi();
+    met_ = mets->vector().pt();
+    met_phi_ = mets->vector().phi();
 
     metCov00_ = mets->xx_sig();
     metCov10_ = mets->yx_sig();
