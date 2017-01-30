@@ -865,15 +865,15 @@ process.pileupJetIdUpdated = process.pileupJetId.clone(
 #print process.pileupJetIdUpdated.dumpConfig()
 process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
 
-#process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-#process.patJetCorrFactorsReapplyJEC = process.updatedPatJetCorrFactors.clone(
-  #src = cms.InputTag("slimmedJets"),
-  #levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
-#process.updatedJets = process.updatedPatJets.clone(
-  #jetSource = cms.InputTag("slimmedJets"),
-  #jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-  #)
-#process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+process.patJetCorrFactorsReapplyJEC = process.updatedPatJetCorrFactors.clone(
+  src = cms.InputTag("slimmedJets"),
+  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
+process.updatedJets = process.updatedPatJets.clone(
+  jetSource = cms.InputTag("slimmedJets"),
+  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+  )
+process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
 
 #Produce and store jets taken straight from miniAOD
 process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
@@ -923,10 +923,10 @@ process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
 process.icPFJetSequence = cms.Sequence()
 process.icPFJetSequence += cms.Sequence(
   process.pileupJetIdUpdated+
-  #process.patJetCorrFactorsReapplyJEC+
-  #process.updatedJets+
   process.patJetCorrFactorsUpdatedJEC+
   process.updatedPatJetsUpdatedJEC+
+  process.patJetCorrFactorsReapplyJEC+
+  process.updatedJets+
   process.selectedUpdatedPatJetsUpdatedJEC+
   process.selectedSlimmedJetsAK4+
   process.unpackedTracksAndVertices+
@@ -937,7 +937,6 @@ process.icPFJetSequence += cms.Sequence(
   #process.ak4PFJetsCHS+
   #process.btaggingSequenceAK4PFCHS+
   #process.puJetMvaCHS
-  #process.patJetCorrFactorsReapplyJEC +
   #process.patJetsReapplyJEC+
   #process.selectedReJECSlimmedJetsAK4+
   #process.icPFJetProducer+ #Not from slimmed jets!
