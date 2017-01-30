@@ -19,6 +19,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "UserCode/ICHiggsTauTau/plugins/ICHashTreeProducer.hh"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 #if CMSSW_MAJOR_VERSION >= 7
@@ -28,6 +29,11 @@
 #include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #endif
 
+#if CMSSW_MAJOR_VERSION >= 8
+#include "DataFormats/L1TGlobal/interface/GlobalAlgBlk.h"
+#endif
+
+
 ICTriggerPathProducer::ICTriggerPathProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
@@ -35,15 +41,23 @@ ICTriggerPathProducer::ICTriggerPathProducer(const edm::ParameterSet& config)
       save_strings_(config.getParameter<bool>("saveStrings")),
       split_version_(config.getParameter<bool>("splitVersion")),
       input_is_standalone_(config.getParameter<bool>("inputIsStandAlone")),
-      input_prescales_(config.getParameter<edm::InputTag>("inputPrescales")) {
+      input_prescales_(config.getParameter<edm::InputTag>("inputPrescales")),
+      hlt_process_(config.getParameter<std::string>("hltProcess")),
+      prescale_fallback_(config.getParameter<bool>("prescaleFallback"))
+ {
   if(!input_is_standalone_){
     consumes<pat::TriggerEvent>(input_);
   } else {
     consumes<edm::TriggerResults>(input_);
   }
-  #if CMSSW_MAJOR_VERSION>=7
+#if CMSSW_MAJOR_VERSION >= 7
    consumes<pat::PackedTriggerPrescales>(input_prescales_);
-  #endif
+#endif
+#if CMSSW_MAJOR_VERSION >= 8
+  if (prescale_fallback_) {
+    consumes<BXVector<GlobalAlgBlk>>(edm::InputTag("gtStage2Digis"));
+  }
+#endif
   paths_ = new std::vector<ic::TriggerPath>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, include_if_fired_, "includeAcceptedOnly");
@@ -82,6 +96,13 @@ void ICTriggerPathProducer::produce(edm::Event& event,
     event.getByLabel(input_prescales_, prescales_handle);
 #endif
 
+#if CMSSW_MAJOR_VERSION >= 8
+    edm::Handle<BXVector<GlobalAlgBlk>> l1algo_handle;
+    if (prescale_fallback_) {
+      event.getByLabel(edm::InputTag("gtStage2Digis"), l1algo_handle);
+    }
+#endif
+
     edm::TriggerNames const& names = event.triggerNames(*trigres_handle);
     paths_->reserve(trigres_handle->size());
     for (unsigned int i = 0, n = trigres_handle->size(); i < n; ++i) {
@@ -91,6 +112,16 @@ void ICTriggerPathProducer::produce(edm::Event& event,
       dest.set_accept(trigres_handle->accept(i));
 #if CMSSW_MAJOR_VERSION >= 7
       dest.set_prescale(prescales_handle->getPrescaleForIndex(i));
+  #if CMSSW_MAJOR_VERSION >= 8
+      if (prescale_fallback_) {
+        unsigned column = l1algo_handle->at(0, 0).getPreScColumn();
+        unsigned other_prescale = hlt_config_.prescaleValue(column, names.triggerName(i));
+        // if (dest.prescale() != other_prescale) {
+        //   std::cout << names.triggerName(i) << "\t" << hlt_config_.tableName() << "\t" << dest.prescale() << "\t" << other_prescale << "\n";
+        // }
+        dest.set_prescale(other_prescale);
+      }
+  #endif
 #else
       dest.set_prescale(0);
 #endif
@@ -127,6 +158,15 @@ void ICTriggerPathProducer::SetNameInfo(std::string name,
   path->set_id(hash);
 }
 
+void ICTriggerPathProducer::beginRun(edm::Run const& run,
+                                       edm::EventSetup const& es) {
+  bool changed = true;
+  bool res = hlt_config_.init(run, es, hlt_process_, changed);
+  if (!res)
+    throw std::runtime_error(
+        "HLTConfigProvider did not initialise correctly");
+}
+
 void ICTriggerPathProducer::beginJob() {
   ic::StaticTree::tree_->Branch(branch_.c_str(), &paths_);
 }
@@ -141,6 +181,7 @@ void ICTriggerPathProducer::endJob() {
     std::map<std::string, std::size_t>::const_iterator iter;
     for (iter = observed_paths_.begin(); iter != observed_paths_.end();
          ++iter) {
+      ICHashTreeProducer::Add(iter->second, iter->first);
       std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
     }
   }

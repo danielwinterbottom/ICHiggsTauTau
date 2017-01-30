@@ -144,6 +144,9 @@ class Electron : public Candidate {
 
   /// Supercluster \f$\eta\f$
   inline float sc_eta() const { return sc_eta_; }
+  
+  /// Supercluster seed \f$\eta\f$
+  inline float sc_seed_eta() const { return sc_seed_eta_; }
 
   /// Supercluster \f$\theta\f$
   inline float sc_theta() const { return sc_theta_; }
@@ -316,6 +319,9 @@ class Electron : public Candidate {
 
   /// @copybrief sc_eta()
   inline void set_sc_eta(float const& sc_eta) { sc_eta_ = sc_eta; }
+  
+  /// @copybrief sc_seed_eta()
+  inline void set_sc_seed_eta(float const& sc_seed_eta) { sc_seed_eta_ = sc_seed_eta; }
 
   /// @copybrief sc_theta()
   inline void set_sc_theta(float const& sc_theta) { sc_theta_ = sc_theta; }
@@ -428,6 +434,7 @@ class Electron : public Candidate {
 
   float f_brem_;
   float sc_eta_;
+  float sc_seed_eta_;
   float sc_theta_;
   float sc_e_over_p_;
   float sc_energy_;
@@ -449,7 +456,7 @@ class Electron : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Electron, 4);
+  ClassDef(Electron, 5);
  #endif
 };
 

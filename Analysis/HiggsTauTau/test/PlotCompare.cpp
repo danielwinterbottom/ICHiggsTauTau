@@ -41,10 +41,14 @@ void SetStyle(ic::TH1PlotElement & ele, unsigned color, unsigned marker) {
   return;
 }
 
-void SetStyleBlock(ic::TH1PlotElement & ele) {
-  //ele.set_marker_color(color);
-  ele.set_line_color(14);
-  ele.set_fill_color(18);
+void SetStyleBlock(ic::TH1PlotElement & ele, int color=-1) {
+  if(color>=0){
+    ele.set_line_color(color);
+    ele.set_fill_color(color);
+  }else{
+    ele.set_line_color(14);
+    ele.set_fill_color(18);
+  }
   ele.set_fill_style(1001);
   ele.set_draw_fill(true);
   ele.set_draw_marker(false);
@@ -263,7 +267,7 @@ int main(int argc, char* argv[]){
       SetStyle(elements.back(), col, *marker_it);
       ++marker_it;
     } else if (split[6] == "1") {
-      SetStyleBlock(elements.back());
+      SetStyleBlock(elements.back(),col);
     } else if (split[6] == "2") {
       SetStyle(elements.back(), col, *marker_it);
       elements.back().set_draw_line(true);

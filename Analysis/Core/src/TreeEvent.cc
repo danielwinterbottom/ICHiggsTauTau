@@ -29,8 +29,8 @@ void TreeEvent::SetTree(TTree* tree) {
       if (b) {
         branch_names_.insert(std::string(b->GetName()));
       } else {
-        std::cout << "[ic::TreeEvent::SetTree] Encountered some non-TBranch "
-                      "object in the list of branches\n";
+        // std::cout << "[ic::TreeEvent::SetTree] Encountered some non-TBranch "
+        //               "object in the list of branches\n";
       }
     }
   }

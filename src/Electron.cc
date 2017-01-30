@@ -31,6 +31,7 @@ Electron::Electron()
       conv_dcot_(0.),
       f_brem_(0.),
       sc_eta_(0.),
+      sc_seed_eta_(0.),
       sc_theta_(0.),
       sc_e_over_p_(0.),
       sc_energy_(0.),

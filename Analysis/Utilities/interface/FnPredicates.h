@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <cmath>
+#include <set>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include "boost/range/algorithm_ext/erase.hpp"
@@ -60,11 +61,18 @@ namespace ic {
   // Candidate
   //----------------------------------------------------------
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta);
+  bool MinPtMaxSCEta(Electron const* cand, double const& minPt, double const& maxEta);
+  bool EtaOutsideRange(Candidate const* cand, double const& minEtaCut, double const& maxEtaCut);
   bool VertexDz(Tau const* cand, double const& vertexZ);
   //----------------------------------------------------------
   // Vertex
   //----------------------------------------------------------
   bool GoodVertex(Vertex const* vertex);
+
+  //
+  bool isTightMuon(Muon* veto,std::vector<Muon*> sel);
+  bool isTightElectron(Electron* veto,std::vector<Electron*> sel);
+  bool isTightTau(Tau* veto,std::vector<Tau*> sel);
 
   //----------------------------------------------------------
   // Electron
@@ -81,6 +89,8 @@ namespace ic {
   bool TightElectronIDSpring15(Electron const* elec);
   bool VetoElectronIDPhys14(Electron const* elec);
   bool VetoElectronIDSpring15(Electron const* elec);
+  bool TightElectronFullIDSpring15(Electron const* elec, double const& rho);
+  bool VetoElectronFullIDSpring15(Electron const* elec, double const& rho);
   bool VetoElectronID(Electron const* elec);
   bool ElectronSimpleWP85Iso(Electron const* elec);
   bool ElectronSimpleWP85ID(Electron const* elec);
@@ -91,7 +101,13 @@ namespace ic {
   bool ElectronHTTIdSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdTrigSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp);
 
+  bool TightElectronFullID16(Electron const* elec, double const& rho);
+  bool VetoElectronFullID16(Electron const* elec, double const& rho);
+
+  double getTotalEA(const double & eta);
+  std::pair<double,double> getEA(const double & eta);
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho);
   bool LoosePhotonIDSpring15(Photon const* photon,double const& rho);
@@ -122,6 +138,9 @@ namespace ic {
   bool PFJetID(PFJet const* jet);
   // Standard particle-flow jet id for 2015
   bool PFJetID2015(PFJet const* jet);
+  // Standard particle-flow jet id for 2016
+  bool PFJetID2016(PFJet const* jet);
+
 
   // Particle-flow jet id without the HF energy in the neutral energy cut
   bool PFJetIDNoHFCut(PFJet const* jet);
@@ -141,7 +160,7 @@ namespace ic {
 
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
   std::pair <bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
-
+  std::pair <bool,std::vector<unsigned>> IsFilterMatchedWithMultipleIndexs(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
 
   template<class T>
   double PF04IsolationVal(T const* cand, double const& dbeta, bool allcharged) {
@@ -285,6 +304,7 @@ namespace ic {
 
   bool MuonTight(Muon const* muon);
   bool MuonMedium(Muon const* muon);
+  bool MuonMediumHIPsafe(Muon const* muon);
   bool MuonLoose(Muon const* muon);
   bool MuonIso(Muon const* muon);
   bool MuonTkIso(Muon const* muon);
@@ -678,5 +698,13 @@ namespace ic {
   double ScaleReso(double pT, double eta, double jerUnc);
 
 */
+  
+  union ui64 {
+    uint64_t one;
+    int16_t four[4];
+  };
+  
+  std::set<int16_t> GetTriggerTypes(TriggerObject* obj);
+  
 } // namepsace
 #endif

@@ -23,6 +23,7 @@ namespace ic {
   void DrawCMSLogoTest(TPad* pad, TString cmsText, TString extraText, int iPosX);
   double Integral(TH1F const* hist);
   double Integral(TH2F const* hist);
+  double Integral(TH3F const* hist);
   double Integral(TH1F const* hist, int binmin, int binmax);
   double Integral(TH2F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax);
   double Integral(TH3F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax);
@@ -32,6 +33,7 @@ namespace ic {
   double IntegralWithError(TH1F const* hist, double err);
   double Error(TH1F const* hist);
   double Error(TH2F const* hist);
+  double Error(TH3F const* hist);
   double Error(TH1F const* hist,int binmin,int binmax);
   double Error(TH2F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax);
   double Error(TH3F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax);
@@ -39,6 +41,9 @@ namespace ic {
 			     std::string const& category,
 			     std::string const& weight);
   std::string BuildVarString(std::string const& variable);
+  bool GetShape(TH1F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd);
+  bool GetShape2D(TH2F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd);
+  bool GetShape3D(TH3F & shape, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree, const bool toadd);
   TH1F GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree);
   TH2F GetShape2D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree);
   TH3F GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree);

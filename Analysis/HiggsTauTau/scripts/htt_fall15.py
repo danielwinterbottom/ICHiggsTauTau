@@ -31,6 +31,9 @@ parser.add_option("--submit", dest="submit",
 parser.add_option("--data", dest="proc_data", action='store_true', default=False,
                   help="Process data samples (including embedded)")
 
+parser.add_option("--calc_lumi", dest="calc_lumi", action='store_true', default=False,
+                  help="Run on data and only write out lumi mask jsons")
+
 parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
                   help="Process background mc samples")
 
@@ -132,7 +135,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
     ]
 if options.proc_mssm or options.proc_all:
   masses = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']
-  if options.short_signal: masses = ['160']
+  if options.short_signal: masses = ['500']
   for mass in masses :
     signal_mc += [
       'SUSYGluGluToHToTauTau_M-'+mass,
@@ -146,7 +149,7 @@ if options.proc_Hhh:
        'GluGluToRadionToHHTo2B2Tau_M-'+mass
     ]
 
-if options.proc_data or options.proc_all:
+if options.proc_data or options.proc_all or options.calc_lumi:
   data_samples = [
    'SingleMuon-2015D',
    'SingleElectron-2015D',
@@ -157,15 +160,27 @@ if options.proc_data or options.proc_all:
 
   DATAFILELIST="./filelists/Mar05_Data_76X"
 
-  for sa in data_samples:
-      JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Mar05_Data_76X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
-      nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 40 
-      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+  if options.calc_lumi:
+    for sa in data_samples:
+        JOB='%s_2015' % (sa)
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Mar05_Data_76X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
+        nperjob = 1000 
+        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+          os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+          os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+        file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+
+  else:
+    for sa in data_samples:
+        JOB='%s_2015' % (sa)
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Mar05_Data_76X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
+        nperjob = 40 
+        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+          os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+          os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+        file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
 if options.proc_qcd:

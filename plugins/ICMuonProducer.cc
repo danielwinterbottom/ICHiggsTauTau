@@ -23,6 +23,7 @@
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 
 
+
 ICMuonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset, edm::ConsumesCollector && collector)
     : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
       charged(pset.getParameter<edm::InputTag>("charged")),
@@ -42,6 +43,8 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
       is_pf_(config.getParameter<bool>("isPF")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_vertex_ip_(config.getParameter<bool>("includeVertexIP")),
+      input_bad_quality_muons_(config.getParameter<edm::InputTag>("inputBadQualityMuons")),
+      do_bad_quality_muons_(config.getParameter<bool>("selectBadQualityMuons")),
       input_beamspot_(config.getParameter<edm::InputTag>("inputBeamspot")),
       do_beamspot_ip_(config.getParameter<bool>("includeBeamspotIP")),
       pf_iso_03_(config.getParameterSet("pfIso03"),consumesCollector()),
@@ -54,6 +57,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
     consumes<edm::View<reco::Muon>>(input_);
   }
   consumes<edm::View<reco::Vertex>>(input_vertices_);
+  consumes<edm::PtrVector<reco::Muon>>(input_bad_quality_muons_);
   consumes<reco::BeamSpot>(input_beamspot_);
   muons_ = new std::vector<ic::Muon>();
 
@@ -80,6 +84,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, is_pf_, "isPF");
   PrintOptional(1, do_vertex_ip_, "includeVertexIP");
+  PrintOptional(1, do_bad_quality_muons_, "selectBadQualityMuons");
   PrintOptional(1, do_beamspot_ip_, "includeBeamspotIP");
   PrintOptional(1, do_pf_iso_03_, "includePFIso03");
   PrintOptional(1, do_pf_iso_04_, "includePFIso04");
@@ -101,6 +106,13 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
   edm::Handle<edm::View<reco::Vertex> > vertices_handle;
   if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
+
+  edm::Handle<edm::PtrVector<reco::Muon> > bad_quality_muons_handle;
+  unsigned n_bad_muons = 0;
+  if (do_bad_quality_muons_) {
+    event.getByLabel(input_bad_quality_muons_, bad_quality_muons_handle);
+    n_bad_muons = bad_quality_muons_handle->size();
+  }
 
   edm::Handle<reco::BeamSpot> beamspot_handle;
   if (do_beamspot_ip_) event.getByLabel(input_beamspot_, beamspot_handle);
@@ -153,6 +165,14 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
   for (unsigned i = 0; i < n_muons; ++i) {
     ic::Muon & dest = muons_->at(i);
+
+    for (unsigned j = 0; j < n_bad_muons; ++j) {
+      if( muons_handle->ptrAt(i) == (*bad_quality_muons_handle)[j] ) {
+        dest.SetIdIso(input_bad_quality_muons_.label(),1);
+        //std::cout << " ---- input_bad_quality_muons_.label() = " << input_bad_quality_muons_.label() << std::endl;
+        // output: input_bad_quality_muons_.label() = badGlobalMuonTagger
+      }
+    }
 
     reco::MuonRef muon_ref;
     edm::RefToBase<reco::Muon> muon_base_ref;

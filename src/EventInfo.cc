@@ -18,7 +18,7 @@ EventInfo::EventInfo()
 EventInfo::~EventInfo() {}
 
 void EventInfo::Print() const {
-  std::cout << boost::format("%s\n") % std::string(30, '-');
+  std::cout << boost::format("%s\n") % std::string(30, '=');
   std::cout << boost::format("%-17s | %10i\n")   % "event"          % event_;
   std::cout << boost::format("%-17s | %10i\n")   % "lumi_block"     % lumi_block_;
   std::cout << boost::format("%-17s | %10i\n")   % "run"            % run_;
@@ -34,6 +34,15 @@ void EventInfo::Print() const {
     std::cout << boost::format("%-17s | %6.3f %3i\n") % it->first % it->second %
                      its->second;
   }
-  std::cout << boost::format("%s\n") % std::string(30, '-');
+  if (filters_.size() > 0) {
+    std::cout << boost::format("%s\n") % std::string(30, '-');
+    std::cout << boost::format("%-17s\n")   % "filters";
+    std::cout << boost::format("%s\n")      % std::string(30, '-');
+    TBMap::const_iterator itf = filters_.begin();
+    for (; itf != filters_.end(); ++itf) {
+      std::cout << boost::format("%-21s | %6.3f\n") % itf->first % itf->second;
+    }
+  }
+  std::cout << boost::format("%s\n")      % std::string(30, '=');
 }
 }

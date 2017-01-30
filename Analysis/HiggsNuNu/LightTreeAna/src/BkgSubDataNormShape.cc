@@ -13,11 +13,11 @@ namespace ic{
   BkgSubDataNormShape::BkgSubDataNormShape(std::string name) : LTModule(name){
     shapebaseweight_="total_weight_lepveto";
     contmcweight_="total_weight_lepveto";
-    contmczweight_="weight_nolep";
+    contmczweight_="weight_nolepnotrig*weight_trig_0";
     shapemcweight_="total_weight_lepveto";
-    shapemczweight_="weight_nolep";
-    contmczweight_="weight_nolep";
-    contdataweight_="weight_nolep";
+    shapemczweight_="weight_nolepnotrig*weight_trig_0";
+    contmczweight_="weight_nolepnotrig*weight_trig_0";
+    contdataweight_="weight_nolepnotrig*weight_trig_0";
     contdataextrasel_="";
     contbkgextrasel_="";
     shapecontextrafactor_=1.;

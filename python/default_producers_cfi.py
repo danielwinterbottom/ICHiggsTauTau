@@ -82,6 +82,8 @@ icMuonProducer = cms.EDProducer('ICMuonProducer',
     isPF                      = cms.bool(False),
     includeVertexIP           = cms.bool(False),
     inputVertices             = cms.InputTag("offlinePrimaryVertices"),
+    selectBadQualityMuons     = cms.bool(False),
+    inputBadQualityMuons      = cms.InputTag("badGlobalMuonTagger","bad"),
     includeBeamspotIP         = cms.bool(False),
     inputBeamspot             = cms.InputTag("offlineBeamSpot"),
     includeFloats = cms.PSet(
@@ -150,12 +152,14 @@ icPhotonProducer = cms.EDProducer('ICPhotonProducer',
 ## [Photon]
 
 ## [Tau]
-icTauProducer = cms.EDProducer("ICPFTauProducer", # or "ICPFTauFromPatProducer"
+icTauProducer = cms.EDProducer("ICPFTauProducer",
   branch                  = cms.string("taus"),
   input                   = cms.InputTag("hpsPFTauProducer"),
   inputVertices           = cms.InputTag("offlinePrimaryVertices"),
   includeVertexIP         = cms.bool(False),
   requestTracks           = cms.bool(False),
+  includeTotalCharged     = cms.bool(False),
+  totalChargedLabel       = cms.string('totalCharged'),
   tauIDs = cms.PSet(
     # Add a list of discriminators that should be loaded from the edm::Event.
     # Each discriminator will be stored as a float and associated to the hash
@@ -166,7 +170,24 @@ icTauProducer = cms.EDProducer("ICPFTauProducer", # or "ICPFTauFromPatProducer"
     #
     # decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding"),
     # etc...
-  )
+  ),
+  requestPFCandidates   = cms.bool(False),
+  inputPFCandidates     = cms.InputTag("pfCandidates"),
+  isSlimmed             = cms.bool(False)
+)
+
+icTauFromPatProducer = cms.EDProducer("ICPFTauFromPatProducer",
+  branch                  = cms.string("taus"),
+  input                   = cms.InputTag("slimmedTaus"),
+  inputVertices           = cms.InputTag("offlineSlimmedPrimaryVertices"),
+  includeVertexIP         = cms.bool(False),
+  requestTracks           = cms.bool(False),
+  includeTotalCharged     = cms.bool(False),
+  totalChargedLabel       = cms.string('totalCharged'),
+  tauIDs = cms.PSet(),
+  requestPFCandidates   = cms.bool(False),
+  inputPFCandidates     = cms.InputTag("packedPFCandidates"),
+  isSlimmed             = cms.bool(True)
 )
 ## [Tau]
 
@@ -369,6 +390,7 @@ icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
     #### The srcConfig PSet when the input is a pat::Jet collection
      srcConfig = cms.PSet(
        isSlimmed                 = cms.bool(False),
+       slimmedPileupIDLabel      = cms.string('pileupJetId:fullDiscriminant'),
        includeJetFlavour         = cms.bool(False),
        includeJECs               = cms.bool(False),
        inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAOD"),
@@ -502,6 +524,8 @@ icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
   saveStrings = cms.bool(True),
   splitVersion = cms.bool(False),
   inputIsStandAlone = cms.bool(False),
+  prescaleFallback = cms.bool(False),
+  hltProcess = cms.string('HLT'),
   inputPrescales = cms.InputTag("patTrigger", "", "PAT") # only used when inputIsStandAlone is true
 )
 ## [TriggerPath]

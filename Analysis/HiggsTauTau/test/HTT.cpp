@@ -124,10 +124,14 @@ int main(int argc, char* argv[]) {
    ignore_chans.push_back(js["job"]["ignore_channels"][i].asString());
   }
 
+  std::string output_name = js["sequence"]["output_name"].asString();
+  bool is_data = js["sequence"]["is_data"].asBool();
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
+    std::string channel_str = js["job"]["channels"][i].asString();
+    if(is_data &&  ( (channel_str.find("em") != channel_str.npos && output_name.find("MuonEG")==output_name.npos )|| (channel_str.find("mt") != channel_str.npos && output_name.find("SingleMuon") == output_name.npos ) || (channel_str.find("et") != channel_str.npos && output_name.find("SingleEle") == output_name.npos ) || (channel_str.find("tt") != channel_str.npos && output_name.find("Tau") == output_name.npos))) continue; 
+
     bool ignore_channel =false;
     bool duplicate_channel = false;
-    std::string channel_str = js["job"]["channels"][i].asString();
     for(unsigned k = 0; k<ignore_chans.size();k++){
       if(ignore_chans.at(k)==channel_str){ignore_channel=true;}
     }

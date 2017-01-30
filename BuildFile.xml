@@ -1,3 +1,4 @@
+<flags CXXFLAGS="-g"/>
 <use name="FWCore/MessageLogger"/>
 <use name="FWCore/Framework"/>
 <use name="FWCore/ParameterSet"/>
@@ -8,6 +9,8 @@
 <use name="RecoEgamma/EgammaTools"/>
 <use name="MagneticField/Records"/>
 <use name="MagneticField/Engine"/>
+<use name="DataFormats/L1Trigger"/>
+<use name="L1Trigger/L1TNtuples"/>
 <use name=""/>
 <use name="root"/>
 <use name="clhep"/>

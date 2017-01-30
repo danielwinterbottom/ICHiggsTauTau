@@ -41,6 +41,8 @@ class ICMuonProducer : public edm::EDProducer {
   std::vector<std::pair<std::string, edm::InputTag> > input_double_vmaps_;
   edm::InputTag input_vertices_;
   bool do_vertex_ip_;
+  edm::InputTag input_bad_quality_muons_;
+  bool do_bad_quality_muons_;
   edm::InputTag input_beamspot_;
   bool do_beamspot_ip_;
 

@@ -1,6 +1,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau//interface/city.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/ElectronEffectiveArea.h"
 
 #include <boost/lexical_cast.hpp>
 #include "TRandom2.h"
@@ -9,6 +10,36 @@
 #include <set>
 
 namespace ic {
+  bool isTightMuon(Muon* veto,std::vector<Muon*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
+
+  bool isTightElectron(Electron* veto,std::vector<Electron*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
+
+  bool isTightTau(Tau* veto,std::vector<Tau*> sel){
+    double mindr=10;
+    for (unsigned i(0);i<sel.size();++i){
+      double dR = ROOT::Math::VectorUtil::DeltaR(veto->vector(), sel[i]->vector());
+      if (dR<mindr) mindr=dR;
+    }
+    if (mindr<0.05) return true;
+    return false;
+  }
+
 
   bool GoodVertex(Vertex const* vertex) {
     if (     vertex->ndof() > 4 
@@ -46,6 +77,21 @@ namespace ic {
     }
     return std::make_pair(false,0);
   }
+  
+  std::pair<bool,std::vector<unsigned>> IsFilterMatchedWithMultipleIndexs(Candidate const* cand, std::vector<TriggerObject*> const& objs, std::string const& filter, double const& max_dr){
+    std::size_t hash = CityHash64(filter);
+    std::vector<unsigned> index_vals;
+    bool matched = false;
+    for (unsigned i = 0; i < objs.size(); ++i) {
+      std::vector<std::size_t> const& labels = objs[i]->filters();
+      if (std::find(labels.begin(),labels.end(), hash) == labels.end()) continue;
+      if (DR(cand, objs[i]) < max_dr){
+         index_vals.push_back(i);
+         matched = true;
+      }
+    }
+    return std::make_pair(matched,index_vals);
+  }
 
   bool VertexDz(Tau const* cand, double const& vertexZ) {
     return ( fabs(cand->vz() - vertexZ)==0) ; 
@@ -53,6 +99,14 @@ namespace ic {
 
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta) {
     return ( (cand->pt() > minPt) && (std::fabs(cand->eta()) < maxEta) ); 
+  }
+
+  bool MinPtMaxSCEta(Electron const* cand, double const& minPt, double const& maxEta) {
+    return ( (cand->pt() > minPt) && (std::fabs(cand->sc_eta()) < maxEta) ); 
+  }
+
+  bool EtaOutsideRange(Candidate const* cand, double const& minEtaCut, double const& maxEtaCut) {
+    return ( (std::fabs(cand->eta()) < minEtaCut) || (std::fabs(cand->eta()) > maxEtaCut) ); 
   }
 
 
@@ -156,6 +210,66 @@ namespace ic {
     return result;
   }
 
+  bool PFJetID2016(PFJet const* jet) {
+    double eta = fabs(jet->eta());
+    bool result = false;
+
+    double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
+    //    int n_pf = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
+
+
+    // From Raffaele: in mono-jet we are applying more stringent selection (than the standard PF Jet ID selection) to kill the noise in the SR:
+    // 1) |eta| < 2.5: charged hadron fraction > 0.1
+    //                 neutral hadron fraction < 0.8 (required in 1-jet events; for VBF we could also not apply it)
+    // 2) |eta| [3,3.2]: neutral hadron fraction < 0.96 (in this way, I saw the spikes have been killed; it should work sufficiently well even when you invert the cut in min-dphi(jet met) < 0.5)
+
+    // From Riccardo: as a consequence, I'm gonna change (for just the 2nd point, |eta| [3,3.2]) from:
+    //if (eta <= 2.4) {
+    //  result = neutralFrac   < 0.99
+    //  && jet->neutral_em_energy_frac()    < 0.99
+    //  && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
+    //  && jet->charged_had_energy_frac()   > 0.0
+    //  && jet->charged_multiplicity()      > 0
+    //  && jet->charged_em_energy_frac()    < 0.99;
+    //} else if (eta <= 2.7){
+    //  result = neutralFrac < 0.99
+    //  && jet->neutral_em_energy_frac()   < 0.99
+    //  && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
+    //} else if(eta<=3.0){
+    //  result = jet->neutral_em_energy_frac()    < 0.90
+    //  && jet->neutral_multiplicity() > 2;
+    //}
+    //else{
+    //  result = jet->neutral_em_energy_frac()    < 0.90
+    //  && jet->neutral_multiplicity()>10;
+    //}
+
+    //to:
+    if (eta <= 2.4) {
+      result = neutralFrac   < 0.99
+      && jet->neutral_em_energy_frac()    < 0.99
+      && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
+      && jet->charged_had_energy_frac()   > 0.0
+      && jet->charged_multiplicity()      > 0
+      && jet->charged_em_energy_frac()    < 0.99;
+    } else if (eta <= 2.7){
+      result = neutralFrac < 0.99
+      && jet->neutral_em_energy_frac()   < 0.99
+      && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1;
+    } else if(eta < 3.0){
+      result = jet->neutral_em_energy_frac()    < 0.90
+      && jet->neutral_multiplicity() > 2;
+    } else if(eta <= 3.2){
+      //result = neutralFrac   < 0.96 &&
+      result = jet->neutral_em_energy_frac()    < 0.90
+	&& jet->neutral_multiplicity() > 10;
+    }
+    else{
+      result = jet->neutral_em_energy_frac()    < 0.90
+      && jet->neutral_multiplicity()>10;
+    }
+    return result;
+  }
 
   bool PUJetID(PFJet const* jet, bool is_2012) {
     // Pt2030_Loose   = cms.vdouble(-0.80,-0.85,-0.84,-0.85),
@@ -282,27 +396,28 @@ namespace ic {
                   return (pu_id_mva_value > -0.45);
             } else return true;
       } else return true;
-    } else if (training == 3) {
-      if (pt > 20. && pt <= 30.) {
-            if (abs_eta < 2.5) {
-	      return (pu_id_mva_value > (doTight?0.05:-0.96));
-            } else if (abs_eta < 2.75) {
-	      return (pu_id_mva_value > (doTight?-0.37:-0.62));
-            } else if (abs_eta < 3.0) {
-	      return (pu_id_mva_value > (doTight?-0.23:-0.53));
-            } else if (abs_eta < 5.0) {
-	      return (pu_id_mva_value > (doTight?-0.21:-0.48));
-            } else return true;
+    } else if (training == 4) {
+      //reference: page 16 of https://indico.cern.ch/event/559594/contributions/2257924/attachments/1317046/1973307/PUID_JMAR_2016_07_26_v1.pdf
+      if (pt <= 30.) {
+	if (abs_eta < 2.5) {
+	  return (pu_id_mva_value > (doTight?0.69:0.18));
+	} else if (abs_eta < 2.75) {
+	  return (pu_id_mva_value > (doTight?-0.35:-0.55));
+	} else if (abs_eta < 3.0) {
+	  return (pu_id_mva_value > (doTight?-0.26:-0.42));
+	} else if (abs_eta < 5.0) {
+	  return (pu_id_mva_value > (doTight?-0.21:-0.36));
+	} else return true;
       } else if (pt > 30.) {
-            if (abs_eta < 2.5) {
-	      return (pu_id_mva_value > (doTight?0.52:-0.93));
-            } else if (abs_eta < 2.75) {
-	      return (pu_id_mva_value > (doTight?-0.18:-0.51));
-            } else if (abs_eta < 3.0) {
-	      return (pu_id_mva_value > (doTight?-0.04:-0.37));
-            } else if (abs_eta < 5.0) {
-	      return (pu_id_mva_value > (doTight?-0.02:-0.30));
-            } else return true;
+	if (abs_eta < 2.5) {
+	  return (pu_id_mva_value > (doTight?0.86:0.61));
+	} else if (abs_eta < 2.75) {
+	  return (pu_id_mva_value > (doTight?-0.10:-0.35));
+	} else if (abs_eta < 3.0) {
+	  return (pu_id_mva_value > (doTight?-0.05:-0.23));
+	} else if (abs_eta < 5.0) {
+	  return (pu_id_mva_value > (doTight?-0.01:-0.17));
+	} else return true;
       } else return true;
     } else {
       return true;
@@ -610,7 +725,7 @@ namespace ic {
         && elec->hadronic_over_em()         <0.0597
         && ooemoop                          <0.012
         && elec->gsf_tk_nhits()             <=2
-     //   && fabs(elec->dxy_vertex())         <0.060279
+	      //   && fabs(elec->dxy_vertex())         <0.060279
 	      //  && fabs(elec->dz_vertex())          <0.800538
 	      //  && dbiso/elec->pt()                 <0.164369
         ) ||
@@ -626,6 +741,162 @@ namespace ic {
    //     && dbiso/elec->pt()                 <0.212604
         ) )
         );
+
+  }
+
+  bool TightElectronFullIDSpring15(Electron const* elec, double const& rho) {//function for spring15 ID 25ns !! needs updating
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    //double lEA = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+    double lEA = getTotalEA(elec->sc_eta());
+
+    double relisoWithEA = (elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - rho*lEA))/elec->pt();
+
+    return(
+	   !elec->has_matched_conversion()
+	   && ( (in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0101
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00926
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.0336
+		 && elec->hadronic_over_em()         <0.0597
+		 && ooemoop                          <0.012
+		 && elec->gsf_tk_nhits()             <=2
+		 && fabs(elec->dxy_vertex())         <0.0111
+		 && fabs(elec->dz_vertex())          <0.0466
+		 && relisoWithEA                     <0.0354
+		 ) ||
+		(!in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0279
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00724
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.0918
+		 && elec->hadronic_over_em()         <0.0615
+		 && ooemoop                          <0.00999
+		 && elec->gsf_tk_nhits()             <=1
+		 && fabs(elec->dxy_vertex())         <0.0351
+		 && fabs(elec->dz_vertex())          <0.417
+		 && relisoWithEA                     <0.0646
+		 ) )
+	   );
+
+  }
+
+  bool VetoElectronFullIDSpring15(Electron const* elec, double const& rho) {//function for spring15 ID 25ns !! needs updating
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    //double lEA = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+    double lEA = getTotalEA(elec->sc_eta());
+
+    double relisoWithEA = (elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - rho*lEA))/elec->pt();
+
+    return(
+	   !elec->has_matched_conversion()
+	   && ( (in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0114
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.0152
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.216
+		 && elec->hadronic_over_em()         <0.181
+		 && ooemoop                          <0.207
+		 && elec->gsf_tk_nhits()             <=2
+		 && fabs(elec->dxy_vertex())         <0.0564
+		 && fabs(elec->dz_vertex())          <0.472
+		 && relisoWithEA                     <0.126
+		 ) ||
+		(!in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0352
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.0113
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.237
+		 && elec->hadronic_over_em()         <0.116
+		 && ooemoop                          <0.174
+		 && elec->gsf_tk_nhits()             <=3
+		 && fabs(elec->dxy_vertex())         <0.222
+		 && fabs(elec->dz_vertex())          <0.921
+		 && relisoWithEA                     <0.144
+		 ) )
+	   );
+
+  }
+
+  bool TightElectronFullID16(Electron const* elec, double const& rho) {//function for 2016 id
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    //double lEA = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+    double lEA = getTotalEA(elec->sc_eta());
+
+    double relisoWithEA = (elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - rho*lEA))/elec->pt();
+
+    return(
+	   !elec->has_matched_conversion()
+	   && ( (in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.00998
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00306
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.0816
+		 && elec->hadronic_over_em()         <0.0414
+		 && ooemoop                          <0.0129
+		 && elec->gsf_tk_nhits()             <=1
+		 && relisoWithEA                     <0.0588
+		 && fabs(elec->dxy_vertex())         <0.05
+		 && fabs(elec->dz_vertex())          <0.1
+		 ) ||
+		(!in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0292
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00605
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.0394
+		 && elec->hadronic_over_em()         <0.0641
+		 && ooemoop                          <0.0129
+		 && elec->gsf_tk_nhits()             <=1
+		 && relisoWithEA                     <0.0571
+		 && fabs(elec->dxy_vertex())         <0.1
+		 && fabs(elec->dz_vertex())          <0.2
+		 ) )
+	   );
+
+  }
+
+  bool VetoElectronFullID16(Electron const* elec, double const& rho) {//function for 2016 id
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    //double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    //double lEA = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , elec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
+    double lEA = getTotalEA(elec->sc_eta());
+
+    double relisoWithEA = (elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - rho*lEA))/elec->pt();
+
+    return(
+	   !elec->has_matched_conversion()
+	   && ( (in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.0115
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00749
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.228
+		 && elec->hadronic_over_em()         <0.356
+		 && ooemoop                          <0.299
+		 && elec->gsf_tk_nhits()             <=2
+		 && relisoWithEA                     <0.175
+		 && fabs(elec->dxy_vertex())         <0.05
+		 && fabs(elec->dz_vertex())          <0.1
+		 ) ||
+		(!in_barrel       
+		 && elec->full5x5_sigma_IetaIeta()   <0.037
+		 && fabs(elec->deta_sc_tk_at_vtx())  <0.00895
+		 && fabs(elec->dphi_sc_tk_at_vtx())  <0.213
+		 && elec->hadronic_over_em()         <0.211
+		 && ooemoop                          <0.15
+		 && elec->gsf_tk_nhits()             <=3
+		 && relisoWithEA                     <0.159
+		 && fabs(elec->dxy_vertex())         <0.1
+		 && fabs(elec->dz_vertex())          <0.2
+		 ) )
+	   );
 
   }
 
@@ -875,6 +1146,26 @@ namespace ic {
     return pass_mva;
   }
   
+  bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp) {
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;      
+    if (elec->gsf_tk_nhits() > 1) return false;              
+    bool pass_mva = false;
+    double eta = fabs(elec->sc_eta());
+    double pt = fabs(elec->pt());
+    double idmva = elec->GetIdIso("generalPurposeMVASpring16");
+    if (!loose_wp) {
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.941 ) pass_mva = true;
+      if (eta > 0.8 && eta <= 1.479 && pt > 10    && idmva > 0.899 ) pass_mva = true;
+      if (eta > 1.479 && pt > 10                  && idmva > 0.758 ) pass_mva = true;
+    } else {
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.837 ) pass_mva = true;
+      if (eta > 0.8 && eta <= 1.479 && pt > 10    && idmva > 0.715 ) pass_mva = true;
+      if (eta > 1.479 && pt > 10                  && idmva > 0.357 ) pass_mva = true;
+    }
+    return pass_mva;
+  }
+  
  double PUW03IsolationVal(Muon const* muon){
    double charged_iso = muon->dr03_pfiso_charged();
    double neutral_weighted = muon->GetIdIso("neutral_pfweighted_iso_03");
@@ -911,12 +1202,9 @@ namespace ic {
     if(!pass_preselection) return false;
     double idmva = elec->GetIdIso("mvaTrigSpring15");
     if (!loose_wp) {
-      if (eta <= 0.8                    && idmva > 0.96) pass_mva = true;
-      if (eta >  0.8 && eta <= 1.479   && idmva > 0.89) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.51) pass_mva = true;
-/*      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
+      if (eta <= 0.8                    && idmva > 0.988153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479   && idmva > 0.967910) pass_mva = true;
-      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;*/
+      if (eta >  1.479                  && idmva > 0.841729) pass_mva = true;
     } else {
       if (eta <= 0.8                    && idmva > 0.972153) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479    && idmva > 0.922126) pass_mva = true;
@@ -1028,7 +1316,32 @@ namespace ic {
     return pass_mva;
   }
 
+  double getTotalEA(const double & eta){
+    if (eta < 1.0) return 0.1703;
+    if (eta >= 1.0 && eta < 1.479) return 0.1715;
+    if (eta >= 1.479 && eta < 2.0) return 0.1213;
+    if (eta >= 2.0 && eta < 2.2) return 0.1230;
+    if (eta >= 2.2 && eta < 2.3) return 0.1635;
+    if (eta >= 2.3 && eta < 2.4) return 0.1937;
+    if (eta >= 2.4) return 0.2393;
+    return 0;
+  }
+
+
   //Photon IDs taken from https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2
+  std::pair<double,double> getEA(const double & eta){
+    double photon_area, neutral_area;
+    if (eta < 1.0)                  { neutral_area=0.0599; photon_area=0.1271; }
+    if (eta >= 1.0 && eta < 1.479)  { neutral_area=0.0819; photon_area=0.1101; }
+    if (eta >= 1.479 && eta < 2.0)  { neutral_area=0.0696; photon_area=0.0756; }
+    if (eta >= 2.0 && eta < 2.2)    { neutral_area=0.0360; photon_area=0.1175; }
+    if (eta >= 2.2 && eta < 2.3)    { neutral_area=0.0360; photon_area=0.1498; }
+    if (eta >= 2.3 && eta < 2.4)    { neutral_area=0.0462; photon_area=0.1857; }
+    if (eta >= 2.4)                 { neutral_area=0.0656; photon_area=0.2183; }
+    return std::pair<double,double>(neutral_area,photon_area);
+  }
+
+
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho) {//function for spring15 ID
     double eta = fabs(photon->eta());
 
@@ -1037,33 +1350,28 @@ namespace ic {
     bool in_endcap = true;
     if (eta < 1.479) in_endcap = false;
 
-    double photon_area, neutral_area, charged_area;
-    if (eta < 1.0)                  { charged_area=0.0158; neutral_area=0.0143; photon_area=0.0725; }
-    if (eta >= 1.0 && eta < 1.479)  { charged_area=0.0143; neutral_area=0.0210; photon_area=0.0604; }
-    if (eta >= 1.479 && eta < 2.0)  { charged_area=0.0115; neutral_area=0.0147; photon_area=0.0320; }
-    if (eta >= 2.0 && eta < 2.2)    { charged_area=0.0094; neutral_area=0.0082; photon_area=0.0512; }
-    if (eta >= 2.2 && eta < 2.3)    { charged_area=0.0095; neutral_area=0.0124; photon_area=0.0766; }
-    if (eta >= 2.3 && eta < 2.4)    { charged_area=0.0068; neutral_area=0.0186; photon_area=0.0949; }
-    if (eta >= 2.4)                 { charged_area=0.0053; neutral_area=0.0320; photon_area=0.1160; }
+    double neutral_area = getEA(eta).first;
+    double photon_area = getEA(eta).second;
 
-    return(
-	( (in_barrel       
-	   && photon->had_tower_over_em()<0.05
-	   && photon->sigma_IetaIeta()<0.01
-	   && std::max(photon->dr03_pfiso_charged()-rho*charged_area,0.)<0.91
-	   && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(0.33+exp(0.0044*photon->pt()+0.5809))
-           && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(0.61+0.0043*photon->pt())
-	   ) ||
-	  (in_endcap       
-	   && photon->had_tower_over_em()<0.05
-	   && photon->sigma_IetaIeta()<0.0267
-	   && std::max(photon->dr03_pfiso_charged()-rho*charged_area,0.)<0.65
-	   && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(0.93+exp(0.004*photon->pt()+0.9402))
-	   && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(0.54+0.0041*photon->pt())
-	   ) )
-        );
-
+    return( photon->pass_electron_veto() &&
+	    ( (in_barrel       
+	       && photon->had_tower_over_em()<0.05
+	       && photon->sigma_IetaIeta()<0.01
+	       && photon->dr03_pfiso_charged() < 0.76
+	       && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(0.97+0.014*photon->pt()+0.000019*pow(photon->pt(),2))
+	       && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(0.08+0.0053*photon->pt())
+	       ) ||
+	      (in_endcap       
+	       && photon->had_tower_over_em()<0.05
+	       && photon->sigma_IetaIeta()<0.0268
+	       && photon->dr03_pfiso_charged()<0.56
+	       && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(2.09+0.0139*photon->pt()+0.000025*pow(photon->pt(),2))
+	       && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(0.16+0.0034*photon->pt())
+	       ) )
+	    );
+    
   }
+
 
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho) {//function for spring15 ID
     double eta = fabs(photon->eta());
@@ -1072,29 +1380,23 @@ namespace ic {
     bool in_endcap = true;
     if (eta < 1.479) in_endcap = false;
 
-    double photon_area, neutral_area, charged_area;
-    if (eta < 1.0)                  { charged_area=0.0158; neutral_area=0.0143; photon_area=0.0725; }
-    if (eta >= 1.0 && eta < 1.479)  { charged_area=0.0143; neutral_area=0.0210; photon_area=0.0604; }
-    if (eta >= 1.479 && eta < 2.0)  { charged_area=0.0115; neutral_area=0.0147; photon_area=0.0320; }
-    if (eta >= 2.0 && eta < 2.2)    { charged_area=0.0094; neutral_area=0.0082; photon_area=0.0512; }
-    if (eta >= 2.2 && eta < 2.3)    { charged_area=0.0095; neutral_area=0.0124; photon_area=0.0766; }
-    if (eta >= 2.3 && eta < 2.4)    { charged_area=0.0068; neutral_area=0.0186; photon_area=0.0949; }
-    if (eta >= 2.4)                 { charged_area=0.0053; neutral_area=0.0320; photon_area=0.1160; }
+    double neutral_area = getEA(eta).first;
+    double photon_area = getEA(eta).second;
     
-    return(
+    return( photon->pass_electron_veto() &&
 	( (in_barrel       
 	   && photon->had_tower_over_em()<0.05
-	   && photon->sigma_IetaIeta()<0.01
-	   && std::max(photon->dr03_pfiso_charged()-rho*charged_area,0.)<1.31
-	   && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(0.6+exp(0.0044*photon->pt()+0.5809))
-           && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(1.33+0.0043*photon->pt())
+	   && photon->sigma_IetaIeta()<0.0102
+	   && photon->dr03_pfiso_charged()<1.37
+	   && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(1.06+0.014*photon->pt()+0.000019*pow(photon->pt(),2))
+           && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(0.28+0.0053*photon->pt())
 	   ) ||
 	  (in_endcap       
 	   && photon->had_tower_over_em()<0.05
-	   && photon->sigma_IetaIeta()<0.0267
-	   && std::max(photon->dr03_pfiso_charged()-rho*charged_area,0.)<1.25
-	   && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(1.65+exp(0.004*photon->pt()+0.9402))
-	   && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(1.02+0.0041*photon->pt())
+	   && photon->sigma_IetaIeta()<0.0268
+	   && photon->dr03_pfiso_charged()<1.10
+	   && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(2.69+0.0139*photon->pt()+0.000025*pow(photon->pt(),2))
+	   && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(0.39+0.0034*photon->pt())
 	   ) )
 	   );
     
@@ -1108,29 +1410,23 @@ namespace ic {
     bool in_endcap = true;
     if (eta < 1.479) in_endcap = false;
     
-    double photon_area, neutral_area, charged_area;
-    if (eta < 1.0)                  { charged_area=0.0158; neutral_area=0.0143; photon_area=0.0725; }
-    if (eta >= 1.0 && eta < 1.479)  { charged_area=0.0143; neutral_area=0.0210; photon_area=0.0604; }
-    if (eta >= 1.479 && eta < 2.0)  { charged_area=0.0115; neutral_area=0.0147; photon_area=0.0320; }
-    if (eta >= 2.0 && eta < 2.2)    { charged_area=0.0094; neutral_area=0.0082; photon_area=0.0512; }
-    if (eta >= 2.2 && eta < 2.3)    { charged_area=0.0095; neutral_area=0.0124; photon_area=0.0766; }
-    if (eta >= 2.3 && eta < 2.4)    { charged_area=0.0068; neutral_area=0.0186; photon_area=0.0949; }
-    if (eta >= 2.4)                 { charged_area=0.0053; neutral_area=0.0320; photon_area=0.1160; }
+    double neutral_area = getEA(eta).first;
+    double photon_area = getEA(eta).second;
 
-    return(
+    return( photon->pass_electron_veto() &&
 	( (in_barrel       
 	   && photon->had_tower_over_em()<0.05
-	   && photon->sigma_IetaIeta()<0.0103
-	   && std::max(photon->dr03_pfiso_charged()-rho*charged_area,0.)<2.44
-	   && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(2.57+exp(0.0044*photon->pt()+0.5809))
-           && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(1.92+0.0043*photon->pt())
+	   && photon->sigma_IetaIeta()<0.0102
+	   && photon->dr03_pfiso_charged()<3.32
+	   && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(1.92+0.014*photon->pt()+0.000019*pow(photon->pt(),2))
+           && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(0.81+0.0053*photon->pt())
 	      ) ||
         (in_endcap       
 	 && photon->had_tower_over_em()<0.05
-	 && photon->sigma_IetaIeta()<0.0277
-	 && std::max(photon->dr03_pfiso_charged()-rho*charged_area,0.)<1.84
-	 && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(4+exp(0.004*photon->pt()+0.9402))
-	 && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(2.15+0.0041*photon->pt())
+	 && photon->sigma_IetaIeta()<0.0274
+	 && photon->dr03_pfiso_charged()<1.97
+	 && std::max(photon->dr03_pfiso_neutral()-rho*neutral_area,0.)<(11.86+0.0139*photon->pt()+0.000025*pow(photon->pt(),2))
+	 && std::max(photon->dr03_pfiso_gamma()-rho*photon_area,0.)<(0.83+0.0034*photon->pt())
         ) )
         );
 
@@ -1225,7 +1521,8 @@ namespace ic {
 
   bool MuonTight(Muon const* muon) {
     bool tightCut = ( 
-        muon->is_global() && 
+        muon->is_global() &&
+	muon->is_pf() &&
         //muon->is_tracker() &&
         //muon->it_tracker_hits() > 10 &&
         muon->it_pixel_hits() > 0 &&
@@ -1251,6 +1548,21 @@ namespace ic {
       muon->segment_compatibility() > (goodGlob ? 0.303 : 0.451); 
     return isMedium;
   }
+
+  bool MuonMediumHIPsafe(Muon const* muon) {
+    bool goodGlob = muon->is_global() && 
+      muon->gt_normalized_chi2() < 3 &&
+      muon->cq_chi2_localposition()<12 &&
+      muon->cq_trk_kink()<20;
+
+    bool isMedium =
+      muon->is_pf() &&
+      (muon->is_global()||muon->is_tracker()) && //Require loose muon except pf isolation should be done in individual analyses
+      muon->it_valid_fraction() > 0.49 && 
+      muon->segment_compatibility() > (goodGlob ? 0.303 : 0.451); 
+    return isMedium;
+  }
+
 
   bool MuonLoose(Muon const* muon) {
     bool isLoose = 
@@ -1686,4 +1998,17 @@ namespace ic {
     return sigPtoverPt*(sqrt(pow(fData,2)+pow(jerUnc,2)))*pT;
   }
   */
+  
+   std::set<int16_t> GetTriggerTypes(TriggerObject* obj){
+    
+     std::set<int16_t> types;
+     ui64 packed_type;
+     packed_type.one = obj->id();
+     
+     for(unsigned i=0; i<4; ++i){
+       int16_t type = packed_type.four[i];
+       if(type!=0) types.insert(type);
+     }
+     return types;
+  }
 } //namespace

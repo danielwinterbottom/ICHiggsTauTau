@@ -1,5 +1,5 @@
-#ifndef UserCode_ICHiggsTauTau_ICElectronProducer_h
-#define UserCode_ICHiggsTauTau_ICElectronProducer_h
+#ifndef UserCode_ICHiggsTauTau_ICEventProducer_h
+#define UserCode_ICHiggsTauTau_ICEventProducer_h
 
 #include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"

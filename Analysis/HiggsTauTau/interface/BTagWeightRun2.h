@@ -22,6 +22,7 @@ namespace ic {
 class BTagWeightRun2 : public ModuleBase {
   private :
    CLASS_MEMBER(BTagWeightRun2, ic::channel, channel)
+   CLASS_MEMBER(BTagWeightRun2, ic::era, era)
    CLASS_MEMBER(BTagWeightRun2, std::string, jet_label)
    CLASS_MEMBER(BTagWeightRun2, TH2F*,bbtag_eff)
    CLASS_MEMBER(BTagWeightRun2, TH2F*,cbtag_eff)
@@ -34,34 +35,11 @@ class BTagWeightRun2 : public ModuleBase {
    //15 LFStats2Down 16 LFStats2Up 17 CFErrIDown 18CFErr1Up 19 CFErr2Down 20 CFerr2Up
 
   TRandom3  *rand;
-  BTagCalibration* calib;
+  const BTagCalibration *calib;
   BTagCalibrationReader* reader_incl;
   BTagCalibrationReader* reader_mujets;
+  BTagCalibrationReader* reader_comb;
   BTagCalibrationReader* reader_iterativefit;
-  //Syst uncs - promote demote:
-  BTagCalibrationReader* reader_inclup;
-  BTagCalibrationReader* reader_incldown;
-  BTagCalibrationReader* reader_mujetsup;
-  BTagCalibrationReader* reader_mujetsdown;
-  //Syst uncs - btagshape
-  BTagCalibrationReader* reader_jesup;
-  BTagCalibrationReader* reader_jesdown;
-  BTagCalibrationReader* reader_lfup;
-  BTagCalibrationReader* reader_lfdown;
-  BTagCalibrationReader* reader_hfup;
-  BTagCalibrationReader* reader_hfdown;
-  BTagCalibrationReader* reader_hfstats1up;
-  BTagCalibrationReader* reader_hfstats1down;
-  BTagCalibrationReader* reader_hfstats2up;
-  BTagCalibrationReader* reader_hfstats2down;
-  BTagCalibrationReader* reader_lfstats1up;
-  BTagCalibrationReader* reader_lfstats1down;
-  BTagCalibrationReader* reader_lfstats2up;
-  BTagCalibrationReader* reader_lfstats2down;
-  BTagCalibrationReader* reader_cferr1up;
-  BTagCalibrationReader* reader_cferr1down;
-  BTagCalibrationReader* reader_cferr2up;
-  BTagCalibrationReader* reader_cferr2down;
 
  public:
   BTagWeightRun2(std::string const& name);

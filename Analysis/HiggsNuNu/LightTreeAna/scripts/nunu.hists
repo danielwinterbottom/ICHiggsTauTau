@@ -1,15 +1,13 @@
-metnomuons*pow(sqrt(sumet),-1)(30,0.,15.)	;S;Events
 n_vertices(40,0,40)	;n_{vtx};Events
 jet1_pt(47,80.,550.)	;p_{T}^{j1} (GeV);Events
-jet2_pt(28,70.,350.)	;p_{T}^{j2} (GeV);Events
+jet2_pt(28,40.,350.)	;p_{T}^{j2} (GeV);Events
 jet1_uncorpt(47,80.,550.)	;uncor p_{T}^{j1} (GeV);Events
-jet2_uncorpt(28,70.,350.)	;uncor p_{T}^{j2} (GeV);Events
+jet2_uncorpt(28,40.,350.)	;uncor p_{T}^{j2} (GeV);Events
 jet1_eta(94,-4.7,4.7)	;#eta^{j1} (GeV);Events
 jet2_eta(94,-4.7,4.7)	;#eta^{j2} (GeV);Events
 cjvjetpt(19,15.,205.)	;p_{T}^{CJV jet} (GeV);Events
 metnomuons(25,200.,600.)	;E_{T,no-#mu}^{miss} (GeV);Events
 met(30,0.,550.)	;MET (GeV);Events
-l1met(30,0.,550.)	;L1MET (GeV);Events
 ht(30,100,1000)	;H_{T}^{p_{T}^{j}>15 GeV} (GeV);Events
 ht30(30,100,1000)	;H_{T}^{p_{T}^{j}>30 GeV} (GeV);Events
 dijet_M(20,1100.,4000.)	;M_{jj} (GeV);Events
@@ -18,9 +16,6 @@ dijet_deta(20,3.6,7.)	;#Delta#eta_{jj};Events
 dijet_sumeta(30,-5,5)	;#eta_{j1}+#eta_{j2};Events
 jetmetnomu_mindphi(12,2.3,3.1416)	;#Delta#phi(E_{T}^{miss},j_{1,2});Events
 alljetsmetnomu_mindphi(12,2.3,3.1416)	;#Delta#phi(E_{T,no-#mu}^{miss},j);Events
-metnomu_significance(30,0.,300.)	;S;Events
-jetunclet_mindphi(32,0,3.1416)	;min #Delta#phi(j,E_{T}^{uncl});Events
-metnomuunclet_dphi(32,0,3.1416)	;#Delta#phi(METnoMu,E_{T}^{uncl});Events
 dijetmetnomu_scalarSum_pt(35,0,1400)	;p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;Events
 dijetmetnomu_vectorialSum_pt(20,0,400)	;p_{T}(#vec{ja}+#vec{jb}+#vec{METnoMu});Events
 dijetmetnomu_ptfraction(20,0.,1.)	;p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events

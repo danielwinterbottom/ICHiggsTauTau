@@ -1,0 +1,3 @@
+jet2_pt(12,40.,250.)	;p_{T}^{j2} (GeV);Events
+alljetsmetnomu_mindphi:dijet_M(24,800.,2000.,20,1.,3.)	;M_{jj} (GeV);#Delta#phi(E_{T}^{miss},j);Events
+dijet_M:dijet_dphi:dijet_deta(10,0,5,10,0,3.1416,15,0,1500) ;#Delta#eta_{jj};#Delta#phi_{jj};M_{jj} (GeV);Events

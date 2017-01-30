@@ -15,8 +15,8 @@ namespace ic{
     std::vector<std::string> defaulttrigger;
     defaulttrigger.push_back("pass_sigtrigger==1");
     trigger_=defaulttrigger;
-    numweight_="weight_nolep";
-    denweight_="weight_nolep";
+    numweight_="weight_nolepnotrig*weight_trig_0";
+    denweight_="weight_nolepnotrig*weight_trig_0";
     shape_=("jet2_pt(200,0.,1000.)");
     shapename_="";
     dirname_="";

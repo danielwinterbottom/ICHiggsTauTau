@@ -327,6 +327,26 @@ TLegend* PositionedLegend(double width, double height, int pos, double offset);
 TLine* DrawHorizontalLine(TPad *pad, TLine* line, double yval);
 
 /**
+ * Use an existing TLine to draw a new vertical line across the current
+ * frame
+ *
+ * Will find the TH1 used to draw the axes on the pad, get the min/max
+ * y-values and then draw a TLine at the specified x-value
+ *
+ * @param pad TPad where the line should be drawn
+ * @param line Existing TLine already customised with the desired colour,
+ * width and style
+ * @param xval The x-value (given in the axis units) where the line should be
+ * drawn
+ * @param custom_ymax The maximum y-value (given in axis units) to draw the line to.
+ * If not specified the whole y-axis range will be used
+ *
+ * @return A pointer to the newly created TLine
+ */
+TLine* DrawVerticalLine(TPad *pad, TLine* line, double xval, double custom_ymax=-999);
+
+
+/**
  * Draw text in the top-margin region of a TPad
  *
  * Specified text will be latex-rendered in one of three positions:
@@ -709,6 +729,16 @@ TLine* DrawHorizontalLine(TPad *pad, TLine* line, double yval) {
   double xmax = axis->GetXaxis()->GetXmax();
   return line->DrawLine(xmin, yval, xmax, yval);
 }
+
+TLine* DrawVerticalLine(TPad *pad, TLine* line, double xval, double custom_ymax) {
+  TH1 *axis = GetAxisHist(pad);
+  std::cout << "pad: " << pad << "\n";
+  double ymin = axis->GetYaxis()->GetXmin();
+  double ymax = axis->GetYaxis()->GetXmax();
+  if (custom_ymax > -998) ymax = custom_ymax; 
+  return line->DrawLine(xval, ymin, xval, ymax);
+}
+
 
 void DrawTitle(TPad* pad, TString text, int align) {
   TVirtualPad *pad_backup = gPad;

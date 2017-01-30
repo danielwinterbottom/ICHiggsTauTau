@@ -33,7 +33,7 @@ class ElectronEffectiveArea{
         kEleHcalIso03, 
         kEleTrkIso04, 
         kEleEcalIso04, 
-        kEleHcalIso04, 
+	kEleHcalIso04, 
         kEleChargedIso03, 
         kEleGammaIso03, 
         kEleNeutralHadronIso03, 
