@@ -71,7 +71,7 @@
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
     "data_pu_file"  : "input/pileup/Data_Pileup_2016_271036-284044_13TeVMoriond17_23Sep2016ReReco_69p2mbMinBiasXS.root",
-    "mc_pu_file"    : "input/pileup/MC_Spring16_PU25ns_V1.root",
+    "mc_pu_file"    : "input/pileup/MC_Summer16_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : false,
