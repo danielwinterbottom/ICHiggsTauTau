@@ -118,7 +118,7 @@ namespace ic {
       }
       
       if(ch_ == channel::et) alias_map_["mt"] = "(mt_1>40)";
-      else if(ch_ == channel::mt) alias_map_["mt"] = "(mt_1>30)";
+      else if(ch_ == channel::mt) alias_map_["mt"] = "(mt_1>40)";
       
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
