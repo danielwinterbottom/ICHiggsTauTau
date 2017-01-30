@@ -1116,19 +1116,6 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
-    
-    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
-     .set_sample(output_name)
-     .set_channel(channel)
-     .set_mc(mc_type)
-     .set_met_label("pfMET")
-     .set_jets_label(jets_label)
-     .set_strategy(strategy_type)
-     .set_use_quantile_map(false)
-     .set_met_scale_mode(metscale_mode)
-     .set_met_res_mode(metres_mode)
-     .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
-
   }
 
 /*
