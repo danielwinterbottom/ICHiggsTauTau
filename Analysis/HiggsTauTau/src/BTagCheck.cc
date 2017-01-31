@@ -7,7 +7,7 @@
 namespace ic {
 
   BTagCheck::BTagCheck(std::string const& name) : ModuleBase(name),channel_(channel::et), 
-    era_(era::data_2012_rereco) {
+    era_(era::data_2012_rereco), strategy_(strategy::mssmsummer16){
     fs_ = NULL;
     jet_label_ = "pfJetsPFlow";
     do_legacy_ = true;
@@ -190,13 +190,15 @@ namespace ic {
         current_jet.push_back(embed_jets[i]);
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
+        double tight_wp = 0.8;
+        if(strategy_ == strategy::mssmsummer16) tight_wp = 0.8484;
         if(jet_flavour == 5){
           if(era_!=era::data_2016){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           } else sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           hists_->Fill("NTot_bflav",pt,fabs(eta),wt);
           if(gen_match) hists_->Fill("NTot_bflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8484){
+          if(csv>tight_wp){
             hists_->Fill("NBtag_bflav",pt,fabs(eta),wt);
             if(gen_match) hists_->Fill("NBtag_bflav_genmatch",pt,fabs(eta),wt);
           }
@@ -206,7 +208,7 @@ namespace ic {
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           } else  sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           if(gen_match) hists_->Fill("NTot_cflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8484){
+          if(csv>tight_wp){
             hists_->Fill("NBtag_cflav",pt,eta,wt);
             if(gen_match) hists_->Fill("NBtag_cflav_genmatch",pt,fabs(eta),wt);
           }
@@ -214,7 +216,7 @@ namespace ic {
           sf = reader_incl->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, eta, pt);
           hists_->Fill("NTot_otherflav",pt,eta,wt);
           if(gen_match) hists_->Fill("NTot_otherflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8484){
+          if(csv>tight_wp){
             hists_->Fill("NBtag_otherflav",pt,eta,wt);
             if(gen_match) hists_->Fill("NBtag_otherflav_genmatch",pt,fabs(eta),wt);
           }
