@@ -1448,6 +1448,12 @@ namespace ic {
 
     }
     lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
+    
+    std::cout << "dilepton_veto_ = " << dilepton_veto_ << std::endl;
+    std::cout << "extraelec_veto_ = " << extraelec_veto_ << std::endl;
+    std::cout << "extramuon_veto_ = " << extramuon_veto_ << std::endl;
+    
+    std::cout << "gen_match_1 = " << gen_match_1_ << std::endl;
 
 
     n_vtx_ = eventInfo->good_vertices();

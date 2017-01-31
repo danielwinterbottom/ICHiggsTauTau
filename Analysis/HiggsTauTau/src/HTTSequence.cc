@@ -53,6 +53,7 @@
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/NvtxWeight.h"
 #include "HiggsTauTau/interface/BTagWeightRun2.h"
+#include "HiggsTauTau/interface/HTTGenMatchSelector.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -2277,8 +2278,14 @@ void HTTSequence::BuildTauSelection(){
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
  
  if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16)){
+    // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
+    BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("genmatched_taus")
+      .set_gen_match(mcorigin::tauHad));
+     
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
-    .set_input_label(js["taus"].asString())
+    .set_input_label("genmatched_taus")
     .set_shift(tau_shift));
  }
 
@@ -2289,7 +2296,6 @@ void HTTSequence::BuildTauSelection(){
       .set_strategy(strategy_type)
       .set_moriond_corrections(moriond_tau_scale));
  }
-
 
 if(strategy_type == strategy::paper2013){
   BuildModule(SimpleFilter<Tau>("TauFilter")
