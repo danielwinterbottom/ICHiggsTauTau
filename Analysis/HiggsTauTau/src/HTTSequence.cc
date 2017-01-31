@@ -2309,7 +2309,8 @@ void HTTSequence::BuildTauSelection(){
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
  
- if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16)){
+ if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16||strategy_type==strategy::mssmsummer16)){
+    // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
     BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("genmatched_taus")
