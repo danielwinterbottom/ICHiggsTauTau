@@ -5,64 +5,140 @@ import json
 from UserCode.ICHiggsTauTau.analysis import *
 from UserCode.ICHiggsTauTau.uncertainties import ufloat
 from optparse import OptionParser
+import argparse
+import ConfigParser
 
 CHANNELS= ['et', 'mt', 'em','tt']
 ANALYSIS= ['sm','mssm']
 METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16]
 
-parser = OptionParser()
-parser.add_option("--channel", dest="channel", type='string', default='mt',
-    help="Tau decay channel to process.  Supported channels: %(CHANNELS)s" % vars())
-parser.add_option("-o", "--outputfolder", dest="output_folder", type='string', default='output',
-    help="Name of output folder")
-parser.add_option("-i", "--inputfolder", dest="input_folder", type='string', default='/vols/cms/dw515/Offline/output/MSSM/Jan11/',
-    help="Name of input folder")
-parser.add_option("-p", "--paramfile", dest="param_file", type='string', default='scripts/Params_2016_spring16.json',
-    help="Name of parameter file")
-parser.add_option("-c", "--cat", dest="cat", type='string', default='inclusive',
-    help="Category")
-parser.add_option("-y", "--year", dest="year", type='string', default='2016',
-    help="Year")
-parser.add_option("-s", "--sel", dest="sel", type='string', default='(1)',
-    help="Selection")
-parser.add_option("--set_alias", action="append", dest="set_alias", type='string', default=[],
-    help="Overwrite alias selection using this options. Specify with the form --set_alias=nameofaliastoreset:newselection")
-parser.add_option("-a", "--analysis", dest="analysis", type='string', default='sm',
-    help="Analysis.  Supported options: %(CHANNELS)s" % vars())
-parser.add_option("-v", "--var", dest="var", type='string', default='m_vis(7,0,140)',
-    help="Variable to plot")
-parser.add_option("-m", "--method", dest="method", type='int', default=8,
-    help="Method.  Supported options: %(METHODS)s" % vars())
-parser.add_option("--signalmasses", dest="signalmasses", type='string', default='125',
-    help="Comma seperated list of signal masses.")
-parser.add_option("-r", "--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type='float', default=-1,
-    help="QCD OS/SS ratio")
-parser.add_option("--sm_bkg", dest="sm_bkg", default=False,
-    help="Add SM Higgs background for MSSM")
-parser.add_option("--syst_tau_scale", dest="syst_tau_scale", type='string', default='',
-    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
-parser.add_option("--syst_eff_t", dest="syst_eff_t", type='string', default='',
-    help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
-parser.add_option("--syst_tquark", dest="syst_tquark", type='string', default='',
-    help="If this string is set then the top-quark weight systematic is performed with the set string appended to the resulting histogram name")
-parser.add_option("--syst_zwt", dest="syst_zwt", type='string', default='',
-    help="If this string is set then the z-reweighting systematic is performed with the set string appended to the resulting histogram name")
-parser.add_option("--syst_w_fake_rate", dest="syst_w_fake_rate", type='string', default='',
-    help="If this string is set then the W+jets fake-rate systematic is performed with the set string appended to the resulting histogram name")
-parser.add_option("--syst_scale_j", dest="syst_scale_j", type='string', default='',
-    help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
-parser.add_option("--syst_eff_b", dest="syst_eff_b", type='string', default='',
-    help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
-parser.add_option("--syst_fake_b", dest="syst_fake_b", type='string', default='',
-    help="If this string is set then the b-tag fake-rate systematic is performed with the set string appended to the resulting histogram name")
-(options, args) = parser.parse_args()
+conf_parser = argparse.ArgumentParser(
+    description=__doc__,
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    add_help=False
+    )
+conf_parser.add_argument("--cfg",
+                    help="Specify config file", metavar="FILE")
+options, remaining_argv = conf_parser.parse_known_args()
 
+defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"sm", "var":"m_vis(7,0,140)", "method":8 , "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "sm_bkg":False, "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" }
+
+if options.cfg:
+    config = ConfigParser.SafeConfigParser()
+    config.read([options.cfg])
+    defaults.update(dict(config.items("Defaults")))
+
+parser = argparse.ArgumentParser(
+    parents=[conf_parser]
+    )
+parser.set_defaults(**defaults)
+parser.add_argument("--channel", dest="channel", type=str,
+    help="Tau decay channel to process.  Supported channels: %(CHANNELS)s" % vars())
+parser.add_argument("--outputfolder", dest="output_folder", type=str,
+    help="Name of output folder")
+parser.add_argument("--folder", dest="input_folder", type=str,
+    help="Name of input folder")
+parser.add_argument("--paramfile", dest="param_file", type=str,
+    help="Name of parameter file")
+parser.add_argument("--cat", dest="cat", type=str,
+    help="Category")
+parser.add_argument("--year", dest="year", type=str,
+    help="Year")
+parser.add_argument("--sel", dest="sel", type=str,
+    help="Selection")
+parser.add_argument("--set_alias", action="append", dest="set_alias", type=str,
+    help="Overwrite alias selection using this options. Specify with the form --set_alias=nameofaliastoreset:newselection")
+parser.add_argument("--analysis", dest="analysis", type=str, 
+    help="Analysis.  Supported options: %(CHANNELS)s" % vars())
+parser.add_argument("--var", dest="var", type=str,
+    help="Variable to plot")
+parser.add_argument("--method", dest="method", type=int,
+    help="Method.  Supported options: %(METHODS)s" % vars())
+parser.add_argument("--sm_masses", dest="sm_masses", type=str,
+    help="Comma seperated list of SM signal masses.")
+parser.add_argument("--ggh_masses", dest="ggh_masses", type=str,
+    help="Comma seperated list of SUSY ggH signal masses.")
+parser.add_argument("--bbh_masses", dest="bbh_masses", type=str,
+    help="Comma seperated list of SUSY bbH signal masses.")
+parser.add_argument("--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type=float, default=-1,
+    help="QCD OS/SS ratio")
+parser.add_argument("--sm_bkg", dest="sm_bkg",
+    help="Add SM Higgs background for MSSM")
+parser.add_argument("--syst_tau_scale", dest="syst_tau_scale", type=str, default='',
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_eff_t", dest="syst_eff_t", type=str, default='',
+    help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tquark", dest="syst_tquark", type=str, default='',
+    help="If this string is set then the top-quark weight systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zwt", dest="syst_zwt", type=str, default='',
+    help="If this string is set then the z-reweighting systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_w_fake_rate", dest="syst_w_fake_rate", type=str, default='',
+    help="If this string is set then the W+jets fake-rate systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_scale_j", dest="syst_scale_j", type=str, default='',
+    help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_eff_b", dest="syst_eff_b", type=str, default='',
+    help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_fake_b", dest="syst_fake_b", type=str, default='',
+    help="If this string is set then the b-tag fake-rate systematic is performed with the set string appended to the resulting histogram name")
+
+
+options = parser.parse_args(remaining_argv)
+
+print options.channel
+
+#parser = OptionParser()
+#parser.add_option("--channel", dest="channel", type='string', default='mt',
+#    help="Tau decay channel to process.  Supported channels: %(CHANNELS)s" % vars())
+#parser.add_option("-o", "--outputfolder", dest="output_folder", type='string', default='output',
+#    help="Name of output folder")
+#parser.add_option("-i", "--inputfolder", dest="input_folder", type='string', default='/vols/cms/dw515/Offline/output/MSSM/Jan11/',
+#    help="Name of input folder")
+#parser.add_option("-p", "--paramfile", dest="param_file", type='string', default='scripts/Params_2016_spring16.json',
+#    help="Name of parameter file")
+#parser.add_option("-c", "--cat", dest="cat", type='string', default='inclusive',
+#    help="Category")
+#parser.add_option("-y", "--year", dest="year", type='string', default='2016',
+#    help="Year")
+#parser.add_option("-s", "--sel", dest="sel", type='string', default='(1)',
+#    help="Selection")
+#parser.add_option("--set_alias", action="append", dest="set_alias", type='string', default=[],
+#    help="Overwrite alias selection using this options. Specify with the form --set_alias=nameofaliastoreset:newselection")
+#parser.add_option("-a", "--analysis", dest="analysis", type='string', default='sm',
+#    help="Analysis.  Supported options: %(CHANNELS)s" % vars())
+#parser.add_option("-v", "--var", dest="var", type='string', default='m_vis(7,0,140)',
+#    help="Variable to plot")
+#parser.add_option("-m", "--method", dest="method", type='int', default=8,
+#    help="Method.  Supported options: %(METHODS)s" % vars())
+#parser.add_option("--signalmasses", dest="signalmasses", type='string', default='125',
+#    help="Comma seperated list of signal masses.")
+#parser.add_option("-r", "--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type='float', default=-1,
+#    help="QCD OS/SS ratio")
+#parser.add_option("--sm_bkg", dest="sm_bkg", default=False,
+#    help="Add SM Higgs background for MSSM")
+#parser.add_option("--syst_tau_scale", dest="syst_tau_scale", type='string', default='',
+#    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+#parser.add_option("--syst_eff_t", dest="syst_eff_t", type='string', default='',
+#    help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
+#parser.add_option("--syst_tquark", dest="syst_tquark", type='string', default='',
+#    help="If this string is set then the top-quark weight systematic is performed with the set string appended to the resulting histogram name")
+#parser.add_option("--syst_zwt", dest="syst_zwt", type='string', default='',
+#    help="If this string is set then the z-reweighting systematic is performed with the set string appended to the resulting histogram name")
+#parser.add_option("--syst_w_fake_rate", dest="syst_w_fake_rate", type='string', default='',
+#    help="If this string is set then the W+jets fake-rate systematic is performed with the set string appended to the resulting histogram name")
+#parser.add_option("--syst_scale_j", dest="syst_scale_j", type='string', default='',
+#    help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
+#parser.add_option("--syst_eff_b", dest="syst_eff_b", type='string', default='',
+#    help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
+#parser.add_option("--syst_fake_b", dest="syst_fake_b", type='string', default='',
+#    help="If this string is set then the b-tag fake-rate systematic is performed with the set string appended to the resulting histogram name")
+#(options, args) = parser.parse_args()
+#
 
 print ''
 print '################### Options ###################'
 print 'channel          = ' + options.channel
 print 'outputfolder     = ' + options.output_folder
-print 'inputfolder      = ' + options.input_folder
+print 'folder           = ' + options.input_folder
 print 'paramfile        = ' + options.param_file
 print 'cat              = ' + options.cat
 print 'year             = ' + options.year
@@ -70,7 +146,9 @@ print 'sel              = ' + options.sel
 print 'analysis         = ' + options.analysis
 print 'var              = ' + options.var
 print 'method           ='  ,  options.method
-print 'signalmasses     = ' +  options.signalmasses
+print 'sm_masses        = ' +  options.sm_masses
+print 'ggh_masses       = ' +  options.ggh_masses
+print 'bbh_masses       = ' +  options.bbh_masses
 print 'qcd_os_ss_ratio  ='  ,  options.qcd_os_ss_ratio
 print 'sm_bkg           ='  ,  options.sm_bkg
 print 'syst_tau_scale   ='  ,  options.syst_tau_scale
@@ -83,6 +161,125 @@ print 'syst_eff_b       ='  ,  options.syst_eff_b
 print 'syst_fake_b      ='  ,  options.syst_fake_b
 print '###############################################'
 print ''
+
+# Category dictionary 
+
+cats = {}
+if options.analysis == 'sm':
+    if options.channel == 'mt':
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+    elif options.channel == 'et': 
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+elif options.analysis == 'mssm':
+    if options.channel == 'mt':        
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+    elif options.channel == 'et':
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+if options.channel == 'tt':
+    cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+elif options.channel == 'em':
+    cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
+
+cats['inclusive'] = '(1)' 
+cats['w_os'] = 'os'
+cats['w_sdb'] = 'mt_1>70.'
+cats['w_sdb_os'] = 'os'
+cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+
+# Overwrite any category selections if the --set_alias option is used
+for i in options.set_alias:
+    cat_to_overwrite = i.split(':')[0]
+    overwrite_with = i.split(':')[1]
+    print 'Overwriting alias: \"'+cat_to_overwrite+'\" with selection: \"'+overwrite_with+'\"'
+    if cat_to_overwrite == 'sel':
+        options.sel = overwrite_with
+    else:
+        cats[cat_to_overwrite] = overwrite_with
+
+# Additional selections to seperate MC samples by gen flags
+
+z_sels = {}
+if options.channel == 'et':
+    z_sels['ztt_sel'] = '(gen_match_2==5)'
+    z_sels['zl_sel'] = '(gen_match_2<5)'
+    z_sels['zj_sel'] = '(gen_match_2==6)'
+elif options.channel == 'mt':
+    z_sels['ztt_sel'] = '(gen_match_2==5)'
+    z_sels['zl_sel'] = '(gen_match_2<5)'
+    z_sels['zj_sel'] = '(gen_match_2==6)'
+elif options.channel == 'tt':
+    z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
+    z_sels['zl_sel'] = '(gen_match_2<6&&gen_match_1<6&&!(gen_match_1==5&&gen_match_2==5))'
+    z_sels['zj_sel'] = '(gen_match_2==6||gen_match_1==6)'
+elif options.channel == 'em':
+    z_sels['ztt_sel'] = '(gen_match_1>2 && gen_match_2>3)'
+    z_sels['zll_sel'] = '(gen_match_1<3 || gen_match_2<4)'
+
+top_sels = {}
+top_sels['ttt_sel'] = z_sels['ztt_sel']
+top_sels['ttj_sel'] = '!('+z_sels['ztt_sel']+')'
+
+vv_sels = {}
+vv_sels['vvt_sel'] = z_sels['ztt_sel']
+vv_sels['vvj_sel'] = '!('+z_sels['ztt_sel']+')'
+    
+# Add data sample names
+if options.channel == 'mt': 
+    data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD']
+if options.channel == 'em': 
+    data_samples = ['MuonEGB','MuonEGC','MuonEGD']
+if options.channel == 'et': 
+    data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD']
+if options.channel == 'tt': 
+    data_samples = ['TauB','TauC','TauD']
+    
+# Add MC sample names   
+ztt_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','ZZTo2L2Q','ZZTo4L','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+wgam_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
+top_samples = ['TT']
+ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+
+if options.channel == 'em': 
+    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
+else:
+    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
+    
+w_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
+wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+
+sm_samples = { 'ggH' : 'GluGluHToTauTau', 'qqH' : 'VBFHToTauTau', 'WplusH' : 'WplusHToTauTau', 'WminusH' : 'WminusHToTauTau', 'ZH' : 'ZHToTauTau', 'TTH' : 'TTHToTauTau' }
+mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau', 'bbH' : 'SUSYGluGluToBBHToTauTau' }
+Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
+
+# set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
+
+systematics = { 'default' : ('','', 'wt', []) }
+if options.syst_tau_scale != '':
+    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'UP', 'wt', [])
+    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'DOWN', 'wt', [])
+if options.syst_eff_t != '':
+    systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'UP', 'wt*wt_tau_id_up', ['ZLL','VVJ','TTJ','QCD','W'] )
+    systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'DOWN', 'wt*wt_tau_id_down', ['ZLL','VVJ','TTJ','QCD','W'])
+if options.syst_tquark != '':
+    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'UP', 'wt*wt_tquark_up', ['ZTT','ZLL','VV','QCD','W','signal'])
+    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'DOWN', 'wt*wt_tquark_down', ['ZTT','ZLL','VV','QCD','W', 'signal'])    
+if options.syst_zwt != '':
+    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'UP', 'wt*wt_zpt_up', ['ZLL','VV','TT','QCD','W','signal'])
+    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'DOWN', 'wt*wt_zpt_down', ['ZLL','VV','TT','QCD','W','signal'])
+if options.syst_w_fake_rate != '':
+    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'UP', 'wt*wt_tau_fake_up', ['ZTT','ZLL','VV','TT','QCD','signal'])
+    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'DOWN', 'wt*wt_tau_fake_down', ['ZTT','ZLL','VV','TT','QCD','signal'])
+if options.syst_scale_j != '':
+    systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'UP', 'wt', [])
+    systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'DOWN', 'wt', [])
+if options.syst_eff_b != '':
+    systematics['syst_eff_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'UP', 'wt', [])
+    systematics['syst_scale_j_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'DOWN', 'wt', [])
+if options.syst_fake_b != '':
+    systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'UP', 'wt', [])
+    systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'DOWN', 'wt', [])
         
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
@@ -96,7 +293,9 @@ else:
 
 # Get array of signal masses to process        
         
-masses = options.signalmasses.split(',')
+sm_masses = options.sm_masses.split(',')
+ggh_masses = options.ggh_masses.split(',')
+bbh_masses = options.bbh_masses.split(',')
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -354,10 +553,14 @@ def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', c
             sample_name = sm_samples[key]+'_M-'+mass
             ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_str+add_name, sample_name, plot, full_selection))
             
-def GenerateMSSMSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel='', cat='', do_ggH=True, do_bbH=True):
+def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_masses = ['1000'], wt='', sel='', cat='', do_ggH=True, do_bbH=True):
     full_selection = BuildCutString(wt, sel, cat, 'os')
-    for mass in masses:
-        for key in mssm_samples:
+    for key in mssm_samples:
+        if key == 'ggH':
+            masses = ggh_masses
+        elif key == 'bbH':
+            masses = bbh_masses
+        for mass in masses:
             if key == 'ggH' and not do_ggH:
                 continue
             if key == 'bbH' and not do_bbH:
@@ -412,132 +615,14 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
         GenerateQCD(ana, add_name, data_samples, qcd_sub_samples, w_sub_samples, plot, wt, sel, cat, options.method)
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
-            GenerateSMSignal(ana, add_name, plot, masses, wt, sel, cat)
+            GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat)
         elif options.analysis == 'mssm':
-            GenerateMSSMSignal(ana, add_name, plot, masses, wt, sel, cat)
+            GenerateMSSMSignal(ana, add_name, plot, ggh_masses, bbh_masses, wt, sel, cat)
             if options.sm_bkg:
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, options.sm_bkg)  
         elif options.analysis == 'Hhh':
-            GenerateHhhSignal(ana, add_name, plot, masses, wt, sel, cat)
+            GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat)
 
-# Category dictionary 
-
-cats = {}
-if options.analysis == 'sm':
-    if options.channel == 'mt':
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-    elif options.channel == 'et': 
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-elif options.analysis == 'mssm':
-    if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-    elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-if options.channel == 'tt':
-    cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
-elif options.channel == 'em':
-    cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
-
-cats['inclusive'] = '(1)' 
-cats['w_os'] = 'os'
-cats['w_sdb'] = 'mt_1>70.'
-cats['w_sdb_os'] = 'os'
-cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
-cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-
-# Overwrite any category selections if the --set_alias option is used
-for i in options.set_alias:
-    cat_to_overwrite = i.split(':')[0]
-    overwrite_with = i.split(':')[1]
-    print 'Overwriting alias: \"'+cat_to_overwrite+'\" with selection: \"'+overwrite_with+'\"'
-    if cat_to_overwrite == 'sel':
-        options.sel = overwrite_with
-    else:
-        cats[cat_to_overwrite] = overwrite_with
-
-# Additional selections to seperate MC samples by gen flags
-
-z_sels = {}
-if options.channel == 'et':
-    z_sels['ztt_sel'] = '(gen_match_2==5)'
-    z_sels['zl_sel'] = '(gen_match_2<5)'
-    z_sels['zj_sel'] = '(gen_match_2==6)'
-elif options.channel == 'mt':
-    z_sels['ztt_sel'] = '(gen_match_2==5)'
-    z_sels['zl_sel'] = '(gen_match_2<5)'
-    z_sels['zj_sel'] = '(gen_match_2==6)'
-elif options.channel == 'tt':
-    z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
-    z_sels['zl_sel'] = '(gen_match_2<6&&gen_match_1<6&&!(gen_match_1==5&&gen_match_2==5))'
-    z_sels['zj_sel'] = '(gen_match_2==6||gen_match_1==6)'
-elif options.channel == 'em':
-    z_sels['ztt_sel'] = '(gen_match_1>2 && gen_match_2>3)'
-    z_sels['zll_sel'] = '(gen_match_1<3 || gen_match_2<4)'
-
-top_sels = {}
-top_sels['ttt_sel'] = z_sels['ztt_sel']
-top_sels['ttj_sel'] = '!('+z_sels['ztt_sel']+')'
-
-vv_sels = {}
-vv_sels['vvt_sel'] = z_sels['ztt_sel']
-vv_sels['vvj_sel'] = '!('+z_sels['ztt_sel']+')'
-    
-# Add data sample names
-if options.channel == 'mt': 
-    data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD']
-if options.channel == 'em': 
-    data_samples = ['MuonEGB','MuonEGC','MuonEGD']
-if options.channel == 'et': 
-    data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD']
-if options.channel == 'tt': 
-    data_samples = ['TauB','TauC','TauD']
-    
-# Add MC sample names   
-ztt_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','ZZTo2L2Q','ZZTo4L','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
-wgam_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
-top_samples = ['TT']
-ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-
-if options.channel == 'em': 
-    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
-else:
-    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
-    
-w_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
-wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
-
-sm_samples = { 'ggH' : 'GluGluHToTauTau', 'qqH' : 'VBFHToTauTau', 'WplusH' : 'WplusHToTauTau', 'WminusH' : 'WminusHToTauTau', 'ZH' : 'ZHToTauTau', 'TTH' : 'TTHToTauTau' }
-mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau', 'bbH' : 'SUSYGluGluToBBHToTauTau' }
-Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
-
-# set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
-
-systematics = { 'default' : ('','', 'wt', []) }
-if options.syst_tau_scale != '':
-    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'UP', 'wt', [])
-    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'DOWN', 'wt', [])
-if options.syst_eff_t != '':
-    systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'UP', 'wt*wt_tau_id_up', ['ZLL','VVJ','TTJ','QCD','W'] )
-    systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'DOWN', 'wt*wt_tau_id_down', ['ZLL','VVJ','TTJ','QCD','W'])
-if options.syst_tquark != '':
-    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'UP', 'wt*wt_tquark_up', ['ZTT','ZLL','VV','QCD','W','signal'])
-    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'DOWN', 'wt*wt_tquark_down', ['ZTT','ZLL','VV','QCD','W', 'signal'])    
-if options.syst_zwt != '':
-    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'UP', 'wt*wt_zpt_up', ['ZLL','VV','TT','QCD','W','signal'])
-    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'DOWN', 'wt*wt_zpt_down', ['ZLL','VV','TT','QCD','W','signal'])
-if options.syst_w_fake_rate != '':
-    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'UP', 'wt*wt_tau_fake_up', ['ZTT','ZLL','VV','TT','QCD','signal'])
-    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'DOWN', 'wt*wt_tau_fake_down', ['ZTT','ZLL','VV','TT','QCD','signal'])
-if options.syst_scale_j != '':
-    systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'UP', 'wt', [])
-    systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'DOWN', 'wt', [])
-if options.syst_eff_b != '':
-    systematics['syst_eff_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'UP', 'wt', [])
-    systematics['syst_scale_j_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'DOWN', 'wt', [])
-if options.syst_fake_b != '':
-    systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'UP', 'wt', [])
-    systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'DOWN', 'wt', [])
 
 # Create output file
 var_name = options.var.split('[')[0]
@@ -587,9 +672,15 @@ for systematic in systematics:
         signal_samples = mssm_samples
     elif options.analysis == 'Hhh':
         signal_samples = Hhh_samples
-    
-    for mass in masses:
-        for samp in signal_samples:
+
+    for samp in signal_samples:
+        if options.analysis == "sm":
+            masses=sm_masses
+        elif samp == 'ggH':
+            masses = ggh_masses
+        else:
+            masses = bbh_masses
+        for mass in masses:
             sample_name = signal_samples[samp]+'_M-'+mass
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
     
