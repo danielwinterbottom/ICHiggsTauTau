@@ -206,8 +206,8 @@ namespace ic {
              w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p20_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
-          fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["m_trgIsoMu24orTkIsoMu24_desy_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trgIsoMu24orTkIsoMu24_desy_data")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_trgMu8leg_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trgMu8leg_desy_data")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_trgMu23leg_desy_data"] = std::shared_ptr<RooFunctor>(
@@ -985,7 +985,7 @@ namespace ic {
                     auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};
                     auto args_desy = std::vector<double>{pt,m_signed_eta};
                     if(m_iso<0.15){
-                      mu_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args_desy.data());
+                      mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
                     } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
                   //  mu_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
                    // mu_trg = 1;

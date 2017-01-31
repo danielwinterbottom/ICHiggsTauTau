@@ -19,7 +19,7 @@ namespace ic {
 
   int BTagWeightRun2::PreAnalysis() {
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
-    if( era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    if( era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2Moriond17_2017_1_26_BtoH.csv";
     calib = new const BTagCalibration("csvv2",csv_file_path);
     if(era_ == era::data_2016){
       reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
@@ -214,7 +214,7 @@ namespace ic {
       }
       bool passtag;
       if(channel_ != channel::tt || era_==era::data_2016){
-        passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+        passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8484;
       } else {
         passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.46;
       }

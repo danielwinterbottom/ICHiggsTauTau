@@ -196,7 +196,7 @@ namespace ic {
           } else sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           hists_->Fill("NTot_bflav",pt,fabs(eta),wt);
           if(gen_match) hists_->Fill("NTot_bflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8){
+          if(csv>0.8484){
             hists_->Fill("NBtag_bflav",pt,fabs(eta),wt);
             if(gen_match) hists_->Fill("NBtag_bflav_genmatch",pt,fabs(eta),wt);
           }
@@ -206,7 +206,7 @@ namespace ic {
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           } else  sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           if(gen_match) hists_->Fill("NTot_cflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8){
+          if(csv>0.8484){
             hists_->Fill("NBtag_cflav",pt,eta,wt);
             if(gen_match) hists_->Fill("NBtag_cflav_genmatch",pt,fabs(eta),wt);
           }
@@ -214,7 +214,7 @@ namespace ic {
           sf = reader_incl->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, eta, pt);
           hists_->Fill("NTot_otherflav",pt,eta,wt);
           if(gen_match) hists_->Fill("NTot_otherflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8){
+          if(csv>0.8484){
             hists_->Fill("NBtag_otherflav",pt,eta,wt);
             if(gen_match) hists_->Fill("NBtag_otherflav_genmatch",pt,fabs(eta),wt);
           }

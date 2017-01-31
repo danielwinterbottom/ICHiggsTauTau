@@ -331,7 +331,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16) {
+    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16 && strategy_!=strategy::mssmsummer16) {
       if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
         std::vector<GenParticle *> sel_particles;
