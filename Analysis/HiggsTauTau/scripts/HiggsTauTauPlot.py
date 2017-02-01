@@ -84,8 +84,6 @@ parser.add_argument("--syst_fake_b", dest="syst_fake_b", type=str, default='',
 
 options = parser.parse_args(remaining_argv)
 
-print options.channel
-
 print ''
 print '################### Options ###################'
 print 'channel           = ' + options.channel

@@ -53,14 +53,6 @@ parser.add_option("--constant_binning",dest="const", action='store_true', defaul
                   help="Use constant binning (196,0,3920)")
 parser.add_option("--add_sm",dest="add_sm",action='store_true', default=False,
                   help="Add SM H as background")
-#parser.add_option("--dijet", dest="dijet", action='store_true', default=False,
-#                  help="Make inputs for dijet mass.")
-#parser.add_option("--mttbb", dest="mttbb", action='store_true', default=False,
-#                  help="Make inputs for mttbb.")
-#parser.add_option("--mH", dest="mH", action='store_true', default=False,
-#                  help="Make inputs for mH using kinematic fitting.")
-#parser.add_option("--masscuts", dest="masscuts", action='store_true', default=False,
-#                  help="Apply mass cuts on m_bb and m_tautau to 4 body mass for H->hh analysis.")
 parser.add_option("-e", dest="energy", type='string', default='13',
                   help="The C.O.M. energy is written into the datacard name, default is 13")
 parser.add_option("--no_shape_systs", dest="no_shape_systs", action='store_true', default=False,
@@ -132,7 +124,7 @@ if not options.year == "":
 
 extra_global = ' '
 if options.add_sm:
-  extra_global = ' --sm_bkg '
+  extra_global = ' --add_sm_background '
 
 #### Apply these options for specific channels
 
@@ -164,8 +156,6 @@ if SCHEME == 'run2_mssm_2016':
   if options.const:
     BINS_FINE="(98,0,3920)"
     BINS="(98,0,3920)"
-#  BINS_FINE_MTSV="[0,9.93847,19.8421,30.1921,39.6147,49.4733,60.2784,69.9045,79.0905,89.4836,101.242,109.027,120.346,129.599,139.564,150.295,161.851,170.045,178.654,187.698,202.13,223.114,252.433,271.843,300.063,323.135,347.981,403.552,503.981,599.075,694.743,786.038,889.33,1110.65,1288.02,1493.7,1689.99,1912.07,2110.56,2272.85,2508.8,2701.7,2909.43,3133.14,3291.76,3458.4,3724.32,3912.87]"
-#  BINS_MTSV="[0,19.8421,39.6147,60.2784,79.0905,101.242,120.346,139.564,161.851,178.654,202.13,252.433,300.063,347.981,403.552,503.981,694.743,889.33,1110.65,1288.02,1493.7,1689.99,1912.07,2110.56,2272.85,2508.8,2701.7,2909.43,3133.14,3291.76,3458.4,3724.32,3912.87]"
 
   scheme_et = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<50" '),
@@ -269,17 +259,16 @@ for ch in channels:
     
     os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --channel=%(ch)s'
               ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s'
-              '--paramfile=%(PARAMS)s --inputfolder=%(FOLDER)s'
-              ' --signalmasses= --signalmassesBB= --signalmassesGG='
-              ' %(extra)s' % vars())
+              '--paramfile=%(PARAMS)s --folder=%(FOLDER)s'
+              ' --var="%(var)s%(bin)s" %(extra)s' % vars())
 
-    os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
-        ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
-        ' --var="%(var)s%(bin)s" --norm_bins=true '
-        ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
-        ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
-        ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbosity=0'
-        ' --paramfile=%(PARAMS)s --extra_pad=0.2 --folder=%(FOLDER)s %(extra)s' % vars())
+    #os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
+    #    ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
+    #    ' --var="%(var)s%(bin)s" --norm_bins=true '
+    #    ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
+    #    ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
+    #    ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbosity=0'
+    #    ' --paramfile=%(PARAMS)s --extra_pad=0.2 --folder=%(FOLDER)s %(extra)s' % vars())
     
   #varsplit = var.split('(')
   #varname=varsplit[0]
