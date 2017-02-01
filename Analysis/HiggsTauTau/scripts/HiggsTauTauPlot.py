@@ -9,7 +9,7 @@ import argparse
 import ConfigParser
 
 CHANNELS= ['et', 'mt', 'em','tt']
-ANALYSIS= ['sm','mssm']
+ANALYSIS= ['sm','mssm','Hhh']
 METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16]
 
 conf_parser = argparse.ArgumentParser(
@@ -701,14 +701,42 @@ for systematic in systematics:
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
-    # When adding SM background for MSSM we want to scale SM signals to 1pb - correct XS times BR is then applied at combine harvestor level
-    if options.add_sm_background != '':
+    # When adding signal samples to th data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
+    if options.analysis == "sm" or options.add_sm_background:
+        if options.analysis == "sm":
+            masses = sm_masses
+        else:
+            masses = [options.add_sm_background]
         for samp in sm_samples:
-            xs = ana.info[sm_samples[samp]+'_M-'+options.add_sm_background]['xs']
-            sf = 1.0/xs
-            sm_hist = ana.nodes[nodename].nodes[samp+"_SM"+options.add_sm_background].shape.hist
-            sm_hist.Scale(sf)
-            sm_hist_int = sm_hist.Integral(0,sm_hist.GetNbinsX()+1)
+            if options.analysis == "sm":
+                samp_name = samp
+            else:
+                samp_name = samp+"_SM"
+            for mass in masses:
+                xs = ana.info[sm_samples[samp]+'_M-'+mass]['xs']
+                sf = 1.0/xs
+                sm_hist = ana.nodes[nodename].nodes[samp_name+mass].shape.hist
+                sm_hist.Scale(sf)
+    if options.analysis == "mssm":
+        for samp in mssm_samples:
+            if samp == 'ggH':
+                masses = ggh_masses
+            elif samp == 'bbH':
+                masses = bbh_masses
+            for mass in masses:
+                xs = ana.info[mssm_samples[samp]+'_M-'+mass]['xs']
+                sf = 1.0/xs
+                mssm_hist = ana.nodes[nodename].nodes[samp+mass].shape.hist
+                mssm_hist.Scale(sf)
+    if options.analysis == "Hhh":
+        for samp in Hhh_samples:
+            masses = ggh_masses
+            for mass in masses:
+                xs = ana.info[Hhh_samples[samp]+'_M-'+mass]['xs']
+                sf = 1.0/xs
+                mssm_hist = ana.nodes[nodename].nodes[samp+mass].shape.hist
+                mssm_hist.Scale(sf)
+    
     
     ana.nodes.Output(outfile)
     
