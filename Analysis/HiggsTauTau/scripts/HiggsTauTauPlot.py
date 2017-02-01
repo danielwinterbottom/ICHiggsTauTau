@@ -140,6 +140,10 @@ cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
+# MSSM categories
+cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
+cats['nobtag'] = '(n_bjets==0)'
+
 # Overwrite any category selections if the --set_alias option is used
 for i in options.set_alias:
     cat_to_overwrite = i.split(':')[0]
@@ -567,7 +571,7 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
     for node in nodes:
         per_err = node.shape.rate.s/node.shape.rate.n
         print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err
-        if True in [node.name.find(sig) != -1 for sig in signal_samples.keys()]:
+        if True in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name.find("_SM"+options.add_sm_background) ==-1:
             sig_total += node.shape.rate
         elif node.name not in data_strings:
             bkg_total += node.shape.rate
@@ -669,7 +673,7 @@ for systematic in systematics:
     
     if options.add_sm_background and options.analysis == 'mssm':
         for samp in sm_samples:
-            sample_name = sm_samples[samp]+'_M-125'
+            sample_name = sm_samples[samp]+'_M-'+options.add_sm_background
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
             
     ana.AddInfo(options.param_file, scaleTo='data_obs')
@@ -697,6 +701,15 @@ for systematic in systematics:
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
+    # When adding SM background for MSSM we want to scale SM signals to 1pb - correct XS times BR is then applied at combine harvestor level
+    if options.add_sm_background != '':
+        for samp in sm_samples:
+            xs = ana.info[sm_samples[samp]+'_M-'+options.add_sm_background]['xs']
+            sf = 1.0/xs
+            sm_hist = ana.nodes[nodename].nodes[samp+"_SM"+options.add_sm_background].shape.hist
+            sm_hist.Scale(sf)
+            sm_hist_int = sm_hist.Integral(0,sm_hist.GetNbinsX()+1)
+    
     ana.nodes.Output(outfile)
     
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
@@ -720,7 +733,7 @@ for systematic in systematics:
         total_bkg = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
         total_bkg.Reset()
         for node in nodes:
-            if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs':
+            if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
                 total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
         total_bkg.SetName('total_bkg')
         total_bkg.Write()
