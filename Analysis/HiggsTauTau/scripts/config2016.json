@@ -23,7 +23,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
-    //"make_sync_ntuple" : true,
+    "make_sync_ntuple" : true,
     "make_sync_ntuple" : false,
     "lumi_mask_only" : false,
     "iso_study" : false,

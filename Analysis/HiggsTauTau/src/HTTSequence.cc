@@ -925,7 +925,7 @@ if(do_met_filters && is_data){
   BuildModule(GenericModule("MetFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-       std::vector<std::string> met_filters = {"Flag_globalTightHalo2016Filter"};
+       std::vector<std::string> met_filters = {"Flag_eeBadScFilter"};
        bool pass_filters = true;
        for(unsigned i=0;i<met_filters.size();++i){
         pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
@@ -937,7 +937,7 @@ if(do_met_filters){
   BuildModule(GenericModule("MetFiltersRecoEffect")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-       std::vector<std::string> met_filters = {"Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter", "badChargedHadronFilter","badMuonFilter"};
+       std::vector<std::string> met_filters = {"Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices", "badChargedHadronFilter","badMuonFilter", "Flag_globalTightHalo2016Filter"};
        bool pass_filters = true;
        for(unsigned i=0;i<met_filters.size();++i){
         pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
@@ -1697,8 +1697,10 @@ BuildModule(HTTElectronEfficiency("ElectronEfficiencyForIDStudy")
     }
    } else if(strategy_type==strategy::phys14){
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
-    } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+    } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
+    } else if(strategy_type == strategy::mssmsummer16){
+      ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
     }
 
 
@@ -1907,8 +1909,10 @@ void HTTSequence::BuildEMPairs() {
     }
    } else if(strategy_type==strategy::phys14){
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
-   } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+   } else if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
+   } else if(strategy_type == strategy::mssmsummer16){
+      ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    }
 
 
@@ -2081,8 +2085,10 @@ void HTTSequence::BuildZEEPairs() {
       js["electrons"].asString(), "sel_electrons"));
 
   std::function<bool(Electron const*)> ElecID;
-   if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 ||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+   if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 ||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
+   } else if(strategy_type == strategy::mssmsummer16){
+      ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    }
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
@@ -2118,8 +2124,10 @@ void HTTSequence::BuildTPZEEPairs() {
       js["electrons"].asString(), "sel_electrons"));
 
   std::function<bool(Electron const*)> ElecID;
-   if(strategy_type==strategy::spring15||strategy_type ==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+   if(strategy_type==strategy::spring15||strategy_type ==strategy::fall15 || strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16){
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
+   } else if(strategy_type==strategy::mssmsummer16){
+      ElecID = [](Electron const* e) { return ElectronHTTIdSpring16(e, false); };
    }
 
   BuildModule(SimpleFilter<Electron>("ProbeFilter")
@@ -2438,7 +2446,7 @@ void HTTSequence::BuildDiElecVeto() {
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
-   } else if(strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+   } else if(strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){
        vetoElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_dielec_pt    &&
                 fabs(e->eta())          < veto_dielec_eta   &&
@@ -2446,6 +2454,18 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(e->dz_vertex())    < veto_dielec_dz    &&
                 //ElectronHTTIdSpring15(e,true)                   &&
                 VetoElectronIDSpring15(e)                   &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
+                PF03IsolationVal(e, 0.5,0) < 0.3;
+      });
+   }
+       else if(strategy_type == strategy::mssmsummer16){
+       vetoElecFilter.set_predicate([=](Electron const* e) {
+        return  e->pt()                 > veto_dielec_pt    &&
+                fabs(e->eta())          < veto_dielec_eta   &&
+                fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
+                fabs(e->dz_vertex())    < veto_dielec_dz    &&
+                //ElectronHTTIdSpring15(e,true)                   &&
+                VetoElectronIDSpring16(e)                   &&
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
@@ -2572,14 +2592,29 @@ void HTTSequence::BuildExtraElecVeto(){
       });
   }
 
- if(strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+ if(strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16){
       extraElecFilter.set_no_filter(true);
       extraElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_elec_pt    &&
                 fabs(e->eta())          < veto_elec_eta   &&
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
-                ElectronHTTIdSpring15(e, false)           &&
+                ElectronHTTIdSpring15(e, true)           &&
+                //!e->has_matched_conversion()              &&
+                //e->gsf_tk_nhits() <= 1                    &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
+                PF03IsolationVal(e, 0.5,0) < 0.3;
+      });
+  }
+  
+ if(strategy_type == strategy::mssmsummer16){
+      extraElecFilter.set_no_filter(true);
+      extraElecFilter.set_predicate([=](Electron const* e) {
+        return  e->pt()                 > veto_elec_pt    &&
+                fabs(e->eta())          < veto_elec_eta   &&
+                fabs(e->dxy_vertex())   < veto_elec_dxy   &&
+                fabs(e->dz_vertex())    < veto_elec_dz    &&
+                ElectronHTTIdSpring16(e, true)           &&
                 //!e->has_matched_conversion()              &&
                 //e->gsf_tk_nhits() <= 1                    &&
                 //PF04IsolationVal(e, 0.5,0) < 0.3;
