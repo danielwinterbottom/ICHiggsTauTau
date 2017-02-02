@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jan24_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et"],
+    "channels":     ["et", "mt", "tt", "em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -19,12 +19,11 @@
   "sequence": {
     "mc"            : "summer16_80X",
     "era"           : "data_2016",
-    "strategy"      : "mssmspring16",
+    "strategy"      : "mssmsummer16",
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
     "make_sync_ntuple" : true,
-    "make_sync_ntuple" : false,
     "lumi_mask_only" : false,
     "iso_study" : false,
     "qcd_study" : false,
@@ -60,7 +59,7 @@
     "read_all_svfit_files" : true,
     "svfit_folder"  : "svfit-76X-postpreapp-output/",
     "svfit_override" : "",
-    "event_check_file":"checkfile.dat",
+    //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 0,
