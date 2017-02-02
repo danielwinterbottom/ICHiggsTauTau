@@ -715,7 +715,7 @@ for systematic in systematics:
             for mass in masses:
                 xs = ana.info[sm_samples[samp]+'_M-'+mass]['xs']
                 sf = 1.0/xs
-                sm_hist = ana.nodes[nodename].nodes[samp_name+mass].shape.hist
+                sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
                 sm_hist.Scale(sf)
     if options.analysis == "mssm":
         for samp in mssm_samples:
@@ -726,7 +726,7 @@ for systematic in systematics:
             for mass in masses:
                 xs = ana.info[mssm_samples[samp]+'_M-'+mass]['xs']
                 sf = 1.0/xs
-                mssm_hist = ana.nodes[nodename].nodes[samp+mass].shape.hist
+                mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                 mssm_hist.Scale(sf)
     if options.analysis == "Hhh":
         for samp in Hhh_samples:
@@ -734,7 +734,7 @@ for systematic in systematics:
             for mass in masses:
                 xs = ana.info[Hhh_samples[samp]+'_M-'+mass]['xs']
                 sf = 1.0/xs
-                mssm_hist = ana.nodes[nodename].nodes[samp+mass].shape.hist
+                mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                 mssm_hist.Scale(sf)
     
     
