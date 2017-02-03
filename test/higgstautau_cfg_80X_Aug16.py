@@ -24,7 +24,7 @@ opts = parser.VarParsing ('analysis')
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/004A6F0D-E624-E611-9637-02163E011CA0.root',parser.VarParsing.multiplicity.singleton,
 #'root://cms-xrd-global.cern.ch//store/mc/RunIISpring16MiniAODv2/SUSYGluGluToHToTauTau_M-1600_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/20000/88D0067C-2A49-E611-884E-F04DA275C013.root', parser.VarParsing.multiplicity.singleton,
 #'root://cms-xrd-global.cern.ch//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/158/00000/02D9C19F-571A-E611-AD8E-02163E013732.root',parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/DYJetsToTauTau_ForcedMuDecay_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/20000/10A0E93C-F901-E611-90F2-0025905A60B4.root',parser.VarParsing.multiplicity.singleton,
+opts.register('file','root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/DYJetsToTauTau_ForcedMuDecay_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/20000/10A0E93C-F901-E611-90F2-0025905A60B4.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext1-v1/20000/0017320C-7BFC-E511-9B2D-0CC47A4C8E34.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/4AAC498F-8BB8-E511-A9E0-FA163E84A67A.root',parser.VarParsing.multiplicity.singleton,
@@ -34,7 +34,7 @@ opts = parser.VarParsing ('analysis')
 #'root://xrootd.unl.edu//store/data/Run2015C/SingleElectron/MINIAOD/PromptReco-v1/000/254/317/00000/C4F3838C-8345-E511-9AA9-02163E011FE4.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/002C89D6-7D1D-E611-B99C-0025905C54D8.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file','root://xrootd.unl.edu//store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/009D49A5-7314-E511-84EF-0025905A605E.root',parser.VarParsing.multiplicity.singleton,
-opts.register('file', 'file:ggh180_miniAODv2reHLT_pickedevent.root', parser.VarParsing.multiplicity.singleton,
+#opts.register('file', 'file:ggh180_miniAODv2reHLT_pickedevent.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
@@ -818,7 +818,12 @@ if release in ['80XMINIAOD']:
     inputVertices           = vtxLabel,
     includeVertexIP         = cms.bool(True),
     requestTracks           = cms.bool(False),
-    tauIDs = cms.PSet()
+    includeTotalCharged     = cms.bool(False),
+    totalChargedLabel       = cms.string("totalCharged"),
+    tauIDs = cms.PSet(),
+    requestPFCandidates     =cms.bool(False),
+    inputPFCandidates       = cms.InputTag("packedPFCandidates"),
+    isSlimmed               = cms.bool(True)
   )
 
 process.icTauSequence = cms.Sequence(
@@ -846,6 +851,7 @@ if release in ['80XMINIAOD']:
       process,
       jetSource = cms.InputTag("slimmedJets"),
       labelName = "UpdatedJEC",
+      btagDiscriminators = ['deepFlavourJetTags:probb','deepFlavourJetTags:probbb','deepFlavourJetTags:probudsg','deepFlavourJetTags:probc','deepFlavourJetTags:probcc'],
       jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None')
     )
   else:
@@ -1138,6 +1144,15 @@ if release in ['80XMINIAOD']:
 #     process.pfchs+
      process.patJetCorrFactorsUpdatedJEC+
      process.updatedPatJetsUpdatedJEC+
+     process.patJetCorrFactorsTransientCorrectedUpdatedJEC+
+     process.pfImpactParameterTagInfosUpdatedJEC+
+     process.pfInclusiveSecondaryVertexFinderTagInfosUpdatedJEC+
+     process.deepNNTagInfosUpdatedJEC+
+     process.deepFlavourJetTagsUpdatedJEC+
+     #process.pfImpactParameterTagInfosUpdatedJEC+
+     #process.pfSecondaryVertexTagInfosUpdatedJEC+
+     #process.pfCombinedSecondaryVertexV2BJetTagsUpdatedJEC+
+     process.updatedPatJetsTransientCorrectedUpdatedJEC+
      process.selectedUpdatedPatJetsUpdatedJEC+
      process.selectedSlimmedJetsAK4+
      process.unpackedTracksAndVertices+
@@ -1233,6 +1248,7 @@ runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
 process.MVAMET.debug = cms.bool(False)
 process.MVAMET.srcLeptons = cms.VInputTag("slimmedMuons","slimmedElectrons","slimmedTaus")
 process.MVAMET.requireOS = cms.bool(False)
+process.tauMET.srcPFCands = cms.InputTag("packedPFCandidates")
 
 
 process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
@@ -2145,8 +2161,10 @@ process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadPFMuonFilter.taggingMode = cms.bool(True)
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
