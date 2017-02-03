@@ -189,7 +189,7 @@ void ICJetProducer<ic::JPTJet, reco::JPTJet>::constructSpecific(
   edm::Handle<reco::VertexCollection> vtx_handle;
   std::map<unsigned, unsigned> trk_vtx_map;
 
-  std::auto_ptr<reco::TrackRefVector> track_requests(
+  std::unique_ptr<reco::TrackRefVector> track_requests(
       new reco::TrackRefVector());
 
   if (dest_.do_trk_vars) {
@@ -253,7 +253,7 @@ void ICJetProducer<ic::JPTJet, reco::JPTJet>::constructSpecific(
     }
   }
   if (dest_.request_trks) {
-    event.put(track_requests, "requestedTracks");
+    event.put(std::move(track_requests), "requestedTracks");
   }
 }
 
@@ -269,7 +269,7 @@ void ICJetProducer<ic::JPTJet, pat::Jet>::constructSpecific(
   edm::Handle<reco::VertexCollection> vtx_handle;
   std::map<unsigned, unsigned> trk_vtx_map;
 
-  std::auto_ptr<reco::TrackRefVector> track_requests(
+  std::unique_ptr<reco::TrackRefVector> track_requests(
       new reco::TrackRefVector());
 
   if (dest_.do_trk_vars) {
@@ -332,7 +332,7 @@ void ICJetProducer<ic::JPTJet, pat::Jet>::constructSpecific(
     }
   }
   if (dest_.request_trks) {
-    event.put(track_requests, "requestedTracks");
+    event.put(std::move(track_requests), "requestedTracks");
   }
 }
 
@@ -351,7 +351,7 @@ void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
   edm::Handle<reco::VertexCollection> vtx_handle;
   std::map<unsigned, unsigned> trk_vtx_map;
 
-  std::auto_ptr<reco::TrackRefVector> track_requests(
+  std::unique_ptr<reco::TrackRefVector> track_requests(
       new reco::TrackRefVector());
 
   if (dest_.do_trk_vars) {
@@ -383,7 +383,7 @@ void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
     }
   }
   if (dest_.request_trks) {
-    event.put(track_requests, "requestedTracks");
+    event.put(std::move(track_requests), "requestedTracks");
   }
 }
 
@@ -402,7 +402,7 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
   edm::Handle<reco::VertexCollection> vtx_handle;
   std::map<unsigned, unsigned> trk_vtx_map;
 
-  std::auto_ptr<reco::TrackRefVector> track_requests(
+  std::unique_ptr<reco::TrackRefVector> track_requests(
       new reco::TrackRefVector());
 
   if (dest_.do_trk_vars) {
@@ -438,7 +438,7 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     }
   }
   if (dest_.request_trks) {
-    event.put(track_requests, "requestedTracks");
+    event.put(std::move(track_requests), "requestedTracks");
   }
 }
 

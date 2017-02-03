@@ -95,8 +95,8 @@ void ICPFCandidateProducer<T>::produce(edm::Event& event,
   // edm::Handle<edm::View<reco::Vertex> > vertices_handle;
   // if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
 
-  std::auto_ptr<reco::TrackRefVector> trk_requests(new reco::TrackRefVector());
-  std::auto_ptr<reco::GsfTrackRefVector> gsf_trk_requests(new reco::GsfTrackRefVector());
+  std::unique_ptr<reco::TrackRefVector> trk_requests(new reco::TrackRefVector());
+  std::unique_ptr<reco::GsfTrackRefVector> gsf_trk_requests(new reco::GsfTrackRefVector());
 
   cands_->clear();
   cands_->resize(cands_handle->size(), ic::PFCandidate());
@@ -118,8 +118,8 @@ void ICPFCandidateProducer<T>::produce(edm::Event& event,
   }
   constructSpecific(cands_handle, trk_requests.get(), gsf_trk_requests.get(),
                     event, setup);
-  if (request_trks_) event.put(trk_requests, "requestedTracks");
-  if (request_gsf_trks_) event.put(gsf_trk_requests, "requestedGsfTracks");
+  if (request_trks_) event.put(std::move(trk_requests), "requestedTracks");
+  if (request_gsf_trks_) event.put(std::move(gsf_trk_requests), "requestedGsfTracks");
 }
 
 // ==================

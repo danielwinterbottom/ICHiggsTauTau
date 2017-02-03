@@ -68,7 +68,7 @@ void RequestByDeltaR<T>::produce(edm::Event& event,
   edm::Handle<edm::View<T> > in_handle;
   event.getByLabel(input_, in_handle);
 
-  std::auto_ptr<RefVectorVec> product(new RefVectorVec());
+  std::unique_ptr<RefVectorVec> product(new RefVectorVec());
 
   for (unsigned i = 0; i < in_handle->size(); ++i) {
     for (unsigned j = 0; j < ref_handle->size(); ++j) {
@@ -79,7 +79,7 @@ void RequestByDeltaR<T>::produce(edm::Event& event,
       }
     }
   }
-  event.put(product);
+  event.put(std::move(product));
 }
 
 template <class T>

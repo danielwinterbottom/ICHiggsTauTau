@@ -56,7 +56,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       consumes<double>(input_jets_rho_);
       consumes<edm::View<reco::Vertex>>(input_vertices_);
       consumes<reco::BeamHaloSummary>(input_csc_filter_);
-      consumes<edm::TriggerResults>(filtersfromtrig_input_);
+//      consumes<edm::TriggerResults>(filtersfromtrig_input_);
   edm::ParameterSet filter_params =
       config.getParameter<edm::ParameterSet>("filters");
   std::vector<std::string> filter_names =
@@ -243,10 +243,10 @@ void ICEventInfoProducer::produce(edm::Event& event,
   }
 
   if (do_filtersfromtrig_) {
-    edm::Handle<edm::TriggerResults> triggerResults;
+ /*   edm::Handle<edm::TriggerResults> triggerResults;
     event.getByLabel(filtersfromtrig_input_, triggerResults);
     if (!triggerResults.isValid()) {
-      throw cms::Exception("TriggerNotValid")
+     throw cms::Exception("TriggerNotValid")
           << "Trigger Results is not valid\n";
     }
 
@@ -285,7 +285,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
 
       info_->set_filter_result(trigName, filter_result);
       observed_filters_[trigName] = CityHash64(trigName);
-    }  // loop on triggers
+    }  // loop on triggers*/
   }
 
   edm::Handle<reco::BeamHaloSummary> beam_halo_handle;
