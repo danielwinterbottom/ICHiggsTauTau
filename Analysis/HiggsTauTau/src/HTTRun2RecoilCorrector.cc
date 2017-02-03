@@ -46,7 +46,7 @@ namespace ic {
     if (strategy_ ==strategy::fall15){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/recoilMvaMEt_76X_newTraining_MG5.root";
       syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root";
-    } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_==strategy::mssmsummer16){
+    } else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16){
       process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MvaMET_MG_2016BCD_RooT_5.2.root";
       if(met_label_ == "pfMET"){
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeIPFMET_2016BCD.root";
