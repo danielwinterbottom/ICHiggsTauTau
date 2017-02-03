@@ -68,7 +68,7 @@ void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup&
   if(partCollection->size()==0) return;
   std::vector<const reco::GenParticle *> daughters ; 
 
-  std::auto_ptr<std::vector<unsigned> > daughter_index(new std::vector<unsigned>());      
+  std::unique_ptr<std::vector<unsigned> > daughter_index(new std::vector<unsigned>());      
 
   for(unsigned i = 0; i<partCollection->size(); i++)
   {
@@ -84,7 +84,7 @@ void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup&
         } 
      }
   }
-  iEvent.put(daughter_index, "selectGenParticles");
+  iEvent.put(std::move(daughter_index), "selectGenParticles");
 
 }
 
