@@ -70,7 +70,7 @@
 
 namespace ic {
 
-HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
+HTTFutureSequence::HTTFutureSequence(std::string& chan, std::string postf, Json::Value const& json) {
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
@@ -188,10 +188,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
 
 }
 
-HTTSequence::~HTTSequence() {}
+HTTFutureSequence::~HTTFutureSequence() {}
 
 
-void HTTSequence::BuildSequence(){
+void HTTFutureSequence::BuildSequence(){
   using ROOT::Math::VectorUtil::DeltaR;
   
   // Set global parameters that get used in multiple places
@@ -309,11 +309,6 @@ void HTTSequence::BuildSequence(){
   if (channel == channel::mt) BuildMTPairs();
   if (channel == channel::em) BuildEMPairs();
   if (channel == channel::tt) BuildTTPairs();
-  if (channel == channel::zee) BuildZEEPairs();
-  if (channel == channel::zmm) BuildZMMPairs();
-  if (channel == channel::wmnu) BuildWMuNu();
-  if (channel == channel::tpzee) BuildTPZEEPairs();
-  if (channel == channel::tpzmm) BuildTPZMMPairs();
 
 
   // Pair DeltaR filtering
@@ -440,7 +435,7 @@ BuildModule(HTTFutureTrees("HTTFutureTrees")
 // --------------------------------------------------------------------------
 // TT Pair Sequence
 // --------------------------------------------------------------------------
-void HTTSequence::BuildTTPairs(){
+void HTTFutureSequence::BuildTTPairs(){
  
  BuildTauSelection();
 
@@ -459,7 +454,7 @@ void HTTSequence::BuildTTPairs(){
 // --------------------------------------------------------------------------
 // ET Pair Sequence
 // --------------------------------------------------------------------------
-void HTTSequence::BuildETPairs() {
+void HTTFutureSequence::BuildETPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
@@ -506,7 +501,7 @@ void HTTSequence::BuildETPairs() {
 // --------------------------------------------------------------------------
 // MT Pair Sequence
 // --------------------------------------------------------------------------
-void HTTSequence::BuildMTPairs() {
+void HTTFutureSequence::BuildMTPairs() {
  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
@@ -553,7 +548,7 @@ void HTTSequence::BuildMTPairs() {
 // --------------------------------------------------------------------------
 // EM Pair Sequence
 // --------------------------------------------------------------------------
-void HTTSequence::BuildEMPairs() {
+void HTTFutureSequence::BuildEMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
@@ -648,7 +643,7 @@ if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smsprin
 // --------------------------------------------------------------------------
 // Tau Selection Sequence
 // --------------------------------------------------------------------------
-void HTTSequence::BuildTauSelection(){
+void HTTFutureSequence::BuildTauSelection(){
   Json::Value base = js["baseline"];
 
   BuildModule(SimpleFilter<Tau>("TauFilter")
@@ -665,7 +660,7 @@ void HTTSequence::BuildTauSelection(){
 }
 
 
-void HTTSequence::BuildDiElecVeto() {
+void HTTFutureSequence::BuildDiElecVeto() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
@@ -727,7 +722,7 @@ void HTTSequence::BuildDiElecVeto() {
 	BuildModule(vetoElecPairFilter);
  }
 
- void HTTSequence::BuildDiMuonVeto() {
+ void HTTFutureSequence::BuildDiMuonVeto() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Muon>("CopyToVetoMuons",
@@ -793,7 +788,7 @@ void HTTSequence::BuildDiElecVeto() {
 
 }
 
-void HTTSequence::BuildExtraElecVeto(){
+void HTTFutureSequence::BuildExtraElecVeto(){
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Electron>("CopyToExtraElecs",
@@ -844,7 +839,7 @@ BuildModule(extraElecFilter);
  }
 
 
-void HTTSequence::BuildExtraMuonVeto(){
+void HTTFutureSequence::BuildExtraMuonVeto(){
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Muon>("CopyToExtraMuons",

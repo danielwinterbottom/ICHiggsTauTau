@@ -13,7 +13,7 @@
 
 namespace ic {
 
-class HTTSequence {
+class HTTFutureSequence {
  private:
   std::shared_ptr<fwlite::TFileService> fs;
   std::vector<std::shared_ptr<ic::ModuleBase>> seq;
@@ -37,20 +37,15 @@ class HTTSequence {
 
  public:
   typedef std::vector<std::shared_ptr<ic::ModuleBase>> ModuleSequence;
-  HTTSequence(std::string & chan, std::string postf, Json::Value const& js);
-  HTTSequence() = default;
-  ~HTTSequence();
+  HTTFutureSequence(std::string & chan, std::string postf, Json::Value const& js);
+  HTTFutureSequence() = default;
+  ~HTTFutureSequence();
   ModuleSequence* getSequence(){return &seq;}
   void BuildSequence();
   void BuildETPairs();
   void BuildMTPairs();
   void BuildEMPairs();
   void BuildTTPairs();
-  void BuildZEEPairs();
-  void BuildZMMPairs();
-  void BuildTPZEEPairs();
-  void BuildTPZMMPairs();
-  void BuildWMuNu();
 
   void BuildTauSelection();
 
