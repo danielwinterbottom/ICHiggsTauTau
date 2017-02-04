@@ -18,6 +18,7 @@
 #include "DataFormats/JetReco/interface/JetID.h"
 #include "DataFormats/BTauReco/interface/JetTag.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 #include "UserCode/ICHiggsTauTau/plugins/ICJetSrcHelper.hh"
@@ -347,6 +348,9 @@ void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
   edm::Handle<edm::ValueMap<float> > pu_id_handle;
   if (dest_.do_pu_id) event.getByLabel(dest_.input_pu_id, pu_id_handle);
 
+//  edm::Handle pfcands_handle;
+//  event.getByLabel(dest_.input_pfcands, pfcands_handle); 
+
   edm::Handle<reco::TrackCollection> trk_handle;
   edm::Handle<reco::VertexCollection> vtx_handle;
   std::map<unsigned, unsigned> trk_vtx_map;
@@ -364,6 +368,16 @@ void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
     reco::PFJet const& src = jets_handle->at(passed_[i]);
     ic::PFJet & dest = jets_->at(i);
     FillCommonPFJet(&dest, src);
+    double in = 0, out = 0;
+    for (unsigned id = 0, nd = src.numberOfDaughters(); id < nd ; ++id){
+      const pat::PackedCandidate &dau = dynamic_cast<const::pat::PackedCandidate &>(*src.daughter(id)); 
+      if (dau.charge() ==0) continue;
+      (fabs(dau.dz())<0.4 ? in: out) += dau.pt();
+    }
+    double sum = in + out;
+    if (sum > 0) {
+    std::cout<<"beta = "<<  in/sum <<std::endl;
+    }
     //  Assume input jet is uncorrected
     dest.set_uncorrected_energy(src.energy());
     if (dest_.do_pu_id) {
@@ -415,6 +429,18 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     pat::Jet const& src = jets_handle->at(passed_[i]);
     ic::PFJet & dest = jets_->at(i);
     FillCommonPFJet(&dest, src);
+
+    double in = 0, out = 0;
+    for (unsigned id = 0, nd = src.numberOfDaughters(); id < nd ; ++id){
+      const pat::PackedCandidate &dau = dynamic_cast<const::pat::PackedCandidate &>(*src.daughter(id)); 
+      if (dau.charge() ==0) continue;
+      (fabs(dau.dz())<0.4 ? in: out) += dau.pt();
+    }
+    double sum = in + out;
+    if (sum > 0) {
+      dest.set_beta(in/sum);
+    } else dest.set_beta(-1);
+
     dest.set_uncorrected_energy(
         (src.jecSetsAvailable() ? src.jecFactor(0) : 1.) * src.energy());
     if (dest_.do_pu_id) {
