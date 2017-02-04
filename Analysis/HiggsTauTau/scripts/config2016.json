@@ -59,7 +59,7 @@
     "read_all_svfit_files" : true,
     "svfit_folder"  : "svfit-76X-postpreapp-output/",
     "svfit_override" : "",
-    //"event_check_file":"checkfile.dat",
+    "event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 0,

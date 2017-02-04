@@ -146,14 +146,14 @@ namespace ic {
   }
 
   std::map<std::size_t, bool> BTagWeightRun2::ReTag(std::vector<PFJet *> const& jets, unsigned btag_mode, unsigned bfake_mode) const {
-    bool verbose = false;
+    bool verbose = true;
     std::map<std::size_t, bool> pass_result;
-    double pt = 0/* = embed_jets[i]->pt()*/;
-    double eta = 0/* embed_jets[i]->eta()*/;
+    float pt = 0/* = embed_jets[i]->pt()*/;
+    float eta = 0/* embed_jets[i]->eta()*/;
     unsigned jet_flavour = 0;
     double sf=0;
     for (unsigned i = 0; i < jets.size(); ++i) {
-      rand->SetSeed((int)((jets[i]->eta()+5)*100000));
+      rand->SetSeed((int)(((float)jets[i]->eta()+5)*100000));
       eta = fabs(jets[i]->eta());
       pt = jets[i]->pt();
       jet_flavour = jets[i]->hadron_flavour();
