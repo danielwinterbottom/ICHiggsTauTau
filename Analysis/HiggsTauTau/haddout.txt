@@ -1,0 +1,9 @@
+hadd Target file: /vols/cms/dw515/Offline/output/MSSM/Feb02//BTAG_DOWN/TTHToTauTau_M-125_mt_2016.root
+hadd compression setting for all ouput: 1
+hadd Source file 1: /vols/cms/dw515/Offline/output/MSSM/Feb02//BTAG_DOWN/TTHToTauTau_M-125_2016_mt_0.root
+Warning in <TFile::Init>: file /vols/cms/dw515/Offline/output/MSSM/Feb02//BTAG_DOWN/TTHToTauTau_M-125_2016_mt_0.root probably not closed, trying to recover
+Info in <TFile::Recover>: /vols/cms/dw515/Offline/output/MSSM/Feb02//BTAG_DOWN/TTHToTauTau_M-125_2016_mt_0.root, recovered key TDirectoryFile:httpairselector at address 366
+Error in <TFile::Recover>: Address = 3320127	Nbytes = 0	=====E R R O R=======
+Warning in <TFile::Init>: successfully recovered 1 keys
+hadd Target path: /vols/cms/dw515/Offline/output/MSSM/Feb02//BTAG_DOWN/TTHToTauTau_M-125_mt_2016.root:/
+hadd Target path: /vols/cms/dw515/Offline/output/MSSM/Feb02//BTAG_DOWN/TTHToTauTau_M-125_mt_2016.root:/httpairselector

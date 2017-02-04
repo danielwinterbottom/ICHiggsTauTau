@@ -1,0 +1,198 @@
+>> Updating config with fragment:
+
+{
+	"file_prefix" : null
+}
+//gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Dec06_MC_80X/, "job":{"filelist":"filelists/Dec06_MC_80X_TTH_M-125.dat"}, "sequence":{"output_name":"temp", "get_effective":true, "make_sync_ntuple":false}}
+
+>> Updating config with fragment:
+
+{
+	"job" : 
+	{
+		"sequences" : 
+		{
+			"all" : [ "default" ]
+		}
+	}
+}
+-------------------------------------
+HiggsToTauTau Analysis
+-------------------------------------
+output                    output///SUSYGluGluToHToTauTau_M-3200_mt_0.root
+strategy                  smspring16                              
+era                       data_2016                               
+mc                        spring16_80X                            
+channel                   mt                                      
+is_data                   0                                       
+is_embedded               0                                       
+special_mode              0                                       
+tau_scale_mode            0                                       
+new_svfit_mode            0                                       
+vh_filter_mode            0                                       
+kinfit_mode               0                                       
+ztautau_mode              0                                       
+faked_tau_selector        0                                       
+hadronic_tau_selector     0                                       
+mva_met_mode              1                                       
+make_sync_ntuple          1                                       
+save_output_jsons         0                                       
+allowed_tau_modes                                                 
+moriond_tau_scale         1                                       
+pu_id_training            2                                       
+bjet_regr_correction      0                                       
+** Kinematics **
+elec_pt                   7.40683e-317                            
+elec_eta                  7.40731e-317                            
+elec_dxy                  0.045                                   
+elec_dz                   0.2                                     
+muon_pt                   23                                      
+muon_eta                  2.4                                     
+muon_dxy                  0.045                                   
+muon_dz                   0.2                                     
+tau_pt                    20                                      
+tau_eta                   2.3                                     
+tau_dz                    0.2                                     
+veto_elec_pt              10                                      
+veto_elec_eta             2.5                                     
+veto_elec_dxy             0.045                                   
+veto_elec_dz              0.2                                     
+veto_dielec_pt            15                                      
+veto_dielec_eta           2.5                                     
+veto_dielec_dxy           0.045                                   
+veto_dielec_dz            0.2                                     
+veto_muon_pt              10                                      
+veto_muon_eta             2.4                                     
+veto_muon_dxy             0.045                                   
+veto_muon_dz              0.2                                     
+veto_dimuon_pt            15                                      
+veto_dimuon_eta           2.4                                     
+veto_dimuon_dxy           0.045                                   
+veto_dimuon_dz            0.2                                     
+** Tau Discriminators **
+isolation                                                         
+isolation cut             7.40773e-317                            
+anti-electron                                                     
+anti-muon                                                         
+** MSSM Signal Sample **
+------------------------------------------------------------------------------
+Analysis        : HiggsTauTau                                                 
+Input Files     : 1                                                           
+Tree Path       : icEventProducer/EventTree                                   
+Events          : -1                                                          
+>> TTree caching enabled
+------------------------------------------------------------------------------
+Pre-analysis    : mt_default                                                  
+------------------------------------------------------------------------------
+----------------------------------------
+PreAnalysis Info for PileupReweight
+----------------------------------------
+* Input data histogram has 600 bins in the range [0,60], integral = 1.28856e+10
+* Input MC histogram has 600 bins in the range [0,60], integral = 10
+* Weights calculated for 600 bins
+* Weight label in EventInfo is pileup
+-------------------------------------
+HTTPairSelector
+-------------------------------------
+pair_label                ditau                                   
+met_label                 pfMVAMet                                
+use_most_isolated         1                                       
+scale_met_for_tau         1                                       
+tau_scale                 1                                       
+allowed_tau_modes         all modes                               
+faked_tau_selector        0                                       
+ztt_mode                  0                                       
+use_status_flags          1                                       
+hadronic_tau_selector     0                                       
+gen_taus_label            genParticles                            
+-------------------------------------
+SVFitTest
+-------------------------------------
+decay_mode                0                                       
+run_mode                  0                                       
+fail_mode                 0                                       
+require_inputs_match      1                                       
+dilepton_label            ditau                                   
+met_label                 pfMVAMet                                
+folder                    SUSYGluGluToHToTauTau_M-3200_mt_0_SVFIT 
+directory                 /vols/build/cms/dw515/CMSSW_8_0_20/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau
+-------------------------------------
+HTTWeights
+-------------------------------------
+channel                   mt                                      
+era                       data_2016                               
+mc                        spring16_80X                            
+do_trg_weights            1                                       
+trg_applied_in_mc         0                                       
+do_idiso_weights          1                                       
+do_id_weights             0                                       
+do_tau_mode_scale         0                                       
+do_etau_fakerate          1                                       
+do_mtau_fakerate          1                                       
+do_emu_e_fakerates        0                                       
+do_emu_m_fakerates        0                                       
+do_top_factors            0                                       
+do_btag_weight            0                                       
+do_zpt_weight             0                                       
+btag_mode                 0                                       
+bfake_mode                0                                       
+do_topquark_weights       0                                       
+do_top_jeteta_weights     0                                       
+do_tau_fake_weights       0                                       
+do_tau_id_weights         1                                       
+do_tau_id_sf              1                                       
+do_em_qcd_weights         1                                       
+jets_label                ak4PFJetsCHS                            
+btag_label                combinedSecondaryVertexBJetTags         
+ditau_label               ditau                                   
+[#1] INFO:ObjectHandling -- RooWorkspace::CodeRepo::compileClasses() Embedded class CrystalBallEfficiency already in ROOT class table, skipping
+-------------------------------------
+HTTStitching
+-------------------------------------
+era                       data_2016                               
+-------------------------------------
+HTTCategories
+-------------------------------------
+channel                   mt                                      
+strategy                  smspring16                              
+era                       data_2016                               
+dilepton_label            ditau                                   
+met_label                 pfMVAMet                                
+jets_label                ak4PFJetsCHS                            
+mass_shift                1                                       
+write_tree                0                                       
+kinfit_mode               0                                       
+make_sync_ntuple          1                                       
+bjet_regression           0                                       
+------------------------------------------------------------------------------
+Beginning Analysis Sequence
+------------------------------------------------------------------------------
+>> File: root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/rlane/Aug11_MC_80X//SUSYGluGluToHToTauTau_M-3200_TuneCUETP8M1_13TeV-pythia8/crab_SUSYGluGluToHToTauTau_M-3200/160811_101520/0000/EventTree_1.root
+>> Processed 10000 events...>> Processed 20000 events...>> Processed 30000 events...>> Processed 40000 events...>> Processed 50000 events...>> Processed 60000 events...>> Processed 70000 events...>> Processed 80000 events...>> Processing Complete: 84168 events processed
+------------------------------------------------------------------------------
+Post-analysis : mt_default                Evts Passed   Time [s] Time/Evt [ms]
+------------------------------------------------------------------------------
+CopyToSelectedMuons                             84168      4.149        0.0493
+MuonFilter                                      25136      0.169        0.0020
+TauFilter                                       24804      3.346        0.1331
+MTPairProducer                                  24804      0.260        0.0105
+PairFilter                                      22085      0.022        0.0009
+CopyToVetoMuons                                 22085      0.021        0.0010
+VetoMuonFilter                                  22085      0.018        0.0008
+VetoMuonPairProducer                            22085      0.058        0.0026
+VetoMuonPairFilter                              22085      0.026        0.0012
+CopyToExtraElecs                                22085      1.401        0.0634
+ExtraElecFilter                                 22085      0.048        0.0022
+CopyToExtraMuons                                22085      0.024        0.0011
+ExtraMuonFilter                                 22085      0.032        0.0014
+PileupWeight                                    22085      0.619        0.0280
+MetFiltersRecoEffect                            22085      0.052        0.0024
+HTTPairSelector                                 22085     10.146        0.4594
+HTTPairGenInfo                                  22085      8.431        0.3818
+CopyFilteredJets                                22085      4.063        0.1840
+JetIDFilter                                     22085      0.022        0.0010
+JetLeptonOverlapFilter                          22085      0.055        0.0025
+SVFitTest                                       22085      0.005        0.0002
+HTTWeights                                      22085      0.733        0.0332
+HTTStitching                                    22085      0.020        0.0009
+HTTCategories                                   22085      3.549        0.1607

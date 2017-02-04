@@ -1,0 +1,32 @@
+DEBUG 2017-01-09 12:47:13,193: 	 Executing command: 'status'
+DEBUG 2017-01-09 12:47:13,193: 	 Found CRAB cache file /home/hep/dw515/.crab3
+ERROR 2017-01-09 12:47:13,194: 	 Error: Jan08_MC_80X//crab_W3JetsToLNu-LO is not a valid CRAB project directory.
+ERROR 2017-01-09 12:47:13,194: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 254, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 749, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 563, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Jan08_MC_80X//crab_W3JetsToLNu-LO is not a valid CRAB project directory.
+DEBUG 2017-01-09 12:47:45,921: 	 Executing command: 'status'
+DEBUG 2017-01-09 12:47:45,921: 	 Found CRAB cache file /home/hep/dw515/.crab3
+ERROR 2017-01-09 12:47:45,938: 	 Error: Jan08_MC_80X//crab_WZTo1L3Nu is not a valid CRAB project directory.
+ERROR 2017-01-09 12:47:45,938: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 254, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 749, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1604/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 563, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Jan08_MC_80X//crab_WZTo1L3Nu is not a valid CRAB project directory.

@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/Aug11_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/rlane/Aug11_MC_80X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jan24_MC_80X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["et", "mt"],
@@ -18,7 +18,7 @@
   },
   "sequence": {
     "store_hltpaths" : false,
-    "mc"            : "spring16_80X",
+    "mc"            : "summer16_80X",
     "era"           : "data_2016",
     "strategy"      : "mssmspring16",
     "is_data"       : false,
@@ -35,6 +35,7 @@
     "trg_in_mc" : false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
+    "do_singletau"    :true,
     "store_trigobjpt" :true,
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
@@ -45,7 +46,7 @@
     "muons"         : "muons",
     "taus"          : "taus",
     "jets"          : "ak4PFJetsCHS",
-    "met"           : "pfMVAMet",
+    "met"           : "pfMET",
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
@@ -65,7 +66,7 @@
     "bjet_regr_correction" : false,
     "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
-    "mva_met_mode"  : 1,
+    "mva_met_mode"  : 0,
     "do_met_filters" : 1,
     "faked_tau_selector" : 0,
     "hadronic_tau_selector" : 0,

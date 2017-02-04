@@ -21,6 +21,8 @@ class HTTTriggerFilter : public ModuleBase {
   CLASS_MEMBER(HTTTriggerFilter, bool, is_embedded)
   CLASS_MEMBER(HTTTriggerFilter, bool, do_leptonplustau)
   CLASS_MEMBER(HTTTriggerFilter, bool, do_singlelepton)
+  CLASS_MEMBER(HTTTriggerFilter, bool, do_singletau)
+  CLASS_MEMBER(HTTTriggerFilter, bool, do_filter)
 
  public:
   HTTTriggerFilter(std::string const& name);

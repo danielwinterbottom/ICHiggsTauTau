@@ -1,0 +1,49 @@
+loose:
+cat = (n_jets<=1 && n_bjets>=1)&& ((mt_1>40) || mva_olddm_tight_2<0.5)&&(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)
+sel = os && mt_1<70.&&(gen_match_2<5)
+
+
+tight:
+cat = ((n_jets<=1 && n_bjets>=1) && mva_olddm_tight_2>0.5 )&&(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)
+sel = os && mt_1<40.&&(gen_match_2<5)
+
+
+
+Jan08_MC_80X//crab_DYJetsToLL-LO-ext - incresed memory to 2500 - 4 jobs not enough memory!
+Jan08_MC_80X//crab_SUSYGluGluToBBHToTauTau_M-160 -idle
+
+
+
+Uncompleted:
+
+Jan08_Data_80X//crab_MuonEGB
+Jan08_Data_80X//crab_MuonEGDReReco
+Jan08_Data_80X//crab_MuonEGGReReco
+Jan08_Data_80X//crab_SingleElectronB
+Jan08_Data_80X//crab_SingleElectronBReReco
+Jan08_Data_80X//crab_SingleElectronCReReco
+Jan08_Data_80X//crab_SingleElectronD
+Jan08_Data_80X//crab_SingleElectronDReReco
+Jan08_Data_80X//crab_SingleElectronEReReco
+Jan08_Data_80X//crab_SingleElectronFReReco
+Jan08_Data_80X//crab_SingleElectronG
+Jan08_Data_80X//crab_SingleElectronHv2
+Jan08_Data_80X//crab_SingleMuonB
+Jan08_Data_80X//crab_SingleMuonBReReco
+Jan08_Data_80X//crab_SingleMuonC
+Jan08_Data_80X//crab_SingleMuonD
+Jan08_Data_80X//crab_SingleMuonEReReco
+Jan08_Data_80X//crab_SingleMuonFReReco
+Jan08_Data_80X//crab_TauE
+Jan08_Data_80X//crab_TauFReReco
+Jan08_Data_80X//crab_TauGReReco
+
+
+Failed:
+
+Jan08_Data_80X//crab_MuonEGB
+Jan08_Data_80X//crab_SingleElectronDReReco
+Jan08_Data_80X//crab_TauFReReco
+
+
+

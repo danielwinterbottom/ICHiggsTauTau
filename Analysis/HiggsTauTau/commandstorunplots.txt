@@ -1,0 +1,50 @@
+./bin/HiggsTauTauPlot5 --cfg=scripts/new_plot_sm_2016.cfg --channel=mt --set_alias="sel:mt_1<50."   --method=8 --var="m_vis"["0,20,40,60,80,100,120,140"] --cat="inclusive"   --x_axis_label="M_{#tau#tau} [GeV]"  --datacard="inclusive" --log_y=false --draw_ratio=true   --custom_y_axis_min=true --y_axis_min=0.0099   --blind=false --x_blind_min=40 --x_blind_max=2000   --background_scheme="mt_with_zmm" --extra_pad=0.3 --draw_error_band=true --auto_error_band=0.00001
+
+python scripts/HiggsTauTauPlot.py --sel="mt_1<50"
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+self.data_os_node.shape.rate.n =  93399.0
+self.subtract_os_node.shape =  22598.7527409
+self.data_ss_node.shape.rate.n =  30004.0
+self.subtract_ss_node.shape =  4972.60382415
+qcd_factor =  1.18
+w_factor:  3.7265085621
+w_control_first:  16203.8331171
+self.w_control_node.shape.rate.n =  69657.7090052
+self.w_signal_node.shape.rate.n =  39444.1536971
+signal/control =  0.566256833026
+final norm =  34192.6956673
+
+
+w_control_full_selection_os =  (wt)*(mt_1>70.)*(os)*(((1))*((iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)))
+full_selection =  (wt)*(mt_1<50)*(os)*(((1))*((iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)))
+
+
+
+num sel = os && mt_1<50......1&&(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto).....wt
+num = 39444.2
+den = os && mt_1>70......1&&(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto).....wt
+den = 69657.6
+data_control_os.first = 93399
+total_bkg_os.first = 22598.9059
+data_control_ss.first = 30004
+total_bkg_ss.first = 4972.60478
+qcd_os_ss_factor_ = 1.18
+w_os_ss_ratio.first = 3.726513945
+w_control_first = 16203.73916
+w_signal = 34192.59242
+
+#statistical errors
+#negative rate (no shape?)
+
+for i in $(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls /store/user/pela/VBFHToTauTau_M125_13TeV_powheg_pythia8/Reprocessing_VBFHiggsTauTau_RAW_v3/160129_142736/0000 | grep .root | cut -d"/" -f5-); do lcg-cp srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/pela/$i srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/dwinterb/$i;  done;
+
+
+
+
+
+
+22531.9430596
+
+#check background params!!
