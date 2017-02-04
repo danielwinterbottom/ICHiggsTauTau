@@ -9,4 +9,4 @@ QUEUE=$1
 sed -i '/export SCRAM_ARCH/ i\
 source /vols/grid/cms/setup.sh' $INPUT
 echo "Submitting job $INPUT to Imperial batch queue $QUEUE"
-qsub -q $QUEUE -l h_rt=0:120:0 -cwd $INPUT
+qsub -q $QUEUE -l h_rt=0:180:0 -cwd $INPUT
