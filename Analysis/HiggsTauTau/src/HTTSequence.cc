@@ -1793,7 +1793,7 @@ void HTTSequence::BuildMTPairs() {
     } else { 
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16){
+   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
    } else {
     MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
@@ -1984,7 +1984,7 @@ if(strategy_type == strategy::paper2013) {
     } else { 
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else if (strategy_type!=strategy::mssmspring16 && strategy_type!=strategy::smspring16 && strategy_type != strategy::mssmsummer16){
+   } else if (strategy_type!=strategy::mssmspring16 && strategy_type!=strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
    } else {
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
@@ -2171,9 +2171,9 @@ void HTTSequence::BuildZMMPairs() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15){
+  if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type == strategy::mssmsummer16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
-  } else if (strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+  } else if (strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
   }
   BuildModule(SimpleFilter<Muon>("MuonFilter")
@@ -2207,9 +2207,9 @@ void HTTSequence::BuildTPZMMPairs() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15){
+  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15  || strategy_type == strategy::mssmsummer16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
-  } else if (strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+  } else if (strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
   }
 
@@ -2255,9 +2255,9 @@ void HTTSequence::BuildWMuNu() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15){
+  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15 || strategy_type == strategy::mssmsummer16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
-  } else if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+  } else if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
   }
 
