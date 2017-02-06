@@ -7,7 +7,7 @@ from UserCode.ICHiggsTauTau.uncertainties import ufloat
 from optparse import OptionParser
 import argparse
 import ConfigParser
-from UserCode.ICHiggsTauTau.Analysis.HiggsTauTau.scripts import HTTPlot
+import UserCode.ICHiggsTauTau.plotting as plotting
 
 CHANNELS= ['et', 'mt', 'em','tt']
 ANALYSIS= ['sm','mssm','Hhh']
@@ -22,7 +22,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"sm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":True, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100:, "custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100 }
+defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"sm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":True, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0 }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -109,6 +109,12 @@ parser.add_argument("--x_axis_min", dest="x_axis_min", type=float,
     help="Minimum x-axis value.")
 parser.add_argument("--x_axis_max", dest="x_axis_max", type=float,
     help="Maximum x-axis value.")
+parser.add_argument("--log_x", dest="log_x", action='store_true',
+    help="Set log scale on x-axis.")
+parser.add_argument("--log_y", dest="log_y", action='store_true',
+    help="Set log scale on y-axis.")
+parser.add_argument("--extra_pad", dest="extra_pad", type=float,
+    help="Fraction of extra whitespace at top of plot.")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -150,6 +156,9 @@ print 'y_axis_max        ='  ,  options.y_axis_max
 print 'custom_x_range    ='  ,  options.custom_x_range
 print 'x_axis_min        ='  ,  options.x_axis_min
 print 'x_axis_max        ='  ,  options.x_axis_max
+print 'log_x             ='  ,  options.log_x
+print 'log_y             ='  ,  options.log_x
+print 'extra_pad         ='  ,  options.extra_pad
 print '###############################################'
 print ''
 
@@ -641,7 +650,9 @@ def createAxisHists(n,src,xmin=0,xmax=499):
 
 def Plot(ana, nodename):
     
-    background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetC
+    plotting.ModTDRStyle(r=0.04, l=0.14)
+    
+    background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'em':[backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VV","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
@@ -658,41 +669,53 @@ def Plot(ana, nodename):
         for i in range(0,total_datahist.GetNbinsX()):
           low_edge = total_datahist.GetBinLowEdge(i+1)
           high_edge = low_edge+total_datahist.GetBinWidth(i+1)
-          if ((low_edge > float(options.x_blind_min) and low_edge < float(options.x_blind_max)) or (options.high_edge > float(x_blind_min) and high_edge<float(options.x_blind_max))):
+          if ((low_edge > float(options.x_blind_min) and low_edge < float(options.x_blind_max)) or (high_edge > float(options.x_blind_min) and high_edge<float(options.x_blind_max))):
             blind_datahist.SetBinContent(i+1,0)
             blind_datahist.SetBinError(i+1,0)
         
-    channel = "mt"
+        #Create stacked plot for the backgrounds
     bkg_histos = []
-    for i,t in enumerate(background_schemes[channel]):
-        print t
-        h = ana.nodes[nodename].nodes[t].shape.hist.Clone()
+    for i,t in enumerate(background_schemes[options.channel]):
+        plots = t['plot_list']
+        h = ROOT.TH1F()
+        for j,k in enumerate(plots):
+            if h.GetEntries()==0:
+                h = ana.nodes[nodename].nodes[k].shape.hist.Clone()
+                h.SetName(k)
+            else:
+                h.Add(ana.nodes[nodename].nodes[k].shape.hist.Clone())
         h.SetFillColor(t['colour'])
         h.SetLineColor(ROOT.kBlack)
         h.SetMarkerSize(0)
+
         if options.norm_bins:
             h.Scale(1.0,"width")
         bkg_histos.append(h)
         
     stack = ROOT.THStack("hs","")
+    bkghist = ROOT.TH1F()
     for hists in bkg_histos:
-      stack.Add(hists)
+      stack.Add(hists.Clone())
+      if bkghist.GetEntries()==0:
+          bkghist = hists.Clone()
+      else:
+          bkghist.Add(hists.Clone())
       
     c1 = ROOT.TCanvas()
     c1.cd()    
     
     if options.ratio:
-        pads=plot.TwoPadSplit(0.29,0.01,0.01)
+        pads=plotting.TwoPadSplit(0.29,0.01,0.01)
     else:
-        pads=plot.OnePad()
+        pads=plotting.OnePad()
     pads[0].cd()
     
-    if(log_y): pads[0].SetLogy(1)
-    if(log_x): pads[0].SetLogx(1)
+    if(options.log_y): pads[0].SetLogy(1)
+    if(options.log_x): pads[0].SetLogx(1)
     if options.custom_x_range:
         if options.x_axis_max > bkghist.GetXaxis().GetXmax(): options.x_axis_max = bkghist.GetXaxis().GetXmax()
     if options.ratio:
-        if(log_x): pads[1].SetLogx(1)
+        if(options.log_x): pads[1].SetLogx(1)
         axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         axish[1].GetXaxis().SetTitle(args.x_title)
         axish[1].GetYaxis().SetNdivisions(4)
@@ -713,14 +736,18 @@ def Plot(ana, nodename):
         if options.custom_y_range:
           axish[0].GetYaxis().SetRangeUser(options.y_axis_min,options.y_axis_max)
     axish[0].GetYaxis().SetTitle(options.y_title)
-    axish[0].GetXaxis().SetTitle(args.x_title)
-    if not options.custom_y_range: axish[0].SetMaximum(extra_pad*bkghist.GetMaximum())
+    axish[0].GetXaxis().SetTitle(options.x_title)
+    if not options.custom_y_range: axish[0].SetMaximum(1.1*(1+options.extra_pad)*bkghist.GetMaximum())
     if not options.custom_y_range: 
-        if(log_y): axish[0].SetMinimum(0.0009)
+        if(options.log_y): axish[0].SetMinimum(0.0009)
         else: axish[0].SetMinimum(0)
     axish[0].Draw()
     
-    #stack.Draw()
+    stack.Draw("histsame")
+    
+    axish[0].Draw("axissame")
+    c1.Print("blah.pdf")
+    
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
     doTTJ = 'TTJ' not in samples_to_skip
@@ -843,7 +870,7 @@ for systematic in systematics:
     
     # Generate plots here for default only
     
-    HTTPlot.Plot(ana,nodename)
+    Plot(ana,nodename)
     
     # When adding signal samples to th data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if options.analysis == "sm" or options.add_sm_background:
