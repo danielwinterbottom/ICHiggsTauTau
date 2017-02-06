@@ -7,6 +7,7 @@ from UserCode.ICHiggsTauTau.uncertainties import ufloat
 from optparse import OptionParser
 import argparse
 import ConfigParser
+from UserCode.ICHiggsTauTau.Analysis.HiggsTauTau.scripts import HTTPlot
 
 CHANNELS= ['et', 'mt', 'em','tt']
 ANALYSIS= ['sm','mssm','Hhh']
@@ -21,7 +22,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"sm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" }
+defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"sm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":True, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100:, "custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100 }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -62,29 +63,54 @@ parser.add_argument("--ggh_masses", dest="ggh_masses", type=str,
     help="Comma seperated list of SUSY ggH signal masses.")
 parser.add_argument("--bbh_masses", dest="bbh_masses", type=str,
     help="Comma seperated list of SUSY bbH signal masses.")
-parser.add_argument("--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type=float, default=-1,
+parser.add_argument("--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type=float,
     help="QCD OS/SS ratio")
 parser.add_argument("--add_sm_background", dest="add_sm_background", type=str,
     help="Add SM Higgs background for MSSM")
-parser.add_argument("--syst_tau_scale", dest="syst_tau_scale", type=str, default='',
+parser.add_argument("--syst_tau_scale", dest="syst_tau_scale", type=str,
     help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_eff_t", dest="syst_eff_t", type=str, default='',
     help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_tquark", dest="syst_tquark", type=str, default='',
+parser.add_argument("--syst_tquark", dest="syst_tquark", type=str,
     help="If this string is set then the top-quark weight systematic is performed with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_zwt", dest="syst_zwt", type=str, default='',
+parser.add_argument("--syst_zwt", dest="syst_zwt", type=str,
     help="If this string is set then the z-reweighting systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_w_fake_rate", dest="syst_w_fake_rate", type=str, default='',
     help="If this string is set then the W+jets fake-rate systematic is performed with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_scale_j", dest="syst_scale_j", type=str, default='',
+parser.add_argument("--syst_scale_j", dest="syst_scale_j", type=str,
     help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_eff_b", dest="syst_eff_b", type=str, default='',
+parser.add_argument("--syst_eff_b", dest="syst_eff_b", type=str,
     help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_fake_b", dest="syst_fake_b", type=str, default='',
+parser.add_argument("--syst_fake_b", dest="syst_fake_b", type=str,
     help="If this string is set then the b-tag fake-rate systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--norm_bins", dest="norm_bins", action='store_true',
+    help="Normalize bins by bin width.")
+parser.add_argument("--blind", dest="blind", action='store_true',
+    help="Blind histogram.")
+parser.add_argument("--x_blind_min", dest="x_blind_min", type=float,
+    help="Minimum x for blinding.")
+parser.add_argument("--x_blind_max", dest="x_blind_max", type=float,
+    help="Maximum x for blinding.")
+parser.add_argument("--ratio", dest="ratio", action='store_true',
+    help="Draw ratio.")
+parser.add_argument("--y_title", dest="y_title", type=str,
+    help="Y-axis title.")
+parser.add_argument("--x_title", dest="x_title", type=str,
+    help="X-axis title.")
+parser.add_argument("--custom_y_range", dest="custom_y_range", action='store_true',
+    help="Use custom y-axis range")
+parser.add_argument("--y_axis_min", dest="y_axis_min", type=float,
+    help="Minimum y-axis value.")
+parser.add_argument("--y_axis_max", dest="y_axis_max", type=float,
+    help="Maximum y-axis value.")
+parser.add_argument("--custom_x_range", dest="custom_x_range", action='store_true',
+    help="Use custom x-axis range")
+parser.add_argument("--x_axis_min", dest="x_axis_min", type=float,
+    help="Minimum x-axis value.")
+parser.add_argument("--x_axis_max", dest="x_axis_max", type=float,
+    help="Maximum x-axis value.")
 
-
-options = parser.parse_args(remaining_argv)
+options = parser.parse_args(remaining_argv)   
 
 print ''
 print '################### Options ###################'
@@ -112,9 +138,22 @@ print 'syst_w_fake_rate  ='  ,  options.syst_w_fake_rate
 print 'syst_scale_j      ='  ,  options.syst_scale_j
 print 'syst_eff_b        ='  ,  options.syst_eff_b
 print 'syst_fake_b       ='  ,  options.syst_fake_b
+print 'blind             ='  ,  options.blind
+print 'x_blind_min       ='  ,  options.x_blind_min
+print 'x_blind_max       ='  ,  options.x_blind_max
+print 'ratio             ='  ,  options.ratio
+print 'y_title           ='  ,  options.y_title
+print 'x_title           ='  ,  options.x_title
+print 'custom_y_range    ='  ,  options.custom_y_range
+print 'y_axis_min        ='  ,  options.y_axis_min
+print 'y_axis_max        ='  ,  options.y_axis_max
+print 'custom_x_range    ='  ,  options.custom_x_range
+print 'x_axis_min        ='  ,  options.x_axis_min
+print 'x_axis_max        ='  ,  options.x_axis_max
 print '###############################################'
 print ''
 
+#y_title x_axis_min, max for y also custom_y_range, custom_x_range
 # Category dictionary 
 
 cats = {}
@@ -582,6 +621,107 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
     print '###############################################'
     print ''
     
+def signalComp(leg,plots,colour,stacked):
+  return dict([('leg_text',leg),('plot_list',plots),('colour',colour),('in_stack',stacked)])
+
+def backgroundComp(leg,plots,colour):
+  return dict([('leg_text',leg),('plot_list',plots),('colour',colour)])
+
+def createAxisHists(n,src,xmin=0,xmax=499):
+  result = []
+  for i in range(0,n):
+    res = src.Clone()
+    res.Reset()
+    res.SetTitle("")
+    res.SetName("axis%(i)d"%vars())
+    res.SetAxisRange(xmin,xmax)
+    res.SetStats(0)
+    result.append(res)
+  return result
+
+def Plot(ana, nodename):
+    
+    background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetC
+    'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
+    'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
+    'em':[backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VV","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
+    'zm':[backgroundComp("Misidentified #mu", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],ROOT.TColor.GetColor(100,192,232))]}
+        
+    total_datahist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
+    blind_datahist = total_datahist.Clone()
+    total_datahist.SetMarkerStyle(20)
+    blind_datahist.SetMarkerStyle(20)
+    blind_datahist.SetLineColor(1)
+    
+    #Blinding by hand using requested range, set to 200-4000 by default:
+    if options.blind:
+        for i in range(0,total_datahist.GetNbinsX()):
+          low_edge = total_datahist.GetBinLowEdge(i+1)
+          high_edge = low_edge+total_datahist.GetBinWidth(i+1)
+          if ((low_edge > float(options.x_blind_min) and low_edge < float(options.x_blind_max)) or (options.high_edge > float(x_blind_min) and high_edge<float(options.x_blind_max))):
+            blind_datahist.SetBinContent(i+1,0)
+            blind_datahist.SetBinError(i+1,0)
+        
+    channel = "mt"
+    bkg_histos = []
+    for i,t in enumerate(background_schemes[channel]):
+        print t
+        h = ana.nodes[nodename].nodes[t].shape.hist.Clone()
+        h.SetFillColor(t['colour'])
+        h.SetLineColor(ROOT.kBlack)
+        h.SetMarkerSize(0)
+        if options.norm_bins:
+            h.Scale(1.0,"width")
+        bkg_histos.append(h)
+        
+    stack = ROOT.THStack("hs","")
+    for hists in bkg_histos:
+      stack.Add(hists)
+      
+    c1 = ROOT.TCanvas()
+    c1.cd()    
+    
+    if options.ratio:
+        pads=plot.TwoPadSplit(0.29,0.01,0.01)
+    else:
+        pads=plot.OnePad()
+    pads[0].cd()
+    
+    if(log_y): pads[0].SetLogy(1)
+    if(log_x): pads[0].SetLogx(1)
+    if options.custom_x_range:
+        if options.x_axis_max > bkghist.GetXaxis().GetXmax(): options.x_axis_max = bkghist.GetXaxis().GetXmax()
+    if options.ratio:
+        if(log_x): pads[1].SetLogx(1)
+        axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+        axish[1].GetXaxis().SetTitle(args.x_title)
+        axish[1].GetYaxis().SetNdivisions(4)
+        axish[1].GetYaxis().SetTitle("Obs/Exp")
+
+        axish[0].GetXaxis().SetTitleSize(0)
+        axish[0].GetXaxis().SetLabelSize(0)
+        if options.custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(options.x_axis_min,options.x_axis_max-0.01)
+          axish[1].GetXaxis().SetRangeUser(options.x_axis_min,options.x_axis_max-0.01)
+        if options.custom_y_range:
+          axish[0].GetYaxis().SetRangeUser(options.y_axis_min,options.y_axis_max)
+          axish[1].GetYaxis().SetRangeUser(options.y_axis_min,options.y_axis_max)
+    else:
+        axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+        if options.custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(options.x_axis_min,options.x_axis_max-0.01)
+        if options.custom_y_range:
+          axish[0].GetYaxis().SetRangeUser(options.y_axis_min,options.y_axis_max)
+    axish[0].GetYaxis().SetTitle(options.y_title)
+    axish[0].GetXaxis().SetTitle(args.x_title)
+    if not options.custom_y_range: axish[0].SetMaximum(extra_pad*bkghist.GetMaximum())
+    if not options.custom_y_range: 
+        if(log_y): axish[0].SetMinimum(0.0009)
+        else: axish[0].SetMinimum(0)
+    axish[0].Draw()
+    
+    #stack.Draw()
+    
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
@@ -700,6 +840,10 @@ for systematic in systematics:
     ana.Run()
     
     PrintSummary(nodename, ['data_obs'], add_name)
+    
+    # Generate plots here for default only
+    
+    HTTPlot.Plot(ana,nodename)
     
     # When adding signal samples to th data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if options.analysis == "sm" or options.add_sm_background:
