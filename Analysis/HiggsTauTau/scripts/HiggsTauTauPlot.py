@@ -22,7 +22,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"sm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":True, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0 }
+defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"sm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":True, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "lumi":"12.9 fb^{-1} (13 TeV)" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -115,6 +115,16 @@ parser.add_argument("--log_y", dest="log_y", action='store_true',
     help="Set log scale on y-axis.")
 parser.add_argument("--extra_pad", dest="extra_pad", type=float,
     help="Fraction of extra whitespace at top of plot.")
+parser.add_argument("--signal_scale", dest="signal_scale", type=float,
+    help="Signal scale.")
+parser.add_argument("--draw_signal_mass", dest="draw_signal_mass", type=str,
+    help="Signal mass.")
+parser.add_argument("--draw_signal_tanb", dest="draw_signal_tanb", type=float,
+    help="Signal tanb.")
+parser.add_argument("--signal_scheme", dest="signal_scheme", type=str,
+    help="Signal scale.")
+parser.add_argument("--lumi", dest="lumi", type=str,
+    help="Lumi..")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -159,12 +169,15 @@ print 'x_axis_max        ='  ,  options.x_axis_max
 print 'log_x             ='  ,  options.log_x
 print 'log_y             ='  ,  options.log_x
 print 'extra_pad         ='  ,  options.extra_pad
+print 'signal_scale      ='  ,  options.signal_scale
+print 'draw_signal_mass  ='  ,  options.draw_signal_mass
+print 'draw_signal_tanb  ='  ,  options.draw_signal_tanb
+print 'signal_scheme     ='  ,  options.signal_scheme
+print 'lumi              ='  ,  options.lumi
 print '###############################################'
 print ''
 
-#y_title x_axis_min, max for y also custom_y_range, custom_x_range
-# Category dictionary 
-
+# Define categories here
 cats = {}
 if options.analysis == 'sm':
     if options.channel == 'mt':
@@ -650,6 +663,11 @@ def createAxisHists(n,src,xmin=0,xmax=499):
 
 def Plot(ana, nodename):
     
+    # Define signal schemes here
+    sig_schemes = {}
+    sig_schemes['sm_default'] = ( str(int(options.signal_scale))+"#times SM H("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
+    sig_schemes['run2_mssm'] = ( str(int(options.signal_scale))+"#times SUSYGluGluH("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
+    
     plotting.ModTDRStyle(r=0.04, l=0.14)
     
     background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
@@ -663,7 +681,7 @@ def Plot(ana, nodename):
     total_datahist.SetMarkerStyle(20)
     blind_datahist.SetMarkerStyle(20)
     blind_datahist.SetLineColor(1)
-    
+
     #Blinding by hand using requested range, set to 200-4000 by default:
     if options.blind:
         for i in range(0,total_datahist.GetNbinsX()):
@@ -672,6 +690,9 @@ def Plot(ana, nodename):
           if ((low_edge > float(options.x_blind_min) and low_edge < float(options.x_blind_max)) or (high_edge > float(options.x_blind_min) and high_edge<float(options.x_blind_max))):
             blind_datahist.SetBinContent(i+1,0)
             blind_datahist.SetBinError(i+1,0)
+    if options.norm_bins:
+        blind_datahist.Scale(1.0,"width")
+        total_datahist.Scale(1.0,"width")
         
         #Create stacked plot for the backgrounds
     bkg_histos = []
@@ -743,9 +764,66 @@ def Plot(ana, nodename):
         else: axish[0].SetMinimum(0)
     axish[0].Draw()
     
-    stack.Draw("histsame")
+    #Draw uncertainty band
+    bkghist.SetFillColor(plotting.CreateTransparentColor(12,0.4))
+    bkghist.SetLineColor(0)
+    bkghist.SetMarkerSize(0)
     
+    sighist = ROOT.TH1F()
+    if options.draw_signal_mass != "":
+        scheme = sig_schemes[options.signal_scheme]
+        for i in scheme[1]: 
+            h = ana.nodes[nodename].nodes[i+options.draw_signal_mass].shape.hist.Clone()
+            if sighist.GetEntries() == 0: sighist = h
+            else: sighist.Add(h)
+        sighist.SetLineColor(ROOT.kBlue)
+        sighist.SetLineWidth(3)
+        sighist.Scale(options.signal_scale)
+        if options.norm_bins: sighist.Scale(1.0,"width")
+        if scheme[2]: 
+            stack.Add(sighist.Clone())
+            if not options.custom_y_range: axish[0].SetMaximum(1.1*(1+options.extra_pad)*stack.GetMaximum())
+        stack.Draw("histsame")
+        if not scheme[2]: sighist.Draw("histsame")
+        
+    else:
+        stack.Draw("histsame")
+    
+    bkghist.Draw("e2same")
+    blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
+    
+    #Setup legend
+    legend = plotting.PositionedLegend(0.40,0.30,3,0.03)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.020)
+    legend.SetFillColor(0)
+    legend.AddEntry(blind_datahist,"Observation","PE")
+    #Drawn on legend in reverse order looks better
+    bkg_histos.reverse()
+    background_schemes[options.channel].reverse()
+    for legi,hists in enumerate(bkg_histos):
+        legend.AddEntry(hists,background_schemes[options.channel][legi]['leg_text'],"f")
+    legend.AddEntry(bkghist,"Background uncertainty","f")
+    if options.draw_signal_mass != "":
+        legend.AddEntry(sighist,sig_schemes[options.signal_scheme][0],"l")    
+    legend.Draw("same")
+    if options.channel == "em": channel_label = "e#mu"
+    if options.channel == "et": channel_label = "e#tau"
+    if options.channel == "mt": channel_label = "#mu#tau"
+    if options.channel == "tt": channel_label = "#tau#tau"
+    latex2 = ROOT.TLatex()
+    latex2.SetNDC()
+    latex2.SetTextAngle(0)
+    latex2.SetTextColor(ROOT.kBlack)
+    latex2.SetTextSize(0.028)
+    latex2.DrawLatex(0.145,0.955,channel_label)
+    
+    #CMS and lumi labels
+    plotting.FixTopRange(pads[0], plotting.GetPadYMax(pads[0]), options.extra_pad if options.extra_pad>0 else 0.30)
+    plotting.DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    plotting.DrawTitle(pads[0], options.lumi, 3)
+    
     c1.Print("blah.pdf")
     
     
