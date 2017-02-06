@@ -26,6 +26,8 @@
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
+#include "HiggsTauTau/interface/HTTFutureGenEvent.h"
+#include "HiggsTauTau/interface/HTTFutureJetPV.h"
 #include "HiggsTauTau/interface/HTTFutureTrees.h"
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
@@ -293,7 +295,16 @@ void HTTFutureSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
+  BuildModule(HTTFutureGenEvent("HTTFutureGenEvent")
+    .set_genparticle_label("genParticles")
+    .set_genjet_label("genJets")
+    .set_jets_label(jets_label)
+    .set_fs(fs.get()));
 
+  BuildModule(HTTFutureJetPV("HTTFutureJetPV")
+    .set_genjet_label("genJets")
+    .set_jets_label(jets_label)
+    .set_fs(fs.get()));
 
   // If desired, run the HTTGenEventModule which will add some handily-
   // formatted generator-level info into the Event
