@@ -630,15 +630,18 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
     bkg_total = ufloat(0.000000001,0.000000001)
     sig_total = ufloat(0.000000001,0.000000001)
     for node in nodes:
-        per_err = node.shape.rate.s/node.shape.rate.n
+        if node.shape.rate.n == 0: per_err = 0
+        else: per_err = node.shape.rate.s/node.shape.rate.n
         print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err
         if True in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name.find("_SM"+options.add_sm_background) ==-1:
             sig_total += node.shape.rate
         elif node.name not in data_strings:
             bkg_total += node.shape.rate
-    per_err = bkg_total.s/bkg_total.n
+    if bkg_total.n == 0: per_err = 0        
+    else: per_err = bkg_total.s/bkg_total.n
     print 'Total bkg'.ljust(10) , ("%.2f" % bkg_total.n).ljust(10), '+/-'.ljust(5), ("%.2f" % bkg_total.s).ljust(7), "(%.4f)" % per_err
-    per_err = sig_total.s/sig_total.n
+    if sig_total.n == 0: per_err = 0
+    else: per_err = sig_total.s/sig_total.n
     print 'Total sig'.ljust(10) , ("%.2f" % sig_total.n).ljust(10), '+/-'.ljust(5), ("%.2f" % sig_total.s).ljust(7), "(%.4f)" % per_err
     print '###############################################'
     print ''

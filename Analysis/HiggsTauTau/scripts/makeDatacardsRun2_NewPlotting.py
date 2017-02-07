@@ -257,9 +257,9 @@ for ch in channels:
     opts    = x[4]
     extra = options.extra + extra_global + extra_channel[ch] + opts
     
-    os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --channel=%(ch)s'
+    os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
               ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s'
-              '--paramfile=%(PARAMS)s --folder=%(FOLDER)s'
+              ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s'
               ' --var="%(var)s%(bin)s" %(extra)s' % vars())
 
     #os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
