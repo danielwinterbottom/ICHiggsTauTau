@@ -5,7 +5,6 @@
 #include "Core/interface/AnalysisBase.h"
 #include "Utilities/interface/JsonTools.h"
 #include "Utilities/interface/FnRootTools.h"
-#include "HiggsTauTau/interface/WJetsStudy.h"
 #include "HiggsTauTau/interface/HTTStitching.h"
 
 

@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
 #include <sys/stat.h>
 #include "boost/algorithm/string.hpp"
+#include "boost/lexical_cast.hpp"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Core/interface/AnalysisBase.h"
 #include "Objects/interface/Muon.hh"
@@ -19,7 +21,6 @@
 #include "Modules/interface/OverlapFilter.h"
 #include "Modules/interface/PileupWeight.h"
 #include "Modules/interface/EnergyShifter.h"
-#include "HiggsTauTau/interface/WJetsStudy.h"
 #include "HiggsTauTau/interface/HTT2016Studies.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/SampleStitching.h"
