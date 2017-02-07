@@ -199,6 +199,15 @@ int main(int argc, char* argv[]) {
       seq.InsertSequence("EffectiveEvents", analysis);
     }
 
+    if (fullseqn == "WJetsStudy") {
+      auto & seq = seqs["WJetsStudy"];
+      seq.BuildModule(ic::WJetsStudy("WJetsStudy")
+        .set_fs(fs.at("WJetsStudy").get())
+        .set_genparticle_label("genParticles")
+        .set_sample_name(js.get("wjets_sample_name", std::string("")).asString()));
+      seq.InsertSequence("WJetsStudy", analysis);
+    }
+
     if (fullseqn == "DYDebug") {
       auto & seq = seqs["DYDebug"];
       if (js.get("do_dyjets_stitching", false).asBool()) {

@@ -16,6 +16,30 @@
 
 namespace ic {
 
+struct CandidateTreeVars {
+  float pt = 0.;
+  float eta = 0.;
+  float phi = 0.;
+  float m = 0.;
+  int q = 0;
+
+  virtual void SetTree(TTree *t, TString pre, TString post);
+  virtual void SetVals(ic::Candidate const* c);
+};
+
+
+struct WeightSetVars {
+  std::vector<float> wts_;
+  std::vector<std::string> strs_;
+  unsigned start_ = 0;
+  unsigned end_ = 0;
+
+  virtual void SetTree(TTree *t, unsigned start, unsigned end, TString pre,
+                       TString post);
+  virtual void SetVals(ic::EventInfo const* info);
+};
+
+
 bool HLTPathCheck(ic::TreeEvent* event, std::string const& label,
                   std::string const& path);
 
@@ -34,6 +58,33 @@ void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift);
 double TopQuarkPtWeight(std::vector<GenParticle *> const& parts);
 
 ROOT::Math::PtEtaPhiEVector BuildGenBoson(std::vector<GenParticle *> const& parts);
+
+class WJetsStudy : public ModuleBase {
+ private:
+  // CLASS_MEMBER(WJetsStudy, ic::channel, channel)
+  CLASS_MEMBER(WJetsStudy, fwlite::TFileService*, fs)
+  CLASS_MEMBER(WJetsStudy, std::string, genparticle_label)
+  CLASS_MEMBER(WJetsStudy, std::string, sample_name)
+
+  TTree * tree_;
+  CandidateTreeVars lepton_;
+  WeightSetVars scale_wts_;
+  WeightSetVars pdf_wts_;
+  float mt_1_ = 0;
+  float wt_ = 1.0;
+  unsigned n_jets_ = 0;
+  bool do_lhe_weights_ = true;
+
+
+ public:
+  WJetsStudy(std::string const& name);
+  virtual ~WJetsStudy();
+
+  virtual int PreAnalysis();
+  virtual int Execute(TreeEvent *event);
+  virtual int PostAnalysis();
+  virtual void PrintInfo();
+};
 
 class SelectMVAMET : public ModuleBase {
  private:
