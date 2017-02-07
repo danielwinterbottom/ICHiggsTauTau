@@ -12,6 +12,8 @@ opts.register('file', '',
     parser.VarParsing.varType.string, 'input file')
 opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, 'global tag')
+opts.register('jecDB', '', parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.string, 'jec db')
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, 'Process as data')
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
@@ -24,6 +26,7 @@ opts.parseArguments()
 infile = opts.file
 isData = opts.isData
 tag  = opts.globalTag
+jecdb = opts.jecDB
 release = opts.release
 hltPaths = opts.hltPaths
 lheParticles = bool(opts.lheParticles)
@@ -34,6 +37,7 @@ if not release in ['80XMINIAOD']:
 print 'release      : '+release
 print 'isData       : '+str(isData)
 print 'globalTag    : '+str(tag)
+print 'jecDB        : '+str(jecdb)
 print 'hltPaths     : '+str(hltPaths)
 print 'lheParticles : '+str(lheParticles)
 
@@ -85,6 +89,30 @@ import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
+
+if jecdb is not '':
+    print 'Using JEC db: %s' % jecdb.split(':')
+
+    # process.load("CondCore.DBCommon.CondDBCommon_cfi")
+    # from CondCore.DBCommon.CondDBSetup_cfi import *
+    process.jec = cms.ESSource("PoolDBESSource",
+        DBParameters = cms.PSet(
+            messageLevel = cms.untracked.int32(0)
+        ),
+        timetype = cms.string('runnumber'),
+        toGet = cms.VPSet(
+            cms.PSet(
+                record = cms.string('JetCorrectionsRecord'),
+                tag    = cms.string(jecdb.split(':')[1]),
+                # tag    = cms.string('JetCorrectorParametersCollection_Fall15_25nsV2_MC_AK4PFchs'),
+                label  = cms.untracked.string('AK4PFchs')
+            )
+        ),
+        connect = cms.string('sqlite:%s' % jecdb.split(':')[0])
+    )
+
+    ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+    process.es_prefer_jec = cms.ESPrefer('PoolDBESSource',' jec')
 
 ################################################################
 # Event
