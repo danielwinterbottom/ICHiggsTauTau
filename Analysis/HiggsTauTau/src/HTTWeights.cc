@@ -200,8 +200,14 @@ namespace ic {
               w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-          fns_["m_trgOR_binned_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_trgOR_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          //fns_["m_trgOR_binned_data"] = std::shared_ptr<RooFunctor>(
+          //   w_->function("m_trgOR_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["m_trgOR4_binned_ratio"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trgOR4_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["m_trgOR4_binned_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trgOR4_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          fns_["m_trgOR4_binned_mc"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trgOR4_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
@@ -218,6 +224,8 @@ namespace ic {
               w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+          fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+             w_->function("e_trg_binned_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           fns_["e_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("e_idiso0p15_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
@@ -757,9 +765,9 @@ namespace ic {
                   auto args_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
                   auto args_desy = std::vector<double>{e_pt,e_signed_eta};
                   if(e_iso<0.1){
-                    ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_desy.data());
+                    ele_trg = fns_["e_trg_binned_data"]->eval(args_desy.data());
                   } else ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
-                  ele_trg_mc=1;
+                  ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());;
               } else {
                   std::cout << "Cross trigger not currently supported! Setting trigger efficiencies to 1" << std::endl;
                   tau_trg=1;
@@ -985,11 +993,11 @@ namespace ic {
                     auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};
                     auto args_desy = std::vector<double>{pt,m_signed_eta};
                     if(m_iso<0.15){
-                      mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
-                    } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
-                  //  mu_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
+                      //mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
+                      mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
+                    } else  mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
+                    mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                    // mu_trg = 1;
-                    mu_trg_mc=1;
                 } else {
                     std::cout << "Cross trigger not currently supported! Setting trigger efficiencies to 1" << std::endl;
                     tau_trg=1;
