@@ -166,7 +166,7 @@ if SCHEME == 'run2_mssm_2016':
     ("16",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<50" '),
     ("16",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" '),
     ("16",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --do_ss '),
-    ("16",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<50" --do_ss=true '),
+    ("16",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<50" --do_ss '),
   ]
   scheme_mt = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:mt_1<40" '),
@@ -209,7 +209,7 @@ if SCHEME == 'run2_mssm_2016':
 cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
-  #'em' : scheme_em,
+  'em' : scheme_em,
   'tt' : scheme_tt
 }
 
@@ -258,20 +258,12 @@ for ch in channels:
     extra = options.extra + extra_global + extra_channel[ch] + opts
     
     os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s'
+              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder="./" --no_plot'
               ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s'
               ' --var="%(var)s%(bin)s" %(extra)s' % vars())
 
-    #os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot5 --cfg=%(CFG)s --channel=%(ch)s'
-    #    ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
-    #    ' --var="%(var)s%(bin)s" --norm_bins=true '
-    #    ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
-    #    ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
-    #    ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbosity=0'
-    #    ' --paramfile=%(PARAMS)s --extra_pad=0.2 --folder=%(FOLDER)s %(extra)s' % vars())
-    
-  #varsplit = var.split('(')
-  #varname=varsplit[0]
-  #os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
-  #os.system('rm datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
+  varsplit = var.split('(')
+  varname=varsplit[0]
+  os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
+  os.system('rm datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
 

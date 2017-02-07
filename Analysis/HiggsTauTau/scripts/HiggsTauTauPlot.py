@@ -8,6 +8,7 @@ from optparse import OptionParser
 import argparse
 import ConfigParser
 import UserCode.ICHiggsTauTau.plotting as plotting
+from collections import OrderedDict
 
 CHANNELS= ['et', 'mt', 'em','tt']
 ANALYSIS= ['sm','mssm','Hhh']
@@ -22,7 +23,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"sm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":True, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "lumi":"12.9 fb^{-1} (13 TeV)" }
+defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -125,6 +126,10 @@ parser.add_argument("--signal_scheme", dest="signal_scheme", type=str,
     help="Signal scale.")
 parser.add_argument("--lumi", dest="lumi", type=str,
     help="Lumi..")
+parser.add_argument("--no_plot", dest="no_plot", action='store_true',
+    help="If option is set then no pdf or png plots will be created only the output root file will be produced.")
+parser.add_argument("--ratio_range", dest="ratio_range", type=str,
+    help="y-axis range for ratio plot in format MIN,MAX")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -158,6 +163,7 @@ print 'blind             ='  ,  options.blind
 print 'x_blind_min       ='  ,  options.x_blind_min
 print 'x_blind_max       ='  ,  options.x_blind_max
 print 'ratio             ='  ,  options.ratio
+print 'ratio_range       ='  ,  options.ratio_range
 print 'y_title           ='  ,  options.y_title
 print 'x_title           ='  ,  options.x_title
 print 'custom_y_range    ='  ,  options.custom_y_range
@@ -174,6 +180,7 @@ print 'draw_signal_mass  ='  ,  options.draw_signal_mass
 print 'draw_signal_tanb  ='  ,  options.draw_signal_tanb
 print 'signal_scheme     ='  ,  options.signal_scheme
 print 'lumi              ='  ,  options.lumi
+print 'no_plot           ='  ,  options.no_plot
 print '###############################################'
 print ''
 
@@ -272,8 +279,8 @@ mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau', 'bbH' : 'SUSYGluGluToBBHToTauT
 Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
 
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
-
-systematics = { 'default' : ('','', 'wt', []) }
+systematics = OrderedDict()
+systematics['default'] = ('','', 'wt', [])
 if options.syst_tau_scale != '':
     systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'UP', 'wt', [])
     systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'DOWN', 'wt', [])
@@ -669,7 +676,7 @@ def Plot(ana, nodename):
     # Define signal schemes here
     sig_schemes = {}
     sig_schemes['sm_default'] = ( str(int(options.signal_scale))+"#times SM H("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
-    sig_schemes['run2_mssm'] = ( str(int(options.signal_scale))+"#times SUSYGluGluH("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
+    sig_schemes['run2_mssm'] = ( str(int(options.signal_scale))+"#times gg#phi("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     
     plotting.ModTDRStyle(r=0.04, l=0.14)
     
@@ -741,9 +748,12 @@ def Plot(ana, nodename):
     if options.ratio:
         if(options.log_x): pads[1].SetLogx(1)
         axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
-        axish[1].GetXaxis().SetTitle(args.x_title)
+        axish[1].GetXaxis().SetTitle(options.x_title)
+        axish[1].GetXaxis().SetLabelSize(0.03)
         axish[1].GetYaxis().SetNdivisions(4)
         axish[1].GetYaxis().SetTitle("Obs/Exp")
+        axish[1].GetYaxis().SetTitleOffset(1.8)
+        axish[1].GetYaxis().SetLabelSize(0.03)
 
         axish[0].GetXaxis().SetTitleSize(0)
         axish[0].GetXaxis().SetLabelSize(0)
@@ -757,10 +767,13 @@ def Plot(ana, nodename):
         axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         if options.custom_x_range:
           axish[0].GetXaxis().SetRangeUser(options.x_axis_min,options.x_axis_max-0.01)
-        if options.custom_y_range:
+        #if options.custom_y_range:                                                                
           axish[0].GetYaxis().SetRangeUser(options.y_axis_min,options.y_axis_max)
     axish[0].GetYaxis().SetTitle(options.y_title)
+    axish[0].GetYaxis().SetTitleOffset(1.8)
+    axish[0].GetYaxis().SetLabelSize(0.03)
     axish[0].GetXaxis().SetTitle(options.x_title)
+    if not options.ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not options.custom_y_range: axish[0].SetMaximum(1.1*(1+options.extra_pad)*bkghist.GetMaximum())
     if not options.custom_y_range: 
         if(options.log_y): axish[0].SetMinimum(0.0009)
@@ -797,9 +810,9 @@ def Plot(ana, nodename):
     axish[0].Draw("axissame")
     
     #Setup legend
-    legend = plotting.PositionedLegend(0.40,0.30,3,0.03)
+    legend = plotting.PositionedLegend(0.30,0.30,3,0.03)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.020)
+    legend.SetTextSize(0.022)
     legend.SetFillColor(0)
     legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
@@ -827,7 +840,25 @@ def Plot(ana, nodename):
     plotting.DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     plotting.DrawTitle(pads[0], options.lumi, 3)
     
-    c1.Print("blah.pdf")
+    #Add ratio plot if required
+    if options.ratio:
+        ratio_bkghist = plotting.MakeRatioHist(bkghist.Clone(),bkghist.Clone(),True,False)
+        blind_ratio = plotting.MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
+        pads[1].cd()
+        pads[1].SetGrid(0,1)
+        axish[1].Draw("axis")
+        axish[1].SetMinimum(float(options.ratio_range.split(',')[0]))
+        axish[1].SetMaximum(float(options.ratio_range.split(',')[1]))
+        ratio_bkghist.SetMarkerSize(0)
+        ratio_bkghist.Draw("e2same")
+        blind_ratio.DrawCopy("e0same")
+        pads[1].RedrawAxis("G")
+    
+    plot_name = options.output_folder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    if(options.log_y): plot_name+="_logy"
+    if(options.log_x): plot_name+="_logx"
+    c1.Print(plot_name+'.pdf')
+    c1.Print(plot_name+'.png')
     
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
@@ -947,47 +978,50 @@ for systematic in systematics:
     
     ana.Run()
     
+    print ana.nodes[nodename]
+    
     PrintSummary(nodename, ['data_obs'], add_name)
     
     # Generate plots here for default only
-    
-    Plot(ana,nodename)
+    if not options.no_plot and systematic == 'default':
+        Plot(ana,nodename)
     
     # When adding signal samples to th data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
-    if options.analysis == "sm" or options.add_sm_background:
-        if options.analysis == "sm":
-            masses = sm_masses
-        else:
-            masses = [options.add_sm_background]
-        for samp in sm_samples:
+    if 'signal' not in samples_to_skip:
+        if options.analysis == "sm" or options.add_sm_background:
             if options.analysis == "sm":
-                samp_name = samp
+                masses = sm_masses
             else:
-                samp_name = samp+"_SM"
-            for mass in masses:
-                xs = ana.info[sm_samples[samp]+'_M-'+mass]['xs']
-                sf = 1.0/xs
-                sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
-                sm_hist.Scale(sf)
-    if options.analysis == "mssm":
-        for samp in mssm_samples:
-            if samp == 'ggH':
+                masses = [options.add_sm_background]
+            for samp in sm_samples:
+                if options.analysis == "sm":
+                    samp_name = samp
+                else:
+                    samp_name = samp+"_SM"
+                for mass in masses:
+                    xs = ana.info[sm_samples[samp]+'_M-'+mass]['xs']
+                    sf = 1.0/xs
+                    sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
+                    sm_hist.Scale(sf)
+        if options.analysis == "mssm":
+            for samp in mssm_samples:
+                if samp == 'ggH':
+                    masses = ggh_masses
+                elif samp == 'bbH':
+                    masses = bbh_masses
+                for mass in masses:
+                    xs = ana.info[mssm_samples[samp]+'_M-'+mass]['xs']
+                    sf = 1.0/xs
+                    mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
+                    mssm_hist.Scale(sf)
+        if options.analysis == "Hhh":
+            for samp in Hhh_samples:
                 masses = ggh_masses
-            elif samp == 'bbH':
-                masses = bbh_masses
-            for mass in masses:
-                xs = ana.info[mssm_samples[samp]+'_M-'+mass]['xs']
-                sf = 1.0/xs
-                mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
-                mssm_hist.Scale(sf)
-    if options.analysis == "Hhh":
-        for samp in Hhh_samples:
-            masses = ggh_masses
-            for mass in masses:
-                xs = ana.info[Hhh_samples[samp]+'_M-'+mass]['xs']
-                sf = 1.0/xs
-                mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
-                mssm_hist.Scale(sf)
+                for mass in masses:
+                    xs = ana.info[Hhh_samples[samp]+'_M-'+mass]['xs']
+                    sf = 1.0/xs
+                    mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
+                    mssm_hist.Scale(sf)
     
     
     ana.nodes.Output(outfile)
