@@ -80,12 +80,11 @@
 #pragma link C++ class ic::GenJet+;
 #pragma link C++ class std::vector<ic::GenJet>+;
 
-#pragma link C++ class ic::EventInfo+;
-
-#pragma link C++ class mithep::TH2DAsymErr+;
-
 #pragma link C++ class ic::L1TObject+;
 #pragma link C++ class std::vector<ic::L1TObject>+;
 
+#pragma link C++ class ic::EventInfo+;
+
+#pragma link C++ class mithep::TH2DAsymErr+;
 
 #endif

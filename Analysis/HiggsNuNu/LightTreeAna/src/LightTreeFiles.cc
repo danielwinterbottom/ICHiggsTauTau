@@ -38,6 +38,9 @@ namespace ic{
       std::cerr << "Warning, file " << this->name() << " could not be opened." << std::endl;
       return 1;
     }
+    //else {
+    //std::cout << " File " << tmp->GetPath() << " successfully opened." << std::endl;
+    //}
     tfile_ = tmp;
     tree_=(TTree *)tfile_->Get("LightTree");
     if (!tree_) {
@@ -86,32 +89,34 @@ namespace ic{
 
   }
 
-  TH1F LTFile::GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
-    TH1F temp;
+  bool LTFile::GetShape(TH1F & temp, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool toadd){
+    //TH1F temp;
     if(tree_->GetEntries()<1){
       std::cout<<"WARNING: "<<name_<<" is empty."<<std::endl;
-      temp.SetName("EMPTY");
-      return temp;
+      //temp.SetName("EMPTY");
+      return false;
     }
-    temp=ic::GetShape(variable,selection,category,weight,tree_);
-    if(strcmp(temp.GetName(),"ERROR")==0){
-      std::cout<<"File with problem is: "<<name_<<std::endl;
-    }
-    return temp;
+    bool success = ic::GetShape(temp,variable,selection,category,weight,tree_,toadd);
+    //if(strcmp(temp.GetName(),"ERROR")==0){
+    //std::cout<<"File with problem is: "<<name_<<std::endl;
+    //return false;
+    //}
+    return success;
   };
 
-  TH2F LTFile::GetShape2D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
-    TH2F temp;
+  bool LTFile::GetShape2D(TH2F & temp, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool toadd){
+    //TH2F temp;
     if(tree_->GetEntries()<1){
       std::cout<<"WARNING: "<<name_<<" is empty."<<std::endl;
-      temp.SetName("EMPTY");
-      return temp;
+      //temp.SetName("EMPTY");
+      return false;
     }
-    temp=ic::GetShape2D(variable,selection,category,weight,tree_);
-    if(strcmp(temp.GetName(),"ERROR")==0){
-      std::cout<<"File with problem is: "<<name_<<std::endl;
-    }
-    return temp;
+    bool success =ic::GetShape2D(temp,variable,selection,category,weight,tree_,toadd);
+    //if(strcmp(temp.GetName(),"ERROR")==0){
+    //std::cout<<"File with problem is: "<<name_<<std::endl;
+    //return false;
+    //}
+    return success;
   };
 
   TH3F LTFile::GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
@@ -124,6 +129,7 @@ namespace ic{
     temp=ic::GetShape3D(variable,selection,category,weight,tree_);
     if(strcmp(temp.GetName(),"ERROR")==0){
       std::cout<<"File with problem is: "<<name_<<std::endl;
+      return temp;
     }
     return temp;
   };
@@ -357,27 +363,45 @@ namespace ic{
     return 0;
   };
 
-  TH1F LTFiles::GetShape(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+  bool LTFiles::GetShape(TH1F & temp, std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool toadd){
     if(OpenFile(filename)==1){
-      std::cout<<"Problem opening file "<<filename << " returning empty TH1F"<<std::endl;
-      TH1F temp;
-      return temp;
+      std::cout<<"Problem opening file "<<filename 
+	//<< " returning empty TH1F"
+	       <<std::endl;
+      //TH1F temp;
+      return false;
     }
-    TH1F temp = files_[filename].GetShape(variable,selection,category,weight);
+    bool success = files_[filename].GetShape(temp,variable,selection,category,weight,toadd);
     CloseFile(filename);
-    return(temp);
+    return success;
   };
 
 
-  TH1F LTFiles::GetSetShape(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
-    TH1F setshape;
+  TH1F LTFiles::GetShape(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+    TH1F temp;
+    GetShape(temp,filename,variable,selection,category,weight,false);
+    return temp;
+  }
+
+  TH1F LTFiles::GetSetShape(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool do_lumixs_weights_){
+    TH1F temp;
+    GetSetShape(temp,setname,variable,selection,category,weight,do_lumixs_weights_,false);
+    return temp;
+
+  }
+
+  bool LTFiles::GetSetShape(TH1F & setshape, std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool do_lumixs_weights_, const bool toadd){
+    //TH1F setshape;
+    bool oneok = false;
     if(setlists_.count(setname)>0){
       if(OpenSet(setname)==1){
-	std::cout<<"Problem opening set "<<setname<<" returning empty TH1F"<<std::endl;
-	TH1F temp;
-	return temp;
+	std::cout<<"Problem opening set "<<setname
+	  //<<" returning empty TH1F"
+		 <<std::endl;
+	//TH1F temp;
+	return false;
       }
-      bool first=true;
+      bool first=toadd?false:true;
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
 	if (!(*iter).second) continue;
 	//ADAPT LUMIXS BIT
@@ -387,92 +411,81 @@ namespace ic{
 	  lumixsweight=this->GetLumiXSWeight(files_[(*iter).first]);
 	}
 	std::cout << "Set: " << setname << ", sample " << (*iter).first << ": " ;
-	TH1F temp=files_[(*iter).first].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
-	if(strcmp(temp.GetName(),"EMPTY")==0){
+	bool success = files_[(*iter).first].GetShape(setshape,variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight),!first);
+	CloseFile((*iter).first);
+	if (!success){
+	  std::cout << " --- Error, Skipping" << std::endl;
 	  continue;
 	}
-	temp.Sumw2();
+	else oneok=true;
+	//if(strcmp(temp.GetName(),"EMPTY")==0){
+	//continue;
+	//}
+	//temp.Sumw2();
 	if(first){
-	  setshape=temp;
+	  //setshape=temp;
 	  first=false;
 	}
-	else setshape.Add(&temp);
+	//else {
+	//bool addok = setshape.Add(&temp);
+	//if (!addok) {
+	// std::cout << " Error with addition of shape for element " << (*iter).first << " skipping..." << std::endl;
+	// continue;
+	//}
+	//}
       }
-      CloseSet(setname);
+      //CloseSet(setname);
     }
     else{
-      std::cout<<"No set called "<<setname<<" returning empty TH1F object expect errors"<<std::endl;
+      std::cout<<"No set called "<<setname
+	//<<" returning empty TH1F object expect errors"
+	       <<std::endl;
+      return false;
     }
-    return setshape;
+    return oneok;
   };
 
-  TH1F LTFiles::GetSetsShape(std::vector<std::string> setnames, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
+  TH1F LTFiles::GetSetsShape(std::vector<std::string> setnames, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool do_lumixs_weights_){
     TH1F setsshape;
+    setsshape.Sumw2();
     bool firstset=true;
     for(unsigned iset=0;iset<setnames.size();iset++){
-      TH1F setshape;
-	if(setlists_.count(setnames[iset])>0){
-	  if(OpenSet(setnames[iset])==1){
-	    std::cout<<"Problem opening set "<<setnames[iset]<<" returning empty TH1F"<<std::endl;
-	    TH1F temp;
-	    return temp;
-	  }
-	  bool firstshape=true;
-	  for(auto iter=setlists_[setnames[iset]].begin(); iter!=setlists_[setnames[iset]].end();++iter){
-	    if (!(*iter).second) continue;
-	    //ADAPT LUMIXS BIT
-	    //std::string sample_path_=files_[*iter].path();
-	    double lumixsweight=1;
-	    if(do_lumixs_weights_){
-	      lumixsweight=this->GetLumiXSWeight(files_[(*iter).first]);
-	    }
-	    std::cout << "Set: " << setnames[iset] << ", sample " << (*iter).first << ": " ;
-	    TH1F temp=files_[(*iter).first].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
-	    if(strcmp(temp.GetName(),"EMPTY")==0){
-	      continue;
-	    }
-	    temp.Sumw2();
-	    if(firstshape){
-	      setshape=temp;
-	      firstshape=false;
-	    }
-	    else setshape.Add(&temp);
-	  }
-	  CloseSet(setnames[iset]);
-	}
-	else{
-	  std::cout<<"No set called "<<setnames[iset]<<" returning empty TH1F object expect errors"<<std::endl;
-	}
-	if(firstset){
-	  setsshape=setshape;
-	  firstset=false;
-	}
-	else setsshape.Add(&setshape);
-    }     
+      GetSetShape(setsshape,setnames[iset], variable, selection, category, weight, do_lumixs_weights_,!firstset);
+      if(firstset){
+	//setsshape= temp;
+	firstset=false;
+      }
+      //else setsshape.Add(&temp);
+    }    
     return setsshape;
   };
 
-  TH2F LTFiles::GetShape2D(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+  bool LTFiles::GetShape2D(TH2F & temp, std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool toadd){
     if(OpenFile(filename)==1){
-      std::cout<<"Problem opening file "<<filename << " returning empty TH2F"<<std::endl;
-      TH2F temp;
-      return temp;
+      std::cout<<"Problem opening file "<<filename 
+	//<< " returning empty TH2F"
+	       <<std::endl;
+      //TH2F temp;
+      return false;
     }
-    TH2F temp = files_[filename].GetShape2D(variable,selection,category,weight);
+    bool success = files_[filename].GetShape2D(temp,variable,selection,category,weight,toadd);
     CloseFile(filename);
-    return(temp);
+    return success;
   };
 
 
-  TH2F LTFiles::GetSetShape2D(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
-    TH2F setshape;
+  bool LTFiles::GetSetShape2D(TH2F & setshape, std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool do_lumixs_weights_, const bool toadd){
+    //TH2F setshape;
+    bool oneok = false;
     if(setlists_.count(setname)>0){
       if(OpenSet(setname)==1){
-	std::cout<<"Problem opening set "<<setname<<" returning empty TH2F"<<std::endl;
-	TH2F temp;
-	return temp;
+	std::cout<<"Problem opening set "<<setname
+	  //<<" returning empty TH2F"
+		 <<std::endl;
+	//TH2F temp;
+	return false;
       }
-      bool first=true;
+      bool first=toadd?false:true;
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
 	if (!(*iter).second) continue;
 	//ADAPT LUMIXS BIT
@@ -482,66 +495,59 @@ namespace ic{
 	  lumixsweight=this->GetLumiXSWeight(files_[(*iter).first]);
 	}
       
-	TH2F temp=files_[(*iter).first].GetShape2D(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
-	if(strcmp(temp.GetName(),"EMPTY")==0){
+	bool success = files_[(*iter).first].GetShape2D(setshape,variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight),!first);
+	CloseFile((*iter).first);
+	if (!success){
+	  std::cout << " --- Error, Skipping" << std::endl;
 	  continue;
 	}
-	temp.Sumw2();
+	else oneok=true;
+	
+	//if(strcmp(temp.GetName(),"EMPTY")==0){
+	//continue;
+	//}
+	//temp.Sumw2();
 	if(first){
-	  setshape=temp;
+	  //setshape=temp;
 	  first=false;
 	}
-	else setshape.Add(&temp);
+	//else setshape.Add(&temp);
       }
-      CloseSet(setname);
+      //CloseSet(setname);
     }
     else{
-      std::cout<<"No set called "<<setname<<" returning empty TH2F object expect errors"<<std::endl;
+      std::cout<<"No set called "<<setname
+	//<<" returning empty TH2F object expect errors"
+	       <<std::endl;
+      return false;
     }
-    return setshape;
+    return oneok;
   };
 
-  TH2F LTFiles::GetSetsShape2D(std::vector<std::string> setnames, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
+  TH2F LTFiles::GetShape2D(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+    TH2F temp;
+    GetShape2D(temp,filename,variable,selection,category,weight,false);
+    return temp;
+  }
+
+  TH2F LTFiles::GetSetShape2D(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool do_lumixs_weights_){
+    TH2F temp;
+    GetSetShape2D(temp,setname,variable,selection,category,weight,do_lumixs_weights_,false);
+    return temp;
+
+  }
+
+  TH2F LTFiles::GetSetsShape2D(std::vector<std::string> setnames, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, const bool do_lumixs_weights_){
     TH2F setsshape;
+    setsshape.Sumw2();
     bool firstset=true;
     for(unsigned iset=0;iset<setnames.size();iset++){
-      TH2F setshape;
-	if(setlists_.count(setnames[iset])>0){
-	  if(OpenSet(setnames[iset])==1){
-	    std::cout<<"Problem opening set "<<setnames[iset]<<" returning empty TH2F"<<std::endl;
-	    TH2F temp;
-	    return temp;
-	  }
-	  bool firstshape=true;
-	  for(auto iter=setlists_[setnames[iset]].begin(); iter!=setlists_[setnames[iset]].end();++iter){
-	    if (!(*iter).second) continue;
-	    //ADAPT LUMIXS BIT
-	    //std::string sample_path_=files_[*iter].path();
-	    double lumixsweight=1;
-	    if(do_lumixs_weights_){
-	      lumixsweight=this->GetLumiXSWeight(files_[(*iter).first]);
-	    }
-	    TH2F temp=files_[(*iter).first].GetShape2D(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
-	    if(strcmp(temp.GetName(),"EMPTY")==0){
-	      continue;
-	    }
-	    temp.Sumw2();
-	    if(firstshape){
-	      setshape=temp;
-	      firstshape=false;
-	    }
-	    else setshape.Add(&temp);
-	  }
-	  CloseSet(setnames[iset]);
-	}
-	else{
-	  std::cout<<"No set called "<<setnames[iset]<<" returning empty TH2F object expect errors"<<std::endl;
-	}
-	if(firstset){
-	  setsshape=setshape;
-	  firstset=false;
-	}
-	else setsshape.Add(&setshape);
+      GetSetShape2D(setsshape,setnames[iset], variable, selection, category, weight, do_lumixs_weights_,!firstset);
+      if(firstset){
+	//setsshape=temp;
+	firstset=false;
+      }
+      //else setsshape.Add(&temp);
     }     
     return setsshape;
   };

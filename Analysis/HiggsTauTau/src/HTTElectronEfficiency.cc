@@ -37,6 +37,11 @@ int HTTElectronEfficiency::PreAnalysis() {
     outtree_->Branch("allcharged03iso",&allcharged03iso_);
     outtree_->Branch("allcharged04iso",&allcharged04iso_);
     outtree_->Branch("sc_eta",&sc_eta);
+    outtree_->Branch("id_2016"      , &id_2016_      ); 
+    outtree_->Branch("id_loose_2016", &id_loose_2016_); 
+    outtree_->Branch("id_loose_2015", &id_loose_2015_); 
+    outtree_->Branch("id_tight_2016", &id_tight_2016_); 
+    outtree_->Branch("id_tight_2015", &id_tight_2015_); 
   }
 
   return 0;
@@ -161,6 +166,12 @@ int HTTElectronEfficiency::Execute(TreeEvent* event) {
 
   electronmvaID_ = elecs.at(i)->GetIdIso("mvaNonTrigSpring15");
   electronTrigmvaID_ = elecs.at(i)->GetIdIso("mvaTrigSpring15");
+  
+  id_2016_             = elecs.at(i)->GetIdIso("generalPurposeMVASpring16");
+  id_loose_2016_       = ElectronHTTIdSpring16(elecs.at(i),true);
+  id_loose_2015_       = ElectronHTTIdSpring15(elecs.at(i),true);
+  id_tight_2016_       = ElectronHTTIdSpring16(elecs.at(i),false);
+  id_tight_2015_       = ElectronHTTIdSpring15(elecs.at(i),false);
 
   //if(elecs.at(i)->pt()>10){
   if(fs_){

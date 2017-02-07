@@ -53,6 +53,7 @@
 #include "HiggsTauTau/interface/EffectiveEvents.h"
 #include "HiggsTauTau/interface/NvtxWeight.h"
 #include "HiggsTauTau/interface/BTagWeightRun2.h"
+#include "HiggsTauTau/interface/HTTGenMatchSelector.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -233,6 +234,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
        elec_pt = 26;
        tau_pt = 30;
       }
+      if (strategy_type == strategy::smspring16){
+       elec_pt = 26;
+      }
    }
 
    } else if (era_type == era::data_2011){
@@ -297,7 +301,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       pair_dr = 0.5;    
     } else{
       muon_pt = 20.0; //cross trigger
-      muon_eta = 2.1;
+      if (strategy_type == strategy::smspring16) muon_eta = 2.4;
+      else muon_eta = 2.1;
       tau_pt = 20;
       tau_eta = 2.3;
       min_taus = 1;
@@ -305,6 +310,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       if(strategy_type == strategy::mssmspring16){
         tau_pt = 30;
         muon_pt = 23;
+      }
+      if (strategy_type == strategy::smspring16){
+       muon_pt = 23;
       }
     }
 
@@ -943,7 +951,7 @@ if(channel != channel::wmnu && !js["store_hltpaths"].asBool()) {
     .set_channel(channel)
     .set_fs(fs.get())
     .set_pair_label("ditau")
-    .set_met_label(met_label)
+    .set_met_label("pfMET")
     .set_strategy(strategy_type)
     .set_mva_met_from_vector(mva_met_mode==1)
     .set_faked_tau_selector(faked_tau_selector)
@@ -1121,7 +1129,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
   }
 
 
- if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16) && channel!=channel::wmnu){
+ if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16) && channel!=channel::wmnu){
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1133,6 +1141,19 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
+    
+    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
+     .set_sample(output_name)
+     .set_channel(channel)
+     .set_mc(mc_type)
+     .set_met_label("pfMET")
+     .set_jets_label(jets_label)
+     .set_strategy(strategy_type)
+     .set_use_quantile_map(false)
+     .set_met_scale_mode(metscale_mode)
+     .set_met_res_mode(metres_mode)
+     .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
+
   }
 
 /*
@@ -1180,7 +1201,7 @@ if(js["do_preselection"].asBool()){
  }
 
 
-if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16) && !is_data){
+if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16) && !is_data){
  TH2F bbtag_eff;
  TH2F cbtag_eff;
  TH2F othbtag_eff;
@@ -1630,7 +1651,7 @@ BuildModule(HTTCategories("HTTCategories")
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
     .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
-    .set_sync_output_name("output/SYNCFILE_"+output_name)
+    .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
     .set_iso_study(js["iso_study"].asBool())
     .set_tau_id_study(js["tau_id_study"].asBool())
     .set_qcd_study(js["qcd_study"].asBool())
@@ -2289,8 +2310,14 @@ void HTTSequence::BuildTauSelection(){
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
  
  if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16)){
+    // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
+    BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("genmatched_taus")
+      .set_gen_match(mcorigin::tauHad));
+     
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
-    .set_input_label(js["taus"].asString())
+    .set_input_label("genmatched_taus")
     .set_shift(tau_shift));
  }
 
@@ -2301,7 +2328,6 @@ void HTTSequence::BuildTauSelection(){
       .set_strategy(strategy_type)
       .set_moriond_corrections(moriond_tau_scale));
  }
-
 
 if(strategy_type == strategy::paper2013){
   BuildModule(SimpleFilter<Tau>("TauFilter")
