@@ -117,8 +117,8 @@ namespace ic {
         if(ch_ == channel::et && year_.find("6")!=year_.npos) alias_map_["baseline"] = "(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)";
       }
       
-      if(ch_ == channel::et) alias_map_["mt"] = "(mt_1>40)";
-      else if(ch_ == channel::mt) alias_map_["mt"] = "(mt_1>40)";
+      if(ch_ == channel::et) alias_map_["mt"] = "(mt_1>50)";
+      else if(ch_ == channel::mt) alias_map_["mt"] = "(mt_1>50)";
       
 //      alias_map_["baseline"]          = "1";
       alias_map_["incvlelm"]         = "(iso_1<0.1&&iso_2<1.5 && antie_vloose_2>0 && antimu_loose_2>0 && !leptonveto)";
@@ -147,10 +147,12 @@ namespace ic {
       alias_map_["nobtag"] = "(n_bjets==0)";
       
       //tighter cats (tighten tau isolation and mt cut)
-      alias_map_["btag_tight"] = "("+alias_map_["btag"]+" && mva_olddm_tight_2>0.5 )";
+      //alias_map_["btag_tight"] = "("+alias_map_["btag"]+" && mva_olddm_tight_2>0.5 )";
+      alias_map_["btag_tight"] = "("+alias_map_["btag"]+")"; 
       alias_map_["btag_loose"] = alias_map_["btag"] + "&& ("+ alias_map_["mt"] + " || mva_olddm_tight_2<0.5)";
       
-      alias_map_["nobtag_tight"] = "("+alias_map_["nobtag"]+" && mva_olddm_tight_2>0.5 )";
+      //alias_map_["nobtag_tight"] = "("+alias_map_["nobtag"]+" && mva_olddm_tight_2>0.5 )";
+      alias_map_["nobtag_tight"] = "("+alias_map_["nobtag"]+")";
       alias_map_["nobtag_loose"] = alias_map_["nobtag"] + "&& ("+ alias_map_["mt"] + " || mva_olddm_tight_2<0.5)";
       
       // Categories for iso studies
