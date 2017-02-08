@@ -106,11 +106,12 @@ namespace ic {
     // Need to loop over all categories and add a ff weight to the event for each
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string map_key = Channel2String(channel_)+"_"+category_names_[i];
-      FakeFactor* ff = fake_factors_[map_key];
+      //FakeFactor* ff = fake_factors_[map_key];
       
       // Retrieve fake factors and add to event as weights
       if(channel_ == channel::et || channel_ == channel::mt){
-        double ff_nom = ff->value(inputs); // nominal fake factor
+        //double ff_nom = ff->value(inputs); // nominal fake factor
+        double ff_nom = fake_factors_[map_key]->value(inputs);
         // Eventually will need to add systematic weights also here
         //std::string sys(...);
         //double ff_sys = ff->value(inputs, sys); // systematic shift

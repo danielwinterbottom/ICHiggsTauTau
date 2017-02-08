@@ -1,6 +1,6 @@
 
-#ifndef ICHiggsTauTau_Analysis_Utilities_FakeFactor_h
-#define ICHiggsTauTau_Analysis_Utilities_FakeFactor_h
+#ifndef Jet2TauFakes_FakeFactor_h
+#define Jet2TauFakes_FakeFactor_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/IFunctionWrapper.h"
 
