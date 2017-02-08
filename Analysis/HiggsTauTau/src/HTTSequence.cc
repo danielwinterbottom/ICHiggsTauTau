@@ -1640,11 +1640,14 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
 
-BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
-    .set_channel(channel)
-    .set_ditau_label("ditau")
-    .set_met_label(met_label)
-    .set_jets_label(jets_label));
+if(js["do_ff_weights"].asBool()){
+  BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
+      .set_channel(channel)
+      .set_ditau_label("ditau")
+      .set_met_label(met_label)
+      .set_jets_label(jets_label)
+      .set_categories(js["ff_categories"].asString()));
+}
     
 if(channel != channel::wmnu) {
 BuildModule(HTTCategories("HTTCategories")
@@ -1671,7 +1674,9 @@ BuildModule(HTTCategories("HTTCategories")
     .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
     .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
     //Good to avoid accidentally overwriting existing output files when syncing
-    .set_write_tree(!js["make_sync_ntuple"].asBool()));
+    .set_write_tree(!js["make_sync_ntuple"].asBool())
+    .set_do_ff_weights(js["do_ff_weights"].asBool())
+    .set_ff_categories(js["ff_categories"].asString()));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")

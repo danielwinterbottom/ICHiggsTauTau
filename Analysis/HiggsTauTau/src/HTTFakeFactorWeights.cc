@@ -7,7 +7,6 @@
 #include "TVector3.h"
 #include "TFile.h"
 #include "TString.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FakeFactor.h"
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp> 
 
@@ -43,7 +42,6 @@ namespace ic {
       for(unsigned j=0; j<channels.size(); ++j){
           std::string ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/"+channels[j]+"/"+category_names_[i]+"/fakeFactors_20170111.root"; 
           ff_file_name = baseDir + ff_file_name;
-          std::cout << baseDir << std::endl;
           TFile* ff_file = new TFile(ff_file_name.c_str());
           FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
           std::string map_key = channels[j]+"_"+category_names_[i];
@@ -55,6 +53,8 @@ namespace ic {
   }
 
   int HTTFakeFactorWeights::Execute(TreeEvent *event) {
+      
+    if(channel_ != channel::et && channel_ != channel::mt && channel_ != channel::tt) return 0;
 
     Met * met = event->GetPtr<Met>(met_label_);
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
@@ -106,31 +106,30 @@ namespace ic {
     // Need to loop over all categories and add a ff weight to the event for each
     for(unsigned i=0; i<category_names_.size(); ++i){
       std::string map_key = Channel2String(channel_)+"_"+category_names_[i];
-      //FakeFactor* ff = fake_factors_[map_key];
       
       // Retrieve fake factors and add to event as weights
       if(channel_ == channel::et || channel_ == channel::mt){
-        //double ff_nom = ff->value(inputs); // nominal fake factor
         double ff_nom = fake_factors_[map_key]->value(inputs);
         // Eventually will need to add systematic weights also here
         //std::string sys(...);
         //double ff_sys = ff->value(inputs, sys); // systematic shift
-        std::cout << map_key << std::endl;
-        std::cout << ff_nom << std::endl;
-        //event->Add("wt_ff_"+map_key, ff_nom);
-      }
-      
-      // Eventually will need to add systematic weights also here
-      //std::string sys(...);
-      //double ff_sys = ff->value(inputs, sys); // systematic shift
+        event->Add("wt_ff_"+map_key, ff_nom);
+      } else if(channel_ == channel::tt){
+        double ff_nom_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
+        double ff_nom_2 = fake_factors_[map_key]->value(tt_inputs_2)*0.5;
+        double ff_nom = ff_nom_1 + ff_nom_2; 
+        // Eventually will need to add systematic weights also here
+        //std::string sys(...);
+        //double ff_sys = ff->value(inputs, sys); // systematic shift
 
+        event->Add("wt_ff_"+map_key, ff_nom);
+      }
     }
 
     return 0;
   }
   
   int HTTFakeFactorWeights::PostAnalysis() {
-
     return 0;
   }
 

@@ -38,6 +38,8 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, jetfake_study)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
+  CLASS_MEMBER(HTTCategories, bool, do_ff_weights)
+  CLASS_MEMBER(HTTCategories, std::string, ff_categories)
  
   TTree *outtree_;
   TTree *synctree_;
@@ -452,6 +454,8 @@ class HTTCategories : public ModuleBase {
 
   double em_gf_mva_;
   double em_vbf_mva_;
+  
+  double ff_weight_inclusive_;
   
   bool emHLTPath1_;
   bool emHLTPath2_;

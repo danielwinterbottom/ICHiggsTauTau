@@ -60,6 +60,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
+
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       if(channel_ == channel::em){
@@ -277,6 +278,13 @@ namespace ic {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
       }
+      
+      // fake-factor weights
+      if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){  
+          std::string branch_name_ = "wt_ff_"+Channel2String(channel_)+"_inclusive";
+          outtree_->Branch(branch_name_.c_str(),    &ff_weight_inclusive_);
+      }
+      
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",             &mt_sv_.var_double);
@@ -1229,6 +1237,13 @@ namespace ic {
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
+    
+    // fake-factor weights
+    if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){  
+      std::string branch_name_ = "wt_ff_"+Channel2String(channel_)+"_inclusive";
+      ff_weight_inclusive_ = event->Get<double>(branch_name_);
+    }
+    
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 

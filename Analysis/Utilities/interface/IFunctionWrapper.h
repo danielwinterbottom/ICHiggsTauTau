@@ -1,7 +1,7 @@
 
 
-#ifndef Jet2TauFakes_IFunctionWrapper_h
-#define Jet2TauFakes_IFunctionWrapper_h
+#ifndef UserCode_ICHiggsTauTau_Analysis_Utilities_IFunctionWrapper_h
+#define UserCode_ICHiggsTauTau_Analysis_Utilities_IFunctionWrapper_h
 
 #include <vector>
 #include <string>
