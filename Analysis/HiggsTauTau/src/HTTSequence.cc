@@ -54,6 +54,7 @@
 #include "HiggsTauTau/interface/NvtxWeight.h"
 #include "HiggsTauTau/interface/BTagWeightRun2.h"
 #include "HiggsTauTau/interface/HTTGenMatchSelector.h"
+#include "HiggsTauTau/interface/HTTFakeFactorWeights.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -1638,7 +1639,13 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
 //    BuildModule(HTTSyncTemp("HTTSyncTemp","HTTSequenceSyncfiles/SYNCFILE_" + output_name, channel)
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
- 
+
+BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
+    .set_channel(channel)
+    .set_ditau_label("ditau")
+    .set_met_label(met_label)
+    .set_jets_label(jets_label));
+    
 if(channel != channel::wmnu) {
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
