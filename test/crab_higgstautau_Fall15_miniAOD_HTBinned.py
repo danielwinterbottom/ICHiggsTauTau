@@ -7,7 +7,7 @@ config.section_('JobType')
 config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_6_3/src/UserCode/ICHiggsTauTau/test/higgstautau_cfg_76X_Jan16.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=76XMINIAOD','isData=0','doHT=1', 'globalTag=76X_mcRun2_asymptotic_v12']
+config.JobType.pyCfgParams = ['release=76XMINIAOD','isData=0','doHT=1', 'globalTag=76X_mcRun2_asymptotic_v12','isReHLT=1']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000 
