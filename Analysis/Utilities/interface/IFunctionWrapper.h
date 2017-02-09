@@ -8,7 +8,6 @@
 
 //#include "Rtypes.h"
 
-
 class IFunctionWrapper
 {
     public:

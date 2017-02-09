@@ -3,6 +3,12 @@
 #define UserCode_ICHiggsTauTau_Analysis_Utilities_FakeFactor_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/IFunctionWrapper.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/WrapperTFormula.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/WrapperTGraph.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/WrapperTH1D.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/WrapperTH2F.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/WrapperTH2D.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/WrapperTH3D.h"
 
 #include <memory>
 #include <vector>
