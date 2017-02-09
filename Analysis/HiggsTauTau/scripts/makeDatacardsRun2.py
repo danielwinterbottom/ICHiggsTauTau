@@ -647,45 +647,45 @@ if SCHEME == 'run2_mssm_tauisocats':
     ("16",   "btag_loose",    "btag_loose_6",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1 && (mva_olddm_tight_2<0.5))" --set_alias="btag_loose:((n_jets<=1 && n_bjets>=1) && (mva_olddm_tight_2<0.5))"'),
     ("16",   "btag_loose",    "btag_loose_7",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_loose:((n_jets<=1 && n_bjets>=1) && (mt_1>50))" --set_alias="btag_wnobtag:((n_jets<=1 && n_lowpt_jets>=1) && (mt_1>50))"'),
 
-    #("12",   "nobtag",    "nobtagvloosemt30",  BINS, '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagloosemt30",  BINS,  '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagmediummt30",  BINS, '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagtightmt30",  BINS,  '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #
-    #("12",   "nobtag",    "nobtagvloosemt40",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagloosemt40",  BINS,  '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagmediummt40",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagtightmt40",  BINS,  '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #
-    #("12",   "nobtag",    "nobtagvloosemt50",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagloosemt50",  BINS,  '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagmediummt50",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagtightmt50",  BINS,  '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #
-    #("12",   "nobtag",    "nobtagvloosemt70",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagloosemt70",  BINS,  '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagmediummt70",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #("12",   "nobtag",    "nobtagtightmt70",  BINS,  '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
-    #
-    #("16",   "btag",    "btagvloosemt30",  BINS, '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagloosemt30",  BINS,  '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagmediummt30",  BINS, '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagtightmt30",  BINS,  '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #                                                                                                                                                                            
-    #("16",   "btag",    "btagvloosemt40",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagloosemt40",  BINS,  '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagmediummt40",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagtightmt40",  BINS,  '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #                                                                                                                                                                        
-    #("16",   "btag",    "btagvloosemt50",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagloosemt50",  BINS,  '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagmediummt50",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagtightmt50",  BINS,  '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #                                                                                                                                                                               
-    #("16",   "btag",    "btagvloosemt70",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagloosemt70",  BINS,  '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagmediummt70",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
-    #("16",   "btag",    "btagtightmt70",  BINS,  '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"')
+    ("12",   "nobtag",    "nobtagvloosemt30",  BINS, '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagloosemt30",  BINS,  '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagmediummt30",  BINS, '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagtightmt30",  BINS,  '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    
+    ("12",   "nobtag",    "nobtagvloosemt40",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagloosemt40",  BINS,  '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagmediummt40",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagtightmt40",  BINS,  '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    
+    ("12",   "nobtag",    "nobtagvloosemt50",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagloosemt50",  BINS,  '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagmediummt50",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagtightmt50",  BINS,  '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    
+    ("12",   "nobtag",    "nobtagvloosemt70",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagloosemt70",  BINS,  '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagmediummt70",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    ("12",   "nobtag",    "nobtagtightmt70",  BINS,  '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"'),
+    
+    ("16",   "btag",    "btagvloosemt30",  BINS, '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagloosemt30",  BINS,  '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagmediummt30",  BINS, '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagtightmt30",  BINS,  '--set_alias="sel:mt_1<30" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+                                                                                                                                                                                
+    ("16",   "btag",    "btagvloosemt40",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagloosemt40",  BINS,  '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagmediummt40",  BINS, '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagtightmt40",  BINS,  '--set_alias="sel:mt_1<40" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+                                                                                                                                                                            
+    ("16",   "btag",    "btagvloosemt50",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagloosemt50",  BINS,  '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagmediummt50",  BINS, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagtightmt50",  BINS,  '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+                                                                                                                                                                                   
+    ("16",   "btag",    "btagvloosemt70",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagloosemt70",  BINS,  '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagmediummt70",  BINS, '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)" --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"'),
+    ("16",   "btag",    "btagtightmt70",  BINS,  '--set_alias="sel:mt_1<70" --set_alias="baseline:(iso_1<0.15  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)"  --set_alias="btag_wnobtag:(n_jets<=1 && n_lowpt_jets>=1)"')
 
   ]
   scheme_tt = [
