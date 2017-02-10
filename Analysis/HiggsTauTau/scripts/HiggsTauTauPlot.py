@@ -215,7 +215,9 @@ cats['nobtag'] = '(n_bjets==0)'
 # Overwrite any category selections if the --set_alias option is used
 for i in options.set_alias:
     cat_to_overwrite = i.split(':')[0]
+    cat_to_overwrite=cat_to_overwrite.replace("\"","")
     overwrite_with = i.split(':')[1]
+    overwrite_with=overwrite_with.replace("\"","")
     print 'Overwriting alias: \"'+cat_to_overwrite+'\" with selection: \"'+overwrite_with+'\"'
     if cat_to_overwrite == 'sel':
         options.sel = overwrite_with
