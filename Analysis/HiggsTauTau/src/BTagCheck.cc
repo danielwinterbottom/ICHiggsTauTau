@@ -105,7 +105,7 @@ namespace ic {
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
         if(era_ != era::data_2016){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
-        } else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+        } else iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         antiele_pass = tau->GetTauID("againstElectronTightMVA6");
         antimu_pass = tau->GetTauID("againstMuonLoose3");
         if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
@@ -121,7 +121,7 @@ namespace ic {
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         } else {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);
-          iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+          iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
         antimu_pass = tau->GetTauID("againstMuonTight3");
