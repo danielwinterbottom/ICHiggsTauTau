@@ -351,6 +351,7 @@ int main(int argc, char* argv[]){
   bool do2DBinning;
   bool doPDF;
   bool doScale;
+  bool NormScale;
   bool RecreateRenorm;
   double ggRatioSize;
   double qqRatioSize;
@@ -369,6 +370,7 @@ int main(int argc, char* argv[]){
         ("doGen",                  po::value<bool>(&doGen)->default_value(true))
         ("doPDF",                  po::value<bool>(&doPDF)->default_value(false))
         ("doScale",                po::value<bool>(&doScale)->default_value(false))
+        ("NormScale",              po::value<bool>(&NormScale)->default_value(true))
         ("RecreateRenorm",         po::value<bool>(&RecreateRenorm)->default_value(false))
         ("do2DBinning",            po::value<bool>(&do2DBinning)->default_value(false))
         ("ggRatioSize",            po::value<double>(&ggRatioSize)->default_value(0.3))
@@ -387,6 +389,7 @@ int main(int argc, char* argv[]){
   std::cout << "doGen          = " << doGen          << std::endl;
   std::cout << "doPDF          = " << doPDF          << std::endl;
   std::cout << "doScale        = " << doScale        << std::endl;
+  std::cout << "NormScale      = " << NormScale      << std::endl;
   std::cout << "RecreateRenorm = " << RecreateRenorm << std::endl;
   std::cout << "ggRatioSize    = " << ggRatioSize    << std::endl;
   std::cout << "qqRatioSize    = " << qqRatioSize    << std::endl;
@@ -759,12 +762,14 @@ int main(int argc, char* argv[]){
             std::cout << "Creating new scale remormalization file: " << input_name << std::endl;
             std::ofstream output(input_name);
             for(unsigned i=0; i<9; ++i){
-              std::string wt_name = Form("%s*scale_variation_wts[%u]",default_wt.c_str(),i);
-
-              gen_tree->Draw("event>>htemp",wt_name.c_str(),"goff");  
-              double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
-              scale_variation_addwt.push_back(nominal_wt/wt_sum);
-              output << nominal_wt/wt_sum << std::endl;
+              if(!NormScale) scale_variation_addwt.push_back(1.0);
+              else{
+                std::string wt_name = Form("%s*scale_variation_wts[%u]",default_wt.c_str(),i);
+                gen_tree->Draw("event>>htemp",wt_name.c_str(),"goff");  
+                double wt_sum = htemp->Integral(0,htemp->GetNbinsX()+1);
+                scale_variation_addwt.push_back(nominal_wt/wt_sum);
+                output << nominal_wt/wt_sum << std::endl;
+              }
             }
             output.close();
           } else{
@@ -772,7 +777,8 @@ int main(int argc, char* argv[]){
             std::ifstream input(input_name);
             double temp;
             while(input >> temp){
-              scale_variation_addwt.push_back(temp);
+              if(!NormScale) scale_variation_addwt.push_back(1.0);
+              else scale_variation_addwt.push_back(temp);
             }
             input.close();
           }
