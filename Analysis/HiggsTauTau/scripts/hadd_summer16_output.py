@@ -27,9 +27,9 @@ ignore = options.ignore
 
 
 sample_list = [
-   'GluGluHToTauTau_M-120',
-   'GluGluHToTauTau_M-125',
-   'GluGluHToTauTau_M-130',
+   'GluGluTpHToTauTau_M-120',
+   'GluGluToHToTauTau_M-125',
+   'GluGluToHToTauTau_M-130',
    'TTHToTauTau_M-120',
    'TTHToTauTau_M-125',
    'TTHToTauTau_M-130',
@@ -89,7 +89,7 @@ sample_list = [
    'WGToLNuG',
    'WGToLNuG-ext',
    'WGstarToLNuEE',
-   'WGstarToLNuMuMu'
+   'WGstarToLNuMuMu',
    'SingleMuonBReReco',
    'SingleElectronBReReco',
    'MuonEGBReReco',

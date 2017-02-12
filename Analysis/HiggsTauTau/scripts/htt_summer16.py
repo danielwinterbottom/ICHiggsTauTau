@@ -136,12 +136,12 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
     signal_mc += [
-      'GluGluHToTauTau_M-'+mass,
+      'GluGluToHToTauTau_M-'+mass,
       'VBFHToTauTau_M-'+mass,
       'ZHToTauTau_M-'+mass,
       'WplusHToTauTau_M-'+mass,
       'WminusHToTauTau_M-'+mass,
-      #'TTHToTauTau_M-'+mass
+      'TTHToTauTau_M-'+mass
     ]
 if options.proc_mssm or options.proc_all:
   gghmasses = ['80','90','100','110','120','130', '160','180','200','250','350','400','450','500','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200'] # 140 not available yet!
@@ -187,50 +187,89 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   data_eras = ['B','C','D','E','F','G','H']
   for chn in channels:
     for era in data_eras:
-      if 'mt' in chn:
-        if not era == 'H':  
-            data_samples+=[   
-             'SingleMuon'+era]
-            data_samples+=[   
-             'SingleMuon'+era+'ReReco']
-        else:
-            data_samples+=[   
-             'SingleMuon'+era+'v2']
-            data_samples+=[   
-             'SingleMuon'+era+'v3']
-      if 'et' in chn:
-        if not era == 'H':  
-            data_samples+=[   
-             'SingleElectron'+era]
-            data_samples+=[   
-             'SingleElectron'+era+'ReReco']
-        else:
-            data_samples+=[   
-             'SingleElectron'+era+'v2']
-            data_samples+=[   
-             'SingleElectron'+era+'v3']
-      if 'em' in chn:
-        if not era == 'H':  
-            data_samples+=[   
-             'MuonEG'+era]
-            data_samples+=[   
-             'MuonEG'+era+'ReReco']
-        else:
-            data_samples+=[   
-             'MuonEG'+era+'v2']
-            data_samples+=[   
-             'MuonEG'+era+'v3']
-      if 'tt' in chn:
-        if not era == 'H':  
-            data_samples+=[   
-             'Tau'+era]
-            data_samples+=[   
-             'Tau'+era+'ReReco']
-        else:
-            data_samples+=[   
-             'Tau'+era+'v2']
-            data_samples+=[   
-             'Tau'+era+'v3']
+      if not options.calc_lumi:  
+        if 'mt' in chn:
+          if not era == 'H':  
+              data_samples+=[   
+               'SingleMuon'+era]
+              data_samples+=[   
+               'SingleMuon'+era+'ReReco']
+          else:
+              data_samples+=[   
+               'SingleMuon'+era+'v2']
+              data_samples+=[   
+               'SingleMuon'+era+'v3']
+        if 'et' in chn:
+          if not era == 'H':  
+              data_samples+=[   
+               'SingleElectron'+era]
+              data_samples+=[   
+               'SingleElectron'+era+'ReReco']
+          else:
+              data_samples+=[   
+               'SingleElectron'+era+'v2']
+              data_samples+=[   
+               'SingleElectron'+era+'v3']
+        if 'em' in chn:
+          if not era == 'H':  
+              data_samples+=[   
+               'MuonEG'+era]
+              data_samples+=[   
+               'MuonEG'+era+'ReReco']
+          else:
+              data_samples+=[   
+               'MuonEG'+era+'v2']
+              data_samples+=[   
+               'MuonEG'+era+'v3']
+        if 'tt' in chn:
+          if not era == 'H':  
+              data_samples+=[   
+               'Tau'+era]
+              data_samples+=[   
+               'Tau'+era+'ReReco']
+          else:
+              data_samples+=[   
+               'Tau'+era+'v2']
+              data_samples+=[   
+               'Tau'+era+'v3']
+      else:
+        if 'mt' in chn:
+          if not era == 'H':  
+              data_samples+=[   
+               'SingleMuon'+era+'ReReco']
+          else:
+              data_samples+=[   
+               'SingleMuon'+era+'v2']
+              data_samples+=[   
+               'SingleMuon'+era+'v3']
+        if 'et' in chn:
+          if not era == 'H':  
+              data_samples+=[   
+               'SingleElectron'+era+'ReReco']
+          else:
+              data_samples+=[   
+               'SingleElectron'+era+'v2']
+              data_samples+=[   
+               'SingleElectron'+era+'v3']
+        if 'em' in chn:
+          if not era == 'H':  
+              data_samples+=[   
+               'MuonEG'+era+'ReReco']
+          else:
+              data_samples+=[   
+               'MuonEG'+era+'v2']
+              data_samples+=[   
+               'MuonEG'+era+'v3']
+        if 'tt' in chn:
+          if not era == 'H':  
+              data_samples+=[   
+               'Tau'+era+'ReReco']
+          else:
+              data_samples+=[   
+               'Tau'+era+'v2']
+              data_samples+=[   
+               'Tau'+era+'v3']   
+        
 
 
   DATAFILELIST="./filelists/Jan08_Data_80X"
