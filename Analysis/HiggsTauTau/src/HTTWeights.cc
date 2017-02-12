@@ -342,7 +342,7 @@ namespace ic {
     }
     
     if (do_tau_fake_weights_) {
-      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+      Candidate const* tau = dilepton[0]->GetCandidate("lepton2");
       double fake_pt = tau->pt() < 200. ? tau->pt() : 200.;
       double fake_weight = tau_fake_weights_->Eval(fake_pt);
       eventInfo->set_weight("tau_fake_weight",fake_weight);
