@@ -23,7 +23,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "output_folder":"output", "input_folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "param_file":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"36.8 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -36,16 +36,18 @@ parser = argparse.ArgumentParser(
 parser.set_defaults(**defaults)
 parser.add_argument("--channel", dest="channel", type=str,
     help="Tau decay channel to process.  Supported channels: %(CHANNELS)s" % vars())
-parser.add_argument("--outputfolder", dest="output_folder", type=str,
+parser.add_argument("--outputfolder", dest="outputfolder", type=str,
     help="Name of output folder")
-parser.add_argument("--folder", dest="input_folder", type=str,
+parser.add_argument("--folder", dest="folder", type=str,
     help="Name of input folder")
-parser.add_argument("--paramfile", dest="param_file", type=str,
+parser.add_argument("--paramfile", dest="paramfile", type=str,
     help="Name of parameter file")
 parser.add_argument("--cat", dest="cat", type=str,
     help="Category")
 parser.add_argument("--year", dest="year", type=str,
     help="Year")
+parser.add_argument("--era", dest="era", type=str,
+    help="Era")
 parser.add_argument("--sel", dest="sel", type=str,
     help="Selection")
 parser.add_argument("--set_alias", action="append", dest="set_alias", type=str,
@@ -136,11 +138,12 @@ options = parser.parse_args(remaining_argv)
 print ''
 print '################### Options ###################'
 print 'channel           = ' + options.channel
-print 'outputfolder      = ' + options.output_folder
-print 'folder            = ' + options.input_folder
-print 'paramfile         = ' + options.param_file
+print 'outputfolder      = ' + options.outputfolder
+print 'folder            = ' + options.folder
+print 'paramfile         = ' + options.paramfile
 print 'cat               = ' + options.cat
 print 'year              = ' + options.year
+print 'era               = ' + options.era
 print 'sel               = ' + options.sel
 print 'analysis          = ' + options.analysis
 print 'var               = ' + options.var
@@ -275,6 +278,33 @@ else:
     
 w_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
 wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+
+if options.era == "mssmsummer16":
+    
+    # Add data sample names
+    if options.channel == 'mt': 
+        data_samples = ['SingleMuonBReReco','SingleMuonCReReco','SingleMuonDReReco','SingleMuonEReReco','SingleMuonFReReco','SingleMuonGReReco','SingleMuonHv2','SingleMuonHv3']
+    if options.channel == 'em': 
+        data_samples = ['MuonEGBReReco','MuonEGCReReco','MuonEGDReReco','MuonEGEReReco','MuonEGFReReco','MuonEGGReReco','MuonEGHv2','MuonEGHv3']
+    if options.channel == 'et': 
+        data_samples = ['SingleElectronBReReco','SingleElectronCReReco','SingleElectronDReReco','SingleElectronEReReco','SingleElectronFReReco','SingleElectronGReReco','SingleElectronHv2','SingleElectronHv3']
+    if options.channel == 'tt': 
+        data_samples = ['TauBReReco','TauCReReco','TauDReReco','TauEReReco','TauFReReco','TauGReReco','TauHv2','TauHv3']
+        
+    # Add MC sample names   
+    ztt_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','ZZTo2L2Q','ZZTo4L','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+    wgam_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
+    top_samples = ['TT']
+    ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    
+    if options.channel == 'em': 
+        qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
+    else:
+        qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
+        
+    w_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
+    wjets_samples = ['WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO-ext2']
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau', 'qqH' : 'VBFHToTauTau', 'WplusH' : 'WplusHToTauTau', 'WminusH' : 'WminusHToTauTau', 'ZH' : 'ZHToTauTau', 'TTH' : 'TTHToTauTau' }
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau', 'bbH' : 'SUSYGluGluToBBHToTauTau' }
@@ -856,7 +886,7 @@ def Plot(ana, nodename):
         blind_ratio.DrawCopy("e0same")
         pads[1].RedrawAxis("G")
     
-    plot_name = options.output_folder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
     if(options.log_y): plot_name+="_logy"
     if(options.log_x): plot_name+="_logx"
     c1.Print(plot_name+'.pdf')
@@ -895,7 +925,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
 # Create output file
 var_name = options.var.split('[')[0]
 var_name = var_name.split('(')[0]
-output_name = options.output_folder+'/datacard_'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year+'.root'
+output_name = options.outputfolder+'/datacard_'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
 
 for systematic in systematics:
@@ -920,13 +950,13 @@ for systematic in systematics:
     elif options.channel == 'tt':
         ana.remaps['Tau'] = 'data_obs'
     
-    mc_input_folder_name = options.input_folder
+    mc_input_folder_name = options.folder
     if add_folder_name != '':
         mc_input_folder_name += '/'+add_folder_name
         
     # Add all data files
     for sample_name in data_samples:
-        ana.AddSamples(options.input_folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+        ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
     
     # Add all MC background files
     for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + qcd_sub_samples + w_sub_samples + wjets_samples:
@@ -957,7 +987,7 @@ for systematic in systematics:
             sample_name = sm_samples[samp]+'_M-'+options.add_sm_background
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
             
-    ana.AddInfo(options.param_file, scaleTo='data_obs')
+    ana.AddInfo(options.paramfile, scaleTo='data_obs')
     
     cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
     sel = options.sel
