@@ -715,7 +715,7 @@ def Plot(ana, nodename):
     background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
-    'em':[backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VV","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
+    'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'zm':[backgroundComp("Misidentified #mu", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],ROOT.TColor.GetColor(100,192,232))]}
         
     total_datahist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
@@ -1067,14 +1067,20 @@ for systematic in systematics:
             sum_hist.Reset()
             j = 'T'
             outname = i
-            if i is 'Z':
-                outname = 'ZLL'
-                j = 'L'
-            if i+'J' or i+j in [node.name for node in nodes]:
-                sum_hist.Add(ana.nodes[nodename].nodes[i+'J'].shape.hist.Clone())
-                sum_hist.Add(ana.nodes[nodename].nodes[i+j].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
+            if options.channel == 'em' and i is 'Z':
+                sum_hist.Add(ana.nodes[nodename].nodes['ZLL'].shape.hist.Clone())
+                sum_hist.Add(ana.nodes[nodename].nodes['ZTT'].shape.hist.Clone())
+                sum_hist.SetName(outname)
+                sum_hist.Write()
+            else:      
+                if i is 'Z':
+                    outname = 'ZLL'
+                    j = 'L'
+                if i+'J' or i+j in [node.name for node in nodes]:
+                    sum_hist.Add(ana.nodes[nodename].nodes[i+'J'].shape.hist.Clone())
+                    sum_hist.Add(ana.nodes[nodename].nodes[i+j].shape.hist.Clone())
+                sum_hist.SetName(outname)
+                sum_hist.Write()
         
         total_bkg = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
         total_bkg.Reset()
