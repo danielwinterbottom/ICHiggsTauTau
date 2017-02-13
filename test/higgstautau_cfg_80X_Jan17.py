@@ -1930,6 +1930,14 @@ process.icIsoTkMu22Eta2p1ObjectProducer = producers.icTriggerObjectProducer.clon
     storeOnlyIfFired = cms.bool(False)
     )
 
+process.icIsoTkMu24Eta2p1ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input = cms.InputTag("patTriggerEvent"),
+    branch = cms.string("triggerObjectsIsoTkMu24Eta2p1"),
+    hltPath = cms.string("HLT_IsoTkMu24_eta2p1_v"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
 process.icIsoMu21MediumTau32ObjectProducer = producers.icTriggerObjectProducer.clone(    
     input = cms.InputTag("patTriggerEvent"),
     branch = cms.string("triggerObjectsIsoMu21MediumTau32"),
@@ -2140,6 +2148,10 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icIsoTkMu22ObjectProducer+
       process.icIsoTkMu24ObjectProducer+
       process.icIsoTkMu27ObjectProducer+
+      
+      process.icIsoTkMu22Eta2p1ObjectProducer+
+      process.icIsoTkMu24Eta2p1ObjectProducer+
+      
       process.icDoubleMediumTau40ObjectProducer +
       process.icDoubleMediumTau35ObjectProducer +
       process.icDoubleMediumTau32ObjectProducer +
