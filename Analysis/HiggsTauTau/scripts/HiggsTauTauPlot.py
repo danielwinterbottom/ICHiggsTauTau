@@ -905,7 +905,6 @@ def Plot(ana, nodename):
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
     
-    
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
