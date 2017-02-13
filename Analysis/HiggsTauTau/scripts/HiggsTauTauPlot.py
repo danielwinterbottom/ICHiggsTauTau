@@ -191,7 +191,7 @@ print ''
 cats = {}
 if options.analysis == 'sm':
     if options.channel == 'mt':
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et': 
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.analysis == 'mssm':
@@ -203,6 +203,12 @@ if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
+    
+if options.era == "mssmsummer16":
+    if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
+    if options.channel == "et": cats['baseline']+=" && trg_singleelectron"
+    if options.channel == "mt": cats['baseline']+=" && trg_singlemuon"
+    #if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
 
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -705,6 +711,9 @@ def createAxisHists(n,src,xmin=0,xmax=499):
 
 def Plot(ana, nodename):
     
+    ROOT.gROOT.SetBatch(ROOT.kTRUE)
+    ROOT.TH1.AddDirectory(False)
+    
     # Define signal schemes here
     sig_schemes = {}
     sig_schemes['sm_default'] = ( str(int(options.signal_scale))+"#times SM H("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
@@ -885,12 +894,16 @@ def Plot(ana, nodename):
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
         pads[1].RedrawAxis("G")
+        
+    pads[0].cd()
+    pads[0].GetFrame().Draw()
+    pads[0].RedrawAxis()
     
     plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
     if(options.log_y): plot_name+="_logy"
     if(options.log_x): plot_name+="_logx"
-    c1.Print(plot_name+'.pdf')
-    c1.Print(plot_name+'.png')
+    c1.SaveAs(plot_name+'.pdf')
+    c1.SaveAs(plot_name+'.png')
     
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
