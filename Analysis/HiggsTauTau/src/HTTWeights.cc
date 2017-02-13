@@ -1660,12 +1660,16 @@ namespace ic {
           }         
             ele_idiso = ele_idiso_data/ele_idiso_mc;
 
-        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
+        } else if (mc_ == mc::spring16_80X){
            auto args_1 = std::vector<double>{pt,e_signed_eta};
            auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
            if(e_iso < 0.1){
              ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data());
            } else ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
+        } else if (mc_ == mc::summer16_80X){
+           auto args_1 = std::vector<double>{pt,e_signed_eta};
+           auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
+           ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
           if (do_id_weights_) ele_iso = 1.0;
@@ -1719,12 +1723,16 @@ namespace ic {
           }         
             mu_idiso = mu_idiso_data/mu_idiso_mc;
 
-        } else if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
+        } else if(mc_ == mc::spring16_80X){
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
            if(m_iso<0.15){
              mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
            } else mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
+        } else if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
+           auto args_1 = std::vector<double>{pt,m_signed_eta};
+           auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
+           mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X && mc_ != mc::summer16_80X){ 
           if (do_id_weights_) mu_iso = 1.0;

@@ -1118,7 +1118,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_label(met_label)
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
-     .set_use_quantile_map(false)
+     .set_use_quantile_map(true)
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
@@ -1184,10 +1184,14 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
     }
-  }  else {
+  }  else if (strategy_type != strategy::mssmsummer16){
     bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
     cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
     othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
+  } else {
+    bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
+    cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
+    othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
   }
 
   BuildModule(BTagWeightRun2("BTagWeightRun2")
@@ -1679,10 +1683,8 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
      httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
      httStitching.SetDYInputYields(49064064,62627174, 19970551, 5856110, 4197868);
    }
-
-    
    BuildModule(httStitching);
-  
+  std::cout << "blah!" << std::endl;
   
   }
 
