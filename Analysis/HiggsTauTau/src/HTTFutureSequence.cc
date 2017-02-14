@@ -27,6 +27,7 @@
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
 #include "HiggsTauTau/interface/HTTFutureGenEvent.h"
+#include "HiggsTauTau/interface/HTTFutureTauEff.h"
 #include "HiggsTauTau/interface/HTTFutureJetPV.h"
 #include "HiggsTauTau/interface/HTTFutureTrees.h"
 #include "HiggsTauTau/interface/WMuNuCategories.h"
@@ -304,6 +305,11 @@ void HTTFutureSequence::BuildSequence(){
   BuildModule(HTTFutureJetPV("HTTFutureJetPV")
     .set_genjet_label("genJets")
     .set_jets_label(jets_label)
+    .set_fs(fs.get()));
+ 
+  BuildModule(HTTFutureTauEff("HTTFutureTauEff")
+    .set_genparticle_label("genParticles")
+    .set_taus_label(js["taus"].asString())
     .set_fs(fs.get()));
 
   // If desired, run the HTTGenEventModule which will add some handily-

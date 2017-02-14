@@ -31,6 +31,7 @@ opts.register('file','file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/Us
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '90X_upgrade2023_realistic_v1', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag','80X_mcRun2_asymptotic_2016_TrancheIV_v6',parser.VarParsing.multiplicity.singleton,
 #opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
@@ -80,7 +81,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("EventTree.root"),
+  fileName = cms.string("EventTree_vbfUPG.root"),
   closeFileFast = cms.untracked.bool(True)
 )
 
@@ -88,7 +89,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10000)
+  input = cms.untracked.int32(1000000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -170,8 +171,59 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/164/00000/4633CC68-A326-E511-95D0-02163E0124EA.root'
 #'root://xrootd.unl.edu//store/data/Run2015B/Tau/MINIAOD/PromptReco-v1/000/251/642/00000/EC1989CD-EB2A-E511-8F15-02163E0146A4.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_10_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_1_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_2_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_3_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_4_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_5_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_6_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_7_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_8_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_9_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_11_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_12_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_13_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_14_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_15_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_16_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_17_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_18_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_19_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_20_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_21_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_22_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_23_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_24_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_25_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_26_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_27_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_28_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_29_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_30_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_31_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_32_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_33_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_34_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_35_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_36_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_37_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_38_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_39_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_40_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_41_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_42_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_43_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_44_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_45_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_46_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_47_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_48_PAT.root',
+'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_49_PAT.root'
+#'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0E712644-6BC7-E611-A85D-1CB72C0A3DC5.root',
+#'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/10B1E335-21C6-E611-A53D-0CC47A706D26.root',
+#'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/2099A9F5-ADC5-E611-8953-1CB72C1B2D80.root'
 
-infile
 ))
 process.GlobalTag.globaltag = cms.string(tag)
 
@@ -1208,6 +1260,12 @@ if release in ['80XMINIAOD']:
                            branch = cms.string("pfMetFromSlimmed"),
                            getUncorrectedMet=cms.bool(False)
                            )
+  process.icGenMetProducer = producers.icMetFromPatProducer.clone(
+                           branch = cms.string("GenMetFromSlimmed"),
+                           getUncorrectedMet=cms.bool(False),
+                           doGenMet=cms.bool(True)
+                           )
+
   process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
                            input=cms.InputTag("slimmedMETsPuppi"),
                            branch = cms.string("puppiMet"),
@@ -1217,7 +1275,8 @@ if release in ['80XMINIAOD']:
 
 process.icPfMetSequence = cms.Sequence(
   process.pfMetRe+
-  process.icPfMetProducer
+  process.icPfMetProducer+
+  process.icGenMetProducer
 )
 
 if release in ['80XMINIAOD']:

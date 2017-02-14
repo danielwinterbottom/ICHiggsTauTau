@@ -85,21 +85,20 @@ int HTTFutureGenEvent::Execute(TreeEvent *event) {
   std::vector<std::pair<PFJet*, GenJet*> > jet_match  = MatchByDR(jets, genjets, 0.2, true, true);
   std::vector<std::pair<PFJet*,GenJet*> > sel_genjets;
   for(unsigned i=0;i<jet_match.size();++i){
-    if(jet_match.at(i).first->parton_flavour()!=0&&jet_match.at(i).first->parton_flavour()!=21) sel_genjets.push_back(jet_match.at(i));
+    if(jet_match.at(i).first->parton_flavour()!=0&&jet_match.at(i).first->parton_flavour()!=21&&MinDRToCollection(jet_match.at(i).first,gen_taus_ptr,0.6)) sel_genjets.push_back(jet_match.at(i));
   }
-
   if(sel_genjets.size()==1){
-    jet1_pt=sel_genjets.at(0).second->pt(); 
-    jet1_eta=sel_genjets.at(0).second->eta(); 
+    jet1_pt=sel_genjets.at(0).first->pt(); 
+    jet1_eta=sel_genjets.at(0).first->eta(); 
     jet1_flav=sel_genjets.at(0).first->parton_flavour();
   }
   if(sel_genjets.size()>1){
-    if(sel_genjets.at(0).second->pt()>sel_genjets.at(1).second->pt()){
-      jet1_pt=sel_genjets.at(0).second->pt();
-      jet1_eta=sel_genjets.at(0).second->eta();
+    if(sel_genjets.at(0).first->pt()>sel_genjets.at(1).first->pt()){
+      jet1_pt=sel_genjets.at(0).first->pt();
+      jet1_eta=sel_genjets.at(0).first->eta();
       jet1_flav=sel_genjets.at(0).first->parton_flavour();
-      jet2_pt=sel_genjets.at(1).second->pt();
-      jet2_eta=sel_genjets.at(1).second->eta();
+      jet2_pt=sel_genjets.at(1).first->pt();
+      jet2_eta=sel_genjets.at(1).first->eta();
       jet2_flav=sel_genjets.at(1).first->parton_flavour();
     }
   }

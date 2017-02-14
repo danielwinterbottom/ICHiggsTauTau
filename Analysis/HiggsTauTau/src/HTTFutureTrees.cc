@@ -74,6 +74,8 @@ namespace ic {
       outtree_->Branch("extraelec_veto",    &extraelec_veto_);
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("pfmet",             &pfmet_.var_double);
+      outtree_->Branch("pfmet_perp_res",    &met_perp_res_);
+      outtree_->Branch("pfmet_par_res",    &met_par_res_);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
@@ -208,6 +210,14 @@ namespace ic {
     pfmet = event->GetPtr<Met>("pfMET");
     pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
     pt_tt_ = pfpt_tt_;
+
+    Met const* genmet=NULL;
+    std::vector<Met*> genmet_vec = event->GetPtrVec<Met>("GenMetFromSlimmed");
+    genmet = genmet_vec.at(0); 
+    double met_genmetdphi= fabs(ROOT::Math::VectorUtil::DeltaPhi(pfmet->vector(),genmet->vector()));
+    met_perp_res_ = TMath::Sin(met_genmetdphi)*pfmet->pt();
+    met_par_res_ = TMath::Cos(met_genmetdphi)*pfmet->pt()-genmet->pt();
+    
   
     m_vis_ = ditau->M();
     mt_lep_ = MT(lep1,lep2);

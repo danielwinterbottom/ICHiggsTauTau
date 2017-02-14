@@ -185,6 +185,8 @@ class HTTFutureTrees : public ModuleBase {
   branch_var mvamet_phi_;
   branch_var pfmet_;
   float pfmet_phi_;
+  double met_perp_res_;
+  double met_par_res_;
   branch_var puppimet_;
   float puppimet_phi_; 
   float mvametCov00_;

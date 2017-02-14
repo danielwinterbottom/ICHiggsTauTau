@@ -434,7 +434,7 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     for (unsigned id = 0, nd = src.numberOfDaughters(); id < nd ; ++id){
       const pat::PackedCandidate &dau = dynamic_cast<const::pat::PackedCandidate &>(*src.daughter(id)); 
       if (dau.charge() ==0) continue;
-      (fabs(dau.dz())<0.4 ? in: out) += dau.pt();
+      (fabs(dau.dz())<0.1 ? in: out) += dau.pt();
     }
     double sum = in + out;
     if (sum > 0) {

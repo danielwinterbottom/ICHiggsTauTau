@@ -39,19 +39,20 @@ int HTTFutureJetPV::PostAnalysis() {
 int HTTFutureJetPV::Execute(TreeEvent *event) {
   std::vector<GenJet*> const& genjets = event->GetPtrVec<GenJet>(genjet_label_);
   std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>(jets_label_);
+
   std::vector<std::pair<PFJet*, GenJet*> > jet_match  = MatchByDR(jets, genjets, 0.2, true, true);
 /*  std::vector<std::pair<PFJet*,GenJet*> > sel_genjets;
   for(unsigned i=0;i<jet_match.size();++i){
     if(jet_match.at(i).first->parton_flavour()!=0&&jet_match.at(i).first->parton_flavour()!=21) sel_genjets.push_back(jet_match.at(i));
   }*/
   for(unsigned j=0;j<jet_match.size();++j){
-    jet_pt=jet_match.at(j).first->pt();
-    jet_eta=jet_match.at(j).first->eta();
-    genjet_eta=jet_match.at(j).second->eta();
-    genjet_pt=jet_match.at(j).second->pt();
-    jet_beta=jet_match.at(j).first->beta();
-    jet_flav=jet_match.at(j).first->parton_flavour();
-    outtree_->Fill();
+      jet_pt=jet_match.at(j).first->pt();
+      jet_eta=jet_match.at(j).first->eta();
+      genjet_eta=jet_match.at(j).second->eta();
+      genjet_pt=jet_match.at(j).second->pt();
+      jet_beta=jet_match.at(j).first->beta();
+      jet_flav=jet_match.at(j).first->parton_flavour();
+      outtree_->Fill();
   }
 
   return 0;

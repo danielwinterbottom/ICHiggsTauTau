@@ -8,7 +8,8 @@ import json
 import UserCode.ICHiggsTauTau.plotting as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_test_tt_0.root"
+infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_fixjeteta_tt_0.root"
+#infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_UPG_tt_0.root"
 
 vbf_file=ROOT.TFile.Open(infile)
 pairtree=vbf_file.Get("geninfo")
@@ -20,7 +21,7 @@ vbf_lead_jet.Sumw2()
 vbf_sublead_jet.Sumw2()
 
 
-pairtree.Draw("abs(jet1_eta)>>vbf_lead_jet","jet1_flav!=0&&jet2_flav!=0&&jet1_pt>20")
+pairtree.Draw("abs(jet1_eta)>>vbf_lead_jet","jet1_flav!=0&&jet2_flav!=0&&jet1_pt>20&&jet2_pt>0")
 pairtree.Draw("abs(jet2_eta)>>vbf_sublead_jet","jet1_flav!=0&&jet2_flav!=0&&jet2_pt>20")
 vbf_lead_jet.Scale(1./vbf_lead_jet.Integral())
 vbf_sublead_jet.Scale(1./vbf_sublead_jet.Integral())
@@ -45,6 +46,12 @@ vbf_lead_jet_graph.SetLineColor(ROOT.kBlue)
 vbf_sublead_jet_graph.SetLineStyle(2)
 vbf_sublead_jet_graph.SetLineColor(ROOT.kRed)
 vbf_lead_jet_graph.GetYaxis().SetRangeUser(0,0.1)
+vbf_lead_jet.SetLineStyle(1)
+vbf_lead_jet.SetLineColor(ROOT.kBlue)
+vbf_sublead_jet.SetLineStyle(2)
+vbf_sublead_jet.SetLineColor(ROOT.kRed)
+vbf_lead_jet.GetYaxis().SetRangeUser(0,0.1)
+
 
 plot.ModTDRStyle(r=0.06, l=0.12)
 ROOT.gStyle.SetFrameLineWidth(2)
@@ -58,10 +65,18 @@ legend = plot.PositionedLegend(0.45, 0.10, 3, 0.015)
 plot.Set(legend, NColumns=1)
 vbf_lead_jet_graph.GetXaxis().SetTitle("VBF jet |#eta|")
 vbf_lead_jet_graph.GetYaxis().SetTitle("a.u.")
-legend.AddEntry(vbf_lead_jet_graph,'Leading VBF jet','L')
-legend.AddEntry(vbf_sublead_jet_graph,'Subleading VBF jet','L')
-vbf_lead_jet_graph.Draw("LAXIS")
-vbf_sublead_jet_graph.Draw("LSAME")
+vbf_lead_jet.GetXaxis().SetTitle("VBF jet |#eta|")
+vbf_lead_jet.GetYaxis().SetTitle("a.u.")
+legend.AddEntry(vbf_lead_jet,'Leading VBF jet','L')
+legend.AddEntry(vbf_sublead_jet,'Subleading VBF jet','L')
+#legend.AddEntry(vbf_lead_jet_graph,'Leading VBF jet','L')
+#legend.AddEntry(vbf_sublead_jet_graph,'Subleading VBF jet','L')
+
+vbf_lead_jet.Draw("L")
+vbf_sublead_jet.Draw("LSAME")
+#vbf_lead_jet_graph.Draw("LAXIS")
+#vbf_sublead_jet_graph.Draw("LSAME")
+
 
 #box = ROOT.TPave(pads[0].GetLeftMargin(), 0.81, 1-pads[0].GetRightMargin(), 1-pads[0].GetTopMargin(), 1, 'NDC')
 #box.Draw()
