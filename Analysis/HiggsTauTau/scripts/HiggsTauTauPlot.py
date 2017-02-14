@@ -623,6 +623,19 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
           num_node,
           den_node))
         
+def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat='',get_os=True):
+    print "Generating fake tau background via fake-factor method. In order for this to work you must first ensure that the fake-faktor weights are included in the input tree for the channel and category you wish use. Weights should be named as: wt_ff_channel_category"
+    
+    fake_factor_wt_string = "wt_ff_"+options.channel+"_"+options.cat
+    if wt is not "": wt+="*"+fake_factor_wt_string
+    else: wt=fake_factor_wt_string
+    if get_os:
+        OSSS = 'os'
+    else:
+        OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, '')
+    ana.nodes[nodename].AddNode(ana.SummedFactory('FakeTaus'+add_name, data, plot, full_selection))
+        
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = ''):
     if get_os:
         OSSS = 'os'
@@ -910,19 +923,41 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
     doTTT = 'TTT' not in samples_to_skip
     doVVJ = 'VVJ' not in samples_to_skip
     doVVT = 'VVT' not in samples_to_skip
-
-    if 'ZTT' not in samples_to_skip:
-        GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
-    if 'ZLL' not in samples_to_skip:
-        GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
-    if 'TT' not in samples_to_skip:    
-        GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ)  
-    if 'VV' not in samples_to_skip:
-        GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
-    if 'W' not in samples_to_skip:
-        GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
-    if 'QCD' not in samples_to_skip:
-        GenerateQCD(ana, add_name, data_samples, qcd_sub_samples, w_sub_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+    
+    if options.method == 17 and options.channel != "em":
+        # method 17 uses the fake factor method!
+        GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, cat,not options.do_ss)
+        
+        # use existing methods to calculate background due to non-fake taus - for W background must use method 8 to compute this!
+        add_fake_factor_selection = "gen_match_2!=6"
+        if options.channel == "tt": add_fake_factor_selection = "!(gen_match_1==6 || gen_match_2==6)"
+        residual_cat=cat+"&&"+add_fake_factor_selection
+        
+        if 'ZTT' not in samples_to_skip:
+            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
+        if 'ZLL' not in samples_to_skip:
+            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
+        if 'TT' not in samples_to_skip:    
+            GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
+        if 'VV' not in samples_to_skip:
+            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
+        if 'W' not in samples_to_skip:
+            GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, wt, sel, residual_cat, 8, qcd_os_ss_ratio, not options.do_ss)
+    
+    else:
+        if 'ZTT' not in samples_to_skip:
+            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
+        if 'ZLL' not in samples_to_skip:
+            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+        if 'TT' not in samples_to_skip:    
+            GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ)  
+        if 'VV' not in samples_to_skip:
+            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
+        if 'W' not in samples_to_skip:
+            GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+        if 'QCD' not in samples_to_skip:
+            GenerateQCD(ana, add_name, data_samples, qcd_sub_samples, w_sub_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+            
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
             GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss)
