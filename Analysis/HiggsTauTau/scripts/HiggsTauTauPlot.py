@@ -739,6 +739,11 @@ def Plot(ana, nodename):
     'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'zm':[backgroundComp("Misidentified #mu", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],ROOT.TColor.GetColor(100,192,232))]}
+    if options.method == 17:
+        for chan in ["et", "mt", "tt"]:    
+            background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)))
+            background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["FakeTaus"],ROOT.TColor.GetColor(250,202,255)))
+    print background_schemes
         
     total_datahist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
     blind_datahist = total_datahist.Clone()
