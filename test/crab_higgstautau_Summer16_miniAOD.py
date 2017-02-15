@@ -3,13 +3,13 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Jan24_MC_80X'
+config.General.workArea='Feb14_MC_80X'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_80X_Jan17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
-config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v7','isReHLT=1', 'LHEWeights=False']
+CfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8','isReHLT=1']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 100000
@@ -17,7 +17,7 @@ config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 #config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/dwinterb/Jan24_MC_80X/'
+config.Data.outLFNDirBase='/store/user/dwinterb/Feb14_MC_80X/'
 config.section_('User')
 config.section_('Site')
 #config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     #############################################################################################
 
     tasks=list()
-    
+
     #commented out samples aren't available yet
 
     tasks.append(('SUSYGluGluToHToTauTau_M-80','/SUSYGluGluToHToTauTau_M-80_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     tasks.append(('SUSYGluGluToBBHToTauTau_M-1000','/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
     tasks.append(('SUSYGluGluToBBHToTauTau_M-1200','/SUSYGluGluToBBHToTauTau_M-1200_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
     tasks.append(('SUSYGluGluToBBHToTauTau_M-1400','/SUSYGluGluToBBHToTauTau_M-1400_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
-    asks.append(('SUSYGluGluToBBHToTauTau_M-1600','/SUSYGluGluToBBHToTauTau_M-1600_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
+    tasks.append(('SUSYGluGluToBBHToTauTau_M-1600','/SUSYGluGluToBBHToTauTau_M-1600_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
     tasks.append(('SUSYGluGluToBBHToTauTau_M-1800','/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
     tasks.append(('SUSYGluGluToBBHToTauTau_M-2000','/SUSYGluGluToBBHToTauTau_M-2000_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
     tasks.append(('SUSYGluGluToBBHToTauTau_M-2300','/SUSYGluGluToBBHToTauTau_M-2300_TuneCUETP8M1_13TeV-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'))
@@ -160,10 +160,9 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
         #submit(config)
             
-        if "GluGluToHToTauTau_M-125" in task[1] or "VBFHToTauTau_M-125" in task[1]:
-            config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v7','isReHLT=1', 'LHEWeights=True']
-        else:
-            config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v7','isReHLT=1', 'LHEWeights=False']
+        if "GluGluToHToTauTau_M-125" in task[0] or "VBFHToTauTau_M-125" in task[0]:
+            config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True']
+        else: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=False']
             
         p = Process(target=submit, args=(config,))
         p.start()
