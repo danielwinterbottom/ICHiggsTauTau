@@ -320,29 +320,29 @@ Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
 systematics = OrderedDict()
 systematics['default'] = ('','', 'wt', [])
 if options.syst_tau_scale != '':
-    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'UP', 'wt', [])
-    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'DOWN', 'wt', [])
+    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'Up', 'wt', [])
+    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'Down', 'wt', [])
 if options.syst_eff_t != '':
-    systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'UP', 'wt*wt_tau_id_up', ['ZLL','VVJ','TTJ','QCD','W'] )
-    systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'DOWN', 'wt*wt_tau_id_down', ['ZLL','VVJ','TTJ','QCD','W'])
+    systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'Up', 'wt*wt_tau_id_up', ['ZLL','VVJ','TTJ','QCD','W'] )
+    systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'Down', 'wt*wt_tau_id_down', ['ZLL','VVJ','TTJ','QCD','W'])
 if options.syst_tquark != '':
-    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'UP', 'wt*wt_tquark_up', ['ZTT','ZLL','VV','QCD','W','signal'])
-    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'DOWN', 'wt*wt_tquark_down', ['ZTT','ZLL','VV','QCD','W', 'signal'])    
+    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'Up', 'wt*wt_tquark_up', ['ZTT','ZLL','VV','QCD','W','signal'])
+    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'Down', 'wt*wt_tquark_down', ['ZTT','ZLL','VV','QCD','W', 'signal'])    
 if options.syst_zwt != '':
-    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'UP', 'wt*wt_zpt_up', ['ZLL','VV','TT','QCD','W','signal'])
-    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'DOWN', 'wt*wt_zpt_down', ['ZLL','VV','TT','QCD','W','signal'])
+    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'Up', 'wt*wt_zpt_up', ['ZLL','VV','TT','QCD','W','signal'])
+    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['ZLL','VV','TT','QCD','W','signal'])
 if options.syst_w_fake_rate != '':
-    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'UP', 'wt*wt_tau_fake_up', ['ZTT','ZLL','VV','TT','QCD','signal'])
-    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'DOWN', 'wt*wt_tau_fake_down', ['ZTT','ZLL','VV','TT','QCD','signal'])
+    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', ['ZTT','ZLL','VV','TT','QCD','signal'])
+    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', ['ZTT','ZLL','VV','TT','QCD','signal'])
 if options.syst_scale_j != '':
-    systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'UP', 'wt', [])
-    systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'DOWN', 'wt', [])
+    systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', [])
+    systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', [])
 if options.syst_eff_b != '':
-    systematics['syst_eff_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'UP', 'wt', [])
-    systematics['syst_scale_j_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'DOWN', 'wt', [])
+    systematics['syst_eff_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', [])
+    systematics['syst_scale_j_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', [])
 if options.syst_fake_b != '':
-    systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'UP', 'wt', [])
-    systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'DOWN', 'wt', [])
+    systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'Up', 'wt', [])
+    systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'Down', 'wt', [])
         
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
@@ -743,7 +743,6 @@ def Plot(ana, nodename):
         for chan in ["et", "mt", "tt"]:    
             background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)))
             background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["FakeTaus"],ROOT.TColor.GetColor(250,202,255)))
-    print background_schemes
         
     total_datahist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
     blind_datahist = total_datahist.Clone()
@@ -1064,6 +1063,38 @@ for systematic in systematics:
     
     print ana.nodes[nodename]
     
+    ana.nodes.Output(outfile)
+    
+    #Fix negative bins, empty histograms and empty bins
+    nodes = ana.nodes[nodename].SubNodes()
+    for node in nodes:
+        hist = node.shape.hist
+        outfile.cd('analysis/'+nodename)
+        #Fix negative bins
+        for i in range(1,hist.GetNbinsX()+1):
+            if hist.GetBinContent(i) < 0:
+                hist.SetBinContent(i,0.0000001)
+                outfile.cd('analysis/'+nodename)
+                hist.Write(node.name,ROOT.TObject.kOverwrite)
+                outfile.cd()
+        #Fix empty histogram
+        if hist.Integral() == 0.0:
+            hist.SetBinContent(hist.GetNbinsX()/2, 0.00001)
+            hist.Write(node.name,ROOT.TObject.kOverwrite)
+        #Fix empty bins
+        first_populated = 0
+        last_populated = 0
+        bins = hist.GetNbinsX()
+        for i in range(1,bins):
+            if hist.GetBinContent(i) > 0 and first_populated == 0: first_populated = i
+            if hist.GetBinContent(bins-(i-1)) > 0. and last_populated == 0: last_populated = bins-(i-1)
+        av_weight = (hist.Integral() / hist.GetEntries())
+        for i in range (first_populated+1,last_populated):
+            if hist.GetBinContent(i) == 0.0: 
+             hist.SetBinError(i, av_weight)
+             hist.Write(node.name,ROOT.TObject.kOverwrite)
+        outfile.cd()
+    
     PrintSummary(nodename, ['data_obs'], add_name)
     
     # Generate plots here for default only
@@ -1108,8 +1139,6 @@ for systematic in systematics:
                     mssm_hist.Scale(sf)
     
     
-    ana.nodes.Output(outfile)
-    
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
     if systematic is 'default':
         outfile.cd('analysis/'+nodename)
@@ -1150,3 +1179,9 @@ for systematic in systematics:
         sum_hist.SetName('TT'+add_name)
         sum_hist.Write()
         outfile.cd()
+    
+                    
+            
+    
+                
+
