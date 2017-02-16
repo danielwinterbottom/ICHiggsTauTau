@@ -1071,16 +1071,15 @@ for systematic in systematics:
         hist = node.shape.hist
         outfile.cd('analysis/'+nodename)
         #Fix negative bins
+        write_hist=False
         for i in range(1,hist.GetNbinsX()+1):
             if hist.GetBinContent(i) < 0:
                 hist.SetBinContent(i,0.0000001)
-                outfile.cd('analysis/'+nodename)
-                hist.Write(node.name,ROOT.TObject.kOverwrite)
-                outfile.cd()
+                write_hist=True
         #Fix empty histogram
         if hist.Integral() == 0.0:
             hist.SetBinContent(hist.GetNbinsX()/2, 0.00001)
-            hist.Write(node.name,ROOT.TObject.kOverwrite)
+            write_hist=True
         #Fix empty bins
         first_populated = 0
         last_populated = 0
@@ -1092,7 +1091,8 @@ for systematic in systematics:
         for i in range (first_populated+1,last_populated):
             if hist.GetBinContent(i) == 0.0: 
              hist.SetBinError(i, av_weight)
-             hist.Write(node.name,ROOT.TObject.kOverwrite)
+             write_hist=True
+        if write_hist: hist.Write(node.name,ROOT.TObject.kOverwrite)
         outfile.cd()
     
     PrintSummary(nodename, ['data_obs'], add_name)

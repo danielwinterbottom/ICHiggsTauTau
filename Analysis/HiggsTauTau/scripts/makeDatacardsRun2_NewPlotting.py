@@ -259,7 +259,7 @@ for ch in channels:
     
     os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
               ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder="./" --no_plot'
-              ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s --era=""'
+              ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s'
               ' --var="%(var)s%(bin)s" %(extra)s' % vars())
 
   varsplit = var.split('(')
