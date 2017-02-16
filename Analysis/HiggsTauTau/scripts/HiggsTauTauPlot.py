@@ -623,18 +623,58 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
           num_node,
           den_node))
         
-def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat='',get_os=True):
+def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name='',get_os=True):
     print "Generating fake tau background via fake-factor method. In order for this to work you must first ensure that the fake-faktor weights are included in the input tree for the channel and category you wish use. Weights should be named as: wt_ff_channel_category"
     
-    fake_factor_wt_string = "wt_ff_"+options.channel+"_"+options.cat
-    if wt is not "": wt+="*"+fake_factor_wt_string
-    else: wt=fake_factor_wt_string
     if get_os:
         OSSS = 'os'
     else:
         OSSS = '!os'
-    full_selection = BuildCutString(wt, sel, cat, OSSS, '')
-    ana.nodes[nodename].AddNode(ana.SummedFactory('FakeTaus'+add_name, data, plot, full_selection))
+    
+    # Select data from anti-isolated region
+    if options.channel != "tt":
+        if options.channel == 'mt':
+            anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        elif options.channel == 'et': 
+            anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            
+        ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
+        fake_factor_wt_string = "wt_ff_"+options.channel+"_"+options.cat
+        if wt is not "": wt+="*"+fake_factor_wt_string
+        else: wt=fake_factor_wt_string
+    
+        full_selection = BuildCutString(wt, sel, ff_cat, OSSS, '')
+        # Calculate FF for anti-isolated data (f1) then subtract contributions from real taus (f2)
+        f1 = ana.SummedFactory('f1', data, plot, full_selection)
+        f2 = ana.SummedFactory('f2', ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection+"*(gen_match_2!=6)")
+        ana.nodes[nodename].AddNode(SubtractNode('FakeTaus'+add_name, f1, f2))
+        
+    if options.channel == 'tt':
+        anti_isolated_sel_1 = '(mva_olddm_tight_1<0.5 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        anti_isolated_sel_2 = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        
+        ff_cat_1 = cats[cat_name] +" && "+ anti_isolated_sel_1
+        ff_cat_2 = cats[cat_name] +" && "+ anti_isolated_sel_2
+        fake_factor_wt_string_1 = "wt_ff_"+options.channel+"_"+options.cat+"_1"
+        fake_factor_wt_string_2 = "wt_ff_"+options.channel+"_"+options.cat+"_2"
+        if wt is not "": 
+            wt_1=wt+"*"+fake_factor_wt_string_1
+            wt_2=wt+"*"+fake_factor_wt_string_2
+        else: 
+            wt_1=fake_factor_wt_string_1
+            wt_2=fake_factor_wt_string_2
+    
+        full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1, OSSS, '')
+        full_selection_2 = BuildCutString(wt_2, sel, ff_cat_1, OSSS, '')
+        
+        ff_total_node = SummedNode('FakeTaus'+add_name)
+        f1_total_node = SummedNode('f1'+add_name)
+        f1_total_node.AddNode(ana.SummedFactory('f1_1'+add_name, data, plot, full_selection_1))
+        f1_total_node.AddNode(ana.SummedFactory('f1_2'+add_name, data, plot, full_selection_2))
+        f2_total_node = SummedNode('f2'+add_name)
+        f2_total_node.AddNode(ana.SummedFactory('f2_1'+add_name, ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection_1+"*(!(gen_match_1==6 ||gen_match_2==6))"))
+        f2_total_node.AddNode(ana.SummedFactory('f2_2'+add_name, ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection_2+"*(!(gen_match_1==6 ||gen_match_2==6))"))
+        ana.nodes[nodename].AddNode(SubtractNode('FakeTaus'+add_name, f1_total_node, f2_total_node))
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = ''):
     if get_os:
@@ -930,7 +970,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
     
     if options.method == 17 and options.channel != "em":
         # method 17 uses the fake factor method!
-        GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, cat,not options.do_ss)
+        GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, options.cat,not options.do_ss)
         
         # use existing methods to calculate background due to non-fake taus - for W background must use method 8 to compute this!
         add_fake_factor_selection = "gen_match_2!=6"
