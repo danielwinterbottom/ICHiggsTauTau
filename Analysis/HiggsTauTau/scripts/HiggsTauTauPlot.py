@@ -646,7 +646,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
         full_selection = BuildCutString(wt, sel, ff_cat, OSSS, '')
         # Calculate FF for anti-isolated data (f1) then subtract contributions from real taus (f2)
         f1 = ana.SummedFactory('f1', data, plot, full_selection)
-        f2 = ana.SummedFactory('f2', ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection+"*(gen_match_2!=6)")
+        f2 = ana.SummedFactory('f2', ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection+"*(gen_match_2<6)")
         ana.nodes[nodename].AddNode(SubtractNode('FakeTaus'+add_name, f1, f2))
         
     if options.channel == 'tt':
@@ -672,8 +672,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
         f1_total_node.AddNode(ana.SummedFactory('f1_1'+add_name, data, plot, full_selection_1))
         f1_total_node.AddNode(ana.SummedFactory('f1_2'+add_name, data, plot, full_selection_2))
         f2_total_node = SummedNode('f2'+add_name)
-        f2_total_node.AddNode(ana.SummedFactory('f2_1'+add_name, ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection_1+"*(!(gen_match_1==6 ||gen_match_2==6))"))
-        f2_total_node.AddNode(ana.SummedFactory('f2_2'+add_name, ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection_2+"*(!(gen_match_1==6 ||gen_match_2==6))"))
+        f2_total_node.AddNode(ana.SummedFactory('f2_1'+add_name, ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection_1+"*(gen_match_1<6)"))
+        f2_total_node.AddNode(ana.SummedFactory('f2_2'+add_name, ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection_2+"*(gen_match_2<6)"))
         ana.nodes[nodename].AddNode(SubtractNode('FakeTaus'+add_name, f1_total_node, f2_total_node))
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = ''):
@@ -973,7 +973,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
         GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, options.cat,not options.do_ss)
         
         # use existing methods to calculate background due to non-fake taus - for W background must use method 8 to compute this!
-        add_fake_factor_selection = "gen_match_2!=6"
+        add_fake_factor_selection = "gen_match_2<6"
         if options.channel == "tt": add_fake_factor_selection = "!(gen_match_1==6 || gen_match_2==6)"
         residual_cat=cat+"&&"+add_fake_factor_selection
         
