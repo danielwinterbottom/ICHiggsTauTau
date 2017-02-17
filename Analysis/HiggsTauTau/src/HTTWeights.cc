@@ -1514,8 +1514,8 @@ namespace ic {
              ele2_trg = fns_["e_trg_binned_data"]->eval(args_2.data());
              //  ele_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
              // ele_trg = 1;
-             ele1_trg_mc=1;
-             ele2_trg_mc=1;
+             ele1_trg_mc=fns_["e_trg_binned_mc"]->eval(args_1.data());
+             ele2_trg_mc=fns_["e_trg_binned_mc"]->eval(args_2.data());
           }
         }
         ele1_trg = 1-((1-ele1_trg)*(1-ele2_trg));
@@ -1585,12 +1585,11 @@ namespace ic {
              mu2_trg_mc=1;
              auto args_1 = std::vector<double>{pt1,m1_signed_eta,m_iso_1};
              auto args_2 = std::vector<double>{pt2,m2_signed_eta,m_iso_2};
-             mu1_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
-             mu2_trg = fns_["m_trgOR_binned_data"]->eval(args_2.data());
-             //  mu_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
-             // mu_trg = 1;
-             mu1_trg_mc=1;
-             mu2_trg_mc=1;
+             
+             mu1_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
+             mu2_trg = fns_["m_trgOR4_binned_data"]->eval(args_2.data());
+             mu1_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
+             mu2_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_2.data());
            }
         }
         mu1_trg = 1-((1-mu1_trg)*(1-mu2_trg));
@@ -1941,6 +1940,7 @@ namespace ic {
            auto args2_2 = std::vector<double>{m_2_pt,m_2_signed_eta,m_2_iso};
            m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data()) * fns_["m_iso_binned_ratio"]->eval(args1_2.data()) ;
            m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data()) * fns_["m_iso_binned_ratio"]->eval(args2_2.data()) ;
+           
           /*if(m_1_pt<1000){
             m_1_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_1_pt));
             m_1_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_1_pt));

@@ -120,7 +120,7 @@ if analysis == 'sm':
 else:
   CONFIG='scripts/config2016.json'
   
-FILELIST='filelists/Jan24_MC_80X'
+FILELIST='filelists/Feb14_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -272,7 +272,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
 
 
-  DATAFILELIST="./filelists/Jan08_Data_80X"
+  DATAFILELIST="./filelists/Feb14_Data_80X"
 
   if options.calc_lumi:
     for sa in data_samples:
@@ -346,6 +346,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'DYJetsToLL',
     #'DYJetsToLL-LO',
     'DYJetsToLL-LO-ext',
+    'DYJetsToLL-LO-ext2'#,
     'DYJetsToLL_M-10to50-ext',
     'DYJetsToLL_M-10to50',
     'DYJetsToLL_M-10-50-LO',
@@ -371,7 +372,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 
   if options.qcd_study:
     #FILELIST='filelists/Feb25_MC_76X'
-    FILELIST='filelists/Jan24_MC_80X'
+    FILELIST='filelists/Feb14_MC_80X'
     central_samples = [
       'QCDMuEnrichedPt15'
   #    'QCDEMEnrichedPt15-20',

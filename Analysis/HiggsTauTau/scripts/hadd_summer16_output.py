@@ -69,6 +69,7 @@ sample_list = [
    'DYJetsToLL',
    'DYJetsToLL-LO',
    'DYJetsToLL-LO-ext',
+   'DYJetsToLL-LO-ext2',
    'DYJetsToLL_M-10to50-ext',
    'DYJetsToLL_M-10to50',
    'DYJetsToLL_M-10-50-LO',
