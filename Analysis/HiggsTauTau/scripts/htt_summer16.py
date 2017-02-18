@@ -186,89 +186,43 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   data_samples = []
   data_eras = ['B','C','D','E','F','G','H']
   for chn in channels:
-    for era in data_eras:
-      if not options.calc_lumi:  
-        if 'mt' in chn:
-          if not era == 'H':  
-              data_samples+=[   
-               'SingleMuon'+era]
-              data_samples+=[   
-               'SingleMuon'+era+'ReReco']
-          else:
-              data_samples+=[   
-               'SingleMuon'+era+'v2']
-              data_samples+=[   
-               'SingleMuon'+era+'v3']
-        if 'et' in chn:
-          if not era == 'H':  
-              data_samples+=[   
-               'SingleElectron'+era]
-              data_samples+=[   
-               'SingleElectron'+era+'ReReco']
-          else:
-              data_samples+=[   
-               'SingleElectron'+era+'v2']
-              data_samples+=[   
-               'SingleElectron'+era+'v3']
-        if 'em' in chn:
-          if not era == 'H':  
-              data_samples+=[   
-               'MuonEG'+era]
-              data_samples+=[   
-               'MuonEG'+era+'ReReco']
-          else:
-              data_samples+=[   
-               'MuonEG'+era+'v2']
-              data_samples+=[   
-               'MuonEG'+era+'v3']
-        if 'tt' in chn:
-          if not era == 'H':  
-              data_samples+=[   
-               'Tau'+era]
-              data_samples+=[   
-               'Tau'+era+'ReReco']
-          else:
-              data_samples+=[   
-               'Tau'+era+'v2']
-              data_samples+=[   
-               'Tau'+era+'v3']
-      else:
-        if 'mt' in chn:
-          if not era == 'H':  
-              data_samples+=[   
-               'SingleMuon'+era+'ReReco']
-          else:
-              data_samples+=[   
-               'SingleMuon'+era+'v2']
-              data_samples+=[   
-               'SingleMuon'+era+'v3']
-        if 'et' in chn:
-          if not era == 'H':  
-              data_samples+=[   
-               'SingleElectron'+era+'ReReco']
-          else:
-              data_samples+=[   
-               'SingleElectron'+era+'v2']
-              data_samples+=[   
-               'SingleElectron'+era+'v3']
-        if 'em' in chn:
-          if not era == 'H':  
-              data_samples+=[   
-               'MuonEG'+era+'ReReco']
-          else:
-              data_samples+=[   
-               'MuonEG'+era+'v2']
-              data_samples+=[   
-               'MuonEG'+era+'v3']
-        if 'tt' in chn:
-          if not era == 'H':  
-              data_samples+=[   
-               'Tau'+era+'ReReco']
-          else:
-              data_samples+=[   
-               'Tau'+era+'v2']
-              data_samples+=[   
-               'Tau'+era+'v3']   
+    for era in data_eras: 
+         if 'mt' in chn:
+           if not era == 'H':  
+               data_samples+=[   
+                'SingleMuon'+era]
+           else:
+               data_samples+=[   
+                'SingleMuon'+era+'v2']
+               data_samples+=[   
+                'SingleMuon'+era+'v3'] # missing at the moment!
+         if 'et' in chn:
+           if not era == 'H':  
+               data_samples+=[   
+                'SingleElectron'+era]
+           else:
+               data_samples+=[   
+                'SingleElectron'+era+'v2']
+               data_samples+=[   
+                'SingleElectron'+era+'v3']
+         if 'em' in chn:
+           if not era == 'H':  
+               data_samples+=[   
+                'MuonEG'+era]
+           else:
+               data_samples+=[   
+                'MuonEG'+era+'v2']
+               data_samples+=[   
+                'MuonEG'+era+'v3']
+         if 'tt' in chn:
+           if not era == 'H':  
+               data_samples+=[   
+                'Tau'+era]
+           else:
+               data_samples+=[   
+                'Tau'+era+'v2']
+               data_samples+=[   
+                'Tau'+era+'v3'] 
         
 
 
@@ -277,7 +231,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan08_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Feb14_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -288,7 +242,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan08_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Feb14_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
 
@@ -345,8 +299,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'Tbar-tW',
     'DYJetsToLL',
     #'DYJetsToLL-LO',
-    'DYJetsToLL-LO-ext',
-    'DYJetsToLL-LO-ext2'#,
+    'DYJetsToLL-LO-ext1',
+    'DYJetsToLL-LO-ext2',
     'DYJetsToLL_M-10to50-ext',
     'DYJetsToLL_M-10to50',
     'DYJetsToLL_M-10-50-LO',
