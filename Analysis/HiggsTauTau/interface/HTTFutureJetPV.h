@@ -8,12 +8,17 @@
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 
 namespace ic {
+bool SortByJetPt(std::pair<ic::PFJet*,ic::GenJet*> const c1,
+                                       std::pair<ic::PFJet*,ic::GenJet*> const c2); 
 
 class HTTFutureJetPV : public ModuleBase {
+
  private:
   CLASS_MEMBER(HTTFutureJetPV, std::string, genjet_label)
+  CLASS_MEMBER(HTTFutureJetPV, std::string, genparticle_label)
   CLASS_MEMBER(HTTFutureJetPV, std::string, jets_label)
   CLASS_MEMBER(HTTFutureJetPV, fwlite::TFileService*, fs)
 
@@ -24,6 +29,8 @@ class HTTFutureJetPV : public ModuleBase {
  double genjet_eta=0;  
  double jet_beta=0; 
  int jet_flav=0;
+ 
+
 
  public:
   explicit HTTFutureJetPV(std::string const& name);

@@ -38,23 +38,45 @@ int HTTFutureJetPV::PostAnalysis() {
 
 int HTTFutureJetPV::Execute(TreeEvent *event) {
   std::vector<GenJet*> const& genjets = event->GetPtrVec<GenJet>(genjet_label_);
-  std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>(jets_label_);
+  std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+  std::vector<GenParticle *>  const& particles = event->GetPtrVec<GenParticle>(genparticle_label_);
+  std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
+  std::vector<GenJet *> gen_taus_ptr;
+  for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+  std::vector<GenParticle *> sel_particles;
+  for (unsigned i=0; i < particles.size(); ++i){
+    std::vector<bool> status_flags_start = particles[i]->statusFlags();
+    if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13 )) && (status_flags_start[IsDirectPromptTauDecayProduct] )){
+      sel_particles.push_back(particles[i]);
+    }
+  }
 
-  std::vector<std::pair<PFJet*, GenJet*> > jet_match  = MatchByDR(jets, genjets, 0.2, true, true);
+
+
+  std::vector<std::pair<PFJet*, GenJet*> > jet_match  = MatchByDR(jets, genjets, 0.1, true, true);
+  std::sort(jet_match.begin(),jet_match.end(),SortByJetPt);
+  
 /*  std::vector<std::pair<PFJet*,GenJet*> > sel_genjets;
   for(unsigned i=0;i<jet_match.size();++i){
     if(jet_match.at(i).first->parton_flavour()!=0&&jet_match.at(i).first->parton_flavour()!=21) sel_genjets.push_back(jet_match.at(i));
   }*/
   for(unsigned j=0;j<jet_match.size();++j){
-      jet_pt=jet_match.at(j).first->pt();
-      jet_eta=jet_match.at(j).first->eta();
-      genjet_eta=jet_match.at(j).second->eta();
-      genjet_pt=jet_match.at(j).second->pt();
-      jet_beta=jet_match.at(j).first->beta();
-      jet_flav=jet_match.at(j).first->parton_flavour();
-      outtree_->Fill();
+      if(MinDRToCollection(jet_match.at(j).first,gen_taus_ptr,0.5)&&MinDRToCollection(jet_match.at(j).first,sel_particles,0.5)){
+        jet_pt=jet_match.at(j).first->pt();
+        jet_eta=jet_match.at(j).first->eta();
+        genjet_eta=jet_match.at(j).second->eta();
+        genjet_pt=jet_match.at(j).second->pt();
+        jet_beta=jet_match.at(j).first->beta();
+        jet_flav=jet_match.at(j).first->parton_flavour();
+        outtree_->Fill();
+      }
   }
 
   return 0;
 }
+
+bool SortByJetPt(std::pair<ic::PFJet*,ic::GenJet*> const c1,
+                                       std::pair<ic::PFJet*,ic::GenJet*> const c2) {
+           return (c1.first->pt() > c2.first->pt() );
+             }
 }
