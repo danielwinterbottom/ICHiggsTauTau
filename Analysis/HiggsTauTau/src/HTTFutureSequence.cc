@@ -305,6 +305,7 @@ void HTTFutureSequence::BuildSequence(){
   BuildModule(HTTFutureJetPV("HTTFutureJetPV")
     .set_genjet_label("genJets")
     .set_jets_label(jets_label)
+    .set_genparticle_label("genParticles")
     .set_fs(fs.get()));
  
   BuildModule(HTTFutureTauEff("HTTFutureTauEff")

@@ -8,7 +8,7 @@ import json
 import UserCode.ICHiggsTauTau.plotting as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_fixjeteta_tt_0.root"
+infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_future_full_tt_0.root"
 
 vbf_file=ROOT.TFile.Open(infile)
 pairtree=vbf_file.Get("tauidinfo")

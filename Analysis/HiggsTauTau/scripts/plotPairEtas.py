@@ -8,7 +8,7 @@ import json
 import UserCode.ICHiggsTauTau.plotting as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/ggH_UPG_tt_0.root"
+infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_future_full_tt_0.root"
 
 vbf_file=ROOT.TFile.Open(infile)
 pairtree=vbf_file.Get("geninfo")
@@ -113,11 +113,11 @@ tau1_eta.GetYaxis().SetTitle("a.u.")
 tau1_eta.Draw("L")
 
 plot.DrawCMSLogo(pads3[0], 'CMS', 'Simulation preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
-plot.DrawTitle(pads3[0], "ggF H#rightarrow#tau#tau", 1)
+plot.DrawTitle(pads3[0], "VBF H#rightarrow#tau#tau", 1)
 plot.DrawTitle(pads3[0], "#sqrt{s}=14 TeV, 0 PU", 3)
 
-canv3.SaveAs('tauetadistggF.pdf')
-canv3.Print('tauetadistggF.png')
+canv3.SaveAs('tauetadistVBFFull.pdf')
+canv3.Print('tauetadistVBFFull.png')
 
 
 

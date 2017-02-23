@@ -372,12 +372,16 @@ void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
     for (unsigned id = 0, nd = src.numberOfDaughters(); id < nd ; ++id){
       const pat::PackedCandidate &dau = dynamic_cast<const::pat::PackedCandidate &>(*src.daughter(id)); 
       if (dau.charge() ==0) continue;
-      (fabs(dau.dz())<0.4 ? in: out) += dau.pt();
+      (fabs(dau.dz())<0.1 ? in: out) += dau.pt();
     }
     double sum = in + out;
     if (sum > 0) {
+      dest.set_beta(in/sum);
+    } else dest.set_beta(-1);
+
+/*    if (sum > 0) {
     std::cout<<"beta = "<<  in/sum <<std::endl;
-    }
+    }*/
     //  Assume input jet is uncorrected
     dest.set_uncorrected_energy(src.energy());
     if (dest_.do_pu_id) {

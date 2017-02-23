@@ -8,7 +8,7 @@ import json
 import UserCode.ICHiggsTauTau.plotting as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_UPG_tt_0.root"
+infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_future_full_tt_0.root"
 
 vbf_file=ROOT.TFile.Open(infile)
 pairtree=vbf_file.Get("geninfo")
@@ -31,11 +31,11 @@ tau2_eta_genpt20 = ROOT.TH1D("tau2_eta_genpt20","tau2_eta_genpt20",50,np.array(x
 
 
 pairtree.Draw("(tau1_pt)>>tau1_genpt_full","abs(tau1_type)==15&&tau1_pt>15")
-pairtree.Draw("(tau1_pt)>>tau1_genpt_eta23","abs(tau1_type)==15&&tau1_pt>15&&abs(tau1_eta)<2.3")
+pairtree.Draw("(tau1_pt)>>tau1_genpt_eta23","abs(tau1_type)==15&&tau1_pt>15&&abs(tau1_eta)<2.5")
 pairtree.Draw("(tau1_pt)>>tau1_genpt_eta3","abs(tau1_type)==15&&tau1_pt>15&&abs(tau1_eta)<3")
 pairtree.Draw("(tau1_pt)>>tau1_genpt_eta4","abs(tau1_type)==15&&tau1_pt>15&&abs(tau1_eta)<4")
 pairtree.Draw("(tau2_pt)>>tau2_genpt_full","abs(tau2_type)==15&&tau2_pt>15")
-pairtree.Draw("(tau2_pt)>>tau2_genpt_eta23","abs(tau2_type)==15&&tau2_pt>15&&abs(tau2_eta)<2.3")
+pairtree.Draw("(tau2_pt)>>tau2_genpt_eta23","abs(tau2_type)==15&&tau2_pt>15&&abs(tau2_eta)<2.5")
 pairtree.Draw("(tau2_pt)>>tau2_genpt_eta3","abs(tau2_type)==15&&tau2_pt>15&&abs(tau2_eta)<3")
 pairtree.Draw("(tau2_pt)>>tau2_genpt_eta4","abs(tau2_type)==15&&tau2_pt>15&&abs(tau2_eta)<4")
 
@@ -109,11 +109,11 @@ for padx in pads:
 
 legend = plot.PositionedLegend(0.45, 0.10, 3, 0.015)
 plot.Set(legend, NColumns=1)
-tau1_genpt_eta23.GetXaxis().SetTitle("Gen #tau_{h} p_{T} (GeV)")
+tau1_genpt_eta23.GetXaxis().SetTitle("Visible gen #tau_{h} p_{T} (GeV)")
 tau1_genpt_eta23.GetYaxis().SetTitle("#tau_{h} acceptance")
 tau1_genpt_eta23.GetYaxis().SetRangeUser(0.6,1.2)
 tau1_genpt_eta23.Draw("P")
-legend.AddEntry(tau1_genpt_eta23,'#tau_{h} |#eta|<2.3','P')
+legend.AddEntry(tau1_genpt_eta23,'#tau_{h} |#eta|<2.5','P')
 tau1_genpt_eta3.Draw("PSAME")
 legend.AddEntry(tau1_genpt_eta3,'#tau_{h} |#eta|<3','P')
 tau1_genpt_eta4.Draw("PSAME")
@@ -125,8 +125,8 @@ plot.DrawCMSLogo(pads[0], 'CMS', 'Simulation preliminary', 11, 0.045, 0.035, 1.2
 plot.DrawTitle(pads[0], "VBF H#rightarrow#tau#tau", 1)
 plot.DrawTitle(pads[0], "#sqrt{s}=14 TeV, 0 PU", 3)
 
-canv.SaveAs('tau_acceptance_VBF.pdf')
-canv.Print('tau_acceptance_VBF.png')
+canv.SaveAs('tau_acceptance_VBF_FULL.pdf')
+canv.Print('tau_acceptance_VBF_FULL.png')
 
 canveta=ROOT.TCanvas()
 padseta = plot.OnePad()
@@ -146,7 +146,7 @@ plot.DrawCMSLogo(padseta[0], 'CMS', 'Simulation preliminary', 11, 0.045, 0.035, 
 plot.DrawTitle(padseta[0], "VBF H#rightarrow#tau#tau", 1)
 plot.DrawTitle(padseta[0], "#sqrt{s}=14 TeV, 0 PU", 3)
 
-canveta.SaveAs('tau_acceptance_eta_VBF.pdf')
-canveta.Print('tau_acceptance_eta_VBF.png')
+canveta.SaveAs('tau_acceptance_eta_VBF_FULL.pdf')
+canveta.Print('tau_acceptance_eta_VBF_FULL.png')
 
 
