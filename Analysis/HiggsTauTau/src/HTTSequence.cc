@@ -355,14 +355,14 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    elec_dz = 0.2;
    elec_dxy = 0.045;
    pair_dr = 0.5;
-   elec_pt = 20;
+   elec_pt = 26;
    elec_eta = 2.1;
  }
  if(channel_str == "zmm"){
    muon_dz = 0.2;
    muon_dxy = 0.045;
-   pair_dr = 0.5;
-   muon_pt = 20;
+   pair_dr = 0.3;
+   muon_pt = 23;
    muon_eta = 2.1;
  }
  if(channel_str == "wmnu"){
@@ -514,13 +514,32 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "isolation cut" %  tau_iso;
   std::cout << boost::format(param_fmt) % "anti-electron" % tau_anti_elec_discr;
   std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
+/*  
+  
+  if(do_met_filters && is_data){
+  BuildModule(GenericModule("MetFiltersCheck")
+    .set_function([=](ic::TreeEvent *event){
+       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+       //std::vector<std::string> met_filters = {"Flag_eeBadScFilter","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices", "badChargedHadronFilter","badMuonFilter", "Flag_globalTightHalo2016Filter"};
+       std::vector<std::string> met_filters = {"Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_CSCTightHaloFilter","Flag_CSCTightHaloTrkMuUnvetoFilter","Flag_CSCTightHalo2015Filter","Flag_globalTightHalo2016Filter","Flag_globalSuperTightHalo2016Filter","Flag_HcalStripHaloFilter","Flag_hcalLaserEventFilter","Flag_EcalDeadCellTriggerPrimitiveFilter" ,"Flag_EcalDeadCellBoundaryEnergyFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_ecalLaserCorrFilter","Flag_trkPOGFilters","Flag_chargedHadronTrackResolutionFilter" ,"Flag_muonBadTrackFilter","Flag_trkPOG_manystripclus53X","Flag_trkPOG_toomanystripclus53X","Flag_trkPOG_logErrorTooManyClusters","Flag_METFilters","Flag_BadChargedCandidateFilter"
+,"Flag_BadPFMuonFilter"};
+       if(eventInfo->run() != 278820 || eventInfo->lumi_block() != 1296 || eventInfo->event() != 2384897986) return 1;
+       std::cout << eventInfo->run() << "  " <<  eventInfo->lumi_block() << "  " <<    eventInfo->event()<< std::endl;
+       for(unsigned i=0;i<met_filters.size();++i){
+           std::cout << met_filters[i] << "   " << eventInfo->filter_result(met_filters.at(i)) << std::endl;
+       }
+       return 0;
+    }));
+}
 
-
+*/
 
   auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
   std::vector<int> to_check =
   {
-  };
+  };   
+  
+  std::cout << "event_check_file = " << js["event_check_file"].asString() << std::endl;
 
 	if(strcmp((js["event_check_file"].asString()).c_str(),"")!=0){
     std::ifstream file;
@@ -556,7 +575,7 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
   //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
   if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
-  if (era_type == era::data_2016)  data_json= "input/json/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt";
+  if (era_type == era::data_2016)  data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -940,7 +959,6 @@ if(strategy_type != strategy::phys14){
        .set_vertex_dist(new TH1F(vertex_wts)));
  }*/
 
-
 if(do_met_filters && is_data){
   BuildModule(GenericModule("MetFilters")
     .set_function([=](ic::TreeEvent *event){
@@ -966,6 +984,18 @@ if(do_met_filters){
     }));
 }
 
+//if(do_met_filters && is_data){
+//  BuildModule(GenericModule("MetFiltersCheck")
+//    .set_function([=](ic::TreeEvent *event){
+//       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+//       std::vector<std::string> met_filters_tocheck = {"Flag_eeBadScFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices", "badChargedHadronFilter","badMuonFilter", "Flag_globalTightHalo2016Filter"};
+//       if (!(eventInfo->run()==278820 && eventInfo->lumi_block()==1296 && eventInfo->event() == 2384897986)) return 1;
+//       for(unsigned i=0;i<met_filters_tocheck.size();++i){
+//        if (eventInfo->run()==278820 && eventInfo->lumi_block()==1296 && eventInfo->event() == 2384897986) std::cout << met_filters_tocheck[i] << " = " << eventInfo->filter_result(met_filters_tocheck.at(i)) << std::endl;  
+//       }
+//       return 0;
+//    }));
+//}
 
 
 if(channel == channel::tpzmm || channel == channel::tpzee){
@@ -1138,7 +1168,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_label(met_label)
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
-     .set_use_quantile_map(true)
+     .set_use_quantile_map(false)
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
@@ -1539,7 +1569,7 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_2.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_3.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -1663,7 +1693,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_2.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_3.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -1938,10 +1968,13 @@ void HTTSequence::BuildMTPairs() {
     } else { 
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16){
+   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16&&strategy_type!=strategy::mssmsummer16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
-   } else {
+   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16) {
     MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+   } else if (strategy_type==strategy::mssmsummer16) {
+    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
+    else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
 
     
@@ -2129,12 +2162,14 @@ if(strategy_type == strategy::paper2013) {
     } else { 
       MuonID = [](Muon const* m) { return MuonTight(m); };
     }
-   } else if (strategy_type!=strategy::mssmspring16 && strategy_type!=strategy::smspring16){
+   } else if (strategy_type!=strategy::mssmspring16&&strategy_type!=strategy::smspring16&&strategy_type!=strategy::mssmsummer16){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
-   } else {
-    MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
+   } else if (strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16) {
+    MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+   } else if (strategy_type==strategy::mssmsummer16) {
+    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
+    else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
-
 
 
   BuildModule(SimpleFilter<Muon>("MuonFilter")
@@ -2239,6 +2274,20 @@ void HTTSequence::BuildZEEPairs() {
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(2)
       .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 20.        &&
+                fabs(e->eta())          < 2.4        &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz    &&
+                ElecID(e) ;
+
+      }));
+  
+  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
+      "sel_electrons", "sel_lead_electrons"));
+  
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_lead_electrons").set_min(1)
+      .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
@@ -2249,7 +2298,7 @@ void HTTSequence::BuildZEEPairs() {
 
      
   BuildModule(CompositeProducer<Electron, Electron>("ZEEPairProducer")
-      .set_input_label_first("sel_electrons")
+      .set_input_label_first("sel_lead_electrons")
       .set_input_label_second("sel_electrons")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
@@ -2316,13 +2365,31 @@ void HTTSequence::BuildZMMPairs() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15 || strategy_type == strategy::mssmsummer16){
+  if(strategy_type==strategy::spring15 || strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
   } else if (strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
-  }
+  } else if (strategy_type==strategy::mssmsummer16) {
+    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
+    else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+   }
+   
   BuildModule(SimpleFilter<Muon>("MuonFilter")
       .set_input_label("sel_muons").set_min(2)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > 10.        &&
+                fabs(m->eta())          < muon_eta   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
+      }));
+  
+  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+      "sel_muons", "sel_lead_muons"));
+  
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+      .set_input_label("sel_lead_muons").set_min(1)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > muon_pt    &&
                 fabs(m->eta())          < muon_eta   &&
@@ -2333,7 +2400,7 @@ void HTTSequence::BuildZMMPairs() {
       }));
   
   BuildModule(CompositeProducer<Muon, Muon>("ZMMPairProducer")
-      .set_input_label_first("sel_muons")
+      .set_input_label_first("sel_lead_muons")
       .set_input_label_second("sel_muons")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
@@ -2352,11 +2419,14 @@ void HTTSequence::BuildTPZMMPairs() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15  || strategy_type == strategy::mssmsummer16){
+  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
   } else if (strategy_type==strategy::mssmspring16 ||strategy_type==strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
-  }
+  } else if (strategy_type==strategy::mssmsummer16) {
+    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
+    else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+   }
 
   BuildModule(SimpleFilter<Muon>("ProbeFilter")
       .set_input_label("sel_muons").set_min(2)
@@ -2400,11 +2470,14 @@ void HTTSequence::BuildWMuNu() {
       js["muons"].asString(), "sel_muons"));
 
   std::function<bool(Muon const*)> MuonID;
-  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15 || strategy_type == strategy::mssmsummer16){
+  if(strategy_type==strategy::spring15||strategy_type==strategy::fall15){
     MuonID = [](Muon const* m) { return MuonMedium(m); };
   } else if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16){
     MuonID = [](Muon const* m) { return MuonMediumHIPsafe(m); };
-  }
+  } else if (strategy_type==strategy::mssmsummer16) {
+    if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
+    else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+   }
 
   BuildModule(SimpleFilter<Muon>("MuonFilter")
       .set_input_label("sel_muons").set_min(1)
@@ -2814,13 +2887,16 @@ void HTTSequence::BuildExtraMuonVeto(){
                 PF04IsolationVal(m, 0.5,0) < 0.3;
       });
    } else if (strategy_type == strategy::mssmsummer16){
+            std::function<bool(Muon const*)> ExtraMuonID;
+            if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) ExtraMuonID = [](Muon const* m) {return MuonMedium(m); };
+            else ExtraMuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
 	    extraMuonFilter.set_no_filter(true);
       extraMuonFilter.set_predicate([=](Muon const* m) {
         return  m->pt()                 > veto_muon_pt    &&
                 fabs(m->eta())          < veto_muon_eta   &&
                 fabs(m->dxy_vertex())   < veto_muon_dxy   &&
                 fabs(m->dz_vertex())    < veto_muon_dz    &&
-                MuonMedium(m)                     &&
+                ExtraMuonID                     &&
                 PF04IsolationVal(m, 0.5,0) < 0.3;
       });
    }

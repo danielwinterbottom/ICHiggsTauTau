@@ -180,14 +180,14 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     channels=cfg["job"]["channels"]
   else:
-    channels=['mt','et','tt','em']
+    channels=['mt','et','tt','em','zmm','zee']
   
 
   data_samples = []
   data_eras = ['B','C','D','E','F','G','H']
   for chn in channels:
     for era in data_eras: 
-         if 'mt' in chn:
+         if 'mt' in chn or 'zmm' in chn:
            if not era == 'H':  
                data_samples+=[   
                 'SingleMuon'+era]
@@ -195,8 +195,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
                data_samples+=[   
                 'SingleMuon'+era+'v2']
                data_samples+=[   
-                'SingleMuon'+era+'v3'] # missing at the moment!
-         if 'et' in chn:
+                'SingleMuon'+era+'v3']
+         if 'et' in chn or 'zee' in chn:
            if not era == 'H':  
                data_samples+=[   
                 'SingleElectron'+era]
@@ -242,7 +242,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Feb14_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Feb14_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
 
