@@ -14,7 +14,7 @@
 
 namespace ic {
 
-  HTTTriggerFilter::HTTTriggerFilter(std::string const& name) : ModuleBase(name), channel_(channel::zee), mc_(mc::summer12_53X), era_(era::data_2015) {
+  HTTTriggerFilter::HTTTriggerFilter(std::string const& name) : ModuleBase(name), channel_(channel::zee), mc_(mc::summer12_53X), era_(era::data_2015), strategy_(strategy::mssmsummer16){
   }
 
   HTTTriggerFilter::~HTTTriggerFilter() {
@@ -313,11 +313,14 @@ namespace ic {
           alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
           alt_trk_trig_obj_label = "triggerObjectsIsoTkMu22";
           alt_trk_leg1_filter =  "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
-          alt_er_trig_obj_label = "triggerObjectsIsoMu22Eta2p1";
-          alt_er_leg1_filter =  "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
-          alt_er_trk_trig_obj_label = "triggerObjectsIsoTkMu22Eta2p1";
-          alt_er_trk_leg1_filter = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
+          if (strategy_ == strategy::mssmsummer16){
+            alt_er_trig_obj_label = "triggerObjectsIsoMu22Eta2p1";
+            alt_er_leg1_filter =  "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
+            alt_er_trk_trig_obj_label = "triggerObjectsIsoTkMu22Eta2p1";
+            alt_er_trk_leg1_filter = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
+          }
           high_leg_pt = 23.;
+          
         }
 
       }
@@ -407,13 +410,15 @@ namespace ic {
           leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
         }
-        if(run >= 271036 /*&& run <= 281613*/){
+        if(run >= 271036 /*&& run <= xxxxx*/){
           trig_obj_label = "triggerObjectsDoubleMediumTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-          alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
-          alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-          alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
+          if(strategy_ == strategy::mssmsummer16){
+            alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
+            alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
+            alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
+          }
         }
       }
       if (channel_ == channel::mtmet) {
@@ -776,7 +781,7 @@ namespace ic {
          bool highpt_leg = dileptons[i]->At(0)->pt()>high_leg_pt;
          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first;
          
-         if(channel_==channel::mt && (mc_==mc::spring16_80X) ) {
+         if(channel_==channel::mt && mc_==mc::spring16_80X) {
             std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
             ic::erase_if_not(alt_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_trk_min_online_pt);
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);

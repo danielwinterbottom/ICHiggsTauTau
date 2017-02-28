@@ -514,32 +514,11 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "isolation cut" %  tau_iso;
   std::cout << boost::format(param_fmt) % "anti-electron" % tau_anti_elec_discr;
   std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
-/*  
-  
-  if(do_met_filters && is_data){
-  BuildModule(GenericModule("MetFiltersCheck")
-    .set_function([=](ic::TreeEvent *event){
-       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-       //std::vector<std::string> met_filters = {"Flag_eeBadScFilter","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices", "badChargedHadronFilter","badMuonFilter", "Flag_globalTightHalo2016Filter"};
-       std::vector<std::string> met_filters = {"Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_CSCTightHaloFilter","Flag_CSCTightHaloTrkMuUnvetoFilter","Flag_CSCTightHalo2015Filter","Flag_globalTightHalo2016Filter","Flag_globalSuperTightHalo2016Filter","Flag_HcalStripHaloFilter","Flag_hcalLaserEventFilter","Flag_EcalDeadCellTriggerPrimitiveFilter" ,"Flag_EcalDeadCellBoundaryEnergyFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_ecalLaserCorrFilter","Flag_trkPOGFilters","Flag_chargedHadronTrackResolutionFilter" ,"Flag_muonBadTrackFilter","Flag_trkPOG_manystripclus53X","Flag_trkPOG_toomanystripclus53X","Flag_trkPOG_logErrorTooManyClusters","Flag_METFilters","Flag_BadChargedCandidateFilter"
-,"Flag_BadPFMuonFilter"};
-       if(eventInfo->run() != 278820 || eventInfo->lumi_block() != 1296 || eventInfo->event() != 2384897986) return 1;
-       std::cout << eventInfo->run() << "  " <<  eventInfo->lumi_block() << "  " <<    eventInfo->event()<< std::endl;
-       for(unsigned i=0;i<met_filters.size();++i){
-           std::cout << met_filters[i] << "   " << eventInfo->filter_result(met_filters.at(i)) << std::endl;
-       }
-       return 0;
-    }));
-}
-
-*/
 
   auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
   std::vector<int> to_check =
   {
   };   
-  
-  std::cout << "event_check_file = " << js["event_check_file"].asString() << std::endl;
 
 	if(strcmp((js["event_check_file"].asString()).c_str(),"")!=0){
     std::ifstream file;
@@ -575,7 +554,10 @@ void HTTSequence::BuildSequence(){
   if (era_type == era::data_2015&&output_name.find("2015B")!=output_name.npos)  data_json= "input/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt";
   //if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt";  //json used for datacard sync v1
   if (era_type == era::data_2015&&output_name.find("2015D")!=output_name.npos)  data_json= "input/json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt";
-  if (era_type == era::data_2016)  data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
+  if (era_type == era::data_2016){
+    data_json= "input/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt";
+    if(strategy_type == strategy::mssmsummer16) data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
+  }
 
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -924,6 +906,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
                .set_channel(channel)
                .set_mc(mc_type)
                .set_era(era_type)
+               .set_strategy(strategy_type)
                .set_is_data(is_data)
                .set_is_embedded(is_embedded)
                .set_do_leptonplustau(js["do_leptonplustau"].asBool())
@@ -983,19 +966,6 @@ if(do_met_filters){
        return !pass_filters;
     }));
 }
-
-//if(do_met_filters && is_data){
-//  BuildModule(GenericModule("MetFiltersCheck")
-//    .set_function([=](ic::TreeEvent *event){
-//       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-//       std::vector<std::string> met_filters_tocheck = {"Flag_eeBadScFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices", "badChargedHadronFilter","badMuonFilter", "Flag_globalTightHalo2016Filter"};
-//       if (!(eventInfo->run()==278820 && eventInfo->lumi_block()==1296 && eventInfo->event() == 2384897986)) return 1;
-//       for(unsigned i=0;i<met_filters_tocheck.size();++i){
-//        if (eventInfo->run()==278820 && eventInfo->lumi_block()==1296 && eventInfo->event() == 2384897986) std::cout << met_filters_tocheck[i] << " = " << eventInfo->filter_result(met_filters_tocheck.at(i)) << std::endl;  
-//       }
-//       return 0;
-//    }));
-//}
 
 
 if(channel == channel::tpzmm || channel == channel::tpzee){
@@ -1491,7 +1461,6 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
    BuildModule(httStitching);
 
   }
-
  if((strategy_type ==strategy::mssmspring16||strategy_type == strategy::smspring16)&&channel!=channel::wmnu){
    TH2D et_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele25_Data_Eff");
    TH2D et_trig_data = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16temp.root","/","Ele25_Data_Eff");
@@ -1569,7 +1538,8 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_3.root");
+        if(strategy_type == strategy::mssmsummer16) httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_3.root");
+        else httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v5.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -2818,9 +2788,6 @@ void HTTSequence::BuildExtraElecVeto(){
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
                 ElectronHTTIdSpring15(e, true)           &&
-                //!e->has_matched_conversion()              &&
-                //e->gsf_tk_nhits() <= 1                    &&
-                //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
@@ -2833,9 +2800,6 @@ void HTTSequence::BuildExtraElecVeto(){
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
                 ElectronHTTIdSpring16(e, true)           &&
-                //!e->has_matched_conversion()              &&
-                //e->gsf_tk_nhits() <= 1                    &&
-                //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
