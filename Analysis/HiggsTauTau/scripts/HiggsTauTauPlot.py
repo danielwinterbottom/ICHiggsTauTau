@@ -205,12 +205,16 @@ if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
+elif options.channel == 'zmm':
+    cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
+elif options.channel == 'zee':
+    cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     
 if options.era == "mssmsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
-    if options.channel == "et": cats['baseline']+=" && trg_singleelectron"
-    if options.channel == "mt": cats['baseline']+=" && trg_singlemuon"
-    #if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
+    if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
+    if options.channel == "mt" or options.channel == 'zmm': cats['baseline']+=" && trg_singlemuon"
+    if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
 
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
@@ -253,6 +257,9 @@ elif options.channel == 'tt':
 elif options.channel == 'em':
     z_sels['ztt_sel'] = '(gen_match_1>2 && gen_match_2>3)'
     z_sels['zll_sel'] = '(gen_match_1<3 || gen_match_2<4)'
+elif options.channel == 'zee' or  options.channel == 'zmm':
+    z_sels['ztt_sel'] = '(0)'
+    z_sels['zll_sel'] = '(1)'
 
 top_sels = {}
 top_sels['ttt_sel'] = z_sels['ztt_sel']
@@ -290,11 +297,11 @@ wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-
 if options.era == "mssmsummer16":
     
     # Add data sample names
-    if options.channel == 'mt': 
+    if options.channel == 'mt' or options.channel == 'zmm': 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
     if options.channel == 'em': 
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
-    if options.channel == 'et': 
+    if options.channel == 'et' or options.channel == 'zee': 
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
     if options.channel == 'tt': 
         data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauHv2','TauHv3']
@@ -350,9 +357,9 @@ if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
     if options.channel == 'et':
-        qcd_os_ss_ratio = 1.02
+        qcd_os_ss_ratio = 1.0#1.02
     elif options.channel == 'mt':
-        qcd_os_ss_ratio = 1.18
+        qcd_os_ss_ratio = 1.17#1.18
     else:
         qcd_os_ss_ratio = 1.0
 if options.do_ss:
@@ -395,7 +402,7 @@ def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
         OSSS = 'os'
     else:
         OSSS = '!os'
-    if options.channel == 'em':
+    if options.channel == 'em' or options.channel == 'zmm' or options.channel == 'zee':
         full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zll_sel'])
         ana.nodes[nodename].AddNode(ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection))
     else:
@@ -580,10 +587,10 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
         
     else:
         OSSS = False
+        if get_os: OSSS = True
         if method == 8:
-            if get_os: 
+            if OSSS: 
                 qcd_sdb_sel =  '(os && ' + sel + ')'
-                OSSS = True
             qcd_sdb_cat = ttqcdcat+'*'+tt_qcd_norm 
             
         shape_cat = '('+cats[options.cat]+')*('+cats['tt_qcd_norm']+')'
@@ -774,6 +781,7 @@ def Plot(ana, nodename):
     sig_schemes['sm_default'] = ( str(int(options.signal_scale))+"#times SM H("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
     sig_schemes['run2_mssm'] = ( str(int(options.signal_scale))+"#times gg#phi("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     sig_schemes['run2_mssm_bbH'] = ( str(int(options.signal_scale))+"#times bb#phi("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
+    #sig_schemes['run2_mssm'] = ( str(int(options.signal_scale))+"#times gg#phi("+options.draw_signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     
     plotting.ModTDRStyle(r=0.04, l=0.14)
     
@@ -781,7 +789,10 @@ def Plot(ana, nodename):
     'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
     'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
-    'zm':[backgroundComp("Misidentified #mu", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],ROOT.TColor.GetColor(100,192,232))]}
+    'zm':[backgroundComp("Misidentified #mu", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],ROOT.TColor.GetColor(100,192,232))],
+    'zmm':[backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZLL"],ROOT.TColor.GetColor(100,192,232))],
+    'zee':[backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZLL"],ROOT.TColor.GetColor(100,192,232))]
+    }
     if options.method == 17:
         for chan in ["et", "mt", "tt"]:    
             background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)))
@@ -905,6 +916,15 @@ def Plot(ana, nodename):
         
     else:
         stack.Draw("histsame")
+        
+    ## Add another signal mass point
+    #sighist2 = ROOT.TH1F()
+    #sighist2 = ana.nodes[nodename].nodes["ggH200"].shape.hist.Clone()
+    #sighist2.SetLineColor(ROOT.kRed)
+    #sighist2.SetLineWidth(3)
+    #sighist2.Scale(options.signal_scale)
+    #if options.norm_bins: sighist2.Scale(1.0,"width")
+    #sighist2.Draw("histsame")
     
     bkghist.Draw("e2same")
     blind_datahist.Draw("E same")
@@ -923,12 +943,16 @@ def Plot(ana, nodename):
         legend.AddEntry(hists,background_schemes[options.channel][legi]['leg_text'],"f")
     legend.AddEntry(bkghist,"Background uncertainty","f")
     if options.draw_signal_mass != "":
-        legend.AddEntry(sighist,sig_schemes[options.signal_scheme][0],"l")    
+        legend.AddEntry(sighist,sig_schemes[options.signal_scheme][0],"l")
+    ## Add a second signl mass
+    #legend.AddEntry(sighist2,str(int(options.signal_scale))+"#times gg#phi(200 GeV)#rightarrow#tau#tau","l")  
     legend.Draw("same")
     if options.channel == "em": channel_label = "e#mu"
     if options.channel == "et": channel_label = "e#tau"
     if options.channel == "mt": channel_label = "#mu#tau"
     if options.channel == "tt": channel_label = "#tau#tau"
+    if options.channel == "zmm": channel_label = "z#mu#mu"
+    if options.channel == "zee": channel_label = "zee"
     latex2 = ROOT.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
@@ -980,7 +1004,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
         if options.channel == "tt": add_fake_factor_selection = "!(gen_match_1==6 || gen_match_2==6)"
         residual_cat=cat+"&&"+add_fake_factor_selection
         
-        if 'ZTT' not in samples_to_skip:
+        if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
@@ -992,7 +1016,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
             GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, wt, sel, residual_cat, 8, qcd_os_ss_ratio, not options.do_ss)
     
     else:
-        if 'ZTT' not in samples_to_skip:
+        if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
@@ -1037,9 +1061,9 @@ for systematic in systematics:
     ana.remaps = {}
     if options.channel == 'em':
         ana.remaps['MuonEG'] = 'data_obs'
-    elif options.channel == 'mt':
+    elif options.channel == 'mt' or options.channel == 'zmm':
         ana.remaps['SingleMuon'] = 'data_obs'
-    elif options.channel == 'et':
+    elif options.channel == 'et' or options.channel == 'zee':
         ana.remaps['SingleElectron'] = 'data_obs'
     elif options.channel == 'tt':
         ana.remaps['Tau'] = 'data_obs'
@@ -1112,7 +1136,7 @@ for systematic in systematics:
     nodes = ana.nodes[nodename].SubNodes()
     for node in nodes:
         hist = node.shape.hist
-        outfile.cd('analysis/'+nodename)
+        outfile.cd(nodename)
         #Fix negative bins
         write_hist=False
         for i in range(1,hist.GetNbinsX()+1):
@@ -1184,7 +1208,7 @@ for systematic in systematics:
     
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
     if systematic is 'default':
-        outfile.cd('analysis/'+nodename)
+        outfile.cd(nodename)
         nodes = ana.nodes[nodename].SubNodes()
         for i in ['TT', 'VV', 'Z']:
             sum_hist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
@@ -1196,7 +1220,11 @@ for systematic in systematics:
                 sum_hist.Add(ana.nodes[nodename].nodes['ZTT'].shape.hist.Clone())
                 sum_hist.SetName(outname)
                 sum_hist.Write()
-            else:      
+            elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
+                sum_hist.Add(ana.nodes[nodename].nodes['ZLL'].shape.hist.Clone())
+                sum_hist.SetName(outname)
+                sum_hist.Write()
+            else: 
                 if i is 'Z':
                     outname = 'ZLL'
                     j = 'L'
@@ -1216,7 +1244,7 @@ for systematic in systematics:
         outfile.cd()
         
     if systematic is 'syst_tquark_up' or systematic is 'syst_tquark_down':
-        outfile.cd('analysis/'+nodename)
+        outfile.cd(nodename)
         sum_hist = ana.nodes[nodename].nodes['TTT'+add_name].shape.hist.Clone()
         sum_hist.Add(ana.nodes[nodename].nodes['TTJ'+add_name].shape.hist.Clone())
         sum_hist.SetName('TT'+add_name)

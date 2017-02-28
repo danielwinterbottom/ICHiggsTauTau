@@ -582,7 +582,7 @@ class HttWOSSSNode(BaseNode):
 class Analysis(object):
     def __init__(self):
         self.trees = {}
-        self.nodes = ListNode('analysis')
+        self.nodes = ListNode('')
         self.info = {}
         self.remaps = {}
         self.compiled = False
