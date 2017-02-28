@@ -273,6 +273,7 @@ namespace ic {
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
+      outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
@@ -351,7 +352,8 @@ namespace ic {
       outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
-      outtree_->Branch("trg_singletau",    &trg_singletau_);
+      outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
+      outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -528,9 +530,9 @@ namespace ic {
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
         outtree_->Branch("phi_2",             &phi_2_.var_double);
-        if (channel_ != channel::em){
+        //if (channel_ != channel::em){
           outtree_->Branch("dphi",              &dphi_);
-        }
+        //}
         outtree_->Branch("E_1",               &E_1_);
         outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
@@ -542,9 +544,13 @@ namespace ic {
         outtree_->Branch("jpt_2",             &jpt_2_.var_double);
         outtree_->Branch("jeta_1",            &jeta_1_.var_double);
         outtree_->Branch("jeta_2",            &jeta_2_.var_double);
+        outtree_->Branch("jphi_1",            &jphi_1_, "jphi_1/F");
+        outtree_->Branch("jphi_2",            &jphi_2_, "jphi_1/F");
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
+        outtree_->Branch("met_dphi_1",             &met_dphi_1_);
+        outtree_->Branch("met_dphi_2",             &met_dphi_2_);
 /*        outtree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_double);
         outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
         outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
@@ -565,8 +571,6 @@ namespace ic {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
           outtree_->Branch("mt_ll",             &mt_ll_);
-          outtree_->Branch("met_dphi_1",             &met_dphi_1_);
-          outtree_->Branch("met_dphi_2",             &met_dphi_2_);
         }
         if(add_Hhh_variables_) {
           outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
@@ -999,7 +1003,8 @@ namespace ic {
       synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       synctree_->Branch("trg_doubletau",    &trg_doubletau_);
       synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
-      synctree_->Branch("trg_singletau",    &trg_singletau_);
+      synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
+      synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
 
     }
     return 0;
@@ -1223,13 +1228,16 @@ namespace ic {
     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     trg_doubletau_      = event->Get<bool>("trg_doubletau");
     trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
-    trg_singletau_      = event->Get<bool>("trg_singletau");
+    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
+    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    if (event->Exists("wt_tau_id_binned")) wt_tau_id_binned_  = event->Get<double>("wt_tau_id_binned");
+    else wt_tau_id_binned_ = 1.0;
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();

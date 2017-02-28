@@ -639,7 +639,10 @@ class HTTCategories : public ModuleBase {
   bool trg_singlemuon_;
   bool trg_muonelectron_;
   bool trg_doubletau_;
-  bool trg_singletau_;
+  bool trg_singletau_1_;
+  bool trg_singletau_2_;
+  
+  double wt_tau_id_binned_;
 
 
  public:
