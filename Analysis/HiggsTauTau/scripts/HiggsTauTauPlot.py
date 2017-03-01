@@ -258,7 +258,7 @@ elif options.channel == 'em':
     z_sels['ztt_sel'] = '(gen_match_1>2 && gen_match_2>3)'
     z_sels['zll_sel'] = '(gen_match_1<3 || gen_match_2<4)'
 elif options.channel == 'zee' or  options.channel == 'zmm':
-    z_sels['ztt_sel'] = '(0)'
+    z_sels['ztt_sel'] = '(1)'
     z_sels['zll_sel'] = '(1)'
 
 top_sels = {}
@@ -347,8 +347,8 @@ if options.syst_scale_j != '':
     systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', [])
     systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', [])
 if options.syst_eff_b != '':
-    systematics['syst_eff_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', [])
-    systematics['syst_scale_j_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', [])
+    systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', [])
+    systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', [])
 if options.syst_fake_b != '':
     systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'Up', 'wt', [])
     systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'Down', 'wt', [])
@@ -357,9 +357,11 @@ if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
     if options.channel == 'et':
-        qcd_os_ss_ratio = 1.0#1.02
+        qcd_os_ss_ratio = 1.02
     elif options.channel == 'mt':
-        qcd_os_ss_ratio = 1.17#1.18
+        qcd_os_ss_ratio = 1.18
+    elif options.channel == 'zmm' or options.channel == 'zee':
+        qcd_os_ss_ratio = 2.0    
     else:
         qcd_os_ss_ratio = 1.0
 if options.do_ss:
@@ -571,7 +573,7 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
         weight = wt
         if method == 15:
             qcd_os_ss_factor = 1
-            if get_os:
+            if get_os and options.channel == "em":
                 weight = wt+'*wt_em_qcd'
         
         full_selection = BuildCutString(weight, qcd_sdb_sel, qcd_cat, '')

@@ -397,14 +397,14 @@ if SCHEME == 'run2_mssm':
   ]
   scheme_mt = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, '--set_alias="sel:(1)" --qcd_os_ss_factor=1.17 '),
-    #("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
-    #("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
-    #("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
-    #("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 --do_ss=true '),
-    #("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
-    #("14",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
-    #("14",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
-    #("14",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
+    ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("14",   "btag",    "btag",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag_wjets_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 '),
+    ("14",   "btag",    "btag_wjets_ss_cr",  BINS, '--set_alias="sel:mt_1>70" --qcd_os_ss_factor=1.17 --do_ss=true '),
+    ("14",   "btag",    "btag_qcd_cr",  BINS, '--set_alias="sel:mt_1<30" --qcd_os_ss_factor=1.17 --do_ss=true '),
   ]
   scheme_tt = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),

@@ -49,7 +49,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "output/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Jan11/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
