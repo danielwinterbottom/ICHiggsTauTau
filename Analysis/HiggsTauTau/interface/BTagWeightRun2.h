@@ -23,6 +23,7 @@ class BTagWeightRun2 : public ModuleBase {
   private :
    CLASS_MEMBER(BTagWeightRun2, ic::channel, channel)
    CLASS_MEMBER(BTagWeightRun2, ic::era, era)
+   CLASS_MEMBER(BTagWeightRun2, ic::strategy, strategy)
    CLASS_MEMBER(BTagWeightRun2, std::string, jet_label)
    CLASS_MEMBER(BTagWeightRun2, TH2F*,bbtag_eff)
    CLASS_MEMBER(BTagWeightRun2, TH2F*,cbtag_eff)
