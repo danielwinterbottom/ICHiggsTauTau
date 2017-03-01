@@ -845,7 +845,6 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
   if (channel == channel::tpzee) BuildTPZEEPairs();
   if (channel == channel::tpzmm) BuildTPZMMPairs();
 
-
   // Pair DeltaR filtering
 if( channel !=channel::wmnu) {
 BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
@@ -855,6 +854,16 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
             > pair_dr;
       }));
 
+if(channel == channel::zmm){
+  // filters dimuon pairs if muons are in the same endcap with dPhi < 70 degrees
+  BuildModule(SimpleFilter<CompositeCandidate>("MuonPairDPhiFilter")
+    .set_input_label("ditau").set_min(1)
+    .set_predicate([=](CompositeCandidate const* c) {
+      Candidate *m1 = c->GetCandidate("lepton1");
+      Candidate *m2 = c->GetCandidate("lepton2");
+      return !(fabs(m1->eta()) > 0.9 && fabs(m2->eta()) > 0.9 && m1->eta()*m2->eta() > 0 && fabs(ROOT::Math::VectorUtil::DeltaPhi(m1->vector(),m2->vector())) < M_PI*7/18);
+    }));
+}
 
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
@@ -2358,7 +2367,7 @@ void HTTSequence::BuildZMMPairs() {
   BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       "sel_muons", "sel_lead_muons"));
   
-  BuildModule(SimpleFilter<Muon>("MuonFilter")
+  BuildModule(SimpleFilter<Muon>("LeadMuonFilter")
       .set_input_label("sel_lead_muons").set_min(1)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > muon_pt    &&

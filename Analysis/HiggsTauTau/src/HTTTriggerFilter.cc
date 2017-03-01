@@ -797,9 +797,9 @@ namespace ic {
 
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first); 
             
-            if (channel_==channel::zmm || channel_ == channel::tpzmm){
-                leg2_match = (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first);
-            }
+            //if (channel_==channel::zmm || channel_ == channel::tpzmm){
+            //    leg2_match = (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first);
+            //}   //commented out to only allow lead muon to fire trigger
          }
          
          bool highpt_leg2 = false;

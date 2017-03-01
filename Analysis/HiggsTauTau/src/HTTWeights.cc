@@ -226,7 +226,7 @@ namespace ic {
              w_->function("m_trgMu8leg_desy_data")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_trgMu23leg_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trgMu23leg_desy_data")->functor(w_->argSet("m_pt,m_eta")));
-          if(mc_ != mc::summer16_80X){
+          if(mc_ == mc::summer16_80X){
             fns_["m_trgMu8leg_desy_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgMu8leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
             fns_["m_trgMu23leg_desy_mc"] = std::shared_ptr<RooFunctor>(
@@ -238,7 +238,7 @@ namespace ic {
               w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
-          if (mc_ != mc::summer16_80X){
+          if (mc_ == mc::summer16_80X){
             fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("e_trg_binned_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           }
@@ -814,7 +814,7 @@ namespace ic {
                   } else ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
                   ele_trg_mc=1;
                   if(mc_ == mc::summer16_80X){
-                    ele_trg = fns_["e_trg_binned_data"]->eval(args_desy.data());  
+                    ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());  
                     ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
                   }
               } else {
@@ -1041,13 +1041,14 @@ namespace ic {
                     tau_trg_mc=1;
                     auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};
                     auto args_desy = std::vector<double>{pt,m_signed_eta};
-                    if(m_iso<0.15){
-                      mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
-                    } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
-                    mu_trg = 1;
                     if(mc_ == mc::summer16_80X){
                       mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
+                    } else{
+                      if(m_iso<0.15){
+                        mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
+                      } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
+                      mu_trg = 1;   
                     }
               
                 } else {
@@ -1590,7 +1591,7 @@ namespace ic {
              ele2_trg = 1;
              ele2_trg_mc=1;
              auto args_1 = std::vector<double>{e1_pt,e1_signed_eta,e_iso_1};
-             auto args_2 = std::vector<double>{e1_pt,e2_signed_eta,e_iso_2};
+             auto args_2 = std::vector<double>{e2_pt,e2_signed_eta,e_iso_2};
              ele1_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
              ele2_trg = fns_["e_trg_binned_data"]->eval(args_2.data());
              ele1_trg_mc=1;
@@ -1601,8 +1602,11 @@ namespace ic {
              }
           }
         }
-        ele1_trg = 1-((1-ele1_trg)*(1-ele2_trg));
-        ele1_trg_mc = 1-((1-ele1_trg_mc)*(1-ele2_trg_mc));
+        if(mc_ != mc::summer16_80X){
+          ele1_trg = 1-((1-ele1_trg)*(1-ele2_trg));
+          ele1_trg_mc = 1-((1-ele1_trg_mc)*(1-ele2_trg_mc));
+        } 
+        // for summer16 only allow first electron to fire trigger
         ele2_trg = 1.0;
         ele2_trg_mc = 1.0;
         if (trg_applied_in_mc_) {
@@ -1669,21 +1673,24 @@ namespace ic {
              auto args_1 = std::vector<double>{pt1,m1_signed_eta,m_iso_1};
              auto args_2 = std::vector<double>{pt2,m2_signed_eta,m_iso_2};
              
-             mu1_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
-             mu2_trg = fns_["m_trgOR_binned_data"]->eval(args_2.data());
-             mu1_trg_mc=1;
-             mu2_trg_mc=1;
-             
              if(mc_ == mc::summer16_80X){
                mu1_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                mu2_trg = fns_["m_trgOR4_binned_data"]->eval(args_2.data());
                mu1_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                mu2_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_2.data());
+             } else{
+               mu1_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
+               mu2_trg = fns_["m_trgOR_binned_data"]->eval(args_2.data());
+               mu1_trg_mc=1;
+               mu2_trg_mc=1;   
              }
            }
         }
-        mu1_trg = 1-((1-mu1_trg)*(1-mu2_trg));
-        mu1_trg_mc = 1-((1-mu1_trg_mc)*(1-mu2_trg_mc));
+        if(mc_ != mc::summer16_80X){
+          mu1_trg = 1-((1-mu1_trg)*(1-mu2_trg));
+          mu1_trg_mc = 1-((1-mu1_trg_mc)*(1-mu2_trg_mc));
+        }
+        // for summer16 only allow lead muon to fire trigger
         mu2_trg = 1.0;
         mu2_trg_mc = 1.0;
  
