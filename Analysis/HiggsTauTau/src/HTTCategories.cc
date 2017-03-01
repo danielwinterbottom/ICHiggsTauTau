@@ -1224,12 +1224,12 @@ namespace ic {
       }
     }
     
-    trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
-    trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
-    trg_doubletau_      = event->Get<bool>("trg_doubletau");
-    trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
-    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
-    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
+    if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
+    if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
+    if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
+    if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
+    if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
+    if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     
 
     // Get the objects we need from the event

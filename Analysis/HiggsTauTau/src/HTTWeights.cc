@@ -257,11 +257,12 @@ namespace ic {
              w_->function("e_trgEle12leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_trgEle23leg_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trgEle23leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
-          fns_["e_trgEle23leg_desy_mc"] = std::shared_ptr<RooFunctor>(
-             w_->function("e_trgEle23leg_desy_mc")->functor(w_->argSet("e_pt,e_eta")));
-          fns_["e_trgEle12leg_desy_mc"] = std::shared_ptr<RooFunctor>(
-             w_->function("e_trgEle12leg_desy_mc")->functor(w_->argSet("e_pt,e_eta")));
-          
+          if(mc_ == mc::summer16_80X){
+            fns_["e_trgEle23leg_desy_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_trgEle23leg_desy_mc")->functor(w_->argSet("e_pt,e_eta")));
+            fns_["e_trgEle12leg_desy_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_trgEle12leg_desy_mc")->functor(w_->argSet("e_pt,e_eta")));
+          }
           if(mc_ == mc::summer16_80X){
             fns_["t_fake_TightIso_tt_mc"] = std::shared_ptr<RooFunctor>(
                 w_->function("t_fake_TightIso_tt_mc")->functor(w_->argSet("t_pt,t_dm")));
@@ -1046,7 +1047,7 @@ namespace ic {
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                     } else{
                       if(m_iso<0.15){
-                        mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
+                        mu_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args_desy.data());
                       } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
                       mu_trg = 1;   
                     }
