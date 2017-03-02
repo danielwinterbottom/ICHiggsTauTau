@@ -23,7 +23,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -44,6 +44,8 @@ parser.add_argument("--paramfile", dest="paramfile", type=str,
     help="Name of parameter file")
 parser.add_argument("--cat", dest="cat", type=str,
     help="Category")
+parser.add_argument("--datacard", dest="datacard", type=str,
+    help="Datacard name")
 parser.add_argument("--year", dest="year", type=str,
     help="Year")
 parser.add_argument("--era", dest="era", type=str,
@@ -985,7 +987,8 @@ def Plot(ana, nodename):
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
     
-    plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
+    else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
     if(options.log_y): plot_name+="_logy"
     if(options.log_x): plot_name+="_logx"
     c1.SaveAs(plot_name+'.pdf')
@@ -1045,7 +1048,10 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
 # Create output file
 var_name = options.var.split('[')[0]
 var_name = var_name.split('(')[0]
-output_name = options.outputfolder+'/datacard_'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year+'.root'
+
+if options.datacard != "": datacard_name = options.datacard
+else: datacard_name = options.cat
+output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
 
 for systematic in systematics:
@@ -1112,7 +1118,8 @@ for systematic in systematics:
     cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
     sel = options.sel
     plot = options.var
-    nodename = options.channel+'_'+options.cat
+    if options.datacard != "": nodename = options.channel+'_'+options.datacard
+    else: nodename = options.channel+'_'+options.cat
     
     ana.nodes.AddNode(ListNode(nodename))
     
@@ -1170,8 +1177,9 @@ for systematic in systematics:
     if not options.no_plot and systematic == 'default':
         Plot(ana,nodename)
     
-    # When adding signal samples to th data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
+    # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if 'signal' not in samples_to_skip:
+        outfile.cd(nodename)
         if options.analysis == "sm" or options.add_sm_background:
             if options.analysis == "sm":
                 masses = sm_masses
@@ -1187,6 +1195,7 @@ for systematic in systematics:
                     sf = 1.0/xs
                     sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
                     sm_hist.Scale(sf)
+                    sm_hist.Write()
         if options.analysis == "mssm":
             for samp in mssm_samples:
                 if samp == 'ggH':
@@ -1198,6 +1207,7 @@ for systematic in systematics:
                     sf = 1.0/xs
                     mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                     mssm_hist.Scale(sf)
+                    mssm_hist.Write()
         if options.analysis == "Hhh":
             for samp in Hhh_samples:
                 masses = ggh_masses
@@ -1206,6 +1216,8 @@ for systematic in systematics:
                     sf = 1.0/xs
                     mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                     mssm_hist.Scale(sf)
+                    mssm_hist.Write()
+        outfile.cd()
     
     
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
