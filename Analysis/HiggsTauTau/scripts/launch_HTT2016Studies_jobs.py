@@ -1,7 +1,6 @@
 from UserCode.ICHiggsTauTau.jobs import Jobs
 import argparse
 import os
-import json
 
 job_mgr = Jobs()
 parser = argparse.ArgumentParser()
@@ -13,8 +12,8 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
 MAX_EVTS = -1
-FILES_PER_JOB = 20
-PROD='Aug16'
+FILES_PER_JOB = 40
+PROD='Aug16_'
 
 DATA_SAMPLES = {
   'Tau': [
@@ -44,68 +43,23 @@ DATA_SAMPLES = {
 }
 
 MC_SAMPLES = {
-    #'DYJetsToLL':               ['DYJetsToLL'],
-    #'DYJetsToLL-Old':               ['DYJetsToLL-Old'],
-    'DYJetsToLLSoup':           ['DYJetsToLL', 'DY1JetsToLL', 'DY2JetsToLL', 'DY3JetsToLL', 'DY4JetsToLL'],
-    #'DYJetsToLL-NLO':           ['DYJetsToLL-NLO'],
-    'DYJetsToLL_M-10to50':      ['DYJetsToLL_M-10to50'],
-    'EWKWMinus2Jets_WToLNu':    ['EWKWMinus2Jets_WToLNu'],
-    'EWKWPlus2Jets_WToLNu':     ['EWKWPlus2Jets_WToLNu'],
-    'EWKZ2Jets_ZToLL':          ['EWKZ2Jets_ZToLL'],
-    'TT':                       ['TT'],
-    'ST_t-channel_antitop':     ['ST_t-channel_antitop'],
-    'ST_t-channel_top':         ['ST_t-channel_top'],
-    'ST_tW_antitop':            ['ST_tW_antitop'],
-    'ST_tW_top':                ['ST_tW_top'],
-    'VVTo2L2Nu':                ['VVTo2L2Nu'],
-    'WWTo1L1Nu2Q':              ['WWTo1L1Nu2Q'],
-    'WZJToLLLNu':               ['WZJToLLLNu'],
-    'WZTo1L1Nu2Q':              ['WZTo1L1Nu2Q'],
-    'WZTo1L3Nu':                ['WZTo1L3Nu'],
-    'WZTo2L2Q':                 ['WZTo2L2Q'],
-    'ZZTo2L2Q':                 ['ZZTo2L2Q'],
-    'ZZTo4L':                   ['ZZTo4L'],
-    #'WJetsToLNu':               ['WJetsToLNu'],
-    'WJetsToLNuSoup':           ['WJetsToLNu', 'W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu']
+    'DYJetsToLL':           ['DYJetsToLL'],
+    'DYJetsToLL_M-10to50':  ['DYJetsToLL_M-10to50'],
+    'TT':                   ['TT'],
+    'VVTo2L2Nu':            ['VVTo2L2Nu'],
+    'WWTo1L1Nu2Q':          ['WWTo1L1Nu2Q'],
+    'WZJToLLLNu':           ['WZJToLLLNu'],
+    'WZTo1L1Nu2Q':          ['WZTo1L1Nu2Q'],
+    'WZTo1L3Nu':            ['WZTo1L3Nu'],
+    'WZTo2L2Q':             ['WZTo2L2Q'],
+    'ZZTo2L2Q':             ['ZZTo2L2Q'],
+    'ZZTo4L':               ['ZZTo4L'],
+    'WJetsToLNu':           ['WJetsToLNu']
 }
-
-with open('scripts/params_%s.json' % PROD) as jsonfile:
-    params = json.load(jsonfile)
-
-SAMPLE_CFG = {
-    'DYJetsToLL': {
-        'do_zpt_reweighting': True,
-        'recoil_sample': 'DYJetsToLL'
-    },
-    'TT': {
-        'do_top_reweighting': True
-    },
-    'DYJetsToLLSoup': {
-        'do_zpt_reweighting': True,
-        'do_dyjets_stitching': True,
-        'dyjets_stitching': {},
-        'recoil_sample': 'DYJetsToLL'
-    },
-    'WJetsToLNuSoup': {
-        'do_wjets_stitching': True,
-        'wjets_stitching': {},
-        'recoil_sample': 'WJetsToLNu'
-    },
-    'WJetsToLNu': {
-        'recoil_sample': 'WJetsToLNu'
-    }
-}
-for x in ['', '1', '2', '3', '4']:
-    SAMPLE_CFG['DYJetsToLLSoup']['dyjets_stitching']['evt_DY%sJetsToLL' % x] = params['DY%sJetsToLL' % x]['evt']
-    SAMPLE_CFG['DYJetsToLLSoup']['dyjets_stitching']['xs_DY%sJetsToLL' % x] = params['DY%sJetsToLL' % x]['lo_xs']
-    SAMPLE_CFG['WJetsToLNuSoup']['wjets_stitching']['evt_W%sJetsToLNu' % x] = params['W%sJetsToLNu' % x]['evt']
-    SAMPLE_CFG['WJetsToLNuSoup']['wjets_stitching']['xs_W%sJetsToLNu' % x] = params['W%sJetsToLNu' % x]['lo_xs']
 
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
-#SEQUENCES = ['Zmm', 'Zmm/scale_m_hi', 'Zmm/scale_m_lo']
-#SEQUENCES = ['SM_et', 'SM_mt', 'SM_em', 'SM_tt']
 SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
 #SEQUENCES = ['Zmm', 'ZmmTP', 'Zee', 'ZeeTP', 'ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo', 'EffectiveEvents']
 #SEQUENCES = ['HashMap']
@@ -113,31 +67,7 @@ SEQUENCES = ['ZmtTP', 'ZmtTP/scale_t_hi', 'ZmtTP/scale_t_lo']
 if 'HashMap' in SEQUENCES:
   FILES_PER_JOB = 1E6
 
-if SEQUENCES == ['EffectiveEvents']:
-  actual_samples = {}
-  for subsamples in MC_SAMPLES.values():
-    for subsample in subsamples:
-      actual_samples[subsample] = [subsample]
-  SAMPLES = actual_samples
-  FILES_PER_JOB = 100
-
-if SEQUENCES == ['DYDebug']:
-    SAMPLES = {
-        'DYJetsToLL':       ['DYJetsToLL'],
-        'DYJetsToLL-Old':   ['DYJetsToLL-Old'],
-        'DY1JetsToLL':      ['DY1JetsToLL'],
-        'DY2JetsToLL':      ['DY2JetsToLL'],
-        'DY3JetsToLL':      ['DY3JetsToLL'],
-        'DY4JetsToLL':      ['DY4JetsToLL']
-    }
-    for key in SAMPLES:
-        SAMPLE_CFG[key] = SAMPLE_CFG['DYJetsToLLSoup']
-
-
 WHITELIST = {
-    'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
-    'Zmm/scale_m_hi': list(MC_SAMPLES.keys()),
-    'Zmm/scale_m_lo': list(MC_SAMPLES.keys()),
     'Zmm': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmmTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'Zee': ['SingleElectron'] + list(MC_SAMPLES.keys()),
@@ -145,13 +75,8 @@ WHITELIST = {
     'ZmtTP': ['SingleMuon'] + list(MC_SAMPLES.keys()),
     'ZmtTP/scale_t_hi': list(MC_SAMPLES.keys()),
     'ZmtTP/scale_t_lo': list(MC_SAMPLES.keys()),
-    'SM_et': ['SingleElectron'] + list(MC_SAMPLES.keys()),
-    'SM_mt': ['SingleMuon'] + list(MC_SAMPLES.keys()),
-    'SM_em': ['MuonEG'] + list(MC_SAMPLES.keys()),
-    'SM_tt': ['Tau'] + list(MC_SAMPLES.keys()),
-    'EffectiveEvents': list(SAMPLES.keys()),
-    'HashMap': list(DATA_SAMPLES.keys()),
-    'DYDebug': list(SAMPLES.keys())
+    'EffectiveEvents': list(MC_SAMPLES.keys()),
+    'HashMap': list(DATA_SAMPLES.keys())
 }
 
 OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name
@@ -174,7 +99,7 @@ for sa in SAMPLES:
             doSample = True
     if not doSample:
         continue
-    filelists = ['filelists/%s_%s.dat' % (PROD, X) for X in SAMPLES[sa]]
+    filelists = ['filelists/%s%s.dat' % (PROD, X) for X in SAMPLES[sa]]
     cfg = {
         # General settings
         'output_dir': '%s' % (OUTPUT),
@@ -197,19 +122,13 @@ for sa in SAMPLES:
         # Trigger info settings
         'trigger_info_output': '%s/trigger_info_%s.json' % (OUTPUT, sa),
         # Scale factors workspace
-        'sf_wsp': 'input/scale_factors/htt_scalefactors_v6.root',
+        'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root',
         # ZmtTP decay mode selection
-        'ZmtTP_tauDM': 'decayModeFinding',
-        #'ZmtTP_tauDM': 'decayModeFindingNewDMs',
-        # Data/MC corrections - global flags
-        'do_zpt_reweighting': False,
-        'do_top_reweighting': False
+        'ZmtTP_tauDM': 'decayModeFinding'
+        #'ZmtTP_tauDM': 'decayModeFindingNewDMs'
     }
-    if sa in SAMPLE_CFG:
-        cfg.update(SAMPLE_CFG[sa])
-
     job_mgr.add_filelist_split_jobs(
-        prog=basedir + '/bin/HTT2016Studies',
+        prog=basedir+'/bin/HTT2016Studies',
         cfg=cfg,
         files_per_job=FILES_PER_JOB,
         output_cfgs=['output_name', 'lumi_out', 'trigger_info_output'])
