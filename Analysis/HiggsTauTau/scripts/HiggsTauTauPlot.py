@@ -1221,50 +1221,64 @@ for systematic in systematics:
     
     
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
-    if systematic is 'default':
-        outfile.cd(nodename)
-        nodes = ana.nodes[nodename].SubNodes()
-        for i in ['TT', 'VV', 'Z']:
-            sum_hist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
-            sum_hist.Reset()
-            j = 'T'
-            outname = i
-            if options.channel == 'em' and i is 'Z':
-                sum_hist.Add(ana.nodes[nodename].nodes['ZLL'].shape.hist.Clone())
-                sum_hist.Add(ana.nodes[nodename].nodes['ZTT'].shape.hist.Clone())
-                sum_hist.SetName(outname)
-                sum_hist.Write()
-            elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
-                sum_hist.Add(ana.nodes[nodename].nodes['ZLL'].shape.hist.Clone())
-                sum_hist.SetName(outname)
-                sum_hist.Write()
-            else: 
-                if i is 'Z':
-                    outname = 'ZLL'
-                    j = 'L'
-                if i+'J' or i+j in [node.name for node in nodes]:
-                    sum_hist.Add(ana.nodes[nodename].nodes[i+'J'].shape.hist.Clone())
-                    sum_hist.Add(ana.nodes[nodename].nodes[i+j].shape.hist.Clone())
-                sum_hist.SetName(outname)
-                sum_hist.Write()
-        
-        total_bkg = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
-        total_bkg.Reset()
-        for node in nodes:
-            if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
-                total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
-        total_bkg.SetName('total_bkg')
-        total_bkg.Write()
-        outfile.cd()
-        
-    if systematic is 'syst_tquark_up' or systematic is 'syst_tquark_down':
-        outfile.cd(nodename)
-        sum_hist = ana.nodes[nodename].nodes['TTT'+add_name].shape.hist.Clone()
-        sum_hist.Add(ana.nodes[nodename].nodes['TTJ'+add_name].shape.hist.Clone())
-        sum_hist.SetName('TT'+add_name)
-        sum_hist.Write()
-        outfile.cd()
+    #if systematic is 'default':
+    outfile.cd(nodename)
+    nodes = ana.nodes[nodename].SubNodes()
+    nodenames=[]
+    for node in nodes: nodenames.append(node.name)
+    for i in ['TT', 'VV', 'Z']:
+        j = 'T'
+        outname = i+add_name
+        first_hist=True
+        if options.channel == 'em' and i is 'Z':
+            if first_hist and 'ZLL'+add_name in nodenames: 
+                sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
+                first_hist=False
+            elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
+            if 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
+            sum_hist.SetName(outname)
+            sum_hist.Write()
+        elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
+            if first_hist and 'ZLL'+add_name in nodenames:
+                sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
+                first_hist=False
+            elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
+            sum_hist.SetName(outname)
+            sum_hist.Write()
+        else: 
+            if i is 'Z':
+                outname = 'ZLL'+add_name
+                j = 'L'
+            if i+'J' or i+j in [node.name for node in nodes]:
+                if first_hist and i+'J'+add_name in nodenames: 
+                    sum_hist = ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone()
+                    first_hist=False
+                elif i+'J'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone())
+                if i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
+            sum_hist.SetName(outname)
+            sum_hist.Write()
+
+    first_hist=True
+    for node in nodes:
+        if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
+            if first_hist:
+                total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
+                first_hist=False
+            else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
+    total_bkg.SetName('total_bkg'+add_name)
+    total_bkg.Write()
+    outfile.cd()
     
+    ####
+    
+    #if systematic is 'syst_tquark_up' or systematic is 'syst_tquark_down':
+    #    outfile.cd(nodename)
+    #    sum_hist = ana.nodes[nodename].nodes['TTT'+add_name].shape.hist.Clone()
+    #    sum_hist.Add(ana.nodes[nodename].nodes['TTJ'+add_name].shape.hist.Clone())
+    #    sum_hist.SetName('TT'+add_name)
+    #    sum_hist.Write()
+    #    outfile.cd()
+    #maybe not needed
                     
             
     
