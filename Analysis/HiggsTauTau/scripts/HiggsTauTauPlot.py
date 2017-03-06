@@ -9,6 +9,7 @@ import argparse
 import ConfigParser
 import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
+import copy
 
 CHANNELS= ['et', 'mt', 'em','tt']
 ANALYSIS= ['sm','mssm','Hhh']
@@ -23,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"wt_up","custom_uncerts_wt_down":"wt_down"  }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -129,12 +130,19 @@ parser.add_argument("--draw_signal_tanb", dest="draw_signal_tanb", type=float,
 parser.add_argument("--signal_scheme", dest="signal_scheme", type=str,
     help="Signal scale.")
 parser.add_argument("--lumi", dest="lumi", type=str,
-    help="Lumi..")
+    help="Lumi.")
 parser.add_argument("--no_plot", dest="no_plot", action='store_true',
     help="If option is set then no pdf or png plots will be created only the output root file will be produced.")
 parser.add_argument("--ratio_range", dest="ratio_range", type=str,
     help="y-axis range for ratio plot in format MIN,MAX")
-
+parser.add_argument("--do_custom_uncerts", dest="do_custom_uncerts", action='store_true',
+    help="Do custome uncertainty band. Up and down weights for this uncertainty band should be set using \"custom_uncerts_wt_up\" and \"custom_uncerts_wt_down\" options")
+parser.add_argument("--custom_uncerts_wt_up", dest="custom_uncerts_wt_up", type=str,
+    help="Up weight for custom uncertainty band")
+parser.add_argument("--custom_uncerts_wt_down", dest="custom_uncerts_wt_down", type=str,
+    help="Down weight for custom uncertainty band")
+parser.add_argument("--uncert_title", dest="uncert_title", type=str,
+    help="Custom uncertainty band legend label")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -775,7 +783,7 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
-def Plot(ana, nodename):
+def Plot(ana, nodename, outfile=None):
     
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
     ROOT.TH1.AddDirectory(False)
@@ -898,8 +906,9 @@ def Plot(ana, nodename):
     
     #Draw uncertainty band
     bkghist.SetFillColor(plotting.CreateTransparentColor(12,0.4))
-    bkghist.SetLineColor(0)
+    bkghist.SetLineColor(plotting.CreateTransparentColor(12,0.4))
     bkghist.SetMarkerSize(0)
+    bkghist.SetMarkerColor(plotting.CreateTransparentColor(12,0.4))
     
     sighist = ROOT.TH1F()
     if options.draw_signal_mass != "":
@@ -929,8 +938,22 @@ def Plot(ana, nodename):
     #sighist2.Scale(options.signal_scale)
     #if options.norm_bins: sighist2.Scale(1.0,"width")
     #sighist2.Draw("histsame")
-    
-    bkghist.Draw("e2same")
+    error_hist = bkghist.Clone()
+    if options.do_custom_uncerts:
+
+      #bkg_uncert_up = ana.nodes[nodename].nodes['total_bkg_custom_uncerts_up'].shape.hist.Clone()
+      bkg_uncert_up = outfile.Get(nodename+'/total_bkg_custom_uncerts_up')
+      bkg_uncert_down = outfile.Get(nodename+'/total_bkg_custom_uncerts_down')
+      #bkg_uncert_down = ana.nodes[nodename].nodes['total_bkg_custom_uncerts_down'].shape.hist.Clone()
+      for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
+          bin_up = bkg_uncert_up.GetBinContent(i)
+          bin_down = bkg_uncert_down.GetBinContent(i)
+          error = abs(bin_up - bin_down)/2
+          band_center = abs(max(bin_up,bin_down) - error)          
+          error_hist.SetBinContent(i,band_center)
+          error_hist.SetBinError(i,error)
+
+    error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
     
@@ -945,10 +968,11 @@ def Plot(ana, nodename):
     background_schemes[options.channel].reverse()
     for legi,hists in enumerate(bkg_histos):
         legend.AddEntry(hists,background_schemes[options.channel][legi]['leg_text'],"f")
-    legend.AddEntry(bkghist,"Background uncertainty","f")
+    if options.do_custom_uncerts and options.uncert_title != "": legend.AddEntry(error_hist,options.uncert_title,"f")
+    else: legend.AddEntry(error_hist,"Background uncertainty","f")
     if options.draw_signal_mass != "":
         legend.AddEntry(sighist,sig_schemes[options.signal_scheme][0],"l")
-    ## Add a second signl mass
+    ## Add a second signal mass
     #legend.AddEntry(sighist2,str(int(options.signal_scale))+"#times gg#phi(200 GeV)#rightarrow#tau#tau","l")  
     legend.Draw("same")
     if options.channel == "em": channel_label = "e#mu"
@@ -971,7 +995,8 @@ def Plot(ana, nodename):
     
     #Add ratio plot if required
     if options.ratio:
-        ratio_bkghist = plotting.MakeRatioHist(bkghist.Clone(),bkghist.Clone(),True,False)
+        if options.do_custom_uncerts: ratio_bkghist = plotting.MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
+        else: ratio_bkghist = plotting.MakeRatioHist(bkghist.Clone(),bkghist.Clone(),True,False)
         blind_ratio = plotting.MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
         pads[1].cd()
         pads[1].SetGrid(0,1)
@@ -994,12 +1019,102 @@ def Plot(ana, nodename):
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
     
-def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
+def FixBins(ana,outfile='output.root'):
+    #Fix negative bins, empty histograms and empty bins
+    nodes = ana.nodes[nodename].SubNodes()
+    for node in nodes:
+        hist = node.shape.hist
+        outfile.cd(nodename)
+        #Fix negative bins
+        write_hist=False
+        for i in range(1,hist.GetNbinsX()+1):
+            if hist.GetBinContent(i) < 0:
+                hist.SetBinContent(i,0.0000001)
+                write_hist=True
+        #Fix empty histogram
+        if hist.Integral() == 0.0:
+            hist.SetBinContent(hist.GetNbinsX()/2, 0.00001)
+            write_hist=True
+        #Fix empty bins
+        first_populated = 0
+        last_populated = 0
+        bins = hist.GetNbinsX()
+        for i in range(1,bins):
+            if hist.GetBinContent(i) > 0 and first_populated == 0: first_populated = i
+            if hist.GetBinContent(bins-(i-1)) > 0. and last_populated == 0: last_populated = bins-(i-1)
+        av_weight = (hist.Integral() / hist.GetEntries())
+        for i in range (first_populated+1,last_populated):
+            if hist.GetBinContent(i) == 0.0: 
+             hist.SetBinError(i, av_weight)
+             write_hist=True
+        if write_hist: hist.Write(node.name,ROOT.TObject.kOverwrite)
+        outfile.cd()
+    
+def GetTotals(ana,add_name="",outfile='outfile.root'):
+    # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
+    outfile.cd(nodename)
+    nodes = ana.nodes[nodename].SubNodes()
+    nodenames=[]
+    for node in nodes: nodenames.append(node.name)
+    for i in ['TT', 'VV', 'Z']:
+        j = 'T'
+        outname = i+add_name
+        first_hist=True
+        if options.channel == 'em' and i is 'Z':
+            if first_hist and 'ZLL'+add_name in nodenames: 
+                sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
+                first_hist=False
+            elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
+            if 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
+            sum_hist.SetName(outname)
+            sum_hist.Write()
+        elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
+            if first_hist and 'ZLL'+add_name in nodenames:
+                sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
+                first_hist=False
+            elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
+            sum_hist.SetName(outname)
+            sum_hist.Write()
+        else: 
+            if i is 'Z':
+                outname = 'ZLL'+add_name
+                j = 'L'
+            if i+'J' or i+j in [node.name for node in nodes]:
+                if first_hist and i+'J'+add_name in nodenames: 
+                    sum_hist = ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone()
+                    first_hist=False
+                elif i+'J'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone())
+                if i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
+            sum_hist.SetName(outname)
+            sum_hist.Write()
+
+    first_hist=True
+    for node in nodes:
+        if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
+            if first_hist:
+                total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
+                first_hist=False
+            else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
+    total_bkg.SetName('total_bkg'+add_name)
+    total_bkg.Write()
+    outfile.cd()
+    
+def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
     doVVJ = 'VVJ' not in samples_to_skip
     doVVT = 'VVT' not in samples_to_skip
     
+    # produce template for observed data
+    if do_data:
+        if options.do_ss:
+          OSSS = '!os'
+        else:
+            OSSS = 'os'
+        full_selection = BuildCutString('wt', sel, cat, OSSS)
+        ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot, full_selection))
+    
+    # produce templates for backgrounds
     if options.method == 17 and options.channel != "em":
         # method 17 uses the fake factor method!
         GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, options.cat,not options.do_ss)
@@ -1043,6 +1158,13 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', samples_to_skip=[]):
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
+            
+    ana.Run()
+    ana.nodes.Output(outfile)
+    # fix negative bns,empty histograms etc.
+    FixBins(ana,outfile)
+    # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
+    GetTotals(ana,add_name,outfile)
 
 
 # Create output file
@@ -1122,60 +1244,29 @@ for systematic in systematics:
     else: nodename = options.channel+'_'+options.cat
     
     ana.nodes.AddNode(ListNode(nodename))
+    if options.do_custom_uncerts:
+      ana_up   = Analysis()
+      ana_down = Analysis()
+      ana_up = copy.deepcopy(ana)
+      ana_down = copy.deepcopy(ana)
     
     # Add data only for default
-    if systematic == 'default':
-        if options.do_ss:
-            OSSS = '!os'
-        else:
-            OSSS = 'os'
-        full_selection = BuildCutString('wt', sel, cat, OSSS)
-        ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot, full_selection))
+    if systematic == 'default': do_data = True
+    else: do_data = False
             
     #Run default plot        
-    RunPlotting(ana, cat, sel, add_name, weight, samples_to_skip)
+    RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
     
-    ana.Run()
-    
-    print ana.nodes[nodename]
-    
-    ana.nodes.Output(outfile)
-    
-    #Fix negative bins, empty histograms and empty bins
-    nodes = ana.nodes[nodename].SubNodes()
-    for node in nodes:
-        hist = node.shape.hist
-        outfile.cd(nodename)
-        #Fix negative bins
-        write_hist=False
-        for i in range(1,hist.GetNbinsX()+1):
-            if hist.GetBinContent(i) < 0:
-                hist.SetBinContent(i,0.0000001)
-                write_hist=True
-        #Fix empty histogram
-        if hist.Integral() == 0.0:
-            hist.SetBinContent(hist.GetNbinsX()/2, 0.00001)
-            write_hist=True
-        #Fix empty bins
-        first_populated = 0
-        last_populated = 0
-        bins = hist.GetNbinsX()
-        for i in range(1,bins):
-            if hist.GetBinContent(i) > 0 and first_populated == 0: first_populated = i
-            if hist.GetBinContent(bins-(i-1)) > 0. and last_populated == 0: last_populated = bins-(i-1)
-        av_weight = (hist.Integral() / hist.GetEntries())
-        for i in range (first_populated+1,last_populated):
-            if hist.GetBinContent(i) == 0.0: 
-             hist.SetBinError(i, av_weight)
-             write_hist=True
-        if write_hist: hist.Write(node.name,ROOT.TObject.kOverwrite)
-        outfile.cd()
+    #"do_custom_uncerts":False, "uncert_title":"Systematic uncertainty"
+    if options.do_custom_uncerts:
+        RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile)
+        RunPlotting(ana_down, cat, sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile)
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
-    # Generate plots here for default only
+    # Generate pdf and png plots here for default only
     if not options.no_plot and systematic == 'default':
-        Plot(ana,nodename)
+        Plot(ana,nodename,outfile)
     
     # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if 'signal' not in samples_to_skip:
@@ -1219,66 +1310,6 @@ for systematic in systematics:
                     mssm_hist.Write()
         outfile.cd()
     
-    
-    # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
-    #if systematic is 'default':
-    outfile.cd(nodename)
-    nodes = ana.nodes[nodename].SubNodes()
-    nodenames=[]
-    for node in nodes: nodenames.append(node.name)
-    for i in ['TT', 'VV', 'Z']:
-        j = 'T'
-        outname = i+add_name
-        first_hist=True
-        if options.channel == 'em' and i is 'Z':
-            if first_hist and 'ZLL'+add_name in nodenames: 
-                sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
-                first_hist=False
-            elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
-            if 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
-        elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
-            if first_hist and 'ZLL'+add_name in nodenames:
-                sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
-                first_hist=False
-            elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
-        else: 
-            if i is 'Z':
-                outname = 'ZLL'+add_name
-                j = 'L'
-            if i+'J' or i+j in [node.name for node in nodes]:
-                if first_hist and i+'J'+add_name in nodenames: 
-                    sum_hist = ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone()
-                    first_hist=False
-                elif i+'J'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone())
-                if i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
-
-    first_hist=True
-    for node in nodes:
-        if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
-            if first_hist:
-                total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
-                first_hist=False
-            else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
-    total_bkg.SetName('total_bkg'+add_name)
-    total_bkg.Write()
-    outfile.cd()
-    
-    ####
-    
-    #if systematic is 'syst_tquark_up' or systematic is 'syst_tquark_down':
-    #    outfile.cd(nodename)
-    #    sum_hist = ana.nodes[nodename].nodes['TTT'+add_name].shape.hist.Clone()
-    #    sum_hist.Add(ana.nodes[nodename].nodes['TTJ'+add_name].shape.hist.Clone())
-    #    sum_hist.SetName('TT'+add_name)
-    #    sum_hist.Write()
-    #    outfile.cd()
-    #maybe not needed
                     
             
     
