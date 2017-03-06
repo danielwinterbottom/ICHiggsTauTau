@@ -210,6 +210,13 @@ namespace ic {
           }
         }
       }
+     if(channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt){
+        if(run >= 271036 /*&&run <= xxxxxx*/){
+          singletau_trg_obj_label = "triggerObjectsSingleTau140";
+          min_online_singletau_pt=150; // don't know what this would be at the moment so just keep as 0 for now
+          singletau_leg1_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
+        }
+      }    
     } else {
       //single tau trigger  
       if (channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt || channel_ == channel::zmm || channel_ == channel::zee){
@@ -321,7 +328,6 @@ namespace ic {
     }
 
     if (is_embedded_) return 0; // Don't do object matching for embedded events
-
     std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
     std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
 
