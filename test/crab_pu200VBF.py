@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     tasks=list()
   
-    tasks.append(('VBFPu200_ntuples-attempt3','/VBFHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_VBFPu200-fast-75f5730139b68db9556f2b4892a82e76/USER'))
+    tasks.append(('VBFPu200_ntuples-near-full-stats','/VBFHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_VBFPu200-near-full-stats-75f5730139b68db9556f2b4892a82e76/USER'))
 
     for task in tasks:
         print task[0]

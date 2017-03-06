@@ -33,6 +33,9 @@ int HTTFutureGenEvent::PreAnalysis() {
     outtree_->Branch("jet2_pt",&jet2_pt);
     outtree_->Branch("jet1_flav",&jet1_flav);
     outtree_->Branch("jet2_flav",&jet2_flav);
+    outtree_->Branch("vtxdz",&vtxdz);
+    outtree_->Branch("vtxdy",&vtxdy);
+    outtree_->Branch("vtxdx",&vtxdx);
   }
   return 0;
 }
@@ -43,6 +46,12 @@ int HTTFutureGenEvent::PostAnalysis() {
 
 
 int HTTFutureGenEvent::Execute(TreeEvent *event) {
+   std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
+   std::vector<ic::Vertex*> genvertices = event->GetPtrVec<ic::Vertex>("genVertices");
+   vtxdz =fabs(vertices.at(0)->vz()-genvertices.at(0)->vz());
+   vtxdy =fabs(vertices.at(0)->vy()-genvertices.at(0)->vy());
+   vtxdx =fabs(vertices.at(0)->vx()-genvertices.at(0)->vx());
+
   std::vector<GenParticle *>  const& particles = event->GetPtrVec<GenParticle>(genparticle_label_);
   std::vector<GenParticle *> sel_particles;
   for (unsigned i=0; i < particles.size(); ++i){

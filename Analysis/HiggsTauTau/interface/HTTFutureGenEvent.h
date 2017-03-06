@@ -80,6 +80,9 @@ class HTTFutureGenEvent : public ModuleBase {
  double jet2_eta=0;
  int jet1_flav=0;
  int jet2_flav=0;
+ double vtxdz=-1;
+ double vtxdy=-1;
+ double vtxdx=-1;
 
  public:
   explicit HTTFutureGenEvent(std::string const& name);
