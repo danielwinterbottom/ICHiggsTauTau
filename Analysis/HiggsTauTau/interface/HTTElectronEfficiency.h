@@ -42,9 +42,12 @@ class HTTElectronEfficiency : public ModuleBase {
   bool pass_cut_preselection;
   int wt_;
   
-
-
-
+  float id_2016_;
+  bool id_loose_2016_;
+  bool id_loose_2015_;
+  bool id_tight_2016_;
+  bool id_tight_2015_;
+  
   CLASS_MEMBER(HTTElectronEfficiency, fwlite::TFileService*, fs)
   CLASS_MEMBER(HTTElectronEfficiency, std::string, dirname)
 

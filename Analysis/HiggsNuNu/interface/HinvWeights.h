@@ -7,6 +7,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagWeight.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTFromLHEParticles.h"
 #include <string>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "TH3F.h"
@@ -83,6 +84,9 @@ class HinvWeights : public ModuleBase {
   std::vector<double> eTight_idisoSF_;
   std::vector<double> eVeto_idisoDataEff_;
   std::vector<double> eVeto_idisoMCEff_;
+  std::vector<double> e_gsfidSF_;
+  std::vector<double> e_gsfidDataEff_;
+  std::vector<double> e_gsfidMCEff_;
   std::vector<double> muTight_idSF_;
   std::vector<double> muTight_isoSF_;
   std::vector<double> muVeto_idDataEff_;
@@ -92,8 +96,20 @@ class HinvWeights : public ModuleBase {
   std::vector<double> muTight_idisoSF_;
   std::vector<double> muVeto_idisoDataEff_;
   std::vector<double> muVeto_idisoMCEff_;
+  std::vector<double> mu_tkSF_;
+  std::vector<double> mu_tkDataEff_;
 
-  double f0_,f1_,f2_,f3_,f4_,n_inc_,n1_,n2_,n3_,n4_,w0_,w1_,w2_,w3_,w4_;
+  std::vector<double> gsf_etabin_;
+  std::vector<double> gsf_ptbin_;
+  std::vector<double> e_etabin_;
+  std::vector<double> e_ptbin_;
+
+  std::vector<double> tk_etabin_;
+  std::vector<double> tk_ptbin_;
+  std::vector<double> mu_etabin_;
+  std::vector<double> mu_ptbin_;
+
+  double f0_,f1_,f2_,f3_,f4_,f5_,f6_,f7_,n_inc_,n1_,n2_,n3_,n4_,n5_,n6_,n7_,w0_,w1_,w2_,w3_,w4_,w5_,w6_,w7_;
   double zf0_,zf1_,zf2_,zf3_,zf4_,zn_inc_,zn1_,zn2_,zn3_,zn4_,zw0_,zw1_,zw2_,zw3_,zw4_;
 
   unsigned eventsWithGenElectron_;
@@ -116,15 +132,23 @@ class HinvWeights : public ModuleBase {
   virtual void PrintInfo();
   double Efficiency(double m, double m0, double sigma, double alpha, double n, double norm);
   void SetWTargetFractions(double f0, double f1, double f2, double f3, double f4);
+  void SetWTargetFractions(double f0, double f1, double f2, double f3, double f4, double f5, double f6, double f7);
   void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4);
+  void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4, double n5, double n6, double n7);
   void SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4);
   void SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4);
 
   unsigned getPartonNumber(std::vector<GenParticle*> const& parts);
 
-  unsigned findElectronPtEtaBin(double pt, double eta);
-  unsigned findMuonPtEtaBin(double pt, double eta);
-  void fillVector(const std::string & aFileName, std::vector<double> & aVector);
+  unsigned findPtEtaBin(const double & pt, const double & eta, const std::vector<double> & ptbin, const std::vector<double> & etabin);
+
+  void fillVector(const std::string & aFileName, 
+		  const unsigned nPtBins,
+		  const unsigned nEtaBins,
+		  std::vector<double> & aVector,
+		  std::vector<double> & ptbin,
+		  std::vector<double> & etabin);
+
   void fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
 
   double nloReweighting(const double & aMjj, const double & aYstar);

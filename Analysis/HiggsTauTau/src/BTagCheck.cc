@@ -7,7 +7,7 @@
 namespace ic {
 
   BTagCheck::BTagCheck(std::string const& name) : ModuleBase(name),channel_(channel::et), 
-    era_(era::data_2016) {
+    era_(era::data_2016), strategy_(strategy::mssmsummer16) {
     fs_ = NULL;
     jet_label_ = "pfJetsPFlow";
     do_legacy_ = true;
@@ -105,7 +105,10 @@ namespace ic {
         iso_1 = PF03IsolationVal(elec, 0.5, 0);
         if(era_ != era::data_2016){
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
-        } else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+        } else{
+          if(strategy_ == strategy::mssmsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+        }
         antiele_pass = tau->GetTauID("againstElectronTightMVA6");
         antimu_pass = tau->GetTauID("againstMuonLoose3");
         if(iso_1<0.1&&iso_2>0.5&&antiele_pass>0.5&&antimu_pass>0.5&&os>0) pass_presel=true;
@@ -121,7 +124,8 @@ namespace ic {
           iso_2 = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         } else {
           iso_1 = PF04IsolationVal(muon, 0.5, 0);
-          iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
+          if(strategy_ == strategy::mssmsummer16) iso_2 = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          else iso_2 = tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
         }
         antiele_pass =  tau->GetTauID("againstElectronVLooseMVA6");
         antimu_pass = tau->GetTauID("againstMuonTight3");
@@ -190,13 +194,15 @@ namespace ic {
         current_jet.push_back(embed_jets[i]);
         std::vector<std::pair<PFJet*, GenJet*> > gen_jet_match = MatchByDR(current_jet,gen_jets,0.5,true,true);
         if(gen_jet_match.size()>0) gen_match = true; else gen_match = false;
+        double tight_wp = 0.8;
+        if(strategy_ == strategy::mssmsummer16) tight_wp = 0.8484;
         if(jet_flavour == 5){
           if(era_!=era::data_2016){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           } else sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
           hists_->Fill("NTot_bflav",pt,fabs(eta),wt);
           if(gen_match) hists_->Fill("NTot_bflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8){
+          if(csv>tight_wp){
             hists_->Fill("NBtag_bflav",pt,fabs(eta),wt);
             if(gen_match) hists_->Fill("NBtag_bflav_genmatch",pt,fabs(eta),wt);
           }
@@ -206,7 +212,7 @@ namespace ic {
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           } else  sf = reader_comb->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
           if(gen_match) hists_->Fill("NTot_cflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8){
+          if(csv>tight_wp){
             hists_->Fill("NBtag_cflav",pt,eta,wt);
             if(gen_match) hists_->Fill("NBtag_cflav_genmatch",pt,fabs(eta),wt);
           }
@@ -214,7 +220,7 @@ namespace ic {
           sf = reader_incl->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, eta, pt);
           hists_->Fill("NTot_otherflav",pt,eta,wt);
           if(gen_match) hists_->Fill("NTot_otherflav_genmatch",pt,fabs(eta),wt);
-          if(csv>0.8){
+          if(csv>tight_wp){
             hists_->Fill("NBtag_otherflav",pt,eta,wt);
             if(gen_match) hists_->Fill("NBtag_otherflav_genmatch",pt,fabs(eta),wt);
           }

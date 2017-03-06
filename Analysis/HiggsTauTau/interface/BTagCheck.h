@@ -19,6 +19,7 @@ class BTagCheck : public ModuleBase {
   CLASS_MEMBER(BTagCheck, bool, do_legacy)
   CLASS_MEMBER(BTagCheck,ic::channel, channel)
   CLASS_MEMBER(BTagCheck,ic::era, era)
+  CLASS_MEMBER(BTagCheck, ic::strategy, strategy)
   CLASS_MEMBER(BTagCheck,std::string, dilepton_label)
   Dynamic2DHistoSet * hists_;
   DynamicHistoSet * hists1d_;

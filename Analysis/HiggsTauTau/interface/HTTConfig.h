@@ -46,7 +46,8 @@ struct strategy_def {
 	enum type {
     fall15,    //Strategy for running on fall15 samples
     mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
-    smspring16    //Strategy for running on spring16 samples, SM analysis
+    smspring16,    //Strategy for running on spring16 samples, SM analysis
+    mssmsummer16
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -55,7 +56,8 @@ inline std::string Strategy2String(strategy const& in) {
 	static std::map<strategy, std::string> conv = boost::assign::map_list_of
     (strategy::fall15, "fall15")
     (strategy::mssmspring16, "mssmspring16")
-    (strategy::smspring16, "smspring16");
+    (strategy::smspring16, "smspring16")
+    (strategy::mssmsummer16, "mssmsummer16");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -68,7 +70,8 @@ inline strategy String2Strategy(std::string const& in) {
 	static std::map<std::string, strategy> conv = boost::assign::map_list_of
   ("fall15", strategy::fall15)
   ("mssmspring16", strategy::mssmspring16)
-  ("smspring16", strategy::smspring16);
+  ("smspring16", strategy::smspring16)
+  ("mssmsummer16", strategy::mssmsummer16);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -112,7 +115,8 @@ inline era String2Era(std::string const& in) {
 struct mc_def {
 	enum type {
     fall15_76X,      //76X MC 
-    spring16_80X      //76X MC 
+    spring16_80X,     //76X MC
+    summer16_80X
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -120,7 +124,8 @@ typedef safe_enum <mc_def> mc;
 inline std::string MC2String(mc const& in) {
 	static std::map<mc, std::string> conv = boost::assign::map_list_of
     (mc::fall15_76X, "fall15_76X")
-    (mc::spring16_80X, "spring16_80X");
+    (mc::spring16_80X, "spring16_80X")
+    (mc::summer16_80X, "summer16_80X");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -132,7 +137,8 @@ inline std::string MC2String(mc const& in) {
 inline mc String2MC(std::string const& in) {
 	static std::map<std::string, mc> conv = boost::assign::map_list_of
   ("fall15_76X", mc::fall15_76X)
-  ("spring16_80X", mc::spring16_80X);
+  ("spring16_80X", mc::spring16_80X)
+  ("summer16_80X", mc::summer16_80X);
 
 
 	if (conv.find(in) != conv.end()) {

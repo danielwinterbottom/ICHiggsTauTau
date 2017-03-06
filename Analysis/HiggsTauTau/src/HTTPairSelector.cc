@@ -223,7 +223,11 @@ namespace ic {
         exit(0);
       }
     }
-    
+   
+    std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
+    Met *pfmet = pfMet_vec.at(0); 
+    event->Add("pfMET", pfmet);
+   
    // ************************************************************************
    // Scale met for the tau energy scale shift
    // ************************************************************************
@@ -320,14 +324,6 @@ namespace ic {
       ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
     }
-
-    // ************************************************************************
-    // Select l->tau or jet->tau fakes
-    // ************************************************************************
-    // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
-    // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
-    // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-
 
      
     // ************************************************************************

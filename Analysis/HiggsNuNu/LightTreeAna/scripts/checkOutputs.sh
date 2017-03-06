@@ -26,7 +26,7 @@ done ;
 if (( "$INJOBDIR" == "0" )); then
     JOBDIR=jobs
 fi
-for JOBDIR in jobs_presel/; do
+for JOBDIR in $JOBDIR; do
 echo "Processing directory: "$JOBDIR
 
 RESULT=0

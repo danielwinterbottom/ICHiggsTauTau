@@ -203,10 +203,10 @@ namespace ic {
       }
     }
 
-    std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
-    for (auto met_pair : met_map) {
-      std::cout << "MVA MET: " << met_pair.second->pt() << std::endl;
-    }
+    //std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+    //for (auto met_pair : met_map) {
+    //  std::cout << "MVA MET: " << met_pair.second->pt() << std::endl;
+    //}
 
     std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>(jet_label_);
     std::vector<PFJet*> matched_jets;

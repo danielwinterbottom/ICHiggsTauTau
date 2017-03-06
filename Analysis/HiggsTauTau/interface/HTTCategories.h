@@ -121,14 +121,18 @@ class HTTCategories : public ModuleBase {
   float eta_h_;
   float phi_h_;
   branch_var pt_tt_;
+  branch_var pfpt_tt_;
   branch_var mt_1_;
   branch_var mt_lep_;
   branch_var mt_tot_;
+  branch_var pfmt_tot_;
   branch_var pfmt_1_;
   branch_var puppimt_1_;
   float id_e_mva_nt_loose_1_ = 0;
   branch_var mt_2_;
+  branch_var pfmt_2_;
   double mt_ll_;
+  double pfmt_ll_;
   branch_var pzeta_;
   branch_var pfpzeta_;
   branch_var puppipzeta_;
@@ -190,20 +194,20 @@ class HTTCategories : public ModuleBase {
   branch_var m_2_;
   branch_var mva_1_;
   branch_var mva_2_;
-  branch_var mvamet_;
-  branch_var mvamet_phi_;
   branch_var pfmet_;
+  branch_var met_;
   float pfmet_phi_;
+  branch_var met_phi_;
   branch_var puppimet_;
   float puppimet_phi_; 
-  float mvametCov00_;
-  float mvametCov01_;
-  float mvametCov10_;
-  float mvametCov11_;
   float pfmetCov00_;
   float pfmetCov01_;
   float pfmetCov10_;
   float pfmetCov11_;
+  float metCov00_;
+  float metCov01_;
+  float metCov10_;
+  float metCov11_;
   float gen_px_;
   float gen_py_;
   float vis_px_;
@@ -630,6 +634,15 @@ class HTTCategories : public ModuleBase {
   bool ttHLTPath1_leg2_;
   bool ttHLTPath2_leg2_;
   bool ttHLTPath3_leg2_;
+  
+  bool trg_singleelectron_;
+  bool trg_singlemuon_;
+  bool trg_muonelectron_;
+  bool trg_doubletau_;
+  bool trg_singletau_1_;
+  bool trg_singletau_2_;
+  
+  double wt_tau_id_binned_;
 
 
  public:

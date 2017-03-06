@@ -273,6 +273,7 @@ namespace ic {
       outtree_->Branch("event",             &event_);
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
+      outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
@@ -283,12 +284,15 @@ namespace ic {
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
+      outtree_->Branch("pfpt_tt",          &pfpt_tt_.var_double);
       outtree_->Branch("mt_tot",            &mt_tot_.var_double);
+      outtree_->Branch("pfmt_tot",          &pfmt_tot_.var_double);
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
       outtree_->Branch("m_2",               &m_2_.var_double);
       outtree_->Branch("pfmt_1",            &pfmt_1_.var_double);
+      outtree_->Branch("pfmt_2",            &pfmt_2_.var_double);
       outtree_->Branch("puppimt_1",         &puppimt_1_.var_double);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
       outtree_->Branch("pfpzeta",           &pfpzeta_.var_double);
@@ -307,7 +311,7 @@ namespace ic {
       outtree_->Branch("extramuon_veto",    &extramuon_veto_);
       outtree_->Branch("minimal_extraelec_veto",    &minimal_extraelec_veto_);
       outtree_->Branch("minimal_extramuon_veto",    &minimal_extramuon_veto_);
-      outtree_->Branch("met",               &mvamet_.var_double);
+      outtree_->Branch("met",               &met_.var_double);
       outtree_->Branch("pfmet",             &pfmet_.var_double);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
@@ -344,6 +348,12 @@ namespace ic {
       outtree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
+      outtree_->Branch("trg_singleelectron",    &trg_singleelectron_);
+      outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
+      outtree_->Branch("trg_doubletau",    &trg_doubletau_);
+      outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
+      outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -520,13 +530,13 @@ namespace ic {
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
         outtree_->Branch("phi_2",             &phi_2_.var_double);
-        if (channel_ != channel::em){
+        //if (channel_ != channel::em){
           outtree_->Branch("dphi",              &dphi_);
-        }
+        //}
         outtree_->Branch("E_1",               &E_1_);
         outtree_->Branch("E_2",               &E_2_);
         outtree_->Branch("z_2",               &z_2_);
-        outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
+        outtree_->Branch("met_phi",           &met_phi_.var_double);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
         outtree_->Branch("jpt_1",             &jpt_1_.var_double);
         outtree_->Branch("nearjpt_1",             &nearjpt_1_);
@@ -534,9 +544,13 @@ namespace ic {
         outtree_->Branch("jpt_2",             &jpt_2_.var_double);
         outtree_->Branch("jeta_1",            &jeta_1_.var_double);
         outtree_->Branch("jeta_2",            &jeta_2_.var_double);
+        outtree_->Branch("jphi_1",            &jphi_1_, "jphi_1/F");
+        outtree_->Branch("jphi_2",            &jphi_2_, "jphi_1/F");
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
+        outtree_->Branch("met_dphi_1",             &met_dphi_1_);
+        outtree_->Branch("met_dphi_2",             &met_dphi_2_);
 /*        outtree_->Branch("trigger_object_pt_1",&trigger_object_pt_1.var_double);
         outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
         outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
@@ -557,8 +571,6 @@ namespace ic {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
           outtree_->Branch("mt_ll",             &mt_ll_);
-          outtree_->Branch("met_dphi_1",             &met_dphi_1_);
-          outtree_->Branch("met_dphi_2",             &met_dphi_2_);
         }
         if(add_Hhh_variables_) {
           outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
@@ -763,7 +775,7 @@ namespace ic {
       // Variables defined when lepton 2 is a tau
       // raw value of the 3hits delta-beta isolation
       
-      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16) {
+      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16||strategy_==strategy::mssmsummer16) {
           synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_1", &l3Hits_1,
                          "byCombinedIsolationDeltaBetaCorrRaw3Hits_1/F");
           synctree_->Branch("byIsolationMVA3newDMwoLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
@@ -802,14 +814,14 @@ namespace ic {
 
       }
       // Uncorrected PF MET (not used in analysis)
-      synctree_->Branch("met", &pfmet_.var_float, "pfmet/F");
+      synctree_->Branch("met", &met_.var_float, "met/F");
       // Uncorrected PF MET phi (not used in analysis)
-      synctree_->Branch("metphi", &pfmet_phi_, "pfmet_phi/F");
+      synctree_->Branch("metphi", &met_phi_.var_float, "met_phi/F");
       // Elements of the PF MET covariance matrix (not used in analysis)
-      synctree_->Branch("metcov00", &pfmetCov00_, "pfmetCov00/F");
-      synctree_->Branch("metcov01", &pfmetCov01_, "pfmetCov01/F");
-      synctree_->Branch("metcov10", &pfmetCov10_, "pfmetCov10/F");
-      synctree_->Branch("metcov11", &pfmetCov11_, "pfmetCov11/F");
+      synctree_->Branch("metcov00", &metCov00_, "metCov00/F");
+      synctree_->Branch("metcov01", &metCov01_, "metCov01/F");
+      synctree_->Branch("metcov10", &metCov10_, "metCov10/F");
+      synctree_->Branch("metcov11", &metCov11_, "metCov11/F");
       //Puppi Met
       synctree_->Branch("puppimet",&puppimet_.var_float, "puppimet/F");
       synctree_->Branch("puppimetphi", &puppimet_phi_,"puppimet_phi/F");
@@ -818,15 +830,6 @@ namespace ic {
       synctree_->Branch("genpY", &gen_py_, "genpY/F");
       synctree_->Branch("vispX", &vis_px_, "vispX/F");
       synctree_->Branch("vispY", &vis_py_, "vispY/F");
-      // MVA MET
-      synctree_->Branch("mvamet", &mvamet_.var_float, "mvamet/F");
-      // MVA MET phi
-      synctree_->Branch("mvametphi", &mvamet_phi_.var_float, "mvamet_phi/F");
-      // Elements of the MVA MET covariance matrix
-      synctree_->Branch("mvacov00", &mvametCov00_, "mvametCov00/F");
-      synctree_->Branch("mvacov01", &mvametCov01_, "mvametCov01/F");
-      synctree_->Branch("mvacov10", &mvametCov10_, "mvametCov10/F");
-      synctree_->Branch("mvacov11", &mvametCov11_, "mvametCov11/F");
 
       // pt of the di-tau + MET system
       synctree_->Branch("pt_tt", &pt_tt_.var_float, "pt_tt/F");
@@ -938,6 +941,13 @@ namespace ic {
       synctree_->Branch("bcsv_2", &bcsv_2_, "bcsv_2/F");
 
       synctree_->Branch("brawf_2", &brawf_2_, "brawf_2/F");
+      
+      synctree_->Branch("trg_singleelectron",    &trg_singleelectron_);
+      synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
+      synctree_->Branch("trg_doubletau",    &trg_doubletau_);
+      synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
+      synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
 
     }
     return 0;
@@ -1156,18 +1166,28 @@ namespace ic {
         ttHLTPath3_leg2_  = event->Get<bool>("HLT_DoubleMediumIsoPFTau40_Trk1_eta2p1_Reg_v_leg2_match");
       }
     }
+    
+    if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
+    if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
+    if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
+    if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
+    if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
+    if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
+    
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    if (event->Exists("wt_tau_id_binned")) wt_tau_id_binned_  = event->Get<double>("wt_tau_id_binned");
+    else wt_tau_id_binned_ = 1.0;
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || ((strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16) && !is_data_) ) {
+    if (event->Exists("pileupInfo") || ((strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 ||strategy_==strategy::mssmsummer16) && !is_data_) ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -1274,9 +1294,11 @@ namespace ic {
     std::string btag_label="combinedSecondaryVertexBJetTags";
     double btag_wp =  0.679;
     double loose_btag_wp = 0.244;
-    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_==strategy::mssmsummer16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16) btag_wp = 0.8;
+    if(strategy_ == strategy::mssmsummer16) btag_wp = 0.8484;
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16) loose_btag_wp = 0.46;
+    if(strategy_ == strategy::mssmsummer16) loose_btag_wp = 0.5426;
 
    //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -1375,7 +1397,6 @@ namespace ic {
     }
     lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
 
-
     n_vtx_ = eventInfo->good_vertices();
     /*trigger_object_pt_1 = 0;
     trigger_object_pt_2 = 0;
@@ -1413,16 +1434,20 @@ namespace ic {
 
     Met const* pfmet = NULL;
     Met const* puppimet = NULL;
-    //slightly different met format for new ntuples
-      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
+    if(strategy_ == strategy::fall15) {
+      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
       pfmet = pfMet_vec.at(0);  
+    }
       if(event->ExistsInTree("puppiMet")){
         std::vector<Met*> puppiMet_vec = event->GetPtrVec<Met>("puppiMet");
         puppimet = puppiMet_vec.at(0);
       }
+    if(strategy_ == strategy::smspring16 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::mssmsummer16) pfmet = event->GetPtr<Met>("pfMET");
 
-
+    pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
+    //mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
     pt_tt_ = (ditau->vector() + mets->vector()).pt();
+
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
     m_vis_ = ditau->M();
    
@@ -1442,19 +1467,23 @@ namespace ic {
     }
 
     mt_lep_ = MT(lep1,lep2);
-    mt_1_ = MT(lep1, mets);
-    mt_2_ = MT(lep2, mets);
     mt_ll_ = MT(ditau, mets);
-    mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
     pzeta_ = PZeta(ditau, mets, 0.85);
-    pzetavis_ = PZetaVis(ditau);
     pzetamiss_ = PZeta(ditau, mets, 0.0);
+    pfpzeta_ = PZeta(ditau, pfmet, 0.85);
+    pfpzetamiss_ = PZeta(ditau, pfmet, 0.0);
+    pzetavis_ = PZetaVis(ditau);
+
     met_dphi_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep1->vector()));
     met_dphi_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(mets->vector(),lep2->vector()));
     //save some pfmet and puppi met versions as well for now
     pfmt_1_ = MT(lep1, pfmet);
-    pfpzeta_ = PZeta(ditau, pfmet, 0.85);
-    pfpzetamiss_ = PZeta(ditau, pfmet, 0.0);
+    pfmt_2_ = MT(lep2, pfmet);
+    pfmt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(pfmt_2_.var_double,2)+pow(pfmt_1_.var_double,2));
+    mt_1_ = MT(lep1, mets);
+    mt_2_ = MT(lep2, mets);
+    mt_tot_ = sqrt(pow(mt_lep_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_1_.var_double,2));
+
     if(puppimet != NULL){
       puppimt_1_ = MT(lep1, puppimet);
       puppipzeta_ = PZeta(ditau, puppimet, 0.85);
@@ -1485,13 +1514,13 @@ namespace ic {
       event->Exists("vispX") ? vis_px_ = event->Get<double>("vispX") : 0.;
       event->Exists("vispY") ? vis_py_ = event->Get<double>("vispY") : 0.;
     }
-    mvamet_ = mets->pt();
-    mvamet_phi_ = mets->phi();
+    met_ = mets->vector().pt();
+    met_phi_ = mets->vector().phi();
 
-    mvametCov00_ = mets->xx_sig();
-    mvametCov10_ = mets->yx_sig();
-    mvametCov01_ = mets->xy_sig();
-    mvametCov11_ = mets->yy_sig();
+    metCov00_ = mets->xx_sig();
+    metCov10_ = mets->yx_sig();
+    metCov01_ = mets->xy_sig();
+    metCov11_ = mets->yy_sig();
     
     pfmet_ = pfmet->pt();
     pfmet_phi_ = pfmet->phi();
@@ -1591,7 +1620,7 @@ namespace ic {
         antiele_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonLoose3_2;
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16) {
+      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         lPhotonPtSum_1 = 0.;
@@ -1728,7 +1757,7 @@ namespace ic {
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
        } 
-       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16){
+       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16){
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
@@ -1830,7 +1859,7 @@ namespace ic {
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16){
+      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16){
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
@@ -1966,7 +1995,7 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
 
       }
-      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16) {
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
         iso_1_ = tau1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         iso_2_ = tau2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         l3Hits_1 = tau1->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
@@ -2084,7 +2113,7 @@ namespace ic {
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16) {
+      if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
         mva_1_ = ElectronHTTIdSpring15(elec1, false);
@@ -2104,7 +2133,7 @@ namespace ic {
         mva_1_ = MuonMedium(muon1);
         mva_2_ = MuonMedium(muon2);
       }
-      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16){
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16){
         iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
         mva_1_ = MuonMediumHIPsafe(muon1);
@@ -2173,14 +2202,12 @@ namespace ic {
           jet_flav_2_ = (tau_matches.at(0)).first->parton_flavour();
       } else jet_flav_2_ = -9999;
     }
-
     
-
     if (n_lowpt_jets_ >= 1) {
       jpt_1_ = lowpt_jets[0]->pt();
       jeta_1_ = lowpt_jets[0]->eta();
       jphi_1_ = lowpt_jets[0]->phi();
-      jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+      jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/lowpt_jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
       jptunc_1_ = 0.0;
       jmva_1_ = lowpt_jets[0]->pu_id_mva_value();
       jlrm_1_ = lowpt_jets[0]->linear_radial_moment();
@@ -2208,7 +2235,7 @@ namespace ic {
       jpt_2_ = lowpt_jets[1]->pt();
       jeta_2_ = lowpt_jets[1]->eta();
       jphi_2_ = lowpt_jets[1]->phi();
-      jrawf_2_ = lowpt_jets[1]->uncorrected_energy()/jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
+      jrawf_2_ = lowpt_jets[1]->uncorrected_energy()/lowpt_jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
       jptunc_2_ = 0.0;
       jmva_2_ = lowpt_jets[1]->pu_id_mva_value();
       jlrm_2_ = lowpt_jets[1]->linear_radial_moment();

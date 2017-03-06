@@ -8,13 +8,11 @@ fi
 
 DOSUBMIT=$1
 DO4PARAMS=$2
-#infolder=output_parkedana
-#outfolder=cards_parkedana/
-#blind=false
-infolder=output_run2ana_160224
-outfolder=cards_run2ana_160229/
-blind=false
-zvvstat=18
+infolder=output_run2ana_161031_full/ #_datacard/
+outfolder=cards_run2ana_161031_full_sig/ #_datacard/
+blind=true
+#zvvstat=18
+zvvstat=0
 mkdir -p $outfolder
 
 extraoptions="--do_ues=false" # --do_ggh=false --do_separate_qcdewk=false"
@@ -25,7 +23,7 @@ do
     mkdir -p $outfolder/$mass
     for mindphicut in 2.31 #1.01 1.21 1.41 1.61 1.81 2.01 2.11 2.21 2.31 2.41 2.51 2.61 2.81
     do
-	for minjjcut in 1101 1401 1601 #901 1001 1101 1201 1301 1401 1501 1601 1701 1801 1901
+	for minjjcut in 1101 #1401 1601 #901 1001 1101 1201 1301 1401 1501 1601 1701 1801 1901
 	do
 	    echo "-----------------------------------------------------"
 	    echo "---Processing mindphi>$mindphicut and Mjj>$minjjcut"
