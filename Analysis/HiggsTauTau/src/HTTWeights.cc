@@ -51,8 +51,7 @@ namespace ic {
     jets_label_               = "pfJetsPFlow";
     btag_label_         = "combinedSecondaryVertexBJetTags";
     ditau_label_              = "emtauCandidates";
-    z_pt_mass_hist_           = nullptr;
-    z_pt_mass_hist_err_       = nullptr;
+    z_pt_mass_hist_            = nullptr;
     mt_idiso_mc_              = nullptr;     
     mt_idiso_data_            = nullptr;     
     et_idiso_mc_              = nullptr;     
@@ -589,15 +588,6 @@ namespace ic {
       double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
       double wtzpt_down=1.0;
       double wtzpt_up = wtzpt*wtzpt;
-      double wt_err = 1.0;
-      if(z_pt_mass_hist_err_){
-        wt_err = z_pt_mass_hist_err_->GetBinContent(z_pt_mass_hist_err_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_err_->GetYaxis()->FindBin(zpt));
-        double wt_err_up = wt_err;
-        double wt_err_down = 1.0/wt_err;
-        event->Add("wt_zpt_err_up",wt_err_up);
-        event->Add("wt_zpt_err_down",wt_err_down);
-      }
-      
       eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
