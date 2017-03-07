@@ -7,6 +7,8 @@ namespace ic {
   PileupWeight::PileupWeight(std::string const& name) : ModuleBase(name) {
     is_valid_       = false;
     data_           = nullptr;
+    data_up_        = nullptr;
+    data_down_      = nullptr;
     mc_             = nullptr;
     print_weights_  = false;
     label_          = "pileup";
@@ -18,6 +20,8 @@ namespace ic {
 			     std::string const& label) : ModuleBase(name) {
     is_valid_       = false;
     data_           = nullptr;
+    data_up_        = nullptr;
+    data_down_      = nullptr;
     mc_             = nullptr;
     print_weights_  = false;
     label_          = label;
@@ -47,9 +51,14 @@ namespace ic {
       std::cout << "* Input MC histogram has " << nbins_mc << " bins in the range [" << min_mc << "," << max_mc << "], integral = " << int_mc << std::endl;
       std::cout << "* Weights calculated for " << nbins << " bins" << std::endl;
       std::cout << "* Weight label in EventInfo is " << label_ << std::endl;
+      std::cout << "do_pu_systematic = " << do_pu_systematic_ << std::endl;
     } else {
       std::cout << "Invalid histogram!" << std::endl;
       return 1;
+    } 
+    if(do_pu_systematic_ && !(data_up_||data_down_)){
+      std::cout << "Invalid systematics histograms!" << std::endl;
+      return 1;    
     }
     //data_->Sumw2();
     //mc_->Sumw2();
@@ -57,6 +66,14 @@ namespace ic {
     mc_->Scale(1./int_mc);
     weights_ = (TH1*)data_->Clone();
     weights_->Divide(mc_);
+    if(do_pu_systematic_){
+      data_up_->Scale(1./data_up_->Integral());  
+      data_down_->Scale(1./data_down_->Integral());
+      weights_up_ = (TH1*)data_up_->Clone();
+      weights_up_->Divide(mc_);
+      weights_down_ = (TH1*)data_down_->Clone();
+      weights_down_->Divide(mc_); 
+    }
     for (unsigned i = 0; i < nbins; ++i) {
       if (print_weights_) std::cout << "nInt = [" << weights_->GetBinLowEdge(i+1) << "," << weights_->GetBinLowEdge(i+2) << "[,\tData = " << data_->GetBinContent(i+1) << ",  MC = " << mc_->GetBinContent(i+1) << ",  Weight = " << weights_->GetBinContent(i+1) << std::endl;
     }
@@ -84,6 +101,22 @@ namespace ic {
       weight = weights_->GetBinContent(found_bin);
     }
     eventInfo->set_weight(label_, weight, weight_is_active_);
+    
+    if(do_pu_systematic_){
+      int found_bin_up = weights_up_->FindBin(true_int);
+      double weight_up = 1.0;
+      if (found_bin_up >= 1 && found_bin_up <= weights_up_->GetNbinsX()) {
+        weight_up = weights_up_->GetBinContent(found_bin_up);
+      }
+      event->Add("wt_pu_up",weight_up/weight);
+      int found_bin_down = weights_down_->FindBin(true_int);
+      double weight_down = 1.0;
+      if (found_bin_down >= 1 && found_bin_down <= weights_down_->GetNbinsX()) {
+        weight_down = weights_down_->GetBinContent(found_bin_down);
+      }
+      event->Add("wt_pu_down",weight_down/weight);
+    }
+    
     return 0;
   }
   int PileupWeight::PostAnalysis() {

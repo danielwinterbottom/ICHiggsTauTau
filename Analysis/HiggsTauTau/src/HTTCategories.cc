@@ -355,6 +355,11 @@ namespace ic {
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       
+      if(channel_ == channel::zmm || channel_ == channel::zee){
+        outtree_->Branch("genpT",    &zpt_);
+        outtree_->Branch("genM",    &zmass_);  
+      }
+      
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
 /*      outtree_->Branch("leading_lepton_match_pt", &leading_lepton_match_pt_);
@@ -511,9 +516,14 @@ namespace ic {
         outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
       //Variables needed for control plots need only be generated for central systematics
+        outtree_->Branch("n_vtx",             &n_vtx_);
       if(!systematic_shift_) {
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
         //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
+        outtree_->Branch("wt_zpt_err_up",     &wt_zpt_err_up_);
+        outtree_->Branch("wt_zpt_err_down",   &wt_zpt_err_down_);  
+        outtree_->Branch("wt_pu_up",          &wt_pu_up_);
+        outtree_->Branch("wt_pu_down",        &wt_pu_down_);
         outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
         outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
         outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
@@ -526,7 +536,6 @@ namespace ic {
         outtree_->Branch("wt_trig_up_2",    &wt_trig_up_2_);
         outtree_->Branch("wt_trig_down_1",    &wt_trig_down_1_);
         outtree_->Branch("wt_trig_down_2",    &wt_trig_down_2_);
-        outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("good_vtx",          &good_vtx_);
         outtree_->Branch("phi_1",             &phi_1_.var_double);
         outtree_->Branch("phi_2",             &phi_2_.var_double);
@@ -1277,6 +1286,11 @@ namespace ic {
     wt_em_qcd_up_ = 1.0;
     wt_nlo_pt_ = 1.0;
     nlo_pt_ = 9999.;
+    wt_pu_up_ = 1.0;
+    wt_pu_down_ = 1.0;
+    wt_zpt_err_up_ = 1.0;
+    wt_zpt_err_down_ = 1.0;
+    
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
     if (event->Exists("wt_tau_fake_up"))    wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");
@@ -1292,6 +1306,10 @@ namespace ic {
     if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
+    if (event->Exists("wt_pu_up"))          wt_pu_up_ = event->Get<double>("wt_pu_up");
+    if (event->Exists("wt_pu_down"))        wt_pu_down_ = event->Get<double>("wt_pu_down");
+    if (event->Exists("wt_zpt_err_up"))     wt_zpt_err_up_ = event->Get<double>("wt_zpt_err_up");
+    if (event->Exists("wt_zpt_err_down"))   wt_zpt_err_down_ = event->Get<double>("wt_zpt_err_down");
 
   
   mc_weight_ = 0.0;
@@ -1510,7 +1528,11 @@ namespace ic {
     //mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
     pt_tt_ = (ditau->vector() + mets->vector()).pt();
 
-    if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
+    if(channel_ == channel::zmm || channel_ == channel::zee){
+      pt_tt_ = (ditau->vector()).pt(); 
+      zpt_ = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
+      zmass_ = event->Exists("genM") ? event->Get<double>("genM") : 0;  
+    }
     m_vis_ = ditau->M();
    
 

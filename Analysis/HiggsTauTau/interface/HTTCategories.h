@@ -643,6 +643,14 @@ class HTTCategories : public ModuleBase {
   bool trg_singletau_2_;
   
   double wt_tau_id_binned_;
+  
+  double zpt_;
+  double zmass_;
+  
+  double wt_pu_up_;
+  double wt_pu_down_;
+  double wt_zpt_err_up_;
+  double wt_zpt_err_down_;
 
 
  public:
