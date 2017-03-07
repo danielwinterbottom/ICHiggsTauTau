@@ -34,6 +34,7 @@
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HTTRun2RecoilCorrector.h"
+#include "HiggsTauTau/interface/HTTMETPhiCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
 #include "HiggsTauTau/interface/HTTEMuMVA.h"
@@ -939,9 +940,20 @@ if(channel == channel::zmm){
 if(strategy_type != strategy::phys14){
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
   TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
+
   if (js["do_pu_wt"].asBool()&&!is_data) {
-    BuildModule( PileupWeight("PileupWeight")
-        .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
+    PileupWeight puweight = PileupWeight("PileupWeight"); 
+    puweight.set_data(new TH1D(d_pu));
+    puweight.set_mc(new TH1D(m_pu));
+    puweight.set_do_pu_systematic(js["do_pu_systematic"].asBool());
+  
+    if(js["do_pu_systematic"].asBool()){
+      TH1D d_pu_up   = GetFromTFile<TH1D>(js["data_pu_up_file"].asString(), "/", "pileup");
+      TH1D d_pu_down = GetFromTFile<TH1D>(js["data_pu_down_file"].asString(), "/", "pileup");
+      puweight.set_data_up(new TH1D(d_pu_up));
+      puweight.set_data_down(new TH1D(d_pu_down));    
+    }
+    BuildModule(puweight);
   }
 }
 
@@ -1140,6 +1152,8 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
 
 
  if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16) && channel!=channel::wmnu){
+    //BuildModule(HTTMETPhiCorrector("HTTMETPhiCorrector")); 
+     
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
      .set_channel(channel)
@@ -1636,7 +1650,8 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_qcd_cr2_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR1_dRGt4");
    TH2D em_qcd_cr2_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dRGt4");
-   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_2016.root","/","zptmass_histo");
+   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016.root","/","zptmass_histo");
+   TH2D z_pt_weights_err = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016.root","/","zptmass_histo_err");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -1657,7 +1672,8 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2))
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4))
-    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
+    .set_z_pt_mass_hist(new TH2D(z_pt_weights))
+    .set_z_pt_mass_hist_err(new TH2D(z_pt_weights_err));
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
