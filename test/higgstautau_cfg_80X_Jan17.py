@@ -1109,8 +1109,43 @@ if release in ['80XMINIAOD']:
                            branch = cms.string("puppiMet"),
                            getUncorrectedMet=cms.bool(False)
                            )
+  
+process.icCandidateProducer = producers.icCandidateProducer.clone(
+  branch  = cms.string('pfCandidates'),
+  input   = cms.InputTag('packedPFCandidates')
+)
+
+from JetMETCorrections.Type1MET.multPhiCorr_741_25nsDY_cfi import multPhiCorr_741_25nsDY as multPhiCorrParams_Txy_25ns
+
+multPhiCorrParams_T0rtTxy_25ns     = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
+multPhiCorrParams_T0rtT1Txy_25ns   = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
+multPhiCorrParams_T0rtT1T2Txy_25ns = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
+multPhiCorrParams_T0pcTxy_25ns     = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
+multPhiCorrParams_T0pcT1Txy_25ns   = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
+multPhiCorrParams_T0pcT1T2Txy_25ns = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
+multPhiCorrParams_T1Txy_25ns       = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
+multPhiCorrParams_T1T2Txy_25ns = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
+
+#from JetMETCorrections.Type1MET.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
+
+#from MetTools.MetPhiCorrections.python.tools.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
+#multPhiCorr_Data_Combined_80X_sumPt_cfi.py
+    #https://github.com/cms-met/MetTools/blob/master/MetPhiCorrections/python/tools/multPhiCorr_Data_G_80X_sumPt_cfi.py
+#multPhiCorr_MC_DY_80X_sumPt_cfi.py
+process.pfMEtMultShiftCorr = cms.EDProducer("MultShiftMETcorrInputProducer",
+    srcPFlow = cms.InputTag('packedPFCandidates', ''),
+    vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    parameters = multPhiCorrParams_Txy_25ns
+)
 
 
+
+process.icPfMetProducerXYCorr = producers.icMetFromPatProducer.clone(
+                           branch = cms.string("pfMetFromSlimmedXYCorr"),
+                           includeMetCorrections = cms.bool(True),
+                           getUncorrectedMet=cms.bool(False)
+                           
+                           )
 
 process.icPfMetSequence = cms.Sequence(
   process.pfMetRe+
@@ -1119,7 +1154,11 @@ process.icPfMetSequence = cms.Sequence(
 
 if release in ['80XMINIAOD']:
   process.icPfMetSequence.remove(process.pfMetRe)
-  process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
+  process.icPfMetSequence+=cms.Sequence(
+      process.icPuppiMetProducer+
+      #process.pfMEtMultShiftCorr#+
+      process.icPfMetProducerXYCorr
+      )
   #process.icPfMetSequence+=cms.Sequence(process.icRecorrectedPfMetProducer)
 
 from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
@@ -2251,6 +2290,7 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
+  process.icCandidateProducer+
 #  process.icL1ExtraTauProducer+
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
