@@ -587,7 +587,7 @@ namespace ic {
       double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
       double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
       double wtzpt_down=1.0;
-      double wtzpt_up = wtzpt*wtzpt; 
+      double wtzpt_up = wtzpt*wtzpt;
       eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
@@ -2250,26 +2250,51 @@ namespace ic {
       Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
       double etau_fakerate_1=1.0;
       double etau_fakerate_2=1.0;
-      if(channel_ == channel::et){
-        if(gm2_==1||gm2_==3){
-          if(fabs(tau->eta()) < 1.5){
-             etau_fakerate_2 = 1.80;
-          } else etau_fakerate_2=1.30;
+      if(mc_ == mc::summer16_80X){
+        if(channel_ == channel::et){
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.5){
+               etau_fakerate_2 = 1.87;
+            } else etau_fakerate_2=1.46;
+          }
+        } else {
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.5){
+               etau_fakerate_2=1.0;
+            } else etau_fakerate_2=1.37;
+          }
         }
+        if(channel_ == channel::tt){
+          unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+          Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==1||gm1_==3){
+            if(fabs(tau1->eta()) < 1.5){
+               etau_fakerate_1=1.0;
+            } else etau_fakerate_1=1.37;
+          }
+        }  
       } else {
-        if(gm2_==1||gm2_==3){
-          if(fabs(tau->eta()) < 1.5){
-             etau_fakerate_2=1.02;
-          } else etau_fakerate_2=1.11;
+        if(channel_ == channel::et){
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.5){
+               etau_fakerate_2 = 1.80;
+            } else etau_fakerate_2=1.30;
+          }
+        } else {
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.5){
+               etau_fakerate_2=1.02;
+            } else etau_fakerate_2=1.11;
+          }
         }
-      }
-      if(channel_ == channel::tt){
-        unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-        if(gm1_==1||gm1_==3){
-          if(fabs(tau1->eta()) < 1.5){
-             etau_fakerate_1=1.02;
-          } else etau_fakerate_1=1.11;
+        if(channel_ == channel::tt){
+          unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+          Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==1||gm1_==3){
+            if(fabs(tau1->eta()) < 1.5){
+               etau_fakerate_1=1.02;
+            } else etau_fakerate_1=1.11;
+          }
         }
       }
      eventInfo->set_weight("etau_fakerate",etau_fakerate_1*etau_fakerate_2);
@@ -2294,49 +2319,98 @@ namespace ic {
       Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
       double mtau_fakerate_1=1.0;
       double mtau_fakerate_2=1.0;
-      if(channel_ == channel::mt){
-        if(gm2_==2||gm2_==4){
-          if(fabs(tau->eta()) < 0.4){
-            mtau_fakerate_2 = 1.5;
-          } else if(fabs(tau->eta()) < 0.8){
-            mtau_fakerate_2 = 1.4;
-          } else if(fabs(tau->eta()) < 1.2){
-            mtau_fakerate_2 = 1.21;
-          } else if(fabs(tau->eta()) < 1.7){
-            mtau_fakerate_2=2.6;
-          } else if(fabs(tau->eta()) < 2.3){
-            mtau_fakerate_2=2.1;
+      if(mc_ == mc::summer16_80X){
+        if(channel_ == channel::mt){
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2 = 1.263;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2 = 1.364;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2 = 0.854;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=1.712;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=2.324;
+            }
+          }
+        } else {
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2=1.012;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2=1.007;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2=0.87;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=1.154;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=2.281;
+            }
           }
         }
-      } else {
-        if(gm2_==2||gm2_==4){
-          if(fabs(tau->eta()) < 0.4){
-            mtau_fakerate_2=1.15;
-          } else if(fabs(tau->eta()) < 0.8){
-            mtau_fakerate_2=1.15;
-          } else if(fabs(tau->eta()) < 1.2){
-            mtau_fakerate_2=1.18;
-          } else if(fabs(tau->eta()) < 1.7){
-            mtau_fakerate_2=1.2;
-          } else if(fabs(tau->eta()) < 2.3){
-            mtau_fakerate_2=1.3;
+        if(channel_ == channel::tt){
+        unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==2||gm1_==4){
+            if(fabs(tau1->eta()) < 0.4){
+              mtau_fakerate_1=1.012;
+            } else if(fabs(tau1->eta()) < 0.8){
+              mtau_fakerate_1=1.007;
+            } else if(fabs(tau1->eta()) < 1.2){
+              mtau_fakerate_1=0.87;
+            } else if(fabs(tau1->eta()) < 1.7){
+              mtau_fakerate_1=1.154;
+            } else if(fabs(tau1->eta()) < 2.3){
+              mtau_fakerate_1=2.281;
+            }
+          }
+        }  
+      } else{
+        if(channel_ == channel::mt){
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2 = 1.5;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2 = 1.4;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2 = 1.21;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=2.6;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=2.1;
+            }
+          }
+        } else {
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2=1.15;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2=1.15;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2=1.18;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=1.2;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=1.3;
+            }
           }
         }
-      }
-      if(channel_ == channel::tt){
-      unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-      Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-        if(gm1_==2||gm1_==4){
-          if(fabs(tau1->eta()) < 0.4){
-            mtau_fakerate_1=1.15;
-          } else if(fabs(tau1->eta()) < 0.8){
-            mtau_fakerate_1=1.15;
-          } else if(fabs(tau1->eta()) < 1.2){
-            mtau_fakerate_1=1.18;
-          } else if(fabs(tau1->eta()) < 1.7){
-            mtau_fakerate_1=1.2;
-          } else if(fabs(tau1->eta()) < 2.3){
-            mtau_fakerate_1=1.3;
+        if(channel_ == channel::tt){
+        unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==2||gm1_==4){
+            if(fabs(tau1->eta()) < 0.4){
+              mtau_fakerate_1=1.15;
+            } else if(fabs(tau1->eta()) < 0.8){
+              mtau_fakerate_1=1.15;
+            } else if(fabs(tau1->eta()) < 1.2){
+              mtau_fakerate_1=1.18;
+            } else if(fabs(tau1->eta()) < 1.7){
+              mtau_fakerate_1=1.2;
+            } else if(fabs(tau1->eta()) < 2.3){
+              mtau_fakerate_1=1.3;
+            }
           }
         }
       }
