@@ -1115,7 +1115,9 @@ process.icCandidateProducer = producers.icCandidateProducer.clone(
   input   = cms.InputTag('packedPFCandidates')
 )
 
-from JetMETCorrections.Type1MET.multPhiCorr_741_25nsDY_cfi import multPhiCorr_741_25nsDY as multPhiCorrParams_Txy_25ns
+#from JetMETCorrections.Type1MET.multPhiCorr_741_25nsDY_cfi import multPhiCorr_741_25nsDY as multPhiCorrParams_Txy_25ns
+from JetMETCorrections.Type1MET.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
+#from JetMETCorrections.Type1MET.multPhiCorr_Data_Combined_80X_sumPt_cfi import multPhiCorr_Data_B_80X as multPhiCorrParams_Txy_25ns
 
 multPhiCorrParams_T0rtTxy_25ns     = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
 multPhiCorrParams_T0rtT1Txy_25ns   = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
@@ -1126,12 +1128,6 @@ multPhiCorrParams_T0pcT1T2Txy_25ns = cms.VPSet( pset for pset in multPhiCorrPara
 multPhiCorrParams_T1Txy_25ns       = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
 multPhiCorrParams_T1T2Txy_25ns = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
 
-#from JetMETCorrections.Type1MET.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
-
-#from MetTools.MetPhiCorrections.python.tools.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
-#multPhiCorr_Data_Combined_80X_sumPt_cfi.py
-    #https://github.com/cms-met/MetTools/blob/master/MetPhiCorrections/python/tools/multPhiCorr_Data_G_80X_sumPt_cfi.py
-#multPhiCorr_MC_DY_80X_sumPt_cfi.py
 process.pfMEtMultShiftCorr = cms.EDProducer("MultShiftMETcorrInputProducer",
     srcPFlow = cms.InputTag('packedPFCandidates', ''),
     vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
@@ -1139,10 +1135,8 @@ process.pfMEtMultShiftCorr = cms.EDProducer("MultShiftMETcorrInputProducer",
 )
 
 
-
 process.icPfMetProducerXYCorr = producers.icMetFromPatProducer.clone(
                            branch = cms.string("pfMetFromSlimmedXYCorr"),
-                           includeMetCorrections = cms.bool(True),
                            getUncorrectedMet=cms.bool(False)
                            
                            )
@@ -1156,7 +1150,7 @@ if release in ['80XMINIAOD']:
   process.icPfMetSequence.remove(process.pfMetRe)
   process.icPfMetSequence+=cms.Sequence(
       process.icPuppiMetProducer+
-      #process.pfMEtMultShiftCorr#+
+      process.pfMEtMultShiftCorr+
       process.icPfMetProducerXYCorr
       )
   #process.icPfMetSequence+=cms.Sequence(process.icRecorrectedPfMetProducer)
