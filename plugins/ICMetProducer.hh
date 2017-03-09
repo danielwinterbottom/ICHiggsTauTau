@@ -19,7 +19,6 @@
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 #include "FWCore/Utilities/interface/Exception.h"
-#include "DataFormats/METReco/interface/CorrMETData.h"
 
 /**
  * @brief See documentation [here](\ref objs-met)
@@ -29,8 +28,6 @@ class ICMetProducer : public edm::EDProducer {
  public:
   explicit ICMetProducer(const edm::ParameterSet&);
   ~ICMetProducer();
-  
-  std::vector<edm::EDGetTokenT<CorrMETData> > corrTokens;
 
  private:
   virtual void beginJob();
@@ -111,10 +108,6 @@ ICMetProducer<T>::ICMetProducer(const edm::ParameterSet& config)
       //metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
   consumes<edm::View<T>>(input_);
   consumes<std::vector<std::size_t>>(inputID_);
-  std::vector<edm::InputTag> corrInputTags = config.getParameter<std::vector<edm::InputTag> >("srcCorrections");
-  for (std::vector<edm::InputTag>::const_iterator inputTag = corrInputTags.begin(); inputTag != corrInputTags.end(); ++inputTag) {
-    corrTokens.push_back(consumes<CorrMETData>(*inputTag));
-  }
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -139,11 +132,6 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
   consumes<edm::View<pat::MET>>(input_);
   consumes<std::vector<std::size_t>>(inputID_);
 
-  std::vector<edm::InputTag> corrInputTags = config.getParameter<std::vector<edm::InputTag> >("srcCorrections");
-  for (std::vector<edm::InputTag>::const_iterator inputTag = corrInputTags.begin(); inputTag != corrInputTags.end(); ++inputTag) {
-    corrTokens.push_back(consumes<CorrMETData>(*inputTag));
-  }
-  
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -165,16 +153,8 @@ void ICMetProducer<T>::produce(edm::Event& event, const edm::EventSetup& setup) 
   if (do_custom_id_) {
     event.getByLabel(inputID_, id_handle);
   }
-  double dpx=0;
-  double dpy=0;
-  for(unsigned i=0; i<corrTokens.size();++i){
-    edm::Handle<CorrMETData> correction;  
-    event.getByToken(corrTokens[i], correction);
-    CorrMETData const& src = (*correction);
-    dpx = src.mex;
-    dpy = src.mey;
-  }
-  
+  // event.getByLabel(merge_labels_[i], "MVAMetId", id_handle);
+
   met_->clear();
   met_->resize(mets_handle->size(), ic::Met());
 
@@ -228,17 +208,6 @@ void ICMetProducer<T>::produce(edm::Event& event, const edm::EventSetup& setup) 
     }//!dogenmet
   }
   constructSpecific(mets_handle, event, setup);
-  //correct met if extra corrects are specified
-  if(dpx!=0 || dpy!=0){
-    for (unsigned i = 0; i < mets_handle->size(); ++i) {
-      ic::Met& dest = met_->at(i);
-      double px = dest.vector().Px() + dpx;
-      double py = dest.vector().Py() + dpy;
-      double pt = sqrt(px*px + py*py);
-      ROOT::Math::XYZTVector v(px, py, 0., pt);
-      dest.set_vector((ROOT::Math::PtEtaPhiEVector)v);
-    }
-  }
 }
 
 //Specific stuff:
