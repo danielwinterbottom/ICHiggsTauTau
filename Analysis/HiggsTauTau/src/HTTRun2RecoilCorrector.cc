@@ -141,7 +141,7 @@ namespace ic {
 
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-  unsigned njets = jets.size();
+  int njets = jets.size();
   if(is_wjets) njets+=1;
   double Metx = met->vector().px();
   double Mety = met->vector().py();

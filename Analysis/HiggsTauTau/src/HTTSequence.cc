@@ -34,7 +34,6 @@
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HTTRun2RecoilCorrector.h"
-#include "HiggsTauTau/interface/HTTMETPhiCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
 #include "HiggsTauTau/interface/HTTEMuMVA.h"
@@ -1152,7 +1151,6 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
 
 
  if((strategy_type == strategy::fall15|| strategy_type==strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16) && channel!=channel::wmnu){
-    //BuildModule(HTTMETPhiCorrector("HTTMETPhiCorrector")); 
      
     BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
      .set_sample(output_name)
@@ -1161,7 +1159,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_label(met_label)
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
-     .set_use_quantile_map(false)
+     .set_use_quantile_map(true)
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
