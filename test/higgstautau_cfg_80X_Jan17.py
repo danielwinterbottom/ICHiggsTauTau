@@ -1075,6 +1075,7 @@ process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+
 runMetCorAndUncFromMiniAOD(process,
                            isData=bool(isData),
                            )
@@ -1110,10 +1111,6 @@ if release in ['80XMINIAOD']:
                            getUncorrectedMet=cms.bool(False)
                            )
   
-process.icCandidateProducer = producers.icCandidateProducer.clone(
-  branch  = cms.string('pfCandidates'),
-  input   = cms.InputTag('packedPFCandidates')
-)
 
 #from JetMETCorrections.Type1MET.multPhiCorr_741_25nsDY_cfi import multPhiCorr_741_25nsDY as multPhiCorrParams_Txy_25ns
 from JetMETCorrections.Type1MET.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
@@ -1133,10 +1130,13 @@ process.pfMEtMultShiftCorr = cms.EDProducer("MultShiftMETcorrInputProducer",
     vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
     parameters = multPhiCorrParams_Txy_25ns
 )
-
-
-process.icPfMetProducerXYCorr = producers.icMetFromPatProducer.clone(
+    
+process.icPfMetProducerXYCorr = producers.icMetProducer.clone(
+                           input=cms.InputTag("slimmedMETs"),
                            branch = cms.string("pfMetFromSlimmedXYCorr"),
+                           srcCorrections = cms.VInputTag(
+                               cms.InputTag('pfMEtMultShiftCorr'),
+                               ),
                            getUncorrectedMet=cms.bool(False)
                            
                            )
@@ -2284,7 +2284,6 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
-  process.icCandidateProducer+
 #  process.icL1ExtraTauProducer+
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
