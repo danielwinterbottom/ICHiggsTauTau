@@ -68,7 +68,7 @@ sample_list = [
    'Tbar-tW',
    'DYJetsToLL',
    'DYJetsToLL-LO',
-   'DYJetsToLL-LO-ext',
+   'DYJetsToLL-LO-ext1',
    'DYJetsToLL-LO-ext2',
    'DYJetsToLL_M-10to50-ext',
    'DYJetsToLL_M-10to50',
