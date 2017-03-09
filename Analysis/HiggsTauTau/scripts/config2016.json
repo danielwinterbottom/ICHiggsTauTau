@@ -1,6 +1,6 @@
 {
   "job": {
-    "filelist" : "filelists/Aug11_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
+    "filelist" : "filelists/Feb14_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Feb14_MC_80X/",
     "max_events":   -1,
     "timings":      true,
