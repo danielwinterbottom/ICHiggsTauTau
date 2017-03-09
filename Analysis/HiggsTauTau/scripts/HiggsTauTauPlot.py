@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"wt_up","custom_uncerts_wt_down":"wt_down"  }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"wt_up","custom_uncerts_wt_down":"wt_down", "add_flat_uncert":0, "add_stat_to_syst":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -136,13 +136,18 @@ parser.add_argument("--no_plot", dest="no_plot", action='store_true',
 parser.add_argument("--ratio_range", dest="ratio_range", type=str,
     help="y-axis range for ratio plot in format MIN,MAX")
 parser.add_argument("--do_custom_uncerts", dest="do_custom_uncerts", action='store_true',
-    help="Do custome uncertainty band. Up and down weights for this uncertainty band should be set using \"custom_uncerts_wt_up\" and \"custom_uncerts_wt_down\" options")
+    help="Do custom uncertainty band. Up and down weights for this uncertainty band should be set using \"custom_uncerts_wt_up\" and \"custom_uncerts_wt_down\" options")
 parser.add_argument("--custom_uncerts_wt_up", dest="custom_uncerts_wt_up", type=str,
     help="Up weight for custom uncertainty band")
 parser.add_argument("--custom_uncerts_wt_down", dest="custom_uncerts_wt_down", type=str,
     help="Down weight for custom uncertainty band")
 parser.add_argument("--uncert_title", dest="uncert_title", type=str,
     help="Custom uncertainty band legend label")
+parser.add_argument("--add_stat_to_syst", dest="add_stat_to_syst", action='store_true',
+    help="Add custom uncertainty band to statistical uncertainty.")
+parser.add_argument("--add_flat_uncert", dest="add_flat_uncert", type=float,
+    help="If set to non-zero will add a flat uncertainty band in quadrature to the uncertainty.")
+
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -969,17 +974,23 @@ def Plot(ana, nodename, outfile=None):
     #sighist2.Draw("histsame")
     error_hist = bkghist.Clone()
     if options.do_custom_uncerts:
-
-      #bkg_uncert_up = ana.nodes[nodename].nodes['total_bkg_custom_uncerts_up'].shape.hist.Clone()
       bkg_uncert_up = outfile.Get(nodename+'/total_bkg_custom_uncerts_up')
       bkg_uncert_down = outfile.Get(nodename+'/total_bkg_custom_uncerts_down')
-      #bkg_uncert_down = ana.nodes[nodename].nodes['total_bkg_custom_uncerts_down'].shape.hist.Clone()
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
+          stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
           bin_down = bkg_uncert_down.GetBinContent(i)
           error = abs(bin_up - bin_down)/2
+          if options.add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           band_center = abs(max(bin_up,bin_down) - error)          
           error_hist.SetBinContent(i,band_center)
+          error_hist.SetBinError(i,error)
+          
+    if options.add_flat_uncert > 0:
+      for i in range(1,error_hist.GetNbinsX()+1): 
+          stat_error=error_hist.GetBinError(i)
+          error = options.add_flat_uncert*error_hist.GetBinContent(i)
+          error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
 
     error_hist.Draw("e2same")
@@ -1024,8 +1035,8 @@ def Plot(ana, nodename, outfile=None):
     
     #Add ratio plot if required
     if options.ratio:
-        if options.do_custom_uncerts: ratio_bkghist = plotting.MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
-        else: ratio_bkghist = plotting.MakeRatioHist(bkghist.Clone(),bkghist.Clone(),True,False)
+        ratio_bkghist = plotting.MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
+        #else: ratio_bkghist = plotting.MakeRatioHist(bkghist.Clone(),bkghist.Clone(),True,False)
         blind_ratio = plotting.MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
         pads[1].cd()
         pads[1].SetGrid(0,1)
