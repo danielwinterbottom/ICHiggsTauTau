@@ -1133,26 +1133,23 @@ process.pfMEtMultShiftCorr = cms.EDProducer("MultShiftMETcorrInputProducer",
     vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
     parameters = multPhiCorrParams_Txy_25ns
 )
-    
-process.icPfMetProducerXYCorr = producers.icMetProducer.clone(
-    input=cms.InputTag("slimmedMETs"),
-    branch = cms.string("pfMetFromSlimmedXYCorr"),
-    srcCorrections = cms.VInputTag(
-        cms.InputTag('pfMEtMultShiftCorr'),
-        ),
-    getUncorrectedMet=cms.bool(False)
-)
-    
-process.icPfMetProducerXYCorr2 = producers.icMetProducer.clone(
-    input=cms.InputTag("slimmedMETs"),
-    branch = cms.string("pfMetFromSlimmedXYCorr2"),
-    getUncorrectedMet=cms.bool(False)
-)    
-                           
-#CorrectedPatMETProducer.cc
+
+if isData:    
+    process.icPfMetProducerXYCorr = producers.icMetProducer.clone(
+        input=cms.InputTag("patMetTxy"),
+        branch = cms.string("pfMetFromSlimmedXYCorr"),
+        getUncorrectedMet=cms.bool(False)
+    )   
+else:    
+    process.icPfMetProducerXYCorr = producers.icMetProducer.clone(
+        input=cms.InputTag("slimmedMETs"),
+        branch = cms.string("pfMetFromSlimmedXYCorr"),
+        getUncorrectedMet=cms.bool(False)
+    )  
+
 
 process.patMetTxy = cms.EDProducer(
-    "CorrectedPatMETProducer",
+    "CorrectedPATMETProducer",
     src = cms.InputTag('slimmedMETs'),
     srcCorrections = cms.VInputTag(
         cms.InputTag('pfMEtMultShiftCorr')
@@ -1169,11 +1166,9 @@ if release in ['80XMINIAOD']:
   process.icPfMetSequence+=cms.Sequence(
       process.icPuppiMetProducer+
       process.pfMEtMultShiftCorr+
-      process.icPfMetProducerXYCorr+
       process.patMetTxy+
-      process.icPfMetProducerXYCorr2
+      process.icPfMetProducerXYCorr
       )
-  #if not isData: process.icPfMetSequence.remove(process.pfMEtMultShiftCorr) #uncomment!
   #process.icPfMetSequence+=cms.Sequence(process.icRecorrectedPfMetProducer)
 
 from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
