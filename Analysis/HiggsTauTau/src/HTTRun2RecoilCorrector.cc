@@ -146,6 +146,11 @@ namespace ic {
   double Metx = met->vector().px();
   double Mety = met->vector().py();
   double Mete = met->energy();
+  double MetPt = met->vector().Pt();
+  double MetPhi = met->vector().Phi();
+  // add uncorrected MET and MET phi to event
+  if(!event->ExistsInEvent("met_norecoil")) event->Add("met_norecoil", MetPt);
+  if(!event->ExistsInEvent("met_phi_norecoil")) event->Add("met_phi_norecoil", MetPhi);
   double met_res_e = sqrt(Mete*Mete-Metx*Metx-Mety*Mety);//As we can only set pt/eta/phi/energy, not px or py
   float correctedMetx, correctedMety;
   if(!disable_recoil_corrs){

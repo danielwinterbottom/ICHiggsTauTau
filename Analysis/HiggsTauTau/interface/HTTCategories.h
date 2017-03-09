@@ -198,6 +198,8 @@ class HTTCategories : public ModuleBase {
   branch_var met_;
   float pfmet_phi_;
   branch_var met_phi_;
+  branch_var uncorrmet_;
+  branch_var uncorrmet_phi_;
   branch_var puppimet_;
   float puppimet_phi_; 
   float pfmetCov00_;
@@ -643,14 +645,13 @@ class HTTCategories : public ModuleBase {
   bool trg_singletau_2_;
   
   double wt_tau_id_binned_;
+  double wt_tau_id_tight_;
   
   double zpt_;
   double zmass_;
   
   double wt_pu_up_;
   double wt_pu_down_;
-  double wt_zpt_err_up_;
-  double wt_zpt_err_down_;
 
 
  public:

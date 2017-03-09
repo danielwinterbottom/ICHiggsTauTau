@@ -274,6 +274,7 @@ namespace ic {
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
+      outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
@@ -519,9 +520,7 @@ namespace ic {
         outtree_->Branch("n_vtx",             &n_vtx_);
       if(!systematic_shift_) {
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
-        //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
-        outtree_->Branch("wt_zpt_err_up",     &wt_zpt_err_up_);
-        outtree_->Branch("wt_zpt_err_down",   &wt_zpt_err_down_);  
+        //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_); 
         outtree_->Branch("wt_pu_up",          &wt_pu_up_);
         outtree_->Branch("wt_pu_down",        &wt_pu_down_);
         outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
@@ -879,10 +878,10 @@ namespace ic {
           synctree_->Branch("decayModeFindingOldDMs_2",&ldecayModeFindingOldDMs_2,"decayModeFindingOldDMs_2/O");
 
       }
-      // Uncorrected PF MET (not used in analysis)
       synctree_->Branch("met", &met_.var_float, "met/F");
-      // Uncorrected PF MET phi (not used in analysis)
       synctree_->Branch("metphi", &met_phi_.var_float, "met_phi/F");
+      synctree_->Branch("uncorrmet", &uncorrmet_.var_float, "met/F");
+      synctree_->Branch("uncorrmetphi", &uncorrmet_phi_.var_float, "met_phi/F");
       // Elements of the PF MET covariance matrix (not used in analysis)
       synctree_->Branch("metcov00", &metCov00_, "metCov00/F");
       synctree_->Branch("metcov01", &metCov01_, "metCov01/F");
@@ -1245,8 +1244,11 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    wt_tau_id_binned_ = 1.0;
     if (event->Exists("wt_tau_id_binned")) wt_tau_id_binned_  = event->Get<double>("wt_tau_id_binned");
-    else wt_tau_id_binned_ = 1.0;
+    wt_tau_id_tight_ = 1.0;
+    if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
+    
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
@@ -1288,8 +1290,6 @@ namespace ic {
     nlo_pt_ = 9999.;
     wt_pu_up_ = 1.0;
     wt_pu_down_ = 1.0;
-    wt_zpt_err_up_ = 1.0;
-    wt_zpt_err_down_ = 1.0;
     
     if (event->Exists("wt_ggh_pt_up"))      wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down"))    wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
@@ -1308,8 +1308,6 @@ namespace ic {
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
     if (event->Exists("wt_pu_up"))          wt_pu_up_ = event->Get<double>("wt_pu_up");
     if (event->Exists("wt_pu_down"))        wt_pu_down_ = event->Get<double>("wt_pu_down");
-    if (event->Exists("wt_zpt_err_up"))     wt_zpt_err_up_ = event->Get<double>("wt_zpt_err_up");
-    if (event->Exists("wt_zpt_err_down"))   wt_zpt_err_down_ = event->Get<double>("wt_zpt_err_down");
 
   
   mc_weight_ = 0.0;
@@ -1600,6 +1598,11 @@ namespace ic {
     }
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
+    
+    uncorrmet_ = met_;
+    if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
+    uncorrmet_phi_ = met_phi_;
+    if (event->Exists("met_phi_norecoil")) uncorrmet_phi_ = event->Get<double>("met_phi_norecoil");
 
     metCov00_ = mets->xx_sig();
     metCov10_ = mets->yx_sig();

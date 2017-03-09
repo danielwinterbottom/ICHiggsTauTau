@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":0, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"wt_up","custom_uncerts_wt_down":"wt_down"  }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"wt_up","custom_uncerts_wt_down":"wt_down"  }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -211,6 +211,11 @@ elif options.analysis == 'mssm':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et':
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+    if options.era == 'mssmsummer16':
+        if options.channel == 'mt':        
+            cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        elif options.channel == 'et':
+            cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
@@ -220,12 +225,6 @@ elif options.channel == 'zmm':
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     
-if options.era == "mssmsummer16":
-    if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
-    if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
-    if options.channel == "mt" or options.channel == 'zmm': cats['baseline']+=" && trg_singlemuon"
-    if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
-
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
@@ -236,6 +235,35 @@ cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && a
 # MSSM categories
 cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
 cats['nobtag'] = '(n_bjets==0)'
+# loose/tight iso-MT categories
+cats['nobtag_tight'] = cats['nobtag']
+cats['nobtag_loosemt'] = '('+cats['nobtag']+ ' && mt_1>40)'
+cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_tight_2<0.5)'
+cats['btag_tight'] = cats['btag']
+cats['btag_loosemt'] = '('+cats['btag']+ ' && mt_1>40)'
+cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
+
+# Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
+if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt':
+    if options.channel == 'mt':        
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+    elif options.channel == 'et':
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+# And aldo overwrite selection if one of the tight categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
+if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<40)'
+# Also need to adjust btag wnobtag category (used for method 16) for different categories
+cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
+if options.channel == 'mt' or options.channel == 'et':
+    if options.cat == 'btag_loosemt': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mt_1>40)'
+    if options.cat == 'btag_looseiso': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
+
+if options.era == "mssmsummer16":
+    if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
+    if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
+    if options.channel == "mt" or options.channel == 'zmm': cats['baseline']+=" && trg_singlemuon"
+    if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
+
 
 # Overwrite any category selections if the --set_alias option is used
 for i in options.set_alias:
@@ -482,7 +510,8 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
         w_shape)
   elif method in [12, 13, 14, 16]:
       if method == 16:
-          cat_nobtag = '(n_jets <=1 && n_lowpt_jets>=1)*('+cats['baseline']+')'
+          cat_nobtag = '('+cats['btag_wnobtag']+')*('+cats['baseline']+')'
+
           full_selection = BuildCutString(wt, sel, cat_nobtag, OSSS)
           ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', '')
           os_selection = BuildCutString(wt, '', cat_nobtag, 'os', '')
