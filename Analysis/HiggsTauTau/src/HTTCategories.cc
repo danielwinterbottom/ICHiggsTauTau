@@ -274,6 +274,7 @@ namespace ic {
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
+      outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
@@ -1236,8 +1237,11 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    wt_tau_id_binned_ = 1.0;
     if (event->Exists("wt_tau_id_binned")) wt_tau_id_binned_  = event->Get<double>("wt_tau_id_binned");
-    else wt_tau_id_binned_ = 1.0;
+    wt_tau_id_tight_ = 1.0;
+    if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
+    
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();

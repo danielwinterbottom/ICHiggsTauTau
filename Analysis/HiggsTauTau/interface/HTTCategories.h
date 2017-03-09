@@ -643,6 +643,7 @@ class HTTCategories : public ModuleBase {
   bool trg_singletau_2_;
   
   double wt_tau_id_binned_;
+  double wt_tau_id_tight_;
 
 
  public:
