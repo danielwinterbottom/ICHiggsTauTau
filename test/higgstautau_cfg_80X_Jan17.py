@@ -14,11 +14,13 @@ opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SU
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/Tau/MINIAOD/PromptReco-v3/000/284/036/00000/36B9BD65-5B9F-E611-820B-02163E0126D3.root', parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string, "input file")
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/SingleElectron/MINIAOD/PromptReco-v3/000/284/036/00000/1CBE1DEB-589F-E611-ABBB-02163E0143B5.root', parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '80X_mcRun2_asymptotic_2016_TrancheIV_v7', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '80X_mcRun2_asymptotic_2016_TrancheIV_v8', parser.VarParsing.multiplicity.singleton,
 #opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
+opts.register('isRunsGtoH', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Is dat from run G or H")
 #opts.register('release', '7412MINIAOD', parser.VarParsing.multiplicity.singleton,
 opts.register('release', '80XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
@@ -38,6 +40,7 @@ isData      = opts.isData
 tag         = opts.globalTag
 release     = opts.release
 doLHEWeights = opts.LHEWeights
+isRunsGtoH = opts.isRunsGtoH
 if not isData:
   doHT     = opts.doHT
   isReHLT  = opts.isReHLT
@@ -1113,8 +1116,8 @@ if release in ['80XMINIAOD']:
   
 
 #from JetMETCorrections.Type1MET.multPhiCorr_741_25nsDY_cfi import multPhiCorr_741_25nsDY as multPhiCorrParams_Txy_25ns
-from JetMETCorrections.Type1MET.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
-#from JetMETCorrections.Type1MET.multPhiCorr_Data_Combined_80X_sumPt_cfi import multPhiCorr_Data_B_80X as multPhiCorrParams_Txy_25ns
+if not isRunsGtoH: from JetMETCorrections.Type1MET.multPhiCorr_Data_Combined_80X_sumPt_cfi import multPhiCorr_Data_B_80X as multPhiCorrParams_Txy_25ns
+else: from JetMETCorrections.Type1MET.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
 
 multPhiCorrParams_T0rtTxy_25ns     = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
 multPhiCorrParams_T0rtT1Txy_25ns   = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
@@ -1132,14 +1135,29 @@ process.pfMEtMultShiftCorr = cms.EDProducer("MultShiftMETcorrInputProducer",
 )
     
 process.icPfMetProducerXYCorr = producers.icMetProducer.clone(
-                           input=cms.InputTag("slimmedMETs"),
-                           branch = cms.string("pfMetFromSlimmedXYCorr"),
-                           srcCorrections = cms.VInputTag(
-                               cms.InputTag('pfMEtMultShiftCorr'),
-                               ),
-                           getUncorrectedMet=cms.bool(False)
+    input=cms.InputTag("slimmedMETs"),
+    branch = cms.string("pfMetFromSlimmedXYCorr"),
+    srcCorrections = cms.VInputTag(
+        cms.InputTag('pfMEtMultShiftCorr'),
+        ),
+    getUncorrectedMet=cms.bool(False)
+)
+    
+process.icPfMetProducerXYCorr2 = producers.icMetProducer.clone(
+    input=cms.InputTag("slimmedMETs"),
+    branch = cms.string("pfMetFromSlimmedXYCorr2"),
+    getUncorrectedMet=cms.bool(False)
+)    
                            
-                           )
+#CorrectedPatMETProducer.cc
+
+process.patMetTxy = cms.EDProducer(
+    "CorrectedPatMETProducer",
+    src = cms.InputTag('slimmedMETs'),
+    srcCorrections = cms.VInputTag(
+        cms.InputTag('pfMEtMultShiftCorr')
+    ),
+) 
 
 process.icPfMetSequence = cms.Sequence(
   process.pfMetRe+
@@ -1151,8 +1169,11 @@ if release in ['80XMINIAOD']:
   process.icPfMetSequence+=cms.Sequence(
       process.icPuppiMetProducer+
       process.pfMEtMultShiftCorr+
-      process.icPfMetProducerXYCorr
+      process.icPfMetProducerXYCorr+
+      process.patMetTxy+
+      process.icPfMetProducerXYCorr2
       )
+  #if not isData: process.icPfMetSequence.remove(process.pfMEtMultShiftCorr) #uncomment!
   #process.icPfMetSequence+=cms.Sequence(process.icRecorrectedPfMetProducer)
 
 from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET

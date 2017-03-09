@@ -122,11 +122,12 @@ if __name__ == '__main__':
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
-        
+        isRunsGtoH='isRunsGtoH=0'
+        if "Run2016H" in task[1] or "Run2016G" in task[1]: isRunsGtoH='isRunsGtoH=1'
         if "Run2016H" in task[1]:
-            config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_v16'] 
+            config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_v16', isRunsGtoH] 
         else:
-            config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_2016SeptRepro_v7']
+            config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_2016SeptRepro_v7', isRunsGtoH]
         #submit(config)
         p = Process(target=submit, args=(config,))
         p.start()
