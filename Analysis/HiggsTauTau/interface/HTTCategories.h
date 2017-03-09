@@ -198,6 +198,8 @@ class HTTCategories : public ModuleBase {
   branch_var met_;
   float pfmet_phi_;
   branch_var met_phi_;
+  branch_var uncorrmet_;
+  branch_var uncorrmet_phi_;
   branch_var puppimet_;
   float puppimet_phi_; 
   float pfmetCov00_;

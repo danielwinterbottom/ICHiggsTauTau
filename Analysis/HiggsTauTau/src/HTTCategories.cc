@@ -871,10 +871,10 @@ namespace ic {
           synctree_->Branch("decayModeFindingOldDMs_2",&ldecayModeFindingOldDMs_2,"decayModeFindingOldDMs_2/O");
 
       }
-      // Uncorrected PF MET (not used in analysis)
       synctree_->Branch("met", &met_.var_float, "met/F");
-      // Uncorrected PF MET phi (not used in analysis)
       synctree_->Branch("metphi", &met_phi_.var_float, "met_phi/F");
+      synctree_->Branch("uncorrmet", &uncorrmet_.var_float, "met/F");
+      synctree_->Branch("uncorrmetphi", &uncorrmet_phi_.var_float, "met_phi/F");
       // Elements of the PF MET covariance matrix (not used in analysis)
       synctree_->Branch("metcov00", &metCov00_, "metCov00/F");
       synctree_->Branch("metcov01", &metCov01_, "metCov01/F");
@@ -1582,6 +1582,11 @@ namespace ic {
     }
     met_ = mets->vector().pt();
     met_phi_ = mets->vector().phi();
+    
+    uncorrmet_ = met_;
+    if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
+    uncorrmet_phi_ = met_phi_;
+    if (event->Exists("met_phi_norecoil")) uncorrmet_phi_ = event->Get<double>("met_phi_norecoil");
 
     metCov00_ = mets->xx_sig();
     metCov10_ = mets->yx_sig();
