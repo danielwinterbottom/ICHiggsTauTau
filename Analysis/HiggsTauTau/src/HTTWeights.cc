@@ -366,7 +366,8 @@ namespace ic {
           if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
           double pt = parts[i]->pt();
           pt = std::min(pt, 400.);
-          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::summer16_80X) top_wt *= std::exp(0.0615-0.0005*pt);
           }
         }
       }

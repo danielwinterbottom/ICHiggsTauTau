@@ -691,7 +691,7 @@ namespace ic {
          leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
          alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
          alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-         alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
+         alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
       }
     }
       /*
@@ -943,15 +943,17 @@ namespace ic {
        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
        
-       if(alt_trig_obj_label!=""){
-         std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);  
-         leg1_match = leg1_match || IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
-         leg2_match = leg2_match || IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
-       }
-
        if (leg1_match && leg2_match){
          passed_doubletau = true;  
          dileptons_pass.push_back(dileptons[i]);
+        } else if(alt_trig_obj_label!=""){
+           std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);  
+           leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
+           leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
+           if (leg1_match && leg2_match){
+             passed_doubletau = true;  
+             dileptons_pass.push_back(dileptons[i]);
+          }
         }
       }
     }
