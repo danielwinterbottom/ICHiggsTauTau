@@ -939,8 +939,6 @@ def Plot(nodename, infile=None):
     if not options.custom_y_range:
         if(options.log_y): 
             axish[0].SetMinimum(0.0009)
-            print 1.1*bkghist.GetMaximum()
-            print axish[0].GetMinimum()
             axish[0].SetMaximum(10**((1+options.extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
         else: 
             axish[0].SetMinimum(0)
