@@ -516,7 +516,7 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
   elif method in [12, 13, 14, 16]:
       if method == 16:
           cat_nobtag = '('+cats['btag_wnobtag']+')*('+cats['baseline']+')'
-
+          
           full_selection = BuildCutString(wt, sel, cat_nobtag, OSSS)
           ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', '')
           os_selection = BuildCutString(wt, '', cat_nobtag, 'os', '')
@@ -600,7 +600,7 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
                 shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
             shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
             shape_node = ana.SummedFactory('shape', data, plot, shape_selection)
-        if method in [10, 12, 14]:
+        elif method in [10, 12, 14]:
             if method == 14:
                 shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
             else: 
@@ -817,8 +817,7 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
-def Plot(ana, nodename, outfile=None):
-    
+def Plot(nodename, infile=None):
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
     ROOT.TH1.AddDirectory(False)
     
@@ -844,12 +843,13 @@ def Plot(ana, nodename, outfile=None):
             background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)))
             background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["FakeTaus"],ROOT.TColor.GetColor(250,202,255)))
         
-    total_datahist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
+    total_datahist = infile.Get(nodename+'/data_obs').Clone()
+    
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
     blind_datahist.SetMarkerStyle(20)
     blind_datahist.SetLineColor(1)
-
+    
     #Blinding by hand using requested range, set to 200-4000 by default:
     if options.blind:
         for i in range(0,total_datahist.GetNbinsX()):
@@ -862,21 +862,22 @@ def Plot(ana, nodename, outfile=None):
         blind_datahist.Scale(1.0,"width")
         total_datahist.Scale(1.0,"width")
         
-        #Create stacked plot for the backgrounds
+    #Create stacked plot for the backgrounds
     bkg_histos = []
     for i,t in enumerate(background_schemes[options.channel]):
         plots = t['plot_list']
         h = ROOT.TH1F()
         for j,k in enumerate(plots):
             if h.GetEntries()==0:
-                h = ana.nodes[nodename].nodes[k].shape.hist.Clone()
+                h = infile.Get(nodename+'/'+k).Clone()
+                
                 h.SetName(k)
             else:
-                h.Add(ana.nodes[nodename].nodes[k].shape.hist.Clone())
+                h.Add(infile.Get(nodename+'/'+k).Clone())
         h.SetFillColor(t['colour'])
         h.SetLineColor(ROOT.kBlack)
         h.SetMarkerSize(0)
-
+    
         if options.norm_bins:
             h.Scale(1.0,"width")
         bkg_histos.append(h)
@@ -910,9 +911,10 @@ def Plot(ana, nodename, outfile=None):
         axish[1].GetXaxis().SetLabelSize(0.03)
         axish[1].GetYaxis().SetNdivisions(4)
         axish[1].GetYaxis().SetTitle("Obs/Exp")
-        axish[1].GetYaxis().SetTitleOffset(1.8)
+        axish[1].GetYaxis().SetTitleOffset(1.6)
+        axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
-
+    
         axish[0].GetXaxis().SetTitleSize(0)
         axish[0].GetXaxis().SetLabelSize(0)
         if options.custom_x_range:
@@ -925,17 +927,24 @@ def Plot(ana, nodename, outfile=None):
         axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         if options.custom_x_range:
           axish[0].GetXaxis().SetRangeUser(options.x_axis_min,options.x_axis_max-0.01)
-        #if options.custom_y_range:                                                                
+        if options.custom_y_range:                                                                
           axish[0].GetYaxis().SetRangeUser(options.y_axis_min,options.y_axis_max)
     axish[0].GetYaxis().SetTitle(options.y_title)
-    axish[0].GetYaxis().SetTitleOffset(1.8)
+    axish[0].GetYaxis().SetTitleOffset(1.6)
+    axish[0].GetYaxis().SetTitleSize(0.04)
     axish[0].GetYaxis().SetLabelSize(0.03)
     axish[0].GetXaxis().SetTitle(options.x_title)
+    axish[1].GetXaxis().SetTitleSize(0.04)
     if not options.ratio: axish[0].GetXaxis().SetLabelSize(0.03)
-    if not options.custom_y_range: axish[0].SetMaximum(1.1*(1+options.extra_pad)*bkghist.GetMaximum())
-    if not options.custom_y_range: 
-        if(options.log_y): axish[0].SetMinimum(0.0009)
-        else: axish[0].SetMinimum(0)
+    if not options.custom_y_range:
+        if(options.log_y): 
+            axish[0].SetMinimum(0.0009)
+            print 1.1*bkghist.GetMaximum()
+            print axish[0].GetMinimum()
+            axish[0].SetMaximum(10**((1+options.extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+        else: 
+            axish[0].SetMinimum(0)
+            axish[0].SetMaximum(1.1*(1+options.extra_pad)*bkghist.GetMaximum())
     axish[0].Draw()
     
     #Draw uncertainty band
@@ -948,7 +957,7 @@ def Plot(ana, nodename, outfile=None):
     if options.draw_signal_mass != "":
         scheme = sig_schemes[options.signal_scheme]
         for i in scheme[1]: 
-            h = ana.nodes[nodename].nodes[i+options.draw_signal_mass].shape.hist.Clone()
+            h = infile.Get(nodename+'/'+i+options.draw_signal_mass).Clone()
             if sighist.GetEntries() == 0: sighist = h
             else: sighist.Add(h)
         sighist.SetLineColor(ROOT.kBlue)
@@ -974,8 +983,8 @@ def Plot(ana, nodename, outfile=None):
     #sighist2.Draw("histsame")
     error_hist = bkghist.Clone()
     if options.do_custom_uncerts:
-      bkg_uncert_up = outfile.Get(nodename+'/total_bkg_custom_uncerts_up')
-      bkg_uncert_down = outfile.Get(nodename+'/total_bkg_custom_uncerts_down')
+      bkg_uncert_up = infile.Get(nodename+'/total_bkg_custom_uncerts_up').Clone()
+      bkg_uncert_down = infile.Get(nodename+'/total_bkg_custom_uncerts_down').Clone()
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
@@ -992,7 +1001,7 @@ def Plot(ana, nodename, outfile=None):
           error = options.add_flat_uncert*error_hist.GetBinContent(i)
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
-
+    
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
@@ -1036,7 +1045,6 @@ def Plot(ana, nodename, outfile=None):
     #Add ratio plot if required
     if options.ratio:
         ratio_bkghist = plotting.MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
-        #else: ratio_bkghist = plotting.MakeRatioHist(bkghist.Clone(),bkghist.Clone(),True,False)
         blind_ratio = plotting.MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
         pads[1].cd()
         pads[1].SetGrid(0,1)
@@ -1105,16 +1113,21 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
                 sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
                 first_hist=False
             elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
-            if 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
+            if first_hist and'ZTT'+add_name in nodenames: 
+                sum_hist = ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone()
+                first_hist=False
+            elif 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
+            if not first_hist:
+                sum_hist.SetName(outname)
+                sum_hist.Write()
         elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
             if first_hist and 'ZLL'+add_name in nodenames:
                 sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
                 first_hist=False
             elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
+            if not first_hist:
+                sum_hist.SetName(outname)
+                sum_hist.Write()
         else: 
             if i is 'Z':
                 outname = 'ZLL'+add_name
@@ -1124,9 +1137,13 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
                     sum_hist = ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone()
                     first_hist=False
                 elif i+'J'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone())
-                if i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
+                if first_hist and i+j+add_name in nodenames:
+                    sum_hist = ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone()    
+                    first_hist=False
+                elif i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
+            if not first_hist:    
+                sum_hist.SetName(outname)
+                sum_hist.Write()
 
     first_hist=True
     for node in nodes:
@@ -1135,8 +1152,9 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
                 total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
                 first_hist=False
             else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
-    total_bkg.SetName('total_bkg'+add_name)
-    total_bkg.Write()
+    if not first_hist:        
+        total_bkg.SetName('total_bkg'+add_name)
+        total_bkg.Write()
     outfile.cd()
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
@@ -1297,16 +1315,11 @@ for systematic in systematics:
     #Run default plot        
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
     
-    #"do_custom_uncerts":False, "uncert_title":"Systematic uncertainty"
     if options.do_custom_uncerts:
         RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile)
         RunPlotting(ana_down, cat, sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile)
     
     PrintSummary(nodename, ['data_obs'], add_name)
-    
-    # Generate pdf and png plots here for default only
-    if not options.no_plot and systematic == 'default':
-        Plot(ana,nodename,outfile)
     
     # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if 'signal' not in samples_to_skip:
@@ -1349,8 +1362,10 @@ for systematic in systematics:
                     mssm_hist.Scale(sf)
                     mssm_hist.Write()
         outfile.cd()
-    
-                    
+outfile.Close()
+plot_file = ROOT.TFile(output_name, 'READ')
+if not options.no_plot:
+    Plot(nodename,plot_file)                    
             
     
                 
