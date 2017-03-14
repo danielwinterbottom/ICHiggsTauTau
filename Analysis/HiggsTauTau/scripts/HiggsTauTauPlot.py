@@ -483,6 +483,10 @@ def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
       ana.nodes[nodename].AddNode(ana.SummedFactory('VVJ'+add_name, samples, plot, full_selection))
   
 def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'   
   full_selection = BuildCutString(wt, sel, cat, OSSS)
   wg_node = ana.SummedFactory('WGam'+add_name, samples, plot, full_selection)
   return wg_node
