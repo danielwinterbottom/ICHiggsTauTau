@@ -348,6 +348,6 @@ for ch in channels:
 
   varsplit = var.split('(')
   varname=varsplit[0]
-  #os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
-  #os.system('rm %(output_folder)s/datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
+  os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
+  os.system('rm %(output_folder)s/datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
 
