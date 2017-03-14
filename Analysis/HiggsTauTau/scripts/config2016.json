@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/Feb14_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Feb14_MC_80X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar11_MC_80X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["em", "et", "mt", "tt", "zee", "zmm"],
@@ -50,7 +50,7 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Feb14/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Mar11/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
