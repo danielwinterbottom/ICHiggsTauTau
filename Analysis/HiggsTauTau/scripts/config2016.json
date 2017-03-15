@@ -1,10 +1,14 @@
 {
   "job": {
-    "filelist" : "filelists/Aug11_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jan24_MC_80X/",
+    "filelist" : "filelists/Feb14_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar11_MC_80X/",
     "max_events":   -1,
     "timings":      true,
+<<<<<<< HEAD
     "channels":     ["et", "mt"],
+=======
+    "channels":     ["em", "et", "mt", "tt", "zee", "zmm"],
+>>>>>>> 3b5260845a6c28a19f06540b6484fb4cb8ac932b
     "sequences": {
     "all":  ["default"]
 //,"scale_met_hi","scale_met_lo","res_met_high","res_met_lo"]
@@ -20,7 +24,7 @@
     "store_hltpaths" : false,
     "mc"            : "summer16_80X",
     "era"           : "data_2016",
-    "strategy"      : "mssmspring16",
+    "strategy"      : "mssmsummer16",
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
@@ -32,7 +36,7 @@
     "add_Hhh_variables" : false,
     "get_effective" : false,
     "do_btag_eff":false,
-    "trg_in_mc" : false,
+    "trg_in_mc" : true,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "do_singletau"    :true,
@@ -51,8 +55,12 @@
     "genJets"       : "genJets",
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
+<<<<<<< HEAD
    // "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Feb02/",
     "output_folder" : "output/",
+=======
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Mar11/",
+>>>>>>> 3b5260845a6c28a19f06540b6484fb4cb8ac932b
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -72,8 +80,8 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2016_69p2mb_Cert_271036-276811.root",
-    "mc_pu_file"    : "input/pileup/MC_Spring16_PU25ns_V1.root",
+    "data_pu_file"  : "input/pileup/Data_Pileup_2016_271036-284044_80bins.root",
+    "mc_pu_file"    : "input/pileup/MC_Moriond17_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : false,
@@ -145,6 +153,24 @@
         "extra_muon_veto":true,
         "max_extra_elecs": 1,
         "max_extra_muons": 1
+      }
+    },
+    "zmm": {
+      "baseline": {
+        "pair_dr": 0.3,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 0,
+        "max_extra_muons": 2
+      }
+    },
+    "zee": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 2,
+        "max_extra_muons": 0
       }
     }
   },

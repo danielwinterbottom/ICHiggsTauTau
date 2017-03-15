@@ -209,6 +209,9 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
+        if(strategy_==strategy::mssmsummer16 || tau_optimisation_){
+          iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+        }
         if(strategy_==strategy::fall15){
           iso_discr_2_ = tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
         }
@@ -241,10 +244,14 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Muon const* muon  = dynamic_cast<Muon const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        iso_1_ = PF03IsolationVal(muon, 0.5, 0);
+        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16) iso_1_ = PF04IsolationVal(muon, 0.5, 0);
+        else iso_1_ = PF03IsolationVal(muon, 0.5, 0);
         //lbyMediumCombinedIsolation_2 = tau->HasTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || tau_optimisation_){
+          iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+        }
+        if(strategy_==strategy::mssmsummer16 || tau_optimisation_){
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
         if(strategy_==strategy::fall15){
@@ -281,17 +288,23 @@ int SVFitTest::Execute(TreeEvent *event) {
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
-        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16) iso_2_ = PF04IsolationVal(muon, 0.5, 0);
+        if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 ) iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
-    }
+    } 
     if(channel_ == channel::tt && do_preselection_) {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
         Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+<<<<<<< HEAD
         if(tau_optimisation_||strategy_==strategy::fall15 || strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16){
           iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
           iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+=======
+        if(tau_optimisation_||strategy_==strategy::fall15 || strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16){
+          iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+          iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+>>>>>>> 3b5260845a6c28a19f06540b6484fb4cb8ac932b
         }
         if(!tau_optimisation_&&strategy_==strategy::spring15){
           lbyTightCombinedIsolation_1 = tau1->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
@@ -321,7 +334,27 @@ int SVFitTest::Execute(TreeEvent *event) {
         antimu_2_ = lagainstMuonLoose3_2;
         if(iso_discr_1_>0 && iso_discr_2_>0 && antiele_1_>0 && antimu_1_>0 && antiele_2_>0 && antimu_2_>0) pass_presel = true;
     }
-
+    //if(channel_ == channel::zmm && do_preselection_) { 
+    //    if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+    //    if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+    //    Muon const* muon1  = dynamic_cast<Muon const*>(lep1);
+    //    Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+    //    iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
+    //    iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
+    //    if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
+    //}
+    //if(channel_ == channel::zee && do_preselection_) { 
+    //    if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+    //    if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+    //    Electron  const* elec1  = dynamic_cast<Electron const*>(lep1);
+    //    Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
+    //    iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+    //    iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+    //    if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
+    //}
+    
+    if((channel_ == channel::zmm || channel_ == channel::zee) && do_preselection_) pass_presel = true;
+    
 
 bool lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
 

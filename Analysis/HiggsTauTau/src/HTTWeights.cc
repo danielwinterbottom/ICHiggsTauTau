@@ -200,50 +200,96 @@ namespace ic {
               w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
           fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-          fns_["m_trgOR_binned_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_trgOR_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          if(mc_ != mc::summer16_80X){
+            fns_["m_trgOR_binned_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgOR_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          } else{
+            fns_["m_trgOR4_binned_ratio"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgOR4_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+            fns_["m_trgOR4_binned_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgOR4_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+            fns_["m_trgOR4_binned_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgOR4_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          }
           fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p20_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
-          fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+          if(mc_ != mc::summer16_80X){
+            fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+          } else{
+            fns_["m_trgIsoMu24orTkIsoMu24_desy_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgIsoMu24orTkIsoMu24_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+          }
           fns_["m_trgMu8leg_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trgMu8leg_desy_data")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_trgMu23leg_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trgMu23leg_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+          if(mc_ == mc::summer16_80X){
+            fns_["m_trgMu8leg_desy_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgMu8leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
+            fns_["m_trgMu23leg_desy_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgMu23leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
+          }
           fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+          if (mc_ == mc::summer16_80X){
+            fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_trg_binned_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+          }
           fns_["e_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("e_idiso0p15_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
-          fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
-             w_->function("e_idiso0p10_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          if(mc_ != mc::summer16_80X){
+            fns_["e_idiso0p10_desy_ratio"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_idiso0p10_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          } else{
+            fns_["e_idiso0p10_KITbins_desy_ratio"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_idiso0p10_KITbins_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          }
           fns_["e_trgEle25eta2p1WPTight_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trgEle25eta2p1WPTight_desy_data")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_trgEle12leg_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trgEle12leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_trgEle23leg_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trgEle23leg_desy_data")->functor(w_->argSet("e_pt,e_eta")));
-          fns_["t_trgLooseIso_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("t_trgLooseIso_data")->functor(w_->argSet("t_pt")));
-          fns_["t_trgMediumIso_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("t_trgMediumIso_data")->functor(w_->argSet("t_pt")));
-          fns_["t_trgTightIso_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("t_trgTightIso_data")->functor(w_->argSet("t_pt")));
-          fns_["t_trgVTightIso_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("t_trgVTightIso_data")->functor(w_->argSet("t_pt")));
-          fns_["t_trgLooseIsoSS_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("t_trgLooseIsoSS_data")->functor(w_->argSet("t_pt")));
-          fns_["t_trgMediumIsoSS_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("t_trgMediumIsoSS_data")->functor(w_->argSet("t_pt")));
-          fns_["t_trgTightIsoSS_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("t_trgTightIsoSS_data")->functor(w_->argSet("t_pt")));
-          fns_["t_trgVTightIsoSS_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("t_trgVTightIsoSS_data")->functor(w_->argSet("t_pt")));
+          if(mc_ == mc::summer16_80X){
+            fns_["e_trgEle23leg_desy_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_trgEle23leg_desy_mc")->functor(w_->argSet("e_pt,e_eta")));
+            fns_["e_trgEle12leg_desy_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_trgEle12leg_desy_mc")->functor(w_->argSet("e_pt,e_eta")));
+          }
+          if(mc_ == mc::summer16_80X){
+            fns_["t_fake_TightIso_tt_mc"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_fake_TightIso_tt_mc")->functor(w_->argSet("t_pt,t_dm")));
+            fns_["t_genuine_TightIso_tt_mc"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_genuine_TightIso_tt_mc")->functor(w_->argSet("t_pt,t_dm")));
+            fns_["t_fake_TightIso_tt_data"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_fake_TightIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
+            fns_["t_genuine_TightIso_tt_data"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_genuine_TightIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
+          } else{
+            fns_["t_trgLooseIso_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_trgLooseIso_data")->functor(w_->argSet("t_pt")));
+            fns_["t_trgMediumIso_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_trgMediumIso_data")->functor(w_->argSet("t_pt")));
+            fns_["t_trgTightIso_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_trgTightIso_data")->functor(w_->argSet("t_pt")));
+            fns_["t_trgVTightIso_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_trgVTightIso_data")->functor(w_->argSet("t_pt")));
+            fns_["t_trgLooseIsoSS_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_trgLooseIsoSS_data")->functor(w_->argSet("t_pt")));
+            fns_["t_trgMediumIsoSS_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_trgMediumIsoSS_data")->functor(w_->argSet("t_pt")));
+            fns_["t_trgTightIsoSS_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_trgTightIsoSS_data")->functor(w_->argSet("t_pt")));
+            fns_["t_trgVTightIsoSS_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("t_trgVTightIsoSS_data")->functor(w_->argSet("t_pt")));
+          }
         }
         if(do_tau_id_sf_){
           fns_["t_iso_mva_m_pt30_sf"] = std::shared_ptr<RooFunctor>(
@@ -320,7 +366,8 @@ namespace ic {
           if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
           double pt = parts[i]->pt();
           pt = std::min(pt, 400.);
-          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::summer16_80X) top_wt *= std::exp(0.0615-0.0005*pt);
           }
         }
       }
@@ -334,7 +381,7 @@ namespace ic {
     }
     
     if (do_tau_fake_weights_) {
-      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+      Candidate const* tau = dilepton[0]->GetCandidate("lepton2");
       double fake_pt = tau->pt() < 200. ? tau->pt() : 200.;
       double fake_weight = tau_fake_weights_->Eval(fake_pt);
       eventInfo->set_weight("tau_fake_weight",fake_weight);
@@ -398,7 +445,14 @@ namespace ic {
         double pt_2 = tau2->pt();
         double eta_2 = tau2->eta();
         auto args_2 = std::vector<double>{pt_2,eta_2,decay_mode_2};
-        tau_sf_2 = (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
+        double tau_sf_2_old = (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
+        if(mc_ == mc::summer16_80X){
+            tau_sf_2  = (gen_match_2 == 5) ? 0.99 : 1.0;
+            double tight_tau_sf_2 = (gen_match_2 == 5) ? 0.95 : 1.0;
+            event->Add("wt_tau_id_tight",tight_tau_sf_2/(tau_sf_2));
+        }
+        else tau_sf_2 = tau_sf_2_old;
+        event->Add("wt_tau_id_binned",tau_sf_2_old/(tau_sf_2));
       } else {
         unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
         unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
@@ -412,8 +466,13 @@ namespace ic {
         double eta_2 = tau2->eta();
         auto args_1 = std::vector<double>{pt_1,eta_1,decay_mode_1};
         auto args_2 = std::vector<double>{pt_2,eta_2,decay_mode_2};
-        tau_sf_1 = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
-        tau_sf_2 = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
+        double tau_sf_1_old = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
+        double tau_sf_2_old = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
+        if(mc_ == mc::summer16_80X) tau_sf_1  = (gen_match_1 == 5) ? 0.95 : 1.0;
+        else tau_sf_1 = tau_sf_1_old;
+        if(mc_ == mc::summer16_80X) tau_sf_2  = (gen_match_2 == 5) ? 0.95 : 1.0;
+        else tau_sf_2 = tau_sf_2_old;
+        event->Add("wt_tau_id_binned",tau_sf_1_old*tau_sf_2_old/(tau_sf_1*tau_sf_2));
       }
      eventInfo->set_weight("wt_tau_id_sf",tau_sf_1*tau_sf_2);
     }
@@ -533,7 +592,7 @@ namespace ic {
       double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
       double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
       double wtzpt_down=1.0;
-      double wtzpt_up = wtzpt*wtzpt; 
+      double wtzpt_up = wtzpt*wtzpt;
       eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
@@ -760,6 +819,10 @@ namespace ic {
                     ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_desy.data());
                   } else ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
                   ele_trg_mc=1;
+                  if(mc_ == mc::summer16_80X){
+                    ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());  
+                    ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
+                  }
               } else {
                   std::cout << "Cross trigger not currently supported! Setting trigger efficiencies to 1" << std::endl;
                   tau_trg=1;
@@ -984,12 +1047,16 @@ namespace ic {
                     tau_trg_mc=1;
                     auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};
                     auto args_desy = std::vector<double>{pt,m_signed_eta};
-                    if(m_iso<0.15){
-                      mu_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args_desy.data());
-                    } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
-                  //  mu_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
-                   // mu_trg = 1;
-                    mu_trg_mc=1;
+                    if(mc_ == mc::summer16_80X){
+                      mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
+                      mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
+                    } else{
+                      if(m_iso<0.15){
+                        mu_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args_desy.data());
+                      } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
+                      mu_trg = 1;   
+                    }
+              
                 } else {
                     std::cout << "Cross trigger not currently supported! Setting trigger efficiencies to 1" << std::endl;
                     tau_trg=1;
@@ -1198,6 +1265,13 @@ namespace ic {
           m_trg_8  = fns_["m_trgMu8leg_desy_data"]->eval(args_2.data());
           e_trg_17 = fns_["e_trgEle23leg_desy_data"]->eval(args_1.data());
           e_trg_12  = fns_["e_trgEle12leg_desy_data"]->eval(args_1.data());
+          
+          if(mc_ == mc::summer16_80X){
+            m_trg_17_mc = fns_["m_trgMu23leg_desy_mc"]->eval(args_2.data());
+            m_trg_8_mc  = fns_["m_trgMu8leg_desy_mc"]->eval(args_2.data());
+            e_trg_17_mc = fns_["e_trgEle23leg_desy_mc"]->eval(args_1.data());
+            e_trg_12_mc  = fns_["e_trgEle12leg_desy_mc"]->eval(args_1.data());
+          }
         }
        if(mc_ !=mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
 
@@ -1339,16 +1413,38 @@ namespace ic {
                 tau2_trg       = Efficiency(pt_2, 39.9131, 7.77317, 39.9403, 140.999, 7.84025E-01);
               }*/ 
             }else if (tt_trg_iso_mode_==0){//Using tight iso
-              if(gm1_ == 5){ 
-                tau1_trg = fns_["t_trgTightIso_data"]->eval(args_1.data());
-              } else {
-                tau1_trg = fns_["t_trgTightIsoSS_data"]->eval(args_1.data());
-              } 
-              if(gm2_ == 5){ 
-                tau2_trg = fns_["t_trgTightIso_data"]->eval(args_2.data());
-              } else {
-                tau2_trg = fns_["t_trgTightIsoSS_data"]->eval(args_2.data());
-              } 
+              if(mc_ == mc::summer16_80X){
+                double decay_mode_1 = tau1->decay_mode();
+                double decay_mode_2 = tau2->decay_mode();
+                auto args_1 = std::vector<double>{pt_1,decay_mode_1};  
+                auto args_2 = std::vector<double>{pt_2,decay_mode_2};
+
+                if(gm1_ == 5){ 
+                  tau1_trg = fns_["t_genuine_TightIso_tt_data"]->eval(args_1.data());
+                  tau1_trg_mc = fns_["t_genuine_TightIso_tt_mc"]->eval(args_1.data());
+                } else {
+                  tau1_trg = fns_["t_fake_TightIso_tt_data"]->eval(args_1.data());
+                  tau1_trg_mc = fns_["t_fake_TightIso_tt_mc"]->eval(args_1.data());
+                } 
+                if(gm2_ == 5){ 
+                  tau2_trg = fns_["t_genuine_TightIso_tt_data"]->eval(args_2.data());
+                  tau2_trg_mc = fns_["t_genuine_TightIso_tt_mc"]->eval(args_2.data());
+                } else {
+                  tau2_trg = fns_["t_fake_TightIso_tt_data"]->eval(args_2.data());
+                  tau2_trg_mc = fns_["t_fake_TightIso_tt_mc"]->eval(args_2.data());
+                }
+              } else{ 
+                if(gm1_ == 5){ 
+                  tau1_trg = fns_["t_trgTightIso_data"]->eval(args_1.data());
+                } else {
+                  tau1_trg = fns_["t_trgTightIsoSS_data"]->eval(args_1.data());
+                } 
+                if(gm2_ == 5){ 
+                  tau2_trg = fns_["t_trgTightIso_data"]->eval(args_2.data());
+                } else {
+                  tau2_trg = fns_["t_trgTightIsoSS_data"]->eval(args_2.data());
+                }
+              }
             } else if (tt_trg_iso_mode_==1) {
               if(gm1_ == 5){ //Using medium iso
                 tau1_trg       = Efficiency(pt_1, 38.2845, 5.3257, 6.450034, 1.6489256, 0.999998);
@@ -1501,17 +1597,22 @@ namespace ic {
              ele2_trg = 1;
              ele2_trg_mc=1;
              auto args_1 = std::vector<double>{e1_pt,e1_signed_eta,e_iso_1};
-             auto args_2 = std::vector<double>{e1_pt,e2_signed_eta,e_iso_2};
+             auto args_2 = std::vector<double>{e2_pt,e2_signed_eta,e_iso_2};
              ele1_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
              ele2_trg = fns_["e_trg_binned_data"]->eval(args_2.data());
-             //  ele_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
-             // ele_trg = 1;
              ele1_trg_mc=1;
              ele2_trg_mc=1;
+             if(mc_ == mc::summer16_80X){
+               ele1_trg_mc=fns_["e_trg_binned_mc"]->eval(args_1.data());
+               ele2_trg_mc=fns_["e_trg_binned_mc"]->eval(args_2.data());
+             }
           }
         }
-        ele1_trg = 1-((1-ele1_trg)*(1-ele2_trg));
-        ele1_trg_mc = 1-((1-ele1_trg_mc)*(1-ele2_trg_mc));
+        if(mc_ != mc::summer16_80X){
+          ele1_trg = 1-((1-ele1_trg)*(1-ele2_trg));
+          ele1_trg_mc = 1-((1-ele1_trg_mc)*(1-ele2_trg_mc));
+        } 
+        // for summer16 only allow first electron to fire trigger
         ele2_trg = 1.0;
         ele2_trg_mc = 1.0;
         if (trg_applied_in_mc_) {
@@ -1577,16 +1678,25 @@ namespace ic {
              mu2_trg_mc=1;
              auto args_1 = std::vector<double>{pt1,m1_signed_eta,m_iso_1};
              auto args_2 = std::vector<double>{pt2,m2_signed_eta,m_iso_2};
-             mu1_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
-             mu2_trg = fns_["m_trgOR_binned_data"]->eval(args_2.data());
-             //  mu_trg_mc = fns_["m_trg_mc"]->eval(args_1.data());
-             // mu_trg = 1;
-             mu1_trg_mc=1;
-             mu2_trg_mc=1;
+             
+             if(mc_ == mc::summer16_80X){
+               mu1_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
+               mu2_trg = fns_["m_trgOR4_binned_data"]->eval(args_2.data());
+               mu1_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
+               mu2_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_2.data());
+             } else{
+               mu1_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
+               mu2_trg = fns_["m_trgOR_binned_data"]->eval(args_2.data());
+               mu1_trg_mc=1;
+               mu2_trg_mc=1;   
+             }
            }
         }
-        mu1_trg = 1-((1-mu1_trg)*(1-mu2_trg));
-        mu1_trg_mc = 1-((1-mu1_trg_mc)*(1-mu2_trg_mc));
+        if(mc_ != mc::summer16_80X){
+          mu1_trg = 1-((1-mu1_trg)*(1-mu2_trg));
+          mu1_trg_mc = 1-((1-mu1_trg_mc)*(1-mu2_trg_mc));
+        }
+        // for summer16 only allow lead muon to fire trigger
         mu2_trg = 1.0;
         mu2_trg_mc = 1.0;
  
@@ -1652,12 +1762,16 @@ namespace ic {
           }         
             ele_idiso = ele_idiso_data/ele_idiso_mc;
 
-        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
+        } else if (mc_ == mc::spring16_80X){
            auto args_1 = std::vector<double>{pt,e_signed_eta};
            auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
            if(e_iso < 0.1){
              ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data());
            } else ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
+        } else if (mc_ == mc::summer16_80X){
+           auto args_1 = std::vector<double>{pt,e_signed_eta};
+           auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
+           ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
           if (do_id_weights_) ele_iso = 1.0;
@@ -1711,12 +1825,16 @@ namespace ic {
           }         
             mu_idiso = mu_idiso_data/mu_idiso_mc;
 
-        } else if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
+        } else if(mc_ == mc::spring16_80X){
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
            if(m_iso<0.15){
              mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
            } else mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
+        } else if(mc_ == mc::summer16_80X){
+           auto args_1 = std::vector<double>{pt,m_signed_eta};
+           auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
+           mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X && mc_ != mc::summer16_80X){ 
           if (do_id_weights_) mu_iso = 1.0;
@@ -1846,14 +1964,23 @@ namespace ic {
             m_idiso = m_idiso_data/m_idiso_mc;
             e_idiso = e_idiso_data/e_idiso_mc;
 
-        } else if (mc_ == mc::spring16_80X || mc_ == mc::summer16_80X){
+        } else if (mc_ == mc::spring16_80X){
            auto args_1 = std::vector<double>{m_pt,m_signed_eta};
            m_idiso = fns_["m_idiso0p20_desy_ratio"]->eval(args_1.data()) ;
            
            auto args_2 = std::vector<double>{e_pt,e_signed_eta};
            e_idiso = fns_["e_idiso0p15_desy_ratio"]->eval(args_2.data()) ;
 
-         }       
+         } else if(mc_ == mc::summer16_80X){
+            double m_iso = PF04IsolationVal(muon, 0.5, 0); 
+            double e_iso = PF03IsolationVal(elec, 0.5, 0);             
+            auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
+            auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
+            m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data()) * fns_["m_iso_binned_ratio"]->eval(args_2_2.data());
+            auto args_1_1 = std::vector<double>{e_pt,m_signed_eta};
+            auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
+            e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2_1.data()); 
+         }
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);
         if(mc_!=mc::fall15_76X && mc_!=mc::spring15_74X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
@@ -1925,6 +2052,7 @@ namespace ic {
            auto args2_2 = std::vector<double>{m_2_pt,m_2_signed_eta,m_2_iso};
            m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data()) * fns_["m_iso_binned_ratio"]->eval(args1_2.data()) ;
            m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data()) * fns_["m_iso_binned_ratio"]->eval(args2_2.data()) ;
+           
           /*if(m_1_pt<1000){
             m_1_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_1_pt));
             m_1_idiso_mc = em_m_idiso_mc_->GetBinContent(em_m_idiso_mc_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_mc_->GetYaxis()->FindBin(m_1_pt));
@@ -2127,26 +2255,51 @@ namespace ic {
       Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
       double etau_fakerate_1=1.0;
       double etau_fakerate_2=1.0;
-      if(channel_ == channel::et){
-        if(gm2_==1||gm2_==3){
-          if(fabs(tau->eta()) < 1.5){
-             etau_fakerate_2 = 1.80;
-          } else etau_fakerate_2=1.30;
+      if(mc_ == mc::summer16_80X){
+        if(channel_ == channel::et){
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.5){
+               etau_fakerate_2 = 1.87;
+            } else etau_fakerate_2=1.46;
+          }
+        } else {
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.5){
+               etau_fakerate_2=1.0;
+            } else etau_fakerate_2=1.37;
+          }
         }
+        if(channel_ == channel::tt){
+          unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+          Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==1||gm1_==3){
+            if(fabs(tau1->eta()) < 1.5){
+               etau_fakerate_1=1.0;
+            } else etau_fakerate_1=1.37;
+          }
+        }  
       } else {
-        if(gm2_==1||gm2_==3){
-          if(fabs(tau->eta()) < 1.5){
-             etau_fakerate_2=1.02;
-          } else etau_fakerate_2=1.11;
+        if(channel_ == channel::et){
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.5){
+               etau_fakerate_2 = 1.80;
+            } else etau_fakerate_2=1.30;
+          }
+        } else {
+          if(gm2_==1||gm2_==3){
+            if(fabs(tau->eta()) < 1.5){
+               etau_fakerate_2=1.02;
+            } else etau_fakerate_2=1.11;
+          }
         }
-      }
-      if(channel_ == channel::tt){
-        unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-        if(gm1_==1||gm1_==3){
-          if(fabs(tau1->eta()) < 1.5){
-             etau_fakerate_1=1.02;
-          } else etau_fakerate_1=1.11;
+        if(channel_ == channel::tt){
+          unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+          Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==1||gm1_==3){
+            if(fabs(tau1->eta()) < 1.5){
+               etau_fakerate_1=1.02;
+            } else etau_fakerate_1=1.11;
+          }
         }
       }
      eventInfo->set_weight("etau_fakerate",etau_fakerate_1*etau_fakerate_2);
@@ -2171,49 +2324,98 @@ namespace ic {
       Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
       double mtau_fakerate_1=1.0;
       double mtau_fakerate_2=1.0;
-      if(channel_ == channel::mt){
-        if(gm2_==2||gm2_==4){
-          if(fabs(tau->eta()) < 0.4){
-            mtau_fakerate_2 = 1.5;
-          } else if(fabs(tau->eta()) < 0.8){
-            mtau_fakerate_2 = 1.4;
-          } else if(fabs(tau->eta()) < 1.2){
-            mtau_fakerate_2 = 1.21;
-          } else if(fabs(tau->eta()) < 1.7){
-            mtau_fakerate_2=2.6;
-          } else if(fabs(tau->eta()) < 2.3){
-            mtau_fakerate_2=2.1;
+      if(mc_ == mc::summer16_80X){
+        if(channel_ == channel::mt){
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2 = 1.263;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2 = 1.364;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2 = 0.854;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=1.712;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=2.324;
+            }
+          }
+        } else {
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2=1.012;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2=1.007;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2=0.87;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=1.154;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=2.281;
+            }
           }
         }
-      } else {
-        if(gm2_==2||gm2_==4){
-          if(fabs(tau->eta()) < 0.4){
-            mtau_fakerate_2=1.15;
-          } else if(fabs(tau->eta()) < 0.8){
-            mtau_fakerate_2=1.15;
-          } else if(fabs(tau->eta()) < 1.2){
-            mtau_fakerate_2=1.18;
-          } else if(fabs(tau->eta()) < 1.7){
-            mtau_fakerate_2=1.2;
-          } else if(fabs(tau->eta()) < 2.3){
-            mtau_fakerate_2=1.3;
+        if(channel_ == channel::tt){
+        unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==2||gm1_==4){
+            if(fabs(tau1->eta()) < 0.4){
+              mtau_fakerate_1=1.012;
+            } else if(fabs(tau1->eta()) < 0.8){
+              mtau_fakerate_1=1.007;
+            } else if(fabs(tau1->eta()) < 1.2){
+              mtau_fakerate_1=0.87;
+            } else if(fabs(tau1->eta()) < 1.7){
+              mtau_fakerate_1=1.154;
+            } else if(fabs(tau1->eta()) < 2.3){
+              mtau_fakerate_1=2.281;
+            }
+          }
+        }  
+      } else{
+        if(channel_ == channel::mt){
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2 = 1.5;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2 = 1.4;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2 = 1.21;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=2.6;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=2.1;
+            }
+          }
+        } else {
+          if(gm2_==2||gm2_==4){
+            if(fabs(tau->eta()) < 0.4){
+              mtau_fakerate_2=1.15;
+            } else if(fabs(tau->eta()) < 0.8){
+              mtau_fakerate_2=1.15;
+            } else if(fabs(tau->eta()) < 1.2){
+              mtau_fakerate_2=1.18;
+            } else if(fabs(tau->eta()) < 1.7){
+              mtau_fakerate_2=1.2;
+            } else if(fabs(tau->eta()) < 2.3){
+              mtau_fakerate_2=1.3;
+            }
           }
         }
-      }
-      if(channel_ == channel::tt){
-      unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-      Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-        if(gm1_==2||gm1_==4){
-          if(fabs(tau1->eta()) < 0.4){
-            mtau_fakerate_1=1.15;
-          } else if(fabs(tau1->eta()) < 0.8){
-            mtau_fakerate_1=1.15;
-          } else if(fabs(tau1->eta()) < 1.2){
-            mtau_fakerate_1=1.18;
-          } else if(fabs(tau1->eta()) < 1.7){
-            mtau_fakerate_1=1.2;
-          } else if(fabs(tau1->eta()) < 2.3){
-            mtau_fakerate_1=1.3;
+        if(channel_ == channel::tt){
+        unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+        Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+          if(gm1_==2||gm1_==4){
+            if(fabs(tau1->eta()) < 0.4){
+              mtau_fakerate_1=1.15;
+            } else if(fabs(tau1->eta()) < 0.8){
+              mtau_fakerate_1=1.15;
+            } else if(fabs(tau1->eta()) < 1.2){
+              mtau_fakerate_1=1.18;
+            } else if(fabs(tau1->eta()) < 1.7){
+              mtau_fakerate_1=1.2;
+            } else if(fabs(tau1->eta()) < 2.3){
+              mtau_fakerate_1=1.3;
+            }
           }
         }
       }

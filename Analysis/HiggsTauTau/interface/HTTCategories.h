@@ -198,6 +198,8 @@ class HTTCategories : public ModuleBase {
   branch_var met_;
   float pfmet_phi_;
   branch_var met_phi_;
+  branch_var uncorrmet_;
+  branch_var uncorrmet_phi_;
   branch_var puppimet_;
   float puppimet_phi_; 
   float pfmetCov00_;
@@ -641,6 +643,16 @@ class HTTCategories : public ModuleBase {
   bool ttHLTPath1_leg2_;
   bool ttHLTPath2_leg2_;
   bool ttHLTPath3_leg2_;
+  
+  bool trg_singleelectron_;
+  bool trg_singlemuon_;
+  bool trg_muonelectron_;
+  bool trg_doubletau_;
+  bool trg_singletau_1_;
+  bool trg_singletau_2_;
+  
+  double wt_tau_id_binned_;
+  double wt_tau_id_tight_;
 
 
  public:

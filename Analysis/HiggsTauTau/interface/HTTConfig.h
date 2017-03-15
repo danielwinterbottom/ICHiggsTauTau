@@ -49,7 +49,8 @@ struct strategy_def {
     spring15,    //Strategy for running on spring15 samples
     fall15,    //Strategy for running on fall15 samples
     mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
-    smspring16    //Strategy for running on spring16 samples, SM analysis
+    smspring16,    //Strategy for running on spring16 samples, SM analysis
+    mssmsummer16
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -61,7 +62,8 @@ inline std::string Strategy2String(strategy const& in) {
     (strategy::spring15, "spring15")
     (strategy::fall15, "fall15")
     (strategy::mssmspring16, "mssmspring16")
-    (strategy::smspring16, "smspring16");
+    (strategy::smspring16, "smspring16")
+    (strategy::mssmsummer16, "mssmsummer16");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -77,7 +79,8 @@ inline strategy String2Strategy(std::string const& in) {
   ("spring15", strategy::spring15)
   ("fall15", strategy::fall15)
   ("mssmspring16", strategy::mssmspring16)
-  ("smspring16", strategy::smspring16);
+  ("smspring16", strategy::smspring16)
+  ("mssmsummer16", strategy::mssmsummer16);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {

@@ -4,7 +4,7 @@
 #include <algorithm>
 
 namespace ic {
-  BTagWeightRun2::BTagWeightRun2(std::string const& name) : ModuleBase(name), channel_(channel::et), era_(era::data_2015) {
+  BTagWeightRun2::BTagWeightRun2(std::string const& name) : ModuleBase(name), channel_(channel::et), era_(era::data_2015), strategy_(strategy::mssmsummer16) {
     jet_label_ = "pfJetsPFlow";
     bbtag_eff_ = nullptr;
     cbtag_eff_ = nullptr;
@@ -19,7 +19,8 @@ namespace ic {
 
   int BTagWeightRun2::PreAnalysis() {
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
-    if( era_ == era::data_2016) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    if(strategy_ == strategy::mssmsummer16) csv_file_path = "./input/btag_sf/CSVv2Moriond17_2017_1_26_BtoH.csv";
+    else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
     calib = new const BTagCalibration("csvv2",csv_file_path);
     if(era_ == era::data_2016){
       reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
@@ -214,7 +215,9 @@ namespace ic {
       }
       bool passtag;
       if(channel_ != channel::tt || era_==era::data_2016){
-        passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.8;
+        double tight_wp = 0.8;
+        if(strategy_ == strategy::mssmsummer16) tight_wp = 0.8484;
+        passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > tight_wp;
       } else {
         passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > 0.46;
       }
