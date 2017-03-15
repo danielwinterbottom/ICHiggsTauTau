@@ -1548,8 +1548,7 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        if(strategy_type == strategy::mssmsummer16) httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_4.root");
-        else httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v5.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v5.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -1673,7 +1672,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_3.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_4.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
