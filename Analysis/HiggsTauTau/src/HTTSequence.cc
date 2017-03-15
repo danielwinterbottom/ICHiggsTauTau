@@ -2881,7 +2881,7 @@ void HTTSequence::BuildExtraMuonVeto(){
                 fabs(m->eta())          < veto_muon_eta   &&
                 fabs(m->dxy_vertex())   < veto_muon_dxy   &&
                 fabs(m->dz_vertex())    < veto_muon_dz    &&
-                ExtraMuonID                     &&
+                ExtraMuonID(m)                     &&
                 PF04IsolationVal(m, 0.5,0) < 0.3;
       });
    }

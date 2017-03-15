@@ -93,7 +93,10 @@ namespace ic {
       std::cout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
       std::cout << "-isTrackerMuon: " << muons[i]->is_tracker() << std::endl;
       std::cout << "-isPF: "<< muons[i]->is_pf() <<std::endl;
-      std::cout << "-Medium Muon ID: "<< MuonMediumHIPsafe(muons[i]) <<std::endl;
+      std::cout << "-Medium Muon ID (HIP Safe): "<< MuonMediumHIPsafe(muons[i]) <<std::endl;
+      //std::cout << "-Loose Muon ID (HIP Safe): "<< MuonMediumHIPsafe(muons[i],true) <<std::endl;
+      std::cout << "-Medium Muon ID: "<< MuonMedium(muons[i]) <<std::endl;
+      //std::cout << "-Loose Muon ID: "<< MuonMedium(muons[i],true) <<std::endl;
       std::cout << "-numberOfValidPixelHits: " << muons[i]->it_pixel_hits() << std::endl;
       std::cout << "-numberOfValidMuonHits: " << muons[i]->gt_valid_muon_hits() << std::endl;
       std::cout<< "-it valid fraciton: " <<muons[i]->it_valid_fraction()<<std::endl;
@@ -117,6 +120,13 @@ namespace ic {
       std::cout << "-dr04_pfiso_dbeta_sum: " << iso << std::endl;
       iso = iso / muons[i]->pt();
       std::cout << "-dr04_pfiso_dbeta_rel: " << iso << std::endl;
+      std::cout << "iso = " << PF04IsolationVal(muons[i], 0.5,0) << std::endl;
+    }
+    
+    
+    if(event->Exists("extra_muon_veto")){
+        bool extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+        std::cout << "Extra muon veto = " << extramuon_veto_ << std::endl;
     }
 
 
