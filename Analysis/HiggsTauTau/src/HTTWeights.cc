@@ -198,8 +198,8 @@ namespace ic {
               w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-          fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          /*fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));*/
           if(mc_ != mc::summer16_80X){
             fns_["m_trgOR_binned_data"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgOR_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
