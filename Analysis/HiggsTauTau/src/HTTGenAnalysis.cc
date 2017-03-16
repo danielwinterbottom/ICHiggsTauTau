@@ -1,5 +1,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTGenAnalysis.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "Utilities/interface/FnRootTools.h"
 
 std::vector<ic::GenParticle> FamilyTree (std::vector<ic::GenParticle> &v, ic::GenParticle p, std::vector<ic::GenParticle*> gen_particles, unsigned &outputID){ 
   if(p.daughters().size() == 0){
@@ -44,11 +45,15 @@ namespace ic {
   }
 
   int HTTGenAnalysis::PreAnalysis() {
+     
+    z_pt_mass_hist_ = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016.root","/","zptmass_histo");
+      
     if(fs_){  
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
       outtree_->Branch("wt_dy"       , &wt_dy_       );
+      outtree_->Branch("wt_zpt"       , &wtzpt_       );
       if(do_theory_uncert_){
         outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
         outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
@@ -174,6 +179,8 @@ namespace ic {
      }
      genpT_ = gen_boson.pt();
      genM_ = gen_boson.M();
+     
+     wtzpt_ = z_pt_mass_hist_.GetBinContent(z_pt_mass_hist_.GetXaxis()->FindBin(genM_),z_pt_mass_hist_.GetYaxis()->FindBin(genpT_));
     
     
     if(do_theory_uncert_){

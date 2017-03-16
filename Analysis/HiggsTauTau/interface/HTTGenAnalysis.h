@@ -95,7 +95,9 @@ class HTTGenAnalysis : public ModuleBase {
   double genpT_;
   double genM_;
   double wt_dy_;
- 
+  double wtzpt_;
+  TH2D z_pt_mass_hist_;
+  
   TFile *ggh_weights_;
   TH1F *ggh_hist_;
   TH1F *ggh_hist_up_;
