@@ -278,10 +278,12 @@ namespace ic {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
         throw;
       }
-      if (partons == 1) eventInfo->set_weight("dysoup", zw1_);
-      if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
-      if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
-      if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
+      double dy_weight_=0;
+      if (partons == 1){ eventInfo->set_weight("dysoup", zw1_);  dy_weight_ = zw1_;}
+      if (partons == 2){ eventInfo->set_weight("dysoup", zw2_);  dy_weight_ = zw2_;}
+      if (partons == 3){ eventInfo->set_weight("dysoup", zw3_);  dy_weight_ = zw3_;}
+      if (partons == 4){ eventInfo->set_weight("dysoup", zw4_);  dy_weight_ = zw4_;}
+      if(!event->ExistsInEvent("wt_dy")) event->Add("wt_dy", dy_weight_);
       t_njets_ = partons;
 
       t_wt_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.;

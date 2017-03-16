@@ -48,9 +48,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
-      outtree_->Branch("wt"       , &wt_       );
-      outtree_->Branch("wt"       , &wt_       );
-      outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("wt_dy"       , &wt_dy_       );
       if(do_theory_uncert_){
         outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
         outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
@@ -135,8 +133,9 @@ namespace ic {
     std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
-    
     wt_ = eventInfo->weight("wt_mc_sign");
+    wt_dy_=1;
+    if (event->Exists("wt_dy")) wt_dy_ = event->Get<double>("wt_dy");
     //wt_ggh_pt_            = 1;
     //wt_ggh_pt_up_         = 1;
     //wt_ggh_pt_down_       = 1;
@@ -372,13 +371,13 @@ namespace ic {
         passed_ = true;
       }
     } else if(channel_str_ == "zmm"){
-      if(taus.size() == 2){
+      if(muons.size() == 2){
         lep1 = muons[0];
         lep2 = muons[1];
         passed_ = true;
       }
     } else if(channel_str_ == "zee"){
-      if(taus.size() == 2){
+      if(electrons.size() == 2){
         lep1 = electrons[0];
         lep2 = electrons[1];
         passed_ = true;

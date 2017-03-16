@@ -54,7 +54,7 @@
 #include "HiggsTauTau/interface/NvtxWeight.h"
 #include "HiggsTauTau/interface/BTagWeightRun2.h"
 #include "HiggsTauTau/interface/HTTGenMatchSelector.h"
-
+#include "HiggsTauTau/interface/HTTGenAnalysis.h"
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
 #include "Modules/interface/CompositeProducer.h"
@@ -657,6 +657,35 @@ void HTTSequence::BuildSequence(){
   if (to_check.size() > 0){
   BuildModule(eventChecker);
   BuildModule(httPrint);  
+}
+
+if(!is_data && js["do_gen_analysis"].asBool()){
+  
+  HTTStitching httStitching = HTTStitching("HTTStitching")  
+   .set_era(era_type)
+   .set_fs(fs.get());
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+    httStitching.set_do_dy_soup(true);
+    httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+    httStitching.SetDYInputYields(96658943,62627174, 19970551, 5856110, 4197868);
+  }
+  
+  BuildModule(httStitching);     
+
+  BuildModule(HTTGenAnalysis("HTTGenAnalysis")
+    .set_fs(fs.get())
+    .set_channel_str(channel_str)
+    .set_min_jet_pt(30.)
+    .set_max_jet_eta(4.7)
+    .set_min_e_pt(0)
+    .set_min_mu_pt(0)
+    .set_min_tau1_pt(0)
+    .set_min_tau2_pt(0)
+    .set_max_e_eta(1000)
+    .set_max_mu_eta(1000)
+    .set_max_tau_eta(1000)
+    .set_do_theory_uncert(false)
+  );
 }
 
 
