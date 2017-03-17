@@ -247,6 +247,7 @@ cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_tight_2<0.5)'
 cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = '('+cats['btag']+ ' && mt_1>40)'
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
+cats['atleast1bjet'] = '(n_bjets>0)'
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
 if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt':
@@ -276,6 +277,17 @@ for i in options.set_alias:
     cat_to_overwrite=cat_to_overwrite.replace("\"","")
     overwrite_with = i.split(':')[1]
     overwrite_with=overwrite_with.replace("\"","")
+    start_index=overwrite_with.find("{")
+    end_index=overwrite_with.find("}")
+    while start_index >0:
+        replace_with=overwrite_with[start_index:end_index+1]
+        replace_with=cat_to_overwrite.replace("{","")
+        replace_with=cat_to_overwrite.replace("}","")
+        replace_string = cats[replace_with]
+        overwrite_with=overwrite_with[0:start_index] + replace_string  + overwrite_with[end_index+1:]
+        start_index=overwrite_with.find("{")
+        end_index=overwrite_with.find("}")
+
     print 'Overwriting alias: \"'+cat_to_overwrite+'\" with selection: \"'+overwrite_with+'\"'
     if cat_to_overwrite == 'sel':
         options.sel = overwrite_with
