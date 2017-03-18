@@ -94,7 +94,7 @@ class HTTGenAnalysis : public ModuleBase {
   unsigned n_bquarks_;
   double genpT_;
   double genM_;
-  double wt_dy_;
+  float wt_dy_;
   double wtzpt_;
   TH2D z_pt_mass_hist_;
   

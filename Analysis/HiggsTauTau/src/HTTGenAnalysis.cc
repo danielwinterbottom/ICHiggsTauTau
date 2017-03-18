@@ -140,7 +140,7 @@ namespace ic {
     wt_ = 1;
     wt_ = eventInfo->weight("wt_mc_sign");
     wt_dy_=1;
-    if (event->Exists("wt_dy")) wt_dy_ = event->Get<double>("wt_dy");
+    if (event->Exists("wt_dy")) wt_dy_ = event->Get<float>("wt_dy");
     //wt_ggh_pt_            = 1;
     //wt_ggh_pt_up_         = 1;
     //wt_ggh_pt_down_       = 1;
