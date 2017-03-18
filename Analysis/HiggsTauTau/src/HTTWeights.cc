@@ -198,8 +198,8 @@ namespace ic {
               w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-          fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
-             w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+          /*fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trg_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));*/
           if(mc_ != mc::summer16_80X){
             fns_["m_trgOR_binned_data"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgOR_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
@@ -366,7 +366,8 @@ namespace ic {
           if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
           double pt = parts[i]->pt();
           pt = std::min(pt, 400.);
-          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::summer16_80X) top_wt *= std::exp(0.0615-0.0005*pt);
           }
         }
       }

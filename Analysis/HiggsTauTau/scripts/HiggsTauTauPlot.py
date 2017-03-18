@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"wt_up","custom_uncerts_wt_down":"wt_down"  }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"wt_up","custom_uncerts_wt_down":"wt_down", "add_flat_uncert":0, "add_stat_to_syst":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -136,13 +136,18 @@ parser.add_argument("--no_plot", dest="no_plot", action='store_true',
 parser.add_argument("--ratio_range", dest="ratio_range", type=str,
     help="y-axis range for ratio plot in format MIN,MAX")
 parser.add_argument("--do_custom_uncerts", dest="do_custom_uncerts", action='store_true',
-    help="Do custome uncertainty band. Up and down weights for this uncertainty band should be set using \"custom_uncerts_wt_up\" and \"custom_uncerts_wt_down\" options")
+    help="Do custom uncertainty band. Up and down weights for this uncertainty band should be set using \"custom_uncerts_wt_up\" and \"custom_uncerts_wt_down\" options")
 parser.add_argument("--custom_uncerts_wt_up", dest="custom_uncerts_wt_up", type=str,
     help="Up weight for custom uncertainty band")
 parser.add_argument("--custom_uncerts_wt_down", dest="custom_uncerts_wt_down", type=str,
     help="Down weight for custom uncertainty band")
 parser.add_argument("--uncert_title", dest="uncert_title", type=str,
     help="Custom uncertainty band legend label")
+parser.add_argument("--add_stat_to_syst", dest="add_stat_to_syst", action='store_true',
+    help="Add custom uncertainty band to statistical uncertainty.")
+parser.add_argument("--add_flat_uncert", dest="add_flat_uncert", type=float,
+    help="If set to non-zero will add a flat uncertainty band in quadrature to the uncertainty.")
+
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -229,7 +234,7 @@ cats['inclusive'] = '(1)'
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
 cats['w_sdb_os'] = 'os'
-cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 # MSSM categories
@@ -326,6 +331,8 @@ ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3J
 
 if options.channel == 'em': 
     qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
+elif options.channel == 'tt':
+    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
 else:
     qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
     
@@ -353,6 +360,8 @@ if options.era == "mssmsummer16":
     
     if options.channel == 'em': 
         qcd_sub_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L-amcat','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
+    elif options.channel == 'tt':
+        qcd_sub_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L-amcat','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO-ext2']
     else:
         qcd_sub_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L-amcat','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
         
@@ -478,6 +487,10 @@ def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
       ana.nodes[nodename].AddNode(ana.SummedFactory('VVJ'+add_name, samples, plot, full_selection))
   
 def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'   
   full_selection = BuildCutString(wt, sel, cat, OSSS)
   wg_node = ana.SummedFactory('WGam'+add_name, samples, plot, full_selection)
   return wg_node
@@ -511,7 +524,7 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
   elif method in [12, 13, 14, 16]:
       if method == 16:
           cat_nobtag = '('+cats['btag_wnobtag']+')*('+cats['baseline']+')'
-
+          
           full_selection = BuildCutString(wt, sel, cat_nobtag, OSSS)
           ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', '')
           os_selection = BuildCutString(wt, '', cat_nobtag, 'os', '')
@@ -573,7 +586,7 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
     if options.channel == 'et' or options.channel == 'mt':
         ttqcdcat = '('+cats[options.cat]+')*(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto)*(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)'
     elif options.channel == 'tt':
-        ttqcdcat = '('+cats[options.cat]+')*(antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        ttqcdcat = '('+cats[options.cat]+')*(antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto&&trg_doubletau)'
         
     qcd_sdb_sel = '(!os && ' + sel + ')'
     w_extrp_sdb_sel = '(!os && '+ cats['w_sdb'] + ')'
@@ -595,7 +608,7 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
                 shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
             shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
             shape_node = ana.SummedFactory('shape', data, plot, shape_selection)
-        if method in [10, 12, 14]:
+        elif method in [10, 12, 14]:
             if method == 14:
                 shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
             else: 
@@ -637,33 +650,33 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
         shape_cat = '('+cats[options.cat]+')*('+cats['tt_qcd_norm']+')'
         shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
         bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-        bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, qcd_os_ss_ratio, OSSS))
+    #    bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, qcd_os_ss_ratio, OSSS))
         shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
             
         full_selection = BuildCutString('wt', qcd_sdb_sel, qcd_sdb_cat, '')
         subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
-        if method == 8:
-            w_node = GetWNode(ana, 'Wos', wjets_samples, data_samples, w_sub_samples, plot, 'wt', qcd_sdb_sel, qcd_sdb_cat, method, qcd_os_ss_ratio, get_os)
-        else:
-            w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
-        subtract_node.AddNode(w_node)
+#        if method == 8:
+#            w_node = GetWNode(ana, 'Wos', wjets_samples, data_samples, w_sub_samples, plot, 'wt', qcd_sdb_sel, qcd_sdb_cat, method, qcd_os_ss_ratio, get_os)
+#        else:
+#            w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
+#        subtract_node.AddNode(w_node)
         num_selection = BuildCutString('wt', sel, qcd_cat, '!os')
         den_selection = BuildCutString('wt', sel, qcd_sdb_cat, '!os')
 
         num_node = SubtractNode('ratio_num',
                      ana.SummedFactory('data_num', data, plot, num_selection),
                      ana.SummedFactory('bkg_num', qcd_sub_samples, plot, num_selection))
-        w_num_node = GetWNode(ana, 'W_num', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_cat, method, qcd_os_ss_ratio, False)
-        num_node = SubtractNode('ratio_num',
-                     num_node,
-                     w_num_node)
+#        w_num_node = GetWNode(ana, 'W_num', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_cat, method, qcd_os_ss_ratio, False)
+#        num_node = SubtractNode('ratio_num',
+#                     num_node,
+#                     w_num_node)
         den_node = SubtractNode('ratio_den',
                      ana.SummedFactory('data_den', data, plot, den_selection),
                      ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
-        w_den_node = GetWNode(ana, 'W_den', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
-        den_node = SubtractNode('ratio_den',
-                     den_node,
-                     w_den_node) 
+#        w_den_node = GetWNode(ana, 'W_den', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
+#        den_node = SubtractNode('ratio_den',
+#                     den_node,
+#                     w_den_node) 
         
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
           ana.SummedFactory('data_ss', data, plot, full_selection),
@@ -812,8 +825,7 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
-def Plot(ana, nodename, outfile=None):
-    
+def Plot(nodename, infile=None):
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
     ROOT.TH1.AddDirectory(False)
     
@@ -839,12 +851,13 @@ def Plot(ana, nodename, outfile=None):
             background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)))
             background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["FakeTaus"],ROOT.TColor.GetColor(250,202,255)))
         
-    total_datahist = ana.nodes[nodename].nodes['data_obs'].shape.hist.Clone()
+    total_datahist = infile.Get(nodename+'/data_obs').Clone()
+    
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
     blind_datahist.SetMarkerStyle(20)
     blind_datahist.SetLineColor(1)
-
+    
     #Blinding by hand using requested range, set to 200-4000 by default:
     if options.blind:
         for i in range(0,total_datahist.GetNbinsX()):
@@ -857,21 +870,22 @@ def Plot(ana, nodename, outfile=None):
         blind_datahist.Scale(1.0,"width")
         total_datahist.Scale(1.0,"width")
         
-        #Create stacked plot for the backgrounds
+    #Create stacked plot for the backgrounds
     bkg_histos = []
     for i,t in enumerate(background_schemes[options.channel]):
         plots = t['plot_list']
         h = ROOT.TH1F()
         for j,k in enumerate(plots):
             if h.GetEntries()==0:
-                h = ana.nodes[nodename].nodes[k].shape.hist.Clone()
+                h = infile.Get(nodename+'/'+k).Clone()
+                
                 h.SetName(k)
             else:
-                h.Add(ana.nodes[nodename].nodes[k].shape.hist.Clone())
+                h.Add(infile.Get(nodename+'/'+k).Clone())
         h.SetFillColor(t['colour'])
         h.SetLineColor(ROOT.kBlack)
         h.SetMarkerSize(0)
-
+    
         if options.norm_bins:
             h.Scale(1.0,"width")
         bkg_histos.append(h)
@@ -905,9 +919,10 @@ def Plot(ana, nodename, outfile=None):
         axish[1].GetXaxis().SetLabelSize(0.03)
         axish[1].GetYaxis().SetNdivisions(4)
         axish[1].GetYaxis().SetTitle("Obs/Exp")
-        axish[1].GetYaxis().SetTitleOffset(1.8)
+        axish[1].GetYaxis().SetTitleOffset(1.6)
+        axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
-
+    
         axish[0].GetXaxis().SetTitleSize(0)
         axish[0].GetXaxis().SetLabelSize(0)
         if options.custom_x_range:
@@ -920,17 +935,22 @@ def Plot(ana, nodename, outfile=None):
         axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         if options.custom_x_range:
           axish[0].GetXaxis().SetRangeUser(options.x_axis_min,options.x_axis_max-0.01)
-        #if options.custom_y_range:                                                                
+        if options.custom_y_range:                                                                
           axish[0].GetYaxis().SetRangeUser(options.y_axis_min,options.y_axis_max)
     axish[0].GetYaxis().SetTitle(options.y_title)
-    axish[0].GetYaxis().SetTitleOffset(1.8)
+    axish[0].GetYaxis().SetTitleOffset(1.6)
+    axish[0].GetYaxis().SetTitleSize(0.04)
     axish[0].GetYaxis().SetLabelSize(0.03)
     axish[0].GetXaxis().SetTitle(options.x_title)
+    axish[1].GetXaxis().SetTitleSize(0.04)
     if not options.ratio: axish[0].GetXaxis().SetLabelSize(0.03)
-    if not options.custom_y_range: axish[0].SetMaximum(1.1*(1+options.extra_pad)*bkghist.GetMaximum())
-    if not options.custom_y_range: 
-        if(options.log_y): axish[0].SetMinimum(0.0009)
-        else: axish[0].SetMinimum(0)
+    if not options.custom_y_range:
+        if(options.log_y): 
+            axish[0].SetMinimum(0.0009)
+            axish[0].SetMaximum(10**((1+options.extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+        else: 
+            axish[0].SetMinimum(0)
+            axish[0].SetMaximum(1.1*(1+options.extra_pad)*bkghist.GetMaximum())
     axish[0].Draw()
     
     #Draw uncertainty band
@@ -943,7 +963,7 @@ def Plot(ana, nodename, outfile=None):
     if options.draw_signal_mass != "":
         scheme = sig_schemes[options.signal_scheme]
         for i in scheme[1]: 
-            h = ana.nodes[nodename].nodes[i+options.draw_signal_mass].shape.hist.Clone()
+            h = infile.Get(nodename+'/'+i+options.draw_signal_mass).Clone()
             if sighist.GetEntries() == 0: sighist = h
             else: sighist.Add(h)
         sighist.SetLineColor(ROOT.kBlue)
@@ -969,19 +989,25 @@ def Plot(ana, nodename, outfile=None):
     #sighist2.Draw("histsame")
     error_hist = bkghist.Clone()
     if options.do_custom_uncerts:
-
-      #bkg_uncert_up = ana.nodes[nodename].nodes['total_bkg_custom_uncerts_up'].shape.hist.Clone()
-      bkg_uncert_up = outfile.Get(nodename+'/total_bkg_custom_uncerts_up')
-      bkg_uncert_down = outfile.Get(nodename+'/total_bkg_custom_uncerts_down')
-      #bkg_uncert_down = ana.nodes[nodename].nodes['total_bkg_custom_uncerts_down'].shape.hist.Clone()
+      bkg_uncert_up = infile.Get(nodename+'/total_bkg_custom_uncerts_up').Clone()
+      bkg_uncert_down = infile.Get(nodename+'/total_bkg_custom_uncerts_down').Clone()
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
+          stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
           bin_down = bkg_uncert_down.GetBinContent(i)
           error = abs(bin_up - bin_down)/2
+          if options.add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           band_center = abs(max(bin_up,bin_down) - error)          
           error_hist.SetBinContent(i,band_center)
           error_hist.SetBinError(i,error)
-
+          
+    if options.add_flat_uncert > 0:
+      for i in range(1,error_hist.GetNbinsX()+1): 
+          stat_error=error_hist.GetBinError(i)
+          error = options.add_flat_uncert*error_hist.GetBinContent(i)
+          error = math.sqrt(error**2+stat_error**2)
+          error_hist.SetBinError(i,error)
+    
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
@@ -1005,11 +1031,11 @@ def Plot(ana, nodename, outfile=None):
     #legend.AddEntry(sighist2,str(int(options.signal_scale))+"#times gg#phi(200 GeV)#rightarrow#tau#tau","l")  
     legend.Draw("same")
     if options.channel == "em": channel_label = "e#mu"
-    if options.channel == "et": channel_label = "e#tau"
-    if options.channel == "mt": channel_label = "#mu#tau"
-    if options.channel == "tt": channel_label = "#tau#tau"
-    if options.channel == "zmm": channel_label = "z#mu#mu"
-    if options.channel == "zee": channel_label = "zee"
+    if options.channel == "et": channel_label = "e#tau_{h}"
+    if options.channel == "mt": channel_label = "#mu#tau_{h}"
+    if options.channel == "tt": channel_label = "#tau_{h}#tau_{h}"
+    if options.channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
+    if options.channel == "zee": channel_label = "Z#rightarrow ee"
     latex2 = ROOT.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
@@ -1024,8 +1050,7 @@ def Plot(ana, nodename, outfile=None):
     
     #Add ratio plot if required
     if options.ratio:
-        if options.do_custom_uncerts: ratio_bkghist = plotting.MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
-        else: ratio_bkghist = plotting.MakeRatioHist(bkghist.Clone(),bkghist.Clone(),True,False)
+        ratio_bkghist = plotting.MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
         blind_ratio = plotting.MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
         pads[1].cd()
         pads[1].SetGrid(0,1)
@@ -1094,16 +1119,21 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
                 sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
                 first_hist=False
             elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
-            if 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
+            if first_hist and'ZTT'+add_name in nodenames: 
+                sum_hist = ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone()
+                first_hist=False
+            elif 'ZTT'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZTT'+add_name].shape.hist.Clone())
+            if not first_hist:
+                sum_hist.SetName(outname)
+                sum_hist.Write()
         elif (options.channel == 'zee' or options.channel == 'zmm') and i is 'Z':
             if first_hist and 'ZLL'+add_name in nodenames:
                 sum_hist = ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone()
                 first_hist=False
             elif 'ZLL'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes['ZLL'+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
+            if not first_hist:
+                sum_hist.SetName(outname)
+                sum_hist.Write()
         else: 
             if i is 'Z':
                 outname = 'ZLL'+add_name
@@ -1113,9 +1143,13 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
                     sum_hist = ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone()
                     first_hist=False
                 elif i+'J'+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+'J'+add_name].shape.hist.Clone())
-                if i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
-            sum_hist.SetName(outname)
-            sum_hist.Write()
+                if first_hist and i+j+add_name in nodenames:
+                    sum_hist = ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone()    
+                    first_hist=False
+                elif i+j+add_name in nodenames: sum_hist.Add(ana.nodes[nodename].nodes[i+j+add_name].shape.hist.Clone())
+            if not first_hist:    
+                sum_hist.SetName(outname)
+                sum_hist.Write()
 
     first_hist=True
     for node in nodes:
@@ -1124,8 +1158,9 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
                 total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
                 first_hist=False
             else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
-    total_bkg.SetName('total_bkg'+add_name)
-    total_bkg.Write()
+    if not first_hist:        
+        total_bkg.SetName('total_bkg'+add_name)
+        total_bkg.Write()
     outfile.cd()
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
@@ -1286,16 +1321,11 @@ for systematic in systematics:
     #Run default plot        
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
     
-    #"do_custom_uncerts":False, "uncert_title":"Systematic uncertainty"
     if options.do_custom_uncerts:
         RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile)
         RunPlotting(ana_down, cat, sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile)
     
     PrintSummary(nodename, ['data_obs'], add_name)
-    
-    # Generate pdf and png plots here for default only
-    if not options.no_plot and systematic == 'default':
-        Plot(ana,nodename,outfile)
     
     # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if 'signal' not in samples_to_skip:
@@ -1338,8 +1368,10 @@ for systematic in systematics:
                     mssm_hist.Scale(sf)
                     mssm_hist.Write()
         outfile.cd()
-    
-                    
+outfile.Close()
+plot_file = ROOT.TFile(output_name, 'READ')
+if not options.no_plot:
+    Plot(nodename,plot_file)                    
             
     
                 
