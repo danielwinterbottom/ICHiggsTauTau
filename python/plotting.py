@@ -1791,17 +1791,38 @@ def getOverlayMarkerAndLegend(legend, entries, options, borderSize=2.0/3, marker
     borderLegend.SetFillColor(0)
     return (borderLegend,graphs)
 
+def signalComp(leg,plots,colour,stacked):
+  return dict([('leg_text',leg),('plot_list',plots),('colour',colour),('in_stack',stacked)])
+
+def backgroundComp(leg,plots,colour):
+  return dict([('leg_text',leg),('plot_list',plots),('colour',colour)])
+
+def createAxisHists(n,src,xmin=0,xmax=499):
+  result = []
+  for i in range(0,n):
+    res = src.Clone()
+    res.Reset()
+    res.SetTitle("")
+    res.SetName("axis%(i)d"%vars())
+    res.SetAxisRange(xmin,xmax)
+    res.SetStats(0)
+    result.append(res)
+  return result
+
 def HTTPlot(nodename, 
             infile=None, 
             signal_scale=1, 
             signal_mass="",
             FF=False,
+            norm_bins=True,
+            channel="mt",
             blind=False,
             x_blind_min=0,
             x_blind_max=4000,
             ratio=True,
             log_y=False,
             log_x=False,
+            ratio_range=0.3,
             custom_x_range=False,
             x_axis_max=4000,
             x_axis_min=0,
