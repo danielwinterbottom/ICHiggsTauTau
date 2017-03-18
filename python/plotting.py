@@ -2082,3 +2082,120 @@ def HTTPlot(nodename,
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+
+def CompareHists(hists=[],
+             ratio=True,
+             log_y=False,
+             log_x=False,
+             ratio_range=0.3,
+             custom_x_range=False,
+             x_axis_max=4000,
+             x_axis_min=0,
+             custom_y_range=False,
+             y_axis_max=4000,
+             y_axis_min=0,
+             x_title="",
+             y_title="",
+             extra_pad=0,
+             norm_hists=True,
+             plot_name="plot"):
+    
+    R.gROOT.SetBatch(R.kTRUE)
+    R.TH1.AddDirectory(False)
+    ModTDRStyle(r=0.04, l=0.14)
+
+    colourlist=[R.kGreen+3,R.kRed,R.kBlue,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
+    hs = R.THStack("hs","")
+    hist_count=0
+    for hist in hists:
+        hist.SetFillColor(0)
+        hist.SetLineColor(colourlist[hist_count])
+        hist.SetMarkerSize(0)
+        if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
+        hs.Add(hist)
+        hist_count+=1
+    hs.Draw("nostack")
+        
+    c1 = R.TCanvas()
+    c1.cd()    
+    
+    if ratio:
+        pads=TwoPadSplit(0.29,0.01,0.01)
+    else:
+        pads=OnePad()
+    pads[0].cd()
+    
+    if(log_y): pads[0].SetLogy(1)
+    if(log_x): pads[0].SetLogx(1)
+    if custom_x_range:
+        if x_axis_max > hists[0].GetXaxis().GetXmax(): x_axis_max = hists[0].GetXaxis().GetXmax()
+    if ratio:
+        if(log_x): pads[1].SetLogx(1)
+        axish = createAxisHists(2,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+        axish[1].GetXaxis().SetTitle(x_title)
+        axish[1].GetXaxis().SetLabelSize(0.03)
+        axish[1].GetYaxis().SetNdivisions(4)
+        axish[1].GetYaxis().SetTitle("Obs/Exp")
+        axish[1].GetYaxis().SetTitleOffset(1.6)
+        axish[1].GetYaxis().SetTitleSize(0.04)
+        axish[1].GetYaxis().SetLabelSize(0.03)
+    
+        axish[0].GetXaxis().SetTitleSize(0)
+        axish[0].GetXaxis().SetLabelSize(0)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+          axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+          axish[1].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    else:
+        axish = createAxisHists(1,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:                                                                
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    axish[0].GetYaxis().SetTitle(y_title)
+    axish[0].GetYaxis().SetTitleOffset(1.6)
+    axish[0].GetYaxis().SetTitleSize(0.04)
+    axish[0].GetYaxis().SetLabelSize(0.03)
+    axish[0].GetXaxis().SetTitle(x_title)
+    axish[0].GetXaxis().SetTitleSize(0.04)
+    if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
+    if not custom_y_range:
+        if(log_y): 
+            axish[0].SetMinimum(0.0009)
+            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+        else: 
+            axish[0].SetMinimum(0)
+            axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum())
+    axish[0].Draw()
+    
+    hs.Draw("nostack")
+    axish[0].Draw("axissame")
+    
+    #CMS and lumi labels
+    FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    
+    #Add ratio plot if required
+    #if ratio:
+    #    ratio_hs
+    #    ratio_bkghist = MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
+    #    blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
+    #    pads[1].cd()
+    #    pads[1].SetGrid(0,1)
+    #    axish[1].Draw("axis")
+    #    axish[1].SetMinimum(float(ratio_range.split(',')[0]))
+    #    axish[1].SetMaximum(float(ratio_range.split(',')[1]))
+    #    ratio_bkghist.SetMarkerSize(0)
+    #    ratio_bkghist.Draw("e2same")
+    #    blind_ratio.DrawCopy("e0same")
+    #    pads[1].RedrawAxis("G")
+        
+    pads[0].cd()
+    pads[0].GetFrame().Draw()
+    pads[0].RedrawAxis()
+    
+    c1.SaveAs(plot_name+'.pdf')
+    c1.SaveAs(plot_name+'.png')
+    
