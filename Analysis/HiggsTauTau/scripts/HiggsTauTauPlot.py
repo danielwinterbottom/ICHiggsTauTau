@@ -837,7 +837,7 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
-def Plot(nodename, infile=None):
+def Plot(nodename, infile=None, signal_scale=1, signal_mass="",):
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
     ROOT.TH1.AddDirectory(False)
     
@@ -1383,7 +1383,39 @@ for systematic in systematics:
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 if not options.no_plot:
-    Plot(nodename,plot_file)                    
+    if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
+    else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    #Plot(nodename,plot_file)
+    FF = options.method==17
+    plotting.HTTPlot(nodename, 
+        plot_file, 
+        options.signal_scale, 
+        options.draw_signal_mass,
+        FF,
+        options.blind,
+        options.x_blind_min,
+        options.x_blind_max,
+        options.ratio,
+        options.log_y,
+        options.log_x,
+        options.custom_x_range,
+        options.x_axis_min,
+        options.x_axis_max,
+        options.custom_y_range,
+        options.y_axis_max,
+        options.y_axis_min,
+        options.x_title,
+        options.y_title,
+        options.extra_pad,
+        options.signal_scheme,
+        options.do_custom_uncerts,
+        options.add_stat_to_syst,
+        options.add_flat_uncert,
+        options.uncert_title,
+        options.lumi,
+        plot_name
+        )
+    
             
     
                 
