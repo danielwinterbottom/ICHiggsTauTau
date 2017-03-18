@@ -68,30 +68,30 @@ for chan in "${channels[@]}"; do
         fi
         
         if [ $x_title == "jpt_1" ]; then
-          set_alias+=" --set_alias=baseline:({baseline} && jeta_1<3&&jeta_1>-3)" #this is wrong!!
-          python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16 $ss_string
+          set_alias+=" --set_alias=baseline:({baseline} && jeta_1<3&&jeta_1>-3)"
+          python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16 $ss_string --cat=$cat
           mv "control_plots/jpt_1_"$cat"_"$chan"_2016.pdf" "control_plots/jpt_1_central_m"$k"_"$cat$add_name"_"$chan"_2016.pdf"
           mv "control_plots/jpt_1_"$cat"_"$chan"_2016.pbg" "control_plots/jpt_1_central_m"$k"_"$cat$add_name"_"$chan"_2016.png"
           
           set_alias+=" --set_alias=baseline:({baseline} && (jeta_1>3||jeta_1<-3))"
-          python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16  $ss_string
+          python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16  $ss_string --cat=$cat
           mv "control_plots/jpt_1_"$cat"_"$chan"_2016.pdf" "control_plots/jpt_1_forward_m"$k"_"$cat$add_name"_"$chan"_2016.pdf"
           mv "control_plots/jpt_1_"$cat"_"$chan"_2016.png" "control_plots/jpt_1_forward_m"$k"_"$cat$add_name"_"$chan"_2016.png"
         fi
         
         if [ $x_title == "jpt_2" ]; then
           set_alias+=" --set_alias=baseline:({baseline} && jeta_2<3&&jeta_2>-3)"
-          python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16 $ss_string
+          python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16 $ss_string --cat=$cat
           mv "control_plots/jpt_2_"$cat"_"$chan"_2016.pdf" "control_plots/jpt_2_central_m"$k"_"$cat$add_name"_"$chan"_2016.pdf"
           mv "control_plots/jpt_2_"$cat"_"$chan"_2016.png" "control_plots/jpt_2_central_m"$k"_"$cat$add_name"_"$chan"_2016.png"
           
           set_alias+=" --set_alias=baseline:({baseline} && (jeta_2>3||jeta_2<-3))"
-          python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16 $ss_string
+          python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16 $ss_string --cat=$cat
           mv "control_plots/jpt_2_"$cat"_"$chan"_2016.pdf" "control_plots/jpt_2_forward_m"$k"_"$cat$add_name"_"$chan"_2016.pdf"
           mv "control_plots/jpt_2_"$cat"_"$chan"_2016.png" "control_plots/jpt_2_forward_m"$k"_"$cat$add_name"_"$chan"_2016.png"
         fi
         
-        python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16 $ss_string
+        python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --ratio --y_title=$y_title --x_title=$x_title --var=$plot $sel $method --channel=$chan $set_alias --outputfolder="control_plots" --norm_bins $extra_pad --era=mssmsummer16 $ss_string --cat=$cat
         mv  "control_plots/"$x_title"_"$cat"_"$chan"_2016.pdf" "control_plots/"$x_title"_m"$k"_"$cat$add_name"_"$chan"_2016.pdf" 
         mv  "control_plots/"$x_title"_"$cat"_"$chan"_2016.png" "control_plots/"$x_title"_m"$k"_"$cat$add_name"_"$chan"_2016.png"
     done; done
