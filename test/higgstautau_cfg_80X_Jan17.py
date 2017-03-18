@@ -1115,9 +1115,9 @@ if release in ['80XMINIAOD']:
                            )
   
 
-#from JetMETCorrections.Type1MET.multPhiCorr_741_25nsDY_cfi import multPhiCorr_741_25nsDY as multPhiCorrParams_Txy_25ns
-if not isRunsGtoH: from JetMETCorrections.Type1MET.multPhiCorr_Data_Combined_80X_sumPt_cfi import multPhiCorr_Data_B_80X as multPhiCorrParams_Txy_25ns
-else: from JetMETCorrections.Type1MET.multPhiCorr_Data_G_80X_sumPt_cfi import multPhiCorr_Data_G_80X as multPhiCorrParams_Txy_25ns
+if isData and not isRunsGtoH: from JetMETCorrections.Type1MET.multPhiCorr_ReMiniAOD_Data_BCDEF_80X_sumPt_cfi import multPhiCorr_Data_BCDEF_80X as multPhiCorrParams_Txy_25ns
+elif isData: from JetMETCorrections.Type1MET.multPhiCorr_ReMiniAOD_Data_GH_80X_sumPt_cfi import multPhiCorr_Data_GH_80X as multPhiCorrParams_Txy_25ns
+else: from JetMETCorrections.Type1MET.multPhiCorr_Summer16_MC_DY_80X_sumPt_cfi import multPhiCorr_MC_DY_sumPT_80X as multPhiCorrParams_Txy_25ns
 
 multPhiCorrParams_T0rtTxy_25ns     = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
 multPhiCorrParams_T0rtT1Txy_25ns   = cms.VPSet( pset for pset in multPhiCorrParams_Txy_25ns)
@@ -1133,19 +1133,12 @@ process.pfMEtMultShiftCorr = cms.EDProducer("MultShiftMETcorrInputProducer",
     vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
     parameters = multPhiCorrParams_Txy_25ns
 )
-
-if isData:    
-    process.icPfMetProducerXYCorr = producers.icMetProducer.clone(
-        input=cms.InputTag("patMetTxy"),
-        branch = cms.string("pfMetFromSlimmedXYCorr"),
-        getUncorrectedMet=cms.bool(False)
-    )   
-else:    
-    process.icPfMetProducerXYCorr = producers.icMetProducer.clone(
-        input=cms.InputTag("slimmedMETs"),
-        branch = cms.string("pfMetFromSlimmedXYCorr"),
-        getUncorrectedMet=cms.bool(False)
-    )  
+  
+process.icPfMetProducerXYCorr = producers.icMetProducer.clone(
+    input=cms.InputTag("patMetTxy"),
+    branch = cms.string("pfMetFromSlimmedXYCorr"),
+    getUncorrectedMet=cms.bool(False)
+)   
 
 
 process.patMetTxy = cms.EDProducer(
