@@ -1819,8 +1819,8 @@ def HTTPlot(nodename,
             lumi="35.9",
             plot_name="htt_plot"
             ):
-    ROOT.gROOT.SetBatch(ROOT.kTRUE)
-    ROOT.TH1.AddDirectory(False)
+    R.gROOT.SetBatch(R.kTRUE)
+    R.TH1.AddDirectory(False)
     
     # Define signal schemes here
     sig_schemes = {}
@@ -1831,18 +1831,18 @@ def HTTPlot(nodename,
     
     ModTDRStyle(r=0.04, l=0.14)
     
-    background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
-    'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
-    'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
-    'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],ROOT.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104))],
-    'zm':[backgroundComp("Misidentified #mu", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],ROOT.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],ROOT.TColor.GetColor(100,192,232))],
-    'zmm':[backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZLL"],ROOT.TColor.GetColor(100,192,232))],
-    'zee':[backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],ROOT.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],ROOT.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZLL"],ROOT.TColor.GetColor(100,192,232))]
+    background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
+    'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZLL"],R.TColor.GetColor(100,192,232))],
+    'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZLL"],R.TColor.GetColor(100,192,232))]
     }
     if FF:
         for chan in ["et", "mt", "tt"]:    
-            background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], ROOT.TColor.GetColor(250,202,255)))
-            background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["FakeTaus"],ROOT.TColor.GetColor(250,202,255)))
+            background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)))
+            background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["FakeTaus"],R.TColor.GetColor(250,202,255)))
         
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     
@@ -1867,7 +1867,7 @@ def HTTPlot(nodename,
     bkg_histos = []
     for i,t in enumerate(background_schemes[channel]):
         plots = t['plot_list']
-        h = ROOT.TH1F()
+        h = R.TH1F()
         for j,k in enumerate(plots):
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
@@ -1876,15 +1876,15 @@ def HTTPlot(nodename,
             else:
                 h.Add(infile.Get(nodename+'/'+k).Clone())
         h.SetFillColor(t['colour'])
-        h.SetLineColor(ROOT.kBlack)
+        h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
     
         if norm_bins:
             h.Scale(1.0,"width")
         bkg_histos.append(h)
         
-    stack = ROOT.THStack("hs","")
-    bkghist = ROOT.TH1F()
+    stack = R.THStack("hs","")
+    bkghist = R.TH1F()
     for hists in bkg_histos:
       stack.Add(hists.Clone())
       if bkghist.GetEntries()==0:
@@ -1892,7 +1892,7 @@ def HTTPlot(nodename,
       else:
           bkghist.Add(hists.Clone())
       
-    c1 = ROOT.TCanvas()
+    c1 = R.TCanvas()
     c1.cd()    
     
     if ratio:
@@ -1952,14 +1952,14 @@ def HTTPlot(nodename,
     bkghist.SetMarkerSize(0)
     bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
     
-    sighist = ROOT.TH1F()
+    sighist = R.TH1F()
     if signal_mass != "":
         scheme = sig_schemes[signal_scheme]
         for i in scheme[1]: 
             h = infile.Get(nodename+'/'+i+signal_mass).Clone()
             if sighist.GetEntries() == 0: sighist = h
             else: sighist.Add(h)
-        sighist.SetLineColor(ROOT.kBlue)
+        sighist.SetLineColor(R.kBlue)
         sighist.SetLineWidth(3)
         sighist.Scale(signal_scale)
         if norm_bins: sighist.Scale(1.0,"width")
@@ -1973,9 +1973,9 @@ def HTTPlot(nodename,
         stack.Draw("histsame")
         
     ## Add another signal mass point
-    #sighist2 = ROOT.TH1F()
+    #sighist2 = R.TH1F()
     #sighist2 = ana.nodes[nodename].nodes["ggH200"].shape.hist.Clone()
-    #sighist2.SetLineColor(ROOT.kRed)
+    #sighist2.SetLineColor(R.kRed)
     #sighist2.SetLineWidth(3)
     #sighist2.Scale(signal_scale)
     #if norm_bins: sighist2.Scale(1.0,"width")
@@ -2029,10 +2029,10 @@ def HTTPlot(nodename,
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
-    latex2 = ROOT.TLatex()
+    latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
-    latex2.SetTextColor(ROOT.kBlack)
+    latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.028)
     latex2.DrawLatex(0.145,0.955,channel_label)
     
