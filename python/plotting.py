@@ -1822,7 +1822,7 @@ def HTTPlot(nodename,
             ratio=True,
             log_y=False,
             log_x=False,
-            ratio_range=0.3,
+            ratio_range="0.7,1.3",
             custom_x_range=False,
             x_axis_max=4000,
             x_axis_min=0,
@@ -2087,7 +2087,7 @@ def CompareHists(hists=[],
              ratio=True,
              log_y=False,
              log_x=False,
-             ratio_range=0.3,
+             ratio_range="0.7,1.3",
              custom_x_range=False,
              x_axis_max=4000,
              x_axis_min=0,
@@ -2108,13 +2108,14 @@ def CompareHists(hists=[],
     hs = R.THStack("hs","")
     hist_count=0
     for hist in hists:
-        hist.SetFillColor(0)
-        hist.SetLineColor(colourlist[hist_count])
-        hist.SetMarkerSize(0)
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
-        hs.Add(hist)
+        h = hist.Clone()
+        h.SetFillColor(0)
+        h.SetLineColor(colourlist[hist_count])
+        h.SetMarkerSize(0)
+        hs.Add(h)
         hist_count+=1
-    hs.Draw("nostack")
+   # hs.Draw("nostack")
         
     c1 = R.TCanvas()
     c1.cd()    
@@ -2135,7 +2136,7 @@ def CompareHists(hists=[],
         axish[1].GetXaxis().SetTitle(x_title)
         axish[1].GetXaxis().SetLabelSize(0.03)
         axish[1].GetYaxis().SetNdivisions(4)
-        axish[1].GetYaxis().SetTitle("Obs/Exp")
+        axish[1].GetYaxis().SetTitle("Ratio")
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
@@ -2168,9 +2169,10 @@ def CompareHists(hists=[],
         else: 
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum())
+    axish[0].SetMaximum(0.5)
     axish[0].Draw()
     
-    hs.Draw("nostack")
+    hs.Draw("nostackhistsame")
     axish[0].Draw("axissame")
     
     #CMS and lumi labels
@@ -2178,20 +2180,25 @@ def CompareHists(hists=[],
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     
     #Add ratio plot if required
-    #if ratio:
-    #    ratio_hs
-    #    ratio_bkghist = MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
-    #    blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
-    #    pads[1].cd()
-    #    pads[1].SetGrid(0,1)
-    #    axish[1].Draw("axis")
-    #    axish[1].SetMinimum(float(ratio_range.split(',')[0]))
-    #    axish[1].SetMaximum(float(ratio_range.split(',')[1]))
-    #    ratio_bkghist.SetMarkerSize(0)
-    #    ratio_bkghist.Draw("e2same")
-    #    blind_ratio.DrawCopy("e0same")
-    #    pads[1].RedrawAxis("G")
-        
+    if ratio:
+        ratio_hs = R.THStack("ratio_hs","")
+        hist_count=0
+        pads[1].cd()
+        pads[1].SetGrid(0,1)
+        axish[1].Draw("axis")
+        axish[1].SetMinimum(float(ratio_range.split(',')[0]))
+        axish[1].SetMaximum(float(ratio_range.split(',')[1]))
+        div_hist = hists[0].Clone()
+        for hist in hists:
+            h = hist.Clone()
+            h.SetFillColor(0)
+            h.SetLineColor(colourlist[hist_count])
+            h.SetMarkerSize(0)
+            h.Divide(div_hist)
+            ratio_hs.Add(h.Clone())
+            hist_count+=1   
+        pads[1].RedrawAxis("G")
+        ratio_hs.Draw("nostackhistsame")  
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
