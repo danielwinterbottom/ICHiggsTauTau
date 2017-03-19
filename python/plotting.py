@@ -1931,6 +1931,7 @@ def HTTPlot(nodename,
         axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         axish[1].GetXaxis().SetTitle(x_title)
         axish[1].GetXaxis().SetLabelSize(0.03)
+        axish[1].GetXaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetNdivisions(4)
         axish[1].GetYaxis().SetTitle("Obs/Exp")
         axish[1].GetYaxis().SetTitleOffset(1.6)
@@ -1947,6 +1948,9 @@ def HTTPlot(nodename,
           axish[1].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     else:
         axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+        axish[0].GetXaxis().SetTitle(x_title)
+        axish[0].GetXaxis().SetTitleSize(0.04)
+        axish[0].GetXaxis().SetLabelSize(0.03)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
         if custom_y_range:                                                                
@@ -1955,8 +1959,6 @@ def HTTPlot(nodename,
     axish[0].GetYaxis().SetTitleOffset(1.6)
     axish[0].GetYaxis().SetTitleSize(0.04)
     axish[0].GetYaxis().SetLabelSize(0.03)
-    axish[0].GetXaxis().SetTitle(x_title)
-    axish[1].GetXaxis().SetTitleSize(0.04)
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not custom_y_range:
         if(log_y): 
@@ -2084,6 +2086,8 @@ def HTTPlot(nodename,
     c1.SaveAs(plot_name+'.png')
 
 def CompareHists(hists=[],
+             legend_titles=[],
+             title="",
              ratio=True,
              log_y=False,
              log_x=False,
@@ -2107,6 +2111,7 @@ def CompareHists(hists=[],
     colourlist=[R.kGreen+3,R.kRed,R.kBlue,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
     hs = R.THStack("hs","")
     hist_count=0
+    legend_hists=[]
     for hist in hists:
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
         h = hist.Clone()
@@ -2115,10 +2120,11 @@ def CompareHists(hists=[],
         h.SetMarkerSize(0)
         hs.Add(h)
         hist_count+=1
+        legend_hists.append(h.Clone())
    # hs.Draw("nostack")
         
     c1 = R.TCanvas()
-    c1.cd()    
+    c1.cd()
     
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
@@ -2151,6 +2157,9 @@ def CompareHists(hists=[],
           axish[1].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     else:
         axish = createAxisHists(1,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+        axish[0].GetXaxis().SetLabelSize(0.03)
+        axish[0].GetXaxis().SetTitle(x_title)
+        axish[0].GetXaxis().SetTitleSize(0.04)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
         if custom_y_range:                                                                
@@ -2159,25 +2168,35 @@ def CompareHists(hists=[],
     axish[0].GetYaxis().SetTitleOffset(1.6)
     axish[0].GetYaxis().SetTitleSize(0.04)
     axish[0].GetYaxis().SetLabelSize(0.03)
-    axish[0].GetXaxis().SetTitle(x_title)
-    axish[0].GetXaxis().SetTitleSize(0.04)
-    if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
+
     if not custom_y_range:
         if(log_y): 
             axish[0].SetMinimum(0.0009)
-            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(axish[0].GetMinimum())))))
         else: 
             axish[0].SetMinimum(0)
-            axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum())
-    axish[0].SetMaximum(0.5)
+            axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
     
     hs.Draw("nostackhistsame")
     axish[0].Draw("axissame")
     
-    #CMS and lumi labels
-    FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
+    
+    #Setup legend
+    legend = PositionedLegend(0.30,0.30,3,0.03)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.022)
+    legend.SetFillColor(0)
+    
+
+    for legi,hist in enumerate(legend_hists):
+        legend.AddEntry(hist,legend_titles[legi],"l")
+    legend.Draw("same")
+    
+    #CMS label and title
+    FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawTitle(pads[0], title, 3)
     
     #Add ratio plot if required
     if ratio:
@@ -2197,8 +2216,8 @@ def CompareHists(hists=[],
             h.Divide(div_hist)
             ratio_hs.Add(h.Clone())
             hist_count+=1   
-        pads[1].RedrawAxis("G")
         ratio_hs.Draw("nostackhistsame")  
+        pads[1].RedrawAxis("G")
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
