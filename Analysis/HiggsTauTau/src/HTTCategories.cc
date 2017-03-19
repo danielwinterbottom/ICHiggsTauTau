@@ -355,6 +355,7 @@ namespace ic {
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
+      outtree_->Branch("n_bquarks", &n_bquarks_);
       
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -1231,6 +1232,8 @@ namespace ic {
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
+    n_bquarks_=-1;
+    if (event->Exists("n_bquarks")) n_bquarks_ = event->Get<unsigned>("n_bquarks");
     
 
     // Get the objects we need from the event

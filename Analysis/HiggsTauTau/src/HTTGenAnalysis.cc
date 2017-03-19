@@ -152,7 +152,6 @@ namespace ic {
     //wt_ggh_pt_scalelow_   = 1;
     
     n_bquarks_=0;
-    if (event->Exists("n_bquarks")) n_bquarks_ = event->Get<unsigned>("n_bquarks");
     
     std::vector<GenParticle *> sel_bquarks;
     for (unsigned i=0; i < gen_particles.size(); ++i){
@@ -163,6 +162,7 @@ namespace ic {
       }
     }
     n_bquarks_ = sel_bquarks.size();
+    event->Add("n_bquarks",n_bquarks_);
     
     std::vector<GenParticle *> sel_gen_parts;
     
