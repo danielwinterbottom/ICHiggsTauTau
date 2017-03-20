@@ -1,11 +1,19 @@
 {
+std::string file_prefix = "/vols/cms/dw515/Offline/output/MSSM/gen_studies/";
 TFile *fout = new TFile("test.root","RECREATE");
-TFile *f1 = new TFile("DYJetsToLL_zmm_2016.root");
+TFile *f1 = new TFile((file_prefix+"/"+"DYJetsToLL_zmm_2016.root").c_str());
 TTree *t1 = (TTree*)f1->Get("gen_ntuple");
 TH1D *nlo = new TH1D("nlo","",20,0,200);
 TH1D *nlo_b = new TH1D("nlo_b","",20,0,200);
 t1->Draw("genpT>>nlo","wt", "goff");
 t1->Draw("genpT>>nlo_b","wt*(n_bquarks>0)", "goff");
+
+double NLO_total=0;
+NLO_total = nlo->Integral(0,nlo->GetNbinsX()+1);
+//std::cout << NLO_total << std::endl;
+
+nlo->Scale(1/NLO_total);
+nlo_b->Scale(1/NLO_total);
 
 fout->cd();
 nlo->Write();
@@ -21,14 +29,21 @@ TH1D *temp = new TH1D("temp","",20,0,200);
 TH1D *lo_btagcat = new TH1D("lo_btagcat","",20,0,200);
 TH1D *lo_inccat = new TH1D("lo_inccat","",20,0,200);
 
+double LO_total = 0;
+//std::vector<std::string> filenames = {"DYJetsToLL-LO-ext2_zmm_2016.root", "DY1JetsToLL-LO_zmm_2016.root", "DY2JetsToLL-LO_zmm_2016.root", "DY3JetsToLL-LO_zmm_2016.root", "DY4JetsToLL-LO_zmm_2016.root"};
 
+std::vector<std::string> filenames = {"DYJetsToLL-LO-ext2_zmm_2016.root","DY1JetsToLL-LO_zmm_2016.root","DY2JetsToLL-LO_zmm_2016.root","DY3JetsToLL-LO_zmm_2016.root","DY4JetsToLL-LO_zmm_2016.root"};
 
-std::vector<std::string> filenames = {"DYJetsToLL-LO-ext2_zmm_2016.root", "DY1JetsToLL-LO_zmm_2016.root", "DY2JetsToLL-LO_zmm_2016.root", "DY3JetsToLL-LO_zmm_2016.root", "DY4JetsToLL-LO_zmm_2016.root"};
+int num=0;
 for (unsigned i=0;i<1&& i< filenames.size();++i){
-  f1 = new TFile(filenames[i].c_str());
+  f1 = new TFile((file_prefix+"/"+filenames[i]).c_str());
   t1 = (TTree*)f1->Get("gen_ntuple");
   temp = new TH1D("temp","",20,0,200);
   t1->Draw("genpT>>temp","wt", "goff");
+  if (num==0){
+    LO_total = temp->Integral(0,temp->GetNbinsX()+1);
+    num++;
+  }
   lo->Add(temp);
   t1->Draw("genpT>>temp","wt*(n_bquarks>0)", "goff");
   lo_b->Add(temp);
@@ -39,22 +54,30 @@ for (unsigned i=0;i<1&& i< filenames.size();++i){
   f1->Close();
 }
 
-for (unsigned i=0;i<1&& i< filenames.size();++i){
-  f1 = new TFile(filenames[i].c_str());
-  t1 = (TTree*)f1->Get("ntuple");
-  temp = new TH1D("temp","",20,0,200);
-  t1->Draw("pt_tt>>temp","wt*(iso_1<0.15 && iso_2<0.15 && m_vis>80 && m_vis<120 && n_bjets>=1 && n_jets<=1)", "goff");
-  lo_inccat->Add(temp);
+std::cout << "LO total = " << LO_total << ", NLO total = " << NLO_total << std::endl;
 
-  t1->Draw("pt_tt>>temp","wt*(iso_1<0.15 && iso_2<0.15 && m_vis>80 && m_vis<120 && n_bjets>=1 && n_jets<=1 && n_bquarks>0)", "goff");
-  lo_btagcat->Add(temp);
 
-  f1->Close();
-}
-double total = lo_inccat->Integral(0, lo_inccat->GetNbinsX()+1);
-double total_withbs = lo_btagcat->Integral(0, lo_btagcat->GetNbinsX()+1);
+lo->Scale(1/LO_total);
+lo_b->Scale(1/LO_total);
+lo_wtzpt->Scale(1/LO_total);
+lo_b_wtzpt->Scale(1/LO_total);
 
-std::cout << "Total = " << total << ", with bquarks = " << total_withbs << ", % = " << total_withbs/total*100 << std::endl;
+//for (unsigned i=0;i<1&& i< filenames.size();++i){
+//  f1 = new TFile(filenames[i].c_str());
+//  t1 = (TTree*)f1->Get("ntuple");
+//  temp = new TH1D("temp","",20,0,200);
+//  t1->Draw("pt_tt>>temp","wt*(iso_1<0.15 && iso_2<0.15 && m_vis>80 && m_vis<120 && n_bjets>=1 && n_jets<=1)", "goff");
+//  lo_inccat->Add(temp);
+//
+//  t1->Draw("pt_tt>>temp","wt*(iso_1<0.15 && iso_2<0.15 && m_vis>80 && m_vis<120 && n_bjets>=1 && n_jets<=1 && n_bquarks>0)", "goff");
+//  lo_btagcat->Add(temp);
+//
+//  f1->Close();
+//}
+//double total = lo_inccat->Integral(0, lo_inccat->GetNbinsX()+1);
+//double total_withbs = lo_btagcat->Integral(0, lo_btagcat->GetNbinsX()+1);
+//
+//std::cout << "Total = " << total << ", with bquarks = " << total_withbs << ", % = " << total_withbs/total*100 << std::endl;
 
 
 fout->cd();
@@ -66,4 +89,4 @@ lo_b_wtzpt->Write();
 
 
 
-}
+}          
