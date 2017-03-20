@@ -64,6 +64,25 @@ plotting.CompareHists(hists,
                       True,
                       "Zpt_lo_nlo_comp_bquarks")
 
+plotting.CompareHists(hists,
+                      ["NLO", "LO", "LO + ZpT re-weighting"],
+                      "N_{bquarks}>0",
+                      True,
+                      False,
+                      False,
+                      "0.7,1.3",
+                      False,
+                      4000,
+                      0,
+                      False,
+                      4000,
+                      0,
+                      "Z p_{T} [GeV]",
+                      "Normalized Entries",
+                      0,
+                      False,
+                      "Zpt_lo_nlo_comp_bquarks_norm_to_inclusiv")
+
 
  
 
