@@ -43,7 +43,7 @@ plotting.CompareHists(hists,
                       "Zpt_lo_nlo_comp_inclusive")
     
 
-hists = [nlo_b, lo_b, lo_b_wtzpt]
+hists = [nlo_b.Clone(), lo_b.Clone(), lo_b_wtzpt.Clone()]
 
 plotting.CompareHists(hists,
                       ["NLO", "LO", "LO + ZpT re-weighting"],
@@ -64,6 +64,8 @@ plotting.CompareHists(hists,
                       True,
                       "Zpt_lo_nlo_comp_bquarks")
 
+hists = [nlo_b.Clone(), lo_b.Clone(), lo_b_wtzpt.Clone()]
+
 plotting.CompareHists(hists,
                       ["NLO", "LO", "LO + ZpT re-weighting"],
                       "N_{bquarks}>0",
@@ -81,7 +83,7 @@ plotting.CompareHists(hists,
                       "Normalized Entries",
                       0,
                       False,
-                      "Zpt_lo_nlo_comp_bquarks_norm_to_inclusiv")
+                      "Zpt_lo_nlo_comp_bquarks_norm_to_inclusive")
 
 
  
