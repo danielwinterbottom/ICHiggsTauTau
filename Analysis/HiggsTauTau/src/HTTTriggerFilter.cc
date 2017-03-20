@@ -47,6 +47,8 @@ namespace ic {
     std::string leg1_filter;
     std::string leg2_filter;
 		std::string extra_leg2_filter;
+    std::string extra_filter ="";
+    std::string alt_extra_filter ="";
 		std::string alt_leg1_filter;
 		std::string alt_trk_leg1_filter;
                 std::string alt_er_leg1_filter;
@@ -128,7 +130,8 @@ namespace ic {
           if (run >= 190456 && run <= 247600 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
           //if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
           if (run >= 250985 && run <= 271035 && (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
-          if (run >= 271036 /*&& run <= xxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
+          if (run >= 271036 && run <= 278819 && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v") != name.npos)) path_found = true;
+          if (run >= 278820 /*&& run <= xxxx*/ && (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos || name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v") != name.npos)) path_found = true;
         }
         if (channel_ == channel::tt){
           if (run >= 250985 /*&& run <= xxxxx*/ && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true;
@@ -393,15 +396,25 @@ namespace ic {
           alt_leg1_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           alt_leg2_filter = "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
         }
-        if (run >= 271036 /*&& run <= XXXXX*/){
+        if (run >= 271036 && run <= 278819){
          trig_obj_label = "triggerObjectsEle12Mu23";
          leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
          alt_trig_obj_label = "triggerObjectsEle23Mu8";
          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
-
         }
+        if (run >= 278820 /*&& run <= xxx*/){
+         trig_obj_label = "triggerObjectsEle12Mu23DZ";
+         leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+         leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
+         extra_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter";
+         alt_trig_obj_label = "triggerObjectsEle23Mu8DZ";
+         alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
+         alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
+         alt_extra_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZFilter";
+        }
+
 
       }
       if(channel_ == channel::tt){
@@ -850,11 +863,17 @@ namespace ic {
       for(unsigned i = 0; i < dileptons.size(); ++i){
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
+        bool extra_leg1_match=true;
+        bool extra_leg2_match=true;
+        if(extra_filter.find("hlt")!=extra_filter.npos){
+          extra_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, extra_filter, 0.5).first;
+          extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, extra_filter, 0.5).first;
+        }
         //unsigned leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).second;
         //unsigned leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).second;
         bool highpt_leg = dileptons[i]->At(1)->pt() >18.0;
         if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) highpt_leg = dileptons[i]->At(1)->pt() >24.0;
-        if (leg1_match && leg2_match && highpt_leg) {
+        if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg) {
           passed_muonelectron = true;  
           dileptons_pass.push_back(dileptons[i]);
        /*  double leg1_trigger_object_pt = objs.at(leg1_match_index)->pt();
@@ -868,13 +887,17 @@ namespace ic {
            event->Add("leg2_trigger_obj_eta",leg2_trigger_object_eta);
          }*/
         } else {
-          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->at(0), alt_objs, alt_leg1_filter, 0.5).first;
-          leg2_match = IsFilterMatchedWithIndex(dileptons[i]->at(1), alt_objs, alt_leg2_filter, 0.5).first;
-          //leg1_match_index = IsFilterMatchedWithIndex(dileptons[i]->at(0), alt_objs, alt_leg1_filter, 0.5).second;
-          //leg2_match_index = IsFilterMatchedWithIndex(dileptons[i]->at(1), alt_objs, alt_leg2_filter, 0.5).second;
+          leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
+          leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
+          extra_leg1_match = true;
+          extra_leg2_match = true;
+          if(alt_extra_filter.find("hlt")!=extra_filter.npos){
+            extra_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_extra_filter, 0.5).first;
+            extra_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_extra_filter, 0.5).first;
+          }
           highpt_leg = dileptons[i]->At(0)->pt() > 18.0;
           if(mc_ == mc::spring16_80X || mc_ == mc::summer16_80X) highpt_leg = dileptons[i]->At(0)->pt() >24.0;
-           if (leg1_match && leg2_match && highpt_leg){
+           if (leg1_match && leg2_match &&extra_leg1_match && extra_leg2_match && highpt_leg){
               passed_muonelectron = true; 
               dileptons_pass.push_back(dileptons[i]);
            /*   double leg1_trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
