@@ -1989,11 +1989,11 @@ namespace ic {
             auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
             auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
             //m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data()) * fns_["m_iso_binned_ratio"]->eval(args_2_2.data());
-            m_idiso=fns_["m_idiso_0p20_desy_ratio"]->eval(args_1_2.data());
-            auto args_1_1 = std::vector<double>{e_pt,m_signed_eta};
+            m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
+            auto args_1_1 = std::vector<double>{e_pt,e_signed_eta};
             auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
            // e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2_1.data()); 
-           e_idiso=fns_["e_idiso_0p15_desy_ratio"]->eval(args_1_1.data());
+           e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());
          }
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);
