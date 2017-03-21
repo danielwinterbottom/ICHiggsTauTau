@@ -1120,11 +1120,13 @@ for systematic in systematics:
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 
+w_total = plot_file.Get(nodename+"/W")
+print "W Yield", w_total.Integral(0,w_total.GetNbinsX()+1)
+
 if options.method is 12 or options.method is 16:
     w_os = plot_file.Get(nodename+"/W.subnodes/w_os")    
     w_ss = plot_file.Get(nodename+"/W.subnodes/w_ss")
     W_os_ss = w_os.Integral(0,w_os.GetNbinsX()+1)/w_ss.Integral(0,w_ss.GetNbinsX()+1)
-
     print "W OS/SS ratio = ", W_os_ss 
 
 if not options.no_plot:

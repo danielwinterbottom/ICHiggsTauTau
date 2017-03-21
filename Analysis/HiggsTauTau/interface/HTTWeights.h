@@ -52,6 +52,8 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_tau_id_sf)
   CLASS_MEMBER(HTTWeights, bool, do_em_qcd_weights)
   CLASS_MEMBER(HTTWeights, TH2D*, z_pt_mass_hist)
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_mass_nlo_vs_lo_hist)
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_mass_b_nlo_vs_lo_hist)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_idiso_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_idiso_data)
   CLASS_MEMBER(HTTWeights, TH2D*, et_idiso_mc)

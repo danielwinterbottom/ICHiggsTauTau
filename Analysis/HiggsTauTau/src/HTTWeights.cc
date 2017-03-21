@@ -52,6 +52,8 @@ namespace ic {
     btag_label_         = "combinedSecondaryVertexBJetTags";
     ditau_label_              = "emtauCandidates";
     z_pt_mass_hist_            = nullptr;
+    z_pt_mass_nlo_vs_lo_hist_  = nullptr;
+    z_pt_mass_b_nlo_vs_lo_hist_  = nullptr;
     mt_idiso_mc_              = nullptr;     
     mt_idiso_data_            = nullptr;     
     et_idiso_mc_              = nullptr;     
@@ -596,6 +598,26 @@ namespace ic {
       eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+      
+      unsigned n_bquarks_=0;
+      std::vector<GenParticle *> const& gen_particles = event->GetPtrVec<GenParticle>("genParticles");
+      std::vector<GenParticle *> sel_bquarks;
+      for (unsigned i=0; i < gen_particles.size(); ++i){
+        std::vector<bool> status_flags = gen_particles[i]->statusFlags();
+        unsigned id = abs(gen_particles[i]->pdgid());  
+        if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
+          sel_bquarks.push_back(gen_particles[i]);
+        }
+      }
+      n_bquarks_ = sel_bquarks.size();
+      double wt_nlo_vs_lo = 1;;
+      if (n_bquarks_==0) wt_nlo_vs_lo = z_pt_mass_nlo_vs_lo_hist_->GetBinContent(z_pt_mass_nlo_vs_lo_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_nlo_vs_lo_hist_->GetYaxis()->FindBin(zpt));
+      else if (n_bquarks_>0) wt_nlo_vs_lo = z_pt_mass_b_nlo_vs_lo_hist_->GetBinContent(z_pt_mass_b_nlo_vs_lo_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_b_nlo_vs_lo_hist_->GetYaxis()->FindBin(zpt));
+      double wt_zpt_nlo_vs_lo_up = wt_nlo_vs_lo;
+      double wt_zpt_nlo_vs_lo_down = 1/wt_nlo_vs_lo;
+      event->Add("wt_zpt_nlo_vs_lo_up",wt_zpt_nlo_vs_lo_up);
+      event->Add("wt_zpt_nlo_vs_lo_down",wt_zpt_nlo_vs_lo_down);
+      
     }
 
    if (do_tracking_eff_){

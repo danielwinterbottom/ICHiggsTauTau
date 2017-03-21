@@ -646,6 +646,8 @@ class HTTCategories : public ModuleBase {
   
   double wt_tau_id_binned_;
   double wt_tau_id_tight_;
+  double wt_zpt_nlo_vs_lo_up_;
+  double wt_zpt_nlo_vs_lo_down_;
 
 
  public:

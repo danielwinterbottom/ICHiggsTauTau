@@ -410,7 +410,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
  if(channel_str=="zmm") muon_shift = json["baseline"]["muon_es_shift"].asDouble();
- else muon_shoft = 1.0;
+ else muon_shift = 1.0;
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
@@ -1639,6 +1639,8 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR1_dRGt4");
    TH2D em_qcd_cr2_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dRGt4");
    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016.root","/","zptmass_histo");
+   TH2D z_pt_nlo_lo_weights = GetFromTFile<TH2D>("input/zpt_weights/Residual_LO_to_NLO_weights.root","/","zptmass_histo");
+   TH2D z_pt_b_nlo_lo_weights = GetFromTFile<TH2D>("input/zpt_weights/Residual_LO_to_NLO_weights.root","/","zptmass_b_histo");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -1659,7 +1661,9 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2))
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4))
-    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
+    .set_z_pt_mass_hist(new TH2D(z_pt_weights))
+    .set_z_pt_mass_nlo_vs_lo_hist(new TH2D(z_pt_nlo_lo_weights))
+    .set_z_pt_mass_b_nlo_vs_lo_hist(new TH2D(z_pt_b_nlo_lo_weights));
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))

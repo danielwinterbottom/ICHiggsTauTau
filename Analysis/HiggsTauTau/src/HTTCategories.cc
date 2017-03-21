@@ -521,6 +521,8 @@ namespace ic {
         outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
         outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
+        outtree_->Branch("wt_zpt_nlo_vs_lo_up", &wt_zpt_nlo_vs_lo_up_);
+        outtree_->Branch("wt_zpt_nlo_vs_lo_down", &wt_zpt_nlo_vs_lo_down_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("wt_trig_up_1",    &wt_trig_up_1_);
@@ -1241,6 +1243,11 @@ namespace ic {
     if (event->Exists("wt_tau_id_binned")) wt_tau_id_binned_  = event->Get<double>("wt_tau_id_binned");
     wt_tau_id_tight_ = 1.0;
     if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
+    
+    wt_zpt_nlo_vs_lo_up_ = 1;
+    wt_zpt_nlo_vs_lo_down_ = 1;
+    if (event->Exists("wt_zpt_nlo_vs_lo_up")) wt_zpt_nlo_vs_lo_up_  = event->Get<double>("wt_zpt_nlo_vs_lo_up");
+    if (event->Exists("wt_zpt_nlo_vs_lo_down")) wt_zpt_nlo_vs_lo_down_  = event->Get<double>("wt_zpt_nlo_vs_lo_down");
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
