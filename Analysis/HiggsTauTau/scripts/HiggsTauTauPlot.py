@@ -250,6 +250,17 @@ cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = '('+cats['btag']+ ' && mt_1>40)'
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
+cats['0jet'] = '(n_jets==0)'
+cats['1jet'] = '(n_jets==1)'
+cats['ge2jet'] = '(n_jets>=2)'
+cats['0bjet'] = '(n_bjets==0)'
+cats['1bjet'] = '(n_bjets==1)'
+cats['ge2bjet'] = '(n_bjets>=2)'
+
+cats['0lowptjet'] = '(n_lowpt_jets==0)'
+cats['1lowptjet'] = '(n_lowpt_jets==1)'
+cats['ge2lowptjet'] = '(n_lowpt_jets>=2)'
+
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
 if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt':
@@ -1130,6 +1141,8 @@ if options.method is 12 or options.method is 16:
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    if options.log_y: plot_name+="_logy"
+    if options.log_x: plot_name+="_logx"
     FF = options.method==17
     plotting.HTTPlot(nodename, 
         plot_file, 
