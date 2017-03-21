@@ -37,7 +37,7 @@
   },
   "DYJetsToLL": {
     "xs": 5765.4,
-    "evt": 11994729
+    "evt": 19403278
   },
   "DYJetsToLL_M-10-50-LO": {
     "xs": 18610,
@@ -45,11 +45,11 @@
   },
   "DYJetsToLL_M-10to50-ext": {
     "xs": 18610,
-    "evt": 11279782
+    "evt": 29386523
   },
   "DYJetsToLL_M-10to50": {
     "xs": 18610,
-    "evt": 12576957
+    "evt": 22440229
   },
   "EWKWMinus2Jets_WToLNu-ext1": {
     "xs": 20.25,
@@ -409,7 +409,7 @@
   },
   "WJetsToLNu": {
     "xs": 61526.7,
-    "evt": 12981300
+    "evt": 16428691
   },
   "WWTo1L1Nu2Q": {
     "xs": 49.997,
@@ -429,7 +429,7 @@
   },
   "WZTo1L1Nu2Q": {
     "xs": 10.71,
-    "evt": 11695192
+    "evt": 14057875
   },
   "WZTo1L3Nu": {
     "xs": 3.05,
@@ -437,7 +437,7 @@
   },
   "WZTo2L2Q": {
     "xs": 5.595,
-    "evt": 11458316
+    "evt": 15879472
   },
   "WminusHToTauTau_M-120": {
     "xs": 1,

@@ -507,18 +507,30 @@ namespace ic {
            qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
          }
        } else if (era_==era::data_2016){
-         if(deltaR < 2){
-           qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
-           qcd_weight_up = em_qcd_cr2_lt2_->GetBinContent(em_qcd_cr2_lt2_->FindBin(trail_pt,lead_pt));
-           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-         } else if (deltaR <=4){
-           qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
-           qcd_weight_up = em_qcd_cr2_2to4_->GetBinContent(em_qcd_cr2_2to4_->FindBin(trail_pt,lead_pt));
-           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+           if (mc_!=mc::summer16_80X){
+             if(deltaR < 2){
+               qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
+               qcd_weight_up = em_qcd_cr2_lt2_->GetBinContent(em_qcd_cr2_lt2_->FindBin(trail_pt,lead_pt));
+               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+             } else if (deltaR <=4){
+               qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
+               qcd_weight_up = em_qcd_cr2_2to4_->GetBinContent(em_qcd_cr2_2to4_->FindBin(trail_pt,lead_pt));
+               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+            } else {
+               qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
+               qcd_weight_up = em_qcd_cr2_gt4_->GetBinContent(em_qcd_cr2_gt4_->FindBin(trail_pt,lead_pt));
+               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+           }
          } else {
-           qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
-           qcd_weight_up = em_qcd_cr2_gt4_->GetBinContent(em_qcd_cr2_gt4_->FindBin(trail_pt,lead_pt));
-           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+             if(deltaR < 2){
+               qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
+             } else if (deltaR <=4){
+               qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
+            } else {
+               qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
+           }
+             qcd_weight_down = qcd_weight;
+             qcd_weight_up = qcd_weight;
          }
        }   
        event->Add("wt_em_qcd",qcd_weight);
@@ -1976,10 +1988,12 @@ namespace ic {
             double e_iso = PF03IsolationVal(elec, 0.5, 0);             
             auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
             auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
-            m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data()) * fns_["m_iso_binned_ratio"]->eval(args_2_2.data());
-            auto args_1_1 = std::vector<double>{e_pt,m_signed_eta};
+            //m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data()) * fns_["m_iso_binned_ratio"]->eval(args_2_2.data());
+            m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
+            auto args_1_1 = std::vector<double>{e_pt,e_signed_eta};
             auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
-            e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2_1.data()); 
+           // e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2_1.data()); 
+           e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());
          }
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);

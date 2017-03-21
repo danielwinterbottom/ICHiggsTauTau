@@ -899,6 +899,25 @@ if(channel == channel::zmm){
 // if(is_data){
 
    if(channel != channel::wmnu) {
+
+   if(channel != channel::tpzmm &&channel !=channel::tpzee && !js["qcd_study"].asBool()){  
+     if((is_data || js["trg_in_mc"].asBool()) && (strategy_type!=strategy::mssmsummer16 || js["filter_trg"].asBool()) &&(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
+       if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
+           BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+               .set_channel(channel)
+               .set_mc(mc_type)
+               .set_era(era_type)
+               .set_strategy(strategy_type)
+               .set_is_data(is_data)
+               .set_is_embedded(is_embedded)
+               .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+               .set_do_singlelepton(js["do_singlelepton"].asBool())
+               .set_do_singletau(js["do_singletau"].asBool())
+               .set_do_filter(true)
+               .set_pair_label("ditau"));
+       }
+     }
+   }
    
      HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
        .set_channel(channel)
@@ -938,7 +957,7 @@ if(channel == channel::zmm){
      }
    } else {
    if(channel != channel::tpzmm &&channel !=channel::tpzee && !js["qcd_study"].asBool()){  
-     if((is_data || js["trg_in_mc"].asBool()) && (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
+     if((is_data || js["trg_in_mc"].asBool()) && (strategy_type==strategy::mssmsummer16 && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
        if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
                .set_channel(channel)
@@ -1659,12 +1678,9 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_e12_trig_mc = GetFromTFile<TH2D>("input/scale_factors/Ele_SF_spring16.root","/","Electron_Ele12_MC_eff");
    TH2F ele_tracking_sf = GetFromTFile<TH2F>("input/scale_factors/EGamma_gsf_tracking.root","/","EGamma_SF2D");
    TH1D muon_tracking_sf = GetFromTFile<TH1D>("input/scale_factors/muon_trk_eff.root","/","muon_trk_eff");
-   TH2D em_qcd_cr1_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR1_dRLt2");
-   TH2D em_qcd_cr2_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dRLt2");
-   TH2D em_qcd_cr1_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR1_dR2to4");
-   TH2D em_qcd_cr2_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dR2to4");
-   TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR1_dRGt4");
-   TH2D em_qcd_cr2_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dRGt4");
+   TH2D em_qcd_cr1_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRLt2");
+   TH2D em_qcd_cr1_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dR2to4");
+   TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRGt4");
    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016.root","/","zptmass_histo");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
@@ -1683,9 +1699,9 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
     .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
     .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
-    .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2))
-    .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
-    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4))
+    .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2))
+    .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4))
+    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4))
     .set_z_pt_mass_hist(new TH2D(z_pt_weights));
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
