@@ -9,6 +9,7 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "RooWorkspace.h"
 #include "RooFunctor.h"
+#include "TH3D.h"
 
 #include <string>
 
@@ -93,6 +94,8 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2F*, ele_tracking_sf)
   CLASS_MEMBER(HTTWeights, TH1D*, muon_tracking_sf)
   CLASS_MEMBER(HTTWeights, std::string, scalefactor_file)
+  CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_normxbins_hist)
+  CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_hist)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
@@ -111,6 +114,7 @@ class HTTWeights : public ModuleBase {
   BTagWeight btag_weight;
   TF1 *tau_fake_weights_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
+  
 
 
 

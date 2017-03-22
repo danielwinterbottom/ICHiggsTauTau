@@ -1659,8 +1659,8 @@ namespace ic {
   }
   
     std::vector<std::pair<GenJet,GenJet>> BuildTauJetsIncNu(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt) {
-    std::vector<GenJet> taus;
-    std::vector<GenJet> taus_inc_nu;
+
+    std::vector<std::pair<GenJet,GenJet>> tau_pairs;
     for (unsigned i = 0; i < parts.size(); ++i) {
         std::vector<bool> status_flags;
         bool is_prompt=true; 
@@ -1679,30 +1679,30 @@ namespace ic {
         if (has_tau_daughter) continue;
         if (has_lepton_daughter && !include_leptonic) continue;
         std::vector<GenParticle *> jet_parts = ExtractStableDaughters(parts[i], parts);
-        taus.push_back(GenJet());
+        tau_pairs.push_back(std::make_pair(GenJet(),GenJet()));
         ROOT::Math::PtEtaPhiEVector vec;
         ROOT::Math::PtEtaPhiEVector incnu_vec;
         std::vector<std::size_t> id_vec;
         std::vector<std::size_t> incnu_id_vec;
         for (unsigned k = 0; k < jet_parts.size(); ++k) {
             incnu_vec += jet_parts[k]->vector();
-            taus_inc_nu.back().set_charge(taus_inc_nu.back().charge() + jet_parts[k]->charge());
+            tau_pairs.back().second.set_charge(tau_pairs.back().second.charge() + jet_parts[k]->charge());
             incnu_id_vec.push_back(jet_parts[k]->id());
           if ( !(abs(jet_parts[k]->pdgid()) == 12 || 
                 abs(jet_parts[k]->pdgid()) == 14 ||
                 abs(jet_parts[k]->pdgid()) == 16 )){ 
             vec += jet_parts[k]->vector();
-            taus.back().set_charge(taus.back().charge() + jet_parts[k]->charge());
+            tau_pairs.back().first.set_charge(tau_pairs.back().first.charge() + jet_parts[k]->charge());
             id_vec.push_back(jet_parts[k]->id());
           }
         }
-        taus.back().set_vector(vec);
-        taus.back().set_constituents(id_vec);
-        taus_inc_nu.back().set_vector(incnu_vec);
-        taus_inc_nu.back().set_constituents(incnu_id_vec);
+        tau_pairs.back().first.set_vector(vec);
+        tau_pairs.back().first.set_constituents(id_vec);
+        tau_pairs.back().second.set_vector(incnu_vec);
+        tau_pairs.back().second.set_constituents(incnu_id_vec);
       }
     }
-    return std::make_pair(taus,taus_inc_nu);
+    return tau_pairs;
   }
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){

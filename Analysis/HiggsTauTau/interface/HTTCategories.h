@@ -647,6 +647,8 @@ class HTTCategories : public ModuleBase {
   double wt_tau_id_binned_;
   double wt_tau_id_tight_;
   unsigned n_bquarks_;
+  double wt_zpt_njets_;
+  double wt_zpt_njets_normxbins_;
 
  public:
   HTTCategories(std::string const& name);

@@ -52,6 +52,8 @@ namespace ic {
     btag_label_         = "combinedSecondaryVertexBJetTags";
     ditau_label_              = "emtauCandidates";
     z_pt_mass_hist_            = nullptr;
+    z_njet_mass_pt_normxbins_hist_  = nullptr;
+    z_njet_mass_pt_hist_      = nullptr;
     mt_idiso_mc_              = nullptr;     
     mt_idiso_data_            = nullptr;     
     et_idiso_mc_              = nullptr;     
@@ -507,30 +509,18 @@ namespace ic {
            qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
          }
        } else if (era_==era::data_2016){
-           if (mc_!=mc::summer16_80X){
-             if(deltaR < 2){
-               qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
-               qcd_weight_up = em_qcd_cr2_lt2_->GetBinContent(em_qcd_cr2_lt2_->FindBin(trail_pt,lead_pt));
-               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-             } else if (deltaR <=4){
-               qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
-               qcd_weight_up = em_qcd_cr2_2to4_->GetBinContent(em_qcd_cr2_2to4_->FindBin(trail_pt,lead_pt));
-               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-            } else {
-               qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
-               qcd_weight_up = em_qcd_cr2_gt4_->GetBinContent(em_qcd_cr2_gt4_->FindBin(trail_pt,lead_pt));
-               qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
-           }
+         if(deltaR < 2){
+           qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
+           qcd_weight_up = em_qcd_cr2_lt2_->GetBinContent(em_qcd_cr2_lt2_->FindBin(trail_pt,lead_pt));
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
+         } else if (deltaR <=4){
+           qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
+           qcd_weight_up = em_qcd_cr2_2to4_->GetBinContent(em_qcd_cr2_2to4_->FindBin(trail_pt,lead_pt));
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
          } else {
-             if(deltaR < 2){
-               qcd_weight = em_qcd_cr1_lt2_->GetBinContent(em_qcd_cr1_lt2_->FindBin(trail_pt,lead_pt));
-             } else if (deltaR <=4){
-               qcd_weight = em_qcd_cr1_2to4_->GetBinContent(em_qcd_cr1_2to4_->FindBin(trail_pt,lead_pt));
-            } else {
-               qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
-           }
-             qcd_weight_down = qcd_weight;
-             qcd_weight_up = qcd_weight;
+           qcd_weight = em_qcd_cr1_gt4_->GetBinContent(em_qcd_cr1_gt4_->FindBin(trail_pt,lead_pt));
+           qcd_weight_up = em_qcd_cr2_gt4_->GetBinContent(em_qcd_cr2_gt4_->FindBin(trail_pt,lead_pt));
+           qcd_weight_down = qcd_weight*qcd_weight/qcd_weight_up;
          }
        }   
        event->Add("wt_em_qcd",qcd_weight);
@@ -608,6 +598,17 @@ namespace ic {
       eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+      
+      std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+      ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+      unsigned njets = jets.size();
+      double wtzpt_njets = z_njet_mass_pt_hist_->GetBinContent(z_njet_mass_pt_hist_->GetYaxis()->FindBin(njets),z_njet_mass_pt_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_hist_->GetZaxis()->FindBin(zpt));
+      double wtzpt_njets_normxbin = z_njet_mass_pt_normxbins_hist_->GetBinContent(z_njet_mass_pt_normxbins_hist_->GetYaxis()->FindBin(njets),z_njet_mass_pt_normxbins_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_normxbins_hist_->GetZaxis()->FindBin(zpt));
+      
+      std::cout << "weight 0 = " << wtzpt << ", weight 1 = " << wtzpt_njets << ", weight 2 = " << wtzpt_njets_normxbin << std::endl;
+      
+      event->Add("wt_zpt_njets", wtzpt_njets/wtzpt);
+      event->Add("wt_zpt_njets_normxbins", wtzpt_njets_normxbin/wtzpt);
     }
 
    if (do_tracking_eff_){
@@ -1988,12 +1989,10 @@ namespace ic {
             double e_iso = PF03IsolationVal(elec, 0.5, 0);             
             auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
             auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
-            //m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data()) * fns_["m_iso_binned_ratio"]->eval(args_2_2.data());
-            m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
-            auto args_1_1 = std::vector<double>{e_pt,e_signed_eta};
+            m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data()) * fns_["m_iso_binned_ratio"]->eval(args_2_2.data());
+            auto args_1_1 = std::vector<double>{e_pt,m_signed_eta};
             auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
-           // e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2_1.data()); 
-           e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());
+            e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2_1.data()); 
          }
         // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);

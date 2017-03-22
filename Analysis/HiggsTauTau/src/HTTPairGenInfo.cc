@@ -69,7 +69,24 @@ namespace ic {
     std::vector<std::pair<Candidate*, GenParticle*> > subleading_lepton_match = MatchByDR(subleading_lepton, sel_particles, 0.2, true, true);
     std::vector<std::pair<Candidate*, GenJet*> > subleading_tau_match  = MatchByDR(subleading_lepton, gen_taus_ptr, 0.2, true, true);
     
-
+    double gen_tau_pt_1=-1;
+    double gen_tau_pt_2=-1;
+    
+    std::vector<double> gen_taus_pt_vector;
+    for(unsigned i=0; i<particles.size(); ++i){
+      GenParticle *part = particles[i];
+      unsigned genID = std::fabs(part->pdgid());
+      bool status_flag_t = part->statusFlags().at(0);
+      bool status_flag_tlc = part->statusFlags().at(13);
+      if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
+      gen_taus_pt_vector.push_back(part->vector().Pt());
+    }
+   std::sort(gen_taus_pt_vector.begin(), gen_taus_pt_vector.end());
+   for(unsigned i=0; i< gen_taus_pt_vector.size();++i) std::cout << gen_taus_pt_vector[i] << std::endl;
+   if(gen_taus_pt_vector.size() >=1) gen_tau_pt_1 = gen_taus_pt_vector[0];
+   if(gen_taus_pt_vector.size() >=2) gen_tau_pt_2 = gen_taus_pt_vector[1];
+   
+   std::cout << gen_tau_pt_1 << "    " << gen_tau_pt_2 << std::endl;
 
    mcorigin gen_match_1 = mcorigin::fake;
    mcorigin gen_match_2 = mcorigin::fake;
