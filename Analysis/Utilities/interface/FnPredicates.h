@@ -401,8 +401,6 @@ namespace ic {
   std::vector<GenParticle *> ExtractDaughtersRecursive(GenParticle * part, std::vector<GenParticle *> const& input);
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt);
-  
-  std::vector<std::pair<GenJet,GenJet>> BuildTauJetsIncNu(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 
