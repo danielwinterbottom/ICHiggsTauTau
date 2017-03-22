@@ -1234,6 +1234,9 @@ namespace ic {
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     n_bquarks_=-1;
     if (event->Exists("n_bquarks")) n_bquarks_ = event->Get<unsigned>("n_bquarks");
+    if (event->Exists("genpT")) n_bquarks_ = event->Get<unsigned>("genpT");
+    if (event->Exists("genM")) n_bquarks_ = event->Get<unsigned>("genM");
+    if (event->Exists("genM")) n_bquarks_ = event->Get<unsigned>("gen_tau_pt");
     
 
     // Get the objects we need from the event

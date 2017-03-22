@@ -157,7 +157,7 @@ namespace ic {
     for (unsigned i=0; i < gen_particles.size(); ++i){
       std::vector<bool> status_flags = gen_particles[i]->statusFlags();
       unsigned id = abs(gen_particles[i]->pdgid());  
-      if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
+      if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>15){
         sel_bquarks.push_back(gen_particles[i]);
       }
     }

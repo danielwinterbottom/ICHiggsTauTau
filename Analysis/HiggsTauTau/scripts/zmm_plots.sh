@@ -1,4 +1,4 @@
-cats=("inclusive" "btag")
+cats=("inclusive" "btag" "0jet" "1jet" "ge2jet" "0bjet" "1bjet" "ge2bjet" "0lowptjet" "1lowptjet" "ge2lowptjet")
 channels=("zmm" "zee")
 plots=("pt_tt(20,0,200)" "pt_1(10,0,100)" "pt_2(10,0,100)" "n_jets(5,0,5)" "n_bjets(5,0,5)")
 weights=("wt_zpt_down" "")
