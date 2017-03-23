@@ -64,6 +64,7 @@ XS_WminusHToTauTau_M-125:0.03340
 XS_ZHToTauTau_M-125:0.05542
 XS_TTHToTauTau_M-125:0.03188
 # Using 1pb for now for the higher mass samples which dont have values in the model files
+XS_SUSYGluGluToHToTauTau_M-80:1.0
 XS_SUSYGluGluToHToTauTau_M-90:1.0
 XS_SUSYGluGluToHToTauTau_M-100:1.0
 XS_SUSYGluGluToHToTauTau_M-110:1.0
@@ -92,6 +93,7 @@ XS_SUSYGluGluToHToTauTau_M-2300:1.0
 XS_SUSYGluGluToHToTauTau_M-2600:1.0
 XS_SUSYGluGluToHToTauTau_M-2900:1.0
 XS_SUSYGluGluToHToTauTau_M-3200:1.0
+XS_SUSYGluGluToBBHToTauTau_M-80:1.0
 XS_SUSYGluGluToBBHToTauTau_M-90:1.0
 XS_SUSYGluGluToBBHToTauTau_M-100:1.0
 XS_SUSYGluGluToBBHToTauTau_M-110:1.0

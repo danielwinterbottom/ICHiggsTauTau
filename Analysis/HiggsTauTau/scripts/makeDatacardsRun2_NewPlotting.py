@@ -25,6 +25,8 @@ parser.add_option("-i","--input", dest="folder", type='string', default='',
                   help="The input folder, containing the output of HTT - can be used to override config file")
 parser.add_option("-o","--output", dest="output", type='string', default='',
                   help="The name that will be appended to the datacard inputs.")
+parser.add_option("--output_folder", dest="output_folder", type='string', default='./',
+                  help="Output folder where plots/datacards will be saved to.")
 parser.add_option("-c", "--channels", dest="channels", type='string', action='callback',callback=split_callback,
                   help="A comma separated list of channels to process.  Supported channels: %(CHANNELS)s" % vars())
 parser.add_option("--blind", dest="blind", action='store_true', default=False,
@@ -63,7 +65,7 @@ parser.add_option("--year", dest="year", type='string', default='',
                   help="Output names are data-taking year dependent. This value is read from the config file if present")
 
 (options, args) = parser.parse_args()
-
+output_folder = options.output_folder
 output = options.output
 if output: 
   output = '-'+output
@@ -86,8 +88,8 @@ for channel in channels:
 
 CFG=options.config
 BLIND = options.blind
-BLIND = "false"
-if options.blind: BLIND = "true"
+BLIND = " "
+if options.blind: BLIND = "--blind"
 COM = options.energy
 
 #Hacky config file parsing
@@ -205,6 +207,88 @@ if SCHEME == 'run2_mssm_2016':
   sig_scheme = 'run2_mssm'
   ANA = 'mssm'
   
+if SCHEME == 'run2_mssm_summer2016':
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  if options.const:
+    BINS_FINE="(98,0,3920)"
+    BINS="(98,0,3920)"
+
+  scheme_et = [
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, '--sel="(mt_1<40)"  '),
+    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
+    ("12",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '),
+    ("12",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--sel="(mt_1<40)" --do_ss '),
+    ("12",   "nobtag_loosemt",    "nobtag_loosemt",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    #("12",   "nobtag_loosemt",    "nobtag_loosemt_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '), #this is same as tight control region!
+    #("12",   "nobtag_loosemt",    "nobtag_loosemt_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '), #this is same as tight control region
+    ("12",   "nobtag_loosemt",    "nobtag_loosemt_qcd_cr",  BINS_FINE, '--sel="(mt_1<70)" --do_ss '),
+    ("12",   "nobtag_looseiso",    "nobtag_looseiso",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("12",   "nobtag_looseiso",    "nobtag_looseiso_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
+    ("12",   "nobtag_looseiso",    "nobtag_looseiso_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '), 
+    ("12",   "nobtag_looseiso",    "nobtag_looseiso_qcd_cr",  BINS_FINE, '--sel="(mt_1<70)" --do_ss '),
+    ("16",   "btag_tight",    "btag_tight",  BINS_FINE, '--sel="(mt_1<40)"  '),
+    ("16",   "btag_tight",    "btag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
+    ("16",   "btag_tight",    "btag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '),
+    ("16",   "btag_tight",    "btag_tight_qcd_cr",  BINS_FINE, '--sel="(mt_1<40)" --do_ss '),
+    ("16",   "btag_loosemt",    "btag_loosemt",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    #("16",   "btag_loosemt",    "btag_loosemt_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '), #this is same as tight control region!
+    #("16",   "btag_loosemt",    "btag_loosemt_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '), #this is same as tight control region
+    ("16",   "btag_loosemt",    "btag_loosemt_qcd_cr",  BINS_FINE, '--sel="(mt_1<70)" --do_ss '),
+    ("16",   "btag_looseiso",    "btag_looseiso",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("16",   "btag_looseiso",    "btag_looseiso_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
+    ("16",   "btag_looseiso",    "btag_looseiso_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '), 
+    ("16",   "btag_looseiso",    "btag_looseiso_qcd_cr",  BINS_FINE, '--sel="(mt_1<70)" --do_ss ')
+  ]
+  scheme_mt = [
+    ("12",   "inclusive",  "inclusive",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("12",   "nobtag",    "nobtag",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, '--sel="(mt_1<40)"  '),
+    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
+    ("12",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '),
+    ("12",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--sel="(mt_1<40)" --do_ss '),
+    ("12",   "nobtag_loosemt",    "nobtag_loosemt",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    #("12",   "nobtag_loosemt",    "nobtag_loosemt_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '), #this is same as tight control region!
+    #("12",   "nobtag_loosemt",    "nobtag_loosemt_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '), #this is same as tight control region
+    ("12",   "nobtag_loosemt",    "nobtag_loosemt_qcd_cr",  BINS_FINE, '--sel="(mt_1<70)" --do_ss '),
+    ("12",   "nobtag_looseiso",    "nobtag_looseiso",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("12",   "nobtag_looseiso",    "nobtag_looseiso_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
+    ("12",   "nobtag_looseiso",    "nobtag_looseiso_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '), 
+    ("12",   "nobtag_looseiso",    "nobtag_looseiso_qcd_cr",  BINS_FINE, '--sel="(mt_1<70)" --do_ss '),
+    ("16",   "btag_tight",    "btag_tight",  BINS_FINE, '--sel="(mt_1<40)"  '),
+    ("16",   "btag_tight",    "btag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
+    ("16",   "btag_tight",    "btag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '),
+    ("16",   "btag_tight",    "btag_tight_qcd_cr",  BINS_FINE, '--sel="(mt_1<40)" --do_ss '),
+    ("16",   "btag_loosemt",    "btag_loosemt",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    #("16",   "btag_loosemt",    "btag_loosemt_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '), #this is same as tight control region!
+    #("16",   "btag_loosemt",    "btag_loosemt_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '), #this is same as tight control region
+    ("16",   "btag_loosemt",    "btag_loosemt_qcd_cr",  BINS_FINE, '--sel="(mt_1<70)" --do_ss '),
+    ("16",   "btag_looseiso",    "btag_looseiso",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("16",   "btag_looseiso",    "btag_looseiso_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
+    ("16",   "btag_looseiso",    "btag_looseiso_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70) --do_ss '), 
+    ("16",   "btag_looseiso",    "btag_looseiso_qcd_cr",  BINS_FINE, '--sel="(mt_1<70)" --do_ss ')
+  ]
+  scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5&&antiele_1 && antimu_1 && antiele_2 &&antimu_2 && leptonveto<0.5" '),
+  ]
+  scheme_em = [
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default'
+  }
+  sig_scheme = 'run2_mssm'
+  ANA = 'mssm'
+  
   
 cat_schemes = {
   'et' : scheme_et,
@@ -258,12 +342,12 @@ for ch in channels:
     extra = options.extra + extra_global + extra_channel[ch] + opts
     
     os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
-              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder="./" --no_plot'
-              ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s'
+              ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
+              ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --ratio --log_x --log_y --norm_bins --extra_pad=0.2'
               ' --var="%(var)s%(bin)s" %(extra)s' % vars())
 
   varsplit = var.split('(')
   varname=varsplit[0]
-  os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
-  os.system('rm datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
+  os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
+  os.system('rm %(output_folder)s/datacard_%(varname)s_*_%(ch)s_%(YEAR)s.root' % vars())
 

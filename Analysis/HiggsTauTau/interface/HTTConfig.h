@@ -49,7 +49,8 @@ struct strategy_def {
     spring15,    //Strategy for running on spring15 samples
     fall15,    //Strategy for running on fall15 samples
     mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
-    smspring16    //Strategy for running on spring16 samples, SM analysis
+    smspring16,    //Strategy for running on spring16 samples, SM analysis
+    mssmsummer16
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -61,7 +62,8 @@ inline std::string Strategy2String(strategy const& in) {
     (strategy::spring15, "spring15")
     (strategy::fall15, "fall15")
     (strategy::mssmspring16, "mssmspring16")
-    (strategy::smspring16, "smspring16");
+    (strategy::smspring16, "smspring16")
+    (strategy::mssmsummer16, "mssmsummer16");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -77,7 +79,8 @@ inline strategy String2Strategy(std::string const& in) {
   ("spring15", strategy::spring15)
   ("fall15", strategy::fall15)
   ("mssmspring16", strategy::mssmspring16)
-  ("smspring16", strategy::smspring16);
+  ("smspring16", strategy::smspring16)
+  ("mssmsummer16", strategy::mssmsummer16);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -131,7 +134,8 @@ struct mc_def {
 		phys14_72X,			// 72X MC
     spring15_74X,      //74X MC 
     fall15_76X,      //76X MC 
-    spring16_80X      //76X MC 
+    spring16_80X,     //76X MC
+    summer16_80X
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -143,7 +147,8 @@ inline std::string MC2String(mc const& in) {
 		(mc::phys14_72X, "phys14_72X")
     (mc::spring15_74X, "spring15_74X")
     (mc::fall15_76X, "fall15_76X")
-    (mc::spring16_80X, "spring16_80X");
+    (mc::spring16_80X, "spring16_80X")
+    (mc::summer16_80X, "summer16_80X");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -159,7 +164,8 @@ inline mc String2MC(std::string const& in) {
 	("phys14_72X",	mc::phys14_72X)
   ("spring15_74X", mc::spring15_74X)
   ("fall15_76X", mc::fall15_76X)
-  ("spring16_80X", mc::spring16_80X);
+  ("spring16_80X", mc::spring16_80X)
+  ("summer16_80X", mc::summer16_80X);
 
 
 	if (conv.find(in) != conv.end()) {

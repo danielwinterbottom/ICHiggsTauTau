@@ -6,24 +6,7 @@
     "lumi": 12918.140703927
   },
   "DYJetsToLL": {
-    "xs": 5765.4,
-    "lo_xs": 4954.0,
-    "clone_to": ["DYJetsToLLSoup"]
-  },
-  "DYJetsToLL-NLO": {
-    "xs": 5765.4
-  },
-  "DY1JetsToLL": {
-    "lo_xs": 1012.5
-  },
-  "DY2JetsToLL": {
-    "lo_xs": 332.8
-  },
-  "DY3JetsToLL": {
-    "lo_xs": 101.8
-  },
-  "DY4JetsToLL": {
-    "lo_xs": 54.8
+    "xs": 6025.5
   },
   "DYJetsToLL_M-10to50": {
     "xs": 18610.0
@@ -56,42 +39,6 @@
     "xs": 1.212
   },
   "WJetsToLNu": {
-    "xs": 61526.7,
-    "lo_xs": 50380.0,
-    "clone_to": ["WJetsToLNuSoup"]
-  },
-  "W1JetsToLNu": {
-    "lo_xs": 9644.5
-  },
-  "W2JetsToLNu": {
-    "lo_xs": 3144.5
-  },
-  "W3JetsToLNu": {
-    "lo_xs": 954.8
-  },
-  "W4JetsToLNu": {
-    "lo_xs": 485.6
-  },
-  "EWKWMinus2Jets_WToLNu": {
-    "xs": 20.25
-  },
-  "EWKWPlus2Jets_WToLNu": {
-    "xs": 25.62
-  },
-  "EWKZ2Jets_ZToLL": {
-    "xs": 3.987
-  },
-  "ST_t-channel_antitop": {
-    "xs": 80.95
-  },
-  "ST_t-channel_top": {
-    "xs": 136.02
-  },
-  "ST_tW_antitop": {
-    "xs": 35.6
-  },
-  "ST_tW_top": {
-    "xs": 35.6
+    "xs": 61526.7
   }
 }
-

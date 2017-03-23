@@ -1024,6 +1024,36 @@ namespace ic {
     return pass_mva;
   }
   
+   bool VetoElectronIDSpring16(Electron const* elec) {
+    
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+
+    double dEtaInSeed = elec->deta_sc_tk_at_vtx() - elec->sc_eta() + elec->sc_seed_eta(); 
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+
+    return (!elec->has_matched_conversion()
+       && ( (in_barrel 
+       && elec->sigma_IetaIeta()           < 0.0115
+       && fabs(dEtaInSeed)                 < 0.00749
+       && fabs(elec->dphi_sc_tk_at_vtx())  < 0.228
+       && elec->hadronic_over_em()         < 0.356
+       && ooemoop                          < 0.299
+       && elec->gsf_tk_nhits()             <=2
+       ) || 
+      (!in_barrel 
+       && elec->sigma_IetaIeta()           < 0.037
+       && fabs(dEtaInSeed)                 < 0.00895
+       && fabs(elec->dphi_sc_tk_at_vtx())  < 0.213
+       && elec->hadronic_over_em()         < 0.211
+       && ooemoop                          < 0.15
+       && elec->gsf_tk_nhits()             <=3
+       )
+      )
+    );
+  }
+
+  
  double PUW03IsolationVal(Muon const* muon){
    double charged_iso = muon->dr03_pfiso_charged();
    double neutral_weighted = muon->GetIdIso("neutral_pfweighted_iso_03");
