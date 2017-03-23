@@ -18,6 +18,7 @@ namespace ic {
     jets_label_ = "ak4PFJetsCHS";
     ditau_label_ = "ditau";
     categories_ = "inclusive";
+    do_systematics_= false;
   }
 
   HTTFakeFactorWeights::~HTTFakeFactorWeights() {
@@ -38,17 +39,16 @@ namespace ic {
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
     
     std::string file_name = "";
-    //if(strategy_ == strategy::smspring16) file_name = "fakeFactors_20170111.root";
-    //else if (strategy_ == strategy::mssmsummer16) file_name = "fakeFactors_20170228.root";
+    if(strategy_ == strategy::smspring16) file_name = "fakeFactors_20170111.root";
+    else if (strategy_ == strategy::mssmsummer16) file_name = "fakeFactors_20170228.root";
     
     std::string channel = Channel2String(channel_);
-    //std::string channel == "tt";
     for(unsigned i=0; i<category_names_.size(); ++i){
-      std::string ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/"+channel+"/"+category_names_[i]+"/fakeFactors_20170111.root"; 
+      std::string ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/"+channel+"/"+category_names_[i]+"/"+file_name; 
       ff_file_name = baseDir + ff_file_name;
       TFile* ff_file = new TFile(ff_file_name.c_str());
       FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
-      std::string map_key = channel+"_"+category_names_[i];
+      std::string map_key = category_names_[i];
       fake_factors_[map_key]  = ff; 
     }
 
@@ -108,28 +108,39 @@ namespace ic {
     
     // Need to loop over all categories and add a ff weight to the event for each
     for(unsigned i=0; i<category_names_.size(); ++i){
-      std::string map_key = Channel2String(channel_)+"_"+category_names_[i];
+      std::string map_key = category_names_[i];
       
       // Retrieve fake factors and add to event as weights
       if(channel_ == channel::et || channel_ == channel::mt){
         double ff_nom = fake_factors_[map_key]->value(inputs);
-        // Eventually will need to add systematic weights also here
-        //std::string sys(...);
-        //double ff_sys = ff->value(inputs, sys); // systematic shift
         event->Add("wt_ff_"+map_key, ff_nom);
+        
+        if(do_systematics_){
+          std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_w_dm0_njet0_stat_up","ff_w_dm0_njet0_stat_down","ff_w_dm0_njet1_stat_up","ff_w_dm0_njet1_stat_down","ff_w_dm1_njet0_stat_up","ff_w_dm1_njet0_stat_down","ff_w_dm1_njet1_stat_up","ff_w_dm1_njet1_stat_down","ff_tt_syst_up","ff_tt_syst_down","ff_tt_dm0_njet0_stat_up","ff_tt_dm0_njet0_stat_down","ff_tt_dm0_njet1_stat_up","ff_tt_dm0_njet1_stat_down","ff_tt_dm1_njet0_stat_up","ff_tt_dm1_njet0_stat_down" ,"ff_tt_dm1_njet1_stat_up","ff_tt_dm1_njet1_stat_down"};
+          for(unsigned j=0; j<systematics.size(); ++j){
+            std::string syst = systematics[j];
+            double ff_syst = fake_factors_[map_key]->value(inputs,syst);
+            std::string syst_name = "wt_"+map_key+"_"+syst;
+            event->Add(syst_name, ff_syst);
+          } 
+        }
       } else if(channel_ == channel::tt){
         double ff_nom_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
         double ff_nom_2 = fake_factors_[map_key]->value(tt_inputs_2)*0.5;
-        double ff_nom = ff_nom_1 + ff_nom_2; 
-        // Eventually will need to add systematic weights also here
-        //std::string sys(...);
-        //double ff_sys = ff->value(inputs, sys); // systematic shift
-        std::cout << ff_nom << std::endl;
-        //double ff_syst_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
-        //double ff_syst_2 = fake_factors_[map_key]->value(tt_inputs_2)*0.5;
-
         event->Add("wt_ff_"+map_key, ff_nom_1);
         event->Add("wt_ff_"+map_key+"_2", ff_nom_2);
+        
+        if(do_systematics_){
+          std::vector<std::string> systematics = {"ff_qcd_syst_up","ff_qcd_syst_down","ff_qcd_dm0_njet0_stat_up","ff_qcd_dm0_njet0_stat_down","ff_qcd_dm0_njet1_stat_up","ff_qcd_dm0_njet1_stat_down","ff_qcd_dm1_njet0_stat_up","ff_qcd_dm1_njet0_stat_down","ff_qcd_dm1_njet1_stat_up","ff_qcd_dm1_njet1_stat_down","ff_w_syst_up","ff_w_syst_down","ff_tt_syst_up","ff_tt_syst_down"};
+          for(unsigned j=0; j<systematics.size(); ++j){
+            std::string syst = systematics[j];
+            double ff_syst_1 = fake_factors_[map_key]->value(tt_inputs_1,syst)*0.5;
+            double ff_syst_2 = fake_factors_[map_key]->value(tt_inputs_2,syst)*0.5;
+            std::string syst_name = "wt_"+map_key+"_"+syst;
+            event->Add(syst_name+"_1", ff_syst_1);
+            event->Add(syst_name+"_2", ff_syst_2);
+          } 
+        }
       }
     }
 

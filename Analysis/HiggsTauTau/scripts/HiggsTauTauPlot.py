@@ -712,11 +712,12 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
     if options.channel != "tt":
         if options.channel == 'mt':
             anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singlemuon"
         elif options.channel == 'et': 
             anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            
+            if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singleelectron"
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
-        fake_factor_wt_string = "wt_ff_"+options.channel+"_"+options.cat
+        fake_factor_wt_string = "wt_ff_"+options.cat
         if wt is not "": wt+="*"+fake_factor_wt_string
         else: wt=fake_factor_wt_string
     
@@ -729,11 +730,14 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
     if options.channel == 'tt':
         anti_isolated_sel_1 = '(mva_olddm_tight_1<0.5 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
         anti_isolated_sel_2 = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        if options.era == "mssmsummer16": 
+          anti_isolated_sel_1 +=" && trg_doubletau"
+          anti_isolated_sel_2 +=" && trg_doubletau"
         
         ff_cat_1 = cats[cat_name] +" && "+ anti_isolated_sel_1
         ff_cat_2 = cats[cat_name] +" && "+ anti_isolated_sel_2
-        fake_factor_wt_string_1 = "wt_ff_"+options.channel+"_"+options.cat+"_1"
-        fake_factor_wt_string_2 = "wt_ff_"+options.channel+"_"+options.cat+"_2"
+        fake_factor_wt_string_1 = "wt_ff_"+options.cat+"_1"
+        fake_factor_wt_string_2 = "wt_ff_"+options.cat+"_2"
         if wt is not "": 
             wt_1=wt+"*"+fake_factor_wt_string_1
             wt_2=wt+"*"+fake_factor_wt_string_2
@@ -1130,6 +1134,8 @@ if options.method is 12 or options.method is 16:
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    if options.log_y:           += "_logx" 
+    if options.log_x: plot_name += "_logy"
     FF = options.method==17
     plotting.HTTPlot(nodename, 
         plot_file, 
