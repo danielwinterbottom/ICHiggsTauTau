@@ -451,6 +451,7 @@ class HTTCategories : public ModuleBase {
   double em_vbf_mva_;
   
   double ff_weight_inclusive_;
+  double ff_weight_inclusive_2_;
   
   bool emHLTPath1_;
   bool emHLTPath2_;

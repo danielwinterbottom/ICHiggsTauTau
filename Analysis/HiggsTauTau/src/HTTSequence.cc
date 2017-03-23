@@ -1784,6 +1784,7 @@ if(js["do_ff_weights"].asBool()){
       .set_ditau_label("ditau")
       .set_met_label(met_label)
       .set_jets_label(jets_label)
+      .set_strategy(strategy_type)
       .set_categories(js["ff_categories"].asString()));
 }
     

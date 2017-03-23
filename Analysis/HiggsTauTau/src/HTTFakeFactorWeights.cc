@@ -13,7 +13,7 @@
 namespace ic {
 
   HTTFakeFactorWeights::HTTFakeFactorWeights(std::string const& name) : ModuleBase(name),
-    channel_(channel::et){ 
+    channel_(channel::et), strategy_(strategy::mssmsummer16){ 
     met_label_ = "pfMET";
     jets_label_ = "ak4PFJetsCHS";
     ditau_label_ = "ditau";
@@ -37,16 +37,19 @@ namespace ic {
     boost::split(category_names_, categories_, boost::is_any_of(","), boost::token_compress_on);
     std::string baseDir = (std::string)getenv("CMSSW_BASE") + "/src/";
     
-    std::vector<std::string> channels = {"et", "mt", "tt"};
+    std::string file_name = "";
+    //if(strategy_ == strategy::smspring16) file_name = "fakeFactors_20170111.root";
+    //else if (strategy_ == strategy::mssmsummer16) file_name = "fakeFactors_20170228.root";
+    
+    std::string channel = Channel2String(channel_);
+    //std::string channel == "tt";
     for(unsigned i=0; i<category_names_.size(); ++i){
-      for(unsigned j=0; j<channels.size(); ++j){
-          std::string ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/"+channels[j]+"/"+category_names_[i]+"/fakeFactors_20170111.root"; 
-          ff_file_name = baseDir + ff_file_name;
-          TFile* ff_file = new TFile(ff_file_name.c_str());
-          FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
-          std::string map_key = channels[j]+"_"+category_names_[i];
-          fake_factors_[map_key]  = ff; 
-      }
+      std::string ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/"+channel+"/"+category_names_[i]+"/fakeFactors_20170111.root"; 
+      ff_file_name = baseDir + ff_file_name;
+      TFile* ff_file = new TFile(ff_file_name.c_str());
+      FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
+      std::string map_key = channel+"_"+category_names_[i];
+      fake_factors_[map_key]  = ff; 
     }
 
     return 0;
@@ -121,8 +124,12 @@ namespace ic {
         // Eventually will need to add systematic weights also here
         //std::string sys(...);
         //double ff_sys = ff->value(inputs, sys); // systematic shift
+        std::cout << ff_nom << std::endl;
+        //double ff_syst_1 = fake_factors_[map_key]->value(tt_inputs_1)*0.5;
+        //double ff_syst_2 = fake_factors_[map_key]->value(tt_inputs_2)*0.5;
 
-        event->Add("wt_ff_"+map_key, ff_nom);
+        event->Add("wt_ff_"+map_key, ff_nom_1);
+        event->Add("wt_ff_"+map_key+"_2", ff_nom_2);
       }
     }
 

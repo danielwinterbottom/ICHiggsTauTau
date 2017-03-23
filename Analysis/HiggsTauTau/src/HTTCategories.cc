@@ -285,6 +285,7 @@ namespace ic {
       if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){  
           std::string branch_name_ = "wt_ff_"+Channel2String(channel_)+"_inclusive";
           outtree_->Branch(branch_name_.c_str(),    &ff_weight_inclusive_);
+          if (channel_ == channel::tt ) outtree_->Branch(branch_name_.c_str(),    &ff_weight_inclusive_2_);
       }
       
       outtree_->Branch("os",                &os_);
@@ -1258,6 +1259,7 @@ namespace ic {
     if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){  
       std::string branch_name_ = "wt_ff_"+Channel2String(channel_)+"_inclusive";
       ff_weight_inclusive_ = event->Get<double>(branch_name_);
+      if(channel_ == channel::tt) ff_weight_inclusive_2_ = event->Get<double>(branch_name_+"_2");    
     }
     
     std::vector<PileupInfo *> puInfo;

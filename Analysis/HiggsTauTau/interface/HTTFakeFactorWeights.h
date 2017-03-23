@@ -15,6 +15,7 @@ class HTTFakeFactorWeights : public ModuleBase {
   CLASS_MEMBER(HTTFakeFactorWeights, std::string, jets_label)
   CLASS_MEMBER(HTTFakeFactorWeights, ic::channel, channel)
   CLASS_MEMBER(HTTFakeFactorWeights, std::string, ditau_label)
+  CLASS_MEMBER(HTTFakeFactorWeights, ic::strategy, strategy)
   CLASS_MEMBER(HTTFakeFactorWeights, std::string, categories)
 
  public:
