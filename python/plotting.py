@@ -1838,7 +1838,9 @@ def HTTPlot(nodename,
             add_flat_uncert=False,
             uncert_title="background uncertainty",
             lumi="35.9",
-            plot_name="htt_plot"
+            plot_name="htt_plot",
+            custom_uncerts_up_name="total_bkg_custom_uncerts_up",
+            custom_uncerts_down_name="total_bkg_custom_uncerts_down"
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2005,8 +2007,8 @@ def HTTPlot(nodename,
     #sighist2.Draw("histsame")
     error_hist = bkghist.Clone()
     if do_custom_uncerts:
-      bkg_uncert_up = infile.Get(nodename+'/total_bkg_custom_uncerts_up').Clone()
-      bkg_uncert_down = infile.Get(nodename+'/total_bkg_custom_uncerts_down').Clone()
+      bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
+      bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
