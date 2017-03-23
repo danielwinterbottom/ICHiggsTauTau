@@ -746,7 +746,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
             wt_2=fake_factor_wt_string_2
     
         full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1, OSSS, '')
-        full_selection_2 = BuildCutString(wt_2, sel, ff_cat_1, OSSS, '')
+        full_selection_2 = BuildCutString(wt_2, sel, ff_cat_2, OSSS, '')
         
         ff_total_node = SummedNode('FakeTaus'+add_name)
         f1_total_node = SummedNode('f1'+add_name)
@@ -1134,7 +1134,7 @@ if options.method is 12 or options.method is 16:
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
-    if options.log_y:           += "_logx" 
+    if options.log_y: plot_name += "_logx" 
     if options.log_x: plot_name += "_logy"
     FF = options.method==17
     plotting.HTTPlot(nodename, 
