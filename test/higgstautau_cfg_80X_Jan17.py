@@ -2092,6 +2092,15 @@ process.icEle23Mu12ObjectProducerDZ = producers.icTriggerObjectProducer.clone(
       storeOnlyIfFired = cms.bool(False)
       )
 
+process.icEle23Mu8ObjectProducerDZ = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle23Mu8DZ"),
+      hltPath = cms.string("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
+
 process.icDoubleMediumCombinedIsoTau35RegObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsDoubleMediumCombinedIsoTau35Reg"),
@@ -2173,6 +2182,7 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icEle12Mu23ObjectProducerDZ+
       process.icEle8Mu23ObjectProducerDZ+
       process.icEle23Mu12ObjectProducerDZ+
+      process.icEle23Mu8ObjectProducerDZ+
       process.icDoubleMediumCombinedIsoTau35RegObjectProducer+
       process.icDoubleMediumCombinedIsoTau40RegObjectProducer+
       process.icDoubleMediumCombinedIsoTau40ObjectProducer
