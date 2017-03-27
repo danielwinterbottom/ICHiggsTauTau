@@ -937,19 +937,22 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         
         # use existing methods to calculate background due to non-fake taus - for W background must use method 8 to compute this!
         add_fake_factor_selection = "gen_match_2<6"
-        if options.channel == "tt": add_fake_factor_selection = "!(gen_match_1==6 || gen_match_2==6)"
+        ff_wt=wt
+        if options.channel == "tt": 
+            add_fake_factor_selection = "1"
+            ff_wt+="*0.5*((gen_match_1<6)+(gen_match_2<6))"
         residual_cat=cat+"&&"+add_fake_factor_selection
         
         if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
-            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
+            GenerateZTT(ana, add_name, ztt_samples, plot, ff_wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
+            GenerateZLL(ana, add_name, ztt_samples, plot, ff_wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'TT' not in samples_to_skip:    
-            GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
+            GenerateTop(ana, add_name, top_samples, plot, ff_wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
-            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
+            GenerateVV(ana, add_name, vv_samples, plot, ff_wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         if 'W' not in samples_to_skip:
-            GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, wt, sel, residual_cat, 8, qcd_os_ss_ratio, not options.do_ss)
+            GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, ff_wt, sel, residual_cat, 8, qcd_os_ss_ratio, not options.do_ss)
     
     else:
         if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
@@ -1129,7 +1132,10 @@ if options.method is 12 or options.method is 16:
     w_ss = plot_file.Get(nodename+"/W.subnodes/w_ss")
     W_os_ss = w_os.Integral(0,w_os.GetNbinsX()+1)/w_ss.Integral(0,w_ss.GetNbinsX()+1)
 
-    print "W OS/SS ratio = ", W_os_ss 
+    print "W OS/SS ratio = ", W_os_ss
+
+if options.log_x: plot_name+="_logx"
+if options.log_y: plot_name+="_logy"
 
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
