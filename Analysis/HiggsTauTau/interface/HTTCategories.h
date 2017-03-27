@@ -649,6 +649,18 @@ class HTTCategories : public ModuleBase {
   unsigned n_bquarks_;
   double wt_zpt_njets_;
   double wt_zpt_njets_normxbins_;
+  double wt_zpt_njets_statup_;
+  double wt_zpt_njets_statdown_;
+  
+  double wt_zpt_njets_tscaleup_;
+  double wt_zpt_njets_tscaledown_;
+  double wt_zpt_njets_jscaleup_;
+  double wt_zpt_njets_jscaledown_;
+  
+  double genpT_;
+  double genM_;
+  double gen_tau_pt_1_;
+  double gen_tau_pt_2_;
 
  public:
   HTTCategories(std::string const& name);

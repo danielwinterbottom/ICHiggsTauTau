@@ -276,7 +276,17 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
       outtree_->Branch("wt_zpt_njets",         &wt_zpt_njets_);
+      outtree_->Branch("wt_zpt_njets_statup",         &wt_zpt_njets_statup_);
+      outtree_->Branch("wt_zpt_njets_statdown",         &wt_zpt_njets_statdown_);
+      outtree_->Branch("wt_zpt_njets_tscaleup",         &wt_zpt_njets_tscaleup_);
+      outtree_->Branch("wt_zpt_njets_tscaledown",       &wt_zpt_njets_tscaledown_);
+      outtree_->Branch("wt_zpt_njets_jscaleup",         &wt_zpt_njets_jscaleup_);
+      outtree_->Branch("wt_zpt_njets_jscaledown",       &wt_zpt_njets_jscaledown_);
       outtree_->Branch("wt_zpt_njets_normxbins", &wt_zpt_njets_normxbins_);
+      outtree_->Branch("genM",  &genM_);
+      outtree_->Branch("genpT", &genpT_);
+      outtree_->Branch("gen_tau_pt_1", &gen_tau_pt_1_);
+      outtree_->Branch("gen_tau_pt_2", &gen_tau_pt_2_);
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
@@ -515,6 +525,8 @@ namespace ic {
         outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
       //Variables needed for control plots need only be generated for central systematics
+        outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
+        outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
       if(!systematic_shift_) {
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
         //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
@@ -522,8 +534,6 @@ namespace ic {
         outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
         outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
         outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
-        outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
-        outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("wt_trig_up_1",    &wt_trig_up_1_);
@@ -1235,10 +1245,16 @@ namespace ic {
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     n_bquarks_=-1;
+    genM_ = -1;
+    genpT_ =1;
     if (event->Exists("n_bquarks")) n_bquarks_ = event->Get<unsigned>("n_bquarks");
-    if (event->Exists("genpT")) n_bquarks_ = event->Get<unsigned>("genpT");
-    if (event->Exists("genM")) n_bquarks_ = event->Get<unsigned>("genM");
-    if (event->Exists("genM")) n_bquarks_ = event->Get<unsigned>("gen_tau_pt");
+    if (event->Exists("genpT")) genpT_ = event->Get<double>("genpT");
+    if (event->Exists("genM")) genM_ = event->Get<double>("genM");
+    
+    gen_tau_pt_1_ = -1;
+    gen_tau_pt_2_ = -1;
+    if (event->Exists("gen_tau_pt_1")) gen_tau_pt_1_ = event->Get<double>("gen_tau_pt_1");
+    if (event->Exists("gen_tau_pt_2")) gen_tau_pt_2_ = event->Get<double>("gen_tau_pt_2");
     
 
     // Get the objects we need from the event
@@ -1251,8 +1267,20 @@ namespace ic {
     if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
     
     wt_zpt_njets_=1;
+    wt_zpt_njets_statup_=1;
+    wt_zpt_njets_statdown_=1;
+    wt_zpt_njets_tscaleup_=1;
+    wt_zpt_njets_tscaledown_=1;
+    wt_zpt_njets_jscaleup_=1;
+    wt_zpt_njets_jscaledown_=1;
     wt_zpt_njets_normxbins_=1;
     if (event->Exists("wt_zpt_njets"          )) wt_zpt_njets_           = event->Get<double>("wt_zpt_njets"          );
+    if (event->Exists("wt_zpt_njets_statup"          )) wt_zpt_njets_statup_           = event->Get<double>("wt_zpt_njets_statup"          );
+    if (event->Exists("wt_zpt_njets_statdown"          )) wt_zpt_njets_statdown_           = event->Get<double>("wt_zpt_njets_statdown"          );
+    if (event->Exists("wt_zpt_njets_jscaleup"          )) wt_zpt_njets_jscaleup_           = event->Get<double>("wt_zpt_njets_jscaleup"          );
+    if (event->Exists("wt_zpt_njets_jscaledown"          )) wt_zpt_njets_jscaledown_           = event->Get<double>("wt_zpt_njets_jscaledown"          );
+    if (event->Exists("wt_zpt_njets_tscaleup"          )) wt_zpt_njets_tscaleup_           = event->Get<double>("wt_zpt_njets_tscaleup"          );
+    if (event->Exists("wt_zpt_njets_tscaledown"          )) wt_zpt_njets_tscaledown_           = event->Get<double>("wt_zpt_njets_tscaledown"          );
     if (event->Exists("wt_zpt_njets_normxbins")) wt_zpt_njets_normxbins_ = event->Get<double>("wt_zpt_njets_normxbins");
 
     

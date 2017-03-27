@@ -1,23 +1,23 @@
-void makeZWeights3D(std::string outfile, std::string MC_add_string){
+void makeZWeightsFile3D(std::string outfile, std::string MC_add_string){
 std::vector<std::string> cats = {"0jet", "1jet", "ge2jet", "inclusive"};
 
 double x_bins[4] = {0,1,2,10000};
 double y_bins[7] = {0,50,80,120,200,800,10000};
-double z_bins[11] = {0,40,80,120,160,200,280,320,400,600,10000};
+double z_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,600,10000};
 int n_xbins=3;
 int n_ybins = 6;
-int n_zbins = 10;
+int n_zbins = 14;
     
 TH3D *h3_data = new TH3D("znjetmasspt_histo","znjetmasspt_histo", n_xbins, x_bins, n_ybins, y_bins, n_zbins, z_bins);
 TH3D *h3_mc = new TH3D("znjetmasspt_histo_mc","znjetmasspt_histo_mc", n_xbins, x_bins, n_ybins, y_bins, n_zbins, z_bins);
 TH3D *h3_data_normxbins = new TH3D("znjetmasspt_histo_normxbins","znjetmasspt_histo_normxbins", n_xbins, x_bins, n_ybins, y_bins, n_zbins, z_bins);
 TH3D *h3_mc_normxbins = new TH3D("znjetmasspt_histo_normxbins_mc","znjetmasspt_histo_normxbins_mc", n_xbins, x_bins, n_ybins, y_bins, n_zbins, z_bins);
 TH2D *h_2dweights = new TH2D("zptmass_histo","zptmass_histo",n_ybins,y_bins,n_zbins,z_bins);
-h3_data           ->Sumw2()
-h3_mc             ->Sumw2()
-h3_data_normxbins ->Sumw2()
-h3_mc_normxbins   ->Sumw2()
-h_2dweights       ->Sumw2()
+h3_data           ->Sumw2();
+h3_mc             ->Sumw2();
+h3_data_normxbins ->Sumw2();
+h3_mc_normxbins   ->Sumw2();
+h_2dweights       ->Sumw2();
 for(unsigned cati=0; cati<cats.size(); ++cati){
     std::vector<std::string> file_names = {"datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis50to80.root", "datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis80to120.root", "datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis120to200.root","datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis200to800.root"};
     
@@ -68,7 +68,7 @@ for(unsigned cati=0; cati<cats.size(); ++cati){
           unsigned bin = h->GetXaxis()->FindBin(z_pt);
           double content = h->GetBinContent(bin);
           double error = h->GetBinError(bin);
-          if(y_bin == h_data->GetNbinsY()){ content = 1; error = 0;}
+          if(y_bin == h_data->GetNbinsY() || x_bin==1 || x_bin==h_data->GetNbinsX()){ content = 1; error = 0;}
           h_data->SetBinContent(x_bin,y_bin,content);
           h_data->SetBinError(x_bin,y_bin,error);          
           
@@ -85,7 +85,7 @@ for(unsigned cati=0; cati<cats.size(); ++cati){
           unsigned bin = h->GetXaxis()->FindBin(z_pt);
           double content = h->GetBinContent(bin);
           double error = h->GetBinError(bin);
-          if(y_bin == h_mc->GetNbinsY()){ content = 1; error = 0;}
+          if(y_bin == h_mc->GetNbinsY() || x_bin==1 || x_bin==h_mc->GetNbinsX()){ content = 1; error = 0;}
           h_mc->SetBinContent(x_bin,y_bin,content);
           h_mc->SetBinError(x_bin,y_bin,error);
       }
@@ -96,7 +96,7 @@ for(unsigned cati=0; cati<cats.size(); ++cati){
       h_data->Scale(h_data->Integral());  
       h_mc->Scale(h_mc->Integral());
       h_data->Divide(h_mc);  
-      h_2dweights = h_data->Clone();
+      h_2dweights = (TH2D*)h_data->Clone();
       continue;    
     }
     // Set 3D hist bins content and errors
@@ -214,19 +214,20 @@ h_2dweights->Write();
 h3_data->Write();      
 h3_data_normxbins->Write();
 
-//for (unsigned i=0; i<(unsigned)h3_data->GetNbinsX(); ++i){
-//  for (unsigned j=0; j<(unsigned)h3_data->GetNbinsY(); ++j){
-//    for (unsigned k=0; k<(unsigned)h3_data->GetNbinsZ(); ++k){
-//      double n_jets = h3_data->GetXaxis()->GetBinLowEdge(i+1);    
-//      double mass   = h3_data->GetYaxis()->GetBinLowEdge(j+1);
-//      double pt     = h3_data->GetZaxis()->GetBinLowEdge(k+1);
-//      double weight = h3_data->GetBinContent(i+1,j+1,k+1);
-//      std::cout << "n_jets = " << n_jets << ", mass = " << mass << ", pt = " << pt << ", weight = " << weight << std::endl;
-//    }
-//  }
-//}
-//std::cout << "-------------------------" << std::endl;
-//
+for (unsigned i=0; i<(unsigned)h3_data->GetNbinsX(); ++i){
+  for (unsigned j=0; j<(unsigned)h3_data->GetNbinsY(); ++j){
+    for (unsigned k=0; k<(unsigned)h3_data->GetNbinsZ(); ++k){
+      double n_jets = h3_data->GetXaxis()->GetBinLowEdge(i+1);    
+      double mass   = h3_data->GetYaxis()->GetBinLowEdge(j+1);
+      double pt     = h3_data->GetZaxis()->GetBinLowEdge(k+1);
+      double weight = h3_data->GetBinContent(i+1,j+1,k+1);
+      double error = h3_data->GetBinError(i+1,j+1,k+1);      
+      std::cout << "n_jets = " << n_jets << ", mass = " << mass << ", pt = " << pt << ", weight = " << weight << ", error = " << error*100/weight << "%" << std::endl;
+    }
+  }
+}
+std::cout << "-------------------------" << std::endl;
+
 //for (unsigned i=0; i<(unsigned)h3_data_normxbins->GetNbinsX(); ++i){
 //  for (unsigned j=0; j<(unsigned)h3_data_normxbins->GetNbinsY(); ++j){
 //    for (unsigned k=0; k<(unsigned)h3_data_normxbins->GetNbinsZ(); ++k){

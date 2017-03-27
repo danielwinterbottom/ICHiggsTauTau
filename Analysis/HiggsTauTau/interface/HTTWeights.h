@@ -96,6 +96,10 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, std::string, scalefactor_file)
   CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_normxbins_hist)
   CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_hist)
+  CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_tscaleup_hist)
+  CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_tscaledown_hist)
+  CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_jscaleup_hist)
+  CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_jscaledown_hist)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;

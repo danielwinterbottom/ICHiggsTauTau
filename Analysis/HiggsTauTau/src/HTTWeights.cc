@@ -54,6 +54,10 @@ namespace ic {
     z_pt_mass_hist_            = nullptr;
     z_njet_mass_pt_normxbins_hist_  = nullptr;
     z_njet_mass_pt_hist_      = nullptr;
+    z_njet_mass_pt_tscaleup_hist_ = nullptr;
+    z_njet_mass_pt_tscaledown_hist_ = nullptr;
+    z_njet_mass_pt_jscaleup_hist_ = nullptr;
+    z_njet_mass_pt_jscaledown_hist_ = nullptr;
     mt_idiso_mc_              = nullptr;     
     mt_idiso_data_            = nullptr;     
     et_idiso_mc_              = nullptr;     
@@ -602,12 +606,20 @@ namespace ic {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       unsigned njets = jets.size();
-      double wtzpt_njets = z_njet_mass_pt_hist_->GetBinContent(z_njet_mass_pt_hist_->GetYaxis()->FindBin(njets),z_njet_mass_pt_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_hist_->GetZaxis()->FindBin(zpt));
-      double wtzpt_njets_normxbin = z_njet_mass_pt_normxbins_hist_->GetBinContent(z_njet_mass_pt_normxbins_hist_->GetYaxis()->FindBin(njets),z_njet_mass_pt_normxbins_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_normxbins_hist_->GetZaxis()->FindBin(zpt));
-      
-      std::cout << "weight 0 = " << wtzpt << ", weight 1 = " << wtzpt_njets << ", weight 2 = " << wtzpt_njets_normxbin << std::endl;
-      
+      double wtzpt_njets = z_njet_mass_pt_hist_->GetBinContent(z_njet_mass_pt_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_hist_->GetZaxis()->FindBin(zpt));
+      double wtzpt_njets_tscaleup = z_njet_mass_pt_tscaleup_hist_->GetBinContent(z_njet_mass_pt_tscaleup_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_tscaleup_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_tscaleup_hist_->GetZaxis()->FindBin(zpt));
+      double wtzpt_njets_tscaledown = z_njet_mass_pt_tscaledown_hist_->GetBinContent(z_njet_mass_pt_tscaledown_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_tscaledown_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_tscaledown_hist_->GetZaxis()->FindBin(zpt));
+      double wtzpt_njets_jscaleup = z_njet_mass_pt_jscaleup_hist_->GetBinContent(z_njet_mass_pt_jscaleup_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_jscaleup_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_jscaleup_hist_->GetZaxis()->FindBin(zpt));
+      double wtzpt_njets_jscaledown = z_njet_mass_pt_jscaledown_hist_->GetBinContent(z_njet_mass_pt_jscaledown_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_jscaledown_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_jscaledown_hist_->GetZaxis()->FindBin(zpt));
+      double wtzpt_njets_stat_error = z_njet_mass_pt_hist_->GetBinError(z_njet_mass_pt_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_hist_->GetZaxis()->FindBin(zpt));
+      double wtzpt_njets_normxbin = z_njet_mass_pt_normxbins_hist_->GetBinContent(z_njet_mass_pt_normxbins_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_normxbins_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_normxbins_hist_->GetZaxis()->FindBin(zpt));
+      event->Add("wt_zpt_njets_statup", (wtzpt_njets+wtzpt_njets_stat_error)/wtzpt);
+      event->Add("wt_zpt_njets_statdown", (wtzpt_njets-wtzpt_njets_stat_error)/wtzpt);      
       event->Add("wt_zpt_njets", wtzpt_njets/wtzpt);
+      event->Add("wt_zpt_njets_tscaleup", wtzpt_njets_tscaleup/wtzpt);
+      event->Add("wt_zpt_njets_tscaledown", wtzpt_njets_tscaledown/wtzpt);
+      event->Add("wt_zpt_njets_jscaleup", wtzpt_njets_jscaleup/wtzpt);
+      event->Add("wt_zpt_njets_jscaledown", wtzpt_njets_jscaledown/wtzpt);
       event->Add("wt_zpt_njets_normxbins", wtzpt_njets_normxbin/wtzpt);
     }
 

@@ -54,7 +54,6 @@ namespace ic {
         sel_particles.push_back(particles[i]);
       }
     }
-
     
     std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
@@ -69,24 +68,20 @@ namespace ic {
     std::vector<std::pair<Candidate*, GenParticle*> > subleading_lepton_match = MatchByDR(subleading_lepton, sel_particles, 0.2, true, true);
     std::vector<std::pair<Candidate*, GenJet*> > subleading_tau_match  = MatchByDR(subleading_lepton, gen_taus_ptr, 0.2, true, true);
     
-    double gen_tau_pt_1=-1;
-    double gen_tau_pt_2=-1;
+    std::vector<GenParticle *> gen_neutrinos;
     
-    std::vector<double> gen_taus_pt_vector;
-    for(unsigned i=0; i<particles.size(); ++i){
-      GenParticle *part = particles[i];
-      unsigned genID = std::fabs(part->pdgid());
-      bool status_flag_t = part->statusFlags().at(0);
-      bool status_flag_tlc = part->statusFlags().at(13);
-      if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
-      gen_taus_pt_vector.push_back(part->vector().Pt());
+    for (unsigned i=0; i < particles.size(); ++i){
+      std::vector<bool> status_flags_start = particles[i]->statusFlags();
+      if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14)||(abs(particles[i]->pdgid()) == 16)) && status_flags_start[IsDirectPromptTauDecayProduct]){
+        gen_neutrinos.push_back(particles[i]);
+      }
     }
-   std::sort(gen_taus_pt_vector.begin(), gen_taus_pt_vector.end());
-   for(unsigned i=0; i< gen_taus_pt_vector.size();++i) std::cout << gen_taus_pt_vector[i] << std::endl;
-   if(gen_taus_pt_vector.size() >=1) gen_tau_pt_1 = gen_taus_pt_vector[0];
-   if(gen_taus_pt_vector.size() >=2) gen_tau_pt_2 = gen_taus_pt_vector[1];
-   
-   std::cout << gen_tau_pt_1 << "    " << gen_tau_pt_2 << std::endl;
+    
+  std::sort(gen_neutrinos.begin(), gen_neutrinos.end(),
+              [](GenParticle const* p1,
+                 GenParticle const* p2) { return p1->vector().Pt() > p2->vector().Pt();
+              });
+
 
    mcorigin gen_match_1 = mcorigin::fake;
    mcorigin gen_match_2 = mcorigin::fake;
@@ -98,6 +93,12 @@ namespace ic {
    double subleading_lepton_match_pt = -1.;
    double leading_lepton_match_DR = -1.;
    double subleading_lepton_match_DR = -1;*/
+   double gen_tau_pt_1 = -1;
+   double gen_tau_pt_2 = -1;
+   
+   
+   ROOT::Math::PtEtaPhiEVector gen_tau_vec_1;
+   ROOT::Math::PtEtaPhiEVector gen_tau_vec_2;
 
 
    if(leptonsize!=0&&tausize!=0){
@@ -108,6 +109,7 @@ namespace ic {
    if(leptonsize!=0) {
       std::vector<bool> status_flags = leading_lepton_match.at(0).second->statusFlags();
       gen_match_1_pt = leading_lepton_match.at(0).second->pt();
+      gen_tau_vec_1 = leading_lepton_match.at(0).second->vector();
 //      leading_lepton_match_DR = DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second);
       if(fs_ && write_plots_){ 
        hists_[0]->Fill("relpt_vs_drlep_lead",fabs(leading_lepton_match.at(0).second->pt()-leading_lepton_match.at(0).first->pt())/leading_lepton_match.at(0).first->pt(),DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second));
@@ -120,7 +122,21 @@ namespace ic {
        if(status_flags[IsDirectPromptTauDecayProduct]){
         if(abs(leading_lepton_match.at(0).second->pdgid())==11){
           gen_match_1 = mcorigin::tauE;
-         } else gen_match_1 = mcorigin::tauMu;
+          for(unsigned i=0; i< gen_neutrinos.size(); ++i){
+            GenParticle *nu = gen_neutrinos[i];
+            int lep_id_sign = leading_lepton_match.at(0).second->pdgid()/abs(leading_lepton_match.at(0).second->pdgid());
+            int nu_id = nu->pdgid();
+            if(nu_id == -lep_id_sign*12 || nu_id == lep_id_sign*16) gen_tau_vec_1 += nu->vector();
+          }
+         } else{
+           gen_match_1 = mcorigin::tauMu;
+           for(unsigned i=0; i< gen_neutrinos.size(); ++i){
+             GenParticle *nu = gen_neutrinos[i];
+             int lep_id_sign = leading_lepton_match.at(0).second->pdgid()/abs(leading_lepton_match.at(0).second->pdgid());
+             int nu_id = nu->pdgid();
+             if(nu_id == -lep_id_sign*14 || nu_id == lep_id_sign*16) gen_tau_vec_1 += nu->vector();
+          }
+         }
         }
        if(status_flags[IsDirectHadronDecayProduct]){
          if(abs(leading_lepton_match.at(0).second->pdgid())==11){
@@ -135,6 +151,13 @@ namespace ic {
        gen_match_1_pt = leading_tau_match.at(0).second->pt();
   //     leading_lepton_match_DR = DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second);
        gen_match_1 = mcorigin::tauHad;
+       gen_tau_vec_1 = leading_tau_match.at(0).second->vector();
+       for(unsigned i=0; i< gen_neutrinos.size(); ++i){
+         GenParticle *nu = gen_neutrinos[i];
+         int lep_id_sign = -leading_tau_match.at(0).second->charge()/abs(leading_tau_match.at(0).second->charge());
+         int nu_id = nu->pdgid();
+         if(nu_id == lep_id_sign*16) gen_tau_vec_1 += nu->vector();
+       }
       }
    
 //Now for subleading lepton:
@@ -149,6 +172,7 @@ namespace ic {
    if(leptonsize!=0) {
       std::vector<bool> status_flags = subleading_lepton_match.at(0).second->statusFlags();
       gen_match_2_pt = subleading_lepton_match.at(0).second->pt();
+      gen_tau_vec_2 = subleading_lepton_match.at(0).second->vector();
     //  subleading_lepton_match_DR = DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second);
       if(fs_ && write_plots_){
        hists_[0]->Fill("relpt_vs_drlep_sublead",fabs(subleading_lepton_match.at(0).second->pt()-subleading_lepton_match.at(0).first->pt())/subleading_lepton_match.at(0).first->pt(),DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second));
@@ -156,12 +180,28 @@ namespace ic {
       if(status_flags[IsPrompt]){
         if(abs(subleading_lepton_match.at(0).second->pdgid())==11){
           gen_match_2 = mcorigin::promptE;
-         } else gen_match_2 = mcorigin::promptMu;
+         } else{
+           gen_match_2 = mcorigin::promptMu;
+         }
        }
        if(status_flags[IsDirectPromptTauDecayProduct]){
         if(abs(subleading_lepton_match.at(0).second->pdgid())==11){
           gen_match_2 = mcorigin::tauE;
-         } else gen_match_2 = mcorigin::tauMu;
+          for(unsigned i=0; i< gen_neutrinos.size(); ++i){
+            GenParticle *nu = gen_neutrinos[i];
+            int lep_id_sign = subleading_lepton_match.at(0).second->pdgid()/abs(subleading_lepton_match.at(0).second->pdgid());
+            int nu_id = nu->pdgid();
+            if(nu_id == -lep_id_sign*12 || nu_id == lep_id_sign*16) gen_tau_vec_2 += nu->vector();
+          }
+         } else{
+           gen_match_2 = mcorigin::tauMu;
+           for(unsigned i=0; i< gen_neutrinos.size(); ++i){
+             GenParticle *nu = gen_neutrinos[i];
+             int lep_id_sign = subleading_lepton_match.at(0).second->pdgid()/abs(subleading_lepton_match.at(0).second->pdgid());
+             int nu_id = nu->pdgid();
+             if(nu_id == -lep_id_sign*14 || nu_id == lep_id_sign*16) gen_tau_vec_2 += nu->vector();
+           }
+         }
         }
        if(status_flags[IsDirectHadronDecayProduct]){
          if(abs(subleading_lepton_match.at(0).second->pdgid())==11){
@@ -176,8 +216,20 @@ namespace ic {
        gen_match_2_pt = subleading_tau_match.at(0).second->pt();
       // subleading_lepton_match_DR = DR(subleading_tau_match.at(0).first,subleading_tau_match.at(0).second);
        gen_match_2 = mcorigin::tauHad;
+       gen_tau_vec_2 = subleading_tau_match.at(0).second->vector();
+       for(unsigned i=0; i< gen_neutrinos.size(); ++i){
+         GenParticle *nu = gen_neutrinos[i];
+         int lep_id_sign = -subleading_tau_match.at(0).second->charge()/abs(subleading_tau_match.at(0).second->charge());
+         int nu_id = nu->pdgid();
+         if(nu_id == lep_id_sign*16) gen_tau_vec_2 += nu->vector();
+       }
       }
-
+      
+   gen_tau_pt_1 = gen_tau_vec_1.Pt();
+   gen_tau_pt_2 = gen_tau_vec_2.Pt();
+   
+   event->Add("gen_tau_pt_1",gen_tau_pt_1);
+   event->Add("gen_tau_pt_2",gen_tau_pt_2);
 
    event->Add("gen_match_1",gen_match_1);
    event->Add("gen_match_2",gen_match_2);
