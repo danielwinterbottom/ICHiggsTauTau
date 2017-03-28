@@ -2201,7 +2201,7 @@ if release in ['80XMINIAOD']:
   for name in process.icTriggerObjectSequence.moduleNames():
     mod = getattr(process, name)
     mod.inputIsStandAlone = cms.bool(True)
-    mod.input = cms.InputTag("selectedPatTrigger", "","TEST")
+    mod.input = cms.InputTag("selectedPatTriggerCustom", "","TEST")
   if isReHLT:
     for name in process.icTriggerObjectSequence.moduleNames():
       mod = getattr(process, name)
