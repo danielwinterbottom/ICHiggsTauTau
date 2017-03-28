@@ -248,9 +248,9 @@ void ICElectronProducer::produce(edm::Event& event,
       dest.set_dxy_beamspot(src.gsfTrack()->dxy(*beamspot_handle));
     }
     
-    if (src.superCluster()->seed().isNonnull()) {
-      dest.set_sc_seed_eta(src.superCluster()->seed()->eta());
-    }
+    //if (src.superCluster()->seed().isNonnull()) {
+    //  dest.set_sc_seed_eta(src.superCluster()->seed()->eta());
+    //}
 
   }
 }
