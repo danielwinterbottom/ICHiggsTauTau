@@ -2080,8 +2080,8 @@ void HTTSequence::BuildEMPairs() {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
-                fabs(e->dz_vertex())    < elec_dz    &&
-                ElecID(e) ;
+                fabs(e->dz_vertex())    < elec_dz;//    &&
+                //ElecID(e) ;
 
       }));
 
@@ -2808,7 +2808,7 @@ void HTTSequence::BuildExtraElecVeto(){
                 fabs(e->eta())          < veto_elec_eta   &&
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
-                ElectronHTTIdSpring16(e, true)           &&
+                //ElectronHTTIdSpring16(e, true)           &&
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
