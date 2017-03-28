@@ -44,6 +44,7 @@ namespace ic {
     outname_ = "svfit_test";
     outputadd_ = "";
     fullpath_ = "SVFIT_2012/";
+    do_vloose_preselection_ = false;
 
     MC_ = false;
   }
@@ -218,6 +219,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(!tau_optimisation_&&strategy_==strategy::spring15){
           iso_discr_2_ = iso_2_ < 10;
         }
+        if(do_vloose_preselection_) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
         /*lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;*/
         bool lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
@@ -260,6 +262,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(!tau_optimisation_&&strategy_==strategy::spring15){
           iso_discr_2_ = iso_2_ < 10;
         }
+        if(do_vloose_preselection_) iso_discr_2_ = tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
 /*        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
         lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
         lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
@@ -299,6 +302,10 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(tau_optimisation_||strategy_==strategy::fall15 || strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16){
           iso_discr_1_ = tau1->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
           iso_discr_2_ = tau2->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
+        }
+        if(do_vloose_preselection_){
+          iso_discr_1_ = tau1->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+          iso_discr_2_ = tau2->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT"); 
         }
         if(!tau_optimisation_&&strategy_==strategy::spring15){
           lbyTightCombinedIsolation_1 = tau1->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits");

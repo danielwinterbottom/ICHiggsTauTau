@@ -731,11 +731,12 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
     if options.channel != "tt":
         if options.channel == 'mt':
             anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singlemuon"
         elif options.channel == 'et': 
             anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            
+            if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singleelectron"
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
-        fake_factor_wt_string = "wt_ff_"+options.channel+"_"+options.cat
+        fake_factor_wt_string = "wt_ff_"+options.cat
         if wt is not "": wt+="*"+fake_factor_wt_string
         else: wt=fake_factor_wt_string
     
@@ -748,11 +749,14 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
     if options.channel == 'tt':
         anti_isolated_sel_1 = '(mva_olddm_tight_1<0.5 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
         anti_isolated_sel_2 = '(mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && mva_olddm_tight_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        if options.era == "mssmsummer16": 
+          anti_isolated_sel_1 +=" && trg_doubletau"
+          anti_isolated_sel_2 +=" && trg_doubletau"
         
         ff_cat_1 = cats[cat_name] +" && "+ anti_isolated_sel_1
         ff_cat_2 = cats[cat_name] +" && "+ anti_isolated_sel_2
-        fake_factor_wt_string_1 = "wt_ff_"+options.channel+"_"+options.cat+"_1"
-        fake_factor_wt_string_2 = "wt_ff_"+options.channel+"_"+options.cat+"_2"
+        fake_factor_wt_string_1 = "wt_ff_"+options.cat+"_1"
+        fake_factor_wt_string_2 = "wt_ff_"+options.cat+"_2"
         if wt is not "": 
             wt_1=wt+"*"+fake_factor_wt_string_1
             wt_2=wt+"*"+fake_factor_wt_string_2
@@ -761,7 +765,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
             wt_2=fake_factor_wt_string_2
     
         full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1, OSSS, '')
-        full_selection_2 = BuildCutString(wt_2, sel, ff_cat_1, OSSS, '')
+        full_selection_2 = BuildCutString(wt_2, sel, ff_cat_2, OSSS, '')
         
         ff_total_node = SummedNode('FakeTaus'+add_name)
         f1_total_node = SummedNode('f1'+add_name)
@@ -963,19 +967,22 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         
         # use existing methods to calculate background due to non-fake taus - for W background must use method 8 to compute this!
         add_fake_factor_selection = "gen_match_2<6"
-        if options.channel == "tt": add_fake_factor_selection = "!(gen_match_1==6 || gen_match_2==6)"
+        ff_wt=wt
+        if options.channel == "tt": 
+            add_fake_factor_selection = "1"
+            ff_wt+="*0.5*((gen_match_1<6)+(gen_match_2<6))"
         residual_cat=cat+"&&"+add_fake_factor_selection
         
         if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
-            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
+            GenerateZTT(ana, add_name, ztt_samples, plot, ff_wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
+            GenerateZLL(ana, add_name, ztt_samples, plot, ff_wt, sel, residual_cat, z_sels, not options.do_ss)
         if 'TT' not in samples_to_skip:    
-            GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
+            GenerateTop(ana, add_name, top_samples, plot, ff_wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
-            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
+            GenerateVV(ana, add_name, vv_samples, plot, ff_wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         if 'W' not in samples_to_skip:
-            GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, wt, sel, residual_cat, 8, qcd_os_ss_ratio, not options.do_ss)
+            GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, ff_wt, sel, residual_cat, 8, qcd_os_ss_ratio, not options.do_ss)
     
     else:
         if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
@@ -1161,7 +1168,7 @@ if options.method is 12 or options.method is 16:
     W_os_ss = w_os.Integral(0,w_os.GetNbinsX()+1)/w_ss.Integral(0,w_ss.GetNbinsX()+1)
 
     print "W OS/SS ratio = ", W_os_ss
-    
+
 if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
     custom_uncerts_up_name = "total_bkg_custom_uncerts_up"
     custom_uncerts_down_name = "total_bkg_custom_uncerts_down"
@@ -1169,13 +1176,15 @@ else:
     custom_uncerts_up_name = options.custom_uncerts_up_name
     custom_uncerts_down_name = options.custom_uncerts_down_name
 
+if options.log_x: plot_name+="_logx"
+if options.log_y: plot_name+="_logy"
+
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
-    if options.log_y: plot_name+="_logy"
-    if options.log_x: plot_name+="_logx"
     scheme=options.channel
-    #scheme="qcd"
+    if options.log_y: plot_name += "_logx" 
+    if options.log_x: plot_name += "_logy"
     FF = options.method==17
     plotting.HTTPlot(nodename, 
         plot_file, 
