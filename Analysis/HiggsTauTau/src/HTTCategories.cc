@@ -282,6 +282,8 @@ namespace ic {
       outtree_->Branch("wt_zpt_njets_tscaledown",       &wt_zpt_njets_tscaledown_);
       outtree_->Branch("wt_zpt_njets_jscaleup",         &wt_zpt_njets_jscaleup_);
       outtree_->Branch("wt_zpt_njets_jscaledown",       &wt_zpt_njets_jscaledown_);
+      outtree_->Branch("wt_extrap_up", &wt_extrap_up_);
+      outtree_->Branch("wt_extrap_down", &wt_extrap_down_);
       outtree_->Branch("wt_zpt_njets_normxbins", &wt_zpt_njets_normxbins_);
       outtree_->Branch("genM",  &genM_);
       outtree_->Branch("genpT", &genpT_);
@@ -1274,6 +1276,8 @@ namespace ic {
     wt_zpt_njets_jscaleup_=1;
     wt_zpt_njets_jscaledown_=1;
     wt_zpt_njets_normxbins_=1;
+    wt_extrap_up_=1;
+    wt_extrap_down_=1;
     if (event->Exists("wt_zpt_njets"          )) wt_zpt_njets_           = event->Get<double>("wt_zpt_njets"          );
     if (event->Exists("wt_zpt_njets_statup"          )) wt_zpt_njets_statup_           = event->Get<double>("wt_zpt_njets_statup"          );
     if (event->Exists("wt_zpt_njets_statdown"          )) wt_zpt_njets_statdown_           = event->Get<double>("wt_zpt_njets_statdown"          );
@@ -1282,7 +1286,9 @@ namespace ic {
     if (event->Exists("wt_zpt_njets_tscaleup"          )) wt_zpt_njets_tscaleup_           = event->Get<double>("wt_zpt_njets_tscaleup"          );
     if (event->Exists("wt_zpt_njets_tscaledown"          )) wt_zpt_njets_tscaledown_           = event->Get<double>("wt_zpt_njets_tscaledown"          );
     if (event->Exists("wt_zpt_njets_normxbins")) wt_zpt_njets_normxbins_ = event->Get<double>("wt_zpt_njets_normxbins");
-
+    
+    if (event->Exists("wt_extrap_up"          )) wt_extrap_up_           = event->Get<double>("wt_extrap_up"          );
+    if (event->Exists("wt_extrap_down"          )) wt_extrap_down_           = event->Get<double>("wt_extrap_down"          );
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();

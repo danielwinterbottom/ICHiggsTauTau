@@ -100,12 +100,14 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_tscaledown_hist)
   CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_jscaleup_hist)
   CLASS_MEMBER(HTTWeights, TH3D*, z_njet_mass_pt_jscaledown_hist)
+  CLASS_MEMBER(HTTWeights, TH2D*, extrap_hist)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
   TH2D *hist_muTauSF2011PFTau15;
   TH2D *hist_muTauSF2011PFTau15MC;
   TH2D *hist_muTauSF2011PFTau20;
+
   TFile *ElectronFRFile;
   TFile *MuonFRFile;
   TFile *ggh_weights_;

@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"1000", "bbh_masses":"1000", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"wt_up","custom_uncerts_wt_down":"wt_down", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -137,6 +137,10 @@ parser.add_argument("--ratio_range", dest="ratio_range", type=str,
     help="y-axis range for ratio plot in format MIN,MAX")
 parser.add_argument("--do_custom_uncerts", dest="do_custom_uncerts", action='store_true',
     help="Do custom uncertainty band. Up and down weights for this uncertainty band should be set using \"custom_uncerts_wt_up\" and \"custom_uncerts_wt_down\" options")
+parser.add_argument("--custom_uncerts_down_name", dest="custom_uncerts_down_name", type=str,
+    help="Name of histogram to use for uncertainty down band")
+parser.add_argument("--custom_uncerts_up_name", dest="custom_uncerts_up_name", type=str,
+    help="Name of histogram to use for uncertainty up band")
 parser.add_argument("--custom_uncerts_wt_up", dest="custom_uncerts_wt_up", type=str,
     help="Up weight for custom uncertainty band")
 parser.add_argument("--custom_uncerts_wt_down", dest="custom_uncerts_wt_down", type=str,
@@ -236,7 +240,8 @@ cats['inclusive'] = '(1)'
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
 cats['w_sdb_os'] = 'os'
-cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+if options.era == "mssmsummer16": cats['tt_qcd_norm'] += '&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 # MSSM categories
@@ -250,6 +255,17 @@ cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = '('+cats['btag']+ ' && mt_1>40)'
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
+cats['0jet'] = '(n_jets==0)'
+cats['1jet'] = '(n_jets==1)'
+cats['ge2jet'] = '(n_jets>=2)'
+cats['0bjet'] = '(n_bjets==0)'
+cats['1bjet'] = '(n_bjets==1)'
+cats['ge2bjet'] = '(n_bjets>=2)'
+
+cats['0lowptjet'] = '(n_lowpt_jets==0)'
+cats['1lowptjet'] = '(n_lowpt_jets==1)'
+cats['ge2lowptjet'] = '(n_lowpt_jets>=2)'
+
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
 if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt':
@@ -429,10 +445,12 @@ if options.do_ss:
     qcd_os_ss_ratio = 1.0
 
 # Get array of signal masses to process        
-        
-sm_masses = options.sm_masses.split(',')
-ggh_masses = options.ggh_masses.split(',')
-bbh_masses = options.bbh_masses.split(',')
+ggh_masses=None
+bbh_masses=None
+sm_masses=None
+if options.sm_masses != "": sm_masses = options.sm_masses.split(',')
+if options.ggh_masses != "": ggh_masses = options.ggh_masses.split(',')
+if options.bbh_masses != "": bbh_masses = options.bbh_masses.split(',')
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -600,7 +618,8 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
     if options.channel == 'et' or options.channel == 'mt':
         ttqcdcat = '('+cats[options.cat]+')*(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto)*(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)'
     elif options.channel == 'tt':
-        ttqcdcat = '('+cats[options.cat]+')*(antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto&&trg_doubletau)'
+        ttqcdcat = '('+cats[options.cat]+')*(antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+        if options.era == "mssmsummer16": ttqcdcat +='*(trg_doubletau)'
         
     qcd_sdb_sel = '(!os && ' + sel + ')'
     w_extrp_sdb_sel = '(!os && '+ cats['w_sdb'] + ')'
@@ -759,14 +778,15 @@ def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', c
     else:
         OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS)
-    for mass in masses:  
-        if sm_bkg != '':
-            add_str = '_SM'+sm_bkg
-        else:
-            add_str = mass
-        for key in sm_samples:
-            sample_name = sm_samples[key]+'_M-'+mass
-            ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_str+add_name, sample_name, plot, full_selection))
+    if masses is not None:
+        for mass in masses:  
+            if sm_bkg != '':
+                add_str = '_SM'+sm_bkg
+            else:
+                add_str = mass
+            for key in sm_samples:
+                sample_name = sm_samples[key]+'_M-'+mass
+                ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_str+add_name, sample_name, plot, full_selection))
             
 def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_masses = ['1000'], wt='', sel='', cat='', get_os=True, do_ggH=True, do_bbH=True):
     if get_os:
@@ -779,13 +799,14 @@ def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_mas
             masses = ggh_masses
         elif key == 'bbH':
             masses = bbh_masses
-        for mass in masses:
-            if key == 'ggH' and not do_ggH:
-                continue
-            if key == 'bbH' and not do_bbH:
-                continue
-            sample_name = mssm_samples[key]+'_M-'+mass
-            ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
+        if masses is not None:    
+            for mass in masses:
+                if key == 'ggH' and not do_ggH:
+                    continue
+                if key == 'bbH' and not do_bbH:
+                    continue
+                sample_name = mssm_samples[key]+'_M-'+mass
+                ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
         
 def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel='', cat='', get_os=True):
     if get_os:
@@ -793,10 +814,11 @@ def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel=''
     else:
         OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS)
-    for mass in masses:
-        for key in Hhh_samples:
-            sample_name = Hhh_samples[key]+'_M-'+mass
-            ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
+    if masses is not None:
+        for mass in masses:
+            for key in Hhh_samples:
+                sample_name = Hhh_samples[key]+'_M-'+mass
+                ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
         
 def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
     print ''
@@ -911,6 +933,16 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
         total_bkg.Write()
     outfile.cd()
     
+def RunSimpleQCD(ana,cat='',sel='',wt='wt',outfile='output.root'):
+    if options.do_ss: OSSS = '!os'
+    else: OSSS = 'os'
+    qcd_selection = BuildCutString('wt', sel, cat, OSSS)
+    ana.nodes[nodename].AddNode(SubtractNode('QCD_simple',ana.SummedFactory('data', data_samples, plot, qcd_selection),ana.SummedFactory('bkg', qcd_sub_samples, plot, qcd_selection)))
+    ana.Run()
+    ana.nodes.Output(outfile)
+    # fix negative bns,empty histograms etc.
+    FixBins(ana,outfile)
+    
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
@@ -919,10 +951,8 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     
     # produce template for observed data
     if do_data:
-        if options.do_ss:
-          OSSS = '!os'
-        else:
-            OSSS = 'os'
+        if options.do_ss: OSSS = '!os'
+        else: OSSS = 'os'
         full_selection = BuildCutString('wt', sel, cat, OSSS)
         ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot, full_selection))
     
@@ -964,7 +994,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
             GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss)
-        elif options.analysis == 'mssm':
+        elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
             GenerateMSSMSignal(ana, add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
             if options.add_sm_background:
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
@@ -1039,9 +1069,10 @@ for systematic in systematics:
             masses = ggh_masses
         else:
             masses = bbh_masses
-        for mass in masses:
-            sample_name = signal_samples[samp]+'_M-'+mass
-            ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+        if masses is not None:    
+            for mass in masses:
+                sample_name = signal_samples[samp]+'_M-'+mass
+                ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
     
     if options.add_sm_background and options.analysis == 'mssm':
         for samp in sm_samples:
@@ -1057,11 +1088,11 @@ for systematic in systematics:
     else: nodename = options.channel+'_'+options.cat
     
     ana.nodes.AddNode(ListNode(nodename))
-    if options.do_custom_uncerts:
-      ana_up   = Analysis()
-      ana_down = Analysis()
-      ana_up = copy.deepcopy(ana)
-      ana_down = copy.deepcopy(ana)
+    if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
+        ana_up   = Analysis()
+        ana_down = Analysis()
+        ana_up = copy.deepcopy(ana)
+        ana_down = copy.deepcopy(ana)
     
     # Add data only for default
     if systematic == 'default': do_data = True
@@ -1069,8 +1100,9 @@ for systematic in systematics:
             
     #Run default plot        
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
-    
-    if options.do_custom_uncerts:
+    #RunSimpleQCD(ana, cat, sel, weight,outfile)
+
+    if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
         RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile)
         RunPlotting(ana_down, cat, sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile)
     
@@ -1089,33 +1121,36 @@ for systematic in systematics:
                     samp_name = samp
                 else:
                     samp_name = samp+"_SM"
-                for mass in masses:
-                    xs = ana.info[sm_samples[samp]+'_M-'+mass]['xs']
-                    sf = 1.0/xs
-                    sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
-                    sm_hist.Scale(sf)
-                    sm_hist.Write()
+                if masses is not None:    
+                    for mass in masses:
+                        xs = ana.info[sm_samples[samp]+'_M-'+mass]['xs']
+                        sf = 1.0/xs
+                        sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
+                        sm_hist.Scale(sf)
+                        sm_hist.Write()
         if options.analysis == "mssm":
             for samp in mssm_samples:
                 if samp == 'ggH':
                     masses = ggh_masses
                 elif samp == 'bbH':
                     masses = bbh_masses
-                for mass in masses:
-                    xs = ana.info[mssm_samples[samp]+'_M-'+mass]['xs']
-                    sf = 1.0/xs
-                    mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
-                    mssm_hist.Scale(sf)
-                    mssm_hist.Write()
+                if masses is not None:    
+                    for mass in masses:
+                        xs = ana.info[mssm_samples[samp]+'_M-'+mass]['xs']
+                        sf = 1.0/xs
+                        mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
+                        mssm_hist.Scale(sf)
+                        mssm_hist.Write()
         if options.analysis == "Hhh":
             for samp in Hhh_samples:
                 masses = ggh_masses
-                for mass in masses:
-                    xs = ana.info[Hhh_samples[samp]+'_M-'+mass]['xs']
-                    sf = 1.0/xs
-                    mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
-                    mssm_hist.Scale(sf)
-                    mssm_hist.Write()
+                if masses is not None:
+                    for mass in masses:
+                        xs = ana.info[Hhh_samples[samp]+'_M-'+mass]['xs']
+                        sf = 1.0/xs
+                        mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
+                        mssm_hist.Scale(sf)
+                        mssm_hist.Write()
         outfile.cd()
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
@@ -1125,11 +1160,22 @@ if options.method is 12 or options.method is 16:
     w_ss = plot_file.Get(nodename+"/W.subnodes/w_ss")
     W_os_ss = w_os.Integral(0,w_os.GetNbinsX()+1)/w_ss.Integral(0,w_ss.GetNbinsX()+1)
 
-    print "W OS/SS ratio = ", W_os_ss 
+    print "W OS/SS ratio = ", W_os_ss
+    
+if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
+    custom_uncerts_up_name = "total_bkg_custom_uncerts_up"
+    custom_uncerts_down_name = "total_bkg_custom_uncerts_down"
+else:
+    custom_uncerts_up_name = options.custom_uncerts_up_name
+    custom_uncerts_down_name = options.custom_uncerts_down_name
 
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    if options.log_y: plot_name+="_logy"
+    if options.log_x: plot_name+="_logx"
+    scheme=options.channel
+    #scheme="qcd"
     FF = options.method==17
     plotting.HTTPlot(nodename, 
         plot_file, 
@@ -1160,6 +1206,9 @@ if not options.no_plot:
         options.add_flat_uncert,
         options.uncert_title,
         options.lumi,
-        plot_name
+        plot_name,
+        custom_uncerts_up_name,
+        custom_uncerts_down_name,
+        scheme
         )
            

@@ -661,6 +661,9 @@ class HTTCategories : public ModuleBase {
   double genM_;
   double gen_tau_pt_1_;
   double gen_tau_pt_2_;
+  
+  double wt_extrap_up_;
+  double wt_extrap_down_;
 
  public:
   HTTCategories(std::string const& name);

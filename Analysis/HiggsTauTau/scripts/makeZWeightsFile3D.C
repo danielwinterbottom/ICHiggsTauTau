@@ -2,10 +2,10 @@ void makeZWeightsFile3D(std::string outfile, std::string MC_add_string){
 std::vector<std::string> cats = {"0jet", "1jet", "ge2jet", "inclusive"};
 
 double x_bins[4] = {0,1,2,10000};
-double y_bins[7] = {0,50,80,120,200,800,10000};
+double y_bins[9] = {0,50,80,120,160,200,400,800,10000};
 double z_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,600,10000};
 int n_xbins=3;
-int n_ybins = 6;
+int n_ybins = 8;
 int n_zbins = 14;
     
 TH3D *h3_data = new TH3D("znjetmasspt_histo","znjetmasspt_histo", n_xbins, x_bins, n_ybins, y_bins, n_zbins, z_bins);
@@ -19,7 +19,7 @@ h3_data_normxbins ->Sumw2();
 h3_mc_normxbins   ->Sumw2();
 h_2dweights       ->Sumw2();
 for(unsigned cati=0; cati<cats.size(); ++cati){
-    std::vector<std::string> file_names = {"datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis50to80.root", "datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis80to120.root", "datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis120to200.root","datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis200to800.root"};
+    std::vector<std::string> file_names = {"datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis50to80.root", "datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis80to120.root", "datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis120to160.root", "datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis160to200.root","datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis200to400.root","datacard_pt_tt_"+cats[cati]+"_zmm_2016_mvis400to800.root"};
     
     std::vector<TH1D*> data_hist_vector;
     std::vector<TH1D*> mc_hist_vector;
@@ -93,8 +93,29 @@ for(unsigned cati=0; cati<cats.size(); ++cati){
     }
     
     if(cats[cati] == "inclusive"){
-      h_data->Scale(h_data->Integral());  
-      h_mc->Scale(h_mc->Integral());
+      double data_total=0;
+      double mc_total=0;
+      for(unsigned i=1; i<=(unsigned)h_data->GetNbinsX();++i){
+        for(unsigned j=1; j<=(unsigned)h_data->GetNbinsY();++j){
+          if(!(i == 1 || i== h_data->GetNbinsX() || j==h_data->GetNbinsY())){
+              double data_content=h_data->GetBinContent(i,j);
+              data_total+=data_content;
+              double mc_content=h_mc->GetBinContent(i,j);
+              mc_total+=mc_content;        
+          }
+        }
+      }
+      for(unsigned i=1; i<=(unsigned)h_data->GetNbinsX();++i){
+        for(unsigned j=1; j<=(unsigned)h_data->GetNbinsY();++j){
+          if(!(i == 1 || i== h_data->GetNbinsX() || j==h_data->GetNbinsY())){
+              double data_content=h_data->GetBinContent(i,j);
+              data_total+=data_content;
+              h_data->SetBinContent(i,j,data_content/data_total);
+              double mc_content=h_mc->GetBinContent(i,j);
+              h_mc->SetBinContent(i,j,mc_content/mc_total);
+          }
+        }
+      }
       h_data->Divide(h_mc);  
       h_2dweights = (TH2D*)h_data->Clone();
       continue;    

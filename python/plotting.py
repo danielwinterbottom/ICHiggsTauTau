@@ -1840,11 +1840,11 @@ def HTTPlot(nodename,
             lumi="35.9",
             plot_name="htt_plot",
             custom_uncerts_up_name="total_bkg_custom_uncerts_up",
-            custom_uncerts_down_name="total_bkg_custom_uncerts_down"
+            custom_uncerts_down_name="total_bkg_custom_uncerts_down",
+            scheme="mt"
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
-    
     # Define signal schemes here
     sig_schemes = {}
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
@@ -1860,8 +1860,11 @@ def HTTPlot(nodename,
     'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
     'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
     'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZLL"],R.TColor.GetColor(100,192,232))],
-    'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZLL"],R.TColor.GetColor(100,192,232))]
+    'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZLL"],R.TColor.GetColor(100,192,232))],
+    'dy':[backgroundComp("DY",["ZTT","ZL","ZJ"],R.TColor.GetColor(100,192,232))],
+    'qcd':[backgroundComp("QCD",["QCD_simple"],R.TColor.GetColor(250,202,255))]
     }
+    if channel == "zee" or channel == "zmm": background_schemes['dy'] = [backgroundComp("DY",["ZLL"],R.TColor.GetColor(100,192,232))]
     if FF:
         for chan in ["et", "mt", "tt"]:    
             background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)))
@@ -1888,7 +1891,7 @@ def HTTPlot(nodename,
         
     #Create stacked plot for the backgrounds
     bkg_histos = []
-    for i,t in enumerate(background_schemes[channel]):
+    for i,t in enumerate(background_schemes[scheme]):
         plots = t['plot_list']
         h = R.TH1F()
         for j,k in enumerate(plots):
@@ -2038,9 +2041,9 @@ def HTTPlot(nodename,
     legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
     bkg_histos.reverse()
-    background_schemes[channel].reverse()
+    background_schemes[scheme].reverse()
     for legi,hists in enumerate(bkg_histos):
-        legend.AddEntry(hists,background_schemes[channel][legi]['leg_text'],"f")
+        legend.AddEntry(hists,background_schemes[scheme][legi]['leg_text'],"f")
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
     if signal_mass != "":

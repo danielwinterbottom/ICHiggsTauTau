@@ -12,6 +12,7 @@
 #include "TSystem.h"
 #include "TFile.h"
 #include "boost/format.hpp"
+#include "Utilities/interface/FnRootTools.h"
 
 namespace ic {
 
@@ -621,6 +622,13 @@ namespace ic {
       event->Add("wt_zpt_njets_jscaleup", wtzpt_njets_jscaleup/wtzpt);
       event->Add("wt_zpt_njets_jscaledown", wtzpt_njets_jscaledown/wtzpt);
       event->Add("wt_zpt_njets_normxbins", wtzpt_njets_normxbin/wtzpt);
+      
+      double wt_extrap_up =1;
+      if(!(zmass<50 || zmass>800 || zpt >600)){
+        wt_extrap_up =  extrap_hist_->GetBinContent(extrap_hist_->GetXaxis()->FindBin(zmass),extrap_hist_->GetYaxis()->FindBin(zpt));   
+      }
+      event->Add("wt_extrap_up", wt_extrap_up);
+      event->Add("wt_extrap_down", 1/wt_extrap_up);
     }
 
    if (do_tracking_eff_){
