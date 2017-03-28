@@ -54,6 +54,7 @@
 #include "HiggsTauTau/interface/NvtxWeight.h"
 #include "HiggsTauTau/interface/BTagWeightRun2.h"
 #include "HiggsTauTau/interface/HTTGenMatchSelector.h"
+#include "HiggsTauTau/interface/HTTFakeFactorWeights.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -1194,7 +1195,8 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
     .set_fullpath(svfit_folder)
     .set_legacy_svfit(true)
     .set_do_preselection(false)
-    .set_MC(true);
+    .set_MC(true)
+    .set_do_vloose_preselection(js["do_ff_weights"].asBool());
  if(era_type == era::data_2015 || era_type == era::data_2016){
    svFitTest.set_legacy_svfit(false);
    svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool());
@@ -1776,7 +1778,18 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
 //    BuildModule(HTTSyncTemp("HTTSyncTemp","HTTSequenceSyncfiles/SYNCFILE_" + output_name, channel)
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
- 
+
+if(js["do_ff_weights"].asBool()){
+  BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
+      .set_channel(channel)
+      .set_ditau_label("ditau")
+      .set_met_label(met_label)
+      .set_jets_label(jets_label)
+      .set_strategy(strategy_type)
+      .set_categories(js["ff_categories"].asString())
+      .set_do_systematics(js["do_ff_systematics"].asBool()));
+}
+    
 if(channel != channel::wmnu) {
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
@@ -1802,7 +1815,10 @@ BuildModule(HTTCategories("HTTCategories")
     .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
     .set_do_HLT_Studies(js["store_hltpaths"].asBool() && (is_data || js["trg_in_mc"].asBool()))
     //Good to avoid accidentally overwriting existing output files when syncing
-    .set_write_tree(!js["make_sync_ntuple"].asBool()));
+    .set_write_tree(!js["make_sync_ntuple"].asBool())
+    .set_do_ff_weights(js["do_ff_weights"].asBool())
+    .set_ff_categories(js["ff_categories"].asString())
+    .set_do_ff_systematics(js["do_ff_systematics"].asBool()));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")
