@@ -1090,8 +1090,7 @@ namespace ic {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
-        double e_eta = fabs(elec->sc_eta());
-        if(era_ == era::data_2015 || era_ == era::data_2016) e_eta = fabs(elec->sc_eta());
+        double e_eta = fabs(elec->eta());
         double m_pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double m_trg = 1.0;
