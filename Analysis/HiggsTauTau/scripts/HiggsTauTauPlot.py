@@ -248,10 +248,10 @@ cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
 cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
-cats['nobtag_loosemt'] = '('+cats['nobtag']+ ' && mt_1>40)'
+cats['nobtag_loosemt'] = cats['nobtag']
 cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_tight_2<0.5)'
 cats['btag_tight'] = cats['btag']
-cats['btag_loosemt'] = '('+cats['btag']+ ' && mt_1>40)'
+cats['btag_loosemt'] = cats['btag']
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
 
@@ -264,10 +264,14 @@ if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.c
 # And aldo overwrite selection if one of the tight categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
     if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<40)'
+if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>40)'
+if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso':
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70)'
 # Also need to adjust btag wnobtag category (used for method 16) for different categories
 cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 if options.channel == 'mt' or options.channel == 'et':
-    if options.cat == 'btag_loosemt': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mt_1>40)'
+    if options.cat == 'btag_loosemt': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
     if options.cat == 'btag_looseiso': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
 
 if options.era == "mssmsummer16":
@@ -526,7 +530,7 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
       shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
   shape_selection = BuildCutString(wt, sel, shape_cat, OSSS, '')
   
-  if method in [8, 9, 15]:
+  if method in [8, 9, 15,18]:
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
   elif method in [10, 11]:
       control_sel = cats['w_sdb']+' && '+ OSSS
@@ -626,16 +630,16 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
                 shape_cat = cats[options.cat]
             else:
                 shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
-            shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
+            shape_selection = BuildCutString(wt, qcd_sdb_sel, shape_cat, '')
             shape_node = ana.SummedFactory('shape', data, plot, shape_selection)
         elif method in [10, 12, 14]:
             if method == 14:
                 shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
             else: 
                 shape_cat = cat
-            shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
+            shape_selection = BuildCutString(wt, qcd_sdb_sel, shape_cat, '')
             bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-            bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, qcd_os_ss_ratio, False))
+            bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, wt, sel, shape_cat, method, qcd_os_ss_ratio, False))
             shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
         
         if options.channel == 'em':
@@ -662,42 +666,72 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
     else:
         OSSS = False
         if get_os: OSSS = True
+        if OSSS: 
+            qcd_sdb_sel =  '(os && ' + sel + ')'
+        qcd_sdb_cat = ttqcdcat+'*'+tt_qcd_norm 
+        num_selection = BuildCutString(wt, sel, qcd_cat, '!os')
+        den_selection = BuildCutString(wt, sel, qcd_sdb_cat, '!os')
+            
         if method == 8:
-            if OSSS: 
-                qcd_sdb_sel =  '(os && ' + sel + ')'
-            qcd_sdb_cat = ttqcdcat+'*'+tt_qcd_norm 
+            
+            num_node = SubtractNode('ratio_num',
+                         ana.SummedFactory('data_num', data, plot, num_selection),
+                         ana.SummedFactory('bkg_num', qcd_sub_samples, plot, num_selection))
+            
+            den_node = SubtractNode('ratio_den',
+                         ana.SummedFactory('data_den', data, plot, den_selection),
+                         ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
+            
+        elif method == 18:
+            num_node=None
+            den_node=None
+            
+            plot_for_weight="pt_2[0,45,50,55,65,70,80,100,120,200]"
+            
+            num = SubtractNode('qcd_weight_num',
+                         ana.SummedFactory('data_num', data, plot_for_weight, num_selection),
+                         ana.SummedFactory('bkg_num', qcd_sub_samples, plot, num_selection))
+            
+            den = SubtractNode('qcd_weight_den',
+                         ana.SummedFactory('data_den', data, plot_for_weight, den_selection),
+                         ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
+            
+            ana_weight.nodes[nodename].AddNode(num)
+            ana_weight.nodes[nodename].AddNode(den)
+            ana_weight.Run()
+            
+            ratio_num = ana_weight.nodes[nodename].nodes["qcd_weight_num"].shape.hist.Clone()
+            ratio_den = ana_weight.nodes[nodename].nodes["qcd_weight_den"].shape.hist.Clone()
+            ratio_num.Divide(ratio_den)
+            weight_hist = ratio_num
+            
+            def StepFunctionFromHist(h,var_name):
+                step_string=""
+                max_bin_content=str(h.GetBinContent(h.GetNbinsX()))
+                max_bin=str(h.GetXaxis().GetXmax())
+                for i in range(1,h.GetNbinsX()+1):
+                    lowbin  = str(h.GetBinLowEdge(i))
+                    highbin = str(h.GetBinLowEdge(i+1))
+                    content=str(h.GetBinContent(i))
+                    if i is not 1: step_string+="+"
+                    step_string+="("+var_name+">="+lowbin+"&&"+var_name+"<"+highbin+")*"+content
+                step_string+="+("+var_name+">="+max_bin+")*"+max_bin_content
+                return step_string
+            var = plot_for_weight.split('[')[0]
+            var = plot_for_weight.split('(')[0]
+            weight_function=StepFunctionFromHist(weight_hist,var)
+            wt+="*("+weight_function+")"
+            full_selection = BuildCutString(wt, qcd_sdb_sel, qcd_sdb_cat, '')
+            ana.nodes[nodename].AddNode(ana.SummedFactory('QCD', data_samples, plot, full_selection))
             
         shape_cat = '('+cats[options.cat]+')*('+cats['tt_qcd_norm']+')'
-        shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
+        shape_selection = BuildCutString(wt, qcd_sdb_sel, shape_cat, '')
         bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-    #    bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, qcd_os_ss_ratio, OSSS))
         shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
             
-        full_selection = BuildCutString('wt', qcd_sdb_sel, qcd_sdb_cat, '')
+        full_selection = BuildCutString(wt, qcd_sdb_sel, qcd_sdb_cat, '')
         subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
-#        if method == 8:
-#            w_node = GetWNode(ana, 'Wos', wjets_samples, data_samples, w_sub_samples, plot, 'wt', qcd_sdb_sel, qcd_sdb_cat, method, qcd_os_ss_ratio, get_os)
-#        else:
-#            w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
-#        subtract_node.AddNode(w_node)
-        num_selection = BuildCutString('wt', sel, qcd_cat, '!os')
-        den_selection = BuildCutString('wt', sel, qcd_sdb_cat, '!os')
 
-        num_node = SubtractNode('ratio_num',
-                     ana.SummedFactory('data_num', data, plot, num_selection),
-                     ana.SummedFactory('bkg_num', qcd_sub_samples, plot, num_selection))
-#        w_num_node = GetWNode(ana, 'W_num', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_cat, method, qcd_os_ss_ratio, False)
-#        num_node = SubtractNode('ratio_num',
-#                     num_node,
-#                     w_num_node)
-        den_node = SubtractNode('ratio_den',
-                     ana.SummedFactory('data_den', data, plot, den_selection),
-                     ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
-#        w_den_node = GetWNode(ana, 'W_den', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
-#        den_node = SubtractNode('ratio_den',
-#                     den_node,
-#                     w_den_node) 
-        
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
           ana.SummedFactory('data_ss', data, plot, full_selection),
           subtract_node,
@@ -705,6 +739,7 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
           shape_node,
           num_node,
           den_node))
+            
         
 def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name='',get_os=True):
     print "Generating fake tau background via fake-factor method. In order for this to work you must first ensure that the fake-faktor weights are included in the input tree for the channel and category you wish use. Weights should be named as: wt_ff_channel_category"
@@ -1079,7 +1114,9 @@ for systematic in systematics:
         ana_down = Analysis()
         ana_up = copy.deepcopy(ana)
         ana_down = copy.deepcopy(ana)
-    
+    if options.method == 18:
+        ana_weight   = Analysis()
+        ana_weight = copy.deepcopy(ana)
     # Add data only for default
     if systematic == 'default': do_data = True
     else: do_data = False
@@ -1153,9 +1190,6 @@ if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "":
 else:
     custom_uncerts_up_name = options.custom_uncerts_up_name
     custom_uncerts_down_name = options.custom_uncerts_down_name
-
-if options.log_x: plot_name+="_logx"
-if options.log_y: plot_name+="_logy"
 
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
