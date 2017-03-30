@@ -225,8 +225,10 @@ elif options.analysis == 'mssm':
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_vloose_2>0.5 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
@@ -291,8 +293,8 @@ for i in options.set_alias:
     end_index=overwrite_with.find("}")
     while start_index >0:
         replace_with=overwrite_with[start_index:end_index+1]
-        replace_with=cat_to_overwrite.replace("{","")
-        replace_with=cat_to_overwrite.replace("}","")
+        replace_with=replace_with.replace("{","")
+        replace_with=replace_with.replace("}","")
         replace_string = cats[replace_with]
         overwrite_with=overwrite_with[0:start_index] + replace_string  + overwrite_with[end_index+1:]
         start_index=overwrite_with.find("{")
@@ -1024,8 +1026,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             
     ana.Run()
     ana.nodes.Output(outfile)
-    w_hist = outfile.Get(nodename+"/W")
-    print "W yield = ", w_hist.Integral(0,w_hist.GetNbinsX()+1)
+
     # fix negative bns,empty histograms etc.
     FixBins(ana,outfile)
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
