@@ -206,7 +206,44 @@ if SCHEME == 'run2_mssm_2016':
   }
   sig_scheme = 'run2_mssm'
   ANA = 'mssm'
-  
+
+if SCHEME == 'run2_mssm_osss_2016':
+    BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,375,400]"
+    BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400]"
+    scheme_et = [
+    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("8",   "btag",    "btag",  BINS, '--sel="(mt_1<70)"  ')
+    ]
+
+    scheme_mt = [
+    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("8",   "btag",    "btag",  BINS, '--sel="(mt_1<70)"  ')
+    ]
+
+    scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5&&antiele_1 && antimu_1 && antiele_2 &&antimu_2 && leptonveto<0.5" '),
+    ]
+    scheme_em = [
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+    ]
+
+
+
+    bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+   }
+    sig_scheme = 'run2_mssm'
+    ANA = 'mssm'
+
+ 
+ 
 if SCHEME == 'run2_mssm_summer2016':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
   BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
