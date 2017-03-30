@@ -1180,9 +1180,14 @@ plot_file = ROOT.TFile(output_name, 'READ')
 if options.method is 12 or options.method is 16:
     w_os = plot_file.Get(nodename+"/W.subnodes/w_os")    
     w_ss = plot_file.Get(nodename+"/W.subnodes/w_ss")
-    W_os_ss = w_os.Integral(0,w_os.GetNbinsX()+1)/w_ss.Integral(0,w_ss.GetNbinsX()+1)
+    w_os_error=ROOT.Double(0.)
+    w_ss_error=ROOT.Double(0.)
+    w_os_total = w_os.IntegralAndError(0,w_os.GetNbinsX()+1,w_os_error)
+    w_ss_total = w_ss.IntegralAndError(0,w_ss.GetNbinsX()+1,w_ss_error)
+    w_os_ss = w_os_total/w_ss_total
+    w_os_ss_error = math.sqrt( (w_os_error/w_os_total)**2 + (w_ss_error/w_ss_total)**2 )*w_os_ss
 
-    print "W OS/SS ratio = ", W_os_ss
+    print "W OS/SS ratio = ", w_os_ss, "+/-", w_os_ss_error, "("+str(100*w_os_ss_error/w_os_ss)+" %)"
 
 if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
     custom_uncerts_up_name = "total_bkg_custom_uncerts_up"
