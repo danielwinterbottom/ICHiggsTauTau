@@ -19,7 +19,7 @@ namespace ic {
 
   int BTagWeightRun2::PreAnalysis() {
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
-    if(strategy_ == strategy::mssmsummer16) csv_file_path = "./input/btag_sf/CSVv2Moriond17_2017_1_26_BtoH.csv";
+    if(strategy_ == strategy::mssmsummer16) csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
     else if (strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
     calib = new const BTagCalibration("csvv2",csv_file_path);
     if(era_ == era::data_2016){
