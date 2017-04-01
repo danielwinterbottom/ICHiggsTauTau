@@ -642,23 +642,7 @@ def GenerateW(ana, name='W', add_name='', samples=[], data=[], sub_samples=[], w
       ana.nodes[nodename].AddNode(w_total_node)
       
 def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
-    tt_qcd_norm = cats['tt_qcd_norm']
-    if options.channel == 'et' or options.channel == 'mt':
-        ttqcdcat = '('+cats[options.cat]+')*(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto)*(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)'
-    elif options.channel == 'tt':
-        ttqcdcat = '('+cats[options.cat]+')*(antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto&&trg_doubletau)'
-        
-    qcd_sdb_sel = '(!os && ' + sel + ')'
-    w_extrp_sdb_sel = '(!os && '+ cats['w_sdb'] + ')'
-    w_extrp_sig_sel = '(!os && ' + sel + ')'
-    w_sdb_sel = '(!os && ' + cats['w_sdb'] + ')'
-    w_sdb_sel_osss = cats['w_sdb']
-    qcd_cat = cat
-    qcd_sdb_cat = cat
-    qcd_extrap_sel = '(!os && ' + sel + ')'
-    
     shape_node = None
-    
     if options.channel != 'tt':
         
         if method in [9, 11, 13, 16]:
@@ -666,17 +650,38 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
                 shape_cat = cats[options.cat]
             else:
                 shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
-            shape_selection = BuildCutString(wt, qcd_sdb_sel, shape_cat, '')
+            shape_selection = BuildCutString(wt, sel, shape_cat, '!os')
             shape_node = ana.SummedFactory('shape', data, plot, shape_selection)
-        elif method in [10, 12, 14]:
-            if method == 14:
-                shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
-            else: 
-                shape_cat = cat
-            shape_selection = BuildCutString(wt, qcd_sdb_sel, shape_cat, '')
-            bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-            bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, wt, sel, shape_cat, method, qcd_os_ss_ratio, False))
-            shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
+        elif method == 14:
+            shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
+            shape_selection = BuildCutString(wt, sel, shape_cat, '!os')
+            
+            subtract_node = SummedNode('total_bkg')
+            w_node = GetWNode(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, wt, sel, shape_cat, method, qcd_os_ss_ratio, False)
+            ttt_node = GetTTTNode(ana, "", top_samples, plot, wt, sel, shape_cat, top_sels, False)
+            ttj_node = GetTTJNode(ana, "", top_samples, plot, wt, sel, shape_cat, top_sels, False)
+            vvt_node = GetVVTNode(ana, "", vv_samples, plot, wt, sel, shape_cat, vv_sels, False)
+            vvj_node = GetVVJNode(ana, "", vv_samples, plot, wt, sel, shape_cat, vv_sels, False)
+            subtract_node.AddNode(w_node)
+            subtract_node.AddNode(ttt_node)
+            subtract_node.AddNode(ttj_node)
+            subtract_node.AddNode(vvt_node)
+            subtract_node.AddNode(vvj_node)
+            if options.channel not in ["zmm", "zee"]: 
+                ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, shape_cat, z_sels, False)
+                subtract_node.AddNode(ztt_node)
+            if options.channel not in ["zmm", "zee", "em"]:
+                zl_node = GetZLNode(ana, "", ztt_samples, plot, wt, sel, shape_cat, z_sels, False)
+                zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, shape_cat, z_sels, False)
+                subtract_node.AddNode(zl_node)
+                subtract_node.AddNode(zj_node)
+            if options.channel in ["zmm", "zee", "em"]:
+                zll_node = GetZLLNode(ana, "", ztt_samples, plot, wt, sel, shape_cat, z_sels, False)
+                subtract_node.AddNode(zll_node)
+            if options.channel == "em":
+                wg_node = GetWGNode(ana, "", wgam_samples, plot, wt, sel, shape_cat, False)
+                subtract_node.AddNode(wg_node)
+            shape_node = SubtractNode('shape', ana.SummedFactory('data_ss', data, plot, shape_selection), subtract_node)
         
         if options.channel == 'em':
             qcd_os_ss_factor = 1
@@ -688,11 +693,35 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
             if get_os and options.channel == "em":
                 weight = wt+'*wt_em_qcd'
         
-        full_selection = BuildCutString(weight, qcd_sdb_sel, qcd_cat, '')
-        subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
-        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, weight, sel, cat, method, qcd_os_ss_ratio, False)
-        subtract_node.AddNode(w_node)
+        full_selection = BuildCutString(weight, sel, cat, '!os')
         
+        
+        subtract_node = SummedNode('total_bkg')
+        w_node = GetWNode(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, weight, sel, cat, method, qcd_os_ss_ratio, False)
+        ttt_node = GetTTTNode(ana, "", top_samples, plot, weight, sel, cat, top_sels, False)
+        ttj_node = GetTTJNode(ana, "", top_samples, plot, weight, sel, cat, top_sels, False)
+        vvt_node = GetVVTNode(ana, "", vv_samples, plot, weight, sel, cat, vv_sels, False)
+        vvj_node = GetVVJNode(ana, "", vv_samples, plot, weight, sel, cat, vv_sels, False)
+        subtract_node.AddNode(w_node)
+        subtract_node.AddNode(ttt_node)
+        subtract_node.AddNode(ttj_node)
+        subtract_node.AddNode(vvt_node)
+        subtract_node.AddNode(vvj_node)
+        if options.channel not in ["zmm", "zee"]: 
+            ztt_node = GetZTTNode(ana, "", ztt_samples, plot, weight, sel, cat, z_sels, False)
+            subtract_node.AddNode(ztt_node)
+        if options.channel not in ["zmm", "zee", "em"]:
+            zl_node = GetZLNode(ana, "", ztt_samples, plot, weight, sel, cat, z_sels, False)
+            zj_node = GetZJNode(ana, "", ztt_samples, plot, weight, sel, cat, z_sels, False)
+            subtract_node.AddNode(zl_node)
+            subtract_node.AddNode(zj_node)
+        if options.channel in ["zmm", "zee", "em"]:
+            zll_node = GetZLLNode(ana, "", ztt_samples, plot, weight, sel, cat, z_sels, False)
+            subtract_node.AddNode(zll_node)
+        if options.channel == "em":
+            wg_node = GetWGNode(ana, "", wgam_samples, plot, weight, sel, cat, False)
+            subtract_node.AddNode(wg_node)
+            
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
           ana.SummedFactory('data_ss', data, plot, full_selection),
           subtract_node,
@@ -700,34 +729,78 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
           shape_node))
         
     else:
-        OSSS = False
-        if get_os: OSSS = True
-        if OSSS: 
-            qcd_sdb_sel =  '(os && ' + sel + ')'
-        qcd_sdb_cat = ttqcdcat+'*'+tt_qcd_norm 
-        num_selection = BuildCutString(wt, sel, qcd_cat, '!os')
+        OSSS = "!os"
+        if get_os: OSSS = "os"
+        qcd_sdb_cat = cats[options.cat]+' && '+cats['tt_qcd_norm'] 
+        
+        subtract_node = SummedNode('total_bkg')
+        w_node = GetWNode(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, False)
+        ttt_node = GetTTTNode(ana, "", top_samples, plot, wt, sel, cat, top_sels, False)
+        ttj_node = GetTTJNode(ana, "", top_samples, plot, wt, sel, cat, top_sels, False)
+        vvt_node = GetVVTNode(ana, "", vv_samples, plot, wt, sel, cat, vv_sels, False)
+        vvj_node = GetVVJNode(ana, "", vv_samples, plot, wt, sel, cat, vv_sels, False)
+        ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, False)
+        zl_node = GetZLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, False)
+        zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, False)
+        subtract_node.AddNode(w_node)
+        subtract_node.AddNode(ttt_node)
+        subtract_node.AddNode(ttj_node)
+        subtract_node.AddNode(vvt_node)
+        subtract_node.AddNode(vvj_node)
+        subtract_node.AddNode(ztt_node)
+        subtract_node.AddNode(zl_node)
+        subtract_node.AddNode(zj_node)
+        
+        num_selection = BuildCutString(wt, sel, cat, '!os')
+        num_node = SubtractNode('ratio_num',
+                     ana.SummedFactory('data', data, plot, num_selection),
+                     subtract_node)
+        
+        subtract_node = SummedNode('total_bkg')
+        w_node = GetWNode(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, wt, sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
+        ttt_node = GetTTTNode(ana, "", top_samples, plot, wt, sel, qcd_sdb_cat, top_sels, False)
+        ttj_node = GetTTJNode(ana, "", top_samples, plot, wt, sel, qcd_sdb_cat, top_sels, False)
+        vvt_node = GetVVTNode(ana, "", vv_samples, plot, wt, sel, qcd_sdb_cat, vv_sels, False)
+        vvj_node = GetVVJNode(ana, "", vv_samples, plot, wt, sel, qcd_sdb_cat, vv_sels, False)
+        ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, qcd_sdb_cat, z_sels, False)
+        zl_node = GetZLNode(ana, "", ztt_samples, plot, wt, sel, qcd_sdb_cat, z_sels, False)
+        zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, qcd_sdb_cat, z_sels, False)
+        subtract_node.AddNode(w_node)
+        subtract_node.AddNode(ttt_node)
+        subtract_node.AddNode(ttj_node)
+        subtract_node.AddNode(vvt_node)
+        subtract_node.AddNode(vvj_node)
+        subtract_node.AddNode(ztt_node)
+        subtract_node.AddNode(zl_node)
+        subtract_node.AddNode(zj_node)
+        
         den_selection = BuildCutString(wt, sel, qcd_sdb_cat, '!os')
-            
-        if method == 8:
-            
-            num_node = SubtractNode('ratio_num',
-                         ana.SummedFactory('data_num', data, plot, num_selection),
-                         ana.SummedFactory('bkg_num', qcd_sub_samples, plot, num_selection))
-            
-            den_node = SubtractNode('ratio_den',
-                         ana.SummedFactory('data_den', data, plot, den_selection),
-                         ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
-            
-        shape_cat = '('+cats[options.cat]+')*('+cats['tt_qcd_norm']+')'
-        shape_selection = BuildCutString(wt, qcd_sdb_sel, shape_cat, '')
-        bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-        shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
-            
-        full_selection = BuildCutString(wt, qcd_sdb_sel, qcd_sdb_cat, '')
-        subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
+        den_node = SubtractNode('ratio_den',
+                     ana.SummedFactory('data', data, plot, den_selection),
+                     subtract_node)
+        shape_node = None   
+        full_selection = BuildCutString(wt, sel, qcd_sdb_cat, OSSS)
+        
+        subtract_node = SummedNode('total_bkg')
+        w_node = GetWNode(ana, 'W', wjets_samples, data_samples, w_sub_samples, plot, wt, sel, qcd_sdb_cat, method, qcd_os_ss_ratio, get_os)
+        ttt_node = GetTTTNode(ana, "", top_samples, plot, wt, sel, qcd_sdb_cat, top_sels, get_os)
+        ttj_node = GetTTJNode(ana, "", top_samples, plot, wt, sel, qcd_sdb_cat, top_sels, get_os)
+        vvt_node = GetVVTNode(ana, "", vv_samples, plot, wt, sel, qcd_sdb_cat, vv_sels, get_os)
+        vvj_node = GetVVJNode(ana, "", vv_samples, plot, wt, sel, qcd_sdb_cat, vv_sels, get_os)
+        ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, qcd_sdb_cat, z_sels, get_os)
+        zl_node = GetZLNode(ana, "", ztt_samples, plot, wt, sel, qcd_sdb_cat, z_sels, get_os)
+        zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, qcd_sdb_cat, z_sels, get_os)
+        subtract_node.AddNode(w_node)
+        subtract_node.AddNode(ttt_node)
+        subtract_node.AddNode(ttj_node)
+        subtract_node.AddNode(vvt_node)
+        subtract_node.AddNode(vvj_node)
+        subtract_node.AddNode(ztt_node)
+        subtract_node.AddNode(zl_node)
+        subtract_node.AddNode(zj_node)
 
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
-          ana.SummedFactory('data_ss', data, plot, full_selection),
+          ana.SummedFactory('data', data, plot, full_selection),
           subtract_node,
           1,
           shape_node,
