@@ -225,10 +225,10 @@ elif options.analysis == 'mssm':
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.15 && mva_olddm_vloose_2>0.5 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)' #mva_olddm_vloose_2>0.5
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_vloose_2>0.5 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
@@ -256,9 +256,11 @@ cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
+cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
+cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
-if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt':
+if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt' or options.cat == 'btag_tight_wnobtag':
     if options.channel == 'mt':        
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et':
@@ -462,56 +464,88 @@ def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
         full_selection += '*('+bkg_sel+')'
     if cat != '':
         full_selection += '*('+cat+')'
-    return full_selection 
+    return full_selection
 
-def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
-    if get_os:
-        OSSS = 'os'
-    else:
-        OSSS = '!os'
+def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['ztt_sel'])
-    ana.nodes[nodename].AddNode(ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection))
+    return ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection)
+
+def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zll_sel'])
+    return ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection)
+
+def GetZLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zl_sel'])
+    return ana.SummedFactory('ZL'+add_name, samples, plot, full_selection)
+
+def GetZJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zj_sel'])
+    return ana.SummedFactory('ZJ'+add_name, samples, plot, full_selection)
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True, doZL=True, doZJ=True):
-    if get_os:
-        OSSS = 'os'
-    else:
-        OSSS = '!os'
     if options.channel == 'em' or options.channel == 'zmm' or options.channel == 'zee':
-        full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zll_sel'])
-        ana.nodes[nodename].AddNode(ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection))
+        zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+        ana.nodes[nodename].AddNode(zll_node)
     else:
         if doZL:
-            full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zl_sel'])
-            ana.nodes[nodename].AddNode(ana.SummedFactory('ZL'+add_name, samples, plot, full_selection))
+            zl_node = GetZLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+            ana.nodes[nodename].AddNode(zl_node)
         if doZJ:
-            full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zj_sel'])
-            ana.nodes[nodename].AddNode(ana.SummedFactory('ZJ'+add_name, samples, plot, full_selection))
-        
+            zj_node = GetZJNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+            ana.nodes[nodename].AddNode(zj_node)  
+
+def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    ztt_node = GetZTTNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
+    ana.nodes[nodename].AddNode(ztt_node)    
+
+def GetTTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'  
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttt_sel'])
+  return ana.SummedFactory('TTT'+add_name, samples, plot, full_selection)
+  
+def GetTTJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'  
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttj_sel'])
+  return ana.SummedFactory('TTJ'+add_name, samples, plot, full_selection)
+
 def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True, doTTT=True, doTTJ=True):
-  if get_os:
-      OSSS = 'os'
-  else:
-      OSSS = '!os'  
   if doTTT:
-      full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttt_sel'])
-      ana.nodes[nodename].AddNode(ana.SummedFactory('TTT'+add_name, samples, plot, full_selection))
+      ttt_node = GetTTTNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+      ana.nodes[nodename].AddNode(ttt_node)
   if doTTJ:
-      full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttj_sel'])
-      ana.nodes[nodename].AddNode(ana.SummedFactory('TTJ'+add_name, samples, plot, full_selection))
+      ttj_node = GetTTJNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+      ana.nodes[nodename].AddNode(ttj_node)
+
+def GetVVTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True): 
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'  
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvt_sel'])
+  return ana.SummedFactory('VVT'+add_name, samples, plot, full_selection)
+
+def GetVVJNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True): 
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'  
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvj_sel'])
+  return ana.SummedFactory('VVJ'+add_name, samples, plot, full_selection)
 
 def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True, doVVT=True, doVVJ=True): 
-  if get_os:
-      OSSS = 'os'
-  else:
-      OSSS = '!os'  
   if doVVT:
-      full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvt_sel'])
-      ana.nodes[nodename].AddNode(ana.SummedFactory('VVT'+add_name, samples, plot, full_selection))
+      vvt_node = GetVVTNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+      ana.nodes[nodename].AddNode(vvt_node)
   if doVVJ:
-      full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvj_sel'])
-      ana.nodes[nodename].AddNode(ana.SummedFactory('VVJ'+add_name, samples, plot, full_selection))
-  
+      vvj_node = GetVVJNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+      ana.nodes[nodename].AddNode(vvj_node)
+#  
 def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
   if get_os:
       OSSS = 'os'
