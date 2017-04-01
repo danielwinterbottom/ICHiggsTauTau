@@ -1947,7 +1947,6 @@ def HTTPlot(nodename,
           axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
         if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
-          axish[1].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     else:
         axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         axish[0].GetXaxis().SetTitle(x_title)
@@ -2062,7 +2061,7 @@ def HTTPlot(nodename,
     latex2.DrawLatex(0.145,0.955,channel_label)
     
     #CMS and lumi labels
-    FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
+    if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
     
@@ -2186,6 +2185,7 @@ def CompareHists(hists=[],
     
     #Setup legend
     legend = PositionedLegend(0.30,0.30,3,0.03)
+    legend = PositionedLegend(0.25,0.30,4,0.03)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
