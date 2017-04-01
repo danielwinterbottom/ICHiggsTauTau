@@ -545,7 +545,7 @@ def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
   if doVVJ:
       vvj_node = GetVVJNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
       ana.nodes[nodename].AddNode(vvj_node)
-#  
+      
 def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
   if get_os:
       OSSS = 'os'
@@ -717,48 +717,6 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
             den_node = SubtractNode('ratio_den',
                          ana.SummedFactory('data_den', data, plot, den_selection),
                          ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
-            
-        elif method == 18:
-            num_node=None
-            den_node=None
-            
-            plot_for_weight="pt_2[0,45,50,55,65,70,80,100,120,200]"
-            
-            num = SubtractNode('qcd_weight_num',
-                         ana.SummedFactory('data_num', data, plot_for_weight, num_selection),
-                         ana.SummedFactory('bkg_num', qcd_sub_samples, plot, num_selection))
-            
-            den = SubtractNode('qcd_weight_den',
-                         ana.SummedFactory('data_den', data, plot_for_weight, den_selection),
-                         ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
-            
-            ana_weight.nodes[nodename].AddNode(num)
-            ana_weight.nodes[nodename].AddNode(den)
-            ana_weight.Run()
-            
-            ratio_num = ana_weight.nodes[nodename].nodes["qcd_weight_num"].shape.hist.Clone()
-            ratio_den = ana_weight.nodes[nodename].nodes["qcd_weight_den"].shape.hist.Clone()
-            ratio_num.Divide(ratio_den)
-            weight_hist = ratio_num
-            
-            def StepFunctionFromHist(h,var_name):
-                step_string=""
-                max_bin_content=str(h.GetBinContent(h.GetNbinsX()))
-                max_bin=str(h.GetXaxis().GetXmax())
-                for i in range(1,h.GetNbinsX()+1):
-                    lowbin  = str(h.GetBinLowEdge(i))
-                    highbin = str(h.GetBinLowEdge(i+1))
-                    content=str(h.GetBinContent(i))
-                    if i is not 1: step_string+="+"
-                    step_string+="("+var_name+">="+lowbin+"&&"+var_name+"<"+highbin+")*"+content
-                step_string+="+("+var_name+">="+max_bin+")*"+max_bin_content
-                return step_string
-            var = plot_for_weight.split('[')[0]
-            var = plot_for_weight.split('(')[0]
-            weight_function=StepFunctionFromHist(weight_hist,var)
-            wt+="*("+weight_function+")"
-            full_selection = BuildCutString(wt, qcd_sdb_sel, qcd_sdb_cat, '')
-            ana.nodes[nodename].AddNode(ana.SummedFactory('QCD', data_samples, plot, full_selection))
             
         shape_cat = '('+cats[options.cat]+')*('+cats['tt_qcd_norm']+')'
         shape_selection = BuildCutString(wt, qcd_sdb_sel, shape_cat, '')
