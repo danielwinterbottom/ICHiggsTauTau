@@ -566,7 +566,7 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
       shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
   shape_selection = BuildCutString(wt, sel, shape_cat, OSSS, '')
   
-  if method in [8, 9, 15,18]:
+  if method in [8, 9, 15]:
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
   elif method in [10, 11]:
       control_sel = cats['w_sdb']+' && '+ OSSS
@@ -1109,9 +1109,7 @@ for systematic in systematics:
         ana_down = Analysis()
         ana_up = copy.deepcopy(ana)
         ana_down = copy.deepcopy(ana)
-    if options.method == 18:
-        ana_weight   = Analysis()
-        ana_weight = copy.deepcopy(ana)
+
     # Add data only for default
     if systematic == 'default': do_data = True
     else: do_data = False
