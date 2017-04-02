@@ -225,7 +225,7 @@ elif options.analysis == 'mssm':
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)' #mva_olddm_vloose_2>0.5
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
             cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -550,7 +550,7 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='',
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
   elif method in [10, 11]:
       control_sel = cats['w_sdb']+' && '+ OSSS
-      w_control_full_selection = BuildCutString('wt', control_sel, cat, OSSS)
+      w_control_full_selection = BuildCutString(wt, control_sel, cat, OSSS)
       subtract_node = GetSubtractNode(ana,'',plot,wt,control_sel,cat,method,qcd_os_ss_ratio,True,False) 
       if shape_selection == full_selection:
           w_shape = None
@@ -569,9 +569,9 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='',
           ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', '')
           os_selection = BuildCutString(wt, '', cat_nobtag, 'os', '')
           control_sel = cats['w_sdb']
-          w_control_full_selection = BuildCutString('wt', control_sel, cat_nobtag, OSSS)
-          w_control_full_selection_os = BuildCutString('wt', control_sel, cat_nobtag)
-          w_control_full_selection_ss = BuildCutString('wt', control_sel, cat_nobtag, '!os')
+          w_control_full_selection = BuildCutString(wt, control_sel, cat_nobtag, OSSS)
+          w_control_full_selection_os = BuildCutString(wt, control_sel, cat_nobtag)
+          w_control_full_selection_ss = BuildCutString(wt, control_sel, cat_nobtag, '!os')
           btag_extrap_sel_num = BuildCutString(wt, sel, cat, OSSS, '')
           btag_extrap_sel_den = BuildCutString(wt, sel, cat_nobtag, OSSS, '')
           btag_extrap_num_node = ana.SummedFactory('btag', samples, plot, btag_extrap_sel_num)
