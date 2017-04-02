@@ -27,6 +27,7 @@ class HTTStitching : public ModuleBase {
   int t_decay_;
   float t_mll_;
   int t_njets_;
+  double t_ht_;
   float t_wt_;
 
   double f0_,f1_,f2_,f3_,f4_,n_inc_,n1_,n2_,n3_,n4_,w0_,w1_,w2_,w3_,w4_;

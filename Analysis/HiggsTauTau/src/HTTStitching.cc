@@ -69,6 +69,7 @@ namespace ic {
         t_gen_info_ = fs_->make<TTree>("genweights", "genweights");
         t_gen_info_->Branch("decay", &t_decay_);
         t_gen_info_->Branch("mll", &t_mll_);
+        t_gen_info_->Branch("ht", &t_ht_);
         t_gen_info_->Branch("njets", &t_njets_);
         t_gen_info_->Branch("wt", &t_wt_);
       }
@@ -104,6 +105,7 @@ namespace ic {
         t_gen_info_ = fs_->make<TTree>("genweights", "genweights");
         t_gen_info_->Branch("decay", &t_decay_);
         t_gen_info_->Branch("mll", &t_mll_);
+        t_gen_info_->Branch("ht", &t_ht_);
         t_gen_info_->Branch("njets", &t_njets_);
         t_gen_info_->Branch("wt", &t_wt_);
       }
@@ -143,6 +145,7 @@ namespace ic {
         t_gen_info_ = fs_->make<TTree>("genweights", "genweights");
         t_gen_info_->Branch("decay", &t_decay_);
         t_gen_info_->Branch("mll", &t_mll_);
+        t_gen_info_->Branch("ht", &t_ht_);
         t_gen_info_->Branch("njets", &t_njets_);
         t_gen_info_->Branch("wt", &t_wt_);
       }
@@ -205,10 +208,14 @@ namespace ic {
       } else if(era_ == era::data_2015 || era_ == era::data_2016) {
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;
+        t_ht_=0;
         for(unsigned i = 0; i< lhe_parts.size(); ++i){
          if(lhe_parts[i]->status() != 1) continue;
          unsigned id = abs(lhe_parts[i]->pdgid());
-         if ((id >= 1 && id <=6) || id == 21) partons++;
+         if ((id >= 1 && id <=6) || id == 21){ 
+            t_ht_+=lhe_parts[i]->pt();
+            partons++;
+         }
         }
           t_mll_ = gen_mll;
           t_decay_ = 0;  // ee, mumu, tautau
@@ -244,12 +251,16 @@ namespace ic {
           if (id == 23) count_jets = true; 
         }
       } else if(era_ == era::data_2015 || era_ == era::data_2016){ 
+        t_ht_=0;
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;
         for(unsigned i = 0; i< lhe_parts.size(); ++i){
          if(lhe_parts[i]->status() != 1) continue;
          unsigned id = abs(lhe_parts[i]->pdgid());
-         if ((id >= 1 && id <=6) || id == 21) partons++;
+         if ((id >= 1 && id <=6) || id == 21){ 
+            partons++;
+            t_ht_+=lhe_parts[i]->pt();
+         }
          if (id == 11|| id ==13 || id ==15) zll_cands.push_back(lhe_parts[i]);
         }
         if(zll_cands.size() == 2){

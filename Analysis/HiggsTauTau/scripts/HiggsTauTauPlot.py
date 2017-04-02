@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"dN/dM_{T}^{tot} (1/GeV)", "x_title":"m_{T}^{tot} (GeV)", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -225,8 +225,10 @@ elif options.analysis == 'mssm':
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
@@ -249,12 +251,13 @@ cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
 cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
-cats['nobtag_loosemt'] = '('+cats['nobtag']+ ' && mt_1>40)'
+cats['nobtag_loosemt'] = cats['nobtag']
 cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_tight_2<0.5)'
 cats['btag_tight'] = cats['btag']
-cats['btag_loosemt'] = '('+cats['btag']+ ' && mt_1>40)'
+cats['btag_loosemt'] = cats['btag']
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
+<<<<<<< HEAD
 cats['0jet'] = '(n_jets==0)'
 cats['1jet'] = '(n_jets==1)'
 cats['ge2jet'] = '(n_jets>=2)'
@@ -266,9 +269,13 @@ cats['0lowptjet'] = '(n_lowpt_jets==0)'
 cats['1lowptjet'] = '(n_lowpt_jets==1)'
 cats['ge2lowptjet'] = '(n_lowpt_jets>=2)'
 
+=======
+cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
+cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
+>>>>>>> 0cf4129f40d22e0a28edcf827b709748b03fba50
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
-if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt':
+if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt' or options.cat == 'btag_tight_wnobtag':
     if options.channel == 'mt':        
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et':
@@ -276,10 +283,14 @@ if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.c
 # And aldo overwrite selection if one of the tight categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
     if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<40)'
+if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>40)'
+if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso':
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70)'
 # Also need to adjust btag wnobtag category (used for method 16) for different categories
 cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 if options.channel == 'mt' or options.channel == 'et':
-    if options.cat == 'btag_loosemt': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mt_1>40)'
+    if options.cat == 'btag_loosemt': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
     if options.cat == 'btag_looseiso': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
 
 if options.era == "mssmsummer16":
@@ -299,8 +310,8 @@ for i in options.set_alias:
     end_index=overwrite_with.find("}")
     while start_index >0:
         replace_with=overwrite_with[start_index:end_index+1]
-        replace_with=cat_to_overwrite.replace("{","")
-        replace_with=cat_to_overwrite.replace("}","")
+        replace_with=replace_with.replace("{","")
+        replace_with=replace_with.replace("}","")
         replace_string = cats[replace_with]
         overwrite_with=overwrite_with[0:start_index] + replace_string  + overwrite_with[end_index+1:]
         start_index=overwrite_with.find("{")
@@ -358,15 +369,6 @@ vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2
 wgam_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
 top_samples = ['TT']
 ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-
-if options.channel == 'em': 
-    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
-elif options.channel == 'tt':
-    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
-else:
-    qcd_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
-    
-w_sub_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
 wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
 
 if options.era == "mssmsummer16":
@@ -387,15 +389,6 @@ if options.era == "mssmsummer16":
     wgam_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
     top_samples = ['TT']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    
-    if options.channel == 'em': 
-        qcd_sub_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t', 'T-t','WWTo1L1Nu2Q','VVTo2L2Nu', 'ZZTo4L-amcat','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
-    elif options.channel == 'tt':
-        qcd_sub_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L-amcat','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO-ext2']
-    else:
-        qcd_sub_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','ZZTo4L-amcat','T-tW','T-t','Tbar-tW','Tbar-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
-        
-    w_sub_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','T-tW', 'Tbar-tW', 'Tbar-t','T-t','WWTo1L1Nu2Q','VVTo2L2Nu','ZZTo4L-amcat','ZZTo2L2Q','WZJToLLLNu','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q','TT']
     wjets_samples = ['WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO-ext2']
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau', 'qqH' : 'VBFHToTauTau', 'WplusH' : 'WplusHToTauTau', 'WminusH' : 'WminusHToTauTau', 'ZH' : 'ZHToTauTau', 'TTH' : 'TTHToTauTau' }
@@ -468,56 +461,88 @@ def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
         full_selection += '*('+bkg_sel+')'
     if cat != '':
         full_selection += '*('+cat+')'
-    return full_selection 
+    return full_selection
 
-def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
-    if get_os:
-        OSSS = 'os'
-    else:
-        OSSS = '!os'
+def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['ztt_sel'])
-    ana.nodes[nodename].AddNode(ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection))
+    return ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection)
+
+def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zll_sel'])
+    return ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection)
+
+def GetZLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zl_sel'])
+    return ana.SummedFactory('ZL'+add_name, samples, plot, full_selection)
+
+def GetZJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zj_sel'])
+    return ana.SummedFactory('ZJ'+add_name, samples, plot, full_selection)
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True, doZL=True, doZJ=True):
-    if get_os:
-        OSSS = 'os'
-    else:
-        OSSS = '!os'
     if options.channel == 'em' or options.channel == 'zmm' or options.channel == 'zee':
-        full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zll_sel'])
-        ana.nodes[nodename].AddNode(ana.SummedFactory('ZLL'+add_name, samples, plot, full_selection))
+        zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+        ana.nodes[nodename].AddNode(zll_node)
     else:
         if doZL:
-            full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zl_sel'])
-            ana.nodes[nodename].AddNode(ana.SummedFactory('ZL'+add_name, samples, plot, full_selection))
+            zl_node = GetZLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+            ana.nodes[nodename].AddNode(zl_node)
         if doZJ:
-            full_selection = BuildCutString(wt, sel, cat, OSSS, z_sels['zj_sel'])
-            ana.nodes[nodename].AddNode(ana.SummedFactory('ZJ'+add_name, samples, plot, full_selection))
-        
+            zj_node = GetZJNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
+            ana.nodes[nodename].AddNode(zj_node)  
+
+def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    ztt_node = GetZTTNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
+    ana.nodes[nodename].AddNode(ztt_node)    
+
+def GetTTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'  
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttt_sel'])
+  return ana.SummedFactory('TTT'+add_name, samples, plot, full_selection)
+  
+def GetTTJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'  
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttj_sel'])
+  return ana.SummedFactory('TTJ'+add_name, samples, plot, full_selection)
+
 def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True, doTTT=True, doTTJ=True):
-  if get_os:
-      OSSS = 'os'
-  else:
-      OSSS = '!os'  
   if doTTT:
-      full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttt_sel'])
-      ana.nodes[nodename].AddNode(ana.SummedFactory('TTT'+add_name, samples, plot, full_selection))
+      ttt_node = GetTTTNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+      ana.nodes[nodename].AddNode(ttt_node)
   if doTTJ:
-      full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttj_sel'])
-      ana.nodes[nodename].AddNode(ana.SummedFactory('TTJ'+add_name, samples, plot, full_selection))
+      ttj_node = GetTTJNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+      ana.nodes[nodename].AddNode(ttj_node)
+
+def GetVVTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True): 
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'  
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvt_sel'])
+  return ana.SummedFactory('VVT'+add_name, samples, plot, full_selection)
+
+def GetVVJNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True): 
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'  
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvj_sel'])
+  return ana.SummedFactory('VVJ'+add_name, samples, plot, full_selection)
 
 def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True, doVVT=True, doVVJ=True): 
-  if get_os:
-      OSSS = 'os'
-  else:
-      OSSS = '!os'  
   if doVVT:
-      full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvt_sel'])
-      ana.nodes[nodename].AddNode(ana.SummedFactory('VVT'+add_name, samples, plot, full_selection))
+      vvt_node = GetVVTNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+      ana.nodes[nodename].AddNode(vvt_node)
   if doVVJ:
-      full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvj_sel'])
-      ana.nodes[nodename].AddNode(ana.SummedFactory('VVJ'+add_name, samples, plot, full_selection))
-  
+      vvj_node = GetVVJNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+      ana.nodes[nodename].AddNode(vvj_node)
+      
 def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
   if get_os:
       OSSS = 'os'
@@ -527,11 +552,9 @@ def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_
   wg_node = ana.SummedFactory('WGam'+add_name, samples, plot, full_selection)
   return wg_node
 
-def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
-  if get_os:
-      OSSS = 'os'
-  else:
-      OSSS = '!os'
+def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
   full_selection = BuildCutString(wt, sel, cat, OSSS, '')
   shape_cat = cat
   if method == 14:
@@ -542,58 +565,61 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
   elif method in [10, 11]:
       control_sel = cats['w_sdb']+' && '+ OSSS
-      w_control_full_selection = BuildCutString('wt', control_sel, cat, OSSS)
+      w_control_full_selection = BuildCutString(wt, control_sel, cat, OSSS)
+      subtract_node = GetSubtractNode(ana,'',plot,wt,control_sel,cat,method,qcd_os_ss_ratio,True,False) 
       if shape_selection == full_selection:
           w_shape = None
       else:    
           w_shape = ana.SummedFactory('w_shape', samples, plot, shape_selection)
       w_node = HttWNode(name,
         ana.SummedFactory('data_obs', data, plot, w_control_full_selection),
-        ana.SummedFactory('backgrounds', sub_samples, plot, w_control_full_selection),
-        ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
-        ana.SummedFactory('w_signal', samples, plot, full_selection),
+        subtract_node,
+        ana.SummedFactory('W_cr', samples, plot, w_control_full_selection),
+        ana.SummedFactory('W_sr', samples, plot, full_selection),
         w_shape)
   elif method in [12, 13, 14, 16]:
       if method == 16:
           cat_nobtag = '('+cats['btag_wnobtag']+')*('+cats['baseline']+')'
-          
           full_selection = BuildCutString(wt, sel, cat_nobtag, OSSS)
           ss_selection = BuildCutString(wt, '', cat_nobtag, '!os', '')
           os_selection = BuildCutString(wt, '', cat_nobtag, 'os', '')
           control_sel = cats['w_sdb']
-          w_control_full_selection = BuildCutString('wt', control_sel, cat_nobtag, OSSS)
-          w_control_full_selection_os = BuildCutString('wt', control_sel, cat_nobtag)
-          w_control_full_selection_ss = BuildCutString('wt', control_sel, cat_nobtag, '!os')
+          w_control_full_selection = BuildCutString(wt, control_sel, cat_nobtag, OSSS)
+          w_control_full_selection_os = BuildCutString(wt, control_sel, cat_nobtag)
+          w_control_full_selection_ss = BuildCutString(wt, control_sel, cat_nobtag, '!os')
           btag_extrap_sel_num = BuildCutString(wt, sel, cat, OSSS, '')
           btag_extrap_sel_den = BuildCutString(wt, sel, cat_nobtag, OSSS, '')
-              
           btag_extrap_num_node = ana.SummedFactory('btag', samples, plot, btag_extrap_sel_num)
           btag_extrap_den_node = ana.SummedFactory('no_btag', samples, plot, btag_extrap_sel_den)
+          subtract_node_os = GetSubtractNode(ana,'_os',plot,wt,control_sel,cat_nobtag,method,qcd_os_ss_ratio,True,False) 
+          subtract_node_ss = GetSubtractNode(ana,'_ss',plot,wt,control_sel,cat_nobtag,method,qcd_os_ss_ratio,False,False)
           
       else:
           full_selection = BuildCutString(wt, sel, cat, OSSS)
           ss_selection = BuildCutString(wt, '', cat, '!os', '')
           os_selection = BuildCutString(wt, '', cat, 'os', '')
           control_sel = cats['w_sdb']
-          w_control_full_selection = BuildCutString('wt', control_sel, cat, OSSS)
-          w_control_full_selection_os = BuildCutString('wt', control_sel, cat)
-          w_control_full_selection_ss = BuildCutString('wt', control_sel, cat, '!os')
+          w_control_full_selection = BuildCutString(wt, control_sel, cat, OSSS)
+          w_control_full_selection_os = BuildCutString(wt, control_sel, cat)
+          w_control_full_selection_ss = BuildCutString(wt, control_sel, cat, '!os')
           btag_extrap_num_node = None
           btag_extrap_den_node = None
-      
+          subtract_node_os = GetSubtractNode(ana,'_os',plot,wt,control_sel,cat,method,qcd_os_ss_ratio,True,False) 
+          subtract_node_ss = GetSubtractNode(ana,'_ss',plot,wt,control_sel,cat,method,qcd_os_ss_ratio,False,False)
+          
       if shape_selection == full_selection:
           w_shape = None
       else:    
           w_shape = ana.SummedFactory('w_shape', samples, plot, shape_selection)
       w_node = HttWOSSSNode(name,
-        ana.SummedFactory('data_os_obs', data, plot, w_control_full_selection_os),
-        ana.SummedFactory('backgrounds_os', sub_samples, plot, w_control_full_selection_os),
-        ana.SummedFactory('data_ss_obs', data_samples, plot, w_control_full_selection_ss),
-        ana.SummedFactory('backgrounds_ss', sub_samples, plot, w_control_full_selection_ss),
-        ana.SummedFactory('w_control', samples, plot, w_control_full_selection),
-        ana.SummedFactory('w_signal', samples, plot, full_selection),
-        ana.SummedFactory('w_os', samples, plot, os_selection),
-        ana.SummedFactory('w_ss', samples, plot, ss_selection),
+        ana.SummedFactory('data_os', data, plot, w_control_full_selection_os),
+        subtract_node_os,
+        ana.SummedFactory('data_ss', data_samples, plot, w_control_full_selection_ss),
+        subtract_node_ss,
+        ana.SummedFactory('W_cr', samples, plot, w_control_full_selection),
+        ana.SummedFactory('W_sr', samples, plot, full_selection),
+        ana.SummedFactory('W_os', samples, plot, os_selection),
+        ana.SummedFactory('W_ss', samples, plot, ss_selection),
         w_shape,
         qcd_factor,
         get_os,
@@ -601,18 +627,48 @@ def GetWNode(ana, name='W', samples=[], data=[], sub_samples=[], plot='', wt='',
         btag_extrap_den_node) 
   return w_node
 
-def GenerateW(ana, name='W', add_name='', samples=[], data=[], sub_samples=[], wg_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
-  w_node_name = name  
+def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
+  w_node_name = 'W'  
   if options.channel == 'em':
       w_total_node = SummedNode('W'+add_name)
       w_total_node.AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
       ana.nodes[nodename].AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
-      w_node_name = name+'J'
-  ana.nodes[nodename].AddNode(GetWNode(ana, w_node_name+add_name, samples, data, sub_samples, plot, wt, sel, cat, method, qcd_factor, get_os))
+      w_node_name+='J'
+  ana.nodes[nodename].AddNode(GetWNode(ana, w_node_name+add_name, samples, data, plot, wt, sel, cat, method, qcd_factor, get_os))
   if options.channel == 'em':
-      w_total_node.AddNode(GetWNode(ana, w_node_name+add_name, samples, data, sub_samples, plot, wt, sel, cat, method, qcd_factor, get_os))
+      w_total_node.AddNode(GetWNode(ana, w_node_name+add_name, samples, data, plot, wt, sel, cat, method, qcd_factor, get_os))
       ana.nodes[nodename].AddNode(w_total_node)
+
+def GetSubtractNode(ana,add_name,plot,wt,sel,cat,method,qcd_os_ss_ratio,OSSS,includeW=False):
+  subtract_node = SummedNode('total_bkg'+add_name)
+  if includeW:
+      w_node = GetWNode(ana, 'W', wjets_samples, data_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, OSSS)
+      subtract_node.AddNode(w_node)
+  ttt_node = GetTTTNode(ana, "", top_samples, plot, wt, sel, cat, top_sels, OSSS)
+  ttj_node = GetTTJNode(ana, "", top_samples, plot, wt, sel, cat, top_sels, OSSS)
+  vvt_node = GetVVTNode(ana, "", vv_samples, plot, wt, sel, cat, vv_sels, OSSS)
+  vvj_node = GetVVJNode(ana, "", vv_samples, plot, wt, sel, cat, vv_sels, OSSS)
+  subtract_node.AddNode(ttt_node)
+  subtract_node.AddNode(ttj_node)
+  subtract_node.AddNode(vvt_node)
+  subtract_node.AddNode(vvj_node)
+  if options.channel not in ["zmm", "zee"]: 
+      ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
+      subtract_node.AddNode(ztt_node)
+  if options.channel not in ["zmm", "zee", "em"]:
+      zl_node = GetZLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
+      zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
+      subtract_node.AddNode(zl_node)
+      subtract_node.AddNode(zj_node)
+  if options.channel in ["zmm", "zee", "em"]:
+      zll_node = GetZLLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
+      subtract_node.AddNode(zll_node)
+  if options.channel == "em":
+      wg_node = GetWGNode(ana, "", wgam_samples, plot, wt, sel, cat, OSSS)
+      subtract_node.AddNode(wg_node)
+  return subtract_node
       
+<<<<<<< HEAD
 def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
     tt_qcd_norm = cats['tt_qcd_norm']
     if options.channel == 'et' or options.channel == 'mt':
@@ -630,8 +686,12 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
     qcd_sdb_cat = cat
     qcd_extrap_sel = '(!os && ' + sel + ')'
     
+=======
+def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
+>>>>>>> 0cf4129f40d22e0a28edcf827b709748b03fba50
     shape_node = None
-    
+    OSSS = "!os"
+    if get_os: OSSS = "os"
     if options.channel != 'tt':
         
         if method in [9, 11, 13, 16]:
@@ -639,17 +699,14 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
                 shape_cat = cats[options.cat]
             else:
                 shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
-            shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
+            shape_selection = BuildCutString(wt, sel, shape_cat, '!os')
             shape_node = ana.SummedFactory('shape', data, plot, shape_selection)
-        elif method in [10, 12, 14]:
-            if method == 14:
-                shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
-            else: 
-                shape_cat = cat
-            shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
-            bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-            bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, qcd_os_ss_ratio, False))
-            shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
+        elif method == 14:
+            shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
+            shape_selection = BuildCutString(wt, sel, shape_cat, '!os')
+            
+            subtract_node = GetSubtractNode(ana,'',plot,wt,sel,shape_cat,method,qcd_os_ss_ratio,False,True)  
+            shape_node = SubtractNode('shape', ana.SummedFactory('data_ss', data, plot, shape_selection), subtract_node)
         
         if options.channel == 'em':
             qcd_os_ss_factor = 1
@@ -661,11 +718,9 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
             if get_os and options.channel == "em":
                 weight = wt+'*wt_em_qcd'
         
-        full_selection = BuildCutString(weight, qcd_sdb_sel, qcd_cat, '')
-        subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
-        w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, weight, sel, cat, method, qcd_os_ss_ratio, False)
-        subtract_node.AddNode(w_node)
-        
+        full_selection = BuildCutString(weight, sel, cat, '!os')
+        subtract_node = GetSubtractNode(ana,'',plot,weight,sel,cat,method,qcd_os_ss_ratio,False,True)
+            
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
           ana.SummedFactory('data_ss', data, plot, full_selection),
           subtract_node,
@@ -673,51 +728,31 @@ def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[],
           shape_node))
         
     else:
-        OSSS = False
-        if get_os: OSSS = True
-        if method == 8:
-            if OSSS: 
-                qcd_sdb_sel =  '(os && ' + sel + ')'
-            qcd_sdb_cat = ttqcdcat+'*'+tt_qcd_norm 
-            
-        shape_cat = '('+cats[options.cat]+')*('+cats['tt_qcd_norm']+')'
-        shape_selection = BuildCutString('wt', qcd_sdb_sel, shape_cat, '')
-        bkg_shape = ana.SummedFactory('bkg_shape', qcd_sub_samples, plot, shape_selection)
-    #    bkg_shape.AddNode(GetWNode(ana, 'W_shape', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, shape_cat, method, qcd_os_ss_ratio, OSSS))
-        shape_node = SubtractNode('shape', ana.SummedFactory('data_shape', data, plot, shape_selection), bkg_shape)
-            
-        full_selection = BuildCutString('wt', qcd_sdb_sel, qcd_sdb_cat, '')
-        subtract_node = ana.SummedFactory('subtract_node', qcd_sub_samples, plot, full_selection)
-#        if method == 8:
-#            w_node = GetWNode(ana, 'Wos', wjets_samples, data_samples, w_sub_samples, plot, 'wt', qcd_sdb_sel, qcd_sdb_cat, method, qcd_os_ss_ratio, get_os)
-#        else:
-#            w_node = GetWNode(ana, 'Wss', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
-#        subtract_node.AddNode(w_node)
-        num_selection = BuildCutString('wt', sel, qcd_cat, '!os')
-        den_selection = BuildCutString('wt', sel, qcd_sdb_cat, '!os')
-
-        num_node = SubtractNode('ratio_num',
-                     ana.SummedFactory('data_num', data, plot, num_selection),
-                     ana.SummedFactory('bkg_num', qcd_sub_samples, plot, num_selection))
-#        w_num_node = GetWNode(ana, 'W_num', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_cat, method, qcd_os_ss_ratio, False)
-#        num_node = SubtractNode('ratio_num',
-#                     num_node,
-#                     w_num_node)
-        den_node = SubtractNode('ratio_den',
-                     ana.SummedFactory('data_den', data, plot, den_selection),
-                     ana.SummedFactory('bkg_den', qcd_sub_samples, plot, den_selection))
-#        w_den_node = GetWNode(ana, 'W_den', wjets_samples, data_samples, w_sub_samples, plot, 'wt', sel, qcd_sdb_cat, method, qcd_os_ss_ratio, False)
-#        den_node = SubtractNode('ratio_den',
-#                     den_node,
-#                     w_den_node) 
+        qcd_sdb_cat = cats[options.cat]+' && '+cats['tt_qcd_norm'] 
         
+        subtract_node = GetSubtractNode(ana,'',plot,wt,sel,cat,method,qcd_os_ss_ratio,False,True)        
+        num_selection = BuildCutString(wt, sel, cat, '!os')
+        num_node = SubtractNode('ratio_num',
+                     ana.SummedFactory('data', data, plot, num_selection),
+                     subtract_node)
+        
+        subtract_node = GetSubtractNode(ana,'',plot,wt,sel,qcd_sdb_cat,method,qcd_os_ss_ratio,False,True)
+        den_selection = BuildCutString(wt, sel, qcd_sdb_cat, '!os')
+        den_node = SubtractNode('ratio_den',
+                     ana.SummedFactory('data', data, plot, den_selection),
+                     subtract_node)
+        shape_node = None   
+        full_selection = BuildCutString(wt, sel, qcd_sdb_cat, OSSS)
+        subtract_node = GetSubtractNode(ana,'',plot,wt,sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
+
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
-          ana.SummedFactory('data_ss', data, plot, full_selection),
+          ana.SummedFactory('data', data, plot, full_selection),
           subtract_node,
           1,
           shape_node,
           num_node,
           den_node))
+            
         
 def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name='',get_os=True):
     print "Generating fake tau background via fake-factor method. In order for this to work you must first ensure that the fake-faktor weights are included in the input tree for the channel and category you wish use. Weights should be named as: wt_ff_channel_category"
@@ -982,7 +1017,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if 'VV' not in samples_to_skip:
             GenerateVV(ana, add_name, vv_samples, plot, ff_wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         if 'W' not in samples_to_skip:
-            GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, ff_wt, sel, residual_cat, 8, qcd_os_ss_ratio, not options.do_ss)
+            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, ff_wt, sel, residual_cat, 8, qcd_os_ss_ratio, not options.do_ss)
     
     else:
         if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
@@ -994,9 +1029,9 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if 'VV' not in samples_to_skip:
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         if 'W' not in samples_to_skip:
-            GenerateW(ana, 'W', add_name, wjets_samples, data_samples, w_sub_samples, wgam_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
-            GenerateQCD(ana, add_name, data_samples, qcd_sub_samples, w_sub_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+            GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
             
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
@@ -1010,6 +1045,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             
     ana.Run()
     ana.nodes.Output(outfile)
+
     # fix negative bns,empty histograms etc.
     FixBins(ana,outfile)
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
@@ -1057,7 +1093,7 @@ for systematic in systematics:
         ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
     
     # Add all MC background files
-    for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + qcd_sub_samples + w_sub_samples + wjets_samples:
+    for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples:
         ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
      
     # Add all MC signal files
@@ -1100,7 +1136,7 @@ for systematic in systematics:
         ana_down = Analysis()
         ana_up = copy.deepcopy(ana)
         ana_down = copy.deepcopy(ana)
-    
+
     # Add data only for default
     if systematic == 'default': do_data = True
     else: do_data = False
@@ -1163,11 +1199,16 @@ outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 
 if options.method is 12 or options.method is 16:
-    w_os = plot_file.Get(nodename+"/W.subnodes/w_os")    
-    w_ss = plot_file.Get(nodename+"/W.subnodes/w_ss")
-    W_os_ss = w_os.Integral(0,w_os.GetNbinsX()+1)/w_ss.Integral(0,w_ss.GetNbinsX()+1)
+    w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
+    w_ss = plot_file.Get(nodename+"/W.subnodes/W_ss")
+    w_os_error=ROOT.Double(0.)
+    w_ss_error=ROOT.Double(0.)
+    w_os_total = w_os.IntegralAndError(0,w_os.GetNbinsX()+1,w_os_error)
+    w_ss_total = w_ss.IntegralAndError(0,w_ss.GetNbinsX()+1,w_ss_error)
+    w_os_ss = w_os_total/w_ss_total
+    w_os_ss_error = math.sqrt( (w_os_error/w_os_total)**2 + (w_ss_error/w_ss_total)**2 )*w_os_ss
 
-    print "W OS/SS ratio = ", W_os_ss
+    print "W OS/SS ratio = ", w_os_ss, "+/-", w_os_ss_error, "("+str(100*w_os_ss_error/w_os_ss)+" %)"
 
 if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
     custom_uncerts_up_name = "total_bkg_custom_uncerts_up"
@@ -1176,15 +1217,20 @@ else:
     custom_uncerts_up_name = options.custom_uncerts_up_name
     custom_uncerts_down_name = options.custom_uncerts_down_name
 
-if options.log_x: plot_name+="_logx"
-if options.log_y: plot_name+="_logy"
-
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
     scheme=options.channel
     if options.log_y: plot_name += "_logx" 
     if options.log_x: plot_name += "_logy"
+    if options.x_title == "": x_title = var_name
+    else: x_title = options.x_title
+    
+    if options.y_title == "": 
+        y_title = "Entries"
+        if options.norm_bins: y_title="dN/d"+var_name
+    else: y_title = options.y_title
+    
     FF = options.method==17
     plotting.HTTPlot(nodename, 
         plot_file, 
@@ -1206,8 +1252,8 @@ if not options.no_plot:
         options.custom_y_range,
         options.y_axis_max,
         options.y_axis_min,
-        options.x_title,
-        options.y_title,
+        x_title,
+        y_title,
         options.extra_pad,
         options.signal_scheme,
         options.do_custom_uncerts,
