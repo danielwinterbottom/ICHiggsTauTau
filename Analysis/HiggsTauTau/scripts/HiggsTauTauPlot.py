@@ -659,24 +659,15 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
     if get_os: OSSS = "os"
     if options.channel != 'tt':
         
-        if method in [9, 11, 13, 16]:
-            if method == 16:
-                shape_cat = cats[options.cat]
-            else:
-                shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
+        if method in [9, 11, 13, 14]:
+            if method in [9, 11, 13]: shape_cat = '('+cats[options.cat]+')*('+cats['qcd_loose_shape']+')'
+            elif method == 14: shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
             shape_selection = BuildCutString(wt, sel, shape_cat, '!os')
-            shape_node = ana.SummedFactory('shape', data, plot, shape_selection)
-        elif method == 14:
-            shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
-            shape_selection = BuildCutString(wt, sel, shape_cat, '!os')
-            
             subtract_node = GetSubtractNode(ana,'',plot,wt,sel,shape_cat,method,qcd_os_ss_ratio,False,True)  
             shape_node = SubtractNode('shape', ana.SummedFactory('data_ss', data, plot, shape_selection), subtract_node)
         
-        if options.channel == 'em':
-            qcd_os_ss_factor = 1
-        else:
-            qcd_os_ss_factor = qcd_factor
+        if options.channel == 'em': qcd_os_ss_factor = 1
+        else: qcd_os_ss_factor = qcd_factor
         weight = wt
         if method == 15:
             qcd_os_ss_factor = 1
