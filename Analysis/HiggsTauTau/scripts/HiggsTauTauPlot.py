@@ -257,22 +257,17 @@ cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
-<<<<<<< HEAD
 cats['0jet'] = '(n_jets==0)'
 cats['1jet'] = '(n_jets==1)'
 cats['ge2jet'] = '(n_jets>=2)'
 cats['0bjet'] = '(n_bjets==0)'
 cats['1bjet'] = '(n_bjets==1)'
 cats['ge2bjet'] = '(n_bjets>=2)'
-
 cats['0lowptjet'] = '(n_lowpt_jets==0)'
 cats['1lowptjet'] = '(n_lowpt_jets==1)'
 cats['ge2lowptjet'] = '(n_lowpt_jets>=2)'
-
-=======
 cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
->>>>>>> 0cf4129f40d22e0a28edcf827b709748b03fba50
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
 if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt' or options.cat == 'btag_tight_wnobtag':
@@ -668,27 +663,7 @@ def GetSubtractNode(ana,add_name,plot,wt,sel,cat,method,qcd_os_ss_ratio,OSSS,inc
       subtract_node.AddNode(wg_node)
   return subtract_node
       
-<<<<<<< HEAD
-def GenerateQCD(ana, add_name='', data=[], qcd_sub_samples=[], w_sub_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
-    tt_qcd_norm = cats['tt_qcd_norm']
-    if options.channel == 'et' or options.channel == 'mt':
-        ttqcdcat = '('+cats[options.cat]+')*(iso_1<0.1 && antiele_2 && antimu_2 && !leptonveto)*(tau_decay_mode_2!=6&&tau_decay_mode_2!=5)'
-    elif options.channel == 'tt':
-        ttqcdcat = '('+cats[options.cat]+')*(antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
-        if options.era == "mssmsummer16": ttqcdcat +='*(trg_doubletau)'
-        
-    qcd_sdb_sel = '(!os && ' + sel + ')'
-    w_extrp_sdb_sel = '(!os && '+ cats['w_sdb'] + ')'
-    w_extrp_sig_sel = '(!os && ' + sel + ')'
-    w_sdb_sel = '(!os && ' + cats['w_sdb'] + ')'
-    w_sdb_sel_osss = cats['w_sdb']
-    qcd_cat = cat
-    qcd_sdb_cat = cat
-    qcd_extrap_sel = '(!os && ' + sel + ')'
-    
-=======
 def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
->>>>>>> 0cf4129f40d22e0a28edcf827b709748b03fba50
     shape_node = None
     OSSS = "!os"
     if get_os: OSSS = "os"
@@ -1221,8 +1196,8 @@ if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
     scheme=options.channel
-    if options.log_y: plot_name += "_logx" 
-    if options.log_x: plot_name += "_logy"
+    if options.log_x: plot_name += "_logx" 
+    if options.log_y: plot_name += "_logy"
     if options.x_title == "": x_title = var_name
     else: x_title = options.x_title
     
