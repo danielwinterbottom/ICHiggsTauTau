@@ -1090,7 +1090,9 @@ for systematic in systematics:
     else: do_data = False
             
     #Run default plot        
+    if "btag_tight" in options.cat or "btag_loosemt" in options.cat: weight+="*wt_tau_id_tight"
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
+    
     
     if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
         RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile)
