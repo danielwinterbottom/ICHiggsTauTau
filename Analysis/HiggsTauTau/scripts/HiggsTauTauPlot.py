@@ -242,8 +242,7 @@ cats['inclusive'] = '(1)'
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
 cats['w_sdb_os'] = 'os'
-cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
-if options.era == "mssmsummer16": cats['tt_qcd_norm'] += '&&trg_doubletau'
+cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 # MSSM categories
@@ -257,16 +256,6 @@ cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
-cats['0jet'] = '(n_jets==0)'
-cats['1jet'] = '(n_jets==1)'
-cats['ge2jet'] = '(n_jets>=2)'
-cats['0bjet'] = '(n_bjets==0)'
-cats['1bjet'] = '(n_bjets==1)'
-cats['ge2bjet'] = '(n_bjets>=2)'
-
-cats['0lowptjet'] = '(n_lowpt_jets==0)'
-cats['1lowptjet'] = '(n_lowpt_jets==1)'
-cats['ge2lowptjet'] = '(n_lowpt_jets>=2)'
 cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
 
@@ -939,16 +928,6 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
         total_bkg.Write()
     outfile.cd()
     
-def RunSimpleQCD(ana,cat='',sel='',wt='wt',outfile='output.root'):
-    if options.do_ss: OSSS = '!os'
-    else: OSSS = 'os'
-    qcd_selection = BuildCutString('wt', sel, cat, OSSS)
-    ana.nodes[nodename].AddNode(SubtractNode('QCD_simple',ana.SummedFactory('data', data_samples, plot, qcd_selection),ana.SummedFactory('bkg', qcd_sub_samples, plot, qcd_selection)))
-    ana.Run()
-    ana.nodes.Output(outfile)
-    # fix negative bns,empty histograms etc.
-    FixBins(ana,outfile)
-    
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
@@ -957,8 +936,10 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     
     # produce template for observed data
     if do_data:
-        if options.do_ss: OSSS = '!os'
-        else: OSSS = 'os'
+        if options.do_ss:
+          OSSS = '!os'
+        else:
+            OSSS = 'os'
         full_selection = BuildCutString('wt', sel, cat, OSSS)
         ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot, full_selection))
     
@@ -1109,9 +1090,10 @@ for systematic in systematics:
     else: do_data = False
             
     #Run default plot        
+    if "btag_tight" in options.cat or "btag_loosemt" in options.cat: weight+="*wt_tau_id_tight"
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
-    #RunSimpleQCD(ana, cat, sel, weight,outfile)
-
+    
+    
     if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
         RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile)
         RunPlotting(ana_down, cat, sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile)
@@ -1187,9 +1169,8 @@ else:
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
-    scheme=options.channel
-    if options.log_y: plot_name += "_logx" 
-    if options.log_x: plot_name += "_logy"
+    if options.log_x: plot_name += "_logx" 
+    if options.log_y: plot_name += "_logy"
     if options.x_title == "": x_title = var_name
     else: x_title = options.x_title
     
@@ -1230,7 +1211,6 @@ if not options.no_plot:
         options.lumi,
         plot_name,
         custom_uncerts_up_name,
-        custom_uncerts_down_name,
-        scheme
+        custom_uncerts_down_name
         )
            

@@ -1668,9 +1668,9 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_qcd_cr2_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR1_dRGt4");
    TH2D em_qcd_cr2_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dRGt4");
-   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v3.root","/","zptmass_histo");
-   TH3D z_njet_mass_pt_normxbins_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v3.root","/","znjetmasspt_histo_normxbins");
-   TH3D z_njet_mass_pt_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v4.root","/","znjetmasspt_histo");
+   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v5.root","/","zptmass_histo");
+   TH3D z_njet_mass_pt_normxbins_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v5.root","/","znjetmasspt_histo_normxbins");
+   TH3D z_njet_mass_pt_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v5.root","/","znjetmasspt_histo");
    TH3D z_njet_mass_pt_tscaleup_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_TScaleUp_v4.root","/","znjetmasspt_histo");
    TH3D z_njet_mass_pt_tscaledown_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_TScaleUp_v4.root","/","znjetmasspt_histo");
    TH3D z_njet_mass_pt_jscaleup_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_JScaleUp_v4.root","/","znjetmasspt_histo");
