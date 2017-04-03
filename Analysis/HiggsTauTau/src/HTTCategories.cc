@@ -283,6 +283,16 @@ namespace ic {
       outtree_->Branch("wt_zpt_njets_tscaledown",       &wt_zpt_njets_tscaledown_);
       outtree_->Branch("wt_zpt_njets_jscaleup",         &wt_zpt_njets_jscaleup_);
       outtree_->Branch("wt_zpt_njets_jscaledown",       &wt_zpt_njets_jscaledown_);
+      
+      outtree_->Branch("wt_zpt_statup",         &wt_zpt_statup_  );
+      outtree_->Branch("wt_zpt_statdown",       &wt_zpt_statdown_);
+      outtree_->Branch("trg_wt_up"   ,          &trg_wt_up_      );
+      outtree_->Branch("trg_wt_down" ,          &trg_wt_down_    );
+      outtree_->Branch("id_wt_up"    ,          &id_wt_up_       );
+      outtree_->Branch("id_wt_down"  ,          &id_wt_down_     );
+      outtree_->Branch("iso_wt_up"   ,          &iso_wt_up_      );
+      outtree_->Branch("iso_wt_down" ,          &iso_wt_down_    );
+      
       outtree_->Branch("wt_extrap_up", &wt_extrap_up_);
       outtree_->Branch("wt_extrap_down", &wt_extrap_down_);
       outtree_->Branch("wt_zpt_njets_normxbins", &wt_zpt_njets_normxbins_);
@@ -1460,6 +1470,14 @@ namespace ic {
     wt_zpt_njets_normxbins_=1;
     wt_extrap_up_=1;
     wt_extrap_down_=1;
+    wt_zpt_statup_  =1;
+    wt_zpt_statdown_=1;
+    trg_wt_up_      =1;
+    trg_wt_down_    =1;
+    id_wt_up_       =1;
+    id_wt_down_     =1;
+    iso_wt_up_      =1;
+    iso_wt_down_    =1;
     if (event->Exists("wt_zpt_njets"          )) wt_zpt_njets_           = event->Get<double>("wt_zpt_njets"          );
     if (event->Exists("wt_zpt_njets_statup"          )) wt_zpt_njets_statup_           = event->Get<double>("wt_zpt_njets_statup"          );
     if (event->Exists("wt_zpt_njets_statdown"          )) wt_zpt_njets_statdown_           = event->Get<double>("wt_zpt_njets_statdown"          );
@@ -1471,6 +1489,17 @@ namespace ic {
     
     if (event->Exists("wt_extrap_up"          )) wt_extrap_up_           = event->Get<double>("wt_extrap_up"          );
     if (event->Exists("wt_extrap_down"          )) wt_extrap_down_           = event->Get<double>("wt_extrap_down"          );
+    
+    if (event->Exists("wt_zpt_statup"   )) wt_zpt_statup_    = event->Get<double>("wt_zpt_statup"   );
+    if (event->Exists("wt_zpt_statdown" )) wt_zpt_statdown_  = event->Get<double>("wt_zpt_statdown" );
+    if (event->Exists("trg_wt_up"       )) trg_wt_up_        = event->Get<double>("trg_wt_up"       );
+    if (event->Exists("trg_wt_down"     )) trg_wt_down_      = event->Get<double>("trg_wt_down"     );
+    if (event->Exists("id_wt_up"        )) id_wt_up_         = event->Get<double>("id_wt_up"        );
+    if (event->Exists("id_wt_down"      )) id_wt_down_       = event->Get<double>("id_wt_down"      );
+    if (event->Exists("iso_wt_up"       )) iso_wt_up_        = event->Get<double>("iso_wt_up"       );
+    if (event->Exists("iso_wt_down"     )) iso_wt_down_      = event->Get<double>("iso_wt_down"     );
+    
+    
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();

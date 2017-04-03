@@ -1676,6 +1676,9 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH3D z_njet_mass_pt_jscaleup_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_JScaleUp_v4.root","/","znjetmasspt_histo");
    TH3D z_njet_mass_pt_jscaledown_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_JScaleDown_v4.root","/","znjetmasspt_histo");
    TH2D extrap_hist = GetFromTFile<TH2D>("input/zpt_weights/ExtrapUncert.root","/","zptmass_histo");
+   TH2D mu_iso_hist = GetFromTFile<TH2D>("input/mu_weights/mu_iso.root","/","Iso_pt_eta_bins");
+   TH2D mu_id_hist = GetFromTFile<TH2D>("input/mu_weights/mu_id.root","/","ID_pt_eta_bins");
+   TH2D mu_trg_hist = GetFromTFile<TH2D>("input/mu_weights/mu_trg.root","/","TrgOR4_Iso_pt_eta_bins");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -1703,7 +1706,10 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_z_njet_mass_pt_tscaledown_hist(new TH3D(z_njet_mass_pt_tscaledown_weights))
     .set_z_njet_mass_pt_jscaleup_hist(new TH3D(z_njet_mass_pt_jscaleup_weights))
     .set_z_njet_mass_pt_jscaledown_hist(new TH3D(z_njet_mass_pt_jscaledown_weights))
-    .set_z_njet_mass_pt_normxbins_hist(new TH3D(z_njet_mass_pt_normxbins_weights));
+    .set_z_njet_mass_pt_normxbins_hist(new TH3D(z_njet_mass_pt_normxbins_weights))
+    .set_mu_id_hist(new TH2D(mu_id_hist))
+    .set_mu_iso_hist(new TH2D(mu_iso_hist))
+    .set_mu_trg_hist(new TH2D(mu_trg_hist));
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))

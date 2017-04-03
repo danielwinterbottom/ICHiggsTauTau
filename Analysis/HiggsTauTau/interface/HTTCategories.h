@@ -838,6 +838,15 @@ class HTTCategories : public ModuleBase {
   
   double wt_extrap_up_;
   double wt_extrap_down_;
+  
+  double wt_zpt_statup_  ;
+  double wt_zpt_statdown_;
+  double trg_wt_up_      ;
+  double trg_wt_down_    ;
+  double id_wt_up_       ;
+  double id_wt_down_     ;
+  double iso_wt_up_      ;
+  double iso_wt_down_    ;
 
  public:
   HTTCategories(std::string const& name);
