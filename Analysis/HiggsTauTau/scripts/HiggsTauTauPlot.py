@@ -256,6 +256,15 @@ cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
 cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
+cats['0jet'] = '(n_jets==0)'
+cats['1jet'] = '(n_jets==1)'
+cats['ge2jet'] = '(n_jets>=2)'
+cats['0bjet'] = '(n_bjets==0)'
+cats['1bjet'] = '(n_bjets==1)'
+cats['ge2bjet'] = '(n_bjets>=2)'
+cats['0lowptjet'] = '(n_lowpt_jets==0)'
+cats['1lowptjet'] = '(n_lowpt_jets==1)'
+cats['ge2lowptjet'] = '(n_lowpt_jets>=2)'
 cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
 
@@ -1169,6 +1178,7 @@ else:
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
+    scheme=options.channel
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
     if options.x_title == "": x_title = var_name
