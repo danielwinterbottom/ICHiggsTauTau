@@ -604,6 +604,8 @@ namespace ic {
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
       
+      double wtzpt_stat_error = z_pt_mass_hist_->GetBinError(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
+      
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       unsigned njets = jets.size();
@@ -615,7 +617,11 @@ namespace ic {
       double wtzpt_njets_stat_error = z_njet_mass_pt_hist_->GetBinError(z_njet_mass_pt_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_hist_->GetZaxis()->FindBin(zpt));
       double wtzpt_njets_normxbin = z_njet_mass_pt_normxbins_hist_->GetBinContent(z_njet_mass_pt_normxbins_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_normxbins_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_normxbins_hist_->GetZaxis()->FindBin(zpt));
       event->Add("wt_zpt_njets_statup", (wtzpt_njets+wtzpt_njets_stat_error)/wtzpt);
-      event->Add("wt_zpt_njets_statdown", (wtzpt_njets-wtzpt_njets_stat_error)/wtzpt);      
+      event->Add("wt_zpt_njets_statdown", (wtzpt_njets-wtzpt_njets_stat_error)/wtzpt); 
+      
+      event->Add("wt_zpt_statup", (wtzpt+wtzpt_stat_error)/wtzpt);
+      event->Add("wt_zpt_statdown", (wtzpt-wtzpt_stat_error)/wtzpt);
+      
       event->Add("wt_zpt_njets", wtzpt_njets/wtzpt);
       event->Add("wt_zpt_njets_tscaleup", wtzpt_njets_tscaleup/wtzpt);
       event->Add("wt_zpt_njets_tscaledown", wtzpt_njets_tscaledown/wtzpt);
@@ -1739,6 +1745,11 @@ namespace ic {
         weight *= (mu1_trg * mu2_trg);
         event->Add("trigweight_1", mu1_trg);
         event->Add("trigweight_2", mu2_trg);
+        
+        double trg_wt_error_1= mu_trg_hist_->GetBinError(mu_trg_hist_->GetXaxis()->FindBin(pt1),mu_trg_hist_->GetYaxis()->FindBin(fabs(m1_signed_eta)));
+        event->Add("trg_wt_up",(mu1_trg+trg_wt_error_1)/mu1_trg);
+        event->Add("trg_wt_down",(mu1_trg-trg_wt_error_1)/mu1_trg);
+    
       }
     }
     if (do_singlemu_trg_weights_) {
@@ -2084,6 +2095,21 @@ namespace ic {
            auto args2_2 = std::vector<double>{m_2_pt,m_2_signed_eta,m_2_iso};
            m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data()) * fns_["m_iso_binned_ratio"]->eval(args1_2.data()) ;
            m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data()) * fns_["m_iso_binned_ratio"]->eval(args2_2.data()) ;
+           
+           double id_error_1 =  mu_id_hist_->GetBinError(mu_id_hist_->GetXaxis()->FindBin(m_1_pt), mu_id_hist_->GetYaxis()->FindBin(fabs(m_1_signed_eta)));
+           double id_error_2 =  mu_id_hist_->GetBinError(mu_id_hist_->GetXaxis()->FindBin(m_2_pt), mu_id_hist_->GetYaxis()->FindBin(fabs(m_2_signed_eta)));
+           double iso_error_1 = mu_iso_hist_->GetBinError(mu_iso_hist_->GetXaxis()->FindBin(m_1_pt), mu_iso_hist_->GetYaxis()->FindBin(fabs(m_1_signed_eta)));
+           double iso_error_2 = mu_iso_hist_->GetBinError(mu_iso_hist_->GetXaxis()->FindBin(m_2_pt), mu_iso_hist_->GetYaxis()->FindBin(fabs(m_2_signed_eta)));
+           
+           double id_nom_1 = fns_["m_id_ratio"]->eval(args1_1.data());
+           double id_nom_2 = fns_["m_id_ratio"]->eval(args2_1.data());
+           double iso_nom_1 = fns_["m_iso_binned_ratio"]->eval(args1_1.data());
+           double iso_nom_2 = fns_["m_iso_binned_ratio"]->eval(args2_1.data());
+           
+           event->Add("id_wt_up"    ,(id_nom_1+id_error_1)*(id_nom_2+id_error_2)*iso_nom_1*iso_nom_2/(m_1_idiso*m_2_idiso));
+           event->Add("id_wt_down"  ,(id_nom_1-id_error_1)*(id_nom_2-id_error_2)*iso_nom_1*iso_nom_2/(m_1_idiso*m_2_idiso));
+           event->Add("iso_wt_up"   ,(iso_nom_1+iso_error_1)*(iso_nom_2+iso_error_2)*id_nom_1*id_nom_2/(m_1_idiso*m_2_idiso));
+           event->Add("iso_wt_down" ,(iso_nom_1-iso_error_1)*(iso_nom_2-iso_error_2)*id_nom_1*id_nom_2/(m_1_idiso*m_2_idiso));
            
           /*if(m_1_pt<1000){
             m_1_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_1_pt));
