@@ -590,7 +590,7 @@ class Analysis(object):
     def Run(self):
         manifest = []
         self.nodes.AddRequests(manifest)
-        # print manifest
+        #print manifest
         drawdict = defaultdict(list)
         outdict = defaultdict(list)
         for entry in manifest:
@@ -631,11 +631,12 @@ class Analysis(object):
             testf.Close()
             #print self.trees
 
-    def AddInfo(self, file, scaleTo=None):
+    def AddInfo(self, file, scaleTo=None,add_name=None):
         with open(file) as jsonfile:
             info = json.load(jsonfile)
         for sa in info:
             name = sa
+            if add_name is not None: name+=add_name
             if sa in self.remaps:
                 name = self.remaps[sa]
             if name in self.trees or name == 'data_obs':
@@ -650,7 +651,7 @@ class Analysis(object):
                     data['sf'] = 1.0
         #pprint.pprint(self.info)
 
-    def BasicFactory(self, name, sample=None, var='', sel='', factors=[], scaleToLumi=True):
+    def BasicFactory(self, name, sample=None, var='', sel='', factors=[], scaleToLumi=True,add_name=None):
         if sample is None:
             sample = name
         if scaleToLumi:
@@ -659,11 +660,14 @@ class Analysis(object):
                 myfactors.append(self.info[sample]['sf'])
             else:
                 myfactors.append(1.0)
+        if add_name is not None: 
+            name+=add_name
+            sample+=add_name
         return BasicNode(name, sample, var, sel, factors=myfactors)
 
-    def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True):
+    def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True,add_name=None):
         res = SummedNode(name)
         for sa in samples:
-            res.AddNode(self.BasicFactory(sa, sa, var, sel, factors, scaleToLumi))
+            res.AddNode(self.BasicFactory(sa, sa, var, sel, factors, scaleToLumi,add_name))
         return res
 

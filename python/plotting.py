@@ -2027,6 +2027,8 @@ def HTTPlot(nodename,
           error = add_flat_uncert*error_hist.GetBinContent(i)
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
+          
+    if norm_bins: error_hist.Scale(1.0,"width")
     
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
