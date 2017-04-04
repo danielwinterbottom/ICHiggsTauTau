@@ -1169,8 +1169,8 @@ else:
 if not options.no_plot:
     if options.datacard != "": plot_name = options.outputfolder+'/'+var_name+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
-    if options.log_y: plot_name += "_logx" 
-    if options.log_x: plot_name += "_logy"
+    if options.log_x: plot_name += "_logx" 
+    if options.log_y: plot_name += "_logy"
     if options.x_title == "": x_title = var_name
     else: x_title = options.x_title
     
