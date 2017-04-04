@@ -1500,7 +1500,6 @@ namespace ic {
     if (event->Exists("iso_wt_down"     )) iso_wt_down_      = event->Get<double>("iso_wt_down"     );
     
     
-    
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();

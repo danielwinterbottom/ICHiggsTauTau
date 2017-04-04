@@ -603,7 +603,7 @@ namespace ic {
       eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
-      
+
       double wtzpt_stat_error = z_pt_mass_hist_->GetBinError(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
       
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
@@ -635,6 +635,7 @@ namespace ic {
       }
       event->Add("wt_extrap_up", wt_extrap_up);
       event->Add("wt_extrap_down", 1/wt_extrap_up);
+
     }
 
    if (do_tracking_eff_){

@@ -411,6 +411,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
+ if(channel_str=="zmm") muon_shift = json["baseline"]["muon_es_shift"].asDouble();
+ else muon_shift = 1.0;
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
@@ -2405,6 +2407,12 @@ void HTTSequence::BuildTPZEEPairs() {
 void HTTSequence::BuildZMMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ if (tau_scale_mode > 0 && strategy_type == strategy::mssmsummer16){
+ BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
+    .set_input_label("muons")
+    .set_shift(muon_shift));
+  }
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));

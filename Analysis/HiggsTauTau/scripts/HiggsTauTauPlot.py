@@ -1177,6 +1177,9 @@ for n in add_names:
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 
+w_total = plot_file.Get(nodename+"/W")
+print "W Yield", w_total.Integral(0,w_total.GetNbinsX()+1)
+
 if options.method is 12 or options.method is 16:
     w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
     w_ss = plot_file.Get(nodename+"/W.subnodes/W_ss")
