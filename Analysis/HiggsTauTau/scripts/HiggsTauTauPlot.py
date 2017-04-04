@@ -1231,6 +1231,7 @@ if not options.no_plot:
         options.lumi,
         plot_name,
         custom_uncerts_up_name,
-        custom_uncerts_down_name
+        custom_uncerts_down_name,
+        options.channel
         )
            
