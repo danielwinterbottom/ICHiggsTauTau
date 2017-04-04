@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar11_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    //"channels":     ["em", "et", "mt", "tt", "zee", "zmm"],
-    "channels":     ["zmm"],
+    "channels":     ["em", "et", "mt", "tt", "zee", "zmm"],
+    //"channels":     ["zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]

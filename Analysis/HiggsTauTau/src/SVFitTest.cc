@@ -335,24 +335,24 @@ int SVFitTest::Execute(TreeEvent *event) {
         antimu_2_ = lagainstMuonLoose3_2;
         if(iso_discr_1_>0 && iso_discr_2_>0 && antiele_1_>0 && antimu_1_>0 && antiele_2_>0 && antimu_2_>0) pass_presel = true;
     }
-    //if(channel_ == channel::zmm && do_preselection_) { 
-    //    if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
-    //    if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
-    //    Muon const* muon1  = dynamic_cast<Muon const*>(lep1);
-    //    Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
-    //    iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
-    //    iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
-    //    if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
-    //}
-    //if(channel_ == channel::zee && do_preselection_) { 
-    //    if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
-    //    if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
-    //    Electron  const* elec1  = dynamic_cast<Electron const*>(lep1);
-    //    Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-    //    iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
-    //    iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
-    //    if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
-    //}
+    if(channel_ == channel::zmm && do_preselection_) { 
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+        Muon const* muon1  = dynamic_cast<Muon const*>(lep1);
+        Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+        iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
+        iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
+        if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
+    }
+    if(channel_ == channel::zee && do_preselection_) { 
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+        Electron  const* elec1  = dynamic_cast<Electron const*>(lep1);
+        Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
+        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
+    }
     
     if((channel_ == channel::zmm || channel_ == channel::zee) && do_preselection_) pass_presel = true;
     

@@ -663,7 +663,7 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
-if(!is_data && js["do_gen_analysis"].asBool() && (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos)) ){
+if(false && !is_data && js["do_gen_analysis"].asBool() && (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos)) ){
   
   HTTStitching httStitching = HTTStitching("HTTStitching")  
    .set_era(era_type)
