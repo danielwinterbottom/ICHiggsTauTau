@@ -5,6 +5,7 @@ import os
 job_mgr = Jobs()
 parser = argparse.ArgumentParser()
 job_mgr.attach_job_args(parser)
+parser.add_argument('--pythia', action='store_true')
 args = parser.parse_args()
 job_mgr.set_args(args)
 
@@ -13,15 +14,53 @@ basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
 
 MAX_EVTS = 100000
 FILES_PER_JOB = 40
-PROD='Oct06_MC_80X_'
+PROD=''
 
 DATA_SAMPLES = {
 }
-
 MC_SAMPLES = {
-    'GluGluHToTauTau_M-125-herwigpp':           ['GluGluHToTauTau_M-125-herwigpp'],
-    'GluGluHToTauTau_M-125':           ['GluGluHToTauTau_M-125'],
+    'A_500_15_b_b':         ['A_500_15_b_b'],
+    'A_500_15_b_tb':        ['A_500_15_b_tb'],
+    'A_500_15_t_t':         ['A_500_15_t_t'],
+    'A_500_15_t_tb':        ['A_500_15_t_tb'],
+    'A_500_15_tb_tb':       ['A_500_15_tb_tb']
 }
+
+if args.pythia:
+    PROD='Apr3_'
+    MC_SAMPLES = {
+            'SUSYGluGluToHToTauTau_M-80':     ['SUSYGluGluToHToTauTau_M-80'],
+            'SUSYGluGluToHToTauTau_M-90':     ['SUSYGluGluToHToTauTau_M-90'],
+            'SUSYGluGluToHToTauTau_M-100':    ['SUSYGluGluToHToTauTau_M-100'],
+            'SUSYGluGluToHToTauTau_M-110':    ['SUSYGluGluToHToTauTau_M-110'],
+            'SUSYGluGluToHToTauTau_M-120':    ['SUSYGluGluToHToTauTau_M-120'],
+            'SUSYGluGluToHToTauTau_M-130':    ['SUSYGluGluToHToTauTau_M-130'],
+            'SUSYGluGluToHToTauTau_M-140':    ['SUSYGluGluToHToTauTau_M-140'],
+            'SUSYGluGluToHToTauTau_M-160':    ['SUSYGluGluToHToTauTau_M-160'],
+            'SUSYGluGluToHToTauTau_M-180':    ['SUSYGluGluToHToTauTau_M-180'],
+            'SUSYGluGluToHToTauTau_M-200':    ['SUSYGluGluToHToTauTau_M-200'],
+            'SUSYGluGluToHToTauTau_M-250':    ['SUSYGluGluToHToTauTau_M-250'],
+            'SUSYGluGluToHToTauTau_M-300':    ['SUSYGluGluToHToTauTau_M-300'],
+            'SUSYGluGluToHToTauTau_M-350':    ['SUSYGluGluToHToTauTau_M-350'],
+            'SUSYGluGluToHToTauTau_M-400':    ['SUSYGluGluToHToTauTau_M-400'],
+            'SUSYGluGluToHToTauTau_M-450':    ['SUSYGluGluToHToTauTau_M-450'],
+            'SUSYGluGluToHToTauTau_M-500':    ['SUSYGluGluToHToTauTau_M-500'],
+            'SUSYGluGluToHToTauTau_M-600':    ['SUSYGluGluToHToTauTau_M-600'],
+            'SUSYGluGluToHToTauTau_M-700':    ['SUSYGluGluToHToTauTau_M-700'],
+            'SUSYGluGluToHToTauTau_M-800':    ['SUSYGluGluToHToTauTau_M-800'],
+            'SUSYGluGluToHToTauTau_M-900':    ['SUSYGluGluToHToTauTau_M-900'],
+            'SUSYGluGluToHToTauTau_M-1000':   ['SUSYGluGluToHToTauTau_M-1000'],
+            'SUSYGluGluToHToTauTau_M-1200':   ['SUSYGluGluToHToTauTau_M-1200'],
+            'SUSYGluGluToHToTauTau_M-1400':   ['SUSYGluGluToHToTauTau_M-1400'],
+            'SUSYGluGluToHToTauTau_M-1500':   ['SUSYGluGluToHToTauTau_M-1500'],
+            'SUSYGluGluToHToTauTau_M-1600':   ['SUSYGluGluToHToTauTau_M-1600'],
+            'SUSYGluGluToHToTauTau_M-1800':   ['SUSYGluGluToHToTauTau_M-1800'],
+            'SUSYGluGluToHToTauTau_M-2000':   ['SUSYGluGluToHToTauTau_M-2000'],
+            'SUSYGluGluToHToTauTau_M-2300':   ['SUSYGluGluToHToTauTau_M-2300'],
+            'SUSYGluGluToHToTauTau_M-2600':   ['SUSYGluGluToHToTauTau_M-2600'],
+            'SUSYGluGluToHToTauTau_M-2900':   ['SUSYGluGluToHToTauTau_M-2900'],
+            'SUSYGluGluToHToTauTau_M-3200':   ['SUSYGluGluToHToTauTau_M-3200'],
+    }
 
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
@@ -57,12 +96,13 @@ for sa in SAMPLES:
             doSample = True
     if not doSample:
         continue
-    filelists = ['%s%s.dat' % (PROD, X) for X in SAMPLES[sa]]
+    filelists = ['filelists/%s%s.dat' % (PROD, X) for X in SAMPLES[sa]]
     cfg = {
         # General settings
         'output_dir': '%s' % (OUTPUT),
         'output_name': '%s.root' % (sa),
         'filelists': filelists,
+        'file_prefix': '/nfs/dust/cms/user/agilbert/projects/mssm-nlo/CMSSW_7_1_20/src/test/my_gg_H_2HDM/MSSM-NLO/', 
         'max_events': MAX_EVTS,
         'is_data': sa in DATA_SAMPLES.keys(),
         'sequences': seqs,
@@ -85,6 +125,8 @@ for sa in SAMPLES:
         'ZmtTP_tauDM': 'decayModeFinding'
         #'ZmtTP_tauDM': 'decayModeFindingNewDMs'
     }
+    if args.pythia:
+        cfg['file_prefix'] = ''
     job_mgr.add_filelist_split_jobs(
         prog=basedir+'/bin/HTT2016Studies',
         cfg=cfg,

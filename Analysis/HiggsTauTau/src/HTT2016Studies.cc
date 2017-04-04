@@ -239,11 +239,11 @@ namespace ic {
     ic::GenParticle *last_taup = nullptr;
     ic::GenParticle *last_taum = nullptr;
 
-
+    std::set<int> higgs_parts = {25, 35, 36};
 
     for (auto p : parts) {
       auto const& flags = p->statusFlags();
-      if (std::abs(p->pdgid()) == 25 && flags[IsLastCopy]) {
+      if (higgs_parts.count(std::abs(p->pdgid())) && flags[IsLastCopy]) {
         if (!last_h) {
           last_h = p;
         } else {
