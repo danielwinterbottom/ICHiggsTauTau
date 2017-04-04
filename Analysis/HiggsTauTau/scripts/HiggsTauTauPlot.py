@@ -1108,6 +1108,7 @@ for systematic in systematics:
     else: do_data = False
             
     #Run default plot        
+    if "btag_tight" in options.cat or "btag_loosemt" in options.cat: weight+="*wt_tau_id_tight"
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
     #RunSimpleQCD(ana, cat, sel, weight,outfile)
 
