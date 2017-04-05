@@ -3,25 +3,25 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Feb14_MC_80X'
+config.General.workArea='crab_mc_HLT_VBF_icntuples'
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_copy_custom_hlt_cfg_80X_Mar17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
 
-config.Data.inputDBS = 'global'
-config.Data.splitting = 'FileBased'
 
-data_inputs = ['/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0000', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0001', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0002', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0003', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0004', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0005', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0006', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0007']
-
+#data_inputs = ['/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0000', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0001', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0002', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0003', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0004', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0005', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0006', '/store/user/adow/VBFHToTauTau_M125_13TeV_powheg_pythia8/crab_VBFHToTauTau/170403_222639/0007']
+data_inputs = '/vols/cms/dw515/files_MC_80X_VBFHToTauTau.txt'
 
 config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=0','doHT=1', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8', 'isReHLT=1']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
-config.Data.unitsPerJob = 80000
+config.Data.unitsPerJob = 20
 #config.Data.unitsPerJob = 1
-config.Data.splitting = 'EventAwareLumiBased'
+config.Data.inputDBS = 'global'
+config.Data.splitting = 'FileBased'
+#config.Data.outputPrimaryDataset = "VBFHToTauTau_M125_13TeV_powheg_pythia8"
 config.Data.publication = False
 #config.Data.ignoreLocality= True
 config.Data.outLFNDirBase='/store/user/adow/HLT_output_5Apr17'
@@ -60,7 +60,8 @@ if __name__ == '__main__':
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
-        config.Data.userInputDataset = task[1]
+        #config.Data.userInputFiles = task[1]
+        config.Data.userInputFiles = open(task[1]).readlines()
         #submit(config)
         p = Process(target=submit, args=(config,))
         p.start()
