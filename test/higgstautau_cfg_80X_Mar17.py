@@ -9,13 +9,14 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/0863B733-1A39-E611-AF47-0025905C53D8.root', parser.VarParsing.multiplicity.singleton,
 opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/4C466283-6BC0-E611-B3AE-001517FB25E4.root', parser.VarParsing.multiplicity.singleton,              
+#opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/000C6E52-8BEC-E611-B3FF-0025905C42FE.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016F/SingleMuon/MINIAOD/PromptReco-v1/000/277/932/00000/084865EB-1859-E611-BDA7-02163E011A89.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v2/000/281/265/00000/28861171-6E82-E611-9CAF-02163E0141FA.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/Tau/MINIAOD/PromptReco-v3/000/284/036/00000/36B9BD65-5B9F-E611-820B-02163E0126D3.root', parser.VarParsing.multiplicity.singleton, parser.VarParsing.varType.string, "input file")
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/SingleElectron/MINIAOD/PromptReco-v3/000/284/036/00000/1CBE1DEB-589F-E611-ABBB-02163E0143B5.root', parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '80X_mcRun2_asymptotic_2016_TrancheIV_v7', parser.VarParsing.multiplicity.singleton,
-#opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag', '80X_dataRun2_2016SeptRepro_v7', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -75,7 +76,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1186,133 +1187,133 @@ if release in ['80XMINIAOD']:
   process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
   #process.icPfMetSequence+=cms.Sequence(process.icRecorrectedPfMetProducer)
 
-from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
-runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
-process.MVAMET.debug = cms.bool(False)
-process.MVAMET.srcLeptons = cms.VInputTag("slimmedMuons","slimmedElectrons","slimmedTaus")
-process.MVAMET.requireOS = cms.bool(False)
+#from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
+#runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
+#process.MVAMET.debug = cms.bool(False)
+#process.MVAMET.srcLeptons = cms.VInputTag("slimmedMuons","slimmedElectrons","slimmedTaus")
+#process.MVAMET.requireOS = cms.bool(False)
 
 
-process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
-  input = cms.InputTag("MVAMET","MVAMET"),
-  branch = cms.string("pfMVAMetVector"),
-  includeCustomID = cms.bool(False),
-  includeUserCandID = cms.bool(True),
-  includeExternalMetsig = cms.bool(False),
-  includeMetUncertainties = cms.bool(False),
-  metuncertainties = cms.vstring(),
-  metcorrections = cms.vstring(),
-  includeExternalMetsigMethod2 = cms.bool(False),
-  includeMetCorrections = cms.bool(False),
-  doGenMet = cms.bool(False),
-  metsig = cms.PSet(
-    metsig = cms.InputTag("METSignificance","METSignificance"),
-    metsigcov00 = cms.InputTag("METSignificance", "CovarianceMatrix00"),
-    metsigcov01 = cms.InputTag("METSignificance", "CovarianceMatrix01"),
-    metsigcov10 = cms.InputTag("METSignificance", "CovarianceMatrix10"),
-    metsigcov11 = cms.InputTag("METSignificance", "CovarianceMatrix11")
-    ),
-  metsig_method2 = cms.PSet(
-    metsig      = cms.InputTag("METSignificance","METSignificance"),
-    metsigcov = cms.InputTag("METSignificance","METCovariance")
-    ),
-  inputCustomID = cms.InputTag("")
-  )
+#process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
+#  input = cms.InputTag("MVAMET","MVAMET"),
+#  branch = cms.string("pfMVAMetVector"),
+#  includeCustomID = cms.bool(False),
+#  includeUserCandID = cms.bool(True),
+#  includeExternalMetsig = cms.bool(False),
+#  includeMetUncertainties = cms.bool(False),
+#  metuncertainties = cms.vstring(),
+#  metcorrections = cms.vstring(),
+#  includeExternalMetsigMethod2 = cms.bool(False),
+#  includeMetCorrections = cms.bool(False),
+#  doGenMet = cms.bool(False),
+#  metsig = cms.PSet(
+#    metsig = cms.InputTag("METSignificance","METSignificance"),
+#    metsigcov00 = cms.InputTag("METSignificance", "CovarianceMatrix00"),
+#    metsigcov01 = cms.InputTag("METSignificance", "CovarianceMatrix01"),
+#    metsigcov10 = cms.InputTag("METSignificance", "CovarianceMatrix10"),
+#    metsigcov11 = cms.InputTag("METSignificance", "CovarianceMatrix11")
+#    ),
+#  metsig_method2 = cms.PSet(
+#    metsig      = cms.InputTag("METSignificance","METSignificance"),
+#    metsigcov = cms.InputTag("METSignificance","METCovariance")
+#    ),
+#  inputCustomID = cms.InputTag("")
+#  )
+#
 
+#process.icMvaMetSequence = cms.Sequence(
+#  process.tauDecayProducts+
+#  process.egmGsfElectronIDs+
+#  process.electronMVAValueMapProducer+
+#  process.electronRegressionValueMapProducer+
+#  process.photonIDValueMapProducer+
+#  process.photonMVAValueMapProducer+
+#  process.slimmedElectronsTight+
+#  process.slimmedMuonsTight+
+#  process.slimmedTausLoose+
+#  process.slimmedTausLooseCleaned+
+#  process.selectedUpdatedPatJetsUpdatedJECCleaned+
+#  process.pfNeutrals+
+#  process.neutralInJets+
+#  process.pfChargedPV+
+#  process.pfChs+
+#  process.pfChargedPU+
+#  process.pfMETCands+
+#  process.pfTrackMETCands+
+#  process.pfNoPUMETCands+
+#  process.pfPUMETCands+
+#  process.pfChargedPUMETCands+
+#  process.pfNeutralPUMETCands+
+#  process.pfNeutralPVMETCands+
+#  process.pfNeutralUnclusteredMETCands+
+#  process.pfPUCorrectedMETCands+
+#  process.ak4PFCHSL1FastjetCorrector+
+#  process.ak4PFCHSL2RelativeCorrector+
+#  process.ak4PFCHSL3AbsoluteCorrector+
+#  process.ak4PFCHSL1FastL2L3Corrector+
+#  process.ak4PFCHSResidualCorrector+
+#  process.ak4PFCHSL1FastL2L3ResidualCorrector+
+#  process.ak4JetsForpfMET+
+#  process.ak4JetsForpfTrackMET+
+#  process.ak4JetsForpfPUMET+
+#  process.ak4JetsForpfChargedPUMET+
+#  process.ak4JetsForpfNeutralPUMET+
+#  process.ak4JetsForpfNeutralPVMET+
+#  process.ak4JetsForpfNeutralUnclusteredMET+
+#  process.ak4JetsForpfPUCorrectedMET+
+#  process.ak4JetsForpfNoPUMET+
+#  process.corrpfMET+
+#  process.corrpfTrackMET+
+#  process.corrpfPUMET+
+#  process.corrpfChargedPUMET+
+#  process.corrpfNeutralPVMET+
+#  process.corrpfNeutralUnclusteredMET+
+#  process.corrpfNeutralPUMET+
+#  process.corrpfPUCorrectedMET+
+#  process.corrpfNoPUMET+
+#  process.pfMET+
+#  process.pfMETT1+
+#  process.patpfMET+
+#  process.pfTrackMET+
+#  process.patpfTrackMET+
+#  process.pfTrackMETT1+
+#  process.patpfTrackMETT1+
+#  process.pfPUCorrectedMET+
+#  process.pfPUMET+
+#  process.pfChargedPUMET+
+#  process.pfNeutralPUMET+
+#  process.patpfPUMET+
+#  process.patpfChargedPUMET+
+#  process.patpfNeutralPUMET+
+#  process.pfNeutralPVMET+
+#  process.pfNeutralUnclusteredMET+
+#  process.patpfNeutralPVMET+
+#  process.patpfNeutralUnclusteredMET+
+#  process.patpfPUCorrectedMET+
+#  process.pfPUMETT1+
+#  process.patpfPUMETT1+
+#  process.pfChargedPUMETT1+
+#  process.pfNeutralPUMETT1+
+#  process.patpfChargedPUMETT1+
+#  process.patpfNeutralPUMETT1+
+#  process.pfPUCorrectedMETT1+
+#  process.patpfPUCorrectedMETT1+
+#  process.pfNoPUMET+
+ # process.patpfNoPUMET+
+ # process.pfNoPUMETT1+
+ # process.patpfNoPUMETT1+
+ # process.patpfMETT1+
+ # process.allDecayProducts+
+ # process.tauPFMET+
+ # process.tauMET+
+ # process.tausSignificance+
+ # process.MVAMET
+ # #process.icPfMVAMetProducer
+ # )
 
-process.icMvaMetSequence = cms.Sequence(
-  process.tauDecayProducts+
-  process.egmGsfElectronIDs+
-  process.electronMVAValueMapProducer+
-  process.electronRegressionValueMapProducer+
-  process.photonIDValueMapProducer+
-  process.photonMVAValueMapProducer+
-  process.slimmedElectronsTight+
-  process.slimmedMuonsTight+
-  process.slimmedTausLoose+
-  process.slimmedTausLooseCleaned+
-  process.selectedUpdatedPatJetsUpdatedJECCleaned+
-  process.pfNeutrals+
-  process.neutralInJets+
-  process.pfChargedPV+
-  process.pfChs+
-  process.pfChargedPU+
-  process.pfMETCands+
-  process.pfTrackMETCands+
-  process.pfNoPUMETCands+
-  process.pfPUMETCands+
-  process.pfChargedPUMETCands+
-  process.pfNeutralPUMETCands+
-  process.pfNeutralPVMETCands+
-  process.pfNeutralUnclusteredMETCands+
-  process.pfPUCorrectedMETCands+
-  process.ak4PFCHSL1FastjetCorrector+
-  process.ak4PFCHSL2RelativeCorrector+
-  process.ak4PFCHSL3AbsoluteCorrector+
-  process.ak4PFCHSL1FastL2L3Corrector+
-  process.ak4PFCHSResidualCorrector+
-  process.ak4PFCHSL1FastL2L3ResidualCorrector+
-  process.ak4JetsForpfMET+
-  process.ak4JetsForpfTrackMET+
-  process.ak4JetsForpfPUMET+
-  process.ak4JetsForpfChargedPUMET+
-  process.ak4JetsForpfNeutralPUMET+
-  process.ak4JetsForpfNeutralPVMET+
-  process.ak4JetsForpfNeutralUnclusteredMET+
-  process.ak4JetsForpfPUCorrectedMET+
-  process.ak4JetsForpfNoPUMET+
-  process.corrpfMET+
-  process.corrpfTrackMET+
-  process.corrpfPUMET+
-  process.corrpfChargedPUMET+
-  process.corrpfNeutralPVMET+
-  process.corrpfNeutralUnclusteredMET+
-  process.corrpfNeutralPUMET+
-  process.corrpfPUCorrectedMET+
-  process.corrpfNoPUMET+
-  process.pfMET+
-  process.pfMETT1+
-  process.patpfMET+
-  process.pfTrackMET+
-  process.patpfTrackMET+
-  process.pfTrackMETT1+
-  process.patpfTrackMETT1+
-  process.pfPUCorrectedMET+
-  process.pfPUMET+
-  process.pfChargedPUMET+
-  process.pfNeutralPUMET+
-  process.patpfPUMET+
-  process.patpfChargedPUMET+
-  process.patpfNeutralPUMET+
-  process.pfNeutralPVMET+
-  process.pfNeutralUnclusteredMET+
-  process.patpfNeutralPVMET+
-  process.patpfNeutralUnclusteredMET+
-  process.patpfPUCorrectedMET+
-  process.pfPUMETT1+
-  process.patpfPUMETT1+
-  process.pfChargedPUMETT1+
-  process.pfNeutralPUMETT1+
-  process.patpfChargedPUMETT1+
-  process.patpfNeutralPUMETT1+
-  process.pfPUCorrectedMETT1+
-  process.patpfPUCorrectedMETT1+
-  process.pfNoPUMET+
-  process.patpfNoPUMET+
-  process.pfNoPUMETT1+
-  process.patpfNoPUMETT1+
-  process.patpfMETT1+
-  process.allDecayProducts+
-  process.tauPFMET+
-  process.tauMET+
-  process.tausSignificance+
-  process.MVAMET
-  #process.icPfMVAMetProducer
-  )
-
-if not isData:
-  process.icMvaMetSequence.remove(process.ak4PFCHSResidualCorrector)
-  process.icMvaMetSequence.remove(process.ak4PFCHSL1FastL2L3ResidualCorrector)
+#if not isData:
+#  process.icMvaMetSequence.remove(process.ak4PFCHSResidualCorrector)
+#  process.icMvaMetSequence.remove(process.ak4PFCHSL1FastL2L3ResidualCorrector)
 
 
 #from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_74X import mvaMetPairs
@@ -2269,12 +2270,15 @@ if release in ['80XMINIAOD']:
 #Load the MET filters here
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
 process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 process.BadPFMuonFilter.taggingMode = cms.bool(True)
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
+process.badGlobalMuonTagger.taggingMode = cms.bool(True)
+process.cloneGlobalMuonTagger.taggingMode = cms.bool(True)
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
@@ -2291,10 +2295,19 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeFiltersFromTrig = cms.bool(True),
   filters             = cms.PSet(
    badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
-   badMuonFilter          = cms.InputTag("BadPFMuonFilter")
+   badMuonFilter          = cms.InputTag("BadPFMuonFilter"),
+   Flag_badMuons      = cms.InputTag("badGlobalMuonTagger"),
+   Flag_duplicateMuons      = cms.InputTag("cloneGlobalMuonTagger")
   ),
   filtersfromtrig     = cms.vstring("Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
 )
+
+if isData:
+  process.icEventInfoProducer.filters=cms.PSet(
+    badChargedHadronFilter = cms.InputTag("BadChargedCandidateFilter"),
+    badMuonFilter = cms.InputTag("BadPFMuonFilter")
+  )
+  process.icEventInfoProducer.filtersfromtrig = cms.vstring("!Flag_badMuons","!Flag_duplicateMuons","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
 
 #if doHT:
 #  process.icEventInfoProducer.includeHT = cms.bool(True)
@@ -2303,8 +2316,15 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventInfoSequence = cms.Sequence(
   process.BadPFMuonFilter+
   process.BadChargedCandidateFilter+ 
+  process.badGlobalMuonTagger+
+  process.cloneGlobalMuonTagger+
   process.icEventInfoProducer
 )
+
+if isData:
+  process.icEventInfoSequence.remove(process.badGlobalMuonTagger)
+  process.icEventInfoSequence.remove(process.cloneGlobalMuonTagger)
+  
 
 
 ################################################################
