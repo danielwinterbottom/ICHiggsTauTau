@@ -293,14 +293,14 @@ namespace ic {
       outtree_->Branch("iso_wt_up"   ,          &iso_wt_up_      );
       outtree_->Branch("iso_wt_down" ,          &iso_wt_down_    );
       
-      outtree_>Branch("wt_z_pt_weights_esup"    ,&wt_z_pt_weights_esup_   );
-      outtree_>Branch("wt_z_pt_weights_esdown"  ,&wt_z_pt_weights_esdown_ );
-      outtree_>Branch("wt_z_pt_weights_idup"    ,&wt_z_pt_weights_idup_   );
-      outtree_>Branch("wt_z_pt_weights_iddown"  ,&wt_z_pt_weights_iddown_ );
-      outtree_>Branch("wt_z_pt_weights_isoup"   ,&wt_z_pt_weights_isoup_  );
-      outtree_>Branch("wt_z_pt_weights_isodown" ,&wt_z_pt_weights_isodown_);
-      outtree_>Branch("wt_z_pt_weights_trgup"   ,&wt_z_pt_weights_trgup_  );
-      outtree_>Branch("wt_z_pt_weights_trgdown" ,&wt_z_pt_weights_trgdown_);
+      outtree_->Branch("wt_z_pt_weights_esup"    ,&wt_z_pt_weights_esup_   );
+      outtree_->Branch("wt_z_pt_weights_esdown"  ,&wt_z_pt_weights_esdown_ );
+      outtree_->Branch("wt_z_pt_weights_idup"    ,&wt_z_pt_weights_idup_   );
+      outtree_->Branch("wt_z_pt_weights_iddown"  ,&wt_z_pt_weights_iddown_ );
+      outtree_->Branch("wt_z_pt_weights_isoup"   ,&wt_z_pt_weights_isoup_  );
+      outtree_->Branch("wt_z_pt_weights_isodown" ,&wt_z_pt_weights_isodown_);
+      outtree_->Branch("wt_z_pt_weights_trgup"   ,&wt_z_pt_weights_trgup_  );
+      outtree_->Branch("wt_z_pt_weights_trgdown" ,&wt_z_pt_weights_trgdown_);
       
       outtree_->Branch("wt_extrap_up", &wt_extrap_up_);
       outtree_->Branch("wt_extrap_down", &wt_extrap_down_);
