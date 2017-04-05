@@ -1098,7 +1098,7 @@ for systematic in systematics:
     if options.add_wt is not "": weight+="*"+options.add_wt
     samples_to_skip = systematics[systematic][3]
     add_names.append((add_name,samples_to_skip))
-    syst_add_name=add_name
+    syst_add_name=add_folder_name
     
     mc_input_folder_name = options.folder
     if add_folder_name != '':
