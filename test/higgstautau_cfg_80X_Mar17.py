@@ -2307,7 +2307,7 @@ if isData:
     badChargedHadronFilter = cms.InputTag("BadChargedCandidateFilter"),
     badMuonFilter = cms.InputTag("BadPFMuonFilter")
   )
-  process.icEventInfoProducer.filtersfromtrig = cms.vstring("Flag_badMuons","Flag_duplicateMuons","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
+  process.icEventInfoProducer.filtersfromtrig = cms.vstring("!Flag_badMuons","!Flag_duplicateMuons","Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
 
 #if doHT:
 #  process.icEventInfoProducer.includeHT = cms.bool(True)
