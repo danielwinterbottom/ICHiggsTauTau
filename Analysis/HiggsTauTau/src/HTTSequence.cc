@@ -411,6 +411,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
+ if(channel_str=="zmm") muon_shift = json["baseline"]["muon_es_shift"].asDouble();
+ else muon_shift = 1.0;
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
@@ -661,7 +663,7 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
-if(!is_data && js["do_gen_analysis"].asBool() && (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos)) ){
+if(false && !is_data && js["do_gen_analysis"].asBool() && (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos)) ){
   
   HTTStitching httStitching = HTTStitching("HTTStitching")  
    .set_era(era_type)
@@ -1668,9 +1670,9 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_qcd_cr2_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR1_dRGt4");
    TH2D em_qcd_cr2_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BCD.root","/","QCDratio_CR2_dRGt4");
-   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v3.root","/","zptmass_histo");
-   TH3D z_njet_mass_pt_normxbins_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v3.root","/","znjetmasspt_histo_normxbins");
-   TH3D z_njet_mass_pt_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v4.root","/","znjetmasspt_histo");
+   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
+   TH3D z_njet_mass_pt_normxbins_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v5.root","/","znjetmasspt_histo_normxbins");
+   TH3D z_njet_mass_pt_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_v5.root","/","znjetmasspt_histo");
    TH3D z_njet_mass_pt_tscaleup_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_TScaleUp_v4.root","/","znjetmasspt_histo");
    TH3D z_njet_mass_pt_tscaledown_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_TScaleUp_v4.root","/","znjetmasspt_histo");
    TH3D z_njet_mass_pt_jscaleup_weights = GetFromTFile<TH3D>("input/zpt_weights/z_njet_mass_pt_weights_3D_JScaleUp_v4.root","/","znjetmasspt_histo");
@@ -1679,6 +1681,15 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D mu_iso_hist = GetFromTFile<TH2D>("input/mu_weights/mu_iso.root","/","Iso_pt_eta_bins");
    TH2D mu_id_hist = GetFromTFile<TH2D>("input/mu_weights/mu_id.root","/","ID_pt_eta_bins");
    TH2D mu_trg_hist = GetFromTFile<TH2D>("input/mu_weights/mu_trg.root","/","TrgOR4_Iso_pt_eta_bins");
+   
+   TH2D z_pt_weights_esup = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo_ESUp");
+   TH2D z_pt_weights_esdown = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo_ESDown");
+   TH2D z_pt_weights_idup = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo_IDUp");
+   TH2D z_pt_weights_iddown = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo_IDDown");
+   TH2D z_pt_weights_isoup = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo_IsoUp");
+   TH2D z_pt_weights_isodown = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo_IsoDown");
+   TH2D z_pt_weights_trgup = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo_TrgUp");
+   TH2D z_pt_weights_trgdown = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo_TrgDown");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -1709,7 +1720,16 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_z_njet_mass_pt_normxbins_hist(new TH3D(z_njet_mass_pt_normxbins_weights))
     .set_mu_id_hist(new TH2D(mu_id_hist))
     .set_mu_iso_hist(new TH2D(mu_iso_hist))
-    .set_mu_trg_hist(new TH2D(mu_trg_hist));
+    .set_mu_trg_hist(new TH2D(mu_trg_hist))
+    .set_z_pt_weights_esup   (new TH2D (z_pt_weights_esup   ))
+    .set_z_pt_weights_esdown (new TH2D (z_pt_weights_esdown ))
+    .set_z_pt_weights_idup   (new TH2D (z_pt_weights_idup   ))
+    .set_z_pt_weights_iddown (new TH2D (z_pt_weights_iddown ))
+    .set_z_pt_weights_isoup  (new TH2D (z_pt_weights_isoup  ))
+    .set_z_pt_weights_isodown(new TH2D (z_pt_weights_isodown))
+    .set_z_pt_weights_trgup  (new TH2D (z_pt_weights_trgup  ))
+    .set_z_pt_weights_trgdown(new TH2D (z_pt_weights_trgdown));
+    ;
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
@@ -2405,6 +2425,12 @@ void HTTSequence::BuildTPZEEPairs() {
 void HTTSequence::BuildZMMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ if (tau_scale_mode > 0 && strategy_type == strategy::mssmsummer16){
+ BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
+    .set_input_label("muons")
+    .set_shift(muon_shift));
+  }
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));

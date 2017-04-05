@@ -1,5 +1,6 @@
 void makeZWeightsFile3D(std::string outfile, std::string MC_add_string){
-std::vector<std::string> cats = {"0jet", "1jet", "ge2jet", "inclusive"};
+//std::vector<std::string> cats = {"0jet", "1jet", "ge2jet", "inclusive"};
+std::vector<std::string> cats = {"inclusive"};
 
 double x_bins[4] = {0,1,2,10000};
 double y_bins[11] = {0,50,80,90,100,120,160,200,400,800,10000};
@@ -109,10 +110,13 @@ for(unsigned cati=0; cati<cats.size(); ++cati){
         for(unsigned j=1; j<=(unsigned)h_data->GetNbinsY();++j){
           if(!(i == 1 || i== h_data->GetNbinsX() || j==h_data->GetNbinsY())){
               double data_content=h_data->GetBinContent(i,j);
-              data_total+=data_content;
               h_data->SetBinContent(i,j,data_content/data_total);
+              double data_error=h_data->GetBinError(i,j);
+              h_data->SetBinError(i,j,data_error/mc_total);
               double mc_content=h_mc->GetBinContent(i,j);
               h_mc->SetBinContent(i,j,mc_content/mc_total);
+              double mc_error=h_mc->GetBinError(i,j);
+              h_mc->SetBinError(i,j,mc_error/mc_total);
           }
         }
       }
@@ -249,6 +253,18 @@ for (unsigned i=0; i<(unsigned)h3_data->GetNbinsX(); ++i){
 }
 std::cout << "-------------------------" << std::endl;
 
+for (unsigned i=0; i<(unsigned)h_2dweights->GetNbinsX(); ++i){
+  for (unsigned j=0; j<(unsigned)h_2dweights->GetNbinsY(); ++j){
+      double mass   = h_2dweights->GetYaxis()->GetBinLowEdge(i+1);
+      double pt     = h_2dweights->GetZaxis()->GetBinLowEdge(j+1);
+      double weight = h_2dweights->GetBinContent(i+1,j+1);
+      double error =  h_2dweights->GetBinError(i+1,j+1);      
+      std::cout << "mass = " << mass << ", pt = " << pt << ", weight = " << weight << ", error = " << error*100/weight << "%" << std::endl;
+  }
+}
+std::cout << "-------------------------" << std::endl;
+
+std::cout << h_2dweights->GetBinContent(h_2dweights->GetXaxis()->FindBin(700),h_2dweights->GetYaxis()->FindBin(5)) << std::endl;
 //for (unsigned i=0; i<(unsigned)h3_data_normxbins->GetNbinsX(); ++i){
 //  for (unsigned j=0; j<(unsigned)h3_data_normxbins->GetNbinsY(); ++j){
 //    for (unsigned k=0; k<(unsigned)h3_data_normxbins->GetNbinsZ(); ++k){

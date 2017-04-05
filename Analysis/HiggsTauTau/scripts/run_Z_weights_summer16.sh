@@ -1,5 +1,5 @@
-cats=("inclusive" "0jet" "1jet" "ge2jet")
-#cats=("ge2jet")
+#cats=("inclusive" "0jet" "1jet" "ge2jet")
+cats=("inclusive")
 for cat in "${cats[@]}"; do
   if [ $cat == "0jet" ]; then
     bins1="0,10,20,30,40,60,80,600"
@@ -20,7 +20,7 @@ for cat in "${cats[@]}"; do
     bins7="0,40,80,120,200,600"
     bins8="0,40,80,600"
   elif [ $cat == "ge2jet" ]; then
-    bins1="0,10,20,30,40,60,80,120,160,200,600"
+    bins1="0,10,20,30,40,60,80,120,160,200,400,600"
     bins2="0,10,20,30,40,60,80,100,120,160,200,280,600"
     bins3="0,10,20,30,40,60,80,100,120,160,200,280,400,600"
     bins4="0,10,20,30,40,60,80,100,120,160,200,600"
@@ -30,12 +30,12 @@ for cat in "${cats[@]}"; do
     bins8="0,120,600"
   elif [ $cat == "inclusive" ]; then
     bins1="0,10,20,30,40,60,80,120,160,200,600"
-    bins2="0,10,20,30,40,60,80,100,120,160,200,280,320,600"
-    bins3="0,10,20,30,40,60,80,100,120,160,200,280,320,600"
+    bins2="0,10,20,30,40,60,80,100,120,160,200,280,320,400,600"
+    bins3="0,10,20,30,40,60,80,100,120,160,200,280,320,400,600"
     bins4="0,10,20,30,40,60,80,100,120,160,200,600"
     bins5="0,10,20,30,40,60,80,120,160,600"
-    bins6="0,10,20,30,40,60,80,120,600"
-    bins7="0,40,80,120,200,600"
+    bins6="0,10,20,30,40,60,80,120,200,600"
+    bins7="0,40,80,120,600"
     bins8="0,40,80,600"
   fi
 
@@ -58,7 +58,7 @@ for cat in "${cats[@]}"; do
   mv datacard_pt_tt_$cat"_zmm_2016".root datacard_pt_tt_$cat"_zmm_2016_mvis100to120.root"
   mv pt_tt_$cat"_zmm_2016_logy.png" pt_tt_$cat"_zmm_2016_logy_mvis100to120.png"
   mv pt_tt_$cat"_zmm_2016_logy.pdf" pt_tt_$cat"_zmm_2016_logy_mvis100to120.pdf"
-
+  
   python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --channel=zmm --set_alias="sel:(m_vis>120 && m_vis<160)"  --method=8 --cat="$cat" --var="pt_tt[$bins5]"  --x_title="Z pt [GeV]" --y_title="Entries" --datacard="$cat" --extra_pad=0.5 --log_y --outputfolder="./" --ratio --add_wt=wt_zpt_down #--syst_scale_j=JES --syst_tau_scale=TES
   mv datacard_pt_tt_$cat"_zmm_2016.root" datacard_pt_tt_$cat"_zmm_2016_mvis120to160.root"
   mv pt_tt_$cat"_zmm_2016_logy.png" pt_tt_$cat"_zmm_2016_logy_mvis120to160.png"

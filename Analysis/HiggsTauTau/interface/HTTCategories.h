@@ -847,6 +847,15 @@ class HTTCategories : public ModuleBase {
   double id_wt_down_     ;
   double iso_wt_up_      ;
   double iso_wt_down_    ;
+  
+  double wt_z_pt_weights_esup_    ;
+  double wt_z_pt_weights_esdown_  ;
+  double wt_z_pt_weights_idup_    ;
+  double wt_z_pt_weights_iddown_  ;
+  double wt_z_pt_weights_isoup_   ;
+  double wt_z_pt_weights_isodown_ ;
+  double wt_z_pt_weights_trgup_   ;
+  double wt_z_pt_weights_trgdown_ ;
 
  public:
   HTTCategories(std::string const& name);

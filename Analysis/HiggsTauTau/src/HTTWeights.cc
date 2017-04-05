@@ -603,13 +603,14 @@ namespace ic {
       eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
-      
+
       double wtzpt_stat_error = z_pt_mass_hist_->GetBinError(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
       
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       unsigned njets = jets.size();
       double wtzpt_njets = z_njet_mass_pt_hist_->GetBinContent(z_njet_mass_pt_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_hist_->GetZaxis()->FindBin(zpt));
+      double temp = z_njet_mass_pt_hist_->FindBin(njets,zmass,zpt);
       double wtzpt_njets_tscaleup = z_njet_mass_pt_tscaleup_hist_->GetBinContent(z_njet_mass_pt_tscaleup_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_tscaleup_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_tscaleup_hist_->GetZaxis()->FindBin(zpt));
       double wtzpt_njets_tscaledown = z_njet_mass_pt_tscaledown_hist_->GetBinContent(z_njet_mass_pt_tscaledown_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_tscaledown_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_tscaledown_hist_->GetZaxis()->FindBin(zpt));
       double wtzpt_njets_jscaleup = z_njet_mass_pt_jscaleup_hist_->GetBinContent(z_njet_mass_pt_jscaleup_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_jscaleup_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_jscaleup_hist_->GetZaxis()->FindBin(zpt));
@@ -618,7 +619,7 @@ namespace ic {
       double wtzpt_njets_normxbin = z_njet_mass_pt_normxbins_hist_->GetBinContent(z_njet_mass_pt_normxbins_hist_->GetXaxis()->FindBin(njets),z_njet_mass_pt_normxbins_hist_->GetYaxis()->FindBin(zmass),z_njet_mass_pt_normxbins_hist_->GetZaxis()->FindBin(zpt));
       event->Add("wt_zpt_njets_statup", (wtzpt_njets+wtzpt_njets_stat_error)/wtzpt);
       event->Add("wt_zpt_njets_statdown", (wtzpt_njets-wtzpt_njets_stat_error)/wtzpt); 
-      
+      std::cout << njets << "    " << zmass << "    " << zpt << "    " << temp << "    " << wtzpt_njets << std::endl;
       event->Add("wt_zpt_statup", (wtzpt+wtzpt_stat_error)/wtzpt);
       event->Add("wt_zpt_statdown", (wtzpt-wtzpt_stat_error)/wtzpt);
       
@@ -629,12 +630,31 @@ namespace ic {
       event->Add("wt_zpt_njets_jscaledown", wtzpt_njets_jscaledown/wtzpt);
       event->Add("wt_zpt_njets_normxbins", wtzpt_njets_normxbin/wtzpt);
       
+      double wt_z_pt_weights_esup    = z_pt_weights_esup_    ->GetBinContent(z_pt_weights_esup_   ->FindBin(zmass,zpt));
+      double wt_z_pt_weights_esdown  = z_pt_weights_esdown_  ->GetBinContent(z_pt_weights_esdown_ ->FindBin(zmass,zpt));
+      double wt_z_pt_weights_idup    = z_pt_weights_idup_    ->GetBinContent(z_pt_weights_idup_   ->FindBin(zmass,zpt));
+      double wt_z_pt_weights_iddown  = z_pt_weights_iddown_  ->GetBinContent(z_pt_weights_iddown_ ->FindBin(zmass,zpt));
+      double wt_z_pt_weights_isoup   = z_pt_weights_isoup_   ->GetBinContent(z_pt_weights_isoup_  ->FindBin(zmass,zpt));
+      double wt_z_pt_weights_isodown = z_pt_weights_isodown_ ->GetBinContent(z_pt_weights_isodown_->FindBin(zmass,zpt));
+      double wt_z_pt_weights_trgup   = z_pt_weights_trgup_   ->GetBinContent(z_pt_weights_trgup_  ->FindBin(zmass,zpt));
+      double wt_z_pt_weights_trgdown = z_pt_weights_trgdown_ ->GetBinContent(z_pt_weights_trgdown_->FindBin(zmass,zpt));
+      
+      event->Add("wt_z_pt_weights_esup"    ,wt_z_pt_weights_esup   );
+      event->Add("wt_z_pt_weights_esdown"  ,wt_z_pt_weights_esdown );
+      event->Add("wt_z_pt_weights_idup"    ,wt_z_pt_weights_idup   );
+      event->Add("wt_z_pt_weights_iddown"  ,wt_z_pt_weights_iddown );
+      event->Add("wt_z_pt_weights_isoup"   ,wt_z_pt_weights_isoup  );
+      event->Add("wt_z_pt_weights_isodown" ,wt_z_pt_weights_isodown);
+      event->Add("wt_z_pt_weights_trgup"   ,wt_z_pt_weights_trgup  );
+      event->Add("wt_z_pt_weights_trgdown" ,wt_z_pt_weights_trgdown);
+      
       double wt_extrap_up =1;
       if(!(zmass<50 || zmass>800 || zpt >600)){
         wt_extrap_up =  extrap_hist_->GetBinContent(extrap_hist_->GetXaxis()->FindBin(zmass),extrap_hist_->GetYaxis()->FindBin(zpt));   
       }
       event->Add("wt_extrap_up", wt_extrap_up);
       event->Add("wt_extrap_down", 1/wt_extrap_up);
+
     }
 
    if (do_tracking_eff_){

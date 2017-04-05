@@ -293,6 +293,15 @@ namespace ic {
       outtree_->Branch("iso_wt_up"   ,          &iso_wt_up_      );
       outtree_->Branch("iso_wt_down" ,          &iso_wt_down_    );
       
+      outtree_>Branch("wt_z_pt_weights_esup"    ,&wt_z_pt_weights_esup_   );
+      outtree_>Branch("wt_z_pt_weights_esdown"  ,&wt_z_pt_weights_esdown_ );
+      outtree_>Branch("wt_z_pt_weights_idup"    ,&wt_z_pt_weights_idup_   );
+      outtree_>Branch("wt_z_pt_weights_iddown"  ,&wt_z_pt_weights_iddown_ );
+      outtree_>Branch("wt_z_pt_weights_isoup"   ,&wt_z_pt_weights_isoup_  );
+      outtree_>Branch("wt_z_pt_weights_isodown" ,&wt_z_pt_weights_isodown_);
+      outtree_>Branch("wt_z_pt_weights_trgup"   ,&wt_z_pt_weights_trgup_  );
+      outtree_>Branch("wt_z_pt_weights_trgdown" ,&wt_z_pt_weights_trgdown_);
+      
       outtree_->Branch("wt_extrap_up", &wt_extrap_up_);
       outtree_->Branch("wt_extrap_down", &wt_extrap_down_);
       outtree_->Branch("wt_zpt_njets_normxbins", &wt_zpt_njets_normxbins_);
@@ -1478,6 +1487,25 @@ namespace ic {
     id_wt_down_     =1;
     iso_wt_up_      =1;
     iso_wt_down_    =1;
+    
+    wt_z_pt_weights_esup_   =1;
+    wt_z_pt_weights_esdown_ =1;
+    wt_z_pt_weights_idup_   =1;
+    wt_z_pt_weights_iddown_ =1;
+    wt_z_pt_weights_isoup_  =1;
+    wt_z_pt_weights_isodown_=1;
+    wt_z_pt_weights_trgup_  =1;
+    wt_z_pt_weights_trgdown_=1;
+    
+    if (event->Exists("wt_z_pt_weights_esup"    )) wt_z_pt_weights_esup_    = event->Get<double>("wt_z_pt_weights_esup"    );
+    if (event->Exists("wt_z_pt_weights_esdown"  )) wt_z_pt_weights_esdown_  = event->Get<double>("wt_z_pt_weights_esdown"  );
+    if (event->Exists("wt_z_pt_weights_idup"    )) wt_z_pt_weights_idup_    = event->Get<double>("wt_z_pt_weights_idup"    );
+    if (event->Exists("wt_z_pt_weights_iddown"  )) wt_z_pt_weights_iddown_  = event->Get<double>("wt_z_pt_weights_iddown"  );
+    if (event->Exists("wt_z_pt_weights_isoup"   )) wt_z_pt_weights_isoup_   = event->Get<double>("wt_z_pt_weights_isoup"   );
+    if (event->Exists("wt_z_pt_weights_isodown" )) wt_z_pt_weights_isodown_ = event->Get<double>("wt_z_pt_weights_isodown" );
+    if (event->Exists("wt_z_pt_weights_trgup"   )) wt_z_pt_weights_trgup_   = event->Get<double>("wt_z_pt_weights_trgup"   );
+    if (event->Exists("wt_z_pt_weights_trgdown" )) wt_z_pt_weights_trgdown_ = event->Get<double>("wt_z_pt_weights_trgdown" );
+    
     if (event->Exists("wt_zpt_njets"          )) wt_zpt_njets_           = event->Get<double>("wt_zpt_njets"          );
     if (event->Exists("wt_zpt_njets_statup"          )) wt_zpt_njets_statup_           = event->Get<double>("wt_zpt_njets_statup"          );
     if (event->Exists("wt_zpt_njets_statdown"          )) wt_zpt_njets_statdown_           = event->Get<double>("wt_zpt_njets_statdown"          );
@@ -1498,7 +1526,6 @@ namespace ic {
     if (event->Exists("id_wt_down"      )) id_wt_down_       = event->Get<double>("id_wt_down"      );
     if (event->Exists("iso_wt_up"       )) iso_wt_up_        = event->Get<double>("iso_wt_up"       );
     if (event->Exists("iso_wt_down"     )) iso_wt_down_      = event->Get<double>("iso_wt_down"     );
-    
     
     
     run_ = eventInfo->run();

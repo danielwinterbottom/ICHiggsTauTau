@@ -53,6 +53,8 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_tau_id_sf)
   CLASS_MEMBER(HTTWeights, bool, do_em_qcd_weights)
   CLASS_MEMBER(HTTWeights, TH2D*, z_pt_mass_hist)
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_mass_nlo_vs_lo_hist)
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_mass_b_nlo_vs_lo_hist)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_idiso_mc)
   CLASS_MEMBER(HTTWeights, TH2D*, mt_idiso_data)
   CLASS_MEMBER(HTTWeights, TH2D*, et_idiso_mc)
@@ -104,12 +106,22 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2D*, mu_id_hist)
   CLASS_MEMBER(HTTWeights, TH2D*, mu_iso_hist)
   CLASS_MEMBER(HTTWeights, TH2D*, mu_trg_hist)
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_weights_esup   )
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_weights_esdown )
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_weights_idup   )
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_weights_iddown )
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_weights_isoup  )
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_weights_isodown)
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_weights_trgup  )
+  CLASS_MEMBER(HTTWeights, TH2D*, z_pt_weights_trgdown)
+  
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
   TH2D *hist_muTauSF2011PFTau15;
   TH2D *hist_muTauSF2011PFTau15MC;
   TH2D *hist_muTauSF2011PFTau20;
+  
 
 
   TFile *ElectronFRFile;
