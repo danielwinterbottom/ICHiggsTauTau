@@ -313,9 +313,18 @@ if SCHEME == 'run2_mssm_summer2016':
     ("8",   "btag",    "btag",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5&&antiele_1 && antimu_1 && antiele_2 &&antimu_2 && leptonveto<0.5" '),
   ]
   scheme_em = [
-    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
-    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
-    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-50"'),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-50"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-50"'),
+    ("15",   "inclusive",    "inclusive_lowPzeta",  BINS_FINE, '--set_alias="sel:pzeta>-50&&pzeta<=-10"'),
+    ("15",   "inclusive",    "inclusive_mediumPzeta",  BINS_FINE, '--set_alias="sel:pzeta>-10&&pzeta<=30"'),
+    ("15",   "inclusive",    "inclusive_highPzeta",  BINS_FINE, '--set_alias="sel:pzeta>30"'),
+    ("15",   "nobtag",    "nobtag_lowPzeta",  BINS_FINE, '--set_alias="sel:pzeta>-50&&pzeta<=-10"'),
+    ("15",   "nobtag",    "nobtag_mediumPzeta",  BINS_FINE, '--set_alias="sel:pzeta>-10&&pzeta<=30"'),
+    ("15",   "nobtag",    "nobtag_highPzeta",  BINS_FINE, '--set_alias="sel:pzeta>30"'),
+    ("15",   "btag",    "btag_lowPzeta",  BINS, '--set_alias="sel:pzeta>-50&&pzeta<=-10"'),
+    ("15",   "btag",    "btag_mediumPzeta",  BINS, '--set_alias="sel:pzeta>-10&&pzeta<=30"'),
+    ("15",   "btag",    "btag_highPzeta",  BINS, '--set_alias="sel:pzeta>30"')
   ]
   bkg_schemes = {
     'et' : 'et_default',
