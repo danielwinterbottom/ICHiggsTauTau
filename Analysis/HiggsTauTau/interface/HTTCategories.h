@@ -450,6 +450,7 @@ class HTTCategories : public ModuleBase {
 
   double em_gf_mva_;
   double em_vbf_mva_;
+
   
   double ff_weight_inclusive_;
   double ff_weight_inclusive_2_;
@@ -457,6 +458,13 @@ class HTTCategories : public ModuleBase {
   double ff_weight_nobtag_2_;
   double ff_weight_btag_;
   double ff_weight_btag_2_;
+  double ff_weight_nobtag_tight_    ;
+  double ff_weight_nobtag_loosemt_  ;
+  double ff_weight_nobtag_looseiso_ ;
+  double ff_weight_btag_tight_      ;
+  double ff_weight_btag_loosemt_    ;
+  double ff_weight_btag_looseiso_   ;
+
   
   double wt_ff_inclusive_qcd_syst_up_            ;
   double wt_ff_inclusive_qcd_syst_down_          ;
