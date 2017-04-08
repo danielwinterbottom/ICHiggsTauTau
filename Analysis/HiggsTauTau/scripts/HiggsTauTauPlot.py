@@ -226,9 +226,11 @@ elif options.analysis == 'mssm':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
             cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['ichep_baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
             cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['ichep_baseline'] = '(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
@@ -258,6 +260,8 @@ cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
 cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
+
+if options.method == 17: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
 if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt' or options.cat == 'btag_tight_wnobtag':
@@ -721,10 +725,10 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
     # Select data from anti-isolated region
     if options.channel != "tt":
         if options.channel == 'mt':
-            anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            anti_isolated_sel = '(iso_1<0.15 && mva_olddm_medium_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
             if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singlemuon"
         elif options.channel == 'et': 
-            anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            anti_isolated_sel = '(iso_1<0.1  && mva_olddm_medium_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
             if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singleelectron"
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
         fake_factor_wt_string = "wt_ff_"+options.cat

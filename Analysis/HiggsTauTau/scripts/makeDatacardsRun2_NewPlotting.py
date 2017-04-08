@@ -275,13 +275,6 @@ if SCHEME == 'run2_mssm_summer2016':
     ("16",   "btag_looseiso",    "btag_looseiso_wjets_cr",  BINS, '--set_alias="sel:(mt_1>70)"  '),
     ("16",   "btag_looseiso",    "btag_looseiso_wjets_ss_cr",  BINS, '--set_alias="sel:(mt_1>70)" --do_ss '), 
     ("16",   "btag_looseiso",    "btag_looseiso_qcd_cr",  BINS, '--do_ss')
-    #("17",   "inclusive",  "inclusive_ff",  BINS_FINE, '--set_alias="baseline:({ichep_baseline})"'),
-    #("17",   "nobtag_tight",    "nobtag_tight_ff",  BINS_FINE, ''),
-    #("17",   "nobtag_loosemt",    "nobtag_loosemt_ff",  BINS_FINE, ''),
-    #("17",   "nobtag_looseiso",    "nobtag_looseiso_ff",  BINS_FINE, '--set_alias="baseline:({ichep_baseline})"'),
-    #("17",   "btag_tight",    "btag_tight_ff",  BINS, ''),
-    #("17",   "btag_loosemt",    "btag_loosemt_ff",  BINS, ''),
-    #("17",   "btag_looseiso",    "btag_looseiso_ff",  BINS, '--set_alias="baseline:({ichep_baseline})"')
   ]
   scheme_mt = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
@@ -307,13 +300,7 @@ if SCHEME == 'run2_mssm_summer2016':
     ("16",   "btag_looseiso",    "btag_looseiso_wjets_cr",  BINS, '--set_alias="sel:(mt_1>70)"  '),
     ("16",   "btag_looseiso",    "btag_looseiso_wjets_ss_cr",  BINS, '--set_alias="sel:(mt_1>70)" --do_ss '), 
     ("16",   "btag_looseiso",    "btag_looseiso_qcd_cr",  BINS, '--do_ss'),
-    #("17",   "inclusive",  "inclusive_ff",  BINS_FINE, '--set_alias="baseline:({ichep_baseline})"'),
-    #("17",   "nobtag_tight",    "nobtag_tight_ff",  BINS_FINE, ''),
-    #("17",   "nobtag_loosemt",    "nobtag_loosemt_ff",  BINS_FINE, ''),
-    #("17",   "nobtag_looseiso",    "nobtag_looseiso_ff",  BINS_FINE, '--set_alias="baseline:({ichep_baseline})"'),
-    #("17",   "btag_tight",    "btag_tight_ff",  BINS, ''),
-    #("17",   "btag_loosemt",    "btag_loosemt_ff",  BINS, ''),
-    #("17",   "btag_looseiso",    "btag_looseiso_ff",  BINS, '--set_alias="baseline:({ichep_baseline})"')
+
 
 
   ]
@@ -321,9 +308,7 @@ if SCHEME == 'run2_mssm_summer2016':
     ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
     ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
     ("8",   "btag",    "btag",  BINS, ''),
-    #("17",   "inclusive",    "inclusive_ff",  BINS_FINE,  ''),
-    #("17",   "nobtag",    "nobtag_ff",  BINS_FINE, ''),
-    #("17",   "btag",    "btag_ff",  BINS, '" '),
+
   ]
   scheme_em = [
     ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
@@ -339,6 +324,50 @@ if SCHEME == 'run2_mssm_summer2016':
   sig_scheme = 'run2_mssm'
   ANA = 'mssm'
   
+if SCHEME == 'run2_mssm_summer2016_ff':
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  if options.const:
+    BINS_FINE="(98,0,3920)"
+    BINS="(98,0,3920)"
+
+  scheme_et = [
+    ("17",   "inclusive",  "inclusive_ff",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("17",   "nobtag_tight",    "nobtag_tight_ff",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("17",   "nobtag_loosemt",    "nobtag_loosemt_ff",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("17",   "nobtag_looseiso",    "nobtag_looseiso_ff",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("17",   "btag_tight",    "btag_tight_ff",  BINS, ''),
+    ("17",   "btag_loosemt",    "btag_loosemt_ff",  BINS, ''),
+    ("17",   "btag_looseiso",    "btag_looseiso_ff",  BINS, '--sel="(mt_1<70)"')
+  ]
+  scheme_mt = [
+    ("17",   "inclusive",  "inclusive_ff",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("17",   "nobtag_tight",    "nobtag_tight_ff",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("17",   "nobtag_loosemt",    "nobtag_loosemt_ff",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("17",   "nobtag_looseiso",    "nobtag_looseiso_ff",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("17",   "btag_tight",    "btag_tight_ff",  BINS, '--sel="(mt_1<70)"'),
+    ("17",   "btag_loosemt",    "btag_loosemt_ff",  BINS, '--sel="(mt_1<70)"'),
+    ("17",   "btag_looseiso",    "btag_looseiso_ff",  BINS, '--sel="(mt_1<70)"')
+
+  ]
+  scheme_tt = [
+    ("17",   "inclusive",    "inclusive_ff",  BINS_FINE,  ''),
+    ("17",   "nobtag",    "nobtag_ff",  BINS_FINE, ''),
+    ("17",   "btag",    "btag_ff",  BINS, '" ')
+  ]
+  scheme_em = [
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default',
+    'tt' : 'tt_default'
+  }
+  sig_scheme = 'run2_mssm'
+  ANA = 'mssm'
   
 cat_schemes = {
   'et' : scheme_et,
