@@ -737,9 +737,9 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
     
         full_selection = BuildCutString(wt, sel, ff_cat, OSSS, '')
         # Calculate FF for anti-isolated data (f1) then subtract contributions from real taus (f2)
-        f1 = ana.SummedFactory('f1', data, plot, full_selection)
-        f2 = ana.SummedFactory('f2', ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection+"*(gen_match_2<6)")
-        ana.nodes[nodename].AddNode(SubtractNode('FakeTaus'+add_name, f1, f2))
+        f1 = ana.SummedFactory('data', data, plot, full_selection)
+        f2 = GetSubtractNode(ana,'',plot,wt,sel+'*(gen_match_2<6)',ff_cat,8,1.0,True,True)
+        ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1, f2))
         
     if options.channel == 'tt':
         anti_isolated_sel_1 = '(mva_olddm_tight_1<0.5 && mva_olddm_vloose_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
@@ -762,14 +762,14 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
         full_selection_1 = BuildCutString(wt_1, sel, ff_cat_1, OSSS, '')
         full_selection_2 = BuildCutString(wt_2, sel, ff_cat_2, OSSS, '')
         
-        ff_total_node = SummedNode('FakeTaus'+add_name)
-        f1_total_node = SummedNode('f1'+add_name)
-        f1_total_node.AddNode(ana.SummedFactory('f1_1'+add_name, data, plot, full_selection_1))
-        f1_total_node.AddNode(ana.SummedFactory('f1_2'+add_name, data, plot, full_selection_2))
-        f2_total_node = SummedNode('f2'+add_name)
-        f2_total_node.AddNode(ana.SummedFactory('f2_1'+add_name, ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection_1+"*(gen_match_1<6)"))
-        f2_total_node.AddNode(ana.SummedFactory('f2_2'+add_name, ztt_samples+vv_samples+top_samples+wjets_samples, plot, full_selection_2+"*(gen_match_2<6)"))
-        ana.nodes[nodename].AddNode(SubtractNode('FakeTaus'+add_name, f1_total_node, f2_total_node))
+        ff_total_node = SummedNode('jetFakes'+add_name)
+        f1_total_node = SummedNode('data')
+        f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot, full_selection_1))
+        f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot, full_selection_2))
+        f2_total_node = SummedNode('total_bkg')
+        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,wt_1,sel+'*(gen_match_1<6)',ff_cat_1,8,1.0,True,True))
+        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,wt_2,sel+'*(gen_match_2<6)',ff_cat_2,8,1.0,True,True))
+        ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = ''):
     if get_os:
