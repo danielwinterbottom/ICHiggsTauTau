@@ -28,7 +28,7 @@ class HTTFakeFactorWeights : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
   
-  std::map<std::string, FakeFactor*> fake_factors_;
+  std::map<std::string, std::shared_ptr<FakeFactor>> fake_factors_;
   std::vector<std::string> category_names_;
 
 };

@@ -40,7 +40,7 @@ namespace ic {
     
     std::string file_name = "";
     if(strategy_ == strategy::smspring16) file_name = "fakeFactors_20170111.root";
-    else if (strategy_ == strategy::mssmsummer16) file_name = "fakeFactors_20170228.root";
+    else if (strategy_ == strategy::mssmsummer16) file_name = "fakeFactors_20170330_tight.root";
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
@@ -49,7 +49,9 @@ namespace ic {
       TFile* ff_file = new TFile(ff_file_name.c_str());
       FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
       std::string map_key = category_names_[i];
-      fake_factors_[map_key]  = ff; 
+      fake_factors_[map_key]  = std::shared_ptr<FakeFactor>(ff);
+      ff_file->Close();
+      delete ff_file;
     }
 
     return 0;

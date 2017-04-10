@@ -282,15 +282,23 @@ namespace ic {
       }
       
       // fake-factor weights
-      if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){  
+      if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){
         if (channel_ == channel::tt ){
-          outtree_->Branch("wt_ff_inclusive_1",    &ff_weight_inclusive_);  
+          outtree_->Branch("wt_ff_inclusive_1",    &ff_weight_inclusive_);
           outtree_->Branch("wt_ff_inclusive_2",    &ff_weight_inclusive_2_);
-          outtree_->Branch("wt_ff_nobtag_1",    &ff_weight_nobtag_);  
+          outtree_->Branch("wt_ff_nobtag_1",    &ff_weight_nobtag_);
           outtree_->Branch("wt_ff_nobtag_2",    &ff_weight_nobtag_2_);
-          outtree_->Branch("wt_ff_btag_1",    &ff_weight_btag_);  
+          outtree_->Branch("wt_ff_btag_1",    &ff_weight_btag_);
           outtree_->Branch("wt_ff_btag_2",    &ff_weight_btag_2_);
-        } else outtree_->Branch("wt_ff_inclusive",    &ff_weight_inclusive_);
+        } else{
+          outtree_->Branch("wt_ff_inclusive",    &ff_weight_inclusive_);
+          outtree_->Branch("wt_ff_nobtag_tight",    &ff_weight_nobtag_tight_);
+          outtree_->Branch("wt_ff_nobtag_loosemt",    &ff_weight_nobtag_loosemt_);
+          outtree_->Branch("wt_ff_nobtag_looseiso",    &ff_weight_nobtag_looseiso_);
+          outtree_->Branch("wt_ff_btag_tight",    &ff_weight_btag_tight_);
+          outtree_->Branch("wt_ff_btag_loosemt",    &ff_weight_btag_loosemt_);
+          outtree_->Branch("wt_ff_btag_looseiso",    &ff_weight_btag_looseiso_);
+        }
           
         if(do_ff_systematics_){
           if(channel_ == channel::et || channel_ == channel::mt){
@@ -1428,19 +1436,25 @@ namespace ic {
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
     
-    // fake-factor weights
-    if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){  
-      if(channel_ == channel::et || channel_ == channel::mt){
-        if(event->Exists("wt_ff_inclusive")) ff_weight_inclusive_ = event->Get<double>("wt_ff_inclusive");
-      }
-      else if(channel_ == channel::tt){
-        if(event->Exists("wt_ff_inclusive"  )) ff_weight_inclusive_   = event->Get<double>("wt_ff_inclusive"   ); 
-        if(event->Exists("wt_ff_inclusive_2")) ff_weight_inclusive_2_ = event->Get<double>("wt_ff_inclusive_2");
-        if(event->Exists("wt_ff_nobtag"     )) ff_weight_nobtag_      = event->Get<double>("wt_ff_nobtag"     ); 
-        if(event->Exists("wt_ff_nobtag_2"   )) ff_weight_nobtag_2_    = event->Get<double>("wt_ff_nobtag_2"   );
-        if(event->Exists("wt_ff_btag"       )) ff_weight_btag_        = event->Get<double>("wt_ff_btag"       ); 
-        if(event->Exists("wt_ff_btag_2"     )) ff_weight_btag_2_      = event->Get<double>("wt_ff_btag_2"     );
-      }
+      // fake-factor weights        
+      if (do_ff_weights_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::tt)){
+        if(channel_ == channel::et || channel_ == channel::mt){
+          if(event->Exists("wt_ff_inclusive")) ff_weight_inclusive_ = event->Get<double>("wt_ff_inclusive");
+          if(event->Exists("wt_ff_nobtag_tight"   )) ff_weight_nobtag_tight_    = event->Get<double>("wt_ff_nobtag_tight"   );
+          if(event->Exists("wt_ff_nobtag_loosemt" )) ff_weight_nobtag_loosemt_  = event->Get<double>("wt_ff_nobtag_loosemt" );
+          if(event->Exists("wt_ff_nobtag_looseiso")) ff_weight_nobtag_looseiso_ = event->Get<double>("wt_ff_nobtag_looseiso");
+          if(event->Exists("wt_ff_btag_tight"     )) ff_weight_btag_tight_      = event->Get<double>("wt_ff_btag_tight"     );
+          if(event->Exists("wt_ff_btag_loosemt"   )) ff_weight_btag_loosemt_    = event->Get<double>("wt_ff_btag_loosemt"   );
+          if(event->Exists("wt_ff_btag_looseiso"  )) ff_weight_btag_looseiso_   = event->Get<double>("wt_ff_btag_looseiso"  );
+        } else if(channel_ == channel::tt){
+          if(event->Exists("wt_ff_inclusive"  )) ff_weight_inclusive_   = event->Get<double>("wt_ff_inclusive"   );
+          if(event->Exists("wt_ff_inclusive_2")) ff_weight_inclusive_2_ = event->Get<double>("wt_ff_inclusive_2");
+          if(event->Exists("wt_ff_nobtag"     )) ff_weight_nobtag_      = event->Get<double>("wt_ff_nobtag"     );
+          if(event->Exists("wt_ff_nobtag_2"   )) ff_weight_nobtag_2_    = event->Get<double>("wt_ff_nobtag_2"   );
+          if(event->Exists("wt_ff_btag"       )) ff_weight_btag_        = event->Get<double>("wt_ff_btag"       );
+          if(event->Exists("wt_ff_btag_2"     )) ff_weight_btag_2_      = event->Get<double>("wt_ff_btag_2"     );
+        }
+
       
       if(do_ff_systematics_){
         if(channel_ == channel::et || channel_ == channel::mt){
