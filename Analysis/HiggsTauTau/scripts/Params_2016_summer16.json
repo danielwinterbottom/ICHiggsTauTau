@@ -1,15 +1,15 @@
 {
   "DY1JetsToLL-LO": {
     "xs": 5765.4,
-    "evt": 96658943
+    "evt": 145803217
   },
   "DY1JetsToLL_M-10-50-LO": {
     "xs": 1,
-    "evt": 39840774
+    "evt": 39761407
   },
   "DY2JetsToLL-LO": {
     "xs": 5765.4,
-    "evt": 96658943
+    "evt": 145803217
   },
   "DY2JetsToLL_M-10-50-LO": {
     "xs": 1,
@@ -17,7 +17,7 @@
   },
   "DY3JetsToLL-LO": {
     "xs": 5765.4,
-    "evt": 96658943
+    "evt": 145803217
   },
   "DY3JetsToLL_M-10-50-LO": {
     "xs": 1,
@@ -25,15 +25,15 @@
   },
   "DY4JetsToLL-LO": {
     "xs": 5765.4,
-    "evt": 96658943
+    "evt": 145803217
   },
   "DYJetsToLL-LO-ext1": {
     "xs": 5765.4,
-    "evt": 49144274
+    "evt": 145803217
   },
   "DYJetsToLL-LO-ext2": {
     "xs": 5765.4,
-    "evt": 96658943
+    "evt": 145803217
   },
   "DYJetsToLL": {
     "xs": 5765.4,
@@ -69,7 +69,7 @@
   },
   "EWKWPlus2Jets_WToLNu-ext2": {
     "xs": 25.62,
-    "evt": 3840121
+    "evt": 3939705
   },
   "EWKWPlus2Jets_WToLNu": {
     "xs": 25.62,
@@ -353,43 +353,55 @@
   },
   "VVTo2L2Nu": {
     "xs": 11.95,
-    "evt": 1728662
+    "evt": 5913675
   },
-  "VVTo2L2Nuext1": {
+  "VVTo2L2Nu-ext1": {
     "xs": 11.95,
-    "evt": 4185013
+    "evt": 5913675
   },
   "W1JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 57026058
+    "evt": 86731806
+  },
+  "W2JetsToLNu-LO-ext": {
+    "xs": 61526.7,
+    "evt": 86731806
   },
   "W2JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 57026058
+    "evt": 86731806
   },
   "W3JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 57026058
+    "evt": 86731806
   },
-  "W4JetsToLNu-LO-ext1": {
+  "W3JetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 2073275
-  },
-  "W4JetsToLNu-LO-ext2": {
-    "xs": 61526.7,
-    "evt": 57026058
+    "evt": 86731806
   },
   "W4JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 9170576
+    "evt": 86731806
+  },
+  "W4JetsToLNu-LO-ext1": {
+    "xs": 61526.7,
+    "evt": 86731806
+  },
+  "W4JetsToLNu-LO-ext2": {
+    "xs": 61526.7,
+    "evt": 86731806
+  },
+  "W4JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 86731806
   },
   "WGToLNuG-ext": {
     "xs": 489,
-    "evt": 3235156
+    "evt": 9800270
   },
   "WGToLNuG": {
     "xs": 489,
-    "evt": 6565114
+    "evt": 9800270
   },
   "WGstarToLNuEE": {
     "xs": 3.526,
@@ -401,15 +413,15 @@
   },
   "WJetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 57026058
+    "evt": 86731806
   },
   "WJetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 29705748
+    "evt": 86731806
   },
   "WJetsToLNu": {
     "xs": 61526.7,
-    "evt": 16428691
+    "evt": 16428677
   },
   "WWTo1L1Nu2Q": {
     "xs": 49.997,
@@ -425,7 +437,7 @@
   },
   "WZJToLLLNu": {
     "xs": 4.708,
-    "evt": 1930828
+    "evt": 1197418
   },
   "WZTo1L1Nu2Q": {
     "xs": 10.71,
