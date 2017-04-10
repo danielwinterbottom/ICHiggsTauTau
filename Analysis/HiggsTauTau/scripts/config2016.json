@@ -1,10 +1,10 @@
 {
   "job": {
     "filelist" : "filelists/Mar11_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar11_MC_80X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr05_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["em", "et", "mt", "tt", "zee", "zmm"],
+    "channels":     ["em" "et", "mt", "tt", "zmm" , "zee"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -54,7 +54,7 @@
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "ff_categories" :"inclusive,btag,nobtag",
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Mar11/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Apr05/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -114,7 +114,10 @@
         "max_extra_elecs": 1,
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true
+        "do_tau_anti_elec":true,
+        "do_ff_weights" : true,
+        "do_ff_systematics": false,
+        "ff_categories" :"btag_looseiso,btag_loosemt,btag_tight,inclusive,nobtag_looseiso,nobtag_loosemt,nobtag_tight"
           }
     },
  "tt": {
@@ -124,7 +127,10 @@
         "extra_elec_veto" : true,
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true
+        "do_tau_anti_elec":true,
+        "do_ff_weights" : true,
+        "do_ff_systematics": false,
+        "ff_categories" :"btag,inclusive,nobtag"
       }
     },
 
@@ -137,7 +143,10 @@
         "max_extra_elecs": 0,
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true
+        "do_tau_anti_elec":true,
+        "do_ff_weights" : true,
+        "do_ff_systematics": false,
+        "ff_categories" :"btag_looseiso,btag_loosemt,btag_tight,inclusive,nobtag_looseiso,nobtag_loosemt,nobtag_tight"
       }
     },
     "em": {
