@@ -419,6 +419,7 @@ namespace ic {
          event->Add("wt_tau_fake_down", weight_down);
         }
       }
+    }
 
     if (do_tau_id_weights_) {
       if(era_ != era::data_2015 && era_!=era::data_2016){
