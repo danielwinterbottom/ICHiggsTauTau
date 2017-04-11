@@ -152,12 +152,12 @@ class Jobs:
                 log_part = '\n'
                 if do_log: log_part = ' 2>&1 | %s ' % tee + logname + log_part
                 text_file.write(command + log_part)
-                if self.tracking:
-                    full_path = os.path.abspath(script_filename)
-                    text_file.write('mv %s %s\n' % (
-                            full_path.replace('.sh', '.status.running'),
-                            full_path.replace('.sh', '.status.done')
-                        ))
+            if self.tracking:
+                full_path = os.path.abspath(script_filename)
+                text_file.write('mv %s %s\n' % (
+                        full_path.replace('.sh', '.status.running'),
+                        full_path.replace('.sh', '.status.done')
+                    ))
         st = os.stat(fname)
         os.chmod(fname, st.st_mode | stat.S_IEXEC)
         print 'Created job script: %s' % script_filename
