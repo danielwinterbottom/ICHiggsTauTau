@@ -228,6 +228,7 @@ namespace ic {
       outtree_->Branch("pt_vistaup",   &pt_vistaup);
       outtree_->Branch("njets", &njets);
       outtree_->Branch("mjj",   &mjj);
+      outtree_->Branch("wt",   &wt);
     }
     return 0;
   }
@@ -313,6 +314,9 @@ namespace ic {
     } else {
       mjj = 0.;
     }
+    
+    auto info = event->GetPtr<EventInfo>("eventInfo");
+    wt = info->total_weight();
     outtree_->Fill();
     return 0;
   }

@@ -114,6 +114,7 @@ class TheoryTreeProducer : public ModuleBase {
   float pt_vistaum;
   int njets;
   float mjj;
+  float wt;
 
  public:
   TheoryTreeProducer(std::string const& name);

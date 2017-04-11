@@ -18,6 +18,8 @@ PROD=''
 
 DATA_SAMPLES = {
 }
+
+
 MC_SAMPLES = {
     'A_500_15_b_b':         ['A_500_15_b_b'],
     'A_500_15_b_tb':        ['A_500_15_b_tb'],
@@ -25,6 +27,25 @@ MC_SAMPLES = {
     'A_500_15_t_tb':        ['A_500_15_t_tb'],
     'A_500_15_tb_tb':       ['A_500_15_tb_tb']
 }
+
+for part in [
+        #'A_500_5',
+        #'A_500_15',
+        #'A_500_30',
+        #'H_500_5',
+        #'H_500_15',
+        #'H_500_30',
+        'H_500_40',
+        'H_500_50',
+        #'s_120_5',
+        #'s_120_15',
+        #'s_120_30',
+        ]:
+    MC_SAMPLES['%s_b_b' % part]    = ['%s_b_b' % part]
+    MC_SAMPLES['%s_b_tb' % part]   = ['%s_b_tb' % part]
+    MC_SAMPLES['%s_t_t' % part]    = ['%s_t_t' % part]
+    MC_SAMPLES['%s_t_tb' % part]   = ['%s_t_tb' % part]
+    MC_SAMPLES['%s_tb_tb' % part]  = ['%s_tb_tb' % part]
 
 if args.pythia:
     PROD='Apr3_'
@@ -132,5 +153,5 @@ for sa in SAMPLES:
         cfg=cfg,
         files_per_job=FILES_PER_JOB,
         output_cfgs=['output_name', 'lumi_out', 'trigger_info_output'])
-    job_mgr.task_name = task + '-' + sa
-    job_mgr.flush_queue()
+    #job_mgr.task_name = task + '-' + sa
+job_mgr.flush_queue()
