@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-from hlt_VBF_noCSVL1em import process # adapt to your case
+from hlt_VBF_matching_mJJ_L1em import process # adapt to your case
 
 
 process.source.fileNames          = cms.untracked.vstring([
@@ -204,9 +204,9 @@ process.hltOutputFULL = cms.OutputModule( 'PoolOutputModule',
         filterName = cms.untracked.string( '' )
     ),
     outputCommands = cms.untracked.vstring( 'keep *' ),
-    SelectEvents = cms.untracked.PSet(
-        SelectEvents = cms.vstring('HLT_*',)
-    )
+#    SelectEvents = cms.untracked.PSet(
+#        SelectEvents = cms.vstring('HLT_*',)
+#    )
 )
 
 # keep all the MINIAOD content, and the updated trigger collections
@@ -257,7 +257,7 @@ process.hltOutputFULL.outputCommands = cms.untracked.vstring(
 )
 
 process.hltOutputFULL.fileName = cms.untracked.string(
-    'outputFULLVBFnoCSVTEST.root'
+    'outputFULLVBFtestingevents.root'
 )
 
 process.FULLOutput = cms.EndPath( process.hltOutputFULL )

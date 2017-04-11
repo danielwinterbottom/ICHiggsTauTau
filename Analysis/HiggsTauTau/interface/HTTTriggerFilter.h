@@ -8,6 +8,8 @@
 #include <string>
 #include <fstream>
 
+#include <TH1D.h>
+#include <TCanvas.h>
 
 namespace ic {
 
@@ -33,6 +35,9 @@ class HTTTriggerFilter : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+
+  TH1D *h1;
+  TCanvas *c1;
 
 };
 
