@@ -34,6 +34,10 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_singlelepton" % do_singlelepton_;
     std::cout << boost::format(param_fmt()) % "do_singletau"    % do_singletau_;
     std::cout << boost::format(param_fmt()) % "do_filter"       % do_filter_;
+
+    h1 = new TH1D("h1","(offline.Pt()-HLT.Pt())/offline.Pt()",50,-1.5,1.5);
+    c1 = new TCanvas("c1","c1",800,1000);
+
     return 0;
   }
 
@@ -66,7 +70,32 @@ namespace ic {
     std::string singletau_trg_obj_label;
     double min_online_singletau_pt=0;
     std::string singletau_leg1_filter;
+
+
+    // For testing HLT online/offline jets matching
+    std::vector<TriggerObject *> const& vbf_objs = event->GetPtrVec<TriggerObject>("triggerVBF");
+    std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+    std::vector<TriggerObject *> matched_vbf_objs;
+
+    for (unsigned i = 0; i < jets.size(); ++i)
+    {
+      int index = IsFilterMatchedWithIndex(jets[i], vbf_objs, "hltDiPFJetOpenMJJOpen", 0.5).second;
+      if (IsFilterMatchedWithIndex(jets[i], vbf_objs, "hltDiPFJetOpenMJJOpen", 0.5).first == true)
+      {
+      	matched_vbf_objs.push_back(vbf_objs[index]);
+      	h1->Fill((jets[i]->vector().Pt()-vbf_objs[index]->vector().Pt())/jets[i]->vector().Pt());
+      }
+      else 
+          break;
+//      std::cout << jets[i]->vector().Pt() << ' ';
+//      std::cout << vbf_objs[index]->vector().Pt() << std::endl;
+
+    }
     
+
+
+
+
     if (is_data_) { //Switch this part off temporarily as we don't have this vector in first processed data
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
@@ -83,7 +112,7 @@ namespace ic {
           if (run >= 160404 && run <= 163869 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau15_v") != name.npos) path_found = true;
           if (run >= 165088 && run <= 167913 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v") != name.npos) path_found = true;
           if (run >= 170249 && run <= 173198 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TightIsoPFTau20_v") != name.npos) path_found = true;
-          if (run >= 173236 && run <= 178380 && name.find("HLT_Ele18_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v") != name.npos) path_found = true;
+          if (run >= 173236 && run <= 178380 && name.find("HLT_Ele18_CaloIdVT_CaloIsoT_TrkIdT_TrkIdsoT_MediumIsoPFTau20_v") != name.npos) path_found = true;
           if (run >= 173236 && run <= 178380 && name.find("HLT_Ele20_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v") != name.npos) {
             path_found      = true;
             fallback_found  = true; 
@@ -1025,8 +1054,11 @@ namespace ic {
 }
 
   int HTTTriggerFilter::PostAnalysis() {
+    h1->Draw();
+    c1->Update();
+    c1->Print("nameplot.pdf");
     return 0;
-  }
+    }
 
   void HTTTriggerFilter::PrintInfo() {
     ;
