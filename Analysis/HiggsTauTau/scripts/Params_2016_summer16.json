@@ -243,6 +243,10 @@
     "xs": 1.0,
     "evt": 497273
   },
+  "SUSYGluGluToHToTauTau_M-140": {
+    "xs": 1.0,
+    "evt": 100000
+  },
   "SUSYGluGluToHToTauTau_M-1400": {
     "xs": 1.0,
     "evt": 100000
