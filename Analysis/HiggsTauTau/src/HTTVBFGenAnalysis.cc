@@ -77,13 +77,6 @@ namespace ic {
   }
 
 
-int ComparePt(TriggerObject *A, TriggerObject *B)
-{
-
-return A->vector().Pt()>B->vector().Pt();
-
-}
-
   int HTTVBFGenAnalysis::Execute(TreeEvent *event) {
     
     //EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -125,56 +118,54 @@ return A->vector().Pt()>B->vector().Pt();
 				max_mjj = (VBFobjs[i]->vector()+VBFobjs[j]->vector()).M();
 	}
 }*/
+    for (unsigned i = 0; i < jet_objs.size(); ++i)
+	{ 
+   bool a =IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltL1DiJetVBF", 0.5).first;
+   bool b = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltCaloJetsCorrectedMatchedToL1", 0.5).first;
+   bool c =IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).first;
 
-    for (unsigned i = 0; i < VBFobjs.size(); ++i)
-	{
-	int HLT_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).second;
+	if (a){
+	
 	int L1_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltL1DiJetVBF", 0.5).second;
-	int Calo_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltCaloJetsCorrectedMatchedToL1", 0.5).second;
-    bool a =IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltL1DiJetVBF", 0.5).first;
-    bool b = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltCaloJetsCorrectedMatchedToL1", 0.5).first;
-
-
-	if (a == false)
-	{
-
-	std::cout<<"Problem with L1_match"<<std::endl;
-	}
-
-	if (b==false)
-	{
-
-	std::cout<<"Problem with Calo_match"<<std::endl;
-	}
-
 	L1jets.push_back(VBFobjs[L1_match]);
-	Calojets.push_back(VBFobjs[Calo_match]);
-	HLTjets.push_back(VBFobjs[HLT_match]);
-
+	
 	}
+	if (b){
+	
+	int Calo_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltCaloJetsCorrectedMatchedToL1", 0.5).second;
+	Calojets.push_back(VBFobjs[Calo_match]);
+	}
+	
+	if (c){
+	
+	int HLT_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).second;
+	HLTjets.push_back(VBFobjs[HLT_match]);
+	}
+
+}
 
 
 for (unsigned i = 0; i < HLTjets.size(); ++i)
-     {if (HLTjets.size()>0)
-        {
-        if (HLTjets.size()>1){
-                if (HLTjets[i]->vector().Pt()>max_jet_pt){
-                        sec_max_jet_pt = max_jet_pt;
-                        max_jet_pt = HLTjets[i]->vector().Pt();}
-                else
-                        if (HLTjets[i]->vector().Pt()>sec_max_jet_pt){
-                                sec_max_jet_pt = HLTjets[i]->vector().Pt();}
+{if (HLTjets.size()>0)
+{
+if (HLTjets.size()>1){
+	if (HLTjets[i]->vector().Pt()>max_jet_pt){
+		sec_max_jet_pt = max_jet_pt;
+		max_jet_pt = HLTjets[i]->vector().Pt();}
+	else
+		if (HLTjets[i]->vector().Pt()>sec_max_jet_pt){
+			sec_max_jet_pt = HLTjets[i]->vector().Pt();}
 
 
 
-        }
-        else{
-                if (HLTjets[i]->vector().Pt()>max_jet_pt) max_jet_pt =HLTjets[i]->vector().Pt();
-                sec_max_jet_pt = -9999;
-                }
-        }
-      else break;
-       if (HLTjets.size()>1){
+}
+else{
+	if (HLTjets[i]->vector().Pt()>max_jet_pt) max_jet_pt =HLTjets[i]->vector().Pt();
+	sec_max_jet_pt = -9999;
+	}
+}
+else break;
+if (HLTjets.size()>1){
         for (unsigned j = 0; j < HLTjets.size(); ++j)
                 if (i!=j)
                         if ((HLTjets[i]->vector()+HLTjets[j]->vector()).M()>max_mjj)
