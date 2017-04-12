@@ -1,11 +1,14 @@
-cats=("inclusive" "btag" "nobtag" "0jet" "1jet" "1bjet")
-channels=("zmm" "zee")
-plots=("pt_tt[0,20,40,60,80,100,120,140,160,200,240,280,320,400,600]" "pt_1(20,0,200)" "pt_2[0,10,20,30,40,50,60,70,80,90,100,120,140,200]" "n_jets(5,0,5)" "n_bjets(5,0,5)" "m_vis[50,60,70,80,85,90,95,100,110,120,140,200,400]")
+channels=("mt" "et" "tt" "zmm" "zee")
+plots=("mt_tot(40,0,400)")
 #plots=("m_vis[50,60,70,80,85,90,95,100,110,120,140,200,400]")
-weights=("wt_zpt_down" "wt_zpt_njets" "wt_zpt_njets_normxbins" "1")
+weights=("wt_zpt_down" "1")
 #weights=("wt_zpt_njets")
 
-for chan in "${channels[@]}"; do for cat in "${cats[@]}"; do for plot in "${plots[@]}"; do for weight in "${weights[@]}"; do
+for chan in "${channels[@]}"; do
+cats=("inclusive" "nobtag_tight" "nobtag_looseiso" "nobtag_loosemt" "nobtag_tight" "nobtag_looseiso" "nobtag_loosemt")
+
+
+for cat in "${cats[@]}"; do for plot in "${plots[@]}"; do for weight in "${weights[@]}"; do
   if [[ $plot == *"["* ]];then 
     var=$(echo $plot | cut -d"[" -f1)
   else
