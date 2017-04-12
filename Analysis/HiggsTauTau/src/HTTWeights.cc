@@ -399,7 +399,7 @@ namespace ic {
           double tau_1_wt=0;
           double tau_2_wt=0;
           if(gen_match_2 == 6){
-            Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+            Candidate const* tau2 = dilepton[0]->GetCandidate("lepton2");
             double pt_2 = tau2->pt();
             tau_2_wt = (0.20*pt_2)/100.;
           } 
@@ -408,7 +408,7 @@ namespace ic {
           if (channel_ == channel::tt){
            unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
            if(gen_match_1 == 6){
-             Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+             Candidate const* tau1 = dilepton[0]->GetCandidate("lepton1");
              double pt_1 = tau1->pt();
              tau_1_wt = (0.20*pt_1/100.);
            }
@@ -662,6 +662,22 @@ namespace ic {
        tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
        auto args_2 = std::vector<double>{muon->eta()};
        tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
+      }
+      if(channel_ == channel::zmm){
+       Muon const* muon_1 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
+       Muon const* muon_2 = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
+       auto args = std::vector<double>{muon_1->eta()};
+       tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
+       auto args_2 = std::vector<double>{muon_2->eta()};
+       tracking_wt_2 *= fns_["m_trk_ratio"]->eval(args_2.data());
+      }
+      if(channel_ == channel::zee){
+       Electron const* elec_1 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
+       Electron const* elec_2 = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton2"));
+       auto args = std::vector<double>{elec_1->pt(),elec_1->sc_eta()};
+       tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
+       auto args_2 = std::vector<double>{elec_2->pt(),elec_2->sc_eta()};
+       tracking_wt_2 *= fns_["e_trk_ratio"]->eval(args_2.data());
       }
       event->Add("trackingweight_1",tracking_wt_1);
       event->Add("trackingweight_2",tracking_wt_2);

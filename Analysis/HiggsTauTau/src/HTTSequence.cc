@@ -996,6 +996,17 @@ if(do_met_filters){
     }));
 }
 
+BuildModule(GenericModule("BadMuonFilters")
+  .set_function([=](ic::TreeEvent *event){
+     EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+     std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
+     bool pass_filters = true;
+     for(unsigned i=0;i<bad_muon_filters.size();++i){
+      pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
+     }
+     return !pass_filters;
+  }));
+
 
 if(channel == channel::tpzmm || channel == channel::tpzee){
   BuildModule(GenericModule("TPTriggerInformation")
@@ -1168,7 +1179,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_label(met_label)
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
-     .set_use_quantile_map(true)
+     .set_use_quantile_map(false)
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
@@ -1697,7 +1708,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     //if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
     if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
     if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
-    if(channel == channel::et || channel==channel::em || channel==channel::mt) httWeights.set_do_tracking_eff(true);
+    //if(channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee) httWeights.set_do_tracking_eff(true);
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
