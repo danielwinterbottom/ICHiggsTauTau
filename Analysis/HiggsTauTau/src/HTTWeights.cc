@@ -639,21 +639,21 @@ namespace ic {
       double wt_z_pt_weights_trgup   = z_pt_weights_trgup_   ->GetBinContent(z_pt_weights_trgup_  ->FindBin(zmass,zpt));
       double wt_z_pt_weights_trgdown = z_pt_weights_trgdown_ ->GetBinContent(z_pt_weights_trgdown_->FindBin(zmass,zpt));
       
-      event->Add("wt_z_pt_weights_esup"    ,wt_z_pt_weights_esup   );
-      event->Add("wt_z_pt_weights_esdown"  ,wt_z_pt_weights_esdown );
-      event->Add("wt_z_pt_weights_idup"    ,wt_z_pt_weights_idup   );
-      event->Add("wt_z_pt_weights_iddown"  ,wt_z_pt_weights_iddown );
-      event->Add("wt_z_pt_weights_isoup"   ,wt_z_pt_weights_isoup  );
-      event->Add("wt_z_pt_weights_isodown" ,wt_z_pt_weights_isodown);
-      event->Add("wt_z_pt_weights_trgup"   ,wt_z_pt_weights_trgup  );
-      event->Add("wt_z_pt_weights_trgdown" ,wt_z_pt_weights_trgdown);
+      event->Add("wt_z_pt_weights_esup"    ,wt_z_pt_weights_esup   /wt_zpt);
+      event->Add("wt_z_pt_weights_esdown"  ,wt_z_pt_weights_esdown /wt_zpt);
+      event->Add("wt_z_pt_weights_idup"    ,wt_z_pt_weights_idup   /wt_zpt);
+      event->Add("wt_z_pt_weights_iddown"  ,wt_z_pt_weights_iddown /wt_zpt);
+      event->Add("wt_z_pt_weights_isoup"   ,wt_z_pt_weights_isoup  /wt_zpt);
+      event->Add("wt_z_pt_weights_isodown" ,wt_z_pt_weights_isodown/wt_zpt);
+      event->Add("wt_z_pt_weights_trgup"   ,wt_z_pt_weights_trgup  /wt_zpt);
+      event->Add("wt_z_pt_weights_trgdown" ,wt_z_pt_weights_trgdown/wt_zpt);
       
       double wt_extrap_up =1;
       if(!(zmass<50 || zmass>800 || zpt >600)){
         wt_extrap_up =  extrap_hist_->GetBinContent(extrap_hist_->GetXaxis()->FindBin(zmass),extrap_hist_->GetYaxis()->FindBin(zpt));   
       }
-      event->Add("wt_extrap_up", wt_extrap_up);
-      event->Add("wt_extrap_down", 1/wt_extrap_up);
+      event->Add("wt_extrap_up", wt_extrap_up/wt_zpt);
+      event->Add("wt_extrap_down", 1/(wt_extrap_up/wt_zpt));
 
     }
 

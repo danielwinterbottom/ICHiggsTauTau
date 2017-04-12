@@ -2,7 +2,8 @@ void makeZWeightsFile(std::string outfile){
 
 double x_bins[11] = {0,50,80,90,100,120,160,200,400,800,10000};
 double y_bins[16] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600,10000};
-std::vector<std::string> MC_add_strings = {"", "_ESUp", "_ESDown", "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"};
+//std::vector<std::string> MC_add_strings = {"", "_ESUp", "_ESDown", "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"};
+std::vector<std::string> MC_add_strings = {""};
 int n_xbins = 10;
 int n_ybins = 15;
 TFile *fout = new TFile(outfile.c_str(),"RECREATE");
