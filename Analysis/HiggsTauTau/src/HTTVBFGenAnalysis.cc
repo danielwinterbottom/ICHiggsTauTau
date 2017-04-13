@@ -2,6 +2,17 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "Utilities/interface/FnRootTools.h"
 
+
+double L1pass;
+double L1fail;
+double L1failSecond;
+double L1size0;
+double L1size1;
+double Calosize0;
+double HLTsize0;
+double CaloL1tot;
+double CaloL1matched;
+bool CaloL1;
 std::vector<ic::GenParticle> FamilyTree (std::vector<ic::GenParticle> &v, ic::GenParticle p, std::vector<ic::GenParticle*> gen_particles, unsigned &outputID){ 
   if(p.daughters().size() == 0){
     unsigned ID = std::fabs(p.pdgid());
@@ -29,11 +40,31 @@ struct swap_labels{
 };
 
 struct PtComparator{
-  bool operator() (ic::Candidate a, ic::Candidate b) {
+    bool operator() (ic::Candidate a, ic::Candidate b) {
     return (a.vector().Pt() > b.vector().Pt());
   }
 };
-  
+ 
+
+
+struct PtComparatorTriggerObj{
+    bool operator() (ic::TriggerObject *a, ic::TriggerObject *b) {
+    return (a->vector().Pt() > b->vector().Pt());
+  }
+};
+
+
+ bool IsFilterMatchedWithName(ic::TriggerObject *objs, std::string const& filter){
+      std::size_t hash = CityHash64(filter);
+      
+      std::vector<std::size_t> const& labels = objs->filters();
+      if (std::find(labels.begin(),labels.end(), hash) == labels.end())  return false;
+      return true;
+  }
+
+
+
+ 
 namespace ic {
 
   HTTVBFGenAnalysis::HTTVBFGenAnalysis(std::string const& name) : ModuleBase(name) {
@@ -46,12 +77,32 @@ namespace ic {
 
   int HTTVBFGenAnalysis::PreAnalysis() {
      
-      
-    if(fs_){  
+   L1pass = 0;
+   L1fail = 0;
+   L1failSecond = 0;
+   L1size0 = 0;
+   L1size1 = 0;
+   HLTsize0 = 0;
+   Calosize0 = 0; 
+   CaloL1matched = 0;
+   CaloL1tot = 0; 
+   CaloL1 = true; 
+   if(fs_){  
       outtree_ = fs_->make<TTree>("HLT_trigger_ntuple","HLT_trigger_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("hlt_jpt_1"       , &hlt_jpt_1_       );
       outtree_->Branch("hlt_jpt_2"       , &hlt_jpt_2_       );
+      outtree_->Branch("hlt_jpt_3"       , &hlt_jpt_3_       );
+      outtree_->Branch("hlt_jpt_4"       , &hlt_jpt_4_       );
+      outtree_->Branch("calo_jpt_1"       , &calo_jpt_1_       );
+      outtree_->Branch("calo_jpt_2"       , &calo_jpt_2_       );
+
+      outtree_->Branch("hlt_jeta_1"       , &hlt_jeta_1_       );
+      outtree_->Branch("hlt_jeta_2"       , &hlt_jeta_2_       );
+      outtree_->Branch("hlt_jeta_3"       , &hlt_jeta_3_       );
+      outtree_->Branch("hlt_jeta_4"       , &hlt_jeta_4_       );
+
+
       outtree_->Branch("hlt_mjj"       , &hlt_mjj_       );
     }
    // count_ee_ = 0;
@@ -79,103 +130,107 @@ namespace ic {
 
   int HTTVBFGenAnalysis::Execute(TreeEvent *event) {
     
-    //EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    //std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
     
    std::vector<TriggerObject *> const& VBFobjs = event->GetPtrVec<TriggerObject>("triggerVBF");	
-   std::vector<PFJet *> const& jet_objs = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
    std::vector<TriggerObject *>  L1jets;
    std::vector<TriggerObject *>  Calojets;
    std::vector<TriggerObject *>  HLTjets;
 
-   double max_jet_pt = -9999;
-   double sec_max_jet_pt = -9999;	
-   double max_mjj = -9999;
- /*  for (unsigned i = 0; i < VBFobjs.size(); ++i) 
-     {if (VBFobjs.size()>0)     
-    	{
-	if (VBFobjs.size()>1){
-		if (VBFobjs[i]->vector().Pt()>max_jet_pt){
-			sec_max_jet_pt = max_jet_pt;
-			max_jet_pt = VBFobjs[i]->vector().Pt();}
-		else 
-			if (VBFobjs[i]->vector().Pt()>sec_max_jet_pt){
-				sec_max_jet_pt = VBFobjs[i]->vector().Pt();}
-			
-	
+   hlt_jpt_1_=-9999;
+   hlt_jpt_2_=-9999;
+   hlt_jpt_3_=-9999;
+   hlt_jpt_4_=-9999;
+   hlt_jeta_1_=-9999;
+   hlt_jeta_2_=-9999;
+   hlt_jeta_3_=-9999;
+   hlt_jeta_4_=-9999;
+   calo_jpt_1_=-9999;
+   calo_jpt_2_=-9999;
+   
+   hlt_mjj_=-9999;
 
-	}
-	else{
-		if (VBFobjs[i]->vector().Pt()>max_jet_pt) max_jet_pt = VBFobjs[i]->vector().Pt();
-		sec_max_jet_pt = -9999;
-      		}
-	}
-      else break;
-       if (VBFobjs.size()>1){
-	for (unsigned j = 0; j < VBFobjs.size(); ++j)		
-		if (i!=j) 
-			if ((VBFobjs[i]->vector()+VBFobjs[j]->vector()).M()>max_mjj)
-				max_mjj = (VBFobjs[i]->vector()+VBFobjs[j]->vector()).M();
-	}
-}*/
-    for (unsigned i = 0; i < jet_objs.size(); ++i)
+    for (unsigned i = 0; i < VBFobjs.size(); ++i)
 	{ 
-   bool a =IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltL1DiJetVBF", 0.5).first;
-   bool b = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltCaloJetsCorrectedMatchedToL1", 0.5).first;
-   bool c =IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).first;
+   bool a = IsFilterMatchedWithName(VBFobjs[i], "hltL1DiJetVBF");
+   //bool b = IsFilterMatchedWithName(VBFobjs[i], "hltCaloJetsCorrectedMatchedToL1");
+   bool b = IsFilterMatchedWithName(VBFobjs[i], "hltDoubleJetDummy");
+   bool c = IsFilterMatchedWithName(VBFobjs[i], "hltDiPFJetMJJDummy");
 
-	if (a){
-	
-	int L1_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltL1DiJetVBF", 0.5).second;
-	L1jets.push_back(VBFobjs[L1_match]);
-	
-	}
-	if (b){
-	
-	int Calo_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltCaloJetsCorrectedMatchedToL1", 0.5).second;
-	Calojets.push_back(VBFobjs[Calo_match]);
-	}
-	
-	if (c){
-	
-	int HLT_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).second;
-	HLTjets.push_back(VBFobjs[HLT_match]);
-	}
+	if (a) 	L1jets.push_back(VBFobjs[i]);	
+	if (b)	Calojets.push_back(VBFobjs[i]);
+	if (c)  HLTjets.push_back(VBFobjs[i]);
 
 }
 
 
-for (unsigned i = 0; i < HLTjets.size(); ++i)
-{if (HLTjets.size()>0)
+
+//std::cout<<"A"<<std::endl;
+std::sort(HLTjets.begin(), HLTjets.end(), PtComparatorTriggerObj());
+std::sort(Calojets.begin(), Calojets.end(), PtComparatorTriggerObj());
+std::sort(L1jets.begin(), L1jets.end(), PtComparatorTriggerObj());
+
+
+//L1jets and Calojets match test
+if (L1jets.size()!=0)
+	{if (L1jets[0]->vector().Pt()<80) L1fail++;
+	if (L1jets.size()>1) 
+		if (L1jets[1]->vector().Pt()<30) L1failSecond++;
+
+	}
+L1pass++;
+
+if (L1jets.size()==0) L1size0++;
+if (Calojets.size()==0) Calosize0++;
+if (HLTjets.size()==0) HLTsize0++;
+
+L1size1++;
+
+/*for (unsigned i = 0; i < Calojets.size(); ++i)
 {
-if (HLTjets.size()>1){
-	if (HLTjets[i]->vector().Pt()>max_jet_pt){
-		sec_max_jet_pt = max_jet_pt;
-		max_jet_pt = HLTjets[i]->vector().Pt();}
-	else
-		if (HLTjets[i]->vector().Pt()>sec_max_jet_pt){
-			sec_max_jet_pt = HLTjets[i]->vector().Pt();}
 
+if ()
+CaloL1tot++;
 
+}*/
+//if (HLTjets.size()>1)
+//std::cout<<HLTjets[0]->vector().Pt()<<" " <<HLTjets[1]->vector().Pt()<<std::endl;
+if (HLTjets.size()>0)
+	{
+    hlt_jpt_1_ = HLTjets[0]->vector().Pt();
+    hlt_jeta_1_ = HLTjets[0]->vector().Eta();
 
-}
-else{
-	if (HLTjets[i]->vector().Pt()>max_jet_pt) max_jet_pt =HLTjets[i]->vector().Pt();
-	sec_max_jet_pt = -9999;
 	}
-}
-else break;
-if (HLTjets.size()>1){
-        for (unsigned j = 0; j < HLTjets.size(); ++j)
-                if (i!=j)
-                        if ((HLTjets[i]->vector()+HLTjets[j]->vector()).M()>max_mjj)
-                                max_mjj = (HLTjets[i]->vector()+HLTjets[j]->vector()).M();
+if (HLTjets.size()>1)
+	{
+    hlt_jpt_2_ = HLTjets[1]->vector().Pt();
+    hlt_jeta_2_ = HLTjets[1]->vector().Eta();
+	}
+if (HLTjets.size()>2)
+	{
+    hlt_jpt_3_ = HLTjets[2]->vector().Pt();
+    hlt_jeta_3_ = HLTjets[2]->vector().Eta();	
+	}
+if (HLTjets.size()>3)
+	{
+    hlt_jpt_4_ = HLTjets[3]->vector().Pt(); 
+    hlt_jeta_4_ = HLTjets[3]->vector().Eta();	
+	}
+//std::cout<<Calojets.size()<<std::endl;
+if (Calojets.size()>0)
+        {
+    calo_jpt_1_ = Calojets[0]->vector().Pt();
+    //calo_jeta_1_ = Calojets[0]->vector().Eta();
+
         }
-    
-}
-    hlt_jpt_1_ = max_jet_pt;
-    hlt_jpt_2_ = sec_max_jet_pt;
-    hlt_mjj_ = max_mjj;
+if (Calojets.size()>1)
+        {
+    calo_jpt_2_ = Calojets[1]->vector().Pt();
+    //calo_jeta_2_ = Calojets[1]->vector().Eta();
+        }
+
+
+ 
+ // hlt_mjj_ = max_mjj;
   if(fs_) outtree_->Fill();
     
     return 0;
@@ -184,24 +239,14 @@ if (HLTjets.size()>1){
 
 	}
  
- //    event_ = (unsigned long long) eventInfo->event();
-   // wt_ = 1;
-   // wt_ = eventInfo->weight("wt_mc_sign");
-   // wt_dy_=1;
-   // if (event->Exists("wt_dy")) wt_dy_ = event->Get<float>("wt_dy");
-    //wt_ggh_pt_            = 1;
-    //wt_ggh_pt_up_         = 1;
-    //wt_ggh_pt_down_       = 1;
-    //wt_ggh_pt_herwig_     = 1;
-    //wt_ggh_pt_amc_        = 1;
-    //wt_ggh_pt_pythiaup_   = 1;
-    //wt_ggh_pt_pythiadown_ = 1;
-    //wt_ggh_pt_scalehigh_  = 1;
-    //wt_ggh_pt_scalelow_   = 1;
-    
-  
   int HTTVBFGenAnalysis::PostAnalysis() {
-    return 0;
+ 
+std::cout<<"L1jets size 0 = "<<1.0*L1size0/L1size1<<std::endl;
+std::cout<<"HLT "<<1.0*(HLTsize0)/L1size1 << " CALO size 0 = "<<1.0*(Calosize0)/L1size1<<std::endl;
+std::cout<<"L1jets size !=0 but L1jets[0]->vector().Pt()<80: "<<(L1fail/L1pass)<<std::endl;
+std::cout<<"L1jets size !=0 but L1jets[1]->vector().Pt()<30: "<<(L1failSecond/L1pass)<<std::endl;
+std::cout<<L1fail<<" "<<L1pass<<std::endl;
+   return 0;
   }
 
   void HTTVBFGenAnalysis::PrintInfo() {

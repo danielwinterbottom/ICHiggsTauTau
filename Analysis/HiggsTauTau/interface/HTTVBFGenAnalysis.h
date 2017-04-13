@@ -64,6 +64,14 @@ class HTTVBFGenAnalysis : public ModuleBase {
   unsigned n_jetsingap_;
   double hlt_jpt_1_;
   double hlt_jpt_2_;
+  double hlt_jpt_3_;
+  double hlt_jpt_4_;
+  double calo_jpt_1_;
+  double calo_jpt_2_;
+  double hlt_jeta_1_;
+  double hlt_jeta_2_;
+  double hlt_jeta_3_;
+  double hlt_jeta_4_;
   double hlt_mjj_;
   double jpt_1_;  
   double jpt_2_;  
