@@ -26,7 +26,11 @@ int HTTFutureJetPV::PreAnalysis() {
     outtree_->Branch("genjet_pt",&genjet_pt);
     outtree_->Branch("genjet_eta",&genjet_eta);
     outtree_->Branch("jet_beta",&jet_beta);
+    outtree_->Branch("jet_beta_puppi",&jet_beta_puppi);
     outtree_->Branch("jet_flav",&jet_flav);
+    outtree_->Branch("vtxdz",&vtxdz);
+    outtree_->Branch("vtxdx",&vtxdx);
+    outtree_->Branch("vtxdy",&vtxdy);
     outtree_second_ = fs_->make<TTree>("leadsubleadjet","leadsubleadjet");
     outtree_second_->Branch("jet_pt1",&jet_pt1);
     outtree_second_->Branch("jet_eta1",&jet_eta1);
@@ -41,6 +45,9 @@ int HTTFutureJetPV::PreAnalysis() {
     outtree_second_->Branch("jet_beta2",&jet_beta2);
     outtree_second_->Branch("jet_flav2",&jet_flav2);
     outtree_second_->Branch("vbf_dphi",&vbf_dphi);
+    outtree_second_->Branch("vtxdz",&vtxdz);
+    outtree_second_->Branch("vtxdx",&vtxdx);
+    outtree_second_->Branch("vtxdy",&vtxdy);
   }
   return 0;
 }
@@ -76,6 +83,12 @@ int HTTFutureJetPV::Execute(TreeEvent *event) {
   std::vector<std::pair<PFJet*, GenJet*> > quark_jet_match  = MatchByDR(quark_jets, genjets, 0.1, true, true);
   std::sort(jet_match.begin(),jet_match.end(),SortByJetPt);
   std::sort(quark_jet_match.begin(),quark_jet_match.end(),SortByJetPt);
+  std::vector<ic::Vertex*> vertices = event->GetPtrVec<ic::Vertex>("vertices");
+  std::vector<ic::Vertex*> genvertices = event->GetPtrVec<ic::Vertex>("genVertices");
+  vtxdz =fabs(vertices.at(0)->vz()-genvertices.at(0)->vz());
+  vtxdy =fabs(vertices.at(0)->vy()-genvertices.at(0)->vy());
+  vtxdx =fabs(vertices.at(0)->vx()-genvertices.at(0)->vx());
+
   
 /*  std::vector<std::pair<PFJet*,GenJet*> > sel_genjets;
   for(unsigned i=0;i<jet_match.size();++i){
@@ -88,6 +101,7 @@ int HTTFutureJetPV::Execute(TreeEvent *event) {
         genjet_eta=jet_match.at(j).second->eta();
         genjet_pt=jet_match.at(j).second->pt();
         jet_beta=jet_match.at(j).first->beta();
+        jet_beta_puppi=jet_match.at(j).first->beta_puppi();
         jet_flav=jet_match.at(j).first->parton_flavour();
         outtree_->Fill();
       }

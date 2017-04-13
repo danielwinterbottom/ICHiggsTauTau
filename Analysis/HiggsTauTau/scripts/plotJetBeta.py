@@ -8,7 +8,7 @@ import json
 import UserCode.ICHiggsTauTau.plotting as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_pu200_partial_forvertex_tt_0.root"
+infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_pu200_full_tt_0.root"
 #infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_future_full_tt_0.root"
 
 vbf_file=ROOT.TFile.Open(infile)
@@ -60,7 +60,7 @@ beta_jets_around4.Draw("EP0SAME")
 
 legend.Draw()
 
-plot.DrawCMSLogo(pads[0], 'CMS', 'Simulation preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
+plot.DrawCMSLogo(pads[0], 'CMS Phase-2', 'Simulation Preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
 plot.DrawTitle(pads[0], "VBF H#rightarrow#tau#tau", 1)
 plot.DrawTitle(pads[0], "#sqrt{s}=14 TeV, 200 PU", 3)
 

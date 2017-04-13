@@ -121,7 +121,7 @@ legend.AddEntry(tau1_genpt_eta4,'#tau_{h} |#eta|<4','P')
 legend.Draw()
 
 
-plot.DrawCMSLogo(pads[0], 'CMS', 'Simulation preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
+plot.DrawCMSLogo(pads[0], 'CMS Phase-2', 'Simulation Preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
 plot.DrawTitle(pads[0], "VBF H#rightarrow#tau#tau", 1)
 plot.DrawTitle(pads[0], "#sqrt{s}=14 TeV, 0 PU", 3)
 
@@ -142,7 +142,7 @@ legendeta.AddEntry(tau1_eta_genpt20,"#tau_{h} vis gen p_{T} > 20 GeV",'P')
 tau1_eta_genpt20.Draw("P")
 legendeta.Draw()
 
-plot.DrawCMSLogo(padseta[0], 'CMS', 'Simulation preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
+plot.DrawCMSLogo(padseta[0], 'CMS Phase 2', 'Simulation preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
 plot.DrawTitle(padseta[0], "VBF H#rightarrow#tau#tau", 1)
 plot.DrawTitle(padseta[0], "#sqrt{s}=14 TeV, 0 PU", 3)
 

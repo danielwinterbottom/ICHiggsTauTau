@@ -369,15 +369,21 @@ void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
     ic::PFJet & dest = jets_->at(i);
     FillCommonPFJet(&dest, src);
     double in = 0, out = 0;
+    double in_puppi = 0, out_puppi = 0;
     for (unsigned id = 0, nd = src.numberOfDaughters(); id < nd ; ++id){
       const pat::PackedCandidate &dau = dynamic_cast<const::pat::PackedCandidate &>(*src.daughter(id)); 
       if (dau.charge() ==0) continue;
       (fabs(dau.dz())<0.1 ? in: out) += dau.pt();
+      (fabs(dau.dz())<0.1 ? in_puppi: out_puppi) += dau.puppiWeight()*dau.pt();
     }
     double sum = in + out;
+    double sum_puppi = in_puppi + out_puppi;
     if (sum > 0) {
       dest.set_beta(in/sum);
     } else dest.set_beta(-1);
+   if (sum_puppi > 0){
+     dest.set_beta_puppi(in_puppi/sum_puppi);
+   } else dest.set_beta_puppi(-1);
 
 /*    if (sum > 0) {
     std::cout<<"beta = "<<  in/sum <<std::endl;
@@ -435,15 +441,22 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     FillCommonPFJet(&dest, src);
 
     double in = 0, out = 0;
+    double in_puppi = 0, out_puppi = 0;
     for (unsigned id = 0, nd = src.numberOfDaughters(); id < nd ; ++id){
       const pat::PackedCandidate &dau = dynamic_cast<const::pat::PackedCandidate &>(*src.daughter(id)); 
       if (dau.charge() ==0) continue;
       (fabs(dau.dz())<0.1 ? in: out) += dau.pt();
+      (fabs(dau.dz())<0.1 ? in_puppi: out_puppi) += dau.puppiWeight()*dau.pt();
     }
     double sum = in + out;
+    double sum_puppi = in_puppi + out_puppi;
     if (sum > 0) {
       dest.set_beta(in/sum);
     } else dest.set_beta(-1);
+    if (sum_puppi > 0) {
+      dest.set_beta_puppi(in_puppi/sum_puppi);
+    } else dest.set_beta_puppi(-1);
+
 
     dest.set_uncorrected_energy(
         (src.jecSetsAvailable() ? src.jecFactor(0) : 1.) * src.energy());

@@ -9,7 +9,7 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_4/src/UserCode/ICHiggsTauTau/test/testinput.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/TauDataTest.root', parser.VarParsing.multiplicity.singleton,
-opts.register('file','file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/test/miniAOD-VBF_PAT.root',parser.VarParsing.multiplicity.singleton,
+opts.register('file','file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_pu140_miniAOD_PAT.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file',
 #'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/0A349B7D-EA03-E611-9E67-0002C94D5504.root', parser.VarParsing.multiplicity.singleton,
@@ -248,7 +248,8 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_74_PAT.root',
 #'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_75_PAT.root',
 #'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_76_PAT.root'
-'root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adewit//Feb20_MC_82X/VBFHToTauTau_M125_14TeV_powheg_pythia8/crab_VBFPu200-fast/170221_102245/0000/vbf_pu200_miniAOD_PAT_119.root'
+infile
+#'root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adewit//Feb20_MC_82X/VBFHToTauTau_M125_14TeV_powheg_pythia8/crab_VBFPu200-fast/170221_102245/0000/vbf_pu200_miniAOD_PAT_119.root'
 #CURRENT MINIAOD
 #'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0E712644-6BC7-E611-A85D-1CB72C0A3DC5.root',
 #'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/10B1E335-21C6-E611-A53D-0CC47A706D26.root',
@@ -946,6 +947,11 @@ if release in ['80XMINIAOD']:
       src = cms.InputTag("slimmedJets"),
       cut = cms.string("pt > 8")
       )
+ 
+  process.selectedSlimmedJetsPuppi = cms.EDFilter("PATJetRefSelector",
+     src = cms.InputTag("slimmedJetsPuppi"),
+     cut = cms.string("pt>8")
+     )
 
 #  process.selectedAK4NoCHSJets = cms.EDFilter("PATJetRefSelector",
 #      src = cms.InputTag("ak4PFJets"),
@@ -1217,6 +1223,28 @@ if release in ['80XMINIAOD']:
       )
   )
 
+  process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
+      branch                    = cms.string("ak4PFJetsPuppi"),
+      input                     = cms.InputTag("selectedSlimmedJetsPuppi"),
+      srcConfig = cms.PSet(
+        isSlimmed               = cms.bool(True),
+        slimmedPileupIDLabel    = cms.string(''),
+        includeJetFlavour       = cms.bool(True),
+        includeJECs             = cms.bool(True),
+        inputSVInfo             = cms.InputTag(""),
+        requestSVInfo           = cms.bool(False)
+      ),
+     destConfig = cms.PSet(
+       includePileupID         = cms.bool(False),
+       inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+       includeTrackBasedVars   = cms.bool(False),
+       inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+       inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+       requestTracks           = cms.bool(False)
+      )
+  )
+
+
   process.icPFJetProducerFromPatak4 = producers.icPFJetProducer.clone(
       branch                    = cms.string("ak4PFJetsNoCHS"),
       input                     = cms.InputTag("ak4PFJets"),
@@ -1259,6 +1287,7 @@ if release in ['80XMINIAOD']:
 #     process.updatedPatJetsUpdatedJEC+
 #     process.selectedUpdatedPatJetsUpdatedJEC+
      process.selectedSlimmedJetsAK4+
+     process.selectedSlimmedJetsPuppi+
      process.unpackedTracksAndVertices+
 #     process.patJetCorrFactorsUpdatedJECak4+
 #     process.updatedPatJetsUpdatedJECak4+
@@ -1276,6 +1305,7 @@ if release in ['80XMINIAOD']:
     process.pfJetFlavourAssociation+
     process.icPFJetFlavourCalculator+
      process.icPFJetProducerFromPat+
+     process.icPFJetProducerFromPatPuppi+
      process.icPFJetProducerFromPatak4
      )
 if release in ['76X']:

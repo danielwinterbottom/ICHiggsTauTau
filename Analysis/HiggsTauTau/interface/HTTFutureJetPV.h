@@ -28,6 +28,7 @@ class HTTFutureJetPV : public ModuleBase {
  double genjet_pt=0;  
  double genjet_eta=0;  
  double jet_beta=0; 
+ double jet_beta_puppi=0; 
  int jet_flav=0;
   TTree* outtree_second_;
  double jet_pt1=0;  
@@ -43,6 +44,9 @@ class HTTFutureJetPV : public ModuleBase {
  double jet_beta2=0; 
  int jet_flav2=0;
  double vbf_dphi=-9999;
+ double vtxdz=0;
+ double vtxdx=0;
+ double vtxdy=0;
 
  
 
