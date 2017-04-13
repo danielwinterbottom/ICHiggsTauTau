@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_1":"", "syst_tau_scale_2":"", "syst_tau_scale_3":"", "syst_tau_scale_4":"", "syst_tau_scale_5":"", "syst_tau_scale_6":"", "syst_tau_scale_7":"", "syst_tau_scale_8":"", "syst_tau_scale_9":"", "syst_tau_scale_10":"", "syst_tau_scale_11":"", "syst_tau_scale_12":"", "syst_tau_scale_13":"", "syst_tau_scale_14":"", "syst_tau_scale_15":"", "syst_tau_scale_16":"", "syst_tau_scale_17":"", "syst_tau_scale_18":"", "syst_tau_scale_19":"", "syst_tau_scale_20":"", "syst_tau_scale_0":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -74,6 +74,48 @@ parser.add_argument("--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type=float,
 parser.add_argument("--add_sm_background", dest="add_sm_background", type=str,
     help="Add SM Higgs background for MSSM")
 parser.add_argument("--syst_tau_scale", dest="syst_tau_scale", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_1", dest="syst_tau_scale_1", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_2", dest="syst_tau_scale_2", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_3", dest="syst_tau_scale_3", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_4", dest="syst_tau_scale_4", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_5", dest="syst_tau_scale_5", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_6", dest="syst_tau_scale_6", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_7", dest="syst_tau_scale_7", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_8", dest="syst_tau_scale_8", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_9", dest="syst_tau_scale_9", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_10", dest="syst_tau_scale_10", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_11", dest="syst_tau_scale_11", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_12", dest="syst_tau_scale_12", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_13", dest="syst_tau_scale_13", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_14", dest="syst_tau_scale_14", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_15", dest="syst_tau_scale_15", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_16", dest="syst_tau_scale_16", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_17", dest="syst_tau_scale_17", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_18", dest="syst_tau_scale_18", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_19", dest="syst_tau_scale_19", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_20", dest="syst_tau_scale_20", type=str,
+    help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_0", dest="syst_tau_scale_0", type=str,
     help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_eff_t", dest="syst_eff_t", type=str, default='',
     help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
@@ -249,6 +291,7 @@ cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && a
 
 # MSSM categories
 cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
+cats['nojets'] = '(n_jets==0)'
 cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
@@ -388,8 +431,54 @@ Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
 systematics = OrderedDict()
 systematics['default'] = ('','', 'wt', [])
 if options.syst_tau_scale != '':
-    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'Up', 'wt', [])
-    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'Down', 'wt', [])
+    systematics['scale_t_up'] = ('TSCALE_UP', '_'+options.syst_tau_scale+'Up','wt', ['VV','TT','QCD','W','signal'])
+    systematics['scale_t_down'] = ('TSCALE_DOWN', '_'+options.syst_tau_scale+'Down','wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_1 != '':
+    systematics['scale_t_1_up'] = ('TSCALE_UP_1' , '_1', 'wt', ['VV','TT','QCD','W','signal'])
+    systematics['scale_t_1_down'] = ('TSCALE_DOWN_1' , '_-1', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_2 != '':
+    systematics['scale_t_2_up'] = ('TSCALE_UP_2' , '_2', 'wt', ['VV','TT','QCD','W','signal'])
+    systematics['scale_t_2_down'] = ('TSCALE_DOWN_2' , '_-2', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_3 != '':
+    systematics['scale_t_3_up'] = ('TSCALE_UP_3' , '_3', 'wt', ['VV','TT','QCD','W','signal'])
+    systematics['scale_t_3_down'] = ('TSCALE_DOWN_3' , '_-3', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_4 != '':
+    systematics['scale_t_4_up'] = ('TSCALE_UP_4' , '_4', 'wt', ['VV','TT','QCD','W','signal'])
+    systematics['scale_t_4_down'] = ('TSCALE_DOWN_4' , '_-4', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_5 != '':
+    systematics['scale_t_5_up'] = ('TSCALE_UP_5' , '_5', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_6 != '':
+    systematics['scale_t_6_up'] = ('TSCALE_UP_6' , '_6', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_7 != '':
+    systematics['scale_t_7_up'] = ('TSCALE_UP_7' , '_7', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_8 != '':
+    systematics['scale_t_8_up'] = ('TSCALE_UP_8' , '_8', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_9 != '':
+    systematics['scale_t_9_up'] = ('TSCALE_UP_9' , '_9', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_10 != '':
+    systematics['scale_t_10_up'] = ('TSCALE_UP_10' , '_10', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_11 != '':
+    systematics['scale_t_11_up'] = ('TSCALE_UP_11' , '_11', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_12 != '':
+    systematics['scale_t_12_up'] = ('TSCALE_UP_12' , '_12', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_13 != '':
+    systematics['scale_t_13_up'] = ('TSCALE_UP_13' , '_13', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_14 != '':
+    systematics['scale_t_14_up'] = ('TSCALE_UP_14' , '_14', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_15 != '':
+    systematics['scale_t_15_up'] = ('TSCALE_UP_15' , '_15', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_16 != '':
+    systematics['scale_t_16_up'] = ('TSCALE_UP_16' , '_16', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_17 != '':
+    systematics['scale_t_17_up'] = ('TSCALE_UP_17' , '_17', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_18 != '':
+    systematics['scale_t_18_up'] = ('TSCALE_UP_18' , '_18', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_19 != '':
+    systematics['scale_t_19_up'] = ('TSCALE_UP_19' , '_19', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_20 != '':
+    systematics['scale_t_20_up'] = ('TSCALE_UP_20' , '_20', 'wt', ['VV','TT','QCD','W','signal'])
+if options.syst_tau_scale_0 != '':
+    systematics['scale_t_0_up'] = ('' , '_0', 'wt', ['VV','TT','QCD','W','signal'])
 if options.syst_eff_t != '':
     systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'Up', 'wt*wt_tau_id_up', ['ZLL','VVJ','TTJ','QCD','W'] )
     systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'Down', 'wt*wt_tau_id_down', ['ZLL','VVJ','TTJ','QCD','W'])

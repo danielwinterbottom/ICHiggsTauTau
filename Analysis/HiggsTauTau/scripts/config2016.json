@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar11_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["em", "et", "mt", "tt", "zmm", "zee"],
+    "channels":     ["et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -54,7 +54,7 @@
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "ff_categories" :"inclusive,btag,nobtag",
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Mar23/",
+    "output_folder" : "/vols/cms/amd12/MSSMFull2016/Mar11_etaufake/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -79,6 +79,7 @@
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : false,
+      "fake_tau_scale"    : false,
       "jes_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
@@ -196,6 +197,248 @@
         "tau_es_shift": 1.03
       }
     },
+    "scale_fake_t_1_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN_1",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 0.99,
+        "elec_es_shift_endcap": 0.975,
+        "tau_es_shift": 0.99
+      }
+    },
+    "scale_fake_t_1_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_1",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.01
+      }
+    },
+    "scale_fake_t_2_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN_2",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 0.99,
+        "elec_es_shift_endcap": 0.975,
+        "tau_es_shift": 0.98
+      }
+    },
+    "scale_fake_t_2_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_2",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.02
+      }
+    },
+    "scale_fake_t_3_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN_3",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 0.99,
+        "elec_es_shift_endcap": 0.975,
+        "tau_es_shift": 0.97
+      }
+    },
+    "scale_fake_t_3_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_3",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.03
+      }
+    },
+    "scale_fake_t_4_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN_4",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 0.99,
+        "elec_es_shift_endcap": 0.975,
+        "tau_es_shift": 0.96
+      }
+    },
+    "scale_fake_t_4_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_4",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.04
+      }
+    },
+    "scale_fake_t_5_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_5",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.05
+      }
+    },
+
+    "scale_fake_t_6_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_6",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.06
+      }
+    },
+    "scale_fake_t_7_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_7",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.07
+      }
+    },
+    "scale_fake_t_8_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_8",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.08
+      }
+    },
+    "scale_fake_t_9_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_9",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.09
+      }
+    },
+    "scale_fake_t_10_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_10",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.10
+      }
+    },
+    "scale_fake_t_11_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_11",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.11
+      }
+    },
+    "scale_fake_t_12_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_12",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.12
+      }
+    },
+    "scale_fake_t_13_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_13",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.13
+      }
+    },
+    "scale_fake_t_14_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_14",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.14
+      }
+    },
+    "scale_fake_t_15_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_15",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.15
+      }
+    },
+    "scale_fake_t_16_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_16",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.16
+      }
+    },
+    "scale_fake_t_17_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_17",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.17
+      }
+    },
+    "scale_fake_t_18_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_18",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.18
+      }
+    },
+    "scale_fake_t_19_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_19",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.19
+      }
+    },
+    "scale_fake_t_20_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP_20",
+        "tau_scale_mode": true,
+        "fake_tau_scale": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.20
+      }
+    },
+
     "scale_e_lo": {
       "baseline": {
         "addit_output_folder" : "TSCALE_DOWN",

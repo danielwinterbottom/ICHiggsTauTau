@@ -409,6 +409,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  vh_filter_mode = json["vh_filter_mode"].asUInt();
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
+ fake_tau_scale = json["baseline"]["fake_tau_scale"].asBool();
  //Need this to correctly set tau /elec ES
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
@@ -1168,7 +1169,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_met_label(met_label)
      .set_jets_label(jets_label)
      .set_strategy(strategy_type)
-     .set_use_quantile_map(true)
+     .set_use_quantile_map(false)
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
      .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
@@ -2514,7 +2515,7 @@ void HTTSequence::BuildTauSelection(){
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
  
- if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16)){
+ if (tau_scale_mode > 0 && !fake_tau_scale && (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16)){
     // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
     BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
@@ -2524,6 +2525,17 @@ void HTTSequence::BuildTauSelection(){
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
     .set_input_label("genmatched_taus")
     .set_shift(tau_shift));
+ }
+
+ if (tau_scale_mode > 0 && fake_tau_scale ){
+    BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelectorE")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("genmatched_efaketau")
+      .set_gen_match(mcorigin::promptE));
+
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifterE")
+      .set_input_label("genmatched_efaketau")
+      .set_shift(tau_shift));
  }
 
  if(moriond_tau_scale&&(!is_data||is_embedded)){

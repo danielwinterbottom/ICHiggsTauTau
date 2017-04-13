@@ -131,7 +131,8 @@ if options.add_sm:
 #### Apply these options for specific channels
 
 extra_channel = {
-    "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" ', 
+    #"et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" ', 
+    "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_tau_scale_1="a"  --syst_tau_scale_2="a" --syst_tau_scale_3="a" --syst_tau_scale_4="a" --syst_tau_scale_5="a" --syst_tau_scale_6="a" --syst_tau_scale_7="a" --syst_tau_scale_8="a" --syst_tau_scale_9="a" --syst_tau_scale_10="a" --syst_tau_scale_11="a" --syst_tau_scale_12="a" --syst_tau_scale_13="a" --syst_tau_scale_14="a" --syst_tau_scale_15="a" --syst_tau_scale_16="a" --syst_tau_scale_17="a" --syst_tau_scale_18="a" --syst_tau_scale_19="a" --syst_tau_scale_20="a" --syst_tau_scale_0="a" ',
     "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" ',
     "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ',
     "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" ',
@@ -241,6 +242,43 @@ if SCHEME == 'run2_mssm_osss_2016':
    }
     sig_scheme = 'run2_mssm'
     ANA = 'mssm'
+
+if SCHEME == 'run2_etaues_2016':
+    BINS_FINE="[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200]"
+    BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400]"
+    scheme_et = [
+    ("12",   "nojets",  "nojets_alldm",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("12",   "nojets",  "nojets_dm0",  BINS_FINE, '--sel="(mt_1<70) && tau_decay_mode_2==0"'),
+    ("12",   "nojets",  "nojets_dm1",  BINS_FINE, '--sel="(mt_1<70) && tau_decay_mode_2==1"'),
+    ("12",   "nojets",  "nojets_dm10",  BINS_FINE, '--sel="(mt_1<70) && tau_decay_mode_2==10"'),
+    ]
+
+    scheme_mt = [
+    ("8",   "inclusive",  "inclusive",  BINS_FINE, '--sel="(mt_1<70)"'),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, '--sel="(mt_1<70)"  '),
+    ("8",   "btag",    "btag",  BINS, '--sel="(mt_1<70)"  ')
+    ]
+
+    scheme_tt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("8",   "nobtag",    "nobtag",  BINS_FINE, ''),
+    ("8",   "btag",    "btag",  BINS, '--set_alias="tt_qcd_norm:mva_olddm_tight_1>0.5&&mva_olddm_loose_2>0.5 &&mva_olddm_tight_2<0.5&&antiele_1 && antimu_1 && antiele_2 &&antimu_2 && leptonveto<0.5" '),
+    ]
+    scheme_em = [
+    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
+    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+    ]
+
+
+
+    bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+   }
+    sig_scheme = 'run2_mssm'
+    ANA = 'mssm'
+
 
  
  
