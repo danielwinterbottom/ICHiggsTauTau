@@ -169,8 +169,30 @@ std::sort(HLTjets.begin(), HLTjets.end(), PtComparatorTriggerObj());
 std::sort(Calojets.begin(), Calojets.end(), PtComparatorTriggerObj());
 std::sort(L1jets.begin(), L1jets.end(), PtComparatorTriggerObj());
 
+// Add mjj
+
+
+
+
+
 
 //L1jets and Calojets match test
+
+unsigned int Match =0;
+for (unsigned i = 0; i < Calojets.size(); ++i)
+	for (unsigned j = 0; j < L1jets.size(); ++j)
+{
+std::pair<TriggerObject *, TriggerObject *> L1Calo (Calojets[i],L1jets[j]);
+bool a = DRLessThan(L1Calo,0.5);
+if (a) {
+	Match+=1;
+	break;
+	}
+
+}
+if (Match!=Calojets.size())
+std::cout<<"Matching problem: Matched :"<<Match<<"/ "<<Calojets.size()<<std::endl;
+
 if (L1jets.size()!=0)
 	{if (L1jets[0]->vector().Pt()<80) L1fail++;
 	if (L1jets.size()>1) 
@@ -184,6 +206,30 @@ if (Calojets.size()==0) Calosize0++;
 if (HLTjets.size()==0) HLTsize0++;
 
 L1size1++;
+
+
+//Insert mjj for HLT and Calo jets 
+
+double mjj = -9999;
+
+for (unsigned i = 0; i < HLTjets.size(); ++i)
+for (unsigned j = 0; j < HLTjets.size(); ++j)
+{
+
+if ((HLTjets.size()>1)||(i!=j)){
+		
+		if ((HLTjets[i]->vector()+HLTjets[j]->vector()).M()>mjj)
+					mjj = (HLTjets[i]->vector()+HLTjets[j]->vector()).M();
+
+
+	}
+
+
+
+}
+
+
+
 
 /*for (unsigned i = 0; i < Calojets.size(); ++i)
 {
@@ -230,7 +276,7 @@ if (Calojets.size()>1)
 
 
  
- // hlt_mjj_ = max_mjj;
+  hlt_mjj_ = mjj;
   if(fs_) outtree_->Fill();
     
     return 0;
