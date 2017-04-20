@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-from hlt_VBF_matching_mJJ_L1em import process # adapt to your case
+from hlt_VBF_EleTau import process # adapt to your case
 
 
 process.source.fileNames          = cms.untracked.vstring([
@@ -257,7 +257,7 @@ process.hltOutputFULL.outputCommands = cms.untracked.vstring(
 )
 
 process.hltOutputFULL.fileName = cms.untracked.string(
-    'outputFULLVBFtestingevents.root'
+    'outputFULLVBFEleTau.root'
 )
 
 process.FULLOutput = cms.EndPath( process.hltOutputFULL )
