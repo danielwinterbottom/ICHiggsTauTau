@@ -97,6 +97,7 @@ class SVFitTest : public ModuleBase {
   CLASS_MEMBER(SVFitTest, bool, read_all)
   CLASS_MEMBER(SVFitTest, bool, read_svfit_mt)
   CLASS_MEMBER(SVFitTest, bool, tau_optimisation)
+  CLASS_MEMBER(SVFitTest, bool, do_vloose_preselection)
 
   unsigned file_counter_;
   unsigned event_counter_;

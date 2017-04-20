@@ -7,7 +7,11 @@ config.General.transferLogs    = True
 
 config.JobType.psetName        = 'customise_mc_cfg.py'
 config.JobType.pluginName      = 'Analysis'
+<<<<<<< HEAD
 config.JobType.outputFiles     = ['outputFULLVBFEleTau.root']
+=======
+config.JobType.outputFiles     = ['outputFULL.root']
+>>>>>>> 1c3d1f062d509f0f64e68304706098921284deb2
 config.JobType.maxMemoryMB     = 9999
 config.JobType.priority        = 99999
 
@@ -20,7 +24,11 @@ config.Data.unitsPerJob        = 30
 # JSON files:
 # /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/
 config.Data.publication        = False
+<<<<<<< HEAD
 config.Data.outputDatasetTag   = 'HLT_VBF_EleTau_openPt'
+=======
+config.Data.outputDatasetTag   = 'HLT_VBF_openPt'
+>>>>>>> 1c3d1f062d509f0f64e68304706098921284deb2
 
 config.Site.storageSite        = 'T2_UK_London_IC'
 # config.Site.blacklist          = ['T1_US_FNAL']
@@ -32,12 +40,20 @@ if __name__ == '__main__':
     from CRABClient.ClientExceptions import ClientException
     from httplib import HTTPException
 
+<<<<<<< HEAD
     tag = 'HLT_VBF_EleTau'
+=======
+    tag = 'HLT_VBF'
+>>>>>>> 1c3d1f062d509f0f64e68304706098921284deb2
 
     # We want to put all the CRAB project directories from the tasks we submit here into one common directory.
     # That's why we need to set this parameter (here or above in the configuration file, it does not matter, we will not overwrite it).
     config.General.workArea   = 'crab_mc_' + tag
+<<<<<<< HEAD
     config.Data.outLFNDirBase = '/store/user/adow/' + tag
+=======
+    config.Data.outLFNDirBase = '/store/user/adow/'
+>>>>>>> 1c3d1f062d509f0f64e68304706098921284deb2
 
     def submit(config):
         try:

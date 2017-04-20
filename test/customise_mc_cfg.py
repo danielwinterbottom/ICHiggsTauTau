@@ -1,6 +1,10 @@
 import FWCore.ParameterSet.Config as cms
 
+<<<<<<< HEAD
 from hlt_VBF_EleTau import process # adapt to your case
+=======
+from hlt_VBF_matching_mJJ_L1em import process # adapt to your case
+>>>>>>> 1c3d1f062d509f0f64e68304706098921284deb2
 
 
 process.source.fileNames          = cms.untracked.vstring([
@@ -257,7 +261,11 @@ process.hltOutputFULL.outputCommands = cms.untracked.vstring(
 )
 
 process.hltOutputFULL.fileName = cms.untracked.string(
+<<<<<<< HEAD
     'outputFULLVBFEleTau.root'
+=======
+    'outputFULLVBFtesting.root'
+>>>>>>> 1c3d1f062d509f0f64e68304706098921284deb2
 )
 
 process.FULLOutput = cms.EndPath( process.hltOutputFULL )

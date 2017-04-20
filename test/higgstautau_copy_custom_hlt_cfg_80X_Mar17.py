@@ -1675,6 +1675,7 @@ process.icVBF = producers.icTriggerObjectProducer.clone(
       inputTriggerResults = cms.InputTag("TriggerResults", "", "TEST")
       )
 
+<<<<<<< HEAD
 
 process.icVBFEleOpenTau20 = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
@@ -1686,6 +1687,8 @@ process.icVBFEleOpenTau20 = producers.icTriggerObjectProducer.clone(
       )
 
 
+=======
+>>>>>>> 1c3d1f062d509f0f64e68304706098921284deb2
 process.icEle12Mu23ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsEle12Mu23"),
@@ -2154,7 +2157,10 @@ process.icDoubleMediumCombinedIsoTau40ObjectProducer = producers.icTriggerObject
 
 process.icTriggerObjectSequenceTEST += cms.Sequence(
       process.icVBF
+<<<<<<< HEAD
       process.icVBFEleOpenTau20
+=======
+>>>>>>> 1c3d1f062d509f0f64e68304706098921284deb2
       )
 
 process.icTriggerObjectSequence += cms.Sequence(

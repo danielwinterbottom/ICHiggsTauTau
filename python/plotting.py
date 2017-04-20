@@ -1790,3 +1790,440 @@ def getOverlayMarkerAndLegend(legend, entries, options, borderSize=2.0/3, marker
     borderLegend.SetFillStyle(0)
     borderLegend.SetFillColor(0)
     return (borderLegend,graphs)
+
+def signalComp(leg,plots,colour,stacked):
+  return dict([('leg_text',leg),('plot_list',plots),('colour',colour),('in_stack',stacked)])
+
+def backgroundComp(leg,plots,colour):
+  return dict([('leg_text',leg),('plot_list',plots),('colour',colour)])
+
+def createAxisHists(n,src,xmin=0,xmax=499):
+  result = []
+  for i in range(0,n):
+    res = src.Clone()
+    res.Reset()
+    res.SetTitle("")
+    res.SetName("axis%(i)d"%vars())
+    res.SetAxisRange(xmin,xmax)
+    res.SetStats(0)
+    result.append(res)
+  return result
+
+def HTTPlot(nodename, 
+            infile=None, 
+            signal_scale=1, 
+            signal_mass="",
+            FF=False,
+            norm_bins=True,
+            channel="mt",
+            blind=False,
+            x_blind_min=0,
+            x_blind_max=4000,
+            ratio=True,
+            log_y=False,
+            log_x=False,
+            ratio_range="0.7,1.3",
+            custom_x_range=False,
+            x_axis_max=4000,
+            x_axis_min=0,
+            custom_y_range=False,
+            y_axis_max=4000,
+            y_axis_min=0,
+            x_title="",
+            y_title="",
+            extra_pad=0,
+            signal_scheme="run2_mssm",
+            do_custom_uncerts=False,
+            add_stat_to_syst=False,
+            add_flat_uncert=False,
+            uncert_title="background uncertainty",
+            lumi="35.9",
+            plot_name="htt_plot",
+            custom_uncerts_up_name="total_bkg_custom_uncerts_up",
+            custom_uncerts_down_name="total_bkg_custom_uncerts_down"
+            ):
+    R.gROOT.SetBatch(R.kTRUE)
+    R.TH1.AddDirectory(False)
+    
+    # Define signal schemes here
+    sig_schemes = {}
+    sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
+    sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
+    sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
+    #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
+    
+    ModTDRStyle(r=0.04, l=0.14)
+    
+    background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'tt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
+    'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZLL"],R.TColor.GetColor(100,192,232))],
+    'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZLL"],R.TColor.GetColor(100,192,232))]
+    }
+    if FF:
+        for chan in ["et", "mt", "tt"]:    
+            background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)))
+            background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["FakeTaus"],R.TColor.GetColor(250,202,255)))
+        
+    total_datahist = infile.Get(nodename+'/data_obs').Clone()
+    
+    blind_datahist = total_datahist.Clone()
+    total_datahist.SetMarkerStyle(20)
+    blind_datahist.SetMarkerStyle(20)
+    blind_datahist.SetLineColor(1)
+    
+    #Blinding by hand using requested range, set to 200-4000 by default:
+    if blind:
+        for i in range(0,total_datahist.GetNbinsX()):
+          low_edge = total_datahist.GetBinLowEdge(i+1)
+          high_edge = low_edge+total_datahist.GetBinWidth(i+1)
+          if ((low_edge > float(x_blind_min) and low_edge < float(x_blind_max)) or (high_edge > float(x_blind_min) and high_edge<float(x_blind_max))):
+            blind_datahist.SetBinContent(i+1,0)
+            blind_datahist.SetBinError(i+1,0)
+    if norm_bins:
+        blind_datahist.Scale(1.0,"width")
+        total_datahist.Scale(1.0,"width")
+        
+    #Create stacked plot for the backgrounds
+    bkg_histos = []
+    for i,t in enumerate(background_schemes[channel]):
+        plots = t['plot_list']
+        h = R.TH1F()
+        for j,k in enumerate(plots):
+            if h.GetEntries()==0:
+                h = infile.Get(nodename+'/'+k).Clone()
+                
+                h.SetName(k)
+            else:
+                h.Add(infile.Get(nodename+'/'+k).Clone())
+        h.SetFillColor(t['colour'])
+        h.SetLineColor(R.kBlack)
+        h.SetMarkerSize(0)
+    
+        if norm_bins:
+            h.Scale(1.0,"width")
+        bkg_histos.append(h)
+        
+    stack = R.THStack("hs","")
+    bkghist = R.TH1F()
+    for hists in bkg_histos:
+      stack.Add(hists.Clone())
+      if bkghist.GetEntries()==0:
+          bkghist = hists.Clone()
+      else:
+          bkghist.Add(hists.Clone())
+      
+    c1 = R.TCanvas()
+    c1.cd()    
+    
+    if ratio:
+        pads=TwoPadSplit(0.29,0.01,0.01)
+    else:
+        pads=OnePad()
+    pads[0].cd()
+    
+    if(log_y): pads[0].SetLogy(1)
+    if(log_x): pads[0].SetLogx(1)
+    if custom_x_range:
+        if x_axis_max > bkghist.GetXaxis().GetXmax(): x_axis_max = bkghist.GetXaxis().GetXmax()
+    if ratio:
+        if(log_x): pads[1].SetLogx(1)
+        axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+        axish[1].GetXaxis().SetTitle(x_title)
+        axish[1].GetXaxis().SetLabelSize(0.03)
+        axish[1].GetXaxis().SetTitleSize(0.04)
+        axish[1].GetYaxis().SetNdivisions(4)
+        axish[1].GetYaxis().SetTitle("Obs/Exp")
+        axish[1].GetYaxis().SetTitleOffset(1.6)
+        axish[1].GetYaxis().SetTitleSize(0.04)
+        axish[1].GetYaxis().SetLabelSize(0.03)
+    
+        axish[0].GetXaxis().SetTitleSize(0)
+        axish[0].GetXaxis().SetLabelSize(0)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+          axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+          axish[1].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    else:
+        axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+        axish[0].GetXaxis().SetTitle(x_title)
+        axish[0].GetXaxis().SetTitleSize(0.04)
+        axish[0].GetXaxis().SetLabelSize(0.03)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:                                                                
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    axish[0].GetYaxis().SetTitle(y_title)
+    axish[0].GetYaxis().SetTitleOffset(1.6)
+    axish[0].GetYaxis().SetTitleSize(0.04)
+    axish[0].GetYaxis().SetLabelSize(0.03)
+    if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
+    if not custom_y_range:
+        if(log_y): 
+            axish[0].SetMinimum(0.0009)
+            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+        else: 
+            axish[0].SetMinimum(0)
+            axish[0].SetMaximum(1.1*(1+extra_pad)*bkghist.GetMaximum())
+    axish[0].Draw()
+    
+    #Draw uncertainty band
+    bkghist.SetFillColor(CreateTransparentColor(12,0.4))
+    bkghist.SetLineColor(CreateTransparentColor(12,0.4))
+    bkghist.SetMarkerSize(0)
+    bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
+    
+    sighist = R.TH1F()
+    if signal_mass != "":
+        scheme = sig_schemes[signal_scheme]
+        for i in scheme[1]: 
+            h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+            if sighist.GetEntries() == 0: sighist = h
+            else: sighist.Add(h)
+        sighist.SetLineColor(R.kBlue)
+        sighist.SetLineWidth(3)
+        sighist.Scale(signal_scale)
+        if norm_bins: sighist.Scale(1.0,"width")
+        if scheme[2]: 
+            stack.Add(sighist.Clone())
+            if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+        stack.Draw("histsame")
+        if not scheme[2]: sighist.Draw("histsame")
+        
+    else:
+        stack.Draw("histsame")
+        
+    ## Add another signal mass point
+    #sighist2 = R.TH1F()
+    #sighist2 = ana.nodes[nodename].nodes["ggH200"].shape.hist.Clone()
+    #sighist2.SetLineColor(R.kRed)
+    #sighist2.SetLineWidth(3)
+    #sighist2.Scale(signal_scale)
+    #if norm_bins: sighist2.Scale(1.0,"width")
+    #sighist2.Draw("histsame")
+    error_hist = bkghist.Clone()
+    if do_custom_uncerts:
+      bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
+      bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
+      for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
+          stat_error=error_hist.GetBinError(i)
+          bin_up = bkg_uncert_up.GetBinContent(i)
+          bin_down = bkg_uncert_down.GetBinContent(i)
+          error = abs(bin_up - bin_down)/2
+          if add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
+          band_center = abs(max(bin_up,bin_down) - error)          
+          error_hist.SetBinContent(i,band_center)
+          error_hist.SetBinError(i,error)
+          
+    if add_flat_uncert > 0:
+      for i in range(1,error_hist.GetNbinsX()+1): 
+          stat_error=error_hist.GetBinError(i)
+          error = add_flat_uncert*error_hist.GetBinContent(i)
+          error = math.sqrt(error**2+stat_error**2)
+          error_hist.SetBinError(i,error)
+    
+    error_hist.Draw("e2same")
+    blind_datahist.Draw("E same")
+    axish[0].Draw("axissame")
+    
+    #Setup legend
+    legend = PositionedLegend(0.30,0.30,3,0.03)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.022)
+    legend.SetFillColor(0)
+    legend.AddEntry(blind_datahist,"Observation","PE")
+    #Drawn on legend in reverse order looks better
+    bkg_histos.reverse()
+    background_schemes[channel].reverse()
+    for legi,hists in enumerate(bkg_histos):
+        legend.AddEntry(hists,background_schemes[channel][legi]['leg_text'],"f")
+    if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
+    else: legend.AddEntry(error_hist,"Background uncertainty","f")
+    if signal_mass != "":
+        legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
+    ## Add a second signal mass
+    #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(200 GeV)#rightarrow#tau#tau","l")  
+    legend.Draw("same")
+    if channel == "em": channel_label = "e#mu"
+    if channel == "et": channel_label = "e#tau_{h}"
+    if channel == "mt": channel_label = "#mu#tau_{h}"
+    if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
+    if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
+    if channel == "zee": channel_label = "Z#rightarrow ee"
+    latex2 = R.TLatex()
+    latex2.SetNDC()
+    latex2.SetTextAngle(0)
+    latex2.SetTextColor(R.kBlack)
+    latex2.SetTextSize(0.028)
+    latex2.DrawLatex(0.145,0.955,channel_label)
+    
+    #CMS and lumi labels
+    FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawTitle(pads[0], lumi, 3)
+    
+    #Add ratio plot if required
+    if ratio:
+        ratio_bkghist = MakeRatioHist(error_hist.Clone(),error_hist.Clone(),True,False)
+        blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
+        pads[1].cd()
+        pads[1].SetGrid(0,1)
+        axish[1].Draw("axis")
+        axish[1].SetMinimum(float(ratio_range.split(',')[0]))
+        axish[1].SetMaximum(float(ratio_range.split(',')[1]))
+        ratio_bkghist.SetMarkerSize(0)
+        ratio_bkghist.Draw("e2same")
+        blind_ratio.DrawCopy("e0same")
+        pads[1].RedrawAxis("G")
+        
+    pads[0].cd()
+    pads[0].GetFrame().Draw()
+    pads[0].RedrawAxis()
+    
+    c1.SaveAs(plot_name+'.pdf')
+    c1.SaveAs(plot_name+'.png')
+
+def CompareHists(hists=[],
+             legend_titles=[],
+             title="",
+             ratio=True,
+             log_y=False,
+             log_x=False,
+             ratio_range="0.7,1.3",
+             custom_x_range=False,
+             x_axis_max=4000,
+             x_axis_min=0,
+             custom_y_range=False,
+             y_axis_max=4000,
+             y_axis_min=0,
+             x_title="",
+             y_title="",
+             extra_pad=0,
+             norm_hists=True,
+             plot_name="plot"):
+    
+    R.gROOT.SetBatch(R.kTRUE)
+    R.TH1.AddDirectory(False)
+    ModTDRStyle(r=0.04, l=0.14)
+
+    colourlist=[R.kGreen+3,R.kRed,R.kBlue,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
+    hs = R.THStack("hs","")
+    hist_count=0
+    legend_hists=[]
+    for hist in hists:
+        if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
+        h = hist.Clone()
+        h.SetFillColor(0)
+        h.SetLineColor(colourlist[hist_count])
+        h.SetMarkerSize(0)
+        hs.Add(h)
+        hist_count+=1
+        legend_hists.append(h.Clone())
+   # hs.Draw("nostack")
+        
+    c1 = R.TCanvas()
+    c1.cd()
+    
+    if ratio:
+        pads=TwoPadSplit(0.29,0.01,0.01)
+    else:
+        pads=OnePad()
+    pads[0].cd()
+    
+    if(log_y): pads[0].SetLogy(1)
+    if(log_x): pads[0].SetLogx(1)
+    if custom_x_range:
+        if x_axis_max > hists[0].GetXaxis().GetXmax(): x_axis_max = hists[0].GetXaxis().GetXmax()
+    if ratio:
+        if(log_x): pads[1].SetLogx(1)
+        axish = createAxisHists(2,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+        axish[1].GetXaxis().SetTitle(x_title)
+        axish[1].GetXaxis().SetLabelSize(0.03)
+        axish[1].GetYaxis().SetNdivisions(4)
+        axish[1].GetYaxis().SetTitle("Ratio")
+        axish[1].GetYaxis().SetTitleOffset(1.6)
+        axish[1].GetYaxis().SetTitleSize(0.04)
+        axish[1].GetYaxis().SetLabelSize(0.03)
+    
+        axish[0].GetXaxis().SetTitleSize(0)
+        axish[0].GetXaxis().SetLabelSize(0)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+          axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+          axish[1].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    else:
+        axish = createAxisHists(1,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+        axish[0].GetXaxis().SetLabelSize(0.03)
+        axish[0].GetXaxis().SetTitle(x_title)
+        axish[0].GetXaxis().SetTitleSize(0.04)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:                                                                
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    axish[0].GetYaxis().SetTitle(y_title)
+    axish[0].GetYaxis().SetTitleOffset(1.6)
+    axish[0].GetYaxis().SetTitleSize(0.04)
+    axish[0].GetYaxis().SetLabelSize(0.03)
+
+    if not custom_y_range:
+        if(log_y): 
+            axish[0].SetMinimum(0.0009)
+            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(axish[0].GetMinimum())))))
+        else: 
+            axish[0].SetMinimum(0)
+            axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
+    axish[0].Draw()
+    
+    hs.Draw("nostackhistsame")
+    axish[0].Draw("axissame")
+    
+    
+    #Setup legend
+    legend = PositionedLegend(0.30,0.30,3,0.03)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.022)
+    legend.SetFillColor(0)
+    
+
+    for legi,hist in enumerate(legend_hists):
+        legend.AddEntry(hist,legend_titles[legi],"l")
+    legend.Draw("same")
+    
+    #CMS label and title
+    FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawTitle(pads[0], title, 3)
+    
+    #Add ratio plot if required
+    if ratio:
+        ratio_hs = R.THStack("ratio_hs","")
+        hist_count=0
+        pads[1].cd()
+        pads[1].SetGrid(0,1)
+        axish[1].Draw("axis")
+        axish[1].SetMinimum(float(ratio_range.split(',')[0]))
+        axish[1].SetMaximum(float(ratio_range.split(',')[1]))
+        div_hist = hists[0].Clone()
+        for hist in hists:
+            h = hist.Clone()
+            h.SetFillColor(0)
+            h.SetLineColor(colourlist[hist_count])
+            h.SetMarkerSize(0)
+            h.Divide(div_hist)
+            ratio_hs.Add(h.Clone())
+            hist_count+=1   
+        ratio_hs.Draw("nostackhistsame")  
+        pads[1].RedrawAxis("G")
+    pads[0].cd()
+    pads[0].GetFrame().Draw()
+    pads[0].RedrawAxis()
+    
+    c1.SaveAs(plot_name+'.pdf')
+    c1.SaveAs(plot_name+'.png')
+    
