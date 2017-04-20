@@ -366,8 +366,8 @@ namespace ic {
           if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
           double pt = parts[i]->pt();
           pt = std::min(pt, 400.);
-          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X) top_wt *= std::exp(0.156-0.00137*pt);
-          if (mc_ == mc::summer16_80X) top_wt *= std::exp(0.0615-0.0005*pt);
+          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || channel_==channel::em) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::summer16_80X && channel_!=channel::em) top_wt *= std::exp(0.0615-0.0005*pt);
           }
         }
       }
@@ -1348,6 +1348,7 @@ namespace ic {
         //trigweight_1 is actually the full trigger weight because of the way the efficiencies are combined
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", double(1.0));
+        if(mc_==mc::summer16_80X) eventInfo->set_weight("filter_eff",double(0.979));
        }
       } else if (channel_ == channel::tt){
         Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));

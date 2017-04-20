@@ -13,7 +13,7 @@ import copy
 
 CHANNELS= ['et', 'mt', 'em','tt']
 ANALYSIS= ['sm','mssm','Hhh']
-METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16]
+METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 19]
 
 conf_parser = argparse.ArgumentParser(
     description=__doc__,
@@ -235,6 +235,7 @@ if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
+    cats['loose_baseline'] = '(iso_1<0.5 && iso_2>0.2 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
 elif options.channel == 'zee':
@@ -550,7 +551,7 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='',
       shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
   shape_selection = BuildCutString(wt, sel, shape_cat, OSSS, '')
   
-  if method in [8, 9, 15]:
+  if method in [8, 9, 15, 19]:
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
   elif method in [10, 11]:
       control_sel = cats['w_sdb']+' && '+ OSSS
@@ -670,13 +671,17 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
             subtract_node = GetSubtractNode(ana,'',plot,wt,sel,shape_cat,method,qcd_os_ss_ratio,False,True)  
             shape_node = SubtractNode('shape', ana.SummedFactory('data_ss', data, plot, shape_selection), subtract_node)
         
-        if options.channel == 'em': qcd_os_ss_factor = 1
-        else: qcd_os_ss_factor = qcd_factor
+        #if options.channel == 'em': qcd_os_ss_factor = 1
+        qcd_os_ss_factor = qcd_factor
         weight = wt
-        if method == 15:
-            qcd_os_ss_factor = 1
+        if method in [15,19]:
+            #qcd_os_ss_factor = 1
             if get_os and options.channel == "em":
                 weight = wt+'*wt_em_qcd'
+            if method == 19:
+                shape_selection = BuildCutString(weight, sel, em_shape_cat, '!os')
+                subtract_node = GetSubtractNode(ana,'',plot,weight,sel,em_shape_cat,method,1,False,True)
+                shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot, shape_selection), subtract_node)
         
         full_selection = BuildCutString(weight, sel, cat, '!os')
         subtract_node = GetSubtractNode(ana,'',plot,weight,sel,cat,method,qcd_os_ss_ratio,False,True)
@@ -1077,6 +1082,7 @@ for systematic in systematics:
     ana.AddInfo(options.paramfile, scaleTo='data_obs')
     
     cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
+    if options.channel=="em": em_shape_cat = '('+cats[options.cat]+')*('+cats['loose_baseline']+')'
     sel = options.sel
     plot = options.var
     if options.datacard != "": nodename = options.channel+'_'+options.datacard
