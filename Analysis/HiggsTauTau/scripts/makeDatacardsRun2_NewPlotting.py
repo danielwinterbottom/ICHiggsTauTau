@@ -247,6 +247,8 @@ if SCHEME == 'run2_mssm_osss_2016':
 if SCHEME == 'run2_mssm_summer2016':
   BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
   BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900]"
+  BINS_EM_NOBTAG="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,900,4000]"
+  BINS_EM_BTAG="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,4000]"
   if options.const:
     BINS_FINE="(98,0,3920)"
     BINS="(98,0,3920)"
@@ -331,9 +333,19 @@ if SCHEME == 'run2_mssm_summer2016':
 
   ]
   scheme_em = [
-    ("15",   "inclusive",    "inclusive",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
-    ("15",   "nobtag",    "nobtag",  BINS_FINE, '--set_alias="sel:pzeta>-20"'),
-    ("15",   "btag",    "btag",  BINS, '--set_alias="sel:pzeta>-20"')
+    ("19",   "inclusive",    "inclusive",  BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-50"'),
+    ("19",   "nobtag",    "nobtag",  BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-50"'),
+    ("19",   "btag",    "btag",  BINS_EM_BTAG, '--set_alias="sel:pzeta>-50" --qcd_os_ss_ratio=0.6 '),
+    ("19",   "inclusive", "inclusive_lowPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-50&&pzeta<=-10"'), 
+    ("19",   "nobtag", "nobtag_lowPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-50&&pzeta<=-10"'), 
+    ("19",   "btag", "btag_lowPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>-50&&pzeta<=-10" --qcd_os_ss_ratio=0.6 '), 
+    ("19",   "inclusive", "inclusive_mediumPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30"'), 
+    ("19",   "nobtag", "nobtag_mediumPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30"'), 
+    ("19",   "btag", "btag_mediumPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30" --qcd_os_ss_ratio=0.6 '), 
+    ("19",   "inclusive", "inclusive_highPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30"'), 
+    ("19",   "nobtag", "nobtag_highPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>30"'), 
+    ("19",   "btag", "btag_highPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>30" --qcd_os_ss_ratio=0.6 '), 
+    ("19",   "inclusive", "ttbar", BINS_EM_NOBTAG, '--set_alias="sel:pzeta<-50 &&met>80" '), 
   ]
   bkg_schemes = {
     'et' : 'et_default',

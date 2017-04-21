@@ -754,7 +754,7 @@ if(js["test_nlo_reweight"].asBool()) {
   BuildModule(lumiMask);
  }
 
-if(strategy_type == strategy::fall15 && output_name.find("WGToLNuG")!=output_name.npos){
+if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16) && output_name.find("WGToLNuG")!=output_name.npos){
   SimpleCounter<GenParticle> wgammaStarFilter = SimpleCounter<GenParticle>("WgammaStarSelector")
     .set_input_label("genParticles")
     .set_predicate(
@@ -1733,7 +1733,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
            output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
         httStitching.set_do_w_soup(true);
         httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-        httStitching.SetWInputYields(57026058 + 29705748,45367044,29878415 + 30319351,19798117 + 19798117,19798117 + 2073275 + 18751462);
+        httStitching.SetWInputYields(57026058 + 29705748,45367044,29878415 + 30319351,19798117 + 39269431,9170576 + 2073275 + 18751462);
        }
        if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
          httStitching.set_do_dy_soup(true);

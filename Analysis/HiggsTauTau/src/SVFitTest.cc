@@ -292,7 +292,7 @@ int SVFitTest::Execute(TreeEvent *event) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 ) iso_2_ = PF04IsolationVal(muon, 0.5, 0);
-        if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
+        if(iso_2_<0.5 && iso_1_<0.5) pass_presel = true;
     } 
     if(channel_ == channel::tt && do_preselection_) {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
