@@ -255,6 +255,11 @@ if SCHEME == 'run2_mssm_summer2016':
     ("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
     ("12",   "nobtag",    "nobtag",  BINS_FINE, '--sel="(mt_1<50)" --set_alias="baseline:({ichep_baseline})" '),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, ''),
+    
+    ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--sel="(mt_1>70)" --set_alias="baseline:({ichep_baseline})" '),
+    ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--sel="(mt_1>70)" --set_alias="baseline:({ichep_baseline})" --do_ss'),
+    ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--sel="(mt_1<50)" --set_alias="baseline:({ichep_baseline})" --do_ss'),
+    
     ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="set_alias:(mt_1>70)"  '),
     ("12",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '),
     ("12",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--do_ss'),
@@ -264,7 +269,12 @@ if SCHEME == 'run2_mssm_summer2016':
     ("12",   "nobtag_looseiso",    "nobtag_looseiso_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" '),
     ("12",   "nobtag_looseiso",    "nobtag_looseiso_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '), 
     ("12",   "nobtag_looseiso",    "nobtag_looseiso_qcd_cr",  BINS_FINE, ' --do_ss '),
-    ("16",   "btag",    "btag",  BINS, '--sel="(mt_1<50)"  --set_alias="baseline:(\{ichep_baseline\})"'),
+    ("16",   "btag",    "btag",  BINS, '--sel="(mt_1<50)"  --set_alias="baseline:({ichep_baseline})"'),
+    
+    ("16",   "btag",    "btag_wjets_cr",  BINS_FINE, '--sel="(mt_1>70)" --set_alias="baseline:({ichep_baseline})" '),
+    ("16",   "btag",    "btag_wjets_ss_cr",  BINS_FINE, '--sel="(mt_1>70)" --set_alias="baseline:({ichep_baseline})" --do_ss'),
+    ("16",   "btag",    "btag_qcd_cr",  BINS_FINE, '--sel="(mt_1<50)" --set_alias="baseline:({ichep_baseline})" --do_ss'),
+    
     ("16",   "btag_tight",    "btag_tight",  BINS, ''),
     ("16",   "btag_tight",    "btag_tight_wjets_cr",  BINS, '--set_alias="sel:(mt_1>70)"  '),
     ("16",   "btag_tight",    "btag_tight_wjets_ss_cr",  BINS, '--set_alias="sel:(mt_1>70)" --do_ss '),
@@ -279,6 +289,11 @@ if SCHEME == 'run2_mssm_summer2016':
   scheme_mt = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
     ("12",   "nobtag",    "nobtag",  BINS_FINE, '--sel="(mt_1<40)" --set_alias="baseline:({ichep_baseline})" '),
+    
+    ("12",   "nobtag",    "nobtag_wjets_cr",  BINS_FINE, '--sel="(mt_1>70)" --set_alias="baseline:({ichep_baseline})" '),
+    ("12",   "nobtag",    "nobtag_wjets_ss_cr",  BINS_FINE, '--sel="(mt_1>70)" --set_alias="baseline:({ichep_baseline})" --do_ss'),
+    ("12",   "nobtag",    "nobtag_qcd_cr",  BINS_FINE, '--sel="(mt_1<40)" --set_alias="baseline:({ichep_baseline})" --do_ss'),
+    
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, ''),
     ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="set_alias:(mt_1>70)"  '),
     ("12",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '),
@@ -290,6 +305,11 @@ if SCHEME == 'run2_mssm_summer2016':
     ("12",   "nobtag_looseiso",    "nobtag_looseiso_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '), 
     ("12",   "nobtag_looseiso",    "nobtag_looseiso_qcd_cr",  BINS_FINE, ' --do_ss '),
     ("16",   "btag",    "btag",  BINS, '--sel="(mt_1<40)"  --set_alias="baseline:({ichep_baseline})"'),
+    
+    ("16",   "btag",    "btag_wjets_cr",  BINS_FINE, '--sel="(mt_1>70)" --set_alias="baseline:({ichep_baseline})" '),
+    ("16",   "btag",    "btag_wjets_ss_cr",  BINS_FINE, '--sel="(mt_1>70)" --set_alias="baseline:({ichep_baseline})" --do_ss'),
+    ("16",   "btag",    "btag_qcd_cr",  BINS_FINE, '--sel="(mt_1<40)" --set_alias="baseline:({ichep_baseline})" --do_ss'),
+    
     ("16",   "btag_tight",    "btag_tight",  BINS, ''),
     ("16",   "btag_tight",    "btag_tight_wjets_cr",  BINS, '--set_alias="sel:(mt_1>70)"  '),
     ("16",   "btag_tight",    "btag_tight_wjets_ss_cr",  BINS, '--set_alias="sel:(mt_1>70)" --do_ss '),

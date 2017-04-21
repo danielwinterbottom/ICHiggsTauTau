@@ -210,6 +210,12 @@ print ''
 
 if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
+loosemt_string='tight'
+tight_string='tight'
+loose_string='loose'
+tight_mt_cut='40'
+if options.channel == 'mt': tight_mt_cut='40'
+
 # Define categories here
 cats = {}
 if options.analysis == 'sm':
@@ -219,18 +225,18 @@ if options.analysis == 'sm':
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
-            cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['ichep_baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loose_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_'+loose_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['ichep_baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et':
-            cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_loose_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['ichep_baseline'] = '(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loose_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_'+loose_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['ichep_baseline'] = '(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.channel == 'em':
@@ -253,34 +259,40 @@ cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
 cats['nobtag_loosemt'] = cats['nobtag']
-cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_tight_2<0.5)'
+cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_'+tight_string+'_2<0.5)'
 cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
-cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_tight_2<0.5)'
+cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_'+tight_string+'_2<0.5)'
 cats['atleast1bjet'] = '(n_bjets>0)'
 cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
-cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
+cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_'+tight_string+'_2<0.5)'
 
 if options.method == 17: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
 
+
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
-if options.cat == 'nobtag_tight' or options.cat == 'nobtag_loosemt' or options.cat == 'btag_tight' or options.cat == 'btag_loosemt' or options.cat == 'btag_tight_wnobtag':
+if options.cat == 'nobtag_tight' or options.cat == 'btag_tight' or options.cat == 'btag_tight_wnobtag':
     if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+tight_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+tight_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
+    if options.channel == 'mt':        
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loosemt_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+    elif options.channel == 'et':
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loosemt_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 # And aldo overwrite selection if one of the tight categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<40)'
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<'+tight_mt_cut+')'
 if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>40)'
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>'+tight_mt_cut+')'
 if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso':
     if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70)'
 # Also need to adjust btag wnobtag category (used for method 16) for different categories
 cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 if options.channel == 'mt' or options.channel == 'et':
     if options.cat == 'btag_loosemt': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
-    if options.cat == 'btag_looseiso': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_tight_2<0.5)'
+    if options.cat == 'btag_looseiso': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_'+tight_string+'_2<0.5)'
 
 if options.era == "mssmsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
@@ -1094,7 +1106,7 @@ for systematic in systematics:
     else: do_data = False
             
     #Run default plot        
-    if "btag_tight" in options.cat or "btag_loosemt" in options.cat: weight+="*wt_tau_id_tight"
+    if "btag_tight" in options.cat or "btag_loosemt" in options.cat: weight+="*wt_tau_id_tight" #need to change at a later stage!
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
     
     
