@@ -325,6 +325,7 @@ if SCHEME == 'run2_mssm_summer2016':
     ("19",   "inclusive", "inclusive_highPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30"'), 
     ("19",   "nobtag", "nobtag_highPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>30"'), 
     ("19",   "btag", "btag_highPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>30" --qcd_os_ss_ratio=0.6 '), 
+    ("19",   "inclusive", "ttbar", BINS_EM_NOBTAG, '--set_alias="sel:pzeta<-50 &&met>80" '), 
   ]
   bkg_schemes = {
     'et' : 'et_default',
