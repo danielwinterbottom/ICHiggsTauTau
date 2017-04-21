@@ -54,7 +54,7 @@
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "ff_categories" :"inclusive,btag,nobtag",
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Apr05/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Apr21/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -116,7 +116,7 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : true,
-        "do_ff_systematics": false,
+        "do_ff_systematics": true,
         "ff_categories" :"btag_looseiso,btag_loosemt,btag_tight,inclusive,nobtag_looseiso,nobtag_loosemt,nobtag_tight"
           }
     },
@@ -129,7 +129,7 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : true,
-        "do_ff_systematics": false,
+        "do_ff_systematics": true,
         "ff_categories" :"btag,inclusive,nobtag"
       }
     },
@@ -145,7 +145,7 @@
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
         "do_ff_weights" : true,
-        "do_ff_systematics": false,
+        "do_ff_systematics": true,
         "ff_categories" :"btag_looseiso,btag_loosemt,btag_tight,inclusive,nobtag_looseiso,nobtag_loosemt,nobtag_tight"
       }
     },

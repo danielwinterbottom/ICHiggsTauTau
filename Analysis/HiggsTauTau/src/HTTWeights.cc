@@ -479,7 +479,9 @@ namespace ic {
         if(mc_ == mc::summer16_80X){
             tau_sf_2  = (gen_match_2 == 5) ? 0.99 : 1.0;
             double tight_tau_sf_2 = (gen_match_2 == 5) ? 0.95 : 1.0;
+            double medium_tau_sf_2 = (gen_match_2 == 5) ? 0.97 : 1.0;
             event->Add("wt_tau_id_tight",tight_tau_sf_2/(tau_sf_2));
+            event->Add("wt_tau_id_medium",medium_tau_sf_2/(tau_sf_2));
         }
         else tau_sf_2 = tau_sf_2_old;
         event->Add("wt_tau_id_binned",tau_sf_2_old/(tau_sf_2));
@@ -503,6 +505,10 @@ namespace ic {
         if(mc_ == mc::summer16_80X) tau_sf_2  = (gen_match_2 == 5) ? 0.95 : 1.0;
         else tau_sf_2 = tau_sf_2_old;
         event->Add("wt_tau_id_binned",tau_sf_1_old*tau_sf_2_old/(tau_sf_1*tau_sf_2));
+        
+        double loose_tau_sf_1 = (gen_match_1 == 5) ? 0.99 : 1.0;
+        double loose_tau_sf_2 = (gen_match_2 == 5) ? 0.99 : 1.0;
+        event->Add("wt_tau_id_loose",loose_tau_sf_1*loose_tau_sf_2/(tau_sf_2*tau_sf_1));
       }
      eventInfo->set_weight("wt_tau_id_sf",tau_sf_1*tau_sf_2);
     }
