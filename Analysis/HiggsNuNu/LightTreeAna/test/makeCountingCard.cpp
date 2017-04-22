@@ -24,6 +24,7 @@ Syst::Syst(){
 };
 
 int main(int argc, char* argv[]){
+  bool do_tau_veto_unc;
   bool blind=true;
   bool do_datatop;
   bool do_qcdfromshape;
@@ -48,6 +49,10 @@ int main(int argc, char* argv[]){
   double wzewk_syst;
   double minvarXcut;
   double minvarYcut;
+  double minvarZcut;
+  double maxvarXcut;
+  double maxvarYcut;
+  double maxvarZcut;
   std::string histoToIntegrate;
   po::variables_map vm;
   po::options_description config("Configuration");
@@ -56,6 +61,7 @@ int main(int argc, char* argv[]){
     ("input_folder,i",           po::value<std::string>(&indir)->default_value("output_run2ana_161015"))
     ("outname,o",                po::value<std::string>(&outname)->default_value("vbfhinv.txt"))
     ("blind",                    po::value<bool>(&blind)->default_value(true))
+    ("do_tau_veto_unc",          po::value<bool>(&do_tau_veto_unc)->default_value(false))
     ("do_qcdfromshape,s",        po::value<bool>(&do_qcdfromshape)->default_value(false))
     ("do_qcdfromnumber,q",       po::value<bool>(&do_qcdfromnumber)->default_value(true))
     ("do_ggh,g",                 po::value<bool>(&do_ggh)->default_value(true))
@@ -75,8 +81,12 @@ int main(int argc, char* argv[]){
     ("do_1param",                po::value<bool>(&do_1param)->default_value(true))
     ("wzqcd_syst",               po::value<double>(&wzqcd_syst)->default_value(1.30))
     ("wzewk_syst",               po::value<double>(&wzewk_syst)->default_value(1.30))
-    ("minvarXcut",               po::value<double>(&minvarXcut)->default_value(1.0))
-    ("minvarYcut",               po::value<double>(&minvarYcut)->default_value(1.0))
+    ("minvarXcut",               po::value<double>(&minvarXcut)->default_value(0))
+    ("minvarYcut",               po::value<double>(&minvarYcut)->default_value(0))
+    ("minvarZcut",               po::value<double>(&minvarZcut)->default_value(0))
+    ("maxvarXcut",               po::value<double>(&maxvarXcut)->default_value(14000))
+    ("maxvarYcut",               po::value<double>(&maxvarYcut)->default_value(14000))
+    ("maxvarZcut",               po::value<double>(&maxvarZcut)->default_value(14000))
     ("histoToIntegrate",         po::value<std::string>(&histoToIntegrate)->default_value("alljetsmetnomu_mindphi"))
 
 ;
@@ -133,6 +143,13 @@ int main(int argc, char* argv[]){
       bkgprocesses.push_back("zmumuewk");
     }
   }
+  if (channel=="ee") {
+    if (!do_separate_qcdewk) bkgprocesses.push_back("zeeqcd");
+    else {
+      bkgprocesses.push_back("zeeqcd");
+      bkgprocesses.push_back("zeeewk");
+    }
+  }
   if (!do_separate_qcdewk) {
     bkgprocesses.push_back("wmuqcd");
     bkgprocesses.push_back("welqcd");
@@ -165,12 +182,19 @@ int main(int argc, char* argv[]){
       bkgprocesslatex.push_back("$ewkZ\\rightarrow\\mu\\mu$");
     }
   }
+  if (channel=="ee") {
+    if (!do_separate_qcdewk) bkgprocesslatex.push_back("$Z\\rightarrow ee$");
+    else {
+      bkgprocesslatex.push_back("$qcdZ\\rightarrow ee$");
+      bkgprocesslatex.push_back("$ewkZ\\rightarrow ee$");
+    }
+  }
   if (!do_separate_qcdewk) {
     bkgprocesslatex.push_back("$W\\rightarrow\\mu\\nu$");
     bkgprocesslatex.push_back("$W\\rightarrow e\\nu$");
     bkgprocesslatex.push_back("$W\\rightarrow\\tau\\nu$");
   }
-  else {    
+  else {
     bkgprocesslatex.push_back("$qcdW\\rightarrow\\mu\\nu$");
     bkgprocesslatex.push_back("$ewkW\\rightarrow\\mu\\nu$");
     bkgprocesslatex.push_back("$qcdW\\rightarrow e\\nu$");
@@ -213,6 +237,19 @@ int main(int argc, char* argv[]){
   //SYSTEMATICS
   std::vector<Syst> systematics;
 
+  std::vector<std::string> tau_veto_unc_affected;
+
+  tau_veto_unc_affected.push_back("wtau");
+  tau_veto_unc_affected.push_back("wtauqcd");
+  tau_veto_unc_affected.push_back("wtauewk");
+
+  Syst tau_veto_unc;
+  tau_veto_unc.set_name("tau_veto_unc")
+  .set_latexname("tau veto uncertainty")
+  .set_type("constlnN")
+  .set_procsaffected(tau_veto_unc_affected)
+  .set_constvalue(1.030);
+
   std::vector<std::string> lumi8tevprocsaffected={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","wg","vv","qcd"};
   if (mcBkgOnly) {
     //if (do_run2) lumi8tevprocsaffected.push_back("zvv");
@@ -222,14 +259,17 @@ int main(int argc, char* argv[]){
     lumi8tevprocsaffected.push_back("zvvqcd");
       //}
     lumi8tevprocsaffected.push_back("zmumu");
+    lumi8tevprocsaffected.push_back("zee");
     lumi8tevprocsaffected.push_back("wmu");
     lumi8tevprocsaffected.push_back("wel");
     lumi8tevprocsaffected.push_back("wtau");
     lumi8tevprocsaffected.push_back("zmumuqcd");
+    lumi8tevprocsaffected.push_back("zeeqcd");
     lumi8tevprocsaffected.push_back("wmuqcd");
     lumi8tevprocsaffected.push_back("welqcd");
     lumi8tevprocsaffected.push_back("wtauqcd");
     lumi8tevprocsaffected.push_back("zmumuewk");
+    lumi8tevprocsaffected.push_back("zeeewk");
     lumi8tevprocsaffected.push_back("wmuewk");
     lumi8tevprocsaffected.push_back("welewk");
     lumi8tevprocsaffected.push_back("wtauewk");
@@ -243,8 +283,8 @@ int main(int argc, char* argv[]){
     .set_procsaffected(lumi8tevprocsaffected)
     .set_constvalue(1.062);
 
-  std::vector<std::string> allprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zmumuqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","qcd","wg","vv"};
-  std::vector<std::string> allprocsnotqcd={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zmumuqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","wmuewk","welewk","wtauewk","top","wg","vv"};
+  std::vector<std::string> allprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH1C50","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zee","zmumuqcd","zeeqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","zeeewk","wmuewk","welewk","wtauewk","top","qcd","wg","vv"};
+  std::vector<std::string> allprocsnotqcd={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","zvv","zvvewk","zvvqcd","zmumu","zee","zmumuqcd","zeeqcd","wmu","wel","wtau","wmuqcd","welqcd","wtauqcd","zmumuewk","zeeewk","wmuewk","welewk","wtauewk","top","wg","vv"};
   std::vector<std::string> ggHprocs={"ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","ggH500","ggH600","ggH"};
   std::vector<std::string> qqHprocs={"qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH500","qqH600","qqH"};
   Syst eleeff;
@@ -332,14 +372,14 @@ int main(int argc, char* argv[]){
     .set_latexname("W/Z from theory")
     .set_type("constlnN")
     .set_constvalue(wzqcd_syst)
-    .set_procsaffected({"zmumuqcd","zvvqcd"});
+    .set_procsaffected({"zeeqcd","zmumuqcd","zvvqcd"});
 
   Syst wzratioewk;
   wzratioewk.set_name("CMS_WZEWK_ratio_from_theory")
     .set_latexname("W/Z from theory")
     .set_type("constlnN")
     .set_constvalue(wzewk_syst)
-    .set_procsaffected({"zmumuewk","zvvewk"});
+    .set_procsaffected({"zeeewk","zmumuewk","zvvewk"});
 
   Syst zvvewkmcstat;
   zvvewkmcstat.set_name("CMS_VBFHinv_zvv_ewk_norm")
@@ -361,7 +401,7 @@ int main(int argc, char* argv[]){
   zmumumcstat.set_name("CMS_VBFHinv_zmumu_norm")
     .set_latexname("$Z\\rightarrow\\mu\\mu$ MC stat.")
     .set_type("fromMCstatlnN")
-    .set_procsaffected({"zmumuqcd"});
+    .set_procsaffected({"zmumu"});
   Syst zmumuqcdmcstat;
   zmumuqcdmcstat.set_name("CMS_VBFHinv_zmumu_qcd_norm")
     .set_latexname("$qcdZ\\rightarrow\\mu\\mu$ MC stat.")
@@ -372,6 +412,22 @@ int main(int argc, char* argv[]){
     .set_latexname("ewk$Z\\rightarrow\\mu\\mu$ MC stat.")
     .set_type("fromMCstatlnN")
     .set_procsaffected({"zmumuewk"});
+
+  Syst zeemcstat;
+  zeemcstat.set_name("CMS_VBFHinv_zee_norm")
+    .set_latexname("$Z\\rightarrow ee$ MC stat.")
+    .set_type("fromMCstatlnN")
+    .set_procsaffected({"zee"});
+  Syst zeeqcdmcstat;
+  zeeqcdmcstat.set_name("CMS_VBFHinv_zee_qcd_norm")
+    .set_latexname("$qcdZ\\rightarrow ee$ MC stat.")
+    .set_type("fromMCstatlnN")
+    .set_procsaffected({"zeeqcd"});
+  Syst zeeewkmcstat;
+  zeeewkmcstat.set_name("CMS_VBFHinv_zee_ewk_norm")
+    .set_latexname("ewk$Z\\rightarrow ee$ MC stat.")
+    .set_type("fromMCstatlnN")
+    .set_procsaffected({"zeeewk"});
 
   Syst zvvdatastat;
   zvvdatastat.set_name("CMS_VBFHinv_zvv_stat")
@@ -615,7 +671,7 @@ int main(int argc, char* argv[]){
   zxsunc.set_name("CMS_VBFHinv_Z_xsunc")
     .set_latexname("Z cross-section")
     .set_type("constlnN")
-    .set_procsaffected({"zvv","zmumu"})
+    .set_procsaffected({"zvv","zmumu","zee"})
     .set_constvalue(1.1);
 
   Syst topxsunc;
@@ -638,6 +694,10 @@ int main(int argc, char* argv[]){
     .set_procsaffected({"zvv"})
     .set_constvalue(1.2);
 
+  if (do_tau_veto_unc) {
+    systematics.push_back(tau_veto_unc);
+  }
+
   systematics.push_back(lumi8tev);
   if (!do_run2)  systematics.push_back(eleeff);
   if (!do_run2) systematics.push_back(mueff);
@@ -654,7 +714,7 @@ int main(int argc, char* argv[]){
   systematics.push_back(trig0);
   systematics.push_back(trig1);
   systematics.push_back(trig2);
-  if (channel=="nunu" || channel=="mumu") {
+  if (channel=="nunu" || channel=="mumu" || channel=="ee") {
     //if (mcBkgOnly) systematics.push_back(zxsunc);
     if (channel=="nunu") {
       if (!do_separate_qcdewk) systematics.push_back(zvvmcstat);
@@ -670,7 +730,14 @@ int main(int argc, char* argv[]){
 	systematics.push_back(zmumuewkmcstat);
       }
     }
-    if (channel=="mumu" || channel=="nunu") {
+    if (channel=="ee") {
+      if (!do_separate_qcdewk) systematics.push_back(zeemcstat);
+      else {
+        systematics.push_back(zeeqcdmcstat);
+        systematics.push_back(zeeewkmcstat);
+      }
+    }
+    if (channel=="ee" || channel=="mumu" || channel=="nunu") {
       systematics.push_back(wzratioqcd);
       systematics.push_back(wzratioewk);
     }
@@ -762,21 +829,31 @@ int main(int argc, char* argv[]){
     }
     dir->cd();
     double rate = 0;
-    if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+    size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+    if (nD==0) {
       TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
       if (!histo) {
 	std::cout<<"Error: No histogram " << histoToIntegrate << " found for "<<dirname<<" exiting"<<std::endl; 
 	return 1;
       }
-      rate=histo->Integral(histo->FindBin(minvarXcut), histo->GetNbinsX() + 1);
+      rate=histo->Integral(histo->FindBin(minvarXcut), histo->FindBin(maxvarXcut));
     }
-    else {
+    else if (nD==1){
       TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
       if (!histo) {
 	std::cout<<"Error: No histogram " << histoToIntegrate << " found for "<<dirname<<" exiting"<<std::endl;
         return 1;
       }
-      rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetNbinsX() + 1, histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
+      rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetXaxis()->FindBin(maxvarXcut), histo->GetYaxis()->FindBin(minvarYcut), histo->GetYaxis()->FindBin(maxvarYcut));
+
+    }
+    else if (nD==2){
+      TH3F* histo = (TH3F*)dir->Get(histoToIntegrate.c_str());
+      if (!histo) {
+	std::cout<<"Error: No histogram " << histoToIntegrate << " found for "<<dirname<<" exiting"<<std::endl;
+        return 1;
+      }
+      rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetXaxis()->FindBin(maxvarXcut), histo->GetYaxis()->FindBin(minvarYcut),histo->GetYaxis()->FindBin(maxvarYcut), histo->GetZaxis()->FindBin(minvarZcut),histo->GetZaxis()->FindBin(maxvarZcut));
 
     }
     datacard<<"observation "<<rate<<std::endl;
@@ -800,12 +877,17 @@ int main(int argc, char* argv[]){
       }
       dir->cd();
       double rate = 0;
-      if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+      size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+      if (nD==0){
 	TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
-	rate=histo->Integral(histo->FindBin(minvarXcut), histo->GetNbinsX() + 1);
-      } else {
+	rate=histo->Integral(histo->FindBin(minvarXcut), histo->FindBin(maxvarXcut));
+      } else if (nD==1){
 	TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
-	rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetNbinsX() + 1, histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
+	rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetXaxis()->FindBin(maxvarXcut), histo->GetYaxis()->FindBin(minvarYcut), histo->GetYaxis()->FindBin(maxvarYcut));
+      }
+      else if (nD==2){
+	TH3F* histo = (TH3F*)dir->Get(histoToIntegrate.c_str());
+	rate=histo->Integral(histo->GetXaxis()->FindBin(minvarXcut), histo->GetXaxis()->FindBin(maxvarXcut), histo->GetYaxis()->FindBin(minvarYcut),histo->GetYaxis()->FindBin(maxvarYcut), histo->GetZaxis()->FindBin(minvarZcut),histo->GetZaxis()->FindBin(maxvarZcut));
       }
       totalbkgs+=rate;
     }
@@ -855,6 +937,7 @@ int main(int argc, char* argv[]){
   datacard<<"rate\t\t";
   TH1F* histo[100];
   TH2F* histo2D[100];
+  TH3F* histo3D[100];
   for(unsigned iProc=0;iProc<(sigprocesses.size()+bkgprocesses.size());iProc++){
     std::string dirname;
     if(iProc<sigprocesses.size())dirname=sigprocesses[iProc];
@@ -872,26 +955,38 @@ int main(int argc, char* argv[]){
     }
     dir->cd();
     double rate = 0;
-    if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+    size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+    if (nD==0){
       histo[iProc] = (TH1F*)dir->Get(histoToIntegrate.c_str());
       std::cout << dirname << " overflows: " << histo[iProc]->GetBinContent(histo[iProc]->GetNbinsX()+1) << std::endl;
-      rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX()+1);
+      rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->FindBin(maxvarXcut));
       if (rate != rate) {
-	rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX());
-	if (rate!=rate){
-	  std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
-	  rate=0;
-	}
+	//rate=Integral(histo[iProc],histo[iProc]->FindBin(minvarXcut),histo[iProc]->GetNbinsX());
+	//if (rate!=rate){
+	std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
+	rate=0;
+	//}
       }
-    } else {
+    } else if (nD==1){
       histo2D[iProc] = (TH2F*)dir->Get(histoToIntegrate.c_str());
-      rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX()+1,histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY()+1);
+      rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetXaxis()->FindBin(maxvarXcut),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetYaxis()->FindBin(maxvarYcut));
       if (rate != rate) {
-	rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX(),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY());
-	if (rate!=rate){
-	  std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
-	  rate=0;
-	}
+	//rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX(),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY());
+	//if (rate!=rate){
+	std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
+	rate=0;
+	//}
+      }
+    }
+    else if (nD==2){
+      histo3D[iProc] = (TH3F*)dir->Get(histoToIntegrate.c_str());
+      rate=Integral(histo3D[iProc],histo3D[iProc]->GetXaxis()->FindBin(minvarXcut),histo3D[iProc]->GetXaxis()->FindBin(maxvarXcut),histo3D[iProc]->GetYaxis()->FindBin(minvarYcut),histo3D[iProc]->GetYaxis()->FindBin(maxvarYcut),histo3D[iProc]->GetZaxis()->FindBin(minvarZcut),histo3D[iProc]->GetZaxis()->FindBin(maxvarZcut));
+      if (rate != rate) {
+	//rate=Integral(histo2D[iProc],histo2D[iProc]->GetXaxis()->FindBin(minvarXcut),histo2D[iProc]->GetNbinsX(),histo2D[iProc]->GetYaxis()->FindBin(minvarYcut),histo2D[iProc]->GetNbinsY());
+	//if (rate!=rate){
+	std::cout << " -- Problem, nan in sample " << dirname << " setting rate to 0." << std::endl;
+	rate=0;
+	//}
       }
     }
     if(iProc<sigprocesses.size())sigcentralrates.push_back(rate);
@@ -975,16 +1070,25 @@ int main(int argc, char* argv[]){
 	  TH1F* downhisto=0;
 	  TH2F* uphisto2D=0;
 	  TH2F* downhisto2D=0;
-	  if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+	  TH3F* uphisto3D=0;
+	  TH3F* downhisto3D=0;
+	  size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+	  if (nD==0) {
 	    uphisto = (TH1F*)updir->Get(histoToIntegrate.c_str());
-	    uprate=Integral(uphisto,uphisto->FindBin(minvarXcut),uphisto->GetNbinsX()+1);
+	    uprate=Integral(uphisto,uphisto->FindBin(minvarXcut),uphisto->FindBin(maxvarXcut));
 	    downhisto = (TH1F*)downdir->Get(histoToIntegrate.c_str());
-	    downrate=Integral(downhisto,downhisto->FindBin(minvarXcut),downhisto->GetNbinsX()+1);
-	  } else {
+	    downrate=Integral(downhisto,downhisto->FindBin(minvarXcut),downhisto->FindBin(maxvarXcut));
+	  } else if (nD==1){
 	    uphisto2D = (TH2F*)updir->Get(histoToIntegrate.c_str());
-	    uprate=Integral(uphisto2D,uphisto2D->GetXaxis()->FindBin(minvarXcut),uphisto2D->GetNbinsX()+1,uphisto2D->GetYaxis()->FindBin(minvarYcut),uphisto2D->GetNbinsY()+1);
+	    uprate=Integral(uphisto2D,uphisto2D->GetXaxis()->FindBin(minvarXcut),uphisto2D->GetXaxis()->FindBin(maxvarXcut),uphisto2D->GetYaxis()->FindBin(minvarYcut),uphisto2D->GetYaxis()->FindBin(maxvarYcut));
 	    downhisto2D = (TH2F*)downdir->Get(histoToIntegrate.c_str());
-	    downrate=Integral(downhisto2D,downhisto2D->GetXaxis()->FindBin(minvarXcut),downhisto2D->GetNbinsX()+1,downhisto2D->GetYaxis()->FindBin(minvarYcut),downhisto2D->GetNbinsY()+1);
+	    downrate=Integral(downhisto2D,downhisto2D->GetXaxis()->FindBin(minvarXcut),downhisto2D->GetXaxis()->FindBin(maxvarXcut),downhisto2D->GetYaxis()->FindBin(minvarYcut),downhisto2D->GetYaxis()->FindBin(maxvarYcut));
+	  }
+	  else if (nD==2){
+	    uphisto3D = (TH3F*)updir->Get(histoToIntegrate.c_str());
+	    uprate=Integral(uphisto3D,uphisto3D->GetXaxis()->FindBin(minvarXcut),uphisto3D->GetXaxis()->FindBin(maxvarXcut),uphisto3D->GetYaxis()->FindBin(minvarYcut),uphisto3D->GetYaxis()->FindBin(maxvarYcut),uphisto3D->GetZaxis()->FindBin(minvarZcut),uphisto3D->GetZaxis()->FindBin(maxvarZcut));
+	    downhisto3D = (TH3F*)downdir->Get(histoToIntegrate.c_str());
+	    downrate=Integral(downhisto3D,downhisto3D->GetXaxis()->FindBin(minvarXcut),downhisto3D->GetXaxis()->FindBin(maxvarXcut),downhisto3D->GetYaxis()->FindBin(minvarYcut),downhisto3D->GetYaxis()->FindBin(maxvarYcut),downhisto3D->GetZaxis()->FindBin(minvarZcut),downhisto3D->GetZaxis()->FindBin(maxvarZcut));
 	  }
 
 	  double centralrate;
@@ -1001,19 +1105,26 @@ int main(int argc, char* argv[]){
 	    std::cout << " Process " << dirname << ", systematics " << systematics[iSyst].name() << " is more than 20%: down - central - up = "
 		      << downrate << " - " << centralrate << " - " << uprate << std::endl;
 	    std::cout << "Diff entries: " ;
-	    if (histoToIntegrate.find(":")==histoToIntegrate.npos){
+	    size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+	    if (nD==0){
 	      std::cout << downhisto->GetEntries() 
 			<< " - " << histo[iProc]->GetEntries() << "(" << histo[iProc]->Integral() << ")"
 			<< " - " << uphisto->GetEntries() << std::endl;
 	    }
-	    else {
+	    else if (nD==1){
 	      std::cout << downhisto2D->GetEntries() 
 			<< " - " << histo2D[iProc]->GetEntries()
 			<< " - " << uphisto2D->GetEntries() << std::endl;
 
 	    }
+	    else if (nD==2){
+	      std::cout << downhisto3D->GetEntries() 
+			<< " - " << histo3D[iProc]->GetEntries()
+			<< " - " << uphisto3D->GetEntries() << std::endl;
+
+	    }
 	    std::cout << "Diff overflows: " ;
-	    if (histoToIntegrate.find(":")==histoToIntegrate.npos){
+	    if (nD==0){
 	      std::cout << downhisto->GetBinContent(0) 
 			<< " - " << histo[iProc]->GetBinContent(0)
 			<< " - " << uphisto->GetBinContent(0) << std::endl
@@ -1021,13 +1132,22 @@ int main(int argc, char* argv[]){
 			<< " - " << histo[iProc]->GetBinContent(histo[iProc]->GetNbinsX()+1)
 			<< " - " << uphisto->GetBinContent(uphisto->GetNbinsX()+1) << std::endl;
 	    }
-	    else {
+	    else if (nD==1){
 	      std::cout << downhisto2D->GetBinContent(0,0) 
 			<< " - " << histo2D[iProc]->GetBinContent(0,0)
 			<< " - " << uphisto2D->GetBinContent(0,0) << std::endl
 			<< downhisto2D->GetBinContent(downhisto2D->GetNbinsX()+1,downhisto2D->GetNbinsY()+1) 
 			<< " - " << histo2D[iProc]->GetBinContent(histo2D[iProc]->GetNbinsX()+1,histo2D[iProc]->GetNbinsY()+1)
 			<< " - " << uphisto2D->GetBinContent(uphisto2D->GetNbinsX()+1,uphisto2D->GetNbinsY()+1) << std::endl;
+
+	    }
+	    else if (nD==2){
+	      std::cout << downhisto3D->GetBinContent(0,0) 
+			<< " - " << histo3D[iProc]->GetBinContent(0,0)
+			<< " - " << uphisto3D->GetBinContent(0,0) << std::endl
+			<< downhisto3D->GetBinContent(downhisto3D->GetNbinsX()+1,downhisto3D->GetNbinsY()+1) 
+			<< " - " << histo3D[iProc]->GetBinContent(histo3D[iProc]->GetNbinsX()+1,histo3D[iProc]->GetNbinsY()+1)
+			<< " - " << uphisto3D->GetBinContent(uphisto3D->GetNbinsX()+1,uphisto3D->GetNbinsY()+1) << std::endl;
 
 	    }
 	  }
@@ -1067,14 +1187,29 @@ int main(int argc, char* argv[]){
 	  TDirectory* dir=nunu->GetDirectory(dirname.c_str());	  
 	  dir->cd();
 	  double error = 0;
-	  if (histoToIntegrate.find(":")==histoToIntegrate.npos) {
+	  size_t nD = std::count(histoToIntegrate.begin(),histoToIntegrate.end(),':');
+	  if (nD==0) {
 	    TH1F* histo = (TH1F*)dir->Get(histoToIntegrate.c_str());
-	    error=Error(histo,histo->FindBin(minvarXcut),histo->GetNbinsX()+1);
-	    if (error!=error) error=Error(histo,histo->FindBin(minvarXcut),histo->GetNbinsX());
-	  } else {
+	    error=Error(histo,histo->FindBin(minvarXcut),histo->FindBin(maxvarXcut));
+	    if (error!=error) {
+	      std::cout << " Warning, nan error for " << dirname << std::endl;
+	      error = 0;
+	    }
+	  } else if (nD==1){
 	    TH2F* histo = (TH2F*)dir->Get(histoToIntegrate.c_str());
-	    error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetNbinsX()+1,histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY() + 1);
-	    if (error!=error) error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetNbinsX(),histo->GetYaxis()->FindBin(minvarYcut), histo->GetNbinsY());
+	    error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetXaxis()->FindBin(maxvarXcut),histo->GetYaxis()->FindBin(minvarYcut), histo->GetYaxis()->FindBin(maxvarYcut));
+	    if (error!=error){
+	      std::cout << " Warning, nan error for " << dirname << std::endl;
+	      error = 0;
+	    } 
+	  }
+	  else if (nD==2){
+	    TH3F* histo = (TH3F*)dir->Get(histoToIntegrate.c_str());
+	    error=Error(histo,histo->GetXaxis()->FindBin(minvarXcut),histo->GetXaxis()->FindBin(maxvarXcut),histo->GetYaxis()->FindBin(minvarYcut), histo->GetYaxis()->FindBin(maxvarYcut),histo->GetZaxis()->FindBin(minvarZcut), histo->GetZaxis()->FindBin(maxvarZcut));
+	    if (error!=error){
+	      std::cout << " Warning, nan error for " << dirname << std::endl;
+	      error = 0;
+	    } 
 	  }
 
 	  double centralrate;
@@ -1299,6 +1434,10 @@ datacard<<std::endl;
     if (channel=="mumu"){
       datacard<<"WZ_xsection rateParam ch1 zmumuqcd 1"<<std::endl;
       datacard<<"WZ_xsection rateParam ch1 zmumuewk 1"<<std::endl;
+    }
+    if (channel=="ee"){
+      datacard<<"WZ_xsection rateParam ch1 zeeqcd 1"<<std::endl;
+      datacard<<"WZ_xsection rateParam ch1 zeeewk 1"<<std::endl;
     }
     if (channel=="nunu"){
       datacard<<"WZ_xsection rateParam ch1 zvvewk 1"<<std::endl;

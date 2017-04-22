@@ -43,8 +43,8 @@ double deltaRmin(double eta1,double phi1,double eta2,double phi2,double eta3,dou
   return std::min(deltaR(eta1,phi1,eta3,phi3),deltaR(eta2,phi2,eta3,phi3));
 };
 
-double getPostFitSF(std::string channel, std::string process){  
-  
+double getPostFitSF(std::string channel, std::string process){
+
   if (process=="error") return -1; // to be removed after test
   else return 1; // to be removed after test
 
@@ -107,6 +107,7 @@ int main(int argc, char* argv[]){
   std::string inputparams;
   std::string filelist;
   std::string basesel;
+  std::string baseselele;
 
   std::string channel;
   std::string syst;
@@ -127,6 +128,10 @@ int main(int argc, char* argv[]){
   bool do_logy;
   bool do_mcbkg;
   bool use_nlo;
+  bool do_tauveto;
+  bool do_bveto;
+  double met_cutval;
+  bool do_lep_mt_cut;
 
   std::string jetmetdphicut;
   std::string metsigcut;
@@ -162,6 +167,7 @@ int main(int argc, char* argv[]){
     ("do_list",                  po::value<bool>(&do_list)->default_value(false))
     ("listset",                  po::value<std::string>(&listset)->default_value("Top"))
     ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=1100&&jet1_pt>80&&dijet_deta>3.6&& jet2_pt>70&&metnomuons>200"))
+    ("baseselele",               po::value<std::string>(&baseselele)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=1100&&jet1_pt>80&&dijet_deta>3.6&& jet2_pt>70&&metnoelectrons>200"))
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
 
     ("runblind",                 po::value<bool>(&runblind)->default_value(true))
@@ -169,7 +175,7 @@ int main(int argc, char* argv[]){
     ("do_latex",                 po::value<bool>(&do_latex)->default_value(false))
 
     ("do_mettrig",               po::value<bool>(&do_mettrig)->default_value(false))
-    ("apply_trig_in_mc",               po::value<bool>(&apply_trig_in_mc)->default_value(false))
+    ("apply_trig_in_mc",         po::value<bool>(&apply_trig_in_mc)->default_value(false))
 
     ("do_logy",                  po::value<bool>(&do_logy)->default_value(false))
     ("blindcutreg",              po::value<bool>(&blindcutreg)->default_value(true))
@@ -182,6 +188,10 @@ int main(int argc, char* argv[]){
     ("histTitlePar",             po::value<std::string>(&histTitlePar)->default_value(";#Delta#phi(E_{T}^{miss},j);Events"))
     ("shapePar",                 po::value<std::string>(&shapePar)->default_value("alljetsmetnomu_mindphi(32,0.,3.1416)"))
     ("lumiSF",                   po::value<double>(&lumiSF)->default_value(1.0))
+    ("do_tauveto",               po::value<bool>(&do_tauveto)->default_value(false))
+    ("do_bveto",                 po::value<bool>(&do_bveto)->default_value(false))
+    ("met_cutval",               po::value<double>(&met_cutval)->default_value(0))
+    ("do_lep_mt_cut",            po::value<bool>(&do_lep_mt_cut)->default_value(false))
     ;
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -227,7 +237,8 @@ int main(int argc, char* argv[]){
   }
   analysis->SetInputParams(inputparams);
 
-  std::cout<<"Base selection: "<<basesel<<std::endl;
+  std::cout << " -- Base selection:               " << basesel    << std::endl;
+  std::cout << " -- Base selection for electrons: " << baseselele << std::endl;
 
   //add metsig cut
   std::string metsigsel;
@@ -235,10 +246,11 @@ int main(int argc, char* argv[]){
   else if (channel=="munu") metsigsel="&& metnomuons/sqrt(sumet-mu1_pt)>"+metsigcut;
   else metsigsel="&& metnomuons/sqrt(sumet)>"+metsigcut;
 
-  basesel = basesel;//+metsigsel;
+  if (channel=="ee" || channel=="enu") basesel = baseselele;//+metsigsel;
+  else basesel = basesel;//+metsigsel;
 
   analysis->set_baseselection(basesel);
-  
+
   /*##########################################
   #                                          #
   #            DEFINE MODULES                #
@@ -305,7 +317,7 @@ int main(int argc, char* argv[]){
       shape.push_back("gamma1_pt(50,0,500)");histTitle.push_back(";p_{T}(#gamma) (GeV);Events");
       shape.push_back("gamma1_eta(30,-2.5,2.5)");histTitle.push_back(";#eta(#gamma);Events");
     }
-    
+
     if(channel=="mumu"){
       shape.push_back("m_mumu(12,60.,120.)");histTitle.push_back(";m_{#mu#mu};Events");
       shape.push_back("pt_mumu(15,0.,400.)");histTitle.push_back(";p_{T}^{#mu#mu};Events");
@@ -314,7 +326,7 @@ int main(int argc, char* argv[]){
       shape.push_back("mu2_pt(30,0.,300.)");histTitle.push_back(";p_{T}(sublead muon) (GeV);Events");
       shape.push_back("mu2_eta(50,-2.1,2.1)");histTitle.push_back(";#eta(sublead muon) (GeV);Events");
     }
-    
+
     shape.push_back("n_vertices(40,0,40)");histTitle.push_back(";n_{vtx};Events");
 
     shape.push_back("jet1_pt(47,80.,550.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
@@ -324,7 +336,7 @@ int main(int argc, char* argv[]){
     shape.push_back("jet1_eta(94,-4.7,4.7)");histTitle.push_back(";#eta^{j1} (GeV);Events");
     shape.push_back("jet2_eta(94,-4.7,4.7)");histTitle.push_back(";#eta^{j2} (GeV);Events");
     shape.push_back("cjvjetpt(19,15.,205.)");histTitle.push_back(";p_{T}^{CJV jet} (GeV);Events");
-    
+
     if(channel=="mumu") {
       shape.push_back("metnomuons(15,200.,450.)");histTitle.push_back(";MET_{no #mu} (GeV);Events");
     }
@@ -333,40 +345,40 @@ int main(int argc, char* argv[]){
     }
     shape.push_back("met(30,0.,550.)");histTitle.push_back(";MET (GeV);Events");
     shape.push_back("l1met(30,0.,550.)");histTitle.push_back(";L1MET (GeV);Events");
-    
+
     shape.push_back("ht(30,100,1000)");histTitle.push_back(";H_{T}^{p_{T}^{j}>15 GeV} (GeV);Events");
     shape.push_back("ht30(30,100,1000)");histTitle.push_back(";H_{T}^{p_{T}^{j}>30 GeV} (GeV);Events");
-    
+
     if(channel=="mumu") {shape.push_back("dijet_M(15,800.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");}
     else {shape.push_back("dijet_M(30,800.,4000.)");histTitle.push_back(";M_{jj} (GeV);Events");}
     shape.push_back("dijet_dphi(15,0.,3.1416)");histTitle.push_back(";#Delta#phi_{jj};Events");
     shape.push_back("dijet_deta(30,3.6,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
     shape.push_back("dijet_sumeta(30,-5,5)");histTitle.push_back(";#eta_{j1}+#eta_{j2};Events");
-    
+
     shape.push_back("jetmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
     shape.push_back("alljetsmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
     shape.push_back("metnomu_significance(30,0.,300.)");histTitle.push_back(";S;Events");
-    
+
     shape.push_back("jetunclet_mindphi(32,0,3.1416)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});Events");
     shape.push_back("metnomuunclet_dphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl});Events");
     shape.push_back("dijetmetnomu_scalarSum_pt(35,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;Events");
     shape.push_back("dijetmetnomu_vectorialSum_pt(20,0,400)");histTitle.push_back(";p_{T}(#vec{ja}+#vec{jb}+#vec{METnoMu});Events");
     shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events");
-    
+
     shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);Events");
     shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);Events");
-    
+
     shape.push_back("jet1_csv(21,0.,1.)");histTitle.push_back(";Jet 1 CSV;Events");
     shape.push_back("jet2_csv(21,0.,1.)");histTitle.push_back(";Jet 2 CSV;Events");
     shape.push_back("jet3_csv(21,0.,1.)");histTitle.push_back(";Jet 3 CSV;Events");
-    
+
     shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;Events");
     shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
     shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
     shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
 
     shape.push_back("alljetsmetnomu_mindphi:dijet_M(24,800.,2000.,20,1.,3.)");histTitle.push_back(";M_{jj} (GeV);#Delta#phi(E_{T}^{miss},j);Events");
- 
+
 
     //mindR(tau,tagjets)
     //shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);Events");
@@ -375,32 +387,75 @@ int main(int argc, char* argv[]){
   std::string dataextrasel;
   std::string mcextrasel;
 
-  if (channel!="gamma"){
-    if(!do_mettrig) dataextrasel="&&(pass_sigtrigger==1)";
-    else dataextrasel="&&(pass_mettrigger==1)";
+  if (channel=="ee" || channel=="enu"){
+    dataextrasel="&&(pass_singleEltrigger==1)";
+  }
+  else if (channel!="gamma"){
+    //if(!do_mettrig) dataextrasel="&&(pass_sigtrigger==1)";
+    //for metmht trigger
+    if(!do_mettrig){
+      dataextrasel="&&(pass_metmht90trigger==1 || pass_metmht100trigger==1 || pass_metmht110trigger==1 || pass_metmht120trigger==1)";
+    }
+    else {
+      dataextrasel="&&(pass_mettrigger==1)";
+    }
   }
   else {
     dataextrasel="&&(pass_photontrigger==1)";
   }
+
   if (apply_trig_in_mc) mcextrasel=dataextrasel;
 
   std::string sigcat;
   std::string zextrasigcat;
 
+  std::string tauveto;
+  std::string bveto;
+  std::string met_cut;
+  std::string lep_mt_cut;
+
+
+  if (do_tauveto){
+    tauveto="&&nvetotaus==0";
+  } else {
+    tauveto="";
+  }
+  if (do_bveto){
+    bveto="&&n_jets_csv2medium==0";
+  } else {
+    bveto="";
+  }
+
+  if (met_cutval>0){
+    std::ostringstream ltmp;
+    ltmp << "&&met>" << met_cutval;
+    met_cut=ltmp.str();
+  } else {
+    met_cut="";
+  }
+  if (do_lep_mt_cut){
+    lep_mt_cut="&&lep_mt<160";
+  } else {
+    lep_mt_cut="";
+  }
+
   //AMM uncomment for QCD mindphi plot in signal region!
-  std::string nunucat="nvetomuons==0&&nvetoelectrons==0&&metnomuons>200&&dijet_M>1100&&"+jetmetdphicut;
+  std::string nunucat  = "nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut+tauveto+bveto;
   //std::string nunuqcdcat=nunucat;
   //AMM uncomment for QCD plot in signal region! except mindphi.
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1";
   //std::string nunuqcdcat="nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
 
-  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
-  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut;
-  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
-  std::string gammacat="ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
-  std::string toplcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";
-  std::string topbcat = "(nselmuons>=1 || nselelectrons>=1)&&(jet1_csv>0.679||jet2_csv>0.679)&&(forward_tag_eta>2.8||forward_tag_eta<-2.8)";
+  std::string enucat   = "nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&ele1_pt>40&&"+jetmetdphicut+tauveto+bveto+lep_mt_cut+met_cut;
+  std::string munucat  = "nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&lep_mt>=0&&"+jetmetdphicut+tauveto+bveto+lep_mt_cut;
+  std::string taunucat = "ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut+bveto+lep_mt_cut;
+
+  std::string eecat    = "nselelectrons>=1&&nvetoelectrons==2&&nvetomuons==0&&m_ee>60&&m_ee<120&&oppsign_ee&&ele1_pt>40&&"+jetmetdphicut+tauveto+bveto;
+  std::string mumucat  = "nselmuons>=1&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&oppsign_mumu&&"+jetmetdphicut+tauveto+bveto;
+
+  std::string gammacat = "ntightphotons==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut+tauveto+bveto;
+  std::string toplcat  = "nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1"+tauveto+bveto;
+  std::string topbcat  = "(nselmuons>=1 || nselelectrons>=1)&&(jet1_csv>0.679||jet2_csv>0.679)&&(forward_tag_eta>2.8||forward_tag_eta<-2.8)"+tauveto+bveto;
 
   if(channel=="nunu" || channel=="qcd"){//nunu
     sigcat=nunucat;
@@ -408,6 +463,9 @@ int main(int argc, char* argv[]){
   else {
     if(channel=="mumu"){//zmumu
       sigcat=mumucat;
+    }
+    else if(channel=="ee"){//zee
+      sigcat=eecat;
     }
     else if(channel=="munu"){//wmu
       sigcat=munucat;
@@ -450,8 +508,15 @@ int main(int argc, char* argv[]){
   if (syst=="TRIG2DOWN") mcweightpufactor<<"*weight_trig_6/weight_trig_0";
 
   if(channel=="taunu"||channel=="gamma"||channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor.str();//+mcweightpufactordebug;
+  //remove trigger weight for e channels which do not use signal trigger
+  else if (channel=="ee" || channel=="enu") sigmcweight="weight_leptight*weight_nolepnotrig"+mcweightpufactor.str();//+mcweightpufactordebug;
   else sigmcweight="total_weight_leptight"+mcweightpufactor.str();//+mcweightpufactordebug;
   sig125mcweight="total_weight_lepveto"+mcweightpufactor.str();
+
+  //add NLO reweighting
+  sigmcweight=sigmcweight+"*v_nlo_Reweight";
+
+  if (channel=="ee" || channel == "enu") dataset="SingleElectron";
 
   std::string bothcentral="TMath::Abs(jet1_eta)<3&&TMath::Abs(jet2_eta)<3";
   std::string bothforward="TMath::Abs(jet1_eta)>=3&&TMath::Abs(jet2_eta)>=3";
@@ -691,6 +756,16 @@ int main(int argc, char* argv[]){
 
   if (use_nlo)  zmumuraw.set_dataset("ZJets_ll_nlo");
 
+  DataShape zeeraw("zeeraw");
+  zeeraw.set_dataset("ZJets_ll")
+    .set_dirname("zee")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  zeeraw.set_dataset("ZJets_ll_nlo");
+
   DataShape qcdzmumuraw("qcdzmumuraw");
   qcdzmumuraw.set_dataset("ZJets_ll")
     .set_dirname("zmumuqcd")
@@ -704,6 +779,24 @@ int main(int argc, char* argv[]){
   DataShape ewkzmumuraw("ewkzmumuraw");
   ewkzmumuraw.set_dataset("EWK_ZJets_ll")
     .set_dirname("zmumuewk")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  DataShape qcdzeeraw("qcdzeeraw");
+  qcdzeeraw.set_dataset("ZJets_ll")
+    .set_dirname("zeeqcd")
+    .set_shape(shape)
+    .set_dataweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat+mcextrasel);
+
+  if (use_nlo)  qcdzeeraw.set_dataset("ZJets_ll_nlo");
+
+  DataShape ewkzeeraw("ewkzeeraw");
+  ewkzeeraw.set_dataset("EWK_ZJets_ll")
+    .set_dirname("zeeewk")
     .set_shape(shape)
     .set_dataweight(sigmcweight)
     .set_basesel(analysis->baseselection())
@@ -1033,6 +1126,34 @@ int main(int argc, char* argv[]){
     .set_sample("zmumuewk");
   if(!do_mcbkg)ewkzmumuele.set_has_dderrors(1);
 
+  LTPlotElement zeeele;
+  zeeele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kAzure  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("Z#rightarrow ee")
+    .set_sample("zee");
+  if(!do_mcbkg)zeeele.set_has_dderrors(1);
+  LTPlotElement qcdzeeele;
+  qcdzeeele.set_is_data(false)
+    .set_scale(getPostFitSF(channel,"zqcd"))
+    .set_color(kAzure  + 2)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("QCD Z#rightarrow ee")
+    .set_sample("zeeqcd");
+  if(!do_mcbkg)qcdzeeele.set_has_dderrors(1);
+  LTPlotElement ewkzeeele;
+  ewkzeeele.set_is_data(false)
+    .set_scale(getPostFitSF(channel,"zewk"))
+    .set_color(kAzure  + 4)
+    .set_in_stack(true)
+    .set_is_inratioden(true)
+    .set_legname("EWK Z#rightarrow ee")
+    .set_sample("zeeewk");
+  if(!do_mcbkg)ewkzeeele.set_has_dderrors(1);
+
   LTPlotElement znunuele;
   znunuele.set_is_data(false)
     .set_scale(1)
@@ -1124,36 +1245,40 @@ int main(int argc, char* argv[]){
       elementvec.push_back(gjetsele);
     }
     if (channel=="nunu"){
-	elementvec.push_back(qcdwele);
-	elementvec.push_back(ewkwele);
+      elementvec.push_back(qcdwele);
+      elementvec.push_back(ewkwele);
     }
-    else if(channel!="mumu"){
+    else if(channel!="mumu" && channel != "ee"){
       if (channel!="enu" && channel!="taunu"){
-	elementvec.push_back(qcdwmunuele);
-	elementvec.push_back(ewkwmunuele);
+        elementvec.push_back(qcdwmunuele);
+        elementvec.push_back(ewkwmunuele);
       }
       if (channel!="munu" && channel!="taunu"){
-	elementvec.push_back(qcdwenuele);
-	elementvec.push_back(ewkwenuele);
+        elementvec.push_back(qcdwenuele);
+        elementvec.push_back(ewkwenuele);
       }
       if (channel!="enu" && channel!="munu"){
-	elementvec.push_back(qcdwtaunuele);
-	elementvec.push_back(ewkwtaunuele);
+        elementvec.push_back(qcdwtaunuele);
+        elementvec.push_back(ewkwtaunuele);
       }
     } //else {
     if(channel=="mumu") {
       elementvec.push_back(qcdzmumuele);
       elementvec.push_back(ewkzmumuele);
     }
+    else if(channel=="ee") {
+      elementvec.push_back(qcdzeeele);
+      elementvec.push_back(ewkzeeele);
+    }
     //}
     elementvec.push_back(topele);
     elementvec.push_back(qcdele);
     elementvec.push_back(vvele);
-    if(channel!="mumu"&&channel!="enu"&&channel!="munu"){
+    if(channel!="mumu"&&channel!="ee"&&channel!="enu"&&channel!="munu"){
       if (channel!="taunu"){
-	elementvec.push_back(qcdznunuele);
-	elementvec.push_back(ewkznunuele);
-	elementvec.push_back(sigele);
+        elementvec.push_back(qcdznunuele);
+        elementvec.push_back(ewkznunuele);
+        elementvec.push_back(sigele);
       }
       //elementvec.push_back(ggHele);
     }
@@ -1191,6 +1316,8 @@ int main(int argc, char* argv[]){
     dirvec.push_back("wtauewk");
     dirvec.push_back("zmumuqcd");
     dirvec.push_back("zmumuewk");
+    dirvec.push_back("zeeqcd");
+    dirvec.push_back("zeeewk");
     dirvec.push_back("wqcd");
     dirvec.push_back("wewk");
     dirvec.push_back("zvvqcd");
@@ -1232,6 +1359,8 @@ int main(int argc, char* argv[]){
       analysis->AddModule(&gjetsraw);
       analysis->AddModule(&qcdzmumuraw);
       analysis->AddModule(&ewkzmumuraw);
+      analysis->AddModule(&qcdzeeraw);
+      analysis->AddModule(&ewkzeeraw);
       analysis->AddModule(&qcdznunuraw);
       analysis->AddModule(&ewkznunuraw);
     }

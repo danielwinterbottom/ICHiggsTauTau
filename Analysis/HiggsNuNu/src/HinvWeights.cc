@@ -45,7 +45,8 @@ namespace ic {//namespace
     thisvar2binning.push_back(1000);
     thisvar2binning.push_back(5000);
     binnedin2d1dfitweightvar2binning_ = thisvar2binning;
-    do_run2_                =false;
+    do_run2_                = true;
+    do_metmht_              = true;
     trg_applied_in_mc_      = false;
     do_idiso_tight_weights_ = false;
     do_idiso_veto_weights_  = false;
@@ -76,6 +77,8 @@ namespace ic {//namespace
     errLabel.push_back("_v2Up");
     errLabel.push_back("_v2Down");
 
+    // For v_nlo_Reweighting (kfactors.root file in input/scalefactors from MIT group)
+    kfactors_file_="input/scale_factors/kfactors.root";
   }
 
   HinvWeights::~HinvWeights() {
@@ -191,12 +194,24 @@ namespace ic {//namespace
       std::cout << "f3 = " << zf3_ << "\t" << "n3 = " << zn3_ << "\t" << "w3 = " << zw3_ << std::endl;
       std::cout << "f4 = " << zf4_ << "\t" << "n4 = " << zn4_ << "\t" << "w4 = " << zw4_ << std::endl;
     }
+    if (do_w_reweighting_ || do_dy_reweighting_) { // For v_nlo_Reweighting (kfactors.root file in input/scalefactors from MIT group)
 
-    if (do_w_reweighting_) {
-      std::cout << "Applying reweighting of W events to NLO MCFM." << std::endl;
-    }
-    if (do_dy_reweighting_) {
-      std::cout << "Applying reweighting of DY events to NLO MCFM." << std::endl;
+      kfactors_ = TFile::Open(kfactors_file_.c_str());
+
+      if (do_w_reweighting_) {
+        std::cout << " -- Applying reweighting of W events to NLO MCFM." << std::endl;
+        hist_kfactors_N_W = (TH1F*)kfactors_->Get("EWKcorr/W");
+        hist_kfactors_N_W->Sumw2();
+        hist_kfactors_N_W->Scale(1./hist_kfactors_N_W->Integral());
+        hist_kfactors_D_W = (TH1F*)kfactors_->Get("WJets_LO/inv_pt");
+        hist_kfactors_D_W->Sumw2();
+        hist_kfactors_D_W->Scale(1./hist_kfactors_D_W->Integral());
+      }
+      if (do_dy_reweighting_) {
+        std::cout << " -- Applying reweighting of DY events to NLO MCFM." << std::endl;
+        hist_kfactors_N_Z = (TH1F*)kfactors_->Get("EWKcorr/Z");
+        hist_kfactors_D_Z = (TH1F*)kfactors_->Get("ZJets_LO/inv_pt");
+      }
     }
 
 
@@ -258,7 +273,7 @@ namespace ic {//namespace
             //HF bins
             for(unsigned iVar3=0;iVar3<(do_run2_?2:1);iVar3++){
               std::ostringstream convert;
-              convert<<iVar1+1<<iVar2+1;
+              if (!do_metmht_) convert<<iVar1+1<<iVar2+1;
               if (do_run2_) convert<<iVar3+1;
               std::string histnumber=convert.str();
               if(!do_run2_){
@@ -268,7 +283,8 @@ namespace ic {//namespace
               }
               else{
                 for (unsigned iErr(0); iErr<7;++iErr){
-                  thisfuncvector[iErr].push_back((TF1*)gDirectory->Get(("fdata_"+binnedin2d1dfitweightvarorder_[2]+"_1d_"+histnumber+"Deff"+errLabel[iErr]).c_str()));
+                  if (!do_metmht_) thisfuncvector[iErr].push_back((TF1*)gDirectory->Get(("fdata_"+binnedin2d1dfitweightvarorder_[2]+"_1d_"+histnumber+"Deff"+errLabel[iErr]).c_str()));
+                  else thisfuncvector[iErr].push_back((TF1*)gDirectory->Get(("METMHT_BIN"+histnumber+errLabel[iErr]).c_str()));
                 }
               }
             }
@@ -744,10 +760,10 @@ namespace ic {//namespace
               <<" vars[1]=" << vars[1] << "(" << var2bin << ")"
               <<" vars[2]=" << vars[2] << "(" << xmin << "," << xmax << ")"
               <<" hasJetsInHF=" << hasJetsInHF
-              <<std::endl;   */                                                                                         
-            //SET TRIGGER WEIGHT                                                                                                                             
-            if (do_trg_weights_ && iErr==0) eventInfo->set_weight(("trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
-            else eventInfo->set_weight(("!trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
+              <<std::endl;   */
+            //SET TRIGGER WEIGHT
+            eventInfo->set_weight(("!trig_2dbinned1d"+errLabel[iErr]).c_str(),trgweight);
+
           }//endof Loop on errors
         }//2D-1D
         else{
@@ -840,6 +856,15 @@ namespace ic {//namespace
       ele_weight *= eTight_idisoSF_[findPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta(),e_ptbin_,e_etabin_)];
       ele_weight *= e_gsfidSF_[findPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta(),gsf_ptbin_,gsf_etabin_)];
     }
+    //add veto which are not tight
+    std::vector<Electron*> const& loose = event->GetPtrVec<Electron>("vetoElectrons");
+    for (unsigned iEle(0); iEle<loose.size();++iEle){
+      //check overlap with tight
+      if (isTightElectron(loose[iEle],elecs)) continue;
+      unsigned lBin = findPtEtaBin(loose[iEle]->pt(),loose[iEle]->eta(),e_ptbin_,e_etabin_);
+      ele_weight *= eVeto_idisoDataEff_[lBin]/eVeto_idisoMCEff_[lBin];
+      ele_weight *= e_gsfidSF_[findPtEtaBin(loose[iEle]->pt(),loose[iEle]->eta(),gsf_ptbin_,gsf_etabin_)];
+    }
     eventInfo->set_weight("!eleTight_idisoSF",ele_weight);
     tighteleweight->Fill(ele_weight);
 
@@ -851,6 +876,15 @@ namespace ic {//namespace
       unsigned lBin = findPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta(),mu_ptbin_,mu_etabin_);
       unsigned mBin = findPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta(),tk_ptbin_,tk_etabin_);
       mu_weight *= muTight_idisoSF_[lBin] * mu_tkSF_[mBin];
+    }
+    //add veto which are not tight
+    std::vector<Muon*> const& loosemus = event->GetPtrVec<Muon>("vetoMuons");
+    for (unsigned iEle(0); iEle<loosemus.size();++iEle){
+      //check overlap with tight
+      if (isTightMuon(loosemus[iEle],mus)) continue;
+      unsigned lBin = findPtEtaBin(loosemus[iEle]->pt(),loosemus[iEle]->eta(),mu_ptbin_,mu_etabin_);
+      unsigned mBin = findPtEtaBin(loosemus[iEle]->pt(),loosemus[iEle]->eta(),tk_ptbin_,tk_etabin_);
+      mu_weight *= muVeto_idisoDataEff_[lBin]/muVeto_idisoMCEff_[lBin] * mu_tkSF_[mBin];
     }
     eventInfo->set_weight("!muTight_idisoSF",mu_weight);
     tightmuweight->Fill(mu_weight);
@@ -965,28 +999,49 @@ namespace ic {//namespace
       }
     }
 
-    if (do_w_reweighting_ || do_dy_reweighting_) {
-      double vReweight = 1.0;
+    if (do_w_reweighting_ || do_dy_reweighting_) { // For v_nlo_Reweighting (kfactors.root file in input/scalefactors from MIT group)
+      double v_nlo_Reweight = 1.0;
+      double v_pt = 0.0;
 
-      std::vector<GenJet *> genjets = event->GetPtrVec<GenJet>("genJets");
-      if (genjets.size() > 1) {
-        double lMjj = (genjets[0]->vector()+genjets[1]->vector()).M();
+      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
 
-        GenParticle* lBoson = 0;
-        std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      for (size_t idxPart = 0; idxPart < parts.size(); ++idxPart) {// Loop over genParticles
 
-        for (unsigned i = 0; i < parts.size(); ++i) {
-          if (parts[i]->status() != 3) continue;
-          unsigned id = abs(parts[i]->pdgid());
-          if (id==24 || id==23) lBoson = parts[i];
+        unsigned absPdgId = TMath::Abs(parts[idxPart]->pdgid());
+        std::vector<bool> flags = parts[idxPart]->statusFlags();
+        if ( !(flags[GenStatusBits::IsHardProcess] && 
+                flags[GenStatusBits::FromHardProcess] && 
+                flags[GenStatusBits::IsFirstCopy]) ) continue;
+        v_pt = parts[idxPart]->pt();
+
+        if (absPdgId==24) {// W+-
+          if (v_pt<150) {
+            //std::cout << " -- Underflow! v_pt = "<< v_pt << " has been re-set to v_pt = 151.0" << std::endl;
+            v_pt = 151.0;
+          }
+          if (v_pt>=1250) {
+            //std::cout << " -- Overflow! v_pt = "<< v_pt << " has been re-set to v_pt = 1249.0" << std::endl;
+            v_pt = 1249.0;
+          }
+          v_nlo_Reweight = (hist_kfactors_N_W->GetBinContent(hist_kfactors_N_W->FindBin(v_pt)))/(hist_kfactors_D_W->GetBinContent(hist_kfactors_D_W->FindBin(v_pt)));
+          //std::cout << " -- The NLO weight of W is v_nlo_Reweight = "<< v_nlo_Reweight << std::endl;
+        } 
+        if (absPdgId==23) {// Z
+          if (v_pt<150) {
+            //std::cout << " -- Underflow! v_pt = "<< v_pt << " has been re-set to v_pt = 151.0" << std::endl;
+            v_pt = 151.0;
+          }
+          if (v_pt>=1250) {
+            //std::cout << " -- Overflow! v_pt = "<< v_pt << " has been re-set to v_pt = 1249.0" << std::endl;
+            v_pt = 1249.0;
+          }
+          v_nlo_Reweight = (hist_kfactors_N_Z->GetBinContent(hist_kfactors_N_Z->FindBin(v_pt)))/(hist_kfactors_D_Z->GetBinContent(hist_kfactors_D_Z->FindBin(v_pt)));
+          //std::cout << " -- The NLO weight of Z is v_nlo_Reweight = "<< v_nlo_Reweight << std::endl;
         }
-        if (lBoson){
-          double y_star = fabs(lBoson->vector().Rapidity() - (genjets[0]->vector().Rapidity()+genjets[1]->vector().Rapidity())/2.);
-          vReweight = nloReweighting(lMjj,y_star);
-        }
-      }
+      }//endof Loop over genParticles
 
-      eventInfo->set_weight("vReweighting", vReweight);
+
+      eventInfo->set_weight("!v_nlo_Reweighting", v_nlo_Reweight);
 
     }
 

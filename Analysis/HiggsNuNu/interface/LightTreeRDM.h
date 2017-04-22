@@ -11,6 +11,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Photon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
+#include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 
@@ -43,12 +44,15 @@ namespace ic {
     unsigned run_;
     unsigned lumi_;
     unsigned event_;
-    double weight_nolep_;
+    double weight_nolepnotrig_;
     double weight_trig_[7];
+    double weight_lepveto_;
+    double weight_leptight_;
     double total_weight_lepveto_;
     double total_weight_leptight_;
     double puweight_up_scale_;
     double puweight_down_scale_;
+    double v_nlo_Reweight_;
 
     unsigned nJetsSave_;
     unsigned nJets_;
@@ -90,6 +94,13 @@ namespace ic {
     double* jet_loosepuid_;
     double* jet_tightpuid_;
     int* jet_flavour_;
+    double* jet_neutralhadfrac_;
+    double* jet_neutralemfrac_;
+    double* jet_chargedemfrac_;
+    double* jet_chargedhadfrac_;
+    unsigned* jet_chargedmult_;
+    unsigned* jet_neutralmult_;
+
 
     double* jet_genjet_mindR_;
     unsigned* jet_genid_;
@@ -101,6 +112,7 @@ namespace ic {
     unsigned n_jets_cjv_20EB_30EE_;
     unsigned n_jets_15_;
     unsigned n_jets_30_;
+    unsigned n_jets_csv2medium_;
     double cjvjetpt_;
 
     double dijet_M_;
@@ -115,6 +127,7 @@ namespace ic {
     double l1met_;
     double l1mht_;
     double met_;
+    double calomet_;
     double genmet_;
     double genmetphi_;
     double metnomuons_;
@@ -159,17 +172,22 @@ namespace ic {
     double jet1metnoel_scalarprod_;
     double jet2metnoel_scalarprod_;
 
-    double pass_muontrigger_;
-    double pass_photontrigger_;
-    double pass_sigtrigger_;
-    double pass_mettrigger_;
-    double pass_metmhttrigger_;
-    double pass_controltrigger_;
+    int pass_muontrigger_;
+    int pass_photontrigger_;
+    int pass_sigtrigger_;
+    int pass_mettrigger_;
+    int pass_metmht90trigger_;
+    int pass_metmht100trigger_;
+    int pass_metmht110trigger_;
+    int pass_metmht120trigger_;
+    int pass_controltrigger_;
+    int pass_singleEltrigger_;
 
     unsigned nvetomuons_;
     unsigned nselmuons_;
     unsigned nvetoelectrons_;
     unsigned nselelectrons_;
+    unsigned nvetotaus_;
     unsigned ntaus_;
     unsigned nloosephotons_;
     unsigned nmediumphotons_;
@@ -177,8 +195,10 @@ namespace ic {
 
     double m_mumu_;
     double pt_mumu_;
+    bool   oppsign_mumu_;
     double m_ee_;
     double pt_ee_;
+    bool   oppsign_ee_;
     double m_mumu_gen_;
     double m_ee_gen_;
     double lep_mt_;
@@ -195,13 +215,16 @@ namespace ic {
     double mu1_pt_;
     double mu1_eta_;
     double mu1_phi_;
+    bool   mu1_isTight_;
     double mu1_genmindR_;
     double mu1_genpt_;
     double mu1_geneta_;
     double mu1_genphi_;
+
     double mu2_pt_;
     double mu2_eta_;
     double mu2_phi_;
+    bool   mu2_isTight_;
     double mu2_genmindR_;
     double mu2_genpt_;
     double mu2_geneta_;
@@ -219,18 +242,38 @@ namespace ic {
     double ele1_pt_;
     double ele1_eta_;
     double ele1_phi_;
+    bool   ele1_isTight_;
     double ele1_genmindR_;
     double ele1_genpt_;
     double ele1_geneta_;
     double ele1_genphi_;
 
+    double ele2_pt_;
+    double ele2_eta_;
+    double ele2_phi_;
+    bool   ele2_isTight_;
+    double ele2_genmindR_;
+    double ele2_genpt_;
+    double ele2_geneta_;
+    double ele2_genphi_;
+
     double tau1_pt_;
     double tau1_eta_;
     double tau1_phi_;
+    bool   tau1_isTight_;
     double tau1_genmindR_;
     double tau1_genpt_;
     double tau1_geneta_;
     double tau1_genphi_;
+
+    double vetotau1_pt_;
+    double vetotau1_eta_;
+    double vetotau1_phi_;
+    bool   vetotau1_isTight_;
+    double vetotau1_genmindR_;
+    double vetotau1_genpt_;
+    double vetotau1_geneta_;
+    double vetotau1_genphi_;
 
     double gamma1_pt_;
     double gamma1_eta_;
@@ -244,6 +287,9 @@ namespace ic {
 
     // lheParticles
     double lheHT_;
+
+    // Boson pt
+    double boson_pt_;
 
   public:
     LightTreeRDM(std::string const& name);

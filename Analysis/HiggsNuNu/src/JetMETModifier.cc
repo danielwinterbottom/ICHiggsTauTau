@@ -29,6 +29,7 @@ namespace ic {
     reapplyJecData_ = false;
     reapplyJecMC_ = false;
     smear_ = false;
+    type1cor_ = false;
 
     nRho_ = 5;
 
@@ -168,13 +169,17 @@ namespace ic {
         std::cout << " -- smearing MC jets"  << std::endl;
         smear_ = true;
       }
+      if (corVec_[ic]==jetmetCor::type1cor){
+        std::cout << " -- Added type1 cor to MET"  << std::endl;
+        type1cor_ = true;
+      }
     }
 
     std::cout << " -- Applying jetmetSyst: " << syst_ << std::endl;
 
 
     //to reapply JEC on data
-    if (is_data_ && reapplyJecData_){
+    if (is_data_ && (reapplyJecData_ || type1cor_) ){
       if (jec_data_files_.size() != 4) {
         std::cout << " -- Check JEC data filename vec, wrong size:" << jec_data_files_.size() << std::endl;
         return 1;
@@ -193,7 +198,7 @@ namespace ic {
       l2JetPar_  = new JetCorrectorParameters(jec_mc_files_[1]);
       l3JetPar_  = new JetCorrectorParameters(jec_mc_files_[2]);
     }
-    if (reapplyJecData_ || reapplyJecMC_){
+    if (reapplyJecData_ || reapplyJecMC_ || type1cor_){
       //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
       std::vector<JetCorrectorParameters> vPar;
       vPar.push_back(*l1JetPar_);
@@ -291,7 +296,7 @@ namespace ic {
 
   int JetMETModifier::Execute(TreeEvent *event) {
 
-    if (is_data_ && !reapplyJecData_) return 0;
+    if (is_data_ && !reapplyJecData_ && !type1cor_) return 0;
 
     std::vector<PFJet *> & jetvec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -330,6 +335,11 @@ namespace ic {
       ROOT::Math::PxPyPzEVector  prevjet;
 
       double oldcor = oldjet.E()/jetvec[i]->uncorrected_energy();
+      if (oldcor != oldcor) {
+	std::cout << " Problem, nan! " << __FILE__ << " " << __LINE__ << std::endl;
+	oldcor=1;
+      }
+      
       //remove old correction using corrector
       //double oldcor = jetvec[i]->GetJecFactor("L1FastJet")*
       //jetvec[i]->GetJecFactor("L2Relative")*
@@ -342,8 +352,12 @@ namespace ic {
 
       //apply new correction
       double newcor = oldcor;
-      if ( (is_data_ && reapplyJecData_) || (!is_data_ && reapplyJecMC_) ) {
+      if ( (is_data_ && (reapplyJecData_ || type1cor_)) || (!is_data_ && reapplyJecMC_) ) {
         newcor = applyCorrection(rawjet,jetvec[i]->jet_area(),eventInfo->jet_rho());
+      }
+      if (newcor != newcor) {
+	std::cout << " Problem, nan! " << __FILE__ << " " << __LINE__ << std::endl;
+	newcor=oldcor;
       }
       prevjet = oldjet;
       newjet = newcor/oldcor*oldjet;
@@ -354,12 +368,17 @@ namespace ic {
         int index = recotogenmatch[i].second ? recotogenmatch[i].first : -1;
         GenJet* match = 0;
         if (index != -1) match = genvec[index];
-        if (smear_) smearFact = applySmearing(0,match,newjet,eventInfo->jet_rho());
-        if (syst_ == jetmetSyst::jerBetter)  smearFact = applySmearing(-1,match,newjet,eventInfo->jet_rho());
-        else if (syst_ == jetmetSyst::jerWorse) smearFact = applySmearing(1,match,newjet,eventInfo->jet_rho());
+	if (smear_) smearFact = applySmearing(0,match,newjet,eventInfo->jet_rho());
+	if (syst_ == jetmetSyst::jerBetter)  smearFact = applySmearing(-1,match,newjet,eventInfo->jet_rho());
+	else if (syst_ == jetmetSyst::jerWorse) smearFact = applySmearing(1,match,newjet,eventInfo->jet_rho());
       }
 
       prevjet = newjet;
+      if (smearFact != smearFact) {
+	std::cout << " Problem, nan! " << __FILE__ << " " << __LINE__ << std::endl;
+	smearFact = 1;
+      }
+
       newjet = newjet*smearFact;
 
       //JES SYSTEMATICS
@@ -381,6 +400,19 @@ namespace ic {
 
       double dpx = newjet.px()-oldjet.px();
       double dpy = newjet.py()-oldjet.py();
+      if (false){// Riccardo, 12/12/2016: It was type1cor_. Changed after discussion with AM on how to avoid SingleElectron ntuples from Htautau group crashing.
+	dpx = newjet.px()-rawjet.px();
+	dpy = newjet.py()-rawjet.py();
+      }
+      if (dpx != dpx) {
+	std::cout << " Problem, nan! " << __FILE__ << " " << __LINE__ << std::endl;
+	dpx=0;
+      }
+      if (dpy != dpy) {
+	std::cout << " Problem, nan! " << __FILE__ << " " << __LINE__ << std::endl;
+	dpy=0;
+      }
+
       newmet.SetPx(newmet.px()-dpx);
       newmet.SetPy(newmet.py()-dpy);
       newmet.SetE(newmet.pt());
@@ -434,11 +466,12 @@ namespace ic {
 
     double JERscalefac=1.;//if no match leave jet alone
     double JERcencorrfac=getJERcorrfac(fabs(oldjet.eta()),error,run2_);
-    if(match!=-0){//if gen jet match calculate correction factor for pt
+    if(match!=0){//if gen jet match calculate correction factor for pt
       if(oldjet.pt()>50.) Smear50miss->Fill(-1.);
       //calculate 4 vector correction factor
       double ptcorrected = match->pt()+JERcencorrfac*(oldjet.pt()-match->pt());
       if(ptcorrected<0.)ptcorrected=0.;
+      if (ptcorrected!=ptcorrected) std::cout << " Problem, nan! " << __FILE__ << " " << __LINE__ << std::endl;
       JERscalefac = ptcorrected/oldjet.pt();
       Smearjetgenjetptdiff->Fill(oldjet.pt()-match->pt());
       Smearjetgenjetptratio->Fill(oldjet.pt()/match->pt());
@@ -461,13 +494,17 @@ namespace ic {
         if(mcrespt<ptmin) mcrespt=ptmin;
         if (mcrespt>ptmax) mcrespt=ptmax;
         double sigmamc=(resfunc_[binNumber]->Eval(mcrespt)*oldjet.pt());
+	if (sigmamc!=sigmamc) std::cout << " Problem, nan! " << __FILE__ << " " << __LINE__ << std::endl;
         //double spring10sigmamc=(spring10resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
         double gauscorr;
         //std::cout<<"Jet pt and eta are: "<<oldjet.pt()<<" "<<oldjet.eta()<<"Sigma MC is: "<<sigmamc<<" "<<spring10sigmamc<<" Gaus corr is: "<<gauscorr<<std::endl;
         //if(!dospring10gaus_) 
-        gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
+	if (JERcencorrfac*JERcencorrfac>1) 
+	  gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
+	else return 1;
         //else gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
         double ptcorrected=oldjet.pt()+gauscorr;
+	if (ptcorrected!=ptcorrected) std::cout << " Problem, nan! " << __FILE__ << " " << __LINE__ << std::endl;
         JERscalefac=ptcorrected/oldjet.pt();
       }//endof Do Gaussian smearing for JERWORSE
     }
@@ -546,8 +583,8 @@ namespace ic {
       //double etabounds[8] = {0,0.8,1.3,1.9,2.5,3,3.2,5};
 
       //Run2 2016 -- https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution#JER_Scaling_factors_and_Uncertai
-      double val[13] = {1.122,1.167,1.168,1.029,1.115,1.041,1.167,1.094,1.168,1.266,1.595,0.998,1.226};
-      double err[13] = {0.026,0.048,0.046,0.066,0.030,0.062,0.086,0.093,0.120,0.132,0.175,0.066,0.145};
+      double val[13] = {1.109,1.138,1.114,1.123,1.084,1.082,1.140,1.067,1.177,1.364,1.857,1.328,1.16};
+      double err[13] = {0.008,0.013,0.013,0.024,0.011,0.035,0.047,0.053,0.041,0.039,0.071,0.022,0.029};
       double etabounds[14] = {0.0,0.5,0.8,1.1,1.3,1.7,1.9,2.1,2.3,2.5,2.8,3.0,3.2,5.0};
       for (unsigned id(0); id<13;++id){
         if (abseta>=etabounds[id] && abseta<etabounds[id+1]) JERcencorrfac=val[id]+error*err[id];

@@ -7,8 +7,6 @@ DOSUBMIT=1
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
 
-#export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
-
 GRIDSETUP=1
 if [ "$DOCERN" = "0" ]
     then
@@ -24,13 +22,12 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultRun2Config.cfg
-QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs_run2ana_161121_ICHEP_cut
-#JOBDIRPREFIX=jobs_run2ana_161121_ICHEP
+QUEUEDIR=short #medium long
+
+JOBDIRPREFIX=jobs_run2ana_170125_NLOreweight/
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output_run2ana_161121_ICHEP_cut
-#OUTPUTPREFIX=output_run2ana_161121_ICHEP
+OUTPUTPREFIX=output_run2ana_170125_NLOreweight/
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"
@@ -71,7 +68,7 @@ for syst in "" JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEF
 do
   mkdir -p $JOBDIR$syst
   mkdir -p $OUTPUTDIR$syst
-  for channels in qcd #enu munu taunu mumu nunu #qcd #topl topb top gamma
+  for channels in enu munu taunu ee mumu qcd nunu
     do
     JOB=$channels
     #executable expect strings separated by "!"
@@ -94,14 +91,27 @@ do
     #SHAPESTRING="alljetsmetnomu_mindphi(14,2.3,3.1416)"
     echo "Making histograms: " $SHAPESTRING
     OUTPUTNAME="$channels.root"
+    #MINDPHICUT="alljetsmetnomu_mindphi\>=0"
+    ############MINDPHICUT="alljetsmetnomu_mindphi\>=0.5"
     MINDPHICUT="alljetsmetnomu_mindphi\>=2.3"
     #MINDPHICUT="alljetsmetnomu_mindphi\>=1."
     if [ "$channels" = "taunu" ]; then
+	############MINDPHICUT="jetmetnomu_mindphi\>=1.0" #\&\&alljetsmetnomu_mindphi\<2.3"
 	MINDPHICUT="jetmetnomu_mindphi\>=1.0\&\&alljetsmetnomu_mindphi\<2.3"
     fi
     if [ "$channels" = "qcd" ]; then
 	MINDPHICUT="alljetsmetnomu_mindphi\<0.5"
 	#MINDPHICUT="alljetsmetnomu_mindphi\>=0"
+    fi
+    if [ "$channels" = "ee" ]; then
+	#MINDPHICUT="alljetsmetnoel_mindphi\>=0"
+	############MINDPHICUT="alljetsmetnoel_mindphi\>=0.5"
+	MINDPHICUT="alljetsmetnoel_mindphi\>=2.3"
+    fi
+    if [ "$channels" = "enu" ]; then
+	#MINDPHICUT="alljetsmetnoel_mindphi\>=0"
+	############MINDPHICUT="alljetsmetnoel_mindphi\>=0.5"
+	MINDPHICUT="alljetsmetnoel_mindphi\>=2.3"
     fi
     if [ "$syst" = "" ]
 	then

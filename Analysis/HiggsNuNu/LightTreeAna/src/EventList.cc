@@ -9,7 +9,7 @@
 namespace ic{
 
   EventList::EventList(std::string name) : LTModule(name){
-    weight_="weight_nolep";
+    weight_="weight_nolepnotrig*weight_trig_0";
   };
 
   EventList::~EventList(){ ;};

@@ -28,20 +28,20 @@ echo "Using job-submission: " $JOBSUBMIT
 
 INPUTPARAMS="filelists/$PRODUCTION/Params${PRODUCTION}.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
+#CONFIG=scripts/DefaultLightTreeConfig_data_forMaria.cfg
 
 
-for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
-#for SYST in JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
+for SYST in central
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
 
   #JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_${PRODUCTION}_ICHEP
-  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_161121_ICHEP_cut
-  #JOBDIRPREFIX=jobs_lighttree_${PRODUCTION}
+  #JOBDIRPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/jobs_lighttree_170111
+  JOBDIRPREFIX=/vols/cms/rd1715/HiggsToInv/jobs_lighttree_170113_ICHEP
   JOBDIR=$JOBDIRPREFIX/
   #OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_${PRODUCTION}_ICHEP
-  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_161121_ICHEP_cut
-  #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_${PRODUCTION}
+  #OUTPUTPREFIX=/vols/cms/magnan/Hinvisible/RunIILT/output_lighttree_170111
+  OUTPUTPREFIX=/vols/cms/rd1715/HiggsToInv/output_lighttree_170113_ICHEP
   OUTPUTDIR=$OUTPUTPREFIX/
 
   if [ "$SYST" != "central" ]
@@ -49,57 +49,6 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEE
       JOBDIR=$JOBDIRPREFIX/$SYST/
       OUTPUTDIR=$OUTPUTPREFIX/$SYST/
   fi
-
-  if [ "$SYST" = "JESUP" ]
-      then
-      SYSTOPTIONS="--dojessyst=true --jesupordown=true"
-  fi
-
-  if [ "$SYST" = "JESDOWN" ]
-      then
-      SYSTOPTIONS="--dojessyst=true --jesupordown=false"
-  fi
-
-  if [ "$SYST" = "JERBETTER" ]
-      then
-      SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=true"
-  fi
-
-  if [ "$SYST" = "JERWORSE" ]
-      then
-      SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
-  fi
-
-  if [ "$SYST" = "UESUP" ]
-	then
-	SYSTOPTIONS="--douessyst=true --uesupordown=true"
-  fi
-
-  if [ "$SYST" = "UESDOWN" ]
-	then
-	SYSTOPTIONS="--douessyst=true --uesupordown=false"
-  fi
-
-  if [ "$SYST" = "ELEEFFUP" ]
-  then
-        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=true"
-  fi
-
-  if [ "$SYST" = "ELEEFFDOWN" ]
-        then
-        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=false"
-  fi
-
-  if [ "$SYST" = "MUEFFUP" ]
-        then
-        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=true"
-  fi
-
-  if [ "$SYST" = "MUEFFDOWN" ]
-        then
-        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
-  fi
-
 
   echo "Config file: $CONFIG"
   mkdir -p $JOBDIR
@@ -135,16 +84,19 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEE
     export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
     echo "Using job-submission: " $JOBSUBMIT
 
-    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_DATA
+    #PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}_DATA
+    PREFIX=root://gfe02.grid.hep.ph.ic.ac.uk:1095//store/user/${PRODUSER}/${PRODUCTION}_DATA
+
     if [ "$PRODUCTION" = "Dec18" ]
     then
         PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/${PRODUSER}/${PRODUCTION}/DATA
     fi
 
     #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_SingleMuon*`
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*HTMHT*`
-    ##for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*M*T*`
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*MET*`
+
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_SingleElectron*`
+    #for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*MET*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_DATA_*`
       do
       echo "Processing files in "$FILELIST
 
