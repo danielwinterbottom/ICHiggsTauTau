@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -153,6 +153,8 @@ parser.add_argument("--add_flat_uncert", dest="add_flat_uncert", type=float,
     help="If set to non-zero will add a flat uncertainty band in quadrature to the uncertainty.")
 parser.add_argument("--add_wt", dest="add_wt", type=str,
     help="Name of additional weight to be applied to all templates.")
+parser.add_argument("--do_ff_systs", dest="do_ff_systs", action='store_true',
+    help="Do fake-factor systamatic shifts.")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -183,39 +185,18 @@ print 'syst_w_fake_rate  ='  ,  options.syst_w_fake_rate
 print 'syst_scale_j      ='  ,  options.syst_scale_j
 print 'syst_eff_b        ='  ,  options.syst_eff_b
 print 'syst_fake_b       ='  ,  options.syst_fake_b
-print 'blind             ='  ,  options.blind
-print 'x_blind_min       ='  ,  options.x_blind_min
-print 'x_blind_max       ='  ,  options.x_blind_max
-print 'ratio             ='  ,  options.ratio
-print 'ratio_range       ='  ,  options.ratio_range
-print 'y_title           ='  ,  options.y_title
-print 'x_title           ='  ,  options.x_title
-print 'custom_y_range    ='  ,  options.custom_y_range
-print 'y_axis_min        ='  ,  options.y_axis_min
-print 'y_axis_max        ='  ,  options.y_axis_max
-print 'custom_x_range    ='  ,  options.custom_x_range
-print 'x_axis_min        ='  ,  options.x_axis_min
-print 'x_axis_max        ='  ,  options.x_axis_max
-print 'log_x             ='  ,  options.log_x
-print 'log_y             ='  ,  options.log_x
-print 'extra_pad         ='  ,  options.extra_pad
-print 'signal_scale      ='  ,  options.signal_scale
-print 'draw_signal_mass  ='  ,  options.draw_signal_mass
-print 'draw_signal_tanb  ='  ,  options.draw_signal_tanb
-print 'signal_scheme     ='  ,  options.signal_scheme
-print 'lumi              ='  ,  options.lumi
-print 'no_plot           ='  ,  options.no_plot
+print 'do_ff_systs       ='  ,  options.do_ff_systs
 print '###############################################'
 print ''
 
 if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
-loosemt_string='tight'
-tight_string='tight'
-loose_string='loose'
+loosemt_string='tight'#tight
+tight_string='tight' #tight
+loose_string='loose' #loose
 tight_mt_cut='40'
 if options.channel == 'mt': tight_mt_cut='40'
-
+loose_iso_mt_cut = '70' #70
 # Define categories here
 cats = {}
 if options.analysis == 'sm':
@@ -260,13 +241,16 @@ cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
 cats['nobtag_loosemt'] = cats['nobtag']
-cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_'+tight_string+'_2<0.5)'
+#cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_'+tight_string+'_2<0.5)'
+cats['nobtag_looseiso'] = cats['nobtag']
 cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
-cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_'+tight_string+'_2<0.5)'
+#cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_'+tight_string+'_2<0.5)'
+cats['btag_looseiso'] = cats['btag']
 cats['atleast1bjet'] = '(n_bjets>0)'
 cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
-cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_'+tight_string+'_2<0.5)'
+#cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_'+tight_string+'_2<0.5)'
+cats['btag_looseiso_wnobtag'] = cats['btag_tight_wnobtag']
 
 if options.method == 17: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
 
@@ -277,6 +261,11 @@ if options.cat == 'nobtag_tight' or options.cat == 'btag_tight' or options.cat =
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+tight_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et':
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+tight_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso' or options.cat == 'btag_looseiso_wnobtag':
+    if options.channel == 'mt':        
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loose_string+'_2>0.5 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+    elif options.channel == 'et':
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loose_string+'_2>0.5 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
 if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
     if options.channel == 'mt':        
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loosemt_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -288,7 +277,7 @@ if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
 if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
     if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>'+tight_mt_cut+')'
 if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70)'
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<'+loose_iso_mt_cut+')'
 # Also need to adjust btag wnobtag category (used for method 16) for different categories
 cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 if options.channel == 'mt' or options.channel == 'et':
@@ -399,32 +388,52 @@ Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
 
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
 systematics = OrderedDict()
-systematics['default'] = ('','', 'wt', [])
+systematics['default'] = ('','', 'wt', [], False)
 if options.syst_tau_scale != '':
-    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'Up', 'wt', [])
-    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'Down', 'wt', [])
+    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'Up', 'wt', [], False)
+    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'Down', 'wt', [], False)
 if options.syst_eff_t != '':
-    systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'Up', 'wt*wt_tau_id_up', ['ZLL','VVJ','TTJ','QCD','W'] )
-    systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'Down', 'wt*wt_tau_id_down', ['ZLL','VVJ','TTJ','QCD','W'])
+    systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'Up', 'wt*wt_tau_id_up', ['ZLL','VVJ','TTJ','QCD','W'], False)
+    systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'Down', 'wt*wt_tau_id_down', ['ZLL','VVJ','TTJ','QCD','W'], False)
 if options.syst_tquark != '':
-    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'Up', 'wt*wt_tquark_up', ['ZTT','ZLL','VV','QCD','W','signal'])
-    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'Down', 'wt*wt_tquark_down', ['ZTT','ZLL','VV','QCD','W', 'signal'])    
+    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'Up', 'wt*wt_tquark_up', ['ZTT','ZLL','VV','QCD','W','signal'], False)
+    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'Down', 'wt*wt_tquark_down', ['ZTT','ZLL','VV','QCD','W', 'signal'], False)    
 if options.syst_zwt != '':
-    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'Up', 'wt*wt_zpt_up', ['ZLL','VV','TT','QCD','W','signal'])
-    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['ZLL','VV','TT','QCD','W','signal'])
+    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'Up', 'wt*wt_zpt_up', ['ZLL','VV','TT','QCD','W','signal'], False)
+    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['ZLL','VV','TT','QCD','W','signal'], False)
 if options.syst_w_fake_rate != '':
-    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', ['ZTT','ZLL','VV','TT','QCD','signal'])
-    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', ['ZTT','ZLL','VV','TT','QCD','signal'])
+    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', ['ZTT','ZLL','VV','TT','QCD','signal'], False)
+    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', ['ZTT','ZLL','VV','TT','QCD','signal'], False)
 if options.syst_scale_j != '':
-    systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', [])
-    systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', [])
+    systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', [], False)
+    systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', [], False)
 if options.syst_eff_b != '':
-    systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', [])
-    systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', [])
+    systematics['syst_b_up'] = ('BTAG_UP' , '_'+options.syst_eff_b+'Up', 'wt', [], False)
+    systematics['syst_b_down'] = ('BTAG_DOWN' , '_'+options.syst_eff_b+'Down', 'wt', [], False)
 if options.syst_fake_b != '':
-    systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'Up', 'wt', [])
-    systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'Down', 'wt', [])
-        
+    systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'Up', 'wt', [], False)
+    systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'Down', 'wt', [], False)
+
+if options.method == 17 and options.do_ff_systs and options.channel in ['et','mt','tt']:
+    processes = ['tt','w','qcd']
+    dms = ['dm0', 'dm1']
+    njets = ['njet0','njet1']
+    uncert_types = [ 'syst', 'stat']
+    for process in processes:
+      template_name = 'ff_'+process+'_syst'
+      weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
+      systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZLL','ZJ','ZL','VV','TT','QCD','W','signal'], True)
+      systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZLL','ZJ','ZL','VV','TT','QCD','W','signal'], True)
+      if options.channel == 'tt' and process in ['w','tt']: continue
+      for dm in dms: 
+        for njet in njets:
+          template_name = 'ff_'+process+'_'+dm+'_'+njet
+          if process is not 'tt': template_name+='_'+options.channel
+          template_name+='_stat'
+          weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
+          systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZLL','ZJ','ZL','VV','TT','QCD','W','signal'], True)
+          systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZLL','ZJ','ZL','VV','TT','QCD','W','signal'], True)
+
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
@@ -731,7 +740,7 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
           den_node))
             
         
-def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name='',get_os=True):
+def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name='',get_os=True,ff_syst_weight=None):
     print "Generating fake tau background via fake-factor method. In order for this to work you must first ensure that the fake-faktor weights are included in the input tree for the channel and category you wish use. Weights should be named as: wt_ff_channel_category"
     
     if get_os:
@@ -748,7 +757,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
             anti_isolated_sel = '(iso_1<0.1  && mva_olddm_medium_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
             if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singleelectron"
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
-        fake_factor_wt_string = "wt_ff_"+options.cat
+        if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
+        else: fake_factor_wt_string = "wt_ff_"+options.cat
         if wt is not "": wt+="*"+fake_factor_wt_string
         else: wt=fake_factor_wt_string
     
@@ -767,8 +777,12 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
         
         ff_cat_1 = cats[cat_name] +" && "+ anti_isolated_sel_1
         ff_cat_2 = cats[cat_name] +" && "+ anti_isolated_sel_2
-        fake_factor_wt_string_1 = "wt_ff_"+options.cat+"_1"
-        fake_factor_wt_string_2 = "wt_ff_"+options.cat+"_2"
+        if ff_syst_weight is not None: 
+            fake_factor_wt_string_1 = ff_syst_weight+'_1'
+            fake_factor_wt_string_2 = ff_syst_weight+'_2'
+        else:
+          fake_factor_wt_string_1 = "wt_ff_"+options.cat+"_1"
+          fake_factor_wt_string_2 = "wt_ff_"+options.cat+"_2"
         if wt is not "": 
             wt_1=wt+"*"+fake_factor_wt_string_1
             wt_2=wt+"*"+fake_factor_wt_string_2
@@ -784,8 +798,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
         f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot, full_selection_1))
         f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot, full_selection_2))
         f2_total_node = SummedNode('total_bkg')
-        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,wt_1,sel+'*(gen_match_1<6)',ff_cat_1,8,1.0,True,True))
-        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,wt_2,sel+'*(gen_match_2<6)',ff_cat_2,8,1.0,True,True))
+        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,wt_1+'*0.99/0.95',sel+'*(gen_match_1<6)',ff_cat_1,8,1.0,True,True))
+        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,wt_2+'*0.99/0.95',sel+'*(gen_match_2<6)',ff_cat_2,8,1.0,True,True))
         ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = ''):
@@ -863,6 +877,7 @@ def FixBins(ana,outfile='output.root'):
     #Fix negative bins, empty histograms and empty bins
     nodes = ana.nodes[nodename].SubNodes()
     for node in nodes:
+        if 'data_obs' in node.name: continue
         hist = node.shape.hist
         outfile.cd(nodename)
         #Fix negative bins
@@ -949,7 +964,12 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
         total_bkg.Write()
     outfile.cd()
     
-def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
+def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root',ff_syst_weight=None):
+    
+    wt_1 = wt #this will use loose SF for et and mt and tight for tt - input for FakeTau module
+    if "btag_tight" in options.cat or "btag_loosemt" in options.cat: wt+="*wt_tau_id_tight"
+    #elif options.method == 17 and options.channel in ['et','mt']: wt+="*wt_tau_id_medium" #uncomment when you have this on tree!
+    
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
     doVVJ = 'VVJ' not in samples_to_skip
@@ -967,7 +987,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     # produce templates for backgrounds
     if options.method == 17 and options.channel != "em":
         # method 17 uses the fake factor method!
-        GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, options.cat,not options.do_ss)
+        GenerateFakeTaus(ana, add_name, data_samples, plot, wt_1, sel, options.cat,not options.do_ss,ff_syst_weight)
         
         # use existing methods to calculate background due to non-fake taus - for W background must use method 8 to compute this!
         add_fake_factor_selection = "gen_match_2<6"
@@ -1037,7 +1057,10 @@ for systematic in systematics:
     
     add_folder_name = systematics[systematic][0]
     add_name = systematics[systematic][1]
-    weight = systematics[systematic][2]
+    isFFSyst = systematics[systematic][4]
+    ff_syst_weight = None
+    if not isFFSyst: weight = systematics[systematic][2]
+    else: ff_syst_weight = systematics[systematic][2]
     if options.add_wt is not "": weight+="*"+options.add_wt
     samples_to_skip = systematics[systematic][3]
     
@@ -1112,13 +1135,12 @@ for systematic in systematics:
     else: do_data = False
             
     #Run default plot        
-    if "btag_tight" in options.cat or "btag_loosemt" in options.cat: weight+="*wt_tau_id_tight" #need to change at a later stage!
-    RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile)
+    RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
     
     
     if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
-        RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile)
-        RunPlotting(ana_down, cat, sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile)
+        RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
+        RunPlotting(ana_down, cat, sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
