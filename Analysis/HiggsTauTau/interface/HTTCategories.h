@@ -823,6 +823,7 @@ class HTTCategories : public ModuleBase {
   double wt_tau_id_binned_;
   double wt_tau_id_tight_;
   double wt_tau_id_loose_;
+  double wt_tau_id_medium_;
 
 
  public:

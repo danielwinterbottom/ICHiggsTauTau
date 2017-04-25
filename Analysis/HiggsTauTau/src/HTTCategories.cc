@@ -1198,6 +1198,8 @@ namespace ic {
     if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
     wt_tau_id_loose_ = 1.0;
     if (event->Exists("wt_tau_id_loose")) wt_tau_id_loose_  = event->Get<double>("wt_tau_id_loose");
+    wt_tau_id_loose_ = 1.0;
+    if (event->Exists("wt_tau_id_medium")) wt_tau_id_medium_  = event->Get<double>("wt_tau_id_medium");
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
