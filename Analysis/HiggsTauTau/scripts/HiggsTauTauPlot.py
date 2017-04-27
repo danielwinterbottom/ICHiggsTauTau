@@ -918,16 +918,26 @@ def FixBins(ana,outfile='output.root'):
              write_hist=True
         if write_hist: hist.Write(node.name,ROOT.TObject.kOverwrite)
         outfile.cd()
-        
+                                                                                                                                
 def NormFFSysts(ana,outfile='output.root'):
-    nodes = ana.nodes[nodename].SubNodes()
     nominal_hist = outfile.Get(nodename+'/jetFakes')
     nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
-    for node in nodes:
-        if 'jetFakes' not in node.name: continue
-        hist = outfile.Get(nodename+'/'+node.name).Clone()
-        norm = nominal_scale/hist.Integral(0,hist.GetNbinsX()+1)
-        hist.Scale(norm)
+    directory = outfile.Get(nodename)
+    outfile.cd(nodename)
+    hists_to_add=[]
+    for key in directory.GetListOfKeys():
+        hist_name = key.GetName()
+        hist = directory.Get(hist_name).Clone()
+        if not isinstance(hist,ROOT.TDirectory):
+           if 'jetFakes' not in hist_name: continue
+           if hist_name == 'jetFakes': continue
+           norm = nominal_scale/hist.Integral(0,hist.GetNbinsX()+1)
+           hist.Scale(norm)
+           norm_hist_name = hist_name
+           norm_hist_name = norm_hist_name.replace('jetFakes','jetFakes_norm')
+           hist.SetName(norm_hist_name)
+           hists_to_add.append(hist)
+    for hist in hists_to_add: hist.Write()
     
 def GetTotals(ana,add_name="",outfile='outfile.root'):
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
@@ -1000,13 +1010,13 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     doVVT = 'VVT' not in samples_to_skip
     
     # produce template for observed data
-    if do_data:
-        if options.do_ss:
-          OSSS = '!os'
-        else:
-            OSSS = 'os'
-        full_selection = BuildCutString('wt', sel, cat, OSSS)
-        ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot, full_selection))
+    #if do_data:
+    #    if options.do_ss:
+    #      OSSS = '!os'
+    #    else:
+    #        OSSS = 'os'
+    #    full_selection = BuildCutString('wt', sel, cat, OSSS)
+    #    ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot, full_selection))
     
     # produce templates for backgrounds
     if options.method == 17 and options.channel != "em":
@@ -1033,24 +1043,24 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
-        if 'TT' not in samples_to_skip:    
-            GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ)  
-        if 'VV' not in samples_to_skip:
-            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
-        if 'W' not in samples_to_skip:
-            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
-        if 'QCD' not in samples_to_skip:
-            GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+    #    if 'TT' not in samples_to_skip:    
+    #        GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ)  
+    #    if 'VV' not in samples_to_skip:
+    #        GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
+    #    if 'W' not in samples_to_skip:
+    #        GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+    #    if 'QCD' not in samples_to_skip:
+    #        GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
             
-    if 'signal' not in samples_to_skip:
-        if options.analysis == 'sm':
-            GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss)
-        elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
-            GenerateMSSMSignal(ana, add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
-            if options.add_sm_background:
-                GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
-        elif options.analysis == 'Hhh':
-            GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
+    #if 'signal' not in samples_to_skip:
+    #    if options.analysis == 'sm':
+    #        GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss)
+    #    elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
+    #        GenerateMSSMSignal(ana, add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
+    #        if options.add_sm_background:
+    #            GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
+    #    elif options.analysis == 'Hhh':
+    #        GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
             
     ana.Run()
     ana.nodes.Output(outfile)
