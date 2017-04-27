@@ -443,6 +443,17 @@ class HTTCategories : public ModuleBase {
   float lbyMediumIsolationMVArun2DBnewDMwLT_2_;
   float lbyTightIsolationMVArun2DBoldDMwLT_2_;
   float lbyTightIsolationMVArun2DBnewDMwLT_2_;
+  
+  bool lbyVLooseIsolationMVArun2DBoldDMwLTNew_1=0;
+  bool lbyLooseIsolationMVArun2DBoldDMwLTNew_1=0;
+  bool lbyMediumIsolationMVArun2DBoldDMwLTNew_1=0;
+  bool lbyTightIsolationMVArun2DBoldDMwLTNew_1=0;
+  bool lbyVTightIsolationMVArun2DBoldDMwLTNew_1=0;
+  bool lbyVLooseIsolationMVArun2DBoldDMwLTNew_2=0;
+  bool lbyLooseIsolationMVArun2DBoldDMwLTNew_2=0;
+  bool lbyMediumIsolationMVArun2DBoldDMwLTNew_2=0;
+  bool lbyTightIsolationMVArun2DBoldDMwLTNew_2=0;
+  bool lbyVTightIsolationMVArun2DBoldDMwLTNew_2=0;
 
   unsigned n_prebjets_;
   unsigned n_jets_csv_;
