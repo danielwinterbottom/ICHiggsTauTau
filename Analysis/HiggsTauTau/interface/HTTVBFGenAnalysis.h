@@ -55,6 +55,8 @@ class HTTVBFGenAnalysis : public ModuleBase {
   double phi_1_;
   double phi_2_;
   double met_;
+  double calo_met_;
+  double hlt_met_;
   double mt_1_;
   double mt_2_;
   double pzeta_;
@@ -73,6 +75,9 @@ class HTTVBFGenAnalysis : public ModuleBase {
   double hlt_jeta_3_;
   double hlt_jeta_4_;
   double hlt_mjj_;
+  double calo_mjj_;
+  double hlt_mjj30_;
+  double calo_mjj30_;
   double jpt_1_;  
   double jpt_2_;  
   double jpt_3_;
@@ -81,6 +86,7 @@ class HTTVBFGenAnalysis : public ModuleBase {
   double jphi_1_;
   double jphi_2_;
   double mjj_;
+  double mjj30_;
   double jdeta_;
   double m_vis_;
   double pt_tt_;

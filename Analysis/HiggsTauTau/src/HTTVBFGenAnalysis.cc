@@ -53,6 +53,12 @@ struct PtComparatorTriggerObj{
   }
 };
 
+struct PtComparatorOfflineObj{
+    bool operator() (ic::PFJet *a, ic::PFJet *b) {
+        return (a->vector().Pt() > b->vector().Pt());
+    }
+};
+
 
  bool IsFilterMatchedWithName(ic::TriggerObject *objs, std::string const& filter){
       std::size_t hash = CityHash64(filter);
@@ -96,6 +102,17 @@ namespace ic {
       outtree_->Branch("hlt_jpt_4"       , &hlt_jpt_4_       );
       outtree_->Branch("calo_jpt_1"       , &calo_jpt_1_       );
       outtree_->Branch("calo_jpt_2"       , &calo_jpt_2_       );
+       
+      outtree_->Branch("jpt_1"       , &jpt_1_       );
+      outtree_->Branch("jpt_2"       , &jpt_2_       );
+      outtree_->Branch("jpt_3"       , &jpt_3_       );
+       
+      outtree_->Branch("jeta_1"       , &jeta_1_       );
+      outtree_->Branch("jeta_2"       , &jeta_2_       );
+       
+      outtree_->Branch("mjj"       , &mjj_       );
+      outtree_->Branch("mjj30"       , &mjj30_       );
+       
 
       outtree_->Branch("hlt_jeta_1"       , &hlt_jeta_1_       );
       outtree_->Branch("hlt_jeta_2"       , &hlt_jeta_2_       );
@@ -104,6 +121,15 @@ namespace ic {
 
 
       outtree_->Branch("hlt_mjj"       , &hlt_mjj_       );
+      outtree_->Branch("calo_mjj"       , &calo_mjj_       );
+      outtree_->Branch("hlt_mjj30"       , &hlt_mjj30_       );
+      outtree_->Branch("calo_mjj30"       , &calo_mjj30_       );
+       
+      outtree_->Branch("met"       , &met_       );
+      outtree_->Branch("calo_met"       , &calo_met_       );
+      outtree_->Branch("hlt_met"       , &hlt_met_       );
+       
+
     }
    // count_ee_ = 0;
    // count_em_ = 0;
@@ -132,9 +158,13 @@ namespace ic {
     
     
    std::vector<TriggerObject *> const& VBFobjs = event->GetPtrVec<TriggerObject>("triggerVBF");	
+
    std::vector<TriggerObject *>  L1jets;
    std::vector<TriggerObject *>  Calojets;
    std::vector<TriggerObject *>  HLTjets;
+   std::vector<TriggerObject *>  L1met;
+   std::vector<TriggerObject *>  Calomet;
+   std::vector<TriggerObject *>  HLTmet;
 
    hlt_jpt_1_=-9999;
    hlt_jpt_2_=-9999;
@@ -146,32 +176,88 @@ namespace ic {
    hlt_jeta_4_=-9999;
    calo_jpt_1_=-9999;
    calo_jpt_2_=-9999;
+      
+   jpt_1_=-9999;
+   jpt_2_=-9999;
+   jpt_3_=-9999;
+      
+   jeta_1_=-9999;
+   jeta_2_=-9999;
+      
+   mjj_ = -9999;
+      
    
    hlt_mjj_=-9999;
+   calo_mjj_=-9999;
+   hlt_mjj30_=-9999;
+   calo_mjj30_=-9999;
+   
+      
+   calo_met_ = -9999;
+   hlt_met_ = -9999;
+   met_ = -9999;
+      
 
     for (unsigned i = 0; i < VBFobjs.size(); ++i)
-	{ 
+	{
    bool a = IsFilterMatchedWithName(VBFobjs[i], "hltL1DiJetVBF");
-   //bool b = IsFilterMatchedWithName(VBFobjs[i], "hltCaloJetsCorrectedMatchedToL1");
+ //  bool b = IsFilterMatchedWithName(VBFobjs[i], "hltCaloJetsCorrectedMatchedToL1");
    bool b = IsFilterMatchedWithName(VBFobjs[i], "hltDoubleJetDummy");
    bool c = IsFilterMatchedWithName(VBFobjs[i], "hltDiPFJetMJJDummy");
+
+//ALBERT'S
+ //  bool a = IsFilterMatchedWithName(VBFobjs[i], "hltL1DiJetVBF");
+   //bool b = IsFilterMatchedWithName(VBFobjs[i], "hltCaloJetsCorrectedMatchedToL1");
+   //bool b = IsFilterMatchedWithName(VBFobjs[i], "hltDoubleJetOpen");
+   //bool c = IsFilterMatchedWithName(VBFobjs[i], "hltDiPFJetOpenMJJOpen");
 
 	if (a) 	L1jets.push_back(VBFobjs[i]);	
 	if (b)	Calojets.push_back(VBFobjs[i]);
 	if (c)  HLTjets.push_back(VBFobjs[i]);
+        
+    bool HLTMET = IsFilterMatchedWithName(VBFobjs[i], "hltPFMETVBF");
+    bool CaloMET = IsFilterMatchedWithName(VBFobjs[i], "hltMETVBF");
+       
+        if (CaloMET){ Calomet.push_back(VBFobjs[i]); calo_met_ = VBFobjs[i]->vector().Pt();}
+        if (HLTMET)  {HLTmet.push_back(VBFobjs[i]); hlt_met_ = VBFobjs[i]->vector().Pt();}
+        
 
 }
+      
+    //  std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
+     // met_ = pfMet_vec.at(0);
 
-
+      if (Calomet.size()>1) std::cout<<"Problem calo met"<<std::endl;
+      if (HLTmet.size()>1) std::cout<<"Problem pf met"<<std::endl;
 
 //std::cout<<"A"<<std::endl;
 std::sort(HLTjets.begin(), HLTjets.end(), PtComparatorTriggerObj());
 std::sort(Calojets.begin(), Calojets.end(), PtComparatorTriggerObj());
 std::sort(L1jets.begin(), L1jets.end(), PtComparatorTriggerObj());
 
-// Add mjj
+// Add offline jet variables
+      
+      
+      
+      std::vector<PFJet *> const& jet_objs = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+      std::vector<PFJet *>  Offline_jet_objs;
+     
+for (unsigned i = 0; i < jet_objs.size(); ++i) {
+    
+         // int leg1_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).second;
+    
+          if (IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).first == true)
+          {
+              
+              Offline_jet_objs.push_back(jet_objs[i]);
+              
+              
+          }
+          else break;
+          
+      }
 
-
+std::sort(Offline_jet_objs.begin(), Offline_jet_objs.end(), PtComparatorOfflineObj());
 
 
 
@@ -210,27 +296,69 @@ L1size1++;
 
 //Insert mjj for HLT and Calo jets 
 
-double mjj = -9999;
+double hlt_mjj = -9999;
+double calo_mjj = -9999;
+double hlt_mjj30 = -9999;
+double calo_mjj30 = -9999;
+
+     
+      
+      
 
 for (unsigned i = 0; i < HLTjets.size(); ++i)
 for (unsigned j = 0; j < HLTjets.size(); ++j)
 {
 
-if ((HLTjets.size()>1)||(i!=j)){
+if ((HLTjets.size()>1)&&(i!=j)){
 		
-		if ((HLTjets[i]->vector()+HLTjets[j]->vector()).M()>mjj)
-					mjj = (HLTjets[i]->vector()+HLTjets[j]->vector()).M();
+    if ((HLTjets[i]->vector()+HLTjets[j]->vector()).M()>hlt_mjj)
+					hlt_mjj = (HLTjets[i]->vector()+HLTjets[j]->vector()).M();
+        
 
-
-	}
-
+   if ((HLTjets[i]->vector().Pt()>30)&&(HLTjets[j]->vector().Pt()>30)&&((HLTjets[i]->vector()+HLTjets[j]->vector()).M()>hlt_mjj30))
+                    hlt_mjj30 = (HLTjets[i]->vector()+HLTjets[j]->vector()).M();
 
 
 }
+}
+    for (unsigned i = 0; i < Calojets.size(); ++i)
+        for (unsigned j = 0; j < Calojets.size(); ++j)
+        {
+          
+            
+            if ((Calojets.size()>1)&&(i!=j)){
+                
+                if ((Calojets[i]->vector()+Calojets[j]->vector()).M()>calo_mjj)
+                    calo_mjj = (Calojets[i]->vector()+Calojets[j]->vector()).M();
+                
+                
+                if ((Calojets[i]->vector().Pt()>30)&&(Calojets[j]->vector().Pt()>30)&&((Calojets[i]->vector()+Calojets[j]->vector()).M()>calo_mjj30))
+                    calo_mjj30 = (Calojets[i]->vector()+Calojets[j]->vector()).M();
+                
+                
+        }
 
-
-
-
+        }
+      
+      double offline_mjj = -9999;
+      double offline_mjj30 = -9999;
+      for (unsigned i = 0; i < Offline_jet_objs.size(); ++i)
+          for (unsigned j = 0; j < Offline_jet_objs.size(); ++j)
+          {
+              
+              if ((Offline_jet_objs.size()>1)&&(i!=j)){
+                  
+                  if ((Offline_jet_objs[i]->vector()+Offline_jet_objs[j]->vector()).M()>offline_mjj)
+                      offline_mjj = (Offline_jet_objs[i]->vector()+Offline_jet_objs[j]->vector()).M();
+              
+                if ((Offline_jet_objs[i]->vector().Pt()>30)&&(Offline_jet_objs[j]->vector().Pt()>30)&&((Offline_jet_objs[i]->vector()+Offline_jet_objs[j]->vector()).M()>offline_mjj30))
+                      offline_mjj30 = (Offline_jet_objs[i]->vector()+Offline_jet_objs[j]->vector()).M();
+              }
+              
+              
+          }
+      
+      
 /*for (unsigned i = 0; i < Calojets.size(); ++i)
 {
 
@@ -238,8 +366,6 @@ if ()
 CaloL1tot++;
 
 }*/
-//if (HLTjets.size()>1)
-//std::cout<<HLTjets[0]->vector().Pt()<<" " <<HLTjets[1]->vector().Pt()<<std::endl;
 if (HLTjets.size()>0)
 	{
     hlt_jpt_1_ = HLTjets[0]->vector().Pt();
@@ -274,9 +400,34 @@ if (Calojets.size()>1)
     //calo_jeta_2_ = Calojets[1]->vector().Eta();
         }
 
+      
+      if (Offline_jet_objs.size()>0)
+      {
+          jpt_1_ = Offline_jet_objs[0]->vector().Pt();
+          jeta_1_ = Offline_jet_objs[0]->vector().Eta();
+          
+      }
+      if (Offline_jet_objs.size()>1)
+      {
+          jpt_2_ = Offline_jet_objs[1]->vector().Pt();
+          jeta_2_ = Offline_jet_objs[1]->vector().Eta();
+      }
+      if (Offline_jet_objs.size()>2)
+      {
+          jpt_3_ = Offline_jet_objs[2]->vector().Pt();
+          
+      }
+      
+      
 
  
-  hlt_mjj_ = mjj;
+  hlt_mjj_ = hlt_mjj;
+  hlt_mjj30_ = hlt_mjj30;
+  calo_mjj_ = calo_mjj;
+  calo_mjj30_ = calo_mjj30;
+  mjj_ = offline_mjj;
+  mjj30_ = offline_mjj30;
+              
   if(fs_) outtree_->Fill();
     
     return 0;
