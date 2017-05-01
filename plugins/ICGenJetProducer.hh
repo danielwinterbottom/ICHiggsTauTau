@@ -31,11 +31,13 @@ class ICGenJetProducer : public edm::EDProducer {
   edm::InputTag input_;
   std::string branch_;
   edm::InputTag input_particles_;
+  bool request_gen_particles_;
+  edm::InputTag input_flavourinfo_;
+  bool do_flavourinfo_;
   boost::hash<reco::GenJet const*> gen_jet_hasher_;
   boost::hash<reco::GenParticle const *> particle_hasher_;
 
 
-  bool request_gen_particles_;
   bool is_slimmed_;
 };
 

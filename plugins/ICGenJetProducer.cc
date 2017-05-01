@@ -21,9 +21,12 @@ ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       input_particles_(config.getParameter<edm::InputTag>("inputGenParticles")),
       request_gen_particles_(config.getParameter<bool>("requestGenParticles")),
+      input_flavourinfo_(config.getParameter<edm::InputTag>("inputFlavourInfo")),
+      do_flavourinfo_(config.getParameter<bool>("includeFlavourInfo")),
       is_slimmed_(config.getParameter<bool>("isSlimmed")) {
   consumes<edm::View<reco::GenJet>>(input_);
   consumes<reco::GenParticleCollection>(input_particles_);
+  consumes<edm::ValueMap<std::vector<int>>>(input_flavourinfo_);
   gen_jets_ = new std::vector<ic::GenJet>();
   if (request_gen_particles_) {
     produces<reco::GenParticleRefVector>("requestedGenParticles");
@@ -31,6 +34,7 @@ ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
 
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, request_gen_particles_, "requestGenParticles");
+  PrintOptional(1, do_flavourinfo_, "inputFlavourInfo");
 }
 
 ICGenJetProducer::~ICGenJetProducer() { delete gen_jets_; }
@@ -49,6 +53,11 @@ void ICGenJetProducer::produce(edm::Event& event,
     }
   }
 
+  edm::Handle<edm::ValueMap<std::vector<int>>> flav_handle;
+  if (do_flavourinfo_) {
+    event.getByLabel(input_flavourinfo_, flav_handle);
+  }
+
   std::auto_ptr<reco::GenParticleRefVector> part_requests(
       new reco::GenParticleRefVector());
 
@@ -64,7 +73,11 @@ void ICGenJetProducer::produce(edm::Event& event,
     dest.set_phi(src.phi());
     dest.set_energy(src.energy());
     dest.set_charge(src.charge());
-    dest.set_flavour(0);
+    if (do_flavourinfo_) {
+      dest.set_flavour((*flav_handle)[jets_handle->refAt(i)].at(1));
+    } else {
+      dest.set_flavour(0);
+    }
     if(is_slimmed_) dest.set_n_constituents(src.numberOfDaughters());
     else dest.set_n_constituents(src.getGenConstituents().size());
     if (request_gen_particles_) {
