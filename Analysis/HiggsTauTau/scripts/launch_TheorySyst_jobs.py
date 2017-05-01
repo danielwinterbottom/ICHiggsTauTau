@@ -12,8 +12,8 @@ job_mgr.set_args(args)
 basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau' % os.environ[
     'CMSSW_BASE']
 
-MAX_EVTS = 100000
-FILES_PER_JOB = 40
+MAX_EVTS = -1
+FILES_PER_JOB = 50
 PROD=''
 
 DATA_SAMPLES = {
@@ -21,31 +21,22 @@ DATA_SAMPLES = {
 
 
 MC_SAMPLES = {
-    'A_500_15_b_b':         ['A_500_15_b_b'],
-    'A_500_15_b_tb':        ['A_500_15_b_tb'],
-    'A_500_15_t_t':         ['A_500_15_t_t'],
-    'A_500_15_t_tb':        ['A_500_15_t_tb'],
-    'A_500_15_tb_tb':       ['A_500_15_tb_tb']
 }
 
-for part in [
-        #'A_500_5',
-        #'A_500_15',
-        #'A_500_30',
-        #'H_500_5',
-        #'H_500_15',
-        #'H_500_30',
-        'H_500_40',
-        'H_500_50',
-        #'s_120_5',
-        #'s_120_15',
-        #'s_120_30',
-        ]:
-    MC_SAMPLES['%s_b_b' % part]    = ['%s_b_b' % part]
-    MC_SAMPLES['%s_b_tb' % part]   = ['%s_b_tb' % part]
-    MC_SAMPLES['%s_t_t' % part]    = ['%s_t_t' % part]
-    MC_SAMPLES['%s_t_tb' % part]   = ['%s_t_tb' % part]
-    MC_SAMPLES['%s_tb_tb' % part]  = ['%s_tb_tb' % part]
+tanb_dict = {
+        'A': '15',
+        'H': '50',
+        's': '15'
+        }
+
+for mass in ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000','1200','1400','1500','1600','1800','2000','2300','2600','2900','3200']:
+    for part in ['H']:
+        key = '%s_%s_%s' % (part, mass, tanb_dict[part])
+        MC_SAMPLES['%s_b_b' % key]    = ['%s_b_b' % key]
+        MC_SAMPLES['%s_b_tb' % key]   = ['%s_b_tb' % key]
+        MC_SAMPLES['%s_t_t' % key]    = ['%s_t_t' % key]
+        MC_SAMPLES['%s_t_tb' % key]   = ['%s_t_tb' % key]
+        MC_SAMPLES['%s_tb_tb' % key]  = ['%s_tb_tb' % key]
 
 if args.pythia:
     PROD='Apr3_'
@@ -143,11 +134,13 @@ for sa in SAMPLES:
         # Scale factors workspace
         'sf_wsp': 'input/scale_factors/htt_scalefactors_v3.root',
         # ZmtTP decay mode selection
-        'ZmtTP_tauDM': 'decayModeFinding'
+        'ZmtTP_tauDM': 'decayModeFinding',
+        'sample_mass': ''
         #'ZmtTP_tauDM': 'decayModeFindingNewDMs'
     }
     if args.pythia:
         cfg['file_prefix'] = ''
+        cfg['sample_mass'] = sa.split('-')[1]
     job_mgr.add_filelist_split_jobs(
         prog=basedir+'/bin/HTT2016Studies',
         cfg=cfg,

@@ -104,6 +104,7 @@ class SelectMVAMET : public ModuleBase {
 class TheoryTreeProducer : public ModuleBase {
  private:
   CLASS_MEMBER(TheoryTreeProducer, fwlite::TFileService*, fs)
+  CLASS_MEMBER(TheoryTreeProducer, std::string, sample_mass)
   TTree *outtree_;
 
   float pt_h;
@@ -115,6 +116,14 @@ class TheoryTreeProducer : public ModuleBase {
   int njets;
   float mjj;
   float wt;
+  float wt_2HDM_h;
+  float wt_2HDM_H;
+  float wt_2HDM_A;
+  float wt_MSSM_h;
+  float wt_MSSM_A;
+  float wt_MSSM_H;
+  
+  std::shared_ptr<RooWorkspace> ws_;
 
  public:
   TheoryTreeProducer(std::string const& name);

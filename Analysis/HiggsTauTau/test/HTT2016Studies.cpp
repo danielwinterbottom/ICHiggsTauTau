@@ -312,6 +312,7 @@ int main(int argc, char* argv[]) {
 
       seq.BuildModule(ic::TheoryTreeProducer("TheoryTreeProducer")
         .set_fs(fs.at(fullseqn).get())
+        .set_sample_mass(js["sample_mass"].asString())
       );
       seq.InsertSequence(fullseqn, analysis);
     }

@@ -223,13 +223,26 @@ namespace ic {
       outtree_ = fs_->make<TTree>("Theory","Theory");
       outtree_->Branch("pt_h",         &pt_h);
       outtree_->Branch("pt_ditau",     &pt_ditau);
-      outtree_->Branch("pt_taup",      &pt_taup);
-      outtree_->Branch("pt_taum",      &pt_taum);
-      outtree_->Branch("pt_vistaup",   &pt_vistaup);
+      // outtree_->Branch("pt_taup",      &pt_taup);
+      // outtree_->Branch("pt_taum",      &pt_taum);
+      // outtree_->Branch("pt_vistaup",   &pt_vistaup);
       outtree_->Branch("njets", &njets);
-      outtree_->Branch("mjj",   &mjj);
+      // outtree_->Branch("mjj",   &mjj);
       outtree_->Branch("wt",   &wt);
+      outtree_->Branch("wt_2HDM_h",   &wt_2HDM_h);
+      outtree_->Branch("wt_2HDM_H",   &wt_2HDM_H);
+      outtree_->Branch("wt_2HDM_A",   &wt_2HDM_A);
     }
+    TFile f("mssm_hpt_weights.root");
+    ws_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+    if (sample_mass_ != "") {
+      double sample_mass_val = boost::lexical_cast<double>(sample_mass_);
+      ws_->var("mh")->setVal(sample_mass_val);
+      ws_->var("mH")->setVal(sample_mass_val);
+      ws_->var("mA")->setVal(sample_mass_val);
+      ws_->var("tanb")->setVal(15.);
+    }
+    f.Close();
     return 0;
   }
 
@@ -317,6 +330,18 @@ namespace ic {
     
     auto info = event->GetPtr<EventInfo>("eventInfo");
     wt = info->total_weight();
+
+    if (sample_mass_ != "") {
+      ws_->var("h_pt")->setVal(pt_h);
+      wt_2HDM_h = ws_->function(TString::Format("h_%s_2HDM_ratio", sample_mass_.c_str()))->getVal();
+      wt_2HDM_H = ws_->function(TString::Format("H_%s_2HDM_ratio", sample_mass_.c_str()))->getVal();
+      wt_2HDM_A = ws_->function(TString::Format("A_%s_2HDM_ratio", sample_mass_.c_str()))->getVal();
+    } else {
+      wt_2HDM_h = 1.0;
+      wt_2HDM_H = 1.0;
+      wt_2HDM_A = 1.0;
+    }
+
     outtree_->Fill();
     return 0;
   }
