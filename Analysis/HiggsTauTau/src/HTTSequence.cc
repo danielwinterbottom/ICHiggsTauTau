@@ -996,16 +996,30 @@ if(do_met_filters){
     }));
 }
 
-BuildModule(GenericModule("BadMuonFilters")
-  .set_function([=](ic::TreeEvent *event){
-     EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-     std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
-     bool pass_filters = true;
-     for(unsigned i=0;i<bad_muon_filters.size();++i){
-      pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
-     }
-     return !pass_filters;
-  }));
+if(!js["make_sync_ntuple"].asBool()){
+    BuildModule(GenericModule("BadMuonFilters")
+      .set_function([=](ic::TreeEvent *event){
+         EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+         std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
+         bool pass_filters = true;
+         for(unsigned i=0;i<bad_muon_filters.size();++i){
+          pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
+         }
+         return !pass_filters;
+      }));
+} else{
+    BuildModule(GenericModule("BadMuonFilters")
+      .set_function([=](ic::TreeEvent *event){
+         EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+         std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
+         bool pass_filter = false;
+         for(unsigned i=0;i<bad_muon_filters.size();++i){
+          pass_filter = eventInfo->filter_result(bad_muon_filters.at(i));
+          event->Add(bad_muon_filters.at(i),!pass_filter);
+         }
+         return 0;
+      }));
+}
 
 
 if(channel == channel::tpzmm || channel == channel::tpzee){
@@ -1798,7 +1812,8 @@ if(js["baseline"]["do_ff_weights"].asBool()){
       .set_jets_label(jets_label)
       .set_strategy(strategy_type)
       .set_categories(js["baseline"]["ff_categories"].asString())
-      .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool()));
+      .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool())
+      .set_ff_file(js["baseline"]["ff_file"].asString()));
 }
     
 if(channel != channel::wmnu) {

@@ -514,18 +514,6 @@ namespace ic {
       outtree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2);
       outtree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1);
       outtree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2);
-      
-      outtree_->Branch("mva_olddm_newmva_vloose_1", &lbyVLooseIsolationMVArun2DBoldDMwLTNew_1);
-      outtree_->Branch("mva_olddm_newmva_vloose_2", &lbyVLooseIsolationMVArun2DBoldDMwLTNew_2);
-      outtree_->Branch("mva_olddm_newmva_loose_1",  &lbyLooseIsolationMVArun2DBoldDMwLTNew_1);
-      outtree_->Branch("mva_olddm_newmva_loose_2",  &lbyLooseIsolationMVArun2DBoldDMwLTNew_2);
-      outtree_->Branch("mva_olddm_newmva_medium_1", &lbyMediumIsolationMVArun2DBoldDMwLTNew_1);
-      outtree_->Branch("mva_olddm_newmva_medium_2", &lbyMediumIsolationMVArun2DBoldDMwLTNew_2);
-      outtree_->Branch("mva_olddm_newmva_tight_1",  &lbyTightIsolationMVArun2DBoldDMwLTNew_1);
-      outtree_->Branch("mva_olddm_newmva_tight_2",  &lbyTightIsolationMVArun2DBoldDMwLTNew_2);
-      outtree_->Branch("mva_olddm_newmva_vtight_1", &lbyVTightIsolationMVArun2DBoldDMwLTNew_1);
-      outtree_->Branch("mva_olddm_newmva_vtight_2", &lbyVTightIsolationMVArun2DBoldDMwLTNew_2);
-      
       outtree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
       outtree_->Branch("trg_singleelectron",    &trg_singleelectron_);
@@ -913,17 +901,6 @@ namespace ic {
       synctree_->Branch("mva_olddm_tight_2",&lbyTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
       synctree_->Branch("mva_olddm_vtight_1",&lbyVTightIsolationMVArun2DBoldDMwLT_1,"mva_olddm_tight_1/O");
       synctree_->Branch("mva_olddm_vtight_2",&lbyVTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
-      
-      //synctree_->Branch("mva_olddm_vloose_1", &lbyVLooseIsolationMVArun2DBoldDMwLT_1,"mva_olddm_medium_1/O");
-      //synctree_->Branch("mva_olddm_vloose_2", &lbyVLooseIsolationMVArun2DBoldDMwLT_2,"mva_olddm_medium_2/O");
-      //synctree_->Branch("mva_olddm_loose_1",  &lbyLooseIsolationMVArun2DBoldDMwLT_1,"mva_olddm_medium_1/O");
-      //synctree_->Branch("mva_olddm_loose_2",  &lbyLooseIsolationMVArun2DBoldDMwLT_2,"mva_olddm_medium_2/O");
-      //synctree_->Branch("mva_olddm_medium_1", &lbyMediumIsolationMVArun2DBoldDMwLT_1,"mva_olddm_medium_1/O");
-      //synctree_->Branch("mva_olddm_medium_2", &lbyMediumIsolationMVArun2DBoldDMwLT_2,"mva_olddm_medium_2/O");
-      //synctree_->Branch("mva_olddm_tight_1",  &lbyTightIsolationMVArun2DBoldDMwLT_1,"mva_olddm_tight_1/O");
-      //synctree_->Branch("mva_olddm_tight_2",  &lbyTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
-      //synctree_->Branch("mva_olddm_vtight_1", &lbyVTightIsolationMVArun2DBoldDMwLT_1,"mva_olddm_tight_1/O");
-      //synctree_->Branch("mva_olddm_vtight_2", &lbyVTightIsolationMVArun2DBoldDMwLT_2,"mva_olddm_tight_2/O");
 
       // Lepton 2 properties
       // pt (including effect of any energy scale corrections)
@@ -1059,17 +1036,6 @@ namespace ic {
           synctree_->Branch("neutralIsoPtSum_2", &lneutralIsoPtSum_2,"neutralIsoPtSum_2/F");
           synctree_->Branch("puCorrPtSum_2", &lpuCorrPtSum_2,"puCorrPtSum_2/F");
           synctree_->Branch("decayModeFindingOldDMs_2",&ldecayModeFindingOldDMs_2,"decayModeFindingOldDMs_2/O");
-          
-          synctree_->Branch("byRerunMVAIdVLoose_1", &lbyVLooseIsolationMVArun2DBoldDMwLTNew_1);
-          synctree_->Branch("byRerunMVAIdVLoose_2", &lbyVLooseIsolationMVArun2DBoldDMwLTNew_2);
-          synctree_->Branch("byRerunMVAIdLoose_1" ,  &lbyLooseIsolationMVArun2DBoldDMwLTNew_1);
-          synctree_->Branch("byRerunMVAIdLoose_2" ,  &lbyLooseIsolationMVArun2DBoldDMwLTNew_2);
-          synctree_->Branch("byRerunMVAIdMedium_1", &lbyMediumIsolationMVArun2DBoldDMwLTNew_1);
-          synctree_->Branch("byRerunMVAIdMedium_2", &lbyMediumIsolationMVArun2DBoldDMwLTNew_2);
-          synctree_->Branch("byRerunMVAIdTight_1" ,  &lbyTightIsolationMVArun2DBoldDMwLTNew_1);
-          synctree_->Branch("byRerunMVAIdTight_2" ,  &lbyTightIsolationMVArun2DBoldDMwLTNew_2);
-          synctree_->Branch("byRerunMVAIdVTight_1", &lbyVTightIsolationMVArun2DBoldDMwLTNew_1);
-          synctree_->Branch("byRerunMVAIdVTight_2", &lbyVTightIsolationMVArun2DBoldDMwLTNew_2);
 
       }
       synctree_->Branch("met", &met_.var_float, "met/F");
@@ -1207,6 +1173,9 @@ namespace ic {
       synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
+      
+      synctree_->Branch("Flag_badMuons",    &Flag_badMuons);
+      synctree_->Branch("Flag_duplicateMuons",    &Flag_duplicateMuons);
 
     }
     return 0;
@@ -1220,6 +1189,11 @@ namespace ic {
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
+    
+    if(make_sync_ntuple_){
+      if (event->Exists("Flag_badMuons")) Flag_badMuons = event->Get<bool>("Flag_badMuons");
+      if (event->Exists("Flag_duplicateMuons")) Flag_duplicateMuons = event->Get<bool>("Flag_duplicateMuons");
+    }
     
 
     // Get the objects we need from the event
@@ -2184,11 +2158,6 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_2 = tau->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         antiele_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonLoose3_2;
-        lbyVLooseIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyLooseIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyMediumIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyTightIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byTightIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyVTightIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byVTightIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLTNew") : 0.;
       }
 
     }
@@ -2407,11 +2376,6 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_2 = tau->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
-        lbyVLooseIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyLooseIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyMediumIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyTightIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byTightIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyVTightIsolationMVArun2DBoldDMwLTNew_2 = tau->HasTauID("byVTightIsolationMVArun2v1DBoldDMwLTNew") ? tau->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLTNew") : 0.;
       }
     }
     if (channel_ == channel::em) {
@@ -2752,17 +2716,6 @@ namespace ic {
         lbyVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWoldDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
-        
-        lbyVLooseIsolationMVArun2DBoldDMwLTNew_1 = tau1->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLTNew") ? tau1->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyLooseIsolationMVArun2DBoldDMwLTNew_1 = tau1->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLTNew") ? tau1->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyMediumIsolationMVArun2DBoldDMwLTNew_1 = tau1->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLTNew") ? tau1->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyTightIsolationMVArun2DBoldDMwLTNew_1 = tau1->HasTauID("byTightIsolationMVArun2v1DBoldDMwLTNew") ? tau1->GetTauID("byTightIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyVTightIsolationMVArun2DBoldDMwLTNew_1 = tau1->HasTauID("byVTightIsolationMVArun2v1DBoldDMwLTNew") ? tau1->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyVLooseIsolationMVArun2DBoldDMwLTNew_2 = tau2->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLTNew") ? tau2->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyLooseIsolationMVArun2DBoldDMwLTNew_2 = tau2->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLTNew") ? tau2->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyMediumIsolationMVArun2DBoldDMwLTNew_2 = tau2->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLTNew") ? tau2->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyTightIsolationMVArun2DBoldDMwLTNew_2 = tau2->HasTauID("byTightIsolationMVArun2v1DBoldDMwLTNew") ? tau2->GetTauID("byTightIsolationMVArun2v1DBoldDMwLTNew") : 0.;
-        lbyVTightIsolationMVArun2DBoldDMwLTNew_2 = tau2->HasTauID("byVTightIsolationMVArun2v1DBoldDMwLTNew") ? tau2->GetTauID("byVTightIsolationMVArun2v1DBoldDMwLTNew") : 0.;
 
 
       }

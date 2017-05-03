@@ -18,6 +18,7 @@ class HTTFakeFactorWeights : public ModuleBase {
   CLASS_MEMBER(HTTFakeFactorWeights, ic::strategy, strategy)
   CLASS_MEMBER(HTTFakeFactorWeights, std::string, categories)
   CLASS_MEMBER(HTTFakeFactorWeights, bool, do_systematics)
+  CLASS_MEMBER(HTTFakeFactorWeights, std::string, ff_file)
 
  public:
   HTTFakeFactorWeights(std::string const& name);

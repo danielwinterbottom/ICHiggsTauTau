@@ -197,7 +197,7 @@ loose_string='loose' #loose
 tight_mt_cut='40'
 if options.channel == 'mt': tight_mt_cut='40'
 loose_iso_mt_cut = '70' #70
-# Define categories here
+
 cats = {}
 if options.analysis == 'sm':
     if options.channel == 'mt':
@@ -212,11 +212,11 @@ elif options.analysis == 'mssm':
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loose_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_'+loose_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_'+loose_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
             cats['ichep_baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loose_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_'+loose_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_'+loose_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
             cats['ichep_baseline'] = '(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
@@ -241,15 +241,12 @@ cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
 cats['nobtag_loosemt'] = cats['nobtag']
-#cats['nobtag_looseiso'] = '('+cats['nobtag']+' && mva_olddm_'+tight_string+'_2<0.5)'
 cats['nobtag_looseiso'] = cats['nobtag']
 cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
-#cats['btag_looseiso'] = '('+cats['btag']+' && mva_olddm_'+tight_string+'_2<0.5)'
 cats['btag_looseiso'] = cats['btag']
 cats['atleast1bjet'] = '(n_bjets>0)'
 cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
-#cats['btag_looseiso_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_'+tight_string+'_2<0.5)'
 cats['btag_looseiso_wnobtag'] = cats['btag_tight_wnobtag']
 
 if options.method == 17: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
@@ -434,6 +431,7 @@ if options.method == 17 and options.do_ff_systs and options.channel in ['et','mt
     uncert_types = [ 'syst', 'stat']
     for process in processes:
       template_name = 'ff_'+process+'_syst'
+      if process == 'qcd': template_name = 'ff_'+process+'_'+options.channel+'_syst'
       weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZLL','ZJ','ZL','VV','TT','QCD','W','signal'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZLL','ZJ','ZL','VV','TT','QCD','W','signal'], True)
@@ -894,15 +892,11 @@ def FixBins(ana,outfile='output.root'):
         if 'data_obs' in node.name: continue
         hist = node.shape.hist
         outfile.cd(nodename)
-        #Fix negative bins
         write_hist=False
-        for i in range(1,hist.GetNbinsX()+1):
-            if hist.GetBinContent(i) < 0:
-                hist.SetBinContent(i,0.0000001)
-                write_hist=True
         #Fix empty histogram
         if hist.Integral() == 0.0:
             hist.SetBinContent(hist.GetNbinsX()/2, 0.00001)
+            hist.SetBinError(hist.GetNbinsX()/2, 0.00001)
             write_hist=True
         #Fix empty bins
         first_populated = 0
@@ -989,6 +983,7 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     first_hist=True
     for node in nodes:
         if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
+            #if node.name not in ['W', 'QCD', 'VVJ', 'VVT', 'TTT', 'TTJ', 'ZJ', 'ZL', 'ZTT']: continue
             if first_hist:
                 total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
                 first_hist=False
@@ -1002,7 +997,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     
     wt_1 = wt #this will use loose SF for et and mt and tight for tt - input for FakeTau module
     if "btag_tight" in options.cat or "btag_loosemt" in options.cat: wt+="*wt_tau_id_tight"
-    #elif options.method == 17 and options.channel in ['et','mt']: wt+="*wt_tau_id_medium" #uncomment when you have this on tree!
+    #elif options.method == 17 and options.channel in ['et','mt']: wt+="*wt_tau_id_medium"
     
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip

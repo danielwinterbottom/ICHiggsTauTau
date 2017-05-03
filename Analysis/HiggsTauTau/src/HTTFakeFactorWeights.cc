@@ -19,6 +19,7 @@ namespace ic {
     ditau_label_ = "ditau";
     categories_ = "inclusive";
     do_systematics_= false;
+    ff_file_= "20170330_tight";
   }
 
   HTTFakeFactorWeights::~HTTFakeFactorWeights() {
@@ -40,9 +41,7 @@ namespace ic {
     
     std::string channel = Channel2String(channel_);
     for(unsigned i=0; i<category_names_.size(); ++i){
-      std::string ff_file_name="";
-      if (channel == "tt") ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/20170423_tight/tt/"+category_names_[i]+"/fakeFactors_20170423_tight.root";
-      else ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/20170330_tight/"+channel+"/"+category_names_[i]+"/fakeFactors_20170330_tight.root";
+      std::string ff_file_name = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/fake_factors/Jet2TauFakesFiles/"+ff_file_+"/"+channel+"/"+category_names_[i]+"/fakeFactors_"+ff_file_+".root";
       ff_file_name = baseDir + ff_file_name;
       TFile* ff_file = new TFile(ff_file_name.c_str());
       FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
