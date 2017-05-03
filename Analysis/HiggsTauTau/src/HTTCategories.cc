@@ -70,6 +70,7 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
+      outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
