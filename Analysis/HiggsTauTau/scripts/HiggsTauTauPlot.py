@@ -189,6 +189,7 @@ print 'do_ff_systs       ='  ,  options.do_ff_systs
 print '###############################################'
 print ''
 
+compare_w_shapes = False
 if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
 loosemt_string='tight'#tight
@@ -212,11 +213,11 @@ elif options.analysis == 'mssm':
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loose_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_'+loose_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
             cats['ichep_baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loose_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_'+loose_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
+            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
             cats['ichep_baseline'] = '(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
@@ -248,6 +249,9 @@ cats['btag_looseiso'] = cats['btag']
 cats['atleast1bjet'] = '(n_bjets>0)'
 cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 cats['btag_looseiso_wnobtag'] = cats['btag_tight_wnobtag']
+cats['0jet'] = '(n_jets==0)'
+cats['1jet'] = '(n_jets==1)'
+cats['ge2jet'] = '(n_jets>=2)'
 
 if options.method == 17: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
 
@@ -763,10 +767,10 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
     # Select data from anti-isolated region
     if options.channel != "tt":
         if options.channel == 'mt':
-            anti_isolated_sel = '(iso_1<0.15 && mva_olddm_medium_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
             if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singlemuon"
         elif options.channel == 'et': 
-            anti_isolated_sel = '(iso_1<0.1  && mva_olddm_medium_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+            anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
             if options.era == "mssmsummer16": anti_isolated_sel +=" && trg_singleelectron"
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
         if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
@@ -886,7 +890,7 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
     print ''
 
 def FixBins(ana,outfile='output.root'):
-    #Fix negative bins, empty histograms and empty bins
+    #Fix empty histograms
     nodes = ana.nodes[nodename].SubNodes()
     for node in nodes:
         if 'data_obs' in node.name: continue
@@ -898,19 +902,6 @@ def FixBins(ana,outfile='output.root'):
             hist.SetBinContent(hist.GetNbinsX()/2, 0.00001)
             hist.SetBinError(hist.GetNbinsX()/2, 0.00001)
             write_hist=True
-        #Fix empty bins
-        first_populated = 0
-        last_populated = 0
-        bins = hist.GetNbinsX()
-        for i in range(1,bins):
-            if hist.GetBinContent(i) > 0 and first_populated == 0: first_populated = i
-            if hist.GetBinContent(bins-(i-1)) > 0. and last_populated == 0: last_populated = bins-(i-1)
-        av_weight = (hist.Integral() / hist.GetEntries())
-        for i in range (first_populated+1,last_populated):
-            if hist.GetBinContent(i) == 0.0: 
-             hist.SetBinError(i, av_weight)
-             write_hist=True
-        if write_hist: hist.Write(node.name,ROOT.TObject.kOverwrite)
         outfile.cd()
                                                                                                                                 
 def NormFFSysts(ana,outfile='output.root'):
@@ -1046,6 +1037,10 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+        if compare_w_shapes:
+          if options.channel == 'mt': cat_relax=cats[options.cat]+' && (iso_1<0.15 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'    
+          else: cat_relax=cats[options.cat]+' && (iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singleelectron'
+          GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    
            
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
@@ -1064,6 +1059,16 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     FixBins(ana,outfile)
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
     GetTotals(ana,add_name,outfile)
+    
+    if compare_w_shapes:
+      nominal_hist = outfile.Get(nodename+'/W')
+      nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
+      directory = outfile.Get(nodename)
+      outfile.cd(nodename)
+      shape_hist = outfile.Get(nodename+'/W_shape')
+      shape_scale = shape_hist.Integral(0,shape_hist.GetNbinsX()+1)
+      shape_hist.Scale(nominal_scale/shape_scale)
+      shape_hist.Write()
 
 # Create output file
 var_name = options.var.split('[')[0]
@@ -1247,7 +1252,8 @@ if not options.no_plot:
         y_title = "Entries"
         if options.norm_bins: y_title="dN/d"+var_name
     else: y_title = options.y_title
-    
+    scheme = options.channel
+    if compare_w_shapes: scheme = 'w_shape'
     FF = options.method==17
     plotting.HTTPlot(nodename, 
         plot_file, 
@@ -1281,6 +1287,6 @@ if not options.no_plot:
         plot_name,
         custom_uncerts_up_name,
         custom_uncerts_down_name,
-        options.channel
+        scheme
         )
            

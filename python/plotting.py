@@ -1863,6 +1863,7 @@ def HTTPlot(nodename,
     'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZLL"],R.TColor.GetColor(100,192,232))],
     'dy':[backgroundComp("DY",["ZTT","ZL","ZJ"],R.TColor.GetColor(100,192,232))],
     'w':[backgroundComp("W",["W"],R.TColor.GetColor(222,90,106))],
+    'w_shape':[backgroundComp("W loosened shape",["W_shape"],R.TColor.GetColor(222,90,106))],
     'qcd':[backgroundComp("QCD",["QCD"],R.TColor.GetColor(250,202,255))]
     }
     if channel == "zee" or channel == "zmm": background_schemes['dy'] = [backgroundComp("DY",["ZLL"],R.TColor.GetColor(100,192,232))]
@@ -1880,6 +1881,7 @@ def HTTPlot(nodename,
             background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["jetFakes"],R.TColor.GetColor(250,202,255)))
         
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
+    if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
@@ -1947,7 +1949,8 @@ def HTTPlot(nodename,
         axish[1].GetXaxis().SetLabelSize(0.03)
         axish[1].GetXaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetNdivisions(4)
-        axish[1].GetYaxis().SetTitle("Obs/Exp")
+        if scheme == 'w_shape': axish[1].GetYaxis().SetTitle("Ratio")
+        else: axish[1].GetYaxis().SetTitle("Obs/Exp")
         axish[1].GetYaxis().SetTitleOffset(1.6)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
@@ -2048,7 +2051,8 @@ def HTTPlot(nodename,
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
-    legend.AddEntry(blind_datahist,"Observation","PE")
+    if scheme == 'w_shape': legend.AddEntry(blind_datahist,"un-loosend shape","PE")
+    else: legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
     bkg_histos.reverse()
     background_schemes[scheme].reverse()
