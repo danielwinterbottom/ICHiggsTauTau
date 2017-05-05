@@ -410,6 +410,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
+ if(channel_str=="zmm") muon_shift = json["baseline"]["muon_es_shift"].asDouble();
+ else muon_shift = 1.0;
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
@@ -1679,7 +1681,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_qcd_cr1_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRLt2");
    TH2D em_qcd_cr1_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRGt4");
-   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016.root","/","zptmass_histo");
+   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -2397,6 +2399,12 @@ void HTTSequence::BuildTPZEEPairs() {
 void HTTSequence::BuildZMMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ if (tau_scale_mode > 0 && strategy_type == strategy::mssmsummer16){
+ BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
+    .set_input_label("muons")
+    .set_shift(muon_shift));
+ }
  
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
