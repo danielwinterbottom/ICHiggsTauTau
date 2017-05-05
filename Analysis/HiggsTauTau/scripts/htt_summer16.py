@@ -144,7 +144,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
       'TTHToTauTau_M-'+mass
     ]
 if options.proc_mssm or options.proc_all:
-  gghmasses = ['80','90','100','110','120','130', '140', '160','180','200','250','350','400','450','500','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200'] # 140 not available yet!
+  gghmasses = ['80','90','100','110','120','130', '140', '160','180','200','250','350','400','450','500', '600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200'] # 140 not available yet!
   bbhmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
   if options.short_signal: 
     gghmasses = ['500']
@@ -302,7 +302,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'DYJetsToLL-LO-ext1',
     'DYJetsToLL-LO-ext2',
     #'DYJetsToLL_M-10to50-ext',
-    'DYJetsToLL_M-10to50',
+    #'DYJetsToLL_M-10to50',
     'DYJetsToLL_M-10-50-LO',
     #'DY1JetsToLL_M-10-50-LO',
     #'DY2JetsToLL_M-10-50-LO',
