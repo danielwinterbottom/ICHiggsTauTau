@@ -1,5 +1,6 @@
 export directory=$1
 export output_prefix=$2
+export samples=$3
 
 targets=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $directory | cut -d"/" -f2-))
 for i in "${targets[@]}"; do
@@ -9,6 +10,9 @@ for i in "${targets[@]}"; do
     type="MC"
     if [[ $name == "Tau"* || "$name" == "MuonEG"* || "$name" == "SingleElectron"* || "$name" == "SingleMuon"* ]]; then
       type="Data"
+    fi
+    if [ "$samples" ]; then 
+      if [[ $name != *"$samples"* ]]; then continue; fi
     fi
     echo "Getting filelist for : " $name
 
