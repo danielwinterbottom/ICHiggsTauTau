@@ -190,14 +190,15 @@ print '###############################################'
 print ''
 
 compare_w_shapes = False
+compare_qcd_shapes = False
 if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
-loosemt_string='tight'#tight
-tight_string='tight' #tight
-loose_string='loose' #loose
+loosemt_string='tight'
+tight_string='tight'
+loose_string='loose'
 tight_mt_cut='40'
 if options.channel == 'mt': tight_mt_cut='40'
-loose_iso_mt_cut = '70' #70
+loose_iso_mt_cut = '70'
 
 cats = {}
 if options.analysis == 'sm':
@@ -1038,9 +1039,13 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
         if compare_w_shapes:
-          if options.channel == 'mt': cat_relax=cats[options.cat]+' && (iso_1<0.15 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'    
-          else: cat_relax=cats[options.cat]+' && (iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singleelectron'
+          #if options.channel == 'mt': cat_relax=cats[options.cat]+' && (iso_1<0.15 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'    
+          #else: cat_relax=cats[options.cat]+' && (iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singleelectron'
+          cat_relax=cats['baseline']+'&&'+cats['btag_wnobtag']
           GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    
+        if compare_qcd_shapes:
+          cat_relax='(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'+'&&'+cats[options.cat]
+          GenerateQCD(ana, '_shape', data_samples, plot, wt, sel, cat_relax, options.method, qcd_os_ss_ratio, not options.do_ss)
            
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
@@ -1066,6 +1071,15 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
       directory = outfile.Get(nodename)
       outfile.cd(nodename)
       shape_hist = outfile.Get(nodename+'/W_shape')
+      shape_scale = shape_hist.Integral(0,shape_hist.GetNbinsX()+1)
+      shape_hist.Scale(nominal_scale/shape_scale)
+      shape_hist.Write()
+    if compare_qcd_shapes:
+      nominal_hist = outfile.Get(nodename+'/QCD')
+      nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
+      directory = outfile.Get(nodename)
+      outfile.cd(nodename)
+      shape_hist = outfile.Get(nodename+'/QCD_shape')
       shape_scale = shape_hist.Integral(0,shape_hist.GetNbinsX()+1)
       shape_hist.Scale(nominal_scale/shape_scale)
       shape_hist.Write()
@@ -1254,6 +1268,7 @@ if not options.no_plot:
     else: y_title = options.y_title
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'
+    if compare_qcd_shapes: scheme = 'qcd_shape'
     FF = options.method==17
     plotting.HTTPlot(nodename, 
         plot_file, 
