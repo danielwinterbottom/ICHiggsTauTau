@@ -339,25 +339,22 @@ elif options.channel == 'zee' or  options.channel == 'zmm':
     z_sels['zll_sel'] = '(1)'
 
 top_sels = {}
+vv_sels = {}
 top_sels['ttt_sel'] = z_sels['ztt_sel']
 top_sels['ttj_sel'] = '!('+z_sels['ztt_sel']+')'
-
-vv_sels = {}
 vv_sels['vvt_sel'] = z_sels['ztt_sel']
 vv_sels['vvj_sel'] = '!('+z_sels['ztt_sel']+')'
 
-if options.method == 17:
-  if options.channel in ['et','mt']:
-    vv_sels['vvt_sel'] = '(gen_match_2<6)'
-    vv_sels['vvj_sel'] = '(gen_match_2==6)'
-    top_sels['ttt_sel'] = '(gen_match_2<6)' 
-    top_sels['ttj_sel'] = '(gen_match_2==6)'
-  elif options.channel == 'tt':
-    vv_sels['vvt_sel'] = '(gen_match_1<6 && gen_match_2<6)'
-    vv_sels['vvj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
-    top_sels['ttt_sel'] = '(gen_match_1<6 && gen_match_2<6)' 
-    top_sels['ttj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
-
+if options.channel in ['et','mt']:
+  vv_sels['vvt_sel'] = '(gen_match_2<6)'
+  vv_sels['vvj_sel'] = '(gen_match_2==6)'
+  top_sels['ttt_sel'] = '(gen_match_2<6)' 
+  top_sels['ttj_sel'] = '(gen_match_2==6)'
+elif options.channel == 'tt':
+  vv_sels['vvt_sel'] = '(gen_match_1<6 && gen_match_2<6)'
+  vv_sels['vvj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
+  top_sels['ttt_sel'] = '(gen_match_1<6 && gen_match_2<6)' 
+  top_sels['ttj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
     
 # Add data sample names
 if options.channel == 'mt': 
