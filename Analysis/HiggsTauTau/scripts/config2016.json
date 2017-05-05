@@ -188,7 +188,8 @@
         "tau_scale_mode": true,
         "elec_es_shift_barrel": 0.99,
         "elec_es_shift_endcap": 0.975,
-        "tau_es_shift": 0.97
+        "tau_es_shift": 0.97,
+        "muon_es_shift": 0.998
       }
     },
     "scale_t_hi": {
