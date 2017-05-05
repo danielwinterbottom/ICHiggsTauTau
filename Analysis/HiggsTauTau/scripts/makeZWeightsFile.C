@@ -89,7 +89,7 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
     double mc_total=0;
     for(unsigned i=1; i<=(unsigned)h_data->GetNbinsX();++i){
       for(unsigned j=1; j<=(unsigned)h_data->GetNbinsY();++j){
-        if(!(i == 1 || i== h_data->GetNbinsX() || j==h_data->GetNbinsY())){
+        if(!(i == 1 )){
             double data_content=h_data->GetBinContent(i,j);
             data_total+=data_content;
             double mc_content=h_mc->GetBinContent(i,j);
@@ -99,7 +99,7 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
     }
     for(unsigned i=1; i<=(unsigned)h_data->GetNbinsX();++i){
       for(unsigned j=1; j<=(unsigned)h_data->GetNbinsY();++j){
-        if(!(i == 1 || i== h_data->GetNbinsX() || j==h_data->GetNbinsY())){
+        if(!(i == 1 )){
             double data_content=h_data->GetBinContent(i,j);
             h_data->SetBinContent(i,j,data_content/data_total);
             double data_error=h_data->GetBinError(i,j);
