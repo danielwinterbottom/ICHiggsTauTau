@@ -680,6 +680,7 @@ namespace ic {
         outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
       //Variables needed for control plots need only be generated for central systematics
+        outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
       if(!systematic_shift_) {
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
         //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
@@ -688,7 +689,6 @@ namespace ic {
         outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
         outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
-        outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("wt_trig_up_1",    &wt_trig_up_1_);
