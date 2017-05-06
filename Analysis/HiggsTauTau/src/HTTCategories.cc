@@ -68,9 +68,19 @@ namespace ic {
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_btag",           &wt_btag_);
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
-      outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
+      
+      if(channel_==channel::tt){
+        outtree_->Branch("wt_tau_id_vtight", &wt_tau_id_vtight_); 
+        outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
+        outtree_->Branch("wt_tau1_id_loose", &wt_tau1_id_loose_);
+        outtree_->Branch("wt_tau1_id_medium", &wt_tau1_id_medium_);
+        outtree_->Branch("wt_tau1_id_vtight", &wt_tau1_id_vtight_);
+        outtree_->Branch("wt_tau2_id_loose", &wt_tau2_id_loose_);
+        outtree_->Branch("wt_tau2_id_medium", &wt_tau2_id_medium_);
+        outtree_->Branch("wt_tau2_id_vtight", &wt_tau2_id_vtight_);
+      }
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
@@ -1207,8 +1217,22 @@ namespace ic {
     if (event->Exists("wt_tau_id_tight")) wt_tau_id_tight_  = event->Get<double>("wt_tau_id_tight");
     wt_tau_id_loose_ = 1.0;
     if (event->Exists("wt_tau_id_loose")) wt_tau_id_loose_  = event->Get<double>("wt_tau_id_loose");
-    wt_tau_id_loose_ = 1.0;
+    wt_tau_id_medium_ = 1.0;
     if (event->Exists("wt_tau_id_medium")) wt_tau_id_medium_  = event->Get<double>("wt_tau_id_medium");
+    wt_tau_id_vtight_ = 1.0;
+    if (event->Exists("wt_tau_id_vtight")) wt_tau_id_vtight_  = event->Get<double>("wt_tau_id_vtight");
+    wt_tau1_id_loose_ = 1.0;
+    if (event->Exists("wt_tau1_id_loose")) wt_tau1_id_loose_  = event->Get<double>("wt_tau1_id_loose");
+    wt_tau1_id_medium_ = 1.0;
+    if (event->Exists("wt_tau1_id_medium")) wt_tau1_id_medium_  = event->Get<double>("wt_tau1_id_medium");
+    wt_tau1_id_vtight_ = 1.0;
+    if (event->Exists("wt_tau1_id_vtight")) wt_tau1_id_vtight_  = event->Get<double>("wt_tau1_id_vtight");
+    wt_tau2_id_loose_ = 1.0;
+    if (event->Exists("wt_tau2_id_loose")) wt_tau2_id_loose_  = event->Get<double>("wt_tau2_id_loose");
+    wt_tau2_id_medium_ = 1.0;
+    if (event->Exists("wt_tau2_id_medium")) wt_tau2_id_medium_  = event->Get<double>("wt_tau2_id_medium");
+    wt_tau2_id_vtight_ = 1.0;
+    if (event->Exists("wt_tau2_id_vtight")) wt_tau2_id_vtight_  = event->Get<double>("wt_tau2_id_vtight");
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();

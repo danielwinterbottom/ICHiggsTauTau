@@ -821,9 +821,17 @@ class HTTCategories : public ModuleBase {
   bool trg_singletau_2_;
   
   double wt_tau_id_binned_;
-  double wt_tau_id_tight_;
   double wt_tau_id_loose_;
   double wt_tau_id_medium_;
+  double wt_tau_id_tight_;
+  double wt_tau_id_vtight_;
+  
+  double wt_tau1_id_loose_;
+  double wt_tau1_id_medium_;
+  double wt_tau1_id_vtight_;
+  double wt_tau2_id_loose_;
+  double wt_tau2_id_medium_;
+  double wt_tau2_id_vtight_;
   
   bool Flag_badMuons=0;
   bool Flag_duplicateMuons=0;
