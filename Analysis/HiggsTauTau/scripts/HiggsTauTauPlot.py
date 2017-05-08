@@ -13,7 +13,7 @@ import copy
 
 CHANNELS= ['et', 'mt', 'em','tt']
 ANALYSIS= ['sm','mssm','Hhh']
-METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 19]
+METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 17, 18, 19]
 
 conf_parser = argparse.ArgumentParser(
     description=__doc__,
@@ -254,7 +254,7 @@ cats['0jet'] = '(n_jets==0)'
 cats['1jet'] = '(n_jets==1)'
 cats['ge2jet'] = '(n_jets>=2)'
 
-if options.method == 17: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
+if options.method in [17,18]: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
 
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
@@ -426,7 +426,7 @@ if options.syst_fake_b != '':
     systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'Up', 'wt', [], False)
     systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'Down', 'wt', [], False)
 
-if options.method == 17 and options.do_ff_systs and options.channel in ['et','mt','tt']:
+if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt']:
     processes = ['tt','w','qcd']
     dms = ['dm0', 'dm1']
     njets = ['njet0','njet1']
@@ -773,6 +773,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
         if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
         else: fake_factor_wt_string = "wt_ff_"+options.cat
+        fake_factor_wt_string+'*wt_tau_id_loose'
         if wt is not "": wt+="*"+fake_factor_wt_string
         else: wt=fake_factor_wt_string
     
@@ -812,8 +813,8 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
         f1_total_node.AddNode(ana.SummedFactory('data_1', data, plot, full_selection_1))
         f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot, full_selection_2))
         f2_total_node = SummedNode('total_bkg')
-        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,wt_1+'*0.99/0.95',sel+'*(gen_match_1<6)',ff_cat_1,8,1.0,True,True))
-        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,wt_2+'*0.99/0.95',sel+'*(gen_match_2<6)',ff_cat_2,8,1.0,True,True))
+        f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,wt_1+'*wt_tau1_id_loose',sel+'*(gen_match_1<6)',ff_cat_1,8,1.0,True,True))
+        f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,wt_2+'*wt_tau2_id_loose',sel+'*(gen_match_2<6)',ff_cat_2,8,1.0,True,True))
         ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
         
 def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', cat='', get_os=True, sm_bkg = ''):
@@ -984,9 +985,7 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root',ff_syst_weight=None):
     
-    wt_1 = wt #this will use loose SF for et and mt and tight for tt - input for FakeTau module
-    if "btag_tight" in options.cat or "btag_loosemt" in options.cat: wt+="*wt_tau_id_tight"
-    #elif options.method == 17 and options.channel in ['et','mt']: wt+="*wt_tau_id_medium"
+    if "btag_looseiso" in options.cat: wt+="*wt_tau_id_loose"
     
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
@@ -1006,11 +1005,11 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     if options.method == 17 and options.channel != "em":
         doVVJ=False
         doTTJ=False
-        GenerateFakeTaus(ana, add_name, data_samples, plot, wt_1, sel, options.cat,not options.do_ss,ff_syst_weight)
+        GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, options.cat,not options.do_ss,ff_syst_weight)
         
         # use existing methods to calculate background due to non-fake taus
         add_fake_factor_selection = "gen_match_2<6"
-        if options.channel == "tt": "gen_match_1<6 && gen_match_2<6"
+        if options.channel == "tt": add_fake_factor_selection = "gen_match_1<6 && gen_match_2<6"
         residual_cat=cat+"&&"+add_fake_factor_selection
         
         if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
@@ -1023,6 +1022,12 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
     
     else:
+        method = options.method
+        if options.method == 18:
+            GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, options.cat,not options.do_ss,ff_syst_weight)
+            if options.channel == 'tt': method = 8
+            elif options.cat == "btag_loosemt" or options.cat == "btag_tight": method = 16
+            elif options.channel == 'et' or options.channel == 'mt': method = 12
         if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
@@ -1032,9 +1037,9 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if 'VV' not in samples_to_skip:
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         if 'W' not in samples_to_skip:
-            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
-            GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, options.method, qcd_os_ss_ratio, not options.do_ss)
+            GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
         if compare_w_shapes:
           #if options.channel == 'mt': cat_relax=cats[options.cat]+' && (iso_1<0.15 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'    
           #else: cat_relax=cats[options.cat]+' && (iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singleelectron'
@@ -1042,7 +1047,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
           GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    
         if compare_qcd_shapes:
           cat_relax='(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'+'&&'+cats[options.cat]
-          GenerateQCD(ana, '_shape', data_samples, plot, wt, sel, cat_relax, options.method, qcd_os_ss_ratio, not options.do_ss)
+          GenerateQCD(ana, '_shape', data_samples, plot, wt, sel, cat_relax, method, qcd_os_ss_ratio, not options.do_ss)
            
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
@@ -1228,11 +1233,11 @@ for systematic in systematics:
                         mssm_hist.Scale(sf)
                         mssm_hist.Write()
         outfile.cd()
-if options.method == 17 and options.do_ff_systs: NormFFSysts(ana,outfile)
+if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 
-if options.method is 12 or options.method is 16:
+if options.method in [12,16,18]:
     w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
     w_ss = plot_file.Get(nodename+"/W.subnodes/W_ss")
     w_os_error=ROOT.Double(0.)
@@ -1266,7 +1271,7 @@ if not options.no_plot:
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'
     if compare_qcd_shapes: scheme = 'qcd_shape'
-    FF = options.method==17
+    FF = options.method==17 or options.method==18
     plotting.HTTPlot(nodename, 
         plot_file, 
         options.signal_scale, 

@@ -54,8 +54,8 @@
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "ff_categories" :"inclusive,btag,nobtag",
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May03/",
-    //"output_folder" : "./",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May07/",
+    "output_folder" : "./",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -85,6 +85,9 @@
       "do_reshape"        : false,
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
+      "muon_es_shift"      : 1.0,
+      "efaketau_0pi_es_shift": 1.024,
+      "efaketau_1pi_es_shift": 1.076,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -200,6 +203,30 @@
         "elec_es_shift_endcap": 1.025,
         "tau_es_shift": 1.03,
         "muon_es_shift": 1.002
+      }
+    },
+    "scale_efake_0pi_lo": {
+      "baseline": {
+        "addit_output_folder" : "EFAKE0PI_DOWN",
+        "efaketau_0pi_es_shift": 1.019
+      }
+    },
+    "scale_efake_0pi_hi": {
+      "baseline": {
+        "addit_output_folder" : "EFAKE0PI_UP",
+        "efaketau_0pi_es_shift": 1.029
+      }
+    },
+    "scale_efake_1pi_lo": {
+      "baseline": {
+        "addit_output_folder" : "EFAKE1PI_DOWN",
+        "efaketau_1pi_es_shift": 1.066
+      }
+    },
+    "scale_efake_1pi_hi": {
+      "baseline": {
+        "addit_output_folder" : "EFAKE1PI_UP",
+        "efaketau_1pi_es_shift": 1.086
       }
     },
     "scale_e_lo": {

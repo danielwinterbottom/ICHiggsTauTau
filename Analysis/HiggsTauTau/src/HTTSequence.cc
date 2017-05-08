@@ -419,7 +419,12 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
  }
-
+ fakeE_tau_shift_0pi = 1.0;
+ fakeE_tau_shift_1pi = 1.0;
+ if(strategy_type==strategy::mssmsummer16){
+   fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
+   fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
+ }
 
 
 }
@@ -2559,6 +2564,39 @@ void HTTSequence::BuildTauSelection(){
     .set_input_label("genmatched_taus")
     .set_shift(tau_shift));
  }
+ 
+  if (!is_data &&strategy_type == strategy::mssmsummer16){
+    BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("fakeE_genmatched_taus")
+      .set_gen_match(mcorigin::promptE));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi"));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+      .set_input_label("fakeE_genmatched_taus_0pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0;
+      }));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+      .set_input_label("fakeE_genmatched_taus_1pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1;
+      }));
+     
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_0pi")
+    .set_shift(fakeE_tau_shift_0pi));
+    
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_1pi")
+    .set_shift(fakeE_tau_shift_1pi));
+  }
 
  if(moriond_tau_scale&&(!is_data||is_embedded)){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")
