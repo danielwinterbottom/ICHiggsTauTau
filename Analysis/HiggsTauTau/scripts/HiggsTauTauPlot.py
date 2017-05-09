@@ -874,6 +874,7 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
     bkg_total = ufloat(0.000000001,0.000000001)
     sig_total = ufloat(0.000000001,0.000000001)
     for node in nodes:
+        if options.method == 18 and 'jetFakes' == node.name: continue
         if node.shape.rate.n == 0: per_err = 0
         else: per_err = node.shape.rate.s/node.shape.rate.n
         print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err
@@ -975,7 +976,7 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     first_hist=True
     for node in nodes:
         if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
-            #if node.name not in ['W', 'QCD', 'VVJ', 'VVT', 'TTT', 'TTJ', 'ZJ', 'ZL', 'ZTT']: continue
+            if options.method == 18 and 'jetFakes' == node.name: continue
             if first_hist:
                 total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
                 first_hist=False
@@ -1242,7 +1243,7 @@ if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 
-if options.method in [12,16,18]:
+if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
     w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
     w_ss = plot_file.Get(nodename+"/W.subnodes/W_ss")
     w_os_error=ROOT.Double(0.)
