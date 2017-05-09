@@ -35,6 +35,7 @@ class HTTSequence {
   bool is_data, is_embedded, real_tau_sample, do_met_filters;
   double pair_dr, tau_shift, mass_shift, elec_shift_barrel, elec_shift_endcap, muon_shift;
   double fakeE_tau_shift_0pi, fakeE_tau_shift_1pi ;
+  double tau_shift_1prong0pi0, tau_shift_1prong1pi0, tau_shift_3prong0pi0;
 
  public:
   typedef std::vector<std::shared_ptr<ic::ModuleBase>> ModuleSequence;

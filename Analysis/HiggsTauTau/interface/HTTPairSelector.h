@@ -18,6 +18,7 @@ namespace ic {
   bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy);
   bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2);
 
+
 class HTTPairSelector : public ModuleBase {
  private:
   CLASS_MEMBER(HTTPairSelector, ic::channel, channel)
@@ -41,6 +42,7 @@ class HTTPairSelector : public ModuleBase {
 
  public:
   HTTPairSelector(std::string const& name);
+  void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift);
   virtual ~HTTPairSelector();
 
   virtual int PreAnalysis();

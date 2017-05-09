@@ -419,11 +419,17 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
  }
+ tau_shift_1prong0pi0 = 1.0;
+ tau_shift_1prong1pi0 = 1.0;
+ tau_shift_3prong0pi0 = 1.0;
  fakeE_tau_shift_0pi = 1.0;
  fakeE_tau_shift_1pi = 1.0;
  if(strategy_type==strategy::mssmsummer16){
    fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
    fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
+   tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
+   tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
+   tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
  }
 
 
@@ -2559,10 +2565,51 @@ void HTTSequence::BuildTauSelection(){
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("genmatched_taus")
       .set_gen_match(mcorigin::tauHad));
+
+    BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong0Pi",
+      "genmatched_taus", "genmatched_taus_1prong0pi0"));
+    
+    BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong1Pi",
+      "genmatched_taus", "genmatched_taus_1prong1pi0"));
+
+    BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
+      "genmatched_taus", "genmatched_taus_3prong0pi0"));
+
+    BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
+      .set_input_label("genmatched_taus_1prong0pi0")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0;
+      }));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong1PiTauHadFilter")
+      .set_input_label("genmatched_taus_1prong1pi0")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1;
+      }));
+
+    BuildModule(SimpleFilter<Tau>("3Prong0PiTauHadFilter")
+      .set_input_label("genmatched_taus_3prong0pi0")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 10;
+      }));
      
-    BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
-    .set_input_label("genmatched_taus")
-    .set_shift(tau_shift));
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
+    .set_input_label("genmatched_taus_1prong0pi0")
+    .set_save_shifts(true) 
+    .set_shift_label("scales_taues_1prong0pi0") 
+    .set_shift(tau_shift_1prong0pi0));
+
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong1pi0")
+    .set_input_label("genmatched_taus_1prong1pi0")
+    .set_save_shifts(true) 
+    .set_shift_label("scales_taues_1prong1pi0") 
+    .set_shift(tau_shift_1prong1pi0));
+
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong0pi0")
+    .set_input_label("genmatched_taus_3prong0pi0")
+    .set_save_shifts(true) 
+    .set_shift_label("scales_taues_3prong0pi0") 
+    .set_shift(tau_shift_3prong0pi0));
  }
  
   if (!is_data &&strategy_type == strategy::mssmsummer16){
@@ -2591,10 +2638,14 @@ void HTTSequence::BuildTauSelection(){
      
     BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
     .set_input_label("fakeE_genmatched_taus_0pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong0pi0")
     .set_shift(fakeE_tau_shift_0pi));
     
     BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEnergyShifter")
     .set_input_label("fakeE_genmatched_taus_1pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong1pi0")
     .set_shift(fakeE_tau_shift_1pi));
   }
 
