@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr05_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["em", "et", "mt", "tt", "zee", "zmm"],
+    "channels":     [ "et", "mt", "tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -54,8 +54,8 @@
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "ff_categories" :"inclusive,btag,nobtag",
-    //"output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May07/",
-    "output_folder" : "./",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May08/",
+    //"output_folder" : "./",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -122,7 +122,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
-        "ff_file" : "20170502_tight"
+        "ff_file" : "20170508_tight"
           }
     },
  "tt": {
@@ -136,7 +136,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"btag,inclusive,nobtag",
-        "ff_file" : "20170423_tight"
+        "ff_file" : "20170508_medium"
       }
     },
 
@@ -153,7 +153,7 @@
         "do_ff_weights" : true,
         "do_ff_systematics": true,
         "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
-        "ff_file" : "20170502_tight"
+        "ff_file" : "20170508_tight"
       }
     },
     "em": {

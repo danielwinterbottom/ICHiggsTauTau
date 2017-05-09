@@ -1,8 +1,8 @@
 channels=("mt" "et" "tt" "em" "zmm" "zee")
 weights=("wt_zpt_down" "1")
-#systs=(" " "JES")
-systs=(" ")
-
+systs=(" " "JES")
+#systs=(" ")
+#--set_alias="baseline:({baseline}&&pt_1>40&&pt_2>40)"
 for chan in "${channels[@]}"; do
   cats=("inclusive" "nobtag" "btag" "0jet" "1jet" "ge2jet")
 
@@ -54,7 +54,7 @@ for cat in "${cats[@]}"; do for weight in "${weights[@]}"; do
         syst_name="_JES"
       fi
       
-      python scripts/HiggsTauTauPlot.py --channel=$chan --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var=$plot --method=8 --cat=$cat --add_wt=$weight --outputfolder="ZptReWeightPlots/" --ratio --x_title=$var --norm_bins --extra_pad=0.5 $log_string $syst_string $blind_string --y_title="Entries/(bin width)" $sel
+      python scripts/HiggsTauTauPlot.py --channel=$chan --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var=$plot --method=8 --cat=$cat --add_wt=$weight --outputfolder="ZptReWeightPlots/" --ratio --x_title=$var --norm_bins --extra_pad=0.5 $log_string $syst_string $blind_string --y_title="Entries/(bin width)" $sel --set_alias="baseline:({baseline}&&pt_1>40&&pt_2>40)"
       if [ "$weight" == "wt_zpt_down" ]; then
         mv ZptReWeightPlots/$var"_"$cat"_"$chan"_2016_"$log_name_string".pdf" ZptReWeightPlots/$var"_"$cat"_"$chan"_2016_nozptwt_"$log_name_string$syst_name".pdf"
         mv ZptReWeightPlots/$var"_"$cat"_"$chan"_2016_"$log_name_string".png" ZptReWeightPlots/$var"_"$cat"_"$chan"_2016_nozptwt_"$log_name_string$syst_name".png"
