@@ -982,19 +982,19 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
             if not first_hist:    
                 sum_hist.SetName(outname)
                 sum_hist.Write()
-
-    first_hist=True
-    for node in nodes:
-        if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
-            if options.method == 18 and 'jetFakes' == node.name: continue
-            if first_hist:
-                total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
-                first_hist=False
-            else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
-    if not first_hist:        
-        total_bkg.SetName('total_bkg'+add_name)
-        total_bkg.Write()
-    outfile.cd()
+    if systematic == 'default':
+      first_hist=True
+      for node in nodes:
+          if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
+              if options.method == 18 and 'jetFakes' == node.name: continue
+              if first_hist:
+                  total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
+                  first_hist=False
+              else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
+      if not first_hist:        
+          total_bkg.SetName('total_bkg'+add_name)
+          total_bkg.Write()
+      outfile.cd()
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root',ff_syst_weight=None):
     
