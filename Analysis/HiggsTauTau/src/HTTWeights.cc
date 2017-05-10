@@ -304,6 +304,11 @@ namespace ic {
               w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));
         }
     }
+    if(z_pt_mass_file_!=""){
+      dy_weights = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo"));
+      dy_weights_esdown = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_ESDown"));
+      dy_weights_esup = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_ESUp"));
+    }
 
     return 0;
   }
@@ -364,10 +369,13 @@ namespace ic {
           std::vector<bool> status_flags = parts[i]->statusFlags();
           unsigned id = abs(parts[i]->pdgid());
           if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
-          double pt = parts[i]->pt();
-          pt = std::min(pt, 400.);
-          if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || channel_==channel::em) top_wt *= std::exp(0.156-0.00137*pt);
-          if (mc_ == mc::summer16_80X && channel_!=channel::em) top_wt *= std::exp(0.0615-0.0005*pt);
+            double pt = parts[i]->pt();
+            pt = std::min(pt, 400.);
+            if (mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || channel_==channel::em) top_wt *= std::exp(0.156-0.00137*pt);
+            if (mc_ == mc::summer16_80X && channel_!=channel::em){
+              //top_wt *= std::exp(0.0615-0.0005*pt); //13TeV
+              top_wt *= std::exp(0.156-0.00137 *pt); //8TeV
+            }
           }
         }
       }
@@ -653,12 +661,31 @@ namespace ic {
     if (do_zpt_weight_){
       double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
       double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
-      double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->GetXaxis()->FindBin(zmass),z_pt_mass_hist_->GetYaxis()->FindBin(zpt));
+      double wtzpt = dy_weights->GetBinContent(dy_weights->FindBin(zmass,zpt));
+      double wtzpt_esup = dy_weights_esup->GetBinContent(dy_weights_esup->FindBin(zmass,zpt));
+      double wtzpt_esdown = dy_weights_esdown->GetBinContent(dy_weights_esdown->FindBin(zmass,zpt));
+      
+      double m400pt0_up   = (zmass >= 400 && zpt >= 0  && zpt < 40)              ? wtzpt + dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))   : wtzpt;
+      double m400pt40_up  = (zmass >= 400 && zpt >= 40 && zpt < 80)              ? wtzpt + dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
+      double m400pt80_up  = (zmass >= 400 && zpt >= 80)                          ? wtzpt + dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
+      double m400pt0_down   = (zmass >= 400 && zpt >= 0  && zpt < 40)              ? wtzpt - dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))   : wtzpt;
+      double m400pt40_down  = (zmass >= 400 && zpt >= 40 && zpt < 80)              ? wtzpt - dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
+      double m400pt80_down  = (zmass >= 400 && zpt >= 80)                          ? wtzpt - dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
+
+
       double wtzpt_down=1.0;
       double wtzpt_up = wtzpt*wtzpt;
       eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+      event->Add("wt_zpt_stat_m400pt0_up"    , m400pt0_up  /wtzpt);
+      event->Add("wt_zpt_stat_m400pt40_up"   , m400pt40_up /wtzpt);
+      event->Add("wt_zpt_stat_m400pt80_up"   , m400pt80_up /wtzpt);
+      event->Add("wt_zpt_stat_m400pt0_down"   , m400pt0_down  /wtzpt);
+      event->Add("wt_zpt_stat_m400pt40_down"  , m400pt40_down /wtzpt);
+      event->Add("wt_zpt_stat_m400pt80_down"  , m400pt80_down /wtzpt);
+      event->Add("wt_zpt_esup"                ,   wtzpt_esup   /wtzpt);
+      event->Add("wt_zpt_esdown"              , wtzpt_esdown /wtzpt);
     }
 
    if (do_tracking_eff_){

@@ -862,16 +862,16 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
             > pair_dr;
       }));
 
-if(channel == channel::zmm){
-  // filters dimuon pairs if muons are in the same endcap with dPhi < 70 degrees
-  BuildModule(SimpleFilter<CompositeCandidate>("MuonPairDPhiFilter")
-    .set_input_label("ditau").set_min(1)
-    .set_predicate([=](CompositeCandidate const* c) {
-      Candidate *m1 = c->GetCandidate("lepton1");
-      Candidate *m2 = c->GetCandidate("lepton2");
-      return !(fabs(m1->eta()) > 0.9 && fabs(m2->eta()) > 0.9 && m1->eta()*m2->eta() > 0 && fabs(ROOT::Math::VectorUtil::DeltaPhi(m1->vector(),m2->vector())) < M_PI*7/18);
-    }));
-}
+//if(channel == channel::zmm){
+//  // filters dimuon pairs if muons are in the same endcap with dPhi < 70 degrees
+//  BuildModule(SimpleFilter<CompositeCandidate>("MuonPairDPhiFilter")
+//    .set_input_label("ditau").set_min(1)
+//    .set_predicate([=](CompositeCandidate const* c) {
+//      Candidate *m1 = c->GetCandidate("lepton1");
+//      Candidate *m2 = c->GetCandidate("lepton2");
+//      return !(fabs(m1->eta()) > 0.9 && fabs(m2->eta()) > 0.9 && m1->eta()*m2->eta() > 0 && fabs(ROOT::Math::VectorUtil::DeltaPhi(m1->vector(),m2->vector())) < M_PI*7/18);
+//    }));
+//}
 
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
@@ -1707,7 +1707,8 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2))
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4))
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4))
-    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
+    .set_z_pt_mass_hist(new TH2D(z_pt_weights))
+    .set_z_pt_mass_file("input/zpt_weights/zpt_weights_summer2016_v3.root");
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
