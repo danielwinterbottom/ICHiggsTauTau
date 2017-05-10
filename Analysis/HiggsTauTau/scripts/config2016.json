@@ -1,6 +1,6 @@
 {
   "job": {
-    "filelist" : "filelists/Mar11_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
+    "filelist" : "filelists/Apr05_MC_80X_DYJetsToLL-LO-ext1.dat",
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr05_MC_80X/",
     "max_events":   -1,
     "timings":      true,
@@ -55,7 +55,6 @@
     "do_ff_systematics": false,
     "ff_categories" :"inclusive,btag,nobtag",
     "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May08/",
-    //"output_folder" : "./",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -79,7 +78,7 @@
     "mc_pu_file"    : "input/pileup/MC_Moriond17_PU25ns_V1.root",
     "run_trg_filter": false,
     "baseline": {
-      "tau_scale_mode"    : false,
+      "tau_scale_mode"    : true,
       "jes_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
@@ -88,6 +87,9 @@
       "muon_es_shift"      : 1.0,
       "efaketau_0pi_es_shift": 1.024,
       "efaketau_1pi_es_shift": 1.076,
+      "tau_1prong0pi0_es_shift": 0.982,
+      "tau_1prong1pi0_es_shift": 1.01,
+      "tau_3prong0pi0_es_shift": 1.004,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -205,6 +207,43 @@
         "muon_es_shift": 1.002
       }
     },
+    "scale_t_0pi_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE0PI_UP",
+         "tau_1prong0pi0_es_shift" : "0.994"
+      }
+    },
+    "scale_t_0pi_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE0PI_DOWN",
+         "tau_1prong0pi0_es_shift" : "0.97"
+      }
+    },
+    "scale_t_1pi_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE1PI_UP",
+         "tau_1prong1pi0_es_shift" : "1.022"
+      }
+    },
+    "scale_t_1pi_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE1PI_DOWN",
+         "tau_1prong1pi0_es_shift" : "0.998"
+      }
+    },
+    "scale_t_3prong_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG_UP",
+         "tau_3prong0pi0_es_shift" : "1.016"
+      }
+    },
+    "scale_t_3prong_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG_DOWN",
+         "tau_3prong0pi0_es_shift" : "0.992"
+      }
+    },
+
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
