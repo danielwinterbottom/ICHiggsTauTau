@@ -876,9 +876,11 @@ class HTTCategories : public ModuleBase {
   
   double wt_tau1_id_loose_;
   double wt_tau1_id_medium_;
+  double wt_tau1_id_tight_;
   double wt_tau1_id_vtight_;
   double wt_tau2_id_loose_;
   double wt_tau2_id_medium_;
+  double wt_tau2_id_tight_;
   double wt_tau2_id_vtight_;
   
   double wt_zpt_stat_m400pt0_up; 
@@ -889,9 +891,6 @@ class HTTCategories : public ModuleBase {
   double wt_zpt_stat_m400pt80_down;  
   double wt_zpt_esup;
   double wt_zpt_esdown;
-  
-  bool Flag_badMuons=0;
-  bool Flag_duplicateMuons=0;
 
 
  public:
