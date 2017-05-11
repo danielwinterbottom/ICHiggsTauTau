@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -159,6 +159,8 @@ parser.add_argument("--syst_efake_0pi_scale", dest="syst_efake_0pi_scale", type=
     help="If this string is set then the e->tau dm=0 fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_efake_1pi_scale", dest="syst_efake_1pi_scale", type=str,
     help="If this string is set then the e->tau dm=1 fake-rate systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--scheme", dest="scheme", type=str,
+    help="Set plotting scheme")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -445,7 +447,7 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
     uncert_types = [ 'syst', 'stat']
     for process in processes:
       template_name = 'ff_'+process+'_syst'
-      if process == 'qcd': template_name = 'ff_'+process+'_'+options.channel+'_syst'
+      template_name = 'ff_'+process+'_'+options.channel+'_syst'
       weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
@@ -453,12 +455,12 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
       for dm in dms: 
         for njet in njets:
           template_name = 'ff_'+process+'_'+dm+'_'+njet
-          if process is not 'tt': template_name+='_'+options.channel
+          template_name+='_'+options.channel
           template_name+='_stat'
           weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
           systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
-
+#tt_nobtag/jetFakes_norm_ff_w_tt_systUp
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
@@ -1289,6 +1291,7 @@ if not options.no_plot:
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'
     if compare_qcd_shapes: scheme = 'qcd_shape'
+    if options.scheme != "": scheme = options.scheme
     FF = options.method==17 or options.method==18
     plotting.HTTPlot(nodename, 
         plot_file, 
