@@ -308,6 +308,8 @@ namespace ic {
       dy_weights = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo"));
       dy_weights_esdown = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_ESDown"));
       dy_weights_esup = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_ESUp"));
+      dy_weights_ttdown = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_TTDown"));
+      dy_weights_ttup = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_TTUp"));
     }
 
     return 0;
@@ -669,6 +671,8 @@ namespace ic {
       double wtzpt = dy_weights->GetBinContent(dy_weights->FindBin(zmass,zpt));
       double wtzpt_esup = dy_weights_esup->GetBinContent(dy_weights_esup->FindBin(zmass,zpt));
       double wtzpt_esdown = dy_weights_esdown->GetBinContent(dy_weights_esdown->FindBin(zmass,zpt));
+      double wtzpt_ttup = dy_weights_ttup->GetBinContent(dy_weights_ttup->FindBin(zmass,zpt));
+      double wtzpt_ttdown = dy_weights_ttdown->GetBinContent(dy_weights_ttdown->FindBin(zmass,zpt));
       
       double m400pt0_up   = (zmass >= 400 && zpt >= 0  && zpt < 40)              ? wtzpt + dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))   : wtzpt;
       double m400pt40_up  = (zmass >= 400 && zpt >= 40 && zpt < 80)              ? wtzpt + dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
@@ -691,6 +695,8 @@ namespace ic {
       event->Add("wt_zpt_stat_m400pt80_down"  , m400pt80_down /wtzpt);
       event->Add("wt_zpt_esup"                ,   wtzpt_esup   /wtzpt);
       event->Add("wt_zpt_esdown"              , wtzpt_esdown /wtzpt);
+      event->Add("wt_zpt_ttup"                ,   wtzpt_ttup   /wtzpt);
+      event->Add("wt_zpt_ttdown"              , wtzpt_ttdown /wtzpt);
     }
 
    if (do_tracking_eff_){

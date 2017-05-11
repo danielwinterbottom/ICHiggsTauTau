@@ -750,6 +750,8 @@ namespace ic {
         outtree_->Branch("wt_zpt_stat_m400pt80_down" , &wt_zpt_stat_m400pt80_down  );
         outtree_->Branch("wt_zpt_esup"               , &wt_zpt_esup                );
         outtree_->Branch("wt_zpt_esdown"             , &wt_zpt_esdown              );
+        outtree_->Branch("wt_zpt_ttup"               , &wt_zpt_ttup                );
+        outtree_->Branch("wt_zpt_ttdown"             , &wt_zpt_ttdown              );
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -1776,7 +1778,8 @@ namespace ic {
     wt_zpt_stat_m400pt80_down  = 1.0;
     wt_zpt_esup                = 1.0;
     wt_zpt_esdown              = 1.0;
-
+    wt_zpt_ttup                = 1.0;
+    wt_zpt_ttdown              = 1.0;
     
     if (event->Exists("wt_zpt_stat_m400pt0_up"    )) wt_zpt_stat_m400pt0_up     = event->Get<double>("wt_zpt_stat_m400pt0_up"    );
     if (event->Exists("wt_zpt_stat_m400pt40_up"   )) wt_zpt_stat_m400pt40_up    = event->Get<double>("wt_zpt_stat_m400pt40_up"   );
@@ -1786,6 +1789,8 @@ namespace ic {
     if (event->Exists("wt_zpt_stat_m400pt80_down" )) wt_zpt_stat_m400pt80_down  = event->Get<double>("wt_zpt_stat_m400pt80_down" );
     if (event->Exists("wt_zpt_esup"               )) wt_zpt_esup                = event->Get<double>("wt_zpt_esup"               );
     if (event->Exists("wt_zpt_esdown"             )) wt_zpt_esdown              = event->Get<double>("wt_zpt_esdown"             );
+    if (event->Exists("wt_zpt_ttup"               )) wt_zpt_ttup                = event->Get<double>("wt_zpt_ttup"               );
+    if (event->Exists("wt_zpt_ttdown"             )) wt_zpt_ttdown              = event->Get<double>("wt_zpt_ttdown"             );
     
   mc_weight_ = 0.0;
   if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;

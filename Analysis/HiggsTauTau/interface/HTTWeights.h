@@ -116,7 +116,8 @@ class HTTWeights : public ModuleBase {
   TH2D *dy_weights;
   TH2D *dy_weights_esup;
   TH2D *dy_weights_esdown;
-
+  TH2D *dy_weights_ttup;
+  TH2D *dy_weights_ttdown;
 
 
 

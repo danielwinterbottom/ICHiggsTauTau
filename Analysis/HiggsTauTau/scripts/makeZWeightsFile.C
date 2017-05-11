@@ -2,7 +2,7 @@ void makeZWeightsFile(std::string outfile){
 
 double x_bins[10] = {0,50,80,90,100,120,160,200,400,800};
 double y_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600};
-std::vector<std::string> MC_add_strings = {"", "_ESUp", "_ESDown"/*, "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"*/};
+std::vector<std::string> MC_add_strings = {/*"", "_ESUp", "_ESDown",*/"_TTUp", "_TTDown"/*, "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"*/};
 //std::vector<std::string> MC_add_strings = {""};
 int n_xbins = 9;
 int n_ybins = 14;
@@ -10,7 +10,11 @@ TFile *fout = new TFile(outfile.c_str(),"RECREATE");
 std::vector<std::string> file_names = {"datacard_pt_tt_inclusive_zmm_2016_mvis50to80.root", "datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root", "datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root", "datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root", "datacard_pt_tt_inclusive_zmm_2016_mvis120to160.root", "datacard_pt_tt_inclusive_zmm_2016_mvis160to200.root","datacard_pt_tt_inclusive_zmm_2016_mvis200to400.root","datacard_pt_tt_inclusive_zmm_2016_mvis400toinf.root"};
 for(unsigned i=0; i<MC_add_strings.size(); ++i){
     std::string MC_add_string = MC_add_strings[i];
-    std::string hist_name = "zptmass_histo"+MC_add_string;    
+    double tt_scale=1.0;
+    if (MC_add_strings[i]=="_TTDown" || MC_add_strings[i]=="_TTUp") MC_add_string = "";
+    if (MC_add_strings[i]=="_TTUp") tt_scale = 1.06;
+    if (MC_add_strings[i]=="_TTDown") tt_scale = 0.94;
+    std::string hist_name = "zptmass_histo"+MC_add_strings[i];    
     TH2D *h_2dweights = new TH2D(hist_name.c_str(),hist_name.c_str(),n_xbins,x_bins,n_ybins,y_bins);
     h_2dweights       ->Sumw2();
     
@@ -28,23 +32,26 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
       TH1D *h1 = (TH1D*)f.Get(("zmm_inclusive/data_obs"))->Clone();
       TH1D *h2 = (TH1D*)f.Get(("zmm_inclusive/total_bkg"+MC_add_string).c_str())->Clone();
       TH1D *h3 = (TH1D*)f.Get(("zmm_inclusive/ZLL"+MC_add_string).c_str())->Clone();
+      TH1D *h4 = (TH1D*)f.Get(("zmm_inclusive/TT"+MC_add_string).c_str())->Clone();
       h1->SetDirectory(0);
       h2->SetDirectory(0);
       h3->SetDirectory(0);
+      h4->SetDirectory(0);
       //subtract ZLL from background
       h2->Add(h3,-1);
+      if (tt_scale!=1.0){
+        //subtract TT from background
+        h2->Add(h4,-1);
+        h4->Scale(tt_scale);
+        //Add shifted ttbar to backgrounds
+        h2->Add(h4);
+      }
       //subtract background from data
       h1->Add(h2,-1);
       data_hist_vector.push_back(h1);
       mc_hist_vector.push_back(h3);
       f.Close();  
     }
-    
-    //add end histogram with content =1
-    //TH1D *h_last = new TH1D("h_last","h_last",1,0,10000);
-    //h_last->SetBinContent(1,1);
-    //data_hist_vector.push_back(h_last);
-    //mc_hist_vector.push_back(h_last);
     
     TH2D *h_data = new TH2D(hist_name.c_str(),"",n_xbins,x_bins,n_ybins,y_bins);
     TH2D *h_mc = new TH2D("zptmass_histo_mc","zptmass_histo_mc",n_xbins,x_bins,n_ybins,y_bins);

@@ -891,7 +891,8 @@ class HTTCategories : public ModuleBase {
   double wt_zpt_stat_m400pt80_down;  
   double wt_zpt_esup;
   double wt_zpt_esdown;
-
+  double wt_zpt_ttup;
+  double wt_zpt_ttdown;
 
  public:
   HTTCategories(std::string const& name);

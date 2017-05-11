@@ -1695,7 +1695,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4))
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4))
     .set_z_pt_mass_hist(new TH2D(z_pt_weights))
-    .set_z_pt_mass_file("input/zpt_weights/zpt_weights_summer2016_v3.root");
+    .set_z_pt_mass_file("input/zpt_weights/zpt_weights_summer2016_v4.root");
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
