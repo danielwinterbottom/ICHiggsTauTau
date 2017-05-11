@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "qcd_shape_cat":"","w_shape_cat":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -161,6 +161,10 @@ parser.add_argument("--syst_efake_1pi_scale", dest="syst_efake_1pi_scale", type=
     help="If this string is set then the e->tau dm=1 fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--scheme", dest="scheme", type=str,
     help="Set plotting scheme")
+parser.add_argument("--qcd_shape_cat", dest="qcd_shape_cat", type=str,
+    help="Shape selection for QCD template.")
+parser.add_argument("--w_shape_cat", dest="w_shape_cat", type=str,
+    help="Shape selection for W template.")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -246,7 +250,8 @@ if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 # MSSM categories
-cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
+#cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
+cats['btag'] = '(n_bjets>=1)'
 cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
@@ -256,7 +261,8 @@ cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
 cats['btag_looseiso'] = cats['btag']
 cats['atleast1bjet'] = '(n_bjets>0)'
-cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
+#cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
+cats['btag_tight_wnobtag']='(n_lowpt_jets>=1)'
 cats['btag_looseiso_wnobtag'] = cats['btag_tight_wnobtag']
 cats['0jet'] = '(n_jets==0)'
 cats['1jet'] = '(n_jets==1)'
@@ -595,7 +601,8 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='',
   if get_os: OSSS = 'os'
   else: OSSS = '!os'
   full_selection = BuildCutString(wt, sel, cat, OSSS, '')
-  shape_cat = cat
+  if options.w_shape_cat != "": shape_cat = options.w_shape_cat
+  else: shape_cat = cat
   if method == 14:
       shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
   shape_selection = BuildCutString(wt, sel, shape_cat, OSSS, '')
@@ -731,6 +738,12 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
                 shape_selection = BuildCutString(weight, sel, em_shape_cat, '!os')
                 subtract_node = GetSubtractNode(ana,'',plot,weight,sel,em_shape_cat,method,1,False,True)
                 shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot, shape_selection), subtract_node)
+        
+        if options.qcd_shape_cat != "": 
+            shape_cat = options.qcd_shape_cat
+            shape_selection = BuildCutString(weight, sel, shape_cat, '!os')
+            subtract_node = GetSubtractNode(ana,'',plot,weight,sel,shape_cat,method,1,False,True)
+            shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot, shape_selection), subtract_node)
         
         full_selection = BuildCutString(weight, sel, cat, '!os')
         subtract_node = GetSubtractNode(ana,'',plot,weight,sel,cat,method,qcd_os_ss_ratio,False,True)
@@ -1060,10 +1073,13 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if compare_w_shapes:
           #if options.channel == 'mt': cat_relax=cats[options.cat]+' && (iso_1<0.15 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'    
           #else: cat_relax=cats[options.cat]+' && (iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singleelectron'
+          cat_relax=options.w_shape_cat
           cat_relax=cats['baseline']+'&&'+cats['btag_wnobtag']
           GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    
         if compare_qcd_shapes:
-          cat_relax='(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'+'&&'+cats[options.cat]
+          cat_relax=options.qcd_shape_cat
+          cat_relax='(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'+'&&'+cats[options.cat]
+          #cat_relax='(n_lowpt_jets>=1)*('+cats['baseline']+')'
           GenerateQCD(ana, '_shape', data_samples, plot, wt, sel, cat_relax, method, qcd_os_ss_ratio, not options.do_ss)
            
     if 'signal' not in samples_to_skip:
