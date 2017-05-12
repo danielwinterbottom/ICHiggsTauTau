@@ -742,16 +742,18 @@ namespace ic {
         outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
         outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
-        outtree_->Branch("wt_zpt_stat_m400pt0_up"    , &wt_zpt_stat_m400pt0_up     );
-        outtree_->Branch("wt_zpt_stat_m400pt40_up"   , &wt_zpt_stat_m400pt40_up    );
-        outtree_->Branch("wt_zpt_stat_m400pt80_up"   , &wt_zpt_stat_m400pt80_up    );
-        outtree_->Branch("wt_zpt_stat_m400pt0_down"  , &wt_zpt_stat_m400pt0_down   );
-        outtree_->Branch("wt_zpt_stat_m400pt40_down" , &wt_zpt_stat_m400pt40_down  );
-        outtree_->Branch("wt_zpt_stat_m400pt80_down" , &wt_zpt_stat_m400pt80_down  );
-        outtree_->Branch("wt_zpt_esup"               , &wt_zpt_esup                );
-        outtree_->Branch("wt_zpt_esdown"             , &wt_zpt_esdown              );
-        outtree_->Branch("wt_zpt_ttup"               , &wt_zpt_ttup                );
-        outtree_->Branch("wt_zpt_ttdown"             , &wt_zpt_ttdown              );
+        if(strategy_ == strategy::mssmsummer16){
+          outtree_->Branch("wt_zpt_stat_m400pt0_up"    , &wt_zpt_stat_m400pt0_up     );
+          outtree_->Branch("wt_zpt_stat_m400pt40_up"   , &wt_zpt_stat_m400pt40_up    );
+          outtree_->Branch("wt_zpt_stat_m400pt80_up"   , &wt_zpt_stat_m400pt80_up    );
+          outtree_->Branch("wt_zpt_stat_m400pt0_down"  , &wt_zpt_stat_m400pt0_down   );
+          outtree_->Branch("wt_zpt_stat_m400pt40_down" , &wt_zpt_stat_m400pt40_down  );
+          outtree_->Branch("wt_zpt_stat_m400pt80_down" , &wt_zpt_stat_m400pt80_down  );
+          outtree_->Branch("wt_zpt_esup"               , &wt_zpt_esup                );
+          outtree_->Branch("wt_zpt_esdown"             , &wt_zpt_esdown              );
+          outtree_->Branch("wt_zpt_ttup"               , &wt_zpt_ttup                );
+          outtree_->Branch("wt_zpt_ttdown"             , &wt_zpt_ttdown              );
+        }
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {

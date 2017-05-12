@@ -94,7 +94,6 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2F*, ele_tracking_sf)
   CLASS_MEMBER(HTTWeights, TH1D*, muon_tracking_sf)
   CLASS_MEMBER(HTTWeights, std::string, scalefactor_file)
-  CLASS_MEMBER(HTTWeights, std::string, z_pt_mass_file)
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
@@ -113,12 +112,6 @@ class HTTWeights : public ModuleBase {
   BTagWeight btag_weight;
   TF1 *tau_fake_weights_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
-  TH2D *dy_weights;
-  TH2D *dy_weights_esup;
-  TH2D *dy_weights_esdown;
-  TH2D *dy_weights_ttup;
-  TH2D *dy_weights_ttdown;
-
 
 
  public:

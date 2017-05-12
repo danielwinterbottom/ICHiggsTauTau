@@ -1700,8 +1700,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2))
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4))
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4))
-    .set_z_pt_mass_hist(new TH2D(z_pt_weights))
-    .set_z_pt_mass_file("input/zpt_weights/zpt_weights_summer2016_v4.root");
+    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
@@ -1716,7 +1715,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_4.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -1727,7 +1726,6 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
-   std::cout << "do zpt weight!" << std::endl;
     httWeights.set_do_zpt_weight(true);
   }
 

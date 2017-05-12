@@ -304,12 +304,29 @@ namespace ic {
               w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));
         }
     }
-    if(z_pt_mass_file_!=""){
-      dy_weights = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo"));
-      dy_weights_esdown = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_ESDown"));
-      dy_weights_esup = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_ESUp"));
-      dy_weights_ttdown = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_TTDown"));
-      dy_weights_ttup = new TH2D(GetFromTFile<TH2D>(z_pt_mass_file_,"/","zptmass_histo_TTUp"));
+    if (do_zpt_weight_ && mc_ == mc::summer16_80X){
+      fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>( 
+              w_->function("zpt_weight_nom")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_esup"] = std::shared_ptr<RooFunctor>(
+              w_->function("zpt_weight_esup")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_esdown"] = std::shared_ptr<RooFunctor>(
+              w_->function("zpt_weight_esdown")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_ttup"] = std::shared_ptr<RooFunctor>( 
+              w_->function("zpt_weight_ttup")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_ttdown"] = std::shared_ptr<RooFunctor>( 
+              w_->function("zpt_weight_ttdown")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_statpt0up"] = std::shared_ptr<RooFunctor>( 
+              w_->function("zpt_weight_statpt0up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_statpt0down"] = std::shared_ptr<RooFunctor>(
+              w_->function("zpt_weight_statpt0down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_statpt40up"] = std::shared_ptr<RooFunctor>(
+              w_->function("zpt_weight_statpt40up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_statpt40down"] = std::shared_ptr<RooFunctor>(
+              w_->function("zpt_weight_statpt40down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_statpt80up"] = std::shared_ptr<RooFunctor>(
+              w_->function("zpt_weight_statpt80up")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
+      fns_["zpt_weight_statpt80down"] = std::shared_ptr<RooFunctor>(
+              w_->function("zpt_weight_statpt80down")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
     }
 
     return 0;
@@ -666,37 +683,45 @@ namespace ic {
      } 
 
     if (do_zpt_weight_){
-      double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
-      double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
-      double wtzpt = dy_weights->GetBinContent(dy_weights->FindBin(zmass,zpt));
-      double wtzpt_esup = dy_weights_esup->GetBinContent(dy_weights_esup->FindBin(zmass,zpt));
-      double wtzpt_esdown = dy_weights_esdown->GetBinContent(dy_weights_esdown->FindBin(zmass,zpt));
-      double wtzpt_ttup = dy_weights_ttup->GetBinContent(dy_weights_ttup->FindBin(zmass,zpt));
-      double wtzpt_ttdown = dy_weights_ttdown->GetBinContent(dy_weights_ttdown->FindBin(zmass,zpt));
-      
-      double m400pt0_up   = (zmass >= 400 && zpt >= 0  && zpt < 40)              ? wtzpt + dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))   : wtzpt;
-      double m400pt40_up  = (zmass >= 400 && zpt >= 40 && zpt < 80)              ? wtzpt + dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
-      double m400pt80_up  = (zmass >= 400 && zpt >= 80)                          ? wtzpt + dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
-      double m400pt0_down   = (zmass >= 400 && zpt >= 0  && zpt < 40)              ? wtzpt - dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))   : wtzpt;
-      double m400pt40_down  = (zmass >= 400 && zpt >= 40 && zpt < 80)              ? wtzpt - dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
-      double m400pt80_down  = (zmass >= 400 && zpt >= 80)                          ? wtzpt - dy_weights->GetBinError(dy_weights->FindBin(zmass,zpt))  : wtzpt;
-
-
-      double wtzpt_down=1.0;
-      double wtzpt_up = wtzpt*wtzpt;
-      eventInfo->set_weight("wt_zpt",wtzpt);
-      event->Add("wt_zpt_up",wtzpt_up/wtzpt);
-      event->Add("wt_zpt_down",wtzpt_down/wtzpt);
-      event->Add("wt_zpt_stat_m400pt0_up"    , m400pt0_up  /wtzpt);
-      event->Add("wt_zpt_stat_m400pt40_up"   , m400pt40_up /wtzpt);
-      event->Add("wt_zpt_stat_m400pt80_up"   , m400pt80_up /wtzpt);
-      event->Add("wt_zpt_stat_m400pt0_down"   , m400pt0_down  /wtzpt);
-      event->Add("wt_zpt_stat_m400pt40_down"  , m400pt40_down /wtzpt);
-      event->Add("wt_zpt_stat_m400pt80_down"  , m400pt80_down /wtzpt);
-      event->Add("wt_zpt_esup"                ,   wtzpt_esup   /wtzpt);
-      event->Add("wt_zpt_esdown"              , wtzpt_esdown /wtzpt);
-      event->Add("wt_zpt_ttup"                ,   wtzpt_ttup   /wtzpt);
-      event->Add("wt_zpt_ttdown"              , wtzpt_ttdown /wtzpt);
+          double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
+          double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
+      if(mc_ != mc::summer16_80X){
+          double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
+          double wtzpt_down=1.0;
+          double wtzpt_up = wtzpt*wtzpt;
+          eventInfo->set_weight("wt_zpt",wtzpt);
+          event->Add("wt_zpt_up",wtzpt_up/wtzpt);
+          event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+      } else if(mc_ == mc::summer16_80X){
+        auto args = std::vector<double>{zmass,zpt};      
+        double wtzpt         = fns_["zpt_weight_nom"]->eval(args.data());
+        double wtzpt_esup    = fns_["zpt_weight_esup"]->eval(args.data());
+        double wtzpt_esdown  = fns_["zpt_weight_esdown"]->eval(args.data());
+        double wtzpt_ttup    = fns_["zpt_weight_ttup"]->eval(args.data()); 
+        double wtzpt_ttdown  = fns_["zpt_weight_ttdown"]->eval(args.data()); 
+        double m400pt0_up    = fns_["zpt_weight_statpt0up"]->eval(args.data()); 
+        double m400pt0_down  = fns_["zpt_weight_statpt0down"]->eval(args.data()); 
+        double m400pt40_up   = fns_["zpt_weight_statpt40up"]->eval(args.data()); 
+        double m400pt40_down = fns_["zpt_weight_statpt40down"]->eval(args.data()); 
+        double m400pt80_up   = fns_["zpt_weight_statpt80up"]->eval(args.data());  
+        double m400pt80_down = fns_["zpt_weight_statpt80down"]->eval(args.data());
+        
+        double wtzpt_down=1.0;
+        double wtzpt_up = wtzpt*wtzpt;
+        eventInfo->set_weight("wt_zpt",wtzpt);
+        event->Add("wt_zpt_up",wtzpt_up/wtzpt);
+        event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+        event->Add("wt_zpt_stat_m400pt0_up"    , m400pt0_up  /wtzpt);
+        event->Add("wt_zpt_stat_m400pt40_up"   , m400pt40_up /wtzpt);
+        event->Add("wt_zpt_stat_m400pt80_up"   , m400pt80_up /wtzpt);
+        event->Add("wt_zpt_stat_m400pt0_down"   , m400pt0_down  /wtzpt);
+        event->Add("wt_zpt_stat_m400pt40_down"  , m400pt40_down /wtzpt);
+        event->Add("wt_zpt_stat_m400pt80_down"  , m400pt80_down /wtzpt);
+        event->Add("wt_zpt_esup"                ,   wtzpt_esup   /wtzpt);
+        event->Add("wt_zpt_esdown"              , wtzpt_esdown /wtzpt);
+        event->Add("wt_zpt_ttup"                ,   wtzpt_ttup   /wtzpt);
+        event->Add("wt_zpt_ttdown"              , wtzpt_ttdown /wtzpt);
+      }
     }
 
    if (do_tracking_eff_){
