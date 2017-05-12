@@ -81,7 +81,7 @@ def MultiDraw(self, Formulae, Compiled=False):
 
         split_var = origFormula.split(';')
         origFormula = split_var[0]
-        print "Formula: ", origFormula, weight
+        # print "Formula: ", origFormula, weight
 
         var_binned_x = False
         var_binned_y = False
@@ -215,7 +215,7 @@ def MultiDraw(self, Formulae, Compiled=False):
                MakeTObjArray(results, takeOwnership=False),
                len(formulae))
 
-    print "Took %.2fs" % (time() - start), " " * 20
+    # print "Took %.2fs" % (time() - start), " " * 20
     return results
 
 ROOT.TTree.MultiDraw = MultiDraw

@@ -505,7 +505,7 @@ class Analysis(object):
         # print drawdict
         # print outdict
         for sample in drawdict:
-            print sample
+            # print sample
             res = self.trees[sample].Draw(drawdict[sample], compiled=self.compiled)
             res = [x for x in res if isinstance(x, ROOT.TH1)]
             for i, hist in enumerate(res):
@@ -553,6 +553,7 @@ class Analysis(object):
         #pprint.pprint(self.info)
 
     def BasicFactory(self, name, sample=None, var='', sel='', factors=[], scaleToLumi=True):
+        myfactors = []
         if sample is None:
             sample = name
         if scaleToLumi:
