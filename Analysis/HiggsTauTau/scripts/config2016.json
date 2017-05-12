@@ -54,7 +54,7 @@
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "ff_categories" :"inclusive,btag,nobtag",
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May08/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May11/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -210,37 +210,37 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_1prong0pi0_es_shift" : "0.994"
+         "tau_1prong0pi0_es_shift" : 0.994
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_1prong0pi0_es_shift" : "0.97"
+         "tau_1prong0pi0_es_shift" : 0.97
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_1prong1pi0_es_shift" : "1.022"
+         "tau_1prong1pi0_es_shift" : 1.022
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_1prong1pi0_es_shift" : "0.998"
+         "tau_1prong1pi0_es_shift" : 0.998
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : "1.016"
+         "tau_3prong0pi0_es_shift" : 1.016
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : "0.992"
+         "tau_3prong0pi0_es_shift" : 0.992
       }
     },
 
