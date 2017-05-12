@@ -2,7 +2,7 @@ void makeZWeightsFile(std::string outfile){
 
 double x_bins[10] = {0,50,80,90,100,120,160,200,400,800};
 double y_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600};
-std::vector<std::string> MC_add_strings = {/*"", "_ESUp", "_ESDown",*/"_TTUp", "_TTDown"/*, "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"*/};
+std::vector<std::string> MC_add_strings = {""/*, "_ESUp", "_ESDown","_TTUp", "_TTDown"/*, "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"*/};
 //std::vector<std::string> MC_add_strings = {""};
 int n_xbins = 9;
 int n_ybins = 14;
@@ -143,12 +143,35 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
     h_2dweights->SetBinError(h_2dweights->GetNbinsX()+1,h_2dweights->GetNbinsY()+1,h_2dweights->GetBinError(h_2dweights->GetNbinsX(),h_2dweights->GetNbinsY()));
     
     fout->cd();
+    h_2dweights->Wrtie();
     
-    h_2dweights->Write();
+    
+    //TH1D *h_stat_up;
+    //TH1D *h_stat_down;
+    //double error; double content;
+    ////M400pT0 stat
+    //h_stat_up = (TH1D*)h_2dweights->Clone();
+    //h_stat_down = (TH1D*)h_2dweights->Clone();
+    //h_stat_up->SetName("zptmass_histo_StatM400pT80Up");
+    //h_stat_up->SetTitle("zptmass_histo_StatM400pT80Up");
+    //h_stat_down->SetName("zptmass_histo_StatM400pT80Down");
+    //h_stat_down->SetTitle("zptmass_histo_StatM400pT80Down");
+    //error = h_2dweights->GetBinError(h_2dweights->FindBin(400,80));
+    //content = h_2dweights->GetBinContent(h_2dweights->FindBin(400,80));
+    //int bin = h_2dweights->GetXaxis()->FindBin(400);
+    //for(unsigned i=7; i<=15; ++i){
+    //  h_stat_up->SetBinContent(bin,i,content+error);
+    //  h_stat_up->SetBinContent(bin+1,i,content+error);
+    //  h_stat_down->SetBinContent(bin,i,content-error);
+    //  h_stat_down->SetBinContent(bin+1,i,content-error);
+    //}
+    //
+    //h_stat_up->Write();
+    //h_stat_down->Write();
     
     std::cout << "-------------------------" << std::endl;
     
-    for (unsigned i=0; i<(unsigned)h_2dweights->GetNbinsX(); ++i){
+    for (unsigned i=0; i<(unsigned)h_2dweights->GetNbinsX()+1; ++i){
       for (unsigned j=0; j<(unsigned)h_2dweights->GetNbinsY(); ++j){
           double mass   = h_2dweights->GetYaxis()->GetBinLowEdge(i+1);
           double pt     = h_2dweights->GetZaxis()->GetBinLowEdge(j+1);
@@ -158,6 +181,7 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
       }
     }
     std::cout << "-------------------------" << std::endl;
+    
 }
 
 }
