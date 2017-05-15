@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -161,6 +161,16 @@ parser.add_argument("--syst_efake_1pi_scale", dest="syst_efake_1pi_scale", type=
     help="If this string is set then the e->tau dm=1 fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--scheme", dest="scheme", type=str,
     help="Set plotting scheme")
+parser.add_argument("--syst_zpt_es", dest="syst_zpt_es", type=str,
+    help="If this string is set then the zpT muon ES systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zpt_tt", dest="syst_zpt_tt", type=str,
+    help="If this string is set then the zpT tt X-section systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zpt_statpt0", dest="syst_zpt_statpt0", type=str,
+    help="If this string is set then the zpT statistical pt0 systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zpt_statpt40", dest="syst_zpt_statpt40", type=str,
+    help="If this string is set then the zpT statistical pt40 systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zpt_statpt80", dest="syst_zpt_statpt80", type=str,
+    help="If this string is set then the zpT statistical pt80 systematic is performed with the set string appended to the resulting histogram name")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -443,6 +453,21 @@ if options.syst_eff_b != '':
 if options.syst_fake_b != '':
     systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'Up', 'wt', [], False)
     systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'Down', 'wt', [], False)
+if options.syst_zpt_es != '':
+    systematics['syst_zpt_es_up'] = ('' , '_'+options.syst_zpt_es+'Up', 'wt*wt_zpt_esup', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_es_down'] = ('' , '_'+options.syst_zpt_es+'Down', 'wt*wt_zpt_esdown', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_zpt_tt != '':
+    systematics['syst_zpt_tt_up'] = ('' , '_'+options.syst_zpt_tt+'Up', 'wt*wt_zpt_ttup', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_tt_down'] = ('' , '_'+options.syst_zpt_tt+'Down', 'wt*wt_zpt_ttdown', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_zpt_statpt0 != '':
+    systematics['syst_zpt_statpt0_up'] = ('' , '_'+options.syst_zpt_statpt0+'Up', 'wt*wt_zpt_stat_m400pt0_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_statpt0_down'] = ('' , '_'+options.syst_zpt_statpt0+'Down', 'wt*wt_zpt_stat_m400pt0_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_zpt_statpt40 != '':
+    systematics['syst_zpt_statpt40_up'] = ('' , '_'+options.syst_zpt_statpt40+'Up', 'wt*wt_zpt_stat_m400pt40_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_statpt40_down'] = ('' , '_'+options.syst_zpt_statpt40+'Down', 'wt*wt_zpt_stat_m400pt40_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_zpt_statpt80 != '':
+    systematics['syst_zpt_statpt80_up'] = ('' , '_'+options.syst_zpt_statpt80+'Up', 'wt*wt_zpt_stat_m400pt80_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_statpt80_down'] = ('' , '_'+options.syst_zpt_statpt80+'Down', 'wt*wt_zpt_stat_m400pt80_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt']:
     processes = ['tt','w','qcd']
@@ -464,7 +489,7 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
           weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
           systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
-#tt_nobtag/jetFakes_norm_ff_w_tt_systUp
+
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
@@ -949,6 +974,39 @@ def NormFFSysts(ana,outfile='output.root'):
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write()
     
+def DYUncertBand(outfile='output.root',ScaleToData=True):
+    bkg_hist = outfile.Get(nodename+'/total_bkg')
+    nominal_hist = outfile.Get(nodename+'/ZLL')
+    up_hist = outfile.Get(nodename+'/total_bkg').Clone()
+    down_hist = outfile.Get(nodename+'/total_bkg').Clone()
+    up_hist.SetName('total_bkg_up')
+    down_hist.SetName('total_bkg_down')
+    shifts=['_ES', '_TT', '_Stat0', '_Stat40', '_Stat80']
+    for i in range(1,nominal_hist.GetNbinsX()+1):
+      nom_content = nominal_hist.GetBinContent(i)
+      bkg_content = bkg_hist.GetBinContent(i)
+      uncert=0
+      for shift in shifts:
+          shift_hist_up = outfile.Get(nodename+'/ZLL'+shift+'Up')
+          shift_hist_down = outfile.Get(nodename+'/ZLL'+shift+'Down')
+          up = abs(shift_hist_up.GetBinContent(i) - nom_content)
+          down = abs(shift_hist_down.GetBinContent(i) - nom_content)
+          uncert=math.sqrt(max([up,down])**2+uncert**2)
+      up_hist.SetBinContent(i, bkg_content+uncert)
+      down_hist.SetBinContent(i, bkg_content-uncert)
+    outfile.cd(nodename)
+    up_hist.Write()
+    down_hist.Write()
+    outfile.cd()
+    if ScaleToData:
+      data_hist=outfile.Get(nodename+'/data_obs')
+      data_total=data_hist.Integral(-1,-1)
+      bkg_total=bkg_hist.Integral(-1,-1)
+      data_hist.Scale(bkg_total/data_total)
+      outfile.cd(nodename)
+      data_hist.Write()
+      outfile.cd()
+    
 def GetTotals(ana,add_name="",outfile='outfile.root'):
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
     outfile.cd(nodename)
@@ -1266,6 +1324,7 @@ for systematic in systematics:
                         mssm_hist.Write()
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
+#DYUncertBand(outfile,True)
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 
