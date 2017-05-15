@@ -410,6 +410,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
  //Need this to correctly set tau /elec ES
+ if(channel_str=="zmm") muon_shift = json["baseline"]["muon_es_shift"].asDouble();
+ else muon_shift = 1.0;
  if(channel_str!="em"){
  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
  } else {
@@ -417,7 +419,18 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
  }
-
+ tau_shift_1prong0pi0 = 1.0;
+ tau_shift_1prong1pi0 = 1.0;
+ tau_shift_3prong0pi0 = 1.0;
+ fakeE_tau_shift_0pi = 1.0;
+ fakeE_tau_shift_1pi = 1.0;
+ if(strategy_type==strategy::mssmsummer16){
+   fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
+   fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
+   tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
+   tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
+   tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
+ }
 
 
 }
@@ -855,16 +868,16 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
             > pair_dr;
       }));
 
-if(channel == channel::zmm){
-  // filters dimuon pairs if muons are in the same endcap with dPhi < 70 degrees
-  BuildModule(SimpleFilter<CompositeCandidate>("MuonPairDPhiFilter")
-    .set_input_label("ditau").set_min(1)
-    .set_predicate([=](CompositeCandidate const* c) {
-      Candidate *m1 = c->GetCandidate("lepton1");
-      Candidate *m2 = c->GetCandidate("lepton2");
-      return !(fabs(m1->eta()) > 0.9 && fabs(m2->eta()) > 0.9 && m1->eta()*m2->eta() > 0 && fabs(ROOT::Math::VectorUtil::DeltaPhi(m1->vector(),m2->vector())) < M_PI*7/18);
-    }));
-}
+//if(channel == channel::zmm){
+//  // filters dimuon pairs if muons are in the same endcap with dPhi < 70 degrees
+//  BuildModule(SimpleFilter<CompositeCandidate>("MuonPairDPhiFilter")
+//    .set_input_label("ditau").set_min(1)
+//    .set_predicate([=](CompositeCandidate const* c) {
+//      Candidate *m1 = c->GetCandidate("lepton1");
+//      Candidate *m2 = c->GetCandidate("lepton2");
+//      return !(fabs(m1->eta()) > 0.9 && fabs(m2->eta()) > 0.9 && m1->eta()*m2->eta() > 0 && fabs(ROOT::Math::VectorUtil::DeltaPhi(m1->vector(),m2->vector())) < M_PI*7/18);
+//    }));
+//}
 
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
@@ -996,30 +1009,17 @@ if(do_met_filters){
     }));
 }
 
-if(!js["make_sync_ntuple"].asBool()){
-    BuildModule(GenericModule("BadMuonFilters")
-      .set_function([=](ic::TreeEvent *event){
-         EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-         std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
-         bool pass_filters = true;
-         for(unsigned i=0;i<bad_muon_filters.size();++i){
-          pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
-         }
-         return !pass_filters;
-      }));
-} else{
-    BuildModule(GenericModule("BadMuonFilters")
-      .set_function([=](ic::TreeEvent *event){
-         EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-         std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
-         bool pass_filter = false;
-         for(unsigned i=0;i<bad_muon_filters.size();++i){
-          pass_filter = eventInfo->filter_result(bad_muon_filters.at(i));
-          event->Add(bad_muon_filters.at(i),!pass_filter);
-         }
-         return 0;
-      }));
-}
+BuildModule(GenericModule("BadMuonFilters")
+  .set_function([=](ic::TreeEvent *event){
+     EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+     std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
+     bool pass_filters = true;
+     for(unsigned i=0;i<bad_muon_filters.size();++i){
+      pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
+     }
+     return !pass_filters;
+  }));
+
 
 
 if(channel == channel::tpzmm || channel == channel::tpzee){
@@ -1679,7 +1679,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_qcd_cr1_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRLt2");
    TH2D em_qcd_cr1_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRGt4");
-   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016.root","/","zptmass_histo");
+   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -1715,7 +1715,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_4.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -1726,7 +1726,6 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
-   std::cout << "do zpt weight!" << std::endl;
     httWeights.set_do_zpt_weight(true);
   }
 
@@ -2398,6 +2397,12 @@ void HTTSequence::BuildZMMPairs() {
 
  ic::strategy strategy_type  = String2Strategy(strategy_str);
  
+ if (tau_scale_mode > 0 && strategy_type == strategy::mssmsummer16){
+ BuildModule(EnergyShifter<Muon>("MuonEnergyScaleCorrection")
+    .set_input_label("muons")
+    .set_shift(muon_shift));
+ }
+ 
  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
 
@@ -2540,17 +2545,95 @@ void HTTSequence::BuildTauSelection(){
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
  
- if (tau_scale_mode > 0 && (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16)){
+ if (tau_scale_mode > 0 && !is_data&& (!moriond_tau_scale||strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16)){
     // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
     BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("genmatched_taus")
       .set_gen_match(mcorigin::tauHad));
+
+    BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong0Pi",
+      "genmatched_taus", "genmatched_taus_1prong0pi0"));
+    
+    BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong1Pi",
+      "genmatched_taus", "genmatched_taus_1prong1pi0"));
+
+    BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
+      "genmatched_taus", "genmatched_taus_3prong0pi0"));
+
+    BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
+      .set_input_label("genmatched_taus_1prong0pi0")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0;
+      }));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong1PiTauHadFilter")
+      .set_input_label("genmatched_taus_1prong1pi0")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1;
+      }));
+
+    BuildModule(SimpleFilter<Tau>("3Prong0PiTauHadFilter")
+      .set_input_label("genmatched_taus_3prong0pi0")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 10;
+      }));
      
-    BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
-    .set_input_label("genmatched_taus")
-    .set_shift(tau_shift));
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
+    .set_input_label("genmatched_taus_1prong0pi0")
+    .set_save_shifts(true) 
+    .set_shift_label("scales_taues_1prong0pi0") 
+    .set_shift(tau_shift_1prong0pi0));
+
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong1pi0")
+    .set_input_label("genmatched_taus_1prong1pi0")
+    .set_save_shifts(true) 
+    .set_shift_label("scales_taues_1prong1pi0") 
+    .set_shift(tau_shift_1prong1pi0));
+
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong0pi0")
+    .set_input_label("genmatched_taus_3prong0pi0")
+    .set_save_shifts(true) 
+    .set_shift_label("scales_taues_3prong0pi0") 
+    .set_shift(tau_shift_3prong0pi0));
  }
+ 
+  if (!is_data &&strategy_type == strategy::mssmsummer16){
+    BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("fakeE_genmatched_taus")
+      .set_gen_match(mcorigin::promptE));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi"));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+      .set_input_label("fakeE_genmatched_taus_0pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0;
+      }));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+      .set_input_label("fakeE_genmatched_taus_1pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1;
+      }));
+     
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_0pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong0pi0")
+    .set_shift(fakeE_tau_shift_0pi));
+    
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_1pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong1pi0")
+    .set_shift(fakeE_tau_shift_1pi));
+  }
 
  if(moriond_tau_scale&&(!is_data||is_embedded)){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")

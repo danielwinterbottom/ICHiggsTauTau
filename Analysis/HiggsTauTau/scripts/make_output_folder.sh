@@ -6,6 +6,12 @@ fi
 
 mkdir -p -v $1/TSCALE_UP
 mkdir -p -v $1/TSCALE_DOWN
+mkdir -p -v $1/TSCALE0PI_UP
+mkdir -p -v $1/TSCALE0PI_DOWN
+mkdir -p -v $1/TSCALE1PI_UP
+mkdir -p -v $1/TSCALE1PI_DOWN
+mkdir -p -v $1/TSCALE3PRONG_UP
+mkdir -p -v $1/TSCALE3PRONG_DOWN
 mkdir -p -v $1/TSCALE_UP_1
 mkdir -p -v $1/TSCALE_DOWN_1
 mkdir -p -v $1/TSCALE_UP_2
@@ -44,3 +50,7 @@ mkdir -p -v $1/MET_SCALE_UP
 mkdir -p -v $1/MET_SCALE_DOWN
 mkdir -p -v $1/MET_RES_UP
 mkdir -p -v $1/MET_RES_DOWN
+mkdir -p -v $1/EFAKE0PI_DOWN
+mkdir -p -v $1/EFAKE0PI_UP
+mkdir -p -v $1/EFAKE1PI_DOWN
+mkdir -p -v $1/EFAKE1PI_UP

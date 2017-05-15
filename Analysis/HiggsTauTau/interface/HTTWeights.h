@@ -9,6 +9,7 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "RooWorkspace.h"
 #include "RooFunctor.h"
+#include "Utilities/interface/FnRootTools.h"
 
 #include <string>
 
@@ -111,8 +112,6 @@ class HTTWeights : public ModuleBase {
   BTagWeight btag_weight;
   TF1 *tau_fake_weights_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
-
-
 
 
  public:
