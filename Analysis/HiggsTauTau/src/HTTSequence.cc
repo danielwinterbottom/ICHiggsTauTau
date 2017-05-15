@@ -28,6 +28,7 @@
 #include "HiggsTauTau/interface/HTTGenEvent.h"
 #include "HiggsTauTau/interface/HTTCategories.h"
 #include "HiggsTauTau/interface/WMuNuCategories.h"
+#include "HiggsTauTau/interface/WMuNuJetTauFakes.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
 #include "HiggsTauTau/interface/BTagCheck.h"
@@ -1207,6 +1208,7 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_scale_shift(0.04));
    }*/
 
+  if (channel != channel::wmnu){
   SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_strategy(strategy_type)
@@ -1232,8 +1234,9 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
  }
 
 BuildModule(svFitTest);
+}
 
-if(js["do_preselection"].asBool()){
+if(js["do_preselection"].asBool() && channel != channel::wmnu){
   BuildModule(GenericModule("PreselectionFilter")
     .set_function([](ic::TreeEvent *event){
       //Pass preselection in case we're accidentally not running any preselection in SVFitTest but somehow have
@@ -1805,7 +1808,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
 
-if(js["baseline"]["do_ff_weights"].asBool()){
+if(js["baseline"]["do_ff_weights"].asBool() && channel!=channel::wmnu){
   BuildModule(HTTFakeFactorWeights("HTTFakeFactorWeights")
       .set_channel(channel)
       .set_ditau_label("ditau")
@@ -1848,6 +1851,10 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()));
 
  } else {
+BuildModule(WMuNuJetTauFakes("WMuNuJetTauFakes")
+    .set_fs(fs.get())
+    .set_jets_label(jets_label));
+
 BuildModule(WMuNuCategories("WMuNuCategories")
     .set_fs(fs.get())
     .set_channel(channel)

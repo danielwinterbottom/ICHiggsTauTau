@@ -91,7 +91,7 @@ namespace ic {
     Muon const* lep1 = muons_vec.at(0);
 //    std::vector <Met const* mets = event->GetPtrVec<Met>(met_label_);
    // std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
-    std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMet");
+    std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     Met const* mets = met_vec.at(0);  
 
     std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
@@ -114,8 +114,8 @@ namespace ic {
     double btag_wp =  0.679;
     if(strategy_ == strategy::phys14) btag_label = "combinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
-    if(strategy_ == strategy::spring15 || strategy_ ==strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ ==strategy::smspring16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ ==strategy::smspring16) btag_wp = 0.814 ;
+    if(strategy_ == strategy::spring15 || strategy_ ==strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ ==strategy::smspring16 ||strategy_==strategy::mssmsummer16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ ==strategy::smspring16 || strategy_==strategy::mssmsummer16) btag_wp = 0.814 ;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -143,8 +143,8 @@ namespace ic {
     Met const* pfmet = NULL;
     //slightly different pfMET format for new ntuples
     if(strategy_ == strategy::paper2013) pfmet = event->GetPtr<Met>("pfMet");
-    if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ ==strategy::mssmspring16||strategy_ == strategy::smspring16) {
-      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
+    if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ ==strategy::mssmspring16||strategy_ == strategy::smspring16||strategy_==strategy::mssmsummer16) {
+      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
       pfmet = pfMet_vec.at(0);  
     }
 
@@ -181,7 +181,7 @@ namespace ic {
     if (channel_ == channel::wmnu) {
      // Muon const* muon = dynamic_cast<Muon const*>(lep1);
       d0_1_ = lep1->dxy_vertex();
-      if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
+      if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15 ||strategy_==strategy::mssmsummer16) {
         iso_1_ = PF03IsolationVal(lep1, 0.5, 0);
         mva_1_ = 0.0;
       }
