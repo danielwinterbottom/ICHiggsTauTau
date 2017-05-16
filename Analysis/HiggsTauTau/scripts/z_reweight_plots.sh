@@ -38,6 +38,12 @@ for cat in "${cats[@]}"; do for weight in "${weights[@]}"; do
       var=$(echo $plot | cut -d"(" -f1)
     fi
     
+    if [ $var == "n_jets" ]; then x_title="N_{jets}"
+    elif [ $var == "m_vis" -a $chan == "et" ]; then x_title="M_{ee} [GeV]"
+    elif [ $var == "m_vis" -a $chan == "et" ]; then x_title="p_{T}^{ee} [GeV]"
+    elif [ $var == "m_vis" -a $chan == "et" ]; then x_title="M_{#mu#mu} [GeV]"
+    elif [ $var == "m_vis" -a $chan == "et" ]; then x_title="p_{T}^{#mu#mu} [GeV]"
+    
     log_string="--log_y --log_x"
     log_name_string="logx_logy"
     if [ $var == "n_jets" -o $var == "n_lowpt_jets" -o $var == "n_bjets" ]; then
