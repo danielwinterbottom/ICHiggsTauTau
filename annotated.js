@@ -1,4 +1,4 @@
-var annotated_dup =
+var annotated =
 [
     [ "edm", "namespaceedm.html", "namespaceedm" ],
     [ "ic", "namespaceic.html", "namespaceic" ],
