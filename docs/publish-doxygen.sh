@@ -1,4 +1,5 @@
 #!/bin/bash -e
+if [ -z ${GH_TOKEN+x} ]; then echo "var is unset"; else echo "var is set to '$(echo $GH_TOKEN | head -c 5)'"; fi
 
 # Settings
 REPO_PATH=https://github.com/ajgilbert/ICHiggsTauTau
