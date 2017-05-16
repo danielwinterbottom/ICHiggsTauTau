@@ -1,7 +1,4 @@
 #!/bin/bash -e
-env
-if [ -z ${GH_TOKEN+x} ]; then echo "var is unset"; else echo "var is set to '$(echo $GH_TOKEN | head -c 5)'"; fi
-
 # Settings
 REPO_PATH=https://github.com/ajgilbert/ICHiggsTauTau
 HTML_PATH=docs/html
@@ -31,6 +28,6 @@ git add .
 git config user.name "${COMMIT_USER}"
 git config user.email "${COMMIT_EMAIL}"
 git commit -m "Automated documentation build for changeset ${CHANGESET}." || true
-git push https://${GH_TOKEN}@github.com/ajgilbert/ICHiggsTauTau gh-pages
+git push https://${GITHUB_TOKEN}@github.com/ajgilbert/ICHiggsTauTau gh-pages
 cd -
 
