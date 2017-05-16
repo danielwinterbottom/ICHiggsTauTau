@@ -188,7 +188,8 @@ struct channel_def {
         tpzmm,
         wmnu,
 		mtmet,
-		etmet
+		etmet,
+                mj
 	};
 };
 typedef safe_enum<channel_def> channel;
@@ -205,7 +206,8 @@ inline std::string Channel2String(channel const& in) {
 		(channel::tpzmm, "tpzmm")
 		(channel::wmnu, "wmnu")
 		(channel::etmet, "etmet")
-		(channel::mtmet, "mtmet");
+		(channel::mtmet, "mtmet")
+                (channel::mj, "mj");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -226,7 +228,8 @@ inline channel String2Channel(std::string const& in) {
 	("tpzmm", channel::tpzmm)
 	("wmnu", channel::wmnu)
 	("etmet", channel::etmet)
-	("mtmet", channel::mtmet);
+	("mtmet", channel::mtmet)
+        ("mj", channel::mj);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

@@ -17,6 +17,7 @@ namespace ic {
   bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy);
   bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy);
   bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2);
+  bool SortByIsoMJ(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy);
 
 
 class HTTPairSelector : public ModuleBase {

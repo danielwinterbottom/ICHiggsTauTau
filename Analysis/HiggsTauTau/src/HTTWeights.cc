@@ -733,7 +733,7 @@ namespace ic {
        tracking_wt_1 *= fns_["e_trk_ratio"]->eval(args.data());
        tracking_wt_2 = 1.0;
      }
-     if(channel_ == channel::mt){
+     if(channel_ == channel::mt || channel_ == channel::mj){
        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
        auto args = std::vector<double>{muon->eta()};
        tracking_wt_1 *= fns_["m_trk_ratio"]->eval(args.data());
@@ -1216,6 +1216,25 @@ namespace ic {
         weight *= (mu_trg * tau_trg);
         event->Add("trigweight_1", mu_trg);
         event->Add("trigweight_2", tau_trg);
+      } else if (channel_ == channel::mj) {
+        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
+        double pt = muon->pt();
+        double m_signed_eta = muon->eta();
+        double m_iso = PF04IsolationVal(muon, 0.5, 0);
+        double mu_trg = 1.0;
+        double mu_trg_mc = 1.0;
+          
+        if(do_single_lepton_trg_){
+            auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};
+            mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
+            mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
+        }
+
+        if (trg_applied_in_mc_) {
+          mu_trg = mu_trg / mu_trg_mc;
+        }
+        weight *= (mu_trg);
+        event->Add("trigweight_1", mu_trg);
       } else if (channel_ == channel::em) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
@@ -1927,7 +1946,7 @@ namespace ic {
           event->Add("idisoweight_1",ele_idiso);
           event->Add("idisoweight_2",double(1.0));
         }
-      } else if (channel_ == channel::mt) {
+      } else if (channel_ == channel::mt || channel_ == channel::mj) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
         double m_eta = fabs(muon->eta());

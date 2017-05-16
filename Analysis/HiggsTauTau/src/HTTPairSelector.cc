@@ -120,6 +120,10 @@ namespace ic {
            std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoTT) ;
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoTT) ;
         }
+        if(channel_ ==  channel::mj) { 
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMJ,_1,_2,strategy_)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMJ,_1,_2,strategy_)) ;
+        }
       }
       if (os_dilepton.size() > 0) { // Take OS in preference to SS
         if(!(channel_ ==  channel::tt)) { 
@@ -232,7 +236,7 @@ namespace ic {
    // Scale met for the tau energy scale shift
    // ************************************************************************
     typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
-    if (/*scale_met_for_tau_ &&*/ channel_ != channel::em && channel_ != channel::tt && channel_ != channel::zmm && channel_ != channel::zee) {
+    if (/*scale_met_for_tau_ &&*/ channel_ != channel::em && channel_ != channel::tt && channel_ != channel::zmm && channel_ != channel::zee && channel_ != channel::mj) {
       Met * met = event->GetPtr<Met>(met_label_);
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       //double t_scale = tau_scale_;
@@ -425,6 +429,23 @@ namespace ic {
     double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
    // if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
     if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
+    return (t1->pt() > t2->pt());
+  }
+  bool SortByIsoMJ(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
+    // First we sort the electrons
+    Muon const* m1 = static_cast<Muon const*>(c1->At(0));
+    Muon const* m2 = static_cast<Muon const*>(c2->At(0));
+    double m_iso1;
+    m_iso1 = (strategy == strategy::fall15) ? PF03IsolationVal(m1, 0.5, 0) : PF04IsolationVal(m1, 0.5, 0);
+    double m_iso2; 
+    m_iso2 = (strategy == strategy::fall15) ? PF03IsolationVal(m2, 0.5, 0) : PF04IsolationVal(m2, 0.5, 0);
+    // If the iso is different we just use this
+    if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
+    // If not try the pT
+    if (m1->pt() != m2->pt()) return m1->pt() > m2->pt();
+    // If both of these are the same then try the jets
+    PFJet const* t1 = static_cast<PFJet const*>(c1->At(1));
+    PFJet const* t2 = static_cast<PFJet const*>(c2->At(1));
     return (t1->pt() > t2->pt());
   }
 

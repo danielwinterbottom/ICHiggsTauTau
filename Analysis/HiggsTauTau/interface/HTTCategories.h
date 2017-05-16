@@ -893,6 +893,8 @@ class HTTCategories : public ModuleBase {
   double wt_zpt_esdown;
   double wt_zpt_ttup;
   double wt_zpt_ttdown;
+  
+  bool passed_dmfind;
 
  public:
   HTTCategories(std::string const& name);

@@ -353,8 +353,15 @@ int SVFitTest::Execute(TreeEvent *event) {
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
         if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
     }
+    if(channel_ == channel::zmm && do_preselection_) { 
+        Muon const* muon1  = dynamic_cast<Muon const*>(lep1);
+        iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
+        if(iso_2_<0.2) pass_presel = true;
+    }
+    
     
     if((channel_ == channel::zmm || channel_ == channel::zee) && do_preselection_) pass_presel = true;
+    if((channel_ == channel::mj) && do_preselection_) pass_presel = true;
     
 
 bool lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;

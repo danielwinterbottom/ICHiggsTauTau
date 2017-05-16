@@ -102,7 +102,7 @@ namespace ic {
        //if (run >= 258655/* &&run <=xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v") != name.npos) ) path_found = true;
        //if (run >= 250985/* && run <= xxxxx*/ && (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v") != name.npos || name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v") != name.npos) ) path_found = true;
         }
-        if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
+        if (channel_ == channel::mt || channel_ == channel::mj || channel_ == channel::zmm || channel_ == channel::tpzmm) {
           if (run >= 160404 && run <= 163869 && name.find("HLT_IsoMu12_LooseIsoPFTau10_v") != name.npos) path_found = true;//215.634 pb
           if (run >= 165088 && run <= 173198 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) path_found = true; // 1787 pb
           if (run >= 165088 && run <= 180252 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) {
@@ -248,7 +248,7 @@ namespace ic {
 
 
       }
-      if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
+      if (channel_ == channel::mt || channel_ == channel::mj || channel_ == channel::zmm || channel_ == channel::tpzmm) {
         // 2011 Triggers
         if (run >= 160404 && run <= 163869) {
           trig_obj_label = "triggerObjectsIsoMu12LooseTau10";
@@ -450,7 +450,7 @@ namespace ic {
       }
       
       //single tau trigger  
-      if (channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt || channel_ == channel::zmm || channel_ == channel::zee){
+      if (channel_ == channel::mt || channel_ == channel::mj || channel_ == channel::et || channel_ == channel::tt || channel_ == channel::zmm || channel_ == channel::zee){
         if(run >= 271036 /*&& run <= xxxxxx*/){  
           singletau_trg_obj_label = "triggerObjectsSingleTau140";
           min_online_singletau_pt=150; // don't know what this would be at the moment so just keep as 0 for now
@@ -493,7 +493,7 @@ namespace ic {
     
     } else {
       //single tau trigger  
-      if (channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt || channel_ == channel::zmm || channel_ == channel::zee){
+      if (channel_ == channel::mt || channel_ == channel::mj || channel_ == channel::et || channel_ == channel::tt || channel_ == channel::zmm || channel_ == channel::zee){
         singletau_trg_obj_label = "triggerObjectsSingleTau140";
         min_online_singletau_pt=150; // don't know what this would be at the moment so just keep as 0 for now
         singletau_leg1_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
@@ -557,7 +557,7 @@ namespace ic {
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
           }
-      } else if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
+      } else if (channel_ == channel::mt || channel_ == channel::mj || channel_ == channel::zmm || channel_ == channel::tpzmm) {
         if (mc_ == mc::fall11_42X) {
           trig_obj_label   = "triggerObjectsIsoMu15LooseTau15";
           leg1_filter      = "hltSingleMuIsoL3IsoFiltered15";
@@ -753,7 +753,7 @@ namespace ic {
 
     std::vector<CompositeCandidate *> dileptons_pass;
 
-    if ((channel_ == channel::et || channel_ == channel::mt)&&mc_ != mc::phys14_72X&&mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X && mc_ != mc::summer16_80X) {
+    if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mj)&&mc_ != mc::phys14_72X&&mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X && mc_ != mc::summer16_80X) {
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
         bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
@@ -763,7 +763,7 @@ namespace ic {
     
     bool passed_singlemuon = false;
     bool passed_singleelectron = false;
-    if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::zee || channel_ == channel::tpzee || channel_ == channel::tpzmm) 
+    if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mj || channel_ == channel::zmm || channel_ == channel::zee || channel_ == channel::tpzee || channel_ == channel::tpzmm) 
         &&(mc_ == mc::phys14_72X || mc_ == mc::spring15_74X || mc_ == mc::fall15_76X || mc_ == mc::spring16_80X || mc_ == mc::summer16_80X)) {
       std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
@@ -800,7 +800,7 @@ namespace ic {
             leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
          }
          
-         if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& (mc_ == mc::summer16_80X) ) {
+         if((channel_==channel::mt || channel_ == channel::mj || channel_==channel::zmm || channel_ == channel::tpzmm)&& (mc_ == mc::summer16_80X) ) {
             std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
             ic::erase_if_not(alt_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_trk_min_online_pt);
             std::vector<TriggerObject *> alt_er_objs = event->GetPtrVec<TriggerObject>(alt_er_trig_obj_label);
@@ -825,7 +825,7 @@ namespace ic {
          if ((leg1_match&&highpt_leg) || (leg2_match&&highpt_leg2)){
            dileptons_pass.push_back(dileptons[i]);
            if (channel_ == channel::et || channel_ == channel::zee) passed_singleelectron = true;
-           if (channel_ == channel::mt || channel_ == channel::zmm) passed_singlemuon = true;
+           if (channel_ == channel::mt || channel_ == channel::mj || channel_ == channel::zmm) passed_singlemuon = true;
            
           /* double trigger_object_pt = alt_objs.at(leg1_match_index)->pt();
            double trigger_object_eta = alt_objs.at(leg1_match_index)->eta();
@@ -984,7 +984,7 @@ namespace ic {
     
     bool passed_singletau_1 = false;
     bool passed_singletau_2 = false;
-    if (do_singletau_ && (channel_ == channel::tt || channel_ == channel::mt || channel_ == channel::et || channel_ == channel::zmm || channel_ == channel::zee)){
+    if (do_singletau_ && (channel_ == channel::tt || channel_ == channel::mt || channel_ == channel::mj || channel_ == channel::et || channel_ == channel::zmm || channel_ == channel::zee)){
       for(unsigned i = 0; i < dileptons.size(); ++i){  
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(singletau_trg_obj_label);
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, singletau_leg1_filter, 0.5).first;

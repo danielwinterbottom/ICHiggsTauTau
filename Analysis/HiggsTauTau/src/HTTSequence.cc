@@ -258,7 +258,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      min_taus = 1;
     }
   } 
- if (channel_str == "mt"){
+ if (channel_str == "mt" || channel_str == "mj"){
   muon_dxy = 0.045;
   muon_dz = 0.2;
   elec_dxy = 0.045;
@@ -460,7 +460,7 @@ void HTTSequence::BuildSequence(){
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
   if (era_type == era::data_2016 && !is_data) real_tau_sample = ( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) ? false : true;
-  if (channel == channel::zmm || channel == channel::zee) real_tau_sample = false;
+  if (channel == channel::zmm || channel == channel::zee || channel == channel::mj) real_tau_sample = false;
 
   std::cout << "-------------------------------------" << std::endl;
   std::cout << "HiggsToTauTau Analysis" << std::endl;
@@ -858,6 +858,11 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
   if (channel == channel::wmnu) BuildWMuNu();
   if (channel == channel::tpzee) BuildTPZEEPairs();
   if (channel == channel::tpzmm) BuildTPZMMPairs();
+  if(channel == channel::mj){ 
+    BuildTauSelection();
+    BuildMJPairs();
+  }
+
 
   // Pair DeltaR filtering
 if( channel !=channel::wmnu) {
@@ -2073,6 +2078,46 @@ BuildModule(HTTMuonEfficiency("MuonEfficiency")
   BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
       .set_input_label_first("sel_muons")
       .set_input_label_second(js["taus"].asString())
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_output_label("ditau"));
+}
+
+
+// --------------------------------------------------------------------------
+// MJ Pair Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildMJPairs() {
+
+ BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+      js["muons"].asString(), "sel_muons"));
+
+  std::function<bool(Muon const*)> MuonID;
+  if( !is_data || output_name.find("MuonEGG") != output_name.npos || output_name.find("MuonEGH") != output_name.npos || output_name.find("SingleElectronEGG") != output_name.npos || output_name.find("SingleElectronH") != output_name.npos || output_name.find("SingleMuonG") != output_name.npos || output_name.find("SingleMuonH") != output_name.npos || output_name.find("TauG") != output_name.npos || output_name.find("TauH") != output_name.npos) MuonID = [](Muon const* m) {return MuonMedium(m); };
+  else MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+      .set_input_label("sel_muons").set_min(1)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > muon_pt    &&
+                fabs(m->eta())          < muon_eta   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
+      }));
+  
+  BuildModule(CopyCollection<PFJet>("CopyJets",jets_label,jets_label+"_pairjet"));
+  
+  //SimpleFilter<PFJet> pairJetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
+  //.set_input_label(jets_label);
+  //pairJetIDFilter.set_predicate(bind(PFJetID2016, _1));
+  //}
+  //BuildModule(pairJetIDFilter);
+
+  BuildModule(CompositeProducer<Muon, PFJet>("MTPairProducer")
+      .set_input_label_first("sel_muons")
+      .set_input_label_second(jets_label+"_pairjet")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));

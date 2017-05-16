@@ -585,6 +585,8 @@ namespace ic {
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
+      outtree_->Branch("passed_dmfind",    &passed_dmfind);
+     // if(channel_== channel::mj) outtree_->Branch("passed_dmfind", &passed_dmfind);
       
       //outtree_->Branch("HLT_paths",    &HLT_paths_);
 
@@ -2108,6 +2110,24 @@ namespace ic {
     antimu_1_ = true;
     antiele_2_ = true;
     antimu_2_ = true;
+    
+    if (channel_ == channel::mj){
+      Muon const* muon = dynamic_cast<Muon const*>(lep1);  
+      iso_1_ = PF04IsolationVal(muon, 0.5, 0);
+
+      std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
+      std::vector<Candidate *> jet;
+      jet.push_back(ditau->GetCandidate("lepton2")); 
+      std::vector<std::pair<ic::Tau *, ic::Candidate *>> matches = MatchByDR(taus, jet, 0.5, true, true);
+
+      passed_dmfind = matches.size()>0;
+      lbyMediumIsolationMVArun2DBoldDMwLT_2=0;
+      lbyTightIsolationMVArun2DBoldDMwLT_2=0;
+      if (passed_dmfind){
+        lbyMediumIsolationMVArun2DBoldDMwLT_2 = matches.at(0).first->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLT") ? matches.at(0).first->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") : 0.;
+        lbyTightIsolationMVArun2DBoldDMwLT_2 = matches.at(0).first->HasTauID("byTightIsolationMVArun2v1DBoldDMwLT") ? matches.at(0).first->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") : 0.;
+      }
+    }
     
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
