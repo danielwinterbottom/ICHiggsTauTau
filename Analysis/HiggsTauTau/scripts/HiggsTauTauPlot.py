@@ -363,8 +363,10 @@ elif options.channel == 'em':
     z_sels['ztt_sel'] = '(gen_match_1>2 && gen_match_2>3)'
     z_sels['zll_sel'] = '(gen_match_1<3 || gen_match_2<4)'
 elif options.channel == 'zee' or  options.channel == 'zmm':
-    z_sels['ztt_sel'] = '(1)'
-    z_sels['zll_sel'] = '(1)'
+    z_sels['ztt_sel'] = '(gen_match_1>2&&gen_match_1<6 && gen_match_2>2&&gen_match_2<6)'
+    if options.channel == 'zmm': z_sels['zl_sel'] = '(gen_match_1==2&&gen_match_2==2)'
+    else: z_sels['zl_sel'] = '(gen_match_1==1&&gen_match_2==1)'
+    z_sels['zj_sel'] = '(!('+z_sels['zl_sel']+') && !('+z_sels['ztt_sel']+'))'
 
 top_sels = {}
 vv_sels = {}
@@ -571,7 +573,7 @@ def GetZJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_se
     return ana.SummedFactory('ZJ'+add_name, samples, plot, full_selection)
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True, doZL=True, doZJ=True):
-    if options.channel == 'em' or options.channel == 'zmm' or options.channel == 'zee':
+    if options.channel == 'em':
         zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
         ana.nodes[nodename].AddNode(zll_node)
     else:
@@ -737,15 +739,14 @@ def GetSubtractNode(ana,add_name,plot,wt,sel,cat,method,qcd_os_ss_ratio,OSSS,inc
   subtract_node.AddNode(ttj_node)
   subtract_node.AddNode(vvt_node)
   subtract_node.AddNode(vvj_node)
-  if options.channel not in ["zmm", "zee"]: 
-      ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
-      subtract_node.AddNode(ztt_node)
-  if options.channel not in ["zmm", "zee", "em"]:
+  ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
+  subtract_node.AddNode(ztt_node)
+  if options.channel not in ["em"]:
       zl_node = GetZLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       subtract_node.AddNode(zl_node)
       subtract_node.AddNode(zj_node)
-  if options.channel in ["zmm", "zee", "em"]:
+  if options.channel in ["em"]:
       zll_node = GetZLLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       subtract_node.AddNode(zll_node)
   if options.channel == "em":
@@ -1114,7 +1115,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if options.channel == "tt": add_fake_factor_selection = "gen_match_1<6 && gen_match_2<6"
         residual_cat=cat+"&&"+add_fake_factor_selection
         
-        if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
+        if 'ZTT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
@@ -1130,7 +1131,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             if options.channel == 'tt': method = 8
             elif options.cat == "btag_loosemt" or options.cat == "btag_tight": method = 16
             elif options.channel == 'et' or options.channel == 'mt': method = 12
-        if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
+        if 'ZTT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
