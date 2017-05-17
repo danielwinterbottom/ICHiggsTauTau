@@ -1867,7 +1867,9 @@ def HTTPlot(nodename,
     'w_shape':[backgroundComp("W loosened shape",["W_shape"],R.TColor.GetColor(222,90,106))],
     'qcd':[backgroundComp("QCD",["QCD"],R.TColor.GetColor(250,202,255))],
     'qcd_shape':[backgroundComp("QCD loosened shape",["QCD_shape"],R.TColor.GetColor(250,202,255))],
-    'ff_comp':[backgroundComp("t#bar{t} j#rightarrow#tau",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak j#rightarrow#tau",["VVJ","W","ZJ"],R.TColor.GetColor(222,90,106))]
+    'ff_comp':[backgroundComp("t#bar{t} j#rightarrow#tau",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak j#rightarrow#tau",["VVJ","W","ZJ"],R.TColor.GetColor(222,90,106))],
+    #'mj':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))]
+    'mj':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255))]
     }
     if channel == "zee" or channel == "zmm": background_schemes['dy'] = [backgroundComp("DY",["ZLL"],R.TColor.GetColor(100,192,232))]
     if FF:
@@ -2078,6 +2080,7 @@ def HTTPlot(nodename,
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
+    if channel == "mj":  channel_label = "#mu j"
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)

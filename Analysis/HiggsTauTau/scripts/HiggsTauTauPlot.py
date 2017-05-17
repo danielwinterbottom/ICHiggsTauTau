@@ -11,7 +11,7 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
 import copy
 
-CHANNELS= ['et', 'mt', 'em','tt']
+CHANNELS= ['et', 'mt', 'em','tt','zmm','zee','mj']
 ANALYSIS= ['sm','mssm','Hhh']
 METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 17, 18, 19]
 
@@ -283,7 +283,8 @@ cats['w_shape']=''
 cats['qcd_shape']=''
 
 if options.method in [17,18]: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
-
+if options.channel == 'mj':        
+  cats['baseline'] = '(iso_1<0.15 && !leptonveto)'
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight' or options.cat == 'btag_tight_wnobtag':
@@ -317,7 +318,7 @@ if options.channel == 'mt' or options.channel == 'et':
 if options.era == "mssmsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
     if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
-    if options.channel == "mt" or options.channel == 'zmm': cats['baseline']+=" && trg_singlemuon"
+    if options.channel in ['mt','zmm','mj']: cats['baseline']+=" && trg_singlemuon"
     if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
 
 
@@ -351,10 +352,14 @@ if options.channel == 'et':
     z_sels['ztt_sel'] = '(gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<5)'
     z_sels['zj_sel'] = '(gen_match_2==6)'
-elif options.channel == 'mt':
+elif options.channel in ['mt','mj']:
     z_sels['ztt_sel'] = '(gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<5)'
     z_sels['zj_sel'] = '(gen_match_2==6)'
+elif options.channel in ['mj']:
+    z_sels['ztt_sel'] = '(0)'
+    z_sels['zl_sel'] = '(0)'
+    z_sels['zj_sel'] = '(1)'
 elif options.channel == 'tt':
     z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<6&&gen_match_1<6&&!(gen_match_1==5&&gen_match_2==5))'
@@ -375,7 +380,7 @@ top_sels['ttj_sel'] = '!('+z_sels['ztt_sel']+')'
 vv_sels['vvt_sel'] = z_sels['ztt_sel']
 vv_sels['vvj_sel'] = '!('+z_sels['ztt_sel']+')'
 
-if options.channel in ['et','mt']:
+if options.channel in ['et','mt','mj']:
   vv_sels['vvt_sel'] = '(gen_match_2<6)'
   vv_sels['vvj_sel'] = '(gen_match_2==6)'
   top_sels['ttt_sel'] = '(gen_match_2<6)' 
@@ -385,6 +390,11 @@ elif options.channel == 'tt':
   vv_sels['vvj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
   top_sels['ttt_sel'] = '(gen_match_1<6 && gen_match_2<6)' 
   top_sels['ttj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
+if options.channel in ['mj']:
+  vv_sels['vvt_sel'] = '(0)'
+  vv_sels['vvj_sel'] = '(1)'
+  top_sels['ttt_sel'] = '(0)' 
+  top_sels['ttj_sel'] = '(1)'
     
 # Add data sample names
 if options.channel == 'mt': 
@@ -407,7 +417,7 @@ wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-
 if options.era == "mssmsummer16":
     
     # Add data sample names
-    if options.channel == 'mt' or options.channel == 'zmm': 
+    if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
     if options.channel == 'em': 
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
@@ -513,7 +523,7 @@ if options.qcd_os_ss_ratio > 0:
 else:
     if options.channel == 'et':
         qcd_os_ss_ratio = 1.02
-    elif options.channel == 'mt':
+    elif options.channel in ['mt','mj']:
         qcd_os_ss_ratio = 1.18
     elif options.channel == 'zmm' or options.channel == 'zee':
         qcd_os_ss_ratio = 2.0    
@@ -1221,7 +1231,7 @@ for systematic in systematics:
     ana.remaps = {}
     if options.channel == 'em':
         ana.remaps['MuonEG'] = 'data_obs'
-    elif options.channel == 'mt' or options.channel == 'zmm':
+    elif options.channel in ['mt','mj','zmm']:
         ana.remaps['SingleMuon'] = 'data_obs'
     elif options.channel == 'et' or options.channel == 'zee':
         ana.remaps['SingleElectron'] = 'data_obs'
