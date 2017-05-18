@@ -180,14 +180,14 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     channels=cfg["job"]["channels"]
   else:
-    channels=['mt','et','tt','em','zmm','zee']
+    channels=['mt','et','tt','em','zmm','zee','wmnu']
   
 
   data_samples = []
   data_eras = ['B','C','D','E','F','G','H']
   for chn in channels:
     for era in data_eras: 
-         if 'mt' in chn or 'zmm' in chn:
+         if 'mt' in chn or 'zmm' in chn or 'wmnu' in chn :
            if not era == 'H':  
                data_samples+=[   
                 'SingleMuon'+era]
