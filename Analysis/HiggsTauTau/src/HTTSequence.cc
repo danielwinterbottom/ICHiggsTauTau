@@ -29,6 +29,7 @@
 #include "HiggsTauTau/interface/HTTCategories.h"
 #include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/WMuNuJetTauFakes.h"
+#include "HiggsTauTau/interface/EMJetTauFakes.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTPairGenInfo.h"
 #include "HiggsTauTau/interface/BTagCheck.h"
@@ -1819,6 +1820,13 @@ if(js["baseline"]["do_ff_weights"].asBool() && channel!=channel::wmnu){
       .set_do_systematics(js["baseline"]["do_ff_systematics"].asBool())
       .set_ff_file(js["baseline"]["ff_file"].asString()));
 }
+
+if(channel == channel::em){
+BuildModule(EMJetTauFakes("EMJetTauFakes")
+    .set_fs(fs.get())
+    .set_jets_label(jets_label));
+}
+
     
 if(channel != channel::wmnu) {
 BuildModule(HTTCategories("HTTCategories")

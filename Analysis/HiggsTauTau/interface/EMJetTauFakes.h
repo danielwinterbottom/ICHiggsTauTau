@@ -1,5 +1,5 @@
 #ifndef ICHiggsTauTau_HiggsTauTau_WMuNJetTauFakes_h
-#define ICHiggsTauTau_HiggsTauTau_WMuNuJetTauFakes_h
+#define ICHiggsTauTau_HiggsTauTau_EMJetTauFakes_h
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -9,14 +9,14 @@
 
 namespace ic {
 
-class WMuNuJetTauFakes : public ModuleBase {
+class EMJetTauFakes : public ModuleBase {
 
  private:
-  CLASS_MEMBER(WMuNuJetTauFakes, std::string, muon_label)
-  CLASS_MEMBER(WMuNuJetTauFakes, std::string, jets_label)
-  CLASS_MEMBER(WMuNuJetTauFakes, bool, write_tree)
-  CLASS_MEMBER(WMuNuJetTauFakes, bool, is_data)
-  CLASS_MEMBER(WMuNuJetTauFakes, fwlite::TFileService*, fs)
+  CLASS_MEMBER(EMJetTauFakes, std::string, muon_label)
+  CLASS_MEMBER(EMJetTauFakes, std::string, jets_label)
+  CLASS_MEMBER(EMJetTauFakes, bool, write_tree)
+  CLASS_MEMBER(EMJetTauFakes, bool, is_data)
+  CLASS_MEMBER(EMJetTauFakes, fwlite::TFileService*, fs)
  
   TTree *outtree_;
  
@@ -30,8 +30,8 @@ class WMuNuJetTauFakes : public ModuleBase {
   double jet_eta_;
 
  public:
-  WMuNuJetTauFakes(std::string const& name);
-  virtual ~WMuNuJetTauFakes();
+  EMJetTauFakes(std::string const& name);
+  virtual ~EMJetTauFakes();
 
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);

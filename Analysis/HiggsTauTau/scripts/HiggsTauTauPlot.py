@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"" }
+defaults = { "channel":"mt" , "fakes":False, "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -37,6 +37,8 @@ parser = argparse.ArgumentParser(
 parser.set_defaults(**defaults)
 parser.add_argument("--channel", dest="channel", type=str,
     help="Tau decay channel to process.  Supported channels: %(CHANNELS)s" % vars())
+parser.add_argument("--fakes", dest="fakes", action='store_true',
+    help="Make jet->tau fake rate plot inputs")
 parser.add_argument("--outputfolder", dest="outputfolder", type=str,
     help="Name of output folder")
 parser.add_argument("--folder", dest="folder", type=str,
@@ -343,9 +345,12 @@ elif options.channel == 'tt':
     z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<6&&gen_match_1<6&&!(gen_match_1==5&&gen_match_2==5))'
     z_sels['zj_sel'] = '(gen_match_2==6||gen_match_1==6)'
-elif options.channel == 'em':
+elif options.channel == 'em' and not options.fakes:
     z_sels['ztt_sel'] = '(gen_match_1>2 && gen_match_2>3)'
     z_sels['zll_sel'] = '(gen_match_1<3 || gen_match_2<4)'
+elif options.channel == 'em' and options.fakes:
+    z_sels['ztt_sel'] = '(1)'
+    z_sels['zll_sel'] = '(1)'
 elif options.channel == 'zee' or  options.channel == 'zmm' or options.channel == 'wmnu':
     z_sels['ztt_sel'] = '(1)'
     z_sels['zll_sel'] = '(1)'
@@ -405,7 +410,7 @@ if options.era == "mssmsummer16":
     top_samples = ['TT']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
-    if options.channel == 'wmnu':
+    if options.channel == 'wmnu' or (options.channel=='em' and options.fakes):
         ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
         vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
         top_samples = ['TT']
@@ -540,12 +545,11 @@ def GetZJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_se
     return ana.SummedFactory('ZJ'+add_name, samples, plot, full_selection)
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True, doZL=True, doZJ=True):
-    if options.channel == 'em' or options.channel == 'zmm' or options.channel == 'zee':
-        zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
-        ana.nodes[nodename].AddNode(zll_node)
-    elif options.channel == 'wmnu':
-        print samples
+    if options.channel == 'wmnu' or options.fakes:
         zll_node = GetZLLNodeWMNu(ana, add_name, samples, plot, sel)
+        ana.nodes[nodename].AddNode(zll_node)
+    elif options.channel == 'em' and not options.fakes or options.channel == 'zmm' or options.channel == 'zee':
+        zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
         ana.nodes[nodename].AddNode(zll_node)
     else:
         if doZL:
@@ -556,7 +560,7 @@ def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
             ana.nodes[nodename].AddNode(zj_node)  
 
 def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True): 
-    if options.channel != 'wmnu':
+    if options.channel != 'wmnu' and not options.fakes:
        ztt_node = GetZTTNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
        ana.nodes[nodename].AddNode(ztt_node)    
 
@@ -578,7 +582,7 @@ def GetTTNodeWMNu(ana, add_name='', samples=[], plot='', sel=''):
 
 
 def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True, doTTT=True, doTTJ=True):
-  if options.channel=='wmnu':
+  if options.channel=='wmnu' or options.fakes:
       tt_node = GetTTNodeWMNu(ana,add_name,samples,plot,sel)
       ana.nodes[nodename].AddNode(tt_node)
   else:
@@ -606,7 +610,7 @@ def GetVVJNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
   return ana.SummedFactory('VVJ'+add_name, samples, plot, full_selection)
 
 def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True, doVVT=True, doVVJ=True): 
-  if options.channel=='wmnu':
+  if options.channel=='wmnu' or options.fakes:
       vv_node = GetVVNodeWMNu(ana, add_name, samples, plot, sel)
       ana.nodes[nodename].AddNode(vv_node)
   else :
@@ -618,7 +622,7 @@ def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
           ana.nodes[nodename].AddNode(vvj_node)
       
 def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
-  if options.channel != 'wmnu':
+  if options.channel != 'wmnu' and not options.fakes:
       if get_os:
           OSSS = 'os'
       else:
@@ -711,7 +715,7 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='',
 
 def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
   w_node_name = 'W'  
-  if options.channel == 'wmnu':
+  if options.channel == 'wmnu' or options.fakes:
       w_node = GetWNodeWMNu(ana, add_name, samples, plot, sel)
       ana.nodes[nodename].AddNode(w_node)
   else:
@@ -755,7 +759,7 @@ def GetSubtractNode(ana,add_name,plot,wt,sel,cat,method,qcd_os_ss_ratio,OSSS,inc
   return subtract_node
       
 def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
-    if options.channel != 'wmnu':
+    if options.channel != 'wmnu' and not options.fakes:
         shape_node = None
         OSSS = "!os"
         if get_os: OSSS = "os"
@@ -1069,7 +1073,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     # produce template for observed data
     if do_data:
         print options.channel
-        if options.channel != 'wmnu':
+        if options.channel != 'wmnu' and not options.fakes:
             if options.do_ss:
               OSSS = '!os'
             else:
@@ -1220,7 +1224,7 @@ for systematic in systematics:
     if add_folder_name != '':
         mc_input_folder_name += '/'+add_folder_name
         
-    if options.channel != 'wmnu':
+    if options.channel != 'wmnu' and not options.fakes:
     # Add all data files
         for sample_name in data_samples:
             ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
@@ -1265,7 +1269,7 @@ for systematic in systematics:
             
     ana.AddInfo(options.paramfile, scaleTo='data_obs')
     
-    if options.channel != 'wmnu': cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
+    if options.channel != 'wmnu' and not options.fakes : cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
     else : cat = '(1)'
     if options.channel=="em": em_shape_cat = '('+cats[options.cat]+')*('+cats['loose_baseline']+')'
     sel = options.sel
@@ -1284,7 +1288,7 @@ for systematic in systematics:
     if systematic == 'default': do_data = True
     else: do_data = False
             
-    if options.channel == 'wmnu': samples_to_skip = ['signal','QCD']
+    if options.channel == 'wmnu' or options.fakes: samples_to_skip = ['signal','QCD']
     #Run default plot        
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
     
@@ -1379,13 +1383,16 @@ if not options.no_plot:
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
     FF = options.method==17 or options.method==18
+    chn = options.channel
+    if options.channel=='em' and options.fakes: chn = 'emfakes'
+    print chn
     plotting.HTTPlot(nodename, 
         plot_file, 
         options.signal_scale, 
         options.draw_signal_mass,
         FF,
         options.norm_bins,
-        options.channel,
+        chn,
         options.blind,
         options.x_blind_min,
         options.x_blind_max,
@@ -1411,6 +1418,6 @@ if not options.no_plot:
         plot_name,
         custom_uncerts_up_name,
         custom_uncerts_down_name,
-        scheme
+        chn 
         )
            

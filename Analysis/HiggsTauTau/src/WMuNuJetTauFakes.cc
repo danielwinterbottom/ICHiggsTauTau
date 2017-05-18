@@ -34,6 +34,8 @@ namespace ic {
 
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("jetfakes","jetfakes");
+      outtree_->Branch("tau_iso_vloose",    &tau_iso_vloose_);
+      outtree_->Branch("tau_iso_loose",    &tau_iso_loose_);
       outtree_->Branch("tau_iso_medium",    &tau_iso_medium_);
       outtree_->Branch("tau_iso_tight",     &tau_iso_tight_);
       outtree_->Branch("tau_pt",            &tau_pt_);
@@ -132,6 +134,8 @@ namespace ic {
  for (unsigned i = 0; i<jets.size();++i){
     tau_pt_ = -999;
     tau_eta_ = -999;
+    tau_iso_vloose_ = 0;
+    tau_iso_loose_ = 0;
     tau_iso_medium_ = 0;
     tau_iso_tight_ = 0;
     jet_pt_ = jets[i]->pt();
@@ -139,6 +143,8 @@ namespace ic {
     if(jet_tau_map.count(jets[i]) >0 ){
      tau_pt_ = jet_tau_map.at(jets[i])->pt();  
      tau_eta_ = jet_tau_map.at(jets[i])->eta();  
+     tau_iso_vloose_ = jet_tau_map.at(jets[i])->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+     tau_iso_loose_ = jet_tau_map.at(jets[i])->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
      tau_iso_medium_ = jet_tau_map.at(jets[i])->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT");
      tau_iso_tight_ = jet_tau_map.at(jets[i])->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT");
    }
