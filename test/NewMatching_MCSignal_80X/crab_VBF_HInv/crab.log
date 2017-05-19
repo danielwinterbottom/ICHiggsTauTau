@@ -1,0 +1,1388 @@
+release     : 80XMINIAOD
+isData      : 0
+globalTag   : 80X_mcRun2_asymptotic_2016_TrancheIV_v8
+doHT        : 1
+isReHLT     : 1
+# Conditions read from  CMS_CONDITIONS  via FrontierProd 
+DEBUG 2017-05-10 13:00:06,728: 	 Executing command: 'submit'
+DEBUG 2017-05-10 13:00:06,740: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:00:06,782: 	 Checking credentials
+DEBUG 2017-05-10 13:00:06,783: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:00:06,783: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:00:08,522: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 36080
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:00:09,759: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 36079
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:00:09,759: 	 Proxy valid for 10:01:20 hours
+DEBUG 2017-05-10 13:00:09,761: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2017-05-10 13:00:09,911: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:00:09,911: 	 Checking credentials
+DEBUG 2017-05-10 13:00:09,912: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:00:09,912: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:00:10,961: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 36078
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:00:12,285: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 36076
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:00:12,286: 	 Proxy valid for 10:01:18 hours
+DEBUG 2017-05-10 13:00:13,825: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u68879 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:00:14,263: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:00:14,385: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:00:14,386: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:00:14,386: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:00:14,903: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:29:16  (23.6 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:00:14,907: 	 Myproxy is valid: 2035756
+DEBUG 2017-05-10 13:00:14,909: 	 Command use: submit
+DEBUG 2017-05-10 13:00:14,909: 	 Options use: ['--config', <WMCore.Configuration.Configuration object at 0x7fa7cb5c44d0>]
+DEBUG 2017-05-10 13:00:15,588: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:00:15,588: 	 Instance is prod
+DEBUG 2017-05-10 13:00:15,588: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:00:15,588: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:00:15,588: 	 Started submission
+DEBUG 2017-05-10 13:00:15,589: 	 Working on /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+DEBUG 2017-05-10 13:00:16,630: 	 Loading required information from the environment
+DEBUG 2017-05-10 13:00:16,630: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-10 13:00:16,630: 	 Loading required information from the environment
+DEBUG 2017-05-10 13:00:16,630: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-10 13:00:16,690: 	 UNIQUE NAME: tarUUID a76a14de-0397-4552-a552-1431c265a1f2 
+DEBUG 2017-05-10 13:00:16,691: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.transferOutputs = True
+config.General.workArea = 'NewMatching_MCSignal_80X'
+config.General.requestName = 'VBF_HInv'
+config.section_('JobType')
+config.JobType.psetName = 'VM_customHLT_test.py'
+config.JobType.pluginName = 'Analysis'
+config.JobType.outputFiles = ['EventTree.root']
+config.JobType.pyCfgParams = ['release=80XMINIAOD', 'isData=0', 'doHT=1', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8', 'isReHLT=1']
+config.JobType.allowUndistributedCMSSW = True
+config.section_('Data')
+config.Data.inputDataset = '/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER'
+config.Data.publication = False
+config.Data.unitsPerJob = 80000
+config.Data.inputDBS = 'phys03'
+config.Data.splitting = 'EventAwareLumiBased'
+config.Data.outLFNDirBase = '/store/user/vmilosev'
+config.section_('User')
+config.section_('Site')
+config.Site.storageSite = 'T2_UK_London_IC'
+
+DEBUG 2017-05-10 13:00:16,691: 	 self.config.JobType.psetName: VM_customHLT_test.py
+INFO 2017-05-10 13:00:16,691: 	 Importing CMSSW configuration VM_customHLT_test.py
+DEBUG 2017-05-10 13:00:16,691: 	 Additional parameters for the CMSSW configuration are: ['release=80XMINIAOD', 'isData=0', 'doHT=1', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8', 'isReHLT=1']
+INFO 2017-05-10 13:00:24,080: 	 Finished importing CMSSW configuration VM_customHLT_test.py
+DEBUG 2017-05-10 13:00:24,081: 	 Writing CMSSW configuration to /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/inputs/PSet.py
+DEBUG 2017-05-10 13:00:26,888: 	 The following EDM output files will be collected: []
+DEBUG 2017-05-10 13:00:26,888: 	 The following TFile output files will be collected: ['EventTree.root']
+DEBUG 2017-05-10 13:00:26,888: 	 The following user output files will be collected: []
+DEBUG 2017-05-10 13:00:26,888: 	 Loading required information from the environment
+DEBUG 2017-05-10 13:00:26,888: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-10 13:00:26,888: 	 Making tarball in /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/inputs/a76a14de-0397-4552-a552-1431c265a1f2default.tgz
+DEBUG 2017-05-10 13:00:27,033: 	 Checking directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/lib
+DEBUG 2017-05-10 13:00:27,033: 	 Adding directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/lib to tarball
+DEBUG 2017-05-10 13:00:44,053: 	 Checking directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/biglib
+DEBUG 2017-05-10 13:00:44,053: 	 Adding directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/biglib to tarball
+DEBUG 2017-05-10 13:00:44,065: 	 Checking directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/module
+DEBUG 2017-05-10 13:00:44,355: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/HLTrigger/special/interface to tarball
+DEBUG 2017-05-10 13:00:44,532: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/L1Trigger/interface to tarball
+DEBUG 2017-05-10 13:00:44,841: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/METReco/interface to tarball
+DEBUG 2017-05-10 13:00:44,943: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/MuonReco/interface to tarball
+DEBUG 2017-05-10 13:00:45,098: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/ParticleFlowCandidate/interface to tarball
+DEBUG 2017-05-10 13:00:45,195: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/PatCandidates/interface to tarball
+DEBUG 2017-05-10 13:00:45,391: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/Alignment/OfflineValidation/interface to tarball
+DEBUG 2017-05-10 13:00:45,413: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/CommonTools/ParticleFlow/interface to tarball
+DEBUG 2017-05-10 13:00:45,730: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/FWCore/Version/interface to tarball
+DEBUG 2017-05-10 13:00:45,782: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/EgammaAnalysis/ElectronTools/data to tarball
+DEBUG 2017-05-10 13:00:45,803: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/EgammaAnalysis/ElectronTools/interface to tarball
+DEBUG 2017-05-10 13:00:45,905: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/EventFilter/L1TRawToDigi/interface to tarball
+DEBUG 2017-05-10 13:00:45,934: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/EventFilter/Utilities/interface to tarball
+DEBUG 2017-05-10 13:00:46,130: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/Fireworks/Core/data to tarball
+DEBUG 2017-05-10 13:00:46,174: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/Fireworks/Core/interface to tarball
+DEBUG 2017-05-10 13:00:46,433: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/JetMETCorrections/Type1MET/data to tarball
+DEBUG 2017-05-10 13:00:46,440: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/JetMETCorrections/Type1MET/interface to tarball
+DEBUG 2017-05-10 13:00:46,488: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TCalorimeter/interface to tarball
+DEBUG 2017-05-10 13:00:46,955: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TGlobal/interface to tarball
+DEBUG 2017-05-10 13:00:47,296: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TMuon/data to tarball
+DEBUG 2017-05-10 13:00:47,307: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TMuon/interface to tarball
+DEBUG 2017-05-10 13:00:47,477: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TMuonBarrel/interface to tarball
+DEBUG 2017-05-10 13:00:47,653: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TNtuples/interface to tarball
+DEBUG 2017-05-10 13:00:48,000: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/PhysicsTools/PatAlgos/interface to tarball
+DEBUG 2017-05-10 13:00:48,348: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/PhysicsTools/PatUtils/data to tarball
+DEBUG 2017-05-10 13:00:48,810: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/PhysicsTools/PatUtils/interface to tarball
+DEBUG 2017-05-10 13:00:49,111: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/PhysicsTools/Utilities/interface to tarball
+DEBUG 2017-05-10 13:00:49,748: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEcal/EgammaClusterProducers/data to tarball
+DEBUG 2017-05-10 13:00:49,880: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEcal/EgammaClusterProducers/interface to tarball
+DEBUG 2017-05-10 13:00:50,014: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/EgammaIsolationAlgos/interface to tarball
+DEBUG 2017-05-10 13:00:50,141: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/EgammaPhotonProducers/interface to tarball
+DEBUG 2017-05-10 13:00:50,361: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/EgammaTools/data to tarball
+DEBUG 2017-05-10 13:00:50,461: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/EgammaTools/interface to tarball
+DEBUG 2017-05-10 13:00:50,595: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/ElectronIdentification/data to tarball
+DEBUG 2017-05-10 13:01:01,296: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/ElectronIdentification/interface to tarball
+DEBUG 2017-05-10 13:01:01,495: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoLocalCalo/EcalRecProducers/interface to tarball
+DEBUG 2017-05-10 13:01:01,657: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METAlgorithms/interface to tarball
+DEBUG 2017-05-10 13:01:01,692: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METFilters/data to tarball
+DEBUG 2017-05-10 13:01:01,698: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METFilters/interface to tarball
+DEBUG 2017-05-10 13:01:01,743: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METPUSubtraction/data to tarball
+DEBUG 2017-05-10 13:01:02,293: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METPUSubtraction/interface to tarball
+DEBUG 2017-05-10 13:01:02,398: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METProducers/interface to tarball
+DEBUG 2017-05-10 13:01:02,677: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoParticleFlow/PFProducer/data to tarball
+DEBUG 2017-05-10 13:01:02,686: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoParticleFlow/PFProducer/interface to tarball
+DEBUG 2017-05-10 13:01:02,980: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoTauTag/RecoTau/interface to tarball
+DEBUG 2017-05-10 13:01:03,274: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoTauTag/HLTProducers/interface to tarball
+DEBUG 2017-05-10 13:01:03,495: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/SimDataFormats/GeneratorProducts/data to tarball
+DEBUG 2017-05-10 13:01:03,614: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/SimDataFormats/GeneratorProducts/interface to tarball
+DEBUG 2017-05-10 13:01:03,723: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/SimGeneral/MixingModule/interface to tarball
+DEBUG 2017-05-10 13:01:04,801: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/Core/interface to tarball
+DEBUG 2017-05-10 13:01:04,922: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface to tarball
+DEBUG 2017-05-10 13:01:05,505: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface to tarball
+DEBUG 2017-05-10 13:01:05,711: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/LegacySVFit/interface to tarball
+DEBUG 2017-05-10 13:01:05,958: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface to tarball
+DEBUG 2017-05-10 13:01:06,156: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/JetTauFakeRate/interface to tarball
+DEBUG 2017-05-10 13:01:06,242: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/Modules/interface to tarball
+DEBUG 2017-05-10 13:01:06,430: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface to tarball
+DEBUG 2017-05-10 13:01:06,443: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/Utilities/interface to tarball
+DEBUG 2017-05-10 13:01:06,570: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/Zbb/interface to tarball
+DEBUG 2017-05-10 13:01:06,891: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/interface to tarball
+DEBUG 2017-05-10 13:01:07,924: 	 Uploading archive /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/inputs/a76a14de-0397-4552-a552-1431c265a1f2default.tgz (46 MB) to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2017-05-10 13:01:34,739: 	 Loading required information from the environment
+DEBUG 2017-05-10 13:01:34,740: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-10 13:01:34,740: 	 Making tarball in /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/inputs/debugFiles.tgz
+DEBUG 2017-05-10 13:01:34,765: 	 Uploading archive /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/inputs/debugFiles.tgz (14 KB) to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2017-05-10 13:01:35,212: 	 Result uploading input files: 8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz 
+INFO 2017-05-10 13:01:35,220: 	 Sending the request to the server
+DEBUG 2017-05-10 13:01:35,220: 	 Submitting {'maxjobruntime': 1250, 'extrajdl': [], 'ignorelocality': 0, 'savelogsflag': 0, 'useparent': 0, 'asyncdest': 'T2_UK_London_IC', 'algoargs': 80000, 'cachefilename': '8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', 'numcores': 1, 'addoutputfiles': [], 'generator': 'pythia', 'maxmemory': 2000, 'publishdbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', 'priority': 10, 'jobsw': 'CMSSW_8_0_25', 'edmoutfiles': [], 'userfiles': [], 'primarydataset': '', 'inputdata': '/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', 'lfn': '/store/user/vmilosev', 'dryrun': 0, 'workflow': 'crab_VBF_HInv', 'cacheurl': u'https://cmsweb.cern.ch/crabcache', 'nonprodsw': 1, 'tfileoutfiles': ['EventTree.root'], 'oneEventMode': 0, 'debugfilename': 'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', 'saveoutput': 1, 'publication': 0, 'jobarch': 'slc6_amd64_gcc530', 'totalunits': 0, 'splitalgo': 'EventAwareLumiBased', 'ignoreglobalblacklist': 0, 'nonvaliddata': 0, 'dbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', 'publishgroupname': 0, 'jobtype': 'Analysis', 'publishname2': ''} 
+DEBUG 2017-05-10 13:01:35,220: 	 Encoded submit request: maxjobruntime=1250&ignorelocality=0&savelogsflag=0&useparent=0&asyncdest=T2_UK_London_IC&algoargs=80000&cachefilename=8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz&numcores=1&generator=pythia&maxmemory=2000&publishdbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSWriter&priority=10&jobsw=CMSSW_8_0_25&primarydataset=&inputdata=%2FVBF_HToInvisible_M125_13TeV_powheg_pythia8%2Fvmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f%2FUSER&lfn=%2Fstore%2Fuser%2Fvmilosev&dryrun=0&workflow=crab_VBF_HInv&cacheurl=https%3A%2F%2Fcmsweb.cern.ch%2Fcrabcache&nonprodsw=1&oneEventMode=0&debugfilename=b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz&saveoutput=1&publication=0&jobarch=slc6_amd64_gcc530&totalunits=0&splitalgo=EventAwareLumiBased&ignoreglobalblacklist=0&nonvaliddata=0&dbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSReader&publishgroupname=0&jobtype=Analysis&publishname2=&tfileoutfiles=EventTree.root
+DEBUG 2017-05-10 13:01:35,805: 	 Result: {u'result': [{u'RequestName': u'170510_110135:vmilosev_crab_VBF_HInv'}]}
+INFO 2017-05-10 13:01:35,808: 	 Success: Your task has been delivered to the CRAB3 server.
+INFO 2017-05-10 13:01:35,808: 	 Task name: 170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:01:35,809: 	 Please use 'crab status' to check how the submission process proceeds.
+DEBUG 2017-05-10 13:01:35,809: 	 About to return
+DEBUG 2017-05-10 13:03:16,490: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:03:16,490: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:03:16,498: 	 Checking credentials
+DEBUG 2017-05-10 13:03:16,499: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:03:16,499: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:03:17,214: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35891
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:03:17,827: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35891
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:03:17,828: 	 Proxy valid for 09:58:11 hours
+DEBUG 2017-05-10 13:03:18,011: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:03:18,011: 	 Checking credentials
+DEBUG 2017-05-10 13:03:18,012: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:03:18,012: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:03:18,719: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35890
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:03:19,430: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35889
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:03:19,431: 	 Proxy valid for 09:58:10 hours
+DEBUG 2017-05-10 13:03:19,792: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:03:19,901: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:03:19,902: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:03:19,902: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:03:20,007: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:26:10  (23.6 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:03:20,008: 	 Myproxy is valid: 2035570
+DEBUG 2017-05-10 13:03:20,008: 	 Command use: status
+DEBUG 2017-05-10 13:03:20,008: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:03:20,391: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:03:20,391: 	 Instance is prod
+DEBUG 2017-05-10 13:03:20,391: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:03:20,391: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:03:20,830: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:03:20,831: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:03:20,831: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:03:20,831: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:03:20,831: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:03:20,831: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:03:20,832: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:03:20,832: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:03:20,832: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:03:21,346: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:03:21,348: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+INFO 2017-05-10 13:03:21,773: 	 Waiting for the Grid scheduler to report back the status of your task
+DEBUG 2017-05-10 13:03:21,773: 	 Cannot retrieve the status_cache file. Maybe the task process has not run yet?
+Got: Error while trying to retrieve file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache: ('http error', 403, 'Forbidden', <httplib.HTTPMessage instance at 0x7fe26cdfa050>)
+Make sure the URL is correct.
+ERROR 2017-05-10 13:03:21,773: 	 Error while trying to retrieve file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache: ('http error', 403, 'Forbidden', <httplib.HTTPMessage instance at 0x7fe26cdfa050>)
+Make sure the URL is correct.
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1705.patch3/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 105, in __call__
+    statusCacheFilename = getFileFromURL(url, filename=filename, proxyfilename=self.proxyfilename)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1705.patch3/lib/python2.7/site-packages/CRABClient/UserUtilities.py", line 150, in getFileFromURL
+    raise exc
+ClientException: Error while trying to retrieve file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache: ('http error', 403, 'Forbidden', <httplib.HTTPMessage instance at 0x7fe26cdfa050>)
+Make sure the URL is correct.
+INFO 2017-05-10 13:03:21,787: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 13:05:35,501: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:05:35,502: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:05:35,516: 	 Checking credentials
+DEBUG 2017-05-10 13:05:35,517: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:05:35,517: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:05:36,641: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35752
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:05:37,448: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35751
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:05:37,449: 	 Proxy valid for 09:55:52 hours
+DEBUG 2017-05-10 13:05:37,570: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:05:37,570: 	 Checking credentials
+DEBUG 2017-05-10 13:05:37,570: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:05:37,571: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:05:38,406: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35750
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:05:39,119: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35749
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:05:39,119: 	 Proxy valid for 09:55:50 hours
+DEBUG 2017-05-10 13:05:39,537: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:05:39,658: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:05:39,659: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:05:39,659: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:05:39,867: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:23:51  (23.6 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:05:39,869: 	 Myproxy is valid: 2035431
+DEBUG 2017-05-10 13:05:39,869: 	 Command use: status
+DEBUG 2017-05-10 13:05:39,869: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:05:40,271: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:05:40,271: 	 Instance is prod
+DEBUG 2017-05-10 13:05:40,271: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:05:40,271: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:05:40,691: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:05:40,692: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:05:40,692: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:05:40,693: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:05:40,693: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:05:40,693: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:05:40,693: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:05:40,693: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:05:40,694: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:05:41,139: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:05:41,139: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 13:05:41,722: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}}
+INFO 2017-05-10 13:05:41,725: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 13:05:41,725: 	 
+Jobs status:                    idle          100.0% (2/2)
+INFO 2017-05-10 13:05:41,726: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 13:05:41,771: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 13:07:32,791: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:07:32,792: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:07:32,798: 	 Checking credentials
+DEBUG 2017-05-10 13:07:32,799: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:07:32,800: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:07:33,507: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35635
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:07:34,216: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35634
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:07:34,216: 	 Proxy valid for 09:53:55 hours
+DEBUG 2017-05-10 13:07:34,333: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:07:34,333: 	 Checking credentials
+DEBUG 2017-05-10 13:07:34,333: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:07:34,333: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:07:35,050: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35634
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:07:35,877: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35633
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:07:35,877: 	 Proxy valid for 09:53:54 hours
+DEBUG 2017-05-10 13:07:36,234: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:07:36,345: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:07:36,346: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:07:36,346: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:07:36,551: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:21:54  (23.6 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:07:36,552: 	 Myproxy is valid: 2035314
+DEBUG 2017-05-10 13:07:36,552: 	 Command use: status
+DEBUG 2017-05-10 13:07:36,552: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:07:36,985: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:07:36,985: 	 Instance is prod
+DEBUG 2017-05-10 13:07:36,985: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:07:36,985: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:07:37,379: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:07:37,380: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:07:37,381: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:07:37,381: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:07:37,381: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:07:37,381: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:07:37,381: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:07:37,381: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:07:37,381: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:07:37,736: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:07:37,736: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 13:07:38,107: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}}
+INFO 2017-05-10 13:07:38,107: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 13:07:38,107: 	 
+Jobs status:                    idle          100.0% (2/2)
+INFO 2017-05-10 13:07:38,107: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 13:07:38,137: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 13:08:44,002: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:08:44,002: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:08:44,019: 	 Checking credentials
+DEBUG 2017-05-10 13:08:44,020: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:08:44,020: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:08:45,036: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35564
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:08:45,951: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35563
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:08:45,952: 	 Proxy valid for 09:52:44 hours
+DEBUG 2017-05-10 13:08:46,069: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:08:46,070: 	 Checking credentials
+DEBUG 2017-05-10 13:08:46,071: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:08:46,071: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:08:46,888: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35562
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:08:47,694: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35561
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:08:47,695: 	 Proxy valid for 09:52:42 hours
+DEBUG 2017-05-10 13:08:48,108: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:08:48,218: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:08:48,218: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:08:48,218: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:08:48,524: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:20:42  (23.6 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:08:48,525: 	 Myproxy is valid: 2035242
+DEBUG 2017-05-10 13:08:48,525: 	 Command use: status
+DEBUG 2017-05-10 13:08:48,525: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:08:48,884: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:08:48,884: 	 Instance is prod
+DEBUG 2017-05-10 13:08:48,884: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:08:48,884: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:08:49,266: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:08:49,266: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:08:49,266: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:08:49,267: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:08:49,267: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:08:49,267: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:08:49,267: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:08:49,267: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:08:49,267: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:08:49,732: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:08:49,732: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 13:08:50,155: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 65.5006148815155], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [2656], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}}
+INFO 2017-05-10 13:08:50,155: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 13:08:50,155: 	 
+Jobs status:                    idle           50.0% (1/2)
+INFO 2017-05-10 13:08:50,155: 	 				running        50.0% (1/2)
+INFO 2017-05-10 13:08:50,155: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 13:08:50,198: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 13:11:54,863: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:11:54,864: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:11:54,876: 	 Checking credentials
+DEBUG 2017-05-10 13:11:54,877: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:11:54,877: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:11:56,727: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35372
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:11:58,053: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35371
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:11:58,053: 	 Proxy valid for 09:49:32 hours
+DEBUG 2017-05-10 13:11:58,303: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:11:58,304: 	 Checking credentials
+DEBUG 2017-05-10 13:11:58,304: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:11:58,304: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:12:00,235: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 35368
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:12:02,524: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 35366
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:12:02,525: 	 Proxy valid for 09:49:28 hours
+DEBUG 2017-05-10 13:12:03,129: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:12:03,244: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:12:03,244: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:12:03,244: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:12:03,655: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:17:27  (23.6 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:12:03,657: 	 Myproxy is valid: 2035047
+DEBUG 2017-05-10 13:12:03,657: 	 Command use: status
+DEBUG 2017-05-10 13:12:03,657: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:12:04,341: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:12:04,341: 	 Instance is prod
+DEBUG 2017-05-10 13:12:04,341: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:12:04,341: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:12:05,090: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:12:05,093: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:12:05,094: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:12:05,094: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:12:05,094: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:12:05,096: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:12:05,096: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:12:05,096: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:12:05,096: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:12:05,530: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:12:05,530: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 13:12:06,801: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 65.5006148815155], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [2656], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}}
+INFO 2017-05-10 13:12:06,801: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 13:12:06,801: 	 
+Jobs status:                    idle           50.0% (1/2)
+INFO 2017-05-10 13:12:06,801: 	 				running        50.0% (1/2)
+INFO 2017-05-10 13:12:06,801: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 13:12:07,137: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 13:18:51,372: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:18:51,372: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:18:51,397: 	 Checking credentials
+DEBUG 2017-05-10 13:18:51,400: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:18:51,400: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:18:52,427: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 34956
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:18:53,355: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 34955
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:18:53,355: 	 Proxy valid for 09:42:36 hours
+DEBUG 2017-05-10 13:18:53,656: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:18:53,657: 	 Checking credentials
+DEBUG 2017-05-10 13:18:53,657: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:18:53,657: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:18:54,601: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 34954
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:18:55,626: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 34953
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:18:55,626: 	 Proxy valid for 09:42:34 hours
+DEBUG 2017-05-10 13:18:56,235: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:18:56,367: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:18:56,367: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:18:56,367: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:18:56,577: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:10:34  (23.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:18:56,579: 	 Myproxy is valid: 2034634
+DEBUG 2017-05-10 13:18:56,579: 	 Command use: status
+DEBUG 2017-05-10 13:18:56,579: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:18:57,127: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:18:57,127: 	 Instance is prod
+DEBUG 2017-05-10 13:18:57,127: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:18:57,127: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:18:57,489: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:18:57,490: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:18:57,490: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:18:57,490: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:18:57,490: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:18:57,490: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:18:57,490: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:18:57,490: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:18:57,491: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:18:58,130: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:18:58,130: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 13:18:58,538: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 612.0], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [904864], 'TotalUserCpuTimeHistory': [466.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [21.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 311.0], 'StartTimes': [1494414615.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [774520], 'TotalUserCpuTimeHistory': [178.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [6.0]}}
+INFO 2017-05-10 13:18:58,538: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 13:18:58,538: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-10 13:18:58,538: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 13:18:58,569: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 13:26:09,203: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:26:09,204: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:26:09,271: 	 Checking credentials
+DEBUG 2017-05-10 13:26:09,272: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:26:09,272: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:26:10,820: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 34518
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:11,953: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 34517
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:11,953: 	 Proxy valid for 09:35:18 hours
+DEBUG 2017-05-10 13:26:12,203: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:12,203: 	 Checking credentials
+DEBUG 2017-05-10 13:26:12,203: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:26:12,203: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:26:13,225: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 34515
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:14,359: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 34514
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:14,359: 	 Proxy valid for 09:35:15 hours
+DEBUG 2017-05-10 13:26:14,728: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:26:14,946: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:14,946: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:26:14,947: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:26:15,565: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:03:15  (23.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:15,566: 	 Myproxy is valid: 2034195
+DEBUG 2017-05-10 13:26:15,566: 	 Command use: status
+DEBUG 2017-05-10 13:26:15,566: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:26:15,923: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:26:15,923: 	 Instance is prod
+DEBUG 2017-05-10 13:26:15,923: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:26:15,924: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:26:16,283: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:26:16,283: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:26:16,283: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:26:16,283: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:26:16,283: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:26:16,284: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:26:16,284: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:26:16,284: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:26:16,284: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:26:16,661: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:26:16,661: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 13:26:17,069: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 913.0], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [918092], 'TotalUserCpuTimeHistory': [711.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [32.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 611.0], 'StartTimes': [1494414615.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [803008], 'TotalUserCpuTimeHistory': [377.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [16.0]}}
+INFO 2017-05-10 13:26:17,069: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 13:26:17,069: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-10 13:26:17,070: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 13:26:17,824: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 13:26:24,556: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:26:24,556: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:26:24,567: 	 Checking credentials
+DEBUG 2017-05-10 13:26:24,569: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:26:24,569: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:26:25,794: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 34503
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:26,815: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 34502
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:26,815: 	 Proxy valid for 09:35:03 hours
+DEBUG 2017-05-10 13:26:27,051: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:27,051: 	 Checking credentials
+DEBUG 2017-05-10 13:26:27,051: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:26:27,051: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:26:28,181: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 34500
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:29,107: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 34499
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:29,107: 	 Proxy valid for 09:35:00 hours
+DEBUG 2017-05-10 13:26:29,619: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:26:29,845: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:29,845: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:26:29,845: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:26:30,053: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:03:00  (23.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:26:30,055: 	 Myproxy is valid: 2034180
+DEBUG 2017-05-10 13:26:30,055: 	 Command use: status
+DEBUG 2017-05-10 13:26:30,056: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:26:30,535: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:26:30,535: 	 Instance is prod
+DEBUG 2017-05-10 13:26:30,535: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:26:30,535: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:26:31,054: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:26:31,055: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:26:31,055: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:26:31,055: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:26:31,056: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:26:31,056: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:26:31,056: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:26:31,056: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:26:31,056: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:26:31,573: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:26:31,573: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 13:26:32,036: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 913.0], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [918092], 'TotalUserCpuTimeHistory': [711.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [32.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 611.0], 'StartTimes': [1494414615.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [803008], 'TotalUserCpuTimeHistory': [377.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [16.0]}}
+INFO 2017-05-10 13:26:32,036: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 13:26:32,036: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-10 13:26:32,036: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 13:26:32,068: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 13:28:00,662: 	 Executing command: 'status'
+DEBUG 2017-05-10 13:28:00,663: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 13:28:01,062: 	 Checking credentials
+DEBUG 2017-05-10 13:28:01,063: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:28:01,063: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:28:03,210: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 34405
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:28:07,110: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 34401
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:28:07,111: 	 Proxy valid for 09:33:25 hours
+DEBUG 2017-05-10 13:28:07,305: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:28:07,306: 	 Checking credentials
+DEBUG 2017-05-10 13:28:07,306: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 13:28:07,306: 	 Getting proxy life time left
+DEBUG 2017-05-10 13:28:11,579: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 34397
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:28:19,221: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 34389
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:28:19,222: 	 Proxy valid for 09:33:17 hours
+DEBUG 2017-05-10 13:28:19,827: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 13:28:20,408: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:28:20,408: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 13:28:20,408: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 13:28:21,127: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 565:01:09  (23.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 13:28:21,128: 	 Myproxy is valid: 2034069
+DEBUG 2017-05-10 13:28:21,128: 	 Command use: status
+DEBUG 2017-05-10 13:28:21,128: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 13:28:21,687: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 13:28:21,687: 	 Instance is prod
+DEBUG 2017-05-10 13:28:21,687: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 13:28:21,687: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 13:28:22,074: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 13:28:22,075: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 13:28:22,075: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:28:22,075: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 13:28:22,075: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 13:28:22,076: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 13:28:22,076: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:28:22,076: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 13:28:22,076: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:28:22,411: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 13:28:22,411: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 13:28:22,928: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 913.0], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [918092], 'TotalUserCpuTimeHistory': [711.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [32.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 611.0], 'StartTimes': [1494414615.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [803008], 'TotalUserCpuTimeHistory': [377.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [16.0]}}
+INFO 2017-05-10 13:28:22,928: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 13:28:22,928: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-10 13:28:22,929: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 13:28:24,089: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 16:02:38,056: 	 Executing command: 'status'
+DEBUG 2017-05-10 16:02:38,059: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 16:02:38,072: 	 Checking credentials
+DEBUG 2017-05-10 16:02:38,073: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:02:38,073: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:02:38,882: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37233
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:02:39,694: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37232
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:02:39,694: 	 Proxy valid for 10:20:33 hours
+DEBUG 2017-05-10 16:02:39,836: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:02:39,837: 	 Checking credentials
+DEBUG 2017-05-10 16:02:39,837: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:02:39,837: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:02:40,545: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37231
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:02:41,262: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37230
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:02:41,263: 	 Proxy valid for 10:20:31 hours
+DEBUG 2017-05-10 16:02:41,684: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 16:02:41,793: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:02:41,793: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 16:02:41,793: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 16:02:42,098: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 562:26:48  (23.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:02:42,100: 	 Myproxy is valid: 2024808
+DEBUG 2017-05-10 16:02:42,100: 	 Command use: status
+DEBUG 2017-05-10 16:02:42,100: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 16:02:42,459: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 16:02:42,459: 	 Instance is prod
+DEBUG 2017-05-10 16:02:42,459: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 16:02:42,459: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 16:02:42,845: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 16:02:42,846: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 16:02:42,846: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 16:02:42,846: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 16:02:42,846: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 16:02:42,846: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 16:02:42,846: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:02:42,846: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 16:02:42,846: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:02:43,230: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:02:43,230: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 16:02:43,614: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 10231.0], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [1041084], 'TotalUserCpuTimeHistory': [8350.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [402.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 4254.0], 'StartTimes': [1494414615.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [1494418869.0], 'Restarts': 0, 'RecordedSite': True, 'State': 'finished', 'ResidentSetSize': [919340], 'TotalUserCpuTimeHistory': [3132], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [126]}}
+INFO 2017-05-10 16:02:43,614: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 16:02:43,614: 	 
+Jobs status:                    finished       50.0% (1/2)
+INFO 2017-05-10 16:02:43,614: 	 				running        50.0% (1/2)
+INFO 2017-05-10 16:02:43,615: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 16:02:43,688: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 16:03:13,057: 	 Executing command: 'report'
+DEBUG 2017-05-10 16:03:13,057: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 16:03:13,065: 	 Checking credentials
+DEBUG 2017-05-10 16:03:13,066: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:03:13,066: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:03:13,678: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37198
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:14,283: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37197
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:14,283: 	 Proxy valid for 10:19:58 hours
+DEBUG 2017-05-10 16:03:14,425: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:14,425: 	 Checking credentials
+DEBUG 2017-05-10 16:03:14,425: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:03:14,426: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:03:15,034: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37197
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:15,641: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37196
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:15,641: 	 Proxy valid for 10:19:57 hours
+DEBUG 2017-05-10 16:03:16,006: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 16:03:16,116: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:16,117: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 16:03:16,117: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 16:03:16,525: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 562:26:14  (23.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:16,526: 	 Myproxy is valid: 2024774
+DEBUG 2017-05-10 16:03:16,527: 	 Command use: report
+DEBUG 2017-05-10 16:03:16,527: 	 Options use: ['NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 16:03:16,878: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 16:03:16,878: 	 Instance is prod
+DEBUG 2017-05-10 16:03:16,878: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 16:03:16,878: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 16:03:16,878: 	 Looking up report for task 170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:03:17,389: 	 Result: {u'result': [{u'runsAndLumis': {u'2': [{u'parents': u'[]', u'runlumi': u"{'1': ['1007']}", u'type': u'POOLIN', u'events': 80, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_652.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['1006']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_651.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['1005']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_650.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['1004']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_649.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['1003']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_648.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['1002']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_647.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['1001']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_646.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['1000']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_645.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['999']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_644.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['998']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_643.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['997']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_642.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['996']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_641.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['995']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_640.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['994']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_639.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['993']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_638.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['992']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_637.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['991']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_636.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['990']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_635.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['989']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_634.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['988']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_633.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['987']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_632.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['986']}", u'type': u'POOLIN', u'events': 80, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_631.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['985']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_630.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['984']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_629.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['983']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_628.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['982']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_627.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['981']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_626.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['980']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_625.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['979']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_624.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['978']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_623.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['977']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_622.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['976']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_621.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['975']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_620.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['974']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_619.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['973']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_618.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['972']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_617.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['971']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_616.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['970']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_615.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['969']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_614.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['968']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0001/outputTEST_1007.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['967']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0001/outputTEST_1006.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['966']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0001/outputTEST_1005.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['965']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0001/outputTEST_1004.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['964']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0001/outputTEST_1003.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['963']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_613.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['962']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_612.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['961']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_611.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['960']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_610.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['959']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_609.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['958']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_608.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['957']}", u'type': u'POOLIN', u'events': 80, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_607.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['956']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_606.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['954']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_604.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['953']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_603.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['952']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_602.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['951']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_601.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['950']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_600.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['949']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_599.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['948']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_598.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['947']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_597.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['946']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_596.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['945']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_595.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['944']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_594.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['943']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0001/outputTEST_1002.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['942']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0001/outputTEST_1001.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['941']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0001/outputTEST_1000.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['940']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_999.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['939']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_998.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['938']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_593.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['937']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_592.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['936']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_591.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['935']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_590.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['934']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_589.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['933']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_588.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['932']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_587.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['931']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_586.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['930']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_585.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['929']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_584.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['928']}", u'type': u'POOLIN', u'events': 80, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_583.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['927']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_582.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['926']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_581.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['925']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_580.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['924']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_579.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['923']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_578.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['922']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_577.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['921']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_576.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['920']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_575.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['919']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_574.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['918']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_573.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['917']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_572.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['916']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_571.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['915']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_570.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['914']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_569.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['913']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_997.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['912']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_996.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['911']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_995.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['910']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_994.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['909']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_993.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['908']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_568.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['907']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_567.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['906']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_566.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['905']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_565.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['904']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_564.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['903']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_563.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['902']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_562.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['901']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_561.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['900']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_560.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['899']}", u'type': u'POOLIN', u'events': 80, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_559.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['898']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_558.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['897']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_557.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['896']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_556.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['895']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_555.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['894']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_554.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['893']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_553.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['892']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_552.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['891']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_551.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['890']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_550.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['889']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_549.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['888']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_548.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['887']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_547.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['886']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_546.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['885']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_545.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['884']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_544.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['883']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_543.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['882']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_542.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['880']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_540.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['879']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_539.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['878']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_538.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['877']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_537.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['876']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_536.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['875']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_535.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['874']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_534.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['873']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_533.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['872']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_532.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['871']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_531.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['870']}", u'type': u'POOLIN', u'events': 80, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_530.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['869']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_992.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['868']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_991.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['867']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_990.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['866']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_989.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['865']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_988.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['864']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_529.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['863']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_528.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['862']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_527.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['861']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_526.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['860']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_525.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['859']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_524.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['858']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_523.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['857']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_522.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['856']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_521.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['855']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_520.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['854']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_519.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['853']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_518.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['852']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_517.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['851']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_516.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['850']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_515.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['849']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_987.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['848']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_986.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['847']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_985.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['846']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_984.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['845']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_983.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['844']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_514.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['843']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_513.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['842']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_512.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['841']}", u'type': u'POOLIN', u'events': 80, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_511.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['840']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_510.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['839']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_982.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['838']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_981.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['837']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_980.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['836']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_979.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['835']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_978.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['834']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_977.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['833']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_976.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['832']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_975.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['831']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_974.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['830']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_973.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['829']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_509.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['828']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_508.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['827']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_507.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['826']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_506.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['825']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_505.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['824']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_972.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['823']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_971.root_2'}, {u'parents': u'[]', u'runlumi': u"{'1': ['822']}", u'type': u'POOLIN', u'events': 100, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_HTau/170510_083303/0000/outputTEST_970.root_2'}, {u'parents': u'[]', u'runlumi': u'{}', u'type': u'TFILE', u'events': 0, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_VBF_HInv/170510_110135/0000/EventTree_2.root'}]}, u'taskDBInfo': {u'inputDataset': u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'userWebDirURL': u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'publication': False, u'outputDatasets': []}}]}
+INFO 2017-05-10 16:03:17,389: 	 Running crab status2 first to fetch necessary information.
+DEBUG 2017-05-10 16:03:17,390: 	 Executing command: 'status'
+DEBUG 2017-05-10 16:03:17,390: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 16:03:17,397: 	 Checking credentials
+DEBUG 2017-05-10 16:03:17,397: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:03:17,397: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:03:18,002: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37194
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:18,711: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37193
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:18,711: 	 Proxy valid for 10:19:54 hours
+DEBUG 2017-05-10 16:03:18,872: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:18,872: 	 Checking credentials
+DEBUG 2017-05-10 16:03:18,872: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:03:18,873: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:03:19,478: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37192
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:20,087: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37191
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:20,087: 	 Proxy valid for 10:19:52 hours
+DEBUG 2017-05-10 16:03:20,464: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 16:03:20,575: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:20,575: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 16:03:20,575: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 16:03:20,783: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 562:26:10  (23.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:20,783: 	 Myproxy is valid: 2024770
+DEBUG 2017-05-10 16:03:20,784: 	 Command use: status
+DEBUG 2017-05-10 16:03:20,784: 	 Options use: []
+DEBUG 2017-05-10 16:03:21,127: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 16:03:21,127: 	 Instance is prod
+DEBUG 2017-05-10 16:03:21,127: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 16:03:21,127: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 16:03:21,512: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 16:03:21,512: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 16:03:21,512: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 16:03:21,512: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 16:03:21,512: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 16:03:21,512: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 16:03:21,512: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:03:21,512: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 16:03:21,512: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:03:21,842: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:03:21,842: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 16:03:22,152: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 10231.0], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [1041084], 'TotalUserCpuTimeHistory': [8350.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [402.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 4254.0], 'StartTimes': [1494414615.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [1494418869.0], 'Restarts': 0, 'RecordedSite': True, 'State': 'finished', 'ResidentSetSize': [919340], 'TotalUserCpuTimeHistory': [3132], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [126]}}
+INFO 2017-05-10 16:03:22,152: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 16:03:22,152: 	 
+Jobs status:                    finished       50.0% (1/2)
+INFO 2017-05-10 16:03:22,152: 	 				running        50.0% (1/2)
+INFO 2017-05-10 16:03:22,153: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-10 16:03:23,193: 	 Will save lumi files into output directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/results
+INFO 2017-05-10 16:03:23,193: 	 Summary from jobs in status 'finished':
+INFO 2017-05-10 16:03:23,193: 	   Number of files processed: 184
+  Number of events read: 18260
+  Number of events written in EDM files: 0
+  Number of events written in TFileService files: 0
+  Number of events written in other type of files: 0
+INFO 2017-05-10 16:03:23,194: 	   Processed lumis written to processedLumis.json
+INFO 2017-05-10 16:03:23,197: 	   Warning: 'notFinished' lumis written to notFinishedLumis.json
+INFO 2017-05-10 16:03:23,198: 	            The 'notFinished' lumis were calculated as: the lumis to process minus the processed lumis.
+INFO 2017-05-10 16:03:23,198: 	 Additional report lumi files:
+INFO 2017-05-10 16:03:23,199: 	   Input dataset lumis (from DBS, at task submission time) written to inputDatasetLumis.json
+INFO 2017-05-10 16:03:23,201: 	   Lumis to process written to lumisToProcess.json
+INFO 2017-05-10 16:03:23,212: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-10 16:03:23,775: 	 Executing command: 'getoutput'
+DEBUG 2017-05-10 16:03:23,776: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 16:03:23,783: 	 Checking credentials
+DEBUG 2017-05-10 16:03:23,783: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:03:23,783: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:03:24,389: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37187
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:25,009: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37187
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:25,009: 	 Proxy valid for 10:19:47 hours
+DEBUG 2017-05-10 16:03:25,010: 	 Using VO group '' and VO role 'NULL' as written in the request cache file for this task.
+DEBUG 2017-05-10 16:03:25,130: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:25,130: 	 Checking credentials
+DEBUG 2017-05-10 16:03:25,132: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:03:25,132: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:03:26,050: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37186
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:26,860: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37185
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:26,861: 	 Proxy valid for 10:19:46 hours
+DEBUG 2017-05-10 16:03:27,584: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u68879 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:27,926: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 16:03:28,036: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:28,036: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 16:03:28,036: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 16:03:28,241: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 562:26:02  (23.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:28,243: 	 Myproxy is valid: 2024762
+DEBUG 2017-05-10 16:03:28,243: 	 Command use: getoutput
+DEBUG 2017-05-10 16:03:28,243: 	 Options use: ['--dump', '--xrootd', 'NewMatching_MCSignal_80X/crab_VBF_HInv/']
+DEBUG 2017-05-10 16:03:28,605: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 16:03:28,605: 	 Instance is prod
+DEBUG 2017-05-10 16:03:28,605: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 16:03:28,605: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 16:03:28,606: 	 Executing command: 'status'
+DEBUG 2017-05-10 16:03:28,606: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 16:03:28,612: 	 Checking credentials
+DEBUG 2017-05-10 16:03:28,612: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:03:28,612: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:03:29,331: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37182
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:29,938: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37182
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:29,938: 	 Proxy valid for 10:19:42 hours
+DEBUG 2017-05-10 16:03:30,219: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:30,219: 	 Checking credentials
+DEBUG 2017-05-10 16:03:30,220: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 16:03:30,220: 	 Getting proxy life time left
+DEBUG 2017-05-10 16:03:30,830: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 37181
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:31,435: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 37180
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:31,436: 	 Proxy valid for 10:19:41 hours
+DEBUG 2017-05-10 16:03:31,787: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 16:03:31,897: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:31,897: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 16:03:31,898: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 16:03:32,103: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 562:25:58  (23.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 16:03:32,103: 	 Myproxy is valid: 2024758
+DEBUG 2017-05-10 16:03:32,104: 	 Command use: status
+DEBUG 2017-05-10 16:03:32,104: 	 Options use: []
+DEBUG 2017-05-10 16:03:32,517: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 16:03:32,517: 	 Instance is prod
+DEBUG 2017-05-10 16:03:32,517: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 16:03:32,517: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 16:03:32,832: 	 Got information from server oracle database: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-10 16:03:32,832: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv
+INFO 2017-05-10 16:03:32,832: 	 Task name:			170510_110135:vmilosev_crab_VBF_HInv
+INFO 2017-05-10 16:03:32,832: 	 Grid scheduler:			crab3@vocms0195.cern.ch
+INFO 2017-05-10 16:03:32,833: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-10 16:03:32,833: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170510_110135%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-10 16:03:32,833: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170510_110135%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:03:32,833: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7318539)
+DEBUG 2017-05-10 16:03:32,833: 	 Webdir is located at http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:03:33,185: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:03:33,185: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0195/cms1307/170510_110135:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-10 16:03:33,677: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [11.0, 10231.0], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [1041084], 'TotalUserCpuTimeHistory': [8350.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [402.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 4254.0], 'StartTimes': [1494414615.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [1494418869.0], 'Restarts': 0, 'RecordedSite': True, 'State': 'finished', 'ResidentSetSize': [919340], 'TotalUserCpuTimeHistory': [3132], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [126]}}
+INFO 2017-05-10 16:03:33,677: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-10 16:03:33,678: 	 
+Jobs status:                    finished       50.0% (1/2)
+INFO 2017-05-10 16:03:33,678: 	 				running        50.0% (1/2)
+INFO 2017-05-10 16:03:33,678: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+DEBUG 2017-05-10 16:03:34,127: 	 Server result: {u'result': [u'170510_110135:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-10 11:01:35.791358', u'None', u'2017-05-10 11:02:27.457439', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-211d3ee5fb57a1889b030cb5cc5cee2f/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'8708dc97d0bc5fa2d2d55673cc300bd516a16bed1a644433e2b8bdc7ebf1813f.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0195.cern.ch/mon/cms1307/170510_110135:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0195.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7318539', u'b3ebb777393623c155d464fec32550b490b9ff81e6c4d908f6d90dd35e350ce2.tar.gz', u'188.184.90.55', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+DEBUG 2017-05-10 16:03:34,127: 	 Retrieving locations for task 170510_110135:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-10 16:03:34,127: 	 Retrieving all file locations
+DEBUG 2017-05-10 16:03:34,127: 	 Retrieving jobs [('jobids', '2')]
+DEBUG 2017-05-10 16:03:34,480: 	 Server result: {u'result': [{u'tmpsite': u'T2_UK_London_IC', u'checksum': {u'adler32': u'c2ddcfa1', u'cksum': 3389634246, u'md5': u'c2ddcfa1'}, u'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_VBF_HInv/170510_110135/0000/EventTree_2.root', u'site': u'T2_UK_London_IC', u'jobid': u'2', u'tmplfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_VBF_HInv/170510_110135/0000/EventTree_2.root', u'size': 223569305, u'directstageout': u'T'}]}
+DEBUG 2017-05-10 16:03:34,480: 	 Service initialised ({'endpoint': 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/', 'key': '/tmp/x509up_u68879', 'maxcachereuse': 24.0, 'cachepath': '/tmp/vmilosev/.wmcore_cache_52tWGI/cmsweb.cern.ch', 'inputdata': {}, 'cert': '/tmp/x509up_u68879', 'timeout': 300, 'service_name': 'PhEDEx', 'requests': {'content_type': 'application/x-www-form-urlencoded', 'cacheduration': 0, 'host': 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/', 'accept_type': 'text/html', 'key': '/tmp/x509up_u68879', 'deleteCacheOnExit': <WMCore.Services.Requests.TempDirectory object at 0x7f35ff92f5d0>, 'endpoint_components': ParseResult(scheme='https', netloc='cmsweb.cern.ch', path='/phedex/datasvc/json/prod/', params='', query='', fragment=''), 'endpoint': 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/', 'pycurl': True, 'cachepath': '/tmp/vmilosev/.wmcore_cache_52tWGI/cmsweb.cern.ch', 'cert': '/tmp/x509up_u68879', 'timeout': 300, 'req_cache_path': '/tmp/vmilosev/.wmcore_cache_52tWGI/cmsweb.cern.ch/.cache', 'logger': <logging.Logger object at 0x7f35ff97dd10>}, 'logger': <logging.Logger object at 0x7f35ff97dd10>, 'cacheduration': 0, 'method': None, 'pycurl': True}):
+	 host: cmsweb.cern.ch, basepath: https://cmsweb.cern.ch/phedex/datasvc/json/prod/ (text/html)
+	 cache: /tmp/vmilosev/.wmcore_cache_52tWGI/cmsweb.cern.ch (duration 0 hours, max reuse 24.0 hours)
+DEBUG 2017-05-10 16:03:34,481: 	 getData: 
+	url: lfn2pfn
+	data: {'node': u'T2_UK_London_IC', 'custodial': 'n', 'lfn': u'/store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_VBF_HInv/170510_110135/0000/EventTree_2.root', 'protocol': 'srmv2'}
+DEBUG 2017-05-10 16:03:34,797: 	 Getting url info
+DEBUG 2017-05-10 16:03:34,797: 	 XRootD urls are requested
+INFO 2017-05-10 16:03:34,797: 	 root://cms-xrd-global.cern.ch//store/user/vmilosev/VBF_HToInvisible_M125_13TeV_powheg_pythia8/crab_VBF_HInv/170510_110135/0000/EventTree_2.root
+DEBUG 2017-05-10 16:03:34,800: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/NewMatching_MCSignal_80X/crab_VBF_HInv/crab.log

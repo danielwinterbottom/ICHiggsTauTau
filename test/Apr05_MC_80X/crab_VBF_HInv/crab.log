@@ -1,0 +1,1568 @@
+release     : 80XMINIAOD
+isData      : 0
+globalTag   : 80X_mcRun2_asymptotic_2016_TrancheIV_v8
+doHT        : 1
+isReHLT     : 1
+# Conditions read from  CMS_CONDITIONS  via FrontierProd 
+DEBUG 2017-05-04 13:17:56,540: 	 Executing command: 'submit'
+DEBUG 2017-05-04 13:17:56,559: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:17:56,581: 	 Checking credentials
+DEBUG 2017-05-04 13:17:56,581: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:17:56,581: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:17:57,481: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 2472
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:17:58,397: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 2471
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:17:58,398: 	 Proxy valid for 00:41:12 hours
+DEBUG 2017-05-04 13:17:58,399: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2017-05-04 13:17:58,488: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:17:58,488: 	 Checking credentials
+DEBUG 2017-05-04 13:17:58,488: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:17:58,488: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:17:59,645: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 2470
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:18:00,592: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 2469
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:18:00,592: 	 Proxy valid for 00:41:10 hours
+DEBUG 2017-05-04 13:18:01,472: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u68879 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:18:01,932: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:18:02,013: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:18:02,014: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:18:02,014: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:18:02,262: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 709:11:28  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:18:02,263: 	 Myproxy is valid: 2553088
+DEBUG 2017-05-04 13:18:02,263: 	 Command use: submit
+DEBUG 2017-05-04 13:18:02,263: 	 Options use: ['--config', <WMCore.Configuration.Configuration object at 0x7fa44e91d250>]
+DEBUG 2017-05-04 13:18:02,649: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:18:02,649: 	 Instance is prod
+DEBUG 2017-05-04 13:18:02,649: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:18:02,649: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:18:02,649: 	 Started submission
+DEBUG 2017-05-04 13:18:02,650: 	 Working on /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+DEBUG 2017-05-04 13:18:03,508: 	 Loading required information from the environment
+DEBUG 2017-05-04 13:18:03,508: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-04 13:18:03,508: 	 Loading required information from the environment
+DEBUG 2017-05-04 13:18:03,508: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-04 13:18:03,541: 	 UNIQUE NAME: tarUUID 52293b60-2ffa-40e5-aedb-2e88409729b4 
+DEBUG 2017-05-04 13:18:03,542: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.transferOutputs = True
+config.General.workArea = 'Apr05_MC_80X'
+config.General.requestName = 'VBF_HInv'
+config.section_('JobType')
+config.JobType.psetName = 'VM_customHLT_test.py'
+config.JobType.pluginName = 'Analysis'
+config.JobType.outputFiles = ['EventTree.root']
+config.JobType.pyCfgParams = ['release=80XMINIAOD', 'isData=0', 'doHT=1', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8', 'isReHLT=1']
+config.JobType.allowUndistributedCMSSW = True
+config.section_('Data')
+config.Data.inputDataset = '/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER'
+config.Data.publication = False
+config.Data.unitsPerJob = 80000
+config.Data.inputDBS = 'phys03'
+config.Data.splitting = 'EventAwareLumiBased'
+config.Data.outLFNDirBase = '/store/user/vmilosev'
+config.section_('User')
+config.section_('Site')
+config.Site.storageSite = 'T2_UK_London_IC'
+
+DEBUG 2017-05-04 13:18:03,542: 	 self.config.JobType.psetName: VM_customHLT_test.py
+INFO 2017-05-04 13:18:03,542: 	 Importing CMSSW configuration VM_customHLT_test.py
+DEBUG 2017-05-04 13:18:03,543: 	 Additional parameters for the CMSSW configuration are: ['release=80XMINIAOD', 'isData=0', 'doHT=1', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8', 'isReHLT=1']
+INFO 2017-05-04 13:18:10,746: 	 Finished importing CMSSW configuration VM_customHLT_test.py
+DEBUG 2017-05-04 13:18:10,746: 	 Writing CMSSW configuration to /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/inputs/PSet.py
+DEBUG 2017-05-04 13:18:12,559: 	 The following EDM output files will be collected: []
+DEBUG 2017-05-04 13:18:12,559: 	 The following TFile output files will be collected: ['EventTree.root']
+DEBUG 2017-05-04 13:18:12,559: 	 The following user output files will be collected: []
+DEBUG 2017-05-04 13:18:12,559: 	 Loading required information from the environment
+DEBUG 2017-05-04 13:18:12,559: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-04 13:18:12,559: 	 Making tarball in /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/inputs/52293b60-2ffa-40e5-aedb-2e88409729b4default.tgz
+DEBUG 2017-05-04 13:18:12,599: 	 Checking directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/lib
+DEBUG 2017-05-04 13:18:12,600: 	 Adding directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/lib to tarball
+DEBUG 2017-05-04 13:18:34,253: 	 Checking directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/biglib
+DEBUG 2017-05-04 13:18:34,254: 	 Adding directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/biglib to tarball
+DEBUG 2017-05-04 13:18:34,258: 	 Checking directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/module
+DEBUG 2017-05-04 13:18:35,091: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/HLTrigger/special/interface to tarball
+DEBUG 2017-05-04 13:18:35,431: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/L1Trigger/interface to tarball
+DEBUG 2017-05-04 13:18:35,669: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/METReco/interface to tarball
+DEBUG 2017-05-04 13:18:35,928: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/MuonReco/interface to tarball
+DEBUG 2017-05-04 13:18:36,077: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/ParticleFlowCandidate/interface to tarball
+DEBUG 2017-05-04 13:18:36,136: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/DataFormats/PatCandidates/interface to tarball
+DEBUG 2017-05-04 13:18:36,416: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/Alignment/OfflineValidation/interface to tarball
+DEBUG 2017-05-04 13:18:36,578: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/CommonTools/ParticleFlow/interface to tarball
+DEBUG 2017-05-04 13:18:36,945: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/FWCore/Version/interface to tarball
+DEBUG 2017-05-04 13:18:37,009: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/EgammaAnalysis/ElectronTools/data to tarball
+DEBUG 2017-05-04 13:18:37,055: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/EgammaAnalysis/ElectronTools/interface to tarball
+DEBUG 2017-05-04 13:18:37,173: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/EventFilter/L1TRawToDigi/interface to tarball
+DEBUG 2017-05-04 13:18:37,390: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/EventFilter/Utilities/interface to tarball
+DEBUG 2017-05-04 13:18:37,536: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/Fireworks/Core/data to tarball
+DEBUG 2017-05-04 13:18:37,705: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/Fireworks/Core/interface to tarball
+DEBUG 2017-05-04 13:18:38,191: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/JetMETCorrections/Type1MET/data to tarball
+DEBUG 2017-05-04 13:18:38,202: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/JetMETCorrections/Type1MET/interface to tarball
+DEBUG 2017-05-04 13:18:38,363: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TCalorimeter/interface to tarball
+DEBUG 2017-05-04 13:18:38,572: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TGlobal/interface to tarball
+DEBUG 2017-05-04 13:18:38,741: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TMuon/data to tarball
+DEBUG 2017-05-04 13:18:38,751: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TMuon/interface to tarball
+DEBUG 2017-05-04 13:18:38,880: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TMuonBarrel/interface to tarball
+DEBUG 2017-05-04 13:18:39,003: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/L1Trigger/L1TNtuples/interface to tarball
+DEBUG 2017-05-04 13:18:39,265: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/PhysicsTools/PatAlgos/interface to tarball
+DEBUG 2017-05-04 13:18:39,566: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/PhysicsTools/PatUtils/data to tarball
+DEBUG 2017-05-04 13:18:40,456: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/PhysicsTools/PatUtils/interface to tarball
+DEBUG 2017-05-04 13:18:40,754: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/PhysicsTools/Utilities/interface to tarball
+DEBUG 2017-05-04 13:18:41,048: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEcal/EgammaClusterProducers/data to tarball
+DEBUG 2017-05-04 13:18:41,128: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEcal/EgammaClusterProducers/interface to tarball
+DEBUG 2017-05-04 13:18:41,311: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/EgammaIsolationAlgos/interface to tarball
+DEBUG 2017-05-04 13:18:41,448: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/EgammaPhotonProducers/interface to tarball
+DEBUG 2017-05-04 13:18:41,545: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/EgammaTools/data to tarball
+DEBUG 2017-05-04 13:18:41,596: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/EgammaTools/interface to tarball
+DEBUG 2017-05-04 13:18:41,686: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/ElectronIdentification/data to tarball
+DEBUG 2017-05-04 13:18:54,152: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoEgamma/ElectronIdentification/interface to tarball
+DEBUG 2017-05-04 13:18:54,329: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoLocalCalo/EcalRecProducers/interface to tarball
+DEBUG 2017-05-04 13:18:54,504: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METAlgorithms/interface to tarball
+DEBUG 2017-05-04 13:18:54,589: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METFilters/data to tarball
+DEBUG 2017-05-04 13:18:54,605: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METFilters/interface to tarball
+DEBUG 2017-05-04 13:18:54,673: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METPUSubtraction/data to tarball
+DEBUG 2017-05-04 13:18:55,063: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METPUSubtraction/interface to tarball
+DEBUG 2017-05-04 13:18:55,140: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoMET/METProducers/interface to tarball
+DEBUG 2017-05-04 13:18:55,256: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoParticleFlow/PFProducer/data to tarball
+DEBUG 2017-05-04 13:18:55,270: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoParticleFlow/PFProducer/interface to tarball
+DEBUG 2017-05-04 13:18:55,468: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoTauTag/RecoTau/interface to tarball
+DEBUG 2017-05-04 13:18:55,687: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/RecoTauTag/HLTProducers/interface to tarball
+DEBUG 2017-05-04 13:18:55,787: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/SimDataFormats/GeneratorProducts/data to tarball
+DEBUG 2017-05-04 13:18:55,822: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/SimDataFormats/GeneratorProducts/interface to tarball
+DEBUG 2017-05-04 13:18:55,877: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/SimGeneral/MixingModule/interface to tarball
+DEBUG 2017-05-04 13:18:56,694: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/Core/interface to tarball
+DEBUG 2017-05-04 13:18:56,978: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface to tarball
+DEBUG 2017-05-04 13:18:57,812: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface to tarball
+DEBUG 2017-05-04 13:18:58,159: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/LegacySVFit/interface to tarball
+DEBUG 2017-05-04 13:18:58,657: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface to tarball
+DEBUG 2017-05-04 13:18:59,309: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/JetTauFakeRate/interface to tarball
+DEBUG 2017-05-04 13:18:59,364: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/Modules/interface to tarball
+DEBUG 2017-05-04 13:18:59,913: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface to tarball
+DEBUG 2017-05-04 13:19:00,010: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/Utilities/interface to tarball
+DEBUG 2017-05-04 13:19:00,141: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/Zbb/interface to tarball
+DEBUG 2017-05-04 13:19:00,191: 	 Adding data directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/interface to tarball
+DEBUG 2017-05-04 13:19:01,392: 	 Uploading archive /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/inputs/52293b60-2ffa-40e5-aedb-2e88409729b4default.tgz (46 MB) to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2017-05-04 13:19:16,756: 	 Loading required information from the environment
+DEBUG 2017-05-04 13:19:16,757: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-04 13:19:16,757: 	 Making tarball in /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/inputs/debugFiles.tgz
+DEBUG 2017-05-04 13:19:16,769: 	 Uploading archive /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/inputs/debugFiles.tgz (14 KB) to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2017-05-04 13:19:17,153: 	 Result uploading input files: b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz 
+INFO 2017-05-04 13:19:17,158: 	 Sending the request to the server
+DEBUG 2017-05-04 13:19:17,159: 	 Submitting {'maxjobruntime': 1250, 'extrajdl': [], 'ignorelocality': 0, 'savelogsflag': 0, 'useparent': 0, 'asyncdest': 'T2_UK_London_IC', 'algoargs': 80000, 'cachefilename': 'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', 'numcores': 1, 'addoutputfiles': [], 'generator': 'pythia', 'maxmemory': 2000, 'publishdbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', 'priority': 10, 'jobsw': 'CMSSW_8_0_25', 'edmoutfiles': [], 'userfiles': [], 'primarydataset': '', 'inputdata': '/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', 'lfn': '/store/user/vmilosev', 'dryrun': 0, 'workflow': 'crab_VBF_HInv', 'cacheurl': u'https://cmsweb.cern.ch/crabcache', 'nonprodsw': 1, 'tfileoutfiles': ['EventTree.root'], 'oneEventMode': 0, 'debugfilename': '9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', 'saveoutput': 1, 'publication': 0, 'jobarch': 'slc6_amd64_gcc530', 'totalunits': 0, 'splitalgo': 'EventAwareLumiBased', 'ignoreglobalblacklist': 0, 'nonvaliddata': 0, 'dbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', 'publishgroupname': 0, 'jobtype': 'Analysis', 'publishname2': ''} 
+DEBUG 2017-05-04 13:19:17,159: 	 Encoded submit request: maxjobruntime=1250&ignorelocality=0&savelogsflag=0&useparent=0&asyncdest=T2_UK_London_IC&algoargs=80000&cachefilename=b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz&numcores=1&generator=pythia&maxmemory=2000&publishdbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSWriter&priority=10&jobsw=CMSSW_8_0_25&primarydataset=&inputdata=%2FVBF_HToInvisible_M125_13TeV_powheg_pythia8%2Fvmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008%2FUSER&lfn=%2Fstore%2Fuser%2Fvmilosev&dryrun=0&workflow=crab_VBF_HInv&cacheurl=https%3A%2F%2Fcmsweb.cern.ch%2Fcrabcache&nonprodsw=1&oneEventMode=0&debugfilename=9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz&saveoutput=1&publication=0&jobarch=slc6_amd64_gcc530&totalunits=0&splitalgo=EventAwareLumiBased&ignoreglobalblacklist=0&nonvaliddata=0&dbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSReader&publishgroupname=0&jobtype=Analysis&publishname2=&tfileoutfiles=EventTree.root
+DEBUG 2017-05-04 13:19:18,418: 	 Result: {u'result': [{u'RequestName': u'170504_111918:vmilosev_crab_VBF_HInv'}]}
+INFO 2017-05-04 13:19:18,424: 	 Success: Your task has been delivered to the CRAB3 server.
+INFO 2017-05-04 13:19:18,425: 	 Task name: 170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:19:18,425: 	 Please use 'crab status' to check how the submission process proceeds.
+DEBUG 2017-05-04 13:19:18,425: 	 About to return
+DEBUG 2017-05-04 13:21:54,732: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:21:54,733: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:21:54,745: 	 Checking credentials
+DEBUG 2017-05-04 13:21:54,745: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:21:54,745: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:21:56,291: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 2233
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:21:57,112: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 2232
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:21:57,113: 	 Proxy valid for 00:37:13 hours
+DEBUG 2017-05-04 13:21:57,236: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:21:57,237: 	 Checking credentials
+DEBUG 2017-05-04 13:21:57,237: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:21:57,237: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:21:58,462: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 2231
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:21:59,591: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 2230
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:21:59,592: 	 Proxy valid for 00:37:11 hours
+DEBUG 2017-05-04 13:22:00,102: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:22:00,231: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:22:00,231: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:22:00,231: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:22:00,837: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 709:07:30  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:22:00,838: 	 Myproxy is valid: 2552850
+DEBUG 2017-05-04 13:22:00,838: 	 Command use: status
+DEBUG 2017-05-04 13:22:00,838: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 13:22:01,255: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:22:01,255: 	 Instance is prod
+DEBUG 2017-05-04 13:22:01,255: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:22:01,255: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:22:01,623: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 13:22:01,624: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 13:22:01,625: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:22:01,625: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 13:22:01,625: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 13:22:01,625: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:22:01,625: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:22:01,625: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 13:22:01,625: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:22:01,626: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 13:22:01,641: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}}
+INFO 2017-05-04 13:22:01,641: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 13:22:01,642: 	 
+Jobs status:                    idle          100.0% (2/2)
+INFO 2017-05-04 13:22:01,643: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 13:22:01,732: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 13:24:27,806: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:24:27,807: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:24:27,820: 	 Checking credentials
+DEBUG 2017-05-04 13:24:27,822: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:24:27,823: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:24:29,450: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 2080
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:24:30,864: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 2079
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:24:30,864: 	 Proxy valid for 00:34:40 hours
+DEBUG 2017-05-04 13:24:30,988: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:24:30,989: 	 Checking credentials
+DEBUG 2017-05-04 13:24:30,989: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:24:30,990: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:24:32,332: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 2077
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:24:33,367: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 2076
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:24:33,367: 	 Proxy valid for 00:34:37 hours
+DEBUG 2017-05-04 13:24:33,840: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:24:33,972: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:24:33,973: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:24:33,973: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:24:34,280: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 709:04:56  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:24:34,282: 	 Myproxy is valid: 2552696
+DEBUG 2017-05-04 13:24:34,282: 	 Command use: status
+DEBUG 2017-05-04 13:24:34,282: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 13:24:34,711: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:24:34,711: 	 Instance is prod
+DEBUG 2017-05-04 13:24:34,711: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:24:34,711: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:24:35,090: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 13:24:35,091: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 13:24:35,091: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:24:35,091: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 13:24:35,091: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 13:24:35,091: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:24:35,091: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:24:35,091: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 13:24:35,091: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:24:35,091: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 13:24:35,103: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}}
+INFO 2017-05-04 13:24:35,103: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 13:24:35,103: 	 
+Jobs status:                    idle          100.0% (2/2)
+INFO 2017-05-04 13:24:35,103: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 13:24:35,140: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 13:27:55,628: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:27:55,629: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:27:55,645: 	 Checking credentials
+DEBUG 2017-05-04 13:27:55,645: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:27:55,645: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:27:56,663: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 1873
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:27:57,571: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 1872
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:27:57,571: 	 Proxy valid for 00:31:13 hours
+DEBUG 2017-05-04 13:27:57,686: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:27:57,686: 	 Checking credentials
+DEBUG 2017-05-04 13:27:57,686: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:27:57,687: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:27:58,702: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 1871
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:27:59,431: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 1870
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:27:59,431: 	 Proxy valid for 00:31:11 hours
+DEBUG 2017-05-04 13:27:59,879: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:27:59,994: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:27:59,995: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:27:59,995: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:28:00,198: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 709:01:30  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:28:00,199: 	 Myproxy is valid: 2552490
+DEBUG 2017-05-04 13:28:00,199: 	 Command use: status
+DEBUG 2017-05-04 13:28:00,199: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 13:28:00,565: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:28:00,565: 	 Instance is prod
+DEBUG 2017-05-04 13:28:00,565: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:28:00,565: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:28:00,936: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 13:28:00,937: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 13:28:00,937: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:28:00,937: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 13:28:00,937: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 13:28:00,937: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:28:00,937: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:28:00,937: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 13:28:00,937: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:28:00,937: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 13:28:00,977: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 123.70460605621338], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [24012], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [0.0]}}
+INFO 2017-05-04 13:28:00,978: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 13:28:00,978: 	 
+Jobs status:                    idle           50.0% (1/2)
+INFO 2017-05-04 13:28:00,978: 	 				running        50.0% (1/2)
+INFO 2017-05-04 13:28:00,978: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 13:28:01,095: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 13:29:18,739: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:29:18,740: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:29:18,754: 	 Checking credentials
+DEBUG 2017-05-04 13:29:18,755: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:29:18,755: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:29:19,773: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 1790
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:29:20,486: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 1789
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:29:20,487: 	 Proxy valid for 00:29:50 hours
+DEBUG 2017-05-04 13:29:20,603: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:29:20,603: 	 Checking credentials
+DEBUG 2017-05-04 13:29:20,603: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:29:20,604: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:29:21,613: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 1788
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:29:22,657: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 1787
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:29:22,658: 	 Proxy valid for 00:29:48 hours
+DEBUG 2017-05-04 13:29:23,074: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:29:23,186: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:29:23,187: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:29:23,187: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:29:23,390: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 709:00:07  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:29:23,391: 	 Myproxy is valid: 2552407
+DEBUG 2017-05-04 13:29:23,391: 	 Command use: status
+DEBUG 2017-05-04 13:29:23,392: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 13:29:23,791: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:29:23,791: 	 Instance is prod
+DEBUG 2017-05-04 13:29:23,791: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:29:23,791: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:29:24,146: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 13:29:24,147: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 13:29:24,147: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:29:24,147: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 13:29:24,147: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 13:29:24,147: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:29:24,147: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:29:24,147: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 13:29:24,147: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:29:24,148: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 13:29:24,165: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [0], 'StartTimes': [], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': False, 'State': 'idle', 'ResidentSetSize': [0], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 123.70460605621338], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [24012], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [0.0]}}
+INFO 2017-05-04 13:29:24,166: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 13:29:24,166: 	 
+Jobs status:                    idle           50.0% (1/2)
+INFO 2017-05-04 13:29:24,166: 	 				running        50.0% (1/2)
+INFO 2017-05-04 13:29:24,166: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 13:29:24,201: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 13:34:56,979: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:34:56,979: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:34:56,987: 	 Checking credentials
+DEBUG 2017-05-04 13:34:56,989: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:34:56,989: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:34:58,017: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 1452
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:34:59,491: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 1450
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:34:59,491: 	 Proxy valid for 00:24:12 hours
+DEBUG 2017-05-04 13:34:59,606: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:34:59,607: 	 Checking credentials
+DEBUG 2017-05-04 13:34:59,607: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:34:59,607: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:35:00,757: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 1449
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:35:02,027: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 1448
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:35:02,028: 	 Proxy valid for 00:24:09 hours
+DEBUG 2017-05-04 13:35:02,544: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:35:02,755: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:35:02,755: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:35:02,756: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:35:03,086: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:54:27  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:35:03,087: 	 Myproxy is valid: 2552067
+DEBUG 2017-05-04 13:35:03,087: 	 Command use: status
+DEBUG 2017-05-04 13:35:03,087: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 13:35:03,498: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:35:03,498: 	 Instance is prod
+DEBUG 2017-05-04 13:35:03,498: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:35:03,498: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:35:03,987: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 13:35:03,989: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 13:35:03,989: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:35:03,989: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 13:35:03,989: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 13:35:03,990: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:35:03,990: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:35:03,990: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 13:35:03,990: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:35:03,990: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 13:35:04,003: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 243.54041600227356], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [47048], 'TotalUserCpuTimeHistory': [0.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [0.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 311.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [781176], 'TotalUserCpuTimeHistory': [216.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [9.0]}}
+INFO 2017-05-04 13:35:04,003: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 13:35:04,003: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 13:35:04,003: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 13:35:04,739: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 13:49:20,571: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:49:20,571: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:49:20,581: 	 Checking credentials
+DEBUG 2017-05-04 13:49:20,582: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:49:20,582: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:49:21,806: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 588
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:22,935: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 587
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:22,936: 	 Proxy valid for 00:09:48 hours
+DEBUG 2017-05-04 13:49:22,936: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2017-05-04 13:49:32,513: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 0
+DEBUG 2017-05-04 13:49:33,670: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 86397
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:35,140: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 86395
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:36,173: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u68879 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:36,173: 	 Proxy created.
+DEBUG 2017-05-04 13:49:36,297: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:36,297: 	 Checking credentials
+DEBUG 2017-05-04 13:49:36,297: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:49:36,297: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:49:37,525: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 86393
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:38,872: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 86392
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:38,873: 	 Proxy valid for 23:59:53 hours
+DEBUG 2017-05-04 13:49:39,232: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:49:39,345: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:39,345: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:49:39,345: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:49:39,649: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:39:51  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:49:39,651: 	 Myproxy is valid: 2551191
+DEBUG 2017-05-04 13:49:39,651: 	 Command use: status
+DEBUG 2017-05-04 13:49:39,651: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 13:49:39,995: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:49:39,996: 	 Instance is prod
+DEBUG 2017-05-04 13:49:39,996: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:49:39,996: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:49:40,357: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 13:49:40,358: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 13:49:40,359: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:49:40,359: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 13:49:40,359: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 13:49:40,359: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:49:40,359: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:49:40,359: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 13:49:40,359: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:49:40,359: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 13:49:40,371: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 610.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [918068], 'TotalUserCpuTimeHistory': [482.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [24.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 1212.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [923996], 'TotalUserCpuTimeHistory': [1006.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [42.0]}}
+INFO 2017-05-04 13:49:40,371: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 13:49:40,371: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 13:49:40,371: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 13:49:40,560: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 13:52:10,204: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:52:10,204: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:52:10,258: 	 Checking credentials
+DEBUG 2017-05-04 13:52:10,260: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:52:10,260: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:52:11,582: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 86239
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:52:12,698: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 86238
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:52:12,698: 	 Proxy valid for 23:57:19 hours
+DEBUG 2017-05-04 13:52:12,815: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:52:12,816: 	 Checking credentials
+DEBUG 2017-05-04 13:52:12,817: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:52:12,817: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:52:13,852: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 86237
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:52:14,878: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 86236
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:52:14,879: 	 Proxy valid for 23:57:17 hours
+DEBUG 2017-05-04 13:52:15,333: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:52:15,462: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:52:15,463: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:52:15,463: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:52:15,775: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:37:15  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:52:15,777: 	 Myproxy is valid: 2551035
+DEBUG 2017-05-04 13:52:15,777: 	 Command use: status
+DEBUG 2017-05-04 13:52:15,777: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 13:52:16,292: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:52:16,292: 	 Instance is prod
+DEBUG 2017-05-04 13:52:16,292: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:52:16,292: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:52:16,861: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 13:52:16,863: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 13:52:16,863: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:52:16,863: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 13:52:16,863: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 13:52:16,863: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:52:16,863: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:52:16,864: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 13:52:16,864: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:52:16,864: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 13:52:16,877: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 1211.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [921312], 'TotalUserCpuTimeHistory': [992.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [49.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 1212.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [923996], 'TotalUserCpuTimeHistory': [1006.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [42.0]}}
+INFO 2017-05-04 13:52:16,877: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 13:52:16,877: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 13:52:16,877: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 13:52:16,932: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 13:55:31,470: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:55:31,470: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:55:31,479: 	 Checking credentials
+DEBUG 2017-05-04 13:55:31,480: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:55:31,480: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:55:32,788: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 86038
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:55:33,501: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 86037
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:55:33,501: 	 Proxy valid for 23:53:58 hours
+DEBUG 2017-05-04 13:55:33,618: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:55:33,619: 	 Checking credentials
+DEBUG 2017-05-04 13:55:33,619: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:55:33,619: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:55:34,631: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 86036
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:55:35,843: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 86035
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:55:35,843: 	 Proxy valid for 23:53:56 hours
+DEBUG 2017-05-04 13:55:36,256: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 13:55:36,367: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:55:36,367: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 13:55:36,367: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 13:55:36,673: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:33:54  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:55:36,674: 	 Myproxy is valid: 2550834
+DEBUG 2017-05-04 13:55:36,675: 	 Command use: status
+DEBUG 2017-05-04 13:55:36,675: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 13:55:37,148: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 13:55:37,149: 	 Instance is prod
+DEBUG 2017-05-04 13:55:37,149: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 13:55:37,149: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 13:55:37,596: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 13:55:37,597: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 13:55:37,597: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:55:37,597: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 13:55:37,597: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 13:55:37,597: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 13:55:37,597: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:55:37,598: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 13:55:37,598: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 13:55:37,598: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 13:55:37,606: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 1211.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [921312], 'TotalUserCpuTimeHistory': [992.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [49.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 1212.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [923996], 'TotalUserCpuTimeHistory': [1006.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [42.0]}}
+INFO 2017-05-04 13:55:37,606: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 13:55:37,606: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 13:55:37,606: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 13:55:37,641: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 14:00:46,285: 	 Executing command: 'status'
+DEBUG 2017-05-04 14:00:46,286: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 14:00:46,305: 	 Checking credentials
+DEBUG 2017-05-04 14:00:46,306: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:00:46,306: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:00:47,939: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85723
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:00:48,956: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85722
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:00:48,957: 	 Proxy valid for 23:48:43 hours
+DEBUG 2017-05-04 14:00:49,076: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:00:49,077: 	 Checking credentials
+DEBUG 2017-05-04 14:00:49,078: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:00:49,080: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:00:50,697: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85720
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:00:52,469: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85718
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:00:52,469: 	 Proxy valid for 23:48:40 hours
+DEBUG 2017-05-04 14:00:52,847: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 14:00:52,965: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:00:52,966: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 14:00:52,966: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 14:00:53,474: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:28:37  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:00:53,476: 	 Myproxy is valid: 2550517
+DEBUG 2017-05-04 14:00:53,476: 	 Command use: status
+DEBUG 2017-05-04 14:00:53,476: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 14:00:53,916: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 14:00:53,916: 	 Instance is prod
+DEBUG 2017-05-04 14:00:53,916: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 14:00:53,916: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 14:00:54,410: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 14:00:54,411: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 14:00:54,412: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:00:54,412: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 14:00:54,412: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 14:00:54,412: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:00:54,412: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:00:54,413: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 14:00:54,413: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:00:54,413: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 14:00:54,426: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 1211.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [921312], 'TotalUserCpuTimeHistory': [992.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [49.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 1212.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [923996], 'TotalUserCpuTimeHistory': [1006.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [42.0]}}
+INFO 2017-05-04 14:00:54,426: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 14:00:54,426: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 14:00:54,426: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 14:00:55,633: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 14:05:36,405: 	 Executing command: 'status'
+DEBUG 2017-05-04 14:05:36,406: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 14:05:36,498: 	 Checking credentials
+DEBUG 2017-05-04 14:05:36,499: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:05:36,499: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:05:37,956: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85433
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:05:39,080: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85431
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:05:39,080: 	 Proxy valid for 23:43:53 hours
+DEBUG 2017-05-04 14:05:39,414: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:05:39,414: 	 Checking credentials
+DEBUG 2017-05-04 14:05:39,414: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:05:39,415: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:05:41,133: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85429
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:05:42,712: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85428
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:05:42,713: 	 Proxy valid for 23:43:49 hours
+DEBUG 2017-05-04 14:05:43,185: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 14:05:43,406: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:05:43,406: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 14:05:43,406: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 14:05:44,038: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:23:47  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:05:44,040: 	 Myproxy is valid: 2550227
+DEBUG 2017-05-04 14:05:44,040: 	 Command use: status
+DEBUG 2017-05-04 14:05:44,040: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 14:05:44,626: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 14:05:44,626: 	 Instance is prod
+DEBUG 2017-05-04 14:05:44,626: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 14:05:44,626: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 14:05:45,167: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 14:05:45,168: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 14:05:45,168: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:05:45,168: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 14:05:45,169: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 14:05:45,169: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:05:45,171: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:05:45,171: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 14:05:45,171: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:05:45,172: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 14:05:45,186: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 1811.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [928600], 'TotalUserCpuTimeHistory': [1511.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [73.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 1212.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [923996], 'TotalUserCpuTimeHistory': [1006.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [42.0]}}
+INFO 2017-05-04 14:05:45,186: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 14:05:45,186: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 14:05:45,187: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 14:05:46,112: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 14:08:22,611: 	 Executing command: 'status'
+DEBUG 2017-05-04 14:08:22,611: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 14:08:22,659: 	 Checking credentials
+DEBUG 2017-05-04 14:08:22,660: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:08:22,660: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:08:24,695: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85266
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:08:26,057: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85265
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:08:26,058: 	 Proxy valid for 23:41:06 hours
+DEBUG 2017-05-04 14:08:26,185: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:08:26,186: 	 Checking credentials
+DEBUG 2017-05-04 14:08:26,186: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:08:26,186: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:08:28,219: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85262
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:08:30,381: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85260
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:08:30,382: 	 Proxy valid for 23:41:02 hours
+DEBUG 2017-05-04 14:08:31,092: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 14:08:31,222: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:08:31,222: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 14:08:31,222: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 14:08:31,540: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:20:59  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:08:31,541: 	 Myproxy is valid: 2550059
+DEBUG 2017-05-04 14:08:31,542: 	 Command use: status
+DEBUG 2017-05-04 14:08:31,542: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 14:08:31,997: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 14:08:31,997: 	 Instance is prod
+DEBUG 2017-05-04 14:08:31,997: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 14:08:31,997: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 14:08:32,621: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 14:08:32,621: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 14:08:32,621: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:08:32,622: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 14:08:32,622: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 14:08:32,622: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:08:32,622: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:08:32,622: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 14:08:32,622: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:08:32,623: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 14:08:32,633: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 1811.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [928600], 'TotalUserCpuTimeHistory': [1511.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [73.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 1212.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [923996], 'TotalUserCpuTimeHistory': [1006.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [42.0]}}
+INFO 2017-05-04 14:08:32,633: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 14:08:32,633: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 14:08:32,634: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 14:08:32,681: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 14:09:45,521: 	 Executing command: 'status'
+DEBUG 2017-05-04 14:09:45,522: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 14:09:45,538: 	 Checking credentials
+DEBUG 2017-05-04 14:09:45,539: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:09:45,539: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:09:47,086: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85183
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:09:48,807: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85182
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:09:48,808: 	 Proxy valid for 23:39:43 hours
+DEBUG 2017-05-04 14:09:48,924: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:09:48,925: 	 Checking credentials
+DEBUG 2017-05-04 14:09:48,925: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:09:48,925: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:09:50,551: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85180
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:09:52,479: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85178
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:09:52,479: 	 Proxy valid for 23:39:40 hours
+DEBUG 2017-05-04 14:09:53,062: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 14:09:53,186: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:09:53,187: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 14:09:53,187: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 14:09:53,597: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:19:37  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:09:53,598: 	 Myproxy is valid: 2549977
+DEBUG 2017-05-04 14:09:53,598: 	 Command use: status
+DEBUG 2017-05-04 14:09:53,598: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 14:09:54,156: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 14:09:54,156: 	 Instance is prod
+DEBUG 2017-05-04 14:09:54,156: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 14:09:54,156: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 14:09:54,616: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 14:09:54,620: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 14:09:54,620: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:09:54,620: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 14:09:54,620: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 14:09:54,620: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:09:54,620: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:09:54,620: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 14:09:54,620: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:09:54,620: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 14:09:54,632: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 1811.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [928600], 'TotalUserCpuTimeHistory': [1511.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [73.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 1212.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [923996], 'TotalUserCpuTimeHistory': [1006.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [42.0]}}
+INFO 2017-05-04 14:09:54,632: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 14:09:54,632: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 14:09:54,632: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 14:09:55,455: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 14:12:44,701: 	 Executing command: 'status'
+DEBUG 2017-05-04 14:12:44,702: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 14:12:44,718: 	 Checking credentials
+DEBUG 2017-05-04 14:12:44,719: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:12:44,719: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:12:46,701: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85004
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:12:48,150: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85002
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:12:48,150: 	 Proxy valid for 23:36:44 hours
+DEBUG 2017-05-04 14:12:48,289: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:12:48,289: 	 Checking credentials
+DEBUG 2017-05-04 14:12:48,290: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 14:12:48,290: 	 Getting proxy life time left
+DEBUG 2017-05-04 14:12:49,552: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 85001
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:12:50,893: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 85000
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:12:50,894: 	 Proxy valid for 23:36:41 hours
+DEBUG 2017-05-04 14:12:51,495: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 14:12:51,609: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:12:51,610: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 14:12:51,610: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 14:12:52,127: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 708:16:38  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 14:12:52,128: 	 Myproxy is valid: 2549798
+DEBUG 2017-05-04 14:12:52,129: 	 Command use: status
+DEBUG 2017-05-04 14:12:52,129: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 14:12:52,691: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 14:12:52,691: 	 Instance is prod
+DEBUG 2017-05-04 14:12:52,691: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 14:12:52,691: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 14:12:53,140: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 14:12:53,141: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 14:12:53,141: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:12:53,141: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 14:12:53,141: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 14:12:53,141: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 14:12:53,141: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:12:53,141: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 14:12:53,141: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 14:12:53,141: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 14:12:53,271: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 1811.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [928600], 'TotalUserCpuTimeHistory': [1511.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [73.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 2715.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [928356], 'TotalUserCpuTimeHistory': [2317.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [93.0]}}
+INFO 2017-05-04 14:12:53,271: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 14:12:53,271: 	 
+Jobs status:                    running       100.0% (2/2)
+INFO 2017-05-04 14:12:53,271: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 14:12:53,357: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 15:21:43,715: 	 Executing command: 'status'
+DEBUG 2017-05-04 15:21:43,717: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 15:21:43,730: 	 Checking credentials
+DEBUG 2017-05-04 15:21:43,730: 	 Proxy file /tmp/x509up_u68879 not found
+DEBUG 2017-05-04 15:21:43,730: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2017-05-04 15:21:52,501: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 0
+DEBUG 2017-05-04 15:21:53,310: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 86398
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 15:21:53,921: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 86397
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 15:21:54,726: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u68879 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 15:21:54,727: 	 Proxy created.
+DEBUG 2017-05-04 15:21:54,882: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 15:21:54,883: 	 Checking credentials
+DEBUG 2017-05-04 15:21:54,884: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 15:21:54,884: 	 Getting proxy life time left
+DEBUG 2017-05-04 15:21:55,498: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 86396
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 15:21:56,206: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 86394
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 15:21:56,206: 	 Proxy valid for 23:59:56 hours
+DEBUG 2017-05-04 15:21:56,580: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 15:21:56,689: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 15:21:56,689: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 15:21:56,689: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 15:21:56,993: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 707:07:34  (29.5 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 15:21:56,994: 	 Myproxy is valid: 2545654
+DEBUG 2017-05-04 15:21:56,994: 	 Command use: status
+DEBUG 2017-05-04 15:21:56,994: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 15:21:57,401: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 15:21:57,401: 	 Instance is prod
+DEBUG 2017-05-04 15:21:57,401: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 15:21:57,401: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 15:21:57,825: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 15:21:57,825: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 15:21:57,825: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 15:21:57,826: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 15:21:57,826: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 15:21:57,826: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 15:21:57,826: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 15:21:57,826: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 15:21:57,826: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 15:21:57,826: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 15:21:57,904: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 6018.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [942436], 'TotalUserCpuTimeHistory': [5074.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [264.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 3488.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [1493900552.0], 'Restarts': 0, 'RecordedSite': True, 'State': 'finished', 'ResidentSetSize': [928356], 'TotalUserCpuTimeHistory': [2969], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [122]}}
+INFO 2017-05-04 15:21:57,904: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 15:21:57,904: 	 
+Jobs status:                    finished       50.0% (1/2)
+INFO 2017-05-04 15:21:57,904: 	 				running        50.0% (1/2)
+INFO 2017-05-04 15:21:57,904: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 15:21:58,247: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 16:18:48,569: 	 Executing command: 'status'
+DEBUG 2017-05-04 16:18:48,784: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 16:18:50,728: 	 Checking credentials
+DEBUG 2017-05-04 16:18:50,730: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 16:18:50,730: 	 Getting proxy life time left
+DEBUG 2017-05-04 16:18:51,939: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 82980
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 16:18:53,065: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 82977
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 16:18:53,066: 	 Proxy valid for 23:03:00 hours
+DEBUG 2017-05-04 16:18:57,372: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 16:18:57,373: 	 Checking credentials
+DEBUG 2017-05-04 16:18:57,373: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 16:18:57,373: 	 Getting proxy life time left
+DEBUG 2017-05-04 16:18:58,383: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 82973
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 16:18:59,093: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 82971
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 16:18:59,093: 	 Proxy valid for 23:02:53 hours
+DEBUG 2017-05-04 16:18:59,503: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 16:18:59,613: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 16:18:59,613: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 16:18:59,614: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 16:18:59,919: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 706:10:31  (29.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 16:18:59,920: 	 Myproxy is valid: 2542231
+DEBUG 2017-05-04 16:18:59,921: 	 Command use: status
+DEBUG 2017-05-04 16:18:59,921: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 16:19:00,285: 	 CRABClient version: 3.3.1705
+DEBUG 2017-05-04 16:19:00,285: 	 Instance is prod
+DEBUG 2017-05-04 16:19:00,285: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 16:19:00,285: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 16:19:00,625: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 16:19:00,626: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 16:19:00,626: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 16:19:00,626: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 16:19:00,626: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 16:19:00,626: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 16:19:00,626: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 16:19:00,627: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 16:19:00,627: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 16:19:00,627: 	 Retrieving 'status_cache' file from webdir
+DEBUG 2017-05-04 16:19:01,658: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 9323.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [1129712], 'TotalUserCpuTimeHistory': [7820.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [422.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 3488.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [1493900552.0], 'Restarts': 0, 'RecordedSite': True, 'State': 'finished', 'ResidentSetSize': [928356], 'TotalUserCpuTimeHistory': [2969], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [122]}}
+INFO 2017-05-04 16:19:01,658: 	 Status on the scheduler:	SUBMITTED
+INFO 2017-05-04 16:19:01,658: 	 
+Jobs status:                    finished       50.0% (1/2)
+INFO 2017-05-04 16:19:01,658: 	 				running        50.0% (1/2)
+INFO 2017-05-04 16:19:01,659: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 16:19:02,520: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log
+DEBUG 2017-05-04 19:24:22,801: 	 Executing command: 'status'
+DEBUG 2017-05-04 19:24:22,804: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 19:24:22,852: 	 Checking credentials
+DEBUG 2017-05-04 19:24:22,853: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 19:24:22,853: 	 Getting proxy life time left
+DEBUG 2017-05-04 19:24:23,559: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 43181
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 19:24:24,164: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 43179
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 19:24:24,165: 	 Proxy valid for 11:59:41 hours
+DEBUG 2017-05-04 19:24:24,326: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 19:24:24,326: 	 Checking credentials
+DEBUG 2017-05-04 19:24:24,326: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 19:24:24,326: 	 Getting proxy life time left
+DEBUG 2017-05-04 19:24:24,839: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 43180
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 19:24:25,446: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 43178
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 19:24:25,446: 	 Proxy valid for 11:59:40 hours
+DEBUG 2017-05-04 19:24:25,832: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-04 19:24:25,950: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 19:24:25,950: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-04 19:24:25,951: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-04 19:24:26,260: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 703:05:04  (29.3 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 19:24:26,262: 	 Myproxy is valid: 2531104
+DEBUG 2017-05-04 19:24:26,262: 	 Command use: status
+DEBUG 2017-05-04 19:24:26,262: 	 Options use: ['Apr05_MC_80X/crab_VBF_HInv/']
+DEBUG 2017-05-04 19:24:26,587: 	 CRABClient version: 3.3.1705.patch1
+DEBUG 2017-05-04 19:24:26,587: 	 Instance is prod
+DEBUG 2017-05-04 19:24:26,587: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-04 19:24:26,587: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-04 19:24:26,988: 	 Got information from server oracle database: {u'result': [u'170504_111918:vmilosev_crab_VBF_HInv', u'None', u'SUBMITTED', u'2017-05-04 11:19:18.412130', u'None', u'2017-05-04 11:20:22.438020', u'None', u'CMSSW_8_0_25', u'slc6_amd64_gcc530', u'/VBF_HToInvisible_M125_13TeV_powheg_pythia8/vmilosev-crab_HTau-24a427e47c816ef5973e398d3e2f1008/USER', u'[]', u'[]', u'EventAwareLumiBased', u"{'splitOnRun': False, 'events_per_job': 80000, 'halt_job_on_file_boundaries': False, 'runs': [], 'lumis': []}", u'0', u'b4391af614af92e2d10091559359aa7a167ee46551c38bbf07aa8126a1dd36e4.tar.gz', u'https://cmsweb.cern.ch/crabcache', u'vmilosev', u'/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic', u'cms', u'None', u'None', u'crab_VBF_HInv-00000000000000000000000000000000', u'T2_UK_London_IC', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader', u'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', u'F', u'Analysis', u'{}', u'[]', u'F', u'vocms052', u'[]', u'1250', u'1', u'2000', u'10', u'None', u'http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv', u'None', u'None', u'[]', u'[]', u'[]', u'pythia', u'[]', u"['EventTree.root']", u'[]', u'https://cmsweb.cern.ch/crabserver/prod', u'None', u'0', u'cmsgwms-collector-global.cern.ch:9620,cmssrv221.fnal.gov:9620', u'crab3@vocms0144.cern.ch', u'F', u'[]', u'T', u'/store/user/vmilosev', u'F', u'None', u'F', u'F', u'F', u'None', u'VBF_HToInvisible_M125_13TeV_powheg_pythia8', u'filetransfers', u'SUBMIT', u'7854264', u'9363522d2709417064e73c46c63dc9e28adbf2069c51315480b90c3b8af57dcc.tar.gz', u'188.184.90.43', u'F', u'None'], u'desc': {u'columns': [u'tm_taskname', u'panda_jobset_id', u'tm_task_status', u'tm_start_time', u'tm_start_injection', u'tm_end_injection', u'tm_task_failure', u'tm_job_sw', u'tm_job_arch', u'tm_input_dataset', u'tm_site_whitelist', u'tm_site_blacklist', u'tm_split_algo', u'tm_split_args', u'tm_totalunits', u'tm_user_sandbox', u'tm_cache_url', u'tm_username', u'tm_user_dn', u'tm_user_vo', u'tm_user_role', u'tm_user_group', u'tm_publish_name', u'tm_asyncdest', u'tm_dbs_url', u'tm_publish_dbs_url', u'tm_publication', u'tm_job_type', u'tm_arguments', u'panda_resubmitted_jobs', u'tm_save_logs', u'tw_name', u'tm_user_infiles', u'tm_maxjobruntime', u'tm_numcores', u'tm_maxmemory', u'tm_priority', u'tm_output_dataset', u'tm_user_webdir', u'tm_activity', u'tm_scriptexe', u'tm_scriptargs', u'tm_extrajdl', u'tm_task_warnings', u'tm_generator', u'tm_outfiles', u'tm_tfile_outfiles', u'tm_edm_outfiles', u'tm_asourl', u'tm_events_per_lumi', u'tm_use_parent', u'tm_collector', u'tm_schedd', u'tm_dry_run', u'tm_user_files', u'tm_transfer_outputs', u'tm_output_lfn', u'tm_ignore_locality', u'tm_fail_limit', u'tm_one_event_mode', u'tm_publish_groupname', u'tm_nonvalid_input_dataset', u'tm_secondary_input_dataset', u'tm_primary_dataset', u'tm_asodb', u'tm_task_command', u'clusterid', u'tm_debug_files', u'tm_submitter_ip_addr', u'tm_ignore_global_blacklist', u'tm_last_publication']}}
+INFO 2017-05-04 19:24:26,989: 	 CRAB project directory:		/afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv
+INFO 2017-05-04 19:24:26,989: 	 Task name:			170504_111918:vmilosev_crab_VBF_HInv
+INFO 2017-05-04 19:24:26,989: 	 Grid scheduler:			crab3@vocms0144.cern.ch
+INFO 2017-05-04 19:24:26,989: 	 Status on the CRAB server:	SUBMITTED
+INFO 2017-05-04 19:24:26,989: 	 Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/170504_111918%3Avmilosev_crab_VBF_HInv
+INFO 2017-05-04 19:24:26,989: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=vmilosev&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=170504_111918%3Avmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 19:24:26,989: 	 The CRAB server submitted your task to the Grid scheduler (cluster ID: 7854264)
+DEBUG 2017-05-04 19:24:26,990: 	 Webdir is located at http://vocms0144.cern.ch/mon/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 19:24:27,360: 	 Proxied webdir is located at https://cmsweb.cern.ch/scheddmon/0144/cms1307/170504_111918:vmilosev_crab_VBF_HInv
+DEBUG 2017-05-04 19:24:27,360: 	 Retrieving 'status_cache' file from https://cmsweb.cern.ch/scheddmon/0144/cms1307/170504_111918:vmilosev_crab_VBF_HInv/status_cache
+DEBUG 2017-05-04 19:24:27,733: 	 Got information from status cache file: {'1': {'Retries': 0, 'WallDurations': [10.0, 11779.0], 'StartTimes': [1493897245.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854268.0'], 'EndTimes': [1493909024.0], 'Restarts': 0, 'RecordedSite': True, 'State': 'finished', 'ResidentSetSize': [1131392], 'TotalUserCpuTimeHistory': [9801], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [544]}, '2': {'Retries': 0, 'WallDurations': [10.0, 3488.0], 'StartTimes': [1493897064.0], 'SubmitTimes': [1493896816.0], 'JobIds': ['7854267.0'], 'EndTimes': [1493900552.0], 'Restarts': 0, 'RecordedSite': True, 'State': 'finished', 'ResidentSetSize': [928356], 'TotalUserCpuTimeHistory': [2969], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [122]}}
+INFO 2017-05-04 19:24:27,733: 	 Status on the scheduler:	COMPLETED
+INFO 2017-05-04 19:24:27,734: 	 
+Jobs status:                    finished      100.0% (2/2)
+INFO 2017-05-04 19:24:27,735: 	 
+No publication information (publication has been disabled in the CRAB configuration file)
+INFO 2017-05-04 19:24:27,886: 	 Log file is /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X/crab_VBF_HInv/crab.log

@@ -1,0 +1,107 @@
+Error:  '80X' not registered.
+DEBUG 2017-05-10 11:16:59,455: 	 Executing command: 'submit'
+DEBUG 2017-05-10 11:16:59,540: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-10 11:16:59,555: 	 Checking credentials
+DEBUG 2017-05-10 11:16:59,556: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 11:16:59,556: 	 Getting proxy life time left
+DEBUG 2017-05-10 11:17:01,034: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 42267
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 11:17:01,976: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 42267
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 11:17:01,977: 	 Proxy valid for 11:44:27 hours
+DEBUG 2017-05-10 11:17:01,978: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2017-05-10 11:17:02,168: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 11:17:02,169: 	 Checking credentials
+DEBUG 2017-05-10 11:17:02,171: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-10 11:17:02,171: 	 Getting proxy life time left
+DEBUG 2017-05-10 11:17:03,540: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 42265
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 11:17:04,829: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 42264
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 11:17:04,830: 	 Proxy valid for 11:44:25 hours
+DEBUG 2017-05-10 11:17:06,496: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u68879 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 11:17:07,287: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+DEBUG 2017-05-10 11:17:07,481: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 11:17:07,482: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2017-05-10 11:17:07,482: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic_cmsweb.cern.ch for credential name
+DEBUG 2017-05-10 11:17:07,881: 	 Executing : 
+ command : myproxy-info -l 9e6c87ae04a05740e17b1fe039c26c54e6181f19 -s myproxy.cern.ch
+ output : username: 9e6c87ae04a05740e17b1fe039c26c54e6181f19
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=vmilosev/CN=757854/CN=Vukasin Milosevic
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108|0105|0109).cern.ch
+  timeleft: 567:12:23  (23.6 days)
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-10 11:17:07,885: 	 Myproxy is valid: 2041943
+DEBUG 2017-05-10 11:17:07,885: 	 Command use: submit
+DEBUG 2017-05-10 11:17:07,885: 	 Options use: ['--config', <WMCore.Configuration.Configuration object at 0x7f2acf99d290>]
+DEBUG 2017-05-10 11:17:08,436: 	 CRABClient version: 3.3.1705.patch3
+DEBUG 2017-05-10 11:17:08,437: 	 Instance is prod
+DEBUG 2017-05-10 11:17:08,437: 	 Server base url is cmsweb.cern.ch
+DEBUG 2017-05-10 11:17:08,437: 	 Command url /crabserver/prod/workflow
+DEBUG 2017-05-10 11:17:08,437: 	 Started submission
+DEBUG 2017-05-10 11:17:08,437: 	 Working on /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/May102017_80X/crab_VBF_HInv
+DEBUG 2017-05-10 11:17:09,895: 	 Loading required information from the environment
+DEBUG 2017-05-10 11:17:09,896: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-10 11:17:09,896: 	 Loading required information from the environment
+DEBUG 2017-05-10 11:17:09,896: 	 Found CMSSW_8_0_25 for slc6_amd64_gcc530 with base /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25
+DEBUG 2017-05-10 11:17:09,958: 	 UNIQUE NAME: tarUUID ab281f52-0034-4589-bbe0-9d729de5ce44 
+DEBUG 2017-05-10 11:17:09,959: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.transferOutputs = True
+config.General.workArea = 'May102017_80X'
+config.General.requestName = 'VBF_HInv'
+config.section_('JobType')
+config.JobType.psetName = 'VM_customHLT_test.py'
+config.JobType.pluginName = 'Analysis'
+config.JobType.outputFiles = ['EventTree.root']
+config.JobType.pyCfgParams = ['release=80XMINIAOD', 'isData=1', 'doHT=1', '80X_dataRun2_Prompt_v16', 'isReHLT=1']
+config.JobType.allowUndistributedCMSSW = True
+config.section_('Data')
+config.Data.inputDataset = '/JetHT/vmilosev-crab_HTau-19981e06020fb058d2a7103e699b0a44/USER'
+config.Data.publication = False
+config.Data.unitsPerJob = 80000
+config.Data.inputDBS = 'phys03'
+config.Data.splitting = 'EventAwareLumiBased'
+config.Data.outLFNDirBase = '/store/user/vmilosev'
+config.section_('User')
+config.section_('Site')
+config.Site.storageSite = 'T2_UK_London_IC'
+
+DEBUG 2017-05-10 11:17:09,959: 	 self.config.JobType.psetName: VM_customHLT_test.py
+INFO 2017-05-10 11:17:09,959: 	 Importing CMSSW configuration VM_customHLT_test.py
+DEBUG 2017-05-10 11:17:09,960: 	 Additional parameters for the CMSSW configuration are: ['release=80XMINIAOD', 'isData=1', 'doHT=1', '80X_dataRun2_Prompt_v16', 'isReHLT=1']

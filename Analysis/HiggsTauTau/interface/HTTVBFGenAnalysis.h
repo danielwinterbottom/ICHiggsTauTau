@@ -46,6 +46,12 @@ class HTTVBFGenAnalysis : public ModuleBase {
   unsigned count_mm_;
   unsigned count_mt_;
   unsigned count_tt_;
+    
+    
+    bool HbbPassed_;
+    bool HLTPassThroughPassed_;
+    bool L1Passed_;
+    
   
   bool passed_;
   double pt_1_;
@@ -75,6 +81,9 @@ class HTTVBFGenAnalysis : public ModuleBase {
   double hlt_jeta_3_;
   double hlt_jeta_4_;
   double hlt_mjj_;
+  double min_dphi_;
+  double dphi_;
+  double deta_;
   double calo_mjj_;
   double hlt_mjj30_;
   double calo_mjj30_;

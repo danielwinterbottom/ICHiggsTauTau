@@ -49,11 +49,11 @@ ICTriggerObjectProducer::~ICTriggerObjectProducer() { delete objects_; }
 void ICTriggerObjectProducer::produce(edm::Event& event,
                                       const edm::EventSetup& setup) {
   objects_->clear();
+    std::cout<<"First Line"<<std::endl;
 
   if (!input_is_standalone_) {
     edm::Handle<pat::TriggerEvent> trig_handle;
     event.getByLabel(input_, trig_handle);
-
 
     // Get a vector of all HLT paths
     std::vector<pat::TriggerPath> const* paths = trig_handle->paths();
@@ -65,7 +65,8 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
     for (unsigned i = 0; i < paths->size(); ++i) {
       std::string const& name = paths->at(i).name();
       if (name.find(hlt_path_) != name.npos) {
-        full_name = name;
+       std::cout<<"Name: = "<<name<<std::endl; 
+       full_name = name;
         path_found = true;
         if (store_only_if_fired_ && !(paths->at(i).wasAccept())) fired = false;
         break;  // Stop loop after we find the first match
@@ -76,6 +77,7 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
     // Get a vector of the objects used in the chosen path
     pat::TriggerObjectRefVector objects =
         trig_handle->pathObjects(full_name, false);
+     //   std::cout<<"Full_name:= "<<full_name<<std::endl;
     objects_->resize(objects.size(), ic::TriggerObject());
     for (unsigned i = 0; i < objects.size(); ++i) {
       pat::TriggerObject const& src = *(objects.at(i));
@@ -90,8 +92,10 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       // Get the filters this object was used in
       pat::TriggerFilterRefVector filters =
           trig_handle->objectFilters((objects)[i], false);
+      std::cout<<"Pre loop-a"<<std::endl;
       for (unsigned k = 0; k < filters.size(); ++k) {
         // Only store the filter label if the filter was used in the chosen path
+        std::cout<<"Fil: "<<filters[k]->label()<<std::endl;  
         if (!trig_handle->filterInPath(filters[k], full_name, false)) continue;
         filter_labels.push_back(CityHash64(filters[k]->label()));
         observed_filters_[filters[k]->label()] = CityHash64(filters[k]->label());
@@ -159,6 +163,7 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
       for (unsigned j = 0; j < pathnames.size(); ++j) {
         if (full_name == pathnames[j]) {
           obj_in_path = true;
+            std::cout<<"Name = "<<full_name<<std::endl;
           break;
         }
       }
@@ -183,6 +188,7 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
         if (!path_filters.count(filters[k])) continue;
         filter_labels.push_back(CityHash64(filters[k]));
         observed_filters_[filters[k]] = CityHash64(filters[k]);
+          std::cout<<"Filters: "<<filters[k]<<std::endl;
       }
       dest.set_filters(filter_labels);
 

@@ -11,7 +11,9 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "boost/bind.hpp"
 #include "boost/format.hpp"
-
+#include "TH1F.h"
+#include "TCanvas.h"
+TH1F *hist; 
 namespace ic {
 
   HTTTriggerFilter::HTTTriggerFilter(std::string const& name) : ModuleBase(name), channel_(channel::zee), mc_(mc::summer12_53X), era_(era::data_2015), strategy_(strategy::mssmsummer16){
@@ -34,6 +36,9 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_singlelepton" % do_singlelepton_;
     std::cout << boost::format(param_fmt()) % "do_singletau"    % do_singletau_;
     std::cout << boost::format(param_fmt()) % "do_filter"       % do_filter_;
+   
+    hist = new TH1F("Test","Test",40,-2,2);
+
     return 0;
   }
 
@@ -915,6 +920,30 @@ namespace ic {
       }
     }
     event->Add("trg_muonelectron", passed_muonelectron);
+///
+//
+//
+//
+//
+//
+//Moj dodatak
+//
+//
+
+std::vector<TriggerObject *> const& VBFobjs = event->GetPtrVec<TriggerObject>("triggerVBF");
+std::vector<PFJet *> const& jet_objs = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+//std::cout<<"TEST"<<std::endl;
+//std::cout<<jet_objs.size()<<std::endl;
+for (unsigned i = 0; i < jet_objs.size(); ++i) {
+	//std::cout<<"A"<<std::endl;
+        int leg1_match = IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).second;
+	//std::cout<<"B"<<leg1_match<<std::endl;
+	//std::cout <<leg1_match<<VBFobjs[leg1_match]->vector().Pt()<<"  "<<jet_objs[i]->vector().Pt()<<std::endl;
+	if (IsFilterMatchedWithIndex(jet_objs[i], VBFobjs, "hltDiPFJetMJJDummy", 0.5).first == true)
+	hist->Fill((VBFobjs[leg1_match]->vector().Pt()-jet_objs[i]->vector().Pt())/jet_objs[i]->vector().Pt());
+	else break;
+
+	}
 
    if (channel_ == channel::tt && mc_ == mc::phys14_72X){
      for(unsigned i = 0; i < dileptons.size(); ++i){
@@ -1048,7 +1077,10 @@ namespace ic {
 }
 
   int HTTTriggerFilter::PostAnalysis() {
-    return 0;
+TCanvas *c1 = new TCanvas("canvas", "canvas", 1024, 768);   
+hist->Draw();
+c1->SaveAs("hist1.pdf","pdf");
+ return 0;
   }
 
   void HTTTriggerFilter::PrintInfo() {

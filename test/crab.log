@@ -28,3 +28,54 @@ Traceback (most recent call last):
   File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1608/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 450, in loadLocalCache
     raise ex
 CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/user/a/adow/CMSSW_8_0_26_patch1/src/UserCode/ICHiggsTauTau/test/crab_mc_HLT_VBF
+DEBUG 2017-05-04 13:17:13,005: 	 Executing command: 'submit'
+DEBUG 2017-05-04 13:17:13,145: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:17:13,178: 	 Checking credentials
+DEBUG 2017-05-04 13:17:13,180: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:17:13,180: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:17:14,568: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 2515
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:17:15,827: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 2514
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:17:15,827: 	 Proxy valid for 00:41:55 hours
+DEBUG 2017-05-04 13:17:15,828: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2017-05-04 13:21:49,166: 	 Executing command: 'status'
+DEBUG 2017-05-04 13:21:49,166: 	 Found CRAB cache file /afs/cern.ch/user/v/vmilosev/.crab3
+DEBUG 2017-05-04 13:21:49,190: 	 Checking credentials
+DEBUG 2017-05-04 13:21:49,191: 	 Found proxy file /tmp/x509up_u68879
+DEBUG 2017-05-04 13:21:49,191: 	 Getting proxy life time left
+DEBUG 2017-05-04 13:21:50,516: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -timeleft
+ output : 2239
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:21:51,455: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u68879 -actimeleft
+ output : 2238
+
+ error: 
+ retcode : 0
+DEBUG 2017-05-04 13:21:51,455: 	 Proxy valid for 00:37:19 hours
+ERROR 2017-05-04 13:21:51,462: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X
+ERROR 2017-05-04 13:21:51,463: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1705/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1705/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1705/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 36, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1705/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 321, in __init__
+    self.loadLocalCache(proxyOptsSetPlace)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1705/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 450, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/v/vmilosev/HLT_VBF/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/test/Apr05_MC_80X

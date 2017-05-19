@@ -147,6 +147,7 @@ void ICTriggerPathProducer::SetNameInfo(std::string name,
       }
     }
   }
+  //std::cout<<name<<std::endl;
   std::size_t hash = CityHash64(name);
   if (save_strings_) {
     path->set_name(name);

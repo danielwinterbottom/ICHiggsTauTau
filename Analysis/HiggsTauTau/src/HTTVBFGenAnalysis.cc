@@ -113,6 +113,13 @@ namespace ic {
       outtree_->Branch("mjj"       , &mjj_       );
       outtree_->Branch("mjj30"       , &mjj30_       );
        
+      outtree_->Branch("HbbPassed"       , &HbbPassed_       );
+      outtree_->Branch("HLTPassThroughPassed"       , &HLTPassThroughPassed_       );
+      outtree_->Branch("L1Passed"       , &L1Passed_       );
+       
+      outtree_->Branch("deta"       , &deta_       );
+      outtree_->Branch("dphi"       , &dphi_       );
+      outtree_->Branch("min_dphi"       , &min_dphi_       );
 
       outtree_->Branch("hlt_jeta_1"       , &hlt_jeta_1_       );
       outtree_->Branch("hlt_jeta_2"       , &hlt_jeta_2_       );
@@ -157,7 +164,14 @@ namespace ic {
   int HTTVBFGenAnalysis::Execute(TreeEvent *event) {
     
     
-   std::vector<TriggerObject *> const& VBFobjs = event->GetPtrVec<TriggerObject>("triggerVBF");	
+   std::vector<TriggerObject *> const& VBFobjs = event->GetPtrVec<TriggerObject>("triggerVBF");
+   
+   std::vector<TriggerObject *> const& VBFobjsHbb = event->GetPtrVec<TriggerObject>("triggerObjectsHbb");
+   std::vector<TriggerObject *> const& VBFobjsHLTPassThrough = event->GetPtrVec<TriggerObject>("triggerObjectsVBFPassThrough");
+      
+      HbbPassed_ = VBFobjsHbb.size()>0;
+      HLTPassThroughPassed_ = VBFobjsHLTPassThrough.size()>0;
+      
 
    std::vector<TriggerObject *>  L1jets;
    std::vector<TriggerObject *>  Calojets;
@@ -185,8 +199,10 @@ namespace ic {
    jeta_2_=-9999;
       
    mjj_ = -9999;
-      
    
+      deta_= -9999;
+      dphi_= -9999;
+      min_dphi_ = -9999;
    hlt_mjj_=-9999;
    calo_mjj_=-9999;
    hlt_mjj30_=-9999;
@@ -200,9 +216,20 @@ namespace ic {
 
     for (unsigned i = 0; i < VBFobjs.size(); ++i)
 	{
+       // std::string Filter;
+     //      std::vector<std::size_t> const& labels = VBFobjs[i]->filters();
+       // for (unsigned int j = 0;j<labels.size();j++)
+        //{
+        //    labels[j]>>Filter;
+           // std::cout<<Filter<<std::endl;
+
+        //}
    bool a = IsFilterMatchedWithName(VBFobjs[i], "hltL1DiJetVBF");
  //  bool b = IsFilterMatchedWithName(VBFobjs[i], "hltCaloJetsCorrectedMatchedToL1");
-   bool b = IsFilterMatchedWithName(VBFobjs[i], "hltDoubleJetDummy");
+   //bool b = IsFilterMatchedWithName(VBFobjs[i], "hltDoubleJetDummy");
+   bool b1 = IsFilterMatchedWithName(VBFobjs[i], "TwoJets");
+   bool b2 = IsFilterMatchedWithName(VBFobjs[i], "MultipleJets");
+        
    bool c = IsFilterMatchedWithName(VBFobjs[i], "hltDiPFJetMJJDummy");
 
 //ALBERT'S
@@ -212,7 +239,8 @@ namespace ic {
    //bool c = IsFilterMatchedWithName(VBFobjs[i], "hltDiPFJetOpenMJJOpen");
 
 	if (a) 	L1jets.push_back(VBFobjs[i]);	
-	if (b)	Calojets.push_back(VBFobjs[i]);
+	if (b1)	Calojets.push_back(VBFobjs[i]);
+    if (b2)	Calojets.push_back(VBFobjs[i]);
 	if (c)  HLTjets.push_back(VBFobjs[i]);
         
     bool HLTMET = IsFilterMatchedWithName(VBFobjs[i], "hltPFMETVBF");
@@ -224,8 +252,8 @@ namespace ic {
 
 }
       
-    //  std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-     // met_ = pfMet_vec.at(0);
+      std::vector<Met *> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
+      met_ = pfMet_vec.at(0)->vector().Pt();
 
       if (Calomet.size()>1) std::cout<<"Problem calo met"<<std::endl;
       if (HLTmet.size()>1) std::cout<<"Problem pf met"<<std::endl;
@@ -272,12 +300,14 @@ std::pair<TriggerObject *, TriggerObject *> L1Calo (Calojets[i],L1jets[j]);
 bool a = DRLessThan(L1Calo,0.5);
 if (a) {
 	Match+=1;
+    std::cout<<"Calo: "<<Calojets[i]->vector().Pt()<<" L1: "<<L1jets[j]->vector().Pt()<<std::endl;
 	break;
 	}
 
 }
 if (Match!=Calojets.size())
 std::cout<<"Matching problem: Matched :"<<Match<<"/ "<<Calojets.size()<<std::endl;
+else std::cout<<Calojets.size()<<" "<<"Matching ok; L1 size: "<<L1jets.size() <<std::endl;
 
 if (L1jets.size()!=0)
 	{if (L1jets[0]->vector().Pt()<80) L1fail++;
@@ -291,6 +321,8 @@ if (L1jets.size()==0) L1size0++;
 if (Calojets.size()==0) Calosize0++;
 if (HLTjets.size()==0) HLTsize0++;
 
+      L1Passed_ =L1jets.size()>0;
+      
 L1size1++;
 
 
@@ -342,8 +374,15 @@ if ((HLTjets.size()>1)&&(i!=j)){
       
       double offline_mjj = -9999;
       double offline_mjj30 = -9999;
+      double minPhi = 1000000000000;
       for (unsigned i = 0; i < Offline_jet_objs.size(); ++i)
-          for (unsigned j = 0; j < Offline_jet_objs.size(); ++j)
+      {
+          if (Offline_jet_objs[i]->vector().Pt()>30)
+          if (minPhi>TMath::Abs(Offline_jet_objs[i]->vector().phi()-pfMet_vec.at(0)->vector().phi()))
+          minPhi =TMath::Abs(Offline_jet_objs[i]->vector().phi()-pfMet_vec.at(0)->vector().phi());
+          
+          
+      for (unsigned j = 0; j < Offline_jet_objs.size(); ++j)
           {
               
               if ((Offline_jet_objs.size()>1)&&(i!=j)){
@@ -353,11 +392,22 @@ if ((HLTjets.size()>1)&&(i!=j)){
               
                 if ((Offline_jet_objs[i]->vector().Pt()>30)&&(Offline_jet_objs[j]->vector().Pt()>30)&&((Offline_jet_objs[i]->vector()+Offline_jet_objs[j]->vector()).M()>offline_mjj30))
                       offline_mjj30 = (Offline_jet_objs[i]->vector()+Offline_jet_objs[j]->vector()).M();
+                  
+                  
+              
+                  
               }
               
-              
           }
-      
+              
+              }
+            
+            
+if (minPhi!=1000000000000) min_dphi_ = minPhi;
+              
+if (Offline_jet_objs.size()>1) deta_ =TMath::Abs(Offline_jet_objs[0]->vector().eta()-Offline_jet_objs[1]->vector().eta());
+              
+if (Offline_jet_objs.size()>1) dphi_ =TMath::Abs(Offline_jet_objs[0]->vector().phi()-Offline_jet_objs[1]->vector().phi());
       
 /*for (unsigned i = 0; i < Calojets.size(); ++i)
 {

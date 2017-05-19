@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/Feb14_MC_80X_SUSYGluGluToHToTauTau_M-3200.dat",
-    "file_prefix" : "",
+    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/vmilosev/JetHT/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["tt"],

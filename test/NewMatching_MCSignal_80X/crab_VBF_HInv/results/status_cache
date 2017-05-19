@@ -1,0 +1,4 @@
+21001
+28
+{'1': {'Retries': 0, 'WallDurations': [11.0, 10231.0], 'StartTimes': [1494414438.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318593.0'], 'EndTimes': [], 'Restarts': 0, 'RecordedSite': True, 'State': 'running', 'ResidentSetSize': [1041084], 'TotalUserCpuTimeHistory': [8350.0], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [402.0]}, '2': {'Retries': 0, 'WallDurations': [10.0, 4254.0], 'StartTimes': [1494414615.0], 'SubmitTimes': [1494414145.0], 'JobIds': ['7318594.0'], 'EndTimes': [1494418869.0], 'Restarts': 0, 'RecordedSite': True, 'State': 'finished', 'ResidentSetSize': [919340], 'TotalUserCpuTimeHistory': [3132], 'SiteHistory': ['Unknown', 'T2_UK_London_IC'], 'TotalSysCpuTimeHistory': [126]}, 'DagStatus': {'Timestamp': 1494425000L, 'NodesTotal': 2L, 'DagStatus': 3L}}
+{(7318594L, 0L): '2', (7318593L, 0L): '1'}
