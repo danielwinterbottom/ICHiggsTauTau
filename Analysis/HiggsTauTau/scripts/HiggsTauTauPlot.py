@@ -11,7 +11,7 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
 import copy
 
-CHANNELS= ['et', 'mt', 'em','tt']
+CHANNELS= ['et', 'mt', 'em','tt','zmm','zee','mj']
 ANALYSIS= ['sm','mssm','Hhh']
 METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 17, 18, 19]
 
@@ -213,6 +213,8 @@ print ''
 
 compare_w_shapes = False
 compare_qcd_shapes = False
+if options.scheme == "qcd_shape": compare_qcd_shapes = True
+if options.scheme == "w_shape": compare_w_shapes = True
 if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
 loosemt_string='tight'
@@ -281,9 +283,12 @@ cats['1jet'] = '(n_jets==1)'
 cats['ge2jet'] = '(n_jets>=2)'
 cats['w_shape']=''
 cats['qcd_shape']=''
+cats['w_shape_comp']=''
+cats['qcd_shape_comp']=''
 
 if options.method in [17,18]: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
-
+if options.channel == 'mj':        
+  cats['baseline'] = '(iso_1<0.15 && !leptonveto)'
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight' or options.cat == 'btag_tight_wnobtag':
@@ -317,7 +322,7 @@ if options.channel == 'mt' or options.channel == 'et':
 if options.era == "mssmsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
     if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
-    if options.channel == "mt" or options.channel == 'zmm': cats['baseline']+=" && trg_singlemuon"
+    if options.channel in ['mt','zmm','mj']: cats['baseline']+=" && trg_singlemuon"
     if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
 
 
@@ -351,10 +356,14 @@ if options.channel == 'et':
     z_sels['ztt_sel'] = '(gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<5)'
     z_sels['zj_sel'] = '(gen_match_2==6)'
-elif options.channel == 'mt':
+elif options.channel in ['mt','mj']:
     z_sels['ztt_sel'] = '(gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<5)'
     z_sels['zj_sel'] = '(gen_match_2==6)'
+elif options.channel in ['mj']:
+    z_sels['ztt_sel'] = '(0)'
+    z_sels['zl_sel'] = '(0)'
+    z_sels['zj_sel'] = '(1)'
 elif options.channel == 'tt':
     z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<6&&gen_match_1<6&&!(gen_match_1==5&&gen_match_2==5))'
@@ -375,7 +384,7 @@ top_sels['ttj_sel'] = '!('+z_sels['ztt_sel']+')'
 vv_sels['vvt_sel'] = z_sels['ztt_sel']
 vv_sels['vvj_sel'] = '!('+z_sels['ztt_sel']+')'
 
-if options.channel in ['et','mt']:
+if options.channel in ['et','mt','mj']:
   vv_sels['vvt_sel'] = '(gen_match_2<6)'
   vv_sels['vvj_sel'] = '(gen_match_2==6)'
   top_sels['ttt_sel'] = '(gen_match_2<6)' 
@@ -385,6 +394,11 @@ elif options.channel == 'tt':
   vv_sels['vvj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
   top_sels['ttt_sel'] = '(gen_match_1<6 && gen_match_2<6)' 
   top_sels['ttj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
+if options.channel in ['mj']:
+  vv_sels['vvt_sel'] = '(0)'
+  vv_sels['vvj_sel'] = '(1)'
+  top_sels['ttt_sel'] = '(0)' 
+  top_sels['ttj_sel'] = '(1)'
     
 # Add data sample names
 if options.channel == 'mt': 
@@ -407,7 +421,7 @@ wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-
 if options.era == "mssmsummer16":
     
     # Add data sample names
-    if options.channel == 'mt' or options.channel == 'zmm': 
+    if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
     if options.channel == 'em': 
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
@@ -507,13 +521,20 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
           weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
           systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
+    if options.channel == "tt":
+      processes = ['dy', 'w', 'tt']
+      for process in processes:
+        template_name = 'ff_'+process+'_frac_tt_syst'
+        weight_name = 'wt_ff_'+options.cat+'_'+process+'_frac_syst_'
+        systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
+        systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
 
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
     if options.channel == 'et':
         qcd_os_ss_ratio = 1.02
-    elif options.channel == 'mt':
+    elif options.channel in ['mt','mj']:
         qcd_os_ss_ratio = 1.18
     elif options.channel == 'zmm' or options.channel == 'zee':
         qcd_os_ss_ratio = 2.0    
@@ -1144,13 +1165,10 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
         if compare_w_shapes:
-          #if options.channel == 'mt': cat_relax=cats[options.cat]+' && (iso_1<0.15 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'    
-          #else: cat_relax=cats[options.cat]+' && (iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singleelectron'
-          cat_relax=cats['baseline']+'&&'+cats['btag_wnobtag']
+          cat_relax=cats['w_shape_comp']
           GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    
         if compare_qcd_shapes:
-          cat_relax='(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'+'&&'+cats[options.cat]
-          #cat_relax='(n_lowpt_jets>=1)*('+cats['baseline']+')'
+          cat_relax=cats['qcd_shape_comp']
           GenerateQCD(ana, '_shape', data_samples, plot, wt, sel, cat_relax, method, qcd_os_ss_ratio, not options.do_ss)
            
     if 'signal' not in samples_to_skip:
@@ -1221,7 +1239,7 @@ for systematic in systematics:
     ana.remaps = {}
     if options.channel == 'em':
         ana.remaps['MuonEG'] = 'data_obs'
-    elif options.channel == 'mt' or options.channel == 'zmm':
+    elif options.channel in ['mt','mj','zmm']:
         ana.remaps['SingleMuon'] = 'data_obs'
     elif options.channel == 'et' or options.channel == 'zee':
         ana.remaps['SingleElectron'] = 'data_obs'

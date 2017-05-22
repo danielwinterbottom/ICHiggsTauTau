@@ -434,20 +434,20 @@ if SCHEME == 'run2_mssm_summer2016_shapestudy':
     BINS_FINE="(98,0,3920)"
     BINS="(98,0,3920)"
     
-  #nobtag_loose_cat_et=' --set_alias="w_shape:(n_bjets==0 && iso_1<0.1 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)"'
-  #nobtag_loose_cat_mt=' --set_alias="w_shape:(n_bjets==0 && iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singlemuon)"'
-  #btag_loose_cat_et=' --set_alias="w_shape:(n_bjets>=1 && iso_1<0.1 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)"'
-  #btag_loose_cat_mt=' --set_alias="w_shape:(n_bjets>=1 && iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singlemuon)"'
+  nobtag_loose_cat_et=' --set_alias="w_shape:(n_bjets==0 && iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)"'
+  nobtag_loose_cat_mt=' --set_alias="w_shape:(n_bjets==0 && iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singlemuon)"'
+  btag_loose_cat_et=' --set_alias="w_shape:(n_bjets>=1 && iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)"'
+  btag_loose_cat_mt=' --set_alias="w_shape:(n_bjets>=1 && iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singlemuon)"'
   
   #nobtag_loose_cat_et=' --set_alias="qcd_shape:(n_bjets==0 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)"'
   #nobtag_loose_cat_mt=' --set_alias="qcd_shape:(n_bjets==0 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singlemuon)"'
   #btag_loose_cat_et=' --set_alias="qcd_shape:(n_bjets>=1 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)"'
   #btag_loose_cat_mt=' --set_alias="qcd_shape:(n_bjets>=1 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singlemuon)"'
   
-  nobtag_loose_cat_et=''
-  nobtag_loose_cat_mt=''
-  btag_loose_cat_et=' --set_alias="qcd_shape:(n_loose_bjets>=1 && iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)"'
-  btag_loose_cat_mt=' --set_alias="qcd_shape:(n_loose_bjets>=1 && iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singlemuon)"'
+  #nobtag_loose_cat_et=''
+  #nobtag_loose_cat_mt=''
+  #btag_loose_cat_et=' --set_alias="qcd_shape:(n_loose_bjets>=1 && iso_1<0.1 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singleelectron)"'
+  #btag_loose_cat_mt=' --set_alias="qcd_shape:(n_loose_bjets>=1 && iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && trg_singlemuon)"'
   
   #nobtag_loose_cat_et=''
   #nobtag_loose_cat_mt=''
