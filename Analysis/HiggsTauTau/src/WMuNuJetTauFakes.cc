@@ -42,7 +42,20 @@ namespace ic {
       outtree_->Branch("tau_eta",           &tau_eta_);
       outtree_->Branch("jet_pt",            &jet_pt_);
       outtree_->Branch("jet_eta",            &jet_eta_);
+      outtree_->Branch("wt",                &wt_);
     }
+      TFile f("input/scale_factors/htt_scalefactors_v16_4.root");
+      w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+      f.Close();
+      fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
+      w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
+      fns_["m_trgOR4_binned_ratio"] = std::shared_ptr<RooFunctor>(
+      w_->function("m_trgOR4_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+      fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+      w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
+      fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
+      w_->function("m_iso_binned_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+
 
     return 0;
   }
@@ -58,7 +71,7 @@ namespace ic {
 
   std::vector<Muon *> & muons_vec = event->GetPtrVec<Muon>(muon_label_);
   ic::erase_if(muons_vec, !boost::bind(MinPtMaxEta, _1, 23.0, 2.4));
-  ic::erase_if_not(muons_vec,[=](ic::Muon* m){return PF04IsolationVal(m,0.5) < 0.25;});
+  ic::erase_if_not(muons_vec,[=](ic::Muon* m){return PF04IsolationVal(m,0.5) < 0.15;});
 
   std::vector<TriggerObject*> const& objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
   std::vector<TriggerObject*> const& objs_trk = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
@@ -119,6 +132,30 @@ namespace ic {
   if ( bjets.size() > 0) return 1;
 
  //After selection, build numerator and denominator by looping through jets and taus.
+ //First define event weights
+  wt_=1.0;
+  if(!is_data_){
+
+      double pt = muon->pt();
+      double m_signed_eta = muon->eta();
+      double m_iso = 0.15;
+
+      auto args_id = std::vector<double>{pt,m_signed_eta};
+      auto args_iso = std::vector<double>{pt,m_signed_eta,m_iso};
+      auto args_trk = std::vector<double>{m_signed_eta};
+
+      double tracking_wt = fns_["m_trk_ratio"]->eval(args_trk.data());
+      double id_wt = fns_["m_id_ratio"]->eval(args_id.data());
+      double iso_wt = fns_["m_iso_binned_ratio"]->eval(args_iso.data());
+      double trg_wt = fns_["m_trgOR4_binned_ratio"]->eval(args_iso.data());
+
+      EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+      double wt_pu = eventInfo->weight("pileup");
+      int wt_mcsign = eventInfo->weight("wt_mc_sign");
+
+     wt_ = tracking_wt*id_wt*iso_wt*trg_wt*wt_pu*wt_mcsign;
+  }
+
   std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
   ic::erase_if(taus,!boost::bind(MinPtMaxEta,_1,18,2.3));
   ic::erase_if_not(taus,[=](ic::Tau* t){return fabs(t->lead_dz_vertex()) < 0.2 && fabs(t->charge()) ==1 && t->GetTauID("decayModeFinding") > 0.5;});

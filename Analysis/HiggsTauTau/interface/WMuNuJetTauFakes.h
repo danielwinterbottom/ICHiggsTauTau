@@ -6,6 +6,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "RooWorkspace.h"
+#include "RooFunctor.h"
 
 namespace ic {
 
@@ -28,6 +30,9 @@ class WMuNuJetTauFakes : public ModuleBase {
   double tau_eta_;
   double jet_pt_;
   double jet_eta_;
+  double wt_;
+  std::shared_ptr<RooWorkspace> w_;
+  std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
 
  public:
   WMuNuJetTauFakes(std::string const& name);

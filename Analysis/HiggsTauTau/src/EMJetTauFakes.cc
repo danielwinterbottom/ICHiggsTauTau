@@ -42,6 +42,7 @@ namespace ic {
       outtree_->Branch("tau_eta",           &tau_eta_);
       outtree_->Branch("jet_pt",            &jet_pt_);
       outtree_->Branch("jet_eta",            &jet_eta_);
+      outtree_->Branch("wt",               &wt_);
     }
 
     return 0;
@@ -50,6 +51,8 @@ namespace ic {
   int EMJetTauFakes::Execute(TreeEvent *event) {
 
   //First do the event selection. Trigger etc already done, so just isolation/lepton vetos/topological
+  //0) Get trigger bool:
+  if(!event->Get<bool>("trg_muonelectron")) return 1;
   //1) Isolation
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>("ditau");
     CompositeCandidate const* ditau = ditau_vec.at(0);
@@ -77,6 +80,18 @@ namespace ic {
  if (pzeta>-50||met<80) return 1;
 
  //After selection, build numerator and denominator by looping through jets and taus.
+ //First define event weights 
+ wt_=1.0;
+ if(!is_data_){
+      EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+      double wt_pu = eventInfo->weight("pileup");
+      int wt_mcsign = eventInfo->weight("wt_mc_sign");
+      double trk_wt = eventInfo->weight("wt_tracking_eff"); 
+      double lepton_wt = eventInfo->weight("lepton"); 
+      
+      wt_ = wt_pu*wt_mcsign*trk_wt*lepton_wt;
+ }
+ 
  std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
  ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
 

@@ -524,7 +524,7 @@ def GetZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_s
     return ana.SummedFactory('ZTT'+add_name, samples, plot, full_selection)
 
 def GetZLLNodeWMNu(ana, add_name='', samples=[], plot='', sel=''):
-    return ana.SummedFactory('ZLL'+add_name, samples, plot, sel)
+    return ana.SummedFactory('ZLL'+add_name, samples, plot, 'wt*('+sel+')')
 
 def GetZLLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
@@ -578,7 +578,7 @@ def GetTTJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top
   return ana.SummedFactory('TTJ'+add_name, samples, plot, full_selection)
 
 def GetTTNodeWMNu(ana, add_name='', samples=[], plot='', sel=''):
-  return ana.SummedFactory('TT'+add_name, samples, plot, sel)
+  return ana.SummedFactory('TT'+add_name, samples, plot, 'wt*('+sel+')')
 
 
 def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True, doTTT=True, doTTJ=True):
@@ -594,7 +594,7 @@ def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', to
           ana.nodes[nodename].AddNode(ttj_node)
 
 def GetVVNodeWMNu(ana, add_name ='', samples=[], plot='', sel=''): 
-  return ana.SummedFactory('VV'+add_name, samples, plot, sel)
+  return ana.SummedFactory('VV'+add_name, samples, plot, 'wt*('+sel+')')
 
 
 def GetVVTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True): 

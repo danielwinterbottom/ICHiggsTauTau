@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr05_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "et", "mt", "tt"],
+    "channels":     ["wmnu","em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -54,7 +54,7 @@
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "ff_categories" :"inclusive,btag,nobtag",
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May11/",
+    "output_folder" : "/vols/cms/amd12/MSSMFull2016/Apr05_jettaufakes/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -79,6 +79,8 @@
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,
+      "elec_es_shift_barrel": 1.00,
+      "elec_es_shift_endcap": 1.00,
       "jes_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
@@ -87,9 +89,9 @@
       "muon_es_shift"      : 1.0,
       "efaketau_0pi_es_shift": 1.024,
       "efaketau_1pi_es_shift": 1.076,
-      "tau_1prong0pi0_es_shift": 0.982,
-      "tau_1prong1pi0_es_shift": 1.01,
-      "tau_3prong0pi0_es_shift": 1.004,
+      "tau_1prong0pi0_es_shift": 1.0,
+      "tau_1prong1pi0_es_shift": 1.0,
+      "tau_3prong0pi0_es_shift": 1.0,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -121,7 +123,7 @@
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
+        "do_ff_weights" : false,
         "do_ff_systematics": true,
         "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
         "ff_file" : "20170508_tight"
@@ -152,7 +154,7 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
+        "do_ff_weights" : false,
         "do_ff_systematics": true,
         "ff_categories" :"btag_loosemt,btag_tight,inclusive,nobtag_loosemt,nobtag_tight",
         "ff_file" : "20170508_tight"

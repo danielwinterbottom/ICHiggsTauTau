@@ -1824,6 +1824,7 @@ if(js["baseline"]["do_ff_weights"].asBool() && channel!=channel::wmnu){
 if(channel == channel::em){
 BuildModule(EMJetTauFakes("EMJetTauFakes")
     .set_fs(fs.get())
+    .set_is_data(is_data)
     .set_jets_label(jets_label));
 }
 
@@ -1861,6 +1862,7 @@ BuildModule(HTTCategories("HTTCategories")
  } else {
 BuildModule(WMuNuJetTauFakes("WMuNuJetTauFakes")
     .set_fs(fs.get())
+    .set_is_data(is_data)
     .set_jets_label(jets_label));
 
 BuildModule(WMuNuCategories("WMuNuCategories")

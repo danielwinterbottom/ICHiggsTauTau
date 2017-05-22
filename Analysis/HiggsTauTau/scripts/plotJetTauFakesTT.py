@@ -30,8 +30,8 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
-denominator_file = ROOT.TFile("output/datacard_jet_pt_denominator_coarse_em_2016.root")
-numerator_file_med = ROOT.TFile("output/datacard_jet_pt_numerator_medium_coarse_em_2016.root")
+denominator_file = ROOT.TFile("output/datacard_jet_pt_denominator_coarse_em_2016-extra.root")
+numerator_file_med = ROOT.TFile("output/datacard_jet_pt_numerator_medium_coarse_em_2016-extra.root")
 
 denom_data = getHistogram(denominator_file,"data_obs","em_inclusive")
 denom_VV = getHistogram(denominator_file,"VV","em_inclusive")
@@ -105,7 +105,7 @@ axish[1].SetMaximum(1.5)
 #ratio_W_hist.DrawCopy("LSAME")
 ratio_data_hist.DrawCopy("PSAME")
 pads[1].RedrawAxis("G")
-func = ROOT.TF1("func","pol1",30,120)
+func = ROOT.TF1("func","pol1",30,140)
 x = ratio_data_hist.Fit("func","R0+")
 plotfn = ratio_data_hist.GetFunction("func")
 #plotfn.Draw("LSAME")

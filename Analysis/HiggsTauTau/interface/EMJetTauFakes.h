@@ -28,6 +28,7 @@ class EMJetTauFakes : public ModuleBase {
   double tau_eta_;
   double jet_pt_;
   double jet_eta_;
+  double wt_;
 
  public:
   EMJetTauFakes(std::string const& name);
