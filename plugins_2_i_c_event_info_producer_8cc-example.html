@@ -149,7 +149,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">      filtersfromtrig_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::vector&lt;<a class="code" href="namespacestd.html">std</a>::string&gt; &gt;(<span class="stringliteral">&quot;filtersfromtrig&quot;</span>))</div>
 <div class="line">{</div>
 <div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
-<div class="line">      consumes&lt;LHERunInfoProduct, edm::InRun&gt;({<span class="stringliteral">&quot;externalLHEProducer&quot;</span>});</div>
+<div class="line">      consumes&lt;LHERunInfoProduct, edm::InRun&gt;({lhe_collection_});</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">      consumes&lt;GenEventInfoProduct&gt;({<span class="stringliteral">&quot;generator&quot;</span>});</div>
 <div class="line">      consumes&lt;LHEEventProduct&gt;(lhe_collection_);</div>
@@ -223,7 +223,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">  <span class="keywordflow">if</span> (!do_lhe_weights_) <span class="keywordflow">return</span>;</div>
 <div class="line">  <span class="keywordflow">if</span> (lhe_weight_labels_.size()) <span class="keywordflow">return</span>;</div>
 <div class="line">  edm::Handle&lt;LHERunInfoProduct&gt; lhe_info;</div>
-<div class="line">  run.getByLabel(<span class="stringliteral">&quot;externalLHEProducer&quot;</span>, lhe_info);</div>
+<div class="line">  run.getByLabel(lhe_collection_, lhe_info);</div>
 <div class="line">  <span class="keywordtype">bool</span> record = <span class="keyword">false</span>;</div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = lhe_info-&gt;headers_begin(); it != lhe_info-&gt;headers_end();</div>
 <div class="line">       ++it) {</div>
