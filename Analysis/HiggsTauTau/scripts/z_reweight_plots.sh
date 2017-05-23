@@ -38,6 +38,14 @@ for cat in "${cats[@]}"; do for weight in "${weights[@]}"; do
       var=$(echo $plot | cut -d"(" -f1)
     fi
     
+    x_title=$var
+    if [ $var == "n_jets" ]; then x_title="N_{jets}"
+    elif [ $var == "m_vis" -a $chan == "zee" ]; then x_title="M_{ee} [GeV]"
+    elif [ $var == "pt_tt" -a $chan == "zee" ]; then x_title="p_{T}^{ee} [GeV]"
+    elif [ $var == "m_vis" -a $chan == "zmm" ]; then x_title="M_{#mu#mu} [GeV]"
+    elif [ $var == "pt_tt" -a $chan == "zmm" ]; then x_title="p_{T}^{#mu#mu} [GeV]"
+    fi
+    
     log_string="--log_y --log_x"
     log_name_string="logx_logy"
     if [ $var == "n_jets" -o $var == "n_lowpt_jets" -o $var == "n_bjets" ]; then
@@ -54,7 +62,7 @@ for cat in "${cats[@]}"; do for weight in "${weights[@]}"; do
         syst_name="_JES"
       fi
       
-      python scripts/HiggsTauTauPlot.py --channel=$chan --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var=$plot --method=8 --cat=$cat --add_wt=$weight --outputfolder="ZptReWeightPlots/" --ratio --x_title=$var --norm_bins --extra_pad=0.5 $log_string $syst_string $blind_string --y_title="Entries/(bin width)" $sel --set_alias="baseline:({baseline}&&pt_1>40&&pt_2>40)"
+      python scripts/HiggsTauTauPlot.py --channel=$chan --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var=$plot --method=8 --cat=$cat --add_wt=$weight --outputfolder="ZptReWeightPlots/" --ratio --x_title=$var --norm_bins --extra_pad=0.5 $log_string $syst_string $blind_string --y_title="Entries/(bin width)" $sel --x_title=$x_title #--set_alias="baseline:({baseline}&&pt_1>40&&pt_2>40)"
       if [ "$weight" == "wt_zpt_down" ]; then
         mv ZptReWeightPlots/$var"_"$cat"_"$chan"_2016_"$log_name_string".pdf" ZptReWeightPlots/$var"_"$cat"_"$chan"_2016_nozptwt_"$log_name_string$syst_name".pdf"
         mv ZptReWeightPlots/$var"_"$cat"_"$chan"_2016_"$log_name_string".png" ZptReWeightPlots/$var"_"$cat"_"$chan"_2016_nozptwt_"$log_name_string$syst_name".png"

@@ -1,6 +1,5 @@
 language: cpp
 before_install:
-  #  - sudo apt-get update -qq
   - sudo apt-add-repository -y ppa:git-core/ppa
   - sudo apt-get update -qq
   - sudo apt-get install git
@@ -19,7 +18,7 @@ git:
     submodules: false
 env:
   global:
-    - secure: "RcuotvBQtnzoEsaN9pfcQ9w+F5Dc8hkcPmaH1PR5uwPHnVd74ZkCSsafPdBG2T7JlIvQpKNhYrHYVEdQ49csr5dBfNH7EtewZ4tyCFCRvb6fr7IGn5nO3g1yp0HCnDqZ9fhuuEjveVMCe1QBK9swc0k4bciUtRZsBN8lEN/TVIQ="
+    - secure: "BioAxknqQKj3m2j2TZICwdwbH80h/qPGli2Ad6kML5NSPIVPnZl8xM6WFF3yiSUITowWoVEZQS1b4iYEe49fmNNuYv/sdLPSgi5iEnV37biQmwS/fLDAnq6OHrY7MmAgSxng4nK5rf5CvW54x3GsFIrdILkqXJUb3dVlEbUKBlw="
 # whitelist
 branches:
   only:

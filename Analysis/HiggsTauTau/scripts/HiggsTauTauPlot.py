@@ -11,7 +11,7 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
 import copy
 
-CHANNELS= ['et', 'mt', 'em','tt']
+CHANNELS= ['et', 'mt', 'em','tt','zmm','zee','mj']
 ANALYSIS= ['sm','mssm','Hhh']
 METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 17, 18, 19]
 
@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -75,6 +75,12 @@ parser.add_argument("--add_sm_background", dest="add_sm_background", type=str,
     help="Add SM Higgs background for MSSM")
 parser.add_argument("--syst_tau_scale", dest="syst_tau_scale", type=str,
     help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_0pi", dest="syst_tau_scale_0pi", type=str,
+    help="If this string is set then the systematic shift due to the 1 prong 0 pi tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_1pi", dest="syst_tau_scale_0pi", type=str,
+    help="If this string is set then the systematic shift due to the 1 prong 1 pi tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_scale_3prong", dest="syst_tau_scale_3prong", type=str,
+    help="If this string is set then the systematic shift due to 3 prong tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_eff_t", dest="syst_eff_t", type=str, default='',
     help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tquark", dest="syst_tquark", type=str,
@@ -161,6 +167,16 @@ parser.add_argument("--syst_efake_1pi_scale", dest="syst_efake_1pi_scale", type=
     help="If this string is set then the e->tau dm=1 fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--scheme", dest="scheme", type=str,
     help="Set plotting scheme")
+parser.add_argument("--syst_zpt_es", dest="syst_zpt_es", type=str,
+    help="If this string is set then the zpT muon ES systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zpt_tt", dest="syst_zpt_tt", type=str,
+    help="If this string is set then the zpT tt X-section systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zpt_statpt0", dest="syst_zpt_statpt0", type=str,
+    help="If this string is set then the zpT statistical pt0 systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zpt_statpt40", dest="syst_zpt_statpt40", type=str,
+    help="If this string is set then the zpT statistical pt40 systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_zpt_statpt80", dest="syst_zpt_statpt80", type=str,
+    help="If this string is set then the zpT statistical pt80 systematic is performed with the set string appended to the resulting histogram name")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -197,6 +213,8 @@ print ''
 
 compare_w_shapes = False
 compare_qcd_shapes = False
+if options.scheme == "qcd_shape": compare_qcd_shapes = True
+if options.scheme == "w_shape": compare_w_shapes = True
 if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
 loosemt_string='tight'
@@ -265,9 +283,12 @@ cats['1jet'] = '(n_jets==1)'
 cats['ge2jet'] = '(n_jets>=2)'
 cats['w_shape']=''
 cats['qcd_shape']=''
+cats['w_shape_comp']=''
+cats['qcd_shape_comp']=''
 
 if options.method in [17,18]: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
-
+if options.channel == 'mj':        
+  cats['baseline'] = '(iso_1<0.15 && !leptonveto)'
 
 # Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight' or options.cat == 'btag_tight_wnobtag':
@@ -301,7 +322,7 @@ if options.channel == 'mt' or options.channel == 'et':
 if options.era == "mssmsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
     if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
-    if options.channel == "mt" or options.channel == 'zmm': cats['baseline']+=" && trg_singlemuon"
+    if options.channel in ['mt','zmm','mj']: cats['baseline']+=" && trg_singlemuon"
     if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
 
 
@@ -335,10 +356,14 @@ if options.channel == 'et':
     z_sels['ztt_sel'] = '(gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<5)'
     z_sels['zj_sel'] = '(gen_match_2==6)'
-elif options.channel == 'mt':
+elif options.channel in ['mt','mj']:
     z_sels['ztt_sel'] = '(gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<5)'
     z_sels['zj_sel'] = '(gen_match_2==6)'
+elif options.channel in ['mj']:
+    z_sels['ztt_sel'] = '(0)'
+    z_sels['zl_sel'] = '(0)'
+    z_sels['zj_sel'] = '(1)'
 elif options.channel == 'tt':
     z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
     z_sels['zl_sel'] = '(gen_match_2<6&&gen_match_1<6&&!(gen_match_1==5&&gen_match_2==5))'
@@ -347,8 +372,10 @@ elif options.channel == 'em':
     z_sels['ztt_sel'] = '(gen_match_1>2 && gen_match_2>3)'
     z_sels['zll_sel'] = '(gen_match_1<3 || gen_match_2<4)'
 elif options.channel == 'zee' or  options.channel == 'zmm':
-    z_sels['ztt_sel'] = '(1)'
-    z_sels['zll_sel'] = '(1)'
+    z_sels['ztt_sel'] = '(gen_match_1>2&&gen_match_1<6 && gen_match_2>2&&gen_match_2<6)'
+    if options.channel == 'zmm': z_sels['zl_sel'] = '(gen_match_1==2&&gen_match_2==2)'
+    else: z_sels['zl_sel'] = '(gen_match_1==1&&gen_match_2==1)'
+    z_sels['zj_sel'] = '(!('+z_sels['zl_sel']+') && !('+z_sels['ztt_sel']+'))'
 
 top_sels = {}
 vv_sels = {}
@@ -357,7 +384,7 @@ top_sels['ttj_sel'] = '!('+z_sels['ztt_sel']+')'
 vv_sels['vvt_sel'] = z_sels['ztt_sel']
 vv_sels['vvj_sel'] = '!('+z_sels['ztt_sel']+')'
 
-if options.channel in ['et','mt']:
+if options.channel in ['et','mt','mj']:
   vv_sels['vvt_sel'] = '(gen_match_2<6)'
   vv_sels['vvj_sel'] = '(gen_match_2==6)'
   top_sels['ttt_sel'] = '(gen_match_2<6)' 
@@ -367,6 +394,11 @@ elif options.channel == 'tt':
   vv_sels['vvj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
   top_sels['ttt_sel'] = '(gen_match_1<6 && gen_match_2<6)' 
   top_sels['ttj_sel'] = '(!(gen_match_1<6 && gen_match_2<6))'
+if options.channel in ['mj']:
+  vv_sels['vvt_sel'] = '(0)'
+  vv_sels['vvj_sel'] = '(1)'
+  top_sels['ttt_sel'] = '(0)' 
+  top_sels['ttj_sel'] = '(1)'
     
 # Add data sample names
 if options.channel == 'mt': 
@@ -389,7 +421,7 @@ wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-
 if options.era == "mssmsummer16":
     
     # Add data sample names
-    if options.channel == 'mt' or options.channel == 'zmm': 
+    if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
     if options.channel == 'em': 
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
@@ -413,15 +445,25 @@ Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
 systematics = OrderedDict()
 systematics['default'] = ('','', 'wt', [], False)
+
 if options.syst_tau_scale != '':
-    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'Up', 'wt', [], False)
-    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'Down', 'wt', [], False)
+    systematics['scale_t_up'] = ('TSCALE_UP' , '_'+options.syst_tau_scale+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_t_down'] = ('TSCALE_DOWN' , '_'+options.syst_tau_scale+'Down', 'wt', ['QCD','jetFakes'], False)
+if options.syst_tau_scale_0pi != '':
+    systematics['scale_t_0pi_up'] = ('TSCALE0PI_UP' , '_'+options.syst_tau_scale_0pi+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_t_0pi_down'] = ('TSCALE0PI_DOWN' , '_'+options.syst_tau_scale_0pi+'Down', 'wt', ['QCD','jetFakes'], False)
+if options.syst_tau_scale_1pi != '':
+    systematics['scale_t_1pi_up'] = ('TSCALE1PI_UP' , '_'+options.syst_tau_scale_1pi+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_t_1pi_down'] = ('TSCALE1PI_DOWN' , '_'+options.syst_tau_scale_1pi+'Down', 'wt', ['QCD','jetFakes'], False)
+if options.syst_tau_scale_3prong != '':
+    systematics['scale_t_3prong_up'] = ('TSCALE3PRONG_UP' , '_'+options.syst_tau_scale_3prong+'Up', 'wt', ['QCD','jetFakes'], False)
+    systematics['scale_t_3prong_down'] = ('TSCALE3PRONG_DOWN' , '_'+options.syst_tau_scale_3prong+'Down', 'wt', ['QCD','jetFakes'], False)
 if options.syst_efake_0pi_scale != '':
-    systematics['scale_efake_0pi_up'] = ('EFAKE0PI_UP' , '_'+options.syst_efake_0pi_scale+'Up', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
-    systematics['scale_efake_0pi_down'] = ('EFAKE0PI_DOWN' , '_'+options.syst_efake_0pi_scale+'Down', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
+    systematics['scale_efake_0pi_up'] = ('EFAKE0PI_UP' , '_'+options.syst_efake_0pi_scale+'Up', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','W','jetFakes'], False)
+    systematics['scale_efake_0pi_down'] = ('EFAKE0PI_DOWN' , '_'+options.syst_efake_0pi_scale+'Down', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','W','jetFakes'], False)
 if options.syst_efake_1pi_scale != '':
-    systematics['scale_efake_1pi_up'] = ('EFAKE1PI_UP' , '_'+options.syst_efake_1pi_scale+'Up', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
-    systematics['scale_efake_1pi_down'] = ('EFAKE1PI_DOWN' , '_'+options.syst_efake_1pi_scale+'Down', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
+    systematics['scale_efake_1pi_up'] = ('EFAKE1PI_UP' , '_'+options.syst_efake_1pi_scale+'Up', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','W','jetFakes'], False)
+    systematics['scale_efake_1pi_down'] = ('EFAKE1PI_DOWN' , '_'+options.syst_efake_1pi_scale+'Down', 'wt', ['ZTT','VVT','VVJ','TTT','TTJ','QCD','signal','W','jetFakes'], False)
 if options.syst_eff_t != '':
     systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'Up', 'wt*wt_tau_id_up', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
     systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'Down', 'wt*wt_tau_id_down', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
@@ -443,6 +485,21 @@ if options.syst_eff_b != '':
 if options.syst_fake_b != '':
     systematics['syst_fake_b_up'] = ('BFAKE_UP' , '_'+options.syst_fake_b+'Up', 'wt', [], False)
     systematics['syst_fake_b_down'] = ('BFAKE_DOWN' , '_'+options.syst_fake_b+'Down', 'wt', [], False)
+if options.syst_zpt_es != '':
+    systematics['syst_zpt_es_up'] = ('' , '_'+options.syst_zpt_es+'Up', 'wt*wt_zpt_esup', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_es_down'] = ('' , '_'+options.syst_zpt_es+'Down', 'wt*wt_zpt_esdown', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_zpt_tt != '':
+    systematics['syst_zpt_tt_up'] = ('' , '_'+options.syst_zpt_tt+'Up', 'wt*wt_zpt_ttup', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_tt_down'] = ('' , '_'+options.syst_zpt_tt+'Down', 'wt*wt_zpt_ttdown', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_zpt_statpt0 != '':
+    systematics['syst_zpt_statpt0_up'] = ('' , '_'+options.syst_zpt_statpt0+'Up', 'wt*wt_zpt_stat_m400pt0_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_statpt0_down'] = ('' , '_'+options.syst_zpt_statpt0+'Down', 'wt*wt_zpt_stat_m400pt0_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_zpt_statpt40 != '':
+    systematics['syst_zpt_statpt40_up'] = ('' , '_'+options.syst_zpt_statpt40+'Up', 'wt*wt_zpt_stat_m400pt40_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_statpt40_down'] = ('' , '_'+options.syst_zpt_statpt40+'Down', 'wt*wt_zpt_stat_m400pt40_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_zpt_statpt80 != '':
+    systematics['syst_zpt_statpt80_up'] = ('' , '_'+options.syst_zpt_statpt80+'Up', 'wt*wt_zpt_stat_m400pt80_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+    systematics['syst_zpt_statpt80_down'] = ('' , '_'+options.syst_zpt_statpt80+'Down', 'wt*wt_zpt_stat_m400pt80_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt']:
     processes = ['tt','w','qcd']
@@ -464,13 +521,20 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
           weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
           systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
-#tt_nobtag/jetFakes_norm_ff_w_tt_systUp
+    if options.channel == "tt":
+      processes = ['dy', 'w', 'tt']
+      for process in processes:
+        template_name = 'ff_'+process+'_frac_tt_syst'
+        weight_name = 'wt_ff_'+options.cat+'_'+process+'_frac_syst_'
+        systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
+        systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
+
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
     if options.channel == 'et':
         qcd_os_ss_ratio = 1.02
-    elif options.channel == 'mt':
+    elif options.channel in ['mt','mj']:
         qcd_os_ss_ratio = 1.18
     elif options.channel == 'zmm' or options.channel == 'zee':
         qcd_os_ss_ratio = 2.0    
@@ -530,7 +594,7 @@ def GetZJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_se
     return ana.SummedFactory('ZJ'+add_name, samples, plot, full_selection)
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True, doZL=True, doZJ=True):
-    if options.channel == 'em' or options.channel == 'zmm' or options.channel == 'zee':
+    if options.channel == 'em':
         zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
         ana.nodes[nodename].AddNode(zll_node)
     else:
@@ -696,15 +760,14 @@ def GetSubtractNode(ana,add_name,plot,wt,sel,cat,method,qcd_os_ss_ratio,OSSS,inc
   subtract_node.AddNode(ttj_node)
   subtract_node.AddNode(vvt_node)
   subtract_node.AddNode(vvj_node)
-  if options.channel not in ["zmm", "zee"]: 
-      ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
-      subtract_node.AddNode(ztt_node)
-  if options.channel not in ["zmm", "zee", "em"]:
+  ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
+  subtract_node.AddNode(ztt_node)
+  if options.channel not in ["em"]:
       zl_node = GetZLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       subtract_node.AddNode(zl_node)
       subtract_node.AddNode(zj_node)
-  if options.channel in ["zmm", "zee", "em"]:
+  if options.channel in ["em"]:
       zll_node = GetZLLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       subtract_node.AddNode(zll_node)
   if options.channel == "em":
@@ -949,6 +1012,39 @@ def NormFFSysts(ana,outfile='output.root'):
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write()
     
+def DYUncertBand(outfile='output.root',ScaleToData=True):
+    bkg_hist = outfile.Get(nodename+'/total_bkg')
+    nominal_hist = outfile.Get(nodename+'/ZLL')
+    up_hist = outfile.Get(nodename+'/total_bkg').Clone()
+    down_hist = outfile.Get(nodename+'/total_bkg').Clone()
+    up_hist.SetName('total_bkg_up')
+    down_hist.SetName('total_bkg_down')
+    shifts=['_ES', '_TT', '_Stat0', '_Stat40', '_Stat80']
+    for i in range(1,nominal_hist.GetNbinsX()+1):
+      nom_content = nominal_hist.GetBinContent(i)
+      bkg_content = bkg_hist.GetBinContent(i)
+      uncert=0
+      for shift in shifts:
+          shift_hist_up = outfile.Get(nodename+'/ZLL'+shift+'Up')
+          shift_hist_down = outfile.Get(nodename+'/ZLL'+shift+'Down')
+          up = abs(shift_hist_up.GetBinContent(i) - nom_content)
+          down = abs(shift_hist_down.GetBinContent(i) - nom_content)
+          uncert=math.sqrt(max([up,down])**2+uncert**2)
+      up_hist.SetBinContent(i, bkg_content+uncert)
+      down_hist.SetBinContent(i, bkg_content-uncert)
+    outfile.cd(nodename)
+    up_hist.Write()
+    down_hist.Write()
+    outfile.cd()
+    if ScaleToData:
+      data_hist=outfile.Get(nodename+'/data_obs')
+      data_total=data_hist.Integral(-1,-1)
+      bkg_total=bkg_hist.Integral(-1,-1)
+      data_hist.Scale(bkg_total/data_total)
+      outfile.cd(nodename)
+      data_hist.Write()
+      outfile.cd()
+    
 def GetTotals(ana,add_name="",outfile='outfile.root'):
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
     outfile.cd(nodename)
@@ -1040,7 +1136,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if options.channel == "tt": add_fake_factor_selection = "gen_match_1<6 && gen_match_2<6"
         residual_cat=cat+"&&"+add_fake_factor_selection
         
-        if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
+        if 'ZTT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
@@ -1056,7 +1152,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             if options.channel == 'tt': method = 8
             elif options.cat == "btag_loosemt" or options.cat == "btag_tight": method = 16
             elif options.channel == 'et' or options.channel == 'mt': method = 12
-        if 'ZTT' not in samples_to_skip and options.channel != 'zee' and options.channel != 'zmm':
+        if 'ZTT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
@@ -1069,13 +1165,10 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
         if compare_w_shapes:
-          #if options.channel == 'mt': cat_relax=cats[options.cat]+' && (iso_1<0.15 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'    
-          #else: cat_relax=cats[options.cat]+' && (iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singleelectron'
-          cat_relax=cats['baseline']+'&&'+cats['btag_wnobtag']
+          cat_relax=cats['w_shape_comp']
           GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    
         if compare_qcd_shapes:
-          cat_relax='(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto) &&trg_singlemuon'+'&&'+cats[options.cat]
-          #cat_relax='(n_lowpt_jets>=1)*('+cats['baseline']+')'
+          cat_relax=cats['qcd_shape_comp']
           GenerateQCD(ana, '_shape', data_samples, plot, wt, sel, cat_relax, method, qcd_os_ss_ratio, not options.do_ss)
            
     if 'signal' not in samples_to_skip:
@@ -1146,7 +1239,7 @@ for systematic in systematics:
     ana.remaps = {}
     if options.channel == 'em':
         ana.remaps['MuonEG'] = 'data_obs'
-    elif options.channel == 'mt' or options.channel == 'zmm':
+    elif options.channel in ['mt','mj','zmm']:
         ana.remaps['SingleMuon'] = 'data_obs'
     elif options.channel == 'et' or options.channel == 'zee':
         ana.remaps['SingleElectron'] = 'data_obs'
@@ -1266,6 +1359,7 @@ for systematic in systematics:
                         mssm_hist.Write()
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
+#DYUncertBand(outfile,True)
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 

@@ -2403,14 +2403,14 @@ namespace ic {
         if(channel_ == channel::et){
           if(gm2_==1||gm2_==3){
             if(fabs(tau->eta()) < 1.5){
-               etau_fakerate_2 = 1.87;
-            } else etau_fakerate_2=1.46;
+               etau_fakerate_2 = 1.40;
+            } else etau_fakerate_2=1.90;
           }
         } else {
           if(gm2_==1||gm2_==3){
             if(fabs(tau->eta()) < 1.5){
-               etau_fakerate_2=1.0;
-            } else etau_fakerate_2=1.37;
+               etau_fakerate_2=1.21;
+            } else etau_fakerate_2=1.38;
           }
         }
         if(channel_ == channel::tt){
@@ -2418,8 +2418,8 @@ namespace ic {
           Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
           if(gm1_==1||gm1_==3){
             if(fabs(tau1->eta()) < 1.5){
-               etau_fakerate_1=1.0;
-            } else etau_fakerate_1=1.37;
+               etau_fakerate_1=1.21;
+            } else etau_fakerate_1=1.38;
           }
         }  
       } else {
@@ -2472,29 +2472,29 @@ namespace ic {
         if(channel_ == channel::mt){
           if(gm2_==2||gm2_==4){
             if(fabs(tau->eta()) < 0.4){
-              mtau_fakerate_2 = 1.263;
+              mtau_fakerate_2 = 1.47;
             } else if(fabs(tau->eta()) < 0.8){
-              mtau_fakerate_2 = 1.364;
+              mtau_fakerate_2 = 1.55;
             } else if(fabs(tau->eta()) < 1.2){
-              mtau_fakerate_2 = 0.854;
+              mtau_fakerate_2 = 1.33;
             } else if(fabs(tau->eta()) < 1.7){
-              mtau_fakerate_2=1.712;
+              mtau_fakerate_2=1.72;
             } else if(fabs(tau->eta()) < 2.3){
-              mtau_fakerate_2=2.324;
+              mtau_fakerate_2=2.5;
             }
           }
         } else {
           if(gm2_==2||gm2_==4){
             if(fabs(tau->eta()) < 0.4){
-              mtau_fakerate_2=1.012;
+              mtau_fakerate_2=1.22;
             } else if(fabs(tau->eta()) < 0.8){
-              mtau_fakerate_2=1.007;
+              mtau_fakerate_2=1.12;
             } else if(fabs(tau->eta()) < 1.2){
-              mtau_fakerate_2=0.87;
+              mtau_fakerate_2=1.26;
             } else if(fabs(tau->eta()) < 1.7){
-              mtau_fakerate_2=1.154;
+              mtau_fakerate_2=1.22;
             } else if(fabs(tau->eta()) < 2.3){
-              mtau_fakerate_2=2.281;
+              mtau_fakerate_2=2.39;
             }
           }
         }
@@ -2503,15 +2503,15 @@ namespace ic {
         Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
           if(gm1_==2||gm1_==4){
             if(fabs(tau1->eta()) < 0.4){
-              mtau_fakerate_1=1.012;
+              mtau_fakerate_1=1.22;
             } else if(fabs(tau1->eta()) < 0.8){
-              mtau_fakerate_1=1.007;
+              mtau_fakerate_1=1.12;
             } else if(fabs(tau1->eta()) < 1.2){
-              mtau_fakerate_1=0.87;
+              mtau_fakerate_1=1.26;
             } else if(fabs(tau1->eta()) < 1.7){
-              mtau_fakerate_1=1.154;
+              mtau_fakerate_1=1.22;
             } else if(fabs(tau1->eta()) < 2.3){
-              mtau_fakerate_1=2.281;
+              mtau_fakerate_1=2.39;
             }
           }
         }  
