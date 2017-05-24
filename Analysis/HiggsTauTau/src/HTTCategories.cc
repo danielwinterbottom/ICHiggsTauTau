@@ -38,6 +38,7 @@ namespace ic {
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
+      do_qcd_scale_wts_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -508,6 +509,18 @@ namespace ic {
           }
         }
       }
+      
+     if(do_qcd_scale_wts_){
+       outtree_->Branch("wt_mur1_muf1",    &scale1_);
+       outtree_->Branch("wt_mur1_muf2",    &scale2_);
+       outtree_->Branch("wt_mur1_muf0p5",  &scale3_);
+       outtree_->Branch("wt_mur2_muf1",    &scale4_);
+       outtree_->Branch("wt_mur2_muf2",    &scale5_);
+       outtree_->Branch("wt_mur2_muf0p5",  &scale6_);
+       outtree_->Branch("wt_mur0p5_muf1",  &scale7_);
+       outtree_->Branch("wt_mur0p5_muf2",  &scale8_);
+       outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
+     }
       
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
@@ -1719,6 +1732,19 @@ namespace ic {
         }
       }
     }
+    
+   if(do_qcd_scale_wts_){
+     // note some of these labels may be generator dependent so need to make sure you check before using them
+     if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+     if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+     if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+     if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+     if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+     if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+     if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+     if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+     if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
+   }
     
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;

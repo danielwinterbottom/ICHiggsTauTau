@@ -41,6 +41,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_ff_weights)
   CLASS_MEMBER(HTTCategories, bool, do_ff_systematics)
   CLASS_MEMBER(HTTCategories, std::string, ff_categories)
+  CLASS_MEMBER(HTTCategories, bool, do_qcd_scale_wts)
  
   TTree *outtree_;
   TTree *synctree_;
@@ -893,6 +894,16 @@ class HTTCategories : public ModuleBase {
   double wt_zpt_esdown;
   double wt_zpt_ttup;
   double wt_zpt_ttdown;
+  
+  double scale1_;
+  double scale2_;
+  double scale3_;
+  double scale4_;
+  double scale5_;
+  double scale6_;
+  double scale7_;
+  double scale8_;
+  double scale9_;
 
  public:
   HTTCategories(std::string const& name);

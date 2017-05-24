@@ -210,7 +210,31 @@ sample_list = [
    'SUSYGluGluToHToTauTau_M-2300',
    'SUSYGluGluToHToTauTau_M-2600',
    'SUSYGluGluToHToTauTau_M-2900',
-   'SUSYGluGluToHToTauTau_M-3200'
+   'SUSYGluGluToHToTauTau_M-3200',
+   'SUSYGluGluToBBHToTauTau_M-80-NLO',
+   'SUSYGluGluToBBHToTauTau_M-130-NLO',
+   'SUSYGluGluToBBHToTauTau_M-200-NLO',
+   'SUSYGluGluToBBHToTauTau_M-350-NLO',
+   'SUSYGluGluToBBHToTauTau_M-700-NLO',
+   'SUSYGluGluToBBHToTauTau_M-1200-NLO',
+   'SUSYGluGluToBBHToTauTau_M-1800-NLO',
+   'SUSYGluGluToBBHToTauTau_M-3200-NLO',
+   'SUSYGluGluToBBHToTauTau_M-80-NLO-QshUp',
+   'SUSYGluGluToBBHToTauTau_M-130-NLO-QshUp',
+   'SUSYGluGluToBBHToTauTau_M-200-NLO-QshUp',
+   'SUSYGluGluToBBHToTauTau_M-350-NLO-QshUp',
+   'SUSYGluGluToBBHToTauTau_M-700-NLO-QshUp',
+   'SUSYGluGluToBBHToTauTau_M-1200-NLO-Qshup',
+   'SUSYGluGluToBBHToTauTau_M-1800-NLO-QshUp',
+   'SUSYGluGluToBBHToTauTau_M-3200-NLO-QshUp',
+   'SUSYGluGluToBBHToTauTau_M-80-NLO-QshDown',
+   'SUSYGluGluToBBHToTauTau_M-130-NLO-QshDown',
+   'SUSYGluGluToBBHToTauTau_M-200-NLO-QshDown',
+   'SUSYGluGluToBBHToTauTau_M-350-NLO-QshDown',
+   'SUSYGluGluToBBHToTauTau_M-700-NLO-QshDown',
+   'SUSYGluGluToBBHToTauTau_M-1200-NLO-QshDown',
+   'SUSYGluGluToBBHToTauTau_M-1800-NLO-QshDown',
+   'SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown'
  
 	]
 

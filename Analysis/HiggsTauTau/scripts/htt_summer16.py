@@ -165,14 +165,13 @@ if options.proc_mssm or options.proc_all:
     ]
 nlo_signal_mc = [ ]    
 if options.proc_mssm_nlo:
-  #bbhmasses = ['30','130','200','350','700','1200','1800','3200']
-  bbhmasses = ['700']
+  bbhmasses = ['80','130','200','350','700','1200','1800'] #no 3200 for now
   for mass in bbhmasses :
     nlo_signal_mc += [
       'SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'
     ]
 if options.proc_mssm_nlo_qsh:
-  bbhmasses = ['30','130','200','350','700','1200','1800','3200']
+  bbhmasses = ['80','130','200','350','700','1200','1800','3200']
   for mass in bbhmasses :
     nlo_signal_mc += [
       'SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshUp', 'SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshDown'
@@ -401,12 +400,12 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
       
-NLO_FILELIST='filelists/May12_MC_80X'
+NLO_FILELIST='filelists/May23_MC_80X'
       
 if options.proc_mssm_nlo or options.proc_mssm_nlo_qsh:
   for sa in nlo_signal_mc:
     JOB='%s_2016' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(NLO_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May12_MC_80X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(NLO_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May23_MC_80X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     FLATJSONPATCH=FLATJSONPATCHDYSIG
     if os.path.exists('%(NLO_FILELIST)s_%(sa)s.dat' %vars()):
       nfiles = sum(1 for line in open('%(NLO_FILELIST)s_%(sa)s.dat' % vars()))

@@ -15,9 +15,20 @@ class EffectiveEvents : public ModuleBase {
  private:
 
   CLASS_MEMBER(EffectiveEvents, fwlite::TFileService*, fs)
+  CLASS_MEMBER(EffectiveEvents, bool, do_qcd_scale_wts)
   TTree *outtree_;
   int mcsign_;
   double gen_ht_;
+  
+  double scale1_;
+  double scale2_;
+  double scale3_;
+  double scale4_;
+  double scale5_;
+  double scale6_;
+  double scale7_;
+  double scale8_;
+  double scale9_;
 
  public:
   EffectiveEvents(std::string const& name);

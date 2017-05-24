@@ -379,7 +379,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    pair_dr = 0.5;
    muon_pt = 10;
    muon_eta = 2.4;
- }
+}
  if(channel_str == "tpzee"){
    elec_dz = 0.5;
    elec_dxy = 0.2;
@@ -387,6 +387,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    elec_pt = 10;
    elec_eta = 2.5;
  }
+ do_qcd_scale_wts_=false;
+ if (output_name.find("SUSYGluGluToBBHToTauTau_M") != output_name.npos && output_name.find("NLO") != output_name.npos) do_qcd_scale_wts_=true;
  
  is_data      = json["is_data"].asBool();
  is_embedded  = json["is_embedded"].asBool();
@@ -580,7 +582,8 @@ void HTTSequence::BuildSequence(){
  }
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
-    .set_fs(fs.get()));
+    .set_fs(fs.get())
+    .set_do_qcd_scale_wts(do_qcd_scale_wts_));
 /*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));*/
   }else if(is_data && js["lumi_mask_only"].asBool()){
@@ -1843,7 +1846,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_write_tree(!js["make_sync_ntuple"].asBool())
     .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
     .set_ff_categories(js["baseline"]["ff_categories"].asString())
-    .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()));
+    .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
+    .set_do_qcd_scale_wts(do_qcd_scale_wts_));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")
