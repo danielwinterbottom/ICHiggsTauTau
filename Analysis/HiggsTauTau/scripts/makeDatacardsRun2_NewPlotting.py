@@ -571,7 +571,7 @@ for ch in channels:
     dc      = x[2]
     bin     = x[3]
     opts    = x[4]
-    extra = options.extra + extra_global + extra_channel[ch] + opts
+    extra = options.extra + ' ' + extra_global + ' ' + extra_channel[ch] + ' ' + opts
     
     if ch is 'zmm': var = 'm_vis'
     else: var = plots[0]
