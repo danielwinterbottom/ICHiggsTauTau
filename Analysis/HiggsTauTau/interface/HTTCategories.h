@@ -94,6 +94,10 @@ class HTTCategories : public ModuleBase {
   double wt_trig_down_2_;
   float idisoweight_1_;
   float idisoweight_2_;
+  double idisoweight_up_1_;
+  double idisoweight_down_1_;
+  double idisoweight_up_2_;
+  double idisoweight_down_2_;
   float trackingweight_1_;
   float trackingweight_2_;
   float isoweight_1_;

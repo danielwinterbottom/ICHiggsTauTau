@@ -134,7 +134,7 @@ extra_channel = {
     "et" : ' --syst_tau_scale="CMS_scale_t_et_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" --syst_efake_0pi_scale="CMS_scale_t_efake_1prong0pi0_13TeV" --syst_efake_1pi_scale="CMS_scale_t_efake_1prong1pi0_13TeV" --syst_tau_scale_0pi=CMS_scale_t_1prong0pi0_13TeV --syst_tau_scale_1pi=CMS_scale_t_1prong1pi0_13TeV --syst_tau_scale_3prong=CMS_scale_t_3prong0pi0_13TeV --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV', 
     "mt" : ' --syst_tau_scale="CMS_scale_t_mt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" --syst_tau_scale_0pi=CMS_scale_t_1prong0pi0_13TeV --syst_tau_scale_1pi=CMS_scale_t_1prong1pi0_13TeV --syst_tau_scale_3prong=CMS_scale_t_3prong0pi0_13TeV  --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV ',
     "tt" : ' --syst_tau_scale="CMS_scale_t_tt_13TeV" --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tau_scale_0pi=CMS_scale_t_1prong0pi0_13TeV --syst_tau_scale_1pi=CMS_scale_t_1prong1pi0_13TeV --syst_tau_scale_3prong=CMS_scale_t_3prong0pi0_13TeV --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV ',
-    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV ',
+    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV --syst_jfake_e="CMS_htt_em_eFake_13TeV" --syst_jfake_m="CMS_htt_em_muFake_13TeV" ',
 }
 
 if options.no_shape_systs:
@@ -295,15 +295,15 @@ if SCHEME == 'run2_mssm_summer2016':
     ("19",   "nobtag",    "nobtag",  BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-50"'),
     ("19",   "btag",    "btag",  BINS_EM_BTAG, '--set_alias="sel:pzeta>-50" --qcd_os_ss_ratio=0.6 '),
     ("19",   "inclusive", "inclusive_lowPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-50&&pzeta<=-10"'), 
-    ("19",   "nobtag", "nobtag_lowPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-50&&pzeta<=-10"'), 
-    ("19",   "btag", "btag_lowPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>-50&&pzeta<=-10" --qcd_os_ss_ratio=0.6 '), 
+    ("19",   "nobtag", "nobtag_lowPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-50&&pzeta<=-10" --qcd_os_ss_ratio=1.026 '), 
+    ("19",   "btag", "btag_lowPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>-50&&pzeta<=-10" --qcd_os_ss_ratio=0.588 '), 
     ("19",   "inclusive", "inclusive_mediumPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30"'), 
-    ("19",   "nobtag", "nobtag_mediumPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30"'), 
+    ("19",   "nobtag", "nobtag_mediumPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30" --qcd_os_ss_ratio=1.021 '), 
     ("19",   "btag", "btag_mediumPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30" --qcd_os_ss_ratio=0.6 '), 
     ("19",   "inclusive", "inclusive_highPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>-10&&pzeta<=30"'), 
-    ("19",   "nobtag", "nobtag_highPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>30"'), 
-    ("19",   "btag", "btag_highPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>30" --qcd_os_ss_ratio=0.6 '), 
-    ("19",   "inclusive", "ttbar", BINS_EM_NOBTAG, '--set_alias="sel:pzeta<-50 &&met>80" '), 
+    ("19",   "nobtag", "nobtag_highPzeta", BINS_EM_NOBTAG, '--set_alias="sel:pzeta>30" --qcd_os_ss_ratio=1.137 '), 
+    ("19",   "btag", "btag_highPzeta", BINS_EM_BTAG, '--set_alias="sel:pzeta>30" --qcd_os_ss_ratio=0.686 '), 
+    ("19",   "inclusive", "ttbar_cr", BINS_EM_NOBTAG, '--set_alias="sel:pzeta<-50 &&met>80" '), 
   ]
   bkg_schemes = {
     'et' : 'et_default',

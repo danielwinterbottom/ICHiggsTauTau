@@ -391,6 +391,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  is_data      = json["is_data"].asBool();
  is_embedded  = json["is_embedded"].asBool();
  real_tau_sample = false; //This gets set properly later
+ jlepton_fake = false;
  jets_label   = json["jets"].asString();
  met_label    = json["met"].asString();
  moriond_tau_scale = json["moriond_tau_scale"].asBool();
@@ -461,6 +462,12 @@ void HTTSequence::BuildSequence(){
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
   if (era_type == era::data_2016 && !is_data) real_tau_sample = ( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) ? false : true;
   if (channel == channel::zmm || channel == channel::zee) real_tau_sample = false;
+  if (channel == channel::em && strategy_type ==strategy::mssmsummer16){
+    //Apply jet->lepton fake rates?
+    if( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) jlepton_fake = true; //Applied for W+Jets...
+    if( (output_name.find("VV") != output_name.npos) || (output_name.find("ZZ") != output_name.npos) || (output_name.find("WZ") !=output_name.npos) || (output_name.find("WW") != output_name.npos)) jlepton_fake = true; //Applied for diboson
+    if( (output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) jlepton_fake = true; //Applied for DY
+  }
 
   std::cout << "-------------------------------------" << std::endl;
   std::cout << "HiggsToTauTau Analysis" << std::endl;
@@ -1687,6 +1694,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_mc(mc_type)
     .set_do_tau_id_weights(real_tau_sample)
     .set_do_tau_id_sf(real_tau_sample)
+    .set_do_jlepton_fake(jlepton_fake)
     .set_do_em_qcd_weights(true)
     .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
