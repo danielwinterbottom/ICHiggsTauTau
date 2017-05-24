@@ -181,6 +181,11 @@ parser.add_argument("--syst_zpt_statpt40", dest="syst_zpt_statpt40", type=str,
     help="If this string is set then the zpT statistical pt40 systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_zpt_statpt80", dest="syst_zpt_statpt80", type=str,
     help="If this string is set then the zpT statistical pt80 systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_jfake_e", dest="syst_jfake_e", type=str,
+    help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_jfake_m", dest="syst_jfake_m", type=str,
+    help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
+
 
 options = parser.parse_args(remaining_argv)   
 
@@ -483,6 +488,12 @@ if options.syst_zwt != '':
 if options.syst_w_fake_rate != '':
     systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
     systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
+if options.syst_jfake_m != '':
+    systematics['syst_jfake_m_up'] = ('' , '_'+options.syst_jfake_m+'Up', 'wt*idisoweight_up_2', ['ZTT','QCD','signal','TT'], False)
+    systematics['syst_jfake_m_down'] = ('' , '_'+options.syst_jfake_m+'Down', 'wt*idisoweight_down_2', ['ZTT','QCD','signal','TT'], False)
+if options.syst_jfake_e != '':
+    systematics['syst_jfake_e_up'] = ('' , '_'+options.syst_jfake_e+'Up', 'wt*idisoweight_up_1', ['ZTT','QCD','signal','TT'], False)
+    systematics['syst_jfake_e_down'] = ('' , '_'+options.syst_jfake_e+'Down', 'wt*idisoweight_down_1', ['ZTT','QCD','signal','TT'], False)
 if options.syst_scale_j != '':
     systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', [], False)
     systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', [], False)

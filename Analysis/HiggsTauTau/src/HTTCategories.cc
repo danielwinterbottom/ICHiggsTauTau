@@ -71,7 +71,12 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
-      
+      if(channel_==channel::em){
+        outtree_->Branch("idisoweight_up_1",&idisoweight_up_1_);
+        outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
+        outtree_->Branch("idisoweight_down_1",&idisoweight_down_1_);
+        outtree_->Branch("idisoweight_down_2",&idisoweight_down_2_);
+      }
       if(channel_==channel::tt){
         outtree_->Branch("wt_tau_id_vtight", &wt_tau_id_vtight_); 
         outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
@@ -1830,6 +1835,12 @@ namespace ic {
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
   if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
+  if(channel_==channel::em){
+    if(event->Exists("idisoweight_up_1")) idisoweight_up_1_ = event->Get<double>("idisoweight_up_1"); else idisoweight_up_1_ = 1.0;
+    if(event->Exists("idisoweight_up_2")) idisoweight_up_2_ = event->Get<double>("idisoweight_up_2"); else idisoweight_up_2_ = 1.0;
+    if(event->Exists("idisoweight_down_1")) idisoweight_down_1_ = event->Get<double>("idisoweight_down_1"); else  idisoweight_down_1_ = 1.0;
+    if(event->Exists("idisoweight_down_2")) idisoweight_down_2_ = event->Get<double>("idisoweight_down_2"); else idisoweight_down_2_=1.0;
+  }
   if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 0.0;
   if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
 //  if (event->Exists("isoweight_1")) isoweight_1_ = event->Get<double>("isoweight_1"); else isoweight_1_ = 0.0;
