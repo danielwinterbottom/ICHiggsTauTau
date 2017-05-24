@@ -20,22 +20,23 @@ for mass in bbhmasses :
 
 if args.qsh:
   for mass in bbhmasses :
-    file_names['SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshDown'] = dirname+'/SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshUp_mt_2016.root'
+    file_names['SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshUp'] = dirname+'/SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshUp_mt_2016.root'
     file_names['SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshDown'] = dirname+'/SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO-QshDown_mt_2016.root'
 
 out_string=''
 weights=['wt','wt_mur1_muf1','wt_mur1_muf2','wt_mur1_muf0p5','wt_mur2_muf1','wt_mur2_muf2','wt_mur2_muf0p5','wt_mur0p5_muf1','wt_mur0p5_muf2','wt_mur0p5_muf0p5']
 
 for f in file_names:
-  out_string+='  \"'+f+'\": {\n    \"xs\": 1,\n'
+  out_string+='  \"'+f+'\": {\n'
   for wt in weights:
     input_file = ROOT.TFile(file_names[f])
     tree = input_file.Get("effective")
     tree.Draw("rand()>>total_hist",wt,"goff")
     total_hist = tree.GetHistogram()
     entries = total_hist.Integral(-1,-1) 
-    if wt is 'wt': out_string+='    \"evt\": '+str(entries)+'\n'
-    else: out_string+='    \"evt_'+wt+'\": '+str(entries)+'\n'
-  out_string+='},\n'
+    if wt is 'wt': out_string+='    \"evt\": '+str(entries)+',\n'
+    else: out_string+='    \"evt_'+wt+'\": '+str(entries)+',\n'
+  out_string+='    \"xs\": 1.0\n'
+  out_string+='  },\n'
 
 print out_string

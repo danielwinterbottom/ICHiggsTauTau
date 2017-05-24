@@ -224,7 +224,7 @@ sample_list = [
    'SUSYGluGluToBBHToTauTau_M-200-NLO-QshUp',
    'SUSYGluGluToBBHToTauTau_M-350-NLO-QshUp',
    'SUSYGluGluToBBHToTauTau_M-700-NLO-QshUp',
-   'SUSYGluGluToBBHToTauTau_M-1200-NLO-Qshup',
+   'SUSYGluGluToBBHToTauTau_M-1200-NLO-QshUp',
    'SUSYGluGluToBBHToTauTau_M-1800-NLO-QshUp',
    'SUSYGluGluToBBHToTauTau_M-3200-NLO-QshUp',
    'SUSYGluGluToBBHToTauTau_M-80-NLO-QshDown',
