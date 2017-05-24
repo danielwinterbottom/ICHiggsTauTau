@@ -77,7 +77,7 @@ parser.add_argument("--syst_tau_scale", dest="syst_tau_scale", type=str,
     help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tau_scale_0pi", dest="syst_tau_scale_0pi", type=str,
     help="If this string is set then the systematic shift due to the 1 prong 0 pi tau energy scale is performed with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_tau_scale_1pi", dest="syst_tau_scale_0pi", type=str,
+parser.add_argument("--syst_tau_scale_1pi", dest="syst_tau_scale_1pi", type=str,
     help="If this string is set then the systematic shift due to the 1 prong 1 pi tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tau_scale_3prong", dest="syst_tau_scale_3prong", type=str,
     help="If this string is set then the systematic shift due to 3 prong tau energy scale is performed with the set string appended to the resulting histogram name")
@@ -508,7 +508,7 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
     uncert_types = [ 'syst', 'stat']
     for process in processes:
       template_name = 'ff_'+process+'_syst'
-      template_name = 'ff_'+process+'_'+options.channel+'_syst'
+      if process is 'qcd': template_name = 'ff_'+process+'_'+options.channel+'_syst'
       weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
@@ -516,7 +516,7 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
       for dm in dms: 
         for njet in njets:
           template_name = 'ff_'+process+'_'+dm+'_'+njet
-          template_name+='_'+options.channel
+          if process != 'tt': template_name+='_'+options.channel
           template_name+='_stat'
           weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
@@ -537,7 +537,7 @@ else:
     elif options.channel in ['mt','mj']:
         qcd_os_ss_ratio = 1.18
     elif options.channel == 'zmm' or options.channel == 'zee':
-        qcd_os_ss_ratio = 2.0    
+        qcd_os_ss_ratio = 1.06   
     else:
         qcd_os_ss_ratio = 1.0
 if options.do_ss:
