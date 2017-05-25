@@ -961,25 +961,30 @@ def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_mas
                 sample_name = mssm_samples[key].replace('*',mass)
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
                 
-def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], bbh_nlo_masses = ['1000'], wt='', sel='', cat='', get_os=True, do_ggH=True, do_bbH=True):
+def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], bbh_nlo_masses = ['1000'], sel='', cat='', doScales=True, get_os=True,do_ggH=True, do_bbH=True):
     if get_os:
         OSSS = 'os'
     else:
         OSSS = '!os'
-    full_selection = BuildCutString(wt, sel, cat, OSSS)
-    for key in mssm_nlo_samples:
-        if key == 'ggH-NLO':
-            masses = ggh_nlo_masses
-        elif key == 'bbH-NLO':
-            masses = bbh_nlo_masses
-        if masses is not None:    
-            for mass in masses:
-                if key == 'ggH-NLO' and not do_ggH:
-                    continue
-                if key == 'bbH-NLO' and not do_bbH:
-                    continue
-                sample_name = mssm_samples[key].replace('*',mass)
-                ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
+    weights = {'':'wt'}
+    if doScales: weights = {'':'wt','muR1muF2':'wt*wt_mur1_muf2','muR1muF0.5':'wt*wt_mur1_muf0p5','muR2muF1':'wt*wt_mur2_muf1','muR2muF2':'wt*wt_mur2_muf2','muR0.5muF1':'wt*wt_mur0p5_muf1','muR0.5muF0.5':'wt*wt_mur0p5_muf0p5'}
+    for weight in weights:
+      wt = weights[weight]  
+      full_selection = BuildCutString(wt, sel, cat, OSSS)
+      for key in mssm_nlo_samples:
+          if 'Qsh' in key and weight is not '': continue
+          if key == 'ggH-NLO':
+              masses = ggh_nlo_masses
+          elif key == 'bbH-NLO':
+              masses = bbh_nlo_masses
+          if masses is not None:    
+              for mass in masses:
+                  if key == 'ggH-NLO' and not do_ggH:
+                      continue
+                  if key == 'bbH-NLO' and not do_bbH:
+                      continue
+                  sample_name = mssm_samples[key].replace('*',mass)
+                  ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name+weight, sample_name, plot, full_selection))
         
         
 def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel='', cat='', get_os=True):
@@ -1052,24 +1057,38 @@ def NormFFSysts(ana,outfile='output.root'):
            hist.SetName(norm_hist_name)
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write()
-    
-def NormQCDScales(ana,outfile):
-    # When varying QCD scales need to normalize to the inclusive sum of weights 
-    if 'mur' not in options.add_wt and 'muf' not in options.add_wt: return
-    print "!!!!!!!!!!!!!!!!!!!!!"
-    outfile.cd(nodename)
-    for samp in mssm_nlo_samples:
-        masses = bbh_nlo_masses
-        if masses is not None:    
-            for mass in masses:
-                xs = ana.info[mssm_nlo_samples[samp].replace('*',mass)]['xs']
-                evt_nom = ana.info[mssm_nlo_samples[samp].replace('*',mass)]['evt']
-                evt_var = ana.info[mssm_nlo_samples[samp].replace('*',mass)]['evt_'+options.add_wt]
-                sf = evt_nom/evt_var
-                mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
-                mssm_hist.Scale(sf)
-                mssm_hist.Write()
-    outfile.cd()
+
+def DONLOUncerts(nodename,infile):
+    if not options.bbh_nlo_masses: return
+    for mass in bbh_nlo_masses:
+      samples = {'bbH-NLO*':'', 'bbH-NLO*muR0.5muF0.5':'wt_mur0p5_muf0p5', 'bbH-NLO*muR1muF0.5':'wt_mur1_muf0p5', 'bbH-NLO*muR0.5muF1':'wt_mur0p5_muf1', 'bbH-NLO*muR2muF2':'wt_mur2_muf2', 'bbH-NLO*muR2muF1':'wt_mur2_muf1', 'bbH-NLO*muR1muF2':'wt_mur1_muf2'}
+      nominal_error=ROOT.Double()
+      qsh_down_error=ROOT.Double()
+      qsh_up_error=ROOT.Double()
+      nominal = outfile.Get(nodename+'/bbH-NLO'+mass).IntegralAndError(-1, -1,nominal_error)  
+      qsh_down = outfile.Get(nodename+'/bbH-NLO-QshDown'+mass).IntegralAndError(-1, -1,qsh_down_error) 
+      qsh_up = outfile.Get(nodename+'/bbH-NLO-QshUp'+mass).IntegralAndError(-1, -1,qsh_up_error)
+      qsh_uncert=(max(nominal,qsh_down,qsh_up) - min(nominal,qsh_down,qsh_up))/2
+      scale_max = nominal
+      scale_min = nominal
+      for samp in samples:    
+        acceptance = outfile.Get(nodename+'/'+samp.replace('*',mass)).Integral(-1, -1)
+        if samp is 'bbH-NLO*': sf = 1.0 
+        else: 
+          sample_name='SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'
+          evt_nom = ana.info[sample_name]['evt']
+          evt_var = ana.info[sample_name]['evt_'+samples[samp]]
+          sf = evt_nom/evt_var
+        acceptance*=sf
+        if acceptance > scale_max: scale_max = acceptance
+        if acceptance < scale_min: scale_min = acceptance
+      uncert = (scale_max-scale_min)/2
+      pythia_error=ROOT.Double()
+      #qsh_error=ROOT.Double()
+      qsh_error = math.sqrt(qsh_up_error**2 + qsh_down_error**2)
+      pythia_yield = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,pythia_error) 
+      print 'bbH'+mass, ' & ', str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1)), ' & ', str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1)), '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)', ' & ', str(round(uncert/nominal,2)), ' & ', str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,1)),' \\\\'  
+        
     
 def DYUncertBand(outfile='output.root',ScaleToData=True):
     bkg_hist = outfile.Get(nodename+'/total_bkg')
@@ -1240,7 +1259,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
         if options.analysis == 'mssm' and options.bbh_nlo_masses != "":
-            GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, not options.do_ss)
+            GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, sel, cat, True, not options.do_ss)
             
     ana.Run()
     ana.nodes.Output(outfile)
@@ -1378,7 +1397,6 @@ for systematic in systematics:
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
-    NormQCDScales(ana,outfile)
     
     # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if 'signal' not in samples_to_skip:
@@ -1427,7 +1445,8 @@ for systematic in systematics:
                         mssm_hist.Write()
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
-#DYUncertBand(outfile,True)
+#DONLOUncerts(nodename,outfile)
+
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 
