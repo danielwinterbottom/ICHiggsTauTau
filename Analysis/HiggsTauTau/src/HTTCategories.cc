@@ -809,6 +809,7 @@ namespace ic {
         outtree_->Branch("jphi_1",            &jphi_1_, "jphi_1/F");
         outtree_->Branch("jphi_2",            &jphi_2_, "jphi_1/F");
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
+        outtree_->Branch("bpt_2",             &bpt_2_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
         outtree_->Branch("met_dphi_1",             &met_dphi_1_);
