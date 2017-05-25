@@ -29,6 +29,7 @@ weights=['wt','wt_mur1_muf1','wt_mur1_muf2','wt_mur1_muf0p5','wt_mur2_muf1','wt_
 for f in file_names:
   out_string+='  \"'+f+'\": {\n'
   for wt in weights:
+    if wt is not 'wt' and 'Qsh' in f: continue
     input_file = ROOT.TFile(file_names[f])
     tree = input_file.Get("effective")
     tree.Draw("rand()>>total_hist",wt,"goff")
