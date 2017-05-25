@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -71,6 +71,8 @@ parser.add_argument("--bbh_nlo_masses", dest="bbh_nlo_masses", type=str,
     help="Comma seperated list of SUSY NLO bbH signal masses.")
 parser.add_argument("--nlo_qsh", dest="nlo_qsh", action='store_true',
     help="Do the Up/Down Qsh variations for NLO samples.")
+parser.add_argument("--doNLOScales", dest="doNLOScales", action='store_true',
+    help="Do the Up/Down QCD scale variations for NLO samples and compute uncertainties.")
 parser.add_argument("--bbh_masses", dest="bbh_masses", type=str,
     help="Comma seperated list of SUSY bbH signal masses.")
 parser.add_argument("--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type=float,
@@ -226,12 +228,6 @@ if options.scheme == "qcd_shape": compare_qcd_shapes = True
 if options.scheme == "w_shape": compare_w_shapes = True
 if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
-loosemt_string='tight'
-tight_string='tight'
-loose_string='loose'
-tight_mt_cut='40'
-if options.channel == 'mt': tight_mt_cut='40'
-loose_iso_mt_cut = '70'
 
 cats = {}
 if options.analysis == 'sm':
@@ -241,18 +237,20 @@ if options.analysis == 'sm':
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
             cats['ichep_baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
+            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
             cats['ichep_baseline'] = '(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
+        elif options.channel == 'mj':        
+            cats['baseline'] = '(iso_1<0.15 && !leptonveto)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16': cats['baseline'] = '(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
@@ -273,20 +271,16 @@ if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 # MSSM categories
-#cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
 cats['btag'] = '(n_bjets>=1)'
 cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
 cats['nobtag_loosemt'] = cats['nobtag']
-cats['nobtag_looseiso'] = cats['nobtag']
 cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
-cats['btag_looseiso'] = cats['btag']
 cats['atleast1bjet'] = '(n_bjets>0)'
-#cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 cats['btag_tight_wnobtag']='(n_lowpt_jets>=1)'
-cats['btag_looseiso_wnobtag'] = cats['btag_tight_wnobtag']
+cats['btag_wnobtag']='(n_lowpt_jets>=1)' # this is the one that is used for the b-tag method 16!
 cats['0jet'] = '(n_jets==0)'
 cats['1jet'] = '(n_jets==1)'
 cats['ge2jet'] = '(n_jets>=2)'
@@ -295,45 +289,18 @@ cats['qcd_shape']=''
 cats['w_shape_comp']=''
 cats['qcd_shape_comp']=''
 
-if options.method in [17,18]: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
-if options.channel == 'mj':        
-  cats['baseline'] = '(iso_1<0.15 && !leptonveto)'
 
-# Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
-if options.cat == 'nobtag_tight' or options.cat == 'btag_tight' or options.cat == 'btag_tight_wnobtag':
-    if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+tight_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-    elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+tight_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso' or options.cat == 'btag_looseiso_wnobtag':
-    if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loose_string+'_2>0.5 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
-    elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loose_string+'_2>0.5 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
-if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
-    if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loosemt_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-    elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loosemt_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-# And aldo overwrite selection if one of the tight categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
+# Overwrite selection depending on whether tight or loose-mt categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<'+tight_mt_cut+')'
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<40)'
 if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>'+tight_mt_cut+')'
-if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<'+loose_iso_mt_cut+')'
-# Also need to adjust btag wnobtag category (used for method 16) for different categories
-cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
-if options.channel == 'mt' or options.channel == 'et':
-    if options.cat == 'btag_loosemt': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
-    if options.cat == 'btag_looseiso': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_'+tight_string+'_2<0.5)'
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>40)'
 
 if options.era == "mssmsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
     if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
     if options.channel in ['mt','zmm','mj']: cats['baseline']+=" && trg_singlemuon"
     if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
-
 
 # Overwrite any category selections if the --set_alias option is used
 for i in options.set_alias:
@@ -1065,10 +1032,12 @@ def DONLOUncerts(nodename,infile):
       nominal_error=ROOT.Double()
       qsh_down_error=ROOT.Double()
       qsh_up_error=ROOT.Double()
-      nominal = outfile.Get(nodename+'/bbH-NLO'+mass).IntegralAndError(-1, -1,nominal_error)  
-      qsh_down = outfile.Get(nodename+'/bbH-NLO-QshDown'+mass).IntegralAndError(-1, -1,qsh_down_error) 
-      qsh_up = outfile.Get(nodename+'/bbH-NLO-QshUp'+mass).IntegralAndError(-1, -1,qsh_up_error)
-      qsh_uncert=(max(nominal,qsh_down,qsh_up) - min(nominal,qsh_down,qsh_up))/2
+      nominal = outfile.Get(nodename+'/bbH-NLO'+mass).IntegralAndError(-1, -1,nominal_error) 
+      if options.nlo_qsh:
+        qsh_down = outfile.Get(nodename+'/bbH-NLO-QshDown'+mass).IntegralAndError(-1, -1,qsh_down_error) 
+        qsh_up = outfile.Get(nodename+'/bbH-NLO-QshUp'+mass).IntegralAndError(-1, -1,qsh_up_error)
+        qsh_uncert=(max(nominal,qsh_down,qsh_up) - min(nominal,qsh_down,qsh_up))/2
+        qsh_error = math.sqrt(qsh_up_error**2 + qsh_down_error**2)
       scale_max = nominal
       scale_min = nominal
       for samp in samples:    
@@ -1084,10 +1053,12 @@ def DONLOUncerts(nodename,infile):
         if acceptance < scale_min: scale_min = acceptance
       uncert = (scale_max-scale_min)/2
       pythia_error=ROOT.Double()
-      #qsh_error=ROOT.Double()
-      qsh_error = math.sqrt(qsh_up_error**2 + qsh_down_error**2)
       pythia_yield = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,pythia_error) 
-      print 'bbH'+mass, ' & ', str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1)), ' & ', str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1)), '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)', ' & ', str(round(uncert/nominal,2)), ' & ', str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,1)),' \\\\'  
+      outstring = 'bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)'+ ' & '+ str(round(uncert/nominal,2))
+      if options.nlo_qsh: outstring+=' & '+ str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,1))+' \\\\'  
+      else: outstring+=' \\\\'
+      outstring+=' '
+      print outstring
         
     
 def DYUncertBand(outfile='output.root',ScaleToData=True):
@@ -1185,8 +1156,6 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root',ff_syst_weight=None):
     
-    if "btag_looseiso" in options.cat: wt+="*wt_tau_id_loose"
-    
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
     doVVJ = 'VVJ' not in samples_to_skip
@@ -1259,7 +1228,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
         if options.analysis == 'mssm' and options.bbh_nlo_masses != "":
-            GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, sel, cat, True, not options.do_ss)
+            GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, sel, cat, options.doNLOScales, not options.do_ss)
             
     ana.Run()
     ana.nodes.Output(outfile)
@@ -1445,7 +1414,7 @@ for systematic in systematics:
                         mssm_hist.Write()
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
-#DONLOUncerts(nodename,outfile)
+if options.doNLOScales: DONLOUncerts(nodename,outfile)
 
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')

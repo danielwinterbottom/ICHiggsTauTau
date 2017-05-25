@@ -256,7 +256,7 @@ if SCHEME == 'run2_mssm_summer2016':
   scheme_et = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, ''),
-    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="set_alias:(mt_1>70)"  '),
+    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
     ("12",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '),
     ("12",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--do_ss'),
     ("12",   "nobtag_loosemt",    "nobtag_loosemt",  BINS_FINE, ''),
@@ -271,7 +271,7 @@ if SCHEME == 'run2_mssm_summer2016':
   scheme_mt = [
     ("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, ''),
-    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="set_alias:(mt_1>70)"  '),
+    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
     ("12",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '),
     ("12",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--do_ss'),
     ("12",   "nobtag_loosemt",    "nobtag_loosemt",  BINS_FINE, ''),
@@ -369,7 +369,7 @@ if SCHEME == 'run2_mssm_summer2016_ffplusdef':
   scheme_et = [
     ("18",   "inclusive",  "inclusive",  BINS_FINE, '--do_ff_systs'),
     ("18",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, '--do_ff_systs'),
-    ("18",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="set_alias:(mt_1>70)"  '),
+    ("18",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
     ("18",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '),
     ("18",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--do_ss'),
     ("18",   "nobtag_loosemt",    "nobtag_loosemt",  BINS_FINE, '--do_ff_systs'),
@@ -384,7 +384,7 @@ if SCHEME == 'run2_mssm_summer2016_ffplusdef':
   scheme_mt = [
     ("18",   "inclusive",  "inclusive",  BINS_FINE, '--do_ff_systs'),
     ("18",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, '--do_ff_systs'),
-    ("18",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="set_alias:(mt_1>70)"  '),
+    ("18",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '),
     ("18",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '),
     ("18",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--do_ss'),
     ("18",   "nobtag_loosemt",    "nobtag_loosemt",  BINS_FINE, '--do_ff_systs'),
@@ -465,7 +465,7 @@ if SCHEME == 'run2_mssm_summer2016_shapestudy':
   scheme_et = [
     #("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, ''+nobtag_loose_cat_et),
-    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="set_alias:(mt_1>70)"  '+nobtag_loose_cat_et),
+    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '+nobtag_loose_cat_et),
     ("12",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '+nobtag_loose_cat_et),
     ("12",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--do_ss '+nobtag_loose_cat_et),
     ("12",   "nobtag_loosemt",    "nobtag_loosemt",  BINS_FINE, ''+nobtag_loose_cat_et),
@@ -480,7 +480,7 @@ if SCHEME == 'run2_mssm_summer2016_shapestudy':
   scheme_mt = [
     #("12",   "inclusive",  "inclusive",  BINS_FINE, ''),
     ("12",   "nobtag_tight",    "nobtag_tight",  BINS_FINE, ''+nobtag_loose_cat_mt),
-    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="set_alias:(mt_1>70)"  '+nobtag_loose_cat_mt),
+    ("12",   "nobtag_tight",    "nobtag_tight_wjets_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)"  '+nobtag_loose_cat_mt),
     ("12",   "nobtag_tight",    "nobtag_tight_wjets_ss_cr",  BINS_FINE, '--set_alias="sel:(mt_1>70)" --do_ss '+nobtag_loose_cat_mt),
     ("12",   "nobtag_tight",    "nobtag_tight_qcd_cr",  BINS_FINE, '--do_ss '+nobtag_loose_cat_mt),
     ("12",   "nobtag_loosemt",    "nobtag_loosemt",  BINS_FINE, ''+nobtag_loose_cat_mt),
@@ -522,6 +522,7 @@ if SCHEME == 'run2_mssm_summer2016_shapestudy':
   }
   sig_scheme = 'run2_mssm'
   ANA = 'mssm'
+
 
 cat_schemes = {
   'et' : scheme_et,
