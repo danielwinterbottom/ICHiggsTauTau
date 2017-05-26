@@ -9,7 +9,7 @@ config.JobType.psetName = 'higgstautau_cfg_80X_Mar17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
-CfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8','isReHLT=1', 'LHEWeights=True', 'LHETag=source']
+config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8','isReHLT=1', 'LHEWeights=True', 'LHETag=source']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 50000
@@ -69,7 +69,8 @@ if __name__ == '__main__':
     tasks.append(('SUSYGluGluToBBHToTauTau_M-1800-NLO-QshUp','/SUSYGluGluToBBHToTauTau_M-1800_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER'))
     tasks.append(('SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown','/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshDown/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER'))
     tasks.append(('SUSYGluGluToBBHToTauTau_M-3200-NLO-QshUp','/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-amcatnlo-pythia8-QshUp/agilbert-miniaod-prod-150517-28028af67189b3de7224b79195bd0e1d/USER'))
-
+    tasks.append(('SUSYGluGluToBBHToTauTau_M-3200-NLO','/SUSYGluGluToBBHToTauTau_M-3200_TuneCUETP8M1_13TeV-amcatnlo-pythia8/agilbert-miniaod-prod-250517-28028af67189b3de7224b79195bd0e1d/USER'))
+    
 
     for task in tasks:
         print task[0]
