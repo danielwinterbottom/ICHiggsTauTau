@@ -38,6 +38,7 @@ namespace ic {
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
+      do_qcd_scale_wts_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -70,7 +71,12 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
-      
+      if(channel_==channel::em){
+        outtree_->Branch("idisoweight_up_1",&idisoweight_up_1_);
+        outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
+        outtree_->Branch("idisoweight_down_1",&idisoweight_down_1_);
+        outtree_->Branch("idisoweight_down_2",&idisoweight_down_2_);
+      }
       if(channel_==channel::tt){
         outtree_->Branch("wt_tau_id_vtight", &wt_tau_id_vtight_); 
         outtree_->Branch("wt_tau_id_tight", &wt_tau_id_tight_);
@@ -509,6 +515,18 @@ namespace ic {
         }
       }
       
+     if(do_qcd_scale_wts_){
+       outtree_->Branch("wt_mur1_muf1",    &scale1_);
+       outtree_->Branch("wt_mur1_muf2",    &scale2_);
+       outtree_->Branch("wt_mur1_muf0p5",  &scale3_);
+       outtree_->Branch("wt_mur2_muf1",    &scale4_);
+       outtree_->Branch("wt_mur2_muf2",    &scale5_);
+       outtree_->Branch("wt_mur2_muf0p5",  &scale6_);
+       outtree_->Branch("wt_mur0p5_muf1",  &scale7_);
+       outtree_->Branch("wt_mur0p5_muf2",  &scale8_);
+       outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
+     }
+      
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("mt_sv",             &mt_sv_.var_double);
@@ -791,6 +809,7 @@ namespace ic {
         outtree_->Branch("jphi_1",            &jphi_1_, "jphi_1/F");
         outtree_->Branch("jphi_2",            &jphi_2_, "jphi_1/F");
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
+        outtree_->Branch("bpt_2",             &bpt_2_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_.var_double);
         outtree_->Branch("met_dphi_1",             &met_dphi_1_);
@@ -1720,6 +1739,19 @@ namespace ic {
       }
     }
     
+   if(do_qcd_scale_wts_){
+     // note some of these labels may be generator dependent so need to make sure you check before using them
+     if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+     if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+     if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+     if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+     if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+     if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+     if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+     if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+     if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
+   }
+    
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
@@ -1804,6 +1836,12 @@ namespace ic {
   if (event->Exists("trigweight_down_2")) wt_trig_down_2_ = event->Get<double>("trigweight_down_2"); else wt_trig_down_2_ = 1.0;
   if (event->Exists("idisoweight_1")) idisoweight_1_ = event->Get<double>("idisoweight_1"); else idisoweight_1_ = 0.0;
   if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 0.0;
+  if(channel_==channel::em){
+    if(event->Exists("idisoweight_up_1")) idisoweight_up_1_ = event->Get<double>("idisoweight_up_1"); else idisoweight_up_1_ = 1.0;
+    if(event->Exists("idisoweight_up_2")) idisoweight_up_2_ = event->Get<double>("idisoweight_up_2"); else idisoweight_up_2_ = 1.0;
+    if(event->Exists("idisoweight_down_1")) idisoweight_down_1_ = event->Get<double>("idisoweight_down_1"); else  idisoweight_down_1_ = 1.0;
+    if(event->Exists("idisoweight_down_2")) idisoweight_down_2_ = event->Get<double>("idisoweight_down_2"); else idisoweight_down_2_=1.0;
+  }
   if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 0.0;
   if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
 //  if (event->Exists("isoweight_1")) isoweight_1_ = event->Get<double>("isoweight_1"); else isoweight_1_ = 0.0;

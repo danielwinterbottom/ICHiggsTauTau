@@ -26,6 +26,7 @@ namespace ic {
     do_singlemu_trg_weights_  = false;
     do_etau_fakerate_         = false;
     do_mtau_fakerate_         = false;
+    do_jlepton_fake_           = false;
     do_idiso_weights_         = false;
     do_id_weights_            = false;
     do_emu_e_fakerates_       = false;
@@ -115,6 +116,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_tau_mode_scale"   % do_tau_mode_scale_;
     std::cout << boost::format(param_fmt()) % "do_etau_fakerate"    % do_etau_fakerate_;
     std::cout << boost::format(param_fmt()) % "do_mtau_fakerate"    % do_mtau_fakerate_;
+    std::cout << boost::format(param_fmt()) % "do_jlepton_fake"    % do_jlepton_fake_;
     std::cout << boost::format(param_fmt()) % "do_emu_e_fakerates"  % do_emu_e_fakerates_;
     std::cout << boost::format(param_fmt()) % "do_emu_m_fakerates"  % do_emu_m_fakerates_;
     std::cout << boost::format(param_fmt()) % "do_top_factors"      % do_top_factors_;
@@ -1993,6 +1995,9 @@ namespace ic {
       } else if (channel_ == channel::em) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
+
+        unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+        unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
         double e_pt = elec->pt();
         double e_eta = fabs(elec->sc_eta());
         double e_signed_eta = elec->eta();
@@ -2001,7 +2006,11 @@ namespace ic {
         double m_eta = fabs(muon->eta());
         double m_signed_eta = muon->eta();
         double m_idiso = 1.0;
+        double m_idiso_up = 1.0;
+        double m_idiso_down = 1.0;
         double e_idiso = 1.0;
+        double e_idiso_up = 1.0;
+        double e_idiso_down = 1.0;
         double m_idiso_mc = 1.0;
         double m_idiso_data = 1.0;
         double e_idiso_mc = 1.0;
@@ -2116,16 +2125,44 @@ namespace ic {
          } else if(mc_ == mc::summer16_80X){
             double m_iso = PF04IsolationVal(muon, 0.5, 0); 
             double e_iso = PF03IsolationVal(elec, 0.5, 0);             
-            auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
-            auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
-            //m_idiso = fns_["m_id_ratio"]->eval(args_1_2.data()) * fns_["m_iso_binned_ratio"]->eval(args_2_2.data());
-            m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
+            std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
+            if(gm2_!=6 || !do_jlepton_fake_){
+              auto args_1_2 = std::vector<double>{m_pt,m_signed_eta};
+              auto args_2_2 = std::vector<double>{m_pt,m_signed_eta,m_iso};
+              m_idiso=fns_["m_idiso0p20_desy_ratio"]->eval(args_1_2.data());
+              m_idiso_up = 1.0;
+              m_idiso_down = 1.0;
+            } else {
+              std::vector<Candidate *> muon_vec;
+              muon_vec.push_back(dilepton[0]->GetCandidate("lepton2"));
+              std::vector<std::pair<Candidate*, PFJet*> > muon_match = MatchByDR(muon_vec,uncleaned_jets,0.2,true,true);
+              double jpt_m = 1.0;
+              if(muon_match.size()>0) jpt_m = muon_match.at(0).second->pt();
+              else jpt_m = m_pt;
+              m_idiso = 0.0025*jpt_m+0.902;
+              m_idiso_up = (0.0050*jpt_m+0.992)/m_idiso;
+              m_idiso_down = 0.812/m_idiso;
+           }
+           if(gm1_!=6 || !do_jlepton_fake_){
             auto args_1_1 = std::vector<double>{e_pt,e_signed_eta};
             auto args_2_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
-           // e_idiso = fns_["e_id_ratio"]->eval(args_1_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2_1.data()); 
-           e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());
+            e_idiso=fns_["e_idiso0p15_desy_ratio"]->eval(args_1_1.data());
+            e_idiso_down=1.0;
+            e_idiso_up=1.0;
+           } else {
+            std::vector<Candidate *> elec_vec;
+            elec_vec.push_back(dilepton[0]->GetCandidate("lepton1"));
+            std::vector<std::pair<Candidate*, PFJet*> > elec_match = MatchByDR(elec_vec,uncleaned_jets,0.2,true,true);
+            double jpt_e = 1.0;
+            if(elec_match.size()>0) jpt_e = elec_match.at(0).second->pt();
+            else jpt_e = e_pt;
+            e_idiso = 0.0015*jpt_e+0.794;
+            e_idiso_up = (0.0030*jpt_e+0.883)/e_idiso;
+            e_idiso_down = 0.702/e_idiso;
+           }
          }
         // if (do_id_weights_) mu_iso = 1.0;
+
         weight *= (e_idiso * m_idiso);
         if(mc_!=mc::fall15_76X && mc_!=mc::spring15_74X && mc_!=mc::spring16_80X && mc_ != mc::summer16_80X){
           event->Add("idweight_1", e_idiso);
@@ -2133,6 +2170,10 @@ namespace ic {
         } else { 
           event->Add("idisoweight_1", e_idiso);
           event->Add("idisoweight_2", m_idiso);
+          event->Add("idisoweight_up_1", e_idiso_up);
+          event->Add("idisoweight_up_2", m_idiso_up);
+          event->Add("idisoweight_down_1", e_idiso_down);
+          event->Add("idisoweight_down_2", m_idiso_down);
         }
         event->Add("isoweight_1", double(1.0));
         event->Add("isoweight_2", double(1.0));

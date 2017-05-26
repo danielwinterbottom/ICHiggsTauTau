@@ -379,7 +379,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    pair_dr = 0.5;
    muon_pt = 10;
    muon_eta = 2.4;
- }
+}
  if(channel_str == "tpzee"){
    elec_dz = 0.5;
    elec_dxy = 0.2;
@@ -387,10 +387,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    elec_pt = 10;
    elec_eta = 2.5;
  }
+ do_qcd_scale_wts_=false;
+ if (output_name.find("SUSYGluGluToBBHToTauTau_M") != output_name.npos && output_name.find("NLO") != output_name.npos) do_qcd_scale_wts_=true;
  
  is_data      = json["is_data"].asBool();
  is_embedded  = json["is_embedded"].asBool();
  real_tau_sample = false; //This gets set properly later
+ jlepton_fake = false;
  jets_label   = json["jets"].asString();
  met_label    = json["met"].asString();
  moriond_tau_scale = json["moriond_tau_scale"].asBool();
@@ -461,6 +464,12 @@ void HTTSequence::BuildSequence(){
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
   if (era_type == era::data_2016 && !is_data) real_tau_sample = ( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) ? false : true;
   if (channel == channel::zmm || channel == channel::zee) real_tau_sample = false;
+  if (channel == channel::em && strategy_type ==strategy::mssmsummer16){
+    //Apply jet->lepton fake rates?
+    if( (output_name.find("W") != output_name.npos) && (output_name.find("JetsToLNu") != output_name.npos)) jlepton_fake = true; //Applied for W+Jets...
+    if( (output_name.find("VV") != output_name.npos) || (output_name.find("ZZ") != output_name.npos) || (output_name.find("WZ") !=output_name.npos) || (output_name.find("WW") != output_name.npos)) jlepton_fake = true; //Applied for diboson
+    if( (output_name.find("DY") != output_name.npos) && (output_name.find("JetsToLL") != output_name.npos)) jlepton_fake = true; //Applied for DY
+  }
 
   std::cout << "-------------------------------------" << std::endl;
   std::cout << "HiggsToTauTau Analysis" << std::endl;
@@ -580,7 +589,8 @@ void HTTSequence::BuildSequence(){
  }
  if(js["get_effective"].asBool()){
   BuildModule(EffectiveEvents("EffectiveEvents")
-    .set_fs(fs.get()));
+    .set_fs(fs.get())
+    .set_do_qcd_scale_wts(do_qcd_scale_wts_));
 /*  BuildModule(HTTElectronEfficiency("ElectronEfficiency")
     .set_fs(fs.get()));*/
   }else if(is_data && js["lumi_mask_only"].asBool()){
@@ -1687,6 +1697,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_mc(mc_type)
     .set_do_tau_id_weights(real_tau_sample)
     .set_do_tau_id_sf(real_tau_sample)
+    .set_do_jlepton_fake(jlepton_fake)
     .set_do_em_qcd_weights(true)
     .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
@@ -1843,7 +1854,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_write_tree(!js["make_sync_ntuple"].asBool())
     .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
     .set_ff_categories(js["baseline"]["ff_categories"].asString())
-    .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool()));
+    .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
+    .set_do_qcd_scale_wts(do_qcd_scale_wts_));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")

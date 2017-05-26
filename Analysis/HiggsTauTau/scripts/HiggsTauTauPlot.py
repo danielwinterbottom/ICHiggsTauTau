@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -67,6 +67,12 @@ parser.add_argument("--sm_masses", dest="sm_masses", type=str,
     help="Comma seperated list of SM signal masses.")
 parser.add_argument("--ggh_masses", dest="ggh_masses", type=str,
     help="Comma seperated list of SUSY ggH signal masses.")
+parser.add_argument("--bbh_nlo_masses", dest="bbh_nlo_masses", type=str,
+    help="Comma seperated list of SUSY NLO bbH signal masses.")
+parser.add_argument("--nlo_qsh", dest="nlo_qsh", action='store_true',
+    help="Do the Up/Down Qsh variations for NLO samples.")
+parser.add_argument("--doNLOScales", dest="doNLOScales", action='store_true',
+    help="Do the Up/Down QCD scale variations for NLO samples and compute uncertainties.")
 parser.add_argument("--bbh_masses", dest="bbh_masses", type=str,
     help="Comma seperated list of SUSY bbH signal masses.")
 parser.add_argument("--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type=float,
@@ -77,7 +83,7 @@ parser.add_argument("--syst_tau_scale", dest="syst_tau_scale", type=str,
     help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tau_scale_0pi", dest="syst_tau_scale_0pi", type=str,
     help="If this string is set then the systematic shift due to the 1 prong 0 pi tau energy scale is performed with the set string appended to the resulting histogram name")
-parser.add_argument("--syst_tau_scale_1pi", dest="syst_tau_scale_0pi", type=str,
+parser.add_argument("--syst_tau_scale_1pi", dest="syst_tau_scale_1pi", type=str,
     help="If this string is set then the systematic shift due to the 1 prong 1 pi tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tau_scale_3prong", dest="syst_tau_scale_3prong", type=str,
     help="If this string is set then the systematic shift due to 3 prong tau energy scale is performed with the set string appended to the resulting histogram name")
@@ -177,6 +183,11 @@ parser.add_argument("--syst_zpt_statpt40", dest="syst_zpt_statpt40", type=str,
     help="If this string is set then the zpT statistical pt40 systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_zpt_statpt80", dest="syst_zpt_statpt80", type=str,
     help="If this string is set then the zpT statistical pt80 systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_jfake_e", dest="syst_jfake_e", type=str,
+    help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_jfake_m", dest="syst_jfake_m", type=str,
+    help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
+
 
 options = parser.parse_args(remaining_argv)   
 
@@ -217,12 +228,6 @@ if options.scheme == "qcd_shape": compare_qcd_shapes = True
 if options.scheme == "w_shape": compare_w_shapes = True
 if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
-loosemt_string='tight'
-tight_string='tight'
-loose_string='loose'
-tight_mt_cut='40'
-if options.channel == 'mt': tight_mt_cut='40'
-loose_iso_mt_cut = '70'
 
 cats = {}
 if options.analysis == 'sm':
@@ -232,18 +237,20 @@ if options.analysis == 'sm':
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_loose_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        cats['baseline'] = '(iso_1<0.1  && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16':
         if options.channel == 'mt':        
             cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
+            cats['baseline_antiisotau'] = '(iso_1<0.15 && 1 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
             cats['ichep_baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et':
             cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
+            cats['baseline_antiisotau'] = '(iso_1<0.1 && mva_olddm_tight_2<0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
             cats['ichep_baseline'] = '(iso_1<0.1 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
+        elif options.channel == 'mj':        
+            cats['baseline'] = '(iso_1<0.15 && !leptonveto)'
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16': cats['baseline'] = '(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
@@ -264,20 +271,16 @@ if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 # MSSM categories
-#cats['btag'] = '(n_jets<=1 && n_bjets>=1)'
 cats['btag'] = '(n_bjets>=1)'
 cats['nobtag'] = '(n_bjets==0)'
 # loose/tight iso-MT categories
 cats['nobtag_tight'] = cats['nobtag']
 cats['nobtag_loosemt'] = cats['nobtag']
-cats['nobtag_looseiso'] = cats['nobtag']
 cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
-cats['btag_looseiso'] = cats['btag']
 cats['atleast1bjet'] = '(n_bjets>0)'
-#cats['btag_tight_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
 cats['btag_tight_wnobtag']='(n_lowpt_jets>=1)'
-cats['btag_looseiso_wnobtag'] = cats['btag_tight_wnobtag']
+cats['btag_wnobtag']='(n_lowpt_jets>=1)' # this is the one that is used for the b-tag method 16!
 cats['0jet'] = '(n_jets==0)'
 cats['1jet'] = '(n_jets==1)'
 cats['ge2jet'] = '(n_jets>=2)'
@@ -286,45 +289,18 @@ cats['qcd_shape']=''
 cats['w_shape_comp']=''
 cats['qcd_shape_comp']=''
 
-if options.method in [17,18]: cats['baseline'] += '*(mva_olddm_medium_2>0.5)'
-if options.channel == 'mj':        
-  cats['baseline'] = '(iso_1<0.15 && !leptonveto)'
 
-# Perhaps the safest thing to do is to set the tau isolation WP in the baseline selection - this means setting different baselines if one of the tight/loose-mt categories are chosen (maybe messy)
-if options.cat == 'nobtag_tight' or options.cat == 'btag_tight' or options.cat == 'btag_tight_wnobtag':
-    if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+tight_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-    elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+tight_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso' or options.cat == 'btag_looseiso_wnobtag':
-    if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loose_string+'_2>0.5 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
-    elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loose_string+'_2>0.5 && mva_olddm_'+tight_string+'_2<0.5 && antiele_2 && antimu_2 && !leptonveto)'
-if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
-    if options.channel == 'mt':        
-        cats['baseline'] = '(iso_1<0.15 && mva_olddm_'+loosemt_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-    elif options.channel == 'et':
-        cats['baseline'] = '(iso_1<0.1  && mva_olddm_'+loosemt_string+'_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-# And aldo overwrite selection if one of the tight categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
+# Overwrite selection depending on whether tight or loose-mt categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<'+tight_mt_cut+')'
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<40)'
 if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>'+tight_mt_cut+')'
-if options.cat == 'nobtag_looseiso' or options.cat == 'btag_looseiso':
-    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<'+loose_iso_mt_cut+')'
-# Also need to adjust btag wnobtag category (used for method 16) for different categories
-cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
-if options.channel == 'mt' or options.channel == 'et':
-    if options.cat == 'btag_loosemt': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1)'
-    if options.cat == 'btag_looseiso': cats['btag_wnobtag']='(n_jets <=1 && n_lowpt_jets>=1 && mva_olddm_'+tight_string+'_2<0.5)'
+    if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>40)'
 
 if options.era == "mssmsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
     if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
     if options.channel in ['mt','zmm','mj']: cats['baseline']+=" && trg_singlemuon"
     if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
-
 
 # Overwrite any category selections if the --set_alias option is used
 for i in options.set_alias:
@@ -438,9 +414,12 @@ if options.era == "mssmsummer16":
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
 
-sm_samples = { 'ggH' : 'GluGluHToTauTau', 'qqH' : 'VBFHToTauTau', 'WplusH' : 'WplusHToTauTau', 'WminusH' : 'WminusHToTauTau', 'ZH' : 'ZHToTauTau', 'TTH' : 'TTHToTauTau' }
-mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau', 'bbH' : 'SUSYGluGluToBBHToTauTau' }
-Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau' }
+sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH_M-*' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
+mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
+mssm_nlo_samples = { 'bbH-NLO' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
+mssm_nlo_qsh_samples = { 'bbH-NLO-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-NLO-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
+if options.nlo_qsh: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
+Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
 systematics = OrderedDict()
@@ -476,6 +455,12 @@ if options.syst_zwt != '':
 if options.syst_w_fake_rate != '':
     systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
     systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
+if options.syst_jfake_m != '':
+    systematics['syst_jfake_m_up'] = ('' , '_'+options.syst_jfake_m+'Up', 'wt*idisoweight_up_2', ['ZTT','QCD','signal','TT'], False)
+    systematics['syst_jfake_m_down'] = ('' , '_'+options.syst_jfake_m+'Down', 'wt*idisoweight_down_2', ['ZTT','QCD','signal','TT'], False)
+if options.syst_jfake_e != '':
+    systematics['syst_jfake_e_up'] = ('' , '_'+options.syst_jfake_e+'Up', 'wt*idisoweight_up_1', ['ZTT','QCD','signal','TT'], False)
+    systematics['syst_jfake_e_down'] = ('' , '_'+options.syst_jfake_e+'Down', 'wt*idisoweight_down_1', ['ZTT','QCD','signal','TT'], False)
 if options.syst_scale_j != '':
     systematics['syst_scale_j_up'] = ('JES_UP' , '_'+options.syst_scale_j+'Up', 'wt', [], False)
     systematics['syst_scale_j_down'] = ('JES_DOWN' , '_'+options.syst_scale_j+'Down', 'wt', [], False)
@@ -508,7 +493,7 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
     uncert_types = [ 'syst', 'stat']
     for process in processes:
       template_name = 'ff_'+process+'_syst'
-      template_name = 'ff_'+process+'_'+options.channel+'_syst'
+      if process is 'qcd': template_name = 'ff_'+process+'_'+options.channel+'_syst'
       weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
@@ -516,7 +501,7 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
       for dm in dms: 
         for njet in njets:
           template_name = 'ff_'+process+'_'+dm+'_'+njet
-          template_name+='_'+options.channel
+          if process != 'tt': template_name+='_'+options.channel
           template_name+='_stat'
           weight_name = 'wt_ff_'+options.cat+'_'+process+'_'+dm+'_'+njet+'_stat_'
           systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
@@ -537,7 +522,7 @@ else:
     elif options.channel in ['mt','mj']:
         qcd_os_ss_ratio = 1.18
     elif options.channel == 'zmm' or options.channel == 'zee':
-        qcd_os_ss_ratio = 2.0    
+        qcd_os_ss_ratio = 1.06   
     else:
         qcd_os_ss_ratio = 1.0
 if options.do_ss:
@@ -550,6 +535,7 @@ sm_masses=None
 if options.sm_masses != "": sm_masses = options.sm_masses.split(',')
 if options.ggh_masses != "": ggh_masses = options.ggh_masses.split(',')
 if options.bbh_masses != "": bbh_masses = options.bbh_masses.split(',')
+if options.bbh_nlo_masses != "": bbh_nlo_masses = options.bbh_nlo_masses.split(',')
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -918,7 +904,7 @@ def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', c
             else:
                 add_str = mass
             for key in sm_samples:
-                sample_name = sm_samples[key]+'_M-'+mass
+                sample_name = sm_samples[key].replace('*',mass)
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_str+add_name, sample_name, plot, full_selection))
             
 def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_masses = ['1000'], wt='', sel='', cat='', get_os=True, do_ggH=True, do_bbH=True):
@@ -928,6 +914,7 @@ def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_mas
         OSSS = '!os'
     full_selection = BuildCutString(wt, sel, cat, OSSS)
     for key in mssm_samples:
+        masses = None
         if key == 'ggH':
             masses = ggh_masses
         elif key == 'bbH':
@@ -938,8 +925,34 @@ def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_mas
                     continue
                 if key == 'bbH' and not do_bbH:
                     continue
-                sample_name = mssm_samples[key]+'_M-'+mass
+                sample_name = mssm_samples[key].replace('*',mass)
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
+                
+def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], bbh_nlo_masses = ['1000'], sel='', cat='', doScales=True, get_os=True,do_ggH=True, do_bbH=True):
+    if get_os:
+        OSSS = 'os'
+    else:
+        OSSS = '!os'
+    weights = {'':'wt'}
+    if doScales: weights = {'':'wt','muR1muF2':'wt*wt_mur1_muf2','muR1muF0.5':'wt*wt_mur1_muf0p5','muR2muF1':'wt*wt_mur2_muf1','muR2muF2':'wt*wt_mur2_muf2','muR0.5muF1':'wt*wt_mur0p5_muf1','muR0.5muF0.5':'wt*wt_mur0p5_muf0p5'}
+    for weight in weights:
+      wt = weights[weight]  
+      full_selection = BuildCutString(wt, sel, cat, OSSS)
+      for key in mssm_nlo_samples:
+          if 'Qsh' in key and weight is not '': continue
+          if key == 'ggH-NLO':
+              masses = ggh_nlo_masses
+          elif key == 'bbH-NLO':
+              masses = bbh_nlo_masses
+          if masses is not None:    
+              for mass in masses:
+                  if key == 'ggH-NLO' and not do_ggH:
+                      continue
+                  if key == 'bbH-NLO' and not do_bbH:
+                      continue
+                  sample_name = mssm_samples[key].replace('*',mass)
+                  ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name+weight, sample_name, plot, full_selection))
+        
         
 def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel='', cat='', get_os=True):
     if get_os:
@@ -950,7 +963,7 @@ def GenerateHhhSignal(ana, add_name='', plot='', masses = ['700'], wt='', sel=''
     if masses is not None:
         for mass in masses:
             for key in Hhh_samples:
-                sample_name = Hhh_samples[key]+'_M-'+mass
+                sample_name = Hhh_samples[key].replace('*',mass)
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
         
 def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
@@ -1011,6 +1024,42 @@ def NormFFSysts(ana,outfile='output.root'):
            hist.SetName(norm_hist_name)
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write()
+
+def DONLOUncerts(nodename,infile):
+    if not options.bbh_nlo_masses: return
+    for mass in bbh_nlo_masses:
+      samples = {'bbH-NLO*':'', 'bbH-NLO*muR0.5muF0.5':'wt_mur0p5_muf0p5', 'bbH-NLO*muR1muF0.5':'wt_mur1_muf0p5', 'bbH-NLO*muR0.5muF1':'wt_mur0p5_muf1', 'bbH-NLO*muR2muF2':'wt_mur2_muf2', 'bbH-NLO*muR2muF1':'wt_mur2_muf1', 'bbH-NLO*muR1muF2':'wt_mur1_muf2'}
+      nominal_error=ROOT.Double()
+      qsh_down_error=ROOT.Double()
+      qsh_up_error=ROOT.Double()
+      nominal = outfile.Get(nodename+'/bbH-NLO'+mass).IntegralAndError(-1, -1,nominal_error) 
+      if options.nlo_qsh:
+        qsh_down = outfile.Get(nodename+'/bbH-NLO-QshDown'+mass).IntegralAndError(-1, -1,qsh_down_error) 
+        qsh_up = outfile.Get(nodename+'/bbH-NLO-QshUp'+mass).IntegralAndError(-1, -1,qsh_up_error)
+        qsh_uncert=(max(nominal,qsh_down,qsh_up) - min(nominal,qsh_down,qsh_up))/2
+        qsh_error = math.sqrt(qsh_up_error**2 + qsh_down_error**2)
+      scale_max = nominal
+      scale_min = nominal
+      for samp in samples:    
+        acceptance = outfile.Get(nodename+'/'+samp.replace('*',mass)).Integral(-1, -1)
+        if samp is 'bbH-NLO*': sf = 1.0 
+        else: 
+          sample_name='SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'
+          evt_nom = ana.info[sample_name]['evt']
+          evt_var = ana.info[sample_name]['evt_'+samples[samp]]
+          sf = evt_nom/evt_var
+        acceptance*=sf
+        if acceptance > scale_max: scale_max = acceptance
+        if acceptance < scale_min: scale_min = acceptance
+      uncert = (scale_max-scale_min)/2
+      pythia_error=ROOT.Double()
+      pythia_yield = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,pythia_error) 
+      outstring = 'bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)'+ ' & '+ str(round(uncert/nominal,2))
+      if options.nlo_qsh: outstring+=' & '+ str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,1))+' \\\\'  
+      else: outstring+=' \\\\'
+      outstring+=' '
+      print outstring
+        
     
 def DYUncertBand(outfile='output.root',ScaleToData=True):
     bkg_hist = outfile.Get(nodename+'/total_bkg')
@@ -1107,8 +1156,6 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root',ff_syst_weight=None):
     
-    if "btag_looseiso" in options.cat: wt+="*wt_tau_id_loose"
-    
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
     doVVJ = 'VVJ' not in samples_to_skip
@@ -1180,6 +1227,8 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
+        if options.analysis == 'mssm' and options.bbh_nlo_masses != "":
+            GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, sel, cat, options.doNLOScales, not options.do_ss)
             
     ana.Run()
     ana.nodes.Output(outfile)
@@ -1264,6 +1313,7 @@ for systematic in systematics:
         signal_samples = sm_samples
     elif options.analysis == 'mssm':
         signal_samples = mssm_samples
+        if options.bbh_nlo_masses: signal_samples.update(mssm_nlo_samples)
     elif options.analysis == 'Hhh':
         signal_samples = Hhh_samples
 
@@ -1272,11 +1322,13 @@ for systematic in systematics:
             masses=sm_masses
         elif samp == 'ggH':
             masses = ggh_masses
-        else:
+        elif samp == 'bbH':
             masses = bbh_masses
+        elif samp == 'bbH-NLO':
+            masses = bbh_nlo_masses
         if masses is not None:    
             for mass in masses:
-                sample_name = signal_samples[samp]+'_M-'+mass
+                sample_name = signal_samples[samp].replace('*',mass)
                 ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
     
     if options.add_sm_background and options.analysis == 'mssm':
@@ -1314,6 +1366,7 @@ for systematic in systematics:
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
+    
     # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if 'signal' not in samples_to_skip:
         outfile.cd(nodename)
@@ -1329,7 +1382,7 @@ for systematic in systematics:
                     samp_name = samp+"_SM"
                 if masses is not None:    
                     for mass in masses:
-                        xs = ana.info[sm_samples[samp]+'_M-'+mass]['xs']
+                        xs = ana.info[sm_samples[samp].replace('*',mass)]['xs']
                         sf = 1.0/xs
                         sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
                         sm_hist.Scale(sf)
@@ -1340,9 +1393,11 @@ for systematic in systematics:
                     masses = ggh_masses
                 elif samp == 'bbH':
                     masses = bbh_masses
+                elif 'bbH-NLO' in samp:
+                    masses = bbh_nlo_masses
                 if masses is not None:    
                     for mass in masses:
-                        xs = ana.info[mssm_samples[samp]+'_M-'+mass]['xs']
+                        xs = ana.info[mssm_samples[samp].replace('*',mass)]['xs']
                         sf = 1.0/xs
                         mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                         mssm_hist.Scale(sf)
@@ -1352,14 +1407,15 @@ for systematic in systematics:
                 masses = ggh_masses
                 if masses is not None:
                     for mass in masses:
-                        xs = ana.info[Hhh_samples[samp]+'_M-'+mass]['xs']
+                        xs = ana.info[Hhh_samples[samp].replace('*',mass)]['xs']
                         sf = 1.0/xs
                         mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                         mssm_hist.Scale(sf)
                         mssm_hist.Write()
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
-#DYUncertBand(outfile,True)
+if options.doNLOScales: DONLOUncerts(nodename,outfile)
+
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
 

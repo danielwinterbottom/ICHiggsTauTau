@@ -518,5 +518,154 @@
   },
   "MuonEG": {
     "lumi": 35867.060
+  },
+  "SUSYGluGluToBBHToTauTau_M-350-NLO-QshDown": {
+    "evt": 109586.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO-QshDown": {
+    "evt": 109056.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1800-NLO-QshUp": {
+    "evt": 102638.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-80-NLO": {
+    "evt": 111642.0,
+    "evt_wt_mur1_muf1": 111642.294769,
+    "evt_wt_mur1_muf2": 115480.237732,
+    "evt_wt_mur1_muf0p5": 107236.821716,
+    "evt_wt_mur2_muf1": 90538.9636536,
+    "evt_wt_mur2_muf2": 94538.6734314,
+    "evt_wt_mur2_muf0p5": 85399.8331909,
+    "evt_wt_mur0p5_muf1": 129332.65094,
+    "evt_wt_mur0p5_muf2": 130995.39093,
+    "evt_wt_mur0p5_muf0p5": 129121.809448,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-130-NLO-QshDown": {
+    "evt": 112144.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-350-NLO-QshUp": {
+    "evt": 102290.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-200-NLO": {
+    "evt": 107712.0,
+    "evt_wt_mur1_muf1": 107712.414093,
+    "evt_wt_mur1_muf2": 108191.05365,
+    "evt_wt_mur1_muf0p5": 107555.178223,
+    "evt_wt_mur2_muf1": 89015.3119507,
+    "evt_wt_mur2_muf2": 88876.3536377,
+    "evt_wt_mur2_muf0p5": 89121.4826965,
+    "evt_wt_mur0p5_muf1": 126431.966248,
+    "evt_wt_mur0p5_muf2": 128380.035706,
+    "evt_wt_mur0p5_muf0p5": 125642.792603,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-700-NLO": {
+    "evt": 105952.0,
+    "evt_wt_mur1_muf1": 105953.051758,
+    "evt_wt_mur1_muf2": 101501.517151,
+    "evt_wt_mur1_muf0p5": 111245.268005,
+    "evt_wt_mur2_muf1": 88824.2145691,
+    "evt_wt_mur2_muf2": 84065.1787109,
+    "evt_wt_mur2_muf0p5": 94498.3014832,
+    "evt_wt_mur0p5_muf1": 125416.066864,
+    "evt_wt_mur0p5_muf2": 122403.581543,
+    "evt_wt_mur0p5_muf0p5": 128971.22821,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1800-NLO-QshDown": {
+    "evt": 109846.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-350-NLO": {
+    "evt": 105890.0,
+    "evt_wt_mur1_muf1": 105890.04718,
+    "evt_wt_mur1_muf2": 104274.023865,
+    "evt_wt_mur1_muf0p5": 108043.084442,
+    "evt_wt_mur2_muf1": 88159.6624451,
+    "evt_wt_mur2_muf2": 85927.8751831,
+    "evt_wt_mur2_muf0p5": 90800.7121887,
+    "evt_wt_mur0p5_muf1": 124934.012573,
+    "evt_wt_mur0p5_muf2": 125143.36615,
+    "evt_wt_mur0p5_muf0p5": 125447.231964,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-200-NLO-QshDown": {
+    "evt": 112308.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-130-NLO-QshUp": {
+    "evt": 105682.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-700-NLO-QshDown": {
+    "evt": 108844.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-80-NLO-QshUp": {
+    "evt": 109946.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-80-NLO-QshDown": {
+    "evt": 114894.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-130-NLO": {
+    "evt": 106468.0,
+    "evt_wt_mur1_muf1": 106466.90213,
+    "evt_wt_mur1_muf2": 108659.535126,
+    "evt_wt_mur1_muf0p5": 104301.008545,
+    "evt_wt_mur2_muf1": 87336.7063904,
+    "evt_wt_mur2_muf2": 89064.3423462,
+    "evt_wt_mur2_muf0p5": 85137.4537964,
+    "evt_wt_mur0p5_muf1": 124262.999084,
+    "evt_wt_mur0p5_muf2": 127000.814636,
+    "evt_wt_mur0p5_muf0p5": 122936.825623,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-700-NLO-QshUp": {
+    "evt": 102328.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1800-NLO": {
+    "evt": 107044.0,
+    "evt_wt_mur1_muf1": 107044.242615,
+    "evt_wt_mur1_muf2": 98428.058136,
+    "evt_wt_mur1_muf0p5": 117221.802521,
+    "evt_wt_mur2_muf1": 90283.8767395,
+    "evt_wt_mur2_muf2": 81999.068634,
+    "evt_wt_mur2_muf0p5": 100321.053833,
+    "evt_wt_mur0p5_muf1": 127028.434692,
+    "evt_wt_mur0p5_muf2": 118834.784729,
+    "evt_wt_mur0p5_muf0p5": 136206.03894,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO": {
+    "evt": 105548.0,
+    "evt_wt_mur1_muf1": 105547.933899,
+    "evt_wt_mur1_muf2": 98912.4375305,
+    "evt_wt_mur1_muf0p5": 113365.570068,
+    "evt_wt_mur2_muf1": 88779.7705383,
+    "evt_wt_mur2_muf2": 82166.0852356,
+    "evt_wt_mur2_muf0p5": 96732.5932007,
+    "evt_wt_mur0p5_muf1": 125239.353516,
+    "evt_wt_mur0p5_muf2": 119505.262207,
+    "evt_wt_mur0p5_muf0p5": 131662.025452,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-200-NLO-QshUp": {
+    "evt": 104192.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO-QshUp": {
+    "evt": 104050.0,
+    "xs": 1.0
   }
+
+
 }
