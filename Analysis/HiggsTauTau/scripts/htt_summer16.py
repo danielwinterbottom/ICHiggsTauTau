@@ -165,7 +165,7 @@ if options.proc_mssm or options.proc_all:
     ]
 nlo_signal_mc = [ ]    
 if options.proc_mssm_nlo:
-  bbhmasses = ['80','130','200','350','700','1200','1800'] #no 3200 for now
+  bbhmasses = ['80','130','200','350','700','1200','1800', '3200']
   for mass in bbhmasses :
     nlo_signal_mc += [
       'SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'

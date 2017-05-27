@@ -13,7 +13,7 @@ parser.add_argument('--qsh', help= 'Do parameters for Qsh samples as well',actio
 args = parser.parse_args()
 dirname = args.file
 file_names={}
-bbhmasses = ['80','130','200','350','700','1200','1800']
+bbhmasses = ['80','130','200','350','700','1200','1800','3200']
 
 for mass in bbhmasses :
   file_names['SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'] = dirname+'/SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO_mt_2016.root'

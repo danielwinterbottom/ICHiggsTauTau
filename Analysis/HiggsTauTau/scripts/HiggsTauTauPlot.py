@@ -414,7 +414,8 @@ if options.era == "mssmsummer16":
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
 
-sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH_M-*' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
+sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
+if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_samples = { 'bbH-NLO' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
 mssm_nlo_qsh_samples = { 'bbH-NLO-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-NLO-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
@@ -490,10 +491,9 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
     processes = ['tt','w','qcd']
     dms = ['dm0', 'dm1']
     njets = ['njet0','njet1']
-    uncert_types = [ 'syst', 'stat']
     for process in processes:
       template_name = 'ff_'+process+'_syst'
-      if process is 'qcd': template_name = 'ff_'+process+'_'+options.channel+'_syst'
+      if process is 'qcd' or options.channel == 'tt': template_name = 'ff_'+process+'_'+options.channel+'_syst'
       weight_name = 'wt_ff_'+options.cat+'_'+process+'_syst_'
       systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
       systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
@@ -519,8 +519,14 @@ if options.qcd_os_ss_ratio > 0:
 else:
     if options.channel == 'et':
         qcd_os_ss_ratio = 1.02
-    elif options.channel in ['mt','mj']:
+        if options.cat == 'inclusive': qcd_os_ss_factor = 1.13
+        elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_factor = 1.11
+        elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_factor = 1.16
+    elif options.channel in ['mt','mj']: 
         qcd_os_ss_ratio = 1.18
+        if options.cat == 'inclusive': qcd_os_ss_factor = 1.12
+        elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_factor = 1.14
+        elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_factor = 1.01
     elif options.channel == 'zmm' or options.channel == 'zee':
         qcd_os_ss_ratio = 1.06   
     else:
@@ -1027,6 +1033,7 @@ def NormFFSysts(ana,outfile='output.root'):
 
 def DONLOUncerts(nodename,infile):
     if not options.bbh_nlo_masses: return
+    outstring='\\begin{table}[H]\n\\centering\n\\resizebox{\\textwidth}{!}{\n\\begin{tabular}{ |c|c|c|c|c| }\n\\hline\nSignal Mass & Pythia  (1 pb) &  NLO Yield (1 pb) & Scale Uncert. & Qsh Uncert. \\\\\n\\hline\n'
     for mass in bbh_nlo_masses:
       samples = {'bbH-NLO*':'', 'bbH-NLO*muR0.5muF0.5':'wt_mur0p5_muf0p5', 'bbH-NLO*muR1muF0.5':'wt_mur1_muf0p5', 'bbH-NLO*muR0.5muF1':'wt_mur0p5_muf1', 'bbH-NLO*muR2muF2':'wt_mur2_muf2', 'bbH-NLO*muR2muF1':'wt_mur2_muf1', 'bbH-NLO*muR1muF2':'wt_mur1_muf2'}
       nominal_error=ROOT.Double()
@@ -1054,11 +1061,11 @@ def DONLOUncerts(nodename,infile):
       uncert = (scale_max-scale_min)/2
       pythia_error=ROOT.Double()
       pythia_yield = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,pythia_error) 
-      outstring = 'bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)'+ ' & '+ str(round(uncert/nominal,2))
-      if options.nlo_qsh: outstring+=' & '+ str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,1))+' \\\\'  
-      else: outstring+=' \\\\'
-      outstring+=' '
-      print outstring
+      outstring +='bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)'+ ' & '+ str(round(uncert/nominal,2))
+      if options.nlo_qsh: outstring+=' & '+ str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,2))+' \\\\\n'  
+      else: outstring+=' \\\\\n'
+    outstring+='\\hline\n\\end{tabular}}\n\\end{table}'
+    print outstring
         
     
 def DYUncertBand(outfile='output.root',ScaleToData=True):
@@ -1330,10 +1337,9 @@ for systematic in systematics:
             for mass in masses:
                 sample_name = signal_samples[samp].replace('*',mass)
                 ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
-    
     if options.add_sm_background and options.analysis == 'mssm':
         for samp in sm_samples:
-            sample_name = sm_samples[samp]+'_M-'+options.add_sm_background
+            sample_name = sm_samples[samp].replace('*',options.add_sm_background)
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
             
     ana.AddInfo(options.paramfile, scaleTo='data_obs')
