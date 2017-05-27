@@ -519,88 +519,147 @@
   "MuonEG": {
     "lumi": 35867.060
   },
-  "SUSYGluGluToBBHToTauTau_M-350-NLO-QshDown": {
-    "evt": 109586.0,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-1200-NLO-QshDown": {
-    "evt": 109056.0,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-1800-NLO-QshUp": {
-    "evt": 102638.0,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-80-NLO": {
-    "evt": 111642.0,
-    "evt_wt_mur1_muf1": 111642.294769,
-    "evt_wt_mur1_muf2": 115480.237732,
-    "evt_wt_mur1_muf0p5": 107236.821716,
-    "evt_wt_mur2_muf1": 90538.9636536,
-    "evt_wt_mur2_muf2": 94538.6734314,
-    "evt_wt_mur2_muf0p5": 85399.8331909,
-    "evt_wt_mur0p5_muf1": 129332.65094,
-    "evt_wt_mur0p5_muf2": 130995.39093,
-    "evt_wt_mur0p5_muf0p5": 129121.809448,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-130-NLO-QshDown": {
-    "evt": 112144.0,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-350-NLO-QshUp": {
-    "evt": 102290.0,
+  "SUSYGluGluToBBHToTauTau_M-3200-NLO": {
+    "evt": 107222.0,
+    "evt_wt_mur1_muf1": 107222.147888,
+    "evt_wt_mur1_muf2": 95424.5234985,
+    "evt_wt_mur1_muf0p5": 121442.010132,
+    "evt_wt_mur2_muf1": 90577.397644,
+    "evt_wt_mur2_muf2": 79636.5321045,
+    "evt_wt_mur2_muf0p5": 104139.102081,
+    "evt_wt_mur0p5_muf1": 127485.439514,
+    "evt_wt_mur0p5_muf2": 115314.226746,
+    "evt_wt_mur0p5_muf0p5": 141443.551758,
     "xs": 1.0
   },
   "SUSYGluGluToBBHToTauTau_M-200-NLO": {
     "evt": 107712.0,
-    "evt_wt_mur1_muf1": 107712.414093,
-    "evt_wt_mur1_muf2": 108191.05365,
-    "evt_wt_mur1_muf0p5": 107555.178223,
-    "evt_wt_mur2_muf1": 89015.3119507,
-    "evt_wt_mur2_muf2": 88876.3536377,
-    "evt_wt_mur2_muf0p5": 89121.4826965,
-    "evt_wt_mur0p5_muf1": 126431.966248,
-    "evt_wt_mur0p5_muf2": 128380.035706,
-    "evt_wt_mur0p5_muf0p5": 125642.792603,
+    "evt_wt_mur1_muf1": 107712.413055,
+    "evt_wt_mur1_muf2": 108191.052795,
+    "evt_wt_mur1_muf0p5": 107555.172974,
+    "evt_wt_mur2_muf1": 89015.3099365,
+    "evt_wt_mur2_muf2": 88876.348877,
+    "evt_wt_mur2_muf0p5": 89121.4860535,
+    "evt_wt_mur0p5_muf1": 126431.978851,
+    "evt_wt_mur0p5_muf2": 128380.041748,
+    "evt_wt_mur0p5_muf0p5": 125642.800079,
     "xs": 1.0
   },
-  "SUSYGluGluToBBHToTauTau_M-700-NLO": {
-    "evt": 105952.0,
-    "evt_wt_mur1_muf1": 105953.051758,
-    "evt_wt_mur1_muf2": 101501.517151,
-    "evt_wt_mur1_muf0p5": 111245.268005,
-    "evt_wt_mur2_muf1": 88824.2145691,
-    "evt_wt_mur2_muf2": 84065.1787109,
-    "evt_wt_mur2_muf0p5": 94498.3014832,
-    "evt_wt_mur0p5_muf1": 125416.066864,
-    "evt_wt_mur0p5_muf2": 122403.581543,
-    "evt_wt_mur0p5_muf0p5": 128971.22821,
+  "SUSYGluGluToBBHToTauTau_M-350-NLO": {
+    "evt": 105890.0,
+    "evt_wt_mur1_muf1": 105890.047485,
+    "evt_wt_mur1_muf2": 104273.997498,
+    "evt_wt_mur1_muf0p5": 108043.072845,
+    "evt_wt_mur2_muf1": 88159.6605835,
+    "evt_wt_mur2_muf2": 85927.8780212,
+    "evt_wt_mur2_muf0p5": 90800.7164917,
+    "evt_wt_mur0p5_muf1": 124934.001404,
+    "evt_wt_mur0p5_muf2": 125143.372498,
+    "evt_wt_mur0p5_muf0p5": 125447.239868,
     "xs": 1.0
   },
   "SUSYGluGluToBBHToTauTau_M-1800-NLO-QshDown": {
     "evt": 109846.0,
     "xs": 1.0
   },
-  "SUSYGluGluToBBHToTauTau_M-350-NLO": {
-    "evt": 105890.0,
-    "evt_wt_mur1_muf1": 105890.04718,
-    "evt_wt_mur1_muf2": 104274.023865,
-    "evt_wt_mur1_muf0p5": 108043.084442,
-    "evt_wt_mur2_muf1": 88159.6624451,
-    "evt_wt_mur2_muf2": 85927.8751831,
-    "evt_wt_mur2_muf0p5": 90800.7121887,
-    "evt_wt_mur0p5_muf1": 124934.012573,
-    "evt_wt_mur0p5_muf2": 125143.36615,
-    "evt_wt_mur0p5_muf0p5": 125447.231964,
+  "SUSYGluGluToBBHToTauTau_M-1800-NLO-QshUp": {
+    "evt": 102638.0,
     "xs": 1.0
   },
-  "SUSYGluGluToBBHToTauTau_M-200-NLO-QshDown": {
-    "evt": 112308.0,
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO-QshDown": {
+    "evt": 109056.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1800-NLO": {
+    "evt": 107044.0,
+    "evt_wt_mur1_muf1": 107044.242554,
+    "evt_wt_mur1_muf2": 98428.071991,
+    "evt_wt_mur1_muf0p5": 117221.789917,
+    "evt_wt_mur2_muf1": 90283.8820496,
+    "evt_wt_mur2_muf2": 81999.0623779,
+    "evt_wt_mur2_muf0p5": 100321.062836,
+    "evt_wt_mur0p5_muf1": 127028.430542,
+    "evt_wt_mur0p5_muf2": 118834.784119,
+    "evt_wt_mur0p5_muf0p5": 136206.019592,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown": {
+    "evt": 110074.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-700-NLO-QshUp": {
+    "evt": 102328.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-3200-NLO-QshUp": {
+    "evt": 102782.0,
     "xs": 1.0
   },
   "SUSYGluGluToBBHToTauTau_M-130-NLO-QshUp": {
     "evt": 105682.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-130-NLO": {
+    "evt": 106468.0,
+    "evt_wt_mur1_muf1": 106466.901001,
+    "evt_wt_mur1_muf2": 108659.541321,
+    "evt_wt_mur1_muf0p5": 104301.007996,
+    "evt_wt_mur2_muf1": 87336.7025757,
+    "evt_wt_mur2_muf2": 89064.3430481,
+    "evt_wt_mur2_muf0p5": 85137.449707,
+    "evt_wt_mur0p5_muf1": 124262.990906,
+    "evt_wt_mur0p5_muf2": 127000.8125,
+    "evt_wt_mur0p5_muf0p5": 122936.822815,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO-QshUp": {
+    "evt": 104050.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-200-NLO-QshUp": {
+    "evt": 104192.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-80-NLO": {
+    "evt": 111642.0,
+    "evt_wt_mur1_muf1": 111642.295898,
+    "evt_wt_mur1_muf2": 115480.227417,
+    "evt_wt_mur1_muf0p5": 107236.841797,
+    "evt_wt_mur2_muf1": 90538.9623413,
+    "evt_wt_mur2_muf2": 94538.6759644,
+    "evt_wt_mur2_muf0p5": 85399.83255,
+    "evt_wt_mur0p5_muf1": 129332.644287,
+    "evt_wt_mur0p5_muf2": 130995.364197,
+    "evt_wt_mur0p5_muf0p5": 129121.780396,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-130-NLO-QshDown": {
+    "evt": 112144.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO": {
+    "evt": 105548.0,
+    "evt_wt_mur1_muf1": 105547.932373,
+    "evt_wt_mur1_muf2": 98912.437561,
+    "evt_wt_mur1_muf0p5": 113365.582245,
+    "evt_wt_mur2_muf1": 88779.7789612,
+    "evt_wt_mur2_muf2": 82166.0891113,
+    "evt_wt_mur2_muf0p5": 96732.6077881,
+    "evt_wt_mur0p5_muf1": 125239.350891,
+    "evt_wt_mur0p5_muf2": 119505.265411,
+    "evt_wt_mur0p5_muf0p5": 131662.025818,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-350-NLO-QshDown": {
+    "evt": 109586.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-350-NLO-QshUp": {
+    "evt": 102290.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-200-NLO-QshDown": {
+    "evt": 112308.0,
     "xs": 1.0
   },
   "SUSYGluGluToBBHToTauTau_M-700-NLO-QshDown": {
@@ -615,55 +674,17 @@
     "evt": 114894.0,
     "xs": 1.0
   },
-  "SUSYGluGluToBBHToTauTau_M-130-NLO": {
-    "evt": 106468.0,
-    "evt_wt_mur1_muf1": 106466.90213,
-    "evt_wt_mur1_muf2": 108659.535126,
-    "evt_wt_mur1_muf0p5": 104301.008545,
-    "evt_wt_mur2_muf1": 87336.7063904,
-    "evt_wt_mur2_muf2": 89064.3423462,
-    "evt_wt_mur2_muf0p5": 85137.4537964,
-    "evt_wt_mur0p5_muf1": 124262.999084,
-    "evt_wt_mur0p5_muf2": 127000.814636,
-    "evt_wt_mur0p5_muf0p5": 122936.825623,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-700-NLO-QshUp": {
-    "evt": 102328.0,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-1800-NLO": {
-    "evt": 107044.0,
-    "evt_wt_mur1_muf1": 107044.242615,
-    "evt_wt_mur1_muf2": 98428.058136,
-    "evt_wt_mur1_muf0p5": 117221.802521,
-    "evt_wt_mur2_muf1": 90283.8767395,
-    "evt_wt_mur2_muf2": 81999.068634,
-    "evt_wt_mur2_muf0p5": 100321.053833,
-    "evt_wt_mur0p5_muf1": 127028.434692,
-    "evt_wt_mur0p5_muf2": 118834.784729,
-    "evt_wt_mur0p5_muf0p5": 136206.03894,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-1200-NLO": {
-    "evt": 105548.0,
-    "evt_wt_mur1_muf1": 105547.933899,
-    "evt_wt_mur1_muf2": 98912.4375305,
-    "evt_wt_mur1_muf0p5": 113365.570068,
-    "evt_wt_mur2_muf1": 88779.7705383,
-    "evt_wt_mur2_muf2": 82166.0852356,
-    "evt_wt_mur2_muf0p5": 96732.5932007,
-    "evt_wt_mur0p5_muf1": 125239.353516,
-    "evt_wt_mur0p5_muf2": 119505.262207,
-    "evt_wt_mur0p5_muf0p5": 131662.025452,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-200-NLO-QshUp": {
-    "evt": 104192.0,
-    "xs": 1.0
-  },
-  "SUSYGluGluToBBHToTauTau_M-1200-NLO-QshUp": {
-    "evt": 104050.0,
+  "SUSYGluGluToBBHToTauTau_M-700-NLO": {
+    "evt": 105952.0,
+    "evt_wt_mur1_muf1": 105953.053741,
+    "evt_wt_mur1_muf2": 101501.51123,
+    "evt_wt_mur1_muf0p5": 111245.263214,
+    "evt_wt_mur2_muf1": 88824.213562,
+    "evt_wt_mur2_muf2": 84065.1778564,
+    "evt_wt_mur2_muf0p5": 94498.2980042,
+    "evt_wt_mur0p5_muf1": 125416.077087,
+    "evt_wt_mur0p5_muf2": 122403.576172,
+    "evt_wt_mur0p5_muf0p5": 128971.240906,
     "xs": 1.0
   }
 
