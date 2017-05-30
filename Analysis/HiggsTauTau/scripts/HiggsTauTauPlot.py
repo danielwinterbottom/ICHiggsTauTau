@@ -279,11 +279,11 @@ cats['nobtag_loosemt'] = cats['nobtag']
 cats['btag_tight'] = cats['btag']
 cats['btag_loosemt'] = cats['btag']
 cats['atleast1bjet'] = '(n_bjets>0)'
-cats['btag_tight_wnobtag']='(n_lowpt_jets>=1)'
 cats['btag_wnobtag']='(n_lowpt_jets>=1)' # this is the one that is used for the b-tag method 16!
 cats['0jet'] = '(n_jets==0)'
 cats['1jet'] = '(n_jets==1)'
 cats['ge2jet'] = '(n_jets>=2)'
+cats['btag_tight_wnobtag']='(n_lowpt_jets>=1)'
 cats['w_shape']=''
 cats['qcd_shape']=''
 cats['w_shape_comp']=''
@@ -519,20 +519,21 @@ if options.qcd_os_ss_ratio > 0:
 else:
     if options.channel == 'et':
         qcd_os_ss_ratio = 1.02
-        if options.cat == 'inclusive': qcd_os_ss_factor = 1.13
-        elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_factor = 1.11
-        elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_factor = 1.16
+        if options.cat == 'inclusive': qcd_os_ss_ratio = 1.13
+        elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_ratio = 1.11
+        elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_ratio = 1.16
     elif options.channel in ['mt','mj']: 
         qcd_os_ss_ratio = 1.18
-        if options.cat == 'inclusive': qcd_os_ss_factor = 1.12
-        elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_factor = 1.14
-        elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_factor = 1.01
+        if options.cat == 'inclusive': qcd_os_ss_ratio = 1.12
+        elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_ratio = 1.14
+        elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_ratio = 1.01
     elif options.channel == 'zmm' or options.channel == 'zee':
         qcd_os_ss_ratio = 1.06   
     else:
         qcd_os_ss_ratio = 1.0
 if options.do_ss:
     qcd_os_ss_ratio = 1.0
+
 
 # Get array of signal masses to process        
 ggh_masses=None
@@ -1033,7 +1034,9 @@ def NormFFSysts(ana,outfile='output.root'):
 
 def DONLOUncerts(nodename,infile):
     if not options.bbh_nlo_masses: return
-    outstring='\\begin{table}[H]\n\\centering\n\\resizebox{\\textwidth}{!}{\n\\begin{tabular}{ |c|c|c|c|c| }\n\\hline\nSignal Mass & Pythia  (1 pb) &  NLO Yield (1 pb) & Scale Uncert. & Qsh Uncert. \\\\\n\\hline\n'
+    outstring='\\begin{table}[H]\n\\centering\n\\resizebox{\\textwidth}{!}{\n\\begin{tabular}{ |c|c|c|c|c|c| }\n\\hline\nSignal Mass & Pythia  (1 pb) &  NLO Yield (1 pb) & Scale Uncert. & Scale Acceptance Uncert. '
+    if options.nlo_qsh: outstring += '& Qsh Uncert. \\\\\n\\hline\n'
+    else: outstring += '\\\\\n\\hline\n'
     for mass in bbh_nlo_masses:
       samples = {'bbH-NLO*':'', 'bbH-NLO*muR0.5muF0.5':'wt_mur0p5_muf0p5', 'bbH-NLO*muR1muF0.5':'wt_mur1_muf0p5', 'bbH-NLO*muR0.5muF1':'wt_mur0p5_muf1', 'bbH-NLO*muR2muF2':'wt_mur2_muf2', 'bbH-NLO*muR2muF1':'wt_mur2_muf1', 'bbH-NLO*muR1muF2':'wt_mur1_muf2'}
       nominal_error=ROOT.Double()
@@ -1047,6 +1050,8 @@ def DONLOUncerts(nodename,infile):
         qsh_error = math.sqrt(qsh_up_error**2 + qsh_down_error**2)
       scale_max = nominal
       scale_min = nominal
+      scale_nosf_max = nominal
+      scale_nosf_min = nominal
       for samp in samples:    
         acceptance = outfile.Get(nodename+'/'+samp.replace('*',mass)).Integral(-1, -1)
         if samp is 'bbH-NLO*': sf = 1.0 
@@ -1055,13 +1060,17 @@ def DONLOUncerts(nodename,infile):
           evt_nom = ana.info[sample_name]['evt']
           evt_var = ana.info[sample_name]['evt_'+samples[samp]]
           sf = evt_nom/evt_var
+        acceptance_nosf = acceptance
         acceptance*=sf
         if acceptance > scale_max: scale_max = acceptance
         if acceptance < scale_min: scale_min = acceptance
+        if acceptance_nosf > scale_nosf_max: scale_nosf_max = acceptance_nosf
+        if acceptance_nosf < scale_nosf_min: scale_nosf_min = acceptance_nosf
       uncert = (scale_max-scale_min)/2
+      uncert_nosf = (scale_nosf_max-scale_nosf_min)/2
       pythia_error=ROOT.Double()
       pythia_yield = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,pythia_error) 
-      outstring +='bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)'+ ' & '+ str(round(uncert/nominal,2))
+      outstring +='bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)' + ' & '+ str(round(uncert_nosf/nominal,2)) + ' & '+ str(round(uncert/nominal,2))
       if options.nlo_qsh: outstring+=' & '+ str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,2))+' \\\\\n'  
       else: outstring+=' \\\\\n'
     outstring+='\\hline\n\\end{tabular}}\n\\end{table}'
