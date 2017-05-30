@@ -10,6 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+#include "TRandom3.h"
 
 #include <string>
 
@@ -29,16 +30,12 @@ class HTTGenAnalysis : public ModuleBase {
   CLASS_MEMBER(HTTGenAnalysis, double, max_mu_eta   )
   CLASS_MEMBER(HTTGenAnalysis, double, max_tau_eta  )
   CLASS_MEMBER(HTTGenAnalysis, bool, do_theory_uncert)
+  CLASS_MEMBER(HTTGenAnalysis, TH2F*,bbtag_eff)
   
   TTree *outtree_;
+  TRandom3  *rand;
   
   unsigned long long event_;
-  std::vector<double> scale_variation_wts_;
-  std::vector<double> NNPDF_wts_;
-  std::vector<double> alpha_s_wts_;
-  std::vector<double> CT10_wts_;
-  std::vector<double> CT10_alpha_s_wts_;
-  std::vector<double> MMHT_wts_;
   
   unsigned count_ee_;
   unsigned count_em_;
@@ -59,6 +56,7 @@ class HTTGenAnalysis : public ModuleBase {
   double mt_2_;
   double pzeta_;
   double n_bjets_;
+  double n_bjets_noscale_;
   unsigned n_jets_nofilter_;
   unsigned n_jets_;
   unsigned n_jetsingap_;
@@ -75,7 +73,6 @@ class HTTGenAnalysis : public ModuleBase {
   double pt_tt_;
   double wt_;
   double HiggsPt_;
-  double FirstHiggsPt_;
   std::string decayType;
   double wt_ggh_pt_           ;
   double wt_ggh_pt_up_        ;
@@ -90,18 +87,19 @@ class HTTGenAnalysis : public ModuleBase {
   double genpt_2_;
   double geneta_1_;
   double geneta_2_;
-  bool hasFSR_;
- 
-  TFile *ggh_weights_;
-  TH1F *ggh_hist_;
-  TH1F *ggh_hist_up_;
-  TH1F *ggh_hist_down_;
-  TH1F *ggh_herwig_hist_;
-  TH1F *ggh_amcnlo_hist_;
-  TH1F *ggh_pythiaup_hist_;
-  TH1F *ggh_pythiadown_hist_;
-  TH1F *ggh_scalehigh_;
-  TH1F *ggh_scalelow_;
+  double n_jets_offline_;
+  double n_bjets_offline_;
+  
+  double scale1_;
+  double scale2_;
+  double scale3_;
+  double scale4_;
+  double scale5_;
+  double scale6_;
+  double scale7_;
+  double scale8_;
+  double scale9_;
+
   
  public:
   HTTGenAnalysis(std::string const& name);

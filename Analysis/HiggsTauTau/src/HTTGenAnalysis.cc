@@ -37,6 +37,7 @@ namespace ic {
 
   HTTGenAnalysis::HTTGenAnalysis(std::string const& name) : ModuleBase(name) {
     fs_ = NULL;
+    bbtag_eff_ = nullptr;
   }
 
   HTTGenAnalysis::~HTTGenAnalysis() {
@@ -44,20 +45,21 @@ namespace ic {
   }
 
   int HTTGenAnalysis::PreAnalysis() {
+    rand = new TRandom3(0);
     if(fs_){  
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
-      outtree_->Branch("wt"       , &wt_       );
-      outtree_->Branch("wt"       , &wt_       );
-      outtree_->Branch("wt"       , &wt_       );
       if(do_theory_uncert_){
-        outtree_->Branch("scale_variation_wts", &scale_variation_wts_);
-        outtree_->Branch("NNPDF_wts", &NNPDF_wts_);
-        outtree_->Branch("alpha_s_wts", &alpha_s_wts_);
-        outtree_->Branch("CT10_wts", &CT10_wts_);
-        outtree_->Branch("CT10_alpha_s_wts", &CT10_alpha_s_wts_);
-        outtree_->Branch("MMHT_wts", &MMHT_wts_);
+        outtree_->Branch("wt_mur1_muf1",    &scale1_);
+        outtree_->Branch("wt_mur1_muf2",    &scale2_);
+        outtree_->Branch("wt_mur1_muf0p5",  &scale3_);
+        outtree_->Branch("wt_mur2_muf1",    &scale4_);
+        outtree_->Branch("wt_mur2_muf2",    &scale5_);
+        outtree_->Branch("wt_mur2_muf0p5",  &scale6_);
+        outtree_->Branch("wt_mur0p5_muf1",  &scale7_);
+        outtree_->Branch("wt_mur0p5_muf2",  &scale8_);
+        outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
       }
       outtree_->Branch("passed"       ,&passed_       );
       outtree_->Branch("pt_1"        , &pt_1_        );
@@ -69,14 +71,13 @@ namespace ic {
       outtree_->Branch("met"         , &met_         );
       outtree_->Branch("m_vis"       , &m_vis_       );
       outtree_->Branch("pt_tt"       , &pt_tt_       );
-      outtree_->Branch("HiggsPt"     , &HiggsPt_     );
-      outtree_->Branch("FirstHiggsPt" , &FirstHiggsPt_     );
       outtree_->Branch("mt_1"        , &mt_1_        );
       outtree_->Branch("mt_2"        , &mt_2_        );
       outtree_->Branch("pzeta"       , &pzeta_       );
       outtree_->Branch("n_bjets"     , &n_bjets_     );
+      outtree_->Branch("n_bjets_noscale"     , &n_bjets_noscale_);
       outtree_->Branch("n_jets"      , &n_jets_      );
-      outtree_->Branch("n_jets_nofilter"      , &n_jets_nofilter_      );
+      outtree_->Branch("n_jets_nofilter"      , &n_jets_nofilter_);
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
       outtree_->Branch("jpt_1"       , &jpt_1_       );
       outtree_->Branch("jpt_2"       , &jpt_2_       );
@@ -92,16 +93,10 @@ namespace ic {
       outtree_->Branch("genpt_2"     , &genpt_2_        );
       outtree_->Branch("geneta_2"    , &geneta_2_       );
       outtree_->Branch("geneta_1"    , &geneta_1_       );
-      outtree_->Branch("wt_ggh_pt", &wt_ggh_pt_           );
-      outtree_->Branch("wt_ggh_pt_up", &wt_ggh_pt_up_        );
-      outtree_->Branch("wt_ggh_pt_down", &wt_ggh_pt_down_      );
-      outtree_->Branch("wt_ggh_pt_herwig", &wt_ggh_pt_herwig_    );
-      outtree_->Branch("wt_ggh_pt_amc", &wt_ggh_pt_amc_       );
-      outtree_->Branch("wt_ggh_pt_pythiaup", &wt_ggh_pt_pythiaup_  );
-      outtree_->Branch("wt_ggh_pt_pythiadown", &wt_ggh_pt_pythiadown_);
-      outtree_->Branch("wt_ggh_pt_scalehigh", &wt_ggh_pt_scalehigh_ );
-      outtree_->Branch("wt_ggh_pt_scalelow", &wt_ggh_pt_scalelow_  );
-      outtree_->Branch("hasFSR", &hasFSR_  );
+      outtree_->Branch("HiggsPt"     , &HiggsPt_     );
+      outtree_->Branch("HiggsPt"     , &HiggsPt_     );
+      outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
+      outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -110,18 +105,6 @@ namespace ic {
     count_mt_ = 0;
     count_tt_ = 0;
     
-    std::string file = "input/ggh_weights/HqT_weight_pTH_summer16_80X_AllSamples.root";
-    ggh_weights_ = new TFile(file.c_str());
-    ggh_weights_->cd();
-    ggh_hist_ = (TH1F*)gDirectory->Get("Powheg_Nominal");
-    ggh_hist_up_ = (TH1F*)gDirectory->Get("Powheg_ScaleUp");
-    ggh_hist_down_ = (TH1F*)gDirectory->Get("Powheg_ScaleDown");
-    ggh_herwig_hist_      = (TH1F*)gDirectory->Get("Herwig_Nominal"            );
-    ggh_amcnlo_hist_      = (TH1F*)gDirectory->Get("aMC_Nominal"           );
-    ggh_pythiaup_hist_    = (TH1F*)gDirectory->Get("PythiaFragmentUp_Nominal"  );
-    ggh_pythiadown_hist_ = (TH1F*)gDirectory->Get("PythiaFragmentDown_Nominal");
-    ggh_scalehigh_        = (TH1F*)gDirectory->Get("Powheg_Nominal_ScaleHigh"   );
-    ggh_scalelow_         = (TH1F*)gDirectory->Get("Powheg_Nominal_ScaleLow"   );
     return 0;
   }
 
@@ -130,56 +113,18 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
-    
-    wt_ = eventInfo->weight("wt_mc_sign");
-    wt_ggh_pt_            = 1;
-    wt_ggh_pt_up_         = 1;
-    wt_ggh_pt_down_       = 1;
-    wt_ggh_pt_herwig_     = 1;
-    wt_ggh_pt_amc_        = 1;
-    wt_ggh_pt_pythiaup_   = 1;
-    wt_ggh_pt_pythiadown_ = 1;
-    wt_ggh_pt_scalehigh_  = 1;
-    wt_ggh_pt_scalelow_   = 1;
-    
-    
+    if(eventInfo->weight_defined("wt_mc_sign")) wt_ = eventInfo->weight("wt_mc_sign");
     if(do_theory_uncert_){
-      scale_variation_wts_.clear();
-      for(unsigned i=1001; i<=1009; ++i){
-        std::string label = Form("%u",i);
-        double wt_temp = eventInfo->weight(label);
-        scale_variation_wts_.push_back(wt_temp);
-      }
-      NNPDF_wts_.clear();
-      for(unsigned i=2001; i<=2100; ++i){
-        std::string label = Form("%u",i);
-        double wt_temp = eventInfo->weight(label);
-        NNPDF_wts_.push_back(wt_temp);
-      }
-      alpha_s_wts_.clear();
-      for(unsigned i=2101; i<=2102; ++i){
-        std::string label = Form("%u",i);
-        double wt_temp = eventInfo->weight(label);
-        alpha_s_wts_.push_back(wt_temp);
-      }
-      CT10_wts_.clear();
-      for(unsigned i=3001; i<=3053; ++i){
-        std::string label = Form("%u",i);
-        double wt_temp = eventInfo->weight(label);
-        CT10_wts_.push_back(wt_temp);
-      }
-      CT10_alpha_s_wts_.clear();
-      for(unsigned i=3054; i<=3055; ++i){
-        std::string label = Form("%u",i);
-        double wt_temp = eventInfo->weight(label);
-        CT10_alpha_s_wts_.push_back(wt_temp);
-      }
-      MMHT_wts_.clear();
-      for(unsigned i=4001; i<=4056; ++i){
-        std::string label = Form("%u",i);
-        double wt_temp = eventInfo->weight(label);
-        MMHT_wts_.push_back(wt_temp);
-      }
+      // note some of these labels may be generator dependent so need to make sure you check before using them
+      if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+      if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+      if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+      if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+      if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+      if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+      if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+      if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+      if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
     }
     
     std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
@@ -193,26 +138,11 @@ namespace ic {
 
     
     HiggsPt_=-9999;
-    FirstHiggsPt_ = -9999;
-    hasFSR_ = false;
     for(unsigned i=0; i<gen_particles.size(); ++i){
-      if(gen_particles[i]->pdgid() == 25 && gen_particles[gen_particles[i]->mothers()[0]]->pdgid()!=25){FirstHiggsPt_ = gen_particles[i]->pt();}
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
       }
 
-      int fbin = ggh_hist_->FindBin(HiggsPt_);
-      if (fbin > 0 && fbin <= ggh_hist_->GetNbinsX()) {
-        wt_ggh_pt_            = ggh_hist_->GetBinContent(fbin);
-        wt_ggh_pt_up_         = ggh_hist_up_->GetBinContent(fbin)  ;
-        wt_ggh_pt_down_       = ggh_hist_down_->GetBinContent(fbin);
-        wt_ggh_pt_herwig_     = ggh_herwig_hist_->GetBinContent(fbin);
-        wt_ggh_pt_amc_        = ggh_amcnlo_hist_->GetBinContent(fbin);
-        wt_ggh_pt_pythiaup_   = ggh_pythiaup_hist_->GetBinContent(fbin);
-        wt_ggh_pt_pythiadown_ = ggh_pythiadown_hist_->GetBinContent(fbin);
-        wt_ggh_pt_scalehigh_  = ggh_scalehigh_->GetBinContent(fbin);
-        wt_ggh_pt_scalelow_   = ggh_scalelow_->GetBinContent(fbin);
-      }
       
       ic::GenParticle part = *gen_particles[i];
       ic::GenParticle higgs_product;
@@ -227,13 +157,6 @@ namespace ic {
         continue;
       }
       
-      if(genID == 25){
-        for(unsigned j=0; j<part.daughters().size(); ++j){
-          ic::GenParticle d = *gen_particles[part.daughters().at(j)];
-          unsigned daughterID = std::fabs(d.pdgid());
-          if(daughterID == 22) hasFSR_ = true;
-        }
-      }
       
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
       gen_taus.push_back(part);
@@ -352,7 +275,6 @@ namespace ic {
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
       m_vis_ = (lep1.vector()+lep2.vector()).M();
-      n_bjets_ = 0;
       mt_1_ = MT(&lep1, &met);
       mt_2_ = MT(&lep2, &met);
 
@@ -361,7 +283,6 @@ namespace ic {
       ditau->AddCandidate("lep2",&lep2);
       pzeta_ = PZeta(ditau, &met , 0.85);
     } else {
-      n_bjets_ = -9999;  
       pt_1_  = -9999;
       pt_2_  = -9999;
       eta_1_ = -9999;
@@ -377,14 +298,56 @@ namespace ic {
     }
     
     std::vector<ic::GenJet> filtered_jets;
+    std::vector<ic::GenJet> bjets;
+    
+    std::vector<GenParticle *> sel_bquarks;
+    for (unsigned i=0; i < gen_particles.size(); ++i){
+      std::vector<bool> status_flags = gen_particles[i]->statusFlags();
+      unsigned id = abs(gen_particles[i]->pdgid());  
+      if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>0){
+        sel_bquarks.push_back(gen_particles[i]);
+      }
+    }
      
     for(unsigned i=0; i<gen_jets.size(); ++i){
       ic::GenJet jet = *gen_jets[i];
       double jetPt = jet.vector().Pt();
       double jetEta = std::fabs(jet.vector().Rapidity());
       if(jetPt > min_jet_pt_ && jetEta < max_jet_eta_) filtered_jets.push_back(jet); 
+      if(jetPt > 20 && jetEta < 2.4){
+          bool MatchedToB = false;
+          for(unsigned j=0; j<sel_bquarks.size(); ++j) if(DRLessThan(std::make_pair(&jet, sel_bquarks[j]),0.5)) MatchedToB = true;
+          if(MatchedToB) bjets.push_back(jet); 
+      }
     }
     
+    for(unsigned i=0; i<bjets.size(); ++i){
+      ic::GenJet jet = bjets[i];
+      bool MatchedToPrompt = false;
+      for(unsigned j=0; j<higgs_products.size(); ++j){
+        if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+      }
+      //remove jets that are matched to Higgs decay products
+      if(MatchedToPrompt) bjets.erase (bjets.begin()+i);
+    }
+    
+    n_bjets_noscale_ = bjets.size();
+    
+    for(unsigned i=0;  i<bjets.size(); ++i){
+      ic::GenJet jet = bjets[i];
+      double pt = bjets[i].vector().Pt();
+      double eta = fabs(bjets[i].vector().Rapidity());
+      double eff=0;
+      if(pt > bbtag_eff_->GetXaxis()->GetBinLowEdge(bbtag_eff_->GetNbinsX()+1)){
+        eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetNbinsX(),bbtag_eff_->GetYaxis()->FindBin(eta));
+      } else{
+        eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetXaxis()->FindBin(pt),bbtag_eff_->GetYaxis()->FindBin(eta));
+      }
+      rand->SetSeed((int)((bjets[i].eta()+5)*100000));
+      double randVal = rand->Uniform();
+      if (randVal > eff) bjets.erase (bjets.begin()+i);
+    }
+    n_bjets_ = bjets.size();
     n_jets_nofilter_ = filtered_jets.size();
     
     for(unsigned i=0; i<filtered_jets.size(); ++i){
@@ -396,6 +359,37 @@ namespace ic {
       //remove jets that are matched to Higgs decay products
       if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
     }
+    
+    std::string jets_label_ = "ak4PFJetsCHS";
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+    std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    
+    for(unsigned i=0; i<jets.size(); ++i){
+      ic::PFJet *jet = jets[i];
+      bool MatchedToPrompt = false;
+      for(unsigned j=0; j<higgs_products.size(); ++j){
+        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+      }
+      //remove jets that are matched to Higgs decay products
+      if(MatchedToPrompt) jets.erase (jets.begin()+i);
+    }
+    
+    std::vector<PFJet*> offline_bjets = jets;
+    ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+    ic::erase_if(offline_bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    
+    std::string btag_label="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    double btag_wp =  0.8484;
+    if (event->Exists("retag_result")) {
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+      ic::erase_if(offline_bjets, !boost::bind(IsReBTagged, _1, retag_result));
+    }else { 
+      ic::erase_if(offline_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+    }
+    
+    
+    n_jets_offline_ = jets.size();
+    n_bjets_offline_ = offline_bjets.size();
 
     n_jets_ = filtered_jets.size();
     jpt_1_       = -9999;

@@ -55,6 +55,7 @@
 #include "HiggsTauTau/interface/BTagWeightRun2.h"
 #include "HiggsTauTau/interface/HTTGenMatchSelector.h"
 #include "HiggsTauTau/interface/HTTFakeFactorWeights.h"
+#include "HiggsTauTau/interface/HTTGenAnalysis.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -714,6 +715,52 @@ if(js["test_nlo_reweight"].asBool()) {
   nloweights::ReadFile();
   BuildModule(NLOWeighting("NLOWeights")
     .set_fs(fs.get()));
+}
+
+if(!is_data && js["do_gen_analysis"].asBool()){
+   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
+
+SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
+.set_input_label(jets_label);
+jetIDFilter.set_predicate(bind(PFJetID2016, _1));
+
+TH2F bbtag_eff;
+TH2F cbtag_eff;
+TH2F othbtag_eff;
+bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
+cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
+othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
+
+BuildModule(BTagWeightRun2("BTagWeightRun2")
+ .set_channel(channel::mt)
+ .set_era(era_type)
+ .set_strategy(strategy_type)
+ .set_jet_label(jets_label)
+ .set_bbtag_eff(new TH2F(bbtag_eff))
+ .set_cbtag_eff(new TH2F(cbtag_eff))
+ .set_othbtag_eff(new TH2F(othbtag_eff))
+ .set_do_reshape(do_reshape)
+ .set_btag_mode(btag_mode)
+ .set_bfake_mode(bfake_mode));
+
+BuildModule(jetIDFilter);
+  TH2F btag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
+  BuildModule(HTTGenAnalysis("HTTGenAnalysis")
+    .set_fs(fs.get())
+    .set_channel_str(channel_str)
+    .set_min_jet_pt(30.)
+    .set_max_jet_eta(4.7)
+    .set_min_e_pt(0)
+    .set_min_mu_pt(0)
+    .set_min_tau1_pt(0)
+    .set_min_tau2_pt(0)
+    .set_max_e_eta(1000)
+    .set_max_mu_eta(1000)
+    .set_max_tau_eta(1000)
+    .set_do_theory_uncert(true)
+    .set_bbtag_eff(new TH2F(btag_eff))
+  );
+  return;  
 }
 
 
