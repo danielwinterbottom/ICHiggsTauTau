@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -187,6 +187,8 @@ parser.add_argument("--syst_jfake_e", dest="syst_jfake_e", type=str,
     help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_jfake_m", dest="syst_jfake_m", type=str,
     help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
+parser.add_argument("--gen_signal", dest="gen_signal", action='store_true',
+    help="If set then use generator-level tree for signal")
 
 
 options = parser.parse_args(remaining_argv)   
@@ -418,6 +420,7 @@ sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'Wplus
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
+mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_qsh_samples = { 'bbH-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
 if options.nlo_qsh: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
 Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
@@ -914,11 +917,12 @@ def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', c
                 sample_name = sm_samples[key].replace('*',mass)
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_str+add_name, sample_name, plot, full_selection))
             
-def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_masses = ['1000'], wt='', sel='', cat='', get_os=True, do_ggH=True, do_bbH=True):
+def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = ['1000'], bbh_masses = ['1000'], wt='', sel='', cat='', get_os=True, do_ggH=True, do_bbH=True):
     if get_os:
         OSSS = 'os'
     else:
         OSSS = '!os'
+    if options.gen_signal: OSSS='1'
     full_selection = BuildCutString(wt, sel, cat, OSSS)
     for key in mssm_samples:
         masses = None
@@ -933,13 +937,18 @@ def GenerateMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], bbh_mas
                 if key == 'bbH' and not do_bbH:
                     continue
                 sample_name = mssm_samples[key].replace('*',mass)
-                ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name, sample_name, plot, full_selection))
+                add_name_2 = ''
+                if bbh_add_name == '-LO' and key is 'bbH': 
+                    sample_name = mssm_lo_samples['bbH-LO'].replace('*',mass)
+                    add_name_2 = bbh_add_name
+                ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name_2+mass+add_name, sample_name, plot, full_selection))
                 
 def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], bbh_nlo_masses = ['1000'], sel='', cat='', doScales=True, get_os=True,do_ggH=True, do_bbH=True):
     if get_os:
         OSSS = 'os'
     else:
         OSSS = '!os'
+    if options.gen_signal: OSSS='1'
     weights = {'':'wt'}
     if doScales: weights = {'':'wt','muR1muF2':'wt*wt_mur1_muf2','muR1muF0.5':'wt*wt_mur1_muf0p5','muR2muF1':'wt*wt_mur2_muf1','muR2muF2':'wt*wt_mur2_muf2','muR0.5muF1':'wt*wt_mur0p5_muf1','muR0.5muF0.5':'wt*wt_mur0p5_muf0p5'}
     for weight in weights:
@@ -1049,7 +1058,7 @@ def DONLOUncerts(nodename,infile):
     for mass in bbh_nlo_masses:
       nominal_error=ROOT.Double()
       nominal = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,nominal_error) 
-      samples = {'bbH*':'', 'bbH*muR0.5muF0.5':'wt_mur0p5_muf0p5', 'bbH*muR1muF0.5':'wt_mur1_muf0p5', 'bbH*muR0.5muF1':'wt_mur0p5_muf1', 'bbH*muR2muF2':'wt_mur2_muf2', 'bbH*muR2muF1':'wt_mur2_muf1', 'bbH*muR1muF2':'wt_mur1_muf2'}
+      samples = {'bbH*':'', 'bbH*muR0.5muF0.5':'wt_mur0p5_muf0p5', 'bbH*muR1muF0.5':'wt_mur1_muf0p5', 'bbH*muR0.5muF1':'wt_mur0p5_muf1', 'bbH*muR2muF2':'wt_mur2_muf2', 'bbH*muR2muF1':'wt_mur2_muf1', 'bbH*muR1muF2':'wt_mur1_muf2'} 
       qsh_down_error=ROOT.Double()
       qsh_up_error=ROOT.Double()
       if options.nlo_qsh:
@@ -1091,6 +1100,39 @@ def DONLOUncerts(nodename,infile):
       else: outstring+=' \\\\\n' 
     outstring+='\\hline\n\\end{tabular}}\n\\end{table}'
     print outstring
+    
+def ScaleUncertBand(nodename='',outfile='output.root',NormScales=True):
+    hist_names=['bbH*muR0.5muF0.5','bbH*muR1muF0.5','bbH*muR0.5muF1','bbH*muR2muF1','bbH*muR1muF2','bbH*muR2muF2']
+    mass = '700'
+    if options.draw_signal_mass: mass = options.draw_signal_mass
+    hists=[]
+    for hist_name in hist_names:
+        sf = 1.0
+        if NormScales:
+            sample_name='SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'
+            evt_nom = ana.info[sample_name]['evt']
+            evt_var = ana.info[sample_name]['evt_'+hist_name.replace('bbH*','wt_').replace('muF','_muf').replace('muR','mur').replace('0.5','0p5')]
+            sf = evt_nom/evt_var
+        hist_name=hist_name.replace('*',mass)
+        hist = outfile.Get(nodename+'/'+hist_name).Clone()
+        if NormScales: hist.Scale(sf)
+        hists.append(hist)
+    nom_hist = outfile.Get(nodename+'/bbH'+mass)
+    up_hist = nom_hist.Clone()
+    down_hist = nom_hist.Clone()
+    up_hist.SetName('ScaleUp')
+    down_hist.SetName('ScaleDown')
+    for i in range (1,nom_hist.GetNbinsX()+1):
+        for hist in hists:
+          max_content = up_hist.GetBinContent(i)
+          min_content = down_hist.GetBinContent(i)
+          content = hist.GetBinContent(i)
+          if content > max_content: up_hist.SetBinContent(i,content)
+          if content < min_content: down_hist.SetBinContent(i,content)
+    outfile.cd(nodename)
+    up_hist.Write()
+    down_hist.Write()
+    outfile.cd()
         
     
 def DYUncertBand(outfile='output.root',ScaleToData=True):
@@ -1187,7 +1229,6 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
       outfile.cd()
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root',ff_syst_weight=None):
-    
     doTTJ = 'TTJ' not in samples_to_skip
     doTTT = 'TTT' not in samples_to_skip
     doVVJ = 'VVJ' not in samples_to_skip
@@ -1254,7 +1295,9 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if options.analysis == 'sm':
             GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss)
         elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
-            GenerateMSSMSignal(ana, add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss,do_bbH= not options.bbh_nlo_masses)
+            bbh_add_name = ''
+            if options.bbh_nlo_masses: bbh_add_name = '-LO'
+            GenerateMSSMSignal(ana, add_name, bbh_add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
             if options.add_sm_background:
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
         elif options.analysis == 'Hhh':
@@ -1347,6 +1390,7 @@ for systematic in systematics:
         signal_samples = mssm_samples
         if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_nlo_samples['bbH']
         if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
+        if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
     elif options.analysis == 'Hhh':
         signal_samples = Hhh_samples
 
@@ -1355,14 +1399,16 @@ for systematic in systematics:
             masses=sm_masses
         elif samp == 'ggH':
             masses = ggh_masses
-        elif samp == 'bbH' and not options.bbh_nlo_masses:
+        elif (samp == 'bbH' and not options.bbh_nlo_masses) or samp == 'bbH-LO':
             masses = bbh_masses
         elif 'bbH' in samp:
             masses = bbh_nlo_masses
         if masses is not None:    
             for mass in masses:
                 sample_name = signal_samples[samp].replace('*',mass)
-                ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+                tree_name = 'ntuple'
+                if options.gen_signal: tree_name = 'gen_ntuple'
+                ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
     if options.add_sm_background and options.analysis == 'mssm':
         for samp in sm_samples:
             sample_name = sm_samples[samp].replace('*',options.add_sm_background)
@@ -1388,7 +1434,10 @@ for systematic in systematics:
     if systematic == 'default': do_data = True
     else: do_data = False
             
-    #Run default plot        
+    #Run default plot 
+    if options.scheme == 'signal': 
+        samples_to_skip.extend(['TTT','TTJ','VVT','VVJ','W','QCD','jetFakes','ZLL','ZTT','ZL'])
+        do_data = False
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
     
     
@@ -1446,7 +1495,9 @@ for systematic in systematics:
                         mssm_hist.Write()
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
-if options.doNLOScales: DONLOUncerts(nodename,outfile)
+if options.doNLOScales: 
+    ScaleUncertBand(nodename,outfile)
+    DONLOUncerts(nodename,outfile)
 
 outfile.Close()
 plot_file = ROOT.TFile(output_name, 'READ')
@@ -1487,7 +1538,8 @@ if not options.no_plot:
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
     FF = options.method==17 or options.method==18
-    plotting.HTTPlot(nodename, 
+    if scheme != 'signal':
+      plotting.HTTPlot(nodename, 
         plot_file, 
         options.signal_scale, 
         options.draw_signal_mass,
@@ -1520,5 +1572,38 @@ if not options.no_plot:
         custom_uncerts_up_name,
         custom_uncerts_down_name,
         scheme
+        )
+    else:    
+      plotting.HTTPlotSignal(nodename, 
+        plot_file, 
+        options.signal_scale, 
+        options.draw_signal_mass,
+        options.norm_bins,
+        options.channel,
+        options.blind,
+        options.x_blind_min,
+        options.x_blind_max,
+        options.ratio,
+        options.log_y,
+        options.log_x,
+        options.ratio_range,
+        options.custom_x_range,
+        options.x_axis_min,
+        options.x_axis_max,
+        options.custom_y_range,
+        options.y_axis_max,
+        options.y_axis_min,
+        x_title,
+        y_title,
+        options.extra_pad,
+        options.signal_scheme,
+        options.do_custom_uncerts,
+        options.add_stat_to_syst,
+        options.add_flat_uncert,
+        options.uncert_title,
+        options.lumi,
+        plot_name,
+        custom_uncerts_up_name,
+        custom_uncerts_down_name
         )
            
