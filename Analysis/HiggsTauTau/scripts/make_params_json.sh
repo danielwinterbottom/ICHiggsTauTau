@@ -6,26 +6,29 @@ lumi=$3
 # Input evt file should have format: Sample_name evt
 
 # set the inclusive sample names for DY and W - the event numbers and xs for the N jets samples will be set to the values for these samples
-DY_inclusive_name="DYJetsToLL-LO-ext2"
-W_inclusive_name="WJetsToLNu-LO-ext"
+DY_inclusive_name_1="DYJetsToLL-LO-ext1"
+DY_inclusive_name_2="DYJetsToLL-LO-ext2"
+W_inclusive_name_1="WJetsToLNu-LO"
+W_inclusive_name_2="WJetsToLNu-LO-ext"
 
 while read i; do 
     sample_name=$(echo $i | cut -d" " -f1)
     xs=$(echo $i | cut -d" " -f2)
-    if [ "$sample_name" == "$DY_inclusive_name" ]; then
+    if [ "$sample_name" == "$DY_inclusive_name_1" ]; then
       dy_xs=$xs
-    elif [ "$sample_name" == "$W_inclusive_name" ]; then
+    elif [ "$sample_name" == "$W_inclusive_name_1" ]; then
       w_xs=$xs
     fi
 done < $input_xs
-
+dy_evt=0
+w_evt=0
 while read i; do 
     sample_name=$(echo $i | cut -d" " -f1)
     evt=$(echo $i | cut -d" " -f2)
-    if [ "$sample_name" == "$DY_inclusive_name" ]; then
-      dy_evt=$evt
-    elif [ "$sample_name" == "$W_inclusive_name" ]; then
-      w_evt=$evt
+    if [ "$sample_name" == "$DY_inclusive_name_1" -o "$sample_name" == "$DY_inclusive_name_2" ]; then
+      dy_evt=$(bc -l <<<$dy_evt+$evt)
+    elif [ "$sample_name" == "$W_inclusive_name_1" -o "$sample_name" == "$W_inclusive_name_2" ]; then
+      w_evt=$(bc -l <<<$w_evt+$evt)
     fi
 done < $input_evt
 
@@ -35,7 +38,7 @@ while read i; do
     sample_name=$(echo $i | cut -d" " -f1)
     xs=$(echo $i | cut -d" " -f2)
     loop=1
-    if [[ "$sample_name" == "DY"*"JetsToLL-LO"* ]]; then
+    if [[ "$sample_name" == "DY"*"JetsToLL-LO"* ]]; then 
       xs=$dy_xs
       evt=$dy_evt
       loop=0

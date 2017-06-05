@@ -2034,8 +2034,8 @@ def HTTPlot(nodename,
           bin_up = bkg_uncert_up.GetBinContent(i)
           bin_down = bkg_uncert_down.GetBinContent(i)
           error = abs(bin_up - bin_down)/2
-          if add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           band_center = max(bin_up,bin_down) - error          
+          if add_stat_to_syst: error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinContent(i,band_center)
           error_hist.SetBinError(i,error)
           
@@ -2046,7 +2046,7 @@ def HTTPlot(nodename,
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
           
-    if norm_bins and (do_custom_uncerts) : error_hist.Scale(1.0,"width")
+    if norm_bins and do_custom_uncerts : error_hist.Scale(1.0,"width")
     
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")

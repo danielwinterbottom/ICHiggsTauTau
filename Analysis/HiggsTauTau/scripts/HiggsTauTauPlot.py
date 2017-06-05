@@ -417,8 +417,8 @@ if options.era == "mssmsummer16":
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
-mssm_nlo_samples = { 'bbH-NLO' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
-mssm_nlo_qsh_samples = { 'bbH-NLO-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-NLO-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
+mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
+mssm_nlo_qsh_samples = { 'bbH-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
 if options.nlo_qsh: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
 Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 
@@ -947,17 +947,17 @@ def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], 
       full_selection = BuildCutString(wt, sel, cat, OSSS)
       for key in mssm_nlo_samples:
           if 'Qsh' in key and weight is not '': continue
-          if key == 'ggH-NLO':
+          if 'ggH' in key:
               masses = ggh_nlo_masses
-          elif key == 'bbH-NLO':
+          elif 'bbH' in key:
               masses = bbh_nlo_masses
           if masses is not None:    
               for mass in masses:
-                  if key == 'ggH-NLO' and not do_ggH:
+                  if key == 'ggH' and not do_ggH:
                       continue
-                  if key == 'bbH-NLO' and not do_bbH:
+                  if key == 'bbH' and not do_bbH:
                       continue
-                  sample_name = mssm_samples[key].replace('*',mass)
+                  sample_name = mssm_nlo_samples[key].replace('*',mass)
                   ana.nodes[nodename].AddNode(ana.BasicFactory(key+mass+add_name+weight, sample_name, plot, full_selection))
         
         
@@ -1033,28 +1033,39 @@ def NormFFSysts(ana,outfile='output.root'):
     for hist in hists_to_add: hist.Write()
 
 def DONLOUncerts(nodename,infile):
+    def LargestDiff(nominal,scales_shifted):
+        largest_diff=0
+        value = nominal
+        for i in scales_shifted:
+            diff = abs(scales_shifted[i] - nominal)
+            if diff > largest_diff: 
+              largest_diff = diff
+              value = scales_shifted[i]
+        return value
     if not options.bbh_nlo_masses: return
-    outstring='\\begin{table}[H]\n\\centering\n\\resizebox{\\textwidth}{!}{\n\\begin{tabular}{ |c|c|c|c|c|c| }\n\\hline\nSignal Mass & Pythia  (1 pb) &  NLO Yield (1 pb) & Scale Uncert. & Scale Acceptance Uncert. '
+    outstring='\\begin{table}[H]\n\\centering\n\\resizebox{\\textwidth}{!}{\n\\begin{tabular}{ |c|c|c|c|c|c|c| }\n\\hline\nSignal Mass & Pythia  (1 pb) &  NLO Yield (1 pb) & Scale Uncert. & Scale Acceptance Uncert. & Scale Acceptance Uncert.(*)'
     if options.nlo_qsh: outstring += '& Qsh Uncert. \\\\\n\\hline\n'
     else: outstring += '\\\\\n\\hline\n'
     for mass in bbh_nlo_masses:
-      samples = {'bbH-NLO*':'', 'bbH-NLO*muR0.5muF0.5':'wt_mur0p5_muf0p5', 'bbH-NLO*muR1muF0.5':'wt_mur1_muf0p5', 'bbH-NLO*muR0.5muF1':'wt_mur0p5_muf1', 'bbH-NLO*muR2muF2':'wt_mur2_muf2', 'bbH-NLO*muR2muF1':'wt_mur2_muf1', 'bbH-NLO*muR1muF2':'wt_mur1_muf2'}
       nominal_error=ROOT.Double()
+      nominal = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,nominal_error) 
+      samples = {'bbH*':'', 'bbH*muR0.5muF0.5':'wt_mur0p5_muf0p5', 'bbH*muR1muF0.5':'wt_mur1_muf0p5', 'bbH*muR0.5muF1':'wt_mur0p5_muf1', 'bbH*muR2muF2':'wt_mur2_muf2', 'bbH*muR2muF1':'wt_mur2_muf1', 'bbH*muR1muF2':'wt_mur1_muf2'}
       qsh_down_error=ROOT.Double()
       qsh_up_error=ROOT.Double()
-      nominal = outfile.Get(nodename+'/bbH-NLO'+mass).IntegralAndError(-1, -1,nominal_error) 
       if options.nlo_qsh:
-        qsh_down = outfile.Get(nodename+'/bbH-NLO-QshDown'+mass).IntegralAndError(-1, -1,qsh_down_error) 
-        qsh_up = outfile.Get(nodename+'/bbH-NLO-QshUp'+mass).IntegralAndError(-1, -1,qsh_up_error)
+        qsh_down = outfile.Get(nodename+'/bbH-QshDown'+mass).IntegralAndError(-1, -1,qsh_down_error) 
+        qsh_up = outfile.Get(nodename+'/bbH-QshUp'+mass).IntegralAndError(-1, -1,qsh_up_error)
         qsh_uncert=(max(nominal,qsh_down,qsh_up) - min(nominal,qsh_down,qsh_up))/2
         qsh_error = math.sqrt(qsh_up_error**2 + qsh_down_error**2)
       scale_max = nominal
       scale_min = nominal
       scale_nosf_max = nominal
       scale_nosf_min = nominal
-      for samp in samples:    
+      up_dic = {}
+      down_dic = {}
+      for samp in samples: 
         acceptance = outfile.Get(nodename+'/'+samp.replace('*',mass)).Integral(-1, -1)
-        if samp is 'bbH-NLO*': sf = 1.0 
+        if samp is 'bbH*': sf = 1.0 
         else: 
           sample_name='SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'
           evt_nom = ana.info[sample_name]['evt']
@@ -1062,17 +1073,22 @@ def DONLOUncerts(nodename,infile):
           sf = evt_nom/evt_var
         acceptance_nosf = acceptance
         acceptance*=sf
+        if samples[samp] in ['wt_mur0p5_muf0p5', 'wt_mur1_muf0p5', 'wt_mur0p5_muf1']: down_dic[samples[samp]] = acceptance
+        if samples[samp] in ['wt_mur2_muf2','wt_mur2_muf1','wt_mur1_muf2']: up_dic[samples[samp]] = acceptance
         if acceptance > scale_max: scale_max = acceptance
         if acceptance < scale_min: scale_min = acceptance
         if acceptance_nosf > scale_nosf_max: scale_nosf_max = acceptance_nosf
         if acceptance_nosf < scale_nosf_min: scale_nosf_min = acceptance_nosf
+      up_nom = LargestDiff(nominal,up_dic)
+      down_nom = LargestDiff(nominal,down_dic)
       uncert = (scale_max-scale_min)/2
       uncert_nosf = (scale_nosf_max-scale_nosf_min)/2
+      uncert_alt_method = (up_nom-down_nom)/2
       pythia_error=ROOT.Double()
       pythia_yield = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,pythia_error) 
-      outstring +='bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)' + ' & '+ str(round(uncert_nosf/nominal,2)) + ' & '+ str(round(uncert/nominal,2))
+      outstring +='bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)' + ' & '+ str(round(uncert_nosf/nominal,2)) + ' & '+ str(round(uncert/nominal,2))+ ' & '+ str(round(uncert_alt_method/nominal,2))
       if options.nlo_qsh: outstring+=' & '+ str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,2))+' \\\\\n'  
-      else: outstring+=' \\\\\n'
+      else: outstring+=' \\\\\n' 
     outstring+='\\hline\n\\end{tabular}}\n\\end{table}'
     print outstring
         
@@ -1238,7 +1254,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if options.analysis == 'sm':
             GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss)
         elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
-            GenerateMSSMSignal(ana, add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss)
+            GenerateMSSMSignal(ana, add_name, plot, ggh_masses, bbh_masses, wt, sel, cat, not options.do_ss,do_bbH= not options.bbh_nlo_masses)
             if options.add_sm_background:
                 GenerateSMSignal(ana, add_name, plot, ['125'],  wt, sel, cat, not options.do_ss, options.add_sm_background)  
         elif options.analysis == 'Hhh':
@@ -1329,7 +1345,8 @@ for systematic in systematics:
         signal_samples = sm_samples
     elif options.analysis == 'mssm':
         signal_samples = mssm_samples
-        if options.bbh_nlo_masses: signal_samples.update(mssm_nlo_samples)
+        if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_nlo_samples['bbH']
+        if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
     elif options.analysis == 'Hhh':
         signal_samples = Hhh_samples
 
@@ -1338,9 +1355,9 @@ for systematic in systematics:
             masses=sm_masses
         elif samp == 'ggH':
             masses = ggh_masses
-        elif samp == 'bbH':
+        elif samp == 'bbH' and not options.bbh_nlo_masses:
             masses = bbh_masses
-        elif samp == 'bbH-NLO':
+        elif 'bbH' in samp:
             masses = bbh_nlo_masses
         if masses is not None:    
             for mass in masses:
@@ -1406,9 +1423,9 @@ for systematic in systematics:
             for samp in mssm_samples:
                 if samp == 'ggH':
                     masses = ggh_masses
-                elif samp == 'bbH':
+                elif samp == 'bbH' and not options.bbh_nlo_masses:
                     masses = bbh_masses
-                elif 'bbH-NLO' in samp:
+                elif 'bbH' in samp:
                     masses = bbh_nlo_masses
                 if masses is not None:    
                     for mass in masses:
