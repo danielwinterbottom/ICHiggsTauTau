@@ -2132,13 +2132,14 @@ def CompareHists(hists=[],
              y_title="",
              extra_pad=0,
              norm_hists=True,
-             plot_name="plot"):
+             plot_name="plot",
+             label=""):
     
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     ModTDRStyle(r=0.04, l=0.14)
 
-    colourlist=[R.kGreen+3,R.kRed,R.kBlue,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
+    colourlist=[R.kBlue,R.kRed,R.kGreen+3,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
     hs = R.THStack("hs","")
     hist_count=0
     legend_hists=[]
@@ -2146,6 +2147,7 @@ def CompareHists(hists=[],
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
         h = hist.Clone()
         h.SetFillColor(0)
+        h.SetLineWidth(3)
         h.SetLineColor(colourlist[hist_count])
         h.SetMarkerSize(0)
         hs.Add(h)
@@ -2208,13 +2210,12 @@ def CompareHists(hists=[],
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
     
-    hs.Draw("nostackhistsame")
+    hs.Draw("nostack hist same")
     axish[0].Draw("axissame")
     
     
     #Setup legend
-    legend = PositionedLegend(0.30,0.30,3,0.03)
-    legend = PositionedLegend(0.25,0.30,4,0.03)
+    legend = PositionedLegend(0.30,0.1,3,0.03)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
@@ -2226,8 +2227,15 @@ def CompareHists(hists=[],
     
     #CMS label and title
     FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
+    
+    latex2 = R.TLatex()
+    latex2.SetNDC()
+    latex2.SetTextAngle(0)
+    latex2.SetTextColor(R.kBlack)
+    latex2.SetTextSize(0.028)
+    latex2.DrawLatex(0.145,0.955,label)
     
     #Add ratio plot if required
     if ratio:
@@ -2239,15 +2247,21 @@ def CompareHists(hists=[],
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
         div_hist = hists[0].Clone()
+        first_hist=True
         for hist in hists:
             h = hist.Clone()
             h.SetFillColor(0)
+            h.SetLineWidth(3)
             h.SetLineColor(colourlist[hist_count])
             h.SetMarkerSize(0)
+            h.SetMarkerColor(h.GetLineColor())
             h.Divide(div_hist)
+            if first_hist:
+                for i in range(1,h.GetNbinsX()+1): h.SetBinError(i,0.00001)
+                first_hist=False
             ratio_hs.Add(h.Clone())
             hist_count+=1   
-        ratio_hs.Draw("nostackhistsame")  
+        ratio_hs.Draw("nostack l same")  
         pads[1].RedrawAxis("G")
     pads[0].cd()
     pads[0].GetFrame().Draw()
@@ -2300,6 +2314,7 @@ def HTTPlotSignal(nodename,
     
     stack = R.THStack("hs","")
     sighist = R.TH1F()
+    sighist_copy = R.TH1F()
     if signal_mass != "":
         sig_scheme = sig_schemes[signal_scheme]
         for i in sig_scheme[1]: 
@@ -2420,6 +2435,7 @@ def HTTPlotSignal(nodename,
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
+    channel_label=""
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)

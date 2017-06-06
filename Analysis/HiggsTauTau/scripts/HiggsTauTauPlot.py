@@ -534,8 +534,8 @@ else:
         qcd_os_ss_ratio = 1.06   
     else:
         qcd_os_ss_ratio = 1.0
-if options.do_ss:
-    qcd_os_ss_ratio = 1.0
+#if options.do_ss:
+#    qcd_os_ss_ratio = 1.0
 
 
 # Get array of signal masses to process        
@@ -804,11 +804,12 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
         
         full_selection = BuildCutString(weight, sel, cat, '!os')
         subtract_node = GetSubtractNode(ana,'',plot,weight,sel,cat,method,qcd_os_ss_ratio,False,True)
-            
+        if get_os: qcd_ratio = qcd_os_ss_factor
+        else: qcd_ratio = 1.0
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
           ana.SummedFactory('data_ss', data, plot, full_selection),
           subtract_node,
-          qcd_os_ss_factor,
+          qcd_ratio,
           shape_node))
         
     else:
@@ -857,7 +858,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='', wt='', sel='', cat_name
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
         if ff_syst_weight is not None: fake_factor_wt_string = ff_syst_weight
         else: fake_factor_wt_string = "wt_ff_"+options.cat
-        fake_factor_wt_string+'*wt_tau_id_loose'
+        fake_factor_wt_string+='*wt_tau_id_loose'
         if wt is not "": wt+="*"+fake_factor_wt_string
         else: wt=fake_factor_wt_string
     
@@ -1606,4 +1607,24 @@ if not options.no_plot:
         custom_uncerts_up_name,
         custom_uncerts_down_name
         )
+   # hists = [plot_file.Get(nodename+"/bbH-LO700"), plot_file.Get(nodename+"/bbH700") ]
+   # plotting.CompareHists(hists,
+   #          ['Pythia','amc@NLO'],
+   #          "bb#phi 700",
+   #          options.ratio,
+   #          options.log_y,
+   #          options.log_x,
+   #          options.ratio_range,
+   #          options.custom_x_range,
+   #          options.x_axis_max,
+   #          options.x_axis_min,
+   #          options.custom_y_range,
+   #          options.y_axis_max,
+   #          options.y_axis_min,
+   #          x_title,
+   #          y_title,
+   #          options.extra_pad,
+   #          False,
+   #          plot_name,
+   #          "#mu#tau_{h}")
            
