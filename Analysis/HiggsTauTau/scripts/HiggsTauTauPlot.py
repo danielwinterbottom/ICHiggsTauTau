@@ -821,14 +821,14 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
                      ana.SummedFactory('data', data, plot, num_selection),
                      subtract_node)
         
-        subtract_node = GetSubtractNode(ana,'',plot,wt,sel,qcd_sdb_cat,method,qcd_os_ss_ratio,False,True)
+        subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose',sel,qcd_sdb_cat,method,qcd_os_ss_ratio,False,True)
         den_selection = BuildCutString(wt, sel, qcd_sdb_cat, '!os')
         den_node = SubtractNode('ratio_den',
                      ana.SummedFactory('data', data, plot, den_selection),
                      subtract_node)
         shape_node = None   
         full_selection = BuildCutString(wt, sel, qcd_sdb_cat, OSSS)
-        subtract_node = GetSubtractNode(ana,'',plot,wt,sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
+        subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose',sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
 
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
           ana.SummedFactory('data', data, plot, full_selection),
