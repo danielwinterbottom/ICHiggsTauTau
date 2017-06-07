@@ -1334,8 +1334,12 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
       shape_hist.Write()
 
 # Create output file
+is_2d=False
 var_name = options.var.split('[')[0]
 var_name = var_name.split('(')[0]
+if ',' in var_name:
+    is_2d = True
+    var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]
 
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat
@@ -1448,7 +1452,6 @@ for systematic in systematics:
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
-    
     # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if 'signal' not in samples_to_skip:
         outfile.cd(nodename)
@@ -1501,6 +1504,7 @@ if options.doNLOScales:
     DONLOUncerts(nodename,outfile)
 
 outfile.Close()
+if is_2d: exit(0) # 2d plotting cosmetics not currently supported
 plot_file = ROOT.TFile(output_name, 'READ')
 
 if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
