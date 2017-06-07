@@ -105,15 +105,14 @@ def MultiDraw(self, Formulae, Compiled=False):
             if formula[-2] == ')':
                 pos_open_y = formula.rfind('(')
                 pos_close_y = formula.rfind(')')
-            if origFormula[-2] == ']':
+            if formula[-2] == ']':
                 var_binned_y = True
-                pos_open_y = origFormula.rfind('[')
-                pos_close_y = origFormula.rfind(']')
+                pos_open_y = formula.rfind('[')
+                pos_close_y = formula.rfind(']')
             if pos_open_y is -1 or pos_close_y is -1 or pos_open_y > pos_close_y:
                 raise RuntimeError('You bus')
             bin_args_y = GetBinningArgs(formula[pos_open_y + 1:pos_close_y], var_binned_y)
             formula = formula[:pos_open_y].split(',')
-            # print formula
         else:
             formula = [formula]
 
