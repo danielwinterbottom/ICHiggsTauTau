@@ -3,9 +3,9 @@ from multiprocessing import Process
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Apr05_Data_80X'
+config.General.workArea='Jun17_Data_80X_smuE'
 config.section_('JobType')
-config.JobType.psetName = 'higgstautau_cfg_80X_Mar17.py'
+config.JobType.psetName = '../higgstautau_cfg_80X_Mar17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Spring16_25nsV3_DATA.db']
@@ -17,10 +17,10 @@ config.Data.unitsPerJob = 100000
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
 config.Data.ignoreLocality= True
-config.Data.outLFNDirBase='/store/user/dwinterb/Apr05_Data_80X/'
+config.Data.outLFNDirBase='/store/user/lmastrol/MSSM_Htt/Jun17_Data_80X_test_smuE/'
 config.section_('User')
 config.section_('Site')
-#config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
+config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
 #config.Site.blacklist = ['T2_US_*']
 config.Site.storageSite = 'T2_UK_London_IC'
 config.JobType.allowUndistributedCMSSW = True
@@ -46,41 +46,41 @@ if __name__ == '__main__':
 
     tasks=list()
     
-    tasks.append(('TauB', '/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
-    tasks.append(('TauC', '/Tau/Run2016C-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauD', '/Tau/Run2016D-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauE', '/Tau/Run2016E-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauF', '/Tau/Run2016F-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauG', '/Tau/Run2016G-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('TauHv2', '/Tau/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
-    tasks.append(('TauHv3', '/Tau/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
-    
+#Luca    tasks.append(('TauB', '/Tau/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
+#Luca    tasks.append(('TauC', '/Tau/Run2016C-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('TauD', '/Tau/Run2016D-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('TauE', '/Tau/Run2016E-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('TauF', '/Tau/Run2016F-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('TauG', '/Tau/Run2016G-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('TauHv2', '/Tau/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
+#Luca    tasks.append(('TauHv3', '/Tau/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
+#Luca    
     tasks.append(('SingleElectronB', '/SingleElectron/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
-    tasks.append(('SingleElectronC', '/SingleElectron/Run2016C-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronD', '/SingleElectron/Run2016D-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronE', '/SingleElectron/Run2016E-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronF', '/SingleElectron/Run2016F-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronG', '/SingleElectron/Run2016G-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleElectronHv2', '/SingleElectron/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
-    tasks.append(('SingleElectronHv3', '/SingleElectron/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
-    
+#Luca    tasks.append(('SingleElectronC', '/SingleElectron/Run2016C-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleElectronD', '/SingleElectron/Run2016D-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleElectronE', '/SingleElectron/Run2016E-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleElectronF', '/SingleElectron/Run2016F-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleElectronG', '/SingleElectron/Run2016G-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleElectronHv2', '/SingleElectron/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
+#Luca    tasks.append(('SingleElectronHv3', '/SingleElectron/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
+#Luca    
     tasks.append(('SingleMuonB', '/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
-    tasks.append(('SingleMuonC', '/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleMuonD', '/SingleMuon/Run2016D-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleMuonE', '/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleMuonF', '/SingleMuon/Run2016F-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleMuonG', '/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('SingleMuonHv2', '/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
-    tasks.append(('SingleMuonHv3', '/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
-    
-    tasks.append(('MuonEGB', '/MuonEG/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
-    tasks.append(('MuonEGC', '/MuonEG/Run2016C-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGD', '/MuonEG/Run2016D-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGE', '/MuonEG/Run2016E-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGF', '/MuonEG/Run2016F-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGG', '/MuonEG/Run2016G-03Feb2017-v1/MINIAOD'       ))
-    tasks.append(('MuonEGHv2', '/MuonEG/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
-    tasks.append(('MuonEGHv3', '/MuonEG/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
+#Luca    tasks.append(('SingleMuonC', '/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleMuonD', '/SingleMuon/Run2016D-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleMuonE', '/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleMuonF', '/SingleMuon/Run2016F-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleMuonG', '/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('SingleMuonHv2', '/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
+#Luca    tasks.append(('SingleMuonHv3', '/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
+#Luca    
+#Luca    tasks.append(('MuonEGB', '/MuonEG/Run2016B-03Feb2017_ver2-v2/MINIAOD'  ))
+#Luca    tasks.append(('MuonEGC', '/MuonEG/Run2016C-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('MuonEGD', '/MuonEG/Run2016D-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('MuonEGE', '/MuonEG/Run2016E-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('MuonEGF', '/MuonEG/Run2016F-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('MuonEGG', '/MuonEG/Run2016G-03Feb2017-v1/MINIAOD'       ))
+#Luca    tasks.append(('MuonEGHv2', '/MuonEG/Run2016H-03Feb2017_ver2-v1/MINIAOD'))
+#Luca    tasks.append(('MuonEGHv3', '/MuonEG/Run2016H-03Feb2017_ver3-v1/MINIAOD'))
     
     #tasks.append(('SingleElectronHv2','/SingleElectron/Run2016H-PromptReco-v2/MINIAOD'))
     #tasks.append(('SingleElectronHv3','/SingleElectron/Run2016H-PromptReco-v3/MINIAOD'))
@@ -115,8 +115,8 @@ if __name__ == '__main__':
     #tasks.append(('TauG','/Tau/Run2016G-23Sep2016-v1/MINIAOD'))
     #tasks.append(('MuonEGG','/MuonEG/Run2016G-23Sep2016-v1/MINIAOD'))
 
-
-
+    tasksPath = './tasks_Jun17_Data/' 
+    s = open(tasksPath+'submitAllData.sh', 'w')
 
     for task in tasks:
         print task[0]
@@ -127,10 +127,33 @@ if __name__ == '__main__':
             config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_Prompt_v16'] 
         else:
             config.JobType.pyCfgParams = ['release=80XMINIAOD','isData=1','doHT=0', 'globalTag=80X_dataRun2_2016SeptRepro_v7']
+        print config
         #submit(config)
-        p = Process(target=submit, args=(config,))
-        p.start()
-        p.join()
+        #p = Process(target=submit, args=(config,))
+        #p.start()
+        #p.join()
 
+        taskName = 'crab_'+config.General.requestName+'_pset.py'
+        print str(tasksPath+taskName)
+        f = open(str(tasksPath+taskName), 'w')
+        f.write(str(config))
+        f.close()
+
+        s.write(str('crab submit -c '+taskName+'\n'))
+        
+    s.close()
+
+
+
+#
+#        taskName = 'tasks_data/crab_'+config.General.requestName+'_pset.py'
+#        print str(taskName)
+#        f = open(str(taskName), 'w')
+#        f.write(str(config))
+#        f.close()
+#
+#        s.write(str('crab submit -c '+taskName+'\n'))
+#        
+#    s.close()
 
 
