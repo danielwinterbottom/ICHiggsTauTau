@@ -11,12 +11,12 @@ import fnmatch
 from UserCode.ICHiggsTauTau.analysis import *
 ROOT.TH1.AddDirectory(False)
 
-def getHistogramAndWriteToFile(infile,outfile,dirname):
+def getHistogramAndWriteToFile(infile,outfile,dirname,write_dirname):
     directory = infile.Get(dirname)
     for key in directory.GetListOfKeys():
         histo = directory.Get(key.GetName())
         if not isinstance(histo,ROOT.TDirectory):
-            WriteToTFile(histo, outfile, dirname+"/"+key.GetName())
+            WriteToTFile(histo, outfile, write_dirname+"/"+key.GetName())
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--file', '-f', help= 'File from which subdirectories need to be dropped')
@@ -31,4 +31,8 @@ output_file = ROOT.TFile(filename,"RECREATE")
 
 for key in original_file.GetListOfKeys():
     if isinstance(original_file.Get(key.GetName()),ROOT.TDirectory):
-        getHistogramAndWriteToFile(original_file,output_file,key.GetName())
+        if(key.GetName()=="em_ttbar_cr"): 
+            dirname="ttbar_cr"
+        else :
+            dirname=key.GetName()
+        getHistogramAndWriteToFile(original_file,output_file,key.GetName(),dirname)
