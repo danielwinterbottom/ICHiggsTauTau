@@ -63,7 +63,8 @@ class HTTSequence {
   void BuildExtraMuonVeto();
   void BuildExtraElecVeto();
 
-
+  bool w_extrap_study_;
+  
   template<class T>
   void BuildModule(T const& mod) {
      seq.push_back(std::shared_ptr<ModuleBase>(new T(mod)));

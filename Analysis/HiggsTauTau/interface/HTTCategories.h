@@ -42,6 +42,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_ff_systematics)
   CLASS_MEMBER(HTTCategories, std::string, ff_categories)
   CLASS_MEMBER(HTTCategories, bool, do_qcd_scale_wts)
+  CLASS_MEMBER(HTTCategories, bool, w_extrap_study)
  
   TTree *outtree_;
   TTree *synctree_;
@@ -908,6 +909,20 @@ class HTTCategories : public ModuleBase {
   double scale7_;
   double scale8_;
   double scale9_;
+  
+  double wt_tt_qcd_nobtag;
+  double wt_tt_qcd_btag;
+  
+  double tau_pt;
+  double mu_pt;
+  double tau_id_vloose;
+  double tau_id_loose;
+  double tau_id_medium;
+  double tau_id_tight;
+  double tau_antielec;
+  double tau_antimuon;
+  double mt_1_nomu;
+  bool os_mu_tau;
 
  public:
   HTTCategories(std::string const& name);

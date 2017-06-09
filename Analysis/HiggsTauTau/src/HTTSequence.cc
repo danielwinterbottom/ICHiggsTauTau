@@ -70,6 +70,9 @@
 #include "HiggsTauTau/interface/NLOWeighting.h"
 
 
+#include "TLorentzVector.h"
+
+
 namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
@@ -100,6 +103,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       // do not create output file when making sync ntuples
       fs = NULL;
   }
+  w_extrap_study_ = true;
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
@@ -366,6 +370,12 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    pair_dr = 0.3;
    muon_pt = 23;
    muon_eta = 2.1;
+   if(w_extrap_study_){
+     tau_dz = 0.2;
+     tau_pt=30.;
+     tau_eta=2.3;
+     min_taus=1;    
+   }
  }
  if(channel_str == "wmnu"){
    muon_dz = 0.2;
@@ -983,6 +993,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
      }
      
      BuildModule(httPairSelector);
+     
    }
    
    if(js["store_hltpaths"].asBool()){
@@ -1253,7 +1264,115 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
      .set_use_quantile_map(false)
      .set_met_scale_mode(metscale_mode)
      .set_met_res_mode(metres_mode)
-     .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
+     .set_store_boson_pt(js["make_sync_ntuple"].asBool())); 
+  }
+  
+    if(w_extrap_study_){
+    BuildModule(GenericModule("AddMuToMET")
+      .set_function([](ic::TreeEvent *event){
+        std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>("ditau");
+        CompositeCandidate const* ditau = ditau_vec.at(0);
+        Candidate * lep1 = ditau->GetCandidate("lepton1");
+        Candidate * lep2 = ditau->GetCandidate("lepton2"); 
+        Muon * muon_1 = dynamic_cast<Muon *>(lep1);
+        Muon * muon_2 = dynamic_cast<Muon *>(lep2);
+        std::vector<ic::Muon*> muons;
+        muons.push_back(muon_1);
+        muons.push_back(muon_2);
+        TRandom3 *rand = new TRandom3(0);
+        rand->SetSeed((int)((muons[0]->eta()+5)*100000));
+        double randVal = rand->Uniform();
+        Met *pfmet = event->GetPtr<Met>("pfMET");
+        double WZ_ratio = 80.4/91.2;
+        TLorentzVector muon1_vec;
+        TLorentzVector muon2_vec;
+
+        muon1_vec.SetXYZM(muons[0]->vector().Px(),muons[0]->vector().Py(),muons[0]->vector().Pz(),0);
+        muon2_vec.SetXYZM(muons[1]->vector().Px(),muons[1]->vector().Py(),muons[1]->vector().Pz(),0);
+        TVector3 Zboost = (muon1_vec+muon2_vec).BoostVector();
+        muon1_vec.Boost(-Zboost);
+        muon2_vec.Boost(-Zboost);
+        muon1_vec.SetXYZM(muon1_vec.Px()*WZ_ratio,muon1_vec.Py()*WZ_ratio,muon1_vec.Pz()*WZ_ratio ,0);
+        muon2_vec.SetXYZM(muon2_vec.Px()*WZ_ratio,muon2_vec.Py()*WZ_ratio,muon2_vec.Pz()*WZ_ratio ,0);
+        muon1_vec.Boost(Zboost);
+        muon2_vec.Boost(Zboost);
+        ic::Muon muon1 = *muons[0];
+        ic::Muon muon2 = *muons[1];
+        muon1.set_pt(muon1_vec.Pt());
+        muon1.set_eta(muon1_vec.Eta());
+        muon1.set_phi(muon1_vec.Phi());
+        muon1.set_energy(muon1_vec.E());
+        muon2.set_pt(muon2_vec.Pt());
+        muon2.set_eta(muon2_vec.Eta());
+        muon2.set_phi(muon2_vec.Phi());
+        muon2.set_energy(muon2_vec.E());
+        ic::Muon *not_removed_mu;
+        if (randVal < 0.5){
+          pfmet->set_vector(muon1.vector()+pfmet->vector());
+          not_removed_mu = new ic::Muon(muon2);
+        } else {
+          pfmet->set_vector(muon2.vector()+pfmet->vector());
+          not_removed_mu = new ic::Muon(muon1);
+        }
+
+        std::vector<ic::Muon*> not_removed_mu_vec;
+        not_removed_mu_vec.push_back(not_removed_mu);
+
+        event->Add("sel_muons_nomu",not_removed_mu_vec);
+        event->Remove("pfMET");
+        event->Add("pfMET",pfmet);
+        return 0;
+       }));
+  
+  //  BuildTauSelection();
+  //  
+  //  BuildModule(OverlapFilter<Tau, CompositeCandidate>("TauMuonOverlapFilter")
+  //    .set_input_label(js["taus"].asString())
+  //    .set_reference_label("ditau")
+  //    .set_min_dr(0.5));
+  //  
+  //  BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
+  //      .set_input_label_first("sel_muons_nomu")
+  //      .set_input_label_second(js["taus"].asString())
+  //      .set_candidate_name_first("lepton1")
+  //      .set_candidate_name_second("lepton2")
+  //      .set_output_label("ditau2"));
+  //  
+  //  HTTPairSelector httPairSelector_extrap = HTTPairSelector("HTTPairSelector_extrap")
+  //   .set_channel(channel::mt)
+  //   .set_fs(fs.get())
+  //   .set_pair_label("ditau2")
+  //   .set_met_label(met_label)
+  //   .set_strategy(strategy_type)
+  //   .set_mva_met_from_vector(mva_met_mode==1)
+  //   .set_faked_tau_selector(faked_tau_selector)
+  //   .set_hadronic_tau_selector(hadronic_tau_selector)
+  //   .set_ztt_mode(ztautau_mode)
+  //   .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
+  //   .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
+  //   .set_tau_scale(tau_shift)
+  //   .set_use_most_isolated(true)
+  //   .set_use_os_preference(false)
+  //   .set_allowed_tau_modes(allowed_tau_modes);
+  // 
+  // if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16){
+  //   httPairSelector_extrap.set_gen_taus_label("genParticles");
+  // }
+  // 
+  // BuildModule(httPairSelector_extrap);    
+  //
+  //  
+  //  BuildModule(SimpleFilter<CompositeCandidate>("PairFilter_MTPair")
+  //      .set_input_label("ditau2").set_min(1)
+  //      .set_predicate([=](CompositeCandidate const* c) {
+  //        return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+  //            > 0.5;
+  //      }));
+  //  
+  //  BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+  //    .set_input_label(jets_label)
+  //    .set_reference_label("ditau2")
+  //    .set_min_dr(0.5));
   }
 
 /*
@@ -1737,6 +1856,8 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_qcd_cr1_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRGt4");
    TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
+   TH2F tt_nobtag_qcd = GetFromTFile<TH2F>("input/tt_qcd/nobtag_ratio.root","/","QCD");
+   TH2F tt_btag_qcd = GetFromTFile<TH2F>("input/tt_qcd/btag_ratio.root","/","QCD");
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -1758,7 +1879,9 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2))
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4))
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4))
-    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
+    .set_z_pt_mass_hist(new TH2D(z_pt_weights))
+    .set_tt_nobtag_qcd_hist(new TH2F(tt_nobtag_qcd))
+    .set_tt_btag_qcd_hist(new TH2F(tt_btag_qcd));
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
@@ -1902,7 +2025,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
     .set_ff_categories(js["baseline"]["ff_categories"].asString())
     .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
-    .set_do_qcd_scale_wts(do_qcd_scale_wts_));
+    .set_do_qcd_scale_wts(do_qcd_scale_wts_)
+    .set_w_extrap_study(w_extrap_study_));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")
@@ -2476,12 +2600,13 @@ void HTTSequence::BuildZMMPairs() {
    }
    
   BuildModule(SimpleFilter<Muon>("MuonFilter")
-      .set_input_label("sel_muons").set_min(2)
+      .set_input_label("sel_muons").set_min(2).set_max(2)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > 10.        &&
                 fabs(m->eta())          < muon_eta   &&
                 fabs(m->dxy_vertex())   < muon_dxy   &&
                 fabs(m->dz_vertex())    < muon_dz   &&
+                (PF04IsolationVal(m, 0.5, 0) < 0.15 || !w_extrap_study_) &&
                 MuonID(m);
 
       }));
@@ -2506,7 +2631,6 @@ void HTTSequence::BuildZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
-
 }
 
 // --------------------------------------------------------------------------

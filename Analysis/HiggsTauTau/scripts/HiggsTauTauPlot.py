@@ -13,7 +13,7 @@ import copy
 
 CHANNELS= ['et', 'mt', 'em','tt','zmm','zee','mj']
 ANALYSIS= ['sm','mssm','Hhh']
-METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 17, 18, 19]
+METHODS= [8 ,9, 10, 11, 12 , 13, 14, 15, 16, 17, 18, 19, 20]
 
 conf_parser = argparse.ArgumentParser(
     description=__doc__,
@@ -665,7 +665,7 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='',
       shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
   shape_selection = BuildCutString(wt, sel, shape_cat, OSSS, '')
   
-  if method in [8, 9, 15, 19]:
+  if method in [8, 9, 15, 19, 20]:
       w_node = ana.SummedFactory(name, samples, plot, full_selection)
   elif method in [10, 11]:
       control_sel = cats['w_sdb']+' && '+ OSSS
@@ -829,6 +829,12 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
         shape_node = None   
         full_selection = BuildCutString(wt, sel, qcd_sdb_cat, OSSS)
         subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose',sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
+        
+        if options.method == 20:
+            num_node = None
+            den_node = None
+            subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tt_qcd_nobtag',sel,cat,method,qcd_os_ss_ratio,False,True)
+            full_selection = BuildCutString(wt+'*wt_tt_qcd_nobtag', sel, qcd_sdb_cat, OSSS)
 
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
           ana.SummedFactory('data', data, plot, full_selection),

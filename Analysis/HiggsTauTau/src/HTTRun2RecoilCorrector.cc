@@ -20,7 +20,7 @@ namespace ic {
     store_boson_pt_ = false;
     disable_recoil_corrs = true;
     disable_met_sys = true;
-    is_wjets = false;
+    is_wjets_ = false;
     met_scale_mode_ = 0;
     met_res_mode_ = 0;
   }
@@ -62,7 +62,7 @@ namespace ic {
    
     if ( (sample_.find("WJetsToLNu") != sample_.npos) || (sample_.find("W1JetsToLNu") != sample_.npos) || (sample_.find("W2JetsToLNu")!=sample_.npos) || (sample_.find("W3JetsToLNu")!=sample_.npos) || (sample_.find("W4JetsToLNu")!=sample_.npos) || (sample_.find("WG")!=sample_.npos)){
       disable_recoil_corrs = false;
-      is_wjets = true;
+      is_wjets_ = true;
     }
 
     if ( (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) ) {
@@ -142,7 +142,7 @@ namespace ic {
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
   unsigned njets = jets.size();
-  if(is_wjets) njets+=1;
+  if(is_wjets_) njets+=1;
   double Metx = met->vector().px();
   double Mety = met->vector().py();
   double Mete = met->energy();
@@ -174,7 +174,7 @@ namespace ic {
     MEtSys::SysType sysType;
     MEtSys::SysShift sysShift;
     MEtSys::ProcessType processType;
-    if(is_wjets || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("HToTauTau")!=sample_.npos ){
+    if(is_wjets_ || (sample_.find("DY")!=sample_.npos && sample_.find("JetsToLL")!=sample_.npos) || sample_.find("HToTauTau")!=sample_.npos ){
         processType = MEtSys::ProcessType::BOSON;
     } else if (sample_.find("TT")!=sample_.npos){
        processType = MEtSys::ProcessType::TOP;

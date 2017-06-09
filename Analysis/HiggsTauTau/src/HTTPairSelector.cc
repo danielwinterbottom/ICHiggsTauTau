@@ -226,7 +226,7 @@ namespace ic {
    
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     Met *pfmet = pfMet_vec.at(0); 
-    event->Add("pfMET", pfmet);
+    if(!event->Exists("pfMET")) event->Add("pfMET", pfmet);
    
    // ************************************************************************
    // Scale met for the tau energy scale shift

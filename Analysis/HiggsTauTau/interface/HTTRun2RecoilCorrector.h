@@ -15,7 +15,6 @@ class HTTRun2RecoilCorrector : public ModuleBase {
  // std::string jets_label_;
   bool disable_recoil_corrs;
   bool disable_met_sys;
-  bool is_wjets;
   RecoilCorrectorRun2 * corrector_;
   MEtSys * metSys_;
   CLASS_MEMBER(HTTRun2RecoilCorrector, std::string, met_label)
@@ -29,6 +28,7 @@ class HTTRun2RecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HTTRun2RecoilCorrector, bool, store_boson_pt)
   CLASS_MEMBER(HTTRun2RecoilCorrector, int, met_scale_mode)
   CLASS_MEMBER(HTTRun2RecoilCorrector, int, met_res_mode)
+  CLASS_MEMBER(HTTRun2RecoilCorrector, bool, is_wjets)
 
 
 

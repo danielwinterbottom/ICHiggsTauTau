@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr05_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "et", "mt", "tt" ],
+    "channels":     [ "mt","tt" ],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -41,7 +41,7 @@
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
-    "do_preselection" : true,
+    "do_preselection" : false,
     "force_old_effs" : false,
     "electrons"     : "electrons",
     "muons"         : "muons",
@@ -54,7 +54,8 @@
     "do_tau_eff"    : false,
     "do_ff_weights" : false,
     "do_ff_systematics": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May29/",
+    //"output_folder" : "/vols/cms/dw515/Offline/output/MSSM/W_extrap_notau/",
+    "output_folder" : "./",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",

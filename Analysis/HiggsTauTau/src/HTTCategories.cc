@@ -39,6 +39,7 @@ namespace ic {
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
       do_qcd_scale_wts_ = false;
+      w_extrap_study_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -71,6 +72,10 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
+      
+      outtree_->Branch("wt_tt_qcd_nobtag" , &wt_tt_qcd_nobtag);
+      outtree_->Branch("wt_tt_qcd_btag" , &wt_tt_qcd_btag);
+      
       if(channel_==channel::em){
         outtree_->Branch("idisoweight_up_1",&idisoweight_up_1_);
         outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
@@ -89,6 +94,19 @@ namespace ic {
         outtree_->Branch("wt_tau2_id_tight", &wt_tau2_id_tight_);
         outtree_->Branch("wt_tau2_id_vtight", &wt_tau2_id_vtight_);
       }
+      if(w_extrap_study_){
+        outtree_->Branch("tau_pt"       , &tau_pt        );
+        outtree_->Branch("mu_pt"        , &mu_pt         );
+        outtree_->Branch("tau_id_vloose", &tau_id_vloose );
+        outtree_->Branch("tau_id_loose" , &tau_id_loose  );
+        outtree_->Branch("tau_id_medium", &tau_id_medium );
+        outtree_->Branch("tau_id_tight" , &tau_id_tight  );
+        outtree_->Branch("tau_antielec" , &tau_antielec  );
+        outtree_->Branch("tau_antimuon" , &tau_antimuon  );
+        outtree_->Branch("mt_1_nomu"    , &mt_1_nomu     );
+        outtree_->Branch("os_mu_tau"   , &os_mu_tau     );
+     }
+          
       if(add_nlo_weights_) {
         outtree_->Branch("wt_nlo_pt",         &wt_nlo_pt_);
         outtree_->Branch("nlo_pt",            &nlo_pt_);
@@ -1314,6 +1332,11 @@ namespace ic {
     wt_tau2_id_vtight_ = 1.0;
     if (event->Exists("wt_tau2_id_vtight")) wt_tau2_id_vtight_  = event->Get<double>("wt_tau2_id_vtight");
     
+    wt_tt_qcd_nobtag = 1;
+    wt_tt_qcd_btag = 1;
+    if (event->Exists("wt_tt_qcd_nobtag")) wt_tt_qcd_nobtag  = event->Get<double>("wt_tt_qcd_nobtag");
+    if (event->Exists("wt_tt_qcd_btag")) wt_tt_qcd_btag  = event->Get<double>("wt_tt_qcd_btag");
+    
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
@@ -1992,6 +2015,10 @@ namespace ic {
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
         if(event->Exists("minimal_extra_muon_veto")) minimal_extramuon_veto_ = event->Get<bool>("minimal_extra_muon_veto");
 
+    }
+    if(channel_ == channel::zmm){
+      if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+      if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");    
     }
     lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
 
@@ -2947,6 +2974,32 @@ namespace ic {
       dz_1_ = muon1->dz_vertex();
       d0_2_ = muon2->dxy_vertex();
       dz_2_ = muon2->dz_vertex();
+      
+      if(w_extrap_study_){          
+        
+        std::vector<ic::Muon*> sel_muons_nomu = event->GetPtrVec<ic::Muon>("sel_muons_nomu");
+
+
+        mu_pt = sel_muons_nomu[0]->pt();
+        mt_1_nomu = MT(sel_muons_nomu[0],mets);
+        
+        if(event->Exists("ditau2")){
+          std::vector<CompositeCandidate *> const& ditau_vec2 = event->GetPtrVec<CompositeCandidate>("ditau2");
+          CompositeCandidate const* ditau2 = ditau_vec2.at(0);
+          Candidate const* extrap_lep1 = ditau2->GetCandidate("lepton1");
+          Candidate const* extrap_lep2 = ditau2->GetCandidate("lepton2");
+          os_mu_tau = extrap_lep1->charge()*extrap_lep2->charge() < 0;
+          Tau const* tau = dynamic_cast<Tau const*>(extrap_lep2);
+          tau_pt = extrap_lep2->pt();
+          tau_antielec = tau->HasTauID("againstElectronVLooseMVA6") ? tau->GetTauID("againstElectronVLooseMVA6") :0. ;
+          tau_antimuon = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
+          tau_id_vloose = tau->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") : 0.;
+          tau_id_loose = tau->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") : 0.;
+          tau_id_medium = tau->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") : 0.;
+          tau_id_tight = tau->HasTauID("byTightIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") : 0.;
+        }
+
+      }
     }
 
     if (channel_ == channel::tpzmm || channel_ == channel::tpzee){

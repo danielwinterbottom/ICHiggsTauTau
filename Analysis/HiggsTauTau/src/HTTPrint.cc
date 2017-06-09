@@ -130,6 +130,10 @@ namespace ic {
       std::cout << "phi "<< elecs[i]->phi()<<std::endl;
       std::cout << "dxyVertex "<<elecs[i]->dxy_vertex()<<std::endl;
       std::cout<< "dzVertex "<<elecs[i]->dz_vertex() <<std::endl;
+      std::cout << "iso = " << PF03IsolationVal(elecs[i], 0.5, 0)<< std::endl;
+      std::cout << "loose ID = " << ElectronHTTIdSpring16(elecs[i], true)<< std::endl;
+      std::cout << "veto ID = " << VetoElectronIDSpring16(elecs[i]) << std::endl;
+      std::cout << PF03EAIsolationVal(elecs[i], eventInfo, true) << std::endl;
       elecs[i]->Print();
       double iso =  (elecs[i]->dr04_pfiso_charged() 
       + std::max(elecs[i]->dr04_pfiso_neutral() + elecs[i]->dr04_pfiso_gamma() - 0.5 * elecs[i]->dr04_pfiso_pu(), 0.0)) / elecs[i]->pt();

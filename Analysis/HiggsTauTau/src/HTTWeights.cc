@@ -53,6 +53,8 @@ namespace ic {
     btag_label_         = "combinedSecondaryVertexBJetTags";
     ditau_label_              = "emtauCandidates";
     z_pt_mass_hist_            = nullptr;
+    tt_nobtag_qcd_hist_            = nullptr;
+    tt_btag_qcd_hist_            = nullptr;
     mt_idiso_mc_              = nullptr;     
     mt_idiso_data_            = nullptr;     
     et_idiso_mc_              = nullptr;     
@@ -489,6 +491,7 @@ namespace ic {
            weight_up = (1.0+tau2_wt)*(1.0+tau1_wt);
            weight_down = std::max(0.0,(1.0-tau2_wt)*(1.0-tau1_wt));
          }
+         std::cout << weight_up << "    " << weight_down << std::endl;
           event->Add("wt_tau_id_up", weight_up);
           event->Add("wt_tau_id_down", weight_down);
         }   
@@ -560,6 +563,20 @@ namespace ic {
         event->Add("wt_tau2_id_vtight",vtight_tau_sf_2/(tau_sf_2));
       }
      eventInfo->set_weight("wt_tau_id_sf",tau_sf_1*tau_sf_2);
+    }
+    if(channel_ == channel::tt){
+      Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+      double pt_1 = tau1->pt();
+      Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+      double pt_2 = tau2->pt();
+      double lead_pt = pt_1;
+      double sublead_pt = pt_2;
+      if (lead_pt > 500) lead_pt = 500;
+      if (sublead_pt > 500) sublead_pt = 500;
+      double nobtag_wt = tt_nobtag_qcd_hist_->GetBinContent(tt_nobtag_qcd_hist_->FindBin(sublead_pt,lead_pt));
+      double btag_wt = tt_btag_qcd_hist_->GetBinContent(tt_btag_qcd_hist_->FindBin(sublead_pt,lead_pt));
+      event->Add("wt_tt_qcd_nobtag",nobtag_wt);
+      event->Add("wt_tt_qcd_btag",btag_wt);
     }
     if (do_em_qcd_weights_){
       if(channel_ == channel::em){
@@ -1950,7 +1967,7 @@ namespace ic {
             if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9884; mu_iso = 0.9996; }
           }
         } else if (mc_ == mc::fall11_42X) {
-          if (pt > 17.0 && pt <= 20.0 && m_eta < 0.8)                   { mu_id = 0.9963; mu_iso = 0.9910; }
+          if (pt > 17.0 && pt <= 20.0 && m_eta < 0.8)                   { mu_id = 0.9963; mu_iso = 0.9910; }  
           if (pt > 17.0 && pt <= 20.0 && m_eta >= 0.8 && m_eta < 1.2)   { mu_id = 0.9846; mu_iso = 0.9643; }
           if (pt > 17.0 && pt <= 20.0 && m_eta >= 1.2)                  { mu_id = 0.9830; mu_iso = 0.9504; }
           if (pt > 20.0 && pt <= 30.0 && m_eta < 0.8)                   { mu_id = 0.9962; mu_iso = 1.0011; }
@@ -1958,7 +1975,7 @@ namespace ic {
           if (pt > 20.0 && pt <= 30.0 && m_eta >= 1.2)                  { mu_id = 0.9828; mu_iso = 0.9975; }
           if (pt > 30.0 && m_eta < 0.8)                                 { mu_id = 0.9977; mu_iso = 0.9895; }
           if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9893; mu_iso = 0.9936; }
-          if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9829; mu_iso = 0.9960; }
+          if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9829; mu_iso = 0.9960; } 
         } else if (mc_ == mc::spring15_74X ||mc_ == mc::fall15_76X){
           if(pt<100){
             mu_idiso_data = mt_idiso_data_->GetBinContent(mt_idiso_data_->GetXaxis()->FindBin(m_eta),mt_idiso_data_->GetYaxis()->FindBin(pt));
@@ -1978,7 +1995,7 @@ namespace ic {
         } else if(mc_ == mc::summer16_80X){
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
-           mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
+           mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data());
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X && mc_ != mc::summer16_80X){ 
           if (do_id_weights_) mu_iso = 1.0;
