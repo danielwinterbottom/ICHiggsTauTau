@@ -923,6 +923,7 @@ class HTTCategories : public ModuleBase {
   double tau_antimuon;
   double mt_1_nomu;
   bool os_mu_tau;
+  bool isTau;
 
  public:
   HTTCategories(std::string const& name);

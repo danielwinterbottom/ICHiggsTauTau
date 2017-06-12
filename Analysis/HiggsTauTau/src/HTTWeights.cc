@@ -565,18 +565,19 @@ namespace ic {
      eventInfo->set_weight("wt_tau_id_sf",tau_sf_1*tau_sf_2);
     }
     if(channel_ == channel::tt){
-      Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-      double pt_1 = tau1->pt();
+      //Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
+      //double pt_1 = tau1->pt();
       Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
       double pt_2 = tau2->pt();
-      double lead_pt = pt_1;
+      //double lead_pt = pt_1;
       double sublead_pt = pt_2;
-      if (lead_pt > 500) lead_pt = 500;
-      if (sublead_pt > 500) sublead_pt = 500;
-      double nobtag_wt = tt_nobtag_qcd_hist_->GetBinContent(tt_nobtag_qcd_hist_->FindBin(sublead_pt,lead_pt));
-      double btag_wt = tt_btag_qcd_hist_->GetBinContent(tt_btag_qcd_hist_->FindBin(sublead_pt,lead_pt));
+      double nobtag_wt = 0.875+0.161/(1+exp(0.251*(sublead_pt-56.08)));
+      //if (lead_pt > 500) lead_pt = 500;
+      //if (sublead_pt > 500) sublead_pt = 500;
+      //double nobtag_wt = tt_nobtag_qcd_hist_->GetBinContent(tt_nobtag_qcd_hist_->FindBin(sublead_pt,lead_pt));
+      //double btag_wt = tt_btag_qcd_hist_->GetBinContent(tt_btag_qcd_hist_->FindBin(sublead_pt,lead_pt));
       event->Add("wt_tt_qcd_nobtag",nobtag_wt);
-      event->Add("wt_tt_qcd_btag",btag_wt);
+      event->Add("wt_tt_qcd_btag",nobtag_wt);
     }
     if (do_em_qcd_weights_){
       if(channel_ == channel::em){

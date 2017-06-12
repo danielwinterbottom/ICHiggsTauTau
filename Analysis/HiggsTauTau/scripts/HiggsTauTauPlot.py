@@ -831,8 +831,8 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
         subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose',sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
         
         if options.method == 20:
-            num_node = None
-            den_node = None
+            #num_node = None
+            #den_node = None
             subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tt_qcd_nobtag',sel,cat,method,qcd_os_ss_ratio,False,True)
             full_selection = BuildCutString(wt+'*wt_tt_qcd_nobtag', sel, qcd_sdb_cat, OSSS)
 

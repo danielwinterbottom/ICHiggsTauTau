@@ -374,7 +374,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      tau_dz = 0.2;
      tau_pt=30.;
      tau_eta=2.3;
-     min_taus=1;    
+     min_taus=0;    
    }
  }
  if(channel_str == "wmnu"){
@@ -1290,12 +1290,15 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
         muon1_vec.SetXYZM(muons[0]->vector().Px(),muons[0]->vector().Py(),muons[0]->vector().Pz(),0);
         muon2_vec.SetXYZM(muons[1]->vector().Px(),muons[1]->vector().Py(),muons[1]->vector().Pz(),0);
         TVector3 Zboost = (muon1_vec+muon2_vec).BoostVector();
+        TLorentzVector Z_vec = muon1_vec+muon2_vec;
+        double scale = sqrt( pow(Z_vec.Px(),2) + pow(Z_vec.Py(),2) + pow(Z_vec.Pz(),2) + pow(Z_vec.M()*WZ_ratio,2));
+        TVector3 BoostBack(Z_vec.Px()/scale, Z_vec.Py()/scale, Z_vec.Pz()/scale); 
         muon1_vec.Boost(-Zboost);
         muon2_vec.Boost(-Zboost);
         muon1_vec.SetXYZM(muon1_vec.Px()*WZ_ratio,muon1_vec.Py()*WZ_ratio,muon1_vec.Pz()*WZ_ratio ,0);
         muon2_vec.SetXYZM(muon2_vec.Px()*WZ_ratio,muon2_vec.Py()*WZ_ratio,muon2_vec.Pz()*WZ_ratio ,0);
-        muon1_vec.Boost(Zboost);
-        muon2_vec.Boost(Zboost);
+        muon1_vec.Boost(BoostBack);
+        muon2_vec.Boost(BoostBack);
         ic::Muon muon1 = *muons[0];
         ic::Muon muon2 = *muons[1];
         muon1.set_pt(muon1_vec.Pt());
@@ -1323,14 +1326,22 @@ if((strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16||stra
         event->Add("pfMET",pfmet);
         return 0;
        }));
-  
-  //  BuildTauSelection();
-  //  
-  //  BuildModule(OverlapFilter<Tau, CompositeCandidate>("TauMuonOverlapFilter")
-  //    .set_input_label(js["taus"].asString())
-  //    .set_reference_label("ditau")
-  //    .set_min_dr(0.5));
-  //  
+
+    BuildTauSelection();
+    
+  //  BuildModule(GenericModule("TausSize")
+  //    .set_function([](ic::TreeEvent *event){
+  //      std::vector<Tau *> const& taus = event->GetPtrVec<Tau>("taus");
+  //      std::cout << taus.size() << std::endl;
+  //      return 0;
+  //     }));
+    
+    BuildModule(OverlapFilter<Tau, CompositeCandidate>("TauMuonOverlapFilter")
+      .set_input_label(js["taus"].asString())
+      .set_reference_label("ditau")
+      .set_min_dr(0.5));
+
+    
   //  BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
   //      .set_input_label_first("sel_muons_nomu")
   //      .set_input_label_second(js["taus"].asString())
@@ -1781,7 +1792,6 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
   }
 
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
-   std::cout << "do zpt weight!" << std::endl;
     httWeights.set_do_zpt_weight(true);
   }
 

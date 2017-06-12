@@ -12,7 +12,15 @@
 #include "TMath.h"
 #include "TLorentzVector.h"
 
+
 namespace ic {
+    
+    bool SortByIso(Tau const* t1, Tau const* t2) {
+          double t_iso1 = t1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+          double t_iso2 = t2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
+          if (t_iso1 != t_iso2) return t_iso1 > t_iso2;
+          return t1->pt() > t2->pt();
+        }
 
   HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), 
       channel_(channel::et), 
@@ -95,6 +103,7 @@ namespace ic {
         outtree_->Branch("wt_tau2_id_vtight", &wt_tau2_id_vtight_);
       }
       if(w_extrap_study_){
+        outtree_->Branch("isTau", &isTau );
         outtree_->Branch("tau_pt"       , &tau_pt        );
         outtree_->Branch("mu_pt"        , &mu_pt         );
         outtree_->Branch("tau_id_vloose", &tau_id_vloose );
@@ -2975,31 +2984,6 @@ namespace ic {
       d0_2_ = muon2->dxy_vertex();
       dz_2_ = muon2->dz_vertex();
       
-      if(w_extrap_study_){          
-        
-        std::vector<ic::Muon*> sel_muons_nomu = event->GetPtrVec<ic::Muon>("sel_muons_nomu");
-
-
-        mu_pt = sel_muons_nomu[0]->pt();
-        mt_1_nomu = MT(sel_muons_nomu[0],mets);
-        
-        if(event->Exists("ditau2")){
-          std::vector<CompositeCandidate *> const& ditau_vec2 = event->GetPtrVec<CompositeCandidate>("ditau2");
-          CompositeCandidate const* ditau2 = ditau_vec2.at(0);
-          Candidate const* extrap_lep1 = ditau2->GetCandidate("lepton1");
-          Candidate const* extrap_lep2 = ditau2->GetCandidate("lepton2");
-          os_mu_tau = extrap_lep1->charge()*extrap_lep2->charge() < 0;
-          Tau const* tau = dynamic_cast<Tau const*>(extrap_lep2);
-          tau_pt = extrap_lep2->pt();
-          tau_antielec = tau->HasTauID("againstElectronVLooseMVA6") ? tau->GetTauID("againstElectronVLooseMVA6") :0. ;
-          tau_antimuon = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
-          tau_id_vloose = tau->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") : 0.;
-          tau_id_loose = tau->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") : 0.;
-          tau_id_medium = tau->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") : 0.;
-          tau_id_tight = tau->HasTauID("byTightIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") : 0.;
-        }
-
-      }
     }
 
     if (channel_ == channel::tpzmm || channel_ == channel::tpzee){
@@ -3033,6 +3017,64 @@ namespace ic {
     n_prebjets_ = prebjets.size();
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
+    
+          
+    if(w_extrap_study_){          
+        
+        std::vector<ic::Muon*> sel_muons_nomu = event->GetPtrVec<ic::Muon>("sel_muons_nomu");
+
+        mu_pt = sel_muons_nomu[0]->pt();
+        mt_1_nomu = MT(sel_muons_nomu[0],mets);
+        
+        isTau=false;        
+        std::vector<ic::Tau*> taus = event->GetPtrVec<ic::Tau>("taus");
+        std::vector<ic::Tau*> sel_taus;
+        for(unsigned i=0; i<taus.size();++i){
+          ic::Tau *tau = taus[i];
+          bool anti_elec = tau->GetTauID("againstElectronVLooseMVA6");
+          bool anti_muon = tau->GetTauID("againstMuonTight3");
+          bool v_loose_tau = tau->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLT");
+          bool os_tau_mu = tau->charge()*sel_muons_nomu[0]->charge() < 0;
+          os_tau_mu = true;
+          if(anti_elec&&anti_muon&&v_loose_tau&&os_tau_mu) sel_taus.push_back(tau);
+        }
+    
+        std::sort(sel_taus.begin(), sel_taus.end(), SortByIso);
+        std::vector<ic::Tau*> taus_to_match;
+        if (sel_taus.size() > 0){
+          taus_to_match.push_back(sel_taus[0]);
+          isTau = true;
+          ic::erase_if(jets, !boost::bind(MinDRToCollection<ic::Tau *>, _1, taus_to_match, 0.5));
+          ic::erase_if(lowpt_jets, !boost::bind(MinDRToCollection<ic::Tau *>, _1, taus_to_match, 0.5));
+          ic::erase_if(bjets, !boost::bind(MinDRToCollection<ic::Tau *>, _1, taus_to_match, 0.5));
+          os_mu_tau = sel_muons_nomu[0]->charge()*taus_to_match[0]->charge() < 0;
+          tau_id_loose = sel_taus[0]->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLT") ? sel_taus[0]->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") : 0.;
+          tau_id_medium = sel_taus[0]->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLT") ? sel_taus[0]->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") : 0.;
+          tau_id_tight = sel_taus[0]->HasTauID("byTightIsolationMVArun2v1DBoldDMwLT") ? sel_taus[0]->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") : 0.;
+        }
+
+        n_jets_ = jets.size();
+        n_lowpt_jets_ = lowpt_jets.size();
+        n_bjets_ = bjets.size(); 
+        
+        
+        if(event->Exists("ditau2")){
+          std::vector<CompositeCandidate *> const& ditau_vec2 = event->GetPtrVec<CompositeCandidate>("ditau2");
+          CompositeCandidate const* ditau2 = ditau_vec2.at(0);
+          Candidate const* extrap_lep1 = ditau2->GetCandidate("lepton1");
+          Candidate const* extrap_lep2 = ditau2->GetCandidate("lepton2");
+          os_mu_tau = extrap_lep1->charge()*extrap_lep2->charge() < 0;
+          Tau const* tau = dynamic_cast<Tau const*>(extrap_lep2);
+          tau_pt = extrap_lep2->pt();
+          tau_antielec = tau->HasTauID("againstElectronVLooseMVA6") ? tau->GetTauID("againstElectronVLooseMVA6") :0. ;
+          tau_antimuon = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
+          tau_id_vloose = tau->HasTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") : 0.;
+          tau_id_loose = tau->HasTauID("byLooseIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT") : 0.;
+          tau_id_medium = tau->HasTauID("byMediumIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byMediumIsolationMVArun2v1DBoldDMwLT") : 0.;
+          tau_id_tight = tau->HasTauID("byTightIsolationMVArun2v1DBoldDMwLT") ? tau->GetTauID("byTightIsolationMVArun2v1DBoldDMwLT") : 0.;
+        }
+
+      }
 
     if(uncleaned_jets.size() > 0 && (channel_ == channel::mt || channel_ == channel::et) && jetfake_study_) {
       std::vector<Candidate *> subleading_lepton;
