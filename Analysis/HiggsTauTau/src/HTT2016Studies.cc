@@ -226,7 +226,14 @@ namespace ic {
       // outtree_->Branch("pt_taup",      &pt_taup);
       // outtree_->Branch("pt_taum",      &pt_taum);
       // outtree_->Branch("pt_vistaup",   &pt_vistaup);
+      outtree_->Branch("pt_1",      &pt_1);
+      outtree_->Branch("pt_2",      &pt_2);
+      outtree_->Branch("eta_1",      &eta_1);
+      outtree_->Branch("eta_2",      &eta_2);
+      outtree_->Branch("dec_1",      &dec_1);
+      outtree_->Branch("dec_2",      &dec_2);
       outtree_->Branch("njets", &njets);
+      outtree_->Branch("nbjets", &nbjets);
       // outtree_->Branch("mjj",   &mjj);
       outtree_->Branch("wt",   &wt);
       outtree_->Branch("wt_2HDM_h",   &wt_2HDM_h);
@@ -289,8 +296,27 @@ namespace ic {
     ditau.AddCandidate("taup", last_taup);
     ditau.AddCandidate("taum", last_taum);
 
+    unsigned decp = 2;  // tau_h
+    unsigned decm = 2;  // tau_h
+
     auto taup_stable_daughters = ExtractStableDaughters(last_taup, h_daughters);
     auto taum_stable_daughters = ExtractStableDaughters(last_taum, h_daughters);
+    for (GenParticle const* p : taup_stable_daughters) {
+      if (abs(p->pdgid()) == 12) {
+        decp = 0;
+      }
+      if (abs(p->pdgid()) == 14) {
+        decp = 1;
+      }
+    }
+    for (GenParticle const* p : taum_stable_daughters) {
+      if (abs(p->pdgid()) == 12) {
+        decm = 0;
+      }
+      if (abs(p->pdgid()) == 14) {
+        decm = 1;
+      }
+    }
     ic::erase_if(taup_stable_daughters, [](GenParticle *p) {
       return (abs(p->pdgid()) == 12 || abs(p->pdgid()) == 14 || abs(p->pdgid()) == 16);
     });
@@ -307,19 +333,63 @@ namespace ic {
     }
 
     auto genjets = event->GetPtrVec<GenJet>("genJets");
+    
     std::vector<Candidate *> vis_taus{&visp, &vism};
     ic::keep_if(genjets, [&](GenJet *j) {
-      return MinPtMaxEta(j, 30., 4.7) && MinDRToCollection(j, vis_taus, 0.5);
+      return MinDRToCollection(j, vis_taus, 0.5);
     });
+    
     std::sort(genjets.begin(), genjets.end(), [](GenJet *j1, GenJet *j2) {
       return j1->pt() > j2->pt();
     });
+
+    auto genbjets = genjets;
+
+    ic::keep_if(genjets, [&](GenJet *j) {
+      return MinPtMaxEta(j, 25., 4.7);
+    });
+
+    ic::keep_if(genbjets, [&](GenJet *j) {
+      return MinPtMaxEta(j, 25., 2.5) && std::abs(j->flavour()) == 5;
+    });
+    
     pt_h = last_h->pt();
     pt_ditau = ditau.pt();
+
+    ic::CompositeCandidate const* c1;
+    ic::CompositeCandidate const* c2;
+
+    dec_1 = 0;
+    dec_2 = 0;
+
+    if (decp == decm) {
+      dec_1 = decp;
+      dec_2 = decm;
+      c1 = visp.pt() > vism.pt() ? &visp : &vism;
+      c2 = visp.pt() > vism.pt() ? &vism : &visp;
+    } else {
+      if ( (decp == 0 && decm == 1) || (decp == 0 && decm == 2) || (decp == 1 && decm == 2) ) {
+        dec_1 = decp;
+        dec_2 = decm;
+        c1 = &visp;
+        c2 = &vism;
+      } else {
+        dec_1 = decm;
+        dec_2 = decp;
+        c1 = &vism;
+        c2 = &visp;
+      }
+    }
+
     pt_taup = last_taup->pt();
     pt_taum = last_taum->pt();
     pt_vistaup = visp.pt();
     pt_vistaum = vism.pt();
+
+    pt_1 = c1->pt();
+    pt_2 = c2->pt();
+    eta_1 = c1->eta();
+    eta_2 = c2->eta();
 
     njets = genjets.size();
     if (njets >= 2) {
@@ -327,6 +397,8 @@ namespace ic {
     } else {
       mjj = 0.;
     }
+
+    nbjets = genbjets.size();
     
     auto info = event->GetPtr<EventInfo>("eventInfo");
     wt = info->total_weight();

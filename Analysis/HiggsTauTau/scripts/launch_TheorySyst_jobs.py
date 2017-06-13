@@ -6,6 +6,8 @@ job_mgr = Jobs()
 parser = argparse.ArgumentParser()
 job_mgr.attach_job_args(parser)
 parser.add_argument('--pythia', action='store_true')
+parser.add_argument('--bbH', action='store_true')
+parser.add_argument('--pythia-bbH', action='store_true')
 args = parser.parse_args()
 job_mgr.set_args(args)
 
@@ -74,6 +76,45 @@ if args.pythia:
             'SUSYGluGluToHToTauTau_M-3200':   ['SUSYGluGluToHToTauTau_M-3200'],
     }
 
+if args.pythia_bbH:
+    PROD='May1_'
+    MC_SAMPLES = {
+            #'SUSYGluGluToBBHToTauTau_M-80':     ['SUSYGluGluToBBHToTauTau_M-80'],
+            #'SUSYGluGluToBBHToTauTau_M-90':     ['SUSYGluGluToBBHToTauTau_M-90'],
+            #'SUSYGluGluToBBHToTauTau_M-100':    ['SUSYGluGluToBBHToTauTau_M-100'],
+            #'SUSYGluGluToBBHToTauTau_M-110':    ['SUSYGluGluToBBHToTauTau_M-110'],
+            #'SUSYGluGluToBBHToTauTau_M-120':    ['SUSYGluGluToBBHToTauTau_M-120'],
+            'SUSYGluGluToBBHToTauTau_M-130':    ['SUSYGluGluToBBHToTauTau_M-130'],
+            #'SUSYGluGluToBBHToTauTau_M-140':    ['SUSYGluGluToBBHToTauTau_M-140'],
+            #'SUSYGluGluToBBHToTauTau_M-160':    ['SUSYGluGluToBBHToTauTau_M-160'],
+            #'SUSYGluGluToBBHToTauTau_M-180':    ['SUSYGluGluToBBHToTauTau_M-180'],
+            #'SUSYGluGluToBBHToTauTau_M-200':    ['SUSYGluGluToBBHToTauTau_M-200'],
+            #'SUSYGluGluToBBHToTauTau_M-250':    ['SUSYGluGluToBBHToTauTau_M-250'],
+            #'SUSYGluGluToBBHToTauTau_M-350':    ['SUSYGluGluToBBHToTauTau_M-350'],
+            #'SUSYGluGluToBBHToTauTau_M-400':    ['SUSYGluGluToBBHToTauTau_M-400'],
+            #'SUSYGluGluToBBHToTauTau_M-450':    ['SUSYGluGluToBBHToTauTau_M-450'],
+            #'SUSYGluGluToBBHToTauTau_M-500':    ['SUSYGluGluToBBHToTauTau_M-500'],
+            #'SUSYGluGluToBBHToTauTau_M-600':    ['SUSYGluGluToBBHToTauTau_M-600'],
+            'SUSYGluGluToBBHToTauTau_M-700':    ['SUSYGluGluToBBHToTauTau_M-700'],
+            #'SUSYGluGluToBBHToTauTau_M-800':    ['SUSYGluGluToBBHToTauTau_M-800'],
+            #'SUSYGluGluToBBHToTauTau_M-900':    ['SUSYGluGluToBBHToTauTau_M-900'],
+            #'SUSYGluGluToBBHToTauTau_M-1000':   ['SUSYGluGluToBBHToTauTau_M-1000'],
+            #'SUSYGluGluToBBHToTauTau_M-1200':   ['SUSYGluGluToBBHToTauTau_M-1200'],
+            #'SUSYGluGluToBBHToTauTau_M-1400':   ['SUSYGluGluToBBHToTauTau_M-1400'],
+            #'SUSYGluGluToBBHToTauTau_M-1600':   ['SUSYGluGluToBBHToTauTau_M-1600'],
+            #'SUSYGluGluToBBHToTauTau_M-1800':   ['SUSYGluGluToBBHToTauTau_M-1800'],
+            #'SUSYGluGluToBBHToTauTau_M-2000':   ['SUSYGluGluToBBHToTauTau_M-2000'],
+            #'SUSYGluGluToBBHToTauTau_M-2300':   ['SUSYGluGluToBBHToTauTau_M-2300'],
+            #'SUSYGluGluToBBHToTauTau_M-2600':   ['SUSYGluGluToBBHToTauTau_M-2600'],
+            #'SUSYGluGluToBBHToTauTau_M-2900':   ['SUSYGluGluToBBHToTauTau_M-2900'],
+            #'SUSYGluGluToBBHToTauTau_M-3200':   ['SUSYGluGluToBBHToTauTau_M-3200'],
+    }
+
+if args.bbH:
+    MC_SAMPLES = {
+        'bbH_700': ['bbH_700']
+    }
+
 SAMPLES = {}
 SAMPLES.update(DATA_SAMPLES)
 SAMPLES.update(MC_SAMPLES)
@@ -138,7 +179,7 @@ for sa in SAMPLES:
         'sample_mass': ''
         #'ZmtTP_tauDM': 'decayModeFindingNewDMs'
     }
-    if args.pythia:
+    if args.pythia or args.pythia_bbH:
         cfg['file_prefix'] = ''
         cfg['sample_mass'] = sa.split('-')[1]
     job_mgr.add_filelist_split_jobs(

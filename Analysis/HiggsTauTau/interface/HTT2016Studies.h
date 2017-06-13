@@ -113,7 +113,14 @@ class TheoryTreeProducer : public ModuleBase {
   float pt_taum;
   float pt_vistaup;
   float pt_vistaum;
+  float pt_1;
+  float pt_2;
+  float eta_1;
+  float eta_2;
+  unsigned dec_1;
+  unsigned dec_2;
   int njets;
+  int nbjets;
   float mjj;
   float wt;
   float wt_2HDM_h;
