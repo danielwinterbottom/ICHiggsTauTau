@@ -103,7 +103,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       // do not create output file when making sync ntuples
       fs = NULL;
   }
-  w_extrap_study_ = true;
+  w_extrap_study_ = false;
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();

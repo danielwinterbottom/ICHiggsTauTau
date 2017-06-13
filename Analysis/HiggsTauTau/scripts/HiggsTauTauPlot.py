@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "syst_qcd_shape":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -189,6 +189,8 @@ parser.add_argument("--syst_jfake_m", dest="syst_jfake_m", type=str,
     help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
 parser.add_argument("--gen_signal", dest="gen_signal", action='store_true',
     help="If set then use generator-level tree for signal")
+parser.add_argument("--syst_qcd_shape", dest="syst_qcd_shape", type=str,
+    help="If set, adds the tt qcd shape uncertainty with the set string appended to the resulting histogram name")
 
 
 options = parser.parse_args(remaining_argv)   
@@ -489,6 +491,9 @@ if options.syst_zpt_statpt40 != '':
 if options.syst_zpt_statpt80 != '':
     systematics['syst_zpt_statpt80_up'] = ('' , '_'+options.syst_zpt_statpt80+'Up', 'wt*wt_zpt_stat_m400pt80_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_zpt_statpt80_down'] = ('' , '_'+options.syst_zpt_statpt80+'Down', 'wt*wt_zpt_stat_m400pt80_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
+if options.syst_qcd_shape != '':
+    systematics['syst_qcd_shape_up'] = ('' , '_'+options.syst_qcd_shape+'Up', 'wt', [], False)
+    systematics['syst_qcd_shape_down'] = ('' , '_'+options.syst_qcd_shape+'Down', 'wt', [], False)
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt']:
     processes = ['tt','w','qcd']
@@ -831,11 +836,26 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
         subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose',sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
         
         if options.method == 20:
-            #num_node = None
-            #den_node = None
-            subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tt_qcd_nobtag',sel,cat,method,qcd_os_ss_ratio,False,True)
+          ana.nodes[nodename].AddNode(HttQCDNode('QCD_shape_nom',
+          ana.SummedFactory('data', data, plot, full_selection),
+          subtract_node,
+          1,
+          shape_node,
+          num_node,
+          den_node))
+          
+          qcd_shape_up = systematic == "syst_qcd_shape_up"
+          qcd_shape_down = systematic == "syst_qcd_shape_down"
+          #qcd_shape_up = True
+          if not (qcd_shape_up or qcd_shape_down): 
+            subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose*wt_tt_qcd_nobtag',sel,cat,method,qcd_os_ss_ratio,False,True)
             full_selection = BuildCutString(wt+'*wt_tt_qcd_nobtag', sel, qcd_sdb_cat, OSSS)
-
+          if qcd_shape_up:
+            subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose*wt_tt_qcd_nobtag*wt_tt_qcd_nobtag',sel,cat,method,qcd_os_ss_ratio,False,True)
+            full_selection = BuildCutString(wt+'*wt_tau2_id_loose*wt_tt_qcd_nobtag*wt_tt_qcd_nobtag', sel, qcd_sdb_cat, OSSS)
+          if qcd_shape_down:
+            full_selection = BuildCutString(wt, sel, qcd_sdb_cat, OSSS)
+            subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose',sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
         ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
           ana.SummedFactory('data', data, plot, full_selection),
           subtract_node,
@@ -996,6 +1016,7 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_name=''):
     bkg_total = ufloat(0.000000001,0.000000001)
     sig_total = ufloat(0.000000001,0.000000001)
     for node in nodes:
+        if node.name == 'QCD_shape_nom': continue
         if options.method == 18 and 'jetFakes' == node.name: continue
         if node.shape.rate.n == 0: per_err = 0
         else: per_err = node.shape.rate.s/node.shape.rate.n
@@ -1221,9 +1242,10 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
             if not first_hist:    
                 sum_hist.SetName(outname)
                 sum_hist.Write()
-    if systematic == 'default':
+    if systematic == 'default' or True:
       first_hist=True
       for node in nodes:
+          if node.name == 'QCD_shape_nom': continue
           if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
               if options.method == 18 and 'jetFakes' == node.name: continue
               if first_hist:
@@ -1314,6 +1336,18 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             
     ana.Run()
     ana.nodes.Output(outfile)
+    
+    if options.method == 20:
+      outfile.cd()
+      nominal_hist = outfile.Get(nodename+'/QCD_shape_nom')
+      nominal_scale = nominal_hist.Integral(-1,-1)
+      if systematic == 'syst_qcd_shape_up': shape_hist = outfile.Get(nodename+'/QCD'+'_'+options.syst_qcd_shape+'Up')
+      else: shape_hist = outfile.Get(nodename+'/QCD')
+      shape_scale = shape_hist.Integral(-1,-1)
+      shape_hist.Scale(nominal_scale/shape_scale)
+      outfile.cd(nodename)
+      shape_hist.Write()
+        
 
     # fix negative bns,empty histograms etc.
     FixBins(ana,outfile)
