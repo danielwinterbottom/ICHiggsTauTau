@@ -1874,18 +1874,15 @@ def HTTPlot(nodename,
     }
     if channel == "zee" or channel == "zmm": background_schemes['dy'] = [backgroundComp("DY",["ZLL"],R.TColor.GetColor(100,192,232))]
     if FF:
-        background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
-        'et':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
-        'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+        background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
+        'et':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
+        'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",  ["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
         'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
         'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
         'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
         'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
         'ff_comp':[backgroundComp("t#bar{t} j#rightarrow#tau",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak j#rightarrow#tau",["VVJ","W","ZJ"],R.TColor.GetColor(222,90,106))]
         }
-        for chan in ["et", "mt", "tt"]:    
-            background_schemes[chan].remove(backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)))
-            background_schemes[chan].insert(1,backgroundComp("j#rightarrow#tau",["jetFakes"],R.TColor.GetColor(250,202,255)))
         
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
@@ -2131,7 +2128,7 @@ def CompareHists(hists=[],
              x_title="",
              y_title="",
              extra_pad=0,
-             norm_hists=True,
+             norm_hists=False,
              plot_name="plot",
              label=""):
     
@@ -2227,7 +2224,7 @@ def CompareHists(hists=[],
     
     #CMS label and title
     FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
     latex2 = R.TLatex()
