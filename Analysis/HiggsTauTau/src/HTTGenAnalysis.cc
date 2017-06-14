@@ -96,7 +96,9 @@ namespace ic {
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
-      outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
+      outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_); 
+      outtree_->Branch("aco_angle_1", &aco_angle_1_);
+      outtree_->Branch("cp_sign_1",     &cp_sign_1_);
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -264,6 +266,24 @@ namespace ic {
         passed_ = true;
       }
     }
+    
+    std::vector<GenJet> gen_tau_jets = BuildTauJets(gen_particles, false,true);
+    std::vector<GenJet *> gen_tau_jets_ptr;
+    for (auto & x : gen_tau_jets) gen_tau_jets_ptr.push_back(&x);
+    ic::erase_if(gen_tau_jets_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
+    std::sort(gen_tau_jets_ptr.begin(), gen_tau_jets_ptr.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    cp_sign_1_ = 0;
+    aco_angle_1_ = 0;
+    if(gen_tau_jets_ptr.size()>=2){
+      std::pair<GenParticle*,GenParticle*> rho_1 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
+      std::pair<GenParticle*,GenParticle*> rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());       
+      bool cat1 = fabs(rho_1.first->pdgid()) == 211 && fabs(rho_2.first->pdgid()) == 211;
+      if(cat1) {
+        aco_angle_1_ = AcoplanarityAngle(rho_1,rho_2);
+        cp_sign_1_ = YRho(rho_1)*YRho(rho_2);
+      }
+    }
+    
 
     if(passed_){
       pt_1_  = lep1.vector().Pt();

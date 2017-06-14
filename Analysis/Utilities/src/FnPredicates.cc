@@ -1657,6 +1657,48 @@ namespace ic {
     }
     return taus;
   }
+  
+  std::vector<GenParticle*> GetTauDaughters(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::vector<GenParticle*> tau_daughters;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      for (unsigned j = 0; j < id.size(); ++j) {
+        if(parts[i]->id() == id[j]){
+          tau_daughters.push_back(parts[i]);
+          continue;
+        }
+      }
+    }
+    return tau_daughters;
+  }
+  
+  std::pair<GenParticle*,GenParticle*> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::vector<GenParticle*> tau_daughters;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      for (unsigned j = 0; j < id.size(); ++j) {
+        if(parts[i]->id() == id[j]){
+          tau_daughters.push_back(parts[i]);
+          continue;
+        }
+      }
+    }
+    GenParticle* pi0 = new GenParticle();
+    GenParticle* pi = new GenParticle();
+    pi->set_pdgid(0);
+    pi0->set_pdgid(0);
+    for(unsigned i=0; i<tau_daughters.size(); ++i){
+      if(fabs(tau_daughters[i]->pdgid()) == 22){ pi0->set_vector(pi0->vector()+tau_daughters[i]->vector()); pi0->set_pdgid(111);}
+      if(fabs(tau_daughters[i]->pdgid()) == 211) { pi = tau_daughters[i];}
+    }
+    std::pair<GenParticle*,GenParticle*> tau_rho_daughter;
+    tau_rho_daughter = std::make_pair(pi,pi0);
+    return tau_rho_daughter;
+  }
+  
+  TLorentzVector ConvertToLorentz(ROOT::Math::PtEtaPhiEVector input_vec){
+      TLorentzVector out_vec;
+      out_vec.SetXYZM(input_vec.Px(),input_vec.Py(),input_vec.Pz(),input_vec.M());
+      return out_vec;
+  }
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){
 

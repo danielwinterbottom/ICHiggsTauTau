@@ -148,6 +148,48 @@ namespace ic {
   double PZetaVis(CompositeCandidate const* cand);
 
   double MT(Candidate const* cand1, Candidate const* cand2);
+  
+  TLorentzVector ConvertToLorentz(ROOT::Math::PtEtaPhiEVector input_vec);
+
+  
+  template<class T1, class T2, class U1, class U2>
+  double AcoplanarityAngle(std::pair<T1,T2> const& p1, std::pair<U1,U2> const& p2) {
+    TLorentzVector lvec1_1 = ConvertToLorentz(p1.first->vector());
+    TLorentzVector lvec1_2 = ConvertToLorentz(p1.second->vector());
+    TLorentzVector lvec2_1 = ConvertToLorentz(p2.first->vector());
+    TLorentzVector lvec2_2 = ConvertToLorentz(p2.second->vector());
+    // Boost to rest frame of input particles
+    TVector3 boost = (lvec1_1+lvec1_2+lvec2_1+lvec2_2).BoostVector();
+    lvec1_1.Boost(-boost);
+    lvec1_2.Boost(-boost);
+    lvec2_1.Boost(-boost);
+    lvec2_2.Boost(-boost);
+    //get 3 vectors of normal to decay planes
+    TVector3 plane1 = lvec1_1.Vect().Cross(lvec1_2.Vect());
+    TVector3 plane2 = lvec2_1.Vect().Cross(lvec2_2.Vect());
+    double angle = acos(plane1.Dot(plane2)/(plane1.Mag()*plane2.Mag()));
+    int sign = lvec1_1.Vect().Dot(plane2)/fabs(lvec1_1.Vect().Dot(plane2));
+    if (sign>0) angle = 2*M_PI - angle;
+    return angle;
+  }
+  template<class T1, class T2>
+  double YRho(std::pair<T1,T2> const& p1) {
+    double E_pi = p1.first->vector().E();
+    double E_pi0 = p1.second->vector().E();
+    double y = (E_pi-E_pi0)/(E_pi+E_pi0);
+    double y_sign = y/fabs(y);
+    return y_sign;
+  }
+  
+  template<class T1, class T2>
+  double YA1(std::pair<T1,T2> const& p1) {
+    double E_rho = p1.first->vector().E();
+    double E_pi = p1.second->vector().E();
+    double Ma = 1230.0; double Mpi = 139.57061; double Mrho = 775.26;
+    double y = (E_rho-E_pi)/(E_rho+E_pi) - (Ma*Ma - Mpi*Mpi + Mrho*Mrho)/(2*Ma*Ma);
+    double y_sign = y/fabs(y);
+    return y_sign;
+  }
 
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
   std::pair <bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
@@ -401,6 +443,9 @@ namespace ic {
   std::vector<GenParticle *> ExtractDaughtersRecursive(GenParticle * part, std::vector<GenParticle *> const& input);
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt);
+  
+  std::vector<GenParticle*> GetTauDaughters(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
+  std::pair<GenParticle*,GenParticle*> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 

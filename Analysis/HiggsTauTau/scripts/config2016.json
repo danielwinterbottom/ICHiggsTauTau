@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr05_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "et", "mt", "tt" ],
+    "channels":     [ "tt" ],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -54,7 +54,7 @@
     "do_tau_eff"    : false,
     "do_ff_weights" : false,
     "do_ff_systematics": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/May29/",
+    "output_folder" : "./",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -135,8 +135,8 @@
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
-        "do_ff_systematics": true,
+        "do_ff_weights" : false,
+        "do_ff_systematics": false,
         "ff_categories" :"btag,inclusive,nobtag",
         "ff_file" : "20170515_medium"
       }

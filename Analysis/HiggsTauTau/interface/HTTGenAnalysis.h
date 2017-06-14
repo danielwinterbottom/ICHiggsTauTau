@@ -99,6 +99,9 @@ class HTTGenAnalysis : public ModuleBase {
   double scale7_;
   double scale8_;
   double scale9_;
+  
+  double aco_angle_1_;
+  int cp_sign_1_;
 
   
  public:

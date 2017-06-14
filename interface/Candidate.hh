@@ -4,6 +4,7 @@
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
 #include "Rtypes.h"
+#include "TLorentzVector.h"
 
 namespace ic {
 

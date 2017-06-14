@@ -86,6 +86,16 @@ class Tau : public Candidate {
   inline std::vector<std::size_t> const& iso_gamma_cands() const {
     return iso_gamma_cands_;
   }
+  
+  /// A vector containing the signal charged Candidates
+  inline std::vector<ic::Candidate> const& charged() const {
+    return charged_;
+  }
+  
+  /// A vector containing the signal gamma Candidates
+  inline std::vector<ic::Candidate> const& gammas() const {
+    return gammas_;
+  }
   /**@}*/
 
   /// @name Setters
@@ -161,6 +171,16 @@ class Tau : public Candidate {
       std::vector<std::size_t> const& iso_gamma_cands) {
     iso_gamma_cands_ = iso_gamma_cands;
   }
+  /// @copybrief charged()
+  inline void charged(
+      std::vector<ic::Candidate> const& charged) {
+    charged_ = charged;
+  }
+  /// @copybrief gammas()
+  inline void set_gammas(
+      std::vector<ic::Candidate> const& gammas) {
+    gammas_ = gammas;
+  }
   /**@}*/
 
   /**
@@ -207,10 +227,13 @@ class Tau : public Candidate {
   std::vector<std::size_t> iso_charged_cands_;
   std::vector<std::size_t> sig_gamma_cands_;
   std::vector<std::size_t> iso_gamma_cands_;
+  
+  std::vector<ic::Candidate> charged_;
+  std::vector<ic::Candidate> gammas_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Tau, 3);
+  ClassDef(Tau, 4);
  #endif
 };
 

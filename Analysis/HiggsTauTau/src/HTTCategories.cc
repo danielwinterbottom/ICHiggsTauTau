@@ -2909,8 +2909,29 @@ namespace ic {
         lbyVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWoldDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
-
-
+        
+        // CP variables
+        int dm_1 = tau1->decay_mode();
+        int dm_2 = tau2->decay_mode();
+        
+        //std::vector<ic::Candidate> pfcands = event->GetIDMap<PFCandidate>("pfCandIDMap", "pfCandidates");
+        
+    // auto tracks = event->GetIDMap<Track>("trackIDMap", "tracks");
+    //auto const& iso_gammas = tau->iso_gamma_cands();
+    //auto const& sig_gammas = tau->sig_gamma_cands();
+   // auto const& sig_charged = tau->sig_charged_cands();
+    //ic::Candidate charged;
+   // for (auto id : sig_charged) {
+   //   charged.set_vector(charged.vector() + pfcands[id]->vector());
+//}
+        
+        if(dm_1==1&&dm_2==1){
+          std::vector<std::size_t> blah = tau1->sig_charged_cands();
+          for (unsigned i=0; i<blah.size(); ++i) std::cout << blah[i] << std::endl;
+          std::cout << "--------" << std::endl;
+          //pfcands
+          //std::vector<std::size_t> = tau1->sig_charged_cands();
+        }
       }
 
     }
