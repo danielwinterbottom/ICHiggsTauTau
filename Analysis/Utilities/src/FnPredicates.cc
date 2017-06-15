@@ -1658,6 +1658,13 @@ namespace ic {
     return taus;
   }
   
+  ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi) {
+    ic::Candidate* pi0 = new ic::Candidate();
+    pi0->set_vector(tau->vector()-pi->vector());
+    pi0->set_charge(0);
+    return pi0;
+  }
+  
   std::vector<GenParticle*> GetTauDaughters(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
     std::vector<GenParticle*> tau_daughters;
     for (unsigned i = 0; i < parts.size(); ++i) {
@@ -1670,6 +1677,7 @@ namespace ic {
     }
     return tau_daughters;
   }
+  
   
   std::pair<GenParticle*,GenParticle*> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
     std::vector<GenParticle*> tau_daughters;

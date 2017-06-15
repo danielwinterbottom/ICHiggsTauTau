@@ -69,6 +69,8 @@ class HTTGenAnalysis : public ModuleBase {
   double jphi_2_;
   double mjj_;
   double jdeta_;
+  double jdphi_;
+  double jdR_;
   double m_vis_;
   double pt_tt_;
   double wt_;
@@ -102,6 +104,8 @@ class HTTGenAnalysis : public ModuleBase {
   
   double aco_angle_1_;
   int cp_sign_1_;
+  int cp_sign_2_;
+  int cp_sign_3_;
 
   
  public:

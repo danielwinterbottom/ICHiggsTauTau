@@ -88,6 +88,8 @@ namespace ic {
       outtree_->Branch("jphi_2"      , &jphi_2_      );
       outtree_->Branch("mjj"         , &mjj_         );
       outtree_->Branch("jdeta"       , &jdeta_       );
+      outtree_->Branch("jdphi"       , &jdphi_       );
+      outtree_->Branch("jdR"       , &jdR_       );
       outtree_->Branch("higgsDecay"  , &decayType    );
       outtree_->Branch("genpt_1"     , &genpt_1_        );
       outtree_->Branch("genpt_2"     , &genpt_2_        );
@@ -99,6 +101,8 @@ namespace ic {
       outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_); 
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
       outtree_->Branch("cp_sign_1",     &cp_sign_1_);
+      outtree_->Branch("cp_sign_2",     &cp_sign_2_);
+      outtree_->Branch("cp_sign_3",     &cp_sign_3_);
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -277,10 +281,12 @@ namespace ic {
     if(gen_tau_jets_ptr.size()>=2){
       std::pair<GenParticle*,GenParticle*> rho_1 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
       std::pair<GenParticle*,GenParticle*> rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());       
-      bool cat1 = fabs(rho_1.first->pdgid()) == 211 && fabs(rho_2.first->pdgid()) == 211;
+      bool cat1 = fabs(rho_1.first->pdgid()) == 211 && fabs(rho_2.first->pdgid()) == 211 && fabs(rho_1.second->pdgid()) == 111 && fabs(rho_2.second->pdgid()) == 111;
       if(cat1) {
         aco_angle_1_ = AcoplanarityAngle(rho_1,rho_2);
         cp_sign_1_ = YRho(rho_1)*YRho(rho_2);
+        cp_sign_2_ = YRho_RhoRest(rho_1)*YRho_RhoRest(rho_2);
+        cp_sign_3_ = YRhoRho(rho_1,rho_2);
       }
     }
     
@@ -421,6 +427,8 @@ namespace ic {
     jphi_2_      = -9999;
     mjj_         = -9999;
     jdeta_       = -9999;
+    jdphi_       = -9999;
+    jdR_         = -9999;
     n_jetsingap_ = 9999;
     if(n_jets_ > 0){
       jpt_1_  = filtered_jets[0].vector().Pt();
@@ -433,6 +441,8 @@ namespace ic {
       jphi_2_ = filtered_jets[1].vector().Phi();
       mjj_   = (filtered_jets[0].vector()+filtered_jets[1].vector()).M();
       jdeta_  = std::fabs(filtered_jets[0].vector().Rapidity() - filtered_jets[1].vector().Rapidity());
+      jdphi_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(filtered_jets[0].vector(), filtered_jets[1].vector()));
+      jdR_ =  std::fabs(ROOT::Math::VectorUtil::DeltaR(filtered_jets[0].vector(), filtered_jets[1].vector()));
       double max_jeta = std::max(jeta_1_,jeta_2_);
       double min_jeta = std::min(jeta_1_,jeta_2_);
       n_jetsingap_ = 0;

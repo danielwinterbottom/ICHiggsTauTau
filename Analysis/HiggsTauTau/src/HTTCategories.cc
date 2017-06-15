@@ -526,6 +526,11 @@ namespace ic {
        outtree_->Branch("wt_mur0p5_muf2",  &scale8_);
        outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
      }
+     
+      outtree_->Branch("aco_angle_1", &aco_angle_1_);
+      outtree_->Branch("cp_sign_1",     &cp_sign_1_);
+      outtree_->Branch("cp_sign_2",     &cp_sign_2_);
+      outtree_->Branch("cp_sign_3",     &cp_sign_3_);
       
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
@@ -568,6 +573,8 @@ namespace ic {
       outtree_->Branch("mjj",               &mjj_.var_double);
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
+      outtree_->Branch("jdphi", &jdphi_, "jdphi/F");
+      outtree_->Branch("jdR", &jdR_, "jdphi/F");
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       outtree_->Branch("pt_2",              &pt_2_.var_double);
@@ -2910,28 +2917,21 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWoldDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         
-        // CP variables
+         // CP variables
+        
         int dm_1 = tau1->decay_mode();
         int dm_2 = tau2->decay_mode();
-        
-        //std::vector<ic::Candidate> pfcands = event->GetIDMap<PFCandidate>("pfCandIDMap", "pfCandidates");
-        
-    // auto tracks = event->GetIDMap<Track>("trackIDMap", "tracks");
-    //auto const& iso_gammas = tau->iso_gamma_cands();
-    //auto const& sig_gammas = tau->sig_gamma_cands();
-   // auto const& sig_charged = tau->sig_charged_cands();
-    //ic::Candidate charged;
-   // for (auto id : sig_charged) {
-   //   charged.set_vector(charged.vector() + pfcands[id]->vector());
-//}
-        
-        if(dm_1==1&&dm_2==1){
-          std::vector<std::size_t> blah = tau1->sig_charged_cands();
-          for (unsigned i=0; i<blah.size(); ++i) std::cout << blah[i] << std::endl;
-          std::cout << "--------" << std::endl;
-          //pfcands
-          //std::vector<std::size_t> = tau1->sig_charged_cands();
+
+        if(dm_1 == 1 && dm_2 == 1){
+          std::pair<Candidate const*,Candidate const*> rho_1 = std::make_pair(&(tau1->charged()[0]), GetPi0(tau1, &(tau1->charged()[0])));
+          std::pair<Candidate const*,Candidate const*> rho_2 = std::make_pair(&(tau2->charged()[0]), GetPi0(tau1, &(tau2->charged()[0])));
+          aco_angle_1_ = AcoplanarityAngle(rho_1,rho_2);
+          cp_sign_1_ = YRho(rho_1)*YRho(rho_2);
+          cp_sign_2_ = YRho_RhoRest(rho_1)*YRho_RhoRest(rho_2);
+          cp_sign_3_ = YRhoRho(rho_1,rho_2);
         }
+
+
       }
 
     }
@@ -3068,6 +3068,7 @@ namespace ic {
       mjj_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector()));
+      jdR_ =  std::fabs(ROOT::Math::VectorUtil::DeltaR(lowpt_jets[0]->vector(), lowpt_jets[1]->vector()));
       double eta_high = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[0]->eta() : lowpt_jets[1]->eta();
       double eta_low = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[1]->eta() : lowpt_jets[0]->eta();
       n_jetsingap_ = 0;

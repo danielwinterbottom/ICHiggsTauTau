@@ -180,7 +180,41 @@ namespace ic {
     double y_sign = y/fabs(y);
     return y_sign;
   }
-  
+  template<class T1, class T2>
+  double YRho_RhoRest(std::pair<T1,T2> const& p1) {    
+    TLorentzVector lvec1 = ConvertToLorentz(p1.first->vector());
+    TLorentzVector lvec2 = ConvertToLorentz(p1.second->vector()); 
+    TVector3 boost = (lvec1+lvec2).BoostVector();
+    lvec1.Boost(-boost);
+    lvec2.Boost(-boost);
+    double E_pi = lvec1.E();
+    double E_pi0 = lvec2.E();
+    double y = (E_pi-E_pi0)/(E_pi+E_pi0);
+    double y_sign = y/fabs(y);
+    return y_sign;
+  }
+  template<class T1, class T2, class U1, class U2>
+  double YRhoRho(std::pair<T1,T2> const& p1, std::pair<U1,U2> const& p2) {
+    TLorentzVector lvec1_1 = ConvertToLorentz(p1.first->vector());
+    TLorentzVector lvec1_2 = ConvertToLorentz(p1.second->vector()); 
+    TLorentzVector lvec2_1 = ConvertToLorentz(p2.first->vector());
+    TLorentzVector lvec2_2 = ConvertToLorentz(p2.second->vector()); 
+    TVector3 boost = (lvec1_1+lvec1_2+lvec2_1+lvec2_2).BoostVector();
+    lvec1_1.Boost(-boost);
+    lvec1_2.Boost(-boost);
+    lvec2_1.Boost(-boost);
+    lvec2_2.Boost(-boost);
+    double E_pi; double E_pi0;
+    E_pi = lvec1_1.E();
+    E_pi0 = lvec1_2.E();
+    double y1 = (E_pi-E_pi0)/(E_pi+E_pi0);
+    double y1_sign = y1/fabs(y1);
+    E_pi = lvec2_1.E();
+    E_pi0 = lvec2_2.E();
+    double y2 = (E_pi-E_pi0)/(E_pi+E_pi0);
+    double y2_sign = y2/fabs(y2);
+    return y1_sign*y2_sign;
+  }
   template<class T1, class T2>
   double YA1(std::pair<T1,T2> const& p1) {
     double E_rho = p1.first->vector().E();
@@ -446,6 +480,7 @@ namespace ic {
   
   std::vector<GenParticle*> GetTauDaughters(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
   std::pair<GenParticle*,GenParticle*> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
+  ic::Candidate* GetPi0(ic::Tau const* tau, ic::Candidate const* pi);
 
   ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
 

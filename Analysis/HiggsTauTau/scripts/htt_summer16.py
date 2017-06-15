@@ -143,15 +143,18 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   for mass in masses :
     signal_mc += [
       'GluGluToHToTauTau_M-'+mass,
-      'VBFHToTauTau_M-'+mass,
-      'ZHToTauTau_M-'+mass,
-      'WplusHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass,
-      'TTHToTauTau_M-'+mass
+      'VBFHToTauTau_M-'+mass#,
+      #'ZHToTauTau_M-'+mass,
+      #'WplusHToTauTau_M-'+mass,
+      #'WminusHToTauTau_M-'+mass,
+      #'TTHToTauTau_M-'+mass
     ]
 if options.proc_mssm or options.proc_all:
-  gghmasses = ['80','90','100','110','120','130', '140', '160','180','200','250','350','400','450','500', '600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200'] # 
-  bbhmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
+  #gghmasses = ['80','90','100','110','120','130', '140', '160','180','200','250','350','400','450','500', '600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200'] # 
+  #bbhmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
+  
+  gghmasses=['120']
+  bbhmasses=['']
   if options.short_signal: 
     gghmasses = ['500']
     bbhmasses = ['500']
@@ -297,52 +300,52 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
-    'TT',
-    'WJetsToLNu',
-    'WJetsToLNu-LO',
-    'WJetsToLNu-LO-ext',
-    'VVTo2L2Nu',
-    'VVTo2L2Nu-ext1',
-    'ZZTo2L2Q',
-    'ZZTo4L',
-    'ZZTo4L-amcat',
-    'WWTo1L1Nu2Q',
-    'WWToLNuQQ',
-    'WWToLNuQQ-ext',
-    'WZJToLLLNu',
-    'WZTo1L3Nu',
-    'WZTo2L2Q',
-    'WZTo1L1Nu2Q',
-    'T-t',
-    'Tbar-t',
-    'T-tW',
-    'Tbar-tW',
+    #'TT',
+    #'WJetsToLNu',
+    #'WJetsToLNu-LO',
+    #'WJetsToLNu-LO-ext',
+    #'VVTo2L2Nu',
+    #'VVTo2L2Nu-ext1',
+    #'ZZTo2L2Q',
+    #'ZZTo4L',
+    #'ZZTo4L-amcat',
+    #'WWTo1L1Nu2Q',
+    #'WWToLNuQQ',
+    #'WWToLNuQQ-ext',
+    #'WZJToLLLNu',
+    #'WZTo1L3Nu',
+    #'WZTo2L2Q',
+    #'WZTo1L1Nu2Q',
+    #'T-t',
+    #'Tbar-t',
+    #'T-tW',
+    #'Tbar-tW',
     'DYJetsToLL',
-    'DYJetsToLL-LO-ext1',
-    'DYJetsToLL-LO-ext2',
-    #'DYJetsToLL_M-10to50-ext',
-    #'DYJetsToLL_M-10to50',
-    'DYJetsToLL_M-10-50-LO',
-    #'DY1JetsToLL_M-10-50-LO',
-    #'DY2JetsToLL_M-10-50-LO',
-    #'DY3JetsToLL_M-10-50-LO',
-    #'DYJetsToLL_M-150-LO',
-    'DY1JetsToLL-LO',
-    'DY2JetsToLL-LO',
-    'DY3JetsToLL-LO',
-    'DY4JetsToLL-LO',
-    'W1JetsToLNu-LO',
-    'W2JetsToLNu-LO',
-    'W2JetsToLNu-LO-ext',
-    'W3JetsToLNu-LO',
-    'W3JetsToLNu-LO-ext',
-    'W4JetsToLNu-LO',
-    'W4JetsToLNu-LO-ext1',
-    'W4JetsToLNu-LO-ext2',
-    'WGToLNuG',
-    'WGToLNuG-ext',
-    'WGstarToLNuEE',
-    'WGstarToLNuMuMu'
+    #'DYJetsToLL-LO-ext1',
+    #'DYJetsToLL-LO-ext2',
+    ##'DYJetsToLL_M-10to50-ext',
+    ##'DYJetsToLL_M-10to50',
+    #'DYJetsToLL_M-10-50-LO',
+    ##'DY1JetsToLL_M-10-50-LO',
+    ##'DY2JetsToLL_M-10-50-LO',
+    ##'DY3JetsToLL_M-10-50-LO',
+    ##'DYJetsToLL_M-150-LO',
+    #'DY1JetsToLL-LO',
+    #'DY2JetsToLL-LO',
+    #'DY3JetsToLL-LO',
+    #'DY4JetsToLL-LO',
+    #'W1JetsToLNu-LO',
+    #'W2JetsToLNu-LO',
+    #'W2JetsToLNu-LO-ext',
+    #'W3JetsToLNu-LO',
+    #'W3JetsToLNu-LO-ext',
+    #'W4JetsToLNu-LO',
+    #'W4JetsToLNu-LO-ext1',
+    #'W4JetsToLNu-LO-ext2',
+    #'WGToLNuG',
+    #'WGToLNuG-ext',
+    #'WGstarToLNuEE',
+    #'WGstarToLNuMuMu'
      ]
 
   if options.qcd_study:

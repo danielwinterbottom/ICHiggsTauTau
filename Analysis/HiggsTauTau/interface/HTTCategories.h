@@ -424,6 +424,7 @@ class HTTCategories : public ModuleBase {
   int convergence_bb_; //Defined if n_jets >= 2
   branch_var jdeta_;     // Defined if n_jets >= 2
   float jdphi_;
+  float jdR_;
   unsigned gen_match_1_;
   unsigned gen_match_2_;
   double gen_match_1_pt_;
@@ -911,6 +912,8 @@ class HTTCategories : public ModuleBase {
   
   double aco_angle_1_;
   int cp_sign_1_;
+  int cp_sign_2_;
+  int cp_sign_3_;
 
  public:
   HTTCategories(std::string const& name);
