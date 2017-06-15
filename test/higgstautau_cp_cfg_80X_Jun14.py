@@ -79,7 +79,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -775,7 +775,7 @@ if release in ['80XMINIAOD']:
     requestTracks           = cms.bool(False),
     includeTotalCharged     = cms.bool(False),
     totalChargedLabel       = cms.string('totalCharged'),
-    requestPFCandidates     = cms.bool(True),
+    requestPFCandidates     = cms.bool(False),
     inputPFCandidates       = cms.InputTag("packedPFCandidates"),
     isSlimmed               = cms.bool(True),
     tauIDs = cms.PSet()

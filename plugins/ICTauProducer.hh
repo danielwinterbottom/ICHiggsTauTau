@@ -219,6 +219,8 @@ void ICTauProducer<pat::Tau>::constructSpecific(
   if (request_cands_) {
     event.getByLabel(input_cands_, cands_handle);
   }
+  
+  
 
 #if CMSSW_MAJOR_VERSION >= 7
   std::auto_ptr<pat::PackedCandidateRefVector> cand_requests_slimmed(new pat::PackedCandidateRefVector());
@@ -232,6 +234,40 @@ void ICTauProducer<pat::Tau>::constructSpecific(
     for (unsigned j = 0; j < tau_ids.size(); ++j) {
       dest.SetTauID(tau_ids[j].first, tau_ids[j].second);
       observed_id_[tau_ids[j].first] = CityHash64(tau_ids[j].first);
+    }
+    
+        bool  add_decay_products_ = true;
+    if (add_decay_products_) {
+      if (src.signalChargedHadrCands().isNonnull()) {
+        auto cands = src.signalChargedHadrCands();
+        std::vector<ic::Candidate> charged_cands;
+        for (unsigned c = 0; c < cands.size(); ++c) {
+          ic::Candidate cand;
+          cand.set_id(cand_hasher_(&(*(cands[c]))));
+          cand.set_pt(cands[c]->pt());
+          cand.set_eta(cands[c]->eta());
+          cand.set_phi(cands[c]->phi());
+          cand.set_energy(cands[c]->energy());
+          cand.set_charge(cands[c]->charge());
+          charged_cands.push_back(cand);
+        }
+        dest.set_charged(charged_cands);
+      }
+      if (src.signalGammaCands().isNonnull()) {
+        auto cands = src.signalGammaCands();
+        std::vector<ic::Candidate> gamma_cands;
+        for (unsigned c = 0; c < cands.size(); ++c) {
+          ic::Candidate cand;
+          cand.set_id(cand_hasher_(&(*(cands[c]))));
+          cand.set_pt(cands[c]->pt());
+          cand.set_eta(cands[c]->eta());
+          cand.set_phi(cands[c]->phi());
+          cand.set_energy(cands[c]->energy());
+          cand.set_charge(cands[c]->charge());
+          gamma_cands.push_back(cand);
+        }
+        dest.set_gammas(gamma_cands);
+      }
     }
      //dest.set_lead_ecal_energy(src.leadChargedHadrCand()->ecalEnergy());
      //dest.set_lead_hcal_energy(src.leadChargedHadrCand()->hcalEnergy());

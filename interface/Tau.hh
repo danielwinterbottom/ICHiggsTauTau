@@ -172,7 +172,7 @@ class Tau : public Candidate {
     iso_gamma_cands_ = iso_gamma_cands;
   }
   /// @copybrief charged()
-  inline void charged(
+  inline void set_charged(
       std::vector<ic::Candidate> const& charged) {
     charged_ = charged;
   }
