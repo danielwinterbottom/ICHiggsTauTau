@@ -1856,6 +1856,7 @@ def HTTPlot(nodename,
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
+    R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
     
     background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
     'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
