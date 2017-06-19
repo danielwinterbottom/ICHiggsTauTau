@@ -25,15 +25,15 @@ def SetAxisTitles(plot, channel):
   lep1_label = '#tau'
   lep2_label = '#tau'
   if channel == 'et': 
-    channel_label = 'e#tau'
+    chan_label = 'e#tau'
     lep1_label = 'e'
     lep2_label = '#tau'
   elif channel == 'mt': 
-    channel_label = '#mu#tau'
+    chan_label = '#mu#tau'
     lep1_label = '#mu'
     lep2_label = '#tau'
   if channel == 'em': 
-    channel_label = 'e#mu'
+    chan_label = 'e#mu'
     lep1_label = 'e'
     lep2_label = '#mu'
   elif channel == 'tt':
@@ -41,11 +41,11 @@ def SetAxisTitles(plot, channel):
     lep1_label = '#tau_{1}'
     lep2_label = '#tau_{2}'
   elif channel == 'zee': 
-    channel_label = 'Z#rightarrow ee'
+    chan_label = 'Z#rightarrow ee'
     lep1_label = 'e_{1}'
     lep2_label = 'e_{2}'
   elif channel == 'zmm': 
-    channel_label = 'Z#rightarrow#mu#mu'
+    chan_label = 'Z#rightarrow#mu#mu'
     lep1_label = '#mu_{1}'
     lep2_label = '#mu_{2}'
   
