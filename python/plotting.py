@@ -58,6 +58,7 @@ def SetAxisTitles(plot, channel):
   titles = {}
   titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)']
+  titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
   titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)']
