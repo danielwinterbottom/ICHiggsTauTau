@@ -1537,12 +1537,12 @@ if not options.no_plot:
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
-    if options.x_title == "": x_title = var_name
+    titles = plotting.SetAxisTitles(options.var,options.channel)
+    if options.x_title == "": x_title = titles[0]
     else: x_title = options.x_title
     
     if options.y_title == "": 
-        y_title = "Entries"
-        if options.norm_bins: y_title="dN/d"+var_name
+        y_title = titles[1]
     else: y_title = options.y_title
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'
