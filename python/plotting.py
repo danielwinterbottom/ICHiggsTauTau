@@ -41,11 +41,11 @@ def SetAxisTitles(plot, channel):
     lep1_label = '#tau_{1}'
     lep2_label = '#tau_{2}'
   elif channel == 'zee': 
-    chan_label = 'Z#rightarrow ee'
+    chan_label = 'ee'
     lep1_label = 'e_{1}'
     lep2_label = 'e_{2}'
   elif channel == 'zmm': 
-    chan_label = 'Z#rightarrow#mu#mu'
+    chan_label = '#mu#mu'
     lep1_label = '#mu_{1}'
     lep2_label = '#mu_{2}'
   
@@ -2089,6 +2089,10 @@ def HTTPlot(nodename,
     if do_custom_uncerts:
       bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
       bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
+      if norm_bins:
+        bkg_uncert_up.Scale(1.0,"width")
+        bkg_uncert_down.Scale(1.0,"width")
+
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
@@ -2106,8 +2110,6 @@ def HTTPlot(nodename,
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
           
-    if norm_bins and do_custom_uncerts : error_hist.Scale(1.0,"width")
-    
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
@@ -2453,6 +2455,10 @@ def HTTPlotSignal(nodename,
     if do_custom_uncerts:
       bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
       bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
+      if norm_bins:
+        bkg_uncert_up.Scale(1.0,"width")
+        bkg_uncert_down.Scale(1.0,"width")
+
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
@@ -2470,7 +2476,6 @@ def HTTPlotSignal(nodename,
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
           
-    if norm_bins and do_custom_uncerts : error_hist.Scale(1.0,"width")
     
     error_hist.Draw("e2same")
     stack.Draw("hist same")
