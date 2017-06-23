@@ -245,12 +245,12 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
 
 
-  DATAFILELIST="./filelists/Apr05_Data_80X"
+  DATAFILELIST="./filelists/Jun16_Data_80X"
 
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr05_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun16_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -261,7 +261,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2016' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Apr05_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun16_Data_80X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
         
