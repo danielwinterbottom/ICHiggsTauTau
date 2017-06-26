@@ -17,7 +17,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
-    "do_gen_analysis" : true,
+    "do_gen_analysis" : false,
     "mc"            : "summer16_80X",
     "era"           : "data_2016",
     "strategy"      : "mssmsummer16",
@@ -54,7 +54,7 @@
     "do_tau_eff"    : false,
     "do_ff_weights" : false,
     "do_ff_systematics": false,
-    "output_folder" : "./",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/tt_qcd/",
     //"output_folder" : "./",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
