@@ -2079,12 +2079,21 @@ def HTTPlot(nodename,
         
     ## Add another signal mass point
     #sighist2 = R.TH1F()
-    #sighist2 = ana.nodes[nodename].nodes["ggH200"].shape.hist.Clone()
+    #sighist2= infile.Get(nodename+'/ggH200').Clone()
     #sighist2.SetLineColor(R.kRed)
     #sighist2.SetLineWidth(3)
     #sighist2.Scale(signal_scale)
-    #if norm_bins: sighist2.Scale(1.0,"width")
+    ## Add another signal mass point
+    #sighist3 = R.TH1F()
+    #sighist3= infile.Get(nodename+'/ggH400').Clone()
+    #sighist3.SetLineColor(R.kGreen+3)
+    #sighist3.SetLineWidth(3)
+    #sighist3.Scale(signal_scale)
+    #if norm_bins: 
+    #    sighist2.Scale(1.0,"width")
+    #    sighist3.Scale(1.0,"width")
     #sighist2.Draw("histsame")
+    #sighist3.Draw("histsame")
     error_hist = bkghist.Clone()
     if do_custom_uncerts:
       bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
@@ -2133,6 +2142,7 @@ def HTTPlot(nodename,
         legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
     ## Add a second signal mass
     #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(200 GeV)#rightarrow#tau#tau","l")  
+    #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(400 GeV)#rightarrow#tau#tau","l")  
     legend.Draw("same")
     if channel == "em": channel_label = "e#mu"
     if channel == "et": channel_label = "e#tau_{h}"
