@@ -5,7 +5,7 @@ config.section_('General')
 config.General.transferOutputs = True
 config.General.workArea='Jun15_MC_80X'
 config.section_('JobType')
-config.JobType.psetName = 'higgstautau_cp_cfg_80X_Jun14.py'
+config.JobType.psetName = 'higgstautau_cp_cfg_80X_Jun17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
