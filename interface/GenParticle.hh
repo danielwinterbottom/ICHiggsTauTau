@@ -5,6 +5,7 @@
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
+#include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 
 
 namespace ic {
@@ -67,6 +68,8 @@ class GenParticle : public Candidate {
 
   /// A genstatusflags object to give information about the production of the particle
   inline std::vector<bool> const& statusFlags() const { return statusFlags_; }
+
+  inline ic::Vertex vtx() const { return vtx_; }
   /**@}*/
 
   /// @name Setters
@@ -94,6 +97,10 @@ class GenParticle : public Candidate {
   inline void set_statusFlags(std::vector<bool> const& statusFlags) {
     statusFlags_ = statusFlags;
   }
+  
+  inline void set_vtx(ic::Vertex const& vtx){
+    vtx_ = vtx;
+  }
   /**@}*/
 
  private:
@@ -103,6 +110,7 @@ class GenParticle : public Candidate {
   std::vector<int> mothers_;
   std::vector<int> daughters_;
   std::vector<bool> statusFlags_;
+  ic::Vertex vtx_;
 
  #ifndef SKIP_CINT_DICT
  public:
