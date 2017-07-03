@@ -100,9 +100,14 @@ namespace ic {
       outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
       outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_); 
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
+      outtree_->Branch("aco_angle_2", &aco_angle_2_);
+      outtree_->Branch("aco_angle_3", &aco_angle_3_);
+      outtree_->Branch("aco_angle_4", &aco_angle_4_);
       outtree_->Branch("cp_sign_1",     &cp_sign_1_);
       outtree_->Branch("cp_sign_2",     &cp_sign_2_);
       outtree_->Branch("cp_sign_3",     &cp_sign_3_);
+      outtree_->Branch("cp_sign_4",     &cp_sign_4_);
+      outtree_->Branch("cp_channel",    &cp_channel_);
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -277,17 +282,82 @@ namespace ic {
     ic::erase_if(gen_tau_jets_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
     std::sort(gen_tau_jets_ptr.begin(), gen_tau_jets_ptr.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     cp_sign_1_ = 0;
+    cp_sign_2_ = 0;
+    cp_sign_3_ = 0;
+    cp_sign_4_ = 0;
     aco_angle_1_ = 0;
-    if(gen_tau_jets_ptr.size()>=2){
-      std::pair<GenParticle*,GenParticle*> rho_1 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
-      std::pair<GenParticle*,GenParticle*> rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());       
-      bool cat1 = fabs(rho_1.first->pdgid()) == 211 && fabs(rho_2.first->pdgid()) == 211 && fabs(rho_1.second->pdgid()) == 111 && fabs(rho_2.second->pdgid()) == 111;
-      if(cat1) {
-        aco_angle_1_ = AcoplanarityAngle(rho_1,rho_2);
-        cp_sign_1_ = YRho(rho_1)*YRho(rho_2);
-        cp_sign_2_ = YRho_RhoRest(rho_1)*YRho_RhoRest(rho_2);
-        cp_sign_3_ = YRhoRho(rho_1,rho_2);
+    aco_angle_2_ = 0;
+    aco_angle_3_ = 0;
+    aco_angle_4_ = 0;
+    cp_channel_=-1;
+    ip_dxy_res_1_ = 9999;
+    ip_dxy_res_2_ = 9999;
+    ip_dz_res_1_ = 9999;
+    ip_dz_res_2_ = 9999;
+    std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
+    
+    std::vector<ic::Tau*> taus = event->GetPtrVec<ic::Tau>("taus");
+    for (unsigned i=0; i<taus.size(); ++i){
+      for(unsigned j=0; j<gen_tau_jets_ptr.size(); ++j){
+        double dR = ROOT::Math::VectorUtil::DeltaR(taus[i]->vector(), gen_tau_jets_ptr[j]->vector());
+        if(dR < 0.5){
+          std::pair<bool,GenParticle*> pi = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[j]->constituents());
+          if (!pi.first) continue;
+          TLorentzVector ip = GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector()); 
+          double offline_dxy = tau[i]->dxy_vertex();
+          double offline_dz = tau[i]->dz_vertex();
+          double gen_dxy = sqrt(pow(ip.X(),2) pow(ip.Y(),2));
+          double gen_dz = ip.Z();
+          
+        }
       }
+    }
+    if(gen_tau_jets_ptr.size()>=2){
+      // need gen primary vertex to compute impact parameters
+      std::pair<bool,GenParticle*> pi_1 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents()); 
+      std::pair<bool,GenParticle*> pi_2 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());
+      std::pair<bool,std::vector<GenParticle*>> rho_1 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
+      std::pair<bool,std::vector<GenParticle*>> rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
+      std::pair<bool,std::vector<GenParticle*>> a1_1 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
+      std::pair<bool,std::vector<GenParticle*>> a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
+      if(pi_1.first&&pi_1.second){
+        cp_channel_=0;
+        TLorentzVector ip_1 = GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector());    
+        TLorentzVector ip_2 = GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector());
+        
+        aco_angle_1_ = IPAcoAngle(ip_1, ip_2, pi_1.second, pi_2.second);
+      }
+      //if(rho_1.first && rho_2.first) { 
+      //  cp_channel_ = 2;
+      //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
+      //  aco_angle_1_ = angles[0].first;
+      //  cp_sign_1_ = angles[0].second;
+      //}
+      //if(rho_1.first && a1_2.first) {
+      //  cp_channel_ = 3;
+      //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,a1_2.second,true);
+      //  aco_angle_1_ = angles[0].first;
+      //  cp_sign_1_ = angles[0].second;
+      //  aco_angle_2_ = angles[1].first;
+      //  cp_sign_2_ = angles[1].second;
+      //  aco_angle_3_ = angles[2].first;
+      //  cp_sign_3_ = angles[2].second;
+      //  aco_angle_4_ = angles[3].first;
+      //  cp_sign_4_ = angles[3].second;
+      //}
+      //if(a1_1.first && rho_2.first) {
+      //  cp_channel_ = 3;
+      //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_2.second,a1_1.second,true);
+      //  aco_angle_1_ = angles[0].first;
+      //  cp_sign_1_ = angles[0].second;
+      //  aco_angle_2_ = angles[1].first;
+      //  cp_sign_2_ = angles[1].second;
+      //  aco_angle_3_ = angles[2].first;
+      //  cp_sign_3_ = angles[2].second;
+      //  aco_angle_4_ = angles[3].first;
+      //  cp_sign_4_ = angles[3].second;
+      //}
+
     }
     
 
@@ -460,12 +530,12 @@ namespace ic {
     return 0;
   }
   int HTTGenAnalysis::PostAnalysis() {
-    std::cout << "ee count = " << count_ee_ << std::endl;
-    std::cout << "em count = " << count_em_ << std::endl;
-    std::cout << "et count = " << count_et_ << std::endl;
-    std::cout << "mm count = " << count_mm_ << std::endl;
-    std::cout << "mt count = " << count_mt_ << std::endl;
-    std::cout << "tt count = " << count_tt_ << std::endl;
+    //std::cout << "ee count = " << count_ee_ << std::endl;
+    //std::cout << "em count = " << count_em_ << std::endl;
+    //std::cout << "et count = " << count_et_ << std::endl;
+    //std::cout << "mm count = " << count_mm_ << std::endl;
+    //std::cout << "mt count = " << count_mt_ << std::endl;
+    //std::cout << "tt count = " << count_tt_ << std::endl;
     return 0;
   }
 

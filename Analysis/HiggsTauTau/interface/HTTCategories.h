@@ -911,9 +911,15 @@ class HTTCategories : public ModuleBase {
   double scale9_;
   
   double aco_angle_1_;
+  double aco_angle_2_;
+  double aco_angle_3_;
+  double aco_angle_4_;
   int cp_sign_1_;
   int cp_sign_2_;
   int cp_sign_3_;
+  int cp_sign_4_;
+  
+  unsigned cp_channel_;
 
  public:
   HTTCategories(std::string const& name);

@@ -528,9 +528,14 @@ namespace ic {
      }
      
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
+      outtree_->Branch("aco_angle_2", &aco_angle_2_);
+      outtree_->Branch("aco_angle_3", &aco_angle_3_);
+      outtree_->Branch("aco_angle_4", &aco_angle_4_);
       outtree_->Branch("cp_sign_1",     &cp_sign_1_);
       outtree_->Branch("cp_sign_2",     &cp_sign_2_);
       outtree_->Branch("cp_sign_3",     &cp_sign_3_);
+      outtree_->Branch("cp_sign_4",     &cp_sign_4_);
+      outtree_->Branch("cp_channel",    &cp_channel_);
       
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
@@ -2917,18 +2922,28 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWoldDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWoldDMwLT") : 0.;
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
         
-         // CP variables
-        
+        // CP variables
         int dm_1 = tau1->decay_mode();
         int dm_2 = tau2->decay_mode();
-
+        aco_angle_1_=0;
+        aco_angle_2_=0;
+        aco_angle_3_=0;
+        aco_angle_4_=0;
+        cp_sign_1_=0;
+        cp_sign_2_=0;
+        cp_sign_3_=0;
+        cp_sign_4_=0;
+        cp_channel_=0;
         if(dm_1 == 1 && dm_2 == 1){
-          std::pair<Candidate const*,Candidate const*> rho_1 = std::make_pair(&(tau1->charged()[0]), GetPi0(tau1, &(tau1->charged()[0])));
-          std::pair<Candidate const*,Candidate const*> rho_2 = std::make_pair(&(tau2->charged()[0]), GetPi0(tau1, &(tau2->charged()[0])));
-          aco_angle_1_ = AcoplanarityAngle(rho_1,rho_2);
-          cp_sign_1_ = YRho(rho_1)*YRho(rho_2);
-          cp_sign_2_ = YRho_RhoRest(rho_1)*YRho_RhoRest(rho_2);
-          cp_sign_3_ = YRhoRho(rho_1,rho_2);
+          cp_channel_=2;
+          Candidate* pi_1 = new Candidate(tau1->charged()[0]);
+          Candidate* pi_2 = new Candidate(tau2->charged()[0]);
+          std::vector<Candidate*> rho_1 = {pi_1, GetPi0(tau1, &(tau1->charged()[0]))};
+          std::vector<Candidate*> rho_2 = {pi_2, GetPi0(tau2, &(tau2->charged()[0]))};
+          
+          std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1,rho_2,true);
+          aco_angle_1_ = angles[0].first;
+          cp_sign_1_ = angles[0].second;
         }
 
 

@@ -1678,8 +1678,33 @@ namespace ic {
     return tau_daughters;
   }
   
+    std::pair<bool, GenParticle*> GetTauPiDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::vector<GenParticle*> tau_daughters;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      for (unsigned j = 0; j < id.size(); ++j) {
+        if(parts[i]->id() == id[j]){
+          tau_daughters.push_back(parts[i]);
+          continue;
+        }
+      }
+    }
+    GenParticle* pi = new GenParticle();
+    pi->set_pdgid(0);
+    GenParticle* tau_rho_daughter = new GenParticle();
+    int countpi = 0;
+    int countgamma = 0;
+    if(tau_daughters.size()==3){
+      for(unsigned i=0; i<tau_daughters.size(); ++i){
+        if(fabs(tau_daughters[i]->pdgid()) == 22){ countgamma++;}
+        if(fabs(tau_daughters[i]->pdgid()) == 211) { pi = tau_daughters[i]; countpi++;}
+      }
+    }
+    bool isPi = countgamma == 0 && countpi == 1;
+    if (isPi) tau_rho_daughter = pi;
+    return std::make_pair(isPi, tau_rho_daughter);
+  }
   
-  std::pair<GenParticle*,GenParticle*> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::pair<bool, std::vector<GenParticle*>> GetTauRhoDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
     std::vector<GenParticle*> tau_daughters;
     for (unsigned i = 0; i < parts.size(); ++i) {
       for (unsigned j = 0; j < id.size(); ++j) {
@@ -1693,18 +1718,69 @@ namespace ic {
     GenParticle* pi = new GenParticle();
     pi->set_pdgid(0);
     pi0->set_pdgid(0);
-    for(unsigned i=0; i<tau_daughters.size(); ++i){
-      if(fabs(tau_daughters[i]->pdgid()) == 22){ pi0->set_vector(pi0->vector()+tau_daughters[i]->vector()); pi0->set_pdgid(111);}
-      if(fabs(tau_daughters[i]->pdgid()) == 211) { pi = tau_daughters[i];}
+    std::vector<GenParticle*> tau_rho_daughter;
+    int countpi = 0;
+    int countgamma = 0;
+    if(tau_daughters.size()==3){
+      for(unsigned i=0; i<tau_daughters.size(); ++i){
+        if(fabs(tau_daughters[i]->pdgid()) == 22){ pi0->set_vector(pi0->vector()+tau_daughters[i]->vector()); pi0->set_pdgid(111); countgamma++;}
+        if(fabs(tau_daughters[i]->pdgid()) == 211) { pi = tau_daughters[i]; countpi++;}
+      }
     }
-    std::pair<GenParticle*,GenParticle*> tau_rho_daughter;
-    tau_rho_daughter = std::make_pair(pi,pi0);
-    return tau_rho_daughter;
+    bool isRho = countgamma == 2 && countpi == 1;
+    if (isRho) tau_rho_daughter = {pi,pi0};
+    return std::make_pair(isRho, tau_rho_daughter);
+  }
+  
+    std::pair<bool, std::vector<GenParticle*>> GetTauA1Daughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id) {
+    std::vector<GenParticle*> tau_daughters;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      for (unsigned j = 0; j < id.size(); ++j) {
+        if(parts[i]->id() == id[j]){
+          tau_daughters.push_back(parts[i]);
+          continue;
+        }
+      }
+    }
+    GenParticle* pi1 = new GenParticle();
+    GenParticle* pi2 = new GenParticle();
+    GenParticle* pi3 = new GenParticle();
+    pi1->set_pdgid(0);
+    pi2->set_pdgid(0);
+    pi3->set_pdgid(0);
+    std::vector<GenParticle*> tau_a1_daughters;
+    int countpiplus = 0;
+    int countpiminus = 0;
+    std::vector<GenParticle*> charged_pis;
+    if(tau_daughters.size()==3){
+      for(unsigned i=0; i<tau_daughters.size(); ++i){
+        if(fabs(tau_daughters[i]->pdgid()) == 211) charged_pis.push_back(tau_daughters[i]);
+        if(tau_daughters[i]->pdgid() == -211) countpiplus++;
+        if(tau_daughters[i]->pdgid() == 211)  countpiminus++;
+      }
+    }
+    bool isA1 = ( countpiplus==2 && countpiminus==1 ) || ( countpiplus==1 && countpiminus==2 );
+    if (isA1) tau_a1_daughters = charged_pis;
+    return std::make_pair(isA1, tau_a1_daughters);
+  }
+  
+  TLorentzVector GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec){
+    TVector3 x(secondary_vtx.vx()-primary_vtx.vx(),secondary_vtx.vy()-primary_vtx.vy(),secondary_vtx.vz()-primary_vtx.vz());
+    TVector3 unit_vec = ConvertToTVector3(part_vec).Unit();
+    TVector3 u = x - x.Dot(unit_vec)*unit_vec;
+    TLorentzVector impact_param;
+    impact_param.SetXYZM(u.X(),u.Y(),u.Z(),0);    
+    return impact_param;    
   }
   
   TLorentzVector ConvertToLorentz(ROOT::Math::PtEtaPhiEVector input_vec){
       TLorentzVector out_vec;
       out_vec.SetXYZM(input_vec.Px(),input_vec.Py(),input_vec.Pz(),input_vec.M());
+      return out_vec;
+  }
+  TVector3 ConvertToTVector3(ROOT::Math::PtEtaPhiEVector input_vec){
+      TVector3 out_vec;
+      out_vec.SetXYZ(input_vec.Px(),input_vec.Py(),input_vec.Pz());
       return out_vec;
   }
 
