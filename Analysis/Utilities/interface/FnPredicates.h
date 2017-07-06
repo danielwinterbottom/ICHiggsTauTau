@@ -151,7 +151,7 @@ namespace ic {
   
   TLorentzVector ConvertToLorentz(ROOT::Math::PtEtaPhiEVector input_vec);
   TVector3 ConvertToTVector3 (ROOT::Math::PtEtaPhiEVector input_vec);
-  TLorentzVector GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec);
+  TVector3 GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec);
   template<class T>
   void BoostVec(T p, TVector3 boost){
     TLorentzVector lvec = ConvertToLorentz(p->vector());    
@@ -160,23 +160,32 @@ namespace ic {
     p->set_vector(out_vec);
   }
   template<class T, class U>
-  double IPAcoAngle(TLorentzVector lip_1, TLorentzVector lip_2, T p1, U p2){
+  double IPAcoAngle(TVector3 ip_1, TVector3 ip_2, T p1, U p2){
     TLorentzVector lvec1 = ConvertToLorentz(p1->vector());
     TLorentzVector lvec2 = ConvertToLorentz(p2->vector());
     TVector3 boost = (lvec1+lvec2).BoostVector();
     lvec1.Boost(-boost);
     lvec2.Boost(-boost);
+    TLorentzVector lip_1(ip_1.Unit(),0); 
+    TLorentzVector lip_2(ip_2.Unit(),0);
     lip_1.Boost(-boost);    
     lip_2.Boost(-boost);
-    TVector3 ip_1 = lip_1.Vect().Unit();
-    TVector3 ip_2 = lip_2.Vect().Unit();
-    TVector3 n1 = ip_1 - ip_1.Dot(lvec1.Vect().Unit())*lvec1.Vect().Unit();    
-    TVector3 n2 = ip_2 - ip_2.Dot(lvec2.Vect().Unit())*lvec2.Vect().Unit();
-    double angle = acos(n1.Dot(n2)/(n1.Mag()*n2.Mag()));
-    int sign = lvec2.Vect().Unit().Unit().Dot(n1.Cross(n2));
+
+    TVector3 plane1 = ip_1.Cross(lvec1.Vect());
+    TVector3 plane2 = ip_2.Cross(lvec2.Vect());
+    
+    TVector3 n1 = lip_1.Vect() - lip_1.Vect().Dot(lvec1.Vect().Unit())*lvec1.Vect().Unit();    
+    TVector3 n2 = lip_2.Vect() - lip_2.Vect().Dot(lvec2.Vect().Unit())*lvec2.Vect().Unit();
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+    double angle = acos(n1.Dot(n2));
+    double sign = lvec2.Vect().Unit().Dot(n1.Cross(n2));
+    
     if(sign<0) angle = 2*M_PI - angle;
     return angle;
   }
+  
+  
   template<class T, class U>
   double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {
     // get boost vector to boost to COM frame 
@@ -542,6 +551,7 @@ namespace ic {
   std::vector<GenParticle *> ExtractDaughtersRecursive(GenParticle * part, std::vector<GenParticle *> const& input);
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt);
+  std::vector<GenJet> BuildTauJetsIncNus(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt);
   
   std::vector<GenParticle*> GetTauDaughters(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);
   std::pair<bool, GenParticle*> GetTauPiDaughter(std::vector<GenParticle *> const& parts, std::vector<std::size_t> id);

@@ -112,6 +112,11 @@ class HTTGenAnalysis : public ModuleBase {
   int cp_sign_4_;
   
   int cp_channel_;
+  
+  double ip_dxy_res_1_; 
+  double ip_dxy_res_2_; 
+  double ip_dz_res_1_;
+  double ip_dz_res_2_;
 
   
  public:

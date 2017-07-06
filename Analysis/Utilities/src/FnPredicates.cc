@@ -1644,9 +1644,44 @@ namespace ic {
         ROOT::Math::PtEtaPhiEVector vec;
         std::vector<std::size_t> id_vec;
         for (unsigned k = 0; k < jet_parts.size(); ++k) {
-          if (  abs(jet_parts[k]->pdgid()) == 12 || 
+          if ( abs(jet_parts[k]->pdgid()) == 12 || 
                 abs(jet_parts[k]->pdgid()) == 14 ||
                 abs(jet_parts[k]->pdgid()) == 16 ) continue;
+          vec += jet_parts[k]->vector();
+          taus.back().set_charge(taus.back().charge() + jet_parts[k]->charge());
+          id_vec.push_back(jet_parts[k]->id());
+        }
+        taus.back().set_vector(vec);
+        taus.back().set_constituents(id_vec);
+      }
+    }
+    return taus;
+  }
+  
+    std::vector<GenJet> BuildTauJetsIncNus(std::vector<GenParticle *> const& parts, bool include_leptonic, bool use_prompt) {
+    std::vector<GenJet> taus;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+        std::vector<bool> status_flags;
+        bool is_prompt=true; 
+        if(use_prompt){
+          status_flags = parts[i]->statusFlags();
+          is_prompt=status_flags[IsPrompt];
+        }
+      if (abs(parts[i]->pdgid()) == 15 && is_prompt) {
+        std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
+        bool has_tau_daughter = false;
+        bool has_lepton_daughter = false;
+        for (unsigned j = 0; j < daughters.size(); ++j) {
+          if (abs(daughters[j]->pdgid()) == 15) has_tau_daughter = true;
+          if (abs(daughters[j]->pdgid()) == 11 || abs(daughters[j]->pdgid()) == 13) has_lepton_daughter = true;
+        }
+        if (has_tau_daughter) continue;
+        if (has_lepton_daughter && !include_leptonic) continue;
+        std::vector<GenParticle *> jet_parts = ExtractStableDaughters(parts[i], parts);
+        taus.push_back(GenJet());
+        ROOT::Math::PtEtaPhiEVector vec;
+        std::vector<std::size_t> id_vec;
+        for (unsigned k = 0; k < jet_parts.size(); ++k) {
           vec += jet_parts[k]->vector();
           taus.back().set_charge(taus.back().charge() + jet_parts[k]->charge());
           id_vec.push_back(jet_parts[k]->id());
@@ -1692,15 +1727,14 @@ namespace ic {
     pi->set_pdgid(0);
     GenParticle* tau_rho_daughter = new GenParticle();
     int countpi = 0;
-    int countgamma = 0;
-    if(tau_daughters.size()==3){
+    if(tau_daughters.size()==1){
       for(unsigned i=0; i<tau_daughters.size(); ++i){
-        if(fabs(tau_daughters[i]->pdgid()) == 22){ countgamma++;}
         if(fabs(tau_daughters[i]->pdgid()) == 211) { pi = tau_daughters[i]; countpi++;}
       }
     }
-    bool isPi = countgamma == 0 && countpi == 1;
+    bool isPi = countpi == 1;
     if (isPi) tau_rho_daughter = pi;
+
     return std::make_pair(isPi, tau_rho_daughter);
   }
   
@@ -1764,13 +1798,11 @@ namespace ic {
     return std::make_pair(isA1, tau_a1_daughters);
   }
   
-  TLorentzVector GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec){
+  TVector3 GetGenImpactParam (ic::Vertex primary_vtx, ic::Vertex secondary_vtx, ROOT::Math::PtEtaPhiEVector part_vec){
     TVector3 x(secondary_vtx.vx()-primary_vtx.vx(),secondary_vtx.vy()-primary_vtx.vy(),secondary_vtx.vz()-primary_vtx.vz());
     TVector3 unit_vec = ConvertToTVector3(part_vec).Unit();
-    TVector3 u = x - x.Dot(unit_vec)*unit_vec;
-    TLorentzVector impact_param;
-    impact_param.SetXYZM(u.X(),u.Y(),u.Z(),0);    
-    return impact_param;    
+    TVector3 u = -(x - x.Dot(unit_vec)*unit_vec);
+    return u;    
   }
   
   TLorentzVector ConvertToLorentz(ROOT::Math::PtEtaPhiEVector input_vec){
