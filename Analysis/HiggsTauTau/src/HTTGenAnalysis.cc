@@ -90,7 +90,7 @@ namespace ic {
       outtree_->Branch("jdeta"       , &jdeta_       );
       outtree_->Branch("jdphi"       , &jdphi_       );
       outtree_->Branch("jdR"       , &jdR_       );
-      outtree_->Branch("higgsDecay"  , &decayType    );
+      outtree_->Branch("channel"  , &decayType    );
       outtree_->Branch("genpt_1"     , &genpt_1_        );
       outtree_->Branch("genpt_2"     , &genpt_2_        );
       outtree_->Branch("geneta_2"    , &geneta_2_       );
@@ -109,8 +109,10 @@ namespace ic {
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
       outtree_->Branch("cp_channel",    &cp_channel_);
       
-      outtree_->Branch("ip_dxy_res_1",    &ip_dxy_res_1_);
-      outtree_->Branch("ip_dxy_res_2",    &ip_dxy_res_2_);
+      outtree_->Branch("ip_dx_res_1",    &ip_dx_res_1_);
+      outtree_->Branch("ip_dx_res_2",    &ip_dx_res_2_);
+      outtree_->Branch("ip_dy_res_1",    &ip_dy_res_1_);
+      outtree_->Branch("ip_dy_res_2",    &ip_dy_res_2_);
       outtree_->Branch("ip_dz_res_1",    &ip_dz_res_1_);
       outtree_->Branch("ip_dz_res_2",    &ip_dz_res_2_);
     }
@@ -303,12 +305,14 @@ namespace ic {
     aco_angle_3_ = 0;
     aco_angle_4_ = 0;
     cp_channel_=-1;
-    ip_dxy_res_1_ = -9999;
-    ip_dxy_res_2_ = -9999;
+    ip_dx_res_1_ = -9999;
+    ip_dx_res_2_ = -9999;
+    ip_dy_res_1_ = -9999;
+    ip_dy_res_2_ = -9999;
     ip_dz_res_1_ = -9999;
     ip_dz_res_2_ = -9999;
     std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
-    //std::cout << primary_vtxs[0]->vx() << "    " << primary_vtxs[0]->vy() << "    " << primary_vtxs[0]->vy() << std::endl;
+    std::vector<ic::Vertex*> offline_primary_vtxs = event->GetPtrVec<ic::Vertex>("vertices");
     
     // use these for loops to compare generator level to offline taus/leptons
     std::vector<ic::Tau*> offline_taus = event->GetPtrVec<ic::Tau>("taus");
@@ -319,49 +323,118 @@ namespace ic {
         if(dR < 0.5){
           std::pair<bool,GenParticle*> pi = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[j]->constituents());
           if (!pi.first) continue;
-          TVector3 ip = GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector()); 
-          double offline_dxy = offline_taus[i]->lead_dxy_vertex();
-          double offline_dz = offline_taus[i]->lead_dz_vertex();
-          //double gen_dxy = sqrt(pow(ip.X(),2) + pow(ip.Y(),2));
-          double gen_dz = ip.Z();
-          double dz_res = (gen_dz-offline_dz)/gen_dz;
-          double dxy_res = offline_dxy;
-          //double dz_res = gen_dz/gen_dxy/(offline_dz/offline_dxy);
+          ic::Vertex offline_tau_point;
+          offline_tau_point.set_vx(offline_taus[i]->vx()); offline_tau_point.set_vy(offline_taus[i]->vy()); offline_tau_point.set_vz(offline_taus[i]->vz());
+          TVector3 ip_offline = GetGenImpactParam(*(offline_primary_vtxs[0]),offline_tau_point, offline_taus[i]->vector());
+          std::cout << "--------------------" << std::endl;
+          std::cout << offline_primary_vtxs[0]->vx() << "    " << offline_primary_vtxs[0]->vy() << "    " << offline_primary_vtxs[0]->vz() << std::endl;
+          std::cout << offline_tau_point.vx() << "    " << offline_tau_point.vy() << "    " << offline_tau_point.vz() << std::endl;
+          TVector3 ip = GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector());
+          
+          ip = ip.Unit();
+          ip_offline = ip_offline.Unit();
+
+          //double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
+          //double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
+          //double dx_res = (ip_offline.X() - ip.X())/ip.X();
+          
+          double dy_res = ip_offline.Y();
+          double dz_res = ip_offline.Z();
+          double dx_res = ip_offline.X();
+          
           if (FirstTau){
             ip_dz_res_1_ = dz_res;  
-            ip_dxy_res_1_ = dxy_res;
+            ip_dy_res_1_ = dy_res;
+            ip_dx_res_1_ = dx_res;
             FirstTau = false;
           } else {
             ip_dz_res_2_ = dz_res;   
-            ip_dxy_res_2_ = dxy_res;
+            ip_dy_res_2_ = dy_res;
+            ip_dx_res_2_ = dx_res;
           }
           break;
         }
       }
     }
+    
+    std::pair<bool,GenParticle*> pi_1 = std::make_pair(false, new GenParticle());
+    std::pair<bool,std::vector<GenParticle*>> rho_1 = std::make_pair(false, std::vector<GenParticle*>()); 
+    std::pair<bool,std::vector<GenParticle*>> a1_1 = std::make_pair(false, std::vector<GenParticle*>());
+    std::pair<bool,GenParticle*> pi_2 = std::make_pair(false, new GenParticle());
+    std::pair<bool,std::vector<GenParticle*>> rho_2 = std::make_pair(false, std::vector<GenParticle*>()); 
+    std::pair<bool,std::vector<GenParticle*>> a1_2 = std::make_pair(false, std::vector<GenParticle*>());
+    
+    if(gen_tau_jets_ptr.size()>=1){
+      pi_1 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents()); 
+      rho_1 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
+      a1_1 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
+    } 
     if(gen_tau_jets_ptr.size()>=2){
-      // need gen primary vertex to compute impact parameters
-      std::pair<bool,GenParticle*> pi_1 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents()); 
-      std::pair<bool,GenParticle*> pi_2 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());
-      std::pair<bool,std::vector<GenParticle*>> rho_1 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
-      std::pair<bool,std::vector<GenParticle*>> rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
-      std::pair<bool,std::vector<GenParticle*>> a1_1 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[0]->constituents());  
-      std::pair<bool,std::vector<GenParticle*>> a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
+      pi_2 = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
+      rho_2 = GetTauRhoDaughter(gen_particles, gen_tau_jets_ptr[1]->constituents());  
+      a1_2 = GetTauA1Daughter(gen_particles, gen_tau_jets_ptr[1]->constituents()); 
+    }
+    std::vector<ic::GenParticle> leptons;
+    for (unsigned i=0; i<electrons.size(); ++i) leptons.push_back(electrons[i]);
+    for (unsigned i=0; i<muons.size(); ++i) leptons.push_back(muons[i]);
+    TLorentzVector lvec1;
+    TLorentzVector lvec2;
+    TLorentzVector lvec3;
+    TLorentzVector lvec4;
+    if(leptons.size()>=2){
+      cp_channel_=1;
+      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);    
+      lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[1].vtx(), leptons[1].vector()),0);
+      lvec3 = ConvertToLorentz(leptons[0].vector());
+      lvec4 = ConvertToLorentz(leptons[1].vector());
+    } else if(leptons.size()==1){
+      lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),leptons[0].vtx(), leptons[0].vector()),0);
+      lvec3 = ConvertToLorentz(leptons[0].vector());
+      if(pi_1.first){cp_channel_=1; lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0); lvec4 = ConvertToLorentz(pi_1.second->vector());}
+      if(pi_2.first){cp_channel_=1; lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0); lvec4 = ConvertToLorentz(pi_2.second->vector());}
+      if(rho_1.first){cp_channel_=2; lvec2 = ConvertToLorentz(rho_1.second[1]->vector()); lvec4 = ConvertToLorentz(rho_1.second[0]->vector()); cp_sign_1_ = YRho(rho_1.second,TVector3());}
+      if(rho_2.first){cp_channel_=2; lvec2 = ConvertToLorentz(rho_2.second[1]->vector()); lvec4 = ConvertToLorentz(rho_2.second[0]->vector()); cp_sign_1_ = YRho(rho_2.second,TVector3());}
+    } else{
       if(pi_1.first&&pi_2.first){
-        cp_channel_=0;
-        TVector3 ip_1 = GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector());    
-        TVector3 ip_2 = GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector());
-        //TLorentzVector ip_1(primary_vtxs[0]->vx() - pi_1.second->vtx().vx(),primary_vtxs[0]->vy() - pi_1.second->vtx().vy(),primary_vtxs[0]->vz() - pi_1.second->vtx().vz(),0);
-        //TLorentzVector ip_2(primary_vtxs[0]->vx() - pi_2.second->vtx().vx(),primary_vtxs[0]->vy() - pi_2.second->vtx().vy(),primary_vtxs[0]->vz() - pi_2.second->vtx().vz(),0);
-
-        aco_angle_1_ = IPAcoAngle(ip_1, ip_2, pi_1.second, pi_2.second);
+        cp_channel_=1;
+        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0);
+        lvec2 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0);
+        lvec3 = ConvertToLorentz(pi_1.second->vector());
+        lvec4 = ConvertToLorentz(pi_2.second->vector());
+      } else if (pi_1.first&&rho_2.first){
+        cp_channel_=2;
+        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_1.second->vtx(), pi_1.second->vector()),0);
+        lvec2 = ConvertToLorentz(rho_2.second[1]->vector());
+        lvec3 = ConvertToLorentz(pi_1.second->vector());
+        lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
+        cp_sign_1_ = YRho(rho_2.second,TVector3());
+      } else if(pi_2.first&&rho_1.first){
+        cp_channel_=2;
+        lvec1 = TLorentzVector(GetGenImpactParam(*(primary_vtxs[0]),pi_2.second->vtx(), pi_2.second->vector()),0);
+        lvec2 = ConvertToLorentz(rho_1.second[1]->vector());
+        lvec3 = ConvertToLorentz(pi_2.second->vector());
+        lvec4 = ConvertToLorentz(rho_1.second[0]->vector());
+        cp_sign_1_ = YRho(rho_1.second,TVector3());
+      } else if (rho_1.first&&rho_2.first){
+        cp_channel_=3;  
+        lvec1 = ConvertToLorentz(rho_1.second[1]->vector());   
+        lvec2 = ConvertToLorentz(rho_2.second[1]->vector());
+        lvec3 = ConvertToLorentz(rho_1.second[0]->vector());   
+        lvec4 = ConvertToLorentz(rho_2.second[0]->vector());
+        cp_sign_1_ = YRho(rho_1.second,TVector3())*YRho(rho_2.second,TVector3());
       }
-      //if(rho_1.first && rho_2.first) { 
-      //  cp_channel_ = 2;
-      //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
-      //  aco_angle_1_ = angles[0].first;
-      //  cp_sign_1_ = angles[0].second;
-      //}
+    }
+    
+    if(cp_channel_!=-1){
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4);    
+    }
+    
+    if(gen_tau_jets_ptr.size()>=2){
+      if(rho_1.first && rho_2.first) { 
+        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
+        aco_angle_2_ = angles[0].first;
+        cp_sign_2_ = angles[0].second;
+      }
       //if(rho_1.first && a1_2.first) {
       //  cp_channel_ = 3;
       //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,a1_2.second,true);

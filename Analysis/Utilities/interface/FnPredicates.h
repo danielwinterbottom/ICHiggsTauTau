@@ -159,32 +159,7 @@ namespace ic {
     ROOT::Math::PtEtaPhiEVector out_vec(lvec.Pt(),lvec.Eta(), lvec.Phi(),lvec.E());
     p->set_vector(out_vec);
   }
-  template<class T, class U>
-  double IPAcoAngle(TVector3 ip_1, TVector3 ip_2, T p1, U p2){
-    TLorentzVector lvec1 = ConvertToLorentz(p1->vector());
-    TLorentzVector lvec2 = ConvertToLorentz(p2->vector());
-    TVector3 boost = (lvec1+lvec2).BoostVector();
-    lvec1.Boost(-boost);
-    lvec2.Boost(-boost);
-    TLorentzVector lip_1(ip_1.Unit(),0); 
-    TLorentzVector lip_2(ip_2.Unit(),0);
-    lip_1.Boost(-boost);    
-    lip_2.Boost(-boost);
-
-    TVector3 plane1 = ip_1.Cross(lvec1.Vect());
-    TVector3 plane2 = ip_2.Cross(lvec2.Vect());
-    
-    TVector3 n1 = lip_1.Vect() - lip_1.Vect().Dot(lvec1.Vect().Unit())*lvec1.Vect().Unit();    
-    TVector3 n2 = lip_2.Vect() - lip_2.Vect().Dot(lvec2.Vect().Unit())*lvec2.Vect().Unit();
-    n1 = n1.Unit();
-    n2 = n2.Unit();
-    double angle = acos(n1.Dot(n2));
-    double sign = lvec2.Vect().Unit().Dot(n1.Cross(n2));
-    
-    if(sign<0) angle = 2*M_PI - angle;
-    return angle;
-  }
-  
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4);
   
   template<class T, class U>
   double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {

@@ -61,7 +61,11 @@ class Tau : public Candidate {
 
   /// The z-coordinate of the leading track PCA
   inline double vz() const { return ref_point_.z(); }
-
+  
+  inline double svx() const { return svx_; }
+  inline double svy() const { return svy_; }
+  inline double svz() const { return svz_; }
+  
   /// A vector referring to the constituent track ic::Track::id()
   inline std::vector<std::size_t> const& constituent_tracks() const {
     return constituent_tracks_;
@@ -141,6 +145,10 @@ class Tau : public Candidate {
 
   /// @copybrief vz()
   inline void set_vz(double const& z) { ref_point_.SetZ(z); }
+  
+  inline void set_svx(double const& svx) { svx_=svx; }
+  inline void set_svy(double const& svy) { svy_=svy; }
+  inline void set_svz(double const& svz) { svz_=svz; }
 
   /// @copybrief constituent_tracks()
   inline void set_constituent_tracks(
@@ -221,6 +229,10 @@ class Tau : public Candidate {
   float lead_dz_vertex_;
 
   Point ref_point_;
+  
+  double svx_;
+  double svy_;
+  double svz_;
 
   std::vector<std::size_t> constituent_tracks_;
   std::vector<std::size_t> sig_charged_cands_;

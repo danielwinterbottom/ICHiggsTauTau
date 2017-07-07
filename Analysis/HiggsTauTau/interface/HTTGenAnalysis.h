@@ -113,8 +113,10 @@ class HTTGenAnalysis : public ModuleBase {
   
   int cp_channel_;
   
-  double ip_dxy_res_1_; 
-  double ip_dxy_res_2_; 
+  double ip_dx_res_1_; 
+  double ip_dx_res_2_; 
+  double ip_dy_res_1_; 
+  double ip_dy_res_2_;
   double ip_dz_res_1_;
   double ip_dz_res_2_;
 
