@@ -501,7 +501,7 @@ namespace ic {
             double tau2_wt_down = 0;
             if(gen_match_2 == 5){
               tau2_wt_up = (0.05*gen_match_2_pt)/1000.;
-              tau2_wt_down = (0.5*gen_match_2_pt)/1000.;
+              tau2_wt_down = (0.35*gen_match_2_pt)/1000.;
             }
             weight_up   = 1.0 +tau2_wt_up;
             weight_down = std::max(0.0, 1.0 - tau2_wt_down);
@@ -512,7 +512,7 @@ namespace ic {
              unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
              if(gen_match_1 == 5){
                tau1_wt_up = (0.05*gen_match_1_pt)/1000.;
-               tau1_wt_down = (0.5*gen_match_1_pt)/1000.;
+               tau1_wt_down = (0.35*gen_match_1_pt)/1000.;
              }
              weight_up = (1.0+tau2_wt_up)*(1.0+tau1_wt_up);
              weight_down = std::max(0.0,(1.0-tau2_wt_down)*(1.0-tau1_wt_down));
