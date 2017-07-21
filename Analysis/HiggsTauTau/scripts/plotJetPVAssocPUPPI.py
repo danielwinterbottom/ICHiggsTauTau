@@ -8,13 +8,13 @@ import json
 import UserCode.ICHiggsTauTau.plotting as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_pu200_full_nochs_tt_0.root"
-current_infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_pu200_full_tt_0.root"
+infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_pu140_full_tt_0.root"
+puppi_infile = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/VBF_pu140_puppi_tt_0.root"
 
 vbf_file=ROOT.TFile.Open(infile)
 jetpvtree=vbf_file.Get("jetpvassoc")
 
-vbfcurrent_file=ROOT.TFile.Open(current_infile)
+vbfcurrent_file=ROOT.TFile.Open(puppi_infile)
 jetpvtree_current=vbfcurrent_file.Get("jetpvassoc")
 
 
@@ -39,7 +39,7 @@ jetpvtree.Draw("abs(jet_eta)>>vbf_pvassoc_jets","jet_flav!=0&&jet_flav!=21&&jet_
 jetpvtree.Draw("jet_beta>>vbf_beta_jets","jet_flav!=0&&jet_flav!=21&&jet_pt>20&&jet_beta>-1")
 jetpvtree.Draw("(jet_beta+1)>>vbf_betaneg_jets","jet_flav!=0&&jet_flav!=21&&jet_pt>20&&jet_beta<0")
 jetpvtree_current.Draw("abs(jet_eta)>>vbf_all_jets_current","jet_flav!=0&&jet_flav!=21&&jet_pt>20")
-jetpvtree_current.Draw("abs(jet_eta)>>vbf_pvassoc_jets_current","jet_flav!=0&&jet_flav!=21&&jet_beta>0.1&&jet_pt>20")
+jetpvtree_current.Draw("abs(jet_eta)>>vbf_pvassoc_jets_current","jet_flav!=0&&jet_flav!=21&&jet_beta_puppi>0.1&&jet_pt>20")
 
 vbf_beta_jets.Add(vbf_betaneg_jets)
 vbf_beta_jets.Scale(1./vbf_beta_jets.Integral())
@@ -68,8 +68,8 @@ legend = plot.PositionedLegend(0.45, 0.10, 3, 0.015)
 plot.Set(legend, NColumns=1)
 vbf_pvassoc_jets.GetXaxis().SetTitle("VBF jet |#eta|")
 vbf_pvassoc_jets.GetYaxis().SetTitle("jet PV association efficiency")
-legend.AddEntry(vbf_pvassoc_jets,'Extended tracker, jets without CHS','P')
-legend.AddEntry(vbf_pvassoc_jets_current,'Extended tracker, jets with CHS','P')
+legend.AddEntry(vbf_pvassoc_jets,'CHS jets','P')
+legend.AddEntry(vbf_pvassoc_jets_current,'Puppi jets','P')
 vbf_pvassoc_jets.Draw("EP0")
 vbf_pvassoc_jets_current.Draw("P0SAME")
 
@@ -78,13 +78,12 @@ vbf_pvassoc_jets_current.Draw("P0SAME")
 
 legend.Draw()
 
-plot.DrawCMSLogo(pads[0], 'CMS Phase-2', 'Simulation', 11, 0.045, 0.035, 1.2, '', 0.8)
-#plot.DrawCMSLogo(pads[0], 'CMS Phase-2', 'Simulation Preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
+plot.DrawCMSLogo(pads[0], 'CMS Phase-2', 'Simulation Preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
 plot.DrawTitle(pads[0], "VBF H#rightarrow#tau#tau", 1)
-plot.DrawTitle(pads[0], "#sqrt{s}=14 TeV, 200 PU", 3)
+plot.DrawTitle(pads[0], "#sqrt{s}=14 TeV, PU 140", 3)
 
-canv.SaveAs('jetpvassoc_CHScheckpu200_noprelim.pdf')
-canv.Print('jetpvassoc_CHScheckpu200_noprelim.png')
+canv.SaveAs('jetpvassoc_PUPPI.pdf')
+canv.Print('jetpvassoc_PUPPI.png')
 
 #canv2=ROOT.TCanvas()
 #pads2 = plot.OnePad()

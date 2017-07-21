@@ -94,7 +94,7 @@ int HTTFutureJetPV::Execute(TreeEvent *event) {
   for(unsigned i=0;i<jet_match.size();++i){
     if(jet_match.at(i).first->parton_flavour()!=0&&jet_match.at(i).first->parton_flavour()!=21) sel_genjets.push_back(jet_match.at(i));
   }*/
-  for(unsigned j=0;j<jet_match.size();++j){
+/*  for(unsigned j=0;j<jet_match.size();++j){
       if(MinDRToCollection(jet_match.at(j).first,gen_taus_ptr,0.5)&&MinDRToCollection(jet_match.at(j).first,sel_particles,0.5)){
         jet_pt=jet_match.at(j).first->pt();
         jet_eta=jet_match.at(j).first->eta();
@@ -105,7 +105,19 @@ int HTTFutureJetPV::Execute(TreeEvent *event) {
         jet_flav=jet_match.at(j).first->parton_flavour();
         outtree_->Fill();
       }
-  }
+  }*/
+
+  for(unsigned j=0;j<jets.size();++j){
+     std::vector<PFJet*> test_jet;
+     test_jet.push_back(jets.at(j));
+     std::vector<std::pair<PFJet*, GenJet*> > jet_match = MatchByDR(test_jet,genjets,0.1,true,true);
+     if(jet_match.size() <1){
+       jet_pt=jets.at(j)->pt();
+       jet_eta=jets.at(j)->eta();
+       jet_beta=jets.at(j)->beta();
+       outtree_->Fill();
+     }
+   }
 
       if(quark_jet_match.size()>1){
         jet_pt1=quark_jet_match.at(0).first->pt();

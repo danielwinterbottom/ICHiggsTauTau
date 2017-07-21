@@ -140,7 +140,7 @@ legend.Draw()
 plot.DrawCMSLogo(pads[0], 'CMS Phase-2', 'Simulation', 11, 0.045, 0.035, 1.2, '', 0.8)
 #plot.DrawCMSLogo(pads[0], 'CMS Phase-2', 'Simulation Preliminary', 11, 0.045, 0.035, 1.2, '', 0.8)
 plot.DrawTitle(pads[0], "VBF H#rightarrow#tau#tau", 1)
-plot.DrawTitle(pads[0], "14 TeV", 3)
+plot.DrawTitle(pads[0], "#sqrt{s}=14 TeV", 3)
 
 canv.SaveAs('jetpvassoc_with200and140_noprelim.pdf')
 canv.Print('jetpvassoc_with200and140_noprelim.png')

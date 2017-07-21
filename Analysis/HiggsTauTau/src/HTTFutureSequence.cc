@@ -28,6 +28,7 @@
 #include "HiggsTauTau/interface/HTTGenEvent.h"
 #include "HiggsTauTau/interface/HTTFutureGenEvent.h"
 #include "HiggsTauTau/interface/HTTFutureTauEff.h"
+#include "HiggsTauTau/interface/HTTFutureTauResolution.h"
 #include "HiggsTauTau/interface/HTTFutureJetPV.h"
 #include "HiggsTauTau/interface/HTTFutureTrees.h"
 #include "HiggsTauTau/interface/WMuNuCategories.h"
@@ -296,7 +297,7 @@ void HTTFutureSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
-  BuildModule(HTTFutureGenEvent("HTTFutureGenEvent")
+/*  BuildModule(HTTFutureGenEvent("HTTFutureGenEvent")
     .set_genparticle_label("genParticles")
     .set_genjet_label("genJets")
     .set_jets_label(jets_label)
@@ -311,7 +312,7 @@ void HTTFutureSequence::BuildSequence(){
   BuildModule(HTTFutureTauEff("HTTFutureTauEff")
     .set_genparticle_label("genParticles")
     .set_taus_label(js["taus"].asString())
-    .set_fs(fs.get()));
+    .set_fs(fs.get()));*/
 
   // If desired, run the HTTGenEventModule which will add some handily-
   // formatted generator-level info into the Event
@@ -321,6 +322,11 @@ void HTTFutureSequence::BuildSequence(){
         .set_genjet_label(js["genJets"].asString()));
   }
 
+
+  BuildModule(HTTFutureTauResolution("HTTFutureTauResolution")
+    .set_genparticle_label("genParticles")
+    .set_taus_label(js["taus"].asString())
+    .set_fs(fs.get()));
 
 
   if (channel == channel::et) BuildETPairs();
@@ -410,7 +416,7 @@ if(channel != channel::wmnu) {
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(0)
     .set_require_inputs_match(true)
-    .set_split(7000)
+    .set_split(700)
     .set_dilepton_label("ditau")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder)
@@ -458,8 +464,8 @@ void HTTFutureSequence::BuildTTPairs(){
  BuildTauSelection();
 
  BuildModule(CompositeProducer<Tau, Tau>("TTPairProducer")
-      .set_input_label_first(js["taus"].asString())
-      .set_input_label_second(js["taus"].asString())
+      .set_input_label_first("genmatched_taus")
+      .set_input_label_second("genmatched_taus")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
@@ -510,7 +516,7 @@ void HTTFutureSequence::BuildETPairs() {
 
   BuildModule(CompositeProducer<Electron, Tau>("ETPairProducer")
       .set_input_label_first("sel_electrons")
-      .set_input_label_second(js["taus"].asString())
+      .set_input_label_second("genmatched_taus")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
@@ -541,8 +547,13 @@ void HTTFutureSequence::BuildMTPairs() {
     MuonID = [](Muon const* m) {return MuonMediumHIPsafe(m); };
    }
 
+  BuildModule(HTTGenMatchSelector<Muon>("HTTGenMatchSelectorMuon")
+    .set_input_vec_label("sel_muons")
+    .set_output_vec_label("genmatched_muons")
+    .set_gen_match(mcorigin::tauMu));
+
   BuildModule(SimpleFilter<Muon>("MuonFilter")
-      .set_input_label("sel_muons").set_min(1)
+      .set_input_label("genmatched_muons").set_min(1)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > muon_pt    &&
                 fabs(m->eta())          < muon_eta   &&
@@ -556,8 +567,8 @@ void HTTFutureSequence::BuildMTPairs() {
   BuildTauSelection();
 
   BuildModule(CompositeProducer<Muon, Tau>("MTPairProducer")
-      .set_input_label_first("sel_muons")
-      .set_input_label_second(js["taus"].asString())
+      .set_input_label_first("genmatched_muons")
+      .set_input_label_second("genmatched_taus")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
@@ -664,8 +675,14 @@ if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::smsprin
 void HTTFutureSequence::BuildTauSelection(){
   Json::Value base = js["baseline"];
 
+  BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("genmatched_taus")
+      .set_gen_match(mcorigin::tauHad));
+
   BuildModule(SimpleFilter<Tau>("TauFilter")
-      .set_input_label(js["taus"].asString()).set_min(min_taus)
+      .set_input_label("genmatched_taus").set_min(min_taus)
+      //.set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
         return  t->pt()                     >  tau_pt     &&
                 fabs(t->eta())              <  tau_eta    &&
