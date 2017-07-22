@@ -13,6 +13,69 @@ COL_STORE = []
 ## and colour palettes
 ##@{
 
+def SetAxisTitles(plot, channel):
+  if '[' in plot: 
+      isVarBins = True
+      var = plot.split('[')[0]
+  else:
+      isVarBins = False
+      var = plot.split('(')[0]
+      
+  chan_label = '#tau#tau'
+  lep1_label = '#tau'
+  lep2_label = '#tau'
+  if channel == 'et': 
+    chan_label = 'e#tau'
+    lep1_label = 'e'
+    lep2_label = '#tau'
+  elif channel == 'mt': 
+    chan_label = '#mu#tau'
+    lep1_label = '#mu'
+    lep2_label = '#tau'
+  if channel == 'em': 
+    chan_label = 'e#mu'
+    lep1_label = 'e'
+    lep2_label = '#mu'
+  elif channel == 'tt':
+    chan_label = '#tau#tau'  
+    lep1_label = '#tau_{1}'
+    lep2_label = '#tau_{2}'
+  elif channel == 'zee': 
+    chan_label = 'ee'
+    lep1_label = 'e_{1}'
+    lep2_label = 'e_{2}'
+  elif channel == 'zmm': 
+    chan_label = '#mu#mu'
+    lep1_label = '#mu_{1}'
+    lep2_label = '#mu_{2}'
+  
+  bin_width=''
+  if not isVarBins:
+      binning = plot.split('(')[1].split(')')[0].split(',')
+      binning = map(float,binning)
+      bin_width = str(round((binning[2]-binning[1])/binning[0],1))
+      
+  titles = {}
+  titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)']
+  titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)']
+  titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
+  titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}']
+  titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
+  titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)']
+  titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)']
+  titles['m_vis'] = ['M_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{'+chan_label+'} (1/GeV)']
+  if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)']
+  else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)']
+  titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
+  titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}']
+  
+  if var not in titles: 
+    if not isVarBins: return [var,'Events']
+    else: return [var, 'dN/d'+var]
+  else:
+    if not isVarBins: return [titles[var][0],titles[var][1]]
+    else: return [titles[var][0], titles[var][2]]
+  
 
 def SetTDRStyle():
     """Sets the PubComm recommended style
@@ -1856,6 +1919,7 @@ def HTTPlot(nodename,
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     
     ModTDRStyle(r=0.04, l=0.14)
+    R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
     
     background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
     'et':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
@@ -1877,7 +1941,7 @@ def HTTPlot(nodename,
         background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
         'et':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
         'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
-        'ff_comp':[backgroundComp("t#bar{t} j#rightarrow#tau",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak j#rightarrow#tau",["VVJ","W","ZJ"],R.TColor.GetColor(222,90,106))]
+        'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
         
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
@@ -2015,16 +2079,29 @@ def HTTPlot(nodename,
         
     ## Add another signal mass point
     #sighist2 = R.TH1F()
-    #sighist2 = ana.nodes[nodename].nodes["ggH200"].shape.hist.Clone()
+    #sighist2= infile.Get(nodename+'/ggH200').Clone()
     #sighist2.SetLineColor(R.kRed)
     #sighist2.SetLineWidth(3)
     #sighist2.Scale(signal_scale)
-    #if norm_bins: sighist2.Scale(1.0,"width")
+    ## Add another signal mass point
+    #sighist3 = R.TH1F()
+    #sighist3= infile.Get(nodename+'/ggH400').Clone()
+    #sighist3.SetLineColor(R.kGreen+3)
+    #sighist3.SetLineWidth(3)
+    #sighist3.Scale(signal_scale)
+    #if norm_bins: 
+    #    sighist2.Scale(1.0,"width")
+    #    sighist3.Scale(1.0,"width")
     #sighist2.Draw("histsame")
+    #sighist3.Draw("histsame")
     error_hist = bkghist.Clone()
     if do_custom_uncerts:
       bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
       bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
+      if norm_bins:
+        bkg_uncert_up.Scale(1.0,"width")
+        bkg_uncert_down.Scale(1.0,"width")
+
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
@@ -2042,8 +2119,6 @@ def HTTPlot(nodename,
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
           
-    if norm_bins and do_custom_uncerts : error_hist.Scale(1.0,"width")
-    
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
@@ -2054,7 +2129,7 @@ def HTTPlot(nodename,
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosend shape","PE")
-    elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF j#rightarrow#tau","PE")
+    elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
     else: legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
     bkg_histos.reverse()
@@ -2067,6 +2142,7 @@ def HTTPlot(nodename,
         legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
     ## Add a second signal mass
     #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(200 GeV)#rightarrow#tau#tau","l")  
+    #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(400 GeV)#rightarrow#tau#tau","l")  
     legend.Draw("same")
     if channel == "em": channel_label = "e#mu"
     if channel == "et": channel_label = "e#tau_{h}"
@@ -2389,6 +2465,10 @@ def HTTPlotSignal(nodename,
     if do_custom_uncerts:
       bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
       bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
+      if norm_bins:
+        bkg_uncert_up.Scale(1.0,"width")
+        bkg_uncert_down.Scale(1.0,"width")
+
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
           bin_up = bkg_uncert_up.GetBinContent(i)
@@ -2406,7 +2486,6 @@ def HTTPlotSignal(nodename,
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
           
-    if norm_bins and do_custom_uncerts : error_hist.Scale(1.0,"width")
     
     error_hist.Draw("e2same")
     stack.Draw("hist same")

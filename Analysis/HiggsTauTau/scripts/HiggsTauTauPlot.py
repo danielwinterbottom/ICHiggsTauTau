@@ -1221,19 +1221,18 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
             if not first_hist:    
                 sum_hist.SetName(outname)
                 sum_hist.Write()
-    if systematic == 'default':
-      first_hist=True
-      for node in nodes:
-          if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
-              if options.method == 18 and 'jetFakes' == node.name: continue
-              if first_hist:
-                  total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
-                  first_hist=False
-              else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
-      if not first_hist:        
-          total_bkg.SetName('total_bkg'+add_name)
-          total_bkg.Write()
-      outfile.cd()
+    first_hist=True
+    for node in nodes:
+        if True not in [node.name.find(sig) != -1 for sig in signal_samples.keys()] and node.name != 'data_obs' and node.name.find("_SM"+options.add_sm_background) ==-1:
+            if options.method == 18 and 'jetFakes' == node.name: continue
+            if first_hist:
+                total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
+                first_hist=False
+            else: total_bkg.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
+    if not first_hist:        
+        total_bkg.SetName('total_bkg'+add_name)
+        total_bkg.Write()
+    outfile.cd()
     
 def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root',ff_syst_weight=None):
     doTTJ = 'TTJ' not in samples_to_skip
@@ -1537,12 +1536,12 @@ if not options.no_plot:
     else: plot_name = options.outputfolder+'/'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
-    if options.x_title == "": x_title = var_name
+    titles = plotting.SetAxisTitles(options.var,options.channel)
+    if options.x_title == "": x_title = titles[0]
     else: x_title = options.x_title
     
     if options.y_title == "": 
-        y_title = "Entries"
-        if options.norm_bins: y_title="dN/d"+var_name
+        y_title = titles[1]
     else: y_title = options.y_title
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'

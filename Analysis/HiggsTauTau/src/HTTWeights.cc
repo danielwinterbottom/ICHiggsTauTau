@@ -469,28 +469,57 @@ namespace ic {
         }
       } else {
        if(channel_ != channel::em){
-         double gen_match_2_pt = event->Get<double>("gen_match_2_pt");
-         unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-         double weight_up    = 1.0;
-         double weight_down  = 1.0;
-         double tau2_wt = 0;
-         if(gen_match_2 == 5){
-           tau2_wt = (0.20*gen_match_2_pt)/1000.;
-         }
-          weight_up   = 1.0 +tau2_wt;
-          weight_down = std::max(0.0, 1.0 - tau2_wt);
-          if(channel_ == channel::tt){
-           double tau1_wt = 0;
-           double gen_match_1_pt = event->Get<double>("gen_match_1_pt");
-           unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
-           if(gen_match_1 == 5){
-             tau1_wt = (0.20*gen_match_1_pt)/1000.;
-           }
-           weight_up = (1.0+tau2_wt)*(1.0+tau1_wt);
-           weight_down = std::max(0.0,(1.0-tau2_wt)*(1.0-tau1_wt));
-         }
-          event->Add("wt_tau_id_up", weight_up);
-          event->Add("wt_tau_id_down", weight_down);
+          if(mc_ != mc::summer16_80X){
+            double gen_match_2_pt = event->Get<double>("gen_match_2_pt");
+            unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+            double weight_up    = 1.0;
+            double weight_down  = 1.0;
+            double tau2_wt = 0;
+            if(gen_match_2 == 5){
+              tau2_wt = (0.20*gen_match_2_pt)/1000.;
+            }
+            weight_up   = 1.0 +tau2_wt;
+            weight_down = std::max(0.0, 1.0 - tau2_wt);
+            if(channel_ == channel::tt){
+             double tau1_wt = 0;
+             double gen_match_1_pt = event->Get<double>("gen_match_1_pt");
+             unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+             if(gen_match_1 == 5){
+               tau1_wt = (0.20*gen_match_1_pt)/1000.;
+             }
+             weight_up = (1.0+tau2_wt)*(1.0+tau1_wt);
+             weight_down = std::max(0.0,(1.0-tau2_wt)*(1.0-tau1_wt));
+            }
+            event->Add("wt_tau_id_up", weight_up);
+            event->Add("wt_tau_id_down", weight_down);
+          } else if(mc_ == mc::summer16_80X){
+            double gen_match_2_pt = event->Get<double>("gen_match_2_pt");
+            unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+            double weight_up    = 1.0;
+            double weight_down  = 1.0;
+            double tau2_wt_up = 0;
+            double tau2_wt_down = 0;
+            if(gen_match_2 == 5){
+              tau2_wt_up = (0.05*gen_match_2_pt)/1000.;
+              tau2_wt_down = (0.35*gen_match_2_pt)/1000.;
+            }
+            weight_up   = 1.0 +tau2_wt_up;
+            weight_down = std::max(0.0, 1.0 - tau2_wt_down);
+            if(channel_ == channel::tt){
+             double tau1_wt_up = 0;
+             double tau1_wt_down = 0;
+             double gen_match_1_pt = event->Get<double>("gen_match_1_pt");
+             unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
+             if(gen_match_1 == 5){
+               tau1_wt_up = (0.05*gen_match_1_pt)/1000.;
+               tau1_wt_down = (0.35*gen_match_1_pt)/1000.;
+             }
+             weight_up = (1.0+tau2_wt_up)*(1.0+tau1_wt_up);
+             weight_down = std::max(0.0,(1.0-tau2_wt_down)*(1.0-tau1_wt_down));
+            }
+            event->Add("wt_tau_id_up", weight_up);
+            event->Add("wt_tau_id_down", weight_down);
+          }
         }   
       }
     }
