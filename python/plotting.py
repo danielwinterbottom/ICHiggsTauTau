@@ -2202,7 +2202,8 @@ def CompareHists(hists=[],
              extra_pad=0,
              norm_hists=False,
              plot_name="plot",
-             label=""):
+             label="",
+             norm_bins=True):
     
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2214,6 +2215,7 @@ def CompareHists(hists=[],
     legend_hists=[]
     for hist in hists:
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
+        if norm_bins: hist.Scale(1.0,"width")
         h = hist.Clone()
         h.SetFillColor(0)
         h.SetLineWidth(3)
@@ -2296,7 +2298,7 @@ def CompareHists(hists=[],
     
     #CMS label and title
     FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], title, 3)
     
     latex2 = R.TLatex()
@@ -2325,9 +2327,9 @@ def CompareHists(hists=[],
             h.SetMarkerSize(0)
             h.SetMarkerColor(h.GetLineColor())
             h.Divide(div_hist)
-            if first_hist:
-                for i in range(1,h.GetNbinsX()+1): h.SetBinError(i,0.00001)
-                first_hist=False
+            #if first_hist:
+            #    for i in range(1,h.GetNbinsX()+1): h.SetBinError(i,0.00001)
+            #    first_hist=False
             ratio_hs.Add(h.Clone())
             hist_count+=1   
         ratio_hs.Draw("nostack l same")  
