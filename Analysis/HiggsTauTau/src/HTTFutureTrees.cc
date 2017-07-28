@@ -158,7 +158,7 @@ namespace ic {
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>(jets_label_+"UnFiltered");
+//    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>(jets_label_+"UnFiltered");
 
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> lowpt_jets = jets;

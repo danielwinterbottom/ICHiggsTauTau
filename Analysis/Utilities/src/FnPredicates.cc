@@ -1480,6 +1480,11 @@ namespace ic {
     return isoCut;
   }
 
+ double MuonPuppiIsoVal(Muon const* muon) {
+   double isoCut = ((muon->puppi_iso_nolep())/muon->pt());
+   return isoCut;
+ }
+
   
   std::vector<Track *> GetTracksAtVertex(std::vector<Track *> const& trks, std::vector<Vertex *> const& vtxs, unsigned idx, double const& dz) {
     std::vector<Track *> result;

@@ -172,15 +172,15 @@ HTTFutureSequence::HTTFutureSequence(std::string& chan, std::string postf, Json:
   pair_dr = 0.5;
   muon_pt = 20.0; //cross trigger
   if (strategy_type == strategy::smspring16) muon_eta = 2.4;
-  else muon_eta = 2.1;
+  else muon_eta = 2.4;
   tau_pt = 20;
-  tau_eta = 2.3;
+  tau_eta = 3;
   min_taus = 1;
   pair_dr = 0.5;
    }
  if (channel_str == "tt"){
-  tau_pt=40;
-  tau_eta = 2.1;
+  tau_pt=20;
+  tau_eta = 3;
   tau_iso = 1.0;
   tau_dz = 0.2;
   min_taus = 2;
@@ -301,9 +301,9 @@ void HTTFutureSequence::BuildSequence(){
     .set_genparticle_label("genParticles")
     .set_genjet_label("genJets")
     .set_jets_label(jets_label)
-    .set_fs(fs.get()));
+    .set_fs(fs.get()));*/
 
-  BuildModule(HTTFutureJetPV("HTTFutureJetPV")
+/*  BuildModule(HTTFutureJetPV("HTTFutureJetPV")
     .set_genjet_label("genJets")
     .set_jets_label(jets_label)
     .set_genparticle_label("genParticles")
@@ -346,8 +346,8 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
   if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
-  if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
-  if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
+//  if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
+ // if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
 
 
 
@@ -380,7 +380,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
     .set_ditau_label("ditau"));
 
   
- BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
+ //BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
 .set_input_label(jets_label);
@@ -466,6 +466,8 @@ void HTTFutureSequence::BuildTTPairs(){
  BuildModule(CompositeProducer<Tau, Tau>("TTPairProducer")
       .set_input_label_first("genmatched_taus")
       .set_input_label_second("genmatched_taus")
+      /*.set_input_label_first(js["taus"].asString())
+      .set_input_label_second(js["taus"].asString())*/
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
@@ -556,10 +558,11 @@ void HTTFutureSequence::BuildMTPairs() {
       .set_input_label("genmatched_muons").set_min(1)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > muon_pt    &&
-                fabs(m->eta())          < muon_eta   &&
-                fabs(m->dxy_vertex())   < muon_dxy   &&
-                fabs(m->dz_vertex())    < muon_dz   &&
-                MuonID(m);
+                fabs(m->eta())          < muon_eta;//   &&
+  //              fabs(m->dxy_vertex())   < muon_dxy   &&
+ //               fabs(m->dz_vertex())    < muon_dz   &&
+//                MuonPuppiIsoVal(m)      < 0.372 &&
+//                MuonID(m);
 
       }));
 
@@ -682,12 +685,14 @@ void HTTFutureSequence::BuildTauSelection(){
 
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label("genmatched_taus").set_min(min_taus)
-      //.set_input_label(js["taus"].asString()).set_min(min_taus)
+//      .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
         return  t->pt()                     >  tau_pt     &&
                 fabs(t->eta())              <  tau_eta    &&
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
                 fabs(t->charge())           == 1          &&
+                //t->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits") >0.5 &&
+                //t->GetTauID("chargedIsoPtSum") < 2 &&
                 t->GetTauID("decayModeFinding") > 0.5;
 
       }));
