@@ -54,6 +54,8 @@
     "do_tau_eff"    : false,
     "do_ff_weights" : false,
     "do_ff_systematics": false,
+    "do_pdf_wts": false,
+    "do_qcd_scale_wts": false,
     "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Jul12/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
