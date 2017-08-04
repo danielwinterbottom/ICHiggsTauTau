@@ -44,7 +44,7 @@ namespace ic {
    * Copy a container, filter elements, then return this copy
    */
   template <class Container, class Pred>
-  Container copy_keep_if(Container& target, Pred pred) {
+  Container copy_keep_if(Container const& target, Pred pred) {
     Container res = target;
     keep_if(res, pred);
     return res;

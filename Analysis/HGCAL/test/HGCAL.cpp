@@ -47,20 +47,43 @@ class Sequence {
 };
 
 
+
 int main(int argc, char* argv[]) {
   Json::Value js = ic::MergedJson(argc, argv);
 
   vector<string> files = {
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_1.root"
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_1.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_2.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_3.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_4.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_5.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_6.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_7.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_8.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_9.root",
+    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_10.root"
   };
 
-  ic::AnalysisBase analysis("HGCAL", files, "ana/hgc", 5);
+  std::string outputdir = "./output";
+  std::map<std::string, std::shared_ptr<fwlite::TFileService>> fs;
+  for (auto const& seq : {"Main"}) {
+    fs[seq] = std::make_shared<fwlite::TFileService>(
+        outputdir + "/" + seq + "/" + "test.root");
+    // fs[seq.asString()] = fwlite::TFileService(js["output_dir"].asString() +
+    //                                           "/" + seq.asString() + "/" +
+    //                                           js["output_name"].asString());
+  }
+
+  ic::AnalysisBase analysis("HGCAL", files, "ana/hgc", 1000);
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);
 
+
+
   Sequence main_seq;
-  main_seq.BuildModule(ic::HGCALTest("HGCALTest"));
+  main_seq.BuildModule(ic::HGCALTest("HGCALTest")
+    .set_fs(fs.at("Main").get()));
 
   main_seq.InsertSequence("Main", analysis);
 

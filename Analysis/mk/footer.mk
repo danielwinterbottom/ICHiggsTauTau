@@ -141,7 +141,7 @@ $(d)/obj/%.o: $(d)/$(SRC_DIR)/%.$(SRC_EXT)
 	@echo -e "$(COLOR_BL)Compiling object file $(subst $(TOP)/,,$@)$(NOCOLOR)"
 	$(DOECHO)$(CXX) $(CXXFLAGS) $(FLAGS_$(@)) -fPIC -c $< -o $@
 	@echo -e "$(COLOR_CY)Generating dependency file $(subst $(TOP)/,,$(@:.o=.d))$(NOCOLOR)"
-	@$(CXX) $(CXXFLAGS) -MM -MP -MT "$@" $< -o $(@:.o=.d)
+	@$(CXX) $(CXXFLAGS) $(FLAGS_$(@)) -MM -MP -MT "$@" $< -o $(@:.o=.d)
 
 # Rule for generating dictionary object
 $(d)/obj/rootcint_dict.o: $(d)/obj/rootcint_dict.cc
