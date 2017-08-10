@@ -1847,15 +1847,26 @@ namespace ic {
     
    if(do_qcd_scale_wts_){
      // note some of these labels may be generator dependent so need to make sure you check before using them
-     if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
-     if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
-     if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
-     if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
-     if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
-     if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
-     if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
-     if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
-     if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
+     // these id's for bbH amc@NLO  
+     //if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+     //if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+     //if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+     //if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+     //if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+     //if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+     //if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+     //if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+     //if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;  
+     // these id's for LO DY MC
+     if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1"); else scale1_=1.0;
+     if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2")/scale1_; else scale2_=1.0;
+     if(eventInfo->weight_defined("3")) scale3_ = eventInfo->weight("3")/scale1_; else scale3_=1.0;
+     if(eventInfo->weight_defined("4")) scale4_ = eventInfo->weight("4")/scale1_; else scale4_=1.0;
+     if(eventInfo->weight_defined("5")) scale5_ = eventInfo->weight("5")/scale1_; else scale5_=1.0;
+     if(eventInfo->weight_defined("6")) scale6_ = eventInfo->weight("6")/scale1_; else scale6_=1.0;
+     if(eventInfo->weight_defined("7")) scale7_ = eventInfo->weight("7")/scale1_; else scale7_=1.0;
+     if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8")/scale1_; else scale8_=1.0;
+     if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9")/scale1_; else scale9_=1.0;
    }
    if(do_pdf_wts_){ 
      //pdf variation weights

@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "DYScales":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -191,6 +191,8 @@ parser.add_argument("--syst_jfake_m", dest="syst_jfake_m", type=str,
     help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
 parser.add_argument("--gen_signal", dest="gen_signal", action='store_true',
     help="If set then use generator-level tree for signal")
+parser.add_argument("--DYScales", dest="DYScales", action='store_true',
+    help="Do DY scale shape uncertainties")
 
 
 options = parser.parse_args(remaining_argv)   
@@ -412,6 +414,8 @@ if options.era == "mssmsummer16":
         
     # Add MC sample names   
     ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    #ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO']
+    z_lowm_samples = ['DYJetsToLL_M-10-50-LO']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     wgam_samples = ['WGToLNuG','WGToLNuG-ext','WGstarToLNuEE','WGstarToLNuMuMu']
     top_samples = ['TT']
@@ -533,9 +537,9 @@ else:
         elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_ratio = 1.14
         elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_ratio = 1.01
     elif options.channel == 'zmm' or options.channel == 'zee':
-        qcd_os_ss_ratio = 1.06   
+        qcd_os_ss_ratio = 2.0   
     else:
-        qcd_os_ss_ratio = 1.0
+        qcd_os_ss_ratio = 2.0
 #if options.do_ss:
 #    qcd_os_ss_ratio = 1.0
 
@@ -603,9 +607,15 @@ def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
             zj_node = GetZJNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
             ana.nodes[nodename].AddNode(zj_node)  
 
-def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True,doScales=False):
     ztt_node = GetZTTNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
-    ana.nodes[nodename].AddNode(ztt_node)    
+    ana.nodes[nodename].AddNode(ztt_node) 
+    weights=[]
+    if doScales: weights = {'muR1muF2':'wt_mur1_muf2','muR1muF0.5':'wt_mur1_muf0p5','muR2muF1':'wt_mur2_muf1','muR2muF2':'wt_mur2_muf2','muR0.5muF1':'wt_mur0p5_muf1','muR0.5muF0.5':'wt_mur0p5_muf0p5'}
+    for weight in weights:
+      scale_wt = weights[weight]+'*wt'  
+      ztt_node = GetZTTNode(ana, weight, samples, plot, scale_wt, sel, cat, z_sels, get_os)  
+      ana.nodes[nodename].AddNode(ztt_node) 
 
 def GetTTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
   if get_os: OSSS = 'os'
@@ -1233,6 +1243,79 @@ def ScaleUncertBand(nodename='',outfile='output.root',NormScales=True):
     up_hist.Write()
     down_hist.Write()
     outfile.cd()
+    
+def ZTTScaleUncertBand(nodename='',outfile='output.root'):
+    #hist_names=['ZTTmuR0.5muF0.5','ZTTmuR1muF0.5','ZTTmuR0.5muF1','ZTTmuR2muF1','ZTTmuR1muF2','ZTTmuR2muF2']
+    hist_names=['ZTTmuR0.5muF0.5','ZTTmuR2muF2']
+    sfs = {'ZTTmuR0.5muF0.5':1.11129,'ZTTmuR1muF0.5':1.11893,'ZTTmuR0.5muF1':0.993773,'ZTTmuR2muF1':1.00499,'ZTTmuR1muF2':0.912697,'ZTTmuR2muF2':0.916896}
+    hists=[]
+    nom_hist = outfile.Get(nodename+'/ZTT').Clone()
+    #hists.append(nom_hist)
+    nom_entries = nom_hist.Integral(-1,-1)
+    for hist_name in hist_names:
+        hist = outfile.Get(nodename+'/'+hist_name)#.Clone() # not using clone and writing below will save histograms with same normalization as the nominal
+        #sf = nom_entries/hist.Integral(-1,-1)
+        sf = sfs[hist_name]
+        #hist.Scale(sf)
+        hist.Write()
+        hists.append(hist)
+    up_hist = hists[1].Clone()
+    down_hist = hists[0].Clone()
+    up_hist.SetName('ScaleUp')
+    down_hist.SetName('ScaleDown')
+    
+    #for hist in hists:
+    #    print hist.GetName()
+    #    if hist.GetName() is 'ZTTmuR0.5muF0.5' : down_hist = hist
+    #    if hist.GetName() is 'ZTTmuR2muF2' : up_hist = hist
+    #for i in range (1,nom_hist.GetNbinsX()+1):
+    #    for hist in hists:
+    #      max_content = up_hist.GetBinContent(i)
+    #      min_content = down_hist.GetBinContent(i)
+    #      content = hist.GetBinContent(i)
+    #      if content > max_content: up_hist.SetBinContent(i,content)
+    #      if content < min_content: down_hist.SetBinContent(i,content)
+    outfile.cd(nodename)
+
+    up_hist.Scale(nom_entries/up_hist.Integral(-1,-1))
+    down_hist.Scale(nom_entries/down_hist.Integral(-1,-1))
+
+    up_set_to = 1
+    down_set_to = 1
+    bin_num = -1
+    for i in range (nom_hist.GetNbinsX(),0,-1):
+        stat_uncert = nom_hist.GetBinError(i)
+        scale_uncert = abs(up_hist.GetBinContent(i) - down_hist.GetBinContent(i))/2
+        if nom_hist.GetBinContent(i) == 0: continue
+        if scale_uncert/stat_uncert > 2.0/3.0: 
+          up_set_to = up_hist.GetBinContent(i)/nom_hist.GetBinContent(i)
+          down_set_to = down_hist.GetBinContent(i)/nom_hist.GetBinContent(i)
+          bin_num = i
+          break
+    for i in range(bin_num+1,nom_hist.GetNbinsX()+1):     
+      up_hist.SetBinContent(i,up_set_to*nom_hist.GetBinContent(i))
+      down_hist.SetBinContent(i,down_set_to*nom_hist.GetBinContent(i))
+    up_hist.Scale(nom_entries/up_hist.Integral(-1,-1))
+    down_hist.Scale(nom_entries/down_hist.Integral(-1,-1))
+    up_hist.Divide(nom_hist)
+    down_hist.Divide(nom_hist)
+    # to here ...
+    
+    #cut off plots
+    cutoff_hist = nom_hist.Clone()
+    for i in range (1,cutoff_hist.GetNbinsX()+1):
+        scale_error = abs(up_hist.GetBinContent(i)-down_hist.GetBinContent(i))/2
+        stat_error = nom_hist.GetBinError(i)
+        r_cut = 0
+        if stat_error != 0: r_cut = scale_error/stat_error
+        cutoff_hist.SetBinContent(i,r_cut)
+    for hist in hists: 
+        hist.Scale(nom_entries/hist.Integral(-1,-1))
+        hist.Write()
+    up_hist.Write()
+    down_hist.Write()
+    outfile.cd()
+    return [[up_hist, down_hist],cutoff_hist]
         
     
 def DYUncertBand(outfile='output.root',ScaleToData=True):
@@ -1348,7 +1431,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
     if options.method == 17 and options.channel != "em":
         doVVJ=False
         doTTJ=False
-        GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, options.cat,not options.do_ss,ff_syst_weight)
+        #GenerateFakeTaus(ana, add_name, data_samples, plot, "wt", sel, options.cat,not options.do_ss,ff_syst_weight)
         
         # use existing methods to calculate background due to non-fake taus
         add_fake_factor_selection = "gen_match_2<6"
@@ -1356,39 +1439,43 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         residual_cat=cat+"&&"+add_fake_factor_selection
         
         if 'ZTT' not in samples_to_skip:
-            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)                                
-        if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
-        if 'TT' not in samples_to_skip:    
-            GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
-        if 'VV' not in samples_to_skip:
-            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
+            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss, options.DYScales)                                
+            #GenerateZTT(ana, "_lowM", z_lowm_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss, options.DYScales)
+        #if 'ZLL' not in samples_to_skip:
+        #    GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
+        #    #GenerateZLL(ana, "low_M", z_lowm_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss,doZL,False)
+        #if 'TT' not in samples_to_skip:    
+        #    GenerateTop(ana, add_name, top_samples, plot, "wt", sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
+        #if 'VV' not in samples_to_skip:
+        #    GenerateVV(ana, add_name, vv_samples, plot, "wt", sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
     
     else:
         method = options.method
         if options.method == 18:
-            GenerateFakeTaus(ana, add_name, data_samples, plot, wt, sel, options.cat,not options.do_ss,ff_syst_weight)
+            GenerateFakeTaus(ana, add_name, data_samples, plot, "wt", sel, options.cat,not options.do_ss,ff_syst_weight)
             if options.channel == 'tt': method = 8
             elif options.cat == "btag_loosemt" or options.cat == "btag_tight": method = 16
             elif options.channel == 'et' or options.channel == 'mt': method = 12
         if 'ZTT' not in samples_to_skip:
-            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)                                
+            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,options.DYScales)                                
+            #GenerateZTT(ana, "_lowM", z_lowm_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
             GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
+            #GenerateZLL(ana, "_lowM", z_lowm_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         if 'TT' not in samples_to_skip:    
-            GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ)  
+            GenerateTop(ana, add_name, top_samples, plot, "wt", sel, cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
-            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
+            GenerateVV(ana, add_name, vv_samples, plot, "wt", sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
         if 'W' not in samples_to_skip:
-            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
+            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, "wt", sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
-            GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
+            GenerateQCD(ana, add_name, data_samples, plot, "wt", sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
         if compare_w_shapes:
           cat_relax=cats['w_shape_comp']
-          GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    
+          GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, "wt", sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    
         if compare_qcd_shapes:
           cat_relax=cats['qcd_shape_comp']
-          GenerateQCD(ana, '_shape', data_samples, plot, wt, sel, cat_relax, method, qcd_os_ss_ratio, not options.do_ss)
+          GenerateQCD(ana, '_shape', data_samples, plot, "wt", sel, cat_relax, method, qcd_os_ss_ratio, not options.do_ss)
            
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
@@ -1479,10 +1566,16 @@ for systematic in systematics:
         
     # Add all data files
     for sample_name in data_samples:
-        ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+        if options.channel == "zmm": ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+        else: ana.AddSamples("/vols/cms/dw515/Offline/output/MSSM/Jul22"+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
     
     # Add all MC background files
-    for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples:
+    if options.channel == "zmm": other_mc_input_folder_name = options.folder
+    else: other_mc_input_folder_name = "/vols/cms/dw515/Offline/output/MSSM/Jul22"
+    for sample_name in vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples:
+        ana.AddSamples(other_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
+        
+    for sample_name in ztt_samples+z_lowm_samples:
         ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
      
     # Add all MC signal files
@@ -1602,6 +1695,32 @@ if options.doNLOScales:
     DONLOUncerts(nodename,outfile)
 if options.doPDF:
     PDFUncerts(nodename,outfile)
+if options.DYScales:
+   hists_for_ratio =  ZTTScaleUncertBand(nodename,outfile)[0]
+   #hist_for_cutoff = ZTTScaleUncertBand(nodename,outfile)[1]
+   #
+   #plot_name = options.outputfolder+'/mt_tot_cutoff_'+options.datacard+'_'+options.channel
+   #
+   #plotting.CompareHists([hist_for_cutoff],
+   #          legend_titles=['-'],
+   #          title="",
+   #          ratio=False,
+   #          log_y=False,
+   #          log_x=True,
+   #          ratio_range="0.7,1.3",
+   #          custom_x_range=False,
+   #          x_axis_max=4000,
+   #          x_axis_min=0,
+   #          custom_y_range=False,
+   #          y_axis_max=4000,
+   #          y_axis_min=0,
+   #          x_title="M_{T}^{tot} (GeV)",
+   #          y_title="scale uncert. / stat. uncert.",
+   #          extra_pad=0,
+   #          norm_hists=False,
+   #          plot_name=plot_name,
+   #          label=options.channel+" "+options.datacard,
+   #          norm_bins=False)
 
 outfile.Close()
 if is_2d: exit(0) # 2d plotting cosmetics not currently supported
@@ -1677,7 +1796,9 @@ if not options.no_plot:
         plot_name,
         custom_uncerts_up_name,
         custom_uncerts_down_name,
-        scheme
+        scheme,
+        hists_for_ratio,
+        ['Scale Up', 'Scale Down']
         )
     else:    
       plotting.HTTPlotSignal(nodename, 

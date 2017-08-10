@@ -1907,7 +1907,9 @@ def HTTPlot(nodename,
             plot_name="htt_plot",
             custom_uncerts_up_name="total_bkg_custom_uncerts_up",
             custom_uncerts_down_name="total_bkg_custom_uncerts_down",
-            scheme="mt"
+            scheme="mt",
+            hists_for_ratio=None,
+            legend_entries=None
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -1918,6 +1920,18 @@ def HTTPlot(nodename,
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     
+    if hists_for_ratio is not None:
+      colourlist=[R.kBlue,R.kRed,R.kGreen+3,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
+      hist_count=0
+      for hist in hists_for_ratio:
+        if norm_bins: hist.Scale(1.0,"width")
+        hist.SetFillColor(0)
+        hist.SetLineWidth(3)
+        hist.SetLineColor(colourlist[hist_count])
+        hist.SetMarkerSize(0)                          
+        for i in range(1,hist.GetNbinsX()+1): hist.SetBinError(i,0)
+        hist_count+=1
+    
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
     
@@ -1927,9 +1941,11 @@ def HTTPlot(nodename,
     'em':[backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVJ","VVT","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
     'zm':[backgroundComp("Misidentified #mu", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VV","W","ZJ"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232))],
     'zmm':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
-    'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT"],R.TColor.GetColor(100,192,232))],
+    'zee':[backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ee",["ZL","ZJ","ZTT","ZL_lowM","ZJ_lowM","ZTT_lowM"],R.TColor.GetColor(100,192,232))],
     #'dy':[backgroundComp("DY",["ZTT","ZL","ZJ"],R.TColor.GetColor(100,192,232))],
+    'ztt':[backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
     'dy':[backgroundComp("Z#rightarrowll",["ZLL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
+    'dy_gen':[backgroundComp("Z#rightarrowll",["ZLL","Z_lowM"],R.TColor.GetColor(100,192,232))],
     'w':[backgroundComp("W",["W"],R.TColor.GetColor(222,90,106))],
     'w_shape':[backgroundComp("W loosened shape",["W_shape"],R.TColor.GetColor(222,90,106))],
     'qcd':[backgroundComp("QCD",["QCD"],R.TColor.GetColor(250,202,255))],
@@ -1941,7 +1957,8 @@ def HTTPlot(nodename,
         background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
         'et':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
         'tt':[backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104)),backgroundComp("jet#rightarrow#tau_{h} fakes",["jetFakes"],R.TColor.GetColor(192,232,100))],
-        'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
+        'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))],
+        'ztt':[backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))]
         }
         
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
@@ -2130,7 +2147,7 @@ def HTTPlot(nodename,
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosend shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
-    else: legend.AddEntry(blind_datahist,"Observation","PE")
+    #else: legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
     bkg_histos.reverse()
     background_schemes[scheme].reverse()
@@ -2140,6 +2157,8 @@ def HTTPlot(nodename,
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
     if signal_mass != "":
         legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
+    if legend_entries is not None and hists_for_ratio is not None:
+      for hist,leg in zip(hists_for_ratio,legend_entries): legend.AddEntry(hist,leg,"l") 
     ## Add a second signal mass
     #legend.AddEntry(sighist2,str(int(signal_scale))+"#times gg#phi(200 GeV)#rightarrow#tau#tau","l")  
     #legend.AddEntry(sighist3,str(int(signal_scale))+"#times gg#phi(400 GeV)#rightarrow#tau#tau","l")  
@@ -2175,6 +2194,10 @@ def HTTPlot(nodename,
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
+        if hists is not None:
+          for hist in hists_for_ratio:
+            hist.Divide(bkghist)
+            hist.Draw("histsame")
         pads[1].RedrawAxis("G")
         
     pads[0].cd()

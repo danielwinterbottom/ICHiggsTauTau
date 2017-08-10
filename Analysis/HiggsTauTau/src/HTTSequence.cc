@@ -720,7 +720,19 @@ if(js["test_nlo_reweight"].asBool()) {
 }
 
 if(!is_data && js["do_gen_analysis"].asBool()){
-   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
+
+HTTStitching httStitching = HTTStitching("HTTStitching")  
+   .set_era(era_type)
+   .set_fs(fs.get());
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+    httStitching.set_do_dy_soup(true);
+    httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+    httStitching.SetDYInputYields(96658943 + 49144274,62627174, 19970551, 5856110, 4197868);
+  }
+  
+BuildModule(httStitching); 
+    
+BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
 .set_input_label(jets_label);
@@ -732,6 +744,7 @@ TH2F othbtag_eff;
 bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
 cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
 othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
+
 
 BuildModule(BTagWeightRun2("BTagWeightRun2")
  .set_channel(channel::mt)
