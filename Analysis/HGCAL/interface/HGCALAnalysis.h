@@ -10,9 +10,11 @@
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
 #include "Objects/interface/Candidate.hh"
+#include "Objects/interface/GenParticle.hh"
 #include "Objects/interface/CompositeCandidate.hh"
 #include "Objects/interface/TriggerObject.hh"
 #include "TGraph2D.h"
+#include "fastjet/ClusterSequence.hh"
 
 namespace ic {
 
@@ -69,12 +71,23 @@ double MeVperMIP(int layer, int thicknessIndex);
 
 std::vector<RecHit *> const &BuildRecHitCollection(TreeEvent *event);
 std::vector<SimCluster *> const &BuildSimClusterCollection(TreeEvent *event);
+std::vector<ic::GenParticle *> const &BuildGenParticleCollection(TreeEvent *event);
 
 class HGCALTest : public ModuleBase {
  private:
   CLASS_MEMBER(HGCALTest, fwlite::TFileService*, fs)
   TTree * t_jets_;
-  float b_jet_pt_;
+  float jet_pt_;
+  float jet_eta_;
+  float jet_phi_;
+  bool gen_matched_;
+  float genjet_pt_;
+  float genjet_eta_;
+  float genjet_phi_;
+  bool gen_nonu_matched_;
+  float genjet_nonu_pt_;
+  float genjet_nonu_eta_;
+  float genjet_nonu_phi_;
 
  public:
   HGCALTest(std::string const &name);
@@ -89,13 +102,30 @@ std::vector<TGraph2D> PlotRecHitsInLayers(std::vector<RecHit *> const &rechits,
                                           TString name_prefix);
 
 template <class T>
-std::vector<ic::CompositeCandidate> ClusterJets(std::vector<T*> const& input);
+std::vector<ic::CompositeCandidate> ClusterJets(
+    std::vector<T *> const &input, fastjet::JetDefinition const &def);
 }  // namespace ic
 
-
 template <class T>
-std::vector<ic::CompositeCandidate> ClusterJets(std::vector<T*> const& input) {
-  input.size();
+std::vector<ic::CompositeCandidate> ic::ClusterJets(
+    std::vector<T *> const &input, fastjet::JetDefinition const &def) {
+  std::vector<fastjet::PseudoJet> converted_input(input.size());
+  for (unsigned i = 0; i < input.size(); ++i) {
+    converted_input[i] = fastjet::PseudoJet(
+        input[i]->vector().px(), input[i]->vector().py(),
+        input[i]->vector().pz(), input[i]->vector().energy());
+    converted_input[i].set_user_index(i);
+  }
+  fastjet::ClusterSequence cs(converted_input, def);
+  std::vector<fastjet::PseudoJet> jets = fastjet::sorted_by_pt(cs.inclusive_jets());
+  std::vector<ic::CompositeCandidate> final_jets(jets.size());
+  for (unsigned i = 0; i < jets.size(); ++i) {
+    auto components = jets[i].constituents();
+    for (unsigned j = 0; j < components.size(); ++j) {
+      final_jets[i].AddCandidate(TString::Format("cand%i", j).Data(), input[components[j].user_index()]);
+    }
+  }
+  return final_jets;
 }
 
 

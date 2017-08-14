@@ -18,12 +18,32 @@ HGCALTest::~HGCALTest() { ; }
 
 int HGCALTest::PreAnalysis() {
   t_jets_ = fs_->make<TTree>("jets", "jets");
-  t_jets_->Branch("jet_pt",          &b_jet_pt_);
+  t_jets_->Branch("jet_pt",          &jet_pt_);
+  t_jets_->Branch("jet_eta",          &jet_eta_);
+  t_jets_->Branch("jet_phi",          &jet_phi_);
+  t_jets_->Branch("gen_matched",          &gen_matched_);
+  t_jets_->Branch("genjet_pt",          &genjet_pt_);
+  t_jets_->Branch("genjet_eta",          &genjet_eta_);
+  t_jets_->Branch("gnejet_phi",          &genjet_phi_);
+  t_jets_->Branch("gen_nonu_matched",          &gen_nonu_matched_);
+  t_jets_->Branch("genjet_nonu_pt",          &genjet_nonu_pt_);
+  t_jets_->Branch("genjet_nonu_eta",          &genjet_nonu_eta_);
+  t_jets_->Branch("gnejet_nonu_phi",          &genjet_nonu_phi_);
+
   return 0;
 }
 
 int HGCALTest::Execute(TreeEvent* event) {
   auto const& rechits = BuildRecHitCollection(event);
+  auto const& genParticles = BuildGenParticleCollection(event);
+  auto genParts_final = ic::copy_keep_if(genParticles, [](ic::GenParticle *p) {
+    return p->status() == 1;
+  });
+
+  auto genParts_finalNoNu = ic::copy_keep_if(genParts_final, [](ic::GenParticle *p) {
+    unsigned pdgid = std::abs(p->pdgid());
+    return pdgid != 12 && pdgid != 14 && pdgid != 16;
+  });
 
   // int long evt = *event->GetPtr<int long>("event");
   auto filtered_rechits = ic::copy_keep_if(rechits, [](RecHit const* r) {
@@ -81,13 +101,20 @@ int HGCALTest::Execute(TreeEvent* event) {
     }
   }
 
+
   // choose a jet definition
   fastjet::JetDefinition jet_def(fastjet::antikt_algorithm, 0.4);
+  auto jets = ClusterJets(filtered_rechits, jet_def);
+  std::vector<ic::CompositeCandidate *> jets_p;
+  for (auto & j : jets) jets_p.push_back(&j);
 
-  // run the clustering, extract the jets
-  fastjet::ClusterSequence cs(particles, jet_def);
-  std::vector<fastjet::PseudoJet> jets = fastjet::sorted_by_pt(cs.inclusive_jets());
+  auto genJets = ClusterJets(genParts_final, jet_def);
+  std::vector<ic::CompositeCandidate *> genJets_p;
+  for (auto & j : genJets) genJets_p.push_back(&j);
 
+  auto genJets_nonu = ClusterJets(genParts_finalNoNu, jet_def);
+  std::vector<ic::CompositeCandidate *> genJets_nonu_p;
+  for (auto & j : genJets_nonu) genJets_nonu_p.push_back(&j);
 
   // std::cout << "Simcluster sums:\n";
   // std::cout << sc_sum_p << "\n";
@@ -102,19 +129,44 @@ int HGCALTest::Execute(TreeEvent* event) {
   // std::cout << "Highest pT jets:\n";
   unsigned print = std::min(unsigned(jets.size()), unsigned(5));
   for (unsigned i = 0; i < print; i++) {
-    ROOT::Math::PtEtaPhiEVector tmpjet(jets[i].pt(), jets[i].eta(), jets[i].phi(), jets[i].e());
     // std::cout << tmpjet << "\n";
     if (i < 2) {
-      b_jet_pt_ = tmpjet.pt();
+      jet_pt_ = jets[i].pt();
+      jet_eta_ = jets[i].eta();
+      jet_phi_ = jets[i].phi();
+      auto matches = ic::MatchByDR(jets_p, genJets_p, 0.4, true, true);
+      std::map<CompositeCandidate*, CompositeCandidate*> matchMap;
+      for (auto const& pair : matches) matchMap[pair.first] = pair.second;
+      if (matchMap.count(jets_p[i])) {
+        gen_matched_ = true;
+        genjet_pt_ = matchMap[jets_p[i]]->pt();
+        genjet_eta_ = matchMap[jets_p[i]]->eta();
+        genjet_phi_ = matchMap[jets_p[i]]->phi();
+      }
+
+      auto matches_nonu = ic::MatchByDR(jets_p, genJets_nonu_p, 0.4, true, true);
+      std::map<CompositeCandidate*, CompositeCandidate*> matchMap_nonu;
+      for (auto const& pair : matches_nonu) matchMap_nonu[pair.first] = pair.second;
+      if (matchMap_nonu.count(jets_p[i])) {
+        gen_nonu_matched_ = true;
+        genjet_nonu_pt_ = matchMap_nonu[jets_p[i]]->pt();
+        genjet_nonu_eta_ = matchMap_nonu[jets_p[i]]->eta();
+        genjet_nonu_phi_ = matchMap_nonu[jets_p[i]]->phi();
+      }
+
       t_jets_->Fill();
     }
-    // std:;cout << "jet " << i << ": "<< jets[i].pt() << " "
-    //                << jets[i].rap() << " " << jets[i].phi() << endl;
-    // vector<PseudoJet> constituents = jets[i].constituents();
-    // for (unsigned j = 0; j < constituents.size(); j++) {
-    //   cout << "    constituent " << j << "'s pt: " << constituents[j].pt()
-    //        << endl;
+    // std::cout << "jet " << i << ": "<< jets[i].pt() << " "
+    //                << jets[i].eta() << " " << jets[i].phi() << std::endl;
   }
+
+  // print = std::min(unsigned(genJets.size()), unsigned(5));
+  // for (unsigned i = 0; i < print; i++) {
+  //   std::cout << "genjet " << i << ": "<< genJets[i].pt() << " "
+  //                  << genJets[i].eta() << " " << genJets[i].phi() << std::endl;
+  // }
+
+
 
   // auto p_rechits = ic::copy_keep_if(filtered_rechits, [](RecHit const* r) {
   //   return r->eta() > 0;
@@ -280,4 +332,36 @@ std::vector<RecHit*> const& BuildRecHitCollection(TreeEvent* event) {
     return simclusters;
   }
 
+  std::vector<ic::GenParticle *> const &BuildGenParticleCollection(TreeEvent *event) {
+    auto const* gen_pt = event->GetPtr<std::vector<float>>("gen_pt");
+    auto const* gen_eta = event->GetPtr<std::vector<float>>("gen_eta");
+    auto const* gen_phi = event->GetPtr<std::vector<float>>("gen_phi");
+    auto const* gen_e = event->GetPtr<std::vector<float>>("gen_energy");
+    auto const* gen_pdgid = event->GetPtr<std::vector<int>>("gen_pdgid");
+    auto const* gen_status = event->GetPtr<std::vector<int>>("gen_status");
+
+    event->Add("genParticles_storage", std::vector<ic::GenParticle>());
+    auto & gen_store = event->Get<std::vector<ic::GenParticle>>("genParticles_storage");
+    event->Add("genParticles", std::vector<ic::GenParticle *>());
+    auto & gens = event->Get<std::vector<ic::GenParticle *>>("genParticles");
+
+    unsigned n = gen_e->size();
+    gen_store.resize(n);
+    gens.resize(n);
+
+    std::hash<ic::GenParticle*> hasher;
+
+    for (unsigned i = 0; i < n; ++i) {
+      ic::GenParticle & dest = gen_store[i];
+      dest.set_pt((*gen_pt)[i]);
+      dest.set_eta((*gen_eta)[i]);
+      dest.set_phi((*gen_phi)[i]);
+      dest.set_energy((*gen_e)[i]);
+      dest.set_pdgid((*gen_pdgid)[i]);
+      dest.set_status((*gen_status)[i]);
+      dest.set_id(hasher(&dest));
+      gens[i] = &dest;
+    }
+    return gens;
+  }
 }

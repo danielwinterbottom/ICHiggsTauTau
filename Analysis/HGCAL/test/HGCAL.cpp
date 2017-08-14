@@ -51,30 +51,42 @@ class Sequence {
 int main(int argc, char* argv[]) {
   Json::Value js = ic::MergedJson(argc, argv);
 
-  vector<string> files = {
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_1.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_2.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_3.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_4.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_5.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_6.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_7.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_8.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_9.root",
-    "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_10.root"
-  };
+  vector<string> files;
+  for (auto const& filelist : js["filelists"]) {
+    auto i_files = ic::ParseFileLines(filelist.asString());
+    files.insert(files.end(), i_files.begin(), i_files.end());
+  }
+  vector<string> do_files;
+  unsigned file_offset = js.get("file_offset", 0).asUInt();
+  unsigned file_step = js.get("file_step", 1).asUInt();
+  for (unsigned i = file_offset; i < files.size(); i += file_step) {
+    do_files.push_back("root://eoscms.cern.ch/" + files[i]);
+  }
+
+  // vector<string> files = {
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_1.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_2.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_3.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_4.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_5.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_6.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_7.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_8.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_9.root",
+  //   "root://eoscms.cern.ch//eos/cms/store/cmst3/group/hgcal/CMG_studies/Production/Pythia8PtGun_agilbert_JetPt30_20170710/NTUP/partGun_PDGid1_x100_Pt30.0To30.0_NTUP_10.root"
+  // };
 
   std::string outputdir = "./output";
   std::map<std::string, std::shared_ptr<fwlite::TFileService>> fs;
   for (auto const& seq : {"Main"}) {
     fs[seq] = std::make_shared<fwlite::TFileService>(
-        outputdir + "/" + seq + "/" + "test.root");
+        outputdir + "/" + seq + "/" + js["output_name"].asString());
     // fs[seq.asString()] = fwlite::TFileService(js["output_dir"].asString() +
     //                                           "/" + seq.asString() + "/" +
     //                                           js["output_name"].asString());
   }
 
-  ic::AnalysisBase analysis("HGCAL", files, "ana/hgc", 1000);
+  ic::AnalysisBase analysis("HGCAL", do_files, "ana/hgc", 500);
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);
