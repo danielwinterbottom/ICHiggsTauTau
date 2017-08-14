@@ -103,6 +103,7 @@ LIB_DEPS_$(d) := $(foreach x,$(LIB_DEPS),$(TOP)/$(x)/lib/libIC$(subst /,_,$(x)).
 $(foreach x,$(EXES_$(d)),$(eval EXE_DEP_$(x) := $(LIB_EXTRA)))
 $(foreach x,$(LIB_$(d)),$(eval LIB_DEP_$(x) := $(LIB_EXTRA)))
 $(foreach x,$(OBJS_$(d)),$(eval FLAGS_$(x) := $(PKG_FLAGS)))
+$(foreach x,$(EXE_OBJS_$(d)),$(eval FLAGS_$(x) := $(PKG_FLAGS)))
 
 SKIP := 0
 ifeq ($(CMSSW), 0)
@@ -157,9 +158,9 @@ $(d)/obj/rootcint_dict.cc: $(DHEADERS_$(d)) $(d)/$(INC_DIR)/LinkDef.h
 # Rule for generating object files for executables from source files
 $(d)/bin/%.o: $(d)/test/%.cpp
 	@echo -e "$(COLOR_BL)Compiling object file $(subst $(TOP)/,,$@)$(NOCOLOR)"
-	$(DOECHO)$(CXX) $(CXXFLAGS) -fPIC -c $<  -o $@
+	$(DOECHO)$(CXX) $(CXXFLAGS) $(FLAGS_$(@)) -fPIC -c $<  -o $@
 	@echo -e "$(COLOR_CY)Generating dependency file $(subst $(TOP)/,,$(@:.o=.d))$(NOCOLOR)"
-	$(DOECHO)$(CXX) $(CXXFLAGS) -MM -MP -MT "$@" $< -o $(@:.o=.d)
+	$(DOECHO)$(CXX) $(CXXFLAGS) $(FLAGS_$(@)) -MM -MP -MT "$@" $< -o $(@:.o=.d)
 
 # Rule for generating shared library
 $(LIB_$(d)) : $(OBJS_$(d)) $(LIB_DEPS_$(d))
