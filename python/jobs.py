@@ -8,29 +8,23 @@ from functools import partial
 from multiprocessing import Pool
 
 JOB_PREFIX = """#!/bin/sh
+export INITIALDIR=${PWD}
 set -o pipefail
 cd %(CMSSW_BASE)s/src
 export SCRAM_ARCH=%(SCRAM_ARCH)s
 eval `scramv1 runtime -sh`
 cd %(PWD)s
-""" % ({
-    'CMSSW_BASE': os.environ['CMSSW_BASE'],
-    'SCRAM_ARCH': os.environ['SCRAM_ARCH'],
-    'PWD': os.environ['PWD']
-})
+"""
 
 JOB_NAF_PREFIX = """#!/bin/sh
+export INITIALDIR=${PWD}
 set -o pipefail
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 cd %(CMSSW_BASE)s/src
 export SCRAM_ARCH=%(SCRAM_ARCH)s
 eval `scramv1 runtime -sh`
 cd %(PWD)s
-""" % ({
-    'CMSSW_BASE': os.environ['CMSSW_BASE'],
-    'SCRAM_ARCH': os.environ['SCRAM_ARCH'],
-    'PWD': os.environ['PWD']
-})
+"""
 
 ERROR_CAPTURE = """
 function error_exit
@@ -79,6 +73,8 @@ class Jobs:
                            help='Number of jobs to run in a single script [only affects batch submission]')
         group.add_argument('--dry-run', action='store_true',
                            help='Print commands to the screen but do not run them')
+        group.add_argument('--cwd', type=int, default=1,
+                           help='Switch to the submission directory within the job')
         group.add_argument('--sub-opts', default=self.bopts,
                            help='Options for batch submission')
         group.add_argument('--memory', type=int,
@@ -132,11 +128,15 @@ class Jobs:
     def create_job_script(self, commands, script_filename, do_log=False):
         fname = script_filename
         logname = script_filename.replace('.sh', '.log')
+        DO_JOB_PREFIX = JOB_PREFIX if not self.job_mode == 'NAF' else JOB_NAF_PREFIX
+        DO_JOB_PREFIX = DO_JOB_PREFIX % ({
+          'CMSSW_BASE': os.environ['CMSSW_BASE'],
+          'SCRAM_ARCH': os.environ['SCRAM_ARCH'],
+          'PWD': (os.environ['PWD'] if self.args.cwd else '${INITIALDIR}')
+        })
+
         with open(fname, "w") as text_file:
-            if self.job_mode == 'NAF':
-                text_file.write(JOB_NAF_PREFIX)
-            else:
-                text_file.write(JOB_PREFIX)
+            text_file.write(DO_JOB_PREFIX)
             if self.tracking:
                 full_path = os.path.abspath(script_filename)
                 text_file.write('mv %s %s\n' % (
