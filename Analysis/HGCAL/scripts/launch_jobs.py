@@ -20,8 +20,14 @@ FILES_PER_JOB = 10
 task = job_mgr.task_name
 
 joblist = [
-  # ('Pythia8PtGun_agilbert_JetPt30_20170710', ["filelists/Pythia8PtGun_agilbert_JetPt30_20170710.dat"]),
-  ('Pythia8PtGun_agilbert_JetPt100_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt100_20170808.dat"]),
+   #('Pythia8PtGun_agilbert_JetPt15_20170710', ["filelists/Pythia8PtGun_agilbert_JetPt15_20170710.dat"]),
+   #('Pythia8PtGun_agilbert_JetPt30_20170710', ["filelists/Pythia8PtGun_agilbert_JetPt30_20170710.dat"]),
+   #('Pythia8PtGun_agilbert_JetPt50_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt50_20170808.dat"]),
+   #('Pythia8PtGun_agilbert_JetPt100_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt100_20170808.dat"]),
+   #('Pythia8PtGun_agilbert_JetPt200_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt200_20170808.dat"]),
+   #('Pythia8PtGun_agilbert_JetPt50_200PU_20170809', ["filelists/Pythia8PtGun_agilbert_JetPt50_200PU_20170809.dat"]),
+   #('Dijet_agilbert_DiJet50_20170815', ["filelists/Dijet_agilbert_DiJet50_20170815.dat"]),
+  ('Dijet_test', ["filelists/filelist_dijet_test.dat"]),
 ]
 
 for sample, filelist in joblist:

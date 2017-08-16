@@ -21,14 +21,17 @@ int HGCALTest::PreAnalysis() {
   t_jets_->Branch("jet_pt",          &jet_pt_);
   t_jets_->Branch("jet_eta",          &jet_eta_);
   t_jets_->Branch("jet_phi",          &jet_phi_);
+  t_jets_->Branch("jet_e",          &jet_e_);
   t_jets_->Branch("gen_matched",          &gen_matched_);
   t_jets_->Branch("genjet_pt",          &genjet_pt_);
   t_jets_->Branch("genjet_eta",          &genjet_eta_);
-  t_jets_->Branch("gnejet_phi",          &genjet_phi_);
+  t_jets_->Branch("genjet_phi",          &genjet_phi_);
+  t_jets_->Branch("genjet_e",          &genjet_e_);
   t_jets_->Branch("gen_nonu_matched",          &gen_nonu_matched_);
   t_jets_->Branch("genjet_nonu_pt",          &genjet_nonu_pt_);
   t_jets_->Branch("genjet_nonu_eta",          &genjet_nonu_eta_);
-  t_jets_->Branch("gnejet_nonu_phi",          &genjet_nonu_phi_);
+  t_jets_->Branch("genjet_nonu_phi",          &genjet_nonu_phi_);
+  t_jets_->Branch("genjet_nonu_e",          &genjet_nonu_e_);
 
   return 0;
 }
@@ -134,6 +137,7 @@ int HGCALTest::Execute(TreeEvent* event) {
       jet_pt_ = jets[i].pt();
       jet_eta_ = jets[i].eta();
       jet_phi_ = jets[i].phi();
+      jet_e_ = jets[i].energy();
       auto matches = ic::MatchByDR(jets_p, genJets_p, 0.4, true, true);
       std::map<CompositeCandidate*, CompositeCandidate*> matchMap;
       for (auto const& pair : matches) matchMap[pair.first] = pair.second;
@@ -142,6 +146,13 @@ int HGCALTest::Execute(TreeEvent* event) {
         genjet_pt_ = matchMap[jets_p[i]]->pt();
         genjet_eta_ = matchMap[jets_p[i]]->eta();
         genjet_phi_ = matchMap[jets_p[i]]->phi();
+        genjet_e_ = matchMap[jets_p[i]]->energy();
+      } else {
+        gen_matched_ = false;
+        genjet_pt_ = -1.;
+        genjet_eta_ = -1.;
+        genjet_phi_ = -1.;
+        genjet_e_ = -1.;
       }
 
       auto matches_nonu = ic::MatchByDR(jets_p, genJets_nonu_p, 0.4, true, true);
@@ -152,6 +163,13 @@ int HGCALTest::Execute(TreeEvent* event) {
         genjet_nonu_pt_ = matchMap_nonu[jets_p[i]]->pt();
         genjet_nonu_eta_ = matchMap_nonu[jets_p[i]]->eta();
         genjet_nonu_phi_ = matchMap_nonu[jets_p[i]]->phi();
+        genjet_nonu_e_ = matchMap_nonu[jets_p[i]]->energy();
+      } else {
+        gen_nonu_matched_ = false;
+        genjet_nonu_pt_ = -1.;
+        genjet_nonu_eta_ = -1.;
+        genjet_nonu_phi_ = -1.;
+        genjet_nonu_e_ = -1.;
       }
 
       t_jets_->Fill();

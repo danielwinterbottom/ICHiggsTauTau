@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
     //                                           js["output_name"].asString());
   }
 
-  ic::AnalysisBase analysis("HGCAL", do_files, "ana/hgc", 500);
+  ic::AnalysisBase analysis("HGCAL", do_files, "ana/hgc", js["max_events"].asInt64());
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);

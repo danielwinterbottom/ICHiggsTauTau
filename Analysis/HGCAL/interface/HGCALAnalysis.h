@@ -80,14 +80,17 @@ class HGCALTest : public ModuleBase {
   float jet_pt_;
   float jet_eta_;
   float jet_phi_;
+  float jet_e_;
   bool gen_matched_;
   float genjet_pt_;
   float genjet_eta_;
   float genjet_phi_;
+  float genjet_e_;
   bool gen_nonu_matched_;
   float genjet_nonu_pt_;
   float genjet_nonu_eta_;
   float genjet_nonu_phi_;
+  float genjet_nonu_e_;
 
  public:
   HGCALTest(std::string const &name);
