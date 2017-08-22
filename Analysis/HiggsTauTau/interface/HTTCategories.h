@@ -78,8 +78,12 @@ class HTTCategories : public ModuleBase {
   double wt_tau_fake_down_;
   double wt_tquark_up_;
   double wt_tquark_down_;
+  double wt_tquark_shape_up_;
+  double wt_tquark_shape_down_;
   double wt_zpt_up_;
   double wt_zpt_down_;
+  double wt_zpt_scaledown_;
+  double wt_zpt_scaleup_;
   double wt_tau_id_up_;
   double wt_tau_id_down_;
   double wt_em_qcd_;
@@ -117,6 +121,7 @@ class HTTCategories : public ModuleBase {
   bool lepton_veto_;
   unsigned n_vtx_;
   bool good_vtx_;
+  double dR_;
 /*  branch_var trigger_object_pt_1;
   branch_var trigger_object_eta_1;
   branch_var trigger_object_pt_2;
@@ -1013,6 +1018,11 @@ class HTTCategories : public ModuleBase {
   
   double wt_alphasdown_;
   double wt_alphasup_;
+  
+  double wt_zpt_bkgup;   
+  double wt_zpt_bkgdown; 
+  double genM;           
+  double genpT;          
 
  public:
   HTTCategories(std::string const& name);

@@ -2,8 +2,8 @@ void makeZWeightsFile(std::string outfile){
 
 double x_bins[10] = {0,50,80,90,100,120,160,200,400,800};
 double y_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600};
-std::vector<std::string> MC_add_strings = {""/*, "_ESUp", "_ESDown","_TTUp", "_TTDown"/*, "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"*/};
-//std::vector<std::string> MC_add_strings = {""};
+//std::vector<std::string> MC_add_strings = {""/*, "_ESUp", "_ESDown","_TTUp", "_TTDown"/*, "_IDUp", "_IDDown", "_IsoUp", "_IsoDown", "_TrgUp", "_TrgDown"*/};
+std::vector<std::string> MC_add_strings = {"","_bkgUp", "_bkgDown"};
 int n_xbins = 9;
 int n_ybins = 14;
 TFile *fout = new TFile(outfile.c_str(),"RECREATE");
@@ -14,6 +14,10 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
     if (MC_add_strings[i]=="_TTDown" || MC_add_strings[i]=="_TTUp") MC_add_string = "";
     if (MC_add_strings[i]=="_TTUp") tt_scale = 1.06;
     if (MC_add_strings[i]=="_TTDown") tt_scale = 0.94;
+    double bkg_scale=1.0;
+    if (MC_add_strings[i]=="_bkgDown" || MC_add_strings[i]=="_bkgUp") MC_add_string = "";
+    if (MC_add_strings[i]=="_bkgUp") bkg_scale = 1.2;
+    if (MC_add_strings[i]=="_bkgDown") bkg_scale = 0.8;
     std::string hist_name = "zptmass_histo"+MC_add_strings[i];    
     TH2D *h_2dweights = new TH2D(hist_name.c_str(),hist_name.c_str(),n_xbins,x_bins,n_ybins,y_bins);
     h_2dweights       ->Sumw2();
@@ -31,8 +35,13 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
       TFile f(file_name.c_str());
       TH1D *h1 = (TH1D*)f.Get(("zmm_inclusive/data_obs"))->Clone();
       TH1D *h2 = (TH1D*)f.Get(("zmm_inclusive/total_bkg"+MC_add_string).c_str())->Clone();
-      TH1D *h3 = (TH1D*)f.Get(("zmm_inclusive/ZLL"+MC_add_string).c_str())->Clone();
+      TH1D *h3 = (TH1D*)f.Get(("zmm_inclusive/ZL"+MC_add_string).c_str())->Clone();
+      h3->Add((TH1D*)f.Get(("zmm_inclusive/ZJ"+MC_add_string).c_str())->Clone());
+      h3->Add((TH1D*)f.Get(("zmm_inclusive/ZTT"+MC_add_string).c_str())->Clone());
       TH1D *h4 = (TH1D*)f.Get(("zmm_inclusive/TT"+MC_add_string).c_str())->Clone();
+      
+      TH1D *h5 = (TH1D*)f.Get(("zmm_inclusive/total_bkg"+MC_add_string).c_str())->Clone();
+
       h1->SetDirectory(0);
       h2->SetDirectory(0);
       h3->SetDirectory(0);
@@ -45,6 +54,13 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
         h4->Scale(tt_scale);
         //Add shifted ttbar to backgrounds
         h2->Add(h4);
+      }
+      if (bkg_scale!=1.0){
+        //subtract TT from background
+        h5->Add(h3,-1);
+        h5->Scale(bkg_scale);
+        //Add shifted ttbar to backgrounds
+        h2 = h5;
       }
       //subtract background from data
       h1->Add(h2,-1);
@@ -143,7 +159,7 @@ for(unsigned i=0; i<MC_add_strings.size(); ++i){
     h_2dweights->SetBinError(h_2dweights->GetNbinsX()+1,h_2dweights->GetNbinsY()+1,h_2dweights->GetBinError(h_2dweights->GetNbinsX(),h_2dweights->GetNbinsY()));
     
     fout->cd();
-    h_2dweights->Wrtie();
+    h_2dweights->Write();
     
     
     //TH1D *h_stat_up;

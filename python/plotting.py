@@ -1923,14 +1923,15 @@ def HTTPlot(nodename,
     if hists_for_ratio is not None:
       colourlist=[R.kBlue,R.kRed,R.kGreen+3,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
       hist_count=0
-      for hist in hists_for_ratio:
-        if norm_bins: hist.Scale(1.0,"width")
-        hist.SetFillColor(0)
-        hist.SetLineWidth(3)
-        hist.SetLineColor(colourlist[hist_count])
-        hist.SetMarkerSize(0)                          
-        for i in range(1,hist.GetNbinsX()+1): hist.SetBinError(i,0)
-        hist_count+=1
+      if hists_for_ratio is not None:
+        for hist in hists_for_ratio:
+          if norm_bins: hist.Scale(1.0,"width")
+          hist.SetFillColor(0)
+          hist.SetLineWidth(3)
+          hist.SetLineColor(colourlist[hist_count])
+          hist.SetMarkerSize(0)                          
+          for i in range(1,hist.GetNbinsX()+1): hist.SetBinError(i,0)
+          hist_count+=1
     
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2194,7 +2195,7 @@ def HTTPlot(nodename,
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
-        if hists is not None:
+        if hists_for_ratio is not None:
           for hist in hists_for_ratio:
             hist.Divide(bkghist)
             hist.Draw("histsame")

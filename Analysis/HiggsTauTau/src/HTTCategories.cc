@@ -878,6 +878,10 @@ namespace ic {
           outtree_->Branch("wt_zpt_ttup"               , &wt_zpt_ttup                );
           outtree_->Branch("wt_zpt_ttdown"             , &wt_zpt_ttdown              );
         }
+        outtree_->Branch("wt_zpt_bkgup"               , &wt_zpt_bkgup                );
+        outtree_->Branch("wt_zpt_bkgdown"             , &wt_zpt_bkgdown              );
+        outtree_->Branch("genM"                       , &genM              );
+        outtree_->Branch("genpT"                      , &genpT              );
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -887,7 +891,13 @@ namespace ic {
         outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
         outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
         outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
+        
+        outtree_->Branch("wt_tquark_shape_up",      &wt_tquark_shape_up_);
+        outtree_->Branch("wt_tquark_shape_down",    &wt_tquark_shape_down_);
+        
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
+        outtree_->Branch("wt_zpt_scaledown",         &wt_zpt_scaledown_);
+        outtree_->Branch("wt_zpt_scaleup",         &wt_zpt_scaleup_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("wt_trig_up_1",    &wt_trig_up_1_);
@@ -900,6 +910,7 @@ namespace ic {
         outtree_->Branch("phi_2",             &phi_2_.var_double);
         //if (channel_ != channel::em){
           outtree_->Branch("dphi",              &dphi_);
+        outtree_->Branch("dR",              &dR_);  
         //}
         outtree_->Branch("E_1",               &E_1_);
         outtree_->Branch("E_2",               &E_2_);
@@ -2018,6 +2029,12 @@ namespace ic {
     if (event->Exists("wt_tau_fake_down"))  wt_tau_fake_down_ = event->Get<double>("wt_tau_fake_down");
     if (event->Exists("wt_tquark_up"))      wt_tquark_up_   = event->Get<double>("wt_tquark_up");
     if (event->Exists("wt_tquark_down"))    wt_tquark_down_ = event->Get<double>("wt_tquark_down");
+    
+    
+    if (event->Exists("wt_tquark_shape_up"))      wt_tquark_shape_up_   = event->Get<double>("wt_tquark_shape_up");
+    if (event->Exists("wt_tquark_shape_down"))    wt_tquark_shape_down_ = event->Get<double>("wt_tquark_shape_down");
+    
+    
     if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
     if (event->Exists("wt_tau_id_up"))      wt_tau_id_up_   = event->Get<double>("wt_tau_id_up");
@@ -2027,6 +2044,9 @@ namespace ic {
     if (event->Exists("wt_em_qcd_down"))    wt_em_qcd_down_ = event->Get<double>("wt_em_qcd_down");
     if(event->Exists("mssm_nlo_wt"))        wt_nlo_pt_ = event->Get<double>("mssm_nlo_wt");
     if(event->Exists("mssm_nlo_pt"))        nlo_pt_ = event->Get<double>("mssm_nlo_pt");
+    
+    if (event->Exists("wt_zpt_scaleup"))       wt_zpt_scaleup_ = event->Get<double>("wt_zpt_scaleup");
+    if (event->Exists("wt_zpt_scaledown"))       wt_zpt_scaledown_ = event->Get<double>("wt_zpt_scaledown");
     
     wt_zpt_stat_m400pt0_up     = 1.0;
     wt_zpt_stat_m400pt40_up    = 1.0;
@@ -2039,6 +2059,11 @@ namespace ic {
     wt_zpt_ttup                = 1.0;
     wt_zpt_ttdown              = 1.0;
     
+    wt_zpt_bkgup   = 1.0;
+    wt_zpt_bkgdown = 1.0;
+    genM           = -1.0;
+    genpT          = -1.0;
+    
     if (event->Exists("wt_zpt_stat_m400pt0_up"    )) wt_zpt_stat_m400pt0_up     = event->Get<double>("wt_zpt_stat_m400pt0_up"    );
     if (event->Exists("wt_zpt_stat_m400pt40_up"   )) wt_zpt_stat_m400pt40_up    = event->Get<double>("wt_zpt_stat_m400pt40_up"   );
     if (event->Exists("wt_zpt_stat_m400pt80_up"   )) wt_zpt_stat_m400pt80_up    = event->Get<double>("wt_zpt_stat_m400pt80_up"   );
@@ -2049,6 +2074,11 @@ namespace ic {
     if (event->Exists("wt_zpt_esdown"             )) wt_zpt_esdown              = event->Get<double>("wt_zpt_esdown"             );
     if (event->Exists("wt_zpt_ttup"               )) wt_zpt_ttup                = event->Get<double>("wt_zpt_ttup"               );
     if (event->Exists("wt_zpt_ttdown"             )) wt_zpt_ttdown              = event->Get<double>("wt_zpt_ttdown"             );
+    
+    if (event->Exists("wt_zpt_bkgup"          )) wt_zpt_bkgup   = event->Get<double>("wt_zpt_bkgup"   );
+    if (event->Exists("wt_zpt_bkgdown"        )) wt_zpt_bkgdown = event->Get<double>("wt_zpt_bkgdown" );
+    if (event->Exists("genM"                  )) genM           = event->Get<double>("genM"           );
+    if (event->Exists("genpT"                 )) genpT          = event->Get<double>("genpT"          );
     
   mc_weight_ = 0.0;
   if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
@@ -2326,6 +2356,7 @@ namespace ic {
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
     dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector()));
+    dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
     E_1_ = lep1->energy();
     E_2_ = lep2->energy();
     m_1_ = lep1->M();

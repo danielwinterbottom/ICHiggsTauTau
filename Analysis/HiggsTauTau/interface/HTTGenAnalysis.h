@@ -73,6 +73,8 @@ class HTTGenAnalysis : public ModuleBase {
   double pt_tt_;
   double wt_;
   double HiggsPt_;
+  double dR_;
+  double m_inv_;
   std::string decayType;
   double wt_ggh_pt_           ;
   double wt_ggh_pt_up_        ;

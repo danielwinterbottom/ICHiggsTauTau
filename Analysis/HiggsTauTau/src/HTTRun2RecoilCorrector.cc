@@ -51,8 +51,8 @@ namespace ic {
       if(met_label_ == "pfMET"){
           process_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/TypeI-PFMet_Run2016BtoH.root";
       }
-      std::cout << "process file = " << process_file << std::endl;
       syst_file    = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/MEtSys.root"; //2015 file, systs not available for 2016 yet!
+      if(met_label_ == "pfMET") syst_file = "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/input/recoilfits/PFMEtSys_2016.root";
     } else{
       std::cerr << "Strategy: " << Strategy2String(strategy_) << " not recognised, an exception will be thrown." << std::endl;
       throw;

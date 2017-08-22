@@ -725,7 +725,8 @@ namespace ic {
           event->Add("wt_zpt_down",wtzpt_down/wtzpt);
       } else if(mc_ == mc::summer16_80X){
         auto args = std::vector<double>{zmass,zpt};      
-        double wtzpt         = fns_["zpt_weight_nom"]->eval(args.data());
+        //double wtzpt         = fns_["zpt_weight_nom"]->eval(args.data());
+        double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
         double wtzpt_esup    = fns_["zpt_weight_esup"]->eval(args.data());
         double wtzpt_esdown  = fns_["zpt_weight_esdown"]->eval(args.data());
         double wtzpt_ttup    = fns_["zpt_weight_ttup"]->eval(args.data()); 
@@ -752,6 +753,21 @@ namespace ic {
         event->Add("wt_zpt_esdown"              , wtzpt_esdown /wtzpt);
         event->Add("wt_zpt_ttup"                ,   wtzpt_ttup   /wtzpt);
         event->Add("wt_zpt_ttdown"              , wtzpt_ttdown /wtzpt);
+        
+        double wtzpt_scaleup = z_pt_mass_hist_scaleup_->GetBinContent(z_pt_mass_hist_scaleup_->FindBin(zmass,zpt));
+        double wtzpt_scaledown = z_pt_mass_hist_scaledown_->GetBinContent(z_pt_mass_hist_scaledown_->FindBin(zmass,zpt));
+        event->Add("wt_zpt_scaleup",wtzpt_scaleup/wtzpt);
+        event->Add("wt_zpt_scaledown",wtzpt_scaledown/wtzpt);
+        
+        double wtzpt_t_up = z_pt_mass_hist_t_up_->GetBinContent(z_pt_mass_hist_t_up_->FindBin(zmass,zpt));
+        double wtzpt_t_down = z_pt_mass_hist_t_down_->GetBinContent(z_pt_mass_hist_t_down_->FindBin(zmass,zpt));
+        event->Add("wt_tquark_shape_up",wtzpt_t_up/wtzpt);
+        event->Add("wt_tquark_shape_down",wtzpt_t_down/wtzpt);
+        
+        double wtzpt_bkg_up = z_pt_mass_hist_bkg_up_->GetBinContent(z_pt_mass_hist_bkg_up_->FindBin(zmass,zpt));
+        double wtzpt_bkg_down = z_pt_mass_hist_bkg_down_->GetBinContent(z_pt_mass_hist_bkg_down_->FindBin(zmass,zpt));
+        event->Add("wt_zpt_bkgup",wtzpt_bkg_up/wtzpt);
+        event->Add("wt_zpt_bkgdown",wtzpt_bkg_down/wtzpt);
       }
     }
 

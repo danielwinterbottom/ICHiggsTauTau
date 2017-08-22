@@ -200,6 +200,8 @@ namespace ic {
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
       outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
+      outtree_->Branch("dR"     , &dR_);
+      outtree_->Branch("m_inv"     , &m_inv_);
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -488,6 +490,7 @@ namespace ic {
     }
 
     if(passed_){
+      dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1.vector(),lep2.vector()));
       pt_1_  = lep1.vector().Pt();
       pt_2_  = lep2.vector().Pt();
       eta_1_ = lep1.vector().Rapidity();
@@ -496,6 +499,7 @@ namespace ic {
       phi_2_ = lep2.vector().Phi();
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
+      m_inv_ = (met.vector()+lep1.vector()+lep2.vector()).M();
       m_vis_ = (lep1.vector()+lep2.vector()).M();
       mt_1_ = MT(&lep1, &met);
       mt_2_ = MT(&lep2, &met);
