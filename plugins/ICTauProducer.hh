@@ -15,7 +15,7 @@
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #endif
 #include "DataFormats/TauReco/interface/PFTauDiscriminator.h"
-#include "/*DataFormats/PatCandidates/interface/Tau.h*/"
+#include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
@@ -140,6 +140,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
     dest.set_charge(src.charge());
     dest.set_decay_mode(src.decayMode());
 
+
     if (src.leadPFChargedHadrCand().isNonnull()) {
       dest.set_lead_ecal_energy(src.leadPFChargedHadrCand()->ecalEnergy());
       dest.set_lead_hcal_energy(src.leadPFChargedHadrCand()->hcalEnergy());
@@ -236,12 +237,12 @@ void ICTauProducer<pat::Tau>::constructSpecific(
       observed_id_[tau_ids[j].first] = CityHash64(tau_ids[j].first);
     }
     
-    if(src.hasSecondaryVertex()){
-      dest.set_svx(src.secondaryVertex().vx());    
-      dest.set_svy(src.secondaryVertex().vy());
-      dest.set_svz(src.secondaryVertex().vz());
-      std::cout << src.secondaryVertex() << std::endl;
-    }
+    //if(src.hasSecondaryVertex()){
+    //  dest.set_svx(src.secondaryVertex().vx());    
+    //  dest.set_svy(src.secondaryVertex().vy());
+    //  dest.set_svz(src.secondaryVertex().vz());
+    //  std::cout << src.secondaryVertex() << std::endl;
+    //}
     
         bool  add_decay_products_ = true;
     if (add_decay_products_) {
