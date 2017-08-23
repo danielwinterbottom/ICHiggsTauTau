@@ -559,6 +559,14 @@ class HttWOSSSNode(BaseNode):
             self.shape *=w_factor
         if self.btag_extrap_num_node is not None and self.btag_extrap_den_node is not None:
             self.shape *= self.btag_extrap_num_node.shape.rate / self.btag_extrap_den_node.shape.rate
+        #print "data os", self.data_os_node.shape.rate.n
+        #print "MC os", self.subtract_os_node.shape.rate.n
+        #print "data ss", self.data_ss_node.shape.rate.n
+        #print "MC ss", self.subtract_ss_node.shape.rate.n
+        #print "QCD OS/SS", self.qcd_factor
+        #print "W OS/SS", w_factor.n
+        #print "high->low mT extrap", self.w_signal_node.shape.rate.n/self.w_control_node.shape.rate.n
+        #if self.btag_extrap_num_node is not None and self.btag_extrap_den_node is not None: print "relaxed b-tag -> b-tag extrap", self.btag_extrap_num_node.shape.rate.n / self.btag_extrap_den_node.shape.rate.n
         
     def Objects(self):
         return {self.name: self.shape.hist}
