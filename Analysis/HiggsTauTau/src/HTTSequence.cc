@@ -1720,7 +1720,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_4.root");
+        httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5.root");
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
@@ -1761,6 +1761,24 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
        }
    
     BuildModule(httStitching);   
+  }
+  if(strategy_type == strategy::mssmsummer16&&channel==channel::wmnu){
+    HTTStitching httStitching = HTTStitching("HTTStitching")  
+        .set_era(era_type)
+        .set_fs(fs.get());
+         if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
+           output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+        httStitching.set_do_w_soup(true);
+        httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
+        httStitching.SetWInputYields(57026058 + 29705748,45367044,29878415 + 30319351,19798117 + 39269431,9170576 + 2073275 + 18751462);
+       }
+       if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+         httStitching.set_do_dy_soup(true);
+         httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); //Target fractions are xs_n-jet/xs_inclusive
+         httStitching.SetDYInputYields(96658943 + 49144274,62627174, 19970551, 5856110, 4197868);
+       }
+   
+    BuildModule(httStitching);      
   }
 
 

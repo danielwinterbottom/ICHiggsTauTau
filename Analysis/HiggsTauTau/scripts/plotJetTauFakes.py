@@ -30,8 +30,8 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
-denominator_file = ROOT.TFile("output/datacard_jet_pt_denominator_coarse_wmnu_2016.root")
-numerator_file_med = ROOT.TFile("output/datacard_jet_pt_numerator_medium_coarse_wmnu_2016.root")
+denominator_file = ROOT.TFile("output/wmnu_denum.root")
+numerator_file_med = ROOT.TFile("output/wmnu_num.root")
 
 denom_data = getHistogram(denominator_file,"data_obs","wmnu_inclusive")
 denom_VV = getHistogram(denominator_file,"VV","wmnu_inclusive")
@@ -44,6 +44,16 @@ num_VV = getHistogram(numerator_file_med,"VV","wmnu_inclusive")
 num_TT = getHistogram(numerator_file_med,"TT","wmnu_inclusive")
 num_ZLL = getHistogram(numerator_file_med,"ZLL","wmnu_inclusive")
 num_W = getHistogram(numerator_file_med,"W","wmnu_inclusive")
+
+subtract_up=denom_data.Clone()
+subtract_down=denom_data.Clone()
+subtract_up.Add(denom_VV,-1.1)
+subtract_up.Add(denom_TT,-1.1)
+subtract_up.Add(denom_ZLL,-1.1)
+
+subtract_up.Add(denom_VV,-0.9)
+subtract_up.Add(denom_TT,-0.9)
+subtract_up.Add(denom_ZLL,-0.9)
 
 
 denom_data.Add(denom_VV,-1)
@@ -61,7 +71,8 @@ num_data.SetMarkerStyle(20)
 num_data.SetMarkerColor(1)
 num_data.SetLineColor(1)
 
-num_W.SetLineColor(ROOT.kGreen+3)
+num_W.SetLineColor(ROOT.kBlue)
+num_W.SetMarkerColor(ROOT.kBlue)
 
 c2 = ROOT.TCanvas()
 c2.cd()
@@ -71,7 +82,7 @@ pads[0].cd()
 pads[0].SetLogy(1)
 axish = createAxisHists(2,num_data,num_data.GetXaxis().GetXmin(),num_data.GetXaxis().GetXmax()-0.01)
 axish[1].GetYaxis().SetTitle("Obs/MC")
-axish[1].GetXaxis().SetTitle("jet p_{T} [GeV]")
+axish[1].GetXaxis().SetTitle("jet p_{T} (GeV)")
 axish[1].GetYaxis().SetNdivisions(8)
 axish[0].GetXaxis().SetTitleSize(0)
 axish[0].GetXaxis().SetLabelSize(0)
@@ -93,6 +104,8 @@ plot.DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045,0.05,1.0,'',1.0)
 plot.DrawTitle(pads[0],"35.9 fb^{-1}",3)
 
 ratio_data_hist = plot.MakeRatioHist(num_data,num_W,True,True)
+#ratio_data_hist = num_data.Clone()
+#ratio_data_hist.Divide(num_W)
 ratio_data_hist_fit = plot.MakeRatioHist(num_data,num_W,True,True)
 ratio_W_hist = plot.MakeRatioHist(num_W,num_W,False,False)
 
@@ -102,13 +115,15 @@ pads[1].SetGrid(0,1)
 axish[1].Draw("axis")
 axish[1].SetMinimum(0.5)
 axish[1].SetMaximum(1.5)
-#ratio_W_hist.DrawCopy("LSAME")
+#ratio_W_hist.DrawCopy("E0LSAME")
+
 ratio_data_hist.DrawCopy("PSAME")
 pads[1].RedrawAxis("G")
-func = ROOT.TF1("func","pol1",30,140)
+func = ROOT.TF1("func","pol1",30,200)
 #func.FixParameter(0,1.25)
 x = ratio_data_hist.Fit("func","R0+")
 plotfn = ratio_data_hist.GetFunction("func")
+
 plotfn.Draw("LSAME")
 pads[1].RedrawAxis("G")
 
@@ -118,7 +133,7 @@ pads[1].RedrawAxis("G")
 #y.Print()
 
 
-c2.SaveAs("W_jettaufake_nofit.pdf")
+c2.SaveAs("W_jettaufake_fit_normrate.pdf")
 
 
 

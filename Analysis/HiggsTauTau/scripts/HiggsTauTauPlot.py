@@ -410,12 +410,12 @@ if options.era == "mssmsummer16":
     top_samples = ['TT']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
-    if options.channel == 'wmnu' or (options.channel=='em' and options.fakes):
-        ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
-        vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
-        top_samples = ['TT']
-        ztt_shape_samples = ['DYJetsToLL-LO-ext2','DYJetsToLL-LO-ext1']
-        wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext']
+    #if options.channel == 'wmnu' or (options.channel=='em' and options.fakes):
+    #    ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
+    #    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+    #    top_samples = ['TT']
+    #    ztt_shape_samples = ['DYJetsToLL-LO-ext2','DYJetsToLL-LO-ext1']
+    #    wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext']
 
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau', 'qqH' : 'VBFHToTauTau', 'WplusH' : 'WplusHToTauTau', 'WminusH' : 'WminusHToTauTau', 'ZH' : 'ZHToTauTau', 'TTH' : 'TTHToTauTau' }
@@ -546,7 +546,7 @@ def GetZJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_se
 
 def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True, doZL=True, doZJ=True):
     if options.channel == 'wmnu' or options.fakes:
-        zll_node = GetZLLNodeWMNu(ana, add_name, samples, plot, sel)
+        zll_node = GetZLLNodeWMNu(ana, add_name, samples, plot, 'wt*('+sel+')')
         ana.nodes[nodename].AddNode(zll_node)
     elif options.channel == 'em' and not options.fakes or options.channel == 'zmm' or options.channel == 'zee':
         zll_node = GetZLLNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)
@@ -716,7 +716,7 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='',
 def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
   w_node_name = 'W'  
   if options.channel == 'wmnu' or options.fakes:
-      w_node = GetWNodeWMNu(ana, add_name, samples, plot, sel)
+      w_node = GetWNodeWMNu(ana, add_name, samples, plot, 'wt*('+sel+')')
       ana.nodes[nodename].AddNode(w_node)
   else:
       if options.channel == 'em':
@@ -759,7 +759,7 @@ def GetSubtractNode(ana,add_name,plot,wt,sel,cat,method,qcd_os_ss_ratio,OSSS,inc
   return subtract_node
       
 def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
-    if options.channel != 'wmnu' and not options.fakes:
+    if options.channel != 'wmnu':
         shape_node = None
         OSSS = "!os"
         if get_os: OSSS = "os"
@@ -779,9 +779,13 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
             #qcd_os_ss_factor = 1
                 if get_os and options.channel == "em":
                     weight = wt+'*wt_em_qcd'
-                if method == 19:
+                if method == 19 and not options.fakes:
                     shape_selection = BuildCutString(weight, sel, em_shape_cat, '!os')
                     subtract_node = GetSubtractNode(ana,'',plot,weight,sel,em_shape_cat,method,1,False,True)
+                    shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot, shape_selection), subtract_node)
+                if method == 19:
+                    shape_selection = BuildCutString(weight, sel, '1', '1')
+                    subtract_node = GetSubtractNode(ana,'',plot,'wt',sel,'1',8,1,False,True)
                     shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot, shape_selection), subtract_node)
         
             if cats['qcd_shape'] != "": 
@@ -791,6 +795,7 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
                 shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot, shape_selection), subtract_node)
         
             full_selection = BuildCutString(weight, sel, cat, '!os')
+            if options.fakes: full_selection = BuildCutString('wt', sel, '1', '1')
             subtract_node = GetSubtractNode(ana,'',plot,weight,sel,cat,method,qcd_os_ss_ratio,False,True)
             
             ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
@@ -1288,7 +1293,8 @@ for systematic in systematics:
     if systematic == 'default': do_data = True
     else: do_data = False
             
-    if options.channel == 'wmnu' or options.fakes: samples_to_skip = ['signal','QCD']
+    if options.channel == 'wmnu': samples_to_skip = ['signal','QCD']
+    if options.channel == 'em' and options.fakes: samples_to_skip = ['signal', 'QCD']
     #Run default plot        
     RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
     

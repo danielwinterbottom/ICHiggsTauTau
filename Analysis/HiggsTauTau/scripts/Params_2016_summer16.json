@@ -1,407 +1,347 @@
 {
   "DY1JetsToLL-LO": {
     "xs": 5765.4,
-    "evt": 145803217
-  },
-  "DY1JetsToLL_M-10-50-LO": {
-    "xs": 1,
-    "evt": 39761407
+    "evt": 145803217.0
   },
   "DY2JetsToLL-LO": {
     "xs": 5765.4,
-    "evt": 145803217
-  },
-  "DY2JetsToLL_M-10-50-LO": {
-    "xs": 1,
-    "evt": 19442927
+    "evt": 145803217.0
   },
   "DY3JetsToLL-LO": {
     "xs": 5765.4,
-    "evt": 145803217
-  },
-  "DY3JetsToLL_M-10-50-LO": {
-    "xs": 1,
-    "evt": 4964197
+    "evt": 145803217.0
   },
   "DY4JetsToLL-LO": {
     "xs": 5765.4,
-    "evt": 145803217
+    "evt": 145803217.0
   },
   "DYJetsToLL-LO-ext1": {
     "xs": 5765.4,
-    "evt": 145803217
+    "evt": 145803217.0
   },
   "DYJetsToLL-LO-ext2": {
     "xs": 5765.4,
-    "evt": 145803217
+    "evt": 145803217.0
   },
   "DYJetsToLL": {
     "xs": 5765.4,
-    "evt": 19403278
+    "evt": 19403278.0
   },
   "DYJetsToLL_M-10-50-LO": {
     "xs": 18610,
-    "evt": 35291566
-  },
-  "DYJetsToLL_M-10to50-ext": {
-    "xs": 18610,
-    "evt": 29386523
-  },
-  "DYJetsToLL_M-10to50": {
-    "xs": 18610,
-    "evt": 22440229
-  },
-  "EWKWMinus2Jets_WToLNu-ext1": {
-    "xs": 20.25,
-    "evt": 490330
-  },
-  "EWKWMinus2Jets_WToLNu-ext2": {
-    "xs": 20.25,
-    "evt": 3841472
-  },
-  "EWKWMinus2Jets_WToLNu": {
-    "xs": 20.25,
-    "evt": 489205
-  },
-  "EWKWPlus2Jets_WToLNu-ext1": {
-    "xs": 25.62,
-    "evt": 500000
-  },
-  "EWKWPlus2Jets_WToLNu-ext2": {
-    "xs": 25.62,
-    "evt": 3939705
-  },
-  "EWKWPlus2Jets_WToLNu": {
-    "xs": 25.62,
-    "evt": 496000
-  },
-  "EWKZ2Jets_ZToLL-ext": {
-    "xs": 3.987,
-    "evt": 150000
-  },
-  "EWKZ2Jets_ZToLL": {
-    "xs": 3.987,
-    "evt": 150000
-  },
-  "EWKZ2Jets_ZToNuNu-ext": {
-    "xs": 1,
-    "evt": 300000
-  },
-  "EWKZ2Jets_ZToNuNu": {
-    "xs": 1,
-    "evt": 296800
+    "evt": 35291566.0
   },
   "GluGluToHToTauTau_M-125": {
     "xs": 2.776,
-    "evt": 1471061
+    "evt": 1471061.0
   },
   "GluGluToHToTauTau_herwig_M-125": {
     "xs": 2.776,
-    "evt": 1499536
+    "evt": 1471061.0
   },
   "QCDMuEnrichedPt15": {
     "xs": 1.0,
-    "evt": 22094081
+    "evt": 1471061.0
   },
   "SUSYGluGluToBBHToTauTau_M-1000": {
     "xs": 0.0288971221842976,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-100": {
     "xs": 1.0,
-    "evt": 500000
+    "evt": 500000.0
   },
   "SUSYGluGluToBBHToTauTau_M-110": {
     "xs": 1.0,
-    "evt": 495650
+    "evt": 495650.0
   },
   "SUSYGluGluToBBHToTauTau_M-1200": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-120": {
     "xs": 1.0,
-    "evt": 491255
+    "evt": 491255.0
   },
   "SUSYGluGluToBBHToTauTau_M-130": {
     "xs": 1.0,
-    "evt": 498710
+    "evt": 498710.0
   },
   "SUSYGluGluToBBHToTauTau_M-1400": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-140": {
     "xs": 1.0,
-    "evt": 499592
+    "evt": 499592.0
   },
   "SUSYGluGluToBBHToTauTau_M-1600": {
     "xs": 1.0,
-    "evt": 99588
+    "evt": 99588.0
   },
   "SUSYGluGluToBBHToTauTau_M-160": {
     "xs": 2.322869013474265,
-    "evt": 495853
+    "evt": 495853.0
   },
   "SUSYGluGluToBBHToTauTau_M-1800": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-180": {
     "xs": 1.0,
-    "evt": 499580
+    "evt": 499580.0
   },
   "SUSYGluGluToBBHToTauTau_M-2000": {
     "xs": 1.0,
-    "evt": 95160
+    "evt": 95160.0
   },
   "SUSYGluGluToBBHToTauTau_M-200": {
     "xs": 1.0,
-    "evt": 196740
+    "evt": 196740.0
   },
   "SUSYGluGluToBBHToTauTau_M-2300": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-250": {
     "xs": 1.0,
-    "evt": 199436
+    "evt": 199436.0
   },
   "SUSYGluGluToBBHToTauTau_M-2600": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-2900": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-3200": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-350": {
     "xs": 1.0,
-    "evt": 199325
+    "evt": 199325.0
   },
   "SUSYGluGluToBBHToTauTau_M-400": {
     "xs": 1.0,
-    "evt": 99174
+    "evt": 99174.0
   },
   "SUSYGluGluToBBHToTauTau_M-450": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-500": {
     "xs": 0.18580833466271834,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-600": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-700": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-800": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToBBHToTauTau_M-80": {
     "xs": 1.0,
-    "evt": 500000
+    "evt": 500000.0
   },
   "SUSYGluGluToBBHToTauTau_M-900": {
     "xs": 1.0,
-    "evt": 99306
+    "evt": 99306.0
   },
   "SUSYGluGluToBBHToTauTau_M-90": {
     "xs": 1.0,
-    "evt": 481439
+    "evt": 481439.0
   },
   "SUSYGluGluToHToTauTau_M-1000": {
     "xs": 0.0008422519154940855,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-100": {
     "xs": 1.0,
-    "evt": 500000
+    "evt": 500000.0
   },
   "SUSYGluGluToHToTauTau_M-110": {
     "xs": 1.0,
-    "evt": 491264
+    "evt": 491264.0
   },
   "SUSYGluGluToHToTauTau_M-1200": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-120": {
     "xs": 1.0,
-    "evt": 498426
+    "evt": 498426.0
   },
   "SUSYGluGluToHToTauTau_M-130": {
     "xs": 1.0,
-    "evt": 497273
+    "evt": 497273.0
   },
   "SUSYGluGluToHToTauTau_M-140": {
     "xs": 1.0,
-    "evt": 499243
+    "evt": 499243.0
   },
   "SUSYGluGluToHToTauTau_M-1400": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-1600": {
     "xs": 1.0,
-    "evt": 99166
+    "evt": 99166.0
   },
   "SUSYGluGluToHToTauTau_M-160": {
     "xs": 0.7955389980487304,
-    "evt": 498892
+    "evt": 498892.0
   },
   "SUSYGluGluToHToTauTau_M-1800": {
     "xs": 1.0,
-    "evt": 99694
+    "evt": 99694.0
   },
   "SUSYGluGluToHToTauTau_M-180": {
     "xs": 1.0,
-    "evt": 495920
+    "evt": 495920.0
   },
   "SUSYGluGluToHToTauTau_M-2000": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-200": {
     "xs": 1.0,
-    "evt": 198194
+    "evt": 198194.0
   },
   "SUSYGluGluToHToTauTau_M-2300": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-250": {
     "xs": 1.0,
-    "evt": 198434
+    "evt": 198434.0
   },
   "SUSYGluGluToHToTauTau_M-2600": {
     "xs": 1.0,
-    "evt": 99597
+    "evt": 99597.0
   },
   "SUSYGluGluToHToTauTau_M-2900": {
     "xs": 1.0,
-    "evt": 98794
+    "evt": 98794.0
   },
   "SUSYGluGluToHToTauTau_M-3200": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-350": {
     "xs": 1.0,
-    "evt": 199636
+    "evt": 199636.0
   },
   "SUSYGluGluToHToTauTau_M-400": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-450": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-500": {
     "xs": 0.016558377304548566,
-    "evt": 99551
+    "evt": 99551.0
   },
   "SUSYGluGluToHToTauTau_M-600": {
     "xs": 1.0,
-    "evt": 99406
+    "evt": 99406.0
   },
   "SUSYGluGluToHToTauTau_M-700": {
     "xs": 1.0,
-    "evt": 99536
+    "evt": 99536.0
   },
   "SUSYGluGluToHToTauTau_M-800": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-80": {
     "xs": 1.0,
-    "evt": 500000
+    "evt": 500000.0
   },
   "SUSYGluGluToHToTauTau_M-900": {
     "xs": 1.0,
-    "evt": 100000
+    "evt": 100000.0
   },
   "SUSYGluGluToHToTauTau_M-90": {
     "xs": 1.0,
-    "evt": 497150
+    "evt": 497150.0
   },
   "T-t": {
     "xs": 136.02,
-    "evt": 67240808
+    "evt": 67240808.0
   },
   "T-tW": {
     "xs": 35.6,
-    "evt": 6952830
+    "evt": 6952830.0
   },
   "TT": {
     "xs": 831.76,
-    "evt": 77229341
+    "evt": 77229341.0
   },
   "Tbar-t": {
     "xs": 80.95,
-    "evt": 38811017
+    "evt": 38811017.0
   },
   "Tbar-tW": {
     "xs": 35.6,
-    "evt": 6933094
+    "evt": 6933094.0
   },
   "VBFHToTauTau_M-125": {
     "xs": 0.2371,
-    "evt": 1499400
+    "evt": 1497048.0
   },
   "VVTo2L2Nu": {
     "xs": 11.95,
-    "evt": 5913675
+    "evt": 5913675.0
   },
   "VVTo2L2Nu-ext1": {
     "xs": 11.95,
-    "evt": 5913675
+    "evt": 5913675.0
   },
   "W1JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "W2JetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "W2JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "W3JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "W3JetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "W4JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "W4JetsToLNu-LO-ext1": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "W4JetsToLNu-LO-ext2": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "W4JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "WGToLNuG-ext": {
     "xs": 489,
@@ -413,99 +353,75 @@
   },
   "WGstarToLNuEE": {
     "xs": 3.526,
-    "evt": 2249800
+    "evt": 2249800.0
   },
   "WGstarToLNuMuMu": {
     "xs": 2.793,
-    "evt": 2218596
+    "evt": 2218596.0
   },
   "WJetsToLNu-LO-ext": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "WJetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 86731806
+    "evt": 86731806.0
   },
   "WJetsToLNu": {
     "xs": 61526.7,
-    "evt": 16428677
+    "evt": 16428677.0
   },
   "WWTo1L1Nu2Q": {
     "xs": 49.997,
-    "evt": 3223676
+    "evt": 3223676.0
   },
   "WWToLNuQQ-ext": {
     "xs": 49.997,
-    "evt": 6998600
+    "evt": 6998600.0
   },
   "WWToLNuQQ": {
     "xs": 49.997,
-    "evt": 1999200
+    "evt": 1999200.0
   },
   "WZJToLLLNu": {
     "xs": 4.708,
-    "evt": 1197418
+    "evt": 1197418.0
   },
   "WZTo1L1Nu2Q": {
     "xs": 10.71,
-    "evt": 14057875
+    "evt": 14057875.0
   },
   "WZTo1L3Nu": {
     "xs": 3.05,
-    "evt": 942046
+    "evt": 942046.0
   },
   "WZTo2L2Q": {
     "xs": 5.595,
-    "evt": 15879472
-  },
-  "WminusHToTauTau_M-120": {
-    "xs": 1,
-    "evt": 60000
+    "evt": 15879472.0
   },
   "WminusHToTauTau_M-125": {
     "xs": 0.03340,
-    "evt": 445200
-  },
-  "WminusHToTauTau_M-130": {
-    "xs": 1,
-    "evt": 60000
-  },
-  "WplusHToTauTau_M-120": {
-    "xs": 1,
-    "evt": 60000
+    "evt": 420456.0
   },
   "WplusHToTauTau_M-125": {
     "xs": 0.05266,
-    "evt": 428036
-  },
-  "WplusHToTauTau_M-130": {
-    "xs": 1,
-    "evt": 60000
-  },
-  "ZHToTauTau_M-120": {
-    "xs": 1,
-    "evt": 80000
+    "evt": 402418.0
   },
   "ZHToTauTau_M-125": {
     "xs": 0.05542,
-    "evt": 571597
-  },
-  "ZHToTauTau_M-130": {
-    "xs": 1,
-    "evt": 79452
+    "evt": 536629.0
   },
   "ZZTo2L2Q": {
     "xs": 3.22,
-    "evt": 9688612
+    "evt": 9688612.0
   },
   "ZZTo4L-amcat": {
     "xs": 1.212,
-    "evt": 7390052
+    "evt": 7390052.0
   },
   "ZZTo4L": {
     "xs": 1.212,
-    "evt": 6669988
+    "evt": 6669988.0
   },
   "SingleElectron": {
     "lumi": 35867.060
@@ -518,5 +434,173 @@
   },
   "MuonEG": {
     "lumi": 35867.060
+  },
+  "SUSYGluGluToBBHToTauTau_M-3200-NLO": {
+    "evt": 107222.0,
+    "evt_wt_mur1_muf1": 107222.147888,
+    "evt_wt_mur1_muf2": 95424.5234985,
+    "evt_wt_mur1_muf0p5": 121442.010132,
+    "evt_wt_mur2_muf1": 90577.397644,
+    "evt_wt_mur2_muf2": 79636.5321045,
+    "evt_wt_mur2_muf0p5": 104139.102081,
+    "evt_wt_mur0p5_muf1": 127485.439514,
+    "evt_wt_mur0p5_muf2": 115314.226746,
+    "evt_wt_mur0p5_muf0p5": 141443.551758,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-200-NLO": {
+    "evt": 107712.0,
+    "evt_wt_mur1_muf1": 107712.413055,
+    "evt_wt_mur1_muf2": 108191.052795,
+    "evt_wt_mur1_muf0p5": 107555.172974,
+    "evt_wt_mur2_muf1": 89015.3099365,
+    "evt_wt_mur2_muf2": 88876.348877,
+    "evt_wt_mur2_muf0p5": 89121.4860535,
+    "evt_wt_mur0p5_muf1": 126431.978851,
+    "evt_wt_mur0p5_muf2": 128380.041748,
+    "evt_wt_mur0p5_muf0p5": 125642.800079,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-350-NLO": {
+    "evt": 105890.0,
+    "evt_wt_mur1_muf1": 105890.047485,
+    "evt_wt_mur1_muf2": 104273.997498,
+    "evt_wt_mur1_muf0p5": 108043.072845,
+    "evt_wt_mur2_muf1": 88159.6605835,
+    "evt_wt_mur2_muf2": 85927.8780212,
+    "evt_wt_mur2_muf0p5": 90800.7164917,
+    "evt_wt_mur0p5_muf1": 124934.001404,
+    "evt_wt_mur0p5_muf2": 125143.372498,
+    "evt_wt_mur0p5_muf0p5": 125447.239868,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1800-NLO-QshDown": {
+    "evt": 109846.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1800-NLO-QshUp": {
+    "evt": 102638.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO-QshDown": {
+    "evt": 109056.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1800-NLO": {
+    "evt": 107044.0,
+    "evt_wt_mur1_muf1": 107044.242554,
+    "evt_wt_mur1_muf2": 98428.071991,
+    "evt_wt_mur1_muf0p5": 117221.789917,
+    "evt_wt_mur2_muf1": 90283.8820496,
+    "evt_wt_mur2_muf2": 81999.0623779,
+    "evt_wt_mur2_muf0p5": 100321.062836,
+    "evt_wt_mur0p5_muf1": 127028.430542,
+    "evt_wt_mur0p5_muf2": 118834.784119,
+    "evt_wt_mur0p5_muf0p5": 136206.019592,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown": {
+    "evt": 110074.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-700-NLO-QshUp": {
+    "evt": 102328.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-3200-NLO-QshUp": {
+    "evt": 102782.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-130-NLO-QshUp": {
+    "evt": 105682.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-130-NLO": {
+    "evt": 106468.0,
+    "evt_wt_mur1_muf1": 106466.901001,
+    "evt_wt_mur1_muf2": 108659.541321,
+    "evt_wt_mur1_muf0p5": 104301.007996,
+    "evt_wt_mur2_muf1": 87336.7025757,
+    "evt_wt_mur2_muf2": 89064.3430481,
+    "evt_wt_mur2_muf0p5": 85137.449707,
+    "evt_wt_mur0p5_muf1": 124262.990906,
+    "evt_wt_mur0p5_muf2": 127000.8125,
+    "evt_wt_mur0p5_muf0p5": 122936.822815,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO-QshUp": {
+    "evt": 104050.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-200-NLO-QshUp": {
+    "evt": 104192.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-80-NLO": {
+    "evt": 111642.0,
+    "evt_wt_mur1_muf1": 111642.295898,
+    "evt_wt_mur1_muf2": 115480.227417,
+    "evt_wt_mur1_muf0p5": 107236.841797,
+    "evt_wt_mur2_muf1": 90538.9623413,
+    "evt_wt_mur2_muf2": 94538.6759644,
+    "evt_wt_mur2_muf0p5": 85399.83255,
+    "evt_wt_mur0p5_muf1": 129332.644287,
+    "evt_wt_mur0p5_muf2": 130995.364197,
+    "evt_wt_mur0p5_muf0p5": 129121.780396,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-130-NLO-QshDown": {
+    "evt": 112144.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-1200-NLO": {
+    "evt": 105548.0,
+    "evt_wt_mur1_muf1": 105547.932373,
+    "evt_wt_mur1_muf2": 98912.437561,
+    "evt_wt_mur1_muf0p5": 113365.582245,
+    "evt_wt_mur2_muf1": 88779.7789612,
+    "evt_wt_mur2_muf2": 82166.0891113,
+    "evt_wt_mur2_muf0p5": 96732.6077881,
+    "evt_wt_mur0p5_muf1": 125239.350891,
+    "evt_wt_mur0p5_muf2": 119505.265411,
+    "evt_wt_mur0p5_muf0p5": 131662.025818,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-350-NLO-QshDown": {
+    "evt": 109586.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-350-NLO-QshUp": {
+    "evt": 102290.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-200-NLO-QshDown": {
+    "evt": 112308.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-700-NLO-QshDown": {
+    "evt": 108844.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-80-NLO-QshUp": {
+    "evt": 109946.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-80-NLO-QshDown": {
+    "evt": 114894.0,
+    "xs": 1.0
+  },
+  "SUSYGluGluToBBHToTauTau_M-700-NLO": {
+    "evt": 105952.0,
+    "evt_wt_mur1_muf1": 105953.053741,
+    "evt_wt_mur1_muf2": 101501.51123,
+    "evt_wt_mur1_muf0p5": 111245.263214,
+    "evt_wt_mur2_muf1": 88824.213562,
+    "evt_wt_mur2_muf2": 84065.1778564,
+    "evt_wt_mur2_muf0p5": 94498.2980042,
+    "evt_wt_mur0p5_muf1": 125416.077087,
+    "evt_wt_mur0p5_muf2": 122403.576172,
+    "evt_wt_mur0p5_muf0p5": 128971.240906,
+    "xs": 1.0
   }
 }

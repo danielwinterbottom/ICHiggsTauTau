@@ -87,9 +87,12 @@ namespace ic {
       double wt_pu = eventInfo->weight("pileup");
       int wt_mcsign = eventInfo->weight("wt_mc_sign");
       double trk_wt = eventInfo->weight("wt_tracking_eff"); 
-      double lepton_wt = eventInfo->weight("lepton"); 
+      double lepton_wt = eventInfo->weight("lepton");
+      double wt_stitching = eventInfo->weight("dysoup")*eventInfo->weight("wsoup");
+      //double wt_dy_pt = eventInfo->weight("wt_zpt");
+      double ttshape_wt = eventInfo->weight("topquark_weight");
       
-      wt_ = wt_pu*wt_mcsign*trk_wt*lepton_wt;
+      wt_ = wt_pu*wt_mcsign*trk_wt*lepton_wt*wt_stitching*ttshape_wt;
  }
  
  std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);

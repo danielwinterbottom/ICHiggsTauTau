@@ -30,8 +30,8 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
-denominator_file = ROOT.TFile("output/datacard_jet_pt_denominator_coarse_em_2016-extra.root")
-numerator_file_med = ROOT.TFile("output/datacard_jet_pt_numerator_medium_coarse_em_2016-extra.root")
+denominator_file = ROOT.TFile("output/em_denum.root")
+numerator_file_med = ROOT.TFile("output/em_num.root")
 
 denom_data = getHistogram(denominator_file,"data_obs","em_inclusive")
 denom_VV = getHistogram(denominator_file,"VV","em_inclusive")
@@ -61,7 +61,7 @@ num_data.SetMarkerStyle(20)
 num_data.SetMarkerColor(1)
 num_data.SetLineColor(1)
 
-num_TT.SetLineColor(ROOT.kGreen+3)
+num_TT.SetLineColor(ROOT.kBlue)
 
 c2 = ROOT.TCanvas()
 c2.cd()

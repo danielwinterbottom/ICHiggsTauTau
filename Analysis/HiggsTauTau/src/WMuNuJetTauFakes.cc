@@ -44,7 +44,7 @@ namespace ic {
       outtree_->Branch("jet_eta",            &jet_eta_);
       outtree_->Branch("wt",                &wt_);
     }
-      TFile f("input/scale_factors/htt_scalefactors_v16_4.root");
+      TFile f("input/scale_factors/htt_scalefactors_v16_5.root");
       w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
       f.Close();
       fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
@@ -68,6 +68,12 @@ namespace ic {
   std::string alt_leg1_filter =  "hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
   std::string alt_trk_trig_obj_label = "triggerObjectsIsoTkMu22";
   std::string alt_trk_leg1_filter =  "hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09";
+  
+  std::string alt_er_trig_obj_label = "triggerObjectsIsoMu22Eta2p1";
+  std::string alt_er_leg1_filter =  "hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09"; 
+  std::string alt_er_trk_leg1_filter = "hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09";
+  std::string alt_er_trk_trig_obj_label = "triggerObjectsIsoTkMu22Eta2p1";
+
 
   std::vector<Muon *> & muons_vec = event->GetPtrVec<Muon>(muon_label_);
   ic::erase_if(muons_vec, !boost::bind(MinPtMaxEta, _1, 23.0, 2.4));
@@ -75,12 +81,15 @@ namespace ic {
 
   std::vector<TriggerObject*> const& objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
   std::vector<TriggerObject*> const& objs_trk = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
+  
+  std::vector<TriggerObject*> const& objs_er = event->GetPtrVec<TriggerObject>(alt_er_trig_obj_label);
+  std::vector<TriggerObject*> const& objs_er_trk = event->GetPtrVec<TriggerObject>(alt_er_trk_trig_obj_label);
 
   std::vector<Muon *> leptons_pass;
 
   for ( unsigned i = 0; i < muons_vec.size(); ++i) {
-     bool leg1_match = IsFilterMatched(muons_vec[i], objs, alt_leg1_filter, 0.5);
-     bool leg1_match_alt = IsFilterMatched(muons_vec[i], objs_trk, alt_trk_leg1_filter, 0.5);
+     bool leg1_match = IsFilterMatched(muons_vec[i], objs, alt_leg1_filter, 0.5) || IsFilterMatched(muons_vec[i], objs_er, alt_er_leg1_filter, 0.5);
+     bool leg1_match_alt = IsFilterMatched(muons_vec[i], objs_trk, alt_trk_leg1_filter, 0.5) || IsFilterMatched(muons_vec[i], objs_er_trk, alt_er_trk_leg1_filter, 0.5);
      if(leg1_match || leg1_match_alt) leptons_pass.push_back(muons_vec[i]);
   }
 
@@ -152,8 +161,9 @@ namespace ic {
       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
       double wt_pu = eventInfo->weight("pileup");
       int wt_mcsign = eventInfo->weight("wt_mc_sign");
+      double wt_stitching = eventInfo->weight("dysoup")*eventInfo->weight("wsoup");
 
-     wt_ = tracking_wt*id_wt*iso_wt*trg_wt*wt_pu*wt_mcsign;
+     wt_ = tracking_wt*id_wt*iso_wt*trg_wt*wt_pu*wt_mcsign*wt_stitching;
   }
 
   std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
