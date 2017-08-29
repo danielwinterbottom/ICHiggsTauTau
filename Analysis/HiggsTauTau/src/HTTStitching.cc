@@ -293,6 +293,7 @@ namespace ic {
       if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
       if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
       if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
+
       t_njets_ = partons;
 
       t_wt_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.;

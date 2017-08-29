@@ -43,6 +43,9 @@ namespace ic {
       outtree_->Branch("jet_pt",            &jet_pt_);
       outtree_->Branch("jet_eta",            &jet_eta_);
       outtree_->Branch("wt",                &wt_);
+      outtree_->Branch("met",                &met_);
+      outtree_->Branch("mt",                &mt_);
+      outtree_->Branch("muon_pt",                &muon_pt_);
     }
       TFile f("input/scale_factors/htt_scalefactors_v16_5.root");
       w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
@@ -76,7 +79,7 @@ namespace ic {
 
 
   std::vector<Muon *> & muons_vec = event->GetPtrVec<Muon>(muon_label_);
-  ic::erase_if(muons_vec, !boost::bind(MinPtMaxEta, _1, 23.0, 2.4));
+  ic::erase_if(muons_vec, !boost::bind(MinPtMaxEta, _1, 23.0, 2.1));
   ic::erase_if_not(muons_vec,[=](ic::Muon* m){return PF04IsolationVal(m,0.5) < 0.15;});
 
   std::vector<TriggerObject*> const& objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
@@ -187,6 +190,9 @@ namespace ic {
     tau_iso_tight_ = 0;
     jet_pt_ = jets[i]->pt();
     jet_eta_ = jets[i]->eta();
+    met_=pfmet->vector().pt();
+    mt_=mt;
+    muon_pt_=muon->pt();;
     if(jet_tau_map.count(jets[i]) >0 ){
      tau_pt_ = jet_tau_map.at(jets[i])->pt();  
      tau_eta_ = jet_tau_map.at(jets[i])->eta();  
@@ -198,7 +204,6 @@ namespace ic {
     if (write_tree_ && fs_) outtree_->Fill();
   }
    
-
     return 0;
   }
 

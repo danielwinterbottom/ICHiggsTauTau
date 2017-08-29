@@ -45,15 +45,34 @@ num_TT = getHistogram(numerator_file_med,"TT","wmnu_inclusive")
 num_ZLL = getHistogram(numerator_file_med,"ZLL","wmnu_inclusive")
 num_W = getHistogram(numerator_file_med,"W","wmnu_inclusive")
 
-subtract_up=denom_data.Clone()
-subtract_down=denom_data.Clone()
-subtract_up.Add(denom_VV,-1.1)
-subtract_up.Add(denom_TT,-1.1)
-subtract_up.Add(denom_ZLL,-1.1)
+num_W_up = getHistogram(numerator_file_med,"W_JESUp","wmnu_inclusive")
+num_W_down = getHistogram(numerator_file_med,"W_JESDown","wmnu_inclusive")
+denom_W_up = getHistogram(denominator_file,"W_JESUp","wmnu_inclusive")
+denom_W_down = getHistogram(denominator_file,"W_JESDown","wmnu_inclusive")
 
-subtract_up.Add(denom_VV,-0.9)
-subtract_up.Add(denom_TT,-0.9)
-subtract_up.Add(denom_ZLL,-0.9)
+num_sub_up=num_data.Clone()
+num_sub_down=num_data.Clone()
+denum_sub_up=denom_data.Clone()
+denum_sub_down=denom_data.Clone()
+
+num_sub_up.Add(num_VV,-1.2)
+num_sub_up.Add(num_TT,-1.2)
+num_sub_up.Add(num_ZLL,-1.2)
+
+num_sub_down.Add(num_VV,-0.8)
+num_sub_down.Add(num_TT,-0.8)
+num_sub_down.Add(num_ZLL,-0.8)
+
+denum_sub_up.Add(denom_VV,-1.2)
+denum_sub_up.Add(denom_TT,-1.2)
+denum_sub_up.Add(denom_ZLL,-1.2)
+
+denum_sub_down.Add(denom_VV,-0.8)
+denum_sub_down.Add(denom_TT,-0.8)
+denum_sub_down.Add(denom_ZLL,-0.8)
+
+num_sub_up.Divide(denum_sub_up)
+num_sub_down.Divide(denum_sub_down)
 
 
 denom_data.Add(denom_VV,-1)
@@ -67,12 +86,44 @@ num_data.Add(num_ZLL, -1)
 num_data.Divide(denom_data)
 num_W.Divide(denom_W)
 
+num_W_up.Divide(denom_W_up)
+num_W_down.Divide(denom_W_down)
+
+#error_hist=num_data.Clone()
+#set num_data bins error to the stat error added in quadrature with the subtraction error
+#for i in range(1,error_hist.GetNbinsX()+1):
+#    stat_error = error_hist.GetBinError(i)
+#    sub_up_error = num_sub_up.GetBin
+
+num_sub_up.SetLineColor(ROOT.kRed)
+num_sub_up.SetMarkerColor(ROOT.kRed)
+num_sub_down.SetLineColor(ROOT.kGreen-2)
+num_sub_down.SetMarkerColor(ROOT.kGreen-2)
+num_sub_up.SetMarkerStyle(0)
+num_sub_down.SetMarkerStyle(0)
+num_sub_up.SetLineWidth(2)
+num_sub_down.SetLineWidth(2)
+
+
+
 num_data.SetMarkerStyle(20)
 num_data.SetMarkerColor(1)
 num_data.SetLineColor(1)
 
 num_W.SetLineColor(ROOT.kBlue)
 num_W.SetMarkerColor(ROOT.kBlue)
+
+data_num_W_up = num_data.Clone()
+data_num_W_down = num_data.Clone()
+
+data_num_W_up.SetLineColor(ROOT.kRed)
+data_num_W_up.SetMarkerColor(ROOT.kRed)
+data_num_W_down.SetLineColor(ROOT.kGreen-2)
+data_num_W_down.SetMarkerColor(ROOT.kGreen-2)
+data_num_W_up.SetMarkerStyle(0)
+data_num_W_down.SetMarkerStyle(0)
+data_num_W_up.SetLineWidth(2)
+data_num_W_down.SetLineWidth(2)
 
 c2 = ROOT.TCanvas()
 c2.cd()
@@ -90,13 +141,19 @@ axish[0].GetYaxis().SetTitle("Misidentification rate")
 axish[0].GetYaxis().SetRangeUser(0.0001,1)
 axish[0].Draw()
 num_data.DrawCopy("PLSAME")
+#num_sub_down.DrawCopy("LSAME")
+#num_sub_up.DrawCopy("LSAME")
 num_W.DrawCopy("E0LSAME")
 
 legend = plot.PositionedLegend(0.3,0.1,3,0.03)
 legend.SetTextFont(42)
 legend.SetTextSize(0.025)
 legend.SetFillColor(0)
-legend.AddEntry(num_data,"Observed","P")
+legend.AddEntry(num_data,"Observation","P")
+#legend.AddEntry(num_sub_up,"MC bkg up","l")
+#legend.AddEntry(num_sub_down,"MC bkg down","l")
+#legend.AddEntry(data_num_W_up,"JES up","l")
+#legend.AddEntry(data_num_W_down,"JES down","l")
 legend.AddEntry(num_W,"MC","L")
 legend.Draw("same")
 
@@ -104,6 +161,10 @@ plot.DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045,0.05,1.0,'',1.0)
 plot.DrawTitle(pads[0],"35.9 fb^{-1}",3)
 
 ratio_data_hist = plot.MakeRatioHist(num_data,num_W,True,True)
+ratio_data_hist_sub_down = plot.MakeRatioHist(num_sub_down,num_W,True,True)
+ratio_data_hist_sub_up = plot.MakeRatioHist(num_sub_up,num_W,True,True)
+ratio_data_hist_jes_down = plot.MakeRatioHist(data_num_W_down,num_W_down,True,True)
+ratio_data_hist_jes_up = plot.MakeRatioHist(data_num_W_up,num_W_up,True,True)
 #ratio_data_hist = num_data.Clone()
 #ratio_data_hist.Divide(num_W)
 ratio_data_hist_fit = plot.MakeRatioHist(num_data,num_W,True,True)
@@ -118,13 +179,17 @@ axish[1].SetMaximum(1.5)
 #ratio_W_hist.DrawCopy("E0LSAME")
 
 ratio_data_hist.DrawCopy("PSAME")
+#ratio_data_hist_sub_down.DrawCopy("histSAME")
+#ratio_data_hist_sub_up.DrawCopy("histSAME")
+#ratio_data_hist_jes_down.DrawCopy("histSAME") 
+#ratio_data_hist_jes_up.DrawCopy("histSAME")
 pads[1].RedrawAxis("G")
-func = ROOT.TF1("func","pol1",30,200)
+func = ROOT.TF1("func","pol1",40,200)
 #func.FixParameter(0,1.25)
 x = ratio_data_hist.Fit("func","R0+")
 plotfn = ratio_data_hist.GetFunction("func")
 
-plotfn.Draw("LSAME")
+#plotfn.Draw("LSAME")
 pads[1].RedrawAxis("G")
 
 
@@ -133,7 +198,7 @@ pads[1].RedrawAxis("G")
 #y.Print()
 
 
-c2.SaveAs("W_jettaufake_fit_normrate.pdf")
+c2.SaveAs("W_jettaufake.pdf")
 
 
 

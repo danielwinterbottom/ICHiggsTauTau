@@ -31,6 +31,9 @@ class WMuNuJetTauFakes : public ModuleBase {
   double jet_pt_;
   double jet_eta_;
   double wt_;
+  double met_;
+  double mt_;
+  double muon_pt_;
   std::shared_ptr<RooWorkspace> w_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
 
