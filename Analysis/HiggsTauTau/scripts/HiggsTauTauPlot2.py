@@ -7,7 +7,7 @@ from UserCode.ICHiggsTauTau.uncertainties import ufloat
 from optparse import OptionParser
 import argparse
 import ConfigParser
-import UserCode.ICHiggsTauTau.plotting as plotting
+import UserCode.ICHiggsTauTau.plotting2 as plotting
 from collections import OrderedDict
 import copy
 
@@ -1470,8 +1470,8 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         if 'ZTT' not in samples_to_skip:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,options.DYScales)                                
             #GenerateZTT(ana, "_lowM", z_lowm_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
-        #if 'ZLL' not in samples_to_skip:
-        #    GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
+        if 'ZLL' not in samples_to_skip:
+            GenerateZLL(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         #    #GenerateZLL(ana, "_lowM", z_lowm_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         #if 'TT' not in samples_to_skip:    
         #    GenerateTop(ana, add_name, top_samples, plot, "wt", sel, cat, top_sels, not options.do_ss, doTTT, doTTJ)  

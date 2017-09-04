@@ -53,6 +53,8 @@ namespace ic {
     btag_label_         = "combinedSecondaryVertexBJetTags";
     ditau_label_              = "emtauCandidates";
     z_pt_mass_hist_            = nullptr;
+    z_pt_mass_hist_esup_            = nullptr;
+    z_pt_mass_hist_esdown_            = nullptr;
     mt_idiso_mc_              = nullptr;     
     mt_idiso_data_            = nullptr;     
     et_idiso_mc_              = nullptr;     
@@ -727,6 +729,8 @@ namespace ic {
         auto args = std::vector<double>{zmass,zpt};      
         //double wtzpt         = fns_["zpt_weight_nom"]->eval(args.data());
         double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
+        double wtzpt_es_new_up = z_pt_mass_hist_esup_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
+        double wtzpt_es_new_down = z_pt_mass_hist_esdown_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
         double wtzpt_esup    = fns_["zpt_weight_esup"]->eval(args.data());
         double wtzpt_esdown  = fns_["zpt_weight_esdown"]->eval(args.data());
         double wtzpt_ttup    = fns_["zpt_weight_ttup"]->eval(args.data()); 
@@ -753,6 +757,9 @@ namespace ic {
         event->Add("wt_zpt_esdown"              , wtzpt_esdown /wtzpt);
         event->Add("wt_zpt_ttup"                ,   wtzpt_ttup   /wtzpt);
         event->Add("wt_zpt_ttdown"              , wtzpt_ttdown /wtzpt);
+        
+        event->Add("wt_zpt_es_new_up"                ,   wtzpt_es_new_up   /wtzpt);
+        event->Add("wt_zpt_es_new_down"              , wtzpt_es_new_down /wtzpt);
         
         double wtzpt_scaleup = z_pt_mass_hist_scaleup_->GetBinContent(z_pt_mass_hist_scaleup_->FindBin(zmass,zpt));
         double wtzpt_scaledown = z_pt_mass_hist_scaledown_->GetBinContent(z_pt_mass_hist_scaledown_->FindBin(zmass,zpt));

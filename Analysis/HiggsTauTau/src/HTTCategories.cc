@@ -897,6 +897,8 @@ namespace ic {
         
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
         outtree_->Branch("wt_zpt_scaledown",         &wt_zpt_scaledown_);
+        outtree_->Branch("wt_zpt_es_new_down",         &wt_zpt_es_new_down);
+        outtree_->Branch("wt_zpt_es_new_up",         &wt_zpt_es_new_up);
         outtree_->Branch("wt_zpt_scaleup",         &wt_zpt_scaleup_);
         outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
         outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
@@ -2016,6 +2018,8 @@ namespace ic {
     wt_tquark_down_ = 1.0;
     wt_zpt_up_ = 1.0;
     wt_zpt_down_ = 1.0;
+    wt_zpt_es_new_up = 1.0;
+    wt_zpt_es_new_down = 1.0;
     wt_tau_id_up_ = 1.0;
     wt_tau_id_down_ = 1.0;
     wt_em_qcd_ = 1.0;
@@ -2034,6 +2038,8 @@ namespace ic {
     if (event->Exists("wt_tquark_shape_up"))      wt_tquark_shape_up_   = event->Get<double>("wt_tquark_shape_up");
     if (event->Exists("wt_tquark_shape_down"))    wt_tquark_shape_down_ = event->Get<double>("wt_tquark_shape_down");
     
+    if (event->Exists("wt_zpt_es_new_up"))        wt_zpt_es_new_up   = event->Get<double>("wt_zpt_es_new_up");
+    if (event->Exists("wt_zpt_es_new_down"))        wt_zpt_es_new_down   = event->Get<double>("wt_zpt_es_new_down");
     
     if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
@@ -2047,6 +2053,7 @@ namespace ic {
     
     if (event->Exists("wt_zpt_scaleup"))       wt_zpt_scaleup_ = event->Get<double>("wt_zpt_scaleup");
     if (event->Exists("wt_zpt_scaledown"))       wt_zpt_scaledown_ = event->Get<double>("wt_zpt_scaledown");
+
     
     wt_zpt_stat_m400pt0_up     = 1.0;
     wt_zpt_stat_m400pt40_up    = 1.0;

@@ -1751,7 +1751,9 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
    TH2D em_qcd_cr1_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRLt2");
    TH2D em_qcd_cr1_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRGt4");
-   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/z_weights_scale_nom.root","/","zptmass_histo");
+   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/z_weights_scale_nom2.root","/","zptmass_histo");
+   TH2D z_pt_weights_esup = GetFromTFile<TH2D>("input/zpt_weights/z_weights_scale_nom2.root","/","zptmass_histo_ESUp");
+   TH2D z_pt_weights_esdown = GetFromTFile<TH2D>("input/zpt_weights/z_weights_scale_nom2.root","/","zptmass_histo_ESDown");
    TH2D z_pt_mass_hist_scaledown = GetFromTFile<TH2D>("input/zpt_weights/z_weights_scale_down.root","/","zptmass_histo");
    TH2D z_pt_mass_hist_scaleup = GetFromTFile<TH2D>("input/zpt_weights/z_weights_scale_up.root","/","zptmass_histo");
    TH2D z_pt_mass_hist_t_down = GetFromTFile<TH2D>("input/zpt_weights/z_weights_t_down.root","/","zptmass_histo");
@@ -1780,6 +1782,8 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4))
     .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4))
     .set_z_pt_mass_hist(new TH2D(z_pt_weights))
+    .set_z_pt_mass_hist_esdown(new TH2D(z_pt_weights_esdown))
+    .set_z_pt_mass_hist_esup(new TH2D(z_pt_weights_esup))
     .set_z_pt_mass_hist_scaledown(new TH2D(z_pt_mass_hist_scaledown))
     .set_z_pt_mass_hist_scaleup(new TH2D(z_pt_mass_hist_scaleup))
     .set_z_pt_mass_hist_t_up(new TH2D(z_pt_mass_hist_t_up))
