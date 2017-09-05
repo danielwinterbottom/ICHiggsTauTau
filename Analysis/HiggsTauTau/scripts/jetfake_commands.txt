@@ -1,1 +1,4 @@
 python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --channel=wmnu  --method=8 --ratio --cat=inclusive  --var="jet_pt[30,40,50,60,70,80,90,100,120,140,200]" --outputfolder=./ --sel="(mt>70 && met>50 && tau_pt>30 && tau_iso_tight)" --syst_scale_j=JES
+
+python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --channel=em  --method=8 --ratio --cat=inclusive  --var="jet_pt[30,50,70,90,120,200]" --outputfolder=./ --sel="(tau_pt>30 && tau_iso_tight)" --fakes --syst_scale_j=JES
+
