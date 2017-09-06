@@ -77,6 +77,9 @@ namespace ic {
    int tausize = leading_tau_match.size();
    double gen_match_1_pt = -1;
    double gen_match_2_pt = -1;
+   
+   double gen_match_1_E=-1;
+   double gen_match_2_E=-1;
 /*   double leading_lepton_match_pt = -1.;
    double subleading_lepton_match_pt = -1.;
    double leading_lepton_match_DR = -1.;
@@ -91,6 +94,7 @@ namespace ic {
    if(leptonsize!=0) {
       std::vector<bool> status_flags = leading_lepton_match.at(0).second->statusFlags();
       gen_match_1_pt = leading_lepton_match.at(0).second->pt();
+      gen_match_1_E = leading_lepton_match.at(0).second->vector().E();
 //      leading_lepton_match_DR = DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second);
       if(fs_ && write_plots_){ 
        hists_[0]->Fill("relpt_vs_drlep_lead",fabs(leading_lepton_match.at(0).second->pt()-leading_lepton_match.at(0).first->pt())/leading_lepton_match.at(0).first->pt(),DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second));
@@ -132,6 +136,7 @@ namespace ic {
    if(leptonsize!=0) {
       std::vector<bool> status_flags = subleading_lepton_match.at(0).second->statusFlags();
       gen_match_2_pt = subleading_lepton_match.at(0).second->pt();
+      gen_match_2_E = subleading_lepton_match.at(0).second->vector().E();
     //  subleading_lepton_match_DR = DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second);
       if(fs_ && write_plots_){
        hists_[0]->Fill("relpt_vs_drlep_sublead",fabs(subleading_lepton_match.at(0).second->pt()-subleading_lepton_match.at(0).first->pt())/subleading_lepton_match.at(0).first->pt(),DR(subleading_lepton_match.at(0).first,subleading_lepton_match.at(0).second));
@@ -166,6 +171,8 @@ namespace ic {
    event->Add("gen_match_2",gen_match_2);
    event->Add("gen_match_1_pt", gen_match_1_pt);
    event->Add("gen_match_2_pt", gen_match_2_pt);
+   event->Add("gen_match_1_E", gen_match_1_E);
+   event->Add("gen_match_2_E", gen_match_2_E);
 /*   event->Add("leading_lepton_match_pt",leading_lepton_match_pt);
    event->Add("subleading_lepton_match_pt",subleading_lepton_match_pt);
    event->Add("leading_lepton_match_DR",leading_lepton_match_DR);

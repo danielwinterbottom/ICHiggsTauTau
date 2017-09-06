@@ -5,6 +5,7 @@
 #include "boost/format.hpp"
 #include "TMVA/Reader.h"
 #include "TVector3.h"
+#include "TRandom3.h"
 
 namespace ic {
 
@@ -105,6 +106,7 @@ namespace ic {
     double vispX=0;
     double vispY=0;
     
+    
     for(unsigned i = 0; i < parts.size(); ++i){
       std::vector<bool> status_flags = parts[i]->statusFlags();
       unsigned id = abs(parts[i]->pdgid());
@@ -115,13 +117,27 @@ namespace ic {
 
    
   ROOT::Math::PtEtaPhiEVector gen_boson;
+  ROOT::Math::PtEtaPhiEVector gen_boson_smear;
    for( unsigned i = 0; i < sel_gen_parts.size() ; ++i){
      genpX+= sel_gen_parts[i]->vector().px();
      genpY+= sel_gen_parts[i]->vector().py();
      gen_boson += sel_gen_parts[i]->vector();
+     GenParticle *smeared_part = sel_gen_parts[i]; 
+     
+     TF1 *f2 = new TF1("f2","gaus(0)+gaus(3)+gaus(6)",-0.15,0.15);
+     f2->SetParameter(0  , 2.63728e+03);f2->SetParameter(1  , 1.90050e-03);f2->SetParameter(2  , 6.18715e-02);f2->SetParameter(3  , 1.24378e+05);f2->SetParameter(4  ,-1.46909e-03);f2->SetParameter(5  , 2.26307e-02);f2->SetParameter(6  , 3.33183e+05);f2->SetParameter(7  ,-6.06386e-05);f2->SetParameter(8  , 1.13489e-02);
+     double rand_num=f2->GetRandom();
+     //std::cout << rand_num << std::endl;
+     //std::cout << smeared_part->vector().Pt() << "    " <<  smeared_part->vector().E() << "    " << smeared_part->vector().Phi() << "    " << smeared_part->vector().Rapidity() << std::endl;
+     smeared_part->set_vector(smeared_part->vector()*(1+rand_num));
+     //std::cout << smeared_part->vector().Pt() << "    " <<  smeared_part->vector().E() << "    " << smeared_part->vector().Phi() << "    " << smeared_part->vector().Rapidity() << std::endl;
+     gen_boson_smear += smeared_part->vector();
    }
     genpT = gen_boson.pt();
     genM = gen_boson.M();
+    
+    double genpT_smear = gen_boson_smear.pt();
+    double genM_smear = gen_boson_smear.M();
 
 
    for( unsigned i = 0; i < sel_vis_parts.size() ; ++i){
@@ -138,6 +154,9 @@ namespace ic {
 
   if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);
   if(!event->ExistsInEvent("genM")) event->Add("genM", genM);
+  
+  if(!event->ExistsInEvent("genpT_smear")) event->Add("genpT_smear", genpT_smear);
+  if(!event->ExistsInEvent("genM_smear")) event->Add("genM_smear", genM_smear);
 
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));

@@ -434,6 +434,8 @@ class HTTCategories : public ModuleBase {
   unsigned gen_match_2_;
   double gen_match_1_pt_;
   double gen_match_2_pt_;
+  double gen_match_1_E_;
+  double gen_match_2_E_;
   /*double leading_lepton_match_pt_;
   double subleading_lepton_match_pt_;
   double leading_lepton_match_DR_;
@@ -1026,6 +1028,9 @@ class HTTCategories : public ModuleBase {
   double wt_zpt_bkgdown; 
   double genM;           
   double genpT;          
+  
+  double genM_smear;           
+  double genpT_smear; 
 
  public:
   HTTCategories(std::string const& name);

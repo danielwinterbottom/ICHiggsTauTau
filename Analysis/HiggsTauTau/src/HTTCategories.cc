@@ -685,6 +685,8 @@ namespace ic {
       outtree_->Branch("gen_match_2", &gen_match_2_);
       outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
       outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
+      outtree_->Branch("gen_match_1_E", &gen_match_1_E_);
+      outtree_->Branch("gen_match_2_E", &gen_match_2_E_);
       outtree_->Branch("db_loose_1",&lbyLooseCombinedIsolation_1);
       outtree_->Branch("db_loose_2",&lbyLooseCombinedIsolation_2);
       outtree_->Branch("db_medium_1",&lbyMediumCombinedIsolation_1);
@@ -882,6 +884,8 @@ namespace ic {
         outtree_->Branch("wt_zpt_bkgdown"             , &wt_zpt_bkgdown              );
         outtree_->Branch("genM"                       , &genM              );
         outtree_->Branch("genpT"                      , &genpT              );
+        outtree_->Branch("genM_smear"                       , &genM_smear              );
+        outtree_->Branch("genpT_smear"                      , &genpT_smear              );
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -2005,6 +2009,8 @@ namespace ic {
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
     if(event->Exists("gen_match_1_pt")) gen_match_1_pt_ = event->Get<double>("gen_match_1_pt");
     if(event->Exists("gen_match_2_pt")) gen_match_2_pt_ = event->Get<double>("gen_match_2_pt");
+    if(event->Exists("gen_match_1_E")) gen_match_1_E_ = event->Get<double>("gen_match_1_E");
+    if(event->Exists("gen_match_2_E")) gen_match_2_E_ = event->Get<double>("gen_match_2_E");
     /*if(event->Exists("leading_lepton_match_pt")) leading_lepton_match_pt_ = event->Get<double>("leading_lepton_match_pt");
     if(event->Exists("subleading_lepton_match_pt")) subleading_lepton_match_pt_ = event->Get<double>("subleading_lepton_match_pt");
     if(event->Exists("leading_lepton_match_DR")) leading_lepton_match_DR_ = event->Get<double>("leading_lepton_match_DR");
@@ -2071,6 +2077,9 @@ namespace ic {
     genM           = -1.0;
     genpT          = -1.0;
     
+    genM_smear = -1.0;
+    genpT_smear = -1.0;
+    
     if (event->Exists("wt_zpt_stat_m400pt0_up"    )) wt_zpt_stat_m400pt0_up     = event->Get<double>("wt_zpt_stat_m400pt0_up"    );
     if (event->Exists("wt_zpt_stat_m400pt40_up"   )) wt_zpt_stat_m400pt40_up    = event->Get<double>("wt_zpt_stat_m400pt40_up"   );
     if (event->Exists("wt_zpt_stat_m400pt80_up"   )) wt_zpt_stat_m400pt80_up    = event->Get<double>("wt_zpt_stat_m400pt80_up"   );
@@ -2086,6 +2095,9 @@ namespace ic {
     if (event->Exists("wt_zpt_bkgdown"        )) wt_zpt_bkgdown = event->Get<double>("wt_zpt_bkgdown" );
     if (event->Exists("genM"                  )) genM           = event->Get<double>("genM"           );
     if (event->Exists("genpT"                 )) genpT          = event->Get<double>("genpT"          );
+    
+    if (event->Exists("genM_smear"                  )) genM_smear           = event->Get<double>("genM_smear"           );
+    if (event->Exists("genpT_smear"                 )) genpT_smear          = event->Get<double>("genpT_smear"          );
     
   mc_weight_ = 0.0;
   if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
