@@ -1816,9 +1816,12 @@ namespace ic {
       return out_vec;
   }
   
-  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4){
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
     //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
-    TVector3 boost = (p3+p4).BoostVector();
+      
+    TVector3 boost;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
     p1.Boost(-boost);
     p2.Boost(-boost);
     p3.Boost(-boost);

@@ -439,15 +439,16 @@ namespace ic {
     }
     
     if(cp_channel_!=-1){
-      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4);    
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
     }
     
     if(gen_tau_jets_ptr.size()>=2){
-      if(rho_1.first && rho_2.first) { 
-        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
-        aco_angle_2_ = angles[0].first;
-        cp_sign_2_ = angles[0].second;
-      }
+      //if(rho_1.first && rho_2.first) { 
+      //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
+      //  aco_angle_2_ = angles[0].first;
+      //  cp_sign_2_ = angles[0].second;
+      //}
       //if(rho_1.first && a1_2.first) {
       //  cp_channel_ = 3;
       //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,a1_2.second,true);

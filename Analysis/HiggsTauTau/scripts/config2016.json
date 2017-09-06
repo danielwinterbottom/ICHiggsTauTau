@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Jun15_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "tt" ],
+    "channels":     [ "mt", "et", "tt" ],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -17,7 +17,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
-    "do_gen_analysis" : true,
+    "do_gen_analysis" : false,
     "mc"            : "summer16_80X",
     "era"           : "data_2016",
     "strategy"      : "mssmsummer16",
@@ -54,7 +54,7 @@
     "do_tau_eff"    : false,
     "do_ff_weights" : false,
     "do_ff_systematics": false,
-    "output_folder" : "/vols/cms/dw515/CPStudies/Gen2/",
+    "output_folder" : "/vols/cms/dw515/CPStudies/Offline/",
     //"output_folder" : "./",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
