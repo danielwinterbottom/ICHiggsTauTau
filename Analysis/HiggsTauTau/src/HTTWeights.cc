@@ -718,6 +718,8 @@ namespace ic {
     if (do_zpt_weight_){
           double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
           double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
+          double zpt_smear = event->Exists("genpT_smear") ? event->Get<double>("genpT_smear") : 0;
+          double zmass_smear = event->Exists("genM_smear") ? event->Get<double>("genM_smear") : 0;
       if(mc_ != mc::summer16_80X){
           double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
           double wtzpt_down=1.0;
@@ -729,6 +731,7 @@ namespace ic {
         auto args = std::vector<double>{zmass,zpt};      
         //double wtzpt         = fns_["zpt_weight_nom"]->eval(args.data());
         double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
+        double wtzpt_smear = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass_smear,zpt_smear));
         double wtzpt_es_new_up = z_pt_mass_hist_esup_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
         double wtzpt_es_new_down = z_pt_mass_hist_esdown_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
         double wtzpt_esup    = fns_["zpt_weight_esup"]->eval(args.data());
@@ -746,6 +749,7 @@ namespace ic {
         double wtzpt_up = wtzpt*wtzpt;
         eventInfo->set_weight("wt_zpt",wtzpt);
         event->Add("wt_zpt_up",wtzpt_up/wtzpt);
+        event->Add("wt_zpt_smear",wtzpt_smear/wtzpt);
         event->Add("wt_zpt_down",wtzpt_down/wtzpt);
         event->Add("wt_zpt_stat_m400pt0_up"    , m400pt0_up  /wtzpt);
         event->Add("wt_zpt_stat_m400pt40_up"   , m400pt40_up /wtzpt);

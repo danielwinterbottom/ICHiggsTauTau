@@ -323,7 +323,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'DYJetsToLL-LO-ext2',
     #'DYJetsToLL_M-10to50-ext',
     #'DYJetsToLL_M-10to50',
-   #'DYJetsToLL_M-10-50-LO',
+   'DYJetsToLL_M-10-50-LO',
    # 'DY1JetsToLL_M-10-50-LO',
    # 'DY2JetsToLL_M-10-50-LO',
    # 'DY3JetsToLL_M-10-50-LO',

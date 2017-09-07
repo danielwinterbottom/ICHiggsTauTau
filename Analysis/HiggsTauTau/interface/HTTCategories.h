@@ -906,6 +906,7 @@ class HTTCategories : public ModuleBase {
   double wt_zpt_esdown;
   double wt_zpt_ttup;
   double wt_zpt_ttdown;
+  double wt_zpt_smear;
   
   double wt_zpt_es_new_up;
   double wt_zpt_es_new_down;

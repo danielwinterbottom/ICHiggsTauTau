@@ -126,10 +126,12 @@ namespace ic {
      
      TF1 *f2 = new TF1("f2","gaus(0)+gaus(3)+gaus(6)",-0.15,0.15);
      f2->SetParameter(0  , 2.63728e+03);f2->SetParameter(1  , 1.90050e-03);f2->SetParameter(2  , 6.18715e-02);f2->SetParameter(3  , 1.24378e+05);f2->SetParameter(4  ,-1.46909e-03);f2->SetParameter(5  , 2.26307e-02);f2->SetParameter(6  , 3.33183e+05);f2->SetParameter(7  ,-6.06386e-05);f2->SetParameter(8  , 1.13489e-02);
-     double rand_num=f2->GetRandom();
+     //double rand_num=0;
+     //rand_num=f2->GetRandom();
+     //if (rand_num < -0.999) rand_num = -0.999;
      //std::cout << rand_num << std::endl;
      //std::cout << smeared_part->vector().Pt() << "    " <<  smeared_part->vector().E() << "    " << smeared_part->vector().Phi() << "    " << smeared_part->vector().Rapidity() << std::endl;
-     smeared_part->set_vector(smeared_part->vector()*(1+rand_num));
+     //smeared_part->set_vector(smeared_part->vector()*(1.0+rand_num));
      //std::cout << smeared_part->vector().Pt() << "    " <<  smeared_part->vector().E() << "    " << smeared_part->vector().Phi() << "    " << smeared_part->vector().Rapidity() << std::endl;
      gen_boson_smear += smeared_part->vector();
    }
