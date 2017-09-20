@@ -109,6 +109,8 @@ namespace ic {
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
       outtree_->Branch("cp_channel",    &cp_channel_);
       
+      outtree_->Branch("ip_dxy_res_1",    &ip_dxy_res_1_);
+      outtree_->Branch("ip_dxy_res_2",    &ip_dxy_res_2_);
       outtree_->Branch("ip_dx_res_1",    &ip_dx_res_1_);
       outtree_->Branch("ip_dx_res_2",    &ip_dx_res_2_);
       outtree_->Branch("ip_dy_res_1",    &ip_dy_res_1_);
@@ -329,7 +331,7 @@ namespace ic {
           //std::cout << "--------------------" << std::endl;
           //std::cout << offline_primary_vtxs[0]->vx() << "    " << offline_primary_vtxs[0]->vy() << "    " << offline_primary_vtxs[0]->vz() << std::endl;
           //std::cout << offline_tau_point.vx() << "    " << offline_tau_point.vy() << "    " << offline_tau_point.vz() << std::endl;
-          TVector3 ip = GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector());
+          TVector3 ip = -GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector());
           
           //ip = ip.Unit();
 
@@ -339,8 +341,12 @@ namespace ic {
           double dz = offline_taus[i]->lead_dz_vertex();
           double dxy = offline_taus[i]->lead_dxy_vertex();
           double m = offline_taus[i]->vector().Py()/offline_taus[i]->vector().Px();
+          double phi = offline_taus[i]->vector().Phi(); 
           double dx = sqrt( pow(dxy,2)/(1/pow(m,2)-1) );
           double dy = sqrt(pow(dxy,2) - pow(dx,2));
+          
+          dy = fabs(dxy)*sin(phi);
+          dx = fabs(dxy)*cos(phi);
           if(m*dxy*offline_taus[i]->vector().Px()<0) dx*=-1;
           if(m*dxy*offline_taus[i]->vector().Py()>0) dy*=-1;
           
@@ -350,20 +356,24 @@ namespace ic {
           double dx_res = (ip_offline.X() - ip.X())/ip.X();
           double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
           double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
+          double gen_dxy = sqrt(pow(ip.Y(),2) + pow(ip.X(),2));
+          double dxy_res = (fabs(dxy) - gen_dxy)/gen_dxy;
           
           //dz_res = (dz/dxy - ip.Z()/sqrt(pow(ip.X(),2)+pow(ip.Y(),2)))/(sqrt(pow(ip.X(),2)+pow(ip.Y(),2)));
-          double offline_dz = offline_taus[i]->lead_dz_vertex();
-          double gen_dz = ip.Z();
-          dz_res = (gen_dz-offline_dz)/gen_dz;
+          //double offline_dz = offline_taus[i]->lead_dz_vertex();
+          //double gen_dz = ip.Z();
+          //dz_res = (fabs(offline_dz))/fabs(gen_dz);
           if (FirstTau){
             ip_dz_res_1_ = dz_res;  
             ip_dy_res_1_ = dy_res;
             ip_dx_res_1_ = dx_res;
+            ip_dxy_res_1_ = dxy_res;
             FirstTau = false;
           } else {
             ip_dz_res_2_ = dz_res;   
             ip_dy_res_2_ = dy_res;
             ip_dx_res_2_ = dx_res;
+            ip_dxy_res_2_ = dxy_res;
           }
           break;
         }
