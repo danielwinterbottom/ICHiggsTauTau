@@ -1875,16 +1875,6 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
-def createAxisGraphs(n,src,xmin=0,xmax=499):
-  result = []
-  for i in range(0,n):
-    res = src.Clone()
-    res.Set(0)
-    res.SetTitle("")
-    res.SetName("axis%(i)d"%vars())
-    res.GetXaxis().SetRangeUser(xmin,xmax)
-    result.append(res)
-  return result
 
 def HTTPlot(nodename, 
             infile=None, 
