@@ -11,13 +11,13 @@ std::vector<double> getValues(int bin){
   
   int nbins = nxbins*nybins*nzbins*nmbins;
   bin--;
-  double x = floor((bin)/(nbins/nxbins))*(xmax-xmin)/nxbins + xmin;
+  double x = floor((bin)/(nbins/nxbins))*(xmax-xmin)/nxbins + xmin + (xmax-xmin)/(2*nxbins);
   bin -= floor(bin/(nbins/nxbins))*(nbins/nxbins);
-  double y = floor(bin/(nzbins*nmbins))*(ymax-ymin)/nybins + ymin;
+  double y = floor(bin/(nzbins*nmbins))*(ymax-ymin)/nybins + ymin + (ymax-ymin)/(2*nybins);
   bin -= floor(bin/(nzbins*nmbins))*(nzbins*nmbins);
-  double z = floor(bin/(nmbins))*(zmax-zmin)/nzbins + zmin;
+  double z = floor(bin/(nmbins))*(zmax-zmin)/nzbins + zmin + (zmax-zmin)/(2*nzbins);
   bin -= floor(bin/(nzbins))*(nzbins);
-  double m = floor(bin)*(mmax-mmin)/nmbins + mmin;
+  double m = floor(bin)*(mmax-mmin)/nmbins + mmin + (mmax-mmin)/(2*nmbins);
   //std::cout << x << std::endl;
   //std::cout << y << std::endl;
   //std::cout << z << std::endl;
@@ -85,6 +85,7 @@ for(unsigned i=0; i<files.size(); ++i){
   c2->SetBranchAddress("l_py",&l_py_);
   c2->SetBranchAddress("l_pz",&l_pz_);
   c2->SetBranchAddress("decaytau_mass",&l_m_);
+  
 
   for(unsigned i=0; i<c1->GetEntries();++i){
     c1->GetEntry(i);
@@ -95,35 +96,34 @@ for(unsigned i=0; i<files.size(); ++i){
     if (l_m_>0.05) muon_tau->Fill(getBinNum(l_px_,l_py_,l_pz_,l_m_));
     else elec_tau->Fill(getBinNum(l_px_,l_py_,l_pz_,l_m_));
   }
-
-   TH1D *had_test = new TH1D("had_test","",nbins,1,nbins+1);
-   gRandom = new TRandom3();
-   for(unsigned i=0; i<1000000; ++i) had_test->Fill(had_tau->GetRandom());
-   TH1D *m = new TH1D("m","",50,0,1.8);
-   for(unsigned i=1; i<=had_test->GetNbinsX(); ++i){
-     double mass = getValues(i)[3];
-     double old_content = m->GetBinContent(m->FindBin(mass));
-     double new_content = old_content + had_test->GetBinContent(i);
-     m->SetBinContent(m->FindBin(mass),new_content);
-   }
-   //m->Draw();
-   
-   TH1D *p = new TH1D("p","",50,-1.5,1.5);
-   for(unsigned i=1; i<=had_test->GetNbinsX(); ++i){
-     double px = getValues(i)[0];
-     double old_content = p->GetBinContent(p->FindBin(px));
-     double new_content = old_content + had_test->GetBinContent(i);
-     p->SetBinContent(p->FindBin(px),new_content);
-   }
-   p->Draw();
-
+  
+  // TH1D *had_test = new TH1D("had_test","",nbins,1,nbins+1);
+  // gRandom = new TRandom3();
+  // for(unsigned i=0; i<1000000; ++i) had_test->Fill(had_tau->GetRandom());
+  // TH1D *m = new TH1D("m","",50,0,1.8);
+  // for(unsigned i=1; i<=had_test->GetNbinsX(); ++i){
+  //   double mass = getValues(i)[3];
+  //   double old_content = m->GetBinContent(m->FindBin(mass));
+  //   double new_content = old_content + had_test->GetBinContent(i);
+  //   m->SetBinContent(m->FindBin(mass),new_content);
+  // }
+  // m->Draw();
+  //
+  //TH1D *p = new TH1D("p","",50,-1.5,1.5);
+  //for(unsigned i=1; i<=had_test->GetNbinsX(); ++i){
+  //  double px = getValues(i)[0];
+  //  double old_content = p->GetBinContent(p->FindBin(px));
+  //  double new_content = old_content + had_test->GetBinContent(i);
+  //  p->SetBinContent(p->FindBin(px),new_content);
+  //}
+  //p->Draw();
+ 
 
 TFile *fout = new TFile("tau_decay_input.root","RECREATE");
 fout->cd();
 had_tau->Write();
 elec_tau->Write();
 muon_tau->Write();
-//lep_tau->Write();
 
 
 }
