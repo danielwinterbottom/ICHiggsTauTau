@@ -1,5 +1,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTGenAnalysis.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "TLorentzVector.h"
+#include "TVector3.h"
 
 std::vector<ic::GenParticle> FamilyTree (std::vector<ic::GenParticle> &v, ic::GenParticle p, std::vector<ic::GenParticle*> gen_particles, unsigned &outputID){ 
   if(p.daughters().size() == 0){
@@ -47,6 +49,8 @@ namespace ic {
   int HTTGenAnalysis::PreAnalysis() {
     rand = new TRandom3(0);
     if(fs_){  
+      outtree2_ = fs_->make<TTree>("lep_decay","lep_decay");  
+      outtree3_ = fs_->make<TTree>("had_decay","had_decay");
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
@@ -200,6 +204,16 @@ namespace ic {
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
       outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
+      outtree3_->Branch("t_px"     , &t_px_);
+      outtree3_->Branch("decaytau_mass"     , &decaytau_mass_);
+      //outtree3_->Branch("tau_mass"     , &tau_mass_);
+      outtree3_->Branch("t_py"     , &t_py_);
+      outtree3_->Branch("t_pz"     , &t_pz_);
+      outtree2_->Branch("l_px"     , &l_px_);
+      outtree2_->Branch("l_py"     , &l_py_);
+      outtree2_->Branch("l_pz"     , &l_pz_);
+      //outtree2_->Branch("tau_mass"     , &tau_mass_);
+      outtree2_->Branch("decaytau_mass"     , &decaytau_mass_);
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -346,6 +360,7 @@ namespace ic {
 
     
     HiggsPt_=-9999;
+    t_px_=-9999; t_py_=-9999; t_pz_=-9999; l_px_=-9999; l_py_=-9999; l_pz_=-9999;
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
@@ -367,12 +382,22 @@ namespace ic {
       
       
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
+      TLorentzVector tau_vec;
+      TLorentzVector decayed_tau_vec;
+      tau_mass_ = part.vector().M();
+      tau_vec.SetXYZM(part.vector().Px(),part.vector().Px(),part.vector().Px(),part.vector().M());
+      TVector3 boost = tau_vec.BoostVector();
       gen_taus.push_back(part);
       std::vector<ic::GenParticle> family;
       unsigned outputID = 15;
       FamilyTree(family, part, gen_particles, outputID);
       if(family.size()==1 && (outputID ==11 || outputID ==13)){
         higgs_products.push_back(family[0]);
+        decayed_tau_vec.SetXYZM(family[0].vector().Px(),family[0].vector().Px(),family[0].vector().Px(),family[0].vector().M());
+        decayed_tau_vec.Boost(-boost);
+        l_px_ = decayed_tau_vec.X(); l_py_ = decayed_tau_vec.Y(); l_pz_ = decayed_tau_vec.Z();
+        decaytau_mass_ = decayed_tau_vec.M();
+        if(fs_) outtree2_->Fill();
         if (outputID == 11) {decay_types.push_back("e");}  
         else if (outputID == 13) {decay_types.push_back("m");}
       } else {
@@ -388,6 +413,11 @@ namespace ic {
         had_tau.set_charge(charge);
         had_tau.set_pdgid(pdgid);
         higgs_products.push_back(had_tau);
+        decayed_tau_vec.SetXYZM(had_tau.vector().Px(),had_tau.vector().Px(),had_tau.vector().Px(),had_tau.vector().M());
+        decayed_tau_vec.Boost(-boost);
+        t_px_ = decayed_tau_vec.X(); t_py_ = decayed_tau_vec.Y(); t_pz_ = decayed_tau_vec.Z();
+        decaytau_mass_ = decayed_tau_vec.M();
+        if(fs_) outtree3_->Fill();
       }
     }
 

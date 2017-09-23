@@ -33,6 +33,8 @@ class HTTGenAnalysis : public ModuleBase {
   CLASS_MEMBER(HTTGenAnalysis, TH2F*,bbtag_eff)
   
   TTree *outtree_;
+  TTree *outtree2_;
+  TTree *outtree3_;
   TRandom3  *rand;
   
   unsigned long long event_;
@@ -89,6 +91,15 @@ class HTTGenAnalysis : public ModuleBase {
   double geneta_2_;
   double n_jets_offline_;
   double n_bjets_offline_;
+  
+  double l_px_;
+  double l_py_;
+  double l_pz_;
+  double t_px_;
+  double t_py_;
+  double t_pz_;
+  double tau_mass_;
+  double decaytau_mass_;
   
   double scale1_;
   double scale2_;
