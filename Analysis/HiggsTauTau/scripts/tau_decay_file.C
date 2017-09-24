@@ -1,6 +1,6 @@
 void setBins(int &nxbins,double &xmin, double &xmax, int &nybins, double &ymin, double &ymax, int &nzbins, double &zmin, double &zmax, int &nmbins, double &mmin, double &mmax){
   int nbins = 50;
-  nxbins = nbins; xmin = -1.5; xmax = 1.5; nybins = nbins; ymin = -1.5; ymax = 1.5; nzbins = nbins; zmin = -1.5; zmax = 1.5; nmbins = nbins; mmin = 0; mmax = 1.8;
+  nxbins = nbins; xmin = -1.; xmax = 1.; nybins = nbins; ymin = -1.; ymax = 1.; nzbins = nbins; zmin = -1.; zmax = 1.; nmbins = nbins; mmin = 0; mmax = 1.8;
 }
 
 
@@ -97,19 +97,19 @@ for(unsigned i=0; i<files.size(); ++i){
     else elec_tau->Fill(getBinNum(l_px_,l_py_,l_pz_,l_m_));
   }
   
-  // TH1D *had_test = new TH1D("had_test","",nbins,1,nbins+1);
-  // gRandom = new TRandom3();
-  // for(unsigned i=0; i<1000000; ++i) had_test->Fill(had_tau->GetRandom());
-  // TH1D *m = new TH1D("m","",50,0,1.8);
-  // for(unsigned i=1; i<=had_test->GetNbinsX(); ++i){
-  //   double mass = getValues(i)[3];
-  //   double old_content = m->GetBinContent(m->FindBin(mass));
-  //   double new_content = old_content + had_test->GetBinContent(i);
-  //   m->SetBinContent(m->FindBin(mass),new_content);
-  // }
-  // m->Draw();
-  //
-  //TH1D *p = new TH1D("p","",50,-1.5,1.5);
+  //TH1D *had_test = new TH1D("had_test","",nbins,1,nbins+1);
+  //gRandom = new TRandom3();
+
+  //TH1D *m = new TH1D("m","",50,0,1.8);
+  //for(unsigned i=1; i<=had_test->GetNbinsX(); ++i){
+  //  double mass = getValues(i)[3];
+  //  double old_content = m->GetBinContent(m->FindBin(mass));
+  //  double new_content = old_content + had_test->GetBinContent(i);
+  //  m->SetBinContent(m->FindBin(mass),new_content);
+  //}
+  //m->Draw();
+  
+  //TH1D *p = new TH1D("p","",50,-1,1);
   //for(unsigned i=1; i<=had_test->GetNbinsX(); ++i){
   //  double px = getValues(i)[0];
   //  double old_content = p->GetBinContent(p->FindBin(px));

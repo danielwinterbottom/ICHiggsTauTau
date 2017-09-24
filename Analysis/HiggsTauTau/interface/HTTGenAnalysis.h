@@ -10,6 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "TRandom3.h"
 
 #include <string>
@@ -214,6 +215,10 @@ class HTTGenAnalysis : public ModuleBase {
   
   double wt_alphasdown_;
   double wt_alphasup_;
+  
+  double pt_h_1_;
+  double pt_h_2_;
+  TH1D had_tau_;
 
   
  public:

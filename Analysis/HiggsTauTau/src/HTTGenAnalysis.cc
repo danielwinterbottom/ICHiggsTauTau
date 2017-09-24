@@ -34,6 +34,47 @@ struct PtComparator{
     return (a.vector().Pt() > b.vector().Pt());
   }
 };
+
+void setBins(int &nxbins,double &xmin, double &xmax, int &nybins, double &ymin, double &ymax, int &nzbins, double &zmin, double &zmax, int &nmbins, double &mmin, double &mmax){
+  int nbins = 50;
+  nxbins = nbins; xmin = -1.; xmax = 1.; nybins = nbins; ymin = -1.; ymax = 1.; nzbins = nbins; zmin = -1.; zmax = 1.; nmbins = nbins; mmin = 0; mmax = 1.8;
+}
+
+std::vector<double> getValues(int bin){
+  std::vector<double> v;
+  int nxbins; double xmin; double xmax; int nybins; double ymin; double ymax; int nzbins; double zmin; double zmax; int nmbins; double mmin; double mmax;
+  setBins(nxbins,xmin,xmax,nybins,ymin,ymax,nzbins,zmin,zmax,nmbins,mmin,mmax);
+  
+  int nbins = nxbins*nybins*nzbins*nmbins;
+  bin--;
+  double x = floor((bin)/(nbins/nxbins))*(xmax-xmin)/nxbins + xmin + (xmax-xmin)/(2*nxbins);
+  bin -= floor(bin/(nbins/nxbins))*(nbins/nxbins);
+  double y = floor(bin/(nzbins*nmbins))*(ymax-ymin)/nybins + ymin + (ymax-ymin)/(2*nybins);
+  bin -= floor(bin/(nzbins*nmbins))*(nzbins*nmbins);
+  double z = floor(bin/(nmbins))*(zmax-zmin)/nzbins + zmin + (zmax-zmin)/(2*nzbins);
+  bin -= floor(bin/(nzbins))*(nzbins);
+  double m = floor(bin)*(mmax-mmin)/nmbins + mmin + (mmax-mmin)/(2*nmbins);
+
+  v = {x,y,z,m};
+  return v;
+}
+
+ROOT::Math::PtEtaPhiEVector getDecayVec(ROOT::Math::PtEtaPhiEVector input_vec, TH1D input_hist){
+  double tau_mass = 1.777;
+  TLorentzVector lvec;
+  lvec.SetXYZM(input_vec.Px(),input_vec.Py(),input_vec.Pz(),tau_mass);
+  TVector3 boost = lvec.BoostVector();
+  int rand_bin = input_hist.GetRandom();  // this line is problematic
+  std::vector<double> v = getValues(rand_bin);
+  TLorentzVector tau_rf;
+  tau_rf.SetXYZM(v[0],v[1],v[2],v[3]);
+  //std::cout << v[0] << "  " << v[1] << "  " << v[2] << "  " << v[3] << std::endl;
+  tau_rf.Boost(boost);
+  ROOT::Math::PtEtaPhiEVector output_vec(tau_rf.Pt(),tau_rf.Rapidity(),tau_rf.Phi(),tau_rf.E());
+  
+  return output_vec;  
+}
+
   
 namespace ic {
 
@@ -48,6 +89,8 @@ namespace ic {
 
   int HTTGenAnalysis::PreAnalysis() {
     rand = new TRandom3(0);
+    gRandom = new TRandom3();
+    had_tau_ = GetFromTFile<TH1D>("input/tau_decay_input.root","/","had_tau");
     if(fs_){  
       outtree2_ = fs_->make<TTree>("lep_decay","lep_decay");  
       outtree3_ = fs_->make<TTree>("had_decay","had_decay");
@@ -214,6 +257,8 @@ namespace ic {
       outtree2_->Branch("l_pz"     , &l_pz_);
       //outtree2_->Branch("tau_mass"     , &tau_mass_);
       outtree2_->Branch("decaytau_mass"     , &decaytau_mass_);
+      outtree_->Branch("pt_h_1", &pt_h_1_);
+      outtree_->Branch("pt_h_2", &pt_h_2_);
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -358,14 +403,14 @@ namespace ic {
     std::vector<ic::GenParticle> prompt_leptons;
     std::vector<std::string> decay_types;
 
-    
+    //int muon_count=0;
     HiggsPt_=-9999;
     t_px_=-9999; t_py_=-9999; t_pz_=-9999; l_px_=-9999; l_py_=-9999; l_pz_=-9999;
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
       }
-
+      
       
       ic::GenParticle part = *gen_particles[i];
       ic::GenParticle higgs_product;
@@ -380,12 +425,21 @@ namespace ic {
         continue;
       }
       
+      //if(genID == 13 && status_flag_t && status_flag_tlc){
+      //  //std::cout << "------------------" << std::endl;
+      //  ROOT::Math::PtEtaPhiEVector decay_tau = getDecayVec(part.vector(),had_tau_);
+      //  //std::cout << part.vector().Pt() << "    " << part.vector().E() << std::endl;
+      //  //std::cout << decay_tau.Pt() << "    " << decay_tau.E() << std::endl;
+      //  if (muon_count==0) {pt_h_1_ = decay_tau.Pt(); muon_count++;}
+      //  else if (muon_count==1) {pt_h_2_ = decay_tau.Pt(); muon_count++;}
+      //}
       
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
+      
       TLorentzVector tau_vec;
       TLorentzVector decayed_tau_vec;
       tau_mass_ = part.vector().M();
-      tau_vec.SetXYZM(part.vector().Px(),part.vector().Px(),part.vector().Px(),part.vector().M());
+      tau_vec.SetXYZM(part.vector().Px(),part.vector().Py(),part.vector().Pz(),part.vector().M());
       TVector3 boost = tau_vec.BoostVector();
       gen_taus.push_back(part);
       std::vector<ic::GenParticle> family;
@@ -393,7 +447,7 @@ namespace ic {
       FamilyTree(family, part, gen_particles, outputID);
       if(family.size()==1 && (outputID ==11 || outputID ==13)){
         higgs_products.push_back(family[0]);
-        decayed_tau_vec.SetXYZM(family[0].vector().Px(),family[0].vector().Px(),family[0].vector().Px(),family[0].vector().M());
+        decayed_tau_vec.SetXYZM(family[0].vector().Px(),family[0].vector().Py(),family[0].vector().Pz(),family[0].vector().M());
         decayed_tau_vec.Boost(-boost);
         l_px_ = decayed_tau_vec.X(); l_py_ = decayed_tau_vec.Y(); l_pz_ = decayed_tau_vec.Z();
         decaytau_mass_ = decayed_tau_vec.M();
@@ -413,12 +467,18 @@ namespace ic {
         had_tau.set_charge(charge);
         had_tau.set_pdgid(pdgid);
         higgs_products.push_back(had_tau);
-        decayed_tau_vec.SetXYZM(had_tau.vector().Px(),had_tau.vector().Px(),had_tau.vector().Px(),had_tau.vector().M());
+        decayed_tau_vec.SetXYZM(had_tau.vector().Px(),had_tau.vector().Py(),had_tau.vector().Pz(),had_tau.vector().M());
         decayed_tau_vec.Boost(-boost);
         t_px_ = decayed_tau_vec.X(); t_py_ = decayed_tau_vec.Y(); t_pz_ = decayed_tau_vec.Z();
         decaytau_mass_ = decayed_tau_vec.M();
         if(fs_) outtree3_->Fill();
       }
+    }
+    
+    if (pt_h_2_ > pt_h_1_){
+        double temp = pt_h_2_;
+        pt_h_2_ = pt_h_1_;
+        pt_h_1_ = temp;
     }
 
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
@@ -476,6 +536,8 @@ namespace ic {
     ic::Candidate lep1;
     ic::Candidate lep2;
     passed_ = false;
+    pt_h_1_ = -9999;
+    pt_h_2_ = -9999;
 
     if(channel_str_ == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
