@@ -104,11 +104,11 @@ namespace ic {
        outtree_->Branch("mt_tot_em_2" , &mt_tot_em_2_);  
        outtree_->Branch("met_tt" , &met_tt_);
        outtree_->Branch("met_et_1_" , &met_et_1_);
-       outtree_->Branch("met_mt_1_" , &met_mt_1_);
-       outtree_->Branch("met_em_1_" , &met_em_1_); 
-       outtree_->Branch("met_et_2_" , &met_et_2_);
-       outtree_->Branch("met_mt_2_" , &met_mt_2_);
-       outtree_->Branch("met_em_2_" , &met_em_2_);
+       outtree_->Branch("met_mt_1" , &met_mt_1_);
+       outtree_->Branch("met_em_1" , &met_em_1_); 
+       outtree_->Branch("met_et_2" , &met_et_2_);
+       outtree_->Branch("met_mt_2" , &met_mt_2_);
+       outtree_->Branch("met_em_2" , &met_em_2_);
       }
       if(channel_==channel::em){
         outtree_->Branch("idisoweight_up_1",&idisoweight_up_1_);
@@ -3202,13 +3202,21 @@ namespace ic {
         eta_m_1_ = decay_mutau_1.Rapidity();
         eta_m_2_ = decay_mutau_2.Rapidity();
         
-        ROOT::Math::PtEtaPhiEVector met_mt_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_mutau_1 - decay_hadtau_2;
-        ROOT::Math::PtEtaPhiEVector met_mt_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_mutau_2 - decay_hadtau_1;
-        ROOT::Math::PtEtaPhiEVector met_et_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_1 - decay_hadtau_2;
-        ROOT::Math::PtEtaPhiEVector met_et_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_2 - decay_hadtau_1;
-        ROOT::Math::PtEtaPhiEVector met_em_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_1 - decay_mutau_2;
-        ROOT::Math::PtEtaPhiEVector met_em_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_2 - decay_mutau_1;
-        ROOT::Math::PtEtaPhiEVector met_tt = mets->vector() + lep1->vector() + lep2->vector() - decay_hadtau_1 - decay_hadtau_2;
+        //ROOT::Math::PtEtaPhiEVector met_mt_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_mutau_1 - decay_hadtau_2;
+        //ROOT::Math::PtEtaPhiEVector met_mt_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_mutau_2 - decay_hadtau_1;
+        //ROOT::Math::PtEtaPhiEVector met_et_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_1 - decay_hadtau_2;
+        //ROOT::Math::PtEtaPhiEVector met_et_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_2 - decay_hadtau_1;
+        //ROOT::Math::PtEtaPhiEVector met_em_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_1 - decay_mutau_2;
+        //ROOT::Math::PtEtaPhiEVector met_em_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_2 - decay_mutau_1;
+        //ROOT::Math::PtEtaPhiEVector met_tt   = mets->vector() + lep1->vector() + lep2->vector() - decay_hadtau_1 - decay_hadtau_2;
+        
+        ROOT::Math::PtEtaPhiEVector met_mt_1 = lep1->vector() + lep2->vector() - decay_mutau_1 - decay_hadtau_2;
+        ROOT::Math::PtEtaPhiEVector met_mt_2 = lep1->vector() + lep2->vector() - decay_mutau_2 - decay_hadtau_1;
+        ROOT::Math::PtEtaPhiEVector met_et_1 = lep1->vector() + lep2->vector() - decay_etau_1 - decay_hadtau_2;
+        ROOT::Math::PtEtaPhiEVector met_et_2 = lep1->vector() + lep2->vector() - decay_etau_2 - decay_hadtau_1;
+        ROOT::Math::PtEtaPhiEVector met_em_1 = lep1->vector() + lep2->vector() - decay_etau_1 - decay_mutau_2;
+        ROOT::Math::PtEtaPhiEVector met_em_2 = lep1->vector() + lep2->vector() - decay_etau_2 - decay_mutau_1;
+        ROOT::Math::PtEtaPhiEVector met_tt   = lep1->vector() + lep2->vector() - decay_hadtau_1 - decay_hadtau_2;
         
         double mt_1_mt_1 = MT(decay_mutau_1,met_mt_1);
         double mt_1_mt_2 = MT(decay_mutau_2,met_mt_2);

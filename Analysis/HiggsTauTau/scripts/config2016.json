@@ -56,7 +56,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/tau_decay/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/tau_decay_genmet/",
     //"output_folder" : "output/"
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
