@@ -1055,6 +1055,20 @@ def NormFFSysts(ana,outfile='output.root'):
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write()
     
+def ZLLNormMCToData(ana,outfile='output.root'):
+    data = outfile.Get(nodename+'/data_obs')
+    bkg = outfile.Get(nodename+'/total_bkg')
+    zl = outfile.Get(nodename+'/ZL')
+    data.Add(bkg,-1)
+    data.Add(zl)
+    zl.Scale(data.Integral(-1,-1)/zl.Integral(-1,-1))
+    bkg.Scale(0)
+    bkg.Add(zl)
+    outfile.cd(nodename)
+    zl.Write()
+    bkg.Write()
+    data.Write()
+    
 def PDFUncerts(nodename, infile):
   def RMS(a):
     from numpy import mean, sqrt, square  
@@ -1597,6 +1611,7 @@ for systematic in systematics:
                         mssm_hist.Write()
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
+#ZLLNormMCToData(ana,outfile) # this will subtract non ZLL backgrounds from data and normalize MC to data
 if options.doNLOScales: 
     ScaleUncertBand(nodename,outfile)
     DONLOUncerts(nodename,outfile)
