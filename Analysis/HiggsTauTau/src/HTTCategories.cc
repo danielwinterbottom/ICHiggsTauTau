@@ -61,7 +61,13 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "kinfit_mode"     % kinfit_mode_;
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
-
+      
+      if(channel_==channel::zmm){
+        gRandom = new TRandom3();
+        had_tau_ = new TH1D(GetFromTFile<TH1D>("input/tau_decay_input.root","/","had_tau"));
+        elec_tau_ = new TH1D(GetFromTFile<TH1D>("input/tau_decay_input.root","/","elec_tau"));
+        muon_tau_ = new TH1D(GetFromTFile<TH1D>("input/tau_decay_input.root","/","muon_tau"));
+      }
 
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
@@ -72,6 +78,38 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
+      if(channel_==channel::zmm){
+       outtree_->Branch("eta_h_1", &eta_h_1_);
+       outtree_->Branch("eta_h_2", &eta_h_2_);
+       outtree_->Branch("eta_e_1", &eta_e_1_);
+       outtree_->Branch("eta_e_2", &eta_e_2_);
+       outtree_->Branch("eta_m_1", &eta_m_1_);
+       outtree_->Branch("eta_m_2", &eta_m_2_);  
+       outtree_->Branch("pt_h_1" , &pt_h_1_);
+       outtree_->Branch("pt_h_2" , &pt_h_2_);
+       outtree_->Branch("pt_e_1" , &pt_e_1_);
+       outtree_->Branch("pt_e_2" , &pt_e_2_);
+       outtree_->Branch("pt_m_1" , &pt_m_1_);
+       outtree_->Branch("pt_m_2" , &pt_m_2_);
+       outtree_->Branch("mt_et_1" , &mt_et_1_);
+       outtree_->Branch("mt_mt_1" , &mt_mt_1_);
+       outtree_->Branch("mt_et_2" , &mt_et_2_);
+       outtree_->Branch("mt_mt_2" , &mt_mt_2_);
+       outtree_->Branch("mt_tot_et_1" , &mt_tot_et_1_);
+       outtree_->Branch("mt_tot_mt_1" , &mt_tot_mt_1_);
+       outtree_->Branch("mt_tot_tt" , &mt_tot_tt_);
+       outtree_->Branch("mt_tot_em_1" , &mt_tot_em_1_);          
+       outtree_->Branch("mt_tot_et_2" , &mt_tot_et_2_);
+       outtree_->Branch("mt_tot_mt_2" , &mt_tot_mt_2_);
+       outtree_->Branch("mt_tot_em_2" , &mt_tot_em_2_);  
+       outtree_->Branch("met_tt" , &met_tt_);
+       outtree_->Branch("met_et_1_" , &met_et_1_);
+       outtree_->Branch("met_mt_1_" , &met_mt_1_);
+       outtree_->Branch("met_em_1_" , &met_em_1_); 
+       outtree_->Branch("met_et_2_" , &met_et_2_);
+       outtree_->Branch("met_mt_2_" , &met_mt_2_);
+       outtree_->Branch("met_em_2_" , &met_em_2_);
+      }
       if(channel_==channel::em){
         outtree_->Branch("idisoweight_up_1",&idisoweight_up_1_);
         outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
@@ -3142,6 +3180,87 @@ namespace ic {
       dz_2_ = elec2->dz_vertex();
     }
     if (channel_ == channel::zmm || channel_ == channel::tpzmm) {
+      if (channel_ == channel::zmm) {  
+        ROOT::Math::PtEtaPhiEVector decay_hadtau_1 = getDecayVec(lep1->vector(),had_tau_);
+        ROOT::Math::PtEtaPhiEVector decay_mutau_1 = getDecayVec(lep1->vector(),muon_tau_);
+        ROOT::Math::PtEtaPhiEVector decay_etau_1 = getDecayVec(lep1->vector(),elec_tau_);  
+        ROOT::Math::PtEtaPhiEVector decay_hadtau_2 = getDecayVec(lep2->vector(),had_tau_);
+        ROOT::Math::PtEtaPhiEVector decay_mutau_2 = getDecayVec(lep2->vector(),muon_tau_);
+        ROOT::Math::PtEtaPhiEVector decay_etau_2 = getDecayVec(lep2->vector(),elec_tau_);
+        
+        pt_h_1_ = decay_hadtau_1.Pt();
+        pt_h_2_ = decay_hadtau_2.Pt();
+        pt_e_1_ = decay_etau_1.Pt();
+        pt_e_2_ = decay_etau_2.Pt();
+        pt_m_1_ = decay_mutau_1.Pt();
+        pt_m_2_ = decay_mutau_2.Pt();
+        
+        eta_h_1_ = decay_hadtau_1.Rapidity();
+        eta_h_2_ = decay_hadtau_2.Rapidity();
+        eta_e_1_ = decay_etau_1.Rapidity();
+        eta_e_2_ = decay_etau_2.Rapidity();
+        eta_m_1_ = decay_mutau_1.Rapidity();
+        eta_m_2_ = decay_mutau_2.Rapidity();
+        
+        ROOT::Math::PtEtaPhiEVector met_mt_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_mutau_1 - decay_hadtau_2;
+        ROOT::Math::PtEtaPhiEVector met_mt_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_mutau_2 - decay_hadtau_1;
+        ROOT::Math::PtEtaPhiEVector met_et_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_1 - decay_hadtau_2;
+        ROOT::Math::PtEtaPhiEVector met_et_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_2 - decay_hadtau_1;
+        ROOT::Math::PtEtaPhiEVector met_em_1 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_1 - decay_mutau_2;
+        ROOT::Math::PtEtaPhiEVector met_em_2 = mets->vector() + lep1->vector() + lep2->vector() - decay_etau_2 - decay_mutau_1;
+        ROOT::Math::PtEtaPhiEVector met_tt = mets->vector() + lep1->vector() + lep2->vector() - decay_hadtau_1 - decay_hadtau_2;
+        
+        double mt_1_mt_1 = MT(decay_mutau_1,met_mt_1);
+        double mt_1_mt_2 = MT(decay_mutau_2,met_mt_2);
+        double mt_1_et_1 = MT(decay_etau_1,met_et_1);
+        double mt_1_et_2 = MT(decay_etau_2,met_et_2);
+        double mt_1_em_1 = MT(decay_etau_1,met_em_1);
+        double mt_1_em_2 = MT(decay_etau_2,met_em_2);
+        double mt_1_tt = MT(decay_hadtau_1,met_tt);
+        double mt_2_mt_1 = MT(decay_hadtau_2,met_mt_1);
+        double mt_2_mt_2 = MT(decay_hadtau_1,met_mt_2);
+        double mt_2_et_1 = MT(decay_hadtau_2,met_et_1);
+        double mt_2_et_2 = MT(decay_hadtau_1,met_et_2);
+        double mt_2_em_1 = MT(decay_mutau_1,met_em_1);
+        double mt_2_em_2 = MT(decay_mutau_2,met_em_2);
+        double mt_2_tt = MT(decay_hadtau_2,met_tt);
+        double mt_3_mt_1 = MT(decay_mutau_1,decay_hadtau_2);
+        double mt_3_mt_2 = MT(decay_mutau_2,decay_hadtau_1);
+        double mt_3_et_1 = MT(decay_etau_1,decay_etau_2);
+        double mt_3_et_2 = MT(decay_etau_2,decay_etau_1);
+        double mt_3_em_1 = MT(decay_etau_1,decay_mutau_2);
+        double mt_3_em_2 = MT(decay_etau_2,decay_mutau_1);
+        double mt_3_tt = MT(decay_hadtau_1,decay_hadtau_2);
+        
+        double mt_tot_mt_1 = sqrt(pow(mt_1_mt_1,2)+pow(mt_2_mt_1,2)+pow(mt_3_mt_1,2));
+        double mt_tot_mt_2 = sqrt(pow(mt_1_mt_2,2)+pow(mt_2_mt_2,2)+pow(mt_3_mt_2,2));
+        double mt_tot_et_1 = sqrt(pow(mt_1_et_1,2)+pow(mt_2_et_1,2)+pow(mt_3_et_1,2));
+        double mt_tot_et_2 = sqrt(pow(mt_1_et_2,2)+pow(mt_2_et_2,2)+pow(mt_3_et_2,2));
+        double mt_tot_em_1 = sqrt(pow(mt_1_em_1,2)+pow(mt_2_em_1,2)+pow(mt_3_em_1,2));
+        double mt_tot_em_2 = sqrt(pow(mt_1_em_2,2)+pow(mt_2_em_2,2)+pow(mt_3_em_2,2));
+        double mt_tot_tt = sqrt(pow(mt_1_tt,2)+pow(mt_2_tt,2)+pow(mt_3_tt,2));
+        
+        mt_mt_1_ = mt_1_mt_1;
+        mt_mt_2_ = mt_1_mt_2;
+        mt_et_1_ = mt_1_et_1;
+        mt_et_2_ = mt_1_et_2;
+        mt_tot_et_1_ = mt_tot_et_1;
+        mt_tot_mt_1_ = mt_tot_mt_1;
+        mt_tot_tt_  = mt_tot_tt;
+        mt_tot_em_1_ = mt_tot_em_1;
+        mt_tot_et_2_ = mt_tot_et_2;
+        mt_tot_mt_2_ = mt_tot_mt_2;
+        mt_tot_em_2_ = mt_tot_em_2;
+        
+        met_et_1_  = met_et_1.Pt();
+        met_mt_1_  = met_mt_1.Pt();
+        met_tt_    = met_tt.Pt();
+        met_em_1_  = met_em_1.Pt();
+        met_et_2_  = met_et_2.Pt();
+        met_mt_2_  = met_mt_2.Pt();
+        met_em_2_  = met_em_2.Pt();
+      }
+      
       Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
       Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
       if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15) {

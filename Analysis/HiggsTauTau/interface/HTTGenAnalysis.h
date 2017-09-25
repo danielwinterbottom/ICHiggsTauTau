@@ -218,7 +218,13 @@ class HTTGenAnalysis : public ModuleBase {
   
   double pt_h_1_;
   double pt_h_2_;
-  TH1D had_tau_;
+  double pt_e_1_;
+  double pt_e_2_;
+  double pt_m_1_;
+  double pt_m_2_;
+  TH1D *had_tau_;
+  TH1D *elec_tau_;
+  TH1D *muon_tau_;
 
   
  public:

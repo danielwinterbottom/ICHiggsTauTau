@@ -6,6 +6,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "TRandom3.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 
 #include <string>
 
@@ -1013,6 +1015,46 @@ class HTTCategories : public ModuleBase {
   
   double wt_alphasdown_;
   double wt_alphasup_;
+  
+  double eta_h_1_;
+  double eta_h_2_;
+  double eta_e_1_;
+  double eta_e_2_;
+  double eta_m_1_;
+  double eta_m_2_;  
+  
+  double pt_h_1_;
+  double pt_h_2_;
+  double pt_e_1_;
+  double pt_e_2_;
+  double pt_m_1_;
+  double pt_m_2_;
+  
+  double mt_et_1_;
+  double mt_mt_1_;
+  double mt_et_2_;
+  double mt_mt_2_;
+  
+  double mt_tot_et_1_;
+  double mt_tot_mt_1_;
+  double mt_tot_tt_;
+  double mt_tot_em_1_;
+  
+  double mt_tot_et_2_;
+  double mt_tot_mt_2_;
+  double mt_tot_em_2_;
+  
+  double met_et_1_;
+  double met_mt_1_;
+  double met_tt_;
+  double met_em_1_;
+  double met_et_2_;
+  double met_mt_2_;
+  double met_em_2_;
+  
+  TH1D *had_tau_;
+  TH1D *elec_tau_;
+  TH1D *muon_tau_;
 
  public:
   HTTCategories(std::string const& name);

@@ -11,6 +11,8 @@
 #include "boost/range/algorithm_ext/erase.hpp"
 #include "Math/VectorUtil.h"
 #include "TVector3.h"
+#include "TLorentzVector.h"
+#include "TH1D.h"
 
 #include "UserCode/ICHiggsTauTau/interface/Objects.hh"
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
@@ -55,7 +57,10 @@ namespace ic {
     (void)cand;
     return true;
   }
-
+  
+  
+  std::vector<double> getValues(int bin);
+  ROOT::Math::PtEtaPhiEVector getDecayVec(ROOT::Math::PtEtaPhiEVector input_vec, TH1D *input_hist);
 
   //----------------------------------------------------------
   // Candidate
@@ -148,6 +153,7 @@ namespace ic {
   double PZetaVis(CompositeCandidate const* cand);
 
   double MT(Candidate const* cand1, Candidate const* cand2);
+  double MT(ROOT::Math::PtEtaPhiEVector cand1, ROOT::Math::PtEtaPhiEVector);
 
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);
   std::pair <bool,unsigned> IsFilterMatchedWithIndex(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr);

@@ -433,6 +433,16 @@ namespace ic {
     }
     return 0.0;
   }
+  
+  double MT(ROOT::Math::PtEtaPhiEVector cand1, ROOT::Math::PtEtaPhiEVector cand2) {
+    double mt = 2. * cand1.pt() * cand2.pt() * (1. - cos(ROOT::Math::VectorUtil::DeltaPhi(cand1, cand2)));
+    if (mt > 0) {
+      return std::sqrt(mt);
+    } else {
+      std::cerr << "Transverse mass would be negative! Returning 0.0" << std::endl;
+    }
+    return 0.0;
+  }
 
   bool passAntiEMVA(Tau const * tau, int WP){
     
@@ -1891,4 +1901,45 @@ namespace ic {
      }
      return types;
   }
+  
+  std::vector<double> getValues(int bin){
+    std::vector<double> v;
+    int nxbins; double xmin; double xmax; int nybins; double ymin; double ymax; int nzbins; double zmin; double zmax; int nmbins; double mmin; double mmax;
+    int nbins_perdim = 50;
+    nxbins = nbins_perdim; xmin = -1.; xmax = 1.; nybins = nbins_perdim; ymin = -1.; ymax = 1.; nzbins = nbins_perdim; zmin = -1.; zmax = 1.; nmbins = nbins_perdim; mmin = 0; mmax = 1.8;
+    int nbins = nxbins*nybins*nzbins*nmbins;
+    bin--;
+    double x = floor((bin)/(nbins/nxbins))*(xmax-xmin)/nxbins + xmin + (xmax-xmin)/(2*nxbins);
+    bin -= floor(bin/(nbins/nxbins))*(nbins/nxbins);
+    double y = floor(bin/(nzbins*nmbins))*(ymax-ymin)/nybins + ymin + (ymax-ymin)/(2*nybins);
+    bin -= floor(bin/(nzbins*nmbins))*(nzbins*nmbins);
+    double z = floor(bin/(nmbins))*(zmax-zmin)/nzbins + zmin + (zmax-zmin)/(2*nzbins);
+    bin -= floor(bin/(nzbins))*(nzbins);
+    double m = floor(bin)*(mmax-mmin)/nmbins + mmin + (mmax-mmin)/(2*nmbins);
+  
+    v = {x,y,z,m};
+    return v;
+  }
+  
+  
+  ROOT::Math::PtEtaPhiEVector getDecayVec(ROOT::Math::PtEtaPhiEVector input_vec, TH1D *input_hist){
+    double tau_mass = 1.777;
+    TLorentzVector lvec;
+    lvec.SetXYZM(input_vec.Px(),input_vec.Py(),input_vec.Pz(),tau_mass);
+    TVector3 boost = lvec.BoostVector();
+    int rand_bin = input_hist->GetRandom();
+    std::vector<double> v = getValues(rand_bin);
+    TLorentzVector tau_rf;
+    double mass  = v[3];
+    std::string name = input_hist->GetName();
+    if(name == "elec_tau") mass = 0.0005;
+    else if(name == "muon_tau") mass = 0.106;
+    tau_rf.SetXYZM(v[0],v[1],v[2],mass);
+    //std::cout << v[0] << "  " << v[1] << "  " << v[2] << "  " << mass << std::endl;
+    tau_rf.Boost(boost);
+    ROOT::Math::PtEtaPhiEVector output_vec(tau_rf.Pt(),tau_rf.Rapidity(),tau_rf.Phi(),tau_rf.E());
+    
+    return output_vec;  
+  }
+
 } //namespace
