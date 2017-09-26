@@ -10,14 +10,30 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
-#include "DataFormats/Candidate/interface/Candidate.h"
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
-#include "TauSpinner/SimpleParticle.h"
-#include "TauSpinner/tau_reweight_lib.h"
+#include "UserCode/ICHiggsTauTau/TAUOLA/TauSpinner/include/TauSpinner/SimpleParticle.h"
+#include "UserCode/ICHiggsTauTau/TAUOLA/TauSpinner/include/TauSpinner/tau_reweight_lib.h"
+//#include "TauSpinner/SimpleParticle.h"
+//#include "TauSpinner/tau_reweight_lib.h"
 //#include "GeneratorInterface/TauolaInterface/interface/TauSpinnerCMS.h"
-#include "LHAPDF/LHAPDF.h"
-#include "Tauola/Tauola.h"
+//#include "LHAPDF/LHAPDF.h"
+//#include "Tauola/Tauola.h"
+
+
+enum pdgId {
+  Gamma = 22,
+  PiZero = 111,
+  PiPlus = 211,
+  KPlus = 321,
+  KLong = 130,
+  KShort = 310,
+  Electron = 11,
+  NuE = 12,
+  Muon = 13,
+  NuMu = 14,
+  NuTau = 16
+};
 
 /**
  * @brief See documentation [here](\ref objs-candidate)
@@ -29,13 +45,19 @@ class ICTauSpinnerProducer : public edm::EDProducer {
 
  private:
   virtual void beginJob();
-  virtual void Init();
+  virtual void initialize();
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
+  reco::GenParticle getBoson(edm::Handle<edm::View<reco::GenParticle> > parts_handle);
+  std::vector<reco::GenParticle> getTaus(reco::GenParticle boson, edm::Handle<edm::View<reco::GenParticle> > parts_handle);
+  void getTauDaughters(std::vector<reco::GenParticle> &tau_daughters, reco::GenParticle tau, edm::Handle<edm::View<reco::GenParticle> > parts_handle);
+  TauSpinner::SimpleParticle ConvertToSimplePart(reco::GenParticle input_part);
 
   edm::InputTag input_;
   std::string branch_;
-  boost::hash<reco::Candidate const*> cand_hasher_;
+  double theta_;
+  int bosonPdgId_;
+  double weight_;
   
   std::string TauSpinnerSettingsPDF;
   bool TauSpinnerSettingsIpp;

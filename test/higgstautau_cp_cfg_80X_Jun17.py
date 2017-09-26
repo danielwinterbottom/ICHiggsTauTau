@@ -79,7 +79,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -2329,6 +2329,21 @@ process.icEventInfoSequence = cms.Sequence(
 if isData:
   process.icEventInfoSequence.remove(process.badGlobalMuonTagger)
   process.icEventInfoSequence.remove(process.cloneGlobalMuonTagger)
+
+################################################################
+# TauSpinner
+################################################################
+  
+process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
+  branch                  = cms.string("tauspinner"),
+  input                   = cms.InputTag("prunedGenParticles"),
+  theta                   = cms.double(1./2)
+)
+
+
+process.icTauSpinnerSequence = cms.Sequence(
+  process.icTauSpinnerProducer 
+)
   
 
 
@@ -2360,6 +2375,7 @@ process.p = cms.Path(
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
+  process.icTauSpinnerSequence+
   #process.patDefaultSequence+
   process.icEventProducer
 )
