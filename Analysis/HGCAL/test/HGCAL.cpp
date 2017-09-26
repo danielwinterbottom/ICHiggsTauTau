@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
   unsigned file_offset = js.get("file_offset", 0).asUInt();
   unsigned file_step = js.get("file_step", 1).asUInt();
   for (unsigned i = file_offset; i < files.size(); i += file_step) {
-    do_files.push_back("root://eoscms.cern.ch/" + files[i]);
+    do_files.push_back(js.get("file_prefix", "").asString() + files[i]);
   }
 
   // vector<string> files = {

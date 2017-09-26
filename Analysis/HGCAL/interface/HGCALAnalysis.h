@@ -11,12 +11,42 @@
 #include "Core/interface/ModuleBase.h"
 #include "Objects/interface/Candidate.hh"
 #include "Objects/interface/GenParticle.hh"
+#include "Objects/interface/GenJet.hh"
 #include "Objects/interface/CompositeCandidate.hh"
 #include "Objects/interface/TriggerObject.hh"
 #include "TGraph2D.h"
 #include "fastjet/ClusterSequence.hh"
 
 namespace ic {
+
+  struct GenEvent_Tau {
+    GenParticle *tau_st3;
+    GenParticle *tau_st2_pre_fsr;
+    GenParticle *tau_st2_post_fsr;
+    GenParticle *tau_nu;
+    GenParticle *lep;
+    GenParticle *lep_nu;
+    GenJet *vis_jet;
+    GenParticle *had;
+    int hadronic_mode;
+    int leptonic_mode;
+    GenEvent_Tau()
+        : tau_st3(nullptr),
+          tau_st2_pre_fsr(nullptr),
+          tau_st2_post_fsr(nullptr),
+          tau_nu(nullptr),
+          lep(nullptr),
+          lep_nu(nullptr),
+          vis_jet(nullptr),
+          had(nullptr),
+          hadronic_mode(-1),
+          leptonic_mode(-1) {}
+    std::vector<GenParticle *> fsr;
+    std::vector<GenParticle *> pi_charged;
+    std::vector<GenParticle *> pi_neutral;
+    std::vector<GenParticle *> other_neutral;
+    std::vector<GenParticle *> all_vis;
+  };
 
 namespace hgcal {
   const int lastLayerFH = 40;
@@ -62,6 +92,56 @@ class RecHit : public Candidate {
 
 class SimCluster : public Candidate {};
 
+class SimParticle : public Candidate {
+ private:
+  typedef ROOT::Math::XYZPoint Point;
+
+ private:
+  Point position_;
+  Point origin_;
+  int index_;
+  int pid_;
+  int gen_;
+  int mother_;
+  int reached_ee_;
+  bool from_beampipe_;
+  std::vector<Point> layer_positions_;
+
+  public:
+   inline Point const& position() const { return position_; }
+   inline void set_x(double const& x) { position_.SetX(x); }
+   inline void set_y(double const& y) { position_.SetY(y); }
+   inline void set_z(double const& z) { position_.SetZ(z); }
+
+   inline Point const& origin() const { return origin_; }
+   inline void set_origin_x(double const& x) { origin_.SetX(x); }
+   inline void set_origin_y(double const& y) { origin_.SetY(y); }
+   inline void set_origin_z(double const& z) { origin_.SetZ(z); }
+
+   inline int index() const { return index_; }
+   inline void set_index(int const &index) { index_ = index; }
+
+   inline int pid() const { return pid_; }
+   inline void set_pid(int const &pid) { pid_ = pid; }
+
+   inline int gen() const { return gen_; }
+   inline void set_gen(int const &gen) { gen_ = gen; }
+
+   inline int mother() const { return mother_; }
+   inline void set_mother(int const &mother) { mother_ = mother; }
+
+   inline int reached_ee() const { return reached_ee_; }
+   inline void set_reached_ee(int const &reached_ee) { reached_ee_ = reached_ee; }
+
+   inline bool from_beampipe() const { return from_beampipe_; }
+   inline void set_from_beampipe(bool const &from_beampipe) { from_beampipe_ = from_beampipe; }
+
+   inline std::vector<Point> layer_positions() const { return layer_positions_; }
+   inline void set_layer_positions(std::vector<Point> const &layer_positions) { layer_positions_ = layer_positions; }
+
+   virtual void Print() const;
+};
+
 std::tuple<double, bool> RecHitAboveThreshold(RecHit const &rHit, double ecut,
                                              bool dependSensor = false);
 
@@ -72,6 +152,7 @@ double MeVperMIP(int layer, int thicknessIndex);
 std::vector<RecHit *> const &BuildRecHitCollection(TreeEvent *event);
 std::vector<SimCluster *> const &BuildSimClusterCollection(TreeEvent *event);
 std::vector<ic::GenParticle *> const &BuildGenParticleCollection(TreeEvent *event);
+std::vector<SimParticle *> const &BuildSimParticleCollection(TreeEvent *event);
 
 class HGCALTest : public ModuleBase {
  private:
@@ -91,6 +172,18 @@ class HGCALTest : public ModuleBase {
   float genjet_nonu_eta_;
   float genjet_nonu_phi_;
   float genjet_nonu_e_;
+  float efrac_r0p02_;
+  float efrac_r0p04_;
+  float efrac_r0p06_;
+  float efrac_r0p08_;
+  float efrac_r0p10_;
+  bool isDM_r0p02_;
+  bool isDM_r0p04_;
+  bool isDM_r0p06_;
+  bool isDM_r0p08_;
+  bool isDM_r0p10_;
+  bool is_hadtau_;
+  int tau_dm_;
 
  public:
   HGCALTest(std::string const &name);

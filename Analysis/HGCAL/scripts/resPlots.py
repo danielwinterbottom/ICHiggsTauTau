@@ -144,7 +144,7 @@ for f in [
         # ('output/Main/Pythia8PtGun_agilbert_JetPt50_200PU_20170809.root', 'Jet p_{T} = 50 GeV', '200 PU' , 6, '1')
         ]:
     left_title = ''
-    extra_text = ['AK4 RH clustering', 'light-quark gun']
+    extra_text = ['AK4 RH clustering', 'QCD gun']
     results = DoRawResponse(f[0], label=f[1], save=True, postfix='_pre', sel=f[4], titles=[left_title, f[2]], extra=extra_text, rmax=f[3])
     DoRawResponse(f[0], label=f[1], sel=f[4], save=True, titles=[left_title, f[2]], extra=extra_text, correction=results['correction'])
 
