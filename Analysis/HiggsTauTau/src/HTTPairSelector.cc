@@ -109,8 +109,8 @@ namespace ic {
            std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoET) ;
         }
         if(channel_ ==  channel::mt) { 
-           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
-           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
+           std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoMT,_1,_2)) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), boost::bind(SortByIsoMT,_1,_2)) ;
         }
         if(channel_ ==  channel::em) { 
            std::sort(os_dilepton.begin(), os_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
@@ -164,7 +164,7 @@ namespace ic {
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoET) ;
         }
         if(channel_ ==  channel::mt) { 
-           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2,strategy_)) ;
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoMT,_1,_2)) ;
         }
         if(channel_ ==  channel::em) { 
            std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), boost::bind(SortByIsoEM,_1,_2,strategy_)) ;
@@ -224,6 +224,7 @@ namespace ic {
       }
     }
    
+   // std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("puppiMet");
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     Met *pfmet = pfMet_vec.at(0); 
     event->Add("pfMET", pfmet);
@@ -404,14 +405,14 @@ namespace ic {
     return (t1->pt() > t2->pt());
   }
 
-  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
     // First we sort the electrons
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));
     Muon const* m2 = static_cast<Muon const*>(c2->At(0));
-    double m_iso1;
-    m_iso1 = (strategy == strategy::fall15) ? PF03IsolationVal(m1, 0.5, 0) : PF04IsolationVal(m1, 0.5, 0);
-    double m_iso2; 
-    m_iso2 = (strategy == strategy::fall15) ? PF03IsolationVal(m2, 0.5, 0) : PF04IsolationVal(m2, 0.5, 0);
+    double m_iso1 = MuonPuppiIsoVal(m1);
+//    m_iso1 = (strategy == strategy::fall15) ? PF03IsolationVal(m1, 0.5, 0) : PF04IsolationVal(m1, 0.5, 0);
+    double m_iso2 = MuonPuppiIsoVal(m2); 
+    //m_iso2 = (strategy == strategy::fall15) ? PF03IsolationVal(m2, 0.5, 0) : PF04IsolationVal(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT

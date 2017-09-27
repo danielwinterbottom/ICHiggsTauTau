@@ -741,7 +741,7 @@ namespace ic {
     }
     if (pairs.size() == 0) return 1;
 
-    std::sort(pairs.begin(), pairs.end(), SortByIsoMT);
+    std::sort(pairs.begin(), pairs.end(), SortByIsoMT2);
     event->Add("sorted_ditau", pairs);
 
     Muon const* muon = dynamic_cast<Muon const*>(pairs[0]->At(0));
@@ -1035,7 +1035,7 @@ namespace ic {
     return types;
   }
 
-  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+  bool SortByIsoMT2(CompositeCandidate const* c1, CompositeCandidate const* c2) {
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));
     Muon const* m2 = static_cast<Muon const*>(c2->At(0));
     double m_iso1 = PF04IsolationVal(m1, 0.5, 0);

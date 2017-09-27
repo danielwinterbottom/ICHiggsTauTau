@@ -21,7 +21,7 @@ ICElectronConversionFromPatCalculator::~ICElectronConversionFromPatCalculator() 
 
 void ICElectronConversionFromPatCalculator::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<bool> > product(new edm::ValueMap<bool>());
+  std::unique_ptr<edm::ValueMap<bool> > product(new edm::ValueMap<bool>());
   edm::Handle<pat::ElectronCollection> elecs_handle;
   event.getByLabel(input_, elecs_handle);
   
@@ -36,7 +36,7 @@ void ICElectronConversionFromPatCalculator::produce(edm::Event& event,
   filler.insert(elecs_handle, values.begin(), values.end());
   filler.fill();
 
-  event.put(product);
+  event.put(std::move(product));
 }
 
 void ICElectronConversionFromPatCalculator::beginJob() {}

@@ -9,15 +9,7 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_4/src/UserCode/ICHiggsTauTau/test/testinput.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/TauDataTest.root', parser.VarParsing.multiplicity.singleton,
-#opts.register('file',
-#'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/40000/10563B6E-D871-E511-9513-B499BAABD280.root',parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/SUSYGluGluToHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/50000/9EF16FCE-E771-E511-AAB0-008CFA1979EC.root',parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/data/Run2015D/MuonEG/MINIAOD/PromptReco-v3/000/256/630/00000/24F810E0-335F-E511-94F4-02163E011C61.root', parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/0014DC94-DC5C-E511-82FB-7845C4FC39F5.root', parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/02D2D410-2A03-E511-8F6C-0025905A60A8.root', parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/data/Run2015D/Tau/MINIAOD/16Dec2015-v1/00000/006DFE2F-B2B6-E511-A7B6-3417EBE65E39.root',parser.VarParsing.multiplicity.singleton,
-#'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file','file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_pu140_miniAOD_PAT.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file',
 #'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root',parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv1/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/0A349B7D-EA03-E611-9E67-0002C94D5504.root', parser.VarParsing.multiplicity.singleton,
@@ -34,11 +26,12 @@ opts = parser.VarParsing ('analysis')
 #'root://xrootd.unl.edu//store/data/Run2015C/SingleElectron/MINIAOD/PromptReco-v1/000/254/317/00000/C4F3838C-8345-E511-9AA9-02163E011FE4.root', parser.VarParsing.multiplicity.singleton,
 #'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/002C89D6-7D1D-E611-B99C-0025905C54D8.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file','root://xrootd.unl.edu//store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/009D49A5-7314-E511-84EF-0025905A605E.root',parser.VarParsing.multiplicity.singleton,
-opts.register('file', 'file:ggh180_miniAODv2reHLT_pickedevent.root', parser.VarParsing.multiplicity.singleton,
+#opts.register('file', 'file:ggh180_miniAODv2reHLT_pickedevent.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '80X_mcRun2_asymptotic_2016_miniAODv2_v1', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '90X_upgrade2023_realistic_v1', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag','80X_mcRun2_asymptotic_2016_TrancheIV_v6',parser.VarParsing.multiplicity.singleton,
 #opts.register('globalTag', '80X_dataRun2_Prompt_ICHEP16JEC_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
@@ -88,6 +81,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
+#  fileName = cms.string("EventTree_vbfUPGfull_pu200.root"),
   fileName = cms.string("EventTree.root"),
   closeFileFast = cms.untracked.bool(True)
 )
@@ -96,7 +90,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(1000000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -178,8 +172,88 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/163/00000/9C435096-9F26-E511-A1D7-02163E012AB6.root',
 #'root://xrootd.unl.edu//store/data/Run2015B/SingleElectron/MINIAOD/PromptReco-v1/000/251/164/00000/4633CC68-A326-E511-95D0-02163E0124EA.root'
 #'root://xrootd.unl.edu//store/data/Run2015B/Tau/MINIAOD/PromptReco-v1/000/251/642/00000/EC1989CD-EB2A-E511-8F15-02163E0146A4.root',
-
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_10_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_1_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_2_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_3_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_4_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_5_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_6_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_7_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_8_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_9_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_11_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_12_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_13_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_14_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_15_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_16_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_17_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_18_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_19_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_20_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_21_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_22_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_23_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_24_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_25_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_26_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_27_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_28_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_29_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_30_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_31_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_32_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_33_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_34_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_35_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_36_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_37_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_38_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_39_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_40_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_41_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_42_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_43_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_44_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_45_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_46_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_47_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_48_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_49_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_50_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_51_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_52_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_53_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_54_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_55_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_56_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_57_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_58_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_59_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_60_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_61_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_62_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_63_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_64_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_65_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_66_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_67_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_68_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_69_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_70_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_71_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_72_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_73_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_74_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_75_PAT.root',
+#'file:/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/vbf_miniAOD_76_PAT.root'
 infile
+#'root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/adewit//Feb20_MC_82X/VBFHToTauTau_M125_14TeV_powheg_pythia8/crab_VBFPu200-fast/170221_102245/0000/vbf_pu200_miniAOD_PAT_119.root'
+#CURRENT MINIAOD
+#'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0E712644-6BC7-E611-A85D-1CB72C0A3DC5.root',
+#'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/10B1E335-21C6-E611-A53D-0CC47A706D26.root',
+#'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/2099A9F5-ADC5-E611-8953-1CB72C1B2D80.root'
 ))
 process.GlobalTag.globaltag = cms.string(tag)
 
@@ -259,15 +333,15 @@ if release in ['80XMINIAOD']:
 #  process.selectedVertices.src = cms.InputTag("offlineSlimmedPrimaryVertices")
   process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
       src = cms.InputTag("slimmedElectrons"),
-      cut = cms.string("pt > 9.5 & abs(eta) < 2.6")
+      cut = cms.string("pt > 9.5 & abs(eta) < 5")
       )
   process.selectedMuons = cms.EDFilter("PATMuonRefSelector",
       src = cms.InputTag("slimmedMuons"),
-      cut = cms.string("pt > 3 & abs(eta) < 2.6")
+      cut = cms.string("pt > 3 & abs(eta) < 5")
       )
   process.selectedTaus = cms.EDFilter("PATTauRefSelector",
       src = cms.InputTag("slimmedTaus"),
-      cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFindingNewDMs") > 0.5')
+      cut = cms.string('pt > 18.0 & abs(eta) < 5 & tauID("decayModeFindingNewDMs") > 0.5')
       )
 
 
@@ -818,7 +892,12 @@ if release in ['80XMINIAOD']:
     inputVertices           = vtxLabel,
     includeVertexIP         = cms.bool(True),
     requestTracks           = cms.bool(False),
-    tauIDs = cms.PSet()
+    tauIDs = cms.PSet(),
+    includeTotalCharged = cms.bool(False),
+    totalChargedLabel = cms.string('totalCharged'),
+    requestPFCandidates = cms.bool(False),
+    inputPFCandidates = cms.InputTag("packedPFCandidates"),
+    isSlimmed = cms.bool(True)
   )
 
 process.icTauSequence = cms.Sequence(
@@ -834,11 +913,13 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 if release in ['80XMINIAOD']:
   #rebuild ak4 chs jets as in  https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Jets
   process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
+
+  process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 #  process.pfchs=cms.EDFilter("CandPtrSelector",src=cms.InputTag("packedPFCandidates"),cut=cms.string("fromPV"))
 #  process.ak4PFJetsCHS = ak4PFJets.clone(src='pfchs',doAreaFastjet=True)
 
   #Also make non-chs jets:
-#  process.ak4PFJets = ak4PFJets.clone(src='packedPFCandidates',doAreaFastjet=True)
+  process.ak4PFJets = ak4PFJets.clone(src='packedPFCandidates',doAreaFastjet=True)
   
   #Reapply JECs:
   if not isData:
@@ -848,6 +929,12 @@ if release in ['80XMINIAOD']:
       labelName = "UpdatedJEC",
       jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None')
     )
+#    updateJetCollection(
+#     process,
+#     jetSource = cms.InputTag("ak4PFJets"),
+#     labelName = "UpdatedJECak4",
+#     jetCorrections = ("AK4PF",cms.vstring(['L1FastJet','L2Relative','L3Absolute']),'None')
+#    )
   else:
    updateJetCollection(
      process,
@@ -857,9 +944,20 @@ if release in ['80XMINIAOD']:
     )
  
   process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
-      src = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
-      cut = cms.string("pt > 15")
+      src = cms.InputTag("slimmedJets"),
+      cut = cms.string("pt > 8")
       )
+ 
+  process.selectedSlimmedJetsPuppi = cms.EDFilter("PATJetRefSelector",
+     src = cms.InputTag("slimmedJetsPuppi"),
+     cut = cms.string("pt>8")
+     )
+
+#  process.selectedAK4NoCHSJets = cms.EDFilter("PATJetRefSelector",
+#      src = cms.InputTag("ak4PFJets"),
+#      cut = cms.string("pt > 8")
+#      )
+
 
 if release in ['74X']:
   process.load("CommonTools.ParticleFlow.pfNoPileUpJME_cff")
@@ -878,40 +976,40 @@ if release in ['74X']:
  # Parton flavour
  # --------------
 #process.jetPartons = cms.EDProducer("PartonSelector",
-#     src = cms.InputTag("genParticles"),
+#     src = cms.InputTag("prunedGenParticles","","PAT"),
 #     withLeptons = cms.bool(False)
 #)
 
 #process.pfJetPartonMatches = cms.EDProducer("JetPartonMatcher",
-#     jets = cms.InputTag("ak4PFJetsCHS"),
+#     jets = cms.InputTag("ak4PFJets"),
 #     coneSizeToAssociate = cms.double(0.3),
 #     partons = cms.InputTag("jetPartons")
 #)
 
-#process.jetPartons = cms.EDProducer('HadronAndPartonSelector',
-#  src = cms.InputTag("generator"),
-#  particles = cms.InputTag("genParticles","","HLT"),
-#  partonMode = cms.string("Auto")
-#)
+process.jetPartons = cms.EDProducer('HadronAndPartonSelector',
+  src = cms.InputTag("generator"),
+  particles = cms.InputTag("prunedGenParticles","","PAT"),
+  partonMode = cms.string("Auto")
+)
 
-#process.pfJetFlavourAssociation = cms.EDProducer("JetFlavourClustering",
-#     jets = cms.InputTag("ak4PFJetsCHS"),
-#     bHadrons = cms.InputTag("jetPartons","bHadrons"),
-#     cHadrons = cms.InputTag("jetPartons","cHadrons"),
-#     partons = cms.InputTag("jetPartons","algorithmicPartons"),
-#     leptons = cms.InputTag("jetPartons","leptons"),
-#     jetAlgorithm = cms.string("AntiKt"),
-#     rParam = cms.double(0.4),
-#     ghostRescaling = cms.double(1e-18),
-#     hadronFlavourHasPriority = cms.bool(False)
-#)
+process.pfJetFlavourAssociation = cms.EDProducer("JetFlavourClustering",
+     jets = cms.InputTag("ak4PFJets"),
+     bHadrons = cms.InputTag("jetPartons","bHadrons"),
+     cHadrons = cms.InputTag("jetPartons","cHadrons"),
+     partons = cms.InputTag("jetPartons","algorithmicPartons"),
+     leptons = cms.InputTag("jetPartons","leptons"),
+     jetAlgorithm = cms.string("AntiKt"),
+     rParam = cms.double(0.4),
+     ghostRescaling = cms.double(1e-18),
+     hadronFlavourHasPriority = cms.bool(False)
+)
 
 
-#process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
-#     input       = cms.InputTag("ak4PFJetsCHS"),
-#     flavourMap  = cms.InputTag("pfJetFlavourAssociation")
-#)
-#
+process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
+     input       = cms.InputTag("ak4PFJets"),
+     flavourMap  = cms.InputTag("pfJetFlavourAssociation")
+)
+
 
 #if release in ['80XMINIAOD']:
 #   process.jetPartons.particles = cms.InputTag("prunedGenParticles","","PAT")
@@ -923,19 +1021,19 @@ if release in ['74X']:
 process.ak4PFL1FastjetCHS = cms.EDProducer("L1FastjetCorrectorProducer",
 #    srcRho = cms.InputTag("kt6PFJets", "rho"),
     srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
-    algorithm = cms.string('AK4PFchs'),
+    algorithm = cms.string('AK4PF'),
     level = cms.string('L1FastJet')
 )
 process.ak4PFL2RelativeCHS = cms.EDProducer("LXXXCorrectorProducer",
-    algorithm = cms.string('AK4PFchs'),
+    algorithm = cms.string('AK4PF'),
     level = cms.string('L2Relative')
 )
 process.ak4PFL3AbsoluteCHS = cms.EDProducer("LXXXCorrectorProducer",
-    algorithm = cms.string('AK4PFchs'),
+    algorithm = cms.string('AK4PF'),
     level = cms.string('L3Absolute')
 )
 process.ak4PFResidualCHS = cms.EDProducer("LXXXCorrectorProducer",
-    algorithm = cms.string('AK4PFchs'),
+    algorithm = cms.string('AK4PF'),
     level = cms.string('L2L3Residual')
 )
 
@@ -1125,6 +1223,55 @@ if release in ['80XMINIAOD']:
       )
   )
 
+  process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
+      branch                    = cms.string("ak4PFJetsPuppi"),
+      input                     = cms.InputTag("selectedSlimmedJetsPuppi"),
+      srcConfig = cms.PSet(
+        isSlimmed               = cms.bool(True),
+        slimmedPileupIDLabel    = cms.string(''),
+        includeJetFlavour       = cms.bool(True),
+        includeJECs             = cms.bool(True),
+        inputSVInfo             = cms.InputTag(""),
+        requestSVInfo           = cms.bool(False)
+      ),
+     destConfig = cms.PSet(
+       includePileupID         = cms.bool(False),
+       inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+       includeTrackBasedVars   = cms.bool(False),
+       inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+       inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+       requestTracks           = cms.bool(False)
+      )
+  )
+
+
+  process.icPFJetProducerFromPatak4 = producers.icPFJetProducer.clone(
+      branch                    = cms.string("ak4PFJetsNoCHS"),
+      input                     = cms.InputTag("ak4PFJets"),
+      srcConfig = cms.PSet(
+        includeJetFlavour       = cms.bool(True),
+        inputJetFlavour         = cms.InputTag("icPFJetFlavourCalculator"),
+        includeJECs             = cms.bool(True),
+        applyJECs               = cms.bool(True),
+        JECs                      = pfJECS,
+        applyCutAfterJECs         = cms.bool(False),
+        cutAfterJECs              = cms.string("pt > 15.0"),
+        inputSVInfo             = cms.InputTag(""),
+        requestSVInfo           = cms.bool(False),
+      BTagDiscriminators        = cms.PSet(
+      )
+      ),
+     destConfig = cms.PSet(
+       includePileupID         = cms.bool(False),
+       inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+       includeTrackBasedVars   = cms.bool(False),
+       inputTracks             = cms.InputTag("generalTracks"),
+       inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+       requestTracks           = cms.bool(False)
+      )
+  )
+
+
 process.icPFJetSequence = cms.Sequence()
 
 
@@ -1136,12 +1283,30 @@ process.icPFJetSequence = cms.Sequence()
 if release in ['80XMINIAOD']:
   process.icPFJetSequence += cms.Sequence(
 #     process.pfchs+
-     process.patJetCorrFactorsUpdatedJEC+
-     process.updatedPatJetsUpdatedJEC+
-     process.selectedUpdatedPatJetsUpdatedJEC+
+#     process.patJetCorrFactorsUpdatedJEC+
+#     process.updatedPatJetsUpdatedJEC+
+#     process.selectedUpdatedPatJetsUpdatedJEC+
      process.selectedSlimmedJetsAK4+
+     process.selectedSlimmedJetsPuppi+
      process.unpackedTracksAndVertices+
-     process.icPFJetProducerFromPat
+#     process.patJetCorrFactorsUpdatedJECak4+
+#     process.updatedPatJetsUpdatedJECak4+
+#     process.selectedUpdatedPatJetsUpdatedJECak4+
+#     process.selectedAK4NoCHSJets+
+    process.ak4PFL1FastjetCHS+
+    process.ak4PFL2RelativeCHS+
+    process.ak4PFL3AbsoluteCHS+
+    process.ak4PFResidualCHS+
+     process.ak4PFJets+
+   #process.pileupJetIdCalculator+
+    #process.pileupJetIdEvaluator+ 
+    process.jetPartons+
+#    process.pfJetPartonMatches+
+    process.pfJetFlavourAssociation+
+    process.icPFJetFlavourCalculator+
+     process.icPFJetProducerFromPat+
+     process.icPFJetProducerFromPatPuppi+
+     process.icPFJetProducerFromPatak4
      )
 if release in ['76X']:
   process.icPFJetSequence += cms.Sequence(
@@ -1183,7 +1348,7 @@ if release in ['76X']:
 # ################################################################
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 #process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
-process.load("RecoJets.JetProducers.ak4PFJets_cfi")
+#process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
 
@@ -1202,159 +1367,166 @@ if release in ['76X']:
                             )
 
 if release in ['80XMINIAOD']:
-  process.icRecorrectedPfMetProducer = producers.icMetFromPatProducer.clone(
-                           input=cms.InputTag("patpfMETT1"),
-                           branch = cms.string("pfMet"),
-                           getUncorrectedMet=cms.bool(False)
-                           )
+#  process.icRecorrectedPfMetProducer = producers.icMetFromPatProducer.clone(
+#                           input=cms.InputTag("patpfMETT1"),
+#                           branch = cms.string("pfMet"),
+#                           getUncorrectedMet=cms.bool(False)
+#                           )
   process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                            branch = cms.string("pfMetFromSlimmed"),
                            getUncorrectedMet=cms.bool(False)
                            )
-  process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
-                           input=cms.InputTag("slimmedMETsPuppi"),
-                           branch = cms.string("puppiMet"),
-                           getUncorrectedMet=cms.bool(False)
+  process.icGenMetProducer = producers.icMetFromPatProducer.clone(
+                           branch = cms.string("GenMetFromSlimmed"),
+                           getUncorrectedMet=cms.bool(False),
+                           doGenMet=cms.bool(True)
                            )
+
+#  process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
+#                           input=cms.InputTag("slimmedMETsPuppi"),
+#                           branch = cms.string("puppiMet"),
+#                           getUncorrectedMet=cms.bool(False)
+#                           )
 
 
 process.icPfMetSequence = cms.Sequence(
   process.pfMetRe+
-  process.icPfMetProducer
+  process.icPfMetProducer+
+  process.icGenMetProducer
 )
 
 if release in ['80XMINIAOD']:
   process.icPfMetSequence.remove(process.pfMetRe)
-  process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
-  process.icPfMetSequence+=cms.Sequence(process.icRecorrectedPfMetProducer)
+#  process.icPfMetSequence+=cms.Sequence(process.icPuppiMetProducer)
+#  process.icPfMetSequence+=cms.Sequence(process.icRecorrectedPfMetProducer)
 
-from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
-runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
-process.MVAMET.debug = cms.bool(False)
-process.MVAMET.srcLeptons = cms.VInputTag("slimmedMuons","slimmedElectrons","slimmedTaus")
-process.MVAMET.requireOS = cms.bool(False)
-
-
-process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
-  input = cms.InputTag("MVAMET","MVAMET"),
-  branch = cms.string("pfMVAMetVector"),
-  includeCustomID = cms.bool(False),
-  includeUserCandID = cms.bool(True),
-  includeExternalMetsig = cms.bool(False),
-  includeMetUncertainties = cms.bool(False),
-  metuncertainties = cms.vstring(),
-  metcorrections = cms.vstring(),
-  includeExternalMetsigMethod2 = cms.bool(False),
-  includeMetCorrections = cms.bool(False),
-  doGenMet = cms.bool(False),
-  metsig = cms.PSet(
-    metsig = cms.InputTag("METSignificance","METSignificance"),
-    metsigcov00 = cms.InputTag("METSignificance", "CovarianceMatrix00"),
-    metsigcov01 = cms.InputTag("METSignificance", "CovarianceMatrix01"),
-    metsigcov10 = cms.InputTag("METSignificance", "CovarianceMatrix10"),
-    metsigcov11 = cms.InputTag("METSignificance", "CovarianceMatrix11")
-    ),
-  metsig_method2 = cms.PSet(
-    metsig      = cms.InputTag("METSignificance","METSignificance"),
-    metsigcov = cms.InputTag("METSignificance","METCovariance")
-    ),
-  inputCustomID = cms.InputTag("")
-  )
+#from RecoMET.METPUSubtraction.MVAMETConfiguration_cff import runMVAMET
+#runMVAMET(process, jetCollectionPF='selectedUpdatedPatJetsUpdatedJEC')
+#process.MVAMET.debug = cms.bool(False)
+#process.MVAMET.srcLeptons = cms.VInputTag("slimmedMuons","slimmedElectrons","slimmedTaus")
+#process.MVAMET.requireOS = cms.bool(False)
 
 
-process.icMvaMetSequence = cms.Sequence(
-  process.tauDecayProducts+
-  process.egmGsfElectronIDs+
-  process.electronMVAValueMapProducer+
-  process.electronRegressionValueMapProducer+
-  process.photonIDValueMapProducer+
-  process.photonMVAValueMapProducer+
-  process.slimmedElectronsTight+
-  process.slimmedMuonsTight+
-  process.slimmedTausLoose+
-  process.slimmedTausLooseCleaned+
-  process.selectedUpdatedPatJetsUpdatedJECCleaned+
-  process.pfNeutrals+
-  process.neutralInJets+
-  process.pfChargedPV+
-  process.pfChs+
-  process.pfChargedPU+
-  process.pfMETCands+
-  process.pfTrackMETCands+
-  process.pfNoPUMETCands+
-  process.pfPUMETCands+
-  process.pfChargedPUMETCands+
-  process.pfNeutralPUMETCands+
-  process.pfNeutralPVMETCands+
-  process.pfNeutralUnclusteredMETCands+
-  process.pfPUCorrectedMETCands+
-  process.ak4PFCHSL1FastjetCorrector+
-  process.ak4PFCHSL2RelativeCorrector+
-  process.ak4PFCHSL3AbsoluteCorrector+
-  process.ak4PFCHSL1FastL2L3Corrector+
-  process.ak4PFCHSResidualCorrector+
-  process.ak4PFCHSL1FastL2L3ResidualCorrector+
-  process.ak4JetsForpfMET+
-  process.ak4JetsForpfTrackMET+
-  process.ak4JetsForpfPUMET+
-  process.ak4JetsForpfChargedPUMET+
-  process.ak4JetsForpfNeutralPUMET+
-  process.ak4JetsForpfNeutralPVMET+
-  process.ak4JetsForpfNeutralUnclusteredMET+
-  process.ak4JetsForpfPUCorrectedMET+
-  process.ak4JetsForpfNoPUMET+
-  process.corrpfMET+
-  process.corrpfTrackMET+
-  process.corrpfPUMET+
-  process.corrpfChargedPUMET+
-  process.corrpfNeutralPVMET+
-  process.corrpfNeutralUnclusteredMET+
-  process.corrpfNeutralPUMET+
-  process.corrpfPUCorrectedMET+
-  process.corrpfNoPUMET+
-  process.pfMET+
-  process.pfMETT1+
-  process.patpfMET+
-  process.pfTrackMET+
-  process.patpfTrackMET+
-  process.pfTrackMETT1+
-  process.patpfTrackMETT1+
-  process.pfPUCorrectedMET+
-  process.pfPUMET+
-  process.pfChargedPUMET+
-  process.pfNeutralPUMET+
-  process.patpfPUMET+
-  process.patpfChargedPUMET+
-  process.patpfNeutralPUMET+
-  process.pfNeutralPVMET+
-  process.pfNeutralUnclusteredMET+
-  process.patpfNeutralPVMET+
-  process.patpfNeutralUnclusteredMET+
-  process.patpfPUCorrectedMET+
-  process.pfPUMETT1+
-  process.patpfPUMETT1+
-  process.pfChargedPUMETT1+
-  process.pfNeutralPUMETT1+
-  process.patpfChargedPUMETT1+
-  process.patpfNeutralPUMETT1+
-  process.pfPUCorrectedMETT1+
-  process.patpfPUCorrectedMETT1+
-  process.pfNoPUMET+
-  process.patpfNoPUMET+
-  process.pfNoPUMETT1+
-  process.patpfNoPUMETT1+
-  process.patpfMETT1+
-  process.allDecayProducts+
-  process.tauPFMET+
-  process.tauMET+
-  process.tausSignificance+
-  process.MVAMET+
-  process.icPfMVAMetProducer
-  )
+#process.icPfMVAMetProducer = cms.EDProducer('ICPFMetFromPatProducer',
+#  input = cms.InputTag("MVAMET","MVAMET"),
+#  branch = cms.string("pfMVAMetVector"),
+#  includeCustomID = cms.bool(False),
+#  includeUserCandID = cms.bool(True),
+#  includeExternalMetsig = cms.bool(False),
+#  includeMetUncertainties = cms.bool(False),
+##  metuncertainties = cms.vstring(),
+#  metcorrections = cms.vstring(),
+#  includeExternalMetsigMethod2 = cms.bool(False),
+#  includeMetCorrections = cms.bool(False),
+#  doGenMet = cms.bool(False),
+#  metsig = cms.PSet(
+#    metsig = cms.InputTag("METSignificance","METSignificance"),
+#    metsigcov00 = cms.InputTag("METSignificance", "CovarianceMatrix00"),
+#    metsigcov01 = cms.InputTag("METSignificance", "CovarianceMatrix01"),
+#    metsigcov10 = cms.InputTag("METSignificance", "CovarianceMatrix10"),
+#    metsigcov11 = cms.InputTag("METSignificance", "CovarianceMatrix11")
+#    ),
+#  metsig_method2 = cms.PSet(
+#    metsig      = cms.InputTag("METSignificance","METSignificance"),
+#    metsigcov = cms.InputTag("METSignificance","METCovariance")
+#    ),
+#  inputCustomID = cms.InputTag("")
+#  )
+#
 
-if not isData:
-  process.icMvaMetSequence.remove(process.ak4PFCHSResidualCorrector)
-  process.icMvaMetSequence.remove(process.ak4PFCHSL1FastL2L3ResidualCorrector)
+#process.icMvaMetSequence = cms.Sequence(
+#  process.tauDecayProducts+
+#  process.egmGsfElectronIDs+
+#  process.electronMVAValueMapProducer+
+#  process.electronRegressionValueMapProducer+
+#  process.photonIDValueMapProducer+
+#  process.photonMVAValueMapProducer+
+#  process.slimmedElectronsTight+
+#  process.slimmedMuonsTight+
+#  process.slimmedTausLoose+
+#  process.slimmedTausLooseCleaned+
+#  process.selectedUpdatedPatJetsUpdatedJECCleaned+
+#  process.pfNeutrals+
+#  process.neutralInJets+
+#  process.pfChargedPV+
+#  process.pfChs+
+#  process.pfChargedPU+
+#  process.pfMETCands+
+#  process.pfTrackMETCands+
+#  process.pfNoPUMETCands+
+#  process.pfPUMETCands+
+#  process.pfChargedPUMETCands+
+#  process.pfNeutralPUMETCands+
+#  process.pfNeutralPVMETCands+
+#  process.pfNeutralUnclusteredMETCands+
+#  process.pfPUCorrectedMETCands+
+#  process.ak4PFCHSL1FastjetCorrector+
+#  process.ak4PFCHSL2RelativeCorrector+
+#  process.ak4PFCHSL3AbsoluteCorrector+
+#  process.ak4PFCHSL1FastL2L3Corrector+
+#  process.ak4PFCHSResidualCorrector+
+#  process.ak4PFCHSL1FastL2L3ResidualCorrector+
+#  process.ak4JetsForpfMET+
+#  process.ak4JetsForpfTrackMET+
+#  process.ak4JetsForpfPUMET+
+#  process.ak4JetsForpfChargedPUMET+
+#  process.ak4JetsForpfNeutralPUMET+
+#  process.ak4JetsForpfNeutralPVMET+
+#  process.ak4JetsForpfNeutralUnclusteredMET+
+#  process.ak4JetsForpfPUCorrectedMET+
+#  process.ak4JetsForpfNoPUMET+
+#  process.corrpfMET+
+#  process.corrpfTrackMET+
+#  process.corrpfPUMET+
+#  process.corrpfChargedPUMET+
+#  process.corrpfNeutralPVMET+
+#  process.corrpfNeutralUnclusteredMET+
+#  process.corrpfNeutralPUMET+
+#  process.corrpfPUCorrectedMET+
+#  process.corrpfNoPUMET+
+#  process.pfMET+
+#  process.pfMETT1+
+#  process.patpfMET+
+#  process.pfTrackMET+
+#  process.patpfTrackMET+
+#  process.pfTrackMETT1+
+#  process.patpfTrackMETT1+
+##  process.pfPUCorrectedMET+
+#  process.pfPUMET+
+#  process.pfChargedPUMET+
+#  process.pfNeutralPUMET+
+#  process.patpfPUMET+
+#  process.patpfChargedPUMET+
+#  process.patpfNeutralPUMET+
+#  process.pfNeutralPVMET+
+#  process.pfNeutralUnclusteredMET+
+#  process.patpfNeutralPVMET+
+#  process.patpfNeutralUnclusteredMET+
+#  process.patpfPUCorrectedMET+
+#  process.pfPUMETT1+
+#  process.patpfPUMETT1+
+#  process.pfChargedPUMETT1+
+#  process.pfNeutralPUMETT1+
+#  process.patpfChargedPUMETT1+
+#  process.patpfNeutralPUMETT1+
+#  process.pfPUCorrectedMETT1+
+#  process.patpfPUCorrectedMETT1+
+#  process.pfNoPUMET+
+#  process.patpfNoPUMET+
+#  process.pfNoPUMETT1+
+#  process.patpfNoPUMETT1+
+#  process.patpfMETT1+
+#  process.allDecayProducts+
+#  process.tauPFMET+
+#  process.tauMET+
+#  process.tausSignificance+
+#  process.MVAMET+
+#  process.icPfMVAMetProducer
+#  )
+
+#if not isData:
+#  process.icMvaMetSequence.remove(process.ak4PFCHSResidualCorrector)
+#  process.icMvaMetSequence.remove(process.ak4PFCHSL1FastL2L3ResidualCorrector)
 
 
 #from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_74X import mvaMetPairs
@@ -2141,12 +2313,12 @@ if release in ['80XMINIAOD']:
 # EventInfo
 ################################################################
 #Load the MET filters here
-process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
-process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+#process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+#process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+#process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+#process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
@@ -2159,11 +2331,11 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputVertices       = vtxLabel,
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
-  includeFiltersFromTrig = cms.bool(True),
-  filters             = cms.PSet(
-   badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
-   badMuonFilter          = cms.InputTag("BadPFMuonFilter")
-  ),
+  includeFiltersFromTrig = cms.bool(False),
+#  filters             = cms.PSet(
+#   badChargedHadronFilter  = cms.InputTag("BadChargedCandidateFilter"),
+#   badMuonFilter          = cms.InputTag("BadPFMuonFilter")
+#  ),
   filtersfromtrig     = cms.vstring("Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_globalTightHalo2016Filter") 
 )
 
@@ -2172,8 +2344,8 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   
 
 process.icEventInfoSequence = cms.Sequence(
-  process.BadPFMuonFilter+
-  process.BadChargedCandidateFilter+ 
+  #process.BadPFMuonFilter+
+  #process.BadChargedCandidateFilter+ 
   process.icEventInfoProducer
 )
 
@@ -2200,13 +2372,13 @@ process.p = cms.Path(
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
   process.icPFJetSequence+
-  process.icMvaMetSequence+
+#  process.icMvaMetSequence+
   process.icPfMetSequence+
   process.icGenSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
-  process.icEventInfoSequence+
   #process.patDefaultSequence+
+  process.icEventInfoSequence+
   process.icEventProducer
 )
 

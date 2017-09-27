@@ -34,7 +34,7 @@ ICPhotonElectronVetoCalculator::~ICPhotonElectronVetoCalculator() {}
 
 void ICPhotonElectronVetoCalculator::produce(edm::Event& event,
                                              const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<bool> > product(new edm::ValueMap<bool>());
+  std::unique_ptr<edm::ValueMap<bool> > product(new edm::ValueMap<bool>());
 
   edm::Handle<reco::PhotonCollection> photons_handle;
   event.getByLabel(input_, photons_handle);
@@ -60,7 +60,7 @@ void ICPhotonElectronVetoCalculator::produce(edm::Event& event,
   filler.insert(photons_handle, values.begin(), values.end());
   filler.fill();
 
-  event.put(product);
+  event.put(std::move(product));
 }
 
 void ICPhotonElectronVetoCalculator::beginJob() {}

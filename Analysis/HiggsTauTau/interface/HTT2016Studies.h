@@ -26,7 +26,7 @@ bool HLTPathCheck(ic::TreeEvent* event, std::string const& label,
 
 std::set<int16_t> GetTriggerTypes(ic::TriggerObject* obj);
 
-bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
+bool SortByIsoMT2(CompositeCandidate const* c1, CompositeCandidate const* c2);
 
 void CorrectMETForShift(ic::Met * met, ROOT::Math::PxPyPzEVector const& shift);
 

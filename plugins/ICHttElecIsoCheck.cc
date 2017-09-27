@@ -26,7 +26,7 @@ ICHttElecIsoCheck::~ICHttElecIsoCheck() {}
 
 void ICHttElecIsoCheck::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<float> > product(new edm::ValueMap<float>());
+  std::unique_ptr<edm::ValueMap<float> > product(new edm::ValueMap<float>());
   edm::Handle<reco::GsfElectronCollection> elecs_handle;
   event.getByLabel(input_, elecs_handle);
   edm::Handle<edm::View<reco::PFCandidate> > pf_handle;
@@ -55,7 +55,7 @@ void ICHttElecIsoCheck::produce(edm::Event& event,
   filler.insert(elecs_handle, values.begin(), values.end());
   filler.fill();
 
-  event.put(product);
+  event.put(std::move(product));
 }
 
 void ICHttElecIsoCheck::beginJob() {}

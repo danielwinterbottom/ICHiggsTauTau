@@ -62,7 +62,7 @@ template <>
 void ICLeptonIsolation<pat::Electron>::constructSpecific(
     edm::Handle<edm::View<pat::Electron> > const& lepton_handle, edm::Event& event,
     const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<double> > product(new edm::ValueMap<double>());
+  std::unique_ptr<edm::ValueMap<double> > product(new edm::ValueMap<double>());
   std::vector<double> values(lepton_handle->size(), 0);
   if(deltaR_ == 0.4){
   for (unsigned i = 0; i < lepton_handle->size(); ++i) {
@@ -109,7 +109,7 @@ void ICLeptonIsolation<pat::Electron>::constructSpecific(
   filler.insert(lepton_handle, values.begin(), values.end());
   filler.fill();
 
-  event.put(product);
+  event.put(std::move(product));
 
 }
 
@@ -117,7 +117,7 @@ template <>
 void ICLeptonIsolation<reco::Muon>::constructSpecific(
     edm::Handle<edm::View<reco::Muon> > const& lepton_handle, edm::Event& event,
     const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<double> > product(new edm::ValueMap<double>());
+  std::unique_ptr<edm::ValueMap<double> > product(new edm::ValueMap<double>());
   std::vector<double> values(lepton_handle->size(), 0);
 if(deltaR_==0.4){
   for (unsigned i = 0; i < lepton_handle->size(); ++i) {
@@ -158,7 +158,7 @@ if(deltaR_==0.4){
   filler.insert(lepton_handle, values.begin(), values.end());
   filler.fill();
 
-  event.put(product);
+  event.put(std::move(product));
 
 }
 
@@ -167,7 +167,7 @@ template <>
 void ICLeptonIsolation<reco::GsfElectron>::constructSpecific(
     edm::Handle<edm::View<reco::GsfElectron> > const& lepton_handle, edm::Event& event,
     const edm::EventSetup& setup) {
-  std::auto_ptr<edm::ValueMap<double> > product(new edm::ValueMap<double>());
+  std::unique_ptr<edm::ValueMap<double> > product(new edm::ValueMap<double>());
   std::vector<double> values(lepton_handle->size(), 0);
  if(deltaR_==0.3){
   for (unsigned i = 0; i < lepton_handle->size(); ++i) {
@@ -191,7 +191,7 @@ void ICLeptonIsolation<reco::GsfElectron>::constructSpecific(
   filler.insert(lepton_handle, values.begin(), values.end());
   filler.fill();
 
-  event.put(product);
+  event.put(std::move(product));
 
 }
 #endif
