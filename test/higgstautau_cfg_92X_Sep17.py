@@ -461,24 +461,14 @@ runMetCorAndUncFromMiniAOD(process,
                            isData=bool(isData),
                            )
 
-#process.pfMetRe = pfMet.clone(src = "particleFlow")
-
-#if release in ['80XMINIAOD']:
-#  process.pfMetRe = pfMet.clone(src = "packedPFCandidates")
-#  process.pfMetRe.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
-#
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
                          getUncorrectedMet=cms.bool(False)
                          )
 
 process.icPfMetSequence = cms.Sequence(
-  #process.pfMetRe+
   process.icPfMetProducer
 )
-
-#if release in ['80XMINIAOD']:
-#  process.icPfMetSequence.remove(process.pfMetRe)
 
 ################################################################
 # EventInfo
