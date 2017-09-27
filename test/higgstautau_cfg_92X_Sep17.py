@@ -449,6 +449,127 @@ process.icTauSequence = cms.Sequence(
   process.icTauProducer 
 )
 
+# ################################################################
+# # Jets
+# ################################################################
+from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
+
+
+#Reapply JECs:
+if not isData:
+  updateJetCollection(
+    process,
+    jetSource = cms.InputTag("slimmedJets"),
+    labelName = "UpdatedJEC",
+    jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None')
+  )
+else:
+ updateJetCollection(
+   process,
+   jetSource = cms.InputTag("slimmedJets"),
+   labelName = "UpdatedJEC",
+   jetCorrections = ("AK4PFchs", cms.vstring(['L1FastJet','L2Relative','L3Absolute','L2L3Residual']), 'None')
+  )
+
+process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
+    src = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
+    cut = cms.string("pt > 15")
+    )
+
+ # Jet energy corrections
+ # ----------------------
+process.ak4PFL1FastjetCHS = cms.EDProducer("L1FastjetCorrectorProducer",
+#    srcRho = cms.InputTag("kt6PFJets", "rho"),
+    srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
+    algorithm = cms.string('AK4PFchs'),
+    level = cms.string('L1FastJet')
+)
+process.ak4PFL2RelativeCHS = cms.EDProducer("LXXXCorrectorProducer",
+    algorithm = cms.string('AK4PFchs'),
+    level = cms.string('L2Relative')
+)
+process.ak4PFL3AbsoluteCHS = cms.EDProducer("LXXXCorrectorProducer",
+    algorithm = cms.string('AK4PFchs'),
+    level = cms.string('L3Absolute')
+)
+process.ak4PFResidualCHS = cms.EDProducer("LXXXCorrectorProducer",
+    algorithm = cms.string('AK4PFchs'),
+    level = cms.string('L2L3Residual')
+)
+
+#Corrections applied to miniaod slimmedJets
+pfJECS = cms.PSet(
+  L1FastJet  = cms.string("ak4PFL1FastjetCHS"),
+  L2Relative = cms.string("ak4PFL2RelativeCHS"),
+  L3Absolute = cms.string("ak4PFL3AbsoluteCHS")
+)
+if isData: pfJECS = cms.PSet(
+  L1FastJet  = cms.string("ak4PFL1FastjetCHS"),
+  L2Relative = cms.string("ak4PFL2RelativeCHS"),
+  L3Absolute = cms.string("ak4PFL3AbsoluteCHS"),
+  L2L3Residual = cms.string("ak4PFResidualCHS")
+)
+
+ # b-tagging
+ # ---------
+process.load("RecoJets.JetAssociationProducers.ak4JTA_cff")
+from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAtVertex
+process.load("RecoBTag.Configuration.RecoBTag_cff")
+import RecoBTag.Configuration.RecoBTag_cff as btag
+
+
+if release in ['80XMINIAOD']:
+  process.pfImpactParameterTagInfos.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
+  process.pfImpactParameterTagInfos.candidates = cms.InputTag("packedPFCandidates")
+
+ # Pileup ID
+ # ---------
+ # Recalculated puJetId isn't the same as miniaod stored - should investigate 
+#stdalgos = cms.VPSet()
+#from RecoJets.JetProducers.PileupJetIDParams_cfi import *
+#stdalgos = cms.VPSet(full_5x_chs,cutbased)
+process.load('RecoJets.JetProducers.PileupJetID_cfi')
+
+process.pileupJetIdCalculator.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.pileupJetIdCalculator.jets = cms.InputTag("ak4PFJetsCHS")
+process.pileupJetIdCalculator.rho = cms.InputTag("fixedGridRhoFastjetAll")
+process.pileupJetIdEvaluator.jets = cms.InputTag("ak4PFJetsCHS")
+process.pileupJetIdEvaluator.rho = cms.InputTag("fixedGridRhoFastjetAll")
+
+process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+    branch                    = cms.string("ak4PFJetsCHS"),
+    input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+    srcConfig = cms.PSet(
+      isSlimmed               = cms.bool(True),
+      slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+      includeJetFlavour       = cms.bool(True),
+      includeJECs             = cms.bool(True),
+      inputSVInfo             = cms.InputTag(""),
+      requestSVInfo           = cms.bool(False)
+    ),
+   destConfig = cms.PSet(
+     includePileupID         = cms.bool(True),
+     inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+     includeTrackBasedVars   = cms.bool(False),
+     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+     requestTracks           = cms.bool(False)
+    )
+)
+
+process.icPFJetSequence = cms.Sequence()
+
+process.icPFJetSequence += cms.Sequence(
+   process.patJetCorrFactorsUpdatedJEC+
+   process.updatedPatJetsUpdatedJEC+
+   process.selectedUpdatedPatJetsUpdatedJEC+
+   process.selectedSlimmedJetsAK4+
+   process.unpackedTracksAndVertices+
+   process.icPFJetProducerFromPat
+   )
+
 ################################################################
 # PF MET
 ################################################################
@@ -535,6 +656,7 @@ process.p = cms.Path(
   process.icVertexSequence+  
   process.icMuonSequence+ 
   process.icTauSequence+
+  process.icPFJetSequence+
   process.icPfMetSequence+
   process.icEventInfoSequence+
   process.icEventProducer
