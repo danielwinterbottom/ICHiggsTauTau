@@ -84,6 +84,198 @@ import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
+################################################################
+# Re-do PFTau reconstruction
+################################################################
+process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
+
+################################################################
+# Object Selection
+################################################################
+
+from RecoTauTag.RecoTau.TauDiscriminatorTools import noPrediscriminants
+process.load('RecoTauTag.Configuration.loadRecoTauTagMVAsFromPrepDB_cfi')
+from RecoTauTag.RecoTau.PATTauDiscriminationByMVAIsolationRun2_cff import *
+from RecoTauTag.RecoTau.PATTauDiscriminationAgainstElectronMVA6_cfi import *
+
+process.rerunDiscriminationByIsolationMVArun2v1raw = patDiscriminationByIsolationMVArun2v1raw.clone(
+   PATTauProducer = cms.InputTag('slimmedTaus'),
+   Prediscriminants = noPrediscriminants,
+   loadMVAfromDB = cms.bool(True),
+   mvaName = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2016v1"), # name of the training you want to use
+   mvaOpt = cms.string("DBoldDMwLT"), # option you want to use for your training (i.e., which variables are used to compute the BDT score)
+   requireDecayMode = cms.bool(True),
+   verbosity = cms.int32(0)
+)
+
+process.rerunDiscriminationByIsolationMVArun2v1VLoose = patDiscriminationByIsolationMVArun2v1VLoose.clone(
+   PATTauProducer = cms.InputTag('slimmedTaus'),    
+   Prediscriminants = noPrediscriminants,
+   toMultiplex = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1raw'),
+   key = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1raw:category'),
+   loadMVAfromDB = cms.bool(True),
+   mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2016v1_mvaOutput_normalization"), # normalization fo the training you want to use
+   mapping = cms.VPSet(
+      cms.PSet(
+         category = cms.uint32(0),
+         cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2016v1_WPEff90"), # this is the name of the working point you want to use
+         variable = cms.string("pt"),
+      )
+   )
+)
+
+# here we produce all the other working points for the training
+process.rerunDiscriminationByIsolationMVArun2v1Loose = process.rerunDiscriminationByIsolationMVArun2v1VLoose.clone()
+process.rerunDiscriminationByIsolationMVArun2v1Loose.mapping[0].cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2016v1_WPEff80")
+process.rerunDiscriminationByIsolationMVArun2v1Medium = process.rerunDiscriminationByIsolationMVArun2v1VLoose.clone()
+process.rerunDiscriminationByIsolationMVArun2v1Medium.mapping[0].cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2016v1_WPEff70")
+process.rerunDiscriminationByIsolationMVArun2v1Tight = process.rerunDiscriminationByIsolationMVArun2v1VLoose.clone()
+process.rerunDiscriminationByIsolationMVArun2v1Tight.mapping[0].cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2016v1_WPEff60")
+process.rerunDiscriminationByIsolationMVArun2v1VTight = process.rerunDiscriminationByIsolationMVArun2v1VLoose.clone()
+process.rerunDiscriminationByIsolationMVArun2v1VTight.mapping[0].cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2016v1_WPEff50")
+process.rerunDiscriminationByIsolationMVArun2v1VVTight = process.rerunDiscriminationByIsolationMVArun2v1VLoose.clone()
+process.rerunDiscriminationByIsolationMVArun2v1VVTight.mapping[0].cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2016v1_WPEff40")
+
+# this sequence has to be included in your cms.Path() before your analyzer which accesses the new variables is called.
+process.rerunMvaIsolation2SeqRun2 = cms.Sequence(
+   process.rerunDiscriminationByIsolationMVArun2v1raw
+   *process.rerunDiscriminationByIsolationMVArun2v1VLoose
+   *process.rerunDiscriminationByIsolationMVArun2v1Loose
+   *process.rerunDiscriminationByIsolationMVArun2v1Medium
+   *process.rerunDiscriminationByIsolationMVArun2v1Tight
+   *process.rerunDiscriminationByIsolationMVArun2v1VTight
+   *process.rerunDiscriminationByIsolationMVArun2v1VVTight
+)
+
+
+process.rerunDiscriminationAgainstElectronMVA6 = patTauDiscriminationAgainstElectronMVA6.clone(
+   PATTauProducer = cms.InputTag('slimmedTaus'),
+   Prediscriminants = noPrediscriminants,
+   loadMVAfromDB = cms.bool(True),
+   returnMVA = cms.bool(True),
+   method = cms.string("BDTG"),
+   mvaName_NoEleMatch_woGwoGSF_BL = cms.string("RecoTauTag_antiElectronMVA6v1_gbr_NoEleMatch_woGwoGSF_BL"),
+   mvaName_NoEleMatch_wGwoGSF_BL = cms.string("RecoTauTag_antiElectronMVA6v1_gbr_NoEleMatch_wGwoGSF_BL"),
+   mvaName_woGwGSF_BL = cms.string("RecoTauTag_antiElectronMVA6v1_gbr_woGwGSF_BL"),
+   mvaName_wGwGSF_BL = cms.string("RecoTauTag_antiElectronMVA6v1_gbr_wGwGSF_BL"),
+   mvaName_NoEleMatch_woGwoGSF_EC = cms.string("RecoTauTag_antiElectronMVA6v1_gbr_NoEleMatch_woGwoGSF_EC"),
+   mvaName_NoEleMatch_wGwoGSF_EC = cms.string("RecoTauTag_antiElectronMVA6v1_gbr_NoEleMatch_wGwoGSF_EC"),
+   mvaName_woGwGSF_EC = cms.string("RecoTauTag_antiElectronMVA6v1_gbr_woGwGSF_EC"),
+   mvaName_wGwGSF_EC = cms.string("RecoTauTag_antiElectronMVA6v1_gbr_wGwGSF_EC"),
+   minMVANoEleMatchWOgWOgsfBL = cms.double(0.0),
+   minMVANoEleMatchWgWOgsfBL  = cms.double(0.0),
+   minMVAWOgWgsfBL            = cms.double(0.0),
+   minMVAWgWgsfBL             = cms.double(0.0),
+   minMVANoEleMatchWOgWOgsfEC = cms.double(0.0),
+   minMVANoEleMatchWgWOgsfEC  = cms.double(0.0),
+   minMVAWOgWgsfEC            = cms.double(0.0),
+   minMVAWgWgsfEC             = cms.double(0.0),
+   srcElectrons = cms.InputTag('slimmedElectrons')
+)
+
+# embed new id's into new tau collection
+embedID = cms.EDProducer("PATTauIDEmbedder",
+   src = cms.InputTag('slimmedTaus'),
+   tauIDSources = cms.PSet(
+      byIsolationMVArun2v1DBoldDMwLTrawNew = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1raw'),
+      byVLooseIsolationMVArun2v1DBoldDMwLTNew = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1VLoose'),
+      byLooseIsolationMVArun2v1DBoldDMwLTNew = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1Loose'),
+      byMediumIsolationMVArun2v1DBoldDMwLTNew = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1Medium'),
+      byTightIsolationMVArun2v1DBoldDMwLTNew = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1Tight'),
+      byVTightIsolationMVArun2v1DBoldDMwLTNew = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1VTight'),
+      byVVTightIsolationMVArun2v1DBoldDMwLTNew = cms.InputTag('rerunDiscriminationByIsolationMVArun2v1VVTight'),
+      againstElectronMVA6RawNew = cms.InputTag('rerunDiscriminationAgainstElectronMVA6')
+      ),
+   )
+setattr(process, "NewTauIDsEmbedded", embedID)
+
+process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
+    src = cms.InputTag("slimmedElectrons"),
+    cut = cms.string("pt > 9.5 & abs(eta) < 2.6")
+    )
+process.selectedMuons = cms.EDFilter("PATMuonRefSelector",
+    src = cms.InputTag("slimmedMuons"),
+    cut = cms.string("pt > 3 & abs(eta) < 2.6")
+    )
+process.selectedTaus = cms.EDFilter("PATTauRefSelector",
+    src = cms.InputTag("NewTauIDsEmbedded"),
+    cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFindingNewDMs") > 0.5')
+    )
+
+
+process.icSelectionSequence = cms.Sequence()
+
+process.icSelectionSequence += cms.Sequence(  
+  process.rerunMvaIsolation2SeqRun2+
+  process.rerunDiscriminationAgainstElectronMVA6+
+  getattr(process, "NewTauIDsEmbedded")
+)
+
+
+process.icSelectionSequence += cms.Sequence(
+  process.selectedElectrons+
+  process.selectedMuons+
+  process.selectedTaus
+)
+
+################################################################
+# PF sequence for lepton isolation
+################################################################
+process.load("CommonTools.ParticleFlow.pfParticleSelection_cff")
+
+process.pfPileUp = cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("packedPFCandidates"),
+    cut = cms.string("fromPV <= 1")
+    )
+process.pfNoPileUp = cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("packedPFCandidates"),
+    cut = cms.string("fromPV > 1")
+    )
+process.pfAllNeutralHadrons = cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("pfNoPileUp"),
+    cut = cms.string("abs(pdgId) = 111 | abs(pdgId) = 130 | " \
+        "abs(pdgId) = 310 | abs(pdgId) = 2112")
+    )
+process.pfAllChargedHadrons= cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("pfNoPileUp"),
+    cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
+        "abs(pdgId) = 999211 | abs(pdgId) = 2212")
+    )
+process.pfAllPhotons= cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("pfNoPileUp"),
+    cut = cms.string("abs(pdgId) = 22")
+    )
+process.pfAllChargedParticles= cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("pfNoPileUp"),
+    cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
+        "abs(pdgId) = 999211 | abs(pdgId) = 2212 | " \
+        "abs(pdgId) = 11 | abs(pdgId) = 13")
+    )
+process.pfPileUpAllChargedParticles= cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("pfPileUp"),
+    cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
+        "abs(pdgId) = 999211 | abs(pdgId) = 2212 | " \
+        "abs(pdgId) = 11 | abs(pdgId) = 13")
+    )
+process.pfAllNeutralHadronsAndPhotons = cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("pfNoPileUp"),
+    cut = cms.string("abs(pdgId) = 111 | abs(pdgId) = 130 | " \
+        "abs(pdgId) = 310 | abs(pdgId) = 2112 | abs(pdgId) = 22")
+    )
+process.pfParticleSelectionSequence = cms.Sequence(
+    process.pfPileUp+
+    process.pfNoPileUp+
+    process.pfAllNeutralHadrons+
+    process.pfAllChargedHadrons+
+    process.pfAllPhotons+
+    process.pfAllChargedParticles+
+    process.pfPileUpAllChargedParticles+
+    process.pfAllNeutralHadronsAndPhotons
+    )
+
+vtxLabel = cms.InputTag("offlinePrimaryVertices")
+if release in ['80XMINIAOD']:
+  vtxLabel = cms.InputTag("offlineSlimmedPrimaryVertices")
 
 vtxLabel = cms.InputTag("offlineSlimmedPrimaryVertices")
 
@@ -108,6 +300,185 @@ process.icVertexSequence = cms.Sequence(
 
 if isData :
   process.icVertexSequence.remove(process.icGenVertexProducer)
+  
+
+################################################################
+# Muons
+################################################################
+process.icMuonSequence = cms.Sequence()
+muons = cms.InputTag("slimmedMuons")
+
+process.load("CommonTools.ParticleFlow.Isolation.pfMuonIsolation_cff")
+process.load("CommonTools.ParticleFlow.deltaBetaWeights_cff")
+process.muPFIsoDepositChargedAll.src  = muons 
+process.muPFIsoDepositNeutral.src     = muons
+process.muPFIsoDepositNeutral.ExtractorPSet.inputCandView = cms.InputTag("pfWeightedNeutralHadrons")
+process.muPFIsoDepositGamma.src       = muons
+process.muPFIsoDepositGamma.ExtractorPSet.inputCandView = cms.InputTag("pfWeightedPhotons")
+process.muPFIsoValueChargedAll03PFIso = process.muPFIsoValueChargedAll03.clone()
+process.muPFIsoValueNeutral04PFWeights = process.muPFIsoValueNeutral04.clone()
+process.muPFIsoValueGamma04PFWeights = process.muPFIsoValueGamma04.clone()
+process.muPFIsoValueNeutral03PFWeights = process.muPFIsoValueNeutral03.clone()
+process.muPFIsoValueGamma03PFWeights = process.muPFIsoValueGamma03.clone()
+
+process.muPFIsoValueCharged03PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("charged_iso") 
+)    
+process.muPFIsoValueGamma03PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("photon_iso") 
+)    
+process.muPFIsoValueNeutral03PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("neutral_iso") 
+)    
+process.muPFIsoValuePU03PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("pu_iso") 
+)    
+
+process.muonPFIsolationValuesSequence = cms.Sequence(
+   
+   process.muPFIsoValueCharged03PFIso+
+   process.muPFIsoValueChargedAll03PFIso+
+   process.muPFIsoValueGamma03PFIso+
+   process.muPFIsoValueNeutral03PFIso+
+   process.muPFIsoValuePU03PFIso+
+   process.muPFIsoValueNeutral04PFWeights+
+   process.muPFIsoValueGamma04PFWeights+
+   process.muPFIsoValueNeutral03PFWeights+
+   process.muPFIsoValueGamma03PFWeights
+   )
+
+process.muPFIsoValueCharged04PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.4),
+  iso_type = cms.string("charged_iso") 
+)    
+process.muPFIsoValueGamma04PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.4),
+  iso_type = cms.string("photon_iso") 
+)    
+process.muPFIsoValueNeutral04PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.4),
+  iso_type = cms.string("neutral_iso") 
+)    
+process.muPFIsoValuePU04PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.4),
+  iso_type = cms.string("pu_iso") 
+)    
+process.muPFIsoValueChargedAll04PFIso = process.muPFIsoValueChargedAll04.clone()
+process.muonPFIsolationValuesSequence +=cms.Sequence(
+  process.muPFIsoValueCharged04PFIso+
+  process.muPFIsoValueGamma04PFIso+
+  process.muPFIsoValuePU04PFIso+
+  process.muPFIsoValueNeutral04PFIso+
+  process.muPFIsoValueChargedAll04PFIso
+)
+
+process.icMuonSequence += cms.Sequence(
+    process.pfDeltaBetaWeightingSequence+
+    process.muPFIsoDepositChargedAll+
+    process.muPFIsoDepositNeutral+
+    process.muPFIsoDepositGamma+
+    process.muonPFIsolationValuesSequence
+    )
+
+process.icMuonProducer = producers.icMuonProducer.clone(
+  branch                    = cms.string("muons"),
+  input                     = cms.InputTag("selectedMuons"),
+  isPF                      = cms.bool(False),
+  includeVertexIP           = cms.bool(True),
+  inputVertices             = vtxLabel,
+  includeBeamspotIP         = cms.bool(True),
+  inputBeamspot             = cms.InputTag("offlineBeamSpot"),
+  includeDoubles = cms.PSet(
+   neutral_pfweighted_iso_03 = cms.InputTag("muPFIsoValueNeutral03PFWeights"),
+   neutral_pfweighted_iso_04 = cms.InputTag("muPFIsoValueNeutral04PFWeights"),
+   gamma_pfweighted_iso_03 = cms.InputTag("muPFIsoValueGamma03PFWeights"),
+   gamma_pfweighted_iso_04 = cms.InputTag("muPFIsoValueGamma04PFWeights")
+  ),
+  requestTracks           = cms.bool(False),
+  includePFIso03           = cms.bool(True),
+  includePFIso04           = cms.bool(True),
+)
+process.icMuonProducer.isPF = cms.bool(False)
+
+process.icMuonSequence += cms.Sequence(
+  process.icMuonProducer
+)
+
+################################################################
+# Taus
+################################################################
+import UserCode.ICHiggsTauTau.tau_discriminators_cfi as tauIDs
+
+process.icTauProducer = producers.icTauProducer.clone(
+  input                   = cms.InputTag("selectedTaus"),
+  inputVertices           = vtxLabel,
+  includeVertexIP         = cms.bool(True),
+  requestTracks           = cms.bool(True),
+  tauIDs = tauIDs.dynamicStripIds
+)
+
+if release in ['80XMINIAOD']:
+  process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
+    branch                  = cms.string("taus"),
+    input                   = cms.InputTag("selectedTaus"),
+    inputVertices           = vtxLabel,
+    includeVertexIP         = cms.bool(True),
+    requestTracks           = cms.bool(False),
+    includeTotalCharged     = cms.bool(False),
+    totalChargedLabel       = cms.string('totalCharged'),
+    requestPFCandidates     = cms.bool(False),
+    inputPFCandidates       = cms.InputTag("packedPFCandidates"),
+    isSlimmed               = cms.bool(True),
+    tauIDs = cms.PSet()
+  )
+
+
+process.icTauSequence = cms.Sequence(
+  process.icTauProducer 
+)
+
+################################################################
+# PF MET
+################################################################
+process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
+process.load("RecoJets.JetProducers.ak4PFJets_cfi")
+
+from RecoMET.METProducers.PFMET_cfi import pfMet
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+                           isData=bool(isData),
+                           )
+
+#process.pfMetRe = pfMet.clone(src = "particleFlow")
+
+#if release in ['80XMINIAOD']:
+#  process.pfMetRe = pfMet.clone(src = "packedPFCandidates")
+#  process.pfMetRe.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
+#
+process.icPfMetProducer = producers.icMetFromPatProducer.clone(
+                         branch = cms.string("pfMetFromSlimmed"),
+                         getUncorrectedMet=cms.bool(False)
+                         )
+
+process.icPfMetSequence = cms.Sequence(
+  #process.pfMetRe+
+  process.icPfMetProducer
+)
+
+#if release in ['80XMINIAOD']:
+#  process.icPfMetSequence.remove(process.pfMetRe)
 
 ################################################################
 # EventInfo
@@ -161,8 +532,6 @@ process.icEventInfoSequence = cms.Sequence(
 )
 
   
-
-
 ################################################################
 # Event
 ################################################################
@@ -171,7 +540,12 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
+  process.icSelectionSequence+  
+  process.pfParticleSelectionSequence+  
   process.icVertexSequence+  
+  process.icMuonSequence+ 
+  process.icTauSequence+
+  process.icPfMetSequence+
   process.icEventInfoSequence+
   process.icEventProducer
 )
