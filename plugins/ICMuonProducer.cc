@@ -51,7 +51,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
   if(is_pf_){
     consumes<edm::View<reco::PFCandidate>>(input_);
   } else {
-    consumes<edm::View<pat::Muon>>(input_);
+    consumes<edm::View<reco::Muon>>(input_);
   }
   consumes<edm::View<reco::Vertex>>(input_vertices_);
   consumes<reco::BeamSpot>(input_beamspot_);
@@ -88,7 +88,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
 ICMuonProducer::~ICMuonProducer() { delete muons_; }
 
 void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
-  edm::Handle<edm::View<pat::Muon> > muons_handle;
+  edm::Handle<edm::View<reco::Muon> > muons_handle;
   edm::Handle<edm::View<reco::PFCandidate> > pfs_handle;
   unsigned n_muons = 0;
   if (is_pf_) {
@@ -154,11 +154,11 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   for (unsigned i = 0; i < n_muons; ++i) {
     ic::Muon & dest = muons_->at(i);
 
-    pat::MuonRef muon_ref;
-    edm::RefToBase<pat::Muon> muon_base_ref;
+    reco::MuonRef muon_ref;
+    edm::RefToBase<reco::Muon> muon_base_ref;
     edm::RefToBase<reco::PFCandidate> pf_base_ref;
     if (is_pf_) {
-      /*reco::PFCandidate const& pf_src = pfs_handle->at(i);
+      reco::PFCandidate const& pf_src = pfs_handle->at(i);
       dest.set_id(pf_hasher_(&pf_src));
       dest.set_pt(pf_src.pt());
       dest.set_eta(pf_src.eta());
@@ -167,9 +167,9 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
       dest.set_charge(pf_src.charge());
       dest.set_is_pf(true);
       muon_ref = pf_src.muonRef();
-      pf_base_ref = pfs_handle->refAt(i);*/
+      pf_base_ref = pfs_handle->refAt(i);
     } else {
-      pat::Muon const& reco_src = muons_handle->at(i);
+      reco::Muon const& reco_src = muons_handle->at(i);
       dest.set_id(muon_hasher_(&reco_src));
       dest.set_pt(reco_src.pt());
       dest.set_eta(reco_src.eta());
@@ -178,20 +178,15 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
       dest.set_charge(reco_src.charge());
       dest.set_is_pf(reco_src.isPFMuon());
       muon_base_ref = muons_handle->refAt(i);
-    /*std::cout<<reco_src.puppiNoLeptonsChargedHadronIso()<<std::endl;
-    std::cout<<reco_src.puppiNoLeptonsNeutralHadronIso()<<std::endl;
-    std::cout<<reco_src.puppiNoLeptonsPhotonIso()<<std::endl;*/
-    dest.set_puppi_iso_nolep(reco_src.puppiNoLeptonsChargedHadronIso() + reco_src.puppiNoLeptonsNeutralHadronIso()+reco_src.puppiNoLeptonsPhotonIso());
-
     }
 
-    /*pat::Muon const& src =
-        is_pf_ ? *(pfs_handle->at(i).muonRef()) : *muons_handle->refAt(i);*/
-    pat::Muon const& src = muons_handle->at(i);
+    reco::Muon const& src =
+        is_pf_ ? *(pfs_handle->at(i).muonRef()) : *muons_handle->refAt(i);
 
     dest.set_dr03_tk_sum_pt(src.isolationR03().sumPt);
     dest.set_dr03_ecal_rechit_sum_et(src.isolationR03().emEt);
     dest.set_dr03_hcal_tower_sum_et(src.isolationR03().hadEt);
+
 
     dest.set_is_standalone(src.isStandAloneMuon());
     dest.set_is_global(src.isGlobalMuon());

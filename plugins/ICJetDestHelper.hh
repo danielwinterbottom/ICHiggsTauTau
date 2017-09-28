@@ -133,7 +133,6 @@ struct JetDestHelper<ic::PFJet> {
   edm::InputTag input_vtxs;
   bool request_trks;
   boost::hash<reco::Track const*> track_hasher;
-//  edm::InputTag input_pfcands;
 
   explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector)
       : do_pu_id(pset.getParameter<bool>("includePileupID")),
@@ -142,11 +141,9 @@ struct JetDestHelper<ic::PFJet> {
         input_trks(pset.getParameter<edm::InputTag>("inputTracks")),
         input_vtxs(pset.getParameter<edm::InputTag>("inputVertices")),
         request_trks(pset.getParameter<bool>("requestTracks")) {
-//        input_pfcands(pset.getParameter<edm::InputTag>("pfcands")) {
           collector.consumes<edm::ValueMap<float>>(input_pu_id);
           collector.consumes<reco::TrackCollection>(input_trks);
           collector.consumes<reco::VertexCollection>(input_vtxs);
-//          collector.consumes<std::vector<pat::PackedCandidate>>(input_pfcands);
         }
 
   void DoSetup(edm::EDProducer * prod) {
