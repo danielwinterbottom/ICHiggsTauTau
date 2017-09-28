@@ -300,7 +300,6 @@ namespace ic {
   bool MuonIso(Muon const* muon);
   bool MuonTkIso(Muon const* muon);
   double MuonTkIsoVal(Muon const* muon);
-  double MuonPuppiIsoVal(Muon const* muon);
 
 
   template<class T, class U>

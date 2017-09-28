@@ -1346,18 +1346,18 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
   HTTWeights httWeights = HTTWeights("HTTWeights")
     .set_channel(channel)
     .set_era(era_type)
-    .set_mc(mc_type);
-    httWeights.set_trg_applied_in_mc(true)
+    .set_mc(mc_type)
+    .set_trg_applied_in_mc(true)
     .set_do_trg_weights(false)
     .set_do_etau_fakerate(false)
-    .set_do_mtau_fakerate(false);
-    httWeights.set_do_idiso_weights(false)
+    .set_do_mtau_fakerate(false)
+    .set_do_idiso_weights(false)
     .set_do_id_weights(false) // This will override do_idiso_weights, applying only ID weights in embedded
-    .set_do_emu_e_fakerates(false);
-    httWeights.set_do_emu_m_fakerates(false)
+    .set_do_emu_e_fakerates(false)
+    .set_do_emu_m_fakerates(false)
     .set_do_top_factors(false)
-    .set_do_tau_id_weights(real_tau_sample);
-    httWeights.set_gen_tau_collection(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
+    .set_do_tau_id_weights(real_tau_sample)
+    .set_gen_tau_collection(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
     .set_jets_label(jets_label)
     .set_ditau_label("ditau")
     .set_do_btag_weight(false);
@@ -1447,19 +1447,19 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
     .set_era(era_type)
-    .set_mc(mc_type);
-    httWeights.set_do_tau_id_weights(false)
+    .set_mc(mc_type)
+    .set_do_tau_id_weights(false)
     .set_ditau_label("ditau")
-    .set_jets_label("ak4PFJetsCHS");
-    httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
-    .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data));
-    httWeights.set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
-    .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data));
-    httWeights.set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
-    .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data));
-    httWeights.set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
-    .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data));
-    httWeights.set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
+    .set_jets_label("ak4PFJetsCHS")
+    .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
+    .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+    .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
+    .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
+    .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
+    .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
+    .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
+    .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
+    .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
     .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data));
   if (!is_data ) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
@@ -1524,25 +1524,25 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
     .set_era(era_type)
-    .set_mc(mc_type);
-    httWeights.set_do_tau_id_weights(real_tau_sample)
+    .set_mc(mc_type)
+    .set_do_tau_id_weights(real_tau_sample)
     .set_do_em_qcd_weights(true)
-    .set_ditau_label("ditau");
-    httWeights.set_jets_label("ak4PFJetsCHS")
-    .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data));
-    httWeights.set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
-    .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data));
-    httWeights.set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
-    .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data));
-    httWeights.set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
-    .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data));
-    httWeights.set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
-    .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data));
-    httWeights.set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data))
-    .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2));
-    httWeights.set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
-    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4));
-    httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
+    .set_ditau_label("ditau")
+    .set_jets_label("ak4PFJetsCHS")
+    .set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
+    .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+    .set_et_idiso_mc(new TH2D(et_idiso_mc)).set_et_idiso_data(new TH2D(et_idiso_data))
+    .set_mt_idiso_mc(new TH2D(mt_idiso_mc)).set_mt_idiso_data(new TH2D(mt_idiso_data))
+    .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
+    .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
+    .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
+    .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
+    .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
+    .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data))
+    .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2))
+    .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
+    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4))
+    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
     if(channel ==channel::zmm || channel==channel::zee) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false);
@@ -1622,35 +1622,35 @@ if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
     .set_era(era_type)
-    .set_mc(mc_type);
-    httWeights.set_do_tau_id_weights(real_tau_sample)
+    .set_mc(mc_type)
+    .set_do_tau_id_weights(real_tau_sample)
     .set_do_tau_id_sf(real_tau_sample)
-    .set_do_em_qcd_weights(true);
-    httWeights.set_ditau_label("ditau")
+    .set_do_em_qcd_weights(true)
+    .set_ditau_label("ditau")
     .set_jets_label("ak4PFJetsCHS")
-    .set_do_single_lepton_trg(js["do_singlelepton"].asBool());
-    httWeights.set_do_cross_trg(js["do_leptonplustau"].asBool())
+    .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
+    .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
-    .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data));
-    httWeights.set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
-    .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data));
-    httWeights.set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
-    .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2));
-    httWeights.set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
-    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4));
-    httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
+    .set_em_m17_trig_mc(new TH2D(em_m17_trig_mc)).set_em_m17_trig_data(new TH2D(em_m17_trig_data))
+    .set_em_m8_trig_mc(new TH2D(em_m8_trig_mc)).set_em_m8_trig_data(new TH2D(em_m8_trig_data))
+    .set_em_e17_trig_mc(new TH2D(em_e17_trig_mc)).set_em_e17_trig_data(new TH2D(em_e17_trig_data))
+    .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
+    .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2)).set_em_qcd_cr2_lt2(new TH2D(em_qcd_cr2_lt2))
+    .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4)).set_em_qcd_cr2_2to4(new TH2D(em_qcd_cr2_2to4))
+    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4)).set_em_qcd_cr2_gt4(new TH2D(em_qcd_cr2_gt4))
+    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
-        .set_muon_tracking_sf(new TH1D(muon_tracking_sf));
-        httWeights.set_ele_tracking_sf(new TH2F(ele_tracking_sf))
-        .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data));
-        httWeights.set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data))
-        .set_et_antiiso1_trig_data(new TH2D(et_antiiso1_trig_data)).set_et_antiiso2_trig_data(new TH2D(et_antiiso2_trig_data));
-        httWeights.set_et_xtrig_mc(new TH2D(et_xtrig_mc)).set_et_xtrig_data(new TH2D(et_xtrig_data))
-        .set_et_conditional_mc(new TH2D(et_conditional_mc)).set_et_conditional_data(new TH2D(et_conditional_data));
-        httWeights.set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
-        .set_mt_antiiso1_trig_data(new TH2D(mt_antiiso1_trig_data)).set_mt_antiiso2_trig_data(new TH2D(mt_antiiso2_trig_data));
-        httWeights.set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
+        .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
+        .set_ele_tracking_sf(new TH2F(ele_tracking_sf))
+        .set_em_e_idiso_mc(new TH2D(em_e_idiso_mc)).set_em_e_idiso_data(new TH2D(em_e_idiso_data))
+        .set_em_m_idiso_mc(new TH2D(em_m_idiso_mc)).set_em_m_idiso_data(new TH2D(em_m_idiso_data))
+        .set_et_antiiso1_trig_data(new TH2D(et_antiiso1_trig_data)).set_et_antiiso2_trig_data(new TH2D(et_antiiso2_trig_data))
+        .set_et_xtrig_mc(new TH2D(et_xtrig_mc)).set_et_xtrig_data(new TH2D(et_xtrig_data))
+        .set_et_conditional_mc(new TH2D(et_conditional_mc)).set_et_conditional_data(new TH2D(et_conditional_data))
+        .set_mt_trig_mc(new TH2D(mt_trig_mc)).set_mt_trig_data(new TH2D(mt_trig_data))
+        .set_mt_antiiso1_trig_data(new TH2D(mt_antiiso1_trig_data)).set_mt_antiiso2_trig_data(new TH2D(mt_antiiso2_trig_data))
+        .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
         httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v5.root");

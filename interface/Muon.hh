@@ -96,9 +96,6 @@ class Muon : public Candidate {
   /// Tracker isolation in a cone with \f$ \Delta R = 0.3 \f$
   inline float dr03_tk_sum_pt() const { return dr03_tk_sum_pt_; }
 
-  ///Puppi isolation
-  inline float puppi_iso_nolep() const { return puppi_iso_nolep_; }
-
   /// ECAL isolation in a cone with \f$ \Delta R = 0.3 \f$
   inline float dr03_ecal_rechit_sum_et() const {
     return dr03_ecal_rechit_sum_et_;
@@ -249,11 +246,6 @@ class Muon : public Candidate {
     dr03_tk_sum_pt_ = dr03_tk_sum_pt;
   }
 
-  /// @copybrief puppi_iso_nolep()
-  inline void set_puppi_iso_nolep(float const& puppi_iso_nolep) { 
-    puppi_iso_nolep_ = puppi_iso_nolep;
- }
-
   /// @copybrief dr03_ecal_rechit_sum_et()
   inline void set_dr03_ecal_rechit_sum_et(
       float const& dr03_ecal_rechit_sum_et) {
@@ -367,7 +359,6 @@ class Muon : public Candidate {
 
  private:
   float dr03_tk_sum_pt_;
-  float puppi_iso_nolep_;
   float dr03_ecal_rechit_sum_et_;
   float dr03_hcal_tower_sum_et_;
 
@@ -410,7 +401,7 @@ class Muon : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Muon, 6);
+  ClassDef(Muon, 5);
  #endif
 };
 

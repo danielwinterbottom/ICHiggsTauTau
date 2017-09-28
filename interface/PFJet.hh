@@ -154,8 +154,6 @@ class PFJet : public Jet {
    */
   inline float const& beta() const { return beta_; }
 
-  inline float const& beta_puppi() const { return beta_puppi_; }
-
   /// The largest value of beta() obtained when it is evaluated for every vertex
   /// in the event
   inline float const& beta_max() const { return beta_max_; }
@@ -333,8 +331,6 @@ class PFJet : public Jet {
   /// @copybrief beta()
   inline void set_beta(float const& beta) { beta_ = beta; }
 
-  inline void set_beta_puppi(float const& beta_puppi) { beta_puppi_ = beta_puppi; }
-
   /// @copybrief beta_max()
   inline void set_beta_max(float const& beta_max) { beta_max_ = beta_max; }
 
@@ -384,7 +380,6 @@ class PFJet : public Jet {
   float charged_mu_energy_;
 
   float beta_;
-  float beta_puppi_;
   float beta_max_;
 
   float pu_id_mva_value_;
@@ -396,7 +391,7 @@ class PFJet : public Jet {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(PFJet, 3);
+  ClassDef(PFJet, 2);
  #endif
 };
 
