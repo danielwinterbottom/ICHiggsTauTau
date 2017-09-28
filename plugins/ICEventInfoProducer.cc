@@ -48,7 +48,7 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig"))
 {
 #if CMSSW_MAJOR_VERSION >= 7
-      consumes<LHERunInfoProduct, edm::InRun>({lhe_collection_});
+      consumes<LHERunInfoProduct, edm::InRun>({"externalLHEProducer"});
 #endif
       consumes<GenEventInfoProduct>({"generator"});
       consumes<LHEEventProduct>(lhe_collection_);
@@ -122,7 +122,7 @@ void ICEventInfoProducer::endRun(edm::Run const& run, edm::EventSetup const& es)
   if (!do_lhe_weights_) return;
   if (lhe_weight_labels_.size()) return;
   edm::Handle<LHERunInfoProduct> lhe_info;
-  run.getByLabel(lhe_collection_, lhe_info);
+  run.getByLabel("externalLHEProducer", lhe_info);
   bool record = false;
   for (auto it = lhe_info->headers_begin(); it != lhe_info->headers_end();
        ++it) {
