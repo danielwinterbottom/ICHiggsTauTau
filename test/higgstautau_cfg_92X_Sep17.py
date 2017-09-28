@@ -701,7 +701,7 @@ process.icPFJetSequence += cms.Sequence(
    process.updatedPatJetsUpdatedJEC+
    process.selectedUpdatedPatJetsUpdatedJEC+
    process.selectedSlimmedJetsAK4+
-   #process.unpackedTracksAndVertices+
+   #process.unpackedTracksAndVertices+  # this line causes an exception, commenting it out means some jet variables aren't filled - i can't see these variabled being used anywhere at the moment but if this changes then this needs to be fixed
    process.icPFJetProducerFromPat
    )
 
