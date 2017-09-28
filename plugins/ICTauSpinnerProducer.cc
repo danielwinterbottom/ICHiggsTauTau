@@ -23,18 +23,19 @@ ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
 
   PrintHeaderWithProduces(config, input_, branch_);
   TauSpinnerSettingsPDF="NNPDF30_nlo_as_0118";
-  TauSpinnerSettingsIpp=true;
-  TauSpinnerSettingsIpol=1;
-  TauSpinnerSettingsNonSM2=0;
-  TauSpinnerSettingsNonSMN=0;
-  TauSpinnerSettingsCmsEnergy=13.;
+  Ipp=true;
+  Ipol=1;
+  nonSM2=0;
+  nonSMN=0;
+  CMSENE=13000.0;
   bosonPdgId_=25;
+  count=0;
+  total=0;
 }
 
 ICTauSpinnerProducer::~ICTauSpinnerProducer() {}
 
 reco::GenParticle ICTauSpinnerProducer::getBoson(edm::Handle<edm::View<reco::GenParticle> > parts_handle){
-  // Function return last copy of generator boson
   reco::GenParticle boson;
   bool foundBoson = false;
   for (unsigned i = 0; i < parts_handle->size(); ++i) {
@@ -66,36 +67,52 @@ std::vector<reco::GenParticle> ICTauSpinnerProducer::getTaus(reco::GenParticle b
   return taus;
 }
 
-void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_daughters, reco::GenParticle tau, edm::Handle<edm::View<reco::GenParticle> > parts_handle){
+void ICTauSpinnerProducer::getTauDaughters(std::vector<reco::GenParticle> &tau_daughters, unsigned &type, reco::GenParticle tau, edm::Handle<edm::View<reco::GenParticle> > parts_handle){
   for (unsigned i = 0; i < tau.daughterRefVector().size(); ++i) {
     int daughter_index = static_cast<int>(tau.daughterRefVector().at(i).key());
     reco::GenParticle daughter = parts_handle->at(daughter_index);
     int daughter_pdgid = fabs(daughter.pdgId());
-    if(daughter_pdgid == 22 || daughter_pdgid == 111 || daughter_pdgid == 211 || daughter_pdgid == 321 || daughter_pdgid == 130 || daughter_pdgid == 310 || daughter_pdgid == 11 || daughter_pdgid == 12 || daughter_pdgid == 13 || daughter_pdgid == 14 || daughter_pdgid == 16) tau_daughters.push_back(daughter);
-    else getTauDaughters(tau_daughters, daughter, parts_handle);
+    if(daughter_pdgid == 22 || daughter_pdgid == 111 || daughter_pdgid == 211 || daughter_pdgid == 321 || daughter_pdgid == 311 || daughter_pdgid == 130 || daughter_pdgid == 310 || daughter_pdgid == 11 || daughter_pdgid == 12 || daughter_pdgid == 13 || daughter_pdgid == 14 || daughter_pdgid == 16){
+      if(daughter_pdgid == 11) type = 1;
+      if(daughter_pdgid == 13) type = 2;
+      tau_daughters.push_back(daughter);
+    }
+    else getTauDaughters(tau_daughters, type, daughter, parts_handle);
   }
+}
 
+void ICTauSpinnerProducer::removeGammas(std::vector<TauSpinner::SimpleParticle> &tau_daughters){
+  for(int i=tau_daughters.size()-1; i>=0; --i){
+    int pdgid = fabs(tau_daughters[i].pdgid());
+    if(pdgid == 22) tau_daughters.erase(tau_daughters.begin()+i);   
+  }
+}
+
+void ICTauSpinnerProducer::removeSecondGamma(std::vector<TauSpinner::SimpleParticle> &tau_daughters){
+  int gamma_count=0;
+  int gamma_index=0;
+  double min_gamma_pt=0;
+  for(unsigned i=0; i<tau_daughters.size(); ++i){
+    int pdgid = fabs(tau_daughters[i].pdgid());
+    if(pdgid == 22){
+      double gamma_pt=sqrt(pow(tau_daughters[i].px(),2) + pow(tau_daughters[i].py(),2));
+      if(gamma_count==0){ min_gamma_pt = gamma_pt; gamma_index=i;}
+      else if (gamma_pt<min_gamma_pt){ min_gamma_pt = gamma_pt; gamma_index=i;}
+      gamma_count++;
+    }
+  }
+  if(gamma_count==2) tau_daughters.erase(tau_daughters.begin()+gamma_index);   
 }
 
 TauSpinner::SimpleParticle ICTauSpinnerProducer::ConvertToSimplePart(reco::GenParticle input_part){
-  TauSpinner::SimpleParticle simple_part;
-  simple_part.setPx(input_part.px());
-  simple_part.setPy(input_part.py());
-  simple_part.setPz(input_part.pz());
-  simple_part.setE(input_part.energy());
-  simple_part.setPdgid(input_part.pdgId());
-  return simple_part;  
+  return TauSpinner::SimpleParticle(input_part.px(), input_part.py(), input_part.pz(), input_part.energy(), input_part.pdgId());
 }
 
 void ICTauSpinnerProducer::initialize(){
   Tauolapp::Tauola::initialize();
   LHAPDF::initPDFSetByName(TauSpinnerSettingsPDF);
   
-  TauSpinner::initialize_spinner(TauSpinnerSettingsIpp,
-                                 TauSpinnerSettingsIpol,
-                                 TauSpinnerSettingsNonSM2,
-                                 TauSpinnerSettingsNonSMN,
-                                 TauSpinnerSettingsCmsEnergy);
+  TauSpinner::initialize_spinner(Ipp, Ipol, nonSM2, nonSMN,  CMSENE);
 }
 
 void ICTauSpinnerProducer::produce(edm::Event& event,
@@ -108,8 +125,10 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   
   std::vector<reco::GenParticle> tau1_daughters;
   std::vector<reco::GenParticle> tau2_daughters;
-  getTauDaughters(tau1_daughters,taus[0],parts_handle);  
-  getTauDaughters(tau2_daughters,taus[0],parts_handle); 
+  unsigned type1 = 0; 
+  unsigned type2 = 0;
+  getTauDaughters(tau1_daughters,type1,taus[0],parts_handle);  
+  getTauDaughters(tau2_daughters,type2,taus[1],parts_handle); 
   
   TauSpinner::SimpleParticle simple_boson = ConvertToSimplePart(boson);
   TauSpinner::SimpleParticle simple_tau1 = ConvertToSimplePart(taus[0]);
@@ -119,12 +138,38 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   
   for(unsigned i=0; i<tau1_daughters.size(); ++i) simple_tau1_daughters.push_back(ConvertToSimplePart(tau1_daughters[i]));
   for(unsigned i=0; i<tau2_daughters.size(); ++i) simple_tau2_daughters.push_back(ConvertToSimplePart(tau2_daughters[i]));
+  // remove the photons for hadronic decays as tauspinner doesn't concider these decay modes
+  if(!(type1==1||type1==2)) removeGammas(simple_tau1_daughters);
+  else removeSecondGamma(simple_tau1_daughters);
+  if(!(type2==1||type2==2)) removeGammas(simple_tau2_daughters);
+  else removeSecondGamma(simple_tau2_daughters);
   
   // Can make this more general by having boson pdgid as input or have option for set boson type
   TauSpinner::setHiggsParametersTR(-cos(2*M_PI*theta_),cos(2*M_PI*theta_),-sin(2*M_PI*theta_),-sin(2*M_PI*theta_));
-  weight_ = TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters);
-  //std::cout << weight_ << std::endl;
-  std::cout << TauSpinner::getWtNonSM() << std::endl;
+  weight_ = TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters); 
+  
+  std::cout << "****************************************************************************" << std::endl;
+  std::cout << "boson = " << simple_boson.pdgid() << "  " << simple_boson.px() << "  " << simple_boson.py() << "  " << simple_boson.pz() << "  " << simple_boson.e() << std::endl;
+  std::cout << "tau 1 = " << simple_tau1.pdgid() << "  " << simple_tau1.px() << "  " << simple_tau1.py() << "  " << simple_tau1.pz() << "  " << simple_tau1.e() << std::endl;
+  std::cout << "type = " << type1 << std::endl;
+  std::cout << "tau 1 daughters:" << std::endl;
+  for(unsigned i=0; i< tau1_daughters.size(); ++i){
+    std::cout << tau1_daughters[i].pdgId() << "  " << tau1_daughters[i].px() << "  " << tau1_daughters[i].py() << "  " << tau1_daughters[i].pz() << "  " << tau1_daughters[i].energy() << std::endl;
+    std::cout << "flags: " <<std::endl;
+    std::cout << "isHardProcessTauDecayProduct = " << tau1_daughters[i].statusFlags().isHardProcessTauDecayProduct() << std::endl;
+    std::cout << "isDirectHardProcessTauDecayProduct = " << tau1_daughters[i].statusFlags().isDirectHardProcessTauDecayProduct() << std::endl;
+  }
+  std::cout << "tau 2 = " << simple_tau2.pdgid() << "  " << simple_tau2.px() << "  " << simple_tau2.py() << "  " << simple_tau2.pz() << "  " << simple_tau2.e() << std::endl;
+  std::cout << "type = " << type2 << std::endl;
+  std::cout << "tau 2 daughters:" << std::endl;
+  for(unsigned i=0; i< tau2_daughters.size(); ++i){
+    std::cout << tau2_daughters[i].pdgId() << "  " << tau2_daughters[i].px() << "  " << tau2_daughters[i].py() << "  " << tau2_daughters[i].pz() << "  " << tau2_daughters[i].energy() << std::endl;
+    std::cout << "flags: " <<std::endl;
+    std::cout << "isHardProcessTauDecayProduct = " << tau2_daughters[i].statusFlags().isHardProcessTauDecayProduct() << std::endl;
+    std::cout << "isDirectHardProcessTauDecayProduct = " << tau2_daughters[i].statusFlags().isDirectHardProcessTauDecayProduct() << std::endl;
+        
+  }
+  std::cout << "weight = " << weight_ << std::endl;
 
 }
 

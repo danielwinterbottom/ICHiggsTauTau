@@ -12,14 +12,8 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
-#include "UserCode/ICHiggsTauTau/TAUOLA/TauSpinner/include/TauSpinner/SimpleParticle.h"
-#include "UserCode/ICHiggsTauTau/TAUOLA/TauSpinner/include/TauSpinner/tau_reweight_lib.h"
-//#include "TauSpinner/SimpleParticle.h"
-//#include "TauSpinner/tau_reweight_lib.h"
-//#include "GeneratorInterface/TauolaInterface/interface/TauSpinnerCMS.h"
-//#include "LHAPDF/LHAPDF.h"
-//#include "Tauola/Tauola.h"
-
+#include "TauSpinner/SimpleParticle.h"
+#include "TauSpinner/tau_reweight_lib.h"
 
 enum pdgId {
   Gamma = 22,
@@ -28,6 +22,7 @@ enum pdgId {
   KPlus = 321,
   KLong = 130,
   KShort = 310,
+  KZero=311,
   Electron = 11,
   NuE = 12,
   Muon = 13,
@@ -50,7 +45,9 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   virtual void endJob();
   reco::GenParticle getBoson(edm::Handle<edm::View<reco::GenParticle> > parts_handle);
   std::vector<reco::GenParticle> getTaus(reco::GenParticle boson, edm::Handle<edm::View<reco::GenParticle> > parts_handle);
-  void getTauDaughters(std::vector<reco::GenParticle> &tau_daughters, reco::GenParticle tau, edm::Handle<edm::View<reco::GenParticle> > parts_handle);
+  void getTauDaughters(std::vector<reco::GenParticle> &tau_daughters, unsigned &type, reco::GenParticle tau, edm::Handle<edm::View<reco::GenParticle> > parts_handle);
+  void removeGammas(std::vector<TauSpinner::SimpleParticle> &tau_daughters);
+  void removeSecondGamma(std::vector<TauSpinner::SimpleParticle> &tau_daughters);
   TauSpinner::SimpleParticle ConvertToSimplePart(reco::GenParticle input_part);
 
   edm::InputTag input_;
@@ -58,13 +55,15 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   double theta_;
   int bosonPdgId_;
   double weight_;
+  unsigned count;
+  unsigned total;
   
   std::string TauSpinnerSettingsPDF;
-  bool TauSpinnerSettingsIpp;
-  int TauSpinnerSettingsIpol;
-  int TauSpinnerSettingsNonSM2;
-  int TauSpinnerSettingsNonSMN;
-  double TauSpinnerSettingsCmsEnergy;
+  bool Ipp;
+  int Ipol;
+  int nonSM2;
+  int nonSMN;
+  double CMSENE;
 };
 
 #endif
