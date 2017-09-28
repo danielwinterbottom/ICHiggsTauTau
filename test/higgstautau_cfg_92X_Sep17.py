@@ -8,9 +8,12 @@ import sys
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 
-opts.register('file', 'root://xrootd.unl.edu//store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v3/000/301/461/00000/12289DDE-0B87-E711-8ACC-02163E01A1E9.root', parser.VarParsing.multiplicity.singleton,               
+opts.register('file', 
+#'root://xrootd.unl.edu//store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10_ext1-v2/10000/00F9D855-E293-E711-B625-02163E014200.root'              
+'root://xrootd.unl.edu//store/data/Run2017C/SingleMuon/MINIAOD/PromptReco-v3/000/301/461/00000/12289DDE-0B87-E711-8ACC-02163E01A1E9.root'
+,parser.VarParsing.multiplicity.singleton, 
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '92X_dataRun2_Prompt_v9', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '92X_dataRun2_Prompt_v9', parser.VarParsing.multiplicity.singleton, ## lates GT i can find for MC = 90X_upgrade2017_realistic_v20
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -727,51 +730,21 @@ process.icPfMetSequence = cms.Sequence(
 ################################################################
 # Simulation only: GenParticles, GenJets, PileupInfo
 ################################################################
+
 process.icGenSequence = cms.Sequence()
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
-    src = cms.InputTag("genParticles","","HLT"),
-    select = cms.vstring(
-        "drop  *", # this is the default
-        "++keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15", # keep leptons, with history
-        "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",   # keep neutrinos
-        "drop   status == 2",                                              # drop the shower part of the history
-        "+keep pdgId == 22 && status == 1 && (pt > 10 || isPromptFinalState())", # keep gamma above 10 GeV (or all prompt) and its first parent
-        "+keep abs(pdgId) == 11 && status == 1 && (pt > 3 || isPromptFinalState())", # keep first parent of electrons above 3 GeV (or prompt)
-        "keep++ abs(pdgId) == 15",                                         # but keep keep taus with decays
-	"drop  status > 30 && status < 70 ", 				   #remove pythia8 garbage
-	"drop  pdgId == 21 && pt < 5",                                    #remove pythia8 garbage
-        "drop   status == 2 && abs(pdgId) == 21",                          # but remove again gluons in the inheritance chain
-        "keep abs(pdgId) == 23 || abs(pdgId) == 24 || abs(pdgId) == 25 || abs(pdgId) == 6 || abs(pdgId) == 37 ",   # keep VIP(articles)s
-        "keep abs(pdgId) == 310 && abs(eta) < 2.5 && pt > 1 ",                                                     # keep K0
-# keep heavy flavour quarks for parton-based jet flavour
-	"keep (4 <= abs(pdgId) <= 5) & (status = 2 || status = 11 || status = 71 || status = 72)",
-# keep light-flavour quarks and gluons for parton-based jet flavour
-	"keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5", 
-# keep b and c hadrons for hadron-based jet flavour
-	"keep (400 < abs(pdgId) < 600) || (4000 < abs(pdgId) < 6000)",
-# additional c hadrons for jet fragmentation studies
-	"keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", 
-# additional b hadrons for jet fragmentation studies
-	"keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543", 
-#keep SUSY particles
-	"keep (1000001 <= abs(pdgId) <= 1000039 ) || ( 2000001 <= abs(pdgId) <= 2000015)",
-# keep protons 
-        "keep pdgId = 2212",
-        "keep status == 3 || ( 21 <= status <= 29) || ( 11 <= status <= 19)",  #keep event summary (status=3 for pythia6, 21 <= status <= 29 for pythia8)
-        "keep isHardProcess() || fromHardProcessFinalState() || fromHardProcessDecayed() || fromHardProcessBeforeFSR() || (statusFlags().fromHardProcess() && statusFlags().isLastCopy())",  #keep event summary based on status flags
-    )
-)
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
-  input=cms.InputTag("prunedGenParticles","","PAT"),
+  input   = cms.InputTag("prunedGenParticles","","PAT"),
   includeMothers = cms.bool(True),
   includeDaughters = cms.bool(True),
   includeStatusFlags = cms.bool(True)
 )
 
+
 process.icGenParticleProducerFromLHEParticles = producers.icGenParticleFromLHEParticlesProducer.clone()
+
 
 process.load("RecoJets.Configuration.GenJetParticles_cff")
 process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
@@ -780,13 +753,10 @@ process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
   4000012, 9900012, 9900014,
   9900016, 39, 12, 14, 16
 )
-
 process.genParticlesForJets.src = cms.InputTag("packedGenParticles")
-
 process.load("RecoJets.JetProducers.ak4GenJets_cfi")
 process.ak4GenJetsNoNuBSM  =  process.ak4GenJets.clone()
-
-process.ak4GenJetsNoNuBSM.src=cms.InputTag("packedGenParticles") 
+process.ak4GenJetsNoNuBSM.src=cms.InputTag("packedGenParticles")
 
 process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
   src = cms.InputTag("ak4GenJetsNoNuBSM"),
@@ -794,10 +764,13 @@ process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
 )
 
 process.icGenJetProducer = producers.icGenJetProducer.clone(
-  branch = cms.string("genJetsReclustered"),
+  branch  = cms.string("genJetsReclustered"),
+  input   = cms.InputTag("selectedGenJets"),
   inputGenParticles = cms.InputTag("prunedGenParticles","","PAT"),
+  requestGenParticles = cms.bool(False),
   isSlimmed  = cms.bool(True)
 )
+  
 process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
   branch = cms.string("genJets"),
   input = cms.InputTag("slimmedGenJets"),
@@ -814,10 +787,10 @@ if not isData:
   process.icGenSequence += (
     process.icGenParticleProducer+
     process.ak4GenJetsNoNuBSM+
-      process.selectedGenJets+
-      process.icGenJetProducer+
-      process.icGenJetProducerFromSlimmed+
-      process.icPileupInfoProducer
+    process.selectedGenJets+
+    process.icGenJetProducer+
+    process.icGenJetProducerFromSlimmed+
+    process.icPileupInfoProducer
   )
   if doHT:
     process.icGenSequence += (
@@ -851,17 +824,16 @@ if isData:
   )
   
 process.icIsoMu27ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("patTriggerEvent"),
+    input   = cms.InputTag("selectedPatTrigger"),
     branch = cms.string("triggerObjectsIsoMu27"),
     hltPath = cms.string("HLT_IsoMu27_v"),
-    inputIsStandAlone = cms.bool(False),
+    inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     )
 
 process.icTriggerObjectSequence += cms.Sequence(
     process.icIsoMu27ObjectProducer
     )
-
 
 ## Need to unpack filterLabels on slimmedPatTrigger then make selectedPatTrigger
 process.patTriggerUnpacker = cms.EDProducer("PATTriggerObjectStandAloneUnpacker",
@@ -878,11 +850,6 @@ process.icTriggerSequence += cms.Sequence(
     process.patTriggerUnpacker +
     process.selectedPatTrigger
     )   
-
-for name in process.icTriggerObjectSequence.moduleNames():
-  mod = getattr(process, name)
-  mod.inputIsStandAlone = cms.bool(True)
-  mod.input = cms.InputTag("selectedPatTrigger")
 
 
 ################################################################
