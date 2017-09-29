@@ -159,7 +159,7 @@ namespace ic {
     ROOT::Math::PtEtaPhiEVector out_vec(lvec.Pt(),lvec.Eta(), lvec.Phi(),lvec.E());
     p->set_vector(out_vec);
   }
-  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4);
+  double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF);
   
   template<class T, class U>
   double AcoplanarityAngle(std::vector<T> const& p1, std::vector<U> const& p2) {

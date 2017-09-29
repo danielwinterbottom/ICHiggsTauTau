@@ -2933,17 +2933,28 @@ namespace ic {
         cp_sign_2_=0;
         cp_sign_3_=0;
         cp_sign_4_=0;
-        cp_channel_=0;
+        cp_channel_=-1;
+        TLorentzVector lvec1;
+        TLorentzVector lvec2;
+        TLorentzVector lvec3;
+        TLorentzVector lvec4;
         if(dm_1 == 1 && dm_2 == 1){
-          cp_channel_=2;
+          cp_channel_=3;
           Candidate* pi_1 = new Candidate(tau1->charged()[0]);
           Candidate* pi_2 = new Candidate(tau2->charged()[0]);
           std::vector<Candidate*> rho_1 = {pi_1, GetPi0(tau1, &(tau1->charged()[0]))};
           std::vector<Candidate*> rho_2 = {pi_2, GetPi0(tau2, &(tau2->charged()[0]))};
           
-          std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1,rho_2,true);
-          aco_angle_1_ = angles[0].first;
-          cp_sign_1_ = angles[0].second;
+          //std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1,rho_2,true);
+          lvec1 = ConvertToLorentz(rho_1[1]->vector());   
+          lvec2 = ConvertToLorentz(rho_2[1]->vector());
+          lvec3 = ConvertToLorentz(rho_1[0]->vector());   
+          lvec4 = ConvertToLorentz(rho_2[0]->vector());
+          aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);
+          aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+          cp_sign_1_ = YRho(rho_1,TVector3())*YRho(rho_2,TVector3());
+          //aco_angle_1_ = angles[0].first;
+          //cp_sign_1_ = angles[0].second;
         }
 
 
