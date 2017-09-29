@@ -191,67 +191,6 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
     double weight_ = TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters); 
     info_->set_weight(weight_name_,weight_,false);
   }
-  
-  //if(weight_==1){  
-  //  std::cout << "****************************************************************************" << std::endl;
-  //  std::cout << "boson = " << simple_boson.pdgid() << "  " << simple_boson.px() << "  " << simple_boson.py() << "  " << simple_boson.pz() << "  " << simple_boson.e() << std::endl;
-  //  std::cout << "tau 1 = " << simple_tau1.pdgid() << "  " << simple_tau1.px() << "  " << simple_tau1.py() << "  " << simple_tau1.pz() << "  " << simple_tau1.e() << std::endl;
-  //  std::cout << "type = " << type1 << std::endl;
-  //  std::cout << "tau 1 daughters:" << std::endl;
-  //  for(unsigned i=0; i< tau1_daughters.size(); ++i){
-  //    std::cout << tau1_daughters[i].pdgId() << "  " << tau1_daughters[i].px() << "  " << tau1_daughters[i].py() << "  " << tau1_daughters[i].pz() << "  " << tau1_daughters[i].energy() << std::endl;
-  //    //std::cout << "status = " << tau1_daughters[i].status() << std::endl;
-  //    //std::cout << "flags: " <<std::endl;
-  //    //std::cout << " IsPrompt                             =  " << tau1_daughters[i].statusFlags().isPrompt                          () << std::endl;  
-  //    //std::cout << " IsDecayedLeptonHadron                =  " << tau1_daughters[i].statusFlags().isDecayedLeptonHadron             () << std::endl;
-  //    //std::cout << " IsTauDecayProduct                    =  " << tau1_daughters[i].statusFlags().isTauDecayProduct                 () << std::endl;
-  //    //std::cout << " IsPromptTauDecayProduct              =  " << tau1_daughters[i].statusFlags().isPromptTauDecayProduct           () << std::endl;
-  //    //std::cout << " IsDirectTauDecayProduct              =  " << tau1_daughters[i].statusFlags().isDirectTauDecayProduct           () << std::endl;
-  //    //std::cout << " IsDirectPromptTauDecayProduct        =  " << tau1_daughters[i].statusFlags().isDirectPromptTauDecayProduct     () << std::endl;
-  //    //std::cout << " IsDirectHadronDecayProduct           =  " << tau1_daughters[i].statusFlags().isDirectHadronDecayProduct        () << std::endl;
-  //    //std::cout << " IsHardProcess                        =  " << tau1_daughters[i].statusFlags().isHardProcess                     () << std::endl;
-  //    //std::cout << " FromHardProcess                      =  " << tau1_daughters[i].statusFlags().fromHardProcess                   () << std::endl;
-  //    //std::cout << " IsHardProcessTauDecayProduct         =  " << tau1_daughters[i].statusFlags().isHardProcessTauDecayProduct      () << std::endl;
-  //    //std::cout << " IsDirectHardProcessTauDecayProduct   =  " << tau1_daughters[i].statusFlags().isDirectHardProcessTauDecayProduct() << std::endl;
-  //    //std::cout << " FromHardProcessBeforeFSR             =  " << tau1_daughters[i].statusFlags().fromHardProcessBeforeFSR          () << std::endl;
-  //    //std::cout << " IsFirstCopy                          =  " << tau1_daughters[i].statusFlags().isFirstCopy                       () << std::endl;
-  //    //std::cout << " IsLastCopy                           =  " << tau1_daughters[i].statusFlags().isLastCopy                        () << std::endl;
-  //    //std::cout << " IsLastCopyBeforeFSR                  =  " << tau1_daughters[i].statusFlags().isLastCopyBeforeFSR               () << std::endl;
-  //  }
-  //  std::cout << "tau 2 = " << simple_tau2.pdgid() << "  " << simple_tau2.px() << "  " << simple_tau2.py() << "  " << simple_tau2.pz() << "  " << simple_tau2.e() << std::endl;
-  //  std::cout << "type = " << type2 << std::endl;
-  //  std::cout << "tau 2 daughters:" << std::endl;
-  //  for(unsigned i=0; i< tau2_daughters.size(); ++i){
-  //    std::cout << tau2_daughters[i].pdgId() << "  " << tau2_daughters[i].px() << "  " << tau2_daughters[i].py() << "  " << tau2_daughters[i].pz() << "  " << tau2_daughters[i].energy() << std::endl;
-  //    //std::cout << "status = " << tau2_daughters[i].status() << std::endl;
-  //    //std::cout << "flags: " <<std::endl;
-  //    //std::cout << " IsPrompt                             =  " << tau2_daughters[i].statusFlags().isPrompt                          () << std::endl;  
-  //    //std::cout << " IsDecayedLeptonHadron                =  " << tau2_daughters[i].statusFlags().isDecayedLeptonHadron             () << std::endl;
-  //    //std::cout << " IsTauDecayProduct                    =  " << tau2_daughters[i].statusFlags().isTauDecayProduct                 () << std::endl;
-  //    //std::cout << " IsPromptTauDecayProduct              =  " << tau2_daughters[i].statusFlags().isPromptTauDecayProduct           () << std::endl;
-  //    //std::cout << " IsDirectTauDecayProduct              =  " << tau2_daughters[i].statusFlags().isDirectTauDecayProduct           () << std::endl;
-  //    //std::cout << " IsDirectPromptTauDecayProduct        =  " << tau2_daughters[i].statusFlags().isDirectPromptTauDecayProduct     () << std::endl;
-  //    //std::cout << " IsDirectHadronDecayProduct           =  " << tau2_daughters[i].statusFlags().isDirectHadronDecayProduct        () << std::endl;
-  //    //std::cout << " IsHardProcess                        =  " << tau2_daughters[i].statusFlags().isHardProcess                     () << std::endl;
-  //    //std::cout << " FromHardProcess                      =  " << tau2_daughters[i].statusFlags().fromHardProcess                   () << std::endl;
-  //    //std::cout << " IsHardProcessTauDecayProduct         =  " << tau2_daughters[i].statusFlags().isHardProcessTauDecayProduct      () << std::endl;
-  //    //std::cout << " IsDirectHardProcessTauDecayProduct   =  " << tau2_daughters[i].statusFlags().isDirectHardProcessTauDecayProduct() << std::endl;
-  //    //std::cout << " FromHardProcessBeforeFSR             =  " << tau2_daughters[i].statusFlags().fromHardProcessBeforeFSR          () << std::endl;
-  //    //std::cout << " IsFirstCopy                          =  " << tau2_daughters[i].statusFlags().isFirstCopy                       () << std::endl;
-  //    //std::cout << " IsLastCopy                           =  " << tau2_daughters[i].statusFlags().isLastCopy                        () << std::endl;
-  //    //std::cout << " IsLastCopyBeforeFSR                  =  " << tau2_daughters[i].statusFlags().isLastCopyBeforeFSR               () << std::endl;
-  //        
-  //  }
-  //  std::cout << "weight = " << weight_ << std::endl;
-  //  
-  //  
-  //}
-  //bool tau1_dm = channelMatch(tau1_daughters, {211, -211, -211, 111, 111,16},false);
-  //bool tau2_dm = channelMatch(tau2_daughters, {211, -211, -211, 111, 111,16},false);
-  //if(tau1_dm) count++;
-  //if(tau2_dm) count++;
-  //total++; total++;
-  //std::cout << count << "/" << total << std::endl;
 
 }
 
