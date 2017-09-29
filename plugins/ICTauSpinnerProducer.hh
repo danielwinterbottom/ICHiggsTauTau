@@ -11,7 +11,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-
+#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "TauSpinner/SimpleParticle.h"
 #include "TauSpinner/tau_reweight_lib.h"
 
@@ -49,14 +49,15 @@ class ICTauSpinnerProducer : public edm::EDProducer {
   void removeGammas(std::vector<TauSpinner::SimpleParticle> &tau_daughters);
   void removeSecondGamma(std::vector<TauSpinner::SimpleParticle> &tau_daughters);
   TauSpinner::SimpleParticle ConvertToSimplePart(reco::GenParticle input_part);
+  bool channelMatch(std::vector<reco::GenParticle> parts, std::vector<int> matches, bool signed_);
+  std::vector<std::pair<std::string,double>> SplitString(std::string instring);
+  ic::EventInfo *info_;
+  std::vector<std::pair<std::string,double>> theta_vec_;
 
   edm::InputTag input_;
   std::string branch_;
-  double theta_;
+  std::string theta_;
   int bosonPdgId_;
-  double weight_;
-  unsigned count;
-  unsigned total;
   
   std::string TauSpinnerSettingsPDF;
   bool Ipp;

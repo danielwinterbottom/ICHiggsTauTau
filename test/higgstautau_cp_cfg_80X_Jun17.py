@@ -1538,7 +1538,7 @@ process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
 )
  
 
-#process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner53X",
+#process.prunedGenaPrticlesTaus = cms.EDProducer("ICGenParticlePruner53X",
 #  src = cms.InputTag("genParticles", "", "HLT"),
 #  select = cms.vstring(
 #    "drop  *",
@@ -2337,7 +2337,7 @@ if isData:
 process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
   branch                  = cms.string("tauspinner"),
   input                   = cms.InputTag("prunedGenParticles"),
-  theta                   = cms.double(1./2)
+  theta                   = cms.string("0,0.25,0.5")
 )
 
 
