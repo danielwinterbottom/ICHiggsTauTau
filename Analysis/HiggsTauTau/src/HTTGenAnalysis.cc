@@ -112,8 +112,6 @@ namespace ic {
       outtree_->Branch("cp_sign_4",     &cp_sign_4_);
       outtree_->Branch("cp_channel",    &cp_channel_);
       
-      outtree_->Branch("ip_dxy_res_1",    &ip_dxy_res_1_);
-      outtree_->Branch("ip_dxy_res_2",    &ip_dxy_res_2_);
       outtree_->Branch("ip_dx_res_1",    &ip_dx_res_1_);
       outtree_->Branch("ip_dx_res_2",    &ip_dx_res_2_);
       outtree_->Branch("ip_dy_res_1",    &ip_dy_res_1_);
@@ -137,7 +135,7 @@ namespace ic {
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
     
-    wt_cp_0_=1; wi_cp_0p25_=1; wt_cp_0p5_=1;
+    wt_cp_0_=1; wt_cp_0p25_=1; wt_cp_0p5_=1;
     if(event->Exists("tauspinner")){
       EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
       wt_cp_0_ = tauspinner->weight("wt_cp_0");
@@ -337,55 +335,34 @@ namespace ic {
         if(dR < 0.5){
           std::pair<bool,GenParticle*> pi = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[j]->constituents());
           if (!pi.first) continue;
-          //ic::Vertex offline_tau_point;
-          //offline_tau_point.set_vx(offline_taus[i]->vx()); offline_tau_point.set_vy(offline_taus[i]->vy()); offline_tau_point.set_vz(offline_taus[i]->vz());
-          //TVector3 ip_offline = GetGenImpactParam(*(offline_primary_vtxs[0]),offline_tau_point, offline_taus[i]->vector());
-          //std::cout << "--------------------" << std::endl;
-          //std::cout << offline_primary_vtxs[0]->vx() << "    " << offline_primary_vtxs[0]->vy() << "    " << offline_primary_vtxs[0]->vz() << std::endl;
-          //std::cout << offline_tau_point.vx() << "    " << offline_tau_point.vy() << "    " << offline_tau_point.vz() << std::endl;
-          TVector3 ip = -GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector());
+          ic::Vertex offline_tau_point;
+          offline_tau_point.set_vx(offline_taus[i]->vx()); offline_tau_point.set_vy(offline_taus[i]->vy()); offline_tau_point.set_vz(offline_taus[i]->vz());
+          TVector3 ip_offline = GetGenImpactParam(*(offline_primary_vtxs[0]),offline_tau_point, offline_taus[i]->vector());
+          std::cout << "--------------------" << std::endl;
+          std::cout << offline_primary_vtxs[0]->vx() << "    " << offline_primary_vtxs[0]->vy() << "    " << offline_primary_vtxs[0]->vz() << std::endl;
+          std::cout << offline_tau_point.vx() << "    " << offline_tau_point.vy() << "    " << offline_tau_point.vz() << std::endl;
+          TVector3 ip = GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector());
           
-          //ip = ip.Unit();
+          ip = ip.Unit();
+          ip_offline = ip_offline.Unit();
 
           //double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
           //double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
           //double dx_res = (ip_offline.X() - ip.X())/ip.X();
-          double dz = offline_taus[i]->lead_dz_vertex();
-          double dxy = offline_taus[i]->lead_dxy_vertex();
-          double m = offline_taus[i]->vector().Py()/offline_taus[i]->vector().Px();
-          double phi = offline_taus[i]->vector().Phi(); 
-          double dx = sqrt( pow(dxy,2)/(1/pow(m,2)-1) );
-          double dy = sqrt(pow(dxy,2) - pow(dx,2));
           
-          dy = fabs(dxy)*sin(phi);
-          dx = fabs(dxy)*cos(phi);
-          if(m*dxy*offline_taus[i]->vector().Px()<0) dx*=-1;
-          if(m*dxy*offline_taus[i]->vector().Py()>0) dy*=-1;
+          double dy_res = ip_offline.Y();
+          double dz_res = ip_offline.Z();
+          double dx_res = ip_offline.X();
           
-          TVector3 ip_offline(dx,dy,dz);
-          //ip_offline = ip_offline.Unit();
-          
-          double dx_res = (ip_offline.X() - ip.X())/ip.X();
-          double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
-          double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
-          double gen_dxy = sqrt(pow(ip.Y(),2) + pow(ip.X(),2));
-          double dxy_res = (fabs(dxy) - gen_dxy)/gen_dxy;
-          
-          //dz_res = (dz/dxy - ip.Z()/sqrt(pow(ip.X(),2)+pow(ip.Y(),2)))/(sqrt(pow(ip.X(),2)+pow(ip.Y(),2)));
-          //double offline_dz = offline_taus[i]->lead_dz_vertex();
-          //double gen_dz = ip.Z();
-          //dz_res = (fabs(offline_dz))/fabs(gen_dz);
           if (FirstTau){
             ip_dz_res_1_ = dz_res;  
             ip_dy_res_1_ = dy_res;
             ip_dx_res_1_ = dx_res;
-            ip_dxy_res_1_ = dxy_res;
             FirstTau = false;
           } else {
             ip_dz_res_2_ = dz_res;   
             ip_dy_res_2_ = dy_res;
             ip_dx_res_2_ = dx_res;
-            ip_dxy_res_2_ = dxy_res;
           }
           break;
         }
@@ -461,16 +438,15 @@ namespace ic {
     }
     
     if(cp_channel_!=-1){
-      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
-      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4);    
     }
     
     if(gen_tau_jets_ptr.size()>=2){
-      //if(rho_1.first && rho_2.first) { 
-      //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
-      //  aco_angle_2_ = angles[0].first;
-      //  cp_sign_2_ = angles[0].second;
-      //}
+      if(rho_1.first && rho_2.first) { 
+        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
+        aco_angle_2_ = angles[0].first;
+        cp_sign_2_ = angles[0].second;
+      }
       //if(rho_1.first && a1_2.first) {
       //  cp_channel_ = 3;
       //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,a1_2.second,true);
