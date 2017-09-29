@@ -50,6 +50,8 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("event"       , &event_       );
+      outtree_->Branch("wt"       , &wt_       );
       outtree_->Branch("wt_cp_0"       , &wt_cp_0_       );
       outtree_->Branch("wt_cp_0p25"    , &wt_cp_0p25_   );
       outtree_->Branch("wt_cp_0p5"    , &wt_cp_0p5_   );
@@ -335,25 +337,38 @@ namespace ic {
         if(dR < 0.5){
           std::pair<bool,GenParticle*> pi = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[j]->constituents());
           if (!pi.first) continue;
-          ic::Vertex offline_tau_point;
-          offline_tau_point.set_vx(offline_taus[i]->vx()); offline_tau_point.set_vy(offline_taus[i]->vy()); offline_tau_point.set_vz(offline_taus[i]->vz());
-          TVector3 ip_offline = GetGenImpactParam(*(offline_primary_vtxs[0]),offline_tau_point, offline_taus[i]->vector());
-          std::cout << "--------------------" << std::endl;
-          std::cout << offline_primary_vtxs[0]->vx() << "    " << offline_primary_vtxs[0]->vy() << "    " << offline_primary_vtxs[0]->vz() << std::endl;
-          std::cout << offline_tau_point.vx() << "    " << offline_tau_point.vy() << "    " << offline_tau_point.vz() << std::endl;
+          //ic::Vertex offline_tau_point;
+          //offline_tau_point.set_vx(offline_taus[i]->vx()); offline_tau_point.set_vy(offline_taus[i]->vy()); offline_tau_point.set_vz(offline_taus[i]->vz());
+          //TVector3 ip_offline = GetGenImpactParam(*(offline_primary_vtxs[0]),offline_tau_point, offline_taus[i]->vector());
+          //std::cout << "--------------------" << std::endl;
+          //std::cout << offline_primary_vtxs[0]->vx() << "    " << offline_primary_vtxs[0]->vy() << "    " << offline_primary_vtxs[0]->vz() << std::endl;
+          //std::cout << offline_tau_point.vx() << "    " << offline_tau_point.vy() << "    " << offline_tau_point.vz() << std::endl;
           TVector3 ip = GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector());
           
-          ip = ip.Unit();
-          ip_offline = ip_offline.Unit();
+          //ip = ip.Unit();
 
           //double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
           //double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
           //double dx_res = (ip_offline.X() - ip.X())/ip.X();
+          double dz = offline_taus[i]->lead_dz_vertex();
+          double dxy = offline_taus[i]->lead_dxy_vertex();
+          double m = offline_taus[i]->vector().Py()/offline_taus[i]->vector().Px();
+          double dx = sqrt( pow(dxy,2)/(1/pow(m,2)-1) );
+          double dy = sqrt(pow(dxy,2) - pow(dx,2));
+          if(m*dxy*offline_taus[i]->vector().Px()<0) dx*=-1;
+          if(m*dxy*offline_taus[i]->vector().Py()>0) dy*=-1;
           
-          double dy_res = ip_offline.Y();
-          double dz_res = ip_offline.Z();
-          double dx_res = ip_offline.X();
+          TVector3 ip_offline(dx,dy,dz);
+          //ip_offline = ip_offline.Unit();
           
+          double dx_res = (ip_offline.X() - ip.X())/ip.X();
+          double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
+          double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
+          
+          //dz_res = (dz/dxy - ip.Z()/sqrt(pow(ip.X(),2)+pow(ip.Y(),2)))/(sqrt(pow(ip.X(),2)+pow(ip.Y(),2)));
+          double offline_dz = offline_taus[i]->lead_dz_vertex();
+          double gen_dz = ip.Z();
+          dz_res = (gen_dz-offline_dz)/gen_dz;
           if (FirstTau){
             ip_dz_res_1_ = dz_res;  
             ip_dy_res_1_ = dy_res;
@@ -438,15 +453,16 @@ namespace ic {
     }
     
     if(cp_channel_!=-1){
-      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4);    
+      aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
+      aco_angle_2_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,true);
     }
     
     if(gen_tau_jets_ptr.size()>=2){
-      if(rho_1.first && rho_2.first) { 
-        std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
-        aco_angle_2_ = angles[0].first;
-        cp_sign_2_ = angles[0].second;
-      }
+      //if(rho_1.first && rho_2.first) { 
+      //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,rho_2.second,true);
+      //  aco_angle_2_ = angles[0].first;
+      //  cp_sign_2_ = angles[0].second;
+      //}
       //if(rho_1.first && a1_2.first) {
       //  cp_channel_ = 3;
       //  std::vector<std::pair<double,int>> angles = AcoplanarityAngles(rho_1.second,a1_2.second,true);
