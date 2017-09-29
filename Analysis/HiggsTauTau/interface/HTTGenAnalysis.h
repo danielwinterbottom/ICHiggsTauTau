@@ -35,6 +35,10 @@ class HTTGenAnalysis : public ModuleBase {
   TTree *outtree_;
   TRandom3  *rand;
   
+  double wt_cp_0_;
+  double wt_cp_0p25_;
+  double wt_cp_0p5_;
+  
   unsigned long long event_;
   
   unsigned count_ee_;

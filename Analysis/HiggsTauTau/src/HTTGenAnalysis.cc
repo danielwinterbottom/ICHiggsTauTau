@@ -50,6 +50,9 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("wt_cp_0"       , &wt_cp_0_       );
+      outtree_->Branch("wt_cp_0p25"    , &wt_cp_0p25_   );
+      outtree_->Branch("wt_cp_0p5"    , &wt_cp_0p5_   );
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -131,6 +134,15 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
+    
+    wt_cp_0_=1; wi_cp_0p25_=1; wt_cp_0p5_=1;
+    if(event->Exists("tauspinner")){
+      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+      wt_cp_0_ = tauspinner->weight("wt_cp_0");
+      wt_cp_0p25_ = tauspinner->weight("wt_cp_0p25");
+      wt_cp_0p5_ = tauspinner->weight("wt_cp_0p5");
+    }
+    
     if(eventInfo->weight_defined("wt_mc_sign")) wt_ = eventInfo->weight("wt_mc_sign");
     if(do_theory_uncert_){
       // note some of these labels may be generator dependent so need to make sure you check before using them
