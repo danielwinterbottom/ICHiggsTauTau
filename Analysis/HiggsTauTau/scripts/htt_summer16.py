@@ -128,7 +128,10 @@ else:
   
 FILELIST='filelists/Jun15_MC_80X'
 
+SM_FILELIST='filelists/Sep29_MC_80X'
+
 signal_mc = [ ]
+sm_signal_mc = [ ]
 signal_vh = [ ] 
 signal_mc_ww = [ ]
 
@@ -141,7 +144,7 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
   masses = ['125']
   if options.short_signal or options.proc_smbkg: masses = ['125']
   for mass in masses :
-    signal_mc += [
+    sm_signal_mc += [
       'GluGluToHToTauTau_M-'+mass,
       'VBFHToTauTau_M-'+mass#,
       #'ZHToTauTau_M-'+mass,
@@ -397,6 +400,18 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
     FLATJSONPATCH=FLATJSONPATCHDYSIG
     if os.path.exists('%(FILELIST)s_%(sa)s.dat' %vars()):
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+      nperjob = 50
+      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+      
+  for sa in sm_signal_mc:
+    JOB='%s_2016' % (sa)
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SM_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Sep29_MC_80X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    FLATJSONPATCH=FLATJSONPATCHDYSIG
+    if os.path.exists('%(SM_FILELIST)s_%(sa)s.dat' %vars()):
+      nfiles = sum(1 for line in open('%(SM_FILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 50
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())

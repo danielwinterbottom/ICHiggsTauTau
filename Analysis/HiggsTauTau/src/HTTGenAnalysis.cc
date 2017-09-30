@@ -138,7 +138,7 @@ namespace ic {
     wt_ = 1;
     
     wt_cp_0_=1; wt_cp_0p25_=1; wt_cp_0p5_=1;
-    if(event->Exists("tauspinner")){
+    if(event->ExistsInTree("tauspinner")){
       EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
       wt_cp_0_ = tauspinner->weight("wt_cp_0");
       wt_cp_0p25_ = tauspinner->weight("wt_cp_0p25");
