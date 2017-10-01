@@ -31,6 +31,7 @@ hist_names = ['odd_1', 'none_1']
 if cp_channel>1: hist_names = ['odd_1', 'none_1', 'odd_2', 'none_2']
 leg_titles=['CP=+1 [SM H(125 GeV)]', 'CP=-1 [SUSY A(120 GeV)]']
 for name in hist_names:
+
   h1 = f.Get(name)    
   h2 = f2.Get(name)
   hists=[h1,h2]
@@ -40,26 +41,27 @@ for name in hist_names:
   plot_name = output_name
   if name in ['odd_1', 'odd_2']: plot_name += "_CPodd_comp"
   if name in ['none_1', 'none_2']: plot_name += "_CPnone_comp"
-  if name in ['odd_1', 'none_1']: plot_name+="_sign_1"
-  elif name in ['odd_2', 'none_2']: plot_name+="_sign_2"
+  if cp_channel>1:
+    if name in ['odd_1', 'none_1']: plot_name+="_sign_1"
+    elif name in ['odd_2', 'none_2']: plot_name+="_sign_2"
 
-plotting.CompareHists(hists,
-         legend_titles=leg_titles,
-         title=title,
-         ratio=False,
-         log_y=False,
-         log_x=False,
-         ratio_range="0.7,1.3",
-         custom_x_range=False,
-         x_axis_max=4000,
-         x_axis_min=0,
-         custom_y_range=False,
-         y_axis_max=4000,
-         y_axis_min=0,
-         x_title="#phi_{CP}^{*} (radians)",
-         y_title="Normalized Events",
-         extra_pad=0,
-         norm_hists=True,
-         plot_name=plot_name,
-         label="",
-         draw_options=['p E2','l'])
+  plotting.CompareHists(hists,
+           legend_titles=leg_titles,
+           title=title,
+           ratio=False,
+           log_y=False,
+           log_x=False,
+           ratio_range="0.7,1.3",
+           custom_x_range=False,
+           x_axis_max=4000,
+           x_axis_min=0,
+           custom_y_range=False,
+           y_axis_max=4000,
+           y_axis_min=0,
+           x_title="#phi_{CP}^{*} (radians)",
+           y_title="Normalized Events",
+           extra_pad=0,
+           norm_hists=True,
+           plot_name=plot_name,
+           label="",
+           draw_options=['p E2','l'])

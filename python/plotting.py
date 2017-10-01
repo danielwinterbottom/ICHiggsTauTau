@@ -2132,13 +2132,13 @@ def CompareHists(hists=[],
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     ModTDRStyle(r=0.04, l=0.14)
-
     colourlist=[R.kBlue,R.kRed,R.kGreen+3,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
     hs = R.THStack("hs","")
     hist_count=0
     legend_hists=[]
     for hist in hists:
-        if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
+        hist.Sumw2(1)
+        if norm_hists: hist.Scale(1/hist.Integral(1, -1))
         hist.SetFillColor(0)
         hist.SetFillStyle(0)
         hist.SetLineWidth(3)
@@ -2153,7 +2153,7 @@ def CompareHists(hists=[],
         
     c1 = R.TCanvas()
     c1.cd()
-    
+
     if ratio:
         pads=TwoPadSplit(0.29,0.01,0.01)
     else:
@@ -2196,7 +2196,7 @@ def CompareHists(hists=[],
     axish[0].GetYaxis().SetTitleOffset(1.6)
     axish[0].GetYaxis().SetTitleSize(0.04)
     axish[0].GetYaxis().SetLabelSize(0.03)
-
+    
     if not custom_y_range:
         if(log_y): 
             axish[0].SetMinimum(0.0009)
@@ -2204,7 +2204,7 @@ def CompareHists(hists=[],
         else: 
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
-    axish[0].Draw()
+    axish[0].Draw("axis")
     
     if draw_options is None: hs.Draw("nostack hist same")
     else: 
