@@ -16,6 +16,7 @@ parser.add_argument('--file', '-f', help= 'Input file containing hitograms to ma
 parser.add_argument('--cp_channel', '-c', help= 'cp_channel', type=int)
 parser.add_argument('--output_name', '-o', help= 'Name of output.')
 parser.add_argument('--title', '-t', help= 'Title')
+parser.add_argument('--reweighted', action='store_true' )
 args = parser.parse_args()
 filename = args.file
 cp_channel = args.cp_channel
@@ -30,7 +31,8 @@ h3 = f.Get('none_1')
 hists=[h1,h2,h3]
 plot_name = output_name
 if cp_channel>1: plot_name+="_sign_1"
-leg_titles=['CP=+1 [SM H(125 GeV)]', 'CP=-1 [SUSY A(120 GeV)]', 'DY']
+if not args.reweighted: leg_titles=['CP=+1 [SM H(125 GeV)]', 'CP=-1 [SUSY A(120 GeV)]', 'DY']
+else: leg_titles=['CP=+1 [SM H(125 GeV)]', 'CP=-1 [SM H(125 GeV)]', 'CP=0 [SM H(125 GeV)]']
 
 plotting.CompareHists(hists,
          legend_titles=leg_titles,
@@ -59,7 +61,6 @@ if cp_channel>1:
   hists=[h1,h2,h3]
   plot_name = output_name
   if cp_channel>1: plot_name+="_sign_2"
-  leg_titles=['CP=+1 [SM H(125 GeV)]', 'CP=-1 [SUSY A(120 GeV)]', 'DY']
   
   plotting.CompareHists(hists,
            legend_titles=leg_titles,
