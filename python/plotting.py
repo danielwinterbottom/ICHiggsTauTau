@@ -2126,7 +2126,8 @@ def CompareHists(hists=[],
              extra_pad=0,
              norm_hists=False,
              plot_name="plot",
-             label=""):
+             label="",
+             draw_options=None):
     
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2138,14 +2139,16 @@ def CompareHists(hists=[],
     legend_hists=[]
     for hist in hists:
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
-        h = hist.Clone()
-        h.SetFillColor(0)
-        h.SetLineWidth(3)
-        h.SetLineColor(colourlist[hist_count])
-        h.SetMarkerSize(0)
-        hs.Add(h)
+        hist.SetFillColor(0)
+        hist.SetFillStyle(0)
+        hist.SetLineWidth(3)
+        hist.SetLineColor(colourlist[hist_count])
+        hist.SetMarkerColor(colourlist[hist_count])
+        hist.SetMarkerSize(1)
+        hist.SetMarkerStyle(8)
+        hs.Add(hist)
         hist_count+=1
-        legend_hists.append(h.Clone())
+        legend_hists.append(hist.Clone())
    # hs.Draw("nostack")
         
     c1 = R.TCanvas()
@@ -2203,7 +2206,12 @@ def CompareHists(hists=[],
             axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
     axish[0].Draw()
     
-    hs.Draw("nostack hist same")
+    if draw_options is None: hs.Draw("nostack hist same")
+    else: 
+      for i in range(0,len(hists)):
+        hist = hists[i]
+        draw_option = draw_options[i]
+        hist.Draw(draw_option+" same")  
     axish[0].Draw("axissame")
     
     
