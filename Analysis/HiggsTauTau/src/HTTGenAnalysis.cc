@@ -137,15 +137,16 @@ namespace ic {
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
     
+    if(eventInfo->weight_defined("wt_mc_sign")) wt_ = eventInfo->weight("wt_mc_sign");
     wt_cp_0_=1; wt_cp_0p25_=1; wt_cp_0p5_=1;
     if(event->ExistsInTree("tauspinner")){
       EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
       wt_cp_0_ = tauspinner->weight("wt_cp_0");
       wt_cp_0p25_ = tauspinner->weight("wt_cp_0p25");
       wt_cp_0p5_ = tauspinner->weight("wt_cp_0p5");
+      if (1/wt_cp_0_>10) wt_=0; // to remove any events with large event weights - not physics motivated
     }
     
-    if(eventInfo->weight_defined("wt_mc_sign")) wt_ = eventInfo->weight("wt_mc_sign");
     if(do_theory_uncert_){
       // note some of these labels may be generator dependent so need to make sure you check before using them
       if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
