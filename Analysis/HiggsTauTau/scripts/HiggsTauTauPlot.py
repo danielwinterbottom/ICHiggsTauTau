@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -73,6 +73,8 @@ parser.add_argument("--nlo_qsh", dest="nlo_qsh", action='store_true',
     help="Do the Up/Down Qsh variations for NLO samples.")
 parser.add_argument("--doNLOScales", dest="doNLOScales", action='store_true',
     help="Do the Up/Down QCD scale variations for NLO samples and compute uncertainties.")
+parser.add_argument("--doPDF", dest="doPDF", action='store_true',
+    help="Do PDF and alphaS variations for NLO samples and compute uncertainties.")
 parser.add_argument("--bbh_masses", dest="bbh_masses", type=str,
     help="Comma seperated list of SUSY bbH signal masses.")
 parser.add_argument("--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type=float,
@@ -950,16 +952,21 @@ def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = 
                     add_name_2 = bbh_add_name
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name_2+mass+add_name, sample_name, plot, full_selection))
                 
-def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], bbh_nlo_masses = ['1000'],wt='wt', sel='', cat='', doScales=True, get_os=True,do_ggH=True, do_bbH=True):
+def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], bbh_nlo_masses = ['1000'],wt='wt', sel='', cat='', doScales=True, doPDF=False, get_os=True,do_ggH=True, do_bbH=True):
     if get_os:
         OSSS = 'os'
     else:
         OSSS = '!os'
     if options.gen_signal: OSSS='1'
     weights = {'':'1'}
+    wt_noscale = wt
     if doScales: weights = {'':'1','muR1muF2':'wt_mur1_muf2','muR1muF0.5':'wt_mur1_muf0p5','muR2muF1':'wt_mur2_muf1','muR2muF2':'wt_mur2_muf2','muR0.5muF1':'wt_mur0p5_muf1','muR0.5muF0.5':'wt_mur0p5_muf0p5'}
+    if doPDF:
+      for i in range(1,101): weights['PDF_'+str(i)] = 'wt_pdf_'+str(i)
+      weights['AlphaS_Up'] = 'wt_alphasup'
+      weights['AlphaS_Down'] = 'wt_alphasdown'
     for weight in weights:
-      wt = weights[weight]+'*'+wt  
+      wt = weights[weight]+'*'+wt_noscale  
       full_selection = BuildCutString(wt, sel, cat, OSSS)
       for key in mssm_nlo_samples:
           if 'Qsh' in key and weight is not '': continue
@@ -1047,6 +1054,60 @@ def NormFFSysts(ana,outfile='output.root'):
            hist.SetName(norm_hist_name)
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write()
+    
+def PDFUncerts(nodename, infile):
+  def RMS(a):
+    from numpy import mean, sqrt, square  
+    rms = sqrt(mean(square(a-mean(a))))
+    return rms
+  outstring1=''
+  outstring2=''
+  
+  for mass in bbh_nlo_masses:
+    nominal_error=ROOT.Double()
+    nominal = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,nominal_error)
+    sample_name='SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'
+    evt_nom = ana.info[sample_name]['evt']
+    pdf_variations_nosf=[]
+    pdf_variations=[]
+    pdf_variations_nosf.append(nominal)
+    pdf_variations.append(nominal)
+    for i in range(1,101):
+      wt = 'wt_pdf_'+str(i)
+      name = 'PDF_'+str(i)
+      val = outfile.Get(nodename+'/bbH'+mass+name).Integral(-1, -1)
+      pdf_variations_nosf.append(val)
+      evt_var = ana.info[sample_name]['evt_'+wt]
+      sf = evt_nom/evt_var
+      pdf_variations.append(val*sf)
+    pdf_uncert_nosf=RMS(pdf_variations_nosf)/nominal*100
+    pdf_uncert=RMS(pdf_variations)/nominal*100
+    #print pdf_uncert_nosf, pdf_uncert
+    
+    outstring1+=mass+','
+    outstring2+=str(pdf_uncert)+','
+    
+    nominal_error=ROOT.Double()
+    nominal = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,nominal_error)
+    alphas_down_error_nosf=ROOT.Double()
+    alphas_down_nosf = outfile.Get(nodename+'/bbH'+mass+'AlphaS_Down').IntegralAndError(-1, -1,alphas_down_error_nosf)
+    alphas_up_error_nosf=ROOT.Double()
+    alphas_up_nosf = outfile.Get(nodename+'/bbH'+mass+'AlphaS_Up').IntegralAndError(-1, -1,alphas_up_error_nosf)
+    evt_var = ana.info[sample_name]['evt_wt_alphasdown']
+    sf = evt_nom/evt_var
+    alphas_down=alphas_down_nosf*sf
+    alphas_down_error=alphas_down_error_nosf*sf
+    evt_var = ana.info[sample_name]['evt_wt_alphasup']
+    sf = evt_nom/evt_var
+    alphas_up=alphas_up_nosf*sf
+    alphas_up_error=alphas_up_error_nosf*sf
+    
+    alphas_uncert = (alphas_up-alphas_down)/2/nominal
+    alphas_uncert_error = math.sqrt(alphas_down_error**2+alphas_up_error**2)/(alphas_up-alphas_down)*alphas_uncert
+    #(alphas_up_nosf-alphas_down_nosf)/2/nominal
+    #print alphas_uncert*100, '\\% $\\pm$', alphas_uncert_error*100,'\\%'
+  print outstring1
+  print outstring2
 
 def DONLOUncerts(nodename,infile):
     def LargestDiff(nominal,scales_shifted):
@@ -1059,9 +1120,13 @@ def DONLOUncerts(nodename,infile):
               value = scales_shifted[i]
         return value
     if not options.bbh_nlo_masses: return
-    outstring='\\begin{table}[H]\n\\centering\n\\resizebox{\\textwidth}{!}{\n\\begin{tabular}{ |c|c|c|c|c|c|c| }\n\\hline\nSignal Mass & Pythia  (1 pb) &  NLO Yield (1 pb) & Scale Uncert. & Scale Acceptance Uncert. & Scale Acceptance Uncert.(*)'
-    if options.nlo_qsh: outstring += '& Qsh Uncert. \\\\\n\\hline\n'
-    else: outstring += '\\\\\n\\hline\n'
+    outstring='%'+options.channel+' '+options.datacard+'\n'
+    if options.nlo_qsh: outstring+='\\begin{table}[H]\n\\centering\n\\resizebox{\\textwidth}{!}{\n\\begin{tabular}{ |c|c|c| }\n\\hline\nSignal Mass (GeV) & Qsh Uncertainty &  Qsh Uncertainty (*)'
+    else: outstring+='\\begin{table}[H]\n\\centering\n\\resizebox{\\textwidth}{!}{\n\\begin{tabular}{ |c|c|c| }\n\\hline\nSignal Mass (GeV) & Scale Uncertainty &  Scale Uncertainty (*)'
+    outstring += '\\\\\n\\hline\n'
+    #outstring2='{'
+    #outstring3='{'
+    #outstring4='{'
     for mass in bbh_nlo_masses:
       nominal_error=ROOT.Double()
       nominal = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,nominal_error) 
@@ -1071,16 +1136,25 @@ def DONLOUncerts(nodename,infile):
       if options.nlo_qsh:
         qsh_down = outfile.Get(nodename+'/bbH-QshDown'+mass).IntegralAndError(-1, -1,qsh_down_error) 
         qsh_up = outfile.Get(nodename+'/bbH-QshUp'+mass).IntegralAndError(-1, -1,qsh_up_error)
-        qsh_uncert=(max(nominal,qsh_down,qsh_up) - min(nominal,qsh_down,qsh_up))/2
-        qsh_error = math.sqrt(qsh_up_error**2 + qsh_down_error**2)
+        qsh_uncert_1=(max(nominal,qsh_down,qsh_up) - min(nominal,qsh_down,qsh_up))/2
+        up_error = nominal_error 
+        down_error = nominal_error
+        if max(nominal,qsh_down,qsh_up) is qsh_up: up_error = qsh_up_error
+        if max(nominal,qsh_down,qsh_up) is qsh_down: up_error = qsh_down_error
+        if min(nominal,qsh_down,qsh_up) is qsh_up: down_error = qsh_up_error
+        if min(nominal,qsh_down,qsh_up) is qsh_down: down_error = qsh_down_error
+        qsh_error_1 = math.sqrt(up_error**2 + down_error**2)
+        qsh_uncert_2 = (qsh_up - qsh_down)/2
+        qsh_error_2 = math.sqrt(qsh_up_error**2 + qsh_down_error**2)
       scale_max = nominal
       scale_min = nominal
       scale_nosf_max = nominal
       scale_nosf_min = nominal
       up_dic = {}
       down_dic = {}
-      for samp in samples: 
-        acceptance = outfile.Get(nodename+'/'+samp.replace('*',mass)).Integral(-1, -1)
+      for samp in samples:
+        acceptance_error = ROOT.Double()  
+        acceptance = outfile.Get(nodename+'/'+samp.replace('*',mass)).IntegralAndError(-1, -1,acceptance_error)
         if samp is 'bbH*': sf = 1.0 
         else: 
           sample_name='SUSYGluGluToBBHToTauTau_M-'+mass+'-NLO'
@@ -1089,28 +1163,47 @@ def DONLOUncerts(nodename,infile):
           sf = evt_nom/evt_var
         acceptance_nosf = acceptance
         acceptance*=sf
-        if samples[samp] in ['wt_mur0p5_muf0p5', 'wt_mur1_muf0p5', 'wt_mur0p5_muf1']: down_dic[samples[samp]] = acceptance
-        if samples[samp] in ['wt_mur2_muf2','wt_mur2_muf1','wt_mur1_muf2']: up_dic[samples[samp]] = acceptance
-        if acceptance > scale_max: scale_max = acceptance
-        if acceptance < scale_min: scale_min = acceptance
+        #if samples[samp] in ['wt_mur0p5_muf0p5', 'wt_mur1_muf0p5', 'wt_mur0p5_muf1']: down_dic[samples[samp]] = acceptance
+        #if samples[samp] in ['wt_mur2_muf2','wt_mur2_muf1','wt_mur1_muf2']: up_dic[samples[samp]] = acceptance
+        if samples[samp] in ['wt_mur0p5_muf0p5']: 
+            down_dic[samples[samp]] = [acceptance,acceptance_error]
+        if samples[samp] in ['wt_mur2_muf2']: up_dic[samples[samp]] = [acceptance,acceptance_error]
+        if acceptance > scale_max: 
+            scale_max = acceptance
+            up_error = acceptance_error
+        if acceptance < scale_min:
+            scale_min = acceptance
+            down_error = acceptance_error
         if acceptance_nosf > scale_nosf_max: scale_nosf_max = acceptance_nosf
         if acceptance_nosf < scale_nosf_min: scale_nosf_min = acceptance_nosf
-      up_nom = LargestDiff(nominal,up_dic)
-      down_nom = LargestDiff(nominal,down_dic)
+      #up_nom = LargestDiff(nominal,up_dic)
+      #down_nom = LargestDiff(nominal,down_dic)
+      up_nom = up_dic['wt_mur2_muf2'][0]
+      down_nom = down_dic['wt_mur0p5_muf0p5'][0]
       uncert = (scale_max-scale_min)/2
+      uncert_error = math.sqrt(up_error**2+down_error**2)/(scale_max-scale_min)*uncert
       uncert_nosf = (scale_nosf_max-scale_nosf_min)/2
       uncert_alt_method = (up_nom-down_nom)/2
+      uncert_alt_error = math.sqrt(up_dic['wt_mur2_muf2'][1]**2 + down_dic['wt_mur0p5_muf0p5'][1]**2)/(up_nom-down_nom) *uncert_alt_method
       pythia_error=ROOT.Double()
       pythia_yield = outfile.Get(nodename+'/bbH'+mass).IntegralAndError(-1, -1,pythia_error) 
-      outstring +='bbH'+mass+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)' + ' & '+ str(round(uncert_nosf/nominal,2)) + ' & '+ str(round(uncert/nominal,2))+ ' & '+ str(round(uncert_alt_method/nominal,2))
-      if options.nlo_qsh: outstring+=' & '+ str(round(qsh_uncert/nominal,2))+' $\pm$ '+str(round(qsh_error/nominal,2))+' \\\\\n'  
-      else: outstring+=' \\\\\n' 
+      outstring +=mass#+ ' & '+ str(round(pythia_yield,1))+' $\pm$ '+str(round(pythia_error,1))+ ' & '+ str(round(nominal,1))+' $\pm$ '+str(round(nominal_error,1))+ '('+str(round((pythia_yield-nominal)*100/pythia_yield,2))+' \%)' + ' & '+ str(round(uncert_nosf/nominal,2)) + ' & '+ str(round(uncert/nominal,2))+ ' & '+ str(round(uncert_alt_method/nominal,2))
+      if options.nlo_qsh: 
+        outstring+=' & '+ str(round(100*qsh_uncert_1/nominal,1))+' $\pm$ '+str(round(100*qsh_error_1/nominal,1))+' & '+ str(round(100*qsh_uncert_2/nominal,1))+' $\pm$ '+str(round(100*qsh_error_2/nominal,1))+'\\\\\n'  
+      else:
+        outstring+=' & '+ str(round(100*uncert/nominal,1))+'\\% $\\pm$ '+ str(round(100*uncert_error/nominal,1)) +'\\% & '+ str(round(100*uncert_alt_method/nominal,1))+'\\% $\\pm$ '+str(round(100*uncert_alt_error/nominal,1)) +'\\% \\\\\n'
+      #outstring2 +=str(round(100*uncert/nominal,1))+','
+      #outstring3 +=str(round(100*uncert_error/nominal,1))+','
+      #outstring4+=mass+','
     outstring+='\\hline\n\\end{tabular}}\n\\end{table}'
     print outstring
+    #print outstring2
+    #print outstring3
+    #print outstring4
     
 def ScaleUncertBand(nodename='',outfile='output.root',NormScales=True):
     hist_names=['bbH*muR0.5muF0.5','bbH*muR1muF0.5','bbH*muR0.5muF1','bbH*muR2muF1','bbH*muR1muF2','bbH*muR2muF2']
-    mass = '700'
+    mass = '100'
     if options.draw_signal_mass: mass = options.draw_signal_mass
     hists=[]
     for hist_name in hist_names:
@@ -1309,7 +1402,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
         elif options.analysis == 'Hhh':
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
         if options.analysis == 'mssm' and options.bbh_nlo_masses != "":
-            GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, options.doNLOScales, not options.do_ss)
+            GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, options.doNLOScales, options.doPDF, not options.do_ss)
             
     ana.Run()
     ana.nodes.Output(outfile)
@@ -1507,6 +1600,8 @@ if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
 if options.doNLOScales: 
     ScaleUncertBand(nodename,outfile)
     DONLOUncerts(nodename,outfile)
+if options.doPDF:
+    PDFUncerts(nodename,outfile)
 
 outfile.Close()
 if is_2d: exit(0) # 2d plotting cosmetics not currently supported
@@ -1522,7 +1617,7 @@ if options.method in [12,16] or (options.channel != "tt" and options.method == "
     w_os_ss = w_os_total/w_ss_total
     w_os_ss_error = math.sqrt( (w_os_error/w_os_total)**2 + (w_ss_error/w_ss_total)**2 )*w_os_ss
 
-    print "W OS/SS ratio = ", w_os_ss, "+/-", w_os_ss_error, "("+str(100*w_os_ss_error/w_os_ss)+" %)"
+    #print "W OS/SS ratio = ", w_os_ss, "+/-", w_os_ss_error, "("+str(100*w_os_ss_error/w_os_ss)+" %)"
 
 if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
     custom_uncerts_up_name = "total_bkg_custom_uncerts_up"
@@ -1549,6 +1644,7 @@ if not options.no_plot:
     if options.scheme != "": scheme = options.scheme
     FF = options.method==17 or options.method==18
     if scheme != 'signal':
+      print x_title 
       plotting.HTTPlot(nodename, 
         plot_file, 
         options.signal_scale, 
