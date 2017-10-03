@@ -34,9 +34,10 @@ class ICGenJetProducer : public edm::EDProducer {
   boost::hash<reco::GenJet const*> gen_jet_hasher_;
   boost::hash<reco::GenParticle const *> particle_hasher_;
 
-
   bool request_gen_particles_;
   bool is_slimmed_;
+  edm::InputTag input_jet_flavour_;
+  bool include_jet_flavour_;
 };
 
 #endif
