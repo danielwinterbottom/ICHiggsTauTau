@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -41,6 +41,8 @@ parser.add_argument("--outputfolder", dest="outputfolder", type=str,
     help="Name of output folder")
 parser.add_argument("--folder", dest="folder", type=str,
     help="Name of input folder")
+parser.add_argument("--signal_folder", dest="signal_folder", type=str,
+    help="If specified will use as input folder for signal samples, else will use same directroy specified by \"folder\" option.")
 parser.add_argument("--paramfile", dest="paramfile", type=str,
     help="Name of parameter file")
 parser.add_argument("--cat", dest="cat", type=str,
@@ -75,6 +77,8 @@ parser.add_argument("--doNLOScales", dest="doNLOScales", action='store_true',
     help="Do the Up/Down QCD scale variations for NLO samples and compute uncertainties.")
 parser.add_argument("--doPDF", dest="doPDF", action='store_true',
     help="Do PDF and alphaS variations for NLO samples and compute uncertainties.")
+parser.add_argument("--doMSSMReWeighting", dest="doMSSMReWeighting", action='store_true',
+    help="Do mA-tanb dependent reweighting of MSSM ggH signal.")
 parser.add_argument("--bbh_masses", dest="bbh_masses", type=str,
     help="Comma seperated list of SUSY bbH signal masses.")
 parser.add_argument("--qcd_os_ss_ratio", dest="qcd_os_ss_ratio", type=float,
@@ -951,6 +955,19 @@ def GenerateMSSMSignal(ana, add_name='', bbh_add_name='', plot='', ggh_masses = 
                     sample_name = mssm_lo_samples['bbH-LO'].replace('*',mass)
                     add_name_2 = bbh_add_name
                 ana.nodes[nodename].AddNode(ana.BasicFactory(key+add_name_2+mass+add_name, sample_name, plot, full_selection))
+
+def GenerateReWeightedMSSMSignal(ana, add_name='', plot='', ggh_masses = ['1000'], wt='', sel='', cat='', get_os=True):
+  weights = {'ggh_t':'wt_ggh_t', 'ggh_b':'wt_ggh_b', 'ggh_i':'wt_ggh_i', 'ggH_t':'wt_ggH_t', 'ggH_b':'wt_ggH_b', 'ggH_i':'wt_ggH_i', 'ggA_t':'wt_ggA_t', 'ggA_b':'wt_ggA_b', 'ggA_i':'wt_ggA_i' }  
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  if options.gen_signal: OSSS='1' 
+  for mass in ggh_masses:
+    for name in weights:
+      weight=wt+"*"+weights[name]    
+      full_selection = BuildCutString(weight, sel, cat, OSSS)
+      sample_name = mssm_samples['ggH'].replace('*',mass)
+      add_name_2 = ''
+      ana.nodes[nodename].AddNode(ana.BasicFactory(name+mass+add_name, sample_name, plot, full_selection))
                 
 def GenerateNLOMSSMSignal(ana, add_name='', plot='', ggh_nlo_masses = ['1000'], bbh_nlo_masses = ['1000'],wt='wt', sel='', cat='', doScales=True, doPDF=False, get_os=True,do_ggH=True, do_bbH=True):
     if get_os:
@@ -1403,6 +1420,8 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
         if options.analysis == 'mssm' and options.bbh_nlo_masses != "":
             GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, options.doNLOScales, options.doPDF, not options.do_ss)
+        if options.analysis == 'mssm' and options.doMSSMReWeighting:
+          GenerateReWeightedMSSMSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)    
             
     ana.Run()
     ana.nodes.Output(outfile)
@@ -1474,8 +1493,11 @@ for systematic in systematics:
         ana.remaps['Tau'] = 'data_obs'
     
     mc_input_folder_name = options.folder
-    if add_folder_name != '':
-        mc_input_folder_name += '/'+add_folder_name
+    if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
+    
+    if options.signal_folder: signal_mc_input_folder_name = options.signal_folder
+    else: signal_mc_input_folder_name = options.folder
+    if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
         
     # Add all data files
     for sample_name in data_samples:
@@ -1511,7 +1533,7 @@ for systematic in systematics:
                 sample_name = signal_samples[samp].replace('*',mass)
                 tree_name = 'ntuple'
                 if options.gen_signal: tree_name = 'gen_ntuple'
-                ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
+                ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
     if options.add_sm_background and options.analysis == 'mssm':
         for samp in sm_samples:
             sample_name = sm_samples[samp].replace('*',options.add_sm_background)

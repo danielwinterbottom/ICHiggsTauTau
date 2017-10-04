@@ -1794,6 +1794,14 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
        output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
     httWeights.set_do_tau_fake_weights(true);
   }
+  if(output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos){
+    httWeights.set_do_mssm_higgspt(true); 
+    httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v1_mssm_mode.root");
+    std::string mass_str = output_name;
+    mass_str.erase(0, mass_str.find("_M-")+3);
+    mass_str.erase(mass_str.find("_"),mass_str.length()-output_name.find("_"));
+    httWeights.set_mssm_mass(mass_str);
+  }
 
   
 
@@ -1876,6 +1884,7 @@ if(js["baseline"]["do_ff_weights"].asBool()){
 }
     
 if(channel != channel::wmnu) {
+bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -1905,7 +1914,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_ff_categories(js["baseline"]["ff_categories"].asString())
     .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
     .set_do_qcd_scale_wts(do_qcd_scale_wts_)
-    .set_do_pdf_wts(js["do_pdf_wts"].asBool()));
+    .set_do_pdf_wts(js["do_pdf_wts"].asBool())
+    .set_do_mssm_higgspt(do_mssm_higgspt));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")

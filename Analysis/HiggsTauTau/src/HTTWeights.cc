@@ -95,6 +95,8 @@ namespace ic {
     muon_tracking_sf_         = nullptr;
     scalefactor_file_         = "";
     do_tau_id_sf_             = false;
+    mssm_higgspt_file_        = "";
+    do_mssm_higgspt_          = false;
   }
   HTTWeights::~HTTWeights() {
     ;
@@ -305,6 +307,22 @@ namespace ic {
           fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));
         }
+    }
+    if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
+      TFile f(mssm_higgspt_file_.c_str());
+      mssm_w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+      f.Close();
+      std::string mass_str = mssm_mass_;
+      fns_["h_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));        
+      fns_["h_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["h_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["H_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("H_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["H_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("H_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["H_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("H_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["A_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["A_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["A_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+
     }
     if (do_zpt_weight_ && mc_ == mc::summer16_80X){
       fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>( 
@@ -752,6 +770,31 @@ namespace ic {
         event->Add("wt_zpt_esdown"              , wtzpt_esdown /wtzpt);
         event->Add("wt_zpt_ttup"                ,   wtzpt_ttup   /wtzpt);
         event->Add("wt_zpt_ttdown"              , wtzpt_ttdown /wtzpt);
+      }
+    }
+    if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
+      if(event->Exists("genpT")){
+        double pT = event->Get<double>("genpT");  
+        auto args = std::vector<double>{pT};     
+        double wt_ggh_t_ = fns_["h_t_ratio"]->eval(args.data());        
+        double wt_ggh_b_ = fns_["h_b_ratio"]->eval(args.data());
+        double wt_ggh_i_ = fns_["h_i_ratio"]->eval(args.data());
+        double wt_ggH_t_ = fns_["H_t_ratio"]->eval(args.data());
+        double wt_ggH_b_ = fns_["H_b_ratio"]->eval(args.data());
+        double wt_ggH_i_ = fns_["H_i_ratio"]->eval(args.data());
+        double wt_ggA_t_ = fns_["A_t_ratio"]->eval(args.data());
+        double wt_ggA_b_ = fns_["A_b_ratio"]->eval(args.data());
+        double wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
+        
+        event->Add("wt_ggh_t" ,wt_ggh_t_);
+        event->Add("wt_ggh_b" ,wt_ggh_b_);
+        event->Add("wt_ggh_i" ,wt_ggh_i_);
+        event->Add("wt_ggH_t" ,wt_ggH_t_);
+        event->Add("wt_ggH_b" ,wt_ggH_b_);
+        event->Add("wt_ggH_i" ,wt_ggH_i_);
+        event->Add("wt_ggA_t" ,wt_ggA_t_);
+        event->Add("wt_ggA_b" ,wt_ggA_b_);
+        event->Add("wt_ggA_i" ,wt_ggA_i_);
       }
     }
 

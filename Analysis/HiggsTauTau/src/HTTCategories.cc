@@ -40,6 +40,7 @@ namespace ic {
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
       do_qcd_scale_wts_ = false;
       do_pdf_wts_ = false;
+      do_mssm_higgspt_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -72,6 +73,17 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
+      if(do_mssm_higgspt_){
+        outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
+        outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
+        outtree_->Branch("wt_ggh_i", &wt_ggh_i_);
+        outtree_->Branch("wt_ggH_t", &wt_ggH_t_);
+        outtree_->Branch("wt_ggH_b", &wt_ggH_b_);
+        outtree_->Branch("wt_ggH_i", &wt_ggH_i_);
+        outtree_->Branch("wt_ggA_t", &wt_ggA_t_);
+        outtree_->Branch("wt_ggA_b", &wt_ggA_b_);
+        outtree_->Branch("wt_ggA_i", &wt_ggA_i_);    
+      }
       if(channel_==channel::em){
         outtree_->Branch("idisoweight_up_1",&idisoweight_up_1_);
         outtree_->Branch("idisoweight_up_2",&idisoweight_up_2_);
@@ -1419,6 +1431,18 @@ namespace ic {
     if (event->Exists("wt_tau2_id_tight")) wt_tau2_id_tight_  = event->Get<double>("wt_tau2_id_tight");
     wt_tau2_id_vtight_ = 1.0;
     if (event->Exists("wt_tau2_id_vtight")) wt_tau2_id_vtight_  = event->Get<double>("wt_tau2_id_vtight");
+    
+    if(do_mssm_higgspt_){
+      wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
+      wt_ggh_b_ = event->Exists("wt_ggh_b") ? event->Get<double>("wt_ggh_b") : 1.0;
+      wt_ggh_i_ = event->Exists("wt_ggh_i") ? event->Get<double>("wt_ggh_i") : 1.0;
+      wt_ggH_t_ = event->Exists("wt_ggH_t") ? event->Get<double>("wt_ggH_t") : 1.0;
+      wt_ggH_b_ = event->Exists("wt_ggH_b") ? event->Get<double>("wt_ggH_b") : 1.0;
+      wt_ggH_i_ = event->Exists("wt_ggH_i") ? event->Get<double>("wt_ggH_i") : 1.0;
+      wt_ggA_t_ = event->Exists("wt_ggA_t") ? event->Get<double>("wt_ggA_t") : 1.0;
+      wt_ggA_b_ = event->Exists("wt_ggA_b") ? event->Get<double>("wt_ggA_b") : 1.0;
+      wt_ggA_i_ = event->Exists("wt_ggA_i") ? event->Get<double>("wt_ggA_i") : 1.0;   
+    }
     
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
