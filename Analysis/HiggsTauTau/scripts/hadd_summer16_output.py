@@ -255,7 +255,11 @@ sample_list = [
    'SUSYGluGluToBBHToTauTau_M-700-NLO-QshDown',
    'SUSYGluGluToBBHToTauTau_M-1200-NLO-QshDown',
    'SUSYGluGluToBBHToTauTau_M-1800-NLO-QshDown',
-   'SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown'
+   'SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown',
+   'bbH700_private',
+   'bbH700_official',
+   'bbH700_NewAcc',
+   'bbH700_OldAcc'
  
 	]
 

@@ -4,7 +4,7 @@ from array import array
 import re
 import json
 import types
-
+import copy
 COL_STORE = []
 
 ## @name Global Style
@@ -2340,6 +2340,217 @@ def CompareHists(hists=[],
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+    
+def CompareNHists(hists=[],
+             legend_titles=[],
+             title="",
+             ratio=True,
+             log_y=False,
+             log_x=False,
+             ratio_range="0.7,1.3",
+             custom_x_range=False,
+             x_axis_max=4000,
+             x_axis_min=0,
+             custom_y_range=False,
+             y_axis_max=4000,
+             y_axis_min=0,
+             x_title="",
+             y_title="",
+             extra_pad=0,
+             norm_hists=False,
+             plot_name="plot",
+             label="",
+             draw_options=None):
+    
+    R.gROOT.SetBatch(R.kTRUE)
+    R.TH1.AddDirectory(False)
+    ModTDRStyle(r=0.04, l=0.14)
+    colourlist=[R.kBlue,R.kRed,R.kGreen+3,R.kBlack,R.kYellow+2,R.kOrange,R.kCyan+3,R.kMagenta+2,R.kViolet-5,R.kGray]
+    hs = R.THStack("hs","")
+    hist_count=0
+    legend_hists=[]
+    for hist in hists:
+        hist.Sumw2(1)
+        if norm_hists: hist.Scale(1/hist.Integral(1, -1))
+        hist.SetFillColor(0)
+        hist.SetFillStyle(0)
+        hist.SetLineWidth(3)
+        hist.SetLineColor(colourlist[hist_count])
+        hist.SetMarkerColor(colourlist[hist_count])
+        hist.SetMarkerSize(1)
+        hist.SetMarkerStyle(8)
+        hs.Add(hist)
+        hist_count+=1
+        legend_hists.append(hist.Clone())
+   # hs.Draw("nostack")
+        
+    c1 = R.TCanvas()
+    c1.cd()
+
+    if ratio:
+        pads=TwoPadSplit(0.29,0.01,0.01)
+    else:
+        pads=OnePad()
+    pads[0].cd()
+    
+    if(log_y): pads[0].SetLogy(1)
+    if(log_x): pads[0].SetLogx(1)
+    if custom_x_range:
+        if x_axis_max > hists[0].GetXaxis().GetXmax(): x_axis_max = hists[0].GetXaxis().GetXmax()
+    if ratio:
+        if(log_x): pads[1].SetLogx(1)
+        axish = createAxisHists(2,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+        axish[1].GetXaxis().SetTitle(x_title)
+        axish[1].GetXaxis().SetLabelSize(0.03)
+        axish[1].GetYaxis().SetNdivisions(4)
+        axish[1].GetYaxis().SetTitle("Ratio")
+        axish[1].GetYaxis().SetTitleOffset(1.6)
+        axish[1].GetYaxis().SetTitleSize(0.04)
+        axish[1].GetYaxis().SetLabelSize(0.03)
+    
+        axish[0].GetXaxis().SetTitleSize(0)
+        axish[0].GetXaxis().SetLabelSize(0)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+          axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+          axish[1].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    else:
+        axish = createAxisHists(1,hists[0],hists[0].GetXaxis().GetXmin(),hists[0].GetXaxis().GetXmax()-0.01)
+        axish[0].GetXaxis().SetLabelSize(0.03)
+        axish[0].GetXaxis().SetTitle(x_title)
+        axish[0].GetXaxis().SetTitleSize(0.04)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:                                                                
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    axish[0].GetYaxis().SetTitle(y_title)
+    axish[0].GetYaxis().SetTitleOffset(1.6)
+    axish[0].GetYaxis().SetTitleSize(0.04)
+    axish[0].GetYaxis().SetLabelSize(0.03)
+    
+    if not custom_y_range:
+        if(log_y): 
+            axish[0].SetMinimum(0.0009)
+            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*hs.GetMaximum("nostack") - math.log10(axish[0].GetMinimum())))))
+        else: 
+            axish[0].SetMinimum(0)
+            axish[0].SetMaximum(1.1*(1+extra_pad)*hs.GetMaximum("nostack"))
+    axish[0].Draw("axis")
+    R.gStyle.SetEndErrorSize(5)
+    for hist in hists:
+      hist.GetYaxis().SetTitle(y_title)  
+      hist.GetYaxis().SetTitleOffset(1.6) 
+      hist.GetXaxis().SetLabelSize(0)  
+      hist.GetXaxis().SetTitleSize(0)
+      if hist.GetName() == 'NewAcc_uncert':
+        hist.SetFillStyle(1001)
+        hist.SetFillColor(16)
+        hist.SetLineWidth(0)
+        hist.SetMarkerStyle(0)
+        hist.Draw('E2')
+    for hist in hists: 
+      if hist.GetName() == 'NewAcc':
+        hist.SetLineColor(R.kBlack)
+        hist.SetMarkerColor(R.kBlack)
+        hist.SetMarkerSize(0)
+        hist.Draw('E0  same')
+    for hist in hists: 
+      if hist.GetName() == 'OldAcc':
+        hist.SetLineColor(R.kBlue)
+        hist.SetMarkerColor(R.kBlue)
+        hist.SetMarkerStyle(21)
+        hist.Draw('E2 same')
+    for hist in hists: 
+      if hist.GetName() == 'private':
+        hist.SetLineColor(R.kRed)
+        hist.SetMarkerColor(R.kRed)
+        #hist.SetMarkerStyle(8)
+        hist.Draw('E1 X0 same') 
+    for hist in hists: 
+      if hist.GetName() == 'official':
+        hist.SetLineColor(R.kGreen-2)
+        hist.SetMarkerColor(R.kGreen-2)
+        hist.SetMarkerStyle(22)
+        hist.Draw('E1 X0 same') 
+    axish[0].Draw("axissame")
+    
+    
+    #Setup legend
+    legend = PositionedLegend(0.30,0.2,3,0.03)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.022)
+    legend.SetFillColor(0)
+    
+
+    for hist in hists:
+        #legend.AddEntry(hist,legend_titles[legi],"l")
+        if hist.GetName() == "NewAcc": legend.AddEntry(hist,hist.GetName(),"l")
+        elif hist.GetName() == "NewAcc_uncert": legend.AddEntry(hist,"NewAcc uncertainty","f")
+        elif hist.GetName() == "OldAcc": legend.AddEntry(hist,hist.GetName(),"pf")
+        else: legend.AddEntry(hist,hist.GetName(),"pe")
+    legend.Draw("same")
+    
+    #CMS label and title
+    FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
+    DrawCMSLogo(pads[0], 'CMS', 'Simulation', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawTitle(pads[0], title, 3)
+    
+    latex2 = R.TLatex()
+    latex2.SetNDC()
+    latex2.SetTextAngle(0)
+    latex2.SetTextColor(R.kBlack)
+    latex2.SetTextSize(0.028)
+    latex2.DrawLatex(0.145,0.955,label)
+    
+    #Add ratio plot if required
+    if ratio:
+        pads[1].cd()
+        pads[1].SetGrid(0,1)
+        axish[1].Draw("axis")
+        axish[1].SetMinimum(float(ratio_range.split(',')[0]))
+        axish[1].SetMaximum(float(ratio_range.split(',')[1]))
+        rhists = copy.deepcopy(hists)
+        for h in rhists: 
+          if hist.GetName() == 'NewAcc': div_hist = hist.Clone()
+        for hist in rhists: hist.Divide(div_hist)
+        for hist in rhists: 
+          if hist.GetName() == 'NewAcc_uncert':
+            hist.SetFillStyle(1001)
+            hist.SetFillColor(16)
+            hist.SetLineStyle(0)
+            hist.SetMarkerStyle(0)
+            hist.Draw('E2 same')
+        for hist in rhists: 
+          if hist.GetName() == 'NewAcc':
+            hist.SetLineColor(R.kBlack)
+            hist.SetMarkerSize(0)
+            hist.Draw('E0  same')
+        for hist in rhists: 
+          if hist.GetName() == 'OldAcc':
+            hist.SetLineColor(R.kBlue)
+            hist.SetMarkerColor(R.kBlue)
+            hist.SetMarkerStyle(21)
+            hist.Draw('E2 same')
+        for hist in rhists: 
+          if hist.GetName() == 'private': 
+            hist.SetLineColor(R.kRed)
+            hist.SetMarkerColor(R.kRed)
+            hist.Draw('E1 X0 same')
+        for hist in rhists: 
+          if hist.GetName() == 'official':
+            hist.SetLineColor(R.kGreen-2)
+            hist.SetMarkerColor(R.kGreen-2)
+            hist.SetMarkerStyle(22)
+            hist.Draw('E1 X0 same')    
+        pads[1].RedrawAxis("G")
+    pads[0].cd()
+    pads[0].GetFrame().Draw()
+    pads[0].RedrawAxis()
+    
+    c1.SaveAs(plot_name+'.pdf')
+   
     
 def HTTPlotSignal(nodename, 
             infile=None, 

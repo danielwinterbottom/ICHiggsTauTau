@@ -54,6 +54,8 @@ class HTTGenAnalysis : public ModuleBase {
   double met_;
   double mt_1_;
   double mt_2_;
+  double mt_3_;
+  double mt_tot_;
   double pzeta_;
   double n_bjets_;
   double n_bjets_noscale_;

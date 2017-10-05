@@ -176,6 +176,8 @@ namespace ic {
       outtree_->Branch("pt_tt"       , &pt_tt_       );
       outtree_->Branch("mt_1"        , &mt_1_        );
       outtree_->Branch("mt_2"        , &mt_2_        );
+      outtree_->Branch("mt_3"        , &mt_3_        );
+      outtree_->Branch("mt_tot"        , &mt_tot_        );
       outtree_->Branch("pzeta"       , &pzeta_       );
       outtree_->Branch("n_bjets"     , &n_bjets_     );
       outtree_->Branch("n_bjets_noscale"     , &n_bjets_noscale_);
@@ -447,25 +449,37 @@ namespace ic {
     ic::Candidate lep2;
     passed_ = false;
 
-    if(channel_str_ == "em"){
+    if(decayType == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
         lep1 = electrons[0];
         lep2 = muons[0];
         passed_ = true;
       }
-    } else if(channel_str_ == "et"){
+    } else if(decayType == "ee"){
+      if(electrons.size() == 1 && muons.size() == 1){
+        lep1 = electrons[0];
+        lep2 = electrons[1];
+        passed_ = true;
+      }
+    } else if(decayType == "mm"){
+      if(electrons.size() == 1 && muons.size() == 1){
+        lep1 = muons[0];
+        lep2 = muons[1];
+        passed_ = true;
+      }
+    } else if(decayType == "et"){
       if(electrons.size() == 1 && taus.size() == 1){
         lep1 = electrons[0];
         lep2 = taus[0];
         passed_ = true;
       }
-    } else if(channel_str_ == "mt"){
+    } else if(decayType == "mt"){
       if(muons.size() == 1 && taus.size() == 1){
         lep1 = muons[0];
         lep2 = taus[0];
         passed_ = true;
       }
-    } else if(channel_str_ == "tt"){
+    } else if(decayType == "tt"){
       if(taus.size() == 2){
         lep1 = taus[0];
         lep2 = taus[1];
@@ -485,7 +499,9 @@ namespace ic {
       m_vis_ = (lep1.vector()+lep2.vector()).M();
       mt_1_ = MT(&lep1, &met);
       mt_2_ = MT(&lep2, &met);
-
+      mt_3_ = MT(&lep1, &lep2);
+      mt_tot_ = sqrt(pow(mt_1_,2)+pow(mt_2_,2)+pow(mt_3_,2));
+      
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
       ditau->AddCandidate("lep1",&lep1);
       ditau->AddCandidate("lep2",&lep2);
@@ -502,6 +518,8 @@ namespace ic {
       m_vis_ = -9999;
       mt_1_ = -9999;
       mt_2_ = -9999;
+      mt_3_ = -9999;
+      mt_tot_ = -9999;
       pzeta_ = -9999;
     }
     
@@ -523,9 +541,8 @@ namespace ic {
       double jetEta = std::fabs(jet.vector().Rapidity());
       if(jetPt > min_jet_pt_ && jetEta < max_jet_eta_) filtered_jets.push_back(jet); 
       if(jetPt > 20 && jetEta < 2.4){
-          bool MatchedToB = false;
-          for(unsigned j=0; j<sel_bquarks.size(); ++j) if(DRLessThan(std::make_pair(&jet, sel_bquarks[j]),0.5)) MatchedToB = true;
-          if(MatchedToB) bjets.push_back(jet); 
+          bool b_flavour = std::fabs(jet.flavour()) == 5;
+          if(b_flavour) bjets.push_back(jet); 
       }
     }
     
@@ -540,20 +557,21 @@ namespace ic {
     }
     
     n_bjets_noscale_ = bjets.size();
-    
-    for(unsigned i=0;  i<bjets.size(); ++i){
-      ic::GenJet jet = bjets[i];
-      double pt = bjets[i].vector().Pt();
-      double eta = fabs(bjets[i].vector().Rapidity());
-      double eff=0;
-      if(pt > bbtag_eff_->GetXaxis()->GetBinLowEdge(bbtag_eff_->GetNbinsX()+1)){
-        eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetNbinsX(),bbtag_eff_->GetYaxis()->FindBin(eta));
-      } else{
-        eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetXaxis()->FindBin(pt),bbtag_eff_->GetYaxis()->FindBin(eta));
+    if(bbtag_eff_){
+      for(unsigned i=0;  i<bjets.size(); ++i){
+        ic::GenJet jet = bjets[i];
+        double pt = bjets[i].vector().Pt();
+        double eta = fabs(bjets[i].vector().Rapidity());
+        double eff=0;
+        if(pt > bbtag_eff_->GetXaxis()->GetBinLowEdge(bbtag_eff_->GetNbinsX()+1)){
+          eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetNbinsX(),bbtag_eff_->GetYaxis()->FindBin(eta));
+        } else{
+          eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetXaxis()->FindBin(pt),bbtag_eff_->GetYaxis()->FindBin(eta));
+        }
+        rand->SetSeed((int)((bjets[i].eta()+5)*100000));
+        double randVal = rand->Uniform();
+        if (randVal > eff) bjets.erase (bjets.begin()+i);
       }
-      rand->SetSeed((int)((bjets[i].eta()+5)*100000));
-      double randVal = rand->Uniform();
-      if (randVal > eff) bjets.erase (bjets.begin()+i);
     }
     n_bjets_ = bjets.size();
     n_jets_nofilter_ = filtered_jets.size();
@@ -567,37 +585,6 @@ namespace ic {
       //remove jets that are matched to Higgs decay products
       if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
     }
-    
-    std::string jets_label_ = "ak4PFJetsCHS";
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-    std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-    
-    for(unsigned i=0; i<jets.size(); ++i){
-      ic::PFJet *jet = jets[i];
-      bool MatchedToPrompt = false;
-      for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
-      }
-      //remove jets that are matched to Higgs decay products
-      if(MatchedToPrompt) jets.erase (jets.begin()+i);
-    }
-    
-    std::vector<PFJet*> offline_bjets = jets;
-    ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-    ic::erase_if(offline_bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-    
-    std::string btag_label="pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    double btag_wp =  0.8484;
-    if (event->Exists("retag_result")) {
-      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(offline_bjets, !boost::bind(IsReBTagged, _1, retag_result));
-    }else { 
-      ic::erase_if(offline_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-    }
-    
-    
-    n_jets_offline_ = jets.size();
-    n_bjets_offline_ = offline_bjets.size();
 
     n_jets_ = filtered_jets.size();
     jpt_1_       = -9999;
