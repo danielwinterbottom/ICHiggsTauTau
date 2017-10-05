@@ -1607,6 +1607,12 @@ for systematic in systematics:
                         mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                         mssm_hist.Scale(sf)
                         mssm_hist.Write()
+                        if options.doMSSMReWeighting: 
+                          re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
+                          for name in re_weighted_names:
+                            mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
+                            mssm_hist.Scale(sf)
+                            mssm_hist.Write()
         if options.analysis == "Hhh":
             for samp in Hhh_samples:
                 masses = ggh_masses

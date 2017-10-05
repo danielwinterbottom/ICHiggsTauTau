@@ -134,6 +134,16 @@ class EffectiveEvents : public ModuleBase {
   
   double wt_alphasdown_;
   double wt_alphasup_;
+  
+  double wt_ggh_t_;
+  double wt_ggh_b_;
+  double wt_ggh_i_;
+  double wt_ggH_t_;
+  double wt_ggH_b_;
+  double wt_ggH_i_;
+  double wt_ggA_t_;
+  double wt_ggA_b_;
+  double wt_ggA_i_;
 
  public:
   EffectiveEvents(std::string const& name);

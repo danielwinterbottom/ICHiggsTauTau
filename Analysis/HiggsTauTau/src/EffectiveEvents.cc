@@ -15,6 +15,15 @@ int EffectiveEvents::PreAnalysis(){
 outtree_ = fs_->make<TTree>("effective","effective");
 outtree_->Branch("wt",&mcsign_);
 outtree_->Branch("gen_ht",&gen_ht_);
+outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
+outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
+outtree_->Branch("wt_ggh_i", &wt_ggh_i_);
+outtree_->Branch("wt_ggH_t", &wt_ggH_t_);
+outtree_->Branch("wt_ggH_b", &wt_ggH_b_);
+outtree_->Branch("wt_ggH_i", &wt_ggH_i_);
+outtree_->Branch("wt_ggA_t", &wt_ggA_t_);
+outtree_->Branch("wt_ggA_b", &wt_ggA_b_);
+outtree_->Branch("wt_ggA_i", &wt_ggA_i_); 
 if(do_qcd_scale_wts_){
   outtree_->Branch("wt_mur1_muf1",    &scale1_);
   outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -141,6 +150,17 @@ int EffectiveEvents::Execute(TreeEvent *event){
   //if (eventInfo->weight_defined("wt_mc_sign")) mcsign_ = eventInfo->weight("wt_mc_sign"); else mcsign_ = 1.0;
   if (eventInfo->weight_defined("wt_mc_sign")) mcsign_ = eventInfo->weight("wt_mc_sign"); else mcsign_= 1;
   gen_ht_ = eventInfo->gen_ht();
+  
+  wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
+  wt_ggh_b_ = event->Exists("wt_ggh_b") ? event->Get<double>("wt_ggh_b") : 1.0;
+  wt_ggh_i_ = event->Exists("wt_ggh_i") ? event->Get<double>("wt_ggh_i") : 1.0;
+  wt_ggH_t_ = event->Exists("wt_ggH_t") ? event->Get<double>("wt_ggH_t") : 1.0;
+  wt_ggH_b_ = event->Exists("wt_ggH_b") ? event->Get<double>("wt_ggH_b") : 1.0;
+  wt_ggH_i_ = event->Exists("wt_ggH_i") ? event->Get<double>("wt_ggH_i") : 1.0;
+  wt_ggA_t_ = event->Exists("wt_ggA_t") ? event->Get<double>("wt_ggA_t") : 1.0;
+  wt_ggA_b_ = event->Exists("wt_ggA_b") ? event->Get<double>("wt_ggA_b") : 1.0;
+  wt_ggA_i_ = event->Exists("wt_ggA_i") ? event->Get<double>("wt_ggA_i") : 1.0; 
+  
 //  mcsign_ = eventInfo->weight;
 //  if (eventInfo->weight_defined("wt_mc_sign")) mcsign_ = eventInfo->weight("wt_mc_sign"); else mcsign_ = 1.0;
 //std::cout<<mcsign_<<std::endl;
