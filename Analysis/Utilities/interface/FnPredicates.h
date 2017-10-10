@@ -356,9 +356,24 @@ namespace ic {
   }
 
   template<class T, class U>
+  bool DxyLessThan(std::pair<T,U> const& cPair, double const& dr) {
+    if (Dxy(cPair.first,cPair.second) < dr) return true;
+    return false;
+  }
+
+
+  template<class T, class U>
   double DR(T const& cand1, U const& cand2) {
     return ROOT::Math::VectorUtil::DeltaR(cand1->vector(),cand2->vector());
   }
+
+  template<class T, class U>
+  double Dxy(T const& cand1, U const& cand2) {
+    double dx = cand1->x() - cand2->x();
+    double dy = cand1->y() - cand2->y();
+    return std::sqrt(dx*dx + dy*dy);
+  }
+
 
   template<class T, class U>
   bool DRCompare(std::pair<T,U> const& p1, std::pair<T,U> const& p2) {

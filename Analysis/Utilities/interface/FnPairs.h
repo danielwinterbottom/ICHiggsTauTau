@@ -52,6 +52,60 @@ namespace ic {
 
 
   template<class T, class U>
+    std::vector< std::pair<T,U> > MatchByDxy(std::vector<T> const& c1,
+                                              std::vector<U> const& c2,
+                                              double const& maxDxy,
+                                              bool const& uniqueFirst,
+                                              bool const& uniqueSecond) {
+      std::vector< std::pair<T,U> > pairVec = MakePairs(c1,c2);
+      erase_if(pairVec, !boost::bind(DxyLessThan<T,U>, _1, maxDxy));
+      std::sort(pairVec.begin(), pairVec.end(), DRCompare<T,U>);
+      if (uniqueFirst && uniqueSecond) {
+        std::vector< std::pair<T,U> > uPairVec;
+        std::vector<T> fVec;
+        std::vector<U> sVec;
+        std::pair<T,U> aPair;
+        BOOST_FOREACH(aPair, pairVec) {
+          bool inFVec = std::count(fVec.begin(),fVec.end(),aPair.first);
+          bool inSVec = std::count(sVec.begin(),sVec.end(),aPair.second);
+          if (!inFVec && !inSVec) {
+            uPairVec.push_back(aPair);
+            fVec.push_back(aPair.first);
+            sVec.push_back(aPair.second);
+          }
+        }
+        return uPairVec;
+      } else if (uniqueFirst) {
+        std::vector< std::pair<T,U> > uPairVec;
+        std::vector<T> fVec;
+        std::pair<T,U> aPair;
+        BOOST_FOREACH(aPair, pairVec) {
+          bool inFVec = std::count(fVec.begin(),fVec.end(),aPair.first);
+          if (!inFVec) {
+            uPairVec.push_back(aPair);
+            fVec.push_back(aPair.first);
+          }
+        }
+        return uPairVec;
+      } else if (uniqueSecond) {
+        std::vector< std::pair<T,U> > uPairVec;
+        std::vector<U> sVec;
+        std::pair<T,U> aPair;
+        BOOST_FOREACH(aPair, pairVec) {
+          bool inSVec = std::count(sVec.begin(),sVec.end(),aPair.second);
+          if (!inSVec) {
+            uPairVec.push_back(aPair);
+            sVec.push_back(aPair.second);
+          }
+        }
+        return uPairVec;
+      }
+      return pairVec;
+    }
+
+
+
+  template<class T, class U>
     std::vector< std::pair<T,U> > MatchByDR(std::vector<T> const& c1,
                                               std::vector<U> const& c2,
                                               double const& maxDR,
