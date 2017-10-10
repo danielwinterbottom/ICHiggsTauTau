@@ -14,6 +14,7 @@
 #include "Objects/interface/GenJet.hh"
 #include "Objects/interface/CompositeCandidate.hh"
 #include "Objects/interface/TriggerObject.hh"
+#include "Utilities/interface/FnPairs.h"
 #include "TGraph2D.h"
 #include "fastjet/ClusterSequence.hh"
 
@@ -87,6 +88,10 @@ class RecHit : public Candidate {
   inline void set_x(double const& x) { position_.SetX(x); }
   inline void set_y(double const& y) { position_.SetY(y); }
   inline void set_z(double const& z) { position_.SetZ(z); }
+
+  inline double x() { return position().x(); }
+  inline double y() { return position().y(); }
+  inline double z() { return position().z(); }
 
 };
 
@@ -185,6 +190,23 @@ class HGCALTest : public ModuleBase {
   bool is_hadtau_;
   int tau_dm_;
 
+  TTree *t_taus_;
+  int tt_dm_;
+  unsigned tt_reached_ee_;
+  unsigned tt_pion_reached_ee_;
+  float tt_tau_pt_;
+  float tt_tau_eta_;
+  float tt_vis_tau_pt_;
+  float tt_vis_tau_eta_;
+  float tt_dm1_pho1_e_;
+  float tt_dm1_pho2_e_;
+  float tt_dm1_pion_e_;
+  float tt_pho_dxy_l1_;
+  float tt_prods_dr_;
+  unsigned tt_evt_;
+  int tt_pm_;
+  unsigned tt_rec_prongs_;
+
  public:
   HGCALTest(std::string const &name);
   virtual ~HGCALTest();
@@ -194,7 +216,18 @@ class HGCALTest : public ModuleBase {
   virtual int PostAnalysis();
 };
 
+
+void RecursiveMatchByDR(RecHit* c1, std::vector<RecHit*> collection, std::set<RecHit*> & result, double maxDR);
+
+std::vector<TGraph2D> PlotRecHits(std::vector<RecHit *> rechits,
+                                          TString name_prefix);
+
+std::vector<TGraph2D> PlotJetRecHitsInLayers(std::vector<std::vector<ic::CompositeCandidate>> jets,
+                                          TString name_prefix);
 std::vector<TGraph2D> PlotRecHitsInLayers(std::vector<RecHit *> const &rechits,
+                                          TString name_prefix);
+
+std::vector<TGraph2D> PlotRecHitListsInLayers(std::vector<std::vector<std::vector<RecHit *>>> jets,
                                           TString name_prefix);
 
 template <class T>

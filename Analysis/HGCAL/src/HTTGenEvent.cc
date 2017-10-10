@@ -374,5 +374,9 @@ void TauInfo::Print() {
     std::cout << "** FSR:\n";
     for (auto const& part : fsr) part->Print();
   }
+  if (vis_jet) {
+    std::cout << "** Visible jet:\n";
+    vis_jet->Print();
+  }
 }
 }

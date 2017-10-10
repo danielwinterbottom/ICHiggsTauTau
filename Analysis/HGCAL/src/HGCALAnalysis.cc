@@ -47,371 +47,688 @@ int HGCALTest::PreAnalysis() {
   t_jets_->Branch("isDM_r0p10",          &isDM_r0p10_);
   t_jets_->Branch("is_hadtau",          &is_hadtau_);
   t_jets_->Branch("tau_dm",          &tau_dm_);
+
+  t_taus_ = fs_->make<TTree>("taus", "taus");
+  t_taus_->Branch("evt",                    &tt_evt_);
+  t_taus_->Branch("pm",                    &tt_pm_);
+  t_taus_->Branch("dm",                    &tt_dm_);
+  t_taus_->Branch("reached_ee",           &tt_reached_ee_);
+  t_taus_->Branch("pion_reached_ee",       &tt_pion_reached_ee_);
+  t_taus_->Branch("tau_pt",                &tt_tau_pt_);
+  t_taus_->Branch("tau_eta",               &tt_tau_eta_);
+  t_taus_->Branch("vis_tau_pt",            &tt_vis_tau_pt_);
+  t_taus_->Branch("vis_tau_eta",           &tt_vis_tau_eta_);
+  t_taus_->Branch("dm1_pho1_e",            &tt_dm1_pho1_e_);
+  t_taus_->Branch("dm1_pho2_e",            &tt_dm1_pho2_e_);
+  t_taus_->Branch("dm1_pion_e",            &tt_dm1_pion_e_);
+  t_taus_->Branch("pho_dxy_l1",            &tt_pho_dxy_l1_);
+  t_taus_->Branch("prods_dr",            &tt_prods_dr_);
+  t_taus_->Branch("rec_prongs",            &tt_rec_prongs_);
   return 0;
 }
 
 int HGCALTest::Execute(TreeEvent* event) {
+  unsigned v = 0;
+
   int long evt = *event->GetPtr<int long>("event");
-  auto const& rechits = BuildRecHitCollection(event);
-  auto const& genParticles = BuildGenParticleCollection(event);
-  auto const& simParticles = BuildSimParticleCollection(event);
 
-  // for (unsigned i = 0; i < genParticles.size(); ++i) {
-  //   genParticles[i]->Print();
-  // }
-  auto genParts_final = ic::copy_keep_if(genParticles, [](ic::GenParticle *p) {
-    return p->status() == 1;
-  });
+  // Start by building object collections from flat trees
+  auto const& all_rechits = BuildRecHitCollection(event);
+  auto const& all_genparts = BuildGenParticleCollection(event);
+  auto const& all_simparts = BuildSimParticleCollection(event);
+  // auto const& simclusters = BuildSimClusterCollection(event);
 
-  auto genParts_finalNoNu = ic::copy_keep_if(genParts_final, [](ic::GenParticle *p) {
-    unsigned pdgid = std::abs(p->pdgid());
-    return pdgid != 12 && pdgid != 14 && pdgid != 16;
-  });
+  unsigned nlayers = hgcal::lastLayer - hgcal::firstLayer + 1;
 
-  auto genParts_taus = ic::copy_keep_if(genParticles, [](ic::GenParticle *p) {
-    return std::abs(p->pdgid()) == 15;
-  });
+  for (auto pm : {-1, +1}) {
+    std::string pm_str = "";
+    if (pm == -1) pm_str = "m";
+    if (pm == +1) pm_str = "p";
 
-  std::cout << ">> Found " << genParts_taus.size() << " taus in event " << evt << "\n";
-  std::vector<ic::TauInfo> genInfo_taus;
-  for (auto const& tau : genParts_taus) {
-    genInfo_taus.push_back(HTTGenEvent::BuildTauInfo(tau, genParticles, true));
-    std::cout << "************* Tau Info *************\n";
-    genInfo_taus.back().Print();
-    std::cout << "************************************\n";
-  }
-
-  for (unsigned i = 0; i < simParticles.size(); ++i) {
-    simParticles[i]->Print();
-  }
-
-
-  auto filtered_rechits = ic::copy_keep_if(rechits, [](RecHit const* r) {
-    return std::get<1>(RecHitAboveThreshold(*r, 3., true));
-  });
-  auto const& simclusters = BuildSimClusterCollection(event);
-  ROOT::Math::PtEtaPhiEVector sc_sum_p;
-  ROOT::Math::PtEtaPhiEVector sc_sum_m;
-  ROOT::Math::PtEtaPhiEVector rh_sum_p;
-  ROOT::Math::PtEtaPhiEVector rh_sum_m;
-  ROOT::Math::PtEtaPhiEVector rhf_sum_p;
-  ROOT::Math::PtEtaPhiEVector rhf_sum_m;
-
-  std::vector<fastjet::PseudoJet> particles;
-
-
-   // print the jets
-   // cout <<   "        pt y phi" << endl;
-   // for (unsigned i = 0; i < jets.size(); i++) {
-   //   cout << "jet " << i << ": "<< jets[i].pt() << " " 
-   //                  << jets[i].rap() << " " << jets[i].phi() << endl;
-   //   vector<PseudoJet> constituents = jets[i].constituents();
-   //   for (unsigned j = 0; j < constituents.size(); j++) {
-   //     cout << "    constituent " << j << "'s pt: " << constituents[j].pt()
-   //          << endl;
-   //   }
-   // }
-
-  std::string label_p = "";
-  std::string label_m = "";
-
-  for (unsigned i = 0; i < rechits.size(); ++i) {
-    if (rechits[i]->eta() > 0.) {
-      rh_sum_p += rechits[i]->vector();
-    } else {
-      rh_sum_m += rechits[i]->vector();
-    }
-  }
-  for (unsigned i = 0; i < filtered_rechits.size(); ++i) {
-    particles.push_back(fastjet::PseudoJet(
-        filtered_rechits[i]->vector().px(),
-        filtered_rechits[i]->vector().py(),
-        filtered_rechits[i]->vector().pz(),
-        filtered_rechits[i]->vector().energy()));
-
-    if (filtered_rechits[i]->eta() > 0.) {
-      rhf_sum_p += filtered_rechits[i]->vector();
-    } else {
-      rhf_sum_m += filtered_rechits[i]->vector();
-    }
-  }
-  for (unsigned i = 0; i < simclusters.size(); ++i) {
-    if (simclusters[i]->eta() > 0.) {
-      sc_sum_p += simclusters[i]->vector();
-    } else {
-      sc_sum_m += simclusters[i]->vector();
-    }
-  }
-
-
-  // choose a jet definition
-  fastjet::JetDefinition jet_def(fastjet::antikt_algorithm, 0.4);
-  auto jets = ClusterJets(filtered_rechits, jet_def);
-  std::vector<ic::CompositeCandidate *> jets_p;
-  for (auto & j : jets) jets_p.push_back(&j);
-
-  auto genJets = ClusterJets(genParts_final, jet_def);
-  std::vector<ic::CompositeCandidate *> genJets_p;
-  for (auto & j : genJets) genJets_p.push_back(&j);
-
-  auto genJets_nonu = ClusterJets(genParts_finalNoNu, jet_def);
-  std::vector<ic::CompositeCandidate *> genJets_nonu_p;
-  for (auto & j : genJets_nonu) genJets_nonu_p.push_back(&j);
-
-
-  auto matches = ic::MatchByDR(jets_p, genJets_p, 0.4, true, true);
-  std::map<CompositeCandidate*, CompositeCandidate*> matchMap;
-  for (auto const& pair : matches) matchMap[pair.first] = pair.second;
-
-  auto matches_nonu = ic::MatchByDR(jets_p, genJets_nonu_p, 0.4, true, true);
-  std::map<CompositeCandidate*, CompositeCandidate*> matchMap_nonu;
-  for (auto const& pair : matches_nonu) matchMap_nonu[pair.first] = pair.second;
-
-
-  // std::cout << "Simcluster sums:\n";
-  // std::cout << sc_sum_p << "\n";
-  // std::cout << sc_sum_m << "\n";
-  // std::cout << "RecHit sums:\n";
-  // std::cout << rh_sum_p << "\n";
-  // std::cout << rh_sum_m << "\n";
-  // std::cout << "RecHit (filtered) sums:\n";
-  // std::cout << rhf_sum_p << "\n";
-  // std::cout << rhf_sum_m << "\n";
-
-  // std::cout << "Highest pT jets:\n";
-  unsigned print = std::min(unsigned(jets.size()), unsigned(5));
-  for (unsigned i = 0; i < print; i++) {
-    // std::cout << tmpjet << "\n";
-
-    // Do the two leading reco jets for now
-    if (i >= 2) continue;
-
-    jet_pt_ = jets[i].pt();
-    jet_eta_ = jets[i].eta();
-    jet_phi_ = jets[i].phi();
-    jet_e_ = jets[i].energy();
-
-    // Is the jet matched to a full genjet (neutrinos included)
-    if (matchMap.count(jets_p[i])) {
-      gen_matched_ = true;
-      genjet_pt_ = matchMap[jets_p[i]]->pt();
-      genjet_eta_ = matchMap[jets_p[i]]->eta();
-      genjet_phi_ = matchMap[jets_p[i]]->phi();
-      genjet_e_ = matchMap[jets_p[i]]->energy();
-    } else {
-      gen_matched_ = false;
-      genjet_pt_ = -1.;
-      genjet_eta_ = -1.;
-      genjet_phi_ = -1.;
-      genjet_e_ = -1.;
-    }
-
-    // Tau DM finding - false by default
-    isDM_r0p02_ = false;
-    isDM_r0p04_ = false;
-    isDM_r0p06_ = false;
-    isDM_r0p08_ = false;
-    isDM_r0p10_ = false;
-
-    if (matchMap_nonu.count(jets_p[i])) {
-      gen_nonu_matched_ = true;
-      genjet_nonu_pt_ = matchMap_nonu[jets_p[i]]->pt();
-      genjet_nonu_eta_ = matchMap_nonu[jets_p[i]]->eta();
-      genjet_nonu_phi_ = matchMap_nonu[jets_p[i]]->phi();
-      genjet_nonu_e_ = matchMap_nonu[jets_p[i]]->energy();
-
-      is_hadtau_ = false;
-      bool found_emu = false;
-      bool tau_matched = false;
-      std::vector<CompositeCandidate const*> partv = {matchMap_nonu[jets_p[i]]};
-      unsigned ncharged_0p02 = 0;
-      unsigned ncharged_0p04 = 0;
-      unsigned ncharged_0p06 = 0;
-      unsigned ncharged_0p08 = 0;
-      unsigned ncharged_0p10 = 0;
-      int charge_0p02 = 0;
-      int charge_0p04 = 0;
-      int charge_0p06 = 0;
-      int charge_0p08 = 0;
-      int charge_0p10 = 0;
-
-      // Loop through genjet constituents to figure out if this is a hadronic tau, and if it passes DM
-      for (unsigned c = 0; c < matchMap_nonu[jets_p[i]]->AsVector().size(); ++c) {
-        GenParticle const* part = dynamic_cast<GenParticle const*>(matchMap_nonu[jets_p[i]]->at(c));
-        if (std::abs(part->pdgid()) == 11 || std::abs(part->pdgid()) == 13) {
-          found_emu = true;
-        }
-        double dr = DR(jets_p[i], part);
-        bool is_charged = (std::abs(part->charge()) == 1);
-        if (is_charged && dr < 0.02) ncharged_0p02 += 1;
-        if (is_charged && dr < 0.04) ncharged_0p04 += 1;
-        if (is_charged && dr < 0.06) ncharged_0p06 += 1;
-        if (is_charged && dr < 0.08) ncharged_0p08 += 1;
-        if (is_charged && dr < 0.10) ncharged_0p10 += 1;
-        if (is_charged && dr < 0.02) charge_0p02 += part->charge();
-        if (is_charged && dr < 0.04) charge_0p04 += part->charge();
-        if (is_charged && dr < 0.06) charge_0p06 += part->charge();
-        if (is_charged && dr < 0.08) charge_0p08 += part->charge();
-        if (is_charged && dr < 0.10) charge_0p10 += part->charge();
-      }
-      if (MatchByDR(partv, genParts_taus, 0.4, true, true).size()) tau_matched = true;
-      if (!found_emu && tau_matched) is_hadtau_ = true;
-      if ((ncharged_0p02 == 1 || ncharged_0p02 == 3) && std::abs(charge_0p02) == 1) isDM_r0p02_ = true;
-      if ((ncharged_0p04 == 1 || ncharged_0p04 == 3) && std::abs(charge_0p04) == 1) isDM_r0p04_ = true;
-      if ((ncharged_0p06 == 1 || ncharged_0p06 == 3) && std::abs(charge_0p06) == 1) isDM_r0p06_ = true;
-      if ((ncharged_0p08 == 1 || ncharged_0p08 == 3) && std::abs(charge_0p08) == 1) isDM_r0p08_ = true;
-      if ((ncharged_0p10 == 1 || ncharged_0p10 == 3) && std::abs(charge_0p10) == 1) isDM_r0p10_ = true;
-    } else {
-      gen_nonu_matched_ = false;
-      genjet_nonu_pt_ = -1.;
-      genjet_nonu_eta_ = -1.;
-      genjet_nonu_phi_ = -1.;
-      genjet_nonu_e_ = -1.;
-      is_hadtau_ = false;
-    }
-
-    double e_sum_all = 0.;
-    double e_sum_0p02 = 0.;
-    double e_sum_0p04 = 0.;
-    double e_sum_0p06 = 0.;
-    double e_sum_0p08 = 0.;
-    double e_sum_0p10 = 0.;
-    for (unsigned c = 0; c < jets_p[i]->AsVector().size(); ++c) {
-      double energy = jets_p[i]->At(c)->energy();
-      e_sum_all += energy;
-      double dr = DR(jets_p[i], jets_p[i]->At(c));
-      if (dr < 0.02) e_sum_0p02 += energy;
-      if (dr < 0.04) e_sum_0p04 += energy;
-      if (dr < 0.06) e_sum_0p06 += energy;
-      if (dr < 0.08) e_sum_0p08 += energy;
-      if (dr < 0.10) e_sum_0p10 += energy;
-    }
-    efrac_r0p02_ = e_sum_0p02 / e_sum_all;
-    efrac_r0p04_ = e_sum_0p04 / e_sum_all;
-    efrac_r0p06_ = e_sum_0p06 / e_sum_all;
-    efrac_r0p08_ = e_sum_0p08 / e_sum_all;
-    efrac_r0p10_ = e_sum_0p10 / e_sum_all;
-
-    // Tau reconstruction
-    // Start by plotting jet energy fraction contained within a cone of various sizes
-
-    t_jets_->Fill();
-    // std::cout << "jet " << i << ": "<< jets[i].pt() << " "
-    //                << jets[i].eta() << " " << jets[i].phi() << std::endl;
-  }
-
-  // print = std::min(unsigned(genJets.size()), unsigned(5));
-  // for (unsigned i = 0; i < print; i++) {
-  //   std::cout << "genjet " << i << ": "<< genJets[i].pt() << " "
-  //                  << genJets[i].eta() << " " << genJets[i].phi() << std::endl;
-  // }
-
-
-  static int event_counter = 0;
-
-  if (event_counter < 100) {
-    auto p_rechits = ic::copy_keep_if(filtered_rechits, [](RecHit const* r) {
-      return r->eta() > 0;
+    auto rechits = ic::copy_keep_if(all_rechits, [&](RecHit const* r) {
+      return r->eta() * float(pm) > 0.;
     });
-    auto m_rechits = ic::copy_keep_if(filtered_rechits, [](RecHit const* r) {
-      return !(r->eta() > 0);
+    auto genparts = ic::copy_keep_if(all_genparts, [&](GenParticle const* r) {
+      return r->eta() * float(pm) > 0.;
+    });
+    auto simparts = ic::copy_keep_if(all_simparts, [&](SimParticle const* r) {
+      return r->eta() * float(pm) > 0.;
     });
 
-    unsigned p_good_pions = 0;
-    unsigned m_good_pions = 0;
-    unsigned p_good_photons = 0;
-    unsigned m_good_photons = 0;
+    //******************** Build some derived collections
 
-    auto p_graphs = PlotRecHitsInLayers(p_rechits, "p_rechits");
-    auto m_graphs = PlotRecHitsInLayers(m_rechits, "m_rechits");
+    // Noise filtering for RecHits
+    auto filtered_rechits = ic::copy_keep_if(rechits, [](RecHit const* r) {
+      return std::get<1>(RecHitAboveThreshold(*r, 3., true));
+    });
 
-    unsigned nlayers = hgcal::lastLayer - hgcal::firstLayer + 1;
-    std::vector<TPolyMarker3D> p_pion_markers(nlayers);
-    std::vector<TPolyMarker3D> m_pion_markers(nlayers);
-    std::vector<TPolyMarker3D> p_photon_markers(nlayers);
-    std::vector<TPolyMarker3D> m_photon_markers(nlayers);
-    for (unsigned i = 0; i < nlayers; ++i) {
-      p_pion_markers[i].SetName(TString::Format("%s_%i", "p_pions", hgcal::firstLayer+i));
-      m_pion_markers[i].SetName(TString::Format("%s_%i", "m_pions", hgcal::firstLayer+i));
-      p_photon_markers[i].SetName(TString::Format("%s_%i", "p_photons", hgcal::firstLayer+i));
-      m_photon_markers[i].SetName(TString::Format("%s_%i", "m_photons", hgcal::firstLayer+i));
+    // All final state GenParticles
+    auto genparts_final = ic::copy_keep_if(genparts, [](ic::GenParticle *p) {
+      return p->status() == 1;
+    });
+
+    // All final state GenParticles excluding neutrinos
+    auto genparts_visible = ic::copy_keep_if(genparts_final, [](ic::GenParticle *p) {
+      unsigned pdgid = std::abs(p->pdgid());
+      return pdgid != 12 && pdgid != 14 && pdgid != 16;
+    });
+
+    // All tau particles
+    auto genparts_taus = ic::copy_keep_if(genparts, [](ic::GenParticle *p) {
+      return std::abs(p->pdgid()) == 15;
+    });
+
+    // Build information about the tau decays
+    std::vector<ic::TauInfo> geninfo_taus;
+    for (auto const& tau : genparts_taus) {
+      geninfo_taus.push_back(HTTGenEvent::BuildTauInfo(tau, genparts, true));
     }
-    TString p_infostr;
-    TString m_infostr;
-    for (unsigned i = 0; i < simParticles.size(); ++i) {
-      auto const& sim = *(simParticles[i]);
-      if ((std::abs(sim.pid()) == 211 || std::abs(sim.pid()) == 321) && sim.reached_ee() && sim.gen() != -1) {
-        std::vector<TPolyMarker3D> & pion_markers = sim.eta() > 0. ? p_pion_markers : m_pion_markers;
-        if (sim.eta() > 0.) {
-          ++p_good_pions;
-          p_infostr += TString::Format("%g:", sim.energy());
-        } else {
-          ++m_good_pions;
-          m_infostr += TString::Format("%g:", sim.energy());
+
+    // Have to build the visible GenJets manually
+    std::vector<GenJet> geninfo_taujets(geninfo_taus.size());
+    for (unsigned i = 0; i < geninfo_taus.size(); ++i) {
+      auto& tinfo = geninfo_taus[i];
+      ROOT::Math::PtEtaPhiEVector vec;
+      std::vector<std::size_t> id_vec;
+      for (unsigned k = 0; k < tinfo.all_vis.size(); ++k) {
+        if (abs(tinfo.all_vis[k]->pdgid()) == 12 ||
+            abs(tinfo.all_vis[k]->pdgid()) == 14 ||
+            abs(tinfo.all_vis[k]->pdgid()) == 16)
+          continue;
+        vec += tinfo.all_vis[k]->vector();
+        geninfo_taujets[i].set_charge(geninfo_taujets[i].charge() +
+                                 tinfo.all_vis[k]->charge());
+        id_vec.push_back(tinfo.all_vis[k]->id());
+      }
+      geninfo_taujets[i].set_vector(vec);
+      geninfo_taujets[i].set_constituents(id_vec);
+      tinfo.vis_jet = &geninfo_taujets[i];
+    }
+
+    // Jets clustering rechits in all layers
+    fastjet::JetDefinition fj_jet_def(fastjet::antikt_algorithm, 0.1);
+    auto jets = ClusterJets(filtered_rechits, fj_jet_def);
+    // std::vector<ic::CompositeCandidate *> jets_p;
+    // for (auto & j : jets) jets_p.push_back(&j);
+    // std::vector<std::vector<ic::CompositeCandidate>> subjets(jets.size());
+
+    std::vector<ic::CompositeCandidate *> selected_jets;
+    for (auto & j : jets) {
+      if (j.pt() > 15.) {
+        selected_jets.push_back(&j);
+      }
+    }
+
+    typedef std::vector<RecHit *> RecHitVec;
+    typedef std::vector<RecHitVec> RecHitLayersVec;
+    typedef std::vector<ic::CompositeCandidate> ClusteredJetVec;
+    typedef std::vector<ClusteredJetVec> ClusteredJetLayersVec;
+
+    std::vector<RecHitLayersVec> jet_hits_in_layers(selected_jets.size());
+    std::vector<ClusteredJetLayersVec> layer_subjets(selected_jets.size());
+    std::vector<RecHitLayersVec> signif_rhs(nlayers);
+    RecHitVec signif_rhs_singles;
+
+    for (unsigned i = 0; i < selected_jets.size(); ++i) {
+      auto components = jets[i].AsVector();
+      // Arrange the components into layers
+      RecHitLayersVec hits_in_layers(nlayers);
+      ClusteredJetLayersVec jets_in_layers(nlayers);
+      for (unsigned j = 0; j < components.size(); ++j) {
+        RecHit *rh = dynamic_cast<RecHit*>(components[j]);
+        unsigned layer_idx = rh->layer() - hgcal::firstLayer;
+        if (layer_idx < nlayers) {
+          hits_in_layers[layer_idx].push_back(rh);
+        }
+      }
+      fastjet::JetDefinition fj_jet_def(fastjet::antikt_algorithm, 0.02);
+      for (unsigned l = 0; l < nlayers; ++l) {
+        jets_in_layers[l] = ClusterJets(hits_in_layers[l], fj_jet_def);
+      }
+      jet_hits_in_layers[i] = hits_in_layers;
+      layer_subjets[i] = jets_in_layers;
+      // subjets[i] = ClusterJets(components, fj_jet_def);
+    }
+
+
+    // Testing the significant hit algo
+    bool nverb = false;
+    if (evt == 15 && pm == -1) {
+      nverb = true;
+    } else {
+      nverb = false;
+    }
+
+    if (nverb && jet_hits_in_layers.size()) {
+      for (unsigned l = 0; l < jet_hits_in_layers[0].size(); ++l) {
+        std::cout << "Layer " << l << "\n";
+        for (unsigned r = 0; r < jet_hits_in_layers[0][l].size(); ++r) {
+          auto rh = jet_hits_in_layers[0][l][r];
+          std::cout << rh->position() << "\t" << rh->thickness() << "\n";
+        }
+      }
+    }
+
+
+    for (unsigned i = 0; i < selected_jets.size(); ++i) {
+      for (unsigned l = 0; l < jet_hits_in_layers[i].size(); ++l) {
+        if (nverb) std::cout << "> Jet " << i << " " << selected_jets[i]->vector() << ", layer = " << l << ", hits = " << jet_hits_in_layers[i][l].size() << "\n";
+        auto const& hits = jet_hits_in_layers[i][l];
+        double spacing = 1.3;
+        if (hits.size() && hits[0]->thickness() > 400) spacing = 6.0;
+        auto matches = MatchByDxy(hits, hits, spacing, false, false);
+        std::map<RecHit *, std::set<RecHit *>> rh_map;
+        for (auto const& pair : matches) {
+          if (pair.first == pair.second) continue;
+          rh_map[pair.first].insert(pair.second);
+        }
+        for (auto const& neighbours : rh_map) {
+          if (nverb) std::cout << neighbours.first->position() << ": ";
+          if (nverb) std::cout << neighbours.second.size();
+
+          unsigned n_tot = neighbours.second.size();
+          unsigned n_low = 0;
+          for (auto const& rh : neighbours.second) {
+            if (rh->energy() <= neighbours.first->energy()) ++n_low;
+            if (nverb) std::cout << Dxy(neighbours.first, rh) << " ";
+          }
+          if (nverb) std::cout << n_low << "/" << n_tot;
+          if (nverb) std::cout << "\n";
+          if (n_tot == n_low && n_tot >= 5) {
+            std::vector<RecHit*> cluster;
+            cluster.push_back(neighbours.first);
+            for (auto rh : neighbours.second) cluster.push_back(rh);
+            signif_rhs[l].push_back(cluster);
+            signif_rhs_singles.push_back(neighbours.first);
+          }
+        }
+
+      }
+    }
+
+
+    // Now we have to identify the cluster centers
+    double cluster_finder_dr = 0.005;
+    std::set<RecHit *> rh_set(signif_rhs_singles.begin(), signif_rhs_singles.end());
+    std::vector<std::vector<RecHit *>> found_clusters;
+    while (rh_set.size() > 0) {
+      auto rh = *(rh_set.begin());
+      std::set<RecHit*> result;
+      RecursiveMatchByDR(rh, std::vector<RecHit*>(rh_set.begin(), rh_set.end()), result, cluster_finder_dr);
+      for (auto rh_result : result) {
+        rh_set.erase(rh_result);
+      }
+      if (result.size() > 1) {
+        found_clusters.push_back(std::vector<RecHit*>(result.begin(), result.end()));
+      }
+    }
+
+    if (nverb) {
+      std::cout << "Significant RecHits:\n";
+      for (auto rh : signif_rhs_singles) {
+        std::cout << " >> " << rh->position() << "\n";
+      }
+      std::cout << "Clustered:\n";
+      for (unsigned i = 0; i < found_clusters.size(); ++i) {
+        std::cout << i << ": ";
+        for (auto rh : found_clusters[i]) {
+          std::cout << rh->position() << "  ";
+        }
+        std::cout << "\n";
+      }
+    }
+
+
+
+    //******************** Printing
+    if (v > 0 || evt == 18) {
+      std::cout << "******** Event = " << evt << " (" << pm << ")\n";
+      std::cout << "**** GenParticles\n";
+      for (unsigned i = 0; i < genparts.size(); ++i) {
+        genparts[i]->Print();
+      }
+      std::cout << "**** TauInfo (n = " << geninfo_taus.size() << ")\n";
+      for (unsigned i = 0; i < geninfo_taus.size(); ++i) {
+        geninfo_taus[i].Print();
+      }
+      std::cout << "**** SimParticles\n";
+      for (unsigned i = 0; i < simparts.size(); ++i) {
+        simparts[i]->Print();
+      }
+      std::cout << "**** Jets\n";
+      for (unsigned i = 0; i < jets.size(); ++i) {
+        if (jets[i].pt() > 10.) {
+          std::cout << jets[i].vector() << "\n";
+          // std::cout << "****** Subjets\n";
+          // for (unsigned j = 0; j < subjets[i].size(); ++j) {
+          //   std::cout << "    " << subjets[i][j].vector() << "\n";
+          // }
+          // std::cout << "****** Layer subjets\n";
+          // for (unsigned l = 0; l < nlayers; ++l) {
+          //   std::cout << "  " << l << ": ";
+          //   for (unsigned j = 0; j < layer_subjets[i][l].size(); ++j) {
+          //     std::cout << layer_subjets[i][l][j].vector() << " ";
+          //   }
+          //   std::cout << "\n";
+          // }
 
         }
-        for (unsigned j = 0; j < sim.layer_positions().size(); ++j) {
-          pion_markers[j].SetNextPoint(sim.layer_positions()[j].x(), sim.layer_positions()[j].y(), 0);
+      }
+    }
+
+
+
+    static int event_counter = 0;
+    bool save = false;
+    if (event_counter < 100) {
+      save = true;
+    }
+
+    unsigned good_pions = 0;
+    unsigned good_photons = 0;
+
+    std::vector<TGraph2D> graphs;
+    std::vector<TGraph2D> jet_graphs;
+    std::vector<TGraph2D> cluster_graphs;
+    std::vector<TGraph2D> signif_graph;
+    std::vector<TGraph2D> signif_cluster_graph;
+
+    if (save) {
+      graphs = PlotRecHitsInLayers(filtered_rechits, TString::Format("%s_rechits", pm_str.c_str()));
+      if (layer_subjets.size()) {
+        jet_graphs = PlotJetRecHitsInLayers(layer_subjets[0], TString::Format("%s_jets", pm_str.c_str()));
+      }
+      cluster_graphs = PlotRecHitListsInLayers(signif_rhs, TString::Format("%s_clusters", pm_str.c_str()));
+      signif_graph = PlotRecHits(signif_rhs_singles, TString::Format("%s_signif_rechits", pm_str.c_str()));
+      for (unsigned i = 0; i < found_clusters.size(); ++i) {
+        signif_cluster_graph.push_back(PlotRecHits(found_clusters[i], TString::Format("%s_signif_rechit_clusters_%i", pm_str.c_str(), i))[0]);
+      }
+    }
+
+    std::vector<TPolyMarker3D> pion_markers(nlayers);
+    std::vector<TPolyMarker3D> photon_markers(nlayers);
+    TPolyMarker3D pion_etaphi_markers;
+    TPolyMarker3D photon_etaphi_markers;
+
+    if (save) {
+      for (unsigned i = 0; i < nlayers; ++i) {
+        pion_markers[i].SetName(
+            TString::Format("%s_pions_%i", pm_str.c_str(), hgcal::firstLayer + i));
+        photon_markers[i].SetName(
+            TString::Format("%s_photons_%i", pm_str.c_str(), hgcal::firstLayer + i));
+      }
+      pion_etaphi_markers.SetName(TString::Format("%s_pions", pm_str.c_str()));
+      photon_etaphi_markers.SetName(TString::Format("%s_photons", pm_str.c_str()));
+    }
+
+    TString infostr;
+    std::vector<SimParticle*> sim_photons;
+    for (unsigned i = 0; i < simparts.size(); ++i) {
+      auto const& sim = *(simparts[i]);
+      if ((std::abs(sim.pid()) == 211 || std::abs(sim.pid()) == 321) &&
+          sim.gen() != -1) {
+        if (sim.reached_ee()) ++good_pions;
+        infostr += TString::Format("%g,%g,%g:", sim.energy(), sim.eta(), sim.phi());
+        if (save) {
+          for (unsigned j = 0; j < sim.layer_positions().size(); ++j) {
+            pion_markers[j].SetNextPoint(sim.layer_positions()[j].x(),
+                                         sim.layer_positions()[j].y(), 0);
+          }
+          pion_etaphi_markers.SetNextPoint(sim.eta(), sim.phi(), 0.);
         }
       }
 
-      if ((std::abs(sim.pid()) == 22) && sim.reached_ee() && sim.gen() != -1) {
-        std::vector<TPolyMarker3D> & photon_markers = sim.eta() > 0. ? p_photon_markers : m_photon_markers;
-        if (sim.eta() > 0.) {
-          ++p_good_photons;
-          p_infostr += TString::Format("%g:", sim.energy());
-        } else {
-          ++m_good_photons;
-          m_infostr += TString::Format("%g:", sim.energy());
-        }
-        for (unsigned j = 0; j < sim.layer_positions().size(); ++j) {
-          photon_markers[j].SetNextPoint(sim.layer_positions()[j].x(), sim.layer_positions()[j].y(), 0);
+      if ((std::abs(sim.pid()) == 22) && sim.gen() != -1) {
+        sim_photons.push_back(simparts[i]);
+        if (sim.reached_ee()) ++good_photons;
+        infostr += TString::Format("%g,%g,%g:", sim.energy(), sim.eta(), sim.phi());
+        if (save) {
+          for (unsigned j = 0; j < sim.layer_positions().size(); ++j) {
+            photon_markers[j].SetNextPoint(sim.layer_positions()[j].x(),
+                                           sim.layer_positions()[j].y(), 0);
+          }
+          photon_etaphi_markers.SetNextPoint(sim.eta(), sim.phi(), 0.);
+
         }
       }
     }
 
-    for (auto const& tinfo : genInfo_taus) {
+    for (unsigned i = 0; i < geninfo_taus.size(); ++i) {
+      auto& tinfo = geninfo_taus[i];
+
+      tt_dm_ = -1;
+      tt_reached_ee_ = 0;
+      tt_pion_reached_ee_ = 0;
+      tt_tau_pt_ = 0.;
+      tt_tau_eta_ = 0.;
+      tt_vis_tau_pt_ = 0.;
+      tt_vis_tau_eta_ = 0.;
+      tt_dm1_pho1_e_ = 0.;
+      tt_dm1_pho2_e_ = 0.;
+      tt_dm1_pion_e_ = 0.;
+      tt_pho_dxy_l1_ = 0.;
+      tt_prods_dr_ = 0.;
+      tt_evt_ = evt;
+      tt_pm_ = pm;
+      tt_rec_prongs_ = 0;
       if (tinfo.hadronic_mode >= 0) {
-        if (tinfo.tau_st2_post_fsr->eta() >= 0.) {
-          p_graphs[0].SetTitle(TString::Format("#tau_{h} mode %i:", tinfo.hadronic_mode) + p_infostr);
-          if (tinfo.pi_charged.size() == p_good_pions && (tinfo.pi_neutral.size() == p_good_photons / 2)) {
-            std::cout << "GOOD HADRONIC TAU (P): " << tinfo.hadronic_mode << "\n";
-          }
-        } else {
-          m_graphs[0].SetTitle(TString::Format("#tau_{h} mode %i:", tinfo.hadronic_mode) + m_infostr);
-          if (tinfo.pi_charged.size() == m_good_pions && (tinfo.pi_neutral.size() == m_good_photons / 2)) {
-            std::cout << "GOOD HADRONIC TAU (M): " << tinfo.hadronic_mode << "\n";
-          }
+        if (save) {
+          graphs[0].SetTitle(
+              TString::Format("#tau_{h} mode %i:", tinfo.hadronic_mode) + infostr);
+        }
+        if (tinfo.pi_charged.size() == good_pions) {
+          tt_pion_reached_ee_ = 1;
+        }
+        if (tinfo.pi_charged.size() == good_pions &&
+            (tinfo.pi_neutral.size() == good_photons / 2)) {
+          tt_reached_ee_ = 1;
+        }
+
+        tt_dm_ = tinfo.hadronic_mode;
+        tt_tau_pt_ = tinfo.tau_st2_post_fsr->pt();
+        tt_tau_eta_ = tinfo.tau_st2_post_fsr->eta();
+        tt_vis_tau_pt_ = tinfo.vis_jet->pt();
+        tt_vis_tau_eta_ = tinfo.vis_jet->eta();
+        if (tt_dm_ == 1) {
+          tt_prods_dr_ = DR(tinfo.pi_charged.at(0), tinfo.pi_neutral.at(0));
+        }
+
+        if (tt_reached_ee_ && tt_dm_ == 1) {
+          double dx = sim_photons[0]->layer_positions()[0].x() -
+                      sim_photons[1]->layer_positions()[0].x();
+          double dy = sim_photons[0]->layer_positions()[0].y() -
+                      sim_photons[1]->layer_positions()[0].y();
+          tt_pho_dxy_l1_ = std::sqrt(dx * dx + dy * dy);
+          // if (tt_reached_ee_ && tt_pho_dxy_l1_ < 1.) std::cout << evt << "\t" << (tinfo.tau_st2_post_fsr->eta() >= 0.) << "\t" << tt_pho_dxy_l1_ << "\n";
         }
       }
+      tt_rec_prongs_ = found_clusters.size();
+      t_taus_->Fill();
     }
 
-    auto subdir = fs_->mkdir(TString::Format("event_%li", evt).Data());
-    for (auto const& gr : p_graphs) {
-      subdir.make<TGraph2D>(gr);
+    if (save) {
+      auto subdir = fs_->mkdir(TString::Format("event_%li", evt).Data());
+      for (auto const& gr : graphs) {
+        subdir.make<TGraph2D>(gr);
+      }
+      for (auto const& gr : signif_graph) {
+        subdir.make<TGraph2D>(gr);
+      }
+      // for (auto const& gr : jet_graphs) {
+      //   subdir.make<TGraph2D>(gr);
+      // }
+      for (auto const& gr : cluster_graphs) {
+        subdir.make<TGraph2D>(gr);
+      }
+      for (auto const& gr : signif_cluster_graph) {
+        subdir.make<TGraph2D>(gr);
+      }
+      for (auto const& gr : pion_markers) {
+        subdir.make<TPolyMarker3D>(gr);
+      }
+      for (auto const& gr : photon_markers) {
+        subdir.make<TPolyMarker3D>(gr);
+      }
+      subdir.make<TPolyMarker3D>(pion_etaphi_markers);
+      subdir.make<TPolyMarker3D>(photon_etaphi_markers);
     }
-    for (auto const& gr : m_graphs) {
-      subdir.make<TGraph2D>(gr);
-    }
-    for (auto const& gr : p_pion_markers) {
-      subdir.make<TPolyMarker3D>(gr);
-    }
-    for (auto const& gr : m_pion_markers) {
-      subdir.make<TPolyMarker3D>(gr);
-    }
-    for (auto const& gr : p_photon_markers) {
-      subdir.make<TPolyMarker3D>(gr);
-    }
-    for (auto const& gr : m_photon_markers) {
-      subdir.make<TPolyMarker3D>(gr);
-    }
+
+    event_counter += 1;
   }
 
-  event_counter += 1;
+
+
+
+
+
+
+
+
+  //  // print the jets
+  //  // cout <<   "        pt y phi" << endl;
+  //  // for (unsigned i = 0; i < jets.size(); i++) {
+  //  //   cout << "jet " << i << ": "<< jets[i].pt() << " " 
+  //  //                  << jets[i].rap() << " " << jets[i].phi() << endl;
+  //  //   vector<PseudoJet> constituents = jets[i].constituents();
+  //  //   for (unsigned j = 0; j < constituents.size(); j++) {
+  //  //     cout << "    constituent " << j << "'s pt: " << constituents[j].pt()
+  //  //          << endl;
+  //  //   }
+  //  // }
+
+  // std::string label_p = "";
+  // std::string label_m = "";
+
+
+  // // choose a jet definition
+  // fastjet::JetDefinition jet_def(fastjet::antikt_algorithm, 0.4);
+  // auto jets = ClusterJets(filtered_rechits, jet_def);
+  // std::vector<ic::CompositeCandidate *> jets_p;
+  // for (auto & j : jets) jets_p.push_back(&j);
+
+  // auto genJets = ClusterJets(genParts_final, jet_def);
+  // std::vector<ic::CompositeCandidate *> genJets_p;
+  // for (auto & j : genJets) genJets_p.push_back(&j);
+
+  // auto genJets_nonu = ClusterJets(genParts_finalNoNu, jet_def);
+  // std::vector<ic::CompositeCandidate *> genJets_nonu_p;
+  // for (auto & j : genJets_nonu) genJets_nonu_p.push_back(&j);
+
+
+  // auto matches = ic::MatchByDR(jets_p, genJets_p, 0.4, true, true);
+  // std::map<CompositeCandidate*, CompositeCandidate*> matchMap;
+  // for (auto const& pair : matches) matchMap[pair.first] = pair.second;
+
+  // auto matches_nonu = ic::MatchByDR(jets_p, genJets_nonu_p, 0.4, true, true);
+  // std::map<CompositeCandidate*, CompositeCandidate*> matchMap_nonu;
+  // for (auto const& pair : matches_nonu) matchMap_nonu[pair.first] = pair.second;
+
+
+  // // std::cout << "Simcluster sums:\n";
+  // // std::cout << sc_sum_p << "\n";
+  // // std::cout << sc_sum_m << "\n";
+  // // std::cout << "RecHit sums:\n";
+  // // std::cout << rh_sum_p << "\n";
+  // // std::cout << rh_sum_m << "\n";
+  // // std::cout << "RecHit (filtered) sums:\n";
+  // // std::cout << rhf_sum_p << "\n";
+  // // std::cout << rhf_sum_m << "\n";
+
+  // // std::cout << "Highest pT jets:\n";
+  // unsigned print = std::min(unsigned(jets.size()), unsigned(5));
+  // for (unsigned i = 0; i < print; i++) {
+  //   // std::cout << tmpjet << "\n";
+
+  //   // Do the two leading reco jets for now
+  //   if (i >= 2) continue;
+
+  //   jet_pt_ = jets[i].pt();
+  //   jet_eta_ = jets[i].eta();
+  //   jet_phi_ = jets[i].phi();
+  //   jet_e_ = jets[i].energy();
+
+  //   // Is the jet matched to a full genjet (neutrinos included)
+  //   if (matchMap.count(jets_p[i])) {
+  //     gen_matched_ = true;
+  //     genjet_pt_ = matchMap[jets_p[i]]->pt();
+  //     genjet_eta_ = matchMap[jets_p[i]]->eta();
+  //     genjet_phi_ = matchMap[jets_p[i]]->phi();
+  //     genjet_e_ = matchMap[jets_p[i]]->energy();
+  //   } else {
+  //     gen_matched_ = false;
+  //     genjet_pt_ = -1.;
+  //     genjet_eta_ = -1.;
+  //     genjet_phi_ = -1.;
+  //     genjet_e_ = -1.;
+  //   }
+
+  //   // Tau DM finding - false by default
+  //   isDM_r0p02_ = false;
+  //   isDM_r0p04_ = false;
+  //   isDM_r0p06_ = false;
+  //   isDM_r0p08_ = false;
+  //   isDM_r0p10_ = false;
+
+  //   if (matchMap_nonu.count(jets_p[i])) {
+  //     gen_nonu_matched_ = true;
+  //     genjet_nonu_pt_ = matchMap_nonu[jets_p[i]]->pt();
+  //     genjet_nonu_eta_ = matchMap_nonu[jets_p[i]]->eta();
+  //     genjet_nonu_phi_ = matchMap_nonu[jets_p[i]]->phi();
+  //     genjet_nonu_e_ = matchMap_nonu[jets_p[i]]->energy();
+
+  //     is_hadtau_ = false;
+  //     bool found_emu = false;
+  //     bool tau_matched = false;
+  //     std::vector<CompositeCandidate const*> partv = {matchMap_nonu[jets_p[i]]};
+  //     unsigned ncharged_0p02 = 0;
+  //     unsigned ncharged_0p04 = 0;
+  //     unsigned ncharged_0p06 = 0;
+  //     unsigned ncharged_0p08 = 0;
+  //     unsigned ncharged_0p10 = 0;
+  //     int charge_0p02 = 0;
+  //     int charge_0p04 = 0;
+  //     int charge_0p06 = 0;
+  //     int charge_0p08 = 0;
+  //     int charge_0p10 = 0;
+
+  //     // Loop through genjet constituents to figure out if this is a hadronic tau, and if it passes DM
+  //     for (unsigned c = 0; c < matchMap_nonu[jets_p[i]]->AsVector().size(); ++c) {
+  //       GenParticle const* part = dynamic_cast<GenParticle const*>(matchMap_nonu[jets_p[i]]->at(c));
+  //       if (std::abs(part->pdgid()) == 11 || std::abs(part->pdgid()) == 13) {
+  //         found_emu = true;
+  //       }
+  //       double dr = DR(jets_p[i], part);
+  //       bool is_charged = (std::abs(part->charge()) == 1);
+  //       if (is_charged && dr < 0.02) ncharged_0p02 += 1;
+  //       if (is_charged && dr < 0.04) ncharged_0p04 += 1;
+  //       if (is_charged && dr < 0.06) ncharged_0p06 += 1;
+  //       if (is_charged && dr < 0.08) ncharged_0p08 += 1;
+  //       if (is_charged && dr < 0.10) ncharged_0p10 += 1;
+  //       if (is_charged && dr < 0.02) charge_0p02 += part->charge();
+  //       if (is_charged && dr < 0.04) charge_0p04 += part->charge();
+  //       if (is_charged && dr < 0.06) charge_0p06 += part->charge();
+  //       if (is_charged && dr < 0.08) charge_0p08 += part->charge();
+  //       if (is_charged && dr < 0.10) charge_0p10 += part->charge();
+  //     }
+  //     if (MatchByDR(partv, genparts_taus, 0.4, true, true).size()) tau_matched = true;
+  //     if (!found_emu && tau_matched) is_hadtau_ = true;
+  //     if ((ncharged_0p02 == 1 || ncharged_0p02 == 3) && std::abs(charge_0p02) == 1) isDM_r0p02_ = true;
+  //     if ((ncharged_0p04 == 1 || ncharged_0p04 == 3) && std::abs(charge_0p04) == 1) isDM_r0p04_ = true;
+  //     if ((ncharged_0p06 == 1 || ncharged_0p06 == 3) && std::abs(charge_0p06) == 1) isDM_r0p06_ = true;
+  //     if ((ncharged_0p08 == 1 || ncharged_0p08 == 3) && std::abs(charge_0p08) == 1) isDM_r0p08_ = true;
+  //     if ((ncharged_0p10 == 1 || ncharged_0p10 == 3) && std::abs(charge_0p10) == 1) isDM_r0p10_ = true;
+  //   } else {
+  //     gen_nonu_matched_ = false;
+  //     genjet_nonu_pt_ = -1.;
+  //     genjet_nonu_eta_ = -1.;
+  //     genjet_nonu_phi_ = -1.;
+  //     genjet_nonu_e_ = -1.;
+  //     is_hadtau_ = false;
+  //   }
+
+  //   double e_sum_all = 0.;
+  //   double e_sum_0p02 = 0.;
+  //   double e_sum_0p04 = 0.;
+  //   double e_sum_0p06 = 0.;
+  //   double e_sum_0p08 = 0.;
+  //   double e_sum_0p10 = 0.;
+  //   for (unsigned c = 0; c < jets_p[i]->AsVector().size(); ++c) {
+  //     double energy = jets_p[i]->At(c)->energy();
+  //     e_sum_all += energy;
+  //     double dr = DR(jets_p[i], jets_p[i]->At(c));
+  //     if (dr < 0.02) e_sum_0p02 += energy;
+  //     if (dr < 0.04) e_sum_0p04 += energy;
+  //     if (dr < 0.06) e_sum_0p06 += energy;
+  //     if (dr < 0.08) e_sum_0p08 += energy;
+  //     if (dr < 0.10) e_sum_0p10 += energy;
+  //   }
+  //   efrac_r0p02_ = e_sum_0p02 / e_sum_all;
+  //   efrac_r0p04_ = e_sum_0p04 / e_sum_all;
+  //   efrac_r0p06_ = e_sum_0p06 / e_sum_all;
+  //   efrac_r0p08_ = e_sum_0p08 / e_sum_all;
+  //   efrac_r0p10_ = e_sum_0p10 / e_sum_all;
+
+  //   // Tau reconstruction
+  //   // Start by plotting jet energy fraction contained within a cone of various sizes
+
+  //   t_jets_->Fill();
+  //   // std::cout << "jet " << i << ": "<< jets[i].pt() << " "
+  //   //                << jets[i].eta() << " " << jets[i].phi() << std::endl;
+  // }
+
+  // // print = std::min(unsigned(genJets.size()), unsigned(5));
+  // // for (unsigned i = 0; i < print; i++) {
+  // //   std::cout << "genjet " << i << ": "<< genJets[i].pt() << " "
+  // //                  << genJets[i].eta() << " " << genJets[i].phi() << std::endl;
+  // // }
+
+
   return 0;
 }
 
 int HGCALTest::PostAnalysis() { return 0; }
+
+
+std::vector<TGraph2D> PlotRecHits(std::vector<RecHit *> rechits,
+                                          TString name_prefix) {
+  std::vector<TGraph2D> res;
+  if (rechits.size() == 0) return res;
+  std::vector<float> eta(rechits.size());
+  std::vector<float> phi(rechits.size());
+  std::vector<float> e(rechits.size());
+  for (unsigned l = 0; l < rechits.size(); ++l) {
+    eta[l] = (rechits[l]->position().eta());
+    phi[l] = (rechits[l]->position().phi());
+    e[l] = (rechits[l]->energy());
+  }
+  res.push_back(TGraph2D(eta.size(), &(eta[0]), &(phi[0]), &(e[0])));
+  res.back().SetName(name_prefix);
+  return res;
+}
+
+std::vector<TGraph2D> PlotJetRecHitsInLayers(std::vector<std::vector<ic::CompositeCandidate>> jets,
+                                          TString name_prefix) {
+  std::vector<TGraph2D> res;
+  for (unsigned l = 0; l < jets.size(); ++l) {
+    for (unsigned j = 0; j < jets[l].size(); ++j) {
+      auto cands = jets[l][j].AsVector();
+      std::vector<float> x(cands.size());
+      std::vector<float> y(cands.size());
+      std::vector<float> e(cands.size());
+      for (unsigned c = 0; c < cands.size(); ++c) {
+        auto rh = dynamic_cast<RecHit*>(cands[c]);
+        x[c] = (rh->position().x());
+        y[c] = (rh->position().y());
+        e[c] = (rh->energy());
+      }
+      res.push_back(TGraph2D(x.size(), &(x[0]), &(y[0]), &(e[0])));
+      res.back().SetName(TString::Format("%s_%i_%i", name_prefix.Data(), hgcal::firstLayer+l, j));
+    }
+  }
+  return res;
+}
+
+std::vector<TGraph2D> PlotRecHitListsInLayers(std::vector<std::vector<std::vector<RecHit *>>> jets,
+                                          TString name_prefix) {
+  std::vector<TGraph2D> res;
+  for (unsigned l = 0; l < jets.size(); ++l) {
+    for (unsigned j = 0; j < jets[l].size(); ++j) {
+      auto cands = jets[l][j];
+      std::vector<float> x(cands.size());
+      std::vector<float> y(cands.size());
+      std::vector<float> e(cands.size());
+      for (unsigned c = 0; c < cands.size(); ++c) {
+        auto rh = dynamic_cast<RecHit*>(cands[c]);
+        x[c] = (rh->position().x());
+        y[c] = (rh->position().y());
+        e[c] = (rh->energy());
+      }
+      res.push_back(TGraph2D(x.size(), &(x[0]), &(y[0]), &(e[0])));
+      res.back().SetName(TString::Format("%s_%i_%i", name_prefix.Data(), hgcal::firstLayer+l, j));
+    }
+  }
+  return res;
+}
 
 
 std::vector<TGraph2D> PlotRecHitsInLayers(std::vector<RecHit *> const &rechits,
@@ -648,6 +965,7 @@ std::vector<RecHit*> const& BuildRecHitCollection(TreeEvent* event) {
 
       dest.set_pid((*genpart_pid)[i]);
       dest.set_gen((*genpart_gen)[i]);
+      if (dest.gen() > 0) dest.set_gen(dest.gen() - 1);
       dest.set_mother((*genpart_mother)[i]);
       dest.set_reached_ee((*genpart_reachedEE)[i]);
       dest.set_from_beampipe((*genpart_fromBeamPipe)[i]);
@@ -669,6 +987,18 @@ std::vector<RecHit*> const& BuildRecHitCollection(TreeEvent* event) {
                   this->index() % this->pid() % this->gen() % this->mother() % this->reached_ee() % this->from_beampipe() %
                      this->vector() % this->M());
   }
+
+  void RecursiveMatchByDR(RecHit* c1, std::vector<RecHit*> collection, std::set<RecHit*> & result, double maxDR) {
+    // std::cout << result.size() << "\t" << collection.size() << "\n";
+    result.insert(c1);
+    std::vector<std::pair<RecHit*,RecHit*>> matches = ic::MatchByDR(std::vector<RecHit*>{c1}, collection, maxDR, false, false);
+    for (auto match : matches) {
+      if (!result.count(match.second)) {
+        RecursiveMatchByDR(match.second, collection, result, maxDR);
+      }
+    }
+  }
+
 
 
 }

@@ -16,7 +16,8 @@ parser = argparse.ArgumentParser()
 # parser.add_argument('input')
 parser.add_argument('--event', '-e', default=1, type=int)
 parser.add_argument('--region', '-r', default='p')
-parser.add_argument('--window', default=30., type=float)
+parser.add_argument('--window', default=0.1, type=float)
+
 # parser.add_argument('--bkg-model', default='Exponential')
 # parser.add_argument('--title', default='Muon ID Efficiency')
 # parser.add_argument('--postfix', default='')
@@ -32,7 +33,7 @@ infileName = 'output/Main/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_0.root'
 setRanges = False
 infoStr = None
 
-for layer in range(1, 53):
+for layer in range(1, 2):
 
     nlayers = 52
     event = args.event
@@ -41,23 +42,23 @@ for layer in range(1, 53):
 
     infile = ROOT.TFile(infileName)
 
-    graph = infile.Get('event_%i/%s_rechits_%i' % (event, region, layer))
+    graph = infile.Get('event_%i/%s_signif_rechits' % (event, region))
     if layer == 1:
         infoStr = graph.GetTitle().split(':')
     graph.SetMarkerStyle(20)
     graph.SetMarkerSize(5)
 
-    pions = infile.Get('event_%i/%s_pions_%i' % (event, region, layer))
-    photons = infile.Get('event_%i/%s_photons_%i' % (event, region, layer))
+    pions = infile.Get('event_%i/%s_pions' % (event, region))
+    photons = infile.Get('event_%i/%s_photons' % (event, region))
+
 
     jet_graphs = []
     jet_graph_idx = 0
-    jet_graph = infile.Get('event_%i/%s_clusters_%i_%i' % (event, region, layer, jet_graph_idx))
+    jet_graph = infile.Get('event_%i/%s_signif_rechit_clusters_%i' % (event, region, jet_graph_idx))
     while jet_graph != None:
         jet_graphs.append(jet_graph)
         jet_graph_idx += 1
-        jet_graph = infile.Get('event_%i/%s_clusters_%i_%i' % (event, region, layer, jet_graph_idx))
-    # print jet_graphs
+        jet_graph = infile.Get('event_%i/%s_signif_rechit_clusters_%i' % (event, region, jet_graph_idx))
 
 
     ncols = ROOT.gStyle.GetNumberOfColors()
@@ -98,11 +99,11 @@ for layer in range(1, 53):
 
     axis.SetMinimum(zmin)
     axis.SetMaximum(zmax)
-    axis.GetXaxis().SetTitle('x [cm]')
-    axis.GetYaxis().SetTitle('y [cm]')
+    axis.GetXaxis().SetTitle('#eta')
+    axis.GetYaxis().SetTitle('#phi')
     axis.GetZaxis().SetTitle('E [GeV]')
     axis.GetZaxis().SetTitleOffset(axis.GetZaxis().GetTitleOffset() * 1.3)
-    canv = ROOT.TCanvas('evt_%i_%s_layer_%.2i' % (event, region, layer), '')
+    canv = ROOT.TCanvas('evt_%i_%s_signifs' % (event, region), '')
     # view = ROOT.TView.CreateView(1)
 
     pads = plot.OnePad()
@@ -132,6 +133,7 @@ for layer in range(1, 53):
         markers.SetMarkerColor(ROOT.gStyle.GetColorPalette(theColor))
         markers.DrawPolyMarker(1, array('d', [graph.GetX()[i]]), array('d', [graph.GetY()[i]]))
 
+
     jetcols = [1, 2, 4, 6, 7, 8, 9, 28, 46]
     jetcol = 0
     for i, jet_graph in enumerate(jet_graphs):
@@ -155,11 +157,7 @@ for layer in range(1, 53):
         z = ROOT.Double()
         pions.GetPoint(i, x, y, z)
         markers.DrawPolyMarker(1, array('d', [x]), array('d', [y]))
-        latex.SetTextColor(ROOT.kRed)
         # latex.DrawLatex(x+1, y+1, 'E = %.1f GeV' % float(infoStr[i+1]))
-        kinlabel = [float(part) for part in infoStr[i+1].split(',')]
-        print kinlabel
-        latex.DrawLatex(x+1, y+1, '(%.1f, %.2f, %.2f)' % (kinlabel[0], kinlabel[1], kinlabel[2]))
 
     print 'Photons: %i' % photons.GetN()
     for i in xrange(photons.GetN()):
@@ -174,12 +172,9 @@ for layer in range(1, 53):
         markers.DrawPolyMarker(1, array('d', [x]), array('d', [y]))
         latex.SetTextColor(ROOT.kBlue)
         # latex.DrawLatex(x+1, y+1, 'E = %.1f GeV' % float(infoStr[i+1+pions.GetN()]))
-        kinlabel = [float(part) for part in infoStr[i+1+pions.GetN()].split(',')]
-        # print kinlabel
-        latex.DrawLatex(x+1, y+1, '(%.1f, %.2f, %.2f)' % (kinlabel[0], kinlabel[1], kinlabel[2]))
 
-    plot.DrawTitle(pads[0], 'layer = %i' % layer, 1)
-    plot.DrawTitle(pads[0], infoStr[0], 3)
+    # plot.DrawTitle(pads[0], 'layer = %i' % layer, 1)
+    # plot.DrawTitle(pads[0], infoStr[0], 3)
     # time.sleep(2)
     # graph.Draw('pcolz')
     # pads[0].Update()
@@ -192,12 +187,7 @@ for layer in range(1, 53):
     # Get a top-down view
     # canv.Print('.png')
     # canv.Print('.pdf')
-    fout = 'evt_%i_%s' % (event, region)
-    ext = ''
-    if layer == 1:
-        ext = '('
-    if layer == 52:
-        ext = ')'
+    fout = 'evt_%i_%s_signifs' % (event, region)
     # canv.Print('%s.png' % fout)
-    canv.Print('%s.pdf%s' % (fout, ext))
+    canv.Print('%s.pdf' % (fout))
 
