@@ -11,7 +11,7 @@ job_mgr.set_args(args)
 basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HGCAL' % os.environ[
     'CMSSW_BASE']
 
-MAX_EVTS = 50
+MAX_EVTS = 2000
 FILES_PER_JOB = 1000
 
 # OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name

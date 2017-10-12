@@ -64,6 +64,8 @@ int HGCALTest::PreAnalysis() {
   t_taus_->Branch("pho_dxy_l1",            &tt_pho_dxy_l1_);
   t_taus_->Branch("prods_dr",            &tt_prods_dr_);
   t_taus_->Branch("rec_prongs",            &tt_rec_prongs_);
+  t_taus_->Branch("jet_mass",            &tt_jet_mass_);
+  t_taus_->Branch("mass",            &tt_mass_);
   return 0;
 }
 
@@ -193,18 +195,18 @@ int HGCALTest::Execute(TreeEvent* event) {
 
     // Testing the significant hit algo
     bool nverb = false;
-    if (evt == 15 && pm == -1) {
-      nverb = true;
-    } else {
-      nverb = false;
-    }
+    // if (evt == 15 && pm == -1) {
+    //   nverb = true;
+    // } else {
+    //   nverb = false;
+    // }
 
     if (nverb && jet_hits_in_layers.size()) {
       for (unsigned l = 0; l < jet_hits_in_layers[0].size(); ++l) {
-        std::cout << "Layer " << l << "\n";
+        // std::cout << "Layer " << l << "\n";
         for (unsigned r = 0; r < jet_hits_in_layers[0][l].size(); ++r) {
-          auto rh = jet_hits_in_layers[0][l][r];
-          std::cout << rh->position() << "\t" << rh->thickness() << "\n";
+          // auto rh = jet_hits_in_layers[0][l][r];
+          // std::cout << rh->position() << "\t" << rh->thickness() << "\n";
         }
       }
     }
@@ -248,9 +250,10 @@ int HGCALTest::Execute(TreeEvent* event) {
 
 
     // Now we have to identify the cluster centers
-    double cluster_finder_dr = 0.005;
+    double cluster_finder_dr = 0.01;
     std::set<RecHit *> rh_set(signif_rhs_singles.begin(), signif_rhs_singles.end());
     std::vector<std::vector<RecHit *>> found_clusters;
+    std::vector<Candidate> found_clusters_p4;
     while (rh_set.size() > 0) {
       auto rh = *(rh_set.begin());
       std::set<RecHit*> result;
@@ -260,28 +263,87 @@ int HGCALTest::Execute(TreeEvent* event) {
       }
       if (result.size() > 1) {
         found_clusters.push_back(std::vector<RecHit*>(result.begin(), result.end()));
+        // take the simple average for now
+        double eta_sum = 0;
+        double phi_sum = 0;
+        for (auto rh : found_clusters.back()) {
+          eta_sum += rh->eta();
+          phi_sum += rh->phi();
+        }
+        found_clusters_p4.push_back(Candidate());
+        found_clusters_p4.back().set_eta(eta_sum / found_clusters.back().size());
+        found_clusters_p4.back().set_phi(phi_sum / found_clusters.back().size());
       }
     }
 
-    if (nverb) {
+    if (v > 0) {
       std::cout << "Significant RecHits:\n";
-      for (auto rh : signif_rhs_singles) {
-        std::cout << " >> " << rh->position() << "\n";
-      }
+      // for (auto rh : signif_rhs_singles) {
+      //   std::cout << " >> " << rh->position() << "\n";
+      // }
       std::cout << "Clustered:\n";
       for (unsigned i = 0; i < found_clusters.size(); ++i) {
+        double e_tot = 0.;
         std::cout << i << ": ";
         for (auto rh : found_clusters[i]) {
-          std::cout << rh->position() << "  ";
+          e_tot += rh->energy();
+          std::cout << rh->vector() << "  ";
         }
-        std::cout << "\n";
+        std::cout << "energy = " << e_tot << ", eta = " << found_clusters_p4[i].eta() << ", phi = " << found_clusters_p4[i].phi() << "\n";
+        // auto full_matches = ExtractSecond(MatchByDR(std::vector<Candidate*>{&found_clusters_p4[i]}, selected_jets[0]->AsVector(), cluster_finder_dr, false, false));
+        // ROOT::Math::PtEtaPhiEVector cone_collected;
+        // for (auto cand : full_matches) cone_collected += cand->vector();
+        // std::cout << "  " << cone_collected << "\n";
       }
     }
+
+    std::vector<double> energy_e(found_clusters_p4.size(), 0.);
+    std::vector<double> energy_h(found_clusters_p4.size(), 0.);
+    std::vector<double> energy_z(found_clusters_p4.size(), 0.);
+    ROOT::Math::PtEtaPhiEVector summed_clusters;
+
+    if (selected_jets.size() > 0) {
+      auto jet_rhs = selected_jets[0]->AsVector();
+      for (unsigned r = 0; r < jet_rhs.size(); ++r) {
+        std::vector<double> weights(found_clusters_p4.size());
+        double weights_sum = 0.;
+        for (unsigned c = 0; c < found_clusters_p4.size(); ++c) {
+          weights[c] = std::exp(-1. * DR(jet_rhs[r], &found_clusters_p4[c]) / cluster_finder_dr);
+          weights_sum += weights[c];
+        }
+        for (unsigned c = 0; c < found_clusters_p4.size(); ++c) {
+          weights[c] /= weights_sum;
+          double e_to_add = jet_rhs[r]->energy() * weights[c];
+          found_clusters_p4[c].set_energy(found_clusters_p4[c].energy() + e_to_add);
+          if (dynamic_cast<RecHit*>(jet_rhs[r])->layer() <= 28) {
+            energy_e[c] += e_to_add;
+          } else {
+            energy_h[c] += e_to_add;
+          }
+          energy_z[c] += dynamic_cast<RecHit*>(jet_rhs[r])->z() * e_to_add;
+        }
+      }
+      for (unsigned c = 0; c < found_clusters_p4.size(); ++c) {
+        energy_z[c] = energy_z[c] / found_clusters_p4[c].energy();
+        found_clusters_p4[c].set_pt(1);
+        found_clusters_p4[c].set_pt(found_clusters_p4[c].energy() * std::sin(found_clusters_p4[c].vector().theta()));
+        summed_clusters += found_clusters_p4[c].vector();
+      }
+      if (v > 0) {
+        std::cout << "Energy assigned:\n";
+        for (unsigned c = 0; c < found_clusters_p4.size(); ++c) {
+          std::cout << " >> " << found_clusters_p4[c].vector()
+                    << " h/e = " << energy_h[c] / energy_e[c] << " <z> = "
+                    << energy_z[c] << "\n";
+        }
+      }
+    }
+
 
 
 
     //******************** Printing
-    if (v > 0 || evt == 18) {
+    if (v > 0) {
       std::cout << "******** Event = " << evt << " (" << pm << ")\n";
       std::cout << "**** GenParticles\n";
       for (unsigned i = 0; i < genparts.size(); ++i) {
@@ -320,7 +382,7 @@ int HGCALTest::Execute(TreeEvent* event) {
 
     static int event_counter = 0;
     bool save = false;
-    if (event_counter < 100) {
+    if (event_counter < 0) {
       save = true;
     }
 
@@ -411,6 +473,8 @@ int HGCALTest::Execute(TreeEvent* event) {
       tt_evt_ = evt;
       tt_pm_ = pm;
       tt_rec_prongs_ = 0;
+      tt_mass_ = 0.;
+      tt_jet_mass_ = 0.;
       if (tinfo.hadronic_mode >= 0) {
         if (save) {
           graphs[0].SetTitle(
@@ -443,6 +507,12 @@ int HGCALTest::Execute(TreeEvent* event) {
         }
       }
       tt_rec_prongs_ = found_clusters.size();
+      if (selected_jets.size() >= 1) {
+        tt_jet_mass_ = selected_jets[0]->M();
+      }
+      if (found_clusters_p4.size() >= 2) {
+        tt_mass_ = summed_clusters.M();
+      }
       t_taus_->Fill();
     }
 

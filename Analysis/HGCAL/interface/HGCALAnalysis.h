@@ -206,6 +206,8 @@ class HGCALTest : public ModuleBase {
   unsigned tt_evt_;
   int tt_pm_;
   unsigned tt_rec_prongs_;
+  float tt_jet_mass_;
+  float tt_mass_;
 
  public:
   HGCALTest(std::string const &name);
