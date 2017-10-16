@@ -866,7 +866,7 @@ namespace ic {
         outtree_->Branch("probe_trigger_match_2", &probe_trigger_match_2_);
       }
         outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
-        if(strategy_ == strategy::mssmsummer16){
+        if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
           outtree_->Branch("wt_zpt_stat_m400pt0_up"    , &wt_zpt_stat_m400pt0_up     );
           outtree_->Branch("wt_zpt_stat_m400pt40_up"   , &wt_zpt_stat_m400pt40_up    );
           outtree_->Branch("wt_zpt_stat_m400pt80_up"   , &wt_zpt_stat_m400pt80_up    );
@@ -1201,7 +1201,7 @@ namespace ic {
           synctree_->Branch("decayModeFindingOldDMs_2",&ldecayModeFindingOldDMs_2,"decayModeFindingOldDMs_2/O");
 
       }
-      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
+      if(strategy_ == strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
           synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_1", &l3Hits_1,
                          "byCombinedIsolationDeltaBetaCorrRaw3Hits_1/F");
           synctree_->Branch("byIsolationMVA3newDMwoLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
@@ -1968,7 +1968,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) && !is_data_) ) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || ((strategy_==strategy::spring15||strategy_==strategy::fall15||strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) && !is_data_) ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -2106,10 +2106,10 @@ namespace ic {
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::spring15) btag_wp = 0.89 ;
-    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16  || strategy_ == strategy::mssmsummer16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16  || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16) btag_wp = 0.8;
-    if(strategy_ == strategy::mssmsummer16) btag_wp = 0.8484;
-    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) loose_btag_wp = 0.46;
+    if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) btag_wp = 0.8484;
+    if(strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) loose_btag_wp = 0.46;
 
    //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -2255,7 +2255,7 @@ namespace ic {
         puppimet = puppiMet_vec.at(0);
       }
     }
-    if(strategy_ == strategy::smspring16 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::mssmsummer16) pfmet = event->GetPtr<Met>("pfMET");
+    if(strategy_ == strategy::smspring16 || strategy_ == strategy::mssmspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) pfmet = event->GetPtr<Met>("pfMET");
 
     pfpt_tt_ = (ditau->vector() + pfmet->vector()).pt();
     //mvapt_tt_ = (ditau->vector() + mets->vector()).pt();
@@ -2512,7 +2512,7 @@ namespace ic {
         antiele_2_ = lagainstElectronTightMVA_2;
         antimu_2_ = lagainstMuonLoose3_2;
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
+      if(strategy_ == strategy::mssmspring16 ||strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
         lPhotonPtSum_1 = 0.;
@@ -2708,7 +2708,7 @@ namespace ic {
         antiele_2_ = lagainstElectronVLooseMVA_2;
         antimu_2_ = lagainstMuonTight3_2;
        } 
-       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16){
+       if (strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
         iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_study_){
           iso_1_db03_ = PF03IsolationVal(muon, 0.5, 0);
@@ -2819,7 +2819,7 @@ namespace ic {
         }
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
       }
-      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16){
+      if(strategy_ == strategy::mssmspring16 ||strategy_ ==strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
@@ -3012,7 +3012,7 @@ namespace ic {
         lbyVVTightIsolationMVArun2PWnewDMwLT_1 = tau1->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau1->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
 
       }
-      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
         iso_1_ = tau1->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         iso_2_ = tau2->GetTauID("byIsolationMVArun2v1DBoldDMwLTraw");
         l3Hits_1 = tau1->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
@@ -3130,7 +3130,7 @@ namespace ic {
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16) {
+      if(strategy_ == strategy::spring15 || strategy_ == strategy::fall15 || strategy_ == strategy::mssmspring16 ||strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16) {
         iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
         iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
         mva_1_ = ElectronHTTIdSpring15(elec1, false);
@@ -3150,7 +3150,7 @@ namespace ic {
         mva_1_ = MuonMedium(muon1);
         mva_2_ = MuonMedium(muon2);
       }
-      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16){
+      if(strategy_ == strategy::mssmspring16 || strategy_ == strategy::smspring16 || strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16){
         iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
         mva_1_ = MuonMediumHIPsafe(muon1);
