@@ -11,7 +11,7 @@ void GenCPPlots(std::string outfile_name, std::string channel, int cp_chan){
   TH1D *h = new TH1D();
   std::string plot_string = "aco_angle_1>>h";
   std::string binning = "(20,0,6.3)";
-  std::string cut_string_1 = "wt*("+cp_channel+")*(channel==\""+channel+"\")";
+  std::string cut_string_1 = "wt*(genpt_1>20&&genpt_2>20)*("+cp_channel+")*(channel==\""+channel+"\")";
   
   if(cp_chan>1){
     cut_string_1+="*(cp_sign_1<0)";    
@@ -35,7 +35,7 @@ void GenCPPlots(std::string outfile_name, std::string channel, int cp_chan){
 
   
   if(cp_chan>1){
-    std::string cut_string_2 = "wt*("+cp_channel+")*(channel==\""+channel+"\")";
+    std::string cut_string_2 = "wt*(genpt_1>20&&genpt_2>20)*("+cp_channel+")*(channel==\""+channel+"\")";
     cut_string_2+="*(cp_sign_1>0)";      
     t1->Draw((plot_string+binning).c_str(),(cut_string_2).c_str(),"goff");
     h = (TH1D*)gDirectory->Get("h");

@@ -144,7 +144,7 @@ namespace ic {
       wt_cp_0_ = tauspinner->weight("wt_cp_0");
       wt_cp_0p25_ = tauspinner->weight("wt_cp_0p25");
       wt_cp_0p5_ = tauspinner->weight("wt_cp_0p5");
-      if (1/wt_cp_0_>10) wt_=0; // to remove any events with large event weights - not physics motivated
+      //if (1/wt_cp_0_>10) wt_=0; // to remove any events with large event weights - not physics motivated
     }
     
     if(do_theory_uncert_){
@@ -275,25 +275,37 @@ namespace ic {
     ic::Candidate lep2;
     passed_ = false;
 
-    if(channel_str_ == "em"){
+    if(decayType == "em"){
       if(electrons.size() == 1 && muons.size() == 1){
         lep1 = electrons[0];
         lep2 = muons[0];
         passed_ = true;
       }
-    } else if(channel_str_ == "et"){
+    } else if(decayType == "mm"){
+      if(muons.size() == 2){
+        lep1 = muons[0];
+        lep2 = muons[1];
+        passed_ = true;
+      }
+    } else if(decayType == "ee"){
+      if(electrons.size() == 2){
+        lep1 = electrons[0];
+        lep2 = electrons[1];
+        passed_ = true;
+      }
+    } else if(decayType == "et"){
       if(electrons.size() == 1 && taus.size() == 1){
         lep1 = electrons[0];
         lep2 = taus[0];
         passed_ = true;
       }
-    } else if(channel_str_ == "mt"){
+    } else if(decayType == "mt"){
       if(muons.size() == 1 && taus.size() == 1){
         lep1 = muons[0];
         lep2 = taus[0];
         passed_ = true;
       }
-    } else if(channel_str_ == "tt"){
+    } else if(decayType == "tt"){
       if(taus.size() == 2){
         lep1 = taus[0];
         lep2 = taus[1];
@@ -327,63 +339,63 @@ namespace ic {
     ip_dz_res_1_ = -9999;
     ip_dz_res_2_ = -9999;
     std::vector<ic::Vertex*> primary_vtxs = event->GetPtrVec<ic::Vertex>("genVertices"); 
-    std::vector<ic::Vertex*> offline_primary_vtxs = event->GetPtrVec<ic::Vertex>("vertices");
+    //std::vector<ic::Vertex*> offline_primary_vtxs = event->GetPtrVec<ic::Vertex>("vertices");
     
     // use these for loops to compare generator level to offline taus/leptons
-    std::vector<ic::Tau*> offline_taus = event->GetPtrVec<ic::Tau>("taus");
-    bool FirstTau = true;
-    for (unsigned i=0; i<offline_taus.size(); ++i){
-      for(unsigned j=0; j<gen_tau_jets_ptr.size(); ++j){
-        double dR = ROOT::Math::VectorUtil::DeltaR(offline_taus[i]->vector(), gen_tau_jets_ptr[j]->vector());
-        if(dR < 0.5){
-          std::pair<bool,GenParticle*> pi = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[j]->constituents());
-          if (!pi.first) continue;
+    //std::vector<ic::Tau*> offline_taus = event->GetPtrVec<ic::Tau>("taus");
+    //bool FirstTau = true;
+    //for (unsigned i=0; i<offline_taus.size(); ++i){
+    //  for(unsigned j=0; j<gen_tau_jets_ptr.size(); ++j){
+    //    double dR = ROOT::Math::VectorUtil::DeltaR(offline_taus[i]->vector(), gen_tau_jets_ptr[j]->vector());
+     //   if(dR < 0.5){
+     //     std::pair<bool,GenParticle*> pi = GetTauPiDaughter(gen_particles, gen_tau_jets_ptr[j]->constituents());
+     //     if (!pi.first) continue;
           //ic::Vertex offline_tau_point;
           //offline_tau_point.set_vx(offline_taus[i]->vx()); offline_tau_point.set_vy(offline_taus[i]->vy()); offline_tau_point.set_vz(offline_taus[i]->vz());
           //TVector3 ip_offline = GetGenImpactParam(*(offline_primary_vtxs[0]),offline_tau_point, offline_taus[i]->vector());
           //std::cout << "--------------------" << std::endl;
           //std::cout << offline_primary_vtxs[0]->vx() << "    " << offline_primary_vtxs[0]->vy() << "    " << offline_primary_vtxs[0]->vz() << std::endl;
           //std::cout << offline_tau_point.vx() << "    " << offline_tau_point.vy() << "    " << offline_tau_point.vz() << std::endl;
-          TVector3 ip = GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector());
+     //     TVector3 ip = GetGenImpactParam(*(primary_vtxs[0]),pi.second->vtx(), pi.second->vector());
           
           //ip = ip.Unit();
 
           //double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
           //double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
           //double dx_res = (ip_offline.X() - ip.X())/ip.X();
-          double dz = offline_taus[i]->lead_dz_vertex();
-          double dxy = offline_taus[i]->lead_dxy_vertex();
-          double m = offline_taus[i]->vector().Py()/offline_taus[i]->vector().Px();
-          double dx = sqrt( pow(dxy,2)/(1/pow(m,2)-1) );
-          double dy = sqrt(pow(dxy,2) - pow(dx,2));
-          if(m*dxy*offline_taus[i]->vector().Px()<0) dx*=-1;
-          if(m*dxy*offline_taus[i]->vector().Py()>0) dy*=-1;
+       //   double dz = offline_taus[i]->lead_dz_vertex();
+        //  double dxy = offline_taus[i]->lead_dxy_vertex();
+        //  double m = offline_taus[i]->vector().Py()/offline_taus[i]->vector().Px();
+         // double dx = sqrt( pow(dxy,2)/(1/pow(m,2)-1) );
+         // double dy = sqrt(pow(dxy,2) - pow(dx,2));
+         // if(m*dxy*offline_taus[i]->vector().Px()<0) dx*=-1;
+         // if(m*dxy*offline_taus[i]->vector().Py()>0) dy*=-1;
           
-          TVector3 ip_offline(dx,dy,dz);
+         // TVector3 ip_offline(dx,dy,dz);
           //ip_offline = ip_offline.Unit();
           
-          double dx_res = (ip_offline.X() - ip.X())/ip.X();
-          double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
-          double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
+          //double dx_res = (ip_offline.X() - ip.X())/ip.X();
+          //double dy_res = (ip_offline.Y() - ip.Y())/ip.Y();
+          //double dz_res = (ip_offline.Z() - ip.Z())/ip.Z();
           
           //dz_res = (dz/dxy - ip.Z()/sqrt(pow(ip.X(),2)+pow(ip.Y(),2)))/(sqrt(pow(ip.X(),2)+pow(ip.Y(),2)));
-          double offline_dz = offline_taus[i]->lead_dz_vertex();
-          double gen_dz = ip.Z();
-          dz_res = (gen_dz-offline_dz)/gen_dz;
-          if (FirstTau){
-            ip_dz_res_1_ = dz_res;  
-            ip_dy_res_1_ = dy_res;
-            ip_dx_res_1_ = dx_res;
-            FirstTau = false;
-          } else {
-            ip_dz_res_2_ = dz_res;   
-            ip_dy_res_2_ = dy_res;
-            ip_dx_res_2_ = dx_res;
-          }
-          break;
-        }
-      }
-    }
+         // double offline_dz = offline_taus[i]->lead_dz_vertex();
+         // double gen_dz = ip.Z();
+          //dz_res = (gen_dz-offline_dz)/gen_dz;
+          //if (FirstTau){
+          //  ip_dz_res_1_ = dz_res;  
+          //  ip_dy_res_1_ = dy_res;
+          //  ip_dx_res_1_ = dx_res;
+          //  FirstTau = false;
+          //} else {
+          //  ip_dz_res_2_ = dz_res;   
+           // ip_dy_res_2_ = dy_res;
+          //  ip_dx_res_2_ = dx_res;
+          //}
+          //break;
+     //   }
+     // }
+    //}
     
     std::pair<bool,GenParticle*> pi_1 = std::make_pair(false, new GenParticle());
     std::pair<bool,std::vector<GenParticle*>> rho_1 = std::make_pair(false, std::vector<GenParticle*>()); 
@@ -548,75 +560,75 @@ namespace ic {
       }
     }
     
-    for(unsigned i=0; i<bjets.size(); ++i){
-      ic::GenJet jet = bjets[i];
-      bool MatchedToPrompt = false;
-      for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
-      }
+    //for(unsigned i=0; i<bjets.size(); ++i){
+    //  ic::GenJet jet = bjets[i];
+    // / bool MatchedToPrompt = false;
+     // for(unsigned j=0; j<higgs_products.size(); ++j){
+     //   if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+      //}
       //remove jets that are matched to Higgs decay products
-      if(MatchedToPrompt) bjets.erase (bjets.begin()+i);
-    }
+     // if(MatchedToPrompt) bjets.erase (bjets.begin()+i);
+    //}
     
     n_bjets_noscale_ = bjets.size();
     
-    for(unsigned i=0;  i<bjets.size(); ++i){
-      ic::GenJet jet = bjets[i];
-      double pt = bjets[i].vector().Pt();
-      double eta = fabs(bjets[i].vector().Rapidity());
-      double eff=0;
-      if(pt > bbtag_eff_->GetXaxis()->GetBinLowEdge(bbtag_eff_->GetNbinsX()+1)){
-        eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetNbinsX(),bbtag_eff_->GetYaxis()->FindBin(eta));
-      } else{
-        eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetXaxis()->FindBin(pt),bbtag_eff_->GetYaxis()->FindBin(eta));
-      }
-      rand->SetSeed((int)((bjets[i].eta()+5)*100000));
-      double randVal = rand->Uniform();
-      if (randVal > eff) bjets.erase (bjets.begin()+i);
-    }
+    //for(unsigned i=0;  i<bjets.size(); ++i){
+    //  ic::GenJet jet = bjets[i];
+    //  double pt = bjets[i].vector().Pt();
+     // double eta = fabs(bjets[i].vector().Rapidity());
+     // double eff=0;
+     // if(pt > bbtag_eff_->GetXaxis()->GetBinLowEdge(bbtag_eff_->GetNbinsX()+1)){
+     //   eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetNbinsX(),bbtag_eff_->GetYaxis()->FindBin(eta));
+     // } else{
+     //   eff = bbtag_eff_->GetBinContent(bbtag_eff_->GetXaxis()->FindBin(pt),bbtag_eff_->GetYaxis()->FindBin(eta));
+      //}
+      //rand->SetSeed((int)((bjets[i].eta()+5)*100000));
+      //double randVal = rand->Uniform();
+      //if (randVal > eff) bjets.erase (bjets.begin()+i);
+    //}
     n_bjets_ = bjets.size();
-    n_jets_nofilter_ = filtered_jets.size();
+    //n_jets_nofilter_ = filtered_jets.size();
     
-    for(unsigned i=0; i<filtered_jets.size(); ++i){
-      ic::GenJet jet = filtered_jets[i];
-      bool MatchedToPrompt = false;
-      for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
-      }
+    //for(unsigned i=0; i<filtered_jets.size(); ++i){
+    //  ic::GenJet jet = filtered_jets[i];
+    //  bool MatchedToPrompt = false;
+    //  for(unsigned j=0; j<higgs_products.size(); ++j){
+    //    if(DRLessThan(std::make_pair(&jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+    //  }
       //remove jets that are matched to Higgs decay products
-      if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
-    }
+    //  if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);
+    //}
     
-    std::string jets_label_ = "ak4PFJetsCHS";
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
-    std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    //std::string jets_label_ = "ak4PFJetsCHS";
+    //std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+    //std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     
-    for(unsigned i=0; i<jets.size(); ++i){
-      ic::PFJet *jet = jets[i];
-      bool MatchedToPrompt = false;
-      for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
-      }
+    //for(unsigned i=0; i<jets.size(); ++i){
+    //  ic::PFJet *jet = jets[i];
+     // bool MatchedToPrompt = false;
+    //  for(unsigned j=0; j<higgs_products.size(); ++j){
+     //   if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+     // }
       //remove jets that are matched to Higgs decay products
-      if(MatchedToPrompt) jets.erase (jets.begin()+i);
-    }
+     // if(MatchedToPrompt) jets.erase (jets.begin()+i);
+   // }
     
-    std::vector<PFJet*> offline_bjets = jets;
-    ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-    ic::erase_if(offline_bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+   // std::vector<PFJet*> offline_bjets = jets;
+   // ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+   // ic::erase_if(offline_bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     
-    std::string btag_label="pfCombinedInclusiveSecondaryVertexV2BJetTags";
-    double btag_wp =  0.8484;
-    if (event->Exists("retag_result")) {
-      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
-      ic::erase_if(offline_bjets, !boost::bind(IsReBTagged, _1, retag_result));
-    }else { 
-      ic::erase_if(offline_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
-    }
+   // std::string btag_label="pfCombinedInclusiveSecondaryVertexV2BJetTags";
+   // double btag_wp =  0.8484;
+   // if (event->Exists("retag_result")) {
+    //  auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+    //  ic::erase_if(offline_bjets, !boost::bind(IsReBTagged, _1, retag_result));
+    //}else { 
+     // ic::erase_if(offline_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+   // }
     
     
-    n_jets_offline_ = jets.size();
-    n_bjets_offline_ = offline_bjets.size();
+    //n_jets_offline_ = jets.size();
+    //n_bjets_offline_ = offline_bjets.size();
 
     n_jets_ = filtered_jets.size();
     jpt_1_       = -9999;
