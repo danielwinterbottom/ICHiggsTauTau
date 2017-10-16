@@ -50,8 +50,8 @@ struct strategy_def {
     fall15,    //Strategy for running on fall15 samples
     mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
     smspring16,    //Strategy for running on spring16 samples, SM analysis
-    mssmsummer16, //Strategry for running on summer16 samples, MSSM analysis
-    smsummer16    //Strategry for running on summer16 samples, SM analysis
+    mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
+    smsummer16    //Strategy for running on summer16 samples, SM analysis
 	};
 };
 typedef safe_enum<strategy_def> strategy;
