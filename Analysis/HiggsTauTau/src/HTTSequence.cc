@@ -745,6 +745,11 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
  .set_btag_mode(btag_mode)
  .set_bfake_mode(bfake_mode));
 
+//GluGluToHToTauTau_M-125_2016_mt_0.root
+std::string mass_str = output_name;
+mass_str.erase(0, mass_str.find("_M-")+3);
+mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
+
 BuildModule(jetIDFilter);
   TH2F btag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
   BuildModule(HTTGenAnalysis("HTTGenAnalysis")
@@ -761,6 +766,7 @@ BuildModule(jetIDFilter);
     .set_max_tau_eta(1000)
     .set_do_theory_uncert(true)
     .set_bbtag_eff(new TH2F(btag_eff))
+    .set_mssm_mass(mass_str)
   );
   return;  
 }

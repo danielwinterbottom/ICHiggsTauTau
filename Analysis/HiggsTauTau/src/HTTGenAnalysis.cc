@@ -45,6 +45,22 @@ namespace ic {
   }
 
   int HTTGenAnalysis::PreAnalysis() {
+    TFile f("input/mssm_higgspt/higgs_pt_v1_mssm_mode.root");
+    mssm_w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+    f.Close();
+    std::string mass_str = mssm_mass_;
+    if(mssm_w_->function(("h_"+mass_str+"_t_ratio").c_str())){
+      fns_["h_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));        
+      fns_["h_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["h_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["H_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("H_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["H_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("H_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["H_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("H_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["A_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["A_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
+      fns_["A_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt"))); 
+    }
+      
     rand = new TRandom3(0);
     if(fs_){  
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
@@ -200,6 +216,19 @@ namespace ic {
       outtree_->Branch("HiggsPt"     , &HiggsPt_     );
       outtree_->Branch("n_jets_offline"     , &n_jets_offline_);
       outtree_->Branch("n_bjets_offline"     , &n_bjets_offline_);
+      
+      outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
+      outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
+      outtree_->Branch("wt_ggh_i", &wt_ggh_i_);
+      outtree_->Branch("wt_ggH_t", &wt_ggH_t_);
+      outtree_->Branch("wt_ggH_b", &wt_ggH_b_);
+      outtree_->Branch("wt_ggH_i", &wt_ggH_i_);
+      outtree_->Branch("wt_ggA_t", &wt_ggA_t_);
+      outtree_->Branch("wt_ggA_b", &wt_ggA_b_);
+      outtree_->Branch("wt_ggA_i", &wt_ggA_i_);
+      outtree_->Branch("wt_ggA_i", &wt_ggA_i_);
+      outtree_->Branch("pT_A", &pT_A_);
+      
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -216,6 +245,7 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     event_ = (unsigned long long) eventInfo->event();
     wt_ = 1;
+    
     if(eventInfo->weight_defined("wt_mc_sign")) wt_ = eventInfo->weight("wt_mc_sign");
     if(do_theory_uncert_){
       // note some of these labels may be generator dependent so need to make sure you check before using them
@@ -344,7 +374,7 @@ namespace ic {
     std::vector<ic::GenParticle> prompt_leptons;
     std::vector<std::string> decay_types;
 
-    
+    double pT=0;
     HiggsPt_=-9999;
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
@@ -358,7 +388,16 @@ namespace ic {
       unsigned genID = std::fabs(part.pdgid());
       bool status_flag_t = part.statusFlags().at(0);
       bool status_flag_tlc = part.statusFlags().at(13);
-
+      
+      if(genID==36 && gen_particles[i]->statusFlags()[IsLastCopy]){
+        pT = gen_particles[i]->vector().Pt();
+        pT_A_ = pT;
+      }
+      if(genID==25 && gen_particles[i]->statusFlags()[IsLastCopy]){
+        pT = gen_particles[i]->vector().Pt();
+        pT_A_ = pT;
+      }
+      
       // add neutrinos 4-vectors to get gen met
       if(genID == 12 || genID == 14 || genID == 16){
         met.set_vector(met.vector() + part.vector());
@@ -631,6 +670,20 @@ namespace ic {
     }
     if(n_jets_ > 2){
       jpt_3_  = filtered_jets[2].vector().Pt();      
+    }
+    
+    //double pT = event->Get<double>("genpT");  
+    auto args = std::vector<double>{pT};
+    if(fns_["h_t_ratio"]){
+      wt_ggh_t_ = fns_["h_t_ratio"]->eval(args.data());        
+      wt_ggh_b_ = fns_["h_b_ratio"]->eval(args.data());
+      wt_ggh_i_ = fns_["h_i_ratio"]->eval(args.data());
+      wt_ggH_t_ = fns_["H_t_ratio"]->eval(args.data());
+      wt_ggH_b_ = fns_["H_b_ratio"]->eval(args.data());
+      wt_ggH_i_ = fns_["H_i_ratio"]->eval(args.data());
+      wt_ggA_t_ = fns_["A_t_ratio"]->eval(args.data());
+      wt_ggA_b_ = fns_["A_b_ratio"]->eval(args.data());
+      wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
     }
 
     if(fs_) outtree_->Fill();

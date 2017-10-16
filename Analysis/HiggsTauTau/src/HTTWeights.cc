@@ -773,29 +773,35 @@ namespace ic {
       }
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
-      if(event->Exists("genpT")){
-        double pT = event->Get<double>("genpT");  
-        auto args = std::vector<double>{pT};     
-        double wt_ggh_t_ = fns_["h_t_ratio"]->eval(args.data());        
-        double wt_ggh_b_ = fns_["h_b_ratio"]->eval(args.data());
-        double wt_ggh_i_ = fns_["h_i_ratio"]->eval(args.data());
-        double wt_ggH_t_ = fns_["H_t_ratio"]->eval(args.data());
-        double wt_ggH_b_ = fns_["H_b_ratio"]->eval(args.data());
-        double wt_ggH_i_ = fns_["H_i_ratio"]->eval(args.data());
-        double wt_ggA_t_ = fns_["A_t_ratio"]->eval(args.data());
-        double wt_ggA_b_ = fns_["A_b_ratio"]->eval(args.data());
-        double wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
-        
-        event->Add("wt_ggh_t" ,wt_ggh_t_);
-        event->Add("wt_ggh_b" ,wt_ggh_b_);
-        event->Add("wt_ggh_i" ,wt_ggh_i_);
-        event->Add("wt_ggH_t" ,wt_ggH_t_);
-        event->Add("wt_ggH_b" ,wt_ggH_b_);
-        event->Add("wt_ggH_i" ,wt_ggH_i_);
-        event->Add("wt_ggA_t" ,wt_ggA_t_);
-        event->Add("wt_ggA_b" ,wt_ggA_b_);
-        event->Add("wt_ggA_i" ,wt_ggA_i_);
+
+      double pT = -9999;  
+      std::vector<ic::GenParticle*> gen_particles = event->GetPtrVec<ic::GenParticle>("genParticles");
+      for(unsigned i=0; i<gen_particles.size(); ++i){
+        unsigned genID = std::fabs(gen_particles[i]->pdgid());  
+        if(genID==36 && gen_particles[i]->statusFlags()[IsLastCopy]) pT = gen_particles[i]->vector().Pt();
       }
+
+      auto args = std::vector<double>{pT};     
+      double wt_ggh_t_ = fns_["h_t_ratio"]->eval(args.data());        
+      double wt_ggh_b_ = fns_["h_b_ratio"]->eval(args.data());
+      double wt_ggh_i_ = fns_["h_i_ratio"]->eval(args.data());
+      double wt_ggH_t_ = fns_["H_t_ratio"]->eval(args.data());
+      double wt_ggH_b_ = fns_["H_b_ratio"]->eval(args.data());
+      double wt_ggH_i_ = fns_["H_i_ratio"]->eval(args.data());
+      double wt_ggA_t_ = fns_["A_t_ratio"]->eval(args.data());
+      double wt_ggA_b_ = fns_["A_b_ratio"]->eval(args.data());
+      double wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
+      
+      event->Add("wt_ggh_t" ,wt_ggh_t_);
+      event->Add("wt_ggh_b" ,wt_ggh_b_);
+      event->Add("wt_ggh_i" ,wt_ggh_i_);
+      event->Add("wt_ggH_t" ,wt_ggH_t_);
+      event->Add("wt_ggH_b" ,wt_ggH_b_);
+      event->Add("wt_ggH_i" ,wt_ggH_i_);
+      event->Add("wt_ggA_t" ,wt_ggA_t_);
+      event->Add("wt_ggA_b" ,wt_ggA_b_);
+      event->Add("wt_ggA_i" ,wt_ggA_i_);
+
     }
 
    if (do_tracking_eff_){
