@@ -18,7 +18,8 @@ namespace ic {
   HTTWeights::HTTWeights(std::string const& name) : ModuleBase(name),
     channel_(channel::et),
     mc_(mc::summer12_53X),
-    era_(era::data_2012_rereco) {
+    era_(era::data_2012_rereco),
+    strategy_(strategy::paper2013){
     do_trg_weights_           = false;
     trg_applied_in_mc_        = false;
     do_single_lepton_trg_     = false;
@@ -107,6 +108,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "channel"             % Channel2String(channel_);
     std::cout << boost::format(param_fmt()) % "era"                 % Era2String(era_);
     std::cout << boost::format(param_fmt()) % "mc"                  % MC2String(mc_);
+    std::cout << boost::format(param_fmt()) % "strategy"        % Strategy2String(strategy_);
     std::cout << boost::format(param_fmt()) % "do_trg_weights"      % do_trg_weights_;
     if (do_trg_weights_) {
       std::cout << boost::format(param_fmt()) % "trg_applied_in_mc" % trg_applied_in_mc_;
@@ -274,6 +276,14 @@ namespace ic {
                 w_->function("t_fake_MediumIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
             fns_["t_genuine_MediumIso_tt_data"] = std::shared_ptr<RooFunctor>(
                 w_->function("t_genuine_MediumIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
+            fns_["t_fake_TightIso_tt_mc"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_fake_TightIso_tt_mc")->functor(w_->argSet("t_pt,t_dm")));
+            fns_["t_genuine_TightIso_tt_mc"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_genuine_TightIso_tt_mc")->functor(w_->argSet("t_pt,t_dm")));
+            fns_["t_fake_TightIso_tt_data"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_fake_TightIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
+            fns_["t_genuine_TightIso_tt_data"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_genuine_TightIso_tt_data")->functor(w_->argSet("t_pt,t_dm")));
           } else{
             fns_["t_trgLooseIso_data"] = std::shared_ptr<RooFunctor>(
                w_->function("t_trgLooseIso_data")->functor(w_->argSet("t_pt")));
@@ -558,9 +568,15 @@ namespace ic {
         auto args_2 = std::vector<double>{pt_2,eta_2,decay_mode_2};
         double tau_sf_1_old = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
         double tau_sf_2_old = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
-        if(mc_ == mc::summer16_80X) tau_sf_1  = (gen_match_1 == 5) ? 0.97 : 1.0;
+        if(mc_ == mc::summer16_80X){
+          if (strategy_ == strategy::smsummer16) tau_sf_1  = (gen_match_1 == 5) ? 0.95 : 1.0;  
+          else tau_sf_1  = (gen_match_1 == 5) ? 0.97 : 1.0;
+        }
         else tau_sf_1 = tau_sf_1_old;
-        if(mc_ == mc::summer16_80X) tau_sf_2  = (gen_match_2 == 5) ? 0.97 : 1.0;
+        if(mc_ == mc::summer16_80X){
+          if(strategy_ == strategy::smsummer16) tau_sf_2  = (gen_match_2 == 5) ? 0.95 : 1.0;
+          else tau_sf_2  = (gen_match_2 == 5) ? 0.97 : 1.0;
+        }
         else tau_sf_2 = tau_sf_2_old;
         event->Add("wt_tau_id_binned",tau_sf_1_old*tau_sf_2_old/(tau_sf_1*tau_sf_2));
         
@@ -1591,20 +1607,21 @@ namespace ic {
                 double decay_mode_2 = tau2->decay_mode();
                 auto args_1 = std::vector<double>{pt_1,decay_mode_1};  
                 auto args_2 = std::vector<double>{pt_2,decay_mode_2};
-
+                std::string isoWP = "Medium";
+                if(strategy_ == strategy::smsummer16) isoWP = "Tight";
                 if(gm1_ == 5){ 
-                  tau1_trg = fns_["t_genuine_MediumIso_tt_data"]->eval(args_1.data());
-                  tau1_trg_mc = fns_["t_genuine_MediumIso_tt_mc"]->eval(args_1.data());
+                  tau1_trg = fns_["t_genuine_"+isoWP+"Iso_tt_data"]->eval(args_1.data());
+                  tau1_trg_mc = fns_["t_genuine_"+isoWP+"Iso_tt_mc"]->eval(args_1.data());
                 } else {
-                  tau1_trg = fns_["t_fake_MediumIso_tt_data"]->eval(args_1.data());
-                  tau1_trg_mc = fns_["t_fake_MediumIso_tt_mc"]->eval(args_1.data());
+                  tau1_trg = fns_["t_fake_"+isoWP+"Iso_tt_data"]->eval(args_1.data());
+                  tau1_trg_mc = fns_["t_fake_"+isoWP+"Iso_tt_mc"]->eval(args_1.data());
                 } 
                 if(gm2_ == 5){ 
-                  tau2_trg = fns_["t_genuine_MediumIso_tt_data"]->eval(args_2.data());
-                  tau2_trg_mc = fns_["t_genuine_MediumIso_tt_mc"]->eval(args_2.data());
+                  tau2_trg = fns_["t_genuine_"+isoWP+"Iso_tt_data"]->eval(args_2.data());
+                  tau2_trg_mc = fns_["t_genuine_"+isoWP+"Iso_tt_mc"]->eval(args_2.data());
                 } else {
-                  tau2_trg = fns_["t_fake_MediumIso_tt_data"]->eval(args_2.data());
-                  tau2_trg_mc = fns_["t_fake_MediumIso_tt_mc"]->eval(args_2.data());
+                  tau2_trg = fns_["t_fake_"+isoWP+"Iso_tt_data"]->eval(args_2.data());
+                  tau2_trg_mc = fns_["t_fake_"+isoWP+"Iso_tt_mc"]->eval(args_2.data());
                 }
               } else{ 
                 if(gm1_ == 5){ 
