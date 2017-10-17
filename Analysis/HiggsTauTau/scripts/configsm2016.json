@@ -33,7 +33,7 @@
     "get_effective" : false,
     "do_btag_eff":false,
     "trg_in_mc" : true,
-    "filter_trg" : false,
+    "filter_trg" : true,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "do_singletau"    :true,
