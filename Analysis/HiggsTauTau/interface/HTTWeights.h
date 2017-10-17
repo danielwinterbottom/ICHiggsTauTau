@@ -21,6 +21,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, ic::channel, channel)
   CLASS_MEMBER(HTTWeights, ic::mc, mc)
   CLASS_MEMBER(HTTWeights, ic::era, era)
+  CLASS_MEMBER(HTTWeights, ic::strategy, strategy)
   CLASS_MEMBER(HTTWeights, bool, do_trg_weights)
   CLASS_MEMBER(HTTWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HTTWeights, bool, do_single_lepton_trg)
