@@ -341,7 +341,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
 
   if (strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
     tau_pt=40;
-    tight_tau_pt=50;
+    lead_tau_pt=50;
     if(js["store_hltpaths"].asBool()) tau_pt = 25;
   }
 
@@ -349,7 +349,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   tau_iso = 1.0;
   tau_dz = 0.2;
   min_taus = 2;
-  tight_min_taus = 1;
+  lead_min_taus = 1;
   tau_iso_discr = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
   tau_anti_elec_discr = "againstElectronVLooseMVA5";
   tau_anti_muon_discr = "againstMuonLoose3";
@@ -519,7 +519,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "muon_dxy" % muon_dxy;
   std::cout << boost::format(param_fmt) % "muon_dz" % muon_dz;
   std::cout << boost::format(param_fmt) % "tau_pt" % tau_pt;
-  std::cout << boost::format(param_fmt) % "tight_tau_pt" % tight_tau_pt;
+  std::cout << boost::format(param_fmt) % "lead_tau_pt" % lead_tau_pt;
   std::cout << boost::format(param_fmt) % "tau_eta" % tau_eta;
   std::cout << boost::format(param_fmt) % "tau_dz" % tau_dz;
   std::cout << boost::format(param_fmt) % "veto_elec_pt" % veto_elec_pt;
@@ -2743,9 +2743,9 @@ if(strategy_type == strategy::paper2013){
    }
   if (strategy_type == strategy::smsummer16){
   BuildModule(SimpleFilter<Tau>("TighterTauFilter")
-      .set_input_label(js["taus"].asString()).set_min(tight_min_taus)
+      .set_input_label(js["taus"].asString()).set_min(lead_min_taus)
       .set_predicate([=](Tau const* t) {
-        return  t->pt()                     >  tight_tau_pt     &&
+        return  t->pt()                     >  lead_tau_pt     &&
                 fabs(t->eta())              <  tau_eta    &&
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
                 fabs(t->charge())           == 1          &&
