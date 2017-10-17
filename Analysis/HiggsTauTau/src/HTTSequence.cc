@@ -1778,7 +1778,10 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
         .set_mt_xtrig_mc(new TH2D(mt_xtrig_mc)).set_mt_xtrig_data(new TH2D(mt_xtrig_data))
         .set_mt_conditional_mc(new TH2D(mt_conditional_mc)).set_mt_conditional_data(new TH2D(mt_conditional_data));
     }else{
-        if(strategy_type == strategy::smsummer16) httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
+        if(strategy_type == strategy::smsummer16){
+          httWeights.set_strategy(strategy::smsummer16);
+          httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
+        }
         else httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5.root");
     }
   if (!is_data ) {

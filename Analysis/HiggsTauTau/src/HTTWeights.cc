@@ -198,6 +198,8 @@ namespace ic {
         w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
         f.Close();
         if(do_trg_weights_ || do_idiso_weights_) {
+          if (strategy_ != strategy::smsummer16) {
+
           fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("m_id_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
@@ -214,7 +216,7 @@ namespace ic {
                w_->function("m_trgOR4_binned_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
             fns_["m_trgOR4_binned_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgOR4_binned_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
-          }
+          }}
           fns_["m_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("m_idiso0p15_desy_ratio")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_idiso0p20_desy_ratio"] = std::shared_ptr<RooFunctor>(
@@ -236,16 +238,19 @@ namespace ic {
             fns_["m_trgMu23leg_desy_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgMu23leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
           }
+          if (strategy_ != strategy::smsummer16) {
           fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_id_ratio")->functor(w_->argSet("e_pt,e_eta")));
           fns_["e_iso_binned_ratio"] = std::shared_ptr<RooFunctor>(
               w_->function("e_iso_binned_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trg_binned_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+          
           if (mc_ == mc::summer16_80X){
             fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("e_trg_binned_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));
           }
+          
           fns_["e_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
              w_->function("e_idiso0p15_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
           if(mc_ != mc::summer16_80X){
@@ -254,6 +259,7 @@ namespace ic {
           } else{
             fns_["e_idiso0p10_KITbins_desy_ratio"] = std::shared_ptr<RooFunctor>(
                w_->function("e_idiso0p10_KITbins_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
+          }
           }
           fns_["e_trgEle25eta2p1WPTight_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trgEle25eta2p1WPTight_desy_data")->functor(w_->argSet("e_pt,e_eta")));
@@ -303,17 +309,21 @@ namespace ic {
                w_->function("t_trgVTightIsoSS_data")->functor(w_->argSet("t_pt")));
           }
         }
-        if(do_tau_id_sf_){
+        if(do_tau_id_sf_ && strategy_ != strategy::smsummer16){
           fns_["t_iso_mva_m_pt30_sf"] = std::shared_ptr<RooFunctor>(
              w_->function("t_iso_mva_m_pt30_sf")->functor(w_->argSet("t_pt,t_eta,t_dm")));
           fns_["t_iso_mva_t_pt40_eta2p1_sf"] = std::shared_ptr<RooFunctor>(
              w_->function("t_iso_mva_t_pt40_eta2p1_sf")->functor(w_->argSet("t_pt,t_eta,t_dm")));
-         }
+        } 
         if(do_tracking_eff_) {
+          TFile f("input/scale_factors/htt_scalefactors_v16_5.root");
+          wtrk_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+          f.Close();
+          
           fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
-              w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
+              wtrk_->function("m_trk_ratio")->functor(wtrk_->argSet("m_eta")));
           fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
-              w_->function("e_trk_ratio")->functor(w_->argSet("e_pt,e_eta")));
+              wtrk_->function("e_trk_ratio")->functor(wtrk_->argSet("e_pt,e_eta")));
         }
     }
     if (do_zpt_weight_ && mc_ == mc::summer16_80X){
@@ -543,7 +553,7 @@ namespace ic {
         double pt_2 = tau2->pt();
         double eta_2 = tau2->eta();
         auto args_2 = std::vector<double>{pt_2,eta_2,decay_mode_2};
-        double tau_sf_2_old = (gen_match_2 == 5) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
+        double tau_sf_2_old = (gen_match_2 == 5 && strategy_ != strategy::smsummer16) ? fns_["t_iso_mva_m_pt30_sf"]->eval(args_2.data()) : 1.0;
         if(mc_ == mc::summer16_80X){
             tau_sf_2  = (gen_match_2 == 5) ? 0.95 : 1.0;
             double loose_tau_sf_2 = (gen_match_2 == 5) ? 0.99 : 1.0;
@@ -1236,11 +1246,11 @@ namespace ic {
                     tau_trg_mc=1;
                     auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};
                     auto args_desy = std::vector<double>{pt,m_signed_eta};
-                    if(mc_ == mc::summer16_80X){
+                    if(mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16){
                       mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                     } else{
-                      if(m_iso<0.15){
+                      if(m_iso<0.15 && strategy_ != strategy::smsummer16){
                         mu_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args_desy.data());
                       } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
                       mu_trg = 1;   
