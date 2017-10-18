@@ -576,8 +576,8 @@ namespace ic {
         double eta_2 = tau2->eta();
         auto args_1 = std::vector<double>{pt_1,eta_1,decay_mode_1};
         auto args_2 = std::vector<double>{pt_2,eta_2,decay_mode_2};
-        double tau_sf_1_old = (gen_match_1==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
-        double tau_sf_2_old = (gen_match_2==5) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
+        double tau_sf_1_old = (gen_match_1==5 && strategy_ != strategy::smsummer16) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_1.data()) : 1.0;
+        double tau_sf_2_old = (gen_match_2==5 && strategy_ != strategy::smsummer16) ? fns_["t_iso_mva_t_pt40_eta2p1_sf"]->eval(args_2.data()) : 1.0;
         if(mc_ == mc::summer16_80X){
           if (strategy_ == strategy::smsummer16) tau_sf_1  = (gen_match_1 == 5) ? 0.95 : 1.0;  
           else tau_sf_1  = (gen_match_1 == 5) ? 0.97 : 1.0;
@@ -1018,7 +1018,7 @@ namespace ic {
                     ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_desy.data());
                   } else ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
                   ele_trg_mc=1;
-                  if(mc_ == mc::summer16_80X){
+                  if(mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16){
                     ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());  
                     ele_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
                   }
@@ -1250,8 +1250,8 @@ namespace ic {
                       mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                     } else{
-                      if(m_iso<0.15 && strategy_ != strategy::smsummer16){
-                        mu_trg = fns_["m_trgIsoMu22orTkIsoMu22_desy_data"]->eval(args_desy.data());
+                      if(m_iso<0.15){
+                        mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
                       } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
                       mu_trg = 1;   
                     }
@@ -1968,7 +1968,7 @@ namespace ic {
            if(e_iso < 0.1){
              ele_idiso = fns_["e_idiso0p10_desy_ratio"]->eval(args_1.data());
            } else ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
-        } else if (mc_ == mc::summer16_80X){
+        } else if (mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16){
            auto args_1 = std::vector<double>{pt,e_signed_eta};
            auto args_2 = std::vector<double>{pt,e_signed_eta,e_iso};
            ele_idiso = fns_["e_id_ratio"]->eval(args_1.data()) * fns_["e_iso_binned_ratio"]->eval(args_2.data()) ;
@@ -2031,7 +2031,7 @@ namespace ic {
            if(m_iso<0.15){
              mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
            } else mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
-        } else if(mc_ == mc::summer16_80X){
+        } else if(mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16){
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
            mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
