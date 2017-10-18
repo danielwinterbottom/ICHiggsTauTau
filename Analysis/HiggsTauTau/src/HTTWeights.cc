@@ -232,11 +232,15 @@ namespace ic {
              w_->function("m_trgMu8leg_desy_data")->functor(w_->argSet("m_pt,m_eta")));
           fns_["m_trgMu23leg_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("m_trgMu23leg_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+          fns_["m_trgMu19leg_eta2p1_desy_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trgMu19leg_eta2p1_desy_data")->functor(w_->argSet("m_pt,m_eta")));
           if(mc_ == mc::summer16_80X){
             fns_["m_trgMu8leg_desy_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgMu8leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
             fns_["m_trgMu23leg_desy_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgMu23leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
+            fns_["m_trgMu19leg_eta2p1_desy_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgMu19leg_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
           }
           if (strategy_ != strategy::smsummer16) {
           fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
