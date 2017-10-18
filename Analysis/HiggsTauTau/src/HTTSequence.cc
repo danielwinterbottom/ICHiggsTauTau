@@ -1802,7 +1802,7 @@ if(strategy_type == strategy::mssmsummer16&&channel!=channel::wmnu){
   }
   if(output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos){
     httWeights.set_do_mssm_higgspt(true); 
-    httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v1_mssm_mode.root");
+    httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v2_mssm_mode.root");
     std::string mass_str = output_name;
     mass_str.erase(0, mass_str.find("_M-")+3);
     mass_str.erase(mass_str.find("_"),mass_str.length()-output_name.find("_"));

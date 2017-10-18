@@ -45,11 +45,11 @@ namespace ic {
   }
 
   int HTTGenAnalysis::PreAnalysis() {
-    TFile f("input/mssm_higgspt/higgs_pt_v1_mssm_mode.root");
-    mssm_w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+    TFile f("input/mssm_higgspt/higgs_pt_v2_mssm_mode.root");
+    mssm_w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
     f.Close();
     std::string mass_str = mssm_mass_;
-    if(mssm_w_->function(("h_"+mass_str+"_t_ratio").c_str())){
+    //if(mssm_w_->function(("h_"+mass_str+"_t_ratio").c_str())){
       fns_["h_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));        
       fns_["h_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
       fns_["h_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
@@ -59,7 +59,7 @@ namespace ic {
       fns_["A_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
       fns_["A_b_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_b_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
       fns_["A_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt"))); 
-    }
+    //}
       
     rand = new TRandom3(0);
     if(fs_){  
@@ -674,7 +674,7 @@ namespace ic {
     
     //double pT = event->Get<double>("genpT");  
     auto args = std::vector<double>{pT};
-    if(fns_["h_t_ratio"]){
+//    if(fns_["h_t_ratio"]){
       wt_ggh_t_ = fns_["h_t_ratio"]->eval(args.data());        
       wt_ggh_b_ = fns_["h_b_ratio"]->eval(args.data());
       wt_ggh_i_ = fns_["h_i_ratio"]->eval(args.data());
@@ -684,7 +684,7 @@ namespace ic {
       wt_ggA_t_ = fns_["A_t_ratio"]->eval(args.data());
       wt_ggA_b_ = fns_["A_b_ratio"]->eval(args.data());
       wt_ggA_i_ = fns_["A_i_ratio"]->eval(args.data());
-    }
+//    }
 
     if(fs_) outtree_->Fill();
     

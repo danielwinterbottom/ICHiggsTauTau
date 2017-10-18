@@ -310,7 +310,7 @@ namespace ic {
     }
     if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
       TFile f(mssm_higgspt_file_.c_str());
-      mssm_w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+      mssm_w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
       f.Close();
       std::string mass_str = mssm_mass_;
       fns_["h_t_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("h_"+mass_str+"_t_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));        
