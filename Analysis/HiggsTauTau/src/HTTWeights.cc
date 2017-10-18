@@ -1014,7 +1014,7 @@ namespace ic {
                   tau_trg_mc=1;
                   auto args_1 = std::vector<double>{e_pt,e_signed_eta,e_iso};
                   auto args_desy = std::vector<double>{e_pt,e_signed_eta};
-                  if(e_iso<0.1){
+                  if(e_iso<0.1 || strategy_ == strategy::smsummer16){
                     ele_trg = fns_["e_trgEle25eta2p1WPTight_desy_data"]->eval(args_desy.data());
                   } else ele_trg = fns_["e_trg_binned_data"]->eval(args_1.data());
                   ele_trg_mc=1;
@@ -1250,7 +1250,7 @@ namespace ic {
                       mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                     } else{
-                      if(m_iso<0.15){
+                      if(m_iso<0.15 || strategy_ == strategy::smsummer16){
                         mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
                       } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
                       mu_trg = 1;   
