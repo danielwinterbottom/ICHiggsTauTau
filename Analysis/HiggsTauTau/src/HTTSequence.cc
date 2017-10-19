@@ -754,7 +754,6 @@ BuildModule(BTagWeightRun2("BTagWeightRun2")
  .set_btag_mode(btag_mode)
  .set_bfake_mode(bfake_mode));
 
-//GluGluToHToTauTau_M-125_2016_mt_0.root
 std::string mass_str = output_name;
 mass_str.erase(0, mass_str.find("_M-")+3);
 mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
