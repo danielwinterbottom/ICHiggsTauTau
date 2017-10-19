@@ -1,0 +1,6 @@
+jet1_neutralfrac(10,0.,1.)	;Jet1_Neutral;Events
+jet2_neutralfrac(10,0.,1.)	;Jet2_Neutral;Events
+jet1_chargedfrac(10,0.,1.)	;Jet1_Charged;Events
+jet2_chargedfrac(10,0.,1.)	;Jet2_Charged;Events
+n_jets_csv2medium(20,0.,6.)	;N b-jets;Events
+nvetotaus(20,0.,6.)	;N veto-#tau;Events

@@ -9,7 +9,7 @@
 namespace ic{
 
   DataShape::DataShape(std::string name) : LTModule(name){
-    dataweight_="weight_nolep";
+    dataweight_="weight_nolepnotrig*weight_trig_0";
     std::vector<std::string> shapes;
     shapes.push_back("jet2_pt(200,0.,1000.)");
     shape_=shapes;
@@ -69,20 +69,34 @@ namespace ic{
       }
       TH1F datashape;
       TH2F datashape2D;
+      TH3F datashape3D;
       bool is2D = false;
-      if (histname.find(":")!=histname.npos) {
+      bool is3D = false;
+      size_t n = std::count(histname.begin(), histname.end(), ':');
+      if (n==1) {
 	datashape2D=filemanager->GetSetsShape2D(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
 	is2D=true;
+      } else if (n==2){
+	datashape3D=filemanager->GetSetsShape3D(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
+	is3D=true;
       }
-      else datashape = filemanager->GetSetsShape(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
+      else if (n==0) datashape = filemanager->GetSetsShape(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
+      else {
+	std::cout << "Warning, more than 2 : found in histname " << histname << ": " << n << " file " << __FILE__ << " line " << __LINE__ << std::endl;
+	return 1;
+      }
       dir->cd();
       if(iShape==0){
-	if (!is2D) std::cout<<"  nevents: "<<Integral(&datashape)<<"+-"<<Error(&datashape)<<std::endl;
-	else std::cout<<"  nevents: "<<Integral(&datashape2D)<<"+-"<<Error(&datashape2D)<<std::endl;
+	if (!is2D && !is3D) std::cout<<"  nevents: "<<Integral(&datashape)<<"+-"<<Error(&datashape)<<std::endl;
+	else if (is2D) std::cout<<"  nevents: "<<Integral(&datashape2D)<<"+-"<<Error(&datashape2D)<<std::endl;
+	else if (is3D) std::cout<<"  nevents: "<<Integral(&datashape3D)<<"+-"<<Error(&datashape3D)<<std::endl;
       }
       if (is2D){
 	datashape2D.SetName(histname.c_str());
 	datashape2D.Write();
+      } else if (is3D){
+	datashape3D.SetName(histname.c_str());
+	datashape3D.Write();
       } else {
 	datashape.SetName(histname.c_str());
 	datashape.Write();

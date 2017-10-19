@@ -59,11 +59,17 @@ namespace ic {
 
 
     ROOT::Math::PtEtaPhiEVector lVec = lMetPtr->vector();
+    //std::cout << " --                             " << std::endl;
+    //std::cout << " -- MET before is:              " << lVec << std::endl;
 
-    if (lepFlavour_==2)
+    if (lepFlavour_==2) {
       correctMet<Muon>(event,lVec);
-    else if (lepFlavour_==1)
+      //std::cout << " -- MET after for Muons is:     " << lVec << std::endl;
+    }
+    else if (lepFlavour_==1) {
       correctMet<Electron>(event,lVec);
+      //std::cout << " -- MET after for Electrons is: " << lVec << std::endl;
+    }
 
     lMetPtr->set_vector(lVec);
  

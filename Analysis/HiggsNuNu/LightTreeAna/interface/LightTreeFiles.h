@@ -33,7 +33,7 @@ namespace ic{
     TTree* GetSubTree(TEntryList);
     bool GetShape(TH1F & shape, std::string const&, std::string const&, std::string const&, std::string const&, const bool);
     bool GetShape2D(TH2F & shape, std::string const&, std::string const&, std::string const&, std::string const&, const bool);
-    TH3F GetShape3D(std::string const&, std::string const&, std::string const&, std::string const&);
+    bool GetShape3D(TH3F & shape, std::string const&, std::string const&, std::string const&, std::string const&, const bool);
     TTree* GetTree();
   };
 
@@ -85,11 +85,14 @@ namespace ic{
     TH1F GetSetsShape(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,const bool);
     bool GetShape2D(TH2F & shape,std::string,std::string const&, std::string const&, std::string const&, std::string const&, const bool);
     bool GetSetShape2D(TH2F & shape, std::string,std::string const&, std::string const&, std::string const&, std::string const&,const bool, const bool);
+    bool GetShape3D(TH3F & shape,std::string,std::string const&, std::string const&, std::string const&, std::string const&, const bool);
+    bool GetSetShape3D(TH3F & shape, std::string,std::string const&, std::string const&, std::string const&, std::string const&,const bool, const bool);
     TH2F GetShape2D(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH2F GetSetShape2D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,const bool);
     TH2F GetSetsShape2D(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,const bool);
     TH3F GetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetSetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
+    TH3F GetSetsShape3D(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,const bool);
   };
 
 }

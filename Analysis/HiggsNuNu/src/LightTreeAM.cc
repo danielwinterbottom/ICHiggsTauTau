@@ -682,9 +682,9 @@ namespace ic {
 	jet_phi_[nJets_]=jets[i]->phi();
 	jet_csv_[nJets_]=jets[i]->GetBDiscriminator("pfCombinedSecondaryVertexV2BJetTags");
 	//jet_csv_[nJets_]=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-	jet_jetid_[nJets_]=PFJetID2015(jets[i]);
-	jet_loosepuid_[nJets_]=PileupJetID(jets[i],3,false);
-	jet_tightpuid_[nJets_]=PileupJetID(jets[i],3,true);
+	jet_jetid_[nJets_]=PFJetID2016(jets[i]);
+	jet_loosepuid_[nJets_]=PileupJetID(jets[i],4,false);
+	jet_tightpuid_[nJets_]=PileupJetID(jets[i],4,true);
 	jet_flavour_[nJets_]=jets[i]->parton_flavour();
 	
 	if (!is_data_ && recotogenmatch[i].second){

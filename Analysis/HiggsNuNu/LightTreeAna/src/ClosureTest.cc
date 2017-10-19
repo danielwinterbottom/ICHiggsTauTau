@@ -15,8 +15,8 @@ namespace ic{
   ClosureTest::ClosureTest(std::string name) : LTModule(name){
     sigmcweight_="total_weight_lepveto";
     contmcweight_="total_weight_leptight";
-    contmczweight_="weight_nolep";
-    dataweight_="weight_nolep";
+    contmczweight_="weight_nolepnotrig*weight_trig_0";
+    dataweight_="weight_nolepnotrig*weight_trig_0";
     dataextrasel_="";
     sigmcextrasel_="";
     contmcextrasel_="";

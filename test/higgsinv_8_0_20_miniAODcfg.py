@@ -1203,15 +1203,16 @@ process.icTriggerSequence += cms.Sequence(
 
 ## It produces failures in the production of DATA_ntuples
 
-#process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
-#  branch = cms.string("triggerObjectsPFMET170NoiseCleaned"),
-#  input   = cms.InputTag("patTriggerEvent"),
-#  hltPath = cms.string("HLT_PFMET170_NoiseCleaned"),
-#  inputIsStandAlone = cms.bool(False),
-#  storeOnlyIfFired = cms.bool(True)
-#  )
 
 if not isReHLT:
+  #process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
+    #branch = cms.string("triggerObjectsPFMET170NoiseCleaned"),
+    #input   = cms.InputTag("patTriggerEvent"),
+    #hltPath = cms.string("HLT_PFMET170_NoiseCleaned"),
+    #inputIsStandAlone = cms.bool(False),
+    #storeOnlyIfFired = cms.bool(True)
+  #)
+
   process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140"),
     input   = cms.InputTag("patTriggerEvent"),
@@ -1224,6 +1225,30 @@ if not isReHLT:
     branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80"),
     input   = cms.InputTag("patTriggerEvent"),
     hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True)
+    )
+
+  process.icPFMETNoMu90PFMHTNoMu90IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsPFMETNoMu90PFMHTNoMu90IDTight"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_PFMETNoMu90_PFMHTNoMu90_IDTight"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True)
+    )
+
+  process.icPFMETNoMu100PFMHTNoMu100IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsPFMETNoMu100PFMHTNoMu100IDTight"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True)
+    )
+
+  process.icPFMETNoMu110PFMHTNoMu110IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsPFMETNoMu110PFMHTNoMu110IDTight"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight"),
     inputIsStandAlone = cms.bool(False),
     storeOnlyIfFired = cms.bool(True)
     )
@@ -1255,6 +1280,33 @@ if isReHLT:
     inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
     )
 
+  process.icPFMETNoMu90PFMHTNoMu90IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsPFMETNoMu90PFMHTNoMu90IDTight"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_PFMETNoMu90_PFMHTNoMu90_IDTight"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
+    )
+
+  process.icPFMETNoMu100PFMHTNoMu100IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsPFMETNoMu100PFMHTNoMu100IDTight"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
+    )
+
+  process.icPFMETNoMu110PFMHTNoMu110IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
+    branch = cms.string("triggerObjectsPFMETNoMu110PFMHTNoMu110IDTight"),
+    input   = cms.InputTag("patTriggerEvent"),
+    hltPath = cms.string("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight"),
+    inputIsStandAlone = cms.bool(False),
+    storeOnlyIfFired = cms.bool(True),
+    inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT2")
+    )
+
   process.icPFMETNoMu120PFMHTNoMu120IDTightObjectProducer = producers.icTriggerObjectProducer.clone(
     branch = cms.string("triggerObjectsPFMETNoMu120PFMHTNoMu120IDTight"),
     input   = cms.InputTag("patTriggerEvent"),
@@ -1267,8 +1319,11 @@ if isReHLT:
 
 process.icTriggerObjectSequence += cms.Sequence(
   #process.icPFMET170NoiseCleanedObjectProducer+
-  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer+
   process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer+
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer+
+  process.icPFMETNoMu90PFMHTNoMu90IDTightObjectProducer+
+  process.icPFMETNoMu100PFMHTNoMu100IDTightObjectProducer+
+  process.icPFMETNoMu110PFMHTNoMu110IDTightObjectProducer+
   process.icPFMETNoMu120PFMHTNoMu120IDTightObjectProducer
   )
 
@@ -1430,7 +1485,7 @@ process.p = cms.Path(process.icProdSeq)
 #process.outpath = cms.EndPath(process.out)
 
 
-#process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
+#process.schedule = cms.Schedule(process.patTriggerPath, process.p)
 process.schedule = cms.Schedule(process.p)
 
 #make an edm output ntuple with everything in it

@@ -29,11 +29,11 @@ namespace ic{
 
     //Get Shapes for NSMC, NCMC, NCData and NCBkg
     std::cout<<"  Getting A shape"<<std::endl;
-    TH1F  Ashape = filemanager->GetSetShape(Aset_,"jet2_pt(200,0.,1000.)",basesel_,Acat_,"weight_nolep",false);
+    TH1F  Ashape = filemanager->GetSetShape(Aset_,"jet2_pt(200,0.,1000.)",basesel_,Acat_,"weight_nolepnotrig*weight_trig_0",false);
     std::cout<<"  Getting B shape"<<std::endl;
-    TH1F  Bshape = filemanager->GetSetShape(Bset_,"jet2_pt(200,0.,1000.)",basesel_,Bcat_,"weight_nolep",false);
+    TH1F  Bshape = filemanager->GetSetShape(Bset_,"jet2_pt(200,0.,1000.)",basesel_,Bcat_,"weight_nolepnotrig*weight_trig_0",false);
     std::cout<<"  Getting C shape"<<std::endl;
-    TH1F  Cshape = filemanager->GetSetShape(Cset_,"jet2_pt(200,0.,1000.)",basesel_,Ccat_,"weight_nolep",false);
+    TH1F  Cshape = filemanager->GetSetShape(Cset_,"jet2_pt(200,0.,1000.)",basesel_,Ccat_,"weight_nolepnotrig*weight_trig_0",false);
     std::cout<<"  Getting A bkg shape"<<std::endl;
     TH1F  Abkgshape = filemanager->GetSetsShape(Abkgset_,"jet2_pt(200,0.,1000.)",basesel_,Acat_,"total_weight_lepveto",false);
     std::cout<<"  Getting B bkg shape"<<std::endl;

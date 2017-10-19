@@ -69,6 +69,11 @@ namespace ic {
   //----------------------------------------------------------
   bool GoodVertex(Vertex const* vertex);
 
+  //
+  bool isTightMuon(Muon* veto,std::vector<Muon*> sel);
+  bool isTightElectron(Electron* veto,std::vector<Electron*> sel);
+  bool isTightTau(Tau* veto,std::vector<Tau*> sel);
+
   //----------------------------------------------------------
   // Electron
   //----------------------------------------------------------
@@ -99,6 +104,11 @@ namespace ic {
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdSpring16(Electron const* elec, bool loose_wp);
 
+  bool TightElectronFullID16(Electron const* elec, double const& rho);
+  bool VetoElectronFullID16(Electron const* elec, double const& rho);
+
+  double getTotalEA(const double & eta);
+  std::pair<double,double> getEA(const double & eta);
   bool TightPhotonIDSpring15(Photon const* photon,double const& rho);
   bool MediumPhotonIDSpring15(Photon const* photon,double const& rho);
   bool LoosePhotonIDSpring15(Photon const* photon,double const& rho);

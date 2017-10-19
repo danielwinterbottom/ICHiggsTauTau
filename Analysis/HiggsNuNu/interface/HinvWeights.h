@@ -31,6 +31,7 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, std::vector<double>, binnedin2d1dfitweightvar1binning)//binning of first var
   CLASS_MEMBER(HinvWeights, std::vector<double>, binnedin2d1dfitweightvar2binning)//binning of second var
   CLASS_MEMBER(HinvWeights, bool, do_run2)
+  CLASS_MEMBER(HinvWeights, bool, do_metmht)
 
 
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
@@ -53,6 +54,16 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, double, Alumi)
   CLASS_MEMBER(HinvWeights, double, BClumi)
   CLASS_MEMBER(HinvWeights, double, Dlumi)
+
+  // For v_nlo_Reweighting (kfactors.root file in input/scalefactors from MIT group)
+  CLASS_MEMBER(HinvWeights, std::string, kfactors_file)
+  TFile *kfactors_;
+  TH1F *hist_kfactors_N_W;
+  TH1F *hist_kfactors_D_W;
+  TH1F *hist_kfactors_N_Z;
+  TH1F *hist_kfactors_D_Z;
+
+
 
   TFile *triggerSF_;
   std::vector<TH1F*> hist_trigSF_METL1vec;
@@ -143,11 +154,11 @@ class HinvWeights : public ModuleBase {
   unsigned findPtEtaBin(const double & pt, const double & eta, const std::vector<double> & ptbin, const std::vector<double> & etabin);
 
   void fillVector(const std::string & aFileName, 
-		  const unsigned nPtBins,
-		  const unsigned nEtaBins,
-		  std::vector<double> & aVector,
-		  std::vector<double> & ptbin,
-		  std::vector<double> & etabin);
+                  const unsigned nPtBins,
+                  const unsigned nEtaBins,
+                  std::vector<double> & aVector,
+                  std::vector<double> & ptbin,
+                  std::vector<double> & etabin);
 
   void fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
 
@@ -157,7 +168,5 @@ class HinvWeights : public ModuleBase {
 };
 
 }
-
 #undef MEMBER_NP
-
 #endif

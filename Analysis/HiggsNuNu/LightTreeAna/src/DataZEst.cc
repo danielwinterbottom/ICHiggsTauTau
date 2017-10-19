@@ -39,15 +39,15 @@ namespace ic{
 
     //Get Shapes for NSMC, NCMC, NCData and NCBkg
     std::cout<<"  Getting signal MC shape"<<std::endl;
-    TH1F  sigmcewkshape = filemanager->GetSetShape(sigmcewkset_,"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"weight_nolep",false);
-    TH1F  sigmcqcdshape = filemanager->GetSetShape(sigmcqcdset_,"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"weight_nolep",false);
+    TH1F  sigmcewkshape = filemanager->GetSetShape(sigmcewkset_,"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"weight_nolepnotrig*weight_trig_0",false);
+    TH1F  sigmcqcdshape = filemanager->GetSetShape(sigmcqcdset_,"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"weight_nolepnotrig*weight_trig_0",false);
     std::cout<<"  Getting control MC shape"<<std::endl;
     TH1F  contmcewkshape = filemanager->GetSetShape(contmcewkset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
     TH1F  contmcqcdshape = filemanager->GetSetShape(contmcqcdset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
     std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
     TH1F  contbkgshape = filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
     std::cout<<"  Getting control Data shape"<<std::endl;
-    TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"weight_nolep",false);
+    TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"weight_nolepnotrig*weight_trig_0",false);
     
     //Integrate over shape to get number in each region
     double nsmcewk = Integral(&sigmcewkshape);

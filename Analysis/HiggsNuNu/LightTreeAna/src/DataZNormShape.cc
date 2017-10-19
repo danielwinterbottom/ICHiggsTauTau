@@ -9,9 +9,9 @@
 namespace ic{
 
   DataZNormShape::DataZNormShape(std::string name) : LTModule(name){
-    sigmcweight_="weight_nolep";
+    sigmcweight_="weight_nolepnotrig*weight_trig_0";
     contmcweight_="total_weight_leptight";
-    contdataweight_="weight_nolep";
+    contdataweight_="weight_nolepnotrig*weight_trig_0";
     contdataextrasel_="";
     sigcontextrafactor_=1;
     std::vector<std::string> shapes;
