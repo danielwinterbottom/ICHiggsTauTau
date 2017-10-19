@@ -269,6 +269,8 @@ namespace ic {
           if(strategy_ == strategy::smsummer16){
             fns_["e_idiso0p1_desy_ratio"] = std::shared_ptr<RooFunctor>(
                w_->function("e_idiso0p1_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
+            fns_["e_idiso0p15_desy_ratio"] = std::shared_ptr<RooFunctor>(
+               w_->function("e_idiso0p15_desy_ratio")->functor(w_->argSet("e_pt,e_eta")));
           }
           fns_["e_trgEle25eta2p1WPTight_desy_data"] = std::shared_ptr<RooFunctor>(
              w_->function("e_trgEle25eta2p1WPTight_desy_data")->functor(w_->argSet("e_pt,e_eta")));
