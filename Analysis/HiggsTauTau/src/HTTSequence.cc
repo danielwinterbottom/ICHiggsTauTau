@@ -233,9 +233,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      tau_pt  = 20;
      tau_eta = 2.3;
    
-     if (strategy_type == strategy::mssmspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+     if (strategy_type == strategy::mssmspring16 || strategy_type == strategy::mssmsummer16){
        elec_pt = 26;
        tau_pt = 30;
+      }
+      if (strategy_type == strategy::smsummer16){
+       elec_pt = 26;
+       tau_pt = 20;
       }
       if (strategy_type == strategy::smspring16){
        elec_pt = 26;
@@ -313,6 +317,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       if(strategy_type == strategy::mssmspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
         tau_pt = 30;
         muon_pt = 23;
+      }
+      if (strategy_type == strategy::smsummer16){
+       tau_pt = 20;
+       muon_pt = 23; // may need to be lower when using with cross-trigger!
       }
       if (strategy_type == strategy::smspring16){
        muon_pt = 23;
@@ -957,7 +965,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
    if(channel != channel::wmnu) {
 
    if(channel != channel::tpzmm &&channel !=channel::tpzee && !js["qcd_study"].asBool()){  
-     if((is_data || js["trg_in_mc"].asBool()) && (strategy_type!=strategy::mssmsummer16 || js["filter_trg"].asBool()) &&(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
+     if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type!=strategy::mssmsummer16 && strategy_type!=strategy::smsummer16) || js["filter_trg"].asBool()) &&(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
        if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
                .set_channel(channel)
@@ -1013,7 +1021,7 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
      }
    } else {
    if(channel != channel::tpzmm &&channel !=channel::tpzee && !js["qcd_study"].asBool()){  
-     if((is_data || js["trg_in_mc"].asBool()) && (strategy_type==strategy::mssmsummer16 && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
+     if((is_data || js["trg_in_mc"].asBool()) && ((strategy_type==strategy::mssmsummer16 || strategy_type==strategy::smsummer16) && !js["filter_trg"].asBool())&& (channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool())){
        if(!is_embedded || (is_embedded && strategy_type==strategy::paper2013 && era_type==era::data_2012_rereco)){
            BuildModule(HTTTriggerFilter("HTTTriggerFilter")
                .set_channel(channel)
@@ -2711,8 +2719,9 @@ void HTTSequence::BuildTauSelection(){
     .set_shift_label("scales_taues_3prong0pi0") 
     .set_shift(tau_shift_3prong0pi0));
  }
- 
-  if (!is_data &&(strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)){
+  // i think the SM analysis do apply some kind of e->tau fake ES correction so we need to find out what it is and to what samples they apply it - according to AN this is 1.7% +/- 0.5% for 1prong 0 pi 0 and 3%+/-0.5% for 1 prong 0pi0
+  // also looks like they apply mu->tau ES corrections = 1% +/- 0.3% for 1prong 0 pi0 and 0% +/- 0.3% for 1 prong 1 pi0
+  if (!is_data &&strategy_type == strategy::mssmsummer16){
     BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("fakeE_genmatched_taus")
