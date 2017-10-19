@@ -224,6 +224,11 @@ namespace ic {
           if(mc_ != mc::summer16_80X){
             fns_["m_trgIsoMu22orTkIsoMu22_desy_data"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgIsoMu22orTkIsoMu22_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+          } else if(strategy_ == strategy::smsummer16) {
+            fns_["m_trgMu22OR_eta2p1_desy_data"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgMu22OR_eta2p1_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+            fns_["m_trgMu22OR_eta2p1_desy_mc"] = std::shared_ptr<RooFunctor>(
+               w_->function("m_trgMu22OR_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
           } else{
             fns_["m_trgIsoMu24orTkIsoMu24_desy_data"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgIsoMu24orTkIsoMu24_desy_data")->functor(w_->argSet("m_pt,m_eta")));
@@ -1268,7 +1273,11 @@ namespace ic {
                     if(mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16){
                       mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
-                    } else{
+                    } else if(mc_ == mc::summer16_80X && strategy_ == strategy::smsummer16){
+                      mu_trg_mc = fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(args_desy.data());
+                      mu_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(args_desy.data()); 
+                      // may want to add different SFs for anti-iso
+                    }  else{
                       if(m_iso<0.15 || strategy_ == strategy::smsummer16){
                         mu_trg = fns_["m_trgIsoMu24orTkIsoMu24_desy_data"]->eval(args_desy.data());
                       } else  mu_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
@@ -1913,11 +1922,18 @@ namespace ic {
              auto args_1 = std::vector<double>{pt1,m1_signed_eta,m_iso_1};
              auto args_2 = std::vector<double>{pt2,m2_signed_eta,m_iso_2};
              
-             if(mc_ == mc::summer16_80X){
+             if(mc_ == mc::summer16_80X && strategy_ != strategy::smsummer16){
                mu1_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                mu2_trg = fns_["m_trgOR4_binned_data"]->eval(args_2.data());
                mu1_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                mu2_trg_mc=fns_["m_trgOR4_binned_mc"]->eval(args_2.data());
+             } else if (strategy_ != strategy::smsummer16){
+               auto argsdesy_1 = std::vector<double>{pt1,m1_signed_eta};
+               auto argsdesy_2 = std::vector<double>{pt2,m2_signed_eta};
+               mu1_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(argsdesy_1.data()); 
+               mu2_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(argsdesy_2.data());
+               mu1_trg_mc=fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(argsdesy_1.data());
+               mu2_trg_mc=fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(argsdesy_2.data());
              } else{
                mu1_trg = fns_["m_trgOR_binned_data"]->eval(args_1.data());
                mu2_trg = fns_["m_trgOR_binned_data"]->eval(args_2.data());
@@ -2072,6 +2088,10 @@ namespace ic {
            auto args_1 = std::vector<double>{pt,m_signed_eta};
            auto args_2 = std::vector<double>{pt,m_signed_eta,m_iso};
            mu_idiso = fns_["m_id_ratio"]->eval(args_1.data()) * fns_["m_iso_binned_ratio"]->eval(args_2.data()) ;
+        } else if(mc_ == mc::summer16_80X && strategy_ == strategy::smsummer16){
+           auto args_1 = std::vector<double>{pt,m_signed_eta};
+           mu_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args_1.data());
+           // May want to use different SFs for anti-iso
         }
         if(mc_ != mc::spring15_74X && mc_ != mc::fall15_76X && mc_ != mc::spring16_80X && mc_ != mc::summer16_80X){ 
           if (do_id_weights_) mu_iso = 1.0;
@@ -2328,8 +2348,16 @@ namespace ic {
            auto args1_2 = std::vector<double>{m_1_pt,m_1_signed_eta,m_1_iso};
            auto args2_1 = std::vector<double>{m_2_pt,m_2_signed_eta};
            auto args2_2 = std::vector<double>{m_2_pt,m_2_signed_eta,m_2_iso};
-           m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data()) * fns_["m_iso_binned_ratio"]->eval(args1_2.data()) ;
-           m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data()) * fns_["m_iso_binned_ratio"]->eval(args2_2.data()) ;
+           
+           if(strategy_ == strategy::smsummer16){
+             m_1_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args1_1.data());
+             m_2_idiso = fns_["m_idiso0p15_desy_ratio"]->eval(args2_1.data());  
+             // may want to use different SFs for anti-iso
+           } else {
+             m_1_idiso = fns_["m_id_ratio"]->eval(args1_1.data()) * fns_["m_iso_binned_ratio"]->eval(args1_2.data()) ;
+             m_2_idiso = fns_["m_id_ratio"]->eval(args2_1.data()) * fns_["m_iso_binned_ratio"]->eval(args2_2.data()) ;
+           }
+           
            
           /*if(m_1_pt<1000){
             m_1_idiso_data = em_m_idiso_data_->GetBinContent(em_m_idiso_data_->GetXaxis()->FindBin(m_1_eta),em_m_idiso_data_->GetYaxis()->FindBin(m_1_pt));
