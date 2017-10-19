@@ -1090,30 +1090,24 @@ BuildModule(GenericModule("BadMuonFilters")
      }
      return !pass_filters;
   }));
-
-
-
+ 
+ 
 if(channel == channel::tpzmm || channel == channel::tpzee){
-  BuildModule(GenericModule("TPTriggerInformation")
-    .set_function([=](ic::TreeEvent *event){
-       std::string trig_obj_label_tag;
-       std::string tp_filter_tag;
-       std::string trig_obj_label_probe;
-       std::string tp_filter_probe;
-       if(channel_str == "tpzmm"){ 
-         if(!is_data){
-           trig_obj_label_tag = "triggerObjectsIsoMu17";
-           tp_filter_tag = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
-           trig_obj_label_probe = "triggerObjectsIsoMu17";
-           tp_filter_probe = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
-         } else {
-           if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
-             trig_obj_label_tag = "triggerObjectsIsoMu18";
-             tp_filter_tag = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
-             trig_obj_label_probe = "triggerObjectsIsoMu18";
-             tp_filter_probe = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
+  if(strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+    BuildModule(GenericModule("TPTriggerInformation")
+      .set_function([=](ic::TreeEvent *event){
+         std::string trig_obj_label_tag;
+         std::string tp_filter_tag;
+         std::string trig_obj_label_probe;
+         std::string tp_filter_probe;
+         if(channel_str == "tpzmm"){ 
+           if(!is_data){
+             trig_obj_label_tag = "triggerObjectsIsoMu17";
+             tp_filter_tag = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
+             trig_obj_label_probe = "triggerObjectsIsoMu17";
+             tp_filter_probe = "hltL3crIsoL1sSingleMu16erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
            } else {
-             if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16){
+             if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
                trig_obj_label_tag = "triggerObjectsIsoMu18";
                tp_filter_tag = "hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09"; 
                trig_obj_label_probe = "triggerObjectsIsoMu18";
@@ -1125,24 +1119,24 @@ if(channel == channel::tpzmm || channel == channel::tpzee){
                tp_filter_probe = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
              }
            }
-         }
-       } else if (channel_str == "tpzee"){
-         if(!is_data){
-           trig_obj_label_tag = "triggerObjectsEle22Gsf";
-           tp_filter_tag = "hltSingleEle22WP75GsfTrackIsoFilter";
-           trig_obj_label_probe = "triggerObjectsEle22Gsf";
-           tp_filter_probe = "hltSingleEle22WP75GsfTrackIsoFilter";
-         } else {
-           if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
-             trig_obj_label_tag = "triggerObjectsEle23";
-             tp_filter_tag = "hltEle23WPLooseGsfTrackIsoFilter";
-             trig_obj_label_probe = "triggerObjectsEle23";
-             tp_filter_probe = "hltEle23WPLooseGsfTrackIsoFilter";
-            } else {
-             trig_obj_label_tag = "triggerObjectsEle25GsfTightEta2p1";
-             tp_filter_tag = "hltEle25erWPTightGsfTrackIsoFilter";
-             trig_obj_label_probe= "triggerObjectsEle24LooseTau20SingleL1";
-             tp_filter_probe = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
+         } else if (channel_str == "tpzee"){
+           if(!is_data){
+             trig_obj_label_tag = "triggerObjectsEle22Gsf";
+             tp_filter_tag = "hltSingleEle22WP75GsfTrackIsoFilter";
+             trig_obj_label_probe = "triggerObjectsEle22Gsf";
+             tp_filter_probe = "hltSingleEle22WP75GsfTrackIsoFilter";
+           } else {
+             if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+               trig_obj_label_tag = "triggerObjectsEle23";
+               tp_filter_tag = "hltEle23WPLooseGsfTrackIsoFilter";
+               trig_obj_label_probe = "triggerObjectsEle23";
+               tp_filter_probe = "hltEle23WPLooseGsfTrackIsoFilter";
+              } else {
+               trig_obj_label_tag = "triggerObjectsEle25GsfTightEta2p1";
+               tp_filter_tag = "hltEle25erWPTightGsfTrackIsoFilter";
+               trig_obj_label_probe= "triggerObjectsEle24LooseTau20SingleL1";
+               tp_filter_probe = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
+             }
            }
          }
          std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>("ditau");
@@ -1162,7 +1156,7 @@ if(channel == channel::tpzmm || channel == channel::tpzee){
    } else{
      ;  
    }
- }
+}
 
 
 if((strategy_type==strategy::spring15||strategy_type==strategy::fall15||strategy_type==strategy::mssmspring16 || strategy_type==strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)&&!is_data&&channel != channel::wmnu){
