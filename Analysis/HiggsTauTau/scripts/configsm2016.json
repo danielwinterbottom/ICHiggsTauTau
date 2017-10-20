@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr05_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "mt", "tt", "et"],
+    "channels":     [ "mt", "et", "tt", "em" ],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -24,7 +24,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
-    "make_sync_ntuple" : false,
+    "make_sync_ntuple" : true,
     "lumi_mask_only" : false,
     "iso_study" : false,
     "qcd_study" : false,
@@ -33,7 +33,7 @@
     "get_effective" : false,
     "do_btag_eff":false,
     "trg_in_mc" : true,
-    "filter_trg" : true,
+    "filter_trg" : false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
     "do_singletau"    :true,
@@ -41,7 +41,7 @@
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
-    "do_preselection" : true,
+    "do_preselection" : false,
     "force_old_effs" : false,
     "electrons"     : "electrons",
     "muons"         : "muons",
@@ -56,7 +56,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/build/cms/akd116/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output",
+    "output_folder" : "output/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -89,9 +89,9 @@
       "muon_es_shift"      : 1.0,
       "efaketau_0pi_es_shift": 1.024,
       "efaketau_1pi_es_shift": 1.076,
-      "tau_1prong0pi0_es_shift": 0.995,
-      "tau_1prong1pi0_es_shift": 1.011,
-      "tau_3prong0pi0_es_shift": 1.006,
+      "tau_1prong0pi0_es_shift": 1.0,
+      "tau_1prong1pi0_es_shift": 1.0,
+      "tau_3prong0pi0_es_shift": 1.0,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -214,37 +214,37 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_1prong0pi0_es_shift" : 1.007
+         "tau_1prong0pi0_es_shift" : 0.988
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_1prong0pi0_es_shift" : 0.983
+         "tau_1prong0pi0_es_shift" : 0.976
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_1prong1pi0_es_shift" : 1.022
+         "tau_1prong1pi0_es_shift" : 1.016
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_1prong1pi0_es_shift" : 0.998
+         "tau_1prong1pi0_es_shift" : 1.004
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_3prong0pi0_es_shift" : 1.018
+         "tau_3prong0pi0_es_shift" : 1.01
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_3prong0pi0_es_shift" : 0.994
+         "tau_3prong0pi0_es_shift" : 0.998
       }
     },
 
