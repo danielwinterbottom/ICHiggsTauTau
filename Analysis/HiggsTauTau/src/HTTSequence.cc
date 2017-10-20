@@ -320,7 +320,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
       }
       if (strategy_type == strategy::smsummer16){
        tau_pt = 20;
-       muon_pt = 23; // may need to be lower when using with cross-trigger!
+       muon_pt = 20;
       }
       if (strategy_type == strategy::smspring16){
        muon_pt = 23;
