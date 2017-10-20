@@ -89,6 +89,8 @@
       "muon_es_shift"      : 1.0,
       "efaketau_0pi_es_shift": 1.017,
       "efaketau_1pi_es_shift": 1.030,
+      "mufaketau_0pi_es_shift": 1.010,
+      "mufaketau_1pi_es_shift": 1.000,
       "tau_1prong0pi0_es_shift": 0.982,
       "tau_1prong1pi0_es_shift": 1.010,
       "tau_3prong0pi0_es_shift": 1.004,
@@ -270,6 +272,31 @@
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
         "efaketau_1pi_es_shift": 1.035
+      }
+    },
+
+    "scale_mufake_0pi_lo": {
+      "baseline": {
+        "addit_output_folder" : "MUFAKE0PI_DOWN",
+        "mufaketau_0pi_es_shift": 1.007
+      }
+    },
+    "scale_mufake_0pi_hi": {
+      "baseline": {
+        "addit_output_folder" : "MUFAKE0PI_UP",
+        "mufaketau_0pi_es_shift": 1.013
+      }
+    },
+    "scale_mufake_1pi_lo": {
+      "baseline": {
+        "addit_output_folder" : "MUFAKE1PI_DOWN",
+        "mufaketau_1pi_es_shift": 0.996
+      }
+    },
+    "scale_mufake_1pi_hi": {
+      "baseline": {
+        "addit_output_folder" : "MUFAKE1PI_UP",
+        "mufaketau_1pi_es_shift": 1.004
       }
     },
     "scale_e_lo": {
