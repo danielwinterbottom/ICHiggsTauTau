@@ -449,12 +449,18 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  tau_shift_3prong0pi0 = 1.0;
  fakeE_tau_shift_0pi = 1.0;
  fakeE_tau_shift_1pi = 1.0;
+ fakeMu_tau_shift_0pi = 1.0;
+ fakeMu_tau_shift_1pi = 1.0;
  if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
    fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
    fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
    tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
    tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
    tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
+ }
+ if(strategy_type == strategy::smsummer16){
+   fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
+   fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
  }
 
 
@@ -1088,16 +1094,18 @@ if(do_met_filters){
     }));
 }
 
-BuildModule(GenericModule("BadMuonFilters")
-  .set_function([=](ic::TreeEvent *event){
-     EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-     std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
-     bool pass_filters = true;
-     for(unsigned i=0;i<bad_muon_filters.size();++i){
-      pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
-     }
-     return !pass_filters;
-  }));
+if (strategy_type == strategy::mssmsummer16){
+  BuildModule(GenericModule("BadMuonFilters")
+    .set_function([=](ic::TreeEvent *event){
+       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+       std::vector<std::string> bad_muon_filters = {"Flag_badMuons","Flag_duplicateMuons"};
+       bool pass_filters = true;
+       for(unsigned i=0;i<bad_muon_filters.size();++i){
+        pass_filters = pass_filters&& eventInfo->filter_result(bad_muon_filters.at(i));
+       }
+       return !pass_filters;
+    }));
+};
  
  
 if(channel == channel::tpzmm || channel == channel::tpzee){
@@ -2721,7 +2729,7 @@ void HTTSequence::BuildTauSelection(){
  }
   // i think the SM analysis do apply some kind of e->tau fake ES correction so we need to find out what it is and to what samples they apply it - according to AN this is 1.7% +/- 0.5% for 1prong 0 pi 0 and 3%+/-0.5% for 1 prong 0pi0
   // also looks like they apply mu->tau ES corrections = 1% +/- 0.3% for 1prong 0 pi0 and 0% +/- 0.3% for 1 prong 1 pi0
-  if (!is_data && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
+  if (!is_data && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16)){
     BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("fakeE_genmatched_taus")
@@ -2757,6 +2765,45 @@ void HTTSequence::BuildTauSelection(){
     .set_shift_label("scales_efaketaues_1prong1pi0")
     .set_shift(fakeE_tau_shift_1pi));
   }
+
+  //adding a fake mu tau ES shifter
+  if (!is_data && strategy_type == strategy::smsummer16){
+    BuildModule(HTTGenMatchSelector<Tau>("FakeMuGenMatchSelector")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("fakeMu_genmatched_taus")
+      .set_gen_match(mcorigin::promptMu));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+      "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_0pi"));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+      "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_1pi"));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+      .set_input_label("fakeMu_genmatched_taus_0pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0;
+      }));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+      .set_input_label("fakeMu_genmatched_taus_1pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1;
+      }));
+     
+    BuildModule(EnergyShifter<Tau>("FakeMu1Prong0PiEnergyShifter")
+    .set_input_label("fakeMu_genmatched_taus_0pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_mufaketaues_1prong0pi0")
+    .set_shift(fakeMu_tau_shift_0pi));
+    
+    BuildModule(EnergyShifter<Tau>("FakeMu1Prong1PiEnergyShifter")
+    .set_input_label("fakeMu_genmatched_taus_1pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_mufaketaues_1prong1pi0")
+    .set_shift(fakeMu_tau_shift_1pi));
+  }
+
 
  if(moriond_tau_scale&&(!is_data||is_embedded)){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")
