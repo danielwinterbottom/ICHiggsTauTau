@@ -2721,7 +2721,7 @@ void HTTSequence::BuildTauSelection(){
  }
   // i think the SM analysis do apply some kind of e->tau fake ES correction so we need to find out what it is and to what samples they apply it - according to AN this is 1.7% +/- 0.5% for 1prong 0 pi 0 and 3%+/-0.5% for 1 prong 0pi0
   // also looks like they apply mu->tau ES corrections = 1% +/- 0.3% for 1prong 0 pi0 and 0% +/- 0.3% for 1 prong 1 pi0
-  if (!is_data &&strategy_type == strategy::mssmsummer16){
+  if (!is_data && (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
     BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("fakeE_genmatched_taus")
@@ -2800,7 +2800,7 @@ if(strategy_type == strategy::paper2013){
       }));
    }
   if (strategy_type == strategy::smsummer16){
-  BuildModule(SimpleFilter<Tau>("TighterTauFilter")
+  BuildModule(SimpleFilter<Tau>("LeadTauFilter")
       .set_input_label(js["taus"].asString()).set_min(lead_min_taus)
       .set_predicate([=](Tau const* t) {
         return  t->pt()                     >  lead_tau_pt     &&

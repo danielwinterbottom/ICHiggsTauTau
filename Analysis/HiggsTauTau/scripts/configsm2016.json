@@ -87,11 +87,11 @@
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
-      "efaketau_0pi_es_shift": 1.024,
-      "efaketau_1pi_es_shift": 1.076,
-      "tau_1prong0pi0_es_shift": 1.0,
-      "tau_1prong1pi0_es_shift": 1.0,
-      "tau_3prong0pi0_es_shift": 1.0,
+      "efaketau_0pi_es_shift": 1.017,
+      "efaketau_1pi_es_shift": 1.030,
+      "tau_1prong0pi0_es_shift": 0.982,
+      "tau_1prong1pi0_es_shift": 1.010,
+      "tau_3prong0pi0_es_shift": 1.004,
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
@@ -251,25 +251,25 @@
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
-        "efaketau_0pi_es_shift": 1.019
+        "efaketau_0pi_es_shift": 1.012
       }
     },
     "scale_efake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_UP",
-        "efaketau_0pi_es_shift": 1.029
+        "efaketau_0pi_es_shift": 1.022
       }
     },
     "scale_efake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_DOWN",
-        "efaketau_1pi_es_shift": 1.066
+        "efaketau_1pi_es_shift": 1.025
       }
     },
     "scale_efake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
-        "efaketau_1pi_es_shift": 1.086
+        "efaketau_1pi_es_shift": 1.035
       }
     },
     "scale_e_lo": {
