@@ -875,6 +875,7 @@ class HTTCategories : public ModuleBase {
   bool trg_doubletau_;
   bool trg_singletau_1_;
   bool trg_singletau_2_;
+  bool trg_mutaucross_;
   
   double wt_tau_id_binned_;
   double wt_tau_id_loose_;
