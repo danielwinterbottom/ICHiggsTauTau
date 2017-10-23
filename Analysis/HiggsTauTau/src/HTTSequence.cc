@@ -1773,7 +1773,8 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
    TH2D em_qcd_cr1_lt2 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRLt2");
    TH2D em_qcd_cr1_2to4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dR2to4");
    TH2D em_qcd_cr1_gt4 = GetFromTFile<TH2D>("input/emu_qcd_weights/QCD_weight_emu_2016BtoH.root","/","QCDratio_CR1_dRGt4");
-   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo"); // will need to find correct file for SM (could be included in the WS)
+   TH2D z_pt_weights = GetFromTFile<TH2D>("input/zpt_weights/zpt_weights_summer2016_v2.root","/","zptmass_histo");
+   TH2D z_pt_weights_sm; GetFromTFile<TH2F>("input/zpt_weights/zpt_weights_2016_BtoH.root","/","zptmass_histo").Copy(z_pt_weights_sm);
 
    HTTWeights httWeights = HTTWeights("HTTWeights")   
     .set_channel(channel)
@@ -1794,8 +1795,7 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
     .set_em_e12_trig_mc(new TH2D(em_e12_trig_mc)).set_em_e12_trig_data(new TH2D(em_e12_trig_data))
     .set_em_qcd_cr1_lt2(new TH2D(em_qcd_cr1_lt2))
     .set_em_qcd_cr1_2to4(new TH2D(em_qcd_cr1_2to4))
-    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4))
-    .set_z_pt_mass_hist(new TH2D(z_pt_weights));
+    .set_em_qcd_cr1_gt4(new TH2D(em_qcd_cr1_gt4));
     if(js["force_old_effs"].asBool()) {
         httWeights.set_et_trig_mc(new TH2D(et_trig_mc)).set_et_trig_data(new TH2D(et_trig_data))
         .set_muon_tracking_sf(new TH1D(muon_tracking_sf))
@@ -1813,8 +1813,12 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
         if(strategy_type == strategy::smsummer16){
           httWeights.set_strategy(strategy::smsummer16);
           httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
+          httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
         }
-        else httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5.root");
+        else { 
+          httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5.root");
+          httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights));
+        }
     }
   if (!is_data ) {
     httWeights.set_do_trg_weights(!js["qcd_study"].asBool()).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);

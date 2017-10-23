@@ -368,7 +368,7 @@ namespace ic {
       fns_["A_i_ratio"] = std::shared_ptr<RooFunctor>(mssm_w_->function(("A_"+mass_str+"_i_ratio").c_str())->functor(mssm_w_->argSet("h_pt")));
 
     }
-    if (do_zpt_weight_ && mc_ == mc::summer16_80X){
+    if (do_zpt_weight_ && mc_ == mc::summer16_80X && strategy_ == strategy::mssmsummer16){
       fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>( 
               w_->function("zpt_weight_nom")->functor(w_->argSet("z_gen_mass,z_gen_pt"))); 
       fns_["zpt_weight_esup"] = std::shared_ptr<RooFunctor>(
@@ -784,14 +784,14 @@ namespace ic {
     if (do_zpt_weight_){
           double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
           double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
-      if(mc_ != mc::summer16_80X){
+      if(mc_ != mc::summer16_80X || strategy_== strategy::smsummer16){
           double wtzpt = z_pt_mass_hist_->GetBinContent(z_pt_mass_hist_->FindBin(zmass,zpt));
           double wtzpt_down=1.0;
           double wtzpt_up = wtzpt*wtzpt;
           eventInfo->set_weight("wt_zpt",wtzpt);
           event->Add("wt_zpt_up",wtzpt_up/wtzpt);
           event->Add("wt_zpt_down",wtzpt_down/wtzpt);
-      } else if(mc_ == mc::summer16_80X){
+      } else if(mc_ == mc::summer16_80X && strategy_== strategy::mssmsummer16){
         auto args = std::vector<double>{zmass,zpt};      
         double wtzpt         = fns_["zpt_weight_nom"]->eval(args.data());
         double wtzpt_esup    = fns_["zpt_weight_esup"]->eval(args.data());
