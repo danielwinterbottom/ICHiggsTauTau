@@ -96,6 +96,10 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, TH2F*, ele_tracking_sf)
   CLASS_MEMBER(HTTWeights, TH1D*, muon_tracking_sf)
   CLASS_MEMBER(HTTWeights, std::string, scalefactor_file)
+  CLASS_MEMBER(HTTWeights, std::string, mssm_higgspt_file)
+  CLASS_MEMBER(HTTWeights, bool, do_mssm_higgspt)
+  CLASS_MEMBER(HTTWeights, std::string, mssm_mass)
+
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;
   TH2D *hist_muTauSF2011PFTau10;
@@ -110,6 +114,7 @@ class HTTWeights : public ModuleBase {
   TH1F *ggh_hist_down_;
   std::shared_ptr<RooWorkspace> w_;
   std::shared_ptr<RooWorkspace> wtrk_; //workspace for trk efficiencies
+  std::shared_ptr<RooWorkspace> mssm_w_;
   mithep::TH2DAsymErr* MuonFakeRateHist_PtEta;
   mithep::TH2DAsymErr* ElectronFakeRateHist_PtEta;
   BTagWeight btag_weight;
