@@ -1475,14 +1475,16 @@ def UnrollHist(h2d,inc_y_of=True):
     if inc_y_of: n = 1
     else: n = 0
     Nbins = (h2d.GetNbinsY()+n)*(h2d.GetNbinsX())
+    print h2d.GetName()
     h1d = ROOT.TH1D(h2d.GetName(), '', Nbins, 0, Nbins)
     for i in range(1,h2d.GetNbinsX()+1):
       for j in range(1,h2d.GetNbinsY()+1+n):
         glob_bin = Get1DBinNum(h2d,i,j)
         content = h2d.GetBinContent(i,j)
+        print content
         error = h2d.GetBinError(i,j)
-        h1d.SetBinContent(glob_bin,content)
-        h1d.SetBinError(glob_bin,error)
+        h1d.SetBinContent(glob_bin+1,content)
+        h1d.SetBinError(glob_bin+1,error)
     return h1d
     
 
@@ -1712,19 +1714,56 @@ if not options.no_plot:
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
     titles = plotting.SetAxisTitles(options.var,options.channel)
-    if options.x_title == "": x_title = titles[0]
+    if options.x_title == "": 
+      x_title = titles[0]
+      if options.do_unrolling and is_2d: x_title = "2D bin num"
     else: x_title = options.x_title
     
     if options.y_title == "": 
         y_title = titles[1]
+        if options.do_unrolling and is_2d: y_title = "Events/bin"
     else: y_title = options.y_title
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
     FF = options.method==17 or options.method==18
-    if scheme != 'signal':
-      print x_title 
+    if options.do_unrolling and is_2d:
+        plotting.HTTPlotUnrolled(nodename, 
+        plot_file, 
+        options.signal_scale, 
+        options.draw_signal_mass,
+        FF,
+        options.norm_bins,
+        options.channel,
+        options.blind,
+        options.x_blind_min,
+        options.x_blind_max,
+        options.ratio,
+        options.log_y,
+        options.log_x,
+        options.ratio_range,
+        options.custom_x_range,
+        options.x_axis_min,
+        options.x_axis_max,
+        options.custom_y_range,
+        options.y_axis_max,
+        options.y_axis_min,
+        x_title,
+        y_title,
+        options.extra_pad,
+        options.signal_scheme,
+        options.do_custom_uncerts,
+        options.add_stat_to_syst,
+        options.add_flat_uncert,
+        options.uncert_title,
+        options.lumi,
+        plot_name,
+        custom_uncerts_up_name,
+        custom_uncerts_down_name,
+        scheme
+        )
+    elif scheme != 'signal':
       plotting.HTTPlot(nodename, 
         plot_file, 
         options.signal_scale, 
