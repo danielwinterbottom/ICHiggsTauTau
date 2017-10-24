@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":True }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -195,6 +195,8 @@ parser.add_argument("--syst_jfake_m", dest="syst_jfake_m", type=str,
     help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
 parser.add_argument("--gen_signal", dest="gen_signal", action='store_true',
     help="If set then use generator-level tree for signal")
+parser.add_argument("--do_unrolling", dest="do_unrolling", action='store_true',
+    help="If argument is set to true will unroll 2D histograms into 1D histogram.")
 
 
 options = parser.parse_args(remaining_argv)   
@@ -234,15 +236,18 @@ compare_w_shapes = False
 compare_qcd_shapes = False
 if options.scheme == "qcd_shape": compare_qcd_shapes = True
 if options.scheme == "w_shape": compare_w_shapes = True
-if options.era == "mssmsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
+if options.era == "mssmsummer16" or options.era == "smsummer16": options.lumi = "35.9 fb^{-1} (13 TeV)"
 
 
 cats = {}
 if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_1>30)'
     elif options.channel == 'et': 
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+        if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_1>30)'
+        
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -262,6 +267,7 @@ elif options.analysis == 'mssm':
 if options.channel == 'tt':
     cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
     if options.era == 'mssmsummer16': cats['baseline'] = '(mva_olddm_medium_1>0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)'
+    if options.era == 'smsummer16': cats['baseline'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && pt_1>50)'
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
     cats['loose_baseline'] = '(iso_1<0.5 && iso_2>0.2 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
@@ -276,6 +282,7 @@ cats['w_sdb'] = 'mt_1>70.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
+if options.era == 'smsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau' # just copying mssm version for now
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
 # MSSM categories
@@ -297,6 +304,15 @@ cats['qcd_shape']=''
 cats['w_shape_comp']=''
 cats['qcd_shape_comp']=''
 
+# SM categories
+cats['0jet'] = '(n_jets==0)'
+cats['vbf'] = '(0)'
+if options.channel == 'em': cats['vbf'] = '(n_jets==2 && mjj>300)'
+if options.channel == 'et': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50)'
+if options.channel == 'mt': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50 && pt_2>40)'
+if options.channel == 'tt': cats['vbf'] = '(n_jets>=2 && pt_tt>100 && jdeta>2.5)'
+cats['boosted'] = '(!%s && !%s)' % (cats['0jet'], cats['vbf'])
+
 
 # Overwrite selection depending on whether tight or loose-mt categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
@@ -304,7 +320,7 @@ if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
 if options.cat == 'nobtag_loosemt' or options.cat == 'btag_loosemt':
     if options.channel == 'mt' or options.channel == 'et': options.sel = '(mt_1<70 && mt_1>40)'
 
-if options.era == "mssmsummer16":
+if options.era == "mssmsummer16" or options.era == "smsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
     if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
     if options.channel in ['mt','zmm','mj']: cats['baseline']+=" && trg_singlemuon"
@@ -402,8 +418,7 @@ top_samples = ['TT']
 ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
 wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
 
-if options.era == "mssmsummer16":
-    
+if options.era == "mssmsummer16" or options.era == "smsummer16":
     # Add data sample names
     if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
@@ -423,6 +438,7 @@ if options.era == "mssmsummer16":
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
 
 sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
+if options.era == "smsummer16": sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
 if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
@@ -1450,6 +1466,26 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
       shape_hist.Scale(nominal_scale/shape_scale)
       shape_hist.Write()
 
+def Get1DBinNum(h2d,xbin,ybin,inc_y_of=True):
+    Nxbins = h2d.GetNbinsX()
+    return (ybin-1)*Nxbins + xbin -1
+
+def UnrollHist(h2d,inc_y_of=True):
+    # inc_y_of = True includes the y over-flow bins
+    if inc_y_of: n = 1
+    else: n = 0
+    Nbins = (h2d.GetNbinsY()+n)*(h2d.GetNbinsX())
+    h1d = ROOT.TH1D(h2d.GetName(), '', Nbins, 0, Nbins)
+    for i in range(1,h2d.GetNbinsX()+1):
+      for j in range(1,h2d.GetNbinsY()+1+n):
+        glob_bin = Get1DBinNum(h2d,i,j)
+        content = h2d.GetBinContent(i,j)
+        error = h2d.GetBinError(i,j)
+        h1d.SetBinContent(glob_bin+1,content)
+        h1d.SetBinError(glob_bin+1,error)
+    return h1d
+    
+
 # Create output file
 is_2d=False
 var_name = options.var.split('[')[0]
@@ -1591,7 +1627,7 @@ for systematic in systematics:
                         sf = 1.0/xs
                         sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
                         sm_hist.Scale(sf)
-                        sm_hist.Write()
+                        sm_hist.Write("",ROOT.TObject.kOverwrite)
         if options.analysis == "mssm":
             for samp in mssm_samples:
                 if samp == 'ggH':
@@ -1606,13 +1642,13 @@ for systematic in systematics:
                         sf = 1.0/xs
                         mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                         mssm_hist.Scale(sf)
-                        mssm_hist.Write()
+                        mssm_hist.Write("",ROOT.TObject.kOverwrite)
                         if options.doMSSMReWeighting: 
                           re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
                           for name in re_weighted_names:
                             mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
                             mssm_hist.Scale(sf)
-                            mssm_hist.Write()
+                            mssm_hist.Write("",ROOT.TObject.kOverwrite)
         if options.analysis == "Hhh":
             for samp in Hhh_samples:
                 masses = ggh_masses
@@ -1622,7 +1658,7 @@ for systematic in systematics:
                         sf = 1.0/xs
                         mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                         mssm_hist.Scale(sf)
-                        mssm_hist.Write()
+                        mssm_hist.Write("",ROOT.TObject.kOverwrite)
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
 if options.doNLOScales: 
@@ -1631,21 +1667,37 @@ if options.doNLOScales:
 if options.doPDF:
     PDFUncerts(nodename,outfile)
 
+
+# sm 2D unrolling
+if is_2d and options.do_unrolling:
+  # loop over all TH2Ds and for each one unroll to produce TH1D and add to datacard
+  directory = outfile.Get(nodename)  
+  outfile.cd(nodename)
+  hists_to_add = []
+  for key in directory.GetListOfKeys():
+    hist_name = key.GetName()
+    hist = directory.Get(hist_name).Clone()
+    if not isinstance(hist,ROOT.TDirectory):
+      h1d = UnrollHist(hist)
+      hists_to_add.append(h1d)    
+  for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+
 outfile.Close()
-if is_2d: exit(0) # 2d plotting cosmetics not currently supported
+
+if is_2d and not options.do_unrolling: exit(0) # 2d plotting cosmetics not currently supported
 plot_file = ROOT.TFile(output_name, 'READ')
 
-if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
-    w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
-    w_ss = plot_file.Get(nodename+"/W.subnodes/W_ss")
-    w_os_error=ROOT.Double(0.)
-    w_ss_error=ROOT.Double(0.)
-    w_os_total = w_os.IntegralAndError(0,w_os.GetNbinsX()+1,w_os_error)
-    w_ss_total = w_ss.IntegralAndError(0,w_ss.GetNbinsX()+1,w_ss_error)
-    w_os_ss = w_os_total/w_ss_total
-    w_os_ss_error = math.sqrt( (w_os_error/w_os_total)**2 + (w_ss_error/w_ss_total)**2 )*w_os_ss
-
-    #print "W OS/SS ratio = ", w_os_ss, "+/-", w_os_ss_error, "("+str(100*w_os_ss_error/w_os_ss)+" %)"
+#if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
+#    w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
+#    w_ss = plot_file.Get(nodename+"/W.subnodes/W_ss")
+#    w_os_error=ROOT.Double(0.)
+#    w_ss_error=ROOT.Double(0.)
+#    w_os_total = w_os.IntegralAndError(0,w_os.GetNbinsX()+1,w_os_error)
+#    w_ss_total = w_ss.IntegralAndError(0,w_ss.GetNbinsX()+1,w_ss_error)
+#    w_os_ss = w_os_total/w_ss_total
+#    w_os_ss_error = math.sqrt( (w_os_error/w_os_total)**2 + (w_ss_error/w_ss_total)**2 )*w_os_ss
+#
+#    #print "W OS/SS ratio = ", w_os_ss, "+/-", w_os_ss_error, "("+str(100*w_os_ss_error/w_os_ss)+" %)"
 
 if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
     custom_uncerts_up_name = "total_bkg_custom_uncerts_up"
@@ -1660,19 +1712,56 @@ if not options.no_plot:
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
     titles = plotting.SetAxisTitles(options.var,options.channel)
-    if options.x_title == "": x_title = titles[0]
+    if options.x_title == "": 
+      x_title = titles[0]
+      if options.do_unrolling and is_2d: x_title = "2D bin num"
     else: x_title = options.x_title
     
     if options.y_title == "": 
         y_title = titles[1]
+        if options.do_unrolling and is_2d: y_title = "Events/bin"
     else: y_title = options.y_title
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'
     if compare_qcd_shapes: scheme = 'qcd_shape'
     if options.scheme != "": scheme = options.scheme
     FF = options.method==17 or options.method==18
-    if scheme != 'signal':
-      print x_title 
+    if options.do_unrolling and is_2d:
+        plotting.HTTPlotUnrolled(nodename, 
+        plot_file, 
+        options.signal_scale, 
+        options.draw_signal_mass,
+        FF,
+        options.norm_bins,
+        options.channel,
+        options.blind,
+        options.x_blind_min,
+        options.x_blind_max,
+        options.ratio,
+        options.log_y,
+        options.log_x,
+        options.ratio_range,
+        options.custom_x_range,
+        options.x_axis_min,
+        options.x_axis_max,
+        options.custom_y_range,
+        options.y_axis_max,
+        options.y_axis_min,
+        x_title,
+        y_title,
+        options.extra_pad,
+        options.signal_scheme,
+        options.do_custom_uncerts,
+        options.add_stat_to_syst,
+        options.add_flat_uncert,
+        options.uncert_title,
+        options.lumi,
+        plot_name,
+        custom_uncerts_up_name,
+        custom_uncerts_down_name,
+        scheme
+        )
+    elif scheme != 'signal':
       plotting.HTTPlot(nodename, 
         plot_file, 
         options.signal_scale, 
