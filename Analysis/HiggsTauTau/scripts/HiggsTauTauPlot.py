@@ -1475,13 +1475,11 @@ def UnrollHist(h2d,inc_y_of=True):
     if inc_y_of: n = 1
     else: n = 0
     Nbins = (h2d.GetNbinsY()+n)*(h2d.GetNbinsX())
-    print h2d.GetName()
     h1d = ROOT.TH1D(h2d.GetName(), '', Nbins, 0, Nbins)
     for i in range(1,h2d.GetNbinsX()+1):
       for j in range(1,h2d.GetNbinsY()+1+n):
         glob_bin = Get1DBinNum(h2d,i,j)
         content = h2d.GetBinContent(i,j)
-        print content
         error = h2d.GetBinError(i,j)
         h1d.SetBinContent(glob_bin+1,content)
         h1d.SetBinError(glob_bin+1,error)
