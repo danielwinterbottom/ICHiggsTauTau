@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":True }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -195,6 +195,8 @@ parser.add_argument("--syst_jfake_m", dest="syst_jfake_m", type=str,
     help="If set, adds the e->jet fake rate uncertainty with the set string appended to the resulting histogram name")
 parser.add_argument("--gen_signal", dest="gen_signal", action='store_true',
     help="If set then use generator-level tree for signal")
+parser.add_argument("--do_unrolling", dest="do_unrolling", action='store_true',
+    help="If argument is set to true will unroll 2D histograms into 1D histogram.")
 
 
 options = parser.parse_args(remaining_argv)   
@@ -1449,6 +1451,30 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
       shape_scale = shape_hist.Integral(0,shape_hist.GetNbinsX()+1)
       shape_hist.Scale(nominal_scale/shape_scale)
       shape_hist.Write()
+      
+def GetGlobalBin(h2d,xbin,ybin):
+    glob_bin = h2d.GetBin(xbin,ybin)
+    return glob_bin
+
+def Get1DBinNum(h2d,xbin,ybin,inc_y_of=True):
+    Nxbins = h2d.GetNbinsX()
+    return (ybin-1)*Nxbins + xbin -1
+
+def UnrollHist(h2d,inc_y_of=True):
+    # inc_y_of = True includes the y over-flow bins
+    if inc_y_of: n = 1
+    else: n = 0
+    Nbins = (h2d.GetNbinsY()+n)*(h2d.GetNbinsX())
+    h1d = ROOT.TH1D(h2d.GetName(), '', Nbins, 0, Nbins)
+    for i in range(1,h2d.GetNbinsX()+1):
+      for j in range(1,h2d.GetNbinsY()+1+n):
+        glob_bin = Get1DBinNum(h2d,i,j)
+        content = h2d.GetBinContent(i,j)
+        error = h2d.GetBinError(i,j)
+        h1d.SetBinContent(glob_bin,content)
+        h1d.SetBinError(glob_bin,error)
+    return h1d
+    
 
 # Create output file
 is_2d=False
@@ -1591,7 +1617,7 @@ for systematic in systematics:
                         sf = 1.0/xs
                         sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
                         sm_hist.Scale(sf)
-                        sm_hist.Write()
+                        sm_hist.Write("",ROOT.TObject.kOverwrite)
         if options.analysis == "mssm":
             for samp in mssm_samples:
                 if samp == 'ggH':
@@ -1606,13 +1632,13 @@ for systematic in systematics:
                         sf = 1.0/xs
                         mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                         mssm_hist.Scale(sf)
-                        mssm_hist.Write()
+                        mssm_hist.Write("",ROOT.TObject.kOverwrite)
                         if options.doMSSMReWeighting: 
                           re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
                           for name in re_weighted_names:
                             mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
                             mssm_hist.Scale(sf)
-                            mssm_hist.Write()
+                            mssm_hist.Write("",ROOT.TObject.kOverwrite)
         if options.analysis == "Hhh":
             for samp in Hhh_samples:
                 masses = ggh_masses
@@ -1622,7 +1648,7 @@ for systematic in systematics:
                         sf = 1.0/xs
                         mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
                         mssm_hist.Scale(sf)
-                        mssm_hist.Write()
+                        mssm_hist.Write("",ROOT.TObject.kOverwrite)
         outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
 if options.doNLOScales: 
@@ -1631,7 +1657,23 @@ if options.doNLOScales:
 if options.doPDF:
     PDFUncerts(nodename,outfile)
 
+
+# sm 2D unrolling
+if is_2d and options.do_unrolling:
+  # loop over all TH2Ds and for each one unroll to produce TH1D and add to datacard
+  directory = outfile.Get(nodename)  
+  outfile.cd(nodename)
+  hists_to_add = []
+  for key in directory.GetListOfKeys():
+    hist_name = key.GetName()
+    hist = directory.Get(hist_name).Clone()
+    if not isinstance(hist,ROOT.TDirectory):
+      h1d = UnrollHist(hist)
+      hists_to_add.append(h1d)    
+  for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+
 outfile.Close()
+
 if is_2d: exit(0) # 2d plotting cosmetics not currently supported
 plot_file = ROOT.TFile(output_name, 'READ')
 
