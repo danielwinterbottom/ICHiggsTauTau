@@ -868,11 +868,11 @@ namespace ic {
       for(unsigned i = 0; i < dileptons.size(); ++i){  
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs_singlel1, extra_leg2_filter,0.5).first;
         bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs_singlel1, extra_leg2_filter,0.5).first;  
-        passed_mutaucross_singlel1 = leg1_match && leg2_match; 
+        passed_mutaucross_singlel1 = leg1_match && leg2_match && dileptons[i]->At(0)->pt()<high_leg_pt; 
         
         bool alt_leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_leg1_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, alt_cross_extra_leg2_filter,0.5).first;
         bool alt_leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_leg2_filter, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, alt_cross_extra_leg2_filter,0.5).first;  
-        passed_mutaucross = alt_leg1_match && alt_leg2_match; 
+        passed_mutaucross = alt_leg1_match && alt_leg2_match && dileptons[i]->At(0)->pt()<high_leg_pt; 
         if(passed_mutaucross_singlel1 || passed_mutaucross) dileptons_pass.push_back(dileptons[i]);
       }
     }
