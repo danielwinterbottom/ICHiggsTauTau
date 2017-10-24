@@ -231,6 +231,10 @@ namespace ic {
                w_->function("m_trgMu22OR_eta2p1_desy_data")->functor(w_->argSet("m_pt,m_eta")));
             fns_["m_trgMu22OR_eta2p1_desy_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgMu22OR_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
+            fns_["m_trgMu19leg_eta2p1_desy_data"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trgMu19leg_eta2p1_desy_data")->functor(w_->argSet("m_pt,m_eta")));
+            fns_["m_trgMu19leg_eta2p1_desy_mc"] = std::shared_ptr<RooFunctor>(
+             w_->function("m_trgMu19leg_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
           } else{
             fns_["m_trgIsoMu24orTkIsoMu24_desy_data"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgIsoMu24orTkIsoMu24_desy_data")->functor(w_->argSet("m_pt,m_eta")));
@@ -248,6 +252,10 @@ namespace ic {
                w_->function("m_trgMu23leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
             fns_["m_trgMu19leg_eta2p1_desy_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgMu19leg_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
+            fns_["t_fake_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_fake_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
+            fns_["t_genuine_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
+                w_->function("t_genuine_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
           }
           if (strategy_ != strategy::smsummer16) {
           fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
@@ -1329,8 +1337,19 @@ namespace ic {
                       mu_trg_mc = fns_["m_trgOR4_binned_mc"]->eval(args_1.data());
                       mu_trg = fns_["m_trgOR4_binned_data"]->eval(args_1.data()); 
                     } else if(mc_ == mc::summer16_80X && strategy_ == strategy::smsummer16){
-                      mu_trg_mc = fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(args_desy.data());
-                      mu_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(args_desy.data()); 
+                      if(pt>=23){
+                        // use signle muon trigger for pt_1>23  
+                        mu_trg_mc = fns_["m_trgMu22OR_eta2p1_desy_mc"]->eval(args_desy.data());
+                        mu_trg = fns_["m_trgMu22OR_eta2p1_desy_data"]->eval(args_desy.data()); 
+                      } else {
+                        auto t_args = std::vector<double>{t_pt,t_eta};
+                        // use cross triggers for pt_1<23
+                        unsigned gm2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
+                        mu_trg_mc = fns_["m_trgMu19leg_eta2p1_desy_mc"]->eval(args_desy.data());
+                        mu_trg = fns_["m_trgMu19leg_eta2p1_desy_data"]->eval(args_desy.data());
+                        if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
+                        else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
+                      }
                       // may want to add different SFs for anti-iso
                     }  else{
                       if(m_iso<0.15 || strategy_ == strategy::smsummer16){
