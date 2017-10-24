@@ -1451,10 +1451,6 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
       shape_scale = shape_hist.Integral(0,shape_hist.GetNbinsX()+1)
       shape_hist.Scale(nominal_scale/shape_scale)
       shape_hist.Write()
-      
-def GetGlobalBin(h2d,xbin,ybin):
-    glob_bin = h2d.GetBin(xbin,ybin)
-    return glob_bin
 
 def Get1DBinNum(h2d,xbin,ybin,inc_y_of=True):
     Nxbins = h2d.GetNbinsX()
