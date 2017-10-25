@@ -13,7 +13,8 @@ for i in "${filelist[@]}"; do
     qsub -q hep.q -l h_rt=0:5:0 scripts/dcache_copy.sh $fullpath1 $fullpath2 $dir
   else
     echo copying $count: $fullpath1
-    ./scripts/dcache_copy.sh $fullpath1 $fullpath2 $dir
+    #./scripts/dcache_copy.sh $fullpath1 $fullpath2 $dir
+    lcg-cp $fullpath1 $fullpath2
   fi
 done
 echo Total files copied: $count
