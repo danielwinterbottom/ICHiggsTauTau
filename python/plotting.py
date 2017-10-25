@@ -3105,7 +3105,7 @@ def HTTPlotUnrolled(nodename,
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
         if ymax == -1: y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
-        else: y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        else: y_bin_label = '%0.f #leq %s #lt %0.f %s' % (ymin,var,ymax,unit) 
         xshift = 0.78/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
         latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
         
