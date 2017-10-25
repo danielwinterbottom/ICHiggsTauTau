@@ -243,10 +243,10 @@ cats = {}
 if options.analysis == 'sm':
     if options.channel == 'mt':
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-        if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_1>30)'
+        if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.15 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30)'
     elif options.channel == 'et': 
         cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
-        if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_1>30)'
+        if options.era == 'smsummer16': cats['baseline'] = '(iso_1<0.1  && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30)'
         
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
@@ -1481,8 +1481,11 @@ def UnrollHist(h2d,inc_y_of=True):
         glob_bin = Get1DBinNum(h2d,i,j)
         content = h2d.GetBinContent(i,j)
         error = h2d.GetBinError(i,j)
-        h1d.SetBinContent(glob_bin+1,content)
-        h1d.SetBinError(glob_bin+1,error)
+        scale = h2d.GetXaxis().GetBinLowEdge(i+1) - h2d.GetXaxis().GetBinLowEdge(i)
+        h1d.SetBinContent(glob_bin+1,content/scale)
+        h1d.SetBinError(glob_bin+1,error/scale)
+        h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
+    h1d.LabelsOption('v','X')
     return h1d
     
 
@@ -1670,6 +1673,9 @@ if options.doPDF:
 
 # sm 2D unrolling
 if is_2d and options.do_unrolling:
+  x_lines = []
+  y_labels = []
+  first_hist = True
   # loop over all TH2Ds and for each one unroll to produce TH1D and add to datacard
   directory = outfile.Get(nodename)  
   outfile.cd(nodename)
@@ -1678,10 +1684,16 @@ if is_2d and options.do_unrolling:
     hist_name = key.GetName()
     hist = directory.Get(hist_name).Clone()
     if not isinstance(hist,ROOT.TDirectory):
-      h1d = UnrollHist(hist)
-      hists_to_add.append(h1d)    
+      include_of = True
+      h1d = UnrollHist(hist,include_of)
+      hists_to_add.append(h1d)
+      if first_hist:
+        first_hist=False
+        Nxbins = hist.GetNbinsX()
+        for i in range(1,hist.GetNbinsY()+1): x_lines.append(Nxbins*i)
+        for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
+        if include_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
-
 outfile.Close()
 
 if is_2d and not options.do_unrolling: exit(0) # 2d plotting cosmetics not currently supported
@@ -1712,14 +1724,18 @@ if not options.no_plot:
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
     titles = plotting.SetAxisTitles(options.var,options.channel)
+    if options.do_unrolling and is_2d: titles2d = plotting.SetAxisTitles2D(options.var,options.channel)
     if options.x_title == "": 
       x_title = titles[0]
-      if options.do_unrolling and is_2d: x_title = "2D bin num"
+      if options.do_unrolling and is_2d: 
+        x_title = titles2d[0][0]
     else: x_title = options.x_title
     
     if options.y_title == "": 
         y_title = titles[1]
-        if options.do_unrolling and is_2d: y_title = "Events/bin"
+        if options.do_unrolling and is_2d: 
+          y_title = titles2d[0][1]
+          y_var_titles = titles2d[1]
     else: y_title = options.y_title
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'
@@ -1750,7 +1766,6 @@ if not options.no_plot:
         x_title,
         y_title,
         options.extra_pad,
-        options.signal_scheme,
         options.do_custom_uncerts,
         options.add_stat_to_syst,
         options.add_flat_uncert,
@@ -1759,7 +1774,10 @@ if not options.no_plot:
         plot_name,
         custom_uncerts_up_name,
         custom_uncerts_down_name,
-        scheme
+        scheme,
+        options.cat,
+        x_lines,
+        [y_labels,y_var_titles]
         )
     elif scheme != 'signal':
       plotting.HTTPlot(nodename, 
