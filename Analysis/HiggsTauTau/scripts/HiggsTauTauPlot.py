@@ -314,6 +314,12 @@ if options.channel == 'mt': cats['vbf'] = '(n_jets>=2 && mjj>300 && pt_tt>50 && 
 if options.channel == 'tt': cats['vbf'] = '(n_jets>=2 && pt_tt>100 && jdeta>2.5)'
 cats['boosted'] = '(!%s && !%s)' % (cats['0jet'], cats['vbf'])
 
+# 2016 sm analysis uses relaxed shape selections for W + WCD processes in et and mt channel, these are set here
+if options.era == 'smsummer16':
+  if options.channel == 'et': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)*('+cats[options.cat]+')'
+  if options.channel == 'mt': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singlemuon)*('+cats[options.cat]+')'
+  cats['w_shape'] = cats['qcd_shape']
+
 
 # Overwrite selection depending on whether tight or loose-mt categories is chosen - this can still be overwritten from command line using the --set_alias=sel:(...) option
 if options.cat == 'nobtag_tight' or options.cat == 'btag_tight':
