@@ -63,7 +63,8 @@ def SetAxisTitles(plot, channel):
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
   titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)']
-  titles['m_vis'] = ['M_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{'+chan_label+'} (1/GeV)']
+  titles['m_vis'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
+  titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)']
   if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)']
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
@@ -75,6 +76,83 @@ def SetAxisTitles(plot, channel):
   else:
     if not isVarBins: return [titles[var][0],titles[var][1]]
     else: return [titles[var][0], titles[var][2]]
+
+def SetAxisTitles2D(plot, channel):
+  if '[' in plot: 
+      isVarBins = True
+      var = plot.split('[')[0]
+  else:
+      isVarBins = False
+      var = plot.split('(')[0]
+
+  yvar = var.split(',')[0]
+  xvar = var.split(',')[1]
+      
+  chan_label = '#tau#tau'
+  lep1_label = '#tau'
+  lep2_label = '#tau'
+  if channel == 'et': 
+    chan_label = 'e#tau'
+    lep1_label = 'e'
+    lep2_label = '#tau'
+  elif channel == 'mt': 
+    chan_label = '#mu#tau'
+    lep1_label = '#mu'
+    lep2_label = '#tau'
+  if channel == 'em': 
+    chan_label = 'e#mu'
+    lep1_label = 'e'
+    lep2_label = '#mu'
+  elif channel == 'tt':
+    chan_label = '#tau#tau'  
+    lep1_label = '#tau_{1}'
+    lep2_label = '#tau_{2}'
+  elif channel == 'zee': 
+    chan_label = 'ee'
+    lep1_label = 'e_{1}'
+    lep2_label = 'e_{2}'
+  elif channel == 'zmm': 
+    chan_label = '#mu#mu'
+    lep1_label = '#mu_{1}'
+    lep2_label = '#mu_{2}'
+  
+  bin_width=''
+  if not isVarBins:
+      binning = plot.split('(')[1].split(')')[0].split(',')
+      binning = map(float,binning)
+      bin_width = str(round((binning[2]-binning[1])/binning[0],1))
+      
+  titles = {}
+  titles['pt_1'] = ['P_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep1_label+'} (1/GeV)','GeV']
+  titles['pt_2'] = ['P_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+lep2_label+'} (1/GeV)','GeV']
+  titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)','GeV']
+  titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}','']
+  titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}','']
+  titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)','GeV']
+  titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)','GeV']
+  titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
+  titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
+  if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)','GeV']
+  else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
+  titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
+  titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
+  
+  if xvar not in titles: 
+    if not isVarBins: return [xvar,'Events']
+    else: x_titles =  [xvar, 'dN/d'+xvar]
+  else:
+    if not isVarBins: return [titles[xvar][0],titles[xvar][1]]
+    else: x_titles =  [titles[xvar][0], titles[xvar][2]]
+  if yvar not in titles: 
+    unit=''
+    if not isVarBins: return [yvar,'Events',unit]
+    else: y_titles =  [yvar, 'dN/d'+yvar,unit]
+  else:
+    unit = titles[yvar][3]  
+    if not isVarBins: return [titles[yvar][0],titles[yvar][1],unit]
+    else: y_titles =  [titles[yvar][0], titles[yvar][2],unit]
+    
+  return [x_titles, y_titles]
   
 
 def SetTDRStyle():
@@ -2720,7 +2798,6 @@ def HTTPlotUnrolled(nodename,
             x_title="",
             y_title="Events/bin",
             extra_pad=0,
-            signal_scheme="run2_mssm",
             do_custom_uncerts=False,
             add_stat_to_syst=False,
             add_flat_uncert=False,
@@ -2729,18 +2806,20 @@ def HTTPlotUnrolled(nodename,
             plot_name="htt_plot",
             custom_uncerts_up_name="total_bkg_custom_uncerts_up",
             custom_uncerts_down_name="total_bkg_custom_uncerts_down",
-            scheme="mt"
+            scheme="mt",
+            cat="",
+            x_lines=None,
+            y_labels_vec=None
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     # Define signal schemes here
     sig_schemes = {}
-    sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
-    sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
-    sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
-    #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
 
-    ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12)
+    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False , R.kRed) 
+    sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH"], False, R.kBlue)
+
+    ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
     
     background_schemes = {'mt':[backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))],
@@ -2828,6 +2907,7 @@ def HTTPlotUnrolled(nodename,
     
     if(log_y): pads[0].SetLogy(1)
     if(log_x): pads[0].SetLogx(1)
+
     if custom_x_range:
         if x_axis_max > bkghist.GetXaxis().GetXmax(): x_axis_max = bkghist.GetXaxis().GetXmax()
     if ratio:
@@ -2842,7 +2922,8 @@ def HTTPlotUnrolled(nodename,
         axish[1].GetYaxis().SetTitleOffset(0.8)
         axish[1].GetYaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetLabelSize(0.03)
-    
+        axish[1].GetXaxis().SetTitleOffset(1.7)
+        axish[1].GetXaxis().SetLabelOffset(0.015)
         axish[0].GetXaxis().SetTitleSize(0)
         axish[0].GetXaxis().SetLabelSize(0)
         if custom_x_range:
@@ -2865,7 +2946,7 @@ def HTTPlotUnrolled(nodename,
     axish[0].GetYaxis().SetLabelSize(0.03)
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not custom_y_range:
-        if(log_y): 
+        if log_y: 
             axish[0].SetMinimum(0.0009)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
         else: 
@@ -2880,21 +2961,31 @@ def HTTPlotUnrolled(nodename,
     bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
     
     sighist = R.TH1F()
+    #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH"], True, R.kBlue)
+    sighists = []
     if signal_mass != "":
-        sig_scheme = sig_schemes[signal_scheme]
-        for i in sig_scheme[1]: 
-            h = infile.Get(nodename+'/'+i+signal_mass).Clone()
-            if sighist.GetEntries() == 0: sighist = h
-            else: sighist.Add(h)
-        sighist.SetLineColor(R.kBlue)
-        sighist.SetLineWidth(3)
-        sighist.Scale(signal_scale)
-        if norm_bins: sighist.Scale(1.0,"width")
-        if sig_scheme[2]: 
-            stack.Add(sighist.Clone())
-            if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
-        stack.Draw("histsame")
-        if not sig_scheme[2]: sighist.Draw("histsame")
+        #signal_scheme = 'sm_ggH'
+        for signal_scheme in sig_schemes:
+          sighist = R.TH1F()  
+          sig_scheme = sig_schemes[signal_scheme]
+          for i in sig_scheme[1]: 
+              h = infile.Get(nodename+'/'+i+signal_mass).Clone()
+              if sighist.GetEntries() == 0: sighist = h
+              else: sighist.Add(h)
+          sighist.SetLineColor(sig_scheme[3])
+          sighist.SetLineWidth(2)
+          sighist.Scale(signal_scale)
+          if norm_bins: sighist.Scale(1.0,"width")
+          if sig_scheme[2]: 
+              stack.Add(sighist.Clone())
+              if not custom_y_range: 
+                axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+          stack.Draw("histsame")
+          sighist.SetName(signal_scheme)
+          sighists.append(sighist.Clone())
+          #if not sig_scheme[2]: sighist.Draw("histsame")
+        for sig in sighists: sig.Draw("histsame")
+              
         
     else:
         stack.Draw("histsame")
@@ -2928,8 +3019,7 @@ def HTTPlotUnrolled(nodename,
     axish[0].Draw("axissame")
     
     #Setup legend
-    #def PositionedLegend(width, height, pos, offset):
-    legend = PositionedLegend(0.15,0.45,7,0)
+    legend = PositionedLegend(0.13,0.45,7,0.02)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
@@ -2944,7 +3034,7 @@ def HTTPlotUnrolled(nodename,
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
     else: legend.AddEntry(error_hist,"Background uncertainty","f")
     if signal_mass != "":
-        legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
+        for sig in sighists: legend.AddEntry(sig,sig_schemes[sig.GetName()][0],"l")
     legend.Draw("same")
     if channel == "em": channel_label = "e#mu"
     if channel == "et": channel_label = "e#tau_{h}"
@@ -2952,12 +3042,14 @@ def HTTPlotUnrolled(nodename,
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
+    if cat != "": channel_label+=" "+cat
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
     latex2.SetTextColor(R.kBlack)
+    latex2.SetTextAlign(23)
     latex2.SetTextSize(0.028)
-    latex2.DrawLatex(0.42,0.915,channel_label)
+    latex2.DrawLatex(0.46,0.92,channel_label)
     
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
@@ -2981,6 +3073,42 @@ def HTTPlotUnrolled(nodename,
     pads[0].cd()
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
+    
+    if x_lines is not None:
+      line = R.TLine()
+      line.SetLineWidth(2)
+      line.SetLineStyle(2)
+      line.SetLineColor(R.kBlack)
+      for x in x_lines:
+        pads[0].cd()
+        ymax = axish[0].GetMaximum()
+        ymin = axish[0].GetMinimum()
+        line.DrawLine(x,ymin,x,ymax)
+        pads[1].cd()
+        ymax = axish[1].GetMaximum()
+        ymin = axish[1].GetMinimum()
+        line.DrawLine(x,ymin,x,ymax)
+        
+    if y_labels_vec is not None:
+      pads[0].cd()  
+      unit = y_labels_vec[1][2]
+      var = y_labels_vec[1][0].split(' ')[0]
+      y_bins = y_labels_vec[0]
+      latex = R.TLatex()
+      latex.SetNDC()
+      latex.SetTextAngle(0)
+      latex.SetTextColor(R.kBlack)
+      latex.SetTextSize(0.028)
+      
+      Nybins = len(y_bins)
+      for i in range(0, Nybins):
+        ymin = y_labels_vec[0][i][0]
+        ymax = y_labels_vec[0][i][1]
+        if ymax == -1: y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
+        else: y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        xshift = 0.78/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
+        latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
+        
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
