@@ -543,20 +543,36 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
 else:
-    if options.channel == 'et':
-        qcd_os_ss_ratio = 1.02
-        if options.cat == 'inclusive': qcd_os_ss_ratio = 1.13
-        elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_ratio = 1.11
-        elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_ratio = 1.16
-    elif options.channel in ['mt','mj']: 
-        qcd_os_ss_ratio = 1.18
-        if options.cat == 'inclusive': qcd_os_ss_ratio = 1.12
-        elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_ratio = 1.14
-        elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_ratio = 1.01
-    elif options.channel == 'zmm' or options.channel == 'zee':
-        qcd_os_ss_ratio = 1.06   
+    if options.analysis == 'sm':
+      if options.channel == 'et':
+          qcd_os_ss_ratio = 1.0
+          if options.cat == '0jet': qcd_os_ss_ratio = 1.0
+          elif options.cat == 'boosted': qcd_os_ss_ratio = 1.28
+          elif options.cat == 'vbf': qcd_os_ss_ratio = 1.0
+      elif options.channel in ['mt','mj']: 
+          qcd_os_ss_ratio = 1.07
+          if options.cat == '0jet': qcd_os_ss_ratio = 1.07
+          elif options.cat == 'boosted': qcd_os_ss_ratio = 1.06
+          elif options.cat == 'vbf': qcd_os_ss_ratio = 1.0
+      elif options.channel == 'zmm' or options.channel == 'zee':
+          qcd_os_ss_ratio = 1.07   
+      else:
+          qcd_os_ss_ratio = 1.0  
     else:
-        qcd_os_ss_ratio = 1.0
+      if options.channel == 'et':
+          qcd_os_ss_ratio = 1.02
+          if options.cat == 'inclusive': qcd_os_ss_ratio = 1.13
+          elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_ratio = 1.11
+          elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_ratio = 1.16
+      elif options.channel in ['mt','mj']: 
+          qcd_os_ss_ratio = 1.18
+          if options.cat == 'inclusive': qcd_os_ss_ratio = 1.12
+          elif options.cat in ['nobtag', 'nobtag_tight', 'nobtag_loosemt']: qcd_os_ss_ratio = 1.14
+          elif options.cat in ['btag', 'btag_tight', 'btag_loosemt']: qcd_os_ss_ratio = 1.01
+      elif options.channel == 'zmm' or options.channel == 'zee':
+          qcd_os_ss_ratio = 1.06   
+      else:
+          qcd_os_ss_ratio = 1.0
 #if options.do_ss:
 #    qcd_os_ss_ratio = 1.0
 
