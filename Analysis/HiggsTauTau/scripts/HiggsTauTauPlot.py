@@ -282,8 +282,9 @@ cats['w_sdb'] = 'mt_1>70.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
-if options.era == 'smsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau' # just copying mssm version for now
+if options.era == 'smsummer16': cats['tt_qcd_norm'] = '(((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5)) && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && pt_1>50)&&trg_doubletau'
 cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
+
 
 # MSSM categories
 cats['btag'] = '(n_bjets>=1)'
@@ -842,15 +843,16 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
         num_node = SubtractNode('ratio_num',
                      ana.SummedFactory('data', data, plot, num_selection),
                      subtract_node)
-        
-        subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose',sel,qcd_sdb_cat,method,qcd_os_ss_ratio,False,True)
+        if options.analysis == 'mssmsummer16': tau_id_wt = 'wt_tau2_id_loose'
+        else: tau_id_wt = '1'
+        subtract_node = GetSubtractNode(ana,'',plot,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,method,qcd_os_ss_ratio,False,True)
         den_selection = BuildCutString(wt, sel, qcd_sdb_cat, '!os')
         den_node = SubtractNode('ratio_den',
                      ana.SummedFactory('data', data, plot, den_selection),
                      subtract_node)
         shape_node = None   
         full_selection = BuildCutString(wt, sel, qcd_sdb_cat, OSSS)
-        subtract_node = GetSubtractNode(ana,'',plot,wt+'*wt_tau2_id_loose',sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
+        subtract_node = GetSubtractNode(ana,'',plot,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,method,qcd_os_ss_ratio,get_os,True)
         
         if options.method == 20:
             num_node = None
@@ -1516,7 +1518,8 @@ for systematic in systematics:
         weight='wt'
         ff_syst_weight = systematics[systematic][2]
     if options.add_wt is not "": weight+="*"+options.add_wt
-    if options.channel == "tt": weight+='*wt_tau_id_medium'
+    if options.channel == "tt" and options.era == 'mssmsummer16': weight+='*wt_tau_id_medium'
+    if options.channel == "tt" and options.era == 'smsummer16': weight+='*wt_tau_id_tight'
     samples_to_skip = systematics[systematic][3]
     
     ana = Analysis()
