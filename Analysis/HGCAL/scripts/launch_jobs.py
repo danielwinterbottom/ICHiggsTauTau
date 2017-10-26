@@ -11,7 +11,7 @@ job_mgr.set_args(args)
 basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HGCAL' % os.environ[
     'CMSSW_BASE']
 
-MAX_EVTS = 200
+MAX_EVTS = 10
 FILES_PER_JOB = 1000
 
 # OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name
@@ -24,7 +24,8 @@ joblist = [
    # ('Pythia8PtGun_agilbert_JetPt30_20170710', ["filelists/Pythia8PtGun_agilbert_JetPt30_20170710.dat"]),
    # ('Pythia8PtGun_agilbert_TauPt45_201708', ["filelists/Pythia8PtGun_agilbert_TauPt45_201708.dat"]),
    # ('Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_full.dat"]),
-   ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
+   # ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
+   ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
    # ('Dijet_agilbert_DiJetFlat20_200_20171015', ["filelists/Dijet_agilbert_DiJetFlat20_200_20171015.dat"]),
    # ('Pythia8PtGun_agilbert_TauPt45_20170913', ["filelists/Pythia8PtGun_agilbert_TauPt45_20170913.dat"]),
    #('Pythia8PtGun_agilbert_JetPt100_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt100_20170808.dat"]),
@@ -34,6 +35,12 @@ joblist = [
   # ('Dijet_test', ["filelists/filelist_dijet_test.dat"]),
 ]
 
+OPTS = {
+  'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub': {
+    's1_pu_strategy': 1
+  }
+}
+
 for sample, filelist in joblist:
 
     cfg = {
@@ -41,10 +48,24 @@ for sample, filelist in joblist:
         'filelists': filelist,
         'max_events': MAX_EVTS,
         'file_prefix': '',
-        'do_fakes': False
+        'do_fakes': False,
+        's1_rechit_threshold': 5.,
+        's1_pu_strategy': 0,
+        's2_jet_distance': 0.2,
+        's2_min_jet_pt': 15.,
+        's3_min_surrounding_hits': 5,
+        's3_min_lower_energy_hits': 5,
+        's3_use_hcal_dxy': True,
+        's3_hcal_dxy': 10.,
+        's4_hit_merge_dr': 0.01,
+        's4_min_hits_for_prong': 3,
+        's5_merge_strategy': 0,
+        's5_exp_merge_scale': 0.01
     }
     if 'DiJet' in sample:
         cfg['do_fakes'] = True
+    if sample in OPTS:
+        cfg.update(OPTS[sample])
 
     job_mgr.add_filelist_split_jobs(
         prog=basedir + '/bin/HGCAL',

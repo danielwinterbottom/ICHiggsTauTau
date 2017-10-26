@@ -45,8 +45,8 @@ ana = Analysis()
 
 path = 'output/Main'
 sa = {
-    'tau_0pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_0',
-    'jet_0pu': 'Dijet_agilbert_DiJetFlat20_200_20171015_0'
+    'tau_0pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013',
+    'jet_0pu': 'Dijet_agilbert_DiJetFlat20_200_20171015'
 }
 labels = {
     'tau_0pu': '#tau_{h}#rightarrow#pi^{+}#pi^{0} (0 PU)',

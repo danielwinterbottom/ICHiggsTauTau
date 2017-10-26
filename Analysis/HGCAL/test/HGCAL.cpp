@@ -83,7 +83,20 @@ int main(int argc, char* argv[]) {
   Sequence main_seq;
 
   main_seq.BuildModule(ic::HGCALObjectBuilder("HGCALObjectBuilder"));
-  main_seq.BuildModule(ic::TauReco("TauReco"));
+  main_seq.BuildModule(ic::TauReco("TauReco")
+    .set_s1_rechit_threshold(js["s1_rechit_threshold"].asDouble())
+    .set_s1_pu_strategy(js["s1_pu_strategy"].asInt())
+    .set_s2_jet_distance(js["s2_jet_distance"].asDouble())
+    .set_s2_min_jet_pt(js["s2_min_jet_pt"].asDouble())
+    .set_s3_min_surrounding_hits(js["s3_min_surrounding_hits"].asInt())
+    .set_s3_min_lower_energy_hits(js["s3_min_lower_energy_hits"].asInt())
+    .set_s3_use_hcal_dxy(js["s3_use_hcal_dxy"].asBool())
+    .set_s3_hcal_dxy(js["s3_hcal_dxy"].asDouble())
+    .set_s4_hit_merge_dr(js["s4_hit_merge_dr"].asDouble())
+    .set_s4_min_hits_for_prong(js["s4_min_hits_for_prong"].asUInt())
+    .set_s5_merge_strategy(js["s5_merge_strategy"].asInt())
+    .set_s5_exp_merge_scale(js["s5_exp_merge_scale"].asDouble())
+    );
   main_seq.BuildModule(ic::HGCALTest("HGCALTest")
     .set_fs(fs.at("Main").get())
     .set_do_fakes(js.get("do_fakes", false).asBool())

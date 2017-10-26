@@ -35,19 +35,37 @@ class TauReco : public ModuleBase {
   typedef std::vector<ic::CompositeCandidate> CompositeVec;
   typedef std::vector<CompositeVec> CompositeVecVec;
 
+  CLASS_MEMBER(TauReco, double, s1_rechit_threshold)
+  CLASS_MEMBER(TauReco, int, s1_pu_strategy)
+  CLASS_MEMBER(TauReco, double, s2_jet_distance)
+  CLASS_MEMBER(TauReco, double, s2_min_jet_pt)
+  CLASS_MEMBER(TauReco, int, s3_min_surrounding_hits)
+  CLASS_MEMBER(TauReco, int, s3_min_lower_energy_hits)
+  CLASS_MEMBER(TauReco, bool, s3_use_hcal_dxy)
+  CLASS_MEMBER(TauReco, double, s3_hcal_dxy)
+  CLASS_MEMBER(TauReco, double, s4_hit_merge_dr)
+  CLASS_MEMBER(TauReco, unsigned, s4_min_hits_for_prong)
+  CLASS_MEMBER(TauReco, int, s5_merge_strategy)
+  CLASS_MEMBER(TauReco, double, s5_exp_merge_scale)
+
+  std::vector<TH1F> pu_bins;
+
  public:
   struct Settings {
-    double s1_rechit_threshold = 5.;
-    double s2_jet_distance = 0.2;
-    double s2_min_jet_pt = 15.;
-    int s3_min_surrounding_hits = 5;
-    int s3_min_lower_energy_hits = 5;
-    bool s3_use_hcal_dxy = true;
-    double s3_hcal_dxy = 10.;
-    double s4_hit_merge_dr = 0.01;
-    unsigned s4_min_hits_for_prong = 3;
-    int s5_merge_strategy = 0;  // 0 = exp(-R/lambda) weighting, 1 = closest in DR
-    double s5_exp_merge_scale = 0.01;
+    double s1_rechit_threshold;
+    int s1_pu_strategy;
+    double s2_jet_distance;
+    double s2_min_jet_pt;
+    int s3_min_surrounding_hits;
+    int s3_min_lower_energy_hits;
+    bool s3_use_hcal_dxy;
+    double s3_hcal_dxy;
+    double s4_hit_merge_dr;
+    unsigned s4_min_hits_for_prong;
+    int s5_merge_strategy;
+    double s5_exp_merge_scale;
+
+    void Print() const;
   };
 
   struct TauInfo {

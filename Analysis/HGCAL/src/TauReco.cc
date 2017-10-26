@@ -21,12 +21,65 @@
 
 */
 namespace ic {
-TauReco::TauReco(std::string const& name) : ModuleBase(name) {}
+TauReco::TauReco(std::string const& name) : ModuleBase(name) {
+   s1_rechit_threshold_ = 5.;
+   s1_pu_strategy_ = 0;
+   s2_jet_distance_ = 0.2;
+   s2_min_jet_pt_ = 15.;
+   s3_min_surrounding_hits_ = 5;
+   s3_min_lower_energy_hits_ = 5;
+   s3_use_hcal_dxy_ = true;
+   s3_hcal_dxy_ = 10.;
+   s4_hit_merge_dr_ = 0.01;
+   s4_min_hits_for_prong_ = 3;
+   s5_merge_strategy_ = 0;  // 0 = exp(-R/lambda) weighting, 1 = closest in DR
+   s5_exp_merge_scale_ = 0.01;
+}
 
 TauReco::~TauReco() { ; }
 
-int TauReco::PreAnalysis() {
+void TauReco::Settings::Print() const {
+  std::cout << " - s1_rechit_threshold: " << s1_rechit_threshold << "\n";
+  std::cout << " - s1_pu_strategy: " << s1_pu_strategy << "\n";
+  std::cout << " - s2_jet_distance: " << s2_jet_distance << "\n";
+  std::cout << " - s2_min_jet_pt: " << s2_min_jet_pt << "\n";
+  std::cout << " - s3_min_surrounding_hits: " << s3_min_surrounding_hits << "\n";
+  std::cout << " - s3_min_lower_energy_hits: " << s3_min_lower_energy_hits << "\n";
+  std::cout << " - s3_use_hcal_dxy: " << s3_use_hcal_dxy << "\n";
+  std::cout << " - s3_hcal_dxy: " << s3_hcal_dxy << "\n";
+  std::cout << " - s4_hit_merge_dr: " << s4_hit_merge_dr << "\n";
+  std::cout << " - s4_min_hits_for_prong: " << s4_min_hits_for_prong << "\n";
+  std::cout << " - s5_merge_strategy: " << s5_merge_strategy << "\n";
+  std::cout << " - s5_exp_merge_scale: " << s5_exp_merge_scale << "\n";
+}
 
+
+int TauReco::PreAnalysis() {
+  settings.s1_rechit_threshold = s1_rechit_threshold_;
+  settings.s1_pu_strategy = s1_pu_strategy_;
+  settings.s2_jet_distance = s2_jet_distance_;
+  settings.s2_min_jet_pt = s2_min_jet_pt_;
+  settings.s3_min_surrounding_hits = s3_min_surrounding_hits_;
+  settings.s3_min_lower_energy_hits = s3_min_lower_energy_hits_;
+  settings.s3_use_hcal_dxy = s3_use_hcal_dxy_;
+  settings.s3_hcal_dxy = s3_hcal_dxy_;
+  settings.s4_hit_merge_dr = s4_hit_merge_dr_;
+  settings.s4_min_hits_for_prong = s4_min_hits_for_prong_;
+  settings.s5_merge_strategy = s5_merge_strategy_;
+  settings.s5_exp_merge_scale = s5_exp_merge_scale_;
+  PrintHeader(this->ModuleName());
+  settings.Print();
+
+
+  unsigned nlayers = hgcal::lastLayer - hgcal::firstLayer + 1;
+  TH1::AddDirectory(false);
+  for (unsigned i = 0; i < nlayers; ++i) {
+    if (i + hgcal::firstLayer <= hgcal::lastLayerE) {
+      pu_bins.push_back(TH1F(TString::Format("bins%i", i), "", 10, 1.479, 3.0));
+    } else {
+      pu_bins.push_back(TH1F(TString::Format("bins%i", i), "", 2, std::vector<double>{1.479, 2.6, 3.0}.data()));
+    }
+  }
   return 0;
 }
 
@@ -197,6 +250,57 @@ int TauReco::Execute(TreeEvent* event) {
     return std::get<1>(RecHitAboveThreshold(*r, settings.s1_rechit_threshold, true));
   });
 
+  unsigned nlayers = hgcal::lastLayer - hgcal::firstLayer + 1;
+  // PU subtraction
+  if (settings.s1_pu_strategy == 1) {
+    // std::cout << "RecHits before: " << filtered_rechits.size() << "\n";
+    std::vector<std::vector<std::vector<RecHit *>>> hits_in_layers(nlayers);
+    std::vector<std::vector<double>> median_energy(nlayers);
+    for (unsigned l = 0; l < nlayers; ++l) {
+      hits_in_layers[l].resize(pu_bins[l].GetNbinsX());
+      median_energy[l].resize(pu_bins[l].GetNbinsX());
+    }
+    for (unsigned i = 0; i < filtered_rechits.size(); ++i) {
+      if (filtered_rechits[i]->layer() > hgcal::lastLayer) continue;
+      unsigned layer_idx = filtered_rechits[i]->layer() - hgcal::firstLayer;
+
+      int mynbins = pu_bins[layer_idx].GetNbinsX();
+      int eta_idx = pu_bins[layer_idx].FindFixBin(std::abs(filtered_rechits[i]->eta())) - 1;
+      if (layer_idx < nlayers && eta_idx >= 0 && eta_idx < mynbins) {
+        hits_in_layers[layer_idx][eta_idx].push_back(filtered_rechits[i]);
+      }
+    }
+    for (unsigned l = 0; l < nlayers; ++l) {
+      for (unsigned b = 0; b < hits_in_layers[l].size(); ++b){
+        std::sort(hits_in_layers[l][b].begin(), hits_in_layers[l][b].end(), [](RecHit *h1, RecHit *h2) {
+          return h1->energy() < h2->energy();
+        });
+        if (hits_in_layers[l][b].size()) {
+          median_energy[l][b] = hits_in_layers[l][b][unsigned(hits_in_layers[l][b].size()/2)]->energy();
+        } else {
+          median_energy[l][b] = 0.;
+        }
+      }
+      // std::cout << "Median energy in layer " << l << " = ";
+      for (unsigned b = 0; b < hits_in_layers[l].size(); ++b) {
+        // std::cout << median_energy[l][b] << " (" << hits_in_layers[l][b].size() << ") ";
+      }
+      // std::cout << "\n";
+    }
+    filtered_rechits = ic::copy_keep_if(filtered_rechits, [&](RecHit * r) {
+      if (r->layer() > hgcal::lastLayer) return true;
+      unsigned lidx = r->layer() - hgcal::firstLayer;
+      int mynbins = pu_bins[lidx].GetNbinsX();
+      int eta_idx = pu_bins[lidx].FindFixBin(std::abs(r->eta())) - 1;
+      if (lidx < nlayers && eta_idx >= 0 && eta_idx < mynbins) {
+        double scale = std::max(r->energy() - median_energy[lidx][eta_idx], 0.) / r->energy();
+        r->set_vector(r->vector() * scale);
+      }
+      return (r->energy() > 1E-6);
+    });
+    // std::cout << "RecHits after: " << filtered_rechits.size() << "\n";
+
+  }
   // Step 2 - jet clustering and selection
   // -------------------------------------------------------------------------
   // Jets clustering rechits in all layers
