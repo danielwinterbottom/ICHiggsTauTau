@@ -1955,6 +1955,18 @@ def createAxisHists(n,src,xmin=0,xmax=499):
     result.append(res)
   return result
 
+def PassAutoBlindMetric(s, b, epsilon=0.09, metric=0.5):
+    y = s/math.sqrt(b + (epsilon*b)**2)
+    return y >= metric
+
+def Norm2DBins(h):
+  for i in range(1,h.GetNbinsX()+1):
+    bin_lab = h.GetXaxis().GetBinLabel(i)
+    scale = float(bin_lab.split('-')[1]) - float(bin_lab.split('-')[0])
+    content = h.GetBinContent(i) 
+    error = h.GetBinError(i)
+    h.SetBinContent(i,content/scale)
+    h.SetBinError(i,error/scale)
 
 def HTTPlot(nodename, 
             infile=None, 
@@ -2785,6 +2797,7 @@ def HTTPlotUnrolled(nodename,
             blind=False,
             x_blind_min=0,
             x_blind_max=4000,
+            auto_blind=False,
             ratio=True,
             log_y=False,
             log_x=False,
@@ -2849,23 +2862,6 @@ def HTTPlotUnrolled(nodename,
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
     if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
     if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
-    
-    blind_datahist = total_datahist.Clone()
-    total_datahist.SetMarkerStyle(20)
-    blind_datahist.SetMarkerStyle(20)
-    blind_datahist.SetLineColor(1)
-    
-    #Blinding by hand using requested range, set to 200-4000 by default:
-    if blind:
-        for i in range(0,total_datahist.GetNbinsX()):
-          low_edge = total_datahist.GetBinLowEdge(i+1)
-          high_edge = low_edge+total_datahist.GetBinWidth(i+1)
-          if ((low_edge > float(x_blind_min) and low_edge < float(x_blind_max)) or (high_edge > float(x_blind_min) and high_edge<float(x_blind_max))):
-            blind_datahist.SetBinContent(i+1,0)
-            blind_datahist.SetBinError(i+1,0)
-    if norm_bins:
-        blind_datahist.Scale(1.0,"width")
-        total_datahist.Scale(1.0,"width")
         
     #Create stacked plot for the backgrounds
     bkg_histos = []
@@ -2883,18 +2879,26 @@ def HTTPlotUnrolled(nodename,
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
     
-        if norm_bins:
-            h.Scale(1.0,"width")
         bkg_histos.append(h)
         
     stack = R.THStack("hs","")
-    bkghist = R.TH1F()
+    bkghist_blind = R.TH1F()
     for hists in bkg_histos:
+      if bkghist_blind.GetEntries()==0:
+          bkghist_blind = hists.Clone()
+      else:
+          bkghist_blind.Add(hists.Clone())
+          
+    bkghist = R.TH1F()
+    
+    for hists in bkg_histos:
+      if norm_bins: Norm2DBins(hists)  
       stack.Add(hists.Clone())
       if bkghist.GetEntries()==0:
           bkghist = hists.Clone()
       else:
           bkghist.Add(hists.Clone())
+    
       
     c1 = R.TCanvas()
     c1.cd()    
@@ -2960,9 +2964,10 @@ def HTTPlotUnrolled(nodename,
     bkghist.SetMarkerSize(0)
     bkghist.SetMarkerColor(CreateTransparentColor(12,0.4))
     
+    totsighist = R.TH1F()
     sighist = R.TH1F()
-    #sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH"], True, R.kBlue)
     sighists = []
+    sighist_blind = []
     if signal_mass != "":
         #signal_scheme = 'sm_ggH'
         for signal_scheme in sig_schemes:
@@ -2975,27 +2980,64 @@ def HTTPlotUnrolled(nodename,
           sighist.SetLineColor(sig_scheme[3])
           sighist.SetLineWidth(2)
           sighist.Scale(signal_scale)
-          if norm_bins: sighist.Scale(1.0,"width")
           if sig_scheme[2]: 
-              stack.Add(sighist.Clone())
+              s = sighist.Clone()
+              if norm_bins: Norm2DBins(s)
+              stack.Add(s)
               if not custom_y_range: 
                 axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+          sighist_blind.append(sighist.Clone())      
+          if norm_bins: Norm2DBins(sighist)
           stack.Draw("histsame")
           sighist.SetName(signal_scheme)
           sighists.append(sighist.Clone())
           #if not sig_scheme[2]: sighist.Draw("histsame")
         for sig in sighists: sig.Draw("histsame")
-              
-        
+            
     else:
         stack.Draw("histsame")
+        
+    totsighist = R.TH1F()
+    for hists in sighist_blind:
+      if totsighist.GetEntries()==0:
+          totsighist = hists.Clone()
+      else:
+          totsighist.Add(hists.Clone())
+    
+    #blinding histograms, autoblind option overwrites others
+    
+    blind_datahist = total_datahist.Clone()
+    total_datahist.SetMarkerStyle(20)
+    blind_datahist.SetMarkerStyle(20)
+    blind_datahist.SetLineColor(1)
+    
+    # Auto blinding option
+    if auto_blind:
+      for i in range(1,total_datahist.GetNbinsX()+1):
+        b = bkghist_blind.GetBinContent(i)  
+        s = totsighist.GetBinContent(i) 
+        if PassAutoBlindMetric(s,b):
+          blind_datahist.SetBinContent(i,0)
+          blind_datahist.SetBinError(i,0)
+    #Blinding by hand using requested range, set to 200-4000 by default:
+    elif blind:
+        for i in range(0,total_datahist.GetNbinsX()):
+          low_edge = total_datahist.GetBinLowEdge(i+1)
+          high_edge = low_edge+total_datahist.GetBinWidth(i+1)
+          if ((low_edge > float(x_blind_min) and low_edge < float(x_blind_max)) or (high_edge > float(x_blind_min) and high_edge<float(x_blind_max))):
+            blind_datahist.SetBinContent(i+1,0)
+            blind_datahist.SetBinError(i+1,0)
+    if norm_bins:
+        Norm2DBins(blind_datahist)
+        Norm2DBins(total_datahist)    
+        
     error_hist = bkghist.Clone()
     if do_custom_uncerts:
       bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
       bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
       if norm_bins:
-        bkg_uncert_up.Scale(1.0,"width")
-        bkg_uncert_down.Scale(1.0,"width")
+        Norm2DBins(bkg_uncert_up)
+        Norm2DBins(bkg_uncert_down)
 
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
@@ -3013,6 +3055,10 @@ def HTTPlotUnrolled(nodename,
           error = add_flat_uncert*error_hist.GetBinContent(i)
           error = math.sqrt(error**2+stat_error**2)
           error_hist.SetBinError(i,error)
+    
+    #if norm_bins:
+      #Norm2DBins(error_hist)    
+      #Norm2DBins(blind_datahist)
           
     error_hist.Draw("e2same")
     blind_datahist.Draw("E same")

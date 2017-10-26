@@ -875,5 +875,49 @@
     "evt_wt_mur0p5_muf2": 649279.294922,
     "evt_wt_mur0p5_muf0p5": 631975.357422,
     "xs": 1.0
+  },
+  "EWKZ2Jets_ZToLL": {
+    "xs": 3.987,
+    "evt": 300000.0
+  },
+  "EWKZ2Jets_ZToLL-ext": {
+    "xs": 3.987,
+    "evt": 300000.0
+  },
+  "EWKWPlus2Jets_WToLNu": {
+    "xs": 25.62,
+    "evt": 4935705.0
+  },
+  "EWKWPlus2Jets_WToLNu-ext1": {
+    "xs": 25.62,
+    "evt": 4935705.0
+  },
+  "EWKWPlus2Jets_WToLNu-ext2": {
+    "xs": 25.62,
+    "evt": 4935705.0
+  },
+  "EWKZ2Jets_ZToNuNu": {
+    "xs": 10.01,
+    "evt": 786005.0
+  },
+  "EWKZ2Jets_ZToNuNu": {
+    "xs": 10.01,
+    "evt": 786005.0
+  },
+  "EWKZ2Jets_ZToNuNu-ext": {
+    "xs": 10.01,
+    "evt": 786005.0
+  },
+  "EWKWMinus2Jets_WToLNu": {
+    "xs": 20.25,
+    "evt": 4821007.0
+  },
+  "EWKWMinus2Jets_WToLNu-ext1": {
+    "xs": 20.25,
+    "evt": 4821007.0
+  },
+  "EWKWMinus2Jets_WToLNu-ext2": {
+    "xs": 20.25,
+    "evt": 4821007.0
   }
 }

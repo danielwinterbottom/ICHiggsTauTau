@@ -1505,12 +1505,65 @@ def UnrollHist(h2d,inc_y_of=True):
         glob_bin = Get1DBinNum(h2d,i,j)
         content = h2d.GetBinContent(i,j)
         error = h2d.GetBinError(i,j)
-        scale = h2d.GetXaxis().GetBinLowEdge(i+1) - h2d.GetXaxis().GetBinLowEdge(i)
-        h1d.SetBinContent(glob_bin+1,content/scale)
-        h1d.SetBinError(glob_bin+1,error/scale)
+        h1d.SetBinContent(glob_bin+1,content)
+        h1d.SetBinError(glob_bin+1,error)
         h1d.GetXaxis().SetBinLabel(glob_bin+1,'%.0f-%.0f' % (h2d.GetXaxis().GetBinLowEdge(i),h2d.GetXaxis().GetBinLowEdge(i+1)))
     h1d.LabelsOption('v','X')
     return h1d
+
+def NormSignals(outfile):
+    # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
+    if 'signal' not in samples_to_skip:
+        outfile.cd(nodename)
+        if options.analysis == "sm" or options.add_sm_background:
+            if options.analysis == "sm":
+                masses = sm_masses
+            else:
+                masses = [options.add_sm_background]
+            for samp in sm_samples:
+                if options.analysis == "sm":
+                    samp_name = samp
+                else:
+                    samp_name = samp+"_SM"
+                if masses is not None:    
+                    for mass in masses:
+                        xs = ana.info[sm_samples[samp].replace('*',mass)]['xs']
+                        sf = 1.0/xs
+                        sm_hist = outfile.Get(nodename+'/'+samp_name+mass+add_name)
+                        sm_hist.Scale(sf)
+                        sm_hist.Write("",ROOT.TObject.kOverwrite)
+        if options.analysis == "mssm":
+            for samp in mssm_samples:
+                if samp == 'ggH':
+                    masses = ggh_masses
+                elif samp == 'bbH' and not options.bbh_nlo_masses:
+                    masses = bbh_masses
+                elif 'bbH' in samp:
+                    masses = bbh_nlo_masses
+                if masses is not None:    
+                    for mass in masses:
+                        xs = ana.info[mssm_samples[samp].replace('*',mass)]['xs']
+                        sf = 1.0/xs
+                        mssm_hist = outfile.Get(nodename+'/'+samp+mass+add_name)
+                        mssm_hist.Scale(sf)
+                        mssm_hist.Write("",ROOT.TObject.kOverwrite)
+                        if options.doMSSMReWeighting: 
+                          re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
+                          for name in re_weighted_names:
+                            mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
+                            mssm_hist.Scale(sf)
+                            mssm_hist.Write("",ROOT.TObject.kOverwrite)
+        if options.analysis == "Hhh":
+            for samp in Hhh_samples:
+                masses = ggh_masses
+                if masses is not None:
+                    for mass in masses:
+                        xs = ana.info[Hhh_samples[samp].replace('*',mass)]['xs']
+                        sf = 1.0/xs
+                        mssm_hist = outfile.Get(nodename+'/'+samp+mass+add_name)
+                        mssm_hist.Scale(sf)
+                        mssm_hist.Write("",ROOT.TObject.kOverwrite)
+        outfile.cd()
     
 
 # Create output file
@@ -1636,58 +1689,6 @@ for systematic in systematics:
     
     PrintSummary(nodename, ['data_obs'], add_name)
     
-    # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
-    if 'signal' not in samples_to_skip:
-        outfile.cd(nodename)
-        if options.analysis == "sm" or options.add_sm_background:
-            if options.analysis == "sm":
-                masses = sm_masses
-            else:
-                masses = [options.add_sm_background]
-            for samp in sm_samples:
-                if options.analysis == "sm":
-                    samp_name = samp
-                else:
-                    samp_name = samp+"_SM"
-                if masses is not None:    
-                    for mass in masses:
-                        xs = ana.info[sm_samples[samp].replace('*',mass)]['xs']
-                        sf = 1.0/xs
-                        sm_hist = ana.nodes[nodename].nodes[samp_name+mass+add_name].shape.hist
-                        sm_hist.Scale(sf)
-                        sm_hist.Write("",ROOT.TObject.kOverwrite)
-        if options.analysis == "mssm":
-            for samp in mssm_samples:
-                if samp == 'ggH':
-                    masses = ggh_masses
-                elif samp == 'bbH' and not options.bbh_nlo_masses:
-                    masses = bbh_masses
-                elif 'bbH' in samp:
-                    masses = bbh_nlo_masses
-                if masses is not None:    
-                    for mass in masses:
-                        xs = ana.info[mssm_samples[samp].replace('*',mass)]['xs']
-                        sf = 1.0/xs
-                        mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
-                        mssm_hist.Scale(sf)
-                        mssm_hist.Write("",ROOT.TObject.kOverwrite)
-                        if options.doMSSMReWeighting: 
-                          re_weighted_names = ['ggh_t','ggh_b','ggh_i','ggH_t','ggH_b','ggH_i','ggA_t','ggA_b','ggA_i']
-                          for name in re_weighted_names:
-                            mssm_hist = ana.nodes[nodename].nodes[name+mass+add_name].shape.hist
-                            mssm_hist.Scale(sf)
-                            mssm_hist.Write("",ROOT.TObject.kOverwrite)
-        if options.analysis == "Hhh":
-            for samp in Hhh_samples:
-                masses = ggh_masses
-                if masses is not None:
-                    for mass in masses:
-                        xs = ana.info[Hhh_samples[samp].replace('*',mass)]['xs']
-                        sf = 1.0/xs
-                        mssm_hist = ana.nodes[nodename].nodes[samp+mass+add_name].shape.hist
-                        mssm_hist.Scale(sf)
-                        mssm_hist.Write("",ROOT.TObject.kOverwrite)
-        outfile.cd()
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
 if options.doNLOScales: 
     ScaleUncertBand(nodename,outfile)
@@ -1759,7 +1760,8 @@ if not options.no_plot:
     if options.y_title == "": 
         y_title = titles[1]
         if options.do_unrolling and is_2d: 
-          y_title = titles2d[0][1]
+          if options.norm_bins: y_title = titles2d[0][1]
+          else: y_title = titles2d[0][0]
           y_var_titles = titles2d[1]
     else: y_title = options.y_title
     scheme = options.channel
@@ -1768,6 +1770,7 @@ if not options.no_plot:
     if options.scheme != "": scheme = options.scheme
     FF = options.method==17 or options.method==18
     if options.do_unrolling and is_2d:
+        auto_blind=True
         plotting.HTTPlotUnrolled(nodename, 
         plot_file, 
         options.signal_scale, 
@@ -1778,6 +1781,7 @@ if not options.no_plot:
         options.blind,
         options.x_blind_min,
         options.x_blind_max,
+        auto_blind,
         options.ratio,
         options.log_y,
         options.log_x,
@@ -1892,4 +1896,9 @@ if not options.no_plot:
    #          False,
    #          plot_name,
    #          "#mu#tau_{h}")
+
+#norm signal yields on datacards to 1pb AFTER plotting    
+outfile =  ROOT.TFile(output_name, 'UPDATE')
+NormSignals(outfile)
+outfile.Close()
            
