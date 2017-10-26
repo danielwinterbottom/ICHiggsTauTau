@@ -35,7 +35,9 @@ int HGCALObjectBuilder::Execute(TreeEvent* event) {
 
 int HGCALObjectBuilder::PostAnalysis() { return 0; }
 
-HGCALTest::HGCALTest(std::string const& name) : ModuleBase(name) {}
+HGCALTest::HGCALTest(std::string const& name) : ModuleBase(name) {
+  do_fakes_ = false;
+}
 
 HGCALTest::~HGCALTest() { ; }
 
@@ -52,14 +54,15 @@ int HGCALTest::PreAnalysis() {
 }
 
 int HGCALTest::Execute(TreeEvent* event) {
-  unsigned v = 1;
+  unsigned v = 0;
 
   std::vector<std::pair<int,int>> save_events;
 
   save_events = {
-    {41, 23},
-    {42, 23},
-    {45, 23}
+    // {41, 23},
+    // {42, 23},
+    // {45, 23},
+    {7, 269}
   };
 
   int long evt = *event->GetPtr<int long>("event");
@@ -71,6 +74,7 @@ int HGCALTest::Execute(TreeEvent* event) {
   auto const& all_simparts = event->GetPtrVec<SimParticle>("simParticles");
   auto const& all_tauinfos = event->Get<std::vector<TauReco::TauInfo>>("tauInfos");
   auto const& all_simclusters = event->GetPtrVec<SimCluster>("simclusters");
+
 
   unsigned nlayers = hgcal::lastLayer - hgcal::firstLayer + 1;
 
@@ -129,8 +133,10 @@ int HGCALTest::Execute(TreeEvent* event) {
 
     // Build information about the tau decays
     std::vector<ic::TauInfo> geninfo_taus;
-    for (auto const& tau : genparts_taus) {
-      geninfo_taus.push_back(HTTGenEvent::BuildTauInfo(tau, genparts, true));
+    if (!do_fakes_) {
+      for (auto const& tau : genparts_taus) {
+        geninfo_taus.push_back(HTTGenEvent::BuildTauInfo(tau, genparts, true));
+      }
     }
 
     // Have to build the visible GenJets manually
@@ -154,8 +160,31 @@ int HGCALTest::Execute(TreeEvent* event) {
       tinfo.vis_jet = &geninfo_taujets[i];
     }
 
+
+    std::vector<ic::CompositeCandidate *> genjets;
+    std::vector<ic::CompositeCandidate> genJets_nonu_vec;
+    if (do_fakes_) {
+      fastjet::JetDefinition fj_jet_def(fastjet::antikt_algorithm,
+                                        0.2);
+      genJets_nonu_vec = ClusterJets(genparts_visible, fj_jet_def);
+      for (auto & j : genJets_nonu_vec) {
+        if (j.pt() > 20.) {
+          genjets.push_back(&j);
+        }
+      }
+    }
+
+    static int event_counter = 0;
+    bool save = false;
+    for (auto to_save : save_events) {
+      if (evt == to_save.first && lumi == to_save.second) {
+        save = true;
+      }
+      // break;
+    }
+
     //******************** Printing
-    if (v > 0) {
+    if (v > 0 || save) {
       std::cout << "******** Event = " << evt << " (" << pm << ")\n";
       std::cout << "**** GenParticles\n";
       for (unsigned i = 0; i < genparts.size(); ++i) {
@@ -175,12 +204,7 @@ int HGCALTest::Execute(TreeEvent* event) {
       }
     }
 
-    static int event_counter = 0;
-    bool save = false;
-    for (auto to_save : save_events) {
-      if (evt == to_save.first && lumi == to_save.second) save = true;
-      // break;
-    }
+
     // if (event_counter < 20) {
     //   save = true;
     // }
@@ -237,7 +261,11 @@ int HGCALTest::Execute(TreeEvent* event) {
             pion_markers[j].SetNextPoint(sim.layer_positions()[j].x(),
                                          sim.layer_positions()[j].y(), 0);
           }
-          pion_etaphi_markers.SetNextPoint(sim.eta(), sim.phi(), 0.);
+          if (sim.layer_positions().size()) {
+            pion_etaphi_markers.SetNextPoint(sim.layer_positions()[0].eta(), sim.layer_positions()[0].phi(), 0.);
+          } else {
+            pion_etaphi_markers.SetNextPoint(sim.eta(), sim.phi(), 0.);
+          }
         }
       }
 
@@ -260,7 +288,57 @@ int HGCALTest::Execute(TreeEvent* event) {
       }
     }
 
+    for (unsigned i = 0; i < genjets.size(); ++i) {
+      t_taus_m1_gen_.Reset();
+      t_taus_m1_match_.Reset();
+
+      auto& jet = genjets[i];
+
+      // Now match to the reconstructed taus
+      double min_dr = 999.;
+      int min_dr_idx = -1;
+      for (unsigned tidx = 0; tidx < tauinfos.size(); ++tidx) {
+        double dr = DR(genjets[i], &(tauinfos[tidx]->jet));
+        if (dr < min_dr && dr < 0.4) {
+          min_dr = dr;
+          min_dr_idx = tidx;
+        }
+      }
+      TauReco::TauInfo const* reco_tau = nullptr;
+      if (min_dr_idx >= 0) {
+        reco_tau = tauinfos[min_dr_idx];
+      }
+
+      t_taus_evt_.evt = evt;
+      t_taus_evt_.lumi = lumi;
+      t_taus_evt_.pm = pm;
+
+      t_taus_gen_.pt = jet->pt();
+      t_taus_gen_.eta = jet->eta();
+
+
+      if (reco_tau) {
+        t_taus_m1_match_.matched = true;
+
+        t_taus_rec_.jet_pt = reco_tau->jet.pt();
+        t_taus_rec_.jet_eta = reco_tau->jet.eta();
+        t_taus_rec_.jet_phi = reco_tau->jet.phi();
+        t_taus_rec_.jet_e = reco_tau->jet.energy();
+        t_taus_rec_.nprongs = reco_tau->prongs.size();
+        t_taus_rec_.jet_mass = reco_tau->jet.M();
+
+        ROOT::Math::PtEtaPhiEVector all_prongs;
+        for (auto const& prong : reco_tau->prongs) all_prongs += prong.vector();
+
+        t_taus_rec_.all_prong_mass = all_prongs.M();
+      }
+
+      t_taus_->Fill();
+
+    }
+
     for (unsigned i = 0; i < geninfo_taus.size(); ++i) {
+
       auto& tinfo = geninfo_taus[i];
 
       if (tinfo.hadronic_mode >= 0) {
@@ -281,17 +359,7 @@ int HGCALTest::Execute(TreeEvent* event) {
       t_taus_gen_.vis_eta = tinfo.vis_jet->eta();
 
 
-
-      t_taus_m1_gen_.all_reached_ee = false;
-      t_taus_m1_gen_.pi_reached_ee = false;
-      t_taus_m1_gen_.p1_reached_ee = false;
-      t_taus_m1_gen_.p2_reached_ee = false;
-      t_taus_m1_gen_.pi_e = 0.;
-      t_taus_m1_gen_.p1_e = 0.;
-      t_taus_m1_gen_.p2_e = 0.;
-      t_taus_m1_gen_.p1_p2_dxy = 0.;
-      t_taus_m1_gen_.has_gen_ele_pair = false;
-
+      t_taus_m1_gen_.Reset();
 
       t_taus_rec_.jet_pt = 0.;
       t_taus_rec_.jet_eta = 0.;
@@ -299,19 +367,8 @@ int HGCALTest::Execute(TreeEvent* event) {
       t_taus_rec_.jet_e = 0.;
       t_taus_rec_.nprongs = 0;
 
-      t_taus_m1_match_.matched = false;
-      t_taus_m1_match_.nmatched_to_pi = 0.;
-      t_taus_m1_match_.nmatched_to_p1 = 0.;
-      t_taus_m1_match_.nmatched_to_p2 = 0.;
-      t_taus_m1_match_.pi_bestmatch_e = 0.;
-      t_taus_m1_match_.p1_bestmatch_e = 0.;
-      t_taus_m1_match_.p2_bestmatch_e = 0.;
-      t_taus_m1_match_.pi_bestmatch_dr = 0.;
-      t_taus_m1_match_.p1_bestmatch_dr = 0.;
-      t_taus_m1_match_.p2_bestmatch_dr = 0.;
-      t_taus_m1_match_.pi_bestmatch_hfrac = 0.;
-      t_taus_m1_match_.p1_bestmatch_hfrac = 0.;
-      t_taus_m1_match_.p2_bestmatch_hfrac = 0.;
+      t_taus_m1_match_.Reset();
+
       if (tinfo.hadronic_mode == 1) {
         // Build a list of the sim photons that match those in the tau collection
         std::vector<SimParticle *> tau_sim_pions;
@@ -372,16 +429,32 @@ int HGCALTest::Execute(TreeEvent* event) {
           t_taus_m1_gen_.p1_p2_dxy = std::sqrt(dx * dx + dy * dy);
         }
 
-        if (tauinfos.size() >= 1) {
-          t_taus_rec_.jet_pt = tauinfos[0]->jet.pt();
-          t_taus_rec_.jet_eta = tauinfos[0]->jet.eta();
-          t_taus_rec_.jet_phi = tauinfos[0]->jet.phi();
-          t_taus_rec_.jet_e = tauinfos[0]->jet.energy();
-          t_taus_rec_.nprongs = tauinfos[0]->prongs.size();
-          t_taus_rec_.jet_mass = tauinfos[0]->jet.M();
+
+        // Now match to the reconstructed taus
+        double min_dr = 999.;
+        int min_dr_idx = -1;
+        for (unsigned tidx = 0; tidx < tauinfos.size(); ++tidx) {
+          double dr = DR(tinfo.vis_jet, &(tauinfos[tidx]->jet));
+          if (dr < min_dr && dr < 0.4) {
+            min_dr = dr;
+            min_dr_idx = tidx;
+          }
+        }
+        TauReco::TauInfo const* reco_tau = nullptr;
+        if (min_dr_idx >= 0) {
+          reco_tau = tauinfos[min_dr_idx];
+        }
+
+        if (reco_tau) {
+          t_taus_rec_.jet_pt = reco_tau->jet.pt();
+          t_taus_rec_.jet_eta = reco_tau->jet.eta();
+          t_taus_rec_.jet_phi = reco_tau->jet.phi();
+          t_taus_rec_.jet_e = reco_tau->jet.energy();
+          t_taus_rec_.nprongs = reco_tau->prongs.size();
+          t_taus_rec_.jet_mass = reco_tau->jet.M();
 
           ROOT::Math::PtEtaPhiEVector all_prongs;
-          for (auto const& prong : tauinfos[0]->prongs) all_prongs += prong.vector();
+          for (auto const& prong : reco_tau->prongs) all_prongs += prong.vector();
 
           t_taus_rec_.all_prong_mass = all_prongs.M();
 
@@ -407,8 +480,10 @@ int HGCALTest::Execute(TreeEvent* event) {
           }
 
           std::vector<ProngCandidate const*> rec_prongs;
-          for (auto & rec : tauinfos[0]->prongs) {
-            rec_prongs.push_back(&rec);
+          std::map<ProngCandidate const*, unsigned> prong_idx_map;
+          for (unsigned rec = 0; rec < reco_tau->prongs.size(); ++rec) {
+            rec_prongs.push_back(&reco_tau->prongs[rec]);
+            prong_idx_map[&reco_tau->prongs[rec]] = rec;
           }
           auto matches = MatchByDR(gen_prongs, rec_prongs, 0.2, false, true);
           auto matches_simclusters = MatchByDR(gen_prongs_unmodified, simclusters, 0.2, true, true);
@@ -440,28 +515,73 @@ int HGCALTest::Execute(TreeEvent* event) {
               t_taus_m1_match_.pi_bestmatch_e = bestmatch->energy();
               t_taus_m1_match_.pi_bestmatch_dr = DR(&modified_pions[0], bestmatch);
               t_taus_m1_match_.pi_bestmatch_hfrac = bestmatch->h_energy() / bestmatch->energy();
-            }
-            if (match_map_simclusters.count(tau_sim_pions[0])) {
-              auto simcluster = match_map_simclusters[tau_sim_pions[0]];
-              std::cout << ">> Simcluster rechits\n";
-              for (unsigned h = 0; h < simcluster->hits().size(); ++h) {
-                std::cout << ">>>> " << simcluster->hits()[h] << "\t" << simcluster->fractions()[h] << "\n";
-                if (rechit_id_map.count(simcluster->hits()[h])) {
-                  rechit_id_map[simcluster->hits()[h]]->Print();
+              auto hit_patterns = reco_tau->merged_central_hits[prong_idx_map[bestmatch]];
+              for (unsigned hit = 0; hit < hit_patterns.size(); ++hit) {
+                if (hit_patterns[hit]->layer() > hgcal::lastLayerE) {
+                  t_taus_m1_match_.pi_n_hcal_hits += 1;
+                } else {
+                  t_taus_m1_match_.pi_n_ecal_hits += 1;
                 }
               }
             }
+
+            if (match_map_simclusters.count(tau_sim_pions[0])) {
+              t_taus_m1_gen_.pi_match_simcluster = true;
+              auto simcluster = match_map_simclusters[tau_sim_pions[0]];
+              // std::cout << ">> Simcluster rechits\n";
+              double e_total = 0.;
+              double h_energy = 0.;
+              for (unsigned h = 0; h < simcluster->hits().size(); ++h) {
+                // std::cout << ">>>> " << simcluster->hits()[h] << "\t" << simcluster->fractions()[h] << "\n";
+                if (rechit_id_map.count(simcluster->hits()[h])) {
+                  RecHit *rh = rechit_id_map[simcluster->hits()[h]];
+                  e_total += rh->energy() * simcluster->fractions()[h];
+                  if (rh->layer() > hgcal::lastLayerE) {
+                    h_energy += rh->energy() * simcluster->fractions()[h];
+                  }
+                }
+              }
+              t_taus_m1_gen_.pi_hfrac = h_energy / e_total;
+            }
+
           }
           if (tau_sim_photons.size() >= 1) {
+
             t_taus_m1_match_.nmatched_to_p1 = match_map[tau_sim_photons[0]].size();
             if (t_taus_m1_match_.nmatched_to_p1 >= 1) {
               auto bestmatch = match_map[tau_sim_photons[0]][0];
               t_taus_m1_match_.p1_bestmatch_e = bestmatch->energy();
               t_taus_m1_match_.p1_bestmatch_dr = DR(tau_sim_photons[0], bestmatch);
               t_taus_m1_match_.p1_bestmatch_hfrac = bestmatch->h_energy() / bestmatch->energy();
+              auto hit_patterns = reco_tau->merged_central_hits[prong_idx_map[bestmatch]];
+              for (unsigned hit = 0; hit < hit_patterns.size(); ++hit) {
+                if (hit_patterns[hit]->layer() > hgcal::lastLayerE) {
+                  t_taus_m1_match_.p1_n_hcal_hits += 1;
+                } else {
+                  t_taus_m1_match_.p1_n_ecal_hits += 1;
+                }
+              }
+            }
+
+            if (match_map_simclusters.count(tau_sim_photons[0])) {
+              t_taus_m1_gen_.p1_match_simcluster = true;
+              auto simcluster = match_map_simclusters[tau_sim_photons[0]];
+              double e_total = 0.;
+              double h_energy = 0.;
+              for (unsigned h = 0; h < simcluster->hits().size(); ++h) {
+                if (rechit_id_map.count(simcluster->hits()[h])) {
+                  RecHit *rh = rechit_id_map[simcluster->hits()[h]];
+                  e_total += rh->energy() * simcluster->fractions()[h];
+                  if (rh->layer() > hgcal::lastLayerE) {
+                    h_energy += rh->energy() * simcluster->fractions()[h];
+                  }
+                }
+              }
+              t_taus_m1_gen_.p1_hfrac = h_energy / e_total;
             }
 
           }
+
           if (tau_sim_photons.size() >= 2) {
             t_taus_m1_match_.nmatched_to_p2 = match_map[tau_sim_photons[1]].size();
             if (t_taus_m1_match_.nmatched_to_p2 >= 1) {
@@ -469,6 +589,31 @@ int HGCALTest::Execute(TreeEvent* event) {
               t_taus_m1_match_.p2_bestmatch_e = bestmatch->energy();
               t_taus_m1_match_.p2_bestmatch_dr = DR(tau_sim_photons[1], bestmatch);
               t_taus_m1_match_.p2_bestmatch_hfrac = bestmatch->h_energy() / bestmatch->energy();
+              auto hit_patterns = reco_tau->merged_central_hits[prong_idx_map[bestmatch]];
+              for (unsigned hit = 0; hit < hit_patterns.size(); ++hit) {
+                if (hit_patterns[hit]->layer() > hgcal::lastLayerE) {
+                  t_taus_m1_match_.p2_n_hcal_hits += 1;
+                } else {
+                  t_taus_m1_match_.p2_n_ecal_hits += 1;
+                }
+              }
+            }
+
+            if (match_map_simclusters.count(tau_sim_photons[1])) {
+              t_taus_m1_gen_.p2_match_simcluster = true;
+              auto simcluster = match_map_simclusters[tau_sim_photons[1]];
+              double e_total = 0.;
+              double h_energy = 0.;
+              for (unsigned h = 0; h < simcluster->hits().size(); ++h) {
+                if (rechit_id_map.count(simcluster->hits()[h])) {
+                  RecHit *rh = rechit_id_map[simcluster->hits()[h]];
+                  e_total += rh->energy() * simcluster->fractions()[h];
+                  if (rh->layer() > hgcal::lastLayerE) {
+                    h_energy += rh->energy() * simcluster->fractions()[h];
+                  }
+                }
+              }
+              t_taus_m1_gen_.p2_hfrac = h_energy / e_total;
             }
           }
         }

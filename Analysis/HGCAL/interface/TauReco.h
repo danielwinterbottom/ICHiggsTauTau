@@ -42,7 +42,11 @@ class TauReco : public ModuleBase {
     double s2_min_jet_pt = 15.;
     int s3_min_surrounding_hits = 5;
     int s3_min_lower_energy_hits = 5;
+    bool s3_use_hcal_dxy = true;
+    double s3_hcal_dxy = 10.;
     double s4_hit_merge_dr = 0.01;
+    unsigned s4_min_hits_for_prong = 3;
+    int s5_merge_strategy = 0;  // 0 = exp(-R/lambda) weighting, 1 = closest in DR
     double s5_exp_merge_scale = 0.01;
   };
 

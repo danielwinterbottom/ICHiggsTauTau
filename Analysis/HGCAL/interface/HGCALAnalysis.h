@@ -91,6 +91,12 @@ struct TauMode1GenVars {
   float p1_p2_dxy;
   bool has_gen_ele_pair;
   float mass;
+  bool pi_match_simcluster;
+  bool p1_match_simcluster;
+  bool p2_match_simcluster;
+  float pi_hfrac;
+  float p1_hfrac;
+  float p2_hfrac;
 
   void AddToTree(TTree *t, TString prefix) {
     t->Branch(prefix+"all_reached_ee",      &all_reached_ee);
@@ -103,7 +109,32 @@ struct TauMode1GenVars {
     t->Branch(prefix+"p1_p2_dxy",           &p1_p2_dxy);
     t->Branch(prefix+"has_gen_ele_pair",    &has_gen_ele_pair);
     t->Branch(prefix+"mass",                &mass);
+    t->Branch(prefix+"pi_match_simcluster",     &pi_match_simcluster);
+    t->Branch(prefix+"p1_match_simcluster",     &p1_match_simcluster);
+    t->Branch(prefix+"p2_match_simcluster",     &p2_match_simcluster);
+    t->Branch(prefix+"pi_hfrac",                &pi_hfrac);
+    t->Branch(prefix+"p1_hfrac",                &p1_hfrac);
+    t->Branch(prefix+"p2_hfrac",                &p2_hfrac);
   }
+
+  void Reset() {
+    all_reached_ee = false;
+    pi_reached_ee = false;
+    p1_reached_ee = false;
+    p2_reached_ee = false;
+    pi_e = 0.;
+    p1_e = 0.;
+    p2_e = 0.;
+    p1_p2_dxy = 0.;
+    has_gen_ele_pair = false;
+    mass = 0.;
+    pi_match_simcluster = false;
+    p1_match_simcluster = false;
+    p2_match_simcluster = false;
+    pi_hfrac = 0.;
+    p1_hfrac = 0.;
+    p2_hfrac = 0.;
+  };
 };
 
 struct TauMode1MatchVars {
@@ -120,6 +151,12 @@ struct TauMode1MatchVars {
   float pi_bestmatch_hfrac;
   float p1_bestmatch_hfrac;
   float p2_bestmatch_hfrac;
+  int pi_n_ecal_hits;
+  int pi_n_hcal_hits;
+  int p1_n_ecal_hits;
+  int p1_n_hcal_hits;
+  int p2_n_ecal_hits;
+  int p2_n_hcal_hits;
 
   void AddToTree(TTree *t, TString prefix) {
     t->Branch(prefix+"matched",              &matched);
@@ -135,12 +172,41 @@ struct TauMode1MatchVars {
     t->Branch(prefix+"pi_bestmatch_hfrac",       &pi_bestmatch_hfrac);
     t->Branch(prefix+"p1_bestmatch_hfrac",       &p1_bestmatch_hfrac);
     t->Branch(prefix+"p2_bestmatch_hfrac",       &p2_bestmatch_hfrac);
+    t->Branch(prefix+"pi_n_ecal_hits",       &pi_n_ecal_hits);
+    t->Branch(prefix+"pi_n_hcal_hits",       &pi_n_hcal_hits);
+    t->Branch(prefix+"p1_n_ecal_hits",       &p1_n_ecal_hits);
+    t->Branch(prefix+"p1_n_hcal_hits",       &p1_n_hcal_hits);
+    t->Branch(prefix+"p2_n_ecal_hits",       &p2_n_ecal_hits);
+    t->Branch(prefix+"p2_n_hcal_hits",       &p2_n_hcal_hits);
+  }
+
+  void Reset() {
+    matched = false;
+    nmatched_to_pi = 0;
+    nmatched_to_p1 = 0;
+    nmatched_to_p2 = 0;
+    pi_bestmatch_e = 0.;
+    p1_bestmatch_e = 0.;
+    p2_bestmatch_e = 0.;
+    pi_bestmatch_dr = 0.;
+    p1_bestmatch_dr = 0.;
+    p2_bestmatch_dr = 0.;
+    pi_bestmatch_hfrac = 0.;
+    p1_bestmatch_hfrac = 0.;
+    p2_bestmatch_hfrac = 0.;
+    pi_n_ecal_hits = 0;
+    pi_n_hcal_hits = 0;
+    p1_n_ecal_hits = 0;
+    p1_n_hcal_hits = 0;
+    p2_n_ecal_hits = 0;
+    p2_n_hcal_hits = 0;
   }
 };
 
 class HGCALTest : public ModuleBase {
  private:
   CLASS_MEMBER(HGCALTest, fwlite::TFileService*, fs)
+  CLASS_MEMBER(HGCALTest, bool, do_fakes)
   // TTree * t_jets_;
   // float jet_pt_;
   // float jet_eta_;

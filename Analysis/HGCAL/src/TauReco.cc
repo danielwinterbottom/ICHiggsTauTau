@@ -15,6 +15,11 @@
 #include "fastjet/ClusterSequence.hh"
 #include "HGCAL/interface/HGCALTools.h"
 
+/*
+  Taking all pion directions as known...
+  insert as prong directions
+
+*/
 namespace ic {
 TauReco::TauReco(std::string const& name) : ModuleBase(name) {}
 
@@ -51,8 +56,10 @@ void TauReco::RunStep3(TauInfo & cand) {
 
     // Estimate the inter-rechit spacing
     double spacing = 1.3;
-    if (hits.size() && hits[0]->thickness() > 400) spacing = 6.0;
-
+    if (!settings.s3_use_hcal_dxy && hits.size() && hits[0]->thickness() > 400)
+      spacing = settings.s3_hcal_dxy;
+    if (settings.s3_use_hcal_dxy && hits.size() && hits[0]->layer() > hgcal::lastLayerE)
+      spacing = settings.s3_hcal_dxy;
     auto matches = MatchByDxy(hits, hits, spacing, false, false);
     std::map<RecHit *, std::set<RecHit *>> rh_map;
     for (auto const& pair : matches) {
@@ -93,7 +100,7 @@ void TauReco::RunStep4(TauInfo & cand) {
     for (auto rh_result : result) {
       rh_set.erase(rh_result);
     }
-    if (result.size() > 1) {
+    if (result.size() >= settings.s4_min_hits_for_prong) {
       cand.merged_central_hits.push_back(std::vector<RecHit*>(result.begin(), result.end()));
       // take the simple average for now
       double eta_sum = 0;
@@ -114,9 +121,23 @@ void TauReco::RunStep5(TauInfo & cand) {
   for (unsigned r = 0; r < jet_rhs.size(); ++r) {
     std::vector<double> weights(cand.prongs.size());
     double weights_sum = 0.;
+    unsigned min_dr_idx = 0;
+    double min_dr = 999999.;
     for (unsigned c = 0; c < cand.prongs.size(); ++c) {
-      weights[c] = std::exp(-1. * DR(jet_rhs[r], &cand.prongs[c]) / settings.s5_exp_merge_scale);
-      weights_sum += weights[c];
+      weights[c] = 0.;
+      double dr = DR(jet_rhs[r], &cand.prongs[c]);
+      if (dr < min_dr) {
+        min_dr = dr;
+        min_dr_idx = c;
+      }
+      if (settings.s5_merge_strategy == 0) {
+        weights[c] = std::exp(-1. * DR(jet_rhs[r], &cand.prongs[c]) / settings.s5_exp_merge_scale);
+        weights_sum += weights[c];
+      }
+    }
+    if (settings.s5_merge_strategy == 1 && cand.prongs.size() > 0) {
+      weights[min_dr_idx] = 1.;
+      weights_sum = 1.;
     }
     for (unsigned c = 0; c < cand.prongs.size(); ++c) {
       weights[c] /= weights_sum;

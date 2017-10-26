@@ -85,7 +85,9 @@ int main(int argc, char* argv[]) {
   main_seq.BuildModule(ic::HGCALObjectBuilder("HGCALObjectBuilder"));
   main_seq.BuildModule(ic::TauReco("TauReco"));
   main_seq.BuildModule(ic::HGCALTest("HGCALTest")
-    .set_fs(fs.at("Main").get()));
+    .set_fs(fs.at("Main").get())
+    .set_do_fakes(js.get("do_fakes", false).asBool())
+    );
 
   main_seq.InsertSequence("Main", analysis);
 
