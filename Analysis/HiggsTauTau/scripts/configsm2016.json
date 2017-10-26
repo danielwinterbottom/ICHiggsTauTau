@@ -5,7 +5,6 @@
     "max_events":   -1,
     "timings":      true,
     "channels":     [ "mt", "et", "tt", "em" ],
-    //"channels":     [ "mt" ],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -25,7 +24,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
-    "make_sync_ntuple" : true,
+    "make_sync_ntuple" : false,
     "lumi_mask_only" : false,
     "iso_study" : false,
     "qcd_study" : false,
@@ -42,7 +41,7 @@
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
-    "do_preselection" : false,
+    "do_preselection" : true,
     "force_old_effs" : false,
     "electrons"     : "electrons",
     "muons"         : "muons",
@@ -57,7 +56,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "output/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Oct25/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -328,6 +327,384 @@
 //        "btag_mode" : 4
       }
     },
+    "scale_j_1_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_1_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "AbsoluteFlavMap" 
+       }
+      },
+      "scale_j_1_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_1_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "AbsoluteFlavMap"
+        }
+      },
+    "scale_j_2_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_2_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "AbsoluteMPFBias" 
+       }
+      },
+      "scale_j_2_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_2_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "AbsoluteMPFBias"
+        }
+      },
+    "scale_j_3_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_3_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "AbsoluteScale" 
+       }
+      },
+      "scale_j_3_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_3_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "AbsoluteScale"
+        }
+      },
+    "scale_j_4_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_4_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "AbsoluteStat" 
+       }
+      },
+      "scale_j_4_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_4_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "AbsoluteStat"
+        }
+      },
+    "scale_j_5_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_5_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "FlavorQCD" 
+       }
+      },
+      "scale_j_5_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_5_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "FlavorQCD"
+        }
+      },
+    "scale_j_6_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_6_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "Fragmentation" 
+       }
+      },
+      "scale_j_6_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_6_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "Fragmentation"
+        }
+      },
+    "scale_j_7_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_7_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "PileUpDataMC" 
+       }
+      },
+      "scale_j_7_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_7_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "PileUpDataMC"
+        }
+      },
+    "scale_j_8_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_8_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "PileUpPtBB" 
+       }
+      },
+      "scale_j_8_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_8_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "PileUpPtBB"
+        }
+      },
+    "scale_j_9_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_9_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "PileUpPtEC1" 
+       }
+      },
+      "scale_j_9_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_9_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "PileUpPtEC1"
+        }
+      },
+    "scale_j_10_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_10_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "PileUpPtEC2" 
+       }
+      },
+      "scale_j_10_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_10_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "PileUpPtEC2"
+        }
+      },
+    "scale_j_11_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_11_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "PileUpPtHF" 
+       }
+      },
+      "scale_j_11_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_11_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "PileUpPtHF"
+        }
+      },
+    "scale_j_12_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_12_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "PileUpPtRef" 
+       }
+      },
+      "scale_j_12_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_12_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "PileUpPtRef"
+        }
+      },
+    "scale_j_13_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_13_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativeBal" 
+       }
+      },
+      "scale_j_13_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_13_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativeBal"
+        }
+      },
+    "scale_j_14_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_14_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativeFSR" 
+       }
+      },
+      "scale_j_14_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_14_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativeFSR"
+        }
+      },
+    "scale_j_15_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_15_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativeJEREC1" 
+       }
+      },
+      "scale_j_15_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_15_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativeJEREC1"
+        }
+      },
+    "scale_j_16_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_16_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativeJEREC2" 
+       }
+      },
+      "scale_j_16_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_16_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativeJEREC2"
+        }
+      },
+    "scale_j_17_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_17_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativeJERHF" 
+       }
+      },
+      "scale_j_17_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_17_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativeJERHF"
+        }
+      },
+    "scale_j_18_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_18_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativePtBB" 
+       }
+      },
+      "scale_j_18_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_18_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativePtBB"
+        }
+      },
+    "scale_j_19_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_19_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativePtEC1" 
+       }
+      },
+      "scale_j_19_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_19_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativePtEC1"
+        }
+      },
+    "scale_j_20_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_20_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativePtEC2" 
+       }
+      },
+      "scale_j_20_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_20_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativePtEC2"
+        }
+      },
+    "scale_j_21_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_21_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativePtHF" 
+       }
+      },
+      "scale_j_21_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_21_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativePtHF"
+        }
+      },
+    "scale_j_22_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_22_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativeStatEC" 
+       }
+      },
+      "scale_j_22_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_22_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativeStatEC"
+        }
+      },
+    "scale_j_23_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_23_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativeStatFSR" 
+       }
+      },
+      "scale_j_23_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_23_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativeStatFSR"
+        }
+      },
+    "scale_j_24_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_24_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "RelativeStatHF" 
+       }
+      },
+      "scale_j_24_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_24_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "RelativeStatHF"
+        }
+      },
+    "scale_j_25_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_25_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "SinglePionECAL" 
+       }
+      },
+      "scale_j_25_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_25_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "SinglePionECAL"
+        }
+      },
+    "scale_j_26_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_26_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "SinglePionHCAL" 
+       }
+      },
+      "scale_j_26_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_26_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "SinglePionHCAL"
+        }
+      },
+    "scale_j_27_lo": {
+        "baseline": {
+          "addit_output_folder" : "JES_27_DOWN",
+          "jes_mode" : 1,
+          "jes_input_set" : "TimePtEta" 
+       }
+      },
+      "scale_j_27_hi": {
+        "baseline": {
+          "addit_output_folder" : "JES_27_UP",
+          "jes_mode" : 2,
+          "jes_input_set" : "TimePtEta"
+        }
+      },
     "scale_met_lo": {
       "baseline": {
         "addit_output_folder" : "MET_SCALE_DOWN",

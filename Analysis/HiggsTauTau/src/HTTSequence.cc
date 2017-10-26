@@ -133,6 +133,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    veto_dimuon_eta = 2.4;
    veto_dimuon_dxy = 0.045;
    veto_dimuon_dz = 0.2;
+   lead_tau_pt=0;
+   lead_min_taus=0;
    if(channel_str == "em"){
      elec_dxy = 0.02;
      elec_dz = 0.1;
@@ -462,6 +464,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
    fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
  }
+ alt_jes_input_set = json["baseline"]["jes_input_set"].asString();
 
 
 }
@@ -1213,9 +1216,11 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
   }
   if (era_type == era::data_2016) {
     jes_input_file = "input/jec/Spring16_25nsV6_DATA_UncertaintySources_AK4PFchs.txt";
-    if (strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
+    if (strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
     jes_input_set  = "Total";
   }
+  
+  if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
     
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
   .set_input_label(jets_label)
@@ -2865,7 +2870,7 @@ if(strategy_type == strategy::paper2013){
 
       }));
    }
-  if (strategy_type == strategy::smsummer16){
+  if (strategy_type == strategy::smsummer16 && channel_type == channel::tt){
   BuildModule(SimpleFilter<Tau>("LeadTauFilter")
       .set_input_label(js["taus"].asString()).set_min(lead_min_taus)
       .set_predicate([=](Tau const* t) {
