@@ -56,9 +56,9 @@ ana.AddSamples('%s/*.root' % path, 'Theory')
 X = '%s_%s_%s' % (args.higgs, args.mass, args.tanb)
 
 varlist = [
-    ('pt_h1', 'pt_h[0:100:10,100:200:20,200:600:100]', ('p_{T}^{H} (GeV)', 'd#sigma/dp_{T}^{H} (pb/GeV)')),
-    ('pt_h2', 'pt_h[0:100:25,100:200:50,200:600:400]', ('p_{T}^{H} (GeV)', 'd#sigma/dp_{T}^{H} (pb/GeV)')),
-    ('pt_h3', 'pt_h[0:100:50,100:200:100,200:600:400]', ('p_{T}^{H} (GeV)', 'd#sigma/dp_{T}^{H} (pb/GeV)')),
+    ('pt_h1', 'pt_h[0:100:10,100:200:20,200:600:100,600:1000:200,1000:2000:1000]', ('p_{T}^{H} (GeV)', 'd#sigma/dp_{T}^{H} (pb/GeV)')),
+    ('pt_h2', 'pt_h[0:100:25,100:200:50,200:1000:400,1000:2000:1000]', ('p_{T}^{H} (GeV)', 'd#sigma/dp_{T}^{H} (pb/GeV)')),
+    ('pt_h3', 'pt_h[0:100:50,100:200:100,200:600:400,600:2000:1400]', ('p_{T}^{H} (GeV)', 'd#sigma/dp_{T}^{H} (pb/GeV)')),
     ('njets', 'njets(6,-0.5,5.5)', ('Number of jets', '#sigma (pb)')),
 ]
 
