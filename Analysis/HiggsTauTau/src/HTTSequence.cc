@@ -1178,7 +1178,7 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
   }
   if (era_type == era::data_2016) {
     jes_input_file = "input/jec/Spring16_25nsV6_DATA_UncertaintySources_AK4PFchs.txt";
-    if (strategy_type != strategy::mssmsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
+    if (strategy_type == strategy::mssmsummer16) jes_input_file = "input/jec/Summer16_23Sep2016HV4_DATA_UncertaintySources_AK4PFchs.txt"; 
     jes_input_set  = "Total";
   }
     
