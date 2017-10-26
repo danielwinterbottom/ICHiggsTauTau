@@ -345,6 +345,21 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'WGstarToLNuEE',
     'WGstarToLNuMuMu'
      ]
+  
+  if options.analysis == 'sm':
+    extra_samples = [
+      'EWKWMinus2Jets_WToLNu-ext1',
+      'EWKWMinus2Jets_WToLNu-ext2',
+      'EWKWMinus2Jets_WToLNu 20.25',
+      'EWKWPlus2Jets_WToLNu-ext1',
+      'EWKWPlus2Jets_WToLNu-ext2',
+      'EWKWPlus2Jets_WToLNu',
+      'EWKZ2Jets_ZToLL-ext',
+      'EWKZ2Jets_ZToLL',
+      'EWKZ2Jets_ZToNuNu-ext',
+      'EWKZ2Jets_ZToNuNu'    
+    ]
+    central_samples.extend(extra_samples)
 
   if options.qcd_study:
     #FILELIST='filelists/Feb25_MC_76X'

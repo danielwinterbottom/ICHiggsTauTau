@@ -255,8 +255,17 @@ sample_list = [
    'SUSYGluGluToBBHToTauTau_M-700-NLO-QshDown',
    'SUSYGluGluToBBHToTauTau_M-1200-NLO-QshDown',
    'SUSYGluGluToBBHToTauTau_M-1800-NLO-QshDown',
-   'SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown'
- 
+   'SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown',
+   'EWKWMinus2Jets_WToLNu-ext1',
+   'EWKWMinus2Jets_WToLNu-ext2',
+   'EWKWMinus2Jets_WToLNu 20.25',
+   'EWKWPlus2Jets_WToLNu-ext1',
+   'EWKWPlus2Jets_WToLNu-ext2',
+   'EWKWPlus2Jets_WToLNu',
+   'EWKZ2Jets_ZToLL-ext',
+   'EWKZ2Jets_ZToLL',
+   'EWKZ2Jets_ZToNuNu-ext',
+   'EWKZ2Jets_ZToNuNu'
 	]
 
 channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm']
