@@ -11,8 +11,8 @@ job_mgr.set_args(args)
 basedir = '%s/src/UserCode/ICHiggsTauTau/Analysis/HGCAL' % os.environ[
     'CMSSW_BASE']
 
-MAX_EVTS = 1000
-FILES_PER_JOB = 1000
+MAX_EVTS = -1
+FILES_PER_JOB = 10
 
 # OUTPUT = 'output/HTT2016Studies_'+job_mgr.task_name
 # os.system('mkdir -p %s' % OUTPUT)
@@ -23,10 +23,10 @@ joblist = [
    #('Pythia8PtGun_agilbert_JetPt15_20170710', ["filelists/Pythia8PtGun_agilbert_JetPt15_20170710.dat"]),
    # ('Pythia8PtGun_agilbert_JetPt30_20170710', ["filelists/Pythia8PtGun_agilbert_JetPt30_20170710.dat"]),
    # ('Pythia8PtGun_agilbert_TauPt45_201708', ["filelists/Pythia8PtGun_agilbert_TauPt45_201708.dat"]),
-   ('Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_test1', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_full.dat"]),
-   # ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
-   # ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
-   # ('Dijet_agilbert_DiJetFlat20_200_20171015', ["filelists/Dijet_agilbert_DiJetFlat20_200_20171015.dat"]),
+   ('Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_full.dat"]),
+   ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
+   ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
+   #('Dijet_agilbert_DiJetFlat20_200_20171015', ["filelists/Dijet_agilbert_DiJetFlat20_200_20171015.dat"]),
    # ('Pythia8PtGun_agilbert_TauPt45_20170913', ["filelists/Pythia8PtGun_agilbert_TauPt45_20170913.dat"]),
    #('Pythia8PtGun_agilbert_JetPt100_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt100_20170808.dat"]),
    #('Pythia8PtGun_agilbert_JetPt200_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt200_20170808.dat"]),
