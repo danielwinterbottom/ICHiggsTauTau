@@ -350,7 +350,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     extra_samples = [
       'EWKWMinus2Jets_WToLNu-ext1',
       'EWKWMinus2Jets_WToLNu-ext2',
-      'EWKWMinus2Jets_WToLNu 20.25',
+      'EWKWMinus2Jets_WToLNu',
       'EWKWPlus2Jets_WToLNu-ext1',
       'EWKWPlus2Jets_WToLNu-ext2',
       'EWKWPlus2Jets_WToLNu',

@@ -258,7 +258,7 @@ sample_list = [
    'SUSYGluGluToBBHToTauTau_M-3200-NLO-QshDown',
    'EWKWMinus2Jets_WToLNu-ext1',
    'EWKWMinus2Jets_WToLNu-ext2',
-   'EWKWMinus2Jets_WToLNu 20.25',
+   'EWKWMinus2Jets_WToLNu',
    'EWKWPlus2Jets_WToLNu-ext1',
    'EWKWPlus2Jets_WToLNu-ext2',
    'EWKWPlus2Jets_WToLNu',
