@@ -479,7 +479,7 @@ icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
 ## [GenParticle from LHE]
 icGenParticleFromLHEParticlesProducer = cms.EDProducer('ICGenParticleFromLHEParticlesProducer',
   branch  = cms.string("lheParticles"),
-  input   = cms.InputTag("externalLHEProducer")
+  input   = cms.InputTag("source")
 )
 ## [GenParticle from LHE]
 
@@ -562,6 +562,12 @@ icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   filtersfromtrig     = cms.vstring("Flag_CSCTightHaloFilter","Flag_hcalLaserEventFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_eeBadScFilter","Flag_ecalLaserCorrFilter","Flag_trkPOGFilters","Flag_trkPOG_manystripclus53X","Flag_trkPOG_toomanystripclus53X","Flag_trkPOG_logErrorTooManyClusters","Flag_METFilters"),
   inputfiltersfromtrig = cms.InputTag("TriggerResults")
 )
+
+icSlimmedEventInfoProducer = cms.EDProducer('ICSlimmedEventInfoProducer',
+  branch              = cms.string("eventInfo"),
+  lheProducer         = cms.InputTag("source")
+)
+
 ## [EventInfo]
 
 ## [Event]

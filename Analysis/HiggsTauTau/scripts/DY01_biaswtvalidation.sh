@@ -1,0 +1,4 @@
+./bin/PlotCompare -p "Without-bias-weight:Without bias weight:./output/DY01_nobiasweight_et_0.root:ntuple:zptlhe:-1:2:4:20:0:200:wt_sign" -p "With-bias-weight:With bias weight:./output/DY01_biasweight_et_0.root:ntuple:zptlhe:-1:2:2:20:0:200:wt_sign" --norm_mode=3 --outname="zptlhe_noweights" --x_axis_title="LHE-level di-lepton p_{T} [GeV]" --big_label=" " --custom_y_axis_min=true --y_axis_min=0.0 --ratios="Without-bias-weight/With-bias-weight/2"
+
+./bin/PlotCompare -p "Without-bias-weight:Without bias weight:./output/DY01_nobiasweight_et_0.root:ntuple:zptlhe:-1:2:4:20:0:200:wt" -p "With-bias-weight:With bias weight:./output/DY01_biasweight_et_0.root:ntuple:zptlhe:-1:2:2:20:0:200:wt" --norm_mode=3 --outname="zptlhe_weights" --x_axis_title="LHE-level di-lepton p_{T} [GeV]" --big_label=" " --ratios="Without-bias-weight/With-bias-weight/2"
+

@@ -24,7 +24,7 @@
 // #include "Modules/interface/OverlapFilter.h"
 // #include "Modules/interface/CheckEvents.h"
 #include "Modules/interface/CompositeProducer.h"
-#include "HiggsTauTau/interface/HTTSequence.h"
+#include "HiggsTauTau/interface/GenSequence.h"
 #include "HiggsTauTau/interface/HTTConfig.h"
 
 // using boost::lexical_cast;
@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
 //  analysis.DoSkimming("./skim/");
   analysis.CalculateTimings(js["job"]["timings"].asBool());
   
-  std::map<std::string, ic::HTTSequence> seqs;
+  std::map<std::string, ic::GenSequence> seqs;
   std::vector<std::string> ignore_chans;
 
   for(unsigned i = 0; i<js["job"]["ignore_channels"].size();++i){
@@ -161,9 +161,9 @@ int main(int argc, char* argv[]) {
       ic::UpdateJson(js_merged, js["channels"][channel_str]);
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
       // std::cout << js_merged;
-      seqs[seq_str] = ic::HTTSequence(channel_str,std::to_string(offset),js_merged);
+      seqs[seq_str] = ic::GenSequence(channel_str,std::to_string(offset),js_merged);
       seqs[seq_str].BuildSequence();
-      ic::HTTSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());
+      ic::GenSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());
       for (auto m : seq_run) analysis.AddModule(seq_str, m.get());
     }
   }
