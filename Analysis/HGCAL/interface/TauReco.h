@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include "TGraph2D.h"
+#include "TH2F.h"
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
 #include "Math/Point3D.h"
@@ -35,6 +36,7 @@ class TauReco : public ModuleBase {
   typedef std::vector<ic::CompositeCandidate> CompositeVec;
   typedef std::vector<CompositeVec> CompositeVecVec;
 
+  CLASS_MEMBER(TauReco, fwlite::TFileService*, fs)
   CLASS_MEMBER(TauReco, double, s1_rechit_threshold)
   CLASS_MEMBER(TauReco, int, s1_pu_strategy)
   CLASS_MEMBER(TauReco, double, s2_jet_distance)
@@ -43,12 +45,15 @@ class TauReco : public ModuleBase {
   CLASS_MEMBER(TauReco, int, s3_min_lower_energy_hits)
   CLASS_MEMBER(TauReco, bool, s3_use_hcal_dxy)
   CLASS_MEMBER(TauReco, double, s3_hcal_dxy)
+  CLASS_MEMBER(TauReco, bool, s3_use_single_hit)
+  CLASS_MEMBER(TauReco, double, s3_single_hit_min)
   CLASS_MEMBER(TauReco, double, s4_hit_merge_dr)
   CLASS_MEMBER(TauReco, unsigned, s4_min_hits_for_prong)
   CLASS_MEMBER(TauReco, int, s5_merge_strategy)
   CLASS_MEMBER(TauReco, double, s5_exp_merge_scale)
 
   std::vector<TH1F> pu_bins;
+  std::vector<TH2F *> pu_profiles;
 
  public:
   struct Settings {
@@ -60,6 +65,8 @@ class TauReco : public ModuleBase {
     int s3_min_lower_energy_hits;
     bool s3_use_hcal_dxy;
     double s3_hcal_dxy;
+    bool s3_use_single_hit;
+    double s3_single_hit_min;
     double s4_hit_merge_dr;
     unsigned s4_min_hits_for_prong;
     int s5_merge_strategy;

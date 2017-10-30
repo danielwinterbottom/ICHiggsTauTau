@@ -47,6 +47,8 @@ void TauReco::Settings::Print() const {
   std::cout << " - s3_min_lower_energy_hits: " << s3_min_lower_energy_hits << "\n";
   std::cout << " - s3_use_hcal_dxy: " << s3_use_hcal_dxy << "\n";
   std::cout << " - s3_hcal_dxy: " << s3_hcal_dxy << "\n";
+  std::cout << " - s3_use_single_hit: " << s3_use_single_hit << "\n";
+  std::cout << " - s3_single_hit_min: " << s3_single_hit_min << "\n";
   std::cout << " - s4_hit_merge_dr: " << s4_hit_merge_dr << "\n";
   std::cout << " - s4_min_hits_for_prong: " << s4_min_hits_for_prong << "\n";
   std::cout << " - s5_merge_strategy: " << s5_merge_strategy << "\n";
@@ -63,6 +65,8 @@ int TauReco::PreAnalysis() {
   settings.s3_min_lower_energy_hits = s3_min_lower_energy_hits_;
   settings.s3_use_hcal_dxy = s3_use_hcal_dxy_;
   settings.s3_hcal_dxy = s3_hcal_dxy_;
+  settings.s3_use_single_hit = s3_use_single_hit_;
+  settings.s3_single_hit_min = s3_single_hit_min_;
   settings.s4_hit_merge_dr = s4_hit_merge_dr_;
   settings.s4_min_hits_for_prong = s4_min_hits_for_prong_;
   settings.s5_merge_strategy = s5_merge_strategy_;
@@ -76,8 +80,11 @@ int TauReco::PreAnalysis() {
   for (unsigned i = 0; i < nlayers; ++i) {
     if (i + hgcal::firstLayer <= hgcal::lastLayerE) {
       pu_bins.push_back(TH1F(TString::Format("bins%i", i), "", 10, 1.479, 3.0));
+      pu_profiles.push_back(fs_->make<TH2F>(TString::Format("pu_profile_%i", i), "", 10, 1.479, 3.0, 100, 0, 0.2));
+      // pu_profiles.push_back(TH2F(TString::Format("pu_profile_%i", i), "", 10, 1.479, 3.0, 100, 0, 0.2));
     } else {
       pu_bins.push_back(TH1F(TString::Format("bins%i", i), "", 2, std::vector<double>{1.479, 2.6, 3.0}.data()));
+      pu_profiles.push_back(fs_->make<TH2F>(TString::Format("pu_profile_%i", i), "", 2, std::vector<double>{1.479, 2.6, 3.0}.data(), 100, 0, 0.4));
     }
   }
   return 0;
@@ -119,6 +126,7 @@ void TauReco::RunStep3(TauInfo & cand) {
       if (pair.first == pair.second) continue;
       rh_map[pair.first].insert(pair.second);
     }
+    std::set<RecHit *> all_hits_in_selected_patterns;
     for (auto const& neighbours : rh_map) {
       // if (nverb) std::cout << neighbours.first->position() << ": ";
       // if (nverb) std::cout << neighbours.second.size();
@@ -134,9 +142,21 @@ void TauReco::RunStep3(TauInfo & cand) {
       if (n_tot >= settings.s3_min_surrounding_hits && n_low >= settings.s3_min_lower_energy_hits && n_tot == n_low) {
         std::vector<RecHit*> cluster;
         cluster.push_back(neighbours.first);
+        all_hits_in_selected_patterns.insert(neighbours.first);
         for (auto rh : neighbours.second) cluster.push_back(rh);
+        for (auto rh : neighbours.second) all_hits_in_selected_patterns.insert(rh);
         cand.selected_hit_patterns_in_layers[l].push_back(cluster);
         cand.all_selected_central_hits.push_back(neighbours.first);
+      }
+    }
+    if (settings.s3_use_single_hit) {
+      for (auto rh : hits) {
+        if (!all_hits_in_selected_patterns.count(rh) && rh->energy() > settings.s3_single_hit_min) {
+          std::vector<RecHit*> cluster;
+          cluster.push_back(rh);
+          cand.selected_hit_patterns_in_layers[l].push_back(cluster);
+          cand.all_selected_central_hits.push_back(rh);
+        }
       }
     }
   }
@@ -280,6 +300,7 @@ int TauReco::Execute(TreeEvent* event) {
         } else {
           median_energy[l][b] = 0.;
         }
+        pu_profiles[l]->Fill(pu_profiles[l]->GetXaxis()->GetBinCenter(b+1), median_energy[l][b]);
       }
       // std::cout << "Median energy in layer " << l << " = ";
       for (unsigned b = 0; b < hits_in_layers[l].size(); ++b) {
