@@ -88,6 +88,9 @@ struct TauMode1GenVars {
   float pi_e;
   float p1_e;
   float p2_e;
+  float pi_pt;
+  float p1_pt;
+  float p2_pt;
   float p1_p2_dxy;
   bool has_gen_ele_pair;
   float mass;
@@ -97,6 +100,7 @@ struct TauMode1GenVars {
   float pi_hfrac;
   float p1_hfrac;
   float p2_hfrac;
+  float highest_single_hit;
 
   void AddToTree(TTree *t, TString prefix) {
     t->Branch(prefix+"all_reached_ee",      &all_reached_ee);
@@ -106,6 +110,9 @@ struct TauMode1GenVars {
     t->Branch(prefix+"pi_e",                &pi_e);
     t->Branch(prefix+"p1_e",                &p1_e);
     t->Branch(prefix+"p2_e",                &p2_e);
+    t->Branch(prefix+"pi_pt",                &pi_pt);
+    t->Branch(prefix+"p1_pt",                &p1_pt);
+    t->Branch(prefix+"p2_pt",                &p2_pt);
     t->Branch(prefix+"p1_p2_dxy",           &p1_p2_dxy);
     t->Branch(prefix+"has_gen_ele_pair",    &has_gen_ele_pair);
     t->Branch(prefix+"mass",                &mass);
@@ -115,6 +122,7 @@ struct TauMode1GenVars {
     t->Branch(prefix+"pi_hfrac",                &pi_hfrac);
     t->Branch(prefix+"p1_hfrac",                &p1_hfrac);
     t->Branch(prefix+"p2_hfrac",                &p2_hfrac);
+    t->Branch(prefix+"highest_single_hit",      &highest_single_hit);
   }
 
   void Reset() {
@@ -125,6 +133,9 @@ struct TauMode1GenVars {
     pi_e = 0.;
     p1_e = 0.;
     p2_e = 0.;
+    pi_pt = 0.;
+    p1_pt = 0.;
+    p2_pt = 0.;
     p1_p2_dxy = 0.;
     has_gen_ele_pair = false;
     mass = 0.;
@@ -134,6 +145,7 @@ struct TauMode1GenVars {
     pi_hfrac = 0.;
     p1_hfrac = 0.;
     p2_hfrac = 0.;
+    highest_single_hit = 0.;
   };
 };
 

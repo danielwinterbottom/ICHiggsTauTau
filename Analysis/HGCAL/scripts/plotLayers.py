@@ -14,6 +14,7 @@ ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING)
 
 parser = argparse.ArgumentParser()
 # parser.add_argument('input')
+parser.add_argument('--file', '-f', default='output/Main/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_0.root')
 parser.add_argument('--event', '-e', default=1, type=int)
 parser.add_argument('--region', '-r', default='p')
 parser.add_argument('--window', default=30., type=float)
@@ -27,7 +28,7 @@ args = parser.parse_args()
 
 plot.ModTDRStyle(width=700, r=0.25)
 
-infileName = 'output/Main/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_0.root'
+infileName = args.file
 # infileName = 'output/Main/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_0.root'
 
 setRanges = False

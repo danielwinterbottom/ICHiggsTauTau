@@ -62,7 +62,20 @@ int HGCALTest::Execute(TreeEvent* event) {
     // {41, 23},
     // {42, 23},
     // {45, 23},
-    {7, 269}
+    {19, 98},
+    {21, 98},
+    {28, 98},
+    {34, 98},
+    {36, 98},
+    {39, 98},
+    {42, 98},
+    {49, 98},
+    {50, 98},
+    {51, 98},
+    {72, 98},
+    {75, 98},
+    {85, 98},
+    {91, 98}
   };
 
   int long evt = *event->GetPtr<int long>("event");
@@ -404,15 +417,18 @@ int HGCALTest::Execute(TreeEvent* event) {
         if (tau_sim_pions.size() >= 1) {
           t_taus_m1_gen_.pi_reached_ee = (tau_sim_pions[0]->reached_ee() == 2);
           t_taus_m1_gen_.pi_e = tau_sim_pions[0]->energy();
+          t_taus_m1_gen_.pi_pt = tau_sim_pions[0]->pt();
         }
         if (tau_sim_photons.size() >= 1) {
           t_taus_m1_gen_.p1_reached_ee = (tau_sim_photons[0]->reached_ee() == 2);
           t_taus_m1_gen_.p1_e = tau_sim_photons[0]->energy();
+          t_taus_m1_gen_.p1_pt = tau_sim_photons[0]->pt();
 
         }
         if (tau_sim_photons.size() >= 2) {
           t_taus_m1_gen_.p2_reached_ee = (tau_sim_photons[1]->reached_ee() == 2);
           t_taus_m1_gen_.p2_e = tau_sim_photons[1]->energy();
+          t_taus_m1_gen_.p2_pt = tau_sim_photons[1]->pt();
         }
         if (tau_sim_photons.size() != 2) {
           t_taus_m1_gen_.has_gen_ele_pair = true;
@@ -531,11 +547,13 @@ int HGCALTest::Execute(TreeEvent* event) {
               // std::cout << ">> Simcluster rechits\n";
               double e_total = 0.;
               double h_energy = 0.;
+              t_taus_m1_gen_.highest_single_hit = 0.;
               for (unsigned h = 0; h < simcluster->hits().size(); ++h) {
                 // std::cout << ">>>> " << simcluster->hits()[h] << "\t" << simcluster->fractions()[h] << "\n";
                 if (rechit_id_map.count(simcluster->hits()[h])) {
                   RecHit *rh = rechit_id_map[simcluster->hits()[h]];
                   e_total += rh->energy() * simcluster->fractions()[h];
+                  t_taus_m1_gen_.highest_single_hit = std::max(t_taus_m1_gen_.highest_single_hit, float(rh->energy() * simcluster->fractions()[h]));
                   if (rh->layer() > hgcal::lastLayerE) {
                     h_energy += rh->energy() * simcluster->fractions()[h];
                   }

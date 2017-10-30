@@ -84,6 +84,7 @@ int main(int argc, char* argv[]) {
 
   main_seq.BuildModule(ic::HGCALObjectBuilder("HGCALObjectBuilder"));
   main_seq.BuildModule(ic::TauReco("TauReco")
+    .set_fs(fs.at("Main").get())
     .set_s1_rechit_threshold(js["s1_rechit_threshold"].asDouble())
     .set_s1_pu_strategy(js["s1_pu_strategy"].asInt())
     .set_s2_jet_distance(js["s2_jet_distance"].asDouble())
@@ -92,6 +93,8 @@ int main(int argc, char* argv[]) {
     .set_s3_min_lower_energy_hits(js["s3_min_lower_energy_hits"].asInt())
     .set_s3_use_hcal_dxy(js["s3_use_hcal_dxy"].asBool())
     .set_s3_hcal_dxy(js["s3_hcal_dxy"].asDouble())
+    .set_s3_use_single_hit(js["s3_use_single_hit"].asBool())
+    .set_s3_single_hit_min(js["s3_single_hit_min"].asDouble())
     .set_s4_hit_merge_dr(js["s4_hit_merge_dr"].asDouble())
     .set_s4_min_hits_for_prong(js["s4_min_hits_for_prong"].asUInt())
     .set_s5_merge_strategy(js["s5_merge_strategy"].asInt())

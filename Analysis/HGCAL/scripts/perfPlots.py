@@ -22,6 +22,8 @@ def MakePlot(c):
     for entry in c['inputs']:
         hists.append(ana.nodes[c['name']][entry['name']].shape.hist)
         plot.Set(hists[-1], LineColor=entry['col'], LineWidth=2)
+        if 'ls' in entry:
+            hists[-1].SetLineStyle(entry['ls'])
         legend.AddEntry(hists[-1], entry['leg'], 'L')
 
     for hist in hists:
@@ -45,11 +47,16 @@ ana = Analysis()
 
 path = 'output/Main'
 sa = {
-    'tau_0pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013',
+    'tau_0pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928',
+    # 'tau_140pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_test1_0',
+    'tau_140pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013',
+    'tau_140pu_sub': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub',
     'jet_0pu': 'Dijet_agilbert_DiJetFlat20_200_20171015'
 }
 labels = {
-    'tau_0pu': '#tau_{h}#rightarrow#pi^{+}#pi^{0} (0 PU)',
+    'tau_0pu': 'Genuine #tau_{h} (0 PU)',
+    'tau_140pu': 'Genuine #tau_{h} (140 PU)',
+    'tau_140pu_sub': 'Genuine #tau_{h} (140 PU sub)',
     'jet_0pu': 'Jet#rightarrow#tau_{h} fakes (0 PU)'
 }
 for name, s in sa.iteritems():
@@ -57,7 +64,16 @@ for name, s in sa.iteritems():
 
 cols = {
     'tau_0pu': 2,
+    'tau_140pu': ROOT.kRed - 6,
+    'tau_140pu_sub': ROOT.kRed + 2,
     'jet_0pu': 4
+}
+
+ls = {
+    'tau_0pu': 1,
+    'tau_140pu': 2,
+    'tau_140pu_sub': 1,
+    'jet_0pu': 1
 }
 
 jet_sel = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && rec_jet_pt > 20)'
@@ -91,7 +107,9 @@ plotlist = [
     'name': 'rec_nprongs_pi_reached', 'scaled': True,
     'inputs': [
         {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_0pu'], 'col': cols['tau_0pu']},
-        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': cols['jet_0pu']},
+        {'name': 'tau_140pu', 'sa': sa['tau_140pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_140pu'], 'col': cols['tau_140pu']},
+        # {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_140pu_sub'], 'col': cols['tau_140pu_sub']},
+        # {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': cols['jet_0pu']},
     ],
     'xtitle': 'Reco. nProngs',
     'ytitle': 'a.u.'
@@ -100,6 +118,8 @@ plotlist = [
     'name': 'rec_nprongs_all_reached', 'scaled': True,
     'inputs': [
         {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': 'm1_matched && m1_all_reached_ee', 'leg': labels['tau_0pu'], 'col': cols['tau_0pu']},
+        {'name': 'tau_140pu', 'sa': sa['tau_140pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': 'm1_matched && m1_all_reached_ee', 'leg': labels['tau_140pu'], 'col': cols['tau_140pu']},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': 'm1_matched && m1_all_reached_ee', 'leg': labels['tau_140pu_sub'], 'col': cols['tau_140pu_sub']},
         {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': cols['jet_0pu']},
     ],
     'xtitle': 'Reco. nProngs',
@@ -108,8 +128,10 @@ plotlist = [
 {
     'name': 'rec_all_prong_mass', 'scaled': True,
     'inputs': [
-        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_0pu'], 'col': 4},
-        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 8},
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_0pu'], 'col': 4, 'ls': ls['tau_0pu']},
+        {'name': 'tau_140pu', 'sa': sa['tau_140pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_140pu'], 'col': cols['tau_140pu'], 'ls': ls['tau_140pu']},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_140pu_sub'], 'col': cols['tau_140pu_sub'], 'ls': ls['tau_140pu_sub']},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 8, 'ls': ls['jet_0pu']},
     ],
     'xtitle': '#tau_{h} Mass (GeV)',
     'ytitle': 'a.u.'
@@ -140,24 +162,54 @@ plotlist = [
     ],
     'xtitle': 'E_{H} fraction for #gamma_{1} match',
     'ytitle': 'a.u.'
-}
+},
+{
+    'name': 'm1_nmatched_to_pi', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'm1_nmatched_to_pi(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_0pu'], 'col': 4},
+        {'name': 'tau_140pu', 'sa': sa['tau_140pu'], 'var': 'm1_nmatched_to_pi(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_140pu'], 'col': cols['tau_140pu']},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'm1_nmatched_to_pi(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_140pu_sub'], 'col': cols['tau_140pu_sub']},
+    ],
+    'xtitle': 'nProngs matched to #pi^{+}',
+    'ytitle': 'a.u.'
+},
+{
+    'name': 'm1_nmatched_to_p1', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'm1_nmatched_to_p1(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_0pu'], 'col': 4},
+        {'name': 'tau_140pu', 'sa': sa['tau_140pu'], 'var': 'm1_nmatched_to_p1(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_140pu'], 'col': cols['tau_140pu']},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'm1_nmatched_to_p1(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_140pu_sub'], 'col': cols['tau_140pu_sub']},
+    ],
+    'xtitle': 'nProngs matched to #gamma_{1}',
+    'ytitle': 'a.u.'
+},
+{
+    'name': 'm1_nmatched_to_p2', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'm1_nmatched_to_p2(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_0pu'], 'col': 4},
+        {'name': 'tau_140pu', 'sa': sa['tau_140pu'], 'var': 'm1_nmatched_to_p2(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_140pu'], 'col': cols['tau_140pu']},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'm1_nmatched_to_p2(10,-0.5,9.5)', 'sel': 'm1_matched && m1_pi_reached_ee', 'leg': labels['tau_140pu_sub'], 'col': cols['tau_140pu_sub']},
+    ],
+    'xtitle': 'nProngs matched to #gamma_{2}',
+    'ytitle': 'a.u.'
+},
 ]
 
 
 #     (
-#       'm1_pi_bestmatch_hfrac_all',
-#       'm1_pi_bestmatch_hfrac(30,0,1)', 'm1_matched && m1_all_reached_ee && m1_nmatched_to_pi > 0',
-#       ('E_{H} fraction for #pi^{+} match', 'Events')
+#       'm1_nmatched_to_pi',
+#       'm1_nmatched_to_pi(10,-0.5,9.5)', 'm1_matched && m1_pi_reached_ee',
+#       ('nProngs matched to #pi^{+}', 'Events')
 #     ),
 #     (
-#       'm1_p1_bestmatch_hfrac_all',
-#       'm1_p1_bestmatch_hfrac(30,0,1)', 'm1_matched && m1_all_reached_ee && m1_nmatched_to_p1 > 0',
-#       ('E_{H} fraction for #gamma_{1} match', 'Events')
+#       'm1_nmatched_to_p1',
+#       'm1_nmatched_to_p1(10,-0.5,9.5)', 'm1_matched && m1_pi_reached_ee',
+#       ('nProngs matched to #gamma_{1}', 'Events')
 #     ),
 #     (
-#       'm1_p2_bestmatch_hfrac_all',
-#       'm1_p2_bestmatch_hfrac(30,0,1)', 'm1_matched && m1_all_reached_ee && m1_nmatched_to_p2 > 0',
-#       ('E_{H} fraction for #gamma_{2} match', 'Events')
+#       'm1_nmatched_to_p2',
+#       'm1_nmatched_to_p2(10,-0.5,9.5)', 'm1_matched && m1_pi_reached_ee',
+#       ('nProngs matched to #gamma_{2}', 'Events')
 #     ),
 
 for c in plotlist:
@@ -252,21 +304,7 @@ for p in plotlist:
 #       'm1_pi_bestmatch_hfrac/m1_p1_bestmatch_hfrac(50,0,5)', 'm1_matched && m1_pi_reached_ee && m1_nmatched_to_pi > 0 && m1_nmatched_to_p1 > 0',
 #       ('#pi^{+} / #gamma_{1} ratio for H/E', 'Events')
 #     ),
-#     (
-#       'm1_nmatched_to_pi',
-#       'm1_nmatched_to_pi(10,-0.5,9.5)', 'm1_matched && m1_pi_reached_ee',
-#       ('nProngs matched to #pi^{+}', 'Events')
-#     ),
-#     (
-#       'm1_nmatched_to_p1',
-#       'm1_nmatched_to_p1(10,-0.5,9.5)', 'm1_matched && m1_pi_reached_ee',
-#       ('nProngs matched to #gamma_{1}', 'Events')
-#     ),
-#     (
-#       'm1_nmatched_to_p2',
-#       'm1_nmatched_to_p2(10,-0.5,9.5)', 'm1_matched && m1_pi_reached_ee',
-#       ('nProngs matched to #gamma_{2}', 'Events')
-#     ),
+
 #     (
 #       'm1_pi_bestmatch_dr',
 #       'm1_pi_bestmatch_dr(30,0,0.2)', 'm1_matched && m1_pi_reached_ee && m1_nmatched_to_pi > 0',
