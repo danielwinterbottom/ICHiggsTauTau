@@ -87,6 +87,8 @@ int TauReco::PreAnalysis() {
       pu_profiles.push_back(fs_->make<TH2F>(TString::Format("pu_profile_%i", i), "", 2, std::vector<double>{1.479, 2.6, 3.0}.data(), 100, 0, 0.4));
     }
   }
+  jet_energy_cont_profiles.push_back(fs_->make<TH2F>("jet_energy_cont_profile", "", 20, 0.0, 0.2, 50, 0, 1));
+  jet_energy_cont_profiles.push_back(fs_->make<TH2F>("tau_energy_cont_profile", "", 20, 0.0, 0.2, 50, 0, 1));
   return 0;
 }
 
@@ -336,6 +338,21 @@ int TauReco::Execute(TreeEvent* event) {
       tau_infos.back().jet = j;
       tau_infos.back().used_settings = settings;
     }
+    if (j.pt() > 20. && j.pt() < 30.) {
+      std::vector<double> slices(jet_energy_cont_profiles[0]->GetXaxis()->GetNbins(), 0.);
+      auto comps = j.AsVector();
+      for (unsigned  i = 0; i < comps.size(); ++i) {
+        double dr = DR(comps[i], &j);
+        int bin = jet_energy_cont_profiles[0]->GetXaxis()->FindFixBin(dr);
+        for (int s = jet_energy_cont_profiles[0]->GetXaxis()->GetNbins(); s > bin; --s) {
+          slices[s-1] += comps[i]->energy();
+        }
+      }
+      for (unsigned s = 0; s < slices.size(); ++s) {
+        slices[s] /= j.energy();
+        jet_energy_cont_profiles[0]->Fill(jet_energy_cont_profiles[0]->GetXaxis()->GetBinCenter(s+1), slices[s]);
+      }
+    }
   }
 
   // Step 3 - hit pattern selection
@@ -354,6 +371,23 @@ int TauReco::Execute(TreeEvent* event) {
   // -------------------------------------------------------------------------
   for (auto & tau_info : tau_infos) {
     RunStep5(tau_info);
+    if (tau_info.jet.pt() > 20. && tau_info.jet.pt() < 30. && tau_info.prongs.size() >= 2) {
+      std::vector<double> slices(jet_energy_cont_profiles[1]->GetXaxis()->GetNbins(), 0.);
+      auto comps = tau_info.prongs;
+      ROOT::Math::PtEtaPhiEVector prong_sum;
+      for (auto const& c : comps) prong_sum += c.vector();
+      for (unsigned  i = 0; i < comps.size(); ++i) {
+        double dr = ROOT::Math::VectorUtil::DeltaR(comps[i].vector(), prong_sum);
+        int bin = jet_energy_cont_profiles[1]->GetXaxis()->FindFixBin(dr);
+        for (int s = jet_energy_cont_profiles[1]->GetXaxis()->GetNbins(); s > bin; --s) {
+          slices[s-1] += comps[i].energy();
+        }
+      }
+      for (unsigned s = 0; s < slices.size(); ++s) {
+        slices[s] /= tau_info.jet.energy();
+        jet_energy_cont_profiles[1]->Fill(jet_energy_cont_profiles[1]->GetXaxis()->GetBinCenter(s+1), slices[s]);
+      }
+    }
   }
 
   //******************** Printing

@@ -52,6 +52,7 @@ struct TauRecoVars {
   float nprongs;
   float jet_mass;
   float all_prong_mass;
+  float all_prong_dr;
 
   void AddToTree(TTree *t, TString prefix) {
     t->Branch(prefix+"jet_pt",          &jet_pt);
@@ -61,6 +62,7 @@ struct TauRecoVars {
     t->Branch(prefix+"nprongs",         &nprongs);
     t->Branch(prefix+"jet_mass",        &jet_mass);
     t->Branch(prefix+"all_prong_mass",  &all_prong_mass);
+    t->Branch(prefix+"all_prong_dr",  &all_prong_dr);
   }
 };
 

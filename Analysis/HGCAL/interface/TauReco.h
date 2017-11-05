@@ -54,6 +54,7 @@ class TauReco : public ModuleBase {
 
   std::vector<TH1F> pu_bins;
   std::vector<TH2F *> pu_profiles;
+  std::vector<TH2F *> jet_energy_cont_profiles;
 
  public:
   struct Settings {

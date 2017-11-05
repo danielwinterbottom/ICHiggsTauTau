@@ -62,20 +62,20 @@ int HGCALTest::Execute(TreeEvent* event) {
     // {41, 23},
     // {42, 23},
     // {45, 23},
-    {19, 98},
-    {21, 98},
-    {28, 98},
-    {34, 98},
-    {36, 98},
-    {39, 98},
-    {42, 98},
-    {49, 98},
-    {50, 98},
-    {51, 98},
-    {72, 98},
-    {75, 98},
-    {85, 98},
-    {91, 98}
+    // {19, 98},
+    // {21, 98},
+    // {28, 98},
+    // {34, 98},
+    // {36, 98},
+    // {39, 98},
+    // {42, 98},
+    // {49, 98},
+    // {50, 98},
+    // {51, 98},
+    // {72, 98},
+    // {75, 98},
+    // {85, 98},
+    // {91, 98}
   };
 
   int long evt = *event->GetPtr<int long>("event");
@@ -344,6 +344,13 @@ int HGCALTest::Execute(TreeEvent* event) {
         for (auto const& prong : reco_tau->prongs) all_prongs += prong.vector();
 
         t_taus_rec_.all_prong_mass = all_prongs.M();
+        double dr_max = 0;
+        for (auto const& prong : reco_tau->prongs) {
+          dr_max = std::max(dr_max, ROOT::Math::VectorUtil::DeltaR(prong.vector(), all_prongs));
+        }
+        t_taus_rec_.all_prong_dr = dr_max;
+
+        t_taus_m1_match_.matched = true;
       }
 
       t_taus_->Fill();
@@ -473,8 +480,11 @@ int HGCALTest::Execute(TreeEvent* event) {
           for (auto const& prong : reco_tau->prongs) all_prongs += prong.vector();
 
           t_taus_rec_.all_prong_mass = all_prongs.M();
-
-
+          double dr_max = 0;
+          for (auto const& prong : reco_tau->prongs) {
+            dr_max = std::max(dr_max, ROOT::Math::VectorUtil::DeltaR(prong.vector(), all_prongs));
+          }
+          t_taus_rec_.all_prong_dr = dr_max;
 
           t_taus_m1_match_.matched = true;
 
