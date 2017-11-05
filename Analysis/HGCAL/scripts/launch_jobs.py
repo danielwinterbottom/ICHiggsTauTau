@@ -26,7 +26,9 @@ joblist = [
    ('Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_full.dat"]),
    ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
    ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_full.dat"]),
-   #('Dijet_agilbert_DiJetFlat20_200_20171015', ["filelists/Dijet_agilbert_DiJetFlat20_200_20171015.dat"]),
+   ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU200_20171030', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU200_20171030_full.dat"]),
+   ('Pythia8PtGun_agilbert_TauPt50_100_DM1_PU200_20171030_pusub', ["filelists/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU200_20171030_full.dat"]),
+   ('Dijet_agilbert_DiJetFlat20_200_20171015', ["filelists/Dijet_agilbert_DiJetFlat20_200_20171015.dat"]),
    # ('Pythia8PtGun_agilbert_TauPt45_20170913', ["filelists/Pythia8PtGun_agilbert_TauPt45_20170913.dat"]),
    #('Pythia8PtGun_agilbert_JetPt100_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt100_20170808.dat"]),
    #('Pythia8PtGun_agilbert_JetPt200_20170808', ["filelists/Pythia8PtGun_agilbert_JetPt200_20170808.dat"]),
@@ -34,9 +36,11 @@ joblist = [
    #('Dijet_agilbert_DiJet50_20170815', ["filelists/Dijet_agilbert_DiJet50_20170815.dat"]),
   # ('Dijet_test', ["filelists/filelist_dijet_test.dat"]),
 ]
-
 OPTS = {
   'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub': {
+    's1_pu_strategy': 1
+  },
+  'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU200_20171030_pusub': {
     's1_pu_strategy': 1
   }
 }
