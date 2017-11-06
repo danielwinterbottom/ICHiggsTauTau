@@ -35,11 +35,20 @@ def MakePlot(c):
     plot.FixTopRange(pads[0], plot.GetPadYMax(pads[0]), 0.30)
     legend.Draw()
 
+
     axis = plot.GetAxisHist(pads[0])
     plot.Set(axis.GetXaxis(), Title=c['xtitle'])
     plot.Set(axis.GetYaxis(), Title=c['ytitle'])
 
-    # plot.DrawTitle(pads[0], 'Boson: %s, ^{}m_{%s}=%s GeV, tan#beta=%s' % (partx, partx, mA, tanb), 3)
+
+    latex = ROOT.TLatex()
+    latex.SetNDC()
+    latex.SetTextSize(0.03)
+
+    if 'text' in c:
+        for i, line in enumerate(c['text']):
+            latex.DrawLatex(0.22, 0.87 - i*0.04, line)
+
     canv.Print('.pdf')
     canv.Print('.png')
 
@@ -47,21 +56,24 @@ ana = Analysis()
 
 path = 'output/Main'
 sa = {
-    'tau_0pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_test1_0',
-    # 'tau_140pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928_test1_0',
+    'tau_0pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928',
     'tau_140pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013',
     'tau_140pu_sub': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub',
     'tau_200pu': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU200_20171030',
     'tau_200pu_sub': 'Pythia8PtGun_agilbert_TauPt50_100_DM1_PU200_20171030_pusub',
-    'jet_0pu': 'Dijet_agilbert_DiJetFlat20_200_20171015_test1_0'
+    'jet_0pu': 'Dijet_agilbert_DiJetFlat20_200_20171015',
+    'jet_140pu': 'Dijet_agilbert_DiJetFlat20_200_PU140_20171102',
+    'jet_140pu_sub': 'Dijet_agilbert_DiJetFlat20_200_PU140_20171102_pusub'
 }
 labels = {
-    'tau_0pu': 'Genuine #tau_{h} (0 PU)',
-    'tau_140pu': 'Genuine #tau_{h} (140 PU)',
-    'tau_140pu_sub': 'Genuine #tau_{h} (140 PU sub)',
-    'tau_200pu': 'Genuine #tau_{h} (200 PU)',
-    'tau_200pu_sub': 'Genuine #tau_{h} (200 PU sub)',
-    'jet_0pu': 'Jet#rightarrow#tau_{h} fakes (0 PU)'
+    'tau_0pu': '#tau#rightarrow#pi^{+}#pi^{0} (0 PU)',
+    'tau_140pu': '#tau#rightarrow#pi^{+}#pi^{0} (140 PU)',
+    'tau_140pu_sub': '#tau#rightarrow#pi^{+}#pi^{0} (140 PU)',
+    'tau_200pu': '#tau_{h} (200 PU)',
+    'tau_200pu_sub': 'Genuine #tau_{h} (200 PU)',
+    'jet_0pu': 'Jet#rightarrow#tau fakes (0 PU)',
+    'jet_140pu': 'Jet#rightarrow#tau fakes (140 PU)',
+    'jet_140pu_sub': 'Jet#rightarrow#tau fakes (140 PU)'
 }
 for name, s in sa.iteritems():
     ana.AddSamples('%s/%s.root' % (path, s), 'taus')
@@ -72,7 +84,9 @@ cols = {
     'tau_140pu_sub': ROOT.kRed + 2,
     'tau_200pu': ROOT.kMagenta + 2,
     'tau_200pu_sub': ROOT.kMagenta - 1,
-    'jet_0pu': 4
+    'jet_0pu': 4,
+    'jet_140pu': 8,
+    'jet_140pu_sub': 12
 }
 
 ls = {
@@ -81,10 +95,16 @@ ls = {
     'tau_140pu_sub': 1,
     'tau_200pu': 1,
     'tau_200pu_sub': 1,
-    'jet_0pu': 1
+    'jet_0pu': 1,
+    'jet_140pu': 1,
+    'jet_140pu_sub': 1,
 }
 
-jet_sel = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && rec_jet_pt > 20)'
+jet_sel = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && rec_jet_pt > 30 && rec_jet_pt < 60)'
+tau_sel = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && rec_jet_pt > 30 && rec_jet_pt < 60)'
+
+jet_sel_gen = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && gen_pt > 30 && gen_pt < 60)'
+tau_sel_gen = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && gen_vis_pt > 30 && gen_vis_pt < 60)'
 
 plotlist = [
 {
@@ -94,6 +114,19 @@ plotlist = [
     ],
     'xtitle': 'Reco. jet p_{T}(GeV)',
     'ytitle': 'Events'
+},
+{
+    'name': 'pt_response', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_jet_pt/gen_vis_pt(40,0,2)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_jet_pt/gen_vis_pt(40,0,2)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_jet_pt/gen_pt(40,0,2)', 'sel': '%s' % jet_sel,               'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_jet_pt/gen_pt(40,0,2)', 'sel': '%s' % jet_sel,               'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Reco./Gen. p_{T} response',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{gen} < 60 GeV']
+
 },
 {
     'name': 'fake_gen_pt', 'scaled': False,
@@ -138,17 +171,28 @@ plotlist = [
     'ytitle': 'a.u.'
 },
 {
+    'name': 'rec_nprongs', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Particle multiplicity',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+{
     'name': 'rec_all_prong_mass', 'scaled': True,
     'inputs': [
-        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_0pu'], 'col': 4, 'ls': ls['tau_0pu']},
-        # {'name': 'tau_140pu', 'sa': sa['tau_140pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_140pu'], 'col': cols['tau_140pu'], 'ls': ls['tau_140pu']},
-        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_140pu_sub'], 'col': cols['tau_140pu_sub'], 'ls': ls['tau_140pu_sub']},
-        # {'name': 'tau_200pu', 'sa': sa['tau_200pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_200pu'], 'col': cols['tau_200pu'], 'ls': ls['tau_200pu']},
-        {'name': 'tau_200pu_sub', 'sa': sa['tau_200pu_sub'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': 'm1_matched && m1_pi_reached_ee && rec_nprongs <= 3 && rec_nprongs >= 2', 'leg': labels['tau_200pu_sub'], 'col': cols['tau_200pu_sub'], 'ls': ls['tau_200pu_sub']},
-        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 8, 'ls': ls['jet_0pu']},
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_all_prong_mass(20,0,6)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
     ],
-    'xtitle': '#tau_{h} Mass (GeV)',
-    'ytitle': 'a.u.'
+    'xtitle': 'Visible #tau mass (GeV)',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
 },
 {
     'name': 'rec_all_prong_dr', 'scaled': True,

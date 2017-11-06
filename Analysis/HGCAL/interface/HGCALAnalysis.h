@@ -46,6 +46,7 @@ struct EvtVars {
 
 struct TauRecoVars {
   float jet_pt;
+  float jet_pt_r0p4;
   float jet_eta;
   float jet_phi;
   float jet_e;
@@ -56,6 +57,7 @@ struct TauRecoVars {
 
   void AddToTree(TTree *t, TString prefix) {
     t->Branch(prefix+"jet_pt",          &jet_pt);
+    t->Branch(prefix+"jet_pt_r0p4",     &jet_pt_r0p4);
     t->Branch(prefix+"jet_eta",         &jet_eta);
     t->Branch(prefix+"jet_phi",         &jet_phi);
     t->Branch(prefix+"jet_e",           &jet_e);
@@ -64,6 +66,18 @@ struct TauRecoVars {
     t->Branch(prefix+"all_prong_mass",  &all_prong_mass);
     t->Branch(prefix+"all_prong_dr",  &all_prong_dr);
   }
+
+  void Reset() {
+    jet_pt = 0.;
+    jet_pt_r0p4 = 0.;
+    jet_eta = 0.;
+    jet_phi = 0.;
+    jet_e = 0.;
+    nprongs = 0.;
+    jet_mass = 0.;
+    all_prong_mass = 0.;
+    all_prong_dr = 0.;
+  };
 };
 
 struct TauGenVars {
@@ -72,6 +86,7 @@ struct TauGenVars {
   float eta;
   float vis_pt;
   float vis_eta;
+  float pt_r0p4;
 
   void AddToTree(TTree *t, TString prefix) {
     t->Branch(prefix+"dm",         &dm);
@@ -79,7 +94,17 @@ struct TauGenVars {
     t->Branch(prefix+"eta",        &eta);
     t->Branch(prefix+"vis_pt",     &vis_pt);
     t->Branch(prefix+"vis_eta",    &vis_eta);
+    t->Branch(prefix+"pt_r0p4",    &pt_r0p4);
   }
+
+  void Reset() {
+    dm = -1;
+    pt = 0.;
+    eta = 0.;
+    vis_pt = 0.;
+    vis_eta = 0.;
+    pt_r0p4 = 0.;
+  };
 };
 
 struct TauMode1GenVars {

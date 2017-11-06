@@ -34,6 +34,7 @@ TauReco::TauReco(std::string const& name) : ModuleBase(name) {
    s4_min_hits_for_prong_ = 3;
    s5_merge_strategy_ = 0;  // 0 = exp(-R/lambda) weighting, 1 = closest in DR
    s5_exp_merge_scale_ = 0.01;
+   postfix_ = "";
 }
 
 TauReco::~TauReco() { ; }
@@ -398,7 +399,7 @@ int TauReco::Execute(TreeEvent* event) {
     }
   }
 
-  event->Add("tauInfos", tau_infos);
+  event->Add("tauInfos"+postfix_, tau_infos);
 
   return 0;
 }

@@ -86,6 +86,7 @@ int HGCALTest::Execute(TreeEvent* event) {
   auto const& all_genparts = event->GetPtrVec<GenParticle>("genParticles");
   auto const& all_simparts = event->GetPtrVec<SimParticle>("simParticles");
   auto const& all_tauinfos = event->Get<std::vector<TauReco::TauInfo>>("tauInfos");
+  auto const& all_tauinfos_r0p4 = event->Get<std::vector<TauReco::TauInfo>>("tauInfos_r0p4");
   auto const& all_simclusters = event->GetPtrVec<SimCluster>("simclusters");
 
 
@@ -113,6 +114,12 @@ int HGCALTest::Execute(TreeEvent* event) {
     for (auto & info : all_tauinfos) {
       if (info.jet.eta() * float(pm) > 0.) {
         tauinfos.push_back(&info);
+      }
+    }
+    std::vector<TauReco::TauInfo const*> tauinfos_r0p4;
+    for (auto & info : all_tauinfos_r0p4) {
+      if (info.jet.eta() * float(pm) > 0.) {
+        tauinfos_r0p4.push_back(&info);
       }
     }
 
@@ -176,6 +183,8 @@ int HGCALTest::Execute(TreeEvent* event) {
 
     std::vector<ic::CompositeCandidate *> genjets;
     std::vector<ic::CompositeCandidate> genJets_nonu_vec;
+    std::vector<ic::CompositeCandidate *> genjets_r0p4;
+    std::vector<ic::CompositeCandidate> genJets_nonu_vec_r0p4;
     if (do_fakes_) {
       fastjet::JetDefinition fj_jet_def(fastjet::antikt_algorithm,
                                         0.2);
@@ -183,6 +192,15 @@ int HGCALTest::Execute(TreeEvent* event) {
       for (auto & j : genJets_nonu_vec) {
         if (j.pt() > 20.) {
           genjets.push_back(&j);
+        }
+      }
+
+      fastjet::JetDefinition fj_jet_def_r0p4(fastjet::antikt_algorithm,
+                                        0.4);
+      genJets_nonu_vec_r0p4 = ClusterJets(genparts_visible, fj_jet_def_r0p4);
+      for (auto & j : genJets_nonu_vec_r0p4) {
+        if (j.pt() > 20.) {
+          genjets_r0p4.push_back(&j);
         }
       }
     }
@@ -304,6 +322,8 @@ int HGCALTest::Execute(TreeEvent* event) {
     for (unsigned i = 0; i < genjets.size(); ++i) {
       t_taus_m1_gen_.Reset();
       t_taus_m1_match_.Reset();
+      t_taus_gen_.Reset();
+      t_taus_rec_.Reset();
 
       auto& jet = genjets[i];
 
@@ -322,12 +342,39 @@ int HGCALTest::Execute(TreeEvent* event) {
         reco_tau = tauinfos[min_dr_idx];
       }
 
+
+      // Now match to the reconstructed taus
+      double min_dr_r0p4 = 999.;
+      int min_dr_idx_r0p4 = -1;
+      for (unsigned tidx = 0; tidx < tauinfos_r0p4.size(); ++tidx) {
+        double dr = DR(genjets[i], &(tauinfos_r0p4[tidx]->jet));
+        if (dr < min_dr_r0p4 && dr < 0.4) {
+          min_dr_r0p4 = dr;
+          min_dr_idx_r0p4 = tidx;
+        }
+      }
+      TauReco::TauInfo const* reco_tau_r0p4 = nullptr;
+      if (min_dr_idx_r0p4 >= 0) {
+        reco_tau_r0p4 = tauinfos_r0p4[min_dr_idx_r0p4];
+      }
+
+      CompositeCandidate const* genjet_r0p4 = nullptr;
+      auto gen_matches_r0p4 = MatchByDR(std::vector<Candidate*>{jet}, genjets_r0p4, 0.4, true, true);
+      if (gen_matches_r0p4.size()) genjet_r0p4 = gen_matches_r0p4[0].second;
+
       t_taus_evt_.evt = evt;
       t_taus_evt_.lumi = lumi;
       t_taus_evt_.pm = pm;
 
       t_taus_gen_.pt = jet->pt();
       t_taus_gen_.eta = jet->eta();
+
+      if (reco_tau_r0p4) {
+        t_taus_rec_.jet_pt_r0p4 = reco_tau_r0p4->jet.pt();
+      }
+      if (genjet_r0p4) {
+        t_taus_gen_.pt_r0p4 = genjet_r0p4->pt();
+      }
 
 
       if (reco_tau) {
@@ -358,6 +405,10 @@ int HGCALTest::Execute(TreeEvent* event) {
     }
 
     for (unsigned i = 0; i < geninfo_taus.size(); ++i) {
+      t_taus_m1_gen_.Reset();
+      t_taus_m1_match_.Reset();
+      t_taus_gen_.Reset();
+      t_taus_rec_.Reset();
 
       auto& tinfo = geninfo_taus[i];
 
@@ -378,16 +429,6 @@ int HGCALTest::Execute(TreeEvent* event) {
       t_taus_gen_.vis_pt = tinfo.vis_jet->pt();
       t_taus_gen_.vis_eta = tinfo.vis_jet->eta();
 
-
-      t_taus_m1_gen_.Reset();
-
-      t_taus_rec_.jet_pt = 0.;
-      t_taus_rec_.jet_eta = 0.;
-      t_taus_rec_.jet_phi = 0.;
-      t_taus_rec_.jet_e = 0.;
-      t_taus_rec_.nprongs = 0;
-
-      t_taus_m1_match_.Reset();
 
       if (tinfo.hadronic_mode == 1) {
         // Build a list of the sim photons that match those in the tau collection
@@ -466,6 +507,24 @@ int HGCALTest::Execute(TreeEvent* event) {
         TauReco::TauInfo const* reco_tau = nullptr;
         if (min_dr_idx >= 0) {
           reco_tau = tauinfos[min_dr_idx];
+        }
+
+        double min_dr_r0p4 = 999.;
+        int min_dr_idx_r0p4 = -1;
+        for (unsigned tidx = 0; tidx < tauinfos_r0p4.size(); ++tidx) {
+          double dr = DR(tinfo.vis_jet, &(tauinfos_r0p4[tidx]->jet));
+          if (dr < min_dr_r0p4 && dr < 0.4) {
+            min_dr_r0p4 = dr;
+            min_dr_idx_r0p4 = tidx;
+          }
+        }
+        TauReco::TauInfo const* reco_tau_r0p4 = nullptr;
+        if (min_dr_idx_r0p4 >= 0) {
+          reco_tau_r0p4 = tauinfos_r0p4[min_dr_idx_r0p4];
+        }
+
+        if (reco_tau_r0p4) {
+          t_taus_rec_.jet_pt_r0p4 = reco_tau_r0p4->jet.pt();
         }
 
         if (reco_tau) {

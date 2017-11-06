@@ -51,6 +51,7 @@ class TauReco : public ModuleBase {
   CLASS_MEMBER(TauReco, unsigned, s4_min_hits_for_prong)
   CLASS_MEMBER(TauReco, int, s5_merge_strategy)
   CLASS_MEMBER(TauReco, double, s5_exp_merge_scale)
+  CLASS_MEMBER(TauReco, std::string, postfix)
 
   std::vector<TH1F> pu_bins;
   std::vector<TH2F *> pu_profiles;
