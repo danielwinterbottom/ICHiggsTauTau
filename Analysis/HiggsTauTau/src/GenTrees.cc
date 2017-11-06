@@ -65,7 +65,7 @@ namespace ic {
     for (unsigned i=0; i < gen_particles.size(); ++i){
       std::vector<bool> status_flags_start = gen_particles[i]->statusFlags();
     //  std::cout<<status_flags_start[IsPrompt]<<std::endl;
-      if ( ((abs(gen_particles[i]->pdgid()) == 11 )||(abs(gen_particles[i]->pdgid()) == 13 )) &&gen_particles[i]->pt() > 4 && status_flags_start[IsLastCopy] && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)){
+      if ( ((abs(gen_particles[i]->pdgid()) == 11 )||(abs(gen_particles[i]->pdgid()) == 13 )) && status_flags_start[IsLastCopy] && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)){
         sel_gen_particles.push_back(gen_particles[i]);
       }
     }

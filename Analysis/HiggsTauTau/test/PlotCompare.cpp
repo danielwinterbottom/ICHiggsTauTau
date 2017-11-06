@@ -138,8 +138,8 @@ int main(int argc, char* argv[]){
     ("ratio_axis_label",    po::value<string>(&ratio_axis_label)->default_value("Ratio"))
     ("title_left",          po::value<string>(&title_left)->default_value(""))
     ("title_right",         po::value<string>(&title_right)->default_value(""))
-    ("ratio_y_min",         po::value<double>(&ratio_y_min)->default_value(0.8))
-    ("ratio_y_max",         po::value<double>(&ratio_y_max)->default_value(1.2))
+    ("ratio_y_min",         po::value<double>(&ratio_y_min)->default_value(0))
+    ("ratio_y_max",         po::value<double>(&ratio_y_max)->default_value(2))
     ("norm_bins",           po::value<bool>(&norm_bins)->default_value(false))
     ("shape_compare",       po::value<bool>(&shape_compare)->default_value(false))
     ("custom_y_axis_range", po::value<bool>(&custom_y_axis_range)->default_value(false))
@@ -236,6 +236,7 @@ int main(int argc, char* argv[]){
       files.back()->cd();
       TTree *tree = dynamic_cast<TTree*>(gDirectory->Get(split[3].c_str()));
       hist_map[split[0].c_str()] = TH1F(split[0].c_str(),split[0].c_str(),n_bins,x_low,x_up);
+      hist_map[split[0].c_str()].Sumw2();
       tree->Draw((split[4]+">>"+split[0]).c_str(),sel_string.c_str());
       elements.emplace_back(split[0], &hist_map[split[0].c_str()], split[1]);
       elements.back().hist_ptr()->Sumw2();
@@ -334,8 +335,8 @@ int main(int argc, char* argv[]){
   // if (channel == "em") channel = "#tau_{e}#tau_{#mu}";
 
   compare.custom_ratio_y_axis_range = true;
-  compare.ratio_y_axis_max = 1.2;
-  compare.ratio_y_axis_min = 0.8;
+  compare.ratio_y_axis_max = 2;
+  compare.ratio_y_axis_min = 0.2;
   compare.x_axis_title = x_axis_title;
   compare.y_axis_title = y_axis_title;
 

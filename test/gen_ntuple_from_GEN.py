@@ -1,18 +1,17 @@
 # Auto generated configuration file
 # using: 
 # Revision: 1.19 
-# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: step1 --fileout file:HIG-RunIISummer16MiniAODv2-00187.root --mc --eventcontent MINIAODSIM --runUnscheduled --datatier MINIAODSIM --conditions 80X_mcRun2_asymptotic_2016_TrancheIV_v6 --step PAT --nThreads 4 --era Run2_2016 --python_filename HIG-RunIISummer16MiniAODv2-00187_1_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring
 import FWCore.ParameterSet.Config as cms
 
 from FWCore.ParameterSet.VarParsing import VarParsing
 
 options = VarParsing('python')
-options.register('output','file:///vols/cms/amd12/biaswttest/DY01_biasweight_eventtree.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+options.register('output','file:///afs/cern.ch/work/a/adewit/private/CMSSW_8_0_23/src/UserCode/ICHiggsTauTau/test/DY01_biasweight_genonly_eventtree.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 #options.register('output','file:///vols/cms/amd12/biaswttest/DY01_noweight_eventtree.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 #options.register('output','file:///vols/cms/amd12/DY01_nobiaswt_evvtree.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 #options.register('input','file:///vols/cms/amd12/biaswttest/DY01_noweight.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
-options.register('input','file:///vols/cms/amd12/biaswttest/DY01_biaswt.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
+options.register('input','file:///afs/cern.ch/work/a/adewit/private/CMSSW_7_4_7/DY01_biasweight_genonly.root', VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 #options.register('input','file:///vols/build/cms/amd12/CMSSW_8_0_23/src/UserCode/ICHiggsTauTau/test/dy01_nobiaswt_out.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,"type parameter")
 
 options.parseArguments()
@@ -125,7 +124,7 @@ process.MINIAODSIMoutput_step = cms.EndPath(process.MINIAODSIMoutput)
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
-    input               = cms.InputTag('genParticles', '', 'SIM'),
+    input               = cms.InputTag('genParticles', '', 'GEN'),
     includeMothers      = cms.bool(True),
     includeDaughters    = cms.bool(True),
     includeStatusFlags  = cms.bool(True)

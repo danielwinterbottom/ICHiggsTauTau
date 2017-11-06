@@ -476,6 +476,7 @@ namespace ic {
                 } else {
                   num->Add(elements_[m].hist_ptr());
                 }
+                num->Scale(1./num->Integral());
               }
             }
           }
@@ -487,6 +488,7 @@ namespace ic {
                 } else {
                   den->Add(elements_[m].hist_ptr());
                 }
+                 den->Scale(1./den->Integral());
               }
             }
           }
