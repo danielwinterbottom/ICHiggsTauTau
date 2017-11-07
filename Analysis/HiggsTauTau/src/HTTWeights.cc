@@ -252,8 +252,8 @@ namespace ic {
                w_->function("m_trgMu23leg_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
             fns_["m_trgMu19leg_eta2p1_desy_mc"] = std::shared_ptr<RooFunctor>(
                w_->function("m_trgMu19leg_eta2p1_desy_mc")->functor(w_->argSet("m_pt,m_eta")));
-            fns_["t_fake_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
-                w_->function("t_fake_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
+            //fns_["t_fake_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
+            //    w_->function("t_fake_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
             fns_["t_genuine_TightIso_mt_ratio"] = std::shared_ptr<RooFunctor>(
                 w_->function("t_genuine_TightIso_mt_ratio")->functor(w_->argSet("t_pt,t_eta")));
           }
@@ -1348,7 +1348,7 @@ namespace ic {
                         mu_trg_mc = fns_["m_trgMu19leg_eta2p1_desy_mc"]->eval(args_desy.data());
                         mu_trg = fns_["m_trgMu19leg_eta2p1_desy_data"]->eval(args_desy.data());
                         if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
-                        else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
+                        //else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
                       }
                       // may want to add different SFs for anti-iso
                     }  else{

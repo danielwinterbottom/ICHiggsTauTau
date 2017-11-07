@@ -352,7 +352,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
 
   if (strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
     tau_pt=40;
-    lead_tau_pt=50;
+    lead_tau_pt=40;
     if(js["store_hltpaths"].asBool()) tau_pt = 25;
   }
 
