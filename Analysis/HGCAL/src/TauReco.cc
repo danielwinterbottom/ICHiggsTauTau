@@ -339,19 +339,19 @@ int TauReco::Execute(TreeEvent* event) {
       tau_infos.back().jet = j;
       tau_infos.back().used_settings = settings;
     }
-    if (j.pt() > 20. && j.pt() < 30.) {
-      std::vector<double> slices(jet_energy_cont_profiles[0]->GetXaxis()->GetNbins(), 0.);
-      auto comps = j.AsVector();
-      for (unsigned  i = 0; i < comps.size(); ++i) {
-        double dr = DR(comps[i], &j);
-        int bin = jet_energy_cont_profiles[0]->GetXaxis()->FindFixBin(dr);
-        for (int s = jet_energy_cont_profiles[0]->GetXaxis()->GetNbins(); s > bin; --s) {
-          slices[s-1] += comps[i]->energy();
-        }
+    std::vector<ROOT::Math::PtEtaPhiEVector> slices(jet_energy_cont_profiles[0]->GetXaxis()->GetNbins());
+    auto comps = j.AsVector();
+    for (unsigned  i = 0; i < comps.size(); ++i) {
+      double dr = DR(comps[i], &j);
+      int bin = jet_energy_cont_profiles[0]->GetXaxis()->FindFixBin(dr);
+      for (int s = jet_energy_cont_profiles[0]->GetXaxis()->GetNbins(); s > bin; --s) {
+        slices[s-1] += comps[i]->vector();
       }
+    }
+    if (j.pt() > 30. && j.pt() < 60.) {
       for (unsigned s = 0; s < slices.size(); ++s) {
         slices[s] /= j.energy();
-        jet_energy_cont_profiles[0]->Fill(jet_energy_cont_profiles[0]->GetXaxis()->GetBinCenter(s+1), slices[s]);
+        jet_energy_cont_profiles[0]->Fill(jet_energy_cont_profiles[0]->GetXaxis()->GetBinCenter(s+1), slices[s].pt());
       }
     }
   }

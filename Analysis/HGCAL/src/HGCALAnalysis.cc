@@ -397,6 +397,14 @@ int HGCALTest::Execute(TreeEvent* event) {
         }
         t_taus_rec_.all_prong_dr = dr_max;
 
+        for (auto const& c : reco_tau->jet.AsVector()) {
+          double dr = DR(c, &reco_tau->jet);
+          if (dr >= 0.0 && dr < 0.2) t_taus_rec_.pt_0p0_0p2 += c->pt();
+          if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
+          if (dr >= 0.4 && dr < 0.6) t_taus_rec_.pt_0p4_0p6 += c->pt();
+          if (dr >= 0.6 && dr < 0.8) t_taus_rec_.pt_0p6_0p8 += c->pt();
+        }
+
         t_taus_m1_match_.matched = true;
       }
 
@@ -544,6 +552,14 @@ int HGCALTest::Execute(TreeEvent* event) {
             dr_max = std::max(dr_max, ROOT::Math::VectorUtil::DeltaR(prong.vector(), all_prongs));
           }
           t_taus_rec_.all_prong_dr = dr_max;
+
+          for (auto const& c : reco_tau->jet.AsVector()) {
+            double dr = DR(c, &reco_tau->jet);
+            if (dr >= 0.0 && dr < 0.2) t_taus_rec_.pt_0p0_0p2 += c->pt();
+            if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
+            if (dr >= 0.4 && dr < 0.6) t_taus_rec_.pt_0p4_0p6 += c->pt();
+            if (dr >= 0.6 && dr < 0.8) t_taus_rec_.pt_0p6_0p8 += c->pt();
+          }
 
           t_taus_m1_match_.matched = true;
 

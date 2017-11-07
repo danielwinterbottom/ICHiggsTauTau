@@ -54,6 +54,10 @@ struct TauRecoVars {
   float jet_mass;
   float all_prong_mass;
   float all_prong_dr;
+  float pt_0p0_0p2;
+  float pt_0p2_0p4;
+  float pt_0p4_0p6;
+  float pt_0p6_0p8;
 
   void AddToTree(TTree *t, TString prefix) {
     t->Branch(prefix+"jet_pt",          &jet_pt);
@@ -65,6 +69,10 @@ struct TauRecoVars {
     t->Branch(prefix+"jet_mass",        &jet_mass);
     t->Branch(prefix+"all_prong_mass",  &all_prong_mass);
     t->Branch(prefix+"all_prong_dr",  &all_prong_dr);
+    t->Branch(prefix+"pt_0p0_0p2",  &pt_0p0_0p2);
+    t->Branch(prefix+"pt_0p2_0p4",  &pt_0p2_0p4);
+    t->Branch(prefix+"pt_0p4_0p6",  &pt_0p4_0p6);
+    t->Branch(prefix+"pt_0p6_0p8",  &pt_0p6_0p8);
   }
 
   void Reset() {
@@ -77,6 +85,10 @@ struct TauRecoVars {
     jet_mass = 0.;
     all_prong_mass = 0.;
     all_prong_dr = 0.;
+    pt_0p0_0p2 = 0.;
+    pt_0p2_0p4 = 0.;
+    pt_0p4_0p6 = 0.;
+    pt_0p6_0p8 = 0.;
   };
 };
 
