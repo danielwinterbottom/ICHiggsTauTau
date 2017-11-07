@@ -70,7 +70,7 @@
 
 //Moj dodatak
 
-#include "HiggsTauTau/interface/HTTVBFGenAnalysis.h"
+#include "HiggsTauTau/interface/HTTVBFHLTAnalysis.h"
 
 namespace ic {
 
@@ -666,7 +666,7 @@ void HTTSequence::BuildSequence(){
 
 //Moj dodatak
 
-BuildModule(HTTVBFGenAnalysis("HTTVBFGenAnalysis")
+BuildModule(HTTVBFHLTAnalysis("HTTVBFHLTAnalysis")
         .set_fs(fs.get())
         .set_channel_str(channel_str)
         .set_min_jet_pt(30.)
