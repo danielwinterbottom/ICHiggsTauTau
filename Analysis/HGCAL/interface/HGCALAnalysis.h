@@ -58,6 +58,8 @@ struct TauRecoVars {
   float pt_0p2_0p4;
   float pt_0p4_0p6;
   float pt_0p6_0p8;
+  float leading_h_frac;
+  float subleading_h_frac;
 
   void AddToTree(TTree *t, TString prefix) {
     t->Branch(prefix+"jet_pt",          &jet_pt);
@@ -73,6 +75,8 @@ struct TauRecoVars {
     t->Branch(prefix+"pt_0p2_0p4",  &pt_0p2_0p4);
     t->Branch(prefix+"pt_0p4_0p6",  &pt_0p4_0p6);
     t->Branch(prefix+"pt_0p6_0p8",  &pt_0p6_0p8);
+    t->Branch(prefix+"leading_h_frac",  &leading_h_frac);
+    t->Branch(prefix+"subleading_h_frac",  &subleading_h_frac);
   }
 
   void Reset() {
@@ -89,6 +93,8 @@ struct TauRecoVars {
     pt_0p2_0p4 = 0.;
     pt_0p4_0p6 = 0.;
     pt_0p6_0p8 = 0.;
+    leading_h_frac = 0.;
+    subleading_h_frac = 0.;
   };
 };
 
