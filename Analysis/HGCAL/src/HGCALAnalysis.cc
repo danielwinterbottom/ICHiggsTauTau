@@ -83,6 +83,7 @@ int HGCALTest::Execute(TreeEvent* event) {
 
   // Start by building object collections from flat trees
   auto const& all_rechits = event->GetPtrVec<RecHit>("rechits");
+  auto const& all_rawrechits = event->GetPtrVec<RecHit>("rawrechits");
   auto const& all_genparts = event->GetPtrVec<GenParticle>("genParticles");
   auto const& all_simparts = event->GetPtrVec<SimParticle>("simParticles");
   auto const& all_tauinfos = event->Get<std::vector<TauReco::TauInfo>>("tauInfos");
@@ -98,6 +99,10 @@ int HGCALTest::Execute(TreeEvent* event) {
     if (pm == +1) pm_str = "p";
 
     auto rechits = ic::copy_keep_if(all_rechits, [&](RecHit const* r) {
+      return r->eta() * float(pm) > 0.;
+    });
+
+    auto rawrechits = ic::copy_keep_if(all_rawrechits, [&](RecHit const* r) {
       return r->eta() * float(pm) > 0.;
     });
     auto genparts = ic::copy_keep_if(all_genparts, [&](GenParticle const* r) {
@@ -397,12 +402,32 @@ int HGCALTest::Execute(TreeEvent* event) {
         }
         t_taus_rec_.all_prong_dr = dr_max;
 
-        for (auto const& c : filtered_rechits) {
+        for (auto const& c : rawrechits) {
           double dr = DR(c, &reco_tau->jet);
           if (dr >= 0.0 && dr < 0.2) t_taus_rec_.pt_0p0_0p2 += c->pt();
           if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
           if (dr >= 0.4 && dr < 0.6) t_taus_rec_.pt_0p4_0p6 += c->pt();
           if (dr >= 0.6 && dr < 0.8) t_taus_rec_.pt_0p6_0p8 += c->pt();
+        }
+
+        if (event->Exists("pu_densities")) {
+          auto const& pu_densities = event->Get<std::vector<TH1F>>("pu_densities");
+          double to_sub_0p0_0p2 = 0;
+          double to_sub_0p2_0p4 = 0;
+          double to_sub_0p4_0p6 = 0;
+          double to_sub_0p6_0p8 = 0;
+          for (unsigned l = 0; l < pu_densities.size(); ++l) {
+            int eta_bin = pu_densities[l].FindFixBin(std::abs(reco_tau->jet.eta()));
+            double density = pu_densities[l].GetBinContent(eta_bin);
+            to_sub_0p0_0p2 += density * TMath::Pi() * (0.2 * 0.2 - 0.0 * 0.0);
+            to_sub_0p2_0p4 += density * TMath::Pi() * (0.4 * 0.4 - 0.2 * 0.2);
+            to_sub_0p4_0p6 += density * TMath::Pi() * (0.6 * 0.6 - 0.4 * 0.4);
+            to_sub_0p6_0p8 += density * TMath::Pi() * (0.8 * 0.8 - 0.6 * 0.6);
+          }
+          t_taus_rec_.pt_0p0_0p2 = std::max(0., t_taus_rec_.pt_0p0_0p2 - to_sub_0p0_0p2);
+          t_taus_rec_.pt_0p2_0p4 = std::max(0., t_taus_rec_.pt_0p2_0p4 - to_sub_0p2_0p4);
+          t_taus_rec_.pt_0p4_0p6 = std::max(0., t_taus_rec_.pt_0p4_0p6 - to_sub_0p4_0p6);
+          t_taus_rec_.pt_0p6_0p8 = std::max(0., t_taus_rec_.pt_0p6_0p8 - to_sub_0p6_0p8);
         }
 
         t_taus_m1_match_.matched = true;
@@ -553,12 +578,31 @@ int HGCALTest::Execute(TreeEvent* event) {
           }
           t_taus_rec_.all_prong_dr = dr_max;
 
-          for (auto const& c : filtered_rechits) {
+          for (auto const& c : rawrechits) {
             double dr = DR(c, &reco_tau->jet);
             if (dr >= 0.0 && dr < 0.2) t_taus_rec_.pt_0p0_0p2 += c->pt();
             if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
             if (dr >= 0.4 && dr < 0.6) t_taus_rec_.pt_0p4_0p6 += c->pt();
             if (dr >= 0.6 && dr < 0.8) t_taus_rec_.pt_0p6_0p8 += c->pt();
+          }
+          if (event->Exists("pu_densities")) {
+            auto const& pu_densities = event->Get<std::vector<TH1F>>("pu_densities");
+            double to_sub_0p0_0p2 = 0;
+            double to_sub_0p2_0p4 = 0;
+            double to_sub_0p4_0p6 = 0;
+            double to_sub_0p6_0p8 = 0;
+            for (unsigned l = 0; l < pu_densities.size(); ++l) {
+              int eta_bin = pu_densities[l].FindFixBin(std::abs(reco_tau->jet.eta()));
+              double density = pu_densities[l].GetBinContent(eta_bin);
+              to_sub_0p0_0p2 += density * TMath::Pi() * (0.2 * 0.2 - 0.0 * 0.0);
+              to_sub_0p2_0p4 += density * TMath::Pi() * (0.4 * 0.4 - 0.2 * 0.2);
+              to_sub_0p4_0p6 += density * TMath::Pi() * (0.6 * 0.6 - 0.4 * 0.4);
+              to_sub_0p6_0p8 += density * TMath::Pi() * (0.8 * 0.8 - 0.6 * 0.6);
+            }
+            t_taus_rec_.pt_0p0_0p2 = std::max(0., t_taus_rec_.pt_0p0_0p2 - to_sub_0p0_0p2);
+            t_taus_rec_.pt_0p2_0p4 = std::max(0., t_taus_rec_.pt_0p2_0p4 - to_sub_0p2_0p4);
+            t_taus_rec_.pt_0p4_0p6 = std::max(0., t_taus_rec_.pt_0p4_0p6 - to_sub_0p4_0p6);
+            t_taus_rec_.pt_0p6_0p8 = std::max(0., t_taus_rec_.pt_0p6_0p8 - to_sub_0p6_0p8);
           }
 
           t_taus_m1_match_.matched = true;

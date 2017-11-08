@@ -81,10 +81,12 @@ int TauReco::PreAnalysis() {
   for (unsigned i = 0; i < nlayers; ++i) {
     if (i + hgcal::firstLayer <= hgcal::lastLayerE) {
       pu_bins.push_back(TH1F(TString::Format("bins%i", i), "", 10, 1.479, 3.0));
+      pu_densities.push_back(TH1F(TString::Format("bins%i", i), "", 10, 1.479, 3.0));
       pu_profiles.push_back(fs_->make<TH2F>(TString::Format("pu_profile_%i", i), "", 10, 1.479, 3.0, 100, 0, 0.2));
       // pu_profiles.push_back(TH2F(TString::Format("pu_profile_%i", i), "", 10, 1.479, 3.0, 100, 0, 0.2));
     } else {
       pu_bins.push_back(TH1F(TString::Format("bins%i", i), "", 2, std::vector<double>{1.479, 2.6, 3.0}.data()));
+      pu_densities.push_back(TH1F(TString::Format("bins%i", i), "", 2, std::vector<double>{1.479, 2.6, 3.0}.data()));
       pu_profiles.push_back(fs_->make<TH2F>(TString::Format("pu_profile_%i", i), "", 2, std::vector<double>{1.479, 2.6, 3.0}.data(), 100, 0, 0.4));
     }
   }
@@ -273,6 +275,19 @@ int TauReco::Execute(TreeEvent* event) {
     return std::get<1>(RecHitAboveThreshold(*r, settings.s1_rechit_threshold, true));
   });
 
+  event->Add("rawrechits_storage", std::vector<RecHit>());
+  auto & rawrechits_storage = event->Get<std::vector<RecHit>>("rawrechits_storage");
+  rawrechits_storage.resize(filtered_rechits.size());
+  for (unsigned i = 0; i < filtered_rechits.size(); ++i) {
+    rawrechits_storage[i] = *(filtered_rechits[i]);
+  }
+  event->Add("rawrechits", std::vector<RecHit *>());
+  auto & rawrechits = event->Get<std::vector<RecHit *>>("rawrechits");
+  rawrechits.resize(rawrechits_storage.size());
+  for (unsigned i = 0; i < rawrechits_storage.size(); ++i) {
+    rawrechits[i] = &(rawrechits_storage[i]);
+  }
+
   unsigned nlayers = hgcal::lastLayer - hgcal::firstLayer + 1;
   // PU subtraction
   if (settings.s1_pu_strategy == 1) {
@@ -295,6 +310,12 @@ int TauReco::Execute(TreeEvent* event) {
     }
     for (unsigned l = 0; l < nlayers; ++l) {
       for (unsigned b = 0; b < hits_in_layers[l].size(); ++b){
+        double et_density = 0.;
+        for (unsigned rh = 0; rh < hits_in_layers[l][b].size(); ++rh) {
+          et_density += hits_in_layers[l][b][rh]->pt();
+        }
+        // Extra factor of 2 here because we sum over both hemispheres
+        et_density /= (2 * 2*TMath::Pi() * (pu_densities[l].GetBinLowEdge(b+2) - pu_densities[l].GetBinLowEdge(b+1)));
         std::sort(hits_in_layers[l][b].begin(), hits_in_layers[l][b].end(), [](RecHit *h1, RecHit *h2) {
           return h1->energy() < h2->energy();
         });
@@ -304,6 +325,7 @@ int TauReco::Execute(TreeEvent* event) {
           median_energy[l][b] = 0.;
         }
         pu_profiles[l]->Fill(pu_profiles[l]->GetXaxis()->GetBinCenter(b+1), median_energy[l][b]);
+        pu_densities[l].SetBinContent(b+1, et_density);
       }
       // std::cout << "Median energy in layer " << l << " = ";
       for (unsigned b = 0; b < hits_in_layers[l].size(); ++b) {
@@ -311,6 +333,7 @@ int TauReco::Execute(TreeEvent* event) {
       }
       // std::cout << "\n";
     }
+    event->Add("pu_densities", pu_densities);
     filtered_rechits = ic::copy_keep_if(filtered_rechits, [&](RecHit * r) {
       if (r->layer() > hgcal::lastLayer) return true;
       unsigned lidx = r->layer() - hgcal::firstLayer;
