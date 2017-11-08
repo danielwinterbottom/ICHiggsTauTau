@@ -100,6 +100,8 @@ int main(int argc, char* argv[]) {
     .set_s5_merge_strategy(js["s5_merge_strategy"].asInt())
     .set_s5_exp_merge_scale(js["s5_exp_merge_scale"].asDouble())
     );
+
+  /*
   main_seq.BuildModule(ic::TauReco("TauRecoR0p4")
     .set_fs(fs.at("Main").get())
     .set_s1_rechit_threshold(js["s1_rechit_threshold"].asDouble())
@@ -118,6 +120,7 @@ int main(int argc, char* argv[]) {
     .set_s5_exp_merge_scale(js["s5_exp_merge_scale"].asDouble())
     .set_postfix("_r0p4")
     );
+ */
   main_seq.BuildModule(ic::HGCALTest("HGCALTest")
     .set_fs(fs.at("Main").get())
     .set_do_fakes(js.get("do_fakes", false).asBool())

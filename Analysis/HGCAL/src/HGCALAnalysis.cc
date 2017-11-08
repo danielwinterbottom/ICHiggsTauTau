@@ -86,7 +86,7 @@ int HGCALTest::Execute(TreeEvent* event) {
   auto const& all_genparts = event->GetPtrVec<GenParticle>("genParticles");
   auto const& all_simparts = event->GetPtrVec<SimParticle>("simParticles");
   auto const& all_tauinfos = event->Get<std::vector<TauReco::TauInfo>>("tauInfos");
-  auto const& all_tauinfos_r0p4 = event->Get<std::vector<TauReco::TauInfo>>("tauInfos_r0p4");
+  auto const& all_tauinfos_r0p4 = event->Get<std::vector<TauReco::TauInfo>>("tauInfos");
   auto const& all_simclusters = event->GetPtrVec<SimCluster>("simclusters");
 
 
@@ -397,7 +397,7 @@ int HGCALTest::Execute(TreeEvent* event) {
         }
         t_taus_rec_.all_prong_dr = dr_max;
 
-        for (auto const& c : reco_tau->jet.AsVector()) {
+        for (auto const& c : filtered_rechits) {
           double dr = DR(c, &reco_tau->jet);
           if (dr >= 0.0 && dr < 0.2) t_taus_rec_.pt_0p0_0p2 += c->pt();
           if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
@@ -553,7 +553,7 @@ int HGCALTest::Execute(TreeEvent* event) {
           }
           t_taus_rec_.all_prong_dr = dr_max;
 
-          for (auto const& c : reco_tau->jet.AsVector()) {
+          for (auto const& c : filtered_rechits) {
             double dr = DR(c, &reco_tau->jet);
             if (dr >= 0.0 && dr < 0.2) t_taus_rec_.pt_0p0_0p2 += c->pt();
             if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();

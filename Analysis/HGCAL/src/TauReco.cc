@@ -344,13 +344,12 @@ int TauReco::Execute(TreeEvent* event) {
     for (unsigned  i = 0; i < comps.size(); ++i) {
       double dr = DR(comps[i], &j);
       int bin = jet_energy_cont_profiles[0]->GetXaxis()->FindFixBin(dr);
-      for (int s = jet_energy_cont_profiles[0]->GetXaxis()->GetNbins(); s > bin; --s) {
+      for (int s = jet_energy_cont_profiles[0]->GetXaxis()->GetNbins(); s >= bin; --s) {
         slices[s-1] += comps[i]->vector();
       }
     }
-    if (j.pt() > 30. && j.pt() < 60.) {
+    if (j.pt() > 40. && j.pt() < 60. && std::abs(j.eta()) > 2.0 && std::abs(j.eta()) < 2.5) {
       for (unsigned s = 0; s < slices.size(); ++s) {
-        slices[s] /= j.energy();
         jet_energy_cont_profiles[0]->Fill(jet_energy_cont_profiles[0]->GetXaxis()->GetBinCenter(s+1), slices[s].pt() / j.pt());
       }
     }
