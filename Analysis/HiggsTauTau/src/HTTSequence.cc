@@ -2699,14 +2699,18 @@ void HTTSequence::BuildTauSelection(){
  bool moriond_tau_scale =false;
  if(real_tau_sample&&strategy_type==strategy::paper2013) moriond_tau_scale = true; 
  
- //if (strategy_type == strategy::smsummer16){
+ //if (strategy_type == strategy::smsummer16 && js["do_preselection"].asBool() && !js["make_sync_ntuple"].asBool()){
+ // // Pre-filter some events without taus not passing loose ID/iso selections to improve run times - don't do this is do_preselection option is false or when we are making sync ntuples
  // BuildModule(SimpleFilter<Tau>("TauPreFilter")
  //     .set_input_label(js["taus"].asString()).set_min(min_taus)
  //     .set_predicate([=](Tau const* t) {
  //       return  fabs(t->eta())              <  tau_eta    &&
  //               fabs(t->lead_dz_vertex())   <  tau_dz     &&
  //               fabs(t->charge())           == 1          &&
- //               t->GetTauID("decayModeFinding") > 0.5;
+ //               t->GetTauID("decayModeFinding") > 0.5     &&
+ //               t->GetTauID("byVLooseIsolationMVArun2v1DBoldDMwLT") > 0.5 &&       
+ //               t->GetTauID("againstElectronVLooseMVA6") > 0.5 &&
+ //               t->GetTauID("againstMuonLoose3") > 0.5;
  //
  //     }));
  //}
