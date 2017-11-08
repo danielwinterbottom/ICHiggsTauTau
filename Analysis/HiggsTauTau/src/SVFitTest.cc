@@ -361,7 +361,7 @@ bool lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
 if ( channel_ == channel::zmm || channel_ == channel::zee ) lepton_veto_ = extraelec_veto_ || extramuon_veto_;
 
 bool preselect_evt = pass_presel&&!lepton_veto_;
-event->Add("pass_preselection",preselect_evt);
+event->Add("pass_preselection",preselect_evt||!do_preselection_);
 
 
 if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
