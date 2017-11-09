@@ -419,10 +419,10 @@ int HGCALTest::Execute(TreeEvent* event) {
 
         for (auto const& c : rawrechits) {
           double dr = DR(c, &reco_tau->jet);
-          if (dr >= 0.0 && dr < 0.2) t_taus_rec_.pt_0p0_0p2 += c->pt();
-          if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
-          if (dr >= 0.4 && dr < 0.6) t_taus_rec_.pt_0p4_0p6 += c->pt();
-          if (dr >= 0.6 && dr < 0.8) t_taus_rec_.pt_0p6_0p8 += c->pt();
+          if (dr >= 0.0 && dr < 0.1) t_taus_rec_.pt_0p0_0p2 += c->pt();
+          if (dr >= 0.1 && dr < 0.2) t_taus_rec_.pt_0p2_0p4 += c->pt();
+          if (dr >= 0.2 && dr < 0.3) t_taus_rec_.pt_0p4_0p6 += c->pt();
+          if (dr >= 0.3 && dr < 0.4) t_taus_rec_.pt_0p6_0p8 += c->pt();
         }
         for (auto const& c : genparts_visible) {
           if (std::abs(c->charge()) == 1 && c->pt() > 0.5) {
@@ -443,10 +443,10 @@ int HGCALTest::Execute(TreeEvent* event) {
           for (unsigned l = 0; l < pu_densities.size(); ++l) {
             int eta_bin = pu_densities[l].FindFixBin(std::abs(reco_tau->jet.eta()));
             double density = pu_densities[l].GetBinContent(eta_bin);
-            to_sub_0p0_0p2 += density * TMath::Pi() * (0.2 * 0.2 - 0.0 * 0.0);
-            to_sub_0p2_0p4 += density * TMath::Pi() * (0.4 * 0.4 - 0.2 * 0.2);
-            to_sub_0p4_0p6 += density * TMath::Pi() * (0.6 * 0.6 - 0.4 * 0.4);
-            to_sub_0p6_0p8 += density * TMath::Pi() * (0.8 * 0.8 - 0.6 * 0.6);
+            to_sub_0p0_0p2 += density * TMath::Pi() * (0.1 * 0.1 - 0.0 * 0.0);
+            to_sub_0p2_0p4 += density * TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1);
+            to_sub_0p4_0p6 += density * TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2);
+            to_sub_0p6_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3);
           }
           t_taus_rec_.pt_0p0_0p2 = std::max(0., t_taus_rec_.pt_0p0_0p2 - to_sub_0p0_0p2);
           t_taus_rec_.pt_0p2_0p4 = std::max(0., t_taus_rec_.pt_0p2_0p4 - to_sub_0p2_0p4);
@@ -619,10 +619,10 @@ int HGCALTest::Execute(TreeEvent* event) {
 
           for (auto const& c : rawrechits) {
             double dr = DR(c, &reco_tau->jet);
-            if (dr >= 0.0 && dr < 0.2) t_taus_rec_.pt_0p0_0p2 += c->pt();
-            if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
-            if (dr >= 0.4 && dr < 0.6) t_taus_rec_.pt_0p4_0p6 += c->pt();
-            if (dr >= 0.6 && dr < 0.8) t_taus_rec_.pt_0p6_0p8 += c->pt();
+            if (dr >= 0.0 && dr < 0.1) t_taus_rec_.pt_0p0_0p2 += c->pt();
+            if (dr >= 0.1 && dr < 0.2) t_taus_rec_.pt_0p2_0p4 += c->pt();
+            if (dr >= 0.2 && dr < 0.3) t_taus_rec_.pt_0p4_0p6 += c->pt();
+            if (dr >= 0.3 && dr < 0.4) t_taus_rec_.pt_0p6_0p8 += c->pt();
           }
           for (auto const& c : genparts_visible) {
             if (std::abs(c->charge()) == 1 && c->pt() > 0.5) {
@@ -642,10 +642,10 @@ int HGCALTest::Execute(TreeEvent* event) {
             for (unsigned l = 0; l < pu_densities.size(); ++l) {
               int eta_bin = pu_densities[l].FindFixBin(std::abs(reco_tau->jet.eta()));
               double density = pu_densities[l].GetBinContent(eta_bin);
-              to_sub_0p0_0p2 += density * TMath::Pi() * (0.2 * 0.2 - 0.0 * 0.0);
-              to_sub_0p2_0p4 += density * TMath::Pi() * (0.4 * 0.4 - 0.2 * 0.2);
-              to_sub_0p4_0p6 += density * TMath::Pi() * (0.6 * 0.6 - 0.4 * 0.4);
-              to_sub_0p6_0p8 += density * TMath::Pi() * (0.8 * 0.8 - 0.6 * 0.6);
+              to_sub_0p0_0p2 += density * TMath::Pi() * (0.1 * 0.1 - 0.0 * 0.0);
+              to_sub_0p2_0p4 += density * TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1);
+              to_sub_0p4_0p6 += density * TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2);
+              to_sub_0p6_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3);
             }
             t_taus_rec_.pt_0p0_0p2 = std::max(0., t_taus_rec_.pt_0p0_0p2 - to_sub_0p0_0p2);
             t_taus_rec_.pt_0p2_0p4 = std::max(0., t_taus_rec_.pt_0p2_0p4 - to_sub_0p2_0p4);
