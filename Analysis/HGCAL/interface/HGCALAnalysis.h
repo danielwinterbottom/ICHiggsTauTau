@@ -50,7 +50,9 @@ struct TauRecoVars {
   float jet_eta;
   float jet_phi;
   float jet_e;
-  float nprongs;
+  int nprongs;
+  int nprongs_pt1;
+  int nprongs_pt5;
   float jet_mass;
   float all_prong_mass;
   float all_prong_dr;
@@ -58,6 +60,10 @@ struct TauRecoVars {
   float pt_0p2_0p4;
   float pt_0p4_0p6;
   float pt_0p6_0p8;
+  float tk_0p0_0p2;
+  float tk_0p2_0p4;
+  float tk_0p4_0p6;
+  float tk_0p6_0p8;
   float leading_h_frac;
   float subleading_h_frac;
 
@@ -68,6 +74,8 @@ struct TauRecoVars {
     t->Branch(prefix+"jet_phi",         &jet_phi);
     t->Branch(prefix+"jet_e",           &jet_e);
     t->Branch(prefix+"nprongs",         &nprongs);
+    t->Branch(prefix+"nprongs_pt1",         &nprongs_pt1);
+    t->Branch(prefix+"nprongs_pt5",         &nprongs_pt5);
     t->Branch(prefix+"jet_mass",        &jet_mass);
     t->Branch(prefix+"all_prong_mass",  &all_prong_mass);
     t->Branch(prefix+"all_prong_dr",  &all_prong_dr);
@@ -75,6 +83,10 @@ struct TauRecoVars {
     t->Branch(prefix+"pt_0p2_0p4",  &pt_0p2_0p4);
     t->Branch(prefix+"pt_0p4_0p6",  &pt_0p4_0p6);
     t->Branch(prefix+"pt_0p6_0p8",  &pt_0p6_0p8);
+    t->Branch(prefix+"tk_0p0_0p2",  &tk_0p0_0p2);
+    t->Branch(prefix+"tk_0p2_0p4",  &tk_0p2_0p4);
+    t->Branch(prefix+"tk_0p4_0p6",  &tk_0p4_0p6);
+    t->Branch(prefix+"tk_0p6_0p8",  &tk_0p6_0p8);
     t->Branch(prefix+"leading_h_frac",  &leading_h_frac);
     t->Branch(prefix+"subleading_h_frac",  &subleading_h_frac);
   }
@@ -85,7 +97,9 @@ struct TauRecoVars {
     jet_eta = 0.;
     jet_phi = 0.;
     jet_e = 0.;
-    nprongs = 0.;
+    nprongs = 0;
+    nprongs_pt1 = 0;
+    nprongs_pt5 = 0;
     jet_mass = 0.;
     all_prong_mass = 0.;
     all_prong_dr = 0.;
@@ -93,6 +107,10 @@ struct TauRecoVars {
     pt_0p2_0p4 = 0.;
     pt_0p4_0p6 = 0.;
     pt_0p6_0p8 = 0.;
+    tk_0p0_0p2 = 0.;
+    tk_0p2_0p4 = 0.;
+    tk_0p4_0p6 = 0.;
+    tk_0p6_0p8 = 0.;
     leading_h_frac = 0.;
     subleading_h_frac = 0.;
   };

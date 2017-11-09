@@ -27,19 +27,20 @@ args = parser.parse_args()
 plot.ModTDRStyle(width=700, r=0.16)
 
 
-file1 = 'output/Test/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928.root'
-file2 = 'output/Test/Dijet_agilbert_DiJetFlat20_200_20171015.root'
+file1 = 'output/Main/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub.root'
+file2 = 'output/Main/Dijet_agilbert_DiJetFlat20_200_PU140_20171102_pusub.root'
         # canv = ROOT.TCanvas('2d_pt_response_jets', '')
 f1 = ROOT.TFile(file1)
 f2 = ROOT.TFile(file2)
 t1 = f1.Get('taus')
 t2 = f2.Get('taus')
 
+
 real_den = 'm1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && gen_vis_pt > 30 && gen_vis_pt < 60'
 fake_den = 'm1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && gen_pt > 30 && gen_pt < 60'
 
-real_num = 'rec_nprongs >= 1 && rec_nprongs <= 3 && rec_all_prong_mass < 1.8'
-fake_num = 'rec_nprongs >= 1 && rec_nprongs <= 3 && rec_all_prong_mass < 1.8'
+real_num = 'rec_nprongs >= 1 && rec_nprongs <= 4 && rec_all_prong_mass < 2.0 && (rec_pt_0p2_0p4/rec_pt_0p0_0p2) < 0.15 && (rec_pt_0p4_0p6+rec_pt_0p6_0p8) < 0.5'
+fake_num = 'rec_nprongs >= 1 && rec_nprongs <= 4 && rec_all_prong_mass < 2.0 && (rec_pt_0p2_0p4/rec_pt_0p0_0p2) < 0.15 && (rec_pt_0p4_0p6+rec_pt_0p6_0p8) < 0.5'
 
 t1.Draw("1>>h1_den(1,0,2)", "%s" % real_den)
 h1_den = ROOT.gDirectory.Get('h1_den')

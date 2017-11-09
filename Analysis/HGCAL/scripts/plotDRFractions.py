@@ -29,8 +29,8 @@ args = parser.parse_args()
 
 plot.ModTDRStyle(width=700)
 
-file1 = 'output/Main/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928.root'
-file2 = 'output/Main/Dijet_agilbert_DiJetFlatQuarks20_200_20171106.root'
+file1 = 'output/DR8/Pythia8PtGun_agilbert_TauPt50_100_DM1_20170928.root'
+file2 = 'output/DR8/Dijet_agilbert_DiJetFlatQuarks20_200_20171106.root'
 
 
 canv = ROOT.TCanvas('tau_dr_profile', '')

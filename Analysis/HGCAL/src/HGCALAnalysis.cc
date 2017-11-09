@@ -393,9 +393,24 @@ int HGCALTest::Execute(TreeEvent* event) {
         t_taus_rec_.jet_mass = reco_tau->jet.M();
 
         ROOT::Math::PtEtaPhiEVector all_prongs;
-        for (auto const& prong : reco_tau->prongs) all_prongs += prong.vector();
-
+        std::vector<ProngCandidate const*> prong_ptrs;
+        for (auto const& prong : reco_tau->prongs) {
+          if (prong.pt() > 1.) ++t_taus_rec_.nprongs_pt1;
+          if (prong.pt() > 5.) ++t_taus_rec_.nprongs_pt5;
+          all_prongs += prong.vector();
+          prong_ptrs.push_back(&prong);
+        }
+        std::sort(prong_ptrs.begin(), prong_ptrs.end(), [](ProngCandidate const* p1, ProngCandidate const* p2) {
+          return (p1->h_energy() / (p1->h_energy() + p1->e_energy())) > (p2->h_energy() / (p2->h_energy() + p2->e_energy()));
+        });
+        if (prong_ptrs.size() >= 1) {
+          t_taus_rec_.leading_h_frac = prong_ptrs[0]->h_energy() / (prong_ptrs[0]->h_energy() + prong_ptrs[0]->e_energy());
+        }
+        if (prong_ptrs.size() >= 2) {
+          t_taus_rec_.subleading_h_frac = prong_ptrs[1]->h_energy() / (prong_ptrs[1]->h_energy() + prong_ptrs[1]->e_energy());
+        }
         t_taus_rec_.all_prong_mass = all_prongs.M();
+
         double dr_max = 0;
         for (auto const& prong : reco_tau->prongs) {
           dr_max = std::max(dr_max, ROOT::Math::VectorUtil::DeltaR(prong.vector(), all_prongs));
@@ -408,6 +423,15 @@ int HGCALTest::Execute(TreeEvent* event) {
           if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
           if (dr >= 0.4 && dr < 0.6) t_taus_rec_.pt_0p4_0p6 += c->pt();
           if (dr >= 0.6 && dr < 0.8) t_taus_rec_.pt_0p6_0p8 += c->pt();
+        }
+        for (auto const& c : genparts_visible) {
+          if (std::abs(c->charge()) == 1 && c->pt() > 0.5) {
+            double dr = DR(c, &reco_tau->jet);
+            if (dr >= 0.0 && dr < 0.1) t_taus_rec_.tk_0p0_0p2 += c->pt();
+            if (dr >= 0.1 && dr < 0.2) t_taus_rec_.tk_0p2_0p4 += c->pt();
+            if (dr >= 0.2 && dr < 0.3) t_taus_rec_.tk_0p4_0p6 += c->pt();
+            if (dr >= 0.3 && dr < 0.4) t_taus_rec_.tk_0p6_0p8 += c->pt();
+          }
         }
 
         if (event->Exists("pu_densities")) {
@@ -569,9 +593,24 @@ int HGCALTest::Execute(TreeEvent* event) {
           t_taus_rec_.jet_mass = reco_tau->jet.M();
 
           ROOT::Math::PtEtaPhiEVector all_prongs;
-          for (auto const& prong : reco_tau->prongs) all_prongs += prong.vector();
-
+          std::vector<ProngCandidate const*> prong_ptrs;
+          for (auto const& prong : reco_tau->prongs) {
+            if (prong.pt() > 1.) ++t_taus_rec_.nprongs_pt1;
+            if (prong.pt() > 5.) ++t_taus_rec_.nprongs_pt5;
+            all_prongs += prong.vector();
+            prong_ptrs.push_back(&prong);
+          }
+          std::sort(prong_ptrs.begin(), prong_ptrs.end(), [](ProngCandidate const* p1, ProngCandidate const* p2) {
+            return (p1->h_energy() / (p1->h_energy() + p1->e_energy())) > (p2->h_energy() / (p2->h_energy() + p2->e_energy()));
+          });
+          if (prong_ptrs.size() >= 1) {
+            t_taus_rec_.leading_h_frac = prong_ptrs[0]->h_energy() / (prong_ptrs[0]->h_energy() + prong_ptrs[0]->e_energy());
+          }
+          if (prong_ptrs.size() >= 2) {
+            t_taus_rec_.subleading_h_frac = prong_ptrs[1]->h_energy() / (prong_ptrs[1]->h_energy() + prong_ptrs[1]->e_energy());
+          }
           t_taus_rec_.all_prong_mass = all_prongs.M();
+
           double dr_max = 0;
           for (auto const& prong : reco_tau->prongs) {
             dr_max = std::max(dr_max, ROOT::Math::VectorUtil::DeltaR(prong.vector(), all_prongs));
@@ -584,6 +623,15 @@ int HGCALTest::Execute(TreeEvent* event) {
             if (dr >= 0.2 && dr < 0.4) t_taus_rec_.pt_0p2_0p4 += c->pt();
             if (dr >= 0.4 && dr < 0.6) t_taus_rec_.pt_0p4_0p6 += c->pt();
             if (dr >= 0.6 && dr < 0.8) t_taus_rec_.pt_0p6_0p8 += c->pt();
+          }
+          for (auto const& c : genparts_visible) {
+            if (std::abs(c->charge()) == 1 && c->pt() > 0.5) {
+              double dr = DR(c, &reco_tau->jet);
+              if (dr >= 0.0 && dr < 0.1) t_taus_rec_.tk_0p0_0p2 += c->pt();
+              if (dr >= 0.1 && dr < 0.2) t_taus_rec_.tk_0p2_0p4 += c->pt();
+              if (dr >= 0.2 && dr < 0.3) t_taus_rec_.tk_0p4_0p6 += c->pt();
+              if (dr >= 0.3 && dr < 0.4) t_taus_rec_.tk_0p6_0p8 += c->pt();
+            }
           }
           if (event->Exists("pu_densities")) {
             auto const& pu_densities = event->Get<std::vector<TH1F>>("pu_densities");
