@@ -88,17 +88,16 @@ parser.add_option("--qcd_study", dest="qcd_study", action='store_true', default=
 
 parser.add_option("--analysis", dest="analysis", type='string', default='mssm',
                   help="Specify whether trees are produced for mssm or sm analysis")
+
 parser.add_option("--parajobs", dest="parajobs", action='store_true', default=False,
                   help="Submit jobs parametrically")
-
-
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
 
 def getParaJobSubmit(N):
-  print JOBSUBMIT  
+  if not options.submit: return 'true'
   sub_opts=JOBSUBMIT.split(' ',1)[1]
   if '\"' in sub_opts: sub_opts = sub_opts.replace('\"','')
   sub_opts = '%s \"%s -t 1-%i:1\"' %(JOBSUBMIT.split(' ',1)[0], sub_opts, N)
@@ -118,8 +117,9 @@ scale_list = scales.split(',')
 flatjsonlist = []
 flatjsonlistdysig = []
 flatjsonlist.append("job:sequences:all:")
-flatjsonlistdysig.append("job:sequences:all:")
+n_scales=0
 for scale in scale_list: 
+  n_scales+=1  
   if scale == "default":
     flatjsonlist.append("^%(scale)s"%vars())
     flatjsonlistdysig.append("^%(scale)s"%vars())
@@ -128,14 +128,36 @@ for scale in scale_list:
   else:
     flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
     flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars()) 
-
-FLATJSONPATCHOTH = ''.join(flatjsonlist)
-FLATJSONPATCHDYSIG = ''.join(flatjsonlistdysig)
  
 if analysis == 'sm':
   CONFIG='scripts/configsm2016.json'
 else:
   CONFIG='scripts/config2016.json'
+ 
+n_channels=1
+with open(CONFIG,"r") as input:
+  with open ("config_for_python_channels.json","w") as output:
+    for line in input:
+      if not '//' in line:
+        output.write(line)
+    output.close()
+  input.close()
+
+with open("config_for_python_channels.json") as config_file:
+  cfg = json.load(config_file)
+  n_channels=len(cfg["job"]["channels"])
+  
+scale = int(math.ceil(float(n_scales*n_channels)/100))
+if scale < 1: scale = 1
+
+total = float(len(flatjsonlistdysig))
+flatjsons = []
+for i in range(0,scale):
+   first = i*int(math.ceil(total/scale))
+   last = (i+1)*int(math.ceil(total/scale))
+   temp=''.join(flatjsonlistdysig[first:last]) 
+   temp='job:sequences:all:'+temp
+   flatjsons.append(temp)
   
 FILELIST='filelists/Apr05_MC_80X'
 
@@ -157,15 +179,15 @@ if options.proc_sm or options.proc_all or options.proc_smbkg:
       'VBFHToTauTau_M-'+mass,
       'ZHToTauTau_M-'+mass,
       'WplusHToTauTau_M-'+mass,
-      'WminusHToTauTau_M-'+mass,
-      'TTHToTauTau_M-'+mass
+      'WminusHToTauTau_M-'+mass#,
+      #'TTHToTauTau_M-'+mass
     ]
-  if options.proc_sm  
+  if options.proc_sm:  
     signal_mc += [
         'GluGluHToWWTo2L2Nu_M-125',
         'VBFHToWWTo2L2Nu_M-125'
         ]
-  
+    
 if options.proc_mssm or options.proc_all:
   gghmasses = ['80','90','100','110','120','130', '140', '160','180','200','250','350','400','450','500', '600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200'] # 
   bbhmasses = ['80','90','100','110','120','130','140','160','180','200','250','350','400','450','500','600','700','800','900','1000','1200','1400','1600','1800','2000','2300','2600','2900','3200']
@@ -323,53 +345,68 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
-    #'TT',
-    #'WJetsToLNu',
-    #'WJetsToLNu-LO',
-    #'WJetsToLNu-LO-ext',
-    #'VVTo2L2Nu',
-    #'VVTo2L2Nu-ext1',
-    #'ZZTo2L2Q',
-    #'ZZTo4L',
-    #'ZZTo4L-amcat',
-    #'WWTo1L1Nu2Q',
-    #'WWToLNuQQ',
-    #'WWToLNuQQ-ext',
-    #'WZJToLLLNu',
-    #'WZTo1L3Nu',
-    #'WZTo2L2Q',
-    #'WZTo1L1Nu2Q',
-    #'T-t',
-    #'Tbar-t',
-    #'T-tW',
-    #'Tbar-tW',
-    #'DYJetsToLL',
-    #'DYJetsToLL-LO-ext1',
-    #'DYJetsToLL-LO-ext2',
-    ##'DYJetsToLL_M-10to50-ext',
-    ##'DYJetsToLL_M-10to50',
-    #'DYJetsToLL_M-10-50-LO',
-    ##'DY1JetsToLL_M-10-50-LO',
-    ##'DY2JetsToLL_M-10-50-LO',
-    ##'DY3JetsToLL_M-10-50-LO',
-    ##'DYJetsToLL_M-150-LO',
-    #'DY1JetsToLL-LO',
-    #'DY2JetsToLL-LO',
-    #'DY3JetsToLL-LO',
+    'TT',
+    'WJetsToLNu',
+    'WJetsToLNu-LO',
+    'WJetsToLNu-LO-ext',
+    'VVTo2L2Nu',
+    'VVTo2L2Nu-ext1',
+    'ZZTo2L2Q',
+    'ZZTo4L',
+    'ZZTo4L-amcat',
+    'WWTo1L1Nu2Q',
+    'WWToLNuQQ',
+    'WWToLNuQQ-ext',
+    'WZJToLLLNu',
+    'WZTo1L3Nu',
+    'WZTo2L2Q',
+    'WZTo1L1Nu2Q',
+    'T-t',
+    'Tbar-t',
+    'T-tW',
+    'Tbar-tW',
+    'DYJetsToLL',
+    'DYJetsToLL-LO-ext1',
+    'DYJetsToLL-LO-ext2',
+    #'DYJetsToLL_M-10to50-ext',
+    #'DYJetsToLL_M-10to50',
+    'DYJetsToLL_M-10-50-LO',
+    #'DY1JetsToLL_M-10-50-LO',
+    #'DY2JetsToLL_M-10-50-LO',
+    #'DY3JetsToLL_M-10-50-LO',
+    #'DYJetsToLL_M-150-LO',
+    'DY1JetsToLL-LO',
+    'DY2JetsToLL-LO',
+    'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
-    #'W1JetsToLNu-LO',
-    #'W2JetsToLNu-LO',
-    #'W2JetsToLNu-LO-ext',
-    #'W3JetsToLNu-LO',
-    #'W3JetsToLNu-LO-ext',
-    #'W4JetsToLNu-LO',
-    #'W4JetsToLNu-LO-ext1',
-    #'W4JetsToLNu-LO-ext2',
-    #'WGToLNuG',
-    #'WGToLNuG-ext',
-    #'WGstarToLNuEE',
-    #'WGstarToLNuMuMu'
+    'W1JetsToLNu-LO',
+    'W2JetsToLNu-LO',
+    'W2JetsToLNu-LO-ext',
+    'W3JetsToLNu-LO',
+    'W3JetsToLNu-LO-ext',
+    'W4JetsToLNu-LO',
+    'W4JetsToLNu-LO-ext1',
+    'W4JetsToLNu-LO-ext2',
+    'WGToLNuG',
+    'WGToLNuG-ext',
+    'WGstarToLNuEE',
+    'WGstarToLNuMuMu'
      ]
+  
+  if options.analysis == 'sm':
+    extra_samples = [
+      'EWKWMinus2Jets_WToLNu-ext1',
+      'EWKWMinus2Jets_WToLNu-ext2',
+      'EWKWMinus2Jets_WToLNu',
+      'EWKWPlus2Jets_WToLNu-ext1',
+      'EWKWPlus2Jets_WToLNu-ext2',
+      'EWKWPlus2Jets_WToLNu',
+      'EWKZ2Jets_ZToLL-ext',
+      'EWKZ2Jets_ZToLL',
+      'EWKZ2Jets_ZToNuNu-ext',
+      'EWKZ2Jets_ZToNuNu'    
+    ]
+    central_samples.extend(extra_samples)
 
   if options.qcd_study:
     #FILELIST='filelists/Feb25_MC_76X'
@@ -384,56 +421,61 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   for sa in central_samples:
       JOB='%s_2016' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-      FLATJSONPATCH=FLATJSONPATCHOTH
-      nperjob = 30
-      if 'scale' in FLATJSONPATCH:
-        nperjob = 20
-      if 'DY' in sa and 'JetsToLL' in sa:
-        FLATJSONPATCH=FLATJSONPATCHDYSIG
-        #nperjob = 30
-      if 'TT' in sa:
+      job_num=0
+      for FLATJSONPATCH in flatjsons:
         nperjob = 30
         if 'scale' in FLATJSONPATCH:
-          nperjob = 15
-#      if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
-#        nperjob = 30
-      if 'QCD' in sa:
-          nperjob = 15
-      if 'DY' in sa and 'JetsToLL' in sa and taues_study:
-        FLATJSONPATCH=""
-        CONFIG='scripts/taues_config.json'
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-        nperjob = 10
-
-
-      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-      
-      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-        if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+          nperjob = 20
+        #if 'DY' in sa and 'JetsToLL' in sa:
+          #nperjob = 30
+        if 'TT' in sa:
+          nperjob = 30
+          if 'scale' in FLATJSONPATCH:
+            nperjob = 15
+#        if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
+#          nperjob = 30
+        if 'QCD' in sa:
+            nperjob = 15
+        if 'DY' in sa and 'JetsToLL' in sa and taues_study:
+          FLATJSONPATCH=""
+          CONFIG='scripts/taues_config.json'
+          JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+          nperjob = 10
+        
+        
+        nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
+        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+          os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
+          if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+          job_num+=1
+        file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
       if parajobs: 
         os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
-        PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
-        os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
-      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
-  
+        PARAJOBSUBMIT = getParaJobSubmit(job_num)
+        os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
+#if float(n_scales*n_channels)/100 > 1: nperjob = int(math.ceil(nperjob/(float(n_scales*n_channels)/100)))  
 
 if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hhh or options.proc_all:
+  if options.analysis == 'sm': SIG_FILELIST='filelists/Oct26_MC_80X' 
+  else: SIG_FILELIST = FILELIST
   for sa in signal_mc:
     JOB='%s_2016' % (sa)
-    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-    FLATJSONPATCH=FLATJSONPATCHDYSIG
-    if os.path.exists('%(FILELIST)s_%(sa)s.dat' %vars()):
-      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 50
-      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-        if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-      if parajobs: 
-        os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
-        PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
-        os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())  
-      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+    SIG_DIR = SIG_FILELIST.split('/')[1]
+    JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+    job_num=0
+    for FLATJSONPATCH in flatjsons:
+      if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
+        nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
+        nperjob = 50
+        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+          os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
+          if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+          job_num+=1 
+        file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+    if parajobs: 
+      os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+      PARAJOBSUBMIT = getParaJobSubmit(job_num)
+      os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
       
 NLO_FILELIST='filelists/Jul22_MC_80X'
       
@@ -441,18 +483,20 @@ if options.proc_mssm_nlo or options.proc_mssm_nlo_qsh:
   for sa in nlo_signal_mc:
     JOB='%s_2016' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(NLO_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jul22_MC_80X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-    FLATJSONPATCH=FLATJSONPATCHDYSIG
-    if os.path.exists('%(NLO_FILELIST)s_%(sa)s.dat' %vars()):
-      nfiles = sum(1 for line in open('%(NLO_FILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 50
-      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-        if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-      if parajobs: 
-        os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
-        PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
-        os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())  
-      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+    job_num=0
+    for FLATJSONPATCH in flatjsons:
+      if os.path.exists('%(NLO_FILELIST)s_%(sa)s.dat' %vars()):
+        nfiles = sum(1 for line in open('%(NLO_FILELIST)s_%(sa)s.dat' % vars()))
+        nperjob = 50
+        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+          os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
+          if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+          job_num+=1   
+        file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+    if parajobs: 
+      os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+      PARAJOBSUBMIT = getParaJobSubmit(job_num)
+      os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
       
 NLO_QSH_FILELIST='filelists/May23_MC_80X'
 
@@ -460,17 +504,19 @@ if options.proc_mssm_nlo_qsh:
   for sa in nlo_qsh_signal_mc:
     JOB='%s_2016' % (sa)
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(NLO_QSH_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May23_MC_80X/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-    FLATJSONPATCH=FLATJSONPATCHDYSIG
-    if os.path.exists('%(NLO_QSH_FILELIST)s_%(sa)s.dat' %vars()):
-      nfiles = sum(1 for line in open('%(NLO_QSH_FILELIST)s_%(sa)s.dat' % vars()))
-      nperjob = 50
-      for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-        if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-      if parajobs: 
-        os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
-        PARAJOBSUBMIT = getParaJobSubmit(int(math.ceil(float(nfiles)/float(nperjob))))
-        os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())  
-      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+    job_num=0
+    for FLATJSONPATCH in flatjsons:
+      if os.path.exists('%(NLO_QSH_FILELIST)s_%(sa)s.dat' %vars()):
+        nfiles = sum(1 for line in open('%(NLO_QSH_FILELIST)s_%(sa)s.dat' % vars()))
+        nperjob = 50
+        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+          os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
+          if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+          job_num+=1 
+        file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+    if parajobs: 
+      os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+      PARAJOBSUBMIT = getParaJobSubmit(job_num)
+      os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 

@@ -44,6 +44,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_qcd_scale_wts)
   CLASS_MEMBER(HTTCategories, bool, do_pdf_wts)
   CLASS_MEMBER(HTTCategories, bool, do_mssm_higgspt)
+  CLASS_MEMBER(HTTCategories, bool, do_sm_scale_wts)
 
  
   TTree *outtree_;
@@ -1026,6 +1027,19 @@ class HTTCategories : public ModuleBase {
   double wt_ggA_t_;
   double wt_ggA_b_;
   double wt_ggA_i_;
+  
+  double wt_scale_et_0jet_;  
+  double wt_scale_et_boosted_;
+  double wt_scale_et_vbf_;   
+  double wt_scale_mt_0jet_;  
+  double wt_scale_mt_boosted_;
+  double wt_scale_mt_vbf_;   
+  double wt_scale_em_0jet_;  
+  double wt_scale_em_boosted_;
+  double wt_scale_em_vbf_;   
+  double wt_scale_tt_0jet_;  
+  double wt_scale_tt_boosted_;
+  double wt_scale_tt_vbf_;   
 
  public:
   HTTCategories(std::string const& name);

@@ -41,6 +41,7 @@ namespace ic {
       do_qcd_scale_wts_ = false;
       do_pdf_wts_ = false;
       do_mssm_higgspt_ = false;
+      do_sm_scale_wts_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -937,7 +938,22 @@ namespace ic {
         outtree_->Branch("trigger_object_eta_1",&trigger_object_eta_1.var_double);
         outtree_->Branch("trigger_object_pt_2",&trigger_object_pt_2.var_double);
         outtree_->Branch("trigger_object_eta_2",&trigger_object_eta_2.var_double);
-*/
+*/        
+        if(strategy_ == strategy::smsummer16 && do_sm_scale_wts_){
+          outtree_->Branch("wt_scale_et_0jet"   , &wt_scale_et_0jet_    );
+          outtree_->Branch("wt_scale_et_boosted" , &wt_scale_et_boosted_ );
+          outtree_->Branch("wt_scale_et_vbf"    , &wt_scale_et_vbf_     );
+          outtree_->Branch("wt_scale_mt_0jet"   , &wt_scale_mt_0jet_    );
+          outtree_->Branch("wt_scale_mt_boosted" , &wt_scale_mt_boosted_ );
+          outtree_->Branch("wt_scale_mt_vbf"    , &wt_scale_mt_vbf_     );
+          outtree_->Branch("wt_scale_em_0jet"   , &wt_scale_em_0jet_    );
+          outtree_->Branch("wt_scale_em_boosted" , &wt_scale_em_boosted_ );
+          outtree_->Branch("wt_scale_em_vbf"    , &wt_scale_em_vbf_     );
+          outtree_->Branch("wt_scale_tt_0jet"   , &wt_scale_tt_0jet_    );
+          outtree_->Branch("wt_scale_tt_boosted" , &wt_scale_tt_boosted_ );
+          outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
+        }
+
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
@@ -1870,6 +1886,7 @@ namespace ic {
         }
       }
     }
+    
     
    if(do_qcd_scale_wts_){
      // note some of these labels may be generator dependent so need to make sure you check before using them
@@ -3328,6 +3345,22 @@ namespace ic {
       mjj_lowpt_ = -9999;
       jdeta_lowpt_ = -9999;
       n_jetsingap_lowpt_ = 9999;
+    }
+    
+    if(strategy_ == strategy::smsummer16 && do_sm_scale_wts_){
+      // weights needed for SM scale uncertainties are computer here rather than in HTTWeights - since these are parametarized as a function of the offline mjj and pt_tt which are computer in HTTCategories anyway
+      wt_scale_et_0jet_  = 0.973 + 0.0003405 * pt_2_.var_double;
+      wt_scale_et_boosted_ = 0.986 - 0.0000278 *pt_tt_.var_double;
+      wt_scale_et_vbf_  = 0.971 + 0.0000327 * mjj_.var_double;
+      wt_scale_mt_0jet_ = 0.929 + 0.0001702 * pt_2_.var_double;
+      wt_scale_mt_boosted_ = 0.919 + 0.0010055 * pt_tt_.var_double;
+      wt_scale_mt_vbf_ = 1.026 +0.000066 * mjj_.var_double;
+      wt_scale_em_0jet_ = 0.942 - 0.0000170 * pt_2_.var_double;
+      wt_scale_em_boosted_ = 0.936 + 0.0008871 * pt_tt_.var_double;
+      wt_scale_em_vbf_ = 1.032 + 0.000102 * mjj_.var_double;
+      wt_scale_tt_0jet_ = 0.814 + 0.0027094 * pt_1_.var_double;
+      wt_scale_tt_boosted_ = 0.973 + 0.0008596 * pt_tt_.var_double;
+      wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
 
     if (channel_ == channel::tt && strategy_ == strategy::fall15){

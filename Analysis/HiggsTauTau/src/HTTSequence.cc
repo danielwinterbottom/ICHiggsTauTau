@@ -1933,6 +1933,7 @@ if(js["baseline"]["do_ff_weights"].asBool()){
     
 if(channel != channel::wmnu) {
 bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
+bool do_sm_scale_wts = output_name.find("GluGluToHToTauTau_M") != output_name.npos && output_name.find("SUSY") == output_name.npos;
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -1963,7 +1964,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_ff_systematics(js["baseline"]["do_ff_systematics"].asBool())
     .set_do_qcd_scale_wts(do_qcd_scale_wts_)
     .set_do_pdf_wts(js["do_pdf_wts"].asBool())
-    .set_do_mssm_higgspt(do_mssm_higgspt));
+    .set_do_mssm_higgspt(do_mssm_higgspt)
+    .set_do_sm_scale_wts(do_sm_scale_wts));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")
