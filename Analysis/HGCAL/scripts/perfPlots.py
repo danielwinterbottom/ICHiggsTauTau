@@ -174,6 +174,32 @@ plotlist = [
 #     'xtitle': 'Reco. nProngs',
 #     'ytitle': 'a.u.'
 # },
+
+{
+    'name': 'rec_leading_h_frac', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_leading_h_frac(20,0,1)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_leading_h_frac(20,0,1)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_leading_h_frac(20,0,1)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_leading_h_frac(20,0,1)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'rec_leading_h_frac',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+{
+    'name': 'rec_leading_h_frac', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_leading_h_frac(20,0,1)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_leading_h_frac(20,0,1)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_leading_h_frac(20,0,1)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_leading_h_frac(20,0,1)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'rec_leading_h_frac',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+
 {
     'name': 'rec_nprongs', 'scaled': True,
     'inputs': [
@@ -181,6 +207,30 @@ plotlist = [
         {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
         {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
         {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_nprongs(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Particle multiplicity',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+{
+    'name': 'rec_nprongs_pt1', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_nprongs_pt1(15,-0.5,14.5)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_nprongs_pt1(15,-0.5,14.5)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_nprongs_pt1(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_nprongs_pt1(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Particle multiplicity',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+{
+    'name': 'rec_nprongs_pt5', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var': 'rec_nprongs_pt5(15,-0.5,14.5)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_nprongs_pt5(15,-0.5,14.5)', 'sel': '%s && m1_matched' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var': 'rec_nprongs_pt5(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_nprongs_pt5(15,-0.5,14.5)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
     ],
     'xtitle': 'Particle multiplicity',
     'ytitle': 'a.u.',
@@ -213,63 +263,112 @@ plotlist = [
 {
     'name': 'rec_pt_iso_rel', 'scaled': True,
     'inputs': [
-        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             '(rec_pt_0p2_0p4)/rec_pt_0p0_0p2(40,0,2)', 'sel': '(%s) && (%s)' % (tau_sel, tau_id), 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
-        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': '(rec_pt_0p2_0p4)/rec_pt_0p0_0p2(40,0,2)', 'sel': '(%s) && (%s)' % (tau_sel, tau_id), 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
-        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             '(rec_pt_0p2_0p4)/rec_pt_0p0_0p2(40,0,2)', 'sel': '(%s) && (%s)' % (jet_sel, tau_id), 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
-        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': '(rec_pt_0p2_0p4)/rec_pt_0p0_0p2(40,0,2)', 'sel': '(%s) && (%s)' % (jet_sel, tau_id), 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s)' % (tau_sel), 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s)' % (tau_sel), 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s)' % (jet_sel), 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s)' % (jet_sel), 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
     ],
-    'xtitle': 'rec_pt_iso_rel',
+    'xtitle': 'Isolation (#Sigma^{0.1 < #DeltaR < 0.4} E_{T} / #Sigma^{#DeltaR < 0.1} E_{T})',
     'ytitle': 'a.u.',
     'text': ['30 < p_{T}^{#tau} < 60 GeV']
 },
 {
-    'name': 'rec_pt_0p0_0p2', 'scaled': True,
+    'name': 'rec_pt_0p0_0p1', 'scaled': True,
     'inputs': [
-        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_pt_0p0_0p2(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
-        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_pt_0p0_0p2(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
-        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_pt_0p0_0p2(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
-        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_pt_0p0_0p2(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_pt_0p0_0p2(40,0,80)', 'sel': '%s' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_pt_0p0_0p2(40,0,80)', 'sel': '%s' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_pt_0p0_0p2(40,0,80)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_pt_0p0_0p2(40,0,80)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': '#Sigma^{0.0 < #DeltaR < 0.1} E_{T}',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+{
+    'name': 'rec_pt_0p1_0p2', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_pt_0p2_0p4(40,0,80)', 'sel': '%s' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_pt_0p2_0p4(40,0,80)', 'sel': '%s' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_pt_0p2_0p4(40,0,80)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_pt_0p2_0p4(40,0,80)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': '#Sigma^{0.1 < #DeltaR < 0.2} E_{T}',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+{
+    'name': 'rec_pt_0p2_0p3', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_pt_0p4_0p6(40,0,80)', 'sel': '%s' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_pt_0p4_0p6(40,0,80)', 'sel': '%s' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_pt_0p4_0p6(40,0,80)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_pt_0p4_0p6(40,0,80)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': '#Sigma^{0.2 < #DeltaR < 0.3} E_{T}',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+{
+    'name': 'rec_pt_0p3_0p4', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_pt_0p6_0p8(40,0,120)', 'sel': '%s' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_pt_0p6_0p8(40,0,120)', 'sel': '%s' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_pt_0p6_0p8(40,0,120)', 'sel': '%s' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_pt_0p6_0p8(40,0,120)', 'sel': '%s' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': '#Sigma^{0.3 < #DeltaR < 0.4} E_{T}',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV']
+},
+{
+    'name': 'rec_tk_0p0_0p2', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_tk_0p0_0p2(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_tk_0p0_0p2(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_tk_0p0_0p2(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_tk_0p0_0p2(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
     ],
     'xtitle': 'pt_0p0_0p2',
     'ytitle': 'a.u.',
     'text': ['30 < p_{T}^{#tau} < 60 GeV']
 },
 {
-    'name': 'rec_pt_0p2_0p4', 'scaled': True,
+    'name': 'rec_tk_0p2_0p4', 'scaled': True,
     'inputs': [
-        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_pt_0p2_0p4(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
-        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_pt_0p2_0p4(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
-        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_pt_0p2_0p4(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
-        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_pt_0p2_0p4(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_tk_0p2_0p4(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_tk_0p2_0p4(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_tk_0p2_0p4(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_tk_0p2_0p4(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
     ],
     'xtitle': 'pt_0p2_0p4',
     'ytitle': 'a.u.',
     'text': ['30 < p_{T}^{#tau} < 60 GeV']
 },
 {
-    'name': 'rec_pt_0p4_0p6', 'scaled': True,
+    'name': 'rec_tk_0p4_0p6', 'scaled': True,
     'inputs': [
-        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_pt_0p4_0p6(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
-        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_pt_0p4_0p6(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
-        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_pt_0p4_0p6(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
-        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_pt_0p4_0p6(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_tk_0p4_0p6(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_tk_0p4_0p6(40,0,80)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_tk_0p4_0p6(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_tk_0p4_0p6(40,0,80)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
     ],
     'xtitle': 'pt_0p4_0p6',
     'ytitle': 'a.u.',
     'text': ['30 < p_{T}^{#tau} < 60 GeV']
 },
 {
-    'name': 'rec_pt_0p6_0p8', 'scaled': True,
+    'name': 'rec_tk_0p6_0p8', 'scaled': True,
     'inputs': [
-        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_pt_0p6_0p8(40,0,120)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
-        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_pt_0p6_0p8(40,0,120)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
-        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_pt_0p6_0p8(40,0,120)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
-        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_pt_0p6_0p8(40,0,120)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             'rec_tk_0p2_0p4+rec_tk_0p4_0p6+rec_tk_0p6_0p8(40,0,40)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': 'rec_tk_0p2_0p4+rec_tk_0p4_0p6+rec_tk_0p6_0p8(40,0,40)', 'sel': '%s && m1_matched && rec_nprongs <= 3 && rec_nprongs >= 2' % tau_sel, 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             'rec_tk_0p2_0p4+rec_tk_0p4_0p6+rec_tk_0p6_0p8(40,0,40)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': 'rec_tk_0p2_0p4+rec_tk_0p4_0p6+rec_tk_0p6_0p8(40,0,40)', 'sel': '%s  && rec_nprongs <= 3 && rec_nprongs >= 2' % jet_sel, 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
     ],
     'xtitle': 'pt_0p6_0p8',
     'ytitle': 'a.u.',
     'text': ['30 < p_{T}^{#tau} < 60 GeV']
 },
+
 {
     'name': 'rec_all_prong_dr', 'scaled': True,
     'inputs': [
