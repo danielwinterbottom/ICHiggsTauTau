@@ -310,12 +310,23 @@ int TauReco::Execute(TreeEvent* event) {
     }
     for (unsigned l = 0; l < nlayers; ++l) {
       for (unsigned b = 0; b < hits_in_layers[l].size(); ++b){
-        double et_density = 0.;
+        unsigned n_phi_bins = 40;
+        std::vector<double> et_density(n_phi_bins);
         for (unsigned rh = 0; rh < hits_in_layers[l][b].size(); ++rh) {
-          et_density += hits_in_layers[l][b][rh]->pt();
+          int phi_bin = int((double(n_phi_bins) * (hits_in_layers[l][b][rh]->phi() + TMath::Pi()) / (2*TMath::Pi())) + 0.5);
+          if (phi_bin < 0) phi_bin = 0;
+          if (phi_bin >= int(et_density.size())) phi_bin = et_density.size() - 1;
+          et_density[phi_bin] += (hits_in_layers[l][b][rh]->pt());
+          // et_density += hits_in_layers[l][b][rh]->pt();
         }
+        std::sort(et_density.begin(), et_density.end());
+        double median_density = ((et_density[(n_phi_bins/2)-1] + et_density[n_phi_bins/2]) / 2.) /
+                                (2. * (2. * TMath::Pi() / double(n_phi_bins)) *
+                                 (pu_densities[l].GetBinLowEdge(b + 2) -
+                                  pu_densities[l].GetBinLowEdge(b + 1)));
+
         // Extra factor of 2 here because we sum over both hemispheres
-        et_density /= (2 * 2*TMath::Pi() * (pu_densities[l].GetBinLowEdge(b+2) - pu_densities[l].GetBinLowEdge(b+1)));
+        // et_density /= (2 * 2*TMath::Pi() * (pu_densities[l].GetBinLowEdge(b+2) - pu_densities[l].GetBinLowEdge(b+1)));
         std::sort(hits_in_layers[l][b].begin(), hits_in_layers[l][b].end(), [](RecHit *h1, RecHit *h2) {
           return h1->energy() < h2->energy();
         });
@@ -325,7 +336,7 @@ int TauReco::Execute(TreeEvent* event) {
           median_energy[l][b] = 0.;
         }
         pu_profiles[l]->Fill(pu_profiles[l]->GetXaxis()->GetBinCenter(b+1), median_energy[l][b]);
-        pu_densities[l].SetBinContent(b+1, et_density);
+        pu_densities[l].SetBinContent(b+1, median_density);
       }
       // std::cout << "Median energy in layer " << l << " = ";
       for (unsigned b = 0; b < hits_in_layers[l].size(); ++b) {

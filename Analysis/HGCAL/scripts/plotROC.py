@@ -12,7 +12,7 @@ ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING)
 parser = argparse.ArgumentParser()
 # parser.add_argument('input')
 # parser.add_argument('--file', '-f', default='output/Main/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub_0.root')
-# parser.add_argument('--event', '-e', default=1, type=int)
+parser.add_argument('--eta-range', default='1.479,3.0')
 # parser.add_argument('--region', '-r', default='p')
 # parser.add_argument('--window', default=0.1, type=float)
 
@@ -68,8 +68,11 @@ def Scan(t1, t2, den1, den2, num1, num2, start, stop, step):
     return roc
 
 
-real_den = 'm1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && gen_vis_pt > 30 && gen_vis_pt < 60'
-fake_den = 'm1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && gen_pt > 30 && gen_pt < 60'
+min_eta = float(args.eta_range.split(',')[0])
+max_eta = float(args.eta_range.split(',')[1])
+
+real_den = 'm1_matched && abs(gen_eta) > %g && abs(gen_eta) < %g && gen_vis_pt > 30 && gen_vis_pt < 60' % (min_eta, max_eta)
+fake_den = 'm1_matched && abs(gen_eta) > %g && abs(gen_eta) < %g && gen_pt > 30 && gen_pt < 60' % (min_eta, max_eta)
 
 
 
@@ -145,11 +148,12 @@ latex.SetNDC()
 latex.SetTextSize(0.03)
 
 text = [
-    '30 < p_{T}^{gen} < 60 GeV'
+    '30 < p_{T}^{gen} < 60 GeV',
+    '%g < |#eta^{gen}| < %g' % (min_eta, max_eta),
 ]
 
 for i, line in enumerate(text):
-    latex.DrawLatex(0.22, 0.6 - i*0.04, line)
+    latex.DrawLatex(0.22, 0.6 - i * 0.04, line)
 
 canv.Print('.png')
 canv.Print('.pdf')

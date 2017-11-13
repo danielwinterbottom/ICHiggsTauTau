@@ -60,6 +60,7 @@ struct TauRecoVars {
   float pt_0p2_0p4;
   float pt_0p4_0p6;
   float pt_0p6_0p8;
+  float pt_0p2_0p8;
   float tk_0p0_0p2;
   float tk_0p2_0p4;
   float tk_0p4_0p6;
@@ -83,6 +84,7 @@ struct TauRecoVars {
     t->Branch(prefix+"pt_0p2_0p4",  &pt_0p2_0p4);
     t->Branch(prefix+"pt_0p4_0p6",  &pt_0p4_0p6);
     t->Branch(prefix+"pt_0p6_0p8",  &pt_0p6_0p8);
+    t->Branch(prefix+"pt_0p2_0p8",  &pt_0p2_0p8);
     t->Branch(prefix+"tk_0p0_0p2",  &tk_0p0_0p2);
     t->Branch(prefix+"tk_0p2_0p4",  &tk_0p2_0p4);
     t->Branch(prefix+"tk_0p4_0p6",  &tk_0p4_0p6);
@@ -107,6 +109,7 @@ struct TauRecoVars {
     pt_0p2_0p4 = 0.;
     pt_0p4_0p6 = 0.;
     pt_0p6_0p8 = 0.;
+    pt_0p2_0p8 = 0.;
     tk_0p0_0p2 = 0.;
     tk_0p2_0p4 = 0.;
     tk_0p4_0p6 = 0.;

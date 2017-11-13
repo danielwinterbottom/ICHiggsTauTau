@@ -423,6 +423,7 @@ int HGCALTest::Execute(TreeEvent* event) {
           if (dr >= 0.1 && dr < 0.2) t_taus_rec_.pt_0p2_0p4 += c->pt();
           if (dr >= 0.2 && dr < 0.3) t_taus_rec_.pt_0p4_0p6 += c->pt();
           if (dr >= 0.3 && dr < 0.4) t_taus_rec_.pt_0p6_0p8 += c->pt();
+          if (dr >= 0.1 && dr < 0.4) t_taus_rec_.pt_0p2_0p8 += c->pt();
         }
         for (auto const& c : genparts_visible) {
           if (std::abs(c->charge()) == 1 && c->pt() > 0.5) {
@@ -440,6 +441,7 @@ int HGCALTest::Execute(TreeEvent* event) {
           double to_sub_0p2_0p4 = 0;
           double to_sub_0p4_0p6 = 0;
           double to_sub_0p6_0p8 = 0;
+          double to_sub_0p2_0p8 = 0;
           for (unsigned l = 0; l < pu_densities.size(); ++l) {
             int eta_bin = pu_densities[l].FindFixBin(std::abs(reco_tau->jet.eta()));
             double density = pu_densities[l].GetBinContent(eta_bin);
@@ -447,11 +449,14 @@ int HGCALTest::Execute(TreeEvent* event) {
             to_sub_0p2_0p4 += density * TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1);
             to_sub_0p4_0p6 += density * TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2);
             to_sub_0p6_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3);
+            to_sub_0p2_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.1 * 0.1);
           }
           t_taus_rec_.pt_0p0_0p2 = std::max(0., t_taus_rec_.pt_0p0_0p2 - to_sub_0p0_0p2);
           t_taus_rec_.pt_0p2_0p4 = std::max(0., t_taus_rec_.pt_0p2_0p4 - to_sub_0p2_0p4);
           t_taus_rec_.pt_0p4_0p6 = std::max(0., t_taus_rec_.pt_0p4_0p6 - to_sub_0p4_0p6);
           t_taus_rec_.pt_0p6_0p8 = std::max(0., t_taus_rec_.pt_0p6_0p8 - to_sub_0p6_0p8);
+          t_taus_rec_.pt_0p2_0p8 = std::max(0., t_taus_rec_.pt_0p2_0p8 - to_sub_0p2_0p8);
+
         }
 
         t_taus_m1_match_.matched = true;
@@ -623,6 +628,7 @@ int HGCALTest::Execute(TreeEvent* event) {
             if (dr >= 0.1 && dr < 0.2) t_taus_rec_.pt_0p2_0p4 += c->pt();
             if (dr >= 0.2 && dr < 0.3) t_taus_rec_.pt_0p4_0p6 += c->pt();
             if (dr >= 0.3 && dr < 0.4) t_taus_rec_.pt_0p6_0p8 += c->pt();
+            if (dr >= 0.1 && dr < 0.4) t_taus_rec_.pt_0p2_0p8 += c->pt();
           }
           for (auto const& c : genparts_visible) {
             if (std::abs(c->charge()) == 1 && c->pt() > 0.5) {
@@ -639,6 +645,7 @@ int HGCALTest::Execute(TreeEvent* event) {
             double to_sub_0p2_0p4 = 0;
             double to_sub_0p4_0p6 = 0;
             double to_sub_0p6_0p8 = 0;
+            double to_sub_0p2_0p8 = 0;
             for (unsigned l = 0; l < pu_densities.size(); ++l) {
               int eta_bin = pu_densities[l].FindFixBin(std::abs(reco_tau->jet.eta()));
               double density = pu_densities[l].GetBinContent(eta_bin);
@@ -646,11 +653,13 @@ int HGCALTest::Execute(TreeEvent* event) {
               to_sub_0p2_0p4 += density * TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1);
               to_sub_0p4_0p6 += density * TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2);
               to_sub_0p6_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3);
+              to_sub_0p2_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.1 * 0.1);
             }
             t_taus_rec_.pt_0p0_0p2 = std::max(0., t_taus_rec_.pt_0p0_0p2 - to_sub_0p0_0p2);
             t_taus_rec_.pt_0p2_0p4 = std::max(0., t_taus_rec_.pt_0p2_0p4 - to_sub_0p2_0p4);
             t_taus_rec_.pt_0p4_0p6 = std::max(0., t_taus_rec_.pt_0p4_0p6 - to_sub_0p4_0p6);
             t_taus_rec_.pt_0p6_0p8 = std::max(0., t_taus_rec_.pt_0p6_0p8 - to_sub_0p6_0p8);
+            t_taus_rec_.pt_0p2_0p8 = std::max(0., t_taus_rec_.pt_0p2_0p8 - to_sub_0p2_0p8);
           }
 
           t_taus_m1_match_.matched = true;
