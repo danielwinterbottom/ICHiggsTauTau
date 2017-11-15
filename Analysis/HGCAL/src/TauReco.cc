@@ -294,39 +294,55 @@ int TauReco::Execute(TreeEvent* event) {
     // std::cout << "RecHits before: " << filtered_rechits.size() << "\n";
     std::vector<std::vector<std::vector<RecHit *>>> hits_in_layers(nlayers);
     std::vector<std::vector<double>> median_energy(nlayers);
+
+    unsigned n_phi_bins = 40;
+    std::vector<std::vector<double>> et_density(pu_densities[0].GetNbinsX(), std::vector<double>(n_phi_bins));
+
     for (unsigned l = 0; l < nlayers; ++l) {
       hits_in_layers[l].resize(pu_bins[l].GetNbinsX());
       median_energy[l].resize(pu_bins[l].GetNbinsX());
     }
+
     for (unsigned i = 0; i < filtered_rechits.size(); ++i) {
       if (filtered_rechits[i]->layer() > hgcal::lastLayer) continue;
       unsigned layer_idx = filtered_rechits[i]->layer() - hgcal::firstLayer;
 
       int mynbins = pu_bins[layer_idx].GetNbinsX();
       int eta_idx = pu_bins[layer_idx].FindFixBin(std::abs(filtered_rechits[i]->eta())) - 1;
+
+
+      // For the rho calculation
+      int density_phi_bin = int((double(n_phi_bins) * (filtered_rechits[i]->phi() + TMath::Pi()) / (2*TMath::Pi())) + 0.5);
+      if (density_phi_bin < 0) density_phi_bin = 0;
+      if (density_phi_bin >= int(n_phi_bins)) density_phi_bin = n_phi_bins - 1;
+      int density_eta_bin = pu_densities[0].FindFixBin(std::abs(filtered_rechits[i]->eta())) - 1;
+      if (density_eta_bin >= 0 && density_eta_bin < int(et_density.size())) {
+        et_density[density_eta_bin][density_phi_bin] += filtered_rechits[i]->pt();
+      }
+
       if (layer_idx < nlayers && eta_idx >= 0 && eta_idx < mynbins) {
         hits_in_layers[layer_idx][eta_idx].push_back(filtered_rechits[i]);
       }
     }
+
+    for (unsigned i =0; i < et_density.size(); ++i) {
+      std::sort(et_density[i].begin(), et_density[i].end());
+      double median_density = ((et_density[i][(n_phi_bins/2)-1] + et_density[i][n_phi_bins/2]) / 2.);
+      double area = (2. * (2. * TMath::Pi() / double(n_phi_bins)) *
+                               (pu_densities[0].GetBinLowEdge(i + 2) -
+                                pu_densities[0].GetBinLowEdge(i + 1)));
+
+      // std::cout << "Median pt = " << median_density << "\n";
+      // std::cout << "area = " << area << "\n";
+      median_density /= area;
+      pu_densities[0].SetBinContent(i+1, median_density);
+    }
+    // pu_densities[0].Print("range");
+
+
     for (unsigned l = 0; l < nlayers; ++l) {
       for (unsigned b = 0; b < hits_in_layers[l].size(); ++b){
-        unsigned n_phi_bins = 40;
-        std::vector<double> et_density(n_phi_bins);
-        for (unsigned rh = 0; rh < hits_in_layers[l][b].size(); ++rh) {
-          int phi_bin = int((double(n_phi_bins) * (hits_in_layers[l][b][rh]->phi() + TMath::Pi()) / (2*TMath::Pi())) + 0.5);
-          if (phi_bin < 0) phi_bin = 0;
-          if (phi_bin >= int(et_density.size())) phi_bin = et_density.size() - 1;
-          et_density[phi_bin] += (hits_in_layers[l][b][rh]->pt());
-          // et_density += hits_in_layers[l][b][rh]->pt();
-        }
-        std::sort(et_density.begin(), et_density.end());
-        double median_density = ((et_density[(n_phi_bins/2)-1] + et_density[n_phi_bins/2]) / 2.) /
-                                (2. * (2. * TMath::Pi() / double(n_phi_bins)) *
-                                 (pu_densities[l].GetBinLowEdge(b + 2) -
-                                  pu_densities[l].GetBinLowEdge(b + 1)));
-
         // Extra factor of 2 here because we sum over both hemispheres
-        // et_density /= (2 * 2*TMath::Pi() * (pu_densities[l].GetBinLowEdge(b+2) - pu_densities[l].GetBinLowEdge(b+1)));
         std::sort(hits_in_layers[l][b].begin(), hits_in_layers[l][b].end(), [](RecHit *h1, RecHit *h2) {
           return h1->energy() < h2->energy();
         });
@@ -336,7 +352,6 @@ int TauReco::Execute(TreeEvent* event) {
           median_energy[l][b] = 0.;
         }
         pu_profiles[l]->Fill(pu_profiles[l]->GetXaxis()->GetBinCenter(b+1), median_energy[l][b]);
-        pu_densities[l].SetBinContent(b+1, median_density);
       }
       // std::cout << "Median energy in layer " << l << " = ";
       for (unsigned b = 0; b < hits_in_layers[l].size(); ++b) {

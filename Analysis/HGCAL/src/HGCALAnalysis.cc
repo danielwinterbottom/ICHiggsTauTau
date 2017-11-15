@@ -442,15 +442,13 @@ int HGCALTest::Execute(TreeEvent* event) {
           double to_sub_0p4_0p6 = 0;
           double to_sub_0p6_0p8 = 0;
           double to_sub_0p2_0p8 = 0;
-          for (unsigned l = 0; l < pu_densities.size(); ++l) {
-            int eta_bin = pu_densities[l].FindFixBin(std::abs(reco_tau->jet.eta()));
-            double density = pu_densities[l].GetBinContent(eta_bin);
-            to_sub_0p0_0p2 += density * TMath::Pi() * (0.1 * 0.1 - 0.0 * 0.0);
-            to_sub_0p2_0p4 += density * TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1);
-            to_sub_0p4_0p6 += density * TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2);
-            to_sub_0p6_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3);
-            to_sub_0p2_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.1 * 0.1);
-          }
+          int eta_bin = pu_densities[0].FindFixBin(std::abs(reco_tau->jet.eta()));
+          double density = pu_densities[0].GetBinContent(eta_bin);
+          to_sub_0p0_0p2 += density * TMath::Pi() * (0.1 * 0.1 - 0.0 * 0.0);
+          to_sub_0p2_0p4 += density * TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1);
+          to_sub_0p4_0p6 += density * TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2);
+          to_sub_0p6_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3);
+          to_sub_0p2_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.1 * 0.1);
           t_taus_rec_.pt_0p0_0p2 = std::max(0., t_taus_rec_.pt_0p0_0p2 - to_sub_0p0_0p2);
           t_taus_rec_.pt_0p2_0p4 = std::max(0., t_taus_rec_.pt_0p2_0p4 - to_sub_0p2_0p4);
           t_taus_rec_.pt_0p4_0p6 = std::max(0., t_taus_rec_.pt_0p4_0p6 - to_sub_0p4_0p6);
@@ -646,15 +644,13 @@ int HGCALTest::Execute(TreeEvent* event) {
             double to_sub_0p4_0p6 = 0;
             double to_sub_0p6_0p8 = 0;
             double to_sub_0p2_0p8 = 0;
-            for (unsigned l = 0; l < pu_densities.size(); ++l) {
-              int eta_bin = pu_densities[l].FindFixBin(std::abs(reco_tau->jet.eta()));
-              double density = pu_densities[l].GetBinContent(eta_bin);
-              to_sub_0p0_0p2 += density * TMath::Pi() * (0.1 * 0.1 - 0.0 * 0.0);
-              to_sub_0p2_0p4 += density * TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1);
-              to_sub_0p4_0p6 += density * TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2);
-              to_sub_0p6_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3);
-              to_sub_0p2_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.1 * 0.1);
-            }
+            int eta_bin = pu_densities[0].FindFixBin(std::abs(reco_tau->jet.eta()));
+            double density = pu_densities[0].GetBinContent(eta_bin);
+            to_sub_0p0_0p2 += density * TMath::Pi() * (0.1 * 0.1 - 0.0 * 0.0);
+            to_sub_0p2_0p4 += density * TMath::Pi() * (0.2 * 0.2 - 0.1 * 0.1);
+            to_sub_0p4_0p6 += density * TMath::Pi() * (0.3 * 0.3 - 0.2 * 0.2);
+            to_sub_0p6_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.3 * 0.3);
+            to_sub_0p2_0p8 += density * TMath::Pi() * (0.4 * 0.4 - 0.1 * 0.1);
             t_taus_rec_.pt_0p0_0p2 = std::max(0., t_taus_rec_.pt_0p0_0p2 - to_sub_0p0_0p2);
             t_taus_rec_.pt_0p2_0p4 = std::max(0., t_taus_rec_.pt_0p2_0p4 - to_sub_0p2_0p4);
             t_taus_rec_.pt_0p4_0p6 = std::max(0., t_taus_rec_.pt_0p4_0p6 - to_sub_0p4_0p6);

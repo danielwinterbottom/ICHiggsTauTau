@@ -31,7 +31,11 @@ def MakePlot(c):
             hist.Scale(1. / hist.Integral())
         hist.Draw('SAMEHIST')
 
-    plot.GetAxisHist(pads[0]).SetMinimum(0)
+    if 'Logy' in c and c['Logy'] > 0:
+        pads[0].SetLogy(True)
+        plot.GetAxisHist(pads[0]).SetMinimum(c['Logy'])
+    else:
+        plot.GetAxisHist(pads[0]).SetMinimum(0)
     plot.FixTopRange(pads[0], plot.GetPadYMax(pads[0]), 0.30)
     legend.Draw()
 
@@ -106,8 +110,8 @@ tau_sel = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && rec_jet_pt
 jet_sel_gen = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && gen_pt > 30 && gen_pt < 60)'
 tau_sel_gen = '(m1_matched && abs(gen_eta) > 1.479 && abs(gen_eta) < 3 && gen_vis_pt > 30 && gen_vis_pt < 60)'
 
-jet_sel = jet_sel_gen
-tau_sel = tau_sel_gen
+# jet_sel = jet_sel_gen
+# tau_sel = tau_sel_gen
 
 tau_id = 'rec_nprongs >= 1 && rec_nprongs <= 3 && rec_all_prong_mass < 1.8'
 plotlist = [
@@ -272,6 +276,80 @@ plotlist = [
     'ytitle': 'a.u.',
     'text': ['30 < p_{T}^{#tau} < 60 GeV']
 },
+{
+    'name': 'rec_pt_iso_rel_eta_bin1', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.6 && abs(gen_eta) < 1.8' % (tau_sel), 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.6 && abs(gen_eta) < 1.8' % (tau_sel), 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.6 && abs(gen_eta) < 1.8' % (jet_sel), 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.6 && abs(gen_eta) < 1.8' % (jet_sel), 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Isolation (#Sigma^{0.1 < #DeltaR < 0.4} E_{T} / #Sigma^{#DeltaR < 0.1} E_{T})',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV', '1.6 < |#eta^{#tau}| < 1.8']
+},
+{
+    'name': 'rec_pt_iso_rel_eta_bin2', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.8 && abs(gen_eta) < 2.4' % (tau_sel), 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.8 && abs(gen_eta) < 2.4' % (tau_sel), 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 3},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.8 && abs(gen_eta) < 2.4' % (jet_sel), 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.8 && abs(gen_eta) < 2.4' % (jet_sel), 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Isolation (#Sigma^{0.1 < #DeltaR < 0.4} E_{T} / #Sigma^{#DeltaR < 0.1} E_{T})',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV', '1.8 < |#eta^{#tau}| < 2.4']
+},
+{
+    'name': 'rec_pt_iso_rel_eta_bin3', 'scaled': True,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 2.4 && abs(gen_eta) < 2.8' % (tau_sel), 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 2.4 && abs(gen_eta) < 2.8' % (tau_sel), 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 2.4 && abs(gen_eta) < 2.8' % (jet_sel), 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 2.4 && abs(gen_eta) < 2.8' % (jet_sel), 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Isolation (#Sigma^{0.1 < #DeltaR < 0.4} E_{T} / #Sigma^{#DeltaR < 0.1} E_{T})',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV', '2.4 < |#eta^{#tau}| < 2.8']
+},
+
+{
+    'name': 'rec_pt_iso_rel_eta_bin1_log', 'scaled': True, 'Logy': 0.01,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.6 && abs(gen_eta) < 1.8' % (tau_sel), 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.6 && abs(gen_eta) < 1.8' % (tau_sel), 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.6 && abs(gen_eta) < 1.8' % (jet_sel), 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.6 && abs(gen_eta) < 1.8' % (jet_sel), 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Isolation (#Sigma^{0.1 < #DeltaR < 0.4} E_{T} / #Sigma^{#DeltaR < 0.1} E_{T})',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV', '1.6 < |#eta^{#tau}| < 1.8']
+},
+{
+    'name': 'rec_pt_iso_rel_eta_bin2_log', 'scaled': True, 'Logy': 0.01,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.8 && abs(gen_eta) < 2.4' % (tau_sel), 'leg': labels['tau_0pu'], 'col': ROOT.kBlue+2, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.8 && abs(gen_eta) < 2.4' % (tau_sel), 'leg': labels['tau_140pu_sub'], 'col': ROOT.kBlue+2, 'ls': 3},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.8 && abs(gen_eta) < 2.4' % (jet_sel), 'leg': labels['jet_0pu'], 'col': ROOT.kRed+-4, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 1.8 && abs(gen_eta) < 2.4' % (jet_sel), 'leg': labels['jet_140pu_sub'], 'col': ROOT.kRed-4, 'ls': 2},
+    ],
+    'xtitle': 'Isolation (#Sigma^{0.1 < #DeltaR < 0.4} E_{T} / #Sigma^{#DeltaR < 0.1} E_{T})',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV', '1.8 < |#eta^{#tau}| < 2.4']
+},
+{
+    'name': 'rec_pt_iso_rel_eta_bin3_log', 'scaled': True, 'Logy': 0.01,
+    'inputs': [
+        {'name': 'tau_0pu', 'sa': sa['tau_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 2.4 && abs(gen_eta) < 2.8' % (tau_sel), 'leg': labels['tau_0pu'], 'col': 4, 'ls': 1},
+        {'name': 'tau_140pu_sub', 'sa': sa['tau_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 2.4 && abs(gen_eta) < 2.8' % (tau_sel), 'leg': labels['tau_140pu_sub'], 'col': 4, 'ls': 2},
+        {'name': 'jet_0pu', 'sa': sa['jet_0pu'], 'var':             '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 2.4 && abs(gen_eta) < 2.8' % (jet_sel), 'leg': labels['jet_0pu'], 'col': 2, 'ls': 1},
+        {'name': 'jet_140pu_sub', 'sa': sa['jet_140pu_sub'], 'var': '(rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2(40,0,4)', 'sel': '(%s) && abs(gen_eta) > 2.4 && abs(gen_eta) < 2.8' % (jet_sel), 'leg': labels['jet_140pu_sub'], 'col': 2, 'ls': 2},
+    ],
+    'xtitle': 'Isolation (#Sigma^{0.1 < #DeltaR < 0.4} E_{T} / #Sigma^{#DeltaR < 0.1} E_{T})',
+    'ytitle': 'a.u.',
+    'text': ['30 < p_{T}^{#tau} < 60 GeV', '2.4 < |#eta^{#tau}| < 2.8']
+},
+
 {
     'name': 'rec_pt_0p0_0p1', 'scaled': True,
     'inputs': [

@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser()
 # parser.add_argument('input')
 # parser.add_argument('--file', '-f', default='output/Main/Pythia8PtGun_agilbert_TauPt50_100_DM1_PU140_20171013_pusub_0.root')
 parser.add_argument('--eta-range', default='1.479,3.0')
+parser.add_argument('--output', default='roc_curve')
 # parser.add_argument('--region', '-r', default='p')
 # parser.add_argument('--window', default=0.1, type=float)
 
@@ -89,12 +90,14 @@ t2 = f2.Get('taus')
 
 real_num = 'rec_nprongs >= 1 && rec_nprongs <= 5 && rec_all_prong_mass < 2.8 && ((rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2) < %(SCAN)f'
 fake_num = 'rec_nprongs >= 1 && rec_nprongs <= 5 && rec_all_prong_mass < 2.8 && ((rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2) < %(SCAN)f'
-roc_curve_1 = Scan(t1, t2, real_den, fake_den, real_num, fake_num, 0.01, 0.5, 0.04)
+print 'Doing (1)'
+roc_curve_1 = Scan(t1, t2, real_den, fake_den, real_num, fake_num, 0.01, 0.5, 0.01)
 
 
 real_num = '((rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2) < %(SCAN)f'
 fake_num = '((rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2) < %(SCAN)f'
-roc_curve_2 = Scan(t1, t2, real_den, fake_den, real_num, fake_num, 0.01, 0.5, 0.04)
+print 'Doing (2)'
+roc_curve_2 = Scan(t1, t2, real_den, fake_den, real_num, fake_num, 0.01, 0.5, 0.01)
 plot.Set(roc_curve_2, LineColor=4, LineStyle=2, MarkerColor=4, LineWidth=2)
 
 
@@ -108,18 +111,20 @@ t2 = f2.Get('taus')
 
 real_num = 'rec_nprongs >= 1 && rec_nprongs <= 5 && rec_all_prong_mass < 2.8 && ((rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2) < %(SCAN)f'
 fake_num = 'rec_nprongs >= 1 && rec_nprongs <= 5 && rec_all_prong_mass < 2.8 && ((rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2) < %(SCAN)f'
-roc_curve_3 = Scan(t1, t2, real_den, fake_den, real_num, fake_num, 0.01, 0.5, 0.04)
+print 'Doing (3)'
+roc_curve_3 = Scan(t1, t2, real_den, fake_den, real_num, fake_num, 0.01, 0.5, 0.01)
 roc_curve_3.SetLineColor(4)
 
 
 real_num = '((rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2) < %(SCAN)f'
 fake_num = '((rec_pt_0p2_0p4+rec_pt_0p4_0p6+rec_pt_0p6_0p8)/rec_pt_0p0_0p2) < %(SCAN)f'
-roc_curve_4 = Scan(t1, t2, real_den, fake_den, real_num, fake_num, 0.01, 0.5, 0.04)
+print 'Doing (4)'
+roc_curve_4 = Scan(t1, t2, real_den, fake_den, real_num, fake_num, 0.01, 0.5, 0.01)
 plot.Set(roc_curve_4, LineColor=4, LineStyle=1, MarkerColor=4, LineWidth=2)
 
 
 
-canv = ROOT.TCanvas('roc_curve', '')
+canv = ROOT.TCanvas(args.output, '')
 pads = plot.OnePad()
 pads[0].cd()
 # pads[0].SetLogy(True)
