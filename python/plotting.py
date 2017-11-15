@@ -2161,12 +2161,12 @@ def HTTPlot(nodename,
     
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
-    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
-    DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
     
-    # category plots for mt and em channel
-    # mt cats plot:
+    ## category plots for mt and em channel
+    ## mt cats plot:
     #line1 = R.TLine()
     #line1.SetLineStyle(2)
     #line1.SetLineWidth(2)
@@ -2174,7 +2174,7 @@ def HTTPlot(nodename,
     #latex1 = R.TLatex()
     #latex1.SetTextAlign(23)
     #latex1.SetTextSize(0.03)
-    #latex1.DrawLatex(20, 21000*1.05, "tight-m_{T}")
+    #latex1.DrawLatex(20, 21000*1.05, "Tight-m_{T}")
     #
     #line2 = R.TLine()
     #line2.SetLineStyle(2)
@@ -2183,8 +2183,8 @@ def HTTPlot(nodename,
     #latex2 = R.TLatex()
     #latex2.SetTextAlign(23)
     #latex2.SetTextSize(0.03)
-    #latex2.DrawLatex(55, 21000*1.05, "loose-m_{T}")
-    
+    #latex2.DrawLatex(55, 21000*1.05, "Loose-m_{T}")
+    #
     ##latex3 = R.TLatex()
     ##latex3.SetTextSize(0.03)
     ##latex3.SetTextAlign(13)
@@ -2192,10 +2192,10 @@ def HTTPlot(nodename,
     
     ##command to run2_mssm
     ##python scripts/HiggsTauTauPlot_mt.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.00368 --add_stat_to_syst --ratio_range=0.4,1.6
-    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.04827 --add_stat_to_syst --ratio_range=0.4,1.6 #prefit
+    #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="mt_1(28,0,140)" --method=17 --ratio --add_flat_uncert=0.04827 --add_stat_to_syst --ratio_range=0.4,1.6 --x_title="m_{T}^{#mu} (GeV)"#prefit
     
     
-    # for em cat plots
+    ## for em cat plots
     #line1 = R.TLine()
     #line1.SetLineStyle(2)
     #line1.SetLineWidth(2)
@@ -2212,8 +2212,8 @@ def HTTPlot(nodename,
     #latex2 = R.TLatex()
     #latex2.SetTextAlign(23)
     #latex2.SetTextSize(0.03)
-    #latex2.DrawLatex(-30, 46000*1.05, "low-D_{#zeta}")
-    #
+    #latex2.DrawLatex(-30, 46000*1.05, "Low-D_{#zeta}")
+    # 
     #line3 = R.TLine()
     #line3.SetLineStyle(2)
     #line3.SetLineWidth(2)
@@ -2221,18 +2221,17 @@ def HTTPlot(nodename,
     #latex3 = R.TLatex()
     #latex3.SetTextAlign(23)
     #latex3.SetTextSize(0.03)
-    #latex3.DrawLatex(10, 46000*1.05, "medium-D_{#zeta}")
+    #latex3.DrawLatex(10, 46000*1.05, "Medium-D_{#zeta}")
     #
     #latex4 = R.TLatex()
     #latex4.SetTextAlign(23)
     #latex4.SetTextSize(0.03)
-    #latex4.DrawLatex(70, 20000, "high-D_{#zeta}")
+    #latex4.DrawLatex(70, 20000, "High-D_{#zeta}")
     
     #command to run2_mssm
     ##python scripts/HiggsTauTauPlot_em.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.00361 --add_stat_to_syst --ratio_range=0.4,1.6 --channel=em 
     #python scripts/HiggsTauTauPlot.py --cfg=scripts/new_plot_mssm_2016_NewPlotting.cfg --var="pzeta(20,-90,110)" --method=19 --ratio --add_flat_uncert=0.04501 --add_stat_to_syst --ratio_range=0.4,1.6 --channel=em  #prefit
 
-    0.04501
     
     #Add ratio plot if required
     if ratio:
