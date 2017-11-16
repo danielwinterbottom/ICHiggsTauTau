@@ -9,7 +9,7 @@
     "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/Jun22_MC_91X/",
     "max_events":   5000000,
     "timings":      true,
-    "channels":     ["mt"],
+    "channels":     ["mt", "et"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]

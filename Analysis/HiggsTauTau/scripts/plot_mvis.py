@@ -9,9 +9,9 @@ import UserCode.ICHiggsTauTau.plotting as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 #infileHTT = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/GluGlu_HToTauTau_Summer16_BarrelTDR_mt_0.root"
-infileHTT = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/GluGluHToTauTau-200PU_mt_0.root"
+infileHTT = "output/Aug4_VBFHToTauTau_M-125-pu200.root_mt_0.root"
 #infileDY = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/DYJetsToLL_Summer16_BarrelTDR_mt_0.root"
-infileDY = "/afs/cern.ch/work/a/adewit/private/CMSSW_8_2_0/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/output/GluGluHToTauTau-200PU-tausOrg_mt_0.root"
+infileDY = "output/Aug4_DYJetsToTauTau_M-50-pu0.root_mt_0.root"
 
 htt_file=ROOT.TFile.Open(infileHTT)
 dy_file=ROOT.TFile.Open(infileDY)
@@ -27,8 +27,11 @@ dy_tree.Draw("m_vis>>httorg_mvis")
 
 
 
+#htt_mvis.SetLineColor(ROOT.kRed)
+#httorg_mvis.SetLineColor(ROOT.kBlue)
 htt_mvis.SetLineColor(ROOT.kRed)
-httorg_mvis.SetLineColor(ROOT.kBlue)
+httorg_mvis.SetFillColor(ROOT.TColor.GetColor(248,206,104))
+httorg_mvis.SetFillStyle(1001)
 
 htt_mvis.Scale(1./htt_mvis.Integral())
 httorg_mvis.Scale(1./httorg_mvis.Integral())

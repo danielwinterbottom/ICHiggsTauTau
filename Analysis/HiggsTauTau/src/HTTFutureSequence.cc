@@ -159,7 +159,7 @@ HTTFutureSequence::HTTFutureSequence(std::string& chan, std::string postf, Json:
    min_taus = 1;
    pair_dr = 0.5;
    elec_pt = 25;
-   elec_eta = 2.1;
+   elec_eta = 1.5;
    tau_pt  = 20;
    tau_eta = 2.3;
   } 
@@ -431,7 +431,7 @@ if(channel != channel::wmnu) {
    svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
 
 BuildModule(svFitTest);
-
+/*
 if(js["do_preselection"].asBool()){
   BuildModule(GenericModule("PreselectionFilter")
     .set_function([](ic::TreeEvent *event){
@@ -442,6 +442,7 @@ if(js["do_preselection"].asBool()){
       else return 0;
      }));
  }
+ */
 
 
 
@@ -502,22 +503,25 @@ void HTTFutureSequence::BuildETPairs() {
       ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
     }
 
+  BuildModule(HTTGenMatchSelector<Electron>("HTTGenMatchSelectorElectrons")
+    .set_input_vec_label("sel_electrons")
+    .set_output_vec_label("genmatched_electrons")
+    .set_gen_match(mcorigin::tauE));
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
-      .set_input_label("sel_electrons").set_min(1)
-      .set_predicate([=](Electron const* e) {
+      .set_input_label("genmatched_electrons").set_min(1)
+      .set_predicate([&](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
-                fabs(e->dz_vertex())    < elec_dz    &&
-                ElecID(e) ;
-
+                fabs(e->dz_vertex())    < elec_dz;    /*&&
+                TightElectronIDSpring16(e) ;*/
       }));
 
   BuildTauSelection();
 
   BuildModule(CompositeProducer<Electron, Tau>("ETPairProducer")
-      .set_input_label_first("sel_electrons")
+      .set_input_label_first("genmatched_electrons")
       .set_input_label_second("genmatched_taus")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")

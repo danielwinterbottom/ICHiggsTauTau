@@ -1,9 +1,12 @@
 from WMCore.Configuration import Configuration
 from multiprocessing import Process
+
+PROD='prod_040817'
+
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='Jun22_MC_91X'
+config.General.workArea=PROD
 config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_future_Jun17.py'
 config.JobType.pluginName = 'Analysis'
@@ -18,16 +21,15 @@ config.Data.inputDBS = 'phys03'
 #config.Data.unitsPerJob = 1
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.ignoreLocality= True
+#config.Data.ignoreLocality= True
 config.Data.allowNonValidInputDataset = True
-config.Data.outLFNDirBase='/store/user/adewit/Jun22_MC_91X/'
+config.Data.outLFNDirBase='/store/group/cmst3/user/agilbert/%s' % PROD
 config.section_('User')
+config.User.voGroup = 'dcms'
 config.section_('Site')
-#config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT',  'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_UK_London_Brunel']
-config.Site.whitelist = ['T2_UK_London_IC','T1_UK_RAL','T2_CH_CERN','T2_UK_SGrid_Bristol','T2_DE_*']
-#config.Site.blacklist = ['T2_US_*']
-config.Site.storageSite = 'T2_UK_London_IC'
-config.JobType.allowUndistributedCMSSW = True
+config.Site.storageSite = 'T2_CH_CERN'
+config.Site.blacklist = ['T1_FR_CCIN2P3']
+#config.JobType.allowUndistributedCMSSW = True
 
 if __name__ == '__main__':
 
@@ -63,8 +65,12 @@ if __name__ == '__main__':
 #    tasks.append(('VBFHToTauTau_M-125-barrel-200PU-reminiaod','/VBFHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_VBFHToTauTau_M-125-barrel-200PU-miniAOD-f98c32fb8d06a506275dc076089204ac/USER'))
 #    tasks.append(('GluGluHToTauTau_M-125-barrel-0PU-reminiaod','/GluGluHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_GluGluHToTauTau_M-125-barrel-0PU-miniAOD-f98c32fb8d06a506275dc076089204ac/USER'))
     #tasks.append(('GluGluHToTauTau_M-125-barrel-200PU-reminiaod-puppiiso-2','/GluGluHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_GluGluHToTauTau_M-125-barrel-200PU-miniAOD-f98c32fb8d06a506275dc076089204ac/USER'))
-    tasks.append(('VBF-tracker-pu200','/VBFHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_VBF-pu200-barrel-miniAOD-f98c32fb8d06a506275dc076089204ac/USER'))
-    tasks.append(('VBF-tracker-pu0','/VBFHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_VBF-pu0-barrel-miniAOD-f98c32fb8d06a506275dc076089204ac/USER'))
+    tasks.append(('VBFHToTauTau_M-125-pu0','/VBFHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_VBFHToTauTau_M-125-barrel-0PU-REminiAOD-a9a3fbb1034cc567360f2e5a9a646c9b/USER'))
+    tasks.append(('VBFHToTauTau_M-125-pu200','/VBFHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_VBFHToTauTau_M-125-barrel-200PU-REminiAOD-a9a3fbb1034cc567360f2e5a9a646c9b/USER'))
+    tasks.append(('GluGluHToTauTau_M-125-pu0','/GluGluHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_GluGluHToTauTau_M-125-barrel-0PU-REminiAOD-a9a3fbb1034cc567360f2e5a9a646c9b/USER'))
+    tasks.append(('GluGluHToTauTau_M-125-pu200','/GluGluHToTauTau_M125_14TeV_powheg_pythia8/adewit-crab_GluGluHToTauTau_M-125-barrel-200PU-REminiAOD-a9a3fbb1034cc567360f2e5a9a646c9b/USER'))
+    tasks.append(('DYJetsToTauTau_M-50-pu0','/DYJetsToTauTau_M-50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/agilbert-miniaod-prod-020117-0PU-a9a3fbb1034cc567360f2e5a9a646c9b/USER'))
+    tasks.append(('DYJetsToTauTau_M-50-pu200','/DYJetsToTauTau_M-50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/agilbert-miniaod-prod-020117-a9a3fbb1034cc567360f2e5a9a646c9b/USER'))
 #    tasks.append(('DYJetsToLL-barrel-0PU-reminiaod','/DYJetsToLL_M-50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/adewit-crab_DYJetsToLL-barrel-0PU-miniAOD-resub-f98c32fb8d06a506275dc076089204ac/USER'))
 #    tasks.append(('DYJetsToLL-barrel-200PU-reminiaod','/DYJetsToLL_M-50_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/adewit-crab_DYJetsToLL-barrel-200PU-miniAOD-resub-f98c32fb8d06a506275dc076089204ac/USER'))
 #    tasks.append(('TTbar-relval-300-reminiaod','/RelValTTbar_14TeV/adewit-crab_ttbar-relval-miniAOD-300-f98c32fb8d06a506275dc076089204ac/USER'))

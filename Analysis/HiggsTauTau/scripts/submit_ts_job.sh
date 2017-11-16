@@ -1,3 +1,4 @@
+#!/bin/bash
 INPUT=$1
 
 echo "Submitting job $INPUT to local task-spooler queue"
