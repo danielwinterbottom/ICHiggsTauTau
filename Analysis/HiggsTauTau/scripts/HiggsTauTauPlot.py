@@ -279,7 +279,7 @@ elif options.channel == 'zee':
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
-if options.era == smsummer16: cats['w_sdb'] = 'mt_1>80.'
+if options.era == 'smsummer16': cats['w_sdb'] = 'mt_1>80.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
@@ -425,6 +425,7 @@ wgam_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
 top_samples = ['TT']
 ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
 wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext','EWKZ2Jets_ZToNuNu','EWKZ2Jets_ZToNuNu-ext']
 
 if options.era == "mssmsummer16" or options.era == "smsummer16":
     # Add data sample names
@@ -649,7 +650,17 @@ def GenerateZLL(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_
 
 def GenerateZTT(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     ztt_node = GetZTTNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
-    ana.nodes[nodename].AddNode(ztt_node)    
+    ana.nodes[nodename].AddNode(ztt_node)
+    
+def GetEWKZNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    if get_os: OSSS = 'os'
+    else: OSSS = '!os'
+    full_selection = BuildCutString(wt, sel, cat, OSSS, '1')
+    return ana.SummedFactory('EWKZ'+add_name, samples, plot, full_selection)
+
+def GenerateEWKZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
+    ewkz_node = GetEWKZNode(ana, add_name, samples, plot, wt, sel, cat, z_sels, get_os)  
+    ana.nodes[nodename].AddNode(ewkz_node) 
 
 def GetTTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
   if get_os: OSSS = 'os'
@@ -804,6 +815,9 @@ def GetSubtractNode(ana,add_name,plot,wt,sel,cat,method,qcd_os_ss_ratio,OSSS,inc
   subtract_node.AddNode(vvj_node)
   ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
   subtract_node.AddNode(ztt_node)
+  if options.era == 'smsummer16': 
+    ewkz_node = GetEWKZNode(ana, "", ewkz_samples, plot, wt, sel, cat, z_sels, OSSS)
+    subtract_node.AddNode(ewkz_node)
   if options.channel not in ["em"]:
       zl_node = GetZLNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
       zj_node = GetZJNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
@@ -1421,6 +1435,8 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, residual_cat, top_sels, not options.do_ss, doTTT, doTTJ)  
         if 'VV' not in samples_to_skip:
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, residual_cat, vv_sels, not options.do_ss, doVVT, doVVJ)  
+        if 'EWKZ' not in samples_to_skip and options.era == 'smsummer16': 
+            GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
     
     else:
         method = options.method
@@ -1441,6 +1457,9 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
+        if 'EWKZ' not in samples_to_skip and options.era == 'smsummer16': 
+            GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)    
+            
         if compare_w_shapes:
           cat_relax=cats['w_shape_comp']
           GenerateW(ana, '_shape', wjets_samples, data_samples, wgam_samples, plot, wt, sel, cat_relax, 8, qcd_os_ss_ratio, not options.do_ss)    

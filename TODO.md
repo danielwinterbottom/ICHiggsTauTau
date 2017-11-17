@@ -24,7 +24,7 @@
 
 - [ ] background method for W - OSSS simultanious equations method?
 
-- [ ] W CR mT > 80 GeV
+- [x] W CR mT > 80 GeV
 - [ ] W CR for boosted used to constrain VBF - what to use as nominal estimate for W in VBF category
 
 - [ ] QCD CR - boosted used to constrain VBF so same comments as above
@@ -42,3 +42,5 @@ e->tau ES correction uncertainty = 3 %
 - [ ] For plotting code make sure trees are only run over once for all systematics - relevant for JES corrections after change described above
 
 - [ ] write script to make datacards and add required systematics to plotting code
+
+- [ ] check how sampls are split into real and fake e.g TTJ and TTT because something I read suggested TTT contains only events where 1 tau is real (for et and mt) and where both taus are real - we currently include all genuine taus and l->tau fakes in the TTT teamples
