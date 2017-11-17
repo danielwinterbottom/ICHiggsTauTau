@@ -279,6 +279,7 @@ elif options.channel == 'zee':
 cats['inclusive'] = '(1)' 
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
+if options.era == smsummer16: cats['w_sdb'] = 'mt_1>80.'
 cats['w_sdb_os'] = 'os'
 cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_olddm_tight_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
