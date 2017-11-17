@@ -6,7 +6,10 @@
 
 - [ ] Run SV fit for all samples/energy scale/met shifts - do e->tau mu->tau ES shifts only apply to Zee/mm events? - if so then only need to run for DY/Z samples - if MET is shape systematic then will need to run for MET shifts as well
 
-- [ ] MET systematics as shape uncertainties or not?
+- [x] MET systematics as shape uncertainties or not?
+- There are 2 MET shape systematics included unclusted and clustered which are added for all MC processes
+
+- [ ] Find out how to comput MET unclustered and clustered systematic shifts and add to datacards
 
 - [ ] W+gamma samples for emu channel only?
 
@@ -25,10 +28,11 @@
 
 - [ ] QCD CR - boosted used to constrain VBF so same comments as above
 
-- [ ] mu->tau ES correction uncertainty = 1.5 %
+- [x] mu->tau ES correction uncertainty = 1.5 %
 e->tau ES correction uncertainty = 3 % 
 
-- [ ] above 2 uncetainties seperate for different DMs but shold the uncertainty be included for 3-prong decays as well?
+- [x] above 2 uncetainties seperate for different DMs but shold the uncertainty be included for 3-prong decays as well?
+- this is not included  for the 3prong decays and the systematic shifts are only included for ZL templates in et and mt channels
 
 - [ ] n_bjets==0 for emu channel only?
 
@@ -36,4 +40,4 @@ e->tau ES correction uncertainty = 3 %
 
 - [ ] For plotting code make sure trees are only run over once for all systematics - relevant for JES corrections after change described above
 
-- [ ] write script to make datacards
+- [ ] write script to make datacards and add required systematics to plotting code
