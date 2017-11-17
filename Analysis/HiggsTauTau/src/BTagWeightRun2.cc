@@ -12,6 +12,7 @@ namespace ic {
     do_reshape_ = false;
     btag_mode_ = 0;
     bfake_mode_ = 0;
+    add_name_="";
   }
   BTagWeightRun2::~BTagWeightRun2() {
    ;
@@ -60,10 +61,10 @@ namespace ic {
     ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     if (!do_reshape_){
       std::map<std::size_t, bool> retag_result = ReTag(embed_jets, btag_mode_, bfake_mode_);
-      event->Add("retag_result", retag_result);
+      event->Add("retag_result"+add_name_, retag_result);
     } else {
       double btag_evt_weight = SFCSVShape(embed_jets, btag_mode_);
-      event->Add("btag_evt_weight", btag_evt_weight);
+      event->Add("btag_evt_weight"+add_name_, btag_evt_weight);
     }
     return 0;
   }

@@ -150,8 +150,6 @@ with open("config_for_python_channels.json") as config_file:
   
 scale = int(math.ceil(float(n_scales*n_channels)/100))
 if scale < 1: scale = 1
-print n_scales,n_channels
-print scale
 
 total = float(len(flatjsonlistdysig))
 flatjsons = []

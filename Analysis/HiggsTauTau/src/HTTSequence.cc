@@ -57,6 +57,7 @@
 #include "HiggsTauTau/interface/HTTFakeFactorWeights.h"
 #include "HiggsTauTau/interface/HTTGenAnalysis.h"
 #include "HiggsTauTau/interface/TagAndProbe.h"
+#include "HiggsTauTau/interface/HTTShiftedJetVariables.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -1221,6 +1222,95 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
   }
   
   if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
+  
+  if(js["baseline"]["split_by_source"].asBool()){
+   // if using split_by_source option then make a copy for the jet collection for each of the JES shifts. The collections need will need JES shifts applied as well as all other of the usual selections/corrections e.g ID. b-tag Sfs... . These collections will be used later to produce shifted jet variables (e.g mjj, n_jets...) 
+     
+   for(unsigned i=1; i<=28; ++i){
+       
+     std::string source = UInt2JES(i);
+     std::string shift_jets_label = jets_label+source;
+     
+     // copy jet collection for each JES shift
+     BuildModule(CopyCollection<PFJet>("CopyJetsForJES"+source,jets_label,shift_jets_label,true));
+     
+     // shift jet energies
+     BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty"+source)
+       .set_input_label(shift_jets_label)
+       .set_jes_shift_mode(jes_mode)
+       .set_uncert_file(jes_input_file)
+       .set_uncert_set(source));
+     
+     // do ID filters for shifted jets
+     SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter"+source)
+     .set_input_label(shift_jets_label);
+     if(strategy_type == strategy::paper2013) {
+       jetIDFilter.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training, false));
+     } else if(strategy_type != strategy::mssmspring16 && strategy_type != strategy::smspring16 && strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+       jetIDFilter.set_predicate((bind(PFJetID2015, _1))); 
+     } else {
+       jetIDFilter.set_predicate(bind(PFJetID2016, _1));
+     }
+     BuildModule(jetIDFilter);
+     
+     //do jet-lepton overlap filters for shifted jets
+     if(channel != channel::wmnu) {
+       BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter"+source)
+         .set_input_label(shift_jets_label)
+         .set_reference_label("ditau")
+         .set_min_dr(0.5));
+     } else if (channel == channel::wmnu){
+       BuildModule(OverlapFilter<PFJet,Muon>("JetLeptonOverlapFilter"+source)
+         .set_input_label(shift_jets_label)
+         .set_reference_label("sel_muons")
+         .set_min_dr(0.5));
+     }
+     // Do b-tag weights for shifted jets
+     if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && !is_data){
+       TH2F bbtag_eff;
+       TH2F cbtag_eff;
+       TH2F othbtag_eff;
+      
+        if(strategy_type == strategy::fall15){
+          if(channel != channel::tt){
+            bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
+            cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
+            othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
+          } else {
+            bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_b");
+            cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
+            othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
+          }
+        }  else if (strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+          bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
+          cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
+          othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
+        } else {
+          bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
+          cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
+          othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
+        }
+      
+        BuildModule(BTagWeightRun2("BTagWeightRun2"+source)
+         .set_channel(channel)
+         .set_era(era_type)
+         .set_strategy(strategy_type)
+         .set_jet_label(shift_jets_label)
+         .set_bbtag_eff(new TH2F(bbtag_eff))
+         .set_cbtag_eff(new TH2F(cbtag_eff))
+         .set_othbtag_eff(new TH2F(othbtag_eff))
+         .set_do_reshape(do_reshape)
+         .set_btag_mode(btag_mode)
+         .set_bfake_mode(bfake_mode)
+         .set_add_name(source));
+     }
+    
+     // compute jet variables for shifted jets
+     BuildModule(HTTShiftedJetVariables("HTTShiftedJetVariables"+source)
+       .set_jets_label(shift_jets_label)
+       .set_source(source));
+   } 
+ }
     
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
   .set_input_label(jets_label)

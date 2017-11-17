@@ -292,6 +292,87 @@ inline mcorigin UInt2MCOrigin(unsigned const&in){
   }
 } 
 
+
+inline unsigned JES2UInt(std::string const& in) {
+  static std::map<std::string, unsigned> conv = boost::assign::map_list_of
+    ("AbsoluteFlavMap",  1)
+    ("AbsoluteMPFBias",  2)
+    ("AbsoluteScale",    3)
+    ("AbsoluteStat",     4)
+    ("FlavorQCD",        5)
+    ("Fragmentation",    6)
+    ("PileUpDataMC",     7)
+    ("PileUpPtBB",       8)
+    ("PileUpPtEC1",      9)
+    ("PileUpPtEC2",      10)
+    ("PileUpPtHF",       11)
+    ("PileUpPtRef",      12)
+    ("RelativeBal",      13)
+    ("RelativeFSR",      14)
+    ("RelativeJEREC1",   15)
+    ("RelativeJEREC2",   16)
+    ("RelativeJERHF",    17)
+    ("RelativePtBB",     18)
+    ("RelativePtEC1",    19)
+    ("RelativePtEC2",    20)
+    ("RelativePtHF",     21)
+    ("RelativeStatEC",   22)
+    ("RelativeStatFSR",  23)
+    ("RelativeStatHF",   24)
+    ("SinglePionECAL",   25)
+    ("SinglePionHCAL",   26)
+    ("TimePtEta",        27)
+    ("Total",            28);
+
+  if (conv.find(in) != conv.end()) {
+    return (conv.find(in)->second);
+  } else {
+    std::cerr << "String2UInt error, string not recognised " <<std::endl;
+    throw;
+  }
+}
+
+inline std::string UInt2JES(unsigned const&in){
+   static std::map<unsigned, std::string> conv = boost::assign::map_list_of
+    (1,  "AbsoluteFlavMap")
+    (2,  "AbsoluteMPFBias")
+    (3,  "AbsoluteScale")
+    (4,  "AbsoluteStat")
+    (5,  "FlavorQCD")
+    (6,  "Fragmentation")
+    (7,  "PileUpDataMC")
+    (8,  "PileUpPtBB")
+    (9,  "PileUpPtEC1")
+    (10, "PileUpPtEC2")
+    (11, "PileUpPtHF")
+    (12, "PileUpPtRef")
+    (13, "RelativeBal")
+    (14, "RelativeFSR")
+    (15, "RelativeJEREC1")
+    (16, "RelativeJEREC2")
+    (17, "RelativeJERHF")
+    (18, "RelativePtBB")
+    (19, "RelativePtEC1")
+    (20, "RelativePtEC2")
+    (21, "RelativePtHF")
+    (22, "RelativeStatEC")
+    (23, "RelativeStatFSR")
+    (24, "RelativeStatHF")
+    (25, "SinglePionECAL")
+    (26, "SinglePionHCAL")
+    (27, "TimePtEta")
+    (28, "Total");
+    
+ if (conv.find(in) != conv.end()){
+   return (conv.find(in)->second);
+ } else {
+   std::cerr << "UInt2String Error, unsigned " << in << " not recognised " <<std::endl;
+   throw;
+  }
+} 
+
+
+
 }
 
 #endif
