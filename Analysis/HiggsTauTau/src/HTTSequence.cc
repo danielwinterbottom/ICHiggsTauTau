@@ -1224,7 +1224,31 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
   if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
   
   if(js["baseline"]["split_by_source"].asBool()){
-   // if using split_by_source option then make a copy for the jet collection for each of the JES shifts. The collections need will need JES shifts applied as well as all other of the usual selections/corrections e.g ID. b-tag Sfs... . These collections will be used later to produce shifted jet variables (e.g mjj, n_jets...) 
+   // if using split_by_source option then make a copy for the jet collection for each of the JES shifts. The collections need will need JES shifts applied as well as all other of the usual selections/corrections e.g ID. b-tag Sfs... . These collections will be used later to produce shifted jet variables (e.g mjj, n_jets...)
+      
+   TH2F bbtag_eff;
+   TH2F cbtag_eff;
+   TH2F othbtag_eff;
+   
+    if(strategy_type == strategy::fall15){
+      if(channel != channel::tt){
+        bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
+        cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
+        othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
+      } else {
+        bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_b");
+        cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
+        othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
+      }
+    }  else if (strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
+    } else {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
+    }   
      
    for(unsigned i=1; i<=28; ++i){
        
@@ -1267,29 +1291,6 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
      }
      // Do b-tag weights for shifted jets
      if((strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 ||strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16) && !is_data){
-       TH2F bbtag_eff;
-       TH2F cbtag_eff;
-       TH2F othbtag_eff;
-      
-        if(strategy_type == strategy::fall15){
-          if(channel != channel::tt){
-            bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_b");
-            cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_c");
-            othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies.root","/","btag_eff_oth");
-          } else {
-            bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_b");
-            cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_c");
-            othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_loosewp.root","/","btag_eff_oth");
-          }
-        }  else if (strategy_type != strategy::mssmsummer16 && strategy_type != strategy::smsummer16){
-          bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_b");
-          cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_c");
-          othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_ichep2016.root","/","btag_eff_oth");
-        } else {
-          bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_b");
-          cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_c");
-          othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_Moriond2017.root","/","btag_eff_oth");
-        }
       
         BuildModule(BTagWeightRun2("BTagWeightRun2"+source)
          .set_channel(channel)
@@ -1309,6 +1310,7 @@ if((strategy_type!=strategy::spring15&&strategy_type!=strategy::fall15&&strategy
      BuildModule(HTTShiftedJetVariables("HTTShiftedJetVariables"+source)
        .set_jets_label(shift_jets_label)
        .set_source(source));
+     
    } 
  }
     
