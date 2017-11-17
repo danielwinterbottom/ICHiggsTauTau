@@ -25,6 +25,7 @@ class GenTrees : public ModuleBase {
   int pdgid_2_ = 0;
   int pdgid_gen_1_ = 0;
   int pdgid_gen_2_ = 0;
+  int npnlo_ = 0;
   unsigned nlhepartons_;
   unsigned ngenjets_;
   double zptgen_ = -1;  

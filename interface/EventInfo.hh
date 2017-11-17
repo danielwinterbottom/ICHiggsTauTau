@@ -59,6 +59,9 @@ class EventInfo {
   /// Generator level M_ll
   inline double gen_mll() const { return gen_mll_; }
 
+  ///NLO parton multiplicity
+  inline int npnlo() const { return npnlo_;}
+
   /// Number of outgoing partons at generator level, used for combining n-jet binned samples with inclusive samples
   inline unsigned n_outgoing_partons() const { return n_outgoing_partons_; }
 
@@ -105,6 +108,10 @@ class EventInfo {
 
   /// @copybrief n_outgoing_partons()
   inline void set_n_outgoing_partons(unsigned const& n_outgoing_partons) { n_outgoing_partons_ = n_outgoing_partons; }
+
+  /// @copybrief npnlo()
+  inline void set_npnlo(unsigned const& npnlo) { npnlo_ = npnlo; }
+
 
   /// @copybrief good_vertices()
   inline void set_good_vertices(unsigned const& good_vertices) {
@@ -269,6 +276,7 @@ class EventInfo {
   double lepton_rho_;
   double gen_ht_;
   unsigned n_outgoing_partons_;
+  int npnlo_;
   double gen_mll_;
   SDMap weights_;
   SBMap weight_status_;
@@ -277,7 +285,7 @@ class EventInfo {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 7);
+  ClassDef(EventInfo, 8);
  #endif
 };
 }
