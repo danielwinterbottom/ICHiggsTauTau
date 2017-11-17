@@ -56,14 +56,14 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Nov09/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Nov15/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "svfit-76X-postpreapp-output/",
+    "svfit_folder"  : "output/",
     "svfit_override" : "",
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
@@ -316,14 +316,16 @@
     "scale_j_lo": {
       "baseline": {
         "addit_output_folder" : "JES_DOWN",
-        "jes_mode" : 1
+        "jes_mode" : 1,
+        "split_by_source" : true
 //        "btag_mode" : 3
       }
     },
     "scale_j_hi": {
       "baseline": {
         "addit_output_folder" : "JES_UP",
-        "jes_mode" : 2
+        "jes_mode" : 2,
+        "split_by_source" : true
 //        "btag_mode" : 4
       }
     },

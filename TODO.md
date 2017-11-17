@@ -32,7 +32,7 @@ e->tau ES correction uncertainty = 3 %
 
 - [ ] n_bjets==0 for emu channel only?
 
-- [ ] JES uncertainties - implemented at the moment as seperate shifts - maybe better to add relevant variables (n_jets_X, n_bjets_X, mjj_X etc ....) for each JES shift X - use seperate module to do this after HTTCategories? - e.g copy HTTCateogry tree somehow and add extra branches?
+- [x] JES uncertainties - implemented at the moment as seperate shifts - maybe better to add relevant variables (n_jets_X, n_bjets_X, mjj_X etc ....) for each JES shift X - use seperate module to do this after HTTCategories? - e.g copy HTTCateogry tree somehow and add extra branches?
 
 - [ ] For plotting code make sure trees are only run over once for all systematics - relevant for JES corrections after change described above
 
