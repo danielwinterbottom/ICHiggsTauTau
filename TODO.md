@@ -28,7 +28,7 @@
 - [ ] mu->tau ES correction uncertainty = 1.5 %
 e->tau ES correction uncertainty = 3 % 
 
-- [ ] above 2 uncetainties seperate for different DMs but shold the uncertainty be included for 3-prong decays only?
+- [ ] above 2 uncetainties seperate for different DMs but shold the uncertainty be included for 3-prong decays as well?
 
 - [ ] n_bjets==0 for emu channel only?
 
