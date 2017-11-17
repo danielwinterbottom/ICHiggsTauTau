@@ -396,12 +396,12 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   
   if options.analysis == 'sm':
     extra_samples = [
-      'EWKWMinus2Jets_WToLNu-ext1',
-      'EWKWMinus2Jets_WToLNu-ext2',
-      'EWKWMinus2Jets_WToLNu',
-      'EWKWPlus2Jets_WToLNu-ext1',
-      'EWKWPlus2Jets_WToLNu-ext2',
-      'EWKWPlus2Jets_WToLNu',
+      #'EWKWMinus2Jets_WToLNu-ext1',
+      #'EWKWMinus2Jets_WToLNu-ext2',
+      #'EWKWMinus2Jets_WToLNu',
+      #'EWKWPlus2Jets_WToLNu-ext1',
+      #'EWKWPlus2Jets_WToLNu-ext2',
+      #'EWKWPlus2Jets_WToLNu',
       'EWKZ2Jets_ZToLL-ext',
       'EWKZ2Jets_ZToLL',
       'EWKZ2Jets_ZToNuNu-ext',

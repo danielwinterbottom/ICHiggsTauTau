@@ -13,15 +13,16 @@
 
 - [ ] W+gamma samples for emu channel only?
 
-- [ ] H->WW background - which templates to include this under (maybe has a seperate template)
+- [ ] H->WW background - add these as seperate templates for em channel only called ggH_hww125 and qqH_hww125
 
-- [ ] Add EWk Z to Z->tautau background (also to Z->ll ?)
+- [ ] Add EWk Z as seperate template called EWKZ I presume this is not split by any gen matching
 
-- [ ] No Ewk W included?
+- [x] No Ewk W included?
+- Yes no Ewk W
 
 - [ ] Z->mumu correction for mjj shape?
 
-- [ ] background method for W - OSSS method?
+- [ ] background method for W - OSSS simultanious equations method?
 
 - [ ] W CR mT > 80 GeV
 - [ ] W CR for boosted used to constrain VBF - what to use as nominal estimate for W in VBF category
