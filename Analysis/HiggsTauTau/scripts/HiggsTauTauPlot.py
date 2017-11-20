@@ -1514,7 +1514,7 @@ def RunPlotting(ana, cat='', sel='', add_name='', wt='wt', do_data=True, samples
             GenerateQCD(ana, add_name, data_samples, plot, wt, sel, cat, method, qcd_os_ss_ratio, not options.do_ss)
         if 'EWKZ' not in samples_to_skip and options.era == 'smsummer16': 
             GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
-        if 'HWW' not in samples_to_skip options.era == 'smsummer16' and options.channel == 'em':
+        if 'HWW' not in samples_to_skip and options.era == 'smsummer16' and options.channel == 'em':
             GenerateHWW(ana, add_name, gghww_samples, qqhww_samples, plot, wt, sel, cat, z_sels, not options.do_ss, True, True)    
             
         if compare_w_shapes:
