@@ -1714,8 +1714,8 @@ for systematic in systematics:
                 if options.gen_signal: tree_name = 'gen_ntuple'
                 ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name+syst_add_name)
     if options.add_sm_background and options.analysis == 'mssm':
-        for samp in sm_samples:
-            sample_name = sm_samples[samp].replace('*',options.add_sm_background)
+        for samp in sm_base_samples:
+            sample_name = sm_base_samples[samp].replace('*',options.add_sm_background)
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name+syst_add_name)
             
     ana.AddInfo(options.paramfile, scaleTo='data_obs',add_name=syst_add_name)
