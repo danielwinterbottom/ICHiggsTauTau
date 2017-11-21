@@ -10,15 +10,17 @@
 - There are 2 MET shape systematics included unclusted and clustered which are added for all MC processes
 
 - [ ] Find out how to comput MET unclustered and clustered systematic shifts and add to datacards
+- clustered = UnclusterEnUp/Down shift, clustered = JetEnUp/Down shift (requires new ntuples with shifts stored)
 
-- [ ] W+gamma samples for emu channel only?
+- [x] W+gamma samples for emu channel only?
+- Yes it is included for emu only and is added to the W templates
 
-- [ ] H->WW background - add these as seperate templates for em channel only called ggH_hww125 and qqH_hww125
+- [x] H->WW background - add these as seperate templates for em channel only called ggH_hww125 and qqH_hww125
 
-- [ ] Add EWk Z as seperate template called EWKZ I presume this is not split by any gen matching
+- [x] Add EWk Z as seperate template called EWKZ I presume this is not split by any gen matching
 
 - [x] No Ewk W included?
-- Yes no Ewk W
+- Ewk W is added to the W shape templates for the et and mt channel. It is also included in the templates for the em and tt channel
 
 - [ ] Z->mumu correction for mjj shape?
 
@@ -39,8 +41,10 @@ e->tau ES correction uncertainty = 3 %
 
 - [x] JES uncertainties - implemented at the moment as seperate shifts - maybe better to add relevant variables (n_jets_X, n_bjets_X, mjj_X etc ....) for each JES shift X - use seperate module to do this after HTTCategories? - e.g copy HTTCateogry tree somehow and add extra branches?
 
-- [ ] For plotting code make sure trees are only run over once for all systematics - relevant for JES corrections after change described above
+- [x] For plotting code make sure trees are only run over once for all systematics - relevant for JES corrections after change described above
 
 - [ ] write script to make datacards and add required systematics to plotting code
 
 - [ ] check how sampls are split into real and fake e.g TTJ and TTT because something I read suggested TTT contains only events where 1 tau is real (for et and mt) and where both taus are real - we currently include all genuine taus and l->tau fakes in the TTT teamples
+
+- [ ] Check naming of SM H templates should be e.g ggH_httM where M=mass
