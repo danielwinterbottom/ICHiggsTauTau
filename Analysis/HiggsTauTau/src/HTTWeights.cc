@@ -98,6 +98,7 @@ namespace ic {
     do_tau_id_sf_             = false;
     mssm_higgspt_file_        = "";
     do_mssm_higgspt_          = false;
+    do_z_weights_         = false;
   }
   HTTWeights::~HTTWeights() {
     ;
@@ -860,6 +861,44 @@ namespace ic {
       event->Add("wt_ggA_b" ,wt_ggA_b_);
       event->Add("wt_ggA_i" ,wt_ggA_i_);
 
+    }
+    if (do_z_weights_) {
+      // these weights are applied for smsummer16 analysis to correct mjj distribution based on Z->mumu data/MC comparrison  
+      double wt_z = 1.02;
+      double wt_z_down = 1.02;
+      double wt_z_up = 1.02;
+      std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
+      ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+      if(jets.size()>=2){
+        double mjj = (jets[0]->vector() + jets[1]->vector()).M();
+        if(channel_ == channel::et || channel_ == channel::mt || channel_ == channel::em){
+          if(mjj>300 && mjj<700){
+            wt_z *= 1.06;
+            wt_z_up *= 1.12;
+          } else if (mjj>700 && mjj<1100){
+            wt_z *= 0.98;
+            wt_z_up *= 0.96;
+          } else if (mjj>1100){
+            wt_z *= 0.95;
+            wt_z_up *= 0.90;
+          }
+        }
+        if(channel_ == channel::tt){
+          if(mjj>300 && mjj<500){
+            wt_z *= 1.02;
+            wt_z_up *= 1.04;
+          } else if (mjj>500 && mjj<800){
+            wt_z *= 1.06;
+            wt_z_up *= 1.12;
+          } else if (mjj>800){
+            wt_z *= 1.04;
+            wt_z_up *= 1.08;
+          }
+        }
+      }
+      eventInfo->set_weight("wt_z",wt_z);
+      event->Add("wt_z_up", wt_z_up/wt_z);
+      event->Add("wt_z_down", wt_z_down/wt_z);
     }
 
    if (do_tracking_eff_){

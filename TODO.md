@@ -22,7 +22,7 @@
 - [x] No Ewk W included?
 - Ewk W is added to the W shape templates for the et and mt channel. It is also included in the templates for the em and tt channel
 
-- [ ] Z->mumu correction for mjj shape (and systematic)?
+- [x] Z->mumu correction for mjj shape (and systematic)?
 
 - [ ] background method for W - OSSS simultanious equations method?
 

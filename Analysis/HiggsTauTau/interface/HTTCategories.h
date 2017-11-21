@@ -46,6 +46,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_mssm_higgspt)
   CLASS_MEMBER(HTTCategories, bool, do_sm_scale_wts)
   CLASS_MEMBER(HTTCategories, bool, do_jes_vars)
+  CLASS_MEMBER(HTTCategories, bool, do_z_weights)
 
  
   TTree *outtree_;
@@ -1238,6 +1239,9 @@ class HTTCategories : public ModuleBase {
   double jdphi_26_;
   double jdphi_27_;
   double jdphi_28_;
+  
+  double wt_z_down_;
+  double wt_z_up_;
   
 
  public:

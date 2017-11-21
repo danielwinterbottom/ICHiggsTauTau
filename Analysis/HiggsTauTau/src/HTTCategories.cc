@@ -43,6 +43,7 @@ namespace ic {
       do_mssm_higgspt_ = false;
       do_sm_scale_wts_ = false;
       do_jes_vars_ = false;
+      do_z_weights_ = false;
 }
 
   HTTCategories::~HTTCategories() {
@@ -1091,7 +1092,7 @@ namespace ic {
         outtree_->Branch("jdphi_26",    &jdphi_26_   );
         outtree_->Branch("jdphi_27",    &jdphi_27_   );
         outtree_->Branch("jdphi_28",    &jdphi_28_   );
-      }  
+      }
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -1152,6 +1153,10 @@ namespace ic {
           outtree_->Branch("wt_scale_tt_0jet"   , &wt_scale_tt_0jet_    );
           outtree_->Branch("wt_scale_tt_boosted" , &wt_scale_tt_boosted_ );
           outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
+        }
+        if(do_z_weights_){
+          outtree_->Branch("wt_z_up",      &wt_z_up_);    
+          outtree_->Branch("wt_z_down",    &wt_z_down_);    
         }
 
         if (channel_ == channel::em) {
@@ -3547,7 +3552,7 @@ namespace ic {
       n_jetsingap_lowpt_ = 9999;
     }
     
-    if(strategy_ == strategy::smsummer16 && do_sm_scale_wts_){
+    if(strategy_ == strategy::smsummer16 && do_sm_scale_wts_ && !systematic_shift_){
       // weights needed for SM scale uncertainties are computer here rather than in HTTWeights - since these are parametarized as a function of the offline mjj and pt_tt which are computer in HTTCategories anyway
       wt_scale_et_0jet_  = 0.973 + 0.0003405 * pt_2_.var_double;
       wt_scale_et_boosted_ = 0.986 - 0.0000278 *pt_tt_.var_double;
@@ -3561,6 +3566,10 @@ namespace ic {
       wt_scale_tt_0jet_ = 0.814 + 0.0027094 * pt_1_.var_double;
       wt_scale_tt_boosted_ = 0.973 + 0.0008596 * pt_tt_.var_double;
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
+    }
+    if(do_z_weights_ && !systematic_shift_){
+      wt_z_up_   = event->Exists("wt_z_up" ) ? event->Get<double>("wt_z_up"  ) : 1.0;
+      wt_z_down_ = event->Exists("wt_z_down") ? event->Get<double>("wt_z_down") : 1.0;   
     }
 
     if(do_jes_vars_){

@@ -1856,7 +1856,7 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
     .set_do_jlepton_fake(jlepton_fake)
     .set_do_em_qcd_weights(true)
     .set_ditau_label("ditau")
-    .set_jets_label("ak4PFJetsCHS")
+    .set_jets_label(jets_label)
     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
@@ -1885,6 +1885,8 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
           httWeights.set_strategy(strategy::smsummer16);
           httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
           httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
+          bool z_sample = (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos) || output_name.find("EWKZ2Jets") != output_name.npos;
+          httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample);
         }
         else { 
           httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5.root");
@@ -2001,6 +2003,7 @@ if(channel != channel::wmnu) {
 bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos && strategy_type == strategy::mssmsummer16;
 bool do_sm_scale_wts = output_name.find("GluGluToHToTauTau_M") != output_name.npos && output_name.find("SUSY") == output_name.npos && strategy_type == strategy::smsummer16;
 bool do_jes_vars = jes_mode > 0 && !is_data && js["baseline"]["split_by_source"].asBool();
+bool z_sample = (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos) || output_name.find("EWKZ2Jets") != output_name.npos;
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -2033,7 +2036,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_pdf_wts(js["do_pdf_wts"].asBool())
     .set_do_mssm_higgspt(do_mssm_higgspt)
     .set_do_sm_scale_wts(do_sm_scale_wts)
-    .set_do_jes_vars(do_jes_vars));
+    .set_do_jes_vars(do_jes_vars)
+    .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")
