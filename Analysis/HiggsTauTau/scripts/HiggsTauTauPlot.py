@@ -447,9 +447,12 @@ if options.era == "mssmsummer16" or options.era == "smsummer16":
     top_base_samples = ['TT']
     ztt_base_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     wjets_base_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
+    
+if options.era == "smsummer16":
+    wjets_base_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
 
 sm_base_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
-if options.era == "smsummer16": sm_base_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
+if options.era == "smsummer16": sm_base_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
 if options.analysis == 'mssm': sm_base_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
 mssm_base_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
 mssm_base_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
@@ -1562,7 +1565,7 @@ def UnrollHist(h2d,inc_y_of=True):
     h1d.LabelsOption('v','X')
     return h1d
 
-def NormSignals(outfile):
+def NormSignals(outfile,add_name):
     # When adding signal samples to the data-card we want to scale all XS to 1pb - correct XS times BR is then applied at combine harvestor level 
     if 'signal' not in samples_to_skip:
         outfile.cd(nodename)
@@ -1983,6 +1986,23 @@ if not options.no_plot:
 
 #norm signal yields on datacards to 1pb AFTER plotting    
 outfile =  ROOT.TFile(output_name, 'UPDATE')
-NormSignals(outfile)
+for add_name in add_names: NormSignals(outfile,add_name)
+
+# for smsummer16 need to ad WplusH and WminusH templates into one - note this may need normalizing to 1pb again!
+if options.era == "smsummer16":
+  outfile.cd(nodename)
+  directory = outfile.Get(nodename)
+  hists_to_add = []
+  for key in directory.GetListOfKeys():
+    hist_name = key.GetName()  
+    if 'WminusH' in hist_name:
+      hist_to_add_name = hist_name.replace('minus', 'plus')  
+      hist = directory.Get(hist_name).Clone()
+      hist_to_add = directory.Get(hist_to_add_name).Clone()
+      hist.Add(hist_to_add)
+      hist.SetName(hist_name.replace('minus',''))
+      hists_to_add.append(hist)
+  for hist in hists_to_add: hist.Write()
+      
 outfile.Close()
            

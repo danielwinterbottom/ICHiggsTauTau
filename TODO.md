@@ -9,8 +9,8 @@
 - [x] MET systematics as shape uncertainties or not?
 - There are 2 MET shape systematics included unclusted and clustered which are added for all MC processes
 
-- [ ] Find out how to comput MET unclustered and clustered systematic shifts and add to datacards
-- clustered = UnclusterEnUp/Down shift, clustered = JetEnUp/Down shift (requires new ntuples with shifts stored)
+- [ ] Find out how to compute MET unclustered and clustered systematic shifts and add to datacards
+- unclustered = UnclusterEnUp/Down shift, clustered = JetEnUp/Down shift (requires new ntuples with shifts stored)
 
 - [x] W+gamma samples for emu channel only?
 - Yes it is included for emu only and is added to the W templates
@@ -47,4 +47,4 @@ e->tau ES correction uncertainty = 3 %
 
 - [ ] check how sampls are split into real and fake e.g TTJ and TTT because something I read suggested TTT contains only events where 1 tau is real (for et and mt) and where both taus are real - we currently include all genuine taus and l->tau fakes in the TTT teamples
 
-- [ ] Check naming of SM H templates should be e.g ggH_httM where M=mass
+- [x] Check naming of SM H templates should be e.g ggH_httM where M=mass
