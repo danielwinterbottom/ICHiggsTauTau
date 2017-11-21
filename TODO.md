@@ -22,7 +22,7 @@
 - [x] No Ewk W included?
 - Ewk W is added to the W shape templates for the et and mt channel. It is also included in the templates for the em and tt channel
 
-- [ ] Z->mumu correction for mjj shape?
+- [ ] Z->mumu correction for mjj shape (and systematic)?
 
 - [ ] background method for W - OSSS simultanious equations method?
 
@@ -48,3 +48,9 @@ e->tau ES correction uncertainty = 3 %
 - [ ] check how sampls are split into real and fake e.g TTJ and TTT because something I read suggested TTT contains only events where 1 tau is real (for et and mt) and where both taus are real - we currently include all genuine taus and l->tau fakes in the TTT teamples
 
 - [x] Check naming of SM H templates should be e.g ggH_httM where M=mass
+
+- [ ] Find out what CMS_tauDMReco_, and CMS_mFakeTau_1prong_$ERA shape sytematics are (to do with fake-rate/ ID uncertainty? - but in bins of DM so affects shape also?)
+
+- [ ] Find out what TopMassTreatment_$ERA theory uncertainty is for ggH 
+
+- [ ] Include shape uncertainty on QCD in et and mt channels due to W subtraction vary W norm in SS region by 10% (0 jet/ boosted) and 30% (VBF)
