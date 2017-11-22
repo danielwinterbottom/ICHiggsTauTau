@@ -425,9 +425,9 @@ wgam_base_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
 top_base_samples = ['TT']
 ztt_base_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
 wjets_base_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
-ewkz_base_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
-gghww_base_samples = ['GluGluHToWWTo2L2Nu_M-125']
-qqhww_base_samples = ['VBFHToWWTo2L2Nu_M-125']
+ewkz_base_samples = []
+gghww_base_samples = []
+qqhww_base_samples = []
 
 if options.era == "mssmsummer16" or options.era == "smsummer16":
     # Add data sample names
@@ -450,6 +450,9 @@ if options.era == "mssmsummer16" or options.era == "smsummer16":
     
 if options.era == "smsummer16":
     wjets_base_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
+    ewkz_base_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
+    gghww_base_samples = ['GluGluHToWWTo2L2Nu_M-125']
+    qqhww_base_samples = ['VBFHToWWTo2L2Nu_M-125']
 
 sm_base_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
 if options.era == "smsummer16": sm_base_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
@@ -1711,7 +1714,7 @@ for systematic in systematics:
         ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
     
     # Add all MC background files
-    for sample_name in ztt_base_samples + vv_base_samples + wgam_base_samples + top_base_samples + ztt_base_shape_samples + wjets_base_samples:
+    for sample_name in ztt_base_samples + vv_base_samples + wgam_base_samples + top_base_samples + ztt_base_shape_samples + wjets_base_samples+ewkz_base_samples+gghww_base_samples+qqhww_base_samples:
         ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name+syst_add_name)
      
     # Add all MC signal files
