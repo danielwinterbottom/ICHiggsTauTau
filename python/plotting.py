@@ -1956,6 +1956,7 @@ def createAxisHists(n,src,xmin=0,xmax=499):
   return result
 
 def PassAutoBlindMetric(s, b, epsilon=0.09, metric=0.5):
+    if b == 0: return True
     y = s/math.sqrt(b + (epsilon*b)**2)
     return y >= metric
 
@@ -3016,7 +3017,7 @@ def HTTPlotUnrolled(nodename,
       for i in range(1,total_datahist.GetNbinsX()+1):
         b = bkghist_blind.GetBinContent(i)  
         s = totsighist.GetBinContent(i) 
-        if PassAutoBlindMetric(s,b):
+        if PassAutoBlindMetric(s,b,metric=0.1):
           blind_datahist.SetBinContent(i,0)
           blind_datahist.SetBinError(i,0)
     #Blinding by hand using requested range, set to 200-4000 by default:
@@ -3130,10 +3131,11 @@ def HTTPlotUnrolled(nodename,
         ymax = axish[0].GetMaximum()
         ymin = axish[0].GetMinimum()
         line.DrawLine(x,ymin,x,ymax)
-        pads[1].cd()
-        ymax = axish[1].GetMaximum()
-        ymin = axish[1].GetMinimum()
-        line.DrawLine(x,ymin,x,ymax)
+        if ratio:
+          pads[1].cd()
+          ymax = axish[1].GetMaximum()
+          ymin = axish[1].GetMinimum()
+          line.DrawLine(x,ymin,x,ymax)
         
     if y_labels_vec is not None:
       pads[0].cd()  
