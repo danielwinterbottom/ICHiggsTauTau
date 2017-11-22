@@ -1,6 +1,8 @@
 ### To do for SM analysis:
 
-- [ ] mu+tau trigger SFs disagreement with Vienna
+- [x] mu+tau trigger SFs disagreement with Vienna
+
+- [ ] m_tau cross trigger differences (pass/fail) with Vienna
 
 - [ ] event number differences with other groups?
 
