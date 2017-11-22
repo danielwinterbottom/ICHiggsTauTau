@@ -132,6 +132,7 @@ def SetAxisTitles2D(plot, channel):
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)','GeV']
   titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
+  titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events','']
   if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)','GeV']
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
@@ -1956,7 +1957,7 @@ def createAxisHists(n,src,xmin=0,xmax=499):
   return result
 
 def PassAutoBlindMetric(s, b, epsilon=0.09, metric=0.5):
-    if b == 0: return True
+    if b <= 0: return True
     y = s/math.sqrt(b + (epsilon*b)**2)
     return y >= metric
 
@@ -2830,8 +2831,8 @@ def HTTPlotUnrolled(nodename,
     # Define signal schemes here
     sig_schemes = {}
 
-    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False , R.kRed) 
-    sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH"], False, R.kBlue)
+    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt"], False , R.kRed) 
+    sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2970,7 +2971,6 @@ def HTTPlotUnrolled(nodename,
     sighists = []
     sighist_blind = []
     if signal_mass != "":
-        #signal_scheme = 'sm_ggH'
         for signal_scheme in sig_schemes:
           sighist = R.TH1F()  
           sig_scheme = sig_schemes[signal_scheme]
