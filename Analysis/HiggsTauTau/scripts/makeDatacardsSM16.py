@@ -142,7 +142,7 @@ if options.no_shape_systs:
 if SCHEME == 'smsummer16':
   
   # replace m_vis with sv fit ass when it has been run
-  VAR_0JET_LT = 'tau_decay_mode_2,m_vis[0,1,2,10],[0,60,65,70,75,80,85,90,95,100,105,110,400]' # check how this works!
+  VAR_0JET_LT = 'tau_decay_mode_2,m_vis[0,1,10],[0,60,65,70,75,80,85,90,95,100,105,110,400]'
   VAR_0JET_EM = 'pt_2,m_vis[15,25,35],[0,50,55,60,65,70,75,80,85,90,95,100,400]'
   VAR_0JET_TT = 'm_vis[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
   

@@ -3140,7 +3140,8 @@ def HTTPlotUnrolled(nodename,
     if y_labels_vec is not None:
       pads[0].cd()  
       unit = y_labels_vec[1][2]
-      var = y_labels_vec[1][0].split(' ')[0]
+      var = y_labels_vec[1][0]
+      if '(' in var: var = var.split(' ')[0]
       y_bins = y_labels_vec[0]
       latex = R.TLatex()
       latex.SetNDC()
@@ -3149,11 +3150,16 @@ def HTTPlotUnrolled(nodename,
       latex.SetTextSize(0.028)
       
       Nybins = len(y_bins)
+      if Nybins > 5: latex.SetTextSize(0.023)
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
         if ymax == -1: y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
         else: y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        if "tau decay mode" in var and Nybins == 3:
+          if i == 0: y_bin_label = "1 prong"
+          if i == 1: y_bin_label = "1 prong + #pi^{0}"
+          if i == 2: y_bin_label = "3 prong"
         xshift = 0.78/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
         latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
         
