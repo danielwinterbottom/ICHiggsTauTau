@@ -27,11 +27,11 @@ ignore = options.ignore
 
 
 sample_list = [
-   'GluGluTpHToTauTau_M-110',
-   'GluGluTpHToTauTau_M-120',
+   'GluGluToHToTauTau_M-110',
+   'GluGluToHToTauTau_M-120',
    'GluGluToHToTauTau_M-125',
    'GluGluToHToTauTau_M-130',
-   'GluGluTpHToTauTau_M-140',
+   'GluGluToHToTauTau_M-140',
    'TTHToTauTau_M-120',
    'TTHToTauTau_M-125',
    'TTHToTauTau_M-130',
@@ -56,7 +56,7 @@ sample_list = [
    'ZHToTauTau_M-130',
    'ZHToTauTau_M-140',
    'GluGluHToWWTo2L2Nu_M-125',
-   'VBFHToWWTo2L2Nu_M-125'
+   'VBFHToWWTo2L2Nu_M-125',
    'QCDMuEnrichedPt15',
    'TT',
    'WJetsToLNu',
