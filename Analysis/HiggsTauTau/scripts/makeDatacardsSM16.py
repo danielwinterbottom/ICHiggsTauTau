@@ -116,6 +116,20 @@ extra_channel = {
       "tt" : ' ',
       "em" : ' '
   }
+
+common_shape_systematics=' --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_qcd_scale="CMS_scale_gg_13TeV" --syst_z_mjj="CMS_htt_zmumuShape_VBF_13TeV" '
+em_shape_systematics=''
+et_shape_systematics=''
+mt_shape_systematics=''
+tt_shape_systematics=''
+
+extra_channel = {
+      "et" : ' '+common_shape_systematics,
+      "mt" : ' '+common_shape_systematics,
+      "tt" : ' '+common_shape_systematics,
+      "em" : ' '+common_shape_systematics
+  }
+
 #extra_channel = {
 #    "et" : ' --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" --syst_efake_0pi_scale="CMS_scale_t_efake_1prong0pi0_13TeV" --syst_efake_1pi_scale="CMS_scale_t_efake_1prong1pi0_13TeV" --syst_tau_scale_0pi=CMS_scale_t_1prong0pi0_13TeV --syst_tau_scale_1pi=CMS_scale_t_1prong1pi0_13TeV --syst_tau_scale_3prong=CMS_scale_t_3prong0pi0_13TeV --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV', 
 #    "mt" : ' --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" --syst_tau_scale_0pi=CMS_scale_t_1prong0pi0_13TeV --syst_tau_scale_1pi=CMS_scale_t_1prong1pi0_13TeV --syst_tau_scale_3prong=CMS_scale_t_3prong0pi0_13TeV  --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV ',
@@ -205,7 +219,7 @@ for ch in channels:
     os.system('python $CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s'
               ' --method=%(cat_num)s --cat=%(cat_str)s --year=%(YEAR)s --outputfolder=%(output_folder)s/ --datacard=%(dc)s'
               ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(BLIND)s --ratio --log_y --norm_bins --extra_pad=0.2'
-              ' --var="%(var)s" %(extra)s' % vars())
+              ' --var="%(var)s" %(extra)s --no_plot' % vars())
               
   os.system('hadd -f %(output_folder)s/htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())
   os.system('rm %(output_folder)s/datacard_*_%(ch)s_%(YEAR)s.root' % vars())

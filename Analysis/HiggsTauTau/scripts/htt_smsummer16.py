@@ -86,7 +86,7 @@ parser.add_option("--taues_study", dest="taues_study", action='store_true', defa
 parser.add_option("--qcd_study", dest="qcd_study", action='store_true', default=False,
                   help="Run QCD MC sample for QCD study")
 
-parser.add_option("--analysis", dest="analysis", type='string', default='mssm',
+parser.add_option("--analysis", dest="analysis", type='string', default='sm',
                   help="Specify whether trees are produced for mssm or sm analysis")
 
 parser.add_option("--parajobs", dest="parajobs", action='store_true', default=False,
@@ -153,6 +153,14 @@ if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
 flatjsons = []
+# this makes sure the JES's are submitted as seperate jobs (solves memory issues)
+for i in flatjsonlistdysig:
+  if 'scale_j' in i:
+    flatjsons.append('job:sequences:all:'+i)
+    flatjsonlistdysig.remove(i)
+    scale = int(math.ceil(float((n_scales-2)*n_channels)/100))
+    if scale < 1: scale = 1
+# split into seperate jobs if number of scales is over a value
 for i in range(0,scale):
    first = i*int(math.ceil(total/scale))
    last = (i+1)*int(math.ceil(total/scale))
@@ -423,7 +431,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       JOB='%s_2016' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
-      for FLATJSONPATCH in flatjsons:
+      for FLATJSONPATCH in flatjsons: 
         nperjob = 30
         if 'scale' in FLATJSONPATCH:
           nperjob = 20

@@ -1885,7 +1885,7 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
           httWeights.set_strategy(strategy::smsummer16);
           httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
           httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
-          bool z_sample = (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos) || output_name.find("EWKZ2Jets") != output_name.npos;
+          bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
           httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample);
         }
         else { 
@@ -2003,7 +2003,7 @@ if(channel != channel::wmnu) {
 bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos && strategy_type == strategy::mssmsummer16;
 bool do_sm_scale_wts = output_name.find("GluGluToHToTauTau_M") != output_name.npos && output_name.find("SUSY") == output_name.npos && strategy_type == strategy::smsummer16;
 bool do_jes_vars = jes_mode > 0 && !is_data && js["baseline"]["split_by_source"].asBool();
-bool z_sample = (output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos) || output_name.find("EWKZ2Jets") != output_name.npos;
+bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)

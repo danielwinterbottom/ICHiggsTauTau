@@ -2009,6 +2009,7 @@ def HTTPlot(nodename,
     # Define signal schemes here
     sig_schemes = {}
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
+    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt", "WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
@@ -2473,6 +2474,7 @@ def HTTPlotSignal(nodename,
     # Define signal schemes here
     sig_schemes = {}
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"]) 
+    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"]) 
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"])
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"])
     
