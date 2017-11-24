@@ -580,8 +580,7 @@ if options.syst_lfake_dm0 != '' and options.cat == "0jet":
     systematics['syst_lfake_dm0_down'] = ('' , '_'+options.syst_lfake_dm0+'Down', 'wt*wt_lfake_dm0_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)    
 if options.syst_lfake_dm1 != '' and options.cat == "0jet":
     systematics['syst_lfake_dm1_up'] = ('' , '_'+options.syst_lfake_dm1+'Up', 'wt*wt_lfake_dm1_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
-    systematics['syst_lfake_dm1_down'] = ('' , '_'+options.syst_lfake_dm1+'Down', 'wt*wt_lfake_dm1_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)     
-    #syst_lfake_dm0
+    systematics['syst_lfake_dm1_down'] = ('' , '_'+options.syst_lfake_dm1+'Down', 'wt*wt_lfake_dm1_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt']:
     processes = ['tt','w','qcd']
@@ -867,6 +866,30 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='', wt='', sel='', cat='',
         get_os,
         btag_extrap_num_node,
         btag_extrap_den_node) 
+      
+  elif method in [21]:
+    control_sel = cats['w_sdb']+' && '+ OSSS
+    w_control_full_selection = BuildCutString(wt, control_sel, cat, OSSS)
+    subtract_node = GetSubtractNode(ana,'',plot,wt,control_sel,cat,method,qcd_os_ss_ratio,True,False) 
+    
+    qcd_subtract_node = GetSubtractNode(ana,'',plot,wt,cats['w_sdb'],cat,8,qcd_os_ss_ratio,False,True)
+    qcd_control_full_selection = BuildCutString(wt, cats['w_sdb'], cat, '!os')
+    qcd_node = HttQCDNode('QCD'+add_name,
+      ana.SummedFactory('data_ss', data, plot, qcd_control_full_selection),
+      qcd_subtract_node,
+      qcd_factor,
+      None)
+    
+    subtract_node.AddNode(qcd_node)
+    
+    if shape_selection == full_selection: w_shape = None
+    else: w_shape = ana.SummedFactory('w_shape', samples, plot, shape_selection)
+    w_node = HttWNode(name,
+      ana.SummedFactory('data_obs', data, plot, w_control_full_selection),
+      subtract_node,
+      ana.SummedFactory('W_cr', samples, plot, w_control_full_selection),
+      ana.SummedFactory('W_sr', samples, plot, full_selection),
+      w_shape)
   return w_node
 
 def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', wt='', sel='', cat='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):

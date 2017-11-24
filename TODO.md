@@ -2,7 +2,8 @@
 
 - [x] mu+tau trigger SFs disagreement with Vienna
 
-- [ ] m_tau cross trigger differences (pass/fail) with Vienna
+- [x] m_tau cross trigger differences (pass/fail) with Vienna
+- Think this is a problem on Viennas side
 
 - [ ] event number differences with other groups?
 
@@ -26,7 +27,8 @@
 
 - [x] Z->mumu correction for mjj shape (and systematic)?
 
-- [ ] background method for W - OSSS simultanious equations method?
+- [x] background method for W - OSSS simultanious equations method?
+- No is slightly different method - added method = 21 to plotting code to do this!
 
 - [x] W CR mT > 80 GeV
 - [ ] W CR for boosted used to constrain VBF - what to use as nominal estimate for W in VBF category
@@ -39,7 +41,8 @@ e->tau ES correction uncertainty = 3 %
 - [x] above 2 uncetainties seperate for different DMs but shold the uncertainty be included for 3-prong decays as well?
 - this is not included  for the 3prong decays and the systematic shifts are only included for ZL templates in et and mt channels
 
-- [ ] n_bjets==0 for emu channel only?
+- [x] n_bjets==0 for emu channel only?
+- Yes looks like this is for emu only
 
 - [x] JES uncertainties - implemented at the moment as seperate shifts - maybe better to add relevant variables (n_jets_X, n_bjets_X, mjj_X etc ....) for each JES shift X - use seperate module to do this after HTTCategories? - e.g copy HTTCateogry tree somehow and add extra branches?
 
@@ -51,8 +54,9 @@ e->tau ES correction uncertainty = 3 %
 
 - [x] Check naming of SM H templates should be e.g ggH_httM where M=mass
 
-- [ ] Find out what CMS_tauDMReco_, and CMS_mFakeTau_1prong_$ERA shape sytematics are (to do with fake-rate/ ID uncertainty? - but in bins of DM so affects shape also?)
+- [x] Find out what CMS_tauDMReco_, and CMS_mFakeTau_1prong_$ERA shape sytematics are (to do with fake-rate/ ID uncertainty? - but in bins of DM so affects shape also?)
+- 3% tau ID uncertainty in bins of DM plus e/mu->tau fake-rate uncertainties in bins of DM (DM=0,1)
 
-- [ ] Find out what TopMassTreatment_$ERA theory uncertainty is for ggH 
+- [ ] Find out what TopMassTreatment_$ERA theory uncertainty is for ggH and add template to datacards
 
 - [ ] Include shape uncertainty on QCD in et and mt channels due to W subtraction vary W norm in SS region by 10% (0 jet/ boosted) and 30% (VBF)
