@@ -514,8 +514,10 @@ if options.syst_zwt != '':
     systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'Up', 'wt*wt_zpt_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
 if options.syst_w_fake_rate != '':
-    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
-    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes'], False)
+    to_skip = ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125']
+    if options.era == "smsummer16": to_skip = ['ZTT','ZL','VVT','TTT','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125']
+    systematics['syst_w_fake_rate_up'] = ('' , '_'+options.syst_w_fake_rate+'Up', 'wt*wt_tau_fake_up', to_skip, False)
+    systematics['syst_w_fake_rate_down'] = ('' , '_'+options.syst_w_fake_rate+'Down', 'wt*wt_tau_fake_down', to_skip, False)
 if options.syst_jfake_m != '':
     systematics['syst_jfake_m_up'] = ('' , '_'+options.syst_jfake_m+'Up', 'wt*idisoweight_up_2', ['ZTT','QCD','signal','TT'], False)
     systematics['syst_jfake_m_down'] = ('' , '_'+options.syst_jfake_m+'Down', 'wt*idisoweight_down_2', ['ZTT','QCD','signal','TT'], False)
@@ -1183,6 +1185,22 @@ def NormFFSysts(ana,outfile='output.root'):
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write()
     
+def NormWFakeSysts(ana,outfile='output.root'):
+    nominal_hist = outfile.Get(nodename+'/W')
+    nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
+    directory = outfile.Get(nodename)
+    outfile.cd(nodename)
+    hists_to_add=[]
+    for key in directory.GetListOfKeys():
+        hist_name = key.GetName()
+        hist = directory.Get(hist_name)
+        if not isinstance(hist,ROOT.TDirectory):
+           if 'W' not in hist_name or options.syst_w_fake_rate not in hist_name: continue
+           norm = nominal_scale/hist.Integral(0,hist.GetNbinsX()+1)
+           hist.Scale(norm)
+           hists_to_add.append(hist)
+    for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+    
 def PDFUncerts(nodename, infile):
   def RMS(a):
     from numpy import mean, sqrt, square  
@@ -1811,6 +1829,7 @@ PrintSummary(nodename, ['data_obs'], add_names)
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
     
 if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
+if options.era == "smsummer16" and options.syst_w_fake_rate and options.method != 8: NormWFakeSysts(ana,outfile)
 if options.doNLOScales: 
     ScaleUncertBand(nodename,outfile)
     DONLOUncerts(nodename,outfile)
