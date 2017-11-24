@@ -1242,7 +1242,16 @@ class HTTCategories : public ModuleBase {
   
   double wt_z_down_;
   double wt_z_up_;
-  
+  double wt_tau_id_dm0_up_;
+  double wt_tau_id_dm0_down_;
+  double wt_tau_id_dm1_up_;
+  double wt_tau_id_dm1_down_;
+  double wt_tau_id_dm10_up_;
+  double wt_tau_id_dm10_down_;  
+  double wt_lfake_dm0_up_;
+  double wt_lfake_dm0_down_;
+  double wt_lfake_dm1_up_;
+  double wt_lfake_dm1_down_;
 
  public:
   HTTCategories(std::string const& name);

@@ -1158,6 +1158,18 @@ namespace ic {
           outtree_->Branch("wt_z_up",      &wt_z_up_);    
           outtree_->Branch("wt_z_down",    &wt_z_down_);    
         }
+        if(strategy_ == strategy::smsummer16){
+          outtree_->Branch("wt_tau_id_dm0_up"   ,    &wt_tau_id_dm0_up_);   
+          outtree_->Branch("wt_tau_id_dm0_down" ,    &wt_tau_id_dm0_down_); 
+          outtree_->Branch("wt_tau_id_dm1_up"   ,    &wt_tau_id_dm1_up_);   
+          outtree_->Branch("wt_tau_id_dm1_down" ,    &wt_tau_id_dm1_down_); 
+          outtree_->Branch("wt_tau_id_dm10_up"  ,    &wt_tau_id_dm10_up_);  
+          outtree_->Branch("wt_tau_id_dm10_down",    &wt_tau_id_dm10_down_); 
+          outtree_->Branch("wt_lfake_dm0_up"    ,    &wt_lfake_dm0_up_);    
+          outtree_->Branch("wt_lfake_dm0_down"  ,    &wt_lfake_dm0_down_);  
+          outtree_->Branch("wt_lfake_dm1_up"    ,    &wt_lfake_dm1_up_);    
+          outtree_->Branch("wt_lfake_dm1_down"  ,    &wt_lfake_dm1_down_);     
+        }
 
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
@@ -3570,6 +3582,18 @@ namespace ic {
     if(do_z_weights_ && !systematic_shift_){
       wt_z_up_   = event->Exists("wt_z_up" ) ? event->Get<double>("wt_z_up"  ) : 1.0;
       wt_z_down_ = event->Exists("wt_z_down") ? event->Get<double>("wt_z_down") : 1.0;   
+    }
+    if(strategy_ == strategy::smsummer16){
+      wt_tau_id_dm0_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
+      wt_tau_id_dm0_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
+      wt_tau_id_dm1_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
+      wt_tau_id_dm1_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
+      wt_tau_id_dm10_up_    = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
+      wt_tau_id_dm10_down_  = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
+      wt_lfake_dm0_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_down") : 1.0;
+      wt_lfake_dm0_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
+      wt_lfake_dm1_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
+      wt_lfake_dm1_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_down") : 1.0;     
     }
 
     if(do_jes_vars_){

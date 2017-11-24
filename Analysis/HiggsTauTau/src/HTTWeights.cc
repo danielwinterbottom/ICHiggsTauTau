@@ -614,6 +614,10 @@ namespace ic {
         }
         else tau_sf_2 = tau_sf_2_old;
         event->Add("wt_tau_id_binned",tau_sf_2_old/(tau_sf_2));
+        if(strategy_==strategy::smsummer16 && gen_match_2 == 5){
+          event->Add("wt_tau_id_dm_up",1.03);
+          event->Add("wt_tau_id_dm_down",0.97);
+        }
       } else {
         unsigned gen_match_2 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
         unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
@@ -2686,6 +2690,10 @@ namespace ic {
             if(fabs(tau->eta()) < 1.5){
                etau_fakerate_2 = 1.40;
             } else etau_fakerate_2=1.90;
+            if(strategy_==strategy::smsummer16){
+              event->Add("wt_lfake_rate_up",1.12);
+              event->Add("wt_lfake_rate_down",0.88);
+            }
           }
         } else {
           if(gm2_==1||gm2_==3){
@@ -2762,6 +2770,10 @@ namespace ic {
               mtau_fakerate_2=1.72;
             } else if(fabs(tau->eta()) < 2.3){
               mtau_fakerate_2=2.5;
+            }
+            if(strategy_==strategy::smsummer16){
+              event->Add("wt_lfake_rate_up",1.25);
+              event->Add("wt_lfake_rate_down",0.75);
             }
           }
         } else {
