@@ -168,7 +168,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
   
-FILELIST='filelists/Apr05_MC_80X'
+FILELIST='filelists/Nov20_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -319,7 +319,10 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         nperjob = 40
         
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-          os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+          command='%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars()
+          if True in ['scale_j' in i for i in flatjsonlistdysig]:
+            command='%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=job:sequences:all:^default^scale_j_hi^scale_j_lo --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars()    
+          os.system(command)
           if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
         if parajobs: 
           os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
@@ -419,7 +422,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 
   if options.qcd_study:
     #FILELIST='filelists/Feb25_MC_76X'
-    FILELIST='filelists/Apr05_MC_80X'
+    FILELIST='filelists/Nov20_MC_80X'
     central_samples = [
       'QCDMuEnrichedPt15'
   #    'QCDEMEnrichedPt15-20',
@@ -465,7 +468,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 #if float(n_scales*n_channels)/100 > 1: nperjob = int(math.ceil(nperjob/(float(n_scales*n_channels)/100)))  
 
 if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hhh or options.proc_all:
-  if options.analysis == 'sm': SIG_FILELIST='filelists/Oct26_MC_80X' 
+  if options.analysis == 'sm': SIG_FILELIST='filelists/Nov20_MC_80X' 
   else: SIG_FILELIST = FILELIST
   for sa in signal_mc:
     JOB='%s_2016' % (sa)

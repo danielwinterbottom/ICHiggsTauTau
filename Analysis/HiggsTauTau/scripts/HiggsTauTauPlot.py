@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":True, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"", "syst_tau_id_dm10":"", "syst_lfake_dm0":"", "syst_lfake_dm1":"","syst_qcd_shape_wsf":"","syst_scale_met_unclustered":"","syst_scale_met_clustered":"" }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"","syst_scale_j_by_source":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":True, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"", "syst_tau_id_dm10":"", "syst_lfake_dm0":"", "syst_lfake_dm1":"","syst_qcd_shape_wsf":"","syst_scale_met_unclustered":"","syst_scale_met_clustered":"" }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -103,6 +103,8 @@ parser.add_argument("--syst_w_fake_rate", dest="syst_w_fake_rate", type=str, def
     help="If this string is set then the W+jets fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_scale_j", dest="syst_scale_j", type=str,
     help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_scale_j_by_source", dest="syst_scale_j_by_source", type=str,
+    help="If this string is set then the jet scale systematic is performed split by source with the set string appended to the resulting histogram name. The string should contrain the substring  \'SOUCE\' which will be replaced by the JES source name")
 parser.add_argument("--syst_eff_b", dest="syst_eff_b", type=str,
     help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_fake_b", dest="syst_fake_b", type=str,
@@ -589,7 +591,7 @@ if options.syst_lfake_dm0 != '' and options.cat == "0jet":
 if options.syst_lfake_dm1 != '' and options.cat == "0jet":
     systematics['syst_lfake_dm1_up'] = ('' , '_'+options.syst_lfake_dm1+'Up', 'wt*wt_lfake_dm1_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_lfake_dm1_down'] = ('' , '_'+options.syst_lfake_dm1+'Down', 'wt*wt_lfake_dm1_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
-if options.syst_qcd_shape_wsf:
+if options.syst_qcd_shape_wsf != '':
     systematics['syst_qcd_shape_wsf_up'] = ('' , '_'+options.syst_qcd_shape_wsf.replace('cat',options.cat)+'Up', 'wt', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','jetFakes','signal','W','EWKZ','ggH_hww125','qqH_hww125'], False)
     systematics['syst_qcd_shape_wsf_down'] = ('' , '_'+options.syst_qcd_shape_wsf.replace('cat',options.cat)+'Down', 'wt', ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','jetFakes','signal','W','EWKZ','ggH_hww125','qqH_hww125'], False)
     if options.cat in ["0jet","boosted"]: w_abs_shift=0.1
@@ -599,7 +601,16 @@ if options.syst_scale_met_unclustered != '':
     systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['QCD','jetFakes'], False)
 if options.syst_scale_met_clustered != '':
     systematics['syst_scale_met_clustered_up'] = ('METCL_UP' , '_'+options.syst_scale_met_clustered+'Up', 'wt', ['QCD','jetFakes'], False)
-    systematics['syst_scale_met_clustered_down'] = ('METCL_DOWN' , '_'+options.syst_scale_met_clustered+'Down', 'wt', ['QCD','jetFakes'], False)    
+    systematics['syst_scale_met_clustered_down'] = ('METCL_DOWN' , '_'+options.syst_scale_met_clustered+'Down', 'wt', ['QCD','jetFakes'], False)  
+if options.syst_scale_j_by_source != '':
+    jes_sources={"AbsoluteFlavMap":1,"AbsoluteMPFBias":2,"AbsoluteScale":3,"AbsoluteStat":4,"FlavorQCD":5,"Fragmentation":6,"PileUpDataMC":7,"PileUpPtBB":8,"PileUpPtEC1":9,"PileUpPtEC2":10,"PileUpPtHF":11,"PileUpPtRef":12,"RelativeBal":13,"RelativeFSR":14,"RelativeJEREC1":15,"RelativeJEREC2":16,"RelativeJERHF":17,"RelativePtBB":18,"RelativePtEC1":19,"RelativePtEC2":20,"RelativePtHF":21,"RelativeStatEC":22,"RelativeStatFSR":23,"RelativeStatHF":24,"SinglePionECAL":25,"SinglePionHCAL":26,"TimePtEta":27}
+    for source in jes_sources:
+      jes_num = jes_sources[source]  
+      replace_dict = {'n_jets':'n_jets_%i'%jes_num, 'n_bjets':'n_bjets_%i'%jes_num, 'mjj':'mjj_%i'%jes_num, 'jdeta':'jdeta_%i'%jes_num, 'jdphi':'jdphi_%i'%jes_num, 'jpt_1':'jpt_1_%i'%jes_num, 'jpt_2':'jpt_2_%i'%jes_num}
+      syst_name = 'syst_scale_j_by_source_'+source
+      hist_name = options.syst_scale_j_by_source.replace('SOURCE', source)
+      systematics[syst_name+'_up'] = ('JES_UP' , '_'+hist_name+'Up', 'wt', ['QCD','jetFakes'], False,replace_dict)
+      systematics[syst_name+'_down'] = ('JES_DOWN' , '_'+hist_name+'Down', 'wt', ['QCD','jetFakes'], False,replace_dict) 
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt']:
     processes = ['tt','w','qcd']
@@ -977,8 +988,8 @@ def GenerateQCD(ana, add_name='', data=[], plot='', wt='', sel='', cat='', metho
             if get_os and options.channel == "em":
                 weight = wt+'*wt_em_qcd'
             if method == 19:
-                shape_selection = BuildCutString(weight, sel, em_shape_cat, '!os')
-                subtract_node = GetSubtractNode(ana,'',plot,weight,sel,em_shape_cat,method,1,False,True)
+                shape_selection = BuildCutString(weight, sel, cats['em_shape_cat'], '!os')
+                subtract_node = GetSubtractNode(ana,'',plot,weight,sel,cats['em_shape_cat'],method,1,False,True)
                 shape_node = SubtractNode('shape', ana.SummedFactory('data_ss',data, plot, shape_selection), subtract_node)
         
         if cats['qcd_shape'] != "" or w_shift is not None: 
@@ -1270,6 +1281,11 @@ def NormWFakeSysts(ana,outfile='output.root'):
            hist.Scale(norm)
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+    
+def OverwriteNames(input_string,replace_dict={}):
+    for i in replace_dict:
+      input_string=input_string.replace(i,replace_dict[i])
+    return input_string
     
 def PDFUncerts(nodename, infile):
   def RMS(a):
@@ -1767,8 +1783,8 @@ elif options.channel == 'et' or options.channel == 'zee':
 elif options.channel == 'tt':
     ana.remaps['Tau'] = 'data_obs'
     
-cat = '('+cats[options.cat]+')*('+cats['baseline']+')'
-if options.channel=="em": em_shape_cat = '('+cats[options.cat]+')*('+cats['loose_baseline']+')'
+cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
+if options.channel=="em": cats['em_shape_cat'] = '('+cats[options.cat]+')*('+cats['loose_baseline']+')'
 sel = options.sel
 plot = options.var
 if options.datacard != "": nodename = options.channel+'_'+options.datacard
@@ -1782,15 +1798,24 @@ if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.
     ana_down = copy.deepcopy(ana)    
 
 add_names = []
+cats_unmodified = copy.deepcopy(cats)
 
 for systematic in systematics:
     
     print "Processing:", systematic
     print ""
     
+    plot = options.var
+    cats=copy.deepcopy(cats_unmodified)
     wshift=1.0
     if systematic == 'syst_qcd_shape_wsf_up': wshift+=w_abs_shift
     if systematic == 'syst_qcd_shape_wsf_down': wshift-=w_abs_shift
+    
+    if options.syst_scale_j_by_source != '' and 'syst_scale_j_by_source' in systematic:
+      # if JES systematic split by source then the category and plotting variable strings need to be modified to use the shifted variables
+      replace_dict = systematics[systematic][5]  
+      for cat in cats: cats[cat] = OverwriteNames(cats[cat], replace_dict)
+      plot = OverwriteNames(plot, replace_dict)
     
     add_folder_name = systematics[systematic][0]
     add_name = systematics[systematic][1]
@@ -1882,14 +1907,14 @@ for systematic in systematics:
     if options.scheme == 'signal': 
         samples_to_skip.extend(['TTT','TTJ','VVT','VVJ','W','QCD','jetFakes','ZLL','ZTT','ZL'])
         do_data = False
-    RunPlotting(ana, cat, sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
+    RunPlotting(ana, cats['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
     
     
     if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
         add_names.append("_custom_uncerts_up")
         add_names.append("_custom_uncerts_down")
-        RunPlotting(ana_up, cat, sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
-        RunPlotting(ana_down, cat, sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
+        RunPlotting(ana_up, cats['cat'], sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
+        RunPlotting(ana_down, cats['cat'], sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
     
 ana.Run()
 ana.nodes.Output(outfile)
