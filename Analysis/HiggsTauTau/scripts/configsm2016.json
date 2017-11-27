@@ -56,14 +56,14 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Nov24/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Nov25/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Nov24_SVFit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Nov25_SVFit/",
     "svfit_override" : "",
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
@@ -97,6 +97,8 @@
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
+      "metcl_mode"        : 0,
+      "metuncl_mode"      : 0,
       "mass_shift"        : 1.0,
       "do_em_extras"      : true,
       "di_elec_veto"      : false,
@@ -729,6 +731,30 @@
       "baseline": {
         "addit_output_folder" : "MET_RES_UP",
         "metres_mode" : 2
+      }
+    },
+    "met_cl_lo": {
+      "baseline": {
+        "addit_output_folder" : "METCL_DOWN",
+        "metcl_mode" : 1
+      }
+    },
+    "met_cl_hi": {
+      "baseline": {
+        "addit_output_folder" : "METCL_UP",
+        "metcl_mode" : 2
+      }
+    },
+    "met_uncl_lo": {
+      "baseline": {
+        "addit_output_folder" : "METUNCL_DOWN",
+        "metuncl_mode" : 1
+      }
+    },
+    "met_uncl_hi": {
+      "baseline": {
+        "addit_output_folder" : "METUNCL_UP",
+        "metuncl_mode" : 2
       }
     },
     "scale_b_lo": {

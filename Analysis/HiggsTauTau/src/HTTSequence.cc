@@ -107,6 +107,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   jes_mode=json["baseline"]["jes_mode"].asUInt();
   metscale_mode=json["baseline"]["metscale_mode"].asUInt();
   metres_mode=json["baseline"]["metres_mode"].asUInt();
+  metcl_mode=json["baseline"]["metcl_mode"].asUInt();
+  metuncl_mode=json["baseline"]["metuncl_mode"].asUInt();
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
@@ -1013,7 +1015,9 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
        .set_tau_scale(tau_shift)
        .set_use_most_isolated((strategy_type != strategy::paper2013) && (!(channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee)))
        .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
-       .set_allowed_tau_modes(allowed_tau_modes);
+       .set_allowed_tau_modes(allowed_tau_modes)
+       .set_metuncl_mode(metuncl_mode)
+       .set_metcl_mode(metcl_mode);
    
      if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
        httPairSelector.set_gen_taus_label("genParticles");
