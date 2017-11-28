@@ -12,7 +12,7 @@
 - [x] MET systematics as shape uncertainties or not?
 - There are 2 MET shape systematics included unclusted and clustered which are added for all MC processes
 
-- [ ] Find out how to compute MET unclustered and clustered systematic shifts and add to datacards
+- [x] Find out how to compute MET unclustered and clustered systematic shifts and add to datacards
 - unclustered = UnclusterEnUp/Down shift, clustered = JetEnUp/Down shift (requires new ntuples with shifts stored)
 
 - [x] W+gamma samples for emu channel only?
@@ -31,9 +31,9 @@
 - No is slightly different method - added method = 21 to plotting code to do this!
 
 - [x] W CR mT > 80 GeV
-- [ ] W CR for boosted used to constrain VBF - what to use as nominal estimate for W in VBF category
-
-- [ ] QCD CR - boosted used to constrain VBF so same comments as above
+- [x] W CR for boosted used to constrain VBF - what to use as nominal estimate for W in VBF category
+- I think this is just the nominal value obtained from using the same W method with the VBF selections applied
+- [x] QCD CR - boosted used to constrain VBF so same comments as above
 
 - [x] mu->tau ES correction uncertainty = 1.5 %
 e->tau ES correction uncertainty = 3 % 
@@ -50,7 +50,7 @@ e->tau ES correction uncertainty = 3 %
 
 - [ ] write script to make datacards and add required systematics to plotting code
 
-- [ ] check how sampls are split into real and fake e.g TTJ and TTT because something I read suggested TTT contains only events where 1 tau is real (for et and mt) and where both taus are real - we currently include all genuine taus and l->tau fakes in the TTT teamples
+- [x] check how sampls are split into real and fake e.g TTJ and TTT because something I read suggested TTT contains only events where 1 tau is real (for et and mt) and where both taus are real - we currently include all genuine taus and l->tau fakes in the TTT teamples
 
 - [x] Check naming of SM H templates should be e.g ggH_httM where M=mass
 
@@ -59,4 +59,4 @@ e->tau ES correction uncertainty = 3 %
 
 - [ ] Find out what TopMassTreatment_$ERA theory uncertainty is for ggH and add template to datacards
 
-- [ ] Include shape uncertainty on QCD in et and mt channels due to W subtraction vary W norm in SS region by 10% (0 jet/ boosted) and 30% (VBF)
+- [x] Include shape uncertainty on QCD in et and mt channels due to W subtraction vary W norm in SS region by 10% (0 jet/ boosted) and 30% (VBF)
