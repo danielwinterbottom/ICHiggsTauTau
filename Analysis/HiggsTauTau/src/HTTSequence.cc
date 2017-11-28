@@ -79,7 +79,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
     if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else {std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
-    svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
+    if(jes_mode > 0 && json["baseline"]["split_by_source"].asBool()) svfit_folder=svfit_folder+"/";
+    else svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   }
   svfit_override = json["svfit_override"].asString();
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
