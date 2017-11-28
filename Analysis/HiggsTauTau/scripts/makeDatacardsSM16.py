@@ -152,8 +152,8 @@ if SCHEME == 'smsummer16':
   VAR_VBF = 'mjj,m_vis[300,700,1100,1500],[0,95,115,135,155,400]' #m_sv
   VAR_VBF_TT = 'mjj,m_vis[0,300,500,800],[0,40,60,70,80,90,100,110,120,130,150,200,250]' #m_sv
   
-  VAR_0JET_LT_WCR = 'mt_t[80,200]'
-  VAR_BOOSTED_WCR = 'mt_t[80,200]'
+  VAR_0JET_LT_WCR = 'mt_1[80,200]'
+  VAR_BOOSTED_WCR = 'mt_1[80,200]'
   
   VAR_0JET_LT_QCDCR = 'm_vis(4,40,200)' 
   VAR_BOOSTED_LT_QCDCR = 'm_vis(4,40,200)' # m_sv
