@@ -351,7 +351,7 @@ if options.channel == "em":
 # 2016 sm analysis uses relaxed shape selections for W + WCD processes in et and mt channel, these are set here
 if options.era == 'smsummer16':
   if options.channel == 'et': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singleelectron)*('+cats[options.cat]+')'
-  if options.channel == 'mt': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && trg_singlemuon)*('+cats[options.cat]+')'
+  if options.channel == 'mt': cats['qcd_shape'] = '(iso_1<0.3 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))*('+cats[options.cat]+')'
   cats['w_shape'] = cats['qcd_shape']
 
 
