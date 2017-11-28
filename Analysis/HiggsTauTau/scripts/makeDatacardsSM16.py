@@ -130,14 +130,6 @@ extra_channel = {
       "em" : ' '+common_shape_systematics+ ' '+em_shape_systematics
   }
 
-
-#extra_channel = {
-#    "et" : ' --syst_eff_t="CMS_eff_t_mssmHigh_et_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" --syst_efake_0pi_scale="CMS_scale_t_efake_1prong0pi0_13TeV" --syst_efake_1pi_scale="CMS_scale_t_efake_1prong1pi0_13TeV" --syst_tau_scale_0pi=CMS_scale_t_1prong0pi0_13TeV --syst_tau_scale_1pi=CMS_scale_t_1prong1pi0_13TeV --syst_tau_scale_3prong=CMS_scale_t_3prong0pi0_13TeV --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV', 
-#    "mt" : ' --syst_eff_t="CMS_eff_t_mssmHigh_mt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_w_fake_rate="CMS_htt_wFakeShape_13TeV" --syst_tau_scale_0pi=CMS_scale_t_1prong0pi0_13TeV --syst_tau_scale_1pi=CMS_scale_t_1prong1pi0_13TeV --syst_tau_scale_3prong=CMS_scale_t_3prong0pi0_13TeV  --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV ',
-#    "tt" : ' --syst_eff_t="CMS_eff_t_mssmHigh_tt_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_tau_scale_0pi=CMS_scale_t_1prong0pi0_13TeV --syst_tau_scale_1pi=CMS_scale_t_1prong1pi0_13TeV --syst_tau_scale_3prong=CMS_scale_t_3prong0pi0_13TeV --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV ',
-#    "em" : ' --syst_tau_scale="CMS_scale_e_em_13TeV" --syst_tquark="CMS_htt_ttbarShape_13TeV" --syst_zwt="CMS_htt_dyShape_13TeV" --syst_zpt_es=CMS_htt_dyShape_scale_m_13TeV --syst_zpt_tt=CMS_htt_dyShape_tjXsec_13TeV --syst_zpt_statpt0=CMS_htt_dyShape_stat_m400pt0_13TeV --syst_zpt_statpt40=CMS_htt_dyShape_stat_m400pt40_13TeV --syst_zpt_statpt80=CMS_htt_dyShape_stat_m400pt80_13TeV --syst_jfake_e="CMS_htt_em_eFake_13TeV" --syst_jfake_m="CMS_htt_em_muFake_13TeV" ',
-#}
-
 if options.no_shape_systs:
   extra_channel = {
       "et" : ' ',
@@ -146,41 +138,55 @@ if options.no_shape_systs:
       "em" : ' '
   }
 
-# update these to latest norm systematics
-#if options.norm_systs:
-#  extra_channel["et"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
-#  extra_channel["mt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
-#  extra_channel["tt"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
-#  extra_channel["em"] += ' --syst_scale_j="CMS_scale_j_13TeV"  --syst_eff_b="CMS_scale_b_13TeV" --syst_fake_b="CMS_fake_b_13TeV" '
-
 
 if SCHEME == 'smsummer16':
   
   # replace m_vis with sv fit ass when it has been run
   VAR_0JET_LT = 'tau_decay_mode_2,m_vis[0,1,10],[0,60,65,70,75,80,85,90,95,100,105,110,400]'
   VAR_0JET_EM = 'pt_2,m_vis[15,25,35],[0,50,55,60,65,70,75,80,85,90,95,100,400]'
-  VAR_0JET_TT = 'm_vis[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
+  VAR_0JET_TT = 'm_vis[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]' #m_sv
   
-  VAR_BOOSTED = 'pt_tt,m_vis[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]'
-  VAR_BOOSTED_TT = 'pt_tt,m_vis[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]'
+  VAR_BOOSTED = 'pt_tt,m_vis[0,100,150,200,250,300],[0,80,90,100,110,120,130,140,150,160,300]' #m_sv
+  VAR_BOOSTED_TT = 'pt_tt,m_vis[0,100,170,300],[0,40,60,70,80,90,100,110,120,130,150,200,250]' #m_sv
   
-  VAR_VBF = 'mjj,m_vis[300,700,1100,1500],[0,95,115,135,155,400]'
-  VAR_VBF_TT = 'mjj,m_vis[0,300,500,800],[0,40,60,70,80,90,100,110,120,130,150,200,250]'
+  VAR_VBF = 'mjj,m_vis[300,700,1100,1500],[0,95,115,135,155,400]' #m_sv
+  VAR_VBF_TT = 'mjj,m_vis[0,300,500,800],[0,40,60,70,80,90,100,110,120,130,150,200,250]' #m_sv
+  
+  VAR_0JET_LT_WCR = 'mt_t[80,200]'
+  VAR_BOOSTED_WCR = 'mt_t[80,200]'
+  
+  VAR_0JET_LT_QCDCR = 'm_vis(4,40,200)' 
+  VAR_BOOSTED_LT_QCDCR = 'm_vis(4,40,200)' # m_sv
+  
+  VAR_0JET_TT_QCDCR = 'm_vis[0,300]' # m_sv
+  VAR_BOOSTED_TT_QCDCR = 'm_vis[0,300]' # m_sv
+  VAR_VBF_TT_QCDCR = 'm_vis[0,250]' # m_sv
 
   scheme_et = [
-    ("12",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),
-    ("12",   "boosted", "boosted",  VAR_BOOSTED, '--set_alias="sel:mt_1<50" '),
-    ("12",   "vbf",     "vbf",  VAR_VBF, '--set_alias="sel:mt_1<50" ')
+    ("21",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),
+    ("21",   "0jet",    "wjets_0jet_cr",  VAR_0JET_LT_WCR, '--set_alias="sel:mt_1>80" --set_alias="0jet:({0jet}&&n_bjets==0)" '),
+    ("21",   "0jet",    "antiiso_0jet_cr",  VAR_0JET_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.1 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && trg_singleelectron)" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.1)" --set_alias="w_shape:({w_shape}&&iso_1>0.1)" '),
+    ("21",   "boosted", "boosted",  VAR_BOOSTED, '--set_alias="sel:mt_1<50" '),
+    ("21",   "boosted", "wjets_boosted_cr",  VAR_BOOSTED_WCR, '--set_alias="sel:mt_1>80" --set_alias="boosted:({boosted}&&n_bjets==0)" '),
+    ("21",   "boosted",    "antiiso_boosted_cr",  VAR_BOOSTED_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.1 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && trg_singleelectron)" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.1)" --set_alias="w_shape:({w_shape}&&iso_1>0.1)" '),
+    ("21",   "vbf",     "vbf",  VAR_VBF, '--set_alias="sel:mt_1<50" ')
   ]
   scheme_mt = [
-    ("12",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),
-    ("12",   "boosted", "boosted",  VAR_BOOSTED, '--set_alias="sel:mt_1<50" '),
-    ("12",   "vbf",     "vbf",  VAR_VBF, '--set_alias="sel:mt_1<50" ')
+    ("21",   "0jet",    "0jet",  VAR_0JET_LT, '--set_alias="sel:mt_1<50" '),
+    ("21",   "0jet",    "wjets_0jet_cr",  VAR_0JET_LT_WCR, '--set_alias="sel:(mt_1>80&&mt_1<200)" --set_alias="0jet:({0jet}&&n_bjets==0)" '),
+    ("21",   "0jet",    "antiiso_0jet_cr",  VAR_0JET_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.15 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.15)" --set_alias="w_shape:({w_shape}&&iso_1>0.15)" '),
+    ("21",   "boosted", "boosted",  VAR_BOOSTED, '--set_alias="sel:mt_1<50" '),
+    ("21",   "boosted", "wjets_boosted_cr",  VAR_BOOSTED_WCR, '--set_alias="sel:mt_1>80" --set_alias="boosted:({boosted}&&n_bjets==0)" '),
+    ("21",   "boosted",    "antiiso_boosted_cr",  VAR_BOOSTED_LT_QCDCR, '--set_alias="sel:mt_1<50" --set_alias="baseline:(iso_1>0.15 && iso_1<0.3 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && leptonveto==0 && pt_2>30 && (trg_singlemuon*(pt_1>23) || trg_mutaucross*(pt_1<23)))" --set_alias="qcd_shape:({qcd_shape}&&iso_1>0.15)" --set_alias="w_shape:({w_shape}&&iso_1>0.15)" '),
+    ("21",   "vbf",     "vbf",  VAR_VBF, '--set_alias="sel:mt_1<50" ')
   ]
   scheme_tt = [
     ("8",   "0jet",    "0jet",  VAR_0JET_TT, ''),
+    ("8",   "0jet",    "0jet_qcd_cr",  VAR_0JET_TT_QCDCR, ' --do_ss '),
     ("8",   "boosted", "boosted",  VAR_BOOSTED_TT, ''),
-    ("8",   "vbf",     "vbf",  VAR_VBF_TT, '')
+    ("8",   "boosted", "boosted_qcd_cr",  VAR_BOOSTED_TT_QCDCR, ' --do_ss '),
+    ("8",   "vbf",     "vbf",  VAR_VBF_TT, ''),
+    ("8",   "vbf",    "0jet_vbf_cr",  VAR_VBF_TT_QCDCR, ' --do_ss ')
   ]
   scheme_em = [
     ("15",   "0jet",    "0jet",  VAR_0JET_EM, '--set_alias="sel:mt_1<50" '),
