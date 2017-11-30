@@ -235,6 +235,7 @@ print 'outputfolder      = ' + options.outputfolder
 print 'folder            = ' + options.folder
 print 'paramfile         = ' + options.paramfile
 print 'cat               = ' + options.cat
+print 'datacard          = ' + options.datacard
 print 'year              = ' + options.year
 print 'era               = ' + options.era
 print 'sel               = ' + options.sel
@@ -442,12 +443,18 @@ if options.channel in ['mj']:
   top_sels['ttj_sel'] = '(1)'
   
 if options.era == "smsummer16":
-  if options.channel in ['et','mt','mj']:
+  if options.channel in ['et','mt']:
+    z_sels['ztt_sel'] = '(gen_match_2==5)'
+    z_sels['zl_sel'] = '(gen_match_2<3)'
+    z_sels['zj_sel'] = '(gen_match_2!=5 && gen_match_2>=3)'  
     vv_sels['vvt_sel'] = '(gen_match_2==5)'
     vv_sels['vvj_sel'] = '(gen_match_2!=5)'
     top_sels['ttt_sel'] = '(gen_match_2==5)' 
     top_sels['ttj_sel'] = '(gen_match_2!=5)'
   elif options.channel == 'tt':
+    z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
+    z_sels['zl_sel'] = '(gen_match_2<3&&gen_match_1<3)'
+    z_sels['zj_sel'] = '(!(gen_match_2<3&&gen_match_1<3) && !(gen_match_1==5&&gen_match_2==5))'  
     vv_sels['vvt_sel'] = '(gen_match_1==5 && gen_match_2==5)'
     vv_sels['vvj_sel'] = '(!(gen_match_1!=5 && gen_match_2!=5))'
     top_sels['ttt_sel'] = '(gen_match_1==5 && gen_match_2==5)' 
@@ -464,15 +471,15 @@ if options.channel == 'tt':
     data_samples = ['TauB','TauC','TauD']
     
 # Add MC sample names   
-ztt_base_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-vv_base_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','ZZTo2L2Q','ZZTo4L','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
-wgam_base_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
-top_base_samples = ['TT']
-ztt_base_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-wjets_base_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
-ewkz_base_samples = []
-gghww_base_samples = []
-qqhww_base_samples = []
+ztt_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','ZZTo2L2Q','ZZTo4L','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+wgam_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
+top_samples = ['TT']
+ztt_shape_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+ewkz_samples = []
+gghww_samples = []
+qqhww_samples = []
 
 if options.era == "mssmsummer16" or options.era == "smsummer16":
     # Add data sample names
@@ -486,28 +493,28 @@ if options.era == "mssmsummer16" or options.era == "smsummer16":
         data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauHv2','TauHv3']
         
     # Add MC sample names   
-    ztt_base_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    vv_base_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
-    wgam_base_samples = ['WGToLNuG','WGToLNuG-ext','WGstarToLNuEE','WGstarToLNuMuMu']
-    top_base_samples = ['TT']
-    ztt_base_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    wjets_base_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
+    ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+    wgam_samples = ['WGToLNuG','WGToLNuG-ext','WGstarToLNuEE','WGstarToLNuMuMu']
+    top_samples = ['TT']
+    ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+    wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
     
 if options.era == "smsummer16":
-    wjets_base_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
-    ewkz_base_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
-    gghww_base_samples = ['GluGluHToWWTo2L2Nu_M-125']
-    qqhww_base_samples = ['VBFHToWWTo2L2Nu_M-125']
+    wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
+    ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
+    gghww_samples = ['GluGluHToWWTo2L2Nu_M-125']
+    qqhww_samples = ['VBFHToWWTo2L2Nu_M-125']
 
-sm_base_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
-if options.era == "smsummer16": sm_base_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
-if options.analysis == 'mssm': sm_base_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
-mssm_base_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
-mssm_base_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
-mssm_base_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*' }
-mssm_base_nlo_qsh_samples = { 'bbH-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
+sm_samples = { 'ggH' : 'GluGluHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*', 'TTH' : 'TTHToTauTau_M-*' }
+if options.era == "smsummer16": sm_samples = { 'ggH_htt' : 'GluGluToHToTauTau_M-*', 'qqH_htt' : 'VBFHToTauTau_M-*', 'WplusH_htt' : 'WplusHToTauTau_M-*', 'WminusH_htt' : 'WminusHToTauTau_M-*', 'ZH_htt' : 'ZHToTauTau_M-*'} # removing TTH for now because it isn't processed
+if options.analysis == 'mssm': sm_samples = { 'ggH' : 'GluGluToHToTauTau_M-*', 'qqH' : 'VBFHToTauTau_M-*', 'WplusH' : 'WplusHToTauTau_M-*', 'WminusH' : 'WminusHToTauTau_M-*', 'ZH' : 'ZHToTauTau_M-*'}
+mssm_samples = { 'ggH' : 'SUSYGluGluToHToTauTau_M-*', 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*' }
+mssm_nlo_samples = { 'bbH' : 'SUSYGluGluToBBHToTauTau_M-*-NLO' }
+mssm_lo_samples = { 'bbH-LO' : 'SUSYGluGluToBBHToTauTau_M-*' }
+mssm_nlo_qsh_samples = { 'bbH-QshUp' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshUp', 'bbH-QshDown' : 'SUSYGluGluToBBHToTauTau_M-*-NLO-QshDown' }
 if options.nlo_qsh: mssm_nlo_samples.update(mssm_nlo_qsh_samples)
-Hhh_base_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
+Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 
 # set systematics: first index sets folder name contaning systematic samples, second index sets string to be appended to output histograms, third index specifies the weight to be applied , 4th lists samples that should be skipped
 systematics = OrderedDict()
@@ -651,6 +658,9 @@ if options.method in [17,18] and options.do_ff_systs and options.channel in ['et
         weight_name = 'wt_ff_'+options.cat+'_'+process+'_frac_syst_'
         systematics[template_name+'_up']   = ('' , '_'+template_name+'Up',   weight_name+'up',   ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
         systematics[template_name+'_down'] = ('' , '_'+template_name+'Down', weight_name+'down', ['ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], True)
+
+# sort systematics by tree's input directory name        
+systematics = OrderedDict(sorted(systematics.items(), key=lambda key: key[1]))
 
 if options.qcd_os_ss_ratio > 0:
     qcd_os_ss_ratio = options.qcd_os_ss_ratio
@@ -1692,7 +1702,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     if 'signal' not in samples_to_skip:
         if options.analysis == 'sm':
             procs=[]
-            for proc in sm_base_samples:
+            for proc in sm_samples:
                 if True not in [samp in proc for samp in samples_to_skip]: procs.append(proc)   
             GenerateSMSignal(ana, add_name, plot, sm_masses, wt, sel, cat, not options.do_ss,processes=procs)
         elif options.analysis == 'mssm' and (options.ggh_masses != "" or options.bbh_masses != ""):
@@ -1812,7 +1822,6 @@ cats_unmodified = copy.deepcopy(cats)
 
 max_systs_per_pass = 20 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
 while len(systematics) > 0:
-
   ana = Analysis()
   if options.syst_scale_j_by_source != '': ana.writeSubnodes(False) # storing subnodes uses too much memory when doing JES uncertainties split by source
   
@@ -1831,10 +1840,11 @@ while len(systematics) > 0:
       ana_up   = Analysis()
       ana_down = Analysis()
       ana_up = copy.deepcopy(ana)
-      ana_down = copy.deepcopy(ana)     
-
-  for systematic in list(systematics.keys())[:max_systs_per_pass]:
-      
+      ana_down = copy.deepcopy(ana)
+  prev_dir=None    
+  for index, systematic in enumerate(list(systematics.keys())[:max_systs_per_pass]):
+      if prev_dir is not None and systematics[systematic][0] is not prev_dir: continue # this ensures that we process the same trees from every call to ana.Run() - i.e trees in sub-directory systematics[systematic][0]
+      prev_dir = systematics[systematic][0]
       print "Processing:", systematic
       print ""
 
@@ -1864,24 +1874,7 @@ while len(systematics) > 0:
       add_names.append(add_name)
       syst_add_name=add_folder_name
       
-      # If we are processing multiple trees stored in different subdiretories for systematic shifts we need to add the directroy name to the sample name so that the correct tree is used
-      
-      ztt_samples          = AppendNameToSamples(ztt_base_samples          , syst_add_name)
-      ewkz_samples         = AppendNameToSamples(ewkz_base_samples         , syst_add_name)
-      vv_samples           = AppendNameToSamples(vv_base_samples           , syst_add_name)
-      wgam_samples         = AppendNameToSamples(wgam_base_samples         , syst_add_name)
-      top_samples          = AppendNameToSamples(top_base_samples          , syst_add_name)
-      ztt_shape_samples    = AppendNameToSamples(ztt_base_shape_samples    , syst_add_name)
-      wjets_samples        = AppendNameToSamples(wjets_base_samples        , syst_add_name)
-      sm_samples           = AppendNameToSamples(sm_base_samples           , syst_add_name)
-      mssm_samples         = AppendNameToSamples(mssm_base_samples         , syst_add_name)
-      mssm_nlo_samples     = AppendNameToSamples(mssm_base_nlo_samples     , syst_add_name)
-      mssm_lo_samples      = AppendNameToSamples(mssm_base_lo_samples      , syst_add_name)
-      mssm_nlo_qsh_samples = AppendNameToSamples(mssm_base_nlo_qsh_samples , syst_add_name)
-      Hhh_samples          = AppendNameToSamples(Hhh_base_samples          , syst_add_name)
-      gghww_samples        = AppendNameToSamples(gghww_base_samples        , syst_add_name)
-      qqhww_samples        = AppendNameToSamples(qqhww_base_samples        , syst_add_name)
-      
+
       mc_input_folder_name = options.folder
       if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
       
@@ -1894,20 +1887,20 @@ while len(systematics) > 0:
           ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
       
       # Add all MC background files
-      for sample_name in ztt_base_samples + vv_base_samples + wgam_base_samples + top_base_samples + ztt_base_shape_samples + wjets_base_samples+ewkz_base_samples+gghww_base_samples+qqhww_base_samples:
-          ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name+syst_add_name)
+      for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples:
+          ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
        
       # Add all MC signal files
       
       if options.analysis == 'sm':
-          signal_samples = sm_base_samples
+          signal_samples = sm_samples
       elif options.analysis == 'mssm':
-          signal_samples = mssm_base_samples
-          if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_base_nlo_samples['bbH']
-          if options.nlo_qsh: signal_samples.update(mssm_base_nlo_qsh_samples)
-          if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_base_lo_samples)
+          signal_samples = mssm_samples
+          if options.bbh_nlo_masses: signal_samples['bbH'] = mssm_nlo_samples['bbH']
+          if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
+          if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
       elif options.analysis == 'Hhh':
-          signal_samples = Hhh_base_samples
+          signal_samples = Hhh_samples
   
       for samp in signal_samples:
           if options.analysis == "sm":
@@ -1923,13 +1916,13 @@ while len(systematics) > 0:
                   sample_name = signal_samples[samp].replace('*',mass)
                   tree_name = 'ntuple'
                   if options.gen_signal: tree_name = 'gen_ntuple'
-                  ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name+syst_add_name)
+                  ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', tree_name, None, sample_name)
       if options.add_sm_background and options.analysis == 'mssm':
-          for samp in sm_base_samples:
-              sample_name = sm_base_samples[samp].replace('*',options.add_sm_background)
-              ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name+syst_add_name)
+          for samp in sm_samples:
+              sample_name = sm_samples[samp].replace('*',options.add_sm_background)
+              ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'*.root', 'ntuple', None, sample_name)
               
-      ana.AddInfo(options.paramfile, scaleTo='data_obs',add_name=syst_add_name)
+      ana.AddInfo(options.paramfile, scaleTo='data_obs')
   
       # Add data only for default
       if systematic == 'default': do_data = True
@@ -2189,4 +2182,4 @@ if options.era == "smsummer16":
   for hist in hists_to_add: hist.Write()
       
 outfile.Close()
-           
+          
