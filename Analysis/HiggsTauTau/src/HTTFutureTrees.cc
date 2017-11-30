@@ -143,7 +143,7 @@ namespace ic {
   int HTTFutureTrees::Execute(TreeEvent *event) {
 
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-   
+    wt_ = eventInfo->total_weight();
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
@@ -380,6 +380,7 @@ namespace ic {
       lbyVVTightIsolationMVArun2PWnewDMwLT_2 = tau->HasTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") ? tau->GetTauID("byVVTightIsolationMVArun2v1PWnewDMwLT") : 0.;
       antiele_2_ = lagainstElectronVLooseMVA_2;
       antimu_2_ = lagainstMuonTight3_2;
+      tau_decay_mode_2_ = tau->decay_mode();
    }else if (channel_ == channel::em) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Muon const* muon = dynamic_cast<Muon const*>(lep2);

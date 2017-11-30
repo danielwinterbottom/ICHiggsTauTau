@@ -161,7 +161,7 @@ HTTFutureSequence::HTTFutureSequence(std::string& chan, std::string postf, Json:
    elec_pt = 25;
    elec_eta = 1.5;
    tau_pt  = 20;
-   tau_eta = 2.3;
+   tau_eta = 3.0;
   } 
  if (channel_str == "mt"){
   muon_dxy = 0.045;
@@ -444,6 +444,15 @@ if(js["do_preselection"].asBool()){
  }
  */
 
+  double extra_weight = js.get("extra_weight", 1.).asDouble();
+  std::cout << "extra weight = " << extra_weight << "\n";
+  BuildModule(GenericModule("ExtraWeight")
+    .set_function([=](ic::TreeEvent *event){
+      auto info = event->GetPtr<ic::EventInfo>("eventInfo");
+      info->set_weight("lumi_weight", extra_weight);
+      return 0;
+     })
+  );
 
 
 if(channel != channel::wmnu) {
