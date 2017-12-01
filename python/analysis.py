@@ -169,7 +169,10 @@ class TTreeEvaluator:
 
     def Draw(self, draw_list, compiled=False):
         self.PrepareTree()
-        return MultiDraw.MultiDraw(self.tree, draw_list, Compiled=compiled)
+        otree = MultiDraw.MultiDraw(self.tree, draw_list, Compiled=compiled)
+        self.file.Close()
+        return otree
+        #return MultiDraw.MultiDraw(self.tree, draw_list, Compiled=compiled)
 
 
 class TChainEvaluator(TTreeEvaluator):
@@ -187,8 +190,9 @@ class TChainEvaluator(TTreeEvaluator):
 
 
 class BaseNode:
-    def __init__(self, name):
+    def __init__(self, name, WriteSubnodes=True):
         self.name = name
+        self.WriteSubnodes = WriteSubnodes    
 
     def GetNameStr(self):
         return '%s::%s' % (self.__class__.__name__, self.name)
@@ -217,7 +221,8 @@ class BaseNode:
         objects = self.Objects()
         for key, val in objects.iteritems():
             WriteToTFile(val, file, '%s/%s' % (prefix, key))
-        for node in self.SubNodes():
+        if self.WriteSubnodes:
+          for node in self.SubNodes():
             node.Output(file, '%s/%s' % (prefix, self.OutputPrefix(node)))
 
     def Run(self):
@@ -230,8 +235,8 @@ class BaseNode:
 
 
 class BasicNode(BaseNode):
-    def __init__(self, name, sample, variable, selection, factors=list()):
-        BaseNode.__init__(self, name)
+    def __init__(self, name, sample, variable, selection, factors=list(),WriteSubnodes=True):
+        BaseNode.__init__(self, name,WriteSubnodes)
         self.sample = sample
         self.variable = variable
         self.selection = selection
@@ -325,8 +330,8 @@ class SubtractNode(BaseNode):
             node.AddRequests(manifest)
 
 class HttQCDNode(BaseNode):
-    def __init__(self, name, data, subtract, factor, qcd_shape=None, ratio_num_node=None, ratio_den_node=None):
-        BaseNode.__init__(self, name)
+    def __init__(self, name, data, subtract, factor, qcd_shape=None, ratio_num_node=None, ratio_den_node=None,WriteSubnodes=True):
+        BaseNode.__init__(self, name,WriteSubnodes)
         self.shape = None
         self.data_node = data
         self.subtract_node = subtract
@@ -586,6 +591,7 @@ class Analysis(object):
         self.info = {}
         self.remaps = {}
         self.compiled = False
+        self.WriteSubnodes = True
 
     def Run(self):
         manifest = []
@@ -630,6 +636,9 @@ class Analysis(object):
                 self.trees[newname] = TTreeEvaluator(tree, f)
             testf.Close()
             #print self.trees
+    
+    def writeSubnodes(self,WriteSubnodes):
+        self.WriteSubnodes = WriteSubnodes
 
     def AddInfo(self, file, scaleTo=None,add_name=None):
         with open(file) as jsonfile:
@@ -663,7 +672,7 @@ class Analysis(object):
         if add_name is not None: 
             name+=add_name
             sample+=add_name
-        return BasicNode(name, sample, var, sel, factors=myfactors)
+        return BasicNode(name, sample, var, sel, factors=myfactors,WriteSubnodes=self.WriteSubnodes)
 
     def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True,add_name=None):
         res = SummedNode(name)

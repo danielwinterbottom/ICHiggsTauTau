@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/Apr05_MC_80X_DYJetsToLL-LO-ext1.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Apr05_MC_80X/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Nov20_MC_80X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     [ "mt", "et", "tt", "em" ],
@@ -56,19 +56,19 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/Nov15/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Nov30/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
 //    "output_name"   : "VBF_HToTauTau_M-125",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "output/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/Nov25_SVFit/",
     "svfit_override" : "",
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -97,6 +97,8 @@
       "elec_es_shift"     : 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
+      "metcl_mode"        : 0,
+      "metuncl_mode"      : 0,
       "mass_shift"        : 1.0,
       "do_em_extras"      : true,
       "di_elec_veto"      : false,
@@ -729,6 +731,30 @@
       "baseline": {
         "addit_output_folder" : "MET_RES_UP",
         "metres_mode" : 2
+      }
+    },
+    "met_cl_lo": {
+      "baseline": {
+        "addit_output_folder" : "METCL_DOWN",
+        "metcl_mode" : 1
+      }
+    },
+    "met_cl_hi": {
+      "baseline": {
+        "addit_output_folder" : "METCL_UP",
+        "metcl_mode" : 2
+      }
+    },
+    "met_uncl_lo": {
+      "baseline": {
+        "addit_output_folder" : "METUNCL_DOWN",
+        "metuncl_mode" : 1
+      }
+    },
+    "met_uncl_hi": {
+      "baseline": {
+        "addit_output_folder" : "METUNCL_UP",
+        "metuncl_mode" : 2
       }
     },
     "scale_b_lo": {

@@ -79,7 +79,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
     if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else {std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
-    svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
+    if(jes_mode > 0 && json["baseline"]["split_by_source"].asBool()) svfit_folder=svfit_folder+"/";
+    else svfit_folder=svfit_folder+"/"+addit_output_folder+"/";
   }
   svfit_override = json["svfit_override"].asString();
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
@@ -107,6 +108,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   jes_mode=json["baseline"]["jes_mode"].asUInt();
   metscale_mode=json["baseline"]["metscale_mode"].asUInt();
   metres_mode=json["baseline"]["metres_mode"].asUInt();
+  metcl_mode=json["baseline"]["metcl_mode"].asUInt();
+  metuncl_mode=json["baseline"]["metuncl_mode"].asUInt();
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
@@ -1013,7 +1016,9 @@ BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
        .set_tau_scale(tau_shift)
        .set_use_most_isolated((strategy_type != strategy::paper2013) && (!(channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee)))
        .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
-       .set_allowed_tau_modes(allowed_tau_modes);
+       .set_allowed_tau_modes(allowed_tau_modes)
+       .set_metuncl_mode(metuncl_mode)
+       .set_metcl_mode(metcl_mode);
    
      if(strategy_type == strategy::spring15 || strategy_type == strategy::fall15 || strategy_type == strategy::mssmspring16 || strategy_type == strategy::smspring16 || strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsummer16){
        httPairSelector.set_gen_taus_label("genParticles");
@@ -1856,7 +1861,7 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
     .set_do_jlepton_fake(jlepton_fake)
     .set_do_em_qcd_weights(true)
     .set_ditau_label("ditau")
-    .set_jets_label("ak4PFJetsCHS")
+    .set_jets_label(jets_label)
     .set_do_single_lepton_trg(js["do_singlelepton"].asBool())
     .set_do_cross_trg(js["do_leptonplustau"].asBool())
     .set_tt_trg_iso_mode(js["tt_trg_iso_mode"].asUInt())
@@ -1885,6 +1890,8 @@ if((strategy_type == strategy::mssmsummer16 || strategy_type == strategy::smsumm
           httWeights.set_strategy(strategy::smsummer16);
           httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_sm_moriond_v2.root");
           httWeights.set_z_pt_mass_hist(new TH2D(z_pt_weights_sm));
+          bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
+          httWeights.set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample);
         }
         else { 
           httWeights.set_scalefactor_file("input/scale_factors/htt_scalefactors_v16_5.root");
@@ -2000,7 +2007,8 @@ if(js["baseline"]["do_ff_weights"].asBool()){
 if(channel != channel::wmnu) {
 bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos && strategy_type == strategy::mssmsummer16;
 bool do_sm_scale_wts = output_name.find("GluGluToHToTauTau_M") != output_name.npos && output_name.find("SUSY") == output_name.npos && strategy_type == strategy::smsummer16;
-bool do_jes_vars = jes_mode > 0 && !is_data && js["baseline"]["split_by_source"].asBool();
+bool do_jes_vars = jes_mode > 0 && js["baseline"]["split_by_source"].asBool();
+bool z_sample = (output_name.find("DY") != output_name.npos && (output_name.find("JetsToLL-LO") != output_name.npos || output_name.find("JetsToLL_M-10-50-LO") != output_name.npos)) || output_name.find("EWKZ2Jets") != output_name.npos;
 BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -2033,7 +2041,8 @@ BuildModule(HTTCategories("HTTCategories")
     .set_do_pdf_wts(js["do_pdf_wts"].asBool())
     .set_do_mssm_higgspt(do_mssm_higgspt)
     .set_do_sm_scale_wts(do_sm_scale_wts)
-    .set_do_jes_vars(do_jes_vars));
+    .set_do_jes_vars(do_jes_vars)
+    .set_do_z_weights(strategy_type == strategy::smsummer16 && z_sample));
 
  } else {
 BuildModule(WMuNuCategories("WMuNuCategories")

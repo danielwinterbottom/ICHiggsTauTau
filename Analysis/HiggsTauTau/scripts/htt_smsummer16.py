@@ -86,7 +86,7 @@ parser.add_option("--taues_study", dest="taues_study", action='store_true', defa
 parser.add_option("--qcd_study", dest="qcd_study", action='store_true', default=False,
                   help="Run QCD MC sample for QCD study")
 
-parser.add_option("--analysis", dest="analysis", type='string', default='mssm',
+parser.add_option("--analysis", dest="analysis", type='string', default='sm',
                   help="Specify whether trees are produced for mssm or sm analysis")
 
 parser.add_option("--parajobs", dest="parajobs", action='store_true', default=False,
@@ -153,14 +153,23 @@ if scale < 1: scale = 1
 
 total = float(len(flatjsonlistdysig))
 flatjsons = []
+# this makes sure the JES's are submitted as seperate jobs (solves memory issues)
+for i in flatjsonlistdysig:
+  if 'scale_j' in i:
+    flatjsons.append('job:sequences:all:'+i)
+    flatjsonlistdysig.remove(i)
+    scale = int(math.ceil(float((n_scales-2)*n_channels)/100))
+    if scale < 1: scale = 1
+# split into seperate jobs if number of scales is over a value
 for i in range(0,scale):
    first = i*int(math.ceil(total/scale))
    last = (i+1)*int(math.ceil(total/scale))
    temp=''.join(flatjsonlistdysig[first:last]) 
+   if temp == '': continue
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
   
-FILELIST='filelists/Apr05_MC_80X'
+FILELIST='filelists/Nov20_MC_80X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -310,7 +319,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
         
-        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+        for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :  
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
           if not parajobs: os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
         if parajobs: 
@@ -347,13 +356,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
     'TT',
-    'WJetsToLNu',
+    #'WJetsToLNu',
     'WJetsToLNu-LO',
     'WJetsToLNu-LO-ext',
     'VVTo2L2Nu',
     'VVTo2L2Nu-ext1',
     'ZZTo2L2Q',
-    'ZZTo4L',
+    #'ZZTo4L',
     'ZZTo4L-amcat',
     'WWTo1L1Nu2Q',
     'WWToLNuQQ',
@@ -366,7 +375,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     'Tbar-t',
     'T-tW',
     'Tbar-tW',
-    'DYJetsToLL',
+    #'DYJetsToLL',
     'DYJetsToLL-LO-ext1',
     'DYJetsToLL-LO-ext2',
     #'DYJetsToLL_M-10to50-ext',
@@ -396,22 +405,22 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
   
   if options.analysis == 'sm':
     extra_samples = [
-      #'EWKWMinus2Jets_WToLNu-ext1',
-      #'EWKWMinus2Jets_WToLNu-ext2',
-      #'EWKWMinus2Jets_WToLNu',
-      #'EWKWPlus2Jets_WToLNu-ext1',
-      #'EWKWPlus2Jets_WToLNu-ext2',
-      #'EWKWPlus2Jets_WToLNu',
+      'EWKWMinus2Jets_WToLNu-ext1',
+      'EWKWMinus2Jets_WToLNu-ext2',
+      'EWKWMinus2Jets_WToLNu',
+      'EWKWPlus2Jets_WToLNu-ext1',
+      'EWKWPlus2Jets_WToLNu-ext2',
+      'EWKWPlus2Jets_WToLNu',
       'EWKZ2Jets_ZToLL-ext',
       'EWKZ2Jets_ZToLL',
-      'EWKZ2Jets_ZToNuNu-ext',
-      'EWKZ2Jets_ZToNuNu'    
+      #'EWKZ2Jets_ZToNuNu-ext',
+      #'EWKZ2Jets_ZToNuNu'    
     ]
     central_samples.extend(extra_samples)
 
   if options.qcd_study:
     #FILELIST='filelists/Feb25_MC_76X'
-    FILELIST='filelists/Apr05_MC_80X'
+    FILELIST='filelists/Nov20_MC_80X'
     central_samples = [
       'QCDMuEnrichedPt15'
   #    'QCDEMEnrichedPt15-20',
@@ -423,7 +432,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       JOB='%s_2016' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
-      for FLATJSONPATCH in flatjsons:
+      for FLATJSONPATCH in flatjsons: 
         nperjob = 30
         if 'scale' in FLATJSONPATCH:
           nperjob = 20
@@ -442,8 +451,11 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
           CONFIG='scripts/taues_config.json'
           JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[\"scale_e_lo\",\"scale_e_hi\",\"scale_j_lo\",\"scale_j_hi\"],\"et\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"mt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_lo\",\"scale_j_hi\"],\"tt\":[\"scale_t_lo_3\",\"scale_t_hi_3\",\"scale_t_lo_2\",\"scale_t_hi_2\",\"scale_t_lo_1\",\"scale_t_hi_1\",\"scale_t_lo_2.5\",\"scale_t_hi_2.5\",\"scale_t_lo_1.5\",\"scale_t_hi_1.5\",\"scale_t_lo_0.5\",\"scale_t_hi_0.5\",\"scale_j_hi\",\"scale_j_lo\"]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
           nperjob = 10
-        
-        
+        if 'DY' not in sa and 'EWKZ' not in sa:
+          FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+        if ('DY' in sa or 'EWKZ' in sa) and 'scale_j' not in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/50.)))
+        elif 'scale_j' not in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/50.)))
+        else: nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_channels)/3.)))
         nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
           os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
@@ -457,7 +469,7 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
 #if float(n_scales*n_channels)/100 > 1: nperjob = int(math.ceil(nperjob/(float(n_scales*n_channels)/100)))  
 
 if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hhh or options.proc_all:
-  if options.analysis == 'sm': SIG_FILELIST='filelists/Oct26_MC_80X' 
+  if options.analysis == 'sm': SIG_FILELIST='filelists/Nov20_MC_80X' 
   else: SIG_FILELIST = FILELIST
   for sa in signal_mc:
     JOB='%s_2016' % (sa)
@@ -465,6 +477,7 @@ if options.proc_sm or options.proc_smbkg or options.proc_mssm or options.proc_Hh
     JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
     job_num=0
     for FLATJSONPATCH in flatjsons:
+      FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')  
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 50

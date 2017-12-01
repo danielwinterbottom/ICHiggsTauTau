@@ -132,6 +132,7 @@ def SetAxisTitles2D(plot, channel):
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)','GeV']
   titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
   titles['mjj'] = ['m_{jj} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{jj} (1/GeV)','GeV']
+  titles['tau_decay_mode_2'] = ['tau decay mode','Events', 'Events','']
   if channel in ['zee','zmm']: titles['pt_tt'] = ['P_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{'+chan_label+'} (1/GeV)','GeV']
   else:  titles['pt_tt'] = ['P_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dP_{T}^{tot} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
@@ -1956,6 +1957,7 @@ def createAxisHists(n,src,xmin=0,xmax=499):
   return result
 
 def PassAutoBlindMetric(s, b, epsilon=0.09, metric=0.5):
+    if b <= 0: return True
     y = s/math.sqrt(b + (epsilon*b)**2)
     return y >= metric
 
@@ -2007,6 +2009,7 @@ def HTTPlot(nodename,
     # Define signal schemes here
     sig_schemes = {}
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"], True ) 
+    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt", "WminusH_htt", "WplusH_htt", "ZH_htt"],False)
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"], False )
     #sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False )
@@ -2471,6 +2474,7 @@ def HTTPlotSignal(nodename,
     # Define signal schemes here
     sig_schemes = {}
     sig_schemes['sm_default'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH", "qqH"]) 
+    sig_schemes['smsummer16'] = ( str(int(signal_scale))+"#times SM H("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt", "qqH_htt"]) 
     sig_schemes['run2_mssm'] = ( str(int(signal_scale))+"#times gg#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"])
     sig_schemes['run2_mssm_bbH'] = ( str(int(signal_scale))+"#times bb#phi("+signal_mass+" GeV)#rightarrow#tau#tau", ["bbH"])
     
@@ -2829,8 +2833,8 @@ def HTTPlotUnrolled(nodename,
     # Define signal schemes here
     sig_schemes = {}
 
-    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH"], False , R.kRed) 
-    sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH"], False, R.kBlue)
+    sig_schemes['sm_ggH'] = ( str(int(signal_scale))+"#times SM ggH("+signal_mass+" GeV)#rightarrow#tau#tau", ["ggH_htt"], False , R.kRed) 
+    sig_schemes['sm_qqH'] = ( str(int(signal_scale))+"#times SM qqH("+signal_mass+" GeV)#rightarrow#tau#tau", ["qqH_htt"], False, R.kBlue)
 
     ModTDRStyle(width=1200, height=600, r=0.3, l=0.14, t=0.12,b=0.15)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2969,7 +2973,6 @@ def HTTPlotUnrolled(nodename,
     sighists = []
     sighist_blind = []
     if signal_mass != "":
-        #signal_scheme = 'sm_ggH'
         for signal_scheme in sig_schemes:
           sighist = R.TH1F()  
           sig_scheme = sig_schemes[signal_scheme]
@@ -3016,7 +3019,7 @@ def HTTPlotUnrolled(nodename,
       for i in range(1,total_datahist.GetNbinsX()+1):
         b = bkghist_blind.GetBinContent(i)  
         s = totsighist.GetBinContent(i) 
-        if PassAutoBlindMetric(s,b):
+        if PassAutoBlindMetric(s,b,metric=0.1):
           blind_datahist.SetBinContent(i,0)
           blind_datahist.SetBinError(i,0)
     #Blinding by hand using requested range, set to 200-4000 by default:
@@ -3130,15 +3133,17 @@ def HTTPlotUnrolled(nodename,
         ymax = axish[0].GetMaximum()
         ymin = axish[0].GetMinimum()
         line.DrawLine(x,ymin,x,ymax)
-        pads[1].cd()
-        ymax = axish[1].GetMaximum()
-        ymin = axish[1].GetMinimum()
-        line.DrawLine(x,ymin,x,ymax)
+        if ratio:
+          pads[1].cd()
+          ymax = axish[1].GetMaximum()
+          ymin = axish[1].GetMinimum()
+          line.DrawLine(x,ymin,x,ymax)
         
     if y_labels_vec is not None:
       pads[0].cd()  
       unit = y_labels_vec[1][2]
-      var = y_labels_vec[1][0].split(' ')[0]
+      var = y_labels_vec[1][0]
+      if '(' in var: var = var.split(' ')[0]
       y_bins = y_labels_vec[0]
       latex = R.TLatex()
       latex.SetNDC()
@@ -3147,11 +3152,16 @@ def HTTPlotUnrolled(nodename,
       latex.SetTextSize(0.028)
       
       Nybins = len(y_bins)
+      if Nybins > 5: latex.SetTextSize(0.023)
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
         if ymax == -1: y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
         else: y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+        if "tau decay mode" in var and Nybins == 3:
+          if i == 0: y_bin_label = "1 prong"
+          if i == 1: y_bin_label = "1 prong + #pi^{0}"
+          if i == 2: y_bin_label = "3 prong"
         xshift = 0.78/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
         latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
         

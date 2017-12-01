@@ -25,6 +25,8 @@ namespace ic {
     tau_scale_ = 1.0;
     allowed_tau_modes_ = "";
     gen_taus_label_ = "genParticlesTaus";
+    metcl_mode_ = 0;
+    metuncl_mode_ = 0;
   }
 
   HTTPairSelector::~HTTPairSelector() {
@@ -225,7 +227,19 @@ namespace ic {
     }
    
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-    Met *pfmet = pfMet_vec.at(0); 
+    Met *pfmet = pfMet_vec.at(0);
+    // shift MET for systematic shifts
+    if(metuncl_mode_!=0 && metcl_mode_!=0) std::cout<< "HTTPairSelector:: Trying to perform more that 1 MET shift at once, MET will not be shifted!" << std::endl;
+    else if(metuncl_mode_!=0 || metcl_mode_!=0){
+      std::string shift_type = "NoShift";  
+      if(metcl_mode_==1) shift_type = "JetEnDown";
+      if(metcl_mode_==2) shift_type = "JetEnUp";
+      if(metuncl_mode_==1) shift_type = "UnclusteredEnDown";
+      if(metuncl_mode_==2) shift_type = "UnclusteredEnUp";
+      double pt = pfmet->GetShiftedMet(shift_type).pt();
+      double phi = pfmet->GetShiftedMet(shift_type).phi();
+      pfmet->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
+    }
     event->Add("pfMET", pfmet);
    
    // ************************************************************************
