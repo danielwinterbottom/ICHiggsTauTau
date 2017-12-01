@@ -13,9 +13,13 @@
 <use name="L1Trigger/L1TNtuples"/>
 <use name=""/>
 <use name="root"/>
+<use name="boost" />
+<use name="python" />
 <use name="clhep"/>
 <use name="rootrflx"/>
 <flags CPPDEFINES="SKIP_CINT_DICT"/>
+<Flags LDFLAGS="-rdynamic" />
+<flags ADD_SUBDIR="1"/>
 <export>
  <lib name="1"/>
 </export>

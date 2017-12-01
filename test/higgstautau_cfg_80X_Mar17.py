@@ -9,7 +9,7 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/0863B733-1A39-E611-AF47-0025905C53D8.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/4C466283-6BC0-E611-B3AE-001517FB25E4.root', parser.VarParsing.multiplicity.singleton,
-opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/130000/10B3D2AA-286C-E711-B57F-141877410B85.root', parser.VarParsing.multiplicity.singleton,               
+opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/20000/00E98807-AE54-E611-9D79-3417EBE47C5E.root', parser.VarParsing.multiplicity.singleton,               
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/000C6E52-8BEC-E611-B3FF-0025905C42FE.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016F/SingleMuon/MINIAOD/PromptReco-v1/000/277/932/00000/084865EB-1859-E611-BDA7-02163E011A89.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v2/000/281/265/00000/28861171-6E82-E611-9CAF-02163E0141FA.root', parser.VarParsing.multiplicity.singleton,
@@ -32,6 +32,8 @@ opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
+opts.register('MGsignal', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Using amc@NLO for signal samples")
 
 
 
@@ -1635,7 +1637,7 @@ if not isData:
       process.icPileupInfoProducer
     )
 
-  if doHT:
+  if doHT or True:
     process.icGenSequence += (
       process.icGenParticleProducerFromLHEParticles
     )
@@ -1703,16 +1705,18 @@ if release in ['76X']:
    process.icTriggerPathProducer
   )
 
+trig_name="HLT"
+if opts.MGsignal: trig_name = "HLT2"
 if release in ['80XMINIAOD']:
   process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
    branch = cms.string("triggerPaths"),
-   input  = cms.InputTag("TriggerResults","","HLT"),
+   input  = cms.InputTag("TriggerResults","",trig_name),
    inputIsStandAlone = cms.bool(True),
    inputPrescales = cms.InputTag("patTrigger")
   )
 
   if isReHLT:
-    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults","","HLT")
+    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults","",trig_name)
 
   if isData:
     process.icTriggerSequence += cms.Sequence(
@@ -2268,7 +2272,7 @@ if release in ['80XMINIAOD']:
   if isReHLT:
     for name in process.icTriggerObjectSequence.moduleNames():
       mod = getattr(process, name)
-      mod.inputTriggerResults = cms.InputTag("TriggerResults", "","HLT")
+      mod.inputTriggerResults = cms.InputTag("TriggerResults", "",trig_name)
 
 ################################################################
 # EventInfo
@@ -2333,7 +2337,27 @@ if isData:
   process.icEventInfoSequence.remove(process.badGlobalMuonTagger)
   process.icEventInfoSequence.remove(process.cloneGlobalMuonTagger)
   
+################################################################
+# MadgraphReWeighting
+################################################################
+import subprocess
+CMSSW_BASE = subprocess.check_output('echo $CMSSW_BASE', shell=True)
+#CMSSW_BASE= os.popen('echo $CMSSW_BASE').read() 
+CMSSW_BASE='/vols/build/cms/dw515/CMSSW_8_0_26_patch1'
+process.icMadgraphWeightsProducer = cms.EDProducer("ICMadgraphWeightsProducer",
+  branch                  = cms.string("madgraphWeights"),
+  input                   = cms.InputTag("externalLHEProducer"),
+  theta                   = cms.string("0,0.5,1"),
+  theta_sample            = cms.double(0.),
+  process_dir             = cms.string(CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf/SubProcesses"),
+  param_card              = cms.string(CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf/Cards/param_card_cp.dat"),
+  param_card_sample       = cms.string(CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf/Cards/param_card_default.dat")
+)
 
+process.icMadgraphWeightsSequence = cms.Sequence(
+  process.icMadgraphWeightsProducer 
+)
+if not opts.MGsignal or isData: process.icMadgraphWeightsSequence.remove(process.icMadgraphWeightsProducer)
 
 ################################################################
 # Event
@@ -2364,6 +2388,7 @@ process.p = cms.Path(
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
   #process.patDefaultSequence+
+  process.icMadgraphWeightsSequence+
   process.icEventProducer
 )
 
