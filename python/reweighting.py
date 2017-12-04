@@ -9,31 +9,48 @@ import sys
 import tempfile
 
 
-def me2(connection):
-	
+def me2_mg5aMCv2p5_or_older(connection):
 	args = connection.recv()
 	cartesian_four_momenta = args[0]
-	pdgs = args[1]
+	particle_pdg_ids = args[1]
 	madgraph_process_directory = args[2]
 	madgraph_param_card = args[3]
 	alpha_s = args[4]
-	
-	
 	
 	cwd = os.getcwd()
 	os.chdir(madgraph_process_directory)
 	sys.path.insert(0, madgraph_process_directory)
 	
+	if "matrix2py" in sys.modules:
+		del sys.modules["matrix2py"]
+	import matrix2py
+	
+	matrix2py.initialise(madgraph_param_card)
+	result = matrix2py.get_me(zip(*cartesian_four_momenta), alpha_s, 0)
 
-	if "allmatrix2py" not in sys.modules:
-		import allmatrix2py
-		
-	elif "allmatrix2py" in sys.modules:	
+	sys.path.pop(0)
+	os.chdir(cwd)
+	connection.send([result])
+	return result
+
+def me2_mg5aMCv2p6_or_newer(connection):
+	args = connection.recv()
+	cartesian_four_momenta = args[0]
+	particle_pdg_ids = args[1]
+	madgraph_process_directory = args[2]
+	madgraph_param_card = args[3]
+	alpha_s = args[4]
+	
+	cwd = os.getcwd()
+	os.chdir(madgraph_process_directory)
+	sys.path.insert(0, madgraph_process_directory)
+	
+	if "allmatrix2py" in sys.modules:
 		del sys.modules["allmatrix2py"]
-		import allmatrix2py
+	import allmatrix2py
 	
 	allmatrix2py.initialise(madgraph_param_card)
-	result = allmatrix2py.smatrixhel(pdgs,zip(*cartesian_four_momenta), alpha_s, 0,-1)
+	result = allmatrix2py.smatrixhel(particle_pdg_ids, zip(*cartesian_four_momenta), alpha_s, 0, -1)
 
 	sys.path.pop(0)
 	os.chdir(cwd)
@@ -41,10 +58,11 @@ def me2(connection):
 	return result
 
 class MadGraphTools(object):
-	def __init__(self, mixing_angle_over_pi_half, madgraph_process_directory, madgraph_param_card, alpha_s):
+	def __init__(self, mixing_angle_over_pi_half, madgraph_process_directory, madgraph_param_card, alpha_s, mg5aMCv2p5_or_older=False):
 		cos_mixing_angle = math.cos(mixing_angle_over_pi_half * math.pi / 2.0)
 		self.madgraph_process_directory = madgraph_process_directory
 		self.alpha_s = alpha_s
+		self.mg5aMCv2p5_or_older = mg5aMCv2p5_or_older
 		
 		# read param_card and modify it in a temporary file
 		madgraph_param_card_content = ""
@@ -59,22 +77,21 @@ class MadGraphTools(object):
 	def __del__(self):
 		os.remove(self.madgraph_param_card)
 	
-	def matrix_element_squared(self, cartesian_four_momenta, pdgs):
-		arguments = [cartesian_four_momenta, pdgs, self.madgraph_process_directory, self.madgraph_param_card, self.alpha_s]
+	def matrix_element_squared(self, cartesian_four_momenta, particle_pdg_ids):
+		arguments = [cartesian_four_momenta, particle_pdg_ids, self.madgraph_process_directory, self.madgraph_param_card, self.alpha_s]
 		parent_connection, child_connection = multiprocessing.Pipe()
 		parent_connection.send(arguments)
 		
-		process = multiprocessing.Process(target=me2, args=(child_connection,))
+		process = multiprocessing.Process(target=me2_mg5aMCv2p5_or_older if self.mg5aMCv2p5_or_older else me2_mg5aMCv2p6_or_newer,
+		                                  args=(child_connection,))
 		process.start()
 		
 		timeout = 10 # in seconds
 		process.join(timeout)
 		
-
 		result = -999.0
 		if parent_connection.poll(timeout):
 			result = parent_connection.recv()[0]
 		process.terminate()
 		return result
-
 

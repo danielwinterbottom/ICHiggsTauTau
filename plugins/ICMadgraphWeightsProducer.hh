@@ -11,8 +11,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
-//#include "UserCode/ICHiggsTauTau/interface/MadGraphTools.h"
-#include "CMSAachen3B/MadGraphReweighting/interface/MadGraphTools.h"
+#include "UserCode/ICHiggsTauTau/interface/MadGraphTools.h"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 
 

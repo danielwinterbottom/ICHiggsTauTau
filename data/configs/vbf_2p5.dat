@@ -1,0 +1,11 @@
+import model HC_NLO_X0_UFO-no_b_mass
+
+define p = g u c d s b u~ c~ d~ s~ b~
+define j = g u c d s b u~ c~ d~ s~ b~
+
+generate p p > x0 j j $$ w+ w- z / a @0
+add process p p > x0 j j j $$ w+ w- z / a @1
+
+output standalone $CMSSW_BASE/src/CMSAachen3B/MadGraphReweighting/data/vbf_2p5
+
+quit

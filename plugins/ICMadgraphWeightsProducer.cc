@@ -56,7 +56,6 @@ void ICMadgraphWeightsProducer::produce(edm::Event& event,
   event.getByLabel(input_, lhe_handle);
   std::vector<lhef::HEPEUP::FiveVector> lheParticles = lhe_handle->hepeup().PUP;
   std::vector< std::pair<int, int> > mothers = lhe_handle->hepeup().MOTHUP;
-  
   std::vector<LHEParticle*> parts;
   count_outpartons_=0;
   for (unsigned i = 0; i < lheParticles.size(); ++i) {
@@ -64,21 +63,17 @@ void ICMadgraphWeightsProducer::produce(edm::Event& event,
     part.p4 = ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float>>(lheParticles[i][0],lheParticles[i][1],lheParticles[i][2],lheParticles[i][3]);
     part.pdgId = lhe_handle->hepeup().IDUP[i];
     parts.push_back(new LHEParticle(part));
-    //if() count_outpartons_++;
-    //std::cout << "mothers   " << lhe_handle->hepeup().IDUP[mothers[i].first] << "    " << lhe_handle->hepeup().IDUP[mothers[i].second] << std::endl; //initial state particles don't have a higgs mother?
   }
   MadGraphTools* madGraphTools = new MadGraphTools((float)theta_sample_, process_dir_, param_card_sample_, 0.118, false);
   double w0_ = madGraphTools->GetMatrixElementSquared(parts);
-  std::cout << w0_ << std::endl;
-  //for(unsigned i=0; i<theta_vec_.size(); ++i){
-  //  float theta_val_ = theta_vec_[i].second;
-  //  MadGraphTools* madGraphTools = new MadGraphTools(theta_val_, process_dir_, param_card_, 0.118, false);
-  //  double weight_ = madGraphTools->GetMatrixElementSquared(parts);
-  //  std::string weight_name_ = theta_vec_[i].first;
-  //  std::cout << weight_ << "    " << w0_ << std::endl;
-  //
-  //  info_->set_weight(weight_name_,weight_/w0_,false);
-  //}
+  for(unsigned i=0; i<theta_vec_.size(); ++i){
+    float theta_val_ = theta_vec_[i].second;
+    std::string weight_name_ = theta_vec_[i].first;
+    MadGraphTools* madGraphTools = new MadGraphTools((float)theta_val_, process_dir_, param_card_, 0.118, false);
+    double weight_ = madGraphTools->GetMatrixElementSquared(parts);
+    if(w0_!=0) info_->set_weight(weight_name_,weight_/w0_,false);
+    else info_->set_weight(weight_name_,0.,false);
+  }
 
 }
 

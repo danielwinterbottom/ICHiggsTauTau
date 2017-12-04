@@ -13,6 +13,7 @@
 <use name="L1Trigger/L1TNtuples"/>
 <use name=""/>
 <use name="root"/>
+<use name="rootEG" />
 <use name="boost" />
 <use name="python" />
 <use name="clhep"/>

@@ -1,11 +1,17 @@
 
 #pragma once
 
+#include <algorithm>
+#include <cstdlib>
+
+#include <boost/algorithm/string/replace.hpp>
+
 #include <Python.h> // https://www.codeproject.com/Articles/11805/Embedding-Python-in-C-C-Part-I
 
 #include <Math/Boost.h>
 #include <Math/LorentzVector.h>
 #include <Math/PxPyPzE4D.h>
+#include <TDatabasePDG.h>
 
 
 
@@ -31,11 +37,11 @@ public:
 	typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float>> CartesianRMFLV;
 	
 	MadGraphTools(float mixingAngleOverPiHalf, std::string madgraphProcessDirectory, std::string madgraphParamCard, float alphaS,
-	              bool madGraphSortingHeavyBQuark=false);
+	              bool madGraphSortingHeavyBQuark=false, bool mg5aMCv2p5OrOlder=false);
 	virtual ~MadGraphTools();
 	
 	template<class TLHEParticle>
-	double GetMatrixElementSquared(std::vector<TLHEParticle*>& lheParticles) const // the vector is sorted in-place to match MadGraph ordering scheme
+	double GetMatrixElementSquared(std::vector<TLHEParticle*>& lheParticles, std::vector<int> const& bosonPdgIds={25}) const // the vector is sorted in-place to match MadGraph ordering scheme
 	{
 		// sorting of LHE particles for MadGraph
 		if (m_madGraphSortingHeavyBQuark)
@@ -49,7 +55,7 @@ public:
 			std::sort(lheParticles.begin()+3, lheParticles.end(), &MadGraphTools::MadGraphParticleOrderingLightBQuark<TLHEParticle>);
 		}
 	
-		std::vector<CartesianRMFLV> particleFourMomenta = MadGraphTools::BoostToHiggsCMS<TLHEParticle>(lheParticles);
+		std::vector<CartesianRMFLV> particleFourMomenta = MadGraphTools::BoostToHiggsCMS<TLHEParticle>(lheParticles, bosonPdgIds);
 		std::vector<int> particlePdgIds = MadGraphTools::GetPdgIds<TLHEParticle>(lheParticles);
 
 		// construct Python list of four-momenta
@@ -84,11 +90,38 @@ public:
 	
 		// clean up
 		Py_DECREF(pyParticleFourMomenta);
+		Py_DECREF(pyParticlePdgIds);
 		Py_DECREF(pyMethodName);
 	
 		return matrixElementSquared;
 	}
 	
+	static TDatabasePDG* GetDatabasePDG(std::string pdgDatabaseFilename="$ROOTSYS/etc/pdg_table.txt");
+	
+	template<class TLHEParticle>
+	static std::string GetProcess(std::vector<TLHEParticle*>& lheParticles, // the vector is sorted in-place to match MadGraph ordering scheme
+	                              TDatabasePDG* databasePDG, bool madGraphSortingHeavyBQuark=false, std::vector<int> const& bosonPdgIds={25})
+	{
+		// sorting of LHE particles for MadGraph
+		if (madGraphSortingHeavyBQuark)
+		{
+			std::sort(lheParticles.begin(), lheParticles.begin()+2, &MadGraphTools::MadGraphParticleOrderingHeavyBQuark<TLHEParticle>);
+			std::sort(lheParticles.begin()+3, lheParticles.end(), &MadGraphTools::MadGraphParticleOrderingHeavyBQuark<TLHEParticle>);
+		}
+		else
+		{
+			std::sort(lheParticles.begin(), lheParticles.begin()+2, &MadGraphTools::MadGraphParticleOrderingLightBQuark<TLHEParticle>);
+			std::sort(lheParticles.begin()+3, lheParticles.end(), &MadGraphTools::MadGraphParticleOrderingLightBQuark<TLHEParticle>);
+		}
+		
+		std::string process = "";
+		for (typename std::vector<TLHEParticle*>::iterator lheParticle = lheParticles.begin(); lheParticle != lheParticles.end(); ++lheParticle)
+		{
+			process += (std::string((std::find(bosonPdgIds.begin(), bosonPdgIds.end(), std::abs((*lheParticle)->pdgId)) != bosonPdgIds.end()) ? "_" : "") +
+			            std::string(databasePDG->GetParticle((*lheParticle)->pdgId)->GetName()));
+		}
+		return process;
+	}
 
 private:
 
@@ -196,7 +229,7 @@ private:
 	}
 	
 	template<class TLHEParticle>
-	static std::vector<CartesianRMFLV> BoostToHiggsCMS(std::vector<TLHEParticle*> lheParticles)
+	static std::vector<CartesianRMFLV> BoostToHiggsCMS(std::vector<TLHEParticle*> lheParticles, std::vector<int> const& bosonPdgIds={25})
 	{
 		std::vector<CartesianRMFLV> particleFourMomentaHiggsCMS;
 	
@@ -204,7 +237,8 @@ private:
 		CartesianRMFLV higgsFourMomentum = CartesianRMFLV(0,0,0,1);
 		for (typename std::vector<TLHEParticle*>::iterator lheParticle = lheParticles.begin(); lheParticle != lheParticles.end(); ++lheParticle)
 		{
-			if ((*lheParticle)->pdgId > 20) {
+			if (std::find(bosonPdgIds.begin(), bosonPdgIds.end(), std::abs((*lheParticle)->pdgId)) != bosonPdgIds.end())
+			{
 				 higgsFourMomentum = (*lheParticle)->p4;
 			}
 		}
@@ -216,7 +250,7 @@ private:
 		// boost all particles
 		for (typename std::vector<TLHEParticle*>::iterator lheParticle = lheParticles.begin(); lheParticle != lheParticles.end(); ++lheParticle)
 		{
-			particleFourMomentaHiggsCMS.push_back(boost * (*lheParticle)->p4);
+			particleFourMomentaHiggsCMS.push_back(boost((*lheParticle)->p4));
 		}
 		return particleFourMomentaHiggsCMS;
 	}
@@ -233,6 +267,7 @@ private:
 	}
 	
 	bool m_madGraphSortingHeavyBQuark = false;
+	bool m_mg5aMCv2p5OrOlder = false;
 	
 	PyObject* m_pyMadGraphTools = nullptr;
 	
