@@ -76,6 +76,7 @@ namespace ic {
       outtree_->Branch("wt_tau_id_binned", &wt_tau_id_binned_);
       outtree_->Branch("wt_tau_id_loose", &wt_tau_id_loose_);
       outtree_->Branch("wt_tau_id_medium", &wt_tau_id_medium_);
+      outtree_->Branch("wt_lfake_rate"    ,    &wt_lfake_rate_); 
       if(do_mssm_higgspt_){
         outtree_->Branch("wt_ggh_t", &wt_ggh_t_);
         outtree_->Branch("wt_ggh_b", &wt_ggh_b_);
@@ -1155,8 +1156,9 @@ namespace ic {
           outtree_->Branch("wt_scale_tt_vbf"    , &wt_scale_tt_vbf_     );
         }
         if(do_z_weights_){
-          outtree_->Branch("wt_z_up",      &wt_z_up_);    
-          outtree_->Branch("wt_z_down",    &wt_z_down_);    
+          outtree_->Branch("wt_z_mjj",      &wt_z_mjj_);   
+          outtree_->Branch("wt_z_mjj_up",      &wt_z_mjj_up_);    
+          outtree_->Branch("wt_z_mjj_down",    &wt_z_mjj_down_);    
         }
         if(strategy_ == strategy::smsummer16){
           outtree_->Branch("wt_tau_id_dm0_up"   ,    &wt_tau_id_dm0_up_);   
@@ -2538,6 +2540,7 @@ namespace ic {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
+    if(event->Exists("m_vis_shift") && do_z_weights_)  m_vis_ = m_vis_* event->Get<double>("m_vis_shift");
 
     mt_lep_ = MT(lep1,lep2);
     mt_ll_ = MT(ditau, mets);
@@ -3580,8 +3583,9 @@ namespace ic {
       wt_scale_tt_vbf_ = 1.094 + 0.0000545 * mjj_.var_double;     
     }
     if(do_z_weights_ && !systematic_shift_){
-      wt_z_up_   = event->Exists("wt_z_up" ) ? event->Get<double>("wt_z_up"  ) : 1.0;
-      wt_z_down_ = event->Exists("wt_z_down") ? event->Get<double>("wt_z_down") : 1.0;   
+      wt_z_mjj_   = event->Exists("wt_z_mjj" ) ? event->Get<double>("wt_z_mjj"  ) : 1.0;  
+      wt_z_mjj_up_   = event->Exists("wt_z_mjj_up" ) ? event->Get<double>("wt_z_mjj_up"  ) : 1.0;
+      wt_z_mjj_down_ = event->Exists("wt_z_mjj_down") ? event->Get<double>("wt_z_mjj_down") : 1.0;   
     }
     if(strategy_ == strategy::smsummer16){
       wt_tau_id_dm0_up_     = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
@@ -3590,6 +3594,7 @@ namespace ic {
       wt_tau_id_dm1_down_   = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==1 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
       wt_tau_id_dm10_up_    = event->Exists("wt_tau_id_dm_up") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_up") : 1.0;
       wt_tau_id_dm10_down_  = event->Exists("wt_tau_id_dm_down") && tau_decay_mode_2_==10 ? event->Get<double>("wt_tau_id_dm_down") : 1.0;
+      wt_lfake_rate_        = event->Exists("wt_lfake_rate") ? event->Get<double>("wt_lfake_rate") : 1.0;
       wt_lfake_dm0_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_down") : 1.0;
       wt_lfake_dm0_down_    = event->Exists("wt_lfake_rate_down") && tau_decay_mode_2_==0 ? event->Get<double>("wt_lfake_rate_up") : 1.0;
       wt_lfake_dm1_up_      = event->Exists("wt_lfake_rate_up") && tau_decay_mode_2_==1 ? event->Get<double>("wt_lfake_rate_up") : 1.0;

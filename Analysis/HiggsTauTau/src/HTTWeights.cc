@@ -885,40 +885,42 @@ namespace ic {
     if (do_z_weights_) {
       // these weights are applied for smsummer16 analysis to correct mjj distribution based on Z->mumu data/MC comparrison  
       double wt_z = 1.02;
-      double wt_z_down = 1.02;
-      double wt_z_up = 1.02;
+      double wt_z_mjj = 1.;
+      double wt_z_mjj_down = 1.;
+      double wt_z_mjj_up = 1.;
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       if(jets.size()>=2){
         double mjj = (jets[0]->vector() + jets[1]->vector()).M();
         if(channel_ == channel::et || channel_ == channel::mt || channel_ == channel::em){
           if(mjj>300 && mjj<700){
-            wt_z *= 1.06;
-            wt_z_up *= 1.12;
+            wt_z_mjj *= 1.06;
+            wt_z_mjj_up *= 1.12;
           } else if (mjj>700 && mjj<1100){
-            wt_z *= 0.98;
-            wt_z_up *= 0.96;
+            wt_z_mjj *= 0.98;
+            wt_z_mjj_up *= 0.96;
           } else if (mjj>1100){
-            wt_z *= 0.95;
-            wt_z_up *= 0.90;
+            wt_z_mjj *= 0.95;
+            wt_z_mjj_up *= 0.90;
           }
         }
         if(channel_ == channel::tt){
           if(mjj>300 && mjj<500){
-            wt_z *= 1.02;
-            wt_z_up *= 1.04;
+            wt_z_mjj *= 1.02;
+            wt_z_mjj_up *= 1.04;
           } else if (mjj>500 && mjj<800){
-            wt_z *= 1.06;
-            wt_z_up *= 1.12;
+            wt_z_mjj *= 1.06;
+            wt_z_mjj_up *= 1.12;
           } else if (mjj>800){
-            wt_z *= 1.04;
-            wt_z_up *= 1.08;
+            wt_z_mjj *= 1.04;
+            wt_z_mjj_up *= 1.08;
           }
         }
       }
       eventInfo->set_weight("wt_z",wt_z);
-      event->Add("wt_z_up", wt_z_up/wt_z);
-      event->Add("wt_z_down", wt_z_down/wt_z);
+      event->Add("wt_z_mjj", wt_z_mjj);
+      event->Add("wt_z_up", wt_z_mjj_up/wt_z_mjj);
+      event->Add("wt_z_down", wt_z_mjj_down/wt_z_mjj);
     }
 
    if (do_tracking_eff_){
@@ -1418,7 +1420,7 @@ namespace ic {
                           mu_trg = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
                         }
                         if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
-                        else tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data()); // same SFs for fake taus as for genuine taus
+                        else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
                       }
                       // may want to add different SFs for anti-iso
                     }  else{
@@ -2732,15 +2734,30 @@ namespace ic {
                etau_fakerate_2 = 1.40;
             } else etau_fakerate_2=1.90;
             if(strategy_==strategy::smsummer16){
+              if(fabs(tau->eta()) < 1.460){
+               etau_fakerate_2 = 1.50;
+              } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=2.;
               event->Add("wt_lfake_rate_up",1.12);
               event->Add("wt_lfake_rate_down",0.88);
+              double wt_lfake_rate = 1.0;
+              double dm_2_ = tau->decay_mode();
+              if(dm_2_==0) wt_lfake_rate = 0.98;
+              if(dm_2_==1) wt_lfake_rate = 1.2;
+              event->Add("wt_lfake_rate", wt_lfake_rate);
+              //store m_vis shift to apply in HTTCategories
+              double m_vis_shift = 1.;
+              if(dm_2_==0) m_vis_shift = 1.017;
+              if(dm_2_==1) m_vis_shift = 1.03;
+              event->Add("m_vis_shift", m_vis_shift);
+                                                        
             }
           }
-        } else {
+      } else {
           if(gm2_==1||gm2_==3){
             if(fabs(tau->eta()) < 1.5){
                etau_fakerate_2=1.21;
             } else etau_fakerate_2=1.38;
+            if(strategy_==strategy::smsummer16) etau_fakerate_2 = 1.4;
           }
         }
         if(channel_ == channel::tt){
@@ -2750,6 +2767,7 @@ namespace ic {
             if(fabs(tau1->eta()) < 1.5){
                etau_fakerate_1=1.21;
             } else etau_fakerate_1=1.38;
+            if(strategy_==strategy::smsummer16) etau_fakerate_1 = 1.4;    
           }
         }  
       } else {
@@ -2813,8 +2831,29 @@ namespace ic {
               mtau_fakerate_2=2.5;
             }
             if(strategy_==strategy::smsummer16){
+              if(fabs(tau->eta()) < 0.4){
+                mtau_fakerate_2 = 1.26;
+              } else if(fabs(tau->eta()) < 0.8){
+                mtau_fakerate_2 = 1.36;
+              } else if(fabs(tau->eta()) < 1.2){
+                mtau_fakerate_2 = 0.85;
+              } else if(fabs(tau->eta()) < 1.7){
+                mtau_fakerate_2=1.7;
+              } else if(fabs(tau->eta()) < 2.3){
+                mtau_fakerate_2=2.3;
+              }  
               event->Add("wt_lfake_rate_up",1.25);
               event->Add("wt_lfake_rate_down",0.75);
+              //not clear if the scale factors split by dm is applied for the SM or not so add these to the event so they can be applied at plotting level if required
+              double wt_lfake_rate = 1.0;
+              double dm_2_ = tau->decay_mode();
+              if(dm_2_==0) wt_lfake_rate = 0.75;
+              if(dm_2_==1) wt_lfake_rate = 1.0;
+              event->Add("wt_lfake_rate", wt_lfake_rate);
+              //store m_vis shift to apply in HTTCategories
+              double m_vis_shift = 1.;
+              if(dm_2_==0) m_vis_shift = 1.01;
+              event->Add("m_vis_shift", m_vis_shift);
             }
           }
         } else {
@@ -2831,6 +2870,19 @@ namespace ic {
               mtau_fakerate_2=2.39;
             }
           }
+          if(strategy_==strategy::smsummer16){
+             if(fabs(tau->eta()) < 0.4){
+               mtau_fakerate_2=1.01;
+             } else if(fabs(tau->eta()) < 0.8){
+               mtau_fakerate_2=1.01;
+             } else if(fabs(tau->eta()) < 1.2){
+               mtau_fakerate_2=0.87;
+             } else if(fabs(tau->eta()) < 1.7){
+               mtau_fakerate_2=1.2;
+             } else if(fabs(tau->eta()) < 2.3){
+               mtau_fakerate_2=2.3;
+             }
+           }
         }
         if(channel_ == channel::tt){
         unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
@@ -2846,6 +2898,19 @@ namespace ic {
               mtau_fakerate_1=1.22;
             } else if(fabs(tau1->eta()) < 2.3){
               mtau_fakerate_1=2.39;
+            }
+            if(strategy_==strategy::smsummer16){
+              if(fabs(tau1->eta()) < 0.4){
+                mtau_fakerate_1=1.01;
+              } else if(fabs(tau1->eta()) < 0.8){
+                mtau_fakerate_1=1.01;
+              } else if(fabs(tau1->eta()) < 1.2){
+                mtau_fakerate_1=0.87;
+              } else if(fabs(tau1->eta()) < 1.7){
+                mtau_fakerate_1=1.2;
+              } else if(fabs(tau1->eta()) < 2.3){
+                mtau_fakerate_1=2.3;
+              }
             }
           }
         }  

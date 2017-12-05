@@ -1240,8 +1240,9 @@ class HTTCategories : public ModuleBase {
   double jdphi_27_;
   double jdphi_28_;
   
-  double wt_z_down_;
-  double wt_z_up_;
+  double wt_z_mjj_;
+  double wt_z_mjj_down_;
+  double wt_z_mjj_up_;
   double wt_tau_id_dm0_up_;
   double wt_tau_id_dm0_down_;
   double wt_tau_id_dm1_up_;
@@ -1252,6 +1253,7 @@ class HTTCategories : public ModuleBase {
   double wt_lfake_dm0_down_;
   double wt_lfake_dm1_up_;
   double wt_lfake_dm1_down_;
+  double wt_lfake_rate_;
 
  public:
   HTTCategories(std::string const& name);

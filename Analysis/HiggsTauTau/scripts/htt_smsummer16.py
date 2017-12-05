@@ -365,8 +365,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
     #'ZZTo4L',
     'ZZTo4L-amcat',
     'WWTo1L1Nu2Q',
-    'WWToLNuQQ',
-    'WWToLNuQQ-ext',
+    #'WWToLNuQQ',
+    #'WWToLNuQQ-ext',
     'WZJToLLLNu',
     'WZTo1L3Nu',
     'WZTo2L2Q',
@@ -413,8 +413,8 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       'EWKWPlus2Jets_WToLNu',
       'EWKZ2Jets_ZToLL-ext',
       'EWKZ2Jets_ZToLL',
-      #'EWKZ2Jets_ZToNuNu-ext',
-      #'EWKZ2Jets_ZToNuNu'    
+      'EWKZ2Jets_ZToNuNu-ext',
+      'EWKZ2Jets_ZToNuNu'    
     ]
     central_samples.extend(extra_samples)
 
