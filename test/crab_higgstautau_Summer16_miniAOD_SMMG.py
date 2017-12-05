@@ -9,7 +9,7 @@ config.JobType.psetName = 'higgstautau_cfg_80X_Nov17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 #config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
-CfgParams = ['release=80XMINIAOD','isData=0','doHT=0', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8','isReHLT=1']
+CfgParams = ['release=80XMINIAOD','isData=0','doHT=1', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8','isReHLT=1','LHEWeights=True']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 100000
@@ -55,10 +55,10 @@ if __name__ == '__main__':
         config.Data.inputDataset = task[1]
         #submit(config)
             
-        if "GluGluToHToTauTau_M-125" in task[0] or "VBFHToTauTau_M-125" in task[0]:
-            config.JobType.pyCfgParams = CfgParams + ['LHEWeights=True']
-        else: config.JobType.pyCfgParams = CfgParams + ['LHEWeights=False']
-            
+        if "GluGluToHToTauTau_amcNLO_M-125" in task[0]:
+            config.JobType.pyCfgParams = CfgParams + ['MGsignalGF=True']
+        else: config.JobType.pyCfgParams = CfgParams + ['MGsignalVBF=True']
+
         p = Process(target=submit, args=(config,))
         p.start()
         p.join()

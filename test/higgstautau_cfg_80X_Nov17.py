@@ -9,7 +9,7 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/0863B733-1A39-E611-AF47-0025905C53D8.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/4C466283-6BC0-E611-B3AE-001517FB25E4.root', parser.VarParsing.multiplicity.singleton,
-opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer16MiniAODv2/SUSYGluGluToBBHToTauTau_M-1000_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/130000/10B3D2AA-286C-E711-B57F-141877410B85.root', parser.VarParsing.multiplicity.singleton,               
+opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluToHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/60000/001268DD-CAEB-E511-AC7F-842B2B5C2299.root', parser.VarParsing.multiplicity.singleton,               
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/000C6E52-8BEC-E611-B3FF-0025905C42FE.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016F/SingleMuon/MINIAOD/PromptReco-v1/000/277/932/00000/084865EB-1859-E611-BDA7-02163E011A89.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v2/000/281/265/00000/28861171-6E82-E611-9CAF-02163E0141FA.root', parser.VarParsing.multiplicity.singleton,
@@ -32,6 +32,10 @@ opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
+opts.register('MGsignalGF', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Using amc@NLO for ggH signal samples")
+opts.register('MGsignalVBF', False, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Using amc@NLO for qqH signal samples")
 
 
 
@@ -1703,17 +1707,20 @@ if release in ['76X']:
     process.patTriggerEvent+
    process.icTriggerPathProducer
   )
-
+  
+trig_name="HLT"
+if opts.MGsignalVBF: trig_name = "HLT2"
+if opts.MGsignalGF: trig_name = "HLT"
 if release in ['80XMINIAOD']:
   process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
    branch = cms.string("triggerPaths"),
-   input  = cms.InputTag("TriggerResults","","HLT"),
+   input  = cms.InputTag("TriggerResults","",trig_name),
    inputIsStandAlone = cms.bool(True),
    inputPrescales = cms.InputTag("patTrigger")
   )
 
   if isReHLT:
-    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults","","HLT")
+    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults","",trig_name)
 
   if isData:
     process.icTriggerSequence += cms.Sequence(
@@ -2269,7 +2276,7 @@ if release in ['80XMINIAOD']:
   if isReHLT:
     for name in process.icTriggerObjectSequence.moduleNames():
       mod = getattr(process, name)
-      mod.inputTriggerResults = cms.InputTag("TriggerResults", "","HLT")
+      mod.inputTriggerResults = cms.InputTag("TriggerResults", "",trig_name)
 
 ################################################################
 # EventInfo
@@ -2334,7 +2341,36 @@ if isData:
   process.icEventInfoSequence.remove(process.badGlobalMuonTagger)
   process.icEventInfoSequence.remove(process.cloneGlobalMuonTagger)
   
+################################################################
+# MadgraphReWeighting
+################################################################
+CMSSW_BASE='/vols/build/cms/dw515/CMSSW_8_0_26_patch1'
+proc_dir = ''
+p_card = ''
+p_card_sample =''
+if opts.MGsignalGF:
+  proc_dir = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/ggh_2p6/SubProcesses"
+  p_card = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/ggh_2p6/Cards/param_card_cp.dat"
+  p_card_sample = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/ggh_2p6/Cards/param_card_default.dat"
+if opts.MGsignalVBF:
+  proc_dir = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf_2p6/SubProcesses"
+  p_card = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf_2p6/Cards/param_card_cp.dat"
+  p_card_sample = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf_2p6/Cards/param_card_default.dat"
 
+process.icMadgraphWeightsProducer = cms.EDProducer("ICMadgraphWeightsProducer",
+  branch                  = cms.string("madgraphWeights"),
+  input                   = cms.InputTag("externalLHEProducer"),
+  theta                   = cms.string("0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0"),
+  theta_sample            = cms.double(0.),
+  process_dir             = cms.string(proc_dir),
+  param_card              = cms.string(p_card),
+  param_card_sample       = cms.string(p_card_sample)
+)
+
+process.icMadgraphWeightsSequence = cms.Sequence(
+  process.icMadgraphWeightsProducer 
+)
+if not opts.MGsignalGF and not opts.MGsignalVBF or isData: process.icMadgraphWeightsSequence.remove(process.icMadgraphWeightsProducer)
 
 ################################################################
 # Event
@@ -2365,6 +2401,7 @@ process.p = cms.Path(
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
   #process.patDefaultSequence+
+  process.icMadgraphWeightsSequence+
   process.icEventProducer
 )
 
