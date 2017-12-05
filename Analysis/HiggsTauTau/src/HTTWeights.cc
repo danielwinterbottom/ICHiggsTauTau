@@ -2869,8 +2869,7 @@ namespace ic {
             } else if(fabs(tau->eta()) < 2.3){
               mtau_fakerate_2=2.39;
             }
-          }
-          if(strategy_==strategy::smsummer16){
+            if(strategy_==strategy::smsummer16){
              if(fabs(tau->eta()) < 0.4){
                mtau_fakerate_2=1.01;
              } else if(fabs(tau->eta()) < 0.8){
@@ -2883,6 +2882,7 @@ namespace ic {
                mtau_fakerate_2=2.3;
              }
            }
+          }
         }
         if(channel_ == channel::tt){
         unsigned gm1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
