@@ -517,12 +517,17 @@ class HttWNode(BaseNode):
         self.extra_den_node = extra_den_node
 
     def RunSelf(self):
-        if self.w_shape is None:
-            self.shape = (self.data_node.shape.rate - self.subtract_node.shape.rate)/self.w_control_node.shape.rate * self.w_signal_node.shape
+        if self.data_node is None:
+          if self.w_shape is None:
+            self.shape = self.w_signal_node.shape
+          else: self.shape = self.w_signal_node.shape.rate / self.w_shape.shape.rate * self.w_shape.shape  
         else:
-            self.shape = (self.data_node.shape.rate - self.subtract_node.shape.rate)/self.w_control_node.shape.rate * self.w_signal_node.shape.rate / self.w_shape.shape.rate * self.w_shape.shape
-        #if self.extra_num_node is not None and self.extra_den_node is not None:
-        #    self.shape *= self.extra_num_node.shape.rate / self.extra_den_node.shape.rate
+          if self.w_shape is None:
+              self.shape = (self.data_node.shape.rate - self.subtract_node.shape.rate)/self.w_control_node.shape.rate * self.w_signal_node.shape
+          else:
+              self.shape = (self.data_node.shape.rate - self.subtract_node.shape.rate)/self.w_control_node.shape.rate * self.w_signal_node.shape.rate / self.w_shape.shape.rate * self.w_shape.shape
+        if self.extra_num_node is not None and self.extra_den_node is not None:
+            self.shape *= self.extra_num_node.shape.rate / self.extra_den_node.shape.rate
 
     def Objects(self):
         return {self.name: self.shape.hist}
@@ -531,7 +536,8 @@ class HttWNode(BaseNode):
         return self.name + '.subnodes'
 
     def SubNodes(self):
-        subnodes = [self.data_node, self.subtract_node, self.w_control_node , self.w_signal_node]
+        if self.data_node is None: subnodes = [self.w_signal_node]
+        else: subnodes = [self.data_node, self.subtract_node, self.w_control_node , self.w_signal_node]
         if self.w_shape is not None:
             subnodes.append(self.w_shape)
         if self.extra_num_node is not None and self.extra_den_node is not None:

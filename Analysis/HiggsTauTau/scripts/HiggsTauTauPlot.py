@@ -949,19 +949,22 @@ def GetWNode(ana, name='W', samples=[], data=[], plot='',plot_unmodified='', wt=
     if shape_selection == full_selection: w_shape = None
     else: w_shape = ana.SummedFactory('w_shape', samples, plot, shape_selection)
     
-    #if method in [22]:
-    #  wsf_num = GetWNode(ana, name, samples, data, plot,plot_unmodified, wt, sel, cat, cat_data, 21, qcd_factor, True)
-    #  wsf_denum = GetWNode(ana, name, samples, data, plot,plot_unmodified, wt, sel, cat, cat_data, 8, qcd_factor, True)
-    #else:
-    #  wsf_num = None
-    #  wsf_denum = None    
+    if method in [22]:
+      data_node = None
+      wsf_num = GetWNode(ana, name, samples, data, plot,plot_unmodified, wt, sel, cat, cat_data, 21, qcd_factor, True)
+      wsf_denum = GetWNode(ana, name, samples, data, plot,plot_unmodified, wt, sel, cat, cat_data, 8, qcd_factor, True)
+    else:
+      wsf_num = None
+      wsf_denum = None    
     
     w_node = HttWNode(name,
       data_node,
       subtract_node,
       ana.SummedFactory('W_cr', samples, plot, w_control_full_selection),
       ana.SummedFactory('W_sr', samples, plot, full_selection),
-      w_shape)
+      w_shape,
+      wsf_num,
+      wsf_denum)
   return w_node
 
 def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', plot_unmodified='', wt='', sel='', cat='', cat_data='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
