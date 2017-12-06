@@ -1420,7 +1420,7 @@ namespace ic {
                           mu_trg = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
                         }
                         if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
-                        else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
+                        else tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
                       }
                       // may want to add different SFs for anti-iso
                     }  else{
@@ -2735,8 +2735,8 @@ namespace ic {
             } else etau_fakerate_2=1.90;
             if(strategy_==strategy::smsummer16){
               if(fabs(tau->eta()) < 1.460){
-               etau_fakerate_2 = 1.50;
-              } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=2.;
+               etau_fakerate_2 = 1.40;//1.50;
+              } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.9;//2.;
               event->Add("wt_lfake_rate_up",1.12);
               event->Add("wt_lfake_rate_down",0.88);
               double wt_lfake_rate = 1.0;
@@ -2757,7 +2757,11 @@ namespace ic {
             if(fabs(tau->eta()) < 1.5){
                etau_fakerate_2=1.21;
             } else etau_fakerate_2=1.38;
-            if(strategy_==strategy::smsummer16) etau_fakerate_2 = 1.4;
+            if(strategy_==strategy::smsummer16){
+              if(fabs(tau->eta()) < 1.460){
+               etau_fakerate_2 = 1.21;
+              } else if(fabs(tau->eta()) > 1.558)  etau_fakerate_2=1.38;
+            }
           }
         }
         if(channel_ == channel::tt){
@@ -2767,7 +2771,11 @@ namespace ic {
             if(fabs(tau1->eta()) < 1.5){
                etau_fakerate_1=1.21;
             } else etau_fakerate_1=1.38;
-            if(strategy_==strategy::smsummer16) etau_fakerate_1 = 1.4;    
+            if(strategy_==strategy::smsummer16){
+              if(fabs(tau1->eta()) < 1.460){
+                etau_fakerate_1 = 1.21;
+               } else if(fabs(tau1->eta()) > 1.558)  etau_fakerate_1=1.38;   
+            }
           }
         }  
       } else {

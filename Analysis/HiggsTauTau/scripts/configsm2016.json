@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Nov20_MC_80X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     [ "mt", "et", "tt", "em" ],
+    "channels":     [ "mt", "et", "tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -121,6 +121,7 @@
       "baseline": {
         "pair_dr": 0.5,
         "di_elec_veto"   :true,
+        "di_muon_veto"   :true,
         "extra_elec_veto":true,
         "extra_muon_veto":true,
         "max_extra_elecs": 1,
@@ -137,6 +138,8 @@
       "baseline": {
         "max_extra_elecs": 0,
         "max_extra_muons": 0,
+        "di_muon_veto"   :true,
+        "di_elec_veto"   :true,
         "extra_elec_veto" : true,
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
@@ -152,6 +155,7 @@
       "baseline": {
         "pair_dr": 0.5,
         "di_muon_veto"   :true,
+        "di_elec_veto"   :true,
         "extra_elec_veto":true,
         "extra_muon_veto":true,
         "max_extra_elecs": 0,

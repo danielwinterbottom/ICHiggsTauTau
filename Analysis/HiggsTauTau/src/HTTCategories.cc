@@ -2439,8 +2439,10 @@ namespace ic {
     extramuon_veto_ = false;
     minimal_extraelec_veto_ = false;
     minimal_extramuon_veto_ = false;
+    bool dilep_veto_=false;
     if(channel_ == channel::et) { 
         if(event->Exists("dielec_veto")) dilepton_veto_ = event->Get<bool>("dielec_veto");
+        if(event->Exists("dimuon_veto")) dilep_veto_ = event->Get<bool>("dimuon_veto");
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
@@ -2448,6 +2450,7 @@ namespace ic {
     }
     if(channel_ == channel::mt) { 
         if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
+        if(event->Exists("dielec_veto")) dilep_veto_ = event->Get<bool>("dielec_veto");
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
@@ -2462,6 +2465,10 @@ namespace ic {
 
     }
     if(channel_ == channel::tt) {
+        if(strategy_==strategy::smsummer16){
+          if(event->Exists("dimuon_veto")) dilep_veto_ = event->Get<bool>("dimuon_veto");
+          if(event->Exists("dielec_veto")) dilep_veto_ = dilep_veto_ || event->Get<bool>("dielec_veto");
+        }
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         if(event->Exists("minimal_extra_elec_veto")) minimal_extraelec_veto_ = event->Get<bool>("minimal_extra_elec_veto");
@@ -2469,6 +2476,8 @@ namespace ic {
 
     }
     lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
+    
+    if(strategy_==strategy::smsummer16 && !make_sync_ntuple_) dilepton_veto_ = dilep_veto_ || dilepton_veto_;
 
     n_vtx_ = eventInfo->good_vertices();
     /*trigger_object_pt_1 = 0;
@@ -2540,7 +2549,7 @@ namespace ic {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
-    if(event->Exists("m_vis_shift") && do_z_weights_)  m_vis_ = m_vis_* event->Get<double>("m_vis_shift");
+    //if(event->Exists("m_vis_shift") && do_z_weights_)  m_vis_ = m_vis_* event->Get<double>("m_vis_shift");
 
     mt_lep_ = MT(lep1,lep2);
     mt_ll_ = MT(ditau, mets);
