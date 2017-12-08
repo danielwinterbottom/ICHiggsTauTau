@@ -7,7 +7,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
-//#include "UserCode/ICHiggsTauTau/interface/MadGraphTools.h"
 
 #include <string>
 
