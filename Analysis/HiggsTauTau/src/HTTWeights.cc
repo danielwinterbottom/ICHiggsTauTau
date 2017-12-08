@@ -1420,7 +1420,7 @@ namespace ic {
                           mu_trg = fns_["m_trgMu19leg_eta2p1_aiso0p15to0p3_desy_data"]->eval(args_desy.data());    
                         }
                         if(gm2_==5) tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
-                        else tau_trg = fns_["t_genuine_TightIso_mt_ratio"]->eval(t_args.data());
+                        else tau_trg = fns_["t_fake_TightIso_mt_ratio"]->eval(t_args.data());
                       }
                       // may want to add different SFs for anti-iso
                     }  else{
