@@ -804,7 +804,7 @@ BuildModule(jetIDFilter);
   return;  
 }
 
-if((output_name.find("GluGluToHToTauTau") != output_name.npos || output_name.find("VBFHToTauTau")) && !is_data && js["do_gen_info"].asBool()){
+if((output_name.find("GluGluToHToTauTau_amcNLO_M") != output_name.npos || output_name.find("VBFHToTauTau_amcNLO_M")) && !is_data && js["do_gen_info"].asBool()){
   BuildModule(HTTGenEventInfo("HTTGenEventInfo"));
 }
 
