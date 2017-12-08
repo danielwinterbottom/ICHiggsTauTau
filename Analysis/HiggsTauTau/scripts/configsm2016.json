@@ -56,7 +56,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec04/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/SM/Dec07/",
     //"output_folder" :/output/July27_NewGolden/",
     "output_name"   : "SUSYGluGluToHToTauTau_M-3200",
     //"output_name"   : "SUSYGluGluToHToTauTau_M-160",
@@ -68,7 +68,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 2,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,
@@ -87,10 +87,10 @@
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
-      "efaketau_0pi_es_shift": 1.017,
-      "efaketau_1pi_es_shift": 1.030,
-      "mufaketau_0pi_es_shift": 1.010,
-      "mufaketau_1pi_es_shift": 1.000,
+      "efaketau_0pi_es_shift": 1.0,
+      "efaketau_1pi_es_shift": 1.095,
+      "mufaketau_0pi_es_shift": 0.998,
+      "mufaketau_1pi_es_shift": 1.015,
       "tau_1prong0pi0_es_shift": 0.982,
       "tau_1prong1pi0_es_shift": 1.010,
       "tau_3prong0pi0_es_shift": 1.004,
@@ -259,44 +259,44 @@
     "scale_efake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_DOWN",
-        "efaketau_0pi_es_shift": 0.987
+        "efaketau_0pi_es_shift": 0.97
       }
     },
     "scale_efake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE0PI_UP",
-        "efaketau_0pi_es_shift": 1.047
+        "efaketau_0pi_es_shift": 1.03
       }
     },
     "scale_efake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_DOWN",
-        "efaketau_1pi_es_shift": 1.0
+        "efaketau_1pi_es_shift": 1.065
       }
     },
     "scale_efake_1pi_hi": {
       "baseline": {
         "addit_output_folder" : "EFAKE1PI_UP",
-        "efaketau_1pi_es_shift": 1.06
+        "efaketau_1pi_es_shift": 1.125
       }
     },
 
     "scale_mufake_0pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_DOWN",
-        "mufaketau_0pi_es_shift": 0.995
+        "mufaketau_0pi_es_shift": 0.983
       }
     },
     "scale_mufake_0pi_hi": {
       "baseline": {
         "addit_output_folder" : "MUFAKE0PI_UP",
-        "mufaketau_0pi_es_shift": 1.025
+        "mufaketau_0pi_es_shift": 1.03
       }
     },
     "scale_mufake_1pi_lo": {
       "baseline": {
         "addit_output_folder" : "MUFAKE1PI_DOWN",
-        "mufaketau_1pi_es_shift": 0.985
+        "mufaketau_1pi_es_shift": 1.0
       }
     },
     "scale_mufake_1pi_hi": {
