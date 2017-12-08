@@ -355,62 +355,62 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all or options.qcd_study:
   central_samples = [
-    'TT',
-    #'WJetsToLNu',
-    'WJetsToLNu-LO',
-    'WJetsToLNu-LO-ext',
-    'VVTo2L2Nu',
-    'VVTo2L2Nu-ext1',
-    'ZZTo2L2Q',
-    #'ZZTo4L',
-    'ZZTo4L-amcat',
-    'WWTo1L1Nu2Q',
-    #'WWToLNuQQ',
-    #'WWToLNuQQ-ext',
-    'WZJToLLLNu',
-    'WZTo1L3Nu',
-    'WZTo2L2Q',
-    'WZTo1L1Nu2Q',
-    'T-t',
-    'Tbar-t',
-    'T-tW',
-    'Tbar-tW',
-    #'DYJetsToLL',
+    #'TT',
+    ##'WJetsToLNu',
+    #'WJetsToLNu-LO',
+    #'WJetsToLNu-LO-ext',
+    #'VVTo2L2Nu',
+    #'VVTo2L2Nu-ext1',
+    #'ZZTo2L2Q',
+    ##'ZZTo4L',
+    #'ZZTo4L-amcat',
+    #'WWTo1L1Nu2Q',
+    ##'WWToLNuQQ',
+    ##'WWToLNuQQ-ext',
+    #'WZJToLLLNu',
+    #'WZTo1L3Nu',
+    #'WZTo2L2Q',
+    #'WZTo1L1Nu2Q',
+    #'T-t',
+    #'Tbar-t',
+    #'T-tW',
+    #'Tbar-tW',
+    ##'DYJetsToLL',
     'DYJetsToLL-LO-ext1',
     'DYJetsToLL-LO-ext2',
-    #'DYJetsToLL_M-10to50-ext',
-    #'DYJetsToLL_M-10to50',
+    ##'DYJetsToLL_M-10to50-ext',
+    ##'DYJetsToLL_M-10to50',
     'DYJetsToLL_M-10-50-LO',
-    #'DY1JetsToLL_M-10-50-LO',
-    #'DY2JetsToLL_M-10-50-LO',
-    #'DY3JetsToLL_M-10-50-LO',
-    #'DYJetsToLL_M-150-LO',
+    ##'DY1JetsToLL_M-10-50-LO',
+    ##'DY2JetsToLL_M-10-50-LO',
+    ##'DY3JetsToLL_M-10-50-LO',
+    ##'DYJetsToLL_M-150-LO',
     'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
-    'W1JetsToLNu-LO',
-    'W2JetsToLNu-LO',
-    'W2JetsToLNu-LO-ext',
-    'W3JetsToLNu-LO',
-    'W3JetsToLNu-LO-ext',
-    'W4JetsToLNu-LO',
-    'W4JetsToLNu-LO-ext1',
-    'W4JetsToLNu-LO-ext2',
-    'WGToLNuG',
-    'WGToLNuG-ext',
-    'WGstarToLNuEE',
-    'WGstarToLNuMuMu'
+    #'W1JetsToLNu-LO',
+    #'W2JetsToLNu-LO',
+    #'W2JetsToLNu-LO-ext',
+    #'W3JetsToLNu-LO',
+    #'W3JetsToLNu-LO-ext',
+    #'W4JetsToLNu-LO',
+    #'W4JetsToLNu-LO-ext1',
+    #'W4JetsToLNu-LO-ext2',
+    #'WGToLNuG',
+    #'WGToLNuG-ext',
+    #'WGstarToLNuEE',
+    #'WGstarToLNuMuMu'
      ]
   
   if options.analysis == 'sm':
     extra_samples = [
-      'EWKWMinus2Jets_WToLNu-ext1',
-      'EWKWMinus2Jets_WToLNu-ext2',
-      'EWKWMinus2Jets_WToLNu',
-      'EWKWPlus2Jets_WToLNu-ext1',
-      'EWKWPlus2Jets_WToLNu-ext2',
-      'EWKWPlus2Jets_WToLNu',
+      #'EWKWMinus2Jets_WToLNu-ext1',
+      #'EWKWMinus2Jets_WToLNu-ext2',
+      #'EWKWMinus2Jets_WToLNu',
+      #'EWKWPlus2Jets_WToLNu-ext1',
+      #'EWKWPlus2Jets_WToLNu-ext2',
+      #'EWKWPlus2Jets_WToLNu',
       'EWKZ2Jets_ZToLL-ext',
       'EWKZ2Jets_ZToLL',
       'EWKZ2Jets_ZToNuNu-ext',
@@ -433,13 +433,13 @@ if options.proc_bkg or options.proc_all or options.qcd_study:
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
-        nperjob = 30
+        nperjob = 20
         if 'scale' in FLATJSONPATCH:
-          nperjob = 20
+          nperjob = 15
         #if 'DY' in sa and 'JetsToLL' in sa:
           #nperjob = 30
         if 'TT' in sa:
-          nperjob = 30
+          nperjob = 20
           if 'scale' in FLATJSONPATCH:
             nperjob = 15
 #        if 'WJetsToLNu' in sa or 'W1JetsToLNu' in sa or 'W2JetsToLNu' in sa or 'W3JetsToLNu' in sa or 'W4JetsToLNu' in sa:
