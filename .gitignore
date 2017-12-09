@@ -33,3 +33,10 @@ jobs/
 
 #backups
 *~
+
+job_*.sh
+parajob_*.sh
+*.sh.o*
+*.sh.e*
+
+../data/*/SubProcesses/param.log

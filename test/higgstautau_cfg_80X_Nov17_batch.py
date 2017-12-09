@@ -37,7 +37,7 @@ opts.register('MGsignalGF', False, parser.VarParsing.multiplicity.singleton,
 opts.register('MGsignalVBF', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Using amc@NLO for qqH signal samples")
 opts.register('outfile', 'EventTree.root', parser.VarParsing.multiplicity.singleton,
-    parser.VarParsing.varType.int, "output file name")
+    parser.VarParsing.varType.string, "Release label")
 opts.register('maxevents', 100, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "max number of events to processs")
 opts.register('firstevent', 1, parser.VarParsing.multiplicity.singleton,
@@ -93,7 +93,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary
 ################################################################
 
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 50
 
 process.options   = cms.untracked.PSet(
   wantSummary = cms.untracked.bool(True)
@@ -329,7 +329,7 @@ if opts.MGsignalGF:
   'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluToHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/60000/464C0C6D-CBEB-E511-AC31-BD6E61BB4F04.root',
   'root://xrootd.unl.edu//store/mc/RunIIFall15MiniAODv2/GluGluToHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/60000/D2D5E4C8-DFEC-E511-A220-B90B5588EECD.root'
   ),
-  skipEvents = cms.untracked.uint32(opts.firstevent-1)  
+  skipEvents = cms.untracked.uint32(opts.firstevent)  
   )
 elif opts.MGsignalVBF:
   process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
@@ -351,7 +351,7 @@ elif opts.MGsignalVBF:
   'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/20000/5ED5CF71-7956-E611-A90D-0026B94DBD95.root',
   'root://xrootd.unl.edu//store/mc/RunIISpring16MiniAODv2/VBFHToTauTau_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/20000/2E466272-D855-E611-ACBB-0026B94DBE0A.root'
   ),
-  skipEvents = cms.untracked.uint32(opts.firstevent-1) 
+  skipEvents = cms.untracked.uint32(opts.firstevent) 
   )
 else:
   process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
