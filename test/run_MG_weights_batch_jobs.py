@@ -3,7 +3,7 @@ import subprocess
 
 cwd = os.getcwd()
 CMSSW_BASE = subprocess.check_output("echo $CMSSW_BASE", shell=True).replace('\n','/')
-nperjob=1000
+nperjob=400
 processes=['ggH','qqH']
 ggH_total=5791488
 vbf_total=1998200
