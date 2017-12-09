@@ -8,11 +8,14 @@ config.section_('JobType')
 config.JobType.psetName = 'higgstautau_cfg_80X_Nov17.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
+#config.JobType.inputFiles = ['/vols/build/cms/dw515/CMSSW_8_0_26_patch1/src/UserCode/ICHiggsTauTau/data/ggh_2p6', '/vols/build/cms/dw515/CMSSW_8_0_26_patch1/src/UserCode/ICHiggsTauTau/data/vbf_2p6', '/vols/build/cms/dw515/CMSSW_8_0_26_patch1/src/UserCode/ICHiggsTauTau/python/reweighting.py']
+config.JobType.inputFiles = ['/vols/build/cms/dw515/CMSSW_8_0_26_patch1/src/UserCode/ICHiggsTauTau/data/ggh_2p6', '/vols/build/cms/dw515/CMSSW_8_0_26_patch1/src/UserCode/ICHiggsTauTau/data/vbf_2p6']
+config.JobType.sendPythonFolder = True
 #config.JobType.inputFiles = ['Spring16_25nsV3_MC.db']
 CfgParams = ['release=80XMINIAOD','isData=0','doHT=1', 'globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v8','isReHLT=1','LHEWeights=True']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
-config.Data.unitsPerJob = 100000
+config.Data.unitsPerJob = 1000
 #config.Data.unitsPerJob = 1
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False

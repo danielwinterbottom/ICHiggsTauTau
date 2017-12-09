@@ -36,7 +36,10 @@ opts.register('MGsignalGF', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Using amc@NLO for ggH signal samples")
 opts.register('MGsignalVBF', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Using amc@NLO for qqH signal samples")
-
+opts.register('outfile', 'EventTree.root', parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.string, "output file name")
+opts.register('cmsswbase', '/vols/build/cms/dw515/CMSSW_8_0_26_patch1/', parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.string, "output file name")
 
 
 opts.parseArguments()
@@ -46,6 +49,9 @@ isData      = opts.isData
 tag         = opts.globalTag
 release     = opts.release
 doLHEWeights = opts.LHEWeights
+outfile      = opts.outfile
+CMSSW_BASE   = opts.cmssw
+
 if not isData:
   doHT     = opts.doHT
   isReHLT  = opts.isReHLT
@@ -75,7 +81,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("EventTree.root"),
+  fileName = cms.string(outfile),
   closeFileFast = cms.untracked.bool(True)
 )
 
@@ -83,7 +89,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -2344,18 +2350,29 @@ if isData:
 ################################################################
 # MadgraphReWeighting
 ################################################################
-CMSSW_BASE='/vols/build/cms/dw515/CMSSW_8_0_26_patch1'
 proc_dir = ''
 p_card = ''
 p_card_sample =''
+grid=False
 if opts.MGsignalGF:
-  proc_dir = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/ggh_2p6/SubProcesses"
-  p_card = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/ggh_2p6/Cards/param_card_cp.dat"
-  p_card_sample = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/ggh_2p6/Cards/param_card_default.dat"
+  if grid:
+    proc_dir = "ggh_2p6/SubProcesses"
+    p_card = "ggh_2p6/Cards/param_card_cp.dat"
+    p_card_sample = "ggh_2p6/Cards/param_card_default.dat"
+
+  else:
+    proc_dir = CMSSW_BASE+"src/UserCode/ICHiggsTauTau/data/ggh_2p6/SubProcesses"
+    p_card = CMSSW_BASE+"src/UserCode/ICHiggsTauTau/data/ggh_2p6/Cards/param_card_cp.dat"
+    p_card_sample = CMSSW_BASE+"src/UserCode/ICHiggsTauTau/data/ggh_2p6/Cards/param_card_default.dat"
 if opts.MGsignalVBF:
-  proc_dir = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf_2p6/SubProcesses"
-  p_card = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf_2p6/Cards/param_card_cp.dat"
-  p_card_sample = CMSSW_BASE+"/src/UserCode/ICHiggsTauTau/data/vbf_2p6/Cards/param_card_default.dat"
+  if grid:
+    proc_dir = "vbf_2p6/SubProcesses"
+    p_card = "vbf_2p6/Cards/param_card_cp.dat"
+    p_card_sample = "vbf_2p6/Cards/param_card_default.dat"
+  else:
+    proc_dir = CMSSW_BASE+"src/UserCode/ICHiggsTauTau/data/vbf_2p6/SubProcesses"
+    p_card = CMSSW_BASE+"src/UserCode/ICHiggsTauTau/data/vbf_2p6/Cards/param_card_cp.dat"
+    p_card_sample = CMSSW_BASE+"src/UserCode/ICHiggsTauTau/data/vbf_2p6/Cards/param_card_default.dat"
 
 process.icMadgraphWeightsProducer = cms.EDProducer("ICMadgraphWeightsProducer",
   branch                  = cms.string("madgraphWeights"),
