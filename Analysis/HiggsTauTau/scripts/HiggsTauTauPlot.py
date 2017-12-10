@@ -1315,7 +1315,8 @@ def FixBins(ana,outfile='output.root'):
                                                                                                                                 
 def NormFFSysts(ana,outfile='output.root'):
     nominal_hist = outfile.Get(nodename+'/jetFakes')
-    nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
+    if isinstance(nominal_hist,ROOT.TH2): nominal_scale = nominal_hist.Integral(-1,-1,-1,-1)
+    else: nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
     directory = outfile.Get(nodename)
     outfile.cd(nodename)
     hists_to_add=[]
@@ -1325,7 +1326,8 @@ def NormFFSysts(ana,outfile='output.root'):
         if not isinstance(hist,ROOT.TDirectory):
            if 'jetFakes' not in hist_name: continue
            if hist_name == 'jetFakes': continue
-           norm = nominal_scale/hist.Integral(0,hist.GetNbinsX()+1)
+           if isinstance(hist,ROOT.TH2): norm = nominal_scale/hist.Integral(-1,-1,-1,-1)
+           else: norm = nominal_scale/hist.Integral(0,hist.GetNbinsX()+1)
            hist.Scale(norm)
            norm_hist_name = hist_name
            norm_hist_name = norm_hist_name.replace('jetFakes','jetFakes_norm')
@@ -1335,7 +1337,8 @@ def NormFFSysts(ana,outfile='output.root'):
     
 def NormWFakeSysts(ana,outfile='output.root'):
     nominal_hist = outfile.Get(nodename+'/W')
-    nominal_scale = nominal_hist.Integral(0,nominal_hist.GetNbinsX()+1)
+    if isinstance(nominal_hist,ROOT.TH2): nominal_scale = nominal_hist.Integral(-1,-1,-1,-1)
+    else: nominal_scale = nominal_hist.Integral(-1,-1)
     directory = outfile.Get(nodename)
     outfile.cd(nodename)
     hists_to_add=[]
@@ -1344,7 +1347,8 @@ def NormWFakeSysts(ana,outfile='output.root'):
         hist = directory.Get(hist_name)
         if not isinstance(hist,ROOT.TDirectory):
            if 'W' not in hist_name or options.syst_w_fake_rate not in hist_name: continue
-           norm = nominal_scale/hist.Integral(0,hist.GetNbinsX()+1)
+           if isinstance(hist,ROOT.TH2): norm = nominal_scale/hist.Integral(-1,-1,-1,-1)
+           else: norm = nominal_scale/hist.Integral(-1,-1)
            hist.Scale(norm)
            hists_to_add.append(hist)
     for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
