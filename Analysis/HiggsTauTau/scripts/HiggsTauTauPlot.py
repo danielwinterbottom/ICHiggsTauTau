@@ -24,7 +24,7 @@ conf_parser.add_argument("--cfg",
                     help="Specify config file", metavar="FILE")
 options, remaining_argv = conf_parser.parse_known_args()
 
-defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"","syst_scale_j_by_source":"", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":True, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"", "syst_tau_id_dm10":"", "syst_lfake_dm0":"", "syst_lfake_dm1":"","syst_qcd_shape_wsf":"","syst_scale_met_unclustered":"","syst_scale_met_clustered":"", "extra_name":"", "no_default":False }
+defaults = { "channel":"mt" , "outputfolder":"output", "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016", "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)", "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"", "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"", "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_eff_t":"", "syst_tquark":"", "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"","syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"",  "syst_fake_b":"" ,"norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False, "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001, "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False, "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10, "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False, "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0, "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"", "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"", "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"", "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"","doNLOScales":False, "gen_signal":False, "doPDF":False, "doMSSMReWeighting":False, "do_unrolling":True, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"", "syst_tau_id_dm10":"", "syst_lfake_dm0":"", "syst_lfake_dm1":"","syst_qcd_shape_wsf":"","syst_scale_met_unclustered":"","syst_scale_met_clustered":"", "extra_name":"", "no_default":False }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -105,6 +105,8 @@ parser.add_argument("--syst_scale_j", dest="syst_scale_j", type=str,
     help="If this string is set then the jet scale systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_scale_j_by_source", dest="syst_scale_j_by_source", type=str,
     help="If this string is set then the jet scale systematic is performed split by source with the set string appended to the resulting histogram name. The string should contrain the substring  \'SOUCE\' which will be replaced by the JES source name")
+parser.add_argument("--jes_sources", dest="jes_sources", type=str,
+    help="JES sources to process specified by integers seperated by commas. Values seperated by x\':\'y will process all integers from x to y. e.g using --jes_sources=1:3,10 will process sources: 1,2,3,10")
 parser.add_argument("--syst_eff_b", dest="syst_eff_b", type=str,
     help="If this string is set then the b-tag efficiency systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_fake_b", dest="syst_fake_b", type=str,
@@ -593,8 +595,8 @@ if options.syst_zpt_statpt80 != '':
     systematics['syst_zpt_statpt80_up'] = ('' , '_'+options.syst_zpt_statpt80+'Up', 'wt*wt_zpt_stat_m400pt80_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_zpt_statpt80_down'] = ('' , '_'+options.syst_zpt_statpt80+'Down', 'wt*wt_zpt_stat_m400pt80_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
 if options.syst_z_mjj != '' and options.cat == 'vbf':
-    systematics['syst_z_mjj_up'] = ('' , '_'+options.syst_z_mjj+'Up', 'wt*wt_z_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
-    systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
+    systematics['syst_z_mjj_up'] = ('' , '_'+options.syst_z_mjj+'Up', 'wt*wt_z_mjj_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
+    systematics['syst_z_mjj_down'] = ('' , '_'+options.syst_z_mjj+'Down', 'wt*wt_z_mjj_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','ggH_hww125','qqH_hww125'], False)
 if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf'] and options.channel in ['em','et','mt','tt']: 
     weight_up = 'wt*wt_scale_%s_%s' % (options.channel, options.cat)
     weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
@@ -628,8 +630,14 @@ if options.syst_scale_met_clustered != '':
     systematics['syst_scale_met_clustered_down'] = ('METCL_DOWN' , '_'+options.syst_scale_met_clustered+'Down', 'wt', ['QCD','jetFakes'], False)  
 if options.syst_scale_j_by_source != '':
     jes_sources={"AbsoluteFlavMap":1,"AbsoluteMPFBias":2,"AbsoluteScale":3,"AbsoluteStat":4,"FlavorQCD":5,"Fragmentation":6,"PileUpDataMC":7,"PileUpPtBB":8,"PileUpPtEC1":9,"PileUpPtEC2":10,"PileUpPtHF":11,"PileUpPtRef":12,"RelativeBal":13,"RelativeFSR":14,"RelativeJEREC1":15,"RelativeJEREC2":16,"RelativeJERHF":17,"RelativePtBB":18,"RelativePtEC1":19,"RelativePtEC2":20,"RelativePtHF":21,"RelativeStatEC":22,"RelativeStatFSR":23,"RelativeStatHF":24,"SinglePionECAL":25,"SinglePionHCAL":26,"TimePtEta":27}
+    jes_to_process=[]
+    for i in options.jes_sources.split(','):
+      if ':' in i: jes_to_process+=range(int(i.split(':')[0]),int(i.split(':')[1])+1)
+      else: jes_to_process.append(int(i)) 
+    jes_to_process = list(set(jes_to_process))  
     for source in jes_sources:
       jes_num = jes_sources[source]  
+      if jes_num not in jes_to_process: continue  
       replace_dict = {'n_jets':'n_jets_%i'%jes_num, 'n_bjets':'n_bjets_%i'%jes_num, 'mjj':'mjj_%i'%jes_num, 'jdeta':'jdeta_%i'%jes_num, 'jdphi':'jdphi_%i'%jes_num, 'jpt_1':'jpt_1_%i'%jes_num, 'jpt_2':'jpt_2_%i'%jes_num}
       syst_name = 'syst_scale_j_by_source_'+source
       hist_name = options.syst_scale_j_by_source.replace('SOURCE', source)
@@ -1842,7 +1850,7 @@ if options.extra_name != "": nodename +='_'+options.extra_name
 add_names = []
 cats_unmodified = copy.deepcopy(cats)
 
-max_systs_per_pass = 20 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
+max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
 while len(systematics) > 0:
   ana = Analysis()
   #if options.syst_scale_j_by_source != '': ana.writeSubnodes(False) # storing subnodes uses too much memory when doing JES uncertainties split by source
