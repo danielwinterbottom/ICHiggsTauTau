@@ -3563,7 +3563,7 @@ namespace ic {
       mjj_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
       jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
       jdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
-      if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) sjdphi_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector()));
+      if(lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector());
       else sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[1]->vector(), lowpt_jets[0]->vector());
       opp_sides_ = lowpt_jets[0]->eta()*lowpt_jets[1]->eta() < 0 ? 1 : 0;
       double eta_high = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[0]->eta() : lowpt_jets[1]->eta();
