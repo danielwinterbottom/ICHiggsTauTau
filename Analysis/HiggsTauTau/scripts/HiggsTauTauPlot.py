@@ -228,7 +228,7 @@ parser.add_argument("--do_unrolling", dest="do_unrolling", action='store_true',
 parser.add_argument("--no_default", dest="no_default", action='store_true',
     help="If option is speficied then don't do nominal histograms.")
 parser.add_argument("--extra_name", dest="extra_name", type=str,
-    help="If set, adds an additional string to the histogram name")
+    help="If set, adds an additional string to the output datacard name")
 
 
 options = parser.parse_args(remaining_argv)   
@@ -602,19 +602,19 @@ if options.syst_qcd_scale != '' and options.cat in ['0jet','boosted','vbf'] and 
     weight_down = 'wt*(2-wt_scale_%s_%s)' % (options.channel, options.cat)
     systematics['syst_qcd_scale_up'] = ('' , '_'+options.syst_qcd_scale+'Up', weight_up, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
     systematics['syst_qcd_scale_down'] = ('' , '_'+options.syst_qcd_scale+'Down', weight_down, ['ZTT','ZL','ZJ','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','jetFakes','qqH','WminusH','WplusH','ZH','EWKZ','ggH_hww125','qqH_hww125'], False)
-if options.syst_tau_id_dm0 != '' and options.cat == "0jet":
+if options.syst_tau_id_dm0 != '':
     systematics['syst_tau_id_dm0_up'] = ('' , '_'+options.syst_tau_id_dm0+'Up', 'wt*wt_tau_id_dm0_up', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
     systematics['syst_tau_id_dm0_down'] = ('' , '_'+options.syst_tau_id_dm0+'Down', 'wt*wt_tau_id_dm0_down', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
-if options.syst_tau_id_dm1 != '' and options.cat == "0jet":
+if options.syst_tau_id_dm1 != '':
     systematics['syst_tau_id_dm1_up'] = ('' , '_'+options.syst_tau_id_dm1+'Up', 'wt*wt_tau_id_dm1_up', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
     systematics['syst_tau_id_dm1_down'] = ('' , '_'+options.syst_tau_id_dm1+'Down', 'wt*wt_tau_id_dm1_down', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)    
-if options.syst_tau_id_dm10 != '' and options.cat == "0jet":
+if options.syst_tau_id_dm10 != '':
     systematics['syst_tau_id_dm10_up'] = ('' , '_'+options.syst_tau_id_dm10+'Up', 'wt*wt_tau_id_dm10_up', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
     systematics['syst_tau_id_dm10_down'] = ('' , '_'+options.syst_tau_id_dm10+'Down', 'wt*wt_tau_id_dm10_down', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)   
-if options.syst_lfake_dm0 != '' and options.cat == "0jet":
+if options.syst_lfake_dm0 != '':
     systematics['syst_lfake_dm0_up'] = ('' , '_'+options.syst_lfake_dm0+'Up', 'wt*wt_lfake_dm0_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_lfake_dm0_down'] = ('' , '_'+options.syst_lfake_dm0+'Down', 'wt*wt_lfake_dm0_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)    
-if options.syst_lfake_dm1 != '' and options.cat == "0jet":
+if options.syst_lfake_dm1 != '':
     systematics['syst_lfake_dm1_up'] = ('' , '_'+options.syst_lfake_dm1+'Up', 'wt*wt_lfake_dm1_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
     systematics['syst_lfake_dm1_down'] = ('' , '_'+options.syst_lfake_dm1+'Down', 'wt*wt_lfake_dm1_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes'], False)
 if options.syst_qcd_shape_wsf != '':
@@ -1839,6 +1839,7 @@ if ',' in var_name:
 
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat
+if options.extra_name != "": datacard_name+='_'+options.extra_name
 output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
     
@@ -1849,7 +1850,6 @@ plot = options.var
 plot_unmodified = plot
 if options.datacard != "": nodename = options.channel+'_'+options.datacard
 else: nodename = options.channel+'_'+options.cat   
-if options.extra_name != "": nodename +='_'+options.extra_name
 
 add_names = []
 cats_unmodified = copy.deepcopy(cats)
